@@ -37,7 +37,12 @@ import org.junit.Assume;
 
 /**
  * @since 3.1
+ *
+ * @deprecated Use JUnit 4/5 and their assertions instead, and use utilities
+ *             provided via utility classes such as {@link FileSystemHelper}
+ *             instead of accessing utilities via inheritance.
  */
+@Deprecated(forRemoval = true, since = "2024-03")
 public class CoreTest extends TestCase {
 	/** counter for generating unique random file system locations */
 	protected static int nextLocationCounter = 0;
@@ -184,9 +189,6 @@ public class CoreTest extends TestCase {
 			return;
 		}
 		// otherwise use this method and check that the arrays are equal in any order
-		if (expected == null && actual == null) {
-			return;
-		}
 		if (expected == actual) {
 			return;
 		}
