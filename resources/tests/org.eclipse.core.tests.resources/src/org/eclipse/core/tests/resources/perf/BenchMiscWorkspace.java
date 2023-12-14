@@ -55,7 +55,7 @@ public class BenchMiscWorkspace {
 	}
 
 	@Test
-	public void testGetProject() throws CoreException {
+	public void testGetProject() throws Exception {
 		new PerformanceTestRunner() {
 			@Override
 			protected void test() {

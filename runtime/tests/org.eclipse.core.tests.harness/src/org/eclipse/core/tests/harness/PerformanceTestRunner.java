@@ -89,13 +89,13 @@ public abstract class PerformanceTestRunner {
 	 * @param outer          The number of repetitions of the test.
 	 * @param inner          The number of repetitions within the performance timer.
 	 */
-	public final void run(Class<?> testClass, String testMethodName, int outer, int inner) throws CoreException {
+	public final void run(Class<?> testClass, String testMethodName, int outer, int inner) throws Exception {
 		Performance perf = Performance.getDefault();
 		PerformanceMeter meter = perf.createPerformanceMeter(perf.getDefaultScenarioId(testClass, testMethodName));
 		runTest(meter, null, outer, inner);
 	}
 
-	private void runTest(PerformanceMeter meter, String localName, int outer, int inner) throws CoreException {
+	private void runTest(PerformanceMeter meter, String localName, int outer, int inner) throws Exception {
 		Performance perf = Performance.getDefault();
 		if (regressionReason != null) {
 			perf.setComment(meter, Performance.EXPLAINS_DEGRADATION_COMMENT, regressionReason);
@@ -123,11 +123,11 @@ public abstract class PerformanceTestRunner {
 		}
 	}
 
-	protected void setUp() throws CoreException {
+	protected void setUp() throws Exception {
 		// subclasses to override
 	}
 
-	protected void tearDown() throws CoreException {
+	protected void tearDown() throws Exception {
 		// subclasses to override
 	}
 
