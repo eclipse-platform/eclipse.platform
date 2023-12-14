@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
+import static org.junit.Assert.fail;
+
 import junit.framework.TestCase;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.test.performance.Dimension;
@@ -70,7 +72,7 @@ public abstract class PerformanceTestRunner {
 		try {
 			runTest(meter, localName, outer, inner);
 		} catch (Exception e) {
-			CoreTest.fail("Failed performance test", e);
+			fail("Failed performance test with exception:" + e);
 		}
 	}
 
