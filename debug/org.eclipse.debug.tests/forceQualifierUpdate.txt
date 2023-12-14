@@ -2,3 +2,4 @@
 Bug 516076 - Fix comparator errors caused by GVT47 : Non-externalized strings in Launch mode drop down list
 Bug 517740: [Launch Group] Externalisation of strings broke Group Launch UI
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1184
+https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1659
