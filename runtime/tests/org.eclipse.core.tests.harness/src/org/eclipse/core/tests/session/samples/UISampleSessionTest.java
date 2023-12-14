@@ -13,13 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.session.samples;
 
-import java.util.Date;
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
 
+import java.util.Date;
 import junit.framework.Test;
 import junit.framework.TestCase;
-import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.session.SessionTestSuite;
-import org.eclipse.test.performance.*;
+import org.eclipse.test.performance.Dimension;
+import org.eclipse.test.performance.Performance;
+import org.eclipse.test.performance.PerformanceMeter;
 
 public class UISampleSessionTest extends TestCase {
 	public UISampleSessionTest(String methodName) {
@@ -53,7 +55,7 @@ public class UISampleSessionTest extends TestCase {
 	}
 
 	public static Test suite() {
-		SessionTestSuite suite = new SessionTestSuite(CoreTest.PI_HARNESS);
+		SessionTestSuite suite = new SessionTestSuite(PI_HARNESS);
 		suite.setApplicationId(SessionTestSuite.UI_TEST_APPLICATION);
 		for (int i = 0; i < 3; i++)
 			suite.addTest(new UISampleSessionTest("testApplicationStartup"));

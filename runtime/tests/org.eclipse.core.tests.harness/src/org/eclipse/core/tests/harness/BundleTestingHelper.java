@@ -104,10 +104,9 @@ public class BundleTestingHelper {
 				try {
 					installed[i] = installBundle(tag + ".setup.0", context, locations[i]);
 					Assert.assertEquals(tag + ".setup.1." + locations[i], Bundle.INSTALLED, installed[i].getState());
-				} catch (BundleException e) {
-					CoreTest.fail(tag + ".setup.2" + locations[i], e);
-				} catch (IOException e) {
-					CoreTest.fail(tag + ".setup.3" + locations[i], e);
+				} catch (BundleException | IOException e) {
+					throw new IllegalStateException(
+							"Exception occurred when setting up bundle at location " + locations[i] + ": " + e);
 				}
 			}
 			if (listener != null) {
@@ -131,7 +130,8 @@ public class BundleTestingHelper {
 					try {
 						installed[i].uninstall();
 					} catch (BundleException e) {
-						CoreTest.fail(tag + ".tearDown.1." + locations[i], e);
+						throw new IllegalStateException(
+								"Exception occurred when removing bundle at location " + locations[i] + ": " + e);
 					}
 				}
 				BundleTestingHelper.resolveBundles(context, installed);
