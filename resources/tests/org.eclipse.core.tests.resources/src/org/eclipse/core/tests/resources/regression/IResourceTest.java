@@ -104,7 +104,7 @@ public class IResourceTest {
 
 	@Test
 	public void testBug28790() throws CoreException {
-		assumeTrue("test only makes sens on platforms that support archive attribute",
+		assumeTrue("only relevant for platforms supporting archive attribute",
 				isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE));
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -216,7 +216,7 @@ public class IResourceTest {
 
 	@Test
 	public void testBug111821() throws CoreException {
-		assumeTrue("test only makes sens on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("testBug111821");
 		IFolder folder = project.getFolder(new Path(null, "c:"));
@@ -256,7 +256,7 @@ public class IResourceTest {
 	 */
 	@Test
 	public void testCreate_1FW87XF() throws Throwable {
-		assumeTrue("test only works on Linux", OS.isLinux());
+		assumeTrue("only relevant on Linux", OS.isLinux());
 
 		// test if the file system is case sensitive
 		boolean caseSensitive = new java.io.File("abc").compareTo(new java.io.File("ABC")) != 0;
