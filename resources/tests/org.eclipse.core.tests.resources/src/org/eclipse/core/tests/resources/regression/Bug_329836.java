@@ -40,7 +40,7 @@ public class Bug_329836 {
 
 	@Test
 	public void testBug() throws Exception {
-		assumeTrue("test only works on Mac", OS.isMac());
+		assumeTrue("only relevant on Mac", OS.isMac());
 
 		IFileStore fileStore = workspaceRule.getTempStore().getChild(createUniqueString());
 		createInFileSystem(fileStore);

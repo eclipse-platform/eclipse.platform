@@ -337,7 +337,7 @@ public class WorkspaceTest {
 
 	@Test
 	public void testWorkingLocationDeletion_bug433061() throws Throwable {
-		assumeTrue("test only makes sense when Platform support symbolic links", canCreateSymLinks());
+		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
 
 		IProject project = getTestProject();
 		FussyProgressMonitor monitor = new FussyProgressMonitor();

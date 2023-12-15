@@ -80,7 +80,7 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeArchive() throws CoreException {
-		assumeTrue("test only relevant for platforms supporting archive attribute",
+		assumeTrue("only relevant for platforms supporting archive attribute",
 				isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE));
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -104,7 +104,7 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeExecutable() throws CoreException {
-		assumeTrue("test only relevant for platforms supporting executable attribute",
+		assumeTrue("only relevant for platforms supporting executable attribute",
 				isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -129,7 +129,7 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeHidden() throws CoreException {
-		assumeTrue("test only relevant for platforms supporting hidden attribute",
+		assumeTrue("only relevant for platforms supporting hidden attribute",
 				isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -153,7 +153,7 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeReadOnly() throws CoreException {
-		assumeTrue("test only relevant for platforms supporting read-only attribute",
+		assumeTrue("only relevant for platforms supporting read-only attribute",
 				isAttributeSupported(EFS.ATTRIBUTE_READ_ONLY));
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -219,7 +219,7 @@ public class ResourceAttributeTest {
 	@Test
 	@Ignore("currently failing on Hudson: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=397353")
 	public void testRefreshExecutableOnFolder() throws CoreException {
-		assumeTrue("test only relevant for platforms supporting executable attribute",
+		assumeTrue("only relevant for platforms supporting executable attribute",
 				isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
 
 		IProject project = getWorkspace().getRoot().getProject("testRefreshExecutableOnFolder");
@@ -247,7 +247,7 @@ public class ResourceAttributeTest {
 
 	@Test
 	public void testAttributeSymlink() throws Exception {
-		assumeTrue("test only relevant for platforms supporting symlinks", canCreateSymLinks());
+		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile link = project.getFile("link");

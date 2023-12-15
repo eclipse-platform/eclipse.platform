@@ -58,7 +58,7 @@ public class IWorkspaceRootTest {
 	 */
 	@Test
 	public void testFindFilesNonCanonicalPath() throws Exception {
-		assumeTrue("this test is for windows only", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("testFindFilesNonCanonicalPath");
 		createInWorkspace(project);

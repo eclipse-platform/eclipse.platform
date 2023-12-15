@@ -51,7 +51,7 @@ public class Bug_025457 {
 
 	@Test
 	public void testFile() throws Exception {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("file.txt");
@@ -79,7 +79,7 @@ public class Bug_025457 {
 	@Test
 	public void testFolder() throws IOException, CoreException {
 		//native code must also be present so move can detect the case change
-		assumeTrue("test only works on Windows", OS.isWindows() && isReadOnlySupported());
+		assumeTrue("only relevant on Windows", OS.isWindows() && isReadOnlySupported());
 
 		IProject source = getWorkspace().getRoot().getProject("SourceProject");
 		IFolder sourceFolder = source.getFolder("folder");
@@ -108,7 +108,7 @@ public class Bug_025457 {
 
 	@Test
 	public void testProject() throws IOException, CoreException {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IProject destination = getWorkspace().getRoot().getProject("Project");

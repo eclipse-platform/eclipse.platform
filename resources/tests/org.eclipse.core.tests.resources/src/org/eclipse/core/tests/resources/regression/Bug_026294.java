@@ -56,7 +56,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteOpenProjectWindows() throws Exception {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -127,7 +127,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteOpenProjectLinux() throws CoreException {
-		assumeTrue("test only works on Linux", OS.isLinux() && isReadOnlySupported());
+		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -175,7 +175,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteClosedProjectWindows() throws Exception {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -213,7 +213,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteClosedProjectLinux() throws CoreException {
-		assumeTrue("test only works on Linux", OS.isLinux());
+		assumeTrue("only relevant on Linux", OS.isLinux());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -258,7 +258,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteFolderWindows() throws Exception {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -293,7 +293,7 @@ public class Bug_026294 {
 	 */
 	@Test
 	public void testDeleteFolderLinux() throws CoreException {
-		assumeTrue("test only works on Linux", OS.isLinux());
+		assumeTrue("only relevant on Linux", OS.isLinux());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());

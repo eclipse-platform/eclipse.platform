@@ -641,7 +641,7 @@ public class IProjectTest  {
 	 */
 	@Test
 	public void testProjectCreationLocationExistsWithDifferentCase() throws CoreException {
-		assumeTrue("Case-sensitive file system test only relevant for Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		String projectName = createUniqueString() + "a";
 		IProject project = getWorkspace().getRoot().getProject(projectName);

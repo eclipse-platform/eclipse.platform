@@ -85,7 +85,7 @@ public class SymlinkResourceTest {
 	 */
 	@Test
 	public void testBug232426() throws Exception {
-		assumeTrue("test is only relevant for Platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -120,7 +120,7 @@ public class SymlinkResourceTest {
 
 	@Test
 	public void testBug358830() throws Exception {
-		assumeTrue("test is only relevant for Platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);

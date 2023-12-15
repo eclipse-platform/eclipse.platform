@@ -47,7 +47,7 @@ public class Bug_185247_recursiveLinks {
 
 	@Before
 	public void requireCanCreateSymlinks() throws IOException {
-		assumeTrue("test only for platform providing symlinks", canCreateSymLinks());
+		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
 	}
 
 	/**

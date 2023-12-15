@@ -30,6 +30,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +58,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.osgi.util.NLS;
-import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -146,8 +147,8 @@ public class FileStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null);
+		assumeFalse("only executable if at least two volumes are present", tempDirectories == null
+				|| tempDirectories.length < 2 || tempDirectories[0] == null || tempDirectories[1] == null);
 
 		/* build scenario */
 		// create source root folder
@@ -231,7 +232,7 @@ public class FileStoreTest {
 	public void testCaseInsensitive() throws Throwable {
 		IFileStore temp = createDir(getWorkspace().getRoot().getLocation().append("temp").toString(), true);
 		boolean isCaseSensitive = temp.getFileSystem().isCaseSensitive();
-		Assume.assumeFalse("Skipping copy test on caseSensitive System", isCaseSensitive);
+		assumeFalse("only relevant for platforms with case-sensitive file system", isCaseSensitive);
 
 		// create a file
 		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
@@ -320,8 +321,8 @@ public class FileStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null);
+		assumeFalse("only executable if at least two volumes are present", tempDirectories == null
+				|| tempDirectories.length < 2 || tempDirectories[0] == null || tempDirectories[1] == null);
 
 		/* build scenario */
 		/* get the source folder */
@@ -474,8 +475,8 @@ public class FileStoreTest {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
-		Assume.assumeFalse(tempDirectories == null || tempDirectories.length < 2 || tempDirectories[0] == null
-				|| tempDirectories[1] == null);
+		assumeFalse("only executable if at least two volumes are present", tempDirectories == null
+				|| tempDirectories.length < 2 || tempDirectories[0] == null || tempDirectories[1] == null);
 
 		/* build scenario */
 		/* get the source folder */
@@ -590,7 +591,7 @@ public class FileStoreTest {
 	}
 
 	private void testAttribute(int attribute) throws Exception {
-		Assume.assumeTrue(isAttributeSupported(attribute));
+		assumeTrue("only relevant for platforms supporting attribute: " + attribute, isAttributeSupported(attribute));
 
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
 		IFileStore targetFolder = createDir(root.toString(), true);
