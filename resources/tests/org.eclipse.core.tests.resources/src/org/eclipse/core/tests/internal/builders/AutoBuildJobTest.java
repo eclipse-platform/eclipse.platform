@@ -219,8 +219,6 @@ public class AutoBuildJobTest {
 	 * @param timeoutMillis
 	 *            after this timeout, a <code>TimeoutException</code> will be
 	 *            thrown.
-	 * @return the exception thrown by {@linkplain BuildManager#waitForAutoBuild()},
-	 *         it can be <code>null</code>.
 	 * @throws InterruptedException
 	 *             if the thread waiting for the auto-build is interrupted.
 	 */
