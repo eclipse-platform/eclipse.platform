@@ -33,7 +33,7 @@ import junit.framework.Test;
 
 /**
  * Abstract {@link Test} class for external tools
- * 
+ *
  * @since 3.5.100 org.eclipse.ant.tests.ui
  */
 @SuppressWarnings("restriction")
@@ -43,7 +43,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	/**
 	 * Creates a new external tool builder for the given project from the given {@link ILaunchConfiguration}
-	 * 
+	 *
 	 * @param project
 	 *            the parent project
 	 * @param name
@@ -53,7 +53,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 * @return a new Ant build {@link ILaunchConfiguration} or <code>null</code>
 	 */
 	protected ILaunchConfiguration createExternalToolBuilder(IProject project, String name, Map<String, ? extends Object> args) throws Exception {
-		IFolder dir = getProject().getFolder(BuilderCoreUtils.BUILDER_FOLDER_NAME);
+		IFolder dir = project.getFolder(BuilderCoreUtils.BUILDER_FOLDER_NAME);
 		if (!dir.exists()) {
 			dir.create(true, true, null);
 		}
@@ -70,7 +70,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 	 * Creates a new external tool Ant build configuration that has never been saved
 	 */
 	protected ILaunchConfigurationWorkingCopy createExternalToolBuilderWorkingCopy(IProject project, String name, Map<String, Object> args) throws Exception {
-		IFolder dir = getProject().getFolder(BuilderCoreUtils.BUILDER_FOLDER_NAME);
+		IFolder dir = project.getFolder(BuilderCoreUtils.BUILDER_FOLDER_NAME);
 		if (!dir.exists()) {
 			dir.create(true, true, null);
 		}
@@ -85,7 +85,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	/**
 	 * Creates a new empty {@link ICommand}
-	 * 
+	 *
 	 * @return the new build {@link ICommand}
 	 */
 	protected ICommand createEmptyBuildCommand() throws Exception {
@@ -94,7 +94,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	/**
 	 * Creates a new builder {@link ICommand}
-	 * 
+	 *
 	 * @return the new builder {@link ICommand}
 	 */
 	protected ICommand createBuildCommand(ILaunchConfiguration config) throws Exception {
@@ -103,7 +103,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	/**
 	 * Returns a map of arguments for an Ant buildfile using Eclipse 2.0 arguments.
-	 * 
+	 *
 	 * @return a map of 2.0 arguments for an Ant buildfile.
 	 */
 	protected Map<String, String> get20AntArgumentMap() {
@@ -123,7 +123,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	/**
 	 * Returns a map of arguments for executing a program using Eclipse 2.0 arguments.
-	 * 
+	 *
 	 * @return a map of 2.0 arguments for a program
 	 */
 	protected Map<String, String> get20ProgramArgumentMap() {
@@ -143,7 +143,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	/**
 	 * Returns a map of arguments for executing an Ant buildfile using Eclipse 2.1 arguments.
-	 * 
+	 *
 	 * @return a map of 2.1 arguments for an Ant buildfile
 	 */
 	protected Map<String, String> get21AntArgumentMap() {
@@ -168,7 +168,7 @@ public abstract class AbstractExternalToolTest extends AbstractAntUITest {
 
 	/**
 	 * Returns a map of arguments for executing a program buildfile using Eclipse 2.1 arguments.
-	 * 
+	 *
 	 * @return a map of 2.1 arguments for a program
 	 */
 	protected Map<String, String> get21ProgramArgumentMap() {
