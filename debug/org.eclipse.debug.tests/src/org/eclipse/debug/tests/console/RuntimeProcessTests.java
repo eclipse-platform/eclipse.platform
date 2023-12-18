@@ -64,8 +64,8 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		mockProcess.setExitValue(1);
 		mockProcess.destroy();
 
-		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, 1000, p -> "RuntimePocess not terminated.");
-		TestUtil.waitForJobs(name.getMethodName(), 25, 500);
+		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, testTimeout, p -> "RuntimeProcess not terminated.");
+		TestUtil.waitForJobs(name.getMethodName(), 25, testTimeout);
 		assertEquals("Wrong number of terminate events.", 1, processTerminateEvents.get());
 		assertEquals("RuntimeProcess reported wrong exit code.", 1, runtimeProcess.getExitValue());
 	}
@@ -92,8 +92,8 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		runtimeProcess.terminate();
 		assertFalse("RuntimeProcess failed to terminate wrapped process.", mockProcess.isAlive());
 
-		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, 1000, p -> "RuntimePocess not terminated.");
-		TestUtil.waitForJobs(name.getMethodName(), 25, 500);
+		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, testTimeout, p -> "RuntimeProcess not terminated.");
+		TestUtil.waitForJobs(name.getMethodName(), 25, testTimeout);
 		assertEquals("Wrong number of terminate events.", 1, processTerminateEvents.get());
 		assertEquals("RuntimeProcess reported wrong exit code.", 1, runtimeProcess.getExitValue());
 	}
@@ -129,7 +129,7 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		assertFalse("RuntimeProcess failed to terminate child of wrapped process.", childProcess2.isAlive());
 		assertFalse("RuntimeProcess failed to terminate descendant of wrapped process.", grandChildProcess.isAlive());
 
-		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, 1000, p -> "RuntimePocess not terminated.");
+		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, testTimeout, p -> "RuntimeProcess not terminated.");
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		assertFalse("RuntimeProcess failed to terminate wrapped process.", mockProcess.isAlive());
 		assertTrue("RuntimeProcess terminated child of wrapped process, unlike configured.", childProcess.isAlive());
 
-		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, 1000, p -> "RuntimePocess not terminated.");
+		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, testTimeout, p -> "RuntimeProcess not terminated.");
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class RuntimeProcessTests extends AbstractDebugTest {
 		RuntimeProcess runtimeProcess = mockProcess.toRuntimeProcess();
 		runtimeProcess.terminate(); // must not throw, even toHandle() does
 
-		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, 1000, p -> "RuntimePocess not terminated.");
+		TestUtil.waitWhile(p -> !p.isTerminated(), runtimeProcess, testTimeout, p -> "RuntimeProcess not terminated.");
 	}
 
 	/**
