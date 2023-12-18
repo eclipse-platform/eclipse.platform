@@ -251,8 +251,8 @@ public class JobTest extends AbstractJobTest {
 			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_DONE);
 		}
 
-		for (int i = 0; i < jobs.length; i++) {
-			jobs[i].join();
+		for (AsynchTestJob job : jobs) {
+			job.join();
 		}
 		//the status for every job should be STATUS_OK
 		//the threads should have been reset to null
@@ -888,6 +888,7 @@ public class JobTest extends AbstractJobTest {
 
 	public void testJoinWithTimeout() throws Exception {
 		longJob.schedule();
+		waitForState(longJob, Job.RUNNING);
 		final long timeout = 1000;
 		final long duration[] = {-1};
 		// Create a thread that will join the test job
@@ -952,6 +953,7 @@ public class JobTest extends AbstractJobTest {
 
 	public void testJoinWithCancelingMonitor() throws InterruptedException {
 		longJob.schedule();
+		waitForState(longJob, Job.RUNNING);
 		// Create a progress monitor for the join call
 		final FussyProgressMonitor monitor = new FussyProgressMonitor();
 		// Create a thread that will join the test job
@@ -971,14 +973,13 @@ public class JobTest extends AbstractJobTest {
 		});
 		t.start();
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_START);
-		assertEquals("1.0", TestBarrier2.STATUS_START, status.get(0));
 
 		// Cancel the monitor that is attached to the join call
 		monitor.setCanceled(true);
 		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_DONE);
 		monitor.sanityCheck();
 		// Verify that the join call is still running
-		assertEquals("2.0", Job.RUNNING, longJob.getState());
+		assertEquals("job unexpectedly stopped running after join call", Job.RUNNING, longJob.getState());
 		// Finally cancel the job
 		longJob.cancel();
 		waitForCompletion(longJob);
