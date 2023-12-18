@@ -20,7 +20,9 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -130,162 +132,146 @@ public class JobTest extends AbstractJobTest {
 	//see bug #43566
 	@Test
 	public void testAsynchJob() {
-		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START });
-
 		//execute a job asynchronously and check the result
-		AsynchTestJob main = new AsynchTestJob("Test Asynch Finish", status, 0);
+		AsynchTestJob main = new AsynchTestJob("Test Asynch Finish");
+		assertNull(main.getThread());
+		assertNull(main.getResult());
 
-		assertNull("1.0", main.getThread());
-		assertNull("2.0", main.getResult());
 		//schedule the job to run
 		main.schedule();
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
-		assertEquals("3.0", Job.RUNNING, main.getState());
+		main.jobBarrier.waitForStatus(TestBarrier2.STATUS_START);
+		waitForState(main, Job.RUNNING);
 		//the asynchronous process that assigns the thread the job is going to run in has not been started yet
 		//the job is running in the thread provided to it by the manager
-		assertTrue("3.1" + main.getThread().getName(), main.getThread() instanceof Worker);
+		assertThreadType(main, Worker.class);
 
-		status.set(0, TestBarrier2.STATUS_START);
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_WAIT_FOR_START);
+		main.jobBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
+		main.jobBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 
 		//the asynchronous process has been started, but the set thread method has not been called yet
-		assertTrue("3.2", main.getThread() instanceof Worker);
-
-		status.set(0, TestBarrier2.STATUS_WAIT_FOR_RUN);
+		assertThreadType(main, Worker.class);
+		main.threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
 
 		//make sure the job has set the thread it is going to run in
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
-
-		assertEquals("3.3", TestBarrier2.STATUS_RUNNING, status.get(0));
-		assertTrue("3.4", main.getThread() instanceof AsynchExecThread);
+		main.threadBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+		assertThreadType(main, AsynchExecThread.class);
 
 		//let the job run
-		status.set(0, TestBarrier2.STATUS_WAIT_FOR_DONE);
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_DONE);
+		main.threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_DONE);
+		main.threadBarrier.waitForStatus(TestBarrier2.STATUS_DONE);
 		waitForState(main, Job.NONE);
 
 		//after the job is finished, the thread should be reset
-		assertEquals("4.0", Job.NONE, main.getState());
-		assertEquals("4.1", IStatus.OK, main.getResult().getSeverity());
-		assertNull("4.2", main.getThread());
+		assertEquals("job finished with unexpected result", IStatus.OK, main.getResult().getSeverity());
+		assertNull(main.getThread());
 
 		//reset status
-		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
+		main.threadBarrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
+		main.jobBarrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
 
 		//schedule the job to run again
 		main.schedule();
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
-		assertEquals("5.0", Job.RUNNING, main.getState());
+		main.jobBarrier.waitForStatus(TestBarrier2.STATUS_START);
+		waitForState(main, Job.RUNNING);
 
 		//the asynchronous process that assigns the thread the job is going to run in has not been started yet
 		//job is running in the thread provided by the manager
-		assertTrue("5.1", main.getThread() instanceof Worker);
+		assertThreadType(main, Worker.class);
 
-		status.set(0, TestBarrier2.STATUS_START);
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_WAIT_FOR_START);
+		main.jobBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
+		main.jobBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 
 		//the asynchronous process has been started, but the set thread method has not been called yet
-		assertTrue("5.2", main.getThread() instanceof Worker);
+		assertThreadType(main, Worker.class);
 
-		status.set(0, TestBarrier2.STATUS_WAIT_FOR_RUN);
+		main.threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
 
 		//make sure the job has set the thread it is going to run in
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_RUNNING);
-
-		assertEquals("5.3", TestBarrier2.STATUS_RUNNING, status.get(0));
-		assertTrue("5.4", main.getThread() instanceof AsynchExecThread);
+		main.threadBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+		assertThreadType(main, AsynchExecThread.class);
 
 		//cancel the job, then let the job get the cancellation request
 		main.cancel();
-		status.set(0, TestBarrier2.STATUS_WAIT_FOR_DONE);
-		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_DONE);
+		main.threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_DONE);
+		main.threadBarrier.waitForStatus(TestBarrier2.STATUS_DONE);
 		waitForState(main, Job.NONE);
 
 		//thread should be reset to null after cancellation
-		assertEquals("6.0", Job.NONE, main.getState());
-		assertEquals("6.1", IStatus.CANCEL, main.getResult().getSeverity());
-		assertNull("6.2", main.getThread());
+		assertEquals("job finished with unexpected result", IStatus.CANCEL, main.getResult().getSeverity());
+		assertNull(main.getThread());
 	}
 
 	@Test
 	public void testAsynchJobComplex() throws InterruptedException {
-		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START,
-				TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START,
-				TestBarrier2.STATUS_WAIT_FOR_START });
-
 		//test the interaction of several asynchronous jobs
 		AsynchTestJob[] jobs = new AsynchTestJob[5];
 
 		for (int i = 0; i < jobs.length; i++) {
-			jobs[i] = new AsynchTestJob("TestJob" + (i + 1), status, i);
-			assertNull("1." + i, jobs[i].getThread());
-			assertNull("2." + i, jobs[i].getResult());
+			jobs[i] = new AsynchTestJob("TestJob" + (i + 1));
+			assertNull("job unexpectedly has thread assigned: " + jobs[i], jobs[i].getThread());
+			assertNull("job unexpectedly has a result: " + jobs[i], jobs[i].getResult());
 			jobs[i].schedule();
-			// status.set(i, TestBarrier.STATUS_START;
 		}
 		//all the jobs should be running at the same time
-		waitForStart(jobs, status);
-
-		//every job should now be waiting for the STATUS_START flag
-		for (int i = 0; i < status.length(); i++) {
-			assertEquals("3." + i, Job.RUNNING, jobs[i].getState());
-			assertTrue("4." + i, jobs[i].getThread() instanceof Worker);
-			status.set(i, TestBarrier2.STATUS_START);
-		}
-
-		for (int i = 0; i < status.length(); i++) {
-			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_WAIT_FOR_START);
+		for (AsynchTestJob job : jobs) {
+			job.jobBarrier.waitForStatus(TestBarrier2.STATUS_START);
 		}
 
 		//every job should now be waiting for the STATUS_WAIT_FOR_RUN flag
-		for (int i = 0; i < status.length(); i++) {
-			assertTrue("5. " + i, jobs[i].getThread() instanceof Worker);
-			status.set(i, TestBarrier2.STATUS_WAIT_FOR_RUN);
+		for (AsynchTestJob job : jobs) {
+			assertThreadType(job, Worker.class);
+			job.jobBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
 		}
 
-		//wait until all jobs are in the running state
-		for (int i = 0; i < status.length(); i++) {
-			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_RUNNING);
+		for (AsynchTestJob job : jobs) {
+			job.jobBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+		}
+
+		//every job should now be waiting for the STATUS_WAIT_FOR_RUN flag
+		for (AsynchTestJob job : jobs) {
+			assertThreadType(job, Worker.class);
+			job.threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
+		}
+
+		//wait until all job threads are in the running state
+		for (AsynchTestJob job : jobs) {
+			job.threadBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		}
 
 		//let the jobs execute
-		for (int i = 0; i < status.length(); i++) {
-			assertTrue("6. " + i, jobs[i].getThread() instanceof AsynchExecThread);
-			status.set(i, TestBarrier2.STATUS_WAIT_FOR_DONE);
+		for (AsynchTestJob job : jobs) {
+			assertThreadType(job, AsynchExecThread.class);
+			job.threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		}
 
-		for (int i = 0; i < status.length(); i++) {
-			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_DONE);
+		for (AsynchTestJob job : jobs) {
+			job.threadBarrier.waitForStatus(TestBarrier2.STATUS_DONE);
 		}
 
 		for (AsynchTestJob job : jobs) {
 			job.join();
 		}
+
 		//the status for every job should be STATUS_OK
 		//the threads should have been reset to null
-		for (int i = 0; i < status.length(); i++) {
-			assertEquals("7." + i, TestBarrier2.STATUS_DONE, status.get(i));
-			assertEquals("8." + i, Job.NONE, jobs[i].getState());
-			assertEquals("9." + i, IStatus.OK, jobs[i].getResult().getSeverity());
-			assertNull("10." + i, jobs[i].getThread());
+		for (AsynchTestJob job : jobs) {
+			waitForState(job, Job.NONE);
+			assertEquals("job finished with unexpected state: " + job, IStatus.OK, job.getResult().getSeverity());
+			assertNull("job still has a thread assigned: " + job, job.getThread());
 		}
 	}
 
 	@Test
 	public void testAsynchJobConflict() {
-		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START,
-				TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START,
-				TestBarrier2.STATUS_WAIT_FOR_START });
-
 		//test the interaction of several asynchronous jobs when a conflicting rule is assigned to some of them
 		AsynchTestJob[] jobs = new AsynchTestJob[5];
 
 		ISchedulingRule rule = new IdentityRule();
 
 		for (int i = 0; i < jobs.length; i++) {
-			jobs[i] = new AsynchTestJob("TestJob" + (i + 1), status, i);
-			assertNull("1." + i, jobs[i].getThread());
-			assertNull("2." + i, jobs[i].getResult());
+			jobs[i] = new AsynchTestJob("TestJob" + (i + 1));
+			assertNull("job unexpectedly has thread assigned: " + jobs[i], jobs[i].getThread());
+			assertNull("job unexpectedly has a result: " + jobs[i], jobs[i].getResult());
 			if (i < 2) {
 				jobs[i].schedule();
 			} else if (i > 2) {
@@ -299,26 +285,27 @@ public class JobTest extends AbstractJobTest {
 
 		//these 3 jobs should be waiting for the STATUS_START flag
 		for (int i = 0; i < 3; i++) {
-			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_RUNNING);
-			assertEquals("3." + i, Job.RUNNING, jobs[i].getState());
-			assertTrue("4." + i, jobs[i].getThread() instanceof Worker);
-			status.set(i, TestBarrier2.STATUS_START);
+			AsynchTestJob job = jobs[i];
+			job.jobBarrier.waitForStatus(TestBarrier2.STATUS_START);
+			waitForState(job, Job.RUNNING);
+			assertThreadType(job, Worker.class);
+			job.jobBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
 		}
 
 		//the first 3 jobs should be running at the same time
 		for (int i = 0; i < 3; i++) {
-			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_WAIT_FOR_START);
+			jobs[i].jobBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		}
 
 		//the 3 jobs should now be waiting for the STATUS_WAIT_FOR_RUN flag
 		for (int i = 0; i < 3; i++) {
-			assertTrue("5. " + i, jobs[i].getThread() instanceof Worker);
-			status.set(i, TestBarrier2.STATUS_WAIT_FOR_RUN);
+			assertThreadType(jobs[i], Worker.class);
+			jobs[i].threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
 		}
 
 		//wait until jobs block on running state
 		for (int i = 0; i < 3; i++) {
-			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_RUNNING);
+			jobs[i].threadBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		}
 
 		//schedule the 2 remaining jobs
@@ -327,70 +314,72 @@ public class JobTest extends AbstractJobTest {
 
 		//the 2 newly scheduled jobs should be waiting since they conflict with the third job
 		//no threads were assigned to them yet
-		assertEquals("6.1", Job.WAITING, jobs[3].getState());
-		assertNull("6.2", jobs[3].getThread());
-		assertEquals("6.3", Job.WAITING, jobs[4].getState());
-		assertNull("6.4", jobs[4].getThread());
+		waitForState(jobs[3], Job.WAITING);
+		assertNull("job unexpectedly has a thread assigned: " + jobs[3], jobs[3].getThread());
+		waitForState(jobs[4], Job.WAITING);
+		assertNull("job unexpectedly has a thread assigned: " + jobs[4], jobs[4].getThread());
 
 		//let the two non-conflicting jobs execute together
 		for (int i = 0; i < 2; i++) {
-			assertTrue("7. " + i, jobs[i].getThread() instanceof AsynchExecThread);
-			status.set(i, TestBarrier2.STATUS_WAIT_FOR_DONE);
+			assertThreadType(jobs[i], AsynchExecThread.class);
+			jobs[i].threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		}
 		//wait until the non-conflicting jobs are done
-		TestBarrier2.waitForStatus(status, 1, TestBarrier2.STATUS_DONE);
+		jobs[1].threadBarrier.waitForStatus(TestBarrier2.STATUS_DONE);
 
 		//the third job should still be in the running state
-		assertEquals("8.1", Job.RUNNING, jobs[2].getState());
+		waitForState(jobs[2], Job.RUNNING);
 		//the 2 conflicting jobs should still be in the waiting state
-		assertEquals("8.2", Job.WAITING, jobs[3].getState());
-		assertEquals("8.3", Job.WAITING, jobs[4].getState());
+		waitForState(jobs[3], Job.WAITING);
+		waitForState(jobs[4], Job.WAITING);
 
 		//let the third job finish execution
-		assertTrue("8.4", jobs[2].getThread() instanceof AsynchExecThread);
-		status.set(2, TestBarrier2.STATUS_WAIT_FOR_DONE);
+		assertThreadType(jobs[2], AsynchExecThread.class);
+		jobs[2].threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 		//wait until the third job is done
-		TestBarrier2.waitForStatus(status, 2, TestBarrier2.STATUS_DONE);
+		jobs[2].threadBarrier.waitForStatus(TestBarrier2.STATUS_DONE);
 
 		//the fourth job should now start running, the fifth job should still be waiting
-		TestBarrier2.waitForStatus(status, 3, TestBarrier2.STATUS_RUNNING);
-		assertEquals("9.1", Job.RUNNING, jobs[3].getState());
-		assertEquals("9.2", Job.WAITING, jobs[4].getState());
+		jobs[3].jobBarrier.waitForStatus(TestBarrier2.STATUS_START);
+		waitForState(jobs[3], Job.RUNNING);
+		waitForState(jobs[4], Job.WAITING);
 
 		//let the fourth job run, the fifth job is still waiting
-		status.set(3, TestBarrier2.STATUS_START);
-		assertEquals("9.3", Job.WAITING, jobs[4].getState());
-		TestBarrier2.waitForStatus(status, 3, TestBarrier2.STATUS_WAIT_FOR_START);
-		status.set(3, TestBarrier2.STATUS_WAIT_FOR_RUN);
-		assertEquals("9.4", Job.WAITING, jobs[4].getState());
-		TestBarrier2.waitForStatus(status, 3, TestBarrier2.STATUS_RUNNING);
-		assertEquals("9.5", Job.WAITING, jobs[4].getState());
+		jobs[3].jobBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
+		waitForState(jobs[4], Job.WAITING);
+		jobs[3].jobBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+		jobs[3].threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_RUN);
+		waitForState(jobs[4], Job.WAITING);
+		jobs[3].threadBarrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+		waitForState(jobs[4], Job.WAITING);
 
 		//cancel the fifth job, finish the fourth job
 		jobs[4].cancel();
-		assertTrue("9.6", jobs[3].getThread() instanceof AsynchExecThread);
-		status.set(3, TestBarrier2.STATUS_WAIT_FOR_DONE);
+		assertThreadType(jobs[3], AsynchExecThread.class);
+		jobs[3].threadBarrier.upgradeTo(TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 		//wait until the fourth job is done
-		TestBarrier2.waitForStatus(status, 3, TestBarrier2.STATUS_DONE);
+		jobs[3].threadBarrier.waitForStatus(TestBarrier2.STATUS_DONE);
 
 		//the status for the first 4 jobs should be STATUS_OK
 		//the threads should have been reset to null
-		for (int i = 0; i < status.length() - 1; i++) {
-			assertEquals("10." + i, TestBarrier2.STATUS_DONE, status.get(i));
-			waitForState(jobs[i], Job.NONE);
-			assertEquals("11." + i, Job.NONE, jobs[i].getState());
-			assertEquals("12." + i, IStatus.OK, jobs[i].getResult().getSeverity());
-			assertNull("13." + i, jobs[i].getThread());
+		for (int i = 0; i < 4; i++) {
+			AsynchTestJob job = jobs[i];
+			waitForState(job, Job.NONE);
+			assertEquals("job finished with unexpected state: " + job, IStatus.OK, job.getResult().getSeverity());
+			assertNull("job still has a thread assigned: " + job, job.getThread());
 		}
 
 		//the fifth job should have null as its status (it never finished running)
 		//the thread for it should have also been reset
-		assertEquals("14.1", TestBarrier2.STATUS_WAIT_FOR_START, status.get(4));
-		assertEquals("14.2", Job.NONE, jobs[4].getState());
-		assertNull("14.3", jobs[4].getResult());
-		assertNull("14.4", jobs[4].getThread());
+		waitForState(jobs[3], Job.NONE);
+		assertNull("job should not have a result: " + jobs[4], jobs[4].getResult());
+		assertNull("job still has a thread assigned: " + jobs[4], jobs[4].getThread());
+	}
+
+	private static void assertThreadType(Job job, Class<?> threadType) {
+		assertThat("job has unexpected thread type: " + job, job.getThread(), instanceOf(threadType));
 	}
 
 	/**
@@ -1768,16 +1757,6 @@ public class JobTest extends AbstractJobTest {
 	}
 
 	/**
-	 * Several jobs were scheduled to run.
-	 * Pause this thread until all the jobs start running.
-	 */
-	private void waitForStart(Job[] jobs, AtomicIntegerArray status) {
-		for (int i = 0; i < jobs.length; i++) {
-			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_RUNNING);
-		}
-	}
-
-	/**
 	 * A job has been scheduled.  Pause this thread so that a worker thread
 	 * has a chance to pick up the new job.
 	 */
@@ -1793,7 +1772,8 @@ public class JobTest extends AbstractJobTest {
 				Thread.yield();
 				long elapsed = (System.nanoTime() - start) / 1_000_000;
 				// sanity test to avoid hanging tests
-				assertTrue("Timeout waiting for job to change state.", elapsed < timeoutInMs);
+				assertThat("Timeout waiting for job to change state to " + state + " (current: " + job.getState()
+						+ "): " + job, elapsed, lessThan(timeoutInMs));
 			}
 		} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {

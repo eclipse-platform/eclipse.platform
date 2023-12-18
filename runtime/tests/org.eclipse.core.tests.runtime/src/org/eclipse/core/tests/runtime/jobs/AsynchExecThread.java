@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -25,58 +24,39 @@ import org.eclipse.core.tests.harness.TestBarrier2;
 public class AsynchExecThread extends Thread {
 	private final IProgressMonitor current;
 	private final Job job;
-	private final int ticks;
-	private final int tickLength;
 	private final String jobName;
-	private final AtomicIntegerArray status;
-	private final int index;
+	private final TestBarrier2 barrier;
 
-	public AsynchExecThread(IProgressMonitor current, Job job, int ticks, int tickLength, String jobName,
-			AtomicIntegerArray status, int index) {
+	public AsynchExecThread(IProgressMonitor current, Job job, String jobName, TestBarrier2 testBarrier) {
 		this.current = current;
 		this.job = job;
-		this.ticks = ticks;
-		this.tickLength = tickLength;
 		this.jobName = jobName;
-		this.status = status;
-		this.index = index;
+		this.barrier = testBarrier;
 	}
 
 	@Override
 	public void run() {
 		//wait until the main testing method allows this thread to run
-		TestBarrier2.waitForStatus(status, index, TestBarrier2.STATUS_WAIT_FOR_RUN);
+		barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
 
 		//set the current thread as the execution thread
 		job.setThread(Thread.currentThread());
 
-		status.set(index, TestBarrier2.STATUS_RUNNING);
+		barrier.upgradeTo(TestBarrier2.STATUS_RUNNING);
 
 		//wait until this job is allowed to run by the tester
-		TestBarrier2.waitForStatus(status, index, TestBarrier2.STATUS_WAIT_FOR_DONE);
+		barrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 
 		//must have positive work
-		current.beginTask(jobName, ticks <= 0 ? 1 : ticks);
+		current.beginTask(jobName, 1);
 		try {
-
-			for (int i = 0; i < ticks; i++) {
-				current.subTask("Tick: " + i);
-				if (current.isCanceled()) {
-					status.set(index, TestBarrier2.STATUS_DONE);
-					job.done(Status.CANCEL_STATUS);
-				}
-				try {
-					//Thread.yield();
-					Thread.sleep(tickLength);
-				} catch (InterruptedException e) {
-				}
-				current.worked(1);
+			if (current.isCanceled()) {
+				barrier.upgradeTo(TestBarrier2.STATUS_DONE);
+				job.done(Status.CANCEL_STATUS);
 			}
-			if (ticks <= 0) {
-				current.worked(1);
-			}
+			current.worked(1);
 		} finally {
-			status.set(index, TestBarrier2.STATUS_DONE);
+			barrier.upgradeTo(TestBarrier2.STATUS_DONE);
 			current.done();
 			job.done(Status.OK_STATUS);
 		}
