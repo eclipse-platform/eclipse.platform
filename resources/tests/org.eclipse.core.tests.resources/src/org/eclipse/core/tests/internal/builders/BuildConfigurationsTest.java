@@ -15,11 +15,18 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 import org.eclipse.core.resources.IBuildConfiguration;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -31,12 +38,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * These tests exercise the project buildConfigs functionality which allows a different
  * builder to be run for different project buildConfigs.
  */
-public class BuildConfigurationsTest extends AbstractBuilderTest {
+public class BuildConfigurationsTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project0;
 	private IProject project1;
@@ -46,13 +60,8 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	private static final String variant1 = "Variant1";
 	private static final String variant2 = "Variant2";
 
-	public BuildConfigurationsTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		// Create resources
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project0 = root.getProject("BuildVariantTest_p0");
@@ -60,7 +69,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		file0 = project0.getFile("File0");
 		file1 = project1.getFile("File1");
 		IResource[] resources = {project0, project1, file0, file1};
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		setAutoBuilding(false);
 		setupProject(project0);
 		setupProject(project1);
@@ -70,19 +79,14 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * Helper method to configure a project with a build command and several buildConfigs.
 	 */
 	private void setupProject(IProject project) throws CoreException {
+		updateProjectDescription(project).addingCommand(ConfigurationBuilder.BUILDER_NAME).withTestBuilderId("Build0")
+				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.FULL_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.INCREMENTAL_BUILD, true)
+				.withBuildingSetting(IncrementalProjectBuilder.CLEAN_BUILD, true).apply();
+
 		IProjectDescription desc = project.getDescription();
-
-		// Add build command
-		ICommand command = createCommand(desc, ConfigurationBuilder.BUILDER_NAME, "Build0");
-		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
-		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, true);
-		desc.setBuildSpec(new ICommand[] {command});
-
-		// Create buildConfigs
 		desc.setBuildConfigs(new String[] {variant0, variant1, variant2});
-
 		project.setDescription(desc, createTestMonitor());
 	}
 
@@ -90,16 +94,17 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * Tests that an incremental builder is run/not run correctly, depending on deltas,
 	 * and is given the correct deltas depending on which project variant is being built
 	 */
+	@Test
 	public void testDeltas() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		// Run some incremental builds while varying the active variant and whether the project was modified
 		// and check that the builder is run/not run with the correct trigger
-		file0.setContents(getRandomContents(), true, true, createTestMonitor());
+		file0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(1, project0, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(2, project0, variant1, false, 1, 0);
 		incrementalBuild(3, project0, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(4, project0, variant1, false, 1, 0);
-		file0.setContents(getRandomContents(), true, true, createTestMonitor());
+		file0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(5, project0, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		incrementalBuild(6, project0, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		incrementalBuild(7, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
@@ -108,9 +113,10 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	/**
 	 * Tests that deltas are preserved per variant when a project is closed then opened.
 	 */
+	@Test
 	public void testCloseAndOpenProject() throws CoreException {
 		ConfigurationBuilder.clearStats();
-		file0.setContents(getRandomContents(), true, true, createTestMonitor());
+		file0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(1, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(2, project0, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(3, project0, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
@@ -127,27 +133,28 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	/**
 	 * Tests that deltas are restored in the correct order per variant when a project is closed then opened.
 	 */
+	@Test
 	public void testCloseAndOpenProject_Bug361675() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject tempProject = root.getProject("BuildVariantTest_pTemp");
 		IFile tempFile0 = tempProject.getFile("File0");
 		IFile tempFile1 = tempProject.getFile("File1");
 		IResource[] resources = {tempProject, tempFile0, tempFile1};
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		setupProject(tempProject);
 
 		ConfigurationBuilder.clearStats();
 
-		tempFile0.setContents(getRandomContents(), true, true, createTestMonitor());
-		tempFile1.setContents(getRandomContents(), true, true, createTestMonitor());
+		tempFile0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		tempFile1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(1, tempProject, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(2, tempProject, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		incrementalBuild(3, tempProject, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
-		tempFile0.setContents(getRandomContents(), true, true, createTestMonitor());
+		tempFile0.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(4, tempProject, variant1, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 
-		tempFile1.setContents(getRandomContents(), true, true, createTestMonitor());
+		tempFile1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		incrementalBuild(5, tempProject, variant2, true, 2, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 
 		tempProject.close(createTestMonitor());
@@ -191,6 +198,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * Build order should be:
 	 *     p0,v1  p1,v0  p1,v2  p0,v0
 	 */
+	@Test
 	public void testBuildReferences() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		ConfigurationBuilder.clearBuildOrder();
@@ -218,7 +226,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 		checkBuild(7, project1, variant2, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
 		// Modify project1, all project1 builders should do an incremental build
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 
 		ConfigurationBuilder.clearBuildOrder();
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
@@ -241,6 +249,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * p1 is closed.
 	 * p0v0 should still be built.
 	 */
+	@Test
 	public void testBuildReferencesOfClosedProject() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		ConfigurationBuilder.clearBuildOrder();
@@ -280,6 +289,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	/**
 	 * Tests that cleaning a project variant does not affect other buildConfigs in the same project
 	 */
+	@Test
 	public void testClean() throws CoreException {
 		ConfigurationBuilder.clearStats();
 		incrementalBuild(1, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
@@ -343,6 +353,7 @@ public class BuildConfigurationsTest extends AbstractBuilderTest {
 	 * another (not yet imported) project. Xtext builder reports it is interested in
 	 * the project that isn't there (but is referenced in the .project file).
 	 */
+	@Test
 	public void testBuildProjectWithNotExistingReference() throws Exception {
 		// need a build to create builder
 		IBuildConfiguration buildConfig = project0.getBuildConfig(variant0);

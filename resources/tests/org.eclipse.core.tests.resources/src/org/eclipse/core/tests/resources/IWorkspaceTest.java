@@ -15,6 +15,8 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE1;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE2;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_CYCLE3;
@@ -31,10 +33,22 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.getVa
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -58,11 +72,16 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
+import org.junit.Rule;
+import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
-public class IWorkspaceTest extends ResourceTest {
+public class IWorkspaceTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IResource[] buildResourceHierarchy() throws CoreException {
 		return buildResources(getWorkspace().getRoot(),
@@ -70,7 +89,7 @@ public class IWorkspaceTest extends ResourceTest {
 	}
 
 	private void ensureResourceHierarchyExist() throws CoreException {
-		ensureExistsInWorkspace(buildResourceHierarchy(), true);
+		createInWorkspace(buildResourceHierarchy());
 	}
 
 	/**
@@ -85,15 +104,10 @@ public class IWorkspaceTest extends ResourceTest {
 		return null;
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		super.tearDown();
-	}
-
 	/**
 	 * Tests handling of runnables that throw OperationCanceledException.
 	 */
+	@Test
 	public void testCancelRunnable() {
 		assertThrows(OperationCanceledException.class, () -> getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			throw new OperationCanceledException();
@@ -105,7 +119,8 @@ public class IWorkspaceTest extends ResourceTest {
 	 * 		IStatus copy([IResource, IPath, boolean, IProgressMonitor)
 	 * See also testMultiCopy()
 	 */
-	public void testCopy() throws CoreException {
+	@Test
+	public void testCopy() throws Exception {
 		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
 		IFolder folder = (IFolder) resources[2];
@@ -150,9 +165,9 @@ public class IWorkspaceTest extends ResourceTest {
 
 		// create the files
 		IFile projectFile = project.getFile("ProjectPhile");
-		file2.create(getRandomContents(), false, createTestMonitor());
-		file3.create(getRandomContents(), false, createTestMonitor());
-		projectFile.create(getRandomContents(), false, createTestMonitor());
+		file2.create(createRandomContentsStream(), false, createTestMonitor());
+		file3.create(createRandomContentsStream(), false, createTestMonitor());
+		projectFile.create(createRandomContentsStream(), false, createTestMonitor());
 
 		//source files aren't siblings
 		assertThrows(CoreException.class, () -> getWorkspace().copy(new IResource[] { file, projectFile },
@@ -171,11 +186,11 @@ public class IWorkspaceTest extends ResourceTest {
 
 		//target exists
 		assertThrows(CoreException.class, () -> {
-			file2Copy.create(getRandomContents(), false, createTestMonitor());
+			file2Copy.create(createRandomContentsStream(), false, createTestMonitor());
 			getWorkspace().copy(new IResource[] { file, file2 }, folder2.getFullPath(), false, createTestMonitor());
 		});
-		ensureDoesNotExistInWorkspace(file2Copy);
-		ensureDoesNotExistInFileSystem(file2Copy);
+		removeFromWorkspace(file2Copy);
+		removeFromFileSystem(file2Copy);
 
 		//make sure the first copy worked
 		fileCopy = folder2.getFile("File");
@@ -197,30 +212,31 @@ public class IWorkspaceTest extends ResourceTest {
 		//copy single file
 		getWorkspace().copy(new IResource[] { file }, folder2.getFullPath(), false, createTestMonitor());
 		assertTrue("3.2", fileCopy.exists());
-		ensureDoesNotExistInWorkspace(fileCopy);
-		ensureDoesNotExistInFileSystem(fileCopy);
+		removeFromWorkspace(fileCopy);
+		removeFromFileSystem(fileCopy);
 
 		//copy two files
 		getWorkspace().copy(new IResource[] { file, file2 }, folder2.getFullPath(), false, createTestMonitor());
 		assertTrue("3.4", fileCopy.exists());
 		assertTrue("3.5", file2Copy.exists());
-		ensureDoesNotExistInWorkspace(fileCopy);
-		ensureDoesNotExistInWorkspace(file2Copy);
-		ensureDoesNotExistInFileSystem(fileCopy);
-		ensureDoesNotExistInFileSystem(file2Copy);
+		removeFromWorkspace(fileCopy);
+		removeFromWorkspace(file2Copy);
+		removeFromFileSystem(fileCopy);
+		removeFromFileSystem(file2Copy);
 
 		//copy a folder
 		getWorkspace().copy(new IResource[] { folder }, folder2.getFullPath(), false, createTestMonitor());
 		assertTrue("3.7", folderCopy.exists());
 		assertTrue("3.8", folderCopy.members().length > 0);
-		ensureDoesNotExistInWorkspace(folderCopy);
-		ensureDoesNotExistInFileSystem(folderCopy);
+		removeFromWorkspace(folderCopy);
+		removeFromFileSystem(folderCopy);
 	}
 
 	/**
 	 * Performs black box testing of the following method:
 	 * 		IStatus delete([IResource, boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testDelete() throws CoreException {
 		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
@@ -243,7 +259,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue(getWorkspace().delete(resources, false, createTestMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
 		assertDoesNotExistInWorkspace(resources);
-		file.create(getRandomContents(), false, createTestMonitor());
+		file.create(createRandomContentsStream(), false, createTestMonitor());
 		resources = new IResource[] {};
 		assertTrue(getWorkspace().delete(resources, false, createTestMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
@@ -262,7 +278,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue(getWorkspace().delete(resources, false, createTestMonitor()).isOK());
 		assertDoesNotExistInFileSystem(resources);
 		assertDoesNotExistInWorkspace(resources);
-		file.create(getRandomContents(), false, createTestMonitor());
+		file.create(createRandomContentsStream(), false, createTestMonitor());
 		resources = new IResource[] {fakeProject};
 		assertTrue(getWorkspace().delete(resources, false, createTestMonitor()).isOK());
 		//	assertDoesNotExistInFileSystem(resources);
@@ -274,6 +290,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 * 	{@link IWorkspace#forgetSavedTree(String)}.
 	 */
+	@Test
 	public void testForgetSavedTree() {
 		// according to javadoc spec, null means forget all plugin trees
 		getWorkspace().forgetSavedTree(null);
@@ -283,6 +300,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IProjectNatureDescriptor[] getNatureDescriptors()
 	 */
+	@Test
 	public void testGetNatureDescriptors() {
 		//NOTE: see static fields for description of available test natures
 		IProjectNatureDescriptor[] descriptors = getWorkspace().getNatureDescriptors();
@@ -386,6 +404,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IProjectNatureDescriptor getNatureDescriptor(String)
 	 */
+	@Test
 	public void testGetNatureDescriptor() {
 		//NOTE: see static fields for description of available test natures
 		IWorkspace ws = getWorkspace();
@@ -489,6 +508,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus move([IResource, IPath, boolean, IProgressMonitor)
 	 */
+	@Test
 	public void testMove() throws CoreException {
 		/* create folders and files */
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -496,7 +516,7 @@ public class IWorkspaceTest extends ResourceTest {
 		IFile file = project.getFile("file.txt");
 		IFile anotherFile = project.getFile("anotherFile.txt");
 		IFile oneMoreFile = project.getFile("oneMoreFile.txt");
-		ensureExistsInWorkspace(new IResource[] {project, folder, file, anotherFile, oneMoreFile}, true);
+		createInWorkspace(new IResource[] {project, folder, file, anotherFile, oneMoreFile});
 
 		/* normal case */
 		IResource[] resources = {file, anotherFile, oneMoreFile};
@@ -550,24 +570,25 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * Another test method for IWorkspace.copy().  See also testCopy
 	 */
-	public void testMultiCopy() throws CoreException {
+	@Test
+	public void testMultiCopy() throws Exception {
 		/* create common objects */
 		IResource[] resources = buildResourceHierarchy();
 		IProject project = (IProject) resources[1];
 		IFolder folder = (IFolder) resources[2];
 
 		/* create folder and file */
-		ensureExistsInWorkspace(folder, true);
-		ensureExistsInFileSystem(folder);
+		createInWorkspace(folder);
+		createInFileSystem(folder);
 		IFile file1 = project.getFile("file.txt");
-		ensureExistsInWorkspace(file1, true);
-		ensureExistsInFileSystem(file1);
+		createInWorkspace(file1);
+		createInFileSystem(file1);
 		IFile anotherFile = project.getFile("anotherFile.txt");
-		ensureExistsInWorkspace(anotherFile, true);
-		ensureExistsInFileSystem(anotherFile);
+		createInWorkspace(anotherFile);
+		createInFileSystem(anotherFile);
 		IFile oneMoreFile = project.getFile("oneMoreFile.txt");
-		ensureExistsInWorkspace(oneMoreFile, true);
-		ensureExistsInFileSystem(oneMoreFile);
+		createInWorkspace(oneMoreFile);
+		createInFileSystem(oneMoreFile);
 
 		/* normal case */
 		resources = new IResource[] {file1, anotherFile, oneMoreFile};
@@ -578,12 +599,12 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("1.4", folder.getFile(file1.getName()).exists());
 		assertTrue("1.5", folder.getFile(anotherFile.getName()).exists());
 		assertTrue("1.6", folder.getFile(oneMoreFile.getName()).exists());
-		ensureDoesNotExistInWorkspace(folder.getFile(file1.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(oneMoreFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(file1.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(oneMoreFile.getName()));
+		removeFromWorkspace(folder.getFile(file1.getName()));
+		removeFromWorkspace(folder.getFile(anotherFile.getName()));
+		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
+		removeFromFileSystem(folder.getFile(file1.getName()));
+		removeFromFileSystem(folder.getFile(anotherFile.getName()));
+		removeFromFileSystem(folder.getFile(oneMoreFile.getName()));
 
 		/* test duplicates */
 		resources = new IResource[] {file1, anotherFile, oneMoreFile, file1};
@@ -594,12 +615,12 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("2.5", folder.getFile(file1.getName()).exists());
 		assertTrue("2.6", folder.getFile(anotherFile.getName()).exists());
 		assertTrue("2.7", folder.getFile(oneMoreFile.getName()).exists());
-		ensureDoesNotExistInWorkspace(folder.getFile(file1.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(oneMoreFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(file1.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(oneMoreFile.getName()));
+		removeFromWorkspace(folder.getFile(file1.getName()));
+		removeFromWorkspace(folder.getFile(anotherFile.getName()));
+		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
+		removeFromFileSystem(folder.getFile(file1.getName()));
+		removeFromFileSystem(folder.getFile(anotherFile.getName()));
+		removeFromFileSystem(folder.getFile(oneMoreFile.getName()));
 
 		/* test no siblings */
 		IResource[] resources2 = new IResource[] { file1, anotherFile, oneMoreFile, project };
@@ -614,12 +635,12 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("3.6", folder.getFile(file1.getName()).exists());
 		assertTrue("3.7", folder.getFile(anotherFile.getName()).exists());
 		assertTrue("3.8", folder.getFile(oneMoreFile.getName()).exists());
-		ensureDoesNotExistInWorkspace(folder.getFile(file1.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInWorkspace(folder.getFile(oneMoreFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(file1.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(anotherFile.getName()));
-		ensureDoesNotExistInFileSystem(folder.getFile(oneMoreFile.getName()));
+		removeFromWorkspace(folder.getFile(file1.getName()));
+		removeFromWorkspace(folder.getFile(anotherFile.getName()));
+		removeFromWorkspace(folder.getFile(oneMoreFile.getName()));
+		removeFromFileSystem(folder.getFile(file1.getName()));
+		removeFromFileSystem(folder.getFile(anotherFile.getName()));
+		removeFromFileSystem(folder.getFile(oneMoreFile.getName()));
 
 		/* inexisting resource */
 		IResource[] resources3 = new IResource[] { file1, anotherFile, project.getFile("inexisting"), oneMoreFile };
@@ -643,6 +664,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertEquals("5.2", 1, status.getChildren().length);
 	}
 
+	@Test
 	public void testMultiCreation() throws Throwable {
 		final IProject project = getWorkspace().getRoot().getProject("bar");
 		final IResource[] resources = buildResources(project, new String[] {"a/", "a/b"});
@@ -669,10 +691,11 @@ public class IWorkspaceTest extends ResourceTest {
 		assertExistsInWorkspace(resources);
 	}
 
+	@Test
 	public void testMultiDeletion() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("testProject");
 		IResource[] before = buildResources(project, new String[] {"c/", "c/b/", "c/x", "c/b/y", "c/b/z"});
-		ensureExistsInWorkspace(before, true);
+		createInWorkspace(before);
 		//
 		assertExistsInWorkspace(before);
 		getWorkspace().delete(before, true, createTestMonitor());
@@ -682,6 +705,7 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * Test thread safety of the API method IWorkspace.setDescription.
 	 */
+	@Test
 	public void testMultiSetDescription() throws CoreException {
 		final int THREAD_COUNT = 2;
 		final CoreException[] errorPointer = new CoreException[1];
@@ -723,10 +747,11 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * Test API method IWorkspace.setDescription.
 	 */
+	@Test
 	public void testSave() throws CoreException {
 		// ensure save returns a warning if a project's .project file is deleted.
 		IProject project = getWorkspace().getRoot().getProject("Broken");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		// wait for snapshot before modifying file
 		TestingSupport.waitForSnapshot();
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
@@ -739,6 +764,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     String[] sortNatureSet(String[])
 	 */
+	@Test
 	public void testSortNatureSet() {
 		//NOTE: see static fields for description of available test natures
 		IWorkspace ws = getWorkspace();
@@ -772,6 +798,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertTrue("4.1", first || second || third);
 	}
 
+	@Test
 	public void testValidateEdit() throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
@@ -780,7 +807,7 @@ public class IWorkspaceTest extends ResourceTest {
 		}
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("myfile.txt");
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		createInWorkspace(new IResource[] {project, file});
 		IStatus result = getWorkspace().validateEdit(new IFile[] {file}, null);
 		assertTrue("1.0", result.isOK());
 		file.setReadOnly(true);
@@ -791,6 +818,7 @@ public class IWorkspaceTest extends ResourceTest {
 		file.setReadOnly(false);
 	}
 
+	@Test
 	public void testValidateLinkLocation() {
 		// TODO
 		// see also: some tests in LinkedResourceWithPathVariableTest
@@ -800,6 +828,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateName(String, int)
 	 */
+	@Test
 	public void testValidateName() {
 		/* normal name */
 		assertTrue("1.1", getWorkspace().validateName("abcdef", IResource.FILE).isOK());
@@ -858,6 +887,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateNatureSet(String[])
 	 */
+	@Test
 	public void testValidateNatureSet() {
 		//NOTE: see static fields for description of available test natures
 		IWorkspace ws = getWorkspace();
@@ -880,6 +910,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validatePath(String, int)
 	 */
+	@Test
 	public void testValidatePath() {
 		/* normal path */
 		assertTrue("1.1", getWorkspace().validatePath("/one/two/three/four/", IResource.FILE | IResource.FOLDER).isOK());
@@ -937,6 +968,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateProjectLocation(IProject, IPath)
 	 */
+	@Test
 	public void testValidateProjectLocation() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
@@ -1066,8 +1098,8 @@ public class IWorkspaceTest extends ResourceTest {
 				open.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 			} catch (CoreException e) {
 			}
-			ensureDoesNotExistInFileSystem(openProjectLocation.toFile());
-			ensureDoesNotExistInFileSystem(closedProjectLocation.toFile());
+			removeFromFileSystem(openProjectLocation.toFile());
+			removeFromFileSystem(closedProjectLocation.toFile());
 		}
 
 		// cannot overlap .metadata folder from the current workspace
@@ -1088,6 +1120,7 @@ public class IWorkspaceTest extends ResourceTest {
 	 * Performs black box testing of the following method:
 	 *     IStatus validateProjectLocationURI(IProject, URI)
 	 */
+	@Test
 	public void testValidateProjectLocationURI() throws URISyntaxException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
@@ -1099,6 +1132,7 @@ public class IWorkspaceTest extends ResourceTest {
 		assertFalse("1.1", workspace.validateProjectLocationURI(project, uri).isOK());
 	}
 
+	@Test
 	public void testWorkspaceService() {
 		final BundleContext context = FrameworkUtil.getBundle(IWorkspaceTest.class).getBundleContext();
 		ServiceReference<IWorkspace> ref = context.getServiceReference(IWorkspace.class);
@@ -1107,10 +1141,12 @@ public class IWorkspaceTest extends ResourceTest {
 		assertNotNull("1.1", ws);
 	}
 
+	@Test
 	public void testGetFilterMatcherDescriptor() {
 		IFilterMatcherDescriptor descriptor = getWorkspace().getFilterMatcherDescriptor("");
 		assertNull("1.0", descriptor);
 		descriptor = getWorkspace().getFilterMatcherDescriptor("org.eclipse.core.resources.regexFilterMatcher");
 		assertNotNull("1.1", descriptor);
 	}
+
 }

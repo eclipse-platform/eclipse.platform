@@ -14,9 +14,17 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
@@ -37,28 +45,27 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
-import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class IWorkspaceRootTest extends ResourceTest {
+public class IWorkspaceRootTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tests findFilesForLocation when non-canonical paths are used (bug 155101).
 	 */
 	@Test
-	public void testFindFilesNonCanonicalPath() throws CoreException {
-		// this test is for windows only
-		Assume.assumeTrue(OS.isWindows());
+	public void testFindFilesNonCanonicalPath() throws Exception {
+		assumeTrue("this test is for windows only", OS.isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("testFindFilesNonCanonicalPath");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		IFile link = project.getFile("file.txt");
-		IFileStore fileStore = getTempStore();
-		createFileInFileSystem(fileStore);
+		IFileStore fileStore = workspaceRule.getTempStore();
+		createInFileSystem(fileStore);
 		assertEquals("0.1", EFS.SCHEME_FILE, fileStore.getFileSystem().getScheme());
 		IPath fileLocationLower = URIUtil.toPath(fileStore.toURI());
 		fileLocationLower = fileLocationLower.setDevice(fileLocationLower.getDevice().toLowerCase());
@@ -94,7 +101,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject p1 = root.getProject("p1");
 		IProject p2 = root.getProject("p2");
-		ensureExistsInWorkspace(new IResource[] {p1, p2}, true);
+		createInWorkspace(new IResource[] {p1, p2});
 		replaceProject(p1, WrapperFileSystem.getWrappedURI(p1.getLocationURI()));
 		replaceProject(p2, WrapperFileSystem.getWrappedURI(p2.getLocationURI()));
 		testFindContainersForLocation(p1, p2);
@@ -113,13 +120,13 @@ public class IWorkspaceRootTest extends ResourceTest {
 		//deep linked resource
 		IFolder parent = p2.getFolder("parent");
 		IFolder link = parent.getFolder("link");
-		ensureExistsInWorkspace(new IResource[] {p1, p2, parent}, true);
+		createInWorkspace(new IResource[] {p1, p2, parent});
 		link.createLink(p1.getLocationURI(), IResource.NONE, createTestMonitor());
 		assertResources("2.0", p1, link, root.findContainersForLocation(p1.getLocation()));
 
 		//existing folder
 		IFolder existing = p2.getFolder("existing");
-		ensureExistsInWorkspace(existing, true);
+		createInWorkspace(existing);
 		assertResources("3.0", existing, root.findContainersForLocation(existing.getLocation()));
 		assertResources("3.1", existing, root.findContainersForLocationURI(existing.getLocationURI()));
 
@@ -137,7 +144,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertThrows(RuntimeException.class, () -> root.findContainersForLocationURI(relative));
 		//linked folder that does not overlap a project location
 		IFolder otherLink = p1.getFolder("otherLink");
-		IFileStore linkStore = getTempStore();
+		IFileStore linkStore = workspaceRule.getTempStore();
 		URI location = linkStore.toURI();
 		linkStore.mkdir(EFS.NONE, createTestMonitor());
 		otherLink.createLink(location, IResource.NONE, createTestMonitor());
@@ -160,7 +167,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("p1");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		replaceProject(project, WrapperFileSystem.getWrappedURI(project.getLocationURI()));
 		testFindFilesForLocation(project);
 	}
@@ -185,7 +192,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 		assertEquals("1.0", 0, result.length);
 
 		IFile existing = project.getFile("file1");
-		ensureExistsInWorkspace(existing, true);
+		createInWorkspace(existing);
 
 		//existing file
 		final IPath existingFileLocation = existing.getLocation();
@@ -218,7 +225,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 
 		//linked resource
 		IFolder link = project.getFolder("link");
-		IFileStore linkStore = getTempStore();
+		IFileStore linkStore = workspaceRule.getTempStore();
 		URI location = linkStore.toURI();
 		linkStore.mkdir(EFS.NONE, createTestMonitor());
 		link.createLink(location, IResource.NONE, createTestMonitor());
@@ -321,7 +328,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void testRefreshLocal() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("Project");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		project.close(createTestMonitor());
 		//refreshing the root shouldn't fail
 		root.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
@@ -331,7 +338,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void testBug234343_folderInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(createUniqueString());
-		ensureDoesNotExistInWorkspace(hiddenProject);
+		removeFromWorkspace(hiddenProject);
 		hiddenProject.create(null, IResource.HIDDEN, createTestMonitor());
 		hiddenProject.open(createTestMonitor());
 
@@ -349,7 +356,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void testBug234343_fileInHiddenProject() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject hiddenProject = root.getProject(createUniqueString());
-		ensureDoesNotExistInWorkspace(hiddenProject);
+		removeFromWorkspace(hiddenProject);
 		hiddenProject.create(null, IResource.HIDDEN, createTestMonitor());
 		hiddenProject.open(createTestMonitor());
 
@@ -376,7 +383,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void testBug476585() throws CoreException {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("a");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		String subProjectName = "subProject";
 		IPath subProjectLocation = project.getLocation().append(subProjectName);
@@ -421,7 +428,7 @@ public class IWorkspaceRootTest extends ResourceTest {
 	public void checkFindMethods(int updateFlags, int[][] results) throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(createUniqueString());
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 
 		project.create(null, IResource.NONE, createTestMonitor());
 		project.open(createTestMonitor());
@@ -515,4 +522,5 @@ public class IWorkspaceRootTest extends ResourceTest {
 		}
 		return folder;
 	}
+
 }

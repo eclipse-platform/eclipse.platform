@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +34,7 @@ import org.junit.runners.MethodSorters;
  * Test for bug 574883
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class Bug_574883 extends AbstractJobManagerTest {
+public class Bug_574883 extends AbstractJobTest {
 
 	static class SerialExecutor extends Job {
 

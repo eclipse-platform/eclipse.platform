@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 
@@ -57,7 +58,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	public void testDeleteFileBeforeLoad1() throws Exception {
 		IProject project = getProject("testDeleteFileBeforeLoad");
 		String qualifier = "test.delete.file.before.load";
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode(qualifier);
 		node.put("key", "value");
@@ -100,7 +101,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	 */
 	public void testSaveLoad1() throws Exception {
 		IProject project = getProject("testSaveLoad");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode("test.save.load");
 		node.put("key", "value");

@@ -13,14 +13,22 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import org.eclipse.core.runtime.*;
+import static org.junit.Assert.assertEquals;
+
+import java.util.concurrent.atomic.AtomicReference;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.ProgressMonitorWrapper;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.TestBarrier2;
+import org.junit.Test;
 
 /**
  * Make sure that IProgressMonitor's blocked/unblocked is invoked.
  */
-public class Bug_311756 extends AbstractJobManagerTest {
+public class Bug_311756 extends AbstractJobTest {
 
 	int UNSET = -1;
 	int CLEARED = 0;
@@ -30,6 +38,7 @@ public class Bug_311756 extends AbstractJobManagerTest {
 	 * Tests that the progress monitor blocked state is cleared in the normal case
 	 * that the rule becomes available after being blocked.
 	 */
+	@Test
 	public void testBlockingAndUnblockingMonitor() throws Exception {
 		final int[] blocked = new int[] {UNSET};
 		ProgressMonitorWrapper wrapper = new ProgressMonitorWrapper(new NullProgressMonitor()) {
@@ -42,12 +51,14 @@ public class Bug_311756 extends AbstractJobManagerTest {
 			@Override
 			public void clearBlocked() {
 				super.clearBlocked();
-				if (blocked[0] == BLOCKED)
+				if (blocked[0] == BLOCKED) {
 					blocked[0] = CLEARED;
+				}
 			}
 		};
 		final TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_START);
 		IdentityRule rule = new IdentityRule();
+		AtomicReference<InterruptedException> exceptionInJob = new AtomicReference<>();
 		Job conflicting = new Job("Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -55,7 +66,7 @@ public class Bug_311756 extends AbstractJobManagerTest {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					fail("4.99", e);
+					exceptionInJob.set(e);
 				}
 				return Status.OK_STATUS;
 			}
@@ -69,13 +80,18 @@ public class Bug_311756 extends AbstractJobManagerTest {
 		} finally {
 			Job.getJobManager().endRule(rule);
 		}
-		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED, blocked[0]);
+		if (exceptionInJob.get() != null) {
+			throw exceptionInJob.get();
+		}
+		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED,
+				blocked[0]);
 	}
 
 	/**
 	 * Tests that the progress monitor blocked state is cleared in the case that a rule
 	 * is transferring to the waiting job while blocked.
 	 */
+	@Test
 	public void testBlockingAndUnblockingMonitorUsingTransfer() throws Exception {
 		final int[] blocked = new int[] {UNSET};
 		final ProgressMonitorWrapper wrapper = new ProgressMonitorWrapper(new NullProgressMonitor()) {
@@ -88,13 +104,15 @@ public class Bug_311756 extends AbstractJobManagerTest {
 			@Override
 			public void clearBlocked() {
 				super.clearBlocked();
-				if (blocked[0] == BLOCKED)
+				if (blocked[0] == BLOCKED) {
 					blocked[0] = CLEARED;
+				}
 			}
 		};
 		final TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_START);
 		final IdentityRule rule = new IdentityRule();
 		final Thread[] destinationThread = new Thread[1];
+		AtomicReference<InterruptedException> exceptionInJob = new AtomicReference<>();
 		Job conflicting = new Job("Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -103,7 +121,8 @@ public class Bug_311756 extends AbstractJobManagerTest {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					fail("4.99", e);
+					exceptionInJob.set(e);
+					return Status.CANCEL_STATUS;
 				}
 				getJobManager().transferRule(rule, destinationThread[0]);
 				return Status.OK_STATUS;
@@ -125,13 +144,18 @@ public class Bug_311756 extends AbstractJobManagerTest {
 		transferTo.schedule();
 		waitForCompletion(conflicting);
 		waitForCompletion(transferTo);
-		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED, blocked[0]);
+		if (exceptionInJob.get() != null) {
+			throw exceptionInJob.get();
+		}
+		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED,
+				blocked[0]);
 	}
 
 	/**
 	 * Tests that the progress monitor blocked state is cleared in the case that a rule
 	 * becomes available to a yielded job while it is blocked.
 	 */
+	@Test
 	public void testBlockingAndUnblockingMonitorUsingYield() throws Exception {
 		final int[] blocked = new int[] {-1};
 		final ProgressMonitorWrapper wrapper = new ProgressMonitorWrapper(new NullProgressMonitor()) {
@@ -144,12 +168,14 @@ public class Bug_311756 extends AbstractJobManagerTest {
 			@Override
 			public void clearBlocked() {
 				super.clearBlocked();
-				if (blocked[0] == BLOCKED)
+				if (blocked[0] == BLOCKED) {
 					blocked[0] = CLEARED;
+				}
 			}
 		};
 		final TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_START);
 		IdentityRule rule = new IdentityRule();
+		AtomicReference<InterruptedException> exceptionInJob = new AtomicReference<>();
 		Job conflicting = new Job("Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -157,11 +183,13 @@ public class Bug_311756 extends AbstractJobManagerTest {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					fail("4.99", e);
+					exceptionInJob.set(e);
+					return Status.CANCEL_STATUS;
 				}
 				Job j = null;
-				while (j == null)
+				while (j == null) {
 					j = yieldRule(wrapper);
+				}
 				return Status.OK_STATUS;
 			}
 		};
@@ -171,15 +199,14 @@ public class Bug_311756 extends AbstractJobManagerTest {
 		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		try {
 			Job.getJobManager().beginRule(rule, null);
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				fail("4.99", e);
-			}
+			Thread.sleep(1000);
 		} finally {
 			Job.getJobManager().endRule(rule);
 		}
 		conflicting.join();
+		if (exceptionInJob.get() != null) {
+			throw exceptionInJob.get();
+		}
 		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED, blocked[0]);
 	}
 
@@ -187,6 +214,7 @@ public class Bug_311756 extends AbstractJobManagerTest {
 	 * Tests that the progress monitor blocked state is cleared in the case that a rule
 	 * is transferred back to a yielded job while it is blocked.
 	 */
+	@Test
 	public void testBlockingAndUnblockingMonitorUsingYieldAndTransfer() throws Exception {
 		final int[] blocked = new int[] {-1};
 		final ProgressMonitorWrapper wrapper = new ProgressMonitorWrapper(new NullProgressMonitor()) {
@@ -199,12 +227,14 @@ public class Bug_311756 extends AbstractJobManagerTest {
 			@Override
 			public void clearBlocked() {
 				super.clearBlocked();
-				if (blocked[0] == BLOCKED)
+				if (blocked[0] == BLOCKED) {
 					blocked[0] = CLEARED;
+				}
 			}
 		};
 		final TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_START);
 		IdentityRule rule = new IdentityRule();
+		AtomicReference<InterruptedException> exceptionInJob = new AtomicReference<>();
 		Job conflicting = new Job("Conflicting") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
@@ -212,11 +242,13 @@ public class Bug_311756 extends AbstractJobManagerTest {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					fail("4.99", e);
+					exceptionInJob.set(e);
+					return Status.CANCEL_STATUS;
 				}
 				Job j = null;
-				while (j == null)
+				while (j == null) {
 					j = yieldRule(wrapper);
+				}
 				return Status.OK_STATUS;
 			}
 		};
@@ -226,12 +258,12 @@ public class Bug_311756 extends AbstractJobManagerTest {
 		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		Job.getJobManager().beginRule(rule, null);
 		Job.getJobManager().transferRule(rule, conflicting.getThread());
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			fail("4.99", e);
-		}
+		Thread.sleep(1000);
 		conflicting.join();
+		if (exceptionInJob.get() != null) {
+			throw exceptionInJob.get();
+		}
 		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED, blocked[0]);
 	}
+	
 }

@@ -15,13 +15,18 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,10 +43,8 @@ import org.eclipse.core.internal.events.ResourceDelta;
 import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IBuildConfiguration;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -56,7 +59,13 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 import org.eclipse.core.tests.resources.TestUtil;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
+import org.junit.rules.TestName;
 
 /**
  * This class tests extended functionality (since 3.6) which allows
@@ -65,26 +74,24 @@ import org.junit.function.ThrowingRunnable;
  * When one of these builders runs, other threads may modify the workspace
  * depending on the builder's scheduling rule
  */
-public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
+public class RelaxedSchedRuleBuilderTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private ErrorLogging errorLogging = new ErrorLogging();
 
-	public RelaxedSchedRuleBuilderTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		errorLogging.enable();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		try {
-			errorLogging.disable();
-		} finally {
-			super.tearDown();
-		}
+	@After
+	public void tearDown() throws Exception {
+		errorLogging.disable();
 		TestBuilder builder = DeltaVerifierBuilder.getInstance();
 		if (builder != null) {
 			builder.reset();
@@ -102,12 +109,14 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	/**
 	 * Test a simple builder with a relaxed scheduling rule
 	 */
+	@Test
 	public void testBasicRelaxedSchedulingRules() throws Throwable {
 		String projectName = "TestRelaxed";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
-		create(project, false);
-		addBuilder(project, EmptyDeltaBuilder.BUILDER_NAME);
+		createInWorkspace(project);
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME).withTestBuilderId("testbuild")
+				.apply();
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
@@ -159,7 +168,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 		tb.waitForStatus(TestBarrier2.STATUS_START);
 
 		// Should be able to write a file in the project
-		create(project.getFile("foo.c"), false);
+		project.getFile("foo.c").create(null, true, createTestMonitor());
 		assertTrue(project.getFile("foo.c").exists());
 
 		// Cancel the builder
@@ -176,15 +185,16 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 *     Bug 306824 - null scheduling rule and non-null scheduling rule don't work together
 	 *     Builders should have separate scheduling rules
 	 */
+	@Test
 	public void testTwoBuildersRunInOneBuild() throws Throwable {
 		String projectName = "testTwoBuildersRunInOneBuild";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
-		create(project, false);
+		createInWorkspace(project);
 
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1"), createCommand(desc, EmptyDeltaBuilder2.BUILDER_NAME, "Project1Build2")});
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project) //
+				.addingCommand(EmptyDeltaBuilder.BUILDER_NAME).withTestBuilderId("Project1Build1") //
+				.andCommand(EmptyDeltaBuilder2.BUILDER_NAME).withTestBuilderId("Project1Build2").apply();
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
@@ -287,22 +297,22 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	 * a change which sneaks in during the window or the build thread acquiring its scheduling
 	 * rule, is correctly present in the builder's delta.
 	 */
+	@Test
 	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Throwable {
 		final int timeout = 10000;
 		String projectName = "testBuildDeltaUsingRelaxedRuleBug343256";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
 		final IFile foo = project.getFile("foo");
-		create(project, false);
+		createInWorkspace(project);
 
-		waitForEncodingRelatedJobs(getName());
+		waitForEncodingRelatedJobs(testName.getMethodName());
 		waitForContentDescriptionUpdate();
 		// wait for noBuildJob so POST_BUILD will fire
 		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuildOff();
 
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1") });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME)
+				.withTestBuilderId("Project1Build1").apply();
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
@@ -316,7 +326,7 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 			protected IStatus run(IProgressMonitor monitor) {
 				tb.setStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
 				try {
-					ensureExistsInWorkspace(foo, new ByteArrayInputStream(new byte[0]));
+					createInWorkspace(foo);
 				} catch (CoreException e) {
 					errorInWorkspaceChangingJob.set(e);
 				}
@@ -422,21 +432,22 @@ public class RelaxedSchedRuleBuilderTest extends AbstractBuilderTest {
 	}
 
 	private void waitForContentDescriptionUpdate() {
-		TestUtil.waitForJobs(getName(), 10, 5_000, ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
+		TestUtil.waitForJobs(testName.getMethodName(), 10, 5_000,
+				ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
 	}
 
 	/**
 	 * Tests for regression in running the build with reduced scheduling rules.
 	 */
+	@Test
 	public void testBug343256() throws Throwable {
 		String projectName = "testBug343256";
 		setAutoBuilding(false);
 		final IProject project = getWorkspace().getRoot().getProject(projectName);
-		create(project, false);
-
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, "Project1Build1"), createCommand(desc, EmptyDeltaBuilder2.BUILDER_NAME, "Project1Build2")});
-		project.setDescription(desc, createTestMonitor());
+		createInWorkspace(project);
+		updateProjectDescription(project) //
+				.addingCommand(EmptyDeltaBuilder.BUILDER_NAME).withTestBuilderId("Project1Build1")
+				.andCommand(EmptyDeltaBuilder2.BUILDER_NAME).withTestBuilderId("Project1Build2").apply();
 
 		// Ensure the builder is instantiated
 		project.build(IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());

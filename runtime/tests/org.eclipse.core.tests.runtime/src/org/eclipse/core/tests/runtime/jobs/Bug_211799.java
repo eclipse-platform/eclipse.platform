@@ -13,15 +13,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.*;
-import org.eclipse.core.runtime.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.junit.Test;
 
 /**
  * Regression test for bug 211799
  */
-public class Bug_211799 extends AbstractJobManagerTest {
+public class Bug_211799 extends AbstractJobTest {
 
 	public class BugJob extends Job {
 		private final long id;
@@ -41,8 +46,9 @@ public class Bug_211799 extends AbstractJobManagerTest {
 		protected IStatus run(IProgressMonitor monitor) {
 			synchronized (list) {
 				Long val = list.getFirst();
-				if (val.longValue() != id)
+				if (val.longValue() != id) {
 					failure = new RuntimeException("We broke, running should have been: " + val.longValue());
+				}
 				list.remove(Long.valueOf(id));
 			}
 
@@ -62,7 +68,8 @@ public class Bug_211799 extends AbstractJobManagerTest {
 
 	List<Long> runList = new ArrayList<>(JOBS_TO_SCHEDULE);
 
-	public void testBug() {
+	@Test
+	public void testBug() throws Exception {
 		for (int i = 0; i < JOBS_TO_SCHEDULE; i++) {
 			synchronized (list) {
 				counter++;
@@ -79,8 +86,9 @@ public class Bug_211799 extends AbstractJobManagerTest {
 				}
 			}
 		}
-		if (failure != null)
-			fail("1.0", failure);
-
+		if (failure != null) {
+			throw failure;
+		}
 	}
+
 }

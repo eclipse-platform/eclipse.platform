@@ -125,23 +125,24 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 			}
 		});
 		browser.addProgressListener(new ProgressListener() {
+			IProgressMonitor monitor;
 
 			@Override
 			public void changed(ProgressEvent e) {
 				if (e.current == e.total)
 					return;
-				IStatusLineManager slm = BrowserPart.this.parent
-						.getStatusLineManager();
-				IProgressMonitor monitor = slm != null ? slm
-						.getProgressMonitor() : null;
+
 				if (lastProgress == -1) {
 					lastProgress = 0;
+					IStatusLineManager slm = BrowserPart.this.parent.getStatusLineManager();
+					monitor = slm != null ? slm.getProgressMonitor() : null;
 					if (monitor != null) {
 						monitor.beginTask("", e.total); //$NON-NLS-1$
 						slm.setCancelEnabled(true);
 					}
 				} else if (monitor != null && monitor.isCanceled()) {
 					browser.stop();
+					monitor = null;
 					return;
 				}
 				if (monitor != null)
@@ -151,13 +152,13 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 
 			@Override
 			public void completed(ProgressEvent e) {
-				IStatusLineManager slm = BrowserPart.this.parent
-						.getStatusLineManager();
-				IProgressMonitor monitor = slm != null ? slm
-						.getProgressMonitor() : null;
 				if (monitor != null) {
-					slm.setCancelEnabled(false);
+					IStatusLineManager slm = BrowserPart.this.parent.getStatusLineManager();
+					if (slm != null) {
+						slm.setCancelEnabled(false);
+					}
 					monitor.done();
+					monitor = null;
 				}
 				lastProgress = -1;
 				if (fontScalePercentage != 100) {

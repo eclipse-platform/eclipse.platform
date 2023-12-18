@@ -14,7 +14,14 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -37,9 +44,14 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.content.IContentTypeSettings;
 import org.eclipse.core.runtime.jobs.Job;
+import org.junit.Rule;
+import org.junit.Test;
 import org.osgi.service.prefs.Preferences;
 
-public class ContentDescriptionManagerTest extends ResourceTest {
+public class ContentDescriptionManagerTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String CONTENT_TYPE_RELATED_NATURE1 = "org.eclipse.core.tests.resources.contentTypeRelated1";
 	private static final String CONTENT_TYPE_RELATED_NATURE2 = "org.eclipse.core.tests.resources.contentTypeRelated2";
@@ -68,6 +80,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 	/**
 	 * Ensure we react to changes to the content type registry in an appropriated way.
 	 */
+	@Test
 	public void testBug79151() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
@@ -76,8 +89,8 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		String newExtension = "xml_bug_79151";
 		IFile file1 = project.getFile("file.xml");
 		IFile file2 = project.getFile("file." + newExtension);
-		ensureExistsInWorkspace(file1, getContents(CharsetTest.SAMPLE_XML_ISO_8859_1_ENCODING));
-		ensureExistsInWorkspace(file2, getContents(CharsetTest.SAMPLE_XML_US_ASCII_ENCODING));
+		createInWorkspace(file1, CharsetTest.SAMPLE_XML_ISO_8859_1_ENCODING);
+		createInWorkspace(file2, CharsetTest.SAMPLE_XML_US_ASCII_ENCODING);
 		// ensure we start in a known state
 		((Workspace) workspace).getContentDescriptionManager().invalidateCache(true, null);
 		// wait for cache flush to finish
@@ -121,13 +134,14 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		assertNull("5.4", description2);
 	}
 
+	@Test
 	public void testBug94516() throws Exception {
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType text = contentTypeManager.getContentType("org.eclipse.core.runtime.text");
 		assertNotNull("0.1", text);
 		IProject project = getWorkspace().getRoot().getProject("proj1");
-		IFile unrelatedFile = project.getFile("file." + getName());
-		ensureExistsInWorkspace(unrelatedFile, "");
+		IFile unrelatedFile = project.getFile("file.unrelated");
+		createInWorkspace(unrelatedFile, "");
 
 		IContentDescription description = null;
 		description = unrelatedFile.getContentDescription();
@@ -168,6 +182,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 	/**
 	 * Ensures content type-nature associations work as expected.
 	 */
+	@Test
 	public void testNatureContentTypeAssociation() throws Exception {
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType baseType = contentTypeManager.getContentType("org.eclipse.core.tests.resources.nature_associated_1");
@@ -177,7 +192,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 		IFile file = project.getFile("file.nature-associated");
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		ensureExistsInWorkspace(file, "it really does not matter");
+		createInWorkspace(file, "it really does not matter");
 		IContentDescription description = null;
 
 		// originally, project description has no natures
@@ -228,6 +243,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		assertSame("5.3", ((ContentTypeHandler) baseType).getTarget(), ((ContentTypeHandler) description.getContentType()).getTarget());
 	}
 
+	@Test
 	public void testProjectSpecificCharset() throws Exception {
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType text = contentTypeManager.getContentType("org.eclipse.core.runtime.text");
@@ -236,11 +252,11 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		assertNotNull("0.2", xml);
 		IProject project = getWorkspace().getRoot().getProject("proj1");
 
-		IFile txtFile = project.getFile(getName() + ".txt");
-		IFile xmlFile = project.getFile(getName() + ".xml");
+		IFile txtFile = project.getFile("example.txt");
+		IFile xmlFile = project.getFile("example.xml");
 
-		ensureExistsInWorkspace(txtFile, "");
-		ensureExistsInWorkspace(xmlFile, "");
+		createInWorkspace(txtFile, "");
+		createInWorkspace(xmlFile, "");
 
 		project.setDefaultCharset("FOO", createTestMonitor());
 		assertEquals("1.0", "FOO", txtFile.getCharset());
@@ -265,6 +281,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		assertEquals("4.2", "FOO", xmlFile.getCharset());
 	}
 
+	@Test
 	public void testProjectSpecificFileAssociations() throws Exception {
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType text = contentTypeManager.getContentType("org.eclipse.core.runtime.text");
@@ -272,14 +289,15 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		assertNotNull("0.1", text);
 		assertNotNull("0.2", xml);
 		IProject project = getWorkspace().getRoot().getProject("proj1");
+		String unrelatedFileExtension = "unrelated";
 
-		IFile txtFile = project.getFile(getName() + ".txt");
-		IFile xmlFile = project.getFile(getName() + ".xml");
-		IFile unrelatedFile = project.getFile("file." + getName());
+		IFile txtFile = project.getFile("example.txt");
+		IFile xmlFile = project.getFile("example.xml");
+		IFile unrelatedFile = project.getFile("file." + unrelatedFileExtension);
 
-		ensureExistsInWorkspace(txtFile, "");
-		ensureExistsInWorkspace(xmlFile, "");
-		ensureExistsInWorkspace(unrelatedFile, "");
+		createInWorkspace(txtFile, "");
+		createInWorkspace(xmlFile, "");
+		createInWorkspace(unrelatedFile, "");
 		IContentDescription description = null;
 
 		description = txtFile.getContentDescription();
@@ -314,7 +332,7 @@ public class ContentDescriptionManagerTest extends ResourceTest {
 		assertNotSame("2.2", text, settings);
 		assertTrue("2.3", settings instanceof ContentTypeSettings);
 
-		settings.addFileSpec(getName(), IContentTypeSettings.FILE_EXTENSION_SPEC);
+		settings.addFileSpec(unrelatedFileExtension, IContentTypeSettings.FILE_EXTENSION_SPEC);
 		contentTypePrefs.flush();
 		description = unrelatedFile.getContentDescription();
 		assertNotNull("3.2b", description);

@@ -13,22 +13,33 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.eclipse.core.internal.localstore.Bucket.Entry;
 import org.eclipse.core.internal.localstore.HistoryBucket;
 import org.eclipse.core.internal.utils.UniversalUniqueIdentifier;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class HistoryBucketTest extends ResourceTest {
+public class HistoryBucketTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Ensures that if another entry having exactly the same UUID is added,
 	 * the original one is not replaced.
 	 */
+	@Test
 	public void testDuplicates() throws CoreException {
 		IPath baseLocation = getRandomLocation();
-		deleteOnTearDown(baseLocation);
+		workspaceRule.deleteOnTearDown(baseLocation);
 		HistoryBucket index1 = new HistoryBucket();
 		IPath location1 = baseLocation.append("location1");
 		index1.load("foo", location1.toFile());
@@ -47,9 +58,10 @@ public class HistoryBucketTest extends ResourceTest {
 		assertEquals(lastModified, entry.getTimestamp(0));
 	}
 
+	@Test
 	public void testPersistence() throws CoreException {
 		IPath baseLocation = getRandomLocation();
-		deleteOnTearDown(baseLocation);
+		workspaceRule.deleteOnTearDown(baseLocation);
 		HistoryBucket index1 = new HistoryBucket();
 		IPath location = baseLocation.append("location");
 		index1.load("foo", location.toFile());
@@ -98,6 +110,7 @@ public class HistoryBucketTest extends ResourceTest {
 	/**
 	 * This test does not cause any data to be written.
 	 */
+	@Test
 	public void testSort() {
 		HistoryBucket index = new HistoryBucket();
 		IPath path = IPath.fromOSString("/foo");
@@ -138,4 +151,5 @@ public class HistoryBucketTest extends ResourceTest {
 		assertEquals(uuid1, entry.getUUID(2));
 		assertEquals(timestamp1, entry.getTimestamp(2));
 	}
+
 }

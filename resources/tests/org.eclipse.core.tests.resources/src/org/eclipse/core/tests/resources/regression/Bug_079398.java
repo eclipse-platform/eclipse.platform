@@ -15,7 +15,12 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.internal.localstore.IHistoryStore;
 import org.eclipse.core.internal.resources.Workspace;
@@ -24,15 +29,18 @@ import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceDescription;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
-//NOTE: Should not hook this test up until the corresponding bug is fixed.
-public class Bug_079398 extends ResourceTest {
+public class Bug_079398 {
 
-	public Bug_079398(String name) {
-		super(name);
-	}
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
+	@Test
+	@Ignore("Bug 78398 needs to be fixed")
 	public void testBug79398() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("myproject");
 		IFile file1 = project.getFile("myFile.txt");
@@ -47,9 +55,9 @@ public class Bug_079398 extends ResourceTest {
 		// max size of file = 1 Mb
 		description.setMaxFileStateSize(1024 * 1024);
 		getWorkspace().setDescription(description);
-		ensureExistsInWorkspace(file1, getRandomContents());
+		createInWorkspace(file1, createRandomString());
 		for (int i = 0; i < 10; i++) {
-			file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+			file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		}
 
 		IFileState[] sourceStates = file1.getHistory(createTestMonitor());
@@ -70,7 +78,7 @@ public class Bug_079398 extends ResourceTest {
 
 		// now cause the destination to have many more states
 		for (int i = 0; i <= description.getMaxFileStates(); i++) {
-			file2.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+			file2.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		}
 		IHistoryStore history = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
 		// clean history

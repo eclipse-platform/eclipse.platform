@@ -16,21 +16,21 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.util.ArrayList;
-import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
-import org.eclipse.core.tests.internal.builders.TestBuilder;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
@@ -69,18 +69,12 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 	 */
 	public void test1() throws CoreException {
 		IResource[] resources = {project1, project2, project3, project4, file1, file2, file3, file4};
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		setAutoBuilding(false);
 
 		// create a project and configure builder
-		IProjectDescription description = project1.getDescription();
-		ICommand command = description.newCommand();
-		Map<String, String> args = command.getArguments();
-		args.put(TestBuilder.BUILD_ID, "Project1Build1");
-		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
-		command.setArguments(args);
-		description.setBuildSpec(new ICommand[] { command });
-		project1.setDescription(description, createTestMonitor());
+		updateProjectDescription(project1).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
+				.withTestBuilderId("Project1Build1").apply();
 
 		// initial build requesting no projects
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
@@ -95,7 +89,7 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		builder.checkDeltas(new IProject[] {project1, project2, project3, project4});
 		builder.requestDeltas(new IProject[] {project1, project2, project4});
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		ArrayList<IProject> received = builder.getReceivedDeltas();
 
@@ -118,9 +112,9 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		builder.checkDeltas(new IProject[] {project1, project2, project3, project4});
 		// dirty projects 1, 2, 3
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
-		file2.setContents(getRandomContents(), true, true, createTestMonitor());
-		file3.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file2.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file3.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 
 		// build
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());

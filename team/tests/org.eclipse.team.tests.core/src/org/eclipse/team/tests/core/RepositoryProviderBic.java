@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
-import org.eclipse.core.resources.IFileModificationValidator;
+import org.eclipse.core.resources.team.FileModificationValidator;
 import org.eclipse.core.resources.team.IMoveDeleteHook;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.RepositoryProvider;
@@ -23,7 +23,7 @@ public class RepositoryProviderBic extends RepositoryProvider {
 	final public static String NATURE_ID = "org.eclipse.team.tests.core.bic-provider";
 
 	private IMoveDeleteHook mdh;
-	private IFileModificationValidator mv;
+	private FileModificationValidator mv;
 
 	@Override
 	public void configureProject() throws CoreException {
@@ -38,7 +38,7 @@ public class RepositoryProviderBic extends RepositoryProvider {
 	}
 
 	@Override
-	public IFileModificationValidator getFileModificationValidator() {
+	public FileModificationValidator getFileModificationValidator2() {
 		return mv;
 	}
 
@@ -47,7 +47,7 @@ public class RepositoryProviderBic extends RepositoryProvider {
 		return mdh;
 	}
 
-	public void setModificationValidator(IFileModificationValidator mv) {
+	public void setModificationValidator(FileModificationValidator mv) {
 		this.mv = mv;
 	}
 

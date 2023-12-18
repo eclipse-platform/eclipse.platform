@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
@@ -33,7 +34,7 @@ public class TestSaveWithClosedProject extends WorkspaceSerializationTest {
 		IFile file = project.getFile(FILE);
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 		project.close(createTestMonitor());
 
 		workspace.save(true, createTestMonitor());

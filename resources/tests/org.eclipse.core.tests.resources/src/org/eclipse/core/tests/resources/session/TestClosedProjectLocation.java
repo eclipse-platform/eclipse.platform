@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.clear;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
@@ -43,7 +45,7 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 		desc.setLocation(location);
 		project.create(desc, createTestMonitor());
 		project.open(createTestMonitor());
-		ensureExistsInWorkspace(file, true);
+		createInWorkspace(file);
 		project.close(createTestMonitor());
 		assertEquals("1.1", location, project.getLocation());
 
@@ -62,7 +64,7 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 			assertTrue("1.2", !file.exists());
 			assertEquals("1.3", location, project.getLocation());
 		} finally {
-			ensureDoesNotExistInFileSystem(location.toFile());
+			clear(location.toFile());
 		}
 	}
 

@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
@@ -51,7 +52,7 @@ public class TestBug12575 extends WorkspaceSerializationTest {
 		desc.setReferencedProjects(new IProject[] { other });
 		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		//creating a project will cause a snapshot
-		ensureExistsInWorkspace(other, true);
+		createInWorkspace(other);
 
 		//crash
 	}

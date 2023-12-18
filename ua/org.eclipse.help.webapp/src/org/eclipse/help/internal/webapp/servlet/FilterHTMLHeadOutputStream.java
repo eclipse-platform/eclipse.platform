@@ -64,8 +64,6 @@ public class FilterHTMLHeadOutputStream extends FilterOutputStream {
 	 * <p>
 	 * The underlying stream might have a more bytes written to it, following
 	 * the &lt;head&gt; HTML element.
-	 * <p>
-	 * Implements the abstract <tt>write</tt> method of <tt>OutputStream</tt>.
 	 *
 	 * @param b
 	 *            the <code>byte</code>.

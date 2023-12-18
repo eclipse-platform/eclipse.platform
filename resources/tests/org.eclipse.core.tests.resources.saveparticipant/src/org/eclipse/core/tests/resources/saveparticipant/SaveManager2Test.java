@@ -31,9 +31,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
 
 /**
  * @see SaveManager1Test
@@ -72,7 +74,7 @@ public class SaveManager2Test extends SaveManagerTest {
 		DeltaVerifierBuilder verifier = DeltaVerifierBuilder.getInstance();
 		verifier.reset();
 		verifier.addExpectedChange(added, project, IResourceDelta.ADDED, 0);
-		added.create(getRandomContents(), true, null);
+		added.create(createRandomContentsStream(), true, null);
 		waitForBuild();
 		assertTrue("3.2", verifier.wasAutoBuild());
 		assertTrue("3.3", verifier.isDeltaValid());
@@ -130,7 +132,7 @@ public class SaveManager2Test extends SaveManagerTest {
 
 		// add a file to test save participant delta
 		IFile file = project.getFile("addedFile");
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 	}
 
 	public void testVerifyRestoredWorkspace() throws CoreException {
@@ -145,6 +147,6 @@ public class SaveManager2Test extends SaveManagerTest {
 
 		// add a file to test save participant delta
 		IFile file = project.getFile("addedFile");
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 	}
 }

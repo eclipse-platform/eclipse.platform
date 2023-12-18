@@ -14,16 +14,25 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.utils;
 
-import java.util.*;
-import org.eclipse.core.internal.utils.ObjectMap;
-import org.eclipse.core.tests.resources.ResourceTest;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-public class ObjectMapTest extends ResourceTest {
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import org.eclipse.core.internal.utils.ObjectMap;
+import org.junit.Test;
+
+public class ObjectMapTest {
 	private static final int MAXIMUM = 100;
 	private Object[] values;
 
+	@Test
 	public void testPut() {
-
 		// create the objects to insert into the map
 		ObjectMap<Integer, Object> map = new ObjectMap<>();
 		int max = 100;
@@ -50,13 +59,14 @@ public class ObjectMapTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testPutEmptyMap() {
 		ObjectMap<Object, Object> map = new ObjectMap<>(new HashMap<>());
 		map.put(new Object(), new Object());
 	}
 
+	@Test
 	public void testRemove() {
-
 		// populate the map
 		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
 
@@ -76,6 +86,7 @@ public class ObjectMapTest extends ResourceTest {
 		assertEquals("3.0", 0, map.size());
 	}
 
+	@Test
 	public void testContains() {
 		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
 
@@ -87,9 +98,10 @@ public class ObjectMapTest extends ResourceTest {
 		assertFalse("3.0", map.containsKey(Integer.valueOf(MAXIMUM + 1)));
 		assertFalse("3.1", map.containsKey(Integer.valueOf(-1)));
 		assertFalse("3.2", map.containsValue(null));
-		assertFalse("3.3", map.containsValue(getRandomString()));
+		assertFalse("3.3", map.containsValue(createRandomString()));
 	}
 
+	@Test
 	public void testValues() {
 		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
 
@@ -99,12 +111,14 @@ public class ObjectMapTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testKeySet() {
 		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
 		Set<Integer> keys = map.keySet();
 		assertEquals("1.0", MAXIMUM, keys.size());
 	}
 
+	@Test
 	public void testEntrySet() {
 		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
 		Set<Map.Entry<Integer, Object>> entries = map.entrySet();
@@ -140,19 +154,12 @@ public class ObjectMapTest extends ResourceTest {
 	/*
 	 * Bug 62231 - empty ObjectMap.toHashMap() causes NullPointerException
 	 */
+	@Test
 	public void testBug_62231() {
 		ObjectMap<Object, Object> map = new ObjectMap<>();
-		try {
-			map.entrySet();
-		} catch (NullPointerException e) {
-			fail("1.0");
-		}
+		map.entrySet();
 		map.clear();
-		try {
-			map.entrySet();
-		} catch (NullPointerException e) {
-			fail("1.1");
-		}
+		map.entrySet();
 
 	}
 }

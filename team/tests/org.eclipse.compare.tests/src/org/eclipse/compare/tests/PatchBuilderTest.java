@@ -294,18 +294,12 @@ public class PatchBuilderTest {
 	}
 
 	private String getLineDelimiter(IStorage storage) throws CoreException, IOException {
-		InputStream in = null;
-		try {
-			in = storage.getContents();
+		try (InputStream in = storage.getContents()) {
 			int ch;
 			while ((ch = in.read()) != -1) {
 				if (ch == '\r') {
 					return "\r\n";
 				}
-			}
-		} finally {
-			if (in != null) {
-				in.close();
 			}
 		}
 		return "\n";

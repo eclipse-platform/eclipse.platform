@@ -14,7 +14,9 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -59,7 +61,7 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		project.open(createTestMonitor());
 
 		IFile f = project.getFile(FILE_NAME);
-		f.create(getContents("content"), true, createTestMonitor());
+		f.create(createInputStream("content"), true, createTestMonitor());
 
 		IMarker marker = f.createMarker(IMarker.BOOKMARK);
 		marker.setAttribute(MARKER_ATTRIBUTE_NAME, MARKER_ATTRIBUTE);

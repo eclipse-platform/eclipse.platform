@@ -13,21 +13,14 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core.regression;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class AllTeamRegressionTests extends TestCase {
-	public AllTeamRegressionTests() {
-		super(null);
-	}
-
-	public AllTeamRegressionTests(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(AllTeamRegressionTests.class.getName());
-		suite.addTest(Bug_217673.suite());
-		suite.addTest(DoNotRemoveTest.suite());
-		return suite;
-	}
+@RunWith(Suite.class)
+@SuiteClasses({ //
+		Bug_217673.class, //
+		DoNotRemoveTest.class, //
+})
+public class AllTeamRegressionTests {
 }

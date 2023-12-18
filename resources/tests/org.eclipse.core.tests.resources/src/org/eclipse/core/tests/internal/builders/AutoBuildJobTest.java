@@ -15,6 +15,9 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.util.Map;
@@ -28,9 +31,7 @@ import org.eclipse.core.internal.events.BuildManager;
 import org.eclipse.core.internal.events.BuildManager.JobManagerSuspendedException;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -40,20 +41,27 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Test for various AutoBuildJob scheduling use cases
  */
-public class AutoBuildJobTest extends AbstractBuilderTest {
+public class AutoBuildJobTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project;
 	private AtomicLong running;
 	private AtomicLong scheduled;
-
-	public AutoBuildJobTest(String name) {
-		super(name);
-	}
 
 	IJobChangeListener jobChangeListener = new JobChangeAdapter() {
 
@@ -72,9 +80,8 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 		}
 	};
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		scheduled = new AtomicLong(0);
 		running = new AtomicLong(0);
 		setupProjectWithOurBuilder();
@@ -82,19 +89,17 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 		Job.getJobManager().addJobChangeListener(jobChangeListener);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		Job.getJobManager().removeJobChangeListener(jobChangeListener);
-		super.tearDown();
 	}
 
 	private void setupProjectWithOurBuilder() throws CoreException {
-		project = getWorkspace().getRoot().getProject(getName());
+		project = getWorkspace().getRoot().getProject(testName.getMethodName());
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, EmptyDeltaBuilder.BUILDER_NAME, getName()) });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME)
+				.withTestBuilderId(testName.getMethodName()).apply();
 	}
 
 	private void requestAutoBuildJobExecution() {
@@ -107,10 +112,12 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 		return ((Workspace) project.getWorkspace()).getBuildManager();
 	}
 
+	@Test
 	public void testNoBuildIfBuildRequestedFromSameThread() throws Exception {
 		triggerAutobuildAndCheckNoExtraBuild(false);
 	}
 
+	@Test
 	public void testNoBuildIfBuildRequestedFromSameThreadAfterCancel() throws Exception {
 		triggerAutobuildAndCheckNoExtraBuild(true);
 	}
@@ -140,6 +147,7 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 		}
 	}
 
+	@Test
 	public void testExtraBuildIfBuildRequestedFromOtherThreadDuringRun() throws Exception {
 		EmptyDeltaBuilder.getInstance().setRuleCallback(new BuilderRuleCallback() {
 			@Override
@@ -164,27 +172,27 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 	}
 
 	@Test
-	public void testWaitForAutoBuild_JobManagerIsSuspended_ExceptionIsThrown()
-			throws InterruptedException, CoreException, ExecutionException {
-		Job.getJobManager().suspend();
+	public void testWaitForAutoBuild_JobManagerIsSuspended_ExceptionIsThrown() throws Exception {
+		try {
+			Job.getJobManager().suspend();
 
-		assertEquals("Scheduled calls", 0, scheduled.get());
-		assertEquals("Running calls", 0, running.get());
+			assertEquals("Scheduled calls", 0, scheduled.get());
+			assertEquals("Running calls", 0, running.get());
 
-		triggerAutoBuildAndWait();
-		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+			triggerAutoBuildAndWait();
+			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
 
-		assertEquals("Scheduled calls", 1, scheduled.get());
-		assertEquals("Running calls", 0, running.get());
+			assertEquals("Scheduled calls", 1, scheduled.get());
+			assertEquals("Running calls", 0, running.get());
 
-		assertThrows(JobManagerSuspendedException.class, () -> waitForAutoBuild(2_000));
-
-		Job.getJobManager().resume();
+			assertThrows(JobManagerSuspendedException.class, () -> waitForAutoBuild(2_000));
+		} finally {
+			Job.getJobManager().resume();
+		}
 	}
 
 	@Test
-	public void testWaitForAutoBuild_JobManagerIsRunning_NoExceptionIsThrown()
-			throws Throwable {
+	public void testWaitForAutoBuild_JobManagerIsRunning_NoExceptionIsThrown() throws Throwable {
 		assertEquals("Scheduled calls", 0, scheduled.get());
 		assertEquals("Running calls", 0, running.get());
 
@@ -211,8 +219,6 @@ public class AutoBuildJobTest extends AbstractBuilderTest {
 	 * @param timeoutMillis
 	 *            after this timeout, a <code>TimeoutException</code> will be
 	 *            thrown.
-	 * @return the exception thrown by {@linkplain BuildManager#waitForAutoBuild()},
-	 *         it can be <code>null</code>.
 	 * @throws InterruptedException
 	 *             if the thread waiting for the auto-build is interrupted.
 	 */

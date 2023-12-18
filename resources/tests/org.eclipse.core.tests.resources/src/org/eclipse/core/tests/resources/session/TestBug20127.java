@@ -16,18 +16,18 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
-import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
-import org.eclipse.core.tests.internal.builders.TestBuilder;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
 /**
@@ -41,18 +41,12 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 	 */
 	public void test1() throws CoreException {
 		IProject project = workspace.getRoot().getProject("Project1");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		setAutoBuilding(false);
 
 		//create a project and configure builder
-		IProjectDescription description = project.getDescription();
-		ICommand command = description.newCommand();
-		Map<String, String> args = command.getArguments();
-		args.put(TestBuilder.BUILD_ID, "Project1Build1");
-		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
-		command.setArguments(args);
-		description.setBuildSpec(new ICommand[] { command });
-		project.setDescription(description, createTestMonitor());
+		updateProjectDescription(project).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
+				.withTestBuilderId("Project1Build1").apply();
 
 		//initial build
 		workspace.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());

@@ -33,7 +33,7 @@ public class LaunchViewSmokeTest extends AbstractLaunchViewTest {
 		assertNotNull("The active workbench page should not be null", page); //$NON-NLS-1$
 		try {
 			page.showView("org.eclipse.debug.ui.launchView"); //$NON-NLS-1$
-		} catch (PartInitException e) {
+		} catch (PartInitException exception) {
 			assertNotNull("Failed to open launch configuration view", null); //$NON-NLS-1$
 		}
 

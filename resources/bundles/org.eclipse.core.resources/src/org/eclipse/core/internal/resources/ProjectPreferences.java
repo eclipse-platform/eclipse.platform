@@ -24,13 +24,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.preferences.ExportedPreferences;
 import org.eclipse.core.internal.preferences.PreferencesService;
@@ -76,7 +74,7 @@ public class ProjectPreferences extends EclipsePreferences {
 	/**
 	 * Cache which nodes have been loaded from disk
 	 */
-	protected static Set<String> loadedNodes = Collections.synchronizedSet(new HashSet<>());
+	private static final Set<String> loadedNodes = ConcurrentHashMap.newKeySet();
 	private IFile file;
 	private boolean initialized = false;
 	/**
@@ -90,11 +88,11 @@ public class ProjectPreferences extends EclipsePreferences {
 	 */
 	private boolean isWriting;
 	private IEclipsePreferences loadLevel;
-	private IProject project;
-	private String qualifier;
+	private final IProject project;
+	private final String qualifier;
 
 	// cache
-	private int segmentCount;
+	private final int segmentCount;
 	private Workspace workspace;
 
 	static void deleted(IFile file) throws CoreException {
@@ -339,13 +337,7 @@ public class ProjectPreferences extends EclipsePreferences {
 
 	private static void removeLoadedNodes(Preferences node) {
 		String path = node.absolutePath();
-		synchronized (loadedNodes) {
-			for (Iterator<String> i = loadedNodes.iterator(); i.hasNext();) {
-				String key = i.next();
-				if (key.startsWith(path))
-					i.remove();
-			}
-		}
+		loadedNodes.removeIf(key -> key.startsWith(path));
 	}
 
 	public static void updatePreferences(IFile file) throws CoreException {
@@ -388,6 +380,9 @@ public class ProjectPreferences extends EclipsePreferences {
 	 */
 	public ProjectPreferences() {
 		super(null, null);
+		qualifier = null;
+		project = null;
+		segmentCount = 0;
 	}
 
 	private ProjectPreferences(EclipsePreferences parent, String name, Workspace workspace) {
@@ -398,17 +393,18 @@ public class ProjectPreferences extends EclipsePreferences {
 		String path = absolutePath();
 		segmentCount = getSegmentCount(path);
 
-		if (segmentCount == 1)
+		if (segmentCount == 1) {
+			qualifier = null;
+			project = null;
 			return;
+		}
 
 		// cache the project name
 		String projectName = getSegment(path, 1);
-		if (projectName != null)
-			project = getWorkspace().getRoot().getProject(projectName);
+		project = (projectName != null) ? getWorkspace().getRoot().getProject(projectName) : null;
 
 		// cache the qualifier
-		if (segmentCount > 2)
-			qualifier = getSegment(path, 2);
+		qualifier = (segmentCount > 2) ? getSegment(path, 2).intern() : null;
 	}
 
 	@Override
@@ -750,14 +746,14 @@ public class ProjectPreferences extends EclipsePreferences {
 			};
 			//don't bother with scheduling rules if we are already inside an operation
 			try {
-				Workspace workspace = getWorkspace();
-				if (workspace.getWorkManager().isLockAlreadyAcquired()) {
+				Workspace ws = getWorkspace();
+				if (ws.getWorkManager().isLockAlreadyAcquired()) {
 					operation.run(null);
 				} else {
-					IResourceRuleFactory factory = workspace.getRuleFactory();
+					IResourceRuleFactory factory = ws.getRuleFactory();
 					// we might: delete the file, create the .settings folder, create the file, modify the file, or set derived flag for the file.
 					ISchedulingRule rule = MultiRule.combine(new ISchedulingRule[] {factory.deleteRule(fileInWorkspace), factory.createRule(fileInWorkspace.getParent()), factory.modifyRule(fileInWorkspace), factory.derivedRule(fileInWorkspace)});
-					workspace.run(operation, rule, IResource.NONE, null);
+					ws.run(operation, rule, IResource.NONE, null);
 					if (bse[0] != null)
 						throw bse[0];
 				}

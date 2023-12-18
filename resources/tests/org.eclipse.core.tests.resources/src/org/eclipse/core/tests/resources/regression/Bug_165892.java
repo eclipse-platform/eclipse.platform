@@ -14,7 +14,10 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -22,7 +25,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests regression of bug 165892. Copying a resource should perform a deep
@@ -30,16 +35,21 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * properties on the destination resource should not affect the properties on the
  * source resource.
  */
-public class Bug_165892 extends ResourceTest {
+public class Bug_165892 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Tests copying a file
 	 */
+	@Test
 	public void testCopyFile() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("folder");
 		IFile sourceFile = sourceFolder.getFile("source");
 		IFile destinationFile = sourceFolder.getFile("destination");
-		ensureExistsInWorkspace(sourceFile, true);
+		createInWorkspace(sourceFile);
 
 		final String sourceValue = "SourceValue";
 		QualifiedName name = new QualifiedName("Bug_165892", "Property");
@@ -65,15 +75,16 @@ public class Bug_165892 extends ResourceTest {
 	/**
 	 * Tests that history of source file isn't affected by a copy
 	 */
+	@Test
 	public void testCopyFileHistory() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("folder");
 		IFile sourceFile = sourceFolder.getFile("source");
 		IFile destinationFile = sourceFolder.getFile("destination");
-		ensureExistsInWorkspace(sourceFile, true);
+		createInWorkspace(sourceFile);
 
 		// modify the source file so it has some history
-		sourceFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+		sourceFile.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 		// check that the source file has the expected history
 		assertEquals("1.0", 1, sourceFile.getHistory(createTestMonitor()).length);
 
@@ -85,7 +96,7 @@ public class Bug_165892 extends ResourceTest {
 		assertEquals("2.1", 1, destinationFile.getHistory(createTestMonitor()).length);
 
 		//modify the destination to change its history
-		destinationFile.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+		destinationFile.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 
 		//make sure the history is correct
 		assertEquals("2.0", 1, sourceFile.getHistory(createTestMonitor()).length);
@@ -95,13 +106,14 @@ public class Bug_165892 extends ResourceTest {
 	/**
 	 * Tests copying a folder
 	 */
+	@Test
 	public void testCopyFolder() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFolder sourceFolder = source.getFolder("source");
 		IFile sourceFile = sourceFolder.getFile("Important.txt");
 		IFolder destinationFolder = source.getFolder("destination");
 		IFile destinationFile = destinationFolder.getFile(sourceFile.getName());
-		ensureExistsInWorkspace(sourceFile, true);
+		createInWorkspace(sourceFile);
 
 		//add a persistent property to each source resource
 		final String sourceValue = "SourceValue";
@@ -136,6 +148,7 @@ public class Bug_165892 extends ResourceTest {
 	/**
 	 * Tests copying a project
 	 */
+	@Test
 	public void testCopyProject() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("source");
 		IFolder sourceFolder = source.getFolder("folder");
@@ -143,7 +156,7 @@ public class Bug_165892 extends ResourceTest {
 		IProject destination = getWorkspace().getRoot().getProject("destination");
 		IFolder destinationFolder = destination.getFolder(sourceFolder.getName());
 		IFile destinationFile = destinationFolder.getFile(sourceFile.getName());
-		ensureExistsInWorkspace(sourceFile, true);
+		createInWorkspace(sourceFile);
 
 		//add a persistent property to each source resource
 		final String sourceValue = "SourceValue";

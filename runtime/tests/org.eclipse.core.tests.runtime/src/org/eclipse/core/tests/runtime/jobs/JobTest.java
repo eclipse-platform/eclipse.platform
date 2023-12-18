@@ -19,7 +19,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,6 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.internal.jobs.InternalJob;
 import org.eclipse.core.internal.jobs.JobListeners;
 import org.eclipse.core.internal.jobs.JobManager;
@@ -38,7 +48,6 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -46,7 +55,10 @@ import org.eclipse.core.runtime.jobs.LockListener;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
-import org.junit.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Tests the implemented get/set methods of the abstract class Job
@@ -55,14 +67,10 @@ import org.junit.Assert;
 public class JobTest extends AbstractJobTest {
 	protected Job longJob;
 	protected Job shortJob;
-	private FussyProgressProvider progressProvider;
 
-	public JobTest(String name) {
-		super(name);
-	}
-
-	//see bug #43591
-	public void _testDone() {
+	@Test
+	@Ignore("see bug 43591")
+	public void testDone() {
 		//calling the done method on a job that is not executing asynchronously should have no effect
 
 		shortJob.done(Status.OK_STATUS);
@@ -103,18 +111,14 @@ public class JobTest extends AbstractJobTest {
 		}
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		shortJob = new TestJob("Short Test Job", 10, 1); // job that tests wait on
 		longJob = new TestJob("Long Test Job", 10000000, 10); // job that never finishes in time
-		progressProvider = new FussyProgressProvider();
-		Job.getJobManager().setProgressProvider(progressProvider);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		Job.getJobManager().setProgressProvider(null);
 		Job.getJobManager().setLockListener(null);
 		shortJob.cancel();
@@ -124,6 +128,7 @@ public class JobTest extends AbstractJobTest {
 	}
 
 	//see bug #43566
+	@Test
 	public void testAsynchJob() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START });
 
@@ -202,7 +207,8 @@ public class JobTest extends AbstractJobTest {
 		assertNull("6.2", main.getThread());
 	}
 
-	public void testAsynchJobComplex() {
+	@Test
+	public void testAsynchJobComplex() throws InterruptedException {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START,
 				TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START,
 				TestBarrier2.STATUS_WAIT_FOR_START });
@@ -252,12 +258,8 @@ public class JobTest extends AbstractJobTest {
 			TestBarrier2.waitForStatus(status, i, TestBarrier2.STATUS_DONE);
 		}
 
-		for (int i = 0; i < jobs.length; i++) {
-			try {
-				jobs[i].join();
-			} catch (InterruptedException e) {
-				fail("4.99", e);
-			}
+		for (AsynchTestJob job : jobs) {
+			job.join();
 		}
 		//the status for every job should be STATUS_OK
 		//the threads should have been reset to null
@@ -269,6 +271,7 @@ public class JobTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testAsynchJobConflict() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START,
 				TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START,
@@ -391,10 +394,11 @@ public class JobTest extends AbstractJobTest {
 	}
 
 	/**
-	 * Tests cancelation of a job from the aboutToRun job event.
-	 * See bug 70434 for details.
+	 * Tests cancelation of a job from the aboutToRun job event. See bug 70434 for
+	 * details.
 	 */
-	public void testCancelFromAboutToRun() {
+	@Test
+	public void testCancelFromAboutToRun() throws InterruptedException {
 		final int[] doneCount = new int[] {0};
 		final int[] runningCount = new int[] {0};
 		TestJob job = new TestJob("testCancelFromAboutToRun", 0, 0);
@@ -415,12 +419,7 @@ public class JobTest extends AbstractJobTest {
 			}
 		});
 		job.schedule();
-		try {
-			job.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			fail("0.99 " + e.getMessage());
-		}
+		job.join();
 		assertEquals("1.0", 0, job.getRunCount());
 		assertEquals("1.1", 1, doneCount[0]);
 		assertEquals("1.2", 0, runningCount[0]);
@@ -429,7 +428,8 @@ public class JobTest extends AbstractJobTest {
 	/**
 	 * Basic test of {@link Job#shouldRun()}.
 	 */
-	public void testShouldRun() {
+	@Test
+	public void testShouldRun() throws InterruptedException {
 		class ShouldRunJob extends Job {
 			public ShouldRunJob() {
 				super("ShouldRunJob");
@@ -450,11 +450,7 @@ public class JobTest extends AbstractJobTest {
 		}
 		ShouldRunJob j = new ShouldRunJob();
 		j.schedule();
-		try {
-			j.join();
-		} catch (InterruptedException e) {
-			fail("0.99", e);
-		}
+		j.join();
 
 		//ensure the job never ran
 		assertEquals(0, j.runCount);
@@ -464,6 +460,7 @@ public class JobTest extends AbstractJobTest {
 	/**
 	 * Test of an ill-behaving {@link Job#shouldRun()}.
 	 */
+	@Test
 	public void testShouldRunFailure() {
 		class ShouldRunJob extends Job {
 			public ShouldRunJob() {
@@ -495,7 +492,8 @@ public class JobTest extends AbstractJobTest {
 	/**
 	 * Tests canceling a job from the shouldRun method. See bug 255384.
 	 */
-	public void testCancelShouldRun() {
+	@Test
+	public void testCancelShouldRun() throws OperationCanceledException, InterruptedException {
 		final String[] failure = new String[1];
 		final Job j = new Job("Test") {
 			AtomicInteger runningCount = new AtomicInteger();
@@ -540,18 +538,15 @@ public class JobTest extends AbstractJobTest {
 			}
 		};
 		j.schedule();
-		try {
-			Thread.sleep(1000);
-			Job.getJobManager().join(this, null);
-		} catch (OperationCanceledException | InterruptedException e) {
-			fail("4.99", e);
-		}
+		Thread.sleep(1000);
+		Job.getJobManager().join(this, null);
 		assertNull(failure[0], failure[0]);
 	}
 
 	/**
 	 * Tests the hook method {@link Job#canceling}.
 	 */
+	@Test
 	public void testCanceling() {
 		final TestBarrier2 barrier = new TestBarrier2();
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
@@ -585,6 +580,7 @@ public class JobTest extends AbstractJobTest {
 	/**
 	 * Tests the hook method {@link Job#canceling}.
 	 */
+	@Test
 	public void testCancelingByMonitor() {
 		final TestBarrier2 barrier = new TestBarrier2();
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
@@ -621,13 +617,15 @@ public class JobTest extends AbstractJobTest {
 		}
 	}
 
-	public void testCancelAboutToScheduleLegacy() {
+	@Test
+	public void testCancelAboutToScheduleLegacy() throws InterruptedException {
 		JobListeners.setJobListenerTimeout(0);
 		testCancelAboutToSchedule();
 		JobListeners.resetJobListenerTimeout();
 	}
 
-	public void testCancelAboutToSchedule() {
+	@Test
+	public void testCancelAboutToSchedule() throws InterruptedException {
 		final boolean[] failure = new boolean[1];
 		final Job j = new Job("testCancelAboutToSchedule") {
 			AtomicInteger runningCount = new AtomicInteger();
@@ -674,35 +672,24 @@ public class JobTest extends AbstractJobTest {
 		Job.getJobManager().addJobChangeListener(listener);
 		try {
 			j.schedule();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				fail("4.99", e);
-			}
-			try {
-				Job.getJobManager().join(this, null);
-			} catch (OperationCanceledException | InterruptedException e) {
-				fail("4.99", e);
-			}
+			Thread.sleep(1000);
+			Job.getJobManager().join(this, null);
 			assertFalse("1.0", failure[0]);
 		} finally {
 			Job.getJobManager().removeJobChangeListener(listener);
 		}
 	}
 
+	@Test
 	public void testGetName() {
 		assertEquals("1.0", "Short Test Job", shortJob.getName());
 		assertEquals("1.1", "Long Test Job", longJob.getName());
 
 		//try creating a job with a null name
-		try {
-			new TestJob(null);
-			fail("2.0");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> new TestJob(null));
 	}
 
+	@Test
 	public void testGetPriority() {
 		//set priorities to all allowed options
 		//check if getPriority() returns proper result
@@ -715,6 +702,7 @@ public class JobTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testGetProperty() {
 		QualifiedName n1 = new QualifiedName("org.eclipse.core.tests.runtime", "p1");
 		QualifiedName n2 = new QualifiedName("org.eclipse.core.tests.runtime", "p2");
@@ -731,6 +719,7 @@ public class JobTest extends AbstractJobTest {
 		assertNull("1.6", shortJob.getProperty(n2));
 	}
 
+	@Test
 	public void testGetResult() {
 		//execute a short job
 		assertNull("1.0", shortJob.getResult());
@@ -747,6 +736,7 @@ public class JobTest extends AbstractJobTest {
 		assertEquals("2.0", IStatus.CANCEL, longJob.getResult().getSeverity());
 	}
 
+	@Test
 	public void testGetRule() {
 		//set several rules for the job, check if getRule returns the rule that was set
 		//no rule was set yet
@@ -763,6 +753,7 @@ public class JobTest extends AbstractJobTest {
 		assertNull("1.3", shortJob.getRule());
 	}
 
+	@Test
 	public void testGetThread() {
 		//check that getThread returns the thread that was passed in setThread, when the job is not running
 		//if the job is scheduled, only jobs that return the asynch_exec status will run in the indicated thread
@@ -781,6 +772,7 @@ public class JobTest extends AbstractJobTest {
 		assertNull("1.3", shortJob.getThread());
 	}
 
+	@Test
 	public void testIsBlocking() {
 		IdentityRule rule = new IdentityRule();
 		TestJob high = new TestJob("TestIsBlocking.long", 10000, 100);
@@ -828,8 +820,8 @@ public class JobTest extends AbstractJobTest {
 	}
 
 	// @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=60964
+	@Test
 	public void testIsBlocking2() throws InterruptedException {
-		final IJobManager manager = Job.getJobManager();
 		final ISchedulingRule rule = new IdentityRule();
 		Thread thread = new Thread("testIsBlocking2") {
 			@Override
@@ -854,6 +846,7 @@ public class JobTest extends AbstractJobTest {
 		}
 	}
 
+	@Test
 	public void testIsSystem() {
 		//reset the system parameter several times
 		shortJob.setUser(false);
@@ -868,6 +861,7 @@ public class JobTest extends AbstractJobTest {
 		assertTrue("1.5", !shortJob.isSystem());
 	}
 
+	@Test
 	public void testIsUser() {
 		//reset the user parameter several times
 		shortJob.setUser(false);
@@ -882,17 +876,19 @@ public class JobTest extends AbstractJobTest {
 		assertTrue("1.5", !shortJob.isSystem());
 	}
 
-	public void testJoin() {
+	@Test
+	public void testJoin() throws InterruptedException {
 		longJob.schedule(100000);
 		//create a thread that will join the test job
 		final AtomicIntegerArray status = new AtomicIntegerArray( new int[1]);
 		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
+		AtomicReference<InterruptedException> exceptionInThread = new AtomicReference<>();
 		Thread t = new Thread(() -> {
 			status.set(0, TestBarrier2.STATUS_START);
 			try {
 				longJob.join();
 			} catch (InterruptedException e) {
-				Assert.fail("0.99");
+				exceptionInThread.set(e);
 			}
 			status.set(0, TestBarrier2.STATUS_DONE);
 		});
@@ -912,23 +908,27 @@ public class JobTest extends AbstractJobTest {
 		//finally canceling the job will cause the join to return
 		longJob.cancel();
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
+		if (exceptionInThread.get() != null) {
+			throw exceptionInThread.get();
+		}
 	}
 
-	public void testJoinWithTimeout() {
+	@Test
+	public void testJoinWithTimeout() throws Exception {
 		longJob.schedule();
+		waitForState(longJob, Job.RUNNING);
 		final long timeout = 1000;
 		final long duration[] = {-1};
 		// Create a thread that will join the test job
 		TestBarrier2 barrier = new TestBarrier2(TestBarrier2.STATUS_WAIT_FOR_START);
+		AtomicReference<Exception> exceptionInThread = new AtomicReference<>();
 		Thread t = new Thread(() -> {
 			try {
 				long start = now();
 				longJob.join(timeout, null);
 				duration[0] = now() - start;
-			} catch (InterruptedException e1) {
-				Assert.fail("Unexpected interrupt occurred while joining job");
-			} catch (OperationCanceledException e2) {
-				Assert.fail("Join was unexpectedly canceled");
+			} catch (InterruptedException | OperationCanceledException e) {
+				exceptionInThread.set(e);
 			}
 			barrier.setStatus(TestBarrier2.STATUS_DONE);
 		});
@@ -945,23 +945,26 @@ public class JobTest extends AbstractJobTest {
 		// Finally cancel the job
 		longJob.cancel();
 		waitForCompletion(longJob);
+		if (exceptionInThread.get() != null) {
+			throw exceptionInThread.get();
+		}
 	}
 
-	public void testJoinWithProgressMonitor() {
+	@Test
+	public void testJoinWithProgressMonitor() throws Exception {
 		shortJob.schedule(100000);
 		// Create a progress monitor for the join call
 		final FussyProgressMonitor monitor = new FussyProgressMonitor();
 		// Create a thread that will join the test job
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
 		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
+		AtomicReference<Exception> exceptionInThread = new AtomicReference<>();
 		Thread t = new Thread(() -> {
 			status.set(0, TestBarrier2.STATUS_START);
 			try {
 				shortJob.join(0, monitor);
-			} catch (InterruptedException e1) {
-				Assert.fail("0.88");
-			} catch (OperationCanceledException e2) {
-				Assert.fail("0.99");
+			} catch (InterruptedException | OperationCanceledException e) {
+				exceptionInThread.set(e);
 			}
 			status.set(0, TestBarrier2.STATUS_DONE);
 		});
@@ -972,21 +975,27 @@ public class JobTest extends AbstractJobTest {
 		shortJob.wakeUp();
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
 		monitor.sanityCheck();
+		if (exceptionInThread.get() != null) {
+			throw exceptionInThread.get();
+		}
 	}
 
-	public void testJoinWithCancelingMonitor() {
+	@Test
+	public void testJoinWithCancelingMonitor() throws InterruptedException {
 		longJob.schedule();
+		waitForState(longJob, Job.RUNNING);
 		// Create a progress monitor for the join call
 		final FussyProgressMonitor monitor = new FussyProgressMonitor();
 		// Create a thread that will join the test job
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
 		status.set(0, TestBarrier2.STATUS_WAIT_FOR_START);
+		AtomicReference<InterruptedException> exceptionInThread = new AtomicReference<>();
 		Thread t = new Thread(() -> {
 			status.set(0, TestBarrier2.STATUS_START);
 			try {
 				longJob.join(0, monitor);
-			} catch (InterruptedException e1) {
-				Assert.fail("0.88");
+			} catch (InterruptedException e) {
+				exceptionInThread.set(e);
 			} catch (OperationCanceledException e2) {
 				// expected
 			}
@@ -994,19 +1003,22 @@ public class JobTest extends AbstractJobTest {
 		});
 		t.start();
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_START);
-		assertEquals("1.0", TestBarrier2.STATUS_START, status.get(0));
 
 		// Cancel the monitor that is attached to the join call
 		monitor.setCanceled(true);
 		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_DONE);
 		monitor.sanityCheck();
 		// Verify that the join call is still running
-		assertEquals("2.0", Job.RUNNING, longJob.getState());
+		assertEquals("job unexpectedly stopped running after join call", Job.RUNNING, longJob.getState());
 		// Finally cancel the job
 		longJob.cancel();
 		waitForCompletion(longJob);
+		if (exceptionInThread.get() != null) {
+			throw exceptionInThread.get();
+		}
 	}
 
+	@Test
 	public void testJoinInterruptNonUIThread() throws InterruptedException {
 		TestBarrier2 barrier = new TestBarrier2();
 		Job.getJobManager().setLockListener(new LockListener() {
@@ -1033,6 +1045,7 @@ public class JobTest extends AbstractJobTest {
 		assertEquals("Thread not interrupted", Status.OK_STATUS, job.getResult());
 	}
 
+	@Test
 	public void testJoinInterruptUIThread() throws InterruptedException {
 		final Job job = new TestJob("job", 3, org.eclipse.core.internal.jobs.JobManager.MAX_WAIT_INTERVAL);
 		Thread t = new Thread(() -> {
@@ -1063,27 +1076,26 @@ public class JobTest extends AbstractJobTest {
 	 * {@link Job#join()}.
 	 * See bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=195839.
 	 */
-	public void testJoinLockListener() {
+	@Test
+	public void testJoinLockListener() throws InterruptedException {
 		TestJob longRunningTestJob = new TestJob("testJoinLockListener", 100000, 10);
 		longRunningTestJob.schedule();
 		TestLockListener lockListener = new TestLockListener(() -> longRunningTestJob.terminate());
 		Job.getJobManager().setLockListener(lockListener);
-		try {
-			longRunningTestJob.join();
-		} catch (OperationCanceledException | InterruptedException e) {
-			fail("Exception occurred when joining job", e);
-		}
+		longRunningTestJob.join();
 		lockListener.assertHasBeenWaiting("JobManager has not been waiting for lock");
 		lockListener.assertNotWaiting("JobManager has not finished waiting for lock");
 	}
 
 	/**
-	 * Tests a job change listener that throws an exception.
-	 * This would previously cause join attempts on that job to
-	 * hang indefinitely because they would miss the notification
-	 * required to end the join.
+	 * Tests a job change listener that throws an exception. This would previously
+	 * cause join attempts on that job to hang indefinitely because they would miss
+	 * the notification required to end the join.
+	 *
+	 * @throws InterruptedException
 	 */
-	public void testJoinFailingListener() {
+	@Test
+	public void testJoinFailingListener() throws InterruptedException {
 		shortJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1091,13 +1103,14 @@ public class JobTest extends AbstractJobTest {
 			}
 		});
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
+		AtomicReference<InterruptedException> exceptionInThread = new AtomicReference<>();
 		//create a thread that will join the job
 		Thread t = new Thread(() -> {
 			status.set(0, TestBarrier2.STATUS_START);
 			try {
 				shortJob.join();
 			} catch (InterruptedException e) {
-				Assert.fail("0.99");
+				exceptionInThread.set(e);
 			}
 			status.set(0, TestBarrier2.STATUS_DONE);
 		});
@@ -1106,12 +1119,18 @@ public class JobTest extends AbstractJobTest {
 		t.start();
 		//wait until the join succeeds
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
+		if (exceptionInThread.get() != null) {
+			throw exceptionInThread.get();
+		}
 	}
 
 	/**
 	 * Tests that a job joining itself is an error.
+	 *
+	 * @throws InterruptedException
 	 */
-	public void testJoinSelf() {
+	@Test
+	public void testJoinSelf() throws InterruptedException {
 		final Exception[] failure = new Exception[1];
 		Job selfJoiner = new Job("testJoinSelf") {
 			@Override
@@ -1125,20 +1144,19 @@ public class JobTest extends AbstractJobTest {
 			}
 		};
 		selfJoiner.schedule();
-		try {
-			selfJoiner.join();
-		} catch (InterruptedException e) {
-			fail("Unexpected interrupt");
-		}
+		selfJoiner.join();
 		assertNotNull("1.0", failure[0]);
 	}
 
 	/**
-	 * This is a regression test for bug 60323. If a job change listener
-	 * removed itself from the listener list during the done() change event,
-	 * then anyone joining on that job would hang forever.
+	 * This is a regression test for bug 60323. If a job change listener removed
+	 * itself from the listener list during the done() change event, then anyone
+	 * joining on that job would hang forever.
+	 *
+	 * @throws InterruptedException
 	 */
-	public void testJoinRemoveListener() {
+	@Test
+	public void testJoinRemoveListener() throws InterruptedException {
 		final IJobChangeListener listener = new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
@@ -1147,13 +1165,14 @@ public class JobTest extends AbstractJobTest {
 		};
 		shortJob.addJobChangeListener(listener);
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
+		AtomicReference<InterruptedException> exceptionInThread = new AtomicReference<>();
 		//create a thread that will join the job
 		Thread t = new Thread(() -> {
 			status.set(0, TestBarrier2.STATUS_START);
 			try {
 				shortJob.join();
 			} catch (InterruptedException e) {
-				Assert.fail("0.99");
+				exceptionInThread.set(e);
 			}
 			status.set(0, TestBarrier2.STATUS_DONE);
 		});
@@ -1162,11 +1181,15 @@ public class JobTest extends AbstractJobTest {
 		t.start();
 		//wait until the join succeeds
 		TestBarrier2.waitForStatus(status, TestBarrier2.STATUS_DONE);
+		if (exceptionInThread.get() != null) {
+			throw exceptionInThread.get();
+		}
 	}
 
 	/*
 	 * Test that a canceled job is rescheduled
 	 */
+	@Test
 	public void testRescheduleCancel() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START });
 		Job job = new Job("Testing") {
@@ -1201,6 +1224,7 @@ public class JobTest extends AbstractJobTest {
 	 * Test that multiple reschedules of the same job while it is running
 	 * only remembers the last reschedule request
 	 */
+	@Test
 	public void testRescheduleComplex() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START });
 		final int[] runCount = new int[] {0};
@@ -1240,6 +1264,7 @@ public class JobTest extends AbstractJobTest {
 	/*
 	 * Reschedule a running job with a delay
 	 */
+	@Test
 	public void testRescheduleDelay() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START });
 		final int[] runCount = new int[] {0};
@@ -1282,6 +1307,7 @@ public class JobTest extends AbstractJobTest {
 	/*
 	 * Schedule a simple job that repeats several times from within the run method.
 	 */
+	@Test
 	public void testRescheduleRepeat() {
 		final int[] count = new int[] {0};
 		final int REPEATS = 10;
@@ -1314,6 +1340,7 @@ public class JobTest extends AbstractJobTest {
 	/*
 	 * Schedule a long running job several times without blocking current thread.
 	 */
+	@Test
 	public void testRescheduleRepeating() {
 		AtomicLong runCount = new AtomicLong();
 		AtomicLong scheduledCount = new AtomicLong();
@@ -1369,10 +1396,7 @@ public class JobTest extends AbstractJobTest {
 			Job[] found = Job.getJobManager().find(job);
 			assertEquals("Job should still run", 1, found.length);
 			assertSame("Job should still run", job, found[0]);
-			long currentRuns = runCount.get();
-			if (currentRuns != 1) {
-				fail("Expected to see exact one job execution, but saw: " + currentRuns);
-			}
+			assertThat("Expected to see exact one job execution", runCount.get(), is(1L));
 		} finally {
 			keepRunning.set(false);
 		}
@@ -1381,7 +1405,7 @@ public class JobTest extends AbstractJobTest {
 	/*
 	 * Schedule a simple job that repeats several times from within the run method.
 	 */
-
+	@Test
 	public void testRescheduleRepeatWithDelay() {
 		final int[] count = new int[] {0};
 		final int REPEATS = 10;
@@ -1414,6 +1438,7 @@ public class JobTest extends AbstractJobTest {
 	/*
 	 * Schedule a job to run, and then reschedule it
 	 */
+	@Test
 	public void testRescheduleSimple() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { TestBarrier2.STATUS_WAIT_FOR_START });
 		Job job = new Job("testRescheduleSimple") {
@@ -1458,6 +1483,7 @@ public class JobTest extends AbstractJobTest {
 	/*
 	 * Reschedule a waiting job.
 	 */
+	@Test
 	public void testRescheduleWaiting() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(
 				new int[] { TestBarrier2.STATUS_WAIT_FOR_START, TestBarrier2.STATUS_WAIT_FOR_START });
@@ -1521,6 +1547,7 @@ public class JobTest extends AbstractJobTest {
 	 * @see <a href=
 	 *      "https://github.com/eclipse-jdt/eclipse.jdt.debug/issues/122">eclipse.jdt.debug/issues/122</a>
 	 */
+	@Test
 	public void testRescheduleFromDone() throws InterruptedException {
 		AtomicInteger runningCount = new AtomicInteger();
 		final Job j = new Job("testCancelAboutToSchedule") {
@@ -1564,23 +1591,21 @@ public class JobTest extends AbstractJobTest {
 	/*
 	 * see bug #43458
 	 */
+	@Test
 	public void testSetPriority() {
 		int[] wrongPriority = {1000, -Job.DECORATE, 25, 0, 5, Job.INTERACTIVE - Job.BUILD};
 
 		for (int i = 0; i < wrongPriority.length; i++) {
 			//set priority to non-existent type
-			try {
-				shortJob.setPriority(wrongPriority[i]);
-				fail("1." + (i + 1));
-			} catch (RuntimeException e) {
-				//should fail
-			}
+			int currentIndex = i;
+			assertThrows(RuntimeException.class, () -> shortJob.setPriority(wrongPriority[currentIndex]));
 		}
 	}
 
 	/**
 	 * Tests the API methods Job.setProgressGroup
 	 */
+	@Test
 	public void testSetProgressGroup() {
 		final TestBarrier2 barrier = new TestBarrier2();
 		Job job = new Job("testSetProgressGroup") {
@@ -1595,12 +1620,7 @@ public class JobTest extends AbstractJobTest {
 			}
 		};
 		//null group
-		try {
-			job.setProgressGroup(null, 5);
-			fail("1.0");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> job.setProgressGroup(null, 5));
 		IProgressMonitor group = Job.getJobManager().createProgressGroup();
 		group.beginTask("Group task name", 10);
 		job.setProgressGroup(group, 5);
@@ -1620,6 +1640,7 @@ public class JobTest extends AbstractJobTest {
 		group.done();
 	}
 
+	@Test
 	public void testSetProgressGroup_propagatesGroupCancellation() throws InterruptedException {
 		Job checkMonitorJob = createJobReactingToCancelRequest();
 
@@ -1654,28 +1675,19 @@ public class JobTest extends AbstractJobTest {
 	/*
 	 * see bug #43459
 	 */
+	@Test
 	public void testSetRule() {
 		//setting a scheduling rule for a job after it was already scheduled should throw an exception
 		shortJob.setRule(new IdentityRule());
 		assertTrue("1.0", shortJob.getRule() instanceof IdentityRule);
 		shortJob.schedule(1000000);
-		try {
-			shortJob.setRule(new PathRule("/testSetRule"));
-			fail("1.1");
-		} catch (RuntimeException e) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> shortJob.setRule(new PathRule("/testSetRule")));
 
 		//wake up the sleeping job
 		shortJob.wakeUp();
 
 		//setting the rule while running should fail
-		try {
-			shortJob.setRule(new PathRule("/testSetRule/B"));
-			fail("2.0");
-		} catch (RuntimeException e1) {
-			//should fail
-		}
+		assertThrows(RuntimeException.class, () -> shortJob.setRule(new PathRule("/testSetRule/B")));
 
 		try {
 			//wait for the job to complete
@@ -1691,6 +1703,7 @@ public class JobTest extends AbstractJobTest {
 		assertNull("1.3", shortJob.getRule());
 	}
 
+	@Test
 	public void testSetThread() {
 		//setting the thread of a job that is not an asynchronous job should not affect the actual thread the job will run in
 		assertNull("0.0", longJob.getThread());

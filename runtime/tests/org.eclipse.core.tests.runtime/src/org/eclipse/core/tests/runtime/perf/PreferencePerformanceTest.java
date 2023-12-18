@@ -14,15 +14,16 @@
 package org.eclipse.core.tests.runtime.perf;
 
 import java.util.ArrayList;
+import java.util.UUID;
+import junit.framework.TestCase;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
 import org.eclipse.core.tests.internal.preferences.TestScope;
-import org.eclipse.core.tests.runtime.RuntimeTest;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-public class PreferencePerformanceTest extends RuntimeTest {
+public class PreferencePerformanceTest extends TestCase {
 	private static final int INNER_LOOP = 10000;
 	private static final int KEYS_PER_NODE = 1000;
 
@@ -116,12 +117,8 @@ public class PreferencePerformanceTest extends RuntimeTest {
 
 			//  clean-up
 			@Override
-			protected void tearDown() {
-				try {
-					prefs.removeNode();
-				} catch (BackingStoreException e) {
-					fail("0.99", e);
-				}
+			protected void tearDown() throws BackingStoreException {
+				prefs.removeNode();
 			}
 
 			// test retrieval
@@ -163,12 +160,8 @@ public class PreferencePerformanceTest extends RuntimeTest {
 
 			// clean-up
 			@Override
-			protected void tearDown() {
-				try {
-					prefs.removeNode();
-				} catch (BackingStoreException e) {
-					fail("0.99", e);
-				}
+			protected void tearDown() throws BackingStoreException {
+				prefs.removeNode();
 			}
 
 			// how long to get the values?
@@ -207,12 +200,8 @@ public class PreferencePerformanceTest extends RuntimeTest {
 
 			// clean-up
 			@Override
-			protected void tearDown() {
-				try {
-					prefs.removeNode();
-				} catch (BackingStoreException e) {
-					fail("0.99", e);
-				}
+			protected void tearDown() throws BackingStoreException {
+				prefs.removeNode();
 			}
 
 			// how long to get the values?
@@ -250,12 +239,8 @@ public class PreferencePerformanceTest extends RuntimeTest {
 
 			// clean-up
 			@Override
-			protected void tearDown() {
-				try {
-					prefs.removeNode();
-				} catch (BackingStoreException e) {
-					fail("0.99", e);
-				}
+			protected void tearDown() throws BackingStoreException {
+				prefs.removeNode();
 			}
 
 			// how long to get the values?
@@ -295,12 +280,8 @@ public class PreferencePerformanceTest extends RuntimeTest {
 
 			// clean-up
 			@Override
-			protected void tearDown() {
-				try {
-					prefs.removeNode();
-				} catch (BackingStoreException e) {
-					fail("0.99", e);
-				}
+			protected void tearDown() throws BackingStoreException {
+				prefs.removeNode();
 			}
 
 			// how long to set the values?
@@ -344,12 +325,8 @@ public class PreferencePerformanceTest extends RuntimeTest {
 
 			// clean-up at the end of each run
 			@Override
-			protected void tearDown() {
-				try {
-					prefs.removeNode();
-				} catch (BackingStoreException e) {
-					fail("0.99", e);
-				}
+			protected void tearDown() throws BackingStoreException {
+				prefs.removeNode();
 			}
 
 			// can only run this once because there is only so many keys you can remove
@@ -363,4 +340,9 @@ public class PreferencePerformanceTest extends RuntimeTest {
 			}
 		}.run(this, 50, 1);
 	}
+
+	private String getUniqueString() {
+		return UUID.randomUUID().toString();
+	}
+
 }
