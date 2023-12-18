@@ -21,6 +21,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.osgi.util.NLS;
+
 public enum SecurityFileSnapshot {
 	INSTANCE;
 	Path pkiFile = null;
@@ -47,6 +49,7 @@ public enum SecurityFileSnapshot {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		isSecurityFileRequired("");
 		if (Files.exists(pkiFile)) {
 			
 			isFound=true;
@@ -74,7 +77,7 @@ public enum SecurityFileSnapshot {
 		
 	}
 
-	@SuppressWarnings("unused")
+	//@SuppressWarnings("unused")
 	private static void isSecurityFileRequired(String securityFileLocation) {
 		Path dir = null;
 		StringBuilder sb = new StringBuilder();
@@ -87,16 +90,16 @@ public enum SecurityFileSnapshot {
 			dir = Paths.get(sb.toString());
 			Files.createDirectories(dir);
 
-			sb.append(".security");
+			sb.append(".security");//$NON-NLS-1$
 
 			Path path = Paths.get(sb.toString());
 
 			if (!(path.toFile().exists())) {
 				Files.deleteIfExists(path);
 				Files.createFile(path);
-				Charset charset = Charset.forName("UTF-8");
+				Charset charset = Charset.forName("UTF-8");//$NON-NLS-1$
 				ArrayList<String> a = fileContents();	
-				if ( FileSystems.getDefault().supportedFileAttributeViews().contains("posix") ) {
+				if ( FileSystems.getDefault().supportedFileAttributeViews().contains("posix") ) { //$NON-NLS-1$
 					PosixFileAttributeView posixAttributes = Files.getFileAttributeView(path, PosixFileAttributeView.class);
 					Set<PosixFilePermission> permissions = posixAttributes.readAttributes().permissions();
 					permissions.remove(PosixFilePermission.GROUP_READ);
@@ -125,20 +128,20 @@ public enum SecurityFileSnapshot {
 		ArrayList<String> a = new ArrayList<String>();
 		
 		try {
-			a.add("javax.net.ssl.trustStoreType="+ System.getProperty("javax.net.ssl.trustStoreType"));
-			a.add("javax.net.ssl.trustStorePassword="+ System.getProperty("javax.net.ssl.trustStorePassword"));
-			a.add("javax.net.ssl.trustStore="+ System.getProperty("javax.net.ssl.trustStore"));
-			a.add("");
+			a.add("javax.net.ssl.trustStoreType="+ System.getProperty("javax.net.ssl.trustStoreType"));//$NON-NLS-1$ //$NON-NLS-2$
+			a.add("javax.net.ssl.trustStorePassword="+ System.getProperty("javax.net.ssl.trustStorePassword"));//$NON-NLS-1$ //$NON-NLS-2$
+			a.add("javax.net.ssl.trustStore="+ System.getProperty("javax.net.ssl.trustStore"));//$NON-NLS-1$ //$NON-NLS-2$
+			a.add("");//$NON-NLS-1$
 			
 			
-			if (System.getProperty("javax.net.ssl.keyStoreType") != null ) {
-				a.add("javax.net.ssl.keyStoreType="+ System.getProperty("javax.net.ssl.keyStoreType"));
-				a.add("javax.net.ssl.keyStore="+ System.getProperty("javax.net.ssl.keyStore"));
-				if (System.getProperty("javax.net.ssl.keyStoreType").equalsIgnoreCase("PKCS12")) {
+			if (System.getProperty("javax.net.ssl.keyStoreType") != null ) {//$NON-NLS-1$
+				a.add("javax.net.ssl.keyStoreType="+ System.getProperty("javax.net.ssl.keyStoreType"));//$NON-NLS-1$ //$NON-NLS-2$
+				a.add("javax.net.ssl.keyStore="+ System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+				if (System.getProperty("javax.net.ssl.keyStoreType").equalsIgnoreCase("PKCS12")) { //$NON-NLS-1$ //$NON-NLS-2$
 					//a.add("javax.net.ssl.keyStorePassword="+ System.getProperty("javax.net.ssl.keyStorePassword"));
 				} else {
-					a.add("javax.net.ssl.keyStorePassword=");
-					a.add("javax.net.ssl.keyStoreProvider="+ System.getProperty("javax.net.ssl.keyStoreProvider"));
+					a.add("javax.net.ssl.keyStorePassword=");//$NON-NLS-1$
+					a.add("javax.net.ssl.keyStoreProvider="+ System.getProperty("javax.net.ssl.keyStoreProvider")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 			
