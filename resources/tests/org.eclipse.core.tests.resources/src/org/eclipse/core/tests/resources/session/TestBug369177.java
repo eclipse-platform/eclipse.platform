@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.net.URI;
@@ -35,7 +36,7 @@ public class TestBug369177 extends WorkspaceSessionTest {
 	public void test01_prepareWorkspace() throws CoreException, URISyntaxException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		IFile link = project.getFile("link_to_file");
 		link.createLink(new URI("bug369177:/dummy_path.txt"), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());

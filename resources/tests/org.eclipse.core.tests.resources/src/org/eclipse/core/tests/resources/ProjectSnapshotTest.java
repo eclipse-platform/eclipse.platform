@@ -17,7 +17,13 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -35,6 +41,9 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests API for save/load refresh snapshots introduced in 3.6M6 (bug 301563):
@@ -44,7 +53,10 @@ import org.eclipse.core.runtime.IPath;
  * <li>{@link IProject#SNAPSHOT_TREE}
  * </ul>
  */
-public class ProjectSnapshotTest extends ResourceTest {
+public class ProjectSnapshotTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/** location of refresh snapshot file */
 	private static final String REFRESH_SNAPSHOT_FILE_LOCATION = "resource-index.zip";
@@ -52,24 +64,23 @@ public class ProjectSnapshotTest extends ResourceTest {
 	protected IProject[] projects = new IProject[2];
 
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		projects[0] = getWorkspace().getRoot().getProject("p1");
 		projects[1] = getWorkspace().getRoot().getProject("p2");
-		ensureExistsInWorkspace(projects, true);
+		createInWorkspace(projects);
 	}
 
-	private void populateProject(IProject project) throws CoreException {
+	private void populateProject(IProject project) throws Exception {
 		// add files and folders to project
 		IFile file = project.getFile("file");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		IFolder folder = project.getFolder("folder");
 		IFolder subfolder = folder.getFolder("subfolder");
 		IFile subfile = folder.getFile("subfile");
-		ensureExistsInFileSystem(folder);
-		ensureExistsInFileSystem(subfolder);
-		ensureExistsInFileSystem(subfile);
+		createInFileSystem(folder);
+		createInFileSystem(subfolder);
+		createInFileSystem(subfile);
 	}
 
 	private URI getSnapshotLocation(IProject project) {
@@ -81,6 +92,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 	/*
 	 * Trying to save a null Snapshot throws CoreException.
 	 */
+	@Test
 	public void testSaveNullSnapshot() throws Throwable {
 		assertThrows(CoreException.class, () -> projects[0].saveSnapshot(IProject.SNAPSHOT_TREE, null, null));
 	}
@@ -91,6 +103,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 	 * with snapshot. All resources must be marked as "exists" in the
 	 * resource tree, although there is no resource actually on disk.
 	 */
+	@Test
 	public void testLoadNoRefresh() throws Throwable {
 		final IProject project = projects[0];
 		// add files and folders to project
@@ -124,6 +137,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 	 * with snapshot and perform a refresh. Resource delta must be created,
 	 * and none of the snapshot resources is found any more.
 	 */
+	@Test
 	public void testLoadWithRefresh() throws Throwable {
 		final IProject project = projects[0];
 		// add files and folders to project
@@ -176,6 +190,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 	 * project name. All resources must be marked as "exists" in the
 	 * resource tree for the new, renamed project.
 	 */
+	@Test
 	public void testLoadWithRename() throws Throwable {
 		IProject project = projects[0];
 		// add files and folders to project
@@ -212,6 +227,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 	 * All resources must be marked as "exists" in the resource tree
 	 * for the new, renamed project, even though they are not actually present.
 	 */
+	@Test
 	public void testLoadWithRename2() throws Throwable {
 		IProject project = projects[0];
 		// add files and folders to project
@@ -224,7 +240,7 @@ public class ProjectSnapshotTest extends ResourceTest {
 		// add two more files to probably provoke a tree delta chain
 		// In SaveManager.writeTree() line 1885, treesToSave.length must be 1
 		IFile file2 = project.getFile("file2");
-		ensureExistsInFileSystem(file2);
+		createInFileSystem(file2);
 		project.getFile("file3");
 		// save project refresh snapshot outside the project
 		URI snapshotLocation = getSnapshotLocation(projects[1]);
@@ -249,13 +265,14 @@ public class ProjectSnapshotTest extends ResourceTest {
 		assertTrue("1.4", subfile.exists());
 	}
 
+	@Test
 	public void testAutoLoadInvalidURI() throws Throwable {
 		// create project with invalid snapshot autoload location
 		IProject project = getWorkspace().getRoot().getProject("project");
 		IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
 		((ProjectDescription) description).setSnapshotLocationURI(URI.create("./relative/uri.zip"));
 		project.create(description, null);
-		ensureExistsInFileSystem(project.getFolder("foo"));
+		createInFileSystem(project.getFolder("foo"));
 		assertFalse("1.0", project.getFolder("foo").exists());
 		// expect to see warning logged, but project open successfully and refresh
 		project.open(null);
@@ -265,13 +282,14 @@ public class ProjectSnapshotTest extends ResourceTest {
 				URI.create("NON_EXISTING/foo/bar.zip"), null));
 	}
 
+	@Test
 	public void testAutoLoadMissingSnapshot() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("project");
 		IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
 		// create project with non-existing snapshot autoload location
-		((ProjectDescription) description).setSnapshotLocationURI(getTempStore().toURI());
+		((ProjectDescription) description).setSnapshotLocationURI(workspaceRule.getTempStore().toURI());
 		project.create(description, null);
-		ensureExistsInFileSystem(project.getFile("foo"));
+		createInFileSystem(project.getFile("foo"));
 		assertFalse("1.0", project.getFile("foo").exists());
 		project.open(null);
 		// expect warning logged but project open and refreshed
@@ -286,9 +304,10 @@ public class ProjectSnapshotTest extends ResourceTest {
 	 * All resources must be marked as "exists" in the resource tree for
 	 * the new, renamed project.
 	 */
+	@Test
 	public void testAutoLoadWithRename() throws Throwable {
 		// create project p0 outside the workspace
-		IFileStore tempStore = getTempStore();
+		IFileStore tempStore = workspaceRule.getTempStore();
 		tempStore.mkdir(EFS.NONE, null);
 		IProject project = getWorkspace().getRoot().getProject("project");
 		IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
@@ -332,9 +351,10 @@ public class ProjectSnapshotTest extends ResourceTest {
 		assertTrue("1.4", subfile.exists());
 	}
 
+	@Test
 	public void testResetAutoLoadSnapshot() throws Throwable {
 		IProject project = projects[0];
-		URI tempURI = getTempStore().toURI();
+		URI tempURI = workspaceRule.getTempStore().toURI();
 		IFile projectFile = project.getFile(".project");
 		long stamp = projectFile.getModificationStamp();
 

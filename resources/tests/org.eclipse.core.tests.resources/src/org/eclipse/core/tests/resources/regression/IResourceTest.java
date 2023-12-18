@@ -15,10 +15,22 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,64 +54,69 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
-public class IResourceTest extends ResourceTest {
+public class IResourceTest {
 
-	private final boolean DISABLED = true;
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * 1G9RBH5: ITPCORE:WIN98 - IFile.appendContents might lose data
 	 */
-	public void testAppendContents_1G9RBH5() throws CoreException {
+	@Test
+	public void testAppendContents_1G9RBH5() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(null);
 		project.open(null);
 
 		IFile target = project.getFile("file1");
-		target.create(getContents("abc"), false, null);
-		target.appendContents(getContents("def"), false, true, null);
+		target.create(createInputStream("abc"), false, null);
+		target.appendContents(createInputStream("def"), false, true, null);
 
 		InputStream content = target.getContents(false);
-		assertTrue("3.0", compareContent(content, getContents("abcdef")));
+		assertTrue("3.0", compareContent(content, createInputStream("abcdef")));
 	}
 
 	/**
 	 * Bug states that JDT cannot copy the .project file from the project root to
 	 * the build output folder.
 	 */
+	@Test
 	public void testBug25686() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder outputFolder = project.getFolder("bin");
 		IFile description = project.getFile(".project");
 		IFile destination = outputFolder.getFile(".project");
-		ensureExistsInWorkspace(new IResource[] {project, outputFolder}, true);
+		createInWorkspace(new IResource[] {project, outputFolder});
 
 		assertTrue("0.0", description.exists());
 		description.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("0.1", destination.exists());
 	}
 
+	@Test
 	public void testBug28790() throws CoreException {
-		// only activate this test on platforms that support it
-		if (!isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE)) {
-			return;
-		}
+		assumeTrue("test only makes sens on platforms that support archive attribute",
+				isAttributeSupported(EFS.ATTRIBUTE_ARCHIVE));
+
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("a.txt");
-		ensureExistsInWorkspace(file, getRandomString());
+		createInWorkspace(file, createRandomString());
 		// ensure archive bit is not set
 		ResourceAttributes attributes = file.getResourceAttributes();
 		attributes.setArchive(false);
 		file.setResourceAttributes(attributes);
 		assertTrue("1.0", !file.getResourceAttributes().isArchive());
 		// modify the file
-		file.setContents(getRandomContents(), IResource.KEEP_HISTORY, createTestMonitor());
+		file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 
 		//now the archive bit should be set
 		assertTrue("2.0", file.getResourceAttributes().isArchive());
@@ -109,6 +126,7 @@ public class IResourceTest extends ResourceTest {
 	 * Bug 31750 states that an OperationCanceledException is
 	 * not handled correctly if it occurs within a proxy visitor.
 	 */
+	@Test
 	public void testBug31750() {
 		IResourceProxyVisitor visitor = proxy -> {
 			throw new OperationCanceledException();
@@ -121,10 +139,11 @@ public class IResourceTest extends ResourceTest {
 	 * all in one operation should not appear in the resource delta for
 	 * clients that are not interested in phantoms.
 	 */
+	@Test
 	public void testBug35991() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		final IFile file = project.getFile("file1");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		//create phantom file by adding sync info
 		final QualifiedName name = new QualifiedName("test", "testBug35991");
 		getWorkspace().getSynchronizer().add(name);
@@ -184,24 +203,24 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * Calling isSynchronized on a non-local resource caused an internal error.
 	 */
+	@Test
 	public void testBug83777() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("testBug83777");
 		IFolder folder = project.getFolder("f");
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(folder, true);
+		createInWorkspace(project);
+		createInWorkspace(folder);
 		folder.setLocal(false, IResource.DEPTH_ZERO, createTestMonitor());
 		// non-local resource is never synchronized because it doesn't exist on disk
 		assertTrue("1.0", !project.isSynchronized(IResource.DEPTH_INFINITE));
 	}
 
+	@Test
 	public void testBug111821() throws CoreException {
-		//this test only makes sense on Windows
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("test only makes sens on Windows", OS.isWindows());
+
 		IProject project = getWorkspace().getRoot().getProject("testBug111821");
 		IFolder folder = project.getFolder(new Path(null, "c:"));
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		QualifiedName partner = new QualifiedName("HowdyThere", "Partner");
 		ISynchronizer sync = getWorkspace().getSynchronizer();
 		sync.add(partner);
@@ -211,12 +230,13 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * 1GA6QJP: ITPCORE:ALL - Copying a resource does not copy its lastmodified time
 	 */
+	@Test
 	public void testCopy_1GA6QJP() throws CoreException, InterruptedException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile source = project.getFile("file1");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		source.create(getContents("abc"), true, createTestMonitor());
+		source.create(createInputStream("abc"), true, createTestMonitor());
 
 		Thread.sleep(2000);
 
@@ -234,12 +254,9 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * 1FW87XF: ITPUI:WIN2000 - Can create 2 files with same name
 	 */
+	@Test
 	public void testCreate_1FW87XF() throws Throwable {
-		// FIXME: remove when fix this PR
-		String os = Platform.getOS();
-		if (!os.equals(Platform.OS_LINUX)) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
 
 		// test if the file system is case sensitive
 		boolean caseSensitive = new java.io.File("abc").compareTo(new java.io.File("ABC")) != 0;
@@ -248,13 +265,13 @@ public class IResourceTest extends ResourceTest {
 		IFile file = project.getFile("file");
 		project.create(null);
 		project.open(null);
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 
 		// force = true
 		assertTrue("2.0", file.exists());
 		IFile anotherFile = project.getFile("File");
 
-		ThrowingRunnable forcedFileCreation = () -> anotherFile.create(getRandomContents(), true, null);
+		ThrowingRunnable forcedFileCreation = () -> anotherFile.create(createRandomContentsStream(), true, null);
 		if (caseSensitive) {
 			forcedFileCreation.run();
 		} else {
@@ -265,7 +282,7 @@ public class IResourceTest extends ResourceTest {
 		anotherFile.delete(true, false, null);
 
 		// force = false
-		ThrowingRunnable fileCreation = () -> anotherFile.create(getRandomContents(), false, null);
+		ThrowingRunnable fileCreation = () -> anotherFile.create(createRandomContentsStream(), false, null);
 		if (caseSensitive) {
 			fileCreation.run();
 		} else {
@@ -284,6 +301,7 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * 1FWYTKT: ITPCORE:WINNT - Error creating folder with long name
 	 */
+	@Test
 	public void testCreate_1FWYTKT() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(null);
@@ -299,7 +317,7 @@ public class IResourceTest extends ResourceTest {
 		assertTrue("2.2", !folder.exists());
 
 		IFile file = project.getFile(sb.toString());
-		assertThrows(CoreException.class, () -> file.create(getRandomContents(), true, null));
+		assertThrows(CoreException.class, () -> file.create(createRandomContentsStream(), true, null));
 		assertTrue("3.1", !file.exists());
 
 		// clean up
@@ -316,15 +334,16 @@ public class IResourceTest extends ResourceTest {
 	 * Ensure that creating a file with force==true doesn't throw
 	 * a CoreException if the resource already exists on disk.
 	 */
-	public void testCreate_1GD7CSU() throws CoreException {
+	@Test
+	public void testCreate_1GD7CSU() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(null);
 		project.open(null);
 
 		IFile file = project.getFile("MyFile");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 	}
 
 	/*
@@ -332,19 +351,14 @@ public class IResourceTest extends ResourceTest {
 	 * when we try to delete a read-only resource. It will depend on the
 	 * OS and file system.
 	 */
+	@Test
+	@Ignore("This test cannot be done automatically because we don't know in that file system we are running. Will leave test here in case it needs to be run it in a special environment.")
 	public void testDelete_1GD3ZUZ() throws CoreException {
-		// This test cannot be done automatically because we don't know in that
-		// file system we are running. Will leave test here in case it needs
-		// to be run it in a special environment.
-		if (DISABLED) {
-			return;
-		}
-
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("MyFile");
 
 		// setup
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		createInWorkspace(new IResource[] {project, file});
 		ResourceAttributes attributes = file.getResourceAttributes();
 		attributes.setReadOnly(true);
 		file.setResourceAttributes(attributes);
@@ -358,10 +372,11 @@ public class IResourceTest extends ResourceTest {
 		attributes.setReadOnly(false);
 		file.setResourceAttributes(attributes);
 		assertTrue("4.0", !file.isReadOnly());
-		ensureDoesNotExistInWorkspace(new IResource[] {project, file});
+		removeFromWorkspace(new IResource[] {project, file});
 	}
 
-	public void testDelete_Bug8754() throws CoreException {
+	@Test
+	public void testDelete_Bug8754() throws Exception {
 		//In this test, we delete with force false on a file that does not exist in the file system,
 		//and ensure that the returned exception is of type OUT_OF_SYNC_LOCAL
 
@@ -369,7 +384,7 @@ public class IResourceTest extends ResourceTest {
 		IFile file = project.getFile("MyFile");
 
 		// setup
-		ensureExistsInWorkspace(new IResource[] {project, file}, true);
+		createInWorkspace(new IResource[] {project, file});
 		ensureOutOfSync(file);
 
 		// doit
@@ -382,15 +397,17 @@ public class IResourceTest extends ResourceTest {
 		}
 		assertEquals("1.2", IResourceStatus.OUT_OF_SYNC_LOCAL, status.getCode());
 		//cleanup
-		ensureDoesNotExistInWorkspace(new IResource[] {project, file});
+		removeFromWorkspace(new IResource[] {project, file});
 	}
 
+	@Test
 	public void testEquals_1FUOU25() {
 		IResource fileResource = getWorkspace().getRoot().getFile(IPath.fromOSString("a/b/c/d"));
 		IResource folderResource = getWorkspace().getRoot().getFolder(IPath.fromOSString("a/b/c/d"));
 		assertTrue("1FUOU25: ITPCORE:ALL - Bug in Resource.equals()", !fileResource.equals(folderResource));
 	}
 
+	@Test
 	public void testExists_1FUP8U6() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -404,6 +421,7 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * 1GA6QYV: ITPCORE:ALL - IContainer.findMember( Path, boolean ) breaking API
 	 */
+	@Test
 	public void testFindMember_1GA6QYV() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(createTestMonitor());
@@ -428,6 +446,7 @@ public class IResourceTest extends ResourceTest {
 	/**
 	 * 1GBZD4S: ITPCORE:API - IFile.getContents(true) fails if performed during delta notification
 	 */
+	@Test
 	public void testGetContents_1GBZD4S() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		project.create(null);
@@ -435,22 +454,24 @@ public class IResourceTest extends ResourceTest {
 
 		final IFile target = project.getFile("file1");
 		String contents = "some random contents";
-		target.create(getContents(contents), false, null);
+		target.create(createInputStream(contents), false, null);
 
 		try (InputStream is = target.getContents(false)) {
-			assertTrue("2.0", compareContent(getContents(contents), is));
+			assertTrue("2.0", compareContent(createInputStream(contents), is));
 		}
 
 		final String newContents = "some other contents";
 		Thread.sleep(5000);
-		createFileInFileSystem(target.getLocation(), getContents(newContents));
+		try (FileOutputStream output = new FileOutputStream(target.getLocation().toFile())) {
+			createInputStream(newContents).transferTo(output);
+		}
 
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
 		});
 		IResourceChangeListener listener = event -> {
 			listenerInMainThreadCallback.set(() -> {
 				try (InputStream is = target.getContents(true)) {
-					assertTrue("4.0", compareContent(getContents(newContents), is));
+					assertTrue("4.0", compareContent(createInputStream(newContents), is));
 				}
 			});
 		};
@@ -470,13 +491,14 @@ public class IResourceTest extends ResourceTest {
 		assertEquals("5.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		try (InputStream is = target.getContents(true)) {
-			assertTrue("6.0", compareContent(getContents(newContents), is));
+			assertTrue("6.0", compareContent(createInputStream(newContents), is));
 		}
 	}
 
 	/**
 	 * 1G60AFG: ITPCORE:WIN - problem calling RefreshLocal with DEPTH_ZERO on folder
 	 */
+	@Test
 	public void testRefreshLocal_1G60AFG() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -484,7 +506,7 @@ public class IResourceTest extends ResourceTest {
 		project.create(null);
 		project.open(null);
 		folder.create(true, true, null);
-		file.create(getRandomContents(), true, null);
+		file.create(createRandomContentsStream(), true, null);
 		assertTrue("2.0", file.exists());
 		folder.refreshLocal(IResource.DEPTH_ZERO, null);
 		assertTrue("2.2", file.exists());
@@ -494,6 +516,7 @@ public class IResourceTest extends ResourceTest {
 	 * 553269: Eclipse sends unexpected ENCODING change after closing/opening
 	 * project with explicit encoding settings changed in the same session
 	 */
+	@Test
 	public void testBug553269() throws Exception {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
@@ -525,4 +548,5 @@ public class IResourceTest extends ResourceTest {
 			workspace.removeResourceChangeListener(verifier);
 		}
 	}
+
 }

@@ -14,6 +14,8 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
@@ -26,10 +28,23 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
-public class BenchWorkspace extends ResourceTest {
+public class BenchWorkspace {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private static final int FILES_PER_FOLDER = 20;
 	private static final int NUM_FOLDERS = 400;//must be multiple of 10
 	IProject project;
@@ -37,7 +52,7 @@ public class BenchWorkspace extends ResourceTest {
 	/**
 	 * Creates the given number of problem markers on each resource in the workspace.
 	 */
-	private void addProblems(final int problemCount) {
+	private void addProblems(final int problemCount) throws CoreException {
 		IWorkspaceRunnable runnable = monitor -> getWorkspace().getRoot().accept(resource -> {
 			for (int i = 0; i < problemCount; i++) {
 				IMarker marker = resource.createMarker(IMarker.PROBLEM);
@@ -45,11 +60,7 @@ public class BenchWorkspace extends ResourceTest {
 			}
 			return true;
 		});
-		try {
-			getWorkspace().run(runnable, null);
-		} catch (CoreException e) {
-			fail("1.0", e);
-		}
+		getWorkspace().run(runnable, null);
 	}
 
 	public String[] defineHierarchy() {
@@ -78,7 +89,7 @@ public class BenchWorkspace extends ResourceTest {
 		return names;
 	}
 
-	int findMaxProblemSeverity(IWorkspaceRoot root) {
+	int findMaxProblemSeverity(IWorkspaceRoot root) throws CoreException {
 		class ResourceVisitor implements IResourceVisitor {
 			int maxSeverity = -1;
 
@@ -95,48 +106,34 @@ public class BenchWorkspace extends ResourceTest {
 			}
 		}
 		ResourceVisitor visitor = new ResourceVisitor();
-		try {
-			root.accept(visitor);
-		} catch (CoreException e) {
-			fail("4.99", e);
-			return -1;
-		}
+		root.accept(visitor);
 		return visitor.maxSeverity;
 	}
 
-	int findMaxProblemSeverity2(IWorkspaceRoot root) {
-		try {
-			return root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-		} catch (CoreException e) {
-			fail("4.99", e);
-			return -1;
-		}
+	int findMaxProblemSeverity2(IWorkspaceRoot root) throws CoreException {
+		return root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 	}
 
-	/**
-	 * @see ResourceTest#setUp()
-	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		IWorkspaceRunnable runnable = monitor -> {
 			//create resources
 			project = getWorkspace().getRoot().getProject("TestProject");
 			project.create(null);
 			project.open(null);
 			IResource[] resources = buildResources(project, defineHierarchy());
-			ensureExistsInWorkspace(resources, true);
+			createInWorkspace(resources);
 		};
 		getWorkspace().run(runnable, null);
 	}
 
-	public void testCountResources() {
+	@Test
+	public void testCountResources() throws Exception {
 		final Workspace workspace = (Workspace) getWorkspace();
 		final IWorkspaceRoot root = workspace.getRoot();
 		new PerformanceTestRunner() {
 			@Override
-			protected void setUp() throws CoreException {
+			protected void setUp() throws Exception {
 				super.setUp();
 				waitForBackgroundActivity();
 			}
@@ -145,7 +142,7 @@ public class BenchWorkspace extends ResourceTest {
 			protected void test() {
 				workspace.countResources(root.getFullPath(), IResource.DEPTH_INFINITE, true);
 			}
-		}.run(this, 10, 100);
+		}.run(getClass(), testName.getMethodName(), 10, 100);
 	}
 
 	/**
@@ -156,7 +153,8 @@ public class BenchWorkspace extends ResourceTest {
 		waitForBuild();
 	}
 
-	public void testCountResourcesDuringOperation() throws CoreException {
+	@Test
+	public void testCountResourcesDuringOperation() throws Exception {
 		final Workspace workspace = (Workspace) getWorkspace();
 		IWorkspaceRunnable runnable = monitor -> {
 			//touch all files
@@ -164,12 +162,18 @@ public class BenchWorkspace extends ResourceTest {
 				resource.touch(null);
 				return true;
 			});
-			new PerformanceTestRunner() {
-				@Override
-				protected void test() {
-					workspace.countResources(project.getFullPath(), IResource.DEPTH_INFINITE, true);
-				}
-			}.run(BenchWorkspace.this, 10, 10);
+			try {
+				new PerformanceTestRunner() {
+					@Override
+					protected void test() {
+						workspace.countResources(project.getFullPath(), IResource.DEPTH_INFINITE, true);
+					}
+				}.run(getClass(), testName.getMethodName(), 10, 10);
+			} catch (CoreException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new CoreException(new Status(IStatus.ERROR, getClass(), "exception during performance test", e));
+			}
 		};
 		workspace.run(runnable, createTestMonitor());
 	}
@@ -177,15 +181,16 @@ public class BenchWorkspace extends ResourceTest {
 	/**
 	 * Tests computing max marker severity
 	 */
-	public void testFindMaxProblemSeverity() {
+	@Test
+	public void testFindMaxProblemSeverity() throws Exception {
 		addProblems(10);
 		final Workspace workspace = (Workspace) getWorkspace();
 		final IWorkspaceRoot root = workspace.getRoot();
 		new PerformanceTestRunner() {
 			@Override
-			protected void test() {
+			protected void test() throws CoreException {
 				findMaxProblemSeverity2(root);
 			}
-		}.run(this, 10, 100);
+		}.run(getClass(), testName.getMethodName(), 10, 100);
 	}
 }

@@ -14,14 +14,30 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.Map;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.IMarkerSetElement;
+import org.eclipse.core.internal.resources.MarkerAttributeMap;
+import org.eclipse.core.internal.resources.MarkerInfo;
+import org.eclipse.core.internal.resources.MarkerSet;
 import org.eclipse.core.resources.IMarker;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class MarkerSetTest extends ResourceTest {
+public class MarkerSetTest {
 
-	public void assertEquals(String message, IMarkerSetElement[] array1, IMarkerSetElement[] array2) {
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private void assertMarkerElementsEqual(String message, IMarkerSetElement[] array1, IMarkerSetElement[] array2) {
 		assertNotNull(message, array1);
 		assertNotNull(message, array2);
 		assertEquals(message, array1.length, array2.length);
@@ -44,8 +60,8 @@ public class MarkerSetTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testAdd() {
-
 		// create the objects to insert into the set
 		MarkerSet set = new MarkerSet();
 		int max = 100;
@@ -53,7 +69,7 @@ public class MarkerSetTest extends ResourceTest {
 		MarkerInfo[] infos = new MarkerInfo[max];
 		for (int i = 0; i < max; i++) {
 			info = new MarkerInfo(IMarker.PROBLEM, i);
-			info.setAttribute(IMarker.MESSAGE, getRandomString(), true);
+			info.setAttribute(IMarker.MESSAGE, createRandomString(), true);
 			infos[i] = info;
 		}
 
@@ -74,8 +90,8 @@ public class MarkerSetTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testElements() {
-
 		// populate the set
 		MarkerSet set = new MarkerSet();
 		int max = 100;
@@ -83,18 +99,18 @@ public class MarkerSetTest extends ResourceTest {
 		MarkerInfo[] infos = new MarkerInfo[max];
 		for (int i = 0; i < max; i++) {
 			info = new MarkerInfo(IMarker.PROBLEM, i);
-			info.setAttribute(IMarker.MESSAGE, getRandomString(), true);
+			info.setAttribute(IMarker.MESSAGE, createRandomString(), true);
 			infos[i] = info;
 		}
 		set.addAll(infos);
 		assertEquals("1.0", max, set.size());
 
 		// remove each element
-		assertEquals("2.0", set.elements(), infos);
+		assertMarkerElementsEqual("2.0", set.elements(), infos);
 	}
 
+	@Test
 	public void testRemove() {
-
 		// populate the set
 		MarkerSet set = new MarkerSet();
 		int max = 100;
@@ -102,7 +118,7 @@ public class MarkerSetTest extends ResourceTest {
 		MarkerInfo[] infos = new MarkerInfo[max];
 		for (int i = 0; i < max; i++) {
 			info = new MarkerInfo(IMarker.PROBLEM, i);
-			info.setAttribute(IMarker.MESSAGE, getRandomString(), true);
+			info.setAttribute(IMarker.MESSAGE, createRandomString(), true);
 			infos[i] = info;
 		}
 		set.addAll(infos);
@@ -124,6 +140,7 @@ public class MarkerSetTest extends ResourceTest {
 		assertEquals("3.0", 0, set.size());
 	}
 
+	@Test
 	public void testMarkerAttributeMap() {
 		MarkerAttributeMap map = new MarkerAttributeMap();
 		String notInternalString = String.valueOf("notIntern".toCharArray());
@@ -151,4 +168,5 @@ public class MarkerSetTest extends ResourceTest {
 		map2.put(null, 1); // allowed for clients using IMarker.getAttributes()
 		map2.put("0", null);// allowed for clients
 	}
+
 }

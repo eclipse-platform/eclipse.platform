@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.session;
 
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,7 +32,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.harness.CoreTest;
 
 /**
  * This class is responsible for launching JUnit tests on a separate Eclipse session and collect
@@ -203,7 +205,7 @@ public class SessionTestRunner {
 					// no need to throw exception
 					return;
 				}
-				CoreTest.log(CoreTest.PI_HARNESS, e);
+				log(new Status(IStatus.WARNING, PI_HARNESS, IStatus.ERROR, "Error", e));
 			} finally {
 				// remember we are already finished
 				markAsFinished();
@@ -227,7 +229,7 @@ public class SessionTestRunner {
 				try {
 					serverSocket.close();
 				} catch (IOException e) {
-					CoreTest.log(CoreTest.PI_HARNESS, e);
+					log(new Status(IStatus.ERROR, PI_HARNESS, IStatus.ERROR, "Error", e));
 				}
 				notifyAll();
 			}
@@ -292,7 +294,7 @@ public class SessionTestRunner {
 		collector.shutdown();
 		// ensure the session ran without any errors
 		if (!status.isOK()) {
-			CoreTest.log(CoreTest.PI_HARNESS, status);
+			log(status);
 			if (status.getSeverity() == IStatus.ERROR) {
 				result.addError(test, new CoreException(status));
 				return;

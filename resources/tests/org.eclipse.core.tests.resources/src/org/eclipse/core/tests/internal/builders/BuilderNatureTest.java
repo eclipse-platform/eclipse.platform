@@ -15,11 +15,14 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -30,17 +33,19 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests relationship between natures and builders.  Builders that are owned
  * by a nature can only be run if their owning nature is defined on the project
  * being built.
  */
-public class BuilderNatureTest extends AbstractBuilderTest {
+public class BuilderNatureTest {
 
-	public BuilderNatureTest(String testName) {
-		super(testName);
-	}
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	protected InputStream projectFileWithoutSnow() {
 		String contents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<projectDescription>\n" + "	<name>P1</name>\n" + "	<comment></comment>\n" + "	<projects>\n" + "	</projects>\n" + "	<buildSpec>\n" + "		<buildCommand>\n" + "			<name>org.eclipse.core.tests.resources.snowbuilder</name>\n" + "			<arguments>\n" + "				<dictionary>\n" + "					<key>BuildID</key>\n" + "					<value>SnowBuild</value>\n" + "				</dictionary>\n" + "			</arguments>\n" + "		</buildCommand>\n" + "	</buildSpec>\n" + "	<natures>\n" + "		<nature>org.eclipse.core.tests.resources.waterNature</nature>\n" + "	</natures>\n" + "</projectDescription>";
@@ -54,11 +59,12 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		return new ByteArrayInputStream(contents.getBytes());
 	}
 
+	@Test
 	public void testBasic() throws CoreException {
 		//add the water and snow natures to the project, and ensure
 		//the snow builder gets run
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.reset();
 		setAutoBuilding(true);
@@ -76,9 +82,10 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 	 * Get the project in a state where the snow nature is disabled,
 	 * then ensure the snow builder is not run but remains on the build spec
 	 */
+	@Test
 	public void testDisabledNature() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
@@ -110,9 +117,10 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 	 * Get the project in a state where the snow nature is missing,
 	 * then ensure the snow builder is removed from the build spec.
 	 */
+	@Test
 	public void testMissingNature() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
@@ -174,4 +182,5 @@ public class BuilderNatureTest extends AbstractBuilderTest {
 		builder.assertLifecycleEvents();
 		assertTrue("5.1", builder.wasDeltaNull());
 	}
+
 }

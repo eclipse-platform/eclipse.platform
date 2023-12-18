@@ -18,10 +18,20 @@ package org.eclipse.core.tests.resources;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileWriter;
@@ -70,11 +80,21 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class CharsetTest extends ResourceTest {
+public class CharsetTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final class JobChangeAdapterExtension extends JobChangeAdapter {
 		private IStatus result;
@@ -175,17 +195,14 @@ public class CharsetTest extends ResourceTest {
 
 	private String savedWorkspaceCharset;
 
-	/**
-	 * See bug 67606.
-	 *
-	 * TODO enable when bug is fixed
-	 */
-	public void _testBug67606() throws CoreException {
+	@Test
+	@Ignore("disabled due to bug 67606")
+	public void testBug67606() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		final IProject project = workspace.getRoot().getProject("MyProject");
 		try {
 			final IFile file = project.getFile("file.txt");
-			ensureExistsInWorkspace(file, true);
+			createInWorkspace(file);
 			project.setDefaultCharset("FOO", createTestMonitor());
 			workspace.run((IWorkspaceRunnable) monitor -> {
 				assertEquals("0.9", "FOO", file.getCharset());
@@ -197,7 +214,7 @@ public class CharsetTest extends ResourceTest {
 				assertEquals("2.0", "BAR", file.getCharset());
 			}, null);
 		} finally {
-			ensureDoesNotExistInWorkspace(project);
+			removeFromWorkspace(project);
 		}
 	}
 
@@ -207,7 +224,7 @@ public class CharsetTest extends ResourceTest {
 		final IProject project = workspace.getRoot().getProject("MyProject");
 		try {
 			final IFile file = project.getFile("file.txt");
-			ensureExistsInWorkspace(file, true);
+			createInWorkspace(file);
 			project.setDefaultCharset("FOO", createTestMonitor());
 			assertEquals("Setting up Projects default charset was successful", "FOO", file.getCharset());
 			file.setCharset("BAR", createTestMonitor());
@@ -217,26 +234,27 @@ public class CharsetTest extends ResourceTest {
 			assertExistsInWorkspace(file2);
 			assertEquals("The file's charset was correctly copied while coying the file", "BAR", file2.getCharset());
 		} finally {
-			ensureDoesNotExistInWorkspace(project);
+			removeFromWorkspace(project);
 		}
 	}
 
 	@Test
 	@Ignore("https://github.com/eclipse-platform/eclipse.platform/issues/634")
-	public void _testCopyFileCopiesCharset() throws CoreException {
+	public void testCopyFileCopiesCharset() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		final IProject project = workspace.getRoot().getProject("MyProject");
 		try {
-			ensureExistsInWorkspace(project, false);
+			project.create(createTestMonitor());
+			project.open(createTestMonitor());
 			final IFile file = project.getFile("file.txt");
-			ensureExistsInWorkspace(file, true);
+			createInWorkspace(file);
 			file.setCharset("FOO", createTestMonitor());
 			assertEquals("File charset correctly set", file.getCharset(true), "FOO");
 			file.copy(project.getFullPath().append("file2.txt"), IResource.NONE, createTestMonitor());
 			final IFile copiedFile = project.getFile("file2.txt");
 			assertEquals("File with explicitly set charset keeps charset", copiedFile.getCharset(true), "FOO");
 		} finally {
-			ensureDoesNotExistInWorkspace(project);
+			removeFromWorkspace(project);
 		}
 	}
 
@@ -272,7 +290,7 @@ public class CharsetTest extends ResourceTest {
 			return true;
 		};
 		root.accept(visitor);
-		waitForEncodingRelatedJobs(getName());
+		waitForEncodingRelatedJobs(testName.getMethodName());
 	}
 
 	private IFile getResourcesPreferenceFile(IProject project, boolean forDerivedResources) {
@@ -320,30 +338,29 @@ public class CharsetTest extends ResourceTest {
 		return InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		// save the workspace charset so it can be restored after the test
 		savedWorkspaceCharset = ResourcesPlugin.getPlugin().getPluginPreferences().getString(ResourcesPlugin.PREF_ENCODING);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// restore the workspace charset
 		ResourcesPlugin.getPlugin().getPluginPreferences().setValue(ResourcesPlugin.PREF_ENCODING, savedWorkspaceCharset);
 		// Reset the PREF_LIGHTWEIGHT_AUTO_REFRESH preference to its default value.
 		getResourcesPreferences().remove(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH);
-		waitForEncodingRelatedJobs(getName());
-		super.tearDown();
+		waitForEncodingRelatedJobs(testName.getMethodName());
 	}
 
+	@Test
 	public void testBug59899() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
 		try {
 			IFile file = project.getFile("file.txt");
 			IFolder folder = project.getFolder("folder");
-			ensureExistsInWorkspace(new IResource[] {file, folder}, true);
+			createInWorkspace(new IResource[] {file, folder});
 			file.setCharset("FOO", createTestMonitor());
 			folder.setDefaultCharset("BAR", createTestMonitor());
 			project.setDefaultCharset("PROJECT_CHARSET", createTestMonitor());
@@ -353,15 +370,16 @@ public class CharsetTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testBug62732() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType anotherXML = contentTypeManager.getContentType("org.eclipse.core.tests.resources.anotherXML");
 		assertNotNull("0.5", anotherXML);
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		IFile file = project.getFile("file.xml");
-		ensureExistsInWorkspace(file, new ByteArrayInputStream(SAMPLE_SPECIFIC_XML.getBytes(StandardCharsets.UTF_8)));
+		createInWorkspace(file, SAMPLE_SPECIFIC_XML);
 		IContentDescription description = file.getContentDescription();
 		assertNotNull("1.0", description);
 		assertEquals("1.1", anotherXML, description.getContentType());
@@ -370,22 +388,24 @@ public class CharsetTest extends ResourceTest {
 		assertEquals("2.1", anotherXML, description.getContentType());
 	}
 
+	@Test
 	public void testBug64503() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType text = contentTypeManager.getContentType("org.eclipse.core.runtime.text");
 		IFile file = project.getFile("file.txt");
-		ensureExistsInWorkspace(file, true);
+		createInWorkspace(file);
 		IContentDescription description = file.getContentDescription();
 		assertNotNull("1.0", description);
 		assertEquals("1.1", text, description.getContentType());
-		ensureDoesNotExistInWorkspace(file);
+		removeFromWorkspace(file);
 		CoreException e = assertThrows(CoreException.class, file::getContentDescription);
 		// Ok, the resource does not exist.
 		assertEquals("1.3", IResourceStatus.RESOURCE_NOT_FOUND, e.getStatus().getCode());
 	}
 
+	@Test
 	public void testBug94279() throws CoreException {
 		final IWorkspaceRoot root = getWorkspace().getRoot();
 		String originalUserCharset = root.getDefaultCharset(false);
@@ -402,19 +422,20 @@ public class CharsetTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testBug333056() throws Exception {
 		IProject project = null;
 		try {
 			IWorkspace workspace = getWorkspace();
 			project = workspace.getRoot().getProject("MyProject");
-			ensureExistsInWorkspace(project, true);
+			createInWorkspace(project);
 			project.setDefaultCharset("BAR", createTestMonitor());
 
 			IFolder folder = project.getFolder(createUniqueString());
 			IFile file = folder.getFile(createUniqueString());
 			assertEquals("1.0", "BAR", file.getCharset(true));
 
-			ensureExistsInWorkspace(folder, true);
+			createInWorkspace(folder);
 			assertEquals("2.0", "BAR", file.getCharset(true));
 
 			folder.setDerived(true, createTestMonitor());
@@ -432,6 +453,7 @@ public class CharsetTest extends ResourceTest {
 	 * #getContentDescription() checks file sync state(), always returning the
 	 * correct content description, whereas getCharset() uses the cached charset if available.
 	 */
+	@Test
 	public void testBug186984() throws Exception {
 		getResourcesPreferences().putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false);
 		IWorkspace workspace = getWorkspace();
@@ -446,11 +468,11 @@ public class CharsetTest extends ResourceTest {
 		file.getCharset(true);
 
 		// test that we can get the charset, when the file is out-of-sync
-		ensureExistsInWorkspace(file, true);
+		createInWorkspace(file);
 		assertTrue(file.getLocation().toFile().delete());
 		file.getCharset(true);
 
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		ensureOutOfSync(file);
 		//getCharset uses a cached value, so it will still pass
 		file.getCharset(true);
@@ -511,6 +533,7 @@ public class CharsetTest extends ResourceTest {
 		assertTrue("6.9", file.getCharset().equals("ascii"));
 	}
 
+	@Test
 	public void testBug207510() throws CoreException, InterruptedException, BackingStoreException {
 		IWorkspace workspace = getWorkspace();
 		CharsetVerifier verifier = new CharsetVerifierWithExtraInfo(CharsetVerifier.IGNORE_BACKGROUND_THREAD);
@@ -523,7 +546,7 @@ public class CharsetTest extends ResourceTest {
 			IFolder a1 = project1.getFolder("a1");
 			IFolder b1 = project1.getFolder("b1");
 			IFile a = a1.getFile("a.txt");
-			ensureExistsInWorkspace(new IResource[] {project1, a1, b1, a}, true);
+			createInWorkspace(new IResource[] {project1, a1, b1, a});
 			verifier.reset();
 			verifier.addExpectedChange(b1, IResourceDelta.CHANGED, IResourceDelta.DERIVED_CHANGED);
 			b1.setDerived(true, createTestMonitor());
@@ -758,21 +781,23 @@ public class CharsetTest extends ResourceTest {
 	 * deleted and recreated, with the same content id but a different content type.
 	 * This tricks the content type cache into returning an invalid result.
 	 */
+	@Test
 	public void testBug261994() throws CoreException {
 		//recreate a file with different contents but the same content id
 		IWorkspace workspace = getWorkspace();
 		IProject project1 = workspace.getRoot().getProject("Project1");
 		IFile file = project1.getFile("file1.xml");
-		ensureExistsInWorkspace(file, new ByteArrayInputStream(SAMPLE_XML_ISO_8859_1_ENCODING.getBytes(StandardCharsets.ISO_8859_1)));
+		createInWorkspace(file, SAMPLE_XML_ISO_8859_1_ENCODING);
 		ContentDescriptionManagerTest.waitForCacheFlush();
 		assertEquals("1.0", "ISO-8859-1", file.getCharset());
 
 		//delete and recreate the file with different contents
-		ensureDoesNotExistInWorkspace(file);
-		ensureExistsInWorkspace(file, new ByteArrayInputStream(SAMPLE_XML_DEFAULT_ENCODING.getBytes(StandardCharsets.UTF_8)));
+		removeFromWorkspace(file);
+		createInWorkspace(file, SAMPLE_XML_DEFAULT_ENCODING);
 		assertEquals("2.0", "UTF-8", file.getCharset());
 	}
 
+	@Test
 	public void testChangesDifferentProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project1 = workspace.getRoot().getProject("Project1");
@@ -781,7 +806,7 @@ public class CharsetTest extends ResourceTest {
 			IFolder folder = project1.getFolder("folder1");
 			IFile file1 = project1.getFile("file1.txt");
 			IFile file2 = folder.getFile("file2.txt");
-			ensureExistsInWorkspace(new IResource[] {file1, file2, project2}, true);
+			createInWorkspace(new IResource[] {file1, file2, project2});
 			project1.setDefaultCharset("FOO", createTestMonitor());
 			project2.setDefaultCharset("ZOO", createTestMonitor());
 			folder.setDefaultCharset("BAR", createTestMonitor());
@@ -803,6 +828,7 @@ public class CharsetTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testChangesSameProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
@@ -810,7 +836,7 @@ public class CharsetTest extends ResourceTest {
 			IFolder folder = project.getFolder("folder1");
 			IFile file1 = project.getFile("file1.txt");
 			IFile file2 = folder.getFile("file2.txt");
-			ensureExistsInWorkspace(new IResource[] {file1, file2}, true);
+			createInWorkspace(new IResource[] {file1, file2});
 			project.setDefaultCharset("FOO", createTestMonitor());
 			file1.setCharset("FRED", createTestMonitor());
 			folder.setDefaultCharset("BAR", createTestMonitor());
@@ -829,13 +855,14 @@ public class CharsetTest extends ResourceTest {
 			// delete a file and recreate it and ensure the encoding is not
 			// remembered
 			file1.delete(false, false, null);
-			ensureExistsInWorkspace(new IResource[] {file1}, true);
+			createInWorkspace(new IResource[] {file1});
 			assertEquals("3.0", project.getDefaultCharset(), file1.getCharset());
 		} finally {
 			clearAllEncodings(project);
 		}
 	}
 
+	@Test
 	public void testClosingAndReopeningProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
@@ -844,7 +871,7 @@ public class CharsetTest extends ResourceTest {
 			IFolder folder = project.getFolder("folder");
 			IFile file1 = project.getFile("file1.txt");
 			IFile file2 = folder.getFile("file2.txt");
-			ensureExistsInWorkspace(new IResource[] {file1, file2}, true);
+			createInWorkspace(new IResource[] {file1, file2});
 			project.setDefaultCharset("FOO", createTestMonitor());
 			file1.setCharset("FRED", createTestMonitor());
 			folder.setDefaultCharset("BAR", createTestMonitor());
@@ -865,16 +892,17 @@ public class CharsetTest extends ResourceTest {
 	/**
 	 * Tests Content Manager-based charset setting.
 	 */
+	@Test
 	public void testContentBasedCharset() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
 		try {
-			ensureExistsInWorkspace(project, true);
+			createInWorkspace(project);
 			project.setDefaultCharset("FOO", createTestMonitor());
 			IFile file = project.getFile("file.xml");
 			assertEquals("0.9", "FOO", project.getDefaultCharset());
 			// content-based encoding is BAR
-			ensureExistsInWorkspace(file, new ByteArrayInputStream(SAMPLE_XML_US_ASCII_ENCODING.getBytes(StandardCharsets.UTF_8)));
+			createInWorkspace(file, SAMPLE_XML_US_ASCII_ENCODING);
 			assertEquals("1.0", "US-ASCII", file.getCharset());
 			// content-based encoding is FRED
 			file.setContents(new ByteArrayInputStream(SAMPLE_XML_ISO_8859_1_ENCODING.getBytes(StandardCharsets.ISO_8859_1)), false, false, null);
@@ -900,6 +928,7 @@ public class CharsetTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testDefaults() throws CoreException {
 		IProject project = null;
 		String originalCharset = ResourcesPlugin.getPlugin().getPluginPreferences().getString(ResourcesPlugin.PREF_ENCODING);
@@ -912,7 +941,7 @@ public class CharsetTest extends ResourceTest {
 			IFile file2 = folder1.getFile("file2.txt");
 			IFile file3 = folder2.getFile("file3.txt");
 
-			ensureExistsInWorkspace(new IResource[] { project }, true);
+			createInWorkspace(new IResource[] { project });
 			assertEquals(ResourcesPlugin.getEncoding(), project.getDefaultCharset(false));
 
 			IMarker[] markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
@@ -921,12 +950,12 @@ public class CharsetTest extends ResourceTest {
 			project.setDefaultCharset(null, createTestMonitor());
 			assertEquals(null, project.getDefaultCharset(false));
 
-			waitForEncodingRelatedJobs(getName());
+			waitForEncodingRelatedJobs(testName.getMethodName());
 
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
 			assertEquals("Missing encoding marker should be set", 1, markers.length);
 
-			ensureExistsInWorkspace(new IResource[] {file1, file2, file3}, true);
+			createInWorkspace(new IResource[] {file1, file2, file3});
 			// project and children should be using the workspace's default now
 			assertCharsetIs("1.0", ResourcesPlugin.getEncoding(), new IResource[] {workspace.getRoot(), project, file1, folder1, file2, folder2, file3}, true);
 			assertCharsetIs("1.1", null, new IResource[] {project, file1, folder1, file2, folder2, file3}, false);
@@ -940,8 +969,8 @@ public class CharsetTest extends ResourceTest {
 			assertCharsetIs("2.1", null, new IResource[] {project, file1, folder1, file2, folder2, file3}, false);
 
 			// sets project default charset
-			project.setDefaultCharset("BAR", getMonitor());
-			waitForEncodingRelatedJobs(getName());
+			project.setDefaultCharset("BAR", createTestMonitor());
+			waitForEncodingRelatedJobs(testName.getMethodName());
 
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
 			assertEquals("No missing encoding marker should be set", 0, markers.length);
@@ -986,6 +1015,7 @@ public class CharsetTest extends ResourceTest {
 	}
 
 	// check we react to content type changes
+	@Test
 	public void testDeltaOnContentTypeChanges() throws CoreException {
 		final String USER_SETTING = "USER_CHARSET";
 		final String PROVIDER_SETTING = "PROVIDER_CHARSET";
@@ -1004,7 +1034,7 @@ public class CharsetTest extends ResourceTest {
 			IFile file2 = folder1.getFile("file2.resources-mc");
 			IFile file3 = project.getFile("file3.resources-mc");
 			IFile file4 = project.getFile("file4.resources-mc");
-			ensureExistsInWorkspace(new IResource[] {file1, file2, file3, file4}, true);
+			createInWorkspace(new IResource[] {file1, file2, file3, file4});
 			project.setDefaultCharset("FOO", createTestMonitor());
 			// even files with a user-set charset will appear in the delta
 			file4.setCharset("BAR", createTestMonitor());
@@ -1040,9 +1070,9 @@ public class CharsetTest extends ResourceTest {
 	}
 
 	// check preference change events are reflected in the charset settings
-	// temporarily disabled
+	// temporarily disabled+
+	@Test
 	public void testDeltaOnPreferenceChanges() throws IOException, CoreException {
-
 		CharsetVerifier backgroundVerifier = new CharsetVerifier(CharsetVerifier.IGNORE_CREATION_THREAD);
 		getWorkspace().addResourceChangeListener(backgroundVerifier, IResourceChangeEvent.POST_CHANGE);
 		IProject project = getWorkspace().getRoot().getProject("project1");
@@ -1050,7 +1080,7 @@ public class CharsetTest extends ResourceTest {
 			IFolder folder1 = project.getFolder("folder1");
 			IFile file1 = folder1.getFile("file1.txt");
 			IFile file2 = project.getFile("file2.txt");
-			ensureExistsInWorkspace(new IResource[] {file1, file2}, true);
+			createInWorkspace(new IResource[] {file1, file2});
 
 			IFile resourcesPrefs = getResourcesPreferenceFile(project, false);
 			assertTrue("0.9", resourcesPrefs.exists());
@@ -1083,7 +1113,7 @@ public class CharsetTest extends ResourceTest {
 			// delete the preferences file
 			resourcesPrefs.delete(true, createTestMonitor());
 			waitForCharsetManagerJob();
-			waitForEncodingRelatedJobs(getName());
+			waitForEncodingRelatedJobs(testName.getMethodName());
 
 			assertTrue("3.1", backgroundVerifier.waitForEvent(10000));
 			assertTrue("3.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
@@ -1100,6 +1130,7 @@ public class CharsetTest extends ResourceTest {
 	 * Test the contents of the resource deltas which are generated
 	 * when we make encoding changes to containers (folders, projects, root).
 	 */
+	@Test
 	public void testDeltasContainer() throws CoreException {
 		MultipleDeltasCharsetVerifier verifier = new MultipleDeltasCharsetVerifier(CharsetVerifier.IGNORE_BACKGROUND_THREAD);
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
@@ -1108,7 +1139,7 @@ public class CharsetTest extends ResourceTest {
 			IFile prefs = getResourcesPreferenceFile(project, false);
 			// leaf folder
 			IFolder folder1 = project.getFolder("folder1");
-			ensureExistsInWorkspace(new IResource[] {project, folder1}, true);
+			createInWorkspace(new IResource[] {project, folder1});
 			verifier.reset();
 			verifier.addExpectedChange(folder1, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
 			verifier.addExpectedChange(new IResource[] { prefs.getParent() }, IResourceDelta.CHANGED, 0);
@@ -1120,7 +1151,7 @@ public class CharsetTest extends ResourceTest {
 			IFolder folder2 = folder1.getFolder("folder2");
 			IFile file1 = folder1.getFile("file1.txt");
 			IFile file2 = folder2.getFile("file2.txt");
-			ensureExistsInWorkspace(new IResource[] {folder2, file1, file2}, true);
+			createInWorkspace(new IResource[] {folder2, file1, file2});
 			verifier.reset();
 			verifier.addExpectedChange(new IResource[] {folder1, folder2, file1, file2}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
 			verifier.addExpectedChange(prefs.getParent(), IResourceDelta.CHANGED, 0);
@@ -1167,16 +1198,16 @@ public class CharsetTest extends ResourceTest {
 			verifier.reset();
 			verifier.addExpectedChange(new IResource[] {project, folder1, folder2, file1, file2, prefs.getParent()}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
 			verifier.addExpectedChange(prefs, IResourceDelta.ADDED, 0);
-			project.setDefaultCharset("foo", getMonitor());
-			waitForEncodingRelatedJobs(getName());
+			project.setDefaultCharset("foo", createTestMonitor());
+			waitForEncodingRelatedJobs(testName.getMethodName());
 			verifier.assertExpectedDeltasWereReceived("7.2.");
 
 			// clear all the encoding info before we start working with the root
 			clearAllEncodings(project);
 			verifier.reset();
 			verifier.addExpectedChange(new IResource[] {project, folder1, folder2, file1, file2, prefs.getParent()}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
-			getWorkspace().getRoot().setDefaultCharset("foo", getMonitor());
-			waitForEncodingRelatedJobs(getName());
+			getWorkspace().getRoot().setDefaultCharset("foo", createTestMonitor());
+			waitForEncodingRelatedJobs(testName.getMethodName());
 			verifier.assertExpectedDeltasWereReceived("8.2.");
 		} finally {
 			verifier.removeResourceChangeListeners();
@@ -1188,6 +1219,7 @@ public class CharsetTest extends ResourceTest {
 	 * Check that we are broadcasting the correct resource deltas when
 	 * making encoding changes.
 	 */
+	@Test
 	public void testDeltasFile() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		MultipleDeltasCharsetVerifier verifier = new MultipleDeltasCharsetVerifier(
@@ -1199,7 +1231,7 @@ public class CharsetTest extends ResourceTest {
 			// File:
 			// single file
 			final IFile file1 = project.getFile("file1.txt");
-			ensureExistsInWorkspace(file1, getRandomContents());
+			createInWorkspace(file1, createRandomString());
 			// change from default
 			verifier.reset();
 			verifier.addExpectedChange(file1, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
@@ -1238,7 +1270,7 @@ public class CharsetTest extends ResourceTest {
 			// multiple files (same operation)
 			verifier.reset();
 			final IFile file2 = project.getFile("file2.txt");
-			ensureExistsInWorkspace(file2, getRandomContents());
+			createInWorkspace(file2, createRandomString());
 			verifier.addExpectedChange(new IResource[] {file1, file2}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
 			verifier.addExpectedChange(prefs.getParent(), IResourceDelta.CHANGED, 0);
 			verifier.addExpectedChange(prefs, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
@@ -1253,6 +1285,7 @@ public class CharsetTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testFileCreation() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
@@ -1260,7 +1293,7 @@ public class CharsetTest extends ResourceTest {
 			IFolder folder = project.getFolder("folder");
 			IFile file1 = project.getFile("file1.txt");
 			IFile file2 = folder.getFile("file2.txt");
-			ensureExistsInWorkspace(new IResource[] {file1, file2}, true);
+			createInWorkspace(new IResource[] {file1, file2});
 			assertExistsInWorkspace(getResourcesPreferenceFile(project, false));
 			project.setDefaultCharset("FOO", createTestMonitor());
 			assertExistsInWorkspace(getResourcesPreferenceFile(project, false));
@@ -1282,6 +1315,7 @@ public class CharsetTest extends ResourceTest {
 	/**
 	 * See enhancement request 60636.
 	 */
+	@Test
 	public void testGetCharsetFor() throws CoreException {
 		IProject project = null;
 		try {
@@ -1295,7 +1329,7 @@ public class CharsetTest extends ResourceTest {
 			IFile newXMLFile = project.getFile("newfile.xml");
 			IFile newTXTFile = project.getFile("newfile.txt");
 			IFile newRandomFile = project.getFile("newFile." + (long) (Math.random() * (Long.MAX_VALUE)));
-			ensureExistsInWorkspace(oldFile, SAMPLE_XML_DEFAULT_ENCODING);
+			createInWorkspace(oldFile, SAMPLE_XML_DEFAULT_ENCODING);
 			// sets project default charset
 			project.setDefaultCharset("BAR", createTestMonitor());
 			oldFile.setCharset("FOO", createTestMonitor());
@@ -1329,6 +1363,7 @@ public class CharsetTest extends ResourceTest {
 	/**
 	 * Moves a project and ensures the charsets are preserved.
 	 */
+	@Test
 	public void testMovingProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project1 = workspace.getRoot().getProject("Project1");
@@ -1337,7 +1372,7 @@ public class CharsetTest extends ResourceTest {
 			IFolder folder = project1.getFolder("folder1");
 			IFile file1 = project1.getFile("file1.txt");
 			IFile file2 = folder.getFile("file2.txt");
-			ensureExistsInWorkspace(new IResource[] {file1, file2}, true);
+			createInWorkspace(new IResource[] {file1, file2});
 			project1.setDefaultCharset("FOO", createTestMonitor());
 			folder.setDefaultCharset("BAR", createTestMonitor());
 
@@ -1367,20 +1402,21 @@ public class CharsetTest extends ResourceTest {
 	 * 	- non-existing resources default to the parent's default charset;
 	 * 	- cannot set the charset for a non-existing resource (exception is thrown).
 	 */
+	@Test
 	public void testNonExistingResource() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("MyProject");
 		try {
 			CoreException e = assertThrows(CoreException.class, () -> project.setDefaultCharset("FOO", createTestMonitor()));
 			assertEquals("project should not exist yet", IResourceStatus.RESOURCE_NOT_FOUND, e.getStatus().getCode());
-			ensureExistsInWorkspace(project, true);
+			createInWorkspace(project);
 			project.setDefaultCharset("FOO", createTestMonitor());
 			IFile file = project.getFile("file.xml");
 			assertDoesNotExistInWorkspace(file);
 			assertEquals("2.2", "FOO", file.getCharset());
 			e = assertThrows(CoreException.class, () -> file.setCharset("BAR", createTestMonitor()));
 			assertEquals("file should not exist yet", IResourceStatus.RESOURCE_NOT_FOUND, e.getStatus().getCode());
-			ensureExistsInWorkspace(file, true);
+			createInWorkspace(file);
 			file.setCharset("BAR", createTestMonitor());
 			assertEquals("2.8", "BAR", file.getCharset());
 			file.delete(IResource.NONE, null);
@@ -1391,21 +1427,23 @@ public class CharsetTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testBug464072() throws CoreException {
 		getResourcesPreferences().putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, true);
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFile file = project.getFile("file.txt");
-		ensureExistsInWorkspace(file, true);
+		createInWorkspace(file);
 		file.getLocation().toFile().delete();
 		CoreException e = assertThrows(CoreException.class, file::getContentDescription);
 		assertEquals("the resource should not exist", IResourceStatus.RESOURCE_NOT_FOUND, e.getStatus().getCode());
 	}
 
+	@Test
 	public void testBug528827() throws CoreException, OperationCanceledException, InterruptedException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		JobChangeAdapterExtension listener = new JobChangeAdapterExtension();
 		Job.getJobManager().addJobChangeListener(listener);
 		try {
@@ -1586,4 +1624,5 @@ public class CharsetTest extends ResourceTest {
 			getWorkspace().removeResourceChangeListener(this);
 		}
 	}
+
 }

@@ -14,8 +14,11 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -25,24 +28,31 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests regression of bug 160251.  In this case, attempting to move a project
  * to an existing directory on disk failed, but should succeed as long as
  * the destination directory is empty.
  */
-public class Bug_160251 extends ResourceTest {
+public class Bug_160251 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * The destination directory does not exist.
 	 */
+	@Test
 	public void testNonExistentDestination() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
-		IFileStore destination = getTempStore();
+		IFileStore destination = workspaceRule.getTempStore();
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
-		ensureExistsInWorkspace(source, true);
-		ensureExistsInWorkspace(sourceFile, true);
+		createInWorkspace(source);
+		createInWorkspace(sourceFile);
 
 		//move the project (should succeed)
 		IProjectDescription description = source.getDescription();
@@ -60,13 +70,14 @@ public class Bug_160251 extends ResourceTest {
 	/**
 	 * The destination directory exists, but is empty
 	 */
+	@Test
 	public void testEmptyDestination() throws CoreException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
-		IFileStore destination = getTempStore();
+		IFileStore destination = workspaceRule.getTempStore();
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
-		ensureExistsInWorkspace(source, true);
-		ensureExistsInWorkspace(sourceFile, true);
+		createInWorkspace(source);
+		createInWorkspace(sourceFile);
 		destination.mkdir(EFS.NONE, createTestMonitor());
 
 		//move the project (should succeed)
@@ -85,15 +96,16 @@ public class Bug_160251 extends ResourceTest {
 	/**
 	 * The destination directory exists, and contains an overlapping file. This should fail.
 	 */
-	public void testOccupiedDestination() throws CoreException {
+	@Test
+	public void testOccupiedDestination() throws Exception {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
-		IFileStore destination = getTempStore();
+		IFileStore destination = workspaceRule.getTempStore();
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
-		ensureExistsInWorkspace(source, true);
-		ensureExistsInWorkspace(sourceFile, true);
+		createInWorkspace(source);
+		createInWorkspace(sourceFile);
 		destination.mkdir(EFS.NONE, createTestMonitor());
-		createFileInFileSystem(destinationFile, getRandomContents());
+		createInFileSystem(destinationFile);
 
 		//move the project (should fail)
 		IProjectDescription description = source.getDescription();
@@ -107,4 +119,5 @@ public class Bug_160251 extends ResourceTest {
 		assertTrue("2.3", !URIUtil.equals(source.getLocationURI(), destination.toURI()));
 		assertTrue("2.4", !URIUtil.equals(sourceFile.getLocationURI(), destinationFile.toURI()));
 	}
+
 }

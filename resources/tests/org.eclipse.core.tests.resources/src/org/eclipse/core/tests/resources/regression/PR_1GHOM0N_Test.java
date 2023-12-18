@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.ICommand;
@@ -23,14 +24,20 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class PR_1GHOM0N_Test extends ResourceTest {
+public class PR_1GHOM0N_Test {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/*
 	 * Ensure that we get ADDED and OPEN in the delta when we create and open
 	 * a project in a workspace runnable.
 	 */
+	@Test
 	public void test_1GEAB3C() throws CoreException {
 		// setup the project
 		final IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -46,8 +53,9 @@ public class PR_1GHOM0N_Test extends ResourceTest {
 		IWorkspaceRunnable body = monitor -> {
 			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 			IFile file = project.getFile("test.txt");
-			file.create(getRandomContents(), true, createTestMonitor());
+			file.create(createRandomContentsStream(), true, createTestMonitor());
 		};
 		getWorkspace().run(body, createTestMonitor());
 	}
+
 }

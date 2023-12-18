@@ -14,7 +14,12 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -25,11 +30,18 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests the public API of IResourceDelta
  */
-public class IResourceDeltaTest extends ResourceTest {
+public class IResourceDeltaTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/* some random resource handles */
 	protected IProject project1;
 	protected IProject project2;
@@ -46,10 +58,8 @@ public class IResourceDeltaTest extends ResourceTest {
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
 	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		// Create some resource handles
 		project1 = getWorkspace().getRoot().getProject("Project" + 1);
 		project2 = getWorkspace().getRoot().getProject("Project" + 2);
@@ -63,13 +73,14 @@ public class IResourceDeltaTest extends ResourceTest {
 		allResources = new IResource[] {project1, project2, folder1, folder2, folder3, file1, file2, file3};
 
 		// Create and open the resources
-		IWorkspaceRunnable body = monitor -> ensureExistsInWorkspace(allResources, true);
+		IWorkspaceRunnable body = monitor -> createInWorkspace(allResources);
 		getWorkspace().run(body, createTestMonitor());
 	}
 
 	/**
 	 * Tests the IResourceDelta#findMember method.
 	 */
+	@Test
 	public void testFindMember() throws CoreException {
 		/*
 		 * The following changes will occur:
@@ -110,9 +121,9 @@ public class IResourceDeltaTest extends ResourceTest {
 
 		//do the work
 		IWorkspaceRunnable body = monitor -> {
-			file1.setContents(getRandomContents(), true, true, createTestMonitor());
+			file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 			folder2.delete(true, createTestMonitor());
-			file4.create(getRandomContents(), true, createTestMonitor());
+			file4.create(createRandomContentsStream(), true, createTestMonitor());
 		};
 		try {
 			getWorkspace().run(body, createTestMonitor());
@@ -120,4 +131,5 @@ public class IResourceDeltaTest extends ResourceTest {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
 	}
+
 }

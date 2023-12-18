@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -94,8 +97,8 @@ public class FileSystemHelper {
 			}
 		}
 		if (!file.delete()) {
-			String message = "ensureDoesNotExistInFileSystem(File) could not delete: " + file.getPath();
-			CoreTest.log(CoreTest.PI_HARNESS, new Status(IStatus.WARNING, CoreTest.PI_HARNESS, IStatus.OK, message, null));
+			String message = "FileSystemHelper#clear() could not delete: " + file.getPath();
+			log(new Status(IStatus.WARNING, PI_HARNESS, IStatus.OK, message, null));
 		}
 	}
 

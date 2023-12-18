@@ -15,22 +15,25 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests the callOnEmptyDelta attribute of the builder extension
  */
-public class EmptyDeltaTest extends AbstractBuilderTest {
+public class EmptyDeltaTest {
 
-	public EmptyDeltaTest(String name) {
-		super(name);
-	}
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
+	@Test
 	public void testBuildEvents() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("TestBuildEvents");
@@ -42,11 +45,7 @@ public class EmptyDeltaTest extends AbstractBuilderTest {
 		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project.getDescription();
-		ICommand command = desc.newCommand();
-		command.setBuilderName(EmptyDeltaBuilder.BUILDER_NAME);
-		desc.setBuildSpec(new ICommand[] { command });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME).apply();
 
 		//do an initial incremental build
 		new EmptyDeltaBuilder().reset();

@@ -14,11 +14,17 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.InputStream;
 import org.eclipse.core.filesystem.IFileStore;
@@ -32,18 +38,23 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * When moving a resource "x" from parent "a" to parent "b", if "x" or any of
  * its children can't be deleted, both "a" and "b" become out-of-sync and resource info is lost.
  */
-public class Bug_032076 extends ResourceTest {
+public class Bug_032076 {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testFileBugOnWindows() throws Exception {
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -53,12 +64,12 @@ public class Bug_032076 extends ResourceTest {
 		IFile sourceFile = sourceParent.getFile("file1.txt");
 		IFile destinationFile = destinationParent.getFile(sourceFile.getName());
 
-		ensureExistsInWorkspace(new IResource[] { sourceFile, destinationParent }, true);
-		deleteOnTearDown(project.getLocation());
+		createInWorkspace(new IResource[] { sourceFile, destinationParent });
+		workspaceRule.deleteOnTearDown(project.getLocation());
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = sourceFile.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -94,10 +105,9 @@ public class Bug_032076 extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testFolderBugOnWindows() throws Exception {
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -110,12 +120,12 @@ public class Bug_032076 extends ResourceTest {
 		// but not this one
 		IFile file2 = folder.getFile("file2.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2, destinationParent }, true);
-		deleteOnTearDown(project.getLocation());
+		createInWorkspace(new IResource[] { file1, file2, destinationParent });
+		workspaceRule.deleteOnTearDown(project.getLocation());
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = file1.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -157,10 +167,9 @@ public class Bug_032076 extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testProjectBugOnWindows() throws Exception {
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("test only works on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
@@ -170,12 +179,12 @@ public class Bug_032076 extends ResourceTest {
 		// but not this one
 		IFile file2 = sourceProject.getFile("file2.txt");
 
-		ensureExistsInWorkspace(new IResource[] {file1, file2}, true);
-		deleteOnTearDown(sourceProject.getLocation()); // Ensure project location is moved after test
+		createInWorkspace(new IResource[] {file1, file2});
+		workspaceRule.deleteOnTearDown(sourceProject.getLocation()); // Ensure project location is moved after test
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = file1.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -206,13 +215,10 @@ public class Bug_032076 extends ResourceTest {
 		}
 	}
 
-	/**
-	 * TODO: This test is currently failing and needs further investigation (bug 203078)
-	 */
-	public void _testFileBugOnLinux() throws CoreException {
-		if (!(OS.isLinux() && isReadOnlySupported())) {
-			return;
-		}
+	@Test
+	@Ignore("test is currently failing and needs further investigation (bug 203078)")
+	public void testFileBugOnLinux() throws CoreException {
+		assumeTrue("test only works on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -223,14 +229,14 @@ public class Bug_032076 extends ResourceTest {
 		IFile sourceFile = roFolder.getFile("file.txt");
 		IFile destinationFile = destinationParent.getFile("file.txt");
 
-		ensureExistsInWorkspace(new IResource[] { sourceFile, destinationParent }, true);
-		deleteOnTearDown(project.getLocation());
+		createInWorkspace(new IResource[] { sourceFile, destinationParent });
+		workspaceRule.deleteOnTearDown(project.getLocation());
 
 		IFileStore roFolderStore = ((Resource) roFolder).getStore();
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = sourceFile.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -268,13 +274,10 @@ public class Bug_032076 extends ResourceTest {
 		}
 	}
 
-	/**
-	 * TODO: This test is currently failing and needs further investigation (bug 203078)
-	 */
-	public void _testFolderBugOnLinux() throws CoreException {
-		if (!(OS.isLinux() && isReadOnlySupported())) {
-			return;
-		}
+	@Test
+	@Ignore("test is currently failing and needs further investigation (bug 203078)")
+	public void testFolderBugOnLinux() throws CoreException {
+		assumeTrue("test only works on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -286,15 +289,15 @@ public class Bug_032076 extends ResourceTest {
 		IFolder destinationParent = project.getFolder("destination_parent");
 		IFolder destinationROFolder = destinationParent.getFolder(roFolder.getName());
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2, destinationParent }, true);
-		deleteOnTearDown(project.getLocation());
+		createInWorkspace(new IResource[] { file1, file2, destinationParent });
+		workspaceRule.deleteOnTearDown(project.getLocation());
 
 		IFileStore roFolderLocation = ((Resource) roFolder).getStore();
 		IFileStore destinationROFolderLocation = ((Resource) destinationROFolder).getStore();
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = file1.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -346,17 +349,14 @@ public class Bug_032076 extends ResourceTest {
 		}
 	}
 
-	/**
-	 * TODO: This test is currently failing and needs further investigation (bug 203078)
-	 */
-	public void _testProjectBugOnLinux() throws CoreException {
-		if (!(OS.isLinux() && isReadOnlySupported())) {
-			return;
-		}
+	@Test
+	@Ignore("test is currently failing and needs further investigation (bug 203078)")
+	public void testProjectBugOnLinux() throws CoreException {
+		assumeTrue("test only works on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
-		IFileStore projectParentStore = getTempStore();
+		IFileStore projectParentStore = workspaceRule.getTempStore();
 		IFileStore projectStore = projectParentStore.getChild(sourceProject.getName());
 		IProjectDescription sourceDescription = workspace.newProjectDescription(sourceProject.getName());
 		sourceDescription.setLocationURI(projectStore.toURI());
@@ -367,15 +367,15 @@ public class Bug_032076 extends ResourceTest {
 		// create and open the source project at a non-default location
 		sourceProject.create(sourceDescription, createTestMonitor());
 		sourceProject.open(createTestMonitor());
-		deleteOnTearDown(sourceProject.getLocation());
+		workspaceRule.deleteOnTearDown(sourceProject.getLocation());
 
 		IFile file1 = sourceProject.getFile("file1.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1 }, true);
+		createInWorkspace(new IResource[] { file1 });
 
 		// add a marker to a file to ensure the move operation is not losing anything
-		String attributeKey = getRandomString();
-		String attributeValue = getRandomString();
+		String attributeKey = createRandomString();
+		String attributeValue = createRandomString();
 		long markerId = -1;
 		IMarker bookmark = file1.createMarker(IMarker.BOOKMARK);
 		bookmark.setAttribute(attributeKey, attributeValue);
@@ -387,7 +387,7 @@ public class Bug_032076 extends ResourceTest {
 
 			assertThrows(CoreException.class,
 					() -> sourceProject.move(destinationDescription, IResource.FORCE, createTestMonitor()));
-			deleteOnTearDown(destinationProject.getLocation());
+			workspaceRule.deleteOnTearDown(destinationProject.getLocation());
 
 			// the source does not exist
 			assertTrue("3.0", !sourceProject.exists());
@@ -410,4 +410,5 @@ public class Bug_032076 extends ResourceTest {
 			setReadOnly(projectParentStore, false);
 		}
 	}
+
 }

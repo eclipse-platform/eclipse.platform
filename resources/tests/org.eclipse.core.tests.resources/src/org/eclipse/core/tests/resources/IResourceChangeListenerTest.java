@@ -15,13 +15,22 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SIMPLE;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -56,6 +65,10 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -71,7 +84,11 @@ import org.osgi.service.log.LogReaderService;
  * Tests behavior of IResourceChangeListener, including validation
  * that correct deltas are received for all types of workspace changes.
  */
-public class IResourceChangeListenerTest extends ResourceTest {
+public class IResourceChangeListenerTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	static class SimpleListener implements IResourceChangeListener {
 		Object source;
 		int trigger;
@@ -101,6 +118,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	IFile project2MetaData;
 	ResourceDeltaVerifier verifier;
 
+	@Test
 	public void testBenchMark_1GBYQEZ() throws Throwable {
 		// start with a clean workspace
 		getWorkspace().removeResourceChangeListener(verifier);
@@ -140,7 +158,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			IProjectDescription description = getWorkspace().newProjectDescription(project.getName());
 			IPath root = getWorkspace().getRoot().getLocation();
 			IPath contents = root.append("temp/testing");
-			deleteOnTearDown(root.append("temp"));
+			workspaceRule.deleteOnTearDown(root.append("temp"));
 			description.setLocation(contents);
 			project.create(description, createTestMonitor());
 			project.open(createTestMonitor());
@@ -205,9 +223,8 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Sets up the fixture, for example, open a network connection. This method
 	 * is called before a test is executed.
 	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		// Create some resource handles
 		project1 = getWorkspace().getRoot().getProject("Project" + 1);
 		project2 = getWorkspace().getRoot().getProject("Project" + 2);
@@ -226,7 +243,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			project1.create(createTestMonitor());
 			project1.open(createTestMonitor());
 			folder1.create(true, true, createTestMonitor());
-			file1.create(getRandomContents(), true, createTestMonitor());
+			file1.create(createRandomContentsStream(), true, createTestMonitor());
 		};
 		verifier = new ResourceDeltaVerifier();
 		getWorkspace().addResourceChangeListener(verifier, IResourceChangeEvent.POST_CHANGE);
@@ -242,16 +259,16 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Tears down the fixture, for example, close a network connection. This
 	 * method is called after a test is executed.
 	 */
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		getWorkspace().removeResourceChangeListener(verifier);
-		super.tearDown();
 	}
 
 	/*
 	 * Create a resource change listener and register it for POST_BUILD
 	 * events. Ensure that you are able to modify the workspace tree.
 	 */
+	@Test
 	public void test_1GDK9OG() throws Throwable {
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// create the resource change listener
@@ -308,12 +325,13 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		listenerInMainThreadCallback.get().run();
 	}
 
+	@Test
 	public void testAddAndRemoveFile() throws CoreException {
 		verifier.reset();
 		getWorkspace().run((IWorkspaceRunnable) m -> {
 			m.beginTask("Creating and deleting", 100);
 			try {
-				file2.create(getRandomContents(), true, SubMonitor.convert(m, 50));
+				file2.create(createRandomContentsStream(), true, SubMonitor.convert(m, 50));
 				file2.delete(true, SubMonitor.convert(m, 50));
 			} finally {
 				m.done();
@@ -323,6 +341,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertTrue("Unexpected notification on no change", !verifier.hasBeenNotified());
 	}
 
+	@Test
 	public void testAddAndRemoveFolder() throws CoreException {
 		verifier.reset();
 		getWorkspace().run((IWorkspaceRunnable) m -> {
@@ -338,12 +357,14 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertTrue("Unexpected notification on no change", !verifier.hasBeenNotified());
 	}
 
+	@Test
 	public void testAddFile() throws CoreException {
 		verifier.addExpectedChange(file2, IResourceDelta.ADDED, 0);
-		file2.create(getRandomContents(), true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
 		assertDelta();
 	}
 
+	@Test
 	public void testAddFileAndFolder() throws CoreException {
 		verifier.addExpectedChange(folder2, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file3, IResourceDelta.ADDED, 0);
@@ -351,7 +372,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			m.beginTask("Creating folder and file", 100);
 			try {
 				folder2.create(true, true, SubMonitor.convert(m, 50));
-				file3.create(getRandomContents(), true, SubMonitor.convert(m, 50));
+				file3.create(createRandomContentsStream(), true, SubMonitor.convert(m, 50));
 			} finally {
 				m.done();
 			}
@@ -359,12 +380,14 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testAddFolder() throws CoreException {
 		verifier.addExpectedChange(folder2, IResourceDelta.ADDED, 0);
 		folder2.create(true, true, createTestMonitor());
 		assertDelta();
 	}
 
+	@Test
 	public void testAddProject() throws CoreException {
 		verifier.addExpectedChange(project2, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(project2MetaData, IResourceDelta.ADDED, 0);
@@ -376,6 +399,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Create a resource change listener and register it for POST_CHANGE events.
 	 * Ensure that you are NOT able to modify the workspace tree.
 	 */
+	@Test
 	public void testBug45996() throws Throwable {
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		// create the resource change listener
@@ -424,6 +448,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		listenerInMainThreadCallback.get().run();
 	}
 
+	@Test
 	public void testBuildKind() throws CoreException {
 		SimpleListener preBuild = new SimpleListener();
 		SimpleListener postBuild = new SimpleListener();
@@ -481,10 +506,11 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testChangeFile() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(file1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-		file1.setContents(getRandomContents(), true, false, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, false, createTestMonitor());
 		assertDelta();
 	}
 
@@ -493,6 +519,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * {@code IResourceChangeEvent.PRE_BUILD} and
 	 * {@code IResourceChangeEvent.POST_BUILD} are fired.
 	 */
+	@Test
 	public void testTouchFileWithAutobuildOff() throws Exception {
 		SimpleListener preBuild = new SimpleListener();
 		SimpleListener postBuild = new SimpleListener();
@@ -519,6 +546,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testChangeFileToFolder() throws CoreException {
 		/* change file1 into a folder */
 		verifier.addExpectedChange(file1, IResourceDelta.CHANGED,
@@ -535,6 +563,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testChangeFolderToFile() throws CoreException {
 		/* change to a folder */
 		verifier.reset();
@@ -549,7 +578,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			m.beginTask("Deleting and Creating", 100);
 			try {
 				folder3.delete(true, SubMonitor.convert(m, 50));
-				file1.create(getRandomContents(), true, SubMonitor.convert(m, 50));
+				file1.create(createRandomContentsStream(), true, SubMonitor.convert(m, 50));
 			} finally {
 				m.done();
 			}
@@ -557,6 +586,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testChangeProject() throws CoreException {
 		verifier.reset();
 		getWorkspace().run((IWorkspaceRunnable) m -> {
@@ -571,6 +601,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testCopyChangeFile() throws CoreException {
 		verifier.addExpectedChange(folder2, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file3, IResourceDelta.ADDED, 0, null, null);
@@ -579,7 +610,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			try {
 				folder2.create(true, true, SubMonitor.convert(m, 50));
 				file1.copy(file3.getFullPath(), true, SubMonitor.convert(m, 50));
-				file3.setContents(getRandomContents(), IResource.NONE, SubMonitor.convert(m, 50));
+				file3.setContents(createRandomContentsStream(), IResource.NONE, SubMonitor.convert(m, 50));
 			} finally {
 				m.done();
 			}
@@ -587,6 +618,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testCopyFile() throws CoreException {
 		verifier.addExpectedChange(folder2, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file3, IResourceDelta.ADDED, 0, null, null);
@@ -602,6 +634,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testCloseOpenReplaceFile() throws CoreException {
 		// FIXME: how to do this?
 		// workspace.save(getMonitor());
@@ -615,7 +648,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			m.beginTask("Deleting and Creating", 100);
 			try {
 				file1.delete(true, SubMonitor.convert(m, 50));
-				file1.create(getRandomContents(), true, SubMonitor.convert(m, 50));
+				file1.create(createRandomContentsStream(), true, SubMonitor.convert(m, 50));
 			} finally {
 				m.done();
 			}
@@ -623,6 +656,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testDeleteInPostBuildListener() throws Throwable {
 		final AtomicReference<CoreException> exceptionInListener = new AtomicReference<>();
 		// create the resource change listener
@@ -663,9 +697,10 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Tests deleting a file, then moving another file to that deleted location.
 	 * See bug 27527.
 	 */
+	@Test
 	public void testDeleteMoveFile() throws CoreException {
 		verifier.reset();
-		file2.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file2.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		verifier.reset();
 		int flags = IResourceDelta.REPLACED | IResourceDelta.MOVED_FROM | IResourceDelta.CONTENT;
 		verifier.addExpectedChange(file1, IResourceDelta.CHANGED, flags, file2.getFullPath(), null);
@@ -682,6 +717,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testDeleteProject() throws Throwable {
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		//test that marker deltas are fired when projects are deleted
@@ -724,6 +760,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		listenerInMainThreadCallback.get().run();
 	}
 
+	@Test
 	public void testDeleteFolderDuringRefresh() throws Throwable {
 		project1 = getWorkspace().getRoot().getProject(createUniqueString());
 		project1.create(createTestMonitor());
@@ -787,6 +824,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testRefreshOtherProjectDuringRefresh() throws Throwable {
 		final IProject p = getWorkspace().getRoot().getProject(createUniqueString());
 		p.create(null);
@@ -871,6 +909,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testPreRefreshNotification() throws Exception {
 		final IWorkspaceRoot root = getWorkspace().getRoot();
 
@@ -923,6 +962,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Tests that phantom members don't show up in resource deltas when standard
 	 * traversal and visitor are used.
 	 */
+	@Test
 	public void testHiddenPhantomChanges() throws Throwable {
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		final IWorkspace workspace = getWorkspace();
@@ -942,7 +982,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		};
 		workspace.addResourceChangeListener(listener);
 		workspace.getSynchronizer().add(partner);
-		ensureDoesNotExistInWorkspace(phantomResources);
+		removeFromWorkspace(phantomResources);
 		try {
 			//create a phantom folder
 			workspace.run((IWorkspaceRunnable) monitor -> workspace.getSynchronizer().setSyncInfo(partner, phantomFolder, new byte[] {1}), createTestMonitor());
@@ -956,7 +996,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			//delete phantom folder and change some other file
 			workspace.run((IWorkspaceRunnable) monitor -> {
 				phantomFolder.delete(IResource.NONE, createTestMonitor());
-				file1.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+				file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			}, createTestMonitor());
 			//create phantom file
 			workspace.run((IWorkspaceRunnable) monitor -> workspace.getSynchronizer().setSyncInfo(partner, phantomFile, new byte[] {2}), createTestMonitor());
@@ -974,6 +1014,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Tests that team private members don't show up in resource deltas when
 	 * standard traversal and visitor are used.
 	 */
+	@Test
 	public void testHiddenTeamPrivateChanges() throws Throwable {
 		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		IWorkspace workspace = getWorkspace();
@@ -999,23 +1040,23 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			}, createTestMonitor());
 			//create children in team private folder
 			IFile fileInFolder = teamPrivateFolder.getFile("FileInPrivateFolder");
-			fileInFolder.create(getRandomContents(), true, createTestMonitor());
+			fileInFolder.create(createRandomContentsStream(), true, createTestMonitor());
 			//modify children in team private folder
-			fileInFolder.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+			fileInFolder.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			//delete children in team private folder
 			fileInFolder.delete(IResource.NONE, createTestMonitor());
 			//delete team private folder and change some other file
 			workspace.run((IWorkspaceRunnable) monitor -> {
 				teamPrivateFolder.delete(IResource.NONE, createTestMonitor());
-				file1.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+				file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			}, createTestMonitor());
 			//create team private file
 			workspace.run((IWorkspaceRunnable) monitor -> {
-				teamPrivateFile.create(getRandomContents(), true, createTestMonitor());
+				teamPrivateFile.create(createRandomContentsStream(), true, createTestMonitor());
 				teamPrivateFile.setTeamPrivateMember(true);
 			}, createTestMonitor());
 			//modify team private file
-			teamPrivateFile.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+			teamPrivateFile.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			//delete team private file
 			teamPrivateFile.delete(IResource.NONE, createTestMonitor());
 		} finally {
@@ -1024,6 +1065,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		listenerInMainThreadCallback.get().run();
 	}
 
+	@Test
 	public void testModifyMoveFile() throws CoreException {
 		verifier.addExpectedChange(folder2, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file1, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null, file3.getFullPath());
@@ -1033,7 +1075,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			m.beginTask("Creating and moving", 100);
 			try {
 				folder2.create(true, true, SubMonitor.convert(m, 50));
-				file1.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+				file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 				file1.move(file3.getFullPath(), true, SubMonitor.convert(m, 50));
 			} finally {
 				m.done();
@@ -1042,6 +1084,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testMoveFile() throws CoreException {
 		verifier.addExpectedChange(folder2, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file1, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null, file3.getFullPath());
@@ -1058,6 +1101,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testMoveFileAddMarker() throws CoreException {
 		verifier.addExpectedChange(folder2, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file1, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null, file3.getFullPath());
@@ -1079,10 +1123,11 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	/**
 	 * Regression test for bug 42514
 	 */
+	@Test
 	public void testMoveFileDeleteFolder() throws CoreException {
 		// file2 moved to file1, and colliding folder3 is deleted
 		file1.delete(IResource.NONE, null);
-		file2.create(getRandomContents(), IResource.NONE, null);
+		file2.create(createRandomContentsStream(), IResource.NONE, null);
 		folder3.create(IResource.NONE, true, null);
 		verifier.reset();
 		verifier.addExpectedChange(file2, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null, file1.getFullPath());
@@ -1100,9 +1145,10 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testMoveFileDeleteSourceParent() throws CoreException {
 		file1.delete(IResource.NONE, null);
-		create(file3, true);
+		createInWorkspace(file3);
 		verifier.reset();
 		verifier.addExpectedChange(folder2, IResourceDelta.REMOVED, 0, null, null);
 		verifier.addExpectedChange(file1, IResourceDelta.ADDED, IResourceDelta.MOVED_FROM, file3.getFullPath(), null);
@@ -1119,6 +1165,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testMoveModifyFile() throws CoreException {
 		verifier.addExpectedChange(folder2, IResourceDelta.ADDED, 0);
 		verifier.addExpectedChange(file1, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null, file3.getFullPath());
@@ -1129,7 +1176,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			try {
 				folder2.create(true, true, SubMonitor.convert(m, 50));
 				file1.move(file3.getFullPath(), true, SubMonitor.convert(m, 50));
-				file3.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+				file3.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			} finally {
 				m.done();
 			}
@@ -1137,6 +1184,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testMoveMoveFile() throws CoreException {
 		file2 = project1.getFile("File2");
 		file3 = project1.getFile("File3");
@@ -1154,6 +1202,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testMoveMoveFolder() throws CoreException {
 		folder2 = project1.getFolder("Folder2");
 		folder3 = project1.getFolder("Folder3");
@@ -1180,6 +1229,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Move a project via rename. Note that the DESCRIPTION flag should be set
 	 * in the delta for the destination only.
 	 */
+	@Test
 	public void testMoveProject1() throws CoreException {
 		verifier.reset();
 		verifier.addExpectedChange(project1, IResourceDelta.REMOVED, IResourceDelta.MOVED_TO, null, project2.getFullPath());
@@ -1212,9 +1262,10 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	 * Move a project via a location change only. Note that the DESCRIPTION flag
 	 * should be set in the delta.
 	 */
+	@Test
 	public void testMoveProject2() throws CoreException {
 		final IPath path = getRandomLocation();
-		deleteOnTearDown(path);
+		workspaceRule.deleteOnTearDown(path);
 		verifier.addExpectedChange(project1, IResourceDelta.CHANGED, IResourceDelta.DESCRIPTION);
 		getWorkspace().run((IWorkspaceRunnable) m -> {
 			m.beginTask("Creating and moving", 100);
@@ -1229,6 +1280,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testMulti() throws CoreException {
 		class Listener implements IResourceChangeListener {
 			public volatile boolean done = false;
@@ -1265,6 +1317,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testAutoPublishService() throws Throwable {
 		final AtomicReference<ThrowingRunnable> logListenerInMainThreadCallback = new AtomicReference<>(NOOP_RUNNABLE);
 		class Loggy implements LogListener {
@@ -1363,6 +1416,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		return dict;
 	}
 
+	@Test
 	public void testProjectDescriptionComment() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(project1, IResourceDelta.CHANGED, IResourceDelta.DESCRIPTION);
@@ -1373,6 +1427,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testProjectDescriptionDynamicRefs() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(project1, IResourceDelta.CHANGED, IResourceDelta.DESCRIPTION);
@@ -1382,6 +1437,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testProjectDescriptionNatures() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(project1, IResourceDelta.CHANGED, IResourceDelta.DESCRIPTION);
@@ -1392,6 +1448,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testProjectDescriptionStaticRefs() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(project1, IResourceDelta.CHANGED, IResourceDelta.DESCRIPTION);
@@ -1402,12 +1459,14 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testRemoveFile() throws CoreException {
 		verifier.addExpectedChange(file1, IResourceDelta.REMOVED, 0);
 		file1.delete(true, createTestMonitor());
 		assertDelta();
 	}
 
+	@Test
 	public void testRemoveFileAndFolder() throws CoreException {
 		verifier.addExpectedChange(folder1, IResourceDelta.REMOVED, 0);
 		verifier.addExpectedChange(file1, IResourceDelta.REMOVED, 0);
@@ -1415,6 +1474,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testReplaceFile() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(file1, IResourceDelta.CHANGED, IResourceDelta.REPLACED | IResourceDelta.CONTENT);
@@ -1422,7 +1482,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 			m.beginTask("Deleting and Creating", 100);
 			try {
 				file1.delete(true, SubMonitor.convert(m, 50));
-				file1.create(getRandomContents(), true, SubMonitor.convert(m, 50));
+				file1.create(createRandomContentsStream(), true, SubMonitor.convert(m, 50));
 			} finally {
 				m.done();
 			}
@@ -1430,6 +1490,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testReplaceFolderWithFolder() throws CoreException {
 		folder2 = project1.getFolder("Folder2");
 		folder3 = project1.getFolder("Folder3");
@@ -1459,6 +1520,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testSetLocal() throws CoreException {
 		verifier.reset();
 		// set local on a file that is already local -- should be no change
@@ -1470,6 +1532,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertTrue("Unexpected notification on no change", !verifier.hasBeenNotified());
 	}
 
+	@Test
 	public void testSwapFiles() throws CoreException {
 		file1 = project1.getFile("File1");
 		file2 = project1.getFile("File2");
@@ -1497,6 +1560,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testSwapFolders() throws CoreException {
 		verifier.reset();
 		getWorkspace().run((IWorkspaceRunnable) m -> {
@@ -1525,6 +1589,7 @@ public class IResourceChangeListenerTest extends ResourceTest {
 	/**
 	 * Asserts that the delta is correct for changes to team private members.
 	 */
+	@Test
 	public void testTeamPrivateChanges() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		final IFolder teamPrivateFolder = project1.getFolder("TeamPrivateFolder");
@@ -1541,12 +1606,12 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		// create children in team private folder
 		IFile fileInFolder = teamPrivateFolder.getFile("FileInPrivateFolder");
 		verifier.addExpectedChange(fileInFolder, IResourceDelta.ADDED, 0);
-		fileInFolder.create(getRandomContents(), true, createTestMonitor());
+		fileInFolder.create(createRandomContentsStream(), true, createTestMonitor());
 		assertDelta();
 		verifier.reset();
 		// modify children in team private folder
 		verifier.addExpectedChange(fileInFolder, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-		fileInFolder.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		fileInFolder.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertDelta();
 		verifier.reset();
 		// delete children in team private folder
@@ -1559,21 +1624,21 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		verifier.addExpectedChange(file1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 		workspace.run((IWorkspaceRunnable) monitor -> {
 			teamPrivateFolder.delete(IResource.NONE, createTestMonitor());
-			file1.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+			file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		}, createTestMonitor());
 		assertDelta();
 		verifier.reset();
 		// create team private file
 		verifier.addExpectedChange(teamPrivateFile, IResourceDelta.ADDED, 0);
 		workspace.run((IWorkspaceRunnable) monitor -> {
-			teamPrivateFile.create(getRandomContents(), true, createTestMonitor());
+			teamPrivateFile.create(createRandomContentsStream(), true, createTestMonitor());
 			teamPrivateFile.setTeamPrivateMember(true);
 		}, createTestMonitor());
 		assertDelta();
 		verifier.reset();
 		// modify team private file
 		verifier.addExpectedChange(teamPrivateFile, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-		teamPrivateFile.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+		teamPrivateFile.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		assertDelta();
 		verifier.reset();
 		// delete team private file
@@ -1583,14 +1648,15 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		verifier.reset();
 	}
 
+	@Test
 	public void testTwoFileChanges() throws CoreException {
 		verifier.addExpectedChange(file1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 		verifier.addExpectedChange(file2, IResourceDelta.ADDED, 0);
 		getWorkspace().run((IWorkspaceRunnable) m -> {
 			m.beginTask("setting contents and creating", 100);
 			try {
-				file1.setContents(getRandomContents(), true, false, SubMonitor.convert(m, 50));
-				file2.create(getRandomContents(), true, SubMonitor.convert(m, 50));
+				file1.setContents(createRandomContentsStream(), true, false, SubMonitor.convert(m, 50));
+				file2.create(createRandomContentsStream(), true, SubMonitor.convert(m, 50));
 			} finally {
 				m.done();
 			}
@@ -1598,9 +1664,10 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testRemoveAndCreateUnderlyingFileForLinkedResource() throws CoreException, IOException {
 		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
-		deleteOnTearDown(path);
+		workspaceRule.deleteOnTearDown(path);
 		path.toFile().createNewFile();
 
 		IFile linkedFile = project1.getFile(createUniqueString());
@@ -1620,9 +1687,10 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testRemoveAndCreateUnderlyingFolderForLinkedResource() throws CoreException {
 		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
-		deleteOnTearDown(path);
+		workspaceRule.deleteOnTearDown(path);
 
 		path.toFile().mkdir();
 		IFolder linkedFolder = project1.getFolder(createUniqueString());
@@ -1641,9 +1709,10 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		assertDelta();
 	}
 
+	@Test
 	public void testBug228354() throws CoreException {
 		IPath path = getTempDir().addTrailingSeparator().append(createUniqueString());
-		deleteOnTearDown(path);
+		workspaceRule.deleteOnTearDown(path);
 
 		path.toFile().mkdir();
 		IFolder linkedFolder = project1.getFolder(createUniqueString());
@@ -1657,4 +1726,5 @@ public class IResourceChangeListenerTest extends ResourceTest {
 		regularFolder.delete(true, createTestMonitor());
 		assertDelta();
 	}
+
 }

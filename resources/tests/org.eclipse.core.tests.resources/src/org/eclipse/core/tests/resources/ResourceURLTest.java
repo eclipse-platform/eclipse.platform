@@ -15,7 +15,13 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,30 +34,23 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Test suites for {@link org.eclipse.core.internal.resources.PlatformURLResourceConnection}
  */
-public class ResourceURLTest extends ResourceTest {
+public class ResourceURLTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private final String[] resourcePaths = new String[] { "/", "/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1", "/2/2",
 			"/2/3", "/3/", "/3/1", "/3/2", "/3/3", "/4/", "/5" };
 
 	private static final String CONTENT = "content";
 	protected static IPath[] interestingPaths;
 	protected static IResource[] interestingResources;
-
-	/**
-	 * Need a zero argument constructor to satisfy the test harness.
-	 * This constructor should not do any real work nor should it be
-	 * called by user code.
-	 */
-	public ResourceURLTest() {
-		super();
-	}
-
-	public ResourceURLTest(String name) {
-		super(name);
-	}
 
 	private void checkURL(IResource resource) throws Throwable {
 		URL url = getURL(resource);
@@ -76,14 +75,16 @@ public class ResourceURLTest extends ResourceTest {
 		return getURL(resource.getFullPath());
 	}
 
+	@Test
 	public void testBasicURLs() throws Throwable {
 		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		for (IResource resource : resources) {
 			checkURL(resource);
 		}
 	}
 
+	@Test
 	public void testExternalURLs() throws Throwable {
 		IProject project = getWorkspace().getRoot().getProject("test");
 		IProjectDescription desc = getWorkspace().newProjectDescription("test");
@@ -91,12 +92,13 @@ public class ResourceURLTest extends ResourceTest {
 		project.create(desc, null);
 		project.open(null);
 		IResource[] resources = buildResources(project, resourcePaths);
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		for (IResource resource : resources) {
 			checkURL(resource);
 		}
 	}
 
+	@Test
 	public void testNonExistantURLs() throws Throwable {
 		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
 		for (int i = 1; i < resources.length; i++) {
@@ -108,12 +110,14 @@ public class ResourceURLTest extends ResourceTest {
 	/**
 	 * Tests decoding of normalized URLs containing spaces
 	 */
+	@Test
 	public void testSpaces() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("My Project");
 		IFile file = project.getFile("a.txt");
-		ensureExistsInWorkspace(file, CONTENT);
+		createInWorkspace(file, CONTENT);
 		URL url = new URL(PlatformURLResourceConnection.RESOURCE_URL_STRING + "My%20Project/a.txt");
 		InputStream stream = url.openStream();
-		assertTrue("1.0", compareContent(stream, getContents(CONTENT)));
+		assertTrue("1.0", compareContent(stream, createInputStream(CONTENT)));
 	}
+
 }

@@ -14,11 +14,12 @@
 package org.eclipse.core.tests.runtime.perf;
 
 import java.util.HashMap;
+import junit.framework.TestCase;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.runtime.RuntimeTest;
 
-public class BenchPath extends RuntimeTest {
+public class BenchPath extends TestCase {
+	
 	public BenchPath() {
 		super();
 	}

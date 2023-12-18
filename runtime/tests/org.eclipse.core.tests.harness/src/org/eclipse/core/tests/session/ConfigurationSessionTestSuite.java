@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.session;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,7 +37,6 @@ import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
 import org.eclipse.osgi.service.datalocation.Location;
@@ -86,7 +86,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		addBundle(org.eclipse.core.runtime.content.IContentType.class); // org.eclipse.core.contenttype
 		addBundle(org.eclipse.equinox.app.IApplication.class); // org.eclipse.equinox.app
 
-		addBundle(org.eclipse.core.tests.harness.CoreTest.class); // org.eclipse.core.tests.harness
+		addBundle(org.eclipse.core.tests.harness.TestHarnessPlugin.class); // org.eclipse.core.tests.harness
 		addBundle(org.eclipse.test.performance.Performance.class); // org.eclipse.test.performance
 
 		addBundle(org.eclipse.jdt.internal.junit.runner.ITestLoader.class); // org.eclipse.jdt.junit.runtime
@@ -214,8 +214,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		try {
 			externalForm = location.get().toURI().toURL().toExternalForm();
 		} catch (Exception e) {
-			CoreTest.fail("Failed to convert file to URL string:" + location.get(), e);
-			return null; // Cannot happen
+			throw new IllegalArgumentException("Failed to convert file to URL string:" + location.get(), e);
 		}
 		// workaround for bug 88070
 		return "reference:" + externalForm + (suffix != null ? suffix : "");
@@ -254,7 +253,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 				try {
 					createConfigINI();
 				} catch (IOException e) {
-					CoreTest.fail("0.1", e);
+					fail(e);
 				}
 			}
 			if (!shouldSort || isSharedSession()) {
@@ -276,7 +275,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 					try {
 						createConfigINI();
 					} catch (IOException e) {
-						CoreTest.fail("0.1", e);
+						fail(e);
 					}
 				// end of KLUDGE
 				}

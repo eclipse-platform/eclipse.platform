@@ -14,9 +14,22 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -43,15 +56,29 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.internal.filesystem.bug440110.Bug440110FileSystem;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class FileSystemResourceManagerTest extends LocalStoreTest implements ICoreConstants {
+public class FileSystemResourceManagerTest implements ICoreConstants {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private IProject project;
+
+	@Before
+	public void createTestProject() throws CoreException {
+		project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
+	}
 
 	@Test
 	public void testBug440110() throws Exception {
 		String projectName = createUniqueString();
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(projectName);
+		project = workspace.getRoot().getProject(projectName);
 		IProjectDescription projectDescription = workspace.newProjectDescription(projectName);
 		projectDescription.setLocationURI(new URI(Bug440110FileSystem.SCHEME + "://" + projectName));
 		project.create(projectDescription, null);
@@ -84,22 +111,22 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 		// project/target
 		IPath path = IPath.fromOSString("target");
-		IFolder folder = projects[0].getFolder(path);
-		IPath location = projects[0].getLocation().append(path);
+		IFolder folder = project.getFolder(path);
+		IPath location = project.getLocation().append(path);
 		IFolder testFolder = (IFolder) getLocalManager().containerForLocation(location);
 		assertEquals(folder, testFolder);
 
 		// project/folder/target
 		path = IPath.fromOSString("folder/target");
-		folder = projects[0].getFolder(path);
-		location = projects[0].getLocation().append(path);
+		folder = project.getFolder(path);
+		location = project.getLocation().append(path);
 		testFolder = (IFolder) getLocalManager().containerForLocation(location);
 		assertEquals(folder, testFolder);
 
 		// project/folder/folder/target
 		path = IPath.fromOSString("folder/folder/target");
-		folder = projects[0].getFolder(path);
-		location = projects[0].getLocation().append(path);
+		folder = project.getFolder(path);
+		location = project.getLocation().append(path);
 		testFolder = (IFolder) getLocalManager().containerForLocation(location);
 		assertEquals(folder, testFolder);
 
@@ -112,19 +139,17 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	 * this test should move to FileTest
 	 */
 	@Test
-	public void testCreateFile() throws CoreException {
-		/* initialize common objects */
-		IProject project = projects[0];
+	public void testCreateFile() throws Exception {
 		File file = (File) project.getFile("testCreateFile");
 		/* common contents */
 		String originalContent = "this string should not be equal the other";
 
 		/* create file with flag false */
-		file.create(getContents(originalContent), false, null);
+		file.create(createInputStream(originalContent), false, null);
 		assertTrue(file.exists());
 		assertTrue(file.isLocal(IResource.DEPTH_ZERO));
 		assertEquals(file.getStore().fetchInfo().getLastModified(), file.getResourceInfo(false, false).getLocalSyncInfo());
-		assertTrue(compareContent(getContents(originalContent), getLocalManager().read(file, true, null)));
+		assertTrue(compareContent(createInputStream(originalContent), getLocalManager().read(file, true, null)));
 	}
 
 	@Test
@@ -136,22 +161,22 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 		// project/file
 		IPath path = IPath.fromOSString("file");
-		IFile file = projects[0].getFile(path);
-		IPath location = projects[0].getLocation().append(path);
+		IFile file = project.getFile(path);
+		IPath location = project.getLocation().append(path);
 		IFile testFile = getLocalManager().fileForLocation(location);
 		assertEquals(file, testFile);
 
 		// project/folder/file
 		path = IPath.fromOSString("folder/file");
-		file = projects[0].getFile(path);
-		location = projects[0].getLocation().append(path);
+		file = project.getFile(path);
+		location = project.getLocation().append(path);
 		testFile = getLocalManager().fileForLocation(location);
 		assertEquals(file, testFile);
 
 		// project/folder/folder/file
 		path = IPath.fromOSString("folder/folder/file");
-		file = projects[0].getFile(path);
-		location = projects[0].getLocation().append(path);
+		file = project.getFile(path);
+		location = project.getLocation().append(path);
 		testFile = getLocalManager().fileForLocation(location);
 		assertEquals(file, testFile);
 
@@ -162,15 +187,12 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 
 	@Test
 	public void testIsLocal() throws CoreException {
-		/* initialize common objects */
-		final IProject project = projects[0];
-
 		// create resources
 		IResource[] resources = buildResources(project, new String[] { "/Folder1/", "/Folder1/File1",
 				"/Folder1/Folder2/", "/Folder1/Folder2/File2", "/Folder1/Folder2/Folder3/" });
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		for (IResource resource : resources) {
-			ensureDoesNotExistInFileSystem(resource);
+			removeFromFileSystem(resource);
 		}
 
 		// exists
@@ -190,7 +212,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		assertFalse(folder.isLocal(IResource.DEPTH_INFINITE));
 
 		// remove the trash
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 	}
 
 	/**
@@ -201,45 +223,45 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	@Test
 	public void testLocationFor() {
 		/* test project */
-		IPath location = projects[0].getLocation();
-		assertEquals(getLocalManager().locationFor(projects[0]), location);
-		assertEquals(getWorkspace().getRoot().getLocation().append(projects[0].getName()), location);
+		IPath location = project.getLocation();
+		assertEquals(getLocalManager().locationFor(project), location);
+		assertEquals(getWorkspace().getRoot().getLocation().append(project.getName()), location);
 	}
 
 	@Test
-	public void testSynchronizeProject() throws CoreException {
+	public void testSynchronizeProject() throws Exception {
 		/* test DEPTH parameter */
 		/* DEPTH_ZERO */
-		IFile file = projects[0].getFile("file");
-		ensureExistsInFileSystem(file);
-		projects[0].refreshLocal(IResource.DEPTH_ZERO, null);
+		IFile file = project.getFile("file");
+		createInFileSystem(file);
+		project.refreshLocal(IResource.DEPTH_ZERO, null);
 		assertFalse(file.exists());
 		/* DEPTH_ONE */
-		IFolder folder = projects[0].getFolder("folder");
+		IFolder folder = project.getFolder("folder");
 		IFolder subfolder = folder.getFolder("subfolder");
 		IFile subfile = folder.getFile("subfile");
-		ensureExistsInFileSystem(folder);
-		ensureExistsInFileSystem(subfolder);
-		ensureExistsInFileSystem(subfile);
-		projects[0].refreshLocal(IResource.DEPTH_ONE, null);
+		createInFileSystem(folder);
+		createInFileSystem(subfolder);
+		createInFileSystem(subfile);
+		project.refreshLocal(IResource.DEPTH_ONE, null);
 		assertTrue(file.exists());
 		assertTrue(folder.exists());
 		assertFalse(subfolder.exists());
 		assertFalse(subfile.exists());
 		/* DEPTH_INFINITE */
-		projects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue(file.exists());
 		assertTrue(folder.exists());
 		assertTrue(subfolder.exists());
 		assertTrue(subfile.exists());
 
 		/* closed project */
-		file = projects[0].getFile("closed");
-		projects[0].close(null);
-		ensureExistsInFileSystem(file);
-		projects[0].open(null);
+		file = project.getFile("closed");
+		project.close(null);
+		createInFileSystem(file);
+		project.open(null);
 		assertFalse(file.exists());
-		projects[0].refreshLocal(IResource.DEPTH_INFINITE, null);
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue(file.exists());
 
 		/* refreshing an inexisting project should do nothing */
@@ -247,11 +269,9 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	}
 
 	@Test
-	public void testWriteFile() throws CoreException {
-		/* initialize common objects */
-		IProject project = projects[0];
+	public void testWriteFile() throws Exception {
 		IFile file = project.getFile("testWriteFile");
-		ensureExistsInWorkspace(file, true);
+		createInWorkspace(file);
 		/* common contents */
 		String originalContent = "this string should not be equal the other";
 		String anotherContent = "and this string should not... well, you know...";
@@ -259,32 +279,32 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		InputStream another;
 
 		/* write file for the first time */
-		original = getContents(originalContent);
+		original = createInputStream(originalContent);
 		write(file, original, true, null);
 
-		original = getContents(originalContent);
+		original = createInputStream(originalContent);
 		assertTrue("Unexpected content in " + original,
 				compareContent(original, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (false) */
-		another = getContents(anotherContent);
+		another = createInputStream(anotherContent);
 		write(file, another, false, null);
 
-		another = getContents(anotherContent);
+		another = createInputStream(anotherContent);
 		assertTrue("Unexpected content in " + another,
 				compareContent(another, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (true) */
-		original = getContents(originalContent);
+		original = createInputStream(originalContent);
 		write(file, original, true, null);
 
-		original = getContents(originalContent);
+		original = createInputStream(originalContent);
 		assertTrue("Unexpected content in " + original,
 				compareContent(original, getLocalManager().read(file, true, null)));
 
 		/* test the overwrite parameter (false) */
 		ensureOutOfSync(file);
-		InputStream another2 = getContents(anotherContent);
+		InputStream another2 = createInputStream(anotherContent);
 		assertThrows("Should fail writing out of sync file #1", CoreException.class,
 				() -> write(file, another2, false, null));
 		ensureOutOfSync(file);
@@ -293,81 +313,76 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 		file.setContents(another, true, false, null);
 
 		/* test the overwrite parameter (false) */
-		ensureDoesNotExistInFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
-		InputStream another3 = getContents(anotherContent);
+		removeFromFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133
+		InputStream another3 = createInputStream(anotherContent);
 		waitForRefresh(); // wait for refresh to ensure that file is not present in workspace
 		assertThrows("Should fail writing non existing file", CoreException.class,
 				() -> write(file, another3, false, null));
 
 		/* remove trash */
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 	}
 
 	// See https://github.com/eclipse-platform/eclipse.platform/issues/103
 	@Test
 	public void testWriteDeletedFile() throws CoreException {
-		/* initialize common objects */
-		IProject project = projects[0];
 		IFile file = project.getFile("testWriteFile");
-		ensureExistsInWorkspace(file, true);
+		createInWorkspace(file);
 		String content = "original";
 
 		/* write file for the first time */
-		write(file, getContents(content), true, null);
+		write(file, createInputStream(content), true, null);
 
 		file.delete(true, null);
 		assertThrows("Should fail writing file that is already deleted", CoreException.class,
-				() -> write(file, getContents(content), false, null));
+				() -> write(file, createInputStream(content), false, null));
 	}
 
 	@Test
 	public void testWriteFileNotInWorkspace() throws CoreException {
 		// Bug 571133
-		IProject project = projects[0];
 		IFile file = project.getFile("testWriteFile2");
 
 		// this file does NOT exist in workspace yet -> no ResourceInfo;
 
 		/* common contents */
 		String anotherContent = "and this string should not... well, you know...";
-		InputStream another = getContents(anotherContent);
+		InputStream another = createInputStream(anotherContent);
 		assertThrows(CoreException.class, () -> write(file, another, false, null));
 
 		/* remove trash */
-		ensureDoesNotExistInWorkspace(project);
+		removeFromWorkspace(project);
 	}
 
 	@Test
-	public void testWriteFolder() throws CoreException {
-		/* initialize common objects */
-		IProject project = projects[0];
+	public void testWriteFolder() throws Exception {
 		IFolder folder = project.getFolder("testWriteFolder");
-		ensureExistsInWorkspace(folder, true);
+		createInWorkspace(folder);
 
 		/* existing file on destination */
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 		IFile file = project.getFile("testWriteFolder");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		/* force = true */
 		assertThrows(CoreException.class, () -> write(folder, true, null));
 		/* force = false */
 		assertThrows(CoreException.class, () -> write(folder, false, null));
-		ensureDoesNotExistInFileSystem(file);
+		removeFromFileSystem(file);
 
 		/* existing folder on destination */
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 		/* force = true */
 		write(folder, true, null);
 		assertTrue(folder.getLocation().toFile().isDirectory());
 		/* force = false */
 		assertThrows(CoreException.class, () -> write(folder, false, null));
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 
 		/* inexisting resource on destination */
 		/* force = true */
 		write(folder, true, null);
 		assertTrue(folder.getLocation().toFile().isDirectory());
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(folder);
 		/* force = false */
 		write(folder, false, null);
 		assertTrue(folder.getLocation().toFile().isDirectory());
@@ -379,14 +394,12 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	 */
 	@Test
 	public void testWriteProject() throws CoreException {
-		/* initialize common objects */
-		final IProject project = projects[0];
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		final IFileStore fileStore = ((Resource) project).getStore();
 		// create project and then delete from file system
 		// wrap in runnable to prevent snapshot from occurring in the middle.
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			ensureDoesNotExistInFileSystem(project);
+			removeFromFileSystem(project);
 			assertFalse("2.1", fileStore.fetchInfo().isDirectory());
 			//write project in a runnable, otherwise tree will be locked
 			((Project) project).writeDescription(IResource.FORCE);
@@ -404,7 +417,7 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 	public void testBug547691() throws CoreException {
 		String projectName = createUniqueString();
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(projectName);
+		project = workspace.getRoot().getProject(projectName);
 		IProjectDescription projectDescription = workspace.newProjectDescription(projectName);
 		project.create(projectDescription, null);
 		project.open(null);
@@ -474,4 +487,9 @@ public class FileSystemResourceManagerTest extends LocalStoreTest implements ICo
 			localManager.write(file, contents, info, flags, false, jobMonitor);
 		}
 	}
+
+	private FileSystemResourceManager getLocalManager() {
+		return ((Workspace) getWorkspace()).getFileSystemManager();
+	}
+
 }

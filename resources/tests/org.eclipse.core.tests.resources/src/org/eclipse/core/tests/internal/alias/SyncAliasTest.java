@@ -30,17 +30,24 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests out of sync cases and refreshLocal in the presence of duplicate
  * resources.
  */
-public class SyncAliasTest extends ResourceTest {
+public class SyncAliasTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Tests synchronization in presence of nested projects.
 	 * See bug 244315 for details.
 	 */
+	@Test
 	public void testNestedProjects() throws CoreException {
 		final IWorkspaceRoot root = getWorkspace().getRoot();
 		File fsRoot = root.getLocation().toFile();
@@ -84,4 +91,5 @@ public class SyncAliasTest extends ResourceTest {
 			nestedTarget.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		}, new NullProgressMonitor());
 	}
+
 }

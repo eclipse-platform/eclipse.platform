@@ -16,6 +16,8 @@ package org.eclipse.core.tests.resources.regression;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 
 import java.io.ByteArrayInputStream;
 import org.eclipse.core.filesystem.provider.FileInfo;
@@ -23,26 +25,34 @@ import org.eclipse.core.internal.filesystem.local.LocalFileNativesManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.runtime.Platform.OS;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Test for Bug 530868: millisecond resolution of file timestamps with native
  * provider.
  */
-public class Bug_530868 extends ResourceTest {
+public class Bug_530868 {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject testProject;
 	private IFile testFile;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		testProject = getWorkspace().getRoot().getProject(Bug_530868.class + "TestProject");
 		testProject.create(createTestMonitor());
 		testProject.open(createTestMonitor());
-		testFile = testProject.getFile(getName());
+		testFile = testProject.getFile(testName.getMethodName());
 
 	}
 
@@ -50,13 +60,12 @@ public class Bug_530868 extends ResourceTest {
 	 * Create a file several times and check that we see different modification
 	 * timestamps.
 	 */
+	@Test
 	public void testMillisecondResolution() throws Exception {
+		assumeFalse("Mac still has no milliseconds resolution", OS.isMac());
 		try {
 			assertTrue("can only run if native provider can be enabled", LocalFileNativesManager.setUsingNative(true));
-			if (Platform.OS_MACOSX.equals(Platform.getOS())) {
-				// Mac still has no milliseconds resolution
-				return;
-			}
+
 			/*
 			 * Run 3 times in case we have seconds resolution due to a bug, but by chance we
 			 * happened to modify the file in-between two seconds.
@@ -95,4 +104,5 @@ public class Bug_530868 extends ResourceTest {
 		FileInfo testFileInfo = LocalFileNativesManager.fetchFileInfo(filePath);
 		return testFileInfo.getLastModified();
 	}
+
 }

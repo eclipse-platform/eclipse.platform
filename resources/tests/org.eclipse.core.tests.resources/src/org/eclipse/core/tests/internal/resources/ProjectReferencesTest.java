@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
@@ -26,12 +27,18 @@ import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Test project variant references
  */
-public class ProjectReferencesTest extends ResourceTest {
+public class ProjectReferencesTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project0;
 	private IProject project1;
@@ -48,14 +55,13 @@ public class ProjectReferencesTest extends ResourceTest {
 	private static final String bc1 = "Variant1";
 	private static final String nonExistentBC = "foo";
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 		project0 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p0");
 		project1 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p1");
 		project2 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p2");
 		project3 = getWorkspace().getRoot().getProject("ProjectReferencesTest_p3");
-		ensureExistsInWorkspace(new IProject[] {project0, project1, project2, project3}, true);
+		createInWorkspace(new IProject[] {project0, project1, project2, project3});
 		setUpVariants(project0);
 		setUpVariants(project1);
 		setUpVariants(project2);
@@ -85,6 +91,7 @@ public class ProjectReferencesTest extends ResourceTest {
 		project.setDescription(desc, createTestMonitor());
 	}
 
+	@Test
 	public void testAddReferencesToNonExistantConfigs() throws CoreException {
 		IProjectDescription desc = project0.getDescription();
 
@@ -107,6 +114,7 @@ public class ProjectReferencesTest extends ResourceTest {
 	 *
 	 * Removing a build configuration removes associated build configuration references
 	 */
+	@Test
 	public void testChangingBuildConfigurations() throws CoreException {
 		IProjectDescription desc = project0.getDescription();
 		IBuildConfiguration[] refs = new IBuildConfiguration[] {project0v1, project1v0};
@@ -148,6 +156,7 @@ public class ProjectReferencesTest extends ResourceTest {
 	 * Tests that setting build configuration level dynamic references
 	 * trumps the project level dynamic references when it comes to order.
 	 */
+	@Test
 	public void testMixedProjectAndBuildConfigRefs() throws CoreException {
 		// Set project variant references
 		IProjectDescription desc = project0.getDescription();
@@ -181,6 +190,7 @@ public class ProjectReferencesTest extends ResourceTest {
 				arrayContaining(project1.getActiveBuildConfig(), project3.getActiveBuildConfig()));
 	}
 
+	@Test
 	public void testSetAndGetProjectReferences() throws CoreException {
 		// Set project references
 		IProjectDescription desc = project0.getDescription();
@@ -215,6 +225,7 @@ public class ProjectReferencesTest extends ResourceTest {
 				arrayContaining(project3v0, project1v0, project2v0));
 	}
 
+	@Test
 	public void testSetAndGetProjectConfigReferences() throws CoreException {
 		// Set project variant references
 		IProjectDescription desc = project0.getDescription();
@@ -253,6 +264,7 @@ public class ProjectReferencesTest extends ResourceTest {
 				project2v0, project1.getActiveBuildConfig(), project3.getActiveBuildConfig()));
 	}
 
+	@Test
 	public void testReferencesToActiveConfigs() throws CoreException {
 		IProjectDescription desc = project0.getDescription();
 		desc.setBuildConfigReferences(bc0, new IBuildConfiguration[] {getRef(project1)});
@@ -262,4 +274,5 @@ public class ProjectReferencesTest extends ResourceTest {
 		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), true),
 				arrayContaining(project1v0));
 	}
+
 }

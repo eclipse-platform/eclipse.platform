@@ -22,14 +22,16 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class RefreshLocalPerformanceTest extends ResourceTest {
+public class RefreshLocalPerformanceTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/** big site default volume (windows) */
 	public static final String bigSiteDevice = "d:";
 
@@ -38,14 +40,6 @@ public class RefreshLocalPerformanceTest extends ResourceTest {
 
 	/** benchmark */
 	public Date startDate;
-
-	public RefreshLocalPerformanceTest() {
-		super();
-	}
-
-	public RefreshLocalPerformanceTest(String name) {
-		super(name);
-	}
 
 	protected int countChildren(File root) {
 		String[] children = root.list();
@@ -130,4 +124,5 @@ public class RefreshLocalPerformanceTest extends ResourceTest {
 		System.out.println("Average without tree: " + averageWithoutTree);
 		System.out.println("Average with tree: " + averageWithTree);
 	}
+
 }

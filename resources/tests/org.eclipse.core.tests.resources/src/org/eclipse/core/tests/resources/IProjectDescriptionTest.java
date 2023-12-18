@@ -15,8 +15,11 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,13 +33,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.CustomTriggerBuilder;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests protocol of IProjectDescription and other specified behavior
  * that relates to the project description.
  */
-public class IProjectDescriptionTest extends ResourceTest {
+public class IProjectDescriptionTest {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testDescriptionConstant() {
 		assertEquals("1.0", ".project", IProjectDescription.DESCRIPTION_FILE_NAME);
 	}
@@ -44,9 +53,10 @@ public class IProjectDescriptionTest extends ResourceTest {
 	/**
 	 * Tests that setting the build spec preserves any instantiated builder.
 	 */
+	@Test
 	public void testBuildSpecBuilder() throws Exception {
 		Project project = (Project) getWorkspace().getRoot().getProject("ProjectTBSB");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		assertTrue("1.0", descriptionFile.exists());
@@ -76,11 +86,12 @@ public class IProjectDescriptionTest extends ResourceTest {
 	 * Tests that the description file is not dirtied if the description has not actually
 	 * changed.
 	 */
+	@Test
 	public void testDirtyDescription() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IProject target1 = getWorkspace().getRoot().getProject("target1");
 		IProject target2 = getWorkspace().getRoot().getProject("target2");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		IFile descriptionFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		assertTrue("1.0", descriptionFile.exists());
 
@@ -115,10 +126,11 @@ public class IProjectDescriptionTest extends ResourceTest {
 	 * Tests that the description file is dirtied if the description has actually
 	 * changed. This is a regression test for bug 64128.
 	 */
+	@Test
 	public void testDirtyBuildSpec() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile projectDescription = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		String key = "key";
 		String value1 = "value1";
 		String value2 = "value2";
@@ -144,14 +156,15 @@ public class IProjectDescriptionTest extends ResourceTest {
 		assertTrue("3.0", modificationStamp != projectDescription.getModificationStamp());
 	}
 
+	@Test
 	public void testDynamicProjectReferences() throws CoreException {
 		IProject target1 = getWorkspace().getRoot().getProject("target1");
 		IProject target2 = getWorkspace().getRoot().getProject("target2");
-		ensureExistsInWorkspace(target1, true);
-		ensureExistsInWorkspace(target2, true);
+		createInWorkspace(target1);
+		createInWorkspace(target2);
 
 		IProject project = getWorkspace().getRoot().getProject("project");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		IProjectDescription description = project.getDescription();
 		description.setReferencedProjects(new IProject[] {target1});
@@ -172,12 +185,13 @@ public class IProjectDescriptionTest extends ResourceTest {
 	/**
 	 * Tests IProjectDescription project references
 	 */
+	@Test
 	public void testProjectReferences() throws CoreException {
 		IProject target = getWorkspace().getRoot().getProject("Project1");
-		ensureExistsInWorkspace(target, true);
+		createInWorkspace(target);
 
 		IProject project = getWorkspace().getRoot().getProject("Project2");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		project.open(createTestMonitor());
 		IProjectDescription description = project.getDescription();
@@ -193,4 +207,5 @@ public class IProjectDescriptionTest extends ResourceTest {
 		IProject[] refs = getWorkspace().getRoot().getProject("DoesNotExist2").getReferencingProjects();
 		assertEquals("4.0", 0, refs.length);
 	}
+
 }

@@ -15,7 +15,10 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -24,13 +27,19 @@ import org.eclipse.core.resources.ISynchronizer;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * When a container was moved, its children were not added to phantom space.
  */
-public class Bug_029671 extends ResourceTest {
+public class Bug_029671 {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testBug() throws CoreException {
 		final QualifiedName partner = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		IWorkspace workspace = getWorkspace();
@@ -41,12 +50,12 @@ public class Bug_029671 extends ResourceTest {
 		IFolder folder = project.getFolder("source");
 		IFile file = folder.getFile("file.txt");
 
-		ensureExistsInWorkspace(file, true);
+		createInWorkspace(file);
 
 		try {
 			// sets sync info for the folder and its children
-			synchronizer.setSyncInfo(partner, folder, getRandomString().getBytes());
-			synchronizer.setSyncInfo(partner, file, getRandomString().getBytes());
+			synchronizer.setSyncInfo(partner, folder, createRandomString().getBytes());
+			synchronizer.setSyncInfo(partner, file, createRandomString().getBytes());
 
 			IFolder targetFolder = project.getFolder("target");
 			IFile targetFile = targetFolder.getFile(file.getName());
@@ -64,4 +73,5 @@ public class Bug_029671 extends ResourceTest {
 			synchronizer.remove(partner);
 		}
 	}
+
 }

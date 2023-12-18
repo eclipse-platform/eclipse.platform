@@ -15,11 +15,21 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,7 +57,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
+import org.junit.rules.TestName;
 
 /**
  * This class tests public API related to building and to build specifications.
@@ -56,25 +72,17 @@ import org.junit.function.ThrowingRunnable;
  * IWorkspace#build IProject#build IProjectDescription#getBuildSpec
  * IProjectDescription#setBuildSpec
  */
-public class BuilderTest extends AbstractBuilderTest {
+public class BuilderTest {
 
-	/**
-	 * BuilderTest constructor comment.
-	 *
-	 * @param name
-	 *                  java.lang.String
-	 */
-	public BuilderTest(String name) {
-		super(name);
-	}
+	@Rule
+	public TestName testName = new TestName();
 
-	/**
-	 * Tears down the fixture, for example, close a network connection. This
-	 * method is called after a test is executed.
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Before
+	@After
+	public void resetBuilder() throws Exception {
 		TestBuilder builder = SortBuilder.getInstance();
 		if (builder != null) {
 			builder.reset();
@@ -86,9 +94,30 @@ public class BuilderTest extends AbstractBuilderTest {
 	}
 
 	/**
+	 * Dirties the given file, forcing a build.
+	 */
+	private void dirty(IFile file) throws CoreException {
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+	}
+
+	/**
+	 * Creates and returns a new command with the given builder name, and the
+	 * TestBuilder.BUILD_ID parameter set to the given value.
+	 */
+	private ICommand createCommand(IProjectDescription description, String builderName, String buildID) {
+		ICommand command = description.newCommand();
+		Map<String, String> args = command.getArguments();
+		args.put(TestBuilder.BUILD_ID, buildID);
+		command.setBuilderName(builderName);
+		command.setArguments(args);
+		return command;
+	}
+
+	/**
 	 * Make sure this test runs first, before any other test
 	 * has a chance to mess with the build order.
 	 */
+	@Test
 	public void testAardvarkBuildOrder() {
 		IWorkspace workspace = getWorkspace();
 		//builder order should initially be null
@@ -100,6 +129,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 *
 	 * @see SortBuilder
 	 */
+	@Test
 	public void testAutoBuildPR() throws CoreException {
 		//REF: 1FUQUJ4
 		// Create some resource handles
@@ -124,15 +154,16 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create folders and files
 		folder.create(true, true, createTestMonitor());
-		fileA.create(getRandomContents(), true, createTestMonitor());
+		fileA.create(createRandomContentsStream(), true, createTestMonitor());
 		sub.create(true, true, createTestMonitor());
-		fileB.create(getRandomContents(), true, createTestMonitor());
+		fileB.create(createRandomContentsStream(), true, createTestMonitor());
 	}
 
 	/**
 	 * Tests installing and running a builder that always fails during
 	 * instantation.
 	 */
+	@Test
 	public void testBrokenBuilder() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -164,6 +195,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 	}
 
+	@Test
 	public void testBuildClean() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -216,6 +248,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 *
 	 * @see SortBuilder
 	 */
+	@Test
 	public void testBuildCommands() throws CoreException {
 		// Create some resource handles
 		IWorkspace workspace = getWorkspace();
@@ -224,9 +257,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		IFile file1 = project1.getFile("FILE1");
 		IFile file2 = project2.getFile("FILE2");
 		//set the build order
-		IWorkspaceDescription workspaceDesc = workspace.getDescription();
-		workspaceDesc.setBuildOrder(new String[] { project1.getName(), project2.getName() });
-		workspace.setDescription(workspaceDesc);
+		setBuildOrder(project1, project2);
 		TestBuilder verifier = null;
 
 		// Turn auto-building off
@@ -236,11 +267,11 @@ public class BuilderTest extends AbstractBuilderTest {
 		project1.open(createTestMonitor());
 		project2.create(createTestMonitor());
 		project2.open(createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
-		file2.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
 		// Do an initial build to get the builder instance
 		IProjectDescription desc = project1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Project1Build1") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Project1Build1") });
 		project1.setDescription(desc, createTestMonitor());
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		verifier = SortBuilder.getInstance();
@@ -279,7 +310,7 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create and set a build specs for project one
 		desc = project1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Project1Build1") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Project1Build1") });
 		project1.setDescription(desc, createTestMonitor());
 
 		// Create and set a build spec for project two
@@ -342,6 +373,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 * Tests that a pre_build listener is not called if there have been no changes
 	 * since the last build of any kind occurred.  See https://bugs.eclipse.org/bugs/show_bug.cgi?id=154880.
 	 */
+	@Test
 	public void testPreBuildEvent() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -357,7 +389,7 @@ public class BuilderTest extends AbstractBuilderTest {
 			proj1.open(createTestMonitor());
 			// Create and set a build spec for project one
 			IProjectDescription desc = proj1.getDescription();
-			desc.setBuildSpec(new ICommand[] {createCommand(desc, "Build0")});
+			desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 			proj1.setDescription(desc, createTestMonitor());
 			proj1.build(IncrementalProjectBuilder.FULL_BUILD, SortBuilder.BUILDER_NAME, new HashMap<>(), null);
 			notified[0] = false;
@@ -374,6 +406,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 *
 	 * @see SortBuilder
 	 */
+	@Test
 	public void testBuildOrder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -392,12 +425,13 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create and set a build specs for project one
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 
 		// Create and set a build spec for project two
 		desc = proj2.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build1"), createCommand(desc, "Build2") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1"),
+				createCommand(desc, SortBuilder.BUILDER_NAME, "Build2") });
 		proj2.setDescription(desc, createTestMonitor());
 
 		// Build the workspace
@@ -444,6 +478,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 * Tests that changing the dynamic build order will induce an autobuild on a project.
 	 * This is a regression test for bug 60653.
 	 */
+	@Test
 	public void testChangeDynamicBuildOrder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -452,15 +487,13 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Turn auto-building on and make sure there is no explicit build order
 		setAutoBuilding(true);
-		IWorkspaceDescription wsDescription = getWorkspace().getDescription();
-		wsDescription.setBuildOrder(null);
-		getWorkspace().setDescription(wsDescription);
+		setBuildOrder((IProject[]) null);
 		// Create and set a build spec for project two
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			proj2.create(createTestMonitor());
 			proj2.open(createTestMonitor());
 			IProjectDescription desc = proj2.getDescription();
-			desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build1") });
+			desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1") });
 			proj2.setDescription(desc, createTestMonitor());
 		}, createTestMonitor());
 		waitForBuild();
@@ -486,7 +519,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		proj1.create(createTestMonitor());
 		proj1.open(createTestMonitor());
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 		// add the dynamic reference to project two
 		IProjectDescription description = proj2.getDescription();
@@ -499,6 +532,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 * to be built in the correct order.
 	 * This is a regression test for bug 330194.
 	 */
+	@Test
 	public void testChangeDynamicBuildOrderDuringPreBuild() throws Throwable {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -507,15 +541,17 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Disable workspace auto-build
 		setAutoBuilding(false);
 
-		ensureExistsInWorkspace(proj1, false);
-		ensureExistsInWorkspace(proj2, false);
+		proj1.create(createTestMonitor());
+		proj1.open(createTestMonitor());
+		proj2.create(createTestMonitor());
+		proj2.open(createTestMonitor());
 
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, "Build0")});
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 
 		desc = proj2.getDescription();
-		desc.setBuildSpec(new ICommand[] {createCommand(desc, "Build1")});
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1") });
 		proj2.setDescription(desc, createTestMonitor());
 
 		// Ensure the builder is instantiated
@@ -591,6 +627,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	/**
 	 * Ensure that build order is preserved when project is closed/opened.
 	 */
+	@Test
 	public void testCloseOpenProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("PROJECT" + 1);
@@ -600,7 +637,8 @@ public class BuilderTest extends AbstractBuilderTest {
 
 		// Create and set a build spec
 		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build1"), createCommand(desc, "Build2") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1"),
+				createCommand(desc, SortBuilder.BUILDER_NAME, "Build2") });
 		project.setDescription(desc, createTestMonitor());
 
 		project.close(createTestMonitor());
@@ -622,6 +660,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 * Tests that when a project is copied, the copied project has a full build
 	 * but the source project does not.
 	 */
+	@Test
 	public void testCopyProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -633,11 +672,11 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Create some resources
 		proj1.create(createTestMonitor());
 		proj1.open(createTestMonitor());
-		ensureDoesNotExistInWorkspace(proj2);
+		removeFromWorkspace(proj2);
 
 		// Create and set a build spec for project one
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 
 		waitForBuild();
@@ -646,7 +685,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		desc.setName(proj2.getName());
 		proj1.copy(desc, IResource.NONE, createTestMonitor());
 
-		waitForEncodingRelatedJobs(getName());
+		waitForEncodingRelatedJobs(testName.getMethodName());
 		waitForBuild();
 		SortBuilder builder = SortBuilder.getInstance();
 		assertEquals(proj2, builder.getProject());
@@ -663,6 +702,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 * Tests an implicit workspace build order created by setting dynamic
 	 * project references.
 	 */
+	@Test
 	public void testDynamicBuildOrder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
@@ -681,18 +721,17 @@ public class BuilderTest extends AbstractBuilderTest {
 		IProjectDescription description = proj2.getDescription();
 		description.setDynamicReferences(new IProject[] { proj1 });
 		proj2.setDescription(description, IResource.NONE, null);
-		IWorkspaceDescription wsDescription = getWorkspace().getDescription();
-		wsDescription.setBuildOrder(null);
-		getWorkspace().setDescription(wsDescription);
+		setBuildOrder((IProject[]) null);
 
 		// Create and set a build specs for project one
 		IProjectDescription desc = proj1.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build0") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build0") });
 		proj1.setDescription(desc, createTestMonitor());
 
 		// Create and set a build spec for project two
 		desc = proj2.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, "Build1"), createCommand(desc, "Build2") });
+		desc.setBuildSpec(new ICommand[] { createCommand(desc, SortBuilder.BUILDER_NAME, "Build1"),
+				createCommand(desc, SortBuilder.BUILDER_NAME, "Build2") });
 		proj2.setDescription(desc, createTestMonitor());
 
 		// Build the workspace
@@ -728,6 +767,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	/**
 	 * Tests that enabling autobuild causes a build to occur.
 	 */
+	@Test
 	public void testEnableAutobuild() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -758,6 +798,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	/**
 	 * Tests installing and running a builder that always fails in its build method
 	 */
+	@Test
 	public void testExceptionBuilder() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -792,6 +833,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	/**
 	 * Tests the method IncrementProjectBuilder.forgetLastBuiltState
 	 */
+	@Test
 	public void testForgetLastBuiltState() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -840,6 +882,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 * Tests that a client invoking a manual incremental build before autobuild has had
 	 * a chance to run will block until the build completes. See bug 275879.
 	 */
+	@Test
 	public void testIncrementalBuildBeforeAutobuild() throws Exception {
 		// Create some resource handles
 		final IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -855,7 +898,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		desc.setBuildSpec(new ICommand[] { command });
 		project.setDescription(desc, createTestMonitor());
-		ensureExistsInWorkspace(input, getRandomContents());
+		createInWorkspace(input, createRandomString());
 
 		waitForBuild();
 		assertTrue("1.0", output.exists());
@@ -884,6 +927,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	/**
 	 * Tests that autobuild is interrupted by a background scheduled job, but eventually completes.
 	 */
+	@Test
 	public void testInterruptAutobuild() throws Exception {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -898,7 +942,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		command.setBuilderName(SortBuilder.BUILDER_NAME);
 		desc.setBuildSpec(new ICommand[] { command });
 		project.setDescription(desc, createTestMonitor());
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 		waitForBuild();
 
 		// Set up a plug-in lifecycle verifier for testing purposes
@@ -927,7 +971,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		try {
 			getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.PRE_BUILD);
 			// Now change a file. The build should not complete until the job triggered by the listener completes
-			file.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+			file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			//wait for job to be scheduled
 			barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 			//wait for test job to complete
@@ -944,6 +988,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	/**
 	 * Tests the lifecycle of a builder.
 	 */
+	@Test
 	public void testLifecycleEvents() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -1007,6 +1052,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 *
 	 * @see SortBuilder
 	 */
+	@Test
 	public void testMoveProject() throws CoreException {
 		// Create some resource handles
 		IWorkspace workspace = getWorkspace();
@@ -1041,6 +1087,7 @@ public class BuilderTest extends AbstractBuilderTest {
 	 * Tests that turning autobuild on will invoke a build in the next
 	 * operation.
 	 */
+	@Test
 	public void testTurnOnAutobuild() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -1051,7 +1098,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Create and open a project
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		file.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		file.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		// Create and set a build spec for the project
 		IProjectDescription desc = project.getDescription();
@@ -1074,7 +1121,7 @@ public class BuilderTest extends AbstractBuilderTest {
 		// Now make a change and then turn autobuild on. Turning it on should
 		// cause a build.
 		IWorkspaceRunnable r = monitor -> {
-			file.setContents(getRandomContents(), IResource.NONE, createTestMonitor());
+			file.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 			IWorkspaceDescription description = getWorkspace().getDescription();
 			description.setAutoBuilding(true);
 			getWorkspace().setDescription(description);
@@ -1085,4 +1132,5 @@ public class BuilderTest extends AbstractBuilderTest {
 		verifier.addExpectedLifecycleEvent(TestBuilder.DEFAULT_BUILD_ID);
 		verifier.assertLifecycleEvents();
 	}
+
 }

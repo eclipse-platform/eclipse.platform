@@ -15,15 +15,22 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import org.eclipse.core.internal.jobs.JobManager;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.ILock;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.harness.TestBarrier2;
+import org.junit.Test;
 
 /**
  * Regression test for bug 316839.
  */
 @SuppressWarnings("restriction")
-public class Bug_316839 extends AbstractJobManagerTest {
+public class Bug_316839 extends AbstractJobTest {
 
 	ILock LOCK = Job.getJobManager().newLock();
 
@@ -33,6 +40,7 @@ public class Bug_316839 extends AbstractJobManagerTest {
 	TestJob interruptingJob;
 	boolean lockGraphWasEmpty = true;
 
+	@Test
 	public void testBug() {
 		// Schedule jobs
 		yieldingJob = new YieldingTestJob("job with project rule "); //$NON-NLS-1$

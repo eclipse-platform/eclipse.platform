@@ -13,22 +13,44 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.internal.resources.ICoreConstants;
-import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
+public class LocalSyncTest implements ICoreConstants {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private IProject project;
+
+	@Before
+	public void createTestProject() throws CoreException {
+		project = getWorkspace().getRoot().getProject("Project");
+		createInWorkspace(project);
+	}
 
 	public void assertExistsInFileSystemWithNoContent(IFile target) {
 		assertTrue(existsInFileSystemWithNoContent(target));
@@ -39,17 +61,15 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		return path.toFile().exists() && path.toFile().length() == 0;
 	}
 
+	@Test
 	public void testProjectDeletion() throws CoreException {
-		/* initialize common objects */
-		Project project = (Project) projects[0];
-
 		//snapshot will recreate the deleted .project file
 		TestingSupport.waitForSnapshot();
 
 		// create resources
 		IResource[] resources = buildResources(project,
 				new String[] { "/File1", "/Folder1/", "/Folder1/File1", "/Folder1/Folder2/" });
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 
 		// delete project's default directory
 		Workspace.clear(project.getLocation().toFile());
@@ -67,10 +87,8 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		}
 	}
 
+	@Test
 	public void testProjectWithNoResources() throws CoreException {
-		/* initialize common objects */
-		Project project = (Project) projects[0];
-
 		/* check normal behaviour */
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue(project.exists());
@@ -79,10 +97,8 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 	/**
 	 * Simple synchronization test. Uses one solution and one project.
 	 */
+	@Test
 	public void testSimpleSync() throws Exception {
-		/* initialize common objects */
-		Project project = (Project) projects[0];
-
 		// create resource handles
 		IResource index = project.getFile(IPath.fromOSString("index.html"));
 		IResource toc = project.getFile(IPath.fromOSString("toc.html"));
@@ -90,10 +106,10 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		IResource folder = project.getFolder(IPath.fromOSString("folder"));
 
 		// add resources to the workspace
-		ensureExistsInWorkspace((IFile) index, "");
-		ensureExistsInWorkspace(toc, true);
-		ensureExistsInWorkspace((IFile) file, "");
-		ensureExistsInWorkspace(folder, true);
+		createInWorkspace((IFile) index, "");
+		createInWorkspace(toc);
+		createInWorkspace((IFile) file, "");
+		createInWorkspace(folder);
 
 		// run synchronize
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -118,17 +134,17 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 
 		// make some modifications in the local resources
 		// index stays the same
-		ensureDoesNotExistInFileSystem(toc);
+		removeFromFileSystem(toc);
 		//
-		ensureDoesNotExistInFileSystem(file);
-		ensureDoesNotExistInFileSystem(folder);
+		removeFromFileSystem(file);
+		removeFromFileSystem(folder);
 
 		Thread.sleep(5000);
 
 		file = project.getFolder(IPath.fromOSString("file"));
 		folder = project.getFile(IPath.fromOSString("folder"));
-		ensureExistsInFileSystem(file);
-		ensureExistsInFileSystem((IFile) folder);
+		createInFileSystem(file);
+		createInFileSystem(folder);
 
 		// run synchronize
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -152,4 +168,5 @@ public class LocalSyncTest extends LocalStoreTest implements ICoreConstants {
 		assertTrue(folder.getType() == IResource.FILE);
 		//-----------------------------------------------------------
 	}
+
 }

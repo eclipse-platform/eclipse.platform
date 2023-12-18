@@ -14,7 +14,10 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
@@ -26,13 +29,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IWorkspaceTest extends ResourceTest {
+public class IWorkspaceTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * 1GDKIHD: ITPCORE:WINNT - API - IWorkspace.move needs to keep history
 	 */
+	@Test
 	public void testMultiMove_1GDKIHD() throws CoreException {
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -44,11 +53,11 @@ public class IWorkspaceTest extends ResourceTest {
 		IFolder folder = project.getFolder("folder");
 		IResource[] allResources = new IResource[] {file1, folder};
 		folder.create(true, true, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		getWorkspace().move(new IFile[] { file1 }, folder.getFullPath(), true, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
 		IFileState[] states = file1.getHistory(createTestMonitor());
 		assertEquals("1.0", 3, states.length);
 		getWorkspace().delete(allResources, true, createTestMonitor());
@@ -56,11 +65,11 @@ public class IWorkspaceTest extends ResourceTest {
 
 		// test file (force = false)
 		folder.create(true, true, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		getWorkspace().move(new IFile[] { file1 }, folder.getFullPath(), false, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file1.getHistory(createTestMonitor());
 		assertEquals("2.0", 3, states.length);
 		getWorkspace().delete(allResources, true, createTestMonitor());
@@ -70,6 +79,7 @@ public class IWorkspaceTest extends ResourceTest {
 	/**
 	 * 1GDGRIZ: ITPCORE:WINNT - API - IWorkspace.delete needs to keep history
 	 */
+	@Test
 	public void testMultiDelete_1GDGRIZ() throws CoreException {
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -78,22 +88,22 @@ public class IWorkspaceTest extends ResourceTest {
 
 		// test file (force = true)
 		IFile file1 = project.getFile("file.txt");
-		file1.create(getRandomContents(), true, createTestMonitor());
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		getWorkspace().delete(new IFile[] { file1 }, true, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
 		IFileState[] states = file1.getHistory(createTestMonitor());
 		assertEquals("1.0", 3, states.length);
 		getWorkspace().delete(new IResource[] { file1 }, true, createTestMonitor());
 		project.clearHistory(createTestMonitor());
 
 		// test file (force = false)
-		file1.create(getRandomContents(), true, createTestMonitor());
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
-		file1.setContents(getRandomContents(), true, true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		getWorkspace().delete(new IFile[] { file1 }, false, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file1.getHistory(createTestMonitor());
 		assertEquals("2.0", 3, states.length);
 		getWorkspace().delete(new IResource[] { file1 }, true, createTestMonitor());
@@ -103,12 +113,12 @@ public class IWorkspaceTest extends ResourceTest {
 		IFolder folder = project.getFolder("folder");
 		IFile file2 = folder.getFile("file2.txt");
 		folder.create(true, true, createTestMonitor());
-		file2.create(getRandomContents(), true, createTestMonitor());
-		file2.setContents(getRandomContents(), true, true, createTestMonitor());
-		file2.setContents(getRandomContents(), true, true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
+		file2.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file2.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		getWorkspace().delete(new IResource[] { folder }, true, createTestMonitor());
 		folder.create(true, true, createTestMonitor());
-		file2.create(getRandomContents(), true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file2.getHistory(createTestMonitor());
 		assertEquals("3.0", 3, states.length);
 		getWorkspace().delete(new IResource[] { folder, file1, file2 }, true, createTestMonitor());
@@ -116,23 +126,24 @@ public class IWorkspaceTest extends ResourceTest {
 
 		// test folder (force = false)
 		folder.create(true, true, createTestMonitor());
-		file2.create(getRandomContents(), true, createTestMonitor());
-		file2.setContents(getRandomContents(), true, true, createTestMonitor());
-		file2.setContents(getRandomContents(), true, true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
+		file2.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file2.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		getWorkspace().delete(new IResource[] { folder }, false, createTestMonitor());
 		folder.create(true, true, createTestMonitor());
-		file2.create(getRandomContents(), true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file2.getHistory(createTestMonitor());
 		assertEquals("4.0", 3, states.length);
 		getWorkspace().delete(new IResource[] { folder, file1, file2 }, true, createTestMonitor());
 		project.clearHistory(createTestMonitor());
 	}
 
+	@Test
 	public void test_8974() throws CoreException {
 		IProject one = getWorkspace().getRoot().getProject("One");
 		IPath oneLocation = getRandomLocation().append(one.getName());
 		oneLocation.toFile().mkdirs();
-		deleteOnTearDown(oneLocation.removeLastSegments(1));
+		workspaceRule.deleteOnTearDown(oneLocation.removeLastSegments(1));
 		IProjectDescription oneDescription = getWorkspace().newProjectDescription(one.getName());
 		oneDescription.setLocation(oneLocation);
 
@@ -144,4 +155,5 @@ public class IWorkspaceTest extends ResourceTest {
 		IStatus result = getWorkspace().validateProjectLocation(two, twoLocation);
 		assertEquals(Workspace.caseSensitive, result.isOK());
 	}
+
 }

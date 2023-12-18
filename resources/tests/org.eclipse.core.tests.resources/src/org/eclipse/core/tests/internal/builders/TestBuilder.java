@@ -156,27 +156,27 @@ public abstract class TestBuilder extends IncrementalProjectBuilder {
 	/**
 	 * Return the configuration element that created this builder.
 	 *
-	 * @see setInitializationData(IConfigurationElement, String, Object)
+	 * @see #setInitializationData(IConfigurationElement, String, Object)
 	 */
 	public IConfigurationElement getConfigurationElement() {
 		return config;
 	}
 
 	/**
-	 * Return the data, always a <code>Hashtable</code> or <code>String</code>,
-	 * that was set when this builder was initialized.
+	 * Return the data, always a <code>Hashtable</code> or <code>String</code>, that
+	 * was set when this builder was initialized.
 	 *
-	 * @see setInitializationData(IConfigurationElement, String, Object)
+	 * @see #setInitializationData(IConfigurationElement, String, Object)
 	 */
 	public Object getData() {
 		return data;
 	}
 
 	/**
-	 * Return the name of the child configuration element that named this
-	 * builder in its class attribute.
+	 * Return the name of the child configuration element that named this builder in
+	 * its class attribute.
 	 *
-	 * @see setInitializationData(IConfigurationElement, String, Object)
+	 * @see #setInitializationData(IConfigurationElement, String, Object)
 	 */
 	public String getName() {
 		return name;

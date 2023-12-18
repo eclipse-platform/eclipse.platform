@@ -14,7 +14,10 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -25,15 +28,21 @@ import org.eclipse.core.resources.ISynchronizer;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.ResourceTest;
 import org.eclipse.core.tests.resources.ResourceVisitorVerifier;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Resource#accept doesn't obey member flags for the traversal entry point.
  */
 
-public class Bug_028981 extends ResourceTest {
+public class Bug_028981 {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testBug() throws CoreException {
 		final QualifiedName partner = new QualifiedName("org.eclipse.core.tests.resources", "myTarget");
 		final IWorkspace workspace = getWorkspace();
@@ -48,8 +57,8 @@ public class Bug_028981 extends ResourceTest {
 		IFolder settings = project.getFolder(".settings");
 		IFile prefs = settings.getFile("org.eclipse.core.resources.prefs");
 
-		ensureExistsInWorkspace(new IResource[] {teamPrivateFile, regularFile}, true);
-		synchronizer.setSyncInfo(partner, phantomFile, getRandomString().getBytes());
+		createInWorkspace(new IResource[] {teamPrivateFile, regularFile});
+		synchronizer.setSyncInfo(partner, phantomFile, createRandomString().getBytes());
 		teamPrivateFile.setTeamPrivateMember(true);
 		assertTrue("0.7", !regularFile.isPhantom() && !regularFile.isTeamPrivateMember());
 		assertTrue("0.8", teamPrivateFile.isTeamPrivateMember());
@@ -85,4 +94,5 @@ public class Bug_028981 extends ResourceTest {
 		teamPrivateFile.accept(verifier, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
 		assertTrue("5.1 - " + verifier.getMessage(), verifier.isValid());
 	}
+
 }

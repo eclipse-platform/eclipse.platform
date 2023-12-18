@@ -15,11 +15,20 @@
 package org.eclipse.core.tests.internal.localstore;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -47,13 +56,19 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This class defines all tests for the HistoryStore Class.
  */
 
-public class HistoryStoreTest extends ResourceTest {
+public class HistoryStoreTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	static class LogListenerVerifier implements ILogListener {
 		List<Integer> actual = new ArrayList<>();
@@ -114,7 +129,7 @@ public class HistoryStoreTest extends ResourceTest {
 		}
 	}
 
-	public static void assertEquals(String tag, IFileState expected, IFileState actual) {
+	public static void assertFileStateEquals(String tag, IFileState expected, IFileState actual) {
 		assertEquals(tag + " path differs", expected.getFullPath(), actual.getFullPath());
 		assertEquals(tag + " timestamp differs", expected.getModificationTime(), actual.getModificationTime());
 		assertEquals(tag + " uuid differs", ((FileState) expected).getUUID(), ((FileState) actual).getUUID());
@@ -161,9 +176,8 @@ public class HistoryStoreTest extends ResourceTest {
 		return currentDescription;
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		wipeHistoryStore(createTestMonitor());
 	}
 
@@ -202,13 +216,14 @@ public class HistoryStoreTest extends ResourceTest {
 	 *      encounter granularity issues).
 	 *  15. Check file states.  There should be none left.
 	 */
+	@Test
 	public void testAddStateAndPolicies() throws Exception {
 		/* Create common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("file.txt");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		/* set local history policies */
 		IWorkspaceDescription description = getWorkspace().getDescription();
@@ -224,7 +239,7 @@ public class HistoryStoreTest extends ResourceTest {
 		for (int i = 0; i < 8; i++) {
 			ensureOutOfSync(file);
 			file.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
-			file.setContents(getRandomContents(), true, true, createTestMonitor());
+			file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		}
 		IFileState[] states = file.getHistory(createTestMonitor());
 		// Make sure we have 8 states as we haven't trimmed yet.
@@ -246,7 +261,7 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// assert that the most recent states were preserved
 		for (int i = 0; i < states.length; i++) {
-			assertEquals("1.4." + i, oldStates[i], states[i]);
+			assertFileStateEquals("1.4." + i, oldStates[i], states[i]);
 		}
 
 		/* test max file state size */
@@ -258,7 +273,7 @@ public class HistoryStoreTest extends ResourceTest {
 		file.create(new ByteArrayInputStream(new byte[0]), true, createTestMonitor());
 		// Add 10 bytes to exceed the max file state size.
 		for (int i = 0; i < 10; i++) {
-			file.appendContents(getContents("a"), true, true, createTestMonitor());
+			file.appendContents(createInputStream("a"), true, true, createTestMonitor());
 		}
 		getWorkspace().save(true, null);
 		states = file.getHistory(createTestMonitor());
@@ -298,7 +313,8 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("3.5", 0, states.length);
 	}
 
-	public void testBug28238() throws CoreException {
+	@Test
+	public void testBug28238() throws Exception {
 		// paths to mimic files in the workspace
 		IProject project = getWorkspace().getRoot().getProject("myproject28238");
 		IFolder folder = project.getFolder("myfolder");
@@ -309,8 +325,8 @@ public class HistoryStoreTest extends ResourceTest {
 		IHistoryStore store = ((Resource) getWorkspace().getRoot()).getLocalManager().getHistoryStore();
 
 		// location of the data on disk
-		IFileStore fileStore = getTempStore();
-		createFileInFileSystem(fileStore);
+		IFileStore fileStore = workspaceRule.getTempStore();
+		createInFileSystem(fileStore);
 		assertEquals("1.0" + " file already has state", 0, store.getStates(file.getFullPath(), createTestMonitor()).length);
 
 		// add the data to the history store
@@ -327,6 +343,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("3.0", 1, states.length);
 	}
 
+	@Test
 	public void testBug28603() throws CoreException {
 		// paths to mimic files in the workspace
 		IProject project = getWorkspace().getRoot().getProject("myproject28603");
@@ -336,11 +353,11 @@ public class HistoryStoreTest extends ResourceTest {
 		IFile file2 = folder2.getFile(file1.getName());
 
 		// directly deletes history files if project did already existed:
-		ensureExistsInWorkspace(new IResource[] {project, folder1, folder2}, true);
-		file1.create(getRandomContents(), IResource.FORCE, createTestMonitor());
-		file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
-		file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
-		file1.setContents(getRandomContents(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+		createInWorkspace(new IResource[] {project, folder1, folder2});
+		file1.create(createRandomContentsStream(), IResource.FORCE, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
+		file1.setContents(createRandomContentsStream(), IResource.FORCE | IResource.KEEP_HISTORY, createTestMonitor());
 		setMaxFileStates(50);
 
 		int maxStates = ResourcesPlugin.getWorkspace().getDescription().getMaxFileStates();
@@ -372,13 +389,14 @@ public class HistoryStoreTest extends ResourceTest {
 	 * - consider history store information stale after some specified period
 	 *   of time and discard stale data
 	 */
+	@Test
 	public void testClean() throws Exception {
 		/* Create common objects. */
 		IProject project = getWorkspace().getRoot().getProject("ProjectClean");
 		IFile file = project.getFile("file.txt");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 		IHistoryStore store = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
 		// get another copy for changes
 		IWorkspaceDescription description = getWorkspace().getDescription();
@@ -401,7 +419,7 @@ public class HistoryStoreTest extends ResourceTest {
 			// file systems
 			// } catch (InterruptedException e) {
 			// }
-			file.setContents(getRandomContents(), true, true, createTestMonitor());
+			file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		}
 		// All 8 states should exist.
 		long oldLastModTimes[] = new long[8];
@@ -486,7 +504,8 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
-	public void testCopyFolder() throws CoreException {
+	@Test
+	public void testCopyFolder() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("CopyFolderProject");
@@ -500,13 +519,13 @@ public class HistoryStoreTest extends ResourceTest {
 		file = folder.getFile("file1.txt");
 		// Setup folder1 and file1.txt with some local history
 		folder.create(true, true, createTestMonitor());
-		file.create(getContents(contents[0]), true, createTestMonitor());
-		file.setContents(getContents(contents[1]), true, true, createTestMonitor());
-		file.setContents(getContents(contents[2]), true, true, createTestMonitor());
+		file.create(createInputStream(contents[0]), true, createTestMonitor());
+		file.setContents(createInputStream(contents[1]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertEquals("1.0", 2, states.length);
-		assertTrue("1.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("1.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("1.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("1.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 
 		// Now do the move
 		folder.copy(folder2.getFullPath(), true, createTestMonitor());
@@ -516,20 +535,20 @@ public class HistoryStoreTest extends ResourceTest {
 		assertTrue("1.3", file2.getFullPath().toString().endsWith("folder2/file1.txt"));
 
 		// Give the new (copied file) some new contents
-		file2.setContents(getContents(contents[3]), true, true, createTestMonitor());
-		file2.setContents(getContents(contents[4]), true, true, createTestMonitor());
+		file2.setContents(createInputStream(contents[3]), true, true, createTestMonitor());
+		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
 
 		// Check the local history of both files
 		states = file.getHistory(createTestMonitor());
 		assertEquals("2.0", 2, states.length);
-		assertTrue("2.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("2.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("2.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("2.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 		states = file2.getHistory(createTestMonitor());
 		assertEquals("2.3", 4, states.length);
-		assertTrue("2.4", compareContent(getContents(contents[3]), states[0].getContents()));
-		assertTrue("2.5", compareContent(getContents(contents[2]), states[1].getContents()));
-		assertTrue("2.6", compareContent(getContents(contents[1]), states[2].getContents()));
-		assertTrue("2.7", compareContent(getContents(contents[0]), states[3].getContents()));
+		assertTrue("2.4", compareContent(createInputStream(contents[3]), states[0].getContents()));
+		assertTrue("2.5", compareContent(createInputStream(contents[2]), states[1].getContents()));
+		assertTrue("2.6", compareContent(createInputStream(contents[1]), states[2].getContents()));
+		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[3].getContents()));
 
 		project.delete(true, createTestMonitor());
 	}
@@ -543,6 +562,7 @@ public class HistoryStoreTest extends ResourceTest {
 	 * - give an invalid source path but a valid destination path
 	 * - give an invalid destination path but a valid source path
 	 */
+	@Test
 	public void testCopyHistoryFile() throws Exception {
 		// Create a project, folder and file so we have some history store
 		// Should have a project that appears as follows:
@@ -558,7 +578,7 @@ public class HistoryStoreTest extends ResourceTest {
 		String[] contents = {"content0", "content1", "content2", "content3", "content4"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("TestCopyHistoryProject");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		IFolder folder = project.getFolder("folder1");
 		IFile file = folder.getFile("file1.txt");
@@ -566,20 +586,20 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// Setup folder1 and file1.txt with some local history
 		folder.create(true, true, createTestMonitor());
-		file.create(getContents(contents[0]), true, createTestMonitor());
+		file.create(createInputStream(contents[0]), true, createTestMonitor());
 
 		Thread.sleep(1000);
-		file.setContents(getContents(contents[1]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[1]), true, true, createTestMonitor());
 		Thread.sleep(1000);
-		file.setContents(getContents(contents[2]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		Thread.sleep(1000);
 
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertEquals("1.0", 2, states.length);
-		assertTrue("1.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("1.2", compareContent(getContents(contents[0]), states[1].getContents()));
-		file2.create(getContents(contents[3]), true, createTestMonitor());
-		file2.setContents(getContents(contents[4]), true, true, createTestMonitor());
+		assertTrue("1.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("1.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
+		file2.create(createInputStream(contents[3]), true, createTestMonitor());
+		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
 
 		// Run some tests with illegal arguments
 		LogListenerVerifier verifier = new LogListenerVerifier();
@@ -617,16 +637,17 @@ public class HistoryStoreTest extends ResourceTest {
 		store.copyHistory(file, file2, false);
 		states = file2.getHistory(createTestMonitor());
 		assertEquals("2.4", 3, states.length);
-		assertTrue("2.5", compareContent(getContents(contents[3]), states[0].getContents()));
-		assertTrue("2.6", compareContent(getContents(contents[1]), states[1].getContents()));
-		assertTrue("2.7", compareContent(getContents(contents[0]), states[2].getContents()));
+		assertTrue("2.5", compareContent(createInputStream(contents[3]), states[0].getContents()));
+		assertTrue("2.6", compareContent(createInputStream(contents[1]), states[1].getContents()));
+		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[2].getContents()));
 	}
 
+	@Test
 	public void testCopyHistoryFolder() throws Exception {
 		String[] contents = {"content0", "content1", "content2", "content3", "content4"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("TestCopyHistoryProject");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		IFolder folder = project.getFolder("folder1");
 		IFolder folder2 = project.getFolder("folder2");
@@ -635,38 +656,39 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// Setup folder1 and file1.txt with some local history
 		folder.create(true, true, createTestMonitor());
-		file.create(getContents(contents[0]), true, createTestMonitor());
+		file.create(createInputStream(contents[0]), true, createTestMonitor());
 
 		Thread.sleep(1000);
-		file.setContents(getContents(contents[1]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[1]), true, true, createTestMonitor());
 		Thread.sleep(1000);
-		file.setContents(getContents(contents[2]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		Thread.sleep(1000);
 
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertEquals("1.0", 2, states.length);
-		assertTrue("1.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("1.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("1.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("1.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 		folder2.create(true, true, createTestMonitor());
-		file2.create(getContents(contents[3]), true, createTestMonitor());
-		file2.setContents(getContents(contents[4]), true, true, createTestMonitor());
+		file2.create(createInputStream(contents[3]), true, createTestMonitor());
+		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
 
 		// Test a valid copy of a folder
 		IHistoryStore store = ((Resource) file).getLocalManager().getHistoryStore();
 		store.copyHistory(folder, folder2, false);
 		states = file2.getHistory(createTestMonitor());
 		assertEquals("2.4", 3, states.length);
-		assertTrue("2.5", compareContent(getContents(contents[3]), states[0].getContents()));
-		assertTrue("2.6", compareContent(getContents(contents[1]), states[1].getContents()));
-		assertTrue("2.7", compareContent(getContents(contents[0]), states[2].getContents()));
+		assertTrue("2.5", compareContent(createInputStream(contents[3]), states[0].getContents()));
+		assertTrue("2.6", compareContent(createInputStream(contents[1]), states[1].getContents()));
+		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[2].getContents()));
 	}
 
+	@Test
 	public void testCopyHistoryProject() throws Exception {
 		String[] contents = {"content0", "content1", "content2", "content3", "content4"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("TestCopyHistoryProject");
 		IProject project2 = getWorkspace().getRoot().getProject("TestCopyHistoryProject2");
-		ensureExistsInWorkspace(new IResource[] {project, project2}, true);
+		createInWorkspace(new IResource[] {project, project2});
 
 		IFolder folder = project.getFolder("folder1");
 		IFolder folder2 = project2.getFolder("folder1");
@@ -674,32 +696,33 @@ public class HistoryStoreTest extends ResourceTest {
 		IFile file2 = folder2.getFile("file1.txt");
 		// Setup folder1 and file1.txt with some local history
 		folder.create(true, true, createTestMonitor());
-		file.create(getContents(contents[0]), true, createTestMonitor());
+		file.create(createInputStream(contents[0]), true, createTestMonitor());
 
 		Thread.sleep(1000);
-		file.setContents(getContents(contents[1]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[1]), true, true, createTestMonitor());
 		Thread.sleep(1000);
-		file.setContents(getContents(contents[2]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		Thread.sleep(1000);
 
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertEquals("1.0", 2, states.length);
-		assertTrue("1.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("1.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("1.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("1.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 		folder2.create(true, true, createTestMonitor());
-		file2.create(getContents(contents[3]), true, createTestMonitor());
-		file2.setContents(getContents(contents[4]), true, true, createTestMonitor());
+		file2.create(createInputStream(contents[3]), true, createTestMonitor());
+		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
 
 		// Test a valid copy of a folder
 		IHistoryStore store = ((Resource) file).getLocalManager().getHistoryStore();
 		store.copyHistory(project, project2, false);
 		states = file2.getHistory(createTestMonitor());
 		assertEquals("2.4", 3, states.length);
-		assertTrue("2.5", compareContent(getContents(contents[3]), states[0].getContents()));
-		assertTrue("2.6", compareContent(getContents(contents[1]), states[1].getContents()));
-		assertTrue("2.7", compareContent(getContents(contents[0]), states[2].getContents()));
+		assertTrue("2.5", compareContent(createInputStream(contents[3]), states[0].getContents()));
+		assertTrue("2.6", compareContent(createInputStream(contents[1]), states[1].getContents()));
+		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[2].getContents()));
 	}
 
+	@Test
 	public void testDelete() throws CoreException {
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -708,9 +731,9 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// test file
 		IFile file = project.getFile("file.txt");
-		file.create(getRandomContents(), true, createTestMonitor());
-		file.setContents(getRandomContents(), true, true, createTestMonitor());
-		file.setContents(getRandomContents(), true, true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 
 		// Check to see that there are only 2 states before the deletion
 		IFileState[] states = file.getHistory(createTestMonitor());
@@ -722,7 +745,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("1.1", 3, states.length);
 
 		// Re-create the file. This should not affect the history store.
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file.getHistory(createTestMonitor());
 		assertEquals("1.2", 3, states.length);
 
@@ -732,9 +755,9 @@ public class HistoryStoreTest extends ResourceTest {
 		// for the first 'file.txt' is likely still around.
 		file = folder.getFile("file2.txt");
 		folder.create(true, true, createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
-		file.setContents(getRandomContents(), true, true, createTestMonitor());
-		file.setContents(getRandomContents(), true, true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 
 		// There should only be 2 history store entries.
 		states = file.getHistory(createTestMonitor());
@@ -747,7 +770,7 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// Re-create the folder. There should be no new history store entries.
 		folder.create(true, true, createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file.getHistory(createTestMonitor());
 		assertEquals("2.2", 3, states.length);
 
@@ -757,6 +780,7 @@ public class HistoryStoreTest extends ResourceTest {
 	/**
 	 * Test for existence of file states in the HistoryStore.
 	 */
+	@Test
 	public void testExists() throws Throwable {
 
 		/* Create common objects. */
@@ -764,14 +788,14 @@ public class HistoryStoreTest extends ResourceTest {
 		IFile file = project.getFile("removeAllStatesFile.txt");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// Constant for the number of states we will create
 		final int ITERATIONS = 20;
 
 		/* Add multiple states for one file location. */
 		for (int i = 0; i < ITERATIONS; i++) {
-			file.setContents(getRandomContents(), true, true, createTestMonitor());
+			file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		}
 
 		/* Valid Case: Test retrieved values. */
@@ -784,6 +808,7 @@ public class HistoryStoreTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testFindDeleted() throws CoreException {
 		// create common objects
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -797,7 +822,7 @@ public class HistoryStoreTest extends ResourceTest {
 		// test that a deleted file can be found
 		IFile pfile = project.getFile("findDeletedFile.txt");
 		// create and delete a file
-		pfile.create(getRandomContents(), true, createTestMonitor());
+		pfile.create(createRandomContentsStream(), true, createTestMonitor());
 		pfile.delete(true, true, createTestMonitor());
 
 		// the deleted file should show up as a deleted member of project
@@ -824,7 +849,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("0.5.4", 0, df.length);
 
 		// recreate the file
-		pfile.create(getRandomContents(), true, createTestMonitor());
+		pfile.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// the deleted file should no longer show up as a deleted member of project
 		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
@@ -861,7 +886,7 @@ public class HistoryStoreTest extends ResourceTest {
 
 		// create and delete a file in a folder
 		folder.create(true, true, createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 		file.delete(true, true, createTestMonitor());
 
 		// the deleted file should show up as a deleted member
@@ -876,7 +901,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("1.4", 0, df.length);
 
 		// recreate the file
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// the deleted file should no longer show up as a deleted member
 		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
@@ -903,7 +928,7 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("1.11", 0, df.length);
 
 		// create and delete a file where the folder was
-		folderAsFile.create(getRandomContents(), true, createTestMonitor());
+		folderAsFile.create(createRandomContentsStream(), true, createTestMonitor());
 		folderAsFile.delete(true, true, createTestMonitor());
 		folder.create(true, true, createTestMonitor());
 
@@ -942,9 +967,9 @@ public class HistoryStoreTest extends ResourceTest {
 		// create and delete a file in a folder
 		folder.create(true, true, createTestMonitor());
 		folder2.create(true, true, createTestMonitor());
-		file1.create(getRandomContents(), true, createTestMonitor());
-		file2.create(getRandomContents(), true, createTestMonitor());
-		file3.create(getRandomContents(), true, createTestMonitor());
+		file1.create(createRandomContentsStream(), true, createTestMonitor());
+		file2.create(createRandomContentsStream(), true, createTestMonitor());
+		file3.create(createRandomContentsStream(), true, createTestMonitor());
 		folder.delete(true, true, createTestMonitor());
 
 		// under root
@@ -1042,6 +1067,7 @@ public class HistoryStoreTest extends ResourceTest {
 	/**
 	 * Test for retrieving contents of files with states logged in the HistoryStore.
 	 */
+	@Test
 	public void testGetContents() throws Throwable {
 		final int ITERATIONS = 20;
 
@@ -1053,11 +1079,11 @@ public class HistoryStoreTest extends ResourceTest {
 		/* Create files. */
 		IFile file = project.getFile("getContentsFile.txt");
 		String contents = "This file has some contents in testGetContents.";
-		ensureExistsInWorkspace(file, contents);
+		createInWorkspace(file, contents);
 
 		IFile secondValidFile = project.getFile("secondGetContentsFile.txt");
 		contents = "A file with some other contents in testGetContents.";
-		ensureExistsInWorkspace(secondValidFile, contents);
+		createInWorkspace(secondValidFile, contents);
 
 		IHistoryStore historyStore = ((Workspace) getWorkspace()).getFileSystemManager().getHistoryStore();
 
@@ -1070,8 +1096,8 @@ public class HistoryStoreTest extends ResourceTest {
 			fileInfo.setLastModified(myLong);
 			historyStore.addState(file.getFullPath(), ((Resource) file).getStore(), fileInfo, true);
 			contents = "This file has some contents in testGetContents.";
-			try (InputStream is = new ByteArrayInputStream(contents.getBytes())) {
-				createFileInFileSystem(file.getLocation(), is);
+			try (FileOutputStream output = new FileOutputStream(file.getLocation().toFile())) {
+				createInputStream(contents).transferTo(output);
 			}
 			file.refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
@@ -1082,8 +1108,8 @@ public class HistoryStoreTest extends ResourceTest {
 			fileInfo.setLastModified(myLong);
 			historyStore.addState(secondValidFile.getFullPath(), ((Resource) secondValidFile).getStore(), fileInfo, true);
 			contents = "A file with some other contents in testGetContents.";
-			try (InputStream is = new ByteArrayInputStream(contents.getBytes())) {
-				createFileInFileSystem(secondValidFile.getLocation(), is);
+			try (FileOutputStream output = new FileOutputStream(secondValidFile.getLocation().toFile())) {
+				createInputStream(contents).transferTo(output);
 			}
 			secondValidFile.refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
@@ -1122,6 +1148,7 @@ public class HistoryStoreTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testModifiedStamp() throws CoreException {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
@@ -1129,14 +1156,14 @@ public class HistoryStoreTest extends ResourceTest {
 		project.open(createTestMonitor());
 
 		IFile file = project.getFile("file");
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		IFileState[] history = file.getHistory(createTestMonitor());
 		// no history yet
 		assertEquals("1.2", 0, history.length);
 		// save the file's current time stamp - it will be remembered in the file state
 		long fileTimeStamp = file.getLocalTimeStamp();
-		file.setContents(getRandomContents(), true, true, createTestMonitor());
+		file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		history = file.getHistory(createTestMonitor());
 		// one state in the history
 		assertEquals("2.2", 1, history.length);
@@ -1161,7 +1188,8 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the moved file should have 4 states as it retains the states from
 	 * before the move took place as well.
 	 */
-	public void testMoveFolder() throws CoreException {
+	@Test
+	public void testMoveFolder() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -1175,13 +1203,13 @@ public class HistoryStoreTest extends ResourceTest {
 		file = folder.getFile("file1.txt");
 		// Setup folder1 and file1.txt with some local history
 		folder.create(true, true, createTestMonitor());
-		file.create(getContents(contents[0]), true, createTestMonitor());
-		file.setContents(getContents(contents[1]), true, true, createTestMonitor());
-		file.setContents(getContents(contents[2]), true, true, createTestMonitor());
+		file.create(createInputStream(contents[0]), true, createTestMonitor());
+		file.setContents(createInputStream(contents[1]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertEquals("1.0", 2, states.length);
-		assertTrue("1.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("1.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("1.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("1.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 
 		// Now do the move
 		folder.move(folder2.getFullPath(), true, createTestMonitor());
@@ -1191,20 +1219,20 @@ public class HistoryStoreTest extends ResourceTest {
 		assertTrue("1.3", file2.getFullPath().toString().endsWith("folder2/file1.txt"));
 
 		// Give the new (moved file) some new contents
-		file2.setContents(getContents(contents[3]), true, true, createTestMonitor());
-		file2.setContents(getContents(contents[4]), true, true, createTestMonitor());
+		file2.setContents(createInputStream(contents[3]), true, true, createTestMonitor());
+		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
 
 		// Check the local history of both files
 		states = file.getHistory(createTestMonitor());
 		assertEquals("2.0", 2, states.length);
-		assertTrue("2.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("2.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("2.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("2.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 		states = file2.getHistory(createTestMonitor());
 		assertEquals("2.3", 4, states.length);
-		assertTrue("2.4", compareContent(getContents(contents[3]), states[0].getContents()));
-		assertTrue("2.5", compareContent(getContents(contents[2]), states[1].getContents()));
-		assertTrue("2.6", compareContent(getContents(contents[1]), states[2].getContents()));
-		assertTrue("2.7", compareContent(getContents(contents[0]), states[3].getContents()));
+		assertTrue("2.4", compareContent(createInputStream(contents[3]), states[0].getContents()));
+		assertTrue("2.5", compareContent(createInputStream(contents[2]), states[1].getContents()));
+		assertTrue("2.6", compareContent(createInputStream(contents[1]), states[2].getContents()));
+		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[3].getContents()));
 
 		project.delete(true, createTestMonitor());
 	}
@@ -1226,7 +1254,8 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
-	public void testMoveProject() throws CoreException {
+	@Test
+	public void testMoveProject() throws Exception {
 		String[] contents = {"content1", "content2", "content3", "content4", "content5"};
 		// create common objects
 		IProject project = getWorkspace().getRoot().getProject("MoveProjectProject");
@@ -1240,13 +1269,13 @@ public class HistoryStoreTest extends ResourceTest {
 		file = folder.getFile("file1.txt");
 		// Setup folder1 and file1.txt with some local history
 		folder.create(true, true, createTestMonitor());
-		file.create(getContents(contents[0]), true, createTestMonitor());
-		file.setContents(getContents(contents[1]), true, true, createTestMonitor());
-		file.setContents(getContents(contents[2]), true, true, createTestMonitor());
+		file.create(createInputStream(contents[0]), true, createTestMonitor());
+		file.setContents(createInputStream(contents[1]), true, true, createTestMonitor());
+		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertEquals("1.0", 2, states.length);
-		assertTrue("1.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("1.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("1.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("1.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 
 		// Now do the move
 		project.move(IPath.fromOSString("SecondMoveProjectProject"), true, createTestMonitor());
@@ -1256,8 +1285,8 @@ public class HistoryStoreTest extends ResourceTest {
 		assertTrue("1.3", file2.getFullPath().toString().endsWith("SecondMoveProjectProject/folder1/file1.txt"));
 
 		// Give the new (copied file) some new contents
-		file2.setContents(getContents(contents[3]), true, true, createTestMonitor());
-		file2.setContents(getContents(contents[4]), true, true, createTestMonitor());
+		file2.setContents(createInputStream(contents[3]), true, true, createTestMonitor());
+		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
 
 		// Check the local history of both files
 		states = file.getHistory(createTestMonitor());
@@ -1266,27 +1295,28 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("2.0", 0, states.length);
 		states = file2.getHistory(createTestMonitor());
 		assertEquals("2.3", 4, states.length);
-		assertTrue("2.4", compareContent(getContents(contents[3]), states[0].getContents()));
-		assertTrue("2.5", compareContent(getContents(contents[2]), states[1].getContents()));
-		assertTrue("2.6", compareContent(getContents(contents[1]), states[2].getContents()));
-		assertTrue("2.7", compareContent(getContents(contents[0]), states[3].getContents()));
+		assertTrue("2.4", compareContent(createInputStream(contents[3]), states[0].getContents()));
+		assertTrue("2.5", compareContent(createInputStream(contents[2]), states[1].getContents()));
+		assertTrue("2.6", compareContent(createInputStream(contents[1]), states[2].getContents()));
+		assertTrue("2.7", compareContent(createInputStream(contents[0]), states[3].getContents()));
 
 		project.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testRemoveAll() throws CoreException {
 		/* Create common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("removeAllStatesFile.txt");
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
-		file.create(getRandomContents(), true, createTestMonitor());
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		final int ITERATIONS = 20;
 
 		/* test remove in a file */
 		for (int i = 0; i < ITERATIONS; i++) {
-			file.setContents(getRandomContents(), true, true, createTestMonitor());
+			file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		}
 
 		/* Valid Case: Ensure correct number of states available. */
@@ -1302,10 +1332,10 @@ public class HistoryStoreTest extends ResourceTest {
 		IFolder folder = project.getFolder("folder");
 		IFile anotherOne = folder.getFile("anotherOne");
 		folder.create(true, true, createTestMonitor());
-		anotherOne.create(getRandomContents(), true, createTestMonitor());
+		anotherOne.create(createRandomContentsStream(), true, createTestMonitor());
 		for (int i = 0; i < ITERATIONS; i++) {
-			file.setContents(getRandomContents(), true, true, createTestMonitor());
-			anotherOne.setContents(getRandomContents(), true, true, createTestMonitor());
+			file.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+			anotherOne.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		}
 
 		states = file.getHistory(createTestMonitor());
@@ -1326,14 +1356,14 @@ public class HistoryStoreTest extends ResourceTest {
 		anotherOne = bbb.getFile("anotherOne");
 		IFile ccc = project.getFile("ccc");
 		bbb.create(true, true, createTestMonitor());
-		anotherOne.create(getRandomContents(), true, createTestMonitor());
-		aaa.create(getRandomContents(), true, createTestMonitor());
-		ccc.create(getRandomContents(), true, createTestMonitor());
+		anotherOne.create(createRandomContentsStream(), true, createTestMonitor());
+		aaa.create(createRandomContentsStream(), true, createTestMonitor());
+		ccc.create(createRandomContentsStream(), true, createTestMonitor());
 
 		for (int i = 0; i < ITERATIONS; i++) {
-			anotherOne.setContents(getRandomContents(), true, true, createTestMonitor());
-			aaa.setContents(getRandomContents(), true, true, createTestMonitor());
-			ccc.setContents(getRandomContents(), true, true, createTestMonitor());
+			anotherOne.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+			aaa.setContents(createRandomContentsStream(), true, true, createTestMonitor());
+			ccc.setContents(createRandomContentsStream(), true, true, createTestMonitor());
 		}
 
 		states = anotherOne.getHistory(createTestMonitor());
@@ -1369,7 +1399,8 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the copied file should have 4 states as it retains the states from
 	 * before the copy took place as well.
 	 */
-	public void testSimpleCopy() throws CoreException {
+	@Test
+	public void testSimpleCopy() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("SimpleCopyProject");
 		project.create(createTestMonitor());
@@ -1380,11 +1411,11 @@ public class HistoryStoreTest extends ResourceTest {
 		IFile copyFile = project.getFile("copyOfSimpleCopyFileWithHistoryCopy");
 
 		/* Create first file. */
-		file.create(getContents(contents[0]), true, null);
+		file.create(createInputStream(contents[0]), true, null);
 
 		/* Set new contents on first file. Should add two entries to the history store. */
-		file.setContents(getContents(contents[1]), true, true, null);
-		file.setContents(getContents(contents[2]), true, true, null);
+		file.setContents(createInputStream(contents[1]), true, true, null);
+		file.setContents(createInputStream(contents[2]), true, true, null);
 
 		/* Copy first file to the second. Second file should have no history. */
 		file.copy(copyFile.getFullPath(), true, null);
@@ -1396,23 +1427,23 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("4.1", 2, states.length);
 
 		/* Set new contents on second file. Should add two entries to the history store. */
-		copyFile.setContents(getContents(contents[3]), true, true, null);
-		copyFile.setContents(getContents(contents[4]), true, true, null);
+		copyFile.setContents(createInputStream(contents[3]), true, true, null);
+		copyFile.setContents(createInputStream(contents[4]), true, true, null);
 
 		/* Check history for both files. */
 		// Check log for original file.
 		states = file.getHistory(null);
 		assertEquals("6.0", 2, states.length);
-		assertTrue("6.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("6.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("6.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("6.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 
 		// Check log for copy.
 		states = copyFile.getHistory(null);
 		assertEquals("6.3", 4, states.length);
-		assertTrue("6.4", compareContent(getContents(contents[3]), states[0].getContents()));
-		assertTrue("6.5", compareContent(getContents(contents[2]), states[1].getContents()));
-		assertTrue("6.6", compareContent(getContents(contents[1]), states[2].getContents()));
-		assertTrue("6.7", compareContent(getContents(contents[0]), states[3].getContents()));
+		assertTrue("6.4", compareContent(createInputStream(contents[3]), states[0].getContents()));
+		assertTrue("6.5", compareContent(createInputStream(contents[2]), states[1].getContents()));
+		assertTrue("6.6", compareContent(createInputStream(contents[1]), states[2].getContents()));
+		assertTrue("6.7", compareContent(createInputStream(contents[0]), states[3].getContents()));
 	}
 
 	/**
@@ -1431,7 +1462,8 @@ public class HistoryStoreTest extends ResourceTest {
 	 * But the moved file should have 4 states as it retains the states from
 	 * before the move took place as well.
 	 */
-	public void testSimpleMove() throws CoreException {
+	@Test
+	public void testSimpleMove() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("SimpleMoveProject");
 		project.create(createTestMonitor());
@@ -1442,11 +1474,11 @@ public class HistoryStoreTest extends ResourceTest {
 		IFile moveFile = project.getFile("copyOfSimpleMoveFileWithCopy");
 
 		/* Create first file. */
-		file.create(getContents(contents[0]), true, null);
+		file.create(createInputStream(contents[0]), true, null);
 
 		/* Set new contents on source file. Should add two entries to the history store. */
-		file.setContents(getContents(contents[1]), true, true, null);
-		file.setContents(getContents(contents[2]), true, true, null);
+		file.setContents(createInputStream(contents[1]), true, true, null);
+		file.setContents(createInputStream(contents[2]), true, true, null);
 
 		/* Move source file to second location.
 		 * Moved files should have the history of the original file.
@@ -1460,23 +1492,23 @@ public class HistoryStoreTest extends ResourceTest {
 		assertEquals("4.1", 2, states.length);
 
 		/* Set new contents on moved file. Should add two entries to the history store. */
-		moveFile.setContents(getContents(contents[3]), true, true, null);
-		moveFile.setContents(getContents(contents[4]), true, true, null);
+		moveFile.setContents(createInputStream(contents[3]), true, true, null);
+		moveFile.setContents(createInputStream(contents[4]), true, true, null);
 
 		/* Check history for both files. */
 		// Check log for original file.
 		states = file.getHistory(null);
 		assertEquals("6.0", 2, states.length);
-		assertTrue("6.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("6.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("6.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("6.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 
 		// Check log for moved file.
 		states = moveFile.getHistory(null);
 		assertEquals("6.3", 4, states.length);
-		assertTrue("6.4", compareContent(getContents(contents[3]), states[0].getContents()));
-		assertTrue("6.5", compareContent(getContents(contents[2]), states[1].getContents()));
-		assertTrue("6.6", compareContent(getContents(contents[1]), states[2].getContents()));
-		assertTrue("6.7", compareContent(getContents(contents[0]), states[3].getContents()));
+		assertTrue("6.4", compareContent(createInputStream(contents[3]), states[0].getContents()));
+		assertTrue("6.5", compareContent(createInputStream(contents[2]), states[1].getContents()));
+		assertTrue("6.6", compareContent(createInputStream(contents[1]), states[2].getContents()));
+		assertTrue("6.7", compareContent(createInputStream(contents[0]), states[3].getContents()));
 	}
 
 	/**
@@ -1491,7 +1523,8 @@ public class HistoryStoreTest extends ResourceTest {
 	 *   6. Set new content				"content 2"			4
 	 *   7. Roll back to third version  "content 3"			5
 	 */
-	public void testSimpleUse() throws CoreException {
+	@Test
+	public void testSimpleUse() throws Exception {
 		/* Initialize common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		project.create(createTestMonitor());
@@ -1501,18 +1534,18 @@ public class HistoryStoreTest extends ResourceTest {
 		IFile file = project.getFile("file");
 
 		/* Create the file. */
-		file.create(getContents(contents[0]), true, createTestMonitor());
+		file.create(createInputStream(contents[0]), true, createTestMonitor());
 
 		/* Set new contents on the file. Should add two entries to the store. */
 		for (int i = 0; i < 2; i++) {
-			file.setContents(getContents(contents[i + 1]), true, true, createTestMonitor());
+			file.setContents(createInputStream(contents[i + 1]), true, true, createTestMonitor());
 		}
 
 		/* Ensure two entries are available for the file, and that content matches. */
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertEquals("3.0", 2, states.length);
-		assertTrue("3.1.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("3.1.2", compareContent(getContents(contents[0]), states[1].getContents()));
+		assertTrue("3.1.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("3.1.2", compareContent(createInputStream(contents[0]), states[1].getContents()));
 
 		/* Delete the file. Should add an entry to the store. */
 		file.delete(true, true, createTestMonitor());
@@ -1520,9 +1553,9 @@ public class HistoryStoreTest extends ResourceTest {
 		/* Ensure three entries are available for the file, and that content matches. */
 		states = file.getHistory(createTestMonitor());
 		assertEquals("5.0", 3, states.length);
-		assertTrue("5.1.1", compareContent(getContents(contents[2]), states[0].getContents()));
-		assertTrue("5.1.2", compareContent(getContents(contents[1]), states[1].getContents()));
-		assertTrue("5.1.3", compareContent(getContents(contents[0]), states[2].getContents()));
+		assertTrue("5.1.1", compareContent(createInputStream(contents[2]), states[0].getContents()));
+		assertTrue("5.1.2", compareContent(createInputStream(contents[1]), states[1].getContents()));
+		assertTrue("5.1.3", compareContent(createInputStream(contents[0]), states[2].getContents()));
 
 		/* Roll file back to first version, and ensure that content matches. */
 		states = file.getHistory(createTestMonitor());
@@ -1533,23 +1566,23 @@ public class HistoryStoreTest extends ResourceTest {
 		// Check history store.
 		states = file.getHistory(createTestMonitor());
 		assertEquals("6.0", 3, states.length);
-		assertTrue("6.1.1", compareContent(getContents(contents[2]), states[0].getContents()));
-		assertTrue("6.1.2", compareContent(getContents(contents[1]), states[1].getContents()));
-		assertTrue("6.1.3", compareContent(getContents(contents[0]), states[2].getContents()));
+		assertTrue("6.1.1", compareContent(createInputStream(contents[2]), states[0].getContents()));
+		assertTrue("6.1.2", compareContent(createInputStream(contents[1]), states[1].getContents()));
+		assertTrue("6.1.3", compareContent(createInputStream(contents[0]), states[2].getContents()));
 
 		// Check file contents.
-		assertTrue("6.2", compareContent(getContents(contents[2]), file.getContents(false)));
+		assertTrue("6.2", compareContent(createInputStream(contents[2]), file.getContents(false)));
 
 		/* Set new contents on the file. Should add an entry to the history store. */
-		file.setContents(getContents(contents[1]), true, true, null);
+		file.setContents(createInputStream(contents[1]), true, true, null);
 
 		/* Ensure four entries are available for the file, and that entries match. */
 		states = file.getHistory(createTestMonitor());
 		assertEquals("8.0", 4, states.length);
-		assertTrue("8.1.1", compareContent(getContents(contents[2]), states[0].getContents()));
-		assertTrue("8.1.2", compareContent(getContents(contents[2]), states[1].getContents()));
-		assertTrue("8.1.3", compareContent(getContents(contents[1]), states[2].getContents()));
-		assertTrue("8.1.4", compareContent(getContents(contents[0]), states[3].getContents()));
+		assertTrue("8.1.1", compareContent(createInputStream(contents[2]), states[0].getContents()));
+		assertTrue("8.1.2", compareContent(createInputStream(contents[2]), states[1].getContents()));
+		assertTrue("8.1.3", compareContent(createInputStream(contents[1]), states[2].getContents()));
+		assertTrue("8.1.4", compareContent(createInputStream(contents[0]), states[3].getContents()));
 
 		/* Roll file back to third version, and ensure that content matches. */
 		states = file.getHistory(createTestMonitor());
@@ -1559,13 +1592,14 @@ public class HistoryStoreTest extends ResourceTest {
 		// Check history log.
 		states = file.getHistory(createTestMonitor());
 		assertEquals("9.0", 5, states.length);
-		assertTrue("9.1.1", compareContent(getContents(contents[1]), states[0].getContents()));
-		assertTrue("9.1.2", compareContent(getContents(contents[2]), states[1].getContents()));
-		assertTrue("9.1.3", compareContent(getContents(contents[2]), states[2].getContents()));
-		assertTrue("9.1.4", compareContent(getContents(contents[1]), states[3].getContents()));
-		assertTrue("9.1.5", compareContent(getContents(contents[0]), states[4].getContents()));
+		assertTrue("9.1.1", compareContent(createInputStream(contents[1]), states[0].getContents()));
+		assertTrue("9.1.2", compareContent(createInputStream(contents[2]), states[1].getContents()));
+		assertTrue("9.1.3", compareContent(createInputStream(contents[2]), states[2].getContents()));
+		assertTrue("9.1.4", compareContent(createInputStream(contents[1]), states[3].getContents()));
+		assertTrue("9.1.5", compareContent(createInputStream(contents[0]), states[4].getContents()));
 
 		// Check file contents.
-		assertTrue("9.2", compareContent(getContents(contents[1]), file.getContents(false)));
+		assertTrue("9.2", compareContent(createInputStream(contents[1]), file.getContents(false)));
 	}
+
 }

@@ -14,10 +14,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.canCreateSymLinks;
+import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
+import java.io.IOException;
 import java.net.URI;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
@@ -30,14 +38,27 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class Bug_233939 extends ResourceTest {
+public class Bug_233939 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Before
+	public void requireCanCreateSymlinks() throws IOException {
+		assumeTrue("test only for platform providing symlinks", canCreateSymLinks());
+	}
+
 	/**
 	 * Create a symbolic link in the given container, pointing to the given target.
 	 * Refresh the workspace and verify that the symbolic link attribute is set.
 	 */
-	protected void symLinkAndRefresh(IContainer container, String linkName, IPath linkTarget) throws CoreException {
+	protected void symLinkAndRefresh(IContainer container, String linkName, IPath linkTarget)
+			throws CoreException, IOException {
 		createSymLink(container.getLocation().toFile(), linkName, linkTarget.toOSString(), false);
 		container.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		IResource theLink = container.findMember(linkName);
@@ -54,11 +75,8 @@ public class Bug_233939 extends ResourceTest {
 		return loc1.equals(loc2);
 	}
 
-	public void testBug() throws CoreException {
-		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+	@Test
+	public void testBug() throws Exception {
 		String fileName = "file.txt";
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -70,8 +88,8 @@ public class Bug_233939 extends ResourceTest {
 		project.open(createTestMonitor());
 
 		// create a file: getTempStore() will be cleaned up in tearDown()
-		IFileStore tempFileStore = getTempStore().getChild(fileName);
-		createFileInFileSystem(tempFileStore);
+		IFileStore tempFileStore = workspaceRule.getTempStore().getChild(fileName);
+		createInFileSystem(tempFileStore);
 		IPath fileInTempDirPath = URIUtil.toPath(tempFileStore.toURI());
 
 		// create a link to the file in the temp dir and refresh
@@ -87,22 +105,19 @@ public class Bug_233939 extends ResourceTest {
 		//		assertEquals("6.1", file, files[0]);
 	}
 
-	public void testMultipleLinksToFolder() throws CoreException {
-		// Only activate this test if testing of symbolic links is possible.
-		if (!canCreateSymLinks()) {
-			return;
-		}
+	@Test
+	public void testMultipleLinksToFolder() throws Exception {
 		// create a folder: getTempStore() will be cleaned up in tearDown()
-		IFileStore tempStore = getTempStore();
-		createFileInFileSystem(tempStore.getChild("foo.txt"));
+		IFileStore tempStore = workspaceRule.getTempStore();
+		createInFileSystem(tempStore.getChild("foo.txt"));
 		IPath tempFolderPath = URIUtil.toPath(tempStore.toURI());
 
 		// create two projects with a symlink to the folder each
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IProject projectA = root.getProject(createUniqueString());
 		IProject projectB = root.getProject(createUniqueString());
-		create(projectA, true);
-		create(projectB, true);
+		createInWorkspace(projectA);
+		createInWorkspace(projectB);
 		symLinkAndRefresh(projectA, "folderA", tempFolderPath);
 		symLinkAndRefresh(projectB, "folderB", tempFolderPath);
 

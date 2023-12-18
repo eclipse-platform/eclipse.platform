@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.internal.dtree;
 
-import org.eclipse.core.internal.utils.*;
+import org.eclipse.core.internal.utils.IStringPoolParticipant;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.StringPool;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 
@@ -143,13 +145,12 @@ public class DataTreeNode extends AbstractDataTreeNode {
 	 *	new child node
 	 */
 	DataTreeNode copyWithNewChild(String localName, DataTreeNode childNode) {
-
-		AbstractDataTreeNode[] children = this.children;
+		AbstractDataTreeNode[] oldChildren = this.children;
 		int left = 0;
-		int right = children.length - 1;
+		int right = oldChildren.length - 1;
 		while (left <= right) {
 			int mid = (left + right) / 2;
-			int compare = localName.compareTo(children[mid].name);
+			int compare = localName.compareTo(oldChildren[mid].name);
 			if (compare < 0) {
 				right = mid - 1;
 			} else if (compare > 0) {
@@ -159,11 +160,11 @@ public class DataTreeNode extends AbstractDataTreeNode {
 			}
 		}
 
-		AbstractDataTreeNode[] newChildren = new AbstractDataTreeNode[children.length + 1];
-		System.arraycopy(children, 0, newChildren, 0, left);
+		AbstractDataTreeNode[] newChildren = new AbstractDataTreeNode[oldChildren.length + 1];
+		System.arraycopy(oldChildren, 0, newChildren, 0, left);
 		childNode.setName(localName);
 		newChildren[left] = childNode;
-		System.arraycopy(children, left, newChildren, left + 1, children.length - left);
+		System.arraycopy(oldChildren, left, newChildren, left + 1, oldChildren.length - left);
 		return new DataTreeNode(this.getName(), this.getData(), newChildren);
 	}
 
@@ -175,18 +176,17 @@ public class DataTreeNode extends AbstractDataTreeNode {
 	 *	name of child to exclude
 	 */
 	DataTreeNode copyWithoutChild(String localName) {
-
 		int index, newSize;
 		DataTreeNode newNode;
-		AbstractDataTreeNode children[];
+		AbstractDataTreeNode newChildren[];
 
 		index = this.indexOfChild(localName);
 		if (index == -1) {
 			newNode = (DataTreeNode) this.copy();
 		} else {
 			newSize = this.size() - 1;
-			children = new AbstractDataTreeNode[newSize];
-			newNode = new DataTreeNode(this.getName(), this.getData(), children);
+			newChildren = new AbstractDataTreeNode[newSize];
+			newNode = new DataTreeNode(this.getName(), this.getData(), newChildren);
 			newNode.copyChildren(0, index - 1, this, 0); //#from:to:with:startingAt:
 			newNode.copyChildren(index, newSize - 1, this, index + 1);
 		}

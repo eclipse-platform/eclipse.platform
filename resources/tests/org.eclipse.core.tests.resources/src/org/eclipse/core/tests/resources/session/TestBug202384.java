@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
@@ -33,7 +34,7 @@ public class TestBug202384 extends WorkspaceSessionTest {
 	public void testInitializeWorkspace() throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		project.setDefaultCharset("UTF-8", createTestMonitor());
 		assertEquals("2.0", "UTF-8", project.getDefaultCharset(false));
 		project.close(createTestMonitor());

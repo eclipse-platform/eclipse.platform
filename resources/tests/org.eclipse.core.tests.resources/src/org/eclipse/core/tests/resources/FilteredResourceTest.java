@@ -14,9 +14,16 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +51,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests the following API methods:
@@ -53,7 +63,11 @@ import org.eclipse.core.runtime.IPath;
  * This test tests resource filters with projects, folders, linked resource folders,
  * and moving those resources to different parents.
  */
-public class FilteredResourceTest extends ResourceTest {
+public class FilteredResourceTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private static final String REGEX_FILTER_PROVIDER = "org.eclipse.core.resources.regexFilterMatcher";
 	protected String childName = "File.txt";
 	protected IProject closedProject;
@@ -73,11 +87,11 @@ public class FilteredResourceTest extends ResourceTest {
 	protected IProject otherExistingProject;
 
 	protected void doCleanup() throws Exception {
-		ensureExistsInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject}, true);
+		createInWorkspace(new IResource[] {existingProject, otherExistingProject, closedProject, existingFolderInExistingProject, existingFolderInExistingFolder, existingFileInExistingProject});
 		closedProject.close(createTestMonitor());
-		ensureDoesNotExistInWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
+		removeFromWorkspace(new IResource[] {nonExistingFolderInExistingProject, nonExistingFolderInExistingFolder, nonExistingFolderInOtherExistingProject, nonExistingFolder2InOtherExistingProject, nonExistingFileInExistingProject, nonExistingFileInOtherExistingProject, nonExistingFileInExistingFolder});
 		resolve(localFolder).toFile().mkdirs();
-		createFileInFileSystem(resolve(localFile), getRandomContents());
+		createInFileSystem(resolve(localFile));
 	}
 
 	/**
@@ -94,9 +108,8 @@ public class FilteredResourceTest extends ResourceTest {
 		return uri;
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		existingProject = getWorkspace().getRoot().getProject("ExistingProject");
 		otherExistingProject = getWorkspace().getRoot().getProject("OtherExistingProject");
 		closedProject = getWorkspace().getRoot().getProject("ClosedProject");
@@ -111,19 +124,15 @@ public class FilteredResourceTest extends ResourceTest {
 		nonExistingFileInOtherExistingProject = otherExistingProject.getFile("nonExistingFileInOtherExistingProject");
 		nonExistingFileInExistingFolder = existingFolderInExistingProject.getFile("nonExistingFileInExistingFolder");
 		localFolder = getRandomLocation();
+		workspaceRule.deleteOnTearDown(resolve(localFolder));
 		localFile = localFolder.append(childName);
 		doCleanup();
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		Workspace.clear(resolve(localFolder).toFile());
 	}
 
 	/**
 	 * Tests the creation of a simple filter on a folder.
 	 */
+	@Test
 	public void testCreateFilterOnFolder() throws CoreException {
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY
@@ -133,7 +142,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo");
 		IFile bar = existingFolderInExistingProject.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		createInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -162,6 +171,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of a simple filter on a project.
 	 */
+	@Test
 	public void testCreateFilterOnProject() throws CoreException {
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		existingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY | IResourceFilterDescription.FOLDERS,
@@ -170,7 +180,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFolder foo = existingProject.getFolder("foo");
 		IFolder bar = existingProject.getFolder("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		createInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -202,6 +212,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of a simple filter on a linked folder.
 	 */
+	@Test
 	public void testCreateFilterOnLinkedFolder() throws CoreException {
 		IPath location = getRandomLocation();
 		IFolder folder = nonExistingFolderInExistingProject;
@@ -216,7 +227,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = folder.getFile("foo");
 		IFile bar = folder.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		createInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -246,6 +257,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 * Tests the creation of two different filters on a linked folder and the original.
 	 * Regression for bug 267201
 	 */
+	@Test
 	public void testCreateFilterOnLinkedFolderAndTarget() throws Exception {
 		IPath location = existingFolderInExistingFolder.getLocation();
 		IFolder folder = nonExistingFolderInExistingProject;
@@ -362,6 +374,7 @@ public class FilteredResourceTest extends ResourceTest {
 		assertEquals("9.8", members[0].getName(), "foo.h");
 	}
 
+	@Test
 	public void testIResource_isFiltered() throws CoreException {
 		IFolder folder = existingFolderInExistingProject.getFolder("virtual_folder.txt");
 		IFile file = existingFolderInExistingProject.getFile("linked_file.txt");
@@ -384,6 +397,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 * excluded locations.
 	 * Regression for bug 267201
 	 */
+	@Test
 	public void testCreateFilterOnLinkedFolderAndTarget2() throws Exception {
 		final IPath location = existingFolderInExistingFolder.getLocation();
 		final IFolder folder = nonExistingFolderInExistingProject;
@@ -402,7 +416,7 @@ public class FilteredResourceTest extends ResourceTest {
 
 		// Create 'foo.cpp' in existingFolder...
 		IFile newFile = existingFolderInExistingFolder.getFile("foo.cpp");
-		create(newFile, true);
+		createInWorkspace(newFile);
 		IResource[] members = existingFolderInExistingFolder.members();
 		assertEquals("1.9", 1, members.length);
 		assertEquals("2.0", IResource.FILE, members[0].getType());
@@ -410,7 +424,7 @@ public class FilteredResourceTest extends ResourceTest {
 
 		// Create a 'foo.h' under folder
 		newFile = folder.getFile("foo.h");
-		create(newFile, true);
+		createInWorkspace(newFile);
 		// Check that foo.h has appeared in 'folder'
 		// // Refreshing restores sanity (hides the .cpp files)...
 		// folder.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
@@ -465,6 +479,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 * otherExistingProject/nonExistingFolder2InOtherExistingProject =&gt; existingProject/existingFolderInExsitingProject/existingFolderInExistingFolder
 	 * This is a regression test for Bug 268518.
 	 */
+	@Test
 	public void testCreateFilterOnLinkedFolderWithAlias() throws Exception {
 		final IProject project = otherExistingProject;
 		final IPath parentLoc = existingFolderInExistingProject.getLocation();
@@ -512,7 +527,7 @@ public class FilteredResourceTest extends ResourceTest {
 		project.close(createTestMonitor());
 		assertTrue("3.1", !project.isOpen());
 		// Create a file under existingFolderInExistingFolder
-		createFileInFileSystem(childLoc.append("foo"));
+		createInFileSystem(childLoc.append("foo"));
 		// Reopen the project
 		project.open(IResource.NONE, createTestMonitor());
 
@@ -572,6 +587,7 @@ public class FilteredResourceTest extends ResourceTest {
 	 * otherExistingProject/nonExistingFolder2InOtherExistingProject =&gt; existingProject/existingFolderInExsitingProject/existingFolderInExistingFolder
 	 * This is a regression test for Bug 268518.
 	 */
+	@Test
 	public void testCreateFilterOnLinkedFolderWithAlias2() throws CoreException {
 		final IProject project = otherExistingProject;
 		final IPath parentLoc = existingFolderInExistingProject.getLocation();
@@ -617,7 +633,7 @@ public class FilteredResourceTest extends ResourceTest {
 		}
 
 		// Create a file under existingFolderInExistingFolder
-		create(folder2.getFile("foo"), true);
+		createInWorkspace(folder2.getFile("foo"));
 
 		assertTrue("22.0", folder1.exists());
 		assertTrue("22.2", folder2.exists());
@@ -651,6 +667,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of a simple filter on a linked folder before the resource creation.
 	 */
+	@Test
 	public void testCreateFilterOnLinkedFolderBeforeCreation() throws CoreException {
 		IPath location = existingFolderInExistingFolder.getLocation();
 		IFolder folder = nonExistingFolderInExistingProject;
@@ -666,7 +683,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = folder.getFile("foo");
 		IFile bar = folder.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		createInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -691,6 +708,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation and removal of a simple filter on a folder.
 	 */
+	@Test
 	public void testCreateAndRemoveFilterOnFolder() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		IResourceFilterDescription filterDescription = existingFolderInExistingFolder
@@ -700,7 +718,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingFolder.getFile("foo");
 		IFile bar = existingFolderInExistingFolder.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		createInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
@@ -729,6 +747,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation and removal of a simple filter on a folder.
 	 */
+	@Test
 	public void testCreateAndRemoveFilterOnFolderWithoutClosingProject() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		IResourceFilterDescription filterDescription = existingFolderInExistingFolder
@@ -738,7 +757,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingFolder.getFile("foo");
 		IFile bar = existingFolderInExistingFolder.getFile("bar");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar}, true);
+		createInWorkspace(new IResource[] {foo, bar});
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		filterDescription.delete(0, createTestMonitor());
@@ -757,6 +776,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of the include-only filter.
 	 */
+	@Test
 	public void testIncludeOnlyFilter() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.c");
 
@@ -768,7 +788,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile file = existingFolderInExistingProject.getFile("file.c");
 		IFile bar = existingFolderInExistingProject.getFile("bar.h");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar, file}, true);
+		createInWorkspace(new IResource[] {foo, bar, file});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingProject.members();
@@ -795,6 +815,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of the exclude-all filter.
 	 */
+	@Test
 	public void testExcludeAllFilter() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.c");
 
@@ -807,7 +828,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile fooh = existingFolderInExistingFolder.getFile("foo.h");
 		IFile bar = existingFolderInExistingFolder.getFile("bar.h");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
+		createInWorkspace(new IResource[] {foo, bar, file, fooh});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
@@ -832,6 +853,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of the mixed include-only exclude-all filter.
 	 */
+	@Test
 	public void testMixedFilter() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.c");
 		FileInfoMatcherDescription matcherDescription2 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
@@ -848,7 +870,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile fooh = existingFolderInExistingProject.getFile("foo.h");
 		IFile bar = existingFolderInExistingProject.getFile("bar.h");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
+		createInWorkspace(new IResource[] {foo, bar, file, fooh});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingProject.members();
@@ -860,6 +882,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of inheritable filter.
 	 */
+	@Test
 	public void testInheritedFilter() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.c");
 		FileInfoMatcherDescription matcherDescription2 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
@@ -875,7 +898,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile fooh = existingFolderInExistingFolder.getFile("foo.h");
 		IFile bar = existingFolderInExistingFolder.getFile("bar.h");
 
-		ensureExistsInWorkspace(new IResource[] {foo, bar, file, fooh}, true);
+		createInWorkspace(new IResource[] {foo, bar, file, fooh});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
@@ -887,6 +910,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of FOLDER filter.
 	 */
+	@Test
 	public void testFolderOnlyFilters() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingFolder.createFilter(
@@ -896,7 +920,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingFolder.getFile("foo.c");
 		IFolder food = existingFolderInExistingFolder.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		createInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
@@ -908,6 +932,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests the creation of FILE filter.
 	 */
+	@Test
 	public void testFileOnlyFilters() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingFolder.createFilter(
@@ -917,7 +942,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingFolder.getFile("foo.c");
 		IFolder food = existingFolderInExistingFolder.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		createInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IResource members[] = existingFolderInExistingFolder.members();
@@ -929,6 +954,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests moving a folder with filters.
 	 */
+	@Test
 	public void testMoveFolderWithFilterToAnotherProject() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingProject.createFilter(
@@ -938,7 +964,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		createInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IFolder destination = otherExistingProject.getFolder("destination");
@@ -958,6 +984,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests copying a folder with filters.
 	 */
+	@Test
 	public void testCopyFolderWithFilterToAnotherProject() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingProject.createFilter(
@@ -967,7 +994,7 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		createInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 		IFolder destination = otherExistingProject.getFolder("destination");
@@ -991,6 +1018,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests copying a folder with filters to another folder.
 	 */
+	@Test
 	public void testCopyFolderWithFilterToAnotherFolder() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingProject.createFilter(
@@ -1000,10 +1028,10 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		createInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
+		createInWorkspace(new IResource[] {nonExistingFolderInExistingProject});
 		IFolder destination = nonExistingFolderInExistingProject.getFolder("destination");
 		existingFolderInExistingProject.copy(destination.getFullPath(), 0, createTestMonitor());
 
@@ -1025,6 +1053,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests moving a folder with filters to another folder.
 	 */
+	@Test
 	public void testMoveFolderWithFilterToAnotherFolder() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		existingFolderInExistingProject.createFilter(
@@ -1034,10 +1063,10 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		createInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
+		createInWorkspace(new IResource[] {nonExistingFolderInExistingProject});
 		IFolder destination = nonExistingFolderInExistingProject.getFolder("destination");
 		existingFolderInExistingProject.move(destination.getFullPath(), 0, createTestMonitor());
 
@@ -1055,6 +1084,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Tests deleting a folder with filters.
 	 */
+	@Test
 	public void testDeleteFolderWithFilterToAnotherFolder() throws CoreException {
 		FileInfoMatcherDescription matcherDescription1 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo.*");
 		FileInfoMatcherDescription matcherDescription2 = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*\\.c");
@@ -1069,10 +1099,10 @@ public class FilteredResourceTest extends ResourceTest {
 		IFile foo = existingFolderInExistingProject.getFile("foo.c");
 		IFolder food = existingFolderInExistingProject.getFolder("foo.d");
 
-		ensureExistsInWorkspace(new IResource[] {foo, food}, true);
+		createInWorkspace(new IResource[] {foo, food});
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		ensureExistsInWorkspace(new IResource[] {nonExistingFolderInExistingProject}, true);
+		createInWorkspace(new IResource[] {nonExistingFolderInExistingProject});
 		existingFolderInExistingProject.delete(0, createTestMonitor());
 
 		IResourceFilterDescription[] filters = existingFolderInExistingProject.getFilters();
@@ -1083,6 +1113,7 @@ public class FilteredResourceTest extends ResourceTest {
 	}
 
 	/* Regression test for Bug 304276 */
+	@Test
 	public void testInvalidCharactersInRegExFilter() {
 		RegexFileInfoMatcher matcher = new RegexFileInfoMatcher();
 		assertThrows(CoreException.class, () -> matcher.initialize(existingProject, "*:*"));
@@ -1091,6 +1122,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Regression test for Bug 302146
 	 */
+	@Test
 	public void testBug302146() throws Exception {
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, "foo");
 		existingFolderInExistingProject.createFilter(IResourceFilterDescription.INCLUDE_ONLY
@@ -1120,12 +1152,13 @@ public class FilteredResourceTest extends ResourceTest {
 	 * appear in the workspace, along with all its children, in spite of active resource filters to the
 	 * contrary.
 	 */
+	@Test
 	public void test317783() throws CoreException {
 		IFolder folder = existingProject.getFolder("foo");
-		ensureExistsInWorkspace(folder, true);
+		createInWorkspace(folder);
 
 		IFile file = folder.getFile("bar.txt");
-		ensureExistsInWorkspace(file, "content");
+		createInWorkspace(file, "content");
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*");
@@ -1152,12 +1185,13 @@ public class FilteredResourceTest extends ResourceTest {
 	 * Regression for  Bug 317824 -  Renaming a project that contains resource filters fails,
 	 * and copying a project that contains resource filters removes the resource filters.
 	 */
+	@Test
 	public void test317824() throws CoreException {
 		IFolder folder = existingProject.getFolder("foo");
-		ensureExistsInWorkspace(folder, true);
+		createInWorkspace(folder);
 
 		IFile file = folder.getFile("bar.txt");
-		ensureExistsInWorkspace(file, "content");
+		createInWorkspace(file, "content");
 
 		existingProject.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER, ".*");
@@ -1185,12 +1219,13 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Regression test for bug 328464
 	 */
+	@Test
 	public void test328464() throws CoreException {
 		IFolder folder = existingProject.getFolder(createUniqueString());
-		ensureExistsInWorkspace(folder, true);
+		createInWorkspace(folder);
 
 		IFile file_a_txt = folder.getFile("a.txt");
-		ensureExistsInWorkspace(file_a_txt, true);
+		createInWorkspace(file_a_txt);
 
 		FileInfoMatcherDescription matcherDescription = new FileInfoMatcherDescription(REGEX_FILTER_PROVIDER,
 				"a\\.txt");
@@ -1219,6 +1254,7 @@ public class FilteredResourceTest extends ResourceTest {
 	/**
 	 * Regression test for bug 343914
 	 */
+	@Test
 	public void test343914() throws CoreException {
 		String subProjectName = "subProject";
 		IPath subProjectLocation = existingProject.getLocation().append(subProjectName);
@@ -1275,4 +1311,5 @@ public class FilteredResourceTest extends ResourceTest {
 		assertTrue("3.6", resultsContainer.length == 1);
 		assertEquals("3.7", subProject, resultsContainer[0].getProject());
 	}
+
 }

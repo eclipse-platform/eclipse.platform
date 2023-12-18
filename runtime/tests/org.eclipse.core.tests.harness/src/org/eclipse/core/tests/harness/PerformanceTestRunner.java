@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
+import static org.junit.Assert.fail;
+
 import junit.framework.TestCase;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.test.performance.Dimension;
@@ -35,7 +37,7 @@ public abstract class PerformanceTestRunner {
 	/**
 	 * Implemented by subclasses to perform the work to be measured.
 	 */
-	protected abstract void test();
+	protected abstract void test() throws CoreException;
 
 	/**
 	 * Executes the performance test the given number of times. Use the outer time
@@ -67,6 +69,36 @@ public abstract class PerformanceTestRunner {
 	public final void run(TestCase testCase, String localName, int outer, int inner) {
 		Performance perf = Performance.getDefault();
 		PerformanceMeter meter = perf.createPerformanceMeter(perf.getDefaultScenarioId(testCase));
+		try {
+			runTest(meter, localName, outer, inner);
+		} catch (Exception e) {
+			fail("Failed performance test with exception:" + e);
+		}
+	}
+
+	/**
+	 * Executes the performance test the given number of times. Use the outer time
+	 * to execute the test several times in order to obtain a normalized average.
+	 * Use the inner loop for very fast tests that would otherwise be difficult to
+	 * measure due to Java's poor timer granularity. The inner loop is not needed
+	 * for long tests that typically take more than a second to execute.
+	 *
+	 * @param testClass      The test class that is currently executed (used to
+	 *                       obtain an appropriate meter)
+	 * @param testMethodName The test method name (or some other identifier) that is
+	 *                       currently executed (used to obtain an appropriate
+	 *                       meter)
+	 * @param outer          The number of repetitions of the test.
+	 * @param inner          The number of repetitions within the performance timer.
+	 */
+	public final void run(Class<?> testClass, String testMethodName, int outer, int inner) throws Exception {
+		Performance perf = Performance.getDefault();
+		PerformanceMeter meter = perf.createPerformanceMeter(perf.getDefaultScenarioId(testClass, testMethodName));
+		runTest(meter, null, outer, inner);
+	}
+
+	private void runTest(PerformanceMeter meter, String localName, int outer, int inner) throws Exception {
+		Performance perf = Performance.getDefault();
 		if (regressionReason != null) {
 			perf.setComment(meter, Performance.EXPLAINS_DEGRADATION_COMMENT, regressionReason);
 		}
@@ -81,25 +113,23 @@ public abstract class PerformanceTestRunner {
 				tearDown();
 			}
 			if (localName != null) {
-				Performance.getDefault().tagAsSummary(meter, localName, Dimension.ELAPSED_PROCESS);
+				perf.tagAsSummary(meter, localName, Dimension.ELAPSED_PROCESS);
 			}
 			if (fingerprintName != null) {
 				perf.tagAsSummary(meter, fingerprintName, Dimension.ELAPSED_PROCESS);
 			}
 			meter.commit();
 			perf.assertPerformance(meter);
-		} catch (CoreException e) {
-			CoreTest.fail("Failed performance test", e);
 		} finally {
 			meter.dispose();
 		}
 	}
 
-	protected void setUp() throws CoreException {
+	protected void setUp() throws Exception {
 		// subclasses to override
 	}
 
-	protected void tearDown() throws CoreException {
+	protected void tearDown() throws Exception {
 		// subclasses to override
 	}
 

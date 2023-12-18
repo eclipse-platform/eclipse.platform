@@ -25,7 +25,7 @@ Require-Bundle: org.eclipse.equinox.common;bundle-version="3.4.0",
 Export-Package: org.eclipse.e4.core.internal.services;x-friends:="org.eclipse.e4.ui.workbench.swt",
  org.eclipse.e4.core.internal.services.about;x-internal:=true,
  org.eclipse.e4.core.services.about,
- org.eclipse.e4.core.services.adapter;x-friends:="org.eclipse.e4.ui.workbench.swt",
+ org.eclipse.e4.core.services.adapter;x-friends:="org.eclipse.e4.ui.workbench.swt, org.eclipse.ui.workbench",
  org.eclipse.e4.core.services.contributions;
   x-friends:="org.eclipse.e4.ui.workbench,
    org.eclipse.e4.ui.css.swt,

@@ -10,7 +10,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,74 +37,82 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.URIUtil;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Test cases for symbolic links in projects.
  */
-public class Bug_185247_LinuxTests extends ResourceTest {
+public class Bug_185247_LinuxTests {
 
-	private static final boolean IS_LINUX = OS.isLinux();
-	private final List<IProject> testProjects = new ArrayList<>();
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private IPath testCasesLocation;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
+		assumeTrue("test only works on Linux", OS.isLinux());
+
 		IPath randomLocation = getRandomLocation();
-		deleteOnTearDown(randomLocation);
+		workspaceRule.deleteOnTearDown(randomLocation);
 		testCasesLocation = randomLocation.append("bug185247LinuxTests");
 		assertTrue("failed to create test location: " + testCasesLocation, testCasesLocation.toFile().mkdirs());
 		extractTestCasesArchive(testCasesLocation);
 	}
 
 	private void extractTestCasesArchive(IPath outputLocation) throws Exception {
-		if (IS_LINUX) {
-			URL testCasesArchive = Platform.getBundle("org.eclipse.core.tests.resources")
-					.getEntry("resources/bug185247/bug185247_LinuxTests.zip");
-			URL archiveLocation = FileLocator.resolve(testCasesArchive);
-			File archive = URIUtil.toFile(archiveLocation.toURI());
-			assertNotNull("cannot find archive with test cases", archive);
-			unzip(archive, outputLocation.toFile());
-		}
+		URL testCasesArchive = Platform.getBundle("org.eclipse.core.tests.resources")
+				.getEntry("resources/bug185247/bug185247_LinuxTests.zip");
+		URL archiveLocation = FileLocator.resolve(testCasesArchive);
+		File archive = URIUtil.toFile(archiveLocation.toURI());
+		assertNotNull("cannot find archive with test cases", archive);
+		unzip(archive, outputLocation.toFile());
 	}
 
+	@Test
 	public void test1_trivial() throws Exception {
 		runProjectTestCase();
 	}
 
+	@Test
 	public void test2_mutual() throws Exception {
 		runProjectTestCase();
 	}
 
+	@Test
 	public void test3_outside_tree() throws Exception {
 		runProjectTestCase();
 	}
 
+	@Test
 	public void test5_transitive_mutual() throws Exception {
 		runProjectTestCase();
 	}
 
+	@Test
 	public void test6_nonrecursive() throws Exception {
 		runProjectTestCase();
 	}
 
 	private void runProjectTestCase() throws Exception {
-		String projectName = getName();
 		// refresh should hang, if bug 105554 re-occurs
-		importProjectAndRefresh(projectName);
+		importProjectAndRefresh(testName.getMethodName());
 	}
 
 	private void importProjectAndRefresh(String projectName) throws Exception {
-		if (IS_LINUX) {
-			IProject project = importTestProject(projectName);
-			project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
-		}
+		IProject project = importTestProject(projectName);
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 	}
 
 	private IProject importTestProject(String projectName) throws Exception {
 		IProject testProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-		testProjects.add(testProject);
 		IProjectDescription projectDescription = new ProjectDescription();
 		projectDescription.setName(projectName);
 		String projectRoot = String.join(File.separator, testCasesLocation.toOSString(), "bug185247", projectName);
@@ -118,7 +131,6 @@ public class Bug_185247_LinuxTests extends ResourceTest {
 
 	private static void executeCommand(String[] command, File outputDirectory) throws Exception {
 		assertTrue("output directory does not exist: " + outputDirectory, outputDirectory.exists());
-		assertTrue("commands only availabe in Linux environment", IS_LINUX);
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		File commandOutputFile = new File(outputDirectory, "commandOutput.txt");
 		if (!commandOutputFile.exists()) {
@@ -144,4 +156,5 @@ public class Bug_185247_LinuxTests extends ResourceTest {
 		String formattedOutput = String.join(System.lineSeparator(), commandToString);
 		return formattedOutput;
 	}
+
 }

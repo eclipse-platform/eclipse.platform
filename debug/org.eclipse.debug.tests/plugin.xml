@@ -66,6 +66,10 @@
             name="%launchConfigurationType.name">
       </launchConfigurationType>
       <launchConfigurationType
+            id="org.eclipse.debug.tests.launch.type1"
+            name="%launchConfigurationTypeWithUriImage.name">
+      </launchConfigurationType>
+      <launchConfigurationType
             delegate="org.eclipse.debug.tests.launching.CancellingLaunchDelegate"
             id="cancelling.type"
             modes="run"

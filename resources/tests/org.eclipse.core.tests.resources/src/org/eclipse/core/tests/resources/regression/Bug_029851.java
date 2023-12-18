@@ -14,6 +14,8 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.util.ArrayList;
@@ -23,14 +25,19 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
- * Tests regression of bug 25457.  In this case, attempting to move a project
+ * Tests regression of bug 25457. In this case, attempting to move a project
  * that is only a case change, where the move fails due to another handle being
  * open on a file in the hierarchy, would cause deletion of the source.
  */
-public class Bug_029851 extends ResourceTest {
+public class Bug_029851 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private Collection<String> createChildren(int breadth, int depth, IPath prefix) {
 		ArrayList<String> result = new ArrayList<>();
@@ -51,9 +58,10 @@ public class Bug_029851 extends ResourceTest {
 		Collection<String> result = createChildren(breadth, depth, prefix);
 		result.add(prefix.toString());
 		IResource[] resources = buildResources(getWorkspace().getRoot(), result.toArray(new String[0]));
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 	}
 
+	@Test
 	public void test() throws CoreException {
 		createResourceHierarchy();
 		final QualifiedName key = new QualifiedName("local", createUniqueString());
@@ -64,4 +72,5 @@ public class Bug_029851 extends ResourceTest {
 		};
 		getWorkspace().getRoot().accept(visitor);
 	}
+
 }

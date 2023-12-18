@@ -14,6 +14,9 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.readStringInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.emptyArray;
@@ -25,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.resources.IBuildConfiguration;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IDynamicReferenceProvider;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -34,46 +36,45 @@ import org.eclipse.core.resources.IWorkspace.ProjectOrder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Test project dynamic references provided by extension point
  * <code>org.eclipse.core.resources.builders</code> and dynamicReference
  * {@link IDynamicReferenceProvider}
  */
-public class ProjectDynamicReferencesTest extends ResourceTest {
+public class ProjectDynamicReferencesTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private static final String PROJECT_0_NAME = "ProjectDynamicReferencesTest_p0";
 
 	private IProject project0;
 	private IProject project1;
 	private IProject project2;
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 		project0 = getWorkspace().getRoot().getProject(PROJECT_0_NAME);
 		project1 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p1");
 		project2 = getWorkspace().getRoot().getProject("ProjectDynamicReferencesTest_p2");
-		ensureExistsInWorkspace(new IProject[] { project0, project1, project2 }, true);
-		addBuilder(project0);
-		addBuilder(project1);
-		addBuilder(project2);
+		createInWorkspace(new IProject[] { project0, project1, project2 });
+		updateProjectDescription(project0).addingCommand(Builder.NAME).apply();
+		updateProjectDescription(project1).addingCommand(Builder.NAME).apply();
+		updateProjectDescription(project2).addingCommand(Builder.NAME).apply();
 	}
 
-	private static void addBuilder(IProject project) throws CoreException {
-		IProjectDescription description = project.getDescription();
-		ICommand command = description.newCommand();
-		command.setBuilderName(Builder.NAME);
-		description.setBuildSpec(new ICommand[] {command});
-		project.setDescription(description, null);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		DynamicReferenceProvider.clear();
 	}
 
+	@Test
 	public void testReferencedProjects() throws CoreException {
 		assertThat("Project0 must not have referenced projects", project0.getReferencedProjects(), emptyArray());
 		assertThat("Project1 must not have referenced projects", project1.getReferencedProjects(), emptyArray());
@@ -117,6 +118,7 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 		assertThat("Project2 must not have referenced projects", project2.getReferencedProjects(), emptyArray());
 	}
 
+	@Test
 	public void testReferencedBuildConfigs() throws CoreException {
 		assertThat("Project0 must not have referenced projects",
 				project0.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false), emptyArray());
@@ -142,6 +144,7 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 				project2.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false), emptyArray());
 	}
 
+	@Test
 	public void testReferencingProjects() throws CoreException {
 		assertThat("Project0 must not have referencing projects", project0.getReferencingProjects(), emptyArray());
 		assertThat("Project1 must not have referencing projects", project1.getReferencingProjects(), emptyArray());
@@ -192,6 +195,7 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 				arrayContaining(project0, project1));
 	}
 
+	@Test
 	public void testComputeProjectOrder() throws CoreException {
 		IProject[] allProjects = new IProject[] { project0, project1, project2 };
 
@@ -223,11 +227,12 @@ public class ProjectDynamicReferencesTest extends ResourceTest {
 		assertThat("Project order should not have cycles: " + projectOrder, !projectOrder.hasCycles);
 	}
 
+	@Test
 	public void testBug543776() throws Exception {
 		IFile projectFile = project0.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		String projectDescription = readStringInFileSystem(projectFile);
 		projectDescription = projectDescription.replace(PROJECT_0_NAME, "anotherName");
-		ensureExistsInWorkspace(projectFile, projectDescription);
+		createInWorkspace(projectFile, projectDescription);
 		project0.delete(false, true, null);
 		project0.create(null);
 		project0.open(null);

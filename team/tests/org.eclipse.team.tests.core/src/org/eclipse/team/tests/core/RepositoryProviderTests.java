@@ -13,23 +13,23 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.junit.Assert;
-
-import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.team.core.TeamException;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -42,22 +42,22 @@ import org.eclipse.core.resources.team.FileModificationValidationContext;
 import org.eclipse.core.resources.team.FileModificationValidator;
 import org.eclipse.core.resources.team.IMoveDeleteHook;
 import org.eclipse.core.resources.team.IResourceTree;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.eclipse.team.core.RepositoryProvider;
+import org.eclipse.team.core.TeamException;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class RepositoryProviderTests extends TeamTest {
-	public RepositoryProviderTests() {
-		super();
-	}
+public class RepositoryProviderTests {
 
-	public RepositoryProviderTests(String name) {
-		super(name);
-	}
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(RepositoryProviderTests.class);
-		return new TestSetup(suite);
-		//return new testSetup(new RepositoryProviderTests("test"));
-	}
-
+	@Test
 	public void testProvidersRegistered() throws CoreException, TeamException {
 		List repoProviderIds = new ArrayList(Arrays.asList(RepositoryProvider.getAllProviderTypeIds()));
 		assertEquals(true, repoProviderIds.contains(RepositoryProviderBic.NATURE_ID));
@@ -65,9 +65,10 @@ public class RepositoryProviderTests extends TeamTest {
 		assertEquals(false, repoProviderIds.contains(RepositoryProviderOtherSport.NATURE_ID));
 	}
 
+	@Test
 	public void testGetProviderGeneric() throws CoreException, TeamException {
-		IProject project = getUniqueTestProject("testGetProviderGeneric1");
-		IProject project2 = getUniqueTestProject("testGetProviderGeneric2");
+		IProject project = createTestProject("testGetProviderGeneric1");
+		IProject project2 = createTestProject("testGetProviderGeneric2");
 
 		// test that adding a non registered provider doesn't work
 		boolean good = false;
@@ -76,70 +77,72 @@ public class RepositoryProviderTests extends TeamTest {
 		} catch (TeamException e) {
 			good = true;
 		}
-		Assert.assertTrue(good);
+		assertTrue(good);
 
 		// adding a valid team provider should be fine
 		RepositoryProvider.map(project, RepositoryProviderNaish.NATURE_ID);
 		RepositoryProvider.map(project2, RepositoryProviderNaish.NATURE_ID);
 		RepositoryProvider provider1 = RepositoryProvider.getProvider(project);
 		RepositoryProvider provider2 = RepositoryProvider.getProvider(project2);
-		Assert.assertTrue(provider1 != null && provider1.getID().equals(RepositoryProviderNaish.NATURE_ID));
-		Assert.assertTrue(provider2 != null && provider2.getID().equals(RepositoryProviderNaish.NATURE_ID));
-		Assert.assertTrue(provider1.getProject().equals(project) && provider2.getProject().equals(project2));
+		assertTrue(provider1 != null && provider1.getID().equals(RepositoryProviderNaish.NATURE_ID));
+		assertTrue(provider2 != null && provider2.getID().equals(RepositoryProviderNaish.NATURE_ID));
+		assertTrue(provider1.getProject().equals(project) && provider2.getProject().equals(project2));
 
 		// remapping a provider is allowed
 		RepositoryProvider.map(project, RepositoryProviderBic.NATURE_ID);
 		provider1 = RepositoryProvider.getProvider(project);
-		Assert.assertTrue(provider1 != null && provider1.getID().equals(RepositoryProviderBic.NATURE_ID));
+		assertTrue(provider1 != null && provider1.getID().equals(RepositoryProviderBic.NATURE_ID));
 
 		// closed or non-existant projects cannot be associated with a provider
-		IProject closedProject = getUniqueTestProject("testGetProviderGenericClosed");
+		IProject closedProject = createTestProject("testGetProviderGenericClosed");
 		IProject nonExistantProject = ResourcesPlugin.getWorkspace().getRoot().getProject("nonExistant");
 		closedProject.close(null);
-		Assert.assertTrue(RepositoryProvider.getProvider(closedProject) == null);
-		Assert.assertTrue(RepositoryProvider.getProvider(nonExistantProject) == null);
+		assertNull(RepositoryProvider.getProvider(closedProject));
+		assertNull(RepositoryProvider.getProvider(nonExistantProject));
 
 		// removing the nature removes the provider association
 		RepositoryProvider.unmap(project);
 		RepositoryProvider.unmap(project2);
-		Assert.assertTrue(RepositoryProvider.getProvider(project) == null);
-		Assert.assertTrue(RepositoryProvider.getProvider(project2) == null);
+		assertNull(RepositoryProvider.getProvider(project));
+		assertNull(RepositoryProvider.getProvider(project2));
 	}
 
+	@Test
 	public void testGetProviderById() throws CoreException, TeamException {
-		IProject project1 = getUniqueTestProject("testGetProviderById_1");
-		IProject project2 = getUniqueTestProject("testGetProviderById_2");
+		IProject project1 = createTestProject("testGetProviderById_1");
+		IProject project2 = createTestProject("testGetProviderById_2");
 
 		// adding a valid team provider should be fine
 		RepositoryProvider.map(project1, RepositoryProviderBic.NATURE_ID);
 		RepositoryProvider.map(project2, RepositoryProviderNaish.NATURE_ID);
-		Assert.assertTrue(RepositoryProvider.getProvider(project1, RepositoryProviderBic.NATURE_ID) != null);
-		Assert.assertTrue(RepositoryProvider.getProvider(project2, RepositoryProviderNaish.NATURE_ID) != null);
+		assertNotNull(RepositoryProvider.getProvider(project1, RepositoryProviderBic.NATURE_ID));
+		assertNotNull(RepositoryProvider.getProvider(project2, RepositoryProviderNaish.NATURE_ID));
 
 		// closed or non-existant projects cannot be associated with a provider
-		IProject closedProject = getUniqueTestProject("testGetProviderGenericClosed");
+		IProject closedProject = createTestProject("testGetProviderGenericClosed");
 		IProject nonExistantProject = ResourcesPlugin.getWorkspace().getRoot().getProject("nonExistant");
 		closedProject.close(null);
-		Assert.assertTrue(RepositoryProvider.getProvider(closedProject, "id") == null);
-		Assert.assertTrue(RepositoryProvider.getProvider(nonExistantProject, "id") == null);
+		assertNull(RepositoryProvider.getProvider(closedProject, "id"));
+		assertNull(RepositoryProvider.getProvider(nonExistantProject, "id"));
 
 		// removing the nature removes the provider association
 		RepositoryProvider.unmap(project1);
 		RepositoryProvider.unmap(project2);
-		Assert.assertTrue(RepositoryProvider.getProvider(project1, RepositoryProviderBic.NATURE_ID) == null);
-		Assert.assertTrue(RepositoryProvider.getProvider(project2, RepositoryProviderNaish.NATURE_ID) == null);
+		assertNull(RepositoryProvider.getProvider(project1, RepositoryProviderBic.NATURE_ID));
+		assertNull(RepositoryProvider.getProvider(project2, RepositoryProviderNaish.NATURE_ID));
 	}
 
+	@Test
 	public void testFileModificationValidator() throws CoreException, TeamException {
-		IProject project = getUniqueTestProject("testFileModificationValidator");
+		IProject project = createTestProject("testFileModificationValidator");
 
 		// adding a valid team provider should be fine
 		RepositoryProvider.map(project, RepositoryProviderBic.NATURE_ID);
 		RepositoryProviderBic bicProvider = (RepositoryProviderBic)RepositoryProvider.getProvider(project, RepositoryProviderBic.NATURE_ID);
-		Assert.assertTrue(bicProvider != null);
+		assertNotNull(bicProvider);
 
 		// test that validator gets called by team core dispatching
-		final boolean[] called = new boolean[] {false};
+		final boolean[] called = { false };
 		bicProvider.setModificationValidator(new FileModificationValidator() {
 			// can't test validate edit here because it is only called from editors
 			@Override
@@ -155,7 +158,7 @@ public class RepositoryProviderTests extends TeamTest {
 		IFile file = project.getFile("test.txt");
 		file.create(new ByteArrayInputStream("test".getBytes()), true, null);
 		file.setContents(new ByteArrayInputStream("test2".getBytes()), true, false, null);
-		Assert.assertTrue(called[0] == true);
+		assertTrue(called[0]);
 
 		// test that validator can veto a setContents
 		called[0] = false;
@@ -171,28 +174,30 @@ public class RepositoryProviderTests extends TeamTest {
 				return getTeamTestStatus(IStatus.ERROR);
 			}
 		});
-		try {
-			file.setContents(new ByteArrayInputStream("test3".getBytes()), true, false, null);
-			fail("validate hook should veto this setContents");
-		} catch(CoreException e) {
-			Assert.assertTrue(called[0] == true);
-		}
+		assertThrows("validate hook should veto this setContents", CoreException.class,
+				() -> file.setContents(new ByteArrayInputStream("test3".getBytes()), true, false, null));
+		assertTrue(called[0]);
 
 		// test that default validator allows the modification
 		bicProvider.setModificationValidator(null);
 		file.setContents(new ByteArrayInputStream("test4".getBytes()), true, false, null);
 	}
 
+	private static IStatus getTeamTestStatus(int severity) {
+		return new Status(severity, "org.eclipse.team.tests.core", 0, "team status", null);
+	}
+
+	@Test
 	public void testMoveDeleteHook() throws CoreException, TeamException {
-		final IProject project = getUniqueTestProject("testMoveDeleteHook");
+		final IProject project = createTestProject("testMoveDeleteHook");
 
 		// adding a valid team provider should be fine
 		RepositoryProvider.map(project, RepositoryProviderBic.NATURE_ID);
 		RepositoryProviderBic bicProvider = (RepositoryProviderBic)RepositoryProvider.getProvider(project, RepositoryProviderBic.NATURE_ID);
-		Assert.assertTrue(bicProvider != null);
+		assertNotNull(bicProvider);
 
 		// only testing that dispatching works, resources plugin is testing the rest of the API
-		final boolean[] called = new boolean[] {false, false, false, false, false, false};
+		final boolean[] called = { false, false, false, false, false, false };
 		IMoveDeleteHook hook = new IMoveDeleteHook() {
 			@Override
 			public boolean deleteFile(IResourceTree tree,	IFile file,	int updateFlags, IProgressMonitor monitor) {
@@ -228,7 +233,7 @@ public class RepositoryProviderTests extends TeamTest {
 		bicProvider.setMoveDeleteHook(hook);
 
 		IResource[] resources = buildResources(project, new String[] {"deleteFile.txt", "moveFile.txt", "deletedFolder/", "moveFolder/"});
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		resources[0].delete(false, null);
 		resources[1].move(resources[1].getFullPath().removeLastSegments(1).append("movedFile_NEW"), false, null);
 		resources[2].delete(false, null);
@@ -241,22 +246,23 @@ public class RepositoryProviderTests extends TeamTest {
 		bicProvider = (RepositoryProviderBic)RepositoryProvider.getProvider(newProject);
 		bicProvider.setMoveDeleteHook(hook);
 		newProject.delete(true, null);
-		for (int i = 0; i < called.length; i++) {
-			Assert.assertTrue(called[i]);
+		for (boolean element : called) {
+			assertTrue(element);
 		}
 	}
 
+	@Test
 	public void testMoveDeleteHookBetweenProjects() throws CoreException, TeamException {
-		final IProject projectA = getUniqueTestProject("testMoveDeleteHookBetweenProjects_A");
-		final IProject projectB = getUniqueTestProject("testMoveDeleteHookBetweenProjects_B");
-		final IProject projectC = getUniqueTestProject("testMoveDeleteHookBetweenProjects_C");
+		final IProject projectA = createTestProject("testMoveDeleteHookBetweenProjects_A");
+		final IProject projectB = createTestProject("testMoveDeleteHookBetweenProjects_B");
+		final IProject projectC = createTestProject("testMoveDeleteHookBetweenProjects_C");
 
 		// adding a valid team provider should be fine
 		RepositoryProvider.map(projectA, RepositoryProviderBic.NATURE_ID);
 		final RepositoryProviderBic bicProvider = (RepositoryProviderBic)RepositoryProvider.getProvider(projectA, RepositoryProviderBic.NATURE_ID);
 		RepositoryProvider.map(projectB, RepositoryProviderNaish.NATURE_ID);
 		final RepositoryProviderNaish naishProvider = (RepositoryProviderNaish)RepositoryProvider.getProvider(projectB, RepositoryProviderNaish.NATURE_ID);
-		Assert.assertTrue(bicProvider != null && naishProvider != null);
+		assertTrue(bicProvider != null && naishProvider != null);
 
 		// only testing that dispatching works, resources plugin is testing the rest of the API
 		final boolean[] calledProjectA = new boolean[] {false, false};
@@ -275,13 +281,13 @@ public class RepositoryProviderTests extends TeamTest {
 			}
 			@Override
 			public boolean moveFile(IResourceTree tree, IFile source, IFile destination, int updateFlags, IProgressMonitor monitor) {
-				Assert.assertTrue(bicProvider.getProject().equals(source.getProject()));
+				assertEquals(bicProvider.getProject(), source.getProject());
 				calledProjectA[0] = true;
 				return false;
 			}
 			@Override
 			public boolean moveFolder(IResourceTree tree,	IFolder source,	IFolder destination, int updateFlags, IProgressMonitor monitor) {
-				Assert.assertTrue(bicProvider.getProject().equals(source.getProject()));
+				assertEquals(bicProvider.getProject(), source.getProject());
 				calledProjectA[1] = true;
 				return false;
 			}
@@ -307,13 +313,13 @@ public class RepositoryProviderTests extends TeamTest {
 			}
 			@Override
 			public boolean moveFile(IResourceTree tree, IFile source, IFile destination, int updateFlags, IProgressMonitor monitor) {
-				Assert.assertTrue(bicProvider.getProject().equals(destination.getProject()));
+				assertEquals(bicProvider.getProject(), destination.getProject());
 				calledProjectB[0] = true;
 				return false;
 			}
 			@Override
 			public boolean moveFolder(IResourceTree tree, IFolder source,	IFolder destination, int updateFlags, IProgressMonitor monitor) {
-				Assert.assertTrue(bicProvider.getProject().equals(destination.getProject()));
+				assertEquals(bicProvider.getProject(), destination.getProject());
 				calledProjectB[1] = true;
 				return false;
 			}
@@ -325,11 +331,11 @@ public class RepositoryProviderTests extends TeamTest {
 
 		// test that moving files/folders between two projects with providers calls the destination
 		IResource[] resources = buildResources(projectA, new String[] {"moveFile.txt", "moveFolder/"});
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		resources[0].move(projectB.getFullPath().append("moveFile_new.txt"), false, null);
 		resources[1].move(projectB.getFullPath().append("movedFolder"), false, null);
 		for (int i = 0; i < calledProjectA.length; i++) {
-			Assert.assertTrue(calledProjectA[i] && calledProjectB[i] == false);
+			assertTrue(calledProjectA[i] && !calledProjectB[i]);
 		}
 
 		// test that moving files/folders from a project with a provider to a project without a provider calls the
@@ -337,17 +343,20 @@ public class RepositoryProviderTests extends TeamTest {
 		calledProjectA[0] = false; calledProjectA[1] = false;
 		calledProjectB[0] = false; calledProjectB[1] = false;
 		resources = buildResources(projectA, new String[] {"anotherMovedFiled.txt", "anotherMovedFolder/"});
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		resources[0].move(projectC.getFullPath().append("moveFileOther_new.txt"), false, null);
 		resources[1].move(projectC.getFullPath().append("movedFolderOther"), false, null);
 		for (int i = 0; i < calledProjectA.length; i++) {
-			Assert.assertTrue(calledProjectA[i] && calledProjectB[i] == false);
+			assertTrue(calledProjectA[i] && !calledProjectB[i]);
 		}
 	}
 
+	@Test
 	public void testMapSuccess() throws CoreException, TeamException {
-		IProject project = getUniqueTestProject("testLinkSuccess");
-		buildResources(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" }, true);
+		IProject project = createTestProject("testLinkSuccess");
+		IResource[] contents = buildResources(project,
+				new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
+		createInWorkspace(contents);
 
 		// Test shallow link when URI not allowed
 		IFolder folder = project.getFolder("link");
@@ -375,9 +384,13 @@ public class RepositoryProviderTests extends TeamTest {
 		RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);
 	}
 
+	@Test
 	public void testLinkSuccess() throws CoreException, TeamException {
-		IProject project = getUniqueTestProject("testLinkSuccess");
-		buildResources(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" }, true);
+		IProject project = createTestProject("testLinkSuccess");
+		IResource[] contents = buildResources(project,
+				new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
+		createInWorkspace(contents);
+
 		RepositoryProviderWithLinking.setCanHandleLinking(true);
 		RepositoryProviderWithLinking.setCanHandleLinkedURI(false);
 		RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);
@@ -395,119 +408,87 @@ public class RepositoryProviderTests extends TeamTest {
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
 	}
 
+	@Test
 	public void testMapFailure() throws CoreException, TeamException {
-		IProject project = getUniqueTestProject("testMapFailure");
-		buildResources(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" }, true);
+		IProject project = createTestProject("testMapFailure");
+		IResource[] contents = buildResources(project,
+				new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
+		createInWorkspace(contents);
+
 		IFolder folder = project.getFolder("link");
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
 		RepositoryProviderWithLinking.setCanHandleLinking(false);
 		RepositoryProviderWithLinking.setCanHandleLinkedURI(false);
+
 		// Test shallow link
-		boolean fail = true;
-		try {
-			RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);
-		} catch (TeamException e) {
-			if (e.getStatus().getCode() != IResourceStatus.LINKING_NOT_ALLOWED) {
-				throw e;
-			}
-			fail = false;
-		}
-		if (fail)
-			fail("Link should be disallowed");
+		TeamException shallowLinkException = assertThrows("Link should be disallowed", TeamException.class,
+				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
+		assertThat(shallowLinkException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
+
 		// Test deep link
 		folder.delete(false, null);
 		folder = project.getFolder("folder1/folder2");
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
-		fail = true;
-		try {
-			RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);
-		} catch (TeamException e) {
-			if (e.getStatus().getCode() != IResourceStatus.LINKING_NOT_ALLOWED) {
-				throw e;
-			}
-			fail = false;
-		}
-		if (fail)
-			fail("Link should be disallowed");
+		TeamException deepLinkException = assertThrows("Link should be disallowed", TeamException.class,
+				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
+		assertThat(deepLinkException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
 
 		// Test deep failure when shallow is allowed
 		folder.delete(false, null);
 		RepositoryProviderWithLinking.setCanHandleLinking(true);
 		folder = project.getFolder("folder1/folder2");
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
-		fail = true;
-		try {
-			RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);
-		} catch (TeamException e) {
-			if (e.getStatus().getCode() != IResourceStatus.LINKING_NOT_ALLOWED) {
-				throw e;
-			}
-			fail = false;
-		}
-		if (fail)
-			fail("Link should be disallowed");
+		TeamException shallowLinksAllowedException = assertThrows("Link should be disallowed", TeamException.class,
+				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
+		assertThat(shallowLinksAllowedException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
 	}
 
-
+	@Test
 	public void testLinkFailure() throws CoreException, TeamException {
-		IProject project = getUniqueTestProject("testLinkFailure");
-		buildResources(project, new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" }, true);
+		IProject project = createTestProject("testLinkFailure");
+		IResource[] contents = buildResources(project,
+				new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
+		createInWorkspace(contents);
+
 		RepositoryProviderWithLinking.setCanHandleLinking(false);
 		RepositoryProviderWithLinking.setCanHandleLinkedURI(false);
 		RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);
 		IFolder folder = project.getFolder("link");
 		// Test shallow link
-		boolean fail = true;
-		try {
-			folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
-		} catch (CoreException e) {
-			if (e.getStatus().getCode() != IResourceStatus.LINKING_NOT_ALLOWED) {
-				throw e;
-			}
-			fail = false;
-		}
-		if (fail)
-			fail("Link should be disallowed");
+		CoreException shallowLinkException = assertThrows("Link should be disallowed", CoreException.class,
+				() -> folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
+		assertThat(shallowLinkException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
+
 		// Test deep link
-		folder = project.getFolder("folder1/folder2");
-		fail = true;
-		try {
-			folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
-		} catch (CoreException e) {
-			if (e.getStatus().getCode() != IResourceStatus.LINKING_NOT_ALLOWED) {
-				throw e;
-			}
-			fail = false;
-		}
-		if (fail)
-			fail("Link should be disallowed");
+		IFolder innerFolder = project.getFolder("folder1/folder2");
+		CoreException deepLinkException = assertThrows("Link should be disallowed", CoreException.class,
+				() -> innerFolder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
+		assertThat(deepLinkException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
 
 		// Test deep link when shallow allowed
 		RepositoryProviderWithLinking.setCanHandleLinking(true);
-		folder = project.getFolder("folder1/folder2");
-		fail = true;
-		try {
-			folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
-		} catch (CoreException e) {
-			if (e.getStatus().getCode() != IResourceStatus.LINKING_NOT_ALLOWED) {
-				throw e;
-			}
-			fail = false;
-		}
-		if (fail)
-			fail("Link should be disallowed");
+		CoreException shallowLinkAllowedException = assertThrows("Link should be disallowed", CoreException.class,
+				() -> innerFolder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
+		assertThat(shallowLinkAllowedException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
 	}
 
+	@Test
 	public void testIsShared() throws CoreException, TeamException {
-		IProject project1 = getUniqueTestProject("testGetProviderById_1");
+		IProject project1 = createTestProject("testGetProviderById_1");
 		RepositoryProvider.map(project1, RepositoryProviderBic.NATURE_ID);
-		Assert.assertTrue(RepositoryProvider.isShared(project1));
+		assertTrue(RepositoryProvider.isShared(project1));
 		project1.close(null);
-		Assert.assertTrue(!RepositoryProvider.isShared(project1));
+		assertFalse(RepositoryProvider.isShared(project1));
 		project1.open(null);
-		Assert.assertTrue(RepositoryProvider.isShared(project1));
+		assertTrue(RepositoryProvider.isShared(project1));
 		RepositoryProvider.unmap(project1);
-		Assert.assertTrue(!RepositoryProvider.isShared(project1));
+		assertFalse(RepositoryProvider.isShared(project1));
+	}
+
+	private IProject createTestProject(String name) throws CoreException {
+		IProject project = getWorkspace().getRoot().getProject(name);
+		createInWorkspace(project);
+		return project;
 	}
 
 }

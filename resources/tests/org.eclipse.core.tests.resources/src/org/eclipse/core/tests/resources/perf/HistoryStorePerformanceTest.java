@@ -11,20 +11,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.resources.usecase;
+package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class HistoryStorePerformanceTest extends ResourceTest {
+public class HistoryStorePerformanceTest {
 
-	@Override
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Before
 	public void setUp() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		project.create(createTestMonitor());
@@ -36,16 +44,14 @@ public class HistoryStorePerformanceTest extends ResourceTest {
 		getWorkspace().setDescription(description);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		project.clearHistory(createTestMonitor());
-		super.tearDown();
 	}
 
+	@Test
 	public void testPerformance() throws CoreException {
-
-		/* Create common objects. */
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		IFile file = project.getFile("file.txt");
 		file.create(null, true, null);
@@ -54,7 +60,7 @@ public class HistoryStorePerformanceTest extends ResourceTest {
 		int nTimes = 1000;
 		long startTime = System.currentTimeMillis();
 		for (int i = 0; i < nTimes; i++) {
-			file.setContents(getContents(contents), true, true, null);
+			file.setContents(createInputStream(contents), true, true, null);
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("Adding " + nTimes + " states: " + (endTime - startTime) + " milliseconds.");

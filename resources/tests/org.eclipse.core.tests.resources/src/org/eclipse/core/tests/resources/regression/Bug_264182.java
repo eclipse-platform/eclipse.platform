@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertThrows;
@@ -26,17 +27,22 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class Bug_264182 extends ResourceTest {
+public class Bug_264182 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	IProject project;
 	IFile dotProject;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		// create a project
 		project = getWorkspace().getRoot().getProject(createUniqueString());
 		project.create(new NullProgressMonitor());
@@ -47,22 +53,23 @@ public class Bug_264182 extends ResourceTest {
 		setReadOnly(dotProject, true);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// make the description writable
 		setReadOnly(dotProject, false);
-		super.tearDown();
 	}
 
-	public void testBug() throws CoreException {
+	@Test
+	public void testBug() throws Exception {
 		// create a linked resource
 		final IFile file = project.getFile(createUniqueString());
-		IFileStore tempFileStore = getTempStore();
-		createFileInFileSystem(tempFileStore);
+		IFileStore tempFileStore = workspaceRule.getTempStore();
+		createInFileSystem(tempFileStore);
 		assertThrows(CoreException.class,
 				() -> file.createLink(tempFileStore.toURI(), IResource.NONE, new NullProgressMonitor()));
 
 		// the file should not exist in the workspace
 		assertDoesNotExistInWorkspace(file);
 	}
+
 }

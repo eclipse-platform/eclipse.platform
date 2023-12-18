@@ -15,8 +15,14 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.InputStream;
@@ -29,40 +35,46 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests that, when the workspace discovery a resource is out-of-sync
  * it brings the resource back into sync in a timely manner.
  */
-public class Bug_303517 extends ResourceTest {
+public class Bug_303517 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private final String[] resourcePaths = new String[] { "/", "/Bug303517/", "/Bug303517/Folder/",
 			"/Bug303517/Folder/Resource", };
 	private boolean originalRefreshSetting;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 		prefs.putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, true);
 		IResource[] resources = buildResources(getWorkspace().getRoot(), resourcePaths);
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
 		prefs.putBoolean(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH, false);
-		super.tearDown();
 	}
 
 	/**
 	 * Tests that file deleted is updated after #getContents
 	 */
+	@Test
 	public void testExists() throws Exception {
 		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
@@ -87,6 +99,7 @@ public class Bug_303517 extends ResourceTest {
 	/**
 	 * Tests that file discovered out-of-sync during #getContents is updated
 	 */
+	@Test
 	public void testGetContents() throws Exception {
 		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
@@ -113,6 +126,7 @@ public class Bug_303517 extends ResourceTest {
 	/**
 	 * Tests that file discovered out-of-sync during #getContents is updated
 	 */
+	@Test
 	public void testGetContentsTrue() throws Exception {
 		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
@@ -144,6 +158,7 @@ public class Bug_303517 extends ResourceTest {
 	/**
 	 * Tests that resource discovered out-of-sync during #isSynchronized is updated
 	 */
+	@Test
 	public void testIsSynchronized() throws Exception {
 		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
@@ -164,6 +179,7 @@ public class Bug_303517 extends ResourceTest {
 	/**
 	 * Tests that when changing resource gender is correctly picked up.
 	 */
+	@Test
 	public void testChangeResourceGender() throws Exception {
 		IResource f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
 		assertTrue("1.0", f.exists());
@@ -192,4 +208,5 @@ public class Bug_303517 extends ResourceTest {
 		assertTrue("1.5", f.exists());
 		assertTrue("1.6", f.isSynchronized(IResource.DEPTH_INFINITE));
 	}
+
 }

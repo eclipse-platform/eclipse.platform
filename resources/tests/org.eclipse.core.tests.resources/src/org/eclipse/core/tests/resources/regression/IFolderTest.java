@@ -14,9 +14,14 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -28,14 +33,15 @@ import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
-import org.junit.Assume;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class IFolderTest extends ResourceTest {
+public class IFolderTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Bug requests that if a failed folder creation occurs on Linux that we check
 	 * the immediate parent to see if it is read-only so we can return a better
@@ -43,18 +49,17 @@ public class IFolderTest extends ResourceTest {
 	 */
 	@Test
 	public void testBug25662() throws CoreException {
-
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		Assume.assumeTrue(isReadOnlySupported());
+		assumeTrue(isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		Assume.assumeTrue(OS.isLinux());
+		assumeTrue(OS.isLinux());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder parentFolder = project.getFolder("parentFolder");
-		ensureExistsInWorkspace(new IResource[] {project, parentFolder}, true);
+		createInWorkspace(new IResource[] {project, parentFolder});
 		IFolder folder = parentFolder.getFolder("folder");
 
 		try {
@@ -71,21 +76,23 @@ public class IFolderTest extends ResourceTest {
 	 * Bug 11510 [resources] Non-local folders do not become local when directory is created.
 	 */
 	@Test
-	public void testBug11510() throws CoreException {
+	public void testBug11510() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject("TestProject");
 		IFolder folder = project.getFolder("fold1");
 		IFile subFile = folder.getFile("f1");
 		IFile file = project.getFile("f2");
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(new IResource[] {folder, file, subFile}, false);
+		createInWorkspace(project);
+		folder.create(true, false, createTestMonitor());
+		file.create(null, true, createTestMonitor());
+		subFile.create(null, true, createTestMonitor());
 
 		assertTrue("1.0", !folder.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("1.1", !file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("1.1", !subFile.isLocal(IResource.DEPTH_ZERO));
 
 		// now create the resources in the local file system and refresh
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("2.1", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("2.2", !folder.isLocal(IResource.DEPTH_ZERO));
@@ -97,7 +104,7 @@ public class IFolderTest extends ResourceTest {
 		assertTrue("3.2", file.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("3.3", !subFile.isLocal(IResource.DEPTH_ZERO));
 
-		ensureExistsInFileSystem(subFile);
+		createInFileSystem(subFile);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertTrue("4.1", subFile.isLocal(IResource.DEPTH_ZERO));
 		assertTrue("4.2", folder.isLocal(IResource.DEPTH_ZERO));
@@ -114,8 +121,8 @@ public class IFolderTest extends ResourceTest {
 		IProject project = root.getProject("TestProject");
 		IFolder folder = project.getFolder("folder");
 
-		ensureExistsInWorkspace(project, true);
-		ensureExistsInWorkspace(new IResource[] {folder}, true);
+		createInWorkspace(project);
+		createInWorkspace(new IResource[] {folder});
 
 		IFileStore dir = EFS.getLocalFileSystem().fromLocalFile(folder.getLocation().toFile());
 		assertTrue(dir.fetchInfo().exists());
@@ -124,4 +131,5 @@ public class IFolderTest extends ResourceTest {
 		dir.mkdir(EFS.SHALLOW, null);
 		// should not throw an exception
 	}
+
 }

@@ -17,7 +17,9 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
 import java.io.ByteArrayInputStream;
@@ -65,7 +67,7 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 */
 	public void test1() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });

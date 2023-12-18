@@ -16,6 +16,8 @@ package org.eclipse.core.tests.runtime.jobs;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Regression test for bug 129551.  A job changes to the ABOUT_TO_RUN
@@ -23,7 +25,7 @@ import org.eclipse.core.tests.harness.TestJob;
  * the job starts, it is put to sleep.  When the bug existed, putting the job
  * to sleep would cause any blocked jobs behind the job to be lost.
  */
-public class Bug_129551 extends AbstractJobManagerTest {
+public class Bug_129551 extends AbstractJobTest {
 	final boolean[] shouldSleep = new boolean[] {true};
 	TestBarrier2 barrier = new TestBarrier2();
 	RuntimeException[] failure = new RuntimeException[1];
@@ -53,15 +55,15 @@ public class Bug_129551 extends AbstractJobManagerTest {
 		}
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() {
 		//don't use fussy progress monitor, because in this case we kill
 		// a job before it has started running
 		manager.setProgressProvider(null);
 	}
 
-	public void testBug() {
+	@Test
+	public void testBug() throws InterruptedException {
 		ISchedulingRule rule = new IdentityRule();
 		BugJob job = new BugJob();
 		job.setRule(rule);
@@ -72,18 +74,15 @@ public class Bug_129551 extends AbstractJobManagerTest {
 		//wait until the first job is about to run
 		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		//wait to ensure the other job is blocked
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			fail("4.99", e);
-		}
+		Thread.sleep(1000);
+
 		//let the first job go
 		barrier.setStatus(TestBarrier2.STATUS_START);
 		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 
 		//check for failure
 		if (failure[0] != null) {
-			fail(failure[0].getMessage());
+			throw failure[0];
 		}
 		//tell the job not to sleep this time around
 		shouldSleep[0] = false;
@@ -91,4 +90,5 @@ public class Bug_129551 extends AbstractJobManagerTest {
 		waitForCompletion(job);
 		waitForCompletion(other);
 	}
+
 }

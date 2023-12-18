@@ -17,8 +17,12 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import org.eclipse.core.filesystem.IFileStore;
@@ -27,7 +31,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests regression of bug 44106. In this case deleting a file which was a
@@ -37,7 +43,10 @@ import org.eclipse.core.tests.resources.ResourceTest;
  * Also tests bug 174492, which is a similar bug except the KEEP_HISTORY
  * flag is used when the resource is deleted from the workspace.
  */
-public class Bug_044106 extends ResourceTest {
+public class Bug_044106 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private void createSymLink(String target, String local) throws InterruptedException, IOException {
 		Process p = Runtime.getRuntime().exec(new String[] { "/bin/ln", "-s", target, local });
@@ -48,15 +57,15 @@ public class Bug_044106 extends ResourceTest {
 	 * Tests various permutations of the bug.
 	 * @param deleteFlags The option flags to use when deleting the resource.
 	 */
-	public void doTestDeleteLinkedFile(int deleteFlags) throws Exception {
+	private void doTestDeleteLinkedFile(int deleteFlags) throws Exception {
 		// create the file/folder that we are going to link to
-		IFileStore linkDestFile = getTempStore();
-		createFileInFileSystem(linkDestFile);
+		IFileStore linkDestFile = workspaceRule.getTempStore();
+		createInFileSystem(linkDestFile);
 		assertTrue("0.1", linkDestFile.fetchInfo().exists());
 
 		// create some resources in the workspace
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		// link in the folder
 		String target = new java.io.File(linkDestFile.toURI()).getAbsolutePath();
@@ -83,18 +92,18 @@ public class Bug_044106 extends ResourceTest {
 	 * is deleted
 	 * @param deleteFlags The flags to use on the resource deletion call
 	 */
-	public void doTestDeleteLinkedFolder(IFolder linkedFolder, boolean deleteParent, int deleteFlags) throws Exception {
-		if (!OS.isLinux()) {
-			return;
-		}
-		IFileStore linkDestLocation = getTempStore();
+	private void doTestDeleteLinkedFolder(IFolder linkedFolder, boolean deleteParent, int deleteFlags)
+			throws Exception {
+		assumeTrue("test only works on Linux", OS.isLinux());
+
+		IFileStore linkDestLocation = workspaceRule.getTempStore();
 		IFileStore linkDestFile = linkDestLocation.getChild(createUniqueString());
-		createFileInFileSystem(linkDestFile);
+		createInFileSystem(linkDestFile);
 		assertTrue("0.1", linkDestLocation.fetchInfo().exists());
 		assertTrue("0.2", linkDestFile.fetchInfo().exists());
 
 		// create some resources in the workspace
-		ensureExistsInWorkspace(linkedFolder.getParent(), true);
+		createInWorkspace(linkedFolder.getParent());
 
 		// link in the folder
 		String target = new java.io.File(linkDestLocation.toURI()).getAbsolutePath();
@@ -123,61 +132,61 @@ public class Bug_044106 extends ResourceTest {
 		assertTrue("4.3", linkDestFile.fetchInfo().exists());
 	}
 
+	@Test
 	public void testDeleteLinkedFile() throws Exception {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
+
 		doTestDeleteLinkedFile(IResource.NONE);
 	}
 
+	@Test
 	public void testDeleteLinkedFolder() throws Exception {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
+
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.NONE);
 	}
 
+	@Test
 	public void testDeleteLinkedResourceInProject() throws Exception {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
+
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.NONE);
 	}
 
+	@Test
 	public void testDeleteLinkedFileKeepHistory() throws Exception {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
+
 		doTestDeleteLinkedFile(IResource.KEEP_HISTORY);
 	}
 
+	@Test
 	public void testDeleteLinkedFolderParentKeepHistory() throws Exception {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
+
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder parent = project.getFolder("parent");
 		IFolder linkedFolder = parent.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.KEEP_HISTORY);
 	}
 
+	@Test
 	public void testDeleteLinkedFolderKeepHistory() throws Exception {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
+
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, false, IResource.KEEP_HISTORY);
 	}
 
+	@Test
 	public void testDeleteLinkedResourceInProjectKeepHistory() throws Exception {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("test only works on Linux", OS.isLinux());
+
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
 		IFolder linkedFolder = project.getFolder("linkedFolder");
 		doTestDeleteLinkedFolder(linkedFolder, true, IResource.KEEP_HISTORY);

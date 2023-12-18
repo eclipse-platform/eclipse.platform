@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
@@ -35,7 +36,7 @@ public class TestBug316182 extends WorkspaceSessionTest {
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject("project_TestBug316182");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		workspace.save(true, createTestMonitor());
 		// reset last caught exception
 		CAUGHT_EXCEPTION = null;

@@ -14,8 +14,12 @@
 package org.eclipse.core.tests.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -29,12 +33,19 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.internal.filesystem.bogus.BogusFileSystem;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryFileSystem;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests behaviour of manipulating linked resources that are not linked into
  * the local file system.
  */
-public class NonLocalLinkedResourceTest extends ResourceTest {
+public class NonLocalLinkedResourceTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Creates a folder in the test file system with the given name
 	 */
@@ -49,12 +60,12 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		return EFS.getFileSystem(MemoryFileSystem.SCHEME_MEMORY);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		MemoryTree.TREE.deleteAll();
-		super.tearDown();
 	}
 
+	@Test
 	public void testCopyFile() throws CoreException {
 		IFileStore sourceStore = createFolderStore("source");
 		IFileStore destinationStore = createFolderStore("destination");
@@ -66,17 +77,17 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFile localFile = project.getFile(sourceFile.getName());
 
 		//setup initial resources
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		sourceFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		//copy to linked destination should succeed
 		sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
 		//copy to local destination should succeed
 		sourceFile.copy(localFile.getFullPath(), IResource.NONE, createTestMonitor());
 		//copy from local to non local
-		ensureDoesNotExistInWorkspace(destinationFile);
+		removeFromWorkspace(destinationFile);
 		//copy from local to non local
 		localFile.copy(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
 
@@ -84,6 +95,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		assertThrows(CoreException.class, () -> localFile.copy(localFile.getFullPath(), IResource.NONE, createTestMonitor()));
 	}
 
+	@Test
 	public void testCopyFolder() throws CoreException {
 		IFileStore sourceStore = createFolderStore("source");
 		IProject project = getWorkspace().getRoot().getProject("project");
@@ -92,7 +104,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFolder destination = project.getFolder("destination");
 
 		//setup initial resources
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		parentFolder.create(IResource.NONE, true, createTestMonitor());
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 
@@ -112,6 +124,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		assertThrows(CoreException.class, () -> source.copy(source.getFullPath(), IResource.NONE, createTestMonitor()));
 	}
 
+	@Test
 	public void testMoveFile() throws CoreException {
 		IFileStore sourceStore = createFolderStore("source");
 		IFileStore destinationStore = createFolderStore("destination");
@@ -123,10 +136,10 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFile localFile = project.getFile(sourceFile.getName());
 
 		//setup initial resources
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		sourceFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		//move to linked destination should succeed
 		sourceFile.move(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
@@ -145,6 +158,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 	}
 
 	// Test for Bug 342060 - Renaming a project failing with custom EFS
+	@Test
 	public void test342060() throws CoreException {
 		IFileStore sourceStore = createBogusFolderStore("source");
 		IFileStore destinationStore = createBogusFolderStore("destination");
@@ -153,10 +167,10 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 		IFolder destination = project.getFolder("destination");
 		IFile sourceFile = source.getFile("file.txt");
 		//setup initial resources
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		source.createLink(sourceStore.toURI(), IResource.NONE, createTestMonitor());
 		destination.createLink(destinationStore.toURI(), IResource.NONE, createTestMonitor());
-		sourceFile.create(getRandomContents(), IResource.NONE, createTestMonitor());
+		sourceFile.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 
 		//move to linked destination should succeed
 		project.move(IPath.fromPortableString("movedProject"), IResource.NONE, createTestMonitor());
@@ -165,7 +179,7 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 	protected IFileStore createBogusFolderStore(String name) throws CoreException {
 		IFileSystem system = getBogusFileSystem();
 		IFileStore store = system.getStore(IPath.ROOT.append(name));
-		deleteOnTearDown(
+		workspaceRule.deleteOnTearDown(
 					IPath.fromOSString(system.getStore(IPath.ROOT).toLocalFile(EFS.NONE, createTestMonitor()).getPath()));
 		store.mkdir(EFS.NONE, createTestMonitor());
 		return store;
@@ -174,4 +188,5 @@ public class NonLocalLinkedResourceTest extends ResourceTest {
 	protected IFileSystem getBogusFileSystem() throws CoreException {
 		return EFS.getFileSystem(BogusFileSystem.SCHEME_BOGUS);
 	}
+
 }

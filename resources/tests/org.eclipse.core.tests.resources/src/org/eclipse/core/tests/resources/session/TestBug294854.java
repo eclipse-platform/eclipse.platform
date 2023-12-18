@@ -15,6 +15,7 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
@@ -73,7 +74,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 	private IProject createProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_OLD_NAME);
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		assertTrue("1.0", project.exists());
 
 		// make sure we do not have .snap file

@@ -17,6 +17,11 @@ import static java.util.Collections.synchronizedList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.stream.Stream;
 import junit.framework.AssertionFailedError;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -47,12 +53,15 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the API of the class IJobManager
  */
 @SuppressWarnings("restriction")
-public class IJobManagerTest extends AbstractJobManagerTest {
+public class IJobManagerTest extends AbstractJobTest {
 	class TestJobListener extends JobChangeAdapter {
 		private final Set<Job> scheduled = Collections.synchronizedSet(new HashSet<>());
 
@@ -97,14 +106,6 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 	protected AtomicInteger scheduledJobs;
 
-	public IJobManagerTest() {
-		super("");
-	}
-
-	public IJobManagerTest(String name) {
-		super(name);
-	}
-
 	/**
 	 * Asserts the current job state
 	 */
@@ -138,9 +139,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		return "UNKNOWN";
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		completedJobs = new AtomicInteger();
 		scheduledJobs = new AtomicInteger();
 		jobListeners = new IJobChangeListener[] {/* new VerboseJobListener(),*/
@@ -150,8 +150,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		for (IJobChangeListener jobListener : jobListeners) {
 			if (jobListener instanceof TestJobListener) {
 				((TestJobListener) jobListener).cancelAllJobs();
@@ -161,10 +161,9 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		for (IJobChangeListener jobListener : jobListeners) {
 			manager.removeJobChangeListener(jobListener);
 		}
-		super.tearDown();
-		//		manager.startup();
 	}
 
+	@Test
 	public void testBadGlobalListener() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { -1 });
 		Job job = new Job("testBadGlobalListener") {
@@ -189,6 +188,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testBadLocalListener() {
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[] { -1 });
 		Job job = new Job("testBadLocalListener") {
@@ -213,6 +213,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testBeginInvalidNestedRules() {
 		final ISchedulingRule root = new PathRule("/");
 		final ISchedulingRule invalid = new ISchedulingRule() {
@@ -228,14 +229,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		};
 		try {
 			Job.getJobManager().beginRule(invalid, null);
-			try {
-				Job.getJobManager().beginRule(root, null);
-				fail("1.0");
-			} catch (IllegalArgumentException e) {
-				// expected
-			} finally {
-				Job.getJobManager().endRule(root);
-			}
+			assertThrows(IllegalArgumentException.class, () -> Job.getJobManager().beginRule(root, null));
+			Job.getJobManager().endRule(root);
 		} finally {
 			Job.getJobManager().endRule(invalid);
 		}
@@ -245,6 +240,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 * Tests that if we call beginRule with a monitor that has already been
 	 * cancelled, it won't try to obtain the rule.
 	 */
+	@Test
 	public void testCancellationPriorToBeginRuleWontHoldRule() throws Exception {
 		final Semaphore mainThreadSemaphore = new Semaphore(0);
 		final Semaphore lockSemaphore = new Semaphore(0);
@@ -290,6 +286,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 * it will stop waiting, will throw an {@link OperationCanceledException},
 	 * and will clear the Thread.interrupted() flag.
 	 */
+	@Test
 	public void testCancellationWhileWaitingOnRule() throws Exception {
 		final Semaphore mainThreadSemaphore = new Semaphore(0);
 		final Semaphore lockSemaphore = new Semaphore(0);
@@ -342,7 +339,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Tests running a job that begins a rule but never ends it
 	 */
-	public void testBeginRuleNoEnd() {
+	@Test
+	public void testBeginRuleNoEnd() throws InterruptedException {
 		final PathRule rule = new PathRule("testBeginRuleNoEnd");
 		Job job = new Job("testBeginRuleNoEnd") {
 			@Override
@@ -358,11 +356,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 			}
 		};
 		job.schedule();
-		try {
-			job.join();
-		} catch (InterruptedException e) {
-			fail("4.99", e);
-		}
+		job.join();
 		//another thread should be able to access the rule now
 		try {
 			manager.beginRule(rule, null);
@@ -371,6 +365,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testBug48073() {
 		ISchedulingRule ruleA = new PathRule("/testBug48073");
 		ISchedulingRule ruleB = new PathRule("/testBug48073/B");
@@ -402,6 +397,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Regression test for bug 57656
 	 */
+	@Test
 	public void testBug57656() {
 		TestJob jobA = new TestJob("Job1");
 		TestJob jobB = new TestJob("Job2");
@@ -420,6 +416,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 * returning the correct value when executed in a thread that is performing
 	 * asynchronous completion of a job (i.e., a UI Job)
 	 */
+	@Test
 	public void testCurrentJob() {
 		final Thread[] thread = new Thread[1];
 		final boolean[] done = new boolean[] {false};
@@ -462,6 +459,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Tests for {@link IJobManager#currentRule()}.
 	 */
+	@Test
 	public void testCurrentRule() {
 		//first test when not running in a job
 		runRuleSequence();
@@ -493,7 +491,6 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		if (!errors.isEmpty()) {
 			throw errors.iterator().next();
 		}
-
 	}
 
 	/**
@@ -566,6 +563,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		return true;
 	}
 
+	@Test
 	public void testDelayedJob() {
 		//schedule a delayed job and ensure it doesn't start until instructed
 		int[] sleepTimes = new int[] { 0, 1, 5, 10, 50, 100, 200, 250 };
@@ -585,6 +583,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testJobFamilyCancel() {
 		//test the cancellation of a family of jobs
 		final int NUM_JOBS = 20;
@@ -662,6 +661,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testJobFamilyFind() {
 		//test of finding jobs based on the job family they belong to
 		final int NUM_JOBS = 20;
@@ -849,6 +849,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		allJobs.clear();
 	}
 
+	@Test
 	public void testJobFamilyJoin() {
 		//test the join method on a family of jobs
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
@@ -918,6 +919,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testJobFamilyJoinCancelJobs() {
 		//test the join method on a family of jobs, then cancel the jobs that are blocking the join call
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
@@ -984,6 +986,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testJobFamilyJoinCancelManager() {
 		//test the join method on a family of jobs, then cancel the call
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
@@ -1059,10 +1062,11 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 	/**
 	 * Asserts that the LockListener is called correctly during invocation of
-	 * {@link IJobManager#join(Object, IProgressMonitor)}.
-	 * See bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=195839.
+	 * {@link IJobManager#join(Object, IProgressMonitor)}. See bug
+	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=195839.
 	 */
-	public void testJobFamilyJoinLockListener() {
+	@Test
+	public void testJobFamilyJoinLockListener() throws OperationCanceledException, InterruptedException {
 		final TestJobFamily family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		int count = 5;
 		TestJob[] jobs = new TestJob[count];
@@ -1074,8 +1078,6 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		try {
 			manager.setLockListener(lockListener);
 			manager.join(family, new FussyProgressMonitor());
-		} catch (OperationCanceledException | InterruptedException e) {
-			fail("Exception occurred when joining on JobManager", e);
 		} finally {
 			manager.setLockListener(null);
 		}
@@ -1083,35 +1085,27 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		lockListener.assertNotWaiting("JobManager has not finished waiting for lock");
 	}
 
-	public void testJobFamilyJoinNothing() {
+	@Test
+	public void testJobFamilyJoinNothing() throws OperationCanceledException, InterruptedException {
 		//test joining a bogus family, and the monitor should be used up
-		try {
-			final FussyProgressMonitor monitor = new FussyProgressMonitor();
-			monitor.prepare();
-			manager.join(new Object(), monitor);
-			monitor.sanityCheck();
-			monitor.assertUsedUp();
-		} catch (OperationCanceledException | InterruptedException e) {
-			fail("4.99", e);
-		}
+		final FussyProgressMonitor monitor = new FussyProgressMonitor();
+		monitor.prepare();
+		manager.join(new Object(), monitor);
+		monitor.sanityCheck();
+		monitor.assertUsedUp();
 	}
 
 	/**
 	 * Tests joining a job that repeats in a loop
 	 */
-	public void testJobFamilyJoinRepeating() {
+	@Test
+	public void testJobFamilyJoinRepeating() throws OperationCanceledException, InterruptedException {
 		Object family = new Object();
 		int count = 25;
 		RepeatingJob job = new RepeatingJob("testJobFamilyJoinRepeating", count);
 		job.setFamily(family);
 		job.schedule();
-		try {
-			Job.getJobManager().join(family, null);
-		} catch (OperationCanceledException e) {
-			fail("1.0", e);
-		} catch (InterruptedException e) {
-			fail("1.1", e);
-		}
+		Job.getJobManager().join(family, null);
 		//ensure the job has run the expected number of times
 		assertEquals("1.2", count, job.getRunCount());
 	}
@@ -1119,7 +1113,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Tests joining a job family that repeats but returns false to shouldSchedule
 	 */
-	public void testJobFamilyJoinShouldSchedule() {
+	@Test
+	public void testJobFamilyJoinShouldSchedule() throws OperationCanceledException, InterruptedException {
 		Object family = new Object();
 		final int count = 1;
 		RepeatingJob job = new RepeatingJob("testJobFamilyJoinShouldSchedule", count) {
@@ -1130,13 +1125,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		};
 		job.setFamily(family);
 		job.schedule();
-		try {
-			Job.getJobManager().join(family, null);
-		} catch (OperationCanceledException e) {
-			fail("1.0", e);
-		} catch (InterruptedException e) {
-			fail("1.1", e);
-		}
+		Job.getJobManager().join(family, null);
 		//ensure the job has run the expected number of times
 		assertEquals("1.2", count, job.getRunCount());
 	}
@@ -1144,6 +1133,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Tests simple usage of the IJobManager.join() method.
 	 */
+	@Test
 	public void testJobFamilyJoinSimple() {
 		//test the join method on a family of jobs that is empty
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);
@@ -1223,6 +1213,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 *  - waiting job is scheduled when job manager is suspended
 	 * In this scenario main job should not wait for the waiting job.
 	 */
+	@Test
 	public void testJobFamilyJoinWhenSuspended_1() throws InterruptedException {
 		final Object family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		final int[] familyJobsCount = new int[] {-1};
@@ -1314,6 +1305,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 *  - waiting job is scheduled when job manager is suspended
 	 * In this scenario main job should not wait for the waiting job.
 	 */
+	@Test
 	public void testJobFamilyJoinWhenSuspended_2() throws InterruptedException {
 		final Object family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		final int[] familyJobsCount = new int[] {-1};
@@ -1406,6 +1398,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 *  - job manager is resumed causing waiting job to start
 	 * In this scenario main thread should wait for the waiting job since the job was started before the join ended.
 	 */
+	@Test
 	public void testJobFamilyJoinWhenSuspended_3() throws InterruptedException {
 		final Object family = new TestJobFamily(TestJobFamily.TYPE_ONE);
 		final TestBarrier2 barrier = new TestBarrier2();
@@ -1466,6 +1459,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testJobFamilyNULL() {
 		//test methods that accept the null job family (i.e. all jobs)
 		final int NUM_JOBS = 20;
@@ -1521,9 +1515,9 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		for (int i = 0; i < NUM_JOBS; i++) {
 			assertState("4." + i, jobs[i], Job.NONE);
 		}
-
 	}
 
+	@Test
 	public void testJobFamilySleep() {
 		//test the sleep method on a family of jobs
 		final int NUM_JOBS = 20;
@@ -1600,6 +1594,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Tests the API method IJobManager.wakeUp(family)
 	 */
+	@Test
 	public void testJobFamilyWakeUp() {
 		final int JOBS_PER_FAMILY = 10;
 		//create two different families of jobs
@@ -1716,6 +1711,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		}
 	}
 
+	@Test
 	public void testMutexRule() {
 		final int JOB_COUNT = 10;
 		TestJob[] jobs = new TestJob[JOB_COUNT];
@@ -1744,6 +1740,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		jobs[JOB_COUNT - 1].cancel();
 	}
 
+	@Test
 	public void testOrder() throws Exception {
 		// ensure jobs are run in order from lowest to highest sleep time.
 		int[] sleepTimes = new int[] { 0, 1, 2, 5, 10, 15, 25, 50 };
@@ -1777,6 +1774,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 				empty());
 	}
 
+	@Test
 	public void testReverseOrder() throws InterruptedException {
 		// ensure that a job does not wait for one that is scheduled with a high delay
 		Job directlyExecutedJob = new TestJob("Directly executed job", 0, 0);
@@ -1793,6 +1791,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Tests conditions where there is a race to schedule the same job multiple times.
 	 */
+	@Test
 	public void testScheduleRace() {
 		final int[] count = new int[1];
 		final boolean[] running = new boolean[] {false};
@@ -1834,6 +1833,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		assertTrue("1.0", !failure[0]);
 	}
 
+	@Test
 	public void testSimple() {
 		final int JOB_COUNT = 10;
 		for (int i = 0; i < JOB_COUNT; i++) {
@@ -1850,6 +1850,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Tests setting various kinds of invalid rules on jobs.
 	 */
+	@Test
 	public void testSetInvalidRule() {
 		class InvalidRule implements ISchedulingRule {
 			@Override
@@ -1874,26 +1875,12 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 			}
 		};
 
-		try {
-			job.setRule(rule1);
-			fail("invalid rule");
-		} catch (IllegalArgumentException e) {
-			//expected
-		}
-		try {
-			job.setRule(rule2);
-			fail("invalid rule");
-		} catch (IllegalArgumentException e) {
-			//expected
-		}
-		try {
-			job.setRule(multi);
-			fail("invalid rule");
-		} catch (IllegalArgumentException e) {
-			//expected
-		}
+		assertThrows(IllegalArgumentException.class, () -> job.setRule(rule1));
+		assertThrows(IllegalArgumentException.class, () -> job.setRule(rule2));
+		assertThrows(IllegalArgumentException.class, () -> job.setRule(multi));
 	}
 
+	@Test
 	public void testSleep() {
 		TestJob job = new TestJob("ParentJob", 1000000, 10);
 		//sleeping a job that isn't scheduled should have no effect
@@ -1924,6 +1911,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		assertTrue("3.4", job.cancel()); //should be possible to cancel a sleeping job
 	}
 
+	@Test
 	public void testSleepOnWait() {
 		final ISchedulingRule rule = new PathRule("testSleepOnWait");
 		TestJob blockingJob = new TestJob("Long Job", 1000000, 10);
@@ -1954,6 +1942,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		waitForCompletion(job);
 	}
 
+	@Test
 	public void testSuspend() {
 		assertTrue("1.0", !manager.isSuspended());
 		manager.suspend();
@@ -1976,6 +1965,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 * @deprecated tests deprecated API
 	 */
 	@Deprecated
+	@Test
 	public void testSuspendMismatchedBegins() {
 		PathRule rule1 = new PathRule("/TestSuspendMismatchedBegins");
 		PathRule rule2 = new PathRule("/TestSuspendMismatchedBegins/Child");
@@ -1997,7 +1987,6 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		barrier.waitForStatus(TestBarrier2.STATUS_DONE);
 		waitForCompletion(runner);
-
 	}
 
 	/**
@@ -2005,6 +1994,7 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	 * @deprecated tests deprecated API
 	 */
 	@Deprecated
+	@Test
 	public void testSuspendMultiThreadAccess() {
 		PathRule rule1 = new PathRule("/TestSuspend");
 		PathRule rule2 = new PathRule("/TestSuspend/Child");
@@ -2064,32 +2054,22 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 		//job should now complete
 		waitForCompletion(job);
-
 	}
 
 	/**
 	 * Tests IJobManager#transfer(ISchedulingRule, Thread) failure conditions.
 	 */
-	public void testTransferFailure() {
+	@Test
+	public void testTransferFailure() throws InterruptedException {
 		PathRule rule = new PathRule("/testTransferFailure");
 		PathRule subRule = new PathRule("/testTransferFailure/Sub");
 		Thread other = new Thread();
 		//can't transfer a rule this thread doesn't own it
-		try {
-			manager.transferRule(rule, other);
-			fail("1.0");
-		} catch (RuntimeException e) {
-			//expected
-		}
+		assertThrows(RuntimeException.class, () -> manager.transferRule(rule, other));
 		try {
 			manager.beginRule(rule, null);
 			//can't transfer a child rule of a rule currently owned by the caller
-			try {
-				manager.transferRule(subRule, other);
-				fail("1.1");
-			} catch (RuntimeException e) {
-				//expected
-			}
+			assertThrows(RuntimeException.class, () ->  manager.transferRule(subRule, other));
 			//TODO This test is failing
 			//can't transfer a rule when the destination already owns an unrelated rule
 			TestBarrier2 barrier = new TestBarrier2();
@@ -2103,20 +2083,11 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 			barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 			//transferring the calling thread's rule to the background job should fail
 			//because the destination thread already owns a rule
-			try {
-				manager.transferRule(rule, ruleRunner.getThread());
-				fail("1.2");
-			} catch (RuntimeException e) {
-				//expected
-			}
+			assertThrows(RuntimeException.class, () -> manager.transferRule(rule, ruleRunner.getThread()));
 			//let the background job finish
 			barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 			barrier.waitForStatus(TestBarrier2.STATUS_DONE);
-			try {
-				ruleRunner.join();
-			} catch (InterruptedException e1) {
-				fail("1.99", e1);
-			}
+			ruleRunner.join();
 		} finally {
 			manager.endRule(rule);
 		}
@@ -2125,7 +2096,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Tests transferring a scheduling rule from one job to another
 	 */
-	public void testTransferJobToJob() {
+	@Test
+	public void testTransferJobToJob() throws CoreException {
 		final PathRule ruleToTransfer = new PathRule("testTransferJobToJob");
 		final TestBarrier2 barrier = new TestBarrier2();
 		final Thread[] sourceThread = new Thread[1];
@@ -2162,21 +2134,20 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		waitForCompletion(destination);
 		if (!destination.getResult().isOK()) {
-			fail("1.2", destination.getResult().getException());
+			throw new CoreException(destination.getResult());
 		}
 	}
 
 	/**
 	 * Tests transferring a scheduling rule to the same thread
 	 */
+	@Test
 	public void testTransferSameThread() {
 		PathRule rule = new PathRule("testTransferSameThread");
 		try {
 			manager.beginRule(rule, null);
 			//transfer to same thread is ok
 			manager.transferRule(rule, Thread.currentThread());
-		} catch (Exception e) {
-			fail("1.0", e);
 		} finally {
 			manager.endRule(rule);
 		}
@@ -2185,7 +2156,8 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	/**
 	 * Simple test of rule transfer
 	 */
-	public void testTransferSimple() {
+	@Test
+	public void testTransferSimple() throws Exception {
 		class RuleEnder implements Runnable {
 			Exception error;
 			private final ISchedulingRule rule;
@@ -2209,20 +2181,17 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 		Thread destination = new Thread(ender);
 		manager.transferRule(rule, destination);
 		destination.start();
-		try {
-			destination.join();
-		} catch (InterruptedException e) {
-			fail("1.99", e);
-		}
+		destination.join();
 		if (ender.error != null) {
-			fail("1.0", ender.error);
+			throw ender.error;
 		}
 	}
 
 	/**
 	 * Tests transferring a scheduling rule to a job and back again.
 	 */
-	public void testTransferToJob() {
+	@Test
+	public void testTransferToJob() throws Exception {
 		final PathRule rule = new PathRule("testTransferToJob");
 		final TestBarrier2 barrier = new TestBarrier2();
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
@@ -2264,21 +2233,17 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 		//ensure the job didn't fail, and finally end the rule to unwind the initial beginRule
 		if (failure[0] != null) {
-			fail("1.0", failure[0]);
+			throw failure[0];
 		}
-		try {
-			manager.endRule(rule);
-		} catch (Exception e) {
-			//we should own the rule so this shouldn't fail
-			fail("2.00", e);
-		}
+		manager.endRule(rule);
 	}
 
 	/**
 	 * Tests transferring a scheduling rule to a job that is waiting for a child of
 	 * the transferred rule.
 	 */
-	public void testTransferToJobWaitingOnChildRule() {
+	@Test
+	public void testTransferToJobWaitingOnChildRule() throws Exception {
 		final PathRule rule = new PathRule("testTransferToJobWaitingOnChildRule");
 		final TestBarrier2 barrier = new TestBarrier2();
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
@@ -2324,20 +2289,16 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 		//ensure the job didn't fail, and finally end the rule to assert we own it
 		if (failure[0] != null) {
-			fail("1.0", failure[0]);
+			throw failure[0];
 		}
-		try {
-			manager.endRule(rule);
-		} catch (Exception e) {
-			//we should own the rule so this shouldn't fail
-			fail("2.00", e);
-		}
+		manager.endRule(rule);
 	}
 
 	/**
 	 * Tests transferring a scheduling rule to a job that is waiting for that rule.
 	 */
-	public void testTransferToWaitingJob() {
+	@Test
+	public void testTransferToWaitingJob() throws Exception {
 		final PathRule rule = new PathRule("testTransferToWaitingJob");
 		final TestBarrier2 barrier = new TestBarrier2();
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_START);
@@ -2382,19 +2343,15 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 
 		//ensure the job didn't fail, and finally end the rule to assert we own it
 		if (failure[0] != null) {
-			fail("1.0", failure[0]);
+			throw failure[0];
 		}
-		try {
-			manager.endRule(rule);
-		} catch (Exception e) {
-			//we should own the rule so this shouldn't fail
-			fail("2.00", e);
-		}
+		manager.endRule(rule);
 	}
 
 	/**
 	 * Tests a batch of jobs that use two mutually exclusive rules.
 	 */
+	@Test
 	public void testTwoRules() {
 		final int JOB_COUNT = 10;
 		TestJob[] jobs = new TestJob[JOB_COUNT];
@@ -2509,4 +2466,5 @@ public class IJobManagerTest extends AbstractJobManagerTest {
 	private void waitForStart(TestJob job) {
 		waitForRunCount(job, 1);
 	}
+
 }

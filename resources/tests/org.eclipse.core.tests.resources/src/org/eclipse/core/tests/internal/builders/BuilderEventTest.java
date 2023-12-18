@@ -15,38 +15,44 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests the PRE_BUILD and POST_BUILD events.
  */
-public class BuilderEventTest extends AbstractBuilderTest {
+public class BuilderEventTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	private BuildEventListener listener;
 
-	public BuilderEventTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		listener = new BuildEventListener();
 		int mask = IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE;
 		getWorkspace().addResourceChangeListener(listener, mask);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		getWorkspace().removeResourceChangeListener(listener);
 	}
 
+	@Test
 	public void testEventsOnClean() throws CoreException {
 		// Create some resource handles
 		IProject project = getWorkspace().getRoot().getProject("PROJECT");
@@ -57,9 +63,8 @@ public class BuilderEventTest extends AbstractBuilderTest {
 		project.open(createTestMonitor());
 
 		// Create and set a build spec for the project
-		IProjectDescription desc = project.getDescription();
-		desc.setBuildSpec(new ICommand[] { createCommand(desc, DeltaVerifierBuilder.BUILDER_NAME, "Project2Build2") });
-		project.setDescription(desc, createTestMonitor());
+		updateProjectDescription(project).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
+				.withTestBuilderId("Project2Build2").apply();
 		listener.reset();
 		//start with an incremental build
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
@@ -96,4 +101,5 @@ public class BuilderEventTest extends AbstractBuilderTest {
 		assertTrue(listener.hadPostBuild());
 		assertTrue(listener.hadPostChange());
 	}
+
 }
