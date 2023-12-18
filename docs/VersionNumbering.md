@@ -1,8 +1,6 @@
 Version Numbering
 =================
 
-These guidelines have been [revised](/Version_Numbering_Europa_Update "Version Numbering Europa Update") in 2006 for the [Europa Simultaneous Release](/Europa_Simultaneous_Release "Europa Simultaneous Release"), and [revised](/Version_Numbering_Galileo_Update "Version Numbering Galileo Update") again in 2009 for the [Galileo Simultaneous Release](/Galileo_Simultaneous_Release "Galileo Simultaneous Release").
-
 Contents
 --------
 
@@ -246,12 +244,6 @@ The Eclipse [API Tools](/PDE/API_Tools/User_Guide "PDE/API Tools/User Guide") de
 
 If you use an older version as API Baseline, you will miss some API problems.
 
-pom.xml Versions
-----------------
-
-Since [CBI](/CBI "CBI") builds depend on Maven and neither Maven nor Tycho can consume version numbers from the MANIFEST.MF ([bug 387802](https://bugs.eclipse.org/bugs/show_bug.cgi?id=387802)), every bundle version change also needs to be reflected in the pom.xml. The **Eclipse Releng Tools** can flag missing pom.xml updates. Install them from an [Eclipse Project Updates p2 repository](/Eclipse_Project_Update_Sites "Eclipse Project Update Sites").
-
-Open **Preferences > POM Version Tool** and make sure the severity is set to **Error**. (Starting with the Neon stream, the POM Version Tool is enabled by default).
 
 Further reading
 ---------------
