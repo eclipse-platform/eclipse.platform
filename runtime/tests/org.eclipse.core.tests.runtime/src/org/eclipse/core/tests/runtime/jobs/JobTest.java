@@ -1665,31 +1665,28 @@ public class JobTest extends AbstractJobTest {
 	 * see bug #43459
 	 */
 	@Test
-	public void testSetRule() {
+	public void testSetRule() throws InterruptedException {
 		//setting a scheduling rule for a job after it was already scheduled should throw an exception
-		shortJob.setRule(new IdentityRule());
-		assertTrue("1.0", shortJob.getRule() instanceof IdentityRule);
-		shortJob.schedule(1000000);
-		assertThrows(RuntimeException.class, () -> shortJob.setRule(new PathRule("/testSetRule")));
+		longJob.setRule(new IdentityRule());
+		assertThat(longJob.getRule(), instanceOf(IdentityRule.class));
+		longJob.schedule(1000000);
+		assertThrows(RuntimeException.class, () -> longJob.setRule(new PathRule("/testSetRule")));
 
 		//wake up the sleeping job
-		shortJob.wakeUp();
+		longJob.wakeUp();
+		waitForState(longJob, Job.RUNNING);
 
 		//setting the rule while running should fail
-		assertThrows(RuntimeException.class, () -> shortJob.setRule(new PathRule("/testSetRule/B")));
+		assertThrows(RuntimeException.class, () -> longJob.setRule(new PathRule("/testSetRule/B")));
 
-		try {
-			//wait for the job to complete
-			shortJob.join();
-		} catch (InterruptedException e2) {
-			//ignore
-		}
+		longJob.cancel();
+		longJob.join();
 
 		//after the job has finished executing, the scheduling rule for it can once again be reset
-		shortJob.setRule(new PathRule("/testSetRule/B/C/D"));
-		assertTrue("1.2", shortJob.getRule() instanceof PathRule);
-		shortJob.setRule(null);
-		assertNull("1.3", shortJob.getRule());
+		longJob.setRule(new PathRule("/testSetRule/B/C/D"));
+		assertThat(longJob.getRule(), instanceOf(PathRule.class));
+		longJob.setRule(null);
+		assertNull("job still has a rule assigned: " + longJob, longJob.getRule());
 	}
 
 	@Test
