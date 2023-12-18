@@ -49,17 +49,13 @@ public class AsynchExecThread extends Thread {
 
 		//must have positive work
 		current.beginTask(jobName, 1);
-		try {
-			if (current.isCanceled()) {
-				barrier.upgradeTo(TestBarrier2.STATUS_DONE);
-				job.done(Status.CANCEL_STATUS);
-			}
-			current.worked(1);
-		} finally {
-			barrier.upgradeTo(TestBarrier2.STATUS_DONE);
-			current.done();
+		if (current.isCanceled()) {
+			job.done(Status.CANCEL_STATUS);
+		} else {
 			job.done(Status.OK_STATUS);
 		}
+		barrier.upgradeTo(TestBarrier2.STATUS_DONE);
+		current.done();
 	}
 
 }
