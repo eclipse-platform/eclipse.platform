@@ -52,7 +52,7 @@ public enum SecurityFileSnapshot {
 		return isFound;
 	}
 	public Properties load() {
-		System.out.println("SecurityFileSnapshot -Searching HOME FILE:" + pkiFile.toString()); //$NON-NLS-1$
+		System.out.println("SecurityFileSnapshot -Searching HOME PATH:" + pkiFile.toString()); //$NON-NLS-1$
 		System.out.println("SecurityFileSnapshot - loading properties from dot PKI file"); //$NON-NLS-1$
 		Properties properties = new Properties();
 		try {
