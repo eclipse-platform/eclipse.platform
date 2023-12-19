@@ -12,38 +12,37 @@ import java.util.List;
 
 
 public class Pkcs11FixConfigFile {
-	private static final String programFiles="Program Files (x86)";
-	private static final CharSequence slash=(CharSequence) "/";
-	private static final CharSequence none=(CharSequence) "";
-	private static final CharSequence quotes=(CharSequence) "\"";
-	private static final CharSequence sslash=(CharSequence) "\\";
-	private static final CharSequence bslash=(CharSequence) "\\\\";
-	private static final String biT32="cspid.dll";
-	private static final String biT64="cspidx64.dll";
+	private static final String programFiles = "Program Files (x86)"; //$NON-NLS-1$
+	private static final CharSequence none = ""; //$NON-NLS-1$
+	private static final CharSequence quotes = "\""; //$NON-NLS-1$
+	private static final CharSequence sslash = "\\"; //$NON-NLS-1$
+	private static final CharSequence bslash = "\\\\"; //$NON-NLS-1$
+	private static final String biT32 = "cspid.dll"; //$NON-NLS-1$
+	private static final String biT64 = "cspidx64.dll"; //$NON-NLS-1$
 	private String cfgFilePath=null;
 	private static String cspidHome;
 	private static Pkcs11FixConfigFile configFile=null;
 	private static StringBuffer sb = new StringBuffer();
-	public static Pkcs11FixConfigFile getCfgInstance(String fileLocation) {	
+	public static Pkcs11FixConfigFile getCfgInstance(String fileLocation) {
 		if ( configFile == null ) {
 			synchronized(Pkcs11FixConfigFile.class) {
 				if ( configFile == null ) {
 					configFile = new Pkcs11FixConfigFile();
 					cspidHome = fileLocation;
-					DebugLogger.printDebug("Pkcs11FixConfigFile --  incoming path:"+ fileLocation);
+					DebugLogger.printDebug("Pkcs11FixConfigFile --  incoming path:" + fileLocation); //$NON-NLS-1$
 					sb.append(fileLocation);
 					initialize();
 				}
 			}
 		}
-		return configFile; 
+		return configFile;
 	}
 	public static void initialize() {
 		try {
 			sb.append(FileSystems.getDefault().getSeparator());
-			sb.append("java_pkcs11.cfg");
+			sb.append("java_pkcs11.cfg"); //$NON-NLS-1$
 			Path path = openFile( sb.toString());
-			Files.setAttribute(path, "dos:readonly", false);
+			Files.setAttribute(path, "dos:readonly", Boolean.valueOf(false)); //$NON-NLS-1$
 			List<String> list = readFile(path);
 			List<String> edit = editFile(list);
 			Path outputPath = setOutputDirectory();
@@ -58,29 +57,29 @@ public class Pkcs11FixConfigFile {
 		Path path = null;
 		StringBuilder sb = new StringBuilder();
 		try {
-			String appData = System.getenv("AppData");
+			String appData = System.getenv("AppData"); //$NON-NLS-1$
 			appData = Paths.get(appData).toAbsolutePath().toString().replace(sslash, bslash);
 			if ( appData != null ) {
 				sb.append(appData);
 			} else {
-				sb.append(System.getProperty("user.dir"));
+				sb.append(System.getProperty("user.dir")); //$NON-NLS-1$
 			}
 			sb.append(FileSystems.getDefault().getSeparator());
 			sb.append(FileSystems.getDefault().getSeparator());
-			sb.append("cspid");
+			sb.append("cspid"); //$NON-NLS-1$
 			sb.append(FileSystems.getDefault().getSeparator());
 			sb.append(FileSystems.getDefault().getSeparator());
-			sb.append("java_pkcs11.cfg");
-			
+			sb.append("java_pkcs11.cfg"); //$NON-NLS-1$
+
 			path = Paths.get(sb.toString());
 			//setCfgFilePath( sb.toString());
-			DebugLogger.printDebug("Pkcs11FixCOnfigFile ----  cspidHome:"+cspidHome );
+			DebugLogger.printDebug("Pkcs11FixCOnfigFile ----  cspidHome:" + cspidHome); //$NON-NLS-1$
 			setCfgFilePath( CreateCFGfile.initialize( cspidHome ));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return path;
 	}
 	public static Path openFile(String s) {
@@ -97,34 +96,34 @@ public class Pkcs11FixConfigFile {
 		return list;
 	}
 	public static List<String> editFile(List<String> list) {
-		ArrayList<String> edit = new ArrayList<String>();
+		ArrayList<String> edit = new ArrayList<>();
 		StringBuffer sb = new StringBuffer();
-		
+
 		for ( String s : list) {
-			CharSequence ch = "/";
-			
-			if (( s.contains("library")) && ( System.getenv("PKCS11_HOME") != null))  {
-				sb.append("library=");
-				sb.append(System.getenv("PKCS11_HOME"));
+			CharSequence ch = "/"; //$NON-NLS-1$
+
+			if ((s.contains("library")) && (System.getenv("PKCS11_HOME") != null)) { //$NON-NLS-1$ //$NON-NLS-2$
+				sb.append("library="); //$NON-NLS-1$
+				sb.append(System.getenv("PKCS11_HOME")); //$NON-NLS-1$
 				sb.append(ch);
 				sb.append(biT64);
 				s=sb.toString();
 			}
-			
-			if (!( s.startsWith("#"))) {
-				if (( s.contains(biT32)) && ( System.getProperty("os.arch").contains("64"))) {
+
+			if (!(s.startsWith("#"))) { //$NON-NLS-1$
+				if ((s.contains(biT32)) && (System.getProperty("os.arch").contains("64"))) { //$NON-NLS-1$ //$NON-NLS-2$
 					s = s.replaceAll(biT32, biT64);
 				}
 			}
 			if ( s.contains(quotes)) {
 				s=s.replace(quotes, none);
 			}
-			
+
 			if ( s.contains(programFiles)) {
-				if ( System.getenv("PKCS11_HOME") != null) {
-					s = System.getenv("PKCS11_HOME");
+				if (System.getenv("PKCS11_HOME") != null) { //$NON-NLS-1$
+					s = System.getenv("PKCS11_HOME"); //$NON-NLS-1$
 				} else {
-					s = s.replace(programFiles, "Progra~2");
+					s = s.replace(programFiles, "Progra~2"); //$NON-NLS-1$
 				}
 				edit.add(s);
 			} else {
@@ -143,18 +142,18 @@ public class Pkcs11FixConfigFile {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getCfgFilePath() {
 		return cfgFilePath;
 	}
 	public static void setCfgFilePath(String cfgFilePath) {
 		configFile.cfgFilePath = cfgFilePath;
 	}
-	private static void listEditedFile( List <String> list ) {
-		DebugLogger.printDebug("PKCS11FixConfigFile ----  ARCH:"+ System.getProperty("os.arch"));
-		for ( String s : list) {
-			DebugLogger.printDebug("PKCS11FixConfigFile ----  edited line:"+ s);
-		}
-	}
-	
+	/*
+	 * private static void listEditedFile( List <String> list ) {
+	 * DebugLogger.printDebug("PKCS11FixConfigFile ----  ARCH:" +
+	 * System.getProperty("os.arch")); //$NON-NLS-1$ //$NON-NLS-2$ for ( String s :
+	 * list) { DebugLogger.printDebug("PKCS11FixConfigFile ----  edited line:" + s);
+	 * //$NON-NLS-1$ } }
+	 */
 }

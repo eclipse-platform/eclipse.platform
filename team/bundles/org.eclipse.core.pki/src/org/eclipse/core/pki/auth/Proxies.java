@@ -13,18 +13,17 @@ package org.eclipse.core.pki.auth;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.util.Optional;
-import java.util.concurrent.Executor;
-
 //import org.apache.commons.httpclient.HttpHost;
 //import org.apache.commons.lang3.StringUtils;
 import java.net.http.HttpClient;
-import java.net.http.HttpClient.Builder;
+//import java.net.http.HttpClient.Builder;
+import java.util.Optional;
+import java.util.concurrent.Executor;
 
-import org.eclipse.core.internal.net.ProxyManager;
 import org.eclipse.core.net.proxy.IProxyData;
 
 @SuppressWarnings("restriction")
@@ -60,7 +59,7 @@ public final class Proxies {
 
         // test the user's name whether it may contain an information about the domain name
         //if (StringUtils.contains(userName, DOUBLEBACKSLASH)) {
-        if (userName.contains(DOUBLEBACKSLASH)) { 	
+        if (userName.contains(DOUBLEBACKSLASH)) {
             //return Optional.of(substringBefore(userName, DOUBLEBACKSLASH));
         	userName.substring(0, userName.indexOf(DOUBLEBACKSLASH)-1);
             return Optional.of(userName.substring(0, userName.indexOf(DOUBLEBACKSLASH)-1));
@@ -92,7 +91,7 @@ public final class Proxies {
             return Optional.empty();
         }
         //return contains(userName, DOUBLEBACKSLASH) ? of(substringAfterLast(userName, DOUBLEBACKSLASH)) : of(userName);
-        return  userName.contains(DOUBLEBACKSLASH) ? 
+        return  userName.contains(DOUBLEBACKSLASH) ?
         		Optional.of(userName.substring(userName.indexOf(DOUBLEBACKSLASH))) : Optional.of(userName);
     }
     //public static Optional<HttpHost> getProxyHost(URI target) {
@@ -114,12 +113,12 @@ public final class Proxies {
             //HttpHost proxyHost = new HttpHost(proxy.getHost(), proxy.getPort());
         	HttpClient.newBuilder().proxy(ProxySelector.of(new InetSocketAddress(proxy.getHost(), proxy.getPort())));
             if (proxy.getUserId() != null) {
-                String userId = getUserName(proxy.getUserId()).orElse(null);
-                String pass = proxy.getPassword();
-                String workstation = getWorkstation().orElse(null);
-                String domain = getUserDomain(proxy.getUserId()).orElse(null);
-                
-                System.out.println("Proxies - proxyAuthentication needs to be FIXED");
+				// String userId = getUserName(proxy.getUserId()).orElse(null);
+				// String pass = proxy.getPassword();
+				// String workstation = getWorkstation().orElse(null);
+				// String domain = getUserDomain(proxy.getUserId()).orElse(null);
+
+				System.out.println("Proxies - proxyAuthentication needs to be FIXED"); //$NON-NLS-1$
                 //return executor.auth(proxyHost, userId, pass, workstation, domain);
                 //return executor.  auth(proxyHost, userId, pass, workstation, domain);
             } else {
@@ -130,20 +129,20 @@ public final class Proxies {
     }
 
     private static Optional<IProxyData> getProxyData(URI target) {
-        IProxyData[] proxies = ProxyManager.getProxyManager().select(target);
-        Optional op = Optional.of(proxies);
+    	Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(target.getHost(), target.getPort()));
+        //IProxyData[] proxies = ProxyManager.getProxyManager().select(target);
+
+    	Optional op = Optional.of(proxy);
         if (op.isEmpty()) {
             return Optional.empty();
         }
-        return Optional.of(proxies[0]);
-    }
+        //return Optional.of(proxies[0]);
+        return op;
+	}
 
     public static Optional<String> getProxyUser(URI target) {
         IProxyData proxy = getProxyData(target).orElse(null);
-        if (proxy == null) {
-            return Optional.empty();
-        }
-        if (proxy.getUserId() == null) {
+        if ((proxy == null) || (proxy.getUserId() == null)) {
             return Optional.empty();
         }
         return getUserName(proxy.getUserId());
@@ -151,10 +150,7 @@ public final class Proxies {
 
     public static Optional<String> getProxyPassword(URI target) {
         IProxyData proxy = getProxyData(target).orElse(null);
-        if (proxy == null) {
-            return Optional.empty();
-        }
-        if (proxy.getUserId() == null) {
+        if ((proxy == null) || (proxy.getUserId() == null)) {
             return Optional.empty();
         }
         return Optional.ofNullable(proxy.getPassword());

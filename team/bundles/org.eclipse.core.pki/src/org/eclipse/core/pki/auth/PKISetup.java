@@ -39,7 +39,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.eclipse.ui.IStartup;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.eclipse.core.resources.ResourcesPlugin;
 
 public class PKISetup implements BundleActivator, IStartup {
 	public static final String ID = "org.eclipse.core.pki"; //$NON-NLS-1$
@@ -56,19 +55,20 @@ public class PKISetup implements BundleActivator, IStartup {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("PKISetup PKISetup ------------------- START");
+		System.out.println("PKISetup PKISetup ------------------- START"); //$NON-NLS-1$
 		Startup();
 	}
 
+	@Override
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
-		System.out.println("PKISetup PKISetup -------------------early START");
+		System.out.println("PKISetup PKISetup -------------------early START"); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 	public static PKISetup getInstance() {
 		return instance;
@@ -77,52 +77,53 @@ public class PKISetup implements BundleActivator, IStartup {
 	public static void setInstance(PKISetup instance) {
 		PKISetup.instance = instance;
 	}
-	
+
 	public void Startup() {
-		
+
 		/*
 		 * Check if .pki file exists. If it doesnt, then create one.
 		 */
-		
-	
+
+
 		/*
 		 * NOTE: Initialize pki settings so that NO PKI is set on start up.
 		 */
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
-		
+
 		/*
 		 * PKCS11 will be the default certificate store, so check it first.
 		 */
 
-		
-		
+
+
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
-			System.out.println("PKISetup get PKI TYPE");
+			System.out.println("PKISetup get PKI TYPE"); //$NON-NLS-1$
 			PublicKeySecurity.INSTANCE.getPkiPropertyFile();
-			
-		} 
+
+		}
+		installTrustStore();
 	}
 
 
 	/**
 	 * @see AuthenticationPlugin#setSystemProperties()
 	 */
-	
+
 
 	private void installTrustStore() {
-		final String USER_HOME = System.getProperty("user.home");
-		final File PKI_ECLIPSE_DIR = new File(USER_HOME, ".eclipse_pki");
-		final String PKI_DIR = "eclipse_pki";
+		final String USER_HOME = System.getProperty("user.home"); //$NON-NLS-1$
+		final File PKI_ECLIPSE_DIR = new File(USER_HOME, ".eclipse_pki"); //$NON-NLS-1$
+		final String PKI_DIR = "eclipse_pki"; //$NON-NLS-1$
 		//final Path pkiHome = Paths.get(PKI_ECLIPSE_DIR.getAbsolutePath() + File.separator + PKI_DIR);
-		
+
 		final Path pkiHome = Paths.get(PKI_ECLIPSE_DIR.getAbsolutePath() + File.separator + PKI_DIR);
 		createSigintEclipseDir(pkiHome);
 		/*
 		 * TODO: Create an enum of the IC comms and utilize the correct trust
 		 */
 
-		String filename = "cacert";
+		String filename = "cacert"; //$NON-NLS-1$
 		File localTrustStore = new File(PKI_ECLIPSE_DIR, filename);
 
 		// System.out.println("Install Truststore - local -> " + localTrustStore);
@@ -139,15 +140,15 @@ public class PKISetup implements BundleActivator, IStartup {
 			os = new FileOutputStream(localTrustStore);
 			fc = os.getChannel();
 
-			
+
 			//
 			//File ConfigurationFile = new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString() + File.separator
 			//		+ "configuration" + File.separator
 			//		+ "cacert");
 
 			File ConfigurationFile = new File(File.separator
-					+ "configuration" + File.separator
-					+ "cacert");
+					+ "configuration" + File.separator //$NON-NLS-1$
+					+ "cacert"); //$NON-NLS-1$
 			InputStream is = new FileInputStream(ConfigurationFile);
 
 			//
@@ -164,27 +165,8 @@ public class PKISetup implements BundleActivator, IStartup {
 
 		} catch (IOException e) {
 			//LogUtil.logError("Issue writing default trust store to disk.", e);
-		} finally {
-			if (fc != null) {
-				try {
-					fc.close();
-				} catch (Exception e) {
-				}
-			}
-			if (os != null) {
-				try {
-					os.close();
-				} catch (Exception e) {
-				}
-			}
-			if (rbc != null) {
-				try {
-					rbc.close();
-				} catch (Exception e) {
-				}
-			}
-			// }
 		}
+			// }
 		//AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.TRUST_STORE_LOCATION,
 		//		localTrustStore.getAbsolutePath());
 

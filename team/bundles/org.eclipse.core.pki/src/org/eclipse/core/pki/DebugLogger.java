@@ -12,12 +12,12 @@ public class DebugLogger {
 			System.out.println(message);
 		}
 	}
-	
+
 	private static boolean checkForFlag() {
-		String debugFlag = System.getProperty("debug.verbose");
+		String debugFlag = System.getProperty("debug.verbose"); //$NON-NLS-1$
 		if (debugFlag != null) {
 			debugFlag = debugFlag.trim().toLowerCase();
-			if (debugFlag.equals("true")) {
+			if (debugFlag.equals("true")) { //$NON-NLS-1$
 				DebugLogger.setEnableDebugLogging(true);
 				return true;
 			}
