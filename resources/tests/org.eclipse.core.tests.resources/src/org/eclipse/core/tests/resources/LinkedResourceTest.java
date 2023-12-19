@@ -888,7 +888,7 @@ public class LinkedResourceTest {
 	 */
 	@Test
 	public void testFindFilesForLocationCaseVariant() throws CoreException {
-		assumeTrue("this test only applies to file systems with a device in the path", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IFolder link = nonExistingFolderInExistingProject;
 		IPath localLocation = resolve(localFolder);
@@ -1279,7 +1279,7 @@ public class LinkedResourceTest {
 	 */
 	@Test
 	public void testLocationWithColon() throws CoreException {
-		assumeFalse("Windows does not allow a location with colon in the name", OS.isWindows());
+		assumeFalse("not relevant on Windows, as it does not allow a location with colon in the name", OS.isWindows());
 
 		IFolder folder = nonExistingFolderInExistingProject;
 		// Note that on *nix, "c:/temp" is a relative path with two segments
@@ -1762,7 +1762,7 @@ public class LinkedResourceTest {
 
 	@Test
 	public void testLinkedFolderWithSymlink_Bug338010() throws Exception {
-		assumeTrue("test is only applicable when symbolic links can be created", canCreateSymLinks());
+		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
 
 		IPath baseLocation = getRandomLocation();
 		IPath resolvedBaseLocation = resolve(baseLocation);
@@ -1787,7 +1787,7 @@ public class LinkedResourceTest {
 	 */
 	@Test
 	public void testDeleteLinkTarget_Bug507084() throws Exception {
-		assumeTrue("test is only applicable when symbolic links can be created", canCreateSymLinks());
+		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
 
 		IPath baseLocation = getRandomLocation();
 		IPath resolvedBaseLocation = resolve(baseLocation);

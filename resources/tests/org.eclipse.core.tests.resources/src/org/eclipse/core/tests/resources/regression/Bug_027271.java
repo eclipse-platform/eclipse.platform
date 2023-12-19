@@ -64,7 +64,7 @@ public class Bug_027271 {
 
 	@Test
 	public void testBug() {
-		assumeTrue("tested bug is only relevant on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IPathVariableManager pvm = getWorkspace().getPathVariableManager();
 		Preferences prefs = ResourcesPlugin.getPlugin().getPluginPreferences();

@@ -58,7 +58,7 @@ public class Bug_185247_LinuxTests {
 
 	@Before
 	public void setUp() throws Exception {
-		assumeTrue("test only works on Linux", OS.isLinux());
+		assumeTrue("only relevant on Linux", OS.isLinux());
 
 		IPath randomLocation = getRandomLocation();
 		workspaceRule.deleteOnTearDown(randomLocation);

@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.eclipse.core.resources.ResourcesPlugin.PI_RESOURCES;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
@@ -295,9 +296,11 @@ public class CharsetTest {
 
 	private IFile getResourcesPreferenceFile(IProject project, boolean forDerivedResources) {
 		if (forDerivedResources) {
-			return project.getFolder(EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME).getFile(ResourcesPlugin.PI_RESOURCES + ".derived." + EclipsePreferences.PREFS_FILE_EXTENSION);
+			return project.getFolder(EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME)
+					.getFile(PI_RESOURCES + ".derived." + EclipsePreferences.PREFS_FILE_EXTENSION);
 		}
-		return project.getFolder(EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME).getFile(ResourcesPlugin.PI_RESOURCES + "." + EclipsePreferences.PREFS_FILE_EXTENSION);
+		return project.getFolder(EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME)
+				.getFile(PI_RESOURCES + "." + EclipsePreferences.PREFS_FILE_EXTENSION);
 	}
 
 	private Reader getTextContents(String text) {
@@ -312,10 +315,10 @@ public class CharsetTest {
 				return false;
 			}
 			node = node.node(projectName);
-			if (!node.nodeExists(ResourcesPlugin.PI_RESOURCES)) {
+			if (!node.nodeExists(PI_RESOURCES)) {
 				return false;
 			}
-			node = node.node(ResourcesPlugin.PI_RESOURCES);
+			node = node.node(PI_RESOURCES);
 			return node.getBoolean(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS, false);
 		} catch (BackingStoreException e) {
 			// default value
@@ -325,7 +328,7 @@ public class CharsetTest {
 
 	private void setDerivedEncodingStoredSeparately(IProject project, boolean value)
 			throws BackingStoreException {
-		org.osgi.service.prefs.Preferences prefs = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
+		org.osgi.service.prefs.Preferences prefs = new ProjectScope(project).getNode(PI_RESOURCES);
 		if (!value) {
 			prefs.remove(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS);
 		} else {
@@ -335,19 +338,19 @@ public class CharsetTest {
 	}
 
 	private static IEclipsePreferences getResourcesPreferences() {
-		return InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
+		return InstanceScope.INSTANCE.getNode(PI_RESOURCES);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		// save the workspace charset so it can be restored after the test
-		savedWorkspaceCharset = ResourcesPlugin.getPlugin().getPluginPreferences().getString(ResourcesPlugin.PREF_ENCODING);
+		savedWorkspaceCharset = getResourcesPreferences().get(ResourcesPlugin.PREF_ENCODING, "");
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		// restore the workspace charset
-		ResourcesPlugin.getPlugin().getPluginPreferences().setValue(ResourcesPlugin.PREF_ENCODING, savedWorkspaceCharset);
+		getResourcesPreferences().put(ResourcesPlugin.PREF_ENCODING, savedWorkspaceCharset);
 		// Reset the PREF_LIGHTWEIGHT_AUTO_REFRESH preference to its default value.
 		getResourcesPreferences().remove(ResourcesPlugin.PREF_LIGHTWEIGHT_AUTO_REFRESH);
 		waitForEncodingRelatedJobs(testName.getMethodName());
@@ -410,14 +413,14 @@ public class CharsetTest {
 		final IWorkspaceRoot root = getWorkspace().getRoot();
 		String originalUserCharset = root.getDefaultCharset(false);
 		try {
-			root.setDefaultCharset(null);
+			root.setDefaultCharset(null, null);
 			assertNull("1.0", root.getDefaultCharset(false));
 
 			root.setDefaultCharset(null, new NullProgressMonitor());
 			assertNull("1.0", root.getDefaultCharset(false));
 		} finally {
 			if (originalUserCharset != null) {
-				root.setDefaultCharset(originalUserCharset);
+				root.setDefaultCharset(originalUserCharset, null);
 			}
 		}
 	}
@@ -931,7 +934,6 @@ public class CharsetTest {
 	@Test
 	public void testDefaults() throws CoreException {
 		IProject project = null;
-		String originalCharset = ResourcesPlugin.getPlugin().getPluginPreferences().getString(ResourcesPlugin.PREF_ENCODING);
 		try {
 			IWorkspace workspace = getWorkspace();
 			project = workspace.getRoot().getProject("MyProject");
@@ -1009,7 +1011,6 @@ public class CharsetTest {
 			file3.setCharset(null, createTestMonitor());
 			assertCharsetIs("11.0", ResourcesPlugin.getEncoding(), new IResource[] {workspace.getRoot(), project, file1, folder1, file2, folder2, file3}, true);
 		} finally {
-			ResourcesPlugin.getPlugin().getPluginPreferences().setValue(ResourcesPlugin.PREF_ENCODING, originalCharset);
 			clearAllEncodings(project);
 		}
 	}

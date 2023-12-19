@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
@@ -37,9 +38,9 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.filesystem.FileStoreCreationRule.FileSystemType;
 import org.eclipse.core.tests.harness.FileSystemHelper;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,7 +66,7 @@ public class SymlinkTest {
 
 	@Before
 	public void assumeSymbolicLinksAvailable() throws Exception {
-		assumeTrue("Can't create symbolic links in this platform: " + Platform.getOS(),
+		assumeTrue("only relevant for platforms supporting symbolic links",
 				FileSystemHelper.canCreateSymLinks());
 	}
 
@@ -377,8 +378,7 @@ public class SymlinkTest {
 
 	@Test
 	public void testSymlinkPutLastModified() throws Exception {
-		// flag EFS.SET_LAST_MODIFIED is set by java.io and it fails on Mac OS
-		Assume.assumeFalse(Platform.OS_MACOSX.equals(Platform.getOS()));
+		assumeFalse("setting EFS.SET_LAST_MODIFIED fails on Mac", OS.isMac());
 
 		//check that putInfo() "writes through" the symlink
 		makeLinkStructure();
@@ -441,7 +441,8 @@ public class SymlinkTest {
 
 	@Test
 	public void testSymlinkPutExecutable() throws Exception {
-		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
+		assumeTrue("only relevant for platforms supporting hidden attribute",
+				isAttributeSupported(EFS.ATTRIBUTE_EXECUTABLE));
 
 		//check that putInfo() "writes through" the symlink
 		makeLinkStructure();
@@ -466,7 +467,8 @@ public class SymlinkTest {
 
 	@Test
 	public void testSymlinkPutHidden() throws Exception {
-		Assume.assumeTrue(isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
+		assumeTrue("only relevant for platforms supporting hidden attribute",
+				isAttributeSupported(EFS.ATTRIBUTE_HIDDEN));
 
 		// Check that putInfo() applies the attribute to the symlink itself.
 		makeLinkStructure();

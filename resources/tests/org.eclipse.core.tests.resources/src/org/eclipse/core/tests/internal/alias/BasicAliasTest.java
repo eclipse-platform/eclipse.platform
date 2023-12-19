@@ -34,6 +34,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -62,7 +64,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
 import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -272,11 +273,11 @@ public class BasicAliasTest {
 	 */
 	@Test
 	public void testBug198571() throws Exception {
-		Assume.assumeTrue(OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		Assume.assumeFalse(devices[0] == null || devices[1] == null);
+		assumeFalse("only executable if at least two volumes are present", devices[0] == null || devices[1] == null);
 
 		String location = createUniqueString();
 		IProject testProject1 = getWorkspace().getRoot().getProject(location + "1");

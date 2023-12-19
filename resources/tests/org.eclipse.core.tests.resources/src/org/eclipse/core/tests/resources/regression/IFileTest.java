@@ -52,10 +52,10 @@ public class IFileTest {
 	public void testBug25658() throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		assumeTrue(isReadOnlySupported());
+		assumeTrue("only relevant for platforms supporting read-only files", isReadOnlySupported());
 
 		// Don't test this on Windows
-		assumeFalse(OS.isWindows());
+		assumeFalse("not relevant on Windows", OS.isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
@@ -83,11 +83,11 @@ public class IFileTest {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		assumeTrue(isReadOnlySupported());
+		assumeTrue("only relevant for platforms supporting read-only files", isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		assumeTrue(OS.isLinux());
+		assumeTrue("only relevant on Linux", OS.isLinux());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");

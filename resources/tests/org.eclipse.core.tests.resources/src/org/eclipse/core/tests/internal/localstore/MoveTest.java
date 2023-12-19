@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.internal.resources.File;
@@ -48,7 +49,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Assume;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -67,11 +67,11 @@ public class MoveTest {
 	 */
 	@Test
 	public void testMoveFileAcrossVolumes() throws CoreException {
-		assumeTrue(OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		Assume.assumeFalse(devices[0] == null || devices[1] == null);
+		assumeFalse("only executable if at least two volumes are present", devices[0] == null || devices[1] == null);
 
 		// create common objects
 		String location = createUniqueString();
@@ -171,11 +171,11 @@ public class MoveTest {
 	 */
 	@Test
 	public void testMoveFolderAcrossVolumes() throws CoreException {
-		assumeTrue(OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		/* look for the adequate environment */
 		String[] devices = findAvailableDevices();
-		Assume.assumeFalse(devices[0] == null || devices[1] == null);
+		assumeFalse("only executable if at least two volumes are present", devices[0] == null || devices[1] == null);
 
 		// create common objects
 		String location = createUniqueString();

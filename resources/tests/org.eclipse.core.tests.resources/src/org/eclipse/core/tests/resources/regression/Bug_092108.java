@@ -35,7 +35,7 @@ public class Bug_092108 {
 
 	@Test
 	public void testBug() throws CoreException {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IFileStore root = EFS.getStore(new java.io.File("c:\\").toURI());
 		IFileInfo info = root.fetchInfo();

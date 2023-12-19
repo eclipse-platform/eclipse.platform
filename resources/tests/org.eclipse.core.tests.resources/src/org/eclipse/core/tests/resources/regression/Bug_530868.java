@@ -62,7 +62,7 @@ public class Bug_530868 {
 	 */
 	@Test
 	public void testMillisecondResolution() throws Exception {
-		assumeFalse("Mac still has no milliseconds resolution", OS.isMac());
+		assumeFalse("not relevant on Mac, as it does not have milliseconds resolution", OS.isMac());
 		try {
 			assertTrue("can only run if native provider can be enabled", LocalFileNativesManager.setUsingNative(true));
 
