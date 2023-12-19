@@ -185,5 +185,3 @@ Versioning
 ----------
 
 It should be easy for API clients to know whether a new version of your components broke APIs or not. Eclipse projects implement semantic versioning according to the [Version Numbering](/Version_Numbering "Version Numbering") specification.
-
-Copyright © 2000, 2007 IBM Corporation
