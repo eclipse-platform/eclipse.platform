@@ -50,7 +50,6 @@ import org.osgi.framework.BundleContext;
  *
  * @since 0.16
  */
-@javax.inject.Qualifier
 @jakarta.inject.Qualifier
 @Documented
 @Target({ElementType.PARAMETER, ElementType.FIELD})

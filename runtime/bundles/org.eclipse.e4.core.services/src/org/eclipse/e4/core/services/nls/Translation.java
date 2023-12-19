@@ -37,7 +37,6 @@ import java.lang.annotation.Target;
  *
  * @since 1.2
  */
-@javax.inject.Qualifier
 @jakarta.inject.Qualifier
 @Documented
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
