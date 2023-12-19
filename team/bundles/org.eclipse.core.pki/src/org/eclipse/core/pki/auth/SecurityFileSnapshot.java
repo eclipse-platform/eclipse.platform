@@ -25,6 +25,7 @@ public enum SecurityFileSnapshot {
 		/*
 		 * CHeck if .pki file is present.
 		 */
+		System.out.println("SecurityFileSnapshot -Searching HOME FILE:" + USER_HOME); //$NON-NLS-1$
 		boolean isFound=false;
 		Path userM2Home = null;
 		try {
@@ -34,7 +35,7 @@ public enum SecurityFileSnapshot {
 			} else {
 				// No M2_HOME is set so figure out where it is, check HOME first.
 				userM2Home = Paths.get(USER_HOME, FileSystems.getDefault().getSeparator(), ".m2"); //$NON-NLS-1$
-				//System.out.println("SecurityFileSnapshot -Searching for FILE:" + userM2Home.toAbsolutePath());
+				System.out.println("SecurityFileSnapshot -Searching for FILE:" + userM2Home.toAbsolutePath()); //$NON-NLS-1$
 
 			}
 
