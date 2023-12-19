@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.e4.core.services.nls;
 
+import jakarta.inject.Inject;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

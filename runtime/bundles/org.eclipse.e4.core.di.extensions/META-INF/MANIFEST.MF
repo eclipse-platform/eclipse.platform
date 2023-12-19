@@ -9,5 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.e4.core.di.extensions;version="0.16.0"
 Bundle-Localization: fragment
 Import-Package: jakarta.inject;version="[2.0.0,3.0.0)",
- javax.inject;version="[1.0.0,2.0.0)";resolution:=optional
+ javax.inject;version="[1.0.0,2.0.0)";resolution:=optional,
+ org.osgi.framework;version="[1.0.0,2.0.0)"
 Automatic-Module-Name: org.eclipse.e4.core.di.extensions
