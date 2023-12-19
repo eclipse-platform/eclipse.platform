@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.pki.auth;
 
+import java.util.Optional;
 import java.util.Properties;
 
 //import org.eclipse.jface.preference.IPreferenceStore;
@@ -62,29 +63,19 @@ public class PKISetup implements BundleActivator, IStartup {
 	}
 
 	public void Startup() {
-
-		/*
-		 * Check if .pki file exists. If it doesnt, then create one.
-		 */
-
-		/*
-		 * NOTE: Initialize pki settings so that NO PKI is set on start up.
-		 */
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
-
-		/*
-		 * PKCS11 will be the default certificate store, so check it first.
-		 */
 
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 			System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
 			PublicKeySecurity.INSTANCE.getPkiPropertyFile();
-
+			Optional op = Optional.of(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
+			if (op.isEmpty()) {
+				System.out.println("PKISetup keystore is set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		} else {
 			System.out.println("PKISetup get IS THRURNED OFF  PKI TYPE"); //$NON-NLS-1$
 		}
-		// installTrustStore();
 	}
 
 	/**
