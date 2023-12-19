@@ -80,12 +80,8 @@ This example shows how the version of a plug-in reacts to changes (indicated in 
     Maintenance stream after 1.1.0
      - 1.1.1
      The plug-in ships as 1.1.1
-    
-    
 
- 
-
-[![Plugin-versioning-fig1.jpg](/images/Plugin-versioning-fig1.jpg)](/File:Plugin-versioning-fig1.jpg)
+![Plugin Versioning Figure 1](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/images/Plugin-versioning-fig1.jpg)
 
 ### When to change the qualifier segment
 
