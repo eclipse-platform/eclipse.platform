@@ -13,6 +13,8 @@ import java.util.jar.Manifest;
 
 public enum SecurePKIVersionInfo {
 	INSTANCE;
+
+	@SuppressWarnings("resource")
 	public static String getVersion() {
 		String version = null;
 		Path path = null;
@@ -23,12 +25,12 @@ public enum SecurePKIVersionInfo {
 			/*
 			 * See if this is a valid path check to see if its eclipse testing
 			 */
-			path = Paths.get("PKI.jar");
+			path = Paths.get("PKI.jar"); //$NON-NLS-1$
 
 			if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
 				//System.out.println(" GOOD PATH");
 			} else {
-				
+
 				try {
 					/*
 					 * path =
@@ -49,8 +51,8 @@ public enum SecurePKIVersionInfo {
 					//System.out.println("PATH:" + path.toAbsolutePath());
 					Manifest manifest = new JarFile(path.toAbsolutePath().toString()).getManifest();
 					Attributes attributes = manifest.getMainAttributes();
-					version = attributes.getValue("Build-Label");
-					DebugLogger.printDebug( " VALUE:"+ version );
+					version = attributes.getValue("Build-Label"); //$NON-NLS-1$
+					DebugLogger.printDebug(" VALUE:" + version); //$NON-NLS-1$
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
@@ -59,7 +61,7 @@ public enum SecurePKIVersionInfo {
 			}
 
 			if (version == null) {
-				version = "isEmbeded?";
+				version = "isEmbeded?"; //$NON-NLS-1$
 			}
 
 		} catch (Exception e) {

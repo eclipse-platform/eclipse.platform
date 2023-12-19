@@ -2,7 +2,6 @@ package org.eclipse.core.pki;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -17,33 +16,35 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 	private static Pkcs11LocationIfc location = null;
 	static Pkcs11LibraryFinder jarLocation = null;
 	public static Pkcs11LocationImpl getPkcs11LocationInstance() {
-		
+
 		if ( location == null ) {
 			synchronized(Pkcs11LocationImpl.class) {
 				if ( location == null ) {
 					jarLocation = findSunPkcs11JarInstance();
 					if (jarLocation.isPkcs11() ) {
 						pkcs11Found=true;
-						DebugLogger.printDebug("PKCS11Locationimp jarDIR:"+ jarLocation.getJarDirectory().toString());
+						DebugLogger.printDebug("PKCS11Locationimp jarDIR:" + jarLocation.getJarDirectory().toString()); //$NON-NLS-1$
 						setJarDir( Paths.get(jarLocation.getJarDirectory().toString()) );
 					}
-					if ( isUnix() ) {	
+					if ( isUnix() ) {
 						location = Pkcs11UnixLocation.getInstance();
-					} else { 
+					} else {
 						location = Pkcs11MSLocation.getInstance();
 					}
 				}
 			}
 		}
-		return (Pkcs11LocationImpl) location; 
+		return (Pkcs11LocationImpl) location;
 	}
 
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("PKCS11Locationimpl  OVERRIDE INITIALIZE");
-		
+		DebugLogger.printDebug("PKCS11Locationimpl  OVERRIDE INITIALIZE"); //$NON-NLS-1$
+
 	}
+
+	@SuppressWarnings("resource")
 	private static boolean isUnix() {
 		for ( Path path : FileSystems.getDefault().getRootDirectories()) {
 			if (path.startsWith(FileSystems.getDefault().getSeparator())) {
@@ -52,13 +53,13 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 		}
 		return false;
 	}
-	
+
 	protected static boolean isPath( StringBuilder pkcs11Path ) {
-		
+
 		try {
-			if (!(pkcs11Path.toString().endsWith("java_pkcs11.cfg"))) {
+			if (!(pkcs11Path.toString().endsWith("java_pkcs11.cfg"))) { //$NON-NLS-1$
 				pkcs11Path.append(FileSystems.getDefault().getSeparator());
-				pkcs11Path.append("java_pkcs11.cfg");
+				pkcs11Path.append("java_pkcs11.cfg"); //$NON-NLS-1$
 			}
 			if (isDirectory(pkcs11Path.toString())) {
 				setPath(Paths.get(pkcs11Path.toString()));
@@ -69,7 +70,7 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 	protected static boolean isDirectory(String incoming) {
@@ -77,7 +78,7 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 			Path path = Paths.get( incoming );
 			if (Files.exists(path)) {
 				return true;
-			} 
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -96,7 +97,7 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 	public static void setPath(Path path) {
 		Pkcs11LocationImpl.path = path;
 	}
-	
+
 	public static Path getJarDir() {
 		return jarDir;
 	}

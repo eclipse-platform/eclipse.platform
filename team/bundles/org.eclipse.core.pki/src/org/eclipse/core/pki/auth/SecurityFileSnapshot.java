@@ -7,13 +7,9 @@ import java.nio.channels.FileLock;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.DosFileAttributeView;
-import java.nio.file.attribute.DosFileAttributes;
-import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
@@ -21,12 +17,10 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.eclipse.osgi.util.NLS;
-
 public enum SecurityFileSnapshot {
 	INSTANCE;
 	Path pkiFile = null;
-	public static final String USER_HOME = System.getProperty("user.home");
+	public static final String USER_HOME = System.getProperty("user.home"); //$NON-NLS-1$
 	public boolean image() {
 		/*
 		 * CHeck if .pki file is present.
@@ -35,29 +29,29 @@ public enum SecurityFileSnapshot {
 		Path userM2Home = null;
 		try {
 
-			if (System.getProperty("M2_HOME") != null) {
-				userM2Home = Paths.get(System.getProperty("M2_HOME"));
+			if (System.getProperty("M2_HOME") != null) { //$NON-NLS-1$
+				userM2Home = Paths.get(System.getProperty("M2_HOME")); //$NON-NLS-1$
 			} else {
 				// No M2_HOME is set so figure out where it is, check HOME first.
-				userM2Home = Paths.get(USER_HOME, FileSystems.getDefault().getSeparator(), ".m2");
+				userM2Home = Paths.get(USER_HOME, FileSystems.getDefault().getSeparator(), ".m2"); //$NON-NLS-1$
 				//System.out.println("SecurityFileSnapshot -Searching for FILE:" + userM2Home.toAbsolutePath());
-			
+
 			}
 
-			pkiFile = Paths.get(userM2Home + "/.pki");
+			pkiFile = Paths.get(userM2Home + "/.pki"); //$NON-NLS-1$
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		isSecurityFileRequired("");
+		isSecurityFileRequired(""); //$NON-NLS-1$
 		if (Files.exists(pkiFile)) {
-			
+
 			isFound=true;
-		} 
+		}
 		return isFound;
 	}
 	public Properties load() {
-		System.out.println("SecurityFileSnapshot - loading properties from dot PKI file");
+		System.out.println("SecurityFileSnapshot - loading properties from dot PKI file"); //$NON-NLS-1$
 		Properties properties = new Properties();
 		try {
 			FileChannel fileChannel = FileChannel.open(pkiFile, StandardOpenOption.READ);
@@ -68,13 +62,13 @@ public enum SecurityFileSnapshot {
 			}
 			System.setProperties(properties);
 			lock.release();
-			System.out.println("SecurityFileSnapshot - loading properties COMPLETED");
+			System.out.println("SecurityFileSnapshot - loading properties COMPLETED"); //$NON-NLS-1$
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return properties;
-		
+
 	}
 
 	//@SuppressWarnings("unused")
@@ -98,7 +92,7 @@ public enum SecurityFileSnapshot {
 				Files.deleteIfExists(path);
 				Files.createFile(path);
 				Charset charset = Charset.forName("UTF-8");//$NON-NLS-1$
-				ArrayList<String> a = fileContents();	
+				ArrayList<String> a = fileContents();
 				if ( FileSystems.getDefault().supportedFileAttributeViews().contains("posix") ) { //$NON-NLS-1$
 					PosixFileAttributeView posixAttributes = Files.getFileAttributeView(path, PosixFileAttributeView.class);
 					Set<PosixFilePermission> permissions = posixAttributes.readAttributes().permissions();
@@ -113,7 +107,7 @@ public enum SecurityFileSnapshot {
 					//DosFileAttributeView dosAttributes =  Files.getFileAttributeView(path, DosFileAttributeView.class);
 					//DosFileAttributes standardPermissions = dosAttributes.readAttributes();
 					Files.write(path, a, charset, StandardOpenOption.TRUNCATE_EXISTING);
-					Files.setAttribute(path, "dos:hidden", true);
+					Files.setAttribute(path, "dos:hidden", Boolean.valueOf(true));//$NON-NLS-1$
 				}
 			}
 
@@ -124,16 +118,16 @@ public enum SecurityFileSnapshot {
 	}
 
 	private static ArrayList<String> fileContents() {
-		
-		ArrayList<String> a = new ArrayList<String>();
-		
+
+		ArrayList<String> a = new ArrayList<>();
+
 		try {
 			a.add("javax.net.ssl.trustStoreType="+ System.getProperty("javax.net.ssl.trustStoreType"));//$NON-NLS-1$ //$NON-NLS-2$
 			a.add("javax.net.ssl.trustStorePassword="+ System.getProperty("javax.net.ssl.trustStorePassword"));//$NON-NLS-1$ //$NON-NLS-2$
 			a.add("javax.net.ssl.trustStore="+ System.getProperty("javax.net.ssl.trustStore"));//$NON-NLS-1$ //$NON-NLS-2$
 			a.add("");//$NON-NLS-1$
-			
-			
+
+
 			if (System.getProperty("javax.net.ssl.keyStoreType") != null ) {//$NON-NLS-1$
 				a.add("javax.net.ssl.keyStoreType="+ System.getProperty("javax.net.ssl.keyStoreType"));//$NON-NLS-1$ //$NON-NLS-2$
 				a.add("javax.net.ssl.keyStore="+ System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -144,13 +138,13 @@ public enum SecurityFileSnapshot {
 					a.add("javax.net.ssl.keyStoreProvider="+ System.getProperty("javax.net.ssl.keyStoreProvider")); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
-			
-		
+
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 
 		return a;
 	}
