@@ -20,6 +20,7 @@ import java.util.Set;
 public enum SecurityFileSnapshot {
 	INSTANCE;
 	Path pkiFile = null;
+	Path userM2Home = null;
 	public static final String USER_HOME = System.getProperty("user.home"); //$NON-NLS-1$
 	public boolean image() {
 		/*
@@ -27,7 +28,6 @@ public enum SecurityFileSnapshot {
 		 */
 		System.out.println("SecurityFileSnapshot -Searching HOME FILE:" + USER_HOME); //$NON-NLS-1$
 		boolean isFound=false;
-		Path userM2Home = null;
 		try {
 
 			if (System.getProperty("M2_HOME") != null) { //$NON-NLS-1$
@@ -52,6 +52,7 @@ public enum SecurityFileSnapshot {
 		return isFound;
 	}
 	public Properties load() {
+		System.out.println("SecurityFileSnapshot -Searching HOME FILE:" + pkiFile.toString()); //$NON-NLS-1$
 		System.out.println("SecurityFileSnapshot - loading properties from dot PKI file"); //$NON-NLS-1$
 		Properties properties = new Properties();
 		try {
