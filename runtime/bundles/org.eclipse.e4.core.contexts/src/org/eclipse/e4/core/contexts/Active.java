@@ -23,12 +23,10 @@ import java.lang.annotation.Target;
  * This annotation can be added to injectable fields ands methods to indicate
  * that the injected value should come from the active context.
  *
- * @see javax.inject.Inject
  * @see jakarta.inject.Inject
  * @see IEclipseContext#activate
  * @since 1.3
  */
-@javax.inject.Qualifier
 @jakarta.inject.Qualifier
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
