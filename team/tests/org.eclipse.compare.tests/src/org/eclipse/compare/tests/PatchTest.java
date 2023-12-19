@@ -312,8 +312,6 @@ public class PatchTest {
 		throw new AssertionFailedError(sb.toString());
 	}
 
-	// both copy-pasted from CoreTest
-
 	private void log(String pluginID, IStatus status) {
 		ILog.of(Platform.getBundle(pluginID)).log(status);
 	}
