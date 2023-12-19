@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Security Team and others.
+ * Copyright (c) 2023 Eclipse Platform, Security Group and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -9,11 +9,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- * Security Team - initial API and implementation
- * <Java Joe> Joe@Schiavone.org
- * yyyymmdd bug      Email and other contact information
- * -------- -------- -----------------------------------------------------------
- *
+ *     Eclipse Platform - initial API and implementation
  *******************************************************************************/
 package org.eclipse.core.pki.auth;
 
