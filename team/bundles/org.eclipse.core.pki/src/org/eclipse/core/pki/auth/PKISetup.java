@@ -68,10 +68,11 @@ public class PKISetup implements BundleActivator, IStartup {
 
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 			System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
-			PublicKeySecurity.INSTANCE.getPkiPropertyFile();
+			Properties p = PublicKeySecurity.INSTANCE.getPkiPropertyFile();
 			Optional op = Optional.of(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
-			if (op.isEmpty()) {
+			if (!(op.isEmpty())) {
 				System.out.println("PKISetup keystore is set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+				System.out.println("PKISetup keystore p set:" + p.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		} else {
 			System.out.println("PKISetup get IS THRURNED OFF  PKI TYPE"); //$NON-NLS-1$
