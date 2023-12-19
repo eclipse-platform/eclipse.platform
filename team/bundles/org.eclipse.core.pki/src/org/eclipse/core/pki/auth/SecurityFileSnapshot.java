@@ -1,3 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2023 Eclipse Platform, Security Group and others.
+ *
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Eclipse Platform - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.core.pki.auth;
 
 import java.io.IOException;
@@ -35,11 +48,13 @@ public enum SecurityFileSnapshot {
 			} else {
 				// No M2_HOME is set so figure out where it is, check HOME first.
 				userM2Home = Paths.get(USER_HOME, FileSystems.getDefault().getSeparator(), ".m2"); //$NON-NLS-1$
-				System.out.println("SecurityFileSnapshot -Searching for FILE:" + userM2Home.toAbsolutePath()); //$NON-NLS-1$
+				System.out.println(
+						"SecurityFileSnapshot -Searching NO M2_HOME set for FILE:" + userM2Home.toAbsolutePath()); //$NON-NLS-1$
 
 			}
 
 			pkiFile = Paths.get(userM2Home + "/.pki"); //$NON-NLS-1$
+
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -86,7 +101,7 @@ public enum SecurityFileSnapshot {
 			dir = Paths.get(sb.toString());
 			Files.createDirectories(dir);
 
-			sb.append(".security");//$NON-NLS-1$
+			// sb.append(".pki");//$NON-NLS-1$
 
 			Path path = Paths.get(sb.toString());
 
