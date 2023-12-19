@@ -54,7 +54,7 @@ public class Bug_032076 {
 
 	@Test
 	public void testFileBugOnWindows() throws Exception {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -107,7 +107,7 @@ public class Bug_032076 {
 
 	@Test
 	public void testFolderBugOnWindows() throws Exception {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -169,7 +169,7 @@ public class Bug_032076 {
 
 	@Test
 	public void testProjectBugOnWindows() throws Exception {
-		assumeTrue("test only works on Windows", OS.isWindows());
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
 		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
@@ -218,7 +218,7 @@ public class Bug_032076 {
 	@Test
 	@Ignore("test is currently failing and needs further investigation (bug 203078)")
 	public void testFileBugOnLinux() throws CoreException {
-		assumeTrue("test only works on Linux", OS.isLinux() && isReadOnlySupported());
+		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -277,7 +277,7 @@ public class Bug_032076 {
 	@Test
 	@Ignore("test is currently failing and needs further investigation (bug 203078)")
 	public void testFolderBugOnLinux() throws CoreException {
-		assumeTrue("test only works on Linux", OS.isLinux() && isReadOnlySupported());
+		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(createUniqueString());
@@ -352,7 +352,7 @@ public class Bug_032076 {
 	@Test
 	@Ignore("test is currently failing and needs further investigation (bug 203078)")
 	public void testProjectBugOnLinux() throws CoreException {
-		assumeTrue("test only works on Linux", OS.isLinux() && isReadOnlySupported());
+		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");

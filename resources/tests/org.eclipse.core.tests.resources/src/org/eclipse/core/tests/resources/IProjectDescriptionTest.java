@@ -105,7 +105,7 @@ public class IProjectDescriptionTest {
 		description.setBuildSpec(description.getBuildSpec());
 		description.setComment(description.getComment());
 		description.setDynamicReferences(description.getDynamicReferences());
-		description.setLocation(description.getLocation());
+		description.setLocationURI(description.getLocationURI());
 		description.setName(description.getName());
 		description.setNatureIds(description.getNatureIds());
 		description.setReferencedProjects(description.getReferencedProjects());

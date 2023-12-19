@@ -29,15 +29,13 @@ import org.junit.Test;
 
 public class ObjectMapTest {
 	private static final int MAXIMUM = 100;
-	private Object[] values;
 
 	@Test
 	public void testPut() {
 		// create the objects to insert into the map
 		ObjectMap<Integer, Object> map = new ObjectMap<>();
-		int max = 100;
-		Object[] values = new Object[max];
-		for (int i = 0; i < max; i++) {
+		Object[] values = new Object[MAXIMUM];
+		for (int i = 0; i < MAXIMUM; i++) {
 			values[i] = Long.valueOf(System.currentTimeMillis());
 		}
 
@@ -51,7 +49,7 @@ public class ObjectMapTest {
 		}
 
 		// make sure they are all still there
-		assertEquals("3.0", max, map.size());
+		assertEquals("3.0", MAXIMUM, map.size());
 		for (int i = 0; i < values.length; i++) {
 			Integer key = Integer.valueOf(i);
 			assertTrue("3.1." + i, map.containsKey(key));
@@ -68,7 +66,8 @@ public class ObjectMapTest {
 	@Test
 	public void testRemove() {
 		// populate the map
-		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
+		Object[] values = new Object[MAXIMUM];
+		ObjectMap<Integer, Object> map = populateMap(values);
 
 		// remove each element
 		for (int i = MAXIMUM - 1; i >= 0; i--) {
@@ -88,7 +87,8 @@ public class ObjectMapTest {
 
 	@Test
 	public void testContains() {
-		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
+		Object[] values = new Object[MAXIMUM];
+		ObjectMap<Integer, Object> map = populateMap(values);
 
 		for (int i = 0; i < MAXIMUM; i++) {
 			assertTrue("2.0." + i, map.containsKey(Integer.valueOf(i)));
@@ -103,7 +103,8 @@ public class ObjectMapTest {
 
 	@Test
 	public void testValues() {
-		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
+		Object[] values = new Object[MAXIMUM];
+		ObjectMap<Integer, Object> map = populateMap(values);
 
 		Collection<Object> result = map.values();
 		for (int i = 0; i < MAXIMUM; i++) {
@@ -113,14 +114,16 @@ public class ObjectMapTest {
 
 	@Test
 	public void testKeySet() {
-		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
+		Object[] values = new Object[MAXIMUM];
+		ObjectMap<Integer, Object> map = populateMap(values);
 		Set<Integer> keys = map.keySet();
 		assertEquals("1.0", MAXIMUM, keys.size());
 	}
 
 	@Test
 	public void testEntrySet() {
-		ObjectMap<Integer, Object> map = populateMap(MAXIMUM);
+		Object[] values = new Object[MAXIMUM];
+		ObjectMap<Integer, Object> map = populateMap(values);
 		Set<Map.Entry<Integer, Object>> entries = map.entrySet();
 		for (int i = 0; i < MAXIMUM; i++) {
 			assertTrue("1.0." + i, contains(entries, values[i]));
@@ -139,15 +142,14 @@ public class ObjectMapTest {
 		return false;
 	}
 
-	private ObjectMap<Integer, Object> populateMap(int max) {
+	private ObjectMap<Integer, Object> populateMap(Object[] values) {
 		// populate the map
 		ObjectMap<Integer, Object> map = new ObjectMap<>();
-		values = new Object[max];
-		for (int i = 0; i < max; i++) {
+		for (int i = 0; i < values.length; i++) {
 			values[i] = Long.valueOf(System.currentTimeMillis());
 			map.put(Integer.valueOf(i), values[i]);
 		}
-		assertEquals("#populateMap", max, map.size());
+		assertEquals("#populateMap", values.length, map.size());
 		return map;
 	}
 
