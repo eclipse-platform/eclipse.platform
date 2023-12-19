@@ -390,6 +390,3 @@ Other Notes
 
 See [Part 3](/Evolving_Java-based_APIs_3 "Evolving Java-based APIs 3").
 
-  
-
-Copyright © 2000, 2017 IBM Corporation
