@@ -1,25 +1,15 @@
 Evolving Java-based APIs
 ========================
 
-By Jim des Rivières, IBM
-
-Revision history:
-
-October 1, 2007 - revision 1.2 - Clarified moving methods up and down type hierarchy; added note about Java reflection; split document into 3 parts because it was getting too large to edit:
+Document is currently split in 3 parts:
 
 *   Part 1: What is an API? (this page)
 *   [Part 2: Achieving API Binary Compatibility](/Evolving_Java-based_APIs_2 "Evolving Java-based APIs 2")
 *   [Part 3: Other Notes](/Evolving_Java-based_APIs_3 "Evolving Java-based APIs 3")
 
-February 14, 2007 - revision 1.1 - Add coverage for JDK 1.5 language features: generics, enums, annotation types, variable arity methods.
-
-June 8, 2001 - revision 1.02 - Added note about breakage due to adding API method to classes that may be subclassed.
-
-January 15, 2001 - revision 1.01 - Added suggestion about making obsolete hook methods final.
-
-October 6, 2000 - revision 1.0
-
-This document is about how to evolve Java-based APIs while maintaining compatibility with existing client code. Without loss of generality, we'll assume that there is a generic **Component** with a **Component API**, with one party providing the Component and controlling its API. The other party, or parties, write **Client** code that use the Component's services through its API. This is a very typical arrangement.
+This document is about how to evolve Java-based APIs while maintaining compatibility with existing client code. 
+Without loss of generality, we'll assume that there is a generic **Component** with a **Component API**, with one party providing the Component and controlling its API. 
+The other party, or parties, write **Client** code that use the Component's services through its API. This is a very typical arrangement.
 
 Contents
 --------
@@ -229,4 +219,4 @@ Bundle Versioning
 
 See [Version Numbering](/Version_Numbering "Version Numbering")
 
-Copyright © 2000, 2009 IBM Corporation
+
