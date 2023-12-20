@@ -13,9 +13,16 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
+import static java.util.stream.Collectors.joining;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -33,6 +40,7 @@ import org.eclipse.debug.tests.AbstractDebugTest;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.junit.Test;
 
@@ -100,6 +108,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			setPreference(DebugUIPlugin.getDefault().getPreferenceStore(), IDebugUIConstants.PREF_AUTO_REMOVE_OLD_LAUNCHES, true);
 			// Stop the JobManager to reliable trigger the tested race
 			// condition.
+			TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
 			Job.getJobManager().suspend();
 			launchManager.addLaunch(process1.getLaunch());
 			launchManager.addLaunch(process2.getLaunch());
@@ -107,16 +116,21 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			Job.getJobManager().resume();
 		}
 
-		ProcessConsoleManager processConsoleManager = DebugUIPlugin.getDefault().getProcessConsoleManager();
 		TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
-		int openConsoles = 0;
+		ProcessConsoleManager processConsoleManager = DebugUIPlugin.getDefault().getProcessConsoleManager();
+		ILaunch[] launches = launchManager.getLaunches();
+		Set<IConsole> openConsoles = new HashSet<>();
 		if (processConsoleManager.getConsole(process1) != null) {
-			openConsoles++;
+			openConsoles.add(processConsoleManager.getConsole(process1));
 		}
 		if (processConsoleManager.getConsole(process2) != null) {
-			openConsoles++;
+			openConsoles.add(processConsoleManager.getConsole(process2));
 		}
-		assertEquals("ProcessConsoleManager and LaunchManager got out of sync.", openConsoles, launchManager.getLaunches().length);
+
+		String launchesString = Stream.of(launches).map(launch -> Stream.of(launch.getProcesses()).map(IProcess::getLabel).collect(joining(",", "[", "]"))).collect(joining());
+		String consolesString = openConsoles.stream().map(IConsole::getName).collect(joining());
+		String failureMessage = String.format("ProcessConsoleManager and LaunchManager got out of sync.\nLaunches: %s\nConsoles: %s", launchesString, consolesString);
+		assertThat(failureMessage, openConsoles, hasSize(launches.length));
 
 		final ConsoleRemoveAllTerminatedAction removeAction = new ConsoleRemoveAllTerminatedAction();
 		assertTrue("Remove terminated action should be enabled.", removeAction.isEnabled() || launchManager.getLaunches().length == 0);
