@@ -65,18 +65,25 @@ public class PKISetup implements BundleActivator, IStartup {
 	public void Startup() {
 
 		Optional<String>type = null;
+		Optional<String> keyStore = null;
+		Optional<String> keyStorePassword = null;
+
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
 		/*
 		 * First see if parameters were passed into eclipse via the command line -D
 		 */
 		type = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
+
 		if (type.isEmpty()) {
 			System.out.println("PKISetup WAS a -D parameter list passed in NO"); //$NON-NLS-1$
 
 			PKIState.CONTROL.setPKCS11on(false);
 			PKIState.CONTROL.setPKCS12on(false);
 		} else {
+
+			keyStorePassword = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
+
 			if ( type.get().equalsIgnoreCase("PKCS11")) { //$NON-NLS-1$
 				PKIState.CONTROL.setPKCS11on(true);
 				System.out.println("PKISetup PKCS11 enabled"); //$NON-NLS-1$
@@ -85,6 +92,16 @@ public class PKISetup implements BundleActivator, IStartup {
 				PKIState.CONTROL.setPKCS12on(true);
 				System.out.println("PKISetup PKCS12 enabled"); //$NON-NLS-1$
 			}
+			keyStore = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
+			if (keyStore.isEmpty()) {
+				PKIState.CONTROL.setPKCS11on(false);
+				PKIState.CONTROL.setPKCS12on(false);
+			}
+			keyStorePassword = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
+			if (keyStorePassword.isEmpty()) {
+				System.out.println("PKISetup PASSWORD required"); //$NON-NLS-1$
+			}
+
 		}
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 			System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
