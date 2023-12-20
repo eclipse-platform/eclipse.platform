@@ -79,9 +79,11 @@ public class PKISetup implements BundleActivator, IStartup {
 		} else {
 			if ( type.get().equalsIgnoreCase("PKCS11")) { //$NON-NLS-1$
 				PKIState.CONTROL.setPKCS11on(true);
+				System.out.println("PKISetup PKCS11 enabled"); //$NON-NLS-1$
 			}
 			if ( type.get().equalsIgnoreCase("PKCS12")) { //$NON-NLS-1$
 				PKIState.CONTROL.setPKCS12on(true);
+				System.out.println("PKISetup PKCS12 enabled"); //$NON-NLS-1$
 			}
 		}
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
