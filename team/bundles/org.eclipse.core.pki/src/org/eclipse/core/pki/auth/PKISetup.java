@@ -63,14 +63,14 @@ public class PKISetup implements BundleActivator, IStartup {
 	}
 
 	public void Startup() {
-		Properties prop = null;
+
 		Optional<String>type = null;
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
 		/*
 		 * First see if parameters were passed into eclipse via the command line -D
 		 */
-		type = Optional.ofNullable(prop.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
+		type = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
 		if (type.isEmpty()) {
 			System.out.println("PKISetup WAS a -D parameter list passed in NO"); //$NON-NLS-1$
 
@@ -86,7 +86,7 @@ public class PKISetup implements BundleActivator, IStartup {
 		}
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 			System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
-			prop = PublicKeySecurity.INSTANCE.getPkiPropertyFile();
+			Properties prop = PublicKeySecurity.INSTANCE.getPkiPropertyFile();
 			type = Optional.ofNullable(prop.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
 			if (type.isEmpty()) {
 				PKIState.CONTROL.setPKCS11on(false);
@@ -95,7 +95,7 @@ public class PKISetup implements BundleActivator, IStartup {
 			}
 		} else {
 			System.out.println("PKISetup keystore is set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
-			System.out.println("PKISetup keystore p set:" + prop.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+			System.out.println("PKISetup keystore p set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
