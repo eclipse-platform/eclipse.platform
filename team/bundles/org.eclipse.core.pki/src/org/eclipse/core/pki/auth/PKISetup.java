@@ -63,19 +63,38 @@ public class PKISetup implements BundleActivator, IStartup {
 	}
 
 	public void Startup() {
+		Properties prop = null;
+		Optional<String>type = null;
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
+		/*
+		 * First see if parameters were passed into eclipse via the command line -D
+		 */
+		type = Optional.ofNullable(prop.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
+		if (type.isEmpty()) {
+			System.out.println("PKISetup WAS a -D parameter list passed in NO"); //$NON-NLS-1$
 
+			PKIState.CONTROL.setPKCS11on(false);
+			PKIState.CONTROL.setPKCS12on(false);
+		} else {
+			if ( type.get().equalsIgnoreCase("PKCS11")) { //$NON-NLS-1$
+				PKIState.CONTROL.setPKCS11on(true);
+			}
+			if ( type.get().equalsIgnoreCase("PKCS12")) { //$NON-NLS-1$
+				PKIState.CONTROL.setPKCS12on(true);
+			}
+		}
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 			System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
-			Properties p = PublicKeySecurity.INSTANCE.getPkiPropertyFile();
-			Optional op = Optional.of(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
-			if (!(op.isEmpty())) {
-				System.out.println("PKISetup keystore is set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
-				System.out.println("PKISetup keystore p set:" + p.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
-			}
+			prop = PublicKeySecurity.INSTANCE.getPkiPropertyFile();
+			type = Optional.ofNullable(prop.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
+			if (type.isEmpty()) {
+				PKIState.CONTROL.setPKCS11on(false);
+				PKIState.CONTROL.setPKCS12on(false);
+				System.out.println("PKISetup get IS THRURNED OFF  PKI TYPE"); //$NON-NLS-1$
 		} else {
-			System.out.println("PKISetup get IS THRURNED OFF  PKI TYPE"); //$NON-NLS-1$
+			System.out.println("PKISetup keystore is set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+			System.out.println("PKISetup keystore p set:" + prop.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
