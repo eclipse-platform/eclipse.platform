@@ -25,3 +25,7 @@ Example of a deprecation comment:
 ``` 
 * The PMC may decide to back out of an API removal
 * In general, removing a deprecated API does NOT cause the increase of the major version segment.
+
+Software tests and test utilities are not considered API and can be changed and deleted at any time.
+
+
