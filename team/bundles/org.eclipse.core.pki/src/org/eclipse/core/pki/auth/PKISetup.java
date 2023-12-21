@@ -16,6 +16,7 @@ package org.eclipse.core.pki.auth;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.eclipse.core.pki.util.LogUtil;
 //import org.eclipse.jface.preference.IPreferenceStore;
 //import org.eclipse.osgi.framework.eventmgr.EventManager;
 //import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
@@ -113,6 +114,7 @@ public class PKISetup implements BundleActivator, IStartup {
 			keyStorePassword = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
 			if (keyStorePassword.isEmpty()) {
 				System.out.println("PKISetup PASSWORD required"); //$NON-NLS-1$
+				LogUtil.logError("A Keystore Password is required, javax.net.ssl.keyStorePassword", null); //$NON-NLS-1$
 			}
 
 		}
