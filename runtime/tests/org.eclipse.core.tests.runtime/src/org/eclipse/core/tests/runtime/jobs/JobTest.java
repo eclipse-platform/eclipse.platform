@@ -1591,13 +1591,70 @@ public class JobTest extends AbstractJobTest {
 		}
 	}
 
-	/**
-	 * Tests the API methods Job.setProgressGroup
-	 */
 	@Test
-	public void testSetProgressGroup() {
+	public void testSetProgressGroup_withNullGroup() {
+		assertThrows(RuntimeException.class,
+				() -> new TestJob("testSetProgressGroup_withNullGroup").setProgressGroup(null, 5));
+	}
+
+	@Test
+	public void testSetProgressGroup_withProperGroup() throws InterruptedException {
+		Job job = new TestJob("testSetProgressGroup_withProperGroup") {
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				monitor.setCanceled(true);
+				return super.run(monitor);
+			}
+		};
+		IProgressMonitor group = Job.getJobManager().createProgressGroup();
+		group.beginTask("Group task name", 10);
+		job.setProgressGroup(group, 0);
+		job.schedule();
+		job.join();
+		assertThat("job progress has not been reported to group monitor", group.isCanceled());
+		group.done();
+	}
+
+	@Test
+	public void testSetProgressGroup_ignoreWhileWaiting() throws InterruptedException {
+		Job job = new TestJob("testSetProgressGroup_ignoreWhileWaiting") {
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				monitor.setCanceled(true);
+				return super.run(monitor);
+			}
+		};
+		IProgressMonitor group = Job.getJobManager().createProgressGroup();
+		job.schedule(10000); // put job to waiting state
+		job.setProgressGroup(group, 0);
+		job.wakeUp();
+		job.join();
+		assertThat("job progress has unexpectedly been reported to group monitor", !group.isCanceled());
+	}
+
+	@Test
+	public void testSetProgressGroup_ignoreWhileRunning() throws InterruptedException {
+		TestBarrier2 barrier = new TestBarrier2();
+		Job job = new TestJob("testSetProgressGroup_ignoreWhileRunning") {
+			@Override
+			public IStatus run(IProgressMonitor monitor) {
+				barrier.upgradeTo(TestBarrier2.STATUS_RUNNING);
+				monitor.setCanceled(true);
+				return super.run(monitor);
+			}
+		};
+		IProgressMonitor group = Job.getJobManager().createProgressGroup();
+		job.schedule();
+		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
+		job.setProgressGroup(group, 0);
+		job.join();
+		assertThat("job progress has unexpectedly been reported to group monitor", !group.isCanceled());
+	}
+
+	@Test
+	public void testSetProgressGroup_cancellationPropagatedToMonitor() {
 		final TestBarrier2 barrier = new TestBarrier2();
-		Job job = new Job("testSetProgressGroup") {
+		Job job = new Job("testSetProgressGroup_cancellationStillWorks") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				barrier.setStatus(TestBarrier2.STATUS_RUNNING);
@@ -1608,25 +1665,15 @@ public class JobTest extends AbstractJobTest {
 				return Status.OK_STATUS;
 			}
 		};
-		//null group
-		assertThrows(RuntimeException.class, () -> job.setProgressGroup(null, 5));
 		IProgressMonitor group = Job.getJobManager().createProgressGroup();
-		group.beginTask("Group task name", 10);
-		job.setProgressGroup(group, 5);
-
-		//ignore changes to group while waiting or running
-		job.schedule(100);
 		job.setProgressGroup(group, 0);
-		//wait until job starts and try to set the progress group
+		job.schedule();
 		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
-		job.setProgressGroup(group, 0);
-
-		//ensure cancelation still works
 		job.cancel();
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		waitForState(job, Job.NONE);
-		assertEquals("1.0", IStatus.CANCEL, job.getResult().getSeverity());
-		group.done();
+		assertThat("job progress has not been reported to group monitor", group.isCanceled());
+		assertEquals("job was unexpectedly not canceled", IStatus.CANCEL, job.getResult().getSeverity());
 	}
 
 	@Test

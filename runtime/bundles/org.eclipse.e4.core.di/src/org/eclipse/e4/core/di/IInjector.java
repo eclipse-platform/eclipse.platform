@@ -30,7 +30,7 @@ import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
  * synchronized with the context once it has been injected.
  * <p>
  * Matching of methods and fields to be injected is performed using the
- * annotations defined in packages javax.inject and
+ * annotations defined in packages jakarta.inject and
  * org.eclipse.e4.core.services.annotations.
  * </p>
  * <p>
