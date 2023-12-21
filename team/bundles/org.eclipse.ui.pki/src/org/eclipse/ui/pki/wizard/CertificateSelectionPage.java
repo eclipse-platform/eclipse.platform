@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.core.pki.FingerprintX509;
+import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 //import org.eclipse.jface.dialogs.MessageDialog;
@@ -49,7 +50,6 @@ import org.eclipse.ui.pki.pkiselection.PKIProperties;
 import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
-import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;

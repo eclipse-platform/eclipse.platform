@@ -53,6 +53,7 @@ import javax.security.auth.callback.PasswordCallback;
 
 import org.eclipse.core.pki.FingerprintX509;
 import org.eclipse.core.pki.auth.SecurityFileSnapshot;
+import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
@@ -77,7 +78,6 @@ import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
-import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.pki.util.PKIAuthenticator;
 import org.eclipse.ui.pki.wizard.PKILoginWizard;
 import org.eclipse.ui.pki.wizard.TrustStoreLoginWizard;
