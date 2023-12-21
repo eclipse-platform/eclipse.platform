@@ -1,9 +1,5 @@
-
-
 Eclipse/API Central/Deprecation Policy
 ======================================
-
-< [Eclipse](/Eclipse "Eclipse")‎ | [API Central](/Eclipse/API_Central "Eclipse/API Central")
 
 This page contains [Eclipse Project](/Eclipse_Project "Eclipse Project") guidelines on API deprecation. This page is maintained by the [Eclipse/PMC](/Eclipse/PMC "Eclipse/PMC").
 
