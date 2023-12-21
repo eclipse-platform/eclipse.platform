@@ -80,6 +80,19 @@ public class PKISetup implements BundleActivator, IStartup {
 
 			PKIState.CONTROL.setPKCS11on(false);
 			PKIState.CONTROL.setPKCS12on(false);
+			if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
+				System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
+				Properties prop = PublicKeySecurity.INSTANCE.getPkiPropertyFile();
+				type = Optional.ofNullable(prop.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
+				if (type.isEmpty()) {
+					PKIState.CONTROL.setPKCS11on(false);
+					PKIState.CONTROL.setPKCS12on(false);
+					System.out.println("PKISetup get IS THRURNED OFF  PKI TYPE"); //$NON-NLS-1$
+				}
+			} else {
+				System.out.println("PKISetup keystore is set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+				System.out.println("PKISetup keystore p set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		} else {
 
 			keyStorePassword = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
@@ -103,19 +116,7 @@ public class PKISetup implements BundleActivator, IStartup {
 			}
 
 		}
-		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
-			System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
-			Properties prop = PublicKeySecurity.INSTANCE.getPkiPropertyFile();
-			type = Optional.ofNullable(prop.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
-			if (type.isEmpty()) {
-				PKIState.CONTROL.setPKCS11on(false);
-				PKIState.CONTROL.setPKCS12on(false);
-				System.out.println("PKISetup get IS THRURNED OFF  PKI TYPE"); //$NON-NLS-1$
-			}
-		} else {
-			System.out.println("PKISetup keystore is set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
-			System.out.println("PKISetup keystore p set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+
 	}
 
 	/**
