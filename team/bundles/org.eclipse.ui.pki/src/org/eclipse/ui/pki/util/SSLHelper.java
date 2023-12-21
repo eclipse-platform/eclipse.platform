@@ -12,6 +12,8 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.eclipse.core.pki.util.LogUtil;
+
 /**
  * This class can be used to create an SSLSocketFactory with provided keystore and trustore.
  * You might use this class in the following way:

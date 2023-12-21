@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.eclipse.ui.pki.util;
+package org.eclipse.core.pki.util;
 
 //import org.eclipse.core.runtime.Platform;
 
@@ -14,7 +14,5 @@ public class LogUtil {
 		StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 		final var pluginName = stackWalker.getClass();
 		//Platform.getLog(pluginName).info(pluginName.getCanonicalName() + ":" + message); //$NON-NLS-1$
-	}
-	
-	
+	}	
 }

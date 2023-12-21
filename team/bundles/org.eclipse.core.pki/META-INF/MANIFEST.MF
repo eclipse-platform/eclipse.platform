@@ -11,6 +11,7 @@ Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: org.eclipse.core.pki.auth.PKISetup
 Export-Package: org.eclipse.core.pki,
  org.eclipse.core.pki.auth,
+ org.eclipse.core.pki.util,
  org.eclipse.pki.exception
 Import-Package: org.eclipse.core.internal.net,
  org.eclipse.core.net.proxy,

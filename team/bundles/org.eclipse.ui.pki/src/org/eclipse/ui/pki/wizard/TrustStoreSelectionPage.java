@@ -7,6 +7,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
+import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -27,7 +28,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
-import org.eclipse.ui.pki.util.LogUtil;
 import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.ui.pki.PKIController;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
