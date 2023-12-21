@@ -46,7 +46,6 @@ import java.lang.annotation.Target;
  * @since 0.16
  */
 @jakarta.inject.Qualifier
-@javax.inject.Qualifier
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
