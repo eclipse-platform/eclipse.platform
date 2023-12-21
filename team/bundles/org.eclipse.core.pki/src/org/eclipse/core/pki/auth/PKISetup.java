@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.eclipse.core.pki.util.LogUtil;
+import org.eclipse.equinox.log.Logger;
 //import org.eclipse.jface.preference.IPreferenceStore;
 //import org.eclipse.osgi.framework.eventmgr.EventManager;
 //import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
@@ -61,6 +62,10 @@ public class PKISetup implements BundleActivator, IStartup {
 
 	public static void setInstance(PKISetup instance) {
 		PKISetup.instance = instance;
+	}
+
+	public Logger getlog() {
+		return this.getlog();
 	}
 
 	public void Startup() {
