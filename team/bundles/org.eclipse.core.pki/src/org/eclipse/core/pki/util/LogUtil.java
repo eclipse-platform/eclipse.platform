@@ -24,13 +24,13 @@ public class LogUtil {
 
 	public static void logInfo(String message) {
 		StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
-		final var pluginName = stackWalker.getClass();
+		final var pluginName = stackWalker.getCallerClass();
 		final ServiceCaller<ILog> log = new ServiceCaller(pluginName, ILog.class);
 		log.call(logger -> logger.info(message));
 	}
 	public static void logError(String message, Throwable t) {
 		StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
-		final var pluginName = stackWalker.getClass();
+		final var pluginName = stackWalker.getCallerClass();
 		final ServiceCaller<ILog> log = new ServiceCaller(pluginName, ILog.class);
 		log.call(logger -> logger.error(message));
 	}
