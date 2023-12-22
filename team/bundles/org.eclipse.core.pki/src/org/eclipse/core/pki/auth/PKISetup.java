@@ -17,7 +17,8 @@ import java.util.Optional;
 import java.util.Properties;
 
 import org.eclipse.core.pki.util.LogUtil;
-import org.eclipse.equinox.log.Logger;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.ServiceCaller;
 //import org.eclipse.jface.preference.IPreferenceStore;
 //import org.eclipse.osgi.framework.eventmgr.EventManager;
 //import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
@@ -29,6 +30,7 @@ public class PKISetup implements BundleActivator, IStartup {
 	public static final String ID = "org.eclipse.core.pki"; //$NON-NLS-1$
 	private static PKISetup instance;
 	static boolean isPkcs11Installed = false;
+	private static final ServiceCaller<ILog> logger = new ServiceCaller(PKISetup.class, ILog.class);
 	// ListenerQueue<PKISetup, Object, EventManager> queue = null;
 	Properties pkiProperties = null;
 
@@ -64,11 +66,14 @@ public class PKISetup implements BundleActivator, IStartup {
 		PKISetup.instance = instance;
 	}
 
-	public Logger getlog() {
-		return this.getlog();
+	public void log(String message) {
+
+		logger.call(logger -> logger.info(message));
 	}
 
 	public void Startup() {
+
+		log("Startup method is now running"); //$NON-NLS-1$
 
 		Optional<String>type = null;
 		Optional<String> keyStore = null;

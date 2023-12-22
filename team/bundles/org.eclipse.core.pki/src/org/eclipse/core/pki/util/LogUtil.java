@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.pki.util;
 
-import org.eclipse.core.pki.auth.PKISetup;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.ServiceCaller;
 
 
 /**
@@ -24,8 +25,6 @@ public class LogUtil {
 	public static void logError(String message, Throwable t) {
 		StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 		final var pluginName = stackWalker.getClass();
-		PKISetup.getInstance().getlog().info(pluginName.getCanonicalName() + ":" + message); //$NON-NLS-1$
-		// Platform.getLog(pluginName).info(pluginName.getCanonicalName() + ":" +
-		// message); //$NON-NLS-1$
+		ServiceCaller.callOnce(pluginName.getClass(), ILog.class, logger -> logger.error(message));
 	}
 }
