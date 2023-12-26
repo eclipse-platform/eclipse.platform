@@ -30,6 +30,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.core.pki.util.LogUtil;
+
 public enum SecurityFileSnapshot {
 	INSTANCE;
 	Path pkiFile = null;
@@ -39,7 +41,6 @@ public enum SecurityFileSnapshot {
 		/*
 		 * CHeck if .pki file is present.
 		 */
-		System.out.println("SecurityFileSnapshot -Searching HOME FILE:" + USER_HOME); //$NON-NLS-1$
 		boolean isFound=false;
 		try {
 
@@ -63,6 +64,7 @@ public enum SecurityFileSnapshot {
 		if (Files.exists(pkiFile)) {
 
 			isFound=true;
+			LogUtil.logWarning("A PKI file has been detected."); //$NON-NLS-1$
 		}
 		return isFound;
 	}
