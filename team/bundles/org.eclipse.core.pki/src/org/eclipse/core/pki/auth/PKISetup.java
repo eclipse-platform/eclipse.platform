@@ -76,8 +76,7 @@ public class PKISetup implements BundleActivator, IStartup {
 		log("Startup method is now running"); //$NON-NLS-1$
 
 		Optional<String>type = null;
-		Optional<String> keyStore = null;
-		Optional<String> keyStorePassword = null;
+
 
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
@@ -93,43 +92,18 @@ public class PKISetup implements BundleActivator, IStartup {
 			PKIState.CONTROL.setPKCS12on(false);
 			if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 				System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
-				Properties prop = PublicKeySecurity.INSTANCE.getPkiPropertyFile();
-				type = Optional.ofNullable(prop.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
-				if (type.isEmpty()) {
-					PKIState.CONTROL.setPKCS11on(false);
-					PKIState.CONTROL.setPKCS12on(false);
-					System.out.println("PKISetup get IS THRURNED OFF  PKI TYPE"); //$NON-NLS-1$
-				}
-			} else {
-				System.out.println("PKISetup keystore is set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
-				System.out.println("PKISetup keystore p set:" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		} else {
 
-			keyStorePassword = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
+			}
+		}
 
-			if ( type.get().equalsIgnoreCase("PKCS11")) { //$NON-NLS-1$
-				PKIState.CONTROL.setPKCS11on(true);
-				System.out.println("PKISetup PKCS11 enabled"); //$NON-NLS-1$
+		if (IncomingSystemProperty.SETTINGS.checkType()) {
+			if (IncomingSystemProperty.SETTINGS.checkKeyStore()) {
+				LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
 			}
-			if ( type.get().equalsIgnoreCase("PKCS12")) { //$NON-NLS-1$
-				PKIState.CONTROL.setPKCS12on(true);
-				System.out.println("PKISetup PKCS12 enabled"); //$NON-NLS-1$
-			}
-			keyStore = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
-			if (keyStore.isEmpty()) {
-				PKIState.CONTROL.setPKCS11on(false);
-				PKIState.CONTROL.setPKCS12on(false);
-			}
-			keyStorePassword = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
-			if (keyStorePassword.isEmpty()) {
-				System.out.println("PKISetup PASSWORD required"); //$NON-NLS-1$
-				LogUtil.logError("A Keystore Password is required, javax.net.ssl.keyStorePassword", null); //$NON-NLS-1$
-			}
-
 		}
 
 	}
+
 
 	/**
 	 * @see AuthenticationPlugin#setSystemProperties()
