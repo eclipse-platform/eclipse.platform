@@ -86,13 +86,14 @@ public class PKISetup implements BundleActivator, IStartup {
 		type = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
 
 		if (type.isEmpty()) {
-			System.out.println("PKISetup WAS a -D parameter list passed in NO"); //$NON-NLS-1$
+			// System.out.println("PKISetup WAS a -D parameter list passed into command
+			// line"); //$NON-NLS-1$
 
 			PKIState.CONTROL.setPKCS11on(false);
 			PKIState.CONTROL.setPKCS12on(false);
 			if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 				System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
-
+				PublicKeySecurity.INSTANCE.getPkiPropertyFile();
 			}
 		}
 
@@ -101,7 +102,6 @@ public class PKISetup implements BundleActivator, IStartup {
 				LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
 			}
 		}
-
 	}
 
 
