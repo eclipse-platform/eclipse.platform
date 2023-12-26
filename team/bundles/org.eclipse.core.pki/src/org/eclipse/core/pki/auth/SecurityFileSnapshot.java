@@ -41,7 +41,6 @@ public enum SecurityFileSnapshot {
 		/*
 		 * CHeck if .pki file is present.
 		 */
-		boolean isFound=false;
 		try {
 
 			if (System.getProperty("M2_HOME") != null) { //$NON-NLS-1$
@@ -49,9 +48,6 @@ public enum SecurityFileSnapshot {
 			} else {
 				// No M2_HOME is set so figure out where it is, check HOME first.
 				userM2Home = Paths.get(USER_HOME, FileSystems.getDefault().getSeparator(), ".m2"); //$NON-NLS-1$
-				System.out.println(
-						"SecurityFileSnapshot -Searching NO M2_HOME set for FILE:" + userM2Home.toAbsolutePath()); //$NON-NLS-1$
-
 			}
 
 			pkiFile = Paths.get(userM2Home + "/.pki"); //$NON-NLS-1$
@@ -62,15 +58,12 @@ public enum SecurityFileSnapshot {
 		}
 		isSecurityFileRequired(""); //$NON-NLS-1$
 		if (Files.exists(pkiFile)) {
-
-			isFound=true;
-			LogUtil.logWarning("A PKI file has been detected."); //$NON-NLS-1$
+			LogUtil.logWarning("A PKI file detected;" + pkiFile.getFileName()); //$NON-NLS-1$
+			return true;
 		}
-		return isFound;
+		return false;
 	}
 	public Properties load() {
-		System.out.println("SecurityFileSnapshot -Searching HOME PATH:" + pkiFile.toString()); //$NON-NLS-1$
-		System.out.println("SecurityFileSnapshot - loading properties from dot PKI file"); //$NON-NLS-1$
 		Properties properties = new Properties();
 		try {
 			FileChannel fileChannel = FileChannel.open(pkiFile, StandardOpenOption.READ);
@@ -81,7 +74,7 @@ public enum SecurityFileSnapshot {
 			}
 			System.setProperties(properties);
 			lock.release();
-			System.out.println("SecurityFileSnapshot - loading properties COMPLETED"); //$NON-NLS-1$
+			LogUtil.logWarning("Loaded System Properties for PKI"); //$NON-NLS-1$
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,7 +96,6 @@ public enum SecurityFileSnapshot {
 			dir = Paths.get(sb.toString());
 			Files.createDirectories(dir);
 
-			// sb.append(".pki");//$NON-NLS-1$
 
 			Path path = Paths.get(sb.toString());
 

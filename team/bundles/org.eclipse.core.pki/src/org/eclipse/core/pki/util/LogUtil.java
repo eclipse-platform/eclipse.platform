@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ServiceCaller;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugPlugin;
 
 
 /**
@@ -43,5 +44,13 @@ public class LogUtil {
 		final ServiceCaller<ILog> log = new ServiceCaller(pluginName, ILog.class);
 		IStatus status = new Status(IStatus.WARNING, message, null);
 		log.call(logger -> logger.log(status));
+	}
+	public static void logDebug(String message) {
+		StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
+		final var pluginName = stackWalker.getCallerClass();
+		final ServiceCaller<DebugPlugin> log = new ServiceCaller(pluginName, DebugPlugin.class);
+		IStatus status = new Status(IStatus.WARNING, message, null);
+
+		log.call(logger -> DebugPlugin.log(status));
 	}
 }
