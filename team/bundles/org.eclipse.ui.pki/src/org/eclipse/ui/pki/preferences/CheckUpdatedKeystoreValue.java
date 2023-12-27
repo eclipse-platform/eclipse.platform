@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
-import org.eclipse.ui.pki.util.KeyStoreFormat;
+import org.eclipse.core.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.pki.exception.UserCanceledException;
