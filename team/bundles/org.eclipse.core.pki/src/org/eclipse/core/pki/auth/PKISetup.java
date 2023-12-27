@@ -16,6 +16,7 @@ package org.eclipse.core.pki.auth;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ServiceCaller;
@@ -102,6 +103,7 @@ public class PKISetup implements BundleActivator, IStartup {
 				if (IncomingSystemProperty.SETTINGS.checkTrustStoreType()) {
 					if (IncomingSystemProperty.SETTINGS.checkTrustStore()) {
 						LogUtil.logError("A Truststore and Password are detected.", null);  //$NON-NLS-1$
+						ConfigureTrust.MANAGER.setUp();
 					}
 				}
 			}

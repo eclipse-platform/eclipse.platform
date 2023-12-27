@@ -58,7 +58,7 @@ public enum SecurityFileSnapshot {
 		}
 		isSecurityFileRequired(""); //$NON-NLS-1$
 		if (Files.exists(pkiFile)) {
-			LogUtil.logWarning("A PKI file detected;" + pkiFile.getFileName()); //$NON-NLS-1$
+			LogUtil.logWarning("A PKI file detected;" + pkiFile.toString()); //$NON-NLS-1$
 			return true;
 		}
 		return false;
