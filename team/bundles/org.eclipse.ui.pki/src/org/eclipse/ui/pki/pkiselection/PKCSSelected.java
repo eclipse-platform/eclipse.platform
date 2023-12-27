@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ui.pki.pkiselection;
 
-import org.eclipse.ui.pki.util.KeyStoreFormat;
+import org.eclipse.core.pki.util.KeyStoreFormat;
 
 public class PKCSSelected {
 	
