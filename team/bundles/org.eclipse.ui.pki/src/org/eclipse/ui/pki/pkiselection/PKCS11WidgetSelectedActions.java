@@ -15,7 +15,7 @@ package org.eclipse.ui.pki.pkiselection;
 
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.pki.util.KeyStoreFormat;
+import org.eclipse.core.pki.util.KeyStoreFormat;
 
 public class PKCS11WidgetSelectedActions {
 	

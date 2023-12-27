@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.ui.pki.wizard;
  
-
- 
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore;
@@ -61,7 +59,7 @@ import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.pkiselection.PKI;
 import org.eclipse.ui.pki.pkiselection.PKIProperties;
 import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
-import org.eclipse.ui.pki.util.KeyStoreFormat;
+import org.eclipse.core.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.AuthenticationPlugin;
