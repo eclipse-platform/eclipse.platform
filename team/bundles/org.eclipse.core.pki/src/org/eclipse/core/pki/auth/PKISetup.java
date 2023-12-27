@@ -24,8 +24,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.eclipse.core.pki.util.ConfigureTrust;
-import org.eclipse.core.pki.util.KeyStoreFormat;
-import org.eclipse.core.pki.util.KeyStoreManager;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ServiceCaller;
@@ -110,14 +108,16 @@ public class PKISetup implements BundleActivator, IStartup {
 		if (IncomingSystemProperty.SETTINGS.checkType()) {
 			if (IncomingSystemProperty.SETTINGS.checkKeyStore()) {
 				if (PKIState.CONTROL.isPKCS12on()) {
-					try {
-						keyStore = KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
-								System.getProperty("javax.net.ssl.keyStorePassword"), //$NON-NLS-1$ ,
-								KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType"))); //$NON-NLS-1$
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						LogUtil.logError("A Truststore and Password are detected.", e); //$NON-NLS-1$
-					}
+					/*
+					 * try { keyStore =
+					 * KeyStoreManager.getKeyStore(System.getProperty("javax.net.ssl.keyStore"),
+					 * //$NON-NLS-1$ System.getProperty("javax.net.ssl.keyStorePassword"),
+					 * //$NON-NLS-1$ ,
+					 * KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType")));
+					 * //$NON-NLS-1$ } catch (Exception e) { // TODO Auto-generated catch block
+					 * LogUtil.logError("A Truststore and Password are detected.", e); //$NON-NLS-1$
+					 * }
+					 */
 				}
 				LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
 				if (IncomingSystemProperty.SETTINGS.checkTrustStoreType()) {
