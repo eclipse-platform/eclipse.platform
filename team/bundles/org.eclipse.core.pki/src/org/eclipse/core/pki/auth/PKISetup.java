@@ -92,7 +92,6 @@ public class PKISetup implements BundleActivator, IStartup {
 			PKIState.CONTROL.setPKCS11on(false);
 			PKIState.CONTROL.setPKCS12on(false);
 			if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
-				System.out.println("PKISetup get IS THRURNED ON  PKI TYPE"); //$NON-NLS-1$
 				PublicKeySecurity.INSTANCE.getPkiPropertyFile();
 			}
 		}

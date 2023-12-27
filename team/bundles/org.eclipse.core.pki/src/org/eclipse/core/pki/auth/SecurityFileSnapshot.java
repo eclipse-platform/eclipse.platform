@@ -46,11 +46,11 @@ public enum SecurityFileSnapshot {
 			Optional<String> m2Home = Optional.ofNullable(System.getProperty("M2_HOME")); //$NON-NLS-1$
 			if (m2Home.isEmpty()) {
 				// No M2_HOME is set so figure out where it is, check HOME first.
-				userM2Home = Paths.get(USER_HOME, FileSystems.getDefault().getSeparator(), ".m2"); //$NON-NLS-1$
+				userM2Home = Paths.get(USER_HOME + FileSystems.getDefault().getSeparator() + ".m2"); //$NON-NLS-1$
 			} else {
 				userM2Home = Paths.get(m2Home.get().toString());
 			}
-			pkiFile = Paths.get(userM2Home + "/.pki"); //$NON-NLS-1$
+			pkiFile = Paths.get(userM2Home.toString() + FileSystems.getDefault().getSeparator() + ".pki"); //$NON-NLS-1$
 
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
