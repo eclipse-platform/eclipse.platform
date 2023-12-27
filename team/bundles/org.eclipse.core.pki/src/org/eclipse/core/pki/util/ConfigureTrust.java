@@ -106,13 +106,13 @@ public enum ConfigureTrust implements X509TrustManager {
 	@Override
 	public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 		// TODO Auto-generated method stub
-
+		pkixTrustManager.checkServerTrusted(chain, authType);
 	}
 
 	@Override
 	public X509Certificate[] getAcceptedIssuers() {
 		// TODO Auto-generated method stub
-		return null;
+		return pkixTrustManager.getAcceptedIssuers();
 
 	}
 

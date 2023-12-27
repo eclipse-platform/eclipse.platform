@@ -11,21 +11,21 @@
  * Contributors:
  *     Eclipse Platform - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ui.pki.util;
+package org.eclipse.core.pki.util;
 
 public enum KeyStoreFormat
 {
-	JKS("JKS"),
-	PKCS12("PKCS12"),
-	PKCS11("PKCS11");
-	
+	JKS("JKS"), //$NON-NLS-1$
+	PKCS12("PKCS12"), //$NON-NLS-1$
+	PKCS11("PKCS11"); //$NON-NLS-1$
+
 	private String value;
 
 	KeyStoreFormat (String value)
 	{
 		this.value = value;
 	}
-	
+
 	public String getValue()
 	{
 		return value;
