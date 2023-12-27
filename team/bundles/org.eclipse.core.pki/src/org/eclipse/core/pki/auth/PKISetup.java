@@ -13,8 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.pki.auth;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.Properties;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.LogUtil;
@@ -103,8 +109,23 @@ public class PKISetup implements BundleActivator, IStartup {
 				if (IncomingSystemProperty.SETTINGS.checkTrustStoreType()) {
 					if (IncomingSystemProperty.SETTINGS.checkTrustStore()) {
 						LogUtil.logError("A Truststore and Password are detected.", null);  //$NON-NLS-1$
-						ConfigureTrust.MANAGER.setUp();
+						Optional<X509TrustManager> PKIXtrust = ConfigureTrust.MANAGER.setUp();
 
+						try {
+							TrustManager[] tm = new TrustManager[] { ConfigureTrust.MANAGER };
+							if (PKIXtrust.isEmpty()) {
+								LogUtil.logError("Invalid TrustManager Initialization.", null); //$NON-NLS-1$
+							} else {
+								SSLContext ctx = SSLContext.getInstance("TLS");//$NON-NLS-1$
+								ctx.init(null, tm, null);
+							}
+						} catch (NoSuchAlgorithmException e) {
+							// TODO Auto-generated catch block
+							LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
+						} catch (KeyManagementException e) {
+							// TODO Auto-generated catch block
+							LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
+						}
 					}
 				}
 			}

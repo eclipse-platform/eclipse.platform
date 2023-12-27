@@ -33,7 +33,7 @@ public enum ConfigureTrust implements X509TrustManager {
 
 	protected X509TrustManager pkixTrustManager = null;
 
-	public void setUp() {
+	public Optional<X509TrustManager> setUp() {
 		KeyStore keyStore = null;
 		String storeLocation = null;
 		String trustType = null;
@@ -94,7 +94,7 @@ public enum ConfigureTrust implements X509TrustManager {
 			// TODO Auto-generated catch block
 			LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
 		}
-
+		return Optional.ofNullable(pkixTrustManager);
 	}
 
 	@Override
