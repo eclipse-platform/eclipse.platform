@@ -100,7 +100,11 @@ public class PKISetup implements BundleActivator, IStartup {
 		if (IncomingSystemProperty.SETTINGS.checkType()) {
 			if (IncomingSystemProperty.SETTINGS.checkKeyStore()) {
 				LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
-				LogUtil.logDebug("A Keystore and Password are detected."); //$NON-NLS-1$
+				if (IncomingSystemProperty.SETTINGS.checkTrustStoreType()) {
+					if (IncomingSystemProperty.SETTINGS.checkTrustStore()) {
+						LogUtil.logError("A Truststore and Password are detected.", null);  //$NON-NLS-1$
+					}
+				}
 			}
 		}
 	}

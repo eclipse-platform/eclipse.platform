@@ -57,4 +57,32 @@ public enum IncomingSystemProperty {
 		return true;
 	}
 
+	public boolean checkTrustStoreType() {
+		Optional<String> type = null;
+
+		type = Optional.ofNullable(System.getProperty("javax.net.ssl.trustStoreType")); //$NON-NLS-1$
+		if (type.isEmpty()) {
+			LogUtil.logError("No incoming System Properties are set for PKI.", null); //$NON-NLS-1$
+			return false;
+		}
+		return true;
+
+	}
+
+	public boolean checkTrustStore() {
+		Optional<String> trustStore = null;
+		Optional<String> trustStorePassword = null;
+		trustStore = Optional.ofNullable(System.getProperty("javax.net.ssl.trustStore")); //$NON-NLS-1$
+		if (trustStore.isEmpty()) {
+			LogUtil.logError("No truststore is set, javax.net.ssl.trustStore", null); //$NON-NLS-1$
+			return false;
+		}
+		trustStorePassword = Optional.ofNullable(System.getProperty("javax.net.ssl.trustStorePassword")); //$NON-NLS-1$
+		if (trustStorePassword.isEmpty()) {
+			LogUtil.logError("A truststore Password is required, javax.net.ssl.trustStorePassword", null); //$NON-NLS-1$
+			return false;
+		}
+		return true;
+	}
+
 }
