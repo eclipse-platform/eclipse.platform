@@ -72,9 +72,11 @@ public enum ConfigureTrust implements X509TrustManager {
 			for (TrustManager tm : tms) {
 				if (tm instanceof X509TrustManager) {
 					pkixTrustManager = (X509TrustManager) tm;
+					LogUtil.logInfo("Initialization PKIX Trust Manager Complete"); //$NON-NLS-1$
 					break;
 				}
 			}
+
 
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block

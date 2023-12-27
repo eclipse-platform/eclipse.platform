@@ -104,6 +104,7 @@ public class PKISetup implements BundleActivator, IStartup {
 					if (IncomingSystemProperty.SETTINGS.checkTrustStore()) {
 						LogUtil.logError("A Truststore and Password are detected.", null);  //$NON-NLS-1$
 						ConfigureTrust.MANAGER.setUp();
+
 					}
 				}
 			}
