@@ -32,6 +32,8 @@ import java.util.Hashtable;
 
 import javax.security.auth.login.FailedLoginException;
 
+import org.eclipse.core.pki.util.KeyStoreFormat;
+
 //import sun.security.pkcs11.wrapper.PKCS11Exception;
 
 public class KeyStoreUtil {
