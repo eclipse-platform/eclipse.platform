@@ -115,7 +115,7 @@ public class PKISetup implements BundleActivator, IStartup {
 						keyStore = KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
 								System.getProperty("javax.net.ssl.keyStorePassword"), //$NON-NLS-1$
 								KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType"))); //$NON-NLS-1$
-					} catch (Exception e) { // TODO Auto-generated catch block
+					} catch (Exception e) {
 						LogUtil.logError("A Truststore and Password are detected.", e); //$NON-NLS-1$
 					}
 
