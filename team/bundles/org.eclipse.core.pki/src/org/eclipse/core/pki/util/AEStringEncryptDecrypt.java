@@ -38,11 +38,11 @@ public enum AEStringEncryptDecrypt {
 	protected Cipher cipher;
 	protected byte[] ivBytes = new byte[16];
 	protected IvParameterSpec iv = null;
+	SecretKeySpec keySpec = null;
 	public void configure() {
-		// KeyGenerator keyGenerator = null;
 		byte[] salt = null;
 		byte[] key = null;
-		SecretKeySpec keySpec = null;
+
 		try {
 			random.nextBytes(ivBytes);
 			iv = new IvParameterSpec(ivBytes);
@@ -61,9 +61,7 @@ public enum AEStringEncryptDecrypt {
 			e.printStackTrace();
 		}
 
-		// keyGenerator.init(128); // block size is 128bits
-		// SecretKey secretKey = keyGenerator.generateKey();
-		// SecretKey secretKey = new SecretKeySpec(key, "AES"); //$NON-NLS-1$
+
 		try {
 			cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); //$NON-NLS-1$
 		} catch (NoSuchAlgorithmException e) {
@@ -77,18 +75,18 @@ public enum AEStringEncryptDecrypt {
 		String plainText = "MyAsecretP"; //$NON-NLS-1$
 		System.out.println("Plain Text Before Encryption: " + plainText); //$NON-NLS-1$
 
-		String encryptedText = encrypt(plainText, keySpec);
+		String encryptedText = encrypt(plainText);
 		System.out.println("Encrypted Text After Encryption: " + encryptedText); //$NON-NLS-1$
 
-		String decryptedText = decrypt(encryptedText, keySpec);
+		String decryptedText = decrypt(encryptedText);
 		System.out.println("Decrypted Text After Decryption: " + decryptedText); //$NON-NLS-1$
 	}
 
-	public String encrypt(String plainText, SecretKeySpec secretKey) {
+	public String encrypt(String plainText) {
 		byte[] encryptedByte = null;
 		byte[] plainTextByte = plainText.getBytes();
 		try {
-			cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
+			cipher.init(Cipher.ENCRYPT_MODE, keySpec, iv);
 			encryptedByte = cipher.doFinal(plainTextByte);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
@@ -109,12 +107,12 @@ public enum AEStringEncryptDecrypt {
 		return encryptedText;
 	}
 
-	public String decrypt(String encryptedText, SecretKeySpec secretKey) {
+	public String decrypt(String encryptedText) {
 		byte[] decryptedByte = null;
 		Base64.Decoder decoder = Base64.getDecoder();
 		byte[] encryptedTextByte = decoder.decode(encryptedText);
 		try {
-			cipher.init(Cipher.DECRYPT_MODE, secretKey, iv);
+			cipher.init(Cipher.DECRYPT_MODE, keySpec, iv);
 			decryptedByte = cipher.doFinal(encryptedTextByte);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
@@ -134,6 +132,8 @@ public enum AEStringEncryptDecrypt {
 	}
 
 	public static void main(String[] args) {
-		AEStringEncryptDecrypt.BLOCK.configure();
+		AEStringEncryptDecrypt go = AEStringEncryptDecrypt.BLOCK;
+		go.configure();
+		go.encrypt(args[0]);
 	}
 }
