@@ -113,6 +113,10 @@ public class PKISetup implements BundleActivator, IStartup {
 				if (PKIState.CONTROL.isPKCS12on()) {
 
 					try {
+
+						LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
+						LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
+						LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
 						Optional<KeyStore> keystoreContainer = Optional.ofNullable(
 								KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
 								System.getProperty("javax.net.ssl.keyStorePassword"), //$NON-NLS-1$
