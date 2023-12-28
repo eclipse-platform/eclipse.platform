@@ -113,16 +113,23 @@ public class PKISetup implements BundleActivator, IStartup {
 				if (PKIState.CONTROL.isPKCS12on()) {
 
 					try {
-						keyStore = KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
+						Optional<KeyStore> keystoreContainer = Optional.ofNullable(
+								KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
 								System.getProperty("javax.net.ssl.keyStorePassword"), //$NON-NLS-1$
-								KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType"))); //$NON-NLS-1$
+										KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType")))); //$NON-NLS-1$
 
+						if (keystoreContainer.isEmpty()) {
+							LogUtil.logError("Optional Failed to Load Keystore.", null); //$NON-NLS-1$
+						} else {
+							LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
+							keyStore = keystoreContainer.get();
+						}
 					} catch (Exception e) {
-						LogUtil.logError("A Truststore and Password are detected.", e); //$NON-NLS-1$
+						LogUtil.logError("Failed to Load Keystore.", e); //$NON-NLS-1$
 					}
 
 				}
-				LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
+
 				if (IncomingSystemProperty.SETTINGS.checkTrustStoreType()) {
 					if (IncomingSystemProperty.SETTINGS.checkTrustStore()) {
 						LogUtil.logError("A Truststore and Password are detected.", null);  //$NON-NLS-1$
