@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -115,6 +116,7 @@ public class PKISetup implements BundleActivator, IStartup {
 						keyStore = KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
 								System.getProperty("javax.net.ssl.keyStorePassword"), //$NON-NLS-1$
 								KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType"))); //$NON-NLS-1$
+
 					} catch (Exception e) {
 						LogUtil.logError("A Truststore and Password are detected.", e); //$NON-NLS-1$
 					}
@@ -127,12 +129,13 @@ public class PKISetup implements BundleActivator, IStartup {
 						Optional<X509TrustManager> PKIXtrust = ConfigureTrust.MANAGER.setUp();
 
 						try {
+							KeyManager[] km = new KeyManager[] { KeyStoreManager.INSTANCE };
 							TrustManager[] tm = new TrustManager[] { ConfigureTrust.MANAGER };
 							if (PKIXtrust.isEmpty()) {
 								LogUtil.logError("Invalid TrustManager Initialization.", null); //$NON-NLS-1$
 							} else {
 								SSLContext ctx = SSLContext.getInstance("TLS");//$NON-NLS-1$
-								ctx.init(null, tm, null);
+								ctx.init(km, tm, null);
 							}
 						} catch (NoSuchAlgorithmException e) {
 							// TODO Auto-generated catch block
