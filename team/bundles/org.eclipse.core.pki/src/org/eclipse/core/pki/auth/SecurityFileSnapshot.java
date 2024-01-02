@@ -95,6 +95,7 @@ public enum SecurityFileSnapshot {
 				passwd = NormalizeAES256.DECRYPT.decrypt(ePasswd, password, salt);
 				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 			}
+			LogUtil.logInfo("SecurityFileSnapshot --  UNencrypted pw:"+ passwd); //$NON-NLS-1$
 			System.setProperties(properties);
 			lock.release();
 			LogUtil.logWarning("Loaded System Properties for PKI"); //$NON-NLS-1$
