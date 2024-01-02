@@ -67,7 +67,7 @@ public class PKIController implements IStartup {
 	@Override
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
-		//System.out.println("PKIController EARLY Startup");
+		System.out.println("PKIController EARLY Startup");
 		Startup();
 	}
 

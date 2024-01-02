@@ -386,7 +386,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
      * Checks if the javax.net.ssl system properties are set.
      */
     public static boolean isSSLSystemPropertiesSet() {
-    	//System.out.println("AuthenticationPlugin    isSSLSystemPropertiesSet   PKCS12 PATH:"+AuthenticationPlugin.getDefault().getPreferenceStore().getString(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION));
+    	System.out.println("AuthenticationPlugin    isSSLSystemPropertiesSet   PKCS12 PATH:"+AuthenticationPlugin.getDefault().getPreferenceStore().getString(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION));
     	String trustPath = System.getProperty(JAVA_SSL_TRUST_STORE_PATH_KEY);
     	String trustType = System.getProperty(JAVA_SSL_TRUST_STORE_TYPE_KEY);
     	
@@ -468,11 +468,11 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 	public String getCertificatePath() {
 		String path = null;
 		if ( PKCSpick.getInstance().isPKCS11on()) {
-			//System.out.println("AuthenticationPlugin ----getCertificatePath  PKCS11");
+			System.out.println("AuthenticationPlugin ----getCertificatePath  PKCS11");
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS11");
 			path = getPreferenceStore().getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
 		} else if ( PKCSpick.getInstance().isPKCS12on()) {
-			//System.out.println("AuthenticationPlugin ----getCertificatePath  PKCS12");
+			System.out.println("AuthenticationPlugin ----getCertificatePath  PKCS12");
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS12");
 			path = getPreferenceStore().getString(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION);
 		}
