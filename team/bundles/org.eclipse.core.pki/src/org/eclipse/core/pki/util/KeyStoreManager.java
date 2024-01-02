@@ -15,6 +15,7 @@ package org.eclipse.core.pki.util;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -50,19 +51,40 @@ public enum KeyStoreManager implements X509KeyManager {
 	protected String selectedFingerprint = "NOSET"; //$NON-NLS-1$
 	protected KeyStore keyStore = null;
 
-	public KeyStore getKeyStore(String fileLocation, String password, KeyStoreFormat format)
-	throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException  {
+	public KeyStore getKeyStore(String fileLocation, String password, KeyStoreFormat format) {
 		InputStream in = null;
 		try {
 
-			in = new FileInputStream(fileLocation);
-			in = new BufferedInputStream(in);
-			return getKeyStore(in, password, format);
+			try {
+				in = new FileInputStream(fileLocation);
+				in = new BufferedInputStream(in);
+
+				keyStore = KeyStore.getInstance(format.getValue());
+				keyStore.load(in, password.toCharArray());
+
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (KeyStoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CertificateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return keyStore;
 		} finally {
 			try {
 				in.close();
-			} catch (Throwable t) {
-				// Why are we here
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
