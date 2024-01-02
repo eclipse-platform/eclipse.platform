@@ -23,7 +23,6 @@ import java.lang.annotation.Target;
  * Specifies that the target class can be created by an injector as needed.
  * @since 1.3
  */
-@javax.inject.Qualifier
 @jakarta.inject.Qualifier
 @Documented
 @Target({ElementType.TYPE})

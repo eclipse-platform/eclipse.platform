@@ -82,7 +82,7 @@ public class ContentService extends HttpServlet {
 			Utils.transferContent(is, out);
 			out.flush();
 		} else {
-			String response = Utils.convertStreamToString(ProxyUtil.getStream(url));
+			String response = Utils.readString(url);
 			response = Utils.updateResponse(response);
 			try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
 				writer.write(response);

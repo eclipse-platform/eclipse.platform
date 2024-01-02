@@ -14,6 +14,8 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.is;
@@ -23,12 +25,18 @@ import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests configuration project build configuration on the project description
  */
-public class ProjectBuildConfigsTest extends ResourceTest {
+public class ProjectBuildConfigsTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project;
 	private static final String variantId0 = "Variant0";
@@ -39,22 +47,22 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 	private IBuildConfiguration variant2;
 	private IBuildConfiguration defaultVariant;
 
-	@Override
+	@Before
 	public void setUp() throws Exception {
-		super.setUp();
 		project = getWorkspace().getRoot().getProject("ProjectBuildConfigsTest_Project");
-		ensureExistsInWorkspace(new IProject[] {project}, true);
+		createInWorkspace(new IProject[] {project});
 		variant0 = new BuildConfiguration(project, variantId0);
 		variant1 = new BuildConfiguration(project, variantId1);
 		variant2 = new BuildConfiguration(project, variantId2);
 		defaultVariant = new BuildConfiguration(project, IBuildConfiguration.DEFAULT_CONFIG_NAME);
 	}
 
+	@Test
 	public void testBasics() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		String[] configs = new String[] {variantId0, variantId1};
 		desc.setBuildConfigs(configs);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		assertThat(project.getBuildConfigs(), arrayContaining(variant0, variant1));
 		assertThat(project.getBuildConfig(variantId0), is(variant0));
@@ -71,7 +79,7 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		assertThat(project.getActiveBuildConfig(), is(variant0));
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(variantId1);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(variant1));
 		// test that setting the variant to an invalid id has no effect
 		desc.setActiveBuildConfig(variantId2);
@@ -82,17 +90,19 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		assertThat(variant.getName(), is(variantId0));
 	}
 
+	@Test
 	public void testDuplicates() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[] {variantId0, variantId1, variantId0});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getBuildConfigs(), arrayContaining(variant0, variant1));
 	}
 
+	@Test
 	public void testDefaultVariant() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[] {});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		assertThat(project.getBuildConfigs(), arrayContaining(defaultVariant));
 		assertThat("project '" + project + "' is missing build config: " + defaultVariant,
@@ -101,41 +111,43 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 		assertThat(project.getActiveBuildConfig(), is(defaultVariant));
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(IBuildConfiguration.DEFAULT_CONFIG_NAME);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(defaultVariant));
 	}
 
+	@Test
 	public void testRemoveActiveVariant() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[0]);
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant1.getName()});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(variant0));
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant2.getName()});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(variant0));
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(variantId2);
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant1.getName()});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 		assertThat(project.getActiveBuildConfig(), is(variant0));
 	}
 
 	/**
 	 * Tests that build configuration references are correct after moving a project
 	 */
+	@Test
 	public void testProjectMove() throws CoreException {
 		IProjectDescription desc = project.getDescription();
 		IBuildConfiguration[] configs = new IBuildConfiguration[] {variant0, variant1};
 		desc.setBuildConfigs(new String[] {configs[0].getName(), configs[1].getName()});
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 
 		// Move the project. The build configurations should point at the new project
 		String newProjectName = "projectMoved";
 		desc = project.getDescription();
 		desc.setName(newProjectName);
-		project.move(desc, false, getMonitor());
+		project.move(desc, false, createTestMonitor());
 
 		IProject newProject = getWorkspace().getRoot().getProject(newProjectName);
 		assertThat("project does not exist: " + newProject, newProject.exists());
@@ -146,4 +158,5 @@ public class ProjectBuildConfigsTest extends ResourceTest {
 			assertThat("unexpected project name at index " + i, newConfigs[i].getName(), is(configs[i].getName()));
 		}
 	}
+
 }

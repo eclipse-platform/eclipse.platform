@@ -22,6 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 
 @RunWith(Suite.class)
+@SuppressWarnings("deprecation")
 @SuiteClasses({
 	TextMergeViewerTest.class,
 	LineReaderTest.class,

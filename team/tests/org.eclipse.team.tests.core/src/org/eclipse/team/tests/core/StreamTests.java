@@ -13,26 +13,19 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.eclipse.team.internal.core.streams.CRLFtoLFInputStream;
 import org.eclipse.team.internal.core.streams.LFtoCRLFInputStream;
+import org.junit.Test;
 
-public class StreamTests extends TestCase {
+public class StreamTests {
 
-	public StreamTests(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		return new TestSuite(StreamTests.class);
-	}
-
+	@Test
 	public void testCRLFtoLFInputStream() throws IOException {
 		testCRLFtoLFTranslation("", "");
 		testCRLFtoLFTranslation("a", "a");
@@ -52,6 +45,7 @@ public class StreamTests extends TestCase {
 		assertStreamEquals(inExpected, in);
 	}
 
+	@Test
 	public void testLFtoCRLFInputStream() throws IOException {
 		testLFtoCRLFTranslation("", "");
 		testLFtoCRLFTranslation("a", "a");

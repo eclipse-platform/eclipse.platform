@@ -303,6 +303,8 @@ public class DebugUIMessages extends NLS {
 
 	public static String LaunchShortcutAction_combineLaunchShortcutName;
 
+	public static String ContextualLaunchAction_0;
+
 	static {
 		// load message values from bundle file
 		NLS.initializeMessages(BUNDLE_NAME, DebugUIMessages.class);

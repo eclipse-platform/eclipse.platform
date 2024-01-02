@@ -15,6 +15,11 @@ package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.TestUtil.waitForCondition;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,9 +34,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.resources.IBuildConfiguration;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -45,11 +48,18 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobGroup;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TimerBuilder.RuleType;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class ParallelBuildChainTest extends AbstractBuilderTest {
+public class ParallelBuildChainTest {
 	private static final int TIMEOUT_IN_MILLIS = 30_000;
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static enum BuildDurationType {
 		/*
@@ -94,22 +104,16 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 
 	}
 
-	public ParallelBuildChainTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		setAutoBuilding(false);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		// Cleanup workspace first to ensure that auto-build is not started on projects
 		waitForBuild();
-		getWorkspace().getRoot().delete(true, true, getMonitor());
-		super.tearDown();
+		getWorkspace().getRoot().delete(true, true, createTestMonitor());
 		TimerBuilder.abortCurrentBuilds();
 	}
 
@@ -231,6 +235,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		});
 	}
 
+	@Test
 	public void testWorkspaceBuild_DependentProjects() throws Exception {
 		int numberOfParallelBuilds = 3;
 		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
@@ -251,6 +256,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		});
 	}
 
+	@Test
 	public void testWorkspaceBuild_DependentProjects_ProjectSubset() throws Exception {
 		int numberOfParallelBuilds = 3;
 		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
@@ -274,6 +280,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		});
 	}
 
+	@Test
 	public void testWorkspaceBuild_DependentProjectBuildConfigurations() throws Exception {
 		int numberOfParallelBuilds = 3;
 		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
@@ -294,6 +301,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		});
 	}
 
+	@Test
 	public void testWorkspaceBuild_DependentProjectBuildConfigurations_ProjectSubset() throws Exception {
 		int numberOfParallelBuilds = 3;
 		setWorkspaceMaxNumberOfConcurrentBuilds(numberOfParallelBuilds);
@@ -343,7 +351,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		String projectName = createUniqueProjectName(buildDurationType.toString());
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IProject project = root.getProject(projectName);
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		configureTimerBuilder(project, buildDurationType.getDurationInMillis(), ruleType);
 		return project;
 	}
@@ -358,15 +366,9 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 	}
 
 	private void configureTimerBuilder(IProject project, int duration, RuleType ruleType) throws CoreException {
-		BuildCommand buildCommand = new BuildCommand();
-		buildCommand.setBuilderName(TimerBuilder.BUILDER_NAME);
-		Map<String, String> arguments = new HashMap<>();
-		arguments.put(TimerBuilder.DURATION_ARG, Integer.toString(duration));
-		arguments.put(TimerBuilder.RULE_TYPE_ARG, ruleType.toString());
-		buildCommand.setArguments(arguments);
-		IProjectDescription projectDescription = project.getDescription();
-		projectDescription.setBuildSpec(new ICommand[] { buildCommand });
-		project.setDescription(projectDescription, getMonitor());
+		updateProjectDescription(project).addingCommand(TimerBuilder.BUILDER_NAME)
+				.withAdditionalBuildArgument(TimerBuilder.DURATION_ARG, Integer.toString(duration))
+				.withAdditionalBuildArgument(TimerBuilder.RULE_TYPE_ARG, ruleType.toString()).apply();
 	}
 
 	private void makeProjectsDependOnEachOther(List<IProject> projects) throws CoreException {
@@ -374,7 +376,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 			IProject project = projects.get(projectNumber);
 			IProjectDescription desc = project.getDescription();
 			desc.setReferencedProjects(new IProject[] { projects.get(projectNumber - 1) });
-			project.setDescription(desc, getMonitor());
+			project.setDescription(desc, createTestMonitor());
 		}
 	}
 
@@ -384,7 +386,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 			IProjectDescription description = project.getDescription();
 			description.setBuildConfigReferences(project.getActiveBuildConfig().getName(),
 					new IBuildConfiguration[] { projects.get(projectNumber - 1).getActiveBuildConfig() });
-			project.setDescription(description, getMonitor());
+			project.setDescription(description, createTestMonitor());
 		}
 	}
 
@@ -404,9 +406,9 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 					waitForRunningJobBarrier.setStatus(TestBarrier2.STATUS_RUNNING);
 					if (buildConfigurations != null) {
 						getWorkspace().build(buildConfigurations, IncrementalProjectBuilder.INCREMENTAL_BUILD, false,
-								getMonitor());
+								createTestMonitor());
 					} else {
-						getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+						getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 					}
 					return Status.OK_STATUS;
 				} catch (CoreException e) {
@@ -422,7 +424,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		} finally {
 			TimerBuilder.abortCurrentBuilds();
 			job.cancel();
-			boolean joinSuccessful = job.join(TIMEOUT_IN_MILLIS, getMonitor());
+			boolean joinSuccessful = job.join(TIMEOUT_IN_MILLIS, createTestMonitor());
 			Assert.assertTrue("timeout occurred when waiting for job that runs the build to finish", joinSuccessful);
 		}
 	}
@@ -440,7 +442,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
 						waitForRunningJobBarriers.get(project).setStatus(TestBarrier2.STATUS_RUNNING);
-						project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+						project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 						return Status.OK_STATUS;
 					} catch (CoreException e) {
 						return new Status(IStatus.ERROR, PI_RESOURCES_TESTS, e.getMessage(),
@@ -460,7 +462,7 @@ public class ParallelBuildChainTest extends AbstractBuilderTest {
 		} finally {
 			TimerBuilder.abortCurrentBuilds();
 			jobGroup.cancel();
-			boolean joinSuccessful = jobGroup.join(TIMEOUT_IN_MILLIS, getMonitor());
+			boolean joinSuccessful = jobGroup.join(TIMEOUT_IN_MILLIS, createTestMonitor());
 			Assert.assertTrue("timeout occurred when waiting for job group that runs the builds to finish",
 					joinSuccessful);
 		}

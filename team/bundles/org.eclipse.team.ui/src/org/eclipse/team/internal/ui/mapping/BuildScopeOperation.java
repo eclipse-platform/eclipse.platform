@@ -22,8 +22,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * A model operation that builds the scope of the operation's
- * manager. Clients who want to build the scope can do the following:
- * <p>
+ * manager.
  *
  * @see ISynchronizationScopeManager
  * @since 3.2

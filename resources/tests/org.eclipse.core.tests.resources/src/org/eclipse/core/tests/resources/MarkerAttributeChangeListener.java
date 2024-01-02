@@ -14,18 +14,22 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Assert;
 
 /**
  * This class works by recording the current state of given markers,
  * then verifying that the marker deltas accurately reflect the old
  * marker state.
  */
-public class MarkerAttributeChangeListener extends Assert implements IResourceChangeListener {
+public class MarkerAttributeChangeListener implements IResourceChangeListener {
 	//Map of (Long(id) -> Map of (String(attribute key) -> Object(attribute value)))
 	private final Map<Long, Map<String, Object>> attributeMap = new HashMap<>();
 

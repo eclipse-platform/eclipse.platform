@@ -19,17 +19,23 @@ import java.util.Arrays;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests regression of bug 288315 - MarkerInfo.setAttributes(Map map) calls
  * checkValidAttribute which throws IllegalArgumentException.
  */
-public class Bug_288315 extends ResourceTest {
+public class Bug_288315 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tests that creating a marker with very long value causes failure.
 	 */
+	@Test
 	public void testBug() throws CoreException {
 		char[] chars = new char[65537];
 		Arrays.fill(chars, 'a');

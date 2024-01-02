@@ -19,9 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
-import org.junit.Assert;
 
-public class ResourceVisitorVerifier extends Assert implements IResourceVisitor {
+public class ResourceVisitorVerifier implements IResourceVisitor {
 	Set<IResource> expected;
 	StringBuilder message;
 	boolean success = true;

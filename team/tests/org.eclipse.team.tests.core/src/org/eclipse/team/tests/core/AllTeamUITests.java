@@ -13,27 +13,18 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.eclipse.core.tests.resources.ResourceTest;
-import org.eclipse.team.tests.core.mapping.ScopeTests;
+import org.eclipse.team.tests.core.mapping.AllTeamMappingTests;
 import org.eclipse.team.tests.ui.SaveableCompareEditorInputTest;
+import org.eclipse.team.tests.ui.synchronize.AllTeamSynchronizeTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class AllTeamUITests extends ResourceTest {
-
-	public AllTeamUITests() {
-		super();
-	}
-
-	public AllTeamUITests(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite();
-		suite.addTest(ScopeTests.suite());
-		suite.addTest(SaveableCompareEditorInputTest.suite());
-		return suite;
-	}
+@RunWith(Suite.class)
+@SuiteClasses({ //
+		AllTeamMappingTests.class, //
+		AllTeamSynchronizeTests.class, //
+		SaveableCompareEditorInputTest.class, //
+})
+public class AllTeamUITests {
 }

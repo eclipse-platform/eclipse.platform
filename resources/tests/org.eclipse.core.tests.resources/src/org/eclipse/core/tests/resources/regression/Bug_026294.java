@@ -14,7 +14,18 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
@@ -25,35 +36,39 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * A parent container (projects and folders) would become out-of-sync if any of
  * its children could not be deleted for some reason. These platform-
  * specific test cases ensure that it does not happen.
  */
-public class Bug_026294 extends ResourceTest {
+public class Bug_026294 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tries to delete an open project containing an unremovable file.
 	 * Works only for Windows.
 	 */
+	@Test
 	public void testDeleteOpenProjectWindows() throws Exception {
-		if (!(OS.isWindows())) {
-			return;
-		}
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
 		IFile file3 = folder.getFile("file3.txt");
 		IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2, file3 }, true);
+		createInWorkspace(new IResource[] { file1, file2, file3 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		assertExistsInFileSystem(file1);
 		assertExistsInFileSystem(file2);
@@ -66,7 +81,7 @@ public class Bug_026294 extends ResourceTest {
 			assertTrue("1.2", projectFile.exists());
 			assertTrue("1.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, getMonitor()));
+			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, createTestMonitor()));
 
 			// Delete is best-case so check all the files.
 			// Do a check on disk and in the workspace in case something is out of sync.
@@ -98,7 +113,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		project.delete(IResource.FORCE, getMonitor());
+		project.delete(IResource.FORCE, createTestMonitor());
 		assertTrue("5.1", !project.exists());
 		assertTrue("5.2", !file1.exists());
 		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
@@ -107,23 +122,22 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete an open project containing an irremovable file.
-	 * Works only for Linux with natives.
+	 * Tries to delete an open project containing an non-removable file. Works only
+	 * for Linux with natives.
 	 */
+	@Test
 	public void testDeleteOpenProjectLinux() throws CoreException {
-		if (!(OS.isLinux() && isReadOnlySupported())) {
-			return;
-		}
+		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2 }, true);
+		createInWorkspace(new IResource[] { file1, file2 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks folder as read-only so its files cannot be deleted on Linux
@@ -133,7 +147,7 @@ public class Bug_026294 extends ResourceTest {
 			assertTrue("1.2", projectFile.exists());
 			assertTrue("1.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
 
-			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, getMonitor()));
+			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, createTestMonitor()));
 			assertTrue("2.1", project.exists());
 			assertTrue("2.2", file1.exists());
 			assertTrue("2.3", !file2.exists());
@@ -147,7 +161,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		project.delete(IResource.FORCE, getMonitor());
+		project.delete(IResource.FORCE, createTestMonitor());
 		assertTrue("5.1", !project.exists());
 		assertTrue("5.2", !file1.exists());
 		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
@@ -156,38 +170,37 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete a closed project containing an unremovable file.
+	 * Tries to delete a closed project containing a non-removable file.
 	 * Works only for Windows.
 	 */
+	@Test
 	public void testDeleteClosedProjectWindows() throws Exception {
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
 		IFile file3 = folder.getFile("file3.txt");
 		IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2, file3 }, true);
+		createInWorkspace(new IResource[] { file1, file2, file3 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
-			project.close(getMonitor());
+			project.close(createTestMonitor());
 			assertThrows(CoreException.class,
-					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor()));
+					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor()));
 			assertTrue("2.1", project.exists());
 			assertTrue("2.7", project.isSynchronized(IResource.DEPTH_INFINITE));
 			assertExistsInFileSystem(projectFile);
 
 		}
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		assertTrue("5.1", !project.exists());
 		assertTrue("5.3", project.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("6.0", !projectRoot.toFile().exists());
@@ -195,47 +208,44 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete a closed project containing an unremovable file.
-	 * Works only for Linux with natives.
-	 *
-	 * TODO: enable this test once bug 48321 is fixed.
+	 * Tries to delete a closed project containing an non-removable file. Works only
+	 * for Linux with natives.
 	 */
+	@Test
 	public void testDeleteClosedProjectLinux() throws CoreException {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("only relevant on Linux", OS.isLinux());
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
 		IFile projectFile = project.getFile(IPath.fromOSString(".project"));
 
-		ensureExistsInWorkspace(new IResource[] { file1, file2 }, true);
+		createInWorkspace(new IResource[] { file1, file2 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks folder as read-only so its files cannot be removed on Linux
 			setReadOnly(folder, true);
 
-			project.close(getMonitor());
+			project.close(createTestMonitor());
 			assertThrows(CoreException.class,
-					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor()));
+					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor()));
 
 			assertTrue("3.0", project.exists());
 			assertTrue("3.1", project.isSynchronized(IResource.DEPTH_INFINITE));
 			assertExistsInFileSystem(projectFile);
 
-			project.open(getMonitor());
+			project.open(createTestMonitor());
 		} finally {
 			if (folder.exists()) {
 				setReadOnly(folder, false);
 			}
 		}
 
-		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 		assertTrue("6.0", !project.exists());
 		assertTrue("6.1", project.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("6.2", !projectRoot.toFile().exists());
@@ -243,27 +253,26 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete a folder containing an unremovable file.
-	 * Works only for Windows.
+	 * Tries to delete a folder containing a non-removable file. Works only for
+	 * Windows.
 	 */
+	@Test
 	public void testDeleteFolderWindows() throws Exception {
-		if (!OS.isWindows()) {
-			return;
-		}
+		assumeTrue("only relevant on Windows", OS.isWindows());
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file3 = folder.getFile("file3.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1, file3 }, true);
+		createInWorkspace(new IResource[] { file1, file3 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
-			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, getMonitor()));
+			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, createTestMonitor()));
 			assertTrue("2.2", file1.exists());
 			assertTrue("2.4", !file3.exists());
 			assertTrue("2.5", folder.exists());
@@ -271,7 +280,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		folder.delete(IResource.FORCE, getMonitor());
+		folder.delete(IResource.FORCE, createTestMonitor());
 		assertTrue("5.1", !file1.exists());
 		assertTrue("5.2", !folder.exists());
 		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
@@ -279,30 +288,29 @@ public class Bug_026294 extends ResourceTest {
 	}
 
 	/**
-	 * Tries to delete a folder containing an irremovable file.
-	 * Works only for Linux with natives.
+	 * Tries to delete a folder containing a non-removable file. Works only for
+	 * Linux with natives.
 	 */
+	@Test
 	public void testDeleteFolderLinux() throws CoreException {
-		if (!OS.isLinux()) {
-			return;
-		}
+		assumeTrue("only relevant on Linux", OS.isLinux());
 
 		IWorkspace workspace = getWorkspace();
-		IProject project = workspace.getRoot().getProject(getUniqueString());
+		IProject project = workspace.getRoot().getProject(createUniqueString());
 		IFolder folder = project.getFolder("a_folder");
 		IFolder subFolder = folder.getFolder("sub-folder");
 		IFile file1 = subFolder.getFile("file1.txt");
 		IFile file3 = folder.getFile("file3.txt");
 
-		ensureExistsInWorkspace(new IResource[] { file1, file3 }, true);
+		createInWorkspace(new IResource[] { file1, file3 });
 		IPath projectRoot = project.getLocation();
-		deleteOnTearDown(projectRoot);
+		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks sub-folder as read-only so its files cannot be removed on Linux
 			setReadOnly(subFolder, true);
 
-			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, getMonitor()));
+			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, createTestMonitor()));
 			assertTrue("2.2", file1.exists());
 			assertTrue("2.3", subFolder.exists());
 			assertTrue("2.4", !file3.exists());
@@ -315,7 +323,7 @@ public class Bug_026294 extends ResourceTest {
 		}
 
 		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
-		folder.delete(IResource.FORCE, getMonitor());
+		folder.delete(IResource.FORCE, createTestMonitor());
 		assertTrue("5.1", !file1.exists());
 		assertTrue("5.2", !subFolder.exists());
 		assertTrue("5.3", !folder.exists());

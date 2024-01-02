@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
 import java.io.BufferedOutputStream;
@@ -34,13 +37,20 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileStore;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.After;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This tests that I/O Exception on OuptuStream#close() after IFile#setContents
  * is correctly reported.
  */
-public class Bug_332543 extends ResourceTest {
+public class Bug_332543 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Wrapper FS which throws an IOException when someone closes an output
 	 * stream...
@@ -67,16 +77,17 @@ public class Bug_332543 extends ResourceTest {
 		}
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() {
 		WrapperFileSystem.setCustomFileStore(null);
-		super.tearDown();
 	}
 
+	@Test
 	public void testBugForByteArrayInputStream() throws Exception {
 		testCancel(s -> s);
 	}
 
+	@Test
 	public void testBugForInputStream() throws Exception {
 		testCancel(delegate -> new InputStream() { // Not ArrayInputStream
 			@Override
@@ -92,10 +103,10 @@ public class Bug_332543 extends ResourceTest {
 		});
 	}
 
-	private void testCancel(Function<ByteArrayInputStream, InputStream> wrap) throws CoreException {
+	private void testCancel(Function<ByteArrayInputStream, InputStream> wrap) throws Exception {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-		String proj_name = getUniqueString();
+		String proj_name = createUniqueString();
 		IPath proj_loc = root.getLocation().append(proj_name);
 		URI proj_uri = WrapperFileSystem.getWrappedURI(URIUtil.toURI(proj_loc));
 
@@ -103,27 +114,27 @@ public class Bug_332543 extends ResourceTest {
 		desc.setLocationURI(proj_uri);
 		// Create the project on the wrapped file system
 		IProject project = root.getProject(desc.getName());
-		project.create(desc, getMonitor());
+		project.create(desc, createTestMonitor());
 
 		// Create a file in the project
 		IFile file = project.getFile("foo.txt");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 
 		// Now open the project
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 
 		// Set our evil IOException on close() fs.
 		WrapperFileSystem.setCustomFileStore(IOErrOnCloseFileStore.class);
 
 		// Try #setContents on an existing file
 		assertThrows(CoreException.class, () -> file.setContents(wrap.apply(new ByteArrayInputStream("Random".getBytes())),
-				false, true, getMonitor()));
+				false, true, createTestMonitor()));
 
 		// Try create on a non-existent file
 		IFile nonExistentFile = project.getFile("foo1.txt");
 		assertThrows(CoreException.class,
 				() -> nonExistentFile.create(wrap.apply(new ByteArrayInputStream("Random".getBytes())), false,
-						getMonitor()));
+						createTestMonitor()));
 	}
 
 }

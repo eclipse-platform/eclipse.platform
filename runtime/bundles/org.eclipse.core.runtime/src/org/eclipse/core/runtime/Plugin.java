@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,14 +15,24 @@
  *******************************************************************************/
 package org.eclipse.core.runtime;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
-import org.eclipse.core.internal.runtime.*;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.internal.runtime.InternalPlatform;
+import org.eclipse.core.internal.runtime.Messages;
+import org.eclipse.core.internal.runtime.RuntimeLog;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.debug.DebugOptions;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -192,7 +202,6 @@ public abstract class Plugin implements BundleActivator {
 	 * @since 3.0
 	 */
 	public Plugin() {
-		super();
 	}
 
 
@@ -707,11 +716,9 @@ public abstract class Plugin implements BundleActivator {
 	 * @since 3.0
 	 */
 	public final Bundle getBundle() {
-		if (bundle != null)
+		if (bundle != null) {
 			return bundle;
-		ClassLoader cl = getClass().getClassLoader();
-		if (cl instanceof BundleReference)
-			return ((BundleReference) cl).getBundle();
-		return null;
+		}
+		return FrameworkUtil.getBundle(getClass());
 	}
 }

@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.session.samples;
 
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
-import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.session.SessionTestSuite;
 
 public class SampleCrashTest extends TestCase {
@@ -40,7 +41,7 @@ public class SampleCrashTest extends TestCase {
 	}
 
 	public static Test suite() {
-		SessionTestSuite sameSession = new SessionTestSuite(CoreTest.PI_HARNESS);
+		SessionTestSuite sameSession = new SessionTestSuite(PI_HARNESS);
 		sameSession.addTest(new SampleCrashTest("test1"));
 		sameSession.addCrashTest(new SampleCrashTest("test2"));
 		sameSession.addTest(new SampleCrashTest("test3"));

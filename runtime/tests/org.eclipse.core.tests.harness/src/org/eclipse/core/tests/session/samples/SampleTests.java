@@ -13,20 +13,21 @@
  *******************************************************************************/
 package org.eclipse.core.tests.session.samples;
 
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.eclipse.core.tests.harness.CoreTest;
 import org.eclipse.core.tests.session.SessionTestSuite;
 
 public class SampleTests extends TestSuite {
 	public SampleTests() {
 		addTest(SampleSessionTest.suite());
 		addTest(UISampleSessionTest.suite());
-		TestSuite another = new SessionTestSuite(CoreTest.PI_HARNESS);
+		TestSuite another = new SessionTestSuite(PI_HARNESS);
 		another.addTestSuite(SampleSessionTest.class);
 		addTest(another);
 		// these tests should run in the same session (don't add to a non-shared session test suite)
-		SessionTestSuite shared = new SessionTestSuite(CoreTest.PI_HARNESS);
+		SessionTestSuite shared = new SessionTestSuite(PI_HARNESS);
 		shared.addTestSuite(SameSessionTest.class);
 		shared.setSharedSession(true);
 		addTest(shared);

@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.eclipse.core.tests.resources.saveparticipant
 Bundle-Name: Eclipse Core Tests Save Participant
 Bundle-SymbolicName: org.eclipse.core.tests.resources.saveparticipant; singleton:=true
 Bundle-Version: 3.6.100.qualifier

@@ -14,15 +14,13 @@
 package org.eclipse.help.internal.webapp.utils;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import org.eclipse.help.internal.base.util.ProxyUtil;
 
 public class Utils {
 
@@ -41,24 +39,13 @@ public class Utils {
 	public static final long PREFERENCE		= 2L;
 	public static final long ABOUT_PLUGIN	= 3L;
 
-	public static String convertStreamToString(InputStream is)
-			throws IOException {
-		if (is != null) {
-			Writer writer = new StringWriter();
-			char[] buffer = new char[1024];
-			try (Reader reader = new BufferedReader(
-						new InputStreamReader(is, StandardCharsets.UTF_8))){
-
-				int n;
-				while ((n = reader.read(buffer)) != -1) {
-					writer.write(buffer, 0, n);
-				}
-			} finally {
-				is.close();
+	public static String readString(URL url) throws IOException {
+		try (InputStream is = ProxyUtil.getStream(url)) {
+			if (is != null) {
+				return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+			} else {
+				return ""; //$NON-NLS-1$
 			}
-			return writer.toString();
-		} else {
-			return ""; //$NON-NLS-1$
 		}
 	}
 

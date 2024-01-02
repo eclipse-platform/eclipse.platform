@@ -13,17 +13,28 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.filesystem.local.LocalFileNativesManager;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
+import org.junit.rules.TestName;
 
 /**
  * Benchmarks basic operations on the IFileStore interface
  */
-public class BenchFileStore extends ResourceTest {
+public class BenchFileStore {
+
+	@Rule
+	public TestName testName = new TestName();
 
 	private static final int LOOP_SIZE = 5000;
 
@@ -44,7 +55,7 @@ public class BenchFileStore extends ResourceTest {
 				try {
 					store.openOutputStream(EFS.NONE, null).close();
 				} catch (IOException e) {
-					fail("BenchFileStore.createStores", e);
+					throw new IllegalStateException("setting up store failed", e);
 				}
 			}
 		}
@@ -64,33 +75,37 @@ public class BenchFileStore extends ResourceTest {
 		}
 	}
 
-	public void testStoreExitsNative() {
+	@Test
+	public void testStoreExitsNative() throws Throwable{
 		withNatives(true, () -> {
-			new StoreTestRunner(true).run(this, REPEATS, LOOP_SIZE);
+			new StoreTestRunner(true).run(getClass(), testName.getMethodName(), REPEATS, LOOP_SIZE);
 		});
 
 	}
 
-	public void testStoreNotExitsNative() {
+	@Test
+	public void testStoreNotExitsNative() throws Throwable {
 		withNatives(true, () -> {
-			new StoreTestRunner(false).run(this, REPEATS, LOOP_SIZE);
+			new StoreTestRunner(false).run(getClass(), testName.getMethodName(), REPEATS, LOOP_SIZE);
 		});
 	}
 
-	public void testStoreExitsNio() {
+	@Test
+	public void testStoreExitsNio() throws Throwable {
 		withNatives(false, () -> {
-			new StoreTestRunner(true).run(this, REPEATS, LOOP_SIZE);
+			new StoreTestRunner(true).run(getClass(), testName.getMethodName(), REPEATS, LOOP_SIZE);
 		});
 
 	}
 
-	public void testStoreNotExitsNio() {
+	@Test
+	public void testStoreNotExitsNio() throws Throwable {
 		withNatives(false, () -> {
-			new StoreTestRunner(false).run(this, REPEATS, LOOP_SIZE);
+			new StoreTestRunner(false).run(getClass(), testName.getMethodName(), REPEATS, LOOP_SIZE);
 		});
 	}
 
-	private static void withNatives(boolean natives, Runnable runnable) {
+	private static void withNatives(boolean natives, ThrowingRunnable runnable) throws Throwable {
 		try {
 			assertEquals("can't set natives to the desired value", natives,
 					LocalFileNativesManager.setUsingNative(natives));

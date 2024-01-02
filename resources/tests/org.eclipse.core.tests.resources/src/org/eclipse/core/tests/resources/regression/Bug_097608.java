@@ -22,16 +22,23 @@ import java.util.Map;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests regression of bug 97608 - error restoring workspace
  * after writing marker with value that is too long.
  */
-public class Bug_097608 extends ResourceTest {
+public class Bug_097608 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	/**
 	 * Tests that creating a marker with very long value causes failure.
 	 */
+	@Test
 	public void testBug() throws CoreException {
 		char[] chars = new char[40000];
 		Arrays.fill(chars, 'a');
@@ -51,6 +58,7 @@ public class Bug_097608 extends ResourceTest {
 	/**
 	 * Tests that creating a marker with very long value causes failure.
 	 */
+	@Test
 	public void testBug2() throws CoreException {
 		char[] chars = new char[40000];
 		Arrays.fill(chars, 'a');
@@ -72,4 +80,5 @@ public class Bug_097608 extends ResourceTest {
 		markerAttributes.put(IMarker.MESSAGE, value);
 		assertThrows(RuntimeException.class, () -> marker.setAttributes(markerAttributes));
 	}
+
 }

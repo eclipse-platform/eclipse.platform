@@ -19,12 +19,19 @@ import java.util.Iterator;
 import org.eclipse.core.internal.resources.LinkDescription;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * Tests concurrent modification of the project description link table.
  */
-public class Bug_132510 extends ResourceTest {
+public class Bug_132510 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testBug() {
 		ProjectDescription desc = new ProjectDescription();
 		IPath path1 = IPath.fromOSString("/a/b/");

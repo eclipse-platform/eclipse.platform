@@ -14,7 +14,15 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
@@ -28,14 +36,17 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.internal.builders.AbstractBuilderTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IProjectTest extends AbstractBuilderTest {
-	public IProjectTest(String name) {
-		super(name);
-	}
+public class IProjectTest {
 
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void test_1G0XIMA() throws CoreException {
 		/* common objects */
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
@@ -57,25 +68,27 @@ public class IProjectTest extends AbstractBuilderTest {
 		/* test */
 		project.accept(renameVisitor);
 		// cleanup
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void test_1G5I6PV() throws CoreException {
 		/* common objects */
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		/* test */
-		project.setLocal(true, IResource.DEPTH_ZERO, getMonitor());
+		project.setLocal(true, IResource.DEPTH_ZERO, createTestMonitor());
 
 		// cleanup
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
 	/**
 	 * 1GC2FKV: ITPCORE:BuildManager triggers incremental build when doing full builds
 	 */
+	@Test
 	public void testAutoBuild_1GC2FKV() throws CoreException {
 		// set auto build OFF
 		IWorkspaceDescription description = getWorkspace().getDescription();
@@ -88,8 +101,8 @@ public class IProjectTest extends AbstractBuilderTest {
 		ICommand command = prjDescription.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		prjDescription.setBuildSpec(new ICommand[] { command });
-		projectONE.create(prjDescription, getMonitor());
-		projectONE.open(getMonitor());
+		projectONE.create(prjDescription, createTestMonitor());
+		projectONE.open(createTestMonitor());
 
 		// create project with a builder
 		IProject projectTWO = getWorkspace().getRoot().getProject("Project_TWO");
@@ -97,14 +110,14 @@ public class IProjectTest extends AbstractBuilderTest {
 		command = prjDescription.newCommand();
 		command.setBuilderName(SignaledBuilder.BUILDER_ID);
 		prjDescription.setBuildSpec(new ICommand[] { command });
-		projectTWO.create(prjDescription, getMonitor());
-		projectTWO.open(getMonitor());
+		projectTWO.create(prjDescription, createTestMonitor());
+		projectTWO.open(createTestMonitor());
 
 		// set auto build ON
 		description = getWorkspace().getDescription();
 		description.setAutoBuilding(true);
 		getWorkspace().setDescription(description);
-		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		waitForBuild();
 
 		SignaledBuilder projectONEbuilder = SignaledBuilder.getInstance(projectONE);
@@ -136,8 +149,9 @@ public class IProjectTest extends AbstractBuilderTest {
 	 * Create a project with resources already existing on disk and ensure
 	 * that the resources are automatically discovered and brought into the workspace.
 	 */
-	public void testBug78711() throws CoreException {
-		String name = getUniqueString();
+	@Test
+	public void testBug78711() throws Exception {
+		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFolder folder = project.getFolder("folder");
 		IFile file1 = project.getFile("file1.txt");
@@ -148,12 +162,12 @@ public class IProjectTest extends AbstractBuilderTest {
 
 		// create in file-system
 		location.append(folder.getName()).toFile().mkdirs();
-		createFileInFileSystem(location.append(folder.getName()).append(file2.getName()));
-		createFileInFileSystem(location.append(file1.getName()));
+		createInFileSystem(location.append(folder.getName()).append(file2.getName()));
+		createInFileSystem(location.append(file1.getName()));
 
 		// create
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		// verify discovery
 		assertTrue("2.0", project.isAccessible());
@@ -165,29 +179,28 @@ public class IProjectTest extends AbstractBuilderTest {
 	/**
 	 * 1GDW1RX: ITPCORE:ALL - IResource.delete() without force not working correctly
 	 */
-	public void testDelete_1GDW1RX() throws CoreException {
+	@Test
+	public void testDelete_1GDW1RX() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 
 		String[] paths = new String[] {"/1/", "/1/1", "/1/2", "/1/3", "/2/", "/2/1"};
 		IResource[] resources = buildResources(project, paths);
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 
 		IFolder folder = project.getFolder("folder");
-		ensureExistsInFileSystem(folder);
+		createInFileSystem(folder);
 
 		IFile file = folder.getFile("MyFile");
-		ensureExistsInFileSystem(file);
+		createInFileSystem(file);
 
-		assertThrows(CoreException.class, () -> project.delete(false, getMonitor()));
-
-		// clean up
-		project.delete(true, true, getMonitor());
+		assertThrows(CoreException.class, () -> project.delete(false, createTestMonitor()));
 	}
 
-	public void testRefreshDotProject() throws CoreException {
-		String name = getUniqueString();
+	@Test
+	public void testRefreshDotProject() throws Exception {
+		String name = createUniqueString();
 		IProject project = getWorkspace().getRoot().getProject(name);
 		IFile dotProject = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		project.create(null);

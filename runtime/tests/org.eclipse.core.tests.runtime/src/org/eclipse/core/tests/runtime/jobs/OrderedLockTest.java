@@ -13,10 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -311,7 +314,7 @@ public class OrderedLockTest {
 
 		// the underlying array has to be empty
 		assertTrue("Locks not removed from graph.", manager.isEmpty());
-		errors.forEach(e -> e.printStackTrace());
+		errors.forEach(Throwable::printStackTrace);
 		assertTrue("Error happend: " + errors.stream().map(e -> "" + e).collect(Collectors.joining(", ")),
 				errors.isEmpty());
 	}
@@ -328,20 +331,24 @@ public class OrderedLockTest {
 			thread.start();
 		}
 		randomOrder.waitForEnd();
-		long maxNano = System.nanoTime() + 5000 * 1_000_000;
+		Duration timeoutTime = Duration.ofMillis(System.currentTimeMillis()).plusSeconds(5);
 		for (Thread thread : threads) {
 			try {
-				long joinMs = (maxNano - System.nanoTime()) / 1_000_000;
-				thread.join(Math.max(joinMs, 1));
-				if (thread.isAlive() || joinMs < 0) {
-					throw new IllegalStateException(
-							"Threads did not end in time. All thread infos begin: ----\n" + getThreadDump()
-									+ "---- All thread infos end.\n");
-
-				}
+				Duration remainingTime = timeoutTime.minusMillis(System.currentTimeMillis());
+				thread.join(remainingTime.toMillis());
 			} catch (InterruptedException e) {
-				throw new IllegalStateException("interrupted");
+				throw new IllegalStateException(e);
 			}
+			checkTimeout(timeoutTime);
+			assertThat("thread is still alive although join did not timeout", !thread.isAlive());
+		}
+	}
+
+	public void checkTimeout(Duration timeoutTime) {
+		Duration currentTime = Duration.ofMillis(System.currentTimeMillis());
+		if (timeoutTime.minus(currentTime).toMillis() <= 0) {
+			assertThat("Threads did not end in time. All thread infos begin: ----\n" + getThreadDump()
+					+ "---- All thread infos end.\n", currentTime.toMillis(), lessThan(timeoutTime.toMillis()));
 		}
 	}
 

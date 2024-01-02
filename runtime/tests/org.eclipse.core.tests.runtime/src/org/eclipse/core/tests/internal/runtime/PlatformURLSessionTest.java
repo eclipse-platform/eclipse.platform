@@ -14,21 +14,28 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.runtime;
 
+import static org.eclipse.core.tests.runtime.RuntimeTestsPlugin.PI_RUNTIME_TESTS;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.stream.Collectors;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.runtime.RuntimeTest;
 import org.eclipse.core.tests.session.ConfigurationSessionTestSuite;
 import org.eclipse.osgi.service.datalocation.Location;
 
-public class PlatformURLSessionTest extends RuntimeTest {
+public class PlatformURLSessionTest extends TestCase {
 
 	private static final String CONFIG_URL = "platform:/config/" + PI_RUNTIME_TESTS + "/";
 	private static final String DATA_CHILD = "child";
@@ -74,8 +81,9 @@ public class PlatformURLSessionTest extends RuntimeTest {
 		// tests run with file based configuration
 		assertEquals(tag + ".1", "file", childConfigURL.getProtocol());
 		File childConfigPrivateDir = new File(childConfigURL.getPath(), PI_RUNTIME_TESTS);
-		createFileInFileSystem(new File(childConfigPrivateDir, FILE_CHILD_ONLY), getContents(DATA_CHILD));
-		createFileInFileSystem(new File(childConfigPrivateDir, FILE_BOTH_PARENT_AND_CHILD), getContents(DATA_CHILD));
+		childConfigPrivateDir.mkdirs();
+		createFileWithContents(new File(childConfigPrivateDir, FILE_CHILD_ONLY), DATA_CHILD);
+		createFileWithContents(new File(childConfigPrivateDir, FILE_BOTH_PARENT_AND_CHILD), DATA_CHILD);
 
 		Location parent = Platform.getConfigurationLocation().getParentLocation();
 		// tests run with cascaded configuration
@@ -84,9 +92,17 @@ public class PlatformURLSessionTest extends RuntimeTest {
 		// tests run with file based configuration
 		assertEquals(tag + ".4", "file", parentConfigURL.getProtocol());
 		File parentConfigPrivateDir = new File(parentConfigURL.getPath(), PI_RUNTIME_TESTS);
-		createFileInFileSystem(new File(parentConfigPrivateDir, FILE_PARENT_ONLY), getContents(DATA_PARENT));
-		createFileInFileSystem(new File(parentConfigPrivateDir, FILE_ANOTHER_PARENT_ONLY), getContents(DATA_PARENT));
-		createFileInFileSystem(new File(parentConfigPrivateDir, FILE_BOTH_PARENT_AND_CHILD), getContents(DATA_PARENT));
+		parentConfigPrivateDir.mkdirs();
+		createFileWithContents(new File(parentConfigPrivateDir, FILE_PARENT_ONLY), DATA_PARENT);
+		createFileWithContents(new File(parentConfigPrivateDir, FILE_ANOTHER_PARENT_ONLY), DATA_PARENT);
+		createFileWithContents(new File(parentConfigPrivateDir, FILE_BOTH_PARENT_AND_CHILD), DATA_PARENT);
+	}
+
+	private void createFileWithContents(File file, String contents) throws IOException {
+		try (InputStream input = new ByteArrayInputStream(contents.getBytes()); FileOutputStream output = new FileOutputStream(file)) {
+			input.transferTo(output);
+		}
+
 	}
 
 	/**

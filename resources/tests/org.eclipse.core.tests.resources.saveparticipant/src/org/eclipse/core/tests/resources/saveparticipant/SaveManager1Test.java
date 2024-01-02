@@ -26,6 +26,12 @@ import org.eclipse.core.tests.resources.saveparticipant3.SaveParticipant3Plugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.*;
 
 /**
  * This class needs to be used with SaveManager2Test. Basically this
@@ -139,7 +145,7 @@ public class SaveManager1Test extends SaveManagerTest {
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_1));
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
 
@@ -162,7 +168,7 @@ public class SaveManager1Test extends SaveManagerTest {
 		command.setBuilderName(DeltaVerifierBuilder.BUILDER_NAME);
 		description.setBuildSpec(new ICommand[] {command});
 		project.setDescription(description, null);
-		project.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		// close and open the project and see if the builder gets a good delta
 		project.close(null);
@@ -172,7 +178,7 @@ public class SaveManager1Test extends SaveManagerTest {
 		DeltaVerifierBuilder verifier = DeltaVerifierBuilder.getInstance();
 		verifier.reset();
 		verifier.addExpectedChange(added, project, IResourceDelta.ADDED, 0);
-		added.create(getRandomContents(), true, null);
+		added.create(createRandomContentsStream(), true, null);
 		waitForBuild();
 		assertTrue("3.2", verifier.wasAutoBuild());
 		assertTrue("3.3", verifier.isDeltaValid());
@@ -202,7 +208,7 @@ public class SaveManager1Test extends SaveManagerTest {
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_1));
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
 
@@ -224,7 +230,7 @@ public class SaveManager1Test extends SaveManagerTest {
 
 		// create some children
 		IResource[] resources = buildResources(project, defineHierarchy(PROJECT_2));
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 		assertExistsInFileSystem(resources);
 		assertExistsInWorkspace(resources);
 

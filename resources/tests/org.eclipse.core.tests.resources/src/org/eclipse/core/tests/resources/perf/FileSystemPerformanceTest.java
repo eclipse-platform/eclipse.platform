@@ -13,17 +13,28 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+
+import java.io.IOException;
 import java.util.Random;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.internal.localstore.LocalStoreTest;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
 /**
  * Automated performance tests for file system operations.
  */
-public class FileSystemPerformanceTest extends LocalStoreTest {
+public class FileSystemPerformanceTest {
+
+	@Rule
+	public TestName testName = new TestName();
 
 	private static final String chars = "abcdefghijklmnopqrstuvwxyz";
 	private static final int FILE_COUNT = 100;
@@ -44,15 +55,15 @@ public class FileSystemPerformanceTest extends LocalStoreTest {
 		return buf.toString();
 	}
 
-	void createStructure() throws CoreException {
-		baseStore = EFS.getLocalFileSystem().getStore(FileSystemHelper.getRandomLocation(getTempDir()));
+	void createStructure() throws CoreException, IOException {
+		baseStore = EFS.getLocalFileSystem().getStore(getRandomLocation(getTempDir()));
 		baseStore.mkdir(EFS.NONE, null);
 		for (int i = 0; i < DIR_COUNT; i++) {
 			IFileStore dir = baseStore.getChild(createString(8));
 			dir.mkdir(EFS.SHALLOW, null);
 			for (int j = 0; j < FILE_COUNT; j++) {
 				IFileStore file = dir.getChild(createString(16));
-				createFile(file, createString(16));
+				createInFileSystem(file);
 			}
 		}
 	}
@@ -70,19 +81,16 @@ public class FileSystemPerformanceTest extends LocalStoreTest {
 		}
 	}
 
-	public void testPutFileInfo() throws CoreException {
+	@Test
+	public void testPutFileInfo() throws Exception {
 		createStructure();
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					setAttributesOnTree();
-				} catch (Exception e) {
-					fail("Failed to set attributes during performance test", e);
-				}
+			protected void test() throws CoreException {
+				setAttributesOnTree();
 			}
 		};
-		runner.run(this, OUTER, INNER);
+		runner.run(getClass(), testName.getMethodName(), OUTER, INNER);
 		baseStore.delete(EFS.NONE, null);
 	}
 

@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.junit.Assert.fail;
+
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
@@ -24,7 +26,6 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Assert;
 
 /**
  * Verifies the state of an <code>IResourceDelta</code> by comparing
@@ -49,7 +50,7 @@ import org.junit.Assert;
  * assert("2.0 "+verifier.getMessage(), verifier.isDeltaValid());
  * </code>
  */
-public class ResourceDeltaVerifier extends Assert implements IResourceChangeListener {
+public class ResourceDeltaVerifier implements IResourceChangeListener {
 	private class ExpectedChange {
 		IResource fResource;
 		IPath movedFromPath;

@@ -14,6 +14,7 @@
 package org.eclipse.debug.tests.console;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -32,12 +33,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -74,15 +76,15 @@ import org.junit.Test;
  */
 public class ProcessConsoleTests extends AbstractDebugTest {
 	/**
-	 * Number of received log messages with severity error while running a
-	 * single test method.
+	 * Log messages with severity error received while running a single test
+	 * method.
 	 */
-	private final AtomicInteger loggedErrors = new AtomicInteger(0);
+	private final List<IStatus> loggedErrors = Collections.synchronizedList(new ArrayList<>());
 
 	/** Listener to count error messages in {@link ConsolePlugin} log. */
 	private final ILogListener errorLogListener = (status, plugin) -> {
 			if (status.matches(IStatus.ERROR)) {
-				loggedErrors.incrementAndGet();
+				loggedErrors.add(status);
 			}
 	};
 
@@ -93,7 +95,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
-		loggedErrors.set(0);
+		loggedErrors.clear();
 		Platform.addLogListener(errorLogListener);
 	}
 
@@ -108,7 +110,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 
 		super.tearDown();
 
-		assertEquals("Test triggered errors.", 0, loggedErrors.get());
+		assertThat("Test triggered errors.", loggedErrors, empty());
 	}
 
 	/**

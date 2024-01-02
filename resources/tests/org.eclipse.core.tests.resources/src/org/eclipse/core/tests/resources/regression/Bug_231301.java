@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertTrue;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -23,9 +26,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class Bug_231301 extends ResourceTest {
+public class Bug_231301 {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
 	public void testBug() throws CoreException, InterruptedException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		final IProject project1 = workspace.getRoot().getProject("Project1");
@@ -62,7 +72,7 @@ public class Bug_231301 extends ResourceTest {
 		try {
 			workspace.addResourceChangeListener(projectClosingChangeListener, IResourceChangeEvent.PRE_CLOSE);
 			// close project
-			project1.close(getMonitor());
+			project1.close(createTestMonitor());
 			job.join();
 		} finally {
 			workspace.removeResourceChangeListener(projectClosingChangeListener);
@@ -72,4 +82,5 @@ public class Bug_231301 extends ResourceTest {
 		assertTrue("3.0", !project1.isOpen());
 		assertTrue("4.0", !project2.isOpen());
 	}
+
 }

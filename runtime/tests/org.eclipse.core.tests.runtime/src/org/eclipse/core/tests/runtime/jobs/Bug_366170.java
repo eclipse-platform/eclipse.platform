@@ -14,9 +14,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.concurrent.Semaphore;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.junit.Test;
 
 /**
  * Tests that scheduling multiple jobs with a delay and then blocking all active
@@ -25,9 +30,10 @@ import org.eclipse.core.runtime.jobs.Job;
  * were available to process sleeping jobs awaiting execution. For details see:
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=366170
  */
-public class Bug_366170 extends AbstractJobManagerTest {
+public class Bug_366170 extends AbstractJobTest {
 	private final Semaphore m_jobBStopHint = new Semaphore(1);
 
+	@Test
 	public void testBug() throws Exception {
 		System.out.println("--- Running the examle ---");
 		m_jobBStopHint.acquire();

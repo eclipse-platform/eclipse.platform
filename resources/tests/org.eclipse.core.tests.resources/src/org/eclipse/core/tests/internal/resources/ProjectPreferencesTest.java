@@ -15,9 +15,22 @@
 package org.eclipse.core.tests.internal.resources;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getLineSeparatorFromFile;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -58,14 +71,19 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 /**
  * @since 3.0
  */
-public class ProjectPreferencesTest extends ResourceTest {
+public class ProjectPreferencesTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String DIR_NAME = ".settings";
 	private static final String FILE_EXTENSION = "prefs";
@@ -113,15 +131,16 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testSimple() throws CoreException {
 		IProject project = getProject("foo");
 		String qualifier = "org.eclipse.core.tests.resources";
-		String key = "key" + getUniqueString();
-		String instanceValue = "instance" + getUniqueString();
-		String projectValue = "project" + getUniqueString();
+		String key = "key" + createUniqueString();
+		String instanceValue = "instance" + createUniqueString();
+		String projectValue = "project" + createUniqueString();
 		IScopeContext projectContext = new ProjectScope(project);
 		IScopeContext instanceContext = InstanceScope.INSTANCE;
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		ArrayList<IScopeContext[]> list = new ArrayList<>();
 		list.add(null);
@@ -205,15 +224,16 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void testListener() throws Exception {
 		// setup
-		IProject project = getProject(getUniqueString());
+		IProject project = getProject(createUniqueString());
 		String qualifier = "org.eclipse.core.tests.resources";
-		String key = "key" + getUniqueString();
-		String value = "value" + getUniqueString();
+		String key = "key" + createUniqueString();
+		String value = "value" + createUniqueString();
 		IScopeContext projectContext = new ProjectScope(project);
 		// create project
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		// set preferences
 		Preferences node = projectContext.getNode(qualifier);
 		node.put(key, value);
@@ -233,8 +253,8 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 
 		// change settings in the file
-		String newKey = "newKey" + getUniqueString();
-		String newValue = "newValue" + getUniqueString();
+		String newKey = "newKey" + createUniqueString();
+		String newValue = "newValue" + createUniqueString();
 		props.put(newKey, newValue);
 
 		// save the file and ensure timestamp is different
@@ -251,7 +271,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		touchInFilesystem(workspaceFile);
 
 		// resource change is fired
-		workspaceFile.refreshLocal(IResource.DEPTH_ZERO, getMonitor());
+		workspaceFile.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
 
 		// validate new settings
 		actual = node.get(key, null);
@@ -263,14 +283,15 @@ public class ProjectPreferencesTest extends ResourceTest {
 	/**
 	 * Regression test for bug 60896 - Project preferences remains when deleting/creating project
 	 */
+	@Test
 	public void testProjectDelete() throws Exception {
 		// create the project
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
 		// set some settings
-		String qualifier = getUniqueString();
-		String key = getUniqueString();
-		String value = getUniqueString();
+		String qualifier = createUniqueString();
+		String key = createUniqueString();
+		String value = createUniqueString();
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode(qualifier);
 		Preferences parent = node.parent().parent();
@@ -278,27 +299,28 @@ public class ProjectPreferencesTest extends ResourceTest {
 		assertEquals("1.0", value, node.get(key, null));
 
 		// delete the project
-		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 
 		// project pref should not exist
 		assertTrue("3.0", !parent.nodeExists(project.getName()));
 
 		// create a project with the same name
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 
 		// ensure that the preference value is not set
 		assertNull("4.0", context.getNode(qualifier).get(key, null));
 	}
 
 	/** See bug 91244, bug 93398 and bug 211006. */
+	@Test
 	public void testProjectMove() throws Exception {
-		IProject project1 = getProject(getUniqueString());
-		IProject project2 = getProject(getUniqueString());
+		IProject project1 = getProject(createUniqueString());
+		IProject project2 = getProject(createUniqueString());
 
-		ensureExistsInWorkspace(new IResource[] {project1}, true);
-		String qualifier = getUniqueString();
-		String key = getUniqueString();
-		String value = getUniqueString();
+		createInWorkspace(project1);
+		String qualifier = createUniqueString();
+		String key = createUniqueString();
+		String value = createUniqueString();
 		Preferences node = new ProjectScope(project1).getNode(qualifier);
 		node.put(key, value);
 		node.flush();
@@ -329,11 +351,12 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * directly to disk. We need to convert to use Resource APIs so changes
 	 * show up in the workspace immediately.
 	 */
+	@Test
 	public void test_60925() throws Exception {
 		// setup
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
-		String qualifier = getUniqueString();
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
+		String qualifier = createUniqueString();
 		IFile file = getFileInWorkspace(project, qualifier);
 
 		// should be nothing in the file system
@@ -342,8 +365,8 @@ public class ProjectPreferencesTest extends ResourceTest {
 
 		// store a preference key/value pair
 		IScopeContext context = new ProjectScope(project);
-		String key = getUniqueString();
-		String value = getUniqueString();
+		String key = createUniqueString();
+		String value = createUniqueString();
 		Preferences node = context.getNode(qualifier);
 		node.put(key, value);
 
@@ -360,14 +383,15 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 *
 	 * Problems with a dot "." as a key name
 	 */
+	@Test
 	public void test_55410() throws Exception {
-		IProject project1 = getProject(getUniqueString());
-		ensureExistsInWorkspace(new IResource[] {project1}, true);
+		IProject project1 = getProject(createUniqueString());
+		createInWorkspace(project1);
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES).node("subnode");
 		String key1 = ".";
 		String key2 = "x";
-		String value1 = getUniqueString();
-		String value2 = getUniqueString();
+		String value1 = createUniqueString();
+		String value2 = createUniqueString();
 		node.put(key1, value1);
 		node.put(key2, value2);
 		assertEquals("0.8", value1, node.get(key1, null));
@@ -390,16 +414,17 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * Investigate what happens with project preferences when the
 	 * project is moved.
 	 */
+	@Test
 	public void test_61277a() throws Exception {
-		IProject project = getProject(getUniqueString());
-		IProject destProject = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
-		ensureDoesNotExistInWorkspace(destProject);
+		IProject project = getProject(createUniqueString());
+		IProject destProject = getProject(createUniqueString());
+		createInWorkspace(project);
+		removeFromWorkspace(destProject);
 		IScopeContext context = new ProjectScope(project);
-		String qualifier = getUniqueString();
+		String qualifier = createUniqueString();
 		Preferences node = context.getNode(qualifier);
-		String key = getUniqueString();
-		String value = getUniqueString();
+		String key = createUniqueString();
+		String value = createUniqueString();
 		node.put(key, value);
 		assertEquals("1.0", value, node.get(key, null));
 
@@ -407,7 +432,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		node.flush();
 
 		// rename the project
-		project.move(destProject.getFullPath(), true, getMonitor());
+		project.move(destProject.getFullPath(), true, createTestMonitor());
 
 		context = new ProjectScope(destProject);
 		node = context.getNode(qualifier);
@@ -420,10 +445,11 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * Investigate what happens with project preferences when the
 	 * project is moved.
 	 */
+	@Test
 	public void test_61277b() throws Exception {
-		IProject project1 = getProject(getUniqueString());
-		IProject project2 = getProject(getUniqueString());
-		ensureExistsInWorkspace(new IResource[] {project1}, true);
+		IProject project1 = getProject(createUniqueString());
+		IProject project2 = getProject(createUniqueString());
+		createInWorkspace(project1);
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES);
 		assertTrue("1.0", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 		node.put("key", "value");
@@ -444,22 +470,23 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 *
 	 * Problems with a key which is the empty string.
 	 */
+	@Test
 	public void test_61277c() throws Exception {
-		IProject project1 = getProject(getUniqueString());
-		ensureExistsInWorkspace(new IResource[] {project1}, true);
+		IProject project1 = getProject(createUniqueString());
+		createInWorkspace(project1);
 		assertTrue("1.0", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES);
 		String key1 = "key";
 		String emptyKey = "";
-		String value1 = getUniqueString();
-		String value2 = getUniqueString();
+		String value1 = createUniqueString();
+		String value2 = createUniqueString();
 		node.put(key1, value1);
 		node.put(emptyKey, value2);
 		node.flush();
 		assertTrue("1.2", getFileInWorkspace(project1, ResourcesPlugin.PI_RESOURCES).exists());
 
 		// move project and ensures charsets settings are preserved
-		IProject project2 = getProject(getUniqueString());
+		IProject project2 = getProject(createUniqueString());
 		project1.move(project2.getFullPath(), false, null);
 		assertTrue("2.0", getFileInWorkspace(project2, ResourcesPlugin.PI_RESOURCES).exists());
 
@@ -474,11 +501,12 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * The project preferences are being accessing (for the first time) from
 	 * within a resource change listener reacting to a change in the workspace.
 	 */
+	@Test
 	public void test_61843() throws Exception {
 		// create the project and manually give it a settings file
-		final String qualifier = getUniqueString();
-		final IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
+		final String qualifier = createUniqueString();
+		final IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
 		IFile settingsFile = getFileInWorkspace(project, qualifier);
 
 		// write some property values in the settings file
@@ -508,7 +536,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		try {
 			Platform.addLogListener(logListener);
 			getWorkspace().addResourceChangeListener(rclistener, IResourceChangeEvent.POST_CHANGE);
-			project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+			project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		} finally {
 			Platform.removeLogListener(logListener);
 			getWorkspace().removeResourceChangeListener(rclistener);
@@ -519,18 +547,19 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * Bug 65068 - When the preferences file is deleted, the corresponding preferences
 	 * should be forgotten.
 	 */
+	@Test
 	public void test_65068() throws Exception {
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
 		Preferences node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		String key = "key";
-		String value = getUniqueString();
+		String value = createUniqueString();
 		node.put(key, value);
 		node.flush();
 		assertTrue("1.2", getFileInWorkspace(project, ResourcesPlugin.PI_RESOURCES).exists());
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		assertEquals("1.3", value, node.get(key, null));
-		ensureDoesNotExistInWorkspace(project.getFolder(DIR_NAME));
+		removeFromWorkspace(project.getFolder(DIR_NAME));
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		assertNull("2.0", node.get(key, null));
 	}
@@ -538,9 +567,10 @@ public class ProjectPreferencesTest extends ResourceTest {
 	/*
 	 * Bug 95052 - external property removals are not detected.
 	 */
+	@Test
 	public void test_95052() throws Exception {
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
 		Preferences node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		node.put("key1", "value1");
 		node.put("key2", "value2");
@@ -564,7 +594,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		ByteArrayOutputStream tempOutput = new ByteArrayOutputStream();
 		properties.store(tempOutput, null);
 		ByteArrayInputStream tempInput = new ByteArrayInputStream(tempOutput.toByteArray());
-		prefFile.setContents(tempInput, false, false, getMonitor());
+		prefFile.setContents(tempInput, false, false, createTestMonitor());
 
 		// here, project preferences should have caught up with the changes
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
@@ -581,9 +611,10 @@ public class ProjectPreferencesTest extends ResourceTest {
 	/*
 	 * Bug 579372 - property removals are not detected.
 	 */
+	@Test
 	public void test_579372() throws Exception {
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
 		Preferences node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		node.put("key1", "value1");
 		node.node("child").put("key", "childValue1");
@@ -614,7 +645,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		ByteArrayOutputStream tempOutput = new ByteArrayOutputStream();
 		properties.store(tempOutput, null);
 		ByteArrayInputStream tempInput = new ByteArrayInputStream(tempOutput.toByteArray());
-		prefFile.setContents(tempInput, false, false, getMonitor());
+		prefFile.setContents(tempInput, false, false, createTestMonitor());
 
 		// here, project preferences should have caught up with the changes
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
@@ -648,19 +679,20 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * Bug 256900 - When the preferences file is copied between projects, the corresponding preferences
 	 * should be updated.
 	 */
+	@Test
 	public void test_256900() throws Exception {
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
 
 		// create the destination project and the .settings folder inside
-		IProject project2 = getProject(getUniqueString());
-		ensureExistsInWorkspace(project2, true);
-		ensureExistsInWorkspace(project2.getFolder(DIR_NAME), true);
+		IProject project2 = getProject(createUniqueString());
+		createInWorkspace(project2);
+		createInWorkspace(project2.getFolder(DIR_NAME));
 
 		// get the pref node for the project and add a sample key/value to it
 		Preferences node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
 		String key = "key";
-		String value = getUniqueString();
+		String value = createUniqueString();
 		node.put(key, value);
 		node.flush();
 
@@ -682,20 +714,21 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * Bug 325000 Project properties not sorted on IBM VMs
 	 * Creates property file with various characters on front and verifies that they are written in alphabetical order.
 	 */
+	@Test
 	public void test_325000() throws Exception {
-		IProject project1 = getProject(getUniqueString());
-		ensureExistsInWorkspace(new IResource[] {project1}, true);
+		IProject project1 = getProject(createUniqueString());
+		createInWorkspace(project1);
 		Preferences node = new ProjectScope(project1).getNode(ResourcesPlugin.PI_RESOURCES).node("subnode");
 
 		List<String> keys = new ArrayList<>();
-		keys.add("z" + getUniqueString());
-		keys.add("a" + getUniqueString());
-		keys.add("1" + getUniqueString());
-		keys.add("z" + getUniqueString());
-		keys.add("_" + getUniqueString());
-		keys.add(getUniqueString());
+		keys.add("z" + createUniqueString());
+		keys.add("a" + createUniqueString());
+		keys.add("1" + createUniqueString());
+		keys.add("z" + createUniqueString());
+		keys.add("_" + createUniqueString());
+		keys.add(createUniqueString());
 		for (String key : keys) {
-			node.put(key, getUniqueString());
+			node.put(key, createUniqueString());
 		}
 		node.flush();
 
@@ -730,13 +763,14 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void test_335591() throws Exception {
-		String projectName = getUniqueString();
+		String projectName = createUniqueString();
 		String nodeName = "node";
 		IProject project = getProject(projectName);
 
 		//create project but do not open it yet
-		project.create(getMonitor());
+		project.create(createTestMonitor());
 
 		//create file with preferences that will be discovered during refresh
 		File folder = new File(project.getLocation().toOSString() + "/.settings");
@@ -751,7 +785,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		Preferences projectNode = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE).node(projectName);
 
 		//open the project. the new file will be found during refresh and preferences will be loaded into nodes
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 
 		//the node was created on refresh so we can now take the node without creating it
 		Preferences node = projectNode.node(nodeName);
@@ -791,6 +825,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		assertEquals("NEW_VALUE", node.get("NEW_KEY", null));
 	}
 
+	@Test
 	public void test_384151() throws BackingStoreException, CoreException {
 		// make sure each line separator is different
 		String systemValue = System.lineSeparator();
@@ -810,8 +845,8 @@ public class ProjectPreferencesTest extends ResourceTest {
 			newProjectValue = "\n";
 		}
 
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
 
 		Preferences rootNode = Platform.getPreferencesService().getRootNode();
 		Preferences instanceNode = rootNode.node(InstanceScope.SCOPE).node(Platform.PI_RUNTIME);
@@ -824,23 +859,23 @@ public class ProjectPreferencesTest extends ResourceTest {
 		Preferences node = rootNode.node(ProjectScope.SCOPE).node(project.getName()).node(qualifier);
 		String key = "key";
 		try {
-			node.put(key, getUniqueString());
+			node.put(key, createUniqueString());
 			node.flush();
 			// if there is no preference, OS default line separator should be used
 			assertEquals("1.0", systemValue, getLineSeparatorFromFile(file));
-			file.delete(true, getMonitor());
+			file.delete(true, createTestMonitor());
 
 			instanceNode.put(Platform.PREF_LINE_SEPARATOR, newInstanceValue);
 			instanceNode.flush();
-			node.put(key, getUniqueString());
+			node.put(key, createUniqueString());
 			node.flush();
 			// if there is instance preference then it should be used
 			assertEquals("2.0", newInstanceValue, getLineSeparatorFromFile(file));
-			file.delete(true, getMonitor());
+			file.delete(true, createTestMonitor());
 
 			projectNode.put(Platform.PREF_LINE_SEPARATOR, newProjectValue);
 			projectNode.flush();
-			node.put(key, getUniqueString());
+			node.put(key, createUniqueString());
 			node.flush();
 			// if there is project preference then it should be used
 			String recentlyUsedLineSeparator = getLineSeparatorFromFile(file);
@@ -860,7 +895,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 			}
 			instanceNode.flush();
 			projectNode.flush();
-			node.put(key, getUniqueString());
+			node.put(key, createUniqueString());
 			node.flush();
 			// if the prefs file exists, line delimiter from the existing file should be used
 			assertEquals("4.0", recentlyUsedLineSeparator, getLineSeparatorFromFile(file));
@@ -875,13 +910,14 @@ public class ProjectPreferencesTest extends ResourceTest {
 		}
 	}
 
+	@Test
 	public void test_336211() throws BackingStoreException, CoreException, IOException {
-		String projectName = getUniqueString();
+		String projectName = createUniqueString();
 		String nodeName = "node";
 		IProject project = getProject(projectName);
 
 		//create project but do not open it yet
-		project.create(getMonitor());
+		project.create(createTestMonitor());
 
 		//create file with preferences that will be discovered during refresh
 		File folder = new File(project.getLocation().toOSString() + "/.settings");
@@ -898,30 +934,32 @@ public class ProjectPreferencesTest extends ResourceTest {
 		Preferences node = projectNode.node(nodeName);
 
 		//open the project; the new file will be found during refresh
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 
 		//loading preferences from a file must not remove nodes that were previously created
 		assertTrue(node == projectNode.node(nodeName));
 		assertEquals("VALUE", node.get("KEY", null));
 	}
 
+	@Test
 	public void testProjectOpenClose() throws Exception {
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
-		String qualifier = getUniqueString();
-		String key = getUniqueString();
-		String value = getUniqueString();
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
+		String qualifier = createUniqueString();
+		String key = createUniqueString();
+		String value = createUniqueString();
 		Preferences node = new ProjectScope(project).getNode(qualifier);
 		node.put(key, value);
 		node.flush();
 		// close the project
-		project.close(getMonitor());
+		project.close(createTestMonitor());
 		// now reopen the project and ensure the settings were not forgotten
-		project.open(getMonitor());
+		project.open(createTestMonitor());
 		node = new ProjectScope(project).getNode(qualifier);
 		assertEquals("2.1", value, node.get(key, null));
 	}
 
+	@Test
 	public void testContentType() {
 		IContentType prefsType = Platform.getContentTypeManager().getContentType(ResourcesPlugin.PI_RESOURCES + ".preferences");
 		assertNotNull("1.0", prefsType);
@@ -929,15 +967,16 @@ public class ProjectPreferencesTest extends ResourceTest {
 		assertEquals("1.1", prefsType, associatedType);
 	}
 
+	@Test
 	public void testListenerOnChangeFile() throws Exception {
 		// setup
-		IProject project = getProject(getUniqueString());
+		IProject project = getProject(createUniqueString());
 		String qualifier = "org.eclipse.core.tests.resources";
-		String key = "key" + getUniqueString();
-		String value = "value" + getUniqueString();
+		String key = "key" + createUniqueString();
+		String value = "value" + createUniqueString();
 		IScopeContext projectContext = new ProjectScope(project);
 		// create project
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		// set preferences
 		Preferences node = projectContext.getNode(qualifier);
 		node.put(key, value);
@@ -961,8 +1000,8 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// reset the listener
 		tracer.log.setLength(0);
 		// change settings in the file
-		String newKey = "newKey" + getUniqueString();
-		String newValue = "newValue" + getUniqueString();
+		String newKey = "newKey" + createUniqueString();
+		String newValue = "newValue" + createUniqueString();
 		props.put(newKey, newValue);
 
 		// save the file via the IFile API
@@ -970,7 +1009,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		props.store(output, null);
 		try (InputStream input = new ByteArrayInputStream(output.toByteArray())) {
-			workspaceFile.setContents(input, IResource.NONE, getMonitor());
+			workspaceFile.setContents(input, IResource.NONE, createTestMonitor());
 		}
 
 		// validate new settings
@@ -999,11 +1038,11 @@ public class ProjectPreferencesTest extends ResourceTest {
 	 * Test to ensure that discovering a new pref file (e.g. loading from a repo)
 	 * is the same as doing an import. (ensure the modify listeners are called)
 	 */
+	@Test
 	public void testLoadIsImport() throws Exception {
-
 		// setup
-		IProject project = getProject(getUniqueString());
-		ensureExistsInWorkspace(project, true);
+		IProject project = getProject(createUniqueString());
+		createInWorkspace(project);
 		IScopeContext context = new ProjectScope(project);
 		String qualifier = "test.load.is.import";
 		IEclipsePreferences node = context.getNode(qualifier);
@@ -1024,13 +1063,13 @@ public class ProjectPreferencesTest extends ResourceTest {
 			try (InputStream input = new BufferedInputStream(fileInput)) {
 				ByteArrayOutputStream output = new ByteArrayOutputStream(1024);
 				buffer = output.toByteArray();
-				transferData(input, output);
+				input.transferTo(output);
 			}
 		}
 
 		// remove the file from the project
 		IFile fileInWS = getFileInWorkspace(project, qualifier);
-		fileInWS.delete(IResource.NONE, getMonitor());
+		fileInWS.delete(IResource.NONE, createTestMonitor());
 		assertTrue("3.0", !fileInWS.exists());
 		assertTrue("3.1", !fileInFS.exists());
 		IEclipsePreferences projectNode = (IEclipsePreferences) service.getRootNode().node(ProjectScope.SCOPE).node(project.getName());
@@ -1042,11 +1081,11 @@ public class ProjectPreferencesTest extends ResourceTest {
 		try (OutputStream fileOutput = new FileOutputStream(fileInFS)) {
 			try (OutputStream output = new BufferedOutputStream(fileOutput)) {
 				try (InputStream input = new BufferedInputStream(new ByteArrayInputStream(buffer))) {
-					transferData(input, output);
+					input.transferTo(output);
 				}
 			}
 		}
-		project.refreshLocal(IResource.DEPTH_INFINITE, getMonitor());
+		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		// ensure that the resource changes happen
 		waitForBuild();
 
@@ -1078,23 +1117,24 @@ public class ProjectPreferencesTest extends ResourceTest {
 		return true;
 	}
 
+	@Test
 	public void testChildrenNamesAgainstInitialize() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1102,7 +1142,7 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode("");
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode("");
 		String[] childrenNames = node.childrenNames();
@@ -1113,27 +1153,28 @@ public class ProjectPreferencesTest extends ResourceTest {
 		assertEquals(1, childrenNames.length);
 		assertEquals(nodeB, childrenNames[0]);
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testChildrenNamesAgainstLoad() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1141,34 +1182,35 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode(nodeA);
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA);
 		String[] childrenNames = node.childrenNames();
 		assertEquals(1, childrenNames.length);
 		assertEquals(nodeB, childrenNames[0]);
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testClear() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1176,34 +1218,35 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode(nodeA).node(nodeB);
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		node.clear();
 		assertEquals(0, node.keys().length);
 		assertNull(node.get(key, null));
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testGet() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1211,32 +1254,33 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode(nodeA).node(nodeB);
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		assertEquals(value, node.get(key, null));
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testKeys() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1244,34 +1288,35 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode(nodeA).node(nodeB);
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		String[] keys = node.keys();
 		assertEquals(1, keys.length);
 		assertEquals(key, keys[0]);
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testNodeExistsAgainstInitialize() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1279,34 +1324,35 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode("nodeC");
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode("");
 		assertTrue(node.nodeExists(nodeA));
 		node = node.node(nodeA);
 		assertTrue(node.nodeExists(nodeB));
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testNodeExistsAgainstLoad() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1314,15 +1360,16 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode(nodeA).node("nodeC");
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA);
 		assertTrue(node.nodeExists(nodeB));
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testPut() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
@@ -1330,17 +1377,17 @@ public class ProjectPreferencesTest extends ResourceTest {
 		String value = "value";
 		String anotherValue = "anotherValue";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1348,33 +1395,34 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode(nodeA).node(nodeB);
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		node.put(key, anotherValue);
 		assertEquals(anotherValue, node.get(key, null));
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testRemove() throws BackingStoreException, CoreException {
 		String nodeA = "nodeA";
 		String nodeB = "nodeB";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
 
-		IProject project2 = getProject(getUniqueString());
-		project1.move(project2.getFullPath(), IResource.NONE, getMonitor());
+		IProject project2 = getProject(createUniqueString());
+		project1.move(project2.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences prefs2 = new ProjectScope(project2).getNode(nodeA).node(nodeB);
 		assertEquals(value, prefs2.get(key, null));
@@ -1382,24 +1430,25 @@ public class ProjectPreferencesTest extends ResourceTest {
 		// this will trigger the creation of "phantom" preferences node for the now-missing project
 		new ProjectScope(project1).getNode(nodeA).node(nodeB);
 
-		project2.move(project1.getFullPath(), IResource.NONE, getMonitor());
+		project2.move(project1.getFullPath(), IResource.NONE, createTestMonitor());
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		node.remove(key);
 		assertNull(node.get(key, null));
 
-		project1.delete(true, getMonitor());
-		project2.delete(true, getMonitor());
+		project1.delete(true, createTestMonitor());
+		project2.delete(true, createTestMonitor());
 	}
 
+	@Test
 	public void testDeleteOnFilesystemAndLoad() throws CoreException, BackingStoreException {
 		String nodeA = "nodeA";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		Preferences prefs1 = new ProjectScope(project1).getNode(nodeA);
 		prefs1.put(key, value);
@@ -1419,14 +1468,15 @@ public class ProjectPreferencesTest extends ResourceTest {
 		ProjectPreferences.updatePreferences(prefsFile);
 	}
 
+	@Test
 	public void testSettingsFolderCreatedOutsideWorkspace() throws CoreException, BackingStoreException, IOException {
 		String nodeA = "nodeA";
 		String key = "key";
 		String value = "value";
 
-		IProject project1 = getProject(getUniqueString());
-		project1.create(getMonitor());
-		project1.open(getMonitor());
+		IProject project1 = getProject(createUniqueString());
+		project1.create(createTestMonitor());
+		project1.open(createTestMonitor());
 
 		// create the project settings folder on disk, it will be out of sync with the workspace
 		// see bug#522214
@@ -1444,6 +1494,6 @@ public class ProjectPreferencesTest extends ResourceTest {
 		prefs1.put(key, value);
 		prefs1.flush();
 		assertEquals(value, prefs1.get(key, null));
-
 	}
+
 }

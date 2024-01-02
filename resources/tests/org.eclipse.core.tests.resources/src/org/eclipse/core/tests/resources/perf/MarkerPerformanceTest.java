@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -22,16 +23,28 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
-public class MarkerPerformanceTest extends ResourceTest {
+public class MarkerPerformanceTest {
+
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	IProject project;
 	IFile file;
 	IMarker[] markers;
 	final int NUM_MARKERS = 5000;
 	final int REPEAT = 100;
 
-	public void testSetAttributes1() {
+	@Test
+	public void testSetAttributes1() throws Exception {
 		//benchmark setting many attributes in a single operation
 		final IWorkspaceRunnable runnable = monitor -> {
 			//set all attributes for each marker
@@ -43,19 +56,16 @@ public class MarkerPerformanceTest extends ResourceTest {
 		};
 		PerformanceTestRunner runner = new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					getWorkspace().run(runnable, null);
-				} catch (CoreException e) {
-					fail("2.0", e);
-				}
+			protected void test() throws CoreException {
+				getWorkspace().run(runnable, null);
 			}
 		};
 		runner.setFingerprintName("Set marker attributes");
-		runner.run(this, 1, 1);
+		runner.run(getClass(), testName.getMethodName(), 1, 1);
 	}
 
-	public void testSetAttributes2() {
+	@Test
+	public void testSetAttributes2() throws Exception {
 		//benchmark setting many attributes in a single operation
 		final IWorkspaceRunnable runnable = monitor -> {
 			//set one attribute per marker, repeat for all attributes
@@ -67,23 +77,14 @@ public class MarkerPerformanceTest extends ResourceTest {
 		};
 		new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					getWorkspace().run(runnable, null);
-				} catch (CoreException e) {
-					fail("2.0", e);
-				}
+			protected void test() throws CoreException {
+				getWorkspace().run(runnable, null);
 			}
-		}.run(this, 1, 1);
+		}.run(getClass(), testName.getMethodName(), 1, 1);
 	}
 
-	/**
-	 * @see ResourceTest#setUp()
-	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
+	@Before
+	public void setUp() throws Exception {
 		final IMarker[] createdMarkers = new IMarker[NUM_MARKERS];
 		IWorkspaceRunnable runnable = monitor -> {
 			//create resources
@@ -91,7 +92,7 @@ public class MarkerPerformanceTest extends ResourceTest {
 			project.create(null);
 			project.open(null);
 			file = project.getFile(IPath.ROOT.append("file.txt"));
-			file.create(getRandomContents(), true, null);
+			file.create(createRandomContentsStream(), true, null);
 			//create markers
 			for (int i = 0; i < NUM_MARKERS; i++) {
 				createdMarkers[i] = file.createMarker(IMarker.BOOKMARK);

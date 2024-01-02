@@ -66,7 +66,7 @@
             storageMergerId="org.eclipse.team.tests.core.storageMerger1"/>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.contentTypes">
+         point="org.eclipse.core.contenttype.contentTypes">
       <content-type
             id="org.eclipse.team.tests.core.content-type1"
             name="org.eclipse.team.tests.core.content-type1"

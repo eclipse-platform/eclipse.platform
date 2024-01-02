@@ -155,8 +155,8 @@ public class DataTreeWriter {
 	 *  only write up to this depth.  A depth of infinity is given
 	 *  by the constant D_INFINITE.
 	 */
-	public void writeTree(DeltaDataTree tree, IPath path, int depth, DataOutput output) throws IOException {
-		this.output = output;
+	public void writeTree(DeltaDataTree tree, IPath path, int depth, DataOutput dataOutput) throws IOException {
+		this.output = dataOutput;
 		/* tunnel down relevant path */
 		AbstractDataTreeNode node = tree.getRootNode();
 		IPath currentPath = IPath.ROOT;

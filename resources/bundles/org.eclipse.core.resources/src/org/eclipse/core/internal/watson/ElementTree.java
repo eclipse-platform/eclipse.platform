@@ -635,6 +635,8 @@ public class ElementTree {
 	public synchronized ElementTree newEmptyDelta() {
 		// Don't want old trees hanging onto cached infos.
 		lookupCache = lookupCacheIgnoreCase = null;
+		// reclaim memory of childIDsCache - which is only used on the current tree:
+		childIDsCache = null;
 		if (!this.isImmutable()) {
 			this.immutable();
 		}

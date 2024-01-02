@@ -18,11 +18,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ BlobStoreTest.class, BucketTreeTests.class, CaseSensitivityTest.class, CopyTest.class,
-		DeleteTest.class, FileSystemResourceManagerTest.class, HistoryBucketTest.class, HistoryStoreTest.class,
-		LocalSyncTest.class, MoveTest.class, PrefixPoolTest.class, RefreshLocalTest.class,
-		SafeChunkyInputOutputStreamTest.class, SafeFileInputOutputStreamTest.class, SymlinkResourceTest.class,
-		UnifiedTreeTest.class })
+@Suite.SuiteClasses({ //
+		BlobStoreTest.class, //
+		BucketTreeTests.class, //
+		CaseSensitivityTest.class, //
+		CopyTest.class, //
+		DeleteTest.class, //
+		FileSystemResourceManagerTest.class, //
+		HistoryBucketTest.class, //
+		HistoryStoreTest.class, //
+		LocalSyncTest.class, //
+		MoveTest.class, //
+		PrefixPoolTest.class, //
+		RefreshLocalTest.class, //
+		SafeChunkyInputOutputStreamTest.class, //
+		SafeFileInputOutputStreamTest.class, //
+		SymlinkResourceTest.class, //
+		UnifiedTreeTest.class, //
+})
 public class AllLocalStoreTests {
 
 }

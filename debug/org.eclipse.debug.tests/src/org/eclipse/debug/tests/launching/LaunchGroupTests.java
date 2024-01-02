@@ -110,8 +110,8 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 		super.tearDown();
 	}
 
-	private ILaunchConfiguration createLaunchGroup(String name, GroupLaunchElement... children) throws CoreException {
-		ILaunchConfigurationWorkingCopy grp = getLaunchManager().getLaunchConfigurationType(GROUP_TYPE).newInstance(null, name);
+	private ILaunchConfiguration createLaunchGroup(String groupName, GroupLaunchElement... children) throws CoreException {
+		ILaunchConfigurationWorkingCopy grp = getLaunchManager().getLaunchConfigurationType(GROUP_TYPE).newInstance(null, groupName);
 		GroupLaunchConfigurationDelegate.storeLaunchElements(grp, Arrays.asList(children));
 		return grp.doSave();
 	}

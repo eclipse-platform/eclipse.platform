@@ -18,17 +18,41 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ CharsetTest.class, ContentDescriptionManagerTest.class, FilteredResourceTest.class,
-		HiddenResourceTest.class, VirtualFolderTest.class, IFileTest.class, IFolderTest.class,
-		IPathVariableTest.class,
-		IProjectDescriptionTest.class, IProjectTest.class, IResourceChangeEventTest.class,
-		IResourceChangeListenerTest.class, IResourceDeltaTest.class, IResourceTest.class, ISynchronizerTest.class,
-		IWorkspaceRootTest.class, IWorkspaceTest.class, LinkedResourceTest.class,
-		LinkedResourceWithPathVariableTest.class, LinkedResourceSyncMoveAndCopyTest.class, MarkerSetTest.class,
-		MarkerTest.class, NatureTest.class, NonLocalLinkedResourceTest.class, ProjectEncodingTest.class,
-		ProjectOrderTest.class,
-		ProjectScopeTest.class, ProjectSnapshotTest.class, ResourceAttributeTest.class, ResourceURLTest.class,
-		TeamPrivateMemberTest.class, WorkspaceTest.class })
+@Suite.SuiteClasses({ //
+		CharsetTest.class, //
+		ContentDescriptionManagerTest.class, //
+		FilteredResourceTest.class, //
+		HiddenResourceTest.class, //
+		IFileTest.class, //
+		IFolderTest.class, //
+		IPathVariableTest.class, //
+		IProjectDescriptionTest.class, //
+		IProjectTest.class, //
+		IResourceChangeEventTest.class, //
+		IResourceChangeListenerTest.class, //
+		IResourceDeltaTest.class, //
+		IResourceTest.class, //
+		ISynchronizerTest.class, //
+		IWorkspaceRootTest.class, //
+		IWorkspaceTest.class, //
+		LinkedDotProjectTest.class, //
+		LinkedResourceSyncMoveAndCopyTest.class, //
+		LinkedResourceTest.class, //
+		LinkedResourceWithPathVariableTest.class, //
+		MarkerSetTest.class, //
+		MarkerTest.class, //
+		NatureTest.class, //
+		NonLocalLinkedResourceTest.class, //
+		ProjectEncodingTest.class, //
+		ProjectOrderTest.class, //
+		ProjectScopeTest.class, //
+		ProjectSnapshotTest.class, //
+		ResourceAttributeTest.class, //
+		ResourceURLTest.class, //
+		TeamPrivateMemberTest.class, //
+		VirtualFolderTest.class, //
+		WorkspaceTest.class, //
+})
 public class AllResourcesTests {
 
 }

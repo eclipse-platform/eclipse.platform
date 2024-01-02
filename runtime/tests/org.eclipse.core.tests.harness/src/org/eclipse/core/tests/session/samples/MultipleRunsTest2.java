@@ -13,14 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.session.samples;
 
-import junit.framework.*;
-import org.eclipse.core.tests.harness.CoreTest;
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
 import org.eclipse.core.tests.session.PerformanceSessionTestSuite;
 import org.eclipse.core.tests.session.TestDescriptor;
 
 public class MultipleRunsTest2 extends TestCase {
 	public static Test suite() {
-		PerformanceSessionTestSuite suite = new PerformanceSessionTestSuite(CoreTest.PI_HARNESS, 10);
+		PerformanceSessionTestSuite suite = new PerformanceSessionTestSuite(PI_HARNESS, 10);
 		suite.addTest(new TestDescriptor(SampleSessionTest.class.getName(), "testApplicationStartup"));
 		return suite;
 	}

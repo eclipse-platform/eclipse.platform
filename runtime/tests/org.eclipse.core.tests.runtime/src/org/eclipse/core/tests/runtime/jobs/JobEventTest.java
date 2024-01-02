@@ -17,8 +17,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.internal.jobs.JobListeners;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.runtime.jobs.OrderAsserter.Event;
 import org.junit.Test;
@@ -27,7 +32,7 @@ import org.junit.Test;
  * Test for bug https://github.com/eclipse-platform/eclipse.platform/issues/193
  */
 @SuppressWarnings("restriction")
-public class JobEventTest {
+public class JobEventTest extends AbstractJobTest {
 	@Test
 	public void testScheduleOrderOfEvents() {
 		OrderAsserter asserter = new OrderAsserter();
@@ -387,11 +392,6 @@ public class JobEventTest {
 	}
 
 	@Test
-	public void testNoTimeoutOccured() throws Exception {
-		AbstractJobTest.assertNoTimeoutOccured();
-	}
-
-	@Test
 	public void testDeadlockRecovery() throws Exception {
 		Object commonLockObject = new Object();
 		TestBarrier2 waitingForJobListenerBarrier = new TestBarrier2();
@@ -433,7 +433,7 @@ public class JobEventTest {
 		final int DEADLOCK_TIMEOUT = 250;
 		final int ABORT_TEST_TIMEOUT = 60_000;
 		try {
-			testNoTimeoutOccured(); // before changing timeout
+			assertNoTimeoutOccured(); // before changing timeout
 			JobListeners.setJobListenerTimeout(DEADLOCK_TIMEOUT);
 			threadDeadlockingWithJobListener.start();
 			jobWithListener.schedule();

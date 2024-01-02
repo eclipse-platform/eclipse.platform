@@ -15,6 +15,8 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -72,12 +74,12 @@ public class TestBug294854 extends WorkspaceSessionTest {
 	private IProject createProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_OLD_NAME);
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		assertTrue("1.0", project.exists());
 
 		// make sure we do not have .snap file
 		TestingSupport.waitForSnapshot();
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 
 		return project;
 	}
@@ -98,7 +100,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		// move project using IProjectDescription
 		IProjectDescription description = project.getDescription();
 		description.setName(PROJECT_NEW_NAME);
-		project.move(description, true, getMonitor());
+		project.move(description, true, createTestMonitor());
 
 		// wait for the snapshot job to run
 		TestingSupport.waitForSnapshot();
@@ -116,7 +118,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		IProject project = createProject();
 
 		// move project using IPath
-		project.move(project.getFullPath().removeLastSegments(1).append(PROJECT_NEW_NAME), true, getMonitor());
+		project.move(project.getFullPath().removeLastSegments(1).append(PROJECT_NEW_NAME), true, createTestMonitor());
 
 		// wait for the snapshot job to run
 		TestingSupport.waitForSnapshot();
@@ -134,7 +136,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		IProject project = createProject();
 
 		// delete project
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 
 		// wait for the snapshot job to run
 		TestingSupport.waitForSnapshot();
@@ -162,7 +164,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		getWorkspace().addResourceChangeListener(selfDeregisteringExistingChangeListener, IResourceChangeEvent.POST_CHANGE);
 
 		// delete project
-		project.delete(true, getMonitor());
+		project.delete(true, createTestMonitor());
 	}
 
 	public void testDeleteWithoutWaitingForSnapshot_02() {

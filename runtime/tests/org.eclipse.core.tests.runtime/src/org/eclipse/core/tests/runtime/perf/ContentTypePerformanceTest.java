@@ -14,18 +14,31 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.perf;
 
-import java.io.*;
-import java.net.MalformedURLException;
+import static org.eclipse.core.tests.harness.FileSystemHelper.clear;
+import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
+import static org.eclipse.core.tests.runtime.RuntimeTestsPlugin.PI_RUNTIME_TESTS;
+
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.eclipse.core.internal.content.*;
+import org.eclipse.core.internal.content.ContentTypeBuilder;
+import org.eclipse.core.internal.content.ContentTypeHandler;
+import org.eclipse.core.internal.content.Util;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.content.BinarySignatureDescriber;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.harness.*;
-import org.eclipse.core.tests.runtime.RuntimeTest;
+import org.eclipse.core.tests.harness.BundleTestingHelper;
+import org.eclipse.core.tests.harness.PerformanceTestRunner;
+import org.eclipse.core.tests.harness.TestRegistryChangeListener;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
 import org.eclipse.core.tests.session.PerformanceSessionTestSuite;
 import org.eclipse.core.tests.session.SessionTestSuite;
@@ -33,7 +46,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 @SuppressWarnings("restriction")
-public class ContentTypePerformanceTest extends RuntimeTest {
+public class ContentTypePerformanceTest extends TestCase {
 
 	private final static String CONTENT_TYPE_PREF_NODE = Platform.PI_RUNTIME + IPath.SEPARATOR + "content-types"; //$NON-NLS-1$
 	private static final String DEFAULT_NAME = "file_" + ContentTypePerformanceTest.class.getName();
@@ -173,7 +186,8 @@ public class ContentTypePerformanceTest extends RuntimeTest {
 		return getTempDir().append(TEST_DATA_ID);
 	}
 
-	private Bundle installContentTypes(String tag, int numberOfLevels, int nodesPerLevel) {
+	private Bundle installContentTypes(String tag, int numberOfLevels, int nodesPerLevel)
+			throws IOException, BundleException {
 		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME, ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 		Bundle installed = null;
 		listener.register();
@@ -181,12 +195,7 @@ public class ContentTypePerformanceTest extends RuntimeTest {
 			IPath pluginLocation = getExtraPluginLocation();
 			assertTrue(pluginLocation.toFile().mkdirs());
 			assertTrue(pluginLocation.append("META-INF").toFile().mkdirs());
-			URL installURL = null;
-			try {
-				installURL = pluginLocation.toFile().toURI().toURL();
-			} catch (MalformedURLException e) {
-				fail(tag + ".0.5", e);
-			}
+			URL installURL = pluginLocation.toFile().toURI().toURL();
 			String eol = System.lineSeparator();
 			try (Writer writer = new BufferedWriter(new FileWriter(pluginLocation.append("plugin.xml").toFile()),
 					0x10000)) {
@@ -197,8 +206,6 @@ public class ContentTypePerformanceTest extends RuntimeTest {
 				String root = createContentType(writer, 0, null);
 				createContentTypes(writer, root, 1, numberOfLevels, nodesPerLevel);
 				writer.write("</extension></plugin>");
-			} catch (IOException e) {
-				fail(tag + ".1.0", e);
 			}
 			try (Writer writer = new BufferedWriter(
 					new FileWriter(pluginLocation.append("META-INF").append("MANIFEST.MF").toFile()),
@@ -214,14 +221,8 @@ public class ContentTypePerformanceTest extends RuntimeTest {
 				writer.write("Bundle-Version: 1.0\n");
 				writer.write("Require-Bundle: " + PI_RUNTIME_TESTS);
 				writer.write(eol);
-			} catch (IOException e) {
-				fail(tag + ".2.0", e);
 			}
-			try {
-				installed = RuntimeTestsPlugin.getContext().installBundle(installURL.toExternalForm());
-			} catch (BundleException e) {
-				fail(tag + ".3.0", e);
-			}
+			installed = RuntimeTestsPlugin.getContext().installBundle(installURL.toExternalForm());
 			BundleTestingHelper.refreshPackages(RuntimeTestsPlugin.getContext(), new Bundle[] {installed});
 			assertTrue(tag + ".4.0", listener.eventReceived(10000));
 		} finally {
@@ -281,15 +282,16 @@ public class ContentTypePerformanceTest extends RuntimeTest {
 		new PerformanceTestRunner() {
 			@Override
 			protected void test() {
-				try {
-					for (int i = 0; i < TOTAL_NUMBER_OF_ELEMENTS; i++) {
-						String id = getContentTypeId(i);
-						IContentType[] result = manager.findContentTypesFor(new ByteArrayInputStream(getSignature(i)), DEFAULT_NAME);
-						assertEquals("1.0." + i, 1, result.length);
-						assertEquals("1.1." + i, id, result[0].getId());
+				for (int i = 0; i < TOTAL_NUMBER_OF_ELEMENTS; i++) {
+					String id = getContentTypeId(i);
+					IContentType[] result;
+					try {
+						result = manager.findContentTypesFor(new ByteArrayInputStream(getSignature(i)), DEFAULT_NAME);
+					} catch (IOException e) {
+						throw new IllegalStateException("unexpected exception occurred", e);
 					}
-				} catch (IOException e) {
-					fail("2.0", e);
+					assertEquals("1.0." + i, 1, result.length);
+					assertEquals("1.1." + i, id, result[0].getId());
 				}
 			}
 		}.run(this, 10, 2);
@@ -301,24 +303,17 @@ public class ContentTypePerformanceTest extends RuntimeTest {
 		if (getName().equals("testDoSetUp") || getName().equals("testDoTearDown")) {
 			return;
 		}
-		Bundle installed = null;
-		try {
-			installed = RuntimeTestsPlugin.getContext()
+		Bundle installed = RuntimeTestsPlugin.getContext()
 					.installBundle(getExtraPluginLocation().toFile().toURI().toURL().toExternalForm());
-		} catch (BundleException e) {
-			fail("1.0", e);
-		} catch (MalformedURLException e) {
-			fail("2.0", e);
-		}
 		BundleTestingHelper.refreshPackages(RuntimeTestsPlugin.getContext(), new Bundle[] { installed });
 	}
 
-	public void testDoSetUp() {
+	public void testDoSetUp() throws IOException, BundleException {
 		installContentTypes("1.0", NUMBER_OF_LEVELS, ELEMENTS_PER_LEVEL);
 	}
 
 	public void testDoTearDown() {
-		ensureDoesNotExistInFileSystem(getExtraPluginLocation().toFile());
+		clear(getExtraPluginLocation().toFile());
 	}
 
 	public void testIsKindOf() {

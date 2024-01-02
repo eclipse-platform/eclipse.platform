@@ -13,10 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.session.samples;
 
-import junit.framework.*;
-import org.eclipse.core.tests.harness.CoreTest;
+import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
 import org.eclipse.core.tests.session.SessionTestSuite;
-import org.eclipse.test.performance.*;
+import org.eclipse.test.performance.Dimension;
+import org.eclipse.test.performance.Performance;
+import org.eclipse.test.performance.PerformanceMeter;
 
 public class SampleSessionTest extends TestCase {
 	public SampleSessionTest(String methodName) {
@@ -47,7 +51,7 @@ public class SampleSessionTest extends TestCase {
 	}
 
 	public static Test suite() {
-		return new SessionTestSuite(CoreTest.PI_HARNESS, SampleSessionTest.class);
+		return new SessionTestSuite(PI_HARNESS, SampleSessionTest.class);
 	}
 
 }

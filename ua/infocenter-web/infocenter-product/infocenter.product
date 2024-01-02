@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Eclipse Infocenter Application" uid="infocenter" application="org.eclipse.help.base.infocenterApplication" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="false">
+<product name="Eclipse Infocenter Application" uid="infocenter" application="org.eclipse.help.base.infocenterApplication" version="1.0.0.qualifier" type="bundles" includeLaunchers="false" autoIncludeRequirements="true">
 
    <configIni use="default">
    </configIni>
@@ -62,8 +62,7 @@ org.osgi.framework.bootdelegation=*
       <plugin id="org.eclipse.help.webapp"/>
       <plugin id="org.eclipse.jdt.core.compiler.batch"/>
       <plugin id="org.eclipse.osgi"/>
-      <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
-      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.compatibility.state"/>
       <plugin id="org.eclipse.osgi.util"/>
       <plugin id="org.mortbay.jasper.apache-jsp"/>
    </plugins>

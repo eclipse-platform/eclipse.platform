@@ -145,8 +145,8 @@ public class DataTreeReader {
 	 * the project (first node under root) in the returned tree
 	 * instead of the name read from the stream.
 	 */
-	public DeltaDataTree readTree(DeltaDataTree parent, DataInput input, String newProjectName) throws IOException {
-		this.input = input;
+	public DeltaDataTree readTree(DeltaDataTree parent, DataInput dataInput, String newProjectName) throws IOException {
+		this.input = dataInput;
 		AbstractDataTreeNode root = readNode(IPath.ROOT, newProjectName);
 		return new DeltaDataTree(root, parent);
 	}

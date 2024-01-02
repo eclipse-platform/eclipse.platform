@@ -15,12 +15,18 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.PROJECT;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.Q_NAME_SESSION;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.STRING_VALUE;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.commonFailureTestsForResource;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.isLocal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Hashtable;
 import org.eclipse.core.resources.ICommand;
@@ -31,13 +37,20 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IProjectTest extends IResourceTest {
+public class IProjectTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	public static String LOCAL_LOCATION_PATH_STRING_0;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() {
 		LOCAL_LOCATION_PATH_STRING_0 = getWorkspace().getRoot().getLocation().append("temp/location0").toOSString();
 	}
 
@@ -100,6 +113,7 @@ public class IProjectTest extends IResourceTest {
 	 * Test IResource API
 	 * Test IFolder API
 	 */
+	@Test
 	public void testProject() throws CoreException {
 		IWorkspace wb = getWorkspace();
 		IProgressMonitor monitor = null;
@@ -223,4 +237,5 @@ public class IProjectTest extends IResourceTest {
 		assertTrue("project at path '" + proj.getFullPath() + "' unexpectedly exists in workspace",
 				wb.getRoot().exists(proj.getFullPath()));
 	}
+
 }

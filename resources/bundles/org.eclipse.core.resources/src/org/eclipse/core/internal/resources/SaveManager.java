@@ -470,8 +470,8 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	public void forgetSavedTree(String pluginId) {
 		if (pluginId == null) {
 			synchronized (savedStates) {
-				for (SavedState savedState : savedStates.values())
-					savedState.forgetTrees();
+				for (SavedState state : savedStates.values())
+					state.forgetTrees();
 			}
 		} else {
 			SavedState state = savedStates.get(pluginId);

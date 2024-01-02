@@ -18,11 +18,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ BuilderCycleTest.class, BuilderEventTest.class, BuilderNatureTest.class, BuilderTest.class,
-		RebuildTest.class,
-		BuildDeltaVerificationTest.class, CustomBuildTriggerTest.class, EmptyDeltaTest.class,
-		MultiProjectBuildTest.class, RelaxedSchedRuleBuilderTest.class, BuildConfigurationsTest.class,
-		BuildContextTest.class, ParallelBuildChainTest.class, ComputeProjectOrderTest.class, AutoBuildJobTest.class })
+@Suite.SuiteClasses({ //
+		AutoBuildJobTest.class, //
+		BuildConfigurationsTest.class, //
+		BuildContextTest.class, //
+		BuildDeltaVerificationTest.class, //
+		BuilderCycleTest.class, //
+		BuilderEventTest.class, //
+		BuilderNatureTest.class, //
+		BuilderTest.class, //
+		ComputeProjectOrderTest.class, //
+		CustomBuildTriggerTest.class, //
+		EmptyDeltaTest.class, //
+		MultiProjectBuildTest.class, //
+		ParallelBuildChainTest.class, //
+		RebuildTest.class, //
+		RelaxedSchedRuleBuilderTest.class, //
+})
 public class AllBuilderTests {
-
 }

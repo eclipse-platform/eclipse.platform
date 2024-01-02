@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IProject;
@@ -30,10 +31,10 @@ public class TestSaveCreateProject extends WorkspaceSerializationTest {
 	public void test1() throws CoreException {
 		/* create some resource handles */
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
-		workspace.save(true, getMonitor());
+		workspace.save(true, createTestMonitor());
 
-		project.create(getMonitor());
-		project.open(getMonitor());
+		project.create(createTestMonitor());
+		project.open(createTestMonitor());
 	}
 
 	public void test2() throws CoreException {

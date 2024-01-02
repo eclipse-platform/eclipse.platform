@@ -14,7 +14,15 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -24,15 +32,15 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.ResourceTest;
-import org.junit.Assume;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public class IFileTest extends ResourceTest {
-	private final boolean DISABLED = true;
+public class IFileTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Bug states that the error code in the CoreException which is thrown when
@@ -40,30 +48,25 @@ public class IFileTest extends ResourceTest {
 	 * ERROR_WRITE.
 	 */
 	@Test
+	@Ignore("This test is no longer valid since the error code is dependent on whether or not the parent folder is marked as read-only. We need to write a different test to make the file.create fail.")
 	public void testBug25658() throws CoreException {
-
-		// This test is no longer valid since the error code is dependent on whether
-		// or not the parent folder is marked as read-only. We need to write a different
-		// test to make the file.create fail.
-		Assume.assumeFalse(DISABLED);
-
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		Assume.assumeTrue(isReadOnlySupported());
+		assumeTrue("only relevant for platforms supporting read-only files", isReadOnlySupported());
 
 		// Don't test this on Windows
-		Assume.assumeFalse(OS.isWindows());
+		assumeFalse("not relevant on Windows", OS.isWindows());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
-		ensureExistsInWorkspace(new IResource[] {project, folder}, true);
+		createInWorkspace(new IResource[] {project, folder});
 		IFile file = folder.getFile("file.txt");
 
 		try {
 			folder.setReadOnly(true);
 			assertTrue(folder.isReadOnly());
 			CoreException exception = assertThrows(CoreException.class,
-					() -> file.create(getRandomContents(), true, getMonitor()));
+					() -> file.create(createRandomContentsStream(), true, createTestMonitor()));
 			assertEquals(IResourceStatus.FAILED_WRITE_LOCAL, exception.getStatus().getCode());
 		} finally {
 			folder.setReadOnly(false);
@@ -80,22 +83,22 @@ public class IFileTest extends ResourceTest {
 
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.
-		Assume.assumeTrue(isReadOnlySupported());
+		assumeTrue("only relevant for platforms supporting read-only files", isReadOnlySupported());
 
 		// Only run this test on Linux for now since Windows lets you create
 		// a file within a read-only folder.
-		Assume.assumeTrue(OS.isLinux());
+		assumeTrue("only relevant on Linux", OS.isLinux());
 
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFolder folder = project.getFolder("folder");
-		ensureExistsInWorkspace(new IResource[] {project, folder}, true);
+		createInWorkspace(new IResource[] {project, folder});
 		IFile file = folder.getFile("file.txt");
 
 		try {
 			folder.setReadOnly(true);
 			assertTrue(folder.isReadOnly());
 			CoreException exception = assertThrows(CoreException.class,
-					() -> file.create(getRandomContents(), true, getMonitor()));
+					() -> file.create(createRandomContentsStream(), true, createTestMonitor()));
 			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
 		} finally {
 			folder.setReadOnly(false);
@@ -109,7 +112,7 @@ public class IFileTest extends ResourceTest {
 	public void testBug43936() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		assertTrue("1.0", descFile.exists());
 
 		IProjectDescription desc = project.getDescription();
@@ -121,6 +124,7 @@ public class IFileTest extends ResourceTest {
 		assertTrue("2.0", descFile.isSynchronized(IResource.DEPTH_ZERO));
 
 		// try setting the description -- shouldn't fail
-		project.setDescription(desc, getMonitor());
+		project.setDescription(desc, createTestMonitor());
 	}
+
 }

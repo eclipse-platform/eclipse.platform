@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2023 Vector Informatik GmbH and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -8,20 +8,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.team.tests.core;
+package org.eclipse.team.tests.core.mapping;
 
-import org.eclipse.compare.tests.WorkspaceTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-public class TeamTest extends WorkspaceTest {
-
-	public TeamTest() {
-		super();
-	}
-	public TeamTest(String name) {
-		super(name);
-	}
-
+@RunWith(Suite.class)
+@SuiteClasses({ //
+		ScopeTests.class, //
+})
+public class AllTeamMappingTests {
 }

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.e4.core.services.nls;
 
+import jakarta.inject.Inject;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -36,7 +37,6 @@ import java.lang.annotation.Target;
  *
  * @since 1.2
  */
-@javax.inject.Qualifier
 @jakarta.inject.Qualifier
 @Documented
 @Target({ ElementType.FIELD, ElementType.PARAMETER })

@@ -15,6 +15,9 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.io.File;
 import junit.framework.Test;
@@ -32,22 +35,22 @@ import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
  * Test for bug 323833
  */
 public class TestBug323833 extends WorkspaceSessionTest {
-	public void test1() throws CoreException {
+	public void test1() throws Exception {
 		if (!Platform.getOS().equals(Platform.OS_MACOSX)) {
 			return;
 		}
 
-		IFileStore fileStore = getTempStore().getChild(getUniqueString());
-		createFileInFileSystem(fileStore);
+		IFileStore fileStore = workspaceRule.getTempStore().getChild(createUniqueString());
+		createInFileSystem(fileStore);
 
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac
 		IFileInfo info = fileStore.fetchInfo();
 		info.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
-		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, getMonitor());
+		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, createTestMonitor());
 
 		// create a cached file
 		File cachedFile = null;
-		cachedFile = fileStore.toLocalFile(EFS.CACHE, getMonitor());
+		cachedFile = fileStore.toLocalFile(EFS.CACHE, createTestMonitor());
 
 		IFileInfo cachedFileInfo = new LocalFile(cachedFile).fetchInfo();
 

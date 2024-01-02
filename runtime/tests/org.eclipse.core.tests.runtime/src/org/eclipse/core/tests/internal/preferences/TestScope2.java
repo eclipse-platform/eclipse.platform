@@ -13,13 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
+import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
+
 import java.util.Properties;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.core.tests.harness.CoreTest;
 import org.osgi.service.prefs.BackingStoreException;
 
 /*
@@ -38,7 +39,7 @@ public class TestScope2 extends EclipsePreferences implements IScopeContext {
 	private IPath location;
 
 	static {
-		baseLocation = new CoreTest().getRandomLocation();
+		baseLocation = getRandomLocation();
 	}
 
 	public TestScope2() {

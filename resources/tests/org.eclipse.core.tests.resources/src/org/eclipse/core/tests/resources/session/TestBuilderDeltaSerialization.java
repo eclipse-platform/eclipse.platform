@@ -16,17 +16,18 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.io.ByteArrayInputStream;
-import java.util.Map;
 import junit.framework.Test;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -63,44 +64,27 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	 */
 	public void test1() throws CoreException {
 		IResource[] resources = {project1, project2, unsorted1, unsorted2, sorted1, sorted2, unsortedFile1, unsortedFile2};
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 
 		// give unsorted files some initial content
 		unsortedFile1.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
 		unsortedFile2.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
 
-		// set build order
-		IWorkspaceDescription workspaceDescription = workspace.getDescription();
-		workspaceDescription.setBuildOrder(new String[] { project1.getName(), project2.getName() });
-		workspace.setDescription(workspaceDescription);
+		setBuildOrder(project1, project2);
 		setAutoBuilding(false);
 
 		// configure builder for project1
-		IProjectDescription description = project1.getDescription();
-		ICommand command = description.newCommand();
-		Map<String, String> args = command.getArguments();
-		args.put(TestBuilder.BUILD_ID, "Project1Build1");
-		args.put(TestBuilder.INTERESTING_PROJECT, project2.getName());
-		command.setBuilderName(SortBuilder.BUILDER_NAME);
-		command.setArguments(args);
-		description.setBuildSpec(new ICommand[] { command });
-		project1.setDescription(description, getMonitor());
+		updateProjectDescription(project1).addingCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Project1Build1")
+				.withAdditionalBuildArgument(TestBuilder.INTERESTING_PROJECT, project2.getName()).apply();
 
 		// configure builder for project2
-		description = project1.getDescription();
-		command = description.newCommand();
-		args = command.getArguments();
-		args.put(TestBuilder.BUILD_ID, "Project2Build1");
-		args.put(TestBuilder.INTERESTING_PROJECT, project1.getName());
-		command.setBuilderName(SortBuilder.BUILDER_NAME);
-		command.setArguments(args);
-		description.setBuildSpec(new ICommand[] { command });
-		project2.setDescription(description, getMonitor());
+		updateProjectDescription(project2).addingCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Project2Build1")
+				.withAdditionalBuildArgument(TestBuilder.INTERESTING_PROJECT, project1.getName()).apply();
 
 		// initial build -- created sortedFile1 and sortedFile2
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -108,7 +92,7 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	 * about changes made by Builder2 during the last build phase.
 	 */
 	public void test2() throws CoreException {
-		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		//Only builder1 should have been built
 		SortBuilder[] builders = SortBuilder.allInstances();
 		assertEquals("1.0", 2, builders.length);

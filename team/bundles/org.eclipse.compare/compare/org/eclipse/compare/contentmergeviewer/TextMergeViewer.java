@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -21,6 +21,7 @@
  *     Robin Stocker (robin@nibor.org) - Bug 399960: [Edit] Make merge arrow buttons easier to hit
  *     John Hendrikx (hjohn@xs4all.nl) - Bug 541401 - [regression] Vertical scrollbar thumb size is wrong in compare view
  *     Stefan Dirix (sdirix@eclipsesource.com) - Bug 473847: Minimum E4 Compatibility of Compare
+ *     Latha Patil (ETAS GmbH) - Issue #504 Show number of differences in the Compare editor
  *******************************************************************************/
 package org.eclipse.compare.contentmergeviewer;
 
@@ -45,6 +46,7 @@ import org.eclipse.compare.INavigatable;
 import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.LabelContributionItem;
 import org.eclipse.compare.SharedDocumentAdapter;
 import org.eclipse.compare.internal.ChangeCompareFilterPropertyAction;
 import org.eclipse.compare.internal.ChangePropertyAction;
@@ -175,6 +177,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -5408,6 +5411,34 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		updateVScrollBar();
 		updatePresentation();
+		updateToolbarLabel();
+	}
+
+	private void updateToolbarLabel() {
+		final String DIFF_COUNT_ID = "DiffCount"; //$NON-NLS-1$
+		ToolBarManager tbm =
+				(ToolBarManager) getToolBarManager(fComposite.getParent());
+		int differenceCount = fMerger.changesCount();
+		if (tbm != null) {
+
+			String label = differenceCount > 1 ? differenceCount + " Differences" //$NON-NLS-1$
+					: differenceCount == 1 ? differenceCount + " Difference" : "No Difference"; //$NON-NLS-1$ //$NON-NLS-2$
+			LabelContributionItem labelContributionItem = new LabelContributionItem(DIFF_COUNT_ID,
+					label);
+
+			if (tbm.find(DIFF_COUNT_ID) != null) {
+				tbm.replaceItem(DIFF_COUNT_ID, labelContributionItem);
+			} else {
+				tbm.appendToGroup("diffLabel", labelContributionItem); //$NON-NLS-1$
+			}
+			fComposite.getDisplay().asyncExec(() -> {
+				// relayout in next tick
+				ToolBar control = tbm.getControl();
+				if (control != null && !control.isDisposed()) {
+					tbm.update(true);
+				}
+			});
+		}
 	}
 
 	private void resetDiffs() {

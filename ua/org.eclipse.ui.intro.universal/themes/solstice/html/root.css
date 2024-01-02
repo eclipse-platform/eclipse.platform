@@ -211,10 +211,9 @@ a .link-extra-div, #page-links a .background-image {
 #action-links a#workbench {
     position : absolute;
     right : 20px;
-    top : 5px;
+    top : 0px;
     width : auto;
     text-align:center;
-    margin-bottom : 0px;
 }
 
 #page-links a#workbench .content-img,
@@ -224,7 +223,6 @@ a .link-extra-div, #page-links a .background-image {
     color: white;
     width:32px;
     height:auto;
-    margin:5px auto 0;
 }
 #page-links a#workbench img,
 #action-links a#workbench img {

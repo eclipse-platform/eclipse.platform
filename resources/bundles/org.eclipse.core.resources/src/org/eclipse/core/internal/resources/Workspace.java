@@ -1938,15 +1938,10 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	 */
 	private void initializePreferenceLookupOrder() throws CoreException {
 		PreferencesService service = PreferencesService.getDefault();
-		String[] original = service.getDefaultDefaultLookupOrder();
-		List<String> newOrder = new ArrayList<>();
 		// put the project scope first on the list
-		newOrder.add(ProjectScope.SCOPE);
-		newOrder.addAll(Arrays.asList(original));
-		service.setDefaultDefaultLookupOrder(newOrder.toArray(new String[newOrder.size()]));
+		service.prependScopeToDefaultDefaultLookupOrder(ProjectScope.SCOPE);
 		Preferences node = service.getRootNode().node(ProjectScope.SCOPE);
-		if (node instanceof ProjectPreferences) {
-			ProjectPreferences projectPreferences = (ProjectPreferences) node;
+		if (node instanceof ProjectPreferences projectPreferences) {
 			projectPreferences.setWorkspace(this);
 		} else {
 			throw new CoreException(Status.error(MessageFormat.format(

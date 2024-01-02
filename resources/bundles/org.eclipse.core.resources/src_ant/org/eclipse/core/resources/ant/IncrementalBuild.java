@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class IncrementalBuild extends Task {
 	private String builder;
-	private String project;
+	private String projectToBuild;
 	private int kind = IncrementalProjectBuilder.INCREMENTAL_BUILD;
 
 	/**
@@ -75,10 +75,10 @@ public class IncrementalBuild extends Task {
 			Hashtable<String, Object> references = getProject().getReferences();
 			if (references != null)
 				monitor = (IProgressMonitor) references.get(AntCorePlugin.ECLIPSE_PROGRESS_MONITOR);
-			if (project == null) {
+			if (projectToBuild == null) {
 				ResourcesPlugin.getWorkspace().build(kind, monitor);
 			} else {
-				IProject targetProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
+				IProject targetProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectToBuild);
 				if (builder == null)
 					targetProject.build(kind, monitor);
 				else
@@ -124,6 +124,6 @@ public class IncrementalBuild extends Task {
 	 * @param value the receiver's target project
 	 */
 	public void setProject(String value) {
-		project = value;
+		projectToBuild = value;
 	}
 }

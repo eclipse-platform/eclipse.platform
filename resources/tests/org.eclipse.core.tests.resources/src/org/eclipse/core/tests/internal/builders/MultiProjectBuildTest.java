@@ -15,12 +15,17 @@
 package org.eclipse.core.tests.internal.builders;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -30,13 +35,21 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.TestPerformer;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * This class tests builds that span multiple projects.  Project builders
  * can specify what other projects they are interested in receiving deltas for,
  * and they should only be receiving deltas for exactly those projects.
  */
-public class MultiProjectBuildTest extends AbstractBuilderTest {
+public class MultiProjectBuildTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
 	//various resource handles
 	private IProject project1;
 	private IProject project2;
@@ -46,13 +59,6 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 	private IFile file2;
 	private IFile file3;
 	private IFile file4;
-
-	/**
-	 * Public constructor required for test harness.
-	 */
-	public MultiProjectBuildTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * Returns an array of interesting project combinations.
@@ -70,12 +76,12 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 			for (IProject project : projects) {
 				for (IResource member : project.members()) {
 					if (member.getType() == IResource.FILE && !member.getName().equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
-						((IFile) member).setContents(getRandomContents(), true, true, null);
+						((IFile) member).setContents(createRandomContentsStream(), true, true, null);
 					}
 				}
 			}
 			getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-		}, getMonitor());
+		}, createTestMonitor());
 	}
 
 	/**
@@ -96,9 +102,8 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		setAutoBuilding(true);
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project1 = root.getProject("Project1");
@@ -110,18 +115,20 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 		file3 = project3.getFile("File3");
 		file4 = project4.getFile("File4");
 		IResource[] resources = {project1, project2, project3, project4, file1, file2, file3, file4};
-		ensureExistsInWorkspace(resources, true);
+		createInWorkspace(resources);
 	}
 
 	/**
 	 * In this test, only project1 has a builder, but it is interested in deltas from the other projects.
 	 * We vary the set of projects that are changed, and the set of projects we request deltas for.
 	 */
+	@Test
 	public void testDeltas() throws Exception {
 		//add builder and do an initial build to get the instance
 		setAutoBuilding(false);
-		addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
-		project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		updateProjectDescription(project1).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
+				.withTestBuilderId("testbuild").apply();
+		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		assertTrue("1.1", builder != null);
@@ -203,47 +210,44 @@ public class MultiProjectBuildTest extends AbstractBuilderTest {
 	/**
 	 * Tests a builder that requests deltas for closed and missing projects.
 	 */
+	@Test
 	public void testRequestMissingProject() throws CoreException {
 		//add builder and do an initial build to get the instance
-		addBuilder(project1, DeltaVerifierBuilder.BUILDER_NAME);
-		project1.build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		updateProjectDescription(project1).addingCommand(DeltaVerifierBuilder.BUILDER_NAME)
+				.withTestBuilderId("testbuild").apply();
+		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		assertTrue("1.1", builder != null);
 		//always check deltas for all projects
 		final IProject[] allProjects = new IProject[] {project1, project2, project3, project4};
-		project2.close(getMonitor());
-		project3.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, getMonitor());
+		project2.close(createTestMonitor());
+		project3.delete(IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
 
 		builder.checkDeltas(allProjects);
 
 		//modify a file in project1 to force an autobuild
-		file1.setContents(getRandomContents(), IResource.NONE, getMonitor());
+		file1.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
 	}
 
 	/**
 	 * Test for Bug #5102.  Never reproduced but interesting little test, worth keeping around
 	 */
+	@Test
 	public void testPR() throws Exception {
 		//create a project with a RefreshLocalJavaFileBuilder and a SortBuilder on the classpath
 		IProject project = getWorkspace().getRoot().getProject("P1");
 		project.create(null);
 		project.open(null);
-		IProjectDescription desc = project.getDescription();
-		ICommand one = desc.newCommand();
-		one.setBuilderName(RefreshLocalJavaFileBuilder.BUILDER_NAME);
-		ICommand two = desc.newCommand();
-		two.setBuilderName(SortBuilder.BUILDER_NAME);
-		desc.setBuildSpec(new ICommand[] {one, two});
-		project.setDescription(desc, null);
+		updateProjectDescription(project).addingCommand(RefreshLocalJavaFileBuilder.BUILDER_NAME)
+				.andCommand(SortBuilder.BUILDER_NAME).apply();
 
 		//do a full build
 		project.build(IncrementalProjectBuilder.FULL_BUILD, null);
 
 		//do an incremental build by creating a file
 		IFile file = project.getFile("Foo");
-		file.create(getRandomContents(), true, getMonitor());
-
+		file.create(createRandomContentsStream(), true, createTestMonitor());
 	}
 
 }

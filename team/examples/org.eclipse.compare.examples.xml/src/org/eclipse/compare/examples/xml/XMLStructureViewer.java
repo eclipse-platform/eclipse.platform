@@ -238,8 +238,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	}
 
 	/**
-	 * Overriden to create buttons in the viewer's pane control bar.
-	 * <p>
+	 * Overridden to create buttons in the viewer's pane control bar.
 	 *
 	 * @param toolBarManager the toolbar manager for which to add the buttons
 	 */
@@ -251,8 +250,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	}
 
 	/**
-	 * Overriden to create a context menu.
-	 * <p>
+	 * Overridden to create a context menu.
 	 *
 	 * @param manager the menu manager for which to add menu items
 	 */

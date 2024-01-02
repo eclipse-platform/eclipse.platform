@@ -14,6 +14,12 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.FOLDER;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.PROJECT;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.Q_NAME_SESSION;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.STRING_VALUE;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.commonFailureTestsForResource;
+import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.isLocal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
@@ -29,8 +35,14 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
 
-public class IFolderTest extends IResourceTest {
+public class IFolderTest {
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tests failure on get/set methods invoked on a nonexistent folder.
@@ -70,6 +82,7 @@ public class IFolderTest extends IResourceTest {
 	 * Test IResource API
 	 * Test IFolder API
 	 */
+	@Test
 	public void testFolder() throws CoreException {
 		IProgressMonitor monitor = null;
 		IWorkspace workspace = getWorkspace();
@@ -224,4 +237,5 @@ public class IFolderTest extends IResourceTest {
 		assertThat("folder at path '" + folder.getFullPath() + "' unexpectedly exists in workspace",
 				!wb.getRoot().exists(folder.getFullPath()));
 	}
+
 }

@@ -11,30 +11,37 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.resources.usecase;
+package org.eclipse.core.tests.resources.perf;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.harness.PerformanceTestRunner;
-import org.eclipse.core.tests.resources.ResourceTest;
+import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestName;
 
-public class ConcurrencyPerformanceTest extends ResourceTest {
+public class ConcurrencyPerformanceTest {
 
-	public void testSimpleCalls() {
+	@Rule
+	public TestName testName = new TestName();
+
+	@Rule
+	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Test
+	public void testSimpleCalls() throws Exception {
 		final IWorkspaceRunnable job = monitor -> {
 			// do nothing
 		};
 		new PerformanceTestRunner() {
 			@Override
-			protected void test() {
-				try {
-					getWorkspace().run(job, null);
-				} catch (CoreException e) {
-					fail("1.0", e);
-				}
+			protected void test() throws CoreException {
+				getWorkspace().run(job, null);
 			}
-		}.run(this, 10, 50);
+		}.run(getClass(), testName.getMethodName(), 10, 50);
 	}
+
 }

@@ -51,7 +51,6 @@ import java.lang.annotation.Target;
  *
  * @since 1.3
  */
-@javax.inject.Qualifier
 @jakarta.inject.Qualifier
 @Documented
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})

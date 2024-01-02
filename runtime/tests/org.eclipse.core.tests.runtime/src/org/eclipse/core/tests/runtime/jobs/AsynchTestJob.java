@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import java.util.concurrent.atomic.AtomicIntegerArray;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -23,22 +22,23 @@ import org.eclipse.core.tests.harness.TestBarrier2;
  * A job that executes asynchronously on a separate thread
  */
 class AsynchTestJob extends Job {
-	private final AtomicIntegerArray status;
-	private final int index;
+	public final TestBarrier2 jobBarrier;
 
-	public AsynchTestJob(String name, AtomicIntegerArray status, int index) {
+	public final TestBarrier2 threadBarrier;
+
+	public AsynchTestJob(String name) {
 		super(name);
-		this.status = status;
-		this.index = index;
+		this.jobBarrier = new TestBarrier2();
+		this.threadBarrier = new TestBarrier2();
 	}
 
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
-		status.set(index, TestBarrier2.STATUS_RUNNING);
-		AsynchExecThread t = new AsynchExecThread(monitor, this, 100, 10, getName(), status, index);
-		TestBarrier2.waitForStatus(status, index, TestBarrier2.STATUS_START);
+		jobBarrier.upgradeTo(TestBarrier2.STATUS_START);
+		AsynchExecThread t = new AsynchExecThread(monitor, this, getName(), threadBarrier);
+		jobBarrier.waitForStatus(TestBarrier2.STATUS_WAIT_FOR_RUN);
 		t.start();
-		status.set(index, TestBarrier2.STATUS_WAIT_FOR_START);
+		jobBarrier.upgradeTo(TestBarrier2.STATUS_RUNNING);
 		return Job.ASYNC_FINISH;
 	}
 

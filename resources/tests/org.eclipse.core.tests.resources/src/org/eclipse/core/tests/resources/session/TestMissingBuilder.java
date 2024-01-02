@@ -17,6 +17,10 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -63,11 +67,11 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 */
 	public void test1() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
-		ensureExistsInWorkspace(project, true);
+		createInWorkspace(project);
 		setAutoBuilding(true);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
-		project.setDescription(desc, IResource.FORCE, getMonitor());
+		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		//wait for background build to complete
 		waitForBuild();
 		//remove the water nature, thus invalidating snow nature
@@ -75,14 +79,14 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		builder.reset();
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		// setting description file will also trigger build
-		descFile.setContents(projectFileWithoutWater(), IResource.FORCE, getMonitor());
+		descFile.setContents(projectFileWithoutWater(), IResource.FORCE, createTestMonitor());
 		//assert that builder was skipped
 		builder.assertLifecycleEvents();
 
 		//assert that the builder is still in the build spec
 		assertTrue(hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -96,13 +100,13 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		assertTrue(hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		//perform a build and ensure snow builder isn't called
-		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
 		builder.assertLifecycleEvents();
 
-		getWorkspace().save(true, getMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
@@ -116,7 +120,7 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		assertTrue("1.0", hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		//perform a build and ensure snow builder isn't called
-		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, getMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		SnowBuilder builder = SnowBuilder.getInstance();
 		builder.addExpectedLifecycleEvent(TestBuilder.SET_INITIALIZATION_DATA);
 		builder.addExpectedLifecycleEvent(TestBuilder.STARTUP_ON_INITIALIZE);
@@ -128,7 +132,7 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		builder.addExpectedLifecycleEvent(SnowBuilder.SNOW_BUILD_EVENT);
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_WATER, NATURE_SNOW });
-		project.setDescription(desc, IResource.FORCE, getMonitor());
+		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		waitForBuild();
 		builder.assertLifecycleEvents();
 		assertTrue(builder.wasDeltaNull());
