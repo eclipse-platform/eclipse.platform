@@ -131,7 +131,7 @@ public class PKIController implements IStartup {
 		}
 
 		try {
-			//System.out.println("PKIController  Setup preferences");
+			System.out.println("PKIController  Setup preferences");
 			IPreferenceStore store = AuthenticationPlugin.getDefault().getPreferenceStore();
 			String tsPref = store.getString(AuthenticationPreferences.TRUST_STORE_LOCATION);
 
