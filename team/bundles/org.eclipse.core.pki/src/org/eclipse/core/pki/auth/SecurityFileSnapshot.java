@@ -14,6 +14,7 @@
 package org.eclipse.core.pki.auth;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -32,6 +33,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.core.pki.util.LogUtil;
+import org.eclipse.core.pki.util.NormalizeAES256;
+import org.eclipse.core.pki.util.SecureAES256;
 
 public enum SecurityFileSnapshot {
 	INSTANCE;
@@ -63,14 +66,34 @@ public enum SecurityFileSnapshot {
 		}
 		return false;
 	}
-	public Properties load() {
+
+	public Properties load(String password, String salt) {
 		Properties properties = new Properties();
+		String passwd = null;
 		try {
 			FileChannel fileChannel = FileChannel.open(pkiFile, StandardOpenOption.READ);
+			FileChannel updateChannel = FileChannel.open(pkiFile, StandardOpenOption.WRITE);
 			FileLock lock = fileChannel.lock(0L, Long.MAX_VALUE,true);
 			properties.load(Channels.newInputStream(fileChannel));
 			for ( Entry<Object,Object>entry:properties.entrySet()) {
 				entry.setValue(entry.getValue().toString().trim());
+			}
+			Optional encryptedPasswd = Optional.ofNullable(properties.getProperty("javax.net.ssl.encryptedPassword")); //$NON-NLS-1$
+			if (encryptedPasswd.isEmpty()) {
+				System.out.println("ILoadProperties empty encrypted passwd NOT found"); //$NON-NLS-1$
+				properties.setProperty("javax.net.ssl.encryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+				passwd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
+				properties.setProperty("javax.net.ssl.keyStorePassword", //$NON-NLS-1$
+						SecureAES256.ENCRYPT.encrypt(passwd, password, salt));
+				OutputStream os = Channels.newOutputStream(updateChannel);
+
+				properties.save(os, null);
+
+			} else {
+				String ePasswd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
+				System.out.println("SecurityFileSnapshot encrypted passwd found"); //$NON-NLS-1$
+				passwd = NormalizeAES256.DECRYPT.decrypt(ePasswd, password, salt);
+				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 			}
 			System.setProperties(properties);
 			lock.release();
