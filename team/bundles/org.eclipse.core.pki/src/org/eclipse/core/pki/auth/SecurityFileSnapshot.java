@@ -86,16 +86,15 @@ public enum SecurityFileSnapshot {
 				properties.setProperty("javax.net.ssl.keyStorePassword", //$NON-NLS-1$
 						SecureAES256.ENCRYPT.encrypt(passwd, password, salt));
 				OutputStream os = Channels.newOutputStream(updateChannel);
-
 				properties.save(os, null);
-
+				// After saving encrypted passwd to properties file, switch to unencrypted
+				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 			} else {
 				String ePasswd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
 				System.out.println("SecurityFileSnapshot encrypted passwd found"); //$NON-NLS-1$
 				passwd = NormalizeAES256.DECRYPT.decrypt(ePasswd, password, salt);
 				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 			}
-			LogUtil.logInfo("SecurityFileSnapshot --  UNencrypted pw:"+ passwd); //$NON-NLS-1$
 			System.setProperties(properties);
 			lock.release();
 			LogUtil.logWarning("Loaded System Properties for PKI"); //$NON-NLS-1$
