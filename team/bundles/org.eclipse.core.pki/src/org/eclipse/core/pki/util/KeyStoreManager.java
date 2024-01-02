@@ -62,6 +62,7 @@ public enum KeyStoreManager implements X509KeyManager {
 				keyStore = KeyStore.getInstance(format.getValue());
 				keyStore.load(in, password.toCharArray());
 
+				setKeyStoreInitialized(true);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -120,7 +121,8 @@ public enum KeyStoreManager implements X509KeyManager {
 			keyStore = KeyStore.getInstance("pkcs11", "SunPKCS11"); //$NON-NLS-1$ //$NON-NLS-2$
 			try {
 				keyStore.load(null, pp.getPassword());
-				isKeyStoreInitialized=true;
+
+				setKeyStoreInitialized(true);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
@@ -140,7 +142,7 @@ public enum KeyStoreManager implements X509KeyManager {
 		PrivateKey privateKey=null;
 
 		try {
-			if ( isKeyStoreInitialized ) {
+			if (isKeyStoreInitialized()) {
 				Enumeration<String> aliasesEnum = keyStore.aliases();
 				while (aliasesEnum.hasMoreElements())
 				{
@@ -341,6 +343,14 @@ public enum KeyStoreManager implements X509KeyManager {
 		return selectedAlias;
 	}
 
+	public boolean isKeyStoreInitialized() {
+		return isKeyStoreInitialized;
+	}
+
+	private void setKeyStoreInitialized(boolean isKeyStoreInitialized) {
+		this.isKeyStoreInitialized = isKeyStoreInitialized;
+	}
+
 	private boolean isDigitalSignature(boolean[] ba) {
 		if (ba != null) {
 
@@ -410,7 +420,7 @@ public enum KeyStoreManager implements X509KeyManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DebugLogger.printDebug("CustomKeyManager CERTIFICATE CHAIN  COUNT:" + X509Certs.length); //$NON-NLS-1$
+		DebugLogger.printDebug("KeyStoreManager CERTIFICATE CHAIN  COUNT:" + X509Certs.length); //$NON-NLS-1$
 		// return X509Certs;
 		try {
 			X509Certs = new X509Certificate[1];
