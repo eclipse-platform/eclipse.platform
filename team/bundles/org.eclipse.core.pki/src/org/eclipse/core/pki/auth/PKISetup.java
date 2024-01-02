@@ -136,8 +136,9 @@ public class PKISetup implements BundleActivator, IStartup {
 				}
 
 				if (IncomingSystemProperty.SETTINGS.checkTrustStoreType()) {
-					if (IncomingSystemProperty.SETTINGS.checkTrustStore()) {
-						LogUtil.logError("A Truststore and Password are detected.", null);  //$NON-NLS-1$
+					if ((IncomingSystemProperty.SETTINGS.checkTrustStore()) &&
+							(KeyStoreManager.INSTANCE.isKeyStoreInitialized())) {
+						LogUtil.logInfo("A KeyStore and Truststore are detected."); //$NON-NLS-1$
 						Optional<X509TrustManager> PKIXtrust = ConfigureTrust.MANAGER.setUp();
 
 						try {
@@ -156,7 +157,10 @@ public class PKISetup implements BundleActivator, IStartup {
 							// TODO Auto-generated catch block
 							LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
 						}
+					} else {
+						LogUtil.logError("Valid KeyStore and Truststore not found.", null); //$NON-NLS-1$
 					}
+
 				}
 			}
 		}
