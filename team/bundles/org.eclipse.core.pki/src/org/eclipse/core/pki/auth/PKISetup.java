@@ -150,6 +150,8 @@ public class PKISetup implements BundleActivator, IStartup {
 							} else {
 								SSLContext ctx = SSLContext.getInstance("TLS");//$NON-NLS-1$
 								ctx.init(km, tm, null);
+								SSLContext.setDefault(ctx);
+								LogUtil.logInfo("PKISetup default SSLContext has been configured."); //$NON-NLS-1$
 							}
 						} catch (NoSuchAlgorithmException e) {
 							// TODO Auto-generated catch block
