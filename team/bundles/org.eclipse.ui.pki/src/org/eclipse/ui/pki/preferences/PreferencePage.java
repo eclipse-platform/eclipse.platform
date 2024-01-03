@@ -19,6 +19,7 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.Optional;
 
+import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -118,8 +119,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
          * Otherwise, just make the pkcs12 selection available.
          */
        
-        	
-        if (PKCSpick.getInstance().isPKCS11on()) {
+        if (PKIState.CONTROL.isPKCS11on()) {
         	//(VendorImplementation.getInstance().isInstalled() )) {
         
         	//System.out.println("PreferencePage -------- AVAL:"+VendorImplementation.getInstance().isInstalled() );
@@ -146,22 +146,18 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     			.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION,
     				 configurationLocationFile.getStringValue() );
     		
+        } else if (PKIState.CONTROL.isPKCS12on()) {
+        	System.out.println("PreferencePage --------- pkcs12 is on");
+        	setPkcs11InVisible();
+        	setPkcs12Visible();
         	
-        } else if ((!(  PKCSpick.getInstance().isPKCS11on())) && 
-            		(!(PKCSpick.getInstance().isPKCS12on())) ) {
+        } else if ((!( PKIState.CONTROL.isPKCS11on() )) && 
+            		(!(PKIState.CONTROL.isPKCS12on())) ) {
             		//(!(VendorImplementation.getInstance().isInstalled() ))) {
         	System.out.println("PreferencePage --------- THERE WAS NO DEFAULT  pkcs12 is on");
         	setPkcs11InVisible();
         	setPkcs12Visible();
-        } else if ( PKCSpick.getInstance().isPKCS11on()) {
-        	System.out.println("PreferencePage ---------  pkcs11 is on");
-        	setPkcs12InVisible();
-        	setPkcs11Visible();
-        } else if ( PKCSpick.getInstance().isPKCS12on()) {
-        	System.out.println("PreferencePage --------- pkcs12 is on");
-        	setPkcs11InVisible();
-        	setPkcs12Visible();
-        }
+        } 
         
         initialize();
         setEditors();
