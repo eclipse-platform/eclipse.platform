@@ -93,7 +93,7 @@ public class PKIController implements IStartup {
 		
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 			//System.out.println("PKIController get PKI TYPE");
-			PublicKeySecurity.INSTANCE.getPkiPropertyFile();
+			PublicKeySecurity.INSTANCE.getPkiPropertyFile("#Gone2Boat@Bay");
 			String pkiType = System.getProperty("javax.net.ssl.keyStoreType").trim();
 			//System.out.println("PKIController PKI TYPE:["+pkiType+"]");
 			if ( pkiType != null) {

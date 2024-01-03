@@ -39,6 +39,7 @@ import org.osgi.framework.BundleContext;
 
 public class PKISetup implements BundleActivator, IStartup {
 	public static final String ID = "org.eclipse.core.pki"; //$NON-NLS-1$
+	protected String pin = "#Gone2Boat@Bay"; //$NON-NLS-1$
 	private static PKISetup instance;
 	static boolean isPkcs11Installed = false;
 	private static final ServiceCaller<ILog> logger = new ServiceCaller(PKISetup.class, ILog.class);
@@ -104,12 +105,12 @@ public class PKISetup implements BundleActivator, IStartup {
 			PKIState.CONTROL.setPKCS11on(false);
 			PKIState.CONTROL.setPKCS12on(false);
 			if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
-				PublicKeySecurity.INSTANCE.getPkiPropertyFile();
+				PublicKeySecurity.INSTANCE.getPkiPropertyFile(pin);
 			}
 		}
 
 		if (IncomingSystemProperty.SETTINGS.checkType()) {
-			if (IncomingSystemProperty.SETTINGS.checkKeyStore()) {
+			if (IncomingSystemProperty.SETTINGS.checkKeyStore(pin)) {
 				if (PKIState.CONTROL.isPKCS12on()) {
 
 					try {
