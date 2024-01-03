@@ -29,6 +29,7 @@ Export-Package: org.eclipse.debug.tests,
  org.eclipse.debug.tests.ui,
  org.eclipse.debug.tests.view.memory,
  org.eclipse.debug.tests.viewer.model
-Import-Package: org.assertj.core.api;version="3.24.2"
+Import-Package: org.assertj.core.api;version="3.24.2",
+ org.assertj.core.api.iterable
 Eclipse-BundleShape: dir
 Automatic-Module-Name: org.eclipse.debug.tests

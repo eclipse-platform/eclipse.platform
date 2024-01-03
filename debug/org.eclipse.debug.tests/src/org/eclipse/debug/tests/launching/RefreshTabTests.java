@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -75,9 +76,7 @@ public class RefreshTabTests extends AbstractLaunchTest {
 		IResource resource = getProject().getFolder("src"); //$NON-NLS-1$
 		setSelection(resource);
 		IResource[] result = RefreshTab.getRefreshResources(scope);
-		assertNotNull(result);
-		assertEquals(1, result.length);
-		assertEquals(resource, result[0]);
+		assertThat(result).containsExactly(resource);
 	}
 
 	/**
@@ -89,9 +88,7 @@ public class RefreshTabTests extends AbstractLaunchTest {
 		IResource resource = getProject().getFolder("src"); //$NON-NLS-1$
 		setSelection(resource);
 		IResource[] result = RefreshTab.getRefreshResources(scope);
-		assertNotNull(result);
-		assertEquals(1, result.length);
-		assertEquals(resource.getParent(), result[0]);
+		assertThat(result).containsExactly(resource.getParent());
 	}
 
 	/**
@@ -103,9 +100,7 @@ public class RefreshTabTests extends AbstractLaunchTest {
 		IResource resource = getProject().getFolder("src"); //$NON-NLS-1$
 		setSelection(resource);
 		IResource[] result = RefreshTab.getRefreshResources(scope);
-		assertNotNull(result);
-		assertEquals(1, result.length);
-		assertEquals(resource.getProject(), result[0]);
+		assertThat(result).containsExactly(resource.getProject());
 	}
 
 	/**
@@ -115,9 +110,7 @@ public class RefreshTabTests extends AbstractLaunchTest {
 	public void testWorkspaceScope() throws CoreException {
 		String scope = "${workspace}"; //$NON-NLS-1$
 		IResource[] result = RefreshTab.getRefreshResources(scope);
-		assertNotNull(result);
-		assertEquals(1, result.length);
-		assertEquals(ResourcesPlugin.getWorkspace().getRoot(), result[0]);
+		assertThat(result).containsExactly(ResourcesPlugin.getWorkspace().getRoot());
 	}
 
 	/**
@@ -128,9 +121,7 @@ public class RefreshTabTests extends AbstractLaunchTest {
 		String scope = "${resource:/RefreshTabTests/some.file}"; //$NON-NLS-1$
 		IResource resource = getProject().getFile("some.file"); //$NON-NLS-1$
 		IResource[] result = RefreshTab.getRefreshResources(scope);
-		assertNotNull(result);
-		assertEquals(1, result.length);
-		assertEquals(resource, result[0]);
+		assertThat(result).containsExactly(resource);
 	}
 
 	/**
@@ -141,9 +132,7 @@ public class RefreshTabTests extends AbstractLaunchTest {
 		String scope= "${working_set:<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<launchConfigurationWorkingSet factoryID=\"org.eclipse.ui.internal.WorkingSetFactory\" name=\"workingSet\" editPageId=\"org.eclipse.ui.resourceWorkingSetPage\">\n<item factoryID=\"org.eclipse.ui.internal.model.ResourceFactory\" path=\"/RefreshTabTests/some.file\" type=\"1\"/>\n</launchConfigurationWorkingSet>}"; //$NON-NLS-1$
 		IResource resource = getProject().getFile("some.file"); //$NON-NLS-1$
 		IResource[] result = RefreshTab.getRefreshResources(scope);
-		assertNotNull(result);
-		assertEquals(1, result.length);
-		assertEquals(resource, result[0]);
+		assertThat(result).containsExactly(resource);
 	}
 
 	/**
@@ -199,11 +188,7 @@ public class RefreshTabTests extends AbstractLaunchTest {
 		IResource[] resources = new IResource[] { getProject(), getProject().getFile("not.exist"), getProject().getFile("some.file") }; //$NON-NLS-1$ //$NON-NLS-2$
 		String memento = RefreshUtil.toMemento(resources);
 		IResource[] restore = RefreshUtil.toResources(memento);
-		assertNotNull(resources);
-		assertEquals(resources.length, restore.length);
-		assertEquals(resources[0], restore[0]);
-		assertEquals(resources[1], restore[1]);
-		assertEquals(resources[2], restore[2]);
+		assertThat(restore).containsExactly(resources);
 	}
 
 	/**
@@ -213,7 +198,6 @@ public class RefreshTabTests extends AbstractLaunchTest {
 	public void testEmptyResourceSet() throws CoreException {
 		String memento = RefreshUtil.toMemento(new IResource[]{});
 		IResource[] resources = RefreshUtil.toResources(memento);
-		assertNotNull(resources);
-		assertEquals("Should be empty", 0, resources.length); //$NON-NLS-1$
+		assertThat(resources).isEmpty();
 	}
 }

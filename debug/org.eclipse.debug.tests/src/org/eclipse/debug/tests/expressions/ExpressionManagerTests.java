@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.expressions;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -137,22 +138,6 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 	}
 
 	/**
-	 * Returns the index of the given expression in the given list or -1 if not present.
-	 *
-	 * @param expression candidate
-	 * @param list list to search
-	 * @return index or -1
-	 */
-	private int indexOf(IExpression expression, IExpression[] list) {
-		for (int i = 0; i < list.length; i++) {
-			if (expression.equals(list[i])) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	/**
 	 * Add expressions and ensure proper call backs are received.
 	 */
 	@Test
@@ -168,7 +153,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			IWatchExpression exp3 = manager.newWatchExpression("exp3"); //$NON-NLS-1$
 			manager.addExpressions(new IExpression[]{exp1, exp2, exp3});
 			IExpression[] expressions = manager.getExpressions();
-			assertEquals("Wrong number of expressions", 3, expressions.length); //$NON-NLS-1$
+			assertThat(expressions).containsExactly(exp1, exp2, exp3);
 			assertEquals(single.addedCallbacks, 3);
 			assertEquals(3, single.added.size());
 			assertEquals(0, single.added.indexOf(exp1));
@@ -179,9 +164,6 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			assertEquals(1, multi.addedCallbacks);
 			assertEquals(0, multi.removedCallbacks);
 			assertEquals(0, multi.changedCallbacks);
-			assertEquals(0, indexOf(exp1, expressions));
-			assertEquals(1, indexOf(exp2, expressions));
-			assertEquals(2, indexOf(exp3, expressions));
 		} finally {
 			manager.removeExpressionListener(single);
 			manager.removeExpressionListener(multi);
@@ -205,7 +187,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			manager.addExpressions(new IExpression[]{exp1, exp2, exp3});
 			manager.removeExpressions(new IExpression[]{exp1, exp3});
 			IExpression[] expressions = manager.getExpressions();
-			assertEquals("Wrong number of expressions", 1, expressions.length); //$NON-NLS-1$
+			assertThat(expressions).containsExactly(exp2);
 			assertEquals(single.addedCallbacks, 3);
 			assertEquals(3, single.added.size());
 			assertEquals(0, single.added.indexOf(exp1));
@@ -220,9 +202,6 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			assertEquals(0, multi.removed.indexOf(exp1));
 			assertEquals(1, multi.removed.indexOf(exp3));
 			assertEquals(0, multi.changedCallbacks);
-			assertEquals(-1, indexOf(exp1, expressions));
-			assertEquals(0, indexOf(exp2, expressions));
-			assertEquals(-1, indexOf(exp3, expressions));
 		} finally {
 			manager.removeExpressionListener(single);
 			manager.removeExpressionListener(multi);
@@ -247,7 +226,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			IExpression[] expressions = manager.getExpressions();
 			exp1.setEnabled(false);
 			exp2.setExpressionText("exp2changed"); //$NON-NLS-1$
-			assertEquals("Wrong number of expressions", 3, expressions.length); //$NON-NLS-1$
+			assertThat(expressions).containsExactly(exp1, exp2, exp3);
 			assertEquals(single.addedCallbacks, 3);
 			assertEquals(3, single.added.size());
 			assertEquals(0, single.added.indexOf(exp1));
@@ -262,9 +241,6 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			assertEquals(2, multi.changedCallbacks);
 			assertEquals(0, multi.changed.indexOf(exp1));
 			assertEquals(1, multi.changed.indexOf(exp2));
-			assertEquals(0, indexOf(exp1, expressions));
-			assertEquals(1, indexOf(exp2, expressions));
-			assertEquals(2, indexOf(exp3, expressions));
 		} finally {
 			manager.removeExpressionListener(single);
 			manager.removeExpressionListener(multi);
@@ -288,10 +264,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			IWatchExpression exp5 = manager.newWatchExpression("exp5"); //$NON-NLS-1$
 			manager.addExpressions(new IExpression[]{exp1, exp2, exp3});
 			IExpression[] expressions = manager.getExpressions();
-			assertEquals("Wrong number of expressions", 3, expressions.length); //$NON-NLS-1$
-			assertEquals(0, indexOf(exp1, expressions));
-			assertEquals(1, indexOf(exp2, expressions));
-			assertEquals(2, indexOf(exp3, expressions));
+			assertThat(expressions).containsExactly(exp1, exp2, exp3);
 			// add listeners
 			manager.addExpressionListener(single);
 			manager.addExpressionListener(multi);
@@ -315,12 +288,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			assertEquals(1, insert.inserted.indexOf(exp5));
 
 			expressions = manager.getExpressions();
-			assertEquals("Wrong number of expressions", 5, expressions.length); //$NON-NLS-1$
-			assertEquals(0, indexOf(exp1, expressions));
-			assertEquals(1, indexOf(exp4, expressions));
-			assertEquals(2, indexOf(exp5, expressions));
-			assertEquals(3, indexOf(exp2, expressions));
-			assertEquals(4, indexOf(exp3, expressions));
+			assertThat(expressions).containsExactly(exp1, exp4, exp5, exp2, exp3);
 
 		} finally {
 			manager.removeExpressionListener(single);
@@ -346,10 +314,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			IWatchExpression exp5 = manager.newWatchExpression("exp5"); //$NON-NLS-1$
 			manager.addExpressions(new IExpression[]{exp1, exp2, exp3});
 			IExpression[] expressions = manager.getExpressions();
-			assertEquals("Wrong number of expressions", 3, expressions.length); //$NON-NLS-1$
-			assertEquals(0, indexOf(exp1, expressions));
-			assertEquals(1, indexOf(exp2, expressions));
-			assertEquals(2, indexOf(exp3, expressions));
+			assertThat(expressions).containsExactly(exp1, exp2, exp3);
 			// add listeners
 			manager.addExpressionListener(single);
 			manager.addExpressionListener(multi);
@@ -373,12 +338,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			assertEquals(1, insert.inserted.indexOf(exp5));
 
 			expressions = manager.getExpressions();
-			assertEquals("Wrong number of expressions", 5, expressions.length); //$NON-NLS-1$
-			assertEquals(0, indexOf(exp1, expressions));
-			assertEquals(1, indexOf(exp2, expressions));
-			assertEquals(2, indexOf(exp4, expressions));
-			assertEquals(3, indexOf(exp5, expressions));
-			assertEquals(4, indexOf(exp3, expressions));
+			assertThat(expressions).containsExactly(exp1, exp2, exp4, exp5, exp3);
 
 		} finally {
 			manager.removeExpressionListener(single);
@@ -424,12 +384,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			assertEquals(2, insert.insertIndex);
 
 			IExpression[] expressions = manager.getExpressions();
-			assertEquals("Wrong number of expressions", 5, expressions.length); //$NON-NLS-1$
-			assertEquals(0, indexOf(exp3, expressions));
-			assertEquals(1, indexOf(exp4, expressions));
-			assertEquals(2, indexOf(exp1, expressions));
-			assertEquals(3, indexOf(exp2, expressions));
-			assertEquals(4, indexOf(exp5, expressions));
+			assertThat(expressions).containsExactly(exp3, exp4, exp1, exp2, exp5);
 
 		} finally {
 			manager.removeExpressionListener(single);
@@ -475,12 +430,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 			assertEquals(1, insert.insertIndex);
 
 			IExpression[] expressions = manager.getExpressions();
-			assertEquals("Wrong number of expressions", 5, expressions.length); //$NON-NLS-1$
-			assertEquals(0, indexOf(exp3, expressions));
-			assertEquals(1, indexOf(exp1, expressions));
-			assertEquals(2, indexOf(exp2, expressions));
-			assertEquals(3, indexOf(exp4, expressions));
-			assertEquals(4, indexOf(exp5, expressions));
+			assertThat(expressions).containsExactly(exp3, exp1, exp2, exp4, exp5);
 
 		} finally {
 			manager.removeExpressionListener(single);
@@ -506,12 +456,8 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 		// create a new manager that will restore the expressions
 		ExpressionManager manager2 = new ExpressionManager();
 		IExpression[] expressions = manager2.getExpressions();
-		assertEquals("Wrong number of expressions", 5, expressions.length); //$NON-NLS-1$
-		assertEquals("exp1", expressions[0].getExpressionText()); //$NON-NLS-1$
-		assertEquals("exp2", expressions[1].getExpressionText()); //$NON-NLS-1$
-		assertEquals("exp3", expressions[2].getExpressionText()); //$NON-NLS-1$
-		assertEquals("exp4", expressions[3].getExpressionText()); //$NON-NLS-1$
-		assertEquals("exp5", expressions[4].getExpressionText()); //$NON-NLS-1$
+		assertThat(expressions).hasSize(5) //
+				.extracting(IExpression::getExpressionText).containsExactly("exp1", "exp2", "exp3", "exp4", "exp5");
 	}
 
 	/**
@@ -546,7 +492,7 @@ public class ExpressionManagerTests extends AbstractDebugTest {
 		t2.start();
 		t1.join();
 		t2.join();
-		assertEquals(0, getManager().getExpressions().length);
+		assertThat(getManager().getExpressions()).isEmpty();
 		assertNull(ex[0]);
 	}
 
