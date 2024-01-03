@@ -39,7 +39,7 @@ import org.osgi.framework.BundleContext;
 
 public class PKISetup implements BundleActivator, IStartup {
 	public static final String ID = "org.eclipse.core.pki"; //$NON-NLS-1$
-	protected String pin = "#Gone2Boat@Bay"; //$NON-NLS-1$
+	protected final String pin = "#Gone2Boat@Bay"; //$NON-NLS-1$
 	private static PKISetup instance;
 	static boolean isPkcs11Installed = false;
 	private static final ServiceCaller<ILog> logger = new ServiceCaller(PKISetup.class, ILog.class);
@@ -99,8 +99,7 @@ public class PKISetup implements BundleActivator, IStartup {
 		type = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
 
 		if (type.isEmpty()) {
-			// System.out.println("PKISetup WAS a -D parameter list passed into command
-			// line"); //$NON-NLS-1$
+			System.out.println("PKISetup WAS it commandline"); //$NON-NLS-1$
 
 			PKIState.CONTROL.setPKCS11on(false);
 			PKIState.CONTROL.setPKCS12on(false);
@@ -108,7 +107,7 @@ public class PKISetup implements BundleActivator, IStartup {
 				PublicKeySecurity.INSTANCE.getPkiPropertyFile(pin);
 			}
 		}
-
+		LogUtil.logInfo("PKISetup - now looking at incoming"); //$NON-NLS-1$
 		if (IncomingSystemProperty.SETTINGS.checkType()) {
 			if (IncomingSystemProperty.SETTINGS.checkKeyStore(pin)) {
 				if (PKIState.CONTROL.isPKCS12on()) {
