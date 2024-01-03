@@ -14,11 +14,11 @@
 package org.eclipse.compare.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -57,15 +57,9 @@ import org.eclipse.compare.tests.PatchUtils.StringStorage;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.junit.Test;
-
-import junit.framework.AssertionFailedError;
+import org.junit.jupiter.api.Test;
 
 public class PatchTest {
 
@@ -297,27 +291,13 @@ public class PatchTest {
 			}
 		}
 
-		if (failures.isEmpty())
-			return;
-
-		if (failures.size() == 1)
+		if (failures.size() == 1) {
 			throw failures.get(0);
-
-		StringBuilder sb = new StringBuilder(
-				"Failures occured while testing data from patchdata subfolder (Please check log for further details):");
-		for (AssertionError error : failures) {
-			log("org.eclipse.compare.tests", error);
-			sb.append("\n" + error.getMessage());
+		} else if (failures.size() > 1) {
+			AssertionError aggregatedFailure = new AssertionError("Failures occured while testing data from patchdata subfolder");
+			failures.forEach(failure -> aggregatedFailure.addSuppressed(failure));
+			throw aggregatedFailure;
 		}
-		throw new AssertionFailedError(sb.toString());
-	}
-
-	private void log(String pluginID, IStatus status) {
-		ILog.of(Platform.getBundle(pluginID)).log(status);
-	}
-
-	private void log(String pluginID, Throwable e) {
-		log(pluginID, new Status(IStatus.ERROR, pluginID, IStatus.ERROR, "Error", e)); //$NON-NLS-1$
 	}
 
 	/**

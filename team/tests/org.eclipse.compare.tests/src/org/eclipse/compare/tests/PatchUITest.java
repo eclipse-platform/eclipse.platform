@@ -14,7 +14,7 @@
 package org.eclipse.compare.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,9 +46,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -62,7 +62,7 @@ public class PatchUITest {
 	private PatchWizardDialog wizardDialog = null;
 	private PatchWizard wizard = null;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		testProject = workspaceRoot.getProject(TEST_PROJECT);
@@ -70,7 +70,7 @@ public class PatchUITest {
 		testProject.open(null);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		testProject.delete(true, null);
 	}

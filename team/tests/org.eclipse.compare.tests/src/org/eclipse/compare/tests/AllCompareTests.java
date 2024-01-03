@@ -13,17 +13,15 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Test some non-UI areas of the compare plug-in.
  */
-
-@RunWith(Suite.class)
 @SuppressWarnings("deprecation")
-@SuiteClasses({
+@Suite
+@SelectClasses({
 	TextMergeViewerTest.class,
 	LineReaderTest.class,
 	StreamMergerTest.class,

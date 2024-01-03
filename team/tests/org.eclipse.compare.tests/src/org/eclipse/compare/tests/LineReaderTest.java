@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.eclipse.compare.internal.core.patch.LineReader;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LineReaderTest  {
 

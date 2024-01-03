@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 import org.eclipse.compare.internal.core.patch.FilePatch2;
 import org.eclipse.compare.internal.patch.WorkspacePatcher;
 import org.eclipse.compare.patch.IHunk;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PatchLinesTest {
 

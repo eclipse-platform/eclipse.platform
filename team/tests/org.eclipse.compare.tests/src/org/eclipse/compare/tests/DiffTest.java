@@ -23,7 +23,7 @@ import org.eclipse.compare.rangedifferencer.RangeDifferencer;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DiffTest {
 

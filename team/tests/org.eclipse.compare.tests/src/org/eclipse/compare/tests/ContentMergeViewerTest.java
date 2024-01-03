@@ -13,14 +13,14 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ContentMergeViewerTest  {
 	private MyContentMergeViewer myContentMergeViewer;
@@ -91,7 +91,7 @@ public class ContentMergeViewerTest  {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp()  {
 		result = new boolean[] { false, false };
 		myContentMergeViewer = new MyContentMergeViewer();
