@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -53,8 +54,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		Map<String, String> properties = null;
 		String propertyFiles = null;
 		AntTargetNode[] targets = AntUtil.getTargets(buildFile.getAbsolutePath(), getLaunchConfiguration(buildFileName, arguments, properties, propertyFiles));
-		assertTrue(targets != null);
-		assertTrue("Incorrect number of targets retrieved; should be 4 was: " + targets.length, targets.length == 4); //$NON-NLS-1$
+		assertThat(targets).hasSize(4);
 		assertContains("echo3", targets); //$NON-NLS-1$
 	}
 
@@ -66,8 +66,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		Map<String, String> properties = null;
 		String propertyFiles = null;
 		AntTargetNode[] targets = AntUtil.getTargets(buildFile.getAbsolutePath(), getLaunchConfiguration(buildFileName, arguments, properties, propertyFiles));
-		assertTrue(targets != null);
-		assertTrue("Incorrect number of targets retrieved; should be 3 was: " + targets.length, targets.length == 3); //$NON-NLS-1$
+		assertThat(targets).hasSize(3);
 		assertContains("import-default", targets); //$NON-NLS-1$
 	}
 
@@ -81,8 +80,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		properties.put("importFileName", "notToBeImported.xml"); //$NON-NLS-1$ //$NON-NLS-2$
 		String propertyFiles = null;
 		AntTargetNode[] targets = AntUtil.getTargets(buildFile.getAbsolutePath(), getLaunchConfiguration(buildFileName, arguments, properties, propertyFiles));
-		assertTrue(targets != null);
-		assertTrue("Incorrect number of targets retrieved; should be 3 was: " + targets.length, targets.length == 3); //$NON-NLS-1$
+		assertThat(targets).hasSize(3);
 		assertContains("import-default", targets); //$NON-NLS-1$
 	}
 
@@ -95,8 +93,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		properties.put("importFileName", "toBeImported.xml"); //$NON-NLS-1$ //$NON-NLS-2$
 		String propertyFiles = null;
 		AntTargetNode[] targets = AntUtil.getTargets(buildFile.getAbsolutePath(), getLaunchConfiguration(buildFileName, arguments, properties, propertyFiles));
-		assertTrue(targets != null);
-		assertTrue("Incorrect number of targets retrieved; should be 3 was: " + targets.length, targets.length == 3); //$NON-NLS-1$
+		assertThat(targets).hasSize(3);
 		assertContains("import-default", targets); //$NON-NLS-1$
 	}
 
@@ -108,8 +105,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		Map<String, String> properties = null;
 		String propertyFiles = "buildtest1.properties"; //$NON-NLS-1$
 		AntTargetNode[] targets = AntUtil.getTargets(buildFile.getAbsolutePath(), getLaunchConfiguration(buildFileName, arguments, properties, propertyFiles));
-		assertTrue(targets != null);
-		assertTrue("Incorrect number of targets retrieved; should be 3 was: " + targets.length, targets.length == 3); //$NON-NLS-1$
+		assertThat(targets).hasSize(3);
 		assertContains("import-default", targets); //$NON-NLS-1$
 	}
 
@@ -242,7 +238,7 @@ public class AntUtilTests extends AbstractAntUITest {
 		String[] expectedTargets = { "deploy", "commonLv1.deploy", "commonLv1.commonLv2.deploySuper", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				"commonLv1.commonLv2.commonLv3.deployLv3", "commonLv1.commonLv2.commonLv3.commonLv4.deployLv4" }; //$NON-NLS-1$ //$NON-NLS-2$
 		// Expected targets
-		Assert.assertEquals(3380, targets.length);
+		assertThat(targets).hasSize(3380);
 		// Just test if the mentioned targets are contained
 		for (String expectedTarget : expectedTargets) {
 			assertContains(expectedTarget, targets);

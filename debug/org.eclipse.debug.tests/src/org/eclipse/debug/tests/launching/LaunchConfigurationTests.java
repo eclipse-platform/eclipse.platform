@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -505,7 +506,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		wc.doSave();
 
 		ILaunchConfiguration[] newConfigs = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Should be the same number of configs", newConfigs.length == configs.length); //$NON-NLS-1$
+		assertThat(newConfigs).as("compare number of configs").hasSameSizeAs(configs);
 
 		// cleanup
 		handle.delete();
@@ -935,7 +936,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		project.open(null);
 		assertTrue("Should only be local configs when closed", local); //$NON-NLS-1$
 		ILaunchConfiguration[] after = getLaunchManager().getLaunchConfigurations();
-		assertTrue("Should be same number of configs after openning", after.length == before.length); //$NON-NLS-1$
+		assertThat(after).as("compare number of configs").hasSameSizeAs(before);
 		for (ILaunchConfiguration b : before) {
 			assertTrue("Config should exist after openning", existsIn(after, b)); //$NON-NLS-1$
 		}
@@ -1473,11 +1474,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 			chars1 = getInputStreamAsCharArray(in1);
 			chars2 = getInputStreamAsCharArray(in2);
 		}
-		assertEquals("Should be the same characters", chars1.length, chars2.length); //$NON-NLS-1$
-		for (int i = 0; i < chars2.length; i++) {
-			assertEquals("Should be the same character", chars1[i], chars2[i]); //$NON-NLS-1$
-		}
-
+		assertThat(chars1).isEqualTo(chars2);
 	}
 
 	/**
@@ -1554,11 +1551,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 			chars1 = getInputStreamAsCharArray(in1);
 			chars2 = getInputStreamAsCharArray(in2);
 		}
-		assertEquals("Should be the same characters", chars1.length, chars2.length); //$NON-NLS-1$
-		for (int i = 0; i < chars2.length; i++) {
-			assertEquals("Should be the same character", chars1[i], chars2[i]); //$NON-NLS-1$
-		}
-
+		assertThat(chars1).isEqualTo(chars2);
 	}
 
 	/**
@@ -1667,7 +1660,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 			setResourceMappings(wc, new ResourceItem[] { new ResourceItem("test.project", Integer.valueOf(IResource.PROJECT)) }); //$NON-NLS-1$
 			IResource[] res = wc.getMappedResources();
 			assertNotNull("There should be mapped resources", res); //$NON-NLS-1$
-			assertTrue("There should be one project", res.length == 1); //$NON-NLS-1$
+			assertThat(res).hasSize(1);
 		}
 		finally {
 			lc.delete();

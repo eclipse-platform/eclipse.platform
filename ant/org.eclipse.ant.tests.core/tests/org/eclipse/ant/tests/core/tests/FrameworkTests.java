@@ -7,13 +7,14 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Ericsson AB, Julian Enoch - Bug 465594
  *******************************************************************************/
 package org.eclipse.ant.tests.core.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -265,7 +266,7 @@ public class FrameworkTests extends AbstractAntTest {
 			runner.setBuildFileLocation(buildFile.getLocation().toFile().toString());
 		}
 		TargetInfo[] infos = runner.getAvailableTargets();
-		assertTrue("incorrect number of targets retrieved", infos != null && infos.length == 3); //$NON-NLS-1$
+		assertThat(infos).as("number of retrieved targets").hasSize(3); //$NON-NLS-1$
 	}
 
 	/**

@@ -214,10 +214,10 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				console.initialize();
 				@SuppressWarnings("restriction")
 				final Class<?> jobFamily = org.eclipse.debug.internal.ui.views.console.ProcessConsole.class;
-				assertTrue("Input read job not started.", Job.getJobManager().find(jobFamily).length > 0);
+				assertThat(Job.getJobManager().find(jobFamily)).as("check input read job started").hasSizeGreaterThan(0);
 				Job.getJobManager().cancel(jobFamily);
 				TestUtil.waitForJobs(name.getMethodName(), 0, 1000);
-				assertEquals("Input read job not canceled.", 0, Job.getJobManager().find(jobFamily).length);
+				assertThat(Job.getJobManager().find(jobFamily)).as("check input read job is canceled").isEmpty();
 			} finally {
 				console.destroy();
 			}
@@ -398,7 +398,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				String expectedPathMsg = MessageFormat.format(org.eclipse.debug.internal.ui.views.console.ConsoleMessages.ProcessConsole_1, new Object[] {
 						outFile.getAbsolutePath() });
 				assertEquals("No or wrong output of redirect file path in console.", expectedPathMsg, doc.get(doc.getLineOffset(0), doc.getLineLength(0)));
-				assertEquals("Expected redirect file path to be linked.", 1, console.getHyperlinks().length);
+				assertThat(console.getHyperlinks()).as("check redirect file path is linked").hasSize(1);
 			}
 			if (checkOutput) {
 				assertEquals("Output not found in console.", new String(testContent), doc.get(doc.getLineOffset(1), doc.getLineLength(1)));
