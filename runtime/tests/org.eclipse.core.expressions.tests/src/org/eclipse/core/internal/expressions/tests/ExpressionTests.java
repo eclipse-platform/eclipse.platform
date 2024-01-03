@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -981,13 +983,10 @@ public class ExpressionTests {
 		IConfigurationElement enable= findExtension(ces, "test2").getChildren("enablement")[0]; //$NON-NLS-1$ //$NON-NLS-2$
 		EnablementExpression exp= (EnablementExpression) ExpressionConverter.getDefault().perform(enable);
 		Expression[] children= exp.getChildren();
-		assertTrue(children.length == 3);
-		TestExpression test= (TestExpression) children[0];
-		assertTrue(test.testGetForcePluginActivation());
-		test= (TestExpression) children[1];
-		assertTrue(!test.testGetForcePluginActivation());
-		test= (TestExpression) children[2];
-		assertTrue(!test.testGetForcePluginActivation());
+		assertThat(children).hasSize(3).allSatisfy(child -> assertThat(child).isInstanceOf(TestExpression.class));
+		assertThat((TestExpression) children[0]).matches(TestExpression::testGetForcePluginActivation);
+		assertThat((TestExpression) children[1]).matches(not(TestExpression::testGetForcePluginActivation));
+		assertThat((TestExpression) children[2]).matches(not(TestExpression::testGetForcePluginActivation));
 	}
 
 	@Test

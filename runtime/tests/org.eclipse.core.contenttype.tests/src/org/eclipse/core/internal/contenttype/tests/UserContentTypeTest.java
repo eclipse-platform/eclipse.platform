@@ -13,10 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.internal.contenttype.tests;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.util.Arrays;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +43,7 @@ public class UserContentTypeTest {
 		initialContentTypes = manager.getAllContentTypes();
 		// check no user-defined Content-Type before test
 		for (IContentType contentType : initialContentTypes) {
-			Assert.assertFalse(contentType.isUserDefined());
+			assertThat(contentType).matches(not(IContentType::isUserDefined), "is not user defined");
 		}
 	}
 
@@ -53,19 +56,15 @@ public class UserContentTypeTest {
 	}
 
 	@Test
-	public void testCannotDeleteSystemContentType() throws CoreException {
-		Assert.assertNotEquals("No content-type to try", 0, initialContentTypes.length);
+	public void testCannotDeleteSystemContentType() {
+		assertThat(initialContentTypes).as("check has content type to try").isNotEmpty();
 		IContentType toDelete = initialContentTypes[0];
-		Assert.assertFalse("Content-type must be system, not user", toDelete.isUserDefined());
-		try {
-			manager.removeContentType(toDelete.getId());
-			Assert.fail("Expected CoreException");
-		} catch (IllegalArgumentException ex) {
-			// OK
-		}
-		Assert.assertEquals("# of content-types shouldn't have changed", initialContentTypes.length,
-				manager.getAllContentTypes().length);
-		Assert.assertEquals("Couldn't access content-type", toDelete, manager.getContentType(toDelete.getId()));
+		assertThat(toDelete).matches(not(IContentType::isUserDefined), "is system and not user defined");
+		assertThatThrownBy(() -> manager.removeContentType(toDelete.getId()))
+				.isInstanceOf(IllegalArgumentException.class);
+		assertThat(manager.getAllContentTypes()).as("check number of content types has not changed")
+				.hasSameSizeAs(initialContentTypes);
+		assertThat(manager.getContentType(toDelete.getId())).as("check could access content type").isEqualTo(toDelete);
 	}
 
 	@Test
@@ -73,12 +72,16 @@ public class UserContentTypeTest {
 		String contentTypeIdentifier = "testContentType" + System.nanoTime();
 		this.createdUserContentType = manager.addContentType(contentTypeIdentifier,
 				"user-defined test content-type", null);
-		Assert.assertEquals("Content type isn't registered", initialContentTypes.length + 1,
-				manager.getAllContentTypes().length);
-		Assert.assertTrue("Content-Type not marked as user-defined", this.createdUserContentType.isUserDefined());
-		Assert.assertEquals(this.createdUserContentType, manager.getContentType(contentTypeIdentifier));
+		assertThat(manager.getAllContentTypes()).as("check content type is registered")
+				.hasSize(initialContentTypes.length + 1);
+		assertThat(createdUserContentType).matches(IContentType::isUserDefined, "is user defined");
+		assertThat(manager.getContentType(contentTypeIdentifier)).isEqualTo(this.createdUserContentType);
 		for (IContentType contentType : manager.getAllContentTypes()) {
-			Assert.assertEquals(contentType.equals(this.createdUserContentType), contentType.isUserDefined());
+			if (contentType.equals(createdUserContentType)) {
+				assertThat(contentType).matches(IContentType::isUserDefined, "is user defined");
+			} else {
+				assertThat(contentType).matches(not(IContentType::isUserDefined), "is not user defined");
+			}
 		}
 	}
 
@@ -89,12 +92,13 @@ public class UserContentTypeTest {
 		// use a new manager to retrigger parsing and test persistency
 		ContentTypeManager.shutdown(); // shut down the old one first
 		this.manager = new ContentTypeManager();
-		Assert.assertEquals("Content type wasn't persisted", initialContentTypes.length + 1,
-				manager.getAllContentTypes().length);
+		assertThat(manager.getAllContentTypes()).as("check content type is persisted")
+				.hasSize(initialContentTypes.length + 1);
 		this.createdUserContentType = this.manager.getContentType(this.createdUserContentType.getId());
-		Assert.assertNotNull("Couldn't find the new content-type in new manager", this.createdUserContentType);
-		Assert.assertTrue("Content-Type not marked as user-defined", this.createdUserContentType.isUserDefined());
-		Assert.assertTrue("Association wasn't persisted", Arrays
-				.asList(this.createdUserContentType.getFileSpecs(IContentType.FILE_NAME_SPEC)).contains("fileSpec"));
+		assertThat(createdUserContentType).as("find new content type in new manager").isNotNull();
+		assertThat(createdUserContentType).matches(IContentType::isUserDefined, "is user defined");
+		assertThat(createdUserContentType).matches(
+				it -> Arrays.asList(it.getFileSpecs(IContentType.FILE_NAME_SPEC)).contains("fileSpec"),
+				"has association persisted");
 	}
 }

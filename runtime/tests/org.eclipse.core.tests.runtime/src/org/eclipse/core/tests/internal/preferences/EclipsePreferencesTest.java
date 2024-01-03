@@ -615,7 +615,7 @@ public class EclipsePreferencesTest {
 
 		// no children to start
 		result = node.childrenNames();
-		assertEquals("1.1", 0, result.length);
+		assertThat(result).isEmpty();
 
 		// add children
 		for (String childrenName : childrenNames) {
@@ -681,18 +681,17 @@ public class EclipsePreferencesTest {
 		String[] values = new String[] {getUniqueString(), getUniqueString(), getUniqueString()};
 
 		// none to start with
-		assertEquals("1.0", 0, node.keys().length);
+		assertThat(node.keys()).isEmpty();
 
 		// fill the node up with values
 		for (int i = 0; i < keys.length; i++) {
 			node.put(keys[i], values[i]);
 		}
-		assertEquals("2.0", keys.length, node.keys().length);
 		assertThat(keys).containsExactlyInAnyOrder(node.keys());
 
 		// clear the values and check
 		node.clear();
-		assertEquals("3.0", 0, node.keys().length);
+		assertThat(node.keys()).isEmpty();
 		for (int i = 0; i < keys.length; i++) {
 			assertNull("3.1." + i, node.get(keys[i], null));
 		}
@@ -1086,10 +1085,7 @@ public class EclipsePreferencesTest {
 		IScopeContext defaultScope = DefaultScope.INSTANCE;
 		defaultScope.getNode(TEST_NODE_PATH).putByteArray(TEST_PREF_KEY, testArray);
 		final byte[] returnArray = Platform.getPreferencesService().getByteArray(TEST_NODE_PATH, TEST_PREF_KEY, new byte[] {}, null);
-		assertEquals("1.0 Wrong size", testArray.length, returnArray.length);
-		for (int i = 0; i < testArray.length; i++) {
-			assertEquals("2.0 Wrong value at: " + i, testArray[i], returnArray[i]);
-		}
+		assertThat(returnArray).isEqualTo(testArray);
 	}
 
 	/*
@@ -1111,7 +1107,7 @@ public class EclipsePreferencesTest {
 
 		// check the child has the expected values
 		Preferences child = node.node("foo");
-		assertEquals("2.0", 2, child.keys().length);
+		assertThat(child.keys()).hasSize(2);
 		assertEquals("2.1", "value1", child.get("key1", null));
 		assertEquals("2.2", "value2", child.get("key2", null));
 

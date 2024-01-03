@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -111,15 +112,15 @@ public class PatchTest {
 		IStorage patchStorage = new StringStorage("patch_hunkFilter.txt");
 		IStorage expStorage = new StringStorage("context.txt");
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
-		assertEquals(1, patches.length);
+		assertThat(patches).hasSize(1);
 		IHunk[] hunks = patches[0].getHunks();
-		assertEquals(5, hunks.length);
+		assertThat(hunks).hasSize(5);
 		PatchConfiguration pc = new PatchConfiguration();
 		final IHunk toFilterOut = hunks[3];
 		pc.addHunkFilter(hunk -> hunk != toFilterOut);
 		IFilePatchResult result = patches[0].apply(expStorage, pc, new NullProgressMonitor());
 		IHunk[] rejects = result.getRejects();
-		assertEquals(2, rejects.length);
+		assertThat(rejects).hasSize(2);
 		boolean aFiltered = pc.getHunkFilters()[0].select(rejects[0]);
 		boolean bFiltered = pc.getHunkFilters()[0].select(rejects[1]);
 		assertTrue((aFiltered && !bFiltered) || (!aFiltered && bFiltered));
@@ -465,7 +466,7 @@ public class PatchTest {
 		IStorage oldStorage = new StringStorage(old);
 		IStorage patchStorage = new StringStorage(patch);
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
-		assertTrue(patches.length == 1);
+		assertThat(patches).hasSize(1);
 		IFilePatchResult result = patches[0].apply(oldStorage, new PatchConfiguration(), null);
 		assertTrue(result.hasMatches());
 		assertFalse(result.hasRejects());
@@ -486,7 +487,7 @@ public class PatchTest {
 		}
 
 		FilePatch2[] diffs = patcher.getDiffs();
-		Assert.assertEquals(diffs.length, 1);
+		assertThat(diffs).hasSize(1);
 
 		FileDiffResult diffResult = patcher.getDiffResult(diffs[0]);
 		diffResult.patch(inLines, null);
@@ -517,7 +518,7 @@ public class PatchTest {
 			PatchConfiguration patchConfiguration) {
 
 		// ensure that we have the same number of input files as we have expected files
-		Assert.assertEquals(originalFiles.length, expectedOutcomeFiles.length);
+		assertThat(expectedOutcomeFiles).hasSameSizeAs(originalFiles);
 
 		// Parse the passed in patch and extract all the Diffs
 		WorkspacePatcher patcher = new WorkspacePatcher();

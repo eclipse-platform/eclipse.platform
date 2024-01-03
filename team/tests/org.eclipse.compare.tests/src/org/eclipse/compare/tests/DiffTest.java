@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.compare.internal.DocLineComparator;
 import org.eclipse.compare.internal.core.TextLineLCS;
-import org.eclipse.compare.rangedifferencer.*;
+import org.eclipse.compare.rangedifferencer.IRangeComparator;
+import org.eclipse.compare.rangedifferencer.RangeDifference;
+import org.eclipse.compare.rangedifferencer.RangeDifferencer;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -45,17 +46,17 @@ public class DiffTest {
 		TextLineLCS lcs = new TextLineLCS(l1, l2);
 		lcs.longestCommonSubsequence(SubMonitor.convert(null, 100));
 		TextLineLCS.TextLine[][] result = lcs.getResult();
-		assertTrue(result[0].length == result[1].length);
-		assertTrue(result[0].length == 3);
+		assertThat(result[0]).hasSameSizeAs(result[1]).hasSize(3);
 		for (int i = 0; i < result[0].length; i++) {
-			assertTrue(result[0][i].sameText(result[1][i]));
+			int index = i;
+			assertThat(result[0][i]).matches(it -> it.sameText(result[1][index]), "same text at index " + index);
 		}
-		assertTrue(result[0][0].lineNumber() == 0);
-		assertTrue(result[1][0].lineNumber() == 0);
-		assertTrue(result[0][1].lineNumber() == 1);
-		assertTrue(result[1][1].lineNumber() == 1);
-		assertTrue(result[0][2].lineNumber() == 2);
-		assertTrue(result[1][2].lineNumber() == 3);
+		assertThat(result[0][0].lineNumber()).isEqualTo(0);
+		assertThat(result[1][0].lineNumber()).isEqualTo(0);
+		assertThat(result[0][1].lineNumber()).isEqualTo(1);
+		assertThat(result[1][1].lineNumber()).isEqualTo(1);
+		assertThat(result[0][2].lineNumber()).isEqualTo(2);
+		assertThat(result[1][2].lineNumber()).isEqualTo(3);
 	}
 
 	@Test
@@ -67,16 +68,17 @@ public class DiffTest {
 		TextLineLCS lcs = new TextLineLCS(l1, l2);
 		lcs.longestCommonSubsequence(SubMonitor.convert(null, 100));
 		TextLineLCS.TextLine[][] result = lcs.getResult();
-		assertTrue(result[0].length == result[1].length);
+		assertThat(result[0]).hasSameSizeAs(result[1]);
 		for (int i = 0; i < result[0].length; i++) {
-			assertTrue(result[0][i].sameText(result[1][i]));
+			int index = i;
+			assertThat(result[0][i]).matches(it -> it.sameText(result[1][index]), "same text at index " + index);
 		}
-		assertTrue(result[0][0].lineNumber() == 0);
-		assertTrue(result[0][1].lineNumber() == 1);
-		assertTrue(result[0][2].lineNumber() == 3);
-		assertTrue(result[1][0].lineNumber() == 0);
-		assertTrue(result[1][1].lineNumber() == 1);
-		assertTrue(result[1][2].lineNumber() == 2);
+		assertThat(result[0][0].lineNumber()).isEqualTo(0);
+		assertThat(result[0][1].lineNumber()).isEqualTo(1);
+		assertThat(result[0][2].lineNumber()).isEqualTo(3);
+		assertThat(result[1][0].lineNumber()).isEqualTo(0);
+		assertThat(result[1][1].lineNumber()).isEqualTo(1);
+		assertThat(result[1][2].lineNumber()).isEqualTo(2);
 	}
 
 	@Test
@@ -88,15 +90,15 @@ public class DiffTest {
 		TextLineLCS lcs = new TextLineLCS(l1, l2);
 		lcs.longestCommonSubsequence(SubMonitor.convert(null, 100));
 		TextLineLCS.TextLine[][] result = lcs.getResult();
-		assertTrue(result[0].length == result[1].length);
-		assertTrue(result[0].length == 2);
+		assertThat(result[0]).hasSameSizeAs(result[1]).hasSize(2);
 		for (int i = 0; i < result[0].length; i++) {
-			assertTrue(result[0][i].sameText(result[1][i]));
+			int index = i;
+			assertThat(result[0][i]).matches(it -> it.sameText(result[1][index]), "same text at index " + index);
 		}
-		assertTrue(result[0][0].lineNumber() == 0);
-		assertTrue(result[1][0].lineNumber() == 0);
-		assertTrue(result[0][1].lineNumber() == 1);
-		assertTrue(result[1][1].lineNumber() == 1);
+		assertThat(result[0][0].lineNumber()).isEqualTo(0);
+		assertThat(result[1][0].lineNumber()).isEqualTo(0);
+		assertThat(result[0][1].lineNumber()).isEqualTo(1);
+		assertThat(result[1][1].lineNumber()).isEqualTo(1);
 	}
 
 	@Test
@@ -108,15 +110,15 @@ public class DiffTest {
 		TextLineLCS lcs = new TextLineLCS(l1, l2);
 		lcs.longestCommonSubsequence(SubMonitor.convert(null, 100));
 		TextLineLCS.TextLine[][] result = lcs.getResult();
-		assertTrue(result[0].length == result[1].length);
-		assertTrue(result[0].length == 2);
+		assertThat(result[0]).hasSameSizeAs(result[1]).hasSize(2);
 		for (int i = 0; i < result[0].length; i++) {
-			assertTrue(result[0][i].sameText(result[1][i]));
+			int index = i;
+			assertThat(result[0][i]).matches(it -> it.sameText(result[1][index]), "same text at index " + index);
 		}
-		assertTrue(result[0][0].lineNumber() == 0);
-		assertTrue(result[1][0].lineNumber() == 0);
-		assertTrue(result[0][1].lineNumber() == 1);
-		assertTrue(result[1][1].lineNumber() == 1);
+		assertThat(result[0][0].lineNumber()).isEqualTo(0);
+		assertThat(result[1][0].lineNumber()).isEqualTo(0);
+		assertThat(result[0][1].lineNumber()).isEqualTo(1);
+		assertThat(result[1][1].lineNumber()).isEqualTo(1);
 	}
 
 	@Test
@@ -128,15 +130,15 @@ public class DiffTest {
 		TextLineLCS lcs = new TextLineLCS(l1, l2);
 		lcs.longestCommonSubsequence(SubMonitor.convert(null, 100));
 		TextLineLCS.TextLine[][] result = lcs.getResult();
-		assertTrue(result[0].length == result[1].length);
-		assertTrue(result[0].length == 2);
+		assertThat(result[0]).hasSameSizeAs(result[1]).hasSize(2);
 		for (int i = 0; i < result[0].length; i++) {
-			assertTrue(result[0][i].sameText(result[1][i]));
+			int index = i;
+			assertThat(result[0][i]).matches(it -> it.sameText(result[1][index]), "same text at index " + index);
 		}
-		assertTrue(result[0][0].lineNumber() == 0);
-		assertTrue(result[1][0].lineNumber() == 1);
-		assertTrue(result[0][1].lineNumber() == 1);
-		assertTrue(result[1][1].lineNumber() == 2);
+		assertThat(result[0][0].lineNumber()).isEqualTo(0);
+		assertThat(result[1][0].lineNumber()).isEqualTo(1);
+		assertThat(result[0][1].lineNumber()).isEqualTo(1);
+		assertThat(result[1][1].lineNumber()).isEqualTo(2);
 	}
 
 	@Test
@@ -148,15 +150,15 @@ public class DiffTest {
 		TextLineLCS lcs = new TextLineLCS(l1, l2);
 		lcs.longestCommonSubsequence(SubMonitor.convert(null, 100));
 		TextLineLCS.TextLine[][] result = lcs.getResult();
-		assertTrue(result[0].length == result[1].length);
-		assertTrue(result[0].length == 2);
+		assertThat(result[0]).hasSameSizeAs(result[1]).hasSize(2);
 		for (int i = 0; i < result[0].length; i++) {
-			assertTrue(result[0][i].sameText(result[1][i]));
+			int index = i;
+			assertThat(result[0][i]).matches(it -> it.sameText(result[1][index]), "same text at index " + index);
 		}
-		assertTrue(result[0][0].lineNumber() == 1);
-		assertTrue(result[0][1].lineNumber() == 2);
-		assertTrue(result[1][0].lineNumber() == 0);
-		assertTrue(result[1][1].lineNumber() == 1);
+		assertThat(result[0][0].lineNumber()).isEqualTo(1);
+		assertThat(result[0][1].lineNumber()).isEqualTo(2);
+		assertThat(result[1][0].lineNumber()).isEqualTo(0);
+		assertThat(result[1][1].lineNumber()).isEqualTo(1);
 	}
 
 	private IRangeComparator toRangeComparator(String s) {
@@ -170,7 +172,7 @@ public class DiffTest {
 		IRangeComparator comp2 = toRangeComparator(s2);
 		RangeDifference[] differences = RangeDifferencer.findDifferences(comp1, comp2);
 		RangeDifference[] oldDifferences = RangeDifferencer.findDifferences(comp1, comp2);
-		assertArrayEquals(differences, oldDifferences);
+		assertThat(differences).containsExactly(oldDifferences);
 		return differences;
 	}
 
@@ -181,11 +183,11 @@ public class DiffTest {
 
 		RangeDifference[] result = getDifferences(s1, s2);
 
-		assertTrue(result.length == 1);
-		assertTrue(result[0].leftStart() == 2);
-		assertTrue(result[0].leftLength() == 0);
-		assertTrue(result[0].rightStart() == 2);
-		assertTrue(result[0].rightLength() == 1);
+		assertThat(result).hasSize(1);
+		assertThat(result[0].leftStart()).isEqualTo(2);
+		assertThat(result[0].leftLength()).isEqualTo(0);
+		assertThat(result[0].rightStart()).isEqualTo(2);
+		assertThat(result[0].rightLength()).isEqualTo(1);
 	}
 
 	@Test
@@ -195,11 +197,11 @@ public class DiffTest {
 
 		RangeDifference[] result = getDifferences(s1, s2);
 
-		assertTrue(result.length == 1);
-		assertTrue(result[0].leftStart() == 2);
-		assertTrue(result[0].leftLength() == 1);
-		assertTrue(result[0].rightStart() == 2);
-		assertTrue(result[0].rightLength() == 0);
+		assertThat(result).hasSize(1);
+		assertThat(result[0].leftStart()).isEqualTo(2);
+		assertThat(result[0].leftLength()).isEqualTo(1);
+		assertThat(result[0].rightStart()).isEqualTo(2);
+		assertThat(result[0].rightLength()).isEqualTo(0);
 	}
 
 	@Test
@@ -209,11 +211,11 @@ public class DiffTest {
 
 		RangeDifference[] result = getDifferences(s1, s2);
 
-		assertTrue(result.length == 1);
-		assertTrue(result[0].leftStart() == 0);
-		assertTrue(result[0].leftLength() == 0);
-		assertTrue(result[0].rightStart() == 0);
-		assertTrue(result[0].rightLength() == 1);
+		assertThat(result).hasSize(1);
+		assertThat(result[0].leftStart()).isEqualTo(0);
+		assertThat(result[0].leftLength()).isEqualTo(0);
+		assertThat(result[0].rightStart()).isEqualTo(0);
+		assertThat(result[0].rightLength()).isEqualTo(1);
 	}
 
 	@Test
@@ -223,11 +225,11 @@ public class DiffTest {
 
 		RangeDifference[] result = getDifferences(s1, s2);
 
-		assertTrue(result.length == 1);
-		assertTrue(result[0].leftStart() == 0);
-		assertTrue(result[0].leftLength() == 1);
-		assertTrue(result[0].rightStart() == 0);
-		assertTrue(result[0].rightLength() == 0);
+		assertThat(result).hasSize(1);
+		assertThat(result[0].leftStart()).isEqualTo(0);
+		assertThat(result[0].leftLength()).isEqualTo(1);
+		assertThat(result[0].rightStart()).isEqualTo(0);
+		assertThat(result[0].rightLength()).isEqualTo(0);
 	}
 
 	@Test
@@ -237,11 +239,11 @@ public class DiffTest {
 
 		RangeDifference[] result = getDifferences(s1, s2);
 
-		assertTrue(result.length == 1);
-		assertTrue(result[0].leftStart() == 2);
-		assertTrue(result[0].leftLength() == 0);
-		assertTrue(result[0].rightStart() == 2);
-		assertTrue(result[0].rightLength() == 1);
+		assertThat(result).hasSize(1);
+		assertThat(result[0].leftStart()).isEqualTo(2);
+		assertThat(result[0].leftLength()).isEqualTo(0);
+		assertThat(result[0].rightStart()).isEqualTo(2);
+		assertThat(result[0].rightLength()).isEqualTo(1);
 	}
 
 	@Test
@@ -251,11 +253,11 @@ public class DiffTest {
 
 		RangeDifference[] result = getDifferences(s1, s2);
 
-		assertTrue(result.length == 1);
-		assertTrue(result[0].leftStart() == 2);
-		assertTrue(result[0].leftLength() == 1);
-		assertTrue(result[0].rightStart() == 2);
-		assertTrue(result[0].rightLength() == 0);
+		assertThat(result).hasSize(1);
+		assertThat(result[0].leftStart()).isEqualTo(2);
+		assertThat(result[0].leftLength()).isEqualTo(1);
+		assertThat(result[0].rightStart()).isEqualTo(2);
+		assertThat(result[0].rightLength()).isEqualTo(0);
 	}
 
 }

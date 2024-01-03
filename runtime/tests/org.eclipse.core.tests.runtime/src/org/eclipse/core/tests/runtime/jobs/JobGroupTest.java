@@ -14,6 +14,7 @@
 
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -314,55 +315,32 @@ public class JobGroupTest extends AbstractJobTest {
 		// Try finding all jobs by supplying the NULL parameter.
 		// Note: Running the test framework may cause other system jobs to run,
 		// so check that the jobs started by this test are a subset of all running jobs.
-		HashSet<Job> testJobs = new HashSet<>();
-		testJobs.addAll(Arrays.asList(jobs));
-		Job[] allJobs = manager.find(null);
-		assertTrue("1.0", allJobs.length >= NUM_JOBS);
-		for (int i = 0; i < allJobs.length; i++) {
-			// Only test jobs that we know about.
-			if (testJobs.remove(allJobs[i])) {
-				JobGroup group = allJobs[i].getJobGroup();
-				assertTrue("1." + i, (group == firstJobGroup || group == secondJobGroup || group == thirdJobGroup || group == fourthJobGroup || group == fifthJobGroup));
-			}
-		}
-		assertTrue("1.2", testJobs.isEmpty());
-
-		List<Job> activeJobs;
+		HashSet<Job> testJobs = new HashSet<>(Arrays.asList(jobs));
+		assertThat(manager.find(null)).hasSizeGreaterThanOrEqualTo(NUM_JOBS) //
+				.filteredOn(job -> testJobs.remove(job)) // only test jobs that we know about
+				.allSatisfy(job -> assertThat(job.getJobGroup()).isIn(firstJobGroup, secondJobGroup, thirdJobGroup,
+						fourthJobGroup, fifthJobGroup));
+		assertThat(testJobs).isEmpty();
 
 		// Try finding all jobs from the first job group.
-		activeJobs = firstJobGroup.getActiveJobs();
-		assertEquals("2.0", 4, activeJobs.size());
-		for (int i = 0; i < activeJobs.size(); i++) {
-			assertEquals("2." + (i + 1), firstJobGroup, activeJobs.get(i).getJobGroup());
-		}
+		assertThat(firstJobGroup.getActiveJobs()).hasSize(4)
+				.allSatisfy(it -> assertThat(it.getJobGroup()).isEqualTo(firstJobGroup));
 
 		// Try finding all jobs from the second job group.
-		activeJobs = secondJobGroup.getActiveJobs();
-		assertEquals("3.0", 4, activeJobs.size());
-		for (int i = 0; i < activeJobs.size(); i++) {
-			assertEquals("3." + (i + 1), secondJobGroup, activeJobs.get(i).getJobGroup());
-		}
+		assertThat(secondJobGroup.getActiveJobs()).hasSize(4)
+				.allSatisfy(it -> assertThat(it.getJobGroup()).isEqualTo(secondJobGroup));
 
 		// Try finding all jobs from the third job group.
-		activeJobs = thirdJobGroup.getActiveJobs();
-		assertEquals("4.0", 4, activeJobs.size());
-		for (int i = 0; i < activeJobs.size(); i++) {
-			assertEquals("4." + (i + 1), thirdJobGroup, activeJobs.get(i).getJobGroup());
-		}
+		assertThat(thirdJobGroup.getActiveJobs()).hasSize(4)
+				.allSatisfy(it -> assertThat(it.getJobGroup()).isEqualTo(thirdJobGroup));
 
 		// Try finding all jobs from the fourth job group.
-		activeJobs = fourthJobGroup.getActiveJobs();
-		assertEquals("5.0", 4, activeJobs.size());
-		for (int i = 0; i < activeJobs.size(); i++) {
-			assertEquals("5." + (i + 1), fourthJobGroup, activeJobs.get(i).getJobGroup());
-		}
+		assertThat(fourthJobGroup.getActiveJobs()).hasSize(4)
+				.allSatisfy(it -> assertThat(it.getJobGroup()).isEqualTo(fourthJobGroup));
 
 		// Try finding all jobs from the fifth job group.
-		activeJobs = fifthJobGroup.getActiveJobs();
-		assertEquals("6.0", 4, activeJobs.size());
-		for (int i = 0; i < activeJobs.size(); i++) {
-			assertEquals("6." + (i + 1), fifthJobGroup, activeJobs.get(i).getJobGroup());
-		}
+		assertThat(fifthJobGroup.getActiveJobs()).hasSize(4)
+				.allSatisfy(it -> assertThat(it.getJobGroup()).isEqualTo(fifthJobGroup));
 
 		// The first job should still be running.
 		for (int i = 0; i < 5; i++) {
@@ -374,39 +352,29 @@ public class JobGroupTest extends AbstractJobTest {
 		waitForCompletion(firstJobGroup);
 
 		// First job group should not contain any active jobs.
-		activeJobs = firstJobGroup.getActiveJobs();
-		assertTrue("7.2", activeJobs.isEmpty());
+		assertThat(firstJobGroup.getActiveJobs()).isEmpty();
 
 		// Cancel the second job group.
 		secondJobGroup.cancel();
 		waitForCompletion(secondJobGroup);
 		// Second job group should not contain any active jobs.
-		activeJobs = secondJobGroup.getActiveJobs();
-		assertTrue("9.0", activeJobs.isEmpty());
+		assertThat(secondJobGroup.getActiveJobs()).isEmpty();
 
 		// Cancel the fourth job group.
 		fourthJobGroup.cancel();
 		waitForCompletion(fourthJobGroup);
 		// Fourth job group should not contain any active jobs.
-		activeJobs = fourthJobGroup.getActiveJobs();
-		assertTrue("9.1", activeJobs.isEmpty());
+		assertThat(fourthJobGroup.getActiveJobs()).isEmpty();
 
 		// Finding all jobs by supplying the NULL parameter should return at least 8 jobs
 		// (4 from the 3rd family, and 4 from the 5th family)
 		// Note: Running the test framework may cause other system jobs to run,
 		// so check that the expected jobs started by this test are a subset of all running jobs.
 		testJobs.addAll(Arrays.asList(jobs));
-		allJobs = manager.find(null);
-		assertTrue("11.0", allJobs.length >= 8);
-		for (int i = 0; i < allJobs.length; i++) {
-			// Only test jobs that we know about.
-			if (testJobs.remove(allJobs[i])) {
-				JobGroup group = allJobs[i].getJobGroup();
-				assertTrue("11." + (i + 1), (group == thirdJobGroup || group == fifthJobGroup));
-			}
-		}
-
-		assertEquals("11.2", 12, testJobs.size());
+		assertThat(manager.find(null)).hasSizeGreaterThanOrEqualTo(8) //
+				.filteredOn(job -> testJobs.remove(job)) // only test jobs that we know about
+				.allSatisfy(job -> assertThat(job.getJobGroup()).isIn(thirdJobGroup, fifthJobGroup));
+		assertThat(testJobs).hasSize(12);
 		testJobs.clear();
 
 		// Cancel the fifth and third job groups.
@@ -424,12 +392,10 @@ public class JobGroupTest extends AbstractJobTest {
 		// Note: Running the test framework may cause other system jobs to run,
 		// so check that there no jobs started by this test are present in all running jobs.
 		testJobs.addAll(Arrays.asList(jobs));
-		allJobs = manager.find(null);
-		for (Job job : allJobs) {
-			// Verify that no jobs that we know about are found (they should have all been removed)
-			assertFalse(job.toString(), testJobs.remove(job));
-		}
-		assertEquals("15.0", NUM_JOBS, testJobs.size());
+		// Verify that no jobs that we know about are found (they should have all been
+		// removed)
+		assertThat(manager.find(null)).allMatch(job -> !testJobs.remove(job), "job is none of the ones we started");
+		assertThat(testJobs).hasSize(NUM_JOBS);
 		testJobs.clear();
 	}
 
@@ -823,7 +789,7 @@ public class JobGroupTest extends AbstractJobTest {
 		jobGroup.join(0, null);
 
 		IStatus[] children = jobGroup.getResult().getChildren();
-		assertEquals(SEED_JOBS, children.length);
+		assertThat(children).hasSize(SEED_JOBS);
 		Integer[] results = Arrays.stream(children).map(s -> Integer.valueOf(s.getMessage())).toArray(Integer[]::new);
 		for (int i = 0; i < results.length; i++) {
 			assertEquals("Job result in unexpected order", i + 1, results[i].intValue());
@@ -845,7 +811,7 @@ public class JobGroupTest extends AbstractJobTest {
 		jobGroup.join(0, monitor);
 
 		children = jobGroup.getResult().getChildren();
-		assertEquals(SEED_JOBS + 1, children.length);
+		assertThat(children).hasSize(SEED_JOBS + 1);
 		results = Arrays.stream(children).map(s -> Integer.valueOf(s.getMessage())).toArray(Integer[]::new);
 		for (int i = 0; i < results.length; i++) {
 			assertEquals("Job result in unexpected order", i + 1, results[i].intValue());
@@ -863,7 +829,7 @@ public class JobGroupTest extends AbstractJobTest {
 		jobGroup.join(0, monitor);
 
 		children = jobGroup.getResult().getChildren();
-		assertEquals(SEED_JOBS + 2, children.length);
+		assertThat(children).hasSize(SEED_JOBS + 2);
 		results = Arrays.stream(children).map(s -> Integer.valueOf(s.getMessage())).toArray(Integer[]::new);
 		for (int i = 0; i < results.length; i++) {
 			assertEquals("Job result in unexpected order", i + 1, results[i].intValue());
@@ -1408,7 +1374,7 @@ public class JobGroupTest extends AbstractJobTest {
 		waitForCompletion(jobGroup);
 		IStatus[] jobResults = jobGroup.getResult().getChildren();
 		// Verify that the group result contains all the job results except the OK statuses.
-		assertEquals("1.0", status.length - 1, jobResults.length);
+		assertThat(jobResults).hasSize(status.length - 1);
 		for (int i = 1; i < status.length; i++) {
 			assertEquals("2." + i, status[i], jobResults[i - 1].getSeverity());
 		}
@@ -1448,7 +1414,7 @@ public class JobGroupTest extends AbstractJobTest {
 		}
 		waitForCompletion(jobGroup);
 		// Verify that the compute group result is called with all the completed job results.
-		assertEquals("2.0", status.length, originalJobResults[0].length);
+		assertThat(originalJobResults[0]).hasSameSizeAs(status);
 		for (int i = 0; i < status.length; i++) {
 			assertEquals("3." + i, status[i], originalJobResults[0][i].getSeverity());
 		}

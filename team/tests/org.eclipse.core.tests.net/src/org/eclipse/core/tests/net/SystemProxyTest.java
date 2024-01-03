@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.net;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +27,9 @@ import org.eclipse.core.internal.net.ProxyData;
 import org.eclipse.core.internal.net.ProxySelector;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class SystemProxyTest {
 
@@ -193,23 +196,12 @@ public class SystemProxyTest {
 	 */
 	@Test
 	public void testNonProxiedHosts_WindowsIEManualSettings() throws URISyntaxException {
-		IProxyData[] proxiesData = getProxyManager().select(new URI("http://eclipse"));
-		assertEquals(1, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://eclipse.org/bugs"));
-		assertEquals(0, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://nonexisting.com"));
-		assertEquals(0, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://www.eclipse.org"));
-		assertEquals(0, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://www.myDomain.com"));
-		assertEquals(0, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://www.test.edu"));
-		assertEquals(0, proxiesData.length);
+		assertThat(getProxyManager().select(new URI("http://eclipse"))).hasSize(1);
+		assertThat(getProxyManager().select(new URI("http://eclipse.org/bugs"))).isEmpty();
+		assertThat(getProxyManager().select(new URI("http://nonexisting.com"))).isEmpty();
+		assertThat(getProxyManager().select(new URI("http://www.eclipse.org"))).isEmpty();
+		assertThat(getProxyManager().select(new URI("http://www.myDomain.com"))).isEmpty();
+		assertThat(getProxyManager().select(new URI("http://www.test.edu"))).isEmpty();
 	}
 
 	void initializeTestProxyData(String proxyDataSource) {

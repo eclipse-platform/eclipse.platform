@@ -11,6 +11,7 @@ Require-Bundle:
  org.eclipse.core.contenttype;bundle-version="3.6",
  org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
  org.junit;bundle-version="4.7"
+Import-Package: org.assertj.core.api
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.core.contenttype.tests
