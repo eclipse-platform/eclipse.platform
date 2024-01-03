@@ -16,6 +16,7 @@ package org.eclipse.core.pki.auth;
 import java.util.Optional;
 
 import org.eclipse.core.pki.util.LogUtil;
+import org.eclipse.core.pki.util.NormalizeAES256;
 
 public enum IncomingSystemProperty {
 	SETTINGS;
@@ -39,9 +40,11 @@ public enum IncomingSystemProperty {
 		return false;
 	}
 
-	public boolean checkKeyStore() {
+	public boolean checkKeyStore(String pin) {
+		byte[] salt = new byte[16];
 		Optional<String> keyStore = null;
 		Optional<String> keyStorePassword = null;
+		Optional<String> PasswordEncrypted = null;
 		keyStore = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
 		if (keyStore.isEmpty()) {
 			PKIState.CONTROL.setPKCS11on(false);
@@ -53,6 +56,18 @@ public enum IncomingSystemProperty {
 		if (keyStorePassword.isEmpty()) {
 			LogUtil.logError("A Keystore Password is required, javax.net.ssl.keyStorePassword", null); //$NON-NLS-1$
 			return false;
+		} else {
+			PasswordEncrypted = Optional.ofNullable(System.getProperty("javax.net.ssl.encryptedPassword")); //$NON-NLS-1$
+			if (PasswordEncrypted.isEmpty()) {
+				// Password is not encrypted
+			} else {
+				if (PasswordEncrypted.get().toString().equalsIgnoreCase("true")) { //$NON-NLS-1$
+					salt = new String(System.getProperty("user.name") + pin).getBytes(); //$NON-NLS-1$
+					String passwd = NormalizeAES256.DECRYPT.decrypt(keyStorePassword.get().toString(), pin,
+							new String(salt));
+					System.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
+				}
+			}
 		}
 		return true;
 	}
