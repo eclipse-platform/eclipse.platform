@@ -99,7 +99,7 @@ public class PKISetup implements BundleActivator, IStartup {
 		type = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
 
 		if (type.isEmpty()) {
-			System.out.println("PKISetup WAS it commandline"); //$NON-NLS-1$
+			System.out.println("PKISetup keystoreType was empty so CHECK in .pki file"); //$NON-NLS-1$
 
 			PKIState.CONTROL.setPKCS11on(false);
 			PKIState.CONTROL.setPKCS12on(false);

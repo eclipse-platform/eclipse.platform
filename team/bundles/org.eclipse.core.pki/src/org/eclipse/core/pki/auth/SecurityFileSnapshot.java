@@ -93,6 +93,7 @@ public enum SecurityFileSnapshot {
 				String ePasswd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
 				System.out.println("SecurityFileSnapshot encrypted passwd found"); //$NON-NLS-1$
 				passwd = NormalizeAES256.DECRYPT.decrypt(ePasswd, password, salt);
+				System.setProperty("javax.net.ssl.decryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 			}
 			System.setProperties(properties);
