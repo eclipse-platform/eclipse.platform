@@ -16,7 +16,7 @@ package org.eclipse.compare.tests;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.compare.internal.CompareResourceFilter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FilterTest {
 

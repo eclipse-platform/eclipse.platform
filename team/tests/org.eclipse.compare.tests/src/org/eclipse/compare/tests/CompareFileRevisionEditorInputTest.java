@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.team.internal.ui.history.CompareFileRevisionEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CompareFileRevisionEditorInputTest {
 	@Test

@@ -14,7 +14,6 @@
 package org.eclipse.compare.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +34,7 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PatchBuilderTest {
 	@Test
@@ -273,7 +272,7 @@ public class PatchBuilderTest {
 	public void testReadNotValidPatch() throws CoreException, IOException {
 		IStorage patch = new StringStorage("not_a_patch.txt");
 		IFilePatch[] filePatches = ApplyPatchOperation.parsePatch(patch);
-		assertArrayEquals(new IFilePatch[0], filePatches);
+		assertThat(filePatches).isEmpty();
 	}
 
 	private void assertHunkEquals(Hunk h1, Hunk h2) {

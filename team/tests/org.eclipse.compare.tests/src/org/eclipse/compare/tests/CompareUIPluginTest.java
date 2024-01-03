@@ -26,7 +26,7 @@ import org.eclipse.compare.internal.ViewerDescriptor;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CompareUIPluginTest {
 
