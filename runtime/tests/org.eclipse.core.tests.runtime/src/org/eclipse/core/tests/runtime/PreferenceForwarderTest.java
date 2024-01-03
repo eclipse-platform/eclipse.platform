@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -33,7 +34,6 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.junit.Test;
@@ -314,7 +314,7 @@ public class PreferenceForwarderTest {
 		Preferences ps = new PreferenceForwarder(getUniqueString());
 
 		// there are no properties initially
-		assertEquals("1.0", 0, ps.propertyNames().length);
+		assertThat(ps.propertyNames()).isEmpty();
 
 		String[] keys = {"a", "b", "c", "d"};
 
@@ -322,13 +322,13 @@ public class PreferenceForwarderTest {
 		for (String key : keys) {
 			ps.setDefault(key, "default");
 		}
-		assertEquals("1.1", 0, ps.propertyNames().length);
+		assertThat(ps.propertyNames()).isEmpty();
 
 		// setting real values does add name to set
 		for (String key : keys) {
 			ps.setValue(key, "actual");
 		}
-		assertEquals("1.2", keys.length, ps.propertyNames().length);
+		assertThat(ps.propertyNames()).hasSameSizeAs(keys);
 
 		Set<String> s1 = new HashSet<>(Arrays.asList(keys));
 		Set<String> s2 = new HashSet<>(Arrays.asList(ps.propertyNames()));
@@ -340,7 +340,7 @@ public class PreferenceForwarderTest {
 			Set<String> s = new HashSet<>(Arrays.asList(ps.propertyNames()));
 			assertTrue("1.4", !s.contains(key));
 		}
-		assertEquals("1.5", 0, ps.propertyNames().length);
+		assertThat(ps.propertyNames()).isEmpty();
 	}
 
 	@Test
@@ -382,7 +382,7 @@ public class PreferenceForwarderTest {
 		Preferences ps = new PreferenceForwarder(getUniqueString());
 
 		// there are no default properties initially
-		assertEquals("1.0", 0, ps.defaultPropertyNames().length);
+		assertThat(ps.defaultPropertyNames()).isEmpty();
 
 		String[] keys = {"a", "b", "c", "d"};
 
@@ -390,13 +390,13 @@ public class PreferenceForwarderTest {
 		for (String key : keys) {
 			ps.setValue(key, "actual");
 		}
-		assertEquals("1.1", 0, ps.defaultPropertyNames().length);
+		assertThat(ps.defaultPropertyNames()).isEmpty();
 
 		// setting defaults does add name to set
 		for (String key : keys) {
 			ps.setDefault(key, "default");
 		}
-		assertEquals("1.2", keys.length, ps.defaultPropertyNames().length);
+		assertThat(ps.defaultPropertyNames()).hasSameSizeAs(keys);
 
 		Set<String> s1 = new HashSet<>(Arrays.asList(keys));
 		Set<String> s2 = new HashSet<>(Arrays.asList(ps.defaultPropertyNames()));
@@ -408,7 +408,7 @@ public class PreferenceForwarderTest {
 			Set<String> s = new HashSet<>(Arrays.asList(ps.defaultPropertyNames()));
 			assertTrue("1.4", s.contains(key));
 		}
-		assertEquals("1.5", keys.length, ps.defaultPropertyNames().length);
+		assertThat(ps.defaultPropertyNames()).hasSameSizeAs(keys);
 
 		// setting to default-default does not remove name from set either
 		for (String key : keys) {
@@ -436,7 +436,7 @@ public class PreferenceForwarderTest {
 			s = new HashSet<>(Arrays.asList(ps.defaultPropertyNames()));
 			assertTrue("1.6.6", s.contains(key));
 		}
-		assertEquals("1.7", keys.length, ps.defaultPropertyNames().length);
+		assertThat(ps.defaultPropertyNames()).hasSameSizeAs(keys);
 	}
 
 	@Test
@@ -820,12 +820,7 @@ public class PreferenceForwarderTest {
 	public void testListenerOnRemove() throws BackingStoreException {
 		AtomicReference<IStatus> logStatus = new AtomicReference<>();
 		// create a new log listener that will fail if anything is written
-		ILogListener logListener = new ILogListener() {
-			@Override
-			public void logging(IStatus status, String plugin) {
-				logStatus.set(status);
-			}
-		};
+		ILogListener logListener = (status, plugin) -> logStatus.set(status);
 
 		// set a preference value to get everything initialized
 		String id = getUniqueString();
@@ -834,10 +829,7 @@ public class PreferenceForwarderTest {
 
 		// add a property change listener which will cause one to be
 		// added at the preference node level
-		IPropertyChangeListener listener = new Preferences.IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-			}
+		IPropertyChangeListener listener = event -> {
 		};
 		ps.addPropertyChangeListener(listener);
 		ps.setValue("key2", "value2");

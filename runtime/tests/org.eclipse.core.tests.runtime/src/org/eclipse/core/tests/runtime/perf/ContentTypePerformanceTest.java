@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.perf;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.clear;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.runtime.RuntimeTestsPlugin.PI_RUNTIME_TESTS;
@@ -290,8 +291,8 @@ public class ContentTypePerformanceTest extends TestCase {
 					} catch (IOException e) {
 						throw new IllegalStateException("unexpected exception occurred", e);
 					}
-					assertEquals("1.0." + i, 1, result.length);
-					assertEquals("1.1." + i, id, result[0].getId());
+					assertThat(result).as("content types for element " + i).singleElement()
+							.satisfies(it -> assertThat(it.getId()).as("id").isEqualTo(id));
 				}
 			}
 		}.run(this, 10, 2);

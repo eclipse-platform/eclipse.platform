@@ -15,6 +15,7 @@
 
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -248,7 +249,7 @@ public class ServiceContextTest {
 			PrintService service = (PrintService) otherServiceContext
 					.get(PrintService.SERVICE_NAME);
 			assertEquals("1.0", stringPrint1, service);
-			assertEquals("1.1", 1, ref.getUsingBundles().length);
+			assertThat(ref.getUsingBundles()).hasSize(1);
 			service = null;
 			otherServiceContext.dispose();
 			assertNull("2.0", ref.getUsingBundles());

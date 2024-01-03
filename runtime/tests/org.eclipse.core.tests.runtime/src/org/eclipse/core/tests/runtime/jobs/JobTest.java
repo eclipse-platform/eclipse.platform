@@ -26,7 +26,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -1380,10 +1379,8 @@ public class JobTest extends AbstractJobTest {
 			}
 		}
 		try {
-			Job[] found = Job.getJobManager().find(job);
-			assertEquals("Job should still run", 1, found.length);
-			assertSame("Job should still run", job, found[0]);
-			assertThat(runCount.get()).as("number of job executions").isEqualTo(1L);
+			assertThat(Job.getJobManager().find(job)).as("check job still runs").contains(job);
+			assertThat(runCount.get()).as("expected to see exact one job execution").isEqualTo(1);
 		} finally {
 			keepRunning.set(false);
 		}

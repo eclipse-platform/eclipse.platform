@@ -13,14 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
@@ -156,7 +150,7 @@ public class ExpressionInfoTests {
 		info.addAccessedPropertyName("prop1");
 		other.addAccessedPropertyName("prop2");
 		info.merge(other);
-		assertPropertyAccess(info, new String[] { "prop1", "prop2" }, false);
+		assertPropertyAccess(info, new String[] { "prop1", "prop2" });
 	}
 
 	@Test
@@ -260,82 +254,70 @@ public class ExpressionInfoTests {
 	}
 
 	private void assertDefaultAccessOnly(ExpressionInfo info) {
-		assertTrue("Accesses default variable", info.hasDefaultVariableAccess());
-		assertFalse("Doesn't accesses system property", info.hasSystemPropertyAccess());
-		assertTrue("No variable accesses", info.getAccessedVariableNames().length == 0);
-		assertNull("No misbehaving expression types", info.getMisbehavingExpressionTypes());
-		assertEquals("No properties accessed", 0, info.getAccessedPropertyNames().length);
+		assertThat(info).matches(ExpressionInfo::hasDefaultVariableAccess, "accesses default variable");
+		assertThat(info).matches(not(ExpressionInfo::hasSystemPropertyAccess), "doesn't access system property");
+		assertThat(info.getAccessedVariableNames()).as("no variable accessed").isEmpty();
+		assertThat(info.getMisbehavingExpressionTypes()).as("no misbehaving expression types").isNull();
+		assertThat(info.getAccessedPropertyNames()).as("no properties accessed").isEmpty();
 	}
 
 	private void assertSystemPropertyOnly(ExpressionInfo info) {
-		assertFalse("Doesn't accesses default variable", info.hasDefaultVariableAccess());
-		assertTrue("Accesses system property", info.hasSystemPropertyAccess());
-		assertTrue("No variable accesses", info.getAccessedVariableNames().length == 0);
-		assertNull("No misbehaving expression types", info.getMisbehavingExpressionTypes());
-		assertEquals("No properties accessed", 0, info.getAccessedPropertyNames().length);
+		assertThat(info).matches(not(ExpressionInfo::hasDefaultVariableAccess), "doesn't access default variable");
+		assertThat(info).matches(ExpressionInfo::hasSystemPropertyAccess, "accesses system property");
+		assertThat(info.getAccessedVariableNames()).as("no variable accessed").isEmpty();
+		assertThat(info.getMisbehavingExpressionTypes()).as("no misbehaving expression types").isNull();
+		assertThat(info.getAccessedPropertyNames()).as("no properties accessed").isEmpty();
 	}
 
 	private void assertNoAccess(ExpressionInfo info) {
-		assertFalse("Doesn't accesses default variable", info.hasDefaultVariableAccess());
-		assertFalse("Doesn't accesses system property", info.hasSystemPropertyAccess());
-		assertTrue("No variable accesses", info.getAccessedVariableNames().length == 0);
-		assertNull("No misbehaving expression types", info.getMisbehavingExpressionTypes());
-		assertEquals("No properties accessed", 0, info.getAccessedPropertyNames().length);
+		assertThat(info).matches(not(ExpressionInfo::hasDefaultVariableAccess), "doesn't access default variable");
+		assertThat(info).matches(not(ExpressionInfo::hasSystemPropertyAccess), "doesn't access system property");
+		assertThat(info.getAccessedVariableNames()).as("no variable accessed").isEmpty();
+		assertThat(info.getMisbehavingExpressionTypes()).as("no misbehaving expression types").isNull();
+		assertThat(info.getAccessedPropertyNames()).as("no properties accessed").isEmpty();
 	}
 
 	private void assertVariableAccess(ExpressionInfo info, String variable) {
-		assertFalse("Doesn't accesses default variable", info.hasDefaultVariableAccess());
-		assertFalse("Doesn't accesses system property", info.hasSystemPropertyAccess());
-		String[] accessedVariableNames= info.getAccessedVariableNames();
-		assertEquals("One variable accessed", 1, accessedVariableNames.length);
-		assertEquals("Variable accessed", variable, accessedVariableNames[0]);
-		assertNull("No misbehaving expression types", info.getMisbehavingExpressionTypes());
-		assertEquals("No properties accessed", 0, info.getAccessedPropertyNames().length);
+		assertThat(info).matches(not(ExpressionInfo::hasDefaultVariableAccess), "doesn't access default variable");
+		assertThat(info).matches(not(ExpressionInfo::hasSystemPropertyAccess), "doesn't access system property");
+		assertThat(info.getAccessedVariableNames()).as("one variable accessed").containsExactly(variable);
+		assertThat(info.getMisbehavingExpressionTypes()).as("no misbehaving expression types").isNull();
+		assertThat(info.getAccessedPropertyNames()).as("no properties accessed").isEmpty();
 	}
 
 	private void assertVariableAccess(ExpressionInfo info, String[] variables) {
-		assertFalse("Doesn't accesses default variable", info.hasDefaultVariableAccess());
-		assertFalse("Doesn't accesses system property", info.hasSystemPropertyAccess());
-		Set<String> accessedVariableNames= new HashSet<>(Arrays.asList(info.getAccessedVariableNames()));
-		assertEquals("All variable accessed", variables.length, accessedVariableNames.size());
-		for (String variable : variables) {
-			assertTrue("Variable accessed", accessedVariableNames.contains(variable));
-		}
-		assertNull("No misbehaving expression types", info.getMisbehavingExpressionTypes());
-		assertEquals("No properties accessed", 0, info.getAccessedPropertyNames().length);
+		assertThat(info).matches(not(ExpressionInfo::hasDefaultVariableAccess), "doesn't access default variable");
+		assertThat(info).matches(not(ExpressionInfo::hasSystemPropertyAccess), "doesn't access system property");
+		assertThat(info.getAccessedVariableNames()).as("all variables accessed").containsExactlyInAnyOrder(variables);
+		assertThat(info.getMisbehavingExpressionTypes()).as("no misbehaving expression types").isNull();
+		assertThat(info.getAccessedPropertyNames()).as("no properties accessed").isEmpty();
 	}
 
 	private void assertPropertyAccess(ExpressionInfo info, String property, boolean defaultVariable) {
-		assertEquals("Accesses default variable", defaultVariable, info.hasDefaultVariableAccess());
-		assertFalse("Doesn't accesses system property", info.hasSystemPropertyAccess());
-		String[] accessedPropertyNames= info.getAccessedPropertyNames();
-		assertEquals("One property accessed", 1, accessedPropertyNames.length);
-		assertEquals("Property accessed", property, accessedPropertyNames[0]);
-		assertNull("No misbehaving expression types", info.getMisbehavingExpressionTypes());
-		assertEquals("No variable accesses", 0, info.getAccessedVariableNames().length);
+		if (defaultVariable) {
+			assertThat(info).matches(ExpressionInfo::hasDefaultVariableAccess, "accesses default variable");
+		} else {
+			assertThat(info).matches(not(ExpressionInfo::hasDefaultVariableAccess), "doesn't access default variable");
+		}
+		assertThat(info).matches(not(ExpressionInfo::hasSystemPropertyAccess), "doesn't access system property");
+		assertThat(info.getAccessedPropertyNames()).as("one property accessed").containsExactly(property);
+		assertThat(info.getMisbehavingExpressionTypes()).as("no misbehaving expression types").isNull();
+		assertThat(info.getAccessedVariableNames()).as("no variable accessed").isEmpty();
 	}
 
-	private void assertPropertyAccess(ExpressionInfo info, String[] properties, boolean defaultVariable) {
-		assertEquals("Accesses default variable", defaultVariable, info.hasDefaultVariableAccess());
-		assertFalse("Doesn't accesses system property", info.hasSystemPropertyAccess());
-		Set<String> accessedPropertyNames= new HashSet<>(Arrays.asList(info.getAccessedPropertyNames()));
-		assertEquals("All properties accessed", properties.length, accessedPropertyNames.size());
-		for (String property : properties) {
-			assertTrue("Property accessed", accessedPropertyNames.contains(property));
-		}
-		assertNull("No misbehaving expression types", info.getMisbehavingExpressionTypes());
-		assertEquals("No variable accesses", 0, info.getAccessedVariableNames().length);
+	private void assertPropertyAccess(ExpressionInfo info, String[] properties) {
+		assertThat(info).matches(not(ExpressionInfo::hasDefaultVariableAccess), "doesn't access default variable");
+		assertThat(info).matches(not(ExpressionInfo::hasSystemPropertyAccess), "doesn't access system property");
+		assertThat(info.getAccessedPropertyNames()).as("all properties accessed").containsExactlyInAnyOrder(properties);
+		assertThat(info.getMisbehavingExpressionTypes()).as("no misbehaving expression types").isNull();
+		assertThat(info.getAccessedVariableNames()).as("one variable accessed").isEmpty();
 	}
 
 	private void assertMisbehavedExpressionTypes(ExpressionInfo info, Class<?>[] types) {
-		assertFalse("Doesn't accesses default variable", info.hasDefaultVariableAccess());
-		assertFalse("Doesn't accesses system property", info.hasSystemPropertyAccess());
-		assertTrue("No variable accesses", info.getAccessedVariableNames().length == 0);
-		assertEquals("No properties accessed", 0, info.getAccessedPropertyNames().length);
-		Set<?> misbehavedTypes = new HashSet<>(Arrays.asList(info.getMisbehavingExpressionTypes()));
-		assertEquals("All types accessed", types.length, misbehavedTypes.size());
-		for (Class<?> type : types) {
-			assertTrue("Type collected", misbehavedTypes.contains(type));
-		}
+		assertThat(info).matches(not(ExpressionInfo::hasDefaultVariableAccess), "doesn't access default variable");
+		assertThat(info).matches(not(ExpressionInfo::hasSystemPropertyAccess), "doesn't access system property");
+		assertThat(info.getAccessedVariableNames()).as("no variable accessed").isEmpty();
+		assertThat(info.getAccessedPropertyNames()).as("no properties accessed").isEmpty();
+		assertThat(info.getMisbehavingExpressionTypes()).as("all types accessed").containsExactlyInAnyOrder(types);
 	}
 }

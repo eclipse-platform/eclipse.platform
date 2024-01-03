@@ -748,7 +748,7 @@ public class PreferencesServiceTest {
 
 		// an empty transfer list matches nothing
 		matching = service.matches(service.getRootNode(), new IPreferenceFilter[0]);
-		assertEquals("1.1", 0, matching.length);
+		assertThat(matching).isEmpty();
 
 		// don't match this filter
 		IPreferenceFilter filter = new IPreferenceFilter() {
@@ -765,24 +765,24 @@ public class PreferencesServiceTest {
 			}
 		};
 		matching = service.matches(service.getRootNode(), new IPreferenceFilter[] { filter });
-		assertEquals("2.1", 0, matching.length);
+		assertThat(matching).isEmpty();
 
 		// shouldn't match since there are no key/value pairs in the node
 		matching = service.matches(service.getRootNode(), new IPreferenceFilter[] { filter });
-		assertEquals("3.0", 0, matching.length);
+		assertThat(matching).isEmpty();
 
 		// add some values so it does match
 		InstanceScope.INSTANCE.getNode(QUALIFIER).put("key", "value");
 		matching = service.matches(service.getRootNode(), new IPreferenceFilter[] { filter });
-		assertEquals("3.1", 1, matching.length);
+		assertThat(matching).hasSize(1);
 
 		// should match on the exact node too
 		matching = service.matches(InstanceScope.INSTANCE.getNode(QUALIFIER), new IPreferenceFilter[] { filter });
-		assertEquals("4.1", 1, matching.length);
+		assertThat(matching).hasSize(1);
 
 		// shouldn't match a different scope
 		matching = service.matches(ConfigurationScope.INSTANCE.getNode(QUALIFIER), new IPreferenceFilter[] { filter });
-		assertEquals("5.1", 0, matching.length);
+		assertThat(matching).isEmpty();
 
 		// try matching on the root node for a filter which matches all nodes in the scope
 		filter = new IPreferenceFilter() {
@@ -797,11 +797,11 @@ public class PreferencesServiceTest {
 			}
 		};
 		matching = service.matches(InstanceScope.INSTANCE.getNode(QUALIFIER), new IPreferenceFilter[] { filter });
-		assertEquals("6.1", 1, matching.length);
+		assertThat(matching).hasSize(1);
 
 		// shouldn't match
 		matching = service.matches(ConfigurationScope.INSTANCE.getNode(QUALIFIER), new IPreferenceFilter[] { filter });
-		assertEquals("7.1", 0, matching.length);
+		assertThat(matching).isEmpty();
 	}
 
 	/*
@@ -828,7 +828,7 @@ public class PreferencesServiceTest {
 				return new String[] {InstanceScope.SCOPE};
 			}
 		}};
-		assertEquals("1.0", 1, service.matches(service.getRootNode(), filters).length);
+		assertThat(service.matches(service.getRootNode(), filters)).hasSize(1);
 	}
 
 	@Test
@@ -1000,7 +1000,7 @@ public class PreferencesServiceTest {
 		node.put(VALID_KEY_4, "value4");
 
 		matching = service.matches(service.getRootNode(), new IPreferenceFilter[] { transfer });
-		assertEquals("2.00", 1, matching.length);
+		assertThat(matching).hasSize(1);
 
 		ExportVerifier verifier = new ExportVerifier(service.getRootNode(), new IPreferenceFilter[] {transfer});
 		verifier.addVersion();
@@ -1062,17 +1062,17 @@ public class PreferencesServiceTest {
 		}
 		String debugString = ((EclipsePreferences) node).toDeepDebugString();
 		String[] children = node.childrenNames();
-		assertEquals(debugString, 1, children.length);
+		assertThat(children).as(debugString).hasSize(1);
 
 		assertEquals(InstanceScope.SCOPE, children[0]);
 		node = node.node(children[0]);
 		children = node.childrenNames();
-		assertEquals(debugString, 1, children.length);
+		assertThat(children).as(debugString).hasSize(1);
 
 		assertEquals("bug418046", children[0]);
 		node = node.node(children[0]);
 		children = node.childrenNames();
-		assertEquals(debugString, 0, children.length);
+		assertThat(children).as(debugString).isEmpty();
 
 		assertEquals(debugString, "someValue", node.get("someKey", null));
 	}
