@@ -14,14 +14,13 @@
 
 package org.eclipse.ua.tests.help.search;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 
@@ -46,10 +45,9 @@ public class InfocenterWorkingSetManagerTest {
 		wset.setElements(new AdaptableHelpResource[] { toc });
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(1, resources.length);
-		assertTrue(resources[0].equals(toc));
+		assertThat(resources).containsExactly(toc);
 	}
 
 	@Test
@@ -66,10 +64,9 @@ public class InfocenterWorkingSetManagerTest {
 		req2.setCookies(resp.getCookies());
 		InfocenterWorkingSetManager mgr2 = new InfocenterWorkingSetManager(req2, resp2, "en");
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(1, resources.length);
-		assertTrue(resources[0].equals(toc));
+		assertThat(resources).containsExactly(toc);
 		checkCookies(resp);
 		checkCookies(resp2);
 	}
@@ -85,12 +82,9 @@ public class InfocenterWorkingSetManagerTest {
 		wset.setElements(new AdaptableHelpResource[] { topic1 });
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(1, resources.length);
-		Set<AdaptableTopic> topics = new HashSet<>();
-		topics.add(topic1);
-		assertTrue(topics.contains(resources[0]));
+		assertThat(resources).containsExactly(topic1);
 		checkCookies(resp);
 	}
 
@@ -107,14 +101,9 @@ public class InfocenterWorkingSetManagerTest {
 		wset.setElements(new AdaptableHelpResource[] { topic1, topic3 });
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(2, resources.length);
-		Set<AdaptableTopic> topics = new HashSet<>();
-		topics.add(topic1);
-		topics.add(topic3);
-		assertTrue(topics.contains(resources[0]));
-		assertTrue(topics.contains(resources[1]));
+		assertThat(resources).containsExactlyInAnyOrder(topic1, topic3);
 		checkCookies(resp);
 	}
 
@@ -134,16 +123,9 @@ public class InfocenterWorkingSetManagerTest {
 		mgr.addWorkingSet(wset);
 
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(3, resources.length);
-		Set<AdaptableTopic> topics = new HashSet<>();
-		topics.add(topic1);
-		topics.add(topic3);
-		topics.add(topic5);
-		assertTrue(topics.contains(resources[0]));
-		assertTrue(topics.contains(resources[1]));
-		assertTrue(topics.contains(resources[2]));
+		assertThat(resources).containsExactlyInAnyOrder(topic1, topic3, topic5);
 		checkCookies(resp);
 	}
 
@@ -163,13 +145,10 @@ public class InfocenterWorkingSetManagerTest {
 		req2.setCookies(resp.getCookies());
 		InfocenterWorkingSetManager mgr2 = new InfocenterWorkingSetManager(req2, resp2, "en");
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
-		assertEquals(1, readWsets.length);
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(1, resources.length);
-		Set<AdaptableTopic> topics = new HashSet<>();
-		topics.add(topic1);
-		assertTrue(topics.contains(resources[0]));
+		assertThat(resources).containsExactly(topic1);
 		checkCookies(resp);
 		checkCookies(resp2);
 	}
@@ -192,14 +171,9 @@ public class InfocenterWorkingSetManagerTest {
 		req2.setCookies(resp.getCookies());
 		InfocenterWorkingSetManager mgr2 = new InfocenterWorkingSetManager(req2, resp2, "en");
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(2, resources.length);
-		Set<AdaptableTopic> topics = new HashSet<>();
-		topics.add(topic1);
-		topics.add(topic3);
-		assertTrue(topics.contains(resources[0]));
-		assertTrue(topics.contains(resources[1]));
+		assertThat(resources).containsExactlyInAnyOrder(topic1, topic3);
 		checkCookies(resp);
 		checkCookies(resp2);
 	}
@@ -224,16 +198,9 @@ public class InfocenterWorkingSetManagerTest {
 		req2.setCookies(resp.getCookies());
 		InfocenterWorkingSetManager mgr2 = new InfocenterWorkingSetManager(req2, resp2, "en");
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(3, resources.length);
-		Set<AdaptableTopic> topics = new HashSet<>();
-		topics.add(topic1);
-		topics.add(topic3);
-		topics.add(topic5);
-		assertTrue(topics.contains(resources[0]));
-		assertTrue(topics.contains(resources[1]));
-		assertTrue(topics.contains(resources[2]));
+		assertThat(resources).containsExactlyInAnyOrder(topic1, topic3, topic5);
 		checkCookies(resp);
 		checkCookies(resp2);
 	}
@@ -254,13 +221,11 @@ public class InfocenterWorkingSetManagerTest {
 		mgr.addWorkingSet(wset1);
 		mgr.addWorkingSet(wset2);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(2, readWsets.length);
+		assertThat(readWsets).hasSize(2);
 		AdaptableHelpResource[] resourcesT3 = mgr.getWorkingSet("test3").getElements();
-		assertEquals(1, resourcesT3.length);
-		assertEquals(topic1, resourcesT3[0]);
+		assertThat(resourcesT3).containsExactly(topic1);
 		AdaptableHelpResource[] resourcesT4 = mgr.getWorkingSet("test4").getElements();
-		assertEquals(1, resourcesT4.length);
-		assertEquals(topic3, resourcesT4[0]);
+		assertThat(resourcesT4).containsExactly(topic3);
 		checkCookies(resp);
 	}
 
@@ -321,13 +286,12 @@ public class InfocenterWorkingSetManagerTest {
 		InfocenterWorkingSetManager mgr2 = new InfocenterWorkingSetManager(req2, resp2, "en");
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
 
-		assertEquals(2, readWsets.length);
+		assertThat(readWsets).hasSize(2);
 		AdaptableHelpResource[] resourcesT3 = mgr2.getWorkingSet("test3").getElements();
-		assertEquals(1, resourcesT3.length);
+		assertThat(resourcesT3).containsExactly(topic1);
 		assertEquals(topic1, resourcesT3[0]);
 		AdaptableHelpResource[] resourcesT4 = mgr2.getWorkingSet("test4").getElements();
-		assertEquals(1, resourcesT4.length);
-		assertEquals(topic3, resourcesT4[0]);
+		assertThat(resourcesT4).containsExactly(topic3);
 		checkCookies(resp);
 		checkCookies(resp2);
 	}
@@ -346,9 +310,9 @@ public class InfocenterWorkingSetManagerTest {
 		wset.setCriteria(criteria);
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		CriterionResource[] readResources = readWsets[0].getCriteria();
-		assertEquals(1, readResources.length);
+		assertThat(readResources).hasSize(1);
 		checkCookies(resp);
 	}
 
@@ -372,9 +336,9 @@ public class InfocenterWorkingSetManagerTest {
 		InfocenterWorkingSetManager mgr2 = new InfocenterWorkingSetManager(req2, resp2, "en");
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
 
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		CriterionResource[] readResources = readWsets[0].getCriteria();
-		assertEquals(1, readResources.length);
+		assertThat(readResources).hasSize(1);
 		checkCookies(resp);
 		checkCookies(resp2);
 	}
@@ -395,7 +359,7 @@ public class InfocenterWorkingSetManagerTest {
 		wset.setCriteria(criteria);
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		CriterionResource[] readResources = readWsets[0].getCriteria();
 		checkResourceWithTwoChildren(readResources);
 		checkCookies(resp);
@@ -419,7 +383,7 @@ public class InfocenterWorkingSetManagerTest {
 		InfocenterWorkingSetManager mgr2 = new InfocenterWorkingSetManager(req2, resp2, "en");
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
 
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		CriterionResource[] readResources = readWsets[0].getCriteria();
 		checkResourceWithTwoChildren(readResources);
 		checkCookies(resp);
@@ -427,7 +391,7 @@ public class InfocenterWorkingSetManagerTest {
 	}
 
 	private void checkResourceWithTwoChildren(CriterionResource[] readResources) {
-		assertEquals(2, readResources.length);
+		assertThat(readResources).hasSize(2);
 		CriterionResource readVersion;
 		CriterionResource readPlatform;
 		if (readResources[0].getCriterionName().equals("version")) {

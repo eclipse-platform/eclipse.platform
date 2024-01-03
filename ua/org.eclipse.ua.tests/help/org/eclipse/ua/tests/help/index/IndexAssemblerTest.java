@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.index;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -69,23 +70,23 @@ public class IndexAssemblerTest {
 		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
 		Index index = assembler.assemble(contributions, Platform.getNL());
 		IIndexEntry[] children = index.getEntries();
-		assertEquals(2,children.length);
+		assertThat(children).hasSize(2);
 		IIndexEntry eclipseEntry = children[0];
 		assertEquals("eclipse", eclipseEntry.getKeyword());
 		IUAElement[] eclipseChildren = eclipseEntry.getChildren();
-		assertEquals(4, eclipseChildren.length);
+		assertThat(eclipseChildren).hasSize(4);
 		assertTrue(eclipseChildren[0] instanceof Topic);
 		assertTrue(eclipseChildren[1] instanceof IndexEntry);
 		assertTrue(eclipseChildren[2] instanceof IndexSee);
 		assertTrue(eclipseChildren[3] instanceof IndexSee);
 		IndexSee seeHelios = (IndexSee) eclipseChildren[2];
 		IndexSee seeHeliosRelease = (IndexSee) eclipseChildren[3];
-		assertEquals(0, seeHelios.getSubpathElements().length);
-		assertEquals(1, seeHeliosRelease.getSubpathElements().length);
+		assertThat(seeHelios.getSubpathElements()).isEmpty();
+		assertThat(seeHeliosRelease.getSubpathElements()).hasSize(1);
 		IIndexEntry heliosEntry = children[1];
 		assertEquals("helios", heliosEntry.getKeyword());
 		IIndexSee[] heliosSees = ((IIndexEntry2)heliosEntry).getSees();
-		assertEquals(1, heliosSees.length);
+		assertThat(heliosSees).hasSize(1);
 		assertEquals("eclipse", heliosSees[0].getKeyword());
 	}
 
@@ -98,10 +99,10 @@ public class IndexAssemblerTest {
 		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
 		Index index = assembler.assemble(contributions, Platform.getNL());
 		IIndexEntry[] children = index.getEntries();
-		assertEquals(1,children.length);
+		assertThat(children).hasSize(1);
 		assertEquals("keyword1", children[0].getKeyword());
 		ITopic[] topics = children[0].getTopics();
-		assertEquals(3, topics.length);
+		assertThat(topics).hasSize(3);
 		assertEquals("topic0", topics[0].getLabel());
 		assertEquals("topic1", topics[1].getLabel());
 		assertEquals("topic2", topics[2].getLabel());

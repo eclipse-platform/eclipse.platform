@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.criteria;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -101,7 +102,7 @@ public class ParseTocWithCriteria {
 	public void testTopicWithCriteria() throws Exception {
 		IToc toc = parseToc("data/help/criteria/c1.xml");
 		ITopic[] topics = toc.getTopics();
-		assertEquals(topics.length, 2);
+		assertThat(topics).hasSize(2);
 		// First topic
 		Map<String, Set<String>> criteria = new HashMap<>();
 		assertTrue(topics[0] instanceof ITopic2);
@@ -129,7 +130,7 @@ public class ParseTocWithCriteria {
 	public void testCriteriaScoping1() throws Exception {
 		IToc toc = parseToc("data/help/criteria/c1.xml");
 		ITopic[] topics = toc.getTopics();
-		assertEquals(topics.length, 2);
+		assertThat(topics).hasSize(2);
 		CriterionResource[] resource = new CriterionResource[1];
 		resource[0] = new CriterionResource("version");
 		resource[0].addCriterionValue("1.0");
@@ -143,7 +144,7 @@ public class ParseTocWithCriteria {
 	public void testCriteriaScoping2() throws Exception {
 		IToc toc = parseToc("data/help/criteria/c1.xml");
 		ITopic[] topics = toc.getTopics();
-		assertEquals(topics.length, 2);
+		assertThat(topics).hasSize(2);
 		CriterionResource[] resource = new CriterionResource[1];
 		resource[0] = new CriterionResource("platform");
 		resource[0].addCriterionValue("linux");
@@ -157,7 +158,7 @@ public class ParseTocWithCriteria {
 	public void testMultipleCriteriaScoping() throws Exception {
 		IToc toc = parseToc("data/help/criteria/c1.xml");
 		ITopic[] topics = toc.getTopics();
-		assertEquals(topics.length, 2);
+		assertThat(topics).hasSize(2);
 		CriterionResource[] resource = new CriterionResource[2];
 		resource[0] = new CriterionResource("platform");
 		resource[0].addCriterionValue("linux");
@@ -178,7 +179,7 @@ public class ParseTocWithCriteria {
 		resource[0].addCriterionValue("linux");
 		resource[1] = new CriterionResource("version");
 		resource[1].addCriterionValue("2.0");
-		assertEquals(topics.length, 2);
+		assertThat(topics).hasSize(2);
 		CriteriaHelpScope scope = new CriteriaHelpScope(resource);
 		assertTrue(scope.inScope(toc));
 		assertFalse(scope.inScope(topics[0]));
@@ -194,7 +195,7 @@ public class ParseTocWithCriteria {
 		toc.addCriterion(criterion2);
 
 		ICriteria[] criteria = toc.getCriteria();
-		assertEquals(2, criteria.length);
+		assertThat(criteria).hasSize(2);
 		assertEquals("version", criteria[0].getName());
 		assertEquals("1.0", criteria[0].getValue());
 		assertEquals("version", criteria[1].getName());
@@ -212,7 +213,7 @@ public class ParseTocWithCriteria {
 		Toc copy = new Toc(toc);
 
 		ICriteria[] criteria = copy.getCriteria();
-		assertEquals(2, criteria.length);
+		assertThat(criteria).hasSize(2);
 		assertEquals("version", criteria[0].getName());
 		assertEquals("1.0", criteria[0].getValue());
 		assertEquals("version", criteria[1].getName());
@@ -230,7 +231,7 @@ public class ParseTocWithCriteria {
 		Topic copy = new Topic(topic);
 
 		ICriteria[] criteria = copy.getCriteria();
-		assertEquals(2, criteria.length);
+		assertThat(criteria).hasSize(2);
 		assertEquals("version", criteria[0].getName());
 		assertEquals("1.0", criteria[0].getValue());
 		assertEquals("version", criteria[1].getName());
@@ -245,7 +246,7 @@ public class ParseTocWithCriteria {
 		topic.addCriterion(criterion1);
 		topic.addCriterion(criterion2);
 		ICriteria[] criteria = topic.getCriteria();
-		assertEquals(2, criteria.length);
+		assertThat(criteria).hasSize(2);
 		assertEquals("version", criteria[0].getName());
 		assertEquals("1.0", criteria[0].getValue());
 		assertEquals("version", criteria[1].getName());

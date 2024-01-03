@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.cheatsheet.other;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -63,8 +64,8 @@ public class TestCheatSheetCollection {
 
 	@Test
 	public void testRoot() {
-		assertEquals(2, root.getChildren().length);
-		assertEquals(2, root.getCheatSheets().length);
+		assertThat(root.getChildren()).hasSize(2);
+		assertThat(root.getCheatSheets()).hasSize(2);
 		assertFalse(root.isEmpty());
 		assertEquals("rootName", root.getLabel(null));
 		assertEquals("rootId", root.getId());
@@ -76,11 +77,11 @@ public class TestCheatSheetCollection {
 		Object[] children = root.getChildren();
 		assertEquals(c1, children[0]);
 		assertEquals(c2, children[1]);
-		assertEquals(2, c1.getChildren().length);
-		assertEquals(0, c1.getCheatSheets().length);
+		assertThat(c1.getChildren()).hasSize(2);
+		assertThat(c1.getCheatSheets()).isEmpty();
 		assertFalse(c1.isEmpty());
-		assertEquals(0, c2.getChildren().length);
-		assertEquals(1, c2.getCheatSheets().length);
+		assertThat(c2.getChildren()).isEmpty();
+		assertThat(c2.getCheatSheets()).hasSize(1);
 		assertFalse(c2.isEmpty());
 	}
 
@@ -96,11 +97,11 @@ public class TestCheatSheetCollection {
 		Object[] children = c1.getChildren();
 		assertEquals(c11, children[0]);
 		assertEquals(c12, children[1]);
-		assertEquals(0, c11.getChildren().length);
-		assertEquals(0, c11.getCheatSheets().length);
+		assertThat(c11.getChildren()).isEmpty();
+		assertThat(c11.getCheatSheets()).isEmpty();
 		assertTrue(c11.isEmpty());
-		assertEquals(0, c12.getChildren().length);
-		assertEquals(1, c12.getCheatSheets().length);
+		assertThat(c12.getChildren()).isEmpty();
+		assertThat(c12.getCheatSheets()).hasSize(1);
 		assertFalse(c12.isEmpty());
 	}
 

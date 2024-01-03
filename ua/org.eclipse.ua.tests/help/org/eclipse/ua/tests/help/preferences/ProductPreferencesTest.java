@@ -14,6 +14,7 @@
 package org.eclipse.ua.tests.help.preferences;
 
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
 import java.util.List;
@@ -161,7 +162,7 @@ public class ProductPreferencesTest {
 					.loadPropertiesFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(), path);
 
 			Assert.assertNotNull("The result of loading a properties file was unexpectedly null", properties);
-			Assert.assertEquals(data.length - 1, properties.size());
+			assertThat(data).hasSize(properties.size() + 1);
 
 			for (int j=1;j<data.length;++j) {
 				StringTokenizer tok = new StringTokenizer(data[j], "=");
@@ -203,7 +204,7 @@ public class ProductPreferencesTest {
 			List<String> output = ProductPreferences.tokenize(input);
 
 			Assert.assertNotNull("The tokenized output was unexpectedly null for: " + input, output);
-			Assert.assertEquals("The number of tokens did not match the expected result for: " + input, data.length - 1, output.size());
+			assertThat(output).as("check number of tokens").hasSize(data.length - 1);
 
 			for (int j=0;j<output.size();++j) {
 				Assert.assertEquals("One of the tokens did not match the expected result", data[j + 1], output.get(j));

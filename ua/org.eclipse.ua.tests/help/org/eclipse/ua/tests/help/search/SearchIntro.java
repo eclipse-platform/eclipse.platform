@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.help.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 
@@ -38,26 +38,22 @@ public class SearchIntro {
 
 	@Test
 	public void testSearchIntroGroupLabel() {
-		SearchHit[] hits = SearchTestUtils.getSearchHits("ifirifjrnfj", "en");
-		assertEquals(1, hits.length);
+		assertThat(SearchTestUtils.getSearchHits("ifirifjrnfj", "en")).hasSize(1);
 	}
 
 	@Test
 	public void testSearchIntroGroupText() {
-		SearchHit[] hits = SearchTestUtils.getSearchHits("nenfhhdhhed", "en");
-		assertEquals(1, hits.length);
+		assertThat(SearchTestUtils.getSearchHits("nenfhhdhhed", "en")).hasSize(1);
 	}
 
 	@Test
 	public void testSearchIntroLinkLabel() {
-		SearchHit[] hits = SearchTestUtils.getSearchHits("hydefefed", "en");
-		assertEquals(1, hits.length);
+		assertThat(SearchTestUtils.getSearchHits("hydefefed", "en")).hasSize(1);
 	}
 
 	@Test
 	public void testSearchIntroLinkText() {
-		SearchHit[] hits = SearchTestUtils.getSearchHits("hfuejfujduj", "en");
-		assertEquals(1, hits.length);
+		assertThat(SearchTestUtils.getSearchHits("hfuejfujduj", "en")).hasSize(1);
 	}
 
 }

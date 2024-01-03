@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -131,12 +132,10 @@ public class TestCompositeParser {
 		assertTrue(parser.getStatus().isOK());
 		AbstractTask task1 = model.getDependencies().getTask("task1");
 		AbstractTask task2 = model.getDependencies().getTask("task2");
-		assertTrue(task1.getRequiredTasks().length == 0);
-		assertTrue(task1.getSuccessorTasks().length == 1);
-		assertEquals(task2, task1.getSuccessorTasks()[0]);
-		assertTrue(task2.getSuccessorTasks().length == 0);
-		assertTrue(task2.getRequiredTasks().length == 1);
-		assertEquals(task1, task2.getRequiredTasks()[0]);
+		assertThat(task1.getRequiredTasks()).isEmpty();
+		assertThat(task1.getSuccessorTasks()).containsExactly(task2);
+		assertThat(task2.getSuccessorTasks()).isEmpty();
+		assertThat(task2.getRequiredTasks()).containsExactly(task1);
 		assertTrue(task1.isSkippable());
 		assertFalse(task2.isSkippable());
 	}
@@ -148,12 +147,10 @@ public class TestCompositeParser {
 		assertTrue(parser.getStatus().isOK());
 		AbstractTask task1 = model.getDependencies().getTask("task1");
 		AbstractTask task2 = model.getDependencies().getTask("task2");
-		assertTrue(task1.getRequiredTasks().length == 0);
-		assertTrue(task1.getSuccessorTasks().length == 1);
-		assertEquals(task2, task1.getSuccessorTasks()[0]);
-		assertTrue(task2.getSuccessorTasks().length == 0);
-		assertTrue(task2.getRequiredTasks().length == 1);
-		assertEquals(task1, task2.getRequiredTasks()[0]);
+		assertThat(task1.getRequiredTasks()).isEmpty();
+		assertThat(task1.getSuccessorTasks()).containsExactly(task2);
+		assertThat(task2.getSuccessorTasks()).isEmpty();
+		assertThat(task2.getRequiredTasks()).containsExactly(task1);
 	}
 
 	@Test

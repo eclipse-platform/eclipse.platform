@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.ui.internal.cheatsheets.composite.model.CompositeCheatSheetModel;
@@ -70,14 +71,13 @@ public class TestSuccessors {
 	private void assertSingleSuccessor(ICompositeCheatSheetTask task, ICompositeCheatSheetTask expectedSuccessor) {
 		SuccesorTaskFinder finder = new SuccesorTaskFinder(task);
 		ICompositeCheatSheetTask[] successors = finder.getRecommendedSuccessors();
-		assertEquals(1, successors.length);
-		assertEquals(expectedSuccessor, successors[0]);
+		assertThat(successors).containsExactly(expectedSuccessor);
 	}
 
 	private void assertNoSuccessors(ICompositeCheatSheetTask task) {
 		SuccesorTaskFinder finder = new SuccesorTaskFinder(task);
 		ICompositeCheatSheetTask[] successors = finder.getRecommendedSuccessors();
-		assertEquals(0, successors.length);
+		assertThat(successors).isEmpty();
 	}
 
 	@Test
@@ -155,11 +155,8 @@ public class TestSuccessors {
 		setupModel(true);
 		SuccesorTaskFinder finder = new SuccesorTaskFinder(subGroup);
 		ICompositeCheatSheetTask[] successors = finder.getRecommendedSuccessors();
-		assertEquals(3, successors.length);
 		// The successors should be in task order
-		assertEquals(task1, successors[0]);
-		assertEquals(task2, successors[1]);
-		assertEquals(task3, successors[2]);
+		assertThat(successors).containsExactly(task1, task2, task3);
 	}
 
 	@Test

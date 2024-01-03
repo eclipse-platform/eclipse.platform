@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.help.remote;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -59,7 +60,7 @@ public class RemotePreferenceTest {
 		setToDefault(IHelpBaseConstants.P_KEY_REMOTE_HELP_DEFAULT_PORT);
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(0, handler.getTotalRemoteInfocenters());
-		assertEquals(0, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).isEmpty();
 	}
 
 	/*
@@ -77,7 +78,7 @@ public class RemotePreferenceTest {
 		setPreference("remoteHelpICContributed", "");
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(0, handler.getTotalRemoteInfocenters());
-		assertEquals(0, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).isEmpty();
 	}
 
 	/*
@@ -95,7 +96,7 @@ public class RemotePreferenceTest {
 		setPreference("remoteHelpICContributed", "");
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(1, handler.getTotalRemoteInfocenters());
-		assertEquals(1, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).hasSize(1);
 	}
 
 	@Test
@@ -110,10 +111,10 @@ public class RemotePreferenceTest {
 		setPreference("remoteHelpICContributed", "");
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(0, handler.getTotalRemoteInfocenters());
-		assertEquals(0, handler.getHostEntries().length);
-		assertEquals(0, handler.getPortEntries().length);
-		assertEquals(0, handler.getEnabledEntries().length);
-		assertEquals(0, handler.getPathEntries().length);
+		assertThat(handler.getHostEntries()).isEmpty();
+		assertThat(handler.getPortEntries()).isEmpty();
+		assertThat(handler.getEnabledEntries()).isEmpty();
+		assertThat(handler.getPathEntries()).isEmpty();
 	}
 
 	@Test
@@ -128,13 +129,13 @@ public class RemotePreferenceTest {
 		setPreference("remoteHelpICContributed", "false");
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(1, handler.getTotalRemoteInfocenters());
-		assertEquals(1, handler.getHostEntries().length);
+		assertThat(handler.getHostEntries()).hasSize(1);
 		assertEquals("localhost", handler.getHostEntries()[0]);
-		assertEquals(1, handler.getPortEntries().length);
+		assertThat(handler.getPortEntries()).hasSize(1);
 		assertEquals("8081", handler.getPortEntries()[0]);
-		assertEquals(1, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).hasSize(1);
 		assertEquals("true", handler.getEnabledEntries()[0].toLowerCase());
-		assertEquals(1, handler.getPathEntries().length);
+		assertThat(handler.getPathEntries()).hasSize(1);
 		assertEquals("/help", handler.getPathEntries()[0].toLowerCase());
 	}
 
@@ -149,16 +150,16 @@ public class RemotePreferenceTest {
 		setPreference("remoteHelpICContributed", "false,false");
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(2, handler.getTotalRemoteInfocenters());
-		assertEquals(2, handler.getHostEntries().length);
+		assertThat(handler.getHostEntries()).hasSize(2);
 		assertEquals("localhost", handler.getHostEntries()[0]);
 		assertEquals("www.eclipse.org", handler.getHostEntries()[1]);
-		assertEquals(2, handler.getPortEntries().length);
+		assertThat(handler.getPortEntries()).hasSize(2);
 		assertEquals("8081", handler.getPortEntries()[0]);
 		assertEquals("8082", handler.getPortEntries()[1]);
-		assertEquals(2, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).hasSize(2);
 		assertEquals("true", handler.getEnabledEntries()[0].toLowerCase());
 		assertEquals("false", handler.getEnabledEntries()[1].toLowerCase());
-		assertEquals(2, handler.getPathEntries().length);
+		assertThat(handler.getPathEntries()).hasSize(2);
 		assertEquals("/help", handler.getPathEntries()[0].toLowerCase());
 		assertEquals("/eclipse/help", handler.getPathEntries()[1].toLowerCase());
 	}
@@ -175,13 +176,13 @@ public class RemotePreferenceTest {
 		setPreference("remoteHelpICContributed", "false,true");
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(1, handler.getTotalRemoteInfocenters());
-		assertEquals(1, handler.getHostEntries().length);
+		assertThat(handler.getHostEntries()).hasSize(1);
 		assertEquals("localhost", handler.getHostEntries()[0]);
-		assertEquals(1, handler.getPortEntries().length);
+		assertThat(handler.getPortEntries()).hasSize(1);
 		assertEquals("8081", handler.getPortEntries()[0]);
-		assertEquals(1, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).hasSize(1);
 		assertEquals("true", handler.getEnabledEntries()[0].toLowerCase());
-		assertEquals(1, handler.getPathEntries().length);
+		assertThat(handler.getPathEntries()).hasSize(1);
 		assertEquals("/help", handler.getPathEntries()[0].toLowerCase());
 	}
 
@@ -197,13 +198,13 @@ public class RemotePreferenceTest {
 		setPreference("remoteHelpICContributed", "");
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(1, handler.getTotalRemoteInfocenters());
-		assertEquals(1, handler.getHostEntries().length);
+		assertThat(handler.getHostEntries()).hasSize(1);
 		assertEquals("localhost", handler.getHostEntries()[0]);
-		assertEquals(1, handler.getPortEntries().length);
+		assertThat(handler.getPortEntries()).hasSize(1);
 		//assertEquals("80", handler.getPortEntries()[0]);
-		assertEquals(1, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).hasSize(1);
 		//assertEquals("true", handler.getEnabledEntries()[0].toLowerCase());
-		assertEquals(1, handler.getPathEntries().length);
+		assertThat(handler.getPathEntries()).hasSize(1);
 		//assertEquals("/help", handler.getPathEntries()[0].toLowerCase());
 	}
 
@@ -212,10 +213,10 @@ public class RemotePreferenceTest {
 		PreferenceFileHandler.commitRemoteICs(new RemoteIC[0]);
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(0, handler.getTotalRemoteInfocenters());
-		assertEquals(0, handler.getHostEntries().length);
-		assertEquals(0, handler.getPortEntries().length);
-		assertEquals(0, handler.getEnabledEntries().length);
-		assertEquals(0, handler.getPathEntries().length);
+		assertThat(handler.getHostEntries()).isEmpty();
+		assertThat(handler.getPortEntries()).isEmpty();
+		assertThat(handler.getEnabledEntries()).isEmpty();
+		assertThat(handler.getPathEntries()).isEmpty();
 	}
 
 	@Test
@@ -224,13 +225,13 @@ public class RemotePreferenceTest {
 		PreferenceFileHandler.commitRemoteICs(ic);
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(1, handler.getTotalRemoteInfocenters());
-		assertEquals(1, handler.getHostEntries().length);
+		assertThat(handler.getHostEntries()).hasSize(1);
 		assertEquals("host", handler.getHostEntries()[0]);
-		assertEquals(1, handler.getPortEntries().length);
+		assertThat(handler.getPortEntries()).hasSize(1);
 		assertEquals("8080", handler.getPortEntries()[0]);
-		assertEquals(1, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).hasSize(1);
 		assertEquals("true", handler.getEnabledEntries()[0].toLowerCase());
-		assertEquals(1, handler.getPathEntries().length);
+		assertThat(handler.getPathEntries()).hasSize(1);
 		assertEquals("/help", handler.getPathEntries()[0].toLowerCase());
 	}
 
@@ -241,16 +242,16 @@ public class RemotePreferenceTest {
 		PreferenceFileHandler.commitRemoteICs(ic);
 		PreferenceFileHandler handler = new PreferenceFileHandler();
 		assertEquals(2, handler.getTotalRemoteInfocenters());
-		assertEquals(2, handler.getHostEntries().length);
+		assertThat(handler.getHostEntries()).hasSize(2);
 		assertEquals("host", handler.getHostEntries()[0]);
 		assertEquals("remotehost", handler.getHostEntries()[1]);
-		assertEquals(2, handler.getPortEntries().length);
+		assertThat(handler.getPortEntries()).hasSize(2);
 		assertEquals("8080", handler.getPortEntries()[0]);
 		assertEquals("8081", handler.getPortEntries()[1]);
-		assertEquals(2, handler.getEnabledEntries().length);
+		assertThat(handler.getEnabledEntries()).hasSize(2);
 		assertEquals("true", handler.getEnabledEntries()[0].toLowerCase());
 		assertEquals("false", handler.getEnabledEntries()[1].toLowerCase());
-		assertEquals(2, handler.getPathEntries().length);
+		assertThat(handler.getPathEntries()).hasSize(2);
 		assertEquals("/help", handler.getPathEntries()[0].toLowerCase());
 		assertEquals("/help2", handler.getPathEntries()[1].toLowerCase());
 	}
