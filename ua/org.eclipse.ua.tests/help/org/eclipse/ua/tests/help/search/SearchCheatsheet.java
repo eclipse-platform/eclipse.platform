@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.help.search;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -85,7 +86,7 @@ public class SearchCheatsheet {
 		checkForCompositeMatch(hits);
 		// Matches in task ids should not be hits
 		hits = findHits("TaskId_AhB4U8");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
@@ -102,7 +103,7 @@ public class SearchCheatsheet {
 	 * Chech that there was one match, the
 	 */
 	private void checkForCheatSheetMatch(SearchHit[] hits) {
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 		assertEquals("/org.eclipse.ua.tests/data/cheatsheet/search/CSSearchTest.xml",
 				ignoreQuery(hits[0].getHref()));
 		assertTrue(hits[0].getDescription().startsWith("CSIntro_AhB4U8 This cheat sheet is used to test search."));
@@ -110,7 +111,7 @@ public class SearchCheatsheet {
 		}
 
 	private void checkForCompositeMatch(SearchHit[] hits) {
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 		assertEquals("/org.eclipse.ua.tests/data/cheatsheet/search/CompositeSearchTest.xml",
 				ignoreQuery(hits[0].getHref()));
 		assertTrue(hits[0].getDescription().startsWith("Intro text TaskGroupIntro_AhB4U8"));

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.toc;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -41,7 +42,7 @@ public class TocProviderTest {
 		for (ITopic child : children) {
 			if ("Generated Parent".equals(child.getLabel())) {
 				generatedParentTopics++;
-				assertEquals(4, child.getSubtopics().length);
+				assertThat(child.getSubtopics()).hasSize(4);
 			}
 		}
 		assertEquals(1, generatedParentTopics);

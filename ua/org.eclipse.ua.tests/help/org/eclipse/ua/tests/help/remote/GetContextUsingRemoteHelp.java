@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.help.remote;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -50,7 +51,7 @@ public class GetContextUsingRemoteHelp {
 		IContext context = HelpPlugin.getContextManager().getContext("org.eclipse.ua.tests.test_one", "en");
 		assertNotNull(context);
 		IHelpResource[] relatedTopics = context.getRelatedTopics();
-		assertEquals(1, relatedTopics.length);
+		assertThat(relatedTopics).hasSize(1);
 		String topicLabel = relatedTopics[0].getLabel();
 		assertEquals("context_one_en", topicLabel);
 		String title = ((IContext3)context).getTitle();
@@ -65,7 +66,7 @@ public class GetContextUsingRemoteHelp {
 		IContext context = HelpPlugin.getContextManager().getContext("org.eclipse.ua.tests.test_cheatsheets", "en");
 		assertNotNull(context);
 		IHelpResource[] relatedTopics = context.getRelatedTopics();
-		assertEquals(1, relatedTopics.length);
+		assertThat(relatedTopics).hasSize(1);
 		String topicLabel = relatedTopics[0].getLabel();
 		assertEquals("abcdefg", topicLabel);
 	}

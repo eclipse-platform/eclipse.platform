@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.criteria;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +42,7 @@ public class TestCriteriaProvider {
 		Topic copy = new Topic(topic);
 
 		ICriteria[] nativeCriteria = copy.getCriteria();
-		assertEquals(2, nativeCriteria.length);
+		assertThat(nativeCriteria).hasSize(2);
 		assertEquals("version", nativeCriteria[0].getName());
 		assertEquals("1.0", nativeCriteria[0].getValue());
 		assertEquals("version", nativeCriteria[1].getName());
@@ -65,7 +66,7 @@ public class TestCriteriaProvider {
 		Toc copy = new Toc(toc);
 
 		ICriteria[] nativeCriteria = copy.getCriteria();
-		assertEquals(2, nativeCriteria.length);
+		assertThat(nativeCriteria).hasSize(2);
 		assertEquals("version", nativeCriteria[0].getName());
 		assertEquals("1.0", nativeCriteria[0].getValue());
 		assertEquals("version", nativeCriteria[1].getName());

@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.help.other;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.help.IContext2;
@@ -88,7 +89,7 @@ public class ContextLinkSorter {
 		ContextHelpSorter sorter = new ContextHelpSorter(new TestContext());
 		TestResource[] resources = new TestResource[0];
 		sorter.sort(null, resources);
-		assertEquals(0, resources.length);
+		assertThat(resources).isEmpty();
 	}
 
 	@Test
@@ -100,7 +101,7 @@ public class ContextLinkSorter {
 				new TestResource("a2", "c1", "http://www.a2.com")
 		};
 		sorter.sort(null, resources);
-		assertEquals(3, resources.length);
+		assertThat(resources).hasSize(3);
 		assertEquals("a1", resources[0].getLabel());
 		assertEquals("a3", resources[1].getLabel());
 		assertEquals("a2", resources[2].getLabel());
@@ -120,7 +121,7 @@ public class ContextLinkSorter {
 				new TestResource("a7", null, "http://www.a2.com")
 		};
 		sorter.sort(null, resources);
-		assertEquals(8, resources.length);
+		assertThat(resources).hasSize(8);
 		assertEquals("a1", resources[0].getLabel());
 		assertEquals("a2", resources[1].getLabel());
 		assertEquals("a9", resources[2].getLabel());

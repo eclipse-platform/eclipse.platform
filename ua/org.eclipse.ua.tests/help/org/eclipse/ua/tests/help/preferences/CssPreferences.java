@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.help.preferences;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.webapp.data.CssUtil;
@@ -34,28 +34,25 @@ public class CssPreferences {
 	@Test
 	public void testNull() {
 		String[] options = CssUtil.getCssFilenames(null);
-		assertEquals(0, options.length);
+		assertThat(options).isEmpty();
 	}
 
 	@Test
 	public void testEmptyString() {
 		String[] options = CssUtil.getCssFilenames("");
-		assertEquals(0, options.length);
+		assertThat(options).isEmpty();
 	}
 
 	@Test
 	public void testSingleString() {
 		String[] options = CssUtil.getCssFilenames(ORG_ECLIPSE_TEST_FILE_CSS);
-		assertEquals(1, options.length);
-		assertEquals(ORG_ECLIPSE_TEST_FILE_CSS, options[0]);
+		assertThat(options).containsExactly(ORG_ECLIPSE_TEST_FILE_CSS);
 	}
 
 	@Test
 	public void testTwoStrings() {
 		String[] options = CssUtil.getCssFilenames(ORG_ECLIPSE_TEST_FILE_CSS + " , " + FILENAME_WITH_PARAM);
-		assertEquals(2, options.length);
-		assertEquals(ORG_ECLIPSE_TEST_FILE_CSS, options[0]);
-		assertEquals(FILENAME_WITH_OS, options[1]);
+		assertThat(options).containsExactly(ORG_ECLIPSE_TEST_FILE_CSS, FILENAME_WITH_OS);
 	}
 
 

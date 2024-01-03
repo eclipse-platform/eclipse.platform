@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.help.other;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -73,14 +74,14 @@ public class ContextMergeTest {
 		assertEquals("Context Description", context1.getText());
 		assertEquals("viewer", context1.getId());
 		IHelpResource[] related = context1.getRelatedTopics();
-		assertEquals(3, related.length);
+		assertThat(related).hasSize(3);
 		assertEquals("eclipse", related[0].getLabel());
 		assertEquals("enabled", related[1].getLabel());
 		assertEquals("bugzilla", related[2].getLabel());
 		assertTrue(related[0] instanceof IUAElement);
 		IUAElement topic = (IUAElement)related[1];
 		IUAElement[] topicChildren = topic.getChildren();
-		assertEquals(1, topicChildren.length);
+		assertThat(topicChildren).hasSize(1);
 	}
 
 }

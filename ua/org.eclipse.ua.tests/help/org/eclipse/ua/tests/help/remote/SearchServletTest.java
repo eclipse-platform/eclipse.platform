@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.remote;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -58,61 +59,61 @@ public class SearchServletTest {
 	@Test
 	public void testRemoteSearchNotFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("duernfryehd");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
 	public void testRemoteSearchFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("jehcyqpfjs");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchOrFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("jehcyqpfjs OR duernfryehd");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchAndFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("jehcyqpfjs AND vkrhjewiwh");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchAndNotFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("jehcyqpfjs AND duernfryehd");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
 	public void testRemoteSearchExactMatchFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("\"jehcyqpfjs vkrhjewiwh\"");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchExactMatchNotFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("\"vkrhjewiwh jehcyqpfjs\"");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
 	public void testRemoteSearchWordNotInDefaultLocale() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("deuejwuid");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
 	public void testRemoteSearchUsingDeLocale() throws Exception {
 		Node[] hits = getSearchHitsUsingLocale("deuejwuid", "de");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchUsingEnLocale() throws Exception {
 		Node[] hits = getSearchHitsUsingLocale("deuejwuid", "en");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	protected Node[] getSearchHitsFromServlet(String phrase)
