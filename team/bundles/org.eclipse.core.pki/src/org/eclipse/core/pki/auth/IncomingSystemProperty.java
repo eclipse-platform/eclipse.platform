@@ -45,6 +45,7 @@ public enum IncomingSystemProperty {
 		Optional<String> keyStore = null;
 		Optional<String> keyStorePassword = null;
 		Optional<String> PasswordEncrypted = null;
+		Optional<String> PasswordDecrypted = null;
 		keyStore = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
 		if (keyStore.isEmpty()) {
 			PKIState.CONTROL.setPKCS11on(false);
@@ -57,14 +58,16 @@ public enum IncomingSystemProperty {
 			LogUtil.logError("A Keystore Password is required, javax.net.ssl.keyStorePassword", null); //$NON-NLS-1$
 			return false;
 		} else {
+			PasswordDecrypted = Optional.ofNullable(System.getProperty("javax.net.ssl.decryptedPassword")); //$NON-NLS-1$
 			PasswordEncrypted = Optional.ofNullable(System.getProperty("javax.net.ssl.encryptedPassword")); //$NON-NLS-1$
-			if (PasswordEncrypted.isEmpty()) {
+			if ((PasswordEncrypted.isEmpty()) || (!(PasswordDecrypted.isEmpty()))) {
 				// Password is not encrypted
 			} else {
 				if (PasswordEncrypted.get().toString().equalsIgnoreCase("true")) { //$NON-NLS-1$
 					salt = new String(System.getProperty("user.name") + pin).getBytes(); //$NON-NLS-1$
 					String passwd = NormalizeAES256.DECRYPT.decrypt(keyStorePassword.get().toString(), pin,
 							new String(salt));
+					LogUtil.logInfo("IncomingSystemProperty - decrypt passwd:" + passwd); //$NON-NLS-1$
 					System.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 				}
 			}
