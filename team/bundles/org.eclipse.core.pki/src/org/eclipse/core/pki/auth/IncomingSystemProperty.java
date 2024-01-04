@@ -62,6 +62,7 @@ public enum IncomingSystemProperty {
 			PasswordEncrypted = Optional.ofNullable(System.getProperty("javax.net.ssl.encryptedPassword")); //$NON-NLS-1$
 			if ((PasswordEncrypted.isEmpty()) || (!(PasswordDecrypted.isEmpty()))) {
 				// Password is not encrypted
+				LogUtil.logInfo("IncomingSystemProperty  - is DecryptedPasswd:" + PasswordDecrypted.get().toString()); //$NON-NLS-1$
 			} else {
 				if (PasswordDecrypted.isEmpty()) {
 					LogUtil.logInfo("IncomingSystemProperty -No DECRYPT FLAG:"); //$NON-NLS-1$
