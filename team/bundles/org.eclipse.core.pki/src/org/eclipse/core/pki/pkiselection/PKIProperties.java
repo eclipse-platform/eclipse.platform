@@ -15,6 +15,7 @@ package org.eclipse.core.pki.pkiselection;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.util.Optional;
 
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.IStatus;
@@ -131,13 +132,15 @@ public class PKIProperties extends Authenticator {
 		}
 	}
 	public void load() {
-
-		if (System.getProperty("javax.net.ssl.keyStore") != null) { //$NON-NLS-1$
-			LogUtil.logInfo("PKIProperties keystorePKI" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
-			sslProperties.setKeyStore(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
-		} else {
+		Optional<String> keyStore = null;
+		keyStore = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
+		if (keyStore.isEmpty()) {
 			sslProperties.setKeyStore(""); //$NON-NLS-1$
+		} else {
+			LogUtil.logInfo("PKIProperties keystorePKI" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+			sslProperties.setKeyStore(keyStore.get().toString());
 		}
+
 		if (System.getProperty("javax.net.ssl.keyStoreType") != null) { //$NON-NLS-1$
 			sslProperties.setKeyStoreType(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
 		} else {

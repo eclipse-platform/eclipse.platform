@@ -159,13 +159,17 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         // Has a headless config already been set up
         if ((PKIState.CONTROL.isPKCS11on()) || (PKIState.CONTROL.isPKCS12on())) {
         	LogUtil.logInfo("AuthenticationPluginA Headless system has already setup PKI");
-        	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ System.getProperty("javax.net.ssl.keyStore"));
+
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
         	snapshotProperties.dump();
-        } else {
         	initialize();
-        	 snapshotProperties = PKIProperties.getInstance();
+        	
+        	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());
+        } else {
+        	clearPKI();
+        	initialize();
+        	snapshotProperties = PKIProperties.getInstance();
         }  
     }
     
@@ -912,18 +916,8 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 	
 	public void initialize() {
 		try {
-			System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
-			//System.clearProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY);
-			System.clearProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY);
-			System.clearProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY);
-			System.clearProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY);
-			/*
-			 * TODO:  Decide if we need to CLEAR all the trust store properties too. 
-			 * 
-			 */
-			System.clearProperty(JAVA_SSL_TRUST_STORE_PATH_KEY);
-			System.clearProperty(JAVA_SSL_TRUST_STORE_TYPE_KEY);
-			System.clearProperty(JAVA_SSL_TRUST_STORE_PASS_KEY);
+			System.out.println("AuthenticationPlugin - initialize");
+			
 			 
 			getPreferenceStore().setValue("JAVA_SSL_USER_KEY_STORE_PATH_KEY", "");
 			getPreferenceStore().setValue(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION, "");
@@ -944,6 +938,20 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public void clearPKI() {
+		System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
+		//System.clearProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY);
+		System.clearProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY);
+		System.clearProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY);
+		System.clearProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY);
+		/*
+		 * TODO:  Decide if we need to CLEAR all the trust store properties too. 
+		 * 
+		 */
+		System.clearProperty(JAVA_SSL_TRUST_STORE_PATH_KEY);
+		System.clearProperty(JAVA_SSL_TRUST_STORE_TYPE_KEY);
+		System.clearProperty(JAVA_SSL_TRUST_STORE_PASS_KEY);
 	}
 	
 	/**
