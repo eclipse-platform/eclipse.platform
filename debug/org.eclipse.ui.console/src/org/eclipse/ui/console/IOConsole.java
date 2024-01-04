@@ -418,7 +418,7 @@ public class IOConsole extends TextConsole {
 	 * it is disabled.
 	 *
 	 * @return <code>true</code> if console interprets ANSI escape sequences
-	 * @since 3.13
+	 * @since 3.14
 	 */
 	public static boolean isAnsiConsoleEnabled() {
 		return AnsiConsolePreferenceUtils.isAnsiConsoleEnabled();
