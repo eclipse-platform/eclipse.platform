@@ -161,11 +161,11 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         	LogUtil.logInfo("AuthenticationPluginA Headless system has already setup PKI");
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
+        	snapshotProperties.dump();
         } else {
         	initialize();
         	 snapshotProperties = PKIProperties.getInstance();
-        }
-        
+        }  
     }
     
     /**
