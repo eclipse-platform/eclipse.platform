@@ -62,20 +62,15 @@ public enum IncomingSystemProperty {
 			PasswordEncrypted = Optional.ofNullable(System.getProperty("javax.net.ssl.encryptedPassword")); //$NON-NLS-1$
 			if ((PasswordEncrypted.isEmpty()) || (!(PasswordDecrypted.isEmpty()))) {
 				// Password is not encrypted
-				LogUtil.logInfo("IncomingSystemProperty  - is DecryptedPasswd:" + PasswordDecrypted.get().toString()); //$NON-NLS-1$
+				// LogUtil.logInfo("IncomingSystemProperty - is DecryptedPasswd:" +
+				// PasswordDecrypted.get().toString()); //$NON-NLS-1$
 			} else {
-				if (PasswordDecrypted.isEmpty()) {
-					LogUtil.logInfo("IncomingSystemProperty -No DECRYPT FLAG:"); //$NON-NLS-1$
-				} else {
-					if (PasswordDecrypted.get().toString().equalsIgnoreCase("true")) { //$NON-NLS-1$
-						if (PasswordEncrypted.get().toString().equalsIgnoreCase("true")) { //$NON-NLS-1$
-							salt = new String(System.getProperty("user.name") + pin).getBytes(); //$NON-NLS-1$
-							String passwd = NormalizeAES256.DECRYPT.decrypt(keyStorePassword.get().toString(), pin,
-									new String(salt));
-							LogUtil.logInfo("IncomingSystemProperty - decrypt passwd:" + passwd); //$NON-NLS-1$
-							System.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
-						}
-					}
+				if (PasswordEncrypted.get().toString().equalsIgnoreCase("true")) { //$NON-NLS-1$
+					salt = new String(System.getProperty("user.name") + pin).getBytes(); //$NON-NLS-1$
+					String passwd = NormalizeAES256.DECRYPT.decrypt(keyStorePassword.get().toString(), pin,
+							new String(salt));
+					LogUtil.logInfo("IncomingSystemProperty - decrypt passwd:" + passwd); //$NON-NLS-1$
+					System.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 				}
 			}
 		}

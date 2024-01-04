@@ -47,10 +47,10 @@ import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.core.pki.util.KeyStoreFormat;
-import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
+import org.eclipse.ui.pki.util.PKISecureStorage;
 
 public class PKIController implements IStartup {
 	protected static final String USER_HOME = System.getProperty("user.home");
@@ -102,6 +102,7 @@ public class PKIController implements IStartup {
 					PKCSpick.getInstance().setPKCS11on(false);
 					PKCSpick.getInstance().setPKCS12on(true);
 					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
+					
 					AuthenticationPlugin.getDefault()
 	    				.getPreferenceStore()
 	    				.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION, null );
