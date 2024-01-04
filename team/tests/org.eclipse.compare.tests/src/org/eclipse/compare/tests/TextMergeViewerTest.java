@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareViewerPane;
@@ -33,11 +35,18 @@ import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.LabelContributionItem;
+import org.eclipse.compare.contentmergeviewer.IIgnoreWhitespaceContributor;
+import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
+import org.eclipse.compare.contentmergeviewer.TokenComparator;
 import org.eclipse.compare.internal.ChangeCompareFilterPropertyAction;
 import org.eclipse.compare.internal.IMergeViewerTestAdapter;
 import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.internal.Utilities;
+import org.eclipse.compare.internal.merge.DocumentMerger;
+import org.eclipse.compare.internal.merge.DocumentMerger.Diff;
+import org.eclipse.compare.internal.merge.DocumentMerger.IDocumentMergerInput;
+import org.eclipse.compare.rangedifferencer.RangeDifference;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
@@ -52,6 +61,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -476,6 +486,64 @@ public class TextMergeViewerTest  {
 		}, cc);
 	}
 
+
+	@Test
+	public void testCompareWithIgnoreWhitespaceContributor() throws Exception {
+		String leftTxt = "str\n= \"Hello\nWorld\"";
+		String rightTxt = "str\n\n= \"Hello\n\nWorld\""; // added newLine in offset 4 and 14
+
+		DiffNode testNode = new DiffNode(new EditableTestElement(leftTxt.getBytes()),
+				new EditableTestElement(rightTxt.getBytes()));
+
+		CompareConfiguration cc = new CompareConfiguration();
+		runInDialogWithIgnoreWhitespaceContributor(testNode, () -> {
+			try {
+				testDocumentMerger.doDiff();
+			} catch (CoreException e) {
+				fail("Cannot do diff in Document Merger");
+			}
+
+			Diff firstDiff = testDocumentMerger.findDiff(new Position(4), false); // first different, not in literal
+			Diff secondDiff = testDocumentMerger.findDiff(new Position(14), false); // second different, in literal
+
+			assertNotNull(firstDiff);
+			assertNotNull(secondDiff);
+
+			assertEquals("Change direction is wrong", RangeDifference.RIGHT, firstDiff.getKind());
+			assertEquals("Change direction is wrong", RangeDifference.RIGHT, secondDiff.getKind());
+
+			assertTrue("Change should be shown", testDocumentMerger.useChange(firstDiff)); // shows this diff in
+																							// DocumentMerger
+			assertTrue("Change should be shown", testDocumentMerger.useChange(secondDiff)); // shows this diff in
+																							// DocumentMerger
+
+			cc.setProperty(CompareConfiguration.IGNORE_WHITESPACE, true);// IGNORE_WHITESPACE set to active
+			try {
+				testDocumentMerger.doDiff();
+			} catch (CoreException e) {
+				fail("Cannot do diff in Document Merger");
+			}
+
+			firstDiff = testDocumentMerger.findDiff(new Position(4), false);
+			secondDiff = testDocumentMerger.findDiff(new Position(14), false);
+
+			assertNotNull(firstDiff);
+			assertNotNull(secondDiff);
+
+			assertEquals("Change direction is wrong", RangeDifference.RIGHT, firstDiff.getKind());
+			assertEquals("Change direction is wrong", RangeDifference.RIGHT, secondDiff.getKind());
+
+			org.junit.Assert.assertFalse("Change should not be shown", testDocumentMerger.useChange(firstDiff)); // whitespace
+																													// not
+																													// in
+																								// literal, do not show
+																								// in DocumentMerger
+			assertTrue("Change should be shown", testDocumentMerger.useChange(secondDiff)); // whitespace in literal,
+																							// show in DocumentMerger
+
+		}, cc);
+	}
+
 	@Test
 	public void testDocumentAsTypedElement() throws Exception {
 		class DocumentAsTypedElement extends Document implements ITypedElement {
@@ -642,5 +710,100 @@ public class TextMergeViewerTest  {
 		protected IDocumentPartitioner getDocumentPartitioner() {
 			return new DummyPartitioner();
 		}
+	}
+
+	private static DocumentMerger testDocumentMerger = null;
+
+	private void runInDialogWithIgnoreWhitespaceContributor(Object input, Runnable runnable,
+			final CompareConfiguration cc) throws Exception {
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		Dialog dialog = new Dialog(shell) {
+			@Override
+			protected Control createDialogArea(Composite parent) {
+				Composite composite = (Composite) super.createDialogArea(parent);
+				viewer = new TestMergeViewer(composite, cc);
+				testDocumentMerger = createDocumentMerger(viewer, cc);
+				return composite;
+			}
+		};
+		dialog.setBlockOnOpen(false);
+		dialog.open();
+		viewer.setInput(input);
+		try {
+			runnable.run();
+		} catch (WrappedException e) {
+			e.throwException();
+		}
+		dialog.close();
+		viewer = null;
+	}
+
+	private static DocumentMerger createDocumentMerger(TestMergeViewer testMergeViewer, CompareConfiguration cc) {
+		return new DocumentMerger(new IDocumentMergerInput() {
+
+			@Override
+			public Optional<IIgnoreWhitespaceContributor> createIgnoreWhitespaceContributor(IDocument document) {
+				return Optional.of(new SimpleIgnoreWhitespaceContributor(document));
+			}
+
+			@Override
+			public IDocument getDocument(char contributor) {
+				IDocument document = Utilities.getDocument(contributor, testMergeViewer.getInput(), true, true);
+				if (document == null) {
+					return testMergeViewer.getAdapter(IMergeViewerTestAdapter.class).getDocument(contributor);
+				}
+				return document;
+			}
+
+			@Override
+			public CompareConfiguration getCompareConfiguration() {
+				return cc;
+			}
+
+			@Override
+			public Position getRegion(char contributor) {
+				return null;
+			}
+
+			@Override
+			public boolean isIgnoreAncestor() {
+				return false;
+			}
+
+			@Override
+			public boolean isThreeWay() {
+				return false;
+			}
+
+			@Override
+			public ITokenComparator createTokenComparator(String line) {
+				return new TokenComparator(line);
+			}
+
+			@Override
+			public boolean isHunkOnLeft() {
+				return false;
+			}
+
+			@Override
+			public int getHunkStart() {
+				return 0;
+			}
+
+			@Override
+			public boolean isPatchHunk() {
+				return false;
+			}
+
+			@Override
+			public boolean isShowPseudoConflicts() {
+				return false;
+			}
+
+			@Override
+			public boolean isPatchHunkOk() {
+				return false;
+			}
+		});
 	}
 }
