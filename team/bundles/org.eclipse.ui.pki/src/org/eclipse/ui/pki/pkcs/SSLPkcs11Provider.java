@@ -15,13 +15,9 @@ package org.eclipse.ui.pki.pkcs;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.Provider;
-import java.security.ProviderException;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateExpiredException;
@@ -37,8 +33,8 @@ import javax.net.ssl.SSLContext;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
-import org.eclipse.ui.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.AuthenticationBase;
+import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.ui.pki.AuthenticationPlugin; 
 
 

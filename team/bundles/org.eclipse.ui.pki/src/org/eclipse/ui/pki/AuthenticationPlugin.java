@@ -47,7 +47,9 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.security.auth.callback.CallbackHandler;
 import org.eclipse.core.pki.FingerprintX509;
+import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.auth.SecurityFileSnapshot;
+import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
@@ -65,7 +67,6 @@ import org.eclipse.ui.pki.jsse.CdeX509TrustManager;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
-import org.eclipse.ui.pki.pkiselection.PKIProperties;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 import org.eclipse.core.pki.util.KeyStoreFormat;
@@ -154,8 +155,17 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        initialize();
-        snapshotProperties = PKIProperties.getInstance();
+        
+        // Has a headless config already been set up
+        if ((PKIState.CONTROL.isPKCS11on()) || (PKIState.CONTROL.isPKCS12on())) {
+        	LogUtil.logInfo("AuthenticationPluginA Headless system has already setup PKI");
+        	snapshotProperties = PKIProperties.getInstance();
+        	snapshotProperties.load();
+        } else {
+        	initialize();
+        	 snapshotProperties = PKIProperties.getInstance();
+        }
+        
     }
     
     /**
