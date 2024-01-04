@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -131,8 +131,7 @@ public class WorkspaceTestRule extends ExternalResource {
 		File workspaceLocation = getWorkspace().getRoot().getLocation().toFile();
 		File[] remainingFilesInWorkspace = workspaceLocation
 				.listFiles(file -> !file.getName().equals(metadataDirectoryName));
-		assertArrayEquals("There are unexpected contents in the workspace folder", new File[0],
-				remainingFilesInWorkspace);
+		assertThat(remainingFilesInWorkspace).as("contents in the workspace folder").isEmpty();
 	}
 
 	/**

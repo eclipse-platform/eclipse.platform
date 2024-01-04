@@ -63,7 +63,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.junit.Assert;
 import org.junit.Test;
 
 import junit.framework.AssertionFailedError;
@@ -495,7 +494,7 @@ public class PatchTest {
 		LineReader expectedContents = new LineReader(PatchUtils.getReader(expt));
 		List<String> expectedLines = expectedContents.readLines();
 
-		Assert.assertArrayEquals(expectedLines.toArray(), inLines.toArray());
+		assertThat(inLines).containsExactlyElementsOf(expectedLines);
 	}
 
 	private void patchWorkspace(String[] originalFiles, String patch, String[] expectedOutcomeFiles, boolean reverse,
@@ -554,7 +553,7 @@ public class PatchTest {
 			LineReader resultReader = new LineReader(new BufferedReader(new StringReader(resultString)));
 			Object[] result = resultReader.readLines().toArray();
 
-			Assert.assertArrayEquals(msg, expected, result);
+			assertThat(result).as(msg).containsExactly(expected);
 		}
 	}
 }
