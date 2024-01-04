@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.refresh;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.internal.refresh.RefreshJob.BASE_REFRESH_DEPTH;
 import static org.eclipse.core.internal.refresh.RefreshJob.DEPTH_INCREASE_STEP;
 import static org.eclipse.core.internal.refresh.RefreshJob.FAST_REFRESH_THRESHOLD;
@@ -20,7 +21,6 @@ import static org.eclipse.core.internal.refresh.RefreshJob.MAX_RECURSION;
 import static org.eclipse.core.internal.refresh.RefreshJob.SLOW_REFRESH_THRESHOLD;
 import static org.eclipse.core.internal.refresh.RefreshJob.UPDATE_DELAY;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +40,6 @@ import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -347,22 +346,19 @@ public class RefreshJobTest {
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		Set<IResource> missing = new LinkedHashSet<>();
 		Set<IResource> visited = new LinkedHashSet<>();
-		project.accept(new IResourceVisitor() {
-			@Override
-			public boolean visit(IResource resource) throws CoreException {
-				if (resource.getType() == IResource.FILE) {
-					return true;
-				}
-				visited.add(resource);
-				if (!resources.contains(resource)) {
-					missing.add(resource);
-				}
+		project.accept(resource -> {
+			if (resource.getType() == IResource.FILE) {
 				return true;
 			}
+			visited.add(resource);
+			if (!resources.contains(resource)) {
+				missing.add(resource);
+			}
+			return true;
 		});
-		assertArrayEquals("Resources not refreshed", new IResource[0], missing.toArray());
-		assertFalse("Projects should be not empty", visited.isEmpty());
-		assertFalse("No resources refreshed", resources.isEmpty());
+		assertThat(missing).as("resources not refreshed").isEmpty();
+		assertThat(visited).as("visited projects").isNotEmpty();
+		assertThat(resources).as("refreshed resources").isNotEmpty();
 	}
 
 	private TestRefreshJob createAndReplaceDefaultJob() throws Exception {

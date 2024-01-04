@@ -15,7 +15,6 @@
 package org.eclipse.core.tests.internal.preferences;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -389,8 +388,7 @@ public class PreferencesServiceTest {
 		String[] setOrder = new String[] {TestScope.SCOPE, DefaultScope.SCOPE};
 		service.setDefaultLookupOrder(qualifier, null, setOrder);
 		String[] order = service.getLookupOrder(qualifier, null);
-		assertNotNull("6.0", order);
-		assertArrayEquals("6.1", setOrder, order);
+		assertThat(order).containsExactly(setOrder);
 
 		// get the value, should be the real one
 		for (int i = 0; i < contexts.length; i++) {
@@ -403,8 +401,7 @@ public class PreferencesServiceTest {
 		setOrder = new String[] {DefaultScope.SCOPE, TestScope.SCOPE};
 		service.setDefaultLookupOrder(qualifier, key, setOrder);
 		order = service.getLookupOrder(qualifier, key);
-		assertNotNull("8.0", order);
-		assertArrayEquals("8.1", setOrder, order);
+		assertThat(order).containsExactly(setOrder);
 
 		// get the value, should be the default one
 		for (int i = 0; i < contexts.length; i++) {

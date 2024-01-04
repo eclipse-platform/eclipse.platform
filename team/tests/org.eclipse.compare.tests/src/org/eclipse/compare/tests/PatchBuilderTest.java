@@ -15,7 +15,6 @@ package org.eclipse.compare.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +35,6 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class PatchBuilderTest {
@@ -214,8 +212,7 @@ public class PatchBuilderTest {
 		addLineDelimiters(lines, lineDelimiter);
 		Hunk hunk = (Hunk) PatchBuilder.createHunk(0, lines);
 		String[] actual = hunk.getUnifiedLines();
-		assertTrue(lines != actual);
-		Assert.assertArrayEquals(lines, actual);
+		assertThat(actual).isNotSameAs(lines).containsExactly(lines);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
 	}
@@ -233,8 +230,7 @@ public class PatchBuilderTest {
 		addLineDelimiters(lines, lineDelimiter);
 		Hunk hunk = (Hunk) PatchBuilder.createHunk(0, lines);
 		String[] actual = hunk.getUnifiedLines();
-		assertTrue(lines != actual);
-		Assert.assertArrayEquals(lines, actual);
+		assertThat(actual).isNotSameAs(lines).containsExactly(lines);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
 	}
@@ -251,8 +247,7 @@ public class PatchBuilderTest {
 		addLineDelimiters(lines, lineDelimiter);
 		Hunk hunk = (Hunk) PatchBuilder.createHunk(0, lines);
 		String[] actual = hunk.getUnifiedLines();
-		assertTrue(lines != actual);
-		Assert.assertArrayEquals(lines, actual);
+		assertThat(actual).isNotSameAs(lines).containsExactly(lines);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
 	}
@@ -269,8 +264,7 @@ public class PatchBuilderTest {
 		addLineDelimiters(lines, lineDelimiter);
 		Hunk hunk = (Hunk) PatchBuilder.createHunk(0, lines);
 		String[] actual = hunk.getUnifiedLines();
-		assertTrue(lines != actual);
-		Assert.assertArrayEquals(lines, actual);
+		assertThat(actual).isNotSameAs(lines).containsExactly(lines);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
 	}

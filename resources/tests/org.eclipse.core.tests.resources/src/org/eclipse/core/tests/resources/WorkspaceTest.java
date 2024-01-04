@@ -28,7 +28,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
@@ -394,7 +393,7 @@ public class WorkspaceTest {
 		p1.open(new NullProgressMonitor());
 		assertFalse(getWorkspace().getDanglingReferences().containsKey(p1));
 		p2.delete(true, true, new NullProgressMonitor());
-		assertArrayEquals(new IProject[] { p2 }, getWorkspace().getDanglingReferences().get(p1));
+		assertThat(getWorkspace().getDanglingReferences().get(p1)).containsExactly(p2);
 	}
 
 	@Test

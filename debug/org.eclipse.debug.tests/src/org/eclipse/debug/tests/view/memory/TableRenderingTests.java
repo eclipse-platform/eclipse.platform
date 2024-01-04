@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.view.memory;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
+
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IMemoryBlockExtension;
 import org.eclipse.debug.core.model.MemoryByte;
@@ -99,11 +100,11 @@ public class TableRenderingTests {
 
 		rendering.setDisplayEndianess(RenderingsUtil.BIG_ENDIAN);
 		assertEquals(bigEndianString, rendering.getString(null, null, memoryBytes));
-		assertArrayEquals(bytes, rendering.getBytes(null, null, memoryBytes, bigEndianString));
+		assertThat(rendering.getBytes(null, null, memoryBytes, bigEndianString)).containsExactly(bytes);
 
 		rendering.setDisplayEndianess(RenderingsUtil.LITTLE_ENDIAN);
 		assertEquals(littleEndianString, rendering.getString(null, null, memoryBytes));
-		assertArrayEquals(bytes, rendering.getBytes(null, null, memoryBytes, littleEndianString));
+		assertThat(rendering.getBytes(null, null, memoryBytes, littleEndianString)).containsExactly(bytes);
 	}
 
 	private HexIntegerRendering createHexIntegerRendering(int addressableSize) {
