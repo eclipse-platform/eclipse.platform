@@ -20,6 +20,8 @@ import java.security.Security;
 import java.util.Optional;
 
 import org.eclipse.core.pki.auth.PKIState;
+import org.eclipse.core.pki.pkiselection.PKI;
+import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -41,8 +43,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IPreferenceConstants;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
-import org.eclipse.ui.pki.pkiselection.PKI;
-import org.eclipse.ui.pki.pkiselection.PKIProperties;
 import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;

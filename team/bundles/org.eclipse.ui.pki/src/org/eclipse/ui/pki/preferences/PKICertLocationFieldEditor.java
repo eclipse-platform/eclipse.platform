@@ -20,6 +20,7 @@ import java.security.KeyStoreException;
 
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
@@ -33,7 +34,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.pki.pkiselection.PKCSpick;
-import org.eclipse.ui.pki.pkiselection.PKIProperties;
 import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.AuthenticationPlugin;
 import org.eclipse.pki.exception.UserCanceledException;
