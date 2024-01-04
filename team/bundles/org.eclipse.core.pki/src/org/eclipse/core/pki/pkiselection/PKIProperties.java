@@ -131,6 +131,7 @@ public class PKIProperties extends Authenticator {
 		}
 	}
 	public void load() {
+
 		if (System.getProperty("javax.net.ssl.keyStore") != null) { //$NON-NLS-1$
 			sslProperties.setKeyStore(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
 		} else {
