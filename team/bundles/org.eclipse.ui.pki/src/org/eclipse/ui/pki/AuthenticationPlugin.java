@@ -26,11 +26,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
-import java.security.KeyStore.Builder;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -43,21 +41,16 @@ import java.util.List;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.KeyStoreBuilderParameters;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
-
 import org.eclipse.core.pki.FingerprintX509;
 import org.eclipse.core.pki.auth.SecurityFileSnapshot;
 import org.eclipse.core.pki.util.LogUtil;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.Wizard;
@@ -66,7 +59,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.BundleContext;
 import org.eclipse.ui.pki.dialog.PassphraseDialog;
 import org.eclipse.ui.pki.jsse.CdeX509TrustManager;
@@ -81,9 +73,6 @@ import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.PKIAuthenticator;
 import org.eclipse.ui.pki.wizard.PKILoginWizard;
 import org.eclipse.ui.pki.wizard.TrustStoreLoginWizard;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -135,7 +124,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
      * @return the shared instance
      */
     public static AuthenticationPlugin getDefault() {
-    	//System.out.println("AuthenticationPlugin ---getDefault plugin");
+    	System.out.println("AuthenticationPlugin ---getDefault plugin");
     	if (plugin == null) {
     		AuthenticationPlugin auth = new AuthenticationPlugin();
 			/*
@@ -912,7 +901,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 	
 	public void initialize() {
 		try {
-			//System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
+			System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
 			//System.clearProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY);
 			System.clearProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY);
 			System.clearProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY);

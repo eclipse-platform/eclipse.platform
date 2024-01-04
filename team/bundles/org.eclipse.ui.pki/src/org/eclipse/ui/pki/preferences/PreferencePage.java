@@ -151,6 +151,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         	setPkcs11InVisible();
         	setPkcs12Visible();
         	
+        	
         } else if ((!( PKIState.CONTROL.isPKCS11on() )) && 
             		(!(PKIState.CONTROL.isPKCS12on())) ) {
             		//(!(VendorImplementation.getInstance().isInstalled() ))) {
