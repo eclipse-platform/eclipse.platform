@@ -163,6 +163,15 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
         	//snapshotProperties.dump();
+        	if (PKIState.CONTROL.isPKCS11on()) {
+        		PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
+        	}
+        	if (PKIState.CONTROL.isPKCS12on()) {
+        		PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
+        		getDefault()
+        			.getPreferenceStore()
+        			.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION, null );
+        	}
         	
         	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());
         } else {
@@ -297,10 +306,10 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     public String obtainSystemPropertyPKICertificatePath(){
     	
 		String currentCertificatePath = "" ; 
-		if ( PKCSpick.getInstance().isPKCS11on()) {
+		if (PKIState.CONTROL.isPKCS11on()) {
 			currentCertificatePath = getPreferenceStore().getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
 		}
-		if ( PKCSpick.getInstance().isPKCS12on()) {
+		if (PKIState.CONTROL.isPKCS12on() ) {
 			currentCertificatePath = System.getProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY);
 		}
 		
@@ -470,11 +479,11 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 
 	public String getCertificatePath() {
 		String path = null;
-		if ( PKCSpick.getInstance().isPKCS11on()) {
+		if ( PKIState.CONTROL.isPKCS11on()) {
 			System.out.println("AuthenticationPlugin ----getCertificatePath  PKCS11");
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS11");
 			path = getPreferenceStore().getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
-		} else if ( PKCSpick.getInstance().isPKCS12on()) {
+		} else if ( PKIState.CONTROL.isPKCS12on()) {
 			System.out.println("AuthenticationPlugin ----getCertificatePath  PKCS12");
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS12");
 			path = getPreferenceStore().getString(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION);
@@ -485,11 +494,11 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 
 	public void setCertificatePath(String path) {
 		
-		if ( PKCSpick.getInstance().isPKCS11on()) {
+		if ( PKIState.CONTROL.isPKCS11on()) {
 			//System.out.println("AuthenticationPlugin ----setCertificatePath  PKCS11 PATH:"+ path);
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS11");
 			//getPreferenceStore().setValue(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION, path);
-		} else if ( PKCSpick.getInstance().isPKCS12on()) {
+		} else if ( PKIState.CONTROL.isPKCS12on()) {
 			//System.out.println("AuthenticationPlugin ----setCertificatePath  PKCS12 PATH:"+ path);
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS12");
 			System.clearProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY);
@@ -545,14 +554,12 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 			       }
 			       
 			    } catch (Exception e) {
-			    	
-			    	PKCSpick.getInstance().setPKCS11on(false);
-			    	PKCSpick.getInstance().setPKCS12on(true);
+			    	PKIState.CONTROL.setPKCS11on(false);
+			    	PKIState.CONTROL.setPKCS12on(true);
 				    e.printStackTrace();
 			    } catch (Throwable e) {
-			    	
-			    	PKCSpick.getInstance().setPKCS11on(false);
-			    	PKCSpick.getInstance().setPKCS12on(true);
+			    	PKIState.CONTROL.setPKCS11on(false);
+			    	PKIState.CONTROL.setPKCS12on(true);
 				    e.printStackTrace();
 			    }
 			
