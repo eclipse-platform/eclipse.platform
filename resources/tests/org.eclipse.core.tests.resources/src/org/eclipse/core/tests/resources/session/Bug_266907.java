@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -86,7 +86,7 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		IProject project = workspace.getRoot().getProject(PROJECT_NAME);
 
 		// the project should be closed cause .project is removed
-		assertThat("project should not be accessible", project.isAccessible(), is(false));
+		assertThat(project).matches(not(IProject::isAccessible), "is not accessible");
 
 		// recreate .project
 		File dotProject = project.getFile(".project").getLocation().toFile();
@@ -100,14 +100,14 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		dotProjectCopy.delete();
 
 		project.open(createTestMonitor());
-		assertThat("project should be accessible", project.isAccessible(), is(true));
+		assertThat(project).matches(IProject::isAccessible, "is accessible");
 
 		IFile file = project.getFile(FILE_NAME);
 		IMarker[] markers = file.findMarkers(IMarker.BOOKMARK, false, IResource.DEPTH_ZERO);
-		assertThat("unexpected number of markers in test project", markers.length, is(1));
+		assertThat(markers).as("number of markers").hasSize(1);
 
 		Object attribute = markers[0].getAttribute(MARKER_ATTRIBUTE_NAME);
-		assertThat("unexpected name of marker", attribute, is(MARKER_ATTRIBUTE));
+		assertThat(attribute).as("name of marker").isEqualTo(MARKER_ATTRIBUTE);
 	}
 
 }

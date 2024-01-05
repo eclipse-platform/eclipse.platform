@@ -14,10 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.aMapWithSize;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,23 +48,21 @@ public class MarkersChangeListener implements IResourceChangeListener {
 			v = new Vector<>();
 		}
 		int numChanges = (added == null ? 0 : added.length) + (removed == null ? 0 : removed.length) + (changed == null ? 0 : changed.length);
-		assertThat("wrong number of markers for resource " + path, numChanges, is(v.size()));
+		assertThat(numChanges).as("number of markers for resource %s", path).isEqualTo(v.size());
 
 		for (IMarkerDelta delta : v) {
 			switch (delta.getKind()) {
-				case IResourceDelta.ADDED :
-					assertThat("added marker is missing resource " + path, added, hasItemInArray(delta.getMarker()));
-					break;
-				case IResourceDelta.REMOVED :
-					assertThat("removed marker is missing resource " + path, removed,
-							hasItemInArray(delta.getMarker()));
-					break;
-				case IResourceDelta.CHANGED :
-					assertThat("changed marker is missing resource " + path, changed,
-							hasItemInArray(delta.getMarker()));
-					break;
-				default :
-					throw new IllegalArgumentException("delta with unsupported kind: " + delta);
+			case IResourceDelta.ADDED:
+				assertThat(added).as("check added markers contain resource %s", path).contains(delta.getMarker());
+				break;
+			case IResourceDelta.REMOVED:
+				assertThat(removed).as("check removed markers contain resource %s", path).contains(delta.getMarker());
+				break;
+			case IResourceDelta.CHANGED:
+				assertThat(changed).as("check changed markers contain resource %s", path).contains(delta.getMarker());
+				break;
+			default:
+				throw new IllegalArgumentException("delta with unsupported kind: " + delta);
 			}
 		}
 	}
@@ -77,7 +72,7 @@ public class MarkersChangeListener implements IResourceChangeListener {
 	 * changes since last reset.
 	 */
 	public void assertNumberOfAffectedResources(int expectedNumberOfResource) {
-		assertThat(changes, aMapWithSize(expectedNumberOfResource));
+		assertThat(changes).hasSize(expectedNumberOfResource);
 	}
 
 	public void reset() {

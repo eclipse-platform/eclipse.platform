@@ -13,14 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.readStringInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.emptyArray;
-import static org.hamcrest.Matchers.is;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,56 +73,56 @@ public class ProjectDynamicReferencesTest {
 
 	@Test
 	public void testReferencedProjects() throws CoreException {
-		assertThat("Project0 must not have referenced projects", project0.getReferencedProjects(), emptyArray());
-		assertThat("Project1 must not have referenced projects", project1.getReferencedProjects(), emptyArray());
-		assertThat("Project2 must not have referenced projects", project2.getReferencedProjects(), emptyArray());
+		assertThat(project0.getReferencedProjects()).as("referenced projects of Project0").isEmpty();
+		assertThat(project1.getReferencedProjects()).as("referenced projects of Project1").isEmpty();
+		assertThat(project2.getReferencedProjects()).as("referenced projects of Project2").isEmpty();
 
 		DynamicReferenceProvider.addReference(project0, project1);
 
-		assertThat("Project0 must not have referenced projects", project0.getReferencedProjects(), emptyArray());
-		assertThat("Project1 must not have referenced projects", project1.getReferencedProjects(), emptyArray());
-		assertThat("Project2 must not have referenced projects", project2.getReferencedProjects(), emptyArray());
+		assertThat(project0.getReferencedProjects()).as("referenced projects of Project0").isEmpty();
+		assertThat(project1.getReferencedProjects()).as("referenced projects of Project1").isEmpty();
+		assertThat(project2.getReferencedProjects()).as("referenced projects of Project2").isEmpty();
 
 		clearCache();
 
-		assertThat("Project0 must reference Project1", project0.getReferencedProjects(), arrayContaining(project1));
-		assertThat("Project1 must not have referenced projects", project1.getReferencedProjects(), emptyArray());
-		assertThat("Project2 must not have referenced projects", project2.getReferencedProjects(), emptyArray());
+		assertThat(project0.getReferencedProjects()).as("referenced projects of Project0").containsExactly(project1);
+		assertThat(project1.getReferencedProjects()).as("referenced projects of Project1").isEmpty();
+		assertThat(project2.getReferencedProjects()).as("referenced projects of Project2").isEmpty();
 
 		DynamicReferenceProvider.addReference(project1, project2);
 
-		assertThat("Project0 must reference Project1", project0.getReferencedProjects(), arrayContaining(project1));
-		assertThat("Project1 must not have referenced projects", project1.getReferencedProjects(), emptyArray());
-		assertThat("Project2 must not have referenced projects", project2.getReferencedProjects(), emptyArray());
+		assertThat(project0.getReferencedProjects()).as("referenced projects of Project0").containsExactly(project1);
+		assertThat(project1.getReferencedProjects()).as("referenced projects of Project1").isEmpty();
+		assertThat(project2.getReferencedProjects()).as("referenced projects of Project2").isEmpty();
 
 		clearCache();
 
-		assertThat("Project0 must reference Project1", project0.getReferencedProjects(), arrayContaining(project1));
-		assertThat("Project1 must reference Project2", project1.getReferencedProjects(), arrayContaining(project2));
-		assertThat("Project2 must not have referenced projects", project2.getReferencedProjects(), emptyArray());
+		assertThat(project0.getReferencedProjects()).as("referenced projects of Project0").containsExactly(project1);
+		assertThat(project1.getReferencedProjects()).as("referenced projects of Project1").containsExactly(project2);
+		assertThat(project2.getReferencedProjects()).as("referenced projects of Project2").isEmpty();
 
 		DynamicReferenceProvider.addReference(project0, project2);
 
-		assertThat("Project0 must reference Project1", project0.getReferencedProjects(), arrayContaining(project1));
-		assertThat("Project1 must reference Project2", project1.getReferencedProjects(), arrayContaining(project2));
-		assertThat("Project2 must not have referenced projects", project2.getReferencedProjects(), emptyArray());
+		assertThat(project0.getReferencedProjects()).as("referenced projects of Project0").containsExactly(project1);
+		assertThat(project1.getReferencedProjects()).as("referenced projects of Project1").containsExactly(project2);
+		assertThat(project2.getReferencedProjects()).as("referenced projects of Project2").isEmpty();
 
 		clearCache();
 
-		assertThat("Project0 must reference Project1 and Project2", project0.getReferencedProjects(),
-				arrayContaining(project1, project2));
-		assertThat("Project1 must reference Project2", project1.getReferencedProjects(), arrayContaining(project2));
-		assertThat("Project2 must not have referenced projects", project2.getReferencedProjects(), emptyArray());
+		assertThat(project0.getReferencedProjects()).as("referenced projects of Project0").containsExactly(project1,
+				project2);
+		assertThat(project1.getReferencedProjects()).as("referenced projects of Project1").containsExactly(project2);
+		assertThat(project2.getReferencedProjects()).as("referenced projects of Project2").isEmpty();
 	}
 
 	@Test
 	public void testReferencedBuildConfigs() throws CoreException {
-		assertThat("Project0 must not have referenced projects",
-				project0.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false), emptyArray());
-		assertThat("Project1 must not have referenced projects",
-				project1.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false), emptyArray());
-		assertThat("Project2 must not have referenced projects",
-				project2.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false), emptyArray());
+		assertThat(project0.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false))
+				.as("referenced build configs of Project0").isEmpty();
+		assertThat(project1.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false))
+				.as("referenced build configs of Project1").isEmpty();
+		assertThat(project2.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false))
+				.as("referenced build configs of Project2").isEmpty();
 
 		DynamicReferenceProvider.addReference(project0, project1);
 		DynamicReferenceProvider.addReference(project1, project2);
@@ -134,65 +131,58 @@ public class ProjectDynamicReferencesTest {
 
 		IBuildConfiguration buildConfigProject1 = project1.getBuildConfig(IBuildConfiguration.DEFAULT_CONFIG_NAME);
 		IBuildConfiguration buildConfigProject2 = project2.getBuildConfig(IBuildConfiguration.DEFAULT_CONFIG_NAME);
-		assertThat("Build configuration of Project0 must reference build configuration of project1 and project2",
-				project0.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false),
-				arrayContaining(buildConfigProject1, buildConfigProject2));
-		assertThat("Build configuration of Project1 must reference build configuration of Project2",
-				project1.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false),
-				arrayContaining(buildConfigProject2));
-		assertThat("Project2 must not have referenced projects",
-				project2.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false), emptyArray());
+		assertThat(project0.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false))
+				.as("referenced build configs of Project0")
+				.containsExactly(buildConfigProject1, buildConfigProject2);
+		assertThat(project1.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false))
+				.as("referenced build configs of Project1")
+				.containsExactly(buildConfigProject2);
+		assertThat(project2.getReferencedBuildConfigs(IBuildConfiguration.DEFAULT_CONFIG_NAME, false))
+				.as("referenced build configs of Project2").isEmpty();
 	}
 
 	@Test
 	public void testReferencingProjects() throws CoreException {
-		assertThat("Project0 must not have referencing projects", project0.getReferencingProjects(), emptyArray());
-		assertThat("Project1 must not have referencing projects", project1.getReferencingProjects(), emptyArray());
-		assertThat("Project2 must not have referencing projects", project2.getReferencingProjects(), emptyArray());
+		assertThat(project0.getReferencingProjects()).as("referencing projects of Project0").isEmpty();
+		assertThat(project1.getReferencingProjects()).as("referencing projects of Project1").isEmpty();
+		assertThat(project2.getReferencingProjects()).as("referencing projects of Project2").isEmpty();
 
 		DynamicReferenceProvider.addReference(project0, project1);
 
-		assertThat("Project0 must not have referencing projects", project0.getReferencingProjects(), emptyArray());
-		assertThat("Project1 must not have referencing projects", project1.getReferencingProjects(), emptyArray());
-		assertThat("Project2 must not have referencing projects", project2.getReferencingProjects(), emptyArray());
+		assertThat(project0.getReferencingProjects()).as("referencing projects of Project0").isEmpty();
+		assertThat(project1.getReferencingProjects()).as("referencing projects of Project1").isEmpty();
+		assertThat(project2.getReferencingProjects()).as("referencing projects of Project2").isEmpty();
 
 		clearCache();
 
-		assertThat("Project0 must not have referencing projects", project0.getReferencingProjects(), emptyArray());
-		assertThat("Project1 must be referenced by Project0", project1.getReferencingProjects(),
-				arrayContaining(project0));
-		assertThat("Project2 must not have referencing projects", project2.getReferencingProjects(), emptyArray());
+		assertThat(project0.getReferencingProjects()).as("referencing projects of Project0").isEmpty();
+		assertThat(project1.getReferencingProjects()).as("referencing projects of Project1").containsExactly(project0);
+		assertThat(project2.getReferencingProjects()).as("referencing projects of Project2").isEmpty();
 
 		DynamicReferenceProvider.addReference(project1, project2);
 
-		assertThat("Project0 must not have referencing projects", project0.getReferencingProjects(), emptyArray());
-		assertThat("Project1 must must be referenced by Project0", project1.getReferencingProjects(),
-				arrayContaining(project0));
-		assertThat("Project2 must not have referencing projects", project2.getReferencingProjects(), emptyArray());
+		assertThat(project0.getReferencingProjects()).as("referencing projects of Project0").isEmpty();
+		assertThat(project1.getReferencingProjects()).as("referencing projects of Project1").containsExactly(project0);
+		assertThat(project2.getReferencingProjects()).as("referencing projects of Project2").isEmpty();
 
 		clearCache();
 
-		assertThat("Project0 must not have referencing projects", project0.getReferencingProjects(), emptyArray());
-		assertThat("Project1 must be referenced by Project0", project1.getReferencingProjects(),
-				arrayContaining(project0));
-		assertThat("Project2 must be referenced by Project1", project2.getReferencingProjects(),
-				arrayContaining(project1));
+		assertThat(project0.getReferencingProjects()).as("referencing projects of Project0").isEmpty();
+		assertThat(project1.getReferencingProjects()).as("referencing projects of Project2").containsExactly(project0);
+		assertThat(project2.getReferencingProjects()).as("referencing projects of Project2").containsExactly(project1);
 
 		DynamicReferenceProvider.addReference(project0, project2);
 
-		assertThat("Project0 must not have referencing projects", project0.getReferencingProjects(), emptyArray());
-		assertThat("Project1 must be referenced by Project0", project1.getReferencingProjects(),
-				arrayContaining(project0));
-		assertThat("Project2 must be referenced by Project1", project2.getReferencingProjects(),
-				arrayContaining(project1));
+		assertThat(project0.getReferencingProjects()).as("referencing projects of Project0").isEmpty();
+		assertThat(project1.getReferencingProjects()).as("referencing projects of Project1").containsExactly(project0);
+		assertThat(project2.getReferencingProjects()).as("referencing projects of Project2").containsExactly(project1);
 
 		clearCache();
 
-		assertThat("Project0 must not have referencing projects", project0.getReferencingProjects(), emptyArray());
-		assertThat("Project1 must be referenced by Project0", project1.getReferencingProjects(),
-				arrayContaining(project0));
-		assertThat("Project2 must be referenced by Project0 and Project1", project2.getReferencingProjects(),
-				arrayContaining(project0, project1));
+		assertThat(project0.getReferencingProjects()).as("referencing projects of Project0").isEmpty();
+		assertThat(project1.getReferencingProjects()).as("referencing projects of Project1").containsExactly(project0);
+		assertThat(project2.getReferencingProjects()).as("referencing projects of Project2").containsExactly(project0,
+				project1);
 	}
 
 	@Test
@@ -201,9 +191,9 @@ public class ProjectDynamicReferencesTest {
 
 		ProjectOrder projectOrder = getWorkspace().computeProjectOrder(allProjects);
 
-		assertThat("Build order not defined, must return projects in default order", projectOrder.projects,
-				is(allProjects));
-		assertThat("Project order should not have cycles: " + projectOrder, !projectOrder.hasCycles);
+		// Build order not defined, must return projects in default order
+		assertThat(projectOrder.projects).as("build order").isEqualTo(allProjects);
+		assertThat(projectOrder).matches(it -> !it.hasCycles, "does not have cycles");
 
 		DynamicReferenceProvider.addReference(project0, project1);
 		DynamicReferenceProvider.addReference(project1, project2);
@@ -211,9 +201,8 @@ public class ProjectDynamicReferencesTest {
 
 		projectOrder = getWorkspace().computeProjectOrder(allProjects);
 
-		assertThat("Build order must be Project2, Project1, Project0", projectOrder.projects,
-				arrayContaining(project2, project1, project0));
-		assertThat("Project order should not have cycles: " + projectOrder, !projectOrder.hasCycles);
+		assertThat(projectOrder.projects).as("build order").containsExactly(project2, project1, project0);
+		assertThat(projectOrder).matches(it -> !it.hasCycles, "does not have cycles");
 
 		DynamicReferenceProvider.clear();
 		DynamicReferenceProvider.addReference(project1, project0);
@@ -222,9 +211,8 @@ public class ProjectDynamicReferencesTest {
 
 		projectOrder = getWorkspace().computeProjectOrder(allProjects);
 
-		assertThat("Build order must be Project2, Project0, Project1",
-				projectOrder.projects, arrayContaining(project2, project0, project1));
-		assertThat("Project order should not have cycles: " + projectOrder, !projectOrder.hasCycles);
+		assertThat(projectOrder.projects).as("build order").containsExactly(project2, project0, project1);
+		assertThat(projectOrder).matches(it -> !it.hasCycles, "does not have cycles");
 	}
 
 	@Test
@@ -237,14 +225,13 @@ public class ProjectDynamicReferencesTest {
 		project0.create(null);
 		project0.open(null);
 
-		assertThat(project0.getName(), is(PROJECT_0_NAME));
-		assertThat(project0.getDescription().getName(), is("anotherName"));
+		assertThat(project0.getName()).isEqualTo(PROJECT_0_NAME);
+		assertThat(project0.getDescription().getName()).isEqualTo("anotherName");
 
 		DynamicReferenceProvider.addReference(project0, project1);
 		clearCache();
 
-		assertThat("Project0 must reference Project1", project0.getReferencedProjects(),
-				arrayContaining(project1));
+		assertThat(project0.getReferencedProjects()).as("referenced projects of Project0").containsExactly(project1);
 	}
 
 	private void clearCache() {
