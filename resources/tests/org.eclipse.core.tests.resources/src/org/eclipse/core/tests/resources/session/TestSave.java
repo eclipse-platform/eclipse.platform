@@ -13,10 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import junit.framework.Test;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -40,13 +42,14 @@ public class TestSave extends WorkspaceSerializationTest {
 
 	public void test2() throws CoreException {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		assertTrue("1.0", root.exists());
+		assertThat(root.exists()).isTrue();
 		IResource[] children = root.members();
-		assertEquals("1.2", 1, children.length);
-		IProject project = (IProject) children[0];
-		assertTrue("1.3", project.exists());
-		assertTrue("1.4", project.isOpen());
-		assertEquals("1.5", PROJECT, project.getName());
+		assertThat(children).singleElement().asInstanceOf(InstanceOfAssertFactories.type(IProject.class))
+				.satisfies(project -> {
+					assertThat(project.exists()).isTrue();
+					assertThat(project.isOpen()).isTrue();
+					assertThat(project.getName()).isEqualTo(PROJECT);
+				});
 	}
 
 	public static Test suite() {

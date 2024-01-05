@@ -1144,12 +1144,11 @@ public class ProjectPreferencesTest {
 
 		Preferences node = new ProjectScope(project1).getNode("");
 		String[] childrenNames = node.childrenNames();
-		assertEquals(2, childrenNames.length);
-		assertEquals(nodeA, childrenNames[1]);
+		assertThat(childrenNames).hasSize(2);
+		assertThat(childrenNames[1]).isEqualTo(nodeA);
 		node = node.node(nodeA);
 		childrenNames = node.childrenNames();
-		assertEquals(1, childrenNames.length);
-		assertEquals(nodeB, childrenNames[0]);
+		assertThat(childrenNames).containsExactly(nodeB);
 
 		project1.delete(true, createTestMonitor());
 		project2.delete(true, createTestMonitor());
@@ -1184,8 +1183,7 @@ public class ProjectPreferencesTest {
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA);
 		String[] childrenNames = node.childrenNames();
-		assertEquals(1, childrenNames.length);
-		assertEquals(nodeB, childrenNames[0]);
+		assertThat(childrenNames).containsExactly(nodeB);
 
 		project1.delete(true, createTestMonitor());
 		project2.delete(true, createTestMonitor());
@@ -1220,7 +1218,7 @@ public class ProjectPreferencesTest {
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		node.clear();
-		assertEquals(0, node.keys().length);
+		assertThat(node.keys()).isEmpty();
 		assertNull(node.get(key, null));
 
 		project1.delete(true, createTestMonitor());
@@ -1290,8 +1288,7 @@ public class ProjectPreferencesTest {
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		String[] keys = node.keys();
-		assertEquals(1, keys.length);
-		assertEquals(key, keys[0]);
+		assertThat(keys).containsExactly(key);
 
 		project1.delete(true, createTestMonitor());
 		project2.delete(true, createTestMonitor());

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
@@ -44,8 +45,7 @@ public class TestCloseNoSave extends WorkspaceSerializationTest {
 		// projects should exist immediately due to snapshot - files may or
 		// may not exist due to snapshot timing. All resources should exist after refresh.
 		IResource[] members = workspace.getRoot().members();
-		assertEquals("1.0", 1, members.length);
-		assertTrue("1.1", members[0].getType() == IResource.PROJECT);
+		assertThat(members).hasSize(1).allSatisfy(member -> assertThat(member.getType()).isEqualTo(IResource.PROJECT));
 		IProject project = (IProject) members[0];
 		assertTrue("1.2", project.exists());
 		IFolder folder = project.getFolder(FOLDER);
@@ -56,7 +56,7 @@ public class TestCloseNoSave extends WorkspaceSerializationTest {
 			project.open(null);
 		}
 
-		assertEquals("2.0", 3, project.members().length);
+		assertThat(project.members()).hasSize(3);
 		assertTrue("2.1", folder.exists());
 		assertTrue("2.2", file.exists());
 	}

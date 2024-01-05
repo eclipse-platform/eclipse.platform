@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
@@ -227,7 +228,7 @@ public class IWorkspaceTest {
 		//copy a folder
 		getWorkspace().copy(new IResource[] { folder }, folder2.getFullPath(), false, createTestMonitor());
 		assertTrue("3.7", folderCopy.exists());
-		assertTrue("3.8", folderCopy.members().length > 0);
+		assertThat(folderCopy.members()).hasSizeGreaterThan(0);
 		removeFromWorkspace(folderCopy);
 		removeFromFileSystem(folderCopy);
 	}
@@ -309,95 +310,81 @@ public class IWorkspaceTest {
 		assertNotNull("2.0", current);
 		assertEquals("2.1", NATURE_SIMPLE, current.getNatureId());
 		assertEquals("2.2", "Simple", current.getLabel());
-		assertEquals("2.3", 0, current.getRequiredNatureIds().length);
-		assertEquals("2.4", 0, current.getNatureSetIds().length);
+		assertThat(current.getRequiredNatureIds()).isEmpty();
+		assertThat(current.getNatureSetIds()).isEmpty();
 
 		current = findNature(descriptors, NATURE_SNOW);
 		assertNotNull("3.0", current);
 		assertEquals("3.1", NATURE_SNOW, current.getNatureId());
 		assertEquals("3.2", "Snow", current.getLabel());
 		String[] required = current.getRequiredNatureIds();
-		assertEquals("3.3", 1, required.length);
-		assertEquals("3.4", NATURE_WATER, required[0]);
+		assertThat(required).containsExactly(NATURE_WATER);
 		String[] sets = current.getNatureSetIds();
-		assertEquals("3.5", 1, sets.length);
-		assertEquals("3.6", SET_OTHER, sets[0]);
+		assertThat(sets).containsExactly(SET_OTHER);
 
 		current = findNature(descriptors, NATURE_WATER);
 		assertNotNull("4.0", current);
 		assertEquals("4.1", NATURE_WATER, current.getNatureId());
 		assertEquals("4.2", "Water", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("4.3", 0, required.length);
+		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
-		assertEquals("4.4", 1, sets.length);
-		assertEquals("4.5", SET_STATE, sets[0]);
+		assertThat(sets).containsExactly(SET_STATE);
 
 		current = findNature(descriptors, NATURE_EARTH);
 		assertNotNull("5.0", current);
 		assertEquals("5.1", NATURE_EARTH, current.getNatureId());
 		assertEquals("5.2", "Earth", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("5.3", 0, required.length);
+		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
-		assertEquals("5.4", 1, sets.length);
-		assertEquals("5.5", SET_STATE, sets[0]);
+		assertThat(sets).containsExactly(SET_STATE);
 
 		current = findNature(descriptors, NATURE_MUD);
 		assertNotNull("6.0", current);
 		assertEquals("6.1", NATURE_MUD, current.getNatureId());
 		assertEquals("6.2", "Mud", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("6.3", 2, required.length);
 		//water and earth are required for mud
-		if (required[0].equals(NATURE_WATER)) {
-			assertEquals("6.4", NATURE_EARTH, required[1]);
-		} else {
-			assertEquals("6.5", NATURE_EARTH, required[0]);
-			assertEquals("6.6", NATURE_WATER, required[0]);
-		}
+		assertThat(required).containsExactlyInAnyOrder(NATURE_WATER, NATURE_EARTH);
 		sets = current.getNatureSetIds();
-		assertEquals("6.7", 1, sets.length);
-		assertEquals("6.8", SET_OTHER, sets[0]);
+		assertThat(sets).containsExactly(SET_OTHER);
 
 		current = findNature(descriptors, NATURE_INVALID);
 		assertNotNull("7.0", current);
 		assertEquals("7.1", NATURE_INVALID, current.getNatureId());
 		assertEquals("7.2", "", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("7.3", 0, required.length);
+		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
-		assertEquals("7.4", 0, sets.length);
+		assertThat(sets).isEmpty();
 
 		current = findNature(descriptors, NATURE_CYCLE1);
 		assertNotNull("8.0", current);
 		assertEquals("8.1", NATURE_CYCLE1, current.getNatureId());
 		assertEquals("8.2", "Cycle1", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("8.3", 1, required.length);
-		assertEquals("8.4", NATURE_CYCLE2, required[0]);
+		assertThat(required).containsExactly(NATURE_CYCLE2);
 		sets = current.getNatureSetIds();
-		assertEquals("8.5", 0, sets.length);
+		assertThat(sets).isEmpty();
 
 		current = findNature(descriptors, NATURE_CYCLE2);
 		assertNotNull("5.0", current);
 		assertEquals("9.1", NATURE_CYCLE2, current.getNatureId());
 		assertEquals("9.2", "Cycle2", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("9.3", 1, required.length);
-		assertEquals("9.4", NATURE_CYCLE3, required[0]);
+		assertThat(required).containsExactly(NATURE_CYCLE3);
 		sets = current.getNatureSetIds();
-		assertEquals("9.5", 0, sets.length);
+		assertThat(sets).isEmpty();
 
 		current = findNature(descriptors, NATURE_CYCLE3);
 		assertNotNull("10.0", current);
 		assertEquals("10.1", NATURE_CYCLE3, current.getNatureId());
 		assertEquals("10.2", "Cycle3", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("10.3", 1, required.length);
-		assertEquals("10.4", NATURE_CYCLE1, required[0]);
+		assertThat(required).containsExactly(NATURE_CYCLE1);
 		sets = current.getNatureSetIds();
-		assertEquals("10.5", 0, sets.length);
+		assertThat(sets).isEmpty();
 	}
 
 	/**
@@ -413,95 +400,80 @@ public class IWorkspaceTest {
 		assertNotNull("2.0", current);
 		assertEquals("2.1", NATURE_SIMPLE, current.getNatureId());
 		assertEquals("2.2", "Simple", current.getLabel());
-		assertEquals("2.3", 0, current.getRequiredNatureIds().length);
-		assertEquals("2.4", 0, current.getNatureSetIds().length);
+		assertThat(current.getRequiredNatureIds()).isEmpty();
+		assertThat(current.getNatureSetIds()).isEmpty();
 
 		current = ws.getNatureDescriptor(NATURE_SNOW);
 		assertNotNull("3.0", current);
 		assertEquals("3.1", NATURE_SNOW, current.getNatureId());
 		assertEquals("3.2", "Snow", current.getLabel());
 		String[] required = current.getRequiredNatureIds();
-		assertEquals("3.3", 1, required.length);
-		assertEquals("3.4", NATURE_WATER, required[0]);
+		assertThat(required).containsExactly(NATURE_WATER);
 		String[] sets = current.getNatureSetIds();
-		assertEquals("3.5", 1, sets.length);
-		assertEquals("3.6", SET_OTHER, sets[0]);
+		assertThat(sets).containsExactly(SET_OTHER);
 
 		current = ws.getNatureDescriptor(NATURE_WATER);
 		assertNotNull("4.0", current);
 		assertEquals("4.1", NATURE_WATER, current.getNatureId());
 		assertEquals("4.2", "Water", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("4.3", 0, required.length);
+		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
-		assertEquals("4.4", 1, sets.length);
-		assertEquals("4.5", SET_STATE, sets[0]);
+		assertThat(sets).containsExactly(SET_STATE);
 
 		current = ws.getNatureDescriptor(NATURE_EARTH);
 		assertNotNull("5.0", current);
 		assertEquals("5.1", NATURE_EARTH, current.getNatureId());
 		assertEquals("5.2", "Earth", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("5.3", 0, required.length);
+		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
-		assertEquals("5.4", 1, sets.length);
-		assertEquals("5.5", SET_STATE, sets[0]);
+		assertThat(sets).containsExactly(SET_STATE);
 
 		current = ws.getNatureDescriptor(NATURE_MUD);
 		assertNotNull("6.0", current);
 		assertEquals("6.1", NATURE_MUD, current.getNatureId());
 		assertEquals("6.2", "Mud", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("6.3", 2, required.length);
-		//water and earth are required for mud
-		if (required[0].equals(NATURE_WATER)) {
-			assertEquals("6.4", NATURE_EARTH, required[1]);
-		} else {
-			assertEquals("6.5", NATURE_EARTH, required[0]);
-			assertEquals("6.6", NATURE_WATER, required[0]);
-		}
+		assertThat(required).containsExactlyInAnyOrder(NATURE_WATER, NATURE_EARTH);
 		sets = current.getNatureSetIds();
-		assertEquals("6.7", 1, sets.length);
-		assertEquals("6.8", SET_OTHER, sets[0]);
+		assertThat(sets).containsExactly(SET_OTHER);
 
 		current = ws.getNatureDescriptor(NATURE_INVALID);
 		assertNotNull("7.0", current);
 		assertEquals("7.1", NATURE_INVALID, current.getNatureId());
 		assertEquals("7.2", "", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("7.3", 0, required.length);
+		assertThat(required).isEmpty();
 		sets = current.getNatureSetIds();
-		assertEquals("7.4", 0, sets.length);
+		assertThat(sets).isEmpty();
 
 		current = ws.getNatureDescriptor(NATURE_CYCLE1);
 		assertNotNull("8.0", current);
 		assertEquals("8.1", NATURE_CYCLE1, current.getNatureId());
 		assertEquals("8.2", "Cycle1", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("8.3", 1, required.length);
-		assertEquals("8.4", NATURE_CYCLE2, required[0]);
+		assertThat(required).containsExactly(NATURE_CYCLE2);
 		sets = current.getNatureSetIds();
-		assertEquals("8.5", 0, sets.length);
+		assertThat(sets).isEmpty();
 
 		current = ws.getNatureDescriptor(NATURE_CYCLE2);
 		assertNotNull("5.0", current);
 		assertEquals("9.1", NATURE_CYCLE2, current.getNatureId());
 		assertEquals("9.2", "Cycle2", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("9.3", 1, required.length);
-		assertEquals("9.4", NATURE_CYCLE3, required[0]);
+		assertThat(required).containsExactly(NATURE_CYCLE3);
 		sets = current.getNatureSetIds();
-		assertEquals("9.5", 0, sets.length);
+		assertThat(sets).isEmpty();
 
 		current = ws.getNatureDescriptor(NATURE_CYCLE3);
 		assertNotNull("10.0", current);
 		assertEquals("10.1", NATURE_CYCLE3, current.getNatureId());
 		assertEquals("10.2", "Cycle3", current.getLabel());
 		required = current.getRequiredNatureIds();
-		assertEquals("10.3", 1, required.length);
-		assertEquals("10.4", NATURE_CYCLE1, required[0]);
+		assertThat(required).containsExactly(NATURE_CYCLE1);
 		sets = current.getNatureSetIds();
-		assertEquals("10.5", 0, sets.length);
+		assertThat(sets).isEmpty();
 	}
 
 	/**
@@ -544,7 +516,7 @@ public class IWorkspaceTest {
 		CoreException ex = assertThrows(CoreException.class,
 				() -> getWorkspace().move(resources2, folder.getFullPath(), true, createTestMonitor()));
 		assertFalse("3.1", ex.getStatus().isOK());
-		assertEquals("3.2", 1, ex.getStatus().getChildren().length);
+		assertThat(ex.getStatus().getChildren()).hasSize(1);
 		assertFalse("3.3", file.exists());
 		assertFalse("3.4", anotherFile.exists());
 		assertFalse("3.5", oneMoreFile.exists());
@@ -628,7 +600,7 @@ public class IWorkspaceTest {
 				() -> getWorkspace().copy(resources2, folder.getFullPath(), true, createTestMonitor()));
 		IStatus status = e.getStatus();
 		assertFalse("3.1", status.isOK());
-		assertEquals("3.2", 1, status.getChildren().length);
+		assertThat(status.getChildren()).hasSize(1);
 		assertTrue("3.3", file1.exists());
 		assertTrue("3.4", anotherFile.exists());
 		assertTrue("3.5", oneMoreFile.exists());
@@ -661,7 +633,7 @@ public class IWorkspaceTest {
 				() -> getWorkspace().copy(new IResource[] { project }, destination.getFullPath(), true, createTestMonitor()));
 		status = ex2.getStatus();
 		assertFalse("5.1", status.isOK());
-		assertEquals("5.2", 1, status.getChildren().length);
+		assertThat(status.getChildren()).hasSize(1);
 	}
 
 	@Test
@@ -773,29 +745,22 @@ public class IWorkspaceTest {
 		String[][] invalid = getInvalidNatureSets();
 		for (String[] element : invalid) {
 			String[] sorted = ws.sortNatureSet(element);
-			assertNotNull("0.0", sorted);
 			//set may grow if it contained duplicates
-			assertTrue("0.1", sorted.length <= element.length);
+			assertThat(sorted).hasSizeLessThanOrEqualTo(element.length);
 		}
 		String[] sorted = ws.sortNatureSet(new String[] {});
-		assertEquals("1.0", 0, sorted.length);
+		assertThat(sorted).isEmpty();
 
 		sorted = ws.sortNatureSet(new String[] {NATURE_SIMPLE});
-		assertEquals("2.0", 1, sorted.length);
-		assertEquals("2.1", NATURE_SIMPLE, sorted[0]);
+		assertThat(sorted).containsExactly(NATURE_SIMPLE);
 
 		sorted = ws.sortNatureSet(new String[] {NATURE_SNOW, NATURE_WATER});
-		assertEquals("3.0", 2, sorted.length);
-		assertEquals("3.1", NATURE_WATER, sorted[0]);
-		assertEquals("3.2", NATURE_SNOW, sorted[1]);
+		assertThat(sorted).containsExactly(NATURE_WATER, NATURE_SNOW);
 
 		sorted = ws.sortNatureSet(new String[] {NATURE_WATER, NATURE_SIMPLE, NATURE_SNOW});
-		assertEquals("4.0", 3, sorted.length);
-		//three valid sorts: water, snow, simple; water, simple, snow; simple, water, snow
-		boolean first = sorted[0].equals(NATURE_WATER) && sorted[1].equals(NATURE_SNOW) && sorted[2].equals(NATURE_SIMPLE);
-		boolean second = sorted[0].equals(NATURE_WATER) && sorted[1].equals(NATURE_SIMPLE) && sorted[2].equals(NATURE_SNOW);
-		boolean third = sorted[0].equals(NATURE_SIMPLE) && sorted[1].equals(NATURE_WATER) && sorted[2].equals(NATURE_SNOW);
-		assertTrue("4.1", first || second || third);
+		assertThat(sorted).satisfiesAnyOf(order -> assertThat(order).containsExactly(NATURE_WATER, NATURE_SNOW, NATURE_SIMPLE),
+				order -> assertThat(order).containsExactly(NATURE_WATER, NATURE_SIMPLE, NATURE_SNOW),
+				order -> assertThat(order).containsExactly(NATURE_SIMPLE, NATURE_WATER, NATURE_SNOW));
 	}
 
 	@Test

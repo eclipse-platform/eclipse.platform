@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.dtree;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -252,7 +253,7 @@ public class DeltaDataTreeTest {
 		NodeComparison nodeComparison = (NodeComparison) rootData;
 		assertEquals(nodeComparison.getNewData(), nodeComparison.getOldData());
 		// assertEquals(0, nodeComparison.getComparison()); XXX fails for tree!=other
-		assertEquals(0, delta.getChildren(AbstractDataTree.rootKey()).length);
+		assertThat(delta.getChildren(AbstractDataTree.rootKey())).isEmpty();
 
 	}
 
@@ -386,7 +387,7 @@ public class DeltaDataTreeTest {
 		tree.createChild(leftKey, "double");
 		tree.createChild(leftKey, "double");
 		/* Make sure size has only increased by one */
-		assertEquals(size + 1, (tree.getNamesOfChildren(leftKey)).length);
+		assertThat(tree.getNamesOfChildren(leftKey)).hasSize(size + 1);
 	}
 
 	/**
@@ -514,9 +515,9 @@ public class DeltaDataTreeTest {
 	@Test
 	public void testEmpty() {
 
-		assertTrue("1", emptyTree.includes(rootKey));
-		assertNotNull("2", TestHelper.getRootNode(emptyTree));
-		assertEquals("3", 0, TestHelper.getRootNode(emptyTree).getChildren().length);
+		assertTrue(emptyTree.includes(rootKey));
+		assertNotNull(TestHelper.getRootNode(emptyTree));
+		assertThat(TestHelper.getRootNode(emptyTree).getChildren()).isEmpty();
 	}
 
 	/**
@@ -746,27 +747,22 @@ public class DeltaDataTreeTest {
 		try {
 			/* empty tree */
 			testChildren = emptyTree.getChildren(rootKey);
-			assertEquals("1", 0, testChildren.length);
+			assertThat(testChildren).isEmpty();
 
 			/* root node */
 			testChildren = tree.getChildren(rootKey);
-			assertEquals("2", 2, testChildren.length);
-			assertTrue("3", testChildren[0].equals(rootChildren[0]));
-			assertTrue("4", testChildren[1].equals(rootChildren[1]));
+			assertThat(testChildren).containsExactly(rootChildren[0], rootChildren[1]);
 
 			/* interior nodes */
 			testChildren = tree.getChildren(leftKey);
-			assertEquals("5", 3, testChildren.length);
-			assertTrue("6", testChildren[0].equals(leftChildren[0]));
-			assertTrue("7", testChildren[2].equals(leftChildren[1]));
-			assertTrue("8", testChildren[1].equals(leftChildren[2]));
+			assertThat(testChildren).containsExactly(leftChildren[0], leftChildren[2], leftChildren[1]);
 
 			/* leaf nodes */
 			testChildren = tree.getChildren(leftChildren[0]);
-			assertEquals("9", 0, testChildren.length);
+			assertThat(testChildren).isEmpty();
 
 			testChildren = tree.getChildren(rightChildren[0]);
-			assertEquals("10", 0, testChildren.length);
+			assertThat(testChildren).isEmpty();
 		} catch (ObjectNotFoundException e) {
 			caught = true;
 		} finally {
@@ -809,31 +805,25 @@ public class DeltaDataTreeTest {
 		try {
 			/* empty tree */
 			testChildren = emptyTree.getNamesOfChildren(rootKey);
-			assertEquals("1", 0, testChildren.length);
+			assertThat(testChildren).isEmpty();
 
 			/* root node */
 			testChildren = tree.getNamesOfChildren(rootKey);
-			assertEquals("2", 2, testChildren.length);
-			assertTrue("3", testChildren[0].equals(rootChildren[0]));
-			assertTrue("4", testChildren[1].equals(rootChildren[1]));
+			assertThat(testChildren).containsExactly(rootChildren[0], rootChildren[1]);
 
 			/* interior nodes */
 			testChildren = tree.getNamesOfChildren(leftKey);
-			assertEquals("5", 3, testChildren.length);
-			assertTrue("6", testChildren[0].equals(leftChildren[0]));
-			assertTrue("7", testChildren[2].equals(leftChildren[1]));
-			assertTrue("8", testChildren[1].equals(leftChildren[2]));
+			assertThat(testChildren).containsExactly(leftChildren[0], leftChildren[2], leftChildren[1]);
 
 			testChildren = tree.getNamesOfChildren(rightKey);
-			assertEquals("8.1", 1, testChildren.length);
-			assertTrue("8.2", testChildren[0].equals(rightChildren[0]));
+			assertThat(testChildren).containsExactly(rightChildren[0]);
 
 			/* leaf nodes */
 			testChildren = tree.getNamesOfChildren(leftKey.append("one"));
-			assertEquals("9", 0, testChildren.length);
+			assertThat(testChildren).isEmpty();
 
 			testChildren = tree.getNamesOfChildren(rightKey.append("rightOfRight"));
-			assertEquals("10", 0, testChildren.length);
+			assertThat(testChildren).isEmpty();
 		} catch (ObjectNotFoundException e) {
 			caught = true;
 		} finally {

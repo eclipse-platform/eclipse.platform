@@ -96,7 +96,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		assertEquals("2.2", expectedList, actualList);
 
 		preferences.setValue(ResourcesPlugin.PREF_BUILD_ORDER, "");
-		assertTrue("2.3", workspace.getDescription().getBuildOrder().length == 0);
+		assertThat(workspace.getDescription().getBuildOrder()).isEmpty();
 
 		long snapshotInterval = 800000000L;
 		preferences.setValue(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL, snapshotInterval);

@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.alias;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
@@ -137,19 +138,18 @@ public class BasicAliasTest {
 	 * that both resources are in sync with the file system.  The resource names
 	 * in the tree may be different.  The resources may not necessarily exist.
 	 */
-	public void assertOverlap(String message, IResource resource1, IResource resource2) throws CoreException {
-		String errMsg = message + resource1.getFullPath().toString();
-		assertEquals(errMsg + "(location)", resource1.getLocation(), resource2.getLocation());
-		assertTrue(errMsg + "(sync)", resource1.isSynchronized(IResource.DEPTH_ZERO));
-		assertTrue(errMsg + "(sync)", resource2.isSynchronized(IResource.DEPTH_ZERO));
+	public void assertOverlap(IResource resource1, IResource resource2) throws CoreException {
+		assertThat(resource1.getLocation()).isEqualTo(resource2.getLocation());
+		assertThat(resource1).matches(it -> it.isSynchronized(IResource.DEPTH_ZERO), "is synchronized");
+		assertThat(resource2).matches(it -> it.isSynchronized(IResource.DEPTH_ZERO), "is synchronized");
 
 		IResource[] children1 = null;
 		IResource[] children2 = null;
 		children1 = getSortedChildren(resource1);
 		children2 = getSortedChildren(resource2);
-		assertEquals(errMsg + "(child count)", children1.length, children2.length);
+		assertThat(children1).as("number of children").hasSameSizeAs(children2);
 		for (int i = 0; i < children2.length; i++) {
-			assertOverlap(message, children1[i], children2[i]);
+			assertOverlap(children1[i], children2[i]);
 		}
 	}
 
@@ -435,12 +435,10 @@ public class BasicAliasTest {
 
 		// now p2 and link2TempFolder should be aliases
 		IResource[] resources = aliasManager.computeAliases(link2TempFolder, ((Folder) link2TempFolder).getStore());
-		assertEquals("5.0", 1, resources.length);
-		assertEquals("6.0", p2, resources[0]);
+		assertThat(resources).containsExactly(p2);
 
 		resources = aliasManager.computeAliases(p2, ((Project) p2).getStore());
-		assertEquals("7.0", 1, resources.length);
-		assertEquals("8.0", link2TempFolder, resources[0]);
+		assertThat(resources).containsExactly(link2TempFolder);
 	}
 
 	@Test
@@ -509,12 +507,12 @@ public class BasicAliasTest {
 		sourceFile.copy(linkDest.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("1.1", linkDest.exists());
 		assertTrue("1.2", overlapDest.exists());
-		assertOverlap("1.3", linkDest, overlapDest);
+		assertOverlap(linkDest, overlapDest);
 
 		linkDest.delete(IResource.NONE, createTestMonitor());
 		assertFalse("1.4", linkDest.exists());
 		assertFalse("1.5", overlapDest.exists());
-		assertOverlap("1.6", linkDest, overlapDest);
+		assertOverlap(linkDest, overlapDest);
 
 		// duplicate file
 		linkDest = lLinked;
@@ -530,7 +528,7 @@ public class BasicAliasTest {
 		sourceFile.copy(overlapDest.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("2.4", linkDest.exists());
 		assertTrue("2.5", overlapDest.exists());
-		assertOverlap("2.6", linkDest, overlapDest);
+		assertOverlap(linkDest, overlapDest);
 
 		// file in duplicate folder
 		linkDest = fLinked.getFile("CopyDestination");
@@ -539,12 +537,12 @@ public class BasicAliasTest {
 		sourceFile.copy(overlapDest.getFullPath(), IResource.NONE, createTestMonitor());
 		assertTrue("3.1", linkDest.exists());
 		assertTrue("3.2", overlapDest.exists());
-		assertOverlap("3.3", linkDest, overlapDest);
+		assertOverlap(linkDest, overlapDest);
 
 		overlapDest.delete(IResource.NONE, createTestMonitor());
 		assertFalse("3.4", linkDest.exists());
 		assertFalse("3.5", overlapDest.exists());
-		assertOverlap("3.6", linkDest, overlapDest);
+		assertOverlap(linkDest, overlapDest);
 	}
 
 	@Test
@@ -596,9 +594,9 @@ public class BasicAliasTest {
 	public void testCreateDeleteFile() throws CoreException {
 		// file in linked folder
 		lChildLinked.delete(IResource.NONE, createTestMonitor());
-		assertOverlap("1.1", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 		lChildLinked.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("1.2", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 		//duplicate file
 		lOverlap.delete(IResource.NONE, createTestMonitor());
 		assertEquals("2.0", lLinked.getLocation(), lOverlap.getLocation());
@@ -614,13 +612,13 @@ public class BasicAliasTest {
 		assertThrows(CoreException.class, () -> lLinked.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor()));
 
 		lOverlap.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("2.8", lLinked, lOverlap);
+		assertOverlap(lLinked, lOverlap);
 
 		//file in duplicate folder
 		lChildOverlap.delete(IResource.NONE, createTestMonitor());
-		assertOverlap("1.1", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 		lChildOverlap.create(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("1.2", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 	}
 
 	@Test
@@ -632,7 +630,7 @@ public class BasicAliasTest {
 		assertFalse("1.1", fLinked.getLocation().toFile().exists());
 
 		fOverlap.create(IResource.NONE, true, createTestMonitor());
-		assertOverlap("1.2", fOverlap, fLinked);
+		assertOverlap(fOverlap, fLinked);
 
 		//linked folder
 		fLinked.delete(IResource.NONE, createTestMonitor());
@@ -641,20 +639,20 @@ public class BasicAliasTest {
 		assertTrue("2.1", fOverlap.getLocation().toFile().exists());
 
 		fLinked.createLink(fOverlap.getLocation(), IResource.NONE, createTestMonitor());
-		assertOverlap("1.4", fOverlap, fLinked);
+		assertOverlap(fOverlap, fLinked);
 
 		//child of linked folders
 		IFolder child1 = fLinkOverlap1.getFolder("LinkChild");
 		IFolder child2 = fLinkOverlap2.getFolder(child1.getName());
 
 		child1.create(IResource.NONE, true, createTestMonitor());
-		assertOverlap("3.0", child1, child2);
+		assertOverlap(child1, child2);
 		child1.delete(IResource.NONE, createTestMonitor());
 		assertFalse("3.1", child1.exists());
 		assertFalse("3.2", child2.exists());
 
 		child2.create(IResource.NONE, true, createTestMonitor());
-		assertOverlap("3.3", child1, child2);
+		assertOverlap(child1, child2);
 		child2.delete(IResource.NONE, createTestMonitor());
 		assertFalse("3.4", child1.exists());
 		assertFalse("3.5", child2.exists());
@@ -818,34 +816,34 @@ public class BasicAliasTest {
 	public void testFileAppendContents() throws CoreException {
 		//linked file
 		lLinked.appendContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("1.1", lLinked, lOverlap);
+		assertOverlap(lLinked, lOverlap);
 
 		//file in linked folder
 		lChildLinked.appendContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("2.1", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 		//duplicate file
 		lOverlap.appendContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("3.1", lLinked, lOverlap);
+		assertOverlap(lLinked, lOverlap);
 		//file in duplicate folder
 		lChildOverlap.appendContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("3.1", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 	}
 
 	@Test
 	public void testFileSetContents() throws CoreException {
 		//linked file
 		lLinked.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("1.1", lLinked, lOverlap);
+		assertOverlap(lLinked, lOverlap);
 
 		//file in linked folder
 		lChildLinked.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("2.1", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 		//duplicate file
 		lOverlap.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("3.1", lLinked, lOverlap);
+		assertOverlap(lLinked, lOverlap);
 		//file in duplicate folder
 		lChildOverlap.setContents(createRandomContentsStream(), IResource.NONE, createTestMonitor());
-		assertOverlap("3.1", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 	}
 
 	/**
@@ -860,7 +858,7 @@ public class BasicAliasTest {
 		assertDoesNotExistInWorkspace(lChildLinked);
 		assertDoesNotExistInWorkspace(lChildOverlap);
 		assertExistsInWorkspace(destination);
-		assertOverlap("1.4", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 		assertTrue("1.5", lChildLinked.isSynchronized(IResource.DEPTH_INFINITE));
 		assertTrue("1.6", destination.isSynchronized(IResource.DEPTH_INFINITE));
 
@@ -868,7 +866,7 @@ public class BasicAliasTest {
 		assertExistsInWorkspace(lChildLinked);
 		assertExistsInWorkspace(lChildOverlap);
 		assertDoesNotExistInWorkspace(destination);
-		assertOverlap("2.4", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 		//duplicate file
 		lOverlap.move(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		assertDoesNotExistInWorkspace(lOverlap);
@@ -882,19 +880,19 @@ public class BasicAliasTest {
 		assertExistsInWorkspace(lLinked);
 		assertExistsInWorkspace(lOverlap);
 		assertDoesNotExistInWorkspace(destination);
-		assertOverlap("3.8", lLinked, lOverlap);
+		assertOverlap(lLinked, lOverlap);
 		//file in duplicate folder
 		lChildOverlap.move(destination.getFullPath(), IResource.NONE, createTestMonitor());
 		assertDoesNotExistInWorkspace(lChildLinked);
 		assertDoesNotExistInWorkspace(lChildOverlap);
 		assertExistsInWorkspace(destination);
-		assertOverlap("3.4", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 
 		destination.move(lChildOverlap.getFullPath(), IResource.NONE, createTestMonitor());
 		assertExistsInWorkspace(lChildLinked);
 		assertExistsInWorkspace(lChildOverlap);
 		assertDoesNotExistInWorkspace(destination);
-		assertOverlap("3.8", lChildLinked, lChildOverlap);
+		assertOverlap(lChildLinked, lChildOverlap);
 	}
 
 }

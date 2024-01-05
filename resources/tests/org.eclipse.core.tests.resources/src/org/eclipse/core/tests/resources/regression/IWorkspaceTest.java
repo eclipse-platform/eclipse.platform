@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
@@ -59,7 +60,7 @@ public class IWorkspaceTest {
 		getWorkspace().move(new IFile[] { file1 }, folder.getFullPath(), true, createTestMonitor());
 		file1.create(createRandomContentsStream(), true, createTestMonitor());
 		IFileState[] states = file1.getHistory(createTestMonitor());
-		assertEquals("1.0", 3, states.length);
+		assertThat(states).hasSize(3);
 		getWorkspace().delete(allResources, true, createTestMonitor());
 		project.clearHistory(createTestMonitor());
 
@@ -71,7 +72,7 @@ public class IWorkspaceTest {
 		getWorkspace().move(new IFile[] { file1 }, folder.getFullPath(), false, createTestMonitor());
 		file1.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file1.getHistory(createTestMonitor());
-		assertEquals("2.0", 3, states.length);
+		assertThat(states).hasSize(3);
 		getWorkspace().delete(allResources, true, createTestMonitor());
 		project.clearHistory(createTestMonitor());
 	}
@@ -94,7 +95,7 @@ public class IWorkspaceTest {
 		getWorkspace().delete(new IFile[] { file1 }, true, createTestMonitor());
 		file1.create(createRandomContentsStream(), true, createTestMonitor());
 		IFileState[] states = file1.getHistory(createTestMonitor());
-		assertEquals("1.0", 3, states.length);
+		assertThat(states).hasSize(3);
 		getWorkspace().delete(new IResource[] { file1 }, true, createTestMonitor());
 		project.clearHistory(createTestMonitor());
 
@@ -105,7 +106,7 @@ public class IWorkspaceTest {
 		getWorkspace().delete(new IFile[] { file1 }, false, createTestMonitor());
 		file1.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file1.getHistory(createTestMonitor());
-		assertEquals("2.0", 3, states.length);
+		assertThat(states).hasSize(3);
 		getWorkspace().delete(new IResource[] { file1 }, true, createTestMonitor());
 		project.clearHistory(createTestMonitor());
 
@@ -120,7 +121,7 @@ public class IWorkspaceTest {
 		folder.create(true, true, createTestMonitor());
 		file2.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file2.getHistory(createTestMonitor());
-		assertEquals("3.0", 3, states.length);
+		assertThat(states).hasSize(3);
 		getWorkspace().delete(new IResource[] { folder, file1, file2 }, true, createTestMonitor());
 		project.clearHistory(createTestMonitor());
 
@@ -133,7 +134,7 @@ public class IWorkspaceTest {
 		folder.create(true, true, createTestMonitor());
 		file2.create(createRandomContentsStream(), true, createTestMonitor());
 		states = file2.getHistory(createTestMonitor());
-		assertEquals("4.0", 3, states.length);
+		assertThat(states).hasSize(3);
 		getWorkspace().delete(new IResource[] { folder, file1, file2 }, true, createTestMonitor());
 		project.clearHistory(createTestMonitor());
 	}
