@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.canCreateSymLinks;
 import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
@@ -21,7 +22,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
@@ -63,7 +63,7 @@ public class Bug_233939 {
 		container.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		IResource theLink = container.findMember(linkName);
 		assertExistsInWorkspace(theLink);
-		assertTrue("2.2", theLink.getResourceAttributes().isSymbolicLink());
+		assertTrue(theLink.getResourceAttributes().isSymbolicLink());
 	}
 
 	/**
@@ -96,8 +96,7 @@ public class Bug_233939 {
 		symLinkAndRefresh(project, fileName, fileInTempDirPath);
 
 		IFile[] files = root.findFilesForLocationURI(file.getLocationURI());
-		assertEquals("7.0", 1, files.length);
-		assertEquals("7.1", file, files[0]);
+		assertThat(files).containsExactly(file);
 
 		// Bug 198291: We do not track canonical symlink locations below project level
 		//		IFile[] files = root.findFilesForLocation(fileInTempDirPath);

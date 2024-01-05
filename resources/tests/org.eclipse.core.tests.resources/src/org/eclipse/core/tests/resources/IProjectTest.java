@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
@@ -127,7 +128,7 @@ public class IProjectTest  {
 		project.copy(destination.getFullPath(), IResource.NONE, monitor);
 		monitor.assertUsedUp();
 		assertTrue("1.1", destination.exists());
-		assertEquals("1.2", 0, destination.findMarkers(IMarker.TASK, true, IResource.DEPTH_INFINITE).length);
+		assertThat(destination.findMarkers(IMarker.TASK, true, IResource.DEPTH_INFINITE)).isEmpty();
 	}
 
 	/**
@@ -1997,29 +1998,23 @@ public class IProjectTest  {
 		IProject project2 = getWorkspace().getRoot().getProject("P2");
 
 		//dynamic project references
-		assertEquals("2.0", 0, desc.getDynamicReferences().length);
+		assertThat(desc.getDynamicReferences()).isEmpty();
 		IProject[] refs = new IProject[] {project1, project2};
 		desc.setDynamicReferences(refs);
 		IProject[] result = desc.getDynamicReferences();
-		assertEquals("2.1", 2, result.length);
-		assertEquals("2.2", project1, result[0]);
-		assertEquals("2.3", project2, result[1]);
+		assertThat(result).containsExactly(project1, project2);
 
 		//destroying the result should not affect the description
 		result[0] = null;
 		result[1] = null;
 		result = desc.getDynamicReferences();
-		assertEquals("2.4", 2, result.length);
-		assertEquals("2.5", project1, result[0]);
-		assertEquals("2.6", project2, result[1]);
+		assertThat(result).containsExactly(project1, project2);
 
 		//duplicates (should be automatically omitted)
 		refs = new IProject[] {project1, project2, project2, project1, project1};
 		desc.setDynamicReferences(refs);
 		result = desc.getDynamicReferences();
-		assertEquals("3.1", 2, result.length);
-		assertEquals("3.2", project1, result[0]);
-		assertEquals("3.3", project2, result[1]);
+		assertThat(result).containsExactly(project1, project2);
 	}
 
 	/**
@@ -2035,29 +2030,23 @@ public class IProjectTest  {
 		assertEquals("1.0", "foo", desc.getName());
 
 		//project references
-		assertEquals("2.0", 0, desc.getReferencedProjects().length);
+		assertThat(desc.getReferencedProjects()).isEmpty();
 		IProject[] refs = new IProject[] {project1, project2};
 		desc.setReferencedProjects(refs);
 		IProject[] result = desc.getReferencedProjects();
-		assertEquals("2.1", 2, result.length);
-		assertEquals("2.2", project1, result[0]);
-		assertEquals("2.3", project2, result[1]);
+		assertThat(result).containsExactly(project1, project2);
 
 		//destroying the result should not affect the description
 		result[0] = null;
 		result[1] = null;
 		result = desc.getReferencedProjects();
-		assertEquals("2.4", 2, result.length);
-		assertEquals("2.5", project1, result[0]);
-		assertEquals("2.6", project2, result[1]);
+		assertThat(result).containsExactly(project1, project2);
 
 		//duplicates (should be automatically omitted)
 		refs = new IProject[] {project1, project2, project2, project1, project1};
 		desc.setReferencedProjects(refs);
 		result = desc.getReferencedProjects();
-		assertEquals("3.1", 2, result.length);
-		assertEquals("3.2", project1, result[0]);
-		assertEquals("3.3", project2, result[1]);
+		assertThat(result).containsExactly(project1, project2);
 	}
 
 	@Test
@@ -2216,7 +2205,7 @@ public class IProjectTest  {
 		assertEquals("1.8", value, actual);
 		// ensure the marker was moved
 		markers = destChild.findMarkers(null, true, IResource.DEPTH_ZERO);
-		assertEquals("1.10", 1, markers.length);
+		assertThat(markers).hasSize(1);
 		// cleanup
 		monitor.prepare();
 		getWorkspace().getRoot().delete(false, monitor);
@@ -2252,7 +2241,7 @@ public class IProjectTest  {
 		assertEquals("2.11", value, actual);
 		// ensure the marker was moved
 		markers = destChild.findMarkers(null, true, IResource.DEPTH_ZERO);
-		assertEquals("2.13", 1, markers.length);
+		assertThat(markers).hasSize(1);
 		// cleanup
 		monitor.prepare();
 		getWorkspace().getRoot().delete(false, monitor);
@@ -2384,7 +2373,7 @@ public class IProjectTest  {
 		assertEquals("2.11", propertyValue, actualPropertyValue);
 		// ensure the marker was moved
 		IMarker[] markers = destChild.findMarkers(null, true, IResource.DEPTH_ZERO);
-		assertEquals("2.13", 1, markers.length);
+		assertThat(markers).hasSize(1);
 		// cleanup
 		monitor.prepare();
 		getWorkspace().getRoot().delete(false, monitor);

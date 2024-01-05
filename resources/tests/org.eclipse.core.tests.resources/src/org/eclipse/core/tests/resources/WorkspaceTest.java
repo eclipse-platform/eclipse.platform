@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.canCreateSymLinks;
 import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
@@ -372,7 +373,7 @@ public class WorkspaceTest {
 		monitor.prepare();
 		project.setDescription(description, monitor);
 		monitor.assertUsedUp();
-		assertTrue(target.getReferencingProjects().length == 1);
+		assertThat(target.getReferencingProjects()).hasSize(1);
 
 		monitor.prepare();
 		target.delete(true, true, monitor);
