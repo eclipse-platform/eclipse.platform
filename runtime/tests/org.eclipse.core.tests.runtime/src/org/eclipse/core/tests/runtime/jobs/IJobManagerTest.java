@@ -14,9 +14,7 @@
 package org.eclipse.core.tests.runtime.jobs;
 
 import static java.util.Collections.synchronizedList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsEmptyCollection.empty;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -1770,8 +1768,7 @@ public class IJobManagerTest extends AbstractJobTest {
 			job.join();
 		}
 
-		assertThat("there have jobs started running before a previously scheduled one", jobsRunningBeforePrevious,
-				empty());
+		assertThat(jobsRunningBeforePrevious).as("job started running before a previously scheduled one").isEmpty();
 	}
 
 	@Test
@@ -1785,7 +1782,7 @@ public class IJobManagerTest extends AbstractJobTest {
 		directlyExecutedJob.join(delayInSeconds * 1000 / 2, null);
 		int delayedJobState = delayedJob.getState();
 		delayedJob.cancel();
-		assertThat("delayed job should still be waiting", delayedJobState, is(Job.SLEEPING));
+		assertThat(delayedJobState).as("state of delayed job that should be waiting").isEqualTo(Job.SLEEPING);
 	}
 
 	/**
