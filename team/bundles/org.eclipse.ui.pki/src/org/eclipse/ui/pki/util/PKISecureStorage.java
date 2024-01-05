@@ -20,6 +20,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
+import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.IStatus;
@@ -217,14 +218,14 @@ public class PKISecureStorage extends AbstractUIPlugin {
 	public void loadUpPKI( ) {
 		
 		try {
-			if (  PKCSpick.getInstance().isPKCS11on() ) {
+			if ( PKIState.CONTROL.isPKCS11on() ) {
 				this.certificateLocation=node.get(PKCS11_LOCATION, "none");
 				this.certPassPhrase = node.get(PKI_PIN, "none");
 				if ( this.certificateLocation.equalsIgnoreCase("none")) {
 					this.certificateLocation = "pkcs11";
 				}
 			}
-			if (  PKCSpick.getInstance().isPKCS12on() ) {
+			if ( PKIState.CONTROL.isPKCS12on() ) {
 				this.certificateLocation=node.get(PKCS12_LOCATION, "none");
 				if ( this.certificateLocation.equals("none") ) {
 					this.certificateLocation=node.get(PKI_LOCATION, "none");
@@ -253,14 +254,14 @@ public class PKISecureStorage extends AbstractUIPlugin {
 		KeyStore userKeyStore = getUserKeyStore();
 		String userKeyStoreLocation = certificateLocation;
 		
-		if ( PKCSpick.getInstance().isPKCS11on() ) {
+		if ( PKIState.CONTROL.isPKCS11on() ) {
 			if( (certPassPhrase != null) && (userKeyStoreLocation != null) &&
 						(!certificateLocation.equals("none"))  && (!certPassPhrase.equals("none"))) {
 				System.setProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY, "pkcs11");
 				System.setProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY, certPassPhrase);
 				AuthenticationPlugin.getDefault().setCertificatePath( userKeyStoreLocation );
 			}
-		} else if ( PKCSpick.getInstance().isPKCS12on() ) {
+		} else if ( PKIState.CONTROL.isPKCS12on() ) {
 			if(userKeyStore != null && userKeyStore.getType() != null && certPassPhrase != null && userKeyStoreLocation != null 
 				&& !certificateLocation.equals("none") && !certPassPhrase.equals("none")) {
 				System.setProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY, userKeyStoreLocation);
