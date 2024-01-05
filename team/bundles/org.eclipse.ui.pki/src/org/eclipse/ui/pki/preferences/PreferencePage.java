@@ -150,6 +150,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         	System.out.println("PreferencePage --------- pkcs12 is on");
         	setPkcs11InVisible();
         	setPkcs12Visible();
+        	pkiSecureStorage.loadUpPKI();
         	
         	
         } else if ((!( PKIState.CONTROL.isPKCS11on() )) && 

@@ -162,7 +162,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
-        	snapshotProperties.dump();
+        	//snapshotProperties.dump();
         	
         	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());
         } else {

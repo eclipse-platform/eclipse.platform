@@ -132,7 +132,10 @@ public class PKIProperties extends Authenticator {
 		}
 	}
 	public void load() {
+		Optional<String> keyStoreType = null;
 		Optional<String> keyStore = null;
+		Optional<String> keyStorePassword = null;
+		Optional<String> keyStoreProvider = null;
 		keyStore = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
 		if (keyStore.isEmpty()) {
 			sslProperties.setKeyStore(""); //$NON-NLS-1$
@@ -141,27 +144,29 @@ public class PKIProperties extends Authenticator {
 			sslProperties.setKeyStore(keyStore.get().toString());
 		}
 
-		if (System.getProperty("javax.net.ssl.keyStoreType") != null) { //$NON-NLS-1$
-			sslProperties.setKeyStoreType(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
-		} else {
+		keyStoreType = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
+		if (keyStoreType.isEmpty()) {
 			sslProperties.setKeyStoreType(""); //$NON-NLS-1$
-		}
-		if (System.getProperty("javax.net.ssl.keyStoreProvider") != null) { //$NON-NLS-1$
-			sslProperties.setKeyStoreProvider(System.getProperty("javax.net.ssl.keyStoreProvider")); //$NON-NLS-1$
 		} else {
-			if (System.getProperty("javax.net.ssl.keyStoreType") != null) { //$NON-NLS-1$
-				if (System.getProperty("javax.net.ssl.keyStoreType").equalsIgnoreCase("pkcs12")) { //$NON-NLS-1$ //$NON-NLS-2$
-					System.clearProperty("javax.net.ssl.keyStoreProvider"); //$NON-NLS-1$
-				} else {
-					sslProperties.setKeyStoreProvider(""); //$NON-NLS-1$
-				}
+			sslProperties.setKeyStoreType(keyStoreType.get().toString());
+		}
+		keyStoreProvider = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreProvider")); //$NON-NLS-1$
+		if (keyStoreProvider.isEmpty()) {
+			sslProperties.setKeyStoreProvider(""); //$NON-NLS-1$
+		} else {
+			sslProperties.setKeyStoreProvider(keyStoreType.get().toString());
+			if (sslProperties.getKeyStoreType().equalsIgnoreCase("pkcs12")) {//$NON-NLS-1$
+				System.clearProperty("javax.net.ssl.keyStoreProvider"); //$NON-NLS-1$
+				sslProperties.setKeyStoreProvider(""); //$NON-NLS-1$
 			}
 		}
-		if (System.getProperty("javax.net.ssl.keyStorePassword") != null) { //$NON-NLS-1$
-			sslProperties.setKeyStorePassword(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
 
-		} else {
+
+		keyStorePassword = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
+		if (keyStoreType.isEmpty()) {
 			sslProperties.setKeyStorePassword(""); //$NON-NLS-1$
+		} else {
+			sslProperties.setKeyStorePassword(keyStorePassword.get().toString());
 		}
 
 		sslProperties.setUsername(System.getProperty("user.name")); //$NON-NLS-1$
