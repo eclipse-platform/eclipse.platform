@@ -47,9 +47,11 @@ public class SessionTestExtension implements InvocationInterceptor {
 
 	private final RemoteTestExecutor testExecutor;
 
+	private final Setup setup;
+
 	private SessionTestExtension(String pluginId, String applicationId) {
 		try {
-			Setup setup = SetupManager.getInstance().getDefaultSetup();
+			this.setup = SetupManager.getInstance().getDefaultSetup();
 			setup.setSystemProperty("org.eclipse.update.reconcile", "false");
 			testExecutor = new RemoteTestExecutor(setup, applicationId, pluginId);
 		} catch (SetupException e) {
@@ -86,6 +88,10 @@ public class SessionTestExtension implements InvocationInterceptor {
 		public SessionTestExtension create() {
 			return new SessionTestExtension(storedPluginId, storedApplicationId);
 		}
+	}
+
+	public void setEclipseArgument(String key, String value) {
+		setup.setEclipseArgument(key, value);
 	}
 
 	@Override
