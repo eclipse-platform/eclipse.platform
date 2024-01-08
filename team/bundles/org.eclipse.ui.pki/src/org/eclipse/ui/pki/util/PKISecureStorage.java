@@ -187,7 +187,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 					
 					try {
 						keyStore = KeyStoreUtil.getKeyStore(certLocation, certPassPhrase, PKCSSelected.getKeystoreformat()); /*KeyStoreFormat.PKCS12*/
-						//System.out.println("PKISecureStorage - GetUserkeystore after  where is password");
+						System.out.println("PKISecureStorage - GetUserkeystore after  where is password");
 					} catch (KeyStoreException e){
 						LogUtil.logError(SVNSaveAuthorizationInfo, e);
 					} catch (NoSuchAlgorithmException e){
