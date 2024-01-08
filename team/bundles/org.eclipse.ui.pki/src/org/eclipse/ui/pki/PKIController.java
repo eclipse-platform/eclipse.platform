@@ -210,7 +210,7 @@ public class PKIController implements IStartup {
 					// TrustStoreSecureStorage();
 					System.out.println("PKIController - SETTING UP PKI, duh");
 					if (pkiSecureStorage.isPKISaved() && truststoreSecureStorage.isJKSSaved()) {
-
+						System.out.println("PKIController - SETTING YOUR PICX");
 						if (pkiSecureStorage.getPkiType().equalsIgnoreCase("PKCS11")) {
 							PKCSpick.getInstance().setPKCS11on(true);
 							PKCSpick.getInstance().setPKCS12on(false);
@@ -282,7 +282,7 @@ public class PKIController implements IStartup {
 								AuthenticationPlugin.getDefault().obtainUserKeyStore());
 
 					} else {
-
+						System.out.println("PKIController - SETTING systemproperties....");
 						AuthenticationPlugin.getDefault().setSystemProperties();
 					}
 				} else {

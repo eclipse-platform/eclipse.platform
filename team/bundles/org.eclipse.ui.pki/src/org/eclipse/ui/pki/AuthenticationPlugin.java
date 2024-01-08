@@ -188,6 +188,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
      * if necessary, and then sets javax.net.ssl system properties.
      */
     public void setSystemProperties() {
+    	
     	KeyStore keystore = null;
     	setTrustStoreSystemProperties(obtainDefaultJKSTrustStore());
     	keystore = obtainUserKeyStore();
@@ -251,11 +252,13 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     	AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, defaultTrustStorePath);
     	this.trustStorePassPhrase = DEFAULT_TRUST_STORE_PASSWORD;
     	
-    	//System.out.println("obtainDefaultJKSTrustStore -> " + defaultTrustStorePath + " " + this.trustStorePassPhrase);
+    	System.out.println("obtainDefaultJKSTrustStore -> " + defaultTrustStorePath + " " + this.trustStorePassPhrase);
    	
     	try {
+    		
 			this.trustStore = KeyStoreUtil.getKeyStore(defaultTrustStorePath, this.trustStorePassPhrase, KeyStoreFormat.JKS);
 			setTrustStoreSystemProperties(this.trustStore);
+    	
     	} catch (KeyStoreException e) {
 			System.out.println("The Java key store can not be loaded.");
 		} catch (NoSuchAlgorithmException e) {
