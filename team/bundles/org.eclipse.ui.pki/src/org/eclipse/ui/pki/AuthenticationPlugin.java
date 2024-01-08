@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Optional;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
@@ -235,11 +236,18 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     public KeyStore obtainDefaultJKSTrustStore(){
     	
     	String trustStoreDirectory=null;
-    	
+    	Optional<String> trustStoreSystemDirectory=null;
+    	Optional<String> trustStoreSystemPassword=null;
     	try {
-    		trustStoreDirectory=AuthenticationPlugin.getDefault().getPreferenceStore().getString(AuthenticationPreferences.TRUST_STORE_LOCATION);
-    		if ((trustStoreDirectory == null ) || (trustStoreDirectory.isEmpty())) {
-    			trustStoreDirectory=PKIController.PKI_ECLIPSE_DIR.getAbsolutePath() + File.separator + DEFAULT_TRUST_STORE;
+    		trustStoreSystemDirectory = Optional.ofNullable(System.getProperty(JAVA_SSL_TRUST_STORE_PATH_KEY));
+    		if (trustStoreSystemDirectory.isEmpty() ) {
+    		
+    			trustStoreDirectory=AuthenticationPlugin.getDefault().getPreferenceStore().getString(AuthenticationPreferences.TRUST_STORE_LOCATION);
+    			if ((trustStoreDirectory == null ) || (trustStoreDirectory.isEmpty())) {
+    				trustStoreDirectory=PKIController.PKI_ECLIPSE_DIR.getAbsolutePath() + File.separator + DEFAULT_TRUST_STORE;
+    			}
+    		} else {
+    			trustStoreDirectory = (String) trustStoreSystemDirectory.get().toString();
     		}
     	} catch (Exception e1) {
 			// TODO Auto-generated catch block
@@ -249,8 +257,14 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     	
     	final String defaultTrustStorePath = trustStoreDirectory;
     	
-    	AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, defaultTrustStorePath);
-    	this.trustStorePassPhrase = DEFAULT_TRUST_STORE_PASSWORD;
+    	trustStoreSystemPassword = Optional.ofNullable(System.getProperty(JAVA_SSL_TRUST_STORE_PASS_KEY));
+    	if (trustStoreSystemPassword.isEmpty()) {
+    	
+    		AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, defaultTrustStorePath);
+    			this.trustStorePassPhrase = DEFAULT_TRUST_STORE_PASSWORD;
+    	} else {
+    		this.trustStorePassPhrase = trustStoreSystemPassword.get().toString();
+    	}
     	
     	System.out.println("obtainDefaultJKSTrustStore -> " + defaultTrustStorePath + " " + this.trustStorePassPhrase);
    	
@@ -1138,7 +1152,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 						if (isDigitalSignature(X509.getKeyUsage())) {
 							Collection<List<?>> altnames = X509.getSubjectAlternativeNames();
 							if (altnames != null) {
-								for (List item : altnames) {
+								for (List<?> item : altnames) {
 									Integer type = (Integer) item.get(0);
 									if (type == 1)
 										try {
