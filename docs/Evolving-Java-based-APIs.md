@@ -4,8 +4,8 @@ Evolving Java-based APIs
 Document is currently split in 3 parts:
 
 *   Part 1: What is an API? (this page)
-*   [Part 2: Achieving API Binary Compatibility](/Evolving_Java-based_APIs_2 "Evolving Java-based APIs 2")
-*   [Part 3: Other Notes](/Evolving_Java-based_APIs_3 "Evolving Java-based APIs 3")
+*   [Part 2: Achieving API Binary Compatibility](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md)
+*   [Part 3: Other Notes](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-3.md)
 
 This document is about how to evolve Java-based APIs while maintaining compatibility with existing client code. 
 Without loss of generality, we'll assume that there is a generic **Component** with a **Component API**, with one party providing the Component and controlling its API. 
@@ -207,16 +207,16 @@ Whether a particular Component API change breaks or maintains contract compatibi
 Achieving API Binary Compatibility
 ----------------------------------
 
-See [Part 2](/Evolving_Java-based_APIs_2 "Evolving Java-based APIs 2").
+See [Part 2](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md).
 
 Other Notes
 -----------
 
-See [Part 3](/Evolving_Java-based_APIs_3 "Evolving Java-based APIs 3").
+See [Part 3](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-3.md).
 
 Bundle Versioning
 -----------------
 
-See [Version Numbering](/Version_Numbering "Version Numbering")
+See [Version Numbering](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/VersionNumbering.md)
 
 
