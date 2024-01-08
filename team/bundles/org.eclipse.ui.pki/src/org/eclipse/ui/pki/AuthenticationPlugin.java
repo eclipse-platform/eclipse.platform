@@ -168,9 +168,9 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         	}
         	if (PKIState.CONTROL.isPKCS12on()) {
         		PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
-        		getDefault()
-        			.getPreferenceStore()
-        			.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION, null );
+        		//getDefault()  //  causes null pointer
+        		//	.getPreferenceStore()
+        		//	.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION, null );
         	}
         	
         	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());
