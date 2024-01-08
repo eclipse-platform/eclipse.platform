@@ -363,7 +363,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     	boolean setKeyStoreProperties = false;
 		String userKeyStoreLocation = null;
 		System.out.println("AuthenticationPlugin ----- setUserKeyStoreSystemProperties");
-		if ( PKCSpick.getInstance().isPKCS11on()) {
+		if (  PKIState.CONTROL.isPKCS11on()) {
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS11");
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY, snapshotProperties.getPasswordAuthentication().getPassword().toString());
 			//   COMMENTING OUT because this isnt used here.
@@ -374,7 +374,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 				System.setProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY, pkcs11Provider.getName());
 			}
 			setKeyStoreProperties = true;
-		} else if ( PKCSpick.getInstance().isPKCS12on()) {
+		} else if ( PKIState.CONTROL.isPKCS12on() ) {
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS12");
 			userKeyStoreLocation = getPreferenceStore().getString(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION);
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY, userKeyStoreLocation);
