@@ -216,7 +216,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 		return keyStore;
 	}
 	public void loadUpPKI( ) {
-		
+		System.out.println("PKISecureStorage -  loaduppki....");
 		try {
 			if ( PKIState.CONTROL.isPKCS11on() ) {
 				this.certificateLocation=node.get(PKCS11_LOCATION, "none");
@@ -253,7 +253,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
     public void setPKISystemProperties(){
 		KeyStore userKeyStore = getUserKeyStore();
 		String userKeyStoreLocation = certificateLocation;
-		
+		System.out.println("PKISecureStorage -  setpkisystemproperties....");
 		if ( PKIState.CONTROL.isPKCS11on() ) {
 			if( (certPassPhrase != null) && (userKeyStoreLocation != null) &&
 						(!certificateLocation.equals("none"))  && (!certPassPhrase.equals("none"))) {
