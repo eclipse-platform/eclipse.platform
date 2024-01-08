@@ -38,6 +38,7 @@ public class EventProcessor implements EventDispatcher<Object, Object, Object> {
 	}
 	private EventProcessor() {}
 	public void initializeEvent(PKIController startup) {
+		System.out.println("EventProcessor, initialize.");
 		this.localStartup=startup;
 		eventManager =  new EventManager("PKI event");
 		Map<PKIController, Object> listeners = new CopyOnWriteIdentityMap<PKIController, Object>();
@@ -49,7 +50,7 @@ public class EventProcessor implements EventDispatcher<Object, Object, Object> {
 		if ( this.localStartup != null ) {
 			this.dispatchEvent(this.localStartup.eventRunner(event), queue, event, queue );
 		} else {
-			//System.out.println("EventProcessor,  waited and wated and waited some more..  But alas, nothing.");
+			System.out.println("EventProcessor,  waited and wated and waited some more..  But alas, nothing.");
 			isPending=true;
 		}
 	}
