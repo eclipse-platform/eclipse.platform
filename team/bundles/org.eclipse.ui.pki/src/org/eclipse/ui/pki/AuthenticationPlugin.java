@@ -47,6 +47,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.security.auth.callback.CallbackHandler;
 import org.eclipse.core.pki.FingerprintX509;
+import org.eclipse.core.pki.auth.EventConstant;
 import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.auth.SecurityFileSnapshot;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
@@ -159,7 +160,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         // Has a headless config already been set up
         if ((PKIState.CONTROL.isPKCS11on()) || (PKIState.CONTROL.isPKCS12on())) {
         	LogUtil.logInfo("AuthenticationPluginA Headless system has already setup PKI");
-
+        	EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue() );
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
         	//snapshotProperties.dump();

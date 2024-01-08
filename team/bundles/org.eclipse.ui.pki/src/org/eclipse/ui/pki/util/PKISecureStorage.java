@@ -76,7 +76,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 			
 			String userKeyStoreLocation = authenticationInfo.getCertificatePath().trim();
 			String passPhrase = authenticationInfo.getCertPassPhrase().trim();
-			if (  PKCSpick.getInstance().isPKCS11on() ) {
+			if ( PKIState.CONTROL.isPKCS11on() ) {
 				node.remove(PKCS12_LOCATION);
 				node.remove(PKI_PASSPHRASE);
 				node.put(PKI_TYPE, "PKCS11", false);
@@ -85,7 +85,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 				node.put(PKCS11_LOCATION, userKeyStoreLocation, false);
 				node.put(PKI_PIN, passPhrase, true);
 			}
-			if (  PKCSpick.getInstance().isPKCS12on() ) {
+			if (  PKIState.CONTROL.isPKCS12on() ) {
 				String status = ExpiredCertCheck.INSTANCE.getDate(userKeyStoreLocation, passPhrase.toCharArray());
 				node.remove(PKCS11_LOCATION);
 				node.remove(PKI_PIN);
@@ -160,7 +160,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 				pkiType = "PKCS12";
 			}
 			
-			if ((  PKCSpick.getInstance().isPKCS11on() ) && (( pkiType.equals("PKCS11")))) {
+			if ((  PKIState.CONTROL.isPKCS11on()) && (( pkiType.equals("PKCS11")))) {
 				VendorImplementation vendorImplementation = VendorImplementation.getInstance(true);
 				if ( vendorImplementation.isInstalled() ) {	
 					vendorImplementation.login(node.get(PKI_PIN, "none"));
@@ -170,7 +170,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 				} else {
 					System.out.println("PKISecureStorage --   PKCS11 NOT enabled");
 				}
-			} else if ((  PKCSpick.getInstance().isPKCS12on() ) && (( pkiType.equals("PKCS12")))) {
+			} else if (( PKIState.CONTROL.isPKCS12on() ) && (( pkiType.equals("PKCS12")))) {
 				certLocation = node.get(PKCS12_LOCATION, "none");
 				if (certLocation.equals("none") ) {
 					certLocation = node.get(PKI_LOCATION, "none");
@@ -187,6 +187,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 					
 					try {
 						keyStore = KeyStoreUtil.getKeyStore(certLocation, certPassPhrase, PKCSSelected.getKeystoreformat()); /*KeyStoreFormat.PKCS12*/
+						//keyStore = KeyStoreManager();
 						System.out.println("PKISecureStorage - GetUserkeystore after  where is password");
 					} catch (KeyStoreException e){
 						LogUtil.logError(SVNSaveAuthorizationInfo, e);
