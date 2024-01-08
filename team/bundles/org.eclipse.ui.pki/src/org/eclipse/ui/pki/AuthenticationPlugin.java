@@ -75,8 +75,10 @@ import org.eclipse.core.pki.util.KeyStoreFormat;
 import org.eclipse.core.pki.util.KeyStoreManager;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.PKIAuthenticator;
+import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.wizard.PKILoginWizard;
 import org.eclipse.ui.pki.wizard.TrustStoreLoginWizard;
+import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -167,14 +169,19 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
         	//snapshotProperties.dump();
+        	
+        	PKISecureStorage pkiSecureStorage = new PKISecureStorage();
+        	pkiSecureStorage.storePKI(this);
+			TrustStoreSecureStorage truststoreSecureStorage = new TrustStoreSecureStorage();
+			truststoreSecureStorage.storeJKS(this);
         	if (PKIState.CONTROL.isPKCS11on()) {
         		PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
         	}
         	if (PKIState.CONTROL.isPKCS12on()) {
+        		
         		PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
-        		//getDefault()  //  causes null pointer
-        		//	.getPreferenceStore()
-        		//	.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION, null );
+        		VendorImplementation.getInstance().off();
+        		//AuthenticationPreferences.PKI_CERTIFICATE_LOCATION, 
         	}
         	
         	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());

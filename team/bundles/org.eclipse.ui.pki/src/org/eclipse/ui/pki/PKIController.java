@@ -206,6 +206,7 @@ public class PKIController implements IStartup {
 				final String KEYSTORE_SELECTION = "Selection";
 				PKISecureStorage pkiSecureStorage = new PKISecureStorage();
 				TrustStoreSecureStorage truststoreSecureStorage = new TrustStoreSecureStorage();
+				
 				// if (!(pkiSecureStorage.isPkcs11Enabled())) {
 				if (!(is11on)) {
 					// TrustStoreSecureStorage truststoreSecureStorage = new
