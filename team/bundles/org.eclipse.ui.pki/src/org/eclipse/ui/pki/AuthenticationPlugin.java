@@ -68,7 +68,7 @@ import org.eclipse.ui.pki.dialog.PassphraseDialog;
 import org.eclipse.ui.pki.jsse.CdeX509TrustManager;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
-import org.eclipse.ui.pki.pkiselection.PKCSpick;
+//import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 import org.eclipse.core.pki.util.KeyStoreFormat;
@@ -561,7 +561,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 			       if (vendorPkcs11.isEnabled() ) {
 				     userKeyStore = vendorPkcs11.getKeyStore();
 				     System.out.println("AuthenticationPlugin - Dynamic vendorPkcs11 enabled.");
-				     PKCSpick.getInstance().setPKCS11on(true);
+				     PKIState.CONTROL.setPKCS11on(true);
 				     if ( vendorPkcs11.getSelectedX509FingerPrint() == null ) {
 				    	 /*
 				    	  * Set fingerprint using the default DS certificate, because this is dynamic vendorPkcs11.
@@ -609,7 +609,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 							userKeyStore=null;
 						}
 						
-						 if ((!( PKCSpick.getInstance().isPKCS11on())) &&  (!(PKCSpick.getInstance().isPKCS12on())) ) {
+						 if ((!(PKIState.CONTROL.isPKCS11on())) &&  (!(PKIState.CONTROL.isPKCS12on())) ) {
 							 //System.out.println("AuthenticationPlugin --- LOGIN CANCELED  AND NO PKI IS SELECTED.");
 							 userKeyStore=null;
 							 if ( op.equalsIgnoreCase("Selection")) {
@@ -988,7 +988,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 			KeyManagerFactory kmf = null;
 			TrustManagerFactory tmf = null;
 			try {	
-				if ( PKCSpick.getInstance().isPKCS11on()) {
+				if ( PKIState.CONTROL.isPKCS11on() ) {
 					
 					/*
 					 *   SSLContext has already been set for PKCS11:

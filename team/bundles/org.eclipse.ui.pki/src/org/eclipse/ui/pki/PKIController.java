@@ -41,11 +41,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IStartup;
 import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.core.pki.auth.EventConstant;
+import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.auth.PublicKeySecurity;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
-import org.eclipse.ui.pki.pkiselection.PKCSpick;
+//import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.core.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
 import org.eclipse.pki.exception.UserCanceledException;
@@ -82,8 +83,9 @@ public class PKIController implements IStartup {
 		/*
 		 * NOTE: Initialize pki settings so that NO PKI is set on start up.
 		 */
-		PKCSpick.getInstance().setPKCS11on(false);
-		PKCSpick.getInstance().setPKCS12on(false);
+		PKIState.CONTROL.setPKCS11on(false);
+		PKIState.CONTROL.setPKCS12on(false);
+		
 		/*
 		 * PKCS11 will be the default certificate store, so check it first.
 		 */
@@ -99,8 +101,8 @@ public class PKIController implements IStartup {
 			if ( pkiType != null) {
 				if (pkiType.equalsIgnoreCase("PKCS12")) {
 					//System.out.println("PKIController PKI TYPE FROM FILE:"+System.getProperty("javax.net.ssl.keyStoreType"));
-					PKCSpick.getInstance().setPKCS11on(false);
-					PKCSpick.getInstance().setPKCS12on(true);
+					PKIState.CONTROL.setPKCS11on(false);
+					PKIState.CONTROL.setPKCS12on(true);
 					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
 					
 					AuthenticationPlugin.getDefault()
@@ -112,8 +114,8 @@ public class PKIController implements IStartup {
 				if ("PKCS11".equalsIgnoreCase(System.getProperty("javax.net.ssl.keyStoreType"))) {
 					if (VendorImplementation.getInstance().isInstalled()) {
 						PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
-						PKCSpick.getInstance().setPKCS11on(true);
-						PKCSpick.getInstance().setPKCS12on(false);
+						PKIState.CONTROL.setPKCS11on(true);
+						PKIState.CONTROL.setPKCS12on(false);
 					} else {
 						// need exception here no PROVIDER
 					}
@@ -122,8 +124,8 @@ public class PKIController implements IStartup {
 		} else {
 			if ( AuthenticationBase.INSTANCE.isPkcs11Setup() ) {
 				if (((!(VendorImplementation.getInstance().isInstalled())) || (isPreviousPkiSelection()))) {
-					PKCSpick.getInstance().setPKCS11on(false);
-					PKCSpick.getInstance().setPKCS12on(true);
+					PKIState.CONTROL.setPKCS11on(false);
+					PKIState.CONTROL.setPKCS12on(true);
 					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
 				} else {
 					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
@@ -181,7 +183,7 @@ public class PKIController implements IStartup {
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
 					VendorImplementation.getInstance().off();
 					isPkcs11Installed = false;
-					PKCSpick.getInstance().setPKCS11on(false);
+					PKIState.CONTROL.setPKCS11on(false);
 					System.clearProperty("javax.net.ssl.keyStoreType");
 					System.clearProperty("javax.net.ssl.keyStoreProvider");
 					System.out.println("PKIController - TURNED OFF ALL PKCS11");
@@ -212,11 +214,11 @@ public class PKIController implements IStartup {
 					if (pkiSecureStorage.isPKISaved() && truststoreSecureStorage.isJKSSaved()) {
 						System.out.println("PKIController - SETTING YOUR PICX");
 						if (pkiSecureStorage.getPkiType().equalsIgnoreCase("PKCS11")) {
-							PKCSpick.getInstance().setPKCS11on(true);
-							PKCSpick.getInstance().setPKCS12on(false);
+							PKIState.CONTROL.setPKCS11on(true);
+							PKIState.CONTROL.setPKCS12on(false);
 						} else {
-							PKCSpick.getInstance().setPKCS11on(false);
-							PKCSpick.getInstance().setPKCS12on(true);
+							PKIState.CONTROL.setPKCS11on(false);
+							PKIState.CONTROL.setPKCS12on(true);
 						}
 						// First, set the system properties from secure storage then retrieved the paths
 						// from the system
@@ -248,11 +250,11 @@ public class PKIController implements IStartup {
 						// from the system
 						// properties to set the preference store for later use.
 						if (pkiSecureStorage.getPkiType().equals("PKCS11")) {
-							PKCSpick.getInstance().setPKCS11on(true);
-							PKCSpick.getInstance().setPKCS12on(false);
+							PKIState.CONTROL.setPKCS11on(true);
+							PKIState.CONTROL.setPKCS12on(false);
 						} else {
-							PKCSpick.getInstance().setPKCS11on(false);
-							PKCSpick.getInstance().setPKCS12on(true);
+							PKIState.CONTROL.setPKCS11on(false);
+							PKIState.CONTROL.setPKCS12on(true);
 						}
 						pkiSecureStorage.loadUpPKI();
 						pkiSecureStorage.setPKISystemProperties();
