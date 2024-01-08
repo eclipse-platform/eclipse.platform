@@ -74,6 +74,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		super(pluginId, name);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void addMinimalBundleSet() {
 		// Just use any class from the bundles we want to add as minimal bundle set
 
@@ -91,6 +92,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 
 		addBundle(org.eclipse.jdt.internal.junit.runner.ITestLoader.class); // org.eclipse.jdt.junit.runtime
 		addBundle(org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader.class); // org.eclipse.jdt.junit4.runtime
+		addBundle(org.eclipse.jdt.internal.junit5.runner.JUnit5TestLoader.class); // org.eclipse.jdt.junit5.runtime
 		addBundle(org.eclipse.pde.internal.junit.runtime.CoreTestApplication.class); // org.eclipse.pde.junit.runtime
 
 		addBundle(net.bytebuddy.ByteBuddy.class); // net.bytebuddy for org.assertj.core.api
@@ -120,8 +122,17 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 
 		addBundle(org.junit.Test.class); // org.junit
 		addBundle(org.junit.jupiter.api.Test.class); // junit-jupiter-api
+		addBundle(org.junit.jupiter.engine.JupiterTestEngine.class); // junit-jupiter-engine
+		addBundle(org.junit.jupiter.migrationsupport.EnableJUnit4MigrationSupport.class); // junit-jupiter-migrationsupport
+		addBundle(org.junit.jupiter.params.ParameterizedTest.class); // junit-jupiter-params
+		addBundle(org.junit.vintage.engine.VintageTestEngine.class); // junit-vintage-engine
 		addBundle(org.junit.platform.commons.JUnitException.class); // junit-platform-commons
+		addBundle(org.junit.platform.engine.TestEngine.class); // junit-platform-engine
+		addBundle(org.junit.platform.launcher.Launcher.class); // junit-platform-launcher
+		addBundle(org.junit.platform.runner.JUnitPlatform.class); // junit-platform-runner
 		addBundle(org.junit.platform.suite.api.Suite.class); // junit-platform-suite-api
+		addBundle(org.junit.platform.suite.commons.SuiteLauncherDiscoveryRequestBuilder.class); // junit-platform-suite-commons
+		addBundle(org.junit.platform.suite.engine.SuiteTestEngine.class); // junit-platform-suite-engine
 		addBundle(org.apiguardian.api.API.class); // org.apiguardian.api
 		addBundle(org.opentest4j.AssertionFailedError.class); // org.opentest4j
 	}
