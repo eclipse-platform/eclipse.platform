@@ -175,7 +175,7 @@ public class PKIController implements IStartup {
 		final Integer value = Integer.valueOf(incoming);
 		return new Runnable() {
 			public void run() {
-				//System.out.println("PKIController EVENT runner");
+				System.out.println("PKIController EVENT runner");
 				if (value.equals(EventConstant.DONE.getValue())) {
 					AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
