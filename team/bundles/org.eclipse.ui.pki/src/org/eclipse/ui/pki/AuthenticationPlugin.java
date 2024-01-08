@@ -72,6 +72,7 @@ import org.eclipse.ui.pki.pkiselection.PKCSSelected;
 import org.eclipse.pki.exception.UserCanceledException;
 import org.eclipse.ui.pki.preferences.AuthenticationPreferences;
 import org.eclipse.core.pki.util.KeyStoreFormat;
+import org.eclipse.core.pki.util.KeyStoreManager;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
 import org.eclipse.ui.pki.util.PKIAuthenticator;
 import org.eclipse.ui.pki.wizard.PKILoginWizard;
@@ -192,7 +193,14 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     	
     	KeyStore keystore = null;
     	setTrustStoreSystemProperties(obtainDefaultJKSTrustStore());
-    	keystore = obtainUserKeyStore();
+    	
+    	if ( KeyStoreManager.INSTANCE.isKeyStoreInitialized() ) {
+    		keystore = KeyStoreManager.INSTANCE.getKeyStore();
+    	} else {
+    		keystore = obtainUserKeyStore();
+    	}
+    	
+    	
     	if (keystore != null) {
     		setUserKeyStoreSystemProperties(keystore);
     	}
