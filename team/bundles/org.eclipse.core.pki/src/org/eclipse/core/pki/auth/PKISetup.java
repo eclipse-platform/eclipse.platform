@@ -24,6 +24,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.KeyStoreFormat;
 import org.eclipse.core.pki.util.KeyStoreManager;
@@ -45,6 +46,7 @@ public class PKISetup implements BundleActivator, IStartup {
 	private static final ServiceCaller<ILog> logger = new ServiceCaller(PKISetup.class, ILog.class);
 	// ListenerQueue<PKISetup, Object, EventManager> queue = null;
 	protected static KeyStore keyStore = null;
+	PKIProperties pkiInstance = null;
 	Properties pkiProperties = null;
 
 	public PKISetup() {
@@ -150,6 +152,8 @@ public class PKISetup implements BundleActivator, IStartup {
 								SSLContext ctx = SSLContext.getInstance("TLS");//$NON-NLS-1$
 								ctx.init(km, tm, null);
 								SSLContext.setDefault(ctx);
+								pkiInstance = PKIProperties.getInstance();
+								pkiInstance.load();
 								LogUtil.logInfo("PKISetup default SSLContext has been configured."); //$NON-NLS-1$
 							}
 						} catch (NoSuchAlgorithmException e) {
