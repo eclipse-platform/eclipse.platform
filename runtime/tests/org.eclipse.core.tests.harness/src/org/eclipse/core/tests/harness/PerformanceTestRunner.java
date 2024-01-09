@@ -16,7 +16,6 @@ package org.eclipse.core.tests.harness;
 import static org.junit.Assert.fail;
 
 import junit.framework.TestCase;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.Performance;
 import org.eclipse.test.performance.PerformanceMeter;
@@ -37,7 +36,7 @@ public abstract class PerformanceTestRunner {
 	/**
 	 * Implemented by subclasses to perform the work to be measured.
 	 */
-	protected abstract void test() throws CoreException;
+	protected abstract void test() throws Exception;
 
 	/**
 	 * Executes the performance test the given number of times. Use the outer time

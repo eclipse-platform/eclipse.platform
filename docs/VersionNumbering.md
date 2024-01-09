@@ -42,13 +42,16 @@ Each segment captures a different intent:
 
 ### When to change the major segment
 
-The major segment number must be increased when a plug-in makes breaking changes to its API. When the major segment is changed the minor and service segments are reset to 0. See [Evolving Java-based APIs](/Evolving_Java-based_APIs "Evolving Java-based APIs") for details on what constitutes a breaking change.
+The major segment number must be increased when a plug-in makes breaking changes to its API. 
+When the major segment is changed the minor and service segments are reset to 0. 
+See [Evolving Java-based APIs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md) for details on what constitutes a breaking change.
 
 **Example**: From the version 2.2.7, an incompatible change would lead to 3.0.0. By definition, such changes should not be made when working in a maintenance stream.
 
 ### When to change the minor segment
 
-The minor segment number must be incremented when a plug-in changes in an "externally visible" way. Examples of externally visible changes include [binary compatible API changes](/Evolving_Java-based_APIs_2 "Evolving Java-based APIs 2"), an updated [BREE](/BREE "BREE") (Bundle-RequiredExecutionEnvironment), significant performance changes, major code rework, adding a new extension point, changing files with a somewhat unclear API status (e.g. changing icons from gif to png), etc. Another way to know when this version number should be changed is by exclusion: it should indicate changes that are neither bug fixes (indicated by the service segment) nor breaking API changes (indicated by the major segment). When the minor segment is changed, the service segment is reset to 0.
+The minor segment number must be incremented when a plug-in changes in an "externally visible" way. 
+Examples of externally visible changes include [binary compatible API changes](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md), an increased minimum Java version via the Bundle-RequiredExecutionEnvironment header in the MANIFEST.MF, significant performance changes, major code rework, adding a new extension point, changing files with a somewhat unclear API status (e.g. changing icons from gif to png), etc. Another way to know when this version number should be changed is by exclusion: it should indicate changes that are neither bug fixes (indicated by the service segment) nor breaking API changes (indicated by the major segment). When the minor segment is changed, the service segment is reset to 0.
 
 **Example**: From the version 2.2.7, a minor change would lead to 2.3.0.
 
@@ -176,7 +179,11 @@ A branding plug-in should keep its version in sync with its feature.
 
 ### To require features or to require bundles
 
-A feature can express its external dependencies as required features, required plug-ins, or a combination of the two. How dependencies are expressed has consequences on the install-time behavior of your feature, so it is important to understand the different approaches. These approaches are described below along with a discussion of their effect. It is important to note that since [Ganymede](/Ganymede "Ganymede") (Eclipse 3.4), feature dependencies do not have to express dependencies that are already expressed at the plug-in level. Such duplication or further refinement of dependency information between features and plug-ins may unnecessarily restrict the ability to install the feature. With the classic Eclipse Update Manager that was the default install/update technology prior to Eclipse 3.4, dependency information was required at the feature level because the provisioning technology only reasoned at the level of features.
+A feature can express its external dependencies as required features, required plug-ins, or a combination of the two. 
+How dependencies are expressed has consequences on the install-time behavior of your feature, so it is important to understand the different approaches. 
+These approaches are described below along with a discussion of their effect.
+Feature dependencies do not have to express dependencies that are already expressed at the plug-in level.
+Such duplication or further refinement of dependency information between features and plug-ins may unnecessarily restrict the ability to install the feature. With the classic Eclipse Update Manager that was the default install/update technology prior to Eclipse 3.4, dependency information was required at the feature level because the provisioning technology only reasoned at the level of features.
 
 #### Require bundles
 
@@ -216,7 +223,9 @@ In case 1, if the version of the org.eclipse.platform feature changes to 4.0.0 (
 
 #### Require features
 
-Use required features when you want another entire feature to be present when your feature is installed. This typically results in a user-level awareness of the required feature, rather than a hidden implementation detail of your feature. For example, users installing Java EE tools from the [Web Tools Platform](http://www.eclipse.org/webtools/) project also require [Java development tools](/JDT "JDT"). This is not just because their plug-ins depend on plug-ins in JDT, but because users of the Java EE tools really expect the full JDT to be there, including documentation, help content, and possibly source. In this case the dependency should be expressed at the feature level to ensure the entire required feature is installed. Feature-level dependencies are also required if you are targeting a platform using the classic Eclipse Update Manager, which operated purely at the level of feature dependencies.
+Use required features when you want another entire feature to be present when your feature is installed. This typically results in a user-level awareness of the required feature, rather than a hidden implementation detail of your feature.
+For example, users installing Java EE tools from the [Web Tools Platform](http://www.eclipse.org/webtools/) project also require [Java development tools](https://github.com/eclipse-jdt). 
+This is not just because their plug-ins depend on plug-ins in JDT, but because users of the Java EE tools really expect the full JDT to be there, including documentation, help content, and possibly source. In this case the dependency should be expressed at the feature level to ensure the entire required feature is installed. Feature-level dependencies are also required if you are targeting a platform using the classic Eclipse Update Manager, which operated purely at the level of feature dependencies.
 
 ### Feature includes
 
@@ -229,7 +238,7 @@ A patch feature is a special kind of feature that updates or replaces some part 
 API Baseline in API Tools
 -------------------------
 
-The Eclipse [API Tools](/PDE/API_Tools/User_Guide "PDE/API Tools/User Guide") detect some violations of the rules outlined in this document. The API Baseline should always be set to the last released version from the development stream you're working on (or from the N-1 stream, if the current stream has no released version yet).
+The Eclipse [API Tools](https://help.eclipse.org/latest/index.jsp?topic=%2Forg.eclipse.pde.doc.user%2Ftasks%2Fapi_tooling_setup.htm) detect some violations of the rules outlined in this document. The API Baseline should always be set to the last released version from the development stream you're working on (or from the N-1 stream, if the current stream has no released version yet).
 
 **Examples**:
 
@@ -244,7 +253,7 @@ If you use an older version as API Baseline, you will miss some API problems.
 Further reading
 ---------------
 
-*   See [Evolving Java-based APIs Part 1](/Evolving_Java-based_APIs "Evolving Java-based APIs")
-*   See [Evolving Java-based APIs Part 2](/Evolving_Java-based_APIs_2 "Evolving Java-based APIs 2")
-*   See [Evolving Java-based APIs Part 3](/Evolving_Java-based_APIs_3 "Evolving Java-based APIs 3")
+*   See [Evolving Java-based APIs Part 1](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md)
+*   See [Evolving Java-based APIs Part 2](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md)
+*   See [Evolving Java-based APIs Part 3](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-3.md)
 

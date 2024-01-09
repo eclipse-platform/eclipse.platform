@@ -65,17 +65,17 @@ public class PDAThreadEventHandler extends DebugEventHandler {
 	@Override
 	protected void handleResume(DebugEvent event) {
 		IThread thread = (IThread) event.getSource();
-		fireDeltaAndClearTopFrame(thread, IModelDelta.STATE | IModelDelta.CONTENT);
+		fireDeltaAndClearTopFrame(thread);
 	}
 
 	@Override
 	protected void handleCreate(DebugEvent event) {
-		fireDeltaAndClearTopFrame((IThread) event.getSource(), IModelDelta.ADDED);
+		fireDeltaAndClearTopFrame((IThread) event.getSource());
 	}
 
 	@Override
 	protected void handleTerminate(DebugEvent event) {
-		fireDeltaAndClearTopFrame((IThread) event.getSource(), IModelDelta.REMOVED);
+		fireDeltaAndClearTopFrame((IThread) event.getSource());
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class PDAThreadEventHandler extends DebugEventHandler {
 	@Override
 	protected void handleSuspendTimeout(DebugEvent event) {
 		IThread thread = (IThread) event.getSource();
-		fireDeltaAndClearTopFrame(thread, IModelDelta.CONTENT);
+		fireDeltaAndClearTopFrame(thread);
 	}
 
 	private ModelDelta buildRootDelta() {
@@ -116,7 +116,7 @@ public class PDAThreadEventHandler extends DebugEventHandler {
 		return newdelta.addNode(debugTarget, indexOf(children, debugTarget), IModelDelta.NO_CHANGE, numFrames);
 	}
 
-	private void fireDeltaAndClearTopFrame(IThread thread, int flags) {
+	private void fireDeltaAndClearTopFrame(IThread thread) {
 		ModelDelta delta = buildRootDelta();
 		addTarget(delta, thread);
 		synchronized (this) {
