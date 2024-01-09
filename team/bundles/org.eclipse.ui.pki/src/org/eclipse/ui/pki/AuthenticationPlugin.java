@@ -1048,6 +1048,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 					ctx.init(keyManagers, trustManagers, null);
 					SSLContext.setDefault(ctx);
 					HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
+					System.out.println("AuthenticationPlugin  HttpsURLConnection CONTEXT set");
 				}
 				
 				/*
