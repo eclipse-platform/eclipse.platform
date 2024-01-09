@@ -393,6 +393,8 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     public boolean setUserKeyStoreSystemProperties(KeyStore userkeystore){
     	boolean setKeyStoreProperties = false;
 		String userKeyStoreLocation = null;
+		Optional<String> keyStorePath = null;
+		Optional<String> keyStorePassword = null;
 		System.out.println("AuthenticationPlugin ----- setUserKeyStoreSystemProperties");
 		if (  PKIState.CONTROL.isPKCS11on()) {
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS11");
@@ -407,9 +409,21 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 			setKeyStoreProperties = true;
 		} else if ( PKIState.CONTROL.isPKCS12on() ) {
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS12");
-			userKeyStoreLocation = getPreferenceStore().getString(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION);
-			System.setProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY, userKeyStoreLocation);
-			//Used by pkcs12.
+			keyStorePath = Optional.ofNullable(System.getProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY));
+			if ( keyStorePath.isEmpty()) {
+				userKeyStoreLocation = getPreferenceStore().getString(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION);
+				System.setProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY, userKeyStoreLocation);
+			} else {
+				userKeyStoreLocation = keyStorePath.get().toString();
+		
+			}
+			keyStorePassword = Optional.ofNullable(System.getProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY));
+			if ( keyStorePassword.isEmpty()) {
+				System.setProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY, certPassPhrase);
+			} else {
+				certPassPhrase = keyStorePassword.get().toString();
+			}
+				//Used by pkcs12.
 			if(userKeyStore != null && userKeyStore.getType() != null && certPassPhrase != null && userKeyStoreLocation != null) {
 				//System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, userKeyStore.getType());
 	        	System.setProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY, certPassPhrase);
