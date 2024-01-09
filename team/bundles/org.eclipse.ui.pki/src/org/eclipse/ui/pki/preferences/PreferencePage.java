@@ -42,7 +42,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.IPreferenceConstants;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
-import org.eclipse.ui.pki.pkiselection.PKCSpick;
+//import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.ui.pki.util.PKISecureStorage;
 import org.eclipse.ui.pki.wizard.TrustStoreSecureStorage;
@@ -354,7 +354,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 				if ( pkiType.equals("pkcs11") && ChangedPressedFieldEditorStatus.isPkiChangedPressed()) {
 					//System.out.println("PreferencePage - APPLY PRESSED REQUEST  PKCS11 needs to be set");
 					if ( pkcs11Certificate.isValid() ) {
-						PKCSpick.getInstance().setPKCS11on(true);
+						PKIState.CONTROL.setPKCS11on(true);
 						ChangedPressedFieldEditorStatus.setPkiChangedPressed(true);
 						if ((ChangedPressedFieldEditorStatus.isPkiChangedPressed() ) ) {
 							if ( CheckUpdatedKeystoreValue.isValid( pkcs11Certificate.getStringValue() )) {
@@ -381,7 +381,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 				}
 				if ( (pkiType.equalsIgnoreCase("pkcs12") && (ChangedPressedFieldEditorStatus.isPkiChangedPressed()))) {
 					if ( pkiCertificate.isValid() ) {
-						PKCSpick.getInstance().setPKCS12on(true);
+						PKIState.CONTROL.setPKCS12on(true);
 						if ((ChangedPressedFieldEditorStatus.isPkiChangedPressed() ) ) {
 							if ( CheckUpdatedKeystoreValue.isValid( pkiCertificate.getStringValue() )) {
 								AuthenticationPlugin.getDefault().setCertificatePath(pkiCertificate.getStringValue());
@@ -440,7 +440,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		if ((ChangedPressedFieldEditorStatus.isPkiChangedPressed() ) ) {
 			AuthenticationPlugin.getDefault().setUserKeyStore(ChangedPressedFieldEditorStatus.getPkiUserKeyStore());
 			System.out.println("PreferencePage --------- PROCESSING A PKI CHANGE OK REQUEST");
-			if (( PKCSpick.getInstance().isPKCS11on()) || ( pkiType.equals("pkcs11") )) {
+			if (( PKIState.CONTROL.isPKCS11on()) || ( pkiType.equals("pkcs11") )) {
 				
 				System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
 				System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
@@ -465,7 +465,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 				
 				PKIProperties.getInstance().setKeyStorePassword(AuthenticationPlugin.getDefault().getCertPassPhrase());
 				PKIProperties.getInstance().restore();
-			} else 	if (( PKCSpick.getInstance().isPKCS12on()) || ( pkiType.equals("pkcs12") )) {
+			} else 	if (( PKIState.CONTROL.isPKCS12on()) || ( pkiType.equals("pkcs12") )) {
 				//System.out.println("PreferencePage --------- PROCESSING A CHANGE OK REQUEST   FOR PKCS12");
 				if (  (pkiCertificate.getStringValue() != null ) || (!pkiCertificate.getStringValue().isEmpty() )){
 					isOK  = CheckUpdatedKeystoreValue.isValid( pkiCertificate.getStringValue() );
@@ -522,14 +522,14 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 			AuthenticationPlugin.getDefault().setUserKeyStore(ChangedPressedFieldEditorStatus.getPreviousUserKeyStore());
     		previousPKI.reSetSystem();
     		if ( previousPKI.getKeyStoreType().equalsIgnoreCase("PKCS11") ) {
-    			PKCSpick.getInstance().setPKCS11on(true);
-    			PKCSpick.getInstance().setPKCS12on(false);
+    			PKIState.CONTROL.setPKCS11on(true);
+    			PKIState.CONTROL.setPKCS12on(false);
     			AuthenticationPlugin.getDefault().setCertificatePath("pkcs11" );
     			pkcs11Certificate.setStringValue("pkcs11");
     		}
     		if ( previousPKI.getKeyStoreType().equalsIgnoreCase("PKCS12") ) {
-    			PKCSpick.getInstance().setPKCS12on(true);
-    			PKCSpick.getInstance().setPKCS11on(false);
+    			PKIState.CONTROL.setPKCS12on(true);
+    			PKIState.CONTROL.setPKCS11on(false);
     			String pkiCertificatePathInSystemProperties = AuthenticationPlugin.getDefault().obtainSystemPropertyPKICertificatePath();
     			AuthenticationPlugin.getDefault().setCertificatePath(pkiCertificatePathInSystemProperties);
     			pkiCertificate.setStringValue(pkiCertificatePathInSystemProperties);
@@ -591,16 +591,16 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		//System.out.println("PreferencePage ------ isValid");
 		boolean isGood=false;
 		isGood=isGoodConfig;
-		if ( PKCSpick.getInstance().isPKCS12on()) {
+		if ( PKIState.CONTROL.isPKCS12on()) {
 			isGood=true;
 		}
-		if ( PKCSpick.getInstance().isPKCS11on()) {
+		if ( PKIState.CONTROL.isPKCS11on()) {
 			if ( pkcs11Certificate.isValid() ) {
 				isGood=true;
 			}
 		}
-		 if ((!(PKCSpick.getInstance().isPKCS11on())) && 
-		     (!(PKCSpick.getInstance().isPKCS12on())) ) {
+		 if ((!(PKIState.CONTROL.isPKCS11on())) && 
+		     (!(PKIState.CONTROL.isPKCS12on())) ) {
 		      isGood=true;
 		 }
 		 //System.out.println("PreferencePage --------------------------isValid-----------------VALID:"+isGoodConfig);
