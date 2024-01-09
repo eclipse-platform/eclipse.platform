@@ -200,6 +200,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     	
     	if ( KeyStoreManager.INSTANCE.isKeyStoreInitialized() ) {
     		keystore = KeyStoreManager.INSTANCE.getKeyStore();
+    		this.setCertificatePath(PKIProperties.getInstance().getKeyStore());
     	} else {
     		keystore = obtainUserKeyStore();
     	}
