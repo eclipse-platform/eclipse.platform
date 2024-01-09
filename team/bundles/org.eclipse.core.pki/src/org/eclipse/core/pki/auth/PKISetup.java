@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -152,6 +153,7 @@ public class PKISetup implements BundleActivator, IStartup {
 								SSLContext ctx = SSLContext.getInstance("TLS");//$NON-NLS-1$
 								ctx.init(km, tm, null);
 								SSLContext.setDefault(ctx);
+								HttpsURLConnection.setDefaultSSLSocketFactory(ctx.getSocketFactory());
 								pkiInstance = PKIProperties.getInstance();
 								pkiInstance.load();
 								LogUtil.logInfo("PKISetup default SSLContext has been configured."); //$NON-NLS-1$
