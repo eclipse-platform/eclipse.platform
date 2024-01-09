@@ -500,7 +500,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		ChangedPressedFieldEditorStatus.setPkiChangedPressed(false);
 		ChangedPressedFieldEditorStatus.setJksChangedPressed(false);
 		
-		System.out.println("PreferencePage -----------performOK DONE   VALUE:"+isOK);
+		//System.out.println("PreferencePage -----------performOK DONE   VALUE:"+isOK);
 		if ( isOK ) {
 			super.performOk();
 		}

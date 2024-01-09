@@ -94,7 +94,7 @@ public class PKIProperties extends Authenticator {
 		this.username = username;
 	}
 	public void restore() {
-		System.out.println("PKIProperties - restore"); //$NON-NLS-1$
+		// System.out.println("PKIProperties - restore"); //$NON-NLS-1$
 		try {
 			if (( this.getKeyStore() != null ) &&
 				( this.getKeyStoreType() != null ) &&
@@ -140,7 +140,8 @@ public class PKIProperties extends Authenticator {
 		if (keyStore.isEmpty()) {
 			sslProperties.setKeyStore(""); //$NON-NLS-1$
 		} else {
-			LogUtil.logInfo("PKIProperties keystorePKI" + System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
+			// LogUtil.logInfo("PKIProperties keystorePKI" +
+			// System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$ //$NON-NLS-2$
 			sslProperties.setKeyStore(keyStore.get().toString());
 		}
 
@@ -175,7 +176,7 @@ public class PKIProperties extends Authenticator {
 		lastPKI = pki;
 	}
 	public void clear() {
-		System.out.println("PKIProperties - CLESAR ALL PROPR"); //$NON-NLS-1$
+		// System.out.println("PKIProperties - CLESAR ALL PROPR"); //$NON-NLS-1$
 		System.clearProperty("javax.net.ssl.keyStoreProvider"); //$NON-NLS-1$
 		System.clearProperty("javax.net.ssl.keyStore"); //$NON-NLS-1$
 		System.clearProperty("javax.net.ssl.keyStoreProvider"); //$NON-NLS-1$
