@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.core.pki.FingerprintX509;
+import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.pkiselection.PKI;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.util.LogUtil;
@@ -57,7 +58,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.pki.buttons.PKCSButtons;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
-import org.eclipse.ui.pki.pkiselection.PKCSpick;
+//import org.eclipse.ui.pki.pkiselection.PKCSpick;
 import org.eclipse.ui.pki.preferences.ChangedPressedFieldEditorStatus;
 import org.eclipse.core.pki.util.KeyStoreFormat;
 import org.eclipse.ui.pki.util.KeyStoreUtil;
@@ -133,12 +134,12 @@ public class CertificateSelectionPage extends WizardPage  {
         	lastPropertyValues = PKIProperties.getInstance();
         	lastPropertyValues.setLastPkiValue(setLastInstance( lastPropertyValues ));
         	pkiSecureStorage = new PKISecureStorage();
-        	if ((!(PKCSpick.getInstance().isPKCS11on())) && ((!(PKCSpick.getInstance().isPKCS12on())))) {
+        	if ((!(PKIState.CONTROL.isPKCS11on())) && ((!(PKIState.CONTROL.isPKCS12on())))) {
         		 PKCSSelected.setPkcs11Selected(false);
         		 PKCSSelected.setPkcs12Selected(false);
         		
         	}
-        	if ( PKCSpick.getInstance().isPKCS11on() ) {
+        	if ( PKIState.CONTROL.isPKCS11on()) {
         		AuthenticationPlugin.getDefault().getPreferenceStore().setValue(
      					AuthenticationPreferences.PKI_SELECTION_TYPE, "PKCS11");
         		slots = selectFromPkcs11Store();
@@ -147,7 +148,7 @@ public class CertificateSelectionPage extends WizardPage  {
                 isButtonSelected=true;
                 
         	} else {
-        		if ( PKCSpick.getInstance().isPKCS12on() ) {
+        		if ( PKIState.CONTROL.isPKCS12on()) {
         			PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
         			AuthenticationPlugin.getDefault().getPreferenceStore().setValue(
      					AuthenticationPreferences.PKI_SELECTION_TYPE, "PKCS12");
@@ -197,12 +198,12 @@ public class CertificateSelectionPage extends WizardPage  {
         //Add pkcs11 and pkcs12 widget selection.
         addPKCSWidgetSelection();
         
-        if (PKCSpick.getInstance().isPKCS12on() ) {
+        if (PKIState.CONTROL.isPKCS12on()) {
         	//this.pkcs12Button.setSelection(true);
         	this.pkcs12Button.setFocus();
         	pkcs12Actions();
         } else {
-        	if (PKCSpick.getInstance().isPKCS11on() ) {
+        	if (PKIState.CONTROL.isPKCS11on() ) {
         		this.pkcs11Button.setSelection(true);
         		//Not sure if add this setFocus() to cspid.
         		//this.pkcs11Button.setFocus();
@@ -284,7 +285,7 @@ public class CertificateSelectionPage extends WizardPage  {
                     	pkcs11Button.setSelection(false);
                     	pkcs12Button.setSelection(true);
                     	VendorImplementation.getInstance().off();
-                    	PKCSpick.getInstance().setPKCS11on(false);
+                    	PKIState.CONTROL.setPKCS11on(false);
                 	}
                     //isPageComplete();
                 } else {
@@ -296,7 +297,7 @@ public class CertificateSelectionPage extends WizardPage  {
                 	deSelectAll();
 					System.clearProperty("javax.net.ssl.keyStoreType");
 					System.clearProperty("javax.net.ssl.keyStoreProvider");
-                	PKCSpick.getInstance().setPKCS11on(false);
+                	PKIState.CONTROL.setPKCS11on(false);
                 }
                 
                 if ( isPageComplete() ) {
@@ -312,7 +313,7 @@ public class CertificateSelectionPage extends WizardPage  {
             	//System.out.println("CertificateSelectionPage - 12-BUTTON  INCOMING:"+e.toString());
                 if ((pkcs12Button.getSelection()) && ((e.doit==true))) {
                 	//System.out.println("CertificateSelectionPage ---------------------  PKCS12 IS TURNED ON");
-                	PKCSpick.getInstance().setPKCS12on(true);                	
+                	PKIState.CONTROL.setPKCS12on(true);
                 	pkcs12Actions();
                 	deSelectPkcs11();
 
@@ -321,7 +322,7 @@ public class CertificateSelectionPage extends WizardPage  {
                 } else {
                 	//  UN-select selected stuff...
                 	//System.out.println("CertificateSelectionPage ---------------------  PKCS12 IS TURNED OFF");
-                	PKCSpick.getInstance().setPKCS12on(false);
+                	PKIState.CONTROL.setPKCS12on(false);
                 	PKCSSelected.setPkcs12Selected(false);
                 	deSelectAll();
                     isButtonSelected=true; 
@@ -351,7 +352,7 @@ public class CertificateSelectionPage extends WizardPage  {
         this.passwordLabel.setEnabled(false);
     	this.pkcs11PasswordLabel.setEnabled(false);
         this.combo.setEnabled(false);
-        PKCSpick.getInstance().setPKCS11on(false);
+        PKIState.CONTROL.setPKCS11on(false);
     }
     private void deSelectPkcs12() {
     	this.pkcs12Button.setSelection(false);
@@ -573,7 +574,7 @@ public class CertificateSelectionPage extends WizardPage  {
             }
         };  
         pkcs12PasswordTextBox.addModifyListener( modifyListener );       
-        if (PKCSpick.getInstance().isPKCS12on() ) {	
+        if (PKIState.CONTROL.isPKCS12on()) {	
    	 		this.pkcs12Button.setSelection(true);
    	 		//PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
    	 		this.pkcs12Button.forceFocus();
@@ -661,7 +662,7 @@ public class CertificateSelectionPage extends WizardPage  {
         		certificateIndex = combo.getSelectionIndex();
         	}
         }); 
-        if ( PKCSpick.getInstance().isPKCS11on() ) {
+        if ( PKIState.CONTROL.isPKCS11on()) {
         	if ( pkiSecureStorage.isPKISaved() ) {
         		pkiSecureStorage.loadUpPKI();
         	}
@@ -798,7 +799,7 @@ public class CertificateSelectionPage extends WizardPage  {
         ModifyListener modifyListener = new ModifyListener() {
             public void modifyText( ModifyEvent e ) {
             	//System.out.println("CertificateSelectionPage - PKCS11 entering text");
-            	if (( checkPinButton != null ) && (PKCSpick.getInstance().isPKCS11on() )) {
+            	if (( checkPinButton != null ) && (PKIState.CONTROL.isPKCS11on())) {
             		checkPinButton.setEnabled(true);
             	}
                 CertificateSelectionPage.this.setErrorMessage( null );
@@ -823,14 +824,14 @@ public class CertificateSelectionPage extends WizardPage  {
 						CertificateSelectionPage.this.setMessage("Password matches your Keystore, PRESS the Finish button to continue.", WizardPage.INFORMATION);
 			    		finishOK=true;
 			    		setPageComplete(true);
-			    		PKCSpick.getInstance().setPKCS11on(true);
+			    		PKIState.CONTROL.setPKCS11on(true);
 	            		slots = selectFromPkcs11Store();
 	            		combo.setEnabled(true);
 	            		pkcs11PasswordLabel.setEnabled(true);
 	            		loadPkcs11Slots();
 	                    pkcs11Actions();
 	                    PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
-	                    PKCSpick.getInstance().setPKCS12on(false);
+	                    PKIState.CONTROL.setPKCS12on(false);
 	                    pinText.setEnabled(false);
 			    		pinText.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
 			    		AuthenticationPlugin.getDefault().setCertPassPhrase(pinText.getText().trim());
@@ -951,10 +952,10 @@ public class CertificateSelectionPage extends WizardPage  {
             } else {
             	System.setProperty("javax.net.ssl.keyStorePassword", "*******");
             }
-            if (( certPath != null ) && (PKCSpick.getInstance().isPKCS12on() ) ) {
+            if (( certPath != null ) && (PKIState.CONTROL.isPKCS12on() ) ) {
             	System.setProperty("javax.net.ssl.keyStore", certPath );
             }
-            if (( certPath != null ) && (PKCSpick.getInstance().isPKCS11on() ) ) {
+            if (( certPath != null ) && (PKIState.CONTROL.isPKCS11on() ) ) {
             	System.setProperty("javax.net.ssl.keyStore", "pkcs11" );
             }
             
@@ -1033,7 +1034,7 @@ public class CertificateSelectionPage extends WizardPage  {
 			    certPath = certPathText.getText().trim();
 			}
 				
-			if ( PKCSpick.getInstance().isPKCS12on() ) {	
+			if ( PKIState.CONTROL.isPKCS12on()) {	
 				//System.out.println("CertificateSelectionPage is PAGE COMPLETE?   PKCS12");
 				System.clearProperty("javax.net.ssl.keyStoreType");
 			    if ( (!(certPath.isEmpty())) && (!(passwordText.getText().isEmpty() ))) {
@@ -1044,13 +1045,13 @@ public class CertificateSelectionPage extends WizardPage  {
 			    	} 
 			    } 
 			}
-			if (( PKCSpick.getInstance().isPKCS11on()) && (pkcs11Button.getSelection()) &&
+			if (( PKIState.CONTROL.isPKCS11on()) && (pkcs11Button.getSelection()) &&
 					(!(pinText.getText().isEmpty()) &&(finishOK))) {
 				//System.out.println("CertificateSelectionPage -------------------- is PAGE COMPLETE?   PKCS11");
 				//System.out.println("CertificateSelectionPage -------------------- PiN   PKCS11:"+ pinText.getText());
 				isComplete=true;
 			}
-			if ((!(PKCSpick.getInstance().isPKCS11on())) && ((!(PKCSpick.getInstance().isPKCS12on())))) {
+			if ((!(PKIState.CONTROL.isPKCS11on())) && ((!(PKIState.CONTROL.isPKCS12on())))) {
 				//System.out.println("CertificateSelectionPage --------- NOTHING PICKED");
 			}
 		} catch (Exception e) {
@@ -1084,14 +1085,14 @@ public class CertificateSelectionPage extends WizardPage  {
     	
     	try {
     		AuthenticationPlugin plugin = AuthenticationPlugin.getDefault();
-    		if ( PKCSpick.getInstance().isPKCS12on() ) {
+    		if ( PKIState.CONTROL.isPKCS12on()) {
     			String path = certPathText.getText().trim();
     			if ( !path.equals( "" ) ) { 
 				    plugin.setCertificatePath( path );
 				    lastPropertyValues.load();
 			    }
     		}
-            if ( PKCSpick.getInstance().isPKCS11on() ) {
+            if ( PKIState.CONTROL.isPKCS11on() ) {
             	isDone=true;
              	plugin.setCertificatePath( "pkcs11" );
             	
