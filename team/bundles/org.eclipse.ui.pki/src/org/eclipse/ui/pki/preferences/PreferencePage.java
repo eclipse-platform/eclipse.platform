@@ -147,9 +147,10 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     				 configurationLocationFile.getStringValue() );
     		
         } else if (PKIState.CONTROL.isPKCS12on()) {
-        	System.out.println("PreferencePage --------- pkcs12 is on");
+        	System.out.println("PreferencePage --------- pkcs12 is on ----------------");
         	setPkcs11InVisible();
         	setPkcs12Visible();
+        	pkiSecureStorage.storePKI(AuthenticationPlugin.getDefault());
         	pkiSecureStorage.loadUpPKI();
         	
         	

@@ -254,7 +254,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
     public void setPKISystemProperties(){
 		KeyStore userKeyStore = getUserKeyStore();
 		String userKeyStoreLocation = certificateLocation;
-		System.out.println("PKISecureStorage -  setpkisystemproperties....");
+		System.out.println("PKISecureStorage -  setpkisystemproperties.... DONT OVERWRITE");
 		if ( PKIState.CONTROL.isPKCS11on() ) {
 			if( (certPassPhrase != null) && (userKeyStoreLocation != null) &&
 						(!certificateLocation.equals("none"))  && (!certPassPhrase.equals("none"))) {
@@ -265,6 +265,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 		} else if ( PKIState.CONTROL.isPKCS12on() ) {
 			if(userKeyStore != null && userKeyStore.getType() != null && certPassPhrase != null && userKeyStoreLocation != null 
 				&& !certificateLocation.equals("none") && !certPassPhrase.equals("none")) {
+				
 				System.setProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY, userKeyStoreLocation);
 				System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, userKeyStore.getType());
 				System.setProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY, certPassPhrase);
