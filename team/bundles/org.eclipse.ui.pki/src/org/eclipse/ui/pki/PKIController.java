@@ -43,6 +43,7 @@ import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.core.pki.auth.EventConstant;
 import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.auth.PublicKeySecurity;
+import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.ui.pki.pkcs.VendorImplementation;
 import org.eclipse.ui.pki.pkiselection.PKCSSelected;
@@ -287,6 +288,19 @@ public class PKIController implements IStartup {
 					} else {
 						System.out.println("PKIController - SETTING systemproperties....");
 						AuthenticationPlugin.getDefault().setSystemProperties();
+						
+						String jksPath = AuthenticationPlugin.getDefault().obtainSystemPropertyJKSPath();
+						System.out.println("PKIController - SET PREFERENCE STORE TRUST:"+jksPath);
+						AuthenticationPlugin.getDefault().getPreferenceStore()
+						.setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, jksPath);
+						AuthenticationPlugin.getDefault()
+						.setTrustStorePassPhrase(truststoreSecureStorage.getJksPassPhrase());
+						AuthenticationPlugin.getDefault().setTrustStore(truststoreSecureStorage.getTrustStore());
+					
+						
+						AuthenticationPlugin.getDefault().getPreferenceStore()
+						.setValue(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION,
+								PKIProperties.getInstance().getKeyStore());
 					}
 				} else {
 					System.out.println("PKIController - SETTING UP PKI,  LAST CHOICE....");
