@@ -44,6 +44,7 @@ public class PKISetup implements BundleActivator, IStartup {
 	protected final String pin = "#Gone2Boat@Bay"; //$NON-NLS-1$
 	private static PKISetup instance;
 	static boolean isPkcs11Installed = false;
+	static boolean isKeyStoreLoaded = false;
 	private static final ServiceCaller<ILog> logger = new ServiceCaller(PKISetup.class, ILog.class);
 	// ListenerQueue<PKISetup, Object, EventManager> queue = null;
 	protected static KeyStore keyStore = null;
@@ -58,14 +59,16 @@ public class PKISetup implements BundleActivator, IStartup {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("PKISetup PKISetup ------------------- START"); //$NON-NLS-1$
+		// System.out.println("PKISetup PKISetup ------------------- START");
+		// //$NON-NLS-1$
 		Startup();
 	}
 
 	@Override
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
-		System.out.println("PKISetup PKISetup -------------------early START"); //$NON-NLS-1$
+		// System.out.println("PKISetup PKISetup -------------------early START");
+		// //$NON-NLS-1$
 	}
 
 	@Override
@@ -89,7 +92,7 @@ public class PKISetup implements BundleActivator, IStartup {
 
 	public void Startup() {
 
-		log("Startup method is now running"); //$NON-NLS-1$
+		// log("Startup method is now running"); //$NON-NLS-1$
 
 		Optional<String>type = null;
 
@@ -102,24 +105,27 @@ public class PKISetup implements BundleActivator, IStartup {
 		type = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
 
 		if (type.isEmpty()) {
-			System.out.println("PKISetup keystoreType was empty so CHECK in .pki file"); //$NON-NLS-1$
-
+			//
+			// Incoming parameter as -DkeystoreType was empty so CHECK in .pki file
+			//
 			PKIState.CONTROL.setPKCS11on(false);
 			PKIState.CONTROL.setPKCS12on(false);
 			if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
 				PublicKeySecurity.INSTANCE.getPkiPropertyFile(pin);
 			}
 		}
-		LogUtil.logInfo("PKISetup - now looking at incoming"); //$NON-NLS-1$
+		// LogUtil.logInfo("PKISetup - now looking at incoming"); //$NON-NLS-1$
 		if (IncomingSystemProperty.SETTINGS.checkType()) {
 			if (IncomingSystemProperty.SETTINGS.checkKeyStore(pin)) {
 				if (PKIState.CONTROL.isPKCS12on()) {
 
 					try {
 
-						LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
-						LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStoreType")); //$NON-NLS-1$
-						LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
+						// LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
+						// LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStoreType"));
+						// //$NON-NLS-1$
+						// LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStorePassword"));
+						// //$NON-NLS-1$
 
 						Optional<KeyStore> keystoreContainer = Optional.ofNullable(
 								KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
@@ -127,10 +133,11 @@ public class PKISetup implements BundleActivator, IStartup {
 										KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType")))); //$NON-NLS-1$
 
 						if (keystoreContainer.isEmpty()) {
-							LogUtil.logError("Optional Failed to Load Keystore.", null); //$NON-NLS-1$
+							LogUtil.logError("PKISetup - Failed to Load a Keystore.", null); //$NON-NLS-1$
 						} else {
 							LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
 							keyStore = keystoreContainer.get();
+							setKeyStoreLoaded(true);
 						}
 					} catch (Exception e) {
 						LogUtil.logError("Failed to Load Keystore.", e); //$NON-NLS-1$
@@ -138,7 +145,7 @@ public class PKISetup implements BundleActivator, IStartup {
 
 				}
 
-				if (IncomingSystemProperty.SETTINGS.checkTrustStoreType()) {
+				if ((IncomingSystemProperty.SETTINGS.checkTrustStoreType()) && (isKeyStoreLoaded())) {
 					if ((IncomingSystemProperty.SETTINGS.checkTrustStore()) &&
 							(KeyStoreManager.INSTANCE.isKeyStoreInitialized())) {
 						LogUtil.logInfo("A KeyStore and Truststore are detected."); //$NON-NLS-1$
@@ -174,6 +181,13 @@ public class PKISetup implements BundleActivator, IStartup {
 		}
 	}
 
+	private boolean isKeyStoreLoaded() {
+		return isKeyStoreLoaded;
+	}
+
+	private void setKeyStoreLoaded(boolean isKeyStoreLoaded) {
+		PKISetup.isKeyStoreLoaded = isKeyStoreLoaded;
+	}
 
 	/**
 	 * @see AuthenticationPlugin#setSystemProperties()
