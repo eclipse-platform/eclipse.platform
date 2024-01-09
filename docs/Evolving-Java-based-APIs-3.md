@@ -1,7 +1,7 @@
 Evolving Java-based APIs 3
 ==========================
 
-Part 3 of [Evolving\_Java-based\_APIs](/Evolving_Java-based_APIs "Evolving Java-based APIs").
+Part 3 of [Evolving\_Java-based\_APIs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md).
 
 Contents
 --------
@@ -184,4 +184,5 @@ On the other hand, clients should avoid all `Class.getDeclared_XXX_` methods as 
 Versioning
 ----------
 
-It should be easy for API clients to know whether a new version of your components broke APIs or not. Eclipse projects implement semantic versioning according to the [Version Numbering](/Version_Numbering "Version Numbering") specification.
+It should be easy for API clients to know whether a new version of your components broke APIs or not. 
+Eclipse projects implement semantic versioning according to the [Version Numbering](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/VersionNumbering.md) specification.

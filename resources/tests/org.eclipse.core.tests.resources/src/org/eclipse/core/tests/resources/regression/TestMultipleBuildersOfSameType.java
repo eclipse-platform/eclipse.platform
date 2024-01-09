@@ -47,6 +47,7 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 
 	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project1 = root.getProject("Project1");
 		unsorted1 = project1.getFolder(SortBuilder.UNSORTED_FOLDER);

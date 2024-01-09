@@ -50,6 +50,7 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
 		root = getWorkspace().getRoot();
 		project = root.getProject("MyProject");
 		pfile = project.getFile("file.txt");
@@ -60,7 +61,6 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		file2 = folder.getFile("file2.txt");
 		folder2 = folder.getFolder("folder2");
 		file3 = folder2.getFile("file3.txt");
-
 	}
 
 	private void saveWorkspace() throws CoreException {
