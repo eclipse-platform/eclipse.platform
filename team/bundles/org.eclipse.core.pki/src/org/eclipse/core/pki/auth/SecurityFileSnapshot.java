@@ -78,9 +78,11 @@ public enum SecurityFileSnapshot {
 			for ( Entry<Object,Object>entry:properties.entrySet()) {
 				entry.setValue(entry.getValue().toString().trim());
 			}
-			Optional encryptedPasswd = Optional.ofNullable(properties.getProperty("javax.net.ssl.encryptedPassword")); //$NON-NLS-1$
+			Optional<String> encryptedPasswd = Optional
+					.ofNullable(properties.getProperty("javax.net.ssl.encryptedPassword")); //$NON-NLS-1$
 			if (encryptedPasswd.isEmpty()) {
-				System.out.println("ILoadProperties empty encrypted passwd NOT found"); //$NON-NLS-1$
+				// System.out.println("ILoadProperties empty encrypted passwd NOT found");
+				// //$NON-NLS-1$
 				properties.setProperty("javax.net.ssl.encryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 				passwd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
 				properties.setProperty("javax.net.ssl.keyStorePassword", //$NON-NLS-1$
@@ -91,7 +93,8 @@ public enum SecurityFileSnapshot {
 				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 			} else {
 				String ePasswd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
-				System.out.println("SecurityFileSnapshot encrypted passwd found"); //$NON-NLS-1$
+				// System.out.println("SecurityFileSnapshot encrypted passwd found");
+
 				passwd = NormalizeAES256.DECRYPT.decrypt(ePasswd, password, salt);
 				System.setProperty("javax.net.ssl.decryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
