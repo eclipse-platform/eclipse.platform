@@ -164,8 +164,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         // Has a headless config already been set up
         if ((PKIState.CONTROL.isPKCS11on()) || (PKIState.CONTROL.isPKCS12on())) {
         	LogUtil.logInfo("AuthenticationPluginA Headless system has already setup PKI");
-        	EventProcessor.getInstance().initializeEvent( new PKIController());
-        	EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue() );
+        	
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
         	//snapshotProperties.dump();
@@ -181,7 +180,8 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         		setSystemProperties();
         		//AuthenticationPreferences.PKI_CERTIFICATE_LOCATION, 
         	}
-        	
+        	EventProcessor.getInstance().initializeEvent( new PKIController());
+        	EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue() );
         	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());
         } else {
         	clearPKI();
