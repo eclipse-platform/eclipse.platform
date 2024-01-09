@@ -76,6 +76,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 			
 			String userKeyStoreLocation = authenticationInfo.getCertificatePath().trim();
 			String passPhrase = authenticationInfo.getCertPassPhrase().trim();
+			System.out.println("PKISexcureStorage  - LOCATION:"+userKeyStoreLocation+" PASSwd:"+passPhrase);
 			if ( PKIState.CONTROL.isPKCS11on() ) {
 				node.remove(PKCS12_LOCATION);
 				node.remove(PKI_PASSPHRASE);
