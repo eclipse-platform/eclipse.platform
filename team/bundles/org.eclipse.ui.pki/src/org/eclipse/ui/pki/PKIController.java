@@ -69,7 +69,7 @@ public class PKIController implements IStartup {
 	@Override
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
-		System.out.println("PKIController EARLY Startup");
+		//System.out.println("PKIController EARLY Startup");
 		Startup();
 	}
 
@@ -79,7 +79,7 @@ public class PKIController implements IStartup {
 		/*
 		 * Check if .pki file exists. If it doesnt, then create one.
 		 */
-		System.out.println("PKIController Startup");
+		//System.out.println("PKIController Startup");
 	
 		/*
 		 * NOTE: Initialize pki settings so that NO PKI is set on start up.
@@ -95,10 +95,10 @@ public class PKIController implements IStartup {
 		
 		
 		if (PublicKeySecurity.INSTANCE.isTurnedOn()) {
-			System.out.println("PKIController get PKI TYPE");
+			//System.out.println("PKIController get PKI TYPE");
 			PublicKeySecurity.INSTANCE.getPkiPropertyFile("#Gone2Boat@Bay");
 			String pkiType = System.getProperty("javax.net.ssl.keyStoreType").trim();
-			System.out.println("PKIController PKI TYPE:["+pkiType+"]");
+			//System.out.println("PKIController PKI TYPE:["+pkiType+"]");
 			if ( pkiType != null) {
 				if (pkiType.equalsIgnoreCase("PKCS12")) {
 					//System.out.println("PKIController PKI TYPE FROM FILE:"+System.getProperty("javax.net.ssl.keyStoreType"));
@@ -135,7 +135,7 @@ public class PKIController implements IStartup {
 		}
 
 		try {
-			System.out.println("PKIController  Setup preferences");
+			//System.out.println("PKIController  Setup preferences");
 			IPreferenceStore store = AuthenticationPlugin.getDefault().getPreferenceStore();
 			String tsPref = store.getString(AuthenticationPreferences.TRUST_STORE_LOCATION);
 
@@ -178,7 +178,7 @@ public class PKIController implements IStartup {
 		final Integer value = Integer.valueOf(incoming);
 		return new Runnable() {
 			public void run() {
-				System.out.println("PKIController EVENT runner");
+				//System.out.println("PKIController EVENT runner");
 				if (value.equals(EventConstant.DONE.getValue())) {
 					AuthenticationPlugin.getDefault().setUserKeyStore(VendorImplementation.getInstance().getKeyStore());
 				} else if (value.equals(EventConstant.CANCEL.getValue())) {
@@ -187,9 +187,9 @@ public class PKIController implements IStartup {
 					PKIState.CONTROL.setPKCS11on(false);
 					System.clearProperty("javax.net.ssl.keyStoreType");
 					System.clearProperty("javax.net.ssl.keyStoreProvider");
-					System.out.println("PKIController - TURNED OFF ALL PKCS11");
+					//System.out.println("PKIController - TURNED OFF ALL PKCS11");
 				} else if (value.equals(EventConstant.SETUP.getValue())) {
-					System.out.println("PKIController - STARTING SETUP");
+					//System.out.println("PKIController - STARTING SETUP");
 					setupSSLSystemProperties(isPkcs11Installed);
 				}
 			}
@@ -212,9 +212,9 @@ public class PKIController implements IStartup {
 				if (!(is11on)) {
 					// TrustStoreSecureStorage truststoreSecureStorage = new
 					// TrustStoreSecureStorage();
-					System.out.println("PKIController - SETTING UP PKI, duh");
+					
 					if (pkiSecureStorage.isPKISaved() && truststoreSecureStorage.isJKSSaved()) {
-						System.out.println("PKIController - SETTING YOUR PICX");
+						
 						if (pkiSecureStorage.getPkiType().equalsIgnoreCase("PKCS11")) {
 							PKIState.CONTROL.setPKCS11on(true);
 							PKIState.CONTROL.setPKCS12on(false);
@@ -226,7 +226,7 @@ public class PKIController implements IStartup {
 						// from the system
 						// properties to set the preference store for later use.
 						// System.out.println("EarlyStartup ---------------- setupSSLSystemProperties");
-						System.out.println("PKIController - SETTING UP PKI,load pki again....");
+						
 						pkiSecureStorage.loadUpPKI();
 						pkiSecureStorage.setPKISystemProperties();
 						truststoreSecureStorage.setTrustStoreSystemProperties();
@@ -247,7 +247,7 @@ public class PKIController implements IStartup {
 					} else if (pkiSecureStorage.isPKISaved() && !truststoreSecureStorage.isJKSSaved()) {
 						AuthenticationPlugin.getDefault().setTrustStoreSystemProperties(
 								AuthenticationPlugin.getDefault().obtainDefaultJKSTrustStore());
-						System.out.println("PKIController - SETTING UP PKI,  CONFFIGUREING....");
+						
 						// First, set the system properties from secure storage then retrieved the paths
 						// from the system
 						// properties to set the preference store for later use.
@@ -274,7 +274,7 @@ public class PKIController implements IStartup {
 						// properties to set the preference store for later use.
 						truststoreSecureStorage.setTrustStoreSystemProperties();
 						String jksPath = AuthenticationPlugin.getDefault().obtainSystemPropertyJKSPath();
-						System.out.println("PKIController - SETTING UP PKI,  CONFF....");
+					
 						AuthenticationPlugin.getDefault().getPreferenceStore()
 								.setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, jksPath);
 						AuthenticationPlugin.getDefault()
@@ -286,11 +286,11 @@ public class PKIController implements IStartup {
 								AuthenticationPlugin.getDefault().obtainUserKeyStore());
 
 					} else {
-						System.out.println("PKIController - SETTING systemproperties....");
+						
 						AuthenticationPlugin.getDefault().setSystemProperties();
 						
 						String jksPath = AuthenticationPlugin.getDefault().obtainSystemPropertyJKSPath();
-						System.out.println("PKIController - SET PREFERENCE STORE TRUST:"+jksPath);
+						
 						AuthenticationPlugin.getDefault().getPreferenceStore()
 						.setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, jksPath);
 						AuthenticationPlugin.getDefault()
@@ -303,7 +303,7 @@ public class PKIController implements IStartup {
 								PKIProperties.getInstance().getKeyStore());
 					}
 				} else {
-					System.out.println("PKIController - SETTING UP PKI,  LAST CHOICE....");
+					
 					AuthenticationPlugin.getDefault().obtainDefaultJKSTrustStore();
 					try {
 						AuthenticationPlugin.getDefault().getUserKeyStore(KEYSTORE_SELECTION);
