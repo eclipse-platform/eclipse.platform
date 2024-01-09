@@ -176,7 +176,6 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         	if (PKIState.CONTROL.isPKCS12on()) {
         		
         		PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
-        		VendorImplementation.getInstance().off();
         		setSystemProperties();
         		//AuthenticationPreferences.PKI_CERTIFICATE_LOCATION, 
         	}
