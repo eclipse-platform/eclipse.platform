@@ -425,8 +425,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	public boolean performOk() {
 		boolean isOK=true;
 		System.out.println("PreferencePage --------- OK PRESSED REQUEST   TBD:   FIX the stored values. TYPE:"+pkiType);
-		System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
-		System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
 		
 		if(ChangedPressedFieldEditorStatus.isJksChangedPressed()){
 			//System.out.println("PreferencePage --------- OK PRESSED REQUEST changepresed trust");
