@@ -61,8 +61,8 @@ public class WorkspaceSessionTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		workspaceRule.before();
 		workspaceRule.setTestName(getName());
+		workspaceRule.before();
 	}
 
 	/**

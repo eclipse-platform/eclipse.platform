@@ -143,8 +143,9 @@ public class DocumentMerger {
 				return fLeftPos;
 			case MergeViewerContentProvider.RIGHT_CONTRIBUTOR:
 				return fRightPos;
+			default:
+				return null;
 			}
-			return null;
 		}
 
 		boolean isInRange(char type, int pos) {
@@ -241,9 +242,7 @@ public class DocumentMerger {
 
 		public boolean isResolved() {
 			if (!fResolved && fDiffs != null) {
-				Iterator<Diff> e= fDiffs.iterator();
-				while (e.hasNext()) {
-					Diff d= e.next();
+				for (Diff d : fDiffs) {
 					if (!d.isResolved())
 						return false;
 				}
@@ -447,6 +446,12 @@ public class DocumentMerger {
 					CompareContentViewerSwitchingPane.OPTIMIZED_ALGORITHM_USED,
 					Boolean.FALSE);
 
+		Optional<IIgnoreWhitespaceContributor> lDocIgnonerWhitespaceContributor = fInput
+				.createIgnoreWhitespaceContributor(lDoc);
+
+		Optional<IIgnoreWhitespaceContributor> rDocIgnonerWhitespaceContributor = fInput
+				.createIgnoreWhitespaceContributor(rDoc);
+
 		ArrayList<Diff> newAllDiffs = new ArrayList<>();
 		for (RangeDifference es : e) {
 			int ancestorStart= 0;
@@ -497,6 +502,18 @@ public class DocumentMerger {
 							&& s.trim().length() == 0
 							&& d.trim().length() == 0) {
 						diff.fIsWhitespace= true;
+
+						// Check if whitespace can be ignored by the contributor
+						if (s.length() > 0 && !lDocIgnonerWhitespaceContributor.isEmpty()) {
+							boolean isIgnored = lDocIgnonerWhitespaceContributor.get()
+									.isIgnoredWhitespace(es.leftStart(), es.leftLength());
+							diff.fIsWhitespace = isIgnored;
+						}
+						if (diff.fIsWhitespace && d.length() > 0 && !rDocIgnonerWhitespaceContributor.isEmpty()) {
+							boolean isIgnored = rDocIgnonerWhitespaceContributor.get()
+									.isIgnoredWhitespace(es.rightStart(), es.rightLength());
+							diff.fIsWhitespace = isIgnored;
+						}
 					}
 
 					// If the diff is of interest, record it and generate the token diffs
@@ -677,9 +694,7 @@ public class DocumentMerger {
 	}
 
 	private boolean useChange(int kind) {
-		if (kind == RangeDifference.NOCHANGE)
-			return false;
-		if (fInput.getCompareConfiguration().isChangeIgnored(kind))
+		if ((kind == RangeDifference.NOCHANGE) || fInput.getCompareConfiguration().isChangeIgnored(kind))
 			return false;
 		if (kind == RangeDifference.ANCESTOR)
 			return fInput.isShowPseudoConflicts();
@@ -782,9 +797,7 @@ public class DocumentMerger {
 			for (; i < r.length; i++) {
 				es= r[i];
 				try {
-					if (leftLine != leftDoc.getLineOfOffset(leftStart+sy.getTokenStart(es.leftStart())))
-						break;
-					if (rightLine != rightDoc.getLineOfOffset(rightStart+sm.getTokenStart(es.rightStart())))
+					if ((leftLine != leftDoc.getLineOfOffset(leftStart+sy.getTokenStart(es.leftStart()))) || (rightLine != rightDoc.getLineOfOffset(rightStart+sm.getTokenStart(es.rightStart()))))
 						break;
 				} catch (BadLocationException e) {
 					// silently ignored
@@ -972,10 +985,8 @@ public class DocumentMerger {
 				diffPos = diff.fRightPos;
 			}
 			// If the element falls within a diff, highlight that diff
-			if (diffPos.offset + diffPos.length >= p.offset && diff.fDirection != RangeDifference.NOCHANGE)
-				return diff;
 			// Otherwise, highlight the first diff after the elements position
-			if (diffPos.offset >= p.offset)
+			if ((diffPos.offset + diffPos.length >= p.offset && diff.fDirection != RangeDifference.NOCHANGE) || (diffPos.offset >= p.offset))
 				return diff;
 		}
 		return null;
@@ -999,9 +1010,7 @@ public class DocumentMerger {
 		int virtualPos= 0;	// virtual position
 		Point region= new Point(0, 0);
 
-		Iterator<Diff> e= fAllDiffs.iterator();
-		while (e.hasNext()) {
-			Diff diff= e.next();
+		for (Diff diff : fAllDiffs) {
 			Position pos= diff.getPosition(contributor);
 			getLineRange(getDocument(contributor),pos, region);
 			int realHeight= region.y;
@@ -1034,9 +1043,7 @@ public class DocumentMerger {
 		int viewPos= 0;
 		Point region= new Point(0, 0);
 
-		Iterator<Diff> e= fAllDiffs.iterator();
-		while (e.hasNext()) {
-			Diff diff= e.next();
+		for (Diff diff : fAllDiffs) {
 			Position pos= diff.getPosition(contributor);
 			int viewHeight= getLineRange(getDocument(contributor), pos, region).y;
 			int virtualHeight= diff.getMaxDiffHeight();
@@ -1061,9 +1068,7 @@ public class DocumentMerger {
 	public int getVirtualHeight() {
 		int h= 1;
 		if (fAllDiffs != null) {
-			Iterator<Diff> e= fAllDiffs.iterator();
-			while (e.hasNext()) {
-				Diff diff= e.next();
+			for (Diff diff : fAllDiffs) {
 				h+= diff.getMaxDiffHeight();
 			}
 		}
@@ -1076,9 +1081,7 @@ public class DocumentMerger {
 	public int getRightHeight() {
 		int h= 1;
 		if (fAllDiffs != null) {
-			Iterator<Diff> e= fAllDiffs.iterator();
-			while (e.hasNext()) {
-				Diff diff= e.next();
+			for (Diff diff : fAllDiffs) {
 				h+= diff.getRightHeight();
 			}
 		}
@@ -1124,9 +1127,7 @@ public class DocumentMerger {
 		int yy, hh;
 		int y= 0;
 		if (fAllDiffs != null) {
-			Iterator<Diff> e= fAllDiffs.iterator();
-			while (e.hasNext()) {
-				Diff diff= e.next();
+			for (Diff diff : fAllDiffs) {
 				int h= synchronizedScrolling ? diff.getMaxDiffHeight()
 											: diff.getRightHeight();
 				if (useChange(diff.getKind()) && !diff.fIsWhitespace) {
