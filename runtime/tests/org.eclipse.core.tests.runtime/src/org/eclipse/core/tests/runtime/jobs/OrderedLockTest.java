@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.lessThan;
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.management.ManagementFactory;
@@ -340,15 +340,15 @@ public class OrderedLockTest {
 				throw new IllegalStateException(e);
 			}
 			checkTimeout(timeoutTime);
-			assertThat("thread is still alive although join did not timeout", !thread.isAlive());
+			assertThat(thread).matches(not(Thread::isAlive), "is not alive");
 		}
 	}
 
 	public void checkTimeout(Duration timeoutTime) {
 		Duration currentTime = Duration.ofMillis(System.currentTimeMillis());
 		if (timeoutTime.minus(currentTime).toMillis() <= 0) {
-			assertThat("Threads did not end in time. All thread infos begin: ----\n" + getThreadDump()
-					+ "---- All thread infos end.\n", currentTime.toMillis(), lessThan(timeoutTime.toMillis()));
+			assertThat(currentTime.toMillis()).as("threads did not end in time. All thread infos begin: ----\n"
+					+ getThreadDump() + "---- All thread infos end.\n").isLessThan(timeoutTime.toMillis());
 		}
 	}
 
