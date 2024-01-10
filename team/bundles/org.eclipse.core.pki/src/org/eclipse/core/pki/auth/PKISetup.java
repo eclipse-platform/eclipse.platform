@@ -142,7 +142,9 @@ public class PKISetup implements BundleActivator, IStartup {
 					} catch (Exception e) {
 						LogUtil.logError("Failed to Load Keystore.", e); //$NON-NLS-1$
 					}
-
+				}
+				if (PKIState.CONTROL.isPKCS11on()) {
+					LogUtil.logInfo("PKISetup - Processing PKCS11"); //$NON-NLS-1$
 				}
 
 				if ((IncomingSystemProperty.SETTINGS.checkTrustStoreType()) && (isKeyStoreLoaded())) {
