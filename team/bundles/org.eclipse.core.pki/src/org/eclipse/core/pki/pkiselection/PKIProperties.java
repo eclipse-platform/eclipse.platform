@@ -18,8 +18,8 @@ import java.net.PasswordAuthentication;
 import java.util.Optional;
 
 import org.eclipse.core.pki.util.LogUtil;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+//import org.eclipse.core.runtime.IStatus;
+//import org.eclipse.core.runtime.Status;
 
 public class PKIProperties extends Authenticator {
 
@@ -194,7 +194,7 @@ public class PKIProperties extends Authenticator {
 		sb.append(sslProperties.getKeyStoreProvider());
 		sb.append("\n"); //$NON-NLS-1$
 
-		Status status = new Status(IStatus.INFO, sb.toString(), null);
-		LogUtil.logInfo(status.getMessage());
+		// Status status = new Status(IStatus.INFO, sb.toString(), null);
+		LogUtil.logInfo(sb.toString());
 	}
 }
