@@ -14,12 +14,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -273,7 +272,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	 */
 	public void assertEquals(String message, IWorkspaceDescription description1, IWorkspaceDescription description2) throws ComparisonFailure {
 		assertEquals(message + " - 1", description1.isAutoBuilding(), description2.isAutoBuilding());
-		assertThat(message + " - 2", description1.getBuildOrder(), is(description2.getBuildOrder()));
+		assertThat(description1.getBuildOrder()).as(message + " - 2").isEqualTo(description2.getBuildOrder());
 		assertEquals(message + " - 3", WorkspacePreferences.convertStringArraytoString(description1.getBuildOrder()), WorkspacePreferences.convertStringArraytoString(description2.getBuildOrder()));
 		assertEquals(message + " - 4", description1.isApplyFileStatePolicy(), description2.isApplyFileStatePolicy());
 		assertEquals(message + " - 5", description1.getFileStateLongevity(), description2.getFileStateLongevity());

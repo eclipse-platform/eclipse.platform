@@ -27,6 +27,7 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.ui.navigator,
  org.eclipse.core.filesystem,
  org.eclipse.compare.tests
+Import-Package: org.assertj.core.api
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
 Bundle-RequiredExecutionEnvironment: JavaSE-17

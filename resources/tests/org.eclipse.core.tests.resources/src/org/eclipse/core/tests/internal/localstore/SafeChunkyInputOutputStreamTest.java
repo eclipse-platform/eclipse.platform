@@ -13,11 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
@@ -94,7 +93,7 @@ public class SafeChunkyInputOutputStreamTest {
 		try (SafeChunkyInputStream input = new SafeChunkyInputStream(target)) {
 			byte[] read = new byte[chunk.length];
 			assertEquals(chunk.length, input.read(read));
-			assertThat(read, is(chunk));
+			assertThat(read).isEqualTo(chunk);
 		}
 		Workspace.clear(target); // make sure there was nothing here before
 	}
@@ -175,13 +174,13 @@ public class SafeChunkyInputOutputStreamTest {
 			assertEquals(chunk4.length, input.read(read4));
 			assertEquals(chunk5.length, input.read(read5));
 			assertEquals((fakeEnd.length + chunk6.length), input.read(read6));
-			assertThat(read1, is(chunk1));
+			assertThat(read1).isEqualTo(chunk1);
 			// assert("3.7", compare(chunk2, read2));
-			assertThat(read3, is(chunk3));
-			assertThat(read4, is(chunk4));
-			assertThat(read5, is(chunk5));
+			assertThat(read3).isEqualTo(chunk3);
+			assertThat(read4).isEqualTo(chunk4);
+			assertThat(read5).isEqualTo(chunk5);
 			byte[] expected = merge(fakeEnd, chunk6);
-			assertThat(read6, is(expected));
+			assertThat(read6).isEqualTo(expected);
 		}
 	}
 
@@ -245,11 +244,11 @@ public class SafeChunkyInputOutputStreamTest {
 			assertEquals(chunk3.length, input.read(read3));
 			assertEquals(chunk4.length, input.read(read4));
 			assertEquals(chunk5.length, input.read(read5));
-			assertThat(read1, is(chunk1));
-			assertThat(read2, is(chunk2));
-			assertThat(read3, is(chunk3));
-			assertThat(read4, is(chunk4));
-			assertThat(read5, is(chunk5));
+			assertThat(read1).isEqualTo(chunk1);
+			assertThat(read2).isEqualTo(chunk2);
+			assertThat(read3).isEqualTo(chunk3);
+			assertThat(read4).isEqualTo(chunk4);
+			assertThat(read5).isEqualTo(chunk5);
 		} finally {
 			Workspace.clear(target); // make sure there was nothing here before
 		}

@@ -14,19 +14,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.PROJECT;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.Q_NAME_SESSION;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.STRING_VALUE;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.commonFailureTestsForResource;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.isLocal;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Hashtable;
 import org.eclipse.core.resources.ICommand;
@@ -79,13 +75,13 @@ public class IProjectTest {
 
 		// Try to open a non-created project.
 		assertThrows(CoreException.class, () -> proj.open(monitor));
-		assertThat("project is unexpectedly open: " + proj, !proj.isOpen());
+		assertThat(proj).matches(not(IProject::isOpen), "is not open");
 
 		// addMapping
 		assertThrows(Exception.class,
 				() -> proj.getDescription().setLocation(IPath.fromOSString(LOCAL_LOCATION_PATH_STRING_0)));
 
-		assertThat(wb.getRoot().getProjects(), arrayWithSize(0));
+		assertThat(wb.getRoot().getProjects()).isEmpty();
 	}
 
 	/**
@@ -115,28 +111,27 @@ public class IProjectTest {
 	 */
 	@Test
 	public void testProject() throws CoreException {
-		IWorkspace wb = getWorkspace();
+		IWorkspace workspace = getWorkspace();
 		IProgressMonitor monitor = null;
 
 		// Create a project handle.
-		IProject proj = wb.getRoot().getProject(PROJECT);
+		IProject proj = workspace.getRoot().getProject(PROJECT);
 
 		// Inspection methods with meaningful results invoked on a handle for a nonexistent project
-		assertThat("project exists unexpectedly: " + proj, !proj.exists());
-		assertThat(proj.getWorkspace(), is(wb));
-		assertThat(proj.getType(), is(IResource.PROJECT));
-		assertThat(proj.getFullPath(), is(IPath.fromOSString("/" + PROJECT)));
-		assertThat(proj.getName(), is(PROJECT));
-		assertThat("project at path '" + proj.getFullPath() + "' unexpectedly exists in workspace",
-				!wb.getRoot().exists(proj.getFullPath()));
-		assertThat(wb.getRoot().findMember(proj.getFullPath()), is(nullValue()));
-		assertThat(proj.getParent(), is(wb.getRoot()));
+		assertThat(proj).matches(not(IProject::exists), "does not exist");
+		assertThat(proj.getWorkspace()).isEqualTo(workspace);
+		assertThat(proj.getType()).isEqualTo(IResource.PROJECT);
+		assertThat(proj.getFullPath()).isEqualTo(IPath.fromOSString("/" + PROJECT));
+		assertThat(proj.getName()).isEqualTo(PROJECT);
+		assertThat(proj).matches(it -> !workspace.getRoot().exists(it.getFullPath()), "is not contained in workspace");
+		assertThat(workspace.getRoot().findMember(proj.getFullPath())).isNull();
+		assertThat(proj.getParent()).isEqualTo(workspace.getRoot());
 		// Legal question inherited from IResource: returns the receiver.
-		assertThat(proj.getProject(), is(proj));
-		assertThat(proj.getProjectRelativePath(), is(IPath.fromOSString("")));
+		assertThat(proj.getProject()).isEqualTo(proj);
+		assertThat(proj.getProjectRelativePath()).isEqualTo(IPath.fromOSString(""));
 
 		// Check that there are no projects.
-		assertThat(wb.getRoot().getProjects(), arrayWithSize(0));
+		assertThat(workspace.getRoot().getProjects()).isEmpty();
 
 		// These tests produce failure because the project does not exist yet.
 		nonexistentProjectFailureTests(proj);
@@ -144,37 +139,35 @@ public class IProjectTest {
 		// Create the project.
 		proj.create(monitor);
 
-		// Check that the project is get-able from the containers.
-		assertThat("project does not exist: " + proj, proj.exists());
-		assertThat("project with name '" + proj.getName() + "' does not exist in workspace",
-				wb.getRoot().findMember(proj.getName()).exists());
-		assertTrue("project at path '" + proj.getFullPath() + "' does not exist in workspace",
-				wb.getRoot().exists(proj.getFullPath()));
-		// But it is still not open.
-		assertThat("project is unexpectedly open: " + proj, !proj.isOpen());
-		assertThat(wb.getRoot().findMember(proj.getFullPath()), is(proj));
+		// Check that the project is get-able from the containers but still not open
+		assertThat(proj).matches(IProject::exists, "exists")
+				.matches(it -> workspace.getRoot().exists(it.getFullPath()), "is contained in workspace")
+				.matches(it -> workspace.getRoot().findMember(it.getFullPath()).exists(),
+						"is found existing in workspace")
+				.isEqualTo(workspace.getRoot().findMember(proj.getFullPath()))
+				.matches(not(IProject::isOpen), "is open");
 
 		// These tests produce failure because the project has not been opened yet.
 		unopenedProjectFailureTests(proj);
 
 		// Open project
 		proj.open(monitor);
-		assertThat("project is not open: " + proj, proj.isOpen());
-		assertThat(proj.getLocation(), not(is(nullValue())));
+		assertThat(proj).matches(IProject::isOpen, "is open");
+		assertThat(proj.getLocation()).isNotNull();
 
 		/* Properties */
 
 		// Session Property
-		assertThat(proj.getSessionProperty(Q_NAME_SESSION), is(nullValue()));
+		assertThat(proj.getSessionProperty(Q_NAME_SESSION)).isNull();
 		proj.setSessionProperty(Q_NAME_SESSION, STRING_VALUE);
-		assertThat(proj.getSessionProperty(Q_NAME_SESSION), is(STRING_VALUE));
+		assertThat(proj.getSessionProperty(Q_NAME_SESSION)).isEqualTo(STRING_VALUE);
 		proj.setSessionProperty(Q_NAME_SESSION, null);
-		assertThat(proj.getSessionProperty(Q_NAME_SESSION), is(nullValue()));
+		assertThat(proj.getSessionProperty(Q_NAME_SESSION)).isNull();
 
 		// Project buildspec
 		IProjectDescription desc = proj.getDescription();
 
-		assertThat(desc.getBuildSpec(), arrayWithSize(0));
+		assertThat(desc.getBuildSpec()).isEmpty();
 		ICommand command = desc.newCommand();
 		command.setBuilderName("org.eclipse.core.tests.buildername");
 		ICommand[] commands = new ICommand[] {command};
@@ -185,25 +178,21 @@ public class IProjectTest {
 		desc.setBuildSpec(commands);
 
 		// Compare project buildspecs
-		assertThat(commands, is(desc.getBuildSpec()));
+		assertThat(commands).isEqualTo(desc.getBuildSpec());
 
 		// IResource.isLocal(int)
-		assertThat("project is not available locally: " + proj, isLocal(proj, IResource.DEPTH_ZERO));
-		// No kids, but it should still answer yes.
-		assertThat("project and its direct children are not available locally: " + proj,
-				isLocal(proj, IResource.DEPTH_ONE));
-		assertThat("project and all its children are not available locally: " + proj,
-				isLocal(proj, IResource.DEPTH_INFINITE));
+		assertThat(proj).matches(it -> isLocal(it, IResource.DEPTH_ZERO), "is locally available")
+				// No kids, but it should still answer yes.
+				.matches(it -> isLocal(it, IResource.DEPTH_ONE), "is locally available with direct children")
+				.matches(it -> isLocal(it, IResource.DEPTH_INFINITE), "is locally available with all children");
 
 		// Close project
 		proj.close(monitor);
-		// The project is no longer open
-		assertThat("project has not been closed: " + proj, !proj.isOpen());
-		// But it still exists.
-		assertThat("project does not exist: " + proj, proj.exists());
-		assertThat(wb.getRoot().findMember(proj.getFullPath()), is(proj));
-		assertTrue("project at path '" + proj.getFullPath() + "' does not exist in workspace",
-				wb.getRoot().exists(proj.getFullPath()));
+		// The project is no longer open but still exists
+		assertThat(proj).matches(not(IProject::isOpen), "is not open") //
+				.matches(IProject::exists, "exists")
+				.matches(it -> workspace.getRoot().exists(it.getFullPath()), "is contained in workspace")
+				.isEqualTo(workspace.getRoot().findMember(proj.getFullPath()));
 
 		// These tests produce failure because the project is now closed.
 		unopenedProjectFailureTests(proj);
@@ -212,13 +201,12 @@ public class IProjectTest {
 		proj.delete(true, true, monitor);
 
 		// The project no longer exists.
-		assertThat("project unexpectedly exists: " + proj, !proj.exists());
-		assertThat(wb.getRoot().getProjects(), arrayWithSize(0));
-		assertThat(wb.getRoot().findMember(proj.getFullPath()), is(nullValue()));
+		assertThat(proj).matches(not(IProject::exists), "does not exist");
+		assertThat(workspace.getRoot().getProjects()).isEmpty();
+		assertThat(workspace.getRoot().findMember(proj.getFullPath())).isNull();
 		// These tests produce failure because the project no longer exists.
 		nonexistentProjectFailureTests(proj);
-		assertTrue("project at path '" + proj.getFullPath() + "' unexpectedly exists in workspace",
-				!wb.getRoot().exists(proj.getFullPath()));
+		assertThat(proj).matches(it -> !workspace.getRoot().exists(it.getFullPath()), "is not contained in workspace");
 	}
 
 	/**
@@ -230,12 +218,11 @@ public class IProjectTest {
 		commonFailureTests(proj, true);
 	}
 
-	protected void unopenedSolutionFailureTests(IProject proj, IWorkspace wb) {
+	protected void unopenedSolutionFailureTests(IProject proj, IWorkspace workspace) {
 		// Try to create the project without the solution being open.
 		assertThrows(CoreException.class, () -> proj.create(null));
-		assertThat("project unexpectedly exists: " + proj, !proj.exists());
-		assertTrue("project at path '" + proj.getFullPath() + "' unexpectedly exists in workspace",
-				wb.getRoot().exists(proj.getFullPath()));
+		assertThat(proj).matches(not(IProject::exists), "does not exist");
+		assertThat(proj).matches(it -> workspace.getRoot().exists(it.getFullPath()), "is contained in workspace");
 	}
 
 }
