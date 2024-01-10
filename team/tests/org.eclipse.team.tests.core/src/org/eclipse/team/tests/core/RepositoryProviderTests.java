@@ -13,12 +13,11 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -423,7 +422,7 @@ public class RepositoryProviderTests {
 		// Test shallow link
 		TeamException shallowLinkException = assertThrows("Link should be disallowed", TeamException.class,
 				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
-		assertThat(shallowLinkException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
+		assertThat(shallowLinkException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 
 		// Test deep link
 		folder.delete(false, null);
@@ -431,7 +430,7 @@ public class RepositoryProviderTests {
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
 		TeamException deepLinkException = assertThrows("Link should be disallowed", TeamException.class,
 				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
-		assertThat(deepLinkException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
+		assertThat(deepLinkException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 
 		// Test deep failure when shallow is allowed
 		folder.delete(false, null);
@@ -440,7 +439,7 @@ public class RepositoryProviderTests {
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
 		TeamException shallowLinksAllowedException = assertThrows("Link should be disallowed", TeamException.class,
 				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
-		assertThat(shallowLinksAllowedException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
+		assertThat(shallowLinksAllowedException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 	}
 
 	@Test
@@ -457,19 +456,19 @@ public class RepositoryProviderTests {
 		// Test shallow link
 		CoreException shallowLinkException = assertThrows("Link should be disallowed", CoreException.class,
 				() -> folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
-		assertThat(shallowLinkException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
+		assertThat(shallowLinkException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 
 		// Test deep link
 		IFolder innerFolder = project.getFolder("folder1/folder2");
 		CoreException deepLinkException = assertThrows("Link should be disallowed", CoreException.class,
 				() -> innerFolder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
-		assertThat(deepLinkException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
+		assertThat(deepLinkException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 
 		// Test deep link when shallow allowed
 		RepositoryProviderWithLinking.setCanHandleLinking(true);
 		CoreException shallowLinkAllowedException = assertThrows("Link should be disallowed", CoreException.class,
 				() -> innerFolder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
-		assertThat(shallowLinkAllowedException.getStatus().getCode(), is(IResourceStatus.LINKING_NOT_ALLOWED));
+		assertThat(shallowLinkAllowedException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 	}
 
 	@Test

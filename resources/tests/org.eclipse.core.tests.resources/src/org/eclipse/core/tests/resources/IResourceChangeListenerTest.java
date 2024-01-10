@@ -14,6 +14,7 @@
  ******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
@@ -27,7 +28,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorksp
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -895,13 +895,14 @@ public class IResourceChangeListenerTest {
 			Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, null);
 
-			assertThat("Refreshing resource in first resource change listener did not succeed",
-					listener1.refreshPerformed);
+			assertThat(listener1.refreshPerformed)
+					.withFailMessage("Refreshing resource in first resource change listener did not succeed").isTrue();
 			if (listener1.exception != null) {
 				throw listener1.exception;
 			}
-			assertThat("Refreshing resource in second resource change listener unexpectedly succeeded",
-					!listener2.refreshSucceeded);
+			assertThat(listener2.refreshSucceeded)
+					.withFailMessage("Refreshing resource in second resource change listener unexpectedly succeeded")
+					.isFalse();
 
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener1);

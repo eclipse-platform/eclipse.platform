@@ -12,10 +12,8 @@
 package org.eclipse.core.tests.resources;
 
 import static java.io.InputStream.nullInputStream;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -435,7 +433,8 @@ public final class ResourceTestUtil {
 	 * Sets the read-only state of the given file store to {@code value}.
 	 */
 	public static void setReadOnly(IFileStore target, boolean value) throws CoreException {
-		assertThat("Setting read only is not supported by local file system", isReadOnlySupported());
+		assertThat(isReadOnlySupported()).withFailMessage("setting read only is not supported by local file system")
+				.isTrue();
 		IFileInfo fileInfo = target.fetchInfo();
 		fileInfo.setAttribute(EFS.ATTRIBUTE_READ_ONLY, value);
 		target.putInfo(fileInfo, EFS.SET_ATTRIBUTES, null);
@@ -487,8 +486,6 @@ public final class ResourceTestUtil {
 		modifyInFileSystem(file);
 		waitForRefresh();
 		touchInFilesystem(file);
-		assertThat("file not out of sync: " + file.getLocation().toOSString(), file.getLocalTimeStamp(),
-				not(is(file.getLocation().toFile().lastModified())));
 	}
 
 	private static void modifyInFileSystem(IFile file) throws FileNotFoundException, IOException {
@@ -532,8 +529,8 @@ public final class ResourceTestUtil {
 				}
 			}
 		}
-		assertThat("File not out of sync: " + location.toOSString(), resource.getLocalTimeStamp(),
-				not(is(getLastModifiedTime(location))));
+		assertThat(resource.getLocalTimeStamp()).as("file not out of sync: %s", location.toOSString())
+				.isNotEqualTo(getLastModifiedTime(location));
 	}
 
 	private static boolean isInSync(IResource resource) {
