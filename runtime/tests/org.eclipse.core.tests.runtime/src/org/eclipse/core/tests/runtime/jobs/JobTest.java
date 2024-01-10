@@ -19,10 +19,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -379,7 +377,7 @@ public class JobTest extends AbstractJobTest {
 	}
 
 	private static void assertThreadType(Job job, Class<?> threadType) {
-		assertThat("job has unexpected thread type: " + job, job.getThread(), instanceOf(threadType));
+		assertThat(job.getThread()).as("type of job %s", job).isInstanceOf(threadType);
 	}
 
 	/**
@@ -1385,7 +1383,7 @@ public class JobTest extends AbstractJobTest {
 			Job[] found = Job.getJobManager().find(job);
 			assertEquals("Job should still run", 1, found.length);
 			assertSame("Job should still run", job, found[0]);
-			assertThat("Expected to see exact one job execution", runCount.get(), is(1L));
+			assertThat(runCount.get()).as("number of job executions").isEqualTo(1L);
 		} finally {
 			keepRunning.set(false);
 		}
@@ -1611,7 +1609,8 @@ public class JobTest extends AbstractJobTest {
 		job.setProgressGroup(group, 0);
 		job.schedule();
 		job.join();
-		assertThat("job progress has not been reported to group monitor", group.isCanceled());
+		assertThat(group).withFailMessage("job progress has not been reported to group monitor")
+				.matches(IProgressMonitor::isCanceled);
 		group.done();
 	}
 
@@ -1629,7 +1628,8 @@ public class JobTest extends AbstractJobTest {
 		job.setProgressGroup(group, 0);
 		job.wakeUp();
 		job.join();
-		assertThat("job progress has unexpectedly been reported to group monitor", !group.isCanceled());
+		assertThat(group).withFailMessage("job progress has unexpectedly been reported to group monitor")
+				.matches(not(IProgressMonitor::isCanceled));
 	}
 
 	@Test
@@ -1648,7 +1648,8 @@ public class JobTest extends AbstractJobTest {
 		barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
 		job.setProgressGroup(group, 0);
 		job.join();
-		assertThat("job progress has unexpectedly been reported to group monitor", !group.isCanceled());
+		assertThat(group).withFailMessage("job progress has unexpectedly been reported to group monitor")
+				.matches(not(IProgressMonitor::isCanceled));
 	}
 
 	@Test
@@ -1672,7 +1673,8 @@ public class JobTest extends AbstractJobTest {
 		job.cancel();
 		barrier.setStatus(TestBarrier2.STATUS_WAIT_FOR_DONE);
 		waitForState(job, Job.NONE);
-		assertThat("job progress has not been reported to group monitor", group.isCanceled());
+		assertThat(group).withFailMessage("job progress has not been reported to group monitor")
+				.matches(IProgressMonitor::isCanceled);
 		assertEquals("job was unexpectedly not canceled", IStatus.CANCEL, job.getResult().getSeverity());
 	}
 
@@ -1715,7 +1717,7 @@ public class JobTest extends AbstractJobTest {
 	public void testSetRule() throws InterruptedException {
 		//setting a scheduling rule for a job after it was already scheduled should throw an exception
 		longJob.setRule(new IdentityRule());
-		assertThat(longJob.getRule(), instanceOf(IdentityRule.class));
+		assertThat(longJob.getRule()).isInstanceOf(IdentityRule.class);
 		longJob.schedule(1000000);
 		assertThrows(RuntimeException.class, () -> longJob.setRule(new PathRule("/testSetRule")));
 
@@ -1731,7 +1733,7 @@ public class JobTest extends AbstractJobTest {
 
 		//after the job has finished executing, the scheduling rule for it can once again be reset
 		longJob.setRule(new PathRule("/testSetRule/B/C/D"));
-		assertThat(longJob.getRule(), instanceOf(PathRule.class));
+		assertThat(longJob.getRule()).isInstanceOf(PathRule.class);
 		longJob.setRule(null);
 		assertNull("job still has a rule assigned: " + longJob, longJob.getRule());
 	}
@@ -1816,8 +1818,8 @@ public class JobTest extends AbstractJobTest {
 				Thread.yield();
 				long elapsed = (System.nanoTime() - start) / 1_000_000;
 				// sanity test to avoid hanging tests
-				assertThat("Timeout waiting for job to change state to " + state + " (current: " + job.getState()
-						+ "): " + job, elapsed, lessThan(timeoutInMs));
+				assertThat(elapsed).as("timeout waiting for job to change state to " + state + " (current: "
+						+ job.getState() + "): " + job).isLessThan(timeoutInMs);
 			}
 		} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {

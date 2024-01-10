@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
@@ -21,11 +22,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
@@ -117,14 +113,11 @@ public class ISynchronizerTest {
 
 	private void assertExpectedSyncInfo(IResource resource, byte[] actualSyncInfo, byte[] expectedSyncInfo) {
 		if (resource.getType() == IResource.ROOT) {
-			assertThat("Sync info for root resource should be null: " + resource.getFullPath(), actualSyncInfo,
-					nullValue());
+			assertThat(actualSyncInfo).as("sync info for root resource: %s", resource.getFullPath()).isNull();
 			return;
 		}
-		assertThat("Sync info for non-root resource should not be null: " + resource.getFullPath(), actualSyncInfo,
-				notNullValue());
-		assertThat("Unexpected sync info for resource: " + resource.getFullPath(), expectedSyncInfo,
-				is(actualSyncInfo));
+		assertThat(actualSyncInfo).as("sync info for non-root resource: %s", resource.getFullPath()).isNotNull()
+				.isEqualTo(expectedSyncInfo);
 	}
 
 	@Test
@@ -295,10 +288,9 @@ public class ISynchronizerTest {
 
 		// check sync info
 		byte[] syncInfo = synchronizer.getSyncInfo(qname, source);
-		assertThat("sync info at source should not be null: " + source.getFullPath(), syncInfo, notNullValue());
-		assertThat("unexpected sync info for resource: " + source.getFullPath(), syncInfo, is(b));
-		assertThat("sync info at destination should be null: " + destination.getFullPath(),
-				synchronizer.getSyncInfo(qname, destination), nullValue());
+		assertThat(syncInfo).as("sync info at source: %s", source.getFullPath()).isNotNull().isEqualTo(b);
+		assertThat(synchronizer.getSyncInfo(qname, destination))
+				.as("sync info at destination: %s", destination.getFullPath()).isNull();
 	}
 
 	@Test
@@ -328,20 +320,19 @@ public class ISynchronizerTest {
 
 		// check sync info
 		byte[] syncInfo = synchronizer.getSyncInfo(qname, sourceFile);
-		assertThat("sync info at source should not be null: " + sourceFile.getFullPath(), syncInfo, notNullValue());
-		assertThat("unexpected sync info for resource: " + sourceFile.getFullPath(), syncInfo, is(b));
-		assertThat("sync info at destination should be null: " + destFile.getFullPath(),
-				synchronizer.getSyncInfo(qname, destFile), nullValue());
+		assertThat(syncInfo).as("sync info at source: %s", sourceFile.getFullPath()).isNotNull().isNotNull()
+				.isEqualTo(b);
+		assertThat(synchronizer.getSyncInfo(qname, destFile)).as("sync info at destination: %s", destFile.getFullPath())
+				.isNull();
 
 		// move the file back
 		destFile.move(sourceFile.getFullPath(), true, createTestMonitor());
 
 		// check the sync info
 		syncInfo = synchronizer.getSyncInfo(qname, sourceFile);
-		assertThat("sync info at source should not be null: " + sourceFile.getFullPath(), syncInfo, notNullValue());
-		assertThat("unexpected sync info for resource: " + sourceFile.getFullPath(), syncInfo, is(b));
-		assertThat("sync info at destination should be null: " + destFile.getFullPath(),
-				synchronizer.getSyncInfo(qname, destFile), nullValue());
+		assertThat(syncInfo).as("sync info at source: %s", sourceFile.getFullPath()).isEqualTo(b);
+		assertThat(synchronizer.getSyncInfo(qname, destFile))
+				.as("sync info at destination: %s", destFile.getFullPath()).isNull();
 
 		// rename the file and ensure that the sync info is moved with it
 		IProject destProject = getWorkspace().getRoot().getProject("newProject");
@@ -349,11 +340,9 @@ public class ISynchronizerTest {
 		assertNull("7.1", synchronizer.getSyncInfo(qname, sourceProject));
 		assertNull("7.2", synchronizer.getSyncInfo(qname, sourceFile));
 		syncInfo = synchronizer.getSyncInfo(qname, destProject.getFile(sourceFile.getName()));
-		assertThat("sync info should not be null: " + sourceFile.getFullPath(), syncInfo, notNullValue());
-		assertThat("unexpected sync info for resource: " + sourceFile.getFullPath(), syncInfo, is(b));
+		assertThat(syncInfo).as("sync info for resource: %s", sourceFile.getFullPath()).isNotNull().isEqualTo(b);
 		syncInfo = synchronizer.getSyncInfo(qname, destProject);
-		assertThat("sync info should not be null: " + sourceFile.getFullPath(), syncInfo, notNullValue());
-		assertThat("unexpected sync info for resource: " + sourceFile.getFullPath(), syncInfo, is(b));
+		assertThat(syncInfo).as("sync info for resource: %s", sourceFile.getFullPath()).isNotNull().isEqualTo(b);
 	}
 
 	@Test
@@ -374,13 +363,13 @@ public class ISynchronizerTest {
 
 		// get the array of targets
 		QualifiedName[] list = synchronizer.getPartners();
-		assertThat(list, arrayWithSize(NUMBER_OF_PARTNERS));
+		assertThat(list).hasSize(NUMBER_OF_PARTNERS);
 
 		// unregister all targets
 		for (int i = 0; i < NUMBER_OF_PARTNERS; i++) {
 			synchronizer.remove(partners[i]);
 		}
-		assertThat(synchronizer.getPartners(), arrayWithSize(0));
+		assertThat(synchronizer.getPartners()).isEmpty();
 	}
 
 	@Test

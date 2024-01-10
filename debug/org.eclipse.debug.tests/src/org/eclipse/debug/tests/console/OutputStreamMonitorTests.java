@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,9 +38,6 @@ import org.eclipse.debug.tests.TestUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.empty;
 
 /**
  * Tests the {@link OutputStreamMonitor}.
@@ -78,7 +77,7 @@ public class OutputStreamMonitorTests extends AbstractDebugTest {
 		}
 
 		public void assertNoExceptions() {
-			assertThat(exceptions, is(empty()));
+			assertThat(exceptions).isEmpty();
 		}
 	}
 
@@ -134,32 +133,36 @@ public class OutputStreamMonitorTests extends AbstractDebugTest {
 		monitor.startMonitoring();
 		binaryListener.waitForBytes(2);
 		streamListener.waitForBytes(1);
-		String contents = monitor.getContents();
-		assertThat("Monitor read wrong content.", contents, is(input.substring(0, 1)));
-		assertThat("Notified and buffered content differ.", streamListener.getRecordedChars(), is(contents));
-		assertThat("Failed to access buffered content twice.", monitor.getContents(), is(contents));
-		byte[] data = monitor.getData();
-		byte[] expected = new byte[2];
-		System.arraycopy(byteInput, 0, expected, 0, 2);
-		assertThat("Monitor read wrong binary content.", data, is(expected));
-		assertThat("Notified and buffered binary content differ.", binaryListener.getRecordedBytes(), is(data));
-		assertThat("Failed to access buffered binary content twice.", monitor.getData(), is(data));
+		String monitorContents = monitor.getContents();
+		assertThat(monitorContents).isEqualTo(input.substring(0, 1));
+		assertThat(streamListener.getRecordedChars()).isEqualTo(monitorContents);
+		String monitorContentsOnSecondAccess = monitor.getContents();
+		assertThat(monitorContentsOnSecondAccess).isEqualTo(monitorContents);
+		byte[] binaryMonitorData = monitor.getData();
+		byte[] expectedBinaryData = new byte[2];
+		System.arraycopy(byteInput, 0, expectedBinaryData, 0, 2);
+		assertThat(binaryMonitorData).isEqualTo(expectedBinaryData);
+		assertThat(binaryListener.getRecordedBytes()).isEqualTo(binaryMonitorData);
+		byte[] binaryMonitorDataOnSecondAccess = monitor.getData();
+		assertThat(binaryMonitorDataOnSecondAccess).isEqualTo(binaryMonitorData);
 
 		monitor.flushContents();
 		sysout.write(byteInput, 2, byteInput.length - 2);
 		sysout.flush();
 		binaryListener.waitForBytes(byteInput.length);
 		streamListener.waitForBytes(new String(byteInput).length());
-		contents = monitor.getContents();
-		assertThat("Monitor buffered wrong content.", contents, is(input.substring(1)));
-		assertThat("Failed to access buffered content twice.", monitor.getContents(), is(contents));
-		assertThat("Wrong content through listener.", streamListener.getRecordedChars(), is(input));
-		data = monitor.getData();
-		expected = new byte[byteInput.length - 2];
-		System.arraycopy(byteInput, 2, expected, 0, expected.length);
-		assertThat("Monitor read wrong binary content.", data, is(expected));
-		assertThat("Failed to access buffered binary content twice.", monitor.getData(), is(data));
-		assertThat("Wrong binary content through listener.", binaryListener.getRecordedBytes(), is(byteInput));
+		monitorContents = monitor.getContents();
+		assertThat(monitorContents).isEqualTo(input.substring(1));
+		monitorContentsOnSecondAccess = monitor.getContents();
+		assertThat(monitorContentsOnSecondAccess).isEqualTo(monitorContents);
+		assertThat(streamListener.getRecordedChars()).isEqualTo(input);
+		binaryMonitorData = monitor.getData();
+		expectedBinaryData = new byte[byteInput.length - 2];
+		System.arraycopy(byteInput, 2, expectedBinaryData, 0, expectedBinaryData.length);
+		assertThat(binaryMonitorData).isEqualTo(expectedBinaryData);
+		binaryMonitorDataOnSecondAccess = monitor.getData();
+		assertThat(binaryMonitorDataOnSecondAccess).isEqualTo(binaryMonitorData);
+		assertThat(binaryListener.getRecordedBytes()).isEqualTo(byteInput);
 
 		binaryListener.assertNoExceptions();
 	}
@@ -183,20 +186,20 @@ public class OutputStreamMonitorTests extends AbstractDebugTest {
 		monitor.startMonitoring();
 		binaryListener.waitForBytes(2);
 		streamListener.waitForBytes(1);
-		assertThat("Monitor read wrong content.", streamListener.getRecordedChars(), is(input.substring(0, 1)));
+		assertThat(streamListener.getRecordedChars()).isEqualTo(input.substring(0, 1));
 		byte[] expected = new byte[2];
 		System.arraycopy(byteInput, 0, expected, 0, 2);
-		assertThat("Monitor read wrong binary content.", binaryListener.getRecordedBytes(), is(expected));
+		assertThat(binaryListener.getRecordedBytes()).isEqualTo(expected);
 
 		monitor.flushContents();
 		sysout.write(byteInput, 2, byteInput.length - 2);
 		sysout.flush();
 		binaryListener.waitForBytes(byteInput.length);
 		streamListener.waitForBytes(new String(byteInput).length());
-		assertThat("Wrong content through listener.", streamListener.getRecordedChars(), is(input));
+		assertThat(streamListener.getRecordedChars()).isEqualTo(input);
 		expected = new byte[byteInput.length - 2];
 		System.arraycopy(byteInput, 2, expected, 0, expected.length);
-		assertThat("Wrong binary content through listener.", binaryListener.getRecordedBytes(), is(byteInput));
+		assertThat(binaryListener.getRecordedBytes()).isEqualTo(byteInput);
 
 		binaryListener.assertNoExceptions();
 	}
@@ -223,7 +226,7 @@ public class OutputStreamMonitorTests extends AbstractDebugTest {
 		sysout.flush();
 
 		streamListener.waitForBytes(input.length());
-		assertThat("Monitor read wrong content.", streamListener.getRecordedChars(), is(input));
+		assertThat(streamListener.getRecordedChars()).isEqualTo(input);
 	}
 
 	/**

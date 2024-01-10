@@ -13,9 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -110,7 +108,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 
 		super.tearDown();
 
-		assertThat("Test triggered errors.", loggedErrors, empty());
+		assertThat(loggedErrors).as("logged errors").isEmpty();
 	}
 
 	/**
@@ -527,7 +525,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		}
 
 		byte[] receivedOutput = Files.readAllBytes(outFile.toPath());
-		assertThat("unexpected output", receivedOutput, is(output));
+		assertThat(receivedOutput).as("received output").isEqualTo(output);
 	}
 
 	/**
