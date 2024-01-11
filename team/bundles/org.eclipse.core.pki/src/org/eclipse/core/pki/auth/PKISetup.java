@@ -25,6 +25,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.KeyStoreFormat;
@@ -50,6 +51,7 @@ public class PKISetup implements BundleActivator, IStartup {
 	protected static KeyStore keyStore = null;
 	PKIProperties pkiInstance = null;
 	Properties pkiProperties = null;
+	Optional<KeyStore> keystoreContainer = null;
 
 	public PKISetup() {
 		super();
@@ -127,7 +129,7 @@ public class PKISetup implements BundleActivator, IStartup {
 						// LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStorePassword"));
 						// //$NON-NLS-1$
 
-						Optional<KeyStore> keystoreContainer = Optional.ofNullable(
+						keystoreContainer = Optional.ofNullable(
 								KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
 								System.getProperty("javax.net.ssl.keyStorePassword"), //$NON-NLS-1$
 										KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType")))); //$NON-NLS-1$
@@ -145,6 +147,14 @@ public class PKISetup implements BundleActivator, IStartup {
 				}
 				if (PKIState.CONTROL.isPKCS11on()) {
 					LogUtil.logInfo("PKISetup - Processing PKCS11"); //$NON-NLS-1$
+					keystoreContainer = Optional.ofNullable(AuthenticationBase.INSTANCE.initialize("".toCharArray())); //$NON-NLS-1$
+					if (keystoreContainer.isEmpty()) {
+						LogUtil.logError("PKISetup - Failed to Load a Keystore.", null); //$NON-NLS-1$
+					} else {
+						LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
+						keyStore = keystoreContainer.get();
+						setKeyStoreLoaded(true);
+					}
 				}
 
 				if ((IncomingSystemProperty.SETTINGS.checkTrustStoreType()) && (isKeyStoreLoaded())) {
