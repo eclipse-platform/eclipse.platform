@@ -138,10 +138,13 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 			if(fUpdateLabel) {
 				fUpdateLabel = false;
 				fCurrentLabels.clear();
+				SelectedResourceManager srm = SelectedResourceManager.getDefault();
+				IStructuredSelection selection = srm.getCurrentSelection();
+				IResource resource = srm.getSelectedResource();
 				Job job = new Job("Compute launch button tooltip") { //$NON-NLS-1$
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
-						computeLabels();
+						computeLabels(selection, resource);
 						fConfigCache.clear();
 						fExtCache.clear();
 						return Status.OK_STATUS;
@@ -152,6 +155,15 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 			}
 		}
 	};
+
+	/**
+	 * Hook for testing. No one else should use this except tests.
+	 *
+	 * @return
+	 */
+	public MouseTrackAdapter getfMouseListener() {
+		return fMouseListener;
+	}
 
 	/**
 	 * Returns if context launching is enabled
@@ -223,18 +235,18 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 	}
 
 	/**
-	 * Computes the current listing of labels for the given <code>IResource</code> context change or the
-	 * current launch history changed event
+	 * Computes the current listing of labels for the given <code>IResource</code>
+	 * context change or the current launch history changed event
+	 *
+	 * @param resource
+	 * @param selection
 	 */
-	protected void computeLabels() {
+	protected void computeLabels(IStructuredSelection selection, IResource resource) {
 		ILaunchGroup group = null;
 		ILaunchConfiguration config = null;
 		String label = null;
 
-		SelectedResourceManager srm = SelectedResourceManager.getDefault();
-		IStructuredSelection selection = srm.getCurrentSelection();
 		List<LaunchShortcutExtension> shortcuts = null;
-		IResource resource = srm.getSelectedResource();
 		for (ILaunchLabelChangedListener iLaunchLabelChangedListener : fLabelListeners) {
 			group = iLaunchLabelChangedListener.getLaunchGroup();
 			if(group != null) {
