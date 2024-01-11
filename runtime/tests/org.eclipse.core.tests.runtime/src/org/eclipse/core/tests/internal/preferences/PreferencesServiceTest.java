@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -54,6 +55,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.PreferenceFilterEntry;
+import org.eclipse.core.runtime.preferences.UserScope;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
 import org.junit.After;
@@ -218,6 +220,7 @@ public class PreferencesServiceTest {
 		String[] defaultOrder = new String[] {"project", //$NON-NLS-1$
 				InstanceScope.SCOPE, //
 				ConfigurationScope.SCOPE, //
+				UserScope.SCOPE, //
 				DefaultScope.SCOPE};
 		String[] fullOrder = new String[] {"a", "b", "c"};
 		String[] nullKeyOrder = new String[] {"e", "f", "g"};
@@ -230,70 +233,39 @@ public class PreferencesServiceTest {
 				() -> service.setDefaultLookupOrder(qualifier, key, new String[] { "a", null, "b" }));
 
 		// nothing set
-		String[] order = service.getDefaultLookupOrder(qualifier, key);
-		assertNull("1.0", order);
-		order = service.getLookupOrder(qualifier, key);
-		assertNotNull("1.1", order);
-		assertArrayEquals("1.2", defaultOrder, order);
+		assertThat(service.getDefaultLookupOrder(qualifier, key)).isNull();
+		assertThat(service.getLookupOrder(qualifier, key)).containsExactly(defaultOrder);
 
-		order = service.getDefaultLookupOrder(qualifier, null);
-		assertNull("1.3", order);
-		order = service.getLookupOrder(qualifier, null);
-		assertNotNull("1.4", order);
-		assertArrayEquals("1.5", defaultOrder, order);
+		assertThat(service.getDefaultLookupOrder(qualifier, null)).isNull();
+		assertThat(service.getLookupOrder(qualifier, null)).containsExactly(defaultOrder);
 
 		// set for qualifier/key
 		service.setDefaultLookupOrder(qualifier, key, fullOrder);
-		order = service.getDefaultLookupOrder(qualifier, key);
-		assertNotNull("2.2", order);
-		assertArrayEquals("2.3", fullOrder, order);
-		order = service.getLookupOrder(qualifier, key);
-		assertNotNull("2.4", order);
-		assertArrayEquals("2.5", fullOrder, order);
+		assertThat(service.getDefaultLookupOrder(qualifier, key)).containsExactly(fullOrder);
+		assertThat(service.getLookupOrder(qualifier, key)).containsExactly(fullOrder);
 
 		// nothing set for qualifier/null
-		order = service.getDefaultLookupOrder(qualifier, null);
-		assertNull("3.0", order);
-		order = service.getLookupOrder(qualifier, null);
-		assertNotNull("3.1", order);
-		assertArrayEquals("3.2", defaultOrder, order);
+		assertThat(service.getDefaultLookupOrder(qualifier, null)).isNull();
+		assertThat(service.getLookupOrder(qualifier, null)).containsExactly(defaultOrder);
 
 		// set for qualifier/null
 		service.setDefaultLookupOrder(qualifier, null, nullKeyOrder);
-		order = service.getDefaultLookupOrder(qualifier, null);
-		assertNotNull("4.0", order);
-		assertArrayEquals("4.1", nullKeyOrder, order);
-		order = service.getLookupOrder(qualifier, null);
-		assertNotNull("4.2", order);
-		assertArrayEquals("4.3", nullKeyOrder, order);
-		order = service.getDefaultLookupOrder(qualifier, key);
-		assertNotNull("4.4", order);
-		assertArrayEquals("4.5", fullOrder, order);
-		order = service.getLookupOrder(qualifier, key);
-		assertNotNull("4.6", order);
-		assertArrayEquals("4.7", fullOrder, order);
+		assertThat(service.getDefaultLookupOrder(qualifier, null)).containsExactly(nullKeyOrder);
+		assertThat(service.getLookupOrder(qualifier, null)).containsExactly(nullKeyOrder);
+		assertThat(service.getDefaultLookupOrder(qualifier, key)).containsExactly(fullOrder);
+		assertThat(service.getLookupOrder(qualifier, key)).containsExactly(fullOrder);
 
 		// clear qualifier/key (find qualifier/null)
 		service.setDefaultLookupOrder(qualifier, key, null);
-		order = service.getDefaultLookupOrder(qualifier, key);
-		assertNull("5.0", order);
-		order = service.getLookupOrder(qualifier, key);
-		assertNotNull("5.1", order);
-		assertArrayEquals("5.2", nullKeyOrder, order);
+		assertThat(service.getDefaultLookupOrder(qualifier, key)).isNull();
+		assertThat(service.getLookupOrder(qualifier, key)).containsExactly(nullKeyOrder);
 
 		// clear qualifier/null (find returns default-default)
 		service.setDefaultLookupOrder(qualifier, null, null);
-		order = service.getDefaultLookupOrder(qualifier, key);
-		assertNull("6.0", order);
-		order = service.getLookupOrder(qualifier, key);
-		assertNotNull("6.1", order);
-		assertArrayEquals("6.2", defaultOrder, order);
-
-		order = service.getDefaultLookupOrder(qualifier, null);
-		assertNull("6.3", order);
-		order = service.getLookupOrder(qualifier, null);
-		assertNotNull("6.4", order);
-		assertArrayEquals("6.5", defaultOrder, order);
+		assertThat(service.getDefaultLookupOrder(qualifier, key)).isNull();
+		assertThat(service.getLookupOrder(qualifier, key)).containsExactly(defaultOrder);
+		assertThat(service.getDefaultLookupOrder(qualifier, null)).isNull();
+		assertThat(service.getLookupOrder(qualifier, null)).containsExactly(defaultOrder);
 	}
 
 	@Test
