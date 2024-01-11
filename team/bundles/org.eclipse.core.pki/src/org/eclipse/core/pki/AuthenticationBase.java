@@ -15,6 +15,7 @@ package org.eclipse.core.pki;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.InvalidParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.Provider;
@@ -122,14 +123,24 @@ public enum AuthenticationBase implements AuthenticationService {
 				prototype = Security.getProvider(providerContainer.get().toString());
 			}
 			if (prototype == null) {
-				DebugLogger.printDebug("In configure  PROVIDER NOT FOUND"); //$NON-NLS-1$
-				// Path path = Paths.get(cfgDirectory);
+				LogUtil.logInfo("In configure  PROVIDER NOT FOUND"); //$NON-NLS-1$
 			}
-			Provider provider = prototype.configure(cfgDirectory);
-			Security.addProvider(provider);
+
 			try {
+				Provider provider = prototype.configure(cfgDirectory);
+
+				Security.addProvider(provider);
 				keyStore = KeyStore.getInstance("pkcs11"); //$NON-NLS-1$
 			} catch (KeyStoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidParameterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnsupportedOperationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullPointerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
