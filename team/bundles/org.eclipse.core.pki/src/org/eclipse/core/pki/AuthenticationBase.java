@@ -13,15 +13,20 @@
  *******************************************************************************/
 package org.eclipse.core.pki;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.util.Optional;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+
+import org.eclipse.core.pki.util.LogUtil;
 
 public enum AuthenticationBase implements AuthenticationService {
 	INSTANCE;
@@ -81,7 +86,8 @@ public enum AuthenticationBase implements AuthenticationService {
 	}
 
 	private static KeyStore configure() {
-
+		Optional<String> configurationDirectory = null;
+		String cfgDirectory = "TBD"; //$NON-NLS-1$
 		KeyStore keyStore = null;
 		is9 = true;
 
@@ -95,11 +101,20 @@ public enum AuthenticationBase implements AuthenticationService {
 
 		// String cfgDirectory = AuthenticationPlugin.getDefault().getPreferenceStore()
 		// .getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
-		String cfgDirectory = "TBD"; //$NON-NLS-1$
+		configurationDirectory = Optional.ofNullable(System.getProperty("javax.net.ssl.cfgFileLocation")); //$NON-NLS-1$
+		if (configurationDirectory.isEmpty()) {
+			cfgDirectory = new String("/etc/opensc"); //$NON-NLS-1$
+		} else {
+			cfgDirectory = configurationDirectory.get().toString();
+		}
+
+		if (Files.exists(Paths.get(cfgDirectory))) {
+			LogUtil.logInfo("AuthenticationBase - PKCS11 configure  DIR:" + cfgDirectory); //$NON-NLS-1$
+		}
 
 		// listProviders();
 
-		DebugLogger.printDebug("In configure  DIR:" + cfgDirectory); //$NON-NLS-1$
+
 		try {
 
 			Provider prototype = Security.getProvider("SunPKCS11"); //$NON-NLS-1$
