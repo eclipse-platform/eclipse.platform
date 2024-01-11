@@ -16,6 +16,7 @@ package org.eclipse.core.pki;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -87,6 +88,8 @@ public enum AuthenticationBase implements AuthenticationService {
 
 	private static KeyStore configure() {
 		Optional<String> configurationDirectory = null;
+		Optional<String>providerContainer = null;
+		Provider prototype = null;
 		String cfgDirectory = "TBD"; //$NON-NLS-1$
 		KeyStore keyStore = null;
 		is9 = true;
@@ -110,32 +113,30 @@ public enum AuthenticationBase implements AuthenticationService {
 
 		if (Files.exists(Paths.get(cfgDirectory))) {
 			LogUtil.logInfo("AuthenticationBase - PKCS11 configure  DIR:" + cfgDirectory); //$NON-NLS-1$
-		}
+			providerContainer=Optional.ofNullable(
+							System.getProperty("javax.net.ssl.keyStoreProvider")); //$NON-NLS-1$
 
-		// listProviders();
-
-
-		try {
-
-			Provider prototype = Security.getProvider("SunPKCS11"); //$NON-NLS-1$
-			// Provider prototype =
-			// Security.getProvider(AuthenticationPlugin.getDefault().getPreferenceStore()
-			// .getString(AuthenticationPreferences.SECURITY_PROVIDER));
-
+			if (providerContainer.isEmpty() ) {
+				prototype = Security.getProvider(PROVIDER);
+			} else {
+				prototype = Security.getProvider(providerContainer.get().toString());
+			}
 			if (prototype == null) {
 				DebugLogger.printDebug("In configure  PROVIDER NOT FOUND"); //$NON-NLS-1$
 				// Path path = Paths.get(cfgDirectory);
 			}
 			Provider provider = prototype.configure(cfgDirectory);
 			Security.addProvider(provider);
-			keyStore = KeyStore.getInstance("pkcs11"); //$NON-NLS-1$
-			// listProviders();
-			DebugLogger.printDebug("In configurejdk9 KEYSTORE LOADED"); //$NON-NLS-1$
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			DebugLogger.printDebug("In configurejdk9 EXCEPTION:" + e.getMessage()); //$NON-NLS-1$
+			try {
+				keyStore = KeyStore.getInstance("pkcs11"); //$NON-NLS-1$
+			} catch (KeyStoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+
+		// listProviders();
+
 		return keyStore;
 	}
 
