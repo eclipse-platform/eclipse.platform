@@ -21,25 +21,6 @@
   <version>1.2.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
-  <build>
-    <plugins>
-      <!-- tycho is not able to automatically determine os/ws/arch of this bundle -->
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>target-platform-configuration</artifactId>
-        <configuration>
-          <environments>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>x86_64</arch>
-            </environment>
-          </environments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <profiles>
     <profile>
       <id>build-natives</id>
