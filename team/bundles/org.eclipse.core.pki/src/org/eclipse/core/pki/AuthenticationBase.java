@@ -33,12 +33,12 @@ import org.eclipse.core.pki.util.LogUtil;
 public enum AuthenticationBase implements AuthenticationService {
 	INSTANCE;
 
-	protected static SSLContext sslContext;
+	protected SSLContext sslContext;
 	static KeyStore.PasswordProtection pp = new KeyStore.PasswordProtection("".toCharArray()); //$NON-NLS-1$
 	// private static final String javaVersion = System.getProperty("java.version");
-	protected static boolean is9;
-	protected static String PROVIDER = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
-	protected static String fingerprint;
+	protected boolean is9;
+	protected String PROVIDER = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
+	protected String fingerprint;
 
 	@Override
 	public KeyStore initialize(char[] p) {
@@ -59,7 +59,7 @@ public enum AuthenticationBase implements AuthenticationService {
 				 */
 				if (!(pin.equalsIgnoreCase("pin"))) { //$NON-NLS-1$
 					keyStore.load(null, pp.getPassword());
-					AuthenticationBase.setSSLContext(keyStore);
+					AuthenticationBase.INSTANCE.setSSLContext(keyStore);
 					DebugLogger.printDebug("AuthenticationBase SSL context PROTOCOL:" + sslContext.getProtocol()); //$NON-NLS-1$
 				}
 
@@ -87,7 +87,7 @@ public enum AuthenticationBase implements AuthenticationService {
 		return keyStore;
 	}
 
-	private static KeyStore configure() {
+	private KeyStore configure() {
 		Optional<String> configurationDirectory = null;
 		Optional<String>providerContainer = null;
 		Provider prototype = null;
@@ -105,6 +105,7 @@ public enum AuthenticationBase implements AuthenticationService {
 
 		// String cfgDirectory = AuthenticationPlugin.getDefault().getPreferenceStore()
 		// .getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
+
 		configurationDirectory = Optional.ofNullable(System.getProperty("javax.net.ssl.cfgFileLocation")); //$NON-NLS-1$
 		if (configurationDirectory.isEmpty()) {
 			cfgDirectory = new String("/etc/opensc"); //$NON-NLS-1$
@@ -122,6 +123,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			} else {
 				prototype = Security.getProvider(providerContainer.get().toString());
 			}
+
 			if (prototype == null) {
 				LogUtil.logInfo("In configure  PROVIDER NOT FOUND"); //$NON-NLS-1$
 			}
@@ -170,7 +172,7 @@ public enum AuthenticationBase implements AuthenticationService {
 
 	}
 
-	public static SSLContext setSSLContext(KeyStore keyStore) {
+	public SSLContext setSSLContext(KeyStore keyStore) {
 		KeyManager[] keyManagers = new KeyManager[1];
 		TrustManager[] trustManagers = new TrustManager[1];
 		try {
@@ -195,15 +197,15 @@ public enum AuthenticationBase implements AuthenticationService {
 		return is9;
 	}
 
-	public static String getFingerprint() {
+	public String getFingerprint() {
 		return fingerprint;
 	}
 
 	public static void setFingerprint(String fingerprint) {
-		AuthenticationBase.fingerprint = fingerprint;
+		AuthenticationBase.INSTANCE.fingerprint = fingerprint;
 	}
 
-	public static KeyManager getCustomKeyManager(KeyStore keyStore) {
+	public KeyManager getCustomKeyManager(KeyStore keyStore) {
 		CustomKeyManager keyManager = null;
 		try {
 			keyManager = new CustomKeyManager(keyStore, "".toCharArray(), null); //$NON-NLS-1$
