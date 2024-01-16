@@ -37,7 +37,7 @@ public enum AuthenticationBase implements AuthenticationService {
 	static KeyStore.PasswordProtection pp = new KeyStore.PasswordProtection("".toCharArray()); //$NON-NLS-1$
 	// private static final String javaVersion = System.getProperty("java.version");
 	protected boolean is9;
-	protected String PROVIDER = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
+	protected String PKI_PROVIDER = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
 	protected String fingerprint;
 
 	@Override
@@ -48,7 +48,7 @@ public enum AuthenticationBase implements AuthenticationService {
 		String pin = new String(p);
 		try {
 
-			DebugLogger.printDebug("Before calls to configure JDK"); //$NON-NLS-1$
+			LogUtil.logInfo("Before calls to configure JDK"); //$NON-NLS-1$
 			// keyStore = (javaVersion.startsWith("1."))?configurejdk8():configurejdk9();
 			keyStore = configure();
 			try {
@@ -91,6 +91,7 @@ public enum AuthenticationBase implements AuthenticationService {
 		Optional<String> configurationDirectory = null;
 		Optional<String>providerContainer = null;
 		Provider prototype = null;
+		String securityProvider = null;
 		String cfgDirectory = "TBD"; //$NON-NLS-1$
 		KeyStore keyStore = null;
 		is9 = true;
@@ -119,11 +120,11 @@ public enum AuthenticationBase implements AuthenticationService {
 							System.getProperty("javax.net.ssl.keyStoreProvider")); //$NON-NLS-1$
 
 			if (providerContainer.isEmpty() ) {
-				prototype = Security.getProvider(PROVIDER);
+				securityProvider = PKI_PROVIDER;
 			} else {
-				prototype = Security.getProvider(providerContainer.get().toString());
+				securityProvider = providerContainer.get().toString();
 			}
-
+			prototype = Security.getProvider(securityProvider);
 			if (prototype == null) {
 				LogUtil.logInfo("In configure  PROVIDER NOT FOUND"); //$NON-NLS-1$
 			}
