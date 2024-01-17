@@ -61,16 +61,14 @@ public class PKISetup implements BundleActivator, IStartup {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		// System.out.println("PKISetup PKISetup ------------------- START");
-		// //$NON-NLS-1$
+		System.out.println("PKISetup PKISetup ------------------- START"); //$NON-NLS-1$
 		Startup();
 	}
 
 	@Override
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
-		// System.out.println("PKISetup PKISetup -------------------early START");
-		// //$NON-NLS-1$
+		System.out.println("PKISetup PKISetup -------------------early START");//$NON-NLS-1$
 	}
 
 	@Override
@@ -147,7 +145,10 @@ public class PKISetup implements BundleActivator, IStartup {
 				}
 				if (PKIState.CONTROL.isPKCS11on()) {
 					LogUtil.logInfo("PKISetup - Processing PKCS11"); //$NON-NLS-1$
-					keystoreContainer = Optional.ofNullable(AuthenticationBase.INSTANCE.initialize("".toCharArray())); //$NON-NLS-1$
+					AuthenticationBase.INSTANCE.initialize("".toCharArray()); //$NON-NLS-1$
+					// keystoreContainer =
+					// Optional.ofNullable(AuthenticationBase.INSTANCE.initialize("".toCharArray()));
+					// //$NON-NLS-1$
 					if (keystoreContainer.isEmpty()) {
 						LogUtil.logError("PKISetup - Failed to Load a Keystore.", null); //$NON-NLS-1$
 					} else {
