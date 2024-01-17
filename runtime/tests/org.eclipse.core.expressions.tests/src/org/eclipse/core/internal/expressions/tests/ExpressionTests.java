@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -31,13 +32,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.junit.Test;
-import org.osgi.framework.FrameworkUtil;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import org.eclipse.core.expressions.AndExpression;
 import org.eclipse.core.expressions.CountExpression;
@@ -60,11 +54,15 @@ import org.eclipse.core.internal.expressions.IterateExpression;
 import org.eclipse.core.internal.expressions.NotExpression;
 import org.eclipse.core.internal.expressions.ResolveExpression;
 import org.eclipse.core.internal.expressions.SystemTestExpression;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.junit.Test;
+import org.osgi.framework.FrameworkUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 @SuppressWarnings("restriction")
@@ -76,11 +74,11 @@ public class ExpressionTests {
 		public Collection<String> collection;
 	}
 
-	@Test(expected = CoreException.class)
+	@Test
 	public void testEscape() throws Exception {
 		assertEquals("Str'ing", Expressions.unEscapeString("Str''ing")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("'", Expressions.unEscapeString("''")); //$NON-NLS-1$ //$NON-NLS-2$
-		Expressions.unEscapeString("'"); //$NON-NLS-1$
+		assertThrows(CoreException.class, () -> Expressions.unEscapeString("'")); //$NON-NLS-1$
 	}
 
 	@Test
@@ -145,20 +143,8 @@ public class ExpressionTests {
 		assertEquals(" s1 ", result[0]); //$NON-NLS-1$
 		assertEquals(Boolean.TRUE, result[1]);
 
-		boolean caught= false;
-		try {
-			Expressions.parseArguments("' s1"); //$NON-NLS-1$
-		} catch (CoreException e) {
-			caught= true;
-		}
-		assertTrue(caught);
-		caught= false;
-		try {
-			Expressions.parseArguments("'''s1"); //$NON-NLS-1$
-		} catch (CoreException e) {
-			caught= true;
-		}
-		assertTrue(caught);
+		assertThrows(CoreException.class, () ->Expressions.parseArguments("' s1")); //$NON-NLS-1$
+		assertThrows(CoreException.class, () -> Expressions.parseArguments("'''s1")); //$NON-NLS-1$
 	}
 
 	@Test
@@ -194,7 +180,7 @@ public class ExpressionTests {
 				"org.eclipse.core.internal.expressions.tests.Adapter"); //$NON-NLS-1$
 		expression2.add(new InstanceofExpression(
 				"org.eclipse.core.internal.expressions.tests.Adapter2")); //$NON-NLS-1$
-		assertTrue("These adapt expressions should not be equal", !expression1
+		assertFalse("These adapt expressions should not be equal", expression1
 				.equals(expression2));
 	}
 
@@ -252,8 +238,7 @@ public class ExpressionTests {
 		AndExpression expression2 = new AndExpression();
 		expression2.add(new InstanceofExpression(
 				"org.eclipse.core.internal.expressions.tests.Adapter2")); //$NON-NLS-1$
-		assertTrue("These and expressions should not be equal", !expression1
-				.equals(expression2));
+		assertFalse("These and expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -272,8 +257,7 @@ public class ExpressionTests {
 	public void testCountExpressionNotEqual() throws Exception {
 		CountExpression expression1 = new CountExpression("+");
 		CountExpression expression2 = new CountExpression("!");
-		assertTrue("These count expressions should not be equal", !expression1
-				.equals(expression2));
+		assertFalse("These count expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -292,8 +276,7 @@ public class ExpressionTests {
 		EnablementExpression expression2 = new EnablementExpression((IConfigurationElement)null);
 		expression2.add(new InstanceofExpression(
 				"org.eclipse.core.internal.expressions.tests.Adapter2")); //$NON-NLS-1$
-		assertTrue("These enablement expressions should not be equal",
-				!expression1.equals(expression2));
+		assertFalse("These enablement expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -312,8 +295,7 @@ public class ExpressionTests {
 	public void testEqualsExpressionNotEqual() throws Exception {
 		EqualsExpression expression1 = new EqualsExpression("+");
 		EqualsExpression expression2 = new EqualsExpression("!");
-		assertTrue("These equals expressions should not be equal", !expression1
-				.equals(expression2));
+		assertFalse("These equals expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -328,8 +310,7 @@ public class ExpressionTests {
 	public void testInstanceOfExpressionNotEqual() throws Exception {
 		InstanceofExpression expression1 = new InstanceofExpression("+");
 		InstanceofExpression expression2 = new InstanceofExpression("!");
-		assertTrue("These instance of expressions should not be equal",
-				!expression1.equals(expression2));
+		assertFalse("These instance of expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -348,8 +329,7 @@ public class ExpressionTests {
 		IterateExpression expression2 = new IterateExpression("and");
 		expression2.add(new InstanceofExpression(
 				"org.eclipse.core.internal.expressions.tests.Adapter")); //$NON-NLS-1$
-		assertTrue("These iterate expressions should not be equal",
-				!expression1.equals(expression2));
+		assertFalse("These iterate expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -370,8 +350,7 @@ public class ExpressionTests {
 				"org.eclipse.core.internal.expressions.tests.Adapter1"));
 		NotExpression expression2 = new NotExpression(new InstanceofExpression(
 				"org.eclipse.core.internal.expressions.tests.Adapter2"));
-		assertTrue("These not expressions should not be equal", !expression1
-				.equals(expression2));
+		assertFalse("These not expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -392,8 +371,7 @@ public class ExpressionTests {
 		OrExpression expression2 = new OrExpression();
 		expression2.add(new InstanceofExpression(
 				"org.eclipse.core.internal.expressions.tests.Adapter2")); //$NON-NLS-1$
-		assertTrue("These or expressions should not be equal", !expression1
-				.equals(expression2));
+		assertFalse("These or expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -418,8 +396,7 @@ public class ExpressionTests {
 				new Object[0]);
 		expression2.add(new InstanceofExpression(
 				"org.eclipse.core.internal.expressions.tests.Adapter2")); //$NON-NLS-1$
-		assertTrue("These resolve expressions should not be equal",
-				!expression1.equals(expression2));
+		assertFalse("These resolve expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -442,8 +419,7 @@ public class ExpressionTests {
 				"value1");
 		SystemTestExpression expression2 = new SystemTestExpression("prop",
 				"value2");
-		assertTrue("These system test expressions should not be equal",
-				!expression1.equals(expression2));
+		assertFalse("These system test expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -462,8 +438,7 @@ public class ExpressionTests {
 				new Object[0], "value1");
 		TestExpression expression2 = new TestExpression("namespace", "prop",
 				new Object[0], "value2");
-		assertTrue("These system test expressions should not be equal",
-				!expression1.equals(expression2));
+		assertFalse("These system test expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -484,8 +459,7 @@ public class ExpressionTests {
 		WithExpression expression2 = new WithExpression("variable2");
 		expression2.add(new InstanceofExpression(
 				"org.eclipse.core.internal.expressions.tests.Adapter2")); //$NON-NLS-1$
-		assertTrue("These with expressions should not be equal",
-				!expression1.equals(expression2));
+		assertFalse("These with expressions should not be equal", expression1.equals(expression2));
 	}
 
 	@Test
@@ -500,12 +474,12 @@ public class ExpressionTests {
 				expression1.hashCode(), expression2.hashCode());
 	}
 
-	@Test(expected = CoreException.class)
+	@Test
 	public void testWithExpressionNoVariable() throws Exception {
 		WithExpression expr = new WithExpression("variable");
 		expr.add(new EqualsExpression(new Object()));
 		EvaluationContext context = new EvaluationContext(null, new Object());
-		expr.evaluate(context);
+		assertThrows(CoreException.class, () -> expr.evaluate(context));
 	}
 
 	@Test
@@ -549,20 +523,13 @@ public class ExpressionTests {
 	public void testCountExpressionAnyNumber() throws Exception {
 		CountExpression exp= new CountExpression("*"); //$NON-NLS-1$
 
-		List<String> list= new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, list);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one"));
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		list.add("two"); //$NON-NLS-1$
-		list.add("three"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one", "two", "three"));
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 	}
 
@@ -570,22 +537,13 @@ public class ExpressionTests {
 	public void testCountExpressionExact() throws Exception {
 		CountExpression exp= new CountExpression("2"); //$NON-NLS-1$
 
-		List<String> list= new ArrayList<>();
-		list.add("one"); //$NON-NLS-1$
-		EvaluationContext context= new EvaluationContext(null, list);
+		EvaluationContext context = new EvaluationContext(null, List.of("one"));
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		list.add("two"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one", "two"));
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		list.add("two"); //$NON-NLS-1$
-		list.add("three"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one", "two", "three"));
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
 
@@ -593,19 +551,13 @@ public class ExpressionTests {
 	public void testCountExpressionNoneOrOne() throws Exception {
 		CountExpression exp= new CountExpression("?"); //$NON-NLS-1$
 
-		List<String> list= new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, list);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one"));
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		list.add("two"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one", "two"));
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
 
@@ -613,19 +565,13 @@ public class ExpressionTests {
 	public void testCountExpressionOneOrMore() throws Exception {
 		CountExpression exp= new CountExpression("+"); //$NON-NLS-1$
 
-		List<String> list= new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, list);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one"));
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		list.add("two"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one", "two"));
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 	}
 
@@ -633,19 +579,13 @@ public class ExpressionTests {
 	public void testCountExpressionNone() throws Exception {
 		CountExpression exp= new CountExpression("!"); //$NON-NLS-1$
 
-		List<String> list= new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, list);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one"));
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 
-		list.clear();
-		list.add("one"); //$NON-NLS-1$
-		list.add("two"); //$NON-NLS-1$
-		context= new EvaluationContext(null, list);
+		context = new EvaluationContext(null, List.of("one", "two"));
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
 
@@ -723,9 +663,7 @@ public class ExpressionTests {
 		};
 		IterateExpression exp= new IterateExpression("and"); //$NON-NLS-1$
 		exp.add(myExpression);
-		List<String> input= new ArrayList<>();
-		input.add("one"); //$NON-NLS-1$
-		input.add("two"); //$NON-NLS-1$
+		List<String> input = List.of("one", "two"); //$NON-NLS-1$
 		EvaluationContext context= new EvaluationContext(null, input);
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 		assertTrue(result.equals(input));
@@ -743,10 +681,7 @@ public class ExpressionTests {
 		};
 		IterateExpression exp= new IterateExpression("and"); //$NON-NLS-1$
 		exp.add(myExpression);
-		List<String> input= new ArrayList<>();
-		input.add("one"); //$NON-NLS-1$
-		input.add("two"); //$NON-NLS-1$
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of("one", "two"));
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 		assertTrue(result.size() == 1 && result.get(0).equals("one")); //$NON-NLS-1$
 	}
@@ -763,10 +698,7 @@ public class ExpressionTests {
 		};
 		IterateExpression exp= new IterateExpression("or"); //$NON-NLS-1$
 		exp.add(myExpression);
-		List<String> input= new ArrayList<>();
-		input.add("one"); //$NON-NLS-1$
-		input.add("two"); //$NON-NLS-1$
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of("one", "two"));
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 		assertTrue(result.size() == 1 && result.get(0).equals("one")); //$NON-NLS-1$
 	}
@@ -783,10 +715,8 @@ public class ExpressionTests {
 		};
 		IterateExpression exp= new IterateExpression("or"); //$NON-NLS-1$
 		exp.add(myExpression);
-		List<String> input= new ArrayList<>();
-		input.add("one"); //$NON-NLS-1$
-		input.add("two"); //$NON-NLS-1$
-		EvaluationContext context= new EvaluationContext(null, input);
+		List<String> input = List.of("one", "two");
+		EvaluationContext context = new EvaluationContext(null, input);
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 		assertTrue(result.equals(input));
 	}
@@ -798,9 +728,7 @@ public class ExpressionTests {
 		IterateExpression exp= new IterateExpression("or"); //$NON-NLS-1$
 		exp.add(Expression.FALSE);
 		exp.add(Expression.TRUE);
-		List<String> input= new ArrayList<>();
-		input.add("one"); //$NON-NLS-1$
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of("one"));
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
 
@@ -811,58 +739,49 @@ public class ExpressionTests {
 		IterateExpression exp= new IterateExpression("and"); //$NON-NLS-1$
 		exp.add(Expression.FALSE);
 		exp.add(Expression.TRUE);
-		List<String> input= new ArrayList<>();
-		input.add("one"); //$NON-NLS-1$
-		input.add("two"); //$NON-NLS-1$
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of("one", "two"));
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
 
 	@Test
 	public void testIterateExpressionEmptyOr() throws Exception {
 		IterateExpression exp= new IterateExpression("or"); //$NON-NLS-1$
-		List<?> input = new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
 
 	@Test
 	public void testIterateExpressionEmptyAnd() throws Exception {
 		IterateExpression exp= new IterateExpression("and"); //$NON-NLS-1$
-		List<?> input = new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 	}
 
 	@Test
 	public void testIterateExpressionAnd_IfEmptyTrue() throws Exception {
 		IterateExpression exp= new IterateExpression("and", "true"); //$NON-NLS-1$
-		List<?> input = new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 	}
 
 	@Test
 	public void testIterateExpressionAnd_IfEmptyFalse() throws Exception {
 		IterateExpression exp= new IterateExpression("and", "false"); //$NON-NLS-1$
-		List<?> input = new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
 
 	@Test
 	public void testIterateExpressionOr_IfEmptyTrue() throws Exception {
 		IterateExpression exp= new IterateExpression("or", "true"); //$NON-NLS-1$
-		List<?> input = new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 	}
 
 	@Test
 	public void testIterateExpressionOr_IfEmptyFalse() throws Exception {
 		IterateExpression exp= new IterateExpression("or", "false"); //$NON-NLS-1$
-		List<?> input = new ArrayList<>();
-		EvaluationContext context= new EvaluationContext(null, input);
+		EvaluationContext context = new EvaluationContext(null, List.of());
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
 
@@ -878,9 +797,7 @@ public class ExpressionTests {
 		};
 		IterateExpression exp= new IterateExpression("or"); //$NON-NLS-1$
 		exp.add(myExpression);
-		final List<String> input= new ArrayList<>();
-		input.add("one"); //$NON-NLS-1$
-		input.add("two"); //$NON-NLS-1$
+		final List<String> input = List.of("one", "two");
 		CollectionWrapper wrapper= new CollectionWrapper();
 		wrapper.collection= input;
 		EvaluationContext context= new EvaluationContext(null, wrapper);
@@ -891,9 +808,8 @@ public class ExpressionTests {
 	@Test
 	public void testIterateExpressionWithAdapterManagerEmptyAnd() throws Exception {
 		IterateExpression exp= new IterateExpression("and"); //$NON-NLS-1$
-		final List<String> input= new ArrayList<>();
 		CollectionWrapper wrapper= new CollectionWrapper();
-		wrapper.collection= input;
+		wrapper.collection = List.of();
 		EvaluationContext context= new EvaluationContext(null, wrapper);
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 	}
@@ -901,9 +817,8 @@ public class ExpressionTests {
 	@Test
 	public void testIterateExpressionWithAdapterManagerEmptyOr() throws Exception {
 		IterateExpression exp= new IterateExpression("or"); //$NON-NLS-1$
-		final List<String> input= new ArrayList<>();
 		CollectionWrapper wrapper= new CollectionWrapper();
-		wrapper.collection= input;
+		wrapper.collection = List.of();
 		EvaluationContext context= new EvaluationContext(null, wrapper);
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
@@ -911,9 +826,8 @@ public class ExpressionTests {
 	@Test
 	public void testIterateExpressionWithAdapterManagerIfEmptyFalse() throws Exception {
 		IterateExpression exp= new IterateExpression("or", "false"); //$NON-NLS-1$
-		final List<String> input= new ArrayList<>();
 		CollectionWrapper wrapper= new CollectionWrapper();
-		wrapper.collection= input;
+		wrapper.collection = List.of();
 		EvaluationContext context= new EvaluationContext(null, wrapper);
 		assertTrue(EvaluationResult.FALSE == exp.evaluate(context));
 	}
@@ -921,9 +835,8 @@ public class ExpressionTests {
 	@Test
 	public void testIterateExpressionWithAdapterManagerIfEmptyTrue() throws Exception {
 		IterateExpression exp= new IterateExpression("or", "true"); //$NON-NLS-1$
-		final List<String> input= new ArrayList<>();
 		CollectionWrapper wrapper= new CollectionWrapper();
-		wrapper.collection= input;
+		wrapper.collection = List.of();
 		EvaluationContext context= new EvaluationContext(null, wrapper);
 		assertTrue(EvaluationResult.TRUE == exp.evaluate(context));
 	}
@@ -1015,13 +928,9 @@ public class ExpressionTests {
 		IConfigurationElement expr= findExtension(ces, "org.eclipse.core.expressions.tests.activeProblemsView");
 		assertNotNull(expr);
 		Expression probExpr= ExpressionConverter.getDefault().perform(expr.getChildren()[0]);
-		EvaluationContext context= new EvaluationContext(null, Collections.EMPTY_LIST);
-		try {
-			probExpr.evaluate(context);
-			fail("Should report error with no variable");
-		} catch (CoreException e) {
-			// correct, throw exception
-		}
+		EvaluationContext context = new EvaluationContext(null, Collections.EMPTY_LIST);
+		assertThrows("Should report error with no variable", CoreException.class, () -> probExpr.evaluate(context));
+
 		context.addVariable("activePartId", "org.eclipse.ui.views.TasksView");
 		assertEquals(EvaluationResult.FALSE, probExpr.evaluate(context));
 
@@ -1038,12 +947,8 @@ public class ExpressionTests {
 		EnablementExpression probExpr= (EnablementExpression)ExpressionConverter.getDefault().perform(enable);
 		EvaluationContext context= new EvaluationContext(null, Collections.EMPTY_LIST);
 
-		try {
-			probExpr.evaluate(context);
-			fail("Should report error with no variable");
-		} catch (CoreException e) {
-			// correct, throw exception
-		}
+		assertThrows("Should report error with no variable", CoreException.class, () -> probExpr.evaluate(context));
+
 		context.addVariable("activePartId", "org.eclipse.ui.views.TasksView");
 		assertEquals(EvaluationResult.FALSE, probExpr.evaluate(context));
 
@@ -1060,12 +965,7 @@ public class ExpressionTests {
 		EnablementExpression probExpr= (EnablementExpression)ExpressionConverter.getDefault().perform(enable);
 		EvaluationContext context= new EvaluationContext(null, Collections.EMPTY_LIST);
 
-		try {
-			probExpr.evaluate(context);
-			fail("Should report error with no variable");
-		} catch (CoreException e) {
-			// correct, throw exception
-		}
+		assertThrows("Should report error with no variable", CoreException.class, () -> probExpr.evaluate(context));
 		context.addVariable("activePartId", "org.eclipse.ui.views.TasksView");
 		assertEquals(EvaluationResult.FALSE, probExpr.evaluate(context));
 
@@ -1073,8 +973,8 @@ public class ExpressionTests {
 		// we still have no selection in the default variable
 		assertEquals(EvaluationResult.FALSE, probExpr.evaluate(context));
 
-		context= new EvaluationContext(context, Collections.singletonList(probExpr));
-		assertEquals(EvaluationResult.TRUE, probExpr.evaluate(context));
+		EvaluationContext context2 = new EvaluationContext(context, Collections.singletonList(probExpr));
+		assertEquals(EvaluationResult.TRUE, probExpr.evaluate(context2));
 	}
 
 	@Test
