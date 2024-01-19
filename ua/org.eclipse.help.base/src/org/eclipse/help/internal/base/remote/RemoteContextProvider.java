@@ -58,7 +58,6 @@ public class RemoteContextProvider extends AbstractContextProvider {
 			for (int i = 0; i < numICs; i++) {
 
 				if (isEnabled[i].equals("true")) { //$NON-NLS-1$
-					@SuppressWarnings("resource")
 					InputStream in = null;
 					try {
 
