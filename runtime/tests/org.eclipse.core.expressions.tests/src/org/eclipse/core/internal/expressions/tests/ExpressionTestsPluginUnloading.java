@@ -14,15 +14,15 @@
 package org.eclipse.core.internal.expressions.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.FixMethodOrder;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -37,11 +37,15 @@ import org.eclipse.core.internal.expressions.Expressions;
  * Don't include these in another test suite!
  */
 @SuppressWarnings("restriction")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ExpressionTestsPluginUnloading {
 
-	@Rule
-	public TestName name = new TestName();
+	private String name;
+
+	@BeforeEach
+	public void setupTestName(TestInfo testInfo) {
+		name = testInfo.getDisplayName();
+	}
 
 	@Test
 	public void test01PluginStopping() throws Exception {
@@ -109,10 +113,10 @@ public class ExpressionTestsPluginUnloading {
 		Class<?> clazz = obj.getClass();
 
 		System.out.println(
-				"ExpressionTestsPluginUnloading#" + name.getMethodName() + "() - " + clazz.getName() + ": "
+				"ExpressionTestsPluginUnloading#" + name + "() - " + clazz.getName() + ": "
 						+ clazz.hashCode());
 		System.out.println(
-				"ExpressionTestsPluginUnloading#" + name.getMethodName() + "() - ClassLoader: "
+				"ExpressionTestsPluginUnloading#" + name + "() - ClassLoader: "
 						+ clazz.getClassLoader().hashCode());
 
 		for (int i= 0; i < 2; i++) { // test twice, second time is cached:
