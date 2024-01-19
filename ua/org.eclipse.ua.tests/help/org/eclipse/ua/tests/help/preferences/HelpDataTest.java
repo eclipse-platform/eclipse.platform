@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.preferences;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -28,7 +29,6 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.help.internal.HelpData;
 import org.eclipse.help.internal.HelpPlugin;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
@@ -93,9 +93,12 @@ public class HelpDataTest {
 			Set<String> expectedHiddenIndexes = new HashSet<>(Arrays.asList(entry[3]));
 			URL url = FrameworkUtil.getBundle(HelpDataTest.class).getEntry(file);
 			HelpData data = new HelpData(url);
-			Assert.assertEquals("Did not get the expected toc order from help data file " + file, expectedTocOrder, data.getTocOrder());
-			Assert.assertEquals("Did not get the expected hidden tocs from help data file " + file, expectedHiddenTocs, data.getHiddenTocs());
-			Assert.assertEquals("Did not get the expected hidden indexes from help data file " + file, expectedHiddenIndexes, data.getHiddenIndexes());
+			assertThat(data.getTocOrder()).as("toc order from help data file " + file)
+					.containsExactlyElementsOf(expectedTocOrder);
+			assertThat(data.getHiddenTocs()).as("hidden tocs from help data file " + file)
+					.containsExactlyElementsOf(expectedHiddenTocs);
+			assertThat(data.getHiddenIndexes()).as("hidden indexes from help data file " + file)
+					.containsExactlyElementsOf(expectedHiddenIndexes);
 		}
 	}
 

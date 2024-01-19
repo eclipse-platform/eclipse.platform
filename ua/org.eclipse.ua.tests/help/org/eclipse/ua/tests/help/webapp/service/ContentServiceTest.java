@@ -15,6 +15,7 @@ package org.eclipse.ua.tests.help.webapp.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 
@@ -64,9 +65,9 @@ public class ContentServiceTest extends ContentServletTest {
 	}
 
 	@Override
-	@Test(expected = IOException.class)
+	@Test
 	public void testRemoteContentNotFound() throws Exception {
-		ServicesTestUtils.getRemoteContent(UA_TESTS, "/no/such/path.html", "en");
+		assertThrows(IOException.class, () -> ServicesTestUtils.getRemoteContent(UA_TESTS, "/no/such/path.html", "en"));
 	}
 
 }

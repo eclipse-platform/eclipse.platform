@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.help.remote;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 import java.net.URL;
@@ -63,7 +63,7 @@ public class SearchIndexCreation {
 		addHrefToIndex(index, "/org.eclipse.ua.tests/data/help/search/test77.htm", false); // Does not exist
 		index.endAddBatch(false, true);
 		int finalCallCount = MockContentServlet.getCallcount();
-		assertEquals("Remote server called", 0, finalCallCount - initialCallCount);
+		assertThat(finalCallCount - initialCallCount).as("Remote server called").isZero();
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class SearchIndexCreation {
 		addHrefToIndex(index, "/org.eclipse.ua.tests/data/help/search/test77.htm", false); // Does not exist
 		index.endAddBatch(false, true);
 		int finalCallCount = MockContentServlet.getCallcount();
-		assertEquals("Remote server called", 0, finalCallCount - initialCallCount);
+		assertThat(finalCallCount - initialCallCount).as("Remote server called").isZero();
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public class SearchIndexCreation {
 		addHrefToIndex(index, "/org.eclipse.ua.tests/data/help/search/test77.htm", false); // Does not exist
 		index.endAddBatch(false, true);
 		int finalCallCount = MockContentServlet.getCallcount();
-		assertEquals("Remote server called", 0, finalCallCount - initialCallCount);
+		assertThat(finalCallCount - initialCallCount).as("Remote server called").isZero();
 	}
 
 	private void addHrefToIndex(SearchIndexWithIndexingProgress index,

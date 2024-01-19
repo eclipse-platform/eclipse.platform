@@ -24,7 +24,6 @@ import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
-import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
 
@@ -55,7 +54,7 @@ public class CheatSheetModelSerializerTest {
 			CheatSheetParser parser = new CheatSheetParser();
 			CheatSheet sheet = (CheatSheet) parser.parse(url, FrameworkUtil.getBundle(getClass()).getSymbolicName(),
 					CheatSheetParser.ANY);
-			Assert.assertNotNull("Tried parsing a valid cheat sheet but parser returned null: " + url, sheet);
+			assertThat(sheet).as("tried parsing a valid cheat sheet but parser returned null: " + url).isNotNull();
 
 			try (PrintWriter out = new PrintWriter(
 					new FileOutputStream(FileUtil.getResultFile(url.toString().substring("file:/".length()))))) {

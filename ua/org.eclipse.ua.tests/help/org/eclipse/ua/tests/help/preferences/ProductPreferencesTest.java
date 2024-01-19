@@ -24,7 +24,6 @@ import java.util.StringTokenizer;
 import java.util.stream.IntStream;
 
 import org.eclipse.help.internal.util.ProductPreferences;
-import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
 
@@ -150,7 +149,7 @@ public class ProductPreferencesTest {
 					.mapToObj(i -> ProductPreferences.tokenize(data[i + 3])).collect(toList());
 
 			List<String> actualOrder = ProductPreferences.getOrderedList(items, primaryOrdering, secondaryOrderings, null);
-			Assert.assertEquals("Items in list were not ordered as expected", expectedOrder, actualOrder);
+			assertThat(actualOrder).containsExactlyElementsOf(expectedOrder);
 		}
 	}
 
@@ -161,7 +160,7 @@ public class ProductPreferencesTest {
 			Properties properties = ProductPreferences
 					.loadPropertiesFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(), path);
 
-			Assert.assertNotNull("The result of loading a properties file was unexpectedly null", properties);
+			assertThat(properties).as("result of loading a properties file").isNotNull();
 			assertThat(data).hasSize(properties.size() + 1);
 
 			for (int j=1;j<data.length;++j) {
@@ -169,7 +168,8 @@ public class ProductPreferencesTest {
 				String key = tok.nextToken();
 				String expectedValue = tok.nextToken();
 				String actualValue = properties.getProperty(key);
-				Assert.assertEquals("One of the properties files' keys did not match the expected value: file=" + path + ", key=" + key, expectedValue, actualValue);
+				assertThat(actualValue).as("one of the properties files' keys did not match the expected value: file="
+						+ path + ", key=" + key).isEqualTo(expectedValue);
 			}
 		}
 	}
@@ -189,10 +189,10 @@ public class ProductPreferencesTest {
 
 			String value = ProductPreferences.getValue(key, primary, secondary);
 			if (allowableValues.isEmpty()) {
-				Assert.assertNull("Value should have been null, but was not: " + key, value);
+				assertThat(value).as("value for key: " + key).isNull();
 			}
 			else {
-				Assert.assertTrue("Value returned was not one of the allowable values", allowableValues.contains(value));
+				assertThat(allowableValues).contains(value);
 			}
 		}
 	}
@@ -203,11 +203,11 @@ public class ProductPreferencesTest {
 			String input = data[0];
 			List<String> output = ProductPreferences.tokenize(input);
 
-			Assert.assertNotNull("The tokenized output was unexpectedly null for: " + input, output);
-			assertThat(output).as("check number of tokens").hasSize(data.length - 1);
-
+			assertThat(output).as("tokenized output for: " + input).isNotNull() //
+					.as("check number of tokens").hasSize(data.length - 1);
 			for (int j=0;j<output.size();++j) {
-				Assert.assertEquals("One of the tokens did not match the expected result", data[j + 1], output.get(j));
+				assertThat(output.get(j)).as("one of the tokens did not match the expected result")
+						.isEqualTo(data[j + 1]);
 			}
 		}
 	}

@@ -14,11 +14,9 @@
 
 package org.eclipse.ua.tests.cheatsheet.execution;
 
-
-import org.junit.Assert;
+import static org.junit.Assert.fail;
 
 import org.eclipse.jface.action.Action;
-
 import org.eclipse.ui.cheatsheets.ICheatSheetAction;
 import org.eclipse.ui.cheatsheets.ICheatSheetManager;
 
@@ -33,7 +31,7 @@ public class ActionWithParameters extends Action implements ICheatSheetAction {
 	 */
 	@Override
 	public void run() {
-		Assert.fail("Should not call this version of run");
+		fail("Should not call this version of run");
 	}
 
 	@Override

@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.cheatsheet.other;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -41,8 +42,7 @@ public class TestCheatSheetCategories {
 		CheatSheetCollectionElement cheatSheets =
 			CheatSheetRegistryReader.getInstance().getCheatSheets();
 		CheatSheetCollectionElement testCat = findChildCategory(cheatSheets, TEST_CATEGORY);
-		assertNotNull("Cannot find category org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat",
-							testCat);
+		assertThat(testCat).as("cannot find category org.eclipse.ua.tests.cheatsheet.cheatSheetsTestCat").isNotNull();
 	}
 
 	@Test

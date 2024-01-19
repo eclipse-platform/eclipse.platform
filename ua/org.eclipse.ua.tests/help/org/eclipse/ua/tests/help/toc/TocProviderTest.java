@@ -15,7 +15,6 @@ package org.eclipse.ua.tests.help.toc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.help.IToc;
 import org.eclipse.help.ITopic;
@@ -36,7 +35,7 @@ public class TocProviderTest {
 				uaToc = toc;
 			}
 		}
-		assertNotNull("User Assistance Tests not found", uaToc);
+		assertThat(uaToc).withFailMessage("User Assistance Tests not found").isNotNull();
 		ITopic[] children = uaToc.getTopics();
 		int generatedParentTopics = 0;
 		for (ITopic child : children) {
@@ -46,7 +45,6 @@ public class TocProviderTest {
 			}
 		}
 		assertEquals(1, generatedParentTopics);
-
 	}
 
 }

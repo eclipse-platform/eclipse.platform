@@ -13,8 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.help.internal.search.AnalyzerDescriptor;
 import org.junit.Test;
@@ -108,19 +107,17 @@ public class AnalyzerTest {
 	}
 
 	private void checkAnalyzer(String language, String analyzerKind) {
-		AnalyzerDescriptor an = new AnalyzerDescriptor(language);
-
+		String actualLanguageAnalyzerClassName = new AnalyzerDescriptor(language).getAnalyzerClassName();
 		for (String nextLocale : supportedLanguages) {
-			AnalyzerDescriptor expected = new AnalyzerDescriptor(nextLocale);
-			String analyzerClassName = expected.getAnalyzerClassName();
+			String otherLanguageAnalyzerClassName = new AnalyzerDescriptor(nextLocale).getAnalyzerClassName();
 			if (nextLocale.equals(analyzerKind)) {
-				assertEquals("Comparing " + nextLocale + " to " + language, analyzerClassName, an.getAnalyzerClassName());
+				assertThat(otherLanguageAnalyzerClassName).as("comparing analyzer for local: " + nextLocale)
+						.isEqualTo(actualLanguageAnalyzerClassName);
 			} else {
-				assertFalse("Both " + nextLocale + " and " + language + " have value of " + analyzerClassName, analyzerClassName.equals(an.getAnalyzerClassName()));
-
+				assertThat(otherLanguageAnalyzerClassName).as("comparing analyzer for local: " + nextLocale)
+						.isNotEqualTo(actualLanguageAnalyzerClassName);
 			}
 		}
-
 	}
 
 }

@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.cheatsheet.parser;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -23,7 +25,6 @@ import org.eclipse.ua.tests.cheatsheet.util.CheatSheetModelSerializer;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
-import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
@@ -39,11 +40,13 @@ public class ValidTest {
 		URL url = FileLocator.find(bundle, path, null);
 		CheatSheetParser parser = new CheatSheetParser();
 		CheatSheet sheet = (CheatSheet) parser.parse(url, bundle.getSymbolicName(), CheatSheetParser.ANY);
-		Assert.assertNotNull("Tried parsing a valid cheat sheet but parser returned null: " + url, sheet);
+		assertThat(sheet).as("tried parsing a valid cheat sheet but parser returned null: " + url).isNotNull();
 		String expectedPath = "data/cheatsheet/valid/" + getExpected(file);
 		String expected = FileUtil.getContents(bundle, expectedPath);
 		String actual = CheatSheetModelSerializer.serialize(sheet);
-		Assert.assertEquals("The model serialization generated for the cheatsheet did not match the expected result for: " + path, expected, actual);
+		assertThat(actual).as(
+				"the model serialization generated for the cheatsheet did not match the expected result for: " + path)
+				.isEqualTo(expected);
 	}
 
 	private String getExpected(String file) {

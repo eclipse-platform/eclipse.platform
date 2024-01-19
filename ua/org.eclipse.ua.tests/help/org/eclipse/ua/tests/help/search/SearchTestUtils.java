@@ -14,10 +14,11 @@
 
 package org.eclipse.ua.tests.help.search;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -26,7 +27,6 @@ import org.eclipse.help.internal.search.ISearchQuery;
 import org.eclipse.help.internal.search.SearchHit;
 import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.help.internal.search.SearchResults;
-import org.junit.Assert;
 
 public class SearchTestUtils {
 
@@ -38,7 +38,7 @@ public class SearchTestUtils {
 	public static void searchOneLocale(String searchWord, String[] hrefs, String nl) {
 		String unexpected = searchForExpectedResults(searchWord, hrefs, nl);
 		if (unexpected != null) {
-			Assert.fail(unexpected);
+			fail(unexpected);
 		}
 	}
 
@@ -74,9 +74,7 @@ public class SearchTestUtils {
 			buf.append("While searching for: " + searchWord + ",\n");
 			if (!hrefsToFind.isEmpty()) {
 				buf.append("Some of the expected results were not found:\n");
-				Iterator<String> iter = hrefsToFind.iterator();
-				while (iter.hasNext()) {
-					String missedHref = iter.next();
+				for (String missedHref : hrefsToFind) {
 					buf.append(missedHref + "\n");
 				}
 			}
@@ -85,9 +83,7 @@ public class SearchTestUtils {
 					buf.append("\nAlso,\n");
 				}
 				buf.append("Found some unexpected search results:\n");
-				Iterator<String> iter = unexpectedHrefs.iterator();
-				while (iter.hasNext()) {
-					String unexpectedHref = iter.next();
+				for (String unexpectedHref : unexpectedHrefs) {
 					buf.append(unexpectedHref + "\n");
 				}
 			}
