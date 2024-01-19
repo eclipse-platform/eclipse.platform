@@ -13,20 +13,20 @@
  *******************************************************************************/
 package org.eclipse.tips.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class TipTest {
 
@@ -36,7 +36,7 @@ public class TipTest {
 	private TestTipProvider fProvider;
 	private TestTip fTip;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		fManager = new TestTipManager();
 		fProvider = (TestTipProvider) new TestTipProvider().setManager(fManager);
@@ -91,7 +91,7 @@ public class TipTest {
 	}
 
 	@Test
-	@Ignore("Missing getImage() implementation in TestTip")
+	@Disabled("Missing getImage() implementation in TestTip")
 	public void testGetImage() {
 		assertNotNull(fTip.getImage());
 	}

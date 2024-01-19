@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.eclipse.tips.tests
 Bundle-Version: 1.2.0.qualifier
 Bundle-Vendor: Eclipse
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Require-Bundle: org.junit;bundle-version="4.12.0",
- org.eclipse.tips.examples;bundle-version="0.1.0",
+Require-Bundle: org.eclipse.tips.examples;bundle-version="0.1.0",
  org.eclipse.tips.ide;bundle-version="0.1.0",
  org.eclipse.core.runtime;bundle-version="3.29.0",
  org.eclipse.swt,
@@ -16,4 +15,6 @@ Require-Bundle: org.junit;bundle-version="4.12.0",
  org.eclipse.tips.json;bundle-version="0.1.0"
 Automatic-Module-Name: org.eclipse.tips.tests
 Import-Package: com.google.gson;version="[2.8.6,3.0.0)",
- org.assertj.core.api
+ org.assertj.core.api,
+ org.junit.jupiter.api,
+ org.junit.jupiter.api.function

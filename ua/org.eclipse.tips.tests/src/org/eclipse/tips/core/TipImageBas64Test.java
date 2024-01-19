@@ -14,10 +14,10 @@
 package org.eclipse.tips.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.runtime.AssertionFailedException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TipImageBas64Test {
 

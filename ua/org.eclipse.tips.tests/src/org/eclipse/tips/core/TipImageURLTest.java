@@ -14,20 +14,20 @@
 package org.eclipse.tips.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.AssertionFailedException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TipImageURLTest {
 
 	private static final String URL = "http://remainsoftware.com/img.png";
 
-	@Test
+	@org.junit.jupiter.api.Test
 	public void testTipImage() {
 		assertThrows(Exception.class, () -> new TipImage((URL) null));
 	}
