@@ -96,6 +96,7 @@ public class PKISetup implements BundleActivator, IStartup {
 
 		Optional<String>type = null;
 
+		keystoreContainer = Optional.ofNullable(AuthenticationBase.INSTANCE.initialize("".toCharArray()));//$NON-NLS-1$
 
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
@@ -121,12 +122,6 @@ public class PKISetup implements BundleActivator, IStartup {
 
 					try {
 
-						// LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStore")); //$NON-NLS-1$
-						// LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStoreType"));
-						// //$NON-NLS-1$
-						// LogUtil.logInfo(System.getProperty("javax.net.ssl.keyStorePassword"));
-						// //$NON-NLS-1$
-
 						keystoreContainer = Optional.ofNullable(
 								KeyStoreManager.INSTANCE.getKeyStore(System.getProperty("javax.net.ssl.keyStore"), //$NON-NLS-1$
 								System.getProperty("javax.net.ssl.keyStorePassword"), //$NON-NLS-1$
@@ -145,10 +140,6 @@ public class PKISetup implements BundleActivator, IStartup {
 				}
 				if (PKIState.CONTROL.isPKCS11on()) {
 					LogUtil.logInfo("PKISetup - Processing PKCS11"); //$NON-NLS-1$
-					AuthenticationBase.INSTANCE.initialize("".toCharArray()); //$NON-NLS-1$
-					// keystoreContainer =
-					// Optional.ofNullable(AuthenticationBase.INSTANCE.initialize("".toCharArray()));
-					// //$NON-NLS-1$
 					if (keystoreContainer.isEmpty()) {
 						LogUtil.logError("PKISetup - Failed to Load a Keystore.", null); //$NON-NLS-1$
 					} else {
