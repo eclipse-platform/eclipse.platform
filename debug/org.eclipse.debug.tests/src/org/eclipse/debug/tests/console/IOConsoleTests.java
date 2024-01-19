@@ -16,6 +16,7 @@ package org.eclipse.debug.tests.console;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -29,12 +30,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -51,6 +59,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleConstants;
@@ -937,5 +946,37 @@ public class IOConsoleTests extends AbstractDebugTest {
 			assertTrue("Styles overlap.", lastEnd <= s.start);
 			lastEnd = s.start + s.length;
 		}
+	}
+
+	/**
+	 * Test that isAnsiConsoleEnabled() reflect changes in the console status.
+	 *
+	 * @throws NotHandledException
+	 * @throws NotEnabledException
+	 * @throws NotDefinedException
+	 * @throws ExecutionException
+	 */
+	@Test
+	public void testIsAnsiEscapeEnabled() throws ExecutionException, NotDefinedException, NotEnabledException, NotHandledException {
+		final boolean initial = IOConsole.isAnsiConsoleEnabled();
+
+		// Switch the ANSI processing status.
+		final ICommandService service = PlatformUI.getWorkbench().getService(ICommandService.class);
+		// We don't want to export
+		// org.eclipse.ui.internal.console.ansi.commands.EnableDisableHandler
+		final String ANSI_ENABLE_DISABLE_COMMAND_ID = "AnsiConsole.command.enable_disable";
+		final Command command = service.getCommand(ANSI_ENABLE_DISABLE_COMMAND_ID);
+		final ExecutionEvent execEvent = new ExecutionEvent(command, Map.of(), null, null);
+		command.executeWithChecks(execEvent);
+
+		// Capture the (hopefully changed) status.
+		final boolean changed = IOConsole.isAnsiConsoleEnabled();
+		assertNotEquals(initial, changed);
+
+		// Switch the ANSI processing status back to original.
+		command.executeWithChecks(execEvent);
+
+		final boolean changedBack = IOConsole.isAnsiConsoleEnabled();
+		assertEquals(initial, changedBack);
 	}
 }
