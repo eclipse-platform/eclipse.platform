@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
 import java.util.stream.IntStream;
 
 import org.eclipse.help.internal.util.ProductPreferences;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 /*

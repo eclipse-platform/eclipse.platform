@@ -17,6 +17,7 @@ import org.eclipse.ua.tests.help.performance.BuildHtmlSearchIndex;
 import org.eclipse.ua.tests.help.performance.HelpServerTest;
 import org.eclipse.ua.tests.help.performance.IndexAssemblePerformanceTest;
 import org.eclipse.ua.tests.help.performance.LowIterationHelpServerTest;
+import org.eclipse.ua.tests.help.performance.OpenHelpTest;
 import org.eclipse.ua.tests.help.performance.TocAssemblePerformanceTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
@@ -25,12 +26,13 @@ import org.junit.platform.suite.api.Suite;
  * Tests help performance (automated).
  */
 @Suite
-@SelectClasses({ TocAssemblePerformanceTest.class,
-	IndexAssemblePerformanceTest.class,
-	LowIterationHelpServerTest.class,
-	BuildHtmlSearchIndex.class,
-	HelpServerTest.class,
-	// OpenHelpTest.class // Disabled due to inability to get reliable results. Browser/SWT changes in timing of listener events no longer consistent in 3.3.
+@SelectClasses({ //
+		TocAssemblePerformanceTest.class, //
+		IndexAssemblePerformanceTest.class, //
+		LowIterationHelpServerTest.class, //
+		BuildHtmlSearchIndex.class, //
+		HelpServerTest.class, //
+		OpenHelpTest.class, //
 })
 public class AllHelpPerformanceTests {
 

@@ -28,15 +28,15 @@ import javax.xml.transform.TransformerException;
 import org.eclipse.help.internal.xhtml.DynamicXHTMLProcessor;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
 import org.eclipse.ua.tests.util.XMLUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
 public class DynamicXHTMLProcessorTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// activate the UI plug-in for UI filtering ability
 		HelpUIPlugin.getDefault();

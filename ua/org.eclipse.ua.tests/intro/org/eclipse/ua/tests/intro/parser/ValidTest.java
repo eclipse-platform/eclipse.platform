@@ -14,7 +14,7 @@
 package org.eclipse.ua.tests.intro.parser;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.Map;
@@ -28,8 +28,8 @@ import org.eclipse.ua.tests.intro.util.IntroModelSerializerTest;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ui.internal.intro.impl.model.IntroModelRoot;
 import org.eclipse.ui.internal.intro.impl.model.loader.ExtensionPointManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -42,7 +42,7 @@ public class ValidTest {
 	 * Ensure that org.eclipse.help.ui is started. It contributes extra content
 	 * filtering that is used by this test. See UIContentFilterProcessor.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		HelpUIPlugin.getDefault();
 	}

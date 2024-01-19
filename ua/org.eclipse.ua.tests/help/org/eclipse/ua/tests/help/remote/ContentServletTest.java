@@ -13,30 +13,30 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.remote;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
 import org.eclipse.help.internal.base.BaseHelpSystem;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ContentServletTest {
 
 	private static final String UA_TESTS = "org.eclipse.ua.tests";
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}

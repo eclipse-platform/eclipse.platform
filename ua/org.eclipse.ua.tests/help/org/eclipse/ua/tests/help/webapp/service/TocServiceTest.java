@@ -21,7 +21,7 @@ import java.net.URL;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
 import org.eclipse.ua.tests.help.remote.TocServletTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;

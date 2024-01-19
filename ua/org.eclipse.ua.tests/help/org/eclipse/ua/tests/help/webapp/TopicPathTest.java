@@ -11,14 +11,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.ua.tests.help.webapp;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.eclipse.help.internal.webapp.data.UrlUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for functions which decode a topic string

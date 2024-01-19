@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.eclipse.help.internal.server.WebappManager;
 import org.eclipse.ua.tests.help.remote.SearchServletTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Node;
 
 public class SearchServiceTest extends SearchServletTest {

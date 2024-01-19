@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +26,8 @@ import org.eclipse.ui.internal.cheatsheets.composite.model.EditableTask;
 import org.eclipse.ui.internal.cheatsheets.composite.model.TaskGroup;
 import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
 import org.eclipse.ui.internal.provisional.cheatsheets.ITaskGroup;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for the events that get generated when the state of a task changes.
@@ -129,7 +129,7 @@ public class TestTaskEvents {
 		group2.addSubtask(task2B);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		resetTaskMap();
 	}

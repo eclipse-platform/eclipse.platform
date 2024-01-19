@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.scope;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test that leaf topics with no href do not show in the tree
@@ -26,7 +26,7 @@ import org.eclipse.help.internal.base.scope.ScopeUtils;
 import org.eclipse.ua.tests.help.other.UserIndexEntry;
 import org.eclipse.ua.tests.help.other.UserToc;
 import org.eclipse.ua.tests.help.other.UserTopic;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EmptyLeafRemoval {
 	@Test

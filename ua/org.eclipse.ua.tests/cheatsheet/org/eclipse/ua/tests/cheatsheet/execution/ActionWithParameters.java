@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.cheatsheet.execution;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.cheatsheets.ICheatSheetAction;

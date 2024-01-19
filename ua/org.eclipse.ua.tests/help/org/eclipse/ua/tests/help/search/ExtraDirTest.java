@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,7 +32,7 @@ import org.eclipse.help.internal.workingset.AdaptableHelpResource;
 import org.eclipse.help.internal.workingset.AdaptableToc;
 import org.eclipse.help.internal.workingset.WorkingSet;
 import org.eclipse.help.internal.workingset.WorkingSetManager;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExtraDirTest {
 

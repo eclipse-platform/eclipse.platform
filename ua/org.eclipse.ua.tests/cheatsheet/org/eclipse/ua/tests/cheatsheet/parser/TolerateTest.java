@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 /*

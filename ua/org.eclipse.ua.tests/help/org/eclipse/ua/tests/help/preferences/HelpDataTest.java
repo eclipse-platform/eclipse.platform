@@ -14,8 +14,8 @@
 package org.eclipse.ua.tests.help.preferences;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -28,9 +28,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.help.internal.HelpData;
 import org.eclipse.help.internal.HelpPlugin;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 /*
@@ -49,7 +49,7 @@ public class HelpDataTest {
 	private String ignoredIndexesPreference;
 
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		baseTocsPreference = Platform.getPreferencesService().getString
 			(HelpPlugin.PLUGIN_ID, HelpPlugin.BASE_TOCS_KEY, "", null);
@@ -62,7 +62,7 @@ public class HelpDataTest {
 		setIgnoredIndexes("");
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		setBaseTocs(baseTocsPreference);
 		setIgnoredTocs(ignoredTocsPreference);

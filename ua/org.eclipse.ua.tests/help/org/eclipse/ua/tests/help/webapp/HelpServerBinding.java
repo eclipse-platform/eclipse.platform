@@ -14,8 +14,8 @@
 
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -25,9 +25,9 @@ import java.net.UnknownHostException;
 
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test to see if the help server binds to host 127.0.0.1 in Workbench mode
@@ -41,12 +41,12 @@ public class HelpServerBinding {
 	// To enable these tests for local testing set testUsingIP to true.
 	private final boolean testUsingIP = false;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		previousMode = BaseHelpSystem.getMode();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(previousMode);
 	}

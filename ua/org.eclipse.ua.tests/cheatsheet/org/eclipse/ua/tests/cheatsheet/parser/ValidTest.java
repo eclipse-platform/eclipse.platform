@@ -25,7 +25,7 @@ import org.eclipse.ua.tests.cheatsheet.util.CheatSheetModelSerializer;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 

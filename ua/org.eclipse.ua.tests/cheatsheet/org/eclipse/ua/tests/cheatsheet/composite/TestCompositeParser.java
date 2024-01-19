@@ -15,12 +15,12 @@
 package org.eclipse.ua.tests.cheatsheet.composite;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,8 +33,8 @@ import org.eclipse.ui.internal.cheatsheets.composite.model.AbstractTask;
 import org.eclipse.ui.internal.cheatsheets.composite.model.CompositeCheatSheetModel;
 import org.eclipse.ui.internal.cheatsheets.composite.model.EditableTask;
 import org.eclipse.ui.internal.cheatsheets.composite.parser.CompositeCheatSheetParser;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 public class TestCompositeParser {
@@ -42,7 +42,7 @@ public class TestCompositeParser {
 	private static final String COMPOSITES_FOLDER = "data/cheatsheet/composite/";
 	private CompositeCheatSheetParser parser;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		parser = new CompositeCheatSheetParser();
 	}

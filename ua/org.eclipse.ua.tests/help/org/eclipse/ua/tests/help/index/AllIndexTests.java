@@ -13,15 +13,15 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.index;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help keyword index functionality.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	IndexAssemblerTest.class
+@Suite
+@SelectClasses({ //
+		IndexAssemblerTest.class, //
 })
 public class AllIndexTests {
 }

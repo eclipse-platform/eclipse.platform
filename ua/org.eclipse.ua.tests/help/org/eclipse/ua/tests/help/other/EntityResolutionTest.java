@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
 public class EntityResolutionTest {

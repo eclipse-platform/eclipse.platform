@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.webapp.data.CssUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  * Test the parsing of CSS preferences

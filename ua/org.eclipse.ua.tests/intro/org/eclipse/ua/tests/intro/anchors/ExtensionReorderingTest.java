@@ -15,10 +15,10 @@
 package org.eclipse.ua.tests.intro.anchors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test that the order in which extensions are processed does not matter
@@ -39,7 +39,7 @@ import org.eclipse.ui.internal.intro.impl.model.AbstractIntroPage;
 import org.eclipse.ui.internal.intro.impl.model.IntroModelRoot;
 import org.eclipse.ui.internal.intro.impl.model.IntroPage;
 import org.eclipse.ui.internal.intro.impl.model.loader.ModelLoaderUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExtensionReorderingTest {
 

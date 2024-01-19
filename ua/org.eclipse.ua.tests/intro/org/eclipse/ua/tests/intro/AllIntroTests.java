@@ -17,15 +17,18 @@ import org.eclipse.ua.tests.intro.anchors.ExtensionReorderingTest;
 import org.eclipse.ua.tests.intro.contentdetect.ContentDetectorTest;
 import org.eclipse.ua.tests.intro.other.AllOtherTests;
 import org.eclipse.ua.tests.intro.parser.AllParserTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests all intro (welcome) functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	AllParserTests.class, ContentDetectorTest.class,ExtensionReorderingTest.class,AllOtherTests.class
+@Suite
+@SelectClasses({ //
+		AllParserTests.class, //
+		ContentDetectorTest.class, //
+		ExtensionReorderingTest.class, //
+		AllOtherTests.class, //
 })
 public class AllIntroTests {
 }

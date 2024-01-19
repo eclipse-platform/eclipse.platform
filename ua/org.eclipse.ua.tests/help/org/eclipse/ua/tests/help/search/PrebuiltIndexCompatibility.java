@@ -15,11 +15,11 @@
 
 package org.eclipse.ua.tests.help.search;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,7 @@ import org.eclipse.help.internal.search.AnalyzerDescriptor;
 import org.eclipse.help.internal.search.PluginIndex;
 import org.eclipse.help.internal.search.QueryBuilder;
 import org.eclipse.help.internal.search.SearchIndexWithIndexingProgress;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
