@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -604,21 +605,17 @@ public class BreakpointContainer extends ElementContentProvider implements IAdap
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof BreakpointContainer) {
-			BreakpointContainer container = (BreakpointContainer) obj;
+		if (obj instanceof BreakpointContainer container) {
 			// With Group by "Advanced" the same category can contain a different subset of breakpoints,
 			// therefore to have the same category is not enough to be equal.
-			if (! (fParent != null && container.fParent != null && fParent.equals(container.fParent) ||
-					fParent == null && container.fParent == null) ) {
-				return false;
-			}
-			if (getCategory() != null && container.getCategory() != null) {
-				return getCategory().equals(container.getCategory());
-			} else {
-				return true;
-			}
+			return Objects.equals(fParent, container.fParent) && Objects.equals(getCategory(), container.getCategory());
 		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(fParent, getCategory());
 	}
 
 	@Override
