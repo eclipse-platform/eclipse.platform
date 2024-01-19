@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -31,7 +32,6 @@ import org.eclipse.help.internal.workingset.AdaptableHelpResource;
 import org.eclipse.help.internal.workingset.AdaptableToc;
 import org.eclipse.help.internal.workingset.WorkingSet;
 import org.eclipse.help.internal.workingset.WorkingSetManager;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class ExtraDirTest {
@@ -175,9 +175,7 @@ public class ExtraDirTest {
 			buf.append("While searching for: " + searchWord + ",\n");
 			if (!hrefsToFind.isEmpty()) {
 				buf.append("Some of the expected results were not found:\n");
-				Iterator<String> iter = hrefsToFind.iterator();
-				while (iter.hasNext()) {
-					String missedHref = iter.next();
+				for (String missedHref : hrefsToFind) {
 					buf.append(missedHref + "\n");
 				}
 			}
@@ -186,13 +184,11 @@ public class ExtraDirTest {
 					buf.append("\nAlso,\n");
 				}
 				buf.append("Found some unexpected search results:\n");
-				Iterator<String> iter = unexpectedHrefs.iterator();
-				while (iter.hasNext()) {
-			 		String unexpectedHref = iter.next();
-					buf.append(unexpectedHref + "\n");
+				for (String unexpectedHref : unexpectedHrefs) {
+			 		buf.append(unexpectedHref + "\n");
 				}
 			}
-			Assert.fail(buf.toString());
+			fail(buf.toString());
 		}
 	}
 }

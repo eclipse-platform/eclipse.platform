@@ -14,13 +14,15 @@
 
 package org.eclipse.ua.tests.help.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.Assert;
 
 public class LoadServletUtil {
 
@@ -37,7 +39,7 @@ public class LoadServletUtil {
 		setTimeout(connection, 5000);
 		try (InputStream input = url.openStream()) {
 			int firstbyte = input.read();
-			Assert.assertTrue(firstbyte > 0);
+			assertThat(firstbyte).isGreaterThan(0);
 		}
 	}
 
@@ -75,7 +77,7 @@ public class LoadServletUtil {
 					}
 				}
 			} while (nextChar != '$');
-			Assert.assertEquals(uniqueParam, value);
+			assertEquals(uniqueParam, value);
 		}
 	}
 

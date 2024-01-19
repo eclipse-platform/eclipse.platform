@@ -116,7 +116,7 @@ public class ExtensionReorderingTest {
 
 			try {
 				model.loadModel();
-				assertTrue("Order = " + toString(order), model.hasValidConfig());
+				assertThat(model).matches(IntroModelRoot::hasValidConfig, "Order = " + toString(order));
 				checkModel(model, numContributions);
 			} catch (RuntimeException e) {
 				e.printStackTrace();

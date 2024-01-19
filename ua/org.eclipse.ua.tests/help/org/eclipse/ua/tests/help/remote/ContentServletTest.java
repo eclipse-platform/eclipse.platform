@@ -15,6 +15,7 @@ package org.eclipse.ua.tests.help.remote;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 
@@ -74,9 +75,9 @@ public class ContentServletTest {
 		assertFalse(remoteContent.equals(enLocalContent));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void testRemoteContentNotFound() throws Exception {
-		RemoteTestUtils.getRemoteContent(UA_TESTS, "/no/such/path.html", "en");
+		assertThrows(IOException.class, () -> RemoteTestUtils.getRemoteContent(UA_TESTS, "/no/such/path.html", "en"));
 	}
 
 

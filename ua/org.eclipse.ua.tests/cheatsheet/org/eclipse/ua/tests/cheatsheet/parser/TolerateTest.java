@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.cheatsheet.parser;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -20,7 +22,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
-import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.framework.FrameworkUtil;
 
@@ -36,8 +37,9 @@ public class TolerateTest {
 		CheatSheetParser parser = new CheatSheetParser();
 		ICheatSheet sheet = parser.parse(url, FrameworkUtil.getBundle(getClass()).getSymbolicName(),
 				CheatSheetParser.SIMPLE_ONLY);
-		Assert.assertEquals("Warning not generated: " + url, IStatus.WARNING, parser.getStatus().getSeverity());
-		Assert.assertNotNull("Tried parsing a tolerable cheat sheet but parser returned null: " + url, sheet);
+		assertThat(parser.getStatus().getSeverity()).as("warning not generated: " + url).isEqualTo(IStatus.WARNING);
+		assertThat(sheet).withFailMessage("tried parsing a tolerable cheat sheet but parser returned null: " + url)
+				.isNotNull();
 	}
 
 	@Test

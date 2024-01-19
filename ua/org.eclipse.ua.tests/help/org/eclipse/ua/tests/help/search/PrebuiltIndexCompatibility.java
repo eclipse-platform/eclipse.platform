@@ -17,6 +17,7 @@ package org.eclipse.ua.tests.help.search;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -53,9 +54,9 @@ public class PrebuiltIndexCompatibility {
 	/**
 	 * Test index built with Lucene 8.4.1
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void test8_4_1_IndexUnreadable() throws Exception {
-		checkReadable("data/help/searchindex/index841");
+		assertThrows(IllegalArgumentException.class, () -> checkReadable("data/help/searchindex/index841"));
 	}
 
 	@Test

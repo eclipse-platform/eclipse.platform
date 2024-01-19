@@ -15,6 +15,7 @@ package org.eclipse.ua.tests.help.index;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -108,15 +109,17 @@ public class IndexAssemblerTest {
 		assertEquals("topic2", topics[2].getLabel());
 	}
 
-	@Test(expected = SAXParseException.class)
+	@Test
 	public void testInvalid() throws Exception {
 		IndexFileParser parser = new IndexFileParser();
-		IndexContribution contrib = parser.parse(
-				new IndexFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
-						"data/help/index/assembler/invalid.xml", "en"));
-		IndexAssembler assembler = new IndexAssembler();
-		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
-		assembler.assemble(contributions, Platform.getNL());
+		assertThrows(SAXParseException.class, () -> {
+			IndexContribution contrib = parser
+					.parse(new IndexFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+							"data/help/index/assembler/invalid.xml", "en"));
+			IndexAssembler assembler = new IndexAssembler();
+			List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
+			assembler.assemble(contributions, Platform.getNL());
+		});
 	}
 
 	// Replaces white space between ">" and "<" by a single newline

@@ -16,6 +16,7 @@ package org.eclipse.ua.tests.help.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,9 +73,9 @@ public class ContextServletTest {
 		assertEquals("German Context", topics[0].getAttribute("label"));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void testRemoteContextNotFound() throws Exception {
-		getContextsFromServlet("org.eclipse.ua.tests.no_such_context");
+		assertThrows(IOException.class, () -> getContextsFromServlet("org.eclipse.ua.tests.no_such_context"));
 	}
 
 	protected Element[] getContextsFromServlet(String phrase)
