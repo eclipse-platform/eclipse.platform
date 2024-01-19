@@ -13,9 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -49,18 +48,22 @@ public class ExpressionTestsPluginUnloading {
 		Bundle bundle= getBundle("com.ibm.icu");
 		bundle.start();
 		int state = bundle.getState();
-		if (state != Bundle.ACTIVE) {
-			fail("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle);
-		}
+		assertThat(state).withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
+				.isNotEqualTo(Bundle.ACTIVE);
 
 		doTestInstanceofICUDecimalFormat(bundle);
-		assertEquals("Instanceof with bundle-local class should load extra bundle", state, bundle.getState());
+		assertThat(bundle.getState()).as("Instanceof with bundle-local class should load extra bundle")
+				.isEqualTo(state);
 
 		bundle.stop();
-		assertEquals(Bundle.RESOLVED, bundle.getState());
+		assertThat(bundle.getState())
+				.withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
+				.isEqualTo(Bundle.RESOLVED);
 
 		bundle.start();
-		assertEquals(Bundle.ACTIVE, bundle.getState());
+		assertThat(bundle.getState())
+				.withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
+				.isEqualTo(Bundle.ACTIVE);
 
 		doTestInstanceofICUDecimalFormat(bundle);
 	}
@@ -72,7 +75,7 @@ public class ExpressionTestsPluginUnloading {
 
 		Class<?> exprClass = expr.loadClass("com.ibm.icu.text.DecimalFormat");
 		Class<?> icuClass = icu.loadClass("com.ibm.icu.text.DecimalFormat");
-		assertNotSame(exprClass, icuClass);
+		assertThat(exprClass).isNotSameAs(icuClass);
 
 		Object exprObj = exprClass.getDeclaredConstructor().newInstance();
 		Object icuObj = icuClass.getDeclaredConstructor().newInstance();
