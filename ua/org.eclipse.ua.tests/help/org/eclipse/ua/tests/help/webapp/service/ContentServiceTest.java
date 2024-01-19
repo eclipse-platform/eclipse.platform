@@ -13,14 +13,14 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
 import org.eclipse.ua.tests.help.remote.ContentServletTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ContentServiceTest extends ContentServletTest {
 

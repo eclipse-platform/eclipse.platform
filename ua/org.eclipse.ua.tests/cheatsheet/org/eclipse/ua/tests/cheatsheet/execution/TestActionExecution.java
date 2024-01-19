@@ -15,15 +15,15 @@
 package org.eclipse.ua.tests.cheatsheet.execution;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.internal.cheatsheets.ActionRunner;
 import org.eclipse.ui.internal.cheatsheets.data.Action;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 public class TestActionExecution {
@@ -37,12 +37,12 @@ public class TestActionExecution {
 	private static final String ACTION_WITH_PARAMETERS_CLASS =
 		ACTION_PACKAGE + ".ActionWithParameters"; //$NON-NLS-1$
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		ActionEnvironment.reset();
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() throws Exception {
 		ActionEnvironment.reset();
 	}

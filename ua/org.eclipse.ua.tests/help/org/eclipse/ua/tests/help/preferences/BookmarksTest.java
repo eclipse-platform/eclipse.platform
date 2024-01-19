@@ -15,9 +15,9 @@
 package org.eclipse.ua.tests.help.preferences;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -25,9 +25,9 @@ import java.util.Observer;
 import org.eclipse.help.IHelpResource;
 import org.eclipse.help.internal.base.BookmarkManager;
 import org.eclipse.help.internal.base.BookmarkManager.BookmarkEvent;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /*
  * Test the BookmarkManager
@@ -63,7 +63,7 @@ public class BookmarksTest {
 	private BookmarkManager manager;
 	private BookmarkObserver observer;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		manager = new BookmarkManager();
 		manager.removeAllBookmarks();
@@ -71,7 +71,7 @@ public class BookmarksTest {
 		manager.addObserver(observer);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		manager = null;
 		observer = null;

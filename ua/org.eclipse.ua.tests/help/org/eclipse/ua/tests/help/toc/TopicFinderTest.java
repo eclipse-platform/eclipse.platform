@@ -15,10 +15,10 @@
 package org.eclipse.ua.tests.help.toc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.eclipse.help.IToc;
 import org.eclipse.help.ITopic;
@@ -28,7 +28,7 @@ import org.eclipse.help.internal.base.scope.UniversalScope;
 import org.eclipse.help.internal.webapp.data.TocData;
 import org.eclipse.help.internal.webapp.data.TopicFinder;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TopicFinderTest {
 

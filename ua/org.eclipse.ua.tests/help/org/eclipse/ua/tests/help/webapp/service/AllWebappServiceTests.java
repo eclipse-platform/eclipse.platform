@@ -13,23 +13,23 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests utility classes and servlets used in Web Application
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	AdvancedSearchServiceTest.class,
-	ContentServiceTest.class,
-	ContextServiceTest.class,
-	ExtensionServiceTest.class,
-	IndexFragmentServiceTest.class,
-	IndexServiceTest.class,
-	SearchServiceTest.class,
-	TocFragmentServiceTest.class,
-	TocServiceTest.class
+@Suite
+@SelectClasses({ //
+		AdvancedSearchServiceTest.class, //
+		ContentServiceTest.class, //
+		ContextServiceTest.class, //
+		ExtensionServiceTest.class, //
+		IndexFragmentServiceTest.class, //
+		IndexServiceTest.class, //
+		SearchServiceTest.class, //
+		TocFragmentServiceTest.class, //
+		TocServiceTest.class, //
 })
 public class AllWebappServiceTests {
 }

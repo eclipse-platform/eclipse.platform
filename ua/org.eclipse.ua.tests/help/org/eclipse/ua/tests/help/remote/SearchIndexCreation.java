@@ -15,7 +15,7 @@
 package org.eclipse.ua.tests.help.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URL;
 
@@ -25,16 +25,16 @@ import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.search.AnalyzerDescriptor;
 import org.eclipse.help.internal.search.SearchIndex;
 import org.eclipse.help.internal.search.SearchIndexWithIndexingProgress;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SearchIndexCreation {
 
 	private int mode;
 	private AnalyzerDescriptor analyzerDesc;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
@@ -46,7 +46,7 @@ public class SearchIndexCreation {
 		analyzerDesc = new AnalyzerDescriptor("en-us");
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		RemotePreferenceStore.restorePreferences();
 		BaseHelpSystem.setMode(mode);

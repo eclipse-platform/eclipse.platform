@@ -14,10 +14,10 @@
 package org.eclipse.ua.tests.help.criteria;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ import org.eclipse.help.internal.toc.TocFileParser;
 import org.eclipse.ua.tests.help.other.UserCriteria;
 import org.eclipse.ua.tests.help.other.UserToc2;
 import org.eclipse.ua.tests.help.other.UserTopic2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 

@@ -16,7 +16,7 @@ package org.eclipse.ua.tests.help.search;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.help.internal.search.AnalyzerDescriptor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AnalyzerTest {
 

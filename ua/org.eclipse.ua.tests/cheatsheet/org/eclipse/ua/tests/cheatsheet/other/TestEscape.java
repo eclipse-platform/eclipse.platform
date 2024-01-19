@@ -14,10 +14,10 @@
 
 package org.eclipse.ua.tests.cheatsheet.other;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.ui.internal.cheatsheets.views.ViewUtilities;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestEscape {
 	@Test

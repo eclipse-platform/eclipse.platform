@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.eclipse.help.internal.server.WebappManager;
 import org.eclipse.ua.tests.help.remote.ContextServletTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class ContextServiceTest extends ContextServletTest {
