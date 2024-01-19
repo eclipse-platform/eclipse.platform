@@ -9,9 +9,11 @@ Export-Package:
  org.eclipse.core.internal.expressions.tests
 Require-Bundle: 
  org.eclipse.core.expressions;bundle-version="[3.4.100,4.0.0)",
- org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
- org.junit;bundle-version="3.8.2"
-Import-Package: org.assertj.core.api
+ org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)"
+Import-Package: org.assertj.core.api,
+ org.junit.jupiter.api,
+ org.junit.jupiter.api.function,
+ org.junit.platform.suite.api
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Eclipse-BundleShape: dir
 Bundle-ActivationPolicy: lazy

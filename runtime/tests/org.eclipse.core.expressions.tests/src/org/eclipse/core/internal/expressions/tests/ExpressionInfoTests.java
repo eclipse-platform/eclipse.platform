@@ -16,7 +16,7 @@ package org.eclipse.core.internal.expressions.tests;
 import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.eclipse.core.expressions.AndExpression;
 import org.eclipse.core.expressions.CountExpression;

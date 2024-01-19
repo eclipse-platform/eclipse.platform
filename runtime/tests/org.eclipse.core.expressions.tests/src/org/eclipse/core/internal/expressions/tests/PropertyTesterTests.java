@@ -14,12 +14,12 @@
 package org.eclipse.core.internal.expressions.tests;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 
 import org.eclipse.core.expressions.EvaluationContext;
@@ -44,7 +44,7 @@ public class PropertyTesterTests {
 	// Needs additional local test plug-ins
 	private static final boolean TEST_DYNAMIC_AND_ACTIVATION= false;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		a= new A();
 		b= new B();
