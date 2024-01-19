@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.tips.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.runtime.AssertionFailedException;
 import org.junit.Test;
@@ -29,67 +29,68 @@ public class TipImageBas64Test {
 		return new TipImage(BASE64);
 	}
 
-	@Test(expected = AssertionFailedException.class)
+	@Test
 	public void testAssertHeight() {
-		new TipImage(BASE64).setAspectRatio(1000, 0, false);
+		assertThrows(AssertionFailedException.class, () -> new TipImage(BASE64).setAspectRatio(1000, 0, false));
 	}
 
-	@Test(expected = AssertionFailedException.class)
+	@Test
 	public void testAssertWidth() {
-		new TipImage(BASE64).setAspectRatio(0, 100, false);
+		assertThrows(AssertionFailedException.class, () -> new TipImage(BASE64).setAspectRatio(0, 100, false));
 	}
 
 	@Test
 	public void testSetExtension() {
-		assertTrue(getTipImage().getBase64Image().contains("png"));
+		assertThat(getTipImage().getBase64Image()).contains("png");
 	}
 
 	@Test
 	public void testSetExtension2() {
-		assertTrue(getTipImage().setExtension("bmp").getBase64Image().contains("bmp"));
+		assertThat(getTipImage().setExtension("bmp").getBase64Image()).contains("bmp");
 	}
 
 	@Test
 	public void testGetIMGAttributes() {
 		String result = getTipImage().setAspectRatio(1.5).getIMGAttributes(740, 370).trim();
-		assertTrue(result, result.equalsIgnoreCase("width=\"555\" height=\"370\""));
+		assertThat(result).isEqualToIgnoringCase("width=\"555\" height=\"370\"");
 	}
 
 	@Test
 	public void testGetBase64() {
-		assertEquals(BASE64, getTipImage().getBase64Image());
+		assertThat(getTipImage().getBase64Image()).isEqualTo(BASE64);
 	}
 
 	@Test
 	public void testSetAspectRatioDouble() {
 		String result = getTipImage().setAspectRatio(1.5).getIMGAttributes(740, 370).trim();
-		assertTrue(result, result.equalsIgnoreCase("width=\"555\" height=\"370\""));
+		assertThat(result).isEqualToIgnoringCase("width=\"555\" height=\"370\"");
 	}
 
 	@Test
 	public void testSetAspectRatioIntIntFalse() {
 		String result = getTipImage().setAspectRatio(200, 50, false).getIMGAttributes(100, 100).trim();
-		assertTrue(result, result.equalsIgnoreCase("width=\"100\" height=\"25\""));
+		assertThat(result).isEqualToIgnoringCase("width=\"100\" height=\"25\"");
 	}
 
 	@Test
 	public void testSetAspectRatioIntIntTrue() {
 		String result = getTipImage().setAspectRatio(400, 300, true).getIMGAttributes(740, 370).trim();
-		assertTrue(result, result.equalsIgnoreCase("width=\"400\" height=\"300\""));
+		assertThat(result).isEqualToIgnoringCase("width=\"400\" height=\"300\"");
 	}
 
 	@Test
 	public void testSetMaxHeight() {
 		String imgAttributes = new TipImage(BASE64).setAspectRatio(2).setMaxHeight(300).getIMGAttributes(200, 200);
-		assertTrue(imgAttributes, imgAttributes.trim().equalsIgnoreCase("width=\"200\" height=\"100\""));
+		assertThat(imgAttributes.trim()).isEqualToIgnoringCase("width=\"200\" height=\"100\"");
 	}
 
 	@Test
 	public void testSetMaxWidth() {
 		String imgAttributes = new TipImage(BASE64).setAspectRatio(1.6).setMaxWidth(200).getIMGAttributes(400, 300);
-		assertTrue(imgAttributes, imgAttributes.trim().equalsIgnoreCase("width=\"200\" height=\"125\""));
+		assertThat(imgAttributes.trim()).isEqualToIgnoringCase("width=\"200\" height=\"125\"");
 	}
 
+	@Test
 	public void testTipImage() {
 		new TipImage(BASE64);
 	}
@@ -99,13 +100,13 @@ public class TipImageBas64Test {
 		getTipImage();
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testTipImage3() {
-		new TipImage(BASE64WRONG);
+		assertThrows(RuntimeException.class, () -> new TipImage(BASE64WRONG));
 	}
 
 	public void testTipImage4() {
 		TipImage tipImage = new TipImage(BASE64WRONG2);
-		assertTrue(tipImage.getIMGAttributes(1, 1).contains("plip"));
+		assertThat(tipImage.getIMGAttributes(1, 1)).contains("plip");
 	}
 }
