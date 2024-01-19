@@ -19,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.eclipse.core.internal.content.ContentTypeManager;
 
@@ -36,7 +36,7 @@ public class UserContentTypeTest {
 	private IContentTypeManager manager;
 	private IContentType[] initialContentTypes;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.createdUserContentType = null;
 		this.manager = new ContentTypeManager();
@@ -47,7 +47,7 @@ public class UserContentTypeTest {
 		}
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws CoreException {
 		if (this.createdUserContentType != null) {
 			this.manager.removeContentType(this.createdUserContentType.getId());
