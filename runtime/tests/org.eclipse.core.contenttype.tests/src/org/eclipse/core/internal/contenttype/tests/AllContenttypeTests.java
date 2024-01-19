@@ -13,16 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.internal.contenttype.tests;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * TODO get this suite to also include ContentTypeTests contributed in
  * eclipse.platform.resources repository (and move those tests here)
  */
-@RunWith(Suite.class)
-@SuiteClasses(value = { UserContentTypeTest.class, XMLRootHandlerTest.class, })
+@Suite
+@SelectClasses({ //
+		UserContentTypeTest.class, //
+		XMLRootHandlerTest.class, //
+})
 public class AllContenttypeTests {
 
 }
