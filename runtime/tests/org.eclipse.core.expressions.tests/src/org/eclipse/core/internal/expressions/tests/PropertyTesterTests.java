@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -117,12 +119,7 @@ public class PropertyTesterTests {
 
 	@Test
 	public void testWrongNameSpace() throws Exception {
-		try {
-			test(a, "differentNamespace", null, null); //$NON-NLS-1$
-		} catch (CoreException e) {
-			return;
-		}
-		assertTrue(false);
+		assertThrows(CoreException.class, () -> test(a, "differentNamespace", null, null)); //$NON-NLS-1$
 	}
 
 	@Test
@@ -138,15 +135,10 @@ public class PropertyTesterTests {
 			bundle.stop();
 			bundle.uninstall();
 			boolean exception= false;
-			try {
-				p= fgManager.getProperty(receiver, "org.eclipse.core.expressions.tests.dynamic", "testing"); //$NON-NLS-1$ //$NON-NLS-2$
-			} catch (CoreException | InvalidRegistryObjectException e) {
-				// The uninstall events are sent out in a separate thread.
-				// So the type extension registry might not be flushed even
-				// though the bundle has already been uninstalled.
-				exception= true;
-			}
-			assertTrue("Core exception not thrown", exception);
+			// The uninstall events are sent out in a separate thread.
+			// So the type extension registry might not be flushed even
+			// though the bundle has already been uninstalled.
+			assertThatThrownBy(() -> fgManager.getProperty(receiver, "org.eclipse.core.expressions.tests.dynamic", "testing")).isInstanceOfAny(CoreException.class, InvalidRegistryObjectException.class);
 		}
 	}
 
