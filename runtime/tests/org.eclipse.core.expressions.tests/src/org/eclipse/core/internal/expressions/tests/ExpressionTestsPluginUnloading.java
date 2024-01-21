@@ -49,7 +49,7 @@ public class ExpressionTestsPluginUnloading {
 		bundle.start();
 		int state = bundle.getState();
 		assertThat(state).withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
-				.isNotEqualTo(Bundle.ACTIVE);
+				.isEqualTo(Bundle.ACTIVE);
 
 		doTestInstanceofICUDecimalFormat(bundle);
 		assertThat(bundle.getState()).as("Instanceof with bundle-local class should load extra bundle")
