@@ -97,7 +97,7 @@ public class PKISetup implements BundleActivator, IStartup {
 
 		Optional<String>type = null;
 
-		PKCS11Provider.CONFIGURATION.setUp(pin);
+		PKCS11Provider.CONFIGURATION.setUp();
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
 		/*
