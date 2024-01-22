@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +27,6 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
-import org.junit.Assert;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -33,7 +35,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * A utility class for working with XML.
  */
-public class XMLUtil extends Assert {
+public class XMLUtil {
 
 	public static void assertXMLEquals(String msg, String s1, String s2) throws Exception {
 		InputStream in1 = new ByteArrayInputStream(s1.getBytes(StandardCharsets.UTF_8));
@@ -44,7 +46,7 @@ public class XMLUtil extends Assert {
 	public static void assertXMLEquals(String msg, InputStream in1, InputStream in2) throws Exception {
 		String s1 = process(in1);
 		String s2 = process(in2);
-		assertEquals(msg, s1, s2);
+		assertThat(s1).as(msg).isEqualTo(s2);
 	}
 
 	public static void assertParseableXML(String s)  {

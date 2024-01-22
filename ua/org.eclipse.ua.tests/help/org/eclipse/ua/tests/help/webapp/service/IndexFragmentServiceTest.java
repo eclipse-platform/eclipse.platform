@@ -13,8 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -63,7 +62,7 @@ public class IndexFragmentServiceTest {
 			InputSource inputSource = new InputSource(is);
 			Document document = LocalEntityResolver.parse(inputSource);
 			Node root = document.getFirstChild();
-			assertEquals("tree_data", root.getNodeName());
+			assertThat(root.getNodeName()).isEqualTo("tree_data");
 		}
 	}
 
@@ -77,7 +76,7 @@ public class IndexFragmentServiceTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	@Test
