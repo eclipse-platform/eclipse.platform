@@ -164,6 +164,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         // Has a headless config already been set up
         if ((PKIState.CONTROL.isPKCS11on()) || (PKIState.CONTROL.isPKCS12on())) {
         	LogUtil.logInfo("AuthenticationPluginA Headless system has already setup PKI");
+        	setCertPassPhrase(System.getProperty("javax.net.ssl.keyStorePassword"));
         	
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
