@@ -14,7 +14,6 @@
 package org.eclipse.compare.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,14 +57,14 @@ public class PatchBuilderTest {
 
 		IHunk[] hunksAfter = filePatch.getHunks();
 		assertThat(hunksAfter).hasSize(4);
-		assertEquals(3, ((Hunk) hunksAfter[0]).getStart(false));
-		assertEquals(3, ((Hunk) hunksAfter[0]).getStart(true));
-		assertEquals(7, ((Hunk) hunksAfter[1]).getStart(false));
-		assertEquals(11, ((Hunk) hunksAfter[1]).getStart(true));
-		assertEquals(18, ((Hunk) hunksAfter[2]).getStart(false));
-		assertEquals(22, ((Hunk) hunksAfter[2]).getStart(true));
-		assertEquals(28, ((Hunk) hunksAfter[3]).getStart(false));
-		assertEquals(33, ((Hunk) hunksAfter[3]).getStart(true));
+		assertThat(((Hunk) hunksAfter[0]).getStart(false)).isEqualTo(3);
+		assertThat(((Hunk) hunksAfter[0]).getStart(true)).isEqualTo(3);
+		assertThat(((Hunk) hunksAfter[1]).getStart(false)).isEqualTo(7);
+		assertThat(((Hunk) hunksAfter[1]).getStart(true)).isEqualTo(11);
+		assertThat(((Hunk) hunksAfter[2]).getStart(false)).isEqualTo(18);
+		assertThat(((Hunk) hunksAfter[2]).getStart(true)).isEqualTo(22);
+		assertThat(((Hunk) hunksAfter[3]).getStart(false)).isEqualTo(28);
+		assertThat(((Hunk) hunksAfter[3]).getStart(true)).isEqualTo(33);
 
 		IFilePatchResult result = filePatch.apply(Utilities.getReaderCreator(contextStorage), new PatchConfiguration(),
 				new NullProgressMonitor());
@@ -79,7 +78,7 @@ public class PatchBuilderTest {
 		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
-		assertEquals(expected, PatchUtils.asString(actual));
+		assertThat(PatchUtils.asString(actual)).isEqualTo(expected);
 	}
 
 	@Test
@@ -105,16 +104,16 @@ public class PatchBuilderTest {
 
 		IHunk[] hunksAfter = filePatch.getHunks();
 		assertThat(hunksAfter).hasSize(5);
-		assertEquals(0, ((Hunk) hunksAfter[0]).getStart(false));
-		assertEquals(0, ((Hunk) hunksAfter[0]).getStart(true));
-		assertEquals(3, ((Hunk) hunksAfter[1]).getStart(false));
-		assertEquals(5, ((Hunk) hunksAfter[1]).getStart(true));
-		assertEquals(19, ((Hunk) hunksAfter[2]).getStart(false));
-		assertEquals(25, ((Hunk) hunksAfter[2]).getStart(true));
-		assertEquals(36, ((Hunk) hunksAfter[3]).getStart(false));
-		assertEquals(40, ((Hunk) hunksAfter[3]).getStart(true));
-		assertEquals(46, ((Hunk) hunksAfter[4]).getStart(false));
-		assertEquals(51, ((Hunk) hunksAfter[4]).getStart(true));
+		assertThat(((Hunk) hunksAfter[0]).getStart(false)).isEqualTo(0);
+		assertThat(((Hunk) hunksAfter[0]).getStart(true)).isEqualTo(0);
+		assertThat(((Hunk) hunksAfter[1]).getStart(false)).isEqualTo(3);
+		assertThat(((Hunk) hunksAfter[1]).getStart(true)).isEqualTo(5);
+		assertThat(((Hunk) hunksAfter[2]).getStart(false)).isEqualTo(19);
+		assertThat(((Hunk) hunksAfter[2]).getStart(true)).isEqualTo(25);
+		assertThat(((Hunk) hunksAfter[3]).getStart(false)).isEqualTo(36);
+		assertThat(((Hunk) hunksAfter[3]).getStart(true)).isEqualTo(40);
+		assertThat(((Hunk) hunksAfter[4]).getStart(false)).isEqualTo(46);
+		assertThat(((Hunk) hunksAfter[4]).getStart(true)).isEqualTo(51);
 
 		IFilePatchResult result = filePatch.apply(Utilities.getReaderCreator(contextStorage), new PatchConfiguration(),
 				new NullProgressMonitor());
@@ -128,7 +127,7 @@ public class PatchBuilderTest {
 		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
-		assertEquals(expected, PatchUtils.asString(actual));
+		assertThat(PatchUtils.asString(actual)).isEqualTo(expected);
 	}
 
 	@Test
@@ -145,12 +144,12 @@ public class PatchBuilderTest {
 
 		IHunk[] hunksAfter = filePatch.getHunks();
 		assertThat(hunksAfter).hasSize(3);
-		assertEquals(19, ((Hunk) hunksAfter[0]).getStart(false));
-		assertEquals(19, ((Hunk) hunksAfter[0]).getStart(true));
-		assertEquals(29, ((Hunk) hunksAfter[1]).getStart(false));
-		assertEquals(27, ((Hunk) hunksAfter[1]).getStart(true));
-		assertEquals(46, ((Hunk) hunksAfter[2]).getStart(false));
-		assertEquals(43, ((Hunk) hunksAfter[2]).getStart(true));
+		assertThat(((Hunk) hunksAfter[0]).getStart(false)).isEqualTo(19);
+		assertThat(((Hunk) hunksAfter[0]).getStart(true)).isEqualTo(19);
+		assertThat(((Hunk) hunksAfter[1]).getStart(false)).isEqualTo(29);
+		assertThat(((Hunk) hunksAfter[1]).getStart(true)).isEqualTo(27);
+		assertThat(((Hunk) hunksAfter[2]).getStart(false)).isEqualTo(46);
+		assertThat(((Hunk) hunksAfter[2]).getStart(true)).isEqualTo(43);
 
 		IFilePatchResult result = filePatch.apply(Utilities.getReaderCreator(contextStorage), new PatchConfiguration(),
 				new NullProgressMonitor());
@@ -164,7 +163,7 @@ public class PatchBuilderTest {
 		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
-		assertEquals(expected, PatchUtils.asString(actual));
+		assertThat(PatchUtils.asString(actual)).isEqualTo(expected);
 	}
 
 	@Test
@@ -197,7 +196,7 @@ public class PatchBuilderTest {
 		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
-		assertEquals(expected, PatchUtils.asString(actual));
+		assertThat(PatchUtils.asString(actual)).isEqualTo(expected);
 	}
 
 	@Test
@@ -273,12 +272,12 @@ public class PatchBuilderTest {
 		String[] l1 = h1.getLines();
 		String[] l2 = h2.getLines();
 		assertThat(l1).containsExactly(l2);
-		assertEquals(h1.getStart(false), h2.getStart(false));
-		assertEquals(h1.getStart(true), h2.getStart(true));
-		assertEquals(h1.getLength(false), h2.getLength(false));
-		assertEquals(h1.getLength(true), h2.getLength(true));
-		assertEquals(h1.getHunkType(false), h2.getHunkType(false));
-		assertEquals(h1.getHunkType(true), h2.getHunkType(true));
+		assertThat(h1.getStart(false)).isEqualTo(h2.getStart(false));
+		assertThat(h1.getStart(true)).isEqualTo(h2.getStart(true));
+		assertThat(h1.getLength(false)).isEqualTo(h2.getLength(false));
+		assertThat(h1.getLength(true)).isEqualTo(h2.getLength(true));
+		assertThat(h1.getHunkType(false)).isEqualTo(h2.getHunkType(false));
+		assertThat(h1.getHunkType(true)).isEqualTo( h2.getHunkType(true));
 	}
 
 	private String getLineDelimiter(IStorage storage) throws CoreException, IOException {
