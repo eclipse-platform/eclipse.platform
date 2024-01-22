@@ -162,7 +162,7 @@ public class ExtensionServiceTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	@Test

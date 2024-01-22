@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -37,7 +37,7 @@ public class TocServiceTest extends TocServletTest {
 			InputSource inputSource = new InputSource(is);
 			Document document = LocalEntityResolver.parse(inputSource);
 			Node root = document.getFirstChild();
-			assertEquals("tocContributions", root.getNodeName());
+			assertThat(root.getNodeName()).isEqualTo("tocContributions");
 			return root;
 		}
 	}
@@ -52,7 +52,7 @@ public class TocServiceTest extends TocServletTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	@Test

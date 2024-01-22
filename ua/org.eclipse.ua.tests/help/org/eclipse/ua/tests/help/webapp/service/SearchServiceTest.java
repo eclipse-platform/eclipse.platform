@@ -13,8 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -56,7 +55,7 @@ public class SearchServiceTest extends SearchServletTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	@Test
@@ -71,7 +70,7 @@ public class SearchServiceTest extends SearchServletTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	@Test
