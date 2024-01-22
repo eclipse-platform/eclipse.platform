@@ -106,9 +106,9 @@ public class PKIController implements IStartup {
 					PKIState.CONTROL.setPKCS12on(true);
 					PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS12);
 					
-					AuthenticationPlugin.getDefault()
-	    				.getPreferenceStore()
-	    				.setValue(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION, null );
+					System.out.println("PKIController PKI PKCS12 PASSWD:["+System.getProperty("javax.net.ssl.keyStorePassword")+"]");
+					AuthenticationPlugin.getDefault().setCertPassPhrase(System.getProperty("javax.net.ssl.keyStorePassword"));
+	    				
 				} else {
 					System.out.println("PKIController PKI TYPE NOT FOUND TO BE EQUAL");
 				}
@@ -185,8 +185,8 @@ public class PKIController implements IStartup {
 					VendorImplementation.getInstance().off();
 					isPkcs11Installed = false;
 					PKIState.CONTROL.setPKCS11on(false);
-					System.clearProperty("javax.net.ssl.keyStoreType");
-					System.clearProperty("javax.net.ssl.keyStoreProvider");
+					//System.clearProperty("javax.net.ssl.keyStoreType");
+					//System.clearProperty("javax.net.ssl.keyStoreProvider");
 					//System.out.println("PKIController - TURNED OFF ALL PKCS11");
 				} else if (value.equals(EventConstant.SETUP.getValue())) {
 					//System.out.println("PKIController - STARTING SETUP");
