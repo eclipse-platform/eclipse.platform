@@ -11,7 +11,7 @@
  * Contributors:
  *     Eclipse Platform - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ui.pki.util;
+package org.eclipse.core.pki.util;
 
 public class ExpiredX509CertificateData {
 	private String alias;

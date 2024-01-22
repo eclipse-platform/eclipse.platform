@@ -22,6 +22,7 @@ import java.security.cert.CertificateException;
 
 import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
+import org.eclipse.core.pki.util.ExpiredCertCheck;
 import org.eclipse.core.pki.util.KeyStoreManager;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.IStatus;

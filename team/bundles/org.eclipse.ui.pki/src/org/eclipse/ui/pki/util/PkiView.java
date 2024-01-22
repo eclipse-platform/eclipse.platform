@@ -18,6 +18,7 @@ package org.eclipse.ui.pki.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.pki.util.ExpiredX509CertificateData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
