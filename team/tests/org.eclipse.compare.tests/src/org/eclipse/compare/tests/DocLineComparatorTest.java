@@ -13,14 +13,20 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.Optional;
 
 import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.internal.DocLineComparator;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
-import org.eclipse.jface.text.*;
-import org.junit.Assert;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
 import org.junit.Test;
 
 public class DocLineComparatorTest {
@@ -36,7 +42,7 @@ public class DocLineComparatorTest {
 		IRangeComparator comp1 = new DocLineComparator(doc1, null, true);
 		IRangeComparator comp2 = new DocLineComparator(doc2, null, true);
 
-		Assert.assertFalse(comp1.rangesEqual(0, comp2, 0));
+		assertFalse(comp1.rangesEqual(0, comp2, 0));
 	}
 
 	@Test
@@ -50,7 +56,7 @@ public class DocLineComparatorTest {
 		IRangeComparator comp1 = new DocLineComparator(doc1, null, true);
 		IRangeComparator comp2 = new DocLineComparator(doc2, null, true);
 
-		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
+		assertTrue(comp1.rangesEqual(0, comp2, 0));
 	}
 
 	@Test
@@ -89,15 +95,15 @@ public class DocLineComparatorTest {
 
 		IRangeComparator comp1 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter }, 'L', Optional.empty());
 		IRangeComparator comp2 = new DocLineComparator(doc2, null, false, new ICompareFilter[] { filter }, 'R', Optional.empty());
-		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
+		assertTrue(comp1.rangesEqual(0, comp2, 0));
 
 		IRangeComparator comp3 = new DocLineComparator(doc1, null, true, new ICompareFilter[] { filter }, 'L', Optional.empty());
 		IRangeComparator comp4 = new DocLineComparator(doc3, null, true, new ICompareFilter[] { filter }, 'R', Optional.empty());
-		Assert.assertTrue(comp3.rangesEqual(0, comp4, 0));
+		assertTrue(comp3.rangesEqual(0, comp4, 0));
 
 		IRangeComparator comp5 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter }, 'L', Optional.empty());
 		IRangeComparator comp6 = new DocLineComparator(doc3, null, false, new ICompareFilter[] { filter }, 'R', Optional.empty());
-		Assert.assertFalse(comp5.rangesEqual(0, comp6, 0));
+		assertFalse(comp5.rangesEqual(0, comp6, 0));
 	}
 
 	@Test
@@ -181,13 +187,13 @@ public class DocLineComparatorTest {
 				new ICompareFilter[] { filter1, filter2, filter3 }, 'L', Optional.empty());
 		IRangeComparator comp2 = new DocLineComparator(doc2, null, false,
 				new ICompareFilter[] { filter1, filter2, filter3 }, 'R', Optional.empty());
-		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
+		assertTrue(comp1.rangesEqual(0, comp2, 0));
 
 		IRangeComparator comp3 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter2, filter3 },
 				'L', Optional.empty());
 		IRangeComparator comp4 = new DocLineComparator(doc2, null, false, new ICompareFilter[] { filter2, filter3 },
 				'R', Optional.empty());
-		Assert.assertFalse(comp3.rangesEqual(0, comp4, 0));
+		assertFalse(comp3.rangesEqual(0, comp4, 0));
 	}
 
 	@Test
@@ -261,10 +267,10 @@ public class DocLineComparatorTest {
 				for (ICompareFilter[] filter : filters) {
 					l = new DocLineComparator(docs[i], null, false, filter, 'L', Optional.empty());
 					r = new DocLineComparator(docs[j], null, false, filter, 'R', Optional.empty());
-					Assert.assertFalse(l.rangesEqual(0, r, 0));
+					assertFalse(l.rangesEqual(0, r, 0));
 					l = new DocLineComparator(docs[i], null, true, filter, 'L', Optional.empty());
 					r = new DocLineComparator(docs[j], null, true, filter, 'R', Optional.empty());
-					Assert.assertTrue(l.rangesEqual(0, r, 0));
+					assertTrue(l.rangesEqual(0, r, 0));
 				}
 	}
 
@@ -272,8 +278,10 @@ public class DocLineComparatorTest {
 	public void noWhitespaceContributorSupplied_whitespaceInStringLiteralIgnored() {
 		DocLineComparator left = new DocLineComparator(new Document("str = \"Hello World\""), null, true, null, 'L', Optional.empty());
 		DocLineComparator right = new DocLineComparator(new Document("str = \"HelloWorld\""), null, true, null, 'R', Optional.empty());
-		Assert.assertTrue("whitespace in left document between 'Hello' and 'World' not ignored",left.rangesEqual(0, right, 0));
-		Assert.assertTrue("whitespace in left document between 'Hello' and 'World' not ignored",right.rangesEqual(0, left, 0));
+		assertThat(left.rangesEqual(0, right, 0))
+				.as("whitespace in left document between 'Hello' and 'World' not ignored").isTrue();
+		assertThat(right.rangesEqual(0, left, 0))
+				.as("whitespace in left document between 'Hello' and 'World' not ignored").isTrue();
 	}
 
 	@Test
@@ -313,8 +321,8 @@ public class DocLineComparatorTest {
 		Document rightDocument = new Document(rightSource);
 		DocLineComparator right = new DocLineComparator(rightDocument, null, true, null, 'R',
 				Optional.of(new SimpleIgnoreWhitespaceContributor(rightDocument)));
-		Assert.assertFalse(message, left.rangesEqual(0, right, 0));
-		Assert.assertFalse(message, right.rangesEqual(0, left, 0));
+		assertThat(left.rangesEqual(0, right, 0)).as(message).isFalse();
+		assertThat(right.rangesEqual(0, left, 0)).as(message).isFalse();
 	}
 
 	private void assertRangesEqualWithSimpleIgnoreWhitespaceContrbutor(String message, String leftSource,
@@ -326,8 +334,8 @@ public class DocLineComparatorTest {
 		Document rightDocument = new Document(rightSource);
 		DocLineComparator right = new DocLineComparator(rightDocument, null, true, null, 'R',
 				Optional.of(new SimpleIgnoreWhitespaceContributor(rightDocument)));
-		Assert.assertTrue(message, left.rangesEqual(0, right, 0));
-		Assert.assertTrue(message, right.rangesEqual(0, left, 0));
+		assertThat(left.rangesEqual(0, right, 0)).as(message).isTrue();
+		assertThat(right.rangesEqual(0, left, 0)).as(message).isTrue();
 	}
 
 	@Test
@@ -341,7 +349,7 @@ public class DocLineComparatorTest {
 		IRangeComparator comp1 = new DocLineComparator(doc1, null, true);
 		IRangeComparator comp2 = new DocLineComparator(doc2, null, true);
 
-		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
+		assertTrue(comp1.rangesEqual(0, comp2, 0));
 	}
 
 	@Test
@@ -351,9 +359,8 @@ public class DocLineComparatorTest {
 		IRangeComparator comp1 = new DocLineComparator(doc, null, true);
 		IRangeComparator comp2 = new DocLineComparator(doc, new Region(0, doc.getLength()), true);
 
-		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
-		Assert.assertEquals(comp1.getRangeCount(), comp2.getRangeCount());
-		Assert.assertEquals(1, comp2.getRangeCount());
+		assertTrue(comp1.rangesEqual(0, comp2, 0));
+		assertThat(comp1.getRangeCount()).isEqualTo(comp2.getRangeCount()).isEqualTo(1);
 	}
 
 	@Test
@@ -364,8 +371,7 @@ public class DocLineComparatorTest {
 		IRangeComparator comp1 = new DocLineComparator(doc, null, true);
 		IRangeComparator comp2 = new DocLineComparator(doc, new Region(0, doc.getLength()), true);
 
-		Assert.assertEquals(comp1.getRangeCount(), comp2.getRangeCount());
-		Assert.assertEquals(1, comp2.getRangeCount());
+		assertThat(comp1.getRangeCount()).isEqualTo(comp2.getRangeCount()).isEqualTo(1);
 	}
 
 	@Test
@@ -376,14 +382,13 @@ public class DocLineComparatorTest {
 		IRangeComparator comp1 = new DocLineComparator(doc, null, true);
 		IRangeComparator comp2 = new DocLineComparator(doc, new Region(0, doc.getLength()), true);
 
-		Assert.assertEquals(comp1.getRangeCount(), comp2.getRangeCount());
-		Assert.assertEquals(2, comp2.getRangeCount());
+		assertThat(comp1.getRangeCount()).isEqualTo(comp2.getRangeCount()).isEqualTo(2);
 
 		IRangeComparator comp3 = new DocLineComparator(doc, new Region(0, "line1".length()), true);
-		Assert.assertEquals(1, comp3.getRangeCount());
+		assertThat(comp3.getRangeCount()).isEqualTo(1);
 
 		comp3 = new DocLineComparator(doc, new Region(0, "line1".length() + 1), true);
-		Assert.assertEquals(2, comp3.getRangeCount()); // two lines
+		assertThat(comp3.getRangeCount()).isEqualTo(2);
 	}
 
 	@Test
@@ -394,7 +399,7 @@ public class DocLineComparatorTest {
 		IRangeComparator comp1 = new DocLineComparator(doc, null, true);
 		IRangeComparator comp2 = new DocLineComparator(doc, new Region(0, doc.getLength()), true);
 
-		Assert.assertEquals(comp1.getRangeCount(), comp2.getRangeCount());
+		assertThat(comp1.getRangeCount()).isEqualTo(comp2.getRangeCount());
 	}
 
 }
