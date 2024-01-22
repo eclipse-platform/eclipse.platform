@@ -134,6 +134,7 @@ public class ControlServlet extends HttpServlet {
 		processRequest(req, resp);
 	}
 
+	@SuppressWarnings("resource")
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 

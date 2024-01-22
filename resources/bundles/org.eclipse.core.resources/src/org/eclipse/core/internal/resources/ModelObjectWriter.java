@@ -22,11 +22,20 @@ package org.eclipse.core.internal.resources;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.FileInfoMatcherDescription;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceFilterDescription;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IPath;
 
 public class ModelObjectWriter implements IModelObjectConstants {
@@ -152,15 +161,13 @@ public class ModelObjectWriter implements IModelObjectConstants {
 	 * The OutputStream is closed in this method.
 	 */
 	public void write(Object object, OutputStream output, String lineSeparator) throws IOException {
-		try (
+		try (output;
 			XMLWriter writer = new XMLWriter(output, lineSeparator);
 		) {
 			write(object, writer);
 			writer.flush();
 			if (writer.checkError())
 				throw new IOException();
-		} finally {
-			FileUtil.safeClose(output);
 		}
 	}
 
