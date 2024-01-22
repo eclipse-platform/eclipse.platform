@@ -26,6 +26,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.eclipse.core.pki.AuthenticationBase;
+import org.eclipse.core.pki.PKCS11Provider;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.KeyStoreFormat;
@@ -96,8 +97,7 @@ public class PKISetup implements BundleActivator, IStartup {
 
 		Optional<String>type = null;
 
-		keystoreContainer = Optional.ofNullable(AuthenticationBase.INSTANCE.initialize("".toCharArray()));//$NON-NLS-1$
-
+		PKCS11Provider.CONFIGURATION.setUp(pin);
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
 		/*
@@ -140,6 +140,7 @@ public class PKISetup implements BundleActivator, IStartup {
 				}
 				if (PKIState.CONTROL.isPKCS11on()) {
 					LogUtil.logInfo("PKISetup - Processing PKCS11"); //$NON-NLS-1$
+					keystoreContainer = Optional.ofNullable(AuthenticationBase.INSTANCE.initialize("".toCharArray()));//$NON-NLS-1$
 					if (keystoreContainer.isEmpty()) {
 						LogUtil.logError("PKISetup - Failed to Load a Keystore.", null); //$NON-NLS-1$
 					} else {
