@@ -26,7 +26,6 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.utils.BitMask;
-import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
@@ -61,7 +60,7 @@ public class File extends Resource implements IFile {
 	public void appendContents(InputStream content, int updateFlags, IProgressMonitor monitor) throws CoreException {
 		String message = NLS.bind(Messages.resources_settingContents, getFullPath());
 		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 100);
-		try {
+		try (content) {
 			Assert.isNotNull(content, "Content cannot be null."); //$NON-NLS-1$
 			if (workspace.shouldValidate)
 				workspace.validateSave(this);
@@ -80,9 +79,10 @@ public class File extends Resource implements IFile {
 			} finally {
 				workspace.endOperation(rule, true);
 			}
+		} catch (IOException streamCloseIgnored) {
+			// ignore;
 		} finally {
 			subMonitor.done();
-			FileUtil.safeClose(content);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class File extends Resource implements IFile {
 	public void create(InputStream content, int updateFlags, IProgressMonitor monitor) throws CoreException {
 		String message = NLS.bind(Messages.resources_creating, getFullPath());
 		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 100);
-		try {
+		try (content) {
 			checkValidPath(path, FILE, true);
 			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
 			SubMonitor newChild = subMonitor.newChild(1);
@@ -190,9 +190,10 @@ public class File extends Resource implements IFile {
 			} finally {
 				workspace.endOperation(rule, true);
 			}
+		} catch (IOException streamCloseIgnored) {
+			// ignore;
 		} finally {
 			subMonitor.done();
-			FileUtil.safeClose(content);
 		}
 	}
 
@@ -346,7 +347,7 @@ public class File extends Resource implements IFile {
 	public void setContents(InputStream content, int updateFlags, IProgressMonitor monitor) throws CoreException {
 		String message = NLS.bind(Messages.resources_settingContents, getFullPath());
 		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 100);
-		try {
+		try (content) {
 			if (workspace.shouldValidate)
 				workspace.validateSave(this);
 			final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
@@ -364,9 +365,10 @@ public class File extends Resource implements IFile {
 			} finally {
 				workspace.endOperation(rule, true);
 			}
+		} catch (IOException streamCloseIgnored) {
+			// ignore;
 		} finally {
 			subMonitor.done();
-			FileUtil.safeClose(content);
 		}
 	}
 
