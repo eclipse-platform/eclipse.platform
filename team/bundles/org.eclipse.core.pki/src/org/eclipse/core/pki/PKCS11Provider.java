@@ -38,7 +38,8 @@ public enum PKCS11Provider {
 	protected byte[] salt = new byte[16];
 	protected String PKI_PROVIDER = "SunPKCS11"; //$NON-NLS-1$
 	Properties properties = new Properties();
-	public void setUp(String pin) {
+
+	public void setUp() {
 
 		readProperties();
 
