@@ -18,6 +18,8 @@
 
 package org.eclipse.ant.tests.ui.editor;
 
+import static java.util.function.Function.identity;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -67,11 +69,11 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor();
 
 		ICompletionProposal[] proposals = processor.getAttributeProposals("contains", "ca"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(1, proposals.length);
-		assertEquals("casesensitive - (true | false | on | off | yes | no)", proposals[0].getDisplayString()); //$NON-NLS-1$
+		assertThat(proposals).hasSize(1).satisfiesExactly(it -> assertThat(it.getDisplayString())
+				.isEqualTo("casesensitive - (true | false | on | off | yes | no)")); //$NON-NLS-1$
 
 		proposals = processor.getAttributeProposals("move", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(17, proposals.length);
+		assertThat(proposals).hasSize(17);
 		ICompletionProposal proposal = proposals[0];
 		String displayString = proposal.getDisplayString();
 		assertTrue(displayString.equals("id") //$NON-NLS-1$
@@ -92,25 +94,24 @@ public class CodeCompletionTest extends AbstractAntUITest {
 				|| displayString.equals("granularity")); //$NON-NLS-1$
 
 		proposals = processor.getAttributeProposals("move", "to"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(2, proposals.length);
+		assertThat(proposals).hasSize(2);
 
 		proposals = processor.getAttributeProposals("reference", "idl"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(0, proposals.length);
+		assertThat(proposals).isEmpty();
 
 		proposals = processor.getAttributeProposals("reference", "id"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(1, proposals.length);
-		assertEquals("id", proposals[0].getDisplayString()); //$NON-NLS-1$
+		assertThat(proposals).hasSize(1).satisfiesExactly(it -> assertThat(it.getDisplayString()).isEqualTo("id")); //$NON-NLS-1$
 
 		proposals = processor.getAttributeProposals("reference", "i"); //$NON-NLS-1$ //$NON-NLS-2$
 		// id includesfile includes
-		assertEquals(3, proposals.length);
+		assertThat(proposals).hasSize(3);
 		displayString = proposals[0].getDisplayString();
 		assertTrue(displayString.equals("id") //$NON-NLS-1$
 				|| displayString.equals("includesfile") //$NON-NLS-1$
 				|| displayString.equals("includes")); //$NON-NLS-1$
 
 		proposals = processor.getAttributeProposals("project", "de"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(1, proposals.length);
+		assertThat(proposals).hasSize(1);
 	}
 
 	/**
@@ -127,7 +128,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getPropertyProposals(getCurrentDocument(), "", lineOffset + columnNumber); //$NON-NLS-1$
-		assertTrue(proposals.length >= 1);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(1);
 		assertContains("prop1", proposals); //$NON-NLS-1$
 
 		lineNumber = 18;
@@ -137,7 +138,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		proposals = processor.getPropertyProposals(getCurrentDocument(), "", lineOffset + columnNumber); //$NON-NLS-1$
-		assertTrue(proposals.length >= 1);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(1);
 		assertContains("prop2", proposals); //$NON-NLS-1$
 	}
 
@@ -158,7 +159,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 			processor.setCursorPosition(lineOffset + columnNumber);
 
 			ICompletionProposal[] proposals = processor.determineTemplateProposals();
-			assertTrue("No templates are relevant at the current position. Found: " + proposals.length, proposals.length == 0); //$NON-NLS-1$
+			assertThat(proposals).isEmpty();
 		}
 		finally {
 			EditorTestHelper.closeAllEditors();
@@ -179,7 +180,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getPropertyProposals(getCurrentDocument(), "", lineOffset + columnNumber); //$NON-NLS-1$
-		assertTrue(proposals.length >= 1);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(1);
 		assertContains("java.home", proposals); //$NON-NLS-1$
 	}
 
@@ -197,7 +198,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getPropertyProposals(getCurrentDocument(), "", lineOffset + columnNumber); //$NON-NLS-1$
-		assertTrue(proposals.length >= 1);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(1);
 		assertContains("ant.file", proposals); //$NON-NLS-1$
 		assertContains("ant.version", proposals); //$NON-NLS-1$
 		assertContains("ant.project.name", proposals); //$NON-NLS-1$
@@ -227,7 +228,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 			processor.setColumnNumber(columnNumber);
 			processor.setCursorPosition(lineOffset + columnNumber);
 			ICompletionProposal[] proposals = processor.getPropertyProposals(getCurrentDocument(), "", lineOffset + columnNumber); //$NON-NLS-1$
-			assertTrue(proposals.length >= 3);
+			assertThat(proposals).hasSizeGreaterThanOrEqualTo(3);
 			assertContains("eclipse.home", proposals); // contributed //$NON-NLS-1$
 			assertContains("property.ui.testing2", proposals); // contributed //$NON-NLS-1$
 			assertContains("test", proposals); //$NON-NLS-1$
@@ -253,7 +254,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getTargetAttributeValueProposals(getCurrentDocument(), getCurrentDocument().get(0, lineOffset
 				+ columnNumber), "", "depends"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue(proposals.length == 7);
+		assertThat(proposals).hasSize(7);
 		assertContains("pretest", proposals); //$NON-NLS-1$
 		assertContains("testMoreDepends", proposals); //$NON-NLS-1$
 		// comma separated depends
@@ -265,7 +266,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		proposals = processor.getTargetAttributeValueProposals(getCurrentDocument(), getCurrentDocument().get(0, lineOffset
 				+ columnNumber), "", "depends"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue(proposals.length == 7);
+		assertThat(proposals).hasSize(7);
 		assertContains("main", proposals); //$NON-NLS-1$
 		// XXX why do we not want a valid proposal?
 		/* assertDoesNotContain("pretest", proposals); */
@@ -285,7 +286,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertEquals(3, proposals.length);
+		assertThat(proposals).hasSize(3);
 		assertContains("main", proposals); //$NON-NLS-1$
 		assertContains("pretest", proposals); //$NON-NLS-1$
 		assertContains("test2", proposals); //$NON-NLS-1$
@@ -318,7 +319,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertEquals(3, proposals.length);
+		assertThat(proposals).hasSize(3);
 		assertContains("task", proposals); //$NON-NLS-1$
 		assertContains("task2", proposals); //$NON-NLS-1$
 		assertContains("task3", proposals); //$NON-NLS-1$
@@ -350,7 +351,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertEquals(2, proposals.length);
+		assertThat(proposals).hasSize(2);
 		assertContains("task", proposals); //$NON-NLS-1$
 		assertContains("task3", proposals); //$NON-NLS-1$
 
@@ -381,7 +382,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getTargetAttributeValueProposals(getCurrentDocument(), getCurrentDocument().get(0, lineOffset
 				+ columnNumber), "", "if"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue(proposals.length >= 1);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(1);
 		assertContains("prop1", proposals); //$NON-NLS-1$
 	}
 
@@ -400,7 +401,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getTargetAttributeValueProposals(getCurrentDocument(), getCurrentDocument().get(0, lineOffset
 				+ columnNumber), "prop", "unless"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue(proposals.length >= 1);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(1);
 		assertContains("prop1", proposals); //$NON-NLS-1$
 
 	}
@@ -418,7 +419,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getAntCallAttributeValueProposals(getCurrentDocument(), "", "target"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue(proposals.length == 2);
+		assertThat(proposals).hasSize(2);
 		assertContains("call", proposals); //$NON-NLS-1$
 		assertContains("pre-call", proposals); //$NON-NLS-1$
 	}
@@ -486,9 +487,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("taskdef.xml")); //$NON-NLS-1$
 
 		ICompletionProposal[] proposals = processor.getTaskProposals(getCurrentDocument(), "target", "min"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(1, proposals.length);
-		ICompletionProposal proposal = proposals[0];
-		assertEquals("mine", proposal.getDisplayString()); //$NON-NLS-1$
+		assertThat(proposals).hasSize(1).satisfiesExactly(it -> assertThat(it.getDisplayString()).isEqualTo("mine")); //$NON-NLS-1$
 		processor.dispose();
 	}
 
@@ -512,9 +511,8 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("macrodef.xml")); //$NON-NLS-1$
 
 		ICompletionProposal[] proposals = processor.getTaskProposals(getCurrentDocument(), "target", "eclipsema"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(1, proposals.length);
-		ICompletionProposal proposal = proposals[0];
-		assertEquals("eclipseMacro", proposal.getDisplayString()); //$NON-NLS-1$
+		assertThat(proposals).hasSize(1)
+				.satisfiesExactly(it -> assertThat(it.getDisplayString()).isEqualTo("eclipseMacro")); //$NON-NLS-1$
 
 	}
 
@@ -526,9 +524,9 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("98853.xml")); //$NON-NLS-1$
 
 		ICompletionProposal[] proposals = processor.getTaskProposals(getCurrentDocument(), "target", "xyz"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(2, proposals.length);
-		ICompletionProposal proposal = proposals[0];
-		assertEquals("xyz:echo-macro", proposal.getDisplayString()); //$NON-NLS-1$
+		assertThat(proposals).hasSize(2).satisfiesExactly(
+				first -> assertThat(first.getDisplayString()).isEqualTo("xyz:echo-macro"), //$NON-NLS-1$
+				identity()::apply);
 		processor.dispose();
 	}
 
@@ -545,7 +543,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertEquals(proposals.length, 5);
+		assertThat(proposals).hasSize(5);
 		assertContains(IAntCoreConstants.DESCRIPTION, proposals);
 		assertContains("implicit - (true | false | on | off | yes | no)", proposals); //$NON-NLS-1$
 		assertContains(IAntCoreConstants.NAME, proposals);
@@ -565,7 +563,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertTrue(proposals.length == 2);
+		assertThat(proposals).hasSize(2);
 		assertContains("v", proposals); //$NON-NLS-1$
 		assertContains("eclipse", proposals); //$NON-NLS-1$
 		assertTrue("Additional proposal information not correct", proposals[1].getAdditionalProposalInfo().startsWith("Testing Eclipse")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -585,7 +583,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertEquals("There should be one completion proposal", proposals.length, 1); //$NON-NLS-1$
+		assertThat(proposals).hasSize(1);
 		assertContains("str", proposals); //$NON-NLS-1$
 		processor.dispose();
 	}
@@ -603,7 +601,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertEquals("There should be 1 completion proposal", proposals.length, 1); //$NON-NLS-1$
+		assertThat(proposals).hasSize(1);
 		assertTrue("Proposal not correct", proposals[0].getDisplayString().equals("some-tasks")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertTrue("Additional proposal information not correct", proposals[0].getAdditionalProposalInfo().endsWith("Not required")); //$NON-NLS-1$ //$NON-NLS-2$
 		processor.dispose();
@@ -617,21 +615,21 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
 		ICompletionProposal[] proposals = processor.getTaskProposals("         <", "rename", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals(0, proposals.length);
+		assertThat(proposals).isEmpty();
 
 		proposals = processor.getTaskProposals("       <cl", "property", "cl"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals(1, proposals.length);
+		assertThat(proposals).hasSize(1);
 		ICompletionProposal proposal = proposals[0];
 		assertEquals("classpath", proposal.getDisplayString()); //$NON-NLS-1$
 
 		proposals = processor.getTaskProposals("       <pr", "property", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals(1, proposals.length);
+		assertThat(proposals).hasSize(1);
 		proposal = proposals[0];
 		assertEquals("classpath", proposal.getDisplayString()); //$NON-NLS-1$
 
 		// "<project><target><mk"
 		proposals = processor.getTaskProposals("<project><target><mk", "target", "mk"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals(1, proposals.length);
+		assertThat(proposals).hasSize(1);
 		proposal = proposals[0];
 		assertEquals("mkdir", proposal.getDisplayString()); //$NON-NLS-1$
 		processor.dispose();
@@ -682,7 +680,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml")); //$NON-NLS-1$
 
 		ICompletionProposal[] proposals = processor.getAttributeProposals("fail", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(6, proposals.length);
+		assertThat(proposals).hasSize(6);
 
 		assertContains("message", proposals); //$NON-NLS-1$
 		assertContains("if", proposals); //$NON-NLS-1$
@@ -698,13 +696,13 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("mixed.xml")); //$NON-NLS-1$
 		// String string = "<project><target><sql driver=\"\" password=\"\" url=\"\" userid=\"\"></sql><concat></concat>";
 		ICompletionProposal[] proposals = processor.getTaskProposals(getCurrentDocument(), processor.getParentName(getCurrentDocument(), 0, 62), "t"); //$NON-NLS-1$
-		assertEquals(1, proposals.length);
+		assertThat(proposals).hasSize(1);
 		ICompletionProposal proposal = proposals[0];
 		assertEquals("transaction", proposal.getDisplayString()); //$NON-NLS-1$
 
 		proposals = processor.getTaskProposals(getCurrentDocument(), processor.getParentName(getCurrentDocument(), 0, 76), ""); //$NON-NLS-1$
 		// filelist fileset filterchain footer header path
-		assertEquals(6, proposals.length);
+		assertThat(proposals).hasSize(6);
 		proposal = proposals[0];
 		assertEquals("filelist", proposal.getDisplayString()); //$NON-NLS-1$
 		processor.dispose();
@@ -892,14 +890,13 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("empty.xml")); //$NON-NLS-1$
 
 		ICompletionProposal[] proposals = processor.getBuildFileProposals("", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(1, proposals.length);
-		assertEquals("project", proposals[0].getDisplayString()); //$NON-NLS-1$
+		assertThat(proposals).hasSize(1).satisfiesExactly(it -> assertThat(it.getDisplayString()).isEqualTo("project")); //$NON-NLS-1$
 
 		proposals = processor.getBuildFileProposals("            jl", "jl"); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(0, proposals.length);
+		assertThat(proposals).isEmpty();
 
 		proposals = processor.getBuildFileProposals("    \n<project></project>", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		assertEquals(1, proposals.length);
+		assertThat(proposals).hasSize(1);
 		processor.dispose();
 	}
 
@@ -919,7 +916,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
 		// for sure should have project.class.path and project.class.path2 but project.class.path2
 		// should not present itself as a possible reference
-		assertTrue(proposals.length >= 2);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(2);
 		assertContains("project.class.path", proposals); //$NON-NLS-1$
 		assertDoesNotContain("project.class.path2", proposals); //$NON-NLS-1$
 		processor.dispose();
@@ -940,8 +937,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
 		// true false yes no on off
-		System.out.println("Proposals length:" + proposals.length); //$NON-NLS-1$
-		assertTrue(proposals.length == 6);
+		assertThat(proposals).hasSize(6);
 		assertContains("true", proposals); //$NON-NLS-1$
 		assertContains("no", proposals); //$NON-NLS-1$
 		processor.dispose();
@@ -960,7 +956,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "c"); //$NON-NLS-1$
-		assertEquals("Incorrect number of proposals", 2, proposals.length); //$NON-NLS-1$
+		assertThat(proposals).hasSize(2);
 		assertContains("cool", proposals); //$NON-NLS-1$
 		assertContains("chillin", proposals); //$NON-NLS-1$
 		assertDoesNotContain("awesome", proposals); //$NON-NLS-1$
@@ -980,7 +976,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "e"); //$NON-NLS-1$
-		assertEquals("Incorrect number of proposals", 1, proposals.length); //$NON-NLS-1$
+		assertThat(proposals).hasSize(1);
 		// the reference to the project by name
 		assertContains("Extension Point Task", proposals); //$NON-NLS-1$
 		processor.dispose();
@@ -999,7 +995,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertTrue(proposals.length == 1);
+		assertThat(proposals).hasSize(1);
 		assertContains("works", proposals); //$NON-NLS-1$
 		processor.dispose();
 	}
@@ -1017,7 +1013,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertTrue(proposals.length == 1);
+		assertThat(proposals).hasSize(1);
 		assertContains("nestedelement", proposals); //$NON-NLS-1$
 		processor.dispose();
 	}
@@ -1038,7 +1034,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 
 			ICompletionProposal[] proposals = processor.computeCompletionProposals(lineOffset);
 
-			assertTrue("No templates are relevant at the current position. Found: " + proposals.length, proposals.length == 1); //$NON-NLS-1$
+			assertThat(proposals).hasSize(1);
 		}
 		finally {
 			EditorTestHelper.closeAllEditors();
@@ -1058,7 +1054,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertEquals("There should be 6 completion proposals", proposals.length, 6); //$NON-NLS-1$
+		assertThat(proposals).hasSize(6);
 		assertContains("true", proposals); //$NON-NLS-1$
 		processor.dispose();
 	}
@@ -1076,7 +1072,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "n"); //$NON-NLS-1$
-		assertTrue(proposals.length == 1);
+		assertThat(proposals).hasSize(1);
 		assertContains(IAntCoreConstants.NAME, proposals);
 		processor.dispose();
 	}
@@ -1094,7 +1090,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertTrue(proposals.length == 6); // boolean proposals
+		assertThat(proposals).hasSize(6);
 		assertContains("false", proposals); //$NON-NLS-1$
 
 		lineNumber = 3;
@@ -1104,7 +1100,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertTrue(proposals.length == 6); // boolean proposals
+		assertThat(proposals).hasSize(6);
 		assertContains("true", proposals); //$NON-NLS-1$
 
 		lineNumber = 4;
@@ -1114,7 +1110,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertTrue(proposals.length == 6); // boolean proposals
+		assertThat(proposals).hasSize(6);
 		assertContains("no", proposals); //$NON-NLS-1$
 		processor.dispose();
 	}
@@ -1132,7 +1128,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 			editor.getSelectionProvider().setSelection(TextSelection.emptySelection());
 
 			ICompletionProposal[] proposals = processor.computeCompletionProposals(0);
-			assertTrue("Four proposals are relevant at the current position. Found: " + proposals.length, proposals.length == 4); //$NON-NLS-1$
+			assertThat(proposals).hasSize(4);
 			assertContains("project", proposals); //$NON-NLS-1$
 			assertContains("Buildfile template - simple buildfile with two targets", proposals); //$NON-NLS-1$
 			processor.dispose();
@@ -1157,7 +1153,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
 		// for sure should have project.class.path and project.class.path2
-		assertTrue(proposals.length >= 2);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(2);
 		assertContains("project.class.path", proposals); //$NON-NLS-1$
 		assertContains("project.class.path2", proposals); //$NON-NLS-1$
 
@@ -1169,7 +1165,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
 		// for sure should have project.class.path and project.class.path2
-		assertTrue(proposals.length >= 2);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(2);
 		assertContains("project.class.path", proposals); //$NON-NLS-1$
 		assertContains("project.class.path2", proposals); //$NON-NLS-1$
 
@@ -1181,7 +1177,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
 		// for sure should have project.class.path and project.class.path2
-		assertTrue(proposals.length >= 2);
+		assertThat(proposals).hasSizeGreaterThanOrEqualTo(2);
 		assertContains("project.class.path", proposals); //$NON-NLS-1$
 		assertContains("project.class.path2", proposals); //$NON-NLS-1$
 		processor.dispose();
@@ -1202,7 +1198,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
 		// includes all the public targets
-		assertTrue(proposals.length == 8);
+		assertThat(proposals).hasSize(8);
 		assertContains("main", proposals); //$NON-NLS-1$
 		assertContains("testUnless", proposals); //$NON-NLS-1$
 		processor.dispose();
@@ -1223,7 +1219,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
 		// includes all the project attributes
-		assertTrue(proposals.length == 3);
+		assertThat(proposals).hasSize(3);
 		assertContains(IAntCoreConstants.NAME, proposals);
 		assertContains("default", proposals); //$NON-NLS-1$
 		assertContains("basedir", proposals); //$NON-NLS-1$
@@ -1234,7 +1230,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		proposals = processor.getProposalsFromDocument(getCurrentDocument(), "n"); //$NON-NLS-1$
-		assertTrue(proposals.length == 1);
+		assertThat(proposals).hasSize(1);
 		assertContains(IAntCoreConstants.NAME, proposals);
 		processor.dispose();
 	}
@@ -1250,7 +1246,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "ext"); //$NON-NLS-1$
-		assertTrue(proposals.length == 3);
+		assertThat(proposals).hasSize(3);
 		assertContains("extension-point", proposals); //$NON-NLS-1$
 		processor.dispose();
 	}
@@ -1266,7 +1262,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		processor.setColumnNumber(columnNumber);
 		processor.setCursorPosition(lineOffset + columnNumber);
 		ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), ""); //$NON-NLS-1$
-		assertTrue(proposals.length == 1);
+		assertThat(proposals).hasSize(1);
 		assertContains("ep-B", proposals); //$NON-NLS-1$
 		processor.dispose();
 	}

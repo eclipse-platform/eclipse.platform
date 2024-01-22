@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
@@ -90,7 +91,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -221,7 +222,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -343,7 +344,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -469,7 +470,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -605,7 +606,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project1.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -740,7 +741,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project1.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -881,7 +882,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project1.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -1037,7 +1038,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project1.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -1194,7 +1195,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project1.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -1353,7 +1354,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project1.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 		RebuildingBuilder b2 = builders.get(1);
 		RebuildingBuilder b3 = builders.get(2);
@@ -1508,7 +1509,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project1.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 
 		// Create and set a build spec for the project
@@ -1711,7 +1712,7 @@ public class RebuildTest {
 		// do an initial build to create builders
 		project1.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		List<RebuildingBuilder> builders = RebuildingBuilder.getInstances();
-		assertEquals(project1.getDescription().getBuildSpec().length, builders.size());
+		assertThat(project1.getDescription().getBuildSpec()).hasSameSizeAs(builders);
 		RebuildingBuilder b1 = builders.get(0);
 
 		// Create and set a build spec for the project

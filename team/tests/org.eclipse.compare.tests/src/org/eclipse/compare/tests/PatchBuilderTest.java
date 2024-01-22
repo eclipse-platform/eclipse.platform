@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -45,9 +45,9 @@ public class PatchBuilderTest {
 		IStorage patchStorage = new StringStorage("patch_modifyHunks.txt");
 		IStorage contextStorage = new StringStorage("context.txt");
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
-		assertEquals(1, patches.length);
+		assertThat(patches).hasSize(1);
 		IHunk[] hunksBefore = patches[0].getHunks();
-		assertEquals(5, hunksBefore.length);
+		assertThat(hunksBefore).hasSize(5);
 
 		String[] lines = new String[] { " [d]", "+[d1]", "+[d2]", "+[d3]", "+[d4]", " [e]" };
 		String lineDelimiter = getLineDelimiter(patchStorage);
@@ -59,7 +59,7 @@ public class PatchBuilderTest {
 		filePatch = PatchBuilder.removeHunks(filePatch, toRemove);
 
 		IHunk[] hunksAfter = filePatch.getHunks();
-		assertEquals(4, hunksAfter.length);
+		assertThat(hunksAfter).hasSize(4);
 		assertEquals(3, ((Hunk) hunksAfter[0]).getStart(false));
 		assertEquals(3, ((Hunk) hunksAfter[0]).getStart(true));
 		assertEquals(7, ((Hunk) hunksAfter[1]).getStart(false));
@@ -73,7 +73,7 @@ public class PatchBuilderTest {
 				new NullProgressMonitor());
 
 		IHunk[] rejects = result.getRejects();
-		assertEquals(1, rejects.length);
+		assertThat(rejects).hasSize(1);
 
 		InputStream actual = result.getPatchedContents();
 
@@ -89,9 +89,9 @@ public class PatchBuilderTest {
 		IStorage patchStorage = new StringStorage("patch_addHunks.txt");
 		IStorage contextStorage = new StringStorage("context_full.txt");
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
-		assertEquals(1, patches.length);
+		assertThat(patches).hasSize(1);
 		IHunk[] hunksBefore = patches[0].getHunks();
-		assertEquals(3, hunksBefore.length);
+		assertThat(hunksBefore).hasSize(3);
 
 		String[] lines0 = new String[] { " [d]", "+[d1]", "+[d2]", "+[d3]", "+[d4]", " [e]" };
 		String lineDelimiter = getLineDelimiter(patchStorage);
@@ -106,7 +106,7 @@ public class PatchBuilderTest {
 		IFilePatch2 filePatch = PatchBuilder.addHunks(patches[0], toAdd);
 
 		IHunk[] hunksAfter = filePatch.getHunks();
-		assertEquals(5, hunksAfter.length);
+		assertThat(hunksAfter).hasSize(5);
 		assertEquals(0, ((Hunk) hunksAfter[0]).getStart(false));
 		assertEquals(0, ((Hunk) hunksAfter[0]).getStart(true));
 		assertEquals(3, ((Hunk) hunksAfter[1]).getStart(false));
@@ -122,7 +122,7 @@ public class PatchBuilderTest {
 				new NullProgressMonitor());
 
 		IHunk[] rejects = result.getRejects();
-		assertEquals(0, rejects.length);
+		assertThat(rejects).isEmpty();
 
 		InputStream actual = result.getPatchedContents();
 
@@ -138,15 +138,15 @@ public class PatchBuilderTest {
 		IStorage patchStorage = new StringStorage("patch_removeHunks.txt");
 		IStorage contextStorage = new StringStorage("context_full.txt");
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
-		assertEquals(1, patches.length);
+		assertThat(patches).hasSize(1);
 		IHunk[] hunksBefore = patches[0].getHunks();
-		assertEquals(5, hunksBefore.length);
+		assertThat(hunksBefore).hasSize(5);
 
 		IHunk[] toRemove = new IHunk[] { hunksBefore[0], hunksBefore[1] };
 		IFilePatch2 filePatch = PatchBuilder.removeHunks(patches[0], toRemove);
 
 		IHunk[] hunksAfter = filePatch.getHunks();
-		assertEquals(3, hunksAfter.length);
+		assertThat(hunksAfter).hasSize(3);
 		assertEquals(19, ((Hunk) hunksAfter[0]).getStart(false));
 		assertEquals(19, ((Hunk) hunksAfter[0]).getStart(true));
 		assertEquals(29, ((Hunk) hunksAfter[1]).getStart(false));
@@ -158,7 +158,7 @@ public class PatchBuilderTest {
 				new NullProgressMonitor());
 
 		IHunk[] rejects = result.getRejects();
-		assertEquals(0, rejects.length);
+		assertThat(rejects).isEmpty();
 
 		InputStream actual = result.getPatchedContents();
 
@@ -188,9 +188,7 @@ public class PatchBuilderTest {
 		IFilePatch2 filePatch = PatchBuilder.createFilePatch(IPath.fromOSString(""), IFilePatch2.DATE_UNKNOWN, IPath.fromOSString(""),
 				IFilePatch2.DATE_UNKNOWN, hunks);
 
-		assertEquals(2, filePatch.getHunks().length);
-		assertEquals(hunk0, filePatch.getHunks()[0]);
-		assertEquals(hunk1, filePatch.getHunks()[1]);
+		assertThat(filePatch.getHunks()).containsExactly(hunk0, hunk1);
 
 		IFilePatchResult result = filePatch.apply(Utilities.getReaderCreator(contextStorage), new PatchConfiguration(),
 				new NullProgressMonitor());
@@ -208,8 +206,8 @@ public class PatchBuilderTest {
 	public void testCreateHunk0() throws CoreException, IOException {
 		IStorage patch = new StringStorage("patch_createHunk0.txt");
 		IFilePatch[] filePatches = ApplyPatchOperation.parsePatch(patch);
-		assertEquals(1, filePatches.length);
-		assertEquals(1, filePatches[0].getHunks().length);
+		assertThat(filePatches).hasSize(1);
+		assertThat(filePatches[0].getHunks()).hasSize(1);
 
 		String[] lines = new String[] { "+[a1]", "+[a2]", "+[a3]", " [a]", " [b]", "-[c]", " [d]", " [e]", " [f]" };
 		String lineDelimiter = getLineDelimiter(patch);
@@ -226,8 +224,8 @@ public class PatchBuilderTest {
 	public void testCreateHunk1() throws CoreException, IOException {
 		IStorage patch = new StringStorage("patch_createHunk1.txt");
 		IFilePatch[] filePatches = ApplyPatchOperation.parsePatch(patch);
-		assertEquals(1, filePatches.length);
-		assertEquals(1, filePatches[0].getHunks().length);
+		assertThat(filePatches).hasSize(1);
+		assertThat(filePatches[0].getHunks()).hasSize(1);
 
 		String[] lines = new String[] { " [a]", " [b]", "-[c]", " [d]", "-[e]", " [f]", " [g]", " [h]", "+[h1]", " [i]",
 				" [j]", "+[j1]", "+[j2]", " [k]", " [l]", " [m]" };
@@ -245,8 +243,8 @@ public class PatchBuilderTest {
 	public void testCreateHunk2() throws CoreException, IOException {
 		IStorage patch = new StringStorage("patch_createHunk2.txt");
 		IFilePatch[] filePatches = ApplyPatchOperation.parsePatch(patch);
-		assertEquals(1, filePatches.length);
-		assertEquals(1, filePatches[0].getHunks().length);
+		assertThat(filePatches).hasSize(1);
+		assertThat(filePatches[0].getHunks()).hasSize(1);
 
 		String[] lines = new String[] { "+[aa]", "+[bb]", "+[cc]" };
 		String lineDelimiter = getLineDelimiter(patch);
@@ -263,8 +261,8 @@ public class PatchBuilderTest {
 	public void testCreateHunk3() throws CoreException, IOException {
 		IStorage patch = new StringStorage("patch_createHunk3.txt");
 		IFilePatch[] filePatches = ApplyPatchOperation.parsePatch(patch);
-		assertEquals(1, filePatches.length);
-		assertEquals(1, filePatches[0].getHunks().length);
+		assertThat(filePatches).hasSize(1);
+		assertThat(filePatches[0].getHunks()).hasSize(1);
 
 		String[] lines = new String[] { "-[aa]", "-[bb]", "-[cc]", "-[dd]" };
 		String lineDelimiter = getLineDelimiter(patch);
@@ -280,11 +278,7 @@ public class PatchBuilderTest {
 	private void assertHunkEquals(Hunk h1, Hunk h2) {
 		String[] l1 = h1.getLines();
 		String[] l2 = h2.getLines();
-		assertEquals(l1.length, l2.length);
-		for (int i = 0; i < l1.length; i++) {
-			assertFalse(l1[i] == null && l2[i] != null);
-			assertEquals(l1[i], (l2[i]));
-		}
+		assertThat(l1).containsExactly(l2);
 		assertEquals(h1.getStart(false), h2.getStart(false));
 		assertEquals(h1.getStart(true), h2.getStart(true));
 		assertEquals(h1.getLength(false), h2.getLength(false));

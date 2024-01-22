@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.PI_RESOURCES;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
@@ -141,13 +142,8 @@ public class CharsetTest {
 
 		boolean ignoreEvent() {
 			// to make testing easier, we allow events from the main or other thread to be ignored
-			if (isSet(IGNORE_BACKGROUND_THREAD) && Thread.currentThread() != creationThread) {
-				return true;
-			}
-			if (isSet(IGNORE_CREATION_THREAD) && Thread.currentThread() == creationThread) {
-				return true;
-			}
-			return false;
+			return (isSet(IGNORE_BACKGROUND_THREAD) && Thread.currentThread() != creationThread)
+					|| (isSet(IGNORE_CREATION_THREAD) && Thread.currentThread() == creationThread);
 		}
 
 		@Override
@@ -947,7 +943,7 @@ public class CharsetTest {
 			assertEquals(ResourcesPlugin.getEncoding(), project.getDefaultCharset(false));
 
 			IMarker[] markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
-			assertEquals("No missing encoding marker should be set", 0, markers.length);
+			assertThat(markers).as("check no missing encoding markers").isEmpty();
 
 			project.setDefaultCharset(null, createTestMonitor());
 			assertEquals(null, project.getDefaultCharset(false));
@@ -955,7 +951,7 @@ public class CharsetTest {
 			waitForEncodingRelatedJobs(testName.getMethodName());
 
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
-			assertEquals("Missing encoding marker should be set", 1, markers.length);
+			assertThat(markers).as("check missing encoding markers").hasSize(1);
 
 			createInWorkspace(new IResource[] {file1, file2, file3});
 			// project and children should be using the workspace's default now
@@ -965,7 +961,7 @@ public class CharsetTest {
 			// sets workspace default charset
 			workspace.getRoot().setDefaultCharset("FOO", createTestMonitor());
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
-			assertEquals("Missing encoding marker should be still set", 1, markers.length);
+			assertThat(markers).as("check missing encoding markers").hasSize(1);
 
 			assertCharsetIs("2.0", "FOO", new IResource[] {workspace.getRoot(), project, file1, folder1, file2, folder2, file3}, true);
 			assertCharsetIs("2.1", null, new IResource[] {project, file1, folder1, file2, folder2, file3}, false);
@@ -975,7 +971,7 @@ public class CharsetTest {
 			waitForEncodingRelatedJobs(testName.getMethodName());
 
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
-			assertEquals("No missing encoding marker should be set", 0, markers.length);
+			assertThat(markers).as("check no missing encoding markers").isEmpty();
 
 			assertCharsetIs("3.0", "BAR", new IResource[] {project, file1, folder1, file2, folder2, file3}, true);
 			assertCharsetIs("3.1", null, new IResource[] {file1, folder1, file2, folder2, file3}, false);
@@ -1103,7 +1099,7 @@ public class CharsetTest {
 			assertTrue("2.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
 
 			IMarker[] markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
-			assertEquals("No missing encoding marker should be set", 0, markers.length);
+			assertThat(markers).as("check no missing enconding markers").isEmpty();
 
 			backgroundVerifier.reset();
 			backgroundVerifier.addExpectedChange(
@@ -1120,7 +1116,7 @@ public class CharsetTest {
 			assertTrue("3.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
 
 			markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
-			assertEquals("Missing encoding marker should be set", 1, markers.length);
+			assertThat(markers).as("check missing encoding markers").hasSize(1);
 		} finally {
 			getWorkspace().removeResourceChangeListener(backgroundVerifier);
 			clearAllEncodings(project);

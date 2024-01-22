@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.remote;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class ContextServletTest {
 	@Test
 	public void testRemoteContextFound() throws Exception {
 		Element[] topics = getContextsFromServlet("org.eclipse.ua.tests.test_cheatsheets");
-		assertEquals(1, topics.length);
+		assertThat(topics).hasSize(1);
 		assertEquals("abcdefg", topics[0].getAttribute("label"));
 	}
 
@@ -67,7 +68,7 @@ public class ContextServletTest {
 	public void testRemoteContextFoundDe() throws Exception {
 		Element[] topics = getContextsUsingLocale
 			("org.eclipse.ua.tests.test_cheatsheets", "de");
-		assertEquals(1, topics.length);
+			assertThat(topics).hasSize(1);
 		assertEquals("German Context", topics[0].getAttribute("label"));
 	}
 

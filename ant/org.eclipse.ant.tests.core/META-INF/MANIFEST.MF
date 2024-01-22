@@ -18,6 +18,7 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.ant.core,
  org.eclipse.core.runtime,
  org.eclipse.pde.core
+Import-Package: org.assertj.core.api
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Eclipse-BundleShape: dir

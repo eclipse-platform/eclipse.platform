@@ -19,7 +19,6 @@ import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -89,16 +88,16 @@ public class RefreshProviderTest {
 		IFile link = project.getFile("Link");
 		// ensure we currently have just the project being monitored
 		TestRefreshProvider provider = TestRefreshProvider.getInstance();
-		assertEquals("1.0", 1, provider.getMonitoredResources().length);
+		assertThat(provider.getMonitoredResources()).hasSize(1);
 		link.createLink(location, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 		joinAutoRefreshJobs();
-		assertEquals("1.1", 2, provider.getMonitoredResources().length);
+		assertThat(provider.getMonitoredResources()).hasSize(2);
 		link.delete(IResource.FORCE, createTestMonitor());
 		joinAutoRefreshJobs();
-		assertEquals("1.2", 1, provider.getMonitoredResources().length);
+		assertThat(provider.getMonitoredResources()).hasSize(1);
 		removeFromWorkspace(project);
 		joinAutoRefreshJobs();
-		assertEquals("1.3", 0, provider.getMonitoredResources().length);
+		assertThat(provider.getMonitoredResources()).isEmpty();
 		// check provider for other errors
 		AssertionFailedError[] failures = provider.getFailures();
 		assertThat(failures).isEmpty();
@@ -116,16 +115,16 @@ public class RefreshProviderTest {
 		joinAutoRefreshJobs();
 		// ensure we currently have just the project being monitored
 		TestRefreshProvider provider = TestRefreshProvider.getInstance();
-		assertEquals("1.0", 1, provider.getMonitoredResources().length);
+		assertThat(provider.getMonitoredResources()).hasSize(1);
 		project.close(createTestMonitor());
 		joinAutoRefreshJobs();
-		assertEquals("1.1", 0, provider.getMonitoredResources().length);
+		assertThat(provider.getMonitoredResources()).isEmpty();
 		project.open(createTestMonitor());
 		joinAutoRefreshJobs();
-		assertEquals("1.2", 1, provider.getMonitoredResources().length);
+		assertThat(provider.getMonitoredResources()).hasSize(1);
 		removeFromWorkspace(project);
 		joinAutoRefreshJobs();
-		assertEquals("1.3", 0, provider.getMonitoredResources().length);
+		assertThat(provider.getMonitoredResources()).isEmpty();
 		// check provider for other errors
 		AssertionFailedError[] failures = provider.getFailures();
 		assertThat(failures).isEmpty();

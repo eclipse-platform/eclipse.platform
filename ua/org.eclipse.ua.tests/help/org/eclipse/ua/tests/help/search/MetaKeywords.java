@@ -14,6 +14,7 @@
 package org.eclipse.ua.tests.help.search;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -41,14 +42,14 @@ public class MetaKeywords {
 	@Test
 	public void testDescriptionInHtml() {
 		SearchHit[] hits = getResultDescriptions("ydhaedrsc", "en");
-		assertEquals(hits.length, 1);
+		assertThat(hits).hasSize(1);
 		assertEquals("HTML Meta description", hits[0].getDescription());
 	}
 
 	@Test
 	public void testDescriptionInXhtml() {
 		SearchHit[] hits = getResultDescriptions("olfrgkjrifjd", "en");
-		assertEquals(hits.length, 1);
+		assertThat(hits).hasSize(1);
 		assertEquals("XHTML Meta description", hits[0].getDescription());
 	}
 

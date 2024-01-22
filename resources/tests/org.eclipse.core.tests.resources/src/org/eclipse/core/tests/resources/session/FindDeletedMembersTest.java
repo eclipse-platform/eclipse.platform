@@ -14,13 +14,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import java.util.Arrays;
-import java.util.List;
 import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -71,8 +70,7 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 
-		IFile[] df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("0.1", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
 
 		// test that a deleted file can be found
 		// create and delete a file
@@ -84,27 +82,17 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 	public void test2() throws Exception {
 		// the deleted file should show up as a deleted member of project
-		IFile[] df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("0.1", 1, df.length);
-		assertEquals("0.2", pfile, df[0]);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("0.3", 1, df.length);
-		assertEquals("0.4", pfile, df[0]);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("0.5", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor()))
+				.containsExactly(pfile);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor()))
+				.containsExactly(pfile);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
 
 		// the deleted file should show up as a deleted member of workspace root
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("0.5.1", 0, df.length);
-
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("0.5.2", 1, df.length);
-		assertEquals("0.5.3", pfile, df[0]);
-
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("0.5.4", 0, df.length);
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor()))
+				.containsExactly(pfile);
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
 
 		// recreate the file
 		pfile.create(createRandomContentsStream(), true, createTestMonitor());
@@ -114,32 +102,21 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 	public void test3() throws Exception {
 		// the deleted file should no longer show up as a deleted member of project
-		IFile[] df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("0.6", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("0.7", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("0.8", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
 
 		// the deleted file should no longer show up as a deleted member of ws root
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("0.8.1", 0, df.length);
-
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("0.8.2", 0, df.length);
-
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("0.8.3", 0, df.length);
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).isEmpty();
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
 
 		// scrub the project
 		project.delete(true, createTestMonitor());
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("0.9", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
 
 		// test folder
 		// create and delete a file in a folder
@@ -152,28 +129,18 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 	public void test4() throws Exception {
 		// the deleted file should show up as a deleted member
-		IFile[] df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("1.1", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("1.2", 1, df.length);
-		assertEquals("1.3", file, df[0]);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("1.4", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor()))
+				.containsExactly(file);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
 
 		// recreate the file
 		file.create(createRandomContentsStream(), true, createTestMonitor());
 
 		// the recreated file should no longer show up as a deleted member
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("1.5", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("1.6", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("1.7", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
 
 		// deleting the folder should bring it back into history
 		folder.delete(true, true, createTestMonitor());
@@ -183,15 +150,10 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 	public void test5() throws Exception {
 		// the deleted file should show up as a deleted member of project
-		IFile[] df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("1.8", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("1.9", 1, df.length);
-		assertEquals("1.10", file, df[0]);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("1.11", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor()))
+				.containsExactly(file);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
 
 		// create and delete a file where the folder was
 		folderAsFile.create(createRandomContentsStream(), true, createTestMonitor());
@@ -199,29 +161,19 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		folder.create(true, true, createTestMonitor());
 
 		// the deleted file should show up as a deleted member of folder
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("1.12", 1, df.length);
-		assertEquals("1.13", folderAsFile, df[0]);
-
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("1.14", 2, df.length);
-		List<IFile> dfList = Arrays.asList(df);
-		assertTrue("1.15", dfList.contains(file));
-		assertTrue("1.16", dfList.contains(folderAsFile));
-
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("1.17", 2, df.length);
-		dfList = Arrays.asList(df);
-		assertTrue("1.18", dfList.contains(file));
-		assertTrue("1.19", dfList.contains(folderAsFile));
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor()))
+				.containsExactly(folderAsFile);
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor()))
+				.containsExactlyInAnyOrder(file, folderAsFile);
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor()))
+				.containsExactlyInAnyOrder(file, folderAsFile);
 
 		// scrub the project
 		project.delete(true, createTestMonitor());
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("1.50", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
 
 		// test a bunch of deletes
 		// create and delete a file in a folder
@@ -237,52 +189,26 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 
 	public void test6() throws Exception {
 		// under root
-		IFile[] df = root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("3.1", 0, df.length);
-
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("3.2", 0, df.length);
-
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("3.3", 3, df.length);
-		List<IFile> dfList = Arrays.asList(df);
-		assertTrue("3.3.1", dfList.contains(file1));
-		assertTrue("3.3.2", dfList.contains(file2));
-		assertTrue("3.3.3", dfList.contains(file3));
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor()))
+				.containsExactlyInAnyOrder(file1, file2, file3);
 
 		// under project
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("3.4", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("3.5", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("3.6", 3, df.length);
-		dfList = Arrays.asList(df);
-		assertTrue("3.6.1", dfList.contains(file1));
-		assertTrue("3.6.2", dfList.contains(file2));
-		assertTrue("3.6.3", dfList.contains(file3));
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor()))
+				.containsExactlyInAnyOrder(file1, file2, file3);
 
 		// under folder
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("3.7", 0, df.length);
-
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("3.8", 2, df.length);
-
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("3.9", 3, df.length);
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).hasSize(2);
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).hasSize(3);
 
 		// under folder2
-		df = folder2.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("3.10", 0, df.length);
-
-		df = folder2.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("3.11", 1, df.length);
-
-		df = folder2.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("3.12", 1, df.length);
+		assertThat(folder2.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
+		assertThat(folder2.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).hasSize(1);
+		assertThat(folder2.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).hasSize(1);
 
 		project.delete(true, createTestMonitor());
 
@@ -292,44 +218,24 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 	public void test7() throws Exception {
 		// once the project is gone, so is all the history for that project
 		// under root
-		IFile[] df = root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("4.1", 0, df.length);
-
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("4.2", 0, df.length);
-
-		df = root.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("4.3", 0, df.length);
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).isEmpty();
 
 		// under project
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("4.4", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("4.5", 0, df.length);
-
-		df = project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("4.6", 0, df.length);
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).isEmpty();
 
 		// under folder
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("4.7", 0, df.length);
-
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("4.8", 0, df.length);
-
-		df = folder.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("4.9", 0, df.length);
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(folder.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).isEmpty();
 
 		// under folder2
-		df = folder2.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor());
-		assertEquals("4.10", 0, df.length);
-
-		df = folder2.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor());
-		assertEquals("4.11", 0, df.length);
-
-		df = folder2.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertEquals("4.12", 0, df.length);
+		assertThat(folder2.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
+		assertThat(folder2.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
+		assertThat(folder2.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, createTestMonitor())).isEmpty();
 
 		saveWorkspace();
 	}

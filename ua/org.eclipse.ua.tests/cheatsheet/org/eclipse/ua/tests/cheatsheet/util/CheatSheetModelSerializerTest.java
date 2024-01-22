@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.cheatsheet.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,7 +50,7 @@ public class CheatSheetModelSerializerTest {
 	public void testRunSerializer() throws IOException {
 		URL[] urls = ResourceFinder.findFiles(FrameworkUtil.getBundle(getClass()), "data/cheatsheet/valid", ".xml",
 				true);
-		Assert.assertTrue("Unable to find sample cheat sheets to test parser", urls.length > 0);
+		assertThat(urls).as("check sample cheat sheets to test parser").hasSizeGreaterThan(0);
 		for (URL url : urls) {
 			CheatSheetParser parser = new CheatSheetParser();
 			CheatSheet sheet = (CheatSheet) parser.parse(url, FrameworkUtil.getBundle(getClass()).getSymbolicName(),

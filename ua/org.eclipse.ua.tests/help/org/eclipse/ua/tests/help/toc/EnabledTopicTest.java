@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.toc;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -137,7 +137,7 @@ public class EnabledTopicTest {
 	@Test
 	public void testEnabledTopicsEmptyArray() throws Exception {
 		ITopic[] enabled = EnabledTopicUtils.getEnabled(new ITopic[0]);
-		assertTrue(enabled.length == 0);
+		assertThat(enabled).isEmpty();
 	}
 
 	@Test
@@ -146,9 +146,9 @@ public class EnabledTopicTest {
 		topics[0] = new ETopic("T1", true);
 		topics[1] = new ETopic("T2", true);
 		ITopic[] enabled = EnabledTopicUtils.getEnabled(topics);
-		assertTrue(enabled.length == 2);
-		assertTrue(topics[0].getLabel().equals("T1"));
-		assertTrue(topics[1].getLabel().equals("T2"));
+		assertThat(enabled).hasSize(2).satisfiesExactly( //
+				first -> assertThat(first.getLabel()).isEqualTo("T1"),
+				second -> assertThat(second.getLabel()).isEqualTo("T2"));
 	}
 
 	@Test
@@ -157,7 +157,7 @@ public class EnabledTopicTest {
 		topics[0] = new ETopic("T1", false);
 		topics[1] = new ETopic("T2", false);
 		ITopic[] enabled = EnabledTopicUtils.getEnabled(topics);
-		assertTrue(enabled.length == 0);
+		assertThat(enabled).isEmpty();
 	}
 
 	@Test
@@ -168,9 +168,9 @@ public class EnabledTopicTest {
 		topics[2] = new ETopic("T3", true);
 		topics[3] = new ETopic("T4", false);
 		ITopic[] enabled = EnabledTopicUtils.getEnabled(topics);
-		assertEquals(2, enabled.length);
-		assertEquals("T1", enabled[0].getLabel());
-		assertEquals("T3", enabled[1].getLabel());
+		assertThat(enabled).hasSize(2).satisfiesExactly( //
+				first -> assertThat(first.getLabel()).isEqualTo("T1"),
+				second -> assertThat(second.getLabel()).isEqualTo("T3"));
 	}
 
 	@Test
@@ -292,7 +292,7 @@ public class EnabledTopicTest {
 	public void testEnabledIndexArrayEmpty() {
 		IIndexEntry[] entries = new EIndexEntry[0];
 		IIndexEntry[] filtered =EnabledTopicUtils.getEnabled(entries);
-		assertEquals(0, filtered.length);
+		assertThat(filtered).isEmpty();
 	}
 
 	@Test
@@ -301,7 +301,7 @@ public class EnabledTopicTest {
 		EIndexEntry entry2 = new EIndexEntry("def");
 		IIndexEntry[] entries = new EIndexEntry[]{entry1, entry2};
 		IIndexEntry[] filtered =EnabledTopicUtils.getEnabled(entries);
-		assertEquals(0, filtered.length);
+		assertThat(filtered).isEmpty();
 	}
 
 	@Test
@@ -312,9 +312,9 @@ public class EnabledTopicTest {
 		entry2.addTopic(new ETopic("T2", true));
 		IIndexEntry[] entries = new EIndexEntry[]{entry1, entry2};
 		IIndexEntry[] filtered =EnabledTopicUtils.getEnabled(entries);
-		assertEquals(2, filtered.length);
-		assertEquals(filtered[0].getKeyword(), "abc");
-		assertEquals(filtered[1].getKeyword(), "def");
+		assertThat(filtered).hasSize(2).satisfiesExactly( //
+				first -> assertThat(first.getKeyword()).isEqualTo("abc"),
+				second -> assertThat(second.getKeyword()).isEqualTo("def"));
 	}
 
 	@Test
@@ -327,9 +327,9 @@ public class EnabledTopicTest {
 		entry4.addTopic(new ETopic("T2", true));
 		IIndexEntry[] entries = new EIndexEntry[]{entry1, entry2, entry3, entry4};
 		IIndexEntry[] filtered =EnabledTopicUtils.getEnabled(entries);
-		assertEquals(2, filtered.length);
-		assertEquals(filtered[0].getKeyword(), "def");
-		assertEquals(filtered[1].getKeyword(), "jkl");
+		assertThat(filtered).hasSize(2).satisfiesExactly( //
+				first -> assertThat(first.getKeyword()).isEqualTo("def"),
+				second -> assertThat(second.getKeyword()).isEqualTo("jkl"));
 	}
 
 }

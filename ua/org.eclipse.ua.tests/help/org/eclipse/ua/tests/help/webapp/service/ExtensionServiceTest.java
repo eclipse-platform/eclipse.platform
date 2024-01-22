@@ -14,6 +14,7 @@
 package org.eclipse.ua.tests.help.webapp.service;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
@@ -54,7 +55,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findContributionByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.1");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
@@ -62,7 +63,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findContributionByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.3");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
@@ -70,7 +71,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findContributionByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.4");
-		assertEquals(0, UARoot.length);
+		assertThat(UARoot).isEmpty();
 	}
 
 	@Test
@@ -78,7 +79,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findContributionByPath(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/extension.xml#anchor.invalidcontribution");
-		assertEquals(2, UARoot.length);
+		assertThat(UARoot).hasSize(2);
 	}
 
 	@Test
@@ -86,7 +87,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findReplacementByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.1");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
@@ -94,7 +95,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findReplacementByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.3");
-		assertEquals(0, UARoot.length);
+		assertThat(UARoot).isEmpty();
 	}
 
 	@Test
@@ -102,7 +103,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findReplacementByPath(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc1.xml#element.2");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	private Element[] findContributionByContent(Node root, String content) {

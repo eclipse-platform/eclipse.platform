@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.help.remote;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +49,13 @@ public class LoadIndexUsingRemoteHelp {
 		String locale = "en";
 		HelpPlugin.getIndexManager().clearCache();
 		IIndex index = HelpPlugin.getIndexManager().getIndex(locale);
-		assertEquals(0, matchingEntries(index, "entry1_" + locale).length);
-		assertEquals(0, matchingEntries(index, "entry2_" + locale).length);
+		assertThat(matchingEntries(index, "entry1_" + locale)).isEmpty();
+		assertThat(matchingEntries(index, "entry2_" + locale)).isEmpty();
 		RemotePreferenceStore.setMockRemoteServer();
 		HelpPlugin.getIndexManager().clearCache();
 		index = HelpPlugin.getIndexManager().getIndex(locale);
-		assertEquals(1, matchingEntries(index, "entry1_" + locale).length);
-		assertEquals(1, matchingEntries(index, "entry2_" + locale).length);
+		assertThat(matchingEntries(index, "entry1_" + locale)).hasSize(1);
+		assertThat(matchingEntries(index, "entry2_" + locale)).hasSize(1);
 	}
 
 	@Test
@@ -64,19 +64,19 @@ public class LoadIndexUsingRemoteHelp {
 		HelpPlugin.getIndexManager().clearCache();
 		IIndex index = HelpPlugin.getIndexManager().getIndex(locale);
 		IIndexEntry[] entry1 = matchingEntries(index, "entry1_" + locale);
-		assertEquals(0, entry1.length);
+		assertThat(entry1).isEmpty();
 		IIndexEntry[] entry2 = matchingEntries(index, "entry2_" + locale);
-		assertEquals(0, entry2.length);
+		assertThat(entry2).isEmpty();
 		RemotePreferenceStore.setTwoMockRemoteServers();
 		HelpPlugin.getIndexManager().clearCache();
 		index = HelpPlugin.getIndexManager().getIndex(locale);
 		// Entry 1 has the same child on each remote server, Entry 2 has different children
 		entry1 = matchingEntries(index, "entry1_" + locale);
 		entry2 = matchingEntries(index, "entry2_" + locale);
-		assertEquals(1, entry1.length);
-		assertEquals(1, entry1[0].getTopics().length);
-		assertEquals(1, entry2.length);
-		assertEquals(2, entry2[0].getTopics().length);
+		assertThat(entry1).hasSize(1);
+		assertThat(entry1[0].getTopics()).hasSize(1);
+		assertThat(entry2).hasSize(1);
+		assertThat(entry2[0].getTopics()).hasSize(2);
 	}
 
 	private IIndexEntry[] matchingEntries(IIndex index, String keyword) {

@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.help.other;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -39,10 +40,10 @@ public class UAElementTest {
 	public void testSimpleUAElement() {
 		UAElement element = new UAElement("name1");
 		assertEquals("name1", element.getElementName());
-		assertEquals(0, element.getChildren().length);
+		assertThat(element.getChildren()).isEmpty();
 		Object topicChildren = element.getChildren(Topic.class);
 		assertTrue(topicChildren instanceof Topic[]);
-		assertTrue(((Topic[])topicChildren).length == 0);
+		assertThat(((Topic[]) topicChildren)).isEmpty();
 		assertNull(element.getParentElement());
 		assertNull(element.getAttribute("a1"));
 		assertTrue(element.equals(element));
@@ -70,25 +71,25 @@ public class UAElementTest {
 		initializeElements();
 		parent1.appendChild(child1);
 		IUAElement[] children = parent1.getChildren();
-		assertEquals(1, children.length);
+		assertThat(children).hasSize(1);
 		assertEquals("c1", ((UAElement)children[0]).getElementName());
 		assertEquals(parent1, ((UAElement)children[0]).getParentElement());
 		assertEquals("c1", ((UAElement)children[0]).getAttribute("id"));
 		parent1.appendChild(child2);
 		children = parent1.getChildren();
-		assertEquals(2, children.length);
+		assertThat(children).hasSize(2);
 		assertEquals("c2", ((UAElement)children[1]).getElementName());
 		parent1.insertBefore(child3, child2);
 		children = parent1.getChildren();
-		assertEquals(3, children.length);
+		assertThat(children).hasSize(3);
 		assertEquals("c3", ((UAElement)children[1]).getElementName());
 		parent1.removeChild(child1);
 		children = parent1.getChildren();
-		assertEquals(2, children.length);
+		assertThat(children).hasSize(2);
 		assertEquals("c3", ((UAElement)children[0]).getElementName());
 		parent1.appendChildren(new IUAElement[] {child1, child4});
 		children = parent1.getChildren();
-		assertEquals(4, children.length);
+		assertThat(children).hasSize(4);
 		assertEquals("c1", ((UAElement)children[2]).getElementName());
 		assertEquals("c4", ((UAElement)children[3]).getElementName());
 	}
@@ -101,7 +102,7 @@ public class UAElementTest {
 		parent1.appendChild(child2);
 		parent1.appendChild(child1);
 		IUAElement[] children = parent1.getChildren();
-		assertEquals(4, children.length);
+		assertThat(children).hasSize(4);
 		assertEquals("c1", ((UAElement)children[0]).getElementName());
 		assertEquals("c2", ((UAElement)children[1]).getElementName());
 		assertEquals("c2", ((UAElement)children[2]).getElementName());
@@ -114,7 +115,7 @@ public class UAElementTest {
 		child1.appendChild(grandchild1);
 		parent2.appendChild(child1);
 		UAElement firstChild = (UAElement) parent2.getChildren()[0];
-		assertEquals(1, firstChild.getChildren().length);
+		assertThat(firstChild.getChildren()).hasSize(1);
 		UAElement firstGrandchild = (UAElement) firstChild.getChildren()[0];
 		assertEquals("g1", firstGrandchild.getElementName());
 		assertEquals(firstGrandchild.getParentElement(), firstChild);

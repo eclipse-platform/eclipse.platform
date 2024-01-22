@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.core.resources.IFile;
@@ -47,7 +47,7 @@ public class StackTests extends AbstractAntDebugTest {
 
 			IStackFrame[] frames = thread.getStackFrames();
 
-			assertTrue(frames.length == 3);
+			assertThat(frames).hasSize(3);
 			IStackFrame frame = frames[0];
 			frame.getName().equals(""); //$NON-NLS-1$
 		}

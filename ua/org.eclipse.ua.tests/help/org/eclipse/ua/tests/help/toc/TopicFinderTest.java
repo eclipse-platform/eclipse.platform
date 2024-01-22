@@ -14,11 +14,11 @@
 
 package org.eclipse.ua.tests.help.toc;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.help.IToc;
 import org.eclipse.help.ITopic;
@@ -38,7 +38,7 @@ public class TopicFinderTest {
 
 	@Test
 	public void testTocsFound() {
-		assertTrue(getTocs().length != 0);
+		assertThat(getTocs()).isNotEmpty();
 	}
 
 	@Test
@@ -65,7 +65,7 @@ public class TopicFinderTest {
 		assertNotNull(path);
 		String tocHref = getTocs()[selectedToc].getHref();
 		assertEquals("/org.eclipse.ua.tests/data/help/toc/root.xml", tocHref);
-		assertEquals(2, path.length);
+		assertThat(path).hasSize(2);
 		assertEquals("manual", path[0].getLabel());
 		assertEquals("filter", path[1].getLabel());
 	}
@@ -80,7 +80,7 @@ public class TopicFinderTest {
 		assertNotNull(path);
 		String tocHref = getTocs()[selectedToc].getHref();
 		assertEquals("/org.eclipse.ua.tests/data/help/toc/root.xml", tocHref);
-		assertEquals(2, path.length);
+		assertThat(path).hasSize(2);
 		assertEquals("manual", path[0].getLabel());
 		assertEquals("filter", path[1].getLabel());
 	}
@@ -95,7 +95,7 @@ public class TopicFinderTest {
 		assertNotNull(path);
 		String tocHref = getTocs()[selectedToc].getHref();
 		assertEquals("/org.eclipse.ua.tests/data/help/toc/root.xml", tocHref);
-		assertEquals(2, path.length);
+		assertThat(path).hasSize(2);
 		assertEquals("filter", path[0].getLabel());
 		assertEquals("The plugin org.eclipse.help is installed", path[1].getLabel());
 		assertEquals("/org.eclipse.ua.tests/data/help/toc/filteredToc/helpInstalled.html", path[1].getHref());
@@ -119,7 +119,7 @@ public class TopicFinderTest {
 		String fullPath = "" + tocIndex + "_" + numericPath;
 		int[] intPath = UrlUtil.splitPath(fullPath);
 		ITopic[] topics = TocData.decodePath(intPath, tocs[tocIndex], new FilterScope());
-		assertEquals(2, topics.length);
+		assertThat(topics).hasSize(2);
 		assertEquals("filter", topics[0].getLabel());
 		assertEquals("The plugin org.eclipse.help is installed", topics[1].getLabel());
 		assertEquals("/org.eclipse.ua.tests/data/help/toc/filteredToc/helpInstalled.html", topics[1].getHref());
@@ -134,7 +134,7 @@ public class TopicFinderTest {
 		String navPath = "http://127.0.0.1:1936/help/nav/" + selectedToc;
 		TopicFinder finder2 = new TopicFinder(navPath, tocs, new UniversalScope());
 		assertEquals(selectedToc, finder2.getSelectedToc());
-		assertEquals(0, finder2.getTopicPath().length);
+		assertThat(finder2.getTopicPath()).isEmpty();
 	}
 
 	@Test
@@ -162,7 +162,7 @@ public class TopicFinderTest {
 		TopicFinder finder2 = new TopicFinder(navPath, tocs, new UniversalScope());
 		assertEquals(selectedToc, finder2.getSelectedToc());
 		ITopic[] topicPath = finder2.getTopicPath();
-		assertEquals(2, topicPath.length);
+		assertThat(topicPath).hasSize(2);
 		ITopic[] topLevelTopics = tocs[selectedToc].getTopics();
 		assertEquals(topLevelTopics[index1], topicPath[0]);
 		ITopic[] secondLevelTopics = topLevelTopics[index1].getSubtopics();

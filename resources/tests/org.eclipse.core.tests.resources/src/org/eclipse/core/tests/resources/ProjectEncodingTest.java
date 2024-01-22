@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.internal.resources.PreferenceInitializer;
 import org.eclipse.core.internal.resources.ValidateProjectEncoding;
@@ -182,7 +182,7 @@ public class ProjectEncodingTest {
 
 	private void thenProjectHasNoEncodingMarker() throws Exception {
 		IMarker[] markers = project.findMarkers(ValidateProjectEncoding.MARKER_TYPE, false, IResource.DEPTH_ONE);
-		assertEquals("Expected to find no marker for project specific file encoding", 0, markers.length);
+		assertThat(markers).describedAs("Expected to find no marker for project specific file encoding").isEmpty();
 	}
 
 	private void thenProjectHasEncodingMarkerOfSeverity(int expectedSeverity) throws Exception {

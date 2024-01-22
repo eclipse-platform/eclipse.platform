@@ -28,6 +28,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.WorkbenchEncoding;
 import org.eclipse.ui.internal.console.IOConsolePage;
 import org.eclipse.ui.internal.console.IOConsolePartitioner;
+import org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferenceUtils;
 import org.eclipse.ui.part.IPageBookViewPage;
 
 /**
@@ -410,5 +411,16 @@ public class IOConsole extends TextConsole {
 		synchronized (openStreams) {
 			openStreams.add(stream);
 		}
+	}
+
+	/**
+	 * Check if the current console currently interprets ANSI escape sequences or if
+	 * it is disabled.
+	 *
+	 * @return <code>true</code> if console interprets ANSI escape sequences
+	 * @since 3.14
+	 */
+	public static boolean isAnsiConsoleEnabled() {
+		return AnsiConsolePreferenceUtils.isAnsiConsoleEnabled();
 	}
 }

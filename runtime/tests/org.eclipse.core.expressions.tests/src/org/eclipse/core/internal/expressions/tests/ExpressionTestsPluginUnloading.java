@@ -13,17 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.FixMethodOrder;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -38,29 +37,37 @@ import org.eclipse.core.internal.expressions.Expressions;
  * Don't include these in another test suite!
  */
 @SuppressWarnings("restriction")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ExpressionTestsPluginUnloading {
 
-	@Rule
-	public TestName name = new TestName();
+	private String name;
+
+	@BeforeEach
+	public void setupTestName(TestInfo testInfo) {
+		name = testInfo.getDisplayName();
+	}
 
 	@Test
 	public void test01PluginStopping() throws Exception {
 		Bundle bundle= getBundle("com.ibm.icu");
 		bundle.start();
 		int state = bundle.getState();
-		if (state != Bundle.ACTIVE) {
-			fail("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle);
-		}
+		assertThat(state).withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
+				.isEqualTo(Bundle.ACTIVE);
 
 		doTestInstanceofICUDecimalFormat(bundle);
-		assertEquals("Instanceof with bundle-local class should load extra bundle", state, bundle.getState());
+		assertThat(bundle.getState()).as("Instanceof with bundle-local class should load extra bundle")
+				.isEqualTo(state);
 
 		bundle.stop();
-		assertEquals(Bundle.RESOLVED, bundle.getState());
+		assertThat(bundle.getState())
+				.withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
+				.isEqualTo(Bundle.RESOLVED);
 
 		bundle.start();
-		assertEquals(Bundle.ACTIVE, bundle.getState());
+		assertThat(bundle.getState())
+				.withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
+				.isEqualTo(Bundle.ACTIVE);
 
 		doTestInstanceofICUDecimalFormat(bundle);
 	}
@@ -72,7 +79,7 @@ public class ExpressionTestsPluginUnloading {
 
 		Class<?> exprClass = expr.loadClass("com.ibm.icu.text.DecimalFormat");
 		Class<?> icuClass = icu.loadClass("com.ibm.icu.text.DecimalFormat");
-		assertNotSame(exprClass, icuClass);
+		assertThat(exprClass).isNotSameAs(icuClass);
 
 		Object exprObj = exprClass.getDeclaredConstructor().newInstance();
 		Object icuObj = icuClass.getDeclaredConstructor().newInstance();
@@ -106,10 +113,10 @@ public class ExpressionTestsPluginUnloading {
 		Class<?> clazz = obj.getClass();
 
 		System.out.println(
-				"ExpressionTestsPluginUnloading#" + name.getMethodName() + "() - " + clazz.getName() + ": "
+				"ExpressionTestsPluginUnloading#" + name + "() - " + clazz.getName() + ": "
 						+ clazz.hashCode());
 		System.out.println(
-				"ExpressionTestsPluginUnloading#" + name.getMethodName() + "() - ClassLoader: "
+				"ExpressionTestsPluginUnloading#" + name + "() - ClassLoader: "
 						+ clazz.getClassLoader().hashCode());
 
 		for (int i= 0; i < 2; i++) { // test twice, second time is cached:
