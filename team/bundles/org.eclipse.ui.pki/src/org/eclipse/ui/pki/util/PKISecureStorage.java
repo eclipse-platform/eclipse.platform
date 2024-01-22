@@ -22,6 +22,7 @@ import java.security.cert.CertificateException;
 
 import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
+import org.eclipse.core.pki.util.KeyStoreManager;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -187,17 +188,19 @@ public class PKISecureStorage extends AbstractUIPlugin {
 					certificateLocation = certLocation;
 					
 					try {
-						keyStore = KeyStoreUtil.getKeyStore(certLocation, certPassPhrase, PKCSSelected.getKeystoreformat()); /*KeyStoreFormat.PKCS12*/
+						keyStore = KeyStoreManager.INSTANCE.getKeyStore(certLocation, certPassPhrase, PKCSSelected.getKeystoreformat()); /*KeyStoreFormat.PKCS12*/
+						//keyStore = KeyStoreUtil.getKeyStore(certLocation, certPassPhrase, PKCSSelected.getKeystoreformat()); /*KeyStoreFormat.PKCS12*/
+						
 						//keyStore = KeyStoreManager();
 						System.out.println("PKISecureStorage - GetUserkeystore after  where is password");
-					} catch (KeyStoreException e){
-						LogUtil.logError(SVNSaveAuthorizationInfo, e);
-					} catch (NoSuchAlgorithmException e){
-						LogUtil.logError(SVNSaveAuthorizationInfo, e);
-					} catch (CertificateException e){
-						LogUtil.logError(SVNSaveAuthorizationInfo, e);
-					} catch (IOException e){
-						LogUtil.logError(SVNSaveAuthorizationInfo, e);
+					//} catch (KeyStoreException e){
+					//	LogUtil.logError(SVNSaveAuthorizationInfo, e);
+					//} catch (NoSuchAlgorithmException e){
+					//	LogUtil.logError(SVNSaveAuthorizationInfo, e);
+					//} catch (CertificateException e){
+					//	LogUtil.logError(SVNSaveAuthorizationInfo, e);
+					//} catch (IOException e){
+					//	LogUtil.logError(SVNSaveAuthorizationInfo, e);
 					} catch (IllegalArgumentException e) {
 						LogUtil.logError(SVNSaveAuthorizationInfo, e);
 					} catch (SecurityException e) {
