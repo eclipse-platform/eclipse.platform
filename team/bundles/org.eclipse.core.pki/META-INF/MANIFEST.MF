@@ -6,9 +6,9 @@ Bundle-SymbolicName: org.eclipse.core.pki; singleton:=true
 Require-Bundle: org.eclipse.osgi;bundle-version="3.4.0",
  org.eclipse.ui.workbench,
  org.eclipse.osgi.services;bundle-version="3.11.100",
+ org.eclipse.core.runtime,
  org.eclipse.ui,
- org.eclipse.debug.core,
- org.eclipse.core.runtime
+ org.eclipse.debug.core
 Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: org.eclipse.core.pki.auth.PKISetup
 Export-Package: org.eclipse.core.pki,
