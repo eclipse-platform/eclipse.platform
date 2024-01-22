@@ -16,7 +16,6 @@ package org.eclipse.core.tests.net;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -285,6 +284,7 @@ public class NetTest {
 
 	@Test
 	@Ignore("Disabled due to bug 403311")
+	@SuppressWarnings("deprecation")
 	public void _testSimpleHost() throws CoreException {
 
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
@@ -299,6 +299,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testHostPattern() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -319,6 +320,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testHostPatternBug505906() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -339,6 +341,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug238796() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -355,6 +358,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug247408() throws CoreException, URISyntaxException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -371,6 +375,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug255981() throws CoreException, URISyntaxException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -424,9 +429,7 @@ public class NetTest {
 
 		// check if system properties are updated
 		String sysPropNonProxyHosts = System.getProperty("http.nonProxyHosts");
-		String assertMessage = "http.nonProxyHost should contain '" + testHost + "', but its current value is '"
-				+ sysPropNonProxyHosts + "'";
-		assertTrue(assertMessage, sysPropNonProxyHosts.contains(testHost));
+		assertThat(sysPropNonProxyHosts).contains(testHost);
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
@@ -452,7 +455,11 @@ public class NetTest {
 
 	private void validateProperty(String key, String expected, boolean equals) {
 		String actual = System.getProperties().getProperty(key);
-		assertTrue((equals && expected.equals(actual)) || (!equals && !expected.equals(actual)));
+		if (equals) {
+			assertThat(actual).isEqualTo(expected);
+		} else {
+			assertThat(actual).isNotEqualTo(expected);
+		}
 	}
 
 }

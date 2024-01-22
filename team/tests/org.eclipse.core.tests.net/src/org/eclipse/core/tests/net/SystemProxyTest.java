@@ -102,6 +102,7 @@ public class SystemProxyTest {
 		checkGetProxyDataForHost("www.something.org");
 	}
 
+	@SuppressWarnings("deprecation")
 	private void checkGetProxyDataForHost(String host) {
 		IProxyData[] proxiesData = getProxyManager().getProxyDataForHost(host);
 		assertNotNull(proxiesData);
