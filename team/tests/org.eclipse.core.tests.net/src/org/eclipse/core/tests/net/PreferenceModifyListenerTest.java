@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.net;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,7 +26,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IExportedPreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class PreferenceModifyListenerTest  {
@@ -51,9 +52,9 @@ public class PreferenceModifyListenerTest  {
 
 		// verify that the node is not modified
 		String debugString = ((EclipsePreferences) exported.node("/")).toDeepDebugString();
-		assertFalse(debugString, exported.nodeExists("instance/org.eclipse.core.net"));
-		assertFalse(debugString, exported.nodeExists("/instance/org.eclipse.core.net"));
-		assertFalse(debugString, exported.nodeExists("configuration/org.eclipse.core.net"));
-		assertFalse(debugString, exported.nodeExists("/configuration/org.eclipse.core.net"));
+		assertFalse(exported.nodeExists("instance/org.eclipse.core.net"), debugString);
+		assertFalse(exported.nodeExists("/instance/org.eclipse.core.net"), debugString);
+		assertFalse(exported.nodeExists("configuration/org.eclipse.core.net"), debugString);
+		assertFalse(exported.nodeExists("/configuration/org.eclipse.core.net"), debugString);
 	}
 }

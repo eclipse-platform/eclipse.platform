@@ -14,8 +14,8 @@
 package org.eclipse.core.tests.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,10 +30,10 @@ import org.eclipse.core.internal.net.ProxyType;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class NetTest {
 
@@ -44,7 +44,7 @@ public class NetTest {
 	private boolean isSystemProxiesDefault;
 	private final Map<String, IProxyData> dataCache = new HashMap<>();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		isSystemProxiesDefault = isSystemProxiesEnabled();
 		setSystemProxiesEnabled(false);
@@ -55,7 +55,7 @@ public class NetTest {
 		ProxyType.socksSystemPropertySetting = ProxyType.ALWAYS_SET;
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		setProxiesEnabled(isProxiesDefault);
 		setSystemProxiesEnabled(isSystemProxiesDefault);
@@ -283,7 +283,7 @@ public class NetTest {
 	}
 
 	@Test
-	@Ignore("Disabled due to bug 403311")
+	@Disabled("Disabled due to bug 403311")
 	@SuppressWarnings("deprecation")
 	public void _testSimpleHost() throws CoreException {
 
