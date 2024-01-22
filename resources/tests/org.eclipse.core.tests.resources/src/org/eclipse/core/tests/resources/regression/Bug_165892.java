@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
@@ -86,21 +87,21 @@ public class Bug_165892 {
 		// modify the source file so it has some history
 		sourceFile.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 		// check that the source file has the expected history
-		assertEquals("1.0", 1, sourceFile.getHistory(createTestMonitor()).length);
+		assertThat(sourceFile.getHistory(createTestMonitor())).hasSize(1);
 
 		//copy the file
 		sourceFile.copy(destinationFile.getFullPath(), IResource.NONE, createTestMonitor());
 
 		//make sure the history was copied
-		assertEquals("2.0", 1, sourceFile.getHistory(createTestMonitor()).length);
-		assertEquals("2.1", 1, destinationFile.getHistory(createTestMonitor()).length);
+		assertThat(sourceFile.getHistory(createTestMonitor())).hasSize(1);
+		assertThat(destinationFile.getHistory(createTestMonitor())).hasSize(1);
 
 		//modify the destination to change its history
 		destinationFile.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 
 		//make sure the history is correct
-		assertEquals("2.0", 1, sourceFile.getHistory(createTestMonitor()).length);
-		assertEquals("2.1", 2, destinationFile.getHistory(createTestMonitor()).length);
+		assertThat(sourceFile.getHistory(createTestMonitor())).hasSize(1);
+		assertThat(destinationFile.getHistory(createTestMonitor())).hasSize(2);
 	}
 
 	/**

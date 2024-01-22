@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
@@ -81,12 +82,11 @@ public class FileDiffResultTest {
 		assertFalse(project.getFile(NEW_FILENAME).exists());
 
 		IFilePatch[] filePatch = ApplyPatchOperation.parsePatch(file);
-		assertNotNull(filePatch);
-		assertEquals(1, filePatch.length);
+		assertThat(filePatch).hasSize(1);
 
 		IFilePatchResult filePatchResult = filePatch[0].apply((IStorage) null, patchConfiguration, createTestMonitor());
 		assertTrue(filePatchResult.hasMatches());
-		assertEquals(0, filePatchResult.getRejects().length);
+		assertThat(filePatchResult.getRejects()).isEmpty();
 		assertEquals("", getStringFromStream(filePatchResult.getOriginalContents()));
 		assertEquals(NEW_FILE_CONTENT, getStringFromStream(filePatchResult.getPatchedContents()));
 	}
@@ -109,14 +109,13 @@ public class FileDiffResultTest {
 		assertTrue(project.getFile(NEW_FILENAME).exists());
 
 		IFilePatch[] filePatch = ApplyPatchOperation.parsePatch(file);
-		assertNotNull(filePatch);
-		assertEquals(1, filePatch.length);
+		assertThat(filePatch).hasSize(1);
 
 		IFilePatchResult filePatchResult = filePatch[0].apply(project.getFile(NEW_FILENAME), patchConfiguration,
 				createTestMonitor());
 
 		assertFalse(filePatchResult.hasMatches());
-		assertEquals(1, filePatchResult.getRejects().length);
+		assertThat(filePatchResult.getRejects()).hasSize(1);
 
 		assertNotNull(filePatchResult.getOriginalContents());
 		assertNotNull(filePatchResult.getPatchedContents());
@@ -145,13 +144,12 @@ public class FileDiffResultTest {
 		assertTrue(project.getFile(NEW_FILENAME).exists());
 
 		IFilePatch[] filePatch = ApplyPatchOperation.parsePatch(file);
-		assertNotNull(filePatch);
-		assertEquals(1, filePatch.length);
+		assertThat(filePatch).hasSize(1);
 
 		IFilePatchResult filePatchResult = filePatch[0].apply(project.getFile(NEW_FILENAME), patchConfiguration,
 				createTestMonitor());
 		assertFalse(filePatchResult.hasMatches());
-		assertEquals(1, filePatchResult.getRejects().length);
+		assertThat(filePatchResult.getRejects()).hasSize(1);
 
 		assertNotNull(filePatchResult.getOriginalContents());
 		assertNotNull(filePatchResult.getPatchedContents());

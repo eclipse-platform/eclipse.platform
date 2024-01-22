@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.help.preferences;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -84,7 +85,7 @@ public class BookmarksTest {
 		assertEquals(BookmarkManager.REMOVE_ALL, observer.getEvent().getType());
 		assertNull(observer.getEvent().getBookmark());
 		IHelpResource[] bookmarks = manager.getBookmarks();
-		assertEquals(0, bookmarks.length);
+		assertThat(bookmarks).isEmpty();
 		assertEquals(1, observer.eventCount);
 	}
 
@@ -100,7 +101,7 @@ public class BookmarksTest {
 		manager.addBookmark(HTTP_BUGZILLA, BUGZILLA);
 		BookmarkManager manager2 = new BookmarkManager();
 		IHelpResource[] bookmarks = manager2.getBookmarks();
-		assertEquals(2, bookmarks.length);
+		assertThat(bookmarks).hasSize(2);
 		assertEquals(ECLIPSE, bookmarks[0].getLabel());
 		assertEquals(BUGZILLA, bookmarks[1].getLabel());
 		assertEquals(HTTP_ECLIPSE, bookmarks[0].getHref());
@@ -131,6 +132,6 @@ public class BookmarksTest {
 		assertEquals(event.getType(), BookmarkManager.REMOVE);
 		assertEquals(BUGZILLA, event.getBookmark().getLabel());
 		assertEquals(HTTP_BUGZILLA, event.getBookmark().getHref());
-		assertEquals(1, manager.getBookmarks().length);
+		assertThat(manager.getBookmarks()).hasSize(1);
 	}
 }

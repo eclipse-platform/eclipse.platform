@@ -731,9 +731,10 @@ public class IResourceChangeListenerTest {
 				done = true;
 				IMarkerDelta[] deltas = event.findMarkerDeltas(IMarker.TASK, false);
 				listenerInMainThreadCallback.set(() -> {
-					assertEquals("1.0", 1, deltas.length);
-					assertEquals("1.1", marker.getId(), deltas[0].getId());
-					assertEquals("1.2", IResourceDelta.REMOVED, deltas[0].getKind());
+					assertThat(deltas).hasSize(1).allSatisfy(delta -> {
+						assertThat(delta.getId()).isEqualTo(marker.getId());
+						assertThat(delta.getKind()).isEqualTo(IResourceDelta.REMOVED);
+					});
 					synchronized (this) {
 						notifyAll();
 					}

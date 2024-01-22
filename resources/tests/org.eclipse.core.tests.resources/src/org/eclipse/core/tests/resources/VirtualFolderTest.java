@@ -16,6 +16,7 @@
 package org.eclipse.core.tests.resources;
 
 import static java.io.InputStream.nullInputStream;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
@@ -130,7 +131,7 @@ public class VirtualFolderTest {
 		assertTrue("4.0", !location.toFile().exists());
 
 		// getting children should succeed (and be empty)
-		assertEquals("5.0", 0, linkedFolder.members().length);
+		assertThat(linkedFolder.members()).isEmpty();
 
 		// delete should succeed
 		linkedFolder.delete(IResource.NONE, createTestMonitor());

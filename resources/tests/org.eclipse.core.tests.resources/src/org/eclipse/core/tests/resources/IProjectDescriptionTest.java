@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
@@ -171,11 +172,9 @@ public class IProjectDescriptionTest {
 		description.setDynamicReferences(new IProject[] {target2});
 		project.setDescription(description, createTestMonitor());
 		IProject[] refs = project.getReferencedProjects();
-		assertEquals("2.1", 2, refs.length);
-		assertEquals("2.2", target1, refs[0]);
-		assertEquals("2.3", target2, refs[1]);
-		assertEquals("2.4", 1, target1.getReferencingProjects().length);
-		assertEquals("2.5", 1, target2.getReferencingProjects().length);
+		assertThat(refs).containsExactly(target1, target2);
+		assertThat(target1.getReferencingProjects()).hasSize(1);
+		assertThat(target2.getReferencingProjects()).hasSize(1);
 
 		//get references for a non-existent project
 		assertThrows(CoreException.class,
@@ -197,7 +196,7 @@ public class IProjectDescriptionTest {
 		IProjectDescription description = project.getDescription();
 		description.setReferencedProjects(new IProject[] {target});
 		project.setDescription(description, createTestMonitor());
-		assertEquals("2.1", 1, target.getReferencingProjects().length);
+		assertThat(target.getReferencingProjects()).hasSize(1);
 
 		//get references for a non-existent project
 		assertThrows(CoreException.class,
@@ -205,7 +204,7 @@ public class IProjectDescriptionTest {
 
 		//get referencing projects for a non-existent project
 		IProject[] refs = getWorkspace().getRoot().getProject("DoesNotExist2").getReferencingProjects();
-		assertEquals("4.0", 0, refs.length);
+		assertThat(refs).isEmpty();
 	}
 
 }

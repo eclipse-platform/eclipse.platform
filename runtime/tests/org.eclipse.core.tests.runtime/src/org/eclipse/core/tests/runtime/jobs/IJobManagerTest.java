@@ -704,146 +704,104 @@ public class IJobManagerTest extends AbstractJobTest {
 		//try finding all jobs by supplying the NULL parameter
 		//note that this might find other jobs that are running as a side-effect of the test
 		//suites running, such as snapshot
-		HashSet<Job> allJobs = new HashSet<>();
-		allJobs.addAll(Arrays.asList(jobs));
-		Job[] result = manager.find(null);
-		assertTrue("1.0", result.length >= NUM_JOBS);
-		for (int i = 0; i < result.length; i++) {
-			//only test jobs that we know about
-			if (allJobs.remove(result[i])) {
-				assertTrue("1." + i, (result[i].belongsTo(first) || result[i].belongsTo(second) || result[i].belongsTo(third) || result[i].belongsTo(fourth) || result[i].belongsTo(fifth)));
-			}
-		}
-		assertEquals("1.2", 0, allJobs.size());
+		HashSet<Job> allJobs = new HashSet<>(Arrays.asList(jobs));
+		assertThat(manager.find(null)).hasSizeGreaterThanOrEqualTo(NUM_JOBS) //
+				.filteredOn(job -> allJobs.remove(job)) // only test jobs that we know about
+				.allMatch(job -> job.belongsTo(first) || job.belongsTo(second) || job.belongsTo(third)
+						|| job.belongsTo(fourth) || job.belongsTo(fifth));
+		assertThat(allJobs).isEmpty();
 
 		//try finding all jobs from the first family
-		result = manager.find(first);
-		assertEquals("2.0", 4, result.length);
-		for (int i = 0; i < result.length; i++) {
-			assertTrue("2." + (i + 1), result[i].belongsTo(first));
-		}
+		assertThat(manager.find(first)).hasSize(4).allMatch(it -> it.belongsTo(first));
 
 		//try finding all jobs from the second family
-		result = manager.find(second);
-		assertEquals("3.0", 4, result.length);
-		for (int i = 0; i < result.length; i++) {
-			assertTrue("3." + (i + 1), result[i].belongsTo(second));
-		}
+		assertThat(manager.find(second)).hasSize(4).allMatch(it -> it.belongsTo(second));
 
-		//try finding all jobs from the third family
-		result = manager.find(third);
-		assertEquals("4.0", 4, result.length);
-		for (int i = 0; i < result.length; i++) {
-			assertTrue("4." + (i + 1), result[i].belongsTo(third));
-		}
+		// try finding all jobs from the third family
+		assertThat(manager.find(third)).hasSize(4).allMatch(it -> it.belongsTo(third));
 
-		//try finding all jobs from the fourth family
-		result = manager.find(fourth);
-		assertEquals("5.0", 4, result.length);
-		for (int i = 0; i < result.length; i++) {
-			assertTrue("5." + (i + 1), result[i].belongsTo(fourth));
-		}
+		// try finding all jobs from the fourth family
+		assertThat(manager.find(fourth)).hasSize(4).allMatch(it -> it.belongsTo(fourth));
 
-		//try finding all jobs from the fifth family
-		result = manager.find(fifth);
-		assertEquals("6.0", 4, result.length);
-		for (int i = 0; i < result.length; i++) {
-			assertTrue("6." + (i + 1), result[i].belongsTo(fifth));
-		}
+		// try finding all jobs from the fifth family
+		assertThat(manager.find(fifth)).hasSize(4).allMatch(it -> it.belongsTo(fifth));
 
-		//the first job should still be running
+		// the first job should still be running
 		assertState("7.0", jobs[0], Job.RUNNING);
 
-		//put the second family of jobs to sleep
+		// put the second family of jobs to sleep
 		manager.sleep(second);
 
-		//cancel the first family of jobs
+		// cancel the first family of jobs
 		manager.cancel(first);
 
-		//the third job should start running
+		// the third job should start running
 		waitForStart(jobs[2]);
 		assertState("7.1", jobs[2], Job.RUNNING);
 
-		//finding all jobs from the first family should return an empty array
-		result = manager.find(first);
-		assertEquals("7.2", 0, result.length);
+		// finding all jobs from the first family should return an empty array
+		assertThat(manager.find(first)).isEmpty();
 
-		//finding all jobs from the second family should return all the jobs (they are just sleeping)
-		result = manager.find(second);
-		assertEquals("8.0", 4, result.length);
-		for (int i = 0; i < result.length; i++) {
-			assertTrue("8." + (i + 1), result[i].belongsTo(second));
-		}
+		// finding all jobs from the second family should return all the jobs (they are
+		// just sleeping)
+		assertThat(manager.find(second)).hasSize(4).allMatch(it -> it.belongsTo(second));
 
-		//cancel the second family of jobs
+		// cancel the second family of jobs
 		manager.cancel(second);
-		//finding all jobs from the second family should now return an empty array
-		result = manager.find(second);
-		assertEquals("9.0", 0, result.length);
+		// finding all jobs from the second family should now return an empty array
+		assertThat(manager.find(second)).isEmpty();
 
-		//cancel the fourth family of jobs
+		// cancel the fourth family of jobs
 		manager.cancel(fourth);
-		//finding all jobs from the fourth family should now return an empty array
-		result = manager.find(fourth);
-		assertEquals("9.1", 0, result.length);
+		// finding all jobs from the fourth family should now return an empty array
+		assertThat(manager.find(fourth)).isEmpty();
 
-		//put the third family of jobs to sleep
+		// put the third family of jobs to sleep
 		manager.sleep(third);
-		//the first job from the third family should still be running
+		// the first job from the third family should still be running
 		assertState("9.2", jobs[2], Job.RUNNING);
-		//wake up the last job from the third family
+		// wake up the last job from the third family
 		jobs[NUM_JOBS - 3].wakeUp();
-		//it should now be in the WAITING state
+		// it should now be in the WAITING state
 		assertState("9.3", jobs[NUM_JOBS - 3], Job.WAITING);
 
-		//finding all jobs from the third family should return all 4 jobs (1 is running, 1 is waiting, 2 are sleeping)
-		result = manager.find(third);
-		assertEquals("10.0", 4, result.length);
-		for (int i = 0; i < result.length; i++) {
-			assertTrue("10." + (i + 1), result[i].belongsTo(third));
-		}
+		// finding all jobs from the third family should return all 4 jobs (1 is
+		// running, 1 is waiting, 2 are sleeping)
+		assertThat(manager.find(third)).hasSize(4).allMatch(it -> it.belongsTo(third));
 
-		//finding all jobs by supplying the NULL parameter should return 8 jobs (4 from the 3rd family, and 4 from the 5th family)
-		//note that this might find other jobs that are running as a side-effect of the test
-		//suites running, such as snapshot
+		// finding all jobs by supplying the NULL parameter should return 8 jobs (4 from
+		// the 3rd family, and 4 from the 5th family)
+		// note that this might find other jobs that are running as a side-effect of the
+		// test suites running, such as snapshot
 		allJobs.addAll(Arrays.asList(jobs));
-		result = manager.find(null);
-		assertTrue("11.0", result.length >= 8);
-		for (int i = 0; i < result.length; i++) {
-			//only test jobs that we know about
-			if (allJobs.remove(result[i])) {
-				assertTrue("11." + (i + 1), (result[i].belongsTo(third) || result[i].belongsTo(fifth)));
-			}
-		}
+		assertThat(manager.find(null)).hasSizeGreaterThanOrEqualTo(8) //
+				.filteredOn(job -> allJobs.remove(job)) // only test jobs that we know about
+				.allMatch(job -> job.belongsTo(third) || job.belongsTo(fifth));
 
-		assertEquals("11.2", 12, allJobs.size());
+		assertThat(allJobs).hasSize(12);
 		allJobs.clear();
 
-		//cancel the fifth family of jobs
+		// cancel the fifth family of jobs
 		manager.cancel(fifth);
-		//cancel the third family of jobs
+		// cancel the third family of jobs
 		manager.cancel(third);
 		waitForFamilyCancel(jobs, third);
 
-		//all jobs should now be in the NONE state
+		// all jobs should now be in the NONE state
 		for (int i = 0; i < NUM_JOBS; i++) {
 			assertState("12." + i, jobs[i], Job.NONE);
 		}
 
-		//finding all jobs should return an empty array
-		//note that this might find other jobs that are running as a side-effect of the test
-		//suites running, such as snapshot
+		// finding all jobs should return an empty array
+		// note that this might find other jobs that are running as a side-effect of the
+		// test suites running, such as snapshot
 		allJobs.addAll(Arrays.asList(jobs));
-		result = manager.find(null);
-		assertTrue("13.0", result.length >= 0);
+		assertThat(manager.find(null)).hasSizeGreaterThanOrEqualTo(0);
 
-		for (int i = 0; i < result.length; i++) {
-			//test jobs that we know about should not be found (they should have all been removed)
-			if (allJobs.remove(result[i])) {
-				assertTrue("14." + i, false);
-			}
-		}
-		assertEquals("15.0", NUM_JOBS, allJobs.size());
+		// test jobs that we know about should not be found (they should have all been
+		// removed)
+		assertThat(manager.find(null)).allMatch(job -> !allJobs.remove(job));
+		assertThat(allJobs).hasSize(NUM_JOBS);
 		allJobs.clear();
 	}
 
@@ -900,12 +858,12 @@ public class IJobManagerTest extends AbstractJobTest {
 
 			//if the thread is complete then all jobs must be done
 			if (currentStatus == TestBarrier2.STATUS_DONE) {
-				assertEquals("2." + i, 0, result.length);
+				assertThat(result).as("failed in iteration " + i).isEmpty();
 				break;
 			}
 			sleep(1);
 		}
-		assertTrue("2.0", i < 10000);
+		assertThat(i).withFailMessage("did not timeout").isLessThan(10000);
 
 		//cancel the second family of jobs
 		manager.cancel(second);
@@ -972,7 +930,7 @@ public class IJobManagerTest extends AbstractJobTest {
 		TestBarrier2.waitForStatus(status, 0, TestBarrier2.STATUS_DONE);
 
 		//all jobs in the first family should be removed from the manager
-		assertEquals("2.2", 0, manager.find(first).length);
+		assertThat(manager.find(first)).isEmpty();
 
 		//cancel the second family of jobs
 		manager.cancel(second);
@@ -1042,7 +1000,7 @@ public class IJobManagerTest extends AbstractJobTest {
 		//the first job in the first family should still be running
 		assertState("2.2", jobs[0], Job.RUNNING);
 		assertEquals("2.3", TestBarrier2.STATUS_DONE, status.get(0));
-		assertTrue("2.4", manager.find(first).length > 0);
+		assertThat(manager.find(first)).isNotEmpty();
 
 		//cancel the second family of jobs
 		manager.cancel(second);
@@ -1444,7 +1402,7 @@ public class IJobManagerTest extends AbstractJobTest {
 				}
 			});
 			manager.join(family, null);
-			assertEquals(0, manager.find(family).length);
+			assertThat(manager.find(family)).isEmpty();
 		} finally {
 			// clean up
 			manager.removeJobChangeListener(listener);

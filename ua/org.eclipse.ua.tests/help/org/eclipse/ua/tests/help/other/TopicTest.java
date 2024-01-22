@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.help.other;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -116,16 +117,16 @@ public class TopicTest {
 		Topic topic1 = createTopic(TOPIC_WITH_CHILD);
 		Topic topic2 = new Topic(topic1);
 
-		assertEquals(1, topic1.getSubtopics().length);
+		assertThat(topic1.getSubtopics()).hasSize(1);
 		Topic child1 = (Topic)topic1.getSubtopics()[0];
 		assertEquals(BUGZILLA, child1.getLabel());
 		assertEquals(BUGZILLA_HREF, child1.getHref());
 
-		assertEquals(1, topic2.getSubtopics().length);
+		assertThat(topic2.getSubtopics()).hasSize(1);
 		Topic child2 = (Topic)topic2.getSubtopics()[0];
 		assertEquals(BUGZILLA, child2.getLabel());
 		assertEquals(BUGZILLA_HREF, child2.getHref());
-		assertEquals(1, topic2.getSubtopics().length);
+		assertThat(topic2.getSubtopics()).hasSize(1);
 	}
 
 	/*
@@ -299,7 +300,7 @@ public class TopicTest {
 		assertEquals(ECLIPSE, t1.getLabel());
 		assertEquals(ECLIPSE_HREF, t1.getHref());
 		assertTrue(t1.isEnabled(HelpEvaluationContext.getContext()));
-		assertEquals(1, t1.getChildren().length);
+		assertThat(t1.getChildren()).hasSize(1);
 		ITopic t2 = t1.getSubtopics()[0];
 		assertEquals(BUGZILLA, t2.getLabel());
 		assertEquals(BUGZILLA_HREF, t2.getHref());
@@ -317,7 +318,7 @@ public class TopicTest {
 		assertEquals(ECLIPSE, t1.getLabel());
 		assertEquals(ECLIPSE_HREF, t1.getHref());
 		assertTrue(t1.isEnabled(HelpEvaluationContext.getContext()));
-		assertEquals(1, t1.getChildren().length);
+		assertThat(t1.getChildren()).hasSize(1);
 		ITopic t1s = t1.getSubtopics()[0];
 		assertEquals(BUGZILLA, t1s.getLabel());
 		assertEquals(BUGZILLA_HREF, t1s.getHref());
@@ -325,7 +326,7 @@ public class TopicTest {
 		assertEquals(ECLIPSE, t2.getLabel());
 		assertEquals(ECLIPSE_HREF, t2.getHref());
 		assertTrue(t2.isEnabled(HelpEvaluationContext.getContext()));
-		assertEquals(1, t2.getChildren().length);
+		assertThat(t2.getChildren()).hasSize(1);
 		ITopic t2s = t2.getSubtopics()[0];
 		assertEquals(BUGZILLA, t2s.getLabel());
 		assertEquals(BUGZILLA_HREF, t2s.getHref());

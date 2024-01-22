@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -152,14 +153,12 @@ public class TestState {
 		task1.setState(ICompositeCheatSheetTask.IN_PROGRESS);
 		task2.setState(ICompositeCheatSheetTask.COMPLETED);
 		task4.setState(ICompositeCheatSheetTask.SKIPPED);
-		assertEquals(1, TaskStateUtilities.getRestartTasks(task1).length);
-		assertEquals(task1, TaskStateUtilities.getRestartTasks(task1)[0]);
-		assertEquals(1, TaskStateUtilities.getRestartTasks(task2).length);
-		assertEquals(0, TaskStateUtilities.getRestartTasks(task3).length);
-		assertEquals(1, TaskStateUtilities.getRestartTasks(task4).length);
-		assertEquals(1, TaskStateUtilities.getRestartTasks(group).length);
-		assertEquals(task4, TaskStateUtilities.getRestartTasks(group)[0]);
-		assertEquals(3, TaskStateUtilities.getRestartTasks(root).length);
+		assertThat(TaskStateUtilities.getRestartTasks(task1)).containsExactly(task1);
+		assertThat(TaskStateUtilities.getRestartTasks(task2)).hasSize(1);
+		assertThat(TaskStateUtilities.getRestartTasks(task3)).isEmpty();
+		assertThat(TaskStateUtilities.getRestartTasks(task4)).hasSize(1);
+		assertThat(TaskStateUtilities.getRestartTasks(group)).containsExactly(task4);
+		assertThat(TaskStateUtilities.getRestartTasks(root)).hasSize(3);
 	}
 
 	/**
@@ -190,11 +189,11 @@ public class TestState {
 		task2.complete();
 		task3.complete();
 		task5.setStarted();
-		assertEquals(4, TaskStateUtilities.getRestartTasks(root).length);
-		assertEquals(4, TaskStateUtilities.getRestartTasks(task1).length);
-		assertEquals(3, TaskStateUtilities.getRestartTasks(task2).length);
-		assertEquals(2, TaskStateUtilities.getRestartTasks(task3).length);
-		assertEquals(1, TaskStateUtilities.getRestartTasks(subGroup).length);
+		assertThat(TaskStateUtilities.getRestartTasks(root)).hasSize(4);
+		assertThat(TaskStateUtilities.getRestartTasks(task1)).hasSize(4);
+		assertThat(TaskStateUtilities.getRestartTasks(task2)).hasSize(3);
+		assertThat(TaskStateUtilities.getRestartTasks(task3)).hasSize(2);
+		assertThat(TaskStateUtilities.getRestartTasks(subGroup)).hasSize(1);
 		// Reset task5 and  start task 1 and 3 and skip task 2.
 		// Resetting task1 will not require task2 or task3 to be reset
 		task5.setState(ICompositeCheatSheetTask.NOT_STARTED);
@@ -202,9 +201,9 @@ public class TestState {
 		task2.setState(ICompositeCheatSheetTask.NOT_STARTED);
 		task2.setState(ICompositeCheatSheetTask.SKIPPED);
 		task3.setStarted();
-		assertEquals(3, TaskStateUtilities.getRestartTasks(root).length);
-		assertEquals(1, TaskStateUtilities.getRestartTasks(task1).length);
-		assertEquals(2, TaskStateUtilities.getRestartTasks(task2).length);
+		assertThat(TaskStateUtilities.getRestartTasks(root)).hasSize(3);
+		assertThat(TaskStateUtilities.getRestartTasks(task1)).hasSize(1);
+		assertThat(TaskStateUtilities.getRestartTasks(task2)).hasSize(2);
 	}
 
 }

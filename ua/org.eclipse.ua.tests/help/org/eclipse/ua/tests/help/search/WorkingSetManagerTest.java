@@ -14,10 +14,10 @@
 
 package org.eclipse.ua.tests.help.search;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class WorkingSetManagerTest {
 	@Test
 	public void testNewWSM() {
 		WorkingSetManager mgr = new WorkingSetManager();
-		assertEquals(0, mgr.getWorkingSets().length);
+		assertThat(mgr.getWorkingSets()).isEmpty();
 		WorkingSetManager mgr2 = new WorkingSetManager();
 		assertEquals(mgr, mgr2);
 		assertEquals(mgr.hashCode(), mgr2.hashCode());
@@ -84,10 +84,9 @@ public class WorkingSetManagerTest {
 		wset.setElements(new AdaptableHelpResource[] { toc });
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(1, resources.length);
-		assertTrue(resources[0].equals(toc));
+		assertThat(resources).containsExactly(toc);
 	}
 
 	@Test
@@ -163,10 +162,9 @@ public class WorkingSetManagerTest {
 		WorkingSetManager mgr2 = new WorkingSetManager();
 		mgr2.restoreState();
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(1, resources.length);
-		assertTrue(resources[0].equals(toc));
+		assertThat(resources).containsExactly(toc);
 	}
 
 	@Test
@@ -176,10 +174,10 @@ public class WorkingSetManagerTest {
 		mgr.saveState();
 		WorkingSetManager mgr2 = new WorkingSetManager();
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
 		Toc[] tocs = HelpPlugin.getTocManager().getTocs(Platform.getNL());
-		assertEquals(tocs.length, resources.length);
+		assertThat(resources).hasSize(tocs.length);
 	}
 
 	@Test
@@ -247,17 +245,9 @@ public class WorkingSetManagerTest {
 		wset.setElements(new AdaptableHelpResource[] { topic1, topic3 });
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(2, resources.length);
-		if (resources[0].equals(topic1)) {
-			assertEquals(topic3, resources[1]);
-			assertNotSame(topic3, resources[0]);
-		} else {
-			assertEquals(topic3, resources[0]);
-			assertEquals(topic1, resources[1]);
-			assertNotSame(topic3, resources[1]);
-		}
+		assertThat(resources).containsExactlyInAnyOrder(topic1, topic3);
 	}
 
 	@Test
@@ -273,17 +263,9 @@ public class WorkingSetManagerTest {
 		mgr.saveState();
 		WorkingSetManager mgr2 = new WorkingSetManager();
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		AdaptableHelpResource[] resources = readWsets[0].getElements();
-		assertEquals(2, resources.length);
-		if (resources[0].equals(topic1)) {
-			assertEquals(topic3, resources[1]);
-			assertNotSame(topic3, resources[0]);
-		} else {
-			assertEquals(topic3, resources[0]);
-			assertEquals(topic1, resources[1]);
-			assertNotSame(topic3, resources[1]);
-		}
+		assertThat(resources).containsExactlyInAnyOrder(topic1, topic3);
 	}
 
 	@Test
@@ -300,13 +282,11 @@ public class WorkingSetManagerTest {
 		mgr.addWorkingSet(wset1);
 		mgr.addWorkingSet(wset2);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(2, readWsets.length);
+		assertThat(readWsets).hasSize(2);
 		AdaptableHelpResource[] resourcesT3 = mgr.getWorkingSet("test3").getElements();
-		assertEquals(1, resourcesT3.length);
-		assertEquals(topic1, resourcesT3[0]);
+		assertThat(resourcesT3).containsExactly(topic1);
 		AdaptableHelpResource[] resourcesT4 = mgr.getWorkingSet("test4").getElements();
-		assertEquals(1, resourcesT4.length);
-		assertEquals(topic3, resourcesT4[0]);
+		assertThat(resourcesT4).containsExactly(topic3);
 	}
 
 	@Test
@@ -326,13 +306,11 @@ public class WorkingSetManagerTest {
 		WorkingSetManager mgr2 = new WorkingSetManager();
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
 
-		assertEquals(2, readWsets.length);
+		assertThat(readWsets).hasSize(2);
 		AdaptableHelpResource[] resourcesT3 = mgr2.getWorkingSet("test3").getElements();
-		assertEquals(1, resourcesT3.length);
-		assertEquals(topic1, resourcesT3[0]);
+		assertThat(resourcesT3).containsExactly(topic1);
 		AdaptableHelpResource[] resourcesT4 = mgr2.getWorkingSet("test4").getElements();
-		assertEquals(1, resourcesT4.length);
-		assertEquals(topic3, resourcesT4[0]);
+		assertThat(resourcesT4).containsExactly(topic3);
 	}
 
 	@Test
@@ -347,9 +325,9 @@ public class WorkingSetManagerTest {
 		wset.setCriteria(criteria);
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		CriterionResource[] readResources = readWsets[0].getCriteria();
-		assertEquals(1, readResources.length);
+		assertThat(readResources).hasSize(1);
 	}
 
 	@Test
@@ -368,9 +346,9 @@ public class WorkingSetManagerTest {
 		WorkingSetManager mgr2 = new WorkingSetManager();
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
 
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		CriterionResource[] readResources = readWsets[0].getCriteria();
-		assertEquals(1, readResources.length);
+		assertThat(readResources).hasSize(1);
 	}
 
 	@Test
@@ -387,7 +365,7 @@ public class WorkingSetManagerTest {
 		wset.setCriteria(criteria);
 		mgr.addWorkingSet(wset);
 		WorkingSet[] readWsets = mgr.getWorkingSets();
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		CriterionResource[] readResources = readWsets[0].getCriteria();
 		checkResourceWithTwoChildren(readResources);
 	}
@@ -407,13 +385,13 @@ public class WorkingSetManagerTest {
 		WorkingSetManager mgr2 = new WorkingSetManager();
 		WorkingSet[] readWsets = mgr2.getWorkingSets();
 
-		assertEquals(1, readWsets.length);
+		assertThat(readWsets).hasSize(1);
 		CriterionResource[] readResources = readWsets[0].getCriteria();
 		checkResourceWithTwoChildren(readResources);
 	}
 
 	private void checkResourceWithTwoChildren(CriterionResource[] readResources) {
-		assertEquals(2, readResources.length);
+		assertThat(readResources).hasSize(2);
 		CriterionResource readVersion;
 		CriterionResource readPlatform;
 		if (readResources[0].getCriterionName().equals("version")) {

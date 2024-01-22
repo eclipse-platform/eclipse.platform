@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -152,10 +153,10 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 		grp.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
 
 		ILaunchConfiguration[] history = runHistory.getHistory();
-		assertEquals(3, history.length);
-		assertTrue("history[0] should be Test Group", history[0].contentsEqual(grp)); //$NON-NLS-1$
-		assertTrue("history[1] should be Test2", history[1].contentsEqual(t2)); //$NON-NLS-1$
-		assertTrue("history[2] should be Test1", history[2].contentsEqual(t1)); //$NON-NLS-1$
+		assertThat(history).hasSize(3).satisfiesExactly(//
+				first -> assertThat(first).matches(it -> it.contentsEqual(grp), "is Test Group"), //
+				second -> assertThat(second).matches(it -> it.contentsEqual(t2), "is Test2"), //
+				third -> assertThat(third).matches(it -> it.contentsEqual(t1), "is Test1"));
 	}
 
 	@Test
@@ -172,10 +173,10 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 		assertTrue("delay was not awaited", (System.currentTimeMillis() - start) >= 2000); //$NON-NLS-1$
 
 		ILaunchConfiguration[] history = runHistory.getHistory();
-		assertEquals(3, history.length);
-		assertTrue("history[0] should be Test Group", history[0].contentsEqual(grp)); //$NON-NLS-1$
-		assertTrue("history[1] should be Test2", history[1].contentsEqual(t2)); //$NON-NLS-1$
-		assertTrue("history[2] should be Test1", history[2].contentsEqual(t1)); //$NON-NLS-1$
+		assertThat(history).hasSize(3).satisfiesExactly(//
+				first -> assertThat(first).matches(it -> it.contentsEqual(grp), "is Test Group"), //
+				second -> assertThat(second).matches(it -> it.contentsEqual(t2), "is Test2"), //
+				third -> assertThat(third).matches(it -> it.contentsEqual(t1), "is Test1"));
 	}
 
 	@Test
@@ -218,10 +219,10 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 		// terminate? don't think so - at least run the code path to have it
 		// covered.
 		ILaunchConfiguration[] history = runHistory.getHistory();
-		assertEquals(3, history.length);
-		assertTrue("history[0] should be Test Group", history[0].contentsEqual(grp)); //$NON-NLS-1$
-		assertTrue("history[1] should be Test2", history[1].contentsEqual(t2)); //$NON-NLS-1$
-		assertTrue("history[2] should be Test1", history[2].contentsEqual(t1)); //$NON-NLS-1$
+		assertThat(history).hasSize(3).satisfiesExactly(//
+				first -> assertThat(first).matches(it -> it.contentsEqual(grp), "is Test Group"), //
+				second -> assertThat(second).matches(it -> it.contentsEqual(t2), "is Test2"), //
+				third -> assertThat(third).matches(it -> it.contentsEqual(t1), "is Test1"));
 	}
 
 	@Test
@@ -237,9 +238,9 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 		grp.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
 
 		ILaunchConfiguration[] history = runHistory.getHistory();
-		assertEquals(2, history.length);
-		assertTrue("history[0] should be Test Group", history[0].contentsEqual(grp)); //$NON-NLS-1$
-		assertTrue("history[1] should be Test1", history[1].contentsEqual(t1)); //$NON-NLS-1$
+		assertThat(history).hasSize(2).satisfiesExactly(//
+				first -> assertThat(first).matches(it -> it.contentsEqual(grp), "is Test Group"), //
+				second -> assertThat(second).matches(it -> it.contentsEqual(t1), "is Test1"));
 		assertEquals("Test1 should be launched only once", 1, launchCount.get()); //$NON-NLS-1$
 	}
 
@@ -266,11 +267,11 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 
 		ILaunchConfiguration[] history = runHistory.getHistory();
 		assertTrue("post launch should not be run", (System.currentTimeMillis() - startTime) < 9_000); //$NON-NLS-1$
-		assertEquals(4, history.length);
-		assertTrue("history[0] should be Group 3", history[0].contentsEqual(grp3)); //$NON-NLS-1$
-		assertTrue("history[1] should be Group 2", history[1].contentsEqual(grp2)); //$NON-NLS-1$
-		assertTrue("history[2] should be Group 1", history[2].contentsEqual(grp)); //$NON-NLS-1$
-		assertTrue("history[3] should be Test1", history[3].contentsEqual(t1)); //$NON-NLS-1$
+		assertThat(history).hasSize(4).satisfiesExactly( //
+				first -> assertThat(first).matches(it -> it.contentsEqual(grp3), "is Test Group 3"), //
+				second -> assertThat(second).matches(it -> it.contentsEqual(grp2), "is Test Group 2"), //
+				third -> assertThat(third).matches(it -> it.contentsEqual(grp), "is Test Group 1"), //
+				fourth -> assertThat(fourth).matches(it -> it.contentsEqual(t1), "is Test1"));
 		assertEquals("Test1 should be launched only once", 1, launchCount.get()); //$NON-NLS-1$
 	}
 
@@ -322,10 +323,10 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 		assertTrue("output was not awaited", (System.currentTimeMillis() - start) >= 2000); //$NON-NLS-1$
 
 		ILaunchConfiguration[] history = runHistory.getHistory();
-		assertEquals(3, history.length);
-		assertTrue("history[0] should be Test Group", history[0].contentsEqual(grp)); //$NON-NLS-1$
-		assertTrue("history[1] should be Test2", history[1].contentsEqual(t2)); //$NON-NLS-1$
-		assertTrue("history[2] should be Test1", history[2].contentsEqual(t1)); //$NON-NLS-1$
+		assertThat(history).hasSize(3).satisfiesExactly(//
+				first -> assertThat(first).matches(it -> it.contentsEqual(grp), "is Test Group"), //
+				second -> assertThat(second).matches(it -> it.contentsEqual(t2), "is Test2"), //
+				third -> assertThat(third).matches(it -> it.contentsEqual(t1), "is Test1"));
 	}
 
 	@Test
@@ -393,15 +394,12 @@ public class LaunchGroupTests extends AbstractLaunchTest {
 
 	private static DummyStream attachDummyProcess(final ILaunch l) {
 		final DummyStream dummy = new DummyStream();
-		final InvocationHandler streamProxyHandler = new InvocationHandler() {
-			@Override
-			public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-				String name = method.getName();
-				if (name.equals("getOutputStreamMonitor")) { //$NON-NLS-1$
-					return dummy;
-				}
-				return null;
+		final InvocationHandler streamProxyHandler = (proxy, method, args) -> {
+			String name = method.getName();
+			if (name.equals("getOutputStreamMonitor")) { //$NON-NLS-1$
+				return dummy;
 			}
+			return null;
 		};
 
 		final InvocationHandler handler = new InvocationHandler() {

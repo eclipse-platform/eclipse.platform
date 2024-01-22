@@ -13,14 +13,14 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.eclipse.compare.*;
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ViewerDescriptor;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
@@ -99,7 +99,7 @@ public class CompareUIPluginTest {
 
 		// API Compatibility : "no descriptor found" should return a null array instead
 		// of a 0-lengthed one.
-		assertNull(result);
+		assertThat(result).isNull();
 	}
 
 	@Test
@@ -112,8 +112,7 @@ public class CompareUIPluginTest {
 		 * "TextTypedElement" is "text" typed : it thus has a Content Viewer attached.
 		 * However, this content viewer is currently NOT returned because of bug 293926
 		 */
-		assertNotNull(result);
-		assertEquals(1, result.length);
+		assertThat(result).hasSize(1);
 	}
 
 	@Test
@@ -127,7 +126,6 @@ public class CompareUIPluginTest {
 		 * However, the content viewer will only be returned because we made our
 		 * "ITypedElement" be an IStreamContentAccessor.
 		 */
-		assertNotNull(result);
-		assertEquals(1, result.length);
+		assertThat(result).hasSize(1);
 	}
 }

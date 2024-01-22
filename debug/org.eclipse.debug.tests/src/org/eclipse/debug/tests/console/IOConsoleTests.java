@@ -13,8 +13,10 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -28,12 +30,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -50,6 +59,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleConstants;
@@ -744,7 +754,8 @@ public class IOConsoleTests extends AbstractDebugTest {
 		final IOConsoleTestUtil c = getTestUtil("Test IConsoleDocumentPartitioner");
 		try (IOConsoleOutputStream otherOut = c.getConsole().newOutputStream()) {
 			StyleRange[] styles = c.getPartitioner().getStyleRanges(0, 1);
-			assertEquals("Got fake styles.", 0, (styles == null ? 0 : styles.length));
+			assertThat(styles).satisfiesAnyOf(it -> assertThat(it).isNull(),
+					it -> assertThat(it).hasSize(0));
 
 			c.insertAndVerify("#\n");
 			c.insertTyping("L");
@@ -762,32 +773,32 @@ public class IOConsoleTests extends AbstractDebugTest {
 			styles = c.getPartitioner().getStyleRanges(0, c.getContentLength());
 			checkOverlapping(styles);
 			assertNotNull("Partitioner provided no styles.", styles);
-			assertTrue("Expected more styles.", styles.length >= 3);
+			assertThat(styles).hasSizeGreaterThanOrEqualTo(3);
 
 			styles = c.getPartitioner().getStyleRanges(5, 20);
 			checkOverlapping(styles);
 			assertNotNull("Partitioner provided no styles.", styles);
-			assertEquals("Number of styles:", 1, styles.length);
+			assertThat(styles).hasSize(1);
 
 			styles = c.getPartitioner().getStyleRanges(loremEnd + 1, 1);
 			checkOverlapping(styles);
 			assertNotNull("Partitioner provided no styles.", styles);
-			assertEquals("Number of styles:", 1, styles.length);
+			assertThat(styles).hasSize(1);
 
 			styles = c.getPartitioner().getStyleRanges(loremEnd, c.getContentLength() - loremEnd);
 			checkOverlapping(styles);
 			assertNotNull("Partitioner provided no styles.", styles);
-			assertEquals("Number of styles:", 2, styles.length);
+			assertThat(styles).hasSize(2);
 
 			styles = c.getPartitioner().getStyleRanges(loremEnd - 3, 5);
 			checkOverlapping(styles);
 			assertNotNull("Partitioner provided no styles.", styles);
-			assertEquals("Number of styles:", 2, styles.length);
+			assertThat(styles).hasSize(2);
 
 			styles = c.getPartitioner().getStyleRanges(loremEnd - 3, 8);
 			checkOverlapping(styles);
 			assertNotNull("Partitioner provided no styles.", styles);
-			assertEquals("Number of styles:", 3, styles.length);
+			assertThat(styles).hasSize(3);
 
 
 			assertTrue("Offset should be read-only.", c.getPartitioner().isReadOnly(0));
@@ -814,14 +825,14 @@ public class IOConsoleTests extends AbstractDebugTest {
 				assertTrue("Area should be read-only.", extension.isReadOnly(6, 105));
 				assertTrue("Area should be read-only.", extension.containsReadOnly(8, 111));
 
-				assertTrue("Read-only parts not found.", extension.computeReadOnlyPartitions().length > 0);
-				assertTrue("Writable parts not found.", extension.computeWritablePartitions().length > 0);
-				assertTrue("Read-only parts not found.", extension.computeReadOnlyPartitions(loremEnd - 5, 7).length > 0);
-				assertTrue("Writable parts not found.", extension.computeWritablePartitions(loremEnd - 5, 7).length > 0);
-				assertTrue("Area should be read-only.", extension.computeReadOnlyPartitions(5, 100).length > 0);
-				assertEquals("Area should be read-only.", 0, extension.computeWritablePartitions(5, 100).length);
-				assertEquals("Area should be writable.", 0, extension.computeReadOnlyPartitions(loremEnd, 2).length);
-				assertTrue("Area should be writable.", extension.computeWritablePartitions(loremEnd, 2).length > 0);
+				assertThat(extension.computeReadOnlyPartitions()).as("has read-only parts").hasSizeGreaterThan(0);
+				assertThat(extension.computeWritablePartitions()).as("has writable parts").hasSizeGreaterThan(0);
+				assertThat(extension.computeReadOnlyPartitions(loremEnd - 5, 7)).as("has read-only parts").hasSizeGreaterThan(0);
+				assertThat(extension.computeWritablePartitions(loremEnd - 5, 7)).as("has writable parts").hasSizeGreaterThan(0);
+				assertThat(extension.computeReadOnlyPartitions(5, 100)).as("area is readable").hasSizeGreaterThan(0);
+				assertThat(extension.computeWritablePartitions(5, 100)).as("area is read-only").isEmpty();
+				assertThat(extension.computeReadOnlyPartitions(loremEnd, 2)).as("area is not read-only").isEmpty();
+				assertThat(extension.computeWritablePartitions(loremEnd, 2)).as("area is writable").hasSizeGreaterThan(0);
 
 				assertEquals("Got wrong offset.", 0, extension.getNextOffsetByState(0, false));
 				assertEquals("Got wrong offset.", 2, extension.getNextOffsetByState(0, true));
@@ -935,5 +946,37 @@ public class IOConsoleTests extends AbstractDebugTest {
 			assertTrue("Styles overlap.", lastEnd <= s.start);
 			lastEnd = s.start + s.length;
 		}
+	}
+
+	/**
+	 * Test that isAnsiConsoleEnabled() reflect changes in the console status.
+	 *
+	 * @throws NotHandledException
+	 * @throws NotEnabledException
+	 * @throws NotDefinedException
+	 * @throws ExecutionException
+	 */
+	@Test
+	public void testIsAnsiEscapeEnabled() throws ExecutionException, NotDefinedException, NotEnabledException, NotHandledException {
+		final boolean initial = IOConsole.isAnsiConsoleEnabled();
+
+		// Switch the ANSI processing status.
+		final ICommandService service = PlatformUI.getWorkbench().getService(ICommandService.class);
+		// We don't want to export
+		// org.eclipse.ui.internal.console.ansi.commands.EnableDisableHandler
+		final String ANSI_ENABLE_DISABLE_COMMAND_ID = "AnsiConsole.command.enable_disable";
+		final Command command = service.getCommand(ANSI_ENABLE_DISABLE_COMMAND_ID);
+		final ExecutionEvent execEvent = new ExecutionEvent(command, Map.of(), null, null);
+		command.executeWithChecks(execEvent);
+
+		// Capture the (hopefully changed) status.
+		final boolean changed = IOConsole.isAnsiConsoleEnabled();
+		assertNotEquals(initial, changed);
+
+		// Switch the ANSI processing status back to original.
+		command.executeWithChecks(execEvent);
+
+		final boolean changedBack = IOConsole.isAnsiConsoleEnabled();
+		assertEquals(initial, changedBack);
 	}
 }

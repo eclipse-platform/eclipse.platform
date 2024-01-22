@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
@@ -647,9 +648,8 @@ public class BuilderTest {
 		//ensure the build spec hasn't changed
 		desc = project.getDescription();
 		ICommand[] commands = desc.getBuildSpec();
-		assertEquals(2, commands.length);
-		assertEquals(commands[0].getBuilderName(), SortBuilder.BUILDER_NAME);
-		assertEquals(commands[1].getBuilderName(), SortBuilder.BUILDER_NAME);
+		assertThat(commands).hasSize(2)
+				.allSatisfy(command -> assertThat(command.getBuilderName()).isEqualTo(SortBuilder.BUILDER_NAME));
 		Map<String, String> args = commands[0].getArguments();
 		assertEquals("Build1", args.get(TestBuilder.BUILD_ID));
 		args = commands[1].getArguments();

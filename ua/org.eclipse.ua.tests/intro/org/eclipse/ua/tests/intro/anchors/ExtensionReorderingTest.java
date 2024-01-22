@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.intro.anchors;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -192,7 +192,7 @@ public class ExtensionReorderingTest {
 	public void testOrder123456() {
 		readIntroConfig();
 		assertNotNull(config);
-		assertEquals(6, introConfigExtensions.length);
+		assertThat(introConfigExtensions).hasSize(6);
 		IntroModelRoot model = new IntroModelRoot(config, introConfigExtensions);
 		model.loadModel();
 		checkModel(model, 6);
@@ -202,7 +202,7 @@ public class ExtensionReorderingTest {
 		assertTrue(model.hasValidConfig());
 		Object[] pages = model.getChildrenOfType(AbstractIntroElement.ABSTRACT_PAGE);
 		AbstractIntroPage root = (AbstractIntroPage) model.findChild("root");
-		assertEquals(elements + 2, pages.length);
+		assertThat(pages).hasSize(elements + 2);
 		IntroPage extn1 = (IntroPage) model.findChild("page1");
 		assertNotNull(extn1);
 		AbstractIntroElement p1link = root.findChild("page1link");

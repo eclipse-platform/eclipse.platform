@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.performance;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class IndexAssemblePerformanceTest extends PerformanceTestCaseJunit5 {
 		IndexAssembler assembler = new IndexAssembler();
 		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(a, b, c));
 		Index assembled = assembler.assemble(contributions, Platform.getNL());
-		assertEquals(100, assembled.getChildren().length);
+		assertThat(assembled.getChildren()).hasSize(100);
 	}
 
 }

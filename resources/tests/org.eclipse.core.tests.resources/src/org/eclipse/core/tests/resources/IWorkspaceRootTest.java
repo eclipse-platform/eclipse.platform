@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
@@ -75,8 +76,7 @@ public class IWorkspaceRootTest {
 
 		//try to find the file using the upper case device
 		IFile[] files = getWorkspace().getRoot().findFilesForLocation(fileLocationUpper);
-		assertEquals("1.0", 1, files.length);
-		assertEquals("1.1", link, files[0]);
+		assertThat(files).containsExactly(link);
 	}
 
 	/**
@@ -114,8 +114,7 @@ public class IWorkspaceRootTest {
 		//should find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IContainer[] result = root.findContainersForLocation(root.getLocation());
-		assertEquals("1.0", 1, result.length);
-		assertEquals("1.1", root, result[0]);
+		assertThat(result).containsExactly(root);
 
 		//deep linked resource
 		IFolder parent = p2.getFolder("parent");
@@ -189,7 +188,7 @@ public class IWorkspaceRootTest {
 		//should not find the workspace root
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		IFile[] result = root.findFilesForLocation(root.getLocation());
-		assertEquals("1.0", 0, result.length);
+		assertThat(result).isEmpty();
 
 		IFile existing = project.getFile("file1");
 		createInWorkspace(existing);
@@ -239,22 +238,14 @@ public class IWorkspaceRootTest {
 	 * Asserts that the given result array contains only the given resource.
 	 */
 	private void assertResources(String message, IResource expected, IResource[] actual) {
-		assertEquals(message, 1, actual.length);
-		assertEquals(message, expected, actual[0]);
+		assertThat(actual).describedAs(message).containsExactly(expected);
 	}
 
 	/**
 	 * Asserts that the given result array contains only the two given resources
 	 */
 	private void assertResources(String message, IResource expected0, IResource expected1, IResource[] actual) {
-		assertEquals(message, 2, actual.length);
-		if (actual[0].equals(expected0)) {
-			assertEquals(message, expected1, actual[1]);
-		} else if (actual[0].equals(expected1)) {
-			assertEquals(message, expected0, actual[1]);
-		} else {
-			assertEquals(message, expected0, actual[0]);
-		}
+		assertThat(actual).describedAs(message).containsExactlyInAnyOrder(expected0, expected1);
 	}
 
 	/**
@@ -346,10 +337,10 @@ public class IWorkspaceRootTest {
 		folder.create(true, true, createTestMonitor());
 
 		IContainer[] containers = root.findContainersForLocationURI(folder.getLocationURI());
-		assertEquals("2.0", 0, containers.length);
+		assertThat(containers).isEmpty();
 
 		containers = root.findContainersForLocationURI(folder.getLocationURI(), IContainer.INCLUDE_HIDDEN);
-		assertEquals("3.0", 1, containers.length);
+		assertThat(containers).hasSize(1);
 	}
 
 	@Test
@@ -364,16 +355,16 @@ public class IWorkspaceRootTest {
 		file.create(new ByteArrayInputStream("foo".getBytes()), true, createTestMonitor());
 
 		IFile[] files = root.findFilesForLocationURI(file.getLocationURI());
-		assertEquals("3.0", 0, files.length);
+		assertThat(files).isEmpty();
 
 		files = root.findFilesForLocationURI(file.getLocationURI(), IContainer.INCLUDE_HIDDEN);
-		assertEquals("4.0", 1, files.length);
+		assertThat(files).hasSize(1);
 
 		IContainer[] containers = root.findContainersForLocationURI(file.getLocationURI());
-		assertEquals("5.0", 0, containers.length);
+		assertThat(containers).isEmpty();
 
 		containers = root.findContainersForLocationURI(file.getLocationURI(), IContainer.INCLUDE_HIDDEN);
-		assertEquals("6.0", 1, containers.length);
+		assertThat(containers).hasSize(1);
 	}
 
 	/**
@@ -483,12 +474,12 @@ public class IWorkspaceRootTest {
 
 	private void checkFindFiles(URI location, int memberFlags, int foundResources) {
 		IFile[] files = getWorkspace().getRoot().findFilesForLocationURI(location, memberFlags);
-		assertEquals(foundResources, files.length);
+		assertThat(files).hasSize(foundResources);
 	}
 
 	private void checkFindContainers(URI location, int memberFlags, int foundResources) {
 		IContainer[] containers = getWorkspace().getRoot().findContainersForLocationURI(location, memberFlags);
-		assertEquals(foundResources, containers.length);
+		assertThat(containers).hasSize(foundResources);
 	}
 
 	private IFile createFile(IContainer parent, int updateFlags, boolean linked) throws Exception {

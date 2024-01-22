@@ -14,6 +14,7 @@
 
 package org.eclipse.ua.tests.cheatsheet.execution;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -103,9 +104,7 @@ public class TestActionExecution {
 		assertTrue(status.isOK());
 		assertEquals(1, ActionEnvironment.getTimesCompleted());
 		String[] actuals = ActionEnvironment.getParams();
-		assertEquals(2, actuals.length);
-		assertEquals(value0, actuals[0]);
-		assertEquals(value1, actuals[1]);
+		assertThat(actuals).containsExactly(value0, value1);
 	}
 
 	private String getPluginId() {

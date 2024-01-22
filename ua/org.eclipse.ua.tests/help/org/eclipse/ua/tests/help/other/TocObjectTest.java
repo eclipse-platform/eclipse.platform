@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.other;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.help.ITopic;
 import org.eclipse.help.internal.base.HelpEvaluationContext;
@@ -85,8 +85,8 @@ public class TocObjectTest {
 		UserToc	utoc = new UserToc(TITLE_1, null, true);
 		Toc toc = new Toc(utoc);
 		ITopic emptyTopic = toc.getTopic(null);
-		assertTrue(emptyTopic.getChildren().length == 0);
-		assertTrue(emptyTopic.isEnabled(HelpEvaluationContext.getContext()));
+		assertThat(emptyTopic.getChildren()).isEmpty();
+		assertThat(emptyTopic).matches(it -> it.isEnabled(HelpEvaluationContext.getContext()), "is enabed");
 	}
 
 }
