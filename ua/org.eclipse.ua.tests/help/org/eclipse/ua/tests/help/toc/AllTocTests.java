@@ -13,23 +13,23 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.toc;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help table of contents functionality.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	TocAssemblerTest.class,
-	EnabledTopicTest.class,
-	TopicFinderTest.class,
-	TocSortingTest.class,
-	TopicSortingTest.class,
-	TocIconTest.class,
-	TocIconPathTest.class,
-	TocProviderTest.class,
-	HelpData.class
+@Suite
+@SelectClasses({ //
+		TocAssemblerTest.class, //
+		EnabledTopicTest.class, //
+		TopicFinderTest.class, //
+		TocSortingTest.class, //
+		TopicSortingTest.class, //
+		TocIconTest.class, //
+		TocIconPathTest.class, //
+		TocProviderTest.class, //
+		HelpData.class, //
 })
 public class AllTocTests {
 }

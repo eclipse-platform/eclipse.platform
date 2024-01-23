@@ -967,37 +967,30 @@ public class CheatSheetParser implements IStatusContainer {
 			addStatus(IStatus.ERROR, input.getErrorMessage(), null);
 		}
 
-		InputStream is = null;
-		InputSource inputSource = null;
-		String filename = ""; //$NON-NLS-1$
+		Document document;
 		URL url = input.getUrl();
+		String filename = (url == null) ? "" : url.getFile(); //$NON-NLS-1$
 
-		if (input.getXml() != null) {
-			StringReader reader = new StringReader(input.getXml());
-			inputSource = new InputSource(reader);
-		} else if (input.getUrl() != null){
-			try {
-				is = url.openStream();
-
-				if (is != null) {
-					inputSource = new InputSource(is);
+		try {
+			if (input.getXml() != null) {
+				StringReader reader = new StringReader(input.getXml());
+				InputSource inputSource = new InputSource(reader);
+				document = LocalEntityResolver.parse(inputSource);
+			} else if (input.getUrl() != null) {
+				try (InputStream is = url.openStream()) {
+					if (is == null) {
+						return null;
+					}
+					InputSource inputSource = new InputSource(is);
+					document = LocalEntityResolver.parse(inputSource);
+				} catch (Exception e) {
+					String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] { url.getFile() }));
+					addStatus(IStatus.ERROR, message, e);
+					return null;
 				}
-			} catch (Exception e) {
-				String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
-				addStatus(IStatus.ERROR, message, e);
+			} else {
 				return null;
 			}
-		} else {
-			return null;
-		}
-
-		if (input.getUrl() != null){
-			filename = url.getFile();
-		}
-
-		Document document;
-		try {
-			document = LocalEntityResolver.parse(inputSource);
 		} catch (ParserConfigurationException e) {
 			addStatus(IStatus.ERROR, Messages.ERROR_DOCUMENT_BUILDER_NOT_INIT, null);
 			return null;
@@ -1014,11 +1007,6 @@ public class CheatSheetParser implements IStatusContainer {
 			String message = NLS.bind(Messages.ERROR_SAX_PARSING, (new Object[] {filename}));
 			addStatus(IStatus.ERROR, message, se);
 			return null;
-		} finally {
-			try {
-				is.close();
-			} catch (Exception e) {
-			}
 		}
 
 		// process dynamic content, normalize paths

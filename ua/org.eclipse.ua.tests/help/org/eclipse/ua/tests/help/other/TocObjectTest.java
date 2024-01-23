@@ -14,13 +14,13 @@
 package org.eclipse.ua.tests.help.other;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.eclipse.help.ITopic;
 import org.eclipse.help.internal.base.HelpEvaluationContext;
 import org.eclipse.help.internal.toc.Toc;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TocObjectTest {
 

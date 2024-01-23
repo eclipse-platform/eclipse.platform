@@ -14,19 +14,19 @@
 
 package org.eclipse.ua.tests.cheatsheet.other;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Unit tests for cheatsheets which don't fill into any other category
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	TestStatePersistence.class,
-	TestEscape.class,
-	TestCheatSheetManager.class,
-	TestCheatSheetCollection.class,
-	TestCheatSheetCategories.class
+@Suite
+@SelectClasses({ //
+		TestStatePersistence.class, //
+		TestEscape.class, //
+		TestCheatSheetManager.class, //
+		TestCheatSheetCollection.class, //
+		TestCheatSheetCategories.class, //
 })
 public class AllOtherCheatSheetTests {
 }

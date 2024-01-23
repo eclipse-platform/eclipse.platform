@@ -15,10 +15,10 @@
 package org.eclipse.ua.tests.help.search;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 
@@ -32,7 +32,7 @@ import org.eclipse.help.internal.workingset.AdaptableTopic;
 import org.eclipse.help.internal.workingset.WorkingSet;
 import org.eclipse.ua.tests.help.webapp.MockServletRequest;
 import org.eclipse.ua.tests.help.webapp.MockServletResponse;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InfocenterWorkingSetManagerTest {
 	@Test

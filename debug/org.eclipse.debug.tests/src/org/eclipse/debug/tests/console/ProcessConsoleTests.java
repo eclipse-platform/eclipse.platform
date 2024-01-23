@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.console;
 
+import static java.nio.file.Files.readAllBytes;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -303,7 +303,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, outFile.getCanonicalPath());
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, true);
 		doConsoleOutputTest(testContent.getBytes(), launchConfigAttributes);
-		assertArrayEquals("Wrong content redirected to file.", testContent.getBytes(), Files.readAllBytes(outFile.toPath()));
+		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly(testContent.getBytes());
 	}
 
 	/**
@@ -318,11 +318,11 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_APPEND_TO_FILE, true);
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, true);
 		doConsoleOutputTest(testContent.getBytes(), launchConfigAttributes);
-		assertArrayEquals("Wrong content redirected to file.", testContent.getBytes(), Files.readAllBytes(outFile.toPath()));
+		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly(testContent.getBytes());
 
 		String appendedContent = "append";
 		doConsoleOutputTest(appendedContent.getBytes(), launchConfigAttributes);
-		assertArrayEquals("Wrong content redirected to file.", (testContent + appendedContent).getBytes(), Files.readAllBytes(outFile.toPath()));
+		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly((testContent + appendedContent).getBytes());
 	}
 
 	/**
@@ -340,19 +340,19 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, outFile.getCanonicalPath());
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
 		IOConsole console = doConsoleOutputTest(testContent.getBytes(), launchConfigAttributes);
-		assertArrayEquals("Wrong content redirected to file.", testContent.getBytes(), Files.readAllBytes(outFile.toPath()));
+		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly(testContent.getBytes());
 		assertEquals("Output in console.", 2, console.getDocument().getNumberOfLines());
 
 		outFile = createTmpFile("exhaustive[128-32].out");
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, outFile.getCanonicalPath());
 		console = doConsoleOutputTest(testContent.getBytes(), launchConfigAttributes);
-		assertArrayEquals("Wrong content redirected to file.", testContent.getBytes(), Files.readAllBytes(outFile.toPath()));
+		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly(testContent.getBytes());
 		assertEquals("Output in console.", 2, console.getDocument().getNumberOfLines());
 
 		outFile = createTmpFile("ug(ly.out");
 		launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, outFile.getCanonicalPath());
 		console = doConsoleOutputTest(testContent.getBytes(), launchConfigAttributes);
-		assertArrayEquals("Wrong content redirected to file.", testContent.getBytes(), Files.readAllBytes(outFile.toPath()));
+		assertThat(readAllBytes(outFile.toPath())).as("content redirected to file").containsExactly(testContent.getBytes());
 		assertEquals("Output in console.", 2, console.getDocument().getNumberOfLines());
 	}
 
@@ -500,7 +500,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				Predicate<AbstractDebugTest> waitForFileWritten = __ -> {
 					try {
 						TestUtil.processUIEvents(20);
-						return Files.readAllBytes(outFile.toPath()).length < output.length;
+						return readAllBytes(outFile.toPath()).length < output.length;
 					} catch (Exception e) {
 						// try again
 					}
@@ -509,7 +509,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				Function<AbstractDebugTest, String> errorMessageProvider = __ -> {
 					byte[] actualOutput = new byte[0];
 					try {
-						actualOutput = Files.readAllBytes(outFile.toPath());
+						actualOutput = readAllBytes(outFile.toPath());
 					} catch (IOException e) {
 						// Proceed as if output was empty
 					}
@@ -560,6 +560,6 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		}
 
 		byte[] receivedInput = mockProcess.getReceivedInput();
-		assertArrayEquals(input, receivedInput);
+		assertThat(receivedInput).as("received input").isEqualTo(input);
 	}
 }

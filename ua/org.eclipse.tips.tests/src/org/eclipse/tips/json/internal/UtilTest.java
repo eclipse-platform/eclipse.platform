@@ -13,10 +13,9 @@
  *******************************************************************************/
 package org.eclipse.tips.json.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -58,7 +57,7 @@ public class UtilTest {
 		String jsonString = "{\"first\": \"Wim\", \"last\": \"Jongman\", \"variables\": {\"title\": \"Mr.\", \"age\": 53}}";
 		JsonObject jsonObject = (JsonObject) JsonParser.parseString(jsonString);
 		String replace = Util.replace(jsonObject, input);
-		assertTrue(replace, replace.equals(result));
+		assertEquals(replace, result);
 	}
 
 	@SuppressWarnings("restriction")
@@ -69,7 +68,7 @@ public class UtilTest {
 		String jsonString = "{\"first\": \"Wim\", \"last\": \"Jongman\", \"variables\": {\"title\": \"Mr.\", \"age\": 53}}";
 		JsonObject jsonObject = (JsonObject) JsonParser.parseString(jsonString);
 		String replace = Util.replace(jsonObject, input);
-		assertTrue(replace, replace.equals(result));
+		assertEquals(replace, result);
 	}
 
 	@SuppressWarnings("restriction")
@@ -80,6 +79,6 @@ public class UtilTest {
 		String jsonString = "{\"first\": \"Wim\", \"empty\": \"\", \"variables\": {\"title\": \"Mr.\", \"age\": 53}}";
 		JsonObject jsonObject = (JsonObject) JsonParser.parseString(jsonString);
 		String replace = Util.replace(jsonObject, input);
-		assertTrue(replace, replace.equals(result));
+		assertEquals(replace, result);
 	}
 }

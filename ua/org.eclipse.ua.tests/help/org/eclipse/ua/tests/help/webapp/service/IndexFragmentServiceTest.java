@@ -13,8 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -22,9 +21,9 @@ import java.net.URL;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -33,14 +32,14 @@ public class IndexFragmentServiceTest {
 
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}
@@ -63,7 +62,7 @@ public class IndexFragmentServiceTest {
 			InputSource inputSource = new InputSource(is);
 			Document document = LocalEntityResolver.parse(inputSource);
 			Node root = document.getFirstChild();
-			assertEquals("tree_data", root.getNodeName());
+			assertThat(root.getNodeName()).isEqualTo("tree_data");
 		}
 	}
 
@@ -77,7 +76,7 @@ public class IndexFragmentServiceTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	@Test

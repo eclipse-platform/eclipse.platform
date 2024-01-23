@@ -14,14 +14,14 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.ui.cheatsheets.CheatSheetListener;
 import org.eclipse.ui.cheatsheets.ICheatSheetEvent;
 import org.eclipse.ui.internal.cheatsheets.registry.CheatSheetElement;
 import org.eclipse.ui.internal.cheatsheets.views.CheatSheetManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestCheatSheetManagerEvents {
 
@@ -44,7 +44,7 @@ public class TestCheatSheetManagerEvents {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		element = new CheatSheetElement("Name");
 		manager = new CheatSheetManager(element);

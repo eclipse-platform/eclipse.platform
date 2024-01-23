@@ -14,8 +14,8 @@
 package org.eclipse.ua.tests.help.toc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
@@ -31,9 +31,9 @@ import org.eclipse.help.internal.HelpData;
 import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.help.internal.toc.TocSorter;
 import org.eclipse.help.internal.util.ProductPreferences;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TocSortingTest {
 
@@ -140,7 +140,7 @@ public class TocSortingTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		helpDataPreference = Platform.getPreferencesService().getString
 			(HelpPlugin.HELP_DATA_KEY, HelpPlugin.HELP_DATA_KEY, "", null);
@@ -152,7 +152,7 @@ public class TocSortingTest {
 		setBaseTocs("");
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		setHelpData(helpDataPreference);
 		setBaseTocs(baseTocsPreference);

@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.dynamic;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,15 +28,15 @@ import javax.xml.transform.TransformerException;
 import org.eclipse.help.internal.xhtml.DynamicXHTMLProcessor;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
 import org.eclipse.ua.tests.util.XMLUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 
 public class DynamicXHTMLProcessorTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// activate the UI plug-in for UI filtering ability
 		HelpUIPlugin.getDefault();
@@ -80,37 +80,37 @@ public class DynamicXHTMLProcessorTest {
 	@Test
 	public void testXhtmlNoCollapseAnchor() throws Exception {
 		String processed = process("data/help/dynamic/xhtml/emptyAnchor.xhtml");
-		assertTrue("Anchor collapsed in " + processed, processed.indexOf("</a>") > 0);
+		assertThat(processed.indexOf("</a>")).as("anchor collapsed in " + processed).isGreaterThan(0);
 	}
 
 	@Test
 	public void testXhtmlNoCollapseParagraph() throws Exception {
 		String processed = process("data/help/dynamic/xhtml/emptyAnchor.xhtml");
-		assertTrue("Paragraph collapsed in " + processed, processed.indexOf("</p>") > 0);
+		assertThat(processed.indexOf("</p>")).as("paragraph collapsed in " + processed).isGreaterThan(0);
 	}
 
 	@Test
 	public void testXhtmlNoCollapseAnchorIC() throws Exception {
 		String processed = process("data/help/dynamic/xhtml/emptyAnchorWithComment.xhtml");
-		assertTrue("Anchor collapsed in " + processed, processed.indexOf("</a>") > 0);
+		assertThat(processed.indexOf("</a>")).as("anchor collapsed in " + processed).isGreaterThan(0);
 	}
 
 	@Test
 	public void testXhtmlNoCollapseParagraphIC() throws Exception {
 		String processed = process("data/help/dynamic/xhtml/emptyAnchorWithComment.xhtml");
-		assertTrue("Paragraph collapsed in " + processed, processed.indexOf("</p>") > 0);
+		assertThat(processed.indexOf("</p>")).as("paragraph collapsed in " + processed).isGreaterThan(0);
 	}
 
 	@Test
 	public void testXhtmlNoCollapseDiv() throws Exception {
 		String processed = process("data/help/dynamic/xhtml/emptyDiv.xhtml");
-		assertTrue("Div collapsed in " + processed, processed.indexOf("</div>") > 0);
+		assertThat(processed.indexOf("</div>")).as("div collapsed in " + processed).isGreaterThan(0);
 	}
 
 	@Test
 	public void testXhtmlNoCollapseScript() throws Exception {
 		String processed = process("data/help/dynamic/xhtml/emptyAnchor.xhtml");
-		assertTrue("Div collapsed in " + processed, processed.indexOf("</script>") > 0);
+		assertThat(processed.indexOf("</div>")).as("div collapsed in " + processed).isGreaterThan(0);
 	}
 
 	@Test

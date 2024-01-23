@@ -21,6 +21,8 @@ import org.junit.platform.suite.api.Suite;
  * Tests help performance (automated).
  */
 @Suite
-@SelectClasses({ OpenIntroTest.class })
+@SelectClasses({ //
+		OpenIntroTest.class, //
+})
 public class AllIntroPerformanceTests {
 }

@@ -11,24 +11,22 @@
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-
 package org.eclipse.ua.tests.cheatsheet.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
 
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.ParserInput;
 import org.eclipse.ui.internal.cheatsheets.registry.CheatSheetElement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 public class ParseFromString {
@@ -85,7 +83,7 @@ public class ParseFromString {
 		CheatSheetParser parser = new CheatSheetParser();
 		ICheatSheet cheatSheet = parser.parse(input, CheatSheetParser.SIMPLE_ONLY);
 		assertNotNull(cheatSheet);
-		assertEquals(Status.OK, parser.getStatus().getSeverity());
+		assertEquals(IStatus.OK, parser.getStatus().getSeverity());
 	}
 
 	@Test
@@ -94,7 +92,7 @@ public class ParseFromString {
 		CheatSheetParser parser = new CheatSheetParser();
 		ICheatSheet cheatSheet = parser.parse(input, CheatSheetParser.SIMPLE_ONLY);
 		assertNull(cheatSheet);
-		assertEquals(Status.ERROR, parser.getStatus().getSeverity());
+		assertEquals(IStatus.ERROR, parser.getStatus().getSeverity());
 		assertTrue(parser.getStatus().getMessage().contains("must contain at least one <item>"));
 	}
 }

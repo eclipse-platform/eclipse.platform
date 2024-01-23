@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.criteria;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import org.eclipse.help.internal.criteria.CriteriaDefinitionContribution;
 import org.eclipse.help.internal.criteria.CriteriaDefinitionFile;
 import org.eclipse.help.internal.criteria.CriteriaDefinitionFileParser;
 import org.eclipse.help.internal.dynamic.DocumentWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 public class ParseCriteriaDefinition {

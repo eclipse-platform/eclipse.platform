@@ -14,9 +14,9 @@
 
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.help.internal.webapp.servlet.PluginsRootResolvingStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for text matching when inserting links

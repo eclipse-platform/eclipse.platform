@@ -24,25 +24,25 @@ import org.eclipse.ua.tests.help.search.AllSearchTests;
 import org.eclipse.ua.tests.help.toc.AllTocTests;
 import org.eclipse.ua.tests.help.webapp.AllWebappTests;
 import org.eclipse.ua.tests.help.webapp.service.AllWebappServiceTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	AllPreferencesTests.class,
-	AllCriteriaTests.class,
-	AllDynamicTests.class,
-	AllSearchTests.class,
-	AllTocTests.class,
-	AllIndexTests.class,
-	AllWebappTests.class,
-	AllOtherHelpTests.class,
-	AllRemoteTests.class,
-	AllScopeTests.class,
-	AllWebappServiceTests.class,
+@Suite
+@SelectClasses({ //
+		AllPreferencesTests.class, //
+		AllCriteriaTests.class, //
+		AllDynamicTests.class, //
+		AllSearchTests.class, //
+		AllTocTests.class, //
+		AllIndexTests.class, //
+		AllWebappTests.class, //
+		AllOtherHelpTests.class, //
+		AllRemoteTests.class, //
+		AllScopeTests.class, //
+		AllWebappServiceTests.class, //
 })
 public class AllHelpTests {
 }

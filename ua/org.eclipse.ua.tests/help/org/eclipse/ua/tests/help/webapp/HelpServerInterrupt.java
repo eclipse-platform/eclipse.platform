@@ -14,15 +14,15 @@
 
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test to see if the help server is interruptable
@@ -113,7 +113,7 @@ public class HelpServerInterrupt {
 			setTimeout(connection, 5000);
 			try (InputStream input = connection.getInputStream()) {
 				int firstbyte = input.read();
-				Assert.assertTrue(firstbyte > 0);
+				assertThat(firstbyte).isGreaterThan(0);
 			}
 		} catch (Exception e) {
 			long elapsed = System.currentTimeMillis() - start;
