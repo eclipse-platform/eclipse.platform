@@ -56,5 +56,5 @@ References
 ==========
 
 *   [Java Deprecation Guidelines](http://java.sun.com/j2se/1.4.2/docs/guide/misc/deprecation/deprecation.html)
-*   [Architecture Council/Meetings/API Deprecation 20080119](/Architecture_Council/Meetings/API_Deprecation_20080119 "Architecture Council/Meetings/API Deprecation 20080119")
+*   [Architecture Council/Meetings/API Deprecation 20080119](https://wiki.eclipse.org/Architecture_Council/Meetings/API_Deprecation_20080119 "Architecture Council/Meetings/API Deprecation 20080119")
 
