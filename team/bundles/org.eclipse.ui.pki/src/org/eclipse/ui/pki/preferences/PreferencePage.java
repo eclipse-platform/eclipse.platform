@@ -82,7 +82,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		noDefaultButton();
 		setPreferenceStore(AuthenticationPlugin.getDefault().getPreferenceStore());
 		setDescription("PKI Preferences:");
-		printoutStore();
+		//printoutStore();
 		//listProviders();
 		previousPKI = this.previousPKI();
 		pkiSecureStorage = new PKISecureStorage();
@@ -123,7 +123,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         	//(VendorImplementation.getInstance().isInstalled() )) {
         
         	//System.out.println("PreferencePage -------- AVAL:"+VendorImplementation.getInstance().isInstalled() );
-        	System.out.println("PreferencePage --------- TURNING ON DEFAULT pkcs11 is on");
+        	//System.out.println("PreferencePage --------- TURNING ON DEFAULT pkcs11 is on");
         	setPkcs12InVisible();
         	setPkcs11Visible();
         	
@@ -131,7 +131,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         	String propertyAddedProvider = 
     				Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreProvider")).
     				orElse("");
-    		System.out.println("PreferencePage --------- preference:"+ propertyAddedProvider);
+    		//System.out.println("PreferencePage --------- preference:"+ propertyAddedProvider);
     		
         	securityProvider.setStringValue(propertyAddedProvider);
     		
@@ -147,7 +147,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     				 configurationLocationFile.getStringValue() );
     		
         } else if (PKIState.CONTROL.isPKCS12on()) {
-        	System.out.println("PreferencePage --------- pkcs12 is on ----------------");
+        	//System.out.println("PreferencePage --------- pkcs12 is on ----------------");
         	setPkcs11InVisible();
         	setPkcs12Visible();
         	pkiSecureStorage.storePKI(AuthenticationPlugin.getDefault());
@@ -157,7 +157,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         } else if ((!( PKIState.CONTROL.isPKCS11on() )) && 
             		(!(PKIState.CONTROL.isPKCS12on())) ) {
             		//(!(VendorImplementation.getInstance().isInstalled() ))) {
-        	System.out.println("PreferencePage --------- THERE WAS NO DEFAULT  pkcs12 is on");
+        	//System.out.println("PreferencePage --------- THERE WAS NO DEFAULT  pkcs12 is on");
         	PKIState.CONTROL.setPKCS12on(true);
         	setPkcs11InVisible();
         	setPkcs12Visible();
@@ -258,7 +258,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     protected void setPkcs11InVisible() {
     	
     	try {
-    		System.out.println("PreferencePage ---------  pkcs12 is on setting PKCS11 INVISIBLE");
+    		//System.out.println("PreferencePage ---------  pkcs12 is on setting PKCS11 INVISIBLE");
 			groups.getChildren()[0].setVisible(false);
 			groups.getChildren()[1].setVisible(false);
 			groups.getChildren()[2].setVisible(false);
@@ -278,7 +278,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     protected void setPkcs12InVisible() {
     	
     	try {
-    		System.out.println("PreferencePage ---------  pkcs11 is on");
+    		//System.out.println("PreferencePage ---------  pkcs11 is on");
         	groups.getChildren()[9].setVisible(false);
     		groups.getChildren()[10].setVisible(false);
         	groups.getChildren()[11].setVisible(false);
@@ -348,7 +348,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		//CheckUpdatedKeystoreValue.isValid( pkiCertificate.getStringValue() );
 		//super.performApply();
 		
-		System.out.println("PreferencePage -- APPLY PRESSED  FIX the stored values. TYPE:"+pkiType);
+		//System.out.println("PreferencePage -- APPLY PRESSED  FIX the stored values. TYPE:"+pkiType);
 		try {
 			if (!(exitView)) {
 				if ( pkiType.equals("pkcs11") && ChangedPressedFieldEditorStatus.isPkiChangedPressed()) {
@@ -364,8 +364,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 						
 								AuthenticationPlugin.getDefault().setCertificatePath("pkcs11");
 								
-								System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
-								System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
+								//System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
+								//System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
 								
 								
 								//AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.SECURITY_PROVIDER, defaultTrustStorePath);
@@ -424,7 +424,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	@Override
 	public boolean performOk() {
 		boolean isOK=true;
-		System.out.println("PreferencePage --------- OK PRESSED REQUEST   TBD:   FIX the stored values. TYPE:"+pkiType);
+		//System.out.println("PreferencePage --------- OK PRESSED REQUEST   TBD:   FIX the stored values. TYPE:"+pkiType);
 		
 		if(ChangedPressedFieldEditorStatus.isJksChangedPressed()){
 			//System.out.println("PreferencePage --------- OK PRESSED REQUEST changepresed trust");
@@ -434,16 +434,16 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 			AuthenticationPlugin.getDefault().setTrustStoreSystemProperties(AuthenticationPlugin.getDefault().getExistingTrustStore());
 		}
 		if(ChangedPressedFieldEditorStatus.isSaveConfigurationLocationFileChecked()){
-			System.out.println("PreferencePage --------- OK PRESSED REQUEST changepresed  CFG FILE");
+			//System.out.println("PreferencePage --------- OK PRESSED REQUEST changepresed  CFG FILE");
 		}
 		
 		if ((ChangedPressedFieldEditorStatus.isPkiChangedPressed() ) ) {
 			AuthenticationPlugin.getDefault().setUserKeyStore(ChangedPressedFieldEditorStatus.getPkiUserKeyStore());
-			System.out.println("PreferencePage --------- PROCESSING A PKI CHANGE OK REQUEST");
+			//System.out.println("PreferencePage --------- PROCESSING A PKI CHANGE OK REQUEST");
 			if (( PKIState.CONTROL.isPKCS11on()) || ( pkiType.equals("pkcs11") )) {
 				
-				System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
-				System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
+				//System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
+				//System.out.println("PreferencePage CFG:"+ configurationLocationFile.getStringValue());
 				
 				AuthenticationPlugin.getDefault()
 					.getPreferenceStore()
@@ -474,7 +474,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 					isOK  = CheckUpdatedKeystoreValue.isValid( AuthenticationPlugin.getDefault().getCertificatePath() );
 				}
 			} else {
-				System.out.println("PreferencePage --------- PROCESSING A CHANGE OK REQUESt NO SELECTION");
+				//System.out.println("PreferencePage --------- PROCESSING A CHANGE OK REQUESt NO SELECTION");
 			}
 		
 			changePKISecureStorage();
