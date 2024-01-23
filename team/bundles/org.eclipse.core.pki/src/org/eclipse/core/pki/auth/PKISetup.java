@@ -26,7 +26,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.eclipse.core.pki.AuthenticationBase;
-import org.eclipse.core.pki.PKCS11Provider;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
 import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.KeyStoreFormat;
@@ -98,7 +97,7 @@ public class PKISetup implements BundleActivator, IStartup {
 
 		Optional<String>type = null;
 
-		PKCS11Provider.CONFIGURATION.setUp();
+		// PKCS11Provider.CONFIGURATION.setUp();
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
 		/*
