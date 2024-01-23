@@ -971,7 +971,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 	
 	public void initialize() {
 		try {
-			System.out.println("AuthenticationPlugin - initialize");
+			//System.out.println("AuthenticationPlugin - initialize");
 			
 			 
 			getPreferenceStore().setValue("JAVA_SSL_USER_KEY_STORE_PATH_KEY", "");
@@ -995,7 +995,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 		}
 	}
 	public void clearPKI() {
-		System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
+		//System.out.println("AuthenticationPlugin CLEARED PROPERTY PROVIDER TBD");
 		//System.clearProperty(JAVA_SSL_USER_KEY_STORE_PROVIDER_KEY);
 		System.clearProperty(JAVA_SSL_USER_KEY_STORE_PATH_KEY);
 		System.clearProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY);
