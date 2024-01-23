@@ -169,9 +169,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         	snapshotProperties = PKIProperties.getInstance();
         	snapshotProperties.load();
         	//snapshotProperties.dump();
-        	PKISecureStorage pkiSecureStorage = new PKISecureStorage();
-        	pkiSecureStorage.storePKI(this);
-			
+        	
 			if (PKIState.CONTROL.isPKCS11on()) {
         		PKCSSelected.setKeystoreformat(KeyStoreFormat.PKCS11);
         	}
@@ -181,6 +179,9 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
         		setSystemProperties();
         		//AuthenticationPreferences.PKI_CERTIFICATE_LOCATION, 
         	}
+        	PKISecureStorage pkiSecureStorage = new PKISecureStorage();
+        	pkiSecureStorage.storePKI(this);
+			
         	EventProcessor.getInstance().initializeEvent( new PKIController());
         	EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue() );
         	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());
