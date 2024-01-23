@@ -31,7 +31,7 @@ import org.junit.After;
 import org.junit.Test;
 
 /**
- * Tests for {@link org.eclipse.e4.core.RunAndTrack.context.IRunAndTrack}.
+ * Tests for {@link org.eclipse.e4.core.contexts.RunAndTrack}.
  */
 public class RunAndTrackTest {
 
@@ -398,7 +398,7 @@ public class RunAndTrackTest {
 	 */
 	@Test
 	public void testRemoveContextVar() {
-		doSingleContextChangeTest((root, var) -> root.remove(var), null, 1);
+		doSingleContextChangeTest(IEclipseContext::remove, null, 1);
 
 	}
 
