@@ -14,8 +14,9 @@
 package org.eclipse.ua.tests.help.index;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ import org.eclipse.help.internal.index.IndexEntry;
 import org.eclipse.help.internal.index.IndexFile;
 import org.eclipse.help.internal.index.IndexFileParser;
 import org.eclipse.help.internal.index.IndexSee;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXParseException;
 
@@ -108,15 +109,17 @@ public class IndexAssemblerTest {
 		assertEquals("topic2", topics[2].getLabel());
 	}
 
-	@Test(expected = SAXParseException.class)
+	@Test
 	public void testInvalid() throws Exception {
 		IndexFileParser parser = new IndexFileParser();
-		IndexContribution contrib = parser.parse(
-				new IndexFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
-						"data/help/index/assembler/invalid.xml", "en"));
-		IndexAssembler assembler = new IndexAssembler();
-		List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
-		assembler.assemble(contributions, Platform.getNL());
+		assertThrows(SAXParseException.class, () -> {
+			IndexContribution contrib = parser
+					.parse(new IndexFile(FrameworkUtil.getBundle(getClass()).getSymbolicName(),
+							"data/help/index/assembler/invalid.xml", "en"));
+			IndexAssembler assembler = new IndexAssembler();
+			List<IndexContribution> contributions = new ArrayList<>(Arrays.asList(contrib));
+			assembler.assemble(contributions, Platform.getNL());
+		});
 	}
 
 	// Replaces white space between ">" and "<" by a single newline

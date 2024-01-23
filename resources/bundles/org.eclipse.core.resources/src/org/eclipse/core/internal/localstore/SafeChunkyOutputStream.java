@@ -14,8 +14,12 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
-import java.io.*;
-import org.eclipse.core.internal.utils.FileUtil;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Appends data, in chunks, to a file. Each chunk is defined by the moment
@@ -66,12 +70,10 @@ public class SafeChunkyOutputStream extends FilterOutputStream {
 	}
 
 	public void succeed() throws IOException {
-		try {
+		try (this) {
 			endChunk();
-			close();
 		} finally {
 			isOpen = false;
-			FileUtil.safeClose(this);
 		}
 	}
 

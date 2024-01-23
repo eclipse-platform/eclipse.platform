@@ -13,30 +13,30 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	ExtraDirTest.class,
-	BasicTest.class,
-	WildcardTest.class,
-	LocaleTest.class,
-	AnalyzerTest.class,
-	SearchCheatsheet.class,
-	SearchIntro.class,
-	EncodedCharacterSearch.class,
-	MetaKeywords.class,
-	SearchParticipantTest.class,
-	SearchParticipantXMLTest.class,
-	SearchRanking.class,
-	WorkingSetManagerTest.class,
-	InfocenterWorkingSetManagerTest.class,
-	PrebuiltIndexCompatibility.class,
-	LockTest.class
+@Suite
+@SelectClasses({ //
+		ExtraDirTest.class, //
+		BasicTest.class, //
+		WildcardTest.class, //
+		LocaleTest.class, //
+		AnalyzerTest.class, //
+		SearchCheatsheet.class, //
+		SearchIntro.class, //
+		EncodedCharacterSearch.class, //
+		MetaKeywords.class, //
+		SearchParticipantTest.class, //
+		SearchParticipantXMLTest.class, //
+		SearchRanking.class, //
+		WorkingSetManagerTest.class, //
+		InfocenterWorkingSetManagerTest.class, //
+		PrebuiltIndexCompatibility.class, //
+		LockTest.class, //
 })
 public class AllSearchTests {
 }

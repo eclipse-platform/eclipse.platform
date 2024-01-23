@@ -14,26 +14,26 @@
 
 package org.eclipse.ua.tests.help.other;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	LinkUtilTest.class,
-	TestEscapeUtils.class,
-	ContextLinkSorter.class,
-	UAElementTest.class,
-	ContextTest.class,
-	TopicTest.class,
-	TocObjectTest.class,
-	DocumentReaderTest.class,
-	EntityResolutionTest.class,
-	ResourceTest.class,
-	ConcurrentTocAccess.class,
-	XHTMLEntityTest.class,
-	PathResolutionTest.class,
-	IndexEntryTest.class,
-	IndexSeeTest.class
+@Suite
+@SelectClasses({ //
+		LinkUtilTest.class, //
+		TestEscapeUtils.class, //
+		ContextLinkSorter.class, //
+		UAElementTest.class, //
+		ContextTest.class, //
+		TopicTest.class, //
+		TocObjectTest.class, //
+		DocumentReaderTest.class, //
+		EntityResolutionTest.class, //
+		ResourceTest.class, // //
+		ConcurrentTocAccess.class, //
+		XHTMLEntityTest.class, //
+		PathResolutionTest.class, //
+		IndexEntryTest.class, //
+		IndexSeeTest.class, //
 })
 public class AllOtherHelpTests {
 }

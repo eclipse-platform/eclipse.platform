@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -21,7 +21,7 @@ import java.net.URL;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
 import org.eclipse.ua.tests.help.remote.IndexServletTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -37,7 +37,7 @@ public class IndexServiceTest extends IndexServletTest {
 			InputSource inputSource = new InputSource(is);
 			Document document = LocalEntityResolver.parse(inputSource);
 			Node root = document.getFirstChild();
-			assertEquals("indexContributions", root.getNodeName());
+			assertThat(root.getNodeName()).isEqualTo("indexContributions");
 			return root;
 		}
 	}
@@ -52,7 +52,7 @@ public class IndexServiceTest extends IndexServletTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	@Test

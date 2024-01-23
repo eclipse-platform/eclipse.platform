@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EncodedCharacterSearch {
 	@Test

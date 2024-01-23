@@ -14,9 +14,8 @@
 package org.eclipse.core.tests.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,10 +30,10 @@ import org.eclipse.core.internal.net.ProxyType;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class NetTest {
 
@@ -45,7 +44,7 @@ public class NetTest {
 	private boolean isSystemProxiesDefault;
 	private final Map<String, IProxyData> dataCache = new HashMap<>();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		isSystemProxiesDefault = isSystemProxiesEnabled();
 		setSystemProxiesEnabled(false);
@@ -56,7 +55,7 @@ public class NetTest {
 		ProxyType.socksSystemPropertySetting = ProxyType.ALWAYS_SET;
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		setProxiesEnabled(isProxiesDefault);
 		setSystemProxiesEnabled(isSystemProxiesDefault);
@@ -284,7 +283,8 @@ public class NetTest {
 	}
 
 	@Test
-	@Ignore("Disabled due to bug 403311")
+	@Disabled("Disabled due to bug 403311")
+	@SuppressWarnings("deprecation")
 	public void _testSimpleHost() throws CoreException {
 
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
@@ -299,6 +299,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testHostPattern() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -319,6 +320,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testHostPatternBug505906() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -339,6 +341,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug238796() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -355,6 +358,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug247408() throws CoreException, URISyntaxException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -371,6 +375,7 @@ public class NetTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug255981() throws CoreException, URISyntaxException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -424,9 +429,7 @@ public class NetTest {
 
 		// check if system properties are updated
 		String sysPropNonProxyHosts = System.getProperty("http.nonProxyHosts");
-		String assertMessage = "http.nonProxyHost should contain '" + testHost + "', but its current value is '"
-				+ sysPropNonProxyHosts + "'";
-		assertTrue(assertMessage, sysPropNonProxyHosts.contains(testHost));
+		assertThat(sysPropNonProxyHosts).contains(testHost);
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
@@ -452,7 +455,11 @@ public class NetTest {
 
 	private void validateProperty(String key, String expected, boolean equals) {
 		String actual = System.getProperties().getProperty(key);
-		assertTrue((equals && expected.equals(actual)) || (!equals && !expected.equals(actual)));
+		if (equals) {
+			assertThat(actual).isEqualTo(expected);
+		} else {
+			assertThat(actual).isNotEqualTo(expected);
+		}
 	}
 
 }

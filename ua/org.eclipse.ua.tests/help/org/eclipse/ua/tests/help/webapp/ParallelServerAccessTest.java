@@ -11,18 +11,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.help.internal.server.WebappManager;
 import org.eclipse.ua.tests.help.util.LoadServletUtil;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the performance of the help server without launching the Help UI
@@ -32,7 +31,7 @@ import org.junit.Test;
 
 public class ParallelServerAccessTest {
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		LoadServletUtil.stopServer();
 	}

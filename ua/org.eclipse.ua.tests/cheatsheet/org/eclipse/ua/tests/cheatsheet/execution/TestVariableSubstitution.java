@@ -14,22 +14,21 @@
 
 package org.eclipse.ua.tests.cheatsheet.execution;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.eclipse.ui.internal.cheatsheets.registry.CheatSheetElement;
+import org.eclipse.ui.internal.cheatsheets.views.CheatSheetManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test variable substitution in cheatsheets. This functionality is used by
  * command execution
  */
-
-import org.eclipse.ui.internal.cheatsheets.registry.CheatSheetElement;
-import org.eclipse.ui.internal.cheatsheets.views.CheatSheetManager;
-import org.junit.Before;
-import org.junit.Test;
-
 public class TestVariableSubstitution {
 	private CheatSheetManager manager;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		manager = new CheatSheetManager(new CheatSheetElement("name"));
 		manager.setData("p1", "one");

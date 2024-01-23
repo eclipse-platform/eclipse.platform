@@ -14,10 +14,10 @@
 
 package org.eclipse.ua.tests.intro.contentdetect;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,12 +25,12 @@ import java.util.Set;
 import org.eclipse.ui.internal.intro.impl.model.ExtensionMap;
 import org.eclipse.ui.internal.intro.universal.contentdetect.ContentDetectHelper;
 import org.eclipse.ui.internal.intro.universal.contentdetect.ContentDetector;
-import org.junit.AfterClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 public class ContentDetectorTest {
 
 	@Test
@@ -160,7 +160,7 @@ public class ContentDetectorTest {
 		assertNull(map.getStartPage());
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void cleanup() throws Throwable {
 		// Delete state files so that if we start Eclipse we don't see all content as new
 		ContentDetectHelper helper = new ContentDetectHelper();

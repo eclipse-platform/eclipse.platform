@@ -15,15 +15,15 @@
 package org.eclipse.ua.tests.help.other;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.help.IHelpResource;
 import org.eclipse.help.IUAElement;
 import org.eclipse.help.internal.context.Context;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -14,6 +14,7 @@
 package org.eclipse.help.internal.webapp.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -51,7 +52,9 @@ public class TocServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// set the character-set to UTF-8 before calling resp.getWriter()
 		resp.setContentType("application/xml; charset=UTF-8"); //$NON-NLS-1$
-		resp.getWriter().write(processRequest(req, resp));
+		@SuppressWarnings("resource")
+		PrintWriter writer = resp.getWriter();
+		writer.write(processRequest(req, resp));
 	}
 
 	protected String processRequest(HttpServletRequest req, HttpServletResponse resp)

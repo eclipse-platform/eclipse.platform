@@ -13,19 +13,19 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.criteria;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help keyword index functionality.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	ParseTocWithCriteria.class,
-	CriteriaUtilitiesTest.class,
-	CriteriaDefinitionTest.class,
-	ParseCriteriaDefinition.class,
-	TestCriteriaProvider.class
+@Suite
+@SelectClasses({ //
+		ParseTocWithCriteria.class, //
+		CriteriaUtilitiesTest.class, //
+		CriteriaDefinitionTest.class, //
+		ParseCriteriaDefinition.class, //
+		TestCriteriaProvider.class, //
 })
 public class AllCriteriaTests {
 }

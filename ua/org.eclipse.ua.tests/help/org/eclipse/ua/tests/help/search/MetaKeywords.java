@@ -13,9 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 
@@ -25,7 +24,7 @@ import org.eclipse.help.internal.search.ISearchQuery;
 import org.eclipse.help.internal.search.SearchHit;
 import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.help.internal.search.SearchResults;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class MetaKeywords {

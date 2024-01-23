@@ -15,10 +15,10 @@
 package org.eclipse.ua.tests.help.other;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.help.IIndexEntry;
 import org.eclipse.help.IIndexEntry2;
@@ -30,8 +30,8 @@ import org.eclipse.help.internal.base.HelpEvaluationContext;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.index.IndexEntry;
 import org.eclipse.help.internal.index.IndexSee;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -74,7 +74,7 @@ public class IndexEntryTest {
 	private final String ENTRY_WITH_TOPIC = ENTRY_HEAD_ECLIPSE + TOPIC_BUGZILLA + ENTRY_END;
 	private final String ENTRY_WITH_SEE = ENTRY_HEAD_ECLIPSE + SEE_ALSO_SDK + ENTRY_END;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_WORKBENCH);
 	}
