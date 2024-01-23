@@ -171,7 +171,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 					AuthenticationPlugin.getDefault().setUserKeyStoreSystemProperties(keyStore);
 					auth.load();
 				} else {
-					System.out.println("PKISecureStorage --   PKCS11 NOT enabled");
+					//System.out.println("PKISecureStorage --   PKCS11 NOT enabled");
 				}
 			} else if (( PKIState.CONTROL.isPKCS12on() ) && (( pkiType.equals("PKCS12")))) {
 				certLocation = node.get(PKCS12_LOCATION, "none");
@@ -193,7 +193,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 						//keyStore = KeyStoreUtil.getKeyStore(certLocation, certPassPhrase, PKCSSelected.getKeystoreformat()); /*KeyStoreFormat.PKCS12*/
 						
 						//keyStore = KeyStoreManager();
-						System.out.println("PKISecureStorage - GetUserkeystore setup done");
+						//System.out.println("PKISecureStorage - GetUserkeystore setup done");
 					//} catch (KeyStoreException e){
 					//	LogUtil.logError(SVNSaveAuthorizationInfo, e);
 					//} catch (NoSuchAlgorithmException e){
@@ -222,7 +222,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
 		return keyStore;
 	}
 	public void loadUpPKI( ) {
-		System.out.println("PKISecureStorage -  loaduppki....");
+		//System.out.println("PKISecureStorage -  loaduppki....");
 		try {
 			if ( PKIState.CONTROL.isPKCS11on() ) {
 				this.certificateLocation=node.get(PKCS11_LOCATION, "none");
@@ -259,7 +259,7 @@ public class PKISecureStorage extends AbstractUIPlugin {
     public void setPKISystemProperties(){
 		KeyStore userKeyStore = getUserKeyStore();
 		String userKeyStoreLocation = certificateLocation;
-		System.out.println("PKISecureStorage -  setpkisystemproperties.... DONT OVERWRITE");
+		//System.out.println("PKISecureStorage -  setpkisystemproperties.... DONT OVERWRITE");
 		if ( PKIState.CONTROL.isPKCS11on() ) {
 			if( (certPassPhrase != null) && (userKeyStoreLocation != null) &&
 						(!certificateLocation.equals("none"))  && (!certPassPhrase.equals("none"))) {
