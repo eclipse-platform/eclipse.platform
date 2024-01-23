@@ -66,7 +66,7 @@ public class PKI {
 			}
 
 			if( this.getKeyStoreProvider() != null) {
-				System.out.println("PKI - CLEARING keystoreprovider"); //$NON-NLS-1$
+				// System.out.println("PKI - CLEARING keystoreprovider"); //$NON-NLS-1$
 				if ( this.getKeyStoreProvider().isEmpty()) {
 					System.clearProperty("javax.net.ssl.keyStoreProvider"); //$NON-NLS-1$
 				} else {
