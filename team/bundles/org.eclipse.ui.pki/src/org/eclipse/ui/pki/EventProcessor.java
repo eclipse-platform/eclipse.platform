@@ -38,7 +38,7 @@ public class EventProcessor implements EventDispatcher<Object, Object, Object> {
 	}
 	private EventProcessor() {}
 	public void initializeEvent(PKIController startup) {
-		System.out.println("EventProcessor, initialize.");
+		//System.out.println("EventProcessor, initialize.");
 		this.localStartup=startup;
 		eventManager =  new EventManager("PKI event");
 		Map<PKIController, Object> listeners = new CopyOnWriteIdentityMap<PKIController, Object>();
