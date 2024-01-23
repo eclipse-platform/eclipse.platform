@@ -20,10 +20,8 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 /**
@@ -46,9 +44,6 @@ public class EditVariableLogicalStructureAction extends Action {
 		if (selection != null) {
 			init(selection);
 		}
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 	}
 
 	/**

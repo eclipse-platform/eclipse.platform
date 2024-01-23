@@ -454,11 +454,7 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 
 		Object current = getViewer().getInput();
 
-		if (current == null && context == null) {
-			return;
-		}
-
-		if (current != null && current.equals(context)) {
+		if ((current == null && context == null) || (current != null && current.equals(context))) {
 			return;
 		}
 
@@ -1125,17 +1121,11 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 						return;
 					}
 					refreshDetailPaneContents();
-					treeSelectionChanged(event);
 				}
 			};
 		}
 		return fTreeSelectionChangedListener;
 	}
-
-	/**
-	 * Selection in the variable tree changed. Perform any updates.
-	 */
-	protected void treeSelectionChanged(SelectionChangedEvent event) {}
 
 	@Override
 	public String getCurrentPaneID() {
