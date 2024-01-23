@@ -130,7 +130,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
      * @return the shared instance
      */
     public static AuthenticationPlugin getDefault() {
-    	System.out.println("AuthenticationPlugin ---getDefault plugin");
+    	//System.out.println("AuthenticationPlugin ---getDefault plugin");
     	if (plugin == null) {
     		AuthenticationPlugin auth = new AuthenticationPlugin();
 			/*
@@ -276,7 +276,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     	trustStoreSystemPassword = Optional.ofNullable(System.getProperty(JAVA_SSL_TRUST_STORE_PASS_KEY));
     	if (trustStoreSystemPassword.isEmpty()) {
     	
-    		AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, defaultTrustStorePath);
+    		
     			this.trustStorePassPhrase = DEFAULT_TRUST_STORE_PASSWORD;
     	} else {
     		this.trustStorePassPhrase = trustStoreSystemPassword.get().toString();
@@ -288,6 +288,8 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
     		
 			this.trustStore = KeyStoreUtil.getKeyStore(defaultTrustStorePath, this.trustStorePassPhrase, KeyStoreFormat.JKS);
 			setTrustStoreSystemProperties(this.trustStore);
+			AuthenticationPlugin.getDefault().getPreferenceStore().setValue(AuthenticationPreferences.TRUST_STORE_LOCATION, defaultTrustStorePath);
+			
     	
     	} catch (KeyStoreException e) {
 			System.out.println("The Java key store can not be loaded.");
