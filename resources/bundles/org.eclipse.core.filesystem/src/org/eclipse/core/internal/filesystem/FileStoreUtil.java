@@ -46,13 +46,7 @@ public final class FileStoreUtil {
 	private static int compareNormalisedUri(URI uri1, URI uri2) {
 		int c;
 		// avoid to use IPath here due to high ephemeral memory allocation (Bug 570896)
-		if ((c = compareStringOrNull(uri1.getAuthority(), uri2.getAuthority())) != 0)
-			return c;
-		if ((c = compareStringOrNull(uri1.getScheme(), uri2.getScheme())) != 0)
-			return c;
-		if ((c = comparePathSegments(uri1.getPath(), uri2.getPath())) != 0)
-			return c;
-		if ((c = compareStringOrNull(uri1.getQuery(), uri2.getQuery())) != 0)
+		if (((c = compareStringOrNull(uri1.getAuthority(), uri2.getAuthority())) != 0) || ((c = compareStringOrNull(uri1.getScheme(), uri2.getScheme())) != 0) || ((c = comparePathSegments(uri1.getPath(), uri2.getPath())) != 0) || ((c = compareStringOrNull(uri1.getQuery(), uri2.getQuery())) != 0))
 			return c;
 		return c;
 	}
@@ -135,9 +129,15 @@ public final class FileStoreUtil {
 	 * @return 0 if the fileStores are equal, 1 if fileStore1 is bigger than fileStore2, -1 otherwise
 	 */
 	public static int compareFileStore(IFileStore fileStore1, IFileStore fileStore2) {
-		int compare = compareStringOrNull(fileStore1.getFileSystem().getScheme(), fileStore2.getFileSystem().getScheme());
-		if (compare != 0)
-			return compare;
+		try {
+			String scheme1 = fileStore1.getFileSystem().getScheme();
+			String scheme2 = fileStore2.getFileSystem().getScheme();
+			int compare = compareStringOrNull(scheme1, scheme2);
+			if (compare != 0)
+				return compare;
+		} catch (NullPointerException e) {
+			throw (NullPointerException) new NullPointerException(String.format("(fileStore1: %s %s; fileStore2: %s %s)", fileStore1.getClass().getName(), fileStore1, fileStore2.getClass().getName(), fileStore2)).initCause(e); //$NON-NLS-1$
+		}
 		// compare based on URI path segment values
 		URI uri1;
 		URI uri2;

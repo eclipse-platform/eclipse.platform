@@ -13,15 +13,19 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.cheatsheet.parser;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests all cheat sheet parser functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	ValidTest.class, TolerateTest.class, InvalidCheatsheet.class, ParseFromString.class, NoError.class
+@Suite
+@SelectClasses({ //
+		ValidTest.class, //
+		TolerateTest.class, //
+		InvalidCheatsheet.class, //
+		ParseFromString.class, //
+		NoError.class, //
 })
 public class AllParserTests {
 }

@@ -253,8 +253,7 @@ public class CustomizationContentsArea {
 		public void dragFinished(DragSourceEvent event) {
 			if (event.detail == DND.DROP_MOVE) {
 				GroupData gd = (GroupData) viewer.getInput();
-				for (int i = 0; i < sel.length; i++) {
-					BaseData ed = sel[i];
+				for (BaseData ed : sel) {
 					gd.remove(ed);
 				}
 				viewer.refresh();
@@ -292,8 +291,7 @@ public class CustomizationContentsArea {
 					index--;
 			}
 
-			for (int i = 0; i < sel.length; i++) {
-				BaseData ed = sel[i];
+			for (BaseData ed : sel) {
 				if (index == -1)
 					gd.add(ed);
 				else
@@ -308,8 +306,7 @@ public class CustomizationContentsArea {
 		}
 
 		private int getStartIndex(GroupData gd, BaseData[] sel) {
-			for (int i = 0; i < sel.length; i++) {
-				BaseData ed = sel[i];
+			for (BaseData ed : sel) {
 				int index = gd.getIndexOf(ed.getId());
 				if (index != -1)
 					return index;
@@ -480,11 +477,8 @@ public class CustomizationContentsArea {
 		fd.setText(Messages.WelcomeCustomizationPreferencePage_serializeTitle);
 		String fileName = fd.open();
 		if (fileName != null) {
-			try {
-				FileWriter writer = new FileWriter(fileName);
-				PrintWriter pwriter = new PrintWriter(writer);
+			try (PrintWriter pwriter = new PrintWriter(new FileWriter(fileName))) {
 				introData.write(pwriter);
-				pwriter.close();
 			} catch (IOException e) {
 				// show an error dialog in addition
 				Log.error("Error while saving the intro data file", e); //$NON-NLS-1$
@@ -684,8 +678,7 @@ public class CustomizationContentsArea {
 
 	private void updateIntroThemeFromData() {
 		if (introThemeId != null) {
-			for (int i = 0; i < themeList.size(); i++) {
-				IntroTheme theme = themeList.get(i);
+			for (IntroTheme theme : themeList) {
 				if (theme.getId().equals(introThemeId)) {
 					introTheme = theme;
 					break;
@@ -702,10 +695,10 @@ public class CustomizationContentsArea {
 		// sync up the root page checklist
 		rootPages.setInput(ROOT_PAGE_TABLE);
 		ArrayList<RootPage> selected = new ArrayList<>();
-		for (int i = 0; i < ROOT_PAGE_TABLE.length; i++) {
-			String id = ROOT_PAGE_TABLE[i].id;
+		for (RootPage element : ROOT_PAGE_TABLE) {
+			String id = element.id;
 			if (introRootPages.contains(id))
-				selected.add(ROOT_PAGE_TABLE[i]);
+				selected.add(element);
 		}
 		rootPages.setCheckedElements(selected.toArray());
 	}
@@ -759,9 +752,9 @@ public class CustomizationContentsArea {
 		loadData(true);
 		// Dispose all the root page tabs
 		CTabItem[] items = tabFolder.getItems();
-		for (int i = 0; i < items.length; i++) {
-			if (items[i].getData("pageData") != null) //$NON-NLS-1$
-				items[i].dispose();
+		for (CTabItem item : items) {
+			if (item.getData("pageData") != null) //$NON-NLS-1$
+				item.dispose();
 		}
 		// Add them back in based on the checked state
 		addRootPages();
@@ -812,9 +805,9 @@ public class CustomizationContentsArea {
 		}
 		// store page layouts
 		StringWriter writer = new StringWriter();
-		PrintWriter pwriter = new PrintWriter(writer);
-		introData.write(pwriter);
-		pwriter.close();
+		try (PrintWriter pwriter = new PrintWriter(writer)) {
+			introData.write(pwriter);
+		}
 		String value = writer.toString();
 		key = pid + "_" + INTRO_DATA; //$NON-NLS-1$
 		uprefs.put(key, value);
@@ -926,9 +919,9 @@ public class CustomizationContentsArea {
 
 	private void loadThemes() {
 		IConfigurationElement [] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.ui.intro.configExtension"); //$NON-NLS-1$
-		for (int i=0; i<elements.length; i++) {
-			if (elements[i].getName().equals("theme")) { //$NON-NLS-1$
-				themeList.add(new IntroTheme(elements[i]));
+		for (IConfigurationElement element : elements) {
+			if (element.getName().equals("theme")) { //$NON-NLS-1$
+				themeList.add(new IntroTheme(element));
 			}
 		}
 	}
@@ -947,16 +940,14 @@ public class CustomizationContentsArea {
 	private void onPageChecked(String id, boolean checked) {
 		CTabItem[] items = tabFolder.getItems();
 		if (checked) {
-			for (int i = 0; i < items.length; i++) {
-				CTabItem item = items[i];
+			for (CTabItem item : items) {
 				if (item.getData() != null)
 					item.dispose();
 			}
 			introRootPages.add(id);
 			addRootPages();
 		} else {
-			for (int i = 0; i < items.length; i++) {
-				CTabItem item = items[i];
+			for (CTabItem item : items) {
 				String itemId = (String) item.getData();
 				if (itemId != null && itemId.equals(id)) {
 					item.dispose();
@@ -968,16 +959,15 @@ public class CustomizationContentsArea {
 	}
 
 	private String getRootPageName(String id) {
-		for (int i = 0; i < ROOT_PAGE_TABLE.length; i++) {
-			if (ROOT_PAGE_TABLE[i].id.equals(id))
-				return ROOT_PAGE_TABLE[i].getName();
+		for (RootPage element : ROOT_PAGE_TABLE) {
+			if (element.id.equals(id))
+				return element.getName();
 		}
 		return "?"; //$NON-NLS-1$
 	}
 
 	private boolean getRootPageSelected(String id) {
-		for (int i = 0; i < introRootPages.size(); i++) {
-			String cid = introRootPages.get(i);
+		for (String cid : introRootPages) {
 			if (cid.equals(id))
 				return true;
 		}
@@ -1098,8 +1088,7 @@ public class CustomizationContentsArea {
 
 			boolean addDeleteSeparator=false;
 
-			for (Iterator<?> iter=ssel.iterator(); iter.hasNext();) {
-				Object obj = iter.next();
+			for (Object obj : ssel) {
 				if (obj instanceof SeparatorData)
 					addDeleteSeparator=true;
 				else {
@@ -1172,8 +1161,8 @@ public class CustomizationContentsArea {
 		if (targetGd == null) {
 			targetGd = createTargetGd(target);
 		}
-		for (int i = 0; i < selObjs.length; i++) {
-			BaseData ed = (BaseData) selObjs[i];
+		for (Object selObj : selObjs) {
+			BaseData ed = (BaseData) selObj;
 			sourceGd.remove(ed);
 			targetGd.add(ed);
 		}

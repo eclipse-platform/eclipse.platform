@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.help.other;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +23,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.help.internal.dynamic.DocumentReader;
 import org.eclipse.help.internal.util.ResourceLocator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 

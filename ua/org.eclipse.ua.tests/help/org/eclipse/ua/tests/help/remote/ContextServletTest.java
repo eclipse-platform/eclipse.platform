@@ -15,7 +15,8 @@
 package org.eclipse.ua.tests.help.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,9 +32,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -45,14 +46,14 @@ public class ContextServletTest {
 
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}
@@ -72,9 +73,9 @@ public class ContextServletTest {
 		assertEquals("German Context", topics[0].getAttribute("label"));
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void testRemoteContextNotFound() throws Exception {
-		getContextsFromServlet("org.eclipse.ua.tests.no_such_context");
+		assertThrows(IOException.class, () -> getContextsFromServlet("org.eclipse.ua.tests.no_such_context"));
 	}
 
 	protected Element[] getContextsFromServlet(String phrase)

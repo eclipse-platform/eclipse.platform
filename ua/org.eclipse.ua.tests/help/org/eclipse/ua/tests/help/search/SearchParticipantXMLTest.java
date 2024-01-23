@@ -13,13 +13,11 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.help.internal.search.SearchHit;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 
 public class SearchParticipantXMLTest {
 	@Test

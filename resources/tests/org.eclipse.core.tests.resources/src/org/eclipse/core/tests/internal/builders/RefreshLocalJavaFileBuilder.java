@@ -15,10 +15,14 @@
 package org.eclipse.core.tests.internal.builders;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
-import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * This builder is for investigating a PR.  It creates java files on disk, then
@@ -36,18 +40,17 @@ public class RefreshLocalJavaFileBuilder extends TestBuilder {
 		IFile file = project.getFile("A.java");
 		IPath localLocation = project.getLocation().append(file.getName());
 		java.io.File localFile = localLocation.toFile();
-		FileOutputStream out = null;
-		try {
+		try (FileOutputStream out = new FileOutputStream(localFile)) {
 			if (localFile.exists()) {
 				localFile.delete();
 			}
-			out = new FileOutputStream(localFile);
+
 			out.write("public class A {}".getBytes());
+		} catch (IOException streamCloseIgnored) {
+			// ignore;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
-		} finally {
-			FileUtil.safeClose(out);
 		}
 
 		project.refreshLocal(IResource.DEPTH_INFINITE, null);

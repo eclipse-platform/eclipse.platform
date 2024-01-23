@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -428,8 +429,8 @@ public class TextMergeViewerTest  {
 					@Override
 					public void setInput(Object input, Object ancestor,
 							Object left, Object right) {
-						assertTrue(leftElement == left);
-						assertTrue(rightElement == right);
+						assertThat(leftElement).isSameAs(left);
+						assertThat(rightElement).isSameAs(right);
 					}
 
 					@Override
@@ -509,13 +510,11 @@ public class TextMergeViewerTest  {
 			assertNotNull(firstDiff);
 			assertNotNull(secondDiff);
 
-			assertEquals("Change direction is wrong", RangeDifference.RIGHT, firstDiff.getKind());
-			assertEquals("Change direction is wrong", RangeDifference.RIGHT, secondDiff.getKind());
+			assertThat(firstDiff.getKind()).as("change direction").isEqualTo(RangeDifference.RIGHT);
+			assertThat(secondDiff.getKind()).as("change direction").isEqualTo(RangeDifference.RIGHT);
 
-			assertTrue("Change should be shown", testDocumentMerger.useChange(firstDiff)); // shows this diff in
-																							// DocumentMerger
-			assertTrue("Change should be shown", testDocumentMerger.useChange(secondDiff)); // shows this diff in
-																							// DocumentMerger
+			assertThat(firstDiff).matches(it -> testDocumentMerger.useChange(it), "shown in document merger");
+			assertThat(secondDiff).matches(it -> testDocumentMerger.useChange(it), "shown in document merger");
 
 			cc.setProperty(CompareConfiguration.IGNORE_WHITESPACE, true);// IGNORE_WHITESPACE set to active
 			try {
@@ -530,17 +529,11 @@ public class TextMergeViewerTest  {
 			assertNotNull(firstDiff);
 			assertNotNull(secondDiff);
 
-			assertEquals("Change direction is wrong", RangeDifference.RIGHT, firstDiff.getKind());
-			assertEquals("Change direction is wrong", RangeDifference.RIGHT, secondDiff.getKind());
+			assertThat(firstDiff.getKind()).as("change direction").isEqualTo(RangeDifference.RIGHT);
+			assertThat(secondDiff.getKind()).as("change direction").isEqualTo(RangeDifference.RIGHT);
 
-			org.junit.Assert.assertFalse("Change should not be shown", testDocumentMerger.useChange(firstDiff)); // whitespace
-																													// not
-																													// in
-																								// literal, do not show
-																								// in DocumentMerger
-			assertTrue("Change should be shown", testDocumentMerger.useChange(secondDiff)); // whitespace in literal,
-																							// show in DocumentMerger
-
+			assertThat(firstDiff).matches(it -> !testDocumentMerger.useChange(it), "not shown in document merger");
+			assertThat(secondDiff).matches(it -> testDocumentMerger.useChange(it), "shown in document merger");
 		}, cc);
 	}
 

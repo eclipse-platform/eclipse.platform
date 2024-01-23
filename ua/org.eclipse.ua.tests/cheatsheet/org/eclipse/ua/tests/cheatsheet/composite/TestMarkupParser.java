@@ -14,13 +14,13 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.StringReader;
 
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.ui.internal.cheatsheets.composite.parser.MarkupParser;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
