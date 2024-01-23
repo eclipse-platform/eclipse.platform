@@ -184,7 +184,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 			
         	EventProcessor.getInstance().initializeEvent( new PKIController());
         	EventProcessor.getInstance().sendEvent(EventConstant.SETUP.getValue() );
-        	LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());
+        	//LogUtil.logInfo("AuthenticationPlugin keystorePKI"+ snapshotProperties.getKeyStore());
         } else {
         	clearPKI();
         	initialize();
@@ -399,7 +399,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 		String userKeyStoreLocation = null;
 		Optional<String> keyStorePath = null;
 		Optional<String> keyStorePassword = null;
-		System.out.println("AuthenticationPlugin ----- setUserKeyStoreSystemProperties");
+		//System.out.println("AuthenticationPlugin ----- setUserKeyStoreSystemProperties");
 		if (  PKIState.CONTROL.isPKCS11on()) {
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_TYPE_KEY, "PKCS11");
 			System.setProperty(JAVA_SSL_USER_KEY_STORE_PASS_KEY, snapshotProperties.getPasswordAuthentication().getPassword().toString());
