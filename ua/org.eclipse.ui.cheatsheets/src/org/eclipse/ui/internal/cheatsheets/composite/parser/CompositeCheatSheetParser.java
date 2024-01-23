@@ -74,52 +74,44 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 			return null;
 		}
 
-		InputStream is = null;
 
-		try {
-			is = url.openStream();
-
+		try (InputStream is = url.openStream()) {
 			if (is == null) {
-				String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
-				addStatus(IStatus.ERROR,  message,  null);
+				String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] { url.getFile() }));
+				addStatus(IStatus.ERROR, message, null);
 				return null;
 			}
-		} catch (Exception e) {
-			String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] {url.getFile()}));
-			addStatus(IStatus.ERROR,  message,  e);
-			return null;
-		}
 
-		Document document;
-		String filename = url.getFile();
-		try {
-			InputSource inputSource = new InputSource(is);
-			document = LocalEntityResolver.parse(inputSource);
-		} catch (ParserConfigurationException e) {
-			addStatus(IStatus.ERROR, Messages.ERROR_DOCUMENT_BUILDER_NOT_INIT, null);
-			return null;
-		} catch (IOException e) {
-			String message = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] {filename}));
-			addStatus(IStatus.ERROR,  message,  e);
-			return null;
-		} catch (SAXParseException spe) {
-			String message = NLS.bind(Messages.ERROR_SAX_PARSING_WITH_LOCATION, (new Object[] { filename,
-					Integer.valueOf(spe.getLineNumber()), Integer.valueOf(spe.getColumnNumber()) }));
-			addStatus(IStatus.ERROR,  message,  spe);
-			return null;
-		} catch (SAXException se) {
-			String message = NLS.bind(Messages.ERROR_SAX_PARSING, (new Object[] {filename}));
-			addStatus(IStatus.ERROR,  message, se);
-			return null;
-		} finally {
+			Document document;
+			String filename = url.getFile();
 			try {
-				is.close();
-			} catch (Exception e) {
+				InputSource inputSource = new InputSource(is);
+				document = LocalEntityResolver.parse(inputSource);
+			} catch (ParserConfigurationException e) {
+				addStatus(IStatus.ERROR, Messages.ERROR_DOCUMENT_BUILDER_NOT_INIT, null);
+				return null;
+			} catch (IOException e) {
+				String message = NLS.bind(Messages.ERROR_OPENING_FILE_IN_PARSER, (new Object[] { filename }));
+				addStatus(IStatus.ERROR, message, e);
+				return null;
+			} catch (SAXParseException spe) {
+				String message = NLS.bind(Messages.ERROR_SAX_PARSING_WITH_LOCATION, (new Object[] { filename,
+						Integer.valueOf(spe.getLineNumber()), Integer.valueOf(spe.getColumnNumber()) }));
+				addStatus(IStatus.ERROR, message, spe);
+				return null;
+			} catch (SAXException se) {
+				String message = NLS.bind(Messages.ERROR_SAX_PARSING, (new Object[] { filename }));
+				addStatus(IStatus.ERROR, message, se);
+				return null;
 			}
-		}
 
-		CompositeCheatSheetModel result = parseCompositeCheatSheet(document, url);
-		return result;
+			CompositeCheatSheetModel result = parseCompositeCheatSheet(document, url);
+			return result;
+		} catch (Exception e) {
+			String message = NLS.bind(Messages.ERROR_OPENING_FILE, (new Object[] { url.getFile() }));
+			addStatus(IStatus.ERROR, message, e);
+			return null;
+		}
 	}
 
 	/**

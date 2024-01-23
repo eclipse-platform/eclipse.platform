@@ -13,29 +13,29 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.remote;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help keyword index functionality.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	RemotePreferenceTest.class,
-	TocServletTest.class,
-	SearchServletTest.class,
-	IndexServletTest.class,
-	ContentServletTest.class,
-	ContextServletTest.class,
-	LoadTocUsingRemoteHelp.class,
-	SearchUsingRemoteHelp.class,
-	LoadIndexUsingRemoteHelp.class,
-	GetContentUsingRemoteHelp.class,
-	GetContextUsingRemoteHelp.class,
-	TocManagerTest.class,
-	SearchIndexCreation.class,
-	ParallelSearchUsingRemote.class,
-	ParallelSearchServletTest.class
+@Suite
+@SelectClasses({ //
+		RemotePreferenceTest.class, //
+		TocServletTest.class, //
+		SearchServletTest.class, //
+		IndexServletTest.class, //
+		ContentServletTest.class, //
+		ContextServletTest.class, //
+		LoadTocUsingRemoteHelp.class, //
+		SearchUsingRemoteHelp.class, //
+		LoadIndexUsingRemoteHelp.class, //
+		GetContentUsingRemoteHelp.class, //
+		GetContextUsingRemoteHelp.class, //
+		TocManagerTest.class, //
+		SearchIndexCreation.class, //
+		ParallelSearchUsingRemote.class, //
+		ParallelSearchServletTest.class, //
 })
 public class AllRemoteTests {
 }

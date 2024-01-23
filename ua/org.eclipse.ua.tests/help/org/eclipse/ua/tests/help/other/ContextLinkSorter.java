@@ -15,12 +15,12 @@
 package org.eclipse.ua.tests.help.other;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.help.IContext2;
 import org.eclipse.help.IHelpResource;
 import org.eclipse.help.ui.internal.views.ContextHelpSorter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ContextLinkSorter {
 

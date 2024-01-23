@@ -162,10 +162,8 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			checkAccessible(flags);
 
 		// Check that this resource matches the member flags
-		if (!isMember(flags, memberFlags))
-			return;
 		// Visit this resource.
-		if (!visitor.visit(this) || depth == DEPTH_ZERO)
+		if (!isMember(flags, memberFlags) || !visitor.visit(this) || depth == DEPTH_ZERO)
 			return;
 		// Get the info again because it might have been changed by the visitor.
 		info = getResourceInfo(includePhantoms, false);
@@ -309,7 +307,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, getFullPath(), message, null);
 			}
 			URI destLocation = dest.getLocationURI();
-			if (destLocation == null && (dest.isUnderVirtual() == false)) {
+			if (destLocation == null && !dest.isUnderVirtual()) {
 				message = NLS.bind(Messages.localstore_locationUndefined, dest.getFullPath());
 				throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, dest.getFullPath(), message, null);
 			}
@@ -446,7 +444,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, getFullPath(), message, null);
 			}
 			URI destLocation = dest.getLocationURI();
-			if (destLocation == null && (dest.isUnderVirtual() == false)) {
+			if (destLocation == null && !dest.isUnderVirtual()) {
 				message = NLS.bind(Messages.localstore_locationUndefined, dest.getFullPath());
 				throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, dest.getFullPath(), message, null);
 			}
@@ -513,10 +511,8 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 	@Override
 	public boolean contains(ISchedulingRule rule) {
-		if (this == rule)
-			return true;
 		// Must allow notifications to nest in all resource rules.
-		if (rule.getClass().equals(WorkManager.NotifyRule.class))
+		if ((this == rule) || rule.getClass().equals(WorkManager.NotifyRule.class))
 			return true;
 		if (rule instanceof MultiRule) {
 			MultiRule multi = (MultiRule) rule;
@@ -536,6 +532,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		return path.isPrefixOf(resource.getFullPath());
 	}
 
+	/**
+	 * @throws CoreException in overloads
+	 */
 	public void convertToPhantom() throws CoreException {
 		ResourceInfo info = getResourceInfo(false, true);
 		if (info == null || isPhantom(getFlags(info)))
@@ -1296,10 +1295,8 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 	@Override
 	public boolean isConflicting(ISchedulingRule rule) {
-		if (this == rule)
-			return true;
 		// Must not schedule at same time as notification.
-		if (rule.getClass().equals(WorkManager.NotifyRule.class))
+		if ((this == rule) || rule.getClass().equals(WorkManager.NotifyRule.class))
 			return true;
 		if (rule instanceof MultiRule) {
 			MultiRule multi = (MultiRule) rule;
@@ -1596,9 +1593,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		SubMonitor split = progress.split(1);
 		try {
 			workspace.prepareOperation(rule, split);
-			if (!isRoot && !getProject().isAccessible())
-				return;
-			if (!exists() && isFiltered())
+			if ((!isRoot && !getProject().isAccessible()) || (!exists() && isFiltered()))
 				return;
 			workspace.beginOperation(true);
 			if (getType() == IResource.PROJECT || getType() == IResource.ROOT)
@@ -1962,9 +1957,7 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		if (project == null)
 			return false;
 		final ProjectDescription description = project.internalGetDescription();
-		if (description == null)
-			return false;
-		if (description.getFilters() == null)
+		if ((description == null) || (description.getFilters() == null))
 			return false;
 
 		Resource currentResource = this;

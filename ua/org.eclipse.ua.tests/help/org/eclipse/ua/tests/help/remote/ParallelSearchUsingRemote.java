@@ -17,9 +17,9 @@ package org.eclipse.ua.tests.help.remote;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.ua.tests.help.search.SearchTestUtils;
 import org.eclipse.ua.tests.help.util.ParallelTestSupport;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ParallelSearchUsingRemote {
 
@@ -42,13 +42,13 @@ public class ParallelSearchUsingRemote {
 			new String[] { "/org.eclipse.ua.tests/data/help/search/test1.xhtml" }
 	};
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		RemotePreferenceStore.savePreferences();
 		mode = BaseHelpSystem.getMode();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		RemotePreferenceStore.restorePreferences();
 		BaseHelpSystem.setMode(mode);

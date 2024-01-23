@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.cheatsheets.data;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -163,32 +162,14 @@ public class CheatSheetSaveHelper {
 	// Document object if parses ok,
 	// returns null if the parse or read fails.
 	protected Document readXMLFile(URL url) {
-		InputStream is = null;
-		InputSource source = null;
-
-		try {
-			is = url.openStream();
+		try (InputStream is = url.openStream()) {
 			if (is != null) {
-				source = new InputSource(is);
+				InputSource source = new InputSource(is);
+				return LocalEntityResolver.parse(source);
 			}
-		} catch (Exception e) {
-			return null;
+		} catch (Exception ignored) {
+			// ignore
 		}
-
-		if (source == null)
-			return null;
-
-		try {
-			return LocalEntityResolver.parse(source);
-		} catch (Exception e) {
-		} finally {
-			try {
-				if (is != null)
-					is.close();
-			} catch (IOException ioe) {
-			}
-		}
-
 		return null;
 	}
 

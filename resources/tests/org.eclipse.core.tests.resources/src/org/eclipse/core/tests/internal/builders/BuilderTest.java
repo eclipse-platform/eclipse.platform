@@ -25,7 +25,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -920,8 +919,7 @@ public class BuilderTest {
 		}
 
 		byte[] result = out.toByteArray();
-		byte[] expected = new byte[] {1, 2, 3, 4, 5};
-		assertArrayEquals(expected, result);
+		assertThat(result).containsExactly(1, 2, 3, 4, 5);
 	}
 
 	/**

@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.criteria;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.util.List;
 
 import org.eclipse.help.internal.base.util.CriteriaUtilities;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CriteriaUtilitiesTest {
 

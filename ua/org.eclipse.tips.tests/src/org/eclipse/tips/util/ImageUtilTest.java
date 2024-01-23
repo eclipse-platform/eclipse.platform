@@ -13,15 +13,14 @@
  *******************************************************************************/
 package org.eclipse.tips.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.tips.ui.internal.util.ImageUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ImageUtilTest {
 
@@ -51,7 +50,7 @@ public class ImageUtilTest {
 		image.dispose();
 		image = new Image(null, ImageUtil.decodeToImage(base64Image));
 		String base64Image2 = ImageUtil.decodeFromImage(image, SWT.IMAGE_PNG);
-		assertTrue(base64Image, base64Image.equals(base64Image2));
+		assertEquals(base64Image2, base64Image);
 		image.dispose();
 
 		Image image2 = new Image(null, ImageUtil.decodeToImage(fImageBase64HTML));
@@ -59,7 +58,7 @@ public class ImageUtilTest {
 		image2.dispose();
 		image2 = new Image(null, ImageUtil.decodeToImage(base64Image3));
 		String base64Image4 = ImageUtil.decodeFromImage(image2, SWT.IMAGE_PNG);
-		assertTrue(base64Image3, base64Image3.equals(base64Image4));
+		assertEquals(base64Image4, base64Image3);
 		image2.dispose();
 	}
 

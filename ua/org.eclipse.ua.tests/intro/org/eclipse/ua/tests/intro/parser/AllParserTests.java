@@ -13,15 +13,15 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.intro.parser;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests all intro parser functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	ValidTest.class
+@Suite
+@SelectClasses({ //
+		ValidTest.class, //
 })
 public class AllParserTests {
 }

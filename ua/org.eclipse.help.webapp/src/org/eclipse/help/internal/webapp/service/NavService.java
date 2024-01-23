@@ -92,7 +92,9 @@ public class NavService extends NavServlet {
 			response = getJSONResponse(response);
 		}
 
-		resp.getWriter().write(response);
+		@SuppressWarnings("resource")
+		PrintWriter writer = resp.getWriter();
+		writer.write(response);
 	}
 
 	private void processHTMLOutputRequest(HttpServletRequest req, HttpServletResponse resp)

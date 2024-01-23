@@ -15,7 +15,7 @@
 package org.eclipse.ua.tests.help.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -23,9 +23,9 @@ import org.eclipse.help.internal.base.HelpBasePlugin;
 import org.eclipse.help.internal.base.IHelpBaseConstants;
 import org.eclipse.help.internal.base.remote.PreferenceFileHandler;
 import org.eclipse.help.internal.base.remote.RemoteIC;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RemotePreferenceTest {
 
@@ -34,12 +34,12 @@ public class RemotePreferenceTest {
 		prefs.put(name, value);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		RemotePreferenceStore.savePreferences();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		RemotePreferenceStore.restorePreferences();
 	}

@@ -14,7 +14,6 @@
 package org.eclipse.core.tests.internal.preferences;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -298,18 +297,18 @@ public class EclipsePreferencesTest {
 
 		try {
 			// nothing there so expect the default
-			assertArrayEquals("1.1", defaultValue, prefs.getByteArray(key, defaultValue));
+			assertThat(prefs.getByteArray(key, defaultValue)).containsExactly(defaultValue);
 
 			// try for each value in the set
-			for (int i = 0; i < values.length; i++) {
-				byte[] v1 = values[i];
+			for (byte[] value : values) {
+				byte[] v1 = value;
 				byte[] v2 = new byte[] {54};
 				prefs.putByteArray(key, v1);
-				assertArrayEquals("1.2." + i, v1, prefs.getByteArray(key, defaultValue));
+				assertThat(prefs.getByteArray(key, defaultValue)).as(value.toString()).containsExactly(v1);
 				prefs.putByteArray(key, v2);
-				assertArrayEquals("1.3." + i, v2, prefs.getByteArray(key, defaultValue));
+				assertThat(prefs.getByteArray(key, defaultValue)).as(value.toString()).containsExactly(v2);
 				prefs.remove(key);
-				assertArrayEquals("1.4." + i, defaultValue, prefs.getByteArray(key, defaultValue));
+				assertThat(prefs.getByteArray(key, defaultValue)).as(value.toString()).containsExactly(defaultValue);
 			}
 
 			// spec'd to throw a NPE if key is null

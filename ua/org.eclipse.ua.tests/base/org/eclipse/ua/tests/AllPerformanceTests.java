@@ -15,21 +15,18 @@ package org.eclipse.ua.tests;
 
 import org.eclipse.ua.tests.cheatsheet.AllCheatSheetPerformanceTests;
 import org.eclipse.ua.tests.help.AllHelpPerformanceTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.eclipse.ua.tests.intro.AllIntroPerformanceTests;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests all user assistance performance (automated).
  */
-@RunWith(Suite.class)
-@SuiteClasses({ AllCheatSheetPerformanceTests.class, AllHelpPerformanceTests.class })
+@Suite
+@SelectClasses({ //
+		AllCheatSheetPerformanceTests.class, //
+		AllHelpPerformanceTests.class, //
+		AllIntroPerformanceTests.class, //
+})
 public class AllPerformanceTests {
-
-	/*
-	 * Disabled due to inability to backport test to 3.2. Internal test hooks
-	 * were added in 3.2.2 code base but do not exist in 3.2 so the test will
-	 * not be accurate.
-	 */
-	// addTest(AllIntroPerformanceTests.suite());
 }
