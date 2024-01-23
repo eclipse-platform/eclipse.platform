@@ -61,7 +61,8 @@ public class PKISetup implements BundleActivator, IStartup {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("PKISetup PKISetup ------------------- START"); //$NON-NLS-1$
+		// System.out.println("PKISetup PKISetup ------------------- START");
+		// //$NON-NLS-1$
 
 		Startup();
 	}
@@ -69,7 +70,8 @@ public class PKISetup implements BundleActivator, IStartup {
 	@Override
 	public void earlyStartup() {
 		// TODO Auto-generated method stub
-		System.out.println("PKISetup PKISetup -------------------early START");//$NON-NLS-1$
+		// System.out.println("PKISetup PKISetup -------------------early
+		// START");//$NON-NLS-1$
 	}
 
 	@Override
