@@ -251,6 +251,8 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	 * Returns a scheduling rule to use when performing the given updates or
 	 * <code>null</code> if none.
 	 *
+	 * @param updates the updates to be considered by overrides
+	 *
 	 * @return scheduling rule or <code>null</code> if none
 	 */
 	protected ISchedulingRule getRule(IChildrenCountUpdate[] updates) {
@@ -261,6 +263,8 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	 * Returns a scheduling rule to use when performing the given updates or
 	 * <code>null</code> if none.
 	 *
+	 * @param updates the updates to be considered by overrides
+	 *
 	 * @return scheduling rule or <code>null</code> if none
 	 */
 	protected ISchedulingRule getRule(IChildrenUpdate[] updates) {
@@ -270,6 +274,8 @@ public abstract class ElementContentProvider implements IElementContentProvider 
 	/**
 	 * Returns a scheduling rule to use when performing the given updates or
 	 * <code>null</code> if none.
+	 *
+	 * @param updates the updates to be considered by overrides
 	 *
 	 * @return scheduling rule or <code>null</code> if none
 	 */

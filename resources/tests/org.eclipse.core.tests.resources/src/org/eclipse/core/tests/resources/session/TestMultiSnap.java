@@ -19,13 +19,14 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests performing multiple snapshots on a workspace that has
@@ -68,8 +69,8 @@ public class TestMultiSnap extends WorkspaceSerializationTest {
 		/* see if the workspace contains the resources created earlier*/
 		IResource[] children = getWorkspace().getRoot().members();
 		assertThat(children).containsExactly(project);
-		assertTrue("1.2", project.exists());
-		assertTrue("1.3", project.isOpen());
+		assertTrue(project.exists());
+		assertTrue(project.isOpen());
 
 		assertExistsInWorkspace(new IResource[] { project, folder, file });
 	}

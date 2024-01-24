@@ -24,6 +24,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1441,7 +1442,7 @@ public class JobGroupTest extends AbstractJobTest {
 		};
 		job.setJobGroup(jobGroup);
 		job.schedule();
-		waitForCompletion(job, 100);
+		waitForCompletion(job, Duration.ofMillis(100));
 
 		boolean completed = jobGroup.join(1000, null);
 		assertTrue("2.0", completed);

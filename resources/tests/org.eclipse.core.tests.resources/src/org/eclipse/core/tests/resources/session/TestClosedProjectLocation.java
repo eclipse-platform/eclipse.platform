@@ -18,7 +18,6 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -26,6 +25,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * This is a test for bug 12507.  Immediately after workspace startup, closed projects
@@ -47,7 +48,7 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 		project.open(createTestMonitor());
 		createInWorkspace(file);
 		project.close(createTestMonitor());
-		assertEquals("1.1", location, project.getLocation());
+		assertEquals(location, project.getLocation());
 
 		workspace.save(true, createTestMonitor());
 	}
@@ -59,9 +60,9 @@ public class TestClosedProjectLocation extends WorkspaceSerializationTest {
 		try {
 			IProject project = workspace.getRoot().getProject(PROJECT);
 			IFile file = project.getFile(FILE);
-			assertTrue("1.0", project.exists());
-			assertTrue("1.1", !project.isOpen());
-			assertTrue("1.2", !file.exists());
+			assertTrue(project.exists());
+			assertFalse(project.isOpen());
+			assertFalse(file.exists());
 			assertEquals("1.3", location, project.getLocation());
 		} finally {
 			clear(location.toFile());

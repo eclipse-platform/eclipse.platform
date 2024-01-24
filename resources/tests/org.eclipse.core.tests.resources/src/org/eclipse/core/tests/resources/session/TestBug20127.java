@@ -21,7 +21,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -29,6 +28,8 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests regression of bug 20127 - error restoring builder state after
@@ -72,9 +73,9 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 		IProject oldLocation = workspace.getRoot().getProject("Project1");
 		IProject newLocation = workspace.getRoot().getProject("MovedProject");
 
-		assertTrue("1.0", !oldLocation.exists());
-		assertTrue("1.0", newLocation.exists());
-		assertTrue("1.1", newLocation.isOpen());
+		assertFalse(oldLocation.exists());
+		assertTrue(newLocation.exists());
+		assertTrue(newLocation.isOpen());
 		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 	}
 

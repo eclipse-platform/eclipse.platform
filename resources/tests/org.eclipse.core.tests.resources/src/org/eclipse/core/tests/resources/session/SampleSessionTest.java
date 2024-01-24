@@ -16,13 +16,14 @@ package org.eclipse.core.tests.resources.session;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * This class is a simple example of how session tests operate.  Each method
@@ -47,8 +48,8 @@ public class SampleSessionTest extends WorkspaceSessionTest {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject p1 = workspace.getRoot().getProject("P1");
 		IFile file = p1.getFile("foo.txt");
-		assertTrue("1.0", p1.exists());
-		assertTrue("1.1", file.exists());
+		assertTrue(p1.exists());
+		assertTrue(file.exists());
 	}
 
 	public static Test suite() {

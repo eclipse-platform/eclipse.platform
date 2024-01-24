@@ -19,13 +19,15 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 
 import java.io.File;
-import junit.framework.Test;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests regression of bug 208833 - project resource tree is deleted when Eclipse fails to access its metainfo
@@ -50,7 +52,8 @@ public class TestBug208833 extends WorkspaceSessionTest {
 
 		// move the project to another location, before the workbench is started again
 		// to emulate disconnection of a device (e.g. USB key) or a remote file system
-		assertTrue("2.0", project.getLocation().toFile().renameTo(new File(project.getLocation().toFile().getAbsolutePath() + "_temp")));
+		assertTrue(project.getLocation().toFile()
+				.renameTo(new File(project.getLocation().toFile().getAbsolutePath() + "_temp")));
 	}
 
 	/**
@@ -62,19 +65,19 @@ public class TestBug208833 extends WorkspaceSessionTest {
 		IProject p1 = workspace.getRoot().getProject("Project1");
 
 		// the project should exist, but closed
-		assertTrue("1.0", p1.exists());
-		assertTrue("2.0", !p1.isOpen());
+		assertTrue(p1.exists());
+		assertFalse(p1.isOpen());
 
 		// move the project back
-		assertTrue("3.0", new File(p1.getLocation().toFile().getAbsolutePath() + "_temp").renameTo(p1.getLocation().toFile()));
+		assertTrue(new File(p1.getLocation().toFile().getAbsolutePath() + "_temp").renameTo(p1.getLocation().toFile()));
 
 		// now the project should be opened without any problems
 		p1.open(null);
 
 		// the project should be opened and the file should exist
-		assertTrue("5.0", p1.isOpen());
+		assertTrue(p1.isOpen());
 		IFile file1 = p1.getFile("file1.txt");
-		assertTrue("6.0", file1.exists());
+		assertTrue(file1.exists());
 	}
 
 	public static Test suite() {

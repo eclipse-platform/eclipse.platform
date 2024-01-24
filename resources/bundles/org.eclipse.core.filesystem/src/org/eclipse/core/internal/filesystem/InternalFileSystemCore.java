@@ -14,10 +14,21 @@
 package org.eclipse.core.internal.filesystem;
 
 import java.net.URI;
-import java.util.HashMap;
-import org.eclipse.core.filesystem.*;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileSystem;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionDelta;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IRegistryChangeEvent;
+import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -34,7 +45,7 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	 * element for the extension.  Once the file system has been created, the
 	 * map contains the IFileSystem instance for that scheme.
 	 */
-	private HashMap<String, Object> fileSystems;
+	private ConcurrentMap<String, Object> fileSystems;
 
 	/**
 	 * Returns the singleton instance of this class.
@@ -62,7 +73,7 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	public IFileSystem getFileSystem(String scheme) throws CoreException {
 		if (scheme == null)
 			throw new NullPointerException();
-		final HashMap<String, Object> registry = getFileSystemRegistry();
+		final Map<String, Object> registry = getFileSystemRegistry();
 		Object result = registry.get(scheme);
 		if (result == null)
 			Policy.error(EFS.ERROR_INTERNAL, NLS.bind(Messages.noFileSystem, scheme));
@@ -72,9 +83,15 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 			IConfigurationElement element = (IConfigurationElement) result;
 			FileSystem fs = (FileSystem) element.createExecutableExtension("run"); //$NON-NLS-1$
 			fs.initialize(scheme);
-			//store the file system instance so we don't have to keep recreating it
-			registry.put(scheme, fs);
-			return fs;
+			synchronized (this) {
+				result = registry.get(scheme);
+				if (result instanceof IFileSystem) {
+					return (IFileSystem) result;
+				}
+				//store the file system instance so we don't have to keep recreating it
+				registry.put(scheme, fs);
+				return fs;
+			}
 		} catch (CoreException e) {
 			//remove this invalid file system from the registry
 			registry.remove(scheme);
@@ -114,9 +131,9 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	 * Returns the fully initialized file system registry
 	 * @return The file system registry
 	 */
-	private synchronized HashMap<String, Object> getFileSystemRegistry() {
+	private synchronized ConcurrentMap<String, Object> getFileSystemRegistry() {
 		if (fileSystems == null) {
-			fileSystems = new HashMap<>();
+			fileSystems = new ConcurrentHashMap<>();
 			IExtensionPoint point = RegistryFactory.getRegistry().getExtensionPoint(EFS.PI_FILE_SYSTEM, EFS.PT_FILE_SYSTEMS);
 			IExtension[] extensions = point.getExtensions();
 			for (IExtension extension : extensions) {

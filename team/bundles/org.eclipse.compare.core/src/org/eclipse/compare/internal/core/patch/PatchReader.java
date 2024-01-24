@@ -589,7 +589,7 @@ public class PatchReader {
 				try {
 					Date date = dateFormat.parse(line);
 					return date.getTime();
-				} catch (ParseException ex) {
+				} catch (@SuppressWarnings("unused") ParseException ex) {
 					// silently ignored
 				}
 			}

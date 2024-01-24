@@ -35,7 +35,7 @@ public class DebugTargetContentProvider extends ElementContentProvider {
 		}
 		else if (id.equals(IDebugUIConstants.ID_MEMORY_VIEW))
 		{
-			return getAllChildren(element, context, monitor).length;
+			return getAllChildren(element, context).length;
 		}
 		return 0;
 	}
@@ -47,7 +47,7 @@ public class DebugTargetContentProvider extends ElementContentProvider {
 
 	@Override
 	protected Object[] getChildren(Object parent, int index, int length, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
-		return getElements(getAllChildren(parent, context, monitor), index, length);
+		return getElements(getAllChildren(parent, context), index, length);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class DebugTargetContentProvider extends ElementContentProvider {
 		}
 		else if (id.equals(IDebugUIConstants.ID_MEMORY_VIEW))
 		{
-			return getAllChildren(element, context, monitor).length > 0;
+			return getAllChildren(element, context).length > 0;
 		}
 		return false;
 	}
@@ -69,7 +69,7 @@ public class DebugTargetContentProvider extends ElementContentProvider {
 	 *
 	 * @return all children
 	 */
-	protected Object[] getAllChildren(Object parent, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
+	private Object[] getAllChildren(Object parent, IPresentationContext context) throws CoreException {
 		String id = context.getId();
 		if (id.equals(IDebugUIConstants.ID_DEBUG_VIEW))
 		{
