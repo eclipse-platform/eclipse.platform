@@ -14,7 +14,9 @@
 package org.eclipse.core.internal.filesystem;
 
 import java.net.URI;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.IFileSystem;
@@ -43,7 +45,7 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	 * element for the extension.  Once the file system has been created, the
 	 * map contains the IFileSystem instance for that scheme.
 	 */
-	private HashMap<String, Object> fileSystems;
+	private ConcurrentMap<String, Object> fileSystems;
 
 	/**
 	 * Returns the singleton instance of this class.
@@ -71,7 +73,7 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	public IFileSystem getFileSystem(String scheme) throws CoreException {
 		if (scheme == null)
 			throw new NullPointerException();
-		final HashMap<String, Object> registry = getFileSystemRegistry();
+		final Map<String, Object> registry = getFileSystemRegistry();
 		Object result = registry.get(scheme);
 		if (result == null)
 			Policy.error(EFS.ERROR_INTERNAL, NLS.bind(Messages.noFileSystem, scheme));
@@ -129,9 +131,9 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	 * Returns the fully initialized file system registry
 	 * @return The file system registry
 	 */
-	private synchronized HashMap<String, Object> getFileSystemRegistry() {
+	private synchronized ConcurrentMap<String, Object> getFileSystemRegistry() {
 		if (fileSystems == null) {
-			fileSystems = new HashMap<>();
+			fileSystems = new ConcurrentHashMap<>();
 			IExtensionPoint point = RegistryFactory.getRegistry().getExtensionPoint(EFS.PI_FILE_SYSTEM, EFS.PT_FILE_SYSTEMS);
 			IExtension[] extensions = point.getExtensions();
 			for (IExtension extension : extensions) {
