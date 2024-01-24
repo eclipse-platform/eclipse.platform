@@ -32,15 +32,11 @@ public enum TemplateForPKIfile {
 		userM2Home = Paths.get(USER_HOME + FileSystems.getDefault().getSeparator() + ".m2" + //$NON-NLS-1$
 				FileSystems.getDefault().getSeparator() + ".pki"); //$NON-NLS-1$
 		if (!(Files.exists(userM2Home))) {
-			System.out.println("TemplateForPKIfile .pki file not  found"); //$NON-NLS-1$
 			userM2Home = Paths.get(USER_HOME + FileSystems.getDefault().getSeparator() + ".m2" + //$NON-NLS-1$
 					FileSystems.getDefault().getSeparator() + "pki.template"); //$NON-NLS-1$
 			if (!(Files.exists(userM2Home))) {
-				System.out.println("TemplateForPKIfile pki.template file not  found"); //$NON-NLS-1$
 				createTemplate(userM2Home);
 			}
-		} else {
-			System.out.println("TemplateForPKIfile .pki file found"); //$NON-NLS-1$
 		}
 	}
 
@@ -56,7 +52,6 @@ public enum TemplateForPKIfile {
 			Files.write(path, (hashTag + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
 			Files.write(path, (hashTag + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
 			Files.write(path, ((buildBuffer()) + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
-			System.out.println("TemplateForPKIfile .pki.template file created"); //$NON-NLS-1$
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
