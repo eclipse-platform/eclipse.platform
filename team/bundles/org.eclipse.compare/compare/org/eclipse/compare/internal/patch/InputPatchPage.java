@@ -125,6 +125,9 @@ public class InputPatchPage extends WizardPage {
 			case WORKSPACE:
 				fShowError= (!fTreeViewer.getSelection().isEmpty());
 				break;
+			default:
+				// CLIPBOARD
+				break;
 			}
 			updateWidgetEnablements();
 		}
@@ -946,6 +949,8 @@ public class InputPatchPage extends WizardPage {
 			fUseURLButton.setSelection(false);
 			fUseWorkspaceButton.setSelection(true);
 			break;
+		default:
+			throw new IllegalArgumentException(Integer.toString(state));
 		}
 
 		setEnablePatchFile(state == FILE);

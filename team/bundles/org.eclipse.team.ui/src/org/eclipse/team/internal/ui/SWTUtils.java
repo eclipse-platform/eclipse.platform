@@ -15,7 +15,6 @@
 package org.eclipse.team.internal.ui;
 
 import java.text.MessageFormat;
-import java.util.Iterator;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.Dialog;
@@ -85,10 +84,8 @@ public class SWTUtils {
 	 * @return IPreferenceNode
 	 */
 	private static IPreferenceNode getPreferenceNode(String pageId) {
-		Iterator iterator = PlatformUI.getWorkbench().getPreferenceManager()
-				.getElements(PreferenceManager.PRE_ORDER).iterator();
-		while (iterator.hasNext()) {
-			IPreferenceNode next = (IPreferenceNode) iterator.next();
+		for (IPreferenceNode next : PlatformUI.getWorkbench().getPreferenceManager()
+				.getElements(PreferenceManager.PRE_ORDER)) {
 			if (next.getId().equals(pageId)) {
 				return next;
 			}
@@ -205,8 +202,6 @@ public class SWTUtils {
 	 * @return the grid layout
 	 */
 	public static GridLayout createGridLayout(int numColumns, PixelConverter converter, int margins) {
-		Assert.isTrue(margins == MARGINS_DEFAULT || margins == MARGINS_NONE || margins == MARGINS_DIALOG);
-
 		final GridLayout layout= new GridLayout(numColumns, false);
 		layout.horizontalSpacing= converter.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
 		layout.verticalSpacing= converter.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
@@ -223,6 +218,8 @@ public class SWTUtils {
 		case MARGINS_DEFAULT:
 			layout.marginLeft= layout.marginRight= layout.marginWidth;
 			layout.marginTop= layout.marginBottom= layout.marginHeight;
+		default:
+			throw new IllegalArgumentException(Integer.toString(margins));
 		}
 		layout.marginWidth= layout.marginHeight= 0;
 		return layout;

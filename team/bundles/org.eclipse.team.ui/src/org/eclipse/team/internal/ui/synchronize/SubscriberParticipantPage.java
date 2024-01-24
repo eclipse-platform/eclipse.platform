@@ -101,6 +101,8 @@ public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 				modeFilter = BOTH_MODE_FILTER; break;
 			case ISynchronizePageConfiguration.CONFLICTING_MODE:
 				modeFilter = CONFLICTING_MODE_FILTER; break;
+			default:
+				throw new IllegalArgumentException(Integer.toString(mode));
 			}
 
 			collector.setFilter(
