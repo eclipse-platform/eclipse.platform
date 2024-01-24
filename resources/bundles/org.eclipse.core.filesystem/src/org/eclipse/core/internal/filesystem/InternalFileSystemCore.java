@@ -15,9 +15,18 @@ package org.eclipse.core.internal.filesystem;
 
 import java.net.URI;
 import java.util.HashMap;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileSystem;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionDelta;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IRegistryChangeEvent;
+import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -72,9 +81,15 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 			IConfigurationElement element = (IConfigurationElement) result;
 			FileSystem fs = (FileSystem) element.createExecutableExtension("run"); //$NON-NLS-1$
 			fs.initialize(scheme);
-			//store the file system instance so we don't have to keep recreating it
-			registry.put(scheme, fs);
-			return fs;
+			synchronized (this) {
+				result = registry.get(scheme);
+				if (result instanceof IFileSystem) {
+					return (IFileSystem) result;
+				}
+				//store the file system instance so we don't have to keep recreating it
+				registry.put(scheme, fs);
+				return fs;
+			}
 		} catch (CoreException e) {
 			//remove this invalid file system from the registry
 			registry.remove(scheme);
