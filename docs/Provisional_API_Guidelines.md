@@ -24,7 +24,8 @@ It is important that API clients understand the state of the APIs in any given b
 This document sets out API guidelines for the Eclipse Project committers on how to indicate APIs that are still under development and subject to change. 
 These guidelines are also useful for API clients who want to know about the state of a given API they are using.
 
-The development cycle for each major and minor Eclipse project release has a milestone designated as the API freeze. The rules for development and treatment of APIs are different for the periods before and after this point, so this document outlines guidelines for both phases of the development cycle.
+The development cycle for each major and minor Eclipse project release has a release designated as the API freeze. 
+The rules for development and treatment of APIs are different for the periods before and after this point, so this document outlines guidelines for both phases of the development cycle.
 
 Definition of terms used in this document:
 
@@ -51,19 +52,25 @@ Although the [Eclipse quality](http://www.eclipse.org/projects/dev_process/eclip
 Before the API freeze
 ---------------------
 
-Prior to the API freeze, any API element that did not exist in the previous release is provisional by definition. This is true regardless of the package name, bundle manifest, or javadoc of the types involved. However, the conventions below should be used to indicate where API is provisional.
+Prior to the API freeze, any API element that did not exist in the previous release is provisional by definition. This is true regardless of the package name, bundle manifest, or javadoc of the types involved. 
+However, the conventions below should be used to indicate where API is provisional.
 
 ### Package naming
 
-Provisional API can appear in any package. Typically if the provisional API is intended to become real API in time for the release, it will appear in an API package. New code that are not intended to become API in time for one of the upcoming releases should be in an internal package. Provisional API should kept in a separate package from code that is never intended to become API and should be marked as x-internal or x-friends in the MANIFEST.MF of the plug-in.
+Provisional API should be marked as x-internal or x-friends in the MANIFEST.MF of the plug-in.
+It should be kept in a separate package from code that is never intended to become API.
+New code that are not intended to become API in time for one of the upcoming releases should be in an internal package.
 
 ### Bundle manifest
 
-All API packages should be exported unconditionally by the bundle manifest. If internal packages are exported, they should be marked via the x-internal or the x-friends directive in the MANIFEST.MF.
+All API packages should be exported unconditionally by the bundle manifest. 
+If internal packages are exported, they should be marked via the x-internal or the x-friends directive in the MANIFEST.MF.
 
 ### Javadoc
 
-The primary indicator of provisional API is the @since tag, indicating that it was introduced during the current development period. For example, during development leading up to the 3.4 release of Eclipse, a tag of @since 3.4 designates provisional API. If the API is particularly volatile, experimental, or at risk of removal, a further comment in the javadoc can be used to clarify the state of the API:
+The primary indicator of provisional API is the @since tag, indicating that it was introduced during the current development period. 
+For example, during development leading up to the 3.4 release of Eclipse, a tag of @since 3.4 designates provisional API. 
+If the API is particularly volatile, experimental, or at risk of removal, a further comment in the javadoc can be used to clarify the state of the API:
 
     * <p>
     * <strong>EXPERIMENTAL</strong>. This class or interface has been added as
@@ -79,17 +86,24 @@ Though not required, inserting this paragraph in your class or interface javadoc
 After the API freeze
 --------------------
 
-From the perspective of code maintenance, there is really no such thing as "provisional API". Either it is complete and committed platform API, or it is internal code. API that is new in the current release cycle is still subject to change, but changes after this point are rare and require approval from the Eclipse project [PMC](http://www.eclipse.org/eclipse/team-leaders.html). However, it is still useful for committers to distinguish truly internal code from internal code that may move into API in a later development cycle.
+From the perspective of code maintenance, there is really no such thing as "provisional API". 
+Either it is complete and committed platform API, or it is internal code. 
+API that is new in the current release cycle is still subject to change, but changes after this point are rare and require approval from the Eclipse project [PMC](http://www.eclipse.org/eclipse/team-leaders.html). 
 
-Note that there are no guarantees about the existence or shape of internal code, even if the package name or comments suggest that it may become API in the next release. In particular, the API contract (binary upwards compatibility) does not apply. Clients who think they must use internal code may do so at their own risk, or with slightly less risk if they can reach an agreement with the team that developed the internal code. Note also that in such cases, the required versions for plug-in dependencies need to be specified with great care.
+Note that there are no guarantees about the existence or shape of internal code, even if the package name or comments suggest that it may become API in the next release. 
+In particular, the API contract (binary upwards compatibility) does not apply. 
+Clients who think they must use internal code may do so at their own risk, or with slightly less risk if they can reach an agreement with the team that developed the internal code. 
+Note also that in such cases, the required versions for plug-in dependencies need to be specified with great care.
 
 ### Package naming
 
-All internal code that is not intended to become API at some point must be in a package whose name contains the segment "internal". Internal code that is planned to become API in a future release must be marked as internal via the x-internal or x-friends directive in the MANIFEST.MF.
+All internal code that is not intended to become API at some point must be in a package whose name contains the segment "internal". 
+Internal code that is planned to become API in a future release must be marked as internal via the x-internal or x-friends directive in the MANIFEST.MF.
 
 ### Bundle manifest
 
-All API packages should be exported unconditionally by the bundle manifest. All internal packages are also exported, they should be marked x-internal.
+All API packages should be exported unconditionally by the bundle manifest. 
+Internal packages may also exported, they must be marked as x-internal in this case.
 
 ### Javadoc
 
@@ -98,7 +112,11 @@ No special javadoc treatment for internal code is needed. Note that @since tags 
 Changing provisional APIs
 -------------------------
 
-Technically, a provisional API can change arbitrarily or be removed at any time without notice. Clients in the greater community who are consuming Eclipse milestone and integration builds cannot make any assumptions about the state of any provisional API between any two non-release builds. However, committers have a shared responsibility to ensure [Eclipse Project](/Eclipse_Project "Eclipse Project") integration builds are not broken due to changes in provisional APIs. Known clients of the provisional API within the SDK should be given fair warning and a chance to react before breaking changes are made. As a courtesy to the community, and to minimize the risk of build failures, it is useful to deprecate provisional APIs slated for change or removal in at least one integration build before making the change. Although not required, adding such a temporary tag can ease the transition for early adopters of the API:
+Technically, a provisional API can change arbitrarily or be removed at any time without notice. 
+Clients in the greater community who are consuming Eclipse milestone and integration builds cannot make any assumptions about the state of any provisional API between any two non-release builds. 
+However, committers have a shared responsibility to ensure [Eclipse Project](/Eclipse_Project "Eclipse Project") integration builds are not broken due to changes in provisional APIs. 
+Known clients of the provisional API within the SDK should be given fair warning and a chance to react before breaking changes are made. 
+As a courtesy to the community, and to minimize the risk of build failures, it is useful to deprecate provisional APIs slated for change or removal in at least one integration build before making the change. Although not required, adding such a temporary tag can ease the transition for early adopters of the API:
 
     * @deprecated This API will be removed in I20380119. Method {@link #blort()} should be used instead.` 
 
