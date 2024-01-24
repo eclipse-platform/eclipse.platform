@@ -1,6 +1,4 @@
-
-
-Provisional API Guidelines
+Eclipse API and Provisional Guidelines
 ==========================
 
 Contents
@@ -20,27 +18,35 @@ Contents
 Overview
 --------
 
-[Eclipse quality](http://www.eclipse.org/projects/dev_process/eclipse-quality.php) APIs don't appear fully formed out of nowhere. All APIs undergo a development process, passing through many phases from initial embroyonic forms to real battle-hardened APIs with guarantees of long term support. It is important that API clients understand the state of the APIs in any given build of Eclipse. This document sets out guidelines for the Eclipse Project committers on how to indicate APIs that are still under development and subject to change. These guidelines are also useful for API clients who want to know about the state of a given API they are using.
+[Eclipse quality](http://www.eclipse.org/projects/dev_process/eclipse-quality.php) APIs don't appear fully formed out of nowhere. 
+All APIs undergo a development process, passing through many phases from initial embroyonic forms to real battle-hardened APIs with guarantees of long term support.
+It is important that API clients understand the state of the APIs in any given build of Eclipse.
+This document sets out API guidelines for the Eclipse Project committers on how to indicate APIs that are still under development and subject to change. 
+These guidelines are also useful for API clients who want to know about the state of a given API they are using.
 
 The development cycle for each major and minor Eclipse project release has a milestone designated as the API freeze. The rules for development and treatment of APIs are different for the periods before and after this point, so this document outlines guidelines for both phases of the development cycle.
 
 Definition of terms used in this document:
 
-API package 
+**API package** 
 
-Any package that does not contain the segment "internal" and which has not set the x-internal or the x-friends directive in the MANIFEST.MF. (see [Naming Conventions](/Naming_Conventions "Naming Conventions") for details)
+A package must be exported via the MANIFEST.MF to be considered API.
+However, any package that does contain the segment "internal" and which has not set the x-internal or the x-friends directive in the MANIFEST.MF is not API. 
+See [Naming Conventions](/Naming_Conventions "Naming Conventions") for details)
 
-Internal package 
+**Internal API**
 
 Any Java package containing the segment "internal".
 
-API element 
+**API element** 
 
 A public Java class or interface in an API package, or a public or protected method or field in such a class or interface
 
-Provisional API 
+**Provisional API**
 
-An API element that has not existed in any release of the Eclipse project. All provisional API is subject to arbitrary change or removal without any notice. Although the [Eclipse quality](http://www.eclipse.org/projects/dev_process/eclipse-quality.php) guidelines distinguish between several forms of transient APIs, this document will refer to all non-final APIs simply as provisional APIs. Provisional API has set the x-internal or the x-friends directive in the MANIFEST.MF
+An API element that has not existed in any release of the Eclipse project. 
+All provisional API is subject to arbitrary change or removal without any notice. 
+Although the [Eclipse quality](http://www.eclipse.org/projects/dev_process/eclipse-quality.php) guidelines distinguish between several forms of transient APIs, this document will refer to all non-final APIs simply as provisional APIs. Provisional API has set the x-internal or the x-friends directive for the package in the MANIFEST.MF
 
 Before the API freeze
 ---------------------
