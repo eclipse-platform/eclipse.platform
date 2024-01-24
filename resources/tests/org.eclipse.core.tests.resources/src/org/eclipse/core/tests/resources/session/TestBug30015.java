@@ -17,7 +17,6 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
@@ -25,6 +24,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests regression of bug 30015.  Due to this bug, it was impossible to restore
@@ -62,11 +63,11 @@ public class TestBug30015 extends WorkspaceSessionTest {
 		rawLocation = IPath.fromOSString(VAR_NAME).append("ProjectLocation");
 		IProject project = getWorkspace().getRoot().getProject(PROJECT_NAME);
 
-		assertEquals("1.0", varValue, getWorkspace().getPathVariableManager().getValue(VAR_NAME));
-		assertTrue("1.1", project.exists());
-		assertTrue("1.2", project.isOpen());
-		assertEquals("1.3", rawLocation, project.getRawLocation());
-		assertEquals("1.4", varValue.append(rawLocation.lastSegment()), project.getLocation());
+		assertEquals(varValue, getWorkspace().getPathVariableManager().getValue(VAR_NAME));
+		assertTrue(project.exists());
+		assertTrue(project.isOpen());
+		assertEquals(rawLocation, project.getRawLocation());
+		assertEquals(varValue.append(rawLocation.lastSegment()), project.getLocation());
 	}
 
 	public static Test suite() {

@@ -20,7 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 
 import java.io.File;
-import junit.framework.Test;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -30,6 +30,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Test for bug 323833
@@ -55,8 +57,8 @@ public class TestBug323833 extends WorkspaceSessionTest {
 		IFileInfo cachedFileInfo = new LocalFile(cachedFile).fetchInfo();
 
 		// check that the file in the cache has attributes set
-		assertTrue("3.0", cachedFileInfo.getAttribute(EFS.ATTRIBUTE_READ_ONLY));
-		assertTrue("4.0", cachedFileInfo.getAttribute(EFS.ATTRIBUTE_IMMUTABLE));
+		assertTrue(cachedFileInfo.getAttribute(EFS.ATTRIBUTE_READ_ONLY));
+		assertTrue(cachedFileInfo.getAttribute(EFS.ATTRIBUTE_IMMUTABLE));
 	}
 
 	public void test2() throws CoreException {

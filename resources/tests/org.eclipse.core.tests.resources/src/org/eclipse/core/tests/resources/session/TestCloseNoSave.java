@@ -18,13 +18,14 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests closing a workspace without save.
@@ -47,7 +48,7 @@ public class TestCloseNoSave extends WorkspaceSerializationTest {
 		IResource[] members = workspace.getRoot().members();
 		assertThat(members).hasSize(1).allSatisfy(member -> assertThat(member.getType()).isEqualTo(IResource.PROJECT));
 		IProject project = (IProject) members[0];
-		assertTrue("1.2", project.exists());
+		assertTrue(project.exists());
 		IFolder folder = project.getFolder(FOLDER);
 		IFile file = folder.getFile(FILE);
 
@@ -57,8 +58,8 @@ public class TestCloseNoSave extends WorkspaceSerializationTest {
 		}
 
 		assertThat(project.members()).hasSize(3);
-		assertTrue("2.1", folder.exists());
-		assertTrue("2.2", file.exists());
+		assertTrue(folder.exists());
+		assertTrue(file.exists());
 	}
 
 	public static Test suite() {

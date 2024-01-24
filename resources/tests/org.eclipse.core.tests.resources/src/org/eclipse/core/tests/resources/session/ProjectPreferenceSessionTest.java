@@ -20,7 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 
 import java.util.concurrent.atomic.AtomicReference;
-import junit.framework.Test;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -33,6 +33,8 @@ import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+
+import junit.framework.Test;
 
 public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 	private static final String DIR_NAME = ".settings";
@@ -65,8 +67,8 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		node.flush();
 		waitForRefresh();
 		IFile file = project.getFile(IPath.fromOSString(DIR_NAME).append(qualifier).addFileExtension(FILE_EXTENSION));
-		assertTrue("2.0", file.exists());
-		assertTrue("2.1", file.getLocation().toFile().exists());
+		assertTrue(file.exists());
+		assertTrue(file.getLocation().toFile().exists());
 		saveWorkspace();
 	}
 
@@ -113,7 +115,7 @@ public class ProjectPreferenceSessionTest extends WorkspaceSessionTest {
 		IProject project = getProject("testSaveLoad");
 		IScopeContext context = new ProjectScope(project);
 		Preferences node = context.getNode("test.save.load");
-		assertEquals("1.0", "value", node.get("key", null));
+		assertEquals("value", node.get("key", null));
 		saveWorkspace();
 	}
 
