@@ -13,13 +13,22 @@
  *******************************************************************************/
 package org.eclipse.core.internal.filesystem;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.filesystem.provider.FileStore;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 
 /**
  * A null file store represents a file whose location is unknown,
@@ -29,13 +38,26 @@ import org.eclipse.core.runtime.*;
  */
 public class NullFileStore extends FileStore {
 	private final IPath path;
+	protected final IFileSystem fileSystem;
 
 	/**
 	 * Creates a null file store
 	 * @param path The path of the file in this store
 	 */
-	public NullFileStore(IPath path) {
+	public NullFileStore(IPath path, IFileSystem fileSystem) {
 		Assert.isNotNull(path);
+		Assert.isLegal(fileSystem instanceof NullFileSystem, "fileSystem must extend NullFileSystem"); //$NON-NLS-1$
+		this.fileSystem = fileSystem;
+		this.path = path;
+	}
+
+	/**
+	 * For test only! Extenders need to extend {@link #getFileSystem()} as well to return their desired instance of the file system!
+	 * @param path The path of the file in this store
+	 */
+	@Deprecated(forRemoval = true, since = "will be deleted 2024-06")
+	public NullFileStore(IPath path) {
+		this.fileSystem = EFS.getNullFileSystem();
 		this.path = path;
 	}
 
@@ -64,12 +86,12 @@ public class NullFileStore extends FileStore {
 
 	@Override
 	public IFileStore getChild(String name) {
-		return new NullFileStore(path.append(name));
+		return new NullFileStore(path.append(name), getFileSystem());
 	}
 
 	@Override
 	public IFileSystem getFileSystem() {
-		return NullFileSystem.getInstance();
+		return fileSystem;
 	}
 
 	@Override
@@ -79,7 +101,7 @@ public class NullFileStore extends FileStore {
 
 	@Override
 	public IFileStore getParent() {
-		return path.segmentCount() == 0 ? null : new NullFileStore(path.removeLastSegments(1));
+		return path.segmentCount() == 0 ? null : new NullFileStore(path.removeLastSegments(1), getFileSystem());
 	}
 
 	@Override

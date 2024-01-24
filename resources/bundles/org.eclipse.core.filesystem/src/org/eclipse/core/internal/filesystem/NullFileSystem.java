@@ -27,34 +27,29 @@ import org.eclipse.core.runtime.IPath;
 public class NullFileSystem extends FileSystem {
 
 	/**
-	 * The singleton instance of this file system.
+	 * Creates the null file system.
 	 */
-	private static IFileSystem instance;
+	public NullFileSystem() {
+		super();
+	}
 
 	/**
 	 * Returns the instance of this file system
 	 *
 	 * @return The instance of this file system.
 	 */
+	@Deprecated(forRemoval = true, since = "will be deleted 2024-06")
 	public static IFileSystem getInstance() {
-		return instance;
-	}
-
-	/**
-	 * Creates the null file system.
-	 */
-	public NullFileSystem() {
-		super();
-		instance = this;
+		return EFS.getNullFileSystem();
 	}
 
 	@Override
 	public IFileStore getStore(IPath path) {
-		return new NullFileStore(path);
+		return new NullFileStore(path, this);
 	}
 
 	@Override
 	public IFileStore getStore(URI uri) {
-		return new NullFileStore(IPath.fromOSString(uri.getPath()));
+		return getStore(IPath.fromOSString(uri.getPath()));
 	}
 }

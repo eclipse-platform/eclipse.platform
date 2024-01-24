@@ -116,6 +116,7 @@ public class BasicAliasTest {
 			}
 		}
 
+		@SuppressWarnings("removal")
 		public BatFSURI(URI uri) {
 			super(IPath.fromOSString("/not/used"));
 			this.uri = uri;

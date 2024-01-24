@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IPath;
 public class Bug369177FileStore extends NullFileStore {
 	private final IPath path;
 
+	@SuppressWarnings("removal")
 	public Bug369177FileStore(IPath path) {
 		super(path);
 		this.path = path;

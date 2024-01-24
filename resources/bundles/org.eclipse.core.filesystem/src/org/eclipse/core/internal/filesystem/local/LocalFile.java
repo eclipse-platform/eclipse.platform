@@ -70,6 +70,7 @@ public class LocalFile extends FileStore {
 	 * cached value for the toURI method
 	 */
 	private URI uri;
+	private final IFileSystem fileSystem;
 
 	private static int attributes(File aFile) {
 		if (!aFile.exists() || aFile.canWrite())
@@ -82,8 +83,21 @@ public class LocalFile extends FileStore {
 	 *
 	 * @param file The file this local file represents
 	 */
+	@Deprecated(forRemoval = true, since = "will be deleted 2024-06")
 	public LocalFile(File file) {
 		this.file = file;
+		this.filePath = file.getAbsolutePath();
+		this.fileSystem = EFS.getLocalFileSystem();
+	}
+
+	/**
+	 * Creates a new local file.
+	 *
+	 * @param file The file this local file represents
+	 */
+	public LocalFile(File file, IFileSystem fileSystem) {
+		this.file = file;
+		this.fileSystem = fileSystem;
 		this.filePath = file.getAbsolutePath();
 	}
 
@@ -206,7 +220,7 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public IFileSystem getFileSystem() {
-		return LocalFileSystem.getInstance();
+		return fileSystem;
 	}
 
 	@Override
@@ -295,7 +309,7 @@ public class LocalFile extends FileStore {
 			String message = fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY) //
 					? Messages.couldnotDeleteReadOnly
 
-					// This is the worst-case scenario: something failed but we don't know what. The children were 
+					// This is the worst-case scenario: something failed but we don't know what. The children were
 					// deleted successfully and the directory is NOT read-only... there's nothing else to report.
 					: Messages.couldnotDelete;
 
@@ -438,7 +452,7 @@ public class LocalFile extends FileStore {
 				// avoid NoSuchFileException for performance reasons
 				return false;
 			}
-			// isSameFile is faster then using getCanonicalPath 
+			// isSameFile is faster then using getCanonicalPath
 			return java.nio.file.Files.isSameFile(source.toPath(), destination.toPath());
 		} catch (NoSuchFileException e) {
 			// ignore - it is the normal case that the destination does not exist.

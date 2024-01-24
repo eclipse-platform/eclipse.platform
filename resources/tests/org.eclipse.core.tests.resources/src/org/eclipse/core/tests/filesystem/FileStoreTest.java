@@ -50,7 +50,6 @@ import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.internal.filesystem.Messages;
 import org.eclipse.core.internal.filesystem.NullFileSystem;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
-import org.eclipse.core.internal.filesystem.local.LocalFileSystem;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -665,7 +664,7 @@ public class FileStoreTest {
 
 	@Test
 	public void testSortOrder() {
-		IFileSystem nullfs = NullFileSystem.getInstance();
+		IFileSystem nullfs = EFS.getNullFileSystem();
 		if (nullfs == null) {
 			nullfs = new NullFileSystem();
 			((FileSystem) nullfs).initialize(EFS.SCHEME_NULL);
@@ -675,7 +674,7 @@ public class FileStoreTest {
 		assertEquals("1.0", -1, nabc.compareTo(nabd));
 		assertEquals("1.1", 0, nabc.compareTo(nabc));
 		assertEquals("1.2", 1, nabd.compareTo(nabc));
-		IFileSystem lfs = LocalFileSystem.getInstance();
+		IFileSystem lfs = EFS.getLocalFileSystem();
 		IFileStore labc = lfs.getStore(IPath.fromOSString("/a/b/c"));
 		IFileStore labd = lfs.getStore(IPath.fromOSString("/a/b/d"));
 		assertEquals("2.0", -1, labc.compareTo(labd));
@@ -692,7 +691,7 @@ public class FileStoreTest {
 
 	@Test
 	public void testSortOrderPaths() {
-		IFileSystem lfs = LocalFileSystem.getInstance();
+		IFileSystem lfs = EFS.getLocalFileSystem();
 		boolean isWindows = java.io.File.separatorChar == '\\';
 		String prefix = isWindows ? "/D:" : "";
 		List<String> paths = List.of( //
