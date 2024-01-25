@@ -96,6 +96,7 @@ public class TipProviderTest {
 	@Test
 	public void testGetNextTip() {
 		createTestData();
+		assertEquals(fProvider.getCurrentTip(), fProvider.getNextTip());
 		fManager.setAsRead(fProvider.getNextTip());
 		assertNotEquals(fProvider.getCurrentTip(), fProvider.getNextTip());
 		Tip nextTip = fProvider.getNextTip();
