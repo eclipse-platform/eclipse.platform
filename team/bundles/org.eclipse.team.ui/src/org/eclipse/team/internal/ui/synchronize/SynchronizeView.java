@@ -765,6 +765,8 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		case ISynchronizePageConfiguration.CONFLICTING_MODE:
 			syncMode = Utils.getString("action.directionFilterConflicts.tooltip", bundle); //$NON-NLS-1$
 			break;
+		default:
+			throw new IllegalArgumentException(Integer.toString(mode));
 		}
 
 		IViewSite viewSite = getViewSite();

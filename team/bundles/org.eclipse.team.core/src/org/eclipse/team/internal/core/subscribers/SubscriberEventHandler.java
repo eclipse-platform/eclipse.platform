@@ -315,6 +315,8 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 							((ResourceEvent)event).getDepth(),
 							Policy.subMonitorFor(monitor, 64));
 					break;
+				default:
+					break;
 			}
 		} catch (OperationCanceledException e) {
 			// the job has been canceled.

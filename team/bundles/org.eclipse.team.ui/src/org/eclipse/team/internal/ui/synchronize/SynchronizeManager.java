@@ -163,6 +163,8 @@ public class SynchronizeManager implements ISynchronizeManager {
 				case REMOVED :
 					fListener.participantsRemoved(fChanged);
 					break;
+				default:
+					throw new IllegalArgumentException(Integer.toString(fType));
 			}
 		}
 
@@ -542,16 +544,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 						store,
 						IPreferenceIds.SYNCHRONIZING_COMPLETE_PERSPECTIVE);
 
-			int result = m.getReturnCode();
-			switch (result) {
-				// yes, ok
-				case IDialogConstants.YES_ID:
-				case IDialogConstants.OK_ID :
-					return true;
-				// no
-				case IDialogConstants.NO_ID :
-					return false;
-			}
+			return m.getReturnCode() == IDialogConstants.YES_ID;
 		}
 		return false;
 	}
