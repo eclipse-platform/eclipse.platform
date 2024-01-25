@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -397,16 +398,19 @@ public class IJobManagerTest extends AbstractJobTest {
 	 */
 	@Test
 	public void testBug57656() {
-		TestJob jobA = new TestJob("Job1");
-		TestJob jobB = new TestJob("Job2");
+		TestJob jobA = new TestJob("Job1", 10000, 10);
+		TestJob jobB = new TestJob("Job2", 1, 1);
 		//schedule jobA
-		jobA.schedule(50);
+		jobA.schedule(100);
 		//schedule jobB so it gets behind jobA in the queue
-		jobB.schedule(100);
+		jobB.schedule(101);
 		//now put jobA to sleep indefinitely
 		jobA.sleep();
-		//jobB should still run within ten seconds
-		waitForCompletion(jobB, 300);
+		// jobB should still run even though jobA scheduled before did not start
+		waitForCompletion(jobB, Duration.ofSeconds(1));
+		jobA.terminate();
+		jobA.cancel();
+		waitForCompletion(jobA, Duration.ofSeconds(5));
 	}
 
 	/**
@@ -1744,10 +1748,13 @@ public class IJobManagerTest extends AbstractJobTest {
 	}
 
 	/**
-	 * Tests conditions where there is a race to schedule the same job multiple times.
+	 * Tests conditions where there is a race to schedule the same job multiple
+	 * times.
+	 *
+	 * @throws InterruptedException
 	 */
 	@Test
-	public void testScheduleRace() {
+	public void testScheduleRace() throws InterruptedException {
 		final int[] count = new int[1];
 		final boolean[] running = new boolean[] {false};
 		final boolean[] failure = new boolean[] {false};
@@ -1784,7 +1791,8 @@ public class IJobManagerTest extends AbstractJobTest {
 			}
 		});
 		testJob.schedule();
-		waitForCompletion(testJob, 5000);
+		testJob.join();
+		waitForCompletion(testJob, Duration.ofSeconds(5));
 		assertTrue("1.0", !failure[0]);
 	}
 

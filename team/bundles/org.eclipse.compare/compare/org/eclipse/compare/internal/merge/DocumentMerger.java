@@ -172,22 +172,13 @@ public class DocumentMerger {
 		}
 
 		public Image getImage() {
-			int code= Differencer.CHANGE;
-			switch (fDirection) {
-			case RangeDifference.RIGHT:
-				code+= getCompareConfiguration().isMirrored() ? Differencer.RIGHT : Differencer.LEFT;
-				break;
-			case RangeDifference.LEFT:
-				code+= getCompareConfiguration().isMirrored() ? Differencer.LEFT : Differencer.RIGHT ;
-				break;
-			case RangeDifference.ANCESTOR:
-			case RangeDifference.CONFLICT:
-				code+= Differencer.CONFLICTING;
-				break;
-			}
-			if (code != 0)
-				return getCompareConfiguration().getImage(code);
-			return null;
+			int code = Differencer.CHANGE + switch (fDirection) {
+			case RangeDifference.RIGHT -> getCompareConfiguration().isMirrored() ? Differencer.RIGHT : Differencer.LEFT;
+			case RangeDifference.LEFT -> getCompareConfiguration().isMirrored() ? Differencer.LEFT : Differencer.RIGHT;
+			case RangeDifference.ANCESTOR, RangeDifference.CONFLICT -> Differencer.CONFLICTING;
+			default -> 0;
+			};
+			return getCompareConfiguration().getImage(code);
 		}
 
 		Position createPosition(IDocument doc, Position range, int start, int end) {
@@ -1103,6 +1094,8 @@ public class DocumentMerger {
 				if (diff.fRightPos != null)
 					return diff.fRightPos.offset;
 				break;
+			default:
+				throw new IllegalArgumentException(Character.toString(type));
 			}
 		}
 		return 0;
@@ -1231,6 +1224,9 @@ public class DocumentMerger {
 							s+= fromDoc.get(fromStart, fromLen);
 						} else
 							s= fromDoc.get(fromStart, fromLen);
+						break;
+					default:
+						// for example ERROR
 						break;
 					}
 					if (s != null) {

@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -40,15 +40,9 @@ public class RefreshLocalJavaFileBuilder extends TestBuilder {
 		IFile file = project.getFile("A.java");
 		IPath localLocation = project.getLocation().append(file.getName());
 		java.io.File localFile = localLocation.toFile();
-		try (FileOutputStream out = new FileOutputStream(localFile)) {
-			if (localFile.exists()) {
-				localFile.delete();
-			}
-
-			out.write("public class A {}".getBytes());
-		} catch (IOException streamCloseIgnored) {
-			// ignore;
-		} catch (Exception e) {
+		try {
+			Files.writeString(localFile.toPath(), "public class A {}");
+		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}

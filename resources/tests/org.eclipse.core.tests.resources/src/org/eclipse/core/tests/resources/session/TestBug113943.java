@@ -18,7 +18,6 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -29,6 +28,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests regression of bug 113943 - linked resources not having
@@ -55,8 +56,8 @@ public class TestBug113943 extends WorkspaceSerializationTest {
 		child.openOutputStream(EFS.NONE, createTestMonitor()).close();
 		link.createLink(location, IResource.NONE, createTestMonitor());
 
-		assertTrue("1.0", link.exists());
-		assertTrue("1.1", linkChild.exists());
+		assertTrue(link.exists());
+		assertTrue(linkChild.exists());
 
 		getWorkspace().save(true, createTestMonitor());
 	}
@@ -70,7 +71,7 @@ public class TestBug113943 extends WorkspaceSerializationTest {
 		IFile linkChild = link.getFile("child.txt");
 		link.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
-		assertTrue("1.0", link.exists());
-		assertTrue("1.1", linkChild.exists());
+		assertTrue(link.exists());
+		assertTrue(linkChild.exists());
 	}
 }

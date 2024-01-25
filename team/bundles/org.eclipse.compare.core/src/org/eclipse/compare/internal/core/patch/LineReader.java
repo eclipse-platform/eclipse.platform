@@ -16,11 +16,15 @@ package org.eclipse.compare.internal.core.patch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.compare.internal.core.Messages;
 import org.eclipse.compare.patch.ReaderCreator;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 
 public class LineReader {
 	/**
@@ -34,8 +38,8 @@ public class LineReader {
 				lines = readLines(bufferedReader);
 			} catch (CoreException ex) {
 				ILog.of(LineReader.class).error(Messages.Activator_1, ex);
-			} catch (IOException closeException) {
-				// silently ignored
+			} catch (IOException ex) {
+				ILog.get().warn(ex.getMessage(), ex);
 			}
 		}
 
@@ -164,7 +168,7 @@ public class LineReader {
 		try {
 			this.fReader.close();
 		} catch (IOException ex) {
-			// silently ignored
+			ILog.get().warn(ex.getMessage(), ex);
 		}
 	}
 
@@ -176,8 +180,7 @@ public class LineReader {
 				lines.add(line);
 			return lines;
 		} catch (IOException ex) {
-			// NeedWork
-			//System.out.println("error while reading file: " + fileName + "(" + ex + ")");
+			ILog.get().warn(ex.getMessage(), ex);
 		} finally {
 			close();
 		}

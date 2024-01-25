@@ -24,7 +24,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import junit.framework.Test;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -37,6 +37,8 @@ import org.eclipse.core.tests.internal.builders.SnowBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests persistence cases for builders that are missing or disabled.
@@ -117,7 +119,7 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 
 		//assert that the builder is still in the build spec
-		assertTrue("1.0", hasBuilder(project, SnowBuilder.BUILDER_NAME));
+		assertTrue(hasBuilder(project, SnowBuilder.BUILDER_NAME));
 
 		//perform a build and ensure snow builder isn't called
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());

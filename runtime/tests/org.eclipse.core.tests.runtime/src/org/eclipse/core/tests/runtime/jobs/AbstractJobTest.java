@@ -14,9 +14,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
 import org.eclipse.core.internal.jobs.JobListeners;
 import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.runtime.jobs.IJobManager;
@@ -43,20 +44,17 @@ public class AbstractJobTest  {
 
 	/**
 	 * Ensures job completes within the given time.
-	 * @param waitTime time in milliseconds
 	 */
-	protected void waitForCompletion(Job job, int waitTime) {
-		int i = 0;
-		int tickLength = 1;
-		int ticks = waitTime / tickLength;
-		long start = now();
-		while (job.getState() != Job.NONE && now() - start < waitTime) {
-			sleep(tickLength);
-			// sanity test to avoid hanging tests
-			if (i++ > ticks && now() - start > waitTime) {
-				dumpState();
-				assertTrue("Timeout waiting for job to complete", false);
-			}
+	protected void waitForCompletion(Job job, Duration timeoutDuration) {
+		Duration startTime = Duration.ofMillis(now());
+		Duration timeout = startTime.plus(timeoutDuration);
+		while (job.getState() != Job.NONE && !timeout.minusMillis(now()).isNegative()) {
+			Thread.yield();
+		}
+		int finalJobState = job.getState();
+		if (finalJobState != Job.NONE) {
+			dumpState();
+			assertThat(finalJobState).as("timeout waiting for job to complete").isEqualTo(Job.NONE);
 		}
 	}
 
@@ -64,7 +62,7 @@ public class AbstractJobTest  {
 	 * Ensures given job completes within a second.
 	 */
 	protected void waitForCompletion(Job job) {
-		waitForCompletion(job, 1000);
+		waitForCompletion(job, Duration.ofSeconds(1));
 	}
 
 	/**
