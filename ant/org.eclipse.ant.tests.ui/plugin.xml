@@ -34,6 +34,12 @@
 	    	eclipseRuntime="false">
 	    </antTask>
 	    <antTask 
+	    	name="eclipse.buildScript" 
+	    	class="org.eclipse.ant.tests.ui.support.tasks.CustomBooleanTask"
+	    	library="lib/antUITestsSupport.jar"
+	    	eclipseRuntime="false">
+	    </antTask>
+	    <antTask 
 	    	name="coolUITask"
 	    	uri="testing"
 	    	class="org.eclipse.ant.tests.ui.support.tasks.AntTestTask2"

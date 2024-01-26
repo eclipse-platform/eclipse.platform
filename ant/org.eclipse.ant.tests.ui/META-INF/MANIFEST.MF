@@ -37,8 +37,7 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.test.performance,
  org.eclipse.ui.console,
  org.eclipse.ant.launching,
- org.eclipse.core.externaltools,
- org.eclipse.pde.core
+ org.eclipse.core.externaltools
 Import-Package: org.assertj.core.api,
  org.assertj.core.api.iterable,
  org.junit.jupiter.api,
