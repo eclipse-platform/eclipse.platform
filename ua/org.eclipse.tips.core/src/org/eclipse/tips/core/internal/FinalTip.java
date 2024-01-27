@@ -31,17 +31,16 @@ public class FinalTip extends Tip implements IHtmlTip {
 	private static final String EH1 = "</h1>"; //$NON-NLS-1$
 	private static final String H1 = "<h1>"; //$NON-NLS-1$
 
-	/**
-	 * Constructor.
-	 */
+	private final Date creationDate;
+
 	public FinalTip(String providerId) {
 		super(providerId);
+		this.creationDate = Calendar.getInstance().getTime();
 	}
 
 	@Override
 	public Date getCreationDate() {
-		Calendar instance = Calendar.getInstance();
-		return instance.getTime();
+		return creationDate;
 	}
 
 	@Override

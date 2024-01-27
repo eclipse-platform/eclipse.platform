@@ -646,12 +646,12 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 
 		int style = getViewerStyle();
 		fPresentationContext = new DebugModelPresentationContext(getPresentationContextId(), this, fModelPresentation);
-		final TreeModelViewer variablesViewer = new TreeModelViewer(parent, style, fPresentationContext);
-		variablesViewer.getControl().addFocusListener(new FocusAdapter() {
+		final TreeModelViewer v = new TreeModelViewer(parent, style, fPresentationContext);
+		v.getControl().addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
 				fTreeHasFocus = true;
-				fSelectionProvider.setActiveProvider(variablesViewer);
+				fSelectionProvider.setActiveProvider(v);
 				setGlobalActions();
 			}
 
@@ -665,7 +665,7 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 				getViewSite().getActionBars().updateActionBars();
 			}
 		});
-		variablesViewer.getPresentationContext().addPropertyChangeListener(
+		v.getPresentationContext().addPropertyChangeListener(
 				event -> {
 					if (IPresentationContext.PROPERTY_COLUMNS.equals(event.getProperty())) {
 						IAction action = getAction("ShowTypeNames"); //$NON-NLS-1$
@@ -675,10 +675,10 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 					}
 				});
 
-		variablesViewer.addPostSelectionChangedListener(getTreeSelectionChangedListener());
+		v.addPostSelectionChangedListener(getTreeSelectionChangedListener());
 		DebugUITools.addPartDebugContextListener(getSite(), this);
 
-		return variablesViewer;
+		return v;
 	}
 
 	private void setGlobalActions() {
