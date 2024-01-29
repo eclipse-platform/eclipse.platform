@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.e4.core.di.internal.extensions.OSGiObjectSupplier">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" name="org.eclipse.e4.core.di.internal.extensions.OSGiObjectSupplier">
    <property name="dependency.injection.annotation" value="org.eclipse.e4.core.di.extensions.OSGiBundle"/>
    <property name="event.topics" value="org/eclipse/e4/core/contexts/IEclipseContext/DISPOSE"/>
    <service>
