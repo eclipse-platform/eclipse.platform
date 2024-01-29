@@ -21,13 +21,13 @@ import java.security.cert.CertificateEncodingException;
 public enum FingerprintX509 {
 	INSTANCE;
 	private static final char[] HEX= {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
-
-	// private static final String ALG="MD5"; //$NON-NLS-1$
+	private static final String cryptoAlg = "SHA-256"; //$NON-NLS-1$
 	public String getFingerPrint(Certificate cert, String alg) {
 		String fingerPrint=null;
 		byte[] encodedCert=null;
 
 		try {
+			alg = cryptoAlg;
 			encodedCert = cert.getEncoded();
 			MessageDigest md = MessageDigest.getInstance(alg);
 			md.update(encodedCert);
