@@ -1,5 +1,5 @@
 <project default="defaultTargetName">
 	<target name="defaultTargetName">
-		<eclipse.buildScript recursivegeneration=""/>
+		<eclipse.buildAScript recursivegeneration=""/>
 	</target>
 </project>
