@@ -19,7 +19,7 @@ public enum SecureAES256 {
 
 	    try {
 
-	        SecureRandom secureRandom = new SecureRandom();
+			SecureRandom secureRandom = SecureRandom.getInstanceStrong();
 	        byte[] iv = new byte[16];
 	        secureRandom.nextBytes(iv);
 	        IvParameterSpec ivspec = new IvParameterSpec(iv);
