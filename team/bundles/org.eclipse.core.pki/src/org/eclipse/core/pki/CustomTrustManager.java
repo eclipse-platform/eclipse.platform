@@ -29,11 +29,13 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
 
 
 public class CustomTrustManager extends X509ExtendedTrustManager implements TrustManager {
 	private KeyStore trustStore;
 	private Collection<X509Certificate>trustedCerts;
+	protected X509TrustManager trustManager;
 	protected CustomTrustManager() {}
 
 	public CustomTrustManager(KeyStore trustStore) {
@@ -41,12 +43,16 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 		this.trustStore=trustStore;
 		DebugLogger.printDebug("CustomTrustManager -- CONSTRUCTOR  ALG:" + TrustManagerFactory.getDefaultAlgorithm()); //$NON-NLS-1$
 		try {
-
-			//Security.getAlgorithms("SunPKCS11-NSS-FIPS");
-			//Security.getAlgorithms("SunPKCS11");
 			Security.getAlgorithms("PKCS11"); //$NON-NLS-1$
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509"); //$NON-NLS-1$
 			tmf.init(trustStore);
+			TrustManager tms[] = tmf.getTrustManagers();
+			for (TrustManager tm : tms) {
+				if (tm instanceof X509TrustManager) {
+					trustManager = (X509TrustManager) tm;
+					break;
+				}
+			}
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,15 +64,15 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 	}
 
 	@Override
-	public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+	public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CustomTrustManager --  checkClientTrusted"); //$NON-NLS-1$
+		trustManager.checkClientTrusted(chain, authType);
 	}
 
 	@Override
-	public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+	public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CustomTrustManager --checkServerTrusted    STRING ASRG:" + arg1); //$NON-NLS-1$
+		trustManager.checkClientTrusted(chain, authType);
 	}
 
 	@Override
@@ -74,7 +80,6 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 		// TODO Auto-generated method stub
 		X509Certificate X509cert=null;
 		X509Certificate[] X509certs=null;
-		DebugLogger.printDebug("CustomTrustManager------------------------------ getAcceptedIssuers"); //$NON-NLS-1$
 
 		this.trustedCerts = new ArrayList<>();
 
@@ -105,9 +110,9 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 	}
 
 	@Override
-	public void checkClientTrusted(X509Certificate[] arg0, String arg1, Socket arg2) throws CertificateException {
+	public void checkClientTrusted(X509Certificate[] chain, String authType, Socket arg2) throws CertificateException {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CustomTrustManager -- checkClientTrusted"); //$NON-NLS-1$
+		trustManager.checkClientTrusted(chain, authType);
 	}
 
 	@Override
