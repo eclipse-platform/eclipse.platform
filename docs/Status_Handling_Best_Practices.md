@@ -31,17 +31,18 @@ Contents
 Introduction
 ============
 
-In software engineering and hardware engineering, serviceability is also known as supportability, and is one of the -ilities or aspects. It refers to the ability of technical support personnel to debug or perform root cause analysis in pursuit of solving a problem with a product. \[ [http://en.wikipedia.org/wiki/Serviceability](http://en.wikipedia.org/wiki/Serviceability)\]
+In software engineering serviceability is also known as supportability, and refers to the ability to debug or perform root cause analysis in pursuit of solving a problem with a product.
+Serviceability includes the logging of state and the notification of the user.
 
-One of the feature of Serviceability includes the logging of state and the notification of the user.
+Eclipse provides a framework to manage the Log file as well as Dialog to notify the user. 
+This framework allows provider to plug-in their diagnosis tools, providing extra value to the user.
 
-Eclipse already provides different framework to manage the Log file as well as Dialog to notify the user. In Eclipse 3.3 we introduce a framework that will make the logging and Dialog consistent across the Eclipse platform. This new framework also allows provider to plug-in their diagnosis tools, providing extra value to the user.
-
-This paper will explain the best practices a developer should follow to exploit this new framework appropriately using the IStatus class. The second part will explain to plug-in provider how to exploit the new ‘StatusHandler’ model, allowing them to contribute to the user interface as well as managing the IStatus we are about to show or log.
+This paper explains the best practices of using the IStatus class. 
+The second part explains to plug-in provider how to exploit the new ‘StatusHandler’ model, allowing them to contribute to the user interface as well as managing the IStatus we are about to show or log.
 
 Before we investigate IStatus, we need to agree on a couple basic principle about logging and error message rendering.
 
-Eclipse UI best practices about Common Error Message \[ [http://wiki.eclipse.org/index.php/UI\_Best\_Practices\_v3.x#Common\_Error_Messages](http://wiki.eclipse.org/index.php/UI_Best_Practices_v3.x#Common_Error_Messages)\]
+Eclipse UI best practices about [Common Error Message](https://eclipse-platform.github.io/ui-best-practices/#common_error_messages)
 
 Messages
 ========
@@ -110,17 +111,11 @@ There is a lot of debate about what to log and what not to log.
     1.  You could fill the hard drive with information and slow the process of your application
     2.  You will scare the product administrator who will see tons of 'possible' errors fill the log.
 
-There are couple best practices I gathered during my years of Support Engineer.
-
 **Rule #1:** if you show it, log it The rationale is that if you do not log it, we have no persistence of the issue. If the user closes the Dialog and closes support, we will have to reproduce the problem. Of course, in the case of a client-server environment, you do not have to log it in both places. If the message comes from the server, the client part can \*just\* present the message that will contain information about the real log record in the server log, so the administrator can retrieve it. Still I would recommend you save the message only (not the whole record) in the client environment, in case the clients forgets the correlator identifier to the server log. Another possibility is to log the message at a DEBUG or TRACE level. Remember to be cautious or you will end up in Scenario #1 : Logging too little.
 
 **Rule #2:** Log even expected exception Some exceptions are expected in your environment. For instance, if you connect to a database using JDBC, you may encounter the java.sql.SQLException. It may be an exception you can recover from (i.e. StaleData) or one you cannot recover from (Server is down). You should not log the StaleData exception or the log will contain too much information. The user/administrator is not interested about your internal code and how you recover. Yet you should log the unexpected exception. We recommend you log the message of an expected exception only, not the whole stackTrace, but at a WARNING or DEBUG level.
 
 Other technique exists that keep a statistic view of your expected errors. This allow an administrator to realize, for instance, that the application is getting a lot of StaleException between 8pm and 9pm on Friday.
-
-**Rule #3: ZZZZZZZZZZZZZZZZZZZ I DO NOT HAVE A RULE #3 :( ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ**
-
-There is tons of information and documentation on the web. On interesting paper about logging exception is the following: \[ [http://dev2dev.bea.com/pub/a/2006/11/effective-exceptions.html](http://dev2dev.bea.com/pub/a/2006/11/effective-exceptions.html)\]
 
 The Eclipse IStatus
 ===================
@@ -152,7 +147,9 @@ Implementing your own Status
 
 You should consider the following when creating an IStatus instance.
 
-1.  Try to create a subclass of IStatus that will carry your specific payload. An Example in Eclipse 3.3 is the class CVSStatus. The class carries information that diagnostic tool can use to validate CVS.
+1.  Try to create a subclass of IStatus that will carry your specific payload. 
+An Example in Eclipse 3.3 is the class CVSStatus. 
+The class carries information that diagnostic tool can use to validate CVS.
 2.  Do not use IStatus.ERROR as a code. Try to use your own code. As an example, look at the Class CVSSTatus.
 
     public class CVSStatus extends TeamStatus {
