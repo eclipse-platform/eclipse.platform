@@ -134,13 +134,11 @@ Most of the framework related to Logging and Error rendering uses an IStatus:
 Calling the Status API
 ----------------------
 
-You should investigate the Status and MultiStatus classes. We recommend you use the following constructor:
-
-public Status(int severity, String pluginId, int code, String message, Throwable exception)
+You should investigate the Status and MultiStatus classes. 
+We recommend you use the following constructor:
 
     public Status(int severity, String pluginId, int code, String message, Throwable exception)
 
-**ZZZZZZZZZZZZZ DO MORE HERE ZZZZZZZZZZZZZZ**
 
 Implementing your own Status
 ----------------------------
@@ -175,8 +173,6 @@ In Eclipse 3.3 we added a new framework to handle statuses. The goal was triple:
 1.  Providing consistency about Logging and ErrorMessage from an Eclipse UI point of view. The work in the core is in progress in the Equinox subproject (as of March 07)
 2.  Allow products based on eclipse a central way to handle statuses before they are rendered or logged
 3.  Allow products based on eclipse to extend the ErrorDialog for specific errors
-
-Check the following link to learn more about the StatusHandler project \[ [http://wiki.eclipse.org/index.php/Platform\_UI\_Error_Handling](http://wiki.eclipse.org/index.php/Platform_UI_Error_Handling)\]
 
 In the first part of this paragraph, we will describe the best practices a developer should use to log or render an IStatus. In the second part of this paragraph, we will explain the best practices to create your own StatusHandler.
 
