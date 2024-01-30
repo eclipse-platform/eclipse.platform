@@ -27,7 +27,9 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
+import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.LogUtil;
 
 public enum AuthenticationBase implements AuthenticationService {
@@ -174,13 +176,20 @@ public enum AuthenticationBase implements AuthenticationService {
 	}
 
 	public SSLContext setSSLContext(KeyStore keyStore) {
+		CustomKeyManager manager = null;
 		KeyManager[] keyManagers = new KeyManager[1];
 		TrustManager[] trustManagers = new TrustManager[1];
 		try {
 			DebugLogger.printDebug("In setSSLContext initialize TLS"); //$NON-NLS-1$
 			// sslContext = SSLContext.getInstance("TLS");
 			sslContext = SSLContext.getInstance("TLSv1.3"); //$NON-NLS-1$
-			CustomKeyManager manager = new CustomKeyManager(keyStore, "".toCharArray(), null); //$NON-NLS-1$
+			Optional<X509TrustManager> PKIXtrust = ConfigureTrust.MANAGER.setUp();
+			if (PKIXtrust.isEmpty()) {
+				manager = new CustomKeyManager(keyStore, "".toCharArray(), null); //$NON-NLS-1$
+			} else {
+				manager = (CustomKeyManager) PKIXtrust.get();
+			}
+
 			manager.setSelectedFingerprint(getFingerprint());
 			keyManagers[0] = manager;
 			trustManagers[0] = new CustomTrustManager(keyStore);
