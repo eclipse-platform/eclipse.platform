@@ -33,8 +33,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.eclipse.core.pki.util.LogUtil;
-import org.eclipse.core.pki.util.NormalizeAES256;
-import org.eclipse.core.pki.util.SecureAES256;
+import org.eclipse.core.pki.util.NormalizeGCM;
+import org.eclipse.core.pki.util.SecureGCM;
 
 public enum SecurityFileSnapshot {
 	INSTANCE;
@@ -86,14 +86,16 @@ public enum SecurityFileSnapshot {
 				properties.setProperty("javax.net.ssl.encryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 				passwd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
 				properties.setProperty("javax.net.ssl.keyStorePassword", //$NON-NLS-1$
-						SecureAES256.ENCRYPT.encrypt(passwd, password, salt));
+						// SecureAES256.ENCRYPT.encrypt(passwd, password, salt));
+						SecureGCM.ENCRYPT.encrypt(passwd, password, salt));
 				OutputStream os = Channels.newOutputStream(updateChannel);
 				properties.save(os, null);
 				// After saving encrypted passwd to properties file, switch to unencrypted
 				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 			} else {
 				String ePasswd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
-				passwd = NormalizeAES256.DECRYPT.decrypt(ePasswd, password, salt);
+				// passwd = NormalizeAES256.DECRYPT.decrypt(ePasswd, password, salt);
+				passwd = NormalizeGCM.DECRYPT.decrypt(ePasswd, password, salt);
 				System.setProperty("javax.net.ssl.decryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
 			}
