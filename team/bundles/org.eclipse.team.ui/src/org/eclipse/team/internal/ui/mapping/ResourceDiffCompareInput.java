@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2017 IBM Corporation and others.
+ * Copyright (c) 2006, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -59,6 +59,9 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 				break;
 			case IDiff.CHANGE:
 				compareKind = Differencer.CHANGE;
+				break;
+			case IDiff.NO_CHANGE:
+				compareKind = Differencer.NO_CHANGE;
 				break;
 			default:
 				throw new IllegalArgumentException(Integer.toString(kind));
