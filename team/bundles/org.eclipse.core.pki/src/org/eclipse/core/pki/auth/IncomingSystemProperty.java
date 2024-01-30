@@ -16,7 +16,7 @@ package org.eclipse.core.pki.auth;
 import java.util.Optional;
 
 import org.eclipse.core.pki.util.LogUtil;
-import org.eclipse.core.pki.util.NormalizeAES256;
+import org.eclipse.core.pki.util.NormalizeGCM;
 
 public enum IncomingSystemProperty {
 	SETTINGS;
@@ -67,7 +67,7 @@ public enum IncomingSystemProperty {
 			} else {
 				if (PasswordEncrypted.get().toString().equalsIgnoreCase("true")) { //$NON-NLS-1$
 					salt = new String(System.getProperty("user.name") + pin).getBytes(); //$NON-NLS-1$
-					String passwd = NormalizeAES256.DECRYPT.decrypt(keyStorePassword.get().toString(), pin,
+					String passwd = NormalizeGCM.DECRYPT.decrypt(keyStorePassword.get().toString(), pin,
 							new String(salt));
 					LogUtil.logInfo("IncomingSystemProperty - decrypt passwd:" + passwd); //$NON-NLS-1$
 					System.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
