@@ -930,7 +930,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("customBoolean.xml")); //$NON-NLS-1$
 
 		int lineNumber = 2;
-		int columnNumber = 44;
+		int columnNumber = 45;
 		int lineOffset = getCurrentDocument().getLineOffset(lineNumber);
 		processor.setLineNumber(lineNumber);
 		processor.setColumnNumber(columnNumber);
