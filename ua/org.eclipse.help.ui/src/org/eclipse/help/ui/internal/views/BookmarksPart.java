@@ -27,10 +27,10 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
@@ -39,6 +39,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+@SuppressWarnings("deprecation") // java.util.Observable since 9;
 public class BookmarksPart extends HyperlinkTreePart implements Observer {
 	private Action deleteAction;
 
@@ -116,7 +117,7 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 	protected void configureTreeViewer() {
 		treeViewer.setContentProvider(new BookmarksProvider());
 		treeViewer.setLabelProvider(new BookmarksLabelProvider());
-		treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
+		treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
 		deleteAction = new Action("") { //$NON-NLS-1$
 
 			@Override
@@ -166,7 +167,7 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 			manager.add(action);
 			value=true;
 		}
-		if (value==true)
+		if (value)
 			manager.add(new Separator());
 		return value;
 	}
