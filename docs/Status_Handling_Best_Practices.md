@@ -11,14 +11,14 @@ Contents
     *   [2.1 Message content](#Message-content)
     *   [2.2 Provide additional information in your message](#Provide-additional-information-in-your-message)
     *   [2.3 Attempt to use a unique identifier](#Attempt-to-use-a-unique-identifier)
-    *   [2.4 Developing messages in eclipse: using the NLS.bind method](#Developing-messages-in-eclipse:-using-the-NLS.bind-method)
+    *   [2.4 Developing messages in eclipse: using the NLS.bind method](#developing-messages-in-eclipse-using-the-nlsbind-method)
 *   [3 About logging and Error Dialog](#About-logging-and-Error-Dialog)
     *   [3.1 The concept of a LogRecord](#The-concept-of-a-LogRecord)
     *   [3.2 Best practices for logging](#Best-practices-for-logging)
 *   [4 The Eclipse IStatus](#The-Eclipse-IStatus)
     *   [4.1 Calling the Status API](#Calling-the-Status-API)
     *   [4.2 Implementing your own Status](#Implementing-your-own-Status)
-*   [5 The Eclipse 3.3 Status handler framework](#The-Eclipse-3.3-Status-handler-framework)
+*   [5 The Eclipse 3.3 Status handler framework](#the-eclipse-33-status-handler-framework)
 *   [6 Using the new Eclipse status handler API](#Using-the-new-Eclipse-status-handler-API)
     *   [6.1 Calling the StatusManager handle method](#Calling-the-StatusManager-handle-method)
 *   [7 Developing a StatusHandler](#Developing-a-StatusHandler)
@@ -85,7 +85,7 @@ Eclipse provides a great mechanism to manage your messages from within your Java
 
 Developing Message Bundles in Eclipse \[ [http://help.eclipse.org/help32/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/message_bundles.html](http://help.eclipse.org/help32/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/message_bundles.html)\]
 
-Internationalization best practices \[ [http://www-128.ibm.com/developerworks/opensource/library/os-i18n/](http://www-128.ibm.com/developerworks/opensource/library/os-i18n/)\] \[ [http://www.icu-project.org/](http://www.icu-project.org/)\]
+Internationalization best practices [http://www.icu-project.org/](http://www.icu-project.org/).
 
 About logging and Error Dialog
 ==============================
@@ -150,20 +150,20 @@ An Example in Eclipse 3.3 is the class CVSStatus.
 The class carries information that diagnostic tool can use to validate CVS.
 2.  Do not use IStatus.ERROR as a code. Try to use your own code. As an example, look at the Class CVSSTatus.
 
-    public class CVSStatus extends TeamStatus {
-     
-    /*** Status codes ***/
-    public static final int SERVER_ERROR = -10;
-    public static final int NO_SUCH_TAG = -11;
-    public static final int CONFLICT = -12;
-    ...
-    public static final int SERVER_IS_UNKNOWN = -22;
-    ...
-     
-    public CVSStatus(int severity, int code, String message, Throwable t, ICVSRepositoryLocation cvsLocation) {
-      super(severity, CVSProviderPlugin.ID, code, message, t,null);
-      this.cvsLocation = cvsLocation;
-    }
+	    public class CVSStatus extends TeamStatus {
+	     
+	    /*** Status codes ***/
+	    public static final int SERVER_ERROR = -10;
+	    public static final int NO_SUCH_TAG = -11;
+	    public static final int CONFLICT = -12;
+	    ...
+	    public static final int SERVER_IS_UNKNOWN = -22;
+	    ...
+	     
+	    public CVSStatus(int severity, int code, String message, Throwable t, ICVSRepositoryLocation cvsLocation) {
+	      super(severity, CVSProviderPlugin.ID, code, message, t,null);
+	      this.cvsLocation = cvsLocation;
+	    }
 
 The Eclipse 3.3 Status handler framework
 ========================================
