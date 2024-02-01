@@ -104,7 +104,7 @@ The names of API packages need to make sense to the ISV.
 The number of different packages that the ISV needs to remember should be small, since a profusion of API packages can make it difficult for ISVs to know which packages they need to import. 
 Within an API package, all public classes and interfaces are considered API. 
 The names of API packages should not contain internal, tests, or examples to avoid confusion with the scheme for naming non-API packages. 
-Consult [Eclipse/API Central](/Eclipse/API_Central "Eclipse/API Central") for more detailed information on choosing and naming API elements.
+Consult [Eclipse/API Central](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Provisional_API_Guidelines.md) for more detailed information on choosing and naming API elements.
 
 ### Internal Implementation Packages
 
