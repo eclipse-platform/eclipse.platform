@@ -53,12 +53,11 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
 
 	/**
 	 * Draw the overlays for the receiver.
-	 * @param overlaysArray the overlay images
 	 */
-	protected void drawOverlays(ImageDescriptor[] overlaysArray) {
+	private void drawOverlays() {
 
 		for (int i = 0; i < overlays.length; i++) {
-			ImageDescriptor overlay = overlaysArray[i];
+			ImageDescriptor overlay = overlays[i];
 			if (overlay == null) {
 				continue;
 			}
@@ -81,6 +80,9 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
 			case IDecoration.BOTTOM_RIGHT:
 				drawImage(overlayData, size.x - overlayData.width, size.y
 						- overlayData.height);
+				break;
+			default:
+				// UNDERLAY
 				break;
 			}
 		}
@@ -114,7 +116,7 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
 			drawImage(underlay.getImageData(), 0, 0);
 		}
 		drawImage(base.getImageData(), 0, 0);
-		drawOverlays(overlays);
+		drawOverlays();
 	}
 
 	@Override

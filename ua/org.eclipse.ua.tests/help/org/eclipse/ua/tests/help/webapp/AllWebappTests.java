@@ -13,31 +13,31 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests utility classes and servlets used in Web Application
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	BrowserIdentificationTest.class,
-	TopicPathTest.class,
-	FilterTest.class,
-	PluginsRootReplacement.class,
-	UrlCoderTest.class,
-	UrlUtilsTests.class,
-	LocaleTest.class,
-	PrintSubtopics.class,
-	RestrictedTopicParameter.class,
-	FilterExtensionTest.class,
-	FragmentServletTest.class,
-	HelpServerInterrupt.class,
-	HelpServerBinding.class,
-	HtmlCoderTest.class,
-	TocZipTest.class,
-	JsonHelperTests.class,
-	EclipseConnectorTests.class
+@Suite
+@SelectClasses({ //
+		BrowserIdentificationTest.class, //
+		TopicPathTest.class, //
+		FilterTest.class, //
+		PluginsRootReplacement.class, //
+		UrlCoderTest.class, //
+		UrlUtilsTests.class, //
+		LocaleTest.class, //
+		PrintSubtopics.class, //
+		RestrictedTopicParameter.class, //
+		FilterExtensionTest.class, //
+		FragmentServletTest.class, //
+		HelpServerInterrupt.class, //
+		HelpServerBinding.class, //
+		HtmlCoderTest.class, //
+		TocZipTest.class, //
+		JsonHelperTests.class, //
+		EclipseConnectorTests.class, //
 })
 public class AllWebappTests {
 }

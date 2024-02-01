@@ -14,20 +14,20 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	TestCompositeParser.class,
-	TestState.class,
-	TestTaskGroups.class,
-	TestPersistence.class,
-	TestMarkupParser.class,
-	TestCheatSheetManagerEvents.class,
-	TestSuccessors.class,
-	TestTaskEvents.class,
-	TestDependency.class
+@Suite
+@SelectClasses({ //
+		TestCompositeParser.class, //
+		TestState.class, //
+		TestTaskGroups.class, //
+		TestPersistence.class, //
+		TestMarkupParser.class, //
+		TestCheatSheetManagerEvents.class, //
+		TestSuccessors.class, //
+		TestTaskEvents.class, //
+		TestDependency.class, //
 })
 public class AllCompositeTests {
 }

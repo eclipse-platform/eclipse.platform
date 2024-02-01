@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -26,7 +27,9 @@ import org.eclipse.core.internal.net.ProxyData;
 import org.eclipse.core.internal.net.ProxySelector;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SystemProxyTest {
 
@@ -35,7 +38,7 @@ public class SystemProxyTest {
 
 	private final Map<String, IProxyData> proxyDataMap = new HashMap<>();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		isSystemProxiesDefault = isSystemProxiesEnabled();
 		setSystemProxiesEnabled(true);
@@ -43,7 +46,7 @@ public class SystemProxyTest {
 		setProxiesEnabled(true);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		setProxiesEnabled(isProxiesDefault);
 		setSystemProxiesEnabled(isSystemProxiesDefault);
@@ -99,6 +102,7 @@ public class SystemProxyTest {
 		checkGetProxyDataForHost("www.something.org");
 	}
 
+	@SuppressWarnings("deprecation")
 	private void checkGetProxyDataForHost(String host) {
 		IProxyData[] proxiesData = getProxyManager().getProxyDataForHost(host);
 		assertNotNull(proxiesData);
@@ -193,23 +197,12 @@ public class SystemProxyTest {
 	 */
 	@Test
 	public void testNonProxiedHosts_WindowsIEManualSettings() throws URISyntaxException {
-		IProxyData[] proxiesData = getProxyManager().select(new URI("http://eclipse"));
-		assertEquals(1, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://eclipse.org/bugs"));
-		assertEquals(0, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://nonexisting.com"));
-		assertEquals(0, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://www.eclipse.org"));
-		assertEquals(0, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://www.myDomain.com"));
-		assertEquals(0, proxiesData.length);
-
-		proxiesData = getProxyManager().select(new URI("http://www.test.edu"));
-		assertEquals(0, proxiesData.length);
+		assertThat(getProxyManager().select(new URI("http://eclipse"))).hasSize(1);
+		assertThat(getProxyManager().select(new URI("http://eclipse.org/bugs"))).isEmpty();
+		assertThat(getProxyManager().select(new URI("http://nonexisting.com"))).isEmpty();
+		assertThat(getProxyManager().select(new URI("http://www.eclipse.org"))).isEmpty();
+		assertThat(getProxyManager().select(new URI("http://www.myDomain.com"))).isEmpty();
+		assertThat(getProxyManager().select(new URI("http://www.test.edu"))).isEmpty();
 	}
 
 	void initializeTestProxyData(String proxyDataSource) {

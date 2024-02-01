@@ -13,14 +13,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.internal.content.ContentTypeManager;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.core.runtime.content.IContentTypeMatcher;
+import org.eclipse.core.runtime.content.IContentTypeSettings;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.junit.Rule;
@@ -104,8 +110,7 @@ public class SpecificContextTest extends ContentTypeTest {
 		localSettings = textContentType.getSettings(scope);
 		// scope-specific settings should contain the filespec we just added
 		String[] fileSpecs = localSettings.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
-		assertEquals("2.2", 1, fileSpecs.length);
-		assertEquals("2.3", "foo", fileSpecs[0]);
+		assertThat(fileSpecs).containsExactly("foo");
 		// now it is associated at the scope level...
 		assertTrue("2.5", textContentType.isAssociatedWith("hello.foo", scope));
 		// ...but not at the global level

@@ -13,16 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.jobs.Job;
-import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
 
 /**
  * This class can be used for testing progress monitoring.
@@ -68,25 +62,13 @@ public class FussyProgressMonitor extends TestProgressMonitor {
 		this.job = job;
 	}
 
-	private <T> void assertThat(String reason, T actual, Matcher<T> matcher) {
+	private void wrapAssertion(Runnable assertion) {
 		// silently ignore follow-up failures
 		if (hasFailed) {
 			return;
 		}
 		try {
-			MatcherAssert.assertThat(reason, actual, matcher);
-		} catch (AssertionError error) {
-			processFailedAssertion(error);
-		}
-	}
-
-	private <T> void assertThat(String reason, boolean condition) {
-		// silently ignore follow-up failures
-		if (hasFailed) {
-			return;
-		}
-		try {
-			MatcherAssert.assertThat(reason, condition);
+			assertion.run();
 		} catch (AssertionError error) {
 			processFailedAssertion(error);
 		}
@@ -108,16 +90,20 @@ public class FussyProgressMonitor extends TestProgressMonitor {
 	 * Asserts that this progress monitor is all used up
 	 */
 	public void assertUsedUp() {
-		assertThat("beginTask has not been called on ProgressMonitor", beginTaskCalled);
-		assertThat("ProgressMonitor not used up", Math.round(workedSoFar), greaterThanOrEqualTo((long) totalWork));
+		wrapAssertion(
+				() -> assertThat(beginTaskCalled).withFailMessage("beginTask has not been called on ProgressMonitor")
+						.isTrue());
+		wrapAssertion(() -> assertThat(Math.round(workedSoFar)).as("work done").isGreaterThanOrEqualTo(totalWork));
 	}
 
 	@Override
 	public void beginTask(String name, int newTotalWork) {
-		assertThat("beginTask may only be called once (old name=" + taskName + ")", !beginTaskCalled);
+		wrapAssertion(() -> assertThat(beginTaskCalled)
+				.withFailMessage("beginTask may only be called once (old name=%s)", taskName).isFalse());
 		beginTaskCalled = true;
 		taskName = name;
-		assertThat("total work must be positive or UNKNOWN", newTotalWork, anyOf(is(UNKNOWN), greaterThan(0)));
+		wrapAssertion(() -> assertThat(newTotalWork).as("total work").satisfiesAnyOf(
+				work -> assertThat(work).isEqualTo(UNKNOWN), work -> assertThat(work).isGreaterThan(0)));
 		this.totalWork = newTotalWork;
 		beginTime = System.currentTimeMillis();
 	}
@@ -130,13 +116,15 @@ public class FussyProgressMonitor extends TestProgressMonitor {
 
 	@Override
 	public void internalWorked(double work) {
-		assertThat("can accept calls to worked/internalWorked only after beginTask", beginTaskCalled);
-		assertThat("can accept calls to worked/internalWorked only before done is called", doneCalls, is(0));
-		assertThat("amount worked should be positive", work, greaterThan(0.0));
+		wrapAssertion(() -> assertThat(beginTaskCalled)
+				.withFailMessage("can accept calls to worked/internalWorked only after beginTask").isTrue());
+		wrapAssertion(() -> assertThat(doneCalls)
+				.withFailMessage("can accept calls to worked/internalWorked only before done is called").isZero());
+		wrapAssertion(() -> assertThat(work).as("amount worked").isGreaterThan(0.0));
 		workedSoFar += work;
 		if (totalWork != UNKNOWN) {
-			assertThat("worked more than totalWork", workedSoFar,
-					lessThanOrEqualTo(totalWork + (totalWork * EPS_FACTOR)));
+			wrapAssertion(() -> assertThat(workedSoFar).as("total work done")
+					.isLessThanOrEqualTo(totalWork + (totalWork * EPS_FACTOR)));
 		}
 	}
 
@@ -162,12 +150,14 @@ public class FussyProgressMonitor extends TestProgressMonitor {
 	 *  should be called after every use of a FussyProgressMonitor
 	 */
 	public void sanityCheck() {
-		assertThat("sanityCheck has already been called", !sanityCheckCalled);
+		wrapAssertion(
+				() -> assertThat(sanityCheckCalled).withFailMessage("sanityCheck has already been called").isFalse());
 		sanityCheckCalled = true;
 		long duration = System.currentTimeMillis() - beginTime;
 		if (duration > NOTICEABLE_DELAY && beginTaskCalled) {
-			assertThat("this operation took: " + duration + "ms, it should report progress", workedSoFar,
-					greaterThan(0.0));
+			wrapAssertion(() -> assertThat(workedSoFar)
+					.withFailMessage("this operation took: %s ms, it should report progress", duration)
+					.isGreaterThan(0.0));
 		}
 	}
 

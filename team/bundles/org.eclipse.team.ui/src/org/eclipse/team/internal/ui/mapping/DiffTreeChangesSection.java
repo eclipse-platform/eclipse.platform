@@ -165,8 +165,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			return hasChangesFor(id, adapter, context, new int[] { IThreeWayDiff.CONFLICTING, IThreeWayDiff.INCOMING }, IThreeWayDiff.DIRECTION_MASK);
 		case ISynchronizePageConfiguration.BOTH_MODE:
 			return hasChangesFor(id, adapter, context, new int[] { IThreeWayDiff.CONFLICTING, IThreeWayDiff.INCOMING, IThreeWayDiff.OUTGOING }, IThreeWayDiff.DIRECTION_MASK);
+		default:
+			throw new IllegalArgumentException(Integer.toString(candidateMode));
 		}
-		return false;
 	}
 
 	private boolean hasChangesFor(String id, ISynchronizationCompareAdapter adapter, ISynchronizationContext context, int[] states, int mask) {

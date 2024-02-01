@@ -47,7 +47,6 @@ public class RemoteExtensionProvider extends AbstractContentExtensionProvider {
 			String isEnabled[] = handler.isEnabled();
 			for (int ic = 0; ic < handler.getTotalRemoteInfocenters(); ic++) {
 				if (isEnabled[ic].equalsIgnoreCase("true")) { //$NON-NLS-1$
-					@SuppressWarnings("resource")
 					InputStream in = null;
 					try {
 						URL url = RemoteHelp.getURL(ic, PATH_EXTENSIONS);

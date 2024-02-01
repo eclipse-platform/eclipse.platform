@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -150,7 +150,7 @@ public class LaunchFavoriteTests extends AbstractLaunchTest {
 		ILaunchConfiguration[] favorites = history.getFavorites();
 		assertNotNull("No favorites", favorites); //$NON-NLS-1$
 		if (size != -1) {
-			assertEquals("Favorites wrong size", size, favorites.length); //$NON-NLS-1$
+			assertThat(favorites).hasSize(size);
 		}
 		for (ILaunchConfiguration favorite : favorites) {
 			if (configuration.equals(favorite)) {

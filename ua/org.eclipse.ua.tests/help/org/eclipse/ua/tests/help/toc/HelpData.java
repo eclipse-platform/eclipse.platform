@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.toc;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
 import org.eclipse.help.internal.util.ProductPreferences;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HelpData {
 	@Test

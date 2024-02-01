@@ -14,11 +14,11 @@
 
 package org.eclipse.ua.tests.help.other;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.help.ui.internal.util.EscapeUtils;
 import org.eclipse.ui.internal.cheatsheets.views.ViewUtilities;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestEscapeUtils {
 	@Test

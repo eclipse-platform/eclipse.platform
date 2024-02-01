@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
@@ -55,13 +55,15 @@ public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
 	public void test2() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceDescription desc = workspace.getDescription();
-		assertThat("auto building is expected to be disabled: " + desc, !desc.isAutoBuilding());
-		assertThat("unexpected buildorder in: " + desc, desc.getBuildOrder(), is(BUILD_ORDER));
-		assertThat("unexpected apply file state policy in: " + desc, desc.isApplyFileStatePolicy(), is(APPLY_POLICY));
-		assertThat("unexpected longevity in: " + desc, desc.getFileStateLongevity(), is(STATE_LONGEVITY));
-		assertThat("unexpected max states in: " + desc, desc.getMaxFileStates(), is(MAX_STATES));
-		assertThat("unexpected max file size in: " + desc, desc.getMaxFileStateSize(), is(MAX_FILE_SIZE));
-		assertThat("unexpected snapshot interval in: " + desc, desc.getSnapshotInterval(), is(SNAPSHOT_INTERVAL));
+		assertThat(desc).matches(not(IWorkspaceDescription::isAutoBuilding), "auto building is disabled");
+		assertThat(desc.getBuildOrder()).as("buildorder in: %s", desc).isEqualTo(BUILD_ORDER);
+		assertThat(desc.isApplyFileStatePolicy()).as("apply file state policy in: %s", desc)
+				.isEqualTo(APPLY_POLICY);
+		assertThat(desc.getFileStateLongevity()).as("longevity in: %s", desc).isEqualTo(STATE_LONGEVITY);
+		assertThat(desc.getMaxFileStates()).as("max states in: %s", desc).isEqualTo(MAX_STATES);
+		assertThat(desc.getMaxFileStateSize()).as("max file size in: %s", desc).isEqualTo(MAX_FILE_SIZE);
+		assertThat(desc.getSnapshotInterval()).as("snapshot interval in: %s", desc)
+				.isEqualTo(SNAPSHOT_INTERVAL);
 	}
 
 	public static Test suite() {

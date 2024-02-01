@@ -13,18 +13,18 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.preferences;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help preferences functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	ProductPreferencesTest.class,
-	HelpDataTest.class,
-	CssPreferences.class,
-	BookmarksTest.class
+@Suite
+@SelectClasses({ //
+		ProductPreferencesTest.class, //
+		HelpDataTest.class, //
+		CssPreferences.class, //
+		BookmarksTest.class, //
 })
 public class AllPreferencesTests {
 }

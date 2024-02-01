@@ -14,12 +14,12 @@
 
 package org.eclipse.ua.tests.help.other;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ResourceTest {
 	@Test

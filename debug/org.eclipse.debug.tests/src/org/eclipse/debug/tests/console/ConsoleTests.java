@@ -14,6 +14,7 @@
 
 package org.eclipse.debug.tests.console;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -50,7 +51,7 @@ public class ConsoleTests extends AbstractDebugTest {
 		// abcdef need 1 byte in UTF-8 each
 		// Ã¤Ã¶Ã¼ (\u00e4\u00f6\u00fc) need 2 bytes each
 		byte[] testStringBuffer = testString.getBytes(StandardCharsets.UTF_8);
-		assertEquals("Test string \"" + testString + "\" should consist of 12 UTF-8 bytes", 12, testStringBuffer.length); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(testStringBuffer).as("Test string \"" + testString + "\" should consist of 12 UTF-8 bytes").hasSize(12);
 		MessageConsole console = new MessageConsole("Test Console", //$NON-NLS-1$
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
@@ -78,7 +79,7 @@ public class ConsoleTests extends AbstractDebugTest {
 	public void testConsoleOutputStreamLastR() throws IOException {
 		String testString = "a\r"; //$NON-NLS-1$
 		byte[] testStringBuffer = testString.getBytes(StandardCharsets.UTF_8);
-		assertEquals("Test string \"" + testString + "\" should consist of 2 UTF-8 bytes", 2, testStringBuffer.length); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(testStringBuffer).as("Test string \"" + testString + "\" should consist of 2 UTF-8 bytes").hasSize(2);
 		MessageConsole console = new MessageConsole("Test Console 2", //$NON-NLS-1$
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();

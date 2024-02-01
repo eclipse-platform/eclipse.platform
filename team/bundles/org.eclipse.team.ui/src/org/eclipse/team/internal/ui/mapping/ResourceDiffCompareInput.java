@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2017 IBM Corporation and others.
+ * Copyright (c) 2006, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -49,7 +49,8 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	public static int getCompareKind(IDiff node) {
 		int compareKind = 0;
 		if (node != null) {
-			switch (node.getKind()) {
+			int kind = node.getKind();
+			switch (kind) {
 			case IDiff.ADD:
 				compareKind = Differencer.ADDITION;
 				break;
@@ -59,10 +60,15 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 			case IDiff.CHANGE:
 				compareKind = Differencer.CHANGE;
 				break;
+			case IDiff.NO_CHANGE:
+				compareKind = Differencer.NO_CHANGE;
+				break;
+			default:
+				throw new IllegalArgumentException(Integer.toString(kind));
 			}
-			if (node instanceof IThreeWayDiff) {
-				IThreeWayDiff twd = (IThreeWayDiff) node;
-				switch (twd.getDirection()) {
+			if (node instanceof IThreeWayDiff twd) {
+				int direction = twd.getDirection();
+				switch (direction) {
 				case IThreeWayDiff.OUTGOING :
 					compareKind |= Differencer.RIGHT;
 					break;
@@ -73,6 +79,8 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 					compareKind |= Differencer.LEFT;
 					compareKind |= Differencer.RIGHT;
 					break;
+				default:
+					throw new IllegalArgumentException(Integer.toString(direction));
 				}
 			}
 		}

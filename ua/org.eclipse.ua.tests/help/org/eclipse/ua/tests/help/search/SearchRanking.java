@@ -14,7 +14,8 @@
 
 package org.eclipse.ua.tests.help.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ import org.eclipse.help.internal.search.ISearchQuery;
 import org.eclipse.help.internal.search.SearchHit;
 import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.help.internal.search.SearchResults;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SearchRanking {
 
@@ -44,7 +45,7 @@ public class SearchRanking {
 	public void testTitleBoost1() {
 		SearchHit[] hits = SearchTestUtils.getSearchHits("mjuhgt", "en");
 		Arrays.sort(hits);
-		assertEquals(2, hits.length);
+		assertThat(hits).hasSize(2);
 		assertEquals("/org.eclipse.ua.tests/data/help/search/extraDir/ranking/ranktest1b.htm", getPath(hits[0]));
 		assertEquals("/org.eclipse.ua.tests/data/help/search/extraDir/ranking/ranktest1a.htm", getPath(hits[1]));
 	}
@@ -53,7 +54,7 @@ public class SearchRanking {
 	public void testTitleBoost2() {
 		SearchHit[] hits = SearchTestUtils.getSearchHits("odrgtb", "en");
 		Arrays.sort(hits);
-		assertEquals(2, hits.length);
+		assertThat(hits).hasSize(2);
 		assertEquals("/org.eclipse.ua.tests/data/help/search/extraDir/ranking/ranktest1a.htm", getPath(hits[0]));
 		assertEquals("/org.eclipse.ua.tests/data/help/search/extraDir/ranking/ranktest1b.htm", getPath(hits[1]));
 	}
@@ -65,7 +66,7 @@ public class SearchRanking {
 	public void testConsecutiveWords1() {
 		SearchHit[] hits = SearchTestUtils.getSearchHits("iduhnf xaqsdab", "en");
 		Arrays.sort(hits);
-		assertEquals(2, hits.length);
+		assertThat(hits).hasSize(2);
 		assertEquals("/org.eclipse.ua.tests/data/help/search/extraDir/ranking/ranktest2b.htm",
 				getPath(hits[0]));
 		assertEquals("/org.eclipse.ua.tests/data/help/search/extraDir/ranking/ranktest2a.htm",
@@ -76,7 +77,7 @@ public class SearchRanking {
 	public void testConsecutiveWords2() {
 		SearchHit[] hits = SearchTestUtils.getSearchHits("xaqsdab iduhnf", "en");
 		Arrays.sort(hits);
-		assertEquals(2, hits.length);
+		assertThat(hits).hasSize(2);
 		assertEquals("/org.eclipse.ua.tests/data/help/search/extraDir/ranking/ranktest2a.htm",
 				getPath(hits[0]));
 		assertEquals("/org.eclipse.ua.tests/data/help/search/extraDir/ranking/ranktest2b.htm",

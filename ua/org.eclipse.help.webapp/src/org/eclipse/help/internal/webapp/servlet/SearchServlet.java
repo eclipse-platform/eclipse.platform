@@ -14,6 +14,7 @@
 package org.eclipse.help.internal.webapp.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,8 +70,11 @@ public class SearchServlet extends HttpServlet {
 		String response = processRequest(req, resp);
 		if ("".equals(response)) //$NON-NLS-1$
 			resp.sendError(400); // bad request; missing parameter
-		else
-			resp.getWriter().write(response);
+		else {
+			@SuppressWarnings("resource")
+			PrintWriter writer = resp.getWriter();
+			writer.write(response);
+		}
 	}
 
 	protected String processRequest(HttpServletRequest req, HttpServletResponse resp)

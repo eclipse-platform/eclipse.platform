@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -74,8 +74,7 @@ public class FilterTransformTests extends AbstractDebugTest {
 		assertTrue("Element should be filtered", transform.isFiltered(TreePath.EMPTY, 3)); //$NON-NLS-1$
 		transform.removeElementFromFilters(TreePath.EMPTY, element3);
 		assertFalse("Element should be unfiltered", transform.isFiltered(TreePath.EMPTY, 3)); //$NON-NLS-1$
-		assertArrayEquals("Wrong filter state", transform.getFilteredChildren(TreePath.EMPTY), new int[] { //$NON-NLS-1$
-				0, 2, 5, 6 });
+		assertThat(transform.getFilteredChildren(TreePath.EMPTY)).as("filter state").containsExactly(0, 2, 5, 6);
 	}
 
 	@Test
@@ -83,8 +82,7 @@ public class FilterTransformTests extends AbstractDebugTest {
 		assertTrue("Element should be filtered", transform.isFiltered(TreePath.EMPTY, 0)); //$NON-NLS-1$
 		transform.removeElementFromFilters(TreePath.EMPTY, element0);
 		assertFalse("Element should be unfiltered", transform.isFiltered(TreePath.EMPTY, 0)); //$NON-NLS-1$
-		assertArrayEquals("Wrong filter state", transform.getFilteredChildren(TreePath.EMPTY), new int[] { //$NON-NLS-1$
-				1, 2, 5, 6 });
+		assertThat(transform.getFilteredChildren(TreePath.EMPTY)).as("filter state").containsExactly(1, 2, 5, 6);
 	}
 
 	@Test
@@ -92,8 +90,7 @@ public class FilterTransformTests extends AbstractDebugTest {
 		assertTrue("Element should be filtered", transform.isFiltered(TreePath.EMPTY, 7)); //$NON-NLS-1$
 		transform.removeElementFromFilters(TreePath.EMPTY, element7);
 		assertFalse("Element should be unfiltered", transform.isFiltered(TreePath.EMPTY, 7)); //$NON-NLS-1$
-		assertArrayEquals("Wrong filter state", transform.getFilteredChildren(TreePath.EMPTY), new int[] { //$NON-NLS-1$
-				0, 2, 3, 6 });
+		assertThat(transform.getFilteredChildren(TreePath.EMPTY)).as("filter state").containsExactly(0, 2, 3, 6);
 	}
 
 	@Test
@@ -101,8 +98,7 @@ public class FilterTransformTests extends AbstractDebugTest {
 		assertTrue("Element should be filtered", transform.isFiltered(TreePath.EMPTY, 3)); //$NON-NLS-1$
 		transform.clear(TreePath.EMPTY, 3);
 		assertFalse("Element should be unfiltered", transform.isFiltered(TreePath.EMPTY, 3)); //$NON-NLS-1$
-		assertArrayEquals("Wrong filter state", transform.getFilteredChildren(TreePath.EMPTY), new int[] { //$NON-NLS-1$
-				0, 2, 6, 7 });
+		assertThat(transform.getFilteredChildren(TreePath.EMPTY)).as("filter state").containsExactly(0, 2, 6, 7);
 	}
 
 	@Test
@@ -110,8 +106,7 @@ public class FilterTransformTests extends AbstractDebugTest {
 		assertTrue("Element should be filtered", transform.isFiltered(TreePath.EMPTY, 0)); //$NON-NLS-1$
 		transform.clear(TreePath.EMPTY, 0);
 		assertFalse("Element should be unfiltered", transform.isFiltered(TreePath.EMPTY, 0)); //$NON-NLS-1$
-		assertArrayEquals("Wrong filter state", transform.getFilteredChildren(TreePath.EMPTY), new int[] { //$NON-NLS-1$
-				2, 3, 6, 7 });
+		assertThat(transform.getFilteredChildren(TreePath.EMPTY)).as("filter state").containsExactly(2, 3, 6, 7);
 	}
 
 	@Test
@@ -119,8 +114,7 @@ public class FilterTransformTests extends AbstractDebugTest {
 		assertTrue("Element should be filtered", transform.isFiltered(TreePath.EMPTY, 7)); //$NON-NLS-1$
 		transform.clear(TreePath.EMPTY, 7);
 		assertFalse("Element should be unfiltered", transform.isFiltered(TreePath.EMPTY, 7)); //$NON-NLS-1$
-		assertArrayEquals("Wrong filter state", transform.getFilteredChildren(TreePath.EMPTY), new int[] { //$NON-NLS-1$
-				0, 2, 3, 6 });
+		assertThat(transform.getFilteredChildren(TreePath.EMPTY)).as("filter state").containsExactly(0, 2, 3, 6);
 	}
 
 	@Test

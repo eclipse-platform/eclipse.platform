@@ -61,6 +61,8 @@ public class DiffTreeStatusLineContributionGroup extends
 		case SyncInfo.CONFLICTING:
 			state = IThreeWayDiff.CONFLICTING;
 			break;
+		default:
+			throw new IllegalArgumentException(Integer.toString(state));
 		}
 		return (int)getSynchronizationContext().getDiffTree().countFor(state, IThreeWayDiff.DIRECTION_MASK);
 	}

@@ -14,9 +14,9 @@
 
 package org.eclipse.ua.tests.cheatsheet.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,8 +26,8 @@ import org.eclipse.ua.tests.cheatsheet.util.StatusCheck;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
 import org.eclipse.ui.internal.cheatsheets.data.ICheatSheet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 public class InvalidCheatsheet {
@@ -35,7 +35,7 @@ public class InvalidCheatsheet {
 	private CheatSheetParser parser;
 	private String bundleSymbolicName;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		parser = new CheatSheetParser();
 		bundleSymbolicName = FrameworkUtil.getBundle(getClass()).getSymbolicName();

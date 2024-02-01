@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -24,9 +24,9 @@ import java.util.List;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,14 +37,14 @@ public class ExtensionServiceTest {
 
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}
@@ -54,7 +54,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findContributionByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.1");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findContributionByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.3");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findContributionByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.4");
-		assertEquals(0, UARoot.length);
+		assertThat(UARoot).isEmpty();
 	}
 
 	@Test
@@ -78,7 +78,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findContributionByPath(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/extension.xml#anchor.invalidcontribution");
-		assertEquals(2, UARoot.length);
+		assertThat(UARoot).hasSize(2);
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findReplacementByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.1");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findReplacementByContent(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc2.xml#element.3");
-		assertEquals(0, UARoot.length);
+		assertThat(UARoot).isEmpty();
 	}
 
 	@Test
@@ -102,7 +102,7 @@ public class ExtensionServiceTest {
 		Node root = getContentExtensions("en");
 		Element[] UARoot = findReplacementByPath(root,
 				"/org.eclipse.ua.tests/data/help/dynamic/shared/doc1.xml#element.2");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	private Element[] findContributionByContent(Node root, String content) {
@@ -161,7 +161,7 @@ public class ExtensionServiceTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	@Test

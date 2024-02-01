@@ -15,6 +15,7 @@
 package org.eclipse.help.internal.webapp.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -140,7 +141,9 @@ public class AboutServlet extends HttpServlet {
 		buf.append("</table>"); //$NON-NLS-1$
 		buf.append(XHTML_3);
 		String response = buf.toString();
-		resp.getWriter().write(response);
+		@SuppressWarnings("resource")
+		PrintWriter writer = resp.getWriter();
+		writer.write(response);
 	}
 
 	private void getPreferences(HttpServletResponse resp) throws IOException {
@@ -156,7 +159,9 @@ public class AboutServlet extends HttpServlet {
 		writer.writePreferences();
 		buf.append(XHTML_3);
 		String response = buf.toString();
-		resp.getWriter().write(response);
+		@SuppressWarnings("resource")
+		PrintWriter w = resp.getWriter();
+		w.write(response);
 	}
 
 	private void getAgent(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -172,7 +177,9 @@ public class AboutServlet extends HttpServlet {
 		buf.append(UrlUtil.htmlEncode(agent));
 		buf.append(XHTML_3);
 		String response = buf.toString();
-		resp.getWriter().write(response);
+		@SuppressWarnings("resource")
+		PrintWriter writer = resp.getWriter();
+		writer.write(response);
 	}
 
 	private String headerRowFor(PluginDetails details) {

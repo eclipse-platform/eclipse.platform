@@ -14,13 +14,13 @@
 
 package org.eclipse.ua.tests.help.other;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.io.Reader;
 
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
 public class EntityResolutionTest {
@@ -39,9 +39,9 @@ public class EntityResolutionTest {
 				read = stream.read(buf);
 			}
 			if (isSupportedDtd) {
-				assertTrue("Entity not found", read > 0);
+				assertThat(read).as("entity not found").isGreaterThan(0);
 			} else {
-				assertTrue("Unsupported Entity did not return empty stream", read == -1);
+				assertThat(read).as("unsupported Entity did not return empty stream").isEqualTo(-1);
 			}
 		}
 	}

@@ -13,18 +13,18 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.scope;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help dynamic content functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	IntersectionTest.class,
-	ScopeHierarchy.class,
-	EmptyLeafRemoval.class,
-	ScopeSetManagerTest.class
+@Suite
+@SelectClasses({ //
+		IntersectionTest.class, //
+		ScopeHierarchy.class, //
+		EmptyLeafRemoval.class, //
+		ScopeSetManagerTest.class, //
 })
 public class AllScopeTests {
 }

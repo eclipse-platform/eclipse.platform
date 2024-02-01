@@ -15,7 +15,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -102,7 +102,7 @@ public class WorkerPoolTest {
 	private int getWorkerThreadCount() {
 		Thread[] threads = new Thread[Thread.activeCount() * 2];
 		int enumeratedThreadCount = Thread.enumerate(threads);
-		assertTrue("Too many active threads: " + enumeratedThreadCount, enumeratedThreadCount < threads.length);
+		assertThat(enumeratedThreadCount).as("check not too many active threads").isLessThan(threads.length);
 
 		int workerThreadCount = 0;
 		for (int i = 0; i < enumeratedThreadCount; i++) {

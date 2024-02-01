@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.internal.contenttype.tests;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -33,12 +33,12 @@ public class XMLRootHandlerTest {
 
 	private XMLRootHandler handler;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.handler = new XMLRootHandler(true);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		this.handler = null;
 	}

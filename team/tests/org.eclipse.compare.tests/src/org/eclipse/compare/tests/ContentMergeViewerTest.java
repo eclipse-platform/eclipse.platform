@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
@@ -107,8 +108,8 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = false;
 		myContentMergeViewer.setLeftDirty(true);
 
-		assertEquals(true, result[0]);
-		assertEquals(true, result[1]);
+		assertTrue(result[0]);
+		assertTrue(result[1]);
 	}
 
 	@Test
@@ -117,8 +118,8 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = true;
 		myContentMergeViewer.setLeftDirty(true);
 
-		assertEquals(true, result[0]);
-		assertEquals(true, result[1]);
+		assertTrue(result[0]);
+		assertTrue(result[1]);
 	}
 
 	@Test
@@ -127,7 +128,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = false;
 		myContentMergeViewer.setLeftDirty(true);
 
-		assertEquals(false, result[0]);
+		assertFalse(result[0]);
 	}
 
 	@Test
@@ -136,7 +137,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = true;
 		myContentMergeViewer.setLeftDirty(true);
 
-		assertEquals(false, result[0]);
+		assertFalse(result[0]);
 	}
 
 	// set left to false
@@ -146,7 +147,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = false;
 		myContentMergeViewer.setLeftDirty(false);
 
-		assertEquals(false, result[0]);
+		assertFalse(result[0]);
 	}
 
 	@Test
@@ -155,7 +156,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = true;
 		myContentMergeViewer.setLeftDirty(false);
 
-		assertEquals(false, result[0]);
+		assertFalse(result[0]);
 	}
 
 	@Test
@@ -164,8 +165,8 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = false;
 		myContentMergeViewer.setLeftDirty(false);
 
-		assertEquals(true, result[0]);
-		assertEquals(false, result[1]);
+		assertTrue(result[0]);
+		assertFalse(result[1]);
 	}
 
 	@Test
@@ -174,8 +175,8 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = true;
 		myContentMergeViewer.setLeftDirty(false);
 
-		assertEquals(true, result[0]);
-		assertEquals(false, result[1]);
+		assertTrue(result[0]);
+		assertFalse(result[1]);
 	}
 
 	// set right to true
@@ -185,8 +186,8 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = false;
 		myContentMergeViewer.setRightDirty(true);
 
-		assertEquals(true, result[0]);
-		assertEquals(true, result[1]);
+		assertTrue(result[0]);
+		assertTrue(result[1]);
 	}
 
 	@Test
@@ -195,7 +196,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = true;
 		myContentMergeViewer.setRightDirty(true);
 
-		assertEquals(false, result[0]);
+		assertFalse(result[0]);
 	}
 
 	@Test
@@ -204,8 +205,8 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = false;
 		myContentMergeViewer.setRightDirty(true);
 
-		assertEquals(true, result[0]);
-		assertEquals(true, result[1]);
+		assertTrue(result[0]);
+		assertTrue(result[1]);
 	}
 
 	@Test
@@ -214,7 +215,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = true;
 		myContentMergeViewer.setRightDirty(true);
 
-		assertEquals(false, result[0]);
+		assertFalse(result[0]);
 	}
 
 	// set right to false
@@ -224,7 +225,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = false;
 		myContentMergeViewer.setRightDirty(false);
 
-		assertEquals(false, result[0]);
+		assertFalse(result[0]);
 	}
 
 	@Test
@@ -233,8 +234,8 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = true;
 		myContentMergeViewer.setRightDirty(false);
 
-		assertEquals(true, result[0]);
-		assertEquals(false, result[1]);
+		assertTrue(result[0]);
+		assertFalse(result[1]);
 	}
 
 	@Test
@@ -243,7 +244,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = false;
 		myContentMergeViewer.setRightDirty(false);
 
-		assertEquals(false, result[0]);
+		assertFalse(result[0]);
 	}
 
 	@Test
@@ -252,7 +253,7 @@ public class ContentMergeViewerTest  {
 		myContentMergeViewer.rightDirty = true;
 		myContentMergeViewer.setRightDirty(false);
 
-		assertEquals(true, result[0]);
-		assertEquals(false, result[1]);
+		assertTrue(result[0]);
+		assertFalse(result[1]);
 	}
 }

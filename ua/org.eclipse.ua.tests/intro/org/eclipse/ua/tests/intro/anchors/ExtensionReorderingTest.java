@@ -14,11 +14,11 @@
 
 package org.eclipse.ua.tests.intro.anchors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test that the order in which extensions are processed does not matter
@@ -39,7 +39,7 @@ import org.eclipse.ui.internal.intro.impl.model.AbstractIntroPage;
 import org.eclipse.ui.internal.intro.impl.model.IntroModelRoot;
 import org.eclipse.ui.internal.intro.impl.model.IntroPage;
 import org.eclipse.ui.internal.intro.impl.model.loader.ModelLoaderUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExtensionReorderingTest {
 
@@ -116,7 +116,7 @@ public class ExtensionReorderingTest {
 
 			try {
 				model.loadModel();
-				assertTrue("Order = " + toString(order), model.hasValidConfig());
+				assertThat(model).matches(IntroModelRoot::hasValidConfig, "Order = " + toString(order));
 				checkModel(model, numContributions);
 			} catch (RuntimeException e) {
 				e.printStackTrace();
@@ -192,7 +192,7 @@ public class ExtensionReorderingTest {
 	public void testOrder123456() {
 		readIntroConfig();
 		assertNotNull(config);
-		assertEquals(6, introConfigExtensions.length);
+		assertThat(introConfigExtensions).hasSize(6);
 		IntroModelRoot model = new IntroModelRoot(config, introConfigExtensions);
 		model.loadModel();
 		checkModel(model, 6);
@@ -202,7 +202,7 @@ public class ExtensionReorderingTest {
 		assertTrue(model.hasValidConfig());
 		Object[] pages = model.getChildrenOfType(AbstractIntroElement.ABSTRACT_PAGE);
 		AbstractIntroPage root = (AbstractIntroPage) model.findChild("root");
-		assertEquals(elements + 2, pages.length);
+		assertThat(pages).hasSize(elements + 2);
 		IntroPage extn1 = (IntroPage) model.findChild("page1");
 		assertNotNull(extn1);
 		AbstractIntroElement p1link = root.findChild("page1link");

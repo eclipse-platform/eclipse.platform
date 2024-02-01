@@ -13,12 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -93,8 +91,8 @@ public class SafeChunkyInputOutputStreamTest {
 		// read chunks
 		try (SafeChunkyInputStream input = new SafeChunkyInputStream(target)) {
 			byte[] read = new byte[chunk.length];
-			assertEquals(chunk.length, input.read(read));
-			assertThat(read, is(chunk));
+			assertThat(chunk).hasSize(input.read(read));
+			assertThat(read).isEqualTo(chunk);
 		}
 		Workspace.clear(target); // make sure there was nothing here before
 	}
@@ -164,24 +162,21 @@ public class SafeChunkyInputOutputStreamTest {
 		// read chunks
 		try (SafeChunkyInputStream input = new SafeChunkyInputStream(target)) {
 			byte[] read1 = new byte[chunk1.length];
-			// byte[] read2 = new byte[chunk2.length];
 			byte[] read3 = new byte[chunk3.length];
 			byte[] read4 = new byte[chunk4.length];
 			byte[] read5 = new byte[chunk5.length];
 			byte[] read6 = new byte[fakeEnd.length + chunk6.length];
-			assertEquals(chunk1.length, input.read(read1));
-			// assert("3.1", input.read(read2) == chunk2.length);
-			assertEquals(chunk3.length, input.read(read3));
-			assertEquals(chunk4.length, input.read(read4));
-			assertEquals(chunk5.length, input.read(read5));
-			assertEquals((fakeEnd.length + chunk6.length), input.read(read6));
-			assertThat(read1, is(chunk1));
-			// assert("3.7", compare(chunk2, read2));
-			assertThat(read3, is(chunk3));
-			assertThat(read4, is(chunk4));
-			assertThat(read5, is(chunk5));
+			assertThat(chunk1).hasSize(input.read(read1));
+			assertThat(chunk3).hasSize(input.read(read3));
+			assertThat(chunk4).hasSize(input.read(read4));
+			assertThat(chunk5).hasSize(input.read(read5));
+			assertThat(chunk6).hasSize(input.read(read6) - fakeEnd.length);
+			assertThat(read1).isEqualTo(chunk1);
+			assertThat(read3).isEqualTo(chunk3);
+			assertThat(read4).isEqualTo(chunk4);
+			assertThat(read5).isEqualTo(chunk5);
 			byte[] expected = merge(fakeEnd, chunk6);
-			assertThat(read6, is(expected));
+			assertThat(read6).isEqualTo(expected);
 		}
 	}
 
@@ -240,16 +235,16 @@ public class SafeChunkyInputOutputStreamTest {
 			byte[] read3 = new byte[chunk3.length];
 			byte[] read4 = new byte[chunk4.length];
 			byte[] read5 = new byte[chunk5.length];
-			assertEquals(chunk1.length, input.read(read1));
-			assertEquals(chunk2.length, input.read(read2));
-			assertEquals(chunk3.length, input.read(read3));
-			assertEquals(chunk4.length, input.read(read4));
-			assertEquals(chunk5.length, input.read(read5));
-			assertThat(read1, is(chunk1));
-			assertThat(read2, is(chunk2));
-			assertThat(read3, is(chunk3));
-			assertThat(read4, is(chunk4));
-			assertThat(read5, is(chunk5));
+			assertThat(chunk1).hasSize(input.read(read1));
+			assertThat(chunk2).hasSize(input.read(read2));
+			assertThat(chunk3).hasSize(input.read(read3));
+			assertThat(chunk4).hasSize(input.read(read4));
+			assertThat(chunk5).hasSize(input.read(read5));
+			assertThat(read1).isEqualTo(chunk1);
+			assertThat(read2).isEqualTo(chunk2);
+			assertThat(read3).isEqualTo(chunk3);
+			assertThat(read4).isEqualTo(chunk4);
+			assertThat(read5).isEqualTo(chunk5);
 		} finally {
 			Workspace.clear(target); // make sure there was nothing here before
 		}

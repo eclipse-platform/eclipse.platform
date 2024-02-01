@@ -35,7 +35,6 @@ The project maintains the following source code repositories:
 * http://git.eclipse.org/c/platform/eclipse.platform.resources.git
 * http://git.eclipse.org/c/platform/eclipse.platform.runtime.git
 * http://git.eclipse.org/c/platform/eclipse.platform.swt.git
-* http://git.eclipse.org/c/platform/eclipse.platform.swt.binaries.git
 * http://git.eclipse.org/c/platform/eclipse.platform.team.git
 * http://git.eclipse.org/c/platform/eclipse.platform.text.git
 * http://git.eclipse.org/c/platform/eclipse.platform.ua.git

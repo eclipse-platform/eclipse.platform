@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.help.internal.toc.TocFile;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /*
  * A utility for regenerating the _expected.txt files that contain the expected
@@ -50,7 +50,7 @@ public class TocModelSerializerTest {
 	 * Ensure that org.eclipse.help.ui is started. It contributes extra content
 	 * filtering that is used by this test. See UIContentFilterProcessor.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		HelpUIPlugin.getDefault();
 	}

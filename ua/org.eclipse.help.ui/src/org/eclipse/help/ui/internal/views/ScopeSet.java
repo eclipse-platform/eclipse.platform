@@ -25,6 +25,7 @@ import org.eclipse.help.ui.internal.HelpUIPlugin;
 import org.eclipse.help.ui.internal.Messages;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Federated search scope.
@@ -87,7 +88,7 @@ public class ScopeSet {
 				}
 			}
 			catch (IOException e) {
-				String message = Messages.bind(Messages.ScopeSet_errorLoading, name);
+				String message = NLS.bind(Messages.ScopeSet_errorLoading, name);
 				ILog.of(getClass()).error(message, e);
 			}
 		}
@@ -112,16 +113,16 @@ public class ScopeSet {
 	private void copy(PreferenceStore store) {
 		try {
 			File file = File.createTempFile("sset", null); //$NON-NLS-1$
-			FileOutputStream fos = new FileOutputStream(file);
-			store.save(fos, ""); //$NON-NLS-1$
-			fos.close();
-			FileInputStream fis = new FileInputStream(file);
-			getPreferenceStore();
-			preferenceStore.load(fis);
-			//when we clone the default set, we should
-			//clear the default marker
-			preferenceStore.setValue(KEY_DEFAULT, false);
-			fis.close();
+			try (FileOutputStream fos = new FileOutputStream(file)) {
+				store.save(fos, ""); //$NON-NLS-1$
+			}
+			try (FileInputStream fis = new FileInputStream(file)) {
+				getPreferenceStore();
+				preferenceStore.load(fis);
+				// when we clone the default set, we should
+				// clear the default marker
+				preferenceStore.setValue(KEY_DEFAULT, false);
+			}
 		}
 		catch (IOException e) {
 		}
@@ -155,7 +156,7 @@ public class ScopeSet {
 			try {
 				preferenceStore.save();
 			} catch (IOException e) {
-				String message = Messages.bind(Messages.ScopeSet_errorSaving, name);
+				String message = NLS.bind(Messages.ScopeSet_errorSaving, name);
 				ILog.of(getClass()).error(message, e);
 			}
 		}
@@ -172,7 +173,7 @@ public class ScopeSet {
 				needsSaving = false;
 			}
 			catch (IOException e) {
-				String message = Messages.bind(Messages.ScopeSet_errorSaving, name);
+				String message = NLS.bind(Messages.ScopeSet_errorSaving, name);
 				ILog.of(getClass()).error(message, e);
 			}
 		}

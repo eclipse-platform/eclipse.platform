@@ -25,20 +25,4 @@
     <skipAPIAnalysis>true</skipAPIAnalysis>
   </properties>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>target-platform-configuration</artifactId>
-        <configuration>
-          <environments>
-            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-            </environment>
-          </environments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

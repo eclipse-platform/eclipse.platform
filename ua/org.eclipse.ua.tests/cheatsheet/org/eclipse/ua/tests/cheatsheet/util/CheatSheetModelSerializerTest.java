@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.cheatsheet.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,8 +24,7 @@ import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ua.tests.util.ResourceFinder;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheet;
 import org.eclipse.ui.internal.cheatsheets.data.CheatSheetParser;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 /*
@@ -48,12 +49,12 @@ public class CheatSheetModelSerializerTest {
 	public void testRunSerializer() throws IOException {
 		URL[] urls = ResourceFinder.findFiles(FrameworkUtil.getBundle(getClass()), "data/cheatsheet/valid", ".xml",
 				true);
-		Assert.assertTrue("Unable to find sample cheat sheets to test parser", urls.length > 0);
+		assertThat(urls).as("check sample cheat sheets to test parser").hasSizeGreaterThan(0);
 		for (URL url : urls) {
 			CheatSheetParser parser = new CheatSheetParser();
 			CheatSheet sheet = (CheatSheet) parser.parse(url, FrameworkUtil.getBundle(getClass()).getSymbolicName(),
 					CheatSheetParser.ANY);
-			Assert.assertNotNull("Tried parsing a valid cheat sheet but parser returned null: " + url, sheet);
+			assertThat(sheet).as("tried parsing a valid cheat sheet but parser returned null: " + url).isNotNull();
 
 			try (PrintWriter out = new PrintWriter(
 					new FileOutputStream(FileUtil.getResultFile(url.toString().substring("file:/".length()))))) {

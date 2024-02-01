@@ -14,9 +14,7 @@
 package org.eclipse.debug.tests.console;
 
 import static java.util.stream.Collectors.joining;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -76,7 +74,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			launchManager.addLaunch(launch);
 			// do not wait on input read job
 			TestUtil.waitForJobs(name.getMethodName(), 0, 10000, ProcessConsole.class);
-			assertEquals("No console was added.", 1, consoleManager.getConsoles().length);
+			assertThat(consoleManager.getConsoles()).as("console has been added").hasSize(1);
 		} finally {
 			mockProcess.destroy();
 		}
@@ -84,7 +82,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 		if (launch != null) {
 			launchManager.removeLaunch(launch);
 			TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
-			assertEquals("Console is not removed.", 0, consoleManager.getConsoles().length);
+			assertThat(consoleManager.getConsoles()).as("console has been removed").isEmpty();
 		}
 	}
 
@@ -130,10 +128,12 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 		String launchesString = Stream.of(launches).map(launch -> Stream.of(launch.getProcesses()).map(IProcess::getLabel).collect(joining(",", "[", "]"))).collect(joining());
 		String consolesString = openConsoles.stream().map(IConsole::getName).collect(joining());
 		String failureMessage = String.format("ProcessConsoleManager and LaunchManager got out of sync.\nLaunches: %s\nConsoles: %s", launchesString, consolesString);
-		assertThat(failureMessage, openConsoles, hasSize(launches.length));
+		assertThat(openConsoles).as(failureMessage).hasSameSizeAs(launches);
 
 		final ConsoleRemoveAllTerminatedAction removeAction = new ConsoleRemoveAllTerminatedAction();
-		assertTrue("Remove terminated action should be enabled.", removeAction.isEnabled() || launchManager.getLaunches().length == 0);
+		if (launchManager.getLaunches().length != 0) {
+			assertThat(removeAction).matches(ConsoleRemoveAllTerminatedAction::isEnabled, "is enabled");
+		}
 		removeAction.run();
 		TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
 		assertNull("First console not removed.", processConsoleManager.getConsole(process1));

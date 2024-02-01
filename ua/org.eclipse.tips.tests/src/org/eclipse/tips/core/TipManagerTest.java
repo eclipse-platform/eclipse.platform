@@ -13,10 +13,11 @@
  *******************************************************************************/
 package org.eclipse.tips.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +27,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.tips.core.internal.LogUtil;
 import org.eclipse.tips.core.internal.TipManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
 public class TipManagerTest {
@@ -36,7 +37,7 @@ public class TipManagerTest {
 	private TestTipProvider fProvider1;
 	private TestTipProvider fProvider2;
 
-	@Before
+	@BeforeEach
 	public void testTipManager() {
 		fManager = new TestTipManager();
 		fManager.open(false);
@@ -66,7 +67,7 @@ public class TipManagerTest {
 		fManager.register(fProvider1);
 		fManager.register(fProvider2);
 		fManager.register(fProvider2);
-		assertEquals(fManager.getProviders().size() + "", 1, fManager.getProviders().size());
+		assertThat(fManager.getProviders()).hasSize(1);
 	}
 
 	@Test
@@ -97,7 +98,7 @@ public class TipManagerTest {
 			}
 		};
 		fManager.register(testTipProvider);
-		assertFalse(test.isEmpty());
+		assertThat(test).isNotEmpty();
 	}
 
 	@Test
@@ -111,7 +112,7 @@ public class TipManagerTest {
 			}
 		};
 		fManager.register(testTipProvider);
-		assertFalse(test.isEmpty());
+		assertThat(test).isNotEmpty();
 	}
 
 	@Test
@@ -130,10 +131,10 @@ public class TipManagerTest {
 			}
 		};
 		m.open(true);
-		assertEquals(1, test.size());
+		assertThat(test).hasSize(1);
 		test.clear();
 		m.open(false);
-		assertEquals(2, test.size());
+		assertThat(test).hasSize(2);
 	}
 
 	@Test
@@ -177,9 +178,9 @@ public class TipManagerTest {
 		fProvider1.setTips(Arrays.asList(new TestTip(fProvider1.getID(), "<b>bold</b>", "Tip 1"),
 				new TestTip(fProvider1.getID(), "<b>bold2</b>", "Tip 2")));
 		fManager.setAsRead(fProvider1.getCurrentTip());
-		assertTrue(fProvider1.getTips().size() + "", fProvider1.getTips().size() == 1);
+		assertThat(fProvider1.getTips()).hasSize(1);
 		fManager.setServeReadTips(true);
-		assertEquals(2, fProvider1.getTips().size());
+		assertThat(fProvider1.getTips()).hasSize(2);
 	}
 
 	@Test

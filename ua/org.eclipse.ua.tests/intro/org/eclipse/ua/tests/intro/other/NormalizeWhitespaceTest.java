@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.intro.other;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.eclipse.ui.internal.intro.impl.util.StringUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /*
  * Tests whitespace normalization used by SWT presentation.

@@ -222,20 +222,18 @@ public class AnsiConsoleStyleListener implements LineStyleListener, IPositionUpd
 	 * @param text          For insert / append, this is the new text. For delete, empty string.
 	 */
 	private void calculateDocumentAnsiPositions(IDocument eventDocument, int offset, int length, String text) {
-		if (text == null) {
-			text = eventDocument.get();
-		}
+		String txt = (text != null) ? text : eventDocument.get();
 
 		if (length != 0) { // This is the length of the text replaced. If not zero then this is not append, is replace.
 			return;
 		}
 		// First time or the appended text is at the end (so it is not inserted text).
-		if (documentEverScanned && offset + text.length() != eventDocument.getLength()) {
+		if (documentEverScanned && offset + txt.length() != eventDocument.getLength()) {
 			return;
 		}
 		documentEverScanned = true;
 		try {
-			List<AnsiPosition> newPos = findPositions(offset, text);
+			List<AnsiPosition> newPos = findPositions(offset, txt);
 			for (AnsiPosition apos : newPos) {
 				eventDocument.addPosition(AnsiPosition.POSITION_NAME, apos);
 			}

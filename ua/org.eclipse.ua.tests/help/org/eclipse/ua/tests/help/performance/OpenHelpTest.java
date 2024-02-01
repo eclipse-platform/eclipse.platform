@@ -35,10 +35,12 @@ import org.eclipse.test.performance.PerformanceTestCaseJunit5;
 import org.eclipse.ui.PlatformUI;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.osgi.framework.FrameworkUtil;
 
+@Disabled("Disabled due to inability to get reliable results. Browser/SWT changes in timing of listener events no longer consistent in 3.3.")
 public class OpenHelpTest extends PerformanceTestCaseJunit5 {
 
 	private AbstractTocProvider[] tocProviders;

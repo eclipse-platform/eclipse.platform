@@ -29,7 +29,7 @@ public class NullFileSystem extends FileSystem {
 	/**
 	 * The singleton instance of this file system.
 	 */
-	private static IFileSystem instance;
+	private static final IFileSystem INSTANCE = EFS.getNullFileSystem();
 
 	/**
 	 * Returns the instance of this file system
@@ -37,7 +37,7 @@ public class NullFileSystem extends FileSystem {
 	 * @return The instance of this file system.
 	 */
 	public static IFileSystem getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	/**
@@ -45,7 +45,6 @@ public class NullFileSystem extends FileSystem {
 	 */
 	public NullFileSystem() {
 		super();
-		instance = this;
 	}
 
 	@Override

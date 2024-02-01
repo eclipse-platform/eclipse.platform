@@ -16,6 +16,7 @@ package org.eclipse.help.internal.webapp.service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
@@ -72,7 +73,9 @@ public class IndexService extends IndexServlet {
 			response = getJSONResponse(response);
 		}
 
-		resp.getWriter().write(response);
+		@SuppressWarnings("resource")
+		PrintWriter writer = resp.getWriter();
+		writer.write(response);
 	}
 
 	protected String getJSONResponse(String response)

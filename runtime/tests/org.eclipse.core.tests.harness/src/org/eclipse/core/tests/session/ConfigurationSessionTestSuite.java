@@ -93,6 +93,8 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		addBundle(org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader.class); // org.eclipse.jdt.junit4.runtime
 		addBundle(org.eclipse.pde.internal.junit.runtime.CoreTestApplication.class); // org.eclipse.pde.junit.runtime
 
+		addBundle(net.bytebuddy.ByteBuddy.class); // net.bytebuddy for org.assertj.core.api
+		addBundle(org.assertj.core.api.Assertions.class); // org.assertj.core.api
 		addBundle(org.hamcrest.CoreMatchers.class); // org.hamcrest.core
 
 		// The org.junit bundle requires an org.hamcrest.core bundle, but as of version

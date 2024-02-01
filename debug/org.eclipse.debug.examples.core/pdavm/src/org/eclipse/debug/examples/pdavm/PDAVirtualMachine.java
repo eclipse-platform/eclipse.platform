@@ -496,8 +496,8 @@ public class PDAVirtualMachine {
 
 			PDAThread[] threadsCopy = fThreads.values().toArray(new PDAThread[fThreads.size()]);
 			allThreadsSuspended = true;
-			for (int i = 0; i < threadsCopy.length; i++) {
-				PDAThread thread = threadsCopy[i];
+			for (PDAThread element : threadsCopy) {
+				PDAThread thread = element;
 				if (thread.fSuspend == null) {
 					allThreadsSuspended = false;
 
@@ -562,33 +562,33 @@ public class PDAVirtualMachine {
 
 		boolean opValid = true;
 		if (op.equals("add")) { //$NON-NLS-1$
-			iAdd(thread, args);
+			iAdd(thread);
 		} else if (op.equals("branch_not_zero")) { //$NON-NLS-1$
 			iBranchNotZero(thread, args);
 		} else if (op.equals("call")) { //$NON-NLS-1$
 			iCall(thread, args);
 		} else if (op.equals("dec")) { //$NON-NLS-1$
-			iDec(thread, args);
+			iDec(thread);
 		} else if (op.equals("def")) { //$NON-NLS-1$
-			iDef(thread, args);
+			iDef(args);
 		} else if (op.equals("dup")) { //$NON-NLS-1$
-			iDup(thread, args);
+			iDup(thread);
 		} else if (op.equals("exec")) { //$NON-NLS-1$
 			iExec(thread, args);
 		} else if (op.equals("halt")) { //$NON-NLS-1$
-			iHalt(thread, args);
+			iHalt(thread);
 		} else if (op.equals("output")) { //$NON-NLS-1$
-			iOutput(thread, args);
+			iOutput(thread);
 		} else if (op.equals("pop")) { //$NON-NLS-1$
 			iPop(thread, args);
 		} else if (op.equals("push")) { //$NON-NLS-1$
 			iPush(thread, args);
 		} else if (op.equals("return")) { //$NON-NLS-1$
-			iReturn(thread, args);
+			iReturn(thread);
 		} else if (op.equals("var")) { //$NON-NLS-1$
 			iVar(thread, args);
 		} else if (op.equals("xyzzy")) { //$NON-NLS-1$
-			iInternalEndEval(thread, args);
+			iInternalEndEval(thread);
 		} else if (op.startsWith(":")) {} // label //$NON-NLS-1$
 		else if (op.startsWith("#")) {} // comment //$NON-NLS-1$
 		else {
@@ -614,8 +614,7 @@ public class PDAVirtualMachine {
 
 	void checkForBreakpoint() {
 		if (fDebug) {
-			for (Iterator<PDAThread> itr = fThreads.values().iterator(); itr.hasNext();) {
-				PDAThread thread = itr.next();
+			for (PDAThread thread : fThreads.values()) {
 				Integer pc = Integer.valueOf(thread.fCurrentFrame.fPC);
 				// Suspend for breakpoint if:
 				// - the VM is not yet set to suspend, for e.g. as a result of step end,
@@ -669,8 +668,7 @@ public class PDAVirtualMachine {
 		// Clear all stepping flags.  In case the VM suspended while
 		// a step operation was being performed for the VM or some thread.
 		fStepVM = fStepReturnVM = false;
-		for (Iterator<PDAThread> itr = fThreads.values().iterator(); itr.hasNext();) {
-			PDAThread thread = itr.next();
+		for (PDAThread thread : fThreads.values()) {
 			thread.fSuspend = null;
 			thread.fStep = thread.fStepReturn = thread.fPerformingEval = false;
 		}
@@ -722,7 +720,7 @@ public class PDAVirtualMachine {
 		} else if ("frame".equals(command)) { //$NON-NLS-1$
 			debugFrame(args);
 		} else if ("groups".equals(command)) { //$NON-NLS-1$
-			debugGroups(args);
+			debugGroups();
 		} else if ("popdata".equals(command)) { //$NON-NLS-1$
 			debugPopData(args);
 		} else if ("pushdata".equals(command)) { //$NON-NLS-1$
@@ -730,7 +728,7 @@ public class PDAVirtualMachine {
 		} else if ("registers".equals(command)) { //$NON-NLS-1$
 			debugRegisters(args);
 		} else if ("restart".equals(command)) { //$NON-NLS-1$
-			debugRestart(args);
+			debugRestart();
 		} else if ("resume".equals(command)) { //$NON-NLS-1$
 			debugResume(args);
 		} else if ("set".equals(command)) { //$NON-NLS-1$
@@ -783,8 +781,7 @@ public class PDAVirtualMachine {
 
 		String varDot = var + "."; //$NON-NLS-1$
 		List<String> children = new ArrayList<>();
-		for (Iterator<String> itr = frame.fLocalVariables.keySet().iterator(); itr.hasNext();) {
-			String localVar = itr.next();
+		for (String localVar : frame.fLocalVariables.keySet()) {
 			if (localVar.startsWith(varDot) && localVar.indexOf('.', varDot.length() + 1) == -1) {
 				children.add(localVar);
 			}
@@ -932,10 +929,9 @@ public class PDAVirtualMachine {
 		sendCommandResponse(printFrame(frame) + "\n"); //$NON-NLS-1$
 	}
 
-	void debugGroups(Args args) {
+	void debugGroups() {
 		TreeSet<String> groups = new TreeSet<>();
-		for (Iterator<Register> itr = fRegisters.values().iterator(); itr.hasNext();) {
-			Register reg = itr.next();
+		for (Register reg : fRegisters.values()) {
 			groups.add(reg.fGroup);
 		}
 		StringBuilder response = new StringBuilder();
@@ -974,14 +970,12 @@ public class PDAVirtualMachine {
 		String group = args.getNextStringArg();
 
 		StringBuilder response = new StringBuilder();
-		for (Iterator<Register> itr = fRegisters.values().iterator(); itr.hasNext();) {
-			Register reg = itr.next();
+		for (Register reg : fRegisters.values()) {
 			if (group.equals(reg.fGroup)) {
 				response.append(reg.fName);
 				response.append(' ');
 				response.append(reg.fIsWriteable);
-				for (Iterator<BitField> itr2 = reg.fBitFields.values().iterator(); itr2.hasNext();) {
-					BitField bitField = itr2.next();
+				for (BitField bitField : reg.fBitFields.values()) {
 					response.append('|');
 					response.append(bitField.fName);
 					response.append(' ');
@@ -989,8 +983,7 @@ public class PDAVirtualMachine {
 					response.append(' ');
 					response.append(bitField.fBitCount);
 					response.append(' ');
-					for (Iterator<Entry<String, Integer>> itr3 = bitField.fMnemonics.entrySet().iterator(); itr3.hasNext();) {
-						Entry<String, Integer> mnemonicEntry = itr3.next();
+					for (Entry<String, Integer> mnemonicEntry : bitField.fMnemonics.entrySet()) {
 						response.append(mnemonicEntry.getKey());
 						response.append(' ');
 						response.append(mnemonicEntry.getValue());
@@ -1005,11 +998,10 @@ public class PDAVirtualMachine {
 		sendCommandResponse(response.toString());
 	}
 
-	void debugRestart(Args args) {
+	void debugRestart() {
 		fSuspendVM = "restart"; //$NON-NLS-1$
 
-		for (Iterator<Integer> itr = fThreads.keySet().iterator(); itr.hasNext();) {
-			Integer id = itr.next();
+		for (Integer id : fThreads.keySet()) {
 			sendDebugEvent("exited " + id, false);             //$NON-NLS-1$
 		}
 		fThreads.clear();
@@ -1101,8 +1093,7 @@ public class PDAVirtualMachine {
 
 		StringBuilder result = new StringBuilder();
 
-		for (Iterator<Frame> itr = thread.fFrames.iterator(); itr.hasNext();) {
-			Frame frame = itr.next();
+		for (Frame frame : thread.fFrames) {
 			result.append(printFrame(frame));
 			result.append('#');
 		}
@@ -1132,8 +1123,7 @@ public class PDAVirtualMachine {
 		buf.append(frame.fPC);
 		buf.append('|');
 		buf.append(frame.fFunction);
-		for (Iterator<String> itr = frame.fLocalVariables.keySet().iterator(); itr.hasNext();) {
-			String var = itr.next();
+		for (String var : frame.fLocalVariables.keySet()) {
 			if (var.indexOf('.') == -1) {
 				buf.append('|');
 				buf.append(var);
@@ -1287,12 +1277,12 @@ public class PDAVirtualMachine {
 		sendCommandResponse("ok\n"); //$NON-NLS-1$
 	}
 
-	void iAdd(PDAThread thread, Args args) {
+	void iAdd(PDAThread thread) {
 		Object val1 = thread.fStack.pop();
 		Object val2 = thread.fStack.pop();
-		if (val1 instanceof Integer && val2 instanceof Integer) {
-			int intVal1 = ((Integer) val1).intValue();
-			int intVal2 = ((Integer) val2).intValue();
+		if (val1 instanceof Integer int1 && val2 instanceof Integer int2) {
+			int intVal1 = int1.intValue();
+			int intVal2 = int2.intValue();
 			thread.fStack.push( Integer.valueOf(intVal1 + intVal2) );
 		} else {
 			thread.fStack.push( Integer.valueOf(-1) );
@@ -1330,7 +1320,7 @@ public class PDAVirtualMachine {
 		}
 	}
 
-	void iDec(PDAThread thread, Args args) {
+	void iDec(PDAThread thread) {
 		Object val = thread.fStack.pop();
 		if (val instanceof Integer) {
 			val = Integer.valueOf(((Integer) val).intValue() - 1);
@@ -1338,7 +1328,7 @@ public class PDAVirtualMachine {
 		thread.fStack.push(val);
 	}
 
-	void iDef(PDAThread thread, Args args) {
+	void iDef(Args args) {
 		String type = args.getNextStringArg();
 
 		String name = args.getNextStringArg();
@@ -1390,7 +1380,7 @@ public class PDAVirtualMachine {
 		return null;
 	}
 
-	void iDup(PDAThread thread, Args args) {
+	void iDup(PDAThread thread) {
 		Object val = thread.fStack.pop();
 		thread.fStack.push(val);
 		thread.fStack.push(val);
@@ -1411,11 +1401,11 @@ public class PDAVirtualMachine {
 		}
 	}
 
-	void iHalt(PDAThread thread, Args args) {
+	void iHalt(PDAThread thread) {
 		thread.fRun = false;
 	}
 
-	void iOutput(PDAThread thread, Args args) {
+	void iOutput(PDAThread thread) {
 		System.out.println(thread.fStack.pop());
 	}
 
@@ -1467,7 +1457,7 @@ public class PDAVirtualMachine {
 		}
 	}
 
-	void iReturn(PDAThread thread, Args args) {
+	void iReturn(PDAThread thread) {
 		if (!thread.fFrames.isEmpty()) {
 			thread.fCurrentFrame = thread.fFrames.remove(thread.fFrames.size() - 1);
 		} else {
@@ -1482,7 +1472,7 @@ public class PDAVirtualMachine {
 		thread.fCurrentFrame.set(var, Integer.valueOf(0));
 	}
 
-	void iInternalEndEval(PDAThread thread, Args args) {
+	void iInternalEndEval(PDAThread thread) {
 		Object result = thread.fStack.pop();
 		thread.fThreadCode = fCode;
 		thread.fThreadLabels = fLabels;

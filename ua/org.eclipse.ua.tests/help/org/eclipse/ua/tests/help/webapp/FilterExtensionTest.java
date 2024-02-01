@@ -11,10 +11,9 @@
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,15 +21,15 @@ import java.io.OutputStream;
 
 import org.eclipse.help.internal.webapp.servlet.ExtraFilters;
 import org.eclipse.help.internal.webapp.servlet.PrioritizedFilter;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the code which supports the extension point org.eclipse.help.webapp.extraFilter
  */
 public class FilterExtensionTest {
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		ExtraFilters.setFilters(new PrioritizedFilter[0]);
 	}

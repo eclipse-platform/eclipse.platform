@@ -13,15 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -79,8 +76,7 @@ public class CopyTest {
 		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = destination.getPersistentProperty(propNames[i]);
 			Object sessionValue = destination.getSessionProperty(propNames[i]);
-			assertThat(propValues[i], is(persistentValue));
-			assertThat(propValues[i], is(not((sessionValue))));
+			assertThat(propValues[i]).isEqualTo(persistentValue).isNotEqualTo(sessionValue);
 		}
 		removeFromWorkspace(destination);
 		removeFromFileSystem(destination);
@@ -95,8 +91,7 @@ public class CopyTest {
 		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = destinationInFolder.getPersistentProperty(propNames[i]);
 			Object sessionValue = destinationInFolder.getSessionProperty(propNames[i]);
-			assertThat(propValues[i], is(persistentValue));
-			assertThat(propValues[i], is(not(sessionValue)));
+			assertThat(propValues[i]).isEqualTo(persistentValue).isNotEqualTo(sessionValue);
 		}
 		removeFromWorkspace(destinationInFolder);
 		removeFromFileSystem(destinationInFolder);
@@ -114,7 +109,7 @@ public class CopyTest {
 		IFolder destinationFolder = project.getFolder("destination");
 		CoreException exception = assertThrows(CoreException.class,
 				() -> folder.copy(destinationFolder.getFullPath(), false, null));
-		assertThat(exception.getStatus().getChildren(), arrayWithSize(2));
+		assertThat(exception.getStatus().getChildren()).hasSize(2);
 		assertTrue(destinationFolder.exists());
 		assertTrue(((IContainer) destinationFolder).getFile(IPath.fromOSString(file.getName())).exists());
 		assertFalse(((IContainer) destinationFolder).getFolder(IPath.fromOSString(subfolder.getName())).exists());
@@ -124,8 +119,7 @@ public class CopyTest {
 		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = target.getPersistentProperty(propNames[i]);
 			Object sessionValue = target.getSessionProperty(propNames[i]);
-			assertThat(propValues[i], is(persistentValue));
-			assertThat(propValues[i], is(not(sessionValue)));
+			assertThat(propValues[i]).isEqualTo(persistentValue).isNotEqualTo(sessionValue);
 		}
 		removeFromWorkspace(destinationFolder);
 		removeFromFileSystem(destinationFolder);

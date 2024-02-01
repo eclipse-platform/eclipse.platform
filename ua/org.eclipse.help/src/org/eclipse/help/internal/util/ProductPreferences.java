@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.help.internal.util;
 
+import static java.util.Collections.emptyList;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -54,7 +56,7 @@ public class ProductPreferences {
 	private static Map<Properties, String> preferencesToPluginIdMap;
 	private static Map<Properties, String> preferencesToProductIdMap;
 	private static List<String> primaryTocOrdering;
-	private static List<String>[] secondaryTocOrderings;
+	private static List<List<String>> secondaryTocOrderings;
 	private static final String PLUGINS_ROOT_SLASH = "PLUGINS_ROOT/"; //$NON-NLS-1$
 	private static boolean rtl;
 	private static boolean directionInitialized = false;
@@ -66,8 +68,7 @@ public class ProductPreferences {
 	 */
 	public static List<String> getTocOrder(List<String> itemsToOrder, Map<String, String> nameIdMap) {
 		List<String> primaryOrdering = getPrimaryTocOrdering();
-		@SuppressWarnings("unchecked")
-		List<String>[] secondaryOrdering = new List[0];
+		List<List<String>> secondaryOrdering = emptyList();
 		if (primaryOrdering == null || primaryOrdering.isEmpty()) {
 			secondaryOrdering = getSecondaryTocOrderings();
 		}
@@ -101,8 +102,7 @@ public class ProductPreferences {
 	 * Returns all secondary toc ordering. These are the preferred toc orders of all
 	 * defined products except the active product.
 	 */
-	@SuppressWarnings("unchecked")
-	public static List<String>[] getSecondaryTocOrderings() {
+	public static List<List<String>> getSecondaryTocOrderings() {
 		if (secondaryTocOrderings == null) {
 			List<List<String>> list = new ArrayList<>();
 			Properties[] productPreferences = getProductPreferences(false);
@@ -115,8 +115,7 @@ public class ProductPreferences {
 					list.add(ordering);
 				}
 			}
-			// can't instantiate arrays of generic type
-			secondaryTocOrderings = list.toArray(new List[list.size()]);
+			secondaryTocOrderings = list;
 		}
 		return secondaryTocOrderings;
 	}
@@ -189,21 +188,12 @@ public class ProductPreferences {
 	}
 
 	/*
-	 * Returns the given items in the order specified. Items listed in the order
-	 * but not present are skipped, and items present but not ordered are added
-	 * at the end.
-	 */
-	public static List<String> getOrderedList(List<String> items, List<String> order) {
-		return getOrderedList(items, order, null, null);
-	}
-
-	/*
 	 * Returns the given items in an order that best satisfies the given orderings.
 	 * The primary ordering must be satisfied in all cases. As many secondary orderings
 	 * as reasonably possible will be satisfied.
 	 */
-	public static List<String> getOrderedList(List<String> items, List<String> primary, List<String>[] secondary,
-			Map<String, String> nameIdMap) {
+	public static List<String> getOrderedList(List<String> items, List<String> primary,
+			List<List<String>> secondary, Map<String, String> nameIdMap) {
 		List<String> result = new ArrayList<>();
 		List<String> set = new ArrayList<>(items);
 		if (orderResolver == null) {

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -91,7 +92,7 @@ public class LazyInputStreamTest {
 		stream.skip(4);
 		byte[] buffer = new byte[7];
 		int read = stream.read(buffer);
-		assertEquals("1.0", buffer.length, read);
+		assertThat(buffer).hasSize(read);
 		assertEquals("1.1", DATA.substring(4, 4 + buffer.length), new String(buffer));
 		assertEquals("1.2", 11, stream.getOffset());
 		read = stream.read(buffer, 3, 4);

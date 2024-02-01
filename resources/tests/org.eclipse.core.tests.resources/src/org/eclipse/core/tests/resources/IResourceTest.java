@@ -15,6 +15,7 @@
 package org.eclipse.core.tests.resources;
 
 import static java.io.InputStream.nullInputStream;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
@@ -34,9 +35,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorksp
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -2593,7 +2591,7 @@ public class IResourceTest {
 		}
 
 		void assertNoLoggedErrors() {
-			assertThat(errors, is(empty()));
+			assertThat(errors).isEmpty();
 		}
 	}
 

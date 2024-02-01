@@ -14,9 +14,10 @@
 
 package org.eclipse.ua.tests.help.criteria;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.help.ICriterionDefinition;
 import org.eclipse.help.ICriterionValueDefinition;
@@ -26,7 +27,7 @@ import org.eclipse.help.internal.criteria.CriterionDefinition;
 import org.eclipse.help.internal.criteria.CriterionValueDefinition;
 import org.eclipse.ua.tests.help.other.UserCriterionDefinition;
 import org.eclipse.ua.tests.help.other.UserCriterionValueDefinition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CriteriaDefinitionTest {
 
@@ -43,7 +44,7 @@ public class CriteriaDefinitionTest {
 		UserCriterionValueDefinition valueDefinition = new UserCriterionValueDefinition(VALUEID1, VALUENAME1);
 		assertEquals(VALUEID1, valueDefinition.getId());
 		assertEquals(VALUENAME1, valueDefinition.getName());
-		assertEquals(0, valueDefinition.getChildren().length);
+		assertThat(valueDefinition.getChildren()).isEmpty();
 	}
 
 	@Test
@@ -52,7 +53,7 @@ public class CriteriaDefinitionTest {
 		ICriterionValueDefinition copy = new CriterionValueDefinition(valueDefinition);
 		assertEquals(VALUEID1, copy.getId());
 		assertEquals(VALUENAME1, copy.getName());
-		assertEquals(0, copy.getChildren().length);
+		assertThat(copy.getChildren()).isEmpty();
 	}
 
 	@Test
@@ -64,7 +65,7 @@ public class CriteriaDefinitionTest {
 		ICriterionValueDefinition copy = (ICriterionValueDefinition) element;
 		assertEquals(VALUEID1, copy.getId());
 		assertEquals(VALUENAME1, copy.getName());
-		assertEquals(0, copy.getChildren().length);
+		assertThat(copy.getChildren()).isEmpty();
 	}
 
 	// Criterion - no children
@@ -73,7 +74,7 @@ public class CriteriaDefinitionTest {
 		UserCriterionDefinition definition = new UserCriterionDefinition(CRITERIONID1, CRITERIONNAME1);
 		assertEquals(CRITERIONID1, definition.getId());
 		assertEquals(CRITERIONNAME1, definition.getName());
-		assertEquals(0, definition.getChildren().length);
+		assertThat(definition.getChildren()).isEmpty();
 	}
 
 	@Test
@@ -82,7 +83,7 @@ public class CriteriaDefinitionTest {
 		ICriterionDefinition copy = new CriterionDefinition(definition);
 		assertEquals(CRITERIONID1, copy.getId());
 		assertEquals(CRITERIONNAME1, copy.getName());
-		assertEquals(0, copy.getChildren().length);
+		assertThat(copy.getChildren()).isEmpty();
 	}
 
 	@Test
@@ -94,7 +95,7 @@ public class CriteriaDefinitionTest {
 		ICriterionDefinition copy = (ICriterionDefinition) element;
 		assertEquals(CRITERIONID1, copy.getId());
 		assertEquals(CRITERIONNAME1, copy.getName());
-		assertEquals(0, copy.getChildren().length);
+		assertThat(copy.getChildren()).isEmpty();
 	}
 
 	@Test
@@ -139,7 +140,7 @@ public class CriteriaDefinitionTest {
 		assertEquals(CRITERIONID1, copy.getId());
 		assertEquals(CRITERIONNAME1, copy.getName());
 		ICriterionValueDefinition[] values = copy.getCriterionValueDefinitions();
-		assertEquals(2, values.length);
+		assertThat(values).hasSize(2);
 		assertEquals(VALUEID1, values[0].getId());
 		assertEquals(VALUENAME1, values[0].getName());
 		assertEquals(VALUEID2, values[1].getId());

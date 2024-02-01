@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.help.internal.search.SearchHit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class SearchParticipantTest {
@@ -59,14 +59,14 @@ public class SearchParticipantTest {
 	@Test
 	public void testReturnedTitle() {
 		SearchHit[] hits = SearchTestUtils.getSearchHits("jkijkijkk", "en");
-		assertEquals(hits.length,1);
+		assertThat(hits).hasSize(1);
 		assertEquals("Title1", hits[0].getLabel());
 	}
 
 	@Test
 	public void testReturnedSummary() {
 		SearchHit[] hits = SearchTestUtils.getSearchHits("jkijkijkk", "en");
-		assertEquals(hits.length,1);
+		assertThat(hits).hasSize(1);
 		assertEquals("Summary1", hits[0].getSummary());
 	}
 

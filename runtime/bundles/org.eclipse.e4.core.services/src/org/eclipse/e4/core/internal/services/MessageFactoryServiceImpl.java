@@ -208,7 +208,7 @@ public class MessageFactoryServiceImpl implements IMessageFactoryService {
 
 		M instance = null;
 		try {
-			instance = messages.newInstance();
+			instance = messages.getDeclaredConstructor().newInstance();
 			Field[] fields = messages.getDeclaredFields();
 
 			for (Field field : fields) {
@@ -219,15 +219,10 @@ public class MessageFactoryServiceImpl implements IMessageFactoryService {
 					field.set(instance, provider.translate(field.getName()));
 				}
 			}
-		} catch (InstantiationException e) {
+		} catch (Exception e) {
 			Logger log = this.logger;
 			if (log != null) {
 				log.error("Instantiation of messages class failed", e); //$NON-NLS-1$
-			}
-		} catch (IllegalAccessException e) {
-			Logger log = this.logger;
-			if (log != null) {
-				log.error("Failed to access messages class", e); //$NON-NLS-1$
 			}
 		}
 

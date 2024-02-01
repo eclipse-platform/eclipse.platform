@@ -70,7 +70,6 @@ public class NavServlet extends HttpServlet {
 			return;
 		}
 
-		@SuppressWarnings("resource")
 		OutputStream out = resp.getOutputStream();
 		for (IFilter filter : filters) {
 			out = filter.filter(req, out);

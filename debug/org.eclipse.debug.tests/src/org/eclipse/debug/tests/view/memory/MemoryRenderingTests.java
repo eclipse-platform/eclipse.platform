@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.view.memory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -35,7 +36,7 @@ public class MemoryRenderingTests extends AbstractDebugTest {
 	public void testRenderingTypes() {
 		IMemoryRenderingManager manager = DebugUITools.getMemoryRenderingManager();
 		IMemoryRenderingType[] types = manager.getRenderingTypes();
-		assertTrue("Wrong number of rendering types contributed", types.length > 6); //$NON-NLS-1$
+		assertThat(types).as("number of contributed rendering types").hasSizeGreaterThan(6);
 		assertTrue("Missing type 1", indexOf(manager.getRenderingType("rendering_type_1"), types) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
 		assertTrue("Missing type 2", indexOf(manager.getRenderingType("rendering_type_2"), types) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
 		assertTrue("Missing type 3", indexOf(manager.getRenderingType("rendering_type_3"), types) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
@@ -59,8 +60,8 @@ public class MemoryRenderingTests extends AbstractDebugTest {
 		IMemoryRenderingManager manager = DebugUITools.getMemoryRenderingManager();
 		IMemoryBlock block = new MemoryBlockOne();
 		IMemoryRenderingType[] types = manager.getRenderingTypes(block);
-		assertEquals("Wrong number of bindings", 1, types.length); //$NON-NLS-1$
-		assertEquals("Wrong binding", "rendering_type_1", types[0].getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(types).as("number of bindings").hasSize(1).satisfiesExactly( //
+				binding -> assertThat(binding.getId()).isEqualTo("rendering_type_1"));
 	}
 
 	@Test
@@ -68,9 +69,9 @@ public class MemoryRenderingTests extends AbstractDebugTest {
 		IMemoryRenderingManager manager = DebugUITools.getMemoryRenderingManager();
 		IMemoryBlock block = new MemoryBlockTwo();
 		IMemoryRenderingType[] types = manager.getRenderingTypes(block);
-		assertEquals("Wrong number of bindings", 2, types.length); //$NON-NLS-1$
-		assertTrue("Missing binding", indexOf(manager.getRenderingType("rendering_type_1"), types) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Missing binding", indexOf(manager.getRenderingType("rendering_type_2"), types) >= 0); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(types).as("number of bindings").hasSize(2).satisfiesExactly( //
+				firstBinding -> assertThat(firstBinding.getId()).isEqualTo("rendering_type_1"), //
+				secondBinding -> assertThat(secondBinding.getId()).isEqualTo("rendering_type_2"));
 	}
 
 	@Test
@@ -78,8 +79,8 @@ public class MemoryRenderingTests extends AbstractDebugTest {
 		IMemoryRenderingManager manager = DebugUITools.getMemoryRenderingManager();
 		IMemoryBlock block = new MemoryBlockOne();
 		IMemoryRenderingType[] types = manager.getDefaultRenderingTypes(block);
-		assertEquals("Wrong number of bindings", 1, types.length); //$NON-NLS-1$
-		assertEquals("Wrong binding", "rendering_type_1", types[0].getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(types).as("number of bindings").hasSize(1).satisfiesExactly( //
+				binding -> assertThat(binding.getId()).isEqualTo("rendering_type_1"));
 	}
 
 	@Test
@@ -87,7 +88,7 @@ public class MemoryRenderingTests extends AbstractDebugTest {
 		IMemoryRenderingManager manager = DebugUITools.getMemoryRenderingManager();
 		IMemoryBlock block = new MemoryBlockTwo();
 		IMemoryRenderingType[] types = manager.getDefaultRenderingTypes(block);
-		assertEquals("Wrong number of bindings", 0, types.length); //$NON-NLS-1$
+		assertThat(types).as("number of bindings").isEmpty();
 	}
 
 	@Test
@@ -111,8 +112,8 @@ public class MemoryRenderingTests extends AbstractDebugTest {
 		IMemoryRenderingManager manager = DebugUITools.getMemoryRenderingManager();
 		IMemoryBlock block = new MemoryBlockThree();
 		IMemoryRenderingType[] types = manager.getDefaultRenderingTypes(block);
-		assertEquals("Wrong number of bindings", 1, types.length); //$NON-NLS-1$
-		assertEquals("Wrong binding", "rendering_type_3", types[0].getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(types).as("number of bindings").hasSize(1).satisfiesExactly( //
+				binding -> assertThat(binding.getId()).isEqualTo("rendering_type_3"));
 	}
 
 	@Test
@@ -120,13 +121,13 @@ public class MemoryRenderingTests extends AbstractDebugTest {
 		IMemoryRenderingManager manager = DebugUITools.getMemoryRenderingManager();
 		IMemoryBlock block = new MemoryBlockDynamic();
 		IMemoryRenderingType[] types = manager.getRenderingTypes(block);
-		assertEquals("Wrong number of bindings", 1, types.length); //$NON-NLS-1$
-		assertEquals("Wrong binding", "rendering_type_1", types[0].getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(types).as("number of bindings").hasSize(1).satisfiesExactly( //
+				binding -> assertThat(binding.getId()).isEqualTo("rendering_type_1"));
 		types = manager.getDefaultRenderingTypes(block);
-		assertEquals("Wrong number of bindings", 1, types.length); //$NON-NLS-1$
-		assertEquals("Wrong binding", "rendering_type_1", types[0].getId()); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(types).as("number of bindings").hasSize(1).satisfiesExactly( //
+				binding -> assertThat(binding.getId()).isEqualTo("rendering_type_1"));
 		IMemoryRenderingType type = manager.getPrimaryRenderingType(block);
-		assertEquals("Wrong bindings", manager.getRenderingType("rendering_type_1"), type); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThat(type).as("has correct binding").isEqualTo(manager.getRenderingType("rendering_type_1"));
 	}
 
 	@Test
@@ -146,8 +147,8 @@ public class MemoryRenderingTests extends AbstractDebugTest {
 			DynamicRenderingBindings.setBinding("rendering_type_2"); //$NON-NLS-1$
 			assertTrue("Renderings should have changed", changed[0]); //$NON-NLS-1$
 			types = manager.getRenderingTypes(block);
-			assertEquals("Wrong number of bindings", 1, types.length); //$NON-NLS-1$
-			assertEquals("Wrong binding", "rendering_type_2", types[0].getId()); //$NON-NLS-1$ //$NON-NLS-2$
+			assertThat(types).as("number of bindings").hasSize(1).satisfiesExactly( //
+					binding -> assertThat(binding.getId()).isEqualTo("rendering_type_2"));
 		} finally {
 			// restore original bindings
 			DynamicRenderingBindings.setBinding("rendering_type_1"); //$NON-NLS-1$

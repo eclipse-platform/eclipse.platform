@@ -13,11 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -69,7 +66,7 @@ public class FileCacheTest {
 		File cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
 		assertTrue("1.0", cachedFile.exists());
 		assertTrue("1.1", !cachedFile.isDirectory());
-		assertArrayEquals("1.2", contents, getBytes(cachedFile));
+		assertThat(getBytes(cachedFile)).containsExactly(contents);
 
 		// write out new file contents
 		byte[] newContents = "newContents".getBytes();
@@ -78,13 +75,13 @@ public class FileCacheTest {
 		}
 
 		// old cache will be out of date
-		assertThat("2.0", newContents, not(equalTo(getBytes(cachedFile))));
+		assertThat(newContents).isNotEqualTo(getBytes(cachedFile));
 
 		// fetching the cache again should return up to date file
 		cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
 		assertTrue("3.0", cachedFile.exists());
 		assertTrue("3.1", !cachedFile.isDirectory());
-		assertArrayEquals("3.2", newContents, getBytes(cachedFile));
+		assertThat(getBytes(cachedFile)).containsExactly(newContents);
 	}
 
 	@Test

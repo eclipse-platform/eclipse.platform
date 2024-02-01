@@ -235,8 +235,7 @@ public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBr
 				String program = getLaunch().getLaunchConfiguration().getAttribute(DebugCorePlugin.ATTR_PDA_PROGRAM, (String)null);
 				if (program != null) {
 					IResource resource = null;
-					if (breakpoint instanceof PDARunToLineBreakpoint) {
-						PDARunToLineBreakpoint rtl = (PDARunToLineBreakpoint) breakpoint;
+					if (breakpoint instanceof PDARunToLineBreakpoint rtl) {
 						resource = rtl.getSourceFile();
 					} else {
 						IMarker marker = breakpoint.getMarker();
@@ -375,7 +374,7 @@ public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBr
 	 * Notification we have connected to the VM and it has started.
 	 * Resume the VM.
 	 */
-	private void vmStarted(PDAVMStartedEvent event) {
+	private void vmStarted() {
 		fireCreationEvent();
 		installDeferredBreakpoints();
 		try {
@@ -496,18 +495,18 @@ public class PDADebugTarget extends PDADebugElement implements IDebugTarget, IBr
 
 	@Override
 	public void handleEvent(PDAEvent event) {
-		if (event instanceof PDAStartedEvent) {
-			started((PDAStartedEvent)event);
-		} else if (event instanceof PDAExitedEvent) {
-			exited((PDAExitedEvent)event);
+		if (event instanceof PDAStartedEvent startedEvent) {
+			started(startedEvent);
+		} else if (event instanceof PDAExitedEvent exitedEvent) {
+			exited(exitedEvent);
 		} else if (event instanceof PDAVMStartedEvent) {
-			vmStarted((PDAVMStartedEvent)event);
+			vmStarted();
 		} else if (event instanceof PDAVMTerminatedEvent) {
 			vmTerminated();
-		} else if (event instanceof PDAVMSuspendedEvent) {
-			vmSuspended((PDAVMSuspendedEvent)event);
-		} else if (event instanceof PDAVMResumedEvent) {
-			vmResumed((PDAVMResumedEvent)event);
+		} else if (event instanceof PDAVMSuspendedEvent suspendedEvent) {
+			vmSuspended(suspendedEvent);
+		} else if (event instanceof PDAVMResumedEvent resumedEvent) {
+			vmResumed(resumedEvent);
 		}
 	}
 

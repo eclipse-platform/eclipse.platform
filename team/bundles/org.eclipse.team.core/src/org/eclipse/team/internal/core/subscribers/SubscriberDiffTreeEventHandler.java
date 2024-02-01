@@ -225,6 +225,8 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 							tree.remove(node.getPath());
 						}
 						break;
+					default:
+						break;
 				}
 			}
 		} finally {

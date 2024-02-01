@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
@@ -24,7 +25,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -647,9 +647,8 @@ public class BuilderTest {
 		//ensure the build spec hasn't changed
 		desc = project.getDescription();
 		ICommand[] commands = desc.getBuildSpec();
-		assertEquals(2, commands.length);
-		assertEquals(commands[0].getBuilderName(), SortBuilder.BUILDER_NAME);
-		assertEquals(commands[1].getBuilderName(), SortBuilder.BUILDER_NAME);
+		assertThat(commands).hasSize(2)
+				.allSatisfy(command -> assertThat(command.getBuilderName()).isEqualTo(SortBuilder.BUILDER_NAME));
 		Map<String, String> args = commands[0].getArguments();
 		assertEquals("Build1", args.get(TestBuilder.BUILD_ID));
 		args = commands[1].getArguments();
@@ -920,8 +919,7 @@ public class BuilderTest {
 		}
 
 		byte[] result = out.toByteArray();
-		byte[] expected = new byte[] {1, 2, 3, 4, 5};
-		assertArrayEquals(expected, result);
+		assertThat(result).containsExactly(1, 2, 3, 4, 5);
 	}
 
 	/**

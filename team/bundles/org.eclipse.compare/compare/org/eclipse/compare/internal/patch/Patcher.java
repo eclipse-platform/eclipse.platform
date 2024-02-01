@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -217,6 +216,8 @@ public class Patcher implements IHunkFilter {
 					case '-':
 						removedLines++;
 						continue;
+					default:
+						break;
 					}
 				}
 			}
@@ -250,10 +251,8 @@ public class Patcher implements IHunkFilter {
 			for (i= 0; i < fDiffs.length; i++) {
 				FilePatch2 diff= fDiffs[i];
 				if (isEnabled(diff)) {
-					switch (diff.getDiffType(isReversed())) {
-					case FilePatch2.CHANGE:
+					if (diff.getDiffType(isReversed()) == FilePatch2.CHANGE) {
 						list.add(createPath(container, getPath(diff)));
-						break;
 					}
 				}
 			}
@@ -305,6 +304,8 @@ public class Patcher implements IHunkFilter {
 						store(LineReader.createString(isPreserveLineDelimeters(), result), file, SubMonitor.convert(pm, workTicks));
 					workTicks-= WORK_UNIT;
 					break;
+				default:
+					throw new IllegalArgumentException(Integer.toString(type));
 				}
 
 				if (isGenerateRejectFile() && failed.size() > 0) {
@@ -421,9 +422,7 @@ public class Patcher implements IHunkFilter {
 
 		String lineSeparator= System.getProperty("line.separator"); //$NON-NLS-1$
 		StringBuilder sb= new StringBuilder();
-		Iterator<Hunk> iter= failedHunks.iterator();
-		while (iter.hasNext()) {
-			Hunk hunk= iter.next();
+		for (Hunk hunk : failedHunks) {
 			sb.append(hunk.getRejectedDescription());
 			sb.append(lineSeparator);
 			sb.append(hunk.getContent());

@@ -13,12 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.is;
 
 import org.eclipse.core.internal.resources.BuildConfiguration;
 import org.eclipse.core.resources.IBuildConfiguration;
@@ -64,30 +62,30 @@ public class ProjectBuildConfigsTest {
 		desc.setBuildConfigs(configs);
 		project.setDescription(desc, createTestMonitor());
 
-		assertThat(project.getBuildConfigs(), arrayContaining(variant0, variant1));
-		assertThat(project.getBuildConfig(variantId0), is(variant0));
-		assertThat(project.getBuildConfig(variantId1), is(variant1));
+		assertThat(project.getBuildConfigs()).containsExactly(variant0, variant1);
+		assertThat(project.getBuildConfig(variantId0)).isEqualTo(variant0);
+		assertThat(project.getBuildConfig(variantId1)).isEqualTo(variant1);
 
 		// Build configuration names don't contribute to equality
-		assertThat("project '" + project + "' is missing build config: " + variant0,
-				project.hasBuildConfig(variant0.getName()));
-		assertThat("project '" + project + "' is missing build config: " + variant1,
-				project.hasBuildConfig(variant1.getName()));
-		assertThat("project '" + project + "' unexpectedly has build config: " + variant2,
-				!project.hasBuildConfig(variant2.getName()));
+		assertThat(project.hasBuildConfig(variant0.getName()))
+				.withFailMessage("project '%s' is missing build config: %s", project, variant0).isTrue();
+		assertThat(project.hasBuildConfig(variant1.getName()))
+				.withFailMessage("project '%s' is missing build config: %s", project, variant1).isTrue();
+		assertThat(project.hasBuildConfig(variant2.getName()))
+				.withFailMessage("project '%s' unexpectedly has build config: %s", project, variant2).isFalse();
 
-		assertThat(project.getActiveBuildConfig(), is(variant0));
+		assertThat(project.getActiveBuildConfig()).isEqualTo(variant0);
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(variantId1);
 		project.setDescription(desc, createTestMonitor());
-		assertThat(project.getActiveBuildConfig(), is(variant1));
+		assertThat(project.getActiveBuildConfig()).isEqualTo(variant1);
 		// test that setting the variant to an invalid id has no effect
 		desc.setActiveBuildConfig(variantId2);
-		assertThat(project.getActiveBuildConfig(), is(variant1));
+		assertThat(project.getActiveBuildConfig()).isEqualTo(variant1);
 
 		IBuildConfiguration variant = project.getBuildConfigs()[0];
-		assertThat(variant.getProject(), is(project));
-		assertThat(variant.getName(), is(variantId0));
+		assertThat(variant.getProject()).isEqualTo(project);
+		assertThat(variant.getName()).isEqualTo(variantId0);
 	}
 
 	@Test
@@ -95,7 +93,7 @@ public class ProjectBuildConfigsTest {
 		IProjectDescription desc = project.getDescription();
 		desc.setBuildConfigs(new String[] {variantId0, variantId1, variantId0});
 		project.setDescription(desc, createTestMonitor());
-		assertThat(project.getBuildConfigs(), arrayContaining(variant0, variant1));
+		assertThat(project.getBuildConfigs()).containsExactly(variant0, variant1);
 	}
 
 	@Test
@@ -104,15 +102,15 @@ public class ProjectBuildConfigsTest {
 		desc.setBuildConfigs(new String[] {});
 		project.setDescription(desc, createTestMonitor());
 
-		assertThat(project.getBuildConfigs(), arrayContaining(defaultVariant));
-		assertThat("project '" + project + "' is missing build config: " + defaultVariant,
-				project.hasBuildConfig(defaultVariant.getName()));
+		assertThat(project.getBuildConfigs()).containsExactly(defaultVariant);
+		assertThat(project.hasBuildConfig(defaultVariant.getName()))
+				.withFailMessage("project '%s' is missing build config: %s", project, defaultVariant).isTrue();
 
-		assertThat(project.getActiveBuildConfig(), is(defaultVariant));
+		assertThat(project.getActiveBuildConfig()).isEqualTo(defaultVariant);
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(IBuildConfiguration.DEFAULT_CONFIG_NAME);
 		project.setDescription(desc, createTestMonitor());
-		assertThat(project.getActiveBuildConfig(), is(defaultVariant));
+		assertThat(project.getActiveBuildConfig()).isEqualTo(defaultVariant);
 	}
 
 	@Test
@@ -121,16 +119,16 @@ public class ProjectBuildConfigsTest {
 		desc.setBuildConfigs(new String[0]);
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant1.getName()});
 		project.setDescription(desc, createTestMonitor());
-		assertThat(project.getActiveBuildConfig(), is(variant0));
+		assertThat(project.getActiveBuildConfig()).isEqualTo(variant0);
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant2.getName()});
 		project.setDescription(desc, createTestMonitor());
-		assertThat(project.getActiveBuildConfig(), is(variant0));
+		assertThat(project.getActiveBuildConfig()).isEqualTo(variant0);
 		desc = project.getDescription();
 		desc.setActiveBuildConfig(variantId2);
 		project.setDescription(desc, createTestMonitor());
 		desc.setBuildConfigs(new String[] {variant0.getName(), variant1.getName()});
 		project.setDescription(desc, createTestMonitor());
-		assertThat(project.getActiveBuildConfig(), is(variant0));
+		assertThat(project.getActiveBuildConfig()).isEqualTo(variant0);
 	}
 
 	/**
@@ -150,12 +148,12 @@ public class ProjectBuildConfigsTest {
 		project.move(desc, false, createTestMonitor());
 
 		IProject newProject = getWorkspace().getRoot().getProject(newProjectName);
-		assertThat("project does not exist: " + newProject, newProject.exists());
+		assertThat(newProject).matches(IProject::exists, "exists");
 
 		IBuildConfiguration[] newConfigs = newProject.getBuildConfigs();
 		for (int i = 0; i < configs.length; i++) {
-			assertThat("unexpected project at index " + i, newConfigs[i].getProject(), is(newProject));
-			assertThat("unexpected project name at index " + i, newConfigs[i].getName(), is(configs[i].getName()));
+			assertThat(newConfigs[i].getProject()).as("project at index %s", i).isEqualTo(newProject);
+			assertThat(newConfigs[i].getName()).as("project name at index %s", i).isEqualTo(configs[i].getName());
 		}
 	}
 

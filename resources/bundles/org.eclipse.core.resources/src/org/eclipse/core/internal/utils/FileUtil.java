@@ -17,7 +17,6 @@
 package org.eclipse.core.internal.utils;
 
 import java.io.ByteArrayInputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -292,34 +291,6 @@ public class FileUtil {
 	}
 
 	/**
-	 * Closes a stream and ignores any resulting exception. This is useful
-	 * when doing stream cleanup in a finally block where secondary exceptions
-	 * are not worth logging.
-	 *
-	 *<p>
-	 * <strong>WARNING:</strong>
-	 * If the API contract requires notifying clients of I/O problems, then you <strong>must</strong>
-	 * explicitly close() output streams outside of safeClose().
-	 * Some OutputStreams will defer an IOException from write() to close().  So
-	 * while the writes may 'succeed', ignoring the IOExcpetion will result in silent
-	 * data loss.
-	 * </p>
-	 * <p>
-	 * This method should only be used as a fail-safe to ensure resources are not
-	 * leaked.
-	 * </p>
-	 * See also: https://bugs.eclipse.org/bugs/show_bug.cgi?id=332543
-	 */
-	public static void safeClose(Closeable stream) {
-		try {
-			if (stream != null)
-				stream.close();
-		} catch (IOException e) {
-			//ignore
-		}
-	}
-
-	/**
 	 * Converts a URI to an IPath.  Returns null if the URI cannot be represented
 	 * as an IPath.
 	 * <p>
@@ -339,8 +310,8 @@ public class FileUtil {
 	public static final void transferStreams(InputStream source, OutputStream destination, String path,
 			IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor);
-		try {
-			try {
+		try (source) {
+			try (destination) {
 				if (source instanceof ByteArrayInputStream) {
 					// ByteArrayInputStream does overload transferTo avoiding buffering
 					((ByteArrayInputStream) source).transferTo(destination);
@@ -362,15 +333,10 @@ public class FileUtil {
 						subMonitor.split(1);
 					}
 				}
-				// Bug 332543 - ensure we don't ignore failures on close()
-				destination.close();
-			} catch (IOException e) {
-				String msg = NLS.bind(Messages.localstore_couldNotWrite, path);
-				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(path), msg, e);
 			}
-		} finally {
-			safeClose(source);
-			safeClose(destination);
+		} catch (IOException e) {
+			String msg = NLS.bind(Messages.localstore_couldNotWrite, path);
+			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(path), msg, e);
 		}
 	}
 

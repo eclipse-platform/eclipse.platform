@@ -303,9 +303,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		super.stop(context);
 
 		if (fgDisposeOnShutdownImages != null) {
-			Iterator<Image> i= fgDisposeOnShutdownImages.iterator();
-			while (i.hasNext()) {
-				Image img= i.next();
+			for (Image img : fgDisposeOnShutdownImages) {
 				if (!img.isDisposed())
 					img.dispose();
 			}
@@ -808,10 +806,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	public ViewerDescriptor[] findStructureViewerDescriptor(Viewer oldViewer,
 			ICompareInput input, CompareConfiguration configuration) {
-		if (input == null)
-			return null;
 		// we don't show the structure of additions or deletions
-		if (input == null || input.getLeft() == null || input.getRight() == null)
+		if ((input == null) || input == null || input.getLeft() == null || input.getRight() == null)
 			return null;
 
 		Set<ViewerDescriptor> result = new LinkedHashSet<>();
@@ -895,9 +891,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			return new CompareFilterDescriptor[0];
 		}
 		Set<CompareFilterDescriptor> result = new LinkedHashSet<>();
-		Iterator<Object> ctIterator = contentTypes.iterator();
-		while (ctIterator.hasNext()) {
-			Object ct = ctIterator.next();
+		for (Object ct : contentTypes) {
 			if (ct instanceof IContentType) {
 				List<CompareFilterDescriptor> list = fCompareFilters.searchAll((IContentType) ct);
 				if (list != null)
@@ -1179,8 +1173,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			return types[0].equals(types[1]);
 		case 3:
 			return types[0].equals(types[1]) && types[1].equals(types[2]);
+		default:
+			return false;
 		}
-		return false;
 	}
 
 	/*
@@ -1237,8 +1232,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 				result= s0[i];
 			}
 			return result;
+		default:
+			return null;
 		}
-		return null;
 	}
 
 	private static IContentType[] toFullPath(IContentType ct) {
@@ -1511,10 +1507,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	String findStructureTypeNameOrType(ICompareInput input, ViewerDescriptor vd, CompareConfiguration cc) {
-		if (input == null)
-			return null;
 		// We don't show the structure of additions or deletions
-		if (input == null || input.getLeft() == null || input.getRight() == null)
+		if ((input == null) || input == null || input.getLeft() == null || input.getRight() == null)
 			return null;
 
 		// Content type search

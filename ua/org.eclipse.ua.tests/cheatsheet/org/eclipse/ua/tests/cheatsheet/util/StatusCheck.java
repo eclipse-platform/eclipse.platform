@@ -14,11 +14,10 @@
 
 package org.eclipse.ua.tests.cheatsheet.util;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-
 
 /**
  * Utilities for checking status
@@ -26,23 +25,17 @@ import org.eclipse.core.runtime.MultiStatus;
 public class StatusCheck {
 
 	public static void assertStatusContains(IStatus status, String text) {
-		if (!status.getMessage().contains(text)) {
-			Assert.fail("Expected status message to contain '" + text + "' actual message is '"
-					+ status.getMessage() + "'");
-		}
+		assertThat(status.getMessage()).contains(text);
 	}
 
 	public static void assertMultiStatusContains(IStatus status, String text) {
-		Assert.assertTrue(status instanceof MultiStatus);
+		assertThat(status).isInstanceOf(MultiStatus.class);
 		IStatus[] children = status.getChildren();
 		for (IStatus element : children) {
 			if (element.getMessage().contains(text)) {
 				return;
 			}
 		}
-		if (!status.getMessage().contains(text)) {
-			Assert.fail("Expected status message to contain '" + text + "' status.toString = '"
-					+ status.toString() + "'");
-		}
+		assertThat(status.getMessage()).contains(text);
 	}
 }

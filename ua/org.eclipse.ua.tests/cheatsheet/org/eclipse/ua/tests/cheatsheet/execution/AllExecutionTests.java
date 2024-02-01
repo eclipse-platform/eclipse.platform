@@ -14,17 +14,17 @@
 
 package org.eclipse.ua.tests.cheatsheet.execution;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Unit tests for the classes which execute commands and actions from a cheatsheet
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	TestVariableSubstitution.class,
-	TestActionExecution.class,
-	TestCommandExecution.class
+@Suite
+@SelectClasses({ //
+		TestVariableSubstitution.class, //
+		TestActionExecution.class, //
+		TestCommandExecution.class, //
 })
 public class AllExecutionTests {
 }

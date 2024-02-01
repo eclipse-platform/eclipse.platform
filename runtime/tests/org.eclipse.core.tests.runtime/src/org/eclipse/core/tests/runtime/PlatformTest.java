@@ -14,6 +14,7 @@
 package org.eclipse.core.tests.runtime;
 
 import static java.util.Collections.emptyMap;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -153,12 +154,7 @@ public class PlatformTest {
 		final List<IStatus> collected = new ArrayList<>();
 
 		// add a log listener to ensure that we report using the right plug-in id
-		ILogListener logListener = new ILogListener() {
-			@Override
-			public void logging(IStatus status, String plugin) {
-				collected.add(status);
-			}
-		};
+		ILogListener logListener = (status, plugin) -> collected.add(status);
 		Platform.addLogListener(logListener);
 
 		final Exception exception = new Exception("PlatformTest.testRunnable: this exception is thrown on purpose as part of the test.");
@@ -331,17 +327,17 @@ public class PlatformTest {
 
 		Bundle[] result = Platform.getBundles(bundleName, null); // no version constraint => get all 3
 		assertNotNull(bundleName + " bundle not available", bundles);
-		assertEquals(3, result.length);
+		assertThat(result).hasSize(3);
 		assertEquals(3, result[0].getVersion().getMajor()); // 3.0.0 version first
 		assertEquals(1, result[2].getVersion().getMajor()); // 1.0.0 version last
 
 		result = Platform.getBundles(bundleName, "2.0.0");
-		assertEquals(2, result.length);
+		assertThat(result).hasSize(2);
 		assertEquals(3, result[0].getVersion().getMajor()); // 3.0.0 version first
 		assertEquals(2, result[1].getVersion().getMajor()); // 2.0.0 version last
 
 		result = Platform.getBundles(bundleName, "[1.0.0,2.0.0)");
-		assertEquals(1, result.length);
+		assertThat(result).hasSize(1);
 		assertEquals(1, result[0].getVersion().getMajor()); // 1.0.0 version
 
 		result = Platform.getBundles(bundleName, "[1.1.0,2.0.0)");
@@ -352,11 +348,10 @@ public class PlatformTest {
 	public void testGetSystemBundle() {
 		Bundle expectedSystem = RuntimeTestsPlugin.getContext().getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
 		Bundle actualSystem = Platform.getBundle(Constants.SYSTEM_BUNDLE_SYMBOLICNAME);
-		assertEquals("Wrong system bundle.", expectedSystem, actualSystem);
+		assertThat(actualSystem).as("check system bundle").isEqualTo(expectedSystem);
 
 		Bundle[] actualSystems = Platform.getBundles(Constants.SYSTEM_BUNDLE_SYMBOLICNAME, null);
-		assertEquals("Wrong number of system bundles.", 1, actualSystems.length);
-		assertEquals("Wrong system bundle.", expectedSystem, actualSystems[0]);
+		assertThat(actualSystems).as("check system bundles").containsExactly(expectedSystem);
 	}
 
 	/**

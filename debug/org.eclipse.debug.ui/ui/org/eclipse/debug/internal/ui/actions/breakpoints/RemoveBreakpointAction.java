@@ -102,10 +102,9 @@ public class RemoveBreakpointAction extends AbstractSelectionActionDelegate {
 							if(prompted) {
 								MessageDialogWithToggle mdwt = MessageDialogWithToggle.openYesNoQuestion(getView().getSite().getShell(), ActionMessages.RemoveBreakpointAction_0,
 										ActionMessages.RemoveBreakpointAction_1, ActionMessages.RemoveAllBreakpointsAction_3, !prompted, null, null);
-								if(mdwt.getReturnCode() == IDialogConstants.NO_ID) {
+								if (mdwt.getReturnCode() != IDialogConstants.YES_ID) {
 									deleteAll = false;
-								}
-								else {
+								} else {
 									store.setValue(IDebugPreferenceConstants.PREF_PROMPT_REMOVE_BREAKPOINTS_FROM_CONTAINER, !mdwt.getToggleState());
 									deleteAll = true;
 								}

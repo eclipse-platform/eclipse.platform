@@ -21,7 +21,9 @@ import org.junit.platform.suite.api.Suite;
  * Tests help performance (automated).
  */
 @Suite
-@SelectClasses({ OpenCheatSheetTest.class })
+@SelectClasses({ //
+	OpenCheatSheetTest.class, //
+})
 public class AllCheatSheetPerformanceTests {
 
 }

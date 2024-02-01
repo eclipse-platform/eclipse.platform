@@ -13,14 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.internal.localstore.IHistoryStore;
 import org.eclipse.core.internal.resources.Workspace;
@@ -62,7 +61,7 @@ public class Bug_079398 {
 
 		IFileState[] sourceStates = file1.getHistory(createTestMonitor());
 		// just make sure our assumptions are valid
-		assertEquals("0.4", 10, sourceStates.length);
+		assertThat(sourceStates).hasSize(10);
 
 		// copy the file - the history should be shared, but the destination
 		// will conform to the policy
@@ -71,10 +70,10 @@ public class Bug_079398 {
 		assertExistsInWorkspace(file2);
 		sourceStates = file1.getHistory(createTestMonitor());
 		// the source is unaffected so far
-		assertEquals("1.2", 10, sourceStates.length);
+		assertThat(sourceStates).hasSize(10);
 		IFileState[] destinationStates = file2.getHistory(createTestMonitor());
 		// but the destination conforms to the policy
-		assertEquals("1.4", description.getMaxFileStates(), destinationStates.length);
+		assertThat(destinationStates).hasSize(description.getMaxFileStates());
 
 		// now cause the destination to have many more states
 		for (int i = 0; i <= description.getMaxFileStates(); i++) {
@@ -87,15 +86,12 @@ public class Bug_079398 {
 		destinationStates = file2.getHistory(createTestMonitor());
 		// cleaning will remove any states the destination had in common
 		// with the source since they don't fit into the policy
-		assertEquals("1.7", description.getMaxFileStates(), destinationStates.length);
+		assertThat(destinationStates).hasSize(description.getMaxFileStates());
 
 		sourceStates = file1.getHistory(createTestMonitor());
 		// the source should have any extra states removed as well,
 		// but the ones left should still exist
-		assertEquals("1.7", description.getMaxFileStates(), sourceStates.length);
-		for (int i = 0; i < sourceStates.length; i++) {
-			assertTrue("1.8." + i, sourceStates[i].exists());
-		}
+		assertThat(sourceStates).hasSize(description.getMaxFileStates()).allMatch(IFileState::exists);
 	}
 
 }

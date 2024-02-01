@@ -192,6 +192,8 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 					case SubscriberEvent.REMOVAL :
 						syncSet.remove(event.getResource(), event.getDepth());
 						break;
+					default:
+						break;
 				}
 			}
 		} finally {

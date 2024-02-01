@@ -201,7 +201,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 				case 0:
 					return false;
 				// cancel
-				case 1:
+				default:
 					return true;
 			}
 		}

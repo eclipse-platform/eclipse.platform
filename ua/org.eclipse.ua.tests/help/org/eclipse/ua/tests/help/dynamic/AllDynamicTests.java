@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.dynamic;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests help dynamic content functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-	XMLProcessorTest.class,
-	DynamicXHTMLProcessorTest.class
+@Suite
+@SelectClasses({ //
+		XMLProcessorTest.class, //
+		DynamicXHTMLProcessorTest.class, //
 })
 public class AllDynamicTests {
 }

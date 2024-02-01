@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -67,7 +68,7 @@ public class PropertyTests extends AbstractAntDebugTest {
 
 			AntStackFrame frame = (AntStackFrame) thread.getTopStackFrame();
 			IVariable[] vars = frame.getVariables();
-			assertTrue("Should be a bunch of properties", 0 < vars.length); //$NON-NLS-1$
+			assertThat(vars).hasSizeGreaterThan(0);
 			AntProperty property = frame.findProperty("ant.library.dir"); //$NON-NLS-1$
 			assertNotNull(property);
 
@@ -103,7 +104,7 @@ public class PropertyTests extends AbstractAntDebugTest {
 
 			AntStackFrame frame = (AntStackFrame) thread.getTopStackFrame();
 			IVariable[] vars = frame.getVariables();
-			assertTrue("Should be a bunch of properties", 0 < vars.length); //$NON-NLS-1$
+			assertThat(vars).hasSizeGreaterThan(0);
 			AntProperty property = frame.findProperty("ant.home"); //$NON-NLS-1$
 			assertNotNull(property);
 
@@ -135,7 +136,7 @@ public class PropertyTests extends AbstractAntDebugTest {
 
 			AntStackFrame frame = (AntStackFrame) thread.getTopStackFrame();
 			IVariable[] vars = frame.getVariables();
-			assertTrue("Should be a bunch of properties", 0 < vars.length); //$NON-NLS-1$
+			assertThat(vars).hasSizeGreaterThan(0);
 			AntProperty property = frame.findProperty("ant.home"); //$NON-NLS-1$
 			assertNotNull(property);
 

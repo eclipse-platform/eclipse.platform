@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -53,8 +54,8 @@ public class TocValidator {
 			return href; }
 	}
 
-	public static abstract class Filter {
-		abstract public boolean isIncluded(String href);
+	public abstract static class Filter {
+		public abstract boolean isIncluded(String href);
 	}
 
 	public static class PassThroughFilter extends Filter {
@@ -73,11 +74,13 @@ public class TocValidator {
 	 * @return An ArrayList of BrokenLink objects in the toc. If no broken links are found, an empty ArrayList
 	 * is returned.
 	 */
-	public static ArrayList<BrokenLink> validate(String[] hrefs) throws IOException, SAXException, ParserConfigurationException{
+	public static  List<BrokenLink> validate(String[] hrefs)
+			throws IOException, SAXException, ParserConfigurationException {
 		return filteredValidate(hrefs, new PassThroughFilter());
 	}
 
-	public static ArrayList<BrokenLink> filteredValidate (String[] hrefs, Filter filter) throws IOException, SAXException, ParserConfigurationException{
+	public static List<BrokenLink> filteredValidate(String[] hrefs, Filter filter)
+			throws IOException, SAXException, ParserConfigurationException {
 		TocValidator v = new TocValidator();
 		ArrayList<BrokenLink> result = new ArrayList<>();
 		for (String href : hrefs)
@@ -127,27 +130,26 @@ public class TocValidator {
 	 */
 	private void process(IUAElement element, String plugin, String path, ArrayList<BrokenLink> result, Filter filter) throws SAXException, ParserConfigurationException {
 		String href;
-		if (element instanceof ILink) {
-			href = ((ILink)element).getToc();
+		if (element instanceof ILink link) {
+			href = link.getToc();
 			try {
 				processToc(href, plugin, result, filter);
 			} catch (IOException e) {
 				result.add(new BrokenLink("/" + plugin + "/" + path, href)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
-		else if (element instanceof IHelpResource) {
-			if (element instanceof IToc)
-				href = ((IToc)element).getTopic(null).getHref();
+		else if (element instanceof IHelpResource helpResource) {
+			if (element instanceof IToc toc)
+				href = toc.getTopic(null).getHref();
 			else
-				href = ((IHelpResource)element).getHref();
-			if (href != null && filter.isIncluded(href))
-				if (!checkLink(href, plugin)) {
+				href = helpResource.getHref();
+			if (href != null && filter.isIncluded(href) && !checkLink(href, plugin)) {
 					result.add(new BrokenLink("/" + plugin + "/" + path, href)); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 		}
 		IUAElement [] children = element.getChildren();
-		for (int i = 0; i < children.length; i++)
-			process(children[i], plugin, path, result, filter);
+		for (IUAElement child : children)
+			process(child, plugin, path, result, filter);
 	}
 
 	/* Checks validity of a given link from a toc in a given plug-in.

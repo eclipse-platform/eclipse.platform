@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -193,7 +194,7 @@ public class LaunchHistoryTests extends AbstractLaunchTest {
 		config = getLaunchConfiguration("LaunchHistoryTest2"); //$NON-NLS-1$
 		assertNotNull("LaunchHistoryTest2 launch config should not be null", config); //$NON-NLS-1$
 		config.launch(ILaunchManager.RUN_MODE, new NullProgressMonitor());
-		assertTrue("there should only be two items in the history", runhistory.getHistory().length == getMaxHistorySize()); //$NON-NLS-1$
-		assertTrue("the complete launch history should be greater than or equal to the history size", runhistory.getCompleteLaunchHistory().length >= runhistory.getHistory().length); //$NON-NLS-1$
+		assertThat(runhistory.getHistory()).hasSize(getMaxHistorySize());
+		assertThat(runhistory.getCompleteLaunchHistory()).hasSizeGreaterThanOrEqualTo(runhistory.getHistory().length);
 	}
 }

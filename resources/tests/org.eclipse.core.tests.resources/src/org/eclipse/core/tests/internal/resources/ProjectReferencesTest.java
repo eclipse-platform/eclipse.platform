@@ -13,13 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.emptyArray;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 
 import org.eclipse.core.internal.resources.BuildConfiguration;
@@ -95,16 +92,16 @@ public class ProjectReferencesTest {
 	public void testAddReferencesToNonExistantConfigs() throws CoreException {
 		IProjectDescription desc = project0.getDescription();
 
-		assertThat("project '" + project0 + "' has unexpected build config: " + nonExistentBC,
-				!project0.hasBuildConfig(nonExistentBC));
+		assertThat(project0.hasBuildConfig(nonExistentBC))
+				.withFailMessage("project '%s' has unexpected build config: %s", project0, nonExistentBC).isFalse();
 
 		desc.setBuildConfigReferences(nonExistentBC, new IBuildConfiguration[] {project1v0});
 		project0.setDescription(desc, createTestMonitor());
 
-		assertThat("project '" + project0 + "' has unexpected build config: " + nonExistentBC,
-				!project0.hasBuildConfig(nonExistentBC));
+		assertThat(project0.hasBuildConfig(nonExistentBC))
+				.withFailMessage("project '%s' has unexpected build config: %s", project0, nonExistentBC).isFalse();
 
-		assertThat(desc.getBuildConfigReferences(nonExistentBC), emptyArray());
+		assertThat(desc.getBuildConfigReferences(nonExistentBC)).isEmpty();
 		assertThrows(CoreException.class, () -> project0.getReferencedBuildConfigs(nonExistentBC, true));
 	}
 
@@ -127,29 +124,29 @@ public class ProjectReferencesTest {
 
 		// Check build configa
 		desc = project0.getDescription();
-		assertThat(desc.getBuildConfigReferences(project0v0.getName()), is(refs));
-		assertThat(desc.getBuildConfigReferences(project0v1.getName()), is(refs2));
+		assertThat(desc.getBuildConfigReferences(project0v0.getName())).isEqualTo(refs);
+		assertThat(desc.getBuildConfigReferences(project0v1.getName())).isEqualTo(refs2);
 		// Resetting the build configs doesn't change anything
 		desc.setBuildConfigs(new String[] {project0v0.getName(), project0v1.getName()});
 		project0.setDescription(desc, createTestMonitor());
 
 		desc = project0.getDescription();
-		assertThat(desc.getBuildConfigReferences(project0v0.getName()), is(refs));
-		assertThat(desc.getBuildConfigReferences(project0v1.getName()), is(refs2));
+		assertThat(desc.getBuildConfigReferences(project0v0.getName())).isEqualTo(refs);
+		assertThat(desc.getBuildConfigReferences(project0v1.getName())).isEqualTo(refs2);
 		// Removing a build configuration removes the references
 		desc.setBuildConfigs(new String[] {project0v0.getName()});
 		project0.setDescription(desc, createTestMonitor());
 
 		desc = project0.getDescription();
-		assertThat(desc.getBuildConfigReferences(project0v0.getName()), is(refs));
-		assertThat(desc.getBuildConfigReferences(project0v1.getName()), emptyArray());
+		assertThat(desc.getBuildConfigReferences(project0v0.getName())).isEqualTo(refs);
+		assertThat(desc.getBuildConfigReferences(project0v1.getName())).isEmpty();
 		// Re-adding a build configuration doesn't make references re-appear
 		desc.setBuildConfigs(new String[] {project0v0.getName()});
 		project0.setDescription(desc, createTestMonitor());
 
 		desc = project0.getDescription();
-		assertThat(desc.getBuildConfigReferences(project0v0.getName()), is(refs));
-		assertThat(desc.getBuildConfigReferences(project0v1.getName()), emptyArray());
+		assertThat(desc.getBuildConfigReferences(project0v0.getName())).isEqualTo(refs);
+		assertThat(desc.getBuildConfigReferences(project0v1.getName())).isEmpty();
 	}
 
 	/**
@@ -165,13 +162,13 @@ public class ProjectReferencesTest {
 
 		// Check getters
 		desc = project0.getDescription();
-		assertThat(desc.getDynamicReferences(), arrayContaining(project1, project3));
-		assertThat(desc.getBuildConfigReferences(project0v0.getName()), emptyArray());
-		assertThat(desc.getBuildConfigReferences(project0v1.getName()), emptyArray());
-		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), false),
-				arrayContaining(project1.getActiveBuildConfig(), project3.getActiveBuildConfig()));
-		assertThat(project0.getReferencedBuildConfigs(project0v1.getName(), false),
-				arrayContaining(project1.getActiveBuildConfig(), project3.getActiveBuildConfig()));
+		assertThat(desc.getDynamicReferences()).containsExactly(project1, project3);
+		assertThat(desc.getBuildConfigReferences(project0v0.getName())).isEmpty();
+		assertThat(desc.getBuildConfigReferences(project0v1.getName())).isEmpty();
+		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), false))
+				.containsExactly(project1.getActiveBuildConfig(), project3.getActiveBuildConfig());
+		assertThat(project0.getReferencedBuildConfigs(project0v1.getName(), false))
+				.containsExactly(project1.getActiveBuildConfig(), project3.getActiveBuildConfig());
 
 		// Now set dynamic references on config1
 		desc.setBuildConfigReferences(project0v0.getName(), new IBuildConfiguration[] {project3v1, project2v0, project1v0});
@@ -180,14 +177,14 @@ public class ProjectReferencesTest {
 		// Check references
 		// This is deterministic as config0 is listed first, so we expect its config order to trump cofig1's
 		desc = project0.getDescription();
-		assertThat(desc.getDynamicReferences(), arrayContaining(project1, project3));
-		assertThat(desc.getBuildConfigReferences(project0v0.getName()),
-				arrayContaining(project3v1, project2v0, project1v0));
+		assertThat(desc.getDynamicReferences()).containsExactly(project1, project3);
+		assertThat(desc.getBuildConfigReferences(project0v0.getName())).containsExactly(project3v1, project2v0,
+				project1v0);
 		// Now at the project leve
-		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), false),
-				arrayContaining(project3v1, project2v0, project1v0, project3v0));
-		assertThat(project0.getReferencedBuildConfigs(project0v1.getName(), false),
-				arrayContaining(project1.getActiveBuildConfig(), project3.getActiveBuildConfig()));
+		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), false)).containsExactly(project3v1,
+				project2v0, project1v0, project3v0);
+		assertThat(project0.getReferencedBuildConfigs(project0v1.getName(), false))
+				.containsExactly(project1.getActiveBuildConfig(), project3.getActiveBuildConfig());
 	}
 
 	@Test
@@ -215,14 +212,14 @@ public class ProjectReferencesTest {
 
 		// Test getters
 		desc = project0.getDescription();
-		assertThat(desc.getReferencedProjects(), arrayContaining(project3, project1));
-		assertThat(desc.getDynamicReferences(), arrayContaining(project1, project2));
-		assertThat(desc.getBuildConfigReferences(bc0), emptyArray());
+		assertThat(desc.getReferencedProjects()).containsExactly(project3, project1);
+		assertThat(desc.getDynamicReferences()).containsExactly(project1, project2);
+		assertThat(desc.getBuildConfigReferences(bc0)).isEmpty();
 
-		assertThat(project0.getReferencedProjects(), arrayContaining(project3, project1, project2));
-		assertThat(project0.getReferencingProjects(), arrayContaining(project1, project3));
-		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), true),
-				arrayContaining(project3v0, project1v0, project2v0));
+		assertThat(project0.getReferencedProjects()).containsExactly(project3, project1, project2);
+		assertThat(project0.getReferencingProjects()).containsExactly(project1, project3);
+		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), true)).containsExactly(project3v0,
+				project1v0, project2v0);
 	}
 
 	@Test
@@ -251,17 +248,17 @@ public class ProjectReferencesTest {
 
 		// Check getters
 		desc = project0.getDescription();
-		assertThat(desc.getReferencedProjects(), arrayContaining(project1));
-		assertThat(desc.getDynamicReferences(), arrayContaining(project3));
-		assertThat(desc.getBuildConfigReferences(bc0), arrayContaining(project2v0, project1v0));
-		assertThat(desc.getBuildConfigReferences(bc1), arrayContaining(project2v0));
+		assertThat(desc.getReferencedProjects()).containsExactly(project1);
+		assertThat(desc.getDynamicReferences()).containsExactly(project3);
+		assertThat(desc.getBuildConfigReferences(bc0)).containsExactly(project2v0, project1v0);
+		assertThat(desc.getBuildConfigReferences(bc1)).containsExactly(project2v0);
 
-		assertThat(project0.getReferencedProjects(), arrayContaining(project2, project1, project3));
-		assertThat(project0.getReferencingProjects(), arrayContaining(project1, project3));
-		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), true),
-				arrayContaining(project2v0, project1v0, project3.getActiveBuildConfig()));
-		assertThat(project0.getReferencedBuildConfigs(project0v1.getName(), true), arrayContaining(
-				project2v0, project1.getActiveBuildConfig(), project3.getActiveBuildConfig()));
+		assertThat(project0.getReferencedProjects()).containsExactly(project2, project1, project3);
+		assertThat(project0.getReferencingProjects()).containsExactly(project1, project3);
+		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), true)).containsExactly(project2v0,
+				project1v0, project3.getActiveBuildConfig());
+		assertThat(project0.getReferencedBuildConfigs(project0v1.getName(), true)).containsExactly(project2v0,
+				project1.getActiveBuildConfig(), project3.getActiveBuildConfig());
 	}
 
 	@Test
@@ -270,9 +267,8 @@ public class ProjectReferencesTest {
 		desc.setBuildConfigReferences(bc0, new IBuildConfiguration[] {getRef(project1)});
 		project0.setDescription(desc, createTestMonitor());
 
-		assertThat(desc.getBuildConfigReferences(bc0), arrayContaining(getRef(project1)));
-		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), true),
-				arrayContaining(project1v0));
+		assertThat(desc.getBuildConfigReferences(bc0)).containsExactly(getRef(project1));
+		assertThat(project0.getReferencedBuildConfigs(project0v0.getName(), true)).containsExactly(project1v0);
 	}
 
 }

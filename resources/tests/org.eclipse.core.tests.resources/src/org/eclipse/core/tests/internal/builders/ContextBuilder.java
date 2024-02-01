@@ -13,8 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,8 +61,9 @@ public class ContextBuilder extends TestBuilder {
 	public static void assertValid() {
 		for (ContextBuilder builder : builders.values()) {
 			if (builder.getRuleCalledForLastBuild) {
-				assertThat(builder.contextForLastBuild, is(builder.contextForLastBuildInGetRule));
-				assertThat(builder.buildConfigurationForLastBuild, is(builder.buildConfigurationForLastBuildInGetRule));
+				assertThat(builder.contextForLastBuild).isEqualTo(builder.contextForLastBuildInGetRule);
+				assertThat(builder.buildConfigurationForLastBuild)
+						.isEqualTo(builder.buildConfigurationForLastBuildInGetRule);
 			}
 		}
 	}

@@ -13,10 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
@@ -603,9 +600,8 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		}
 		rescheduledJob.join(TIMEOUT_IN_MILLIS, new NullProgressMonitor());
 		Job.getJobManager().removeJobChangeListener(runningThreadStoreListener);
-		assertThat("ThreadJob did not finish", rescheduledJob.getState(), is(Job.NONE));
-		assertThat("ThreadJob did not ignore reschedule", jobsStartedRunning,
-				not(hasItem(rescheduledJob)));
+		assertThat(rescheduledJob.getState()).as("state of job expected to be finished").isEqualTo(Job.NONE);
+		assertThat(jobsStartedRunning).as("started jobs").doesNotContain(rescheduledJob);
 	}
 
 	@Test
@@ -628,8 +624,8 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		}
 		scheduledJob.join(TIMEOUT_IN_MILLIS, new NullProgressMonitor());
 		Job.getJobManager().removeJobChangeListener(runningThreadStoreListener);
-		assertThat("ThreadJob did not finish", scheduledJob.getState(), is(Job.NONE));
-		assertThat("ThreadJob was rescheduled", jobsStartedRunning, not(hasItem(scheduledJob)));
+		assertThat(scheduledJob.getState()).as("state of job expected to be finished").isEqualTo(Job.NONE);
+		assertThat(jobsStartedRunning).as("started jobs").doesNotContain(scheduledJob);
 	}
 
 	@Test
@@ -667,8 +663,8 @@ public class BeginEndRuleTest extends AbstractJobTest {
 		job.join(TIMEOUT_IN_MILLIS, new NullProgressMonitor());
 		scheduledJob.get().join(TIMEOUT_IN_MILLIS, new NullProgressMonitor());
 		Job.getJobManager().removeJobChangeListener(runningThreadStoreListener);
-		assertThat("Another nested job was created", job, is(scheduledJob.get()));
-		assertThat("Job did not finish", job.getState(), is(Job.NONE));
+		assertThat(scheduledJob.get()).as("job in nested rule expected to be same as outer job").isEqualTo(job);
+		assertThat(job.getState()).as("state of job expected to be finished").isEqualTo(Job.NONE);
 	}
 
 }

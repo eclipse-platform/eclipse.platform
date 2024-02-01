@@ -15,6 +15,7 @@
 package org.eclipse.help.internal.webapp.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,9 @@ public class IndexFragmentServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// set the character-set to UTF-8 before calling resp.getWriter()
 		resp.setContentType("application/xml; charset=UTF-8"); //$NON-NLS-1$
-		resp.getWriter().write(processRequest(req, resp));
+		@SuppressWarnings("resource")
+		PrintWriter writer = resp.getWriter();
+		writer.write(processRequest(req, resp));
 	}
 
 	protected String processRequest(HttpServletRequest req, HttpServletResponse resp)
@@ -278,8 +281,7 @@ public class IndexFragmentServlet extends HttpServlet {
 		}
 
 		private int enabledEntryCount(IIndexEntry entry) {
-			if (!ScopeUtils.showInTree(entry, scope)) return 0;
-			if (entry.getKeyword() == null || entry.getKeyword().length() == 0) {
+			if (!ScopeUtils.showInTree(entry, scope) || entry.getKeyword() == null || entry.getKeyword().length() == 0) {
 				return 0;
 			}
 			int count = 1;

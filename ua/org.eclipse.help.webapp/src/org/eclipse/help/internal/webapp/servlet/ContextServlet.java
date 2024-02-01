@@ -14,6 +14,7 @@
 package org.eclipse.help.internal.webapp.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -48,8 +49,11 @@ public class ContextServlet extends HttpServlet {
 			resp.sendError(400); // bad request; missing parameter
 		else if ("404".equals(response)) //$NON-NLS-1$
 			resp.sendError(404); // Wrong context id; not found
-		else
-			resp.getWriter().write(response);
+		else {
+			@SuppressWarnings("resource")
+			PrintWriter writer = resp.getWriter();
+			writer.write(response);
+		}
 	}
 
 	protected String processRequest(HttpServletRequest req, HttpServletResponse resp)

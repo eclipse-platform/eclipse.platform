@@ -14,7 +14,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.remote;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,9 +31,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -43,14 +44,14 @@ public class SearchServletTest {
 
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}
@@ -58,61 +59,61 @@ public class SearchServletTest {
 	@Test
 	public void testRemoteSearchNotFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("duernfryehd");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
 	public void testRemoteSearchFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("jehcyqpfjs");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchOrFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("jehcyqpfjs OR duernfryehd");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchAndFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("jehcyqpfjs AND vkrhjewiwh");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchAndNotFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("jehcyqpfjs AND duernfryehd");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
 	public void testRemoteSearchExactMatchFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("\"jehcyqpfjs vkrhjewiwh\"");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchExactMatchNotFound() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("\"vkrhjewiwh jehcyqpfjs\"");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
 	public void testRemoteSearchWordNotInDefaultLocale() throws Exception {
 		Node[] hits = getSearchHitsFromServlet("deuejwuid");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	@Test
 	public void testRemoteSearchUsingDeLocale() throws Exception {
 		Node[] hits = getSearchHitsUsingLocale("deuejwuid", "de");
-		assertEquals(1, hits.length);
+		assertThat(hits).hasSize(1);
 	}
 
 	@Test
 	public void testRemoteSearchUsingEnLocale() throws Exception {
 		Node[] hits = getSearchHitsUsingLocale("deuejwuid", "en");
-		assertEquals(0, hits.length);
+		assertThat(hits).isEmpty();
 	}
 
 	protected Node[] getSearchHitsFromServlet(String phrase)

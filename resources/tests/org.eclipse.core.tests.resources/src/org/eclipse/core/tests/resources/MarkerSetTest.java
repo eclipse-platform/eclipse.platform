@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,10 +38,10 @@ public class MarkerSetTest {
 	@Rule
 	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
-	private void assertMarkerElementsEqual(String message, IMarkerSetElement[] array1, IMarkerSetElement[] array2) {
-		assertNotNull(message, array1);
-		assertNotNull(message, array2);
-		assertEquals(message, array1.length, array2.length);
+	private void assertMarkerElementsEqual(IMarkerSetElement[] array1, IMarkerSetElement[] array2) {
+		assertNotNull(array1);
+		assertNotNull(array2);
+		assertThat(array1).hasSameSizeAs(array2);
 		IMarkerSetElement[] m1 = new IMarkerSetElement[array1.length];
 		System.arraycopy(array1, 0, m1, 0, array1.length);
 		IMarkerSetElement[] m2 = new IMarkerSetElement[array2.length];
@@ -56,7 +57,7 @@ public class MarkerSetTest {
 		Arrays.sort(m1, compare);
 		Arrays.sort(m2, compare);
 		for (int i = 0; i < m1.length; i++) {
-			assertEquals(message, m1[i].getId(), m2[i].getId());
+			assertEquals(m1[i].getId(), m2[i].getId());
 		}
 	}
 
@@ -106,7 +107,7 @@ public class MarkerSetTest {
 		assertEquals("1.0", max, set.size());
 
 		// remove each element
-		assertMarkerElementsEqual("2.0", set.elements(), infos);
+		assertMarkerElementsEqual(set.elements(), infos);
 	}
 
 	@Test

@@ -140,6 +140,8 @@ public class WorkspacePatcher extends Patcher {
 								store(LineReader.createString(isPreserveLineDelimeters(), result), file, SubMonitor.convert(pm, workTicks));
 							workTicks -= WORK_UNIT;
 							break;
+						default:
+							throw new IllegalArgumentException(Integer.toString(type));
 					}
 
 					if (isGenerateRejectFile() && failed.size() > 0) {

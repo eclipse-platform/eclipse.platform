@@ -210,41 +210,76 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 	}
 
 	/**
-	 * Returns the <code>FontData</code> for the path in the given column with the current presentation
+	 * Returns the <code>FontData</code> for the path in the given column with the
+	 * current presentation
+	 *
+	 * @param elementPath         the path in the given column
+	 * @param presentationContext the context for the IDebugModelPresentation
+	 * @param columnId            the column ID
 	 * @return font information or <code>null</code>
+	 * @throws CoreException from
+	 *                       org.eclipse.debug.core.model.IVariable.hasValueChanged()
 	 */
 	protected FontData getFontData(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		return null;
 	}
 
 	/**
-	 * Returns the <code>RGB</code> foreground colour for the path in the given column with the current presentation
+	 * Returns the <code>RGB</code> foreground colour for the path in the given
+	 * column with the current presentation
+	 *
+	 * @param elementPath         the path in the given column
+	 * @param presentationContext the context for the IDebugModelPresentation
+	 * @param columnId            the column ID
 	 * @return color or <code>null</code>
+	 * @throws CoreException from
+	 *                       org.eclipse.debug.core.model.IVariable.hasValueChanged()
 	 */
 	protected RGB getForeground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		return null;
 	}
 
 	/**
-	 * Returns the <code>RGB</code> background colour for the path in the given column with the current presentation
+	 * Returns the <code>RGB</code> background colour for the path in the given
+	 * column with the current presentation
+	 *
+	 * @param elementPath         the path in the given column
+	 * @param presentationContext the context for the IDebugModelPresentation
+	 * @param columnId            the column ID
 	 * @return color or <code>null</code>
+	 * @throws CoreException from
+	 *                       org.eclipse.debug.core.model.IVariable.hasValueChanged()
 	 */
 	protected RGB getBackground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		return null;
 	}
 
 	/**
-	 * Returns the <code>ImageDescriptor</code> for the path in the given column with the current presentation
+	 * Returns the <code>ImageDescriptor</code> for the path in the given column
+	 * with the current presentation
+	 *
+	 * @param elementPath         the path in the given column
+	 * @param presentationContext the context for the IDebugModelPresentation
+	 * @param columnId            the column ID
 	 * @return image descriptor or <code>null</code>
+	 * @throws CoreException from
+	 *                       org.eclipse.debug.core.model.IVariable.hasValueChanged()
 	 */
 	protected ImageDescriptor getImageDescriptor(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		return null;
 	}
 
 	/**
-	 * Returns the <code>ImageDescriptor</code> for the path in the given column with the current presentation
+	 * Returns the <code>ImageDescriptor</code> for the path in the given column
+	 * with the current presentation
+	 *
+	 * @param elementPath         the path in the given column
+	 * @param presentationContext the context for the IDebugModelPresentation
+	 * @param columnId            the column ID
+	 * @param columnIndex         the column index
 	 * @return image descriptor or <code>null</code>
-	 * @throws CoreException
+	 * @throws CoreException from
+	 *                       org.eclipse.debug.core.model.IVariable.hasValueChanged()
 	 *
 	 * @since 3.6
 	 */
@@ -258,7 +293,10 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 	protected abstract String getLabel(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException;
 
 	/**
-	 * Returns the label for the path in the given column with the current presentation.
+	 * Returns the label for the path in the given column with the current
+	 * presentation.
+	 *
+	 * @param columnIndex
 	 * @return label
 	 *
 	 * @since 3.6
@@ -329,7 +367,10 @@ public abstract class ElementLabelProvider implements IElementLabelProvider {
 
 	/**
 	 * Returns whether a UI job should be used for updates versus a non-UI job.
-	 * @return true if the array of updates requires a UI job to update the labels, false otherwise
+	 *
+	 * @param updates the updates
+	 * @return true if the array of updates requires a UI job to update the labels,
+	 *         false otherwise
 	 */
 	protected boolean requiresUIJob(ILabelUpdate[] updates) {
 		return false;

@@ -129,7 +129,7 @@ public class PatchTargetPage extends WizardPage {
 		// contains only a patch for a single file
 		if (!fPatcher.isWorkspacePatch() && fPatcher.getTarget() instanceof IFile && fPatcher.getDiffs().length > 1) {
 			InputPatchPage inputPage = (InputPatchPage) getWizard().getPage(InputPatchPage.INPUTPATCHPAGE_NAME);
-			String source = ""; //$NON-NLS-1$
+			String source;
 			switch (inputPage.getInputMethod()) {
 				case InputPatchPage.CLIPBOARD :
 					source = PatchMessages.InputPatchPage_Clipboard_title;
@@ -141,6 +141,9 @@ public class PatchTargetPage extends WizardPage {
 
 				case InputPatchPage.WORKSPACE :
 					source = PatchMessages.InputPatchPage_WorkspacePatch_title;
+					break;
+				default: // URL
+					source = ""; //$NON-NLS-1$
 					break;
 			}
 			String format = PatchMessages.InputPatchPage_SingleFileError_format;

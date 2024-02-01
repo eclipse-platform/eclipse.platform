@@ -13,8 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.preferences;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -27,10 +28,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.help.internal.HelpData;
 import org.eclipse.help.internal.HelpPlugin;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 /*
@@ -49,7 +49,7 @@ public class HelpDataTest {
 	private String ignoredIndexesPreference;
 
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		baseTocsPreference = Platform.getPreferencesService().getString
 			(HelpPlugin.PLUGIN_ID, HelpPlugin.BASE_TOCS_KEY, "", null);
@@ -62,7 +62,7 @@ public class HelpDataTest {
 		setIgnoredIndexes("");
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		setBaseTocs(baseTocsPreference);
 		setIgnoredTocs(ignoredTocsPreference);
@@ -93,9 +93,12 @@ public class HelpDataTest {
 			Set<String> expectedHiddenIndexes = new HashSet<>(Arrays.asList(entry[3]));
 			URL url = FrameworkUtil.getBundle(HelpDataTest.class).getEntry(file);
 			HelpData data = new HelpData(url);
-			Assert.assertEquals("Did not get the expected toc order from help data file " + file, expectedTocOrder, data.getTocOrder());
-			Assert.assertEquals("Did not get the expected hidden tocs from help data file " + file, expectedHiddenTocs, data.getHiddenTocs());
-			Assert.assertEquals("Did not get the expected hidden indexes from help data file " + file, expectedHiddenIndexes, data.getHiddenIndexes());
+			assertThat(data.getTocOrder()).as("toc order from help data file " + file)
+					.containsExactlyElementsOf(expectedTocOrder);
+			assertThat(data.getHiddenTocs()).as("hidden tocs from help data file " + file)
+					.containsExactlyElementsOf(expectedHiddenTocs);
+			assertThat(data.getHiddenIndexes()).as("hidden indexes from help data file " + file)
+					.containsExactlyElementsOf(expectedHiddenIndexes);
 		}
 	}
 

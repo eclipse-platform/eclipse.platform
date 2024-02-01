@@ -13,15 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_SNOW;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.NATURE_WATER;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -140,7 +138,7 @@ public class BuilderNatureTest {
 		//make sure the build spec doesn't include snow builder
 		ICommand[] commands = project.getDescription().getBuildSpec();
 		for (ICommand command : commands) {
-			assertThat(command.getBuilderName(), not(is(SnowBuilder.BUILDER_NAME)));
+			assertThat(command.getBuilderName()).isNotEqualTo(SnowBuilder.BUILDER_NAME);
 		}
 
 		//now add the snow nature back and ensure snow builder runs
@@ -167,7 +165,7 @@ public class BuilderNatureTest {
 		//make sure the build spec doesn't include snow builder
 		commands = project.getDescription().getBuildSpec();
 		for (ICommand command : commands) {
-			assertThat(command.getBuilderName(), not(is(SnowBuilder.BUILDER_NAME)));
+			assertThat(command.getBuilderName()).isNotEqualTo(SnowBuilder.BUILDER_NAME);
 		}
 
 		//now re-enable the nature and ensure that the delta was null

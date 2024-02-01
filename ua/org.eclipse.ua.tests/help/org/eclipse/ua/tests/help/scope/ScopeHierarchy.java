@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.scope;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.help.IIndexEntry2;
 import org.eclipse.help.IIndexSee;
@@ -26,7 +26,7 @@ import org.eclipse.ua.tests.help.other.UserIndexEntry;
 import org.eclipse.ua.tests.help.other.UserIndexSee;
 import org.eclipse.ua.tests.help.other.UserToc;
 import org.eclipse.ua.tests.help.other.UserTopic;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ScopeHierarchy {
 	@Test

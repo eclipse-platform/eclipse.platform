@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 
 import junit.framework.Test;
@@ -33,18 +34,16 @@ public class TestBug94498 extends TestCase {
 
 	public void test1() throws CoreException {
 		IContentType text = Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
-		assertNotNull("1.0", text);
+		assertThat(text).isNotNull();
 		text.addFileSpec(FILE_NAME, IContentType.FILE_NAME_SPEC);
 		String[] fileSpecs = text.getFileSpecs(IContentType.FILE_NAME_SPEC | IContentType.IGNORE_PRE_DEFINED);
-		assertEquals("2.0", 1, fileSpecs.length);
-		assertEquals("2.1", FILE_NAME, fileSpecs[0]);
+		assertThat(fileSpecs).containsExactly(FILE_NAME);
 	}
 
 	public void test2() {
 		IContentType text = Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
-		assertNotNull("1.0", text);
+		assertThat(text).isNotNull();
 		String[] fileSpecs = text.getFileSpecs(IContentType.FILE_NAME_SPEC | IContentType.IGNORE_PRE_DEFINED);
-		assertEquals("2.0", 1, fileSpecs.length);
-		assertEquals("2.1", FILE_NAME, fileSpecs[0]);
+		assertThat(fileSpecs).containsExactly(FILE_NAME);
 	}
 }

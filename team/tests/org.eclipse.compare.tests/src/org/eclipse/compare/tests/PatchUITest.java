@@ -13,29 +13,42 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.internal.CompareUIPlugin;
-import org.eclipse.compare.internal.patch.*;
+import org.eclipse.compare.internal.patch.PatchMessages;
+import org.eclipse.compare.internal.patch.PatchWizard;
+import org.eclipse.compare.internal.patch.PatchWizardDialog;
 import org.eclipse.core.internal.resources.WorkspaceRoot;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.swt.dnd.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -61,8 +74,9 @@ public class PatchUITest {
 	public void tearDown() throws Exception {
 		testProject.delete(true, null);
 	}
-@Test
-	public void testApplyClipboardPatch() throws CoreException {
+
+	@Test
+	public void testApplyClipboardPatch() throws Exception {
 		// Clipboard support on Mac OS is not reliable when tests are run
 		// through an SSH session, see bug 272870 for details
 		if (Platform.getOS().equals(Platform.OS_MACOSX)) {
@@ -73,12 +87,12 @@ public class PatchUITest {
 		copyIntoWorkspace("context.txt");
 
 		openPatchWizard();
-		assertTrue(wizard.getPageCount() == 3);
+		assertThat(wizard.getPageCount()).isEqualTo(3);
 		IWizardPage patchWizardPage = wizard.getPages()[0];
 
 		assertTrue(patchWizardPage.canFlipToNextPage());
 
-		callMethod(wizardDialog, "nextPressed");
+		ReflectionUtils.callMethod(wizardDialog, "nextPressed");
 
 		processQueuedEvents();
 		assertTrue(wizard.canFinish());
@@ -89,12 +103,13 @@ public class PatchUITest {
 		InputStream actual = testProject.getFile("context.txt").getContents();
 		compareStreams(expected, actual);
 	}
-@Test
-	public void testApplyWorkspacePatch() throws CoreException {
+
+	@Test
+	public void testApplyWorkspacePatch() throws Exception {
 		copyIntoWorkspace("patch_addition.txt");
 
 		openPatchWizard();
-		assertTrue(wizard.getPageCount() == 3);
+		assertThat(wizard.getPageCount()).isEqualTo(3);
 		IWizardPage patchWizardPage = wizard.getPages()[0];
 
 		getButton(patchWizardPage, "fUseClipboardButton").setSelection(false);
@@ -107,7 +122,7 @@ public class PatchUITest {
 
 		processQueuedEvents();
 		assertTrue(patchWizardPage.canFlipToNextPage());
-		callMethod(wizardDialog, "nextPressed");
+		ReflectionUtils.callMethod(wizardDialog, "nextPressed");
 
 		assertTrue(wizard.canFinish());
 		wizard.performFinish();
@@ -134,12 +149,12 @@ public class PatchUITest {
 		copyIntoClipboard("patch_addition.txt");
 
 		openPatchWizard();
-		assertTrue(wizard.getPageCount() == 3);
+		assertThat(wizard.getPageCount()).isEqualTo(3);
 		IWizardPage patchWizardPage = wizard.getPages()[0];
 
 		assertTrue(patchWizardPage.canFlipToNextPage());
 
-		callMethod(wizardDialog, "nextPressed");
+		ReflectionUtils.callMethod(wizardDialog, "nextPressed");
 
 		processQueuedEvents();
 		assertTrue(wizard.canFinish());
@@ -151,8 +166,7 @@ public class PatchUITest {
 
 		String expected = PatchUtils.asString(expectedIS).replaceAll("\r?\n", "\r\n");
 		String actual = PatchUtils.asString(actualIS);
-
-		assertEquals(expected, actual);
+		assertThat(actual).isEqualTo(expected);
 
 		// restore previously saved value for LD
 		saveValue(workspacePreferences, previous);
@@ -206,42 +220,29 @@ public class PatchUITest {
 		wizardDialog.open();
 	}
 
-	private void copyIntoClipboard(String name) {
+	private void copyIntoClipboard(String name) throws IOException {
 		Clipboard clipboard = new Clipboard(getShell().getDisplay());
-		InputStream patchIS = PatchUtils.asInputStream(name);
-		String patch = null;
-		try {
-			patch = PatchUtils.asString(patchIS);
-		} catch (IOException e) {
-			fail(e.getMessage());
+		try (InputStream patchIS = PatchUtils.asInputStream(name)) {
+			String patch = PatchUtils.asString(patchIS);
+			TextTransfer textTransfer = TextTransfer.getInstance();
+			Transfer[] transfers = new Transfer[] { textTransfer };
+			Object[] data = new Object[] { patch };
+			clipboard.setContents(data, transfers);
+			clipboard.dispose();
 		}
-		TextTransfer textTransfer = TextTransfer.getInstance();
-		Transfer[] transfers = new Transfer[] { textTransfer };
-		Object[] data = new Object[] { patch };
-		clipboard.setContents(data, transfers);
-		clipboard.dispose();
 	}
 
-	private void copyIntoWorkspace(String name) {
+	private void copyIntoWorkspace(String name) throws IOException, CoreException {
 		IFile file = testProject.getFile(name);
-		InputStream is = PatchUtils.asInputStream(name);
-		try {
+		try (InputStream is = PatchUtils.asInputStream(name)) {
 			file.create(is, true, null);
-		} catch (CoreException e) {
-			fail(e.getMessage());
 		}
 	}
 
-	private void compareStreams(InputStream expectedIS, InputStream actualIS) {
-		String expected = null;
-		String actual = null;
-		try {
-			expected = PatchUtils.asString(expectedIS);
-			actual = PatchUtils.asString(actualIS);
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-		assertEquals(expected, actual);
+	private void compareStreams(InputStream expectedIS, InputStream actualIS) throws IOException {
+		String expected = PatchUtils.asString(expectedIS);
+		String actual = PatchUtils.asString(actualIS);
+		assertThat(actual).isEqualTo(expected);
 	}
 
 	private void treeSelect(TreeViewer tree, String path) {
@@ -252,44 +253,14 @@ public class PatchUITest {
 		tree.setSelection(sel);
 	}
 
-	private Button getButton(Object object, String name) {
-		return (Button) getField(object, name);
+	private Button getButton(Object object, String name)
+			throws IllegalArgumentException, IllegalAccessException, SecurityException, NoSuchFieldException {
+		return (Button) ReflectionUtils.getField(object, name);
 	}
 
-	private TreeViewer getTreeViewer(Object object, String name) {
-		return (TreeViewer) getField(object, name);
-	}
-
-	private Object getField(Object object, String name) {
-		Object ret = null;
-		try {
-			ret = ReflectionUtils.getField(object, name);
-		} catch (IllegalArgumentException e) {
-			fail(e.getMessage());
-		} catch (SecurityException e) {
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
-			fail(e.getMessage());
-		} catch (NoSuchFieldException e) {
-			fail(e.getMessage());
-		}
-		return ret;
-	}
-
-	private Object callMethod(Object object, String name, Object... args) {
-		Object ret = null;
-		try {
-			ret = ReflectionUtils.callMethod(object, name, args);
-		} catch (IllegalArgumentException e) {
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
-			fail(e.getMessage());
-		} catch (InvocationTargetException e) {
-			fail(e.getMessage());
-		} catch (NoSuchMethodException e) {
-			fail(e.getMessage());
-		}
-		return ret;
+	private TreeViewer getTreeViewer(Object object, String name)
+			throws IllegalArgumentException, IllegalAccessException, SecurityException, NoSuchFieldException {
+		return (TreeViewer) ReflectionUtils.getField(object, name);
 	}
 
 	private Shell getShell() {

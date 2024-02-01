@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
@@ -20,13 +21,15 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
 
 import java.io.ByteArrayInputStream;
-import junit.framework.Test;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests saving the workspace, then performing snapshots, then crashing and recovering
@@ -71,10 +74,9 @@ public class TestSaveSnap extends WorkspaceSerializationTest {
 
 		/* see if the workspace contains the resources created earlier*/
 		IResource[] children = getWorkspace().getRoot().members();
-		assertEquals("1.0", 1, children.length);
-		assertEquals("1.1", children[0], project);
-		assertTrue("1.2", project.exists());
-		assertTrue("1.3", project.isOpen());
+		assertThat(children).containsExactly(project);
+		assertTrue(project.exists());
+		assertTrue(project.isOpen());
 
 		assertExistsInWorkspace(new IResource[] { project, folder, file });
 	}

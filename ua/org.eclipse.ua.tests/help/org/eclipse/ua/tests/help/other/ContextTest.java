@@ -14,11 +14,12 @@
 
 package org.eclipse.ua.tests.help.other;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.help.IHelpResource;
 import org.eclipse.help.IUAElement;
@@ -28,8 +29,8 @@ import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.base.HelpEvaluationContext;
 import org.eclipse.help.internal.context.Context;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -56,7 +57,7 @@ public class ContextTest {
 	private static final String TOPIC_FILTER_OUT = TOPIC_HEAD_ECLIPSE + FILTER_OUT + TOPIC_END;
 	private static final String END_CONTEXT = "</context>";
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// Required for isEnabled() to work correctly
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_WORKBENCH);
@@ -86,7 +87,7 @@ public class ContextTest {
 		assertEquals("Sample View", context.getTitle());
 		assertEquals("Context Description", context.getText());
 		IHelpResource[] related = context.getRelatedTopics();
-		assertEquals(1, related.length);
+		assertThat(related).hasSize(1);
 		assertEquals("eclipse", related[0].getLabel());
 	}
 
@@ -102,12 +103,12 @@ public class ContextTest {
 		assertEquals("Context Description", context.getText());
 		assertEquals("viewer", context.getId());
 		IHelpResource[] related = context.getRelatedTopics();
-		assertEquals(1, related.length);
+		assertThat(related).hasSize(1);
 		assertEquals("enabled", related[0].getLabel());
 		assertTrue(related[0] instanceof IUAElement);
 		IUAElement topic = (IUAElement)related[0];
 		IUAElement[] topicChildren = topic.getChildren();
-		assertEquals(1, topicChildren.length);
+		assertThat(topicChildren).hasSize(1);
 	}
 
 	@Test
@@ -128,21 +129,21 @@ public class ContextTest {
 		assertEquals("new id2", context3.getId());
 
 		IHelpResource[] related = context.getRelatedTopics();
-		assertEquals(1, related.length);
+		assertThat(related).hasSize(1);
 		assertEquals("enabled", related[0].getLabel());
 		assertTrue(related[0] instanceof IUAElement);
 		Topic topic = (Topic)related[0];
 		assertEquals("http://www.eclipse.org", topic.getHref());
 
 		related = context2.getRelatedTopics();
-		assertEquals(1, related.length);
+		assertThat(related).hasSize(1);
 		assertEquals("enabled", related[0].getLabel());
 		assertTrue(related[0] instanceof IUAElement);
 		topic = (Topic)related[0];
 		assertEquals("http://www.eclipse.org", topic.getHref());
 
 		related = context3.getRelatedTopics();
-		assertEquals(1, related.length);
+		assertThat(related).hasSize(1);
 		assertEquals("enabled", related[0].getLabel());
 		assertTrue(related[0] instanceof IUAElement);
 		topic = (Topic)related[0];
@@ -159,7 +160,7 @@ public class ContextTest {
 			END_CONTEXT;
 		Context context  = createContext(contextSource);
 		IHelpResource[] related = context.getRelatedTopics();
-		assertEquals(3, related.length);
+		assertThat(related).hasSize(3);
 		assertTrue(((Topic)related[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related[1]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related[2]).isEnabled(HelpEvaluationContext.getContext()));
@@ -177,17 +178,17 @@ public class ContextTest {
 		Context context3 = new Context(context2, "id2");
 
 		IHelpResource[] related1 = context1.getRelatedTopics();
-		assertEquals(2, related1.length);
+		assertThat(related1).hasSize(2);
 		assertTrue(((Topic)related1[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related1[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related2 = context2.getRelatedTopics();
-		assertEquals(2, related2.length);
+		assertThat(related2).hasSize(2);
 		assertTrue(((Topic)related2[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related2[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related3 = context3.getRelatedTopics();
-		assertEquals(2, related3.length);
+		assertThat(related3).hasSize(2);
 		assertTrue(((Topic)related3[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related3[1]).isEnabled(HelpEvaluationContext.getContext()));
 	}
@@ -204,17 +205,17 @@ public class ContextTest {
 		Context context3 = new Context(context1, "id2");
 
 		IHelpResource[] related1 = context1.getRelatedTopics();
-		assertEquals(2, related1.length);
+		assertThat(related1).hasSize(2);
 		assertTrue(((Topic)related1[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related1[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related2 = context2.getRelatedTopics();
-		assertEquals(2, related2.length);
+		assertThat(related2).hasSize(2);
 		assertTrue(((Topic)related2[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related2[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related3 = context3.getRelatedTopics();
-		assertEquals(2, related3.length);
+		assertThat(related3).hasSize(2);
 		assertTrue(((Topic)related3[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related3[1]).isEnabled(HelpEvaluationContext.getContext()));
 	}
@@ -230,17 +231,17 @@ public class ContextTest {
 		Context context2 = new Context(context1, "id");
 		Context context3 = new Context(context2, "id2");
 		IHelpResource[] related1 = context1.getRelatedTopics();
-		assertEquals(2, related1.length);
+		assertThat(related1).hasSize(2);
 		assertTrue(((Topic)related1[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related1[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related2 = context2.getRelatedTopics();
-		assertEquals(2, related2.length);
+		assertThat(related2).hasSize(2);
 		assertTrue(((Topic)related2[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related2[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related3 = context3.getRelatedTopics();
-		assertEquals(2, related3.length);
+		assertThat(related3).hasSize(2);
 		assertTrue(((Topic)related3[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related3[1]).isEnabled(HelpEvaluationContext.getContext()));
 	}
@@ -257,17 +258,17 @@ public class ContextTest {
 		Context context3 = new Context(context1, "id2");
 
 		IHelpResource[] related1 = context1.getRelatedTopics();
-		assertEquals(2, related1.length);
+		assertThat(related1).hasSize(2);
 		assertTrue(((Topic)related1[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related1[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related2 = context2.getRelatedTopics();
-		assertEquals(2, related2.length);
+		assertThat(related2).hasSize(2);
 		assertTrue(((Topic)related2[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related2[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related3 = context3.getRelatedTopics();
-		assertEquals(2, related3.length);
+		assertThat(related3).hasSize(2);
 		assertTrue(((Topic)related3[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related3[1]).isEnabled(HelpEvaluationContext.getContext()));
 	}
@@ -283,17 +284,17 @@ public class ContextTest {
 		Context context2 = new Context(context1, "id");
 		Context context3 = new Context(context2, "id2");
 		IHelpResource[] related1 = context1.getRelatedTopics();
-		assertEquals(2, related1.length);
+		assertThat(related1).hasSize(2);
 		assertTrue(((Topic)related1[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related1[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related2 = context2.getRelatedTopics();
-		assertEquals(2, related2.length);
+		assertThat(related2).hasSize(2);
 		assertTrue(((Topic)related2[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related2[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related3 = context3.getRelatedTopics();
-		assertEquals(2, related3.length);
+		assertThat(related3).hasSize(2);
 		assertTrue(((Topic)related3[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related3[1]).isEnabled(HelpEvaluationContext.getContext()));
 	}
@@ -310,17 +311,17 @@ public class ContextTest {
 		Context context3 = new Context(context1, "id2");
 
 		IHelpResource[] related1 = context1.getRelatedTopics();
-		assertEquals(2, related1.length);
+		assertThat(related1).hasSize(2);
 		assertTrue(((Topic)related1[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related1[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related2 = context2.getRelatedTopics();
-		assertEquals(2, related2.length);
+		assertThat(related2).hasSize(2);
 		assertTrue(((Topic)related2[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related2[1]).isEnabled(HelpEvaluationContext.getContext()));
 
 		IHelpResource[] related3 = context3.getRelatedTopics();
-		assertEquals(2, related3.length);
+		assertThat(related3).hasSize(2);
 		assertTrue(((Topic)related3[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related3[1]).isEnabled(HelpEvaluationContext.getContext()));
 	}
@@ -343,16 +344,16 @@ public class ContextTest {
 
 	private void deleteAndInsert(Context context) {
 		IHelpResource[] related = context.getRelatedTopics();
-		assertEquals(2, related.length);
+		assertThat(related).hasSize(2);
 		IHelpResource enabled= related[0];
 		context.removeChild((UAElement) enabled);
 		related = context.getRelatedTopics();
-		assertEquals(1, related.length);
+		assertThat(related).hasSize(1);
 		Topic disabled = (Topic)related[0];
 		assertFalse(disabled.isEnabled(HelpEvaluationContext.getContext()));
 		context.insertBefore((UAElement) enabled, disabled);
 		related = context.getRelatedTopics();
-		assertEquals(2, related.length);
+		assertThat(related).hasSize(2);
 		assertTrue(((Topic)related[0]).isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(((Topic)related[1]).isEnabled(HelpEvaluationContext.getContext()));
 	}

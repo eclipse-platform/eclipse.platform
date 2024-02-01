@@ -454,11 +454,7 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 
 		Object current = getViewer().getInput();
 
-		if (current == null && context == null) {
-			return;
-		}
-
-		if (current != null && current.equals(context)) {
+		if ((current == null && context == null) || (current != null && current.equals(context))) {
 			return;
 		}
 
@@ -650,12 +646,12 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 
 		int style = getViewerStyle();
 		fPresentationContext = new DebugModelPresentationContext(getPresentationContextId(), this, fModelPresentation);
-		final TreeModelViewer variablesViewer = new TreeModelViewer(parent, style, fPresentationContext);
-		variablesViewer.getControl().addFocusListener(new FocusAdapter() {
+		final TreeModelViewer v = new TreeModelViewer(parent, style, fPresentationContext);
+		v.getControl().addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
 				fTreeHasFocus = true;
-				fSelectionProvider.setActiveProvider(variablesViewer);
+				fSelectionProvider.setActiveProvider(v);
 				setGlobalActions();
 			}
 
@@ -669,7 +665,7 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 				getViewSite().getActionBars().updateActionBars();
 			}
 		});
-		variablesViewer.getPresentationContext().addPropertyChangeListener(
+		v.getPresentationContext().addPropertyChangeListener(
 				event -> {
 					if (IPresentationContext.PROPERTY_COLUMNS.equals(event.getProperty())) {
 						IAction action = getAction("ShowTypeNames"); //$NON-NLS-1$
@@ -679,10 +675,10 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 					}
 				});
 
-		variablesViewer.addPostSelectionChangedListener(getTreeSelectionChangedListener());
+		v.addPostSelectionChangedListener(getTreeSelectionChangedListener());
 		DebugUITools.addPartDebugContextListener(getSite(), this);
 
-		return variablesViewer;
+		return v;
 	}
 
 	private void setGlobalActions() {
@@ -1125,17 +1121,11 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 						return;
 					}
 					refreshDetailPaneContents();
-					treeSelectionChanged(event);
 				}
 			};
 		}
 		return fTreeSelectionChangedListener;
 	}
-
-	/**
-	 * Selection in the variable tree changed. Perform any updates.
-	 */
-	protected void treeSelectionChanged(SelectionChangedEvent event) {}
 
 	@Override
 	public String getCurrentPaneID() {

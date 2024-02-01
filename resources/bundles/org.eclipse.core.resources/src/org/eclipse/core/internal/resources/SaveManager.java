@@ -65,7 +65,6 @@ import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
 import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
 import org.eclipse.core.internal.localstore.SafeFileInputStream;
 import org.eclipse.core.internal.localstore.SafeFileOutputStream;
-import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.IStringPoolParticipant;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
@@ -1709,61 +1708,51 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		IPath syncInfoTempLocation = workspace.getMetaArea().getBackupLocationFor(syncInfoLocation);
 		final List<String> writtenTypes = new ArrayList<>(5);
 		final List<QualifiedName> writtenPartners = new ArrayList<>(synchronizer.registry.size());
-		DataOutputStream o1 = null;
-		DataOutputStream o2 = null;
 		String message;
 
 		// Create the output streams
-		try {
-			o1 = new DataOutputStream(new SafeFileOutputStream(markersLocation.toOSString(), markersTempLocation.toOSString()));
-			// we don't store the sync info for the workspace root so don't create
-			// an empty file
-			if (root.getType() != IResource.ROOT)
-				o2 = new DataOutputStream(new SafeFileOutputStream(syncInfoLocation.toOSString(), syncInfoTempLocation.toOSString()));
-		} catch (IOException e) {
-			FileUtil.safeClose(o1);
-			FileUtil.safeClose(o2);
-			message = NLS.bind(Messages.resources_writeMeta, root.getFullPath());
-			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, root.getFullPath(), message, e);
-		}
+		try (DataOutputStream markersOutput = new DataOutputStream(
+				new SafeFileOutputStream(markersLocation.toOSString(), markersTempLocation.toOSString()));
+				DataOutputStream syncInfoOutput = (root.getType() == IResource.ROOT) ? null
+						: new DataOutputStream(new SafeFileOutputStream(syncInfoLocation.toOSString(),
+								syncInfoTempLocation.toOSString()))) {
 
-		final DataOutputStream markersOutput = o1;
-		final DataOutputStream syncInfoOutput = o2;
-		// The following 2 piece array will hold a running total of the times
-		// taken to save markers and syncInfo respectively.  This will cut down
-		// on the number of statements printed out as we would get 2 statements
-		// for each resource otherwise.
-		final long[] saveTimes = new long[2];
+			// The following 2 piece array will hold a running total of the times
+			// taken to save markers and syncInfo respectively. This will cut down
+			// on the number of statements printed out as we would get 2 statements
+			// for each resource otherwise.
+			final long[] saveTimes = new long[2];
 
-		// Create the visitor
-		IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
-			ResourceInfo info = (ResourceInfo) elementContents;
-			if (info != null) {
-				try {
-					// save the markers
-					long start = System.currentTimeMillis();
-					markerManager.save(info, requestor, markersOutput, writtenTypes);
-					long markerSaveTime = System.currentTimeMillis() - start;
-					saveTimes[0] += markerSaveTime;
-					persistMarkers += markerSaveTime;
-					// save the sync info - if we have the workspace root then the output stream will be null
-					if (syncInfoOutput != null) {
-						start = System.currentTimeMillis();
-						synchronizer.saveSyncInfo(info, requestor, syncInfoOutput, writtenPartners);
-						long syncInfoSaveTime = System.currentTimeMillis() - start;
-						saveTimes[1] += syncInfoSaveTime;
-						persistSyncInfo += syncInfoSaveTime;
+			// Create the visitor
+			IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
+				ResourceInfo info = (ResourceInfo) elementContents;
+				if (info != null) {
+					try {
+						// save the markers
+						long start = System.currentTimeMillis();
+						markerManager.save(info, requestor, markersOutput, writtenTypes);
+						long markerSaveTime = System.currentTimeMillis() - start;
+						saveTimes[0] += markerSaveTime;
+						persistMarkers += markerSaveTime;
+						// save the sync info - if we have the workspace root then the output stream
+						// will be null
+						if (syncInfoOutput != null) {
+							start = System.currentTimeMillis();
+							synchronizer.saveSyncInfo(info, requestor, syncInfoOutput, writtenPartners);
+							long syncInfoSaveTime = System.currentTimeMillis() - start;
+							saveTimes[1] += syncInfoSaveTime;
+							persistSyncInfo += syncInfoSaveTime;
+						}
+					} catch (IOException e) {
+						throw new WrappedRuntimeException(e);
 					}
-				} catch (IOException e) {
-					throw new WrappedRuntimeException(e);
 				}
-			}
-			// don't continue if the current resource is the workspace root, only continue for projects
-			return root.getType() != IResource.ROOT;
-		};
+				// don't continue if the current resource is the workspace root, only continue
+				// for projects
+				return root.getType() != IResource.ROOT;
+			};
 
-		// Call the visitor
-		try {
+			// Call the visitor
 			try {
 				new ElementTreeIterator(workspace.getElementTree(), root.getFullPath()).iterate(visitor);
 			} catch (WrappedRuntimeException e) {
@@ -1784,9 +1773,6 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		} catch (IOException e) {
 			message = NLS.bind(Messages.resources_writeMeta, root.getFullPath());
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, root.getFullPath(), message, e);
-		} finally {
-			FileUtil.safeClose(markersOutput);
-			FileUtil.safeClose(syncInfoOutput);
 		}
 
 		// recurse over the projects in the workspace if we were given the workspace root
@@ -1842,86 +1828,72 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		IPath syncInfoLocation = workspace.getMetaArea().getSyncInfoSnapshotLocationFor(root);
 		SafeChunkyOutputStream safeMarkerStream = null;
 		SafeChunkyOutputStream safeSyncInfoStream = null;
-		DataOutputStream o1 = null;
-		DataOutputStream o2 = null;
 		String message;
 
 		// Create the output streams
 		try {
 			safeMarkerStream = new SafeChunkyOutputStream(markersLocation.toFile());
-			o1 = new DataOutputStream(safeMarkerStream);
-			// we don't store the sync info for the workspace root so don't create
-			// an empty file
-			if (root.getType() != IResource.ROOT) {
-				safeSyncInfoStream = new SafeChunkyOutputStream(syncInfoLocation.toFile());
-				o2 = new DataOutputStream(safeSyncInfoStream);
-			}
-		} catch (IOException e) {
-			FileUtil.safeClose(o1);
-			message = NLS.bind(Messages.resources_writeMeta, root.getFullPath());
-			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, root.getFullPath(), message, e);
-		}
+			try (DataOutputStream markersOutput = new DataOutputStream(safeMarkerStream);
+					DataOutputStream syncInfoOutput = (root.getType() == IResource.ROOT) ? null
+							: new DataOutputStream(
+									safeSyncInfoStream = new SafeChunkyOutputStream(syncInfoLocation.toFile()))) {
+				int markerFileSize = markersOutput.size();
+				int syncInfoFileSize = safeSyncInfoStream == null ? -1 : syncInfoOutput.size();
+				// The following 2 piece array will hold a running total of the times
+				// taken to save markers and syncInfo respectively. This will cut down
+				// on the number of statements printed out as we would get 2 statements
+				// for each resource otherwise.
+				final long[] snapTimes = new long[2];
 
-		final DataOutputStream markersOutput = o1;
-		final DataOutputStream syncInfoOutput = o2;
-		int markerFileSize = markersOutput.size();
-		int syncInfoFileSize = safeSyncInfoStream == null ? -1 : syncInfoOutput.size();
-		// The following 2 piece array will hold a running total of the times
-		// taken to save markers and syncInfo respectively.  This will cut down
-		// on the number of statements printed out as we would get 2 statements
-		// for each resource otherwise.
-		final long[] snapTimes = new long[2];
-
-		IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
-			ResourceInfo info = (ResourceInfo) elementContents;
-			if (info != null) {
-				try {
-					// save the markers
-					long start = System.currentTimeMillis();
-					markerManager.snap(info, requestor, markersOutput);
-					long markerSnapTime = System.currentTimeMillis() - start;
-					snapTimes[0] += markerSnapTime;
-					persistMarkers += markerSnapTime;
-					// save the sync info - if we have the workspace root then the output stream will be null
-					if (syncInfoOutput != null) {
-						start = System.currentTimeMillis();
-						synchronizer.snapSyncInfo(info, requestor, syncInfoOutput);
-						long syncInfoSnapTime = System.currentTimeMillis() - start;
-						snapTimes[1] += syncInfoSnapTime;
-						persistSyncInfo += syncInfoSnapTime;
+				IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
+					ResourceInfo info = (ResourceInfo) elementContents;
+					if (info != null) {
+						try {
+							// save the markers
+							long start = System.currentTimeMillis();
+							markerManager.snap(info, requestor, markersOutput);
+							long markerSnapTime = System.currentTimeMillis() - start;
+							snapTimes[0] += markerSnapTime;
+							persistMarkers += markerSnapTime;
+							// save the sync info - if we have the workspace root then the output stream
+							// will be null
+							if (syncInfoOutput != null) {
+								start = System.currentTimeMillis();
+								synchronizer.snapSyncInfo(info, requestor, syncInfoOutput);
+								long syncInfoSnapTime = System.currentTimeMillis() - start;
+								snapTimes[1] += syncInfoSnapTime;
+								persistSyncInfo += syncInfoSnapTime;
+							}
+						} catch (IOException e) {
+							throw new WrappedRuntimeException(e);
+						}
 					}
-				} catch (IOException e) {
-					throw new WrappedRuntimeException(e);
-				}
-			}
-			// don't continue if the current resource is the workspace root, only continue for projects
-			return root.getType() != IResource.ROOT;
-		};
+					// don't continue if the current resource is the workspace root, only continue
+					// for projects
+					return root.getType() != IResource.ROOT;
+				};
 
-		try {
-			// Call the visitor
-			try {
-				new ElementTreeIterator(workspace.getElementTree(), root.getFullPath()).iterate(visitor);
-			} catch (WrappedRuntimeException e) {
-				throw (IOException) e.getTargetException();
+				// Call the visitor
+				try {
+					new ElementTreeIterator(workspace.getElementTree(), root.getFullPath()).iterate(visitor);
+				} catch (WrappedRuntimeException e) {
+					throw (IOException) e.getTargetException();
+				}
+				if (Policy.DEBUG_SAVE_MARKERS)
+					Policy.debug("Snap Markers for " + root.getFullPath() + ": " + snapTimes[0] + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				if (Policy.DEBUG_SAVE_SYNCINFO)
+					Policy.debug("Snap SyncInfo for " + root.getFullPath() + ": " + snapTimes[1] + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				if (markerFileSize != markersOutput.size())
+					safeMarkerStream.succeed();
+				if (safeSyncInfoStream != null && syncInfoFileSize != syncInfoOutput.size()) {
+					safeSyncInfoStream.succeed();
+					syncInfoOutput.close();
+				}
+				markersOutput.close();
 			}
-			if (Policy.DEBUG_SAVE_MARKERS)
-				Policy.debug("Snap Markers for " + root.getFullPath() + ": " + snapTimes[0] + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			if (Policy.DEBUG_SAVE_SYNCINFO)
-				Policy.debug("Snap SyncInfo for " + root.getFullPath() + ": " + snapTimes[1] + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			if (markerFileSize != markersOutput.size())
-				safeMarkerStream.succeed();
-			if (safeSyncInfoStream != null && syncInfoFileSize != syncInfoOutput.size()) {
-				safeSyncInfoStream.succeed();
-				syncInfoOutput.close();
-			}
-			markersOutput.close();
 		} catch (IOException e) {
 			message = NLS.bind(Messages.resources_writeMeta, root.getFullPath());
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, root.getFullPath(), message, e);
-		} finally {
-			FileUtil.safeClose(markersOutput);
-			FileUtil.safeClose(syncInfoOutput);
 		}
 
 		// recurse over the projects in the workspace if we were given the workspace root

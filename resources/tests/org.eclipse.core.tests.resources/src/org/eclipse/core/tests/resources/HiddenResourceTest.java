@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
@@ -131,9 +132,9 @@ public class HiddenResourceTest {
 		members = project.members();
 
 		// +1 for the project description file
-		assertEquals("2.1", 4, members.length);
+		assertThat(members).hasSize(4);
 		members = folder.members();
-		assertEquals("2.3", 1, members.length);
+		assertThat(members).hasSize(1);
 
 		// Set the values.
 		setHidden(project, true, IResource.DEPTH_INFINITE);
@@ -144,9 +145,9 @@ public class HiddenResourceTest {
 
 		// Check the calls to #members
 		members = project.members();
-		assertEquals("5.1", 0, members.length);
+		assertThat(members).isEmpty();
 		members = folder.members();
-		assertEquals("5.3", 0, members.length);
+		assertThat(members).isEmpty();
 
 		// FIXME: add the tests for #members(int)
 
@@ -157,44 +158,44 @@ public class HiddenResourceTest {
 		// Check the calls to members(IResource.NONE);
 		members = project.members(IResource.NONE);
 		// +1 for the project description file
-		assertEquals("7.1", 4, members.length);
+		assertThat(members).hasSize(4);
 		members = project.members(IContainer.INCLUDE_HIDDEN);
 		// +1 for the project description file
-		assertEquals("7.3", 4, members.length);
+		assertThat(members).hasSize(4);
 		members = folder.members();
-		assertEquals("7.5", 1, members.length);
+		assertThat(members).hasSize(1);
 
 		// Set one of the children to be HIDDEN and try again
 		setHidden(folder, true, IResource.DEPTH_ZERO);
 		members = project.members();
 
 		// +1 for project description, -1 for hidden folder
-		assertEquals("8.2", 3, members.length);
+		assertThat(members).hasSize(3);
 		members = folder.members();
-		assertEquals("8.4", 1, members.length);
+		assertThat(members).hasSize(1);
 		members = project.members(IResource.NONE);
 		// +1 for project description, -1 for hidden folder
-		assertEquals("8.6", 3, members.length);
+		assertThat(members).hasSize(3);
 		members = folder.members();
-		assertEquals("8.8", 1, members.length);
+		assertThat(members).hasSize(1);
 		members = project.members(IContainer.INCLUDE_HIDDEN);
 		// +1 for project description
-		assertEquals("8.10", 4, members.length);
+		assertThat(members).hasSize(4);
 		members = folder.members();
-		assertEquals("8.12", 1, members.length);
+		assertThat(members).hasSize(1);
 
 		// Set all the resources to be hidden
 		setHidden(project, true, IResource.DEPTH_INFINITE);
 		assertHidden(project, true, IResource.DEPTH_INFINITE);
 		members = project.members(IResource.NONE);
-		assertEquals("9.3", 0, members.length);
+		assertThat(members).isEmpty();
 		members = folder.members(IResource.NONE);
-		assertEquals("9.5", 0, members.length);
+		assertThat(members).isEmpty();
 		members = project.members(IContainer.INCLUDE_HIDDEN);
 		// +1 for project description
-		assertEquals("9.7", 4, members.length);
+		assertThat(members).hasSize(4);
 		members = folder.members(IContainer.INCLUDE_HIDDEN);
-		assertEquals("9.9", 1, members.length);
+		assertThat(members).hasSize(1);
 	}
 
 	/**

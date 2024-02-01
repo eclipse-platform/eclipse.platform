@@ -11,13 +11,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
 
@@ -27,9 +26,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.util.ProductPreferences;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for locale related code in UrlUtil
@@ -38,12 +37,12 @@ public class LocaleTest {
 
 	private int mode;
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		mode = BaseHelpSystem.getMode();
 	}

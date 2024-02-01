@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
@@ -21,13 +22,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.TestUtil.waitForCondition;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
-import static org.hamcrest.number.OrderingComparison.lessThanOrEqualTo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -228,9 +222,10 @@ public class ParallelBuildChainTest {
 		executeIncrementalWorkspaceBuild(() -> {
 			waitForCondition(() -> TimerBuilder.getStartedProjectBuilds().size() > 1,
 					millisToWaitForUnexpectedParallelBuild);
-			assertThat(
-					"all build jobs have started in time although infinitely running builds with conflicting rules exist",
-					TimerBuilder.getStartedProjectBuilds(), not(containsInAnyOrder(longRunningProjects)));
+			assertThat(longRunningProjects).withFailMessage(
+					"all build jobs have started in time although infinitely running builds with conflicting rules exist")
+					.anySatisfy(longRunningProject -> assertThat(TimerBuilder.getStartedProjectBuilds())
+							.doesNotContain(longRunningProject));
 			assertMaximumNumberOfSimultaneousBuilds(1);
 		});
 	}
@@ -469,25 +464,27 @@ public class ParallelBuildChainTest {
 	}
 
 	private void assertMinimumNumberOfSimultaneousBuilds(int minimumNumberOfSimulaneousBuilds) {
-		assertThat("too few builds have run in parallel", TimerBuilder.getMaximumNumberOfSimultaneousBuilds(),
-				greaterThanOrEqualTo(minimumNumberOfSimulaneousBuilds));
+		assertThat(TimerBuilder.getMaximumNumberOfSimultaneousBuilds())
+				.as("check maximum number of parallel builds exceeds minimum expected number")
+				.isGreaterThanOrEqualTo(minimumNumberOfSimulaneousBuilds);
 	}
 
 	private void assertMaximumNumberOfSimultaneousBuilds(int maximumNumberOfSimulaneousBuilds) {
-		assertThat("too many builds have run in parallel", TimerBuilder.getMaximumNumberOfSimultaneousBuilds(),
-				lessThanOrEqualTo(maximumNumberOfSimulaneousBuilds));
+		assertThat(TimerBuilder.getMaximumNumberOfSimultaneousBuilds())
+				.as("check maximum number of parallel builds does not exceed maximum expected number")
+				.isLessThanOrEqualTo(maximumNumberOfSimulaneousBuilds);
 	}
 
 	private void assertMaximumNumberOfConcurrentWorkspaceBuilds() {
-		assertThat("too many workspace builds have run in parallel",
-				TimerBuilder.getMaximumNumberOfSimultaneousBuilds(),
-				lessThanOrEqualTo(getWorkspace().getDescription().getMaxConcurrentBuilds()));
+		assertThat(TimerBuilder.getMaximumNumberOfSimultaneousBuilds())
+				.as("check maximum number of parallel builds does not exceed workspace limit")
+				.isLessThanOrEqualTo(getWorkspace().getDescription().getMaxConcurrentBuilds());
 	}
 
 	private void assertBuildsToStart(List<IProject> projects) {
 		waitForCondition(() -> TimerBuilder.getStartedProjectBuilds().containsAll(projects), TIMEOUT_IN_MILLIS);
-		assertThat("not all build jobs have started in time", TimerBuilder.getStartedProjectBuilds(),
-				hasItems(projects.toArray(IProject[]::new)));
+		assertThat(TimerBuilder.getStartedProjectBuilds()).as("check all build jobs have started in time")
+				.containsAll(projects);
 	}
 
 	private static class ExpectedExecutionTime {
@@ -503,8 +500,9 @@ public class ParallelBuildChainTest {
 		}
 
 		void assertMinimumExecutionTimeReached() {
-			assertThat("build was faster than the expected execution time (in milliseconds)",
-					getExecutionTimeInMillis(), greaterThanOrEqualTo(minimumExecutionTimeInMillis));
+			assertThat(getExecutionTimeInMillis())
+					.as("check build was not faster than the expected execution time (in milliseconds)")
+					.isGreaterThanOrEqualTo(minimumExecutionTimeInMillis);
 		}
 
 		static ExpectedExecutionTime captureFromCurrentTime(int minimumExecutionTimeInMillis) {
@@ -514,13 +512,13 @@ public class ParallelBuildChainTest {
 
 	private void assertBuildsToFinish(List<IProject> projects) {
 		waitForCondition(() -> TimerBuilder.getFinishedProjectBuilds().containsAll(projects), TIMEOUT_IN_MILLIS);
-		assertThat("not all build jobs have finished in time", TimerBuilder.getFinishedProjectBuilds(),
-				hasItems(projects.toArray(IProject[]::new)));
+		assertThat(TimerBuilder.getFinishedProjectBuilds()).as("check all build jobs have finished in time")
+				.containsAll(projects);
 	}
 
 	private void assertSequentialBuildEventsForProjects(Iterable<IProject> projects) {
-		assertThat("unexpected order of build events occurred", TimerBuilder.getBuildEvents(),
-				equalTo(getExpectedSequentialBuildEvents(projects)));
+		assertThat(TimerBuilder.getBuildEvents()).as("order of build events")
+				.isEqualTo(getExpectedSequentialBuildEvents(projects));
 	}
 
 	private Iterable<Object> getExpectedSequentialBuildEvents(Iterable<IProject> projects) {

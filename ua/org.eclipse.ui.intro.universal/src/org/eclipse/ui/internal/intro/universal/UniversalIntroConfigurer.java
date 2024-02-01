@@ -559,16 +559,15 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 		if (primaryAnchors == null) {
 			primaryAnchors = Collections.emptyList();
 		}
-		List<List<IntroElement>> secondaryAnchorsList = new ArrayList<>();
+		List<List<IntroElement>> secondaryAnchors = new ArrayList<>();
 		for (int i=0;i<secondaryIntroData.length;++i) {
 			IntroData idata = secondaryIntroData[i];
 			List<IntroElement> anchors = getAnchors(idata, pageId, groupId);
 			if (anchors != null) {
-				secondaryAnchorsList.add(anchors);
+				secondaryAnchors.add(anchors);
 			}
 		}
 
-		List<IntroElement>[] secondaryAnchors = secondaryAnchorsList.toArray(new List[secondaryAnchorsList.size()]);
 		if (sequenceResolver == null) {
 			sequenceResolver = new SequenceResolver<>();
 		}

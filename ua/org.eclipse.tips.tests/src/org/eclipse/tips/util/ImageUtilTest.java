@@ -13,36 +13,35 @@
  *******************************************************************************/
 package org.eclipse.tips.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.tips.ui.internal.util.ImageUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ImageUtilTest {
 
-	private static String fImageBase64 = """
-			iVBORw0KGgoAAAANSUhEUgAAACIAAAAkCAYAAADsHujfAAAAAXNSR0IArs4c6QAAAARnQU1BAACx
-			jwv8YQUAAAAJcEhZcwAAJOgAACToAYJjBRwAAAEcSURBVFhH7dZBCsIwEIXh3MkbuPJubtwI0kOIK
-			IJuddseo+eIPORBDZM0MyPaRQr/IiRtP9osEoa+j0uoQdKykPVtiLunPKdtcx/i9iHPMRECRDi+82K
-			A4LNKGBHCG5kVM0UgjKV1SITgxdMHIC1Gg0DZPeLBaBEoC0EWjAWBihCkwVgRaBaCajAeBKqCoBLGi0
-			DVECRhVtfPsQWBVBAkYZgVgdQQlPsy0traTJB0TzDuGUtqSA7BrBgVJEVgLP0mC6YaIiE49w1MFaSEYF
-			7MLKQGwTyYIkSDYFZMFmJBMAtGhHgQTIsRIdObLQiWYnAWltYhEYJDrhfBiCkhUHGz/rIGSWuQtAZJC+M
-			4xn93Ol9iiAu49oduKZAuvgC5R8NSTiN3qAAAAABJRU5ErkJggg==""";
+	private static String fImageBase64 = "" //
+			+ "iVBORw0KGgoAAAANSUhEUgAAACIAAAAkCAYAAADsHujfAAAAAXNSR0IArs4c6QAAAARnQU1BAACx"
+			+ "jwv8YQUAAAAJcEhZcwAAJOgAACToAYJjBRwAAAEcSURBVFhH7dZBCsIwEIXh3MkbuPJubtwI0kOIK"
+			+ "IJuddseo+eIPORBDZM0MyPaRQr/IiRtP9osEoa+j0uoQdKykPVtiLunPKdtcx/i9iHPMRECRDi+82K"
+			+ "A4LNKGBHCG5kVM0UgjKV1SITgxdMHIC1Gg0DZPeLBaBEoC0EWjAWBihCkwVgRaBaCajAeBKqCoBLGi0"
+			+ "DVECRhVtfPsQWBVBAkYZgVgdQQlPsy0traTJB0TzDuGUtqSA7BrBgVJEVgLP0mC6YaIiE49w1MFaSEYF"
+			+ "7MLKQGwTyYIkSDYFZMFmJBMAtGhHgQTIsRIdObLQiWYnAWltYhEYJDrhfBiCkhUHGz/rIGSWuQtAZJC+M"
+			+ "4xn93Ol9iiAu49oduKZAuvgC5R8NSTiN3qAAAAABJRU5ErkJggg==";
 
-	private static String fImageBase64HTML = """
-			data:image/png;base64,
-			iVBORw0KGgoAAAANSUhEUgAAACIAAAAkCAYAAADsHujfAAAAAXNSR0IArs4c6QAAAARnQU1BAACx
-			jwv8YQUAAAAJcEhZcwAAJOgAACToAYJjBRwAAAEcSURBVFhH7dZBCsIwEIXh3MkbuPJubtwI0kOIK
-			IJuddseo+eIPORBDZM0MyPaRQr/IiRtP9osEoa+j0uoQdKykPVtiLunPKdtcx/i9iHPMRECRDi+82K
-			A4LNKGBHCG5kVM0UgjKV1SITgxdMHIC1Gg0DZPeLBaBEoC0EWjAWBihCkwVgRaBaCajAeBKqCoBLGi0
-			DVECRhVtfPsQWBVBAkYZgVgdQQlPsy0traTJB0TzDuGUtqSA7BrBgVJEVgLP0mC6YaIiE49w1MFaSEYF
-			7MLKQGwTyYIkSDYFZMFmJBMAtGhHgQTIsRIdObLQiWYnAWltYhEYJDrhfBiCkhUHGz/rIGSWuQtAZJC+M
-			4xn93Ol9iiAu49oduKZAuvgC5R8NSTiN3qAAAAABJRU5ErkJggg==""";
+	private static String fImageBase64HTML = "" //
+			+ "data:image/png;base64,"
+			+ "iVBORw0KGgoAAAANSUhEUgAAACIAAAAkCAYAAADsHujfAAAAAXNSR0IArs4c6QAAAARnQU1BAACx"
+			+ "jwv8YQUAAAAJcEhZcwAAJOgAACToAYJjBRwAAAEcSURBVFhH7dZBCsIwEIXh3MkbuPJubtwI0kOIK"
+			+ "IJuddseo+eIPORBDZM0MyPaRQr/IiRtP9osEoa+j0uoQdKykPVtiLunPKdtcx/i9iHPMRECRDi+82K"
+			+ "A4LNKGBHCG5kVM0UgjKV1SITgxdMHIC1Gg0DZPeLBaBEoC0EWjAWBihCkwVgRaBaCajAeBKqCoBLGi0"
+			+ "DVECRhVtfPsQWBVBAkYZgVgdQQlPsy0traTJB0TzDuGUtqSA7BrBgVJEVgLP0mC6YaIiE49w1MFaSEYF"
+			+ "7MLKQGwTyYIkSDYFZMFmJBMAtGhHgQTIsRIdObLQiWYnAWltYhEYJDrhfBiCkhUHGz/rIGSWuQtAZJC+M"
+			+ "4xn93Ol9iiAu49oduKZAuvgC5R8NSTiN3qAAAAABJRU5ErkJggg==";
 
 	@Test
 	public void decodeImageToBase64Test() throws IOException {
@@ -51,7 +50,7 @@ public class ImageUtilTest {
 		image.dispose();
 		image = new Image(null, ImageUtil.decodeToImage(base64Image));
 		String base64Image2 = ImageUtil.decodeFromImage(image, SWT.IMAGE_PNG);
-		assertTrue(base64Image, base64Image.equals(base64Image2));
+		assertEquals(base64Image2, base64Image);
 		image.dispose();
 
 		Image image2 = new Image(null, ImageUtil.decodeToImage(fImageBase64HTML));
@@ -59,7 +58,7 @@ public class ImageUtilTest {
 		image2.dispose();
 		image2 = new Image(null, ImageUtil.decodeToImage(base64Image3));
 		String base64Image4 = ImageUtil.decodeFromImage(image2, SWT.IMAGE_PNG);
-		assertTrue(base64Image3, base64Image3.equals(base64Image4));
+		assertEquals(base64Image4, base64Image3);
 		image2.dispose();
 	}
 

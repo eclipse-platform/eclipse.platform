@@ -83,7 +83,9 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 							change(delta.getResource(), IResource.DEPTH_INFINITE);
 						}
 						break;
-				}
+					default:
+						break;
+					}
 			}
 		} finally {
 			endInput();

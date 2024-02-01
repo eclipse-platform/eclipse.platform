@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -352,8 +349,8 @@ public class XmlProcessorFactoryTest {
 							try (OutputStream outputStream = socket.getOutputStream()) {
 								outputStream.write("HTTP/1.1 200 OK\r\n".getBytes(StandardCharsets.UTF_8));
 							}
-							assertThat(firstLine, startsWith("GET"));
-							assertThat(firstLine, not(containsString("secret")));
+							assertThat(firstLine).startsWith("GET");
+							assertThat(firstLine).doesNotContain("secret");
 							fail("Server was contacted");
 						}
 					} catch (SocketException closed) {

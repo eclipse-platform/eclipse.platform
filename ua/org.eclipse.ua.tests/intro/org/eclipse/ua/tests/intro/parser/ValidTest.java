@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.intro.parser;
 
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,9 +28,8 @@ import org.eclipse.ua.tests.intro.util.IntroModelSerializerTest;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ui.internal.intro.impl.model.IntroModelRoot;
 import org.eclipse.ui.internal.intro.impl.model.loader.ExtensionPointManager;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -43,7 +42,7 @@ public class ValidTest {
 	 * Ensure that org.eclipse.help.ui is started. It contributes extra content
 	 * filtering that is used by this test. See UIContentFilterProcessor.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		HelpUIPlugin.getDefault();
 	}
@@ -97,17 +96,19 @@ public class ValidTest {
 
 						String expected = FileUtil.getContents(bundle, FileUtil.getResultFile(content));
 						String actual = serializer.toString();
-						Assert.assertEquals("The model parsed for intro did not match the expected result for: " + id, expected, actual);
+						assertThat(actual).as("the model parsed for intro did not match the expected result for: " + id)
+								.isEqualTo(expected);
 
 						Map<String, String> map = IntroModelSerializerTest.getXHTMLFiles(model);
-						Iterator<Entry<String, String>> iter = map.entrySet().iterator();
-						while (iter.hasNext()) {
-							Entry<String, String> entry = iter.next();
+						for (Entry<String, String> entry : map.entrySet()) {
 							String relativePath = entry.getKey();
 
 							expected = FileUtil.getContents(bundle, FileUtil.getResultFile(relativePath));
 							actual = entry.getValue();
-							Assert.assertEquals("The XHTML generated for intro did not match the expected result for: " + relativePath, expected, actual);
+							assertThat(actual)
+									.as("the XHTML generated for intro did not match the expected result for: "
+											+ relativePath)
+									.isEqualTo(expected);
 						}
 					}
 					return;

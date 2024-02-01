@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +23,9 @@ import java.util.List;
 
 import org.eclipse.compare.internal.WorkQueue;
 import org.eclipse.compare.internal.Worker;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.junit.Test;
 
@@ -99,8 +102,7 @@ public class AsyncExecTests {
 		w.run(new NullProgressMonitor());
 		assertFalse(w.hasWork());
 		assertFalse(w.isWorking());
-		assertEquals(1, worked.size());
-		assertEquals(r, worked.get(0));
+		assertThat(worked).containsExactly(r);
 		// Test two tasks
 		worked.clear();
 		w.add(r);
@@ -112,9 +114,7 @@ public class AsyncExecTests {
 		w.run(new NullProgressMonitor());
 		assertFalse(w.hasWork());
 		assertFalse(w.isWorking());
-		assertEquals(2, worked.size());
-		assertEquals(r, worked.get(0));
-		assertEquals(r2, worked.get(1));
+		assertThat(worked).containsExactly(r, r2);
 		// Test re-add order
 		worked.clear();
 		w.add(r);
@@ -129,9 +129,7 @@ public class AsyncExecTests {
 		w.run(new NullProgressMonitor());
 		assertFalse(w.hasWork());
 		assertFalse(w.isWorking());
-		assertEquals(2, worked.size());
-		assertEquals(r, worked.get(1));
-		assertEquals(r2, worked.get(0));
+		assertThat(worked).containsExactly(r2, r);
 	}
 
 	@Test
@@ -170,9 +168,6 @@ public class AsyncExecTests {
 		w.run(new NullProgressMonitor());
 		assertFalse(w.hasWork());
 		assertFalse(w.isWorking());
-		assertEquals(3, worked.size());
-		assertEquals(r, worked.get(0));
-		assertEquals(r2, worked.get(1));
-		assertEquals(r, worked.get(2));
+		assertThat(worked).containsExactly(r, r2, r);
 	}
 }

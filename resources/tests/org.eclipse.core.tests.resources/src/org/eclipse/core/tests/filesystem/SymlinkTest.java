@@ -21,6 +21,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureDoesNotExist;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureExists;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
@@ -33,6 +35,8 @@ import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -156,40 +160,32 @@ public class SymlinkTest {
 		ensureDoesNotExist(aFile);
 		ensureDoesNotExist(aDir);
 		IFileInfo[] infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 4);
+		assertThat(infos).hasSize(4);
+
+		Function<String, Consumer<IFileInfo>> isSymLinkCheckProvider = link -> (info -> {
+			assertThat(link).isEqualTo(info.getName());
+			assertThat(info.getAttribute(EFS.ATTRIBUTE_SYMLINK)).isTrue();
+		});
 
 		IFileStore _llFile = baseStore.getChild("_llFile");
 		IFileStore _llDir = baseStore.getChild("_llDir");
 		llFile.move(_llFile, EFS.NONE, getMonitor());
 		llDir.move(_llDir, EFS.NONE, getMonitor());
 		infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 4);
-		assertFalse("1.0", containsSymlink(infos, llFile.getName()));
-		assertFalse("1.1", containsSymlink(infos, llDir.getName()));
-		assertTrue("1.2", containsSymlink(infos, _llFile.getName()));
-		assertTrue("1.3", containsSymlink(infos, _llFile.getName()));
+		assertThat(infos).hasSize(4) //
+				.noneSatisfy(isSymLinkCheckProvider.apply(llFile.getName()))
+				.noneSatisfy(isSymLinkCheckProvider.apply(llDir.getName()))
+				.anySatisfy(isSymLinkCheckProvider.apply(_llFile.getName()));
 
 		IFileStore _lFile = baseStore.getChild("_lFile");
 		IFileStore _lDir = baseStore.getChild("_lDir");
 		lFile.move(_lFile, EFS.NONE, getMonitor());
 		lDir.move(_lDir, EFS.NONE, getMonitor());
 		infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 4);
-		assertFalse("1.4", containsSymlink(infos, lFile.getName()));
-		assertFalse("1.5", containsSymlink(infos, lDir.getName()));
-		assertTrue("1.6", containsSymlink(infos, _lFile.getName()));
-		assertTrue("1.7", containsSymlink(infos, _lFile.getName()));
-	}
-
-	private boolean containsSymlink(IFileInfo[] infos, String link) {
-		for (IFileInfo info : infos) {
-			if (link.equals(info.getName())) {
-				if (info.getAttribute(EFS.ATTRIBUTE_SYMLINK)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		assertThat(infos).hasSize(4) //
+				.noneSatisfy(isSymLinkCheckProvider.apply(lFile.getName()))
+				.noneSatisfy(isSymLinkCheckProvider.apply(lDir.getName()))
+				.anySatisfy(isSymLinkCheckProvider.apply(_lFile.getName()));
 	}
 
 	// Removing a broken symlink is possible.
@@ -200,15 +196,15 @@ public class SymlinkTest {
 		ensureDoesNotExist(aFile);
 		ensureDoesNotExist(aDir);
 		IFileInfo[] infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 4);
+		assertThat(infos).hasSize(4);
 		llFile.delete(EFS.NONE, getMonitor());
 		llDir.delete(EFS.NONE, getMonitor());
 		infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 2);
+		assertThat(infos).hasSize(2);
 		lFile.delete(EFS.NONE, getMonitor());
 		lDir.delete(EFS.NONE, getMonitor());
 		infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 0);
+		assertThat(infos).isEmpty();
 	}
 
 	@Test
@@ -225,7 +221,7 @@ public class SymlinkTest {
 		assertEquals("l2", i1.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET));
 
 		IFileInfo[] infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 2);
+		assertThat(infos).hasSize(2);
 		i1.setAttribute(EFS.ATTRIBUTE_READ_ONLY, true);
 		boolean exceptionThrown = false;
 		try {
@@ -257,7 +253,7 @@ public class SymlinkTest {
 
 		l1.delete(EFS.NONE, getMonitor());
 		infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 1);
+		assertThat(infos).hasSize(1);
 	}
 
 	@Test
@@ -304,7 +300,7 @@ public class SymlinkTest {
 		IFileStore childDir = aDir.getChild("subDir");
 		ensureExists(childDir, true);
 		IFileInfo[] infos = llDir.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 1);
+		assertThat(infos).hasSize(1);
 		assertTrue(infos[0].isDirectory());
 		assertFalse(infos[0].getAttribute(EFS.ATTRIBUTE_SYMLINK));
 		assertNull(infos[0].getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET));
@@ -319,7 +315,7 @@ public class SymlinkTest {
 		IFileStore childFile = llDir.getChild("subFile");
 		ensureExists(childFile, false);
 		IFileInfo[] infos = aDir.childInfos(EFS.NONE, getMonitor());
-		assertEquals(infos.length, 1);
+		assertThat(infos).hasSize(1);
 		assertFalse(infos[0].isDirectory());
 		assertFalse(infos[0].getAttribute(EFS.ATTRIBUTE_SYMLINK));
 		assertNull(infos[0].getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET));
@@ -359,21 +355,20 @@ public class SymlinkTest {
 		mkLink(baseStore, "l" + specialCharName, specialCharName, true);
 		mkLink(baseStore, "lf" + specialCharName, "ff" + specialCharName, false);
 		IFileInfo[] infos = baseStore.childInfos(EFS.NONE, getMonitor());
-		assertEquals("0.1", infos.length, 4);
-		for (IFileInfo info : infos) {
-			String infoName = info.getName();
-			assertTrue("1." + infoName, infoName.endsWith(specialCharName));
-			assertTrue("2." + infoName, info.exists());
+		assertThat(infos).hasSize(4);
+		assertThat(infos).allSatisfy(info -> {
+			assertThat(info.getName()).endsWith(specialCharName);
+			assertThat(info).matches(IFileInfo::exists, "exists");
 			if (info.getName().charAt(1) == 'f') {
-				assertFalse("3." + infoName, info.isDirectory());
+				assertThat(info).matches(not(IFileInfo::isDirectory), "is not a directory");
 			} else {
-				assertTrue("4." + infoName, info.isDirectory());
+				assertThat(info).matches(IFileInfo::isDirectory, "is a directory");
 			}
 			if (info.getName().charAt(0) == 'l') {
-				assertTrue("5." + infoName, info.getAttribute(EFS.ATTRIBUTE_SYMLINK));
-				assertTrue("6." + infoName, info.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET).endsWith(specialCharName));
+				assertThat(info).matches(it -> it.getAttribute(EFS.ATTRIBUTE_SYMLINK), "is symlink");
+				assertThat(info.getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET).endsWith(specialCharName));
 			}
-		}
+		});
 	}
 
 	@Test

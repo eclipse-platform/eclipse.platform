@@ -13,10 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.ArrayMatching.arrayContainingInAnyOrder;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertArrayEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -300,18 +297,18 @@ public class EclipsePreferencesTest {
 
 		try {
 			// nothing there so expect the default
-			assertArrayEquals("1.1", defaultValue, prefs.getByteArray(key, defaultValue));
+			assertThat(prefs.getByteArray(key, defaultValue)).containsExactly(defaultValue);
 
 			// try for each value in the set
-			for (int i = 0; i < values.length; i++) {
-				byte[] v1 = values[i];
+			for (byte[] value : values) {
+				byte[] v1 = value;
 				byte[] v2 = new byte[] {54};
 				prefs.putByteArray(key, v1);
-				assertArrayEquals("1.2." + i, v1, prefs.getByteArray(key, defaultValue));
+				assertThat(prefs.getByteArray(key, defaultValue)).as(value.toString()).containsExactly(v1);
 				prefs.putByteArray(key, v2);
-				assertArrayEquals("1.3." + i, v2, prefs.getByteArray(key, defaultValue));
+				assertThat(prefs.getByteArray(key, defaultValue)).as(value.toString()).containsExactly(v2);
 				prefs.remove(key);
-				assertArrayEquals("1.4." + i, defaultValue, prefs.getByteArray(key, defaultValue));
+				assertThat(prefs.getByteArray(key, defaultValue)).as(value.toString()).containsExactly(defaultValue);
 			}
 
 			// spec'd to throw a NPE if key is null
@@ -606,7 +603,7 @@ public class EclipsePreferencesTest {
 
 		// get the key list
 		String[] result = node.keys();
-		assertThat(keys, arrayContainingInAnyOrder(result));
+		assertThat(keys).containsExactlyInAnyOrder(result);
 	}
 
 	@Test
@@ -617,14 +614,14 @@ public class EclipsePreferencesTest {
 
 		// no children to start
 		result = node.childrenNames();
-		assertEquals("1.1", 0, result.length);
+		assertThat(result).isEmpty();
 
 		// add children
 		for (String childrenName : childrenNames) {
 			node.node(childrenName);
 		}
 		result = node.childrenNames();
-		assertThat(childrenNames, arrayContainingInAnyOrder(result));
+		assertThat(childrenNames).containsExactlyInAnyOrder(result);
 	}
 
 	@Test
@@ -683,18 +680,17 @@ public class EclipsePreferencesTest {
 		String[] values = new String[] {getUniqueString(), getUniqueString(), getUniqueString()};
 
 		// none to start with
-		assertEquals("1.0", 0, node.keys().length);
+		assertThat(node.keys()).isEmpty();
 
 		// fill the node up with values
 		for (int i = 0; i < keys.length; i++) {
 			node.put(keys[i], values[i]);
 		}
-		assertEquals("2.0", keys.length, node.keys().length);
-		assertThat(keys, arrayContainingInAnyOrder(node.keys()));
+		assertThat(keys).containsExactlyInAnyOrder(node.keys());
 
 		// clear the values and check
 		node.clear();
-		assertEquals("3.0", 0, node.keys().length);
+		assertThat(node.keys()).isEmpty();
 		for (int i = 0; i < keys.length; i++) {
 			assertNull("3.1." + i, node.get(keys[i], null));
 		}
@@ -726,18 +722,15 @@ public class EclipsePreferencesTest {
 		ArrayList<String> expected = new ArrayList<>();
 		final ArrayList<String> actual = new ArrayList<>();
 
-		IPreferenceNodeVisitor visitor = new IPreferenceNodeVisitor() {
-			@Override
-			public boolean visit(IEclipsePreferences node) {
-				actual.add(node.absolutePath());
-				return true;
-			}
+		IPreferenceNodeVisitor visitor = node -> {
+			actual.add(node.absolutePath());
+			return true;
 		};
 
 		// just the scope root
 		scopeRoot.accept(visitor);
 		expected.add(scopeRoot.absolutePath());
-		assertThat(actual, containsInAnyOrder(expected.toArray(new String[0])));
+		assertThat(actual).containsExactlyInAnyOrderElementsOf(actual);
 
 		Set<String> children = new HashSet<>();
 		children.add(getUniqueString());
@@ -753,7 +746,7 @@ public class EclipsePreferencesTest {
 			scopeRoot.node(s);
 		}
 		scopeRoot.accept(visitor);
-		assertThat(actual, containsInAnyOrder(expected.toArray(new String[0])));
+		assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
 	}
 
 	@Test
@@ -1091,10 +1084,7 @@ public class EclipsePreferencesTest {
 		IScopeContext defaultScope = DefaultScope.INSTANCE;
 		defaultScope.getNode(TEST_NODE_PATH).putByteArray(TEST_PREF_KEY, testArray);
 		final byte[] returnArray = Platform.getPreferencesService().getByteArray(TEST_NODE_PATH, TEST_PREF_KEY, new byte[] {}, null);
-		assertEquals("1.0 Wrong size", testArray.length, returnArray.length);
-		for (int i = 0; i < testArray.length; i++) {
-			assertEquals("2.0 Wrong value at: " + i, testArray[i], returnArray[i]);
-		}
+		assertThat(returnArray).isEqualTo(testArray);
 	}
 
 	/*
@@ -1116,7 +1106,7 @@ public class EclipsePreferencesTest {
 
 		// check the child has the expected values
 		Preferences child = node.node("foo");
-		assertEquals("2.0", 2, child.keys().length);
+		assertThat(child.keys()).hasSize(2);
 		assertEquals("2.1", "value1", child.get("key1", null));
 		assertEquals("2.2", "value2", child.get("key2", null));
 

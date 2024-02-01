@@ -184,7 +184,7 @@ public class FailureTraceUIBlock implements IMenuListener {
 
 	private void updateActions(TestElement test) {
 		ITestViewSupport testViewSupport = test != null ? test.getTestRunSession().getTestViewSupport() : null;
-		fShowTraceInConsoleAction.setDelegate(testViewSupport != null && test.getFailureTrace() != null
+		fShowTraceInConsoleAction.setDelegate(testViewSupport != null && test != null && test.getFailureTrace() != null
 				? testViewSupport.createShowStackTraceInConsoleViewActionDelegate(test)
 				: null);
 	}

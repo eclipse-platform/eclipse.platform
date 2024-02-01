@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -126,8 +127,10 @@ public class FileSystemHelper {
 			int exitcode = process.waitFor();
 			if (exitcode != 0) {
 				// xxx wrong charset. from jdk17+ we could use Console.charset()
-				String result = new BufferedReader(new InputStreamReader(process.getErrorStream())).readLine();
-				throw new IllegalStateException("Creating symlink is unsupported: " + result);
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+					String result = reader.readLine();
+					throw new IllegalStateException("Creating symlink is unsupported: " + result);
+				}
 			}
 		} catch (InterruptedException e) {
 			throw new IOException("Creating symlink failed due to interrupted exception", e);

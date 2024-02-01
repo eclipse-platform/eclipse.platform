@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.breakpoint;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -83,7 +84,7 @@ public class SerialExecutorTest extends AbstractDebugTest {
 		}
 		Job.getJobManager().join(this, null);
 		Job[] jobs = Job.getJobManager().find(this);
-		assertEquals(0, jobs.length);
+		assertThat(jobs).isEmpty();
 		long stop = System.nanoTime();
 		long millis = (stop - start) / 1000_000;
 		assertEquals(RUNS, executions.get());
@@ -112,7 +113,7 @@ public class SerialExecutorTest extends AbstractDebugTest {
 		}
 		Job.getJobManager().join(this, null);
 		Job[] jobs = Job.getJobManager().find(this);
-		assertEquals(0, jobs.length);
+		assertThat(jobs).isEmpty();
 		assertEquals(RUNS, executions.get());
 	}
 
@@ -128,7 +129,7 @@ public class SerialExecutorTest extends AbstractDebugTest {
 		}
 		Job.getJobManager().join(this, null);
 		Job[] jobs = Job.getJobManager().find(this);
-		assertEquals(0, jobs.length);
+		assertThat(jobs).isEmpty();
 		assertEquals(RUNS, executions.get());
 	}
 
@@ -152,7 +153,7 @@ public class SerialExecutorTest extends AbstractDebugTest {
 			}
 			Job.getJobManager().join(this, null);
 			Job[] jobs = Job.getJobManager().find(this);
-			assertEquals(0, jobs.length);
+			assertThat(jobs).isEmpty();
 			assertEquals("failed on run " + run, RUNS, executions.get());
 			// does fail on run ~ 40 if the final job.join() is removed.
 		}

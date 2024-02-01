@@ -13,8 +13,9 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.webapp.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -27,9 +28,9 @@ import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
 import org.eclipse.help.internal.toc.Toc;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -40,14 +41,14 @@ public class TocFragmentServiceTest {
 
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}
@@ -60,7 +61,7 @@ public class TocFragmentServiceTest {
 		Node root = getTreeData(url);
 		Element[] UARoot = findNodeById(root,
 				"/org.eclipse.ua.tests/data/help/toc/root.xml");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
@@ -71,16 +72,16 @@ public class TocFragmentServiceTest {
 		Node root = getTreeData(url);
 		Element[] UARoot = findNodeById(root,
 				"/org.eclipse.ua.tests/data/help/toc/root.xml");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 		Element[] filterNode = findNodeById(UARoot[0], "2");
-		assertEquals(1, filterNode.length);
+		assertThat(filterNode).hasSize(1);
 		Element[] results = findHref(filterNode[0], "node",
 				"../topic/org.eclipse.ua.tests/data/help/toc/filteredToc/simple_page.html");
-		assertEquals(24, results.length);
+		assertThat(results).hasSize(24);
 
 		results = findHref(filterNode[0], "node",
 		"../topic/org.eclipse.ua.tests/data/help/toc/filteredToc/helpInstalled.html");
-		assertEquals(1, results.length);
+		assertThat(results).hasSize(1);
 	}
 
 	@Test
@@ -93,15 +94,15 @@ public class TocFragmentServiceTest {
 		Node root = getTreeData(url);
 		Element[] UARoot = findNodeById(root,
 				"/org.eclipse.ua.tests/data/help/toc/root.xml");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 		Element[] searchNode = findChildren(UARoot[0], "node", "title", "search");
-		assertEquals(1, searchNode.length);
+		assertThat(searchNode).hasSize(1);
 		Element[] topicEn = findHref(searchNode[0], "node",
 				"../topic/org.eclipse.ua.tests/data/help/search/test_en.html");
-		assertEquals(1, topicEn.length);
+		assertThat(topicEn).hasSize(1);
 		Element[] topicDe = findHref(searchNode[0], "node",
 				"../topic/org.eclipse.ua.tests/data/help/search/test_de.html");
-		assertEquals(0, topicDe.length);
+		assertThat(topicDe).isEmpty();
 	}
 
 	private int findUATopicIndex(String title, String locale) {
@@ -132,14 +133,14 @@ public class TocFragmentServiceTest {
 		Node root = getTreeData(url);
 		Element[] UARoot = findNodeById(root,
 				"/org.eclipse.ua.tests/data/help/toc/root.xml");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 		Element[] searchNode = findChildren(UARoot[0], "node", "title", "search");
 		Element[] topicEn = findHref(searchNode[0], "node",
 				"../topic/org.eclipse.ua.tests/data/help/search/test_en.html");
-		assertEquals(0, topicEn.length);
+		assertThat(topicEn).isEmpty();
 		Element[] topicDe = findHref(searchNode[0], "node",
 				"../topic/org.eclipse.ua.tests/data/help/search/test_de.html");
-		assertEquals(1, topicDe.length);
+		assertThat(topicDe).hasSize(1);
 		BaseHelpSystem.setMode(helpMode);
 	}
 
@@ -215,7 +216,7 @@ public class TocFragmentServiceTest {
 		String uri = url.toString();
 		String result = SchemaValidator.testXMLSchema(uri, schema);
 
-		assertEquals("URL: \"" + uri + "\" is ", "valid", result);
+		assertThat(result).as("URL: " + uri).isEqualTo("valid");
 	}
 
 	/*

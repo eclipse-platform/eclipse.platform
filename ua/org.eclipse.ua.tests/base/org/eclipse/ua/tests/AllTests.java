@@ -16,13 +16,17 @@ package org.eclipse.ua.tests;
 import org.eclipse.ua.tests.cheatsheet.AllCheatSheetTests;
 import org.eclipse.ua.tests.help.AllHelpTests;
 import org.eclipse.ua.tests.intro.AllIntroTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests all user assistance functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ AllCheatSheetTests.class, AllIntroTests.class, AllHelpTests.class })
+@Suite
+@SelectClasses({ //
+		AllCheatSheetTests.class, //
+		AllIntroTests.class, //
+		AllHelpTests.class, //
+})
 public class AllTests {
 }

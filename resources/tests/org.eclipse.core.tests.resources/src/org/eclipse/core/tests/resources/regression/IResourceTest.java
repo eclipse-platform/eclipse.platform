@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
@@ -392,7 +393,7 @@ public class IResourceTest {
 		IStatus status = exception.getStatus();
 		if (status.isMultiStatus()) {
 			IStatus[] children = status.getChildren();
-			assertEquals("1.1", 1, children.length);
+			assertThat(children).hasSize(1);
 			status = children[0];
 		}
 		assertEquals("1.2", IResourceStatus.OUT_OF_SYNC_LOCAL, status.getCode());

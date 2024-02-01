@@ -132,6 +132,8 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 				break;
 			case ISynchronizePageConfiguration.BOTH_MODE:
 				return true;
+			default:
+				throw new IllegalArgumentException(Integer.toString(mode));
 			}
 		} else if (configuration.getComparisonType() == ISynchronizePageConfiguration.TWO_WAY
 				&& node instanceof ITwoWayDiff) {

@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.internal.DocLineComparator;
@@ -35,10 +35,8 @@ public class RangeDifferencerThreeWayDiffTest {
 
 		RangeDifference[] diffs = findRange(a, l, r);
 
-		assertEquals(3, diffs.length);
-		assertEquals(RangeDifference.NOCHANGE, diffs[0].kind());
-		assertEquals(RangeDifference.CONFLICT, diffs[1].kind());
-		assertEquals(RangeDifference.NOCHANGE, diffs[2].kind());
+		assertThat(diffs).extracting(RangeDifference::kind).containsExactly(RangeDifference.NOCHANGE,
+				RangeDifference.CONFLICT, RangeDifference.NOCHANGE);
 	}
 
 	@Test
@@ -49,10 +47,8 @@ public class RangeDifferencerThreeWayDiffTest {
 
 		RangeDifference[] diffs = findRange(a, l, r);
 
-		assertEquals(3, diffs.length);
-		assertEquals(RangeDifference.NOCHANGE, diffs[0].kind());
-		assertEquals(RangeDifference.CONFLICT, diffs[1].kind());
-		assertEquals(RangeDifference.NOCHANGE, diffs[2].kind());
+		assertThat(diffs).extracting(RangeDifference::kind).containsExactly(RangeDifference.NOCHANGE,
+				RangeDifference.CONFLICT, RangeDifference.NOCHANGE);
 	}
 
 	@Test
@@ -63,10 +59,8 @@ public class RangeDifferencerThreeWayDiffTest {
 
 		RangeDifference[] diffs = findRange(a, l, r);
 
-		assertEquals(3, diffs.length);
-		assertEquals(RangeDifference.NOCHANGE, diffs[0].kind());
-		assertEquals(RangeDifference.CONFLICT, diffs[1].kind());
-		assertEquals(RangeDifference.NOCHANGE, diffs[2].kind());
+		assertThat(diffs).extracting(RangeDifference::kind).containsExactly(RangeDifference.NOCHANGE,
+				RangeDifference.CONFLICT, RangeDifference.NOCHANGE);
 	}
 
 	@Test
@@ -77,10 +71,8 @@ public class RangeDifferencerThreeWayDiffTest {
 
 		RangeDifference[] diffs = findRange(a, l, r);
 
-		assertEquals(3, diffs.length);
-		assertEquals(RangeDifference.NOCHANGE, diffs[0].kind());
-		assertEquals(RangeDifference.CONFLICT, diffs[1].kind());
-		assertEquals(RangeDifference.NOCHANGE, diffs[2].kind());
+		assertThat(diffs).extracting(RangeDifference::kind).containsExactly(RangeDifference.NOCHANGE,
+				RangeDifference.CONFLICT, RangeDifference.NOCHANGE);
 	}
 
 	@Test
@@ -91,11 +83,8 @@ public class RangeDifferencerThreeWayDiffTest {
 
 		RangeDifference[] diffs = findRange(a, l, r);
 
-		assertEquals(4, diffs.length);
-		assertEquals(RangeDifference.NOCHANGE, diffs[0].kind());
-		assertEquals(RangeDifference.LEFT, diffs[1].kind());
-		assertEquals(RangeDifference.RIGHT, diffs[2].kind());
-		assertEquals(RangeDifference.NOCHANGE, diffs[3].kind());
+		assertThat(diffs).extracting(RangeDifference::kind).containsExactly(RangeDifference.NOCHANGE,
+				RangeDifference.LEFT, RangeDifference.RIGHT, RangeDifference.NOCHANGE);
 	}
 
 	@Test
@@ -106,11 +95,8 @@ public class RangeDifferencerThreeWayDiffTest {
 
 		RangeDifference[] diffs = findRange(a, l, r);
 
-		assertEquals(4, diffs.length);
-		assertEquals(RangeDifference.NOCHANGE, diffs[0].kind());
-		assertEquals(RangeDifference.LEFT, diffs[1].kind());
-		assertEquals(RangeDifference.RIGHT, diffs[2].kind());
-		assertEquals(RangeDifference.NOCHANGE, diffs[3].kind());
+		assertThat(diffs).extracting(RangeDifference::kind).containsExactly(RangeDifference.NOCHANGE,
+				RangeDifference.LEFT, RangeDifference.RIGHT, RangeDifference.NOCHANGE);
 	}
 
 	@Test
@@ -121,10 +107,8 @@ public class RangeDifferencerThreeWayDiffTest {
 
 		RangeDifference[] diffs = findRange(a, l, r);
 
-		assertEquals(3, diffs.length);
-		assertEquals(RangeDifference.NOCHANGE, diffs[0].kind());
-		assertEquals(RangeDifference.LEFT, diffs[1].kind());
-		assertEquals(RangeDifference.RIGHT, diffs[2].kind());
+		assertThat(diffs).extracting(RangeDifference::kind).containsExactly(RangeDifference.NOCHANGE,
+				RangeDifference.LEFT, RangeDifference.RIGHT);
 	}
 
 	private RangeDifference[] findRange(String a, String l, String r) {

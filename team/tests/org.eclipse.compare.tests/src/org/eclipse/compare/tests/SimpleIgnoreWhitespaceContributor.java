@@ -19,7 +19,6 @@ import java.util.TreeMap;
 import org.eclipse.compare.contentmergeviewer.IIgnoreWhitespaceContributor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.junit.Assert;
 
 public class SimpleIgnoreWhitespaceContributor implements IIgnoreWhitespaceContributor {
 
@@ -64,7 +63,7 @@ public class SimpleIgnoreWhitespaceContributor implements IIgnoreWhitespaceContr
 				}
 			}
 		} catch (BadLocationException e) {
-			Assert.fail("BadLocationException not expected");
+			throw new IllegalStateException("BadLocationException not expected", e);
 		}
 		return true;
 	}

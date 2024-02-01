@@ -1,7 +1,7 @@
 Evolving Java-based APIs 2
 ==========================
 
-Part 2 of [Evolving\_Java-based\_APIs](/Evolving_Java-based_APIs "Evolving Java-based APIs").
+Part 2 of [Evolving\_Java-based\_APIs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md).
 
 Contents
 --------
@@ -94,13 +94,14 @@ Evolving API interfaces is somewhat more straightforward than API classes since 
 | Add element to annotation type | If element has a default value <br> <br> If element has no default value| Binary compatible <br> <br> **Breaks compatibility** (5)|
 | Delete element from annotation type | - | **Breaks compatibility** (6) |
 
-(0) Although adding a new method to an API interface which need not be reimplemented by Clients does not break binary compatibility, a pre-existing Client subclass of an existing implementation might still provide a pre-existing implementation of a method by this name. See [Evolving Java-based APIs#Example 4 - Adding an API method](/Evolving_Java-based_APIs#Example_4_-_Adding_an_API_method "Evolving Java-based APIs") in the preceding section for why this breaks API contract compatibility.
+(0) Although adding a new method to an API interface which need not be reimplemented by Clients does not break binary compatibility, a pre-existing Client subclass of an existing implementation might still provide a pre-existing implementation of a method by this name. 
+See [Evolving Java-based APIs#Example 4 - Adding an API method](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in the preceding section for why this breaks API contract compatibility.
 
 (1) Adding a new method to an API interface that is implemented by Clients (e.g., a callback, listener, or visitor interface) breaks compatibility because hypothetical pre-existing implementations do not implement the new method.
 
 (2) Adding an API field to an API interface that is implemented by Clients is dangerous in two respects:
 
-*   It may break API contract compatibility similar to [Evolving\_Java-based\_APIs#Example\_4\_-\_Adding\_an\_API\_method](/Evolving_Java-based_APIs#Example_4_-_Adding_an_API_method "Evolving Java-based APIs") in case of name clashes.
+*   It may break API contract compatibility similar to [Evolving\_Java-based\_APIs#Example\_4\_-\_Adding\_an\_API\_method](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in case of name clashes.
 *   It may cause linkage errors in case an instance (respectively static) field hides a static (respectively instance) field, see [JLS8 13.4.8](https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.4.8). This can not happen if all field declarations follow the usual naming conventions from [JLS8 6.1](https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.1) and classes only have API fields that are either
     *   "static final" (and hence have a name that doesn't contain any lowercase letters), or
     *   non-static and non-final (and hence have a name that contains a least one lowercase letter)
@@ -223,7 +224,8 @@ Evolving API classes is somewhat more complex than API interfaces due to the wid
 | Delete enum constant | - | **Breaks compatibility** |
 | Re-order enum constants | - | Binary compatible (8) |
 
-(0) Although adding a new method to an API class which need not be reimplemented by Clients does not break binary compatibility, a pre-existing subclass might still provide a pre-existing implementation of a method by this name. See [Evolving Java-based APIs#Example 4 - Adding an API method](/Evolving_Java-based_APIs#Example_4_-_Adding_an_API_method "Evolving Java-based APIs") in the preceding section for why this breaks API contract compatibility.
+(0) Although adding a new method to an API class which need not be reimplemented by Clients does not break binary compatibility, a pre-existing subclass might still provide a pre-existing implementation of a method by this name. 
+See [Evolving Java-based APIs#Example 4 - Adding an API method](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in the preceding section for why this breaks API contract compatibility.
 
 (1) Adding a new method to an API class that must be reimplemented by Clients breaks compatibility because pre-existing subclasses would not provide any such implementation.
 
@@ -231,7 +233,7 @@ Evolving API classes is somewhat more complex than API interfaces due to the wid
 
 (3) Adding an API field to an API class that is extended by Clients is dangerous in two respects:
 
-*   It may break API contract compatibility similar to [Evolving\_Java-based\_APIs#Example\_4\_-\_Adding\_an\_API\_method](/Evolving_Java-based_APIs#Example_4_-_Adding_an_API_method "Evolving Java-based APIs") in case of name clashes.
+*   It may break API contract compatibility similar to [Evolving\_Java-based\_APIs#Example\_4\_-\_Adding\_an\_API\_method](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in case of name clashes.
 *   It may cause linkage errors in case an instance (respectively static) field hides a static (respectively instance) field, see [JLS8 13.4.8](https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.4.8). This can not happen if all field declarations follow the usual naming conventions from [JLS8 6.1](https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.1) and classes only have API fields that are either
     *   "static final" (and hence have a name that doesn't contain any lowercase letters), or
     *   non-static and non-final (and hence have a name that contains a least one lowercase letter)
@@ -388,5 +390,5 @@ Parties that declare annotation types should try to provide helpful guidance for
 Other Notes
 -----------
 
-See [Part 3](/Evolving_Java-based_APIs_3 "Evolving Java-based APIs 3").
+See [Part 3](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-3.md).
 

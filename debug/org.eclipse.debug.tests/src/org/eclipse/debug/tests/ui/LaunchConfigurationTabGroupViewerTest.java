@@ -11,9 +11,8 @@
 
 package org.eclipse.debug.tests.ui;
 
+import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,6 +31,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
 import org.eclipse.swt.widgets.Display;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LaunchConfigurationTabGroupViewerTest {
@@ -56,9 +56,9 @@ public class LaunchConfigurationTabGroupViewerTest {
 		ILaunchConfigurationTab[] tabs = tabGroup.getTabs();
 
 		assertThat(tabs).hasSizeGreaterThanOrEqualTo(2);
-		assertThat(tabs).allMatch(SpyTab.class::isInstance, "Use only SpyTabs in the group");
-		long typesOfTabs = Arrays.stream(tabs).map(Object::getClass).distinct().count();
-		assertThat("There are tabs of the exact same type in the group", tabs.length == typesOfTabs);
+		assertThat(tabs).allSatisfy(tab -> assertThat(tab).isInstanceOf(SpyTab.class));
+		int typesOfTabs = Math.toIntExact(Arrays.stream(tabs).map(Object::getClass).distinct().count());
+		assertThat(tabs).withFailMessage("there are tabs of the exact same type in the group").hasSize(typesOfTabs);
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class LaunchConfigurationTabGroupViewerTest {
 		final ILaunchConfigurationTab[] tabs = runOnDialog(createAndSelect1LaunchConfig);
 
 		for (int i = 0; i < tabs.length; i++) {
-			assertThat("Tab " + i + " was not initialized", ((SpyTab) tabs[i]).isInitialized());
+			assertThat(((SpyTab) tabs[i])).withFailMessage("tab %s was not initialized", i).matches(SpyTab::isInitialized);
 		}
 	}
 
@@ -83,7 +83,7 @@ public class LaunchConfigurationTabGroupViewerTest {
 		};
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(createAndSelect1LaunchConfig);
-		assertThat("The 1st tab was not activated", ((SpyTab) tabs[0]).isActivated());
+		assertThat(((SpyTab) tabs[0])).matches(SpyTab::isActivated, "is activated");
 	}
 
 	@Test
@@ -104,11 +104,12 @@ public class LaunchConfigurationTabGroupViewerTest {
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(setActiveTab);
 
-		assertThat("The 1st tab of the other launch configuration shouldn't have been activated", not(((SpyTab) tabs[0]).isActivated()));
-		assertThat("The tab was not activated", ((SpyTab) tabs[secondTabIndex]).isActivated());
+		assertThat((SpyTab) tabs[0]).withFailMessage("the 1st tab of the other launch configuration shouldn't have been activated").matches(not(SpyTab::isActivated));
+		assertThat((SpyTab) tabs[secondTabIndex]).matches(SpyTab::isActivated, "is activated");
 	}
 
 	@Test
+	@Ignore("https://github.com/eclipse-platform/eclipse.platform/issues/1075")
 	public void testOnlyDefaultTabInOtherConfigIsActivated() {
 		int overflowTabIndex = Integer.MAX_VALUE;
 
@@ -126,11 +127,11 @@ public class LaunchConfigurationTabGroupViewerTest {
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(setActiveTab);
 
-		assertThat("The 1st tab of the other launch configuration should have been activated", ((SpyTab) tabs[0]).isActivated());
+		assertThat(((SpyTab) tabs[0])).withFailMessage("the 1st tab of the other launch configuration should have been activated").matches(SpyTab::isActivated);
 
 		// All other tabs should not have been initialized
 		for (int i = 1; i < tabs.length; i++) {
-			assertThat("Tab " + i + " should not have been initialized", not(((SpyTab) tabs[i]).isInitialized()));
+			assertThat((SpyTab) tabs[i]).withFailMessage("tab %s should not have been initialized", i).matches(not(SpyTab::isInitialized));
 		}
 	}
 
@@ -148,7 +149,7 @@ public class LaunchConfigurationTabGroupViewerTest {
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(setActiveTab);
 
-		assertThat("The tab was not activated", ((SpyTab) tabs[secondTabIndex]).isActivated());
+		assertThat((SpyTab) tabs[secondTabIndex]).matches(SpyTab::isActivated, "is activated");
 	}
 
 	private ILaunchConfigurationWorkingCopy createLaunchConfigurationInstance() throws CoreException {

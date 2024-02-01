@@ -18,8 +18,11 @@ package org.eclipse.debug.internal.core;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Vector;
+import java.util.Arrays;
+import java.util.Queue;
+import java.util.concurrent.LinkedTransferQueue;
 
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 
 /**
@@ -38,12 +41,12 @@ public class InputStreamMonitor {
 	/**
 	 * The queue of output.
 	 */
-	private final Vector<byte[]> fQueue;
+	private final Queue<byte[]> fQueue;
 
 	/**
 	 * The thread which writes to the stream.
 	 */
-	private Thread fThread;
+	private volatile Thread fThread;
 
 	/**
 	 * A lock for ensuring that writes to the queue are contiguous
@@ -53,7 +56,7 @@ public class InputStreamMonitor {
 	/**
 	 * Whether the underlying output stream has been closed
 	 */
-	private boolean fClosed = false;
+	private volatile boolean fClosed = false;
 
 	/**
 	 * The charset of the input stream.
@@ -78,7 +81,7 @@ public class InputStreamMonitor {
 	 */
 	public InputStreamMonitor(OutputStream stream, Charset charset) {
 		fStream = stream;
-		fQueue = new Vector<>();
+		fQueue = new LinkedTransferQueue<>();
 		fLock = new Object();
 		fCharset = charset;
 	}
@@ -104,10 +107,7 @@ public class InputStreamMonitor {
 	 * @param text text to append
 	 */
 	public void write(String text) {
-		synchronized (fLock) {
-			fQueue.add(fCharset == null ? text.getBytes() : text.getBytes(fCharset));
-			fLock.notifyAll();
-		}
+		write(fCharset == null ? text.getBytes() : text.getBytes(fCharset));
 	}
 
 	/**
@@ -119,10 +119,15 @@ public class InputStreamMonitor {
 	 * @param length number of bytes in data
 	 */
 	public void write(byte[] data, int offset, int length) {
+		write(Arrays.copyOfRange(data, offset, offset + length));
+	}
+
+	private void write(byte[] copy) {
+		if (fClosed) {
+			return; // drop data;
+		}
 		synchronized (fLock) {
-			byte[] copy = new byte[length];
-			System.arraycopy(data, offset, copy, 0, length);
-			fQueue.add(copy);
+			fQueue.offer(copy);
 			fLock.notifyAll();
 		}
 	}
@@ -164,32 +169,32 @@ public class InputStreamMonitor {
 	/**
 	 * Continuously writes to the stream.
 	 */
-	protected void write() {
-		while (fThread != null) {
-			writeNext();
-		}
-		if (!fClosed) {
+	private void write() {
+		try {
 			try {
-				fStream.close();
-			} catch (IOException e) {
-				DebugPlugin.log(e);
+				while (fThread != null) {
+					writeNext();
+				}
+			} finally {
+				if (!fClosed) {
+					fClosed = true; // start dropping data;
+					fStream.close();
+				}
 			}
+		} catch (IOException e) {
+			fQueue.clear();
+			DebugPlugin.log(Status.warning("Error writing to '" + Thread.currentThread().getName() + "': " + e.getMessage(), e)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
 	/**
 	 * Write the text in the queue to the stream.
 	 */
-	protected void writeNext() {
+	private void writeNext() throws IOException {
 		while (!fQueue.isEmpty() && !fClosed) {
-			byte[] data = fQueue.firstElement();
-			fQueue.removeElementAt(0);
-			try {
-				fStream.write(data);
-				fStream.flush();
-			} catch (IOException e) {
-				DebugPlugin.log(e);
-			}
+			byte[] data = fQueue.poll();
+			fStream.write(data);
+			fStream.flush();
 		}
 		try {
 			synchronized(fLock) {

@@ -14,10 +14,10 @@
 
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.help.internal.webapp.servlet.TocFragmentServlet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the class TocFragmentServlet

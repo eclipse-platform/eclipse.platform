@@ -19,8 +19,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -33,8 +33,8 @@ import org.eclipse.ui.internal.intro.impl.model.IntroModelRoot;
 import org.eclipse.ui.internal.intro.impl.model.IntroPage;
 import org.eclipse.ui.internal.intro.impl.model.loader.ExtensionPointManager;
 import org.eclipse.ui.internal.intro.impl.presentations.BrowserIntroPartImplementation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -62,7 +62,7 @@ public class IntroModelSerializerTest {
 	 * content filtering that is used by this test. See
 	 * UIContentFilterProcessor.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		HelpUIPlugin.getDefault();
 	}
@@ -99,9 +99,7 @@ public class IntroModelSerializerTest {
 				 * referenced from the model.
 				 */
 				Map<String, String> map = getXHTMLFiles(model);
-				Iterator<Map.Entry<String, String>> iter = map.entrySet().iterator();
-				while (iter.hasNext()) {
-					Map.Entry<String, String> entry = iter.next();
+				for (Entry<String, String> entry : map.entrySet()) {
 					file = FileUtil.getResultFile(pluginRoot + entry.getKey());
 					try (PrintWriter out = new PrintWriter(new FileOutputStream(file))) {
 						out.print(entry.getValue());
@@ -130,9 +128,7 @@ public class IntroModelSerializerTest {
 				pages.add(otherPage);
 			}
 		}
-		Iterator<AbstractIntroPage> iter = pages.iterator();
-		while (iter.hasNext()) {
-			AbstractIntroPage page = iter.next();
+		for (AbstractIntroPage page : pages) {
 			BrowserIntroPartImplementation impl = new BrowserIntroPartImplementation();
 			String xhtml = impl.generateXHTMLPage(page, (provider, incremental) -> {
 				// dummy site

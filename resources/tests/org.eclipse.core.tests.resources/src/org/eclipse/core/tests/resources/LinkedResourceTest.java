@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.canCreateSymLinks;
 import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
@@ -213,7 +214,7 @@ public class LinkedResourceTest {
 		assertEquals("1.2", resolve(location), folder.getLocation());
 		assertTrue("1.3", !resolve(location).toFile().exists());
 		//getting children should succeed (and be empty)
-		assertEquals("1.4", 0, folder.members().length);
+		assertThat(folder.members()).isEmpty();
 
 		//delete should succeed
 		folder.delete(IResource.NONE, createTestMonitor());
@@ -898,7 +899,7 @@ public class LinkedResourceTest {
 		link.createLink(upperCase, IResource.NONE, createTestMonitor());
 		IPath lowerCaseFilePath = lowerCase.append("file.txt");
 		IFile[] files = getWorkspace().getRoot().findFilesForLocation(lowerCaseFilePath);
-		assertEquals("1.0", 1, files.length);
+		assertThat(files).hasSize(1);
 	}
 
 	/**
@@ -968,28 +969,24 @@ public class LinkedResourceTest {
 		nonExistingFolderInOtherExistingProject.createLink(childLoc, IResource.NONE, createTestMonitor());
 		createInWorkspace(nonExistingFolderInOtherExistingProject.getFile("foo"));
 
-		assertTrue("2.0", existingFolderInExistingFolder.members().length == 1);
-		assertTrue("3.0", existingFolderInExistingFolder.members()[0].getName().equals("foo"));
-		assertTrue("2.0", nonExistingFolderInOtherExistingProject.members().length == 1);
-		assertTrue("3.0", nonExistingFolderInOtherExistingProject.members()[0].getName().equals("foo"));
-
-		assertTrue("4.0", nonExistingFolderInExistingProject.members().length == 1);
-		assertTrue("5.0", nonExistingFolderInExistingProject.members()[0].getName()
-				.equals(existingFolderInExistingFolder.getName()));
+		assertThat(existingFolderInExistingFolder.members()).hasSize(1)
+				.satisfiesExactly(member -> assertThat(member.getName()).as("name").isEqualTo("foo"));
+		assertThat(nonExistingFolderInOtherExistingProject.members()).hasSize(1)
+				.satisfiesExactly(member -> assertThat(member.getName()).as("name").isEqualTo("foo"));
+		assertThat(nonExistingFolderInExistingProject.members()).hasSize(1).satisfiesExactly(
+				member -> assertThat(member.getName()).as("name").isEqualTo(existingFolderInExistingFolder.getName()));
 
 		// Swap links around
 		nonExistingFolderInExistingProject.createLink(childLoc, IResource.REPLACE, createTestMonitor());
 		nonExistingFolderInOtherExistingProject.createLink(parentLoc, IResource.REPLACE, createTestMonitor());
 
-		assertTrue("2.0", existingFolderInExistingFolder.members().length == 1);
-		assertTrue("3.0", existingFolderInExistingFolder.members()[0].getName().equals("foo"));
-		assertTrue(nonExistingFolderInExistingProject.getLocation().equals(childLoc));
-		assertTrue("2.0", nonExistingFolderInExistingProject.members().length == 1);
-		assertTrue("3.0", nonExistingFolderInExistingProject.members()[0].getName().equals("foo"));
-
-		assertTrue("4.0", nonExistingFolderInOtherExistingProject.members().length == 1);
-		assertTrue("5.0", nonExistingFolderInOtherExistingProject.members()[0].getName()
-				.equals(existingFolderInExistingFolder.getName()));
+		assertThat(existingFolderInExistingFolder.members()).hasSize(1)
+				.satisfiesExactly(member -> assertThat(member.getName()).as("name").isEqualTo("foo"));
+		assertThat(nonExistingFolderInOtherExistingProject.members()).hasSize(1).satisfiesExactly(
+				member -> assertThat(member.getName()).as("name").isEqualTo(existingFolderInExistingFolder.getName()));
+		assertThat(nonExistingFolderInExistingProject.members()).hasSize(1)
+				.satisfiesExactly(member -> assertThat(member.getName()).as("name").isEqualTo("foo"));
+		assertThat(nonExistingFolderInExistingProject.getLocation()).isEqualTo(childLoc);
 	}
 
 	@Test

@@ -628,6 +628,8 @@ public abstract class ContentMergeViewer extends ContentViewer
 					cursor= fHSashCursor;
 				}
 				break;
+			default:
+				throw new IllegalArgumentException(Integer.toString(dir));
 			}
 			if (cursor != null)
 				c.setCursor(cursor);
@@ -744,7 +746,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 					setLeftDirty(false);
 					setRightDirty(false);
 					break;
-				case 2:
+				default:
 					throw new ViewerSwitchingCancelled();
 				}
 			} else {
@@ -1378,7 +1380,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 				case 0:
 					flushContent(input, null);
 					break;
-				case 1:
+				default:
 					setLeftDirty(false);
 					setRightDirty(false);
 					break;

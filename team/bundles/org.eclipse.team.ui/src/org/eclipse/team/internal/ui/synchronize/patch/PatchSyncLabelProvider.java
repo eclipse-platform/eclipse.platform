@@ -72,6 +72,8 @@ public class PatchSyncLabelProvider extends SynchronizationLabelProvider {
 		case Differencer.RIGHT:
 			kind = (kind & ~Differencer.RIGHT) | Differencer.LEFT;
 			break;
+		default:
+			break;
 		}
 		return super.getCompareImage(base, kind);
 	}

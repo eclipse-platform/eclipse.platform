@@ -31,7 +31,6 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Assert;
 import org.osgi.framework.Bundle;
 
 public class PatchUtils {
@@ -168,8 +167,7 @@ public class PatchUtils {
 			URL url = new URL(getBundle().getEntry("/"), path.toString());
 			return url.openStream();
 		} catch (IOException e) {
-			Assert.fail("Failed while reading " + name);
-			return null; // never reached
+			throw new IllegalStateException("failed while reading " + name, e);
 		}
 	}
 

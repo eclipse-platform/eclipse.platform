@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
@@ -47,6 +48,7 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 
 	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project1 = root.getProject("Project1");
 		unsorted1 = project1.getFolder(SortBuilder.UNSORTED_FOLDER);
@@ -84,10 +86,10 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		//Only builder1 should have been built
 		SortBuilder[] builders = SortBuilder.allInstances();
-		assertEquals("1.0", 2, builders.length);
-		assertTrue("1.1", builders[0].wasBuilt());
-		assertTrue("1.2", builders[0].wasIncrementalBuild());
-		assertTrue("1.3", !builders[1].wasBuilt());
+		assertThat(builders).hasSize(2).satisfiesExactly(first -> {
+			assertThat(first.wasBuilt()).isTrue();
+			assertThat(first.wasIncrementalBuild()).isTrue();
+		}, second -> assertThat(second.wasAutoBuild()).isFalse());
 	}
 
 	public static Test suite() {

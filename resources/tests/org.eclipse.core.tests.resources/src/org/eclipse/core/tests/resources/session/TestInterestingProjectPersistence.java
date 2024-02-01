@@ -23,7 +23,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.util.ArrayList;
-import junit.framework.Test;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * When a builder is run, it reports what projects it is interested in obtaining
@@ -121,16 +123,16 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		ArrayList<IProject> received = builder.getReceivedDeltas();
 
 		// should have received deltas for 1, 2, and 4
-		assertEquals("1.0", 3, received.size());
-		assertTrue("1.1", received.contains(project1));
-		assertTrue("1.2", received.contains(project2));
-		assertTrue("1.3", !received.contains(project3));
-		assertTrue("1.4", received.contains(project4));
+		assertEquals(3, received.size());
+		assertTrue(received.contains(project1));
+		assertTrue(received.contains(project2));
+		assertFalse(received.contains(project3));
+		assertTrue(received.contains(project4));
 
 		// delta for project4 should be empty
 		ArrayList<IProject> empty = builder.getEmptyDeltas();
-		assertEquals("1.2", 1, empty.size());
-		assertTrue("1.3", empty.contains(project4));
+		assertEquals(1, empty.size());
+		assertTrue(empty.contains(project4));
 
 		// save
 		getWorkspace().save(true, createTestMonitor());

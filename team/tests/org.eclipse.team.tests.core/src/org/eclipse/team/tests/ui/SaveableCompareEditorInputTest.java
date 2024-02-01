@@ -14,12 +14,11 @@
 package org.eclipse.team.tests.ui;
 
 import static java.util.Collections.synchronizedList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -98,7 +97,7 @@ public class SaveableCompareEditorInputTest {
 	public void tearDown() throws Exception {
 		// remove log listener
 		Platform.removeLogListener(logListener);
-		assertThat("Unexpected errors in log listener", errorsInListener, empty());
+		assertThat(errorsInListener).as("logged errors").isEmpty();
 	}
 
 	private class TestFileElement implements ITypedElement {

@@ -14,8 +14,8 @@
 
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,15 +26,15 @@ import java.net.URL;
 
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for reading from toc.zip
  */
 public class TocZipTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 	}

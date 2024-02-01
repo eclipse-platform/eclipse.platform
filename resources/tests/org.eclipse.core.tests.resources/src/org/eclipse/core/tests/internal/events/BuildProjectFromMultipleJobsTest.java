@@ -13,14 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.events;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -133,18 +131,18 @@ public class BuildProjectFromMultipleJobsTest {
 
 		// Get a non-cloned version of the project desc build spec
 		BuildCommand buildCommand = (BuildCommand) project.internalGetDescription().getBuildSpec(false)[0];
-		assertThat(buildCommand.getBuilders(), instanceOf(Map.class));
+		assertThat(buildCommand.getBuilders()).isInstanceOf(Map.class);
 		if (buildCommand.getBuilders() instanceof Map<?, ?> buildersMap) {
-			assertThat(buildersMap.entrySet(), hasSize(1));
+			assertThat(buildersMap.entrySet()).hasSize(1);
 			// Try to change the internal data
 			buildersMap.clear();
-			assertThat(buildersMap.entrySet(), hasSize(0));
+			assertThat(buildersMap.entrySet()).isEmpty();
 		}
 
-		assertThat(buildCommand.getBuilders(), instanceOf(Map.class));
+		assertThat(buildCommand.getBuilders()).isInstanceOf(Map.class);
 		if (buildCommand.getBuilders() instanceof Map<?, ?> buildersMap) {
 			// Should still be OK
-			assertThat("BuildCommand state was changed!", buildersMap.entrySet(), hasSize(1));
+			assertThat(buildersMap.entrySet()).as("check BuildCommand state did not changed").hasSize(1);
 		}
 	}
 

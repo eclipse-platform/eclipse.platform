@@ -94,8 +94,7 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 	}
 
 	public EngineDescriptor findEngine(String engineId) {
-		for (int i=0; i<descriptors.size(); i++) {
-			EngineDescriptor desc = descriptors.get(i);
+		for (EngineDescriptor desc : descriptors) {
 			if (desc.getId().equals(engineId))
 				return desc;
 		}
@@ -113,8 +112,7 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 				new OutputStreamWriter(new FileOutputStream(fileName), StandardCharsets.UTF_8))) {
 			writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
 			writer.println("<engines>"); //$NON-NLS-1$
-			for (int i = 0; i < descriptors.size(); i++) {
-				EngineDescriptor desc = descriptors.get(i);
+			for (EngineDescriptor desc : descriptors) {
 				if (desc.isUserDefined()) {
 					save(writer, desc);
 				}
@@ -142,8 +140,7 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(ENGINE_EXP_ID);
 		Hashtable<String, EngineTypeDescriptor> engineTypes = loadEngineTypes(elements);
-		for (int i = 0; i < elements.length; i++) {
-			IConfigurationElement element = elements[i];
+		for (IConfigurationElement element : elements) {
 			if (element.getName().equals(TAG_ENGINE)) {
 				EngineDescriptor desc = new EngineDescriptor(element);
 				String engineId = desc.getEngineTypeId();
@@ -161,8 +158,7 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 	private Hashtable<String, EngineTypeDescriptor> loadEngineTypes(IConfigurationElement[] elements) {
 		Hashtable<String, EngineTypeDescriptor> result = new Hashtable<>();
 		ArrayList<EngineTypeDescriptor> list = new ArrayList<>();
-		for (int i = 0; i < elements.length; i++) {
-			IConfigurationElement element = elements[i];
+		for (IConfigurationElement element : elements) {
 			if (element.getName().equals("engineType")) { //$NON-NLS-1$
 				EngineTypeDescriptor etdesc = new EngineTypeDescriptor(element);
 				String id = etdesc.getId();
@@ -207,10 +203,9 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 		File file = new File(fileName);
 		if (!file.exists()) return;
 		FileInputStream stream = new FileInputStream(file);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				stream, StandardCharsets.UTF_8));
-		load(reader);
-		reader.close();
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+			load(reader);
+		}
 	}
 
 	private void load(Document doc, Element root) {
@@ -263,8 +258,7 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 	}
 
 	private boolean isUsed(int value, ArrayList<Integer> used) {
-		for (int i=0; i<used.size(); i++) {
-			Integer iv = used.get(i);
+		for (Integer iv : used) {
 			if (iv.intValue()==value)
 				return true;
 		}
@@ -330,8 +324,7 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 	private EngineTypeDescriptor findEngineType(String id) {
 		if (id == null)
 			return null;
-		for (int i = 0; i < engineTypes.length; i++) {
-			EngineTypeDescriptor etd = engineTypes[i];
+		for (EngineTypeDescriptor etd : engineTypes) {
 			if (etd.getId().equals(id))
 				return etd;
 		}

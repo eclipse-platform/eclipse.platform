@@ -50,12 +50,10 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 			DND.error(DND.ERROR_INVALID_DATA);
 		}
 		BaseData[] myTypes = (BaseData[]) object;
-		try {
-			// write data to a byte array and then ask super to convert to pMedium
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			DataOutputStream writeOut = new DataOutputStream(out);
-			for (int i = 0, length = myTypes.length; i < length; i++) {
-				BaseData bd = myTypes[i];
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		// write data to a byte array and then ask super to convert to pMedium
+		try (DataOutputStream writeOut = new DataOutputStream(out)) {
+			for (BaseData bd : myTypes) {
 				boolean separator = bd instanceof SeparatorData;
 				writeOut.writeBoolean(separator);
 				byte[] buffer = bd.getId().getBytes();
@@ -70,7 +68,6 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 				}
 			}
 			byte[] buffer = out.toByteArray();
-			writeOut.close();
 			super.javaToNative(buffer, transferData);
 		} catch (IOException e) {
 		}
@@ -84,9 +81,8 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 				return null;
 
 			BaseData[] myData = new BaseData[0];
-			try {
-				ByteArrayInputStream in = new ByteArrayInputStream(buffer);
-				DataInputStream readIn = new DataInputStream(in);
+			ByteArrayInputStream in = new ByteArrayInputStream(buffer);
+			try (DataInputStream readIn = new DataInputStream(in)) {
 				while (readIn.available() > 4) {
 					boolean separator;
 					int importance=0;
@@ -113,7 +109,6 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 						newMyData[myData.length] = new ExtensionData(id, name, importance);
 					myData = newMyData;
 				}
-				readIn.close();
 			} catch (IOException ex) {
 				return null;
 			}
@@ -129,8 +124,8 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 			return false;
 		}
 		BaseData[] myTypes = (BaseData[]) object;
-		for (int i = 0; i < myTypes.length; i++) {
-			if (myTypes[i] == null || myTypes[i].getId() == null || myTypes[i] instanceof ExtensionData && ((ExtensionData)myTypes[i]).getName() == null)
+		for (BaseData myType : myTypes) {
+			if (myType == null || myType.getId() == null || myType instanceof ExtensionData && ((ExtensionData)myType).getName() == null)
 				return false;
 		}
 		return true;

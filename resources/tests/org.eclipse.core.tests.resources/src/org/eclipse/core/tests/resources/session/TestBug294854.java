@@ -18,8 +18,6 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
 import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -30,6 +28,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.SessionTestSuite;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Test for bug 294854
@@ -75,7 +76,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_OLD_NAME);
 		createInWorkspace(project);
-		assertTrue("1.0", project.exists());
+		assertTrue(project.exists());
 
 		// make sure we do not have .snap file
 		TestingSupport.waitForSnapshot();
@@ -110,8 +111,8 @@ public class TestBug294854 extends WorkspaceSessionTest {
 	}
 
 	public void testRenameUsingProjectDescription_02() {
-		assertFalse("1.0", checkProjectExists(PROJECT_OLD_NAME));
-		assertTrue("2.0", checkProjectExists(PROJECT_NEW_NAME));
+		assertFalse(checkProjectExists(PROJECT_OLD_NAME));
+		assertTrue(checkProjectExists(PROJECT_NEW_NAME));
 	}
 
 	public void testRenameUsingResourcePath_01() throws CoreException, InterruptedException {
@@ -128,8 +129,8 @@ public class TestBug294854 extends WorkspaceSessionTest {
 	}
 
 	public void testRenameUsingResourcePath_02() {
-		assertFalse("1.0", checkProjectExists(PROJECT_OLD_NAME));
-		assertTrue("2.0", checkProjectExists(PROJECT_NEW_NAME));
+		assertFalse(checkProjectExists(PROJECT_OLD_NAME));
+		assertTrue(checkProjectExists(PROJECT_NEW_NAME));
 	}
 
 	public void testDelete_01() throws CoreException {
@@ -146,7 +147,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 	}
 
 	public void testDelete_02() {
-		assertFalse("1.0", checkProjectExists(PROJECT_OLD_NAME));
+		assertFalse(checkProjectExists(PROJECT_OLD_NAME));
 	}
 
 	public void testDeleteWithoutWaitingForSnapshot_01() throws CoreException {
@@ -168,7 +169,7 @@ public class TestBug294854 extends WorkspaceSessionTest {
 	}
 
 	public void testDeleteWithoutWaitingForSnapshot_02() {
-		assertTrue("1.0", checkProjectExists(PROJECT_OLD_NAME));
-		assertFalse("1.1", checkProjectIsOpen(PROJECT_OLD_NAME));
+		assertTrue(checkProjectExists(PROJECT_OLD_NAME));
+		assertFalse(checkProjectIsOpen(PROJECT_OLD_NAME));
 	}
 }

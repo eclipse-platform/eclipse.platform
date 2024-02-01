@@ -25,7 +25,7 @@ public class MemoryRetrievalContentProvider extends ElementContentProvider {
 	@Override
 	protected int getChildCount(Object element, IPresentationContext context,
 			IViewerUpdate monitor) throws CoreException {
-		return getAllChildren(element, context, monitor).length;
+		return getAllChildren(element, context).length;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class MemoryRetrievalContentProvider extends ElementContentProvider {
 			IPresentationContext context, IViewerUpdate monitor)
 			throws CoreException {
 
-		return getElements(getAllChildren(parent, context, monitor), index, length);
+		return getElements(getAllChildren(parent, context), index, length);
 
 	}
 
@@ -42,7 +42,7 @@ public class MemoryRetrievalContentProvider extends ElementContentProvider {
 	 *
 	 * @return all children
 	 */
-	protected Object[] getAllChildren(Object parent, IPresentationContext context, IViewerUpdate monitor) {
+	private Object[] getAllChildren(Object parent, IPresentationContext context) {
 		String id = context.getId();
 		if (id.equals(IDebugUIConstants.ID_MEMORY_VIEW))
 		{

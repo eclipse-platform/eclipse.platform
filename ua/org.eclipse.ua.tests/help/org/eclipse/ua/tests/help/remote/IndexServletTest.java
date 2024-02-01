@@ -14,7 +14,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.remote;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -24,9 +25,9 @@ import java.util.List;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,14 +38,14 @@ public class IndexServletTest {
 
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}
@@ -53,70 +54,70 @@ public class IndexServletTest {
 	public void testIndexServletContainsSimpleWord() throws Exception {
 		Node root = getIndexContributions("en");
 		Element[] UARoot = findEntryInAllContributions(root, "xyz");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testIndexServletContainsWordWithAccent() throws Exception {
 		Node root = getIndexContributions("en");
 		Element[] UARoot = findEntryInAllContributions(root, "\u00E1mbito");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testIndexServletContainsWordWithGt() throws Exception {
 		Node root = getIndexContributions("en");
 		Element[] UARoot = findEntryInAllContributions(root, "character >");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testIndexServletContainsWordWithLt() throws Exception {
 		Node root = getIndexContributions("en");
 		Element[] UARoot = findEntryInAllContributions(root, "character <");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testIndexServletContainsWordWithAmp() throws Exception {
 		Node root = getIndexContributions("en");
 		Element[] UARoot = findEntryInAllContributions(root, "character &");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testIndexServletContainsWordWithQuot() throws Exception {
 		Node root = getIndexContributions("en");
 		Element[] UARoot = findEntryInAllContributions(root, "character \"");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testIndexServletContainsWordWithApostrophe() throws Exception {
 		Node root = getIndexContributions("en");
 		Element[] UARoot = findEntryInAllContributions(root, "character '");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testDeWordNotInEnIndex() throws Exception {
 		Node root = getIndexContributions("en");
 		Element[] UARoot = findEntryInAllContributions(root, "munich");
-		assertEquals(0, UARoot.length);
+		assertThat(UARoot).isEmpty();
 	}
 
 	@Test
 	public void testWordInDeIndex() throws Exception {
 		Node root = getIndexContributions("de");
 		Element[] UARoot = findEntryInAllContributions(root, "munich");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testWordNotInDeIndex() throws Exception {
 		Node root = getIndexContributions("de");
 		Element[] UARoot = findEntryInAllContributions(root, "xyz");
-		assertEquals(0, UARoot.length);
+		assertThat(UARoot).isEmpty();
 	}
 
 	private Element[] findEntryInAllContributions(Node parent, String keyword) {

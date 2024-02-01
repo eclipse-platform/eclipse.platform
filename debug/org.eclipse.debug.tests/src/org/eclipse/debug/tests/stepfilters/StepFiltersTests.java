@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.stepfilters;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -28,14 +28,14 @@ public class StepFiltersTests extends AbstractDebugTest {
 	public void testStepFitlersExtension_01() {
 		IStepFilter[] stepFilters = DebugPlugin.getStepFilters("com.example.lalala.model"); //$NON-NLS-1$
 		assertNotNull(stepFilters);
-		assertEquals(0, stepFilters.length);
+		assertThat(stepFilters).isEmpty();
 	}
 
 	@Test
 	public void testStepFitlersExtension_02() {
 		IStepFilter[] stepFilters = DebugPlugin.getStepFilters("com.example.debug.model"); //$NON-NLS-1$
 		assertNotNull(stepFilters);
-		assertEquals(1, stepFilters.length);
+		assertThat(stepFilters).hasSize(1);
 
 		assertTrue(stepFilters[0].isFiltered(Boolean.TRUE));
 		assertFalse(stepFilters[0].isFiltered(Boolean.FALSE));

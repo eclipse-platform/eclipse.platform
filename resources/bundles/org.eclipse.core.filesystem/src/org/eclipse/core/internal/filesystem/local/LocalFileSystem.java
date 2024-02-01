@@ -19,7 +19,9 @@ package org.eclipse.core.internal.filesystem.local;
 
 import java.io.File;
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.service.environment.Constants;
@@ -47,7 +49,7 @@ public class LocalFileSystem extends FileSystem {
 	/**
 	 * The singleton instance of this file system.
 	 */
-	private static IFileSystem instance;
+	private static final IFileSystem INSTANCE = EFS.getLocalFileSystem();
 
 	/**
 	 * Returns the instance of this file system
@@ -55,7 +57,7 @@ public class LocalFileSystem extends FileSystem {
 	 * @return The instance of this file system.
 	 */
 	public static IFileSystem getInstance() {
-		return instance;
+		return INSTANCE;
 	}
 
 	/**
@@ -71,7 +73,6 @@ public class LocalFileSystem extends FileSystem {
 	 */
 	public LocalFileSystem() {
 		super();
-		instance = this;
 	}
 
 	@Override

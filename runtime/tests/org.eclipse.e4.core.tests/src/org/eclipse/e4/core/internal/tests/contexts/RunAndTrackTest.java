@@ -398,7 +398,7 @@ public class RunAndTrackTest {
 	 */
 	@Test
 	public void testRemoveContextVar() {
-		doSingleContextChangeTest((root, var) -> root.remove(var), null, 1);
+		doSingleContextChangeTest(IEclipseContext::remove, null, 1);
 
 	}
 

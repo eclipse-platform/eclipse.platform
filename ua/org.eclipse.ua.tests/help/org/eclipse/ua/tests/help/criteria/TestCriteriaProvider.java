@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.criteria;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.help.ICriteria;
 import org.eclipse.help.internal.Topic;
@@ -26,7 +27,7 @@ import org.eclipse.help.internal.toc.Toc;
 import org.eclipse.ua.tests.help.other.UserCriteria;
 import org.eclipse.ua.tests.help.other.UserToc2;
 import org.eclipse.ua.tests.help.other.UserTopic2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestCriteriaProvider {
 
@@ -41,7 +42,7 @@ public class TestCriteriaProvider {
 		Topic copy = new Topic(topic);
 
 		ICriteria[] nativeCriteria = copy.getCriteria();
-		assertEquals(2, nativeCriteria.length);
+		assertThat(nativeCriteria).hasSize(2);
 		assertEquals("version", nativeCriteria[0].getName());
 		assertEquals("1.0", nativeCriteria[0].getValue());
 		assertEquals("version", nativeCriteria[1].getName());
@@ -65,7 +66,7 @@ public class TestCriteriaProvider {
 		Toc copy = new Toc(toc);
 
 		ICriteria[] nativeCriteria = copy.getCriteria();
-		assertEquals(2, nativeCriteria.length);
+		assertThat(nativeCriteria).hasSize(2);
 		assertEquals("version", nativeCriteria[0].getName());
 		assertEquals("1.0", nativeCriteria[0].getValue());
 		assertEquals("version", nativeCriteria[1].getName());

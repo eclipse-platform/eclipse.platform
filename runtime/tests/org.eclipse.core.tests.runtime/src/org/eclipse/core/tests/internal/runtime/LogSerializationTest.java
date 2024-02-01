@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -50,7 +51,7 @@ public class LogSerializationTest {
 		if (actual == null) {
 			assertNull(msg + " expected " + Arrays.toString(expected) + " but got null", expected);
 		}
-		assertEquals(msg + " different number of statuses", expected.length, actual.length);
+		assertThat(actual).as(msg + " number of statuses").hasSameSizeAs(expected);
 		for (int i = 0, imax = expected.length; i < imax; i++) {
 			assertStatusEquals(msg + " differ at status " + i, expected[i], actual[i]);
 		}

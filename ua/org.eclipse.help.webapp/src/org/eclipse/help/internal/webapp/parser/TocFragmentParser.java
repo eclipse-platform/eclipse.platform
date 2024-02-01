@@ -40,7 +40,9 @@ public class TocFragmentParser extends ResultParser {
 	public void parse(URL tocURL, int level)
 		throws ParserConfigurationException, SAXException, IOException
 	{
-		parse(ProxyUtil.getStream(tocURL), level);
+		try (InputStream stream = ProxyUtil.getStream(tocURL)) {
+			parse(stream, level);
+		}
 	}
 
 	public void parse(InputStream in, int level)

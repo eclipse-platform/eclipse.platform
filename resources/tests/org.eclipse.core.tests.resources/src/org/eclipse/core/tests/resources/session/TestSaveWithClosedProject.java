@@ -17,12 +17,13 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Create a project, close it, save, crash, recover.  Recovered project should still be closed.
@@ -44,14 +45,14 @@ public class TestSaveWithClosedProject extends WorkspaceSerializationTest {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
 		IFile file = project.getFile(FILE);
 
-		assertTrue("1.0", project.exists());
-		assertTrue("1.1", !project.isOpen());
-		assertTrue("1.2", !file.exists());
+		assertTrue(project.exists());
+		assertFalse(project.isOpen());
+		assertFalse(file.exists());
 
 		project.open(createTestMonitor());
 
-		assertTrue("2.0", project.isOpen());
-		assertTrue("2.1", file.exists());
+		assertTrue(project.isOpen());
+		assertTrue(file.exists());
 	}
 
 	public static Test suite() {

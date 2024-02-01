@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.internal.localstore.LocalStoreTestUtil.createTree;
 import static org.eclipse.core.tests.internal.localstore.LocalStoreTestUtil.getTree;
@@ -300,7 +301,7 @@ public class RefreshLocalTest implements ICoreConstants {
 		assertFalse(folder.exists());
 		folder.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue(folder.exists());
-		assertEquals(((Resource) folder).countResources(IResource.DEPTH_INFINITE, false), getTree(target).length + 1);
+		assertThat(getTree(target)).hasSize(((Resource) folder).countResources(IResource.DEPTH_INFINITE, false) - 1);
 	}
 
 }

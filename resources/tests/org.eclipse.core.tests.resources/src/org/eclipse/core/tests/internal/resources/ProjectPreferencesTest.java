@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
@@ -22,9 +23,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.getLineSeparator
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -526,7 +524,7 @@ public class ProjectPreferencesTest {
 			if (exception == null || !(exception instanceof CoreException coreException)) {
 				return;
 			}
-			assertThat(IResourceStatus.WORKSPACE_LOCKED, not(is(coreException.getStatus().getCode())));
+			assertThat(IResourceStatus.WORKSPACE_LOCKED).isNotEqualTo(coreException.getStatus().getCode());
 		};
 
 		// listener to react to changes in the workspace
@@ -1146,12 +1144,11 @@ public class ProjectPreferencesTest {
 
 		Preferences node = new ProjectScope(project1).getNode("");
 		String[] childrenNames = node.childrenNames();
-		assertEquals(2, childrenNames.length);
-		assertEquals(nodeA, childrenNames[1]);
+		assertThat(childrenNames).hasSize(2);
+		assertThat(childrenNames[1]).isEqualTo(nodeA);
 		node = node.node(nodeA);
 		childrenNames = node.childrenNames();
-		assertEquals(1, childrenNames.length);
-		assertEquals(nodeB, childrenNames[0]);
+		assertThat(childrenNames).containsExactly(nodeB);
 
 		project1.delete(true, createTestMonitor());
 		project2.delete(true, createTestMonitor());
@@ -1186,8 +1183,7 @@ public class ProjectPreferencesTest {
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA);
 		String[] childrenNames = node.childrenNames();
-		assertEquals(1, childrenNames.length);
-		assertEquals(nodeB, childrenNames[0]);
+		assertThat(childrenNames).containsExactly(nodeB);
 
 		project1.delete(true, createTestMonitor());
 		project2.delete(true, createTestMonitor());
@@ -1222,7 +1218,7 @@ public class ProjectPreferencesTest {
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		node.clear();
-		assertEquals(0, node.keys().length);
+		assertThat(node.keys()).isEmpty();
 		assertNull(node.get(key, null));
 
 		project1.delete(true, createTestMonitor());
@@ -1292,8 +1288,7 @@ public class ProjectPreferencesTest {
 
 		Preferences node = new ProjectScope(project1).getNode(nodeA).node(nodeB);
 		String[] keys = node.keys();
-		assertEquals(1, keys.length);
-		assertEquals(key, keys[0]);
+		assertThat(keys).containsExactly(key);
 
 		project1.delete(true, createTestMonitor());
 		project2.delete(true, createTestMonitor());

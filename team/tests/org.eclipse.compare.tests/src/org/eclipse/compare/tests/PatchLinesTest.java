@@ -14,7 +14,6 @@
 package org.eclipse.compare.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -106,7 +105,8 @@ public class PatchLinesTest {
 		assertEquals(2, lines[1]);
 	}
 
-	private int[] parsePatch(String patch) {
+	private int[] parsePatch(String patch)
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		WorkspacePatcher patcher = new WorkspacePatcher();
 		try {
 			patcher.parse(getReader(patch));
@@ -140,41 +140,19 @@ public class PatchLinesTest {
 		return PatchUtils.getReader(name);
 	}
 
-	private int getNewLength(IHunk hunk) {
+	private int getNewLength(IHunk hunk)
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Class<?> cls = hunk.getClass();
-		try {
-			Field fld = cls.getDeclaredField("fNewLength");
-			fld.setAccessible(true);
-			return fld.getInt(hunk);
-		} catch (SecurityException e) {
-			fail(e.getMessage());
-		} catch (NoSuchFieldException e) {
-			fail(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
-			fail(e.getMessage());
-		}
-		fail();
-		return -1;
+		Field fld = cls.getDeclaredField("fNewLength");
+		fld.setAccessible(true);
+		return fld.getInt(hunk);
 	}
 
-	private int getOldLength(IHunk hunk) {
+	private int getOldLength(IHunk hunk)
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Class<?> cls = hunk.getClass();
-		try {
-			Field fld = cls.getDeclaredField("fOldLength");
-			fld.setAccessible(true);
-			return fld.getInt(hunk);
-		} catch (SecurityException e) {
-			fail(e.getMessage());
-		} catch (NoSuchFieldException e) {
-			fail(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
-			fail(e.getMessage());
-		}
-		fail();
-		return -1;
+		Field fld = cls.getDeclaredField("fOldLength");
+		fld.setAccessible(true);
+		return fld.getInt(hunk);
 	}
 }

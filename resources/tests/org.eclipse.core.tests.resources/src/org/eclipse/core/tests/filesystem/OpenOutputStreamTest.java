@@ -13,10 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.ensureDoesNotExist;
 import static org.eclipse.core.tests.filesystem.FileSystemTestUtil.getMonitor;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -85,7 +84,7 @@ public class OpenOutputStreamTest {
 		// check that the parent knows about it
 		IFileInfo[] children = store.getParent().childInfos(EFS.NONE, getMonitor());
 		List<String> childrenNames = Stream.of(children).map(IFileInfo::getName).collect(Collectors.toList());
-		assertThat(childrenNames, hasItem(store.getName()));
+		assertThat(childrenNames).contains(store.getName());
 	}
 
 	@Test

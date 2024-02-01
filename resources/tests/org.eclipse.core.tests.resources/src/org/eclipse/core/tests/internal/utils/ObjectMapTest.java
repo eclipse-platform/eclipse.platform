@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.utils;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -149,7 +150,7 @@ public class ObjectMapTest {
 			values[i] = Long.valueOf(System.currentTimeMillis());
 			map.put(Integer.valueOf(i), values[i]);
 		}
-		assertEquals("#populateMap", values.length, map.size());
+		assertThat(values).hasSize(map.size());
 		return map;
 	}
 

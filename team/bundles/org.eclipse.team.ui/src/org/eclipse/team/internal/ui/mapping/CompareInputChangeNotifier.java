@@ -138,6 +138,8 @@ public abstract class CompareInputChangeNotifier implements
 						}
 					}
 					break;
+				default:
+					break;
 			}
 		}
 

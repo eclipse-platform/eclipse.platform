@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.search;
 
-
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ import org.eclipse.help.internal.search.ISearchQuery;
 import org.eclipse.help.internal.search.SearchHit;
 import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.help.internal.search.SearchResults;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class MetaKeywords {
@@ -41,14 +41,14 @@ public class MetaKeywords {
 	@Test
 	public void testDescriptionInHtml() {
 		SearchHit[] hits = getResultDescriptions("ydhaedrsc", "en");
-		assertEquals(hits.length, 1);
+		assertThat(hits).hasSize(1);
 		assertEquals("HTML Meta description", hits[0].getDescription());
 	}
 
 	@Test
 	public void testDescriptionInXhtml() {
 		SearchHit[] hits = getResultDescriptions("olfrgkjrifjd", "en");
-		assertEquals(hits.length, 1);
+		assertThat(hits).hasSize(1);
 		assertEquals("XHTML Meta description", hits[0].getDescription());
 	}
 

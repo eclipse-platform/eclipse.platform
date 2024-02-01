@@ -149,6 +149,7 @@ public class ValidatorServlet extends HttpServlet {
 		process(req, resp);
 	}
 
+	@SuppressWarnings("resource")
 	public boolean isSecure(HttpServletRequest req,HttpServletResponseAdv resp)
 			throws SecurityException {
 		Enumeration<String> names = req.getParameterNames();
@@ -166,8 +167,8 @@ public class ValidatorServlet extends HttpServlet {
 
 		if (resp.getWriter() != null) {
 			String data = resp.getString();
-			for (int s=0; s < scripts.size(); s++)
-				if (data.indexOf(scripts.get(s)) > -1)
+			for (String script : scripts)
+				if (data.indexOf(script) > -1)
 					throw new SecurityException("Potential cross-site scripting detected."); //$NON-NLS-1$
 		}
 

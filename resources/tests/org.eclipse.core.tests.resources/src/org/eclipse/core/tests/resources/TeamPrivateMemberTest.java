@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
@@ -21,9 +22,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
@@ -83,24 +81,24 @@ public class TeamPrivateMemberTest {
 		createInWorkspace(resources);
 
 		// no team private members
-		assertThat(root.findMember(project.getFullPath()), is(project));
-		assertThat(root.findMember(folder.getFullPath()), is(folder));
-		assertThat(root.findMember(file.getFullPath()), is(file));
-		assertThat(root.findMember(subFile.getFullPath()), is(subFile));
+		assertThat(root.findMember(project.getFullPath())).isEqualTo(project);
+		assertThat(root.findMember(folder.getFullPath())).isEqualTo(folder);
+		assertThat(root.findMember(file.getFullPath())).isEqualTo(file);
+		assertThat(root.findMember(subFile.getFullPath())).isEqualTo(subFile);
 
 		// the folder is team private
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
-		assertThat(root.findMember(project.getFullPath()), is(project));
-		assertThat(root.findMember(folder.getFullPath()), is(folder));
-		assertThat(root.findMember(file.getFullPath()), is(file));
-		assertThat(root.findMember(subFile.getFullPath()), is(subFile));
+		assertThat(root.findMember(project.getFullPath())).isEqualTo(project);
+		assertThat(root.findMember(folder.getFullPath())).isEqualTo(folder);
+		assertThat(root.findMember(file.getFullPath())).isEqualTo(file);
+		assertThat(root.findMember(subFile.getFullPath())).isEqualTo(subFile);
 
 		// all are team private
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
-		assertThat(root.findMember(project.getFullPath()), is(project));
-		assertThat(root.findMember(folder.getFullPath()), is(folder));
-		assertThat(root.findMember(file.getFullPath()), is(file));
-		assertThat(root.findMember(subFile.getFullPath()), is(subFile));
+		assertThat(root.findMember(project.getFullPath())).isEqualTo(project);
+		assertThat(root.findMember(folder.getFullPath())).isEqualTo(folder);
+		assertThat(root.findMember(file.getFullPath())).isEqualTo(file);
+		assertThat(root.findMember(subFile.getFullPath())).isEqualTo(subFile);
 	}
 
 	/**
@@ -123,8 +121,8 @@ public class TeamPrivateMemberTest {
 
 		// Check the calls to #members
 		// +1 for the project description file
-		assertThat(project.members(), arrayWithSize(4));
-		assertThat(folder.members(), arrayWithSize(1));
+		assertThat(project.members()).hasSize(4);
+		assertThat(folder.members()).hasSize(1);
 
 		// Set the values.
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
@@ -134,8 +132,8 @@ public class TeamPrivateMemberTest {
 		assertTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 
 		// Check the calls to #members
-		assertThat(project.members(), arrayWithSize(0));
-		assertThat(folder.members(), arrayWithSize(0));
+		assertThat(project.members()).hasSize(0);
+		assertThat(folder.members()).hasSize(0);
 
 		// reset to false
 		setTeamPrivateMember(project, false, IResource.DEPTH_INFINITE);
@@ -143,30 +141,30 @@ public class TeamPrivateMemberTest {
 
 		// Check the calls to members(IResource.NONE);
 		// +1 for the project description file
-		assertThat(project.members(IResource.NONE), arrayWithSize(4));
+		assertThat(project.members(IResource.NONE)).hasSize(4);
 		// +1 for the project description file
-		assertThat(project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS), arrayWithSize(4));
-		assertThat(folder.members(), arrayWithSize(1));
+		assertThat(project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS)).hasSize(4);
+		assertThat(folder.members()).hasSize(1);
 
 		// Set one of the children to be TEAM_PRIVATE and try again
 		setTeamPrivateMember(folder, true, IResource.DEPTH_ZERO);
 		// +1 for project description, -1 for team private folder
-		assertThat(project.members(), arrayWithSize(3));
-		assertThat(folder.members(), arrayWithSize(1));
+		assertThat(project.members()).hasSize(3);
+		assertThat(folder.members()).hasSize(1);
 		// +1 for project description, -1 for team private folder
-		assertThat(project.members(IResource.NONE), arrayWithSize(3));
-		assertThat(folder.members(), arrayWithSize(1));
+		assertThat(project.members(IResource.NONE)).hasSize(3);
+		assertThat(folder.members()).hasSize(1);
 		// +1 for project description
-		assertThat(project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS), arrayWithSize(4));
-		assertThat(folder.members(), arrayWithSize(1));
+		assertThat(project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS)).hasSize(4);
+		assertThat(folder.members()).hasSize(1);
 
 		// Set all the resources to be team private
 		setTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
 		assertTeamPrivateMember(project, true, IResource.DEPTH_INFINITE);
-		assertThat(project.members(IResource.NONE), arrayWithSize(0));
-		assertThat(folder.members(IResource.NONE), arrayWithSize(0));
-		assertThat(project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS), arrayWithSize(4));
-		assertThat(folder.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS), arrayWithSize(1));
+		assertThat(project.members(IResource.NONE)).hasSize(0);
+		assertThat(folder.members(IResource.NONE)).hasSize(0);
+		assertThat(project.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS)).hasSize(4);
+		assertThat(folder.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS)).hasSize(1);
 	}
 
 	/**
@@ -592,8 +590,8 @@ public class TeamPrivateMemberTest {
 	}
 
 	private void assertTeamPrivateMember(IResource resource, boolean expectedValue) {
-		assertThat("unexpected isTeamPrivateMember value for resource: " + resource, resource.isTeamPrivateMember(),
-				is(expectedValue));
+		assertThat(resource.isTeamPrivateMember())
+				.as("isTeamPrivateMember value for resource: %s", resource).isEqualTo(expectedValue);
 	}
 
 	private void setTeamPrivateMember(IResource root, final boolean value, int depth)

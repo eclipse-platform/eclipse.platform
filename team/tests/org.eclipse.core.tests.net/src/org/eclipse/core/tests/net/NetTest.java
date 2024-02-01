@@ -13,21 +13,27 @@
  *******************************************************************************/
 package org.eclipse.core.tests.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.core.internal.net.ProxyData;
 import org.eclipse.core.internal.net.ProxyType;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class NetTest {
 
@@ -38,7 +44,7 @@ public class NetTest {
 	private boolean isSystemProxiesDefault;
 	private final Map<String, IProxyData> dataCache = new HashMap<>();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		isSystemProxiesDefault = isSystemProxiesEnabled();
 		setSystemProxiesEnabled(false);
@@ -49,7 +55,7 @@ public class NetTest {
 		ProxyType.socksSystemPropertySetting = ProxyType.ALWAYS_SET;
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		setProxiesEnabled(isProxiesDefault);
 		setSystemProxiesEnabled(isSystemProxiesDefault);
@@ -277,27 +283,23 @@ public class NetTest {
 	}
 
 	@Test
-	@Ignore("Disabled due to bug 403311")
+	@Disabled("Disabled due to bug 403311")
+	@SuppressWarnings("deprecation")
 	public void _testSimpleHost() throws CoreException {
 
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
 		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
 
-		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("www.randomhot.com");
-		assertEquals(3, allData.length);
-
-		IProxyData data = this.getProxyManager().getProxyDataForHost("www.randomhot.com", IProxyData.HTTP_PROXY_TYPE);
-		assertNotNull(data);
-
-		allData = this.getProxyManager().getProxyDataForHost("localhost");
-		assertEquals(0, allData.length);
-
-		data = this.getProxyManager().getProxyDataForHost("localhost", IProxyData.HTTP_PROXY_TYPE);
-		assertNull(data);
+		assertThat(this.getProxyManager().getProxyDataForHost("www.randomhot.com")).hasSize(3);
+		assertThat(this.getProxyManager().getProxyDataForHost("www.randomhot.com", IProxyData.HTTP_PROXY_TYPE))
+				.isNotNull();
+		assertThat(this.getProxyManager().getProxyDataForHost("localhost")).isEmpty();
+		assertThat(this.getProxyManager().getProxyDataForHost("localhost", IProxyData.HTTP_PROXY_TYPE)).isNull();
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testHostPattern() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -306,28 +308,19 @@ public class NetTest {
 		String[] oldHosts = this.getProxyManager().getNonProxiedHosts();
 		this.getProxyManager().setNonProxiedHosts(new String[] { "*ignore.com" });
 
-		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("www.randomhot.com");
-		assertEquals(3, allData.length);
-
-		IProxyData data = this.getProxyManager().getProxyDataForHost("www.randomhot.com", IProxyData.HTTP_PROXY_TYPE);
-		assertNotNull(data);
-
-		allData = this.getProxyManager().getProxyDataForHost("www.ignore.com");
-		assertEquals(0, allData.length);
-
-		data = this.getProxyManager().getProxyDataForHost("www.ignore.com", IProxyData.HTTP_PROXY_TYPE);
-		assertNull(data);
-
-		allData = this.getProxyManager().getProxyDataForHost("ignore.com");
-		assertEquals(0, allData.length);
-
-		data = this.getProxyManager().getProxyDataForHost("ignore.com", IProxyData.HTTP_PROXY_TYPE);
-		assertNull(data);
+		assertThat(this.getProxyManager().getProxyDataForHost("www.randomhot.com")).hasSize(3);
+		assertThat(this.getProxyManager().getProxyDataForHost("www.randomhot.com", IProxyData.HTTP_PROXY_TYPE))
+				.isNotNull();
+		assertThat(this.getProxyManager().getProxyDataForHost("www.ignore.com")).isEmpty();
+		assertThat(this.getProxyManager().getProxyDataForHost("www.ignore.com", IProxyData.HTTP_PROXY_TYPE)).isNull();
+		assertThat(this.getProxyManager().getProxyDataForHost("ignore.com")).isEmpty();
+		assertThat(this.getProxyManager().getProxyDataForHost("ignore.com", IProxyData.HTTP_PROXY_TYPE)).isNull();
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testHostPatternBug505906() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -336,29 +329,19 @@ public class NetTest {
 		String[] oldHosts = this.getProxyManager().getNonProxiedHosts();
 		this.getProxyManager().setNonProxiedHosts(new String[] { "ignore.com" });
 
-		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com");
-		assertEquals(3, allData.length);
-
-		IProxyData data = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com",
-				IProxyData.HTTP_PROXY_TYPE);
-		assertNotNull(data);
-
-		allData = this.getProxyManager().getProxyDataForHost("www.ignore.com");
-		assertEquals(0, allData.length);
-
-		data = this.getProxyManager().getProxyDataForHost("www.ignore.com", IProxyData.HTTP_PROXY_TYPE);
-		assertNull(data);
-
-		allData = this.getProxyManager().getProxyDataForHost("ignore.com");
-		assertEquals(0, allData.length);
-
-		data = this.getProxyManager().getProxyDataForHost("ignore.com", IProxyData.HTTP_PROXY_TYPE);
-		assertNull(data);
+		assertThat(this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com")).hasSize(3);
+		assertThat(this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com", IProxyData.HTTP_PROXY_TYPE))
+				.isNotNull();
+		assertThat(this.getProxyManager().getProxyDataForHost("www.ignore.com")).isEmpty();
+		assertThat(this.getProxyManager().getProxyDataForHost("www.ignore.com", IProxyData.HTTP_PROXY_TYPE)).isNull();
+		assertThat(this.getProxyManager().getProxyDataForHost("ignore.com")).isEmpty();
+		assertThat(this.getProxyManager().getProxyDataForHost("ignore.com", IProxyData.HTTP_PROXY_TYPE)).isNull();
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug238796() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -368,15 +351,14 @@ public class NetTest {
 
 		this.getProxyManager().setNonProxiedHosts(new String[] { "nonexisting.com" });
 
-		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("NONEXISTING.COM");
-		assertEquals(0, allData.length);
-		IProxyData data = this.getProxyManager().getProxyDataForHost("NONEXISTING.COM", IProxyData.HTTP_PROXY_TYPE);
-		assertNull(data);
+		assertThat(this.getProxyManager().getProxyDataForHost("NONEXISTING.COM")).isEmpty();
+		assertThat(this.getProxyManager().getProxyDataForHost("NONEXISTING.COM", IProxyData.HTTP_PROXY_TYPE)).isNull();
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug247408() throws CoreException, URISyntaxException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -384,16 +366,16 @@ public class NetTest {
 
 		IProxyData data1 = this.getProxyManager().getProxyDataForHost("randomhost.com", IProxyData.HTTP_PROXY_TYPE);
 		IProxyData[] data2 = this.getProxyManager().select(new URI("http://randomhost.com"));
-		assertEquals(data2.length, 1);
-		assertEquals(data1, data2[0]);
+		assertThat(data2).singleElement().isEqualTo(data1);
 
 		IProxyData data3 = this.getProxyManager().getProxyDataForHost("randomhost.com", null);
 		IProxyData[] data4 = this.getProxyManager().select(new URI(null, "randomhost.com", null, null));
-		assertNull(data3);
-		assertEquals(data4.length, 0);
+		assertThat(data3).isNull();
+		assertThat(data4).isEmpty();
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testBug255981() throws CoreException, URISyntaxException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -402,13 +384,13 @@ public class NetTest {
 		this.getProxyManager().setProxiesEnabled(false);
 
 		IProxyData data = this.getProxyManager().getProxyDataForHost("randomhost.com", IProxyData.HTTP_PROXY_TYPE);
-		assertNull(data);
+		assertThat(data).isNull();
 
 		IProxyData[] data2 = this.getProxyManager().select(new URI("http://randomhost.com"));
-		assertEquals(data2.length, 0);
+		assertThat(data2).isEmpty();
 
 		IProxyData data3[] = this.getProxyManager().getProxyDataForHost("http://randomhost.com");
-		assertEquals(data3.length, 0);
+		assertThat(data3).isEmpty();
 	}
 
 	@Test
@@ -447,9 +429,7 @@ public class NetTest {
 
 		// check if system properties are updated
 		String sysPropNonProxyHosts = System.getProperty("http.nonProxyHosts");
-		String assertMessage = "http.nonProxyHost should contain '" + testHost + "', but its current value is '"
-				+ sysPropNonProxyHosts + "'";
-		assertTrue(assertMessage, sysPropNonProxyHosts.contains(testHost));
+		assertThat(sysPropNonProxyHosts).contains(testHost);
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
@@ -475,7 +455,11 @@ public class NetTest {
 
 	private void validateProperty(String key, String expected, boolean equals) {
 		String actual = System.getProperties().getProperty(key);
-		assertTrue((equals && expected.equals(actual)) || (!equals && !expected.equals(actual)));
+		if (equals) {
+			assertThat(actual).isEqualTo(expected);
+		} else {
+			assertThat(actual).isNotEqualTo(expected);
+		}
 	}
 
 }

@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -430,7 +431,7 @@ public class YieldTest extends AbstractJobTest {
 		barrier.waitForStatus(TestBarrier2.STATUS_START);
 		t.start();
 
-		waitForCompletion(yielding, 5000);
+		waitForCompletion(yielding, Duration.ofSeconds(5));
 		assertTrue(yielding.getResult().isOK());
 	}
 
@@ -518,7 +519,7 @@ public class YieldTest extends AbstractJobTest {
 		barrier.waitForStatus(TestBarrier2.STATUS_START);
 		conflicting.schedule();
 
-		waitForCompletion(conflicting, 5000);
+		waitForCompletion(conflicting, Duration.ofSeconds(5));
 		assertTrue(conflicting.getResult().isOK());
 		barrier.waitForStatus(TestBarrier2.STATUS_BLOCKED);
 	}

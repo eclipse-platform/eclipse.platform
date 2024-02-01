@@ -16,12 +16,10 @@ package org.eclipse.team.internal.core.mapping;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.diff.IThreeWayDiff;
 import org.eclipse.team.core.diff.ITwoWayDiff;
-import org.eclipse.team.core.diff.provider.Diff;
 import org.eclipse.team.core.diff.provider.ThreeWayDiff;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.mapping.IResourceDiff;
@@ -62,58 +60,20 @@ public class SyncInfoToDiffConverter {
 				case IDiff.CHANGE: label = Messages.RemoteSyncElement_change ; break;
 				case IDiff.ADD: label = Messages.RemoteSyncElement_addition; break;
 				case IDiff.REMOVE: label = Messages.RemoteSyncElement_deletion; break;
+				default:
+					throw new IllegalArgumentException(Integer.toString(kind));
 			}
 		}
 		return label;
 	}
 
 	public static String diffDirectionToString(int direction) {
-		switch(direction) {
-			case IThreeWayDiff.CONFLICTING: return Messages.RemoteSyncElement_conflicting;
-			case IThreeWayDiff.OUTGOING: return Messages.RemoteSyncElement_outgoing;
-			case IThreeWayDiff.INCOMING: return Messages.RemoteSyncElement_incoming;
-		}
-		return ""; //$NON-NLS-1$
-	}
-
-	public static String diffStatusToString(int status) {
-		int kind = status & Diff.KIND_MASK;
-		String label = diffKindToString(kind);
-		int direction = status & ThreeWayDiff.DIRECTION_MASK;
-		if (direction != 0)
-			label = NLS.bind(Messages.concatStrings, new String[] { diffDirectionToString(direction), label });
-		return label;
-	}
-
-	public static int asDiffFlags(int syncInfoFlags) {
-		if (syncInfoFlags == SyncInfo.IN_SYNC)
-			return IDiff.NO_CHANGE;
-		int kind = SyncInfo.getChange(syncInfoFlags);
-		int diffFlags = 0;
-		switch (kind) {
-		case SyncInfo.ADDITION:
-			diffFlags = IDiff.ADD;
-			break;
-		case SyncInfo.DELETION:
-			diffFlags = IDiff.REMOVE;
-			break;
-		case SyncInfo.CHANGE:
-			diffFlags = IDiff.CHANGE;
-			break;
-		}
-		int direction = SyncInfo.getDirection(syncInfoFlags);
-		switch (direction) {
-		case SyncInfo.INCOMING:
-			diffFlags |= IThreeWayDiff.INCOMING;
-			break;
-		case SyncInfo.OUTGOING:
-			diffFlags |= IThreeWayDiff.OUTGOING;
-			break;
-		case SyncInfo.CONFLICTING:
-			diffFlags |= IThreeWayDiff.CONFLICTING;
-			break;
-		}
-		return diffFlags;
+		return switch (direction) {
+		case IThreeWayDiff.CONFLICTING -> Messages.RemoteSyncElement_conflicting;
+		case IThreeWayDiff.OUTGOING -> Messages.RemoteSyncElement_outgoing;
+		case IThreeWayDiff.INCOMING -> Messages.RemoteSyncElement_incoming;
+		default -> ""; //$NON-NLS-1$
+		};
 	}
 
 	private static int asSyncInfoKind(IThreeWayDiff diff) {
@@ -131,6 +91,8 @@ public class SyncInfoToDiffConverter {
 		case IDiff.CHANGE:
 			syncKind = SyncInfo.CHANGE;
 			break;
+		default:
+			throw new IllegalArgumentException(Integer.toString(kind));
 		}
 		int direction = diff.getDirection();
 		switch (direction) {
@@ -143,6 +105,8 @@ public class SyncInfoToDiffConverter {
 		case IThreeWayDiff.CONFLICTING:
 			syncKind |= SyncInfo.CONFLICTING;
 			break;
+		default:
+			throw new IllegalArgumentException(Integer.toString(direction));
 		}
 		return syncKind;
 	}

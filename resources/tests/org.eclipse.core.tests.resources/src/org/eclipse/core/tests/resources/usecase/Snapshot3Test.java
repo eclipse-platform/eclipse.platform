@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.usecase;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
@@ -57,7 +58,7 @@ public class Snapshot3Test extends SnapshotTest {
 		assertTrue("3.0", project.exists());
 		assertTrue("3.1", project.isOpen());
 
-		assertEquals("4.0", 4, project.members().length);
+		assertThat(project.members()).hasSize(4);
 		assertNotNull("4.1", project.findMember(IProjectDescription.DESCRIPTION_FILE_NAME));
 
 		// verify existence of children

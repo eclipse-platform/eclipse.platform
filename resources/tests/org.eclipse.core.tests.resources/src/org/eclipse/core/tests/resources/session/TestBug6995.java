@@ -21,7 +21,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -30,6 +29,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * Tests the fix for bug 6995.  In this bug, a snapshot immediately after startup and
@@ -77,8 +78,8 @@ public class TestBug6995 extends WorkspaceSessionTest {
 
 		//make sure an incremental build occurred
 		SortBuilder builder = SortBuilder.getInstance();
-		assertTrue("3.0", !builder.wasDeltaNull());
-		assertTrue("3.1", builder.wasIncrementalBuild());
+		assertFalse(builder.wasDeltaNull());
+		assertTrue(builder.wasIncrementalBuild());
 	}
 
 	public static Test suite() {

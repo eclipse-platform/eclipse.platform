@@ -18,6 +18,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: jakarta.annotation;version="[2.1.0,3.0.0)",
  jakarta.inject;version="[2.0.0,3.0.0)",
  junit.framework;version="[4.13.0,5.0.0)",
+ org.assertj.core.api,
  org.eclipse.osgi.service.datalocation,
  org.eclipse.osgi.service.debug,
  org.junit;version="[4.13.0,5.0.0)",

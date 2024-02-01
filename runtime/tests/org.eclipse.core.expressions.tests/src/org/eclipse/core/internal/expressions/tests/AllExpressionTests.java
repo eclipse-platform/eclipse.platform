@@ -13,13 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.internal.expressions.tests;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses({ PropertyTesterTests.class, ExpressionTests.class, ExpressionInfoTests.class,
-		CountExpressionTest.class })
+@Suite
+@SelectClasses({ //
+		PropertyTesterTests.class, //
+		ExpressionTests.class, //
+		ExpressionInfoTests.class, //
+		CountExpressionTest.class, //
+})
 public class AllExpressionTests {
 
 }

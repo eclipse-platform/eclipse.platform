@@ -17,12 +17,14 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 
 import java.util.Properties;
-import junit.framework.Test;
+
 import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+
+import junit.framework.Test;
 
 /**
  * This is an internal test that makes sure the workspace master table does not
@@ -61,8 +63,8 @@ public class TestMasterTableCleanup extends WorkspaceSerializationTest {
 		//ensure master table does not contain entries for stale projects
 		IProject closeOpen = getWorkspace().getRoot().getProject(CLOSE_OPEN);
 		IProject closeDelete = getWorkspace().getRoot().getProject(CLOSE_DELETE);
-		assertTrue("2.0", !masterTable.containsKey(closeOpen.getFullPath().append(".tree").toString()));
-		assertTrue("2.1", !masterTable.containsKey(closeDelete.getFullPath().append(".tree").toString()));
+		assertFalse(masterTable.containsKey(closeOpen.getFullPath().append(".tree").toString()));
+		assertFalse(masterTable.containsKey(closeDelete.getFullPath().append(".tree").toString()));
 	}
 
 	public static Test suite() {

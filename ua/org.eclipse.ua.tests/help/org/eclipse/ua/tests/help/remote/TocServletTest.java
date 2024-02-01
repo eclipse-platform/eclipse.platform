@@ -14,7 +14,8 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.help.remote;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -24,9 +25,9 @@ import java.util.List;
 import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.server.WebappManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -37,14 +38,14 @@ public class TocServletTest {
 
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_INFOCENTER);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		BaseHelpSystem.setMode(mode);
 	}
@@ -53,51 +54,51 @@ public class TocServletTest {
 	public void testTocServletContainsUAToc() throws Exception {
 		Node root = getTocContributions("en");
 		Element[] UARoot = findContributionById(root, "/org.eclipse.ua.tests/data/help/toc/root.xml");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testTocServletContainsFilteredToc() throws Exception {
 		Node root = getTocContributions("en");
 		Element[] UARoot = findContributionById(root, "/org.eclipse.ua.tests/data/help/toc/filteredToc/toc.xml");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testTocServletContainsUnlinkedToc() throws Exception {
 		Node root = getTocContributions("en");
 		Element[] UARoot = findContributionById(root, "/org.eclipse.ua.tests/data/help/toc/filteredToc/nonPrimaryToc.xml");
-		assertEquals(1, UARoot.length);
+		assertThat(UARoot).hasSize(1);
 	}
 
 	@Test
 	public void testReadEnToc() throws Exception {
 		Node root = getTocContributions("en");
 		Element[] uaRoot = findContributionById(root, "/org.eclipse.ua.tests/data/help/search/toc.xml");
-		assertEquals(1, uaRoot.length);
+		assertThat(uaRoot).hasSize(1);
 		Element[] toc = findChildren(uaRoot[0], "toc", "label", "search");
-		assertEquals(1, toc.length);
+		assertThat(toc).hasSize(1);
 		Element[] topicSearch = findChildren(toc[0], "topic", "label", "search");
-		assertEquals(1, topicSearch.length);
+		assertThat(topicSearch).hasSize(1);
 		Element[] topicEn = findChildren(topicSearch[0], "topic", "label", "testen.html");
-		assertEquals(1, topicEn.length);
+		assertThat(topicEn).hasSize(1);
 		Element[] topicDe = findChildren(topicSearch[0], "topic", "label", "testde.html");
-		assertEquals(0, topicDe.length);
+		assertThat(topicDe).isEmpty();
 	}
 
 	@Test
 	public void testReadDeToc() throws Exception {
 		Node root = getTocContributions("de");
 		Element[] uaRoot = findContributionById(root, "/org.eclipse.ua.tests/data/help/search/toc.xml");
-		assertEquals(1, uaRoot.length);
+		assertThat(uaRoot).hasSize(1);
 		Element[] toc = findChildren(uaRoot[0], "toc", "label", "search");
-		assertEquals(1, toc.length);
+		assertThat(toc).hasSize(1);
 		Element[] topicSearch = findChildren(toc[0], "topic", "label", "search");
-		assertEquals(1, topicSearch.length);
+		assertThat(topicSearch).hasSize(1);
 		Element[] topicEn = findChildren(topicSearch[0], "topic", "label", "testen.html");
-		assertEquals(0, topicEn.length);
+		assertThat(topicEn).isEmpty();
 		Element[] topicDe = findChildren(topicSearch[0], "topic", "label", "testde.html");
-		assertEquals(1, topicDe.length);
+		assertThat(topicDe).hasSize(1);
 	}
 
 	private Element[] findContributionById(Node root, String id) {

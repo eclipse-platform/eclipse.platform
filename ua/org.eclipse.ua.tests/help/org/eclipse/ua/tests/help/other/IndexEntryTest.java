@@ -14,10 +14,11 @@
 
 package org.eclipse.ua.tests.help.other;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.help.IIndexEntry;
 import org.eclipse.help.IIndexEntry2;
@@ -29,8 +30,8 @@ import org.eclipse.help.internal.base.HelpEvaluationContext;
 import org.eclipse.help.internal.entityresolver.LocalEntityResolver;
 import org.eclipse.help.internal.index.IndexEntry;
 import org.eclipse.help.internal.index.IndexSee;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -73,7 +74,7 @@ public class IndexEntryTest {
 	private final String ENTRY_WITH_TOPIC = ENTRY_HEAD_ECLIPSE + TOPIC_BUGZILLA + ENTRY_END;
 	private final String ENTRY_WITH_SEE = ENTRY_HEAD_ECLIPSE + SEE_ALSO_SDK + ENTRY_END;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.setMode(BaseHelpSystem.MODE_WORKBENCH);
 	}
@@ -96,9 +97,9 @@ public class IndexEntryTest {
 		IndexEntry entry;
 		entry = createEntry(ENTRY_ECLIPSE);
 		assertEquals(ECLIPSE, entry.getKeyword());
-		assertEquals(0, entry.getTopics().length);
-		assertEquals(0, entry.getSubentries().length);
-		assertEquals(0, entry.getSees().length);
+		assertThat(entry.getTopics()).isEmpty();
+		assertThat(entry.getSubentries()).isEmpty();
+		assertThat(entry.getSees()).isEmpty();
 	}
 
 	@Test
@@ -116,14 +117,14 @@ public class IndexEntryTest {
 		entry1 = createEntry(ENTRY_WITH_CHILD);
 		IndexEntry entry2 = new IndexEntry(entry1);
 
-		assertEquals(1, entry1.getSubentries().length);
+		assertThat(entry1.getSubentries()).hasSize(1);
 		IndexEntry child1 = (IndexEntry)entry1.getSubentries()[0];
 		assertEquals(BUGZILLA, child1.getKeyword());
 
-		assertEquals(1, entry2.getSubentries().length);
+		assertThat(entry2.getSubentries()).hasSize(1);
 		IndexEntry child2 = (IndexEntry)entry2.getSubentries()[0];
 		assertEquals(BUGZILLA, child2.getKeyword());
-		assertEquals(1, entry2.getSubentries().length);
+		assertThat(entry2.getSubentries()).hasSize(1);
 	}
 
 	@Test
@@ -132,14 +133,14 @@ public class IndexEntryTest {
 		entry1 = createEntry(ENTRY_WITH_TOPIC);
 		IndexEntry entry2 = new IndexEntry(entry1);
 
-		assertEquals(0, entry1.getSubentries().length);
-		assertEquals(1, entry1.getTopics().length);
+		assertThat(entry1.getSubentries()).isEmpty();
+		assertThat(entry1.getTopics()).hasSize(1);
 		Topic child1 = (Topic)entry1.getTopics()[0];
 		assertEquals(BUGZILLA, child1.getLabel());
 		assertEquals(BUGZILLA_HREF, child1.getHref());
 
-		assertEquals(0, entry2.getSubentries().length);
-		assertEquals(1, entry2.getTopics().length);
+		assertThat(entry2.getSubentries()).isEmpty();
+		assertThat(entry2.getTopics()).hasSize(1);
 		Topic child2 = (Topic)entry2.getTopics()[0];
 		assertEquals(BUGZILLA, child2.getLabel());
 		assertEquals(BUGZILLA_HREF, child2.getHref());
@@ -151,13 +152,13 @@ public class IndexEntryTest {
 		entry1 = createEntry(ENTRY_WITH_SEE);
 		IndexEntry entry2 = new IndexEntry(entry1);
 
-		assertEquals(0, entry1.getSubentries().length);
-		assertEquals(1, entry1.getSees().length);
+		assertThat(entry1.getSubentries()).isEmpty();
+		assertThat(entry1.getSees()).hasSize(1);
 		IndexSee child1 = (IndexSee)entry1.getSees()[0];
 		assertEquals("sdk", child1.getKeyword());
 
-		assertEquals(0, entry2.getSubentries().length);
-		assertEquals(1, entry2.getSees().length);
+		assertThat(entry2.getSubentries()).isEmpty();
+		assertThat(entry2.getSees()).hasSize(1);
 		IndexSee child2 = (IndexSee)entry2.getSees()[0];
 		assertEquals("sdk", child2.getKeyword());
 	}
@@ -311,9 +312,9 @@ public class IndexEntryTest {
 		IIndexEntry[] subentries = entry.getSubentries();
 		ITopic[] topics = entry.getTopics();
 		IIndexSee[] sees = entry.getSees();
-		assertEquals(2, subentries.length);
-		assertEquals(1, sees.length);
-		assertEquals(3,topics.length);
+		assertThat(subentries).hasSize(2);
+		assertThat(sees).hasSize(1);
+		assertThat(topics).hasSize(3);
 		assertEquals("jdt", subentries[0].getKeyword());
 		assertEquals("compiler", subentries[1].getKeyword());
 		assertEquals("label1", topics[0].getLabel());
@@ -329,9 +330,9 @@ public class IndexEntryTest {
 		IIndexEntry[] subentries = entry.getSubentries();
 		ITopic[] topics = entry.getTopics();
 		IIndexSee[] sees = entry.getSees();
-		assertEquals(2, subentries.length);
-		assertEquals(1, sees.length);
-		assertEquals(3,topics.length);
+		assertThat(subentries).hasSize(2);
+		assertThat(sees).hasSize(1);
+		assertThat(topics).hasSize(3);
 		assertTrue(subentries[0].isEnabled(HelpEvaluationContext.getContext()));
 		assertFalse(subentries[1].isEnabled(HelpEvaluationContext.getContext()));
 		assertTrue(topics[0].isEnabled(HelpEvaluationContext.getContext()));

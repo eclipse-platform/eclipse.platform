@@ -12,14 +12,13 @@
  ******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayWithSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -230,7 +229,7 @@ public class CustomBuildTriggerTest {
 		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
 				.apply();
 
-		assertThat(project.getDescription().getBuildSpec(), arrayWithSize(1));
+		assertThat(project.getDescription().getBuildSpec()).hasSize(1);
 		ICommand command = project.getDescription().getBuildSpec()[0];
 		assertTrue("1.0", command.isConfigurable());
 		//ensure that setBuilding has effect
@@ -309,7 +308,7 @@ public class CustomBuildTriggerTest {
 		// Create and set a build specs for project
 		updateProjectDescription(project).addingCommand(SortBuilder.BUILDER_NAME).withTestBuilderId("Build0").apply();
 
-		assertThat(project.getDescription().getBuildSpec(), arrayWithSize(1));
+		assertThat(project.getDescription().getBuildSpec()).hasSize(1);
 		ICommand command = project.getDescription().getBuildSpec()[0];
 		assertTrue("1.0", !command.isConfigurable());
 		//ensure that setBuilding has no effect
@@ -357,7 +356,7 @@ public class CustomBuildTriggerTest {
 		updateProjectDescription(project).addingCommand(CustomTriggerBuilder.BUILDER_NAME).withTestBuilderId("Build0")
 				.withBuildingSetting(IncrementalProjectBuilder.AUTO_BUILD, false)
 				.apply();
-		assertThat(project.getDescription().getBuildSpec(), arrayWithSize(1));
+		assertThat(project.getDescription().getBuildSpec()).hasSize(1);
 		ICommand command = project.getDescription().getBuildSpec()[0];
 
 		// turn autobuild back on

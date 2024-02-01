@@ -28,14 +28,14 @@ import org.eclipse.help.internal.dynamic.XMLProcessor;
 import org.eclipse.help.ui.internal.HelpUIPlugin;
 import org.eclipse.ua.tests.util.FileUtil;
 import org.eclipse.ua.tests.util.XMLUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
 public class XMLProcessorTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// activate the UI plug-in for UI filtering ability
 		HelpUIPlugin.getDefault();

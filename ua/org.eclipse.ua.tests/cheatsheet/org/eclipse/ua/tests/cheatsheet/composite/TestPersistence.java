@@ -14,8 +14,8 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -30,7 +30,7 @@ import org.eclipse.ui.internal.cheatsheets.composite.model.EditableTask;
 import org.eclipse.ui.internal.cheatsheets.composite.model.TaskGroup;
 import org.eclipse.ui.internal.cheatsheets.state.DefaultStateManager;
 import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestPersistence {
 

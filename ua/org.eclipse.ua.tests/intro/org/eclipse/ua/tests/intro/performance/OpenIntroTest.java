@@ -24,10 +24,12 @@ import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.config.CustomizableIntroPart;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.osgi.framework.FrameworkUtil;
 
+@Disabled("Disabled due to inability to backport test to 3.2. Internal test hooks were added in 3.2.2 code base but do not exist in 3.2 so the test will not be accurate.")
 public class OpenIntroTest extends PerformanceTestCaseJunit5 {
 
 	@BeforeEach

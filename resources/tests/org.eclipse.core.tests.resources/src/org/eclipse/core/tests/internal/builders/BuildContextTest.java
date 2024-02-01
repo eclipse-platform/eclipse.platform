@@ -13,15 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.emptyArray;
 
 import org.eclipse.core.internal.events.BuildContext;
 import org.eclipse.core.internal.resources.BuildConfiguration;
@@ -136,22 +134,22 @@ public class BuildContextTest {
 		IBuildContext context;
 
 		context = new BuildContext(p0v0, new IBuildConfiguration[] {p0v0, p1v0}, buildOrder);
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
-		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(p0v1, p1v0));
-		assertThat(context.getRequestedConfigs(), arrayContaining(p0v0, p1v0));
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(p0v1, p1v0);
+		assertThat(context.getRequestedConfigs()).containsExactly(p0v0, p1v0);
 
 		context = new BuildContext(p0v1, buildOrder, buildOrder);
-		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(p0v0));
-		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(p1v0));
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(p0v0);
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(p1v0);
 
 		context = new BuildContext(p1v0, buildOrder, buildOrder);
-		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(p0v0, p0v1));
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(p0v0, p0v1);
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
 
 		// And it works with no build context too
 		context = new BuildContext(p1v0);
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
 	}
 
 	@Test
@@ -164,8 +162,8 @@ public class BuildContextTest {
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
 
 		// Change the active build configuration will cause the project to be rebuilt
 		ContextBuilder.clearStats();
@@ -174,7 +172,7 @@ public class BuildContextTest {
 		ContextBuilder.assertValid();
 
 		context = ContextBuilder.getContext(newActive);
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
 	}
 
 	/**
@@ -190,18 +188,18 @@ public class BuildContextTest {
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertThat(context.getAllReferencedBuildConfigs(),
-				arrayContaining(project2.getActiveBuildConfig(), project1.getActiveBuildConfig()));
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(project2.getActiveBuildConfig(),
+				project1.getActiveBuildConfig());
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
 
 		context = ContextBuilder.getBuilder(project1.getActiveBuildConfig()).contextForLastBuild;
-		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project2.getActiveBuildConfig()));
-		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(project2.getActiveBuildConfig());
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(project0.getActiveBuildConfig());
 
 		context = ContextBuilder.getBuilder(project2.getActiveBuildConfig()).contextForLastBuild;
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
-		assertThat(context.getAllReferencingBuildConfigs(),
-				arrayContaining(project1.getActiveBuildConfig(), project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(project1.getActiveBuildConfig(),
+				project0.getActiveBuildConfig());
 
 		// Build just project0
 		ContextBuilder.clearStats();
@@ -209,8 +207,8 @@ public class BuildContextTest {
 		ContextBuilder.assertValid();
 
 		context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
 	}
 
 	/**
@@ -225,18 +223,16 @@ public class BuildContextTest {
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertThat(context.getAllReferencedBuildConfigs(),
-				arrayContaining(project2.getActiveBuildConfig(), project1.getActiveBuildConfig()));
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(project2.getActiveBuildConfig(), project1.getActiveBuildConfig());
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
 
 		context = ContextBuilder.getBuilder(project1.getActiveBuildConfig()).contextForLastBuild;
-		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project2.getActiveBuildConfig()));
-		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(project2.getActiveBuildConfig());
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(project0.getActiveBuildConfig());
 
 		context = ContextBuilder.getBuilder(project2.getActiveBuildConfig()).contextForLastBuild;
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
-		assertThat(context.getAllReferencingBuildConfigs(),
-				arrayContaining(project1.getActiveBuildConfig(), project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(project1.getActiveBuildConfig(), project0.getActiveBuildConfig());
 	}
 
 	/**
@@ -253,18 +249,18 @@ public class BuildContextTest {
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertThat(context.getAllReferencedBuildConfigs(),
-				arrayContaining(project2.getActiveBuildConfig(), project1.getActiveBuildConfig()));
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(project2.getActiveBuildConfig(),
+				project1.getActiveBuildConfig());
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
 
 		context = ContextBuilder.getBuilder(project1.getActiveBuildConfig()).contextForLastBuild;
-		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project2.getActiveBuildConfig()));
-		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(project2.getActiveBuildConfig());
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(project0.getActiveBuildConfig());
 
 		context = ContextBuilder.getBuilder(project2.getActiveBuildConfig()).contextForLastBuild;
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
-		assertThat(context.getAllReferencingBuildConfigs(),
-				arrayContaining(project1.getActiveBuildConfig(), project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(project1.getActiveBuildConfig(),
+				project0.getActiveBuildConfig());
 	}
 
 	/**
@@ -283,13 +279,13 @@ public class BuildContextTest {
 		ContextBuilder.assertValid();
 
 		IBuildContext context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project1.getActiveBuildConfig()));
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
-		assertThat(context.getRequestedConfigs(), arrayContaining(project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(project1.getActiveBuildConfig());
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
+		assertThat(context.getRequestedConfigs()).containsExactly(project0.getActiveBuildConfig());
 
 		context = ContextBuilder.getBuilder(project1.getActiveBuildConfig()).contextForLastBuild;
-		assertThat(context.getAllReferencedBuildConfigs(), emptyArray());
-		assertThat(context.getAllReferencingBuildConfigs(), arrayContaining(project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).isEmpty();
+		assertThat(context.getAllReferencingBuildConfigs()).containsExactly(project0.getActiveBuildConfig());
 
 		// Change the active configuration of project1, and test that two configurations are built
 		ContextBuilder.clearStats();
@@ -299,8 +295,8 @@ public class BuildContextTest {
 		ContextBuilder.assertValid();
 
 		context = ContextBuilder.getContext(project0.getActiveBuildConfig());
-		assertThat(context.getAllReferencedBuildConfigs(), arrayContaining(project1PreviousActive, project1NewActive));
-		assertThat(context.getAllReferencingBuildConfigs(), emptyArray());
-		assertThat(context.getRequestedConfigs(), arrayContaining(project0.getActiveBuildConfig()));
+		assertThat(context.getAllReferencedBuildConfigs()).containsExactly(project1PreviousActive, project1NewActive);
+		assertThat(context.getAllReferencingBuildConfigs()).isEmpty();
+		assertThat(context.getRequestedConfigs()).containsExactly(project0.getActiveBuildConfig());
 	}
 }

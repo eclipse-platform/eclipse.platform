@@ -14,19 +14,18 @@
 
 package org.eclipse.ua.tests.cheatsheet.composite;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-/**
- * Test that dependencies get satisfied when the required tasks are completed
- */
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.ui.internal.cheatsheets.composite.model.CompositeCheatSheetModel;
 import org.eclipse.ui.internal.cheatsheets.composite.model.EditableTask;
 import org.eclipse.ui.internal.cheatsheets.composite.model.TaskGroup;
 import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+/**
+ * Test that dependencies get satisfied when the required tasks are completed
+ */
 public class TestDependency {
 
 	private CompositeCheatSheetModel model;

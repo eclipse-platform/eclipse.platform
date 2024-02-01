@@ -14,15 +14,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -631,8 +629,8 @@ public class RelaxedSchedRuleBuilderTest {
 			loggedErrors.removeIf(errors::add);
 			List<Throwable> thrownExceptions = errors.stream().map(IStatus::getException).filter(Objects::nonNull)
 					.collect(Collectors.toList());
-			assertThat("Test logged exceptions", thrownExceptions, is(empty()));
-			assertThat("Test logged errors", errors, is(empty()));
+			assertThat(thrownExceptions).as("logged exceptions").isEmpty();
+			assertThat(errors).as("logged errors").isEmpty();
 		}
 	}
 

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
@@ -75,7 +76,7 @@ public class ArgumentParsingTests extends AbstractDebugTest {
 		}
 
 		String[] splitArguments = DebugPlugin.splitArguments(commandLine);
-		assertEquals(expectedArgs.length, splitArguments.length);
+		assertThat(splitArguments).hasSameSizeAs(expectedArgs);
 		String sb = String.join(" ", splitArguments); //$NON-NLS-1$
 		assertEquals(commandLine, sb);
 	}

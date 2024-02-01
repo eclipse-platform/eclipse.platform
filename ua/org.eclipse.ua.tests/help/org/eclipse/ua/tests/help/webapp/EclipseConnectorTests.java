@@ -14,7 +14,7 @@
 
 package org.eclipse.ua.tests.help.webapp;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URL;
 
@@ -25,14 +25,14 @@ import org.eclipse.help.internal.server.WebappManager;
 import org.eclipse.ua.tests.help.remote.RemotePreferenceStore;
 import org.eclipse.ua.tests.help.remote.RemoteTestUtils;
 import org.eclipse.ua.tests.help.remote.TestServerManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseConnectorTests {
 	private int mode;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		BaseHelpSystem.ensureWebappRunning();
 		mode = BaseHelpSystem.getMode();
@@ -42,7 +42,7 @@ public class EclipseConnectorTests {
 		HelpPlugin.getTocManager().getTocs("en");
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		RemotePreferenceStore.restorePreferences();
 		BaseHelpSystem.setMode(mode);

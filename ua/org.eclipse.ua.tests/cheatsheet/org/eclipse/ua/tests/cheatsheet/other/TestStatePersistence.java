@@ -14,13 +14,9 @@
 
 package org.eclipse.ua.tests.cheatsheet.other;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-/**
- * Tests for the saving and restoring of the state of a simple cheat sheet in a memento
- */
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -31,9 +27,13 @@ import org.eclipse.ui.internal.cheatsheets.data.CheatSheetSaveHelper;
 import org.eclipse.ui.internal.cheatsheets.data.IParserTags;
 import org.eclipse.ui.internal.cheatsheets.registry.CheatSheetElement;
 import org.eclipse.ui.internal.cheatsheets.views.CheatSheetManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for the saving and restoring of the state of a simple cheat sheet in a
+ * memento
+ */
 public class TestStatePersistence {
 
 	private static final String VALUE2 = "value2";
@@ -64,7 +64,7 @@ public class TestStatePersistence {
 	 * Initialize the properties that will be saved. Individual tests will modify
 	 * the properties which apply to a particular test.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		propsToSave = new PropertySet();
 		propsToSave.button = 1;

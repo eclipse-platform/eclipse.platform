@@ -13,8 +13,9 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.eclipse.compare.internal.CompareResourceFilter;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class FilterTest {
@@ -24,45 +25,45 @@ public class FilterTest {
 	@Test
 	public void testFilterFile() {
 		CompareResourceFilter f = new CompareResourceFilter();
-		f.setFilters("*.class"); //$NON-NLS-1$
-		Assert.assertTrue("file foo.class should be filtered", f.filter("foo.class", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertFalse("file foo.java shouldn't be filtered", f.filter("foo.java", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
+		f.setFilters("*.class");
+		assertThat(f.filter("foo.class", false, false)).as("file foo.class should be filtered").isTrue();
+		assertThat(f.filter("foo.java", false, false)).as("file foo.java should not be filtered").isFalse();
 	}
 
 	@Test
 	public void testFilterDotFile() {
 		CompareResourceFilter f = new CompareResourceFilter();
-		f.setFilters(".cvsignore"); //$NON-NLS-1$
-		Assert.assertTrue("file .cvsignore should be filtered", f.filter(".cvsignore", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertFalse("file foo.cvsignore shouldn't be filtered", f.filter("foo.cvsignore", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
+		f.setFilters(".cvsignore");
+		assertThat(f.filter(".cvsignore", false, false)).as("file .cvsignore should be filtered").isTrue();
+		assertThat(f.filter("foo.cvsignore", false, false)).as("file foo.cvsignore should not be filtered").isFalse();
 	}
 
 	@Test
 	public void testFilterFolder() {
 		CompareResourceFilter f = new CompareResourceFilter();
-		f.setFilters("bin/"); //$NON-NLS-1$
-		Assert.assertTrue("folder bin should be filtered", f.filter("bin", true, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertFalse("file bin shouldn't be filtered", f.filter("bin", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
+		f.setFilters("bin/");
+		assertThat(f.filter("bin", true, false)).as("folder bin should be filtered").isTrue();
+		assertThat(f.filter("bin", false, false)).as("file bin should not be filtered").isFalse();
 	}
 
 	@Test
 	public void testMultiFilter() {
 		CompareResourceFilter f = new CompareResourceFilter();
-		f.setFilters("*.class, .cvsignore, bin/, src/"); //$NON-NLS-1$
-		Assert.assertTrue("file foo.class should be filtered", f.filter("foo.class", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertFalse("file foo.java shouldn't be filtered", f.filter("foo.java", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("file .cvsignore should be filtered", f.filter(".cvsignore", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertFalse("file foo.cvsignore shouldn't be filtered", f.filter("foo.cvsignore", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("folder bin should be filtered", f.filter("bin", true, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertFalse("file bin shouldn't be filtered", f.filter("bin", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertTrue("folder src should be filtered", f.filter("src", true, false)); //$NON-NLS-1$ //$NON-NLS-2$
-		Assert.assertFalse("file src shouldn't be filtered", f.filter("src", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
+		f.setFilters("*.class, .cvsignore, bin/, src/");
+		assertThat(f.filter("foo.class", false, false)).as("file foo.class should be filtered").isTrue();
+		assertThat(f.filter("foo.java", false, false)).as("file foo.java should not be filtered").isFalse();
+		assertThat(f.filter(".cvsignore", false, false)).as("file .cvsignore should be filtered").isTrue();
+		assertThat(f.filter("foo.cvsignore", false, false)).as("file foo.cvsignore should not be filtered").isFalse();
+		assertThat(f.filter("bin", true, false)).as("folder bin should be filtered").isTrue();
+		assertThat(f.filter("bin", false, false)).as("file bin should not be filtered").isFalse();
+		assertThat(f.filter("src", true, false)).as("folder src should be filtered").isTrue();
+		assertThat(f.filter("src", false, false)).as("file src should not be filtered").isFalse();
 	}
 
 	@Test
 	public void testVerify() {
-		Assert.assertNull("filters don't verify",
-				CompareResourceFilter.validateResourceFilters("*.class, .cvsignore, bin/"));
-		Assert.assertNotNull("filters shouldn't verify", CompareResourceFilter.validateResourceFilters("bin//"));
+		assertThat(CompareResourceFilter.validateResourceFilters("*.class, .cvsignore, bin/"))
+				.as("filters don't verify").isNull();
+		assertThat(CompareResourceFilter.validateResourceFilters("bin//")).as("filters shouldn't verify").isNotNull();
 	}
 }

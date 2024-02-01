@@ -678,10 +678,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		//write the project's private description to the metadata area
 		if (hasPrivateChanges)
 			getWorkspace().getMetaArea().writePrivateDescription(target);
-		if (!hasPublicChanges)
-			return false;
 		//can't do anything if there's no description
-		if (description == null)
+		if (!hasPublicChanges || (description == null))
 			return false;
 
 		//write the model to a byte array
@@ -1184,7 +1182,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 */
 	public void write(IFile target, InputStream content, IFileInfo fileInfo, int updateFlags, boolean append, IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 4);
-		try {
+		try (content) {
 			Resource targetResource = (Resource) target;
 			IFileStore store = getStore(target);
 			if (fileInfo.getAttribute(EFS.ATTRIBUTE_READ_ONLY)) {
@@ -1277,8 +1275,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			mutableTargetResourceInfo.incrementContentId();
 			mutableTargetResourceInfo.clear(M_CONTENT_CACHE);
 			workspace.updateModificationStamp(mutableTargetResourceInfo);
-		} finally {
-			FileUtil.safeClose(content);
+		} catch (IOException streamCloseIgnored) {
+			// ignore;
 		}
 	}
 

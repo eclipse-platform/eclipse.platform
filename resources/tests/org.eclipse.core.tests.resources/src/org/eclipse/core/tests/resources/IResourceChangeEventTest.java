@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
+import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -105,8 +105,7 @@ public class IResourceChangeEventTest {
 
 			//marker type, no subtypes
 			deltas = event.findMarkerDeltas(IMarker.MARKER, false);
-			assertNotNull("10.0", deltas);
-			assertTrue("10.1", deltas.length == 0);
+			assertThat(deltas).isEmpty();
 
 			//marker type, with subtypes
 			deltas = event.findMarkerDeltas(IMarker.MARKER, true);
@@ -114,8 +113,7 @@ public class IResourceChangeEventTest {
 
 			//problem type, with subtypes
 			deltas = event.findMarkerDeltas(IMarker.PROBLEM, true);
-			assertNotNull("12.0", deltas);
-			assertTrue("12.1", deltas.length == 0);
+			assertThat(deltas).isEmpty();
 
 			//all types, include subtypes
 			deltas = event.findMarkerDeltas(null, true);
@@ -148,39 +146,25 @@ public class IResourceChangeEventTest {
 		 */
 		IResourceChangeListener listener = event -> {
 			//bookmark type, no subtypes
-			IMarkerDelta[] deltas = event.findMarkerDeltas(IMarker.BOOKMARK, false);
-			assertNotNull("1.0", deltas);
-			assertTrue("1.1", deltas.length == 0);
+			assertThat(event.findMarkerDeltas(IMarker.BOOKMARK, false)).isEmpty();
 
 			//bookmark type, with subtypes
-			deltas = event.findMarkerDeltas(IMarker.BOOKMARK, true);
-			assertNotNull("2.0", deltas);
-			assertTrue("2.1", deltas.length == 0);
+			assertThat(event.findMarkerDeltas(IMarker.BOOKMARK, true)).isEmpty();
 
 			//marker type, no subtypes
-			deltas = event.findMarkerDeltas(IMarker.MARKER, false);
-			assertNotNull("3.0", deltas);
-			assertTrue("3.1", deltas.length == 0);
+			assertThat(event.findMarkerDeltas(IMarker.MARKER, false)).isEmpty();
 
 			//marker type, with subtypes
-			deltas = event.findMarkerDeltas(IMarker.MARKER, true);
-			assertNotNull("4.0", deltas);
-			assertTrue("4.1", deltas.length == 0);
+			assertThat(event.findMarkerDeltas(IMarker.MARKER, true)).isEmpty();
 
 			//problem type, with subtypes
-			deltas = event.findMarkerDeltas(IMarker.PROBLEM, true);
-			assertNotNull("5.0", deltas);
-			assertTrue("5.1", deltas.length == 0);
+			assertThat(event.findMarkerDeltas(IMarker.PROBLEM, true)).isEmpty();
 
 			//all types, include subtypes
-			deltas = event.findMarkerDeltas(null, true);
-			assertNotNull("6.0", deltas);
-			assertTrue("6.1", deltas.length == 0);
+			assertThat(event.findMarkerDeltas(null, true)).isEmpty();
 
 			//all types, no subtypes
-			deltas = event.findMarkerDeltas(null, false);
-			assertNotNull("7.0", deltas);
-			assertTrue("7.1", deltas.length == 0);
+			assertThat(event.findMarkerDeltas(null, false)).isEmpty();
 		};
 		getWorkspace().addResourceChangeListener(listener);
 
@@ -196,29 +180,15 @@ public class IResourceChangeEventTest {
 	 * Verifies that the marker deltas have the right changes.
 	 */
 	protected void verifyDeltas(IMarkerDelta[] deltas) {
-		assertNotNull("1.0", deltas);
-		assertTrue("1.1", deltas.length == 3);
-		//delta order is not defined..
-		boolean found1 = false, found2 = false, found3 = false;
-		for (int i = 0; i < deltas.length; i++) {
-			assertTrue("kind" + i, deltas[i].getType().equals(IMarker.BOOKMARK));
-			long id = deltas[i].getId();
-			if (id == marker1.getId()) {
-				found1 = true;
-				assertTrue("2.0", deltas[i].getKind() == IResourceDelta.ADDED);
-			} else if (id == marker2.getId()) {
-				found2 = true;
-				assertTrue("3.0", deltas[i].getKind() == IResourceDelta.REMOVED);
-			} else if (id == marker3.getId()) {
-				found3 = true;
-				assertTrue("4.0", deltas[i].getKind() == IResourceDelta.CHANGED);
-			} else {
-				assertTrue("4.99", false);
-			}
-		}
-		assertTrue("5.0", found1);
-		assertTrue("5.1", found2);
-		assertTrue("5.2", found3);
+		Map<Long, Integer> deltaIdToKind = Map.of(marker1.getId(), IResourceDelta.ADDED, //
+				marker2.getId(), IResourceDelta.REMOVED, //
+				marker3.getId(), IResourceDelta.CHANGED);
+		assertThat(deltas).hasSize(3).allSatisfy(delta -> {
+			assertThat(delta.getType()).as("type").isEqualTo(IMarker.BOOKMARK);
+			assertThat(delta.getKind()).as("kind").isNotNull().isEqualTo(deltaIdToKind.get(delta.getId()));
+		}).anySatisfy(delta -> assertThat(delta.getKind()).isEqualTo(IResourceDelta.ADDED))
+				.anySatisfy(delta -> assertThat(delta.getKind()).isEqualTo(IResourceDelta.REMOVED))
+				.anySatisfy(delta -> assertThat(delta.getKind()).isEqualTo(IResourceDelta.CHANGED));
 	}
 
 }

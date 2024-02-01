@@ -17,14 +17,18 @@ import org.eclipse.ua.tests.cheatsheet.composite.AllCompositeTests;
 import org.eclipse.ua.tests.cheatsheet.execution.AllExecutionTests;
 import org.eclipse.ua.tests.cheatsheet.other.AllOtherCheatSheetTests;
 import org.eclipse.ua.tests.cheatsheet.parser.AllParserTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests all cheat sheet functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ AllParserTests.class, AllExecutionTests.class, AllCompositeTests.class,
-		AllOtherCheatSheetTests.class })
+@Suite
+@SelectClasses({ //
+		AllParserTests.class, //
+		AllExecutionTests.class, //
+		AllCompositeTests.class, //
+		AllOtherCheatSheetTests.class, //
+})
 public class AllCheatSheetTests {
 }

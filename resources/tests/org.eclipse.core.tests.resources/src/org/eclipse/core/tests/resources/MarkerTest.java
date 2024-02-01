@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
@@ -22,12 +23,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -48,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
+import org.assertj.core.api.ObjectAssert;
 import org.eclipse.core.internal.resources.MarkerManager;
 import org.eclipse.core.internal.resources.MarkerReader;
 import org.eclipse.core.internal.resources.Resource;
@@ -149,13 +145,19 @@ public class MarkerTest {
 
 	private void assertMarkerHasAttributeValue(IMarker marker, String attributeName, Object expectedValue)
 			throws CoreException {
-		assertThat("marker has unexpected attribute value: " + marker, marker.getAttribute(attributeName),
-				expectedValue == null ? is(nullValue()) : is(expectedValue));
+		ObjectAssert<Object> asserted = assertThat(marker.getAttribute(attributeName))
+				.as("attribute %s of marker %s", attributeName, marker);
+		if (expectedValue == null) {
+			asserted.isNull();
+		} else {
+			asserted.isEqualTo(expectedValue);
+		}
+
 	}
 
 	private void assertSingleMarkerWithId(IMarker[] markers, long id) {
-		assertThat(markers, arrayWithSize(1));
-		assertThat("wrong id in marker " + markers[0], markers[0].getId(), is(id));
+		assertThat(markers).hasSize(1).satisfiesExactly(
+				marker -> assertThat(marker.getId()).as("id of marker %s", marker).isEqualTo(id));
 	}
 
 	private void assertMarkerIsSubtype(IMarker marker, String superType) throws CoreException {
@@ -343,7 +345,7 @@ public class MarkerTest {
 			IMarker marker = resource.createMarker(TEST_PROBLEM_MARKER);
 			marker.setAttribute(IMarker.MESSAGE, createRandomString());
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			assertThat(listener.numberOfChanges(), is(3));
+			assertThat(listener.numberOfChanges()).isEqualTo(3);
 		}
 	}
 
@@ -360,7 +362,7 @@ public class MarkerTest {
 			// each setAttributes triggers one resource change event
 			resource.createMarker(TEST_PROBLEM_MARKER,
 					Map.of(IMarker.MESSAGE, createRandomString(), IMarker.PRIORITY, IMarker.PRIORITY_HIGH));
-			assertThat(listener.numberOfChanges(), is(1));
+			assertThat(listener.numberOfChanges()).isEqualTo(1);
 		}
 	}
 
@@ -368,8 +370,8 @@ public class MarkerTest {
 	public void testCreationTime() throws CoreException {
 		for (IResource element : resources) {
 			IMarker marker = element.createMarker(IMarker.PROBLEM);
-			assertThat("creation time for marker in resource " + element.getFullPath() + " is not set",
-					marker.getCreationTime(), not(is(0)));
+			assertThat(marker.getCreationTime())
+					.withFailMessage("creation time for marker in resource %s is not set", element.getFullPath()).isNotZero();
 		}
 	}
 
@@ -433,12 +435,12 @@ public class MarkerTest {
 		// test finding some markers which actually exist
 		IMarker[] markers = createMarkers(resources, IMarker.PROBLEM);
 		IMarker[] found = getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
-		assertThat(found, arrayContainingInAnyOrder(markers));
+		assertThat(found).containsExactlyInAnyOrder(markers);
 		found = getWorkspace().getRoot().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-		assertThat(found, arrayContainingInAnyOrder(markers));
+		assertThat(found).containsExactlyInAnyOrder(markers);
 		// test finding some markers which don't exist
 		found = getWorkspace().getRoot().findMarkers(IMarker.BOOKMARK, false, IResource.DEPTH_INFINITE);
-		assertThat(found, arrayWithSize(0));
+		assertThat(found).isEmpty();
 
 		// add more markers and do a search on all marker types
 		Vector<IMarker> allMarkers = new Vector<>(markers.length * 3);
@@ -448,9 +450,9 @@ public class MarkerTest {
 		markers = createMarkers(resources, IMarker.TASK);
 		Collections.addAll(allMarkers, markers);
 		found = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
-		assertThat(found, arrayContainingInAnyOrder(allMarkers.toArray(new IMarker[allMarkers.size()])));
+		assertThat(found).containsExactlyInAnyOrderElementsOf(allMarkers);
 		found = getWorkspace().getRoot().findMarkers(IMarker.MARKER, true, IResource.DEPTH_INFINITE);
-		assertThat(found, arrayContainingInAnyOrder(allMarkers.toArray(new IMarker[allMarkers.size()])));
+		assertThat(found).containsExactlyInAnyOrderElementsOf(allMarkers);
 	}
 
 	/*
@@ -468,7 +470,7 @@ public class MarkerTest {
 		marker.setAttribute(IMarker.TRANSIENT, expected);
 
 		int actual = marker.getAttribute(IMarker.TRANSIENT, -1);
-		assertThat(actual, is(expected));
+		assertThat(actual).isEqualTo(expected);
 		marker.setAttribute(IMarker.MESSAGE, createRandomString());
 	}
 
@@ -480,9 +482,9 @@ public class MarkerTest {
 		file.create(createRandomContentsStream(), true, null);
 		file.createMarker(IMarker.PROBLEM);
 		IMarker[] found = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
-		assertThat(found, arrayWithSize(1));
+		assertThat(found).hasSize(1);
 		found = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-		assertThat(found, arrayWithSize(1));
+		assertThat(found).hasSize(1);
 		project.delete(true, true, null);
 	}
 
@@ -518,46 +520,49 @@ public class MarkerTest {
 		IResource[] allResources = new IResource[] {project, folder, sub, topFile, subFile};
 		createInWorkspace(allResources);
 
-		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE), is(-1));
-		assertThat(root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
-		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO), is(-1));
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE)).isEqualTo(-1);
+		assertThat(root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE)).isEqualTo(-1);
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO)).isEqualTo(-1);
 
 		createProblem(subFile, IMarker.SEVERITY_INFO);
-		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
-				is(IMarker.SEVERITY_INFO));
-		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE), is(-1));
-		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO), is(-1));
-		assertThat(root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
+				.isEqualTo(IMarker.SEVERITY_INFO);
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE)).isEqualTo(-1);
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO)).isEqualTo(-1);
+		assertThat(root.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE)).isEqualTo(-1);
 
-		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
-				is(IMarker.SEVERITY_INFO));
-		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE), is(-1));
-		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO), is(-1));
-		assertThat(folder.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
+		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
+				.isEqualTo(IMarker.SEVERITY_INFO);
+		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE)).isEqualTo(-1);
+		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO)).isEqualTo(-1);
+		assertThat(folder.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE)).isEqualTo(-1);
 
-		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
-				is(IMarker.SEVERITY_INFO));
-		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE), is(IMarker.SEVERITY_INFO));
-		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO), is(-1));
-		assertThat(sub.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
+		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
+				.isEqualTo(IMarker.SEVERITY_INFO);
+		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE))
+				.isEqualTo(IMarker.SEVERITY_INFO);
+		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO)).isEqualTo(-1);
+		assertThat(sub.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE)).isEqualTo(-1);
 
-		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
-				is(IMarker.SEVERITY_INFO));
-		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, false, IResource.DEPTH_ONE), is(IMarker.SEVERITY_INFO));
-		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO),
-				is(IMarker.SEVERITY_INFO));
-		assertThat(subFile.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE), is(-1));
+		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
+				.isEqualTo(IMarker.SEVERITY_INFO);
+		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, false, IResource.DEPTH_ONE))
+				.isEqualTo(IMarker.SEVERITY_INFO);
+		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO))
+				.isEqualTo(IMarker.SEVERITY_INFO);
+		assertThat(subFile.findMaxProblemSeverity(IMarker.TASK, true, IResource.DEPTH_INFINITE)).isEqualTo(-1);
 
 		createProblem(topFile, IMarker.SEVERITY_ERROR);
-		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE),
-				is(IMarker.SEVERITY_ERROR));
-		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE),
-				is(IMarker.SEVERITY_ERROR));
-		assertThat(topFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE),
-				is(IMarker.SEVERITY_ERROR));
-		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE), is(IMarker.SEVERITY_INFO));
-		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO),
-				is(IMarker.SEVERITY_INFO));
+		assertThat(root.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE))
+				.isEqualTo(IMarker.SEVERITY_ERROR);
+		assertThat(folder.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE))
+				.isEqualTo(IMarker.SEVERITY_ERROR);
+		assertThat(topFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE))
+				.isEqualTo(IMarker.SEVERITY_ERROR);
+		assertThat(sub.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ONE))
+				.isEqualTo(IMarker.SEVERITY_INFO);
+		assertThat(subFile.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO))
+				.isEqualTo(IMarker.SEVERITY_INFO);
 	}
 
 	/**
@@ -1021,7 +1026,7 @@ public class MarkerTest {
 			path = path.append(resource.getFullPath().removeFirstSegments(1));
 			IResource oldResource = ((Workspace) getWorkspace()).newResource(path, resource.getType());
 			IMarker marker = table.get(oldResource);
-			assertThat(marker, not(is(nullValue())));
+			assertThat(marker).isNotNull();
 			listener.assertChanges(oldResource, null, new IMarker[] { marker }, null);
 			IMarker[] markers = resource.findMarkers(null, true, IResource.DEPTH_ZERO);
 			assertSingleMarkerWithId(markers, marker.getId());
@@ -1099,7 +1104,7 @@ public class MarkerTest {
 		// to have
 		assertMarkersExist(expected);
 		IMarker[] actual = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
-		assertThat(actual, arrayContainingInAnyOrder(expected));
+		assertThat(actual).containsExactlyInAnyOrder(expected);
 
 		// cleanup
 		assertTrue("deleting file failed", file.delete());
@@ -1188,7 +1193,7 @@ public class MarkerTest {
 		// to have
 		assertMarkersExist(expected);
 		IMarker[] actual = getWorkspace().getRoot().findMarkers(null, false, IResource.DEPTH_INFINITE);
-		assertThat(actual, arrayContainingInAnyOrder(expected));
+		assertThat(actual).containsExactlyInAnyOrder(expected);
 
 		// cleanup
 		assertTrue("deleting file failed", file.delete());
@@ -1243,14 +1248,14 @@ public class MarkerTest {
 			Map<String, Object> originalMap = Map.of(keys[0], values[0], keys[1], values[1], keys[2], values[2]);
 			marker.setAttributes(keys, values);
 			Object[] found = marker.getAttributes(keys);
-			assertThat(resourcePath, found, is(values));
+			assertThat(found).as(resourcePath).isEqualTo(values);
 			marker.setAttribute(IMarker.SEVERITY, null);
 			values[1] = null;
 			found = marker.getAttributes(keys);
-			assertThat(resourcePath, found, is(values));
+			assertThat(found).as(resourcePath).isEqualTo(values);
 			values[1] = Integer.valueOf(5);
 			marker.setAttribute(IMarker.SEVERITY, values[1]);
-			assertThat(resourcePath, marker.getAttributes(), is(originalMap));
+			assertThat(marker.getAttributes()).as(resourcePath).isEqualTo(originalMap);
 
 			// try sending null as args
 			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null));
@@ -1284,7 +1289,7 @@ public class MarkerTest {
 			// Check the map returned by marker is equal to equal map
 			Map<String, Object> existing = marker.getAttributes();
 			Map<String, Object> otherAttributes = Map.of(String.valueOf(i), value);
-			assertThat(otherAttributes, is(existing));
+			assertThat(otherAttributes).isEqualTo(existing);
 		}
 	}
 
@@ -1296,17 +1301,17 @@ public class MarkerTest {
 			// getting a non-existant attribute should return null or the specified default
 			IMarker marker = resource.createMarker(IMarker.PROBLEM);
 			// #getAttribute(Object)
-			assertThat(resourcePath, marker.getAttribute(IMarker.MESSAGE), is(nullValue()));
+			assertThat(marker.getAttribute(IMarker.MESSAGE)).as(resourcePath).isNull();
 			// #getAttribute(String, String)
-			assertThat(resourcePath, marker.getAttribute(IMarker.MESSAGE, "default"), is("default"));
+			assertThat(marker.getAttribute(IMarker.MESSAGE, "default")).as(resourcePath).isEqualTo("default");
 			// #getAttribute(String, boolean)
-			assertThat(resourcePath, marker.getAttribute(IMarker.MESSAGE, true), is(true));
+			assertThat(marker.getAttribute(IMarker.MESSAGE, true)).as(resourcePath).isTrue();
 			// #getAttribute(String, int)
-			assertThat(resourcePath, marker.getAttribute(IMarker.MESSAGE, 5), is(5));
+			assertThat(marker.getAttribute(IMarker.MESSAGE, 5)).as(resourcePath).isEqualTo(5);
 			// #getAttributes()
-			assertThat(resourcePath, marker.getAttributes(), is(nullValue()));
+			assertThat(marker.getAttributes()).isNull();
 			// #getAttributes(String[])
-			assertThat(resourcePath, marker.getAttributes(new String[] { IMarker.MESSAGE })[0], is(nullValue()));
+			assertThat(marker.getAttributes(new String[] { IMarker.MESSAGE })[0]).as(resourcePath).isNull();
 
 			// set an attribute, get its value, then remove it
 			String testMessage = createRandomString();
@@ -1324,14 +1329,14 @@ public class MarkerTest {
 			Map<String, Object> originalMap = Map.of(keys[0], values[0], keys[1], values[1], keys[2], values[2]);
 			marker.setAttributes(keys, values);
 			Object[] found = marker.getAttributes(keys);
-			assertThat(resourcePath, found, is(values));
+			assertThat(found).as(resourcePath).isEqualTo(values);
 			marker.setAttribute(IMarker.SEVERITY, null);
 			values[1] = null;
 			found = marker.getAttributes(keys);
-			assertThat(resourcePath, found, is(values));
+			assertThat(found).as(resourcePath).isEqualTo(values);
 			values[1] = Integer.valueOf(5);
 			marker.setAttribute(IMarker.SEVERITY, values[1]);
-			assertThat(resourcePath, marker.getAttributes(), is(originalMap));
+			assertThat(marker.getAttributes()).as(resourcePath).isEqualTo(originalMap);
 
 			// try sending null as args
 			assertThrows(resourcePath, RuntimeException.class, () -> marker.getAttribute(null));
@@ -1357,12 +1362,12 @@ public class MarkerTest {
 			reretrievedAttributes.put(null, 1); // allowed for clients using IMarker.getAttributes()
 			// not allowed for clients to put null key
 			assertThrows(resourcePath, RuntimeException.class, () -> marker.setAttributes(reretrievedAttributes));
-			assertThat(resourcePath, marker.getAttribute("2"), not(is(nullValue())));
-			assertThat(resourcePath, marker.getAttributes(), not(is(nullValue())));
+			assertThat(marker.getAttribute("2")).as(resourcePath).isNotNull();
+			assertThat(marker.getAttributes()).as(resourcePath).isNotNull();
 			marker.setAttributes(null);
-			assertThat(resourcePath, marker.getAttribute("1"), is(nullValue()));
-			assertThat(resourcePath, marker.getAttribute("2"), is(nullValue()));
-			assertThat(resourcePath, marker.getAttributes(), is(nullValue()));
+			assertThat(marker.getAttribute("1")).as(resourcePath).isNull();
+			assertThat(marker.getAttribute("2")).as(resourcePath).isNull();
+			assertThat(marker.getAttributes()).as(resourcePath).isNull();
 		}
 	}
 

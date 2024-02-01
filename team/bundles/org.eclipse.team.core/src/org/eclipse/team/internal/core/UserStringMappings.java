@@ -16,7 +16,6 @@
 package org.eclipse.team.internal.core;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -61,7 +60,8 @@ public class UserStringMappings {
 		final Map<String, Integer> map = referenceMap();
 
 		for (int i = 0; i < names.length; i++) {
-			switch (types[i]) {
+			int type = types[i];
+			switch (type) {
 			case Team.BINARY:
 				map.put(names[i], BINARY);
 				break;
@@ -71,6 +71,8 @@ public class UserStringMappings {
 			case Team.UNKNOWN:
 				map.put(names[i], UNKNOWN);
 				break;
+			default:
+				throw new IllegalArgumentException(Integer.toString(type));
 			}
 		}
 		save();
@@ -92,10 +94,7 @@ public class UserStringMappings {
 	public void save() {
 		// Now set into preferences
 		final StringBuilder buffer = new StringBuilder();
-		final Iterator e = fMap.keySet().iterator();
-
-		while (e.hasNext()) {
-			final String filename = (String) e.next();
+		for (String filename : fMap.keySet()) {
 			buffer.append(filename);
 			buffer.append(PREF_TEAM_SEPARATOR);
 			final Integer type = fMap.get(filename);

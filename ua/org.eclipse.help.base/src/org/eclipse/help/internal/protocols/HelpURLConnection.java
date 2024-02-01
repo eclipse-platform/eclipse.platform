@@ -154,7 +154,6 @@ public class HelpURLConnection extends URLConnection {
 		return in;
 	}
 
-	@SuppressWarnings("resource")
 	private InputStream getLocalHelp(Bundle plugin) {
 		// first try using content provider, then try to find the file
 		// inside doc.zip, and finally try the file system
@@ -357,10 +356,10 @@ public class HelpURLConnection extends URLConnection {
 					if (elements.length == 0)
 						return null;
 					IConfigurationElement serverElement = null;
-					for (int i = 0; i < elements.length; i++) {
-						String defaultValue = elements[i].getAttribute("default"); //$NON-NLS-1$
+					for (IConfigurationElement element : elements) {
+						String defaultValue = element.getAttribute("default"); //$NON-NLS-1$
 						if (defaultValue == null || defaultValue.equals("false")) { //$NON-NLS-1$
-							serverElement = elements[i];
+							serverElement = element;
 							break;
 						}
 					}
@@ -382,7 +381,6 @@ public class HelpURLConnection extends URLConnection {
 	 * Opens a connection to the document on the remote help server, if one was specified. If the
 	 * document doesn't exist on the remote server, returns null.
 	 */
-	@SuppressWarnings("resource")
 	private InputStream openFromRemoteServer(String href, String locale) {
 		if (RemoteHelp.isEnabled()) {
 
@@ -410,7 +408,6 @@ public class HelpURLConnection extends URLConnection {
 		return null;
 	}
 
-	@SuppressWarnings("resource")
 	private InputStream getUnverifiedStream(String remoteURL,String pathSuffix)
 	{
 		URL url;
@@ -486,10 +483,7 @@ public class HelpURLConnection extends URLConnection {
 					int count = 0;
 
 					while ((line = br.readLine()) != null) {
-						if (count > lines.length)
-							return false;
-
-						if (!lines[count].equals(line))
+						if ((count > lines.length) || !lines[count].equals(line))
 							return false;
 						count++;
 					}

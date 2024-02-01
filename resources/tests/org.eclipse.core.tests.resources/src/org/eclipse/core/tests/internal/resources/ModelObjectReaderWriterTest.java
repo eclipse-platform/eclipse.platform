@@ -15,21 +15,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anEmptyMap;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.emptyArray;
-import static org.hamcrest.Matchers.emptyString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -184,36 +176,36 @@ public class ModelObjectReaderWriterTest {
 
 	private void compareBuildSpecs(ICommand[] commands, ICommand[] commands2) {
 		// ASSUMPTION:  commands and commands2 are non-null
-		assertThat("different number of commands", commands, arrayWithSize(commands2.length));
+		assertThat(commands).as("compare number of commands").hasSameSizeAs(commands2);
 		for (int i = 0; i < commands.length; i++) {
-			assertThat("names of builders at index " + i + " are different", commands[i].getBuilderName(),
-					is(commands2[i].getBuilderName()));
+			assertThat(commands[i].getBuilderName()).as("compare names of builders at index %s", i)
+					.isEqualTo(commands2[i].getBuilderName());
 			Map<String, String> args = commands[i].getArguments();
 			Map<String, String> args2 = commands2[i].getArguments();
-			assertThat("different number of arguments for builder at index " + i, args.entrySet(),
-					hasSize(args2.size()));
+			assertThat(args.entrySet()).as("compare number of arguments for builder at index %s", i)
+					.hasSize(args2.size());
 			for (Entry<String, String> entry : args.entrySet()) {
 				String key = entry.getKey();
 				String value = entry.getValue();
 				String value2 = args2.get(key);
 				if (value == null) {
-					assertThat("value for key '" + key + "' should be null", value2, nullValue());
+					assertThat(value2).as("value for key '%s'", key).isNull();
 				} else {
-					assertThat("unequal values for key: " + key, args.get(key), is(args2.get(key)));
+					assertThat(args.get(key)).as("compare values for key: %s", key).isEqualTo(args2.get(key));
 				}
 			}
 		}
 	}
 
 	private void compareProjectDescriptions(int errorTag, ProjectDescription description, ProjectDescription description2) {
-		assertThat(description.getName(), is(description2.getName()));
+		assertThat(description.getName()).isEqualTo(description2.getName());
 		String comment = description.getComment();
 		if (comment == null) {
 			// The old reader previously returned null for an empty comment.  We
 			// are changing this so it now returns an empty string.
-			assertThat(description2.getComment(), emptyString());
+			assertThat(description2.getComment()).isEmpty();
 		} else {
-			assertThat(description.getComment(), is(description2.getComment()));
+			assertThat(description.getComment()).isEqualTo(description2.getComment());
 		}
 
 		IProject[] projects = description.getReferencedProjects();
@@ -226,19 +218,19 @@ public class ModelObjectReaderWriterTest {
 
 		String[] natures = description.getNatureIds();
 		String[] natures2 = description2.getNatureIds();
-		assertThat(natures, is(natures2));
+		assertThat(natures).isEqualTo(natures2);
 
 		HashMap<IPath, LinkDescription> links = description.getLinks();
 		HashMap<IPath, LinkDescription> links2 = description2.getLinks();
-		assertThat(links, is(links2));
+		assertThat(links).isEqualTo(links2);
 	}
 
 	private void compareProjects(IProject[] projects, IProject[] projects2) {
 		// ASSUMPTION:  projects and projects2 are non-null
-		assertThat("different number of projects", projects, arrayWithSize(projects2.length));
+		assertThat(projects).as("compare number of projects").hasSameSizeAs(projects2);
 		for (int i = 0; i < projects.length; i++) {
-			assertThat("names of projects at index " + i + " are different", projects[i].getName(),
-					is(projects2[i].getName()));
+			assertThat(projects[i].getName()).as("compare names of projects at index %s", i)
+					.isEqualTo(projects2[i].getName());
 		}
 	}
 
@@ -326,7 +318,7 @@ public class ModelObjectReaderWriterTest {
 		String result = buffer.toString();
 
 		// order of keys in serialized file should be exactly the same as expected
-		assertThat(result, is(expected));
+		assertThat(result).isEqualTo(expected);
 	}
 
 	@Test
@@ -345,7 +337,7 @@ public class ModelObjectReaderWriterTest {
 			createInputStream(invalidProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = reader.read(location);
-		assertThat(projDesc, nullValue());
+		assertThat(projDesc).isNull();
 	}
 
 	@Test
@@ -358,14 +350,14 @@ public class ModelObjectReaderWriterTest {
 			createInputStream(invalidProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = readDescription(store);
-		assertThat(projDesc, not(nullValue()));
-		assertThat(projDesc.getName(), nullValue());
-		assertThat(projDesc.getComment(), emptyString());
-		assertThat(projDesc.getLocationURI(), nullValue());
-		assertThat(projDesc.getReferencedProjects(), emptyArray());
-		assertThat(projDesc.getNatureIds(), emptyArray());
-		assertThat(projDesc.getBuildSpec(), emptyArray());
-		assertThat(projDesc.getLinks(), nullValue());
+		assertThat(projDesc).isNotNull();
+		assertThat(projDesc.getName()).isNull();
+		assertThat(projDesc.getComment()).isEmpty();
+		assertThat(projDesc.getLocationURI()).isNull();
+		assertThat(projDesc.getReferencedProjects()).isEmpty();
+		assertThat(projDesc.getNatureIds()).isEmpty();
+		assertThat(projDesc.getBuildSpec()).isEmpty();
+		assertThat(projDesc.getLinks()).isNull();
 	}
 
 	@Test
@@ -379,14 +371,14 @@ public class ModelObjectReaderWriterTest {
 		}
 
 		ProjectDescription projDesc = readDescription(store);
-		assertThat(projDesc, not(nullValue()));
-		assertThat(projDesc.getName(), is("abc"));
-		assertThat(projDesc.getComment(), emptyString());
-		assertThat(projDesc.getLocationURI(), nullValue());
-		assertThat(projDesc.getReferencedProjects(), emptyArray());
-		assertThat(projDesc.getNatureIds(), emptyArray());
-		assertThat(projDesc.getBuildSpec(), emptyArray());
-		assertThat(projDesc.getLinks(), nullValue());
+		assertThat(projDesc).isNotNull();
+		assertThat(projDesc.getName()).isEqualTo("abc");
+		assertThat(projDesc.getComment()).isEmpty();
+		assertThat(projDesc.getLocationURI()).isNull();
+		assertThat(projDesc.getReferencedProjects()).isEmpty();
+		assertThat(projDesc.getNatureIds()).isEmpty();
+		assertThat(projDesc.getBuildSpec()).isEmpty();
+		assertThat(projDesc.getLinks()).isNull();
 	}
 
 	@Test
@@ -399,16 +391,16 @@ public class ModelObjectReaderWriterTest {
 			createInputStream(invalidProjectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = readDescription(store);
-		assertThat(projDesc, not(nullValue()));
-		assertThat(projDesc.getName(), is("abc"));
-		assertThat(projDesc.getComment(), emptyString());
-		assertThat(projDesc.getLocationURI(), nullValue());
-		assertThat(projDesc.getReferencedProjects(), emptyArray());
-		assertThat(projDesc.getNatureIds(), emptyArray());
-		assertThat(projDesc.getBuildSpec(), emptyArray());
+		assertThat(projDesc).isNotNull();
+		assertThat(projDesc.getName()).isEqualTo("abc");
+		assertThat(projDesc.getComment()).isEmpty();
+		assertThat(projDesc.getLocationURI()).isNull();
+		assertThat(projDesc.getReferencedProjects()).isEmpty();
+		assertThat(projDesc.getNatureIds()).isEmpty();
+		assertThat(projDesc.getBuildSpec()).isEmpty();
 		LinkDescription link = projDesc.getLinks().values().iterator().next();
-		assertThat(link.getProjectRelativePath(), is(IPath.fromOSString("newLink")));
-		assertThat(URIUtil.toPath(link.getLocationURI()).toString(), is(PATH_STRING));
+		assertThat(link.getProjectRelativePath()).isEqualTo(IPath.fromOSString("newLink"));
+		assertThat(URIUtil.toPath(link.getLocationURI()).toString()).isEqualTo(PATH_STRING);
 	}
 
 	/**
@@ -430,8 +422,9 @@ public class ModelObjectReaderWriterTest {
 		ProjectDescription projDesc = reader.read(location);
 		removeFromFileSystem(location.toFile());
 		for (LinkDescription link : projDesc.getLinks().values()) {
-			assertThat("Unexpected location URI for link with relative path: " + link.getProjectRelativePath(),
-					link.getLocationURI(), is(LONG_LOCATION_URI));
+			assertThat(link.getLocationURI())
+					.as("location URI for link with relative path: %s", link.getProjectRelativePath())
+					.isEqualTo(LONG_LOCATION_URI);
 		}
 	}
 
@@ -453,8 +446,9 @@ public class ModelObjectReaderWriterTest {
 		ProjectDescription projDesc = reader.read(location);
 		removeFromFileSystem(location.toFile());
 		for (LinkDescription link : projDesc.getLinks().values()) {
-			assertThat("Unexpected location URI for link with relative path: " + link.getProjectRelativePath(),
-					link.getLocationURI(), is(LONG_LOCATION_URI));
+			assertThat(link.getLocationURI())
+					.as("location URI for link with relative path: %s", link.getProjectRelativePath())
+					.isEqualTo(LONG_LOCATION_URI);
 		}
 	}
 
@@ -532,21 +526,22 @@ public class ModelObjectReaderWriterTest {
 
 		/* test read */
 		ProjectDescription description2 = readDescription(tempStore);
-		assertThat(description.getName(), is(description2.getName()));
-		assertThat(location, is(description.getLocationURI()));
+		assertThat(description.getName()).isEqualTo(description2.getName());
+		assertThat(location).isEqualTo(description.getLocationURI());
 
 		ICommand[] commands2 = description2.getBuildSpec();
-		assertThat(commands2, arrayWithSize(2));
-		assertThat(commands2[0].getBuilderName(), is("MyCommand"));
-		assertThat(commands2[0].getArguments().get("ArgOne"), is("ARGH!"));
-		assertThat(commands2[0].getArguments().get("ArgTwo"), is("2 x ARGH!"));
-		assertThat(commands2[0].getArguments().get("NullArg"), emptyString());
-		assertThat(commands2[0].getArguments().get("EmptyArg"), emptyString());
-		assertThat(commands2[1].getBuilderName(), is("MyOtherCommand"));
-		assertThat(commands2[1].getArguments().get("ArgOne"), is("ARGH!"));
-		assertThat(commands2[1].getArguments().get("ArgTwo"), is("2 x ARGH!"));
-		assertThat(commands2[0].getArguments().get("NullArg"), emptyString());
-		assertThat(commands2[0].getArguments().get("EmptyArg"), emptyString());
+		assertThat(commands2).hasSize(2).satisfiesExactly(first -> {
+			assertThat(first.getBuilderName()).as("name").isEqualTo("MyCommand");
+			assertThat(first.getArguments().get("ArgOne")).as("ArgOne").isEqualTo("ARGH!");
+			assertThat(first.getArguments().get("ArgTwo")).as("ArgTwO").isEqualTo("2 x ARGH!");
+			assertThat(first.getArguments().get("NullArg")).as("NullArg").isEmpty();
+			assertThat(first.getArguments().get("EmptyArg")).as("EmptyArg").isEmpty();
+			assertThat(first.getArguments().get("NullArg")).as("NullArg").isEmpty();
+			assertThat(first.getArguments().get("EmptyArg")).as("EmptyArg").isEmpty();
+		}, second -> {
+			assertThat(second.getBuilderName()).as("name").isEqualTo("MyOtherCommand");
+			assertThat(second.getArguments().get("ArgOne")).as("ArgOne").isEqualTo("ARGH!");
+		});
 	}
 
 	@Test
@@ -588,22 +583,23 @@ public class ModelObjectReaderWriterTest {
 			description2 = reader.read(in);
 		}
 
-		assertThat(description.getName(), is(description2.getName()));
-		assertThat(location, is(description.getLocationURI()));
+		assertThat(description.getName()).isEqualTo(description2.getName());
+		assertThat(location).isEqualTo(description.getLocationURI());
 
 		ICommand[] commands2 = description2.getBuildSpec();
-		assertThat(commands2, arrayWithSize(1));
-		assertThat(commands2[0].getBuilderName(), is("MyCommand"));
-		assertThat(commands2[0].getArguments().get("ArgOne"), is("ARGH!"));
+		assertThat(commands2).hasSize(1).satisfiesExactly(command -> {
+			assertThat(command.getBuilderName()).as("name").isEqualTo("MyCommand");
+			assertThat(command.getArguments().get("ArgOne")).as("ArgOne").isEqualTo("ARGH!");
+		});
 
-		assertThat(description.getComment(), is(description2.getComment()));
+		assertThat(description.getComment()).isEqualTo(description2.getComment());
 
 		IProject[] ref = description.getReferencedProjects();
 		IProject[] ref2 = description2.getReferencedProjects();
-		assertThat(ref2, arrayWithSize(3));
-		assertThat(ref[0].getName(), is(ref2[0].getName()));
-		assertThat(ref[1].getName(), is(ref2[1].getName()));
-		assertThat(ref[2].getName(), is(ref2[2].getName()));
+		assertThat(ref2).hasSize(3).satisfiesExactly(
+				first -> assertThat(first.getName()).isEqualTo(ref[0].getName()),
+				second -> assertThat(second.getName()).isEqualTo(ref[1].getName()),
+				third -> assertThat(third.getName()).isEqualTo(ref[2].getName()));
 	}
 
 	// see bug 274437
@@ -625,13 +621,14 @@ public class ModelObjectReaderWriterTest {
 
 		/* test read */
 		ProjectDescription description2 = readDescription(tempStore);
-		assertThat(description.getName(), is(description2.getName()));
-		assertThat(description.getLocationURI(), is(location));
+		assertThat(description.getName()).isEqualTo(description2.getName());
+		assertThat(description.getLocationURI()).isEqualTo(location);
 
 		ICommand[] commands2 = description2.getBuildSpec();
-		assertThat(commands2, arrayWithSize(1));
-		assertThat(commands2[0].getBuilderName(), is("MyCommand"));
-		assertThat(commands2[0].getArguments(), anEmptyMap());
+		assertThat(commands2).hasSize(1).satisfiesExactly(command -> {
+			assertThat(command.getBuilderName()).as("name").isEqualTo("MyCommand");
+			assertThat(command.getArguments()).as("arguments").isEmpty();
+		});
 	}
 
 	@Test
@@ -650,9 +647,9 @@ public class ModelObjectReaderWriterTest {
 
 		/* test read */
 		ProjectDescription description2 = readDescription(store);
-		assertThat(description.getName(), is(description2.getName()));
-		assertThat(description.getLocationURI(), is(location));
-		assertThat(description2.getLinkLocationURI(path), is(locationWithSpaces));
+		assertThat(description.getName()).isEqualTo(description2.getName());
+		assertThat(description.getLocationURI()).isEqualTo(location);
+		assertThat(description2.getLinkLocationURI(path)).isEqualTo(locationWithSpaces);
 	}
 
 	protected URI uriFromPortableString(String pathString) {
@@ -708,6 +705,6 @@ public class ModelObjectReaderWriterTest {
 			createInputStream(projectDescription).transferTo(output);
 		}
 		ProjectDescription projDesc = reader.read(location);
-		assertThat(projDesc, not(nullValue()));
+		assertThat(projDesc).isNotNull();
 	}
 }

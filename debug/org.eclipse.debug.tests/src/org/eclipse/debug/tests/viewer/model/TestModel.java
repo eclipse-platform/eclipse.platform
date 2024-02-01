@@ -14,13 +14,14 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.viewer.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.PlatformObject;
-
 import org.eclipse.debug.internal.ui.viewers.model.IInternalTreeModelViewer;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ICheckUpdate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IChildrenCountUpdate;
@@ -42,13 +43,10 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.ITreeModelViewer;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ModelDelta;
 import org.eclipse.debug.internal.ui.viewers.provisional.AbstractModelProxy;
-
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-
 import org.eclipse.swt.widgets.Display;
-
 import org.junit.Assert;
 
 /**
@@ -164,8 +162,8 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 			} else {
 				TestElement[] children = element.getChildren();
 
-				for (int i = 0; i < children.length; i++) {
-					installSubModelProxies(path.createChildPath(children[i]), delta.addNode(children[i], IModelDelta.NO_CHANGE));
+				for (TestElement child : children) {
+					installSubModelProxies(path.createChildPath(child), delta.addNode(child, IModelDelta.NO_CHANGE));
 				}
 			}
 		}
@@ -221,8 +219,8 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 			return atDepth;
 		}
 		int depth = atDepth + 1;
-		for (int i = 0; i < children.length; i++) {
-			depth = Math.max(depth, getDepth(children[i], atDepth + 1));
+		for (TestElement child : children) {
+			depth = Math.max(depth, getDepth(child, atDepth + 1));
 		}
 
 		return depth;
@@ -246,8 +244,8 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	public void processQueuedUpdates() {
 		List<IViewerUpdate> updates = new ArrayList<>(fQueuedUpdates);
 		fQueuedUpdates.clear();
-		for (int i = 0; i < updates.size(); i++) {
-			processUpdate(updates.get(i));
+		for (IViewerUpdate update : updates) {
+			processUpdate(update);
 		}
 	}
 
@@ -268,8 +266,8 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 	}
 
 	private void processUpdates(IViewerUpdate[] updates) {
-		for (int i = 0; i < updates.length; i++) {
-			processUpdate(updates[i]);
+		for (IViewerUpdate update : updates) {
+			processUpdate(update);
 		}
 	}
 
@@ -401,8 +399,8 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 
 	private void doSetExpanded(TestElement element) {
 		element.fExpanded = true;
-		for (int i = 0; i < element.fChildren.length; i++) {
-			doSetExpanded(element.fChildren[i]);
+		for (TestElement fChild : element.fChildren) {
+			doSetExpanded(fChild);
 		}
 	}
 
@@ -412,8 +410,8 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 
 	private void doSetAllAppendix(TestElement element, String appendix) {
 		element.setLabelAppendix(appendix);
-		for (int i = 0; i < element.fChildren.length; i++) {
-			doSetAllAppendix(element.fChildren[i], appendix);
+		for (TestElement fChild : element.fChildren) {
+			doSetAllAppendix(fChild, appendix);
 		}
 	}
 
@@ -437,18 +435,22 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 			TestElement[] children = element.getChildren();
 
 			int viewerIndex = 0;
-			for (int i = 0; i < children.length; i++) {
-				if (TestModelUpdatesListener.isFiltered(children[i], filters)) {
+			for (TestElement child : children) {
+				if (TestModelUpdatesListener.isFiltered(child, filters)) {
 					continue;
 				}
-				Assert.assertEquals(children[i], viewer.getChildElement(path, viewerIndex));
-				validateData(viewer, path.createChildPath(children[i]), expandedElementsOnly, filters);
+				Assert.assertEquals(child, viewer.getChildElement(path, viewerIndex));
+				validateData(viewer, path.createChildPath(child), expandedElementsOnly, filters);
 				viewerIndex++;
 			}
 			Assert.assertEquals(viewerIndex, viewer.getChildCount(path));
 		} else if (!viewer.getExpandedState(path)) {
 			// If element not expanded, verify the plus sign.
-			Assert.assertTrue(viewer.getHasChildren(path) == element.getChildren().length > 0);
+			if (viewer.getHasChildren(path)) {
+				assertThat(element.getChildren()).hasSizeGreaterThan(0);
+			} else {
+				assertThat(element.getChildren()).isEmpty();
+			}
 		}
 	}
 
@@ -683,8 +685,8 @@ public class TestModel implements IElementContentProvider, IElementLabelProvider
 		builder.append(element.toString());
 		builder.append('\n');
 		TestElement[] children = element.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			builder.append(getElementString(children[i], indent + "  ")); //$NON-NLS-1$
+		for (TestElement child : children) {
+			builder.append(getElementString(child, indent + "  ")); //$NON-NLS-1$
 		}
 		return builder.toString();
 	}
