@@ -20,9 +20,4 @@
   <artifactId>org.eclipse.ui.intro</artifactId>
   <version>3.7.300-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
-
-  <properties>
-    <code.ignoredWarnings>-warn:-raw,unchecked</code.ignoredWarnings>
-  </properties> 
-
 </project>
