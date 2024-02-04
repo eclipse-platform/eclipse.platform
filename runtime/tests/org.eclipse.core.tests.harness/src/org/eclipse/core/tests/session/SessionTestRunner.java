@@ -262,9 +262,10 @@ public class SessionTestRunner {
 		IStatus outcome = Status.OK_STATUS;
 		try {
 			int returnCode = setup.run();
-			if (returnCode == 23) {
+			if (returnCode == 23 || returnCode == 24) {
 				// asked to restart; for now just do this once.
-				// Note that 23 is our magic return code indicating that a restart is required.
+				// Note that 23 and 24 are our magic return code indicating that a restart is
+				// required.
 				// This can happen for tests that update framework extensions which requires a restart.
 				returnCode = setup.run();
 			}

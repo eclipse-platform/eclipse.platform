@@ -27,6 +27,7 @@ import java.util.List;
 public class Eclipse extends Thread {
 	// Eclipse exit codes
 	private static final int NEEDS_RESTART = 23;
+	private static final int NEEDS_RESTART_ALT = 24;
 	// Launching status
 	public static final int STATUS_INIT = 0;
 	public static final int STATUS_STARTED = 1;
@@ -110,14 +111,15 @@ public class Eclipse extends Thread {
 				} catch (InterruptedException e) {
 				}
 				if (Options.isDebug()) {
+					int exitValue = pr.exitValue();
 					System.out
-							.println("Eclipse exited with status code " + pr.exitValue()); //$NON-NLS-1$
-					if (pr.exitValue() == NEEDS_RESTART) {
+							.println("Eclipse exited with status code " + exitValue); //$NON-NLS-1$
+					if (exitValue == NEEDS_RESTART || exitValue == NEEDS_RESTART_ALT) {
 						System.out
 								.println("Updates are installed,  Eclipse will be restarted."); //$NON-NLS-1$
 					}
 				}
-			} while (pr.exitValue() == NEEDS_RESTART);
+			} while (pr.exitValue() == NEEDS_RESTART | pr.exitValue() == NEEDS_RESTART_ALT);
 		} catch (Exception exc) {
 			exception = exc;
 			status = STATUS_ERROR;
