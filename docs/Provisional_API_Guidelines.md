@@ -1,5 +1,5 @@
 Eclipse API and Provisional Guidelines
-==========================
+======================================
 
 Contents
 --------
@@ -18,8 +18,7 @@ Contents
 Overview
 --------
 
-[Eclipse quality](http://www.eclipse.org/projects/dev_process/eclipse-quality.php) APIs don't appear fully formed out of nowhere. 
-All APIs undergo a development process, passing through many phases from initial embroyonic forms to real battle-hardened APIs with guarantees of long term support.
+Eclipse APIs undergo a development process, passing through many phases from initial forms to real APIs with guarantees of long term support.
 It is important that API clients understand the state of the APIs in any given build of Eclipse.
 This document sets out API guidelines for the Eclipse Project committers on how to indicate APIs that are still under development and subject to change. 
 These guidelines are also useful for API clients who want to know about the state of a given API they are using.
@@ -33,7 +32,7 @@ Definition of terms used in this document:
 
 A package must be exported via the MANIFEST.MF to be considered API.
 However, any package that does contain the segment "internal" and which has not set the x-internal or the x-friends directive in the MANIFEST.MF is not API. 
-See [Naming Conventions](/Naming_Conventions "Naming Conventions") for details)
+See [Naming Conventions](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Naming_Conventions.md) for details)
 
 **Internal API**
 
@@ -47,7 +46,8 @@ A public Java class or interface in an API package, or a public or protected met
 
 An API element that has not existed in any release of the Eclipse project. 
 All provisional API is subject to arbitrary change or removal without any notice. 
-Although the [Eclipse quality](http://www.eclipse.org/projects/dev_process/eclipse-quality.php) guidelines distinguish between several forms of transient APIs, this document will refer to all non-final APIs simply as provisional APIs. Provisional API has set the x-internal or the x-friends directive for the package in the MANIFEST.MF
+This document refers to all non-final APIs as provisional APIs. 
+Provisional API has set the x-internal or the x-friends directive for the package in the MANIFEST.MF
 
 Before the API freeze
 ---------------------
@@ -88,7 +88,7 @@ After the API freeze
 
 From the perspective of code maintenance, there is really no such thing as "provisional API". 
 Either it is complete and committed platform API, or it is internal code. 
-API that is new in the current release cycle is still subject to change, but changes after this point are rare and require approval from the Eclipse project [PMC](http://www.eclipse.org/eclipse/team-leaders.html). 
+API that is new in the current release cycle is still subject to change, but changes after this point are rare and require approval from the Eclipse project [PMC](https://eclipse.dev/eclipse/team-leaders.php). 
 
 Note that there are no guarantees about the existence or shape of internal code, even if the package name or comments suggest that it may become API in the next release. 
 In particular, the API contract (binary upwards compatibility) does not apply. 
@@ -107,14 +107,17 @@ Internal packages may also exported, they must be marked as x-internal in this c
 
 ### Javadoc
 
-No special javadoc treatment for internal code is needed. Note that @since tags also have little significance for internal code at this point. If internal code is added in the 3.4 development period, but promoted to real API in the 3.5 development period, the correct tag for that API will be @since 3.5. The [experimental](/Provisional_API_Guidelines#experimental "Provisional API Guidelines") javadoc paragraph can be left in the class or interface comment, but is not required.
+No special javadoc treatment for internal code is needed. 
+Note that @since tags also have little significance for internal code at this point. 
+If internal code is added in the 3.4 development period, but promoted to real API in the 3.5 development period, the correct tag for that API will be @since 3.5. 
+The experimental javadoc paragraph can be left in the class or interface comment, but is not required.
 
 Changing provisional APIs
 -------------------------
 
 Technically, a provisional API can change arbitrarily or be removed at any time without notice. 
 Clients in the greater community who are consuming Eclipse milestone and integration builds cannot make any assumptions about the state of any provisional API between any two non-release builds. 
-However, committers have a shared responsibility to ensure [Eclipse Project](/Eclipse_Project "Eclipse Project") integration builds are not broken due to changes in provisional APIs. 
+However, committers have a shared responsibility to ensure that integration builds are not broken due to changes in provisional APIs. 
 Known clients of the provisional API within the SDK should be given fair warning and a chance to react before breaking changes are made. 
 As a courtesy to the community, and to minimize the risk of build failures, it is useful to deprecate provisional APIs slated for change or removal in at least one integration build before making the change. Although not required, adding such a temporary tag can ease the transition for early adopters of the API:
 
