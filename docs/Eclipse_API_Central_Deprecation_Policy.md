@@ -14,7 +14,7 @@ Contents
     *   [2.2 Extension Points](#Extension-Points)
 *   [3 Removal of Deprecated API](#Removal-of-Deprecated-API)
     *   [3.1 Third Party API](#Third-Party-API)
-*   [4 References](#References)
+
 
 What is Deprecation?
 ====================
