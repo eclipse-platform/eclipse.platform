@@ -21,9 +21,4 @@
   <artifactId>org.eclipse.ui.cheatsheets</artifactId>
   <version>3.8.300-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
-
-  <properties>
-    <code.ignoredWarnings>-warn:-deprecation,raw,unchecked</code.ignoredWarnings>
-  </properties>
-
 </project>

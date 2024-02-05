@@ -22,6 +22,7 @@ import org.eclipse.help.ui.internal.Messages;
 import org.eclipse.help.ui.internal.util.EscapeUtils;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -34,6 +35,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
+@SuppressWarnings("deprecation") // java.util.Observable since 9;
 public class ScopeSelectPart extends AbstractFormPart implements IHelpPart  {
 
 	public class ScopeObserver implements Observer {
@@ -83,7 +85,7 @@ public class ScopeSelectPart extends AbstractFormPart implements IHelpPart  {
 		dialog.setInput(scopeSetManager);
 		dialog.create();
 		dialog.getShell().setText(Messages.ScopeSetDialog_wtitle);
-		if (dialog.open() == ScopeSetDialog.OK) {
+		if (dialog.open() == Window.OK) {
 			ScopeSet set = dialog.getActiveSet();
 			if (set != null) {
 				setActiveScopeSet(set);
