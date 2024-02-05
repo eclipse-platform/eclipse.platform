@@ -32,7 +32,7 @@ Identifying Deprecated API
 ==========================
 
 This section describes how clients can identify what API is deprecated. 
-To identify API from non-API, see [\[1\]](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Provisional_API_Guidelines.md)
+To identify API from non-API, see [Provisional API Guidelines](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Provisional_API_Guidelines.md)
 
 Java API
 --------

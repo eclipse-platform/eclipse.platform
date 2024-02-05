@@ -1,5 +1,5 @@
 Eclipse API and Provisional Guidelines
-==========================
+======================================
 
 Contents
 --------
@@ -18,8 +18,7 @@ Contents
 Overview
 --------
 
-[Eclipse quality](http://www.eclipse.org/projects/dev_process/eclipse-quality.php) APIs don't appear fully formed out of nowhere. 
-All APIs undergo a development process, passing through many phases from initial embroyonic forms to real battle-hardened APIs with guarantees of long term support.
+Eclipse APIs undergo a development process, passing through many phases from initial forms to real APIs with guarantees of long term support.
 It is important that API clients understand the state of the APIs in any given build of Eclipse.
 This document sets out API guidelines for the Eclipse Project committers on how to indicate APIs that are still under development and subject to change. 
 These guidelines are also useful for API clients who want to know about the state of a given API they are using.
@@ -33,7 +32,7 @@ Definition of terms used in this document:
 
 A package must be exported via the MANIFEST.MF to be considered API.
 However, any package that does contain the segment "internal" and which has not set the x-internal or the x-friends directive in the MANIFEST.MF is not API. 
-See [Naming Conventions](/Naming_Conventions "Naming Conventions") for details)
+See [Naming Conventions](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Naming_Conventions.md) for details)
 
 **Internal API**
 
@@ -47,7 +46,8 @@ A public Java class or interface in an API package, or a public or protected met
 
 An API element that has not existed in any release of the Eclipse project. 
 All provisional API is subject to arbitrary change or removal without any notice. 
-Although the [Eclipse quality](http://www.eclipse.org/projects/dev_process/eclipse-quality.php) guidelines distinguish between several forms of transient APIs, this document will refer to all non-final APIs simply as provisional APIs. Provisional API has set the x-internal or the x-friends directive for the package in the MANIFEST.MF
+This document refers to all non-final APIs as provisional APIs. 
+Provisional API has set the x-internal or the x-friends directive for the package in the MANIFEST.MF
 
 Before the API freeze
 ---------------------
@@ -114,7 +114,7 @@ Changing provisional APIs
 
 Technically, a provisional API can change arbitrarily or be removed at any time without notice. 
 Clients in the greater community who are consuming Eclipse milestone and integration builds cannot make any assumptions about the state of any provisional API between any two non-release builds. 
-However, committers have a shared responsibility to ensure [Eclipse Project](/Eclipse_Project "Eclipse Project") integration builds are not broken due to changes in provisional APIs. 
+However, committers have a shared responsibility to ensure that integration builds are not broken due to changes in provisional APIs. 
 Known clients of the provisional API within the SDK should be given fair warning and a chance to react before breaking changes are made. 
 As a courtesy to the community, and to minimize the risk of build failures, it is useful to deprecate provisional APIs slated for change or removal in at least one integration build before making the change. Although not required, adding such a temporary tag can ease the transition for early adopters of the API:
 
