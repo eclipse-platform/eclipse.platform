@@ -65,7 +65,7 @@ public enum SecurePKIVersionInfo {
 					Manifest manifest = new JarFile(path.toAbsolutePath().toString()).getManifest();
 					Attributes attributes = manifest.getMainAttributes();
 					version = attributes.getValue("Build-Label"); //$NON-NLS-1$
-					DebugLogger.printDebug(" VALUE:" + version); //$NON-NLS-1$
+					System.out.println(" VALUE:" + version); //$NON-NLS-1$
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
