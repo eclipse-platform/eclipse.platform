@@ -37,7 +37,7 @@ public class Pkcs11UnixLocation extends Pkcs11Location implements Pkcs11Location
 
 	private void unixPath() {
 		StringBuilder pkcs11Home = new StringBuilder();
-		DebugLogger.printDebug("Pkcs11UnixLocation - unixPath"); //$NON-NLS-1$
+		System.out.println("Pkcs11UnixLocation - unixPath"); //$NON-NLS-1$
 		try {
 			if (!(getUserSpecifiedDirectory().equals("none"))) { //$NON-NLS-1$
 				pkcs11Home.append( getUserSpecifiedDirectory() );

@@ -41,7 +41,7 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 	public CustomTrustManager(KeyStore trustStore) {
 		super();
 		this.trustStore=trustStore;
-		DebugLogger.printDebug("CustomTrustManager -- CONSTRUCTOR  ALG:" + TrustManagerFactory.getDefaultAlgorithm()); //$NON-NLS-1$
+		System.out.println("CustomTrustManager -- CONSTRUCTOR  ALG:" + TrustManagerFactory.getDefaultAlgorithm()); //$NON-NLS-1$
 		try {
 			Security.getAlgorithms("PKCS11"); //$NON-NLS-1$
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance("X509"); //$NON-NLS-1$
@@ -91,10 +91,10 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 				if (alias.startsWith("IC")) { //$NON-NLS-1$
 					X509cert = (X509Certificate) this.trustStore.getCertificate(alias);
 					trustedCerts.add(X509cert);
-					DebugLogger.printDebug("CustomTrustManager-FOUND TRUSTORE FOR IC"); //$NON-NLS-1$
+					System.out.println("CustomTrustManager-FOUND TRUSTORE FOR IC"); //$NON-NLS-1$
 				}
 			}
-			DebugLogger.printDebug("CustomTrustManager-COMPLETED TRUSTSTORE SEARCH"); //$NON-NLS-1$
+			System.out.println("CustomTrustManager-COMPLETED TRUSTSTORE SEARCH"); //$NON-NLS-1$
 			int i = 0;
 			X509certs = new X509Certificate[ trustedCerts.size() ];
 			Iterator<X509Certificate> it = trustedCerts.iterator();
@@ -118,17 +118,16 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 	@Override
 	public void checkClientTrusted(X509Certificate[] arg0, String arg1, SSLEngine arg2) throws CertificateException {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CustomTrustManager -- checkClientTrusted"); //$NON-NLS-1$
+		System.out.println("CustomTrustManager -- checkClientTrusted"); //$NON-NLS-1$
 	}
 
 	@Override
 	public void checkServerTrusted(X509Certificate[] x509incoming, String arg1, Socket socket) throws CertificateException {
-		DebugLogger.printDebug("CustomTrustManager checkServerTrusted  based on socket"); //$NON-NLS-1$
+		System.out.println("CustomTrustManager checkServerTrusted  based on socket"); //$NON-NLS-1$
 		if (x509incoming != null) {
-			DebugLogger.printDebug("CustomTrustManager checkServerTrusted  INCOMING SIZE:" + x509incoming.length); //$NON-NLS-1$
+			System.out.println("CustomTrustManager checkServerTrusted  INCOMING SIZE:" + x509incoming.length); //$NON-NLS-1$
 			for(X509Certificate x509 :  x509incoming) {
-				DebugLogger
-						.printDebug("CustomTrustManager checkServerTrusted  INCOMING:" + x509.getSubjectDN().getName()); //$NON-NLS-1$
+				System.out.println("CustomTrustManager checkServerTrusted  INCOMING:" + x509.getSubjectDN().getName()); //$NON-NLS-1$
 				x509.checkValidity();
 
 			}
@@ -140,7 +139,7 @@ public class CustomTrustManager extends X509ExtendedTrustManager implements Trus
 	@Override
 	public void checkServerTrusted(X509Certificate[] arg0, String arg1, SSLEngine arg2) throws CertificateException {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CustomTrustManager checkServerTrusted  with SSLEngine"); //$NON-NLS-1$
+		System.out.println("CustomTrustManager checkServerTrusted  with SSLEngine"); //$NON-NLS-1$
 	}
 
 }

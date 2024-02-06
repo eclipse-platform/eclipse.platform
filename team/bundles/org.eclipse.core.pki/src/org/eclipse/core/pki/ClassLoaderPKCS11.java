@@ -34,7 +34,7 @@ public class ClassLoaderPKCS11 extends Pkcs11Location {
 				} catch (Exception e1) {
 					System.out.println(
 							"There was a problem initializing the PKCS11 library.  You may be using a JRE, please try a JDK. "); //$NON-NLS-1$
-					DebugLogger.printDebug(Arrays.toString(e1.getStackTrace()));
+					System.out.println(Arrays.toString(e1.getStackTrace()));
 				}
 
 				/*
@@ -42,8 +42,7 @@ public class ClassLoaderPKCS11 extends Pkcs11Location {
 				 */
 				cfgFile = getDirectory();
 
-				DebugLogger
-						.printDebug("CLASSLOADERPKCS11 --------------Loading up the OBJECT FILE JAR:" + jarDirectory); //$NON-NLS-1$
+				System.out.println("CLASSLOADERPKCS11 --------------Loading up the OBJECT FILE JAR:" + jarDirectory); //$NON-NLS-1$
 				ClassLoader pkcs11 = new SpecialClassLoader(System.getProperty(jarDirectory));
 				pkcs11Class = pkcs11.loadClass("sun.security.pkcs11.SunPKCS11"); //$NON-NLS-1$
 
@@ -54,7 +53,7 @@ public class ClassLoaderPKCS11 extends Pkcs11Location {
 					 *  a windows or windos derivative eu2 setup.  The file is called
 					 */
 					try {
-						DebugLogger.printDebug("CLASSLOADERPKCS11 --------------CFG FILE:" + cfgFile); //$NON-NLS-1$
+						System.out.println("CLASSLOADERPKCS11 --------------CFG FILE:" + cfgFile); //$NON-NLS-1$
 
 						sunPkcs11 = pkcs11Class.getConstructor(java.lang.String.class).newInstance(cfgFile);
 
@@ -80,7 +79,7 @@ public class ClassLoaderPKCS11 extends Pkcs11Location {
 				}
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
-				DebugLogger.printDebug("CLASSLOADERPKCS11 -----------------------loadSunPKCS11Class    FAILED"); //$NON-NLS-1$
+				System.out.println("CLASSLOADERPKCS11 -----------------------loadSunPKCS11Class    FAILED"); //$NON-NLS-1$
 				//e.printStackTrace();
 
 			}

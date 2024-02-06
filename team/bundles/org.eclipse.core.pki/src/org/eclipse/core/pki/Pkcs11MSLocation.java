@@ -57,7 +57,7 @@ public class Pkcs11MSLocation extends Pkcs11Location implements Pkcs11LocationIf
 				if (System.getenv("PKCS11_HOME") != null) { //$NON-NLS-1$
 					pkcs11Path = new StringBuilder();
 					pkcs11Path.append(System.getenv("PKCS11_HOME")); //$NON-NLS-1$
-					DebugLogger.printDebug(
+					System.out.println(
 							"Pkcs11MSlocation --  Setting pkcs11 loaction from PKCS11_HOME:" + pkcs11Path.toString()); //$NON-NLS-1$
 					if ( isDirectory( pkcs11Path.toString() )) {
 						configFile = Pkcs11FixConfigFile.getCfgInstance(pkcs11Path.toString());
@@ -73,19 +73,18 @@ public class Pkcs11MSLocation extends Pkcs11Location implements Pkcs11LocationIf
 						pkcs11Path = new StringBuilder();
 						pkcs11Path.append(dir32bit);
 						if ((isDirectory(pkcs11Path.toString()))) {
-							DebugLogger
-									.printDebug("Pkcs11MSlocation --   64bit  FOUND LOACTION:" + pkcs11Path.toString()); //$NON-NLS-1$
+							System.out.println("Pkcs11MSlocation --   64bit  FOUND LOACTION:" + pkcs11Path.toString()); //$NON-NLS-1$
 							configFile = Pkcs11FixConfigFile.getCfgInstance(pkcs11Path.toString());
 							setDirectory(configFile.getCfgFilePath());
 						}
 					} else {
-						DebugLogger.printDebug("Pkcs11MSlocation --   32bit  FOUND LOACTION:" + pkcs11Path.toString()); //$NON-NLS-1$
+						System.out.println("Pkcs11MSlocation --   32bit  FOUND LOACTION:" + pkcs11Path.toString()); //$NON-NLS-1$
 						configFile = Pkcs11FixConfigFile.getCfgInstance(pkcs11Path.toString());
 						setDirectory(configFile.getCfgFilePath());
 					}
 				}
 			}
-			DebugLogger.printDebug("Pkcs11MSlocation --   LOCATION:" + pkcs11Path.toString()); //$NON-NLS-1$
+			System.out.println("Pkcs11MSlocation --   LOCATION:" + pkcs11Path.toString()); //$NON-NLS-1$
 			if ( getDirectory() != null ) {
 				if (!( isPath( pkcs11Path ))) {
 					setFound(false);

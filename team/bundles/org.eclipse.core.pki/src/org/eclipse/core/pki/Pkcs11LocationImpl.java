@@ -36,7 +36,7 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 					jarLocation = findSunPkcs11JarInstance();
 					if (jarLocation.isPkcs11() ) {
 						pkcs11Found=true;
-						DebugLogger.printDebug("PKCS11Locationimp jarDIR:" + jarLocation.getJarDirectory().toString()); //$NON-NLS-1$
+						System.out.println("PKCS11Locationimp jarDIR:" + jarLocation.getJarDirectory().toString()); //$NON-NLS-1$
 						setJarDir( Paths.get(jarLocation.getJarDirectory().toString()) );
 					}
 					if ( isUnix() ) {
@@ -53,7 +53,7 @@ public class Pkcs11LocationImpl extends Pkcs11LibraryFinder implements Pkcs11Loc
 	@Override
 	public void initialize() {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("PKCS11Locationimpl  OVERRIDE INITIALIZE"); //$NON-NLS-1$
+		System.out.println("PKCS11Locationimpl  OVERRIDE INITIALIZE"); //$NON-NLS-1$
 
 	}
 

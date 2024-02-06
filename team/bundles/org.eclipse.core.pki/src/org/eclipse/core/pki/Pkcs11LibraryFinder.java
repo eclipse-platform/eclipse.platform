@@ -48,7 +48,7 @@ public class Pkcs11LibraryFinder {
 	// versions after 9 sinced they handle PKCS11 differently
 	//
 	public static Pkcs11LibraryFinder findSunPkcs11JarInstance() {
-		DebugLogger.printDebug("Pkcs11LibraryFinder ------------findSunPkcs11JarInstance"); //$NON-NLS-1$
+		System.out.println("Pkcs11LibraryFinder ------------findSunPkcs11JarInstance"); //$NON-NLS-1$
 		if ( instance == null ) {
 			synchronized(Pkcs11LocationImpl.class) {
 				if ( instance == null ) {
@@ -70,7 +70,7 @@ public class Pkcs11LibraryFinder {
 	// find the PKCS11 package, it could be in different places if it's on windows or Linux
 	//
 	private void initialize() {
-		DebugLogger.printDebug("Pkcs11LibraryFinder ------------initialize"); //$NON-NLS-1$
+		System.out.println("Pkcs11LibraryFinder ------------initialize"); //$NON-NLS-1$
 		try {
 			Path path = null;
 			StringBuffer sb = new StringBuffer();
@@ -126,7 +126,7 @@ public class Pkcs11LibraryFinder {
 		Path path = null;
 
 		path = Paths.get(sb.toString());
-		DebugLogger.printDebug("Pkcs11LibraryFinder  incoming PATH:" + path.toString()); //$NON-NLS-1$
+		System.out.println("Pkcs11LibraryFinder  incoming PATH:" + path.toString()); //$NON-NLS-1$
 		/*
 		 * FIRST  FIND THE JDK, then find jar:
 		 */
@@ -147,7 +147,7 @@ public class Pkcs11LibraryFinder {
         	{
         		Path path2 = Paths.get(sb.substring(0, index));
         		dirlist.add(path2);
-				DebugLogger.printDebug("JRE adding " + path2.toString()); //$NON-NLS-1$
+				System.out.println("JRE adding " + path2.toString()); //$NON-NLS-1$
         	}
 		}
 
@@ -160,7 +160,7 @@ public class Pkcs11LibraryFinder {
 				if (search(p, pattern, Integer.valueOf(4))) {
 					if (finder.getLocation().contains(jvmRuntime)) {
 						setJarDirectory(Paths.get(finder.getLocation()));
-						DebugLogger.printDebug("Pkcs11LibraryFinder  FOUND JAR in JVMRuntime"); //$NON-NLS-1$
+						System.out.println("Pkcs11LibraryFinder  FOUND JAR in JVMRuntime"); //$NON-NLS-1$
 						return true;
 					} else {
 						found = true;
@@ -202,15 +202,14 @@ public class Pkcs11LibraryFinder {
 		for ( String dir : list ) {
 			sb = new StringBuffer();
 			sb.append(dir);
-			DebugLogger.printDebug(" Pkcs11LibraryFinder   Searching:" + sb.toString()); //$NON-NLS-1$
+			System.out.println(" Pkcs11LibraryFinder   Searching:" + sb.toString()); //$NON-NLS-1$
 			if ( findLocation(sb) ) {
 				foundJar=true;
 			}
 		}
 
 		if ( !(foundJar) ) {
-			DebugLogger
-					.printDebug(" Pkcs11LibraryFinder --  Could not locate a sunpkcs11.jar in JDK or JRE, Trying P12"); //$NON-NLS-1$
+			System.out.println(" Pkcs11LibraryFinder --  Could not locate a sunpkcs11.jar in JDK or JRE, Trying P12"); //$NON-NLS-1$
 		}
 
 		return sb;
