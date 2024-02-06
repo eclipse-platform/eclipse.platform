@@ -37,13 +37,13 @@ public class DynamicFileFinder extends SimpleFileVisitor <Path>  {
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
 		Path name = file.getFileName();
 		if ( pathMatcher.matches(name)) {
-			DebugLogger.printDebug("FILE:" + name.toString()); //$NON-NLS-1$
-			DebugLogger.printDebug("path:" + file.toString()); //$NON-NLS-1$
+			System.out.println("FILE:" + name.toString()); //$NON-NLS-1$
+			System.out.println("path:" + file.toString()); //$NON-NLS-1$
 			list.add( file );
 			location = file.toString();
 			found=true;
 		}
-		DebugLogger.printDebug("NOT A MATCH FILE:" + name.toString()); //$NON-NLS-1$
+		System.out.println("NOT A MATCH FILE:" + name.toString()); //$NON-NLS-1$
 		return FileVisitResult.CONTINUE;
 	}
 	@Override
@@ -52,13 +52,13 @@ public class DynamicFileFinder extends SimpleFileVisitor <Path>  {
 	}
 	@Override
 	public FileVisitResult preVisitDirectory( Path dir,  BasicFileAttributes attr) {
-		DebugLogger.printDebug("SKIPPING dir:" + dir.toString()); //$NON-NLS-1$
+		System.out.println("SKIPPING dir:" + dir.toString()); //$NON-NLS-1$
 		Path name = dir.getFileName();
 		if ( pathMatcher.matches(name)) {
-			DebugLogger.printDebug("DIR FILE:" + name.toString()); //$NON-NLS-1$
-			DebugLogger.printDebug("DIR path:" + dir.toString()); //$NON-NLS-1$
+			System.out.println("DIR FILE:" + name.toString()); //$NON-NLS-1$
+			System.out.println("DIR path:" + dir.toString()); //$NON-NLS-1$
 		}
-		DebugLogger.printDebug("   DIR   NOT A MATCH FILE:" + name.toString()); //$NON-NLS-1$
+		System.out.println("   DIR   NOT A MATCH FILE:" + name.toString()); //$NON-NLS-1$
 		return FileVisitResult.CONTINUE;
 	}
 	public boolean isFound() {

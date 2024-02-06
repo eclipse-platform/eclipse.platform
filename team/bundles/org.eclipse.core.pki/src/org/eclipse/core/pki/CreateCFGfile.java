@@ -38,7 +38,7 @@ public class CreateCFGfile {
 		StringBuffer sb = new StringBuffer();
 
 		try {
-			DebugLogger.printDebug("CreateCFGfile  ----   Pkcs11cfgHome:" + Pkcs11cfgHome); //$NON-NLS-1$
+			System.out.println("CreateCFGfile  ----   Pkcs11cfgHome:" + Pkcs11cfgHome); //$NON-NLS-1$
 			Charset charset = Charset.forName(charsetName);
 			sb.append(System.getProperty("user.home")); //$NON-NLS-1$
 			sb.append(FileSystems.getDefault().getSeparator());
@@ -47,7 +47,7 @@ public class CreateCFGfile {
 			Path cspidDir = Paths.get (sb.toString() );
 			Files.createDirectories( cspidDir );
 			sb.append("java_pkcs11.cfg"); //$NON-NLS-1$
-			DebugLogger.printDebug("CreateCFGfile  ----   NEW CFG FILE::" + sb.toString()); //$NON-NLS-1$
+			System.out.println("CreateCFGfile  ----   NEW CFG FILE::" + sb.toString()); //$NON-NLS-1$
 			Path path = Paths.get (sb.toString() );
 
 			if (!(path.toFile().exists() )) {

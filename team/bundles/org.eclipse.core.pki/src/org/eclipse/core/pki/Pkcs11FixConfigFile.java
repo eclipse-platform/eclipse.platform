@@ -42,7 +42,7 @@ public class Pkcs11FixConfigFile {
 				if ( configFile == null ) {
 					configFile = new Pkcs11FixConfigFile();
 					cspidHome = fileLocation;
-					DebugLogger.printDebug("Pkcs11FixConfigFile --  incoming path:" + fileLocation); //$NON-NLS-1$
+					System.out.println("Pkcs11FixConfigFile --  incoming path:" + fileLocation); //$NON-NLS-1$
 					sb.append(fileLocation);
 					initialize();
 				}
@@ -86,7 +86,7 @@ public class Pkcs11FixConfigFile {
 
 			path = Paths.get(sb.toString());
 			//setCfgFilePath( sb.toString());
-			DebugLogger.printDebug("Pkcs11FixCOnfigFile ----  cspidHome:" + cspidHome); //$NON-NLS-1$
+			System.out.println("Pkcs11FixCOnfigFile ----  cspidHome:" + cspidHome); //$NON-NLS-1$
 			setCfgFilePath( CreateCFGfile.initialize( cspidHome ));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -164,9 +164,9 @@ public class Pkcs11FixConfigFile {
 	}
 	/*
 	 * private static void listEditedFile( List <String> list ) {
-	 * DebugLogger.printDebug("PKCS11FixConfigFile ----  ARCH:" +
+	 * System.out.println("PKCS11FixConfigFile ----  ARCH:" +
 	 * System.getProperty("os.arch")); //$NON-NLS-1$ //$NON-NLS-2$ for ( String s :
-	 * list) { DebugLogger.printDebug("PKCS11FixConfigFile ----  edited line:" + s);
+	 * list) { System.out.println("PKCS11FixConfigFile ----  edited line:" + s);
 	 * //$NON-NLS-1$ } }
 	 */
 }
