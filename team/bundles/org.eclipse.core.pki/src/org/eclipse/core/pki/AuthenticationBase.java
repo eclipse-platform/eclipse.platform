@@ -29,6 +29,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.eclipse.core.pki.AuthenticationService;
 import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.LogUtil;
 
