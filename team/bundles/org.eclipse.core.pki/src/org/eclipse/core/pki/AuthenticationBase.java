@@ -63,7 +63,7 @@ public enum AuthenticationBase implements AuthenticationService {
 				if (!(pin.equalsIgnoreCase("pin"))) { //$NON-NLS-1$
 					keyStore.load(null, pp.getPassword());
 					AuthenticationBase.INSTANCE.setSSLContext(keyStore);
-					DebugLogger.printDebug("AuthenticationBase SSL context PROTOCOL:" + sslContext.getProtocol()); //$NON-NLS-1$
+					System.out.println("AuthenticationBase SSL context PROTOCOL:" + sslContext.getProtocol()); //$NON-NLS-1$
 				}
 
 			} catch (Exception e) {
@@ -99,7 +99,7 @@ public enum AuthenticationBase implements AuthenticationService {
 		KeyStore keyStore = null;
 		is9 = true;
 
-		// DebugLogger.printDebug("In configure CFG STORED FILE LOC:" +
+		// System.out.println("In configure CFG STORED FILE LOC:" +
 		// AuthenticationPlugin.getDefault()
 		// .getPreferenceStore().getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION));
 
@@ -181,7 +181,7 @@ public enum AuthenticationBase implements AuthenticationService {
 		KeyManager[] keyManagers = new KeyManager[1];
 		TrustManager[] trustManagers = new TrustManager[1];
 		try {
-			DebugLogger.printDebug("In setSSLContext initialize TLS"); //$NON-NLS-1$
+			System.out.println("In setSSLContext initialize TLS"); //$NON-NLS-1$
 			// sslContext = SSLContext.getInstance("TLS");
 			sslContext = SSLContext.getInstance("TLSv1.3"); //$NON-NLS-1$
 			Optional<X509TrustManager> PKIXtrust = ConfigureTrust.MANAGER.setUp();
@@ -252,9 +252,9 @@ public enum AuthenticationBase implements AuthenticationService {
 	 * private static void listProviders() {
 	 *
 	 * Provider[] providers = Security.getProviders(); for (Provider provider :
-	 * providers) { DebugLogger.printDebug("In configurejdk9 PROVIDER:" +
+	 * providers) { System.out.println("In configurejdk9 PROVIDER:" +
 	 * provider.getName()); //$NON-NLS-1$
-	 * DebugLogger.printDebug("In configurejdk9 PROVIDER INFO:" +
+	 * System.out.println("In configurejdk9 PROVIDER INFO:" +
 	 * provider.getInfo()); //$NON-NLS-1$ } }
 	 */
 
@@ -264,9 +264,9 @@ public enum AuthenticationBase implements AuthenticationService {
 	 * (provider.getName().contains("FIPS")) { //$NON-NLS-1$
 	 *
 	 * for (Provider.Service service : provider.getServices() ) {
-	 * DebugLogger.printDebug("FIPS Algorithm:"+ service.getAlgorithm()); }
+	 * System.out.println("FIPS Algorithm:"+ service.getAlgorithm()); }
 	 *
-	 * DebugLogger.printDebug("FIPS Provider:" + provider.getName()); //$NON-NLS-1$
+	 * System.out.println("FIPS Provider:" + provider.getName()); //$NON-NLS-1$
 	 * enabled = true; }
 	 *
 	 * } return enabled; }
