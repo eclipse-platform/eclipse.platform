@@ -37,7 +37,6 @@ import java.util.Hashtable;
 
 import javax.net.ssl.X509KeyManager;
 
-import org.eclipse.core.pki.DebugLogger;
 import org.eclipse.core.pki.FingerprintX509;
 
 //import sun.security.pkcs11.wrapper.PKCS11Exception;
@@ -299,7 +298,7 @@ public enum KeyStoreManager implements X509KeyManager {
 						if (!(isKeyEncipherment(x509.getKeyUsage()))) {
 							// selectedAlias=alias;
 							fingerprint = FingerprintX509.INSTANCE.getFingerPrint(x509, "MD5"); //$NON-NLS-1$
-							DebugLogger.printDebug("KeyManager -  SELECTED finger:" + getSelectedFingerprint()); //$NON-NLS-1$
+							System.out.println("KeyManager -  SELECTED finger:" + getSelectedFingerprint()); //$NON-NLS-1$
 							// System.err.println("KeyManager - DUMP OUT DATA:"+info);
 
 							if (getSelectedFingerprint() != null) {
@@ -420,7 +419,7 @@ public enum KeyStoreManager implements X509KeyManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DebugLogger.printDebug("KeyStoreManager CERTIFICATE CHAIN  COUNT:" + X509Certs.length); //$NON-NLS-1$
+		System.out.println("KeyStoreManager CERTIFICATE CHAIN  COUNT:" + X509Certs.length); //$NON-NLS-1$
 		// return X509Certs;
 		try {
 			X509Certs = new X509Certificate[1];
@@ -429,7 +428,7 @@ public enum KeyStoreManager implements X509KeyManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DebugLogger.printDebug("CustomKeyManager CERTIFICATE CHAIN  COUNT:" + X509Certs.length); //$NON-NLS-1$
+		System.out.println("CustomKeyManager CERTIFICATE CHAIN  COUNT:" + X509Certs.length); //$NON-NLS-1$
 		return X509Certs;
 	}
 
