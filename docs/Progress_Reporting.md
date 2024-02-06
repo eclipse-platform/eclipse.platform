@@ -1,11 +1,9 @@
-
-
 Progress Reporting
 ==================
 
 **Are you working with Progress Monitors, and wish you did not have too?**
 
-_by Henrik Lindberg - originally posted on [Eclipse by Planatery Transitions](http://henrik-eclipse.blogspot.com/2009/05/progress-monitor-patterns.html)_
+_by Henrik Lindberg_ - originally posted on [Eclipse by Planatery Transitions](https://henrik-eclipse.blogspot.com/2009/05/progress-monitor-patterns.html)
 
 Contents
 --------
