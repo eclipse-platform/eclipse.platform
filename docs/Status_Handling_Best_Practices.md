@@ -85,7 +85,7 @@ Eclipse provides a great mechanism to manage your messages from within your Java
 
 Developing Message Bundles in Eclipse \[ [http://help.eclipse.org/help32/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/message_bundles.html](http://help.eclipse.org/help32/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/message_bundles.html)\]
 
-For futher information see [https://icu.unicode.org/](https://icu.unicode.org/).
+For futher information see [ICU-TC Home Page](https://icu.unicode.org/).
 
 About logging and Error Dialog
 ==============================
