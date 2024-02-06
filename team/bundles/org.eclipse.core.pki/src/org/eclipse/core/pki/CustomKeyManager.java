@@ -61,7 +61,6 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 			sb.append(message);
 			while ( aliases.hasMoreElements() ) {
 				alias = aliases.nextElement();
-				DebugLogger.printDebug("CustomKeyManager --------------------- chooseClientAlias:" + alias); //$NON-NLS-1$
 				if ( this.getPrivateKey(alias) != null ) {
 					X509Certificate x509 = (X509Certificate) this.keyStore.getCertificate(alias);
 					try {
@@ -69,7 +68,7 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 						if (!(isKeyEncipherment(x509.getKeyUsage()))) {
 							//selectedAlias=alias;
 							fingerprint = FingerprintX509.INSTANCE.getFingerPrint(x509, "MD5"); //$NON-NLS-1$
-							DebugLogger.printDebug("KeyManager -  SELECTED finger:" + getSelectedFingerprint()); //$NON-NLS-1$
+							System.out.println("KeyManager -  SELECTED finger:" + getSelectedFingerprint()); //$NON-NLS-1$
 							//System.err.println("KeyManager -  DUMP OUT DATA:"+info);
 
 							if ( getSelectedFingerprint() != null ) {
@@ -133,7 +132,6 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 	@Override
 	public String chooseServerAlias(String arg0, Principal[] arg1, Socket arg2) {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CustomKeyManager ---- chooseServertAlias"); //$NON-NLS-1$
 		return null;
 	}
 
@@ -141,7 +139,6 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 	public X509Certificate[] getCertificateChain(String alias) {
 		// TODO Auto-generated method stub
 
-		DebugLogger.printDebug("CustomKeyManager ---- getCertificateChain INCOMING ALIAS:" + alias); //$NON-NLS-1$
 		X509Certificate[] X509Certs=null;
 		X509Certificate X509Cert=null;
 		try {
@@ -178,7 +175,6 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DebugLogger.printDebug("CustomKeyManager CERTIFICATE CHAIN  COUNT:" + X509Certs.length); //$NON-NLS-1$
 		//return X509Certs;
 		try {
 			X509Certs = new X509Certificate[1];
@@ -187,7 +183,6 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DebugLogger.printDebug("CustomKeyManager CERTIFICATE CHAIN  COUNT:" + X509Certs.length); //$NON-NLS-1$
 		return X509Certs;
 	}
 
@@ -195,7 +190,6 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 	public String[] getClientAliases(String arg0, Principal[] arg1) {
 		// TODO Auto-generated method stub
 		//return null;
-		DebugLogger.printDebug("CustomKeyManager -----------------------------getClientAliases"); //$NON-NLS-1$
 		return new String[] {chooseClientAlias(null, arg1, null) };
 
 	}
@@ -203,7 +197,6 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 	@Override
 	public PrivateKey getPrivateKey(String alias) {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CustomKeyManager ---------------------getPrivateKey  ALIAS:" + alias); //$NON-NLS-1$
 		PrivateKey privateKey = null;
 		try {
 			privateKey = (PrivateKey) keyStore.getKey(alias, "".toCharArray()); //$NON-NLS-1$
@@ -223,7 +216,6 @@ public class CustomKeyManager extends X509ExtendedKeyManager implements X509KeyM
 	@Override
 	public String[] getServerAliases(String arg0, Principal[] arg1) {
 		// TODO Auto-generated method stub
-		DebugLogger.printDebug("CustomKeyManager ---- getServertAliases"); //$NON-NLS-1$
 		return null;
 	}
 	public static String getSelectedFingerprint() {
