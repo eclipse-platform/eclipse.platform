@@ -88,7 +88,7 @@ Consequently, repository users expect the content of these repositories to be st
 
 The following document describes the retention policy used by the Eclipse project:
 
-*   Release repositories: the repository contains all the metadata and artifact of a given release (e.g. Galileo) and no content is ever removed from it. When a new SR is made available the metadata and the artifacts are appended to the existing repository.
+*   Release repositories: the repository contains all the metadata and artifact of a given release and no content is ever removed from it. When a new SR is made available the metadata and the artifacts are appended to the existing repository.
 *   Integration build repositories: content is expected to stay until the milestone is complete, but can be disposed at any time. They may be deleted but usually only if it is known to be a "bad" I-build (that is, will hurt something if installed).
 *   Nightly build repositories: content can be disposed at any time.
 
