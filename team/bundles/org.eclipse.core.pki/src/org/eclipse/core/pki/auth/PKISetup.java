@@ -147,6 +147,7 @@ public class PKISetup implements BundleActivator, IStartup {
 					} else {
 						LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
 						keyStore = keystoreContainer.get();
+						KeyStoreManager.INSTANCE.setKeyStore(keyStore);
 						setKeyStoreLoaded(true);
 					}
 				}
