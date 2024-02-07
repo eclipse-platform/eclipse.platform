@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.security.InvalidParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
+import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -40,7 +41,8 @@ public enum AuthenticationBase implements AuthenticationService {
 	static KeyStore.PasswordProtection pp = new KeyStore.PasswordProtection("".toCharArray()); //$NON-NLS-1$
 	// private static final String javaVersion = System.getProperty("java.version");
 	protected boolean is9;
-	protected String PKI_PROVIDER = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
+	protected String pkiProvider = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
+	protected String cfgDirectory = null;
 	protected String fingerprint;
 
 	@Override
@@ -112,18 +114,20 @@ public enum AuthenticationBase implements AuthenticationService {
 
 		configurationDirectory = Optional.ofNullable(System.getProperty("javax.net.ssl.cfgFileLocation")); //$NON-NLS-1$
 		if (configurationDirectory.isEmpty()) {
-			cfgDirectory = new String("/etc/opensc"); //$NON-NLS-1$
+			// Where is it for Windoz
+			//TBD:  find default setting
+			setCfgDirectory(new String("/etc/opensc")); //$NON-NLS-1$
 		} else {
-			cfgDirectory = configurationDirectory.get().toString();
+			setCfgDirectory(configurationDirectory.get().toString());
 		}
 
-		if (Files.exists(Paths.get(cfgDirectory))) {
-			LogUtil.logInfo("AuthenticationBase - PKCS11 configure  DIR:" + cfgDirectory); //$NON-NLS-1$
+		if (Files.exists(Paths.get(getCfgDirectory()))) {
+			LogUtil.logInfo("AuthenticationBase - PKCS11 configure  DIR:" + getCfgDirectory()); //$NON-NLS-1$
 			providerContainer=Optional.ofNullable(
 							System.getProperty("javax.net.ssl.keyStoreProvider")); //$NON-NLS-1$
 
 			if (providerContainer.isEmpty() ) {
-				securityProvider = PKI_PROVIDER;
+				securityProvider = pkiProvider;
 			} else {
 				securityProvider = providerContainer.get().toString();
 			}
@@ -133,10 +137,11 @@ public enum AuthenticationBase implements AuthenticationService {
 			}
 
 			try {
-				Provider provider = prototype.configure(cfgDirectory);
+				Provider provider = prototype.configure(getCfgDirectory());
 
 				Security.addProvider(provider);
-				keyStore = KeyStore.getInstance("pkcs11"); //$NON-NLS-1$
+				keyStore = KeyStore.getInstance("pkcs11", provider.getName() ); //$NON-NLS-1$
+				setPkiProvider(provider.getName());
 			} catch (KeyStoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -147,6 +152,9 @@ public enum AuthenticationBase implements AuthenticationService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullPointerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchProviderException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -204,6 +212,14 @@ public enum AuthenticationBase implements AuthenticationService {
 		return sslContext;
 	}
 
+	public String getPkiProvider() {
+		return pkiProvider;
+	}
+
+	public void setPkiProvider(String pkiProvider) {
+		this.pkiProvider = pkiProvider;
+	}
+
 	public boolean isJava9() {
 		return is9;
 	}
@@ -235,6 +251,14 @@ public enum AuthenticationBase implements AuthenticationService {
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
+	}
+	
+	public String getCfgDirectory() {
+		return cfgDirectory;
+	}
+
+	public void setCfgDirectory(String cfgDirectory) {
+		this.cfgDirectory = cfgDirectory;
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import java.security.Provider;
 import java.security.Security;
 import java.util.Optional;
 
+import org.eclipse.core.pki.AuthenticationBase;
 import org.eclipse.core.pki.auth.PKIState;
 import org.eclipse.core.pki.pkiselection.PKI;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
@@ -82,7 +83,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		noDefaultButton();
 		setPreferenceStore(AuthenticationPlugin.getDefault().getPreferenceStore());
 		setDescription("PKI Preferences:");
-		//printoutStore();
+		printoutStore();
 		//listProviders();
 		previousPKI = this.previousPKI();
 		pkiSecureStorage = new PKISecureStorage();
@@ -96,7 +97,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	}
 	@Override
     protected Control createContents(Composite parent) {
-		
+		String propertyAddedProvider=null;
 		// help to debug
 		//yourParent.getChildren()[0].setBackground(yellow);
 		
@@ -128,12 +129,25 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         	setPkcs11Visible();
         	
         	setVisible(false);
-        	String propertyAddedProvider = 
-    				Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreProvider")).
-    				orElse("");
-    		//System.out.println("PreferencePage --------- preference:"+ propertyAddedProvider);
+        	
+        	Optional incomingProvider = Optional.ofNullable(AuthenticationBase.INSTANCE.getPkiProvider());
+        	if ( incomingProvider.isEmpty() ) {
+        		propertyAddedProvider = 
+        				Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreProvider")).
+        				orElse("");
+        		securityProvider.setStringValue(propertyAddedProvider);
+        	} else {
+        		securityProvider.setStringValue((String) incomingProvider.get());
+        	}       	
+    		System.out.println("PreferencePage --------- preference:"+ propertyAddedProvider);
     		
-        	securityProvider.setStringValue(propertyAddedProvider);
+    		Optional cfgDirectoryHolder = Optional.ofNullable(AuthenticationBase.INSTANCE.getCfgDirectory());
+    		
+    		if ( cfgDirectoryHolder.isEmpty() ) {
+    			configurationLocationFile.setStringValue("Set to your PKCS11 cfg file");
+    		} else {
+    			configurationLocationFile.setStringValue((String) cfgDirectoryHolder.get());
+    		}
     		
     		
     		AuthenticationPlugin.getDefault()
@@ -362,6 +376,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 								pkcs11Certificate.setStringValue( "pkcs11" );
 								
 						
+								System.out.println("PreferencePage SETTING certificate path for PKCS11 FIX THIS");
 								AuthenticationPlugin.getDefault().setCertificatePath("pkcs11");
 								
 								//System.out.println("PreferencePage SECURITYPROVIDER:"+ securityProvider.getStringValue());
