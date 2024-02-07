@@ -134,7 +134,7 @@ public enum KeyStoreManager implements X509KeyManager {
 	public KeyStore getKeyStore() {
 		return keyStore;
 	}
-	public void getKeyStore(KeyStore keyStore) {
+	public void setKeyStore(KeyStore keyStore) {
 		this.keyStore=keyStore;
 		setKeyStoreInitialized(true);
 	}
