@@ -80,3 +80,16 @@ These repos go well together with the latest release train repo: [http://downloa
 | Current Integration builds | [http://download.eclipse.org/eclipse/updates/I-builds](http://download.eclipse.org/eclipse/updates/I-builds) | See above |
 | Latest Release | [https://download.eclipse.org/eclipse/updates/latest](https://download.eclipse.org/eclipse/updates/latest) | See above |
 
+#### Eclipse/Repository retention policy
+
+p2's ability to provision complete products from repositories has made the concept of repositories a first-class citizen of the eclipse ecosystem. 
+People can now use repositories during the build, at development time to setup their target and find missing bundles or simply to setup their IDE. 
+Consequently, repository users expect the content of these repositories to be stable, and it is important to make the retention policy of each repository clearly available.
+
+The following document describes the retention policy used by the Eclipse project:
+
+*   Release repositories: the repository contains all the metadata and artifact of a given release (e.g. Galileo) and no content is ever removed from it. When a new SR is made available the metadata and the artifacts are appended to the existing repository.
+*   Integration build repositories: content is expected to stay until the milestone is complete, but can be disposed at any time. They may be deleted but usually only if it is known to be a "bad" I-build (that is, will hurt something if installed).
+*   Nightly build repositories: content can be disposed at any time.
+
+Though specific to the Eclipse platform team, these rules are general enough that we encourage any other team producing repositories to follow them.
