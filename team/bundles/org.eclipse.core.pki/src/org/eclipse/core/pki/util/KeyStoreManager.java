@@ -134,6 +134,10 @@ public enum KeyStoreManager implements X509KeyManager {
 	public KeyStore getKeyStore() {
 		return keyStore;
 	}
+	public void getKeyStore(KeyStore keyStore) {
+		this.keyStore=keyStore;
+		setKeyStoreInitialized(true);
+	}
 
 	public Hashtable<X509Certificate, PrivateKey> getCertificates(KeyStore keyStore) {
 
