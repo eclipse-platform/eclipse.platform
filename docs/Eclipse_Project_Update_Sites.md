@@ -63,9 +63,9 @@ The following is the list of actual and planned statble update sites for release
 
 #### Non-versioned repository URLs
 
-For the current development release you also find integration update sites, for example if the current development release is 4.35 you find:
+For the current development release you also find integration update sites, the following site points to the current integration update site:
 
-* https://download.eclipse.org/eclipse/updates/4.35-I-builds/ 
+* https://download.eclipse.org/eclipse/updates/I-builds/
 
 Last 7-days I-builds are retained along with every weeks Monday's I-builds until a milestone is available; they will be removed once a milestone is available.   
 To be explicit, only about four integration builds are left in the composite I-build repository, even though the simple repositories are retained until the release is avail
