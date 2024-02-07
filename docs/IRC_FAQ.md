@@ -42,10 +42,7 @@ Contents
     *   [2.28 How do I install PDT?](#How-do-I-install-PDT.3F)
     *   [2.29 How do I install a plug-in with multiple dependencies?](#How-do-I-install-a-plug-in-with-multiple-dependencies.3F)
     *   [2.30 How do I uninstall a plug-in?](#How-do-I-uninstall-a-plug-in.3F)
-    *   [2.31 I'm getting "Network is unreachable" error messages when I'm trying to use the provisioning system on a Debian/Debian-based system. What should I do?](#I.27m-getting-.22Network-is-unreachable.22-error-messages-when-I.27m-trying-to-use-the-provisioning-system-on-a-Debian.2FDebian-based-system.-What-should-I-do.3F)
 *   [3 Crashers, Freezing, and other Major Issues](#Crashers.2C-Freezing.2C-and-other-Major-Issues)
-    *   [3.1 Eclipse is constantly crashing for me on Oracle's / Apple's Java 6 HotSpot VM...](#Eclipse-is-constantly-crashing-for-me-on-Oracle.27s-.2F-Apple.27s-Java-6-HotSpot-VM...)
-    *   [3.2 Eclipse gets past the splash screen but then an empty window appears / Eclipse is crashing on me whenever I initiate a browser component such as hovering over Java methods for javadoc tooltips...](#Eclipse-gets-past-the-splash-screen-but-then-an-empty-window-appears-.2F-Eclipse-is-crashing-on-me-whenever-I-initiate-a-browser-component-such-as-hovering-over-Java-methods-for-javadoc-tooltips...)
     *   [3.6 I'm having memory, heap, or permgen problems, what can I do?](#I.27m-having-memory.2C-heap.2C-or-permgen-problems.2C-what-can-I-do.3F)
     *   [3.8 Eclipse buttons in dialogs and other places are not working for me if I click them with the mouse. I also cannot see anything in the tree when I try to install updates. What's going on?](#Eclipse-buttons-in-dialogs-and-other-places-are-not-working-for-me-if-I-click-them-with-the-mouse.-I-also-cannot-see-anything-in-the-tree-when-I-try-to-install-updates.-What.27s-going-on.3F)
     *   [3.9 Eclipse seems to be hanging on startup. How can I find out why?](#Eclipse-seems-to-be-hanging-on-startup.-How-can-I-find-out-why.3F)
@@ -319,10 +316,6 @@ To receive updates for the plugins you copied, you also have to copy their updat
 You can view your list of installed software by checking your installation details from about dialog.
 
 *   Help > About > Installation Details
-
-### I'm getting "Network is unreachable" error messages when I'm trying to use the provisioning system on a Debian/Debian-based system. What should I do?
-
-There's a setting that has been introduced regarding IPv6 that is causing this problem. Please check [Debian's bug tracking system](http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=560044) for more information.
 
 Crashers, Freezing, and other Major Issues
 ------------------------------------------
