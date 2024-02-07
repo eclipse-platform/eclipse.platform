@@ -95,6 +95,4 @@ Contents
 | --- | --- |
 | Eclipse indexes its help files by looking at the text in the page and weighting titles over paragraphs. However, there can be times when you want the index to show text that does not display on the page. For example, if Eclipse uses its own terminology for a function, you might want users to be able to look up synonyms.  To have the Eclipse index generate a hit for "autosave" (a function that Eclipse has under another name) add a meta "keywords" tag before the </head> tag.   |                    <meta name="keywords" content="autosave">           |
 
-* * *
-Back to [Eclipse Documentation](/Eclipse_Documentation "Eclipse Documentation")
 
