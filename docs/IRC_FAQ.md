@@ -1,3 +1,8 @@
+# NOTE: LOTS OF QUESTIONS AND ANSWERS ARE NOT UP TO DATE
+
+# This document is based on frequently asked questions in a older support channel of Eclipse called IRC and was located in a wiki which has been deprecreated
+# In Febr. 2024 the most outdated content has been removed or updated but if you see something which you can improve / update please send a PR for this repo
+
 
 
 IRC FAQ
@@ -10,23 +15,15 @@ Contents
 
 *   [1 General](#General)
     *   [1.1 I'm new, what should I read first?](#I.27m-new.2C-what-should-I-read-first.3F)
-    *   [1.2 What are #eclipse and #eclipse-dev about?](#What-are-.23eclipse-and-.23eclipse-dev-about.3F)
-    *   [1.3 I am looking for help with developing with Eclipse. Should I ask on #eclipse or #eclipse-dev?](#I-am-looking-for-help-with-developing-with-Eclipse.-Should-I-ask-on-.23eclipse-or-.23eclipse-dev.3F)
-    *   [1.4 Are there other active channels about Eclipse?](#Are-there-other-active-channels-about-Eclipse.3F)
-    *   [1.5 Nobody is answering my question. What should I do?](#Nobody-is-answering-my-question.-What-should-I-do.3F)
 *   [2 Installation, Startup and Runtime](#Installation.2C-Startup-and-Runtime)
     *   [2.1 Where can I get Eclipse?](#Where-can-I-get-Eclipse.3F)
     *   [2.2 What's the difference between all the different packages like 'Eclipse IDE for Java Developers' and the 'Eclipse IDE for Java EE Developers'? What do they contain? Do they contain source code?](#What.27s-the-difference-between-all-the-different-packages-like-.27Eclipse-IDE-for-Java-Developers.27-and-the-.27Eclipse-IDE-for-Java-EE-Developers.27.3F-What-do-they-contain.3F-Do-they-contain-source-code.3F)
-    *   [2.3 There is no package for the platform I'm on. What can I do?](#There-is-no-package-for-the-platform-I.27m-on.-What-can-I-do.3F)
-    *   [2.4 I don't want multiple Eclipse installations. How do I merge those packages into one?](#I-don.27t-want-multiple-Eclipse-installations.-How-do-I-merge-those-packages-into-one.3F)
-    *   [2.5 How do I verify my download? Are there any MD5 or SHA1 hashes for me to verify my download against?](#How-do-I-verify-my-download.3F-Are-there-any-MD5-or-SHA1-hashes-for-me-to-verify-my-download-against.3F)
-    *   [2.6 What are all these strangely named releases?](#What-are-all-these-strangely-named-releases.3F)
-    *   [2.7 Where can I get a list of all the Eclipse projects?](#Where-can-I-get-a-list-of-all-the-Eclipse-projects.3F)
+    *   [2.3 How do I verify my download? Are there any MD5 or SHA1 hashes for me to verify my download against?](#How-do-I-verify-my-download.3F-Are-there-any-MD5-or-SHA1-hashes-for-me-to-verify-my-download-against.3F)
+    *   [2.4 What are all these strangely named releases?](#What-are-all-these-strangely-named-releases.3F)
+    *   [2.5 Where can I get a list of all the Eclipse projects?](#Where-can-I-get-a-list-of-all-the-Eclipse-projects.3F)
     *   [2.8 Where can I get project XYZ?](#Where-can-I-get-project-XYZ.3F)
         *   [2.8.1 Is there a GUI Builder?](#Is-there-a-GUI-Builder.3F)
-        *   [2.8.2 Is there a PHP editor for Eclipse 3.3 Europa / Eclipse 3.4 Ganymede?](#Is-there-a-PHP-editor-for-Eclipse-3.3-Europa-.2F-Eclipse-3.4-Ganymede.3F)
     *   [2.9 What is p2?](#What-is-p2.3F)
-    *   [2.10 What is the Update Manager?](#What-is-the-Update-Manager.3F)
     *   [2.11 How do I start Eclipse?](#How-do-I-start-Eclipse.3F)
     *   [2.12 How do I upgrade/update Eclipse?](#How-do-I-upgrade.2Fupdate-Eclipse.3F)
     *   [2.13 What other command line arguments are available?](#What-other-command-line-arguments-are-available.3F)
@@ -36,16 +33,9 @@ Contents
             *   [2.14.2.1 Launching as an Eclipse Application using PDE](#Launching-as-an-Eclipse-Application-using-PDE)
             *   [2.14.2.2 Attaching to a running instance](#Attaching-to-a-running-instance)
         *   [2.14.3 Shared Installation Problems](#Shared-Installation-Problems)
-    *   [2.15 How do I find out which Java runtime environment is being used to run Eclipse?](#How-do-I-find-out-which-Java-runtime-environment-is-being-used-to-run-Eclipse.3F)
-    *   [2.16 Can I upgrade from Eclipse 3.2 (Callisto) to Eclipse 3.3 (Europa)?](#Can-I-upgrade-from-Eclipse-3.2-.28Callisto.29-to-Eclipse-3.3-.28Europa.29.3F)
     *   [2.17 Can I use my Eclipse workspace from an old release with a new Eclipse release?](#Can-I-use-my-Eclipse-workspace-from-an-old-release-with-a-new-Eclipse-release.3F)
     *   [2.18 How do I use a different workspace?](#How-do-I-use-a-different-workspace.3F)
-    *   [2.19 How do I install Eclipse on Linux?](#How-do-I-install-Eclipse-on-Linux.3F)
-    *   [2.20 How do I install Eclipse on Solaris?](#How-do-I-install-Eclipse-on-Solaris.3F)
     *   [2.21 I just unzipped Eclipse, but it does not start. Why?](#I-just-unzipped-Eclipse.2C-but-it-does-not-start.-Why.3F)
-    *   [2.22 I just installed Eclipse on Linux, but it does not start. What is the problem?](#I-just-installed-Eclipse-on-Linux.2C-but-it-does-not-start.-What-is-the-problem.3F)
-    *   [2.23 I just installed Eclipse on my 64-bit system, but it does not start. What is the problem?](#I-just-installed-Eclipse-on-my-64-bit-system.2C-but-it-does-not-start.-What-is-the-problem.3F)
-    *   [2.24 When I try to install a plug-in, I get a "Cannot connect to keystore." error, what should I do?](#When-I-try-to-install-a-plug-in.2C-I-get-a-.22Cannot-connect-to-keystore..22-error.2C-what-should-I-do.3F)
     *   [2.25 When I start Eclipse it says "Workspace in use or cannot be created, choose a different one.", what should I do?](#When-I-start-Eclipse-it-says-.22Workspace-in-use-or-cannot-be-created.2C-choose-a-different-one..22.2C-what-should-I-do.3F)
     *   [2.26 How do I copy plugins between Eclipse installations with p2?](#How-do-I-copy-plugins-between-Eclipse-installations-with-p2.3F)
     *   [2.27 How come my list of update sites is completely empty when other people says theirs has stuff in it?](#How-come-my-list-of-update-sites-is-completely-empty-when-other-people-says-theirs-has-stuff-in-it.3F)
@@ -56,16 +46,10 @@ Contents
 *   [3 Crashers, Freezing, and other Major Issues](#Crashers.2C-Freezing.2C-and-other-Major-Issues)
     *   [3.1 Eclipse is constantly crashing for me on Oracle's / Apple's Java 6 HotSpot VM...](#Eclipse-is-constantly-crashing-for-me-on-Oracle.27s-.2F-Apple.27s-Java-6-HotSpot-VM...)
     *   [3.2 Eclipse gets past the splash screen but then an empty window appears / Eclipse is crashing on me whenever I initiate a browser component such as hovering over Java methods for javadoc tooltips...](#Eclipse-gets-past-the-splash-screen-but-then-an-empty-window-appears-.2F-Eclipse-is-crashing-on-me-whenever-I-initiate-a-browser-component-such-as-hovering-over-Java-methods-for-javadoc-tooltips...)
-    *   [3.3 The Java EE build for Eclipse Ganymede / Eclipse 3.4 does not run for me but the Eclipse Classic build starts up just fine...](#The-Java-EE-build-for-Eclipse-Ganymede-.2F-Eclipse-3.4-does-not-run-for-me-but-the-Eclipse-Classic-build-starts-up-just-fine...)
-    *   [3.4 Why does Eclipse hang for an extended period of time after opening an editor in Linux/gtk+?](#Why-does-Eclipse-hang-for-an-extended-period-of-time-after-opening-an-editor-in-Linux.2Fgtk.2B.3F)
-    *   [3.5 Eclipse is crashing for me when performing Subversion operations on Windows. I am using Subclipse.](#Eclipse-is-crashing-for-me-when-performing-Subversion-operations-on-Windows.-I-am-using-Subclipse.)
     *   [3.6 I'm having memory, heap, or permgen problems, what can I do?](#I.27m-having-memory.2C-heap.2C-or-permgen-problems.2C-what-can-I-do.3F)
-    *   [3.7 Eclipse is constantly crashing for me on Linux and I have a lot of plug-ins installed. There is a mentioning of "too many open files".](#Eclipse-is-constantly-crashing-for-me-on-Linux-and-I-have-a-lot-of-plug-ins-installed.-There-is-a-mentioning-of-.22too-many-open-files.22.)
     *   [3.8 Eclipse buttons in dialogs and other places are not working for me if I click them with the mouse. I also cannot see anything in the tree when I try to install updates. What's going on?](#Eclipse-buttons-in-dialogs-and-other-places-are-not-working-for-me-if-I-click-them-with-the-mouse.-I-also-cannot-see-anything-in-the-tree-when-I-try-to-install-updates.-What.27s-going-on.3F)
     *   [3.9 Eclipse seems to be hanging on startup. How can I find out why?](#Eclipse-seems-to-be-hanging-on-startup.-How-can-I-find-out-why.3F)
     *   [3.10 Update complains that it cannot find a repository](#Update-complains-that-it-cannot-find-a-repository)
-    *   [3.11 Eclipse keeps running out of (permgen) memory when I use Oracle/Sun's Java 6 update 21 on Windows](#Eclipse-keeps-running-out-of-.28permgen.29-memory-when-I-use-Oracle.2FSun.27s-Java-6-update-21-on-Windows)
-    *   [3.12 After startup, i see only an empty Dialog - eclipse won't start](#After-startup.2C-i-see-only-an-empty-Dialog---eclipse-won.27t-start)
 *   [4 Eclipse](#Eclipse)
     *   [4.1 How do I create a project for an existing source directory?](#How-do-I-create-a-project-for-an-existing-source-directory.3F)
         *   [4.1.1 Option 1: Import the source into an existing project](#Option-1:-Import-the-source-into-an-existing-project)
@@ -81,7 +65,6 @@ Contents
         *   [4.7.2 Why can't I find the command I'm looking for?](#Why-can.27t-I-find-the-command-I.27m-looking-for.3F)
     *   [4.8 Why did Content Assist stop working?](#Why-did-Content-Assist-stop-working.3F)
     *   [4.9 Why won't Content Assist work for my .xyz file type?](#Why-won.27t-Content-Assist-work-for-my-.xyz-file-type.3F)
-    *   [4.10 How to have a custom .php extension recognized by PDT (or .xml by the XML editor and other XML features, etc.)?](#How-to-have-a-custom-.php-extension-recognized-by-PDT-.28or-.xml-by-the-XML-editor-and-other-XML-features.2C-etc..29.3F)
     *   [4.11 How do I manually assign a project Nature or BuildCommand?](#How-do-I-manually-assign-a-project-Nature-or-BuildCommand.3F)
     *   [4.12 How do I export a launch configuration?](#How-do-I-export-a-launch-configuration.3F)
     *   [4.13 How do I find out which workspace I currently have open?](#How-do-I-find-out-which-workspace-I-currently-have-open.3F)
@@ -128,18 +111,6 @@ Contents
     *   [7.6 How do I edit the source for a plugin?](#How-do-I-edit-the-source-for-a-plugin.3F)
 *   [8 SWT](#SWT)
     *   [8.1 I cannot get the SWT widget ABC to work when I do XYZ. Could you help me?](#I-cannot-get-the-SWT-widget-ABC-to-work-when-I-do-XYZ.-Could-you-help-me.3F)
-    *   [8.2 I cannot get Mozilla to run on Linux as an embedded browser?](#I-cannot-get-Mozilla-to-run-on-Linux-as-an-embedded-browser.3F)
-    *   [8.3 I cannot get Firefox to run on Linux as an embedded browser?](#I-cannot-get-Firefox-to-run-on-Linux-as-an-embedded-browser.3F)
-*   [9 CVS](#CVS)
-    *   [9.1 I am having some trouble with CVS in eclipse -- is there a way I can get actual logs and see detailed error messages?](#I-am-having-some-trouble-with-CVS-in-eclipse----is-there-a-way-I-can-get-actual-logs-and-see-detailed-error-messages.3F)
-    *   [9.2 Where are the CVS repositories locations stored?](#Where-are-the-CVS-repositories-locations-stored.3F)
-*   [10 Subversion](#Subversion)
-    *   [10.1 What plug-ins are there for Subversion integration?](#What-plug-ins-are-there-for-Subversion-integration.3F)
-    *   [10.2 I just installed Subversion on Mac/Linux, and then I installed Subclipse, but it does not work. What is the problem?](#I-just-installed-Subversion-on-Mac.2FLinux.2C-and-then-I-installed-Subclipse.2C-but-it-does-not-work.-What-is-the-problem.3F)
-    *   [10.3 I am trying to use svn+ssh:// with Subclipse, and it does not work?](#I-am-trying-to-use-svn.2Bssh:.2F.2F-with-Subclipse.2C-and-it-does-not-work.3F)
-    *   [10.4 I've upgraded to Gallileo, but Subversive can't read my projects](#I.27ve-upgraded-to-Gallileo.2C-but-Subversive-can.27t-read-my-projects)
-*   [11 Additions](#Additions)
-    *   [11.1 Is there an UML editor for Eclipse?](#Is-there-an-UML-editor-for-Eclipse.3F)
 
 General
 -------
@@ -149,145 +120,17 @@ General
 *   [Recommended Eclipse Reading List](http://www.ibm.com/developerworks/opensource/library/os-ecl-read/)
 *   [The Official Eclipse FAQs - Getting Started](/The_Official_Eclipse_FAQs#Getting_Started "The Official Eclipse FAQs")
 
-### What are #eclipse and #eclipse-dev about?
-
-*   **#eclipse** is about development _using_ Eclipse (for development _of_ Eclipse, please see **#eclipse-dev**). [log](http://echelog.com/logs/browse/eclipse)
-
-*   **#eclipse-dev** is about development _of_ Eclipse (for development _with_/_using_ Eclipse, please see **#eclipse**). **Unless you are asking a question about how to contribute a fix to a bug or a feature enhancement, ask your Eclipse-related questions on #eclipse.** The fact of the matter is that there are a lot more people there than on #eclipse-dev.
-
-### I am looking for help with developing with Eclipse. Should I ask on #eclipse or #eclipse-dev?
-
-Probably **#eclipse** as long as your question relates to Eclipse usage or plug-in/RCP development. If the issue is purely a language issue unrelated to Eclipse, you should find a more appropriate channel that deals with that programming language. For example, freenode has a **##java** channel for Java-related questions. You will need to be registered to nickserv to enter that channel though.
-
-### Are there other active channels about Eclipse?
-
-Yes, there are [several other channels](/IRC "IRC") that are specific to projects hosted at Eclipse.org.
-
-Others are listed below:
-
-*   **#eclipse-e4** is the E4 discussion channel - [log](http://echelog.matzon.dk/?eclipse-e4)
-
-*   **#eclipse-modeling** about modelling and EMF-based technologies like Xtext, Xtend, and more
-
-*   **#azureus** about [Azureus](http://azureus.sourceforge.net), an Eclipse-based BitTorrent client
-
-*   **#easyeclipse** about [EasyEclipse](http://www.easyeclipse.org), an Eclipse distribution
-
-*   **#eclipselink** about [EclipseLink](https://wiki.eclipse.org/EclipseLink), persistence services project
-
-*   **#phpeclipse** about [PHPEclipse](http://www.phpeclipse.com/), an Eclipse-based IDE for PHP
-
-*   **#rssowl** about [RSSOwl](http://www.rssowl.org), a RSS reader built on Eclipse RCP
-
-*   **#subclipse** about [Subclipse](http://subclipse.tigris.org), a Subversion plug-in
-
-*   **#udig** about [UDIG](http://udig.refractions.net/confluence/display/UDIG/Home), an Eclipse-based GIS toolkit
-
-*   **#weblogic-eclipse** about the [Webglogic](https://eclipse-plugin.projects.dev2dev.bea.com/) plug-in
-
-*   **#higgins** about the [Higgins](http://www.eclipse.org/higgins/) Eclipse project
-
-If you are using Linux, please consider visiting **#fedora-java**, **#gentoo-java**, and **#ubuntu-java** for distribution-specific questions.
-
-### Nobody is answering my question. What should I do?
-
-First, **be patient**, the person that has an answer for you may be busy at the moment. Unless you urgently need to leave, **stay**. Then please continue being patient as that person may be in another time zone. Be polite and gentle or you may be politely ignored. If nobody answers, it may just be that nobody knows the answer. You will have to do some research on your own. The [Eclipse forums](http://www.eclipse.org/forums/) are a good place, as well as [Eclipse's Bugzilla system](https://bugs.eclipse.org/bugs/). Remember that search engines are your best friends, and good luck! For those that have some idea of a possible solution, please do not hesitate to speak up!
-
-Note also that not every project has [experts](/IRC_bot "IRC bot") or users who idle on IRC. So, here's a few other ways to get help:
-
-1.  Read the FAQs: [Eclipse FAQs](/The_Official_Eclipse_FAQs "The Official Eclipse FAQs"), [Graphical Eclipse FAQs](/Graphical_Eclipse_FAQs "Graphical Eclipse FAQs") (these FAQs have screenshots accompanying you to guide you to the possible solution), [More FAQs](/Category:FAQ "Category:FAQ")
-2.  Learn about the tools/projects you use from their [websites](http://www.eclipse.org/projects/) or [wiki pages](/Main_Page "Main Page")
-3.  Read the online ISV help docs and APIs at [help.eclipse.org](http://help.eclipse.org); the search box is powerful
-4.  Ask a question on the [forums](http://www.eclipse.org/forums/)
-5.  Submit a question / discuss an issue / keep up to date in the [mailing lists](http://www.eclipse.org/mail/index_all.php) or search on programming sites like [StackOverflow](http://stackoverflow.com).
-6.  Browse [source code in CVS](http://dev.eclipse.org/viewcvs/index.cgi) to find an existing [solution](http://dev.eclipse.org/viewcvs/index.cgi/releng-common/?root=Modeling_Project)
-7.  Read [articles](http://www.eclipse.org/articles/), [blogs](http://planet.eclipse.org), and other [resources](http://www.eclipse.org/resources/)
-8.  Watch [videos](http://live.eclipse.org) of demos, walkthrus, and howtos
-9.  Find, report, patch, triage, fix, or verify a [bug or feature request](https://bugs.eclipse.org/bugs/)
-10.  Search with [Eclipse](http://www.eclipse.org/search/search.cgi?form=extended&qprev=) or [Google](http://www.google.com/ig)
-11.  Seek [legal](http://www.eclipse.org/legal/) advice about [3rd party code](http://www.eclipse.org/orbit/) and [IP](https://dev.eclipse.org/ipzilla/)
-
 Installation, Startup and Runtime
 ---------------------------------
 
 ### Where can I get Eclipse?
 
-*   Use the [downloads page](http://www.eclipse.org/downloads/) to get the latest releases. Older ones quickly become unsupported. The [comparison page](https://www.eclipse.org/downloads/compare.php?release=oxygen1a) provides a breakdown of the projects/components included in each of the pre-configured packages (eg., for Java, JEE/Web, C/C++, or RCP/Plug-in developers).
-    *   You can install additional components from within Eclipse either through the Installation Manager (see **Help → Install New Software** or the **Marketplace Client**).
-    *   You can use services such as [Yoxos OnDemand](http://ondemand.yoxos.com) to pick and choose Eclipse components to create a custom distribution on the fly.
-*   See the archives for older [packages](http://wiki.eclipse.org/Older_Versions_Of_Eclipse) and [Eclipse Platform archives](http://archive.eclipse.org/eclipse/downloads/).
-*   For the [bleeding-edge versions of the Eclipse Platform](http://download.eclipse.org/eclipse/downloads/build_types.html), visit [http://download.eclipse.org/eclipse/downloads/](http://download.eclipse.org/eclipse/downloads/) or EPP's [downloads page](http://www.eclipse.org/epp/) for bundle builds
-*   Some projects, such as [BIRT](http://eclipse.org/birt), [PDT](http://download.eclipse.org/tools/pdt/downloads/), and [TPTP](http://www.eclipse.org/tptp/home/downloads/) provide "all-in-one" bundles, which include their project, Eclipse and all dependencies.
+*   Use the [downloads page](http://www.eclipse.org/downloads/) or [download package](https://www.eclipse.org/downloads/packages/) to get the latest releases. 
 
-### What's the difference between all the different packages like 'Eclipse IDE for Java Developers' and the 'Eclipse IDE for Java EE Developers'? What do they contain? Do they contain source code?
 
-See [here](https://www.eclipse.org/downloads/compare.php?release=oxygen1a).
+### What's the difference between all the different packages? What do they contain? Do they contain source code?
 
-### There is no package for the platform I'm on. What can I do?
-
-If you are using a Oxygen release (built on Eclipse 4.7.x):
-
-1.  Help > Install New Software...
-2.  Select _Oxygen - [http://download.eclipse.org/releases/oxygen](http://download.eclipse.org/releases/oxygen)_ from the dropdown combo box.
-3.  Uncheck 'Group items by category'.
-4.  Then type 'epp' into the text field filter to find the package you wish to add to your existing Eclipse installation.
-
-If you are using a Neon release (built on Eclipse 4.6.x, no longer supported):
-
-1.  Help > Install New Software...
-2.  Select _Neon - [http://download.eclipse.org/releases/neon](http://download.eclipse.org/releases/neon)_ from the dropdown combo box.
-3.  Uncheck 'Group items by category'.
-4.  Then type 'epp' into the text field filter to find the package you wish to add to your existing Eclipse installation.
-
-If you are using a Mars release (built on Eclipse 4.5.x, no longer supported):
-
-1.  Help > Install New Software...
-2.  Select _Mars - [http://download.eclipse.org/releases/mars](http://download.eclipse.org/releases/mars)_ from the dropdown combo box.
-3.  Uncheck 'Group items by category'.
-4.  Then type 'epp' into the text field filter to find the package you wish to add to your existing Eclipse installation.
-
-If you are using a Luna release (built on Eclipse 4.4.x, no longer supported):
-
-1.  Help > Install New Software...
-2.  Select _Luna - [http://download.eclipse.org/releases/luna](http://download.eclipse.org/releases/luna)_ from the dropdown combo box.
-3.  Uncheck 'Group items by category'.
-4.  Then type 'epp' into the text field filter to find the package you wish to add to your existing Eclipse installation.
-
-If you are using a Kepler release (built on Eclipse 4.3.x, no longer supported):
-
-1.  Help > Install New Software...
-2.  Select _Kepler - [http://download.eclipse.org/releases/kepler](http://download.eclipse.org/releases/kepler)_ from the dropdown combo box.
-3.  Uncheck 'Group items by category'.
-4.  Then type 'epp' into the text field filter to find the package you wish to add to your existing Eclipse installation.
-
-If you are using a Juno release (Eclipse 4.2.x, no longer supported):
-
-1.  Help > Install New Software...
-2.  Select _Juno - [http://download.eclipse.org/releases/juno](http://download.eclipse.org/releases/juno)_ from the dropdown combo box.
-3.  Uncheck 'Group items by category'.
-4.  Then type 'epp' into the text field filter to find the package you wish to add to your existing Eclipse installation.
-
-If you are using an Indigo release (Eclipse 3.7.x, no longer supported):
-
-1.  Help > Install New Software...
-2.  Select _Indigo - [http://download.eclipse.org/releases/indigo](http://download.eclipse.org/releases/indigo)_ from the dropdown combo box.
-3.  Uncheck 'Group items by category'.
-4.  Then type 'epp' into the text field filter to find the package you wish to add to your existing Eclipse installation.
-
-If you are using the Helios release (Eclipse 3.6.x, no longer supported):
-
-1.  Help > Install New Software...
-2.  Select _Helios - [http://download.eclipse.org/releases/helios](http://download.eclipse.org/releases/helios)_ from the dropdown combo box.
-3.  Uncheck 'Group items by category'.
-4.  Then type 'epp' into the text field filter to find the package you wish to add to your existing Eclipse installation.
-
-If you are using the Galileo release (Eclipse 3.5.x, no longer supported), see [here](http://ekkescorner.wordpress.com/2009/06/30/galileo-epp-for-cocoa-64-bit/) and [here](http://bewarethepenguin.blogspot.com/2009/07/screencast-creating-eclipse-download.html) about how to "create" your own package.
-
-[Yoxos OnDemand](http://ondemand.yoxos.com) is a free service for building a custom package.
-
-### I don't want multiple Eclipse installations. How do I merge those packages into one?
-
-See the solution for [There is no package for the platform I'm on. What can I do?](#There-is-no-package-for-the-platform-I.27m-on.-What-can-I-do.3F).
+They contain different plug-ins, see the descriptive text for each package.
 
 ### How do I verify my download? Are there any MD5 or SHA1 hashes for me to verify my download against?
 
@@ -295,38 +138,20 @@ Eclipse.org offers MD5 and SHA1 hashes for the downloads on the main [downloads 
 
 ### What are all these strangely named releases?
 
-Each year since 2006, the Eclipse community has planned, developed, and delivered a coordinated release that allows users and adopters to update their Eclipse installations at one time. These Simultaneous Releases are designated with names rather than numbers as they consist of a collection of many different projects started at different times and would have different version numbers as a result.
-
-  
-
-*   Oxygen is the 2017 simultaneous release of [83 major Eclipse projects](/Luna "Luna"), including release 4.7 of The Eclipse Project. For a list of those projects, what they consist of, their own individual version numbers, and an overview of some of these projects, see: [https://projects.eclipse.org/releases/oxygen1a](https://projects.eclipse.org/releases/oxygen1a)
-*   Neon is the 2016 simultaneous release of [major Eclipse projects](/Luna "Luna"), including release 4.6 of The Eclipse Project. For a list of those projects, what they consist of, their own individual version numbers, and an overview of some of these projects, see: [https://projects.eclipse.org/releases/neon](https://projects.eclipse.org/releases/neon)
-*   Mars is the 2015 simultaneous release of [major Eclipse projects](/Luna "Luna"), including release 4.5 of The Eclipse Project. For a list of those projects, what they consist of, their own individual version numbers, and an overview of some of these projects, see: [https://projects.eclipse.org/releases/mars](https://projects.eclipse.org/releases/mars)
-*   Luna is the 2014 simultaneous release of [76 major Eclipse projects](/Luna "Luna"), including release 4.4 of The Eclipse Project. For a list of those projects, what they consist of, their own individual version numbers, and an overview of some of these projects, see: [https://projects.eclipse.org/releases/luna](https://projects.eclipse.org/releases/luna)
-*   Kepler is the 2013 simultaneous release of [69 major Eclipse projects](/Kepler "Kepler"), including Eclipse 4.3. For a list of those projects, what they consist of, and an overview of some of these projects, see: [http://eclipse.org/kepler/projects.php](http://eclipse.org/kepler/projects.php)
-*   Juno is the 2012 simultaneous release of [69 major Eclipse projects](/Juno "Juno"), including Eclipse 4.2. For a list of those projects, what they consist of, and an overview of some of these projects, see: [http://eclipse.org/juno/projects.php](http://eclipse.org/juno/projects.php)
-*   Indigo is the 2011 simultaneous release of [62 major Eclipse projects](/Indigo "Indigo"), including Eclipse 3.7. For a list of those projects, what they consist of, and an overview of some of these projects, see: [http://eclipse.org/indigo/projects.php](http://eclipse.org/indigo/projects.php)
-*   Helios is the 2010 simultaneous release of [39 major Eclipse projects](/Helios "Helios"), including Eclipse 3.6. For a list of those projects, what they consist of, and an overview of some of these projects, see: [http://eclipse.org/helios/projects.php](http://eclipse.org/helios/projects.php)
-*   Galileo is the 2009 simultaneous release of [33 major Eclipse projects](/Galileo "Galileo"), including Eclipse 3.5. For a list of those projects, what they consist of, and an overview of some of these projects, see: [http://eclipse.org/galileo/projects.php](http://eclipse.org/galileo/projects.php)
-*   Ganymede is the 2008 simultaneous release of [22 major Eclipse projects](/Ganymede "Ganymede"), including Eclipse 3.4. For a list of those projects, what they consist of, and an overview of some of these projects, see: [http://www-128.ibm.com/developerworks/library/os-eclipse-ganymede/](http://www-128.ibm.com/developerworks/library/os-eclipse-ganymede/)
-*   Europa is the 2007 simultaneous release of [21 major Eclipse projects](/Europa "Europa"), including Eclipse 3.3. For a list of those projects, what they consist of, and how to easily get them, see: [http://www.ibm.com/developerworks/opensource/library/os-eclipse-europa/](http://www.ibm.com/developerworks/opensource/library/os-eclipse-europa/)
-*   Callisto is the 2006 simultaneous release of [10 major Eclipse projects](http://www.eclipse.org/projects/callisto.php), including Eclipse 3.2.
+Eclipse uses the year and the month as release name, for example 2024-12 would be the december release 2024.
 
 ### Where can I get a list of all the Eclipse projects?
 
-Well, for starters, there's:
+See
 
-*   [Official Eclipse Projects](http://www.eclipse.org/projects/)
-*   The [Eclipse Marketplace](http://marketplace.eclipse.org/)
-*   [Eclipse Plug-In Central](http://www.eclipseplugincentral.com/)
-*   [Eclipse Plugins](http://www.eclipse-plugins.info)
-*   [Sourceforge](http://sourceforge.net/search/?type_of_search=soft&words=eclipse)
+*   [Official Eclipse Projects](https://www.eclipse.org/projects/)
+*   The [Eclipse Marketplace](https://marketplace.eclipse.org/)
 
 ### Where can I get project XYZ?
 
-You can search for downloads [by project](http://www.eclipse.org/downloads/index_project.php) or [by topic](http://www.eclipse.org/downloads/index_topic.php).
+You can search for downloads [by project](https://www.eclipse.org/downloads/index_project.php) or [by topic](https://www.eclipse.org/downloads/index_topic.php).
 
-Or, start with that project's homepage (www.eclipse.org/xyz) and look for download or update links. For example, EMF: [website](http://www.eclipse.org/modeling/emf/), [downloads](http://www.eclipse.org/modeling/emf/downloads/), [updates](http://www.eclipse.org/modeling/emf/updates/).
+Or, start with that project's homepage  and look for download or update links. For example, EMF: [website](http://www.eclipse.org/modeling/emf/), [downloads](http://www.eclipse.org/modeling/emf/downloads/), [updates](http://www.eclipse.org/modeling/emf/updates/).
 
 Download the zip and unpack it into your Eclipse install folder, or use a .link file [\[1\]](http://divby0.blogspot.com/2007/06/managing-plugins-and-features-with-link.html) [\[2\]](http://www.ibm.com/developerworks/opensource/library/os-ecl-manage/) to locate the project in another folder.
 
@@ -336,39 +161,14 @@ Or, if using Update Manager, add the Update URL here, then download and install 
    Now select what you want to install
 
 
- 
 
 #### Is there a GUI Builder?
 
-Yes: Google donated [WindowBuilder](http://eclipse.org/windowbuilder/) to the Eclipse Foundation. It supports round-tripping of SWT and Swing designs.
-
-The [Visual Editor project](http://eclipse.org/vep) was decommissioned and archived in June 2011
-
-#### Is there a PHP editor for Eclipse 3.3 Europa / Eclipse 3.4 Ganymede?
-
-Yes, there are two. Note that installing both concurrently can be [a bad thing](/IRC_FAQ#How_do_I_manually_assign_a_project_Nature_or_BuildCommand.3F "IRC FAQ").
-
-*   [phpeclipse](http://www.phpeclipse.de/tiki-view_articles.php) (third party)
-
-*   Install using [Update Manager](/IRC_FAQ#Where_can_I_get_project_XYZ.3F "IRC FAQ") and the [Update Site](http://phpeclipse.sourceforge.net/update/nightly/).
-
-*   [PHP Development Tools (PDT)](/PDT "PDT")
-
-*   [Install like this](/PDT/Installation "PDT/Installation").
+[WindowBuilder](https://eclipse.org/windowbuilder/) supports round-tripping of SWT and Swing designs.
 
 ### What is p2?
 
-[p2](/Equinox/p2 "Equinox/p2") is a provisioning system, under the Equinox project, that was introduced in Eclipse 3.4 and is intended to replace the former Update Manager.
-
-*   [How do I update/upgrade Eclipse?](./FAQ_How_do_I_upgrade_Eclipse.md "FAQ How do I upgrade Eclipse?")
-
-### What is the Update Manager?
-
-**Note:** The Update Manager is now deprecated in favor of the [p2](/Equinox_p2_Update_UI_Users_Guide "Equinox p2 Update UI Users Guide") provisioning system as of the Eclipse 3.4 (Ganymede) release.
-
-*   [p2 Users' Guide](/Equinox_p2_Update_UI_Users_Guide "Equinox p2 Update UI Users Guide")
-*   [What is the Update Manager?](./FAQ_What_is_the_Update_Manager.md "FAQ What is the Update Manager?")
-*   [How do I update/upgrade Eclipse?](./FAQ_How_do_I_upgrade_Eclipse.md "FAQ How do I upgrade Eclipse?")
+p2 is a provisioning system allowing to install and update Eclipse components.
 
 ### How do I start Eclipse?
 
@@ -411,8 +211,8 @@ See [here](./FAQ_How_do_I_upgrade_Eclipse.md "FAQ How do I upgrade Eclipse?").
 
 ### What other command line arguments are available?
 
-*   [http://www.eclipse.org/swt/launcher.html](http://www.eclipse.org/swt/launcher.html)
-*   [Eclipse runtime options](http://help.eclipse.org/indigo/topic/org.eclipse.platform.doc.isv/reference/misc/runtime-options.html)
+*   [https://www.eclipse.org/swt/launcher.html](http://www.eclipse.org/swt/launcher.html)
+*   [Eclipse runtime options](https://help.eclipse.org/indigo/topic/org.eclipse.platform.doc.isv/reference/misc/runtime-options.html)
 
 ### How do I debug Eclipse? How can I see what plug-ins are being started? Why aren't the plug-ins I installed showing up in the UI? How do I start the OSGi console?
 
@@ -463,25 +263,6 @@ This approach requires that the running instance be started with some special fl
 
 The JDWP agent supports other useful arguments, like "suspend=n" so that the process does not suspend. For more details, see Oracle's [Java Debug Wire Protocol (JDWP) connection docs](http://docs.oracle.com/javase/8/docs/technotes/guides/jpda/conninv.html). See also: [Debug Java applications remotely with Eclipse](http://www.ibm.com/developerworks/library/os-eclipse-javadebug/) or [Hacking the Java Debug Wire Protocol](http://blog.ioactive.com/2014/04/hacking-java-debug-wire-protocol-or-how.html)
 
-#### Shared Installation Problems
-
-_Helios/3.6 only:_ If the installation seemed to have completed successfully but you can't seem to find anything in the user interface, you may be seeing a problem with a shared installation setup problem with Eclipse. See [bug 322929](https://bugs.eclipse.org/bugs/show_bug.cgi?id=322929) for more details. This bug will likely manifest itself if you, for example, unzipped Eclipse in the `Program Files` folder or some place like `/opt/` or `/usr/local`. The Helios SR1 (Eclipse Platform 3.6.1) release should have this problem fixed. We recommend upgrading immediately.
-
-### How do I find out which Java runtime environment is being used to run Eclipse?
-
-See [here](/Graphical_Eclipse_FAQs#How_do_I_find_out_which_Java_runtime_environment_is_being_used_to_run_my_Eclipse.3F "Graphical Eclipse FAQs").
-
-### Can I upgrade from Eclipse 3.2 (Callisto) to Eclipse 3.3 (Europa)?
-
-Yes and no.
-
-It depends on what plugins you use and if they have been updated to work with the new version of the platform. If you used projects that were part of Callisto and which are now part of Europa, the answer is most likely yes. Some plugins will work on Eclipse 3.0 - 3.3 without any problems. Others are version-specific because they exploit aspects of Eclipse that were added or changed along the way (such as internal APIs not intended to be extended).
-
-To upgrade, download a copy of Eclipse or a Europa bundle (see [above](/IRC_FAQ#Installation.2C_Startup_and_Runtime "IRC FAQ")). Extract the downloaded archive into its own directory (do **not** extract it into an existing eclipse directory), start up the new Eclipse and point it at your old workspace. If you see a message like 'cannot restore perspective' then something that your old workspace relied on (eg., some view contributed by some plugin) is not working anymore, and you'll have to search for an updated version from that plugin's provider.
-
-If you installed features/plugins outside your Eclipse folder, you can reuse them via `Help > Software Updates > Manage Configuration > Add an Extension Location` to point your new Eclipse at those old plugins. However, those plugin folders must have an `.eclipseextension` file in them for Eclipse to accept them, and as noted above, they may not work without being updated. Details on using .link files and Extension Locations [here](http://divby0.blogspot.com/2007/06/managing-plugins-and-features-with-link.html) and [here](http://www.ibm.com/developerworks/opensource/library/os-ecl-manage/).
-
-If you use JRE/JDK1.4 with Eclipse 3.2, you may need to update to JRE/JDK5.0 as some Europa components require JDK5.0 (eg., WTP, TPTP, EMF).
 
 ### Can I use my Eclipse workspace from an old release with a new Eclipse release?
 
@@ -499,72 +280,6 @@ Three ways:
 2.  In Eclipse, select `Window > Preferences... > General > Startup and Shutdown > \[x\] Prompt for workspace on startup`, then restart Eclipse.
 3.  Via commandline, run `./eclipse -data /path/to/new/workspace/folder`
 
-### How do I install Eclipse on Linux?
-
-There are many schools of thought here, depending on your comfort level with Linux and the number of users on your system.
-
-The simplest approach is to grab the latest bundle for your distro, using something like apt-get or yum. Please note that these bundles are often not the latest and greatest because they are released in concert with the distro release cycles, not that of Eclipse. For more on these repository packages, see [Linux Distributions Project](/Linux_Distributions_Project "Linux Distributions Project"), or hang out in [#eclipse-linux on freenode](/IRC "IRC"). If you're installing on ubuntu, here's a couple walkthroughs: [Eclipse 3.4 on Ubuntu](http://jhcore.com/2008/06/26/eclipse-34-ganymede-on-ubuntu/), [Eclipse 3.2 + WTP on ubuntu, including desktop icon](http://flurdy.com/docs/eclipse/install.html).
-
-If you want the latest, grab a [Helios](/Helios "Helios") [bundle](http://www.eclipse.org/helios) or [archive](http://download.eclipse.org/eclipse/downloads/) for your distribution. If you're on a 64-bit system and are using a 64-bit JRE, make sure you get the 64-bit version.
-
-Save the archive into your home directory, ~ or /home/$USER/. Open a console or terminal, and type:
-
-    cd ~; tar xvzf eclipse*.tar.gz; 
-    
-
- 
-
-To start up Eclipse, type:
-
-    cd ~/eclipse; ./eclipse -vm /path/to/bin/java
-    
-
- 
-
-If you want to create a desktop or launcher shortcut, see [this ubuntu walkthrough](http://flurdy.com/docs/eclipse/install.html).
-
-You can also install Eclipse in another location -- it's up to you, your distro's conventions, or your own preferences.
-
-For a multi-user system, consider these [three approaches](http://divby0.blogspot.com/2007/08/howto-install-eclipse-for-multi-user.html) or [the official approach](http://help.eclipse.org/stable/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/misc/multi_user_installs.html).
-
-Once you have Eclipse installed, you can [add other projects to it](/IRC_FAQ#Where_can_I_get_a_list_of_all_the_Eclipse_projects.3F "IRC FAQ").
-
-### How do I install Eclipse on Solaris?
-
-*   For [Solaris 10 on SPARC](http://download.eclipse.org/eclipse/downloads/), get an official Eclipse build then update it using an update site such as [Ganymede](http://download.eclipse.org/releases/ganymede/).
-*   For [Solaris on x86](http://code.google.com/p/solipse/), you'll have to [build it yourself](http://code.google.com/p/solipse/wiki/BasicHowToBuild) then update from an update site such as [Ganymede](http://download.eclipse.org/releases/ganymede/).
-
-### I just unzipped Eclipse, but it does not start. Why?
-
-[Here](./FAQ_I_unzipped_Eclipse,_but_it_won%27t_start._Why.md "FAQ I unzipped Eclipse, but it won't start. Why?") are ten possible reasons.
-
-### I just installed Eclipse on Linux, but it does not start. What is the problem?
-
-Quite often, Eclipse will not work properly with non-Sun or non-IBM JVMs. These issues are usually related to [Blackdown](http://www.blackdown.org/) or [GCJ](http://gcc.gnu.org/java/). Eclipse has a list of [reference platforms](http://www.eclipse.org/eclipse/development/readme_eclipse_3.4.html#TargetOperatingEnvironments) that it is tested against which you should try to match against. Try installing one from [Sun](http://java.sun.com/javase/downloads/index.jsp), [IBM](http://www.ibm.com/developerworks/java/jdk/index.html), or [BEA](http://www.bea.com/framework.jsp?CNT=index.htm&FP=/content/products/weblogic/jrockit/) (eg., [Sun JDK 5.0](http://java.sun.com/javase/downloads/index_jdk5.jsp), [IBM JDK 5.0](http://www.ibm.com/developerworks/java/jdk/linux/download.html), or [BEA JRockit 5.0](http://www.bea.com/framework.jsp?CNT=index.htm&FP=/content/products/weblogic/jrockit/)). Version 6 of [OpenJDK](http://openjdk.java.net/) works too, particularly with [Fedora Eclipse](http://fedoraproject.org/wiki/Features/Eclipse34).
-
-Make sure that your selected JDK is the one being used when starting Eclipse by passing in the `-vm` flag.
-
-    eclipse -vm /full/path/to/java/bin/java
-
-It is usually desirable to place this option in your [eclipse.ini](/Eclipse.ini "Eclipse.ini") file so you don't have to type it every time you start Eclipse. If you do append it onto your eclipse.ini file, you should make sure that it appears before the `-vmargs` line, if you have one. Also note that `-vm` and the `/full/path/to/java/bin/java` are on **separate** lines.
-
-The argument must point to the `java` or `javaw` executable, not some wrapper script like `run-java-tool`, as used by the Gentoo Linux distribution.
-
-Please note that if you are on a 64-bit system and have a 64-bit JRE installed, you will need to use a 64-bit Eclipse build. If you wish to use a 32-bit Eclipse build, please use a 32-bit JRE. Mismatches **will** cause Eclipse to not start properly. Please see [bug 221969](https://bugs.eclipse.org/bugs/show_bug.cgi?id=221969) if you are interested in this mismatch problem.
-
-First time downloading/installing Java for Linux? Read [this](http://java.sun.com/j2se/1.5.0/install-linux.html) or [this](http://www.ibm.com/developerworks/java/jdk/jdkfaq/).
-
-Note also that there are differences between ext2/ext3 filesystems and fat32 ones. Eclipse includes a lot of long file paths, .dotfiles, and case sensitive files. If you plan to use Eclipse on linux, unpacking it onto an ext2 or ext3 filesystem is recommended.
-
-### I just installed Eclipse on my 64-bit system, but it does not start. What is the problem?
-
-Make sure that you have downloaded the 64-bit version of Eclipse (it should have x86_64 somewhere in its name) and have installed a 64-bit JVM. Likewise, if you run a 32-bit JVM, then you should use the 32-bit version of Eclipse.
-
-### When I try to install a plug-in, I get a "Cannot connect to keystore." error, what should I do?
-
-[Check](/Graphical_Eclipse_FAQs#How_do_I_find_out_which_Java_runtime_environment_is_being_used_to_run_my_Eclipse.3F "Graphical Eclipse FAQs") that you are not using GCJ to run Eclipse. This problem may also surface if you are using IcedTea or an OpenJDK 6 build.
-
-Install Java 6 from Sun and use that to run Eclipse instead.
 
 ### When I start Eclipse it says "Workspace in use or cannot be created, choose a different one.", what should I do?
 
@@ -572,7 +287,8 @@ There are a couple of things you can try.
 
 1.  Delete the `workspace/.metadata/.lock` file.
 2.  Check your running processes to make sure there aren't any remaining Java or Eclipse processes running. When in doubt, restart your computer. :)
-3.  Try starting Eclipse on a different workspace (from the workspace selection dialog, or by using a command line argument like `-data /home/user/tmp-workspace`), then [switch](#How-do-I-switch-my-workspace.3F) back to your original workspace.
+3.  Try starting Eclipse on a different workspace (from the workspace selection dialog, or by using a command line argument like `-data /home/user/tmp-workspace`), then switch 
+back to your original workspace.
 
 If none of these solution work, could you be trying to create the workspace on a folder mounted via NFS? If yes, please make sure you are using NFS v4.
 
@@ -597,54 +313,6 @@ To receive updates for the plugins you copied, you also have to copy their updat
 5.  Go to preferences -> Install/Update -> Available Software Sites
 6.  Import the list you exported
 
-### How come my list of update sites is completely empty when other people says theirs has stuff in it?
-
-This is a known bug for shared installs and will likely manifest itself if you extract Eclipse in, for instance, `/opt/` on Linux or `C:\\Program Files\` on Windows. Please see [bug 249133](https://bugs.eclipse.org/bugs/show_bug.cgi?id=249133). Depending on your download and who built it, the URLs may also have been omitted.
-
-By default, an Eclipse installation should include the following update sites:
-
-**4.3**
-
-*   Kepler - [http://download.eclipse.org/releases/kepler](http://download.eclipse.org/releases/kepler)
-*   The Eclipse Project Updates - [http://download.eclipse.org/eclipse/updates/4.3](http://download.eclipse.org/eclipse/updates/4.3)
-
-**3.8/4.2**
-
-*   Juno - [http://download.eclipse.org/releases/juno](http://download.eclipse.org/releases/juno)
-*   The Eclipse Project Updates - [http://download.eclipse.org/eclipse/updates/34.2](http://download.eclipse.org/eclipse/updates/34.2)
-
-**3.7**
-
-*   Indigo - [http://download.eclipse.org/releases/indigo](http://download.eclipse.org/releases/indigo)
-*   The Eclipse Project Updates - [http://download.eclipse.org/eclipse/updates/3.7](http://download.eclipse.org/eclipse/updates/3.7)
-
-**3.6**
-
-*   Helios - [http://download.eclipse.org/releases/helios](http://download.eclipse.org/releases/helios)
-*   The Eclipse Project Updates - [http://download.eclipse.org/eclipse/updates/3.6](http://download.eclipse.org/eclipse/updates/3.6)
-
-### How do I install PDT?
-
-See [here](/PDT/Installation "PDT/Installation").
-
-### How do I install a plug-in with multiple dependencies?
-
-There are numerous approaches here, depending on your need and starting point.
-
-The simplest is to grab the All-In-One bundle from the project's download site, if one is provided for your platform. Note too that if you're on a 64-bit platform and are using a 64-bit JRE, you will need a 64-bit bundle (which may not exist).
-
-But if:
-
-*   there's no OS-compatible All-In-One available, or
-*   you already have Eclipse installed, and
-*   you want to add a project to an existing Eclipse, then ...
-
-...you'll need to either:
-
-*   download the individual required projects (most download pages have a "Requirements" section you can use for reference, but this can still be a pain), or
-*   use [p2](/Equinox/p2 "Equinox/p2") to install the prereqs and the project you want, too.
-
-Note that if you're installing from multiple update sites, you have to expand each one before you hit 'Select Required' for the wizard to be able to scan those sites and resolve all your dependencies. See [bug 203473](https://bugs.eclipse.org/bugs/show_bug.cgi?id=203473).
 
 ### How do I uninstall a plug-in?
 
@@ -661,69 +329,11 @@ Crashers, Freezing, and other Major Issues
 
 Do you have any `hs\_err\_pid*log` files lying around? This is an error log that is generated by HotSpot, Sun's implementation of the Java Virtual Machine (assuming that is the JVM you are using). HotSpot is also the JVM being used by the OpenJDK project, HotSpot is also being used by IcedTea (which has since been renamed to OpenJDK also).
 
-### Eclipse is constantly crashing for me on Oracle's / Apple's Java 6 HotSpot VM...
-
-Do your VM logs point to a problematic frame at `libjvm.so` or `jvm.dll`? Do you see any mentions of a `Current CompileTask`, possibly on `AbstractDataTreeNode`, `ParameterizedMethodBinding`, `CCPTemplates`, or `PDOMCPPLinkage`? If yes, you are likely seeing a very [infamous bug](http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6614100) in Oracle's Java 6 VM implementation. Try starting Eclipse with the most recent Java SE 6 or 7 release. Any Oracle JVM release between 1.6.0.3 and 1.6.0.9 (inclusive) are affected by this bug.
-
-The relevant NOT_ECLIPSE bug is [bug 214092](https://bugs.eclipse.org/bugs/show_bug.cgi?id=214092) and you can read through it and its duplicates for other information. There are workarounds listed on the bug at [bug 214092 comment 13](https://bugs.eclipse.org/bugs/show_bug.cgi?id=214092#c13), [bug 214092 comment 25](https://bugs.eclipse.org/bugs/show_bug.cgi?id=214092#c25), and [bug 214092 comment 26](https://bugs.eclipse.org/bugs/show_bug.cgi?id=214092#c26). Please make sure you add the arguments after the `-vmargs` line in the `eclipse.ini` file and that the entry is on its own line.
-
-If in doubt, you should start Eclipse with the most recent Java SE 6 or 7 release, and tell Eclipse to start use that VM to start Eclipse with the `-vm` argument (`./eclipse -vm /opt/sun-jdk-1.6.0.22/bin/java`).
-
-### Eclipse gets past the splash screen but then an empty window appears / Eclipse is crashing on me whenever I initiate a browser component such as hovering over Java methods for javadoc tooltips...
-
-There are a couple of possible causes to this problem.
-
-If you have Firefox 4 installed, you should install WebKitGTK+. Alternatively, you can install an older version of XULRunner and ask Eclipse to use that XULRunner runtime. See the [SWT FAQ](http://www.eclipse.org/swt/faq.php#specifyxulrunner) for more information.
-
-Otherwise, you want to check your workspace's log file (located in `workspace/.metadata/.log`, note the period in front of the folder and file name, this is the marker for hidden files on UNIX and UNIX-based systems) if you have one. If you do, you should search for the string `-2147467262`, the full error will be something like `org.eclipse.swt.SWTError: XPCOM error -2147467262`. If you have this problem, you should refer to [bug 213194](https://bugs.eclipse.org/bugs/show_bug.cgi?id=213194) and its other variants. This is caused by an incompatibility between the version of XULRunner detected by Eclipse and Eclipse itself. It is highly recommend that you uninstall any alpha or beta versions of XULRunner on your system since those are not supported. Alternatively, you can install a recent stable version of Firefox/XULRunner and point Eclipse at that particular runtime. See the [SWT FAQ](http://www.eclipse.org/swt/faq.php#specifyxulrunner) for more information. If possible, you should upgrade to Eclipse 4.2.x as soon as possible since the older releases are no longer under maintenance.
-
-If you are seeing the problem with the empty window, that too should be resolved by what has been mentioned above. Please refer to [bug 234910](https://bugs.eclipse.org/bugs/show_bug.cgi?id=234910) for more information.
-
-If you did not find the XPCOM error, did you find any references to `libxul.so` or `xul.dll` in those logs? Maybe you see a mention of `NewLocalFile` in there too? If yes, you have likely hit [bug 236724](https://bugs.eclipse.org/bugs/show_bug.cgi?id=236724). The cause of this problem is explained in [bug 236724 comment 44](https://bugs.eclipse.org/bugs/show_bug.cgi?id=236724#c44). To workaround this problem in the 3.3.x line, you should take a look at [bug 236724 comment 22](https://bugs.eclipse.org/bugs/show_bug.cgi?id=236724#c22). If you are comfortable using a newer build, you should try the most recent release or maintenance build. These builds can be found [here](http://download.eclipse.org/eclipse/downloads/).
-
-### The Java EE build for Eclipse Ganymede / Eclipse 3.4 does not run for me but the Eclipse Classic build starts up just fine...
-
-Do you see something like `-vm C:\\Program Files\\Java\\jre1.6.0_07\\bin\\server\\jvm.dll` in the error dialog? If you are using a `dll` or `so` as an argument to `-vm` for starting up Eclipse, there may be problems, see [bug 237652](https://bugs.eclipse.org/bugs/show_bug.cgi?id=237652) for more information. You should be able to work around this problem by using the actual `java` binary as an argument to `-vm`.
-
-### Why does Eclipse hang for an extended period of time after opening an editor in Linux/gtk+?
-
-There seems to be a bug in gtk+ 2.10 and 2.12 that is causing certain printing backends to hang. You can try to start Eclipse with the method suggested below. This should be supported in 3.3.1 (and up) maintenance builds and 3.4 and upwards.
-
-    ./eclipse -vmargs -Dorg.eclipse.swt.internal.gtk.disablePrinting
-    
-
- 
-
-You should consider taking a look at [bug 215234](https://bugs.eclipse.org/bugs/show_bug.cgi?id=215234) for more information. You may also want to refer to [bug 346903](http://bugzilla.gnome.org/show_bug.cgi?id=346903) in GNOME's bugzilla system.
-
-### Eclipse is crashing for me when performing Subversion operations on Windows. I am using Subclipse.
-
-Have you found any JVM error logs with a mentioning of the libapr-1.dll file? If yes, you have hit a DLL incompatibility problem raised by Subversion's use of the Apache Portable Runtime library. Please see Subclipse's [FAQ entry](http://subclipse.tigris.org/wiki/PluginFAQ#head-43aec0a3a0f7175fc55e72caf95471f8711d9d28) about this for more information.
-
 ### I'm having memory, heap, or permgen problems, what can I do?
 
 *   [FAQ How do I increase the heap size available to Eclipse?](./FAQ_How_do_I_increase_the_heap_size_available_to_Eclipse.md "FAQ How do I increase the heap size available to Eclipse?")
 *   [FAQ How do I increase the permgen size available to Eclipse?](./FAQ_How_do_I_increase_the_permgen_size_available_to_Eclipse.md "FAQ How do I increase the permgen size available to Eclipse?")
 
-### Eclipse is constantly crashing for me on Linux and I have a lot of plug-ins installed. There is a mentioning of "too many open files".
-
-With around 1000 plug-ins installed on Linux, Eclipse will crash due to an excessive amount of open files. Please see [bug 238015](https://bugs.eclipse.org/bugs/show_bug.cgi?id=238015) for more information. The best workaround at the moment is to add `osgi.bundlefile.limit=600` in `eclipe/configuration/config.ini`.
-
-### Eclipse buttons in dialogs and other places are not working for me if I click them with the mouse. I also cannot see anything in the tree when I try to install updates. What's going on?
-
-Are you using running on GTK+ 2.17.x/2.18.x? Try declaring the GDK\_NATIVE\_WINDOWS environment variable and see how that goes. (Note that for some folk this workaround causes other failures.)
-
-    $ export GDK_NATIVE_WINDOWS=true
-    $ ./eclipse
-    
-
- 
-
-The latest version of GTK+ has altered the way it creates and handles windows on the X windowing system. This has introduced some problems due to the way SWT was managing the Z order of windows.
-
-The buttons problem should be fixed in both the 3.6 stream and the 3.5.2 stream. Any [3.5.2 stream build](http://download.eclipse.org/eclipse/downloads/) newer than M20091118-0800 should include the fix. See [bug 291257](https://bugs.eclipse.org/bugs/show_bug.cgi?id=291257) for more information.
-
-The tree problem is described by [bug 290395](https://bugs.eclipse.org/bugs/show_bug.cgi?id=290395). This has been fixed in the 3.6 stream. Any build newer than I20091201-2000 should include the fix. Please test it out to see if it resolves your problem. Pending community feedback, the fix may be backported to 3.5.2
 
 ### Eclipse seems to be hanging on startup. How can I find out why?
 
@@ -938,20 +548,6 @@ and set a better default. Note that the last editor you used for a file will be 
 
 If, for example, Content Assist works in your Java editor but not in your PHP editor, it could be a problem with your project's nature. See [How do I manually assign a project Nature or BuildCommand?](#How-do-I-manually-assign-a-project-Nature-or-BuildCommand.3F)
 
-### How to have a custom .php extension recognized by PDT (or .xml by the XML editor and other XML features, etc.)?
-
-Some people like to change the standard .php extension of their php files to something else (e.g. ArsTechnica does it with their .ars).
-
-If you do this, though, PDT probably won't recognize your php files (and many features including Syntax highlighting, Debugging, etc will be lost). In order to instruct Eclipse to treat your .xyz files as php content, you must go to:
-
-    Windows > Preferences > General > Content Types > Text > PHP Content Type
-    
-
- 
-
-and add *.xyz
-
-Note: you'll also have to instruct your http server that .xyz are php content. With an Apache server, one way to do this is to add a configuration directive like "AddType application/x-httpd-php .xyz".
 
 ### How do I manually assign a project Nature or BuildCommand?
 
@@ -1442,52 +1038,5 @@ SWT
 
 ### I cannot get the SWT widget ABC to work when I do XYZ. Could you help me?
 
-Check the [SWT Snippets](http://www.eclipse.org/swt/snippets/) section, there might be a code example that demonstrates what you are trying to do.here.
-
-### I cannot get Mozilla to run on Linux as an embedded browser?
-
-Follow the instructions in the [SWT FAQ](http://www.eclipse.org/swt/faq.php#browserlinux).
-
-### I cannot get Firefox to run on Linux as an embedded browser?
-
-Firefox is not supported as embedded browser on Linux for now. Take a look at [bug #72487](https://bugs.eclipse.org/bugs/show_bug.cgi?id=72487).
-
-On some Linux distributions that dynamically link Firefox (like Ubuntu and Fedora), Firefox will work.
-
-CVS
----
-
-### I am having some trouble with CVS in eclipse -- is there a way I can get actual logs and see detailed error messages?
-
-Open the console view and select CVS from the triangle drop-down in the console toolbar.
-
-### Where are the CVS repositories locations stored?
-
-In <workspace>/.metadata/.plugin/org.eclipse.team.cvs.ui/repositoriesView.xml . Previously used commit comments are in commitCommentHistory.xml.
-
-Subversion
-----------
-
-### What plug-ins are there for Subversion integration?
-
-You can try either [Subclipse](http://subclipse.tigris.org/) or [Subversive](http://www.eclipse.org/subversive). Don't ask us which one is better. Some people use Subclipse, some people use Subversive.
-
-### I just installed Subversion on Mac/Linux, and then I installed Subclipse, but it does not work. What is the problem?
-
-Verify that the version of Subclipse matches the version of Subversion that you have installed. Try uninstalling Subversion and configuring Subclipse's preferences to run JavaSVN. Take a look at the [Subclipse FAQ](http://subclipse.tigris.org/faq.html) and the [JavaHL FAQ](http://subclipse.tigris.org/wiki/JavaHL). Ask on **#subclipse** for additional assistance.
-
-### I am trying to use svn+ssh:// with Subclipse, and it does not work?
-
-Generally speaking, the JavaSVN adapter in the Team/SVN preferences will yield better results when using svn+ssh. See: [Subclipse support for SVN protocols](http://svn.collab.net/subclipse/help/index.jsp?topic=/org.tigris.subversion.subclipse.doc/html/reference/protocol.html) for detailed information.
-
-### I've upgraded to Gallileo, but Subversive can't read my projects
-
-It seems the versions of Subversive for Ganymede and Gallileo use different versions of the SVNKit plugin. Backing out to a previous version of SVNKit 1.3.2 may solve the issue.
-
-Additions
----------
-
-### Is there an UML editor for Eclipse?
-
-*   An Eclipse Modelling project-based UML editor can be installed from the Eclipse update site "Modelling > UML2 Tools SDK". See [Creating UML 2 diagrams with Eclipse UML2 Tools - Tutorial](http://www.vogella.de/articles/UML/article.html) for an introduction.
+Check the [SWT Snippets](https://www.eclipse.org/swt/snippets/) section, there might be a code example that demonstrates what you are trying to do.here.
 
