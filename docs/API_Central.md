@@ -13,8 +13,8 @@ This page is a hub to collect information about Eclipse Project APIs.
 *   [Deprecation Policy](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Eclipse_API_Central_Deprecation_Policy.md)
 *   [Policy on use of Export-Package](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Export-Package.md)
 *   [Version Numbering](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/VersionNumbering.md) Guidelines on how to assign and evolve plug-in version numbers
-*   [Naming Conventions](https://github.com/eclipse-platform/eclipse.platform/blob/api-central/docs/Naming_Conventions.md)  How to name things like packages, classes, and methods
-*   [Code Conventions](https://github.com/eclipse-platform/eclipse.platform/blob/api-central/docs/Coding_Conventions.md)  How to make Java code readable
-*   [Eclipse Doc Conventions](https://github.com/vogellacompany/eclipse.platform/blob/api-central/docs/Eclipse_Doc_Style_Guide.md) Guide how to write Eclipse docs
+*   [Naming Conventions](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Naming_Conventions.md)  How to name things like packages, classes, and methods
+*   [Code Conventions](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Coding_Conventions.md)  How to make Java code readable
+*   [Eclipse Doc Conventions](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Eclipse_Doc_Style_Guide.md) Guide how to write Eclipse docs
 *   [User interface guidelines](https://github.com/eclipse-platform/ui-best-practices)
 

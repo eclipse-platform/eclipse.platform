@@ -26,7 +26,7 @@ Modifiers should be ordered as specified in the JLS and summarized in [AST#newMo
     synchronized native strictfp transient volatile
     
 
-For Javadoc conventions, see Oracle's [How to Write Doc Comments for the Javadoc Tool](http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html) and [Eclipse/API_Central](/https://github.com/eclipse-platform/eclipse.platform/blob/api-central/docs/API_Central.md).
+For Javadoc conventions, see Oracle's [How to Write Doc Comments for the Javadoc Tool](http://www.oracle.com/technetwork/java/javase/documentation/index-137868.html) and [Eclipse/API_Central](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/API_Central.md).
 
 For Eclipse projects, there is no policy that requires a specific coding format or style, though the Eclipse style in the formatter and cleanup is preferred. Project teams typically determine their own styles and then commit the appropriate files. One way is to commit files on a per-project basis, the other is to have a central set of files that should be imported by each committer. See [Eclipse Incubation Mailing List, 20-June-2016](https://dev.eclipse.org/mhonarc/lists/incubation/msg00141.html).
 
