@@ -20,9 +20,16 @@ package org.eclipse.core.internal.resources;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HexFormat;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.events.ILifecycleListener;
@@ -57,6 +64,7 @@ import org.eclipse.core.runtime.content.IContentTypeMatcher;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * Keeps a cache of recently read content descriptions.
@@ -65,6 +73,7 @@ import org.osgi.framework.Bundle;
  * @see IFile#getContentDescription()
  */
 public class ContentDescriptionManager implements IManager, IRegistryChangeListener, IContentTypeManager.IContentTypeChangeListener, ILifecycleListener {
+
 	/**
 	 * This job causes the content description cache and the related flags
 	 * in the resource tree to be flushed.
@@ -337,14 +346,6 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		return cacheState;
 	}
 
-	public long getCacheTimestamp() throws CoreException {
-		try {
-			return Long.parseLong(workspace.getRoot().getPersistentProperty(CACHE_TIMESTAMP));
-		} catch (NumberFormatException e) {
-			return 0;
-		}
-	}
-
 	public IContentTypeMatcher getContentTypeMatcher(Project project) throws CoreException {
 		return projectContentTypes.getMatcherFor(project);
 	}
@@ -370,9 +371,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		if (inSync && getCacheState() != ABOUT_TO_FLUSH) {
 			// first look for the flags in the resource info to avoid looking in the cache
 			// don't need to copy the info because the modified bits are not in the deltas
-			if (info == null)
-				return null;
-			if (info.isSet(ICoreConstants.M_NO_CONTENT_DESCRIPTION))
+			if ((info == null) || info.isSet(ICoreConstants.M_NO_CONTENT_DESCRIPTION))
 				// presumably, this file has no known content type
 				return null;
 			if (info.isSet(ICoreConstants.M_DEFAULT_CONTENT_DESCRIPTION)) {
@@ -480,6 +479,38 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		}
 	}
 
+	private static String getCurrentPlatformState() {
+		ResourcesPlugin plugin = ResourcesPlugin.getPlugin();
+		if (plugin == null) {
+			return ""; //$NON-NLS-1$
+		}
+		BundleContext bundleContext = plugin.getBundle().getBundleContext();
+		if (bundleContext == null) {
+			return ""; //$NON-NLS-1$
+		}
+		String ID = Arrays.stream(bundleContext.getBundles())
+				.map(bundle -> String.format("%d %s %s", bundle.getBundleId(), bundle.getSymbolicName(), //$NON-NLS-1$
+						bundle.getVersion()))
+				.sorted().collect(Collectors.joining(System.lineSeparator()));
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256"); //$NON-NLS-1$
+			return HexFormat.of().formatHex(digest.digest(ID.getBytes(StandardCharsets.UTF_8)));
+		} catch (NoSuchAlgorithmException e) {
+			return Integer.toHexString(ID.hashCode());
+		}
+	}
+
+	/**
+	 * @return the cached platform state, only public for testing purpose!
+	 */
+	private String getCachedPlatformState() {
+		try {
+			return Objects.requireNonNullElse(workspace.getRoot().getPersistentProperty(CACHE_TIMESTAMP), ""); //$NON-NLS-1$
+		} catch (CoreException e) {
+			return e.toString();
+		}
+	}
+
 	/**
 	 * Tries to obtain a content description for the given file.
 	 */
@@ -536,15 +567,11 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		cacheState = newCacheState;
 	}
 
-	private void setCacheTimeStamp(long timeStamp) throws CoreException {
-		workspace.getRoot().setPersistentProperty(CACHE_TIMESTAMP, Long.toString(timeStamp));
-	}
-
 	@Override
 	public void shutdown(IProgressMonitor monitor) throws CoreException {
-		if (getCacheState() != INVALID_CACHE)
-			// remember the platform timestamp for which we have a valid cache
-			setCacheTimeStamp(Platform.getStateStamp());
+		if (getCacheState() != INVALID_CACHE) {
+			workspace.getRoot().setPersistentProperty(CACHE_TIMESTAMP, getCurrentPlatformState());
+		}
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		//tolerate missing services during shutdown because they might be already gone
 		if (contentTypeManager != null)
@@ -569,8 +596,9 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 			setCacheState(INVALID_CACHE);
 		flushJob = new FlushJob(workspace);
 		// the cache is stale (plug-ins that might be contributing content types were added/removed)
-		if (getCacheTimestamp() != Platform.getStateStamp())
+		if (!Objects.equals(getCachedPlatformState(), getCurrentPlatformState())) {
 			invalidateCache(false, null);
+		}
 		// register a lifecycle listener
 		workspace.addLifecycleListener(this);
 		// register a content type change listener
