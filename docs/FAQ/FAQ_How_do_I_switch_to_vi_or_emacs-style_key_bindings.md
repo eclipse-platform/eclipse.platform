@@ -10,7 +10,6 @@ Eclipse has a built-in key-binding configuration that emulates emacs-style key b
 See Also:
 ---------
 
-[FAQ\_How\_do\_I\_create\_my\_own\_key-binding\_configuration?](./FAQ_How_do_I_create_my_own_key-binding_configuration.md "FAQ How do I create my own key-binding configuration?")
+[FAQ How do I create my own key-binding configuration?](./FAQ_How_do_I_create_my_own_key-binding_configuration.md "FAQ How do I create my own key-binding configuration?")
 
-VIPlugin ([http://eclipse-plugins.2y.net/eclipse/plugin_details.jsp?id=331](http://eclipse-plugins.2y.net/eclipse/plugin_details.jsp?id=331))
 

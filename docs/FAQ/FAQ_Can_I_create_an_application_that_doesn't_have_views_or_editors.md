@@ -46,5 +46,5 @@ The subclass also needs to override the createContents method to create the SWT 
 See Also:
 ---------
 
-[FAQ\_How\_do\_I\_build\_menus\_and\_toolbars\_programmatically?](./FAQ_How_do_I_build_menus_and_toolbars_programmatically.md "FAQ How do I build menus and toolbars programmatically?")
+[FAQ How do I build menus and toolbars programmatically?](./FAQ_How_do_I_build_menus_and_toolbars_programmatically.md "FAQ How do I build menus and toolbars programmatically?")
 
