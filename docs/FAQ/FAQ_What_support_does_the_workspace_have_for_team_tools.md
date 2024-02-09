@@ -1,12 +1,7 @@
-
-
 FAQ What support does the workspace have for team tools?
 ========================================================
 
   
-
-  
-
   
 
 Repository tools often need special control over how files in the workspace are managed. The workspace API includes special hooks that allow repository tools to reimplement certain methods, validate and veto file changes, and store synchronization state on resources. These facilities are generally well described in the _Platform Plug-in Developer's Guide_, but here is a quick tour of special repository integration support in the workspace:

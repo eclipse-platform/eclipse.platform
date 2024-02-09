@@ -14,8 +14,8 @@ This simply means that Ant could not find a Java compiler. The easiest solution 
   
 Alternatively, Ant supports the notion of a _compiler adapter_, allowing you to plug in your own Java compiler, such as the Java compiler that is built into Eclipse. The Eclipse compiler adapter is found in the org.eclipse.jdt.core in jdtCompilerAdapter.jar. Again, you need to make sure that this JAR is on Ant's classpath from the Ant preference page. Then, simply add the following line to your build file to specify the compiler:
 
-   <property name="build.compiler" 
-      value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+      <property name="build.compiler" 
+         value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
  
 
   

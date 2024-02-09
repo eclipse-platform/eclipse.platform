@@ -7,13 +7,13 @@ Several methods on IJobManager (find, cancel, join, sleep, and wakeUp) require a
 
 A concrete example will help to explain how families can be used. The Java search mechanism uses background jobs to build indexes of source files and JARs in each project of the workspace. If a project is deleted, the search facility wants to discard all indexing jobs on files in that project as they are no longer needed. The search facility accomplishes this by using project names as a family identifier. A simplified version of the index job implementation is as follows:
 
-   class IndexJob extends Job {
-      String projectName;
-      ...
-      public boolean belongsTo(Object family) {
-         return projectName.equals(family);
+      class IndexJob extends Job {
+         String projectName;
+         ...
+         public boolean belongsTo(Object family) {
+            return projectName.equals(family);
+         }
       }
-   }
 
 When a project is deleted, all index jobs on that project can be cancelled using the following code:
 

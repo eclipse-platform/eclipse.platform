@@ -11,34 +11,34 @@ In some situations however, a plug-in in the development platform has a legitima
   
 Prior to Eclipse 3.0, each plug-in that wanted console-like output created its own Console view. Eclipse 3.0 provides a single generic Console view that all plug-ins can write to. The view can host several console documents at once and allows the user to switch between different console pages. Each page in the console is represented by an org.eclipse.ui.console.IConsole object. To write to the console, you need to create your own IConsole instance and connect it to the Console view. To do this, you have to add a new dependency to org.eclipse.ui.console in the plugin.xml of your plugin. For a console containing a simple text document, you can instantiate a MessageConsole instance. Here is a method that locates a console with a given name and creates a new one if it cannot be found:
 
-   private MessageConsole findConsole(String name) {
-      ConsolePlugin plugin = ConsolePlugin.getDefault();
-      IConsoleManager conMan = plugin.getConsoleManager();
-      IConsole\[\] existing = conMan.getConsoles();
-      for (int i = 0; i < existing.length; i++)
-         if (name.equals(existing\[i\].getName()))
-            return (MessageConsole) existing\[i\];
-      //no console found, so create a new one
-      MessageConsole myConsole = new MessageConsole(name, null);
-      conMan.addConsoles(new IConsole\[\]{myConsole});
-      return myConsole;
-   }
+      private MessageConsole findConsole(String name) {
+         ConsolePlugin plugin = ConsolePlugin.getDefault();
+         IConsoleManager conMan = plugin.getConsoleManager();
+         IConsole\[\] existing = conMan.getConsoles();
+         for (int i = 0; i < existing.length; i++)
+            if (name.equals(existing\[i\].getName()))
+               return (MessageConsole) existing\[i\];
+         //no console found, so create a new one
+         MessageConsole myConsole = new MessageConsole(name, null);
+         conMan.addConsoles(new IConsole\[\]{myConsole});
+         return myConsole;
+      }
 
   
 Once a console is created, you can write to it either by directly modifying its IDocument or by opening an output stream on the console. This snippet opens a stream and writes some text to a console:
 
-   MessageConsole myConsole = findConsole(CONSOLE_NAME);
-   MessageConsoleStream out = myConsole.newMessageStream();
-   out.println("Hello from Generic console sample action");
+      MessageConsole myConsole = findConsole(CONSOLE_NAME);
+      MessageConsoleStream out = myConsole.newMessageStream();
+      out.println("Hello from Generic console sample action");
 
   
 Creating a console and writing to it do not create or reveal the Console view. If you want to make that sure the Console view is visible, you need to reveal it using the usual workbench API. Even once the Console view is revealed, keep in mind that it may contain several pages, each representing a different IConsole provided by a plug-in. Additional API asks the Console view to display your console. This snippet reveals the Console view and asks it to display a particular console instance:
 
-  IConsole myConsole = ...;// your console instance
-  IWorkbenchPage page = ...;// [obtain the active page](./FAQ_How_do_I_find_the_active_workbench_page.md "FAQ How do I find the active workbench page?")
-  String id = IConsoleConstants.ID\_CONSOLE\_VIEW;
-  IConsoleView view = (IConsoleView) page.showView(id);
-  view.display(myConsole);
+   IConsole myConsole = ...;// your console instance
+   IWorkbenchPage page = ...;// [obtain the active page](./FAQ_How_do_I_find_the_active_workbench_page.md "FAQ How do I find the active workbench page?")
+   String id = IConsoleConstants.ID\_CONSOLE\_VIEW;
+   IConsoleView view = (IConsoleView) page.showView(id);
+   view.display(myConsole);
 
   
 

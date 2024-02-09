@@ -10,14 +10,14 @@ In Java, each thread can optionally reference a _context class loader_. This loa
   
 By default, the context loader is set to be the application class loader, which is not used in Eclipse. Because Eclipse has a separate class loader for each installed plug-in, a default class loader generally does not make sense as the context loader for a given thread. If you are calling third-party libraries that rely on the context loader, you will need to set it yourself. The following code snippet sets the context class loader before calling a library. Note that the code politely cleans up afterward by resetting the context loader to its original value:
 
-   Thread current = Thread.currentThread();
-   ClassLoader oldLoader = current.getContextClassLoader();
-   try {
-      current.setContextClassLoader(getClass().getClassLoader());
-      //call library code here
-   } finally {
-      current.setContextClassLoader(oldLoader);
-   }
+      Thread current = Thread.currentThread();
+      ClassLoader oldLoader = current.getContextClassLoader();
+      try {
+         current.setContextClassLoader(getClass().getClassLoader());
+         //call library code here
+      } finally {
+         current.setContextClassLoader(oldLoader);
+      }
 
   
 

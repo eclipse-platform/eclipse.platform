@@ -10,10 +10,10 @@ Like members of a community, plug-ins do not generally live in isolation. Most p
   
 To rephrase all this in Eclipse terminology, plug-ins define their interactions with other plug-ins in a number of ways. First, a plug-in can specify what other plug-ins it _requires_, those that it absolutely cannot live without. A UI plug-in will probably require the SWT plug-in, and a Java development tool will usually require one or more of the JDT plug-ins. Plug-in requirements are specified in the _plug-in manifest file_ (plugin.xml). The following example shows a plug-in that requires only the JFace and SWT plug-ins:
 
-   <requires>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.swt"/>
-   </requires>
+    <requires>
+        <import plugin="org.eclipse.jface"/>
+        <import plugin="org.eclipse.swt"/>
+    </requires>
 
 Your plug-in can reference _only_ the classes and interfaces of plug-ins it requires. Attempts to reference classes in other plug-ins will fail.
 
@@ -22,11 +22,11 @@ Your plug-in can reference _only_ the classes and interfaces of plug-ins it requ
   
 Conversely, a plug-in can choose which classes and interfaces it wants to expose to other plug-ins. Your plug-in manifest must declare what libraries (JARs) it provides and, optionally, what classes it wants other plug-ins to be able to reference. This example declares a single JAR file and exposes classes only in packages starting with the prefix com.xyz.*:
 
-  <runtime>
-    <library name="sample.jar">
-      <export name="com.xyz.*"/>
-    </library>   
-  </runtime>
+    <runtime>
+      <library name="sample.jar">
+        <export name="com.xyz.*"/>
+      </library>   
+    </runtime>
 
   
 

@@ -5,15 +5,15 @@ FAQ How do I react to changes in source files?
 
 Register a workspace resource change listener. Inside our eScript plug-in class, we call
 
-   IResourceChangeListener rcl = new IResourceChangeListener() {
-      public void resourceChanged(IResourceChangeEvent event) {
-         IResource resource = event.getResource();
-         if (resource.getFileExtension().equals("escript")) {
-            // run the compiler
+      IResourceChangeListener rcl = new IResourceChangeListener() {
+         public void resourceChanged(IResourceChangeEvent event) {
+            IResource resource = event.getResource();
+            if (resource.getFileExtension().equals("escript")) {
+               // run the compiler
+            }
          }
-      }
-   };
-   ResourcesPlugin.getWorkspace().addResourceChangeListener(rcl);
+      };
+      ResourcesPlugin.getWorkspace().addResourceChangeListener(rcl);
 
 We will be notified whenever the file is changed in the workspace under Eclipse's control. Changes made to the files outside Eclipse will not be detected unless the workspace is being explicitly refreshed. Alternatively, a separate worker thread could be used to monitor the file system and inform Eclipse of any files having changed.
 

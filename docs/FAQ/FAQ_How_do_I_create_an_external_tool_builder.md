@@ -11,13 +11,13 @@ An external tool builder is an external tool that runs every time the projects i
 
 As with ordinary external tools, you can define your own type of external tool builder by creating a new launch configuration type. In your launch configuration declaration, you must specify the category for external tool builder launch configurations:
 
-   <launchConfigurationType
-      name="%AntBuild"
-      delegate="com.xyz.MyLaunchDelegate"
-      '''category="org.eclipse.ui.externaltools.builder"'''
-      modes="run"
-      id="com.xyz.MyLaunchType">
-   </launchConfigurationType>
+      <launchConfigurationType
+         name="%AntBuild"
+         delegate="com.xyz.MyLaunchDelegate"
+         '''category="org.eclipse.ui.externaltools.builder"'''
+         modes="run"
+         id="com.xyz.MyLaunchType">
+      </launchConfigurationType>
 
 See Also:
 ---------

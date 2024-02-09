@@ -5,10 +5,10 @@ FAQ How do I prompt the user to select a file or a directory?
 
 SWT provides native dialogs for asking the user to select a file (FileDialog) or a directory (DirectoryDialog). Both dialogs allow you to specify an initial directory (setFilterPath), and FileDialog also allows you to specify an initial selection (setFileName). Neither of these settings will restrict the user's ultimate choice as the dialogs allow the user to browse to another directory regardless of the filter path. FileDialog also allows you to specify permitted file extensions (setFilterExtensions), and the dialog will not let the user select a file whose extension does not match one of the filters. The following example usage of FileDialog asks the user to open an HTML file:
 
-   FileDialog dialog = new FileDialog(shell, SWT.OPEN);
-   dialog.setFilterExtensions(new String \[\] {"*.html"});
-   dialog.setFilterPath("c:\\\temp");
-   String result = dialog.open();
+      FileDialog dialog = new FileDialog(shell, SWT.OPEN);
+      dialog.setFilterExtensions(new String \[\] {"*.html"});
+      dialog.setFilterPath("c:\\\temp");
+      String result = dialog.open();
 
   
 

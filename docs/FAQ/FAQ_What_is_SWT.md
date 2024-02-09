@@ -16,10 +16,5 @@ SWT does not make use of AWT or any other Java tool kit to implement its functio
   
 
 *   Win32
-*   Linux Motif and GTK
-*   AIX Motif
-*   HPUX Motif
-*   MacOS Carbon and Cocoa
-*   Photon
-*   Pocket PC
-
+*   Linux GTK
+*   MacOS

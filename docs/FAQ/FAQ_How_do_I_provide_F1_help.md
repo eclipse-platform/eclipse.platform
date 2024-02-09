@@ -8,20 +8,20 @@ When the user presses F1, context-sensitive help is displayed that briefly descr
   
 The only code required to associate help with your UI component is to link a help context ID to it. This is accomplished by using the various setHelp methods on the WorkbenchHelp class. For example, adding help to a view can be done in the view's createPartControl method:
 
-   public void createPartControl(Composite parent) {
-      ...
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, 
-         "org.eclipse.faq.examples.books_view");
-   }
+      public void createPartControl(Composite parent) {
+         ...
+         PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, 
+            "org.eclipse.faq.examples.books_view");
+      }
 
 The setHelp methods can be used to add help contexts to actions, menus, and arbitrary controls. Because context-sensitive help operates on the control that is in focus, it makes sense to associate help contexts only with controls that are able to take focus. See the help documentation for more details.
 
 For actions that are contributed declaratively, help contexts are contributed in the XML action definition. For example, for an action in an actionSet, the context is specified using the helpContextId attribute:
 
-   <action
-      ...
-      helpContextId="org.eclipse.faq.examples.console_action"
-   </action>
+      <action
+         ...
+         helpContextId="org.eclipse.faq.examples.console_action"
+      </action>
 
 Help contexts are specified declaratively for the following extension points in the Eclipse SDK:
 

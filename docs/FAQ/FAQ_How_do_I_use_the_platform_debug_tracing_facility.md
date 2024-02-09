@@ -48,9 +48,9 @@ Turning on debug tracing
 
 To turn tracing on, you need to create a trace-options file that contains a list of the debug options that you want to turn on. By default, the platform looks for a file called .options in the Eclipse install directory. This should be a text file in the Java properties file format, with one key=value pair per line. To turn on the trace options in the preceding two examples, you need an options file that looks like this:
 
-   org.eclipse.faq.examples/debug=true
-   org.eclipse.faq.examples/debug/option1=true
-   org.eclipse.faq.examples/debug/option2=true
+      org.eclipse.faq.examples/debug=true
+      org.eclipse.faq.examples/debug/option1=true
+      org.eclipse.faq.examples/debug/option2=true
 
 The first line sets the value of the flag returned by Plugin.isDebugging, and the next two lines define the debug option strings returned by the getDebugOption method on Platform.
 
@@ -58,9 +58,6 @@ _Hint_: If you use tracing in your plug-in, you should keep in your plug-in inst
 
 _Hint2_: If the trace levels don't show up in the according dialogs (Run/Debug configuration or in the workspace settings of the eclipse product) you may have forgotten to include the .options file in the Build Configuration (build.properties) of your plug-in.
 
-    ![Tracing launch.png](https://raw.githubusercontent.com/eclipse/gef-classic/master/docs/images/Tracing_launch.png)
-
-    **Figure 6.1**   Tracing Options page
 
 Finally, you need to enable the tracing mechanism by starting Eclipse with the -debug command line argument. You can, optionally, specify the location of the debug options file as either a URL or a file-system path after the -debug argument.
 

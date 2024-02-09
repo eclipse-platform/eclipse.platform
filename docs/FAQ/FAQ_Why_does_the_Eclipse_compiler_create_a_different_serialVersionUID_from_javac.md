@@ -7,9 +7,9 @@ You may discover that serializable classes compiled with Eclipse are not compati
 
 If you need object serialization, the _only_ way to be safe is to explicitly define the serialVersionUID in your code:
 
-    class MyClass implements Serializable {
-        public static final long serialVersionUID = 1;
-    }
+        class MyClass implements Serializable {
+            public static final long serialVersionUID = 1;
+        }
 
   
 

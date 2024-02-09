@@ -13,12 +13,12 @@ Resources become out of sync with the workspace if they are changed directly in 
   
 Here is an example snippet that sets the contents of a file using a FileOutputStream, and then uses refreshLocal to synchronize the workspace. This example is a bit contrived, because you could easily use the workspace API in this case. Imagine that the actual file manipulation is buried in some third-party library that you can't change, and this code makes more sense.
 
-   private void externalModify(IFile iFile) throws ... {
-      java.io.File file = iFile.getLocation().toFile();
-      FileOutputStream fOut = new FileOutputStream(file);
-      fOut.write("Written by FileOutputStream".getBytes());
-      iFile.refreshLocal(IResource.DEPTH_ZERO, null);
-   }
+      private void externalModify(IFile iFile) throws ... {
+         java.io.File file = iFile.getLocation().toFile();
+         FileOutputStream fOut = new FileOutputStream(file);
+         fOut.write("Written by FileOutputStream".getBytes());
+         iFile.refreshLocal(IResource.DEPTH_ZERO, null);
+      }
 
 You might reasonably ask why the workspace does not refresh out of sync files automatically. The answer in Eclipse 3.0 is that it can, with some caveats. The problem is that there is no way to do this efficiently in a platform-neutral way. Some operating systems have callback mechanisms that send notifications when there are changes to particular sections of the file system, but this support doesn't exist on all operating systems that Eclipse runs on. The only way to perform automatic refresh across all platforms is to have a background thread that periodically polls the file system for changes. This clearly can have a steep performance cost, especially since workspaces might easily contain tens of thousands of files.
 
@@ -29,5 +29,4 @@ The solution in Eclipse 3.0 is to have an auto-refresh capability that is turned
 The down side of auto-refresh is that programmatic clients of the workspace API still need to check for and defend against out of sync resources. Resources can be out of sync if auto-refresh is turned off, and they can even be out of sync when auto-refresh is turned on. If you are programmatically modifying files in the workspace externally, you should still perform a refreshLocal to make sure files come back in sync as quickly as possible.
 
   
-If you are using Eclipse 2.1, you can install auto-refresh as a separate plug-in. This plug-in is hosted on the Eclipse Platform core team home page, to be found at the Eclipse Web site ([http://www.eclipse.org](http://www.eclipse.org)), by clicking on **Projects >** The Eclipse Project > Platform > Core > Development Resources and Planning**.**
 

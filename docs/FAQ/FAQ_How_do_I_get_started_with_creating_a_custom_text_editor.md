@@ -23,18 +23,18 @@ The FAQs in this chapter will use a running example of a simple HTML editor. We 
 
 Here is the skeleton of the HTMLEditor class, showing the customization entry points:
 
-public class HTMLEditor extends AbstractTextEditor {
-   public HTMLEditor() {
-      //install the source configuration
-      setSourceViewerConfiguration(new HTMLConfiguration());
-      //install the document provider
-      setDocumentProvider(new HTMLDocumentProvider());
+   public class HTMLEditor extends AbstractTextEditor {
+      public HTMLEditor() {
+         //install the source configuration
+         setSourceViewerConfiguration(new HTMLConfiguration());
+         //install the document provider
+         setDocumentProvider(new HTMLDocumentProvider());
+      }
+      protected void createActions() {
+         super.createActions();
+         //... add other editor actions here
+      }
    }
-   protected void createActions() {
-      super.createActions();
-      //... add other editor actions here
-   }
-}
 
 See Also:
 ---------

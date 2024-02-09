@@ -7,24 +7,21 @@ The purpose of a viewer is to simplify the interaction between an underlying mod
 
 A viewer is created by first creating an SWT widget, constructing the viewer on that widget, and then setting its content provider, label provider, and input. This snippet is from the BooksView class in the FAQ Examples plug-in, which creates a table viewer to display a library of books:
 
-   int style = SWT.MULTI | SWT.H\_SCROLL | SWT.V\_SCROLL;
-   Table table = new Table(parent, style);
-   TableViewer viewer = new TableViewer(table);
-   viewer.setContentProvider(new BookshelfContentProvider());
-   viewer.setLabelProvider(new BookshelfLabelProvider());
-   viewer.setInput(createBookshelf());
+      int style = SWT.MULTI | SWT.H\_SCROLL | SWT.V\_SCROLL;
+      Table table = new Table(parent, style);
+      TableViewer viewer = new TableViewer(table);
+      viewer.setContentProvider(new BookshelfContentProvider());
+      viewer.setLabelProvider(new BookshelfLabelProvider());
+      viewer.setInput(createBookshelf());
 
 In general, JFace viewers allow you to create a model-view-controller (MVC) architecture. The view is the underlying SWT widget, the model is specified by the framework user, and the JFace viewer and its associated components form the controller. The viewer input is a model element that seeds the population of the viewer.
 
-![](https://raw.githubusercontent.com/eclipse/gef-classic/master/docs/images/Package_explorer.jpg)
+![](https://github.com/eclipse-platform/eclipse.platform/tree/master/docs/FAQimages/Package_explorer.jpg)
 
 JDT Package Explorer
 
 The JDT Package Explorer uses a TreeViewer to display the contents of a workspace, represented as a JavaModel.
 
-The corresponding Spider diagram (Figure 8.2) shows the relationships among the Package Explorer, its viewer, its model, the underlying widget, and the label and content providers for the JDT Package Explorer.
-
-    <img src="../images/ViewerModel.png" width=547>     **Figure 8.2**   Spider diagram of Package Explorer components
 
 See Also:
 ---------

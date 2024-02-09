@@ -7,15 +7,15 @@ Text editors have no public API to insert text. Furthermore, they do not expose 
 
 Text editors obtain a document model by using a _document provider_. This provider functions as synchronizer for multiple editors, notifying each when the other changes the document. By acting as one of the editors on a document, one can easily insert text into the editor of choice. The next code snippet locates the active editor, gets its document provider, requests the underlying document, and inserts some text into it:
 
-   IWorkbenchPage page = ...;
-   IEditorPart part = page.getActiveEditor();
-   if (!(part instanceof AbstractTextEditor)
-      return;
-   ITextEditor editor = (ITextEditor)part;
-   IDocumentProvider dp = editor.getDocumentProvider();
-   IDocument doc = dp.getDocument(editor.getEditorInput());
-   int offset = doc.getLineOffset(doc.getNumberOfLines()-4);
-   doc.replace(offset, 0, pasteText+"\\n");
+      IWorkbenchPage page = ...;
+      IEditorPart part = page.getActiveEditor();
+      if (!(part instanceof AbstractTextEditor)
+         return;
+      ITextEditor editor = (ITextEditor)part;
+      IDocumentProvider dp = editor.getDocumentProvider();
+      IDocument doc = dp.getDocument(editor.getEditorInput());
+      int offset = doc.getLineOffset(doc.getNumberOfLines()-4);
+      doc.replace(offset, 0, pasteText+"\n");
 
 The provider will notify all other editors to update their presentation as a result.
 
