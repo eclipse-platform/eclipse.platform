@@ -3,7 +3,7 @@
 FAQ What is the Eclipse Foundation?
 ===================================
 
-Please see the Eclipse Foundation pages on the Eclipse.org website: [https://www.eclipse.org/org/foundation/](https://www.eclipse.org/org/foundation/)
+Please see the Eclipse Foundation pages on the [Eclipse.org website](https://www.eclipse.org/org/foundation/)
 
   
 

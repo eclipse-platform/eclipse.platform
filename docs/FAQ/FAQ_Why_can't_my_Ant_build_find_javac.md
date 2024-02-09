@@ -23,5 +23,5 @@ Alternatively, Ant supports the notion of a _compiler adapter_, allowing you to 
 See Also:
 ---------
 
-[FAQ\_What\_is_Ant?](./FAQ_What_is_Ant.md "FAQ What is Ant?")
+[FAQ What is Ant?](./FAQ_What_is_Ant.md "FAQ What is Ant?")
 
