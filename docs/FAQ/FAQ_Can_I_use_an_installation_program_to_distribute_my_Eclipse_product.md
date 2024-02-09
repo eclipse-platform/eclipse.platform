@@ -12,7 +12,7 @@ Once the product has been installed, it is recommended that the Eclipse Update M
 See Also:
 ---------
 
-*   InstallShield ([http://www.installshield.com](http://www.installshield.com))
+*    [InstallShield](https://www.installshield.com)
 
 The referenced IBM alphaWorks Install Toolkit for Java has not be available since April 9, 1998.
 
