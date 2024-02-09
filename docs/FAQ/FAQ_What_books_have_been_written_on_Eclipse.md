@@ -5,7 +5,7 @@ FAQ What books have been written on Eclipse?
 
 In June 2004, books on Eclipse, other than this one, included the following:
 
-*   Frank Budinsky et al., _Eclipse Modeling Framework_, Addison-Wesley, 2004 ([http://www.aw.com](http://www.aw.com))
+*   Frank Budinsky et al., _Eclipse Modeling Framework_, Addison-Wesley, 2004
 
 *   Berthold Daum, _Eclipse 2 for Java Developers_, Wiley, 2003 ([http://www.wileyeurope.com](http://www.wileyeurope.com))
 

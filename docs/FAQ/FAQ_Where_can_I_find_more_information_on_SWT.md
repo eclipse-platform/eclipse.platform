@@ -51,7 +51,7 @@ The main forum for discussion of SWT is the eclipse.platform.swt newsgroup. This
 
 The platform-swt-dev mailing list is for discussion among members of the SWT development team and other contributors to SWT. If you are fixing SWT bugs, porting SWT to another platform, or looking for solutions to advanced questions that have not been answered on the newsgroup, you are welcome to ask here. SWT users are welcome to subscribe and follow along with the discussion, but to avoid cluttering the developer list, please use the newsgroup for your questions.
 
-Some other Java forums have been known to host discussion threads on SWT. Unfortunately, these forums can sometimes deteriorate into flame wars on Swing versus SWT. One notable example is [http://www.javalobby.org](http://www.javalobby.org), which has had several SWT discussion threads.
+Some other Java forums have been known to host discussion threads on SWT. Unfortunately, these forums can sometimes deteriorate into flame wars on Swing versus SWT. One notable example is [javalobby](http://www.javalobby.org), which has had several SWT discussion threads.
 
 See Also:
 ---------

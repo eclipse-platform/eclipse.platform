@@ -96,8 +96,7 @@ Upgrading other features (like CDT, PDT, WTP...) can be done without the need to
 See Also:
 ---------
 
-*   [FAQ\_How\_do\_I\_update_Eclipse?](./FAQ_How_do_I_update_Eclipse.md "FAQ How do I update Eclipse?")
-*   [FAQ\_What\_is\_the\_Update_Manager?](./FAQ_What_is_the_Update_Manager.md "FAQ What is the Update Manager?")
+*   [FAQ What is the Update Manager?](./FAQ_What_is_the_Update_Manager.md "FAQ What is the Update Manager?") 
 *   [How to upgrade Eclipse for Java EE Developers from Juno to Kepler?](https://stackoverflow.com/questions/17337526/how-to-upgrade-eclipse-for-java-ee-developers-from-juno-to-kepler)
 
   

@@ -41,7 +41,7 @@ that is responsible for starting the OSGi framework. Typically you will not want
   
 Using a separate plug-in to contain a library is the most powerful approach because it means that other plug-ins can make use of that library without having to load your plug-in or add the library to their own classpath explicitly. This approach is used throughout the Eclipse Project to add third-party libraries, such as Xerces, Ant, and JUnit.
 
-Of course, because this is Java, there is always a way to load classes outside the scope of your classpath. You can instantiate your own class loader that knows how to find the code you need and use that to load other classes. This is a very powerful mechanism because it can change dynamically at runtime, and it can even load classes that aren't in your file system, such as classes in a database or even classes generated on the fly. Manipulating class loaders is a bit outside the scope of this book, but plenty of information is available in Java programming books or at the Java Web site ([http://java.sun.com](http://java.sun.com)).
+Of course, because this is Java, there is always a way to load classes outside the scope of your classpath. You can instantiate your own class loader that knows how to find the code you need and use that to load other classes. This is a very powerful mechanism because it can change dynamically at runtime, and it can even load classes that aren't in your file system, such as classes in a database or even classes generated on the fly. Manipulating class loaders is a bit outside the scope of this book, but plenty of information is available in Java programming books or at the [Java Web site](http://java.sun.com).
 
 See Also:
 ---------

@@ -12,5 +12,6 @@ The .cvsignore file is not an Eclipse invention. Its syntax is defined by CVS, a
 See Also:
 ---------
 
-*   The CVS manual ([http://www.cvshome.org](http://www.cvshome.org))
+*   [The CVS manual](http://www.cvshome.org)
+
 

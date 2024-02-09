@@ -10,7 +10,8 @@ As for the HTML files, you can write them by hand, which is painful. There are m
 See Also:
 ---------
 
-DocBook ([http://www.docbook.org](http://www.docbook.org))
+[DocBook](https://www.docbook.org)
+
 
 [Authoring\_Eclipse\_Help\_Using\_DocBook](/Authoring_Eclipse_Help_Using_DocBook "Authoring Eclipse Help Using DocBook")
 
