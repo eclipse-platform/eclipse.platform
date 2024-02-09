@@ -9,19 +9,13 @@ Quick Fixes can be used to make typing much faster. Let's assume that you are us
 
 The JDT can detect syntax errors but is also smart enough to guess what you could do to correct the problem. As can be seen in Figure 3.2, the JDT can create the class for us with a single mouse click.
 
-![](https://raw.githubusercontent.com/eclipse/gef-classic/master/docs/images/120px-Quickfix1.jpg)
+![](https://github.com/eclipse-platform/eclipse.platform/tree/master/docs/FAQimages/120px-Quickfix1.jpg)
 
-[](/File:Quickfix1.jpg "Enlarge")
-
-Test
 
 A major tenet of Extreme Programming is to write test cases first. In other words, use cases are specified first; then the implementation is provided. Quick Fixes help in this process. For instance, we start using our Rook class as if it has a move method. Of course, the editor will complain and place a marker next to the reference to the nonexistent method. However, the editor also guesses what we want to do with the method (Figure 3.3).
 
-![](https://raw.githubusercontent.com/eclipse/gef-classic/master/docs/images/120px-Quickguess1.jpg)
+![](https://github.com/eclipse-platform/eclipse.platform/tree/master/docs/FAQimages/120px-Quickguess1.jpg)
 
-[](/File:Quickguess1.jpg "Enlarge")
-
-Test
 
 In a similar fashion, Quick Fixes can be used to add fields to classes, add parameters to methods, help with unhandled exceptions, and generate local variable declarations. Quick Fixes are designed to allow you to continue the creative process of designing API while using it, a major component of Extreme Programming.
 

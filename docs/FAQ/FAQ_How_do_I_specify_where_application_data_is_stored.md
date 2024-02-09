@@ -26,12 +26,12 @@ from your application's run method before you call PlatformUI.createAndRunWorkbe
 
 If you define a location programmatically (either by prompting the user or by other means), you must then set it as follows:
 
-   URL choice = ... pick a data location
-   Location loc = Platform.getInstanceLocation();
-   if (loc.setURL(choice, true))
-      //success!
-   else
-      //location is in use, or is invalid
+      URL choice = ... pick a data location
+      Location loc = Platform.getInstanceLocation();
+      if (loc.setURL(choice, true))
+         //success!
+      else
+         //location is in use, or is invalid
 
 If your end-user is allowed to manipulate the command line directly, there are other things you need to keep in mind. For example, the user may have already picked a location using -data. In this case, Location.isSet() will return true, but you are still responsible for locking the location using Location.lock() to prevent other instances of your application from trying to use the same location concurrently. To see all of the cases that need to be considered take a look at how the Eclipse IDE application does it. Look at IDEApplication.checkInstanceLocation to see all the subtleties of checking and prompting for an instance location.
 

@@ -13,38 +13,38 @@ Once the initial presentation of a document is calculated, it needs to be increm
   
 This all sounds very complicated, but the text framework will usually do most of this work for you. Typically you simply need to create a set of rules that describe the various tokens in your document. The framework has a default presentation reconciler that allows you to plug these rules into it, and the rest of the reconciling work is done for you. As an example, this is a scanner created by the sample HTML editor for scanning HTML tags:
 
-   ITokenScanner scanner = new RuleBasedScanner();
-   IToken string = createToken(colorString);
-   IRule\[\] rules = new IRule\[3\];
-   // Add rule for double quotes
-   rules\[0\] = new SingleLineRule("\\"", "\\"", string, '\\\');
-   // Add a rule for single quotes
-   rules\[1\] = new SingleLineRule("'", "'", string, '\\\');
-   // Add generic whitespace rule.
-   rules\[2\] = new WhitespaceRule(whitespaceDetector);
-   scanner.setRules(rules);
-   scanner.setDefaultReturnToken(createToken(colorTag));
+      ITokenScanner scanner = new RuleBasedScanner();
+      IToken string = createToken(colorString);
+      IRule[] rules = new IRule[3];
+      // Add rule for double quotes
+      rules[0] = new SingleLineRule("\\"", "\\"", string, '\\\');
+      // Add a rule for single quotes
+      rules[1] = new SingleLineRule("'", "'", string, '\\\');
+      // Add generic whitespace rule.
+      rules[2] = new WhitespaceRule(whitespaceDetector);
+      scanner.setRules(rules);
+      scanner.setDefaultReturnToken(createToken(colorTag));
 
 This scanner creates unique tokens for string literals within a tag so it can color them differently. Outside of strings, the rest of the tag is divided into white-space-separated tokens, using a white-space rule.
 
 The createToken method instantiates a Token object for a particular color:
 
-   private IToken createToken(Color color) {
-      return new Token(new TextAttribute(color));
-   }
+      private IToken createToken(Color color) {
+         return new Token(new TextAttribute(color));
+      }
 
 This scanner is finally fed to a standard presentation reconciler in the SourceConfiguration subclass. You need to specify a different damager/repairer for each partition of your document:
 
-   public IPresentationReconciler getPresentationReconciler(
-    ISourceViewer sv) {
-      PresentationReconciler rec = new PresentationReconciler();
-      DefaultDamagerRepairer dr = 
-         new DefaultDamagerRepairer(getTagScanner());
-      rec.setDamager(dr, HTML_TAG);
-      rec.setRepairer(dr, HTML_TAG);
-      ... same for other partitions ...
-      return rec;
-   }
+      public IPresentationReconciler getPresentationReconciler(
+      ISourceViewer sv) {
+         PresentationReconciler rec = new PresentationReconciler();
+         DefaultDamagerRepairer dr = 
+            new DefaultDamagerRepairer(getTagScanner());
+         rec.setDamager(dr, HTML_TAG);
+         rec.setRepairer(dr, HTML_TAG);
+         ... same for other partitions ...
+         return rec;
+      }
 
 For more complex documents or for optimized reconciling, you can build your own custom damager and repairer instances by directly implementing IPresentationDamager and IPresentationRepairer, respectively. However, for most kinds of documents, a simple rule-based approach is sufficient.
 

@@ -9,33 +9,33 @@ Each plug-in has its own log associated with it, but all logged information even
 
 You can write any kind of IStatus object to the log file, including a MultiStatus if you have hierarchies of information to display. If you create your own subclass of the utility class Status, you can override the getMessage method to return extra information to be displayed in the log file. Many plug-ins add utility classes for writing messages and errors to the log:
 
-   import org.eclipse.core.runtime.Status;
-   ...
-   public class MyLogger {
-   ...
-   private static final Bundle BUNDLE = FrameworkUtil.getBundle(MyLogger.class);
-   private static final ILog LOGGER = Platform.getLog(BUNDLE);
-   ...
-   public static void test(){
-       try {
-          log("Eclipse Style Logging");
-       }
-       catch(Exception e){
-         log("Oops!", e);
-       }
-   }
+      import org.eclipse.core.runtime.Status;
+      ...
+      public class MyLogger {
+      ...
+      private static final Bundle BUNDLE = FrameworkUtil.getBundle(MyLogger.class);
+      private static final ILog LOGGER = Platform.getLog(BUNDLE);
+      ...
+      public static void test(){
+         try {
+            log("Eclipse Style Logging");
+         }
+         catch(Exception e){
+            log("Oops!", e);
+         }
+      }
 
-   public static void log(String msg) {
-      log(msg, null);
-   }
+      public static void log(String msg) {
+         log(msg, null);
+      }
 
-   public static void log(String msg, Exception e) {
-      LOGGER.log(new Status((e==null?Status.INFO:Status.ERROR), BUNDLE.getSymbolicName(), msg, e));
-   }
+      public static void log(String msg, Exception e) {
+         LOGGER.log(new Status((e==null?Status.INFO:Status.ERROR), BUNDLE.getSymbolicName(), msg, e));
+      }
 
 During development, you can browse and manipulate the platform log file using the Error Log view (**Window > Show View > General > Error Log**). You can also have the log file mirrored in the Java console by starting Eclipse with the -consoleLog command-line argument.
 
-   eclipse -vm c:\\jre\\bin\\java.exe -consoleLog
+      eclipse -vm c:\\jre\\bin\\java.exe -consoleLog
 
 We explicitly pass the VM because on Windows you have to use java.exe instead of javaw.exe if you want the Java console window to appear.
 

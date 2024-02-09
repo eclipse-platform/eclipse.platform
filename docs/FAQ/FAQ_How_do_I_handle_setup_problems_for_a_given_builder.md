@@ -5,9 +5,9 @@ FAQ How do I handle setup problems for a given builder?
 
 When running a build in a runtime workbench, you might get the following message:
 
-    !MESSAGE Skipping builder com.xyz.builder for project P.
-    Either the builder is missing from the install, or it
-    belongs to a project nature that is missing or disabled.
+     !MESSAGE Skipping builder com.xyz.builder for project P.
+        Either the builder is missing from the install, or it
+        belongs to a project nature that is missing or disabled.
 
 This message means that something is wrong with the builder plug-in or with the attribution of the builder specification in the .project file. The builder plug-in might load fine but still be broken, perhaps because it is missing an ID in the extension point declaration.
 

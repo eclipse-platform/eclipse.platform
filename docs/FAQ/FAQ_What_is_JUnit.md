@@ -5,7 +5,7 @@ FAQ What is JUnit?
 
 JUnit is a simple testing framework shipped with Eclipse. JUnit can be used to write tests for Java programs developed with the JDT and is also used heavily by the platform to test plug-ins.
 
-When inspecting the Eclipse plug-ins in CVS, you will notice quite a few projects like org.eclipse.core.tests.resource. All these projects contain PDE JUnit tests to perform regression tests on plug-ins.
+When inspecting the Eclipse plug-ins in version control, you will notice quite a few projects like org.eclipse.core.tests.resource. All these projects contain PDE JUnit tests to perform regression tests on plug-ins.
 
 See Also:
 ---------

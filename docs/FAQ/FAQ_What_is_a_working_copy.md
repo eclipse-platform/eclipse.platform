@@ -7,17 +7,17 @@ The Java model supports the creation of so-called working copies of compilation 
 
 Working copies should generally be used whenever you modify a compilation unit. This ensures that you are modifying the most up-to-date contents of that file, even if they have not yet been written to disk. If you do not use working copies, and a dirty Java editor is open on that file already, the user will be forced to reconcile your changes manually. The following example of using a working copy to replace a compilation unit's contents is from the implementation of ChangeReturnTypeAction included in this book's FAQ Examples plug-in:
 
-   ICompilationUnit unit = ...; //get compilation unit handle
-   unit.becomeWorkingCopy(null, null);
-   try {
-      IBuffer buffer = unit.getBuffer();
-      String oldContents = buffer.getContents();
-      String newContents = ...; //make some change
-      buffer.setContents(newContents);
-      unit.reconcile(false, null);
-   } finally {
-      unit.discardWorkingCopy();
-   }
+      ICompilationUnit unit = ...; //get compilation unit handle
+      unit.becomeWorkingCopy(null, null);
+      try {
+         IBuffer buffer = unit.getBuffer();
+         String oldContents = buffer.getContents();
+         String newContents = ...; //make some change
+         buffer.setContents(newContents);
+         unit.reconcile(false, null);
+      } finally {
+         unit.discardWorkingCopy();
+      }
 
 You should always put discardWorkingCopy in a finally block to ensure that the working copy opened by becomeWorkingCopy is discarded even in the case of an exception. Although in this example, we simply replaced the old file contents with new contents, the IBuffer API can be used to perform modifications on smaller parts of the buffer, to replace a region, or to append contents to the end of the file.
 

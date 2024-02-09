@@ -8,15 +8,15 @@ The Property dialog appears when you select an object in a view and choose **Pro
   
 You can also open a Property dialog on a set of property pages of your own choosing. This works exactly like the JFace Preference dialog: You supply the dialog with a PreferenceManager instance that knows how to build the set of pages to be shown. The only difference with the Property dialog is that you must also supply it with the current selection:
 
-   ISelection sel = ... obtain the current selection
-   PropertyPage page = new MyPropertyPage();
-   PreferenceManager mgr = new PreferenceManager();
-   IPreferenceNode node = new PreferenceNode("1", page);
-   mgr.addToRoot(node);
-   PropertyDialog dialog = new PropertyDialog(shell, mgr, sel);
-   dialog.create();
-   dialog.setMessage(page.getTitle());
-   dialog.open();
+      ISelection sel = ... obtain the current selection
+      PropertyPage page = new MyPropertyPage();
+      PreferenceManager mgr = new PreferenceManager();
+      IPreferenceNode node = new PreferenceNode("1", page);
+      mgr.addToRoot(node);
+      PropertyDialog dialog = new PropertyDialog(shell, mgr, sel);
+      dialog.create();
+      dialog.setMessage(page.getTitle());
+      dialog.open();
 
 See Also:
 ---------

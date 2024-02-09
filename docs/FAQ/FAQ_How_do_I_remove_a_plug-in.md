@@ -32,20 +32,20 @@ This is the type of error message gives rise to the typical use-case for uninsta
 
  
 
-     Software being installed: m2e - Maven Integration for Eclipse 1.3.1.20130219-1424 (org.eclipse.m2e.feature.feature.group 1.3.1.20130219-1424)
-     Software currently installed: Project configurators for commonly used maven plugins (temporary) 0.12.0.20101103-1500 (org.maven.ide.eclipse.temporary.mojos.feature.feature.group 0.12.0.20101103-1500)
-     Only one of the following can be installed at once: 
-       Maven Integration for Eclipse 0.12.1.20110112-1712 (org.maven.ide.eclipse 0.12.1.20110112-1712)
-       This version of m2eclipse cannot be installed on top of the already installed m2eclipse. Uninstall the previous version of m2eclipse and try the install again. 1.3.1.20130219-1424 (org.maven.ide.eclipse 1.3.1.20130219-1424)
-     Cannot satisfy dependency:
-       From: m2e - Maven Integration for Eclipse 1.3.1.20130219-1424 (org.eclipse.m2e.feature.feature.group 1.3.1.20130219-1424)
-       To: bundle org.maven.ide.eclipse [1.3.1.20130219-1424]
-     Cannot satisfy dependency:
-       From: Plexus Metadata Generation 0.12.0.20101103-1500 (org.maven.ide.eclipse.plexus.annotations 0.12.0.20101103-1500)
-       To: bundle org.maven.ide.eclipse [0.10.0,0.13.0)
-     Cannot satisfy dependency:
-       From: Project configurators for commonly used maven plugins (temporary) 0.12.0.20101103-1500 (org.maven.ide.eclipse.temporary.mojos.feature.feature.group 0.12.0.20101103-1500)
-       To: org.maven.ide.eclipse.plexus.annotations [0.12.0.20101103-1500]
+      Software being installed: m2e - Maven Integration for Eclipse 1.3.1.20130219-1424 (org.eclipse.m2e.feature.feature.group 1.3.1.20130219-1424)
+      Software currently installed: Project configurators for commonly used maven plugins (temporary) 0.12.0.20101103-1500 (org.maven.ide.eclipse.temporary.mojos.feature.feature.group 0.12.0.20101103-1500)
+      Only one of the following can be installed at once: 
+        Maven Integration for Eclipse 0.12.1.20110112-1712 (org.maven.ide.eclipse 0.12.1.20110112-1712)
+        This version of m2eclipse cannot be installed on top of the already installed m2eclipse. Uninstall the previous version of m2eclipse and try the install again. 1.3.1.20130219-1424 (org.maven.ide.eclipse 1.3.1.20130219-1424)
+      Cannot satisfy dependency:
+        From: m2e - Maven Integration for Eclipse 1.3.1.20130219-1424 (org.eclipse.m2e.feature.feature.group 1.3.1.20130219-1424)
+        To: bundle org.maven.ide.eclipse [1.3.1.20130219-1424]
+      Cannot satisfy dependency:
+        From: Plexus Metadata Generation 0.12.0.20101103-1500 (org.maven.ide.eclipse.plexus.annotations 0.12.0.20101103-1500)
+        To: bundle org.maven.ide.eclipse [0.10.0,0.13.0)
+      Cannot satisfy dependency:
+        From: Project configurators for commonly used maven plugins (temporary) 0.12.0.20101103-1500 (org.maven.ide.eclipse.temporary.mojos.feature.feature.group 0.12.0.20101103-1500)
+        To: org.maven.ide.eclipse.plexus.annotations [0.12.0.20101103-1500]
     
 
  

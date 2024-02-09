@@ -26,14 +26,14 @@ You can also define a key binding that applies only to a particular locale or pl
 
 The following is an example key-binding definition. This binding sets up a toggle comment accelerator for a hypothetical [AMPLE](http://en.wikipedia.org/wiki/AMPLE) language editor, which by default has no key binding:
 
-	<extension point="org.eclipse.ui.bindings">
-		<key sequence="Ctrl+7"
-			commandId="uk.co.example.actions.togglecomment"
-			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			contextId="uk.co.example.ampleEditorScope"/>
-	</extension>
+		<extension point="org.eclipse.ui.bindings">
+			<key sequence="Ctrl+7"
+				commandId="uk.co.example.actions.togglecomment"
+				schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+				contextId="uk.co.example.ampleEditorScope"/>
+		</extension>
 
-The difference between a scheme and a [context](/Org.eclipse.ui.context "Org.eclipse.ui.context") can be confusing at first. The scheme is explicitly set by the user; once it is set, it does not change. The context can be changed programmatically by any plug-in. For example, you can change the context whenever your view or editor becomes active, using AbstractTextEditor.setKeyBindingScopes().
+The difference between a scheme and a context can be confusing at first. The scheme is explicitly set by the user; once it is set, it does not change. The context can be changed programmatically by any plug-in. For example, you can change the context whenever your view or editor becomes active, using AbstractTextEditor.setKeyBindingScopes().
 
   
 

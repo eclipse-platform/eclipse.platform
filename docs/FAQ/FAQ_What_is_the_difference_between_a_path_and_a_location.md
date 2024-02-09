@@ -11,28 +11,28 @@ In fact, IPath objects are used in a variety of contexts for locating an object 
 
 The file-system location of a resource, on the other hand, is returned by the method IResource.getLocation. Methods on IContainer and IWorkspaceRoot can help you convert from one to the other. The following code converts from a path to a location:
 
-   IPath path = ...;
-   IWorkspace workspace = ResourcesPlugin.getWorkspace();
-   IWorkspaceRoot root = workspace.getRoot();
-   IResource resource = root.findMember(path);
-   if (resource != null) {
-      location = resource.getLocation();
-   }
+      IPath path = ...;
+      IWorkspace workspace = ResourcesPlugin.getWorkspace();
+      IWorkspaceRoot root = workspace.getRoot();
+      IResource resource = root.findMember(path);
+      if (resource != null) {
+         location = resource.getLocation();
+      }
 
 Note that in some situations, a resource can have a null location. In particular, resources whose project doesn't exist and linked resources that are relative to a nonexistent path variable will have a null location.
 
 Here is the converse code to convert from a location to the workspace paths that correspond to it:
 
-   IPath location = ...;
-   IFile\[\] files = root.findFilesForLocation(location);
-   IFolder\[\] folders = root.findContainersForLocation(location);
-   if (files.length > 0) {
-      for (int i = 0; i < files.length; i++)
-         path = files\[i\].getLocation();
-   } else {
-      for (int i = 0; i < folders.length; i++)
-         path = folders\[i\].getLocation();
-   }
+      IPath location = ...;
+      IFile\[\] files = root.findFilesForLocation(location);
+      IFolder\[\] folders = root.findContainersForLocation(location);
+      if (files.length > 0) {
+         for (int i = 0; i < files.length; i++)
+            path = files\[i\].getLocation();
+      } else {
+         for (int i = 0; i < folders.length; i++)
+            path = folders\[i\].getLocation();
+      }
 
 As this snippet shows, a single file-system location can correspond to multiple resources. This is true because linked resources can point to locations inside other projects. Of course, the same file-system location can't correspond to both files and folders at the same time.
 

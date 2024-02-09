@@ -7,10 +7,10 @@ Certain standard toolbar and menu entries can be shared among several views and 
 
 A view typically registers its global action handlers in the createPartControl method:
 
-   IActionBars actionBars= getViewSite().getActionBars();
-   actionBars.setGlobalActionHandler(
-      ActionFactory.COPY.getId(),
-      copyAction);	
+      IActionBars actionBars= getViewSite().getActionBars();
+      actionBars.setGlobalActionHandler(
+         ActionFactory.COPY.getId(),
+         copyAction);	
 
 You have to do this only once for each view that is created. The platform remembers your action handler and retargets the action each time the view becomes active. To unregister from a global action, simply invoke setGlobalActionHandler again and pass in a null value for the handler.
 

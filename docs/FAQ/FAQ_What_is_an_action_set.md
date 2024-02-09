@@ -7,17 +7,17 @@ An action set is a logical group of menus and actions that should appear togethe
 
 You can create your own action sets, thus contributing to the main menu and toolbar, using the org.eclipse.ui.actionSets extension point. Here is an action set definition from the FAQ examples plug-in:
 
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-         label="Sample Action Set"
-         visible="false"
-         id="org.eclipse.faq.examples.actionSet">
-         <menu>...</menu>
-         <action>...</action>
-         ...
-      </actionSet>
-   </extension>
+      <extension
+            point="org.eclipse.ui.actionSets">
+         <actionSet
+            label="Sample Action Set"
+            visible="false"
+            id="org.eclipse.faq.examples.actionSet">
+            <menu>...</menu>
+            <action>...</action>
+            ...
+         </actionSet>
+      </extension>
 
 The action set declaration itself is followed by a series of menu and action attributes, which are discussed in more detail in the FAQs that follow this one. Action sets are an entirely declarative concept. They cannot be defined, customized, or manipulated programmatically.
 

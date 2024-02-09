@@ -17,16 +17,16 @@ Starting Eclipse
 
 When you unzip Eclipse, the directory layout looks something like this:
 
-   eclipse/
-      features/			''the directory containing Eclipse features''
-      plugins/			''the directory containing Eclipse plugins''
-      eclipse.exe		''platform executable''
-      eclipse.ini
-      eclipsec.exe              ''(windows only) console executable''
-      epl-v10.html		''the EPL license''
-       jre/			''the JRE to run Eclipse with''
-      notice.html	
-      readme	
+      eclipse/
+         features/			''the directory containing Eclipse features''
+         plugins/			''the directory containing Eclipse plugins''
+         eclipse.exe		''platform executable''
+         eclipse.ini
+         eclipsec.exe              ''(windows only) console executable''
+         epl-v10.html		''the EPL license''
+         jre/			''the JRE to run Eclipse with''
+         notice.html	
+         readme	
 
 You can start Eclipse by running eclipse.exe on Windows or eclipse on other platforms. This small launcher essentially finds and loads the JVM. On Windows, the eclipsec.exe console executable can be used for improved command line behavior.
 
@@ -46,8 +46,8 @@ If a JVM is installed in the eclipse/jre directory, Eclipse will use it; otherwi
 
 To explicitly specify a JVM of your choice, you can use the -vm command line argument:
 
-   eclipse -vm c:\\jre\\bin\\javaw.exe              ''start Java by executing the specified java executable
-   eclipse -vm c:\\jre\\bin\\client\\jvm.dll         ''start Java by loading the jvm in the eclipse process
+      eclipse -vm c:\\jre\\bin\\javaw.exe              ''start Java by executing the specified java executable
+      eclipse -vm c:\\jre\\bin\\client\\jvm.dll         ''start Java by loading the jvm in the eclipse process
 
 See the [launcher](/Equinox_Launcher#Finding_a_VM.2C_Using_JNI_Invocation_or_Executing_Java "Equinox Launcher") page for more details on specifying a JVM.
 
@@ -56,8 +56,8 @@ eclipse.ini
 
 The **most recommended** way to specify a JVM for Eclipse to run in is to put startup configuration into the `[eclipse.ini](/Eclipse.ini "Eclipse.ini")` file in the same folder as the Eclipse executable (`eclipse.exe` on Windows). The Eclipse program launcher will read arguments from either the command-line or the configuration file named `[eclipse.ini](/Eclipse.ini "Eclipse.ini")`. To specify a JVM using configuration file, include the -vm argument in `[eclipse.ini](/Eclipse.ini "Eclipse.ini")`, for example:
 
--vm
-c:/jre/bin/javaw.exe
+      -vm
+      c:/jre/bin/javaw.exe
 
 Note: there are no quotes around this path as would be required when executing the same from the command-line were the path to contain white space, etc. This is a common mistake when using Windows.
 

@@ -15,46 +15,45 @@ An editor contributes to the org.eclipse.ui.editors extension point, and, in pra
 
 If you want to see what the minimalist editor looks like, we did the experiment of reducing our eScript editor to a single source file with the bare minimum code required to make the smallest possible Eclipse editor ever (see Figure 19.3). We don't suggest that you organize your code this way, but it will show you the basic information you will have to provide to give your editor have a professional look and feel with syntax highlighting and hover help.
 
-    <img src=../images/escript_editor.png>     **Figure 19.3**   The eScript editor
 
 Here is the structure of our minimalist eScript editor:
 
-   public class Editor extends TextEditor {
-      ...
-      public Editor() {
-         super();
-         setSourceViewerConfiguration(new Configuration());
-      }
-      protected void createActions() {
+      public class Editor extends TextEditor {
+         ...
+         public Editor() {
+            super();
+            setSourceViewerConfiguration(new Configuration());
+         }
+         protected void createActions() {
+            ...
+         }
          ...
       }
-      ...
-   }
 
 In the constructor, we set up a source viewer configuration, handling such issues as Content Assist, hover help, and instructing the editor what to do while the user types text. In the inherited createActions method the editor creates its Content Assist action, used when Ctrl+Space is pressed in the editor.
 
 Our configuration looks like this:
 
-   class Configuration extends SourceViewerConfiguration {
-      public IPresentationReconciler getPresentationReconciler(
-         ISourceViewer sourceViewer) {
-         PresentationReconciler pr = new PresentationReconciler();
-         DefaultDamagerRepairer ddr = new DefaultDamagerRepairer('''new Scanner()''');
-         pr.setRepairer(ddr, IDocument.DEFAULT\_CONTENT\_TYPE);
-         pr.setDamager(ddr, IDocument.DEFAULT\_CONTENT\_TYPE);
-         return pr;
+      class Configuration extends SourceViewerConfiguration {
+         public IPresentationReconciler getPresentationReconciler(
+            ISourceViewer sourceViewer) {
+            PresentationReconciler pr = new PresentationReconciler();
+            DefaultDamagerRepairer ddr = new DefaultDamagerRepairer('''new Scanner()''');
+            pr.setRepairer(ddr, IDocument.DEFAULT\_CONTENT\_TYPE);
+            pr.setDamager(ddr, IDocument.DEFAULT\_CONTENT\_TYPE);
+            return pr;
+         }
+         IContentAssistant getContentAssistant(ISourceViewer sv) {
+            ContentAssistant ca = new ContentAssistant();
+            IContentAssistProcessor cap = '''new CompletionProcessor()''';
+            ca.setContentAssistProcessor(cap, IDocument.DEFAULT\_CONTENT\_TYPE);
+            ca.setInformationControlCreator(getInformationControlCreator(sv));
+            return ca;
+         }
+         public ITextHover getTextHover(ISourceViewer sv, String contentType) {
+            return '''new TextHover()''';
+         }
       }
-      IContentAssistant getContentAssistant(ISourceViewer sv) {
-         ContentAssistant ca = new ContentAssistant();
-         IContentAssistProcessor cap = '''new CompletionProcessor()''';
-         ca.setContentAssistProcessor(cap, IDocument.DEFAULT\_CONTENT\_TYPE);
-         ca.setInformationControlCreator(getInformationControlCreator(sv));
-         return ca;
-      }
-      public ITextHover getTextHover(ISourceViewer sv, String contentType) {
-         return '''new TextHover()''';
-      }
-   }
 
 We use the default presentation reconciler, and we do not distinguish between sections in our documents. In other words, reconciliation of layout will be the same all over the document, whether we are inside a feature, a plug-in, or a method. We declare a scanner, implemented by us, and rely on the text editor framework to parse the document using our parser when it suits it.
 
@@ -64,36 +63,36 @@ Finally, we create a text-hover that will return a relevant string to be shown i
 
 For scanning the underlying document to draw it using different colors and fonts, we deploy RuleBasedScanner, one of the simplest scanners offered by the editor framework:
 
-   class Scanner extends RuleBasedScanner {
-      public Scanner() {
-         WordRule rule = new WordRule(new IWordDetector() {
-            public boolean isWordStart(char c) { 
-         	return Character.isJavaIdentifierStart(c); 
-            }
-            public boolean isWordPart(char c) {   
-            	return Character.isJavaIdentifierPart(c); 
-            }
-         });
-         Token keyword = new Token(new TextAttribute(Editor.KEYWORD, null, SWT.BOLD));
-         Token comment = new Token(new TextAttribute(Editor.COMMENT));
-         Token string = new Token(new TextAttribute(Editor.STRING));
-         //add tokens for each reserved word
-         for (int n = 0; n < Parser.KEYWORDS.length; n++) {
-            rule.addWord(Parser.KEYWORDS\[n\], keyword);
-         }
-         setRules(new IRule\[\] {
-            rule,
-            new SingleLineRule("#", null, comment),
-            new SingleLineRule("\\"", "\\"", string, '\\\'),
-            new SingleLineRule("'", "'", string, '\\\'),
-            new WhitespaceRule(new IWhitespaceDetector() {
-               public boolean isWhitespace(char c) {
-                  return Character.isWhitespace(c);
+      class Scanner extends RuleBasedScanner {
+         public Scanner() {
+            WordRule rule = new WordRule(new IWordDetector() {
+               public boolean isWordStart(char c) { 
+               return Character.isJavaIdentifierStart(c); 
                }
-            }),
-         });
+               public boolean isWordPart(char c) {   
+                  return Character.isJavaIdentifierPart(c); 
+               }
+            });
+            Token keyword = new Token(new TextAttribute(Editor.KEYWORD, null, SWT.BOLD));
+            Token comment = new Token(new TextAttribute(Editor.COMMENT));
+            Token string = new Token(new TextAttribute(Editor.STRING));
+            //add tokens for each reserved word
+            for (int n = 0; n < Parser.KEYWORDS.length; n++) {
+               rule.addWord(Parser.KEYWORDS\[n\], keyword);
+            }
+            setRules(new IRule\[\] {
+               rule,
+               new SingleLineRule("#", null, comment),
+               new SingleLineRule("\\"", "\\"", string, '\\\'),
+               new SingleLineRule("'", "'", string, '\\\'),
+               new WhitespaceRule(new IWhitespaceDetector() {
+                  public boolean isWhitespace(char c) {
+                     return Character.isWhitespace(c);
+                  }
+               }),
+            });
+         }
       }
-   }
 
 For each of the keywords in our little language, we define a word entry in our WordRule. We pass our keyword detector, together with rules for recognizing comments, strings, and white spaces to the scanner. With this simple set of rules, the scanner can segment a stream of bytes into sections and then use the underlying rules to color the sections.
 

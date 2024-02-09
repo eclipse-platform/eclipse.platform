@@ -16,26 +16,25 @@ A DOM represents the structure of your programming language. Its design and impl
     *   The same compiler that also compiles source code can save its abstract syntax tree (AST) and expose it for use by the editor. Using an AST is a pretty standard way to implement a computer language, and piggybacking on that infrastructure makes life a lot easier when writing your editor. This is the way the eScript editor works.
     *   If the underlying AST is not accessible or is to too fine-grained for use in an editor, you may decide to implement a lightweight parser and generate a DOM more efficiently. This is the way the JDT implements its Java model.
 
-Figure 19.2 shows the inheritance hierarchy for the DOM that was developed for the eScript's language. As you can see, each node in the DOM extends Element. It defines the following fields:
+The inheritance hierarchy for the DOM  defines the following fields:
 
-   int startOffset, endOffset; // source positions
-   Hashtable attributes;       // things like ID, label, ...
-   ArrayList children;         // children of this element
-   Element parent;             // the owner of this element
-   String hoverHelp;           // cached value of hover help
-   ...more fields....
+      int startOffset, endOffset; // source positions
+      Hashtable attributes;       // things like ID, label, ...
+      ArrayList children;         // children of this element
+      Element parent;             // the owner of this element
+      String hoverHelp;           // cached value of hover help
+      ...more fields....
 
 The subclasses of Element implement useful methods:
 
-   public String getAttributeValue(String name)
-   public String getHoverHelp()
-   public void getContentProposals(...., ArrayList result)   
+      public String getAttributeValue(String name)
+      public String getHoverHelp()
+      public void getContentProposals(...., ArrayList result)   
 
 For instance, the getHoverHelp method easily allows us to use the DOM to find the element at a given offset and then ask it for what hover help is appropriate.
 
   
 
-[Figure 19.2 Inheritance hierarchy for eScript's DOM](/index.php?title=Special:Upload&wpDestFile=Dom-escript.png "File:Dom-escript.png")
 
   
 

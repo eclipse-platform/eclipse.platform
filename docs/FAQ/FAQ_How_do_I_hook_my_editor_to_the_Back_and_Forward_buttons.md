@@ -16,15 +16,15 @@ A navigation location can also choose to support persistence. When an editor clo
   
 Now we know how to create and restore editor locations, but how are entries added to the navigation history in the first place? Anyone can mark an interesting location in an open editor by calling the markLocation method on INavigationHistory. Code that causes the cursor or selection to jump to another location in an editor should call this method both before and after performing the jump. As mentioned, implementations of restoreLocation should also mark the current location before restoring an old one. Regardless of whether the specific editor has any support for navigation history, markLocation will work. If the editor doesn't implement INavigationLocationProvider, a history entry will be added, allowing the user to jump back to that editor but without returning to any particular location. The following snippet shows an action that is added to the sample HTML editor. When the action is invoked, it will add the current cursor position to the navigation history:
 
-   public class MarkLocationAction extends Action {
-      private IEditorPart editor;
-      public MarkLocationAction(IEditorPart editor) {
-         super("Mark Location in History", null);
-         this.editor = editor;
+      public class MarkLocationAction extends Action {
+         private IEditorPart editor;
+         public MarkLocationAction(IEditorPart editor) {
+            super("Mark Location in History", null);
+            this.editor = editor;
+         }
+         public void run() {
+            IWorkbenchPage page = editor.getSite().getPage();
+            page.getNavigationHistory().markLocation(editor);
+         }
       }
-      public void run() {
-         IWorkbenchPage page = editor.getSite().getPage();
-         page.getNavigationHistory().markLocation(editor);
-      }
-   }
 

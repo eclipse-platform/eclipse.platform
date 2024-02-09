@@ -7,26 +7,26 @@ Every time resources in the workspace change, a resource change notification is 
 
 Two different mechanisms are available for batching changes. To run a series of changes in the current thread, use IWorkspaceRunnable. Here is an example of a workspace runnable that creates two folders:
 
-   final IFolder folder1 = ..., folder2 = ...;
-   workspace.run(new IWorkspaceRunnable() {
-      public void run(IProgressMonitor monitor) {
-         folder1.create(IResource.NONE, true, null);
-         folder2.create(IResource.NONE, true, null);
-      }
-   }, null);
+      final IFolder folder1 = ..., folder2 = ...;
+      workspace.run(new IWorkspaceRunnable() {
+         public void run(IProgressMonitor monitor) {
+            folder1.create(IResource.NONE, true, null);
+            folder2.create(IResource.NONE, true, null);
+         }
+      }, null);
 
 The other mechanism for batching resource changes is a WorkspaceJob. Introduced in Eclipse 3.0, this mechanism is the asynchronous equivalent of IWorkspaceRunnable. When you create and schedule a workspace job, it will perform the changes in a background thread and then cause a single resource change notification and autobuild to occur. Here is sample code using a workspace job:
 
-   final IFolder folder1 = ..., folder2 = ...;
-   Job job = new WorkspaceJob("Creating folders") {
-      public IStatus runInWorkspace(IProgressMonitor monitor) 
-         throws CoreException {
-         folder1.create(IResource.NONE, true, null);
-         folder2.create(IResource.NONE, true, null);
-         return Status.OK_STATUS;
-      }
-   };
-   job.schedule();
+      final IFolder folder1 = ..., folder2 = ...;
+      Job job = new WorkspaceJob("Creating folders") {
+         public IStatus runInWorkspace(IProgressMonitor monitor) 
+            throws CoreException {
+            folder1.create(IResource.NONE, true, null);
+            folder2.create(IResource.NONE, true, null);
+            return Status.OK_STATUS;
+         }
+      };
+      job.schedule();
 
 See Also:
 ---------

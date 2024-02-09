@@ -5,10 +5,10 @@ FAQ How do I inform the user of a problem?
 
 Warnings and errors can be reported to the user by using an ErrorDialog. Here is a very simple example of an Error dialog displaying a warning message:
 
-   IStatus warning = new Status(IStatus.WARNING, 
-      ExamplesPlugin.ID, 1, "You have been warned.", null);
-   ErrorDialog.openError(window.getShell(), 
-      "This is your final warning", null, warning);
+      IStatus warning = new Status(IStatus.WARNING, 
+         ExamplesPlugin.ID, 1, "You have been warned.", null);
+      ErrorDialog.openError(window.getShell(), 
+         "This is your final warning", null, warning);
 
   
 
