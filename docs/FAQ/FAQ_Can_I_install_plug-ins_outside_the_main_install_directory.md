@@ -7,15 +7,15 @@ Users who like to live on the edge will be frequently installing new builds of E
 
 A product extension must be laid out on disk in a certain way so the Eclipse configuration tools can recognize it. Following is the disk layout for a product extension that contains a single plug-in called org.eclipse.faq.examples.
 
-   eclipse/
-      .eclipseextension
-      plugins/
-         org.eclipse.faq.examples/
-            plugin.xml
-            examples.jar
-         ... optionally more plug-in directories ...
-      features/
-         ... features would go here ...
+      eclipse/
+         .eclipseextension
+         plugins/
+            org.eclipse.faq.examples/
+               plugin.xml
+               examples.jar
+            ... optionally more plug-in directories ...
+         features/
+            ... features would go here ...
 
 The file .eclipseextension is empty, acting as a special marker that tells install tools that this is an Eclipse extension. Other than that special file, the layout is the same as that for an Eclipse product. Plug-ins go in a directory called plugins, and if the extension contains features, they go in a sibling directory called features.
 

@@ -8,5 +8,5 @@ The Eclipse Platform and SDK do not have support for creating graphical editors.
 See Also:
 ---------
 
-The GEF Web page ([http://eclipse.org/gef](http://eclipse.org/gef))
+The GEF Web page ([https://eclipse.org/gef](https://eclipse.org/gef))
 

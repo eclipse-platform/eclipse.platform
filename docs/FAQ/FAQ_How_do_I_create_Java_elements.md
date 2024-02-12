@@ -13,19 +13,19 @@ An important characteristic of IJavaElements is that they are _handle objects_. 
   
 The implication here is that creating a Java element has two meanings. You can create IJavaElement handles by asking the parent element for one. For example, IType.getMethod will return an IMethod handle but will not create that method in the file on disk. The JavaCore class also provides factory methods for creating Java elements for a given file, folder, or project in the workspace. For example, the following will create an ICompilationUnit handle for a given file handle:
 
-   IFile file = ...;//a file handle
-   ICompilationUnit unit = 
-      JavaCore.createCompilationUnitFrom(file);
+      IFile file = ...;//a file handle
+      ICompilationUnit unit = 
+         JavaCore.createCompilationUnitFrom(file);
 
   
 To create the contents on disk, you need to use the various create methods on the handle objects. For example, IType.createMethod will create a Java method on disk. Because creation will fail if such a method already exists, you should first use a method handle to find out whether the method already exists:
 
-   IType type = ...;
-   String body = "public String toString() {"+
-      "return super.toString();}";
-   IMethod method = type.'''getMethod'''("toString", new String\[0\]);
-   if (!method.exists())
-      method = type.createMethod(body, null, false, null);
+      IType type = ...;
+      String body = "public String toString() {"+
+         "return super.toString();}";
+      IMethod method = type.'''getMethod'''("toString", new String\[0\]);
+      if (!method.exists())
+         method = type.createMethod(body, null, false, null);
 
   
 

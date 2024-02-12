@@ -8,7 +8,7 @@ In Eclipse 3.0, APIs have been introduced for integrating AWT and Swing with SWT
 Articles
 --------
 
-*   \[[Swing/SWT Integration](https://www.eclipse.org/articles/article.php?file=Article-Swing-SWT-Integration/index.html)\] Article on eclipse.org
+*   [Swing/SWT Integration](https://www.eclipse.org/articles/article.php?file=Article-Swing-SWT-Integration/index.html) Article on eclipse.org
 
 See Also:
 ---------

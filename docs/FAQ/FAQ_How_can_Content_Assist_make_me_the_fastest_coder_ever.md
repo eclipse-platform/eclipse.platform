@@ -47,18 +47,18 @@ Between two method declarations, type get, and invoke Content Assist. Proposals 
 
 Eclipse likes loose coupling and hence works a lot with listeners that are registered on demand. The listeners implement a given interface with methods that are called when the event of interest happens. Typical usage is to declare an anonymous inner class, as in this example:
 
-button.addSelectionListener(new SelectionAdapter() {
-    public void widgetSelected(SelectionEvent e) {
-        // do something here
-    }
-});
+    button.addSelectionListener(new SelectionAdapter() {
+        public void widgetSelected(SelectionEvent e) {
+            // do something here
+        }
+    });
 
 Here is how an experienced Eclipse user might enter that code using Content Assist.
 
-but**<Ctrl+Space>** select 'button'
-.add**<Ctrl+Space>** select 'addSelectionListener'
-new Sel**<Ctrl+Space>** select 'SelectionAdapter'
-() { **<Ctrl+Space>** select 'widgetSelected'
+        but**<Ctrl+Space>** select 'button'
+        .add**<Ctrl+Space>** select 'addSelectionListener'
+        new Sel**<Ctrl+Space>** select 'SelectionAdapter'
+        () { **<Ctrl+Space>** select 'widgetSelected'
 
   
 

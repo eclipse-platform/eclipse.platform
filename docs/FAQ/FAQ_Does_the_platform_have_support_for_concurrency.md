@@ -34,5 +34,5 @@ See Also:
 *   [FAQ How do I switch from using a Progress dialog to the Progress view?](./FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view.md "FAQ How do I switch from using a Progress dialog to the Progress view?")
 *   [FAQ Actions, commands, operations, jobs: What does it all mean?](./FAQ_Actions,_commands,_operations,_jobs:_What_does_it_all_mean.md "FAQ Actions, commands, operations, jobs: What does it all mean?")
 *   [On the Job: The Eclipse Jobs API](https://www.eclipse.org/articles/Article-Concurrency/jobs-api.html)
-*   [Eclipse Jobs and Background processing Tutorial](http://www.vogella.de/articles/EclipseJobs/article.html)
+*   [Eclipse Jobs and Background processing Tutorial](https://www.vogella.com/tutorials/EclipseJobs/article.html)
 

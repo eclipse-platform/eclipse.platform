@@ -19,7 +19,6 @@ In June 2004, books on Eclipse, other than this one, included the following:
 
 *   David Gallardo, Ed Burnette, and Robert McGovern, _Eclipse in Action: A Guide for the Java Developer_, Manning, 2003 ([http://www.manning.com](http://www.manning.com))
 
-*   Erich Gamma and Kent Beck, _Contributing to Eclipse_, Addison-Wesley, 2003 ([http://www.aw.com](http://www.aw.com))
 
 *   Wonjin Heo and Jiwon Jun, _Total Eclipse (Korean)_, Youngjin Publishing, 2003 ([http://www.youngjin.com](http://www.youngjin.com))
 
@@ -33,11 +32,7 @@ In June 2004, books on Eclipse, other than this one, included the following:
 
 *   Stanford Ng, Stephen Holder, and Matt Scarpino, _JFace/SWT in Action_, Manning, 2003 ([http://www.manning.com](http://www.manning.com))
 
-*   Steve Northover and Mike Wilson, _SWT: The Standard Widget Toolkit_, Addison-Wesley, 2004 ([http://www.aw.com](http://www.aw.com))
-
 *   Joe Pluta, _Eclipse: Step by Step_, MC Press, 2003 ([http://www.mc-store.com](http://www.mc-store.com))
-
-*   Sherry Shavor et al., _The Java Developer's Guide to Eclipse_, Addison-Wesley, 2003 ([http://www.aw.com](http://www.aw.com))
 
 *   Carlos Valcarcel, _Eclipse Kick Start_, Sams Publishing, 2004 ([http://www.samspublishing.com](http://www.samspublishing.com))
 

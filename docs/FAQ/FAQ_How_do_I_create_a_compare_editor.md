@@ -15,30 +15,30 @@ Compare editors display a tree of DiffNode elements, where each node represents 
   
 The DiffNode tree is computed by a CompareEditorInput subclass that is passed as an input to the editor. The subclass must implement the prepareInput method to return the tree represented by the DiffNode. The following example illustrates a compare editor input that uses the CompareItem class described in [FAQ\_How\_do\_I\_create\_a\_Compare_dialog?](./FAQ_How_do_I_create_a_Compare_dialog.md "FAQ How do I create a Compare dialog?")
 
-   class CompareInput extends CompareEditorInput {
-      public CompareInput() {
-         super(new CompareConfiguration());
+      class CompareInput extends CompareEditorInput {
+         public CompareInput() {
+            super(new CompareConfiguration());
+         }
+         protected Object prepareInput(IProgressMonitor pm) {
+            CompareItem ancestor = 
+               new CompareItem("Common", "contents");
+            CompareItem left = 
+               new CompareItem("Left", "new contents");
+            CompareItem right = 
+               new CompareItem("Right", "old contents");
+            return new DiffNode(null, Differencer.CONFLICTING, 
+               ancestor, left, right);
+         }
       }
-      protected Object prepareInput(IProgressMonitor pm) {
-         CompareItem ancestor = 
-            new CompareItem("Common", "contents");
-         CompareItem left = 
-            new CompareItem("Left", "new contents");
-         CompareItem right = 
-            new CompareItem("Right", "old contents");
-         return new DiffNode(null, Differencer.CONFLICTING, 
-            ancestor, left, right);
-      }
-   }
 
 Once you have a compare editor input, opening a compare editor on that input is trivial. Here is an example action that opens a compare editor, using the preceding input:
 
-   public class CompareEditorAction implements 
-    IWorkbenchWindowActionDelegate {
-      public void run(IAction action) {
-         CompareUI.openCompareEditor(new CompareInput());
+      public class CompareEditorAction implements 
+      IWorkbenchWindowActionDelegate {
+         public void run(IAction action) {
+            CompareUI.openCompareEditor(new CompareInput());
+         }
       }
-   }
 
   
 If you want to support merging as well as comparing, two extra steps are involved. First, you need to specify which of the elements is editable. This is done by the CompareConfiguration object that is passed to the CompareEditorInput constructor. Use the setLeftEditable and setRightEditable methods to specify which of the comparison panes should support modification. Second, your editor input class should override the save method to perform the save of the editor contents.

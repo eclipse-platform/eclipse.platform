@@ -12,6 +12,6 @@ Owing to the success of using Eclipse in the classroom, the Eclipse Ececis Proje
 See Also:
 ---------
 
-*   The Ecesis Project ([http://eclipse.org/ecesis](http://eclipse.org/ecesis)) (broken)
+*   The Ecesis Project ([https://eclipse.org/ecesis](https://eclipse.org/ecesis)) (broken)
 *   The Ecesis Project Downloads ([http://dev.eclipse.org/viewcvs/indextech.cgi/ecesis-home/downloads/index.html](http://dev.eclipse.org/viewcvs/indextech.cgi/ecesis-home/downloads/index.html))
 

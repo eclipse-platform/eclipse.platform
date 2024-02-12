@@ -3,7 +3,7 @@
 FAQ How do I deploy a stand-alone JFace application?
 ====================================================
 
-A JFace application can be deployed in a similar manner to any application that uses SWT. Detailed step-by-step instructions are available in the [Deploying a Java Program That Uses SWT and JFace](/JFace#Deploying_a_Java_Program_That_Uses_SWT_and_JFace "JFace") section of the [JFace](/JFace "JFace") article.
+A JFace application can be deployed in a similar manner to any application that uses SWT. Detailed step-by-step instructions are available in the [Deploying a Java Program That Uses SWT and JFace](https://github.com/eclipse-platform/eclipse.platform.ui/blob/master/docs/JFace.md#Deploying-a-Java-Program-That-Uses-SWT-and-JFace "JFace") section of the [JFace](https://github.com/eclipse-platform/eclipse.platform.ui/blob/master/docs/JFace.md "JFace") article.
 
 See Also
 --------

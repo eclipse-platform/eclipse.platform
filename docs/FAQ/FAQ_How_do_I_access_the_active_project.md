@@ -9,42 +9,42 @@ Often people are really asking for the currently selected project, folder, or fi
 
 Once you have the selection, you can extract the selected resource as follows:
 
-   IResource extractSelection(ISelection sel) {
-      if (!(sel instanceof IStructuredSelection))
-         return null;
-      IStructuredSelection ss = (IStructuredSelection) sel;
-      Object element = ss.getFirstElement();
-      if (element instanceof IResource)
-         return (IResource) element;
-      if (!(element instanceof IAdaptable))
-         return null;
-      IAdaptable adaptable = (IAdaptable)element;
-      Object adapter = adaptable.getAdapter(IResource.class);
-      return (IResource) adapter;
-   }
+      IResource extractSelection(ISelection sel) {
+         if (!(sel instanceof IStructuredSelection))
+            return null;
+         IStructuredSelection ss = (IStructuredSelection) sel;
+         Object element = ss.getFirstElement();
+         if (element instanceof IResource)
+            return (IResource) element;
+         if (!(element instanceof IAdaptable))
+            return null;
+         IAdaptable adaptable = (IAdaptable)element;
+         Object adapter = adaptable.getAdapter(IResource.class);
+         return (IResource) adapter;
+      }
 
 If you are looking for the active editor, you can determine that from the IPartService. If an editor is active, you can extract the resource, if available, like this:
 
-   IResource extractResource(IEditorPart editor) {
-      IEditorInput input = editor.getEditorInput();
-      if (!(input instanceof IFileEditorInput))
-         return null;
-      return ((IFileEditorInput)input).getFile();
-   }
+      IResource extractResource(IEditorPart editor) {
+         IEditorInput input = editor.getEditorInput();
+         if (!(input instanceof IFileEditorInput))
+            return null;
+         return ((IFileEditorInput)input).getFile();
+      }
 
 The code above has a minor error:
 
-IEditorInput input = editor.getEditorInput();
+      IEditorInput input = editor.getEditorInput();
 
 To obtain the project from the resource use IResource.getProject(). Beware that while Eclipse uses "selected" rather than "active" for the active project, it uses "active" rather than "selected" for the active editor. Or is that "selected editor" ;-). For example,
 
-IWorkbench iworkbench = PlatformUI.getWorkbench();
-if (iworkbench == null)...
-IWorkbenchWindow iworkbenchwindow = iworkbench.getActiveWorkbenchWindow();
-if (iworkbenchwindow == null) ...
-IWorkbenchPage iworkbenchpage = iworkbenchwindow.getActivePage();
-if (iworkbenchpage == null) ...
-IEditorPart ieditorpart = iworkbenchpage.getActiveEditor();
+      IWorkbench iworkbench = PlatformUI.getWorkbench();
+      if (iworkbench == null)...
+      IWorkbenchWindow iworkbenchwindow = iworkbench.getActiveWorkbenchWindow();
+      if (iworkbenchwindow == null) ...
+      IWorkbenchPage iworkbenchpage = iworkbenchwindow.getActivePage();
+      if (iworkbenchpage == null) ...
+      IEditorPart ieditorpart = iworkbenchpage.getActiveEditor();
 
 See Also:
 ---------

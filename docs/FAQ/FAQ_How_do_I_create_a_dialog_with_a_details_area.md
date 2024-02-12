@@ -9,23 +9,23 @@ Many dialogs in Eclipse have a **Details** button that shows or hides an extra a
 
 If you want to provide more information in the details area, you need to supply a MultiStatus object. The dialog will obtain the message string from the MultiStatus parent, and one line in the details area will be for the message from each child status. The following example uses an error dialog to display some information-the date-with more details provided in the details area:
 
-   Date date = new Date();
-   SimpleDateFormat format = new SimpleDateFormat();
-   String\[\] patterns = new String\[\] {
-      "EEEE", "yyyy", "MMMM", "h 'o''clock'"};
-   String\[\] prefixes = new String\[\] {
-      "Today is ", "The year is ", "It is ", "It is "};
-   String\[\] msg = new String\[patterns.length\];
-   for (int i = 0; i < msg.length; i++) {
-      format.applyPattern(patterns\[i\]);
-      msg\[i\] = prefixes\[i\] + format.format(date);
-   }
-   final String PID = ExamplesPlugin.ID;
-   MultiStatus info = new MultiStatus(PID, 1, msg\[0\], null);
-   info.add(new Status(IStatus.INFO, PID, 1, msg\[1\], null));
-   info.add(new Status(IStatus.INFO, PID, 1, msg\[2\], null));
-   info.add(new Status(IStatus.INFO, PID, 1, msg\[3\], null));
-   ErrorDialog.openError(window.getShell(), "Time", null, info);
+      Date date = new Date();
+      SimpleDateFormat format = new SimpleDateFormat();
+      String\[\] patterns = new String\[\] {
+         "EEEE", "yyyy", "MMMM", "h 'o''clock'"};
+      String\[\] prefixes = new String\[\] {
+         "Today is ", "The year is ", "It is ", "It is "};
+      String\[\] msg = new String\[patterns.length\];
+      for (int i = 0; i < msg.length; i++) {
+         format.applyPattern(patterns\[i\]);
+         msg\[i\] = prefixes\[i\] + format.format(date);
+      }
+      final String PID = ExamplesPlugin.ID;
+      MultiStatus info = new MultiStatus(PID, 1, msg\[0\], null);
+      info.add(new Status(IStatus.INFO, PID, 1, msg\[1\], null));
+      info.add(new Status(IStatus.INFO, PID, 1, msg\[2\], null));
+      info.add(new Status(IStatus.INFO, PID, 1, msg\[3\], null));
+      ErrorDialog.openError(window.getShell(), "Time", null, info);
 
   
 

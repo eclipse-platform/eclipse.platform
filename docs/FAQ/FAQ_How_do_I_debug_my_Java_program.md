@@ -16,5 +16,5 @@ Because it is a Java program, Eclipse can also be debugged in a similar fashion.
 See Also:
 ---------
 
-[FAQ\_What\_is\_hot\_code_replace?](./FAQ_What_is_hot_code_replace.md "FAQ What is hot code replace?")
+[FAQ What is hot code replace?](./FAQ_What_is_hot_code_replace.md "FAQ What is hot code replace?")
 

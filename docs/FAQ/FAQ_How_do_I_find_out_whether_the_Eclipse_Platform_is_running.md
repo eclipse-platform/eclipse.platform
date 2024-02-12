@@ -10,7 +10,7 @@ If you have a library of code that can be used within both the Eclipse Platform 
   
 You can find out whether an Ant script is running from within Eclipse by querying the state of the variable eclipse.running. You can use this information to specify targets that are built only when Ant is invoked from within Eclipse:
 
-   <target name="properties" if="eclipse.running"/>
+      <target name="properties" if="eclipse.running"/>
 
   
 
@@ -21,5 +21,5 @@ You can find out whether an Ant script is running from within Eclipse by queryin
 See Also:
 ---------
 
-[FAQ\_What\_is_Ant?](./FAQ_What_is_Ant.md "FAQ What is Ant?")
+[FAQ What is Ant?](./FAQ_What_is_Ant.md "FAQ What is Ant?")
 

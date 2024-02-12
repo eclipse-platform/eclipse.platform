@@ -11,5 +11,5 @@ Although Eclipse newsgroups are intended for users and extenders of the platform
 See Also:
 ---------
 
-*   The Eclipse mailing list page ([http://eclipse.org/mail](http://eclipse.org/mail))
+*   The Eclipse mailing list page ([https://eclipse.org/mail](https://eclipse.org/mail))
 

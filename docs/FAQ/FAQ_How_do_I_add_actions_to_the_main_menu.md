@@ -11,22 +11,22 @@ Contents
     *   [2.1 Standard Menus](#Standard-Menus)
     *   [2.2 Standard group for adding top level menus](#Standard-group-for-adding-top-level-menus)
     *   [2.3 Standard file actions](#Standard-file-actions)
-    *   [2.4 "Most Recently Used File" group](#.22Most-Recently-Used-File.22-group)
+    *   [2.4 Most Recently Used File group](#Most-Recently-Used-File-group)
     *   [2.5 Standard edit actions](#Standard-edit-actions)
     *   [2.6 Standard help actions](#Standard-help-actions)
-*   [3 See Also:](#See-Also:)
+*   [3 See Also](#See-Also)
 
 Overview
 --------
 
 As with menus and toolbar buttons, menu actions are added to the main menu by using the org.eclipse.ui.actionSets extension point. The FAQ Examples plug-in has many actions that are contributed to the menu in this way. Here is a sample action definition (a subelement of the actionSets element):
 
-   <action
-      label="Open Error &Dialog"
-      class=
-        "org.eclipse.faq.examples.actions.OpenErrorDialogAction"
-      menubarPath="exampleMenu/exampleGroup">
-   </action>
+      <action
+         label="Open Error &Dialog"
+         class=
+         "org.eclipse.faq.examples.actions.OpenErrorDialogAction"
+         menubarPath="exampleMenu/exampleGroup">
+      </action>
 
 The class attribute specifies the fully qualified path of the Action class, which must implement IWorkbenchWindowActionDelegate. When the action is selected by the user, the action's run method will be invoked.
 
@@ -42,15 +42,15 @@ The final part of the menubarPath attribute-after the last slash-is the group na
 
 Some examples of menubarPath attributes will help to illustrate how they are used. Here is the path for an action in the import/export group within the top-level **File** menu:
 
-   menubarPath="file/import.ext"
+      menubarPath="file/import.ext"
 
 An action contributed to the group of **Show...** actions in the **Navigate** menu would have the following path:
 
-   menubarPath="navigate/show.ext"
+      menubarPath="navigate/show.ext"
 
 Finally, an action contributed to the **Editor** submenu in the **FAQ Examples** menu would have this path:
 
-   menubarPath="exampleMenu/editorMenu/editorGroup"
+      menubarPath="exampleMenu/editorMenu/editorGroup"
 
 Note that the group name is required even for menus that have only one group.
 
@@ -83,7 +83,7 @@ Here is a listing of common standard menupaths from class org.eclipse.ui.IWorkbe
 *   Group for extra Print-like actions -- PRINT_EXT = "print.ext"
 *   Group for extra Import-like actions -- IMPORT_EXT = "import.ext"
 
-### "Most Recently Used File" group
+### Most Recently Used File group
 
 *   Group for most recently used file -- MRU = "mru"
 
@@ -97,8 +97,8 @@ Here is a listing of common standard menupaths from class org.eclipse.ui.IWorkbe
 *   Group for start of menu -- HELP_START = "helpStart"
 *   Group for end of menu -- HELP_END = "helpEnd"
 
-See Also:
----------
+See Also
+--------
 
 [FAQ What is an action set?](./FAQ_What_is_an_action_set.md "FAQ What is an action set?")
 

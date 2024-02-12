@@ -13,11 +13,11 @@ Declaring xmlparser.jar as an external JAR does not work, as there is no easy wa
 
 Declare a new plug-in, _C_, to contain the library JAR, and make both plug-in _A_ and plug-in _B_ dependent on plug-in _C_. Make sure that plug-in _C_ exports its library so other plug-ins can see it:
 
-   <runtime>
-      <library name="xmlParserAPIs.jar">
-         <export name="*"/>
-      </library>
-   </runtime>
+      <runtime>
+         <library name="xmlParserAPIs.jar">
+            <export name="*"/>
+         </library>
+      </runtime>
 
   
 

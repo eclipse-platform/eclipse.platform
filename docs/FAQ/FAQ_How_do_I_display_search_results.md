@@ -15,36 +15,36 @@ Before you begin adding search results to the view, you need to call ISearchResu
 
 *   IActionGroupFactory, a factory object for creating the actions that will
 
-appear in the context menu when a search result is selected.</li>
+appear in the context menu when a search result is selected.
 
 *   String, the label to use in the view title bar when there is exactly one
 
-search result. This label should describe the search thoroughly because it will also appear in the search history list that allows the user to add old searches back to the view.</li>
+search result. This label should describe the search thoroughly because it will also appear in the search history list that allows the user to add old searches back to the view.
 
 *   String, the same label as the preceding, but for multiple search results. The
 
-string should contain the pattern {0}, which will be replaced with the exact number of occurrences.</li>
+string should contain the pattern {0}, which will be replaced with the exact number of occurrences.
 
 *   ImageDescriptor, the image to use for this group of results. This will
 
-also appear in the search history drop-down list. If you don't provide one, a default icon will be used.</li>
+also appear in the search history drop-down list. If you don't provide one, a default icon will be used.
 
 *   String, the ID of the Search dialog page that generated this
 
-set of search results. This is the ID attribute from the search page extension declaration.</li>
+set of search results. This is the ID attribute from the search page extension declaration.
 
 *   ILabelProvider, the label provider to use for displaying each search result. If
 
-not provided, a reasonable default will be used.</li>
+not provided, a reasonable default will be used.
 
 *   IAction, the action that will cause your search result to be opened in an
 
-editor.</li>
+editor.
 
-*   IGroupByKeyComputer (described in the next paragraph).</li>
+*   IGroupByKeyComputer (described in the next paragraph).
 *   IRunnableWithProgress, a runnable that will execute the search query
 
-over again. This can be the exact runnable executed from the Search dialog.</li>
+over again. This can be the exact runnable executed from the Search dialog.
 
   
 
@@ -61,7 +61,7 @@ Finally, when you have finished adding search results, call the method searchFin
 See Also:
 ---------
 
-[FAQ\_How\_do\_I\_write\_a\_Search_dialog?](./FAQ_How_do_I_write_a_Search_dialog.md "FAQ How do I write a Search dialog?")
+[FAQ How do I write a Search dialog?](./FAQ_How_do_I_write_a_Search_dialog.md "FAQ How do I write a Search dialog?")
 
-[FAQ\_How\_do\_I\_implement\_a\_search_operation?](./FAQ_How_do_I_implement_a_search_operation.md "FAQ How do I implement a search operation?")
+[FAQ How do I implement a search operation?](./FAQ_How_do_I_implement_a_search_operation.md "FAQ How do I implement a search operation?")
 

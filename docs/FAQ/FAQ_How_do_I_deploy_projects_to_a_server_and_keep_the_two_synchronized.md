@@ -15,5 +15,4 @@ The main entry point for this kind of team integration is the notion of a _team 
   
 See the _Platform Plug-in Developer Guide_ under **Programmer's Guide > Team support** for complete details on how to implement your own team subscriber and for integrating with the generic Synchronize view.
 
-**Aside:** if all you really want is to do is synch Eclipse workspace content with a webserver, see [Eclipse Server Sandbox Setup](/Eclipse_Server_Sandbox_Setup "Eclipse Server Sandbox Setup") for an idea on how this can be done.
 

@@ -7,21 +7,21 @@ The ISelectionService tracks all selection changes within the views and editors 
 
 You can also ask for the selection in a particular view by passing the view ID as a parameter to the getSelection method:
 
-   IWorkbenchPage page = ...;
-   //the current selection in the entire page
-   ISelection selection = page.getSelection();
-   //the current selection in the navigator view
-   selection = page.getSelection(IPageLayout.ID\_RES\_NAV);
-   //add a listener
-   ISelectionListener sl = new ISelectionListener() {
-      public void selectionChanged(IWorkbenchPart part, ISelection sel) {
-         System.out.println("Selection is: " + sel);
-      }
-   };
-   page.addSelectionListener(sl);
-   //add a listener to selection changes only
-   //in the navigator view
-   page.addSelectionListener(sl, IPageLayout.ID\_RES\_NAV);
+      IWorkbenchPage page = ...;
+      //the current selection in the entire page
+      ISelection selection = page.getSelection();
+      //the current selection in the navigator view
+      selection = page.getSelection(IPageLayout.ID\_RES\_NAV);
+      //add a listener
+      ISelectionListener sl = new ISelectionListener() {
+         public void selectionChanged(IWorkbenchPart part, ISelection sel) {
+            System.out.println("Selection is: " + sel);
+         }
+      };
+      page.addSelectionListener(sl);
+      //add a listener to selection changes only
+      //in the navigator view
+      page.addSelectionListener(sl, IPageLayout.ID\_RES\_NAV);
 
 IWorkbenchPage implements ISelectionService directly. You can also access a selection service to track selection within a workbench window by using IWorkbenchWindow.getSelectionService.
 

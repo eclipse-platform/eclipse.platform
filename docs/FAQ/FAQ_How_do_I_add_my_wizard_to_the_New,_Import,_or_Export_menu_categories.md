@@ -5,14 +5,14 @@ FAQ How do I add my wizard to the New, Import, or Export menu categories?
 
 Some special kinds of wizards have to be registered with the platform in your plugin.xml file. These wizards are found under the **File > New**, **File > Import**, and **File > Export** menu actions. These wizards are declared using the org.eclipse.ui newWizards, importWizards, and exportWizards extension points, respectively. Once you have declared your wizard with the appropriate extension point, the platform will take care of displaying it in the appropriate places. Following is an example declaration of a new wizard:
 
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
-            name="New Addition"
-            class="org.eclipse.faq.examples.AddingWizard"
-            id="org.eclipse.faq.examples.addingWizard">
-      </wizard>
-   </extension>
+      <extension
+            point="org.eclipse.ui.newWizards">
+            <wizard
+                  name="New Addition"
+                  class="org.eclipse.faq.examples.AddingWizard"
+                  id="org.eclipse.faq.examples.addingWizard">
+            </wizard>
+      </extension>
 
 This wizard will appear by default under **File > New > Other...**. To make the wizard appear under the new-project category, add the attribute project="true" to the extension declaration.
 

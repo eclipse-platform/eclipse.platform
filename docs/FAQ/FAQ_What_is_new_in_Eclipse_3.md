@@ -54,5 +54,5 @@ See Also:
 [FAQ\_Is\_Eclipse\_3.0\_going\_to\_break\_all\_of\_my\_old_plug-ins?](./FAQ_Is_Eclipse_3.0_going_to_break_all_of_my_old_plug-ins.md "FAQ Is Eclipse 3.0 going to break all of my old plug-ins?")
 
   
-The Eclipse 3.0 plan ([http://eclipse.org/development/plan](http://eclipse.org/development/plan))
+The Eclipse 3.0 plan ([https://eclipse.org/development/plan](https://eclipse.org/development/plan))
 

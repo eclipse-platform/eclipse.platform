@@ -13,7 +13,7 @@ In fact, the 100-page article is a great source of inspiration for any plug-in d
 See Also:
 ---------
 
-Online article on UI Guidelines ([http://eclipse.org/articles](http://eclipse.org/articles)). 
+Online article on UI Guidelines ([https://eclipse.org/articles](https://eclipse.org/articles)). 
 
 There is a partly obsolete article with eclipse [2.1 UI Guidelines](https://www.eclipse.org/articles/Article-UI-Guidelines/Index.html)
 

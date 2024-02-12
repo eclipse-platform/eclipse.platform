@@ -12,5 +12,5 @@ One way of finding out is to select **Help > About Eclipse Platform >**. From th
 See Also:
 ---------
 
-[FAQ\_What\_is\_a\_configuration?](./FAQ_What_is_a_configuration.md "FAQ What is a configuration?")
+[FAQ What is a configuration?](./FAQ_What_is_a_configuration.md "FAQ What is a configuration?")
 

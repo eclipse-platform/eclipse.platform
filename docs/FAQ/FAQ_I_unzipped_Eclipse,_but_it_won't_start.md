@@ -63,7 +63,7 @@ Eclipse, especially 2.1 and earlier, does not always gracefully report disk-full
 
 *   _None of the preceding_.
 
-When all else fails, try asking on the [eclipse.newcomer](http://eclipse.org/forums/eclipse.newcomer) newsgroup or [IRC](/IRC "IRC") channel. Be extremely specific about what operating system, VM, Eclipse build, hardware, and so on, you are running. Attach any error details that you have found in the Eclipse error log. You will find, especially on Linux and Mac, where configuration can be a lot more complicated, that the community is fairly helpful in getting new users going and will generally make an effort in proportion to the effort they perceive that you have made. You are almost guaranteed to get no response if you simply say, Eclipse will not start. If a well-described newsgroup post does not get any response, enter a bug report.
+When all else fails, try asking on the [eclipse.newcomer](https://eclipse.org/forums/eclipse.newcomer) newsgroup or [IRC](/IRC "IRC") channel. Be extremely specific about what operating system, VM, Eclipse build, hardware, and so on, you are running. Attach any error details that you have found in the Eclipse error log. You will find, especially on Linux and Mac, where configuration can be a lot more complicated, that the community is fairly helpful in getting new users going and will generally make an effort in proportion to the effort they perceive that you have made. You are almost guaranteed to get no response if you simply say, Eclipse will not start. If a well-described newsgroup post does not get any response, enter a bug report.
 
   
 

@@ -27,8 +27,8 @@ In case you are curious, this works by creating in your workspace a Java project
 See Also:
 ---------
 
-*   [FAQ\_How\_do\_I\_open\_a\_type\_in\_a\_Java\_editor?](./FAQ_How_do_I_open_a_type_in_a_Java_editor.md "FAQ How do I open a type in a Java editor?")
-*   [FAQ\_Where\_can\_I\_find\_the\_Eclipse_plug-ins?](./FAQ_Where_can_I_find_the_Eclipse_plug-ins.md "FAQ Where can I find the Eclipse plug-ins?")
+*   [FAQ How do I open a type in a Java editor?](./FAQ_How_do_I_open_a_type_in_a_Java_editor.md "FAQ How do I open a type in a Java editor?")
+*   [FAQ Where can I find the Eclipse plug-ins?](./FAQ_Where_can_I_find_the_Eclipse_plug-ins.md "FAQ Where can I find the Eclipse plug-ins?")
 
 Note:
 -----

@@ -18,6 +18,6 @@ For historical interest, earlier versions of Eclipse have also been compiled wit
 See Also:
 ---------
 
-*   The Eclipse download site ([http://eclipse.org/downloads](http://eclipse.org/downloads))
+*   The Eclipse download site ([https://eclipse.org/downloads](https://eclipse.org/downloads))
 *   IKVM ([http://www.ikvm.net](http://www.ikvm.net))
 

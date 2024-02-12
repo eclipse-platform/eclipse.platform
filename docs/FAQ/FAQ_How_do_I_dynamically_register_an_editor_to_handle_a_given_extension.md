@@ -10,15 +10,15 @@ The only thing you _can_ currently do programmatically is specify the default ed
 
 Here is an example snippet that sets the default editor for text files to be the built-in platform text editor:
 
-   IEditorRegistry registry = 
-           PlatformUI.getWorkbench().getEditorRegistry();
-   registry.setDefaultEditor("*.txt", 
-           "org.eclipse.ui.DefaultTextEditor");
+        IEditorRegistry registry = 
+                PlatformUI.getWorkbench().getEditorRegistry();
+        registry.setDefaultEditor("*.txt", 
+                "org.eclipse.ui.DefaultTextEditor");
 
   
 
 See Also:
 ---------
 
-[FAQ\_How\_do\_I\_create\_my\_own_editor?](./FAQ_How_do_I_create_my_own_editor.md "FAQ How do I create my own editor?")
+[FAQ How do I create my own editor?](./FAQ_How_do_I_create_my_own_editor.md "FAQ How do I create my own editor?")
 

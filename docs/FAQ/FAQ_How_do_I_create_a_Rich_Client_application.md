@@ -29,15 +29,8 @@ An Eclipse RCP application has full control over how the user interface is creat
   
 This application creates a blank workbench window with no toolbars, no menus, no status line, and no views or editors (Figure 13.1). The application will run until the user closes the workbench window.
 
-    <img src=../images/minimal_app.png>
-
-    **Figure 13.1**   Minimal RCP application
-
-  
-
 The application's run method is the one we've seen in previous application examples. You need to specify the name of the class with this method when declaring your application in the plugin.xml file. This example creates a workbench and runs the event loop by calling createAndRunWorkbench. The preWindowOpen method is your opportunity to customize the basic appearance of the window. Finally, the getInitialWindowPerspectiveId method must specify the ID of the initial perspective to be displayed.
 
-  
 That's all there is to it! The rest of an RCP application is developed just like any other plug-in. You need to create one or more perspectives and populate them with the views and editors that apply for your application. These are created by using the standard org.eclipse.ui extension points, all of which are available in a custom application.
 
   

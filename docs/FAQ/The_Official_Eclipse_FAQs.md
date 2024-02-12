@@ -153,7 +153,7 @@ This chapter describes the mechanics of plug-in development, such as creating pl
 *   [FAQ Why do I get a 'plug-in was unable to load class' error when I activate a menu or toolbar action?](./FAQ_Why_do_I_get_a_%27plug-in_was_unable_to_load_class%27_error_when_I_activate_a_menu_or_toolbar_action.md "FAQ Why do I get a 'plug-in was unable to load class' error when I activate a menu or toolbar action?")
 *   [FAQ What is the use of the build.xml file?](./FAQ_What_is_the_use_of_the_build.xml_file.md "FAQ What is the use of the build.xml file?")
 *   [FAQ How do I prevent my build.xml file from being overwritten?](./FAQ_How_do_I_prevent_my_build.xml_file_from_being_overwritten.md "FAQ How do I prevent my build.xml file from being overwritten?")
-*   [FAQ When is the build.xml script executed?](./FAQ_When_is_the_build.xml_script_executed.md "FAQ When is the build.xml script executed?")
+*   [FAQ When is the build.xml script executed?](./FAQ_When_is_the_build_script_executed.md "FAQ When is the build.xml script executed?")
 *   [FAQ How do I declare my own extension point?](./FAQ_How_do_I_declare_my_own_extension_point.md "FAQ How do I declare my own extension point?")
 *   [FAQ How do I find all the plug-ins that contribute to my extension point?](./FAQ_How_do_I_find_all_the_plug-ins_that_contribute_to_my_extension_point.md "FAQ How do I find all the plug-ins that contribute to my extension point?")
 *   [FAQ Why is the interface for my new extension point not visible?](./FAQ_Why_is_the_interface_for_my_new_extension_point_not_visible.md "FAQ Why is the interface for my new extension point not visible?")

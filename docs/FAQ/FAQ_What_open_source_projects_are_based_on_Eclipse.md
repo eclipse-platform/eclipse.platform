@@ -9,11 +9,9 @@ Thousands of projects of various sizes are based on Eclipse. A small number are 
 
 *   [_Eclipse-Plugins.info_](http://www.eclipse-plugins.info) This site is probably the longest running Eclipse information portal, best known for its exhaustive catalog of known open source Eclipse plug-ins. If you have a plug-in that you want the world to know about, get it listed here!
 
-*   [_Eclipse Plugin Central (EPIC)_](http://www.eclipseplugincentral.com) A newcomer to the world of Eclipse portals, this site has an excellent Eclipse news feed and a growing catalog of open source Eclipse-based projects.
-
 See Also:
 ---------
 
 *   [FAQ What are Eclipse projects and technologies?](./FAQ_What_are_Eclipse_projects_and_technologies.md "FAQ What are Eclipse projects and technologies?")
-*   The Eclipse community Web site ([http://eclipse.org/community](http://eclipse.org/community))
+*   [The Eclipse community Web site](https://eclipse.org/community)
 
