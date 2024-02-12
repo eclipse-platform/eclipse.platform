@@ -121,7 +121,7 @@ public class SSLPkcs11Provider {
 										keyStore.setCertificateEntry(tmpAlias, certificate);
 										//System.out.println("SSLPkcs11Provider  - SunPKCS11  DS ALIAS:"+alias);	
 										IStatus status = new Status (IStatus.OK, AuthenticationPlugin.getPluginId(),"      SunPKCS11 provider loaded.");
-										AuthenticationPlugin.getDefault().getLog().log(status);
+										//AuthenticationPlugin.getDefault().getLog().log(status);
 										if ( pin.equals("pin")) {
 											System.out.println("SSLPkcs11Provide KEYSTORE  PIN CHECK FIX THIS  ");
 											// @see AUTHENTICATION
@@ -172,7 +172,7 @@ public class SSLPkcs11Provider {
 				
 			} else {
 				logMessage = "Unable to locate a valid pkcs11 provider, searching for SunPKCS11";
-				AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":SSLPkcs11Provider",logMessage));
+				//AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":SSLPkcs11Provider",logMessage));
 				System.out.println("SSLPkcs11Provider    --------------------------   NO SunPKCS11 provider found.");
 			}
 			

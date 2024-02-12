@@ -140,6 +140,7 @@ public class CertificateSelectionPage extends WizardPage  {
         		
         	}
         	if ( PKIState.CONTROL.isPKCS11on()) {
+        		
         		AuthenticationPlugin.getDefault().getPreferenceStore().setValue(
      					AuthenticationPreferences.PKI_SELECTION_TYPE, "PKCS11");
         		slots = selectFromPkcs11Store();
@@ -1202,7 +1203,7 @@ public class CertificateSelectionPage extends WizardPage  {
     protected boolean loadPkcs11Slots() {
     	boolean isAnySlots=false;
 		try {
-			//System.out.println("CertificateSelectionPage -- loadPkcs11Slots        load slots");
+			System.out.println("CertificateSelectionPage -- loadPkcs11Slots        load slots");
 			if ( slots != null ) {
 				if ( slots.length < 1 ) {
 					slots = new String[1];
@@ -1227,7 +1228,7 @@ public class CertificateSelectionPage extends WizardPage  {
     	String items[] = null;
     	items = new String[1];
     	try {
-    		//System.out.println("CertificateSelectionPage --  --selectFromPkcs11Store");
+    		System.out.println("CertificateSelectionPage --  --selectFromPkcs11Store");
         	if ( VendorImplementation.getInstance().isInstalled()) {
         		
         		list = new ArrayList<String>(VendorImplementation.getInstance().getList());
