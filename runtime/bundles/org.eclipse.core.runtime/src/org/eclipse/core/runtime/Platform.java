@@ -1166,20 +1166,24 @@ public final class Platform {
 	/**
 	 * Returns the platform administrator for this running Eclipse.
 	 * <p>
-	 * Note: This is an internal method and <em>must not</em>
-	 * be used by clients which are not part of the Eclipse Platform.
-	 * This method allows access to classes which are not Eclipse
-	 * Platform API but are part of the OSGi runtime that the Eclipse
-	 * Platform is built on. Even as the Eclipse Platform evolves
-	 * in compatible ways from release to release, the details of
-	 * the OSGi implementation might not.
-	 * </p><p>
-	 * Clients can also acquire the {@link PlatformAdmin} service
-	 * to retrieve this object.
+	 * Note: This is an internal method and <em>must not</em> be used by clients
+	 * which are not part of the Eclipse Platform. This method allows access to
+	 * classes which are not Eclipse Platform API but are part of the OSGi runtime
+	 * that the Eclipse Platform is built on. Even as the Eclipse Platform evolves
+	 * in compatible ways from release to release, the details of the OSGi
+	 * implementation might not.
 	 * </p>
+	 * <p>
+	 * Clients can also acquire the {@link PlatformAdmin} service to retrieve this
+	 * object.
+	 * </p>
+	 *
 	 * @return the platform admin for this instance of Eclipse
+	 * @deprecated only consumer is PDE and this should never be used by other
+	 *             clients, see javadoc for details.
 	 * @since 3.0
 	 */
+	@Deprecated(forRemoval = true)
 	public static PlatformAdmin getPlatformAdmin() {
 		return InternalPlatform.getDefault().getPlatformAdmin();
 	}
