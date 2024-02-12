@@ -1,13 +1,7 @@
-
-
 FAQ How is Eclipse licensed?
 ============================
 
-Please see the Eclipse Legal Resources pages on the Eclipse.org website: [https://www.eclipse.org/legal/](https://www.eclipse.org/legal/)
-
-  
-
-  
+Please see the Eclipse Legal Resources pages on the Eclipse.org [website](https://www.eclipse.org/legal/)
 
 See Also:
 ---------

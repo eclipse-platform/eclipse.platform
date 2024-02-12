@@ -1,9 +1,7 @@
-
-
 FAQ Where do I get and install Eclipse?
 =======================================
 
-The way you download Eclipse depends on how close you want to be to the live stream. Following are the release types that can be downloaded from the Eclipse download site ([https://eclipse.org/downloads](https://eclipse.org/downloads)), in increasing level of closeness to the CVS HEAD stream:
+The way you download Eclipse depends on how close you want to be to the live stream. Following are the release types that can be downloaded from the Eclipse [download site](https://eclipse.org/downloads), in increasing level of closeness to the CVS HEAD stream:
 
 *   _The latest release_, used by most products in the market. These releases have little risk of surprises, yet those builds can be up to 6 months behind what is being worked on now. Example version numbers for these releases are 2.1.2 and 3.0.
 
@@ -38,7 +36,7 @@ Oracle's Java is available in two main distributions: the Java Runtime Environme
 See Also:
 ---------
 
-*   The Eclipse download site ([https://eclipse.org/downloads](https://eclipse.org/downloads))
+*   The Eclipse [download site](https://eclipse.org/downloads)
 *   [FAQ I unzipped Eclipse, but it won't start](./FAQ_I_unzipped_Eclipse,_but_it_won%27t_start.md "FAQ I unzipped Eclipse, but it won't start")
 *   [Sun Developer Network](http://java.sun.com/)
 

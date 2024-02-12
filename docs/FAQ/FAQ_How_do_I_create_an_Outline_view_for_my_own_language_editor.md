@@ -1,5 +1,3 @@
-
-
 FAQ How do I create an Outline view for my own language editor?
 ===============================================================
 
@@ -53,7 +51,7 @@ You will want to update the selection in your Outline view when the cursor is mo
 When the user selects a node in the Outline view, the editor should change selection to the selected element and make it visible.
 
   
-When [https://bugs.eclipse.org/bugs/show_bug.cgi?id=507205](https://bugs.eclipse.org/bugs/show_bug.cgi?id=507205) is fixed, a recommended way would be to rely on the Common Navigator Framework in order to implement Tree-based navigation outline pages. For the moment, you can already write your own outline view consuming the CommonViewer class.
+When [Bug 507205](https://bugs.eclipse.org/bugs/show_bug.cgi?id=507205) is fixed, a recommended way would be to rely on the Common Navigator Framework in order to implement Tree-based navigation outline pages. For the moment, you can already write your own outline view consuming the CommonViewer class.
 
  
 

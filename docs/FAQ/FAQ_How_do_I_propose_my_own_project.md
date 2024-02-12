@@ -1,9 +1,7 @@
-
-
 FAQ How do I propose my own project?
 ====================================
 
-Please see the Project Development Process pages on the eclipse.org Website: [https://www.eclipse.org/projects/dev_process/pre-proposal-phase.php](https://www.eclipse.org/projects/dev_process/pre-proposal-phase.php)
+Please see the Project Development Process pages on the eclipse.org [Website](https://www.eclipse.org/projects/dev_process/pre-proposal-phase.php)
 
   
 
