@@ -7,8 +7,4 @@ HCR has been specifically added as a standard technique to Java to facilitate ex
 
 If HCR does not work for you even in a simple Java application and you have confirmed that you are running the application on a supported VM (taking note that the JVM that runs Eclipse may not be the same as the JVM that is running your Java application), you may not have automatic building turned on. Make sure that 'Project > Build Automatically' is checked.
 
-See Also:
----------
-
-The  [WSDD Web site] (http://ibm.com/software/wireless/wsdd/)
 

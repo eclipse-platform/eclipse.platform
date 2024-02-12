@@ -16,7 +16,7 @@ A viewer is created by first creating an SWT widget, constructing the viewer on 
 
 In general, JFace viewers allow you to create a model-view-controller (MVC) architecture. The view is the underlying SWT widget, the model is specified by the framework user, and the JFace viewer and its associated components form the controller. The viewer input is a model element that seeds the population of the viewer.
 
-![](https://github.com/eclipse-platform/eclipse.platform/tree/master/docs/FAQimages/Package_explorer.jpg)
+![](https://github.com/eclipse-platform/eclipse.platform/tree/master/docs/FAQ/images/Package_explorer.jpg)
 
 JDT Package Explorer
 

@@ -7,9 +7,4 @@ Eclipse makes a careful distinction between published APIs and internal implemen
 
 In the Eclipse Platform, the API of a plug-in includes all public classes and interfaces that do not have the word _internal_ in their package names and all public and protected methods in those classes and interfaces. The API also includes all extension points that are not explicitly described as for internal use only in their documentation; there is only a small handful of such internal extension points.
 
-See Also:
----------
-
-*   [Eclipse online article "How to Use the Eclipse API"](https://www.eclipse.org/articles/Article-API%20use/eclipse-api-usage-rules.html)
-*   [EclipseCon 2004 technical track presentation, "Eclipse APIs: Lines in the Sand"](http://www.eclipsecon.org/2004/EclipseCon_2004_TechnicalTrackPresentations/02_des_Rivieres.pdf)
 
