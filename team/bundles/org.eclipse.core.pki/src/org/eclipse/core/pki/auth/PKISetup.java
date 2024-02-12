@@ -98,6 +98,7 @@ public class PKISetup implements BundleActivator, IStartup {
 		// log("Startup method is now running"); //$NON-NLS-1$
 
 		Optional<String>type = null;
+		Optional<String>decryptedPw;
 
 		PKIState.CONTROL.setPKCS11on(false);
 		PKIState.CONTROL.setPKCS12on(false);
@@ -140,8 +141,13 @@ public class PKISetup implements BundleActivator, IStartup {
 					}
 				}
 				if (PKIState.CONTROL.isPKCS11on()) {
+					String pkcs11Pin="";
 					LogUtil.logInfo("PKISetup - Processing PKCS11"); //$NON-NLS-1$
-					keystoreContainer = Optional.ofNullable(AuthenticationBase.INSTANCE.initialize("".toCharArray()));//$NON-NLS-1$
+					decryptedPw = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStorePassword"));
+					if (!decryptedPw.isEmpty()) {
+						pkcs11Pin=decryptedPw.get();
+					}
+					keystoreContainer = Optional.ofNullable(AuthenticationBase.INSTANCE.initialize(pkcs11Pin.toCharArray()));//$NON-NLS-1$
 					if (keystoreContainer.isEmpty()) {
 						LogUtil.logError("PKISetup - Failed to Load a Keystore.", null); //$NON-NLS-1$
 					} else {

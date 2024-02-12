@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.pki;
 
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.InvalidParameterException;
@@ -22,6 +23,7 @@ import java.security.NoSuchProviderException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -32,30 +34,36 @@ import javax.net.ssl.X509TrustManager;
 
 import org.eclipse.core.pki.AuthenticationService;
 import org.eclipse.core.pki.util.ConfigureTrust;
+import org.eclipse.core.pki.util.KeyStoreManager;
 import org.eclipse.core.pki.util.LogUtil;
 
 public enum AuthenticationBase implements AuthenticationService {
 	INSTANCE;
 
 	protected SSLContext sslContext;
+	protected String pin;
 	static KeyStore.PasswordProtection pp = new KeyStore.PasswordProtection("".toCharArray()); //$NON-NLS-1$
 	// private static final String javaVersion = System.getProperty("java.version");
 	protected boolean is9;
 	protected String pkiProvider = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
 	protected String cfgDirectory = null;
 	protected String fingerprint;
-
+	KeyStore keyStore = null;
 	@Override
 	public KeyStore initialize(char[] p) {
 		// TODO Auto-generated method stub
 		pp = new KeyStore.PasswordProtection(p);
-		KeyStore keyStore = null;
 		String pin = new String(p);
 		try {
 
-			LogUtil.logInfo("Before calls to configure JDK"); //$NON-NLS-1$
-			// keyStore = (javaVersion.startsWith("1."))?configurejdk8():configurejdk9();
-			keyStore = configure();
+			//LogUtil.logInfo("Before configure keyStore with PIN:"+pin); //$NON-NLS-1$
+			
+			Optional<KeyStore>keyStoreContainer = Optional.ofNullable(configure());
+			if (keyStoreContainer.isEmpty() ) {
+				return null;
+			} else {
+				keyStore=keyStoreContainer.get();
+			}
 			try {
 				/*
 				 * Only load the store if the pin is a valuye other than the default setting of
@@ -63,8 +71,14 @@ public enum AuthenticationBase implements AuthenticationService {
 				 * keystore, dynamically
 				 */
 				if (!(pin.equalsIgnoreCase("pin"))) { //$NON-NLS-1$
-					keyStore.load(null, pp.getPassword());
-					AuthenticationBase.INSTANCE.setSSLContext(keyStore);
+					PkiCallbackHandler pkiCB = new PkiCallbackHandler();
+					PkiLoadParameter lp = new PkiLoadParameter();
+					lp.setWaitForSlot(true);
+				    lp.setProtectionParameter(pp);
+				   
+				    lp.setEventHandler(pkiCB);
+					keyStore.load(lp);
+					sslContext=AuthenticationBase.INSTANCE.setSSLContext(keyStore);
 					System.out.println("AuthenticationBase SSL context PROTOCOL:" + sslContext.getProtocol()); //$NON-NLS-1$
 				}
 
@@ -75,7 +89,7 @@ public enum AuthenticationBase implements AuthenticationService {
 				// TODO Auto-generated catch block
 //				IStatus status = new Status (IStatus.ERROR, AuthenticationPlugin.getPluginId(),"Did you enter an invalid PiN? ");
 //				AuthenticationPlugin.getDefault().getLog().log(status);
-				// e.printStackTrace();
+				e.printStackTrace();
 			}
 			// System.setProperty("javax.net.ssl.keyStoreProvider", "SunPKCS11");
 			System.setProperty("javax.net.ssl.keyStoreProvider", "SunPKCS11"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -102,15 +116,6 @@ public enum AuthenticationBase implements AuthenticationService {
 		is9 = true;
 
 		// System.out.println("In configure CFG STORED FILE LOC:" +
-		// AuthenticationPlugin.getDefault()
-		// .getPreferenceStore().getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION));
-
-		// Pkcs11Location location = new Pkcs11Location();
-		// location.getPkcs11LocationInstance();
-		// String cfgDirectory = location.getDirectory();
-
-		// String cfgDirectory = AuthenticationPlugin.getDefault().getPreferenceStore()
-		// .getString(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION);
 
 		configurationDirectory = Optional.ofNullable(System.getProperty("javax.net.ssl.cfgFileLocation")); //$NON-NLS-1$
 		if (configurationDirectory.isEmpty()) {
@@ -164,47 +169,43 @@ public enum AuthenticationBase implements AuthenticationService {
 
 		return keyStore;
 	}
+	public KeyStore getKeyStore() {
+		return keyStore;
+	}
+
+	public SSLContext getSSLContext() {
+		return this.sslContext;
+	}
+		
 
 	public boolean isPkcs11Setup() {
-
-		/*
-		 * if (AuthenticationPlugin.getDefault().getPreferenceStore()
-		 * .getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION) != null) {
-		 *
-		 * if (!(AuthenticationPlugin.getDefault().getPreferenceStore()
-		 * .getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION).isEmpty())) {
-		 * Path path = Paths.get(AuthenticationPlugin.getDefault().getPreferenceStore()
-		 * .getString(AuthenticationPreferences.PKCS11_CFG_FILE_LOCATION)); if
-		 * (Files.notExists(path)) { System.out.println("AuthenticationBase CFG FILE:" +
-		 * AuthenticationPlugin.getDefault()
-		 * .getPreferenceStore().getString(AuthenticationPreferences.
-		 * PKCS11_CFG_FILE_LOCATION)); return true; } } }
-		 */
+		
+		if ((getCfgDirectory() !=null ) && ( getPkiProvider() != null)) {
+			return true;
+		}
 		return false;
 
 	}
 
 	public SSLContext setSSLContext(KeyStore keyStore) {
-		CustomKeyManager manager = null;
-		KeyManager[] keyManagers = new KeyManager[1];
-		TrustManager[] trustManagers = new TrustManager[1];
+		
 		try {
-			System.out.println("In setSSLContext initialize TLS"); //$NON-NLS-1$
+			//System.out.println("In setSSLContext initialize TLS"); //$NON-NLS-1$
 			// sslContext = SSLContext.getInstance("TLS");
 			sslContext = SSLContext.getInstance("TLSv1.3"); //$NON-NLS-1$
+			
 			Optional<X509TrustManager> PKIXtrust = ConfigureTrust.MANAGER.setUp();
 			if (PKIXtrust.isEmpty()) {
-				manager = new CustomKeyManager(keyStore, "".toCharArray(), null); //$NON-NLS-1$
+				LogUtil.logError("Invalid TrustManager Initialization.", null); //$NON-NLS-1$
 			} else {
-				manager = (CustomKeyManager) PKIXtrust.get();
+				
+				KeyManager[] km = new KeyManager[] { KeyStoreManager.INSTANCE };
+				TrustManager[] tm = new TrustManager[] { ConfigureTrust.MANAGER };
+				
+				sslContext.init(km, tm, new SecureRandom());
+				SSLContext.setDefault(sslContext);
+				HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 			}
-
-			manager.setSelectedFingerprint(getFingerprint());
-			keyManagers[0] = manager;
-			trustManagers[0] = new CustomTrustManager(keyStore);
-			sslContext.init(keyManagers, trustManagers, new SecureRandom());
-			SSLContext.setDefault(sslContext);
-			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -243,6 +244,9 @@ public enum AuthenticationBase implements AuthenticationService {
 		}
 		return keyManager;
 	}
+	public ArrayList getList() {
+		return EclipseKeyStoreCollection.PILE.getList(keyStore);
+	}
 
 	public boolean isJavaModulesBased() {
 		try {
@@ -259,6 +263,40 @@ public enum AuthenticationBase implements AuthenticationService {
 
 	public void setCfgDirectory(String cfgDirectory) {
 		this.cfgDirectory = cfgDirectory;
+	}
+	public String getPin() {
+		return pin;
+	}
+	public void setPin(String pin) {
+		this.pin = pin;
+		pp = new KeyStore.PasswordProtection(pin.toCharArray());
+	}
+	public void logoff() {
+		try {
+			//System.out.println("SSLPkcs11Provider   LOGOFF  INVOKATION:");
+			//provider.clear();
+			
+			//System.out.println("SSLPkcs11Provider   LOGOFF   DONE");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	public boolean login() {
+		//System.out.println("SSLPkcs11Provider LOGIN");
+		Provider provider = Security.getProvider(getPkiProvider());
+		if ( provider != null) { 
+			
+			try {
+				provider.clear();
+			}  catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		
+		return false;
 	}
 
 	@Override

@@ -14,15 +14,13 @@
 package org.eclipse.ui.pki.pkcs;
 
 import java.security.KeyStore;
+import java.util.List;
 
 import javax.net.ssl.SSLContext;
 
 import org.eclipse.core.pki.AuthenticationBase;
-import org.eclipse.ui.pki.pkcs.ProviderImpl;
 
-
-
-public class VendorImplementation extends ProviderImpl {
+public class VendorImplementation implements EclipsePkiProvider {
 	private static final  VendorImplementation venderImpl=new VendorImplementation();
 	private static VendorImplementation csp=new VendorImplementation();
 	
@@ -37,7 +35,7 @@ public class VendorImplementation extends ProviderImpl {
 	private VendorImplementation() {
 		try {
 			
-			if ( security.isPKCS11Enabled()) {
+			if ( security.isPkcs11Setup()) {
 				enabled=true;
 			}
 		} catch (Exception e) {
@@ -49,16 +47,16 @@ public class VendorImplementation extends ProviderImpl {
 		//super(quiet);
 	}
 	public static void refresh() {
-		getNewInstance();
+		getInstance();
 	}
 	public void enable(boolean changeValue) {
-		security.setPKCS11on(changeValue);
+		enabled=changeValue;
 	}
 	public boolean isEnabled() {
-		return security.isPKCS11Enabled();
+		return security.isPkcs11Setup();
 	}
 	public boolean isInstalled() {
-		return security.isPKCS11Installed();
+		return security.isPkcs11Setup();
 	}
 	public KeyStore getKeyStore() {
 		return security.getKeyStore();
@@ -83,5 +81,20 @@ public class VendorImplementation extends ProviderImpl {
 	}
 	public void logoff() {
 		security.logoff();
+	}
+	@Override
+	public List<String> getList() {
+		// TODO Auto-generated method stub
+		return AuthenticationBase.INSTANCE.getList();
+	}
+	@Override
+	public String getAlias() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void off() {
+		// TODO Auto-generated method stub
+		
 	}
 }

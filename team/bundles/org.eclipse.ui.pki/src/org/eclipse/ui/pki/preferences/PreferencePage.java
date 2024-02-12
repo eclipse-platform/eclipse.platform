@@ -112,7 +112,9 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         yourSibling.setLayout( pkiGrid );
         groups =  addGroup( yourSibling );
         addFields( groups );
-        
+        initialize();
+        setEditors();
+	    checkState();
         
         /*
          * NOTE: 
@@ -132,14 +134,18 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         	
         	Optional incomingProvider = Optional.ofNullable(AuthenticationBase.INSTANCE.getPkiProvider());
         	if ( incomingProvider.isEmpty() ) {
-        		propertyAddedProvider = 
-        				Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreProvider")).
-        				orElse("");
+        		incomingProvider = Optional.ofNullable(System.getProperty("javax.net.ssl.keyStoreProvider"));
+        				
+        		if (incomingProvider.isEmpty() ) {
+        			propertyAddedProvider="PKCS11";
+        		} else {
+        			propertyAddedProvider=(String) incomingProvider.get();
+        		}
         		securityProvider.setStringValue(propertyAddedProvider);
         	} else {
         		securityProvider.setStringValue((String) incomingProvider.get());
         	}       	
-    		System.out.println("PreferencePage --------- preference:"+ propertyAddedProvider);
+    		System.out.println("PreferencePage --------- preference:"+securityProvider.getStringValue() );
     		
     		Optional cfgDirectoryHolder = Optional.ofNullable(AuthenticationBase.INSTANCE.getCfgDirectory());
     		
@@ -149,7 +155,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
     			configurationLocationFile.setStringValue((String) cfgDirectoryHolder.get());
     		}
     		
-    		
+    		System.out.println("PreferencePage --------- set cfgvalue"+configurationLocationFile.getStringValue());
     		AuthenticationPlugin.getDefault()
     			.getPreferenceStore()
     			.setValue(AuthenticationPreferences.SECURITY_PROVIDER, 
@@ -177,9 +183,9 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
         	setPkcs12Visible();
         } 
         
-        initialize();
-        setEditors();
-	    checkState();
+        //initialize();
+        //setEditors();
+	    //checkState();
 		
 		yourSibling.layout();
 		
