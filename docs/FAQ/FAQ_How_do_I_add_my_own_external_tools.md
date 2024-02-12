@@ -9,13 +9,13 @@ External tools are applications or scripts that typically act as extensions to y
 
 If you want to write your own category of external tool, such as support for a different scripting language, you need to write a plug-in. The process for defining external tools is almost identical to writing your own launch configuration. Essentially, an external tool is a launch-configuration type that belongs to the special external-tools category:
 
-  <launchConfigurationType
-     name="My Tool"
-     delegate="com.xyz.MyLaunchDelegate"
-     **category="org.eclipse.ui.externaltools"**
-     modes="run"
-     id="com.xyz.MyLaunchType">
-  </launchConfigurationType>
+    <launchConfigurationType
+      name="My Tool"
+      delegate="com.xyz.MyLaunchDelegate"
+      **category="org.eclipse.ui.externaltools"**
+      modes="run"
+      id="com.xyz.MyLaunchType">
+    </launchConfigurationType>
 
   
 

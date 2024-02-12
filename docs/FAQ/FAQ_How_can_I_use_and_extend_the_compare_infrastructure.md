@@ -3,12 +3,6 @@
 FAQ How can I use and extend the compare infrastructure?
 ========================================================
 
-  
-
-  
-
-  
-
 The org.eclipse.compare plug-in includes infrastructure for computing the differences between groups of files and the content of individual files. The plug-in also contains UI components that allow a user to browse and manipulate comparisons in editors and dialogs. Eclipse components typically interact with the compare plug-in in two ways. First, they may be compare clients, using the comparison engine to compute differences between various inputs and to display the result of those comparisons. For example, the Team plug-ins use the compare support to compute differences between local and remote resources, and to display those comparisons in a comparison editor.
 
   

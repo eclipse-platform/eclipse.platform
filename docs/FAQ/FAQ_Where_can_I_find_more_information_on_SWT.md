@@ -29,7 +29,7 @@ Several other Eclipse books include a chapter or more on SWT:
 Web sites
 ---------
 
-The information hub for SWT is the [SWT development team home page](http://eclipse.org/swt). The main page has a basic SWT overview, and the Development Resources page has loads more information, including a comprehensive library of stand-alone SWT programs--called snippets--illustrating many of the important concepts in SWT. This page also hosts the official SWT FAQ maintained by the SWT development team, as well as development plans, platform porting status, and much more.
+The information hub for SWT is the [SWT development team home page](https://eclipse.org/swt). The main page has a basic SWT overview, and the Development Resources page has loads more information, including a comprehensive library of stand-alone SWT programs--called snippets--illustrating many of the important concepts in SWT. This page also hosts the official SWT FAQ maintained by the SWT development team, as well as development plans, platform porting status, and much more.
 
 Visit [http://www.cs.umanitoba.ca/~eclipse](http://www.cs.umanitoba.ca/~eclipse), hosted by the computer science department of the University of Manitoba, for extensive tutorials on using SWT, from a simple introduction to advanced applications. This site has a lot of high-quality information that can help you write your first stand-alone SWT application.
 

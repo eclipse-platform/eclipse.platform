@@ -29,5 +29,5 @@ In addition to these two principal JDT plug-ins, a number of other plug-ins also
 See Also:
 ---------
 
-JUnit ([http://www.junit.org](http://www.junit.org))
+ [JUnit](http://www.junit.org)
 

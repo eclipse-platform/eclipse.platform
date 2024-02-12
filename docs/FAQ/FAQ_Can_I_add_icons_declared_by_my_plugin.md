@@ -1,5 +1,3 @@
-
-
 FAQ Can I add icons declared by my plugin.xml in the runtime JAR?
 =================================================================
 
@@ -15,16 +13,11 @@ The structure of a plug-in roughly looks like this:
 
 Plug-in activation is a process that requires considerable memory and central processing unit (CPU) cycles. To speed up load time of the platform, opening the runtime JAR is avoided for as long as possible.
 
-  
 
 Of course, images included in a runtime JAR can be used by plug-in code using standard Java resource-loading techniques, such as getResource on a given Java class or by using a class loader.
 
-  
-
-  
-
-See Also:
----------
+See Also
+--------
 
 [FAQ\_How\_do\_I\_add\_images\_and\_other\_resources\_to\_a\_runtime\_JAR_file?](./FAQ_How_do_I_add_images_and_other_resources_to_a_runtime_JAR_file.md "FAQ How do I add images and other resources to a runtime JAR file?")
 

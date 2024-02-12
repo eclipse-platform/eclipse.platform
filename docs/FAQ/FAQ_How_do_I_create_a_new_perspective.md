@@ -12,5 +12,5 @@ See Also:
 
 Perspectives (See **Platform Plug-in Developer's Guide**)
 
-Eclipse online article "[Using Perspectives in the Eclipse UI](https://www.eclipse.org/articles/using-perspectives/PerspectiveArticle.html)".
+Eclipse online article [Using Perspectives in the Eclipse UI](https://www.eclipse.org/articles/using-perspectives/PerspectiveArticle.html).
 

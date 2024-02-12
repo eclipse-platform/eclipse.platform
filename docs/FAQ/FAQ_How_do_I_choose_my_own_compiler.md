@@ -14,12 +14,8 @@ By activating **Window > Preferences > Java > Compiler**, you have full control 
   
 Using the Preference page, you can also select the JDK compliance level of the compiler, the version of generated class files, and whether the compiler should generate debugging symbols.
 
-  
-
-  
-
 See Also:
 ---------
 
-\[\[FAQ\_Why\_can%26%23146%3Bt\_my\_Ant\_build\_find_%3Ctt%3Ejavac%3C%2Ftt%3E%3F\]\]
+[FAQ Why can't my Ant build find javac?](FAQ_Why_can't_my_Ant_build_find_javac.md)
 

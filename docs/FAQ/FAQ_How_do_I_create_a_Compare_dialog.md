@@ -11,24 +11,24 @@ The Eclipse SDK includes actions for comparing and replacing files in the worksp
 
 to supply the content to be compared. Here is an example of a class that implements all these interfaces for string-based content:
 
-   class CompareItem implements IStreamContentAccessor,
-            ITypedElement, IModificationDate {
-      private String contents, name;
-      private long time;
-      CompareItem(String name, String contents, long time) {
-         this.name = name;
-         this.contents = contents;
-         this.time = time;
+      class CompareItem implements IStreamContentAccessor,
+               ITypedElement, IModificationDate {
+         private String contents, name;
+         private long time;
+         CompareItem(String name, String contents, long time) {
+            this.name = name;
+            this.contents = contents;
+            this.time = time;
+         }
+         public InputStream getContents() throws CoreException {
+            return new ByteArrayInputStream(contents.getBytes());
+         }
+         public Image getImage() {return null;}
+         public long getModificationDate() {return time;}
+         public String getName() {return name;}
+         public String getString() {return contents;}
+         public String getType() {return ITypedElement.TEXT_TYPE;}
       }
-      public InputStream getContents() throws CoreException {
-         return new ByteArrayInputStream(contents.getBytes());
-      }
-      public Image getImage() {return null;}
-      public long getModificationDate() {return time;}
-      public String getName() {return name;}
-      public String getString() {return contents;}
-      public String getType() {return ITypedElement.TEXT_TYPE;}
-   }
 
 The most interesting method here is the getType method, which should return the file extension of the input element. The file extension is used to determine the viewer for displaying the contents of the object.
 

@@ -7,7 +7,7 @@ As with most technologies, Eclipse started out with a single newsgroup. Now, all
 
 The most active newsgroup is [news://news.eclipse.org/eclipse.platform](news://news.eclipse.org/eclipse.platform), with around 1,500 postings per month. Before you post a question to any newsgroup, it makes a lot of sense to search the platform newsgroup for an answer. Chances are that the question has been asked before, and the answer can be found there quickly.
 
-The newsgroups are archived at the Eclipse Web site, and the search engine at the Eclipse Web site ([http://eclipse.org/search/search.cgi](http://eclipse.org/search/search.cgi)) can search them quite efficiently.
+The newsgroups are archived at the Eclipse Web site, and the search engine at the Eclipse Web site ([https://eclipse.org/search/search.cgi](https://eclipse.org/search/search.cgi)) can search them quite efficiently.
 
 See Also
 --------

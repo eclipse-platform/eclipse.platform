@@ -5,16 +5,16 @@ FAQ How can I change the name or tooltip of my action?
 
 Actions contributed via XML have statically defined names, images, and tooltips. Often, you want to change these attributes dynamically, based on the current selection or some other state. Owing to the lazy-loading nature of the platform, you can't do this until your action has been run once. A common solution is to specify generic attributes in the XML and then make attributes more dynamic after the action has been run. For example, the action to enable or disable breakpoints is called **Toggle Breakpoint** when the platform is first started. After it has been run once, the action dynamically sets its name to be either **Enable Breakpoint** or **Disable Breakpoint**, depending on whether the selected breakpoint is enabled. Here is an example action that implements this behavior:
 
-   class ToggleAction 
-         implements IWorkbenchWindowActionDelegate {
-      private boolean state = false;
-      public void run(IAction action) {
-         state = !state;
-         String name = state ? "True Action" : "False Action";
-         action.setText(name);
-         action.setToolTipText(name);
+      class ToggleAction 
+            implements IWorkbenchWindowActionDelegate {
+         private boolean state = false;
+         public void run(IAction action) {
+            state = !state;
+            String name = state ? "True Action" : "False Action";
+            action.setText(name);
+            action.setToolTipText(name);
+         }
       }
-   }
 
   
 You can change many more action properties, including the action's image, accelerator key, and enablement. Look at the methods on IAction to see what other properties can be changed.

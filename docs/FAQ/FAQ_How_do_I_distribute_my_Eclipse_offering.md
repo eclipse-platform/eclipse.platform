@@ -8,7 +8,7 @@ That depends. If you just got started and are still testing your plug-ins or if 
 See Also:
 ---------
 
-\[\[FAQ\_How\_do\_I\_create\_an\_update\_site\_%28%3Ctt%3Esite.xml%3C%2Ftt%3E%29%3F\]\]
+[FAQ How do I create an update site?](FAQ_How_do_I_create_an_update_site.md)
 
-[FAQ\_Can\_I\_use\_an\_installation\_program\_to\_distribute\_my\_Eclipse_product?](./FAQ_Can_I_use_an_installation_program_to_distribute_my_Eclipse_product.md "FAQ Can I use an installation program to distribute my Eclipse product?")
+[FAQ Can I use an installation program to distribute my Eclipse product?](./FAQ_Can_I_use_an_installation_program_to_distribute_my_Eclipse_product.md "FAQ Can I use an installation program to distribute my Eclipse product?")
 

@@ -3,7 +3,7 @@
 FAQ How can I publish partial upgrades (patches) to my product?
 ===============================================================
 
-See the Eclipse Web site ([http://eclipse.org](http://eclipse.org)) and click **Projects > The Eclipse Project > Platform > Update > Development Resources** for elaborate documentation on updating Eclipse-based products.
+See the Eclipse Web site ([https://eclipse.org](https://eclipse.org)) and click **Projects > The Eclipse Project > Platform > Update > Development Resources** for elaborate documentation on updating Eclipse-based products.
 
   
 

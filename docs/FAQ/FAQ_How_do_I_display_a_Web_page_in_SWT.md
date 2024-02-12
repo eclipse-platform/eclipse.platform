@@ -12,33 +12,26 @@ For a richer example, look at the org.eclipse.ui.examples.browser project in the
 
 A title listener is added to the browser in order to update the shell title with the name of the Web page being displayed:
 
-   Display display = new Display();
-   final Shell shell = new Shell(display, SWT.SHELL_TRIM);
-   shell.setLayout(new FillLayout());
-   Browser browser = new Browser(shell, SWT.NONE);
-   browser.addTitleListener(new TitleListener() {
-      public void changed(TitleEvent event) {
-         shell.setText(event.title);
-      }
-   });
-   browser.setBounds(0,0,600,400);
-   shell.pack();
-   shell.open();
-   browser.setUrl("http://eclipse.org");
-   while (!shell.isDisposed())
-      if (!display.readAndDispatch())
-         display.sleep();
+      Display display = new Display();
+      final Shell shell = new Shell(display, SWT.SHELL_TRIM);
+      shell.setLayout(new FillLayout());
+      Browser browser = new Browser(shell, SWT.NONE);
+      browser.addTitleListener(new TitleListener() {
+         public void changed(TitleEvent event) {
+            shell.setText(event.title);
+         }
+      });
+      browser.setBounds(0,0,600,400);
+      shell.pack();
+      shell.open();
+      browser.setUrl("https://eclipse.org");
+      while (!shell.isDisposed())
+         if (!display.readAndDispatch())
+            display.sleep();
 
   
 Figure 7.1 shows the resulting browser inside a simple shell. The browser widget is not yet available on all platforms as not all platforms that SWT supports have an appropriate native control that can be exploited. For Eclipse 3.0, the browser will at least be available on Windows, Linux, QNX, and MacOS. For platforms that do not have a browser widget available, the Browser constructor will throw an SWT error, allowing you to catch the condition and fall back to an alternative, such as a user-specified external browser.
 
-  
-
-  
-    <img src=../images/browser_snippet.png>
-
-  
-    **Figure 7.1**   SWT browser widget
 
 See also [How can I invoke the eclipse default web browser in my own plugin?](/How_can_I_invoke_the_eclipse_default_web_browser_in_my_own_plugin%3F "How can I invoke the eclipse default web browser in my own plugin?").
 

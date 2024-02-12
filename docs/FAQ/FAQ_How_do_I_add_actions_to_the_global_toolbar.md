@@ -3,16 +3,14 @@
 FAQ How do I add actions to the toolbar?
 ========================================
 
-(Redirected from [FAQ How do I add actions to the global toolbar?](/index.php?title=FAQ_How_do_I_add_actions_to_the_global_toolbar%3F&redirect=no "FAQ How do I add actions to the global toolbar?"))
-
 Actions are added to the workbench window's toolbar by using the org.eclipse.ui.actionSets extension point. Here is a sample action element that contributes an action to the workbench window toolbar:
 
-   <action
-      class="org.eclipse.faq.examples.actions.ToolBarAction"
-      toolbarPath="Normal/exampleGroup"
-      icon="icons/sample.gif"
-      tooltip="Sample toolbar action">
-   </action>
+      <action
+         class="org.eclipse.faq.examples.actions.ToolBarAction"
+         toolbarPath="Normal/exampleGroup"
+         icon="icons/sample.gif"
+         tooltip="Sample toolbar action">
+      </action>
 
   
 The class attribute is the fully qualified name of the action that will be run when the toolbar button is clicked. This class must implement the interface IWorkbenchWindowActionDelegate. The toolbarPath attribute has two segments-the toolbar ID and the group ID-separated by a slash (/) character. The toolbar ID is used to indicate which toolbar the action belongs to. This value isn't currently used because the platform defines only one toolbar, but the convention is to use the string Normal to represent the default toolbar. The group ID is used to place similar actions together. All actions with the same group ID will be placed in a fixed group in the toolbar. The string in the tooltip attribute is shown when the user hovers over the toolbar button.

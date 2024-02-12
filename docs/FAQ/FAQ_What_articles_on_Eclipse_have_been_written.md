@@ -12,5 +12,5 @@ In addition to the online Eclipse articles, a wealth of Eclipse experience is re
 See Also:
 ---------
 
-*   The Eclipse articles page ([http://eclipse.org/articles](http://eclipse.org/articles))
+*   The Eclipse articles page ([https://eclipse.org/articles](https://eclipse.org/articles))
 

@@ -7,20 +7,20 @@ A common misconception is that a fragment can be used to patch or replace functi
 
 Nonetheless, it is possible to design a plug-in so that it allows a portion of its functionality to be implemented or replaced by a fragment. Let's look at a notable example of how this is applied in the org.eclipse.swt plug-in. The SWT plug-in manifest declares a runtime library by using a special path-substitution variable:
 
-   <library name="$ws$/swt.jar">
+      <library name="$ws$/swt.jar">
 
 When the plug-in manifest is loaded, the platform will substitute the $ws$ variable with a string describing the windowing system of the currently running operating system. Each windowing system has a separate SWT plug-in fragment that will provide this library. For example, when running on windows, $ws$ will resolve to ws/win32. You can make use of this path-substitution facility in your own plug-in code by using the Plugin.find methods. The fragment org.eclipse.swt.win32 supplies the swt.jar library at the path org.eclipse.swt.win32/ws/win32/swt.jar. Thus, in this case the fragment will supply a library that was specified by its host plug-in.
 
 The same principle can be used to allow a fragment to provide a patch to a host plug-in. The host plug-in can specify both its own library and a patch library in its plug-in manifest:
 
-   <runtime>
-      <library name="patch.jar">
-         <export name="*"/>
-      </library>
-      <library name="main.jar">
-         <export name="*"/>
-      </library>
-   </runtime>
+      <runtime>
+         <library name="patch.jar">
+            <export name="*"/>
+         </library>
+         <library name="main.jar">
+            <export name="*"/>
+         </library>
+      </runtime>
 
   
 The host plug-in puts all its code in main.jar and does not specify a patch.jar at all. When no patch is needed, the patch.jar library is simply missing from the classpath. This allows a fragment to be added later that contributes the patch.jar library. Because the host plug-in has defined patch.jar at the front of its runtime classpath, classes in the patch library will be found before classes in the original library.
@@ -32,5 +32,4 @@ See Also:
 
 [FAQ\_What\_is\_the\_classpath\_of\_a_plug-in?](./FAQ_What_is_the_classpath_of_a_plug-in.md "FAQ What is the classpath of a plug-in?")
 
-For a step by step walk through to use fragments to patch hosts bundles in Eclipse 3.2 and up using OSGi see: [Steps\_to\_use\_Fragments\_to\_patch\_a_plug-in](/Steps_to_use_Fragments_to_patch_a_plug-in "Steps to use Fragments to patch a plug-in")
 

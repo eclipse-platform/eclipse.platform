@@ -18,5 +18,7 @@ Then, rerun the Ant build script to generate a runtime JAR including the resourc
 See Also:
 ---------
 
-\[\[FAQ\_Can\_I\_add\_icons\_declared\_by\_my\_%3Ctt%3Eplugin.xml%3C%2Ftt%3E\_in\_the\_runtime\_JAR%3F\]\]
+[FAQ Can I add icons declared by my plugin.xml in the runtime JAR?](./FAQ_Can_I_add_icons_declared_by_my_plugin.xml_in_the_runtime_JAR.md)
+
+
 

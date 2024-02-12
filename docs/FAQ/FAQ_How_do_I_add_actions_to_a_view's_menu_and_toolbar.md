@@ -19,13 +19,13 @@ The drop-down menu on the right-hand side, a small downward-pointing triangle, i
 
 Actions are added to the menu and toolbar by using the IActionBars interface. This interface is used to access the standard JFace menu and toolbar manager objects used for creating menus throughout Eclipse. The following code, usually invoked from the view's createPartControl method, adds a single action to the view's menu and toolbar:
 
-   Action action = ...;
-   IActionBars actionBars = getViewSite().getActionBars();
-   IMenuManager dropDownMenu = actionBars.getMenuManager();
-   IToolBarManager toolBar = actionBars.getToolBarManager();
-   dropDownMenu.add(action);
-   toolBar.add(action);
-   actionBars.updateActionBars();
+      Action action = ...;
+      IActionBars actionBars = getViewSite().getActionBars();
+      IMenuManager dropDownMenu = actionBars.getMenuManager();
+      IToolBarManager toolBar = actionBars.getToolBarManager();
+      dropDownMenu.add(action);
+      toolBar.add(action);
+      actionBars.updateActionBars();
 
   
 

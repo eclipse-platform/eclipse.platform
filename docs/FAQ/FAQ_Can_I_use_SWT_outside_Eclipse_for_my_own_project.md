@@ -7,7 +7,7 @@ This can be interpreted as either a legal question or a technical question. You 
 
 Each platform you want your project to run on will need its own native libraries. Luckily, this is easier than it used to be because the download section of eclipse.org now includes SWT drops. Download the appropriate SWT drop for the platform you are interested in running on, and set up the VM's classpath and library path accordingly. Here is a command line that was used to launch the BrowserSnippet stand-alone program:
 
-   java -cp swt.jar;. -Djava.library.path=. BrowserSnippet
+      java -cp swt.jar;. -Djava.library.path=. BrowserSnippet
 
 This command line assumes that java is on your execution path and that both swt.jar and the SWT dynamic link library are located in the current working directory.
 
