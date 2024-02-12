@@ -1,5 +1,3 @@
-
-
 FAQ Where do I find suitable Eclipse logos and wordmarks?
 =========================================================
 
@@ -8,5 +6,5 @@ The Eclipse Web site contains a list of suitable logos and wordmarks to download
 See Also:
 ---------
 
-Eclipse artwork ([https://www.eclipse.org/artwork/main.html](https://www.eclipse.org/artwork/main.html))
+[Eclipse artwork](https://www.eclipse.org/artwork/main.html)
 

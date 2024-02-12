@@ -1,12 +1,10 @@
-
-
 FAQ How do I write an editor for my own language?
 =================================================
 
 Contributing to Generic and Extensible editor
 ---------------------------------------------
 
-Since Eclipse 4.7.M3, you can consider simply adding extensions to the Generic Editor: [https://www.eclipse.org/eclipse/news/4.7/M3/#generic-editor](https://www.eclipse.org/eclipse/news/4.7/M3/#generic-editor) . This will allow you to write support for textual edition of a language with less boiler plate.
+Since Eclipse 4.7.M3, you can consider simply adding extensions to the [Generic Editor](https://www.eclipse.org/eclipse/news/4.7/M3/#generic-editor) . This will allow you to write support for textual edition of a language with less boiler plate.
 
 Implementing your own editor
 ----------------------------

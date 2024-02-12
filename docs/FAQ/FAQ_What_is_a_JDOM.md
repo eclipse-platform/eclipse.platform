@@ -1,5 +1,3 @@
-
-
 FAQ What is a JDOM?
 ===================
 
@@ -10,7 +8,7 @@ FAQ What is a JDOM?
   
 A JDOM is a Java document object model. DOM is a commonly used term for an object-oriented representation of the structure of a file. A Google definition search turned up this Web definition: _Document Object Model: DOM is a platform- and language-neutral interface, that provides a standard model of how the objects in an XML object are put together, and a standard interface for accessing and manipulating these objects and their interrelationships._
 
--[http://www.google.com/search?q=define:Document+Object+Model](http://www.google.com/search?q=define:Document+Object+Model)
+-[Google search for define:Document Object Model](http://www.google.com/search?q=define:Document+Object+Model)
 
 In the context of JDT, the JDOM represents a hierarchical, in-memory representation of a single Java file (compilation unit). The DOM can be traversed to view the elements that make up that compilation unit, including types, methods, package declarations, import statements, and so on. The main purpose of the JDOM API is manipulating Java code, allowing you to add and delete methods and fields, for example. All this manipulation occurs on the in-memory object model, so it does not affect the Java file on disk until the DOM is saved. However, the DOM allows you to access only the _principal structure_ of the compilation unit, so you cannot easily modify document elements, such as javadoc comments and method bodies.
 

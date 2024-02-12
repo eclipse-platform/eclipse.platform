@@ -1,5 +1,3 @@
-
-
 FAQ How do I upgrade Eclipse IDE?
 =================================
 
@@ -28,7 +26,7 @@ To upgrade Eclipse IDE to the next major release
 1.  You first need to [add the new release's repository](https://help.eclipse.org/latest/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-128.htm) as follows:
     1.  Window > Preferences > Install/Update > Available Software Sites
     2.  Click 'Add'
-    3.  Enter the URL of the new repository (for example, [https://download.eclipse.org/releases/2021-12/](https://download.eclipse.org/releases/2021-12/) ).
+    3.  Enter the URL of the new repository for example, https://download.eclipse.org/releases/2021-12/
     4.  Click 'Ok'
 2.  [Help > Check for Updates](https://help.eclipse.org/latest/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-120.htm)
 3.  If updates are found, proceed through the install wizard and restart the IDE when prompted. Otherwise, read carefully the error message to find out which component is conflicting and establish your resolution strategy.
@@ -40,7 +38,7 @@ Always enable major upgrades
 To always enable major upgrades of your IDE once and for all:
 
 1.  Open the _Available Software Sites_ preference page
-2.  Enable the _Latest Eclipse release [https://download.eclipse.org/releases/latest](https://download.eclipse.org/releases/latest)_ repository by ticking the checkbox.
+2.  Enable the [Latest Eclipse release](https://download.eclipse.org/releases/latest) repository by ticking the checkbox.
 3.  Apply and Close
 4.  Check for updates
 
@@ -52,15 +50,15 @@ Beta-testing milestones and release candidates
 The same process as above can be used to enable update to milestones or release candidates of the Eclipse IDE (which have already been partially tested before being published, but might still contain unknown issues for you to [report to Bugzilla](https://bugs.eclipse.org/bugs/enter_bug.cgi)). The only difference is that you should add the 2 following URLs as [Available sites](https://help.eclipse.org/2018-12/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-128.htm) before running [Check for updates](https://help.eclipse.org/2018-12/index.jsp?topic=%2Forg.eclipse.platform.doc.user%2Ftasks%2Ftasks-120.htm) in order to let Eclipse IDE locate the milestones/release-candidates:
 
 *   Assuming next release name is _2021-12_
-    *   [https://download.eclipse.org/staging/2021-12/](https://download.eclipse.org/staging/2021-12/)
-    *   [https://download.eclipse.org/releases/2021-12/](https://download.eclipse.org/releases/2021-12/) (this is the same URL that will be used for release)
+    *   https://download.eclipse.org/staging/2021-12/
+    *   https://download.eclipse.org/releases/2021-12/ (this is the same URL that will be used for release)
 
 Fresh install
 -------------
 
 If you prefer not performing an update (for example because some 3rd-party content is not ready for the current release of Eclipse IDE and the update reports conflicts), you can still download a fresh install of the Eclipse IDE and install it in another location on your filesystem, and use it together with the previous version.
 
-To do so, download a new build from the Eclipse download website ([https://www.eclipse.org/downloads/eclipse-packages/](https://www.eclipse.org/downloads/eclipse-packages/)) and run the installer or unzip the archive in a new directory. We strongly recommend against installing/unzipping over your existing version of Eclipse IDE as it may corrupt your installation.
+To do so, download a new build from the [Eclipse download website](https://www.eclipse.org/downloads/eclipse-packages/) and run the installer or unzip the archive in a new directory. We strongly recommend against installing/unzipping over your existing version of Eclipse IDE as it may corrupt your installation.
 
 When you start a new version of Eclipse IDE, you can use the same existing workspace folder that you were using with the older version. The workspace will be migrated to a newer version and the Eclipse IDE will reuse all configurations. The workspace is forward compatible, but might not be backward compatible.
 

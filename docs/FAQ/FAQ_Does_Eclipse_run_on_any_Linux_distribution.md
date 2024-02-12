@@ -1,5 +1,3 @@
-
-
 FAQ Does Eclipse run on any Linux distribution?
 ===============================================
 
@@ -13,7 +11,7 @@ The latest releases should normally work fine on any recent Linux distribution. 
 
 Portability of Eclipse is defined mainly by the underlying Java runtime (Eclipse 4.6 and later needs a Java 8 runtime) and by what platform SWT runs on, as all graphical UI in Eclipse are based on SWT.
 
-For historical interest, earlier versions of Eclipse have also been compiled with gcj ([http://www.klomp.org/mark/classpath/eclipse-gnome-gij.png](http://www.klomp.org/mark/classpath/eclipse-gnome-gij.png)) and even made to run on .Net, using IKVM on the CLR or Mono through the amazing work of Jeroen Frijters.
+For historical interest, earlier versions of Eclipse have also been compiled with gcj [gcj](http://www.klomp.org/mark/classpath/eclipse-gnome-gij.png) and even made to run on .Net, using IKVM on the CLR or Mono through the amazing work of Jeroen Frijters.
 
 See Also:
 ---------

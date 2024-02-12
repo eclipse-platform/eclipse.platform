@@ -1,5 +1,3 @@
-
-
 FAQ Where can I find more information on SWT?
 =============================================
 
@@ -10,7 +8,7 @@ Contents
 *   [2 Web sites](#Web-sites)
 *   [3 Articles](#Articles)
 *   [4 Discussion forums](#Discussion-forums)
-*   [5 See Also:](#See-Also:)
+*   [5 See Also](#See-Also)
 
 Books
 -----
@@ -30,8 +28,6 @@ Web sites
 ---------
 
 The information hub for SWT is the [SWT development team home page](https://eclipse.org/swt). The main page has a basic SWT overview, and the Development Resources page has loads more information, including a comprehensive library of stand-alone SWT programs--called snippets--illustrating many of the important concepts in SWT. This page also hosts the official SWT FAQ maintained by the SWT development team, as well as development plans, platform porting status, and much more.
-
-Visit [http://www.cs.umanitoba.ca/~eclipse](http://www.cs.umanitoba.ca/~eclipse), hosted by the computer science department of the University of Manitoba, for extensive tutorials on using SWT, from a simple introduction to advanced applications. This site has a lot of high-quality information that can help you write your first stand-alone SWT application.
 
 The [home page for the SWT and JFace portion of the Eclipse wiki](http://wiki.eclipse.org/SWT) (www.eclipse-wiki.info) has links to other resource pages, but some information is here, along with a collection of FAQs.
 
@@ -53,8 +49,8 @@ The platform-swt-dev mailing list is for discussion among members of the SWT dev
 
 Some other Java forums have been known to host discussion threads on SWT. Unfortunately, these forums can sometimes deteriorate into flame wars on Swing versus SWT. One notable example is [javalobby](http://www.javalobby.org), which has had several SWT discussion threads.
 
-See Also:
----------
+See Also
+--------
 
 *   [FAQ What Eclipse newsgroups are available?](./FAQ_What_Eclipse_newsgroups_are_available.md "FAQ What Eclipse newsgroups are available?")
 *   [FAQ What Eclipse mailing lists are available?](./FAQ_What_Eclipse_mailing_lists_are_available.md "FAQ What Eclipse mailing lists are available?")

@@ -1,5 +1,3 @@
-
-
 FAQ What is hot code replace?
 =============================
 
@@ -12,5 +10,5 @@ If HCR does not work for you even in a simple Java application and you have conf
 See Also:
 ---------
 
-The WSDD Web site ([http://ibm.com/software/wireless/wsdd/](http://ibm.com/software/wireless/wsdd/))
+The  [WSDD Web site] (http://ibm.com/software/wireless/wsdd/)
 

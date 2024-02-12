@@ -1,5 +1,3 @@
-
-
 FAQ Can I get my documentation in PDF form, please?
 ===================================================
 
@@ -12,6 +10,6 @@ Converting HTML to PDF form is somewhat labor-intensive. Although tools are avai
 See Also:
 ---------
 
-*   HTMLDOC by Easy Software Products ([http://www.easysw.com/htmldoc](http://www.easysw.com/htmldoc))
-*   eclipse.org documentation page ([https://www.eclipse.org/documentation](https://www.eclipse.org/documentation))
+*   [HTMLDOC](http://www.easysw.com/htmldoc) by Easy Software Products 
+*   eclipse.org [documentation page](https://www.eclipse.org/documentation)
 
