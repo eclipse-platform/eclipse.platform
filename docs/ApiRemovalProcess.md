@@ -1,6 +1,6 @@
 # API removal process
 
-See [Eclipse Project Deprecation Policy](https://github.com/vogellacompany/eclipse.platform/blob/master/docs/Eclipse_API_Central_Deprecation_Policy.md) for more information.
+See [Eclipse Project Deprecation Policy](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Eclipse_API_Central_Deprecation_Policy.md) for more information.
 
 For new API planned removals use:
 
