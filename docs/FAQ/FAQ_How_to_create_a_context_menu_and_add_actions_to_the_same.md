@@ -1,7 +1,7 @@
 
 
-FAQ How to create a context menu & add actions to the same?
-===========================================================
+FAQ How to create a context menu and add actions to the same?
+=============================================================
 
 **To create a Context Menu for your View or Editor do the following :**
 

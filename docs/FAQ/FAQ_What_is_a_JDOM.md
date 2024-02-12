@@ -1,7 +1,7 @@
 FAQ What is a JDOM?
 ===================
 
-![Warning2.png](https://github.com/eclipse-platform/eclipse.platform/tree/master/docs/FAQimages/Warning2.png)
+![Warning2.png](https://github.com/eclipse-platform/eclipse.platform/tree/master/docs/FAQ/images/Warning2.png)
 
 **JDT's JDOM has been superseded by the [DOM/AST](https://help.eclipse.org/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/dom/AST.html), and should no longer be used.**  
 

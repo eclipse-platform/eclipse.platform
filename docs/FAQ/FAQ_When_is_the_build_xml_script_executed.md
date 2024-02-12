@@ -1,13 +1,7 @@
-
-
 FAQ When is the build.xml script executed?
 ==========================================
 
 The build script for a plug-in is executed when you manually run the context menu command **Run Ant...** on a build.xml file. The build script is also executed when you export your plug-in project or when you click **Build All...** in the Update Site Editor.
-
-  
-
-  
 
 See Also:
 ---------
