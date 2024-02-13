@@ -43,14 +43,13 @@ public class LogUtil {
 		final var pluginName = stackWalker.getCallerClass();
 		final ServiceCaller<ILog> log = new ServiceCaller<>(pluginName, ILog.class);
 		IStatus status = new Status(IStatus.WARNING, pluginName.getPackageName(), message);
-		log.call(logger -> logger.log(status));
+		log.call(logger -> logger.warn(message));
 	}
 	public static void logDebug(String message) {
 		StackWalker stackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 		final var pluginName = stackWalker.getCallerClass();
 		final ServiceCaller<DebugPlugin> log = new ServiceCaller<>(pluginName, DebugPlugin.class);
 		IStatus status = new Status(IStatus.WARNING, pluginName.getPackageName(), message);
-
-		log.call(logger -> DebugPlugin.log(status));
+		log.call(logger -> DebugPlugin.logDebugMessage(message));
 	}
 }
