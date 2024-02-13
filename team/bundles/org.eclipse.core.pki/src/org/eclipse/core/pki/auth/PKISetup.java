@@ -13,10 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.pki.auth;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.ServiceCaller;
 
 import java.security.KeyManagementException;
@@ -94,9 +91,6 @@ public class PKISetup implements BundleActivator, IStartup {
 	public static void setInstance(PKISetup instance) {
 		PKISetup.instance = instance;
 	}
-	//public static void log(IStatus status) {
-	//	ILog.of(Platform.getBundle(ID)).log(status);
-	//}
 
 	public void log(String message) {
 		logger.call(logger -> logger.info(message));
