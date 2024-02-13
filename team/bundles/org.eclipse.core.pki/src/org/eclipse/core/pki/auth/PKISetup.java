@@ -162,9 +162,7 @@ public class PKISetup implements BundleActivator, IStartup {
 						System.clearProperty("javax.net.ssl.keyStoreType"); //$NON-NLS-1$
 						System.clearProperty("javax.net.ssl.keyStore"); //$NON-NLS-1$
 						System.clearProperty("javax.net.ssl.keyStoreProvider"); //$NON-NLS-1$
-						System.clearProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
-						
-						
+						System.clearProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$	
 					} else {
 						LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
 						keyStore = keystoreContainer.get();

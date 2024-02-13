@@ -46,7 +46,7 @@ public enum AuthenticationBase implements AuthenticationService {
 	// private static final String javaVersion = System.getProperty("java.version");
 	protected boolean is9;
 	protected String pkiProvider = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
-	protected Provider provider = null;
+	protected String providerName = null;
 	protected String cfgDirectory = null;
 	protected String fingerprint;
 	KeyStore keyStore = null;
@@ -144,7 +144,8 @@ public enum AuthenticationBase implements AuthenticationService {
 			}
 
 			try {
-				provider = prototype.configure(getCfgDirectory());
+				Provider provider = prototype.configure(getCfgDirectory());
+				providerName = provider.getName();
 				Security.addProvider(provider);
 				keyStore = KeyStore.getInstance("pkcs11", provider.getName() ); //$NON-NLS-1$
 				setPkiProvider(provider.getName());
@@ -171,7 +172,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			}
 			Optional<String> errorContainer = Optional.ofNullable(errorMessage);
 			if ( !(errorContainer.isEmpty())) {
-				Security.removeProvider(provider.getName());
+				Security.removeProvider(providerName);
 				LogUtil.logError(errorMessage, null);
 			}
 		}
