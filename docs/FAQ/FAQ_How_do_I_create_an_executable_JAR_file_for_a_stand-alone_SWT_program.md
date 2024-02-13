@@ -11,10 +11,10 @@ The detailed instructions for creating an executable JAR file for a stand-alone 
 2.  Find the correct SWT JAR file for the desired target platform. You can download the desired ZIP file from [the SWT website](https://www.eclipse.org/swt/). For example, for Eclipse 3.3 and a target platform of Linux, download the file swt-3.3.1.1-gtk-linux-x86.zip. Expand this ZIP file and copy the swt.jar file to the runtime folder. Remember that this swt.jar file is specific to one platform, in this case Linux.
 3.  Create a manifest file for your application using the Eclipse text editor (e.g., myapplication-manifest.txt). The text of the manifest should be as follows:
     
-        > Manifest-Version: 1.0
-        > Class-Path: swt.jar 
-        > Main-Class: mypackage.MyClassWithMainMethod
-        > (blank line at end of file)
+                Manifest-Version: 1.0
+                Class-Path: swt.jar 
+                Main-Class: mypackage.MyClassWithMainMethod
+                (blank line at end of file)
     
 4.  Make sure the manifest file ends with a blank line. Put the name of your package and class that contains the main() method for the Main-Class.
 5.  In Eclipse, select File/Export/Java/Jar file and press Next.
