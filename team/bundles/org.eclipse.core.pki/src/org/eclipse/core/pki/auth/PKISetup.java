@@ -34,13 +34,16 @@ import org.eclipse.core.pki.util.ConfigureTrust;
 import org.eclipse.core.pki.util.KeyStoreFormat;
 import org.eclipse.core.pki.util.KeyStoreManager;
 import org.eclipse.core.pki.util.LogUtil;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
-
-
+import org.eclipse.core.runtime.IProgressMonitor;
 //import org.eclipse.jface.preference.IPreferenceStore;
 //import org.eclipse.osgi.framework.eventmgr.EventManager;
 //import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
 import org.eclipse.ui.IStartup;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -50,6 +53,7 @@ public class PKISetup implements BundleActivator, IStartup {
 	private static PKISetup instance;
 	static boolean isPkcs11Installed = false;
 	static boolean isKeyStoreLoaded = false;
+	private BundleContext context;
 	private static final ServiceCaller<ILog> logger = new ServiceCaller(PKISetup.class, ILog.class);
 	// ListenerQueue<PKISetup, Object, EventManager> queue = null;
 	protected static KeyStore keyStore = null;
@@ -65,8 +69,9 @@ public class PKISetup implements BundleActivator, IStartup {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		// System.out.println("PKISetup PKISetup ------------------- START");
-		// //$NON-NLS-1$
+		System.out.println("PKISetup PKISetup ------------------- START");
+		this.context=context;
+		
 
 		Startup();
 	}
@@ -153,6 +158,13 @@ public class PKISetup implements BundleActivator, IStartup {
 					keystoreContainer = Optional.ofNullable(AuthenticationBase.INSTANCE.initialize(pkcs11Pin.toCharArray()));//$NON-NLS-1$
 					if (keystoreContainer.isEmpty()) {
 						LogUtil.logError("PKISetup - Failed to Load a Keystore.", null); //$NON-NLS-1$
+						PKIState.CONTROL.setPKCS11on(false);
+						System.clearProperty("javax.net.ssl.keyStoreType"); //$NON-NLS-1$
+						System.clearProperty("javax.net.ssl.keyStore"); //$NON-NLS-1$
+						System.clearProperty("javax.net.ssl.keyStoreProvider"); //$NON-NLS-1$
+						System.clearProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
+						
+						
 					} else {
 						LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
 						keyStore = keystoreContainer.get();

@@ -46,6 +46,7 @@ public enum AuthenticationBase implements AuthenticationService {
 	// private static final String javaVersion = System.getProperty("java.version");
 	protected boolean is9;
 	protected String pkiProvider = "SunPKCS11"; // or could be FIPS provider :SunPKCS11-FIPS //$NON-NLS-1$
+	protected Provider provider = null;
 	protected String cfgDirectory = null;
 	protected String fingerprint;
 	KeyStore keyStore = null;
@@ -111,8 +112,9 @@ public enum AuthenticationBase implements AuthenticationService {
 		Optional<String>providerContainer = null;
 		Provider prototype = null;
 		String securityProvider = null;
-		String cfgDirectory = "TBD"; //$NON-NLS-1$
+		//String cfgDirectory = "TBD"; //$NON-NLS-1$
 		KeyStore keyStore = null;
+		String errorMessage=null;
 		is9 = true;
 
 		// System.out.println("In configure CFG STORED FILE LOC:" +
@@ -142,26 +144,35 @@ public enum AuthenticationBase implements AuthenticationService {
 			}
 
 			try {
-				Provider provider = prototype.configure(getCfgDirectory());
-
+				provider = prototype.configure(getCfgDirectory());
 				Security.addProvider(provider);
 				keyStore = KeyStore.getInstance("pkcs11", provider.getName() ); //$NON-NLS-1$
 				setPkiProvider(provider.getName());
 			} catch (KeyStoreException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				errorMessage=e.getMessage();
 			} catch (InvalidParameterException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				errorMessage=e.getMessage();
 			} catch (UnsupportedOperationException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				errorMessage=e.getMessage();
 			} catch (NullPointerException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				errorMessage=e.getMessage();
 			} catch (NoSuchProviderException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				errorMessage=e.getMessage();
+			}
+			Optional<String> errorContainer = Optional.ofNullable(errorMessage);
+			if ( !(errorContainer.isEmpty())) {
+				Security.removeProvider(provider.getName());
+				LogUtil.logError(errorMessage, null);
 			}
 		}
 
