@@ -261,10 +261,10 @@ public class CertificateSelectionPage extends WizardPage  {
 	                        }
 	                	} else {
 	                		//System.out.println("CertificateSelectionPage --  pkcs11 is NOT enabled");
-	                		AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":CertificateSelectionPage","PKCS11 CHECK"));
+	                		//AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":CertificateSelectionPage","PKCS11 CHECK"));
 	                		try {
 								if ( VendorImplementation.getInstance().isInstalled() ) { 
-									AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":CertificateSelectionPage","PKCS11 IS ALIVE"));
+								//	AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":CertificateSelectionPage","PKCS11 IS ALIVE"));
 								} else {
 									// Disable the PKCS11 button, becuase its not configured on this machine.
 									event = new Event();
@@ -1108,7 +1108,7 @@ public class CertificateSelectionPage extends WizardPage  {
 				X509Certificate x509 = (X509Certificate) VendorImplementation.getInstance().getKeyStore().getCertificate(selectedAlias);
 				if ( x509 != null) {
 					//System.out.println("CertificateSelectionPage performFinish() CERTIFICATE ALIAS:"+ x509.getSubjectDN());
-					fingerprint=FingerprintX509.INSTANCE.getFingerPrint(x509, "MD5");
+					fingerprint=FingerprintX509.INSTANCE.getFingerPrint(x509, "SHA-256");
 					VendorImplementation.getInstance().setSelectedX509Fingerprint(fingerprint);
 				} 
 			}
@@ -1230,7 +1230,7 @@ public class CertificateSelectionPage extends WizardPage  {
     	try {
     		System.out.println("CertificateSelectionPage --  --selectFromPkcs11Store");
         	if ( VendorImplementation.getInstance().isInstalled()) {
-        		
+        		System.out.println("CertificateSelectionPage --  --selectFromPkcs11Store installed");
         		list = new ArrayList<String>(VendorImplementation.getInstance().getList());
         		Iterator<String>it = list.iterator();
         		int i=0;
@@ -1244,6 +1244,7 @@ public class CertificateSelectionPage extends WizardPage  {
     					i++;
     				}
     			}
+        		System.out.println("CertificateSelectionPage --  --selectFromPkcs11Store installed DONE");
         	} else {
         		//  SET SELECTION TO PKCS12 here, because there is no PKCS11 installed
         		System.out.println("CertificateSelectionPage ----NOT able to load a PROVIDER");

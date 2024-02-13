@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.pki.auth;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.ServiceCaller;
+
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +38,8 @@ import org.eclipse.core.pki.util.KeyStoreFormat;
 import org.eclipse.core.pki.util.KeyStoreManager;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.ServiceCaller;
+
+
 //import org.eclipse.jface.preference.IPreferenceStore;
 //import org.eclipse.osgi.framework.eventmgr.EventManager;
 //import org.eclipse.osgi.framework.eventmgr.ListenerQueue;
@@ -87,9 +94,11 @@ public class PKISetup implements BundleActivator, IStartup {
 	public static void setInstance(PKISetup instance) {
 		PKISetup.instance = instance;
 	}
+	//public static void log(IStatus status) {
+	//	ILog.of(Platform.getBundle(ID)).log(status);
+	//}
 
 	public void log(String message) {
-
 		logger.call(logger -> logger.info(message));
 	}
 
