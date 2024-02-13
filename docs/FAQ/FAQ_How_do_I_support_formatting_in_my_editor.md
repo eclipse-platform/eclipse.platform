@@ -10,7 +10,7 @@ The following snippet from the Java source configuration installs a master strat
       MultiPassContentFormatter formatter= 
          new MultiPassContentFormatter(
          getConfiguredDocumentPartitioning(viewer), 
-         IDocument.DEFAULT\_CONTENT\_TYPE);
+         IDocument.DEFAULT_CONTENT_TYPE);
       formatter.setMasterStrategy(
          new JavaFormattingStrategy());
       formatter.setSlaveStrategy(
