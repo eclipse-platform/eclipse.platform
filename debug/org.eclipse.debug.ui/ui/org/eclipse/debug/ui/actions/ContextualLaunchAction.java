@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.expressions.IEvaluationContext;
@@ -51,8 +50,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuAdapter;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IEditorPart;
@@ -208,126 +205,92 @@ public abstract class ContextualLaunchAction implements IObjectActionDelegate, I
 		}
 		List<Object> selection = ss.toList();
 		Object o = ss.getFirstElement();
-		final IEditorPart editor;
+		IEditorPart editor = null;
 		if(o instanceof IEditorPart editorPart) {
 			editor = editorPart;
 			selection.set(0, editorPart.getEditorInput());
-		} else {
-			editor = null;
 		}
-
 		IEvaluationContext context = DebugUIPlugin.createEvaluationContext(selection);
 		context.setAllowPluginActivation(true);
 		context.addVariable("selection", selection); //$NON-NLS-1$
-
-		MenuItem loadingItem = new MenuItem(menu, SWT.NONE);
-		loadingItem.setText(DebugUIMessages.ContextualLaunchAction_0);
-		loadingItem.setEnabled(false);
-
-		final int finalAcc = accelerator;
-		CompletableFuture.supplyAsync(() -> filterShortcuts(context))// filtering can be a long-running operation
-				.thenAccept(filteredShortcuts -> {
-
-					// Run this in the UI thread so the menu can be populated
-					Display.getDefault().syncExec(() -> {
-
-						int internalAccelerator = finalAcc;
-						// replace "Loading..." with actual stuff
-						loadingItem.dispose();
-
-						// we need a separator iff the shared config entry has been added and there are
-						// following shortcuts
-						if (menu.getItemCount() > 0 && filteredShortcuts.size() > 0) {
-							new MenuItem(menu, SWT.SEPARATOR);
-						}
-
-						List<String> categories = new ArrayList<>();
-						Map<LaunchShortcutExtension, ILaunchConfiguration[]> launchConfigurations = new LinkedHashMap<>();
-						for (LaunchShortcutExtension ext : filteredShortcuts) {
-							for (String mode : ext.getModes()) {
-								if (mode.equals(fMode)) {
-									String category = ext.getCategory();
-									// NOTE: category can be null
-									if (category != null && !categories.contains(category)) {
-										categories.add(category);
-									}
-									populateMenuItem(mode, ext, menu, null, internalAccelerator++, null);
-									ILaunchConfiguration[] configurations = editor != null
-											? ext.getLaunchConfigurations(editor)
-											: ext.getLaunchConfigurations(ss);
-									if (configurations != null) {
-										launchConfigurations.put(ext, configurations);
-									}
-								}
-							}
-						}
-
-						// add in the open ... dialog shortcut(s)
-						if (categories.isEmpty()) {
-							if (internalAccelerator > 1) {
-								new MenuItem(menu, SWT.SEPARATOR);
-							}
-							IAction action = new OpenLaunchDialogAction(fGroup.getIdentifier());
-							ActionContributionItem item = new ActionContributionItem(action);
-							item.fill(menu, -1);
-						} else {
-							boolean addedSep = false;
-							for (String category : categories) {
-								ILaunchGroup group = fGroup;
-								if (category != null) {
-									group = fGroupsByCategory.get(category);
-								}
-								if (group != null) {
-									if (internalAccelerator > 1 && !addedSep) {
-										new MenuItem(menu, SWT.SEPARATOR);
-										addedSep = true;
-									}
-									IAction action = new OpenLaunchDialogAction(group.getIdentifier());
-									ActionContributionItem item= new ActionContributionItem(action);
-									item.fill(menu, -1);
-								}
-							}
-						}
-
-						// now add collected launches
-						Set<ILaunchConfiguration> added = new HashSet<>();
-						for (Entry<LaunchShortcutExtension, ILaunchConfiguration[]> entry : launchConfigurations.entrySet()) {
-							for (ILaunchConfiguration configuration : entry.getValue()) {
-								if (added.add(configuration)) {
-									populateMenuItem(fMode, entry.getKey(), menu, configuration, internalAccelerator++,
-											null);
-								}
-							}
-						}
-
-						// update UI
-						Event event = new Event();
-						event.data = menu;
-						menu.notifyListeners(SWT.Show, event);
-
-						fFillMenu = false;
-					});
-		});
-	}
-
-	private List<LaunchShortcutExtension> filterShortcuts(IEvaluationContext context) {
 		List<LaunchShortcutExtension> allShortCuts = getLaunchConfigurationManager().getLaunchShortcuts();
 		List<LaunchShortcutExtension> filteredShortCuts = new ArrayList<>();
-		Iterator<LaunchShortcutExtension> allShortcutsIter = allShortCuts.iterator();
-		while (allShortcutsIter.hasNext()) {
-			LaunchShortcutExtension shortcut = allShortcutsIter.next();
+		Iterator<LaunchShortcutExtension> iter = allShortCuts.iterator();
+		while (iter.hasNext()) {
+			LaunchShortcutExtension ext = iter.next();
 			try {
-				if (!WorkbenchActivityHelper.filterItem(shortcut) && isApplicable(shortcut, context)) {
-					filteredShortCuts.add(shortcut);
+				if (!WorkbenchActivityHelper.filterItem(ext) && isApplicable(ext, context)) {
+					filteredShortCuts.add(ext);
 				}
-			} catch (CoreException e) {
-				IStatus status = new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), "Launch shortcut '" //$NON-NLS-1$
-						+ shortcut.getId() + "' enablement expression caused exception. Shortcut was removed.", e); //$NON-NLS-1$
+			}
+			catch (CoreException e) {
+				IStatus status = new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), "Launch shortcut '" + ext.getId() + "' enablement expression caused exception. Shortcut was removed.", e); //$NON-NLS-1$ //$NON-NLS-2$
 				DebugUIPlugin.log(status);
-				allShortcutsIter.remove();
+				iter.remove();
 			}
 		}
-		return filteredShortCuts;
+
+	//we need a separator iff the shared config entry has been added and there are following shortcuts
+		if(menu.getItemCount() > 0 && filteredShortCuts.size() > 0) {
+			 new MenuItem(menu, SWT.SEPARATOR);
+		}
+		List<String> categories = new ArrayList<>();
+		Map<LaunchShortcutExtension, ILaunchConfiguration[]> launchConfigurations = new LinkedHashMap<>();
+		for(LaunchShortcutExtension ext : filteredShortCuts) {
+			for(String mode : ext.getModes()) {
+				if (mode.equals(fMode)) {
+					String category = ext.getCategory();
+					// NOTE: category can be null
+					if (category != null && !categories.contains(category)) {
+						categories.add(category);
+					}
+					populateMenuItem(mode, ext, menu, null, accelerator++, null);
+					ILaunchConfiguration[] configurations = editor != null ?
+						ext.getLaunchConfigurations(editor) :
+						ext.getLaunchConfigurations(ss);
+					if (configurations != null) {
+						launchConfigurations.put(ext, configurations);
+					}
+				}
+			}
+		}
+
+	// add in the open ... dialog shortcut(s)
+		if (categories.isEmpty()) {
+			if (accelerator > 1) {
+				new MenuItem(menu, SWT.SEPARATOR);
+			}
+			IAction action = new OpenLaunchDialogAction(fGroup.getIdentifier());
+			ActionContributionItem item = new ActionContributionItem(action);
+			item.fill(menu, -1);
+		} else {
+			boolean addedSep = false;
+			for (String category : categories) {
+				ILaunchGroup group = fGroup;
+				if (category != null) {
+					group = fGroupsByCategory.get(category);
+				}
+				if (group != null) {
+					if (accelerator > 1 && !addedSep) {
+						new MenuItem(menu, SWT.SEPARATOR);
+						addedSep = true;
+					}
+					IAction action = new OpenLaunchDialogAction(group.getIdentifier());
+					ActionContributionItem item= new ActionContributionItem(action);
+					item.fill(menu, -1);
+				}
+			}
+		}
+		// now add collected launches
+		Set<ILaunchConfiguration> added = new HashSet<>();
+		for (Entry<LaunchShortcutExtension, ILaunchConfiguration[]> entry : launchConfigurations.entrySet()) {
+			for (ILaunchConfiguration configuration : entry.getValue()) {
+				if (added.add(configuration)) {
+					populateMenuItem(fMode, entry.getKey(), menu, configuration, accelerator++, null);
+				}
+			}
+		}
+
 	}
 
 	/**
