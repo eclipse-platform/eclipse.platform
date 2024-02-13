@@ -264,7 +264,7 @@ public class CertificateSelectionPage extends WizardPage  {
 	                		//AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":CertificateSelectionPage","PKCS11 CHECK"));
 	                		try {
 								if ( VendorImplementation.getInstance().isInstalled() ) { 
-								//	AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":CertificateSelectionPage","PKCS11 IS ALIVE"));
+									//AuthenticationPlugin.getDefault().getLog().log(new Status(IStatus.OK, AuthenticationPlugin.getPluginId()+":CertificateSelectionPage","PKCS11 IS ALIVE"));
 								} else {
 									// Disable the PKCS11 button, becuase its not configured on this machine.
 									event = new Event();
