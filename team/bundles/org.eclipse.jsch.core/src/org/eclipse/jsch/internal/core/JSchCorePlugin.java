@@ -15,11 +15,18 @@
 package org.eclipse.jsch.internal.core;
 
 import java.io.FileNotFoundException;
-import java.util.Hashtable;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.eclipse.core.net.proxy.IProxyService;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jsch.core.AbstractIdentityRepositoryFactory;
 import org.eclipse.jsch.core.IJSchService;
 import org.eclipse.osgi.util.NLS;
@@ -31,6 +38,7 @@ import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
+@SuppressWarnings("deprecation") // Preferences
 public class JSchCorePlugin extends Plugin{
 
   public static String ID="org.eclipse.jsch.core"; //$NON-NLS-1$
@@ -63,7 +71,7 @@ public class JSchCorePlugin extends Plugin{
 
   /**
    * Convenience method for logging CoreExceptions to the plugin log
-   * 
+   *
    * @param e
    *          the exception
    */
@@ -75,7 +83,7 @@ public class JSchCorePlugin extends Plugin{
    * Log the given status. Do not use this method for the IStatus from a
    * CoreException. Use<code>log(CoreException)</code> instead so the stack
    * trace is not lost.
-   * 
+   *
    * @param status
    *          the status
    */
@@ -89,7 +97,7 @@ public class JSchCorePlugin extends Plugin{
 
   /**
    * Get the communications timeout value in seconds
-   * 
+   *
    * @return the timeout value in seconds
    */
   public int getTimeout(){
@@ -99,7 +107,7 @@ public class JSchCorePlugin extends Plugin{
   /**
    * Set the timeout value for communications to a value in seconds. The value
    * must be greater than or equal 0. If is it 0, there is no timeout.
-   * 
+   *
    * @param timeout
    *          the timeout value in seconds
    */
@@ -230,7 +238,7 @@ public class JSchCorePlugin extends Plugin{
   /**
    * Return the {@link IProxyService} or <code>null</code> if the service is
    * not available.
-   * 
+   *
    * @return the {@link IProxyService} or <code>null</code>
    */
   public IProxyService getProxyService(){
@@ -240,12 +248,12 @@ public class JSchCorePlugin extends Plugin{
   @Override
   public void start(BundleContext context) throws Exception{
     super.start(context);
-    tracker=new ServiceTracker<Object, Object>(getBundle().getBundleContext(),
+    tracker=new ServiceTracker<>(getBundle().getBundleContext(),
         IProxyService.class.getName(), null);
     tracker.open();
     jschService=getBundle().getBundleContext().registerService(
         IJSchService.class.getName(), JSchProvider.getInstance(),
-        new Hashtable<String, Object>());
+        new Hashtable<>());
   }
 
   @Override

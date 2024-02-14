@@ -47,6 +47,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  * and (optionally) prompts the user to add the new resources to the
  * control of the repository provider.
  */
+@SuppressWarnings("deprecation") // Preferences
 public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceChangeListener {
 	/*
 	 * Set of added resources
@@ -277,9 +278,7 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 			}
 			if (window != null) {
 				Shell shell= window.getShell();
-				if (shell == null)
-					return null;
-				if (shell.isDisposed())
+				if ((shell == null) || shell.isDisposed())
 					return null;
 				return shell;
 			}

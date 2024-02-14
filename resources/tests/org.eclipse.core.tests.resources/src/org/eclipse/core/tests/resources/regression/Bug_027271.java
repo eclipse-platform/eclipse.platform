@@ -34,6 +34,7 @@ import org.junit.Test;
  * variable manager.
  */
 
+@SuppressWarnings("deprecation") // Preferences
 public class Bug_027271 {
 
 	@Rule

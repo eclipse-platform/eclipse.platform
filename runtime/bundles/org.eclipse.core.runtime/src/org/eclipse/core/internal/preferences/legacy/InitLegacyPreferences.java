@@ -16,8 +16,13 @@ package org.eclipse.core.internal.preferences.legacy;
 
 import java.lang.reflect.Field;
 import org.eclipse.core.internal.preferences.exchange.ILegacyPreferences;
-import org.eclipse.core.internal.runtime.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.runtime.InternalPlatform;
+import org.eclipse.core.internal.runtime.Messages;
+import org.eclipse.core.internal.runtime.RuntimeLog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -26,6 +31,7 @@ import org.osgi.framework.BundleContext;
  * Provides initialization of the legacy preferences as described in
  * the Plugin class.
  */
+@SuppressWarnings("deprecation") // ILegacyPreferences
 public class InitLegacyPreferences implements ILegacyPreferences {
 	/**
 	 * The method tries to initialize the preferences using the legacy Plugin method.

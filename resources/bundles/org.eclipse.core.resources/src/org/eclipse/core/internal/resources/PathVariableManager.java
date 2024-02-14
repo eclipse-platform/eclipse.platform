@@ -48,6 +48,7 @@ import org.eclipse.osgi.util.NLS;
 /**
  * Core's implementation of IPathVariableManager.
  */
+@SuppressWarnings("deprecation") // Preferences
 public class PathVariableManager implements IPathVariableManager, IManager {
 
 	static final String VARIABLE_PREFIX = "pathvariable."; //$NON-NLS-1$
@@ -262,9 +263,7 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 		synchronized (this) {
 			IPath currentValue = getValue(varName);
 			boolean variableExists = currentValue != null;
-			if (!variableExists && newValue == null)
-				return;
-			if (variableExists && currentValue.equals(newValue))
+			if ((!variableExists && newValue == null) || (variableExists && currentValue.equals(newValue)))
 				return;
 			if (newValue == null) {
 				preferences.setToDefault(getKeyForName(varName));

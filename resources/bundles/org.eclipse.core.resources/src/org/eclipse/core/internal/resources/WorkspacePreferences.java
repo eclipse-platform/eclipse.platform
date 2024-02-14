@@ -15,7 +15,9 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Preferences;
 
@@ -29,6 +31,7 @@ import org.eclipse.core.runtime.Preferences;
  * corresponding property preference store. To keep the cache synchronized with
  * the preference store, a property change listener is used.
  */
+@SuppressWarnings("deprecation") // Preferences
 public class WorkspacePreferences extends WorkspaceDescription {
 
 	public final static String PROJECT_SEPARATOR = "/"; //$NON-NLS-1$

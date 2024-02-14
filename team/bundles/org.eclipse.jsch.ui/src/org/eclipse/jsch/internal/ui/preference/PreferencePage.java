@@ -85,6 +85,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 
+@SuppressWarnings("deprecation") // Preferences
 public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 		implements IWorkbenchPreferencePage{
 
@@ -557,9 +558,7 @@ protected Control createContents(Composite parent){
 						}
 						Display.getDefault().syncExec(prompt);
 						String passphrase=prompt.getPassphrase();
-						if(passphrase==null)
-							break;
-						if(_kpair.decrypt(passphrase)){
+						if((passphrase==null) || _kpair.decrypt(passphrase)){
 							break;
 						}
 						MessageDialog.openError(getShell(),
@@ -1506,7 +1505,7 @@ public void init(IWorkbench workbench){
 	}
 
 	private void initControls(){
-		Preferences preferences=JSchCorePlugin.getPlugin().getPluginPreferences();
+		Preferences preferences = JSchCorePlugin.getPlugin().getPluginPreferences();
 		ssh2HomeText.setText(preferences
 				.getString(org.eclipse.jsch.internal.core.IConstants.KEY_SSH2HOME));
 		privateKeyText.setText(preferences

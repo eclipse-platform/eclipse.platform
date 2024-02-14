@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
 
+@SuppressWarnings("deprecation") // Preferences
 public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 	private IWorkspace workspace;
 	private Preferences preferences;

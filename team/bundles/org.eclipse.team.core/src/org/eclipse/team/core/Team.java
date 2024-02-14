@@ -52,9 +52,9 @@ import org.eclipse.team.internal.core.FileContentManager;
 import org.eclipse.team.internal.core.Messages;
 import org.eclipse.team.internal.core.Policy;
 import org.eclipse.team.internal.core.StorageMergerRegistry;
-import org.eclipse.team.internal.core.WildcardStringMatcher;
 import org.eclipse.team.internal.core.TeamPlugin;
 import org.eclipse.team.internal.core.TeamResourceChangeListener;
+import org.eclipse.team.internal.core.WildcardStringMatcher;
 import org.eclipse.team.internal.core.importing.BundleImporterExtension;
 
 /**
@@ -63,6 +63,7 @@ import org.eclipse.team.internal.core.importing.BundleImporterExtension;
  *
  * @since 2.0
  */
+@SuppressWarnings("deprecation") // Preferences
 public final class Team {
 
 	private static class StringMappingWrapper implements IFileTypeInfo {
@@ -366,9 +367,7 @@ public final class Team {
 					}
 				}
 
-				Iterator<String> it = pIgnore.keySet().iterator();
-				while (it.hasNext()) {
-					String pattern = it.next();
+				for (String pattern : pIgnore.keySet()) {
 					if (!gIgnore.containsKey(pattern)) {
 						gIgnore.put(pattern, pIgnore.get(pattern));
 					}

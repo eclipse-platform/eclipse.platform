@@ -89,6 +89,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * Bootstrap class for the platform. It is responsible for setting up the
  * platform class loader and passing control to the actual application class
  */
+@SuppressWarnings("deprecation") // ILegacyPreferences
 public final class InternalPlatform {
 
 	private static final String[] ARCH_LIST = { Platform.ARCH_AARCH64, Platform.ARCH_X86, Platform.ARCH_X86_64 };

@@ -98,6 +98,7 @@ public class LocationValidator {
 		return validateLinkLocationURI(resource, URIUtil.toURI(location));
 	}
 
+	@SuppressWarnings("deprecation") // org.eclipse.core.runtime.Preferences.getBoolean(String)
 	public IStatus validateLinkLocationURI(IResource resource, URI unresolvedLocation) {
 		String schemeSpecificPart = unresolvedLocation.getSchemeSpecificPart();
 		if (schemeSpecificPart == null || schemeSpecificPart.isEmpty()) {
@@ -395,10 +396,8 @@ public class LocationValidator {
 			URI testLocation = project.getLocationURI();
 			if (context != null && project.equals(context)) {
 				//tolerate locations being the same if this is the project being tested
-				if (URIUtil.equals(testLocation, location))
-					continue;
 				//a project cannot be moved inside of its current location
-				if (!FileUtil.isPrefixOf(testLocation, location))
+				if (URIUtil.equals(testLocation, location) || !FileUtil.isPrefixOf(testLocation, location))
 					continue;
 			} else if (!URIUtil.equals(testLocation, location)) {
 				// a project cannot have the same location as another existing project

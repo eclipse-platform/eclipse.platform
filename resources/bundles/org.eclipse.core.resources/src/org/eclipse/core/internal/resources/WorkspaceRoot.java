@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.osgi.util.NLS;
 
+@SuppressWarnings("deprecation") // Preferences
 public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 	/**
 	 * As an optimization, we store a table of project handles
