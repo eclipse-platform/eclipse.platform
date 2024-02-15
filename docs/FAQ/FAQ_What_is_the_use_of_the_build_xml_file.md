@@ -14,6 +14,6 @@ See Also:
 
 *   [FAQ When is the build.xml script executed?](./FAQ_When_is_the_build_script_executed.md "FAQ When is the build.xml script executed?")
 *   [FAQ How do I create a feature?](./FAQ_How_do_I_create_a_feature.md "FAQ How do I create a feature?")
-*   [FAQ How do I create an update site (site.xml)?](./FAQ_How_do_I_create_an_update_site_(site.xml).md "FAQ How do I create an update site (site.xml)?")
+*   [FAQ How do I create an update site?](./FAQ_How_do_I_create_an_update_site.md "FAQ How do I create an update site")
 *   [FAQ What is Ant?](./FAQ_What_is_Ant.md "FAQ What is Ant?")
 

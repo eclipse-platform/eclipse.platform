@@ -82,7 +82,7 @@ This chapter should get you going. We also included some FAQs for plug-in develo
 *   [FAQ How do I increase the heap size available to Eclipse?](./FAQ_How_do_I_increase_the_heap_size_available_to_Eclipse.md "FAQ How do I increase the heap size available to Eclipse?")
 *   [FAQ Where can I find that elusive .log file?](./FAQ_Where_can_I_find_that_elusive_.log_file.md "FAQ Where can I find that elusive .log file?")
 *   [FAQ Does Eclipse run on any Linux distribution?](./FAQ_Does_Eclipse_run_on_any_Linux_distribution.md "FAQ Does Eclipse run on any Linux distribution?")
-*   [FAQ I unzipped Eclipse, but it won't start. Why?](./FAQ_I_unzipped_Eclipse,_but_it_won%27t_start._Why.md "FAQ I unzipped Eclipse, but it won't start. Why?")
+*   [FAQ I unzipped Eclipse, but it won't start](./FAQ_I_unzipped_Eclipse,_but_it_won%27t_start.md "FAQ I unzipped Eclipse, but it won't start")
 *   [FAQ How do I upgrade Eclipse?](./FAQ_How_do_I_upgrade_Eclipse.md "FAQ How do I upgrade Eclipse?")
 *   [FAQ How do I install new plug-ins?](./FAQ_How_do_I_install_new_plug-ins.md "FAQ How do I install new plug-ins?")
 *   [FAQ Can I install plug-ins outside the main install directory?](./FAQ_Can_I_install_plug-ins_outside_the_main_install_directory.md "FAQ Can I install plug-ins outside the main install directory?")
@@ -102,7 +102,7 @@ The topic of how to use Eclipse for typical Java development is beyond the scope
 For a comprehensive guide to using Eclipse, refer to other books such as The Java Developer’s Guide to Eclipse (Addison-Wesley, 2003).
 
 *   [FAQ How do I get started if I am new to Java and Eclipse?](./FAQ_How_do_I_get_started_if_I_am_new_to_Java_and_Eclipse.md "FAQ How do I get started if I am new to Java and Eclipse?")
-*   [FAQ How do I show/hide files like classpath in the Navigator?](./FAQ_How_do_I_show/hide_files_like_classpath_in_the_Navigator.md "FAQ How do I show/hide files like classpath in the Navigator?")
+*   [FAQ How do I show or hide files like classpath in the Navigator?](./FAQ_How_do_I_show_or_hide_files_like_classpath_in_the_Navigator.md "FAQ How do I show or hide files like classpath in the Navigator?")
 *   [FAQ How do I link the Navigator with the currently active editor?](./FAQ_How_do_I_link_the_Navigator_with_the_currently_active_editor.md "FAQ How do I link the Navigator with the currently active editor?")
 *   [FAQ How do I use the keyboard to traverse between editors?](./FAQ_How_do_I_use_the_keyboard_to_traverse_between_editors.md "FAQ How do I use the keyboard to traverse between editors?")
 *   [FAQ How can I rearrange Eclipse views and editors?](./FAQ_How_can_I_rearrange_Eclipse_views_and_editors.md "FAQ How can I rearrange Eclipse views and editors?")
@@ -161,7 +161,7 @@ This chapter describes the mechanics of plug-in development, such as creating pl
 *   [FAQ How do I create a feature?](./FAQ_How_do_I_create_a_feature.md "FAQ How do I create a feature?")
 *   [FAQ How do I synchronize versions between a feature and its plug-in(s)?](./FAQ_How_do_I_synchronize_versions_between_a_feature_and_its_plug-in(s).md "FAQ How do I synchronize versions between a feature and its plug-in(s)?")
 *   [FAQ What is the Update Manager?](./FAQ_What_is_the_Update_Manager.md "FAQ What is the Update Manager?")
-*   [FAQ How do I create an update site (site.xml)?](./FAQ_How_do_I_create_an_update_site_(site.xml).md "FAQ How do I create an update site (site.xml)?")
+*   [FAQ How do I create an update site?](./FAQ_How_do_I_create_an_update_site.md "FAQ How do I create an update site?")
 *   [FAQ Why does my update site need a license?](./FAQ_Why_does_my_update_site_need_a_license.md "FAQ Why does my update site need a license?")
 
 Part II -- The Rich Client Platform

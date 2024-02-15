@@ -12,5 +12,5 @@ See Also:
 
 [FAQ\_What\_is\_the\_Update_Manager?](./FAQ_What_is_the_Update_Manager.md "FAQ What is the Update Manager?")
 
-[FAQ\_How\_do\_I\_create\_an\_update\_site\_(site.xml)?](./FAQ_How_do_I_create_an_update_site_(site.xml).md "FAQ How do I create an update site (site.xml)?")
+[FAQ How do I create an update site?](./FAQ_How_do_I_create_an_update_site.md "FAQ How do I create an update site?")
 
