@@ -1,5 +1,3 @@
-
-
 FAQ How do I write to the console from a plug-in?
 =================================================
 
@@ -14,13 +12,13 @@ Prior to Eclipse 3.0, each plug-in that wanted console-like output created its o
       private MessageConsole findConsole(String name) {
          ConsolePlugin plugin = ConsolePlugin.getDefault();
          IConsoleManager conMan = plugin.getConsoleManager();
-         IConsole\[\] existing = conMan.getConsoles();
+         IConsole[] existing = conMan.getConsoles();
          for (int i = 0; i < existing.length; i++)
-            if (name.equals(existing\[i\].getName()))
-               return (MessageConsole) existing\[i\];
+            if (name.equals(existing[i].getName()))
+               return (MessageConsole) existing[i];
          //no console found, so create a new one
          MessageConsole myConsole = new MessageConsole(name, null);
-         conMan.addConsoles(new IConsole\[\]{myConsole});
+         conMan.addConsoles(new IConsole[]{myConsole});
          return myConsole;
       }
 
@@ -36,7 +34,7 @@ Creating a console and writing to it do not create or reveal the Console view. I
 
    IConsole myConsole = ...;// your console instance
    IWorkbenchPage page = ...;// [obtain the active page](./FAQ_How_do_I_find_the_active_workbench_page.md "FAQ How do I find the active workbench page?")
-   String id = IConsoleConstants.ID\_CONSOLE\_VIEW;
+   String id = IConsoleConstants.ID_CONSOLE_VIEW;
    IConsoleView view = (IConsoleView) page.showView(id);
    view.display(myConsole);
 
@@ -45,7 +43,7 @@ Creating a console and writing to it do not create or reveal the Console view. I
 See Also:
 ---------
 
-[FAQ\_How\_do\_I\_use\_the\_platform\_debug\_tracing_facility?](./FAQ_How_do_I_use_the_platform_debug_tracing_facility.md "FAQ How do I use the platform debug tracing facility?")
+[FAQ How do I use the platform debug tracing facility?](./FAQ_How_do_I_use_the_platform_debug_tracing_facility.md "FAQ How do I use the platform debug tracing facility?")
 
-[FAQ\_How\_do\_I\_use\_the\_text\_document\_model?](./FAQ_How_do_I_use_the_text_document_model.md "FAQ How do I use the text document model?")
+[FAQ How do I use the text document model?](./FAQ_How_do_I_use_the_text_document_model.md "FAQ How do I use the text document model?")
 

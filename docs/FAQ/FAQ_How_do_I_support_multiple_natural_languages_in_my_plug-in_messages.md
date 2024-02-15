@@ -1,11 +1,9 @@
-
-
 FAQ How do I support multiple natural languages in my plug-in messages?
 =======================================================================
 
 Almost all plug-ins in Eclipse use java.util.ResourceBundle, a messages.properties file, and look up messages by using a key. The MessageFormat class can be used to insert parameters into the translated message. Here is an example:
 
-      String translate(String key, String\[\] parms) {
+      String translate(String key, String[] parms) {
          try {
             ResourceBundle bundle = 
                ResourceBundle.getBundle("messages");

@@ -11,20 +11,20 @@ If you want to provide more information in the details area, you need to supply 
 
       Date date = new Date();
       SimpleDateFormat format = new SimpleDateFormat();
-      String\[\] patterns = new String\[\] {
+      String[] patterns = new String[] {
          "EEEE", "yyyy", "MMMM", "h 'o''clock'"};
-      String\[\] prefixes = new String\[\] {
+      String[] prefixes = new String[] {
          "Today is ", "The year is ", "It is ", "It is "};
-      String\[\] msg = new String\[patterns.length\];
+      String[] msg = new String\[patterns.length\];
       for (int i = 0; i < msg.length; i++) {
-         format.applyPattern(patterns\[i\]);
-         msg\[i\] = prefixes\[i\] + format.format(date);
+         format.applyPattern(patterns[i]);
+         msg[i] = prefixes[i] + format.format(date);
       }
       final String PID = ExamplesPlugin.ID;
-      MultiStatus info = new MultiStatus(PID, 1, msg\[0\], null);
-      info.add(new Status(IStatus.INFO, PID, 1, msg\[1\], null));
-      info.add(new Status(IStatus.INFO, PID, 1, msg\[2\], null));
-      info.add(new Status(IStatus.INFO, PID, 1, msg\[3\], null));
+      MultiStatus info = new MultiStatus(PID, 1, msg[0], null);
+      info.add(new Status(IStatus.INFO, PID, 1, msg[1], null));
+      info.add(new Status(IStatus.INFO, PID, 1, msg[2], null));
+      info.add(new Status(IStatus.INFO, PID, 1, msg[3], null));
       ErrorDialog.openError(window.getShell(), "Time", null, info);
 
   

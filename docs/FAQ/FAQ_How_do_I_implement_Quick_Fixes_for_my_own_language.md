@@ -16,10 +16,10 @@ The JDT has support for so-called Quick Fixes. Whenever a marker is generated, a
 The implementation class implements the IMarkerResolutionGenerator interface. Use the IMarkerResolutionGenerator2 when resolutions are expensive to implement. See the javadoc for the interface for an explanation. Here is what the implementation class may look like:
 
       public class QuickFixer implements IMarkerResolutionGenerator {
-         public IMarkerResolution\[\] getResolutions(IMarker mk) {
+         public IMarkerResolution[] getResolutions(IMarker mk) {
             try {
                Object problem = mk.getAttribute("WhatsUp");
-               return new IMarkerResolution\[\] {
+               return new IMarkerResolution[] {
                   new QuickFix("Fix #1 for "+problem),
                   new QuickFix("Fix #2 for "+problem),
                };

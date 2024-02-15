@@ -1,5 +1,3 @@
-
-
 FAQ How do I store extra properties on a resource?
 ==================================================
 
@@ -10,7 +8,7 @@ Table 17.1 provides a high-level view of the various forms of metadata, along wi
 |   | **Speed** | **Footprint** | **Notify** | **Persistence** | **Types** | **Size constraints?** |
 | --- | --- | --- | --- | --- | --- | --- |
 | Markers | Good | Medium | Yes | Save; snapshot | String, int, boolean | No |
-| Sync info | Good | Medium | Yes | Save; snapshot | byte\[\] | ?? |
+| Sync info | Good | Medium | Yes | Save; snapshot | byte[] | ?? |
 | Session Property | Fast | Medium | No | None | Object | No |
 | Persistent Property | Slow | None | No | Immediate | String | Yes: 2K, exception thrown on overflow |
 | Project Preferences | Slow | Small (preference cache) | Yes | Immediate | String, all primitive types | No |

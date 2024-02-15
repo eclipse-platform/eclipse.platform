@@ -37,14 +37,14 @@ Our configuration looks like this:
             ISourceViewer sourceViewer) {
             PresentationReconciler pr = new PresentationReconciler();
             DefaultDamagerRepairer ddr = new DefaultDamagerRepairer('''new Scanner()''');
-            pr.setRepairer(ddr, IDocument.DEFAULT\_CONTENT\_TYPE);
-            pr.setDamager(ddr, IDocument.DEFAULT\_CONTENT\_TYPE);
+            pr.setRepairer(ddr, IDocument.DEFAULT_CONTENT_TYPE);
+            pr.setDamager(ddr, IDocument.DEFAULT_CONTENT_TYPE);
             return pr;
          }
          IContentAssistant getContentAssistant(ISourceViewer sv) {
             ContentAssistant ca = new ContentAssistant();
             IContentAssistProcessor cap = '''new CompletionProcessor()''';
-            ca.setContentAssistProcessor(cap, IDocument.DEFAULT\_CONTENT\_TYPE);
+            ca.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
             ca.setInformationControlCreator(getInformationControlCreator(sv));
             return ca;
          }
@@ -76,9 +76,9 @@ For scanning the underlying document to draw it using different colors and fonts
             Token string = new Token(new TextAttribute(Editor.STRING));
             //add tokens for each reserved word
             for (int n = 0; n < Parser.KEYWORDS.length; n++) {
-               rule.addWord(Parser.KEYWORDS\[n\], keyword);
+               rule.addWord(Parser.KEYWORDS[n], keyword);
             }
-            setRules(new IRule\[\] {
+            setRules(new IRule[] {
                rule,
                new SingleLineRule("#", null, comment),
                new SingleLineRule("\\"", "\\"", string, '\\\'),

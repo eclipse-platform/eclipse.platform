@@ -27,7 +27,7 @@ How to get all IConfigurationElement objects more simply?
 You can also get all IConfigurationElement objects without retrieving each extension by using following code:
 
     IExtensionRegistry reg = Platform.getExtensionRegistry();
-    IConfigurationElement\[\] elements = reg.getConfigurationElementsFor("Extension Point ID");
+    IConfigurationElement[] elements = reg.getConfigurationElementsFor("Extension Point ID");
 
 See Also:
 ---------
