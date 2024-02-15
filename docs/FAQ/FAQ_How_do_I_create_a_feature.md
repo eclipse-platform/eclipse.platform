@@ -15,7 +15,7 @@ Q: How do you know if your project is a "Feature Project"? A: (I'm guessing) It 
 See Also:
 ---------
 
-[How do I create an "update site"?](./FAQ_How_do_I_create_an_update_site_(site.xml).md "FAQ How do I create an update site (site.xml)?")
+[How do I create an "update site"?](./FAQ_How_do_I_create_an_update_site.md "FAQ How do I create an update site?")
 
   
 

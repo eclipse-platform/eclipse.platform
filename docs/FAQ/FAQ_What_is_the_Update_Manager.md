@@ -20,7 +20,7 @@ See Also:
 *   [FAQ How do I update Eclipse?](./FAQ_How_do_I_update_Eclipse.md "FAQ How do I update Eclipse?")
 *   [FAQ How do I create a plug-in?](./FAQ_How_do_I_create_a_plug-in.md "FAQ How do I create a plug-in?")
 *   [FAQ How do I create a feature?](./FAQ_How_do_I_create_a_feature.md "FAQ How do I create a feature?")
-*   [FAQ How do I create an update site (site.xml)?](./FAQ_How_do_I_create_an_update_site_(site.xml).md "FAQ How do I create an update site (site.xml)?")
+*   [FAQ How do I create an update site?](./FAQ_How_do_I_create_an_update_site.md "FAQ How do I create an update site?")
 *   [FAQ What is the purpose of activities?](./FAQ_What_is_the_purpose_of_activities.md "FAQ What is the purpose of activities?")
 *   [How to Keep Up to Date](https://www.eclipse.org/articles/Article-Update/keeping-up-to-date.html) (from 2004)
 
