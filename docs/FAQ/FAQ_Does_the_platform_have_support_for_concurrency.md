@@ -32,7 +32,7 @@ See Also:
 
 *   [FAQ How do I show progress for things happening in the background?](./FAQ_How_do_I_show_progress_for_things_happening_in_the_background.md "FAQ How do I show progress for things happening in the background?")
 *   [FAQ How do I switch from using a Progress dialog to the Progress view?](./FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view.md "FAQ How do I switch from using a Progress dialog to the Progress view?")
-*   [FAQ Actions, commands, operations, jobs: What does it all mean?](./FAQ_Actions,_commands,_operations,_jobs:_What_does_it_all_mean.md "FAQ Actions, commands, operations, jobs: What does it all mean?")
+*   [FAQ Actions, commands, operations, jobs: What does it all mean?](./FAQ_Actions_commands_operations_jobs_What_does_it_all_mean.md "FAQ Actions, commands, operations, jobs: What does it all mean?")
 *   [On the Job: The Eclipse Jobs API](https://www.eclipse.org/articles/Article-Concurrency/jobs-api.html)
 *   [Eclipse Jobs and Background processing Tutorial](https://www.vogella.com/tutorials/EclipseJobs/article.html)
 

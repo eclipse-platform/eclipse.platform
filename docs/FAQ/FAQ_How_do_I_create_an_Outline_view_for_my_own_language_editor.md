@@ -67,5 +67,5 @@ See Also:
 
 [FAQ How do I use a model reconciler?](./FAQ_How_do_I_use_a_model_reconciler.md "FAQ How do I use a model reconciler?")
 
-[FAQ Language integration phase 4: What are the finishing touches?](./FAQ_Language_integration_phase_4:_What_are_the_finishing_touches.md "FAQ Language integration phase 4: What are the finishing touches?")
+[FAQ Language integration phase 4: What are the finishing touches?](./FAQ_Language_integration_phase_4_What_are_the_finishing_touches.md "FAQ Language integration phase 4: What are the finishing touches?")
 

@@ -13,5 +13,5 @@ Views and editors can register their context menus with the platform to allow ot
 See Also:
 ---------
 
-[FAQ Can other plug-ins add actions to my part's context menu](FAQ_Can_other_plug-ins_add_actions_to_my_part's_context_menu.md)
+[FAQ Can other plug-ins add actions to my part's context menu](FAQ_Can_other_plug-ins_add_actions_to_my_parts_context_menu.md)
 

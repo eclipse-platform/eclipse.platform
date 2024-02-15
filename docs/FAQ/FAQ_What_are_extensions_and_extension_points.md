@@ -20,7 +20,7 @@ See Also:
 
 *   [FAQ How do I declare my own extension point?](./FAQ_How_do_I_declare_my_own_extension_point.md "FAQ How do I declare my own extension point?")
 *   [FAQ What is a plug-in?](./FAQ_What_is_a_plug-in.md "FAQ What is a plug-in?")
-*   [FAQ What is the plug-in manifest file (plugin.xml)?](./FAQ_What_is_the_plug-in_manifest_file_(plugin.xml).md "FAQ What is the plug-in manifest file (plugin.xml)?")
+*   [FAQ What is the plug-in manifest file (plugin.xml)?](./FAQ_What_is_the_plug-in_manifest_file_plugin_xml.md "FAQ What is the plug-in manifest file (plugin.xml)?")
 *   [FAQ How do I make my plug-in connect to other plug-ins?](./FAQ_How_do_I_make_my_plug-in_connect_to_other_plug-ins.md "FAQ How do I make my plug-in connect to other plug-ins?")
 *   [FAQ What is an extension point schema?](./FAQ_What_is_an_extension_point_schema.md "FAQ What is an extension point schema?")
 *   _Platform Plug-in Developer Guide_ under Programmer's Guide, Platform architecture

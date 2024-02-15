@@ -24,5 +24,5 @@ Note that reconcilers are generally not an adequate replacement for builders but
 See Also:
 ---------
 
-[FAQ Language integration phase 2: How do I implement a DOM?](./FAQ_Language_integration_phase_2:_How_do_I_implement_a_DOM.md "FAQ Language integration phase 2: How do I implement a DOM?")
+[FAQ Language integration phase 2: How do I implement a DOM?](./FAQ_Language_integration_phase_2_How_do_I_implement_a_DOM.md "FAQ Language integration phase 2: How do I implement a DOM?")
 

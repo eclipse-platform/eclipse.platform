@@ -11,6 +11,6 @@ Click **Next** and provide details. Click **OK**. Voila, your plug-in now has do
 See Also:
 ---------
 
-*   [FAQ How can I generate HTML and toc.xml files?](./FAQ_How_can_I_generate_HTML_and_toc.xml_files.md "FAQ How can I generate HTML and toc.xml files?")
+*   [FAQ How can I generate HTML and toc.xml files?](./FAQ_How_can_I_generate_HTML_and_toc_xml_files.md "FAQ How can I generate HTML and toc.xml files?")
 *   [FAQ How do I support source-level debugging for my own language?](./FAQ_How_do_I_support_source-level_debugging_for_my_own_language.md "FAQ How do I support source-level debugging for my own language?")
 

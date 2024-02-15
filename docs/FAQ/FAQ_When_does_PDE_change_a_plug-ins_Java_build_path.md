@@ -12,6 +12,6 @@ Regardless of whether classpath containers are used, it makes little sense to ed
 See Also:
 ---------
 
-*   [FAQ Why doesn't my plug-in build correctly?](./FAQ_Why_doesn%27t_my_plug-in_build_correctly.md "FAQ Why doesn't my plug-in build correctly?")
+*   [FAQ Why doesn't my plug-in build correctly?](./FAQ_Why_doesnt_my_plug-in_build_correctly.md "FAQ Why doesn't my plug-in build correctly?")
 *   [FAQ What is the classpath of a plug-in?](./FAQ_What_is_the_classpath_of_a_plug-in.md "FAQ What is the classpath of a plug-in?")
 

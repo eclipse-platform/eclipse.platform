@@ -25,10 +25,6 @@ Commercial Plug-ins
 
 *   [_SWT designer_](http://www.swt-designer.com). This commercial plug-in to Eclipse, which targets only SWT, is fairly new as a commercial product but is based on an open source project that has been around for a while and has a strong following.
 
-*   [_SWT GUI Builder_](http://www.swtguibuilder.com). This commercial plug-in provides a visual editor for SWT only. The company also sells a product called Swing2SWT that ports Swing applications to SWT.
-
-*   [_Jigloo GUI Builder_](http://www.cloudgarden.com/jigloo). This fairly new GUI builder for both SWT and Swing is a commercial product, but a free version is licensed for noncommercial use only.
-
 See Also:
 ---------
 

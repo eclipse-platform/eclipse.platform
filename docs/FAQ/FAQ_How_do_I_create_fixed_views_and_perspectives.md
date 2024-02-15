@@ -31,5 +31,5 @@ See Also:
 
 [FAQ How can I add my views and actions to an existing perspective?](./FAQ_How_can_I_add_my_views_and_actions_to_an_existing_perspective.md "FAQ How can I add my views and actions to an existing perspective?")
 
-[FAQ Why can't I control when, where, and how my view is presented?](./FAQ_Why_can%27t_I_control_when,_where,_and_how_my_view_is_presented.md "FAQ Why can't I control when, where, and how my view is presented?")
+[FAQ Why can't I control when, where, and how my view is presented?](./FAQ_Why_cant_I_control_when_where_and_how_my_view_is_presented.md "FAQ Why can't I control when, where, and how my view is presented?")
 

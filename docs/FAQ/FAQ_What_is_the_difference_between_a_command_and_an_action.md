@@ -38,13 +38,11 @@ If you look in the **General > Keys** preference page, you will see a list of al
 References
 ----------
 
-*   [Platform Command Framework](http://wiki.eclipse.org/Platform_Command_Framework)
-*   [Platform Expression Framework](http://wiki.eclipse.org/Platform_Expression_Framework)
-*   [Core Expressions](http://wiki.eclipse.org/Command_Core_Expressions)
-*   [Menu Contributions](http://wiki.eclipse.org/Menu_Contributions)
-*   [Menu Extension Mapping](http://wiki.eclipse.org/Menus_Extension_Mapping)
+*   [Platform Command Framework](https://github.com/eclipse-platform/eclipse.platform.ui/blob/master/docs/PlatformCommandFramework.md)
+*   [Platform Expression Framework](https://github.com/eclipse-platform/eclipse.platform.ui/blob/master/docs/Platform_Expression_Framework.md)
+*   [Core Expressions](https://github.com/eclipse-platform/eclipse.platform.ui/blob/master/docs/Command_Core_Expressions.md)
+*   [Menu Contributions](https://github.com/eclipse-platform/eclipse.platform.ui/blob/master/docs/Menu_Contributions.md)
 *   [Eclipse Workbench Guide](https://help.eclipse.org/help33/index.jsp?topic=/org.eclipse.platform.doc.isv/guide/workbench.htm)
-*   [Working with mnu extension point](http://blog.rcp-company.com/2007/06/working-with-menus-extension-point.html)
 *   [bug 223445 discusses references to an upcoming article](https://bugs.eclipse.org/bugs/show_bug.cgi?id=223445)
 
 See Also:

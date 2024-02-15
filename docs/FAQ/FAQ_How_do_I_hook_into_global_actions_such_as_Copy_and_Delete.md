@@ -22,7 +22,7 @@ The IWorkbenchActionConstants interface in the org.eclipse.ui package contains a
 See Also
 --------
 
-[FAQ How do I enable global actions such as Cut, Paste, and Print in my editor?](./FAQ_How_do_I_enable_global_actions_such_as_Cut,_Paste,_and_Print_in_my_editor.md "FAQ How do I enable global actions such as Cut, Paste, and Print in my editor?")
+[FAQ How do I enable global actions such as Cut, Paste, and Print in my editor?](./FAQ_How_do_I_enable_global_actions_such_as_Cut_Paste_and_Print_in_my_editor.md "FAQ How do I enable global actions such as Cut, Paste, and Print in my editor?")
 
 [FAQ How do I add actions to the global toolbar?](./FAQ_How_do_I_add_actions_to_the_global_toolbar.md "FAQ How do I add actions to the global toolbar?")
 

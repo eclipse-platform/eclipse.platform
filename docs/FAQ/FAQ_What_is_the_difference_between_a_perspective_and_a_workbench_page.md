@@ -10,5 +10,5 @@ The workbench page is the main body of a workbench window: between the toolbar a
 See Also:
 ---------
 
-[FAQ\_Pages,\_parts,\_sites,\_windows:\_What\_is\_all\_this_stuff?](./FAQ_Pages,_parts,_sites,_windows:_What_is_all_this_stuff.md "FAQ Pages, parts, sites, windows: What is all this stuff?")
+[FAQ\_Pages,\_parts,\_sites,\_windows:\_What\_is\_all\_this_stuff?](./FAQ_Pages_parts_sites_windows_What_is_all_this_stuff.md "FAQ Pages, parts, sites, windows: What is all this stuff?")
 

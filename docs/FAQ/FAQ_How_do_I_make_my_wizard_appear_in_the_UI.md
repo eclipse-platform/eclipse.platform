@@ -14,5 +14,5 @@ See Also:
 ---------
 
 *   [FAQ What is a wizard?](./FAQ_What_is_a_wizard.md "FAQ What is a wizard?")
-*   [FAQ How do I add my wizard to the New, Import, or Export menu categories?](./FAQ_How_do_I_add_my_wizard_to_the_New,_Import,_or_Export_menu_categories.md "FAQ How do I add my wizard to the New, Import, or Export menu categories?")
+*   [FAQ How do I add my wizard to the New, Import, or Export menu categories?](./FAQ_How_do_I_add_my_wizard_to_the_New_Import_or_Export_menu_categories.md "FAQ How do I add my wizard to the New, Import, or Export menu categories?")
 

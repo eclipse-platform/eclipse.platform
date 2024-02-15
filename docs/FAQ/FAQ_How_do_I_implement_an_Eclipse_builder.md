@@ -3,8 +3,6 @@
 Eclipse./FAQ/How.md do I implement an Eclipse builder?
 ==================================================
 
-< [Eclipse](/Eclipse "Eclipse")‎ | [FAQ](/Eclipse/FAQ "Eclipse./FAQ")(Redirected.md from [FAQ How do I implement an Eclipse builder?](/index.php?title=FAQ_How_do_I_implement_an_Eclipse_builder%3F&redirect=no "FAQ How do I implement an Eclipse builder?"))
-
 To understand how Eclipse builds projects, you need to
 
 *   Understand where Eclipse stores its project build specifications (See [FAQ Where are project build specifications stored?](./FAQ_Where_are_project_build_specifications_stored.md "FAQ Where are project build specifications stored?"))

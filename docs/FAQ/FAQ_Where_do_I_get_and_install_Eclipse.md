@@ -22,7 +22,7 @@ To install Eclipse, all you do is unpack the zip/tar file download in the desire
 
 For Windows, a number of problems have been reported when people try to use Windows Explorer to unzip the zip file. Please use a third-party unzip program, such as 7-Zip, Winzip, JustZIPIt, EasyZip, or InfoZIP (part of Cygwin, although you may have to manually chmod the .dll and .exe files as executable afterward).
 
-If you have problems running Eclipse after it's been installed, please see [FAQ I unzipped Eclipse, but it won't start](./FAQ_I_unzipped_Eclipse,_but_it_won%27t_start.md "FAQ I unzipped Eclipse, but it won't start") for troubleshooting help.
+If you have problems running Eclipse after it's been installed, please see [FAQ I unzipped Eclipse, but it won't start](./FAQ_I_unzipped_Eclipse_but_it_wont_start.md "FAQ I unzipped Eclipse, but it won't start") for troubleshooting help.
 
 See also [Eclipse/Installation](/Eclipse/Installation "Eclipse/Installation").
 
@@ -37,6 +37,6 @@ See Also:
 ---------
 
 *   The Eclipse [download site](https://eclipse.org/downloads)
-*   [FAQ I unzipped Eclipse, but it won't start](./FAQ_I_unzipped_Eclipse,_but_it_won%27t_start.md "FAQ I unzipped Eclipse, but it won't start")
+*   [FAQ I unzipped Eclipse, but it won't start](./FAQ_I_unzipped_Eclipse_but_it_wont_start.md "FAQ I unzipped Eclipse, but it won't start")
 *   [Sun Developer Network](http://java.sun.com/)
 

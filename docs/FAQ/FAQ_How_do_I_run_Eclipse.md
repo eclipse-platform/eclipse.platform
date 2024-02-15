@@ -1,5 +1,3 @@
-
-
 FAQ How do I run Eclipse?
 =========================
 
@@ -75,14 +73,9 @@ See Also:
 *   [FAQ How do I increase the heap size available to Eclipse?](./FAQ_How_do_I_increase_the_heap_size_available_to_Eclipse.md "FAQ How do I increase the heap size available to Eclipse?")
 *   [FAQ How do I increase the permgen size available to Eclipse?](./FAQ_How_do_I_increase_the_permgen_size_available_to_Eclipse.md "FAQ How do I increase the permgen size available to Eclipse?")
 *   [FAQ Who shows the Eclipse splash screen?](./FAQ_Who_shows_the_Eclipse_splash_screen.md "FAQ Who shows the Eclipse splash screen?")
-*   [The Eclipse Program Launcher](https://www.eclipse.org/swt/launcher.html)
-*   [Equinox Wiki Category](http://wiki.eclipse.org/index.php/Category:Equinox)
 *   Running Eclipse 3.3M5+
 
 *   [Starting Eclipse Commandline With Equinox Launcher](/Starting_Eclipse_Commandline_With_Equinox_Launcher "Starting Eclipse Commandline With Equinox Launcher")
 *   [Automated PDE JUnit Testing With Eclipse 3.3M5](/Automated_PDE_JUnit_Testing_With_Eclipse_3.3M5 "Automated PDE JUnit Testing With Eclipse 3.3M5")
 
-*   [Preparing for Eclipse in Linux: Installing JRE 1.6.0 (Update x) as the Default Runtime](http://www.64bitjungle.com/ubuntu/install-java-jre-160-update-x-on-hardy-as-the-default-java-runtime)
-
-  
 

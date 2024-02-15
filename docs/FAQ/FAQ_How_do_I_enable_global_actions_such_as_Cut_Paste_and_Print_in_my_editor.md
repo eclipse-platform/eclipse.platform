@@ -21,5 +21,5 @@ Your editor's IEditorActionBarContributor, defined in the editor definition in t
 See Also
 --------
 
-[FAQ How do I hook into global actions, such as Copy and Delete?](./FAQ_How_do_I_hook_into_global_actions,_such_as_Copy_and_Delete.md "FAQ How do I hook into global actions, such as Copy and Delete?")
+[FAQ How do I hook into global actions, such as Copy and Delete?](./FAQ_How_do_I_hook_into_global_actions_such_as_Copy_and_Delete.md "FAQ How do I hook into global actions, such as Copy and Delete?")
 

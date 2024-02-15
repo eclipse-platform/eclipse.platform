@@ -28,5 +28,5 @@ Keep in mind that it is not practical to store all your resources in a permanent
 See Also:
 ---------
 
-*   [FAQ Why do I have to dispose of colors, fonts, and images?](./FAQ_Why_do_I_have_to_dispose_of_colors,_fonts,_and_images.md "FAQ Why do I have to dispose of colors, fonts, and images?")
+*   [FAQ Why do I have to dispose of colors, fonts, and images?](./FAQ_Why_do_I_have_to_dispose_of_colors_fonts_and_images.md "FAQ Why do I have to dispose of colors, fonts, and images?")
 

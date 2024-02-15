@@ -14,6 +14,6 @@ A plug-in that provides Java code may specify in the manifest a concrete subclas
 See Also:
 ---------
 
-*   [FAQ What is the plug-in manifest file (plugin.xml)?](./FAQ_What_is_the_plug-in_manifest_file_(plugin.xml).md "FAQ What is the plug-in manifest file (plugin.xml)?")
+*   [FAQ What is the plug-in manifest file (plugin.xml)?](./FAQ_What_is_the_plug-in_manifest_file_plugin_xml.md "FAQ What is the plug-in manifest file (plugin.xml)?")
 *   [FAQ What are extensions and extension points?](./FAQ_What_are_extensions_and_extension_points.md "FAQ What are extensions and extension points?")
 

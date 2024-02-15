@@ -15,5 +15,5 @@ See Also:
 ---------
 
 *   [Apache Ant](http://ant.apache.org)
-*   [FAQ What is the use of the build.xml file?](./FAQ_What_is_the_use_of_the_build.xml_file.md "FAQ What is the use of the build.xml file?")
+*   [FAQ What is the use of the build.xml file?](./FAQ_What_is_the_use_of_the_build_xml_file.md "FAQ What is the use of the build.xml file?")
 

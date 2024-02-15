@@ -32,6 +32,6 @@ To play along with the rule of lazy activation, plug-in writers should follow so
 See Also:
 ---------
 
-*   [FAQ What is the plug-in manifest file (plugin.xml)?](./FAQ_What_is_the_plug-in_manifest_file_(plugin.xml).md "FAQ What is the plug-in manifest file (plugin.xml)?")
+*   [FAQ What is the plug-in manifest file (plugin.xml)?](./FAQ_What_is_the_plug-in_manifest_file_plugin_xml.md "FAQ What is the plug-in manifest file (plugin.xml)?")
 *   [FAQ Can I activate my plug-in when the workbench starts?](./FAQ_Can_I_activate_my_plug-in_when_the_workbench_starts.md "FAQ Can I activate my plug-in when the workbench starts?")
 

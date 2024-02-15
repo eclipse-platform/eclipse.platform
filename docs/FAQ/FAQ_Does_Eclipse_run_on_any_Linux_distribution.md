@@ -17,5 +17,4 @@ See Also:
 ---------
 
 *   [The Eclipse download site ](https://eclipse.org/downloads)
-*   [IKVM](http://www.ikvm.net)
 

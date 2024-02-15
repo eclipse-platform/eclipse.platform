@@ -12,5 +12,5 @@ Use the menu for Package Explorer: the small triangle in the explorer's title ba
 See Also:
 ---------
 
-[FAQ How do I show/hide files like classpath in the Navigator?](./FAQ_How_do_I_show/hide_files_like_classpath_in_the_Navigator.md "FAQ How do I show/hide files like classpath in the Navigator?")
+[FAQ How do I show/hide files like classpath in the Navigator?](./FAQ_How_do_I_show_or_hide_files_like_classpath_in_the_Navigator.md "FAQ How do I show/hide files like classpath in the Navigator?")
 

@@ -18,7 +18,7 @@ In Eclipse 2.1, the libraries from the org.eclipse.core.boot and org.eclipse.cor
 See Also:
 ---------
 
-*   [FAQ What is the plug-in manifest file (plugin.xml)?](./FAQ_What_is_the_plug-in_manifest_file_(plugin.xml).md "FAQ What is the plug-in manifest file (plugin.xml)?")
+*   [FAQ What is the plug-in manifest file (plugin.xml)?](./FAQ_What_is_the_plug-in_manifest_file_plugin_xml.md "FAQ What is the plug-in manifest file (plugin.xml)?")
 *   [FAQ How do I make my plug-in connect to other plug-ins?](./FAQ_How_do_I_make_my_plug-in_connect_to_other_plug-ins.md "FAQ How do I make my plug-in connect to other plug-ins?")
 *   [FAQ How do I add a library to the classpath of a plug-in?](./FAQ_How_do_I_add_a_library_to_the_classpath_of_a_plug-in.md "FAQ How do I add a library to the classpath of a plug-in?")
 *   [FAQ How can I share a JAR among various plug-ins?](./FAQ_How_can_I_share_a_JAR_among_various_plug-ins.md "FAQ How can I share a JAR among various plug-ins?")

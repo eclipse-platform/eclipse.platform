@@ -22,6 +22,6 @@ See Also:
 
 *   [FAQ Why do I get an invalid thread access exception?](./FAQ_Why_do_I_get_an_invalid_thread_access_exception.md "FAQ Why do I get an invalid thread access exception?")
 *   [FAQ How do I switch from using a Progress dialog to the Progress view?](./FAQ_How_do_I_switch_from_using_a_Progress_dialog_to_the_Progress_view.md "FAQ How do I switch from using a Progress dialog to the Progress view?")
-*   [FAQ Actions, commands, operations, jobs: What does it all mean?](./FAQ_Actions,_commands,_operations,_jobs:_What_does_it_all_mean.md "FAQ Actions, commands, operations, jobs: What does it all mean?")
-*   [FAQ What are IWorkspaceRunnable, IRunnableWithProgress, and WorkspaceModifyOperation?](./FAQ_What_are_IWorkspaceRunnable,_IRunnableWithProgress,_and_WorkspaceModifyOperation.md "FAQ What are IWorkspaceRunnable, IRunnableWithProgress, and WorkspaceModifyOperation?")
+*   [FAQ Actions, commands, operations, jobs: What does it all mean?](./FAQ_Actions_commands_operations_jobs_What_does_it_all_mean.md "FAQ Actions, commands, operations, jobs: What does it all mean?")
+*   [FAQ What are IWorkspaceRunnable, IRunnableWithProgress, and WorkspaceModifyOperation?](./FAQ_What_are_IWorkspaceRunnable_IRunnableWithProgress_and_WorkspaceModifyOperation "FAQ What are IWorkspaceRunnable, IRunnableWithProgress, and WorkspaceModifyOperation?")
 

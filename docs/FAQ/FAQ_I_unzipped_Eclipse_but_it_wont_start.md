@@ -72,8 +72,8 @@ When all else fails, try asking on the [eclipse.newcomer](https://eclipse.org/fo
 See Also:
 ---------
 
-[FAQ\_How\_do\_I\_increase\_the\_heap\_size\_available\_to\_Eclipse?](./FAQ_How_do_I_increase_the_heap_size_available_to_Eclipse.md "FAQ How do I increase the heap size available to Eclipse?")
+[FAQ How do I increase the heap size available to Eclipse?](./FAQ_How_do_I_increase_the_heap_size_available_to_Eclipse.md "FAQ How do I increase the heap size available to Eclipse?")
 
   
-[FAQ\_Why\_doesn't\_Eclipse\_play\_well\_with_Xerces?](./FAQ_Why_doesn%27t_Eclipse_play_well_with_Xerces.md "FAQ Why doesn't Eclipse play well with Xerces?")
+[FAQ Why doesn't Eclipse play well with Xerces?](./FAQ_Why_doesnt_Eclipse_play_well_with_Xerces.md "FAQ Why doesn't Eclipse play well with Xerces?")
 

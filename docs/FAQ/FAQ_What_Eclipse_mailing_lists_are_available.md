@@ -8,8 +8,4 @@ Although Eclipse newsgroups are intended for users and extenders of the platform
 |   **Warning:** Unless you are actively contributing to an Eclipse project, have a vested interest in the topic, or have special expertise to contribute, you should simply _read_ the archive for the mailing list and _ask questions_ on the corresponding newsgroups.   |
 | --- |
 
-See Also:
----------
-
-*   [The Eclipse mailing list page ](https://eclipse.org/mail)
 

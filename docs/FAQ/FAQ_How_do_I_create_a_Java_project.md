@@ -36,7 +36,7 @@ Finally, you need to set the project's classpath, also known as the build path. 
 See Also:
 ---------
 
-[FAQ When does PDE change a plug-in's Java build path?](FAQ_When_does_PDE_change_a_plug-in's_Java_build_path.md)
+[FAQ When does PDE change a plug-in's Java build path?](FAQ_When_does_PDE_change_a_plug-ins_Java_build_path.md)
 
 [FAQ\_How\_are\_resources\_created?](./FAQ_How_are_resources_created.md "FAQ How are resources created?")
 
