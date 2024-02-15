@@ -7,17 +7,17 @@ To register the eScript builder for a given project, add the builder to the proj
 
       private void addBuilder(IProject project, String id) {
          IProjectDescription desc = project.getDescription();
-         ICommand\[\] commands = desc.getBuildSpec();
+         ICommand[] commands = desc.getBuildSpec();
          for (int i = 0; i < commands.length; ++i)
-            if (commands\[i\].getBuilderName().equals(id))
+            if (commands[i].getBuilderName().equals(id))
                return;
          //add builder to project
          ICommand command = desc.newCommand();
          command.setBuilderName(id);
-         ICommand\[\] nc = new ICommand\[commands.length + 1\];
+         ICommand[] nc = new ICommand[commands.length + 1];
          // Add it before other builders.
          System.arraycopy(commands, 0, nc, 1, commands.length);
-         nc\[0\] = command;
+         nc[0] = command;
          desc.setBuildSpec(nc);
          project.setDescription(desc, null);
       }

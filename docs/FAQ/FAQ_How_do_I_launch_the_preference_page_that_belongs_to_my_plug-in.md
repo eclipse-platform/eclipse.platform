@@ -9,7 +9,7 @@ The `org.eclipse.ui.dialogs.PreferencesUtil` in bundle `org.eclipse.ui.workbench
 
         PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(
             shell, "org.eclipse.licensing.ui.licensesPreferencePage",  
-            new String\[\] {"org.eclipse.licensing.ui.licensesPreferencePage"}, null);
+            new String[] {"org.eclipse.licensing.ui.licensesPreferencePage"}, null);
         dialog.open();
 
 Alternative solution

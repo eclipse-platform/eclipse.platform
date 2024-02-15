@@ -1,5 +1,3 @@
-
-
 FAQ What is the difference between a path and a location?
 =========================================================
 
@@ -24,14 +22,14 @@ Note that in some situations, a resource can have a null location. In particular
 Here is the converse code to convert from a location to the workspace paths that correspond to it:
 
       IPath location = ...;
-      IFile\[\] files = root.findFilesForLocation(location);
-      IFolder\[\] folders = root.findContainersForLocation(location);
+      IFile[] files = root.findFilesForLocation(location);
+      IFolder[] folders = root.findContainersForLocation(location);
       if (files.length > 0) {
          for (int i = 0; i < files.length; i++)
-            path = files\[i\].getLocation();
+            path = files[i].getLocation();
       } else {
          for (int i = 0; i < folders.length; i++)
-            path = folders\[i\].getLocation();
+            path = folders[i].getLocation();
       }
 
 As this snippet shows, a single file-system location can correspond to multiple resources. This is true because linked resources can point to locations inside other projects. Of course, the same file-system location can't correspond to both files and folders at the same time.

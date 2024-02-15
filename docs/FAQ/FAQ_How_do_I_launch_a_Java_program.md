@@ -18,7 +18,7 @@ With those plug-ins added to your dependent plug-in list, your Java program can 
          IVMInstall vm = JavaRuntime.getVMInstall(proj);
          if (vm == null) vm = JavaRuntime.getDefaultVMInstall();
          IVMRunner vmr = vm.getVMRunner(ILaunchManager.RUN_MODE);
-         String\[\] cp = JavaRuntime.
+         String[] cp = JavaRuntime.
             computeDefaultRuntimeClassPath(proj);
          VMRunnerConfiguration config = 
             new VMRunnerConfiguration(main, cp);
@@ -54,5 +54,5 @@ More information is available at **Help > Help Contents > JDT Plug-in Developer 
 See Also:
 ---------
 
-[FAQ\_What\_is\_a\_launch_configuration?](./FAQ_What_is_a_launch_configuration.md "FAQ What is a launch configuration?")
+[FAQ What is a launch configuration?](./FAQ_What_is_a_launch_configuration.md "FAQ What is a launch configuration?")
 

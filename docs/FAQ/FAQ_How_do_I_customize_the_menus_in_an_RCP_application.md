@@ -10,7 +10,7 @@ Here is a simple example of an advisor that creates two menus-**Window** and **H
 
       public void fillActionBars(IWorkbenchWindow window,
          IActionBarConfigurer configurer, int flags) {
-         if ((flags & FILL\_MENU\_BAR) == 0)
+         if ((flags & FILL_MENU_BAR) == 0)
             return;
          IMenuManager mainMenu = configurer.getMenuManager();
          MenuManager windowMenu = new MenuManager("&Window", 
@@ -31,13 +31,13 @@ For simplicity, this snippet creates new actions each time fillActionBars is cal
       //configurer is provided by initialize method
       private IWorkbenchConfigurer configurer = ...;
       private static final String MENU_ACTIONS = &menu.actions&;
-      private IAction\[\] getMenuActions(IWorkbenchWindow window) {
+      private IAction[] getMenuActions(IWorkbenchWindow window) {
          IWorkbenchWindowConfigurer wwc =
             configurer.getWindowConfigurer(window);
-         IAction\[\] actions = (IAction\[\]) wwc.getData(MENU_ACTIONS);
+         IAction[] actions = (IAction[]) wwc.getData(MENU_ACTIONS);
          if (actions == null) {
             IAction max = ActionFactory.MAXIMIZE.create(window);
-            actions = new IAction\[\] {max};
+            actions = new IAction[] {max};
             wwc.setData(MENU_ACTIONS, actions);
          }
          return actions;
@@ -55,5 +55,5 @@ Note that WorkbenchAdvisor fillActionBars is deprecated and ActionBarAdvisor.fil
 See Also:
 ---------
 
-[FAQ\_How\_do\_I\_build\_menus\_and\_toolbars\_programmatically?](./FAQ_How_do_I_build_menus_and_toolbars_programmatically.md "FAQ How do I build menus and toolbars programmatically?")
+[FAQ How do I build menus and toolbars programmatically?](./FAQ_How_do_I_build_menus_and_toolbars_programmatically.md "FAQ How do I build menus and toolbars programmatically?")
 

@@ -1,5 +1,3 @@
-
-
 FAQ How do I find out what view or editor is selected?
 ======================================================
 
@@ -7,17 +5,17 @@ To find out what view or editor is selected, use the IPartService. As with ISele
 
 Two types of listeners can be added to the part service: IPartListener and the poorly named IPartListener2. You should always use this second one as it can handle part-change events on parts that have not yet been created because they are hidden in a stack behind another part. This listener will also tell you when a part is made visible or hidden or when an editor's input is changed:
 
-      IWorkbenchPage page = ...;
-      //the active part
-      IWorkbenchPart active = page.getActivePart();
-      //adding a listener
-      IPartListener2 pl = new IPartListener2() {
-         public void partActivated(IWorkbenchPartReference ref) {
-            System.out.println("Active: "+ref.getTitle());
-         }
-         ... other listener methods ...
-      };
-      page.addPartListener(pl);
+	      IWorkbenchPage page = ...;
+	      //the active part
+	      IWorkbenchPart active = page.getActivePart();
+	      //adding a listener
+	      IPartListener2 pl = new IPartListener2() {
+	         public void partActivated(IWorkbenchPartReference ref) {
+	            System.out.println("Active: "+ref.getTitle());
+	         }
+	         ... other listener methods ...
+	      };
+	      page.addPartListener(pl);
 
 IWorkbenchPage implements IPartService directly. You can also access a activation service by using IWorkbenchWindow.getPartService.
 

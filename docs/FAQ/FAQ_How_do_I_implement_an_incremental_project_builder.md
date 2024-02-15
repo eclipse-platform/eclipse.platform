@@ -21,7 +21,7 @@ To implement an incremental project builder, you first have to create an extensi
 The second step is to create a builder class that must extend the abstract IncrementalProjectBuilder superclass:
 
       public class Builder extends IncrementalProjectBuilder {   
-         protected IProject\[\] build(int kind, Map args, 
+         protected IProject[] build(int kind, Map args, 
          IProgressMonitor monitor) {
             if (kind == IncrementalProjectBuilder.FULL_BUILD) {
                fullBuild(monitor);

@@ -22,22 +22,22 @@ The cache has a startup method that loads the initial set of extensions and then
       public void startup() {
          IExtensionRegistry reg = Platform.getExtensionRegistry();
          IExtensionPoint pt = reg.getExtensionPoint(PT_ID);
-         IExtension\[\] ext = pt.getExtensions();
+         IExtension[] ext = pt.getExtensions();
          for (int i = 0; i < ext.length; i++)
-            extensions.add(ext\[i\]);
+            extensions.add(ext[i]);
          reg.addRegistryChangeListener(this);
       }
 
 The class implements the IRegistryChangeListener interface, which has a single method that is called whenever the registry changes:
 
       public void registryChanged(IRegistryChangeEvent event) {
-         IExtensionDelta\[\] deltas = 
+         IExtensionDelta[] deltas = 
                            event.getExtensionDeltas(PID, PT_ID);
          for (int i = 0; i < deltas.length; i++) {
-            if (deltas\[i\].getKind() == IExtensionDelta.ADDED)
-               extensions.add(deltas\[i\].getExtension());
+            if (deltas[i].getKind() == IExtensionDelta.ADDED)
+               extensions.add(deltas[i].getExtension());
             else
-               extensions.remove(deltas\[i\].getExtension());
+               extensions.remove(deltas[i].getExtension());
          }
       }
 
@@ -58,6 +58,6 @@ If you hold onto classes defined in other plug-ins through different mechanisms,
 See Also:
 ---------
 
-*   [FAQ\_What\_is\_a\_dynamic_plug-in?](./FAQ_What_is_a_dynamic_plug-in.md "FAQ What is a dynamic plug-in?")
-*   [FAQ\_How\_do\_I\_make\_my\_plug-in\_dynamic\_enabled?](./FAQ_How_do_I_make_my_plug-in_dynamic_enabled.md "FAQ How do I make my plug-in dynamic enabled?")
+*   [FAQ What is a dynamic plug-in?](./FAQ_What_is_a_dynamic_plug-in.md "FAQ What is a dynamic plug-in?")
+*   [FAQ How do I make my plug-in dynamic enabled?](./FAQ_How_do_I_make_my_plug-in_dynamic_enabled.md "FAQ How do I make my plug-in dynamic enabled?")
 
