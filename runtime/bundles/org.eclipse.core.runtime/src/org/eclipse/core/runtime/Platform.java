@@ -609,7 +609,7 @@ public final class Platform {
 	 * for data access and modifications.
 	 * This API will be deleted in a future release. See bug 370248 for details.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2024-03")
 	public static void addProtectionSpace(URL resourceUrl, String realm) throws CoreException {
 		AuthorizationHandler.addProtectionSpace(resourceUrl, realm);
 	}
