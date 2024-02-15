@@ -21,7 +21,7 @@ Although some of these performance enhancements can be added retroactively to yo
 See Also:
 ---------
 
-[FAQ Language integration phase 3: How do I edit programs?](./FAQ_Language_integration_phase_3:_How_do_I_edit_programs.md "FAQ Language integration phase 3: How do I edit programs?")
+[FAQ Language integration phase 3: How do I edit programs?](./FAQ_Language_integration_phase_3_How_do_I_edit_programs.md "FAQ Language integration phase 3: How do I edit programs?")
 
 [FAQ How do I create Java elements?](./FAQ_How_do_I_create_Java_elements.md "FAQ How do I create Java elements?")
 

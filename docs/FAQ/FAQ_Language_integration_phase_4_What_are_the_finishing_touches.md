@@ -1,9 +1,5 @@
-
-
 FAQ/Language integration/phase 4: What are the finishing touches?
 =================================================================
-
-< [FAQ](/FAQ "FAQ")(Redirected from [FAQ Language integration phase 4: What are the finishing touches?](/index.php?title=FAQ_Language_integration_phase_4:_What_are_the_finishing_touches%3F&redirect=no "FAQ Language integration phase 4: What are the finishing touches?"))
 
 After following the steps in phases 1 to 3, you have successfully written a compiler, a builder, a DOM, and an integrated editor. What remains are a few finishing touches:
 

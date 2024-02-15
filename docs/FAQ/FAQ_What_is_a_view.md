@@ -11,7 +11,7 @@ See Also:
 ---------
 
 *   [FAQ What is a viewer?](./FAQ_What_is_a_viewer.md "FAQ What is a viewer?")
-*   [FAQ Pages, parts, sites, windows: What is all this stuff?](./FAQ_Pages,_parts,_sites,_windows:_What_is_all_this_stuff.md "FAQ Pages, parts, sites, windows: What is all this stuff?")
+*   [FAQ Pages, parts, sites, windows: What is all this stuff?](./FAQ_Pages_parts_sites_windows_What_is_all_this_stuff.md "FAQ Pages, parts, sites, windows: What is all this stuff?")
 *   [FAQ What is the difference between a view and a viewer?](./FAQ_What_is_the_difference_between_a_view_and_a_viewer.md "FAQ What is the difference between a view and a viewer?")
 *   [FAQ What is the difference between a view and an editor?](./FAQ_What_is_the_difference_between_a_view_and_an_editor.md "FAQ What is the difference between a view and an editor?")
 

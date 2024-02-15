@@ -24,7 +24,8 @@ Keyboard shortcuts can also be created by defining a _key sequence_, using the o
 
 You can also define a key binding that applies only to a particular locale or platform. For example, you can define an accelerator that applies only to a German Linux GTK installation of Eclipse. See the command extension point documentation for more details on these advanced features.
 
-The following is an example key-binding definition. This binding sets up a toggle comment accelerator for a hypothetical [AMPLE](http://en.wikipedia.org/wiki/AMPLE) language editor, which by default has no key binding:
+The following is an example key-binding definition. 
+This binding sets up a toggle comment accelerator for a hypothetical AMPLE language editor, which by default has no key binding:
 
 		<extension point="org.eclipse.ui.bindings">
 			<key sequence="Ctrl+7"

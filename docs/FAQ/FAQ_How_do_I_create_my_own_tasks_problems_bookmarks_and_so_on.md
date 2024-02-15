@@ -20,7 +20,7 @@ See Also:
 
 *   [FAQ How can I be notified of changes to the workspace?](./FAQ_How_can_I_be_notified_of_changes_to_the_workspace.md "FAQ How can I be notified of changes to the workspace?")
 *   [FAQ Why don't my markers appear in the editor's vertical ruler?](./
-FAQ_Why_don%27t_my_markers_appear_in_the_editor%27s_vertical_ruler.md  "FAQ Why don't my markers appear in the editor's vertical ruler?")
+FAQ_Why_dont_my_markers_appear_in_the_editors_vertical_ruler.md  "FAQ Why don't my markers appear in the editor's vertical ruler?")
 *   [FAQ How do I create problem markers for my compiler?](./FAQ_How_do_I_create_problem_markers_for_my_compiler.md "FAQ How do I create problem markers for my compiler?")
 *   Go to **Platform Plug-in Developer Guide > Programmer's Guide > Resources overview > Resource markers**
 *   Eclipse online article ["Mark My Words"](https://www.eclipse.org/articles/Article-Mark%20My%20Words/mark-my-words.html)

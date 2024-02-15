@@ -12,5 +12,5 @@ Normally, you can use the build.xml file that is automatically generated for you
 See Also:
 ---------
 
-*   [FAQ What is the use of the build.xml file?](./FAQ_What_is_the_use_of_the_build.xml_file.md "FAQ What is the use of the build.xml file?")
+*   [FAQ What is the use of the build.xml file?](./FAQ_What_is_the_use_of_the_build_xml_file.md "FAQ What is the use of the build.xml file?")
 

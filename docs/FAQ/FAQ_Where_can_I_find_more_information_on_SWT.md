@@ -13,9 +13,13 @@ Contents
 Books
 -----
 
-Before 2004, comprehensive information on SWT was not available outside the SWT source code and javadoc itself. This situation changed in 2004 with the publication of _SWT: The Standard Widget Toolkit_ in the Addison-Wesley Eclipse Series. This book was written by Steve Northover and Mike Wilson, two of the original architects and developers of SWT. When the acronym first appeared, it was jokingly referred to as Steve's Widget Toolkit.
+Before 2004, comprehensive information on SWT was not available outside the SWT source code and javadoc itself. 
+This situation changed in 2004 with the publication of _SWT: The Standard Widget Toolkit_ in the Addison-Wesley Eclipse Series. 
+This book was written by Steve Northover and Mike Wilson, two of the original architects and developers of SWT. 
+When the acronym first appeared, it was jokingly referred to as Steve's Widget Toolkit.
 
-Nobody knows SWT better than these authors, and their book is the most authoritative guide to the subject. If you're doing extensive development using SWT, it's indispensable. Volume 2 of their book is forthcoming.
+Nobody knows SWT better than these authors, and their book is the most authoritative guide to the subject. 
+If you're doing extensive development using SWT, it's indispensable. Volume 2 of their book is forthcoming.
 
 Several other Eclipse books include a chapter or more on SWT:
 
@@ -27,27 +31,36 @@ Several other Eclipse books include a chapter or more on SWT:
 Web sites
 ---------
 
-The information hub for SWT is the [SWT development team home page](https://eclipse.org/swt). The main page has a basic SWT overview, and the Development Resources page has loads more information, including a comprehensive library of stand-alone SWT programs--called snippets--illustrating many of the important concepts in SWT. This page also hosts the official SWT FAQ maintained by the SWT development team, as well as development plans, platform porting status, and much more.
+The information hub for SWT is the [SWT development team home page](https://eclipse.org/swt). 
+The main page has a basic SWT overview, and the Development Resources page has loads more information, including a comprehensive library of stand-alone SWT programs--called snippets--illustrating many of the important concepts in SWT. 
+This page also hosts the official SWT FAQ maintained by the SWT development team, as well as development plans, platform porting status, and much more.
 
-The [home page for the SWT and JFace portion of the Eclipse wiki](http://wiki.eclipse.org/SWT) (www.eclipse-wiki.info) has links to other resource pages, but some information is here, along with a collection of FAQs.
+The home page for SWT and JFace has links to other resource pages, but some information is here, along with a collection of FAQs.
 
-The site [SWT Workbench](http://www.swtworkbench.com) is hosted by a company that does consulting and develops commercial SWT products. Its community page has discussion forums, news, links, and more, with a particular emphasis on SWT.
 
 Articles
 --------
 
-The first place to look for articles is the articles page on eclipse.org. We won't bother listing all the articles here as the list would probably be stale by the time this book goes to print. Of particular note is the two-part article entitled 'SWT: The Standard Widget Toolkit.' These articles were written by the SWT development team to describe some of the design rationale behind the project. The CD included with this book has PDF versions of all the articles, captured in May, 2004.
+The first place to look for articles is the articles page on eclipse.org. 
+We won't bother listing all the articles here as the list would probably be stale by the time this book goes to print. 
+Of particular note is the two-part article entitled 'SWT: The Standard Widget Toolkit.' 
+These articles were written by the SWT development team to describe some of the design rationale behind the project. 
+The CD included with this book has PDF versions of all the articles, captured in May, 2004.
 
-[IBM developerWorks](http://www.ibm.com/developerworks) also has some technical articles focusing on SWT: 'Using JFace and SWT in stand-alone mode,' and 'How to Deploy an SWT application using Java Web Start.'
 
 Discussion forums
 -----------------
 
-The main forum for discussion of SWT is the eclipse.platform.swt newsgroup. This is the place to go for all kinds of SWT questions for users of all levels, from novices taking their first steps with SWT to highly experienced SWT developers. The SWT develoment team regularly reads this newsgroup, so you can be sure of authoritative answers. Be sure to do a [quick search](https://www.eclipse.org/search/search.cgi), before posting, to avoid asking a question that's been asked before.
+The main forum for discussion of SWT is the eclipse.platform.swt newsgroup. 
+This is the place to go for all kinds of SWT questions for users of all levels, from novices taking their first steps with SWT to highly experienced SWT developers. 
+The SWT develoment team regularly reads this newsgroup, so you can be sure of authoritative answers. 
+Be sure to do a [quick search](https://www.eclipse.org/search/search.cgi), before posting, to avoid asking a question that's been asked before.
 
-The platform-swt-dev mailing list is for discussion among members of the SWT development team and other contributors to SWT. If you are fixing SWT bugs, porting SWT to another platform, or looking for solutions to advanced questions that have not been answered on the newsgroup, you are welcome to ask here. SWT users are welcome to subscribe and follow along with the discussion, but to avoid cluttering the developer list, please use the newsgroup for your questions.
+The platform-swt-dev mailing list is for discussion among members of the SWT development team and other contributors to SWT. 
+If you are fixing SWT bugs, porting SWT to another platform, or looking for solutions to advanced questions that have not been answered on the newsgroup, you are welcome to ask here. 
+SWT users are welcome to subscribe and follow along with the discussion, but to avoid cluttering the developer list, please use the newsgroup for your questions.
 
-Some other Java forums have been known to host discussion threads on SWT. Unfortunately, these forums can sometimes deteriorate into flame wars on Swing versus SWT. One notable example is [javalobby](http://www.javalobby.org), which has had several SWT discussion threads.
+Some other Java forums have been known to host discussion threads on SWT. Unfortunately, these forums can sometimes deteriorate into flame wars on Swing versus SWT. 
 
 See Also
 --------

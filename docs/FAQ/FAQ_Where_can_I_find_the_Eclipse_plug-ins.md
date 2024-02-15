@@ -20,5 +20,5 @@ It may be a struggle to keep your workspace error free when you bring in only po
 See Also:
 ---------
 
-*   [FAQ When does PDE change a plug-in's Java build path?](./FAQ_When_does_PDE_change_a_plug-in%27s_Java_build_path.md "FAQ When does PDE change a plug-in's Java build path?")
+*   [FAQ When does PDE change a plug-in's Java build path?](./FAQ_When_does_PDE_change_a_plug-ins_Java_build_path.md "FAQ When does PDE change a plug-in's Java build path?")
 

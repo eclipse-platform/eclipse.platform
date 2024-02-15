@@ -32,7 +32,7 @@ See Also:
 \[\[FAQ\_How\_do\_I\_add\_an\_extra\_library\_to\_my\_project%26%23146%3Bs_classpath%3F\]\]
 
   
-[FAQ\_My\_runtime\_workbench\_runs,\_but\_my\_plug-in\_does\_not\_show._Why?](./FAQ_My_runtime_workbench_runs,_but_my_plug-in_does_not_show._Why.md "FAQ My runtime workbench runs, but my plug-in does not show. Why?")
+[FAQ\_My\_runtime\_workbench\_runs,\_but\_my\_plug-in\_does\_not\_show._Why?](./FAQ_My_runtime_workbench_runs_but_my_plug-in_does_not_show.md "FAQ My runtime workbench runs, but my plug-in does not show. Why?")
 
   
 \[\[FAQ\_When\_does\_PDE\_change\_a\_plug-in%26%23146%3Bs\_Java\_build_path%3F\]\]

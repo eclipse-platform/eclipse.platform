@@ -36,6 +36,6 @@ See Also:
 ---------
 
   \* [FAQ How do I implement Quick Fixes for my own language?](./FAQ_How_do_I_implement_Quick_Fixes_for_my_own_language.md "FAQ How do I implement Quick Fixes for my own language?")
-  \* Mark My Words \[[\[1\]](https://www.eclipse.org/articles/Article-Mark%20My%20Words/mark-my-words.html)\]
+  \* [Mark My Words](https://www.eclipse.org/articles/Article-Mark%20My%20Words/mark-my-words.html)
 
 

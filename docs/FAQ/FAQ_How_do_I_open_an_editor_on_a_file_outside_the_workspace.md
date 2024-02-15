@@ -41,7 +41,7 @@ Alternatively, you can create a _linked resource_ in an existing project, which 
 See Also:
 ---------
 
-*   [FAQ How do I accommodate project layouts that don't fit the Eclipse model?](./FAQ_How_do_I_accommodate_project_layouts_that_don%27t_fit_the_Eclipse_model.md "FAQ How do I accommodate project layouts that don't fit the Eclipse model?")
+*   [FAQ How do I accommodate project layouts that don't fit the Eclipse model?](./FAQ_How_do_I_accommodate_project_layouts_that_dont_fit_the_Eclipse_model.md "FAQ How do I accommodate project layouts that don't fit the Eclipse model?")
 *   [FAQ How do I open an editor programmatically?](./FAQ_How_do_I_open_an_editor_programmatically.md "FAQ How do I open an editor programmatically?")
 *   [FAQ How do I open an editor on something that is not a file?](./FAQ_How_do_I_open_an_editor_on_something_that_is_not_a_file.md "FAQ How do I open an editor on something that is not a file?")
 

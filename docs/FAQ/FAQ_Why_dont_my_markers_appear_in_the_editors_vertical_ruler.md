@@ -15,5 +15,5 @@ Text editors in Eclipse can display markers in a number of ways. Most commonly, 
 See Also:
 ---------
 
-[FAQ How do I create my own tasks, problems, bookmarks, and so on?](./FAQ_How_do_I_create_my_own_tasks,_problems,_bookmarks,_and_so_on.md "FAQ How do I create my own tasks, problems, bookmarks, and so on?")
+[FAQ How do I create my own tasks, problems, bookmarks, and so on?](./FAQ_How_do_I_create_my_own_tasks_problems_bookmarks_and_so_on.md "FAQ How do I create my own tasks, problems, bookmarks, and so on?")
 

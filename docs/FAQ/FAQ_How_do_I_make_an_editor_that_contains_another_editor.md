@@ -14,5 +14,5 @@ The simplest way to get going with a multi-page editor is to edit your plugin.xm
 See Also:
 ---------
 
-*   [FAQ How do I create a form-based editor, such as the plug-in Manifest Editor?](./FAQ_How_do_I_create_a_form-based_editor,_such_as_the_plug-in_Manifest_Editor.md "FAQ How do I create a form-based editor, such as the plug-in Manifest Editor?")
+*   [FAQ How do I create a form-based editor, such as the plug-in Manifest Editor?](./FAQ_How_do_I_create_a_form-based_editor_such_as_the_plug-in_Manifest_Editor.md "FAQ How do I create a form-based editor, such as the plug-in Manifest Editor?")
 

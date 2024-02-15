@@ -42,6 +42,6 @@ We explicitly pass the VM because on Windows you have to use java.exe instead of
 See Also:
 ---------
 
-*   [FAQ Where can I find that elusive .log file?](./FAQ_Where_can_I_find_that_elusive_.log_file.md "FAQ Where can I find that elusive .log file?")
+*   [FAQ Where can I find that elusive .log file?](./FAQ_Where_can_I_find_that_elusive_log_file.md "FAQ Where can I find that elusive .log file?")
 *   [Platform UI Error Handling](/Platform_UI_Error_Handling "Platform UI Error Handling")
 

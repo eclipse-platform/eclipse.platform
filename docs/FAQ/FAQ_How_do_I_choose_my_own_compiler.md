@@ -17,5 +17,5 @@ Using the Preference page, you can also select the JDK compliance level of the c
 See Also:
 ---------
 
-[FAQ Why can't my Ant build find javac?](FAQ_Why_can't_my_Ant_build_find_javac.md)
+[FAQ Why can't my Ant build find javac?](FAQ_Why_cant_my_Ant_build_find_javac.md)
 

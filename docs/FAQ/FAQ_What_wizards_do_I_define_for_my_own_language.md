@@ -18,5 +18,4 @@ See Also:
 
 *   [FAQ\_What\_is\_a\_wizard?](./FAQ_What_is_a_wizard.md "FAQ What is a wizard?")
 *   [FAQ\_When\_does\_my\_language\_need\_its\_own\_nature?](./FAQ_When_does_my_language_need_its_own_nature.md "FAQ When does my language need its own nature?")
-*   [Eclipse online article Creating JFace Wizards](https://www.eclipse.org/articles/Article-JFace%20Wizards/wizardArticle.html)
 

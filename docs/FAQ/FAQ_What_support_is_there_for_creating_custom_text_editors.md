@@ -42,7 +42,7 @@ This plug-in provides the main concrete editor in the base Eclipse Platform: the
 See Also:
 ---------
 
-[FAQ I'm still confused. How do all the editor pieces fit together?](./FAQ_I%27m_still_confused!_How_do_all_the_editor_pieces_fit_together.md "FAQ I'm still confused! How do all the editor pieces fit together?")
+[FAQ I'm still confused. How do all the editor pieces fit together?](./FAQ_Im_still_confused_How_do_all_the_editor_pieces_fit_together.md "FAQ I'm still confused! How do all the editor pieces fit together?")
 
 [FAQ How do I get started with creating a custom text editor?](./FAQ_How_do_I_get_started_with_creating_a_custom_text_editor.md "FAQ How do I get started with creating a custom text editor?")
 

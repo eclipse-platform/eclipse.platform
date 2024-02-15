@@ -17,7 +17,6 @@ See Also:
 ---------
 
 *   [FAQ How do I upgrade Eclipse?](./FAQ_How_do_I_upgrade_Eclipse.md "FAQ How do I upgrade Eclipse?")
-*   [FAQ How do I update Eclipse?](./FAQ_How_do_I_update_Eclipse.md "FAQ How do I update Eclipse?")
 *   [FAQ How do I create a plug-in?](./FAQ_How_do_I_create_a_plug-in.md "FAQ How do I create a plug-in?")
 *   [FAQ How do I create a feature?](./FAQ_How_do_I_create_a_feature.md "FAQ How do I create a feature?")
 *   [FAQ How do I create an update site?](./FAQ_How_do_I_create_an_update_site.md "FAQ How do I create an update site?")

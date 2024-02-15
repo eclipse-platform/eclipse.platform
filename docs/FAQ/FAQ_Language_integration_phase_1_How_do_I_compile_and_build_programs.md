@@ -1,9 +1,6 @@
-
-
 FAQ/Language integration/phase 1: How do I compile and build programs?
 ======================================================================
 
-< [FAQ](/FAQ "FAQ")(Redirected from [FAQ Language integration phase 1: How do I compile and build programs?](/index.php?title=FAQ_Language_integration_phase_1:_How_do_I_compile_and_build_programs%3F&redirect=no "FAQ Language integration phase 1: How do I compile and build programs?"))
 
 Phase 1 of language integration with Eclipse focuses on compilation of source files and building projects. We can distinguish the following individual steps/approaches to obtain complete integration:
 
@@ -17,5 +14,6 @@ Phase 1 of language integration with Eclipse focuses on compilation of source fi
 
 *   _Implement an Eclipse builder._ Builders are invoked on a project when any of its resources are changed or when the user manually requests a project to be rebuilt. Multiple builders can be registered on a project, and integration of a compiler into a build process is worth considering owing to its many benefits. For more details, see [FAQ\_How\_do\_I\_implement\_an\_Eclipse_builder?](./FAQ_How_do_I_implement_an_Eclipse_builder.md "FAQ How do I implement an Eclipse builder?")
 
-After following these steps, you are _almost_ ready to focus on writing an editor. First, you have to look at [FAQ\_Language\_integration\_phase\_2:\_How\_do\_I\_implement\_a\_DOM?](./FAQ_Language_integration_phase_2:_How_do_I_implement_a_DOM.md "FAQ Language integration phase 2: How do I implement a DOM?")
+After following these steps, you are _almost_ ready to focus on writing an editor. 
+First, you have to look at [FAQ Language integration phase 2: How do I implement a DOM?](./FAQ_Language_integration_phase_2_How_do_I_implement_a_DOM.md "FAQ Language integration phase 2: How do I implement a DOM?")
 

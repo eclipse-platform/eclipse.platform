@@ -17,5 +17,5 @@ See Also:
 ---------
 
 *   [FAQ What is the advantage of sharing the project file in a repository?](./FAQ_What_is_the_advantage_of_sharing_the_project_file_in_a_repository.md "FAQ What is the advantage of sharing the project file in a repository?")
-*   [FAQ What is the function of the .cvsignore file?](./FAQ_What_is_the_function_of_the_.cvsignore_file.md "FAQ What is the function of the .cvsignore file?")
+*   [FAQ What is the function of the .cvsignore file?](./FAQ_What_is_the_function_of_the_cvsignore_file.md "FAQ What is the function of the .cvsignore file?")
 
