@@ -21,6 +21,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
+import java.security.ProviderException;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.util.ArrayList;
@@ -169,6 +170,10 @@ public enum AuthenticationBase implements AuthenticationService {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 				errorMessage=e.getMessage();
+			} catch (ProviderException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				errorMessage=e.getMessage()+" No PKCS11 Configuration found.";
 			}
 			Optional<String> errorContainer = Optional.ofNullable(errorMessage);
 			if ( !(errorContainer.isEmpty())) {
