@@ -1232,6 +1232,7 @@ public class CertificateSelectionPage extends WizardPage  {
         	if ( VendorImplementation.getInstance().isInstalled()) {
         		System.out.println("CertificateSelectionPage --  --selectFromPkcs11Store installed");
         		list = new ArrayList<String>(VendorImplementation.getInstance().getList());
+        		LogUtil.logInfo("CertificateSelectionPage - selectFromPkcs11Store list from cac:"+list.size());
         		Iterator<String>it = list.iterator();
         		int i=0;
         		if ( list.isEmpty() ) {

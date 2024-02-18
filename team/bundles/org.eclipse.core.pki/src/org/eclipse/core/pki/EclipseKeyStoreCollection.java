@@ -11,6 +11,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import org.eclipse.core.pki.pkiselection.PKIProperties;
+import org.eclipse.core.pki.util.LogUtil;
 
 
 public enum EclipseKeyStoreCollection {
@@ -49,6 +50,10 @@ public enum EclipseKeyStoreCollection {
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		LogUtil.logInfo("EclipseKeyStoreCollection list COUNT:"+list.size() );
+		if (!( list.isEmpty())) {
+			LogUtil.logInfo("EclipseKeyStoreCollection list item:"+list.get(0));
 		}
 		return list;
 		
