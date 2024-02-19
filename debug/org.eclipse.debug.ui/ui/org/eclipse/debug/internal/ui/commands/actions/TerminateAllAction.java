@@ -13,6 +13,11 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.commands.actions;
 
+import java.util.Arrays;
+
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
@@ -22,9 +27,11 @@ import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.actions.ActionMessages;
 import org.eclipse.debug.ui.actions.DebugCommandAction;
+import org.eclipse.debug.ui.contexts.DebugContextEvent;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
@@ -49,9 +56,7 @@ public class TerminateAllAction extends DebugCommandAction implements ILaunchesL
 	private void attachSelfToLaunchManager() {
 		ILaunchManager launchManager = getLaunchManager();
 		launchManager.addLaunchListener(this);
-		// heuristic... rather than updating all the time, just assume there's
-		// something that's not terminated.
-		setEnabled(launchManager.getLaunches().length > 0);
+		setEnabled(canTerminate());
 	}
 
 	private ILaunchManager getLaunchManager() {
@@ -103,12 +108,12 @@ public class TerminateAllAction extends DebugCommandAction implements ILaunchesL
 
 	@Override
 	public void launchesTerminated(ILaunch[] launches) {
-		setEnabled(getLaunchManager().getLaunches().length > 0);
+		setEnabled(canTerminate());
 	}
 
 	@Override
 	public void launchesAdded(ILaunch[] launches) {
-		setEnabled(true);
+		setEnabled(canTerminate());
 	}
 
 	@Override
@@ -117,7 +122,7 @@ public class TerminateAllAction extends DebugCommandAction implements ILaunchesL
 
 	@Override
 	public void launchesRemoved(ILaunch[] launches) {
-		setEnabled(getLaunchManager().getLaunches().length > 0);
+		setEnabled(canTerminate());
 	}
 
 	@Override
@@ -135,5 +140,33 @@ public class TerminateAllAction extends DebugCommandAction implements ILaunchesL
 	public void init(IWorkbenchWindow window) {
 		super.init(window);
 		attachSelfToLaunchManager();
+	}
+
+	@Override
+	protected boolean getInitialEnablement() {
+		return canTerminate();
+	}
+
+	private boolean canTerminate() {
+		return Arrays.stream(getLaunchManager().getLaunches()).anyMatch(ILaunch::canTerminate);
+	}
+
+	@Override
+	public void runWithEvent(Event event) {
+		for (ILaunch l : getLaunchManager().getLaunches()) {
+			try {
+				if (l.canTerminate()) {
+					l.terminate();
+				}
+			} catch (DebugException e) {
+				ILog.get().log(Status.warning("Unable to terminate launch: " + e.getMessage(), e)); //$NON-NLS-1$
+			}
+		}
+		setEnabled(canTerminate());
+	}
+
+	@Override
+	public void debugContextChanged(DebugContextEvent event) {
+		setEnabled(canTerminate());
 	}
 }
