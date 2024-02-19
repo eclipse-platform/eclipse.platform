@@ -17,8 +17,10 @@ package org.eclipse.debug.core;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -66,7 +68,7 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	/**
 	 * The configuration that was launched, or null.
 	 */
-	private ILaunchConfiguration fConfiguration= null;
+	private volatile ILaunchConfiguration fConfiguration = null;
 
 	/**
 	 * The system processes associated with
@@ -78,7 +80,7 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	 * The source locator to use in the debug session
 	 * or <code>null</code> if not supported.
 	 */
-	private ISourceLocator fLocator= null;
+	private volatile ISourceLocator fLocator = null;
 
 	/**
 	 * The mode this launch was launched in.
@@ -88,7 +90,7 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	/**
 	 * Table of client defined attributes
 	 */
-	private HashMap<String, String> fAttributes;
+	private final Map<String, String> fAttributes = new ConcurrentHashMap<>();
 
 	/**
 	 * Flag indicating that change notification should
@@ -319,10 +321,13 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	 */
 	@Override
 	public void setAttribute(String key, String value) {
-		if (fAttributes == null) {
-			fAttributes = new HashMap<>(5);
+		Objects.requireNonNull(key);
+		if (value == null) {
+			// ConcurrentHashMap does not allow null values
+			fAttributes.remove(key);
+		} else {
+			fAttributes.put(key, value);
 		}
-		fAttributes.put(key, value);
 	}
 
 	/**
@@ -330,9 +335,6 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	 */
 	@Override
 	public String getAttribute(String key) {
-		if (fAttributes == null) {
-			return null;
-		}
 		return fAttributes.get(key);
 	}
 
@@ -343,7 +345,7 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 	public IDebugTarget[] getDebugTargets() {
 		readLock.lock();
 		try {
-			return fTargets.toArray(new IDebugTarget[fTargets.size()]);
+			return fTargets.toArray(IDebugTarget[]::new);
 		} finally {
 			readLock.unlock();
 		}

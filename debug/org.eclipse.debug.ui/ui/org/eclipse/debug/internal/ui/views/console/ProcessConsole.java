@@ -248,8 +248,6 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 
 		colorProvider.connect(fProcess, this);
 
-		setName(computeName());
-
 		Color color = fColorProvider.getColor(IDebugUIConstants.ID_STANDARD_INPUT_STREAM);
 		if (fInput instanceof IOConsoleInputStream) {
 			((IOConsoleInputStream)fInput).setColor(color);
@@ -556,6 +554,9 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	protected void init() {
 		super.init();
 		DebugPlugin.getDefault().addDebugEventListener(this);
+		// computeName() after addDebugEventListener()
+		// see https://github.com/eclipse-jdt/eclipse.jdt.debug/issues/390
+		setName(computeName());
 		if (fProcess.isTerminated()) {
 			closeStreams();
 			resetName();
