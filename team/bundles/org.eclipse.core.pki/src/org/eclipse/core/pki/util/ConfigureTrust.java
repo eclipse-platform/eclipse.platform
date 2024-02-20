@@ -16,7 +16,10 @@ package org.eclipse.core.pki.util;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -47,8 +50,10 @@ public enum ConfigureTrust implements X509TrustManager {
 			} else {
 				storeLocation = trustStoreFile.get().toString();
 			}
-			FileInputStream fs = new FileInputStream(storeLocation);
+			//FileInputStream fs = new FileInputStream(storeLocation);
 
+			InputStream fs = Files.newInputStream(Paths.get(storeLocation));
+			
 			Optional<String> trustStoreFileType = Optional
 					.ofNullable(System.getProperty("javax.net.ssl.trustStoreType")); //$NON-NLS-1$
 			if (trustStoreFileType.isEmpty()) {
@@ -61,6 +66,9 @@ public enum ConfigureTrust implements X509TrustManager {
 			Optional<String> trustStorePassword = Optional
 					.ofNullable(System.getProperty("javax.net.ssl.trustStorePassword")); //$NON-NLS-1$
 			if (trustStorePassword.isEmpty()) {
+				LogUtil.logInfo("ConfigureTrust using default Password since none provided.");
+				passwd="changeit";
+			} else {
 				passwd = trustStorePassword.get().toString();
 			}
 
@@ -80,19 +88,19 @@ public enum ConfigureTrust implements X509TrustManager {
 
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
-			LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
+			LogUtil.logError("ConfigureTrust - No algorythm found, ", e); //$NON-NLS-1$
 		} catch (KeyStoreException e) {
 			// TODO Auto-generated catch block
-			LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
+			LogUtil.logError("ConfigureTrust - Initialize keystore Error, ", e); //$NON-NLS-1$
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
+			LogUtil.logError("ConfigureTrust - No File Found:", e); //$NON-NLS-1$
 		} catch (CertificateException e) {
 			// TODO Auto-generated catch block
-			LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
+			LogUtil.logError("ConfigureTrust - Certificate Error", e); //$NON-NLS-1$
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			LogUtil.logError("Initialization Error", e); //$NON-NLS-1$
+			LogUtil.logError("ConfigureTrust - I/O Error, bad password?", e); //$NON-NLS-1$
 		}
 		return Optional.ofNullable(pkixTrustManager);
 	}
