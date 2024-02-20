@@ -61,7 +61,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			//LogUtil.logInfo("Before configure keyStore with PIN:"+pin); //$NON-NLS-1$
 			
 			Optional<KeyStore>keyStoreContainer = Optional.ofNullable(configure());
-			LogUtil.logInfo("Before configured keyStore with PIN:"+pin); //$NON-NLS-1$
+			//LogUtil.logInfo("Before configured keyStore with PIN:"+pin); //$NON-NLS-1$
 			if (keyStoreContainer.isEmpty() ) {
 				return null;
 			} else {
