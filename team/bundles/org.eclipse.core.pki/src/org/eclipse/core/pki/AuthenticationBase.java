@@ -153,23 +153,23 @@ public enum AuthenticationBase implements AuthenticationService {
 			} catch (KeyStoreException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
-				errorMessage=e.getMessage();
+				errorMessage=e.getMessage()+" Problem loading the keystore.";
 			} catch (InvalidParameterException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
-				errorMessage=e.getMessage();
+				errorMessage=e.getMessage()+" YOu have provided an invalid parameter.";
 			} catch (UnsupportedOperationException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
-				errorMessage=e.getMessage();
+				errorMessage=e.getMessage()+" Operation is not supported at this time.";
 			} catch (NullPointerException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
-				errorMessage=e.getMessage();
+				errorMessage=e.getMessage()+" A Null Pointer was found.";
 			} catch (NoSuchProviderException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
-				errorMessage=e.getMessage();
+				errorMessage=e.getMessage()+" The PKCS11 provider could not be found.";
 			} catch (ProviderException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
