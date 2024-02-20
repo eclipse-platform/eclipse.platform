@@ -61,6 +61,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			//LogUtil.logInfo("Before configure keyStore with PIN:"+pin); //$NON-NLS-1$
 			
 			Optional<KeyStore>keyStoreContainer = Optional.ofNullable(configure());
+			LogUtil.logInfo("Before configured keyStore with PIN:"+pin); //$NON-NLS-1$
 			if (keyStoreContainer.isEmpty() ) {
 				return null;
 			} else {
@@ -157,7 +158,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			} catch (InvalidParameterException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
-				errorMessage=e.getMessage()+" YOu have provided an invalid parameter.";
+				errorMessage=e.getMessage()+" You have provided an invalid parameter.";
 			} catch (UnsupportedOperationException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
