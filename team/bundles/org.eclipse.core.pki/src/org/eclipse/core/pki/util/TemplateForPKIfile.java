@@ -24,18 +24,23 @@ public enum TemplateForPKIfile {
 	CREATION;
 	public final String hashTag = "############################################################"; //$NON-NLS-1$
 	public final String shortHashTag = "################"; //$NON-NLS-1$
+	public static final String DotEclipse = ".eclipse";
 	public final String USER_HOME = System.getProperty("user.home"); //$NON-NLS-1$
 	Path userM2Home = null;
 	public void setup() {
-		userM2Home = Paths.get(USER_HOME + FileSystems.getDefault().getSeparator() + ".m2" + //$NON-NLS-1$
-				FileSystems.getDefault().getSeparator() + ".pki"); //$NON-NLS-1$
-		if (!(Files.exists(userM2Home))) {
-			userM2Home = Paths.get(USER_HOME + FileSystems.getDefault().getSeparator() + ".m2" + //$NON-NLS-1$
-					FileSystems.getDefault().getSeparator() + "pki.template"); //$NON-NLS-1$
-			if (!(Files.exists(userM2Home))) {
-				createTemplate(userM2Home);
+		try {
+			Path path = Paths.get(USER_HOME+
+					FileSystems.getDefault().getSeparator()+DotEclipse+
+					FileSystems.getDefault().getSeparator()+
+					"pki.template");
+			if (!(Files.exists(path))) {
+				createTemplate(path);
 			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 	public void createTemplate(Path path) {
 		String editTag = "Edit this File, Save as .pki"; //$NON-NLS-1$

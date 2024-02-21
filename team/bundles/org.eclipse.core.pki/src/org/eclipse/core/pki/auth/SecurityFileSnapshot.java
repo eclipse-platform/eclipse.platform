@@ -26,7 +26,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFilePermission;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
@@ -35,33 +37,52 @@ import java.util.Set;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.pki.util.NormalizeGCM;
 import org.eclipse.core.pki.util.SecureGCM;
+import org.eclipse.core.pki.util.TemplateForPKIfile;
 
 public enum SecurityFileSnapshot {
 	INSTANCE;
 	Path pkiFile = null;
 	Path userM2Home = null;
+	Path userHome = null;
+	Path userDotEclipseHome = null;
+	Properties originalProperties = new Properties();
+	public static final String DotEclipse = ".eclipse";
 	public static final String USER_HOME = System.getProperty("user.home"); //$NON-NLS-1$
 	public boolean image() {
 		/*
 		 * CHeck if .pki file is present.
 		 */
 		try {
-			Optional<String> m2Home = Optional.ofNullable(System.getProperty("M2_HOME")); //$NON-NLS-1$
-			if (m2Home.isEmpty()) {
-				// No M2_HOME is set so figure out where it is, check HOME first.
-				userM2Home = Paths.get(USER_HOME + FileSystems.getDefault().getSeparator() + ".m2"); //$NON-NLS-1$
-			} else {
-				userM2Home = Paths.get(m2Home.get().toString());
-			}
-			pkiFile = Paths.get(userM2Home.toString() + FileSystems.getDefault().getSeparator() + ".pki"); //$NON-NLS-1$
-
+			Optional<Boolean> eclipseHome = Optional.ofNullable(Files.exists(Paths.get(USER_HOME))); //$NON-NLS-1$
+			if(!(eclipseHome.isEmpty())) {
+				if (Files.exists(Paths.get(USER_HOME+
+						FileSystems.getDefault().getSeparator()+DotEclipse+
+						FileSystems.getDefault().getSeparator()+
+						".pki"))) {
+					
+					userDotEclipseHome=Paths.get(USER_HOME+
+							FileSystems.getDefault().getSeparator()+DotEclipse+
+							FileSystems.getDefault().getSeparator()+
+							".pki");
+				} else {
+					LogUtil.logWarning("NO PKI file detected");
+					/*
+					 * Files.createFile(Paths.get(USER_HOME+
+					 * FileSystems.getDefault().getSeparator()+DotEclipse+
+					 * FileSystems.getDefault().getSeparator()+ ".pki"));
+					 */
+					TemplateForPKIfile.CREATION.setup();
+					return false;
+				}
+			} 
+			
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		isSecurityFileRequired(""); //$NON-NLS-1$
-		if (Files.exists(pkiFile)) {
-			LogUtil.logWarning("A PKI file detected;" + pkiFile.toString()); //$NON-NLS-1$
+		if (Files.exists(userDotEclipseHome)) {
+			LogUtil.logWarning("A PKI file detected;" + userDotEclipseHome.toString()); //$NON-NLS-1$
 			return true;
 		}
 		return false;
@@ -71,10 +92,11 @@ public enum SecurityFileSnapshot {
 		Properties properties = new Properties();
 		String passwd = null;
 		try {
-			FileChannel fileChannel = FileChannel.open(pkiFile, StandardOpenOption.READ);
-			FileChannel updateChannel = FileChannel.open(pkiFile, StandardOpenOption.WRITE);
+			FileChannel fileChannel = FileChannel.open(userDotEclipseHome, StandardOpenOption.READ);
+			FileChannel updateChannel = FileChannel.open(userDotEclipseHome, StandardOpenOption.WRITE);
 			FileLock lock = fileChannel.lock(0L, Long.MAX_VALUE,true);
 			properties.load(Channels.newInputStream(fileChannel));
+			originalProperties.putAll(properties);
 			for ( Entry<Object,Object>entry:properties.entrySet()) {
 				entry.setValue(entry.getValue().toString().trim());
 			}
@@ -113,7 +135,23 @@ public enum SecurityFileSnapshot {
 
 	}
 
-	//@SuppressWarnings("unused")
+	public void restoreProperties() {
+		try {
+			Files.deleteIfExists(userDotEclipseHome);
+			Files.createFile(userDotEclipseHome);
+			FileChannel updateChannel = FileChannel.open(userDotEclipseHome, StandardOpenOption.WRITE);
+			OutputStream os = Channels.newOutputStream(updateChannel);
+			String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+			originalProperties.store(os, "Restored to Original:"+date);
+			os.flush();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+			
+	}
+	
 	private static void isSecurityFileRequired(String securityFileLocation) {
 		Path dir = null;
 		StringBuilder sb = new StringBuilder();
@@ -140,7 +178,7 @@ public enum SecurityFileSnapshot {
 					permissions.remove(PosixFilePermission.GROUP_READ);
 					posixAttributes.setPermissions(permissions);
 					Files.write(path, a, charset, StandardOpenOption.TRUNCATE_EXISTING);
-					//ls
+					
 					permissions.remove(PosixFilePermission.OWNER_WRITE);
 					posixAttributes.setPermissions(permissions);
 				} else {
