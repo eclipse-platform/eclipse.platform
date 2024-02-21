@@ -809,7 +809,7 @@ public class CertificateSelectionPage extends WizardPage  {
         };
         pinText.addModifyListener( modifyListener );
         if ( this.combo == null) {
-        	 this.slots=null;
+        	 //this.slots=null;
         }
         this.checkPinButton = new Button(subsectionComposite, SWT.RIGHT);
         this.checkPinButton.setText("Log in");

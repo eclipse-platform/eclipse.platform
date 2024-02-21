@@ -34,6 +34,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Optional;
 
 import javax.net.ssl.X509KeyManager;
 
@@ -64,21 +65,29 @@ public enum KeyStoreManager implements X509KeyManager {
 				setKeyStoreInitialized(true);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				LogUtil.logError("Configure KeyStore - No File Found:", e); //$NON-NLS-1$
 			} catch (KeyStoreException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				LogUtil.logError("Configure KeyStore - Initialize keystore, bad password? ", e); //$NON-NLS-1$
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				LogUtil.logError("Configure KeyStore - No algorythm found, ", e); //$NON-NLS-1$
 			} catch (CertificateException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				LogUtil.logError("Configure KeyStore - Certificate Error", e); //$NON-NLS-1$
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
+				LogUtil.logError("Configure KeyStore - I/O Error, bad password?", e); //$NON-NLS-1$
 			}
-			return keyStore;
+			if ( keyStore != null) {
+				return keyStore;
+			}
+			return null;
 		} finally {
 			try {
 				in.close();

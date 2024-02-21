@@ -69,7 +69,7 @@ public class PKISetup implements BundleActivator, IStartup {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("PKISetup PKISetup ------------------- START");
+		//System.out.println("PKISetup PKISetup ------------------- START");
 		this.context=context;
 		
 
@@ -137,8 +137,14 @@ public class PKISetup implements BundleActivator, IStartup {
 								System.getProperty("javax.net.ssl.keyStorePassword"), //$NON-NLS-1$
 										KeyStoreFormat.valueOf(System.getProperty("javax.net.ssl.keyStoreType")))); //$NON-NLS-1$
 
-						if (keystoreContainer.isEmpty()) {
+						if ((keystoreContainer.isEmpty()) || (!(KeyStoreManager.INSTANCE.isKeyStoreInitialized()))) {
 							LogUtil.logError("PKISetup - Failed to Load a Keystore.", null); //$NON-NLS-1$
+							PKIState.CONTROL.setPKCS12on(false);
+							System.clearProperty("javax.net.ssl.keyStoreType"); //$NON-NLS-1$
+							System.clearProperty("javax.net.ssl.keyStore"); //$NON-NLS-1$
+							System.clearProperty("javax.net.ssl.keyStoreProvider"); //$NON-NLS-1$
+							System.clearProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
+							SecurityFileSnapshot.INSTANCE.restoreProperties();
 						} else {
 							LogUtil.logError("A Keystore and Password are detected.", null); //$NON-NLS-1$
 							keyStore = keystoreContainer.get();
