@@ -89,10 +89,8 @@ public enum AuthenticationBase implements AuthenticationService {
 				/*
 				 * An incorrect PiN could have been entered. AND thats OK, they can try again.
 				 */
-				// TODO Auto-generated catch block
-//				IStatus status = new Status (IStatus.ERROR, AuthenticationPlugin.getPluginId(),"Did you enter an invalid PiN? ");
-//				AuthenticationPlugin.getDefault().getLog().log(status);
-				e.printStackTrace();
+				LogUtil.logError("Unable to load KeyStore, Bad Pin?", e); //$NON-NLS-1$
+				return null;
 			}
 			// System.setProperty("javax.net.ssl.keyStoreProvider", "SunPKCS11");
 			System.setProperty("javax.net.ssl.keyStoreProvider", "SunPKCS11"); //$NON-NLS-1$ //$NON-NLS-2$
