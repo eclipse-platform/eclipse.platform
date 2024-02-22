@@ -68,16 +68,18 @@ public class VendorImplementation implements EclipsePkiProvider {
 		//System.out.println("VendorImplementation--------- setSelectedX509Fingerprint   PRINTE:"+fingerprint);
 		selectedX509Fingerprint=fingerprint;
 		//System.out.println("VendorImplementation ---FIX THIS------ setSelectedX509Fingerprint PRINT:"+fingerprint);
-		
 		AuthenticationBase.INSTANCE.setFingerprint(selectedX509Fingerprint);
-		AuthenticationBase.INSTANCE.setSSLContext(this.getKeyStore());
+		
 	}
 	public SSLContext getSSLContext() {
 		return security.getSSLContext();
 	}
 	public boolean login( final String pin ) {
 		security.setPin(pin);
-		return security.login();
+		if (security.login()) {
+			return true;	
+		}
+		return false;
 	}
 	public void logoff() {
 		security.logoff();
