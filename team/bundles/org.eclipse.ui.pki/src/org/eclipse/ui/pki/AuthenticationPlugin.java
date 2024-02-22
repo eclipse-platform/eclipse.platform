@@ -669,7 +669,7 @@ public class AuthenticationPlugin extends AbstractUIPlugin {
 				throw exceptions.get(0);
 			}	
 		}
-		SecurityFileSnapshot.INSTANCE.image();
+		//SecurityFileSnapshot.INSTANCE.image();
 		return userKeyStore;
 	}
 
