@@ -306,6 +306,7 @@ public enum AuthenticationBase implements AuthenticationService {
 			
 			try {
 				provider.clear();
+				return true;
 			}  catch (SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
