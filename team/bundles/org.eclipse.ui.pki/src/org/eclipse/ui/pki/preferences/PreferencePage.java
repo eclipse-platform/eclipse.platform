@@ -212,7 +212,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		securityProvider = new PKICertLocationFieldEditor(AuthenticationPreferences.SECURITY_PROVIDER,
                 "Java PKI Security Provider", group, "pkcs11", this);
 				
-		pkcs11Certificate = new PKICertLocationFieldEditor(AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION,
+		pkcs11Certificate = new PKICertLocationFieldEditor("NONE",
                 "Smartcard repository location", group, "pkcs11", this);
 		
 		pkiCertificate = new PKICertLocationFieldEditor(AuthenticationPreferences.PKI_CERTIFICATE_LOCATION,
