@@ -25,5 +25,5 @@ Import-Package: org.eclipse.core.internal.net,
 Bundle-Vendor: %PLUGIN_PROVIDER
 Automatic-Module-Name: org.eclipse.core.pki
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-ClassPath: ., org.eclipse.core.pki
 Bundle-RequiredExecutionEnvironment: JavaSE-17
