@@ -227,7 +227,7 @@ public class PKICertLocationFieldEditor extends StringButtonFieldEditor {
     			/*
     			 *  NOTE: if the keystore is equal NULL, then the user probably pressed cancel.  SO restore back to las setting.
     			 */
-    			//System.out.println("PKICertLocationFieldEditor --- NO KEYSORE FOUND");
+    			System.out.println("PKICertLocationFieldEditor --- NO KEYSORE FOUND");
     			preferencePage.exitView = true;
     			this.preferencePage.pageChangeListener(getPreferenceName(),"VALIDATE", oldValue, "TURN_OFF_APPLY");
     			ChangedPressedFieldEditorStatus.setPkiChangedPressed(false);
@@ -302,6 +302,7 @@ public class PKICertLocationFieldEditor extends StringButtonFieldEditor {
         	}
         	return fileName;
         } else {
+        	this.preferencePage.pageChangeListener(getPreferenceName(),AuthenticationPreferences.PKCS11_CONFIGURE_FILE_LOCATION, oldValue, myName);
         	if (((this.getStringValue() != null)) && (!this.getStringValue().isEmpty())) {
         		return this.getStringValue();
         	}
