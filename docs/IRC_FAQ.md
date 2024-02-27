@@ -14,100 +14,96 @@ Contents
 --------
 
 *   [1 General](#General)
-    *   [1.1 I'm new, what should I read first?](#I.27m-new.2C-what-should-I-read-first.3F)
-*   [2 Installation, Startup and Runtime](#Installation.2C-Startup-and-Runtime)
-    *   [2.1 Where can I get Eclipse?](#Where-can-I-get-Eclipse.3F)
-    *   [2.2 What's the difference between all the different packages like 'Eclipse IDE for Java Developers' and the 'Eclipse IDE for Java EE Developers'? What do they contain? Do they contain source code?](#What.27s-the-difference-between-all-the-different-packages-like-.27Eclipse-IDE-for-Java-Developers.27-and-the-.27Eclipse-IDE-for-Java-EE-Developers.27.3F-What-do-they-contain.3F-Do-they-contain-source-code.3F)
-    *   [2.3 How do I verify my download? Are there any MD5 or SHA1 hashes for me to verify my download against?](#How-do-I-verify-my-download.3F-Are-there-any-MD5-or-SHA1-hashes-for-me-to-verify-my-download-against.3F)
-    *   [2.4 What are all these strangely named releases?](#What-are-all-these-strangely-named-releases.3F)
-    *   [2.5 Where can I get a list of all the Eclipse projects?](#Where-can-I-get-a-list-of-all-the-Eclipse-projects.3F)
-    *   [2.8 Where can I get project XYZ?](#Where-can-I-get-project-XYZ.3F)
-        *   [2.8.1 Is there a GUI Builder?](#Is-there-a-GUI-Builder.3F)
-    *   [2.9 What is p2?](#What-is-p2.3F)
-    *   [2.11 How do I start Eclipse?](#How-do-I-start-Eclipse.3F)
-    *   [2.12 How do I upgrade/update Eclipse?](#How-do-I-upgrade.2Fupdate-Eclipse.3F)
-    *   [2.13 What other command line arguments are available?](#What-other-command-line-arguments-are-available.3F)
-    *   [2.14 How do I debug Eclipse? How can I see what plug-ins are being started? Why aren't the plug-ins I installed showing up in the UI? How do I start the OSGi console?](#How-do-I-debug-Eclipse.3F-How-can-I-see-what-plug-ins-are-being-started.3F-Why-aren.27t-the-plug-ins-I-installed-showing-up-in-the-UI.3F-How-do-I-start-the-OSGi-console.3F)
-        *   [2.14.1 Debugging OSGi Bundle Loading Issues](#Debugging-OSGi-Bundle-Loading-Issues)
-        *   [2.14.2 Debugging Eclipse Using Eclipse](#Debugging-Eclipse-Using-Eclipse)
-            *   [2.14.2.1 Launching as an Eclipse Application using PDE](#Launching-as-an-Eclipse-Application-using-PDE)
-            *   [2.14.2.2 Attaching to a running instance](#Attaching-to-a-running-instance)
-        *   [2.14.3 Shared Installation Problems](#Shared-Installation-Problems)
-    *   [2.17 Can I use my Eclipse workspace from an old release with a new Eclipse release?](#Can-I-use-my-Eclipse-workspace-from-an-old-release-with-a-new-Eclipse-release.3F)
-    *   [2.18 How do I use a different workspace?](#How-do-I-use-a-different-workspace.3F)
-    *   [2.21 I just unzipped Eclipse, but it does not start. Why?](#I-just-unzipped-Eclipse.2C-but-it-does-not-start.-Why.3F)
-    *   [2.25 When I start Eclipse it says "Workspace in use or cannot be created, choose a different one.", what should I do?](#When-I-start-Eclipse-it-says-.22Workspace-in-use-or-cannot-be-created.2C-choose-a-different-one..22.2C-what-should-I-do.3F)
-    *   [2.26 How do I copy plugins between Eclipse installations with p2?](#How-do-I-copy-plugins-between-Eclipse-installations-with-p2.3F)
-    *   [2.27 How come my list of update sites is completely empty when other people says theirs has stuff in it?](#How-come-my-list-of-update-sites-is-completely-empty-when-other-people-says-theirs-has-stuff-in-it.3F)
-    *   [2.28 How do I install PDT?](#How-do-I-install-PDT.3F)
-    *   [2.29 How do I install a plug-in with multiple dependencies?](#How-do-I-install-a-plug-in-with-multiple-dependencies.3F)
-    *   [2.30 How do I uninstall a plug-in?](#How-do-I-uninstall-a-plug-in.3F)
+    *   [1.1 I'm new, what should I read first?](#im-new-what-should-i-read-first)
+*   [2 Installation, Startup and Runtime](#installation-startup-and-runtime)
+    *   [2.1 Where can I get Eclipse?](#Where-can-I-get-Eclipse)
+    *   [2.2 What's the difference between all the different packages like 'Eclipse IDE for Java Developers' and the 'Eclipse IDE for Java EE Developers'? What do they contain? Do they contain source code?](#whats-the-difference-between-all-the-different-packages-what-do-they-contain-do-they-contain-source-code)
+    *   [2.3 How do I verify my download? Are there any MD5 or SHA1 hashes for me to verify my download against?](#how-do-i-verify-my-download-are-there-any-md5-or-sha1-hashes-for-me-to-verify-my-download-against)
+    *   [2.4 What are all these strangely named releases?](#What-are-all-these-strangely-named-releases)
+    *   [2.5 Where can I get a list of all the Eclipse projects?](#Where-can-I-get-a-list-of-all-the-Eclipse-projects)
+    *   [2.6 Where can I get project XYZ?](#Where-can-I-get-project-XYZ)
+        *   [2.6.1 Is there a GUI Builder?](#Is-there-a-GUI-Builder)
+    *   [2.7 What is p2?](#What-is-p2)
+    *   [2.8 How do I start Eclipse?](#How-do-I-start-Eclipse)
+    *   [2.9 How do I upgrade/update Eclipse?](#how-do-i-upgradeupdate-eclipse)
+    *   [2.10 What other command line arguments are available?](#What-other-command-line-arguments-are-available)
+    *   [2.11 How do I debug Eclipse? How can I see what plug-ins are being started? Why aren't the plug-ins I installed showing up in the UI? How do I start the OSGi console?](#how-do-i-debug-eclipse-how-can-i-see-what-plug-ins-are-being-started-why-arent-the-plug-ins-i-installed-showing-up-in-the-ui-how-do-i-start-the-osgi-console)
+        *   [2.11.1 Debugging OSGi Bundle Loading Issues](#Debugging-OSGi-Bundle-Loading-Issues)
+        *   [2.11.2 Debugging Eclipse Using Eclipse](#Debugging-Eclipse-Using-Eclipse)
+            *   [2.11.2.1 Launching as an Eclipse Application using PDE](#Launching-as-an-Eclipse-Application-using-PDE)
+            *   [2.11.2.2 Attaching to a running instance](#Attaching-to-a-running-instance)
+    *   [2.12 Can I use my Eclipse workspace from an old release with a new Eclipse release?](#Can-I-use-my-Eclipse-workspace-from-an-old-release-with-a-new-Eclipse-release)
+    *   [2.13 How do I use a different workspace?](#How-do-I-use-a-different-workspace)
+    *   [2.14 When I start Eclipse it says "Workspace in use or cannot be created, choose a different one.", what should I do?](#when-i-start-eclipse-it-says-workspace-in-use-or-cannot-be-created-choose-a-different-one-what-should-i-do)
+    *   [2.15 How do I copy plugins between Eclipse installations with p2?](#How-do-I-copy-plugins-between-Eclipse-installations-with-p2)
+    *   [2.16 How do I install a plug-in with multiple dependencies?](#How-do-I-install-a-plug-in-with-multiple-dependencies.3F)
 *   [3 Crashers, Freezing, and other Major Issues](#Crashers.2C-Freezing.2C-and-other-Major-Issues)
-    *   [3.6 I'm having memory, heap, or permgen problems, what can I do?](#I.27m-having-memory.2C-heap.2C-or-permgen-problems.2C-what-can-I-do.3F)
-    *   [3.8 Eclipse buttons in dialogs and other places are not working for me if I click them with the mouse. I also cannot see anything in the tree when I try to install updates. What's going on?](#Eclipse-buttons-in-dialogs-and-other-places-are-not-working-for-me-if-I-click-them-with-the-mouse.-I-also-cannot-see-anything-in-the-tree-when-I-try-to-install-updates.-What.27s-going-on.3F)
-    *   [3.9 Eclipse seems to be hanging on startup. How can I find out why?](#Eclipse-seems-to-be-hanging-on-startup.-How-can-I-find-out-why.3F)
-    *   [3.10 Update complains that it cannot find a repository](#Update-complains-that-it-cannot-find-a-repository)
+    *   [3.1 I'm having memory, heap, or permgen problems, what can I do?](#I.27m-having-memory.2C-heap.2C-or-permgen-problems.2C-what-can-I-do.3F)
+    *   [3.2 Eclipse seems to be hanging on startup. How can I find out why?](#Eclipse-seems-to-be-hanging-on-startup.-How-can-I-find-out-why.3F)
+    *   [3.3 Update complains that it cannot find a repository](#Update-complains-that-it-cannot-find-a-repository)
+	*	[3.4 Eclipse keeps running out of (permgen) memory when I use Oracle/Sun's Java 6 update 21 on Windows](eclipse-keeps-running-out-of-permgen-memory-when-i-use-oraclesuns-java-6-update-21-on-windows)
+	*	[3.5 After startup, i see only an empty Dialog - eclipse won't start](after-startup-i-see-only-an-empty-dialog---eclipse-wont-start)
 *   [4 Eclipse](#Eclipse)
-    *   [4.1 How do I create a project for an existing source directory?](#How-do-I-create-a-project-for-an-existing-source-directory.3F)
-        *   [4.1.1 Option 1: Import the source into an existing project](#Option-1:-Import-the-source-into-an-existing-project)
-        *   [4.1.2 Option 2: Create project on the existing source directory](#Option-2:-Create-project-on-the-existing-source-directory)
-        *   [4.1.3 Option 3: Create project and link to existing source](#Option-3:-Create-project-and-link-to-existing-source)
-    *   [4.2 Where are Eclipse's log files located?](#Where-are-Eclipse.27s-log-files-located.3F)
-    *   [4.3 I was working on a project and doing something or other does not work. Where should I start?](#I-was-working-on-a-project-and-doing-something-or-other-does-not-work.-Where-should-I-start.3F)
-    *   [4.4 Where are Eclipse preferences stored?](#Where-are-Eclipse-preferences-stored.3F)
-    *   [4.5 Where are update site bookmarks stored?](#Where-are-update-site-bookmarks-stored.3F)
-    *   [4.6 Where are my Eclipse plug-ins folder?](#Where-are-my-Eclipse-plug-ins-folder.3F)
-    *   [4.7 What's the key for ...?](#What.27s-the-key-for-....3F)
-        *   [4.7.1 How do I add my own bindings?](#How-do-I-add-my-own-bindings.3F)
-        *   [4.7.2 Why can't I find the command I'm looking for?](#Why-can.27t-I-find-the-command-I.27m-looking-for.3F)
-    *   [4.8 Why did Content Assist stop working?](#Why-did-Content-Assist-stop-working.3F)
-    *   [4.9 Why won't Content Assist work for my .xyz file type?](#Why-won.27t-Content-Assist-work-for-my-.xyz-file-type.3F)
-    *   [4.11 How do I manually assign a project Nature or BuildCommand?](#How-do-I-manually-assign-a-project-Nature-or-BuildCommand.3F)
-    *   [4.12 How do I export a launch configuration?](#How-do-I-export-a-launch-configuration.3F)
-    *   [4.13 How do I find out which workspace I currently have open?](#How-do-I-find-out-which-workspace-I-currently-have-open.3F)
-    *   [4.14 Why is Eclipse launching the current file I have open instead of whatever I last launched?](#Why-is-Eclipse-launching-the-current-file-I-have-open-instead-of-whatever-I-last-launched.3F)
-    *   [4.15 How do I configure Eclipse to use a black background with a white font?](#How-do-I-configure-Eclipse-to-use-a-black-background-with-a-white-font.3F)
-    *   [4.16 Where do I find the javadoc for the Eclipse API locally? I don't always want to load stuff up in a browser.](#Where-do-I-find-the-javadoc-for-the-Eclipse-API-locally.3F-I-don.27t-always-want-to-load-stuff-up-in-a-browser.)
-    *   [4.17 Cut/Copy/Paste does not appear to be working properly on Linux. It's not often that I have to invoke the keyboard shortcut multiple times for it to take effect. What's the deal here?](#Cut.2FCopy.2FPaste-does-not-appear-to-be-working-properly-on-Linux.-It.27s-not-often-that-I-have-to-invoke-the-keyboard-shortcut-multiple-times-for-it-to-take-effect.-What.27s-the-deal-here.3F)
-    *   [4.18 How do I show line numbers in the Eclipse text editor?](#How-do-I-show-line-numbers-in-the-Eclipse-text-editor.3F)
-    *   [4.19 How do I change the colour of the highlighting marker that highlights all the occurrences of some element in the text editor?](#How-do-I-change-the-colour-of-the-highlighting-marker-that-highlights-all-the-occurrences-of-some-element-in-the-text-editor.3F)
-    *   [4.20 How do I switch my workspace?](#How-do-I-switch-my-workspace.3F)
-    *   [4.21 I have just installed a plug-in but I do not see any indication of it in my workspace. What do I do?](#I-have-just-installed-a-plug-in-but-I-do-not-see-any-indication-of-it-in-my-workspace.-What-do-I-do.3F)
-    *   [4.22 How do I check for the command line invocation that Eclipse used to launch an application?](#How-do-I-check-for-the-command-line-invocation-that-Eclipse-used-to-launch-an-application.3F)
-    *   [4.23 Can projects exist outside of the workspace's folder?](#Can-projects-exist-outside-of-the-workspace.27s-folder.3F)
-    *   [4.24 How do I change the list of workspaces listed under the 'Switch Workspace' submenu?](#How-do-I-change-the-list-of-workspaces-listed-under-the-.27Switch-Workspace.27-submenu.3F)
-    *   [4.25 How do I recover my saved passwords from the .keyring file?](#How-do-I-recover-my-saved-passwords-from-the-.keyring-file.3F)
-    *   [4.26 My line delimiter changes are not being persisted to the file. What's going on?](#My-line-delimiter-changes-are-not-being-persisted-to-the-file.-What.27s-going-on.3F)
-    *   [4.27 Black background color for tooltips on Linux/Ubuntu/GTK](#Black-background-color-for-tooltips-on-Linux.2FUbuntu.2FGTK)
-    *   [4.28 Excessive tab folder height on Linux/Ubuntu/GTK](#Excessive-tab-folder-height-on-Linux.2FUbuntu.2FGTK)
-    *   [4.29 How can I easily migrate settings and preferences between my Eclipse workspaces?](#How-can-I-easily-migrate-settings-and-preferences-between-my-Eclipse-workspaces.3F)
-    *   [4.30 How do I swap between different programs' output in the 'Console' view? How do I open another 'Console' view?](#How-do-I-swap-between-different-programs.27-output-in-the-.27Console.27-view.3F-How-do-I-open-another-.27Console.27-view.3F)
-*   [5 Java Development Tools (JDT)](#Java-Development-Tools-.28JDT.29)
-    *   [5.1 The javadoc for the standard Java classes does not show up as context help. What is the problem? Should I download the javadocs?](#The-javadoc-for-the-standard-Java-classes-does-not-show-up-as-context-help.-What-is-the-problem.3F-Should-I-download-the-javadocs.3F)
-        *   [5.1.1 What do you mean by 'run a JDK'?](#What-do-you-mean-by-.27run-a-JDK.27.3F)
-        *   [5.1.2 But it still does \*not\* work! Help me!](#But-it-still-does-.2Anot.2A-work.21-Help-me.21)
-        *   [5.1.3 But I'm on MacOS X which comes with the JDK](#But-I.27m-on-MacOS-X-which-comes-with-the-JDK)
-    *   [5.2 How do I override the environment variables that Ant uses during execution?](#How-do-I-override-the-environment-variables-that-Ant-uses-during-execution.3F)
-    *   [5.3 Why is Content Assist not working in the Java editor? Why doesn't Eclipse recognize my .java file as a Java file?](#Why-is-Content-Assist-not-working-in-the-Java-editor.3F-Why-doesn.27t-Eclipse-recognize-my-.java-file-as-a-Java-file.3F)
-    *   [5.4 How do I change the Java compiler compliance level for my workspace?](#How-do-I-change-the-Java-compiler-compliance-level-for-my-workspace.3F)
-    *   [5.5 How do I add arguments to the Java program I am running?](#How-do-I-add-arguments-to-the-Java-program-I-am-running.3F)
-    *   [5.6 How do I alter my package representation so that parent packages are housing child packages?](#How-do-I-alter-my-package-representation-so-that-parent-packages-are-housing-child-packages.3F)
-    *   [5.7 I clicked on something and now I can only see the method that I am currently editing. What do I do? Did I lose my entire file?](#I-clicked-on-something-and-now-I-can-only-see-the-method-that-I-am-currently-editing.-What-do-I-do.3F-Did-I-lose-my-entire-file.3F)
-    *   [5.8 I would like code completion to be activated as I type like how it works in Visual Studio? Can I turn this on somewhere?](#I-would-like-code-completion-to-be-activated-as-I-type-like-how-it-works-in-Visual-Studio.3F-Can-I-turn-this-on-somewhere.3F)
-    *   [5.9 I've been told that Eclipse has its own Java compiler, is this true? Can I use Sun's javac instead?](#I.27ve-been-told-that-Eclipse-has-its-own-Java-compiler.2C-is-this-true.3F-Can-I-use-Sun.27s-javac-instead.3F)
-    *   [5.10 I call System.console() in my code but null is returned. It does work in the command line though. What's going on?](#I-call-System.console.28.29-in-my-code-but-null-is-returned.-It-does-work-in-the-command-line-though.-What.27s-going-on.3F)
-    *   [5.11 Why isn't my { class | jdbc driver | ... } being found?](#Why-isn.27t-my-.7B-class-.7C-jdbc-driver-.7C-...-.7D-being-found.3F)
-*   [6 PHP Development Tools (PDT)](#PHP-Development-Tools-.28PDT.29)
-    *   [6.1 When I try to create PHP project, I get an error saying "Creation of element failed.", what should I do?](#When-I-try-to-create-PHP-project.2C-I-get-an-error-saying-.22Creation-of-element-failed..22.2C-what-should-I-do.3F)
+    *   [4.1 How do I create a project for an existing source directory?](#How-do-I-create-a-project-for-an-existing-source-directory)
+        *   [4.1.1 Option 1: Import the source into an existing project](#option-1-import-the-source-into-an-existing-project)
+        *   [4.1.2 Option 2: Create project on the existing source directory](#option-2-create-project-on-the-existing-source-directory)
+        *   [4.1.3 Option 3: Create project and link to existing source](#option-3-create-project-and-link-to-existing-source)
+    *   [4.2 Where are Eclipse's log files located?](#where-are-eclipses-log-files-located)
+    *   [4.3 I was working on a project and doing something or other does not work. Where should I start?](#I-was-working-on-a-project-and-doing-something-or-other-does-not-work.-Where-should-I-start)
+    *   [4.4 Where are Eclipse preferences stored?](#Where-are-Eclipse-preferences-stored)
+    *   [4.5 Where are update site bookmarks stored?](#Where-are-update-site-bookmarks-stored)
+    *   [4.6 Where are my Eclipse plug-ins folder?](#Where-are-my-Eclipse-plug-ins-folder)
+    *   [4.7 What's the key for ...?](#whats-the-key-for-F)
+        *   [4.7.1 How do I add my own bindings?](#How-do-I-add-my-own-bindings)
+        *   [4.7.2 Why can't I find the command I'm looking for?](#Why-cant-I-find-the-command-Im-looking-for)
+    *   [4.8 Why did Content Assist stop working?](#Why-did-Content-Assist-stop-working)
+    *   [4.9 Why won't Content Assist work for my .xyz file type?](#why-wont-content-assist-work-for-my-xyz-file-type)
+    *   [4.10 How do I manually assign a project Nature or BuildCommand?](#How-do-I-manually-assign-a-project-Nature-or-BuildCommand)
+    *   [4.11 How do I export a launch configuration?](#How-do-I-export-a-launch-configuration)
+    *   [4.12 How do I find out which workspace I currently have open?](#How-do-I-find-out-which-workspace-I-currently-have-open)
+    *   [4.13 Why is Eclipse launching the current file I have open instead of whatever I last launched?](#Why-is-Eclipse-launching-the-current-file-I-have-open-instead-of-whatever-I-last-launched)
+    *   [4.14 How do I configure Eclipse to use a black background with a white font?](#How-do-I-configure-Eclipse-to-use-a-black-background-with-a-white-font)
+    *   [4.15 Where do I find the javadoc for the Eclipse API locally? I don't always want to load stuff up in a browser.](#Where-do-I-find-the-javadoc-for-the-Eclipse-API-locally-I-dont-always-want-to-load-stuff-up-in-a-browser)
+    *   [4.16 Cut/Copy/Paste does not appear to be working properly on Linux. It's not often that I have to invoke the keyboard shortcut multiple times for it to take effect. What's the deal here?](#cutcopypaste-does-not-appear-to-be-working-properly-on-linux-its-not-often-that-i-have-to-invoke-the-keyboard-shortcut-multiple-times-for-it-to-take-effect-whats-the-deal-here)
+    *   [4.17 How do I show line numbers in the Eclipse text editor?](#How-do-I-show-line-numbers-in-the-Eclipse-text-editor)
+    *   [4.18 How do I change the colour of the highlighting marker that highlights all the occurrences of some element in the text editor?](#How-do-I-change-the-colour-of-the-highlighting-marker-that-highlights-all-the-occurrences-of-some-element-in-the-text-editor)
+    *   [4.19 How do I switch my workspace?](#How-do-I-switch-my-workspace)
+    *   [4.20 I have just installed a plug-in but I do not see any indication of it in my workspace. What do I do?](#I-have-just-installed-a-plug-in-but-I-do-not-see-any-indication-of-it-in-my-workspace-What-do-I-do)
+    *   [4.21 How do I check for the command line invocation that Eclipse used to launch an application?](#How-do-I-check-for-the-command-line-invocation-that-Eclipse-used-to-launch-an-application)
+    *   [4.22 Can projects exist outside of the workspace's folder?](#Can-projects-exist-outside-of-the-workspaceS-folder)
+    *   [4.23 How do I change the list of workspaces listed under the 'Switch Workspace' submenu?](#how-do-i-change-the-list-of-workspaces-listed-under-the-switch-workspace-submenu)
+    *   [4.24 How do I recover my saved passwords from the .keyring file?](#how-do-i-recover-my-saved-passwords-from-the-keyring-file)
+    *   [4.25 My line delimiter changes are not being persisted to the file. What's going on?](#My-line-delimiter-changes-are-not-being-persisted-to-the-file.-Whats-going-on)
+    *   [4.26 Black background color for tooltips on Linux/Ubuntu/GTK](#black-background-color-for-tooltips-on-linuxubuntugtk)
+    *   [4.27 Excessive tab folder height on Linux/Ubuntu/GTK](#excessive-tab-folder-height-on-linuxubuntugtk)
+    *   [4.28 How can I easily migrate settings and preferences between my Eclipse workspaces?](#How-can-I-easily-migrate-settings-and-preferences-between-my-Eclipse-workspaces)
+    *   [4.29 How do I swap between different programs' output in the 'Console' view? How do I open another 'Console' view?](#how-do-i-swap-between-different-programs-output-in-the-console-view-how-do-i-open-another-console-view)
+*   [5 Java Development Tools (JDT)](#Java-Development-Tools-JDT)
+    *   [5.1 The javadoc for the standard Java classes does not show up as context help. What is the problem? Should I download the javadocs?](#the-javadoc-for-the-standard-java-classes-does-not-show-up-as-context-help-what-is-the-problem-should-i-download-the-javadocs)
+        *   [5.1.1 What do you mean by 'run a JDK'?](#what-do-you-mean-by-run-a-jdk)
+        *   [5.1.2 But it still does \*not\* work! Help me!](#but-it-still-does-not-work-help-me)
+        *   [5.1.3 But I'm on MacOS X which comes with the JDK](#But-im-on-MacOS-X-which-comes-with-the-JDK)
+    *   [5.2 How do I override the environment variables that Ant uses during execution?](#How-do-I-override-the-environment-variables-that-Ant-uses-during-execution)
+    *   [5.3 Why is Content Assist not working in the Java editor? Why doesn't Eclipse recognize my .java file as a Java file?](#Why-is-Content-Assist-not-working-in-the-Java-editor-Why-doesnt-Eclipse-recognize-my-java-file-as-a-Java-file)
+    *   [5.4 How do I change the Java compiler compliance level for my workspace?](#How-do-I-change-the-Java-compiler-compliance-level-for-my-workspace)
+    *   [5.5 How do I add arguments to the Java program I am running?](#How-do-I-add-arguments-to-the-Java-program-I-am-running)
+    *   [5.6 How do I alter my package representation so that parent packages are housing child packages?](#How-do-I-alter-my-package-representation-so-that-parent-packages-are-housing-child-packages)
+    *   [5.7 I clicked on something and now I can only see the method that I am currently editing. What do I do? Did I lose my entire file?](#I-clicked-on-something-and-now-I-can-only-see-the-method-that-I-am-currently-editing-What-do-I-do-Did-I-lose-my-entire-file)
+    *   [5.8 I would like code completion to be activated as I type like how it works in Visual Studio? Can I turn this on somewhere?](#I-would-like-code-completion-to-be-activated-as-I-type-like-how-it-works-in-Visual-Studio-Can-I-turn-this-on-somewhere)
+    *   [5.9 I've been told that Eclipse has its own Java compiler, is this true? Can I use Sun's javac instead?](#Ive-been-told-that-Eclipse-has-its-own-Java-compiler-is-this-true-Can-I-use-Suns-javac-instead)
+    *   [5.10 I call System.console() in my code but null is returned. It does work in the command line though. What's going on?](#i-call-systemconsole-in-my-code-but-null-is-returned-it-does-work-in-the-command-line-though-whats-going-on)
+    *   [5.11 Why isn't my { class | jdbc driver | ... } being found?](#why-isnt-my--class--jdbc-driver----being-found)
+*   [6 PHP Development Tools (PDT)](#PHP-Development-Tools-PDT)
+    *   [6.1 When I try to create PHP project, I get an error saying "Creation of element failed.", what should I do?](#when-i-try-to-create-php-project-i-get-an-error-saying-creation-of-element-failed-what-should-i-do)
 *   [7 Plug-in Development](#Plug-in-Development)
-    *   [7.1 How do I test my plug-ins?](#How-do-I-test-my-plug-ins.3F)
-    *   [7.2 I get an unhandled event loop exception in my console. What gives?](#I-get-an-unhandled-event-loop-exception-in-my-console.-What-gives.3F)
-    *   [7.3 A plug-in in my 'Eclipse Application' launch configuration is listed as being "out of sync", what should I do?](#A-plug-in-in-my-.27Eclipse-Application.27-launch-configuration-is-listed-as-being-.22out-of-sync.22.2C-what-should-I-do.3F)
-    *   [7.4 I added a jar to my classpath, but it's not being found! What should I do?](#I-added-a-jar-to-my-classpath.2C-but-it.27s-not-being-found.21-What-should-I-do.3F)
-    *   [7.5 How do I find the source for a plugin?](#How-do-I-find-the-source-for-a-plugin.3F)
-    *   [7.6 How do I edit the source for a plugin?](#How-do-I-edit-the-source-for-a-plugin.3F)
+    *   [7.1 How do I test my plug-ins?](#How-do-I-test-my-plug-ins)
+    *   [7.2 I get an unhandled event loop exception in my console. What gives?](#I-get-an-unhandled-event-loop-exception-in-my-console-What-gives)
+    *   [7.3 A plug-in in my 'Eclipse Application' launch configuration is listed as being "out of sync", what should I do?](#a-plug-in-in-my-eclipse-application-launch-configuration-is-listed-as-being-out-of-sync-what-should-i-do)
+    *   [7.4 I added a jar to my classpath, but it's not being found! What should I do?](#i-added-a-jar-to-my-classpath-but-its-not-being-found-what-should-i-do)
+    *   [7.5 How do I find the source for a plugin?](#How-do-I-find-the-source-for-a-plugin)
+    *   [7.6 How do I edit the source for a plugin?](#How-do-I-edit-the-source-for-a-plugin)
 *   [8 SWT](#SWT)
-    *   [8.1 I cannot get the SWT widget ABC to work when I do XYZ. Could you help me?](#I-cannot-get-the-SWT-widget-ABC-to-work-when-I-do-XYZ.-Could-you-help-me.3F)
+    *   [8.1 I cannot get the SWT widget ABC to work when I do XYZ. Could you help me?](#i-cannot-get-the-swt-widget-abc-to-work-when-i-do-xyz-could-you-help-me)
 
 General
 -------
@@ -670,175 +666,175 @@ The code snippet below should be able to help you. You may also wish to refer to
 
 The code below is largely copy and pasted from `org.eclipse.core.internal.runtime.auth.AuthorizationDatabase`, `org.eclipse.core.internal.runtime.auth.CipherInputStream`, and `org.eclipse.core.internal.runtime.auth.Cipher`.
 
-public static void main(String\[\] args) {
-	String s = "/home/user/eclipse/configuration/org.eclipse.core.runtime/.keyring"; //$NON-NLS-1$
- 
-	try {
-		InputStream input = new FileInputStream(s);
-		try {
-			load(input);
-		} finally {
-			input.close();
-		}
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-}
- 
-private static final int MAGIC_NUMBER = 1;
- 
-private static void load(InputStream is) throws IOException,
-		ClassNotFoundException {
-	int version = is.read();
-	if (version == MAGIC_NUMBER) {
-		// read the authorization data
-		CipherInputStream cis = new CipherInputStream(is, ""); //$NON-NLS-1$
-		ObjectInputStream ois = new ObjectInputStream(cis);
-		try {
-			Map authorizationInfo = (Hashtable) ois.readObject();
-			System.out.println(authorizationInfo);
-		} finally {
-			ois.close();
-		}
-	}
-}
- 
-static class CipherInputStream extends FilterInputStream {
-	private static final int SKIP\_BUFFER\_SIZE = 2048;
-	private Cipher cipher;
- 
-	public CipherInputStream(InputStream is, String password) {
-		super(is);
-		cipher = new Cipher(Cipher.DECRYPT_MODE, password);
-	}
- 
-	public boolean markSupported() {
-		return false;
-	}
- 
-	public int read() throws IOException {
-		int b = super.read();
-		if (b == -1)
-			return -1;
-		try {
-			return (cipher.cipher((byte) b)) & 0x00ff;
-		} catch (Exception e) {
-			throw new IOException(e.getMessage());
-		}
-	}
- 
-	public int read(byte b\[\], int off, int len) throws IOException {
-		int bytesRead = in.read(b, off, len);
-		if (bytesRead == -1)
-			return -1;
-		try {
-			byte\[\] result = cipher.cipher(b, off, bytesRead);
-			for (int i = 0; i < result.length; ++i)
-				b\[i + off\] = result\[i\];
-			return bytesRead;
-		} catch (Exception e) {
-			throw new IOException(e.getMessage());
-		}
-	}
- 
-	public long skip(long n) throws IOException {
-		byte\[\] buffer = new byte\[SKIP\_BUFFER\_SIZE\];
- 
-		int bytesRead = 0;
-		long bytesRemaining = n;
- 
-		while (bytesRead != -1 && bytesRemaining > 0) {
-			bytesRead = read(buffer, 0, (int) Math.min(SKIP\_BUFFER\_SIZE,
-					bytesRemaining));
-			if (bytesRead > 0) {
-				bytesRemaining -= bytesRead;
+		public static void main(String\[\] args) {
+			String s = "/home/user/eclipse/configuration/org.eclipse.core.runtime/.keyring"; //$NON-NLS-1$
+		 
+			try {
+				InputStream input = new FileInputStream(s);
+				try {
+					load(input);
+				} finally {
+					input.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
- 
-		return n - bytesRemaining;
-	}
-}
- 
-static class Cipher {
-	public static final int DECRYPT_MODE = -1;
-	public static final int ENCRYPT_MODE = 1;
-	private static final int RANDOM_SIZE = 16;
- 
-	private int mode = 0;
-	private byte\[\] password = null;
- 
-	private byte\[\] byteStream;
-	private int byteStreamOffset;
-	private MessageDigest digest;
-	private Random random;
-	private final byte\[\] toDigest;
- 
-	public Cipher(int mode, String passwordString) {
-		this.mode = mode;
-		try {
-			this.password = passwordString.getBytes("UTF8"); //$NON-NLS-1$
-		} catch (UnsupportedEncodingException e) {
-			this.password = passwordString.getBytes();
-		}
-		toDigest = new byte\[password.length + RANDOM_SIZE\];
-	}
- 
-	public byte\[\] cipher(byte\[\] data) throws Exception {
-		return transform(data, 0, data.length, mode);
-	}
- 
-	public byte\[\] cipher(byte\[\] data, int off, int len) throws Exception {
-		return transform(data, off, len, mode);
-	}
- 
-	public byte cipher(byte datum) throws Exception {
-		byte\[\] data = { datum };
-		return cipher(data)\[0\];
-	}
- 
-	private byte\[\] generateBytes() throws Exception {
-		if (digest == null) {
-			digest = MessageDigest.getInstance("SHA"); //$NON-NLS-1$
-			// also seed random number generator based on password
-			long seed = 0;
-			for (int i = 0; i < password.length; i++)
-				// this function is known to give good hash distribution for
-				// character data
-				seed = (seed * 37) + password\[i\];
-			random = new Random(seed);
-		}
-		// add random bytes to digest array
-		random.nextBytes(toDigest);
- 
-		// overlay password onto digest array
-		System.arraycopy(password, 0, toDigest, 0, password.length);
- 
-		// compute and return SHA-1 hash of digest array
-		return digest.digest(toDigest);
-	}
- 
-	private byte\[\] nextRandom(int length) throws Exception {
-		byte\[\] nextRandom = new byte\[length\];
-		int nextRandomOffset = 0;
-		while (nextRandomOffset < length) {
-			if (byteStream == null || byteStreamOffset >= byteStream.length) {
-				byteStream = generateBytes();
-				byteStreamOffset = 0;
+		 
+		private static final int MAGIC_NUMBER = 1;
+		 
+		private static void load(InputStream is) throws IOException,
+				ClassNotFoundException {
+			int version = is.read();
+			if (version == MAGIC_NUMBER) {
+				// read the authorization data
+				CipherInputStream cis = new CipherInputStream(is, ""); //$NON-NLS-1$
+				ObjectInputStream ois = new ObjectInputStream(cis);
+				try {
+					Map authorizationInfo = (Hashtable) ois.readObject();
+					System.out.println(authorizationInfo);
+				} finally {
+					ois.close();
+				}
 			}
-			nextRandom\[nextRandomOffset++\] = byteStream\[byteStreamOffset++\];
 		}
-		return nextRandom;
-	}
- 
-	private byte\[\] transform(byte\[\] data, int off, int len, int mod)
-			throws Exception {
-		byte\[\] result = nextRandom(len);
-		for (int i = 0; i < len; ++i) {
-			result\[i\] = (byte) (data\[i + off\] + mod * result\[i\]);
+		 
+		static class CipherInputStream extends FilterInputStream {
+			private static final int SKIP\_BUFFER\_SIZE = 2048;
+			private Cipher cipher;
+		 
+			public CipherInputStream(InputStream is, String password) {
+				super(is);
+				cipher = new Cipher(Cipher.DECRYPT_MODE, password);
+			}
+		 
+			public boolean markSupported() {
+				return false;
+			}
+		 
+			public int read() throws IOException {
+				int b = super.read();
+				if (b == -1)
+					return -1;
+				try {
+					return (cipher.cipher((byte) b)) & 0x00ff;
+				} catch (Exception e) {
+					throw new IOException(e.getMessage());
+				}
+			}
+		 
+			public int read(byte b\[\], int off, int len) throws IOException {
+				int bytesRead = in.read(b, off, len);
+				if (bytesRead == -1)
+					return -1;
+				try {
+					byte\[\] result = cipher.cipher(b, off, bytesRead);
+					for (int i = 0; i < result.length; ++i)
+						b\[i + off\] = result\[i\];
+					return bytesRead;
+				} catch (Exception e) {
+					throw new IOException(e.getMessage());
+				}
+			}
+		 
+			public long skip(long n) throws IOException {
+				byte\[\] buffer = new byte\[SKIP\_BUFFER\_SIZE\];
+		 
+				int bytesRead = 0;
+				long bytesRemaining = n;
+		 
+				while (bytesRead != -1 && bytesRemaining > 0) {
+					bytesRead = read(buffer, 0, (int) Math.min(SKIP\_BUFFER\_SIZE,
+							bytesRemaining));
+					if (bytesRead > 0) {
+						bytesRemaining -= bytesRead;
+					}
+				}
+		 
+				return n - bytesRemaining;
+			}
 		}
-		return result;
-	}
-}
+		 
+		static class Cipher {
+			public static final int DECRYPT_MODE = -1;
+			public static final int ENCRYPT_MODE = 1;
+			private static final int RANDOM_SIZE = 16;
+		 
+			private int mode = 0;
+			private byte\[\] password = null;
+		 
+			private byte\[\] byteStream;
+			private int byteStreamOffset;
+			private MessageDigest digest;
+			private Random random;
+			private final byte\[\] toDigest;
+		 
+			public Cipher(int mode, String passwordString) {
+				this.mode = mode;
+				try {
+					this.password = passwordString.getBytes("UTF8"); //$NON-NLS-1$
+				} catch (UnsupportedEncodingException e) {
+					this.password = passwordString.getBytes();
+				}
+				toDigest = new byte\[password.length + RANDOM_SIZE\];
+			}
+		 
+			public byte\[\] cipher(byte\[\] data) throws Exception {
+				return transform(data, 0, data.length, mode);
+			}
+		 
+			public byte\[\] cipher(byte\[\] data, int off, int len) throws Exception {
+				return transform(data, off, len, mode);
+			}
+		 
+			public byte cipher(byte datum) throws Exception {
+				byte\[\] data = { datum };
+				return cipher(data)\[0\];
+			}
+		 
+			private byte\[\] generateBytes() throws Exception {
+				if (digest == null) {
+					digest = MessageDigest.getInstance("SHA"); //$NON-NLS-1$
+					// also seed random number generator based on password
+					long seed = 0;
+					for (int i = 0; i < password.length; i++)
+						// this function is known to give good hash distribution for
+						// character data
+						seed = (seed * 37) + password\[i\];
+					random = new Random(seed);
+				}
+				// add random bytes to digest array
+				random.nextBytes(toDigest);
+		 
+				// overlay password onto digest array
+				System.arraycopy(password, 0, toDigest, 0, password.length);
+		 
+				// compute and return SHA-1 hash of digest array
+				return digest.digest(toDigest);
+			}
+		 
+			private byte\[\] nextRandom(int length) throws Exception {
+				byte\[\] nextRandom = new byte\[length\];
+				int nextRandomOffset = 0;
+				while (nextRandomOffset < length) {
+					if (byteStream == null || byteStreamOffset >= byteStream.length) {
+						byteStream = generateBytes();
+						byteStreamOffset = 0;
+					}
+					nextRandom\[nextRandomOffset++\] = byteStream\[byteStreamOffset++\];
+				}
+				return nextRandom;
+			}
+		 
+			private byte\[\] transform(byte\[\] data, int off, int len, int mod)
+					throws Exception {
+				byte\[\] result = nextRandom(len);
+				for (int i = 0; i < len; ++i) {
+					result\[i\] = (byte) (data\[i + off\] + mod * result\[i\]);
+				}
+				return result;
+			}
+		}
 
 ### My line delimiter changes are not being persisted to the file. What's going on?
 
