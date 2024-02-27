@@ -1,9 +1,9 @@
-
-
 Eclipse Doc Style Guide
 =======================
 
-This document gives the style conventions to be used in [Eclipse help](/Eclipse_Documentation "Eclipse Documentation"). The Eclipse help has the following topic types: Tutorial (Getting Started), Concept, Task, and Reference. These topic types are based on the [Darwin Information Typing Architecture (DITA)](http://www.ibm.com/developerworks/library/x-dita1/) standards.
+This document gives the style conventions to be used in [Eclipse help](/Eclipse_Documentation "Eclipse Documentation"). 
+The Eclipse help has the following topic types: Tutorial (Getting Started), Concept, Task, and Reference. 
+These topic types are based on the [Darwin Information Typing Architecture (DITA)](http://www.ibm.com/developerworks/library/x-dita1/) standards.
 
 Contents
 --------
@@ -21,9 +21,9 @@ Contents
 
 | Guideline | Example |
 | --- | --- |
-| A topic's _title_ (heading) is marked with a heading value that matches the topic's position in the table of contents. The topic shown here is at the top level, so it is tagged as an **<h1>**. | `<h1>A Tour of the Workbench</h1>` |
-| The text in a topic's <title\> must match the text in the heading. | From concepts-2.htm:           <title>The Workbench</title>   ...   <h1>Workbench</h1>       |
-| A topic's <title\> must be _unique_ to enable users to make a correct choice after a search.  Use sentence capitalization for all titles.   | Results of searching for **workbench**:           88% The workbench (concepts-2.htm)       74% Workbench (ref-10.htm)       70% The workbench (qs-02a.htm)      Better titles:           88% What is the workbench? (concepts-2.htm)       74% Workbench reference (ref-10.htm)       70% Launching the workbench (qs-02a.htm)       |
+| A topic's _title_ (heading) is marked with a heading value that matches the topic's position in the table of contents. The topic shown here is at the top level, so it is tagged as an `<h1>`. | `<h1>A Tour of the Workbench</h1>` |
+| The text in a topic's <title\> must match the text in the heading. | From concepts-2.htm:<br> `<title>The Workbench</title>   ...  <h1>Workbench</h1>`       |
+| A topic's <title\> must be _unique_ to enable users to make a correct choice after a search.  Use sentence capitalization for all titles.   | Results of searching for **workbench**: <br> `88% The workbench (concepts-2.htm)`<br>  `74% Workbench (ref-10.htm)`<br>  `70% The workbench (qs-02a.htm)`  <br>    Better titles: <br> `88% What is the workbench? (concepts-2.htm)` <br>  `74% Workbench reference (ref-10.htm)` <br> `70% Launching the workbench (qs-02a.htm)`       |
 | Begin "task" and "getting started" titles with a [gerund](http://en.wikipedia.org/wiki/Gerund). | **Creating a project** |
 
 ### Lists
@@ -32,8 +32,8 @@ Contents
 | --- | --- |
 | Use a sentence fragment followed by a colon before numbered steps. | To hide files by type: |
 | Each numbered list item should include only one step. |   |
-| If you have an ordered list within an ordered list, use:     <ol type="a"></ol>   | To do X:  1.  Step 1 text. 2.  Step 2 introductory text:     1.  Sub-step 1.     2.  Sub-step 2.   |
-| If you need to start an ordered list at a number other than 1, use     <li value="3">text</li>   |   1.  text   |
+| If you have an ordered list within an ordered list, use:     `<ol type="a"></ol>`   | To do X:  1.  Step 1 text. 2.  Step 2 introductory text:     1.  Sub-step 1.     2.  Sub-step 2.   |
+| If you need to start an ordered list at a number other than 1, use     `<li value="3">text</li>`   |   1.  text   |
 | Each task topic should contain a reasonable number of steps.  "Reasonable" is a judgment call, and your freedom may be restricted by the complexity of the software. However, if you find that you are over 10 steps, see if you can break the steps into two sub-topics.   |   |
 | When describing menu items, use third-person descriptive verb tenses rather than imperative ones. | ~~Create~~ a new file -> **Creates** a new file |
 
@@ -41,7 +41,7 @@ Contents
 
 | Guideline | Example |
 | --- | --- |
-| Elements names that appear in the GUI should be identified as such.  The standard convention for GUI elements is to display the name in a bold font. There are different ways this can be done:  *   Use <b> tags *   Use the <strong> tags and expect that they will render as bold *   Use <span> tags with different class types. For example:     *   <em class="UILabel">Preferences</em>     *   <span class="guibutton">OK</span>  The benefit of using class types is that the CSS file can then declare:                   EM.UILabel {font-weight: bold;}          Or for a more elaborate display:                   .guibutton { color: #000000; font-weight: bold;      font-family: helvetica, sans-serif;      background-color: #DCDCDC; padding: 1px 5px;       font-size: 10pt; border: outset 2px;      text-decoration: none; line-height:175%; }           | **Preferences**     OK   |
+| Elements names that appear in the GUI should be identified as such.  The standard convention for GUI elements is to display the name in a bold font. There are different ways this can be done: <br>   - Use `<b>` tags  <br>  - Use the `<strong>` tags and expect that they will render as bold <br>  - Use `<span>` tags with different class types. For example: <br>       -- `<em class="UILabel">Preferences</em>`     <br>   -- `<span class="guibutton">OK</span>` <br> The benefit of using class types is that the CSS file can then declare:     <br>              EM.UILabel {font-weight: bold;}  <br>        Or for a more elaborate display:               <br>    .guibutton { color: #000000; font-weight: bold;  <br>    font-family: helvetica, sans-serif;  <br>    background-color: #DCDCDC; padding: 1px 5px; <br>      font-size: 10pt; border: outset 2px;  <br>    text-decoration: none; line-height:175%; }           | **Preferences**     OK   |
 
 ### Topic Content
 
@@ -73,8 +73,8 @@ Contents
 
 | Guideline | Example |
 | --- | --- |
-| Declare tables consistently. |   <table border="1" cellpadding="3" cellspacing="0">   |
-| Set the vertical alignment for rows to "top" in the CSS file. |   tr { vertical-align: top; }   |
+| Declare tables consistently. |   `<table border="1" cellpadding="3" cellspacing="0">`   |
+| Set the vertical alignment for rows to "top" in the CSS file. |   `tr { vertical-align: top; }`   |
 
 ### CSS Class Summary
 
@@ -86,13 +86,13 @@ Contents
 
 | Guideline | Example |
 | --- | --- |
-| There are two types of graphics in the online help at present: icons and screen captures.  Icons are system-independent, so there are no reasons to give them class names or to be concerned about their file type. For icons the ".svg" version of the icons (that are used to generate the ".png" files used in the user interface) should directly be used. This ensures that they are rendered at the exact screen resolution and therefor appear super crisp also on high resolution displays.  On the other hand, screen captures are system-dependent, so it is important that different systems can display the appropriate screen captures. To do this, vendors need to be able to create a zip file of screen captures that the help system can display properly and automatically:  *   Screen captures must be ".png" files. *   Image declarations must **_not_** specify image sizes. *   Image declarations should have "alt" attributes (this is an accessibility feature). *   Image declarations may have a <title> attribute. *   Screen captures should be taken at the minimum supported resolution of 1152x864. *   Images should be no more than 650 pixels wide.  Here are some general guidelines on taking screen shots:  *   Ensure consistent look within a document: if a document has most of its screenshots done under a certain OS then additional screenshots must also be made under that OS. Ask a friend to capture them for you if it's hard for yourself. *   Use a default theme and not your custom colors and fonts. *   Trim the screenshot to only show the relevant information.  Here is how to setup Windows XP for taking screen shots:  *   Display Properties > Themes > Theme: Windows XP *   Display Properties > Appearance > Windows and Buttons: Windows XP Style *   Color Scheme: Default (blue) *   Font Size: Normal *   Display Properties > Appearance > Effects > Use the following method to smooth edges of screen fonts: Off (Not checked)  Here is how to setup Windows 7 for taking screen shots:  *   Control Panel > System > Advanced system settings > Advanced > (Performance) Settings > Visual Effects > Select 'Custom' and uncheck 'Smooth edges of screen fonts'   | `<img border="0" src="../images/Image201_fillet" alt="Define a New File Type dialog">` |
+| There are two types of graphics in the online help at present: icons and screen captures.  Icons are system-independent, so there are no reasons to give them class names or to be concerned about their file type. For icons the ".svg" version of the icons (that are used to generate the ".png" files used in the user interface) should directly be used. This ensures that they are rendered at the exact screen resolution and therefor appear super crisp also on high resolution displays. <br><br>  On the other hand, screen captures are system-dependent, so it is important that different systems can display the appropriate screen captures. To do this, vendors need to be able to create a zip file of screen captures that the help system can display properly and automatically: <br><br> *   Screen captures must be ".png" files. <br>*   Image declarations must **_not_** specify image sizes.<br> *   Image declarations should have "alt" attributes (this is an accessibility feature). <br>*   Image declarations may have a <title> attribute. <br>*   Screen captures should be taken at the minimum supported resolution of 1152x864. <br>*   Images should be no more than 650 pixels wide. <br><br> Here are some general guidelines on taking screen shots:  <br>*   Ensure consistent look within a document: if a document has most of its screenshots done under a certain OS then additional screenshots must also be made under that OS. Ask a friend to capture them for you if it's hard for yourself. <br>*   Use a default theme and not your custom colors and fonts. <br>*   Trim the screenshot to only show the relevant information. <br> Here is how to setup Windows XP for taking screen shots:  <br>*   Display Properties > Themes > Theme: Windows XP <br>*   Display Properties > Appearance > Windows and Buttons: Windows XP Style <br>*   Color Scheme: Default (blue) <br>*   Font Size: Normal <br>*   Display Properties > Appearance > Effects > Use the following method to smooth edges of screen fonts: Off (Not checked) <br><br> Here is how to setup Windows 7 for taking screen shots:<br>  *   Control Panel > System > Advanced system settings > Advanced > (Performance) Settings > Visual Effects > Select 'Custom' and uncheck 'Smooth edges of screen fonts'   | `<img border="0" src="../images/Image201_fillet" alt="Define a New File Type dialog">` |
 | Screen captures should generally be PNG-8 (8 bit color) to keep image sizes small. If a particular screen shot uses enough color to warrant additional color depth, use PNG-24. Use your judgement. Start with PNG-8, and if it looks bad then use PNG-24 instead. |  |
 
 ### Indexing
 
 | Guideline | Example |
 | --- | --- |
-| Eclipse indexes its help files by looking at the text in the page and weighting titles over paragraphs. However, there can be times when you want the index to show text that does not display on the page. For example, if Eclipse uses its own terminology for a function, you might want users to be able to look up synonyms.  To have the Eclipse index generate a hit for "autosave" (a function that Eclipse has under another name) add a meta "keywords" tag before the </head> tag.   |                    <meta name="keywords" content="autosave">           |
+| Eclipse indexes its help files by looking at the text in the page and weighting titles over paragraphs. However, there can be times when you want the index to show text that does not display on the page. For example, if Eclipse uses its own terminology for a function, you might want users to be able to look up synonyms.  To have the Eclipse index generate a hit for "autosave" (a function that Eclipse has under another name) add a meta "keywords" tag before the </head> tag.   |                    `<meta name="keywords" content="autosave">`           |
 
 
