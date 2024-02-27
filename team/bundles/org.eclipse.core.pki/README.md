@@ -5,7 +5,7 @@ The comprehensive system required to provide public key encryption and digital s
 
 This package allows a user to setup an SSLContext to use inside the Eclipse architecture.  Using this core package there are two ways to initialize the PKI setup, (additionally,  A UI is forthcoming org.eclipse.pki.ui )
 
-1.  Add the following properties to the eclipse.ini or similiar start up.
+1)  Add the following properties to the eclipse.ini or similiar start up.
 
 	-Djavax.net.ssl.keyStoreType=
 	-Djavax.net.ssl.keyStorePassword=
@@ -17,7 +17,7 @@ This package allows a user to setup an SSLContext to use inside the Eclipse arch
 	
 	-Djavax.net.debug=keymanager
 
-2.  Create a file called .pki inside of your user home .eclipse directory.  Once you startup eclipse it will create a template in your .eclipse directory that you can update with your personal PKI setup. You can use either a PKCS11 or PKCS12 KeyStore setup.  The .pki file for a PKCS12 setup should look similar to the following;
+2)  Create a file called .pki inside of your user home .eclipse directory.  Once you startup eclipse it will create a template in your .eclipse directory that you can update with your personal PKI setup. You can use either a PKCS11 or PKCS12 KeyStore setup.  The .pki file for a PKCS12 setup should look similar to the following;
 
 	javax.net.ssl.trustStore=/etc/pki/java/cacerts
 	javax.net.ssl.trustStoreType=JKS
