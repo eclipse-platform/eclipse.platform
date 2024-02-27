@@ -17,7 +17,7 @@ This package allows a user to setup an SSLContext to use inside the Eclipse arch
 	
 	-Djavax.net.debug=keymanager
 
-2.  Create a file called .pki inside of your user home .eclipse directory.  Once you starup eclipse it will create a template in your .eclipse directory that you can update with your personal PKI setup. You can use either a PKCS11 or PKCS12 KeyStore setup.  The .pki file will look as follows;
+2.  Create a file called .pki inside of your user home .eclipse directory.  Once you startup eclipse it will create a template in your .eclipse directory that you can update with your personal PKI setup. You can use either a PKCS11 or PKCS12 KeyStore setup.  The .pki file will look as follows;
 
 	javax.net.ssl.trustStore=/etc/pki/ca-trust/extracted/java/cacerts
 	javax.net.ssl.trustStoreType=JKS
