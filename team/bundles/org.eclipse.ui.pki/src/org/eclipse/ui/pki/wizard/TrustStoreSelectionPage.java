@@ -326,6 +326,7 @@ public class TrustStoreSelectionPage extends WizardPage {
         
         if(errormsg != null){
         	this.setErrorMessage(errormsg);
+        	keyStore = null;
         }        
         
         // Return the result
