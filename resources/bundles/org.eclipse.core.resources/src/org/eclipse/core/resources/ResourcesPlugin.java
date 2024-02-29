@@ -27,13 +27,21 @@ import java.util.List;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -419,7 +427,7 @@ public final class ResourcesPlugin extends Plugin {
 	 * @see #getSystemEncoding()
 	 */
 	public static String getEncoding() {
-		ResourcesPlugin resourcesPlugin = plugin;
+		ResourcesPlugin resourcesPlugin = getPlugin();
 		if (resourcesPlugin == null) {
 			return getSystemEncoding();
 		}
@@ -475,7 +483,21 @@ public final class ResourcesPlugin extends Plugin {
 	 * @return the single instance of this plug-in runtime class
 	 */
 	public static ResourcesPlugin getPlugin() {
-		return plugin;
+		if (plugin == null) {
+			return null;
+		}
+		return plugin.initialized();
+	}
+
+	private ResourcesPlugin initialized() {
+		ServiceTracker<Location, Workspace> t = instanceLocationTracker;
+		if (t != null && t.size() == 0) {
+			synchronized (t) {
+				// lazy initialize
+				t.open();
+			}
+		}
+		return this;
 	}
 
 	/**
@@ -491,10 +513,8 @@ public final class ResourcesPlugin extends Plugin {
 	 *         class.
 	 */
 	public static IWorkspace getWorkspace() {
-		ResourcesPlugin resourcesPlugin = plugin;
+		ResourcesPlugin resourcesPlugin = getPlugin();
 		if (resourcesPlugin == null) {
-			// this happens when the resource plugin is shut down already... or never
-			// started!
 			throw new IllegalStateException(Messages.resources_workspaceClosedStatic);
 		}
 		Workspace workspace = resourcesPlugin.workspaceInitCustomizer.workspace;
@@ -520,6 +540,7 @@ public final class ResourcesPlugin extends Plugin {
 		// save the preferences for this plug-in
 		getPlugin().savePluginPreferences();
 		plugin = null;
+		instanceLocationTracker = null;
 	}
 
 	/**
@@ -542,7 +563,7 @@ public final class ResourcesPlugin extends Plugin {
 				workspaceInitCustomizer);
 		plugin = this; // must before open the tracker, as this can cause the registration of the
 						// workspace and this might trigger code that calls the static method then.
-		instanceLocationTracker.open();
+		new Thread(this::initialized, "Async ResourcesPlugin start").start(); //$NON-NLS-1$
 	}
 
 	private final class WorkspaceInitCustomizer implements ServiceTrackerCustomizer<Location, Workspace> {
