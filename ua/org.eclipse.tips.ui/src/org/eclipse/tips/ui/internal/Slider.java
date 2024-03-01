@@ -37,7 +37,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -424,9 +423,10 @@ public class Slider extends Composite {
 			int imageHeight = textExtent.y + 5;
 			int imageWidth = number > 9 ? textExtent.x + 8 : imageHeight;
 
-			PaletteData palette = new PaletteData(new RGB(255, 255, 255));
-			ImageData transparentBackground = new ImageData(imageWidth, imageHeight, 32, palette);
-			transparentBackground.transparentPixel = transparentBackground.getPixel(0, 0);
+			/* Create a 24 bit image data with alpha channel */
+			PaletteData palette = new PaletteData(0xFF, 0xFF00, 0xFF0000);
+			ImageData transparentBackground = new ImageData(imageWidth, imageHeight, 24, palette);
+			transparentBackground.alpha = 0;
 
 			Image image = new Image(display, transparentBackground);
 			GC gc = new GC(image);
