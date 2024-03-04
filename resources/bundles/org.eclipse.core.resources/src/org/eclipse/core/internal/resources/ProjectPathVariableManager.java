@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.filesystem.URIUtil;
@@ -48,7 +47,7 @@ import org.eclipse.osgi.util.NLS;
 public class ProjectPathVariableManager implements IPathVariableManager, IManager {
 
 	private final Resource resource;
-	private ProjectVariableProviderManager.Descriptor variableProviders[] = null;
+	private final ProjectVariableProviderManager.Descriptor variableProviders[];
 
 	/**
 	 * Constructor for the class.
@@ -182,9 +181,6 @@ public class ProjectPathVariableManager implements IPathVariableManager, IManage
 	@Override
 	public boolean isDefined(String varName) {
 		for (Descriptor variableProvider : variableProviders) {
-			//			if (variableProviders[i].getName().equals(varName))
-			//				return true;
-
 			if (varName.startsWith(variableProvider.getName()))
 				return true;
 		}
@@ -192,9 +188,7 @@ public class ProjectPathVariableManager implements IPathVariableManager, IManage
 		try {
 			HashMap<String, VariableDescription> map = ((ProjectDescription) resource.getProject().getDescription()).getVariables();
 			if (map != null) {
-				Iterator<String> it = map.keySet().iterator();
-				while (it.hasNext()) {
-					String name = it.next();
+				for (String name : map.keySet()) {
 					if (name.equals(varName))
 						return true;
 				}
@@ -358,9 +352,7 @@ public class ProjectPathVariableManager implements IPathVariableManager, IManage
 				}
 			}
 			boolean variableExists = currentValue != null;
-			if (!variableExists && newValue == null)
-				return;
-			if (variableExists && currentValue.equals(newValue))
+			if ((!variableExists && newValue == null) || (variableExists && currentValue.equals(newValue)))
 				return;
 
 			for (Descriptor variableProvider : variableProviders) {
