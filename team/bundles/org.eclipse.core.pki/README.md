@@ -3,7 +3,7 @@
 
 The comprehensive system required to provide public key encryption and digital signature services is known as a **Public Key Infrastructure (PKI)**. The purpose of a PKI is to manage keys and certificates. By managing keys and certificates through a PKI, an organization establishes and maintains a trustworthy networking environment \[^1].
 
-This package is implemented in Java programming language and allows a user to setup an SSLContext to use inside the Eclipse architecture.  Using this core package there are two ways to initialize the PKI setup, (additionally,  A UI is forthcoming org.eclipse.pki.ui ), The preferred option is specified in the 2nd paragraph below. That option takes a clear text password and allows the core pki package to encrypt it for any subsequent usage.
+This package is implemented in Java programming language and allows a user to setup an SSLContext to use inside the Eclipse architecture.  Using this core package there are two ways to initialize the PKI setup, (additionally,  A UI is forthcoming org.eclipse.pki.ui ), **The preferred option is specified in the 2nd paragraph below.** That option takes a clear text password and allows the core pki package to encrypt it for any subsequent usage.
 
 1)  Add the following properties to the eclipse.ini or similar start up.
 
