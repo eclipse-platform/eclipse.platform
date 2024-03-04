@@ -853,12 +853,21 @@ public class Project extends Container implements IProject {
 	 * during workspace restore (i.e., when you cannot do an operation)
 	 */
 	void internalSetDescription(IProjectDescription value, boolean incrementContentId) {
+		internalSetDescription(value, incrementContentId, false);
+	}
+
+	void internalSetDescription(IProjectDescription value, boolean incrementContentId,
+			boolean locationAlreadyNormalized) {
 		// Project has been added / removed. Build order is out-of-step
 		workspace.flushBuildOrder();
 
 		ProjectInfo info = (ProjectInfo) getResourceInfo(false, true);
 		info.setDescription((ProjectDescription) value);
-		getLocalManager().setLocation(this, info, value.getLocationURI());
+		if (locationAlreadyNormalized) {
+			getLocalManager().setNormalizedLocation(this, info, value.getLocationURI());
+		} else {
+			getLocalManager().setLocation(this, info, value.getLocationURI());
+		}
 		if (incrementContentId) {
 			info.incrementContentId();
 			//if the project is not accessible, stamp will be null and should remain null
