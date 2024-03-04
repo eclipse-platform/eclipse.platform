@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.runtime.content;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.preferences.IScopeContext;
@@ -167,26 +169,56 @@ public interface IContentType extends IContentTypeSettings {
 	String getName();
 
 	/**
-	 * Returns whether this content type is associated with the
-	 * given file name.
+	 * Returns whether this content type is associated with the given file name. The
+	 * association is done ignoring case "c"=="C"
 	 *
 	 * @param fileName the file name
-	 * @return <code>true</code> if this content type is associated with
-	 * the given file name, <code>false</code> otherwise
+	 * @return <code>true</code> if this content type is associated with the given
+	 *         file name, <code>false</code> otherwise
 	 * @see #isAssociatedWith(String, IScopeContext)
 	 */
+	@Deprecated
 	boolean isAssociatedWith(String fileName);
 
 	/**
-	 * Returns whether this content type is associated with the
-	 * given file name in the given preference scope.
+	 * Returns whether this content type is associated with the given file name.
+	 *
+	 * @param fileName   the file name
+	 * @param caseStrict if true the string comparison is case sensitive else the
+	 *                   comparison is ignoring case
+	 *
+	 * @return <code>true</code> if this content type is associated with the given
+	 *         file name, <code>false</code> otherwise
+	 * @see #isAssociatedWith(String, IScopeContext)
+	 * @since 3.10
+	 */
+	boolean isAssociatedWith(String fileName, boolean caseStrict);
+
+	/**
+	 * Returns whether this content type is associated with the given file name in
+	 * the given preference scope.
+	 *
+	 * @param fileName   the file name
+	 * @param caseStrict if true the string comparison is case sensitive else the
+	 *                   comparison is ignoring case
+	 * @param context    a preference scope context
+	 * @return <code>true</code> if this content type is associated with the given
+	 *         file name, <code>false</code> otherwise
+	 * @since 3.10
+	 */
+	boolean isAssociatedWith(String fileName, boolean caseStrict, IScopeContext context);
+
+	/**
+	 * Returns whether this content type is associated with the given file name in
+	 * the given preference scope. The association is done ignoring case "c"=="C"
 	 *
 	 * @param fileName the file name
-	 * @param context a preference scope context
-	 * @return <code>true</code> if this content type is associated with
-	 * the given file name, <code>false</code> otherwise
+	 * @param context  a preference scope context
+	 * @return <code>true</code> if this content type is associated with the given
+	 *         file name, <code>false</code> otherwise
 	 * @since 3.1
 	 */
+	@Deprecated
 	boolean isAssociatedWith(String fileName, IScopeContext context);
 
 	/**

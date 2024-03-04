@@ -13,11 +13,26 @@
  *******************************************************************************/
 package org.eclipse.core.internal.content;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.core.internal.runtime.RuntimeLog;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.content.IContentDescriber;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeSettings;
+import org.eclipse.core.runtime.content.ITextContentDescriber;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
@@ -377,15 +392,15 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		return builtInAssociations;
 	}
 
-	boolean hasFileSpec(IScopeContext context, String text, int typeMask) {
+	boolean hasFileSpec(IScopeContext context, String text, int typeMask, boolean caseStrict) {
 		if (context.equals(manager.getContext()) || (typeMask & IGNORE_USER_DEFINED) != 0)
-			return hasFileSpec(text, typeMask, false);
+			return hasFileSpec(text, typeMask, false, caseStrict);
 		String[] fileSpecs = ContentTypeSettings.getFileSpecs(context, id, typeMask);
 		for (String fileSpec : fileSpecs)
 			if (text.equalsIgnoreCase(fileSpec))
 				return true;
 		// no user defined association... try built-in
-		return hasFileSpec(text, typeMask | IGNORE_PRE_DEFINED, false);
+		return hasFileSpec(text, typeMask | IGNORE_PRE_DEFINED, false, caseStrict);
 	}
 
 	/**
@@ -397,11 +412,11 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	 *            FILE_NAME_SPEC or FILE_EXTENSION_SPEC or FILE_REGEXP_SPEC
 	 * @return true if this file spec has already been added, false otherwise
 	 */
-	boolean hasFileSpec(String text, int typeMask, boolean strict) {
+	boolean hasFileSpec(String text, int typeMask, boolean typeStrict, boolean caseStrict) {
 		if (fileSpecs.isEmpty())
 			return false;
 		for (FileSpec spec : fileSpecs) {
-			if (spec.equals(text, typeMask, strict))
+			if (spec.equals(text, typeMask, typeStrict, caseStrict))
 				return true;
 		}
 		return false;
@@ -416,7 +431,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	 * Adds a user-defined or pre-defined file spec.
 	 */
 	boolean internalAddFileSpec(String fileSpec, int typeMask) {
-		if (hasFileSpec(fileSpec, typeMask, false))
+		if (hasFileSpec(fileSpec, typeMask, false, true))
 			return false;
 		FileSpec newFileSpec = createFileSpec(fileSpec, typeMask);
 		if ((typeMask & ContentType.SPEC_USER_DEFINED) == 0) {
@@ -480,15 +495,15 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		return description;
 	}
 
-	byte internalIsAssociatedWith(String fileName, IScopeContext context) {
-		if (hasFileSpec(context, fileName, FILE_NAME_SPEC))
+	byte internalIsAssociatedWith(String fileName, boolean caseStrict, IScopeContext context) {
+		if (hasFileSpec(context, fileName, FILE_NAME_SPEC, caseStrict))
 			return ASSOCIATED_BY_NAME;
 		String fileExtension = ContentTypeManager.getFileExtension(fileName);
-		if (hasFileSpec(context, fileExtension, FILE_EXTENSION_SPEC))
+		if (hasFileSpec(context, fileExtension, FILE_EXTENSION_SPEC, caseStrict))
 			return ASSOCIATED_BY_EXTENSION;
 		// if does not have built-in file specs, delegate to parent (if any)
 		if (!hasBuiltInAssociations() && baseType != null)
-			return baseType.internalIsAssociatedWith(fileName, context);
+			return baseType.internalIsAssociatedWith(fileName, caseStrict, context);
 		return NOT_ASSOCIATED;
 	}
 
@@ -523,12 +538,22 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 
 	@Override
 	public boolean isAssociatedWith(String fileName) {
-		return isAssociatedWith(fileName, manager.getContext());
+		return isAssociatedWith(fileName, false, manager.getContext());
+	}
+
+	@Override
+	public boolean isAssociatedWith(String fileName, boolean caseStrict) {
+		return isAssociatedWith(fileName, caseStrict, manager.getContext());
 	}
 
 	@Override
 	public boolean isAssociatedWith(String fileName, IScopeContext context) {
-		return internalIsAssociatedWith(fileName, context) != NOT_ASSOCIATED;
+		return internalIsAssociatedWith(fileName, false, context) != NOT_ASSOCIATED;
+	}
+
+	@Override
+	public boolean isAssociatedWith(String fileName, boolean caseStrict, IScopeContext context) {
+		return internalIsAssociatedWith(fileName, caseStrict, context) != NOT_ASSOCIATED;
 	}
 
 	@Override
