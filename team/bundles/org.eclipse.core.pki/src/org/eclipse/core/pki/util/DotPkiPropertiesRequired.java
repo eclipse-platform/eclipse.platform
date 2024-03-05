@@ -18,7 +18,7 @@ public enum DotPkiPropertiesRequired {
 	List<String> list = get();
 	public boolean testFile(Path path) {
 		Properties properties=new Properties();
-		System.out.println("DotPkiPropertiesRequired testFile:"+path.toString());
+		//System.out.println("DotPkiPropertiesRequired testFile:"+path.toString());
 		try {
 			if (Files.exists(path)) {
 				final FileChannel channel = FileChannel.open(path, StandardOpenOption.READ);
