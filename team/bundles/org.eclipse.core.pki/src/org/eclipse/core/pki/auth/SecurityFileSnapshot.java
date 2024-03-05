@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
+import org.eclipse.core.pki.util.DotPkiPropertiesRequired;
 import org.eclipse.core.pki.util.LogUtil;
 import org.eclipse.core.pki.util.NormalizeGCM;
 import org.eclipse.core.pki.util.SecureGCM;
@@ -64,6 +65,10 @@ public enum SecurityFileSnapshot {
 							FileSystems.getDefault().getSeparator()+DotEclipse+
 							FileSystems.getDefault().getSeparator()+
 							".pki");
+					if (!DotPkiPropertiesRequired.CHECKER.testFile(userDotEclipseHome)) {
+						TemplateForPKIfile.CREATION.setup();
+						return false;
+					}
 				} else {
 					LogUtil.logWarning("NO PKI file detected");
 					/*
