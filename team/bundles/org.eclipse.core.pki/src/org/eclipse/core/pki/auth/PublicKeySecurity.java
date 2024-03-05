@@ -17,8 +17,6 @@ import java.util.Properties;
 
 public enum PublicKeySecurity {
 	INSTANCE;
-
-	// protected String pin = "#Gone2Boat@Bay"; //$NON-NLS-1$
 	protected byte[] salt = new byte[16];
 	public boolean isTurnedOn() {
 		return SecurityFileSnapshot.INSTANCE.image();
