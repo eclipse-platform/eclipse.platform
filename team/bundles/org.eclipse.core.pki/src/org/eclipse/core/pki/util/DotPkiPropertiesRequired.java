@@ -59,7 +59,7 @@ public enum DotPkiPropertiesRequired {
 				"javax.net.ssl.trustStorePassword","javax.net.ssl.keyStoreType",
 				"javax.net.ssl.keyStoreProvider","javax.net.ssl.cfgFileLocation",
 				"javax.net.ssl.keyStorePassword", "javax.net.ssl.keyStore");
-		List<String> list = new ArrayList(l);
+		List<String> list = new ArrayList<String>(l);
 		return list;
 	}
 }
