@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.debug.core; singleton:=true
-Bundle-Version: 3.21.300.qualifier
+Bundle-Version: 3.21.400.qualifier
 Bundle-Activator: org.eclipse.debug.core.DebugPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
