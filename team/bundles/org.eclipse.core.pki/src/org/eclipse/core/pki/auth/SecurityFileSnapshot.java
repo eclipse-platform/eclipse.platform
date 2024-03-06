@@ -149,7 +149,7 @@ public enum SecurityFileSnapshot {
 			String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
 			originalProperties.store(os, "Restored to Original:"+date);
 			os.flush();
-			
+			os.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
