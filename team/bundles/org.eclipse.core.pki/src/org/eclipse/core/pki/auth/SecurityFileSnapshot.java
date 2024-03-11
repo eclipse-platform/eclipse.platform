@@ -105,34 +105,41 @@ public enum SecurityFileSnapshot {
 			for ( Entry<Object,Object>entry:properties.entrySet()) {
 				entry.setValue(entry.getValue().toString().trim());
 			}
+			Optional<String> passwdContainer = Optional
+					.ofNullable(properties.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
 			Optional<String> encryptedPasswd = Optional
 					.ofNullable(properties.getProperty("javax.net.ssl.encryptedPassword")); //$NON-NLS-1$
-			if (encryptedPasswd.isEmpty()) {
+			if (passwdContainer.isEmpty() ) {
+				// get the passwd from console
+				PokeInConsole.PASSWD.get();
+			} else {
+				if (encryptedPasswd.isEmpty()) {
 				// System.out.println("ILoadProperties empty encrypted passwd NOT found");
 				// //$NON-NLS-1$
-				properties.setProperty("javax.net.ssl.encryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-				passwd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
-				properties.setProperty("javax.net.ssl.keyStorePassword", //$NON-NLS-1$
-						// SecureAES256.ENCRYPT.encrypt(passwd, password, salt));
-						SecureGCM.ENCRYPT.encrypt(passwd, password, salt));
-				OutputStream os = Channels.newOutputStream(updateChannel);
-				properties.save(os, null);
-				// After saving encrypted passwd to properties file, switch to unencrypted
-				properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
-			} else {
-				Optional<String> passwdContainer = Optional
-						.ofNullable(properties.getProperty("javax.net.ssl.keyStorePassword")); //$NON-NLS-1$
-				if (passwdContainer.isEmpty() ) {
-					// get the passwd from console
-					PokeInConsole.PASSWD.get();
-				} else {
-					//String ePasswd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
-					String ePasswd = passwdContainer.get();
-					passwd = NormalizeGCM.DECRYPT.decrypt(ePasswd, password, salt);
-					System.setProperty("javax.net.ssl.decryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+					
+					properties.setProperty("javax.net.ssl.encryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+					passwd = passwdContainer.get();
+					properties.setProperty("javax.net.ssl.keyStorePassword", //$NON-NLS-1$
+							// SecureAES256.ENCRYPT.encrypt(passwd, password, salt));
+							SecureGCM.ENCRYPT.encrypt(passwd, password, salt));
+					OutputStream os = Channels.newOutputStream(updateChannel);
+					properties.save(os, null);
+					// After saving encrypted passwd to properties file, switch to unencrypted
 					properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
-					properties.setProperty("javax.net.ssl.decryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-
+				} else {
+					
+					if (passwdContainer.isEmpty() ) {
+						// get the passwd from console
+						PokeInConsole.PASSWD.get();
+					} else {
+						//String ePasswd = properties.getProperty("javax.net.ssl.keyStorePassword"); //$NON-NLS-1$
+						String ePasswd = passwdContainer.get();
+						passwd = NormalizeGCM.DECRYPT.decrypt(ePasswd, password, salt);
+						System.setProperty("javax.net.ssl.decryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+						properties.setProperty("javax.net.ssl.keyStorePassword", passwd); //$NON-NLS-1$
+						properties.setProperty("javax.net.ssl.decryptedPassword", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+	
+					}
 				}
 			}
 
