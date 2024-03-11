@@ -20,16 +20,29 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 
 /**
- * A process represents a program running in normal (non-debug) mode.
- * Processes support setting and getting of client defined attributes.
- * This way, clients can annotate a process with any extra information
- * important to them. For example, classpath annotations, or command
- * line arguments used to launch the process may be important to a client.
+ * A process represents a program running in normal (non-debug) mode. Processes
+ * support setting and getting of client defined attributes. This way, clients
+ * can annotate a process with any extra information important to them. For
+ * example, classpath annotations, or command line arguments used to launch the
+ * process may be important to a client.
  * <p>
- * Clients may implement this interface, however, the debug plug-in
- * provides an implementation of this interface for a
- * <code>java.lang.Process</code>.
+ * Clients may implement this interface, however, the debug plug-in provides an
+ * implementation of this interface for a <code>java.lang.Process</code>.
  * </p>
+ *
+ * If implementing custom launches it is important to fire event whenever the
+ * process state changes in the following way:
+ *
+ * <pre>
+ * DebugPlugin manager = DebugPlugin.getDefault();
+ * if (manager != null) {
+ * 	manager.fireDebugEventSet(new DebugEvent[] {
+ * 			new DebugEvent(this, DebugEvent.CREATE) });
+ * }
+ * </pre>
+ *
+ * otherwise the UI will probably show faulty state for your process and launch.
+ *
  * @see org.eclipse.debug.core.DebugPlugin#newProcess(ILaunch, Process, String)
  */
 public interface IProcess extends IAdaptable, ITerminate {
