@@ -22,6 +22,7 @@ package org.eclipse.core.internal.resources;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayDeque;
@@ -994,7 +995,7 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	 */
 	public ProjectDescription read(IPath location, IPath tempLocation) throws IOException {
 		try (
-			SafeFileInputStream file = new SafeFileInputStream(location.toOSString(), tempLocation.toOSString());
+				InputStream file = SafeFileInputStream.of(location.toOSString(), tempLocation.toOSString());
 		) {
 			return read(new InputSource(file));
 		}
