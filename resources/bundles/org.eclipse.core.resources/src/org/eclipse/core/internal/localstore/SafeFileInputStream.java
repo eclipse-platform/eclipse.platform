@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 
 /**
  * Given a target and a temporary locations, it tries to read the contents
@@ -33,12 +33,12 @@ public class SafeFileInputStream {
 	public static InputStream of(String targetPath, String tempPath) throws IOException {
 		File target = new File(targetPath);
 		try {
-			return new ByteArrayInputStream(Files.readAllBytes(target.toPath()));
-		} catch (FileNotFoundException e) {
+			return new ByteArrayInputStream(SafeFileOutputStream.read(target.toPath()));
+		} catch (FileNotFoundException | NoSuchFileException e) {
 			if (tempPath == null)
 				tempPath = target.getAbsolutePath() + EXTENSION;
 			target = new File(tempPath);
-			return new ByteArrayInputStream(Files.readAllBytes(target.toPath()));
+			return new ByteArrayInputStream(SafeFileOutputStream.read(target.toPath()));
 		}
 	}
 }

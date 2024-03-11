@@ -19,8 +19,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class should be used when there's a file already in the
@@ -34,6 +39,7 @@ public class SafeFileOutputStream extends OutputStream {
 	private final String targetPath;
 	private final ByteArrayOutputStream output;
 	private static final String EXTENSION = ".bak"; //$NON-NLS-1$
+	private static final Map<Path, Integer> fileHashes = Collections.synchronizedMap(new HashMap<>());
 
 	/**
 	 * Creates an output stream on a file at the given location
@@ -59,37 +65,45 @@ public class SafeFileOutputStream extends OutputStream {
 	@Override
 	public void close() throws IOException {
 		File target = new File(targetPath);
+		Path targetP = target.toPath();
 		File temp = getTempFile();
+		byte[] newContent = output.toByteArray();
+		Integer newHash = hash(newContent);
+		Integer oldHash = fileHashes.put(targetP, newHash);
 		if (!target.exists()) {
 			if (!temp.exists()) {
-				Files.write(target.toPath(), output.toByteArray());
+				Files.write(targetP, newContent);
 				return;
 			}
 			// If we do not have a file at target location, but we do have at temp location,
 			// it probably means something wrong happened the last time we tried to write
 			// it.
 			// So, try to recover the backup file. And, if successful, write the new one.
-			Files.copy(temp.toPath(), target.toPath());
+			Files.copy(temp.toPath(), targetP);
 		}
-		byte[] oldContent = Files.readAllBytes(target.toPath());
-		byte[] newContent = output.toByteArray();
-		if (Arrays.equals(oldContent, newContent)) {
-			return;
+
+		if (Objects.equals(oldHash, newHash)) {
+			// quick path: since hash did not change it is likely that content did not
+			// change:
+			byte[] oldContent = Files.readAllBytes(targetP);
+			if (Arrays.equals(oldContent, newContent)) {
+				return;
+			}
 		}
 
 		try {
 			Files.write(temp.toPath(), newContent);
-			commit(temp, target);
+			commit(temp, targetP);
 		} catch (IOException e) {
 			temp.delete();
 			throw e; // rethrow
 		}
 	}
 
-	private void commit(File temp, File target) throws IOException {
+	private void commit(File temp, Path targetP) throws IOException {
 		if (!temp.exists())
 			return;
-		Files.copy(temp.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		Files.copy(temp.toPath(), targetP, StandardCopyOption.REPLACE_EXISTING);
 		temp.delete();
 	}
 
@@ -110,5 +124,15 @@ public class SafeFileOutputStream extends OutputStream {
 	@Override
 	public void write(int b) throws IOException {
 		output.write(b);
+	}
+
+	private static int hash(byte[] content) {
+		return Arrays.hashCode(content) + content.length;
+	}
+
+	public static byte[] read(Path path) throws IOException {
+		byte[] content = Files.readAllBytes(path);
+		fileHashes.put(path, hash(content));
+		return content;
 	}
 }
