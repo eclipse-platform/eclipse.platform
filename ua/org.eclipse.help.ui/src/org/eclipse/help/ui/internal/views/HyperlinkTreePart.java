@@ -58,6 +58,7 @@ import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+@SuppressWarnings("deprecation") // java.util.Observable since 9;
 public abstract class HyperlinkTreePart extends AbstractFormPart implements
 		IHelpPart {
 
@@ -143,9 +144,7 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 			@Override
 			public void mouseUp(MouseEvent e) {
 				long eventTime = e.time & 0xFFFFFFFFL;
-				if (eventTime - lastTime <= e.display.getDoubleClickTime())
-					return;
-				if (e.button != 1)
+				if ((eventTime - lastTime <= e.display.getDoubleClickTime()) || (e.button != 1))
 					return;
 				lastTime = eventTime;
 				Point p = new Point(e.x, e.y);
@@ -166,8 +165,8 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 			Rectangle bounds = lastItem.getBounds();
 			boolean selected = false;
 			TreeItem[] items = lastItem.getParent().getSelection();
-			for (int i = 0; i < items.length; i++) {
-				if (items[i].equals(lastItem)) {
+			for (TreeItem item : items) {
+				if (item.equals(lastItem)) {
 					selected = true;
 					break;
 				}
@@ -396,8 +395,7 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 		ScopeSet set = manager.getActiveSet();
 		EngineDescriptor[] engineDescriptors = parent.getEngineManager().getDescriptors();
 		ISearchScope scope = null;
-		for (int i = 0; i < engineDescriptors.length; i++) {
-			final EngineDescriptor ed = engineDescriptors[i];
+		for (final EngineDescriptor ed : engineDescriptors) {
 			if (ed.getEngineTypeId().equals("org.eclipse.help.ui.localSearch") //$NON-NLS-1$
 					&& ed.getEngine() != null) {
 				scope = ed.createSearchScope(set.getPreferenceStore());

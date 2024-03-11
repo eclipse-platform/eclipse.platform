@@ -51,7 +51,7 @@ See [Evolving Java-based APIs](https://github.com/eclipse-platform/eclipse.platf
 ### When to change the minor segment
 
 The minor segment number must be incremented when a plug-in changes in an "externally visible" way. 
-Examples of externally visible changes include [binary compatible API changes](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md), an increased minimum Java version via the Bundle-RequiredExecutionEnvironment header in the MANIFEST.MF, significant performance changes, major code rework, adding a new extension point, changing files with a somewhat unclear API status (e.g. changing icons from gif to png), etc. Another way to know when this version number should be changed is by exclusion: it should indicate changes that are neither bug fixes (indicated by the service segment) nor breaking API changes (indicated by the major segment). When the minor segment is changed, the service segment is reset to 0.
+Examples of externally visible changes include [binary compatible API changes](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md) or an increased minimum Java version via the Bundle-RequiredExecutionEnvironment header in the MANIFEST.MF, significant performance changes, major code rework, adding a new extension point, changing files with a somewhat unclear API status (e.g. changing icons from gif to png), etc. Another way to know when this version number should be changed is by exclusion: it should indicate changes that are neither bug fixes (indicated by the service segment) nor breaking API changes (indicated by the major segment). When the minor segment is changed, the service segment is reset to 0.
 
 **Example**: From the version 2.2.7, a minor change would lead to 2.3.0.
 
@@ -90,11 +90,9 @@ This example shows how the version of a plug-in reacts to changes (indicated in 
 
 Because changing the version number of a plug-in on every commit can be burdensome to the development team, we recommend only applying the previous guidelines once per release cycle. However, since we want to enable the use of the update manager by the development teams, we will use the qualifier segment to indicate changes between builds.
 
-Since Eclipse 3.1, PDE Build can automatically derive the value of the qualifier from the tag associated with the plug-in in the [map file](http://git.eclipse.org/c/platform/eclipse.platform.releng.basebuilder.git/plain/readme.html#createmap) that has been fed as input to the build. This leaves the responsibility to the developer preparing the input for the build to tag their plug-ins with a value that is [lexicographically](http://en.wikipedia.org/wiki/Lexicographical_order) higher than the previous one. To facilitate this, we recommend using the date formatted as vYYYYMMDD (year, month day). If you have multiple builds in a day, you can add "-HHMM" (hour, minute) to ensure it is unique.
+The Tycho build system automatically adds the timp-stamp as a replacement of the qualifier segment.
 
-It is also recommended that you prefix the tag on a maintenance branch with a unique branch identifier to ensure that builds on that branch can be distinguished from builds on the main development branch. For example, a branch for maintenance of the 1.0 release can use a prefix of "R10x_" so that all builds on that branch for the 1.0.x maintenance releases are grouped together. Note that the "x" in "R10x_" is not intended as a variable to be replaced by the current release number. The prefix should remain consistent throughout all maintenance releases within the same branch, because the same version of a plug-in may appear in multiple maintenance releases. For example a plug-in with version 1.0.1.R10x_v20030629 may appear in the 1.0.1 and 1.0.2 releases of a product.
-
-**Example**: The map file for the plug-in P indicates v20050506, and P's version is 4.2.3. The resulting fully qualified version number would be 4.2.3.v20050506. Deriving the qualifier from the build input offers the advantage that if the plug-in code has not changed, no new version will be created and therefore update manager won't download the plug-in again.
+**Example**: For example, if org.eclipse.core.variables specifies 3.6.300.3.12.0.qualifier and the final version is 3.6.300.v20231214-1012 the v20231214-1012 indicates the time in with the plug-in was build.
 
 ### Plug-ins with no API
 

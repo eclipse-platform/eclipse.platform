@@ -66,6 +66,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
+@SuppressWarnings("deprecation") // java.util.Observable since 9;
 public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUIConstants {
 
 	public class SearchScopeObserver implements Observer {

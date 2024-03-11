@@ -967,7 +967,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			//try to read private metadata and add to the description
 			workspace.getMetaArea().readPrivateDescription(project, description);
 		}
-		project.internalSetDescription(description, false);
+		project.internalSetDescription(description, false, true);
 		if (failure != null) {
 			try {
 				// write the project tree ...

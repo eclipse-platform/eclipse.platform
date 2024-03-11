@@ -27,6 +27,7 @@ import org.osgi.framework.FrameworkUtil;
 /**
  * Manages the scope for the federated search.
  */
+@SuppressWarnings("deprecation") // java.util.Observable since 9;
 public class ScopeSetManager extends Observable {
 	private ScopeSet activeSet;
 
@@ -78,14 +79,13 @@ public class ScopeSetManager extends Observable {
 		IPath location = HelpUIPlugin.getDefault().getStateLocation();
 		location = location.append(ScopeSet.SCOPE_DIR_NAME);
 		File dir = location.toFile();
-		if (dir.exists() == false)
+		if (!dir.exists())
 			dir.mkdir();
 	}
 
 	public void save() {
 		ensureLocation();
-		for (int i = 0; i < sets.size(); i++) {
-			ScopeSet set = sets.get(i);
+		for (ScopeSet set : sets) {
 			set.save();
 		}
 		IDialogSettings settings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(ScopeSetManager.class))
@@ -118,8 +118,7 @@ public class ScopeSetManager extends Observable {
 			if(files == null) {
 				files = new File[0];
 			}
-			for (int i = 0; i < files.length; i++) {
-				File file = files[i];
+			for (File file : files) {
 				String name = file.getName();
 				int loc = name.lastIndexOf(ScopeSet.EXT);
 				if (loc != -1) {
@@ -174,8 +173,7 @@ public class ScopeSetManager extends Observable {
 	}
 
 	public HistoryScopeSet findSearchSet(String expression) {
-		for (int i = 0; i < sets.size(); i++) {
-			ScopeSet set = sets.get(i);
+		for (ScopeSet set : sets) {
 			if (!set.isImplicit() || !(set instanceof HistoryScopeSet))
 				continue;
 			HistoryScopeSet sset = (HistoryScopeSet) set;
@@ -187,8 +185,7 @@ public class ScopeSetManager extends Observable {
 
 	public ScopeSet findSet(String name, boolean implicit) {
 		ScopeSet defaultSet = null;
-		for (int i = 0; i < sets.size(); i++) {
-			ScopeSet set = sets.get(i);
+		for (ScopeSet set : sets) {
 			if (name != null && set.isImplicit() == implicit) {
 				if (set.getName().equals(name))
 					return set;

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.tips.ui;singleton:=true
-Bundle-Version: 0.3.300.qualifier
+Bundle-Version: 0.3.400.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.29.0",
  org.eclipse.jface;bundle-version="3.30.0",

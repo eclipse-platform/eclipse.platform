@@ -33,6 +33,7 @@ import org.osgi.service.prefs.BackingStoreException;
  *
  * @since 3.1
  */
+@SuppressWarnings("deprecation") // java.util.Observable since 9;
 public class BookmarkManager extends Observable {
 	// all bookmarks removed
 	public static final int REMOVE_ALL = 1;
@@ -76,9 +77,7 @@ public class BookmarkManager extends Observable {
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
+			if ((obj == null) || (getClass() != obj.getClass()))
 				return false;
 			Bookmark other = (Bookmark) obj;
 			return Objects.equals(href, other.href) && Objects.equals(label, other.label);

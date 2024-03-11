@@ -18,6 +18,7 @@ package org.eclipse.core.internal.runtime;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -57,6 +58,7 @@ import org.eclipse.equinox.internal.app.IBranding;
 import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.eclipse.equinox.log.ExtendedLogService;
 import org.eclipse.equinox.log.Logger;
+import org.eclipse.osgi.container.Module;
 import org.eclipse.osgi.container.ModuleContainer;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.eclipse.osgi.service.datalocation.Location;
@@ -538,8 +540,8 @@ public final class InternalPlatform {
 	}
 
 	public long getStateTimeStamp() {
-		PlatformAdmin admin = getPlatformAdmin();
-		return admin == null ? -1 : admin.getState(false).getTimeStamp();
+		return Arrays.stream(getBundleContext().getBundles()).map(bundle -> bundle.adapt(Module.class))
+				.filter(Objects::nonNull).mapToLong(Module::getLastModified).sum();
 	}
 
 	public Location getUserLocation() {

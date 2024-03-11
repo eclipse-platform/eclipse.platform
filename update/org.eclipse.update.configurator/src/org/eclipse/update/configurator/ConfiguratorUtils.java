@@ -7,19 +7,20 @@
  *  https://www.eclipse.org/legal/epl-2.0/
  *
  *  SPDX-License-Identifier: EPL-2.0
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.update.configurator;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.URL;
 
 import org.eclipse.update.internal.configurator.ConfigurationActivator;
 import org.eclipse.update.internal.configurator.Utils;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * Helper class to get platform configuration data without having to
@@ -34,12 +35,12 @@ import org.osgi.framework.*;
  * @deprecated The org.eclipse.update component has been replaced by Equinox p2.
  * This API will be deleted in a future release. See bug 311590 for details.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "2024-03")
 public class ConfiguratorUtils {
 	/**
 	 * Returns the current platform configuration. This method replaces the one we used
 	 * to call on BootLoader.
-	 * 
+	 *
 	 * @return platform configuration used in current instance of platform
 	 * @since 3.0
 	 */
@@ -57,11 +58,11 @@ public class ConfiguratorUtils {
 		context.ungetService(configFactorySR);
 		return currentConfig;
 	}
-	
+
 	/**
 	 * Returns a platform configuration object, optionally initialized with previously saved
 	 * configuration information. We will use this method instead of the old one in BootLoader.
-	 * 
+	 *
 	 * @param url location of previously save configuration information. If <code>null</code>
 	 * is specified, an empty configuration object is returned
 	 * @return platform configuration used in current instance of platform
@@ -80,11 +81,11 @@ public class ConfiguratorUtils {
 		context.ungetService(configFactorySR);
 		return config;
 	}
-	
+
 	/**
 	 * Returns a platform configuration object, optionally initialized with previously saved
 	 * configuration information. We will use this method instead of the old one in BootLoader.
-	 * 
+	 *
 	 * @param url location of previously save configuration information. If <code>null</code>
 	 * is specified, an empty configuration object is returned
 	 * @param loc location of the platform installation.  Used to resolve entries in the save location
@@ -104,7 +105,7 @@ public class ConfiguratorUtils {
 		context.ungetService(configFactorySR);
 		return config;
 	}
-	
+
 	/**
 	 * @return the URL of this eclispe installation
 	 */

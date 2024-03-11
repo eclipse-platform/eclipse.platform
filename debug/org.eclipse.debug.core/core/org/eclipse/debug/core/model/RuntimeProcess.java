@@ -17,9 +17,10 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -68,7 +69,9 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 	private Process fProcess;
 
 	/**
-	 * This process's exit value
+	 * This process's exit value.
+	 *
+	 * synchronized by this
 	 */
 	private int fExitValue;
 
@@ -96,17 +99,17 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 	/**
 	 * Table of client defined attributes
 	 */
-	private Map<String, String> fAttributes;
+	private final Map<String, String> fAttributes = new ConcurrentHashMap<>();
 
 	/**
 	 * Whether output from the process should be captured or swallowed
 	 */
-	private boolean fCaptureOutput = true;
+	private final boolean fCaptureOutput;
 
 	/**
 	 * Whether the descendants of this process should be terminated too
 	 */
-	private boolean fTerminateDescendants = true;
+	private final boolean fTerminateDescendants;
 
 	private final String fThreadNameSuffix;
 
@@ -141,14 +144,16 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 		String captureOutput = launch.getAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT);
 		fCaptureOutput = !("false".equals(captureOutput)); //$NON-NLS-1$
 
+		boolean terminateDescendants = true;
 		try {
 			ILaunchConfiguration launchConfiguration = launch.getLaunchConfiguration();
 			if (launchConfiguration != null) {
-				fTerminateDescendants = launchConfiguration.getAttribute(DebugPlugin.ATTR_TERMINATE_DESCENDANTS, true);
+				terminateDescendants = launchConfiguration.getAttribute(DebugPlugin.ATTR_TERMINATE_DESCENDANTS, true);
 			}
 		} catch (CoreException e) {
 			DebugPlugin.log(e);
 		}
+		fTerminateDescendants = terminateDescendants;
 		fThreadNameSuffix = getPidInfo(process, launch);
 
 		fStreamsProxy = createStreamsProxy();
@@ -264,7 +269,9 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 				try { // (in total don't wait longer than TERMINATION_TIMEOUT)
 					long waitStart = System.currentTimeMillis();
 					if (process.waitFor(TERMINATION_TIMEOUT, TimeUnit.MILLISECONDS)) {
-						fExitValue = process.exitValue();
+						synchronized (this) {
+							fExitValue = process.exitValue();
+						}
 						if (waitFor(descendants, waitStart)) {
 							return;
 						}
@@ -419,16 +426,18 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 	 */
 	@Override
 	public void setAttribute(String key, String value) {
-		if (fAttributes == null) {
-			fAttributes = new HashMap<>(5);
+		Objects.requireNonNull(key);
+		if (value == null) {
+			// ConcurrentHashMap does not allow null values
+			if (fAttributes.remove(key) != null) {
+				fireChangeEvent();
+			}
+		} else {
+			String origVal = fAttributes.put(key, value);
+			if (!Objects.equals(origVal, value)) {
+				fireChangeEvent();
+			}
 		}
-		Object origVal = fAttributes.get(key);
-		if (origVal != null && origVal.equals(value)) {
-			return; //nothing changed.
-		}
-
-		fAttributes.put(key, value);
-		fireChangeEvent();
 	}
 
 	/**
@@ -436,9 +445,6 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 	 */
 	@Override
 	public String getAttribute(String key) {
-		if (fAttributes == null) {
-			return null;
-		}
 		return fAttributes.get(key);
 	}
 

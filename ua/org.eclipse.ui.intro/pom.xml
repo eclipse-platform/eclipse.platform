@@ -14,15 +14,10 @@
   <parent>
     <artifactId>eclipse.platform.ua</artifactId>
     <groupId>eclipse.platform.ua</groupId>
-    <version>4.31.0-SNAPSHOT</version>
+    <version>4.32.0-SNAPSHOT</version>
   </parent>
   <groupId>org.eclipse.ui</groupId>
   <artifactId>org.eclipse.ui.intro</artifactId>
   <version>3.7.300-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
-
-  <properties>
-    <code.ignoredWarnings>-warn:-raw,unchecked</code.ignoredWarnings>
-  </properties> 
-
 </project>

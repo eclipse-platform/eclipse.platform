@@ -44,6 +44,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+@SuppressWarnings("deprecation") // java.util.Observable since 9;
 public class EngineDescriptorManager extends Observable implements IHelpUIConstants {
 	private final ArrayList<EngineDescriptor> descriptors;
 

@@ -660,9 +660,14 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 * @param location the File system location of this resource on disk
 	 * @return The file store for the provided resource
 	 */
-	private IFileStore initializeStore(IResource target, URI location) throws CoreException {
+	private IFileStore initializeStore(IResource target, URI location, boolean locationAlreadyNormalized)
+			throws CoreException {
 		ResourceInfo info = ((Resource) target).getResourceInfo(false, true);
-		setLocation(target, info, location);
+		if (locationAlreadyNormalized) {
+			setNormalizedLocation(target, info, location);
+		} else {
+			setLocation(target, info, location);
+		}
 		FileStoreRoot root = getStoreRoot(target);
 		return root.createStore(target.getFullPath(), target);
 	}
@@ -808,7 +813,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	}
 
 	public void link(Resource target, URI location, IFileInfo fileInfo) throws CoreException {
-		initializeStore(target, location);
+		initializeStore(target, location, false);
 		ResourceInfo info = target.getResourceInfo(false, true);
 		long lastModified = fileInfo == null ? 0 : fileInfo.getLastModified();
 		if (lastModified == 0)
@@ -928,7 +933,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			projectLocation = URIUtil.toURI(getProjectDefaultLocation(target));
 		}
 		IFile descFile = target.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		IFileStore projectStore = initializeStore(target, projectLocation);
+		IFileStore projectStore = initializeStore(target, projectLocation, true);
 		IFileStore descriptionStore = descFile.exists() ? getStore(descFile) : projectStore.getChild(IProjectDescription.DESCRIPTION_FILE_NAME);
 		ProjectDescription description = null;
 		//hold onto any exceptions until after sync info is updated, then throw it
@@ -1089,9 +1094,13 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 * @param location the new storage location
 	 */
 	public void setLocation(IResource target, ResourceInfo info, URI location) {
+		// Normalize case as it exists on the file system.
+		setNormalizedLocation(target, info, FileUtil.realURI(location));
+	}
+
+	public void setNormalizedLocation(IResource target, ResourceInfo info, URI location) {
 		FileStoreRoot oldRoot = info.getFileStoreRoot();
 		if (location != null) {
-			location = FileUtil.realURI(location); // Normalize case as it exists on the file system.
 			info.setFileStoreRoot(new FileStoreRoot(location, target.getFullPath()));
 		} else {
 			//project is in default location so clear the store root

@@ -17,7 +17,7 @@
 	<parent>
 		<groupId>org.eclipse.platform</groupId>
 		<artifactId>eclipse.platform.runtime</artifactId>
-		<version>4.31.0-SNAPSHOT</version>
+		<version>4.32.0-SNAPSHOT</version>
 		<relativePath>../..</relativePath>
 	</parent>
 	<artifactId>org.eclipse.e4.core.tests</artifactId>
