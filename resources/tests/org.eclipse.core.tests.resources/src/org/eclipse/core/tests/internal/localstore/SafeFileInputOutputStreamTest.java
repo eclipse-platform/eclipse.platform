@@ -50,7 +50,7 @@ public class SafeFileInputOutputStreamTest {
 	}
 
 	private InputStream getContents(java.io.File target) throws IOException {
-		return new SafeFileInputStream(target);
+		return SafeFileInputStream.of(target.getAbsolutePath(), null);
 	}
 
 	@Before
@@ -83,7 +83,7 @@ public class SafeFileInputOutputStreamTest {
 		}
 		assertTrue(target.exists());
 		assertFalse(tempFile.exists());
-		InputStream diskContents = new SafeFileInputStream(tempLocation.toOSString(), target.getAbsolutePath());
+		InputStream diskContents = SafeFileInputStream.of(tempLocation.toOSString(), target.getAbsolutePath());
 		assertTrue(compareContent(diskContents, createInputStream(contents)));
 		Workspace.clear(target); // make sure there was nothing here before
 	}
