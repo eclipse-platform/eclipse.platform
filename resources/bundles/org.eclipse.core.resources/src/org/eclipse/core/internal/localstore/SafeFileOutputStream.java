@@ -14,9 +14,13 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 /**
  * This class should be used when there's a file already in the
@@ -26,11 +30,10 @@ import java.nio.file.StandardCopyOption;
  * If everything goes OK, it is moved to the right place.
  */
 public class SafeFileOutputStream extends OutputStream {
-	protected File temp;
-	protected File target;
-	protected OutputStream output;
-	protected boolean failed;
-	protected static final String EXTENSION = ".bak"; //$NON-NLS-1$
+	private final String tempPath;
+	private final String targetPath;
+	private final ByteArrayOutputStream output;
+	private static final String EXTENSION = ".bak"; //$NON-NLS-1$
 
 	/**
 	 * Creates an output stream on a file at the given location
@@ -46,71 +49,66 @@ public class SafeFileOutputStream extends OutputStream {
 	 * @param tempPath The temporary location to use, or <code>null</code> to
 	 * use the same location as the target path but with a different extension.
 	 */
+	@SuppressWarnings("unused")
 	public SafeFileOutputStream(String targetPath, String tempPath) throws IOException {
-		failed = false;
-		target = new File(targetPath);
-		createTempFile(tempPath);
-		if (!target.exists()) {
-			if (!temp.exists()) {
-				output = new BufferedOutputStream(new FileOutputStream(target));
-				return;
-			}
-			// If we do not have a file at target location, but we do have at temp location,
-			// it probably means something wrong happened the last time we tried to write it.
-			// So, try to recover the backup file. And, if successful, write the new one.
-			Files.copy(temp.toPath(), target.toPath());
-		}
-		output = new BufferedOutputStream(new FileOutputStream(temp));
+		this.tempPath = tempPath != null ? tempPath : (targetPath + EXTENSION);
+		this.targetPath = targetPath;
+		output = new ByteArrayOutputStream();
 	}
 
 	@Override
 	public void close() throws IOException {
+		File target = new File(targetPath);
+		File temp = getTempFile();
+		if (!target.exists()) {
+			if (!temp.exists()) {
+				Files.write(target.toPath(), output.toByteArray());
+				return;
+			}
+			// If we do not have a file at target location, but we do have at temp location,
+			// it probably means something wrong happened the last time we tried to write
+			// it.
+			// So, try to recover the backup file. And, if successful, write the new one.
+			Files.copy(temp.toPath(), target.toPath());
+		}
+		byte[] oldContent = Files.readAllBytes(target.toPath());
+		byte[] newContent = output.toByteArray();
+		if (Arrays.equals(oldContent, newContent)) {
+			return;
+		}
+
 		try {
-			output.close();
+			Files.write(temp.toPath(), newContent);
+			commit(temp, target);
 		} catch (IOException e) {
-			failed = true;
+			temp.delete();
 			throw e; // rethrow
 		}
-		if (failed)
-			temp.delete();
-		else
-			commit();
 	}
 
-	protected void commit() throws IOException {
+	private void commit(File temp, File target) throws IOException {
 		if (!temp.exists())
 			return;
 		Files.copy(temp.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		temp.delete();
 	}
 
-	protected void createTempFile(String tempPath) {
-		if (tempPath == null)
-			tempPath = target.getAbsolutePath() + EXTENSION;
-		temp = new File(tempPath);
+	private File getTempFile() {
+		return new File(tempPath);
 	}
 
 	@Override
 	public void flush() throws IOException {
-		try {
-			output.flush();
-		} catch (IOException e) {
-			failed = true;
-			throw e; // rethrow
-		}
+		output.flush();
 	}
 
 	public String getTempFilePath() {
-		return temp.getAbsolutePath();
+		return getTempFile().getAbsolutePath();
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void write(int b) throws IOException {
-		try {
-			output.write(b);
-		} catch (IOException e) {
-			failed = true;
-			throw e; // rethrow
-		}
+		output.write(b);
 	}
 }
