@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
@@ -33,8 +34,17 @@ public enum DotPkiPropertiesRequired {
 			    	//System.out.println("DotPkiPropertiesRequired All proeprties exist:"+list.size());
 			    	return true;
 			    } else {
-			    	//System.out.println("DotPkiPropertiesRequired missing preoperties");
-			    	LogUtil.logWarning("Missing properies;"+ list.toString());
+			    	Optional pkiType = Optional.ofNullable(properties.get("javax.net.ssl.keyStoreType"));
+			    	if ( !(pkiType.isEmpty())) {
+			    		if (pkiType.get().toString().contains("12")) { //PKCS12 type. no cfg needed
+			    			isProperty("javax.net.ssl.cfgFileLocation");	
+			    		}
+			    	}
+			    	if (!(list.isEmpty())) {
+			    		LogUtil.logWarning("Missing properies;"+ list.toString());
+			    	} else {
+			    		return true;
+			    	}
 			    }
 			} else {
 				LogUtil.logWarning("DotPkiPropertiesRequired- NO PKI file detected");
