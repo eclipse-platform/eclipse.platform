@@ -58,10 +58,14 @@ public enum DotPkiPropertiesRequired {
 		l = Arrays.asList("javax.net.ssl.trustStore","javax.net.ssl.trustStoreType",
 				"javax.net.ssl.trustStorePassword","javax.net.ssl.keyStoreType",
 				"javax.net.ssl.keyStoreProvider","javax.net.ssl.cfgFileLocation",
+<<<<<<< HEAD
 				"javax.net.ssl.keyStore",
 				//"javax.net.ssl.keyStorePassword", "javax.net.ssl.keyStore");
 				"javax.net.ssl.keyStorePassword", "javax.net.ssl.keyStore");
 
+=======
+				"javax.net.ssl.keyStorePassword", "javax.net.ssl.keyStore");
+>>>>>>> branch 'master' of https://github.com/JavaJoeS/eclipse.platform.git
 		List<String> list = new ArrayList<String>(l);
 		return list;
 	}
