@@ -13,12 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 /**
  * Given a target and a temporary locations, it tries to read the contents
@@ -28,17 +27,19 @@ import java.nio.file.NoSuchFileException;
  * @see SafeFileOutputStream
  */
 public class SafeFileInputStream {
-	protected static final String EXTENSION = ".bak"; //$NON-NLS-1$
 
 	public static InputStream of(String targetPath, String tempPath) throws IOException {
-		File target = new File(targetPath);
+		Path target = Path.of(targetPath);
 		try {
-			return new ByteArrayInputStream(SafeFileOutputStream.read(target.toPath()));
+			// we assume the happy path here that the file is present to avoid extra I/O to
+			// check if file is actually there, in case of failure (what should be really
+			// rare) this will add a small penalty for exception creation).
+			return SafeFileOutputStream.read(target, target);
 		} catch (FileNotFoundException | NoSuchFileException e) {
-			if (tempPath == null)
-				tempPath = target.getAbsolutePath() + EXTENSION;
-			target = new File(tempPath);
-			return new ByteArrayInputStream(SafeFileOutputStream.read(target.toPath()));
+			if (tempPath == null) {
+				tempPath = targetPath + SafeFileOutputStream.EXTENSION;
+			}
+			return SafeFileOutputStream.read(Path.of(tempPath), target);
 		}
 	}
 }

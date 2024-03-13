@@ -14,18 +14,20 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.security.DigestInputStream;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class should be used when there's a file already in the
@@ -38,8 +40,8 @@ public class SafeFileOutputStream extends OutputStream {
 	private final String tempPath;
 	private final String targetPath;
 	private final ByteArrayOutputStream output;
-	private static final String EXTENSION = ".bak"; //$NON-NLS-1$
-	private static final Map<Path, Integer> fileHashes = Collections.synchronizedMap(new HashMap<>());
+	static final String EXTENSION = ".bak"; //$NON-NLS-1$
+	private static final Map<Path, FileHash> FILE_HASHES = new ConcurrentHashMap<>();
 
 	/**
 	 * Creates an output stream on a file at the given location
@@ -68,8 +70,8 @@ public class SafeFileOutputStream extends OutputStream {
 		Path targetP = target.toPath();
 		File temp = getTempFile();
 		byte[] newContent = output.toByteArray();
-		Integer newHash = hash(newContent);
-		Integer oldHash = fileHashes.put(targetP, newHash);
+		FileHash newHash = hash(newContent);
+		FileHash oldHash = FILE_HASHES.put(targetP, newHash);
 		if (!target.exists()) {
 			if (!temp.exists()) {
 				Files.write(targetP, newContent);
@@ -126,13 +128,24 @@ public class SafeFileOutputStream extends OutputStream {
 		output.write(b);
 	}
 
-	private static int hash(byte[] content) {
-		return Arrays.hashCode(content) + content.length;
+	private static FileHash hash(byte[] content) {
+		return new FileHash(content.length, Arrays.hashCode(content));
 	}
 
-	public static byte[] read(Path path) throws IOException {
-		byte[] content = Files.readAllBytes(path);
-		fileHashes.put(path, hash(content));
-		return content;
+	static InputStream read(Path path, Path cachePath) throws IOException {
+		InputStream rawInputStream = Files.newInputStream(path);
+		return new DigestInputStream(new BufferedInputStream(rawInputStream),
+				new HashCodeMessageDigest()) {
+			@Override
+			public void close() throws IOException {
+				super.close();
+				HashCodeMessageDigest hashDigest = (HashCodeMessageDigest) getMessageDigest();
+				FILE_HASHES.put(cachePath, new FileHash(hashDigest.bytes, hashDigest.result));
+			}
+		};
+	}
+
+	private static final record FileHash(int size, int hash) {
+
 	}
 }
