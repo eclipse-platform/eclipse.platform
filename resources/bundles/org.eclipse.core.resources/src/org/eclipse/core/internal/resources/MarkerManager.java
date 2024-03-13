@@ -15,31 +15,16 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
 import org.eclipse.core.internal.localstore.SafeFileInputStream;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.internal.watson.ElementTree;
-import org.eclipse.core.internal.watson.ElementTreeIterator;
-import org.eclipse.core.internal.watson.IElementContentVisitor;
-import org.eclipse.core.internal.watson.IPathRequestor;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.internal.watson.*;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -549,7 +534,7 @@ public class MarkerManager implements IManager {
 		if (!sourceFile.exists() && !tempFile.exists())
 			return;
 		try (DataInputStream input = new DataInputStream(
-				SafeFileInputStream.of(sourceLocation.toOSString(), tempLocation.toOSString()))) {
+				new SafeFileInputStream(sourceLocation.toOSString(), tempLocation.toOSString()))) {
 			MarkerReader reader = new MarkerReader(workspace);
 			reader.read(input, generateDeltas);
 		} catch (Exception e) {
