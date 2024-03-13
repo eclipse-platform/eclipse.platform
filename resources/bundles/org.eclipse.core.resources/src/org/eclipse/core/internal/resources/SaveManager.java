@@ -49,6 +49,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.stream.Collectors;
@@ -1778,33 +1779,56 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		// recurse over the projects in the workspace if we were given the workspace root
 		if (root.getType() == IResource.PROJECT)
 			return;
-		IProject[] projects = ((IWorkspaceRoot) root).getProjects(IContainer.INCLUDE_HIDDEN);
+		forEachProjectInParallel(null, this::visitAndSave);
+	}
+
+	@FunctionalInterface
+	public interface CoreConsumer<T> {
+		/**
+		 * Performs this operation on the given argument.
+		 *
+		 * @param t the input argument
+		 */
+		void accept(T t) throws CoreException;
+	}
+
+	private void forEachProjectInParallel(IProgressMonitor m, CoreConsumer<IProject> consumer) throws CoreException {
+		IProject[] projects = workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
+		if (projects.length == 0) {
+			return;
+		}
+		SubMonitor subMointor = SubMonitor.convert(m, projects.length);
+		IStatus[] stats;
 		// Never use a shared ForkJoinPool.commonPool() as it may be busy with other tasks, which might deadlock.
 		// Also use a custom ForkJoinWorkerThreadFactory, to prevent issues with a
 		// potential SecurityManager, since the threads created by it get no permissions.
 		// See https://github.com/eclipse-platform/eclipse.platform/issues/294
-		ForkJoinPool forkJoinPool = new ForkJoinPool(ForkJoinPool.getCommonPoolParallelism(),
+		ExecutorService executor = new ForkJoinPool(ForkJoinPool.getCommonPoolParallelism(),
 				pool -> new ForkJoinWorkerThread(pool) {
 					// anonymous subclass to access protected constructor
 				}, null, false);
-		IStatus[] stats;
 		try {
-			stats = forkJoinPool.submit(() -> Arrays.stream(projects).parallel().map(project -> {
+			stats = executor.submit(() -> Arrays.stream(projects).parallel().map(project -> {
+				subMointor.split(1);
 				try {
-					visitAndSave(project);
+					consumer.accept(project);
 				} catch (CoreException e) {
-					return e.getStatus();
+					return Status.error("Error with project " + project.getName(), e); //$NON-NLS-1$
 				}
 				return null;
 			}).filter(Objects::nonNull).toArray(IStatus[]::new)).get();
 		} catch (InterruptedException | ExecutionException e) {
-			throw new CoreException(Status.error(Messages.resources_saveProblem, e));
+			List<Runnable> notExecuted = executor.shutdownNow();
+			throw new CoreException(Status.error("Error with " + notExecuted.size() + " projects left.", e)); //$NON-NLS-1$//$NON-NLS-2$
 		} finally {
-			forkJoinPool.shutdown();
+			executor.shutdown();
+		}
+		if (stats.length == 1) {
+			throw new CoreException(stats[1]);
 		}
 		if (stats.length > 0) {
 			throw new CoreException(new MultiStatus(ResourcesPlugin.PI_RESOURCES, IStatus.ERROR, stats,
-					Messages.resources_saveProblem, null));
+					"Error with " + stats.length + " projects.", null)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
