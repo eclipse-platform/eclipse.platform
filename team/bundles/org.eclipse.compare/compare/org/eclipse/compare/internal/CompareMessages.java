@@ -96,6 +96,7 @@ public final class CompareMessages extends NLS {
 	public static String TextMergeViewer_atEnd_message;
 	public static String TextMergeViewer_atBeginning_title;
 	public static String TextMergeViewer_atBeginning_message;
+	public static String TextMergeViewer_differences;
 	public static String CompareNavigator_atEnd_title;
 	public static String CompareNavigator_atEnd_message;
 	public static String CompareNavigator_atBeginning_title;
