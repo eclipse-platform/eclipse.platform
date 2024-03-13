@@ -197,6 +197,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	private static final String DEBUG_FULL_SAVE = "Full save on workspace: "; //$NON-NLS-1$
 	private static final String DEBUG_PROJECT_SAVE = "Save on project "; //$NON-NLS-1$
 	private static final String DEBUG_SNAPSHOT = "Snapshot: "; //$NON-NLS-1$
+	private static final int TREE_BUFFER_SIZE = 1024 * 64;//64KB buffer
 
 	public SaveManager(Workspace workspace) {
 		this.workspace = workspace;
@@ -1102,8 +1103,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			savedStates = Collections.synchronizedMap(new HashMap<>(10));
 			return;
 		}
-		try (DataInputStream input = new DataInputStream(
-				SafeFileInputStream.of(treeLocation.toOSString(), tempLocation.toOSString()))) {
+		try (DataInputStream input = new DataInputStream(new SafeFileInputStream(treeLocation.toOSString(), tempLocation.toOSString(), TREE_BUFFER_SIZE))) {
 			WorkspaceTreeReader.getReader(workspace, input.readInt()).readTree(input, monitor);
 		} catch (Exception e) { // "Unknown format" is passed as ResourceException
 			String msg = NLS.bind(Messages.resources_readMeta, treeLocation.toOSString());
@@ -1134,8 +1134,7 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			if (!treeLocation.toFile().exists() && !tempLocation.toFile().exists())
 				return false;
 			try (
-					DataInputStream input = new DataInputStream(
-							SafeFileInputStream.of(treeLocation.toOSString(), tempLocation.toOSString()));
+				DataInputStream input = new DataInputStream(new SafeFileInputStream(treeLocation.toOSString(), tempLocation.toOSString()));
 			) {
 				WorkspaceTreeReader reader = WorkspaceTreeReader.getReader(workspace, input.readInt());
 				reader.readTree(project, input, Policy.subMonitorFor(monitor, Policy.totalWork));
