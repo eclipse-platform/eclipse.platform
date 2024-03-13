@@ -17,7 +17,6 @@ import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -107,6 +106,7 @@ public class SafeFileInputOutputStreamTest {
 		File tempFile;
 		try (SafeFileOutputStream safeStream = createSafeStream(target)) {
 			tempFile = new File(safeStream.getTempFilePath());
+			assertTrue(tempFile.exists());
 			createInputStream(contents).transferTo(safeStream);
 		}
 		assertFalse(tempFile.exists());
@@ -140,6 +140,7 @@ public class SafeFileInputOutputStreamTest {
 		contents = createRandomString();
 		// now we should have a temp file
 		try (SafeFileOutputStream safeStream = createSafeStream(target.getAbsolutePath(), tempLocation.toOSString())) {
+			assertTrue(tempFile.exists());
 			// update target contents
 			createInputStream(contents).transferTo(safeStream);
 		}
@@ -149,36 +150,4 @@ public class SafeFileInputOutputStreamTest {
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 
-	@Test
-	public void testContentSame() throws Exception {
-		File target = new File(temp.toFile(), "target");
-		Workspace.clear(target); // make sure there was nothing here before
-		assertTrue(!target.exists());
-		String contentsA = createRandomString();
-
-		// basic use (like a FileOutputStream)
-		try (SafeFileOutputStream safeStream = createSafeStream(target)) {
-			createInputStream(contentsA).transferTo(safeStream);
-		}
-		long lastModified1 = target.lastModified();
-		try {
-			// wait at least lastModified accuracy:
-			Thread.sleep(1);
-		} catch (InterruptedException e) {
-			throw e;
-		}
-		// "write" same content again:
-		try (SafeFileOutputStream safeStream = createSafeStream(target)) {
-			createInputStream(contentsA).transferTo(safeStream);
-		}
-		long lastModified2 = target.lastModified();
-		assertEquals(lastModified1, lastModified2);
-		String contentsB = "B" + contentsA;
-		// change content:
-		try (SafeFileOutputStream safeStream = createSafeStream(target)) {
-			createInputStream(contentsB).transferTo(safeStream);
-		}
-		InputStream diskContents = getContents(target);
-		assertTrue(compareContent(diskContents, createInputStream(contentsB)));
-	}
 }
