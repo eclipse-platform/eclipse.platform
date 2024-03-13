@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse Core Tests Resources
 Bundle-SymbolicName: org.eclipse.core.tests.resources; singleton:=true
-Bundle-Version: 3.11.400.qualifier
+Bundle-Version: 3.11.500.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.core.tests.filesystem,
  org.eclipse.core.tests.internal.alias,
