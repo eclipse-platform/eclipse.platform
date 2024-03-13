@@ -5421,8 +5421,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		int differenceCount = fMerger.changesCount();
 		if (tbm != null) {
 
-			String label = differenceCount > 1 ? differenceCount + " Differences" //$NON-NLS-1$
-					: differenceCount == 1 ? differenceCount + " Difference" : "No Difference"; //$NON-NLS-1$ //$NON-NLS-2$
+			String label = MessageFormat.format(CompareMessages.TextMergeViewer_differences, differenceCount);
 			LabelContributionItem labelContributionItem = new LabelContributionItem(DIFF_COUNT_ID,
 					label);
 
