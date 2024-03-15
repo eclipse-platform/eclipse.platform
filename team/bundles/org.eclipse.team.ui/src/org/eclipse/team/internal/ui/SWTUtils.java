@@ -218,6 +218,7 @@ public class SWTUtils {
 		case MARGINS_DEFAULT:
 			layout.marginLeft= layout.marginRight= layout.marginWidth;
 			layout.marginTop= layout.marginBottom= layout.marginHeight;
+		        break;
 		default:
 			throw new IllegalArgumentException(Integer.toString(margins));
 		}
