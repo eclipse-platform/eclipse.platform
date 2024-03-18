@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012-2022 Mihai Nita and others
+ * Copyright (c) 2012, 2024 Mihai Nita and others
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.console.ansi.participants;
 
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,8 +21,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TypedListener;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsolePageParticipant;
 import org.eclipse.ui.part.IPageBookViewPage;
@@ -66,15 +65,8 @@ public class AnsiConsolePageParticipant implements IConsolePageParticipant {
 
 	// Find the document associated with the viewer
 	static IDocument getDocument(StyledText viewer) {
-		for (Listener listener : viewer.getListeners(ST.LineGetStyle)) {
-			if (listener instanceof TypedListener) {
-				Object evenListener = ((TypedListener) listener).getEventListener();
-				if (evenListener instanceof ITextViewer) {
-					return ((ITextViewer) evenListener).getDocument();
-				}
-			}
-		}
-		return null;
+		return viewer.getTypedListeners(ST.LineGetStyle, EventListener.class).filter(ITextViewer.class::isInstance)
+				.findFirst().map(v -> ((ITextViewer) v).getDocument()).orElse(null);
 	}
 
 	private void addViewer(StyledText viewer, IConsolePageParticipant participant) {

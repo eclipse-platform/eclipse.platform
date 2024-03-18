@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TypedListener;
 
 /**
  *
@@ -156,19 +155,19 @@ public class HyperlinkLabel extends Canvas {
 
 	public void addSelectionListener(SelectionListener listener) {
 		checkWidget();
-		if (listener == null)
+		if (listener == null) {
 			return;
-		TypedListener typedListener = new TypedListener(listener);
-		addListener(SWT.Selection, typedListener);
-		addListener(SWT.DefaultSelection, typedListener);
+		}
+		addTypedListener(listener, SWT.Selection, SWT.DefaultSelection);
 	}
 
 	public void removeSelectionListener(SelectionListener listener) {
 		checkWidget();
-		if (listener == null)
+		if (listener == null) {
 			return;
-		removeListener(SWT.Selection, listener);
-		removeListener(SWT.DefaultSelection, listener);
+		}
+		removeTypedListener(SWT.Selection, listener);
+		removeTypedListener(SWT.DefaultSelection, listener);
 	}
 
 	@Override
