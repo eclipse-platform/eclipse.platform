@@ -13,11 +13,15 @@
  *******************************************************************************/
 package org.eclipse.core.internal.content;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.ref.SoftReference;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeSettings;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 
 /**
@@ -169,13 +173,25 @@ public class ContentTypeHandler implements IContentType {
 	@Override
 	public boolean isAssociatedWith(String fileName) {
 		final IContentType target = getTarget();
-		return (target != null) ? target.isAssociatedWith(fileName) : false;
+		return (target != null) ? target.isAssociatedWith(fileName, false) : false;
 	}
 
 	@Override
 	public boolean isAssociatedWith(String fileName, IScopeContext context) {
 		final IContentType target = getTarget();
-		return (target != null) ? target.isAssociatedWith(fileName, context) : false;
+		return (target != null) ? target.isAssociatedWith(fileName, false, context) : false;
+	}
+
+	@Override
+	public boolean isAssociatedWith(String fileName, boolean caseStrict) {
+		final IContentType target = getTarget();
+		return (target != null) ? target.isAssociatedWith(fileName, caseStrict) : false;
+	}
+
+	@Override
+	public boolean isAssociatedWith(String fileName, boolean caseStrict, IScopeContext context) {
+		final IContentType target = getTarget();
+		return (target != null) ? target.isAssociatedWith(fileName, caseStrict, context) : false;
 	}
 
 	@Override

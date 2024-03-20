@@ -46,11 +46,12 @@ class FileSpec {
 		if (!(other instanceof FileSpec))
 			return false;
 		FileSpec otherFileSpec = (FileSpec) other;
-		return equals(text, otherFileSpec.getType(), false);
+		return equals(text, otherFileSpec.getType(), false, false);
 	}
 
-	public boolean equals(final String text, final int otherType, final boolean strict) {
-		return ((!strict && getBasicType(type) == getBasicType(otherType)) || type == otherType) && this.text.equalsIgnoreCase(text);
+	public boolean equals(final String text, final int otherType, final boolean typeStrict, final boolean caseStrict) {
+		boolean textMatch = caseStrict ? this.text.equals(text) : this.text.equalsIgnoreCase(text);
+		return ((!typeStrict && getBasicType(type) == getBasicType(otherType)) || type == otherType) && textMatch;
 	}
 
 	@Override

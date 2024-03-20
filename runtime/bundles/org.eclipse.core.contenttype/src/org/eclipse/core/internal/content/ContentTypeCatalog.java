@@ -14,13 +14,35 @@
  *******************************************************************************/
 package org.eclipse.core.internal.content;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.content.IContentDescriber;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.content.IContentTypeManager.ISelectionPolicy;
+import org.eclipse.core.runtime.content.IContentTypeSettings;
+import org.eclipse.core.runtime.content.ITextContentDescriber;
+import org.eclipse.core.runtime.content.XMLRootElementContentDescriber;
+import org.eclipse.core.runtime.content.XMLRootElementContentDescriber2;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.osgi.util.NLS;
 
@@ -652,7 +674,7 @@ public final class ContentTypeCatalog {
 			typeMask ^= (IContentType.IGNORE_PRE_DEFINED | IContentType.IGNORE_USER_DEFINED);
 			for (Iterator<ContentType> i = contentTypes.iterator(); i.hasNext();) {
 				ContentType contentType = i.next();
-				if (!contentType.hasFileSpec(text, typeMask, true))
+				if (!contentType.hasFileSpec(text, typeMask, true, false))
 					i.remove();
 			}
 		}
@@ -708,21 +730,16 @@ public final class ContentTypeCatalog {
 		for (ContentType root : source) {
 			// From a given content type, check if it matches, and
 			// include any children that match as well.
-			internalAccept(new ContentTypeVisitor() {
-				@Override
-				public int visit(ContentType type) {
-					if (type != root && type.hasBuiltInAssociations())
-						// this content type has built-in associations - visit it later as root
-						return RETURN;
-					if (type == root && !type.hasFileSpec(context, fileSpecText, fileSpecType))
-						// it is the root and does not match the file name - do not add it nor look into its children
-						return RETURN;
-					// either the content type is the root and matches the file name or
-					// is a sub content type and does not have built-in files specs
-					if (!existing.contains(type))
-						destination.add(type);
-					return CONTINUE;
-				}
+			internalAccept(type -> {
+				if ((type != root && type.hasBuiltInAssociations())
+						|| (type == root && !type.hasFileSpec(context, fileSpecText, fileSpecType, false)))
+					// it is the root and does not match the file name - do not add it nor look into its children
+					return ContentTypeVisitor.RETURN;
+				// either the content type is the root and matches the file name or
+				// is a sub content type and does not have built-in files specs
+				if (!existing.contains(type))
+					destination.add(type);
+				return ContentTypeVisitor.CONTINUE;
 			}, root);
 		}
 		return destination;
