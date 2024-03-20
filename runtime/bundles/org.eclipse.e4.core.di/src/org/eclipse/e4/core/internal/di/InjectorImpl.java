@@ -75,7 +75,8 @@ public class InjectorImpl implements IInjector {
 	private final Set<IdentityWeakReference<Class<?>>> injectedClasses = new LinkedHashSet<>();
 	private final Map<Class<?>, Object> singletonCache = new HashMap<>();
 	private final Map<Class<?>, Set<Binding>> bindings = new HashMap<>();
-	private final Map<AnnotationProxy, Map<AnnotatedElement, Boolean>> annotationsPresent = new HashMap<>();
+	private final Map<AnnotationProxy, Map<AnnotatedElement, Boolean>> annotationsPresent = Collections
+			.synchronizedMap(new HashMap<>());
 
 	// Performance improvement:
 	private final Map<Class<?>, Method[]> methodsCache = Collections.synchronizedMap(new WeakHashMap<>());
