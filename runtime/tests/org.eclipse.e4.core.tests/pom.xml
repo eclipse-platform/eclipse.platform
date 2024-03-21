@@ -21,7 +21,7 @@
 		<relativePath>../..</relativePath>
 	</parent>
 	<artifactId>org.eclipse.e4.core.tests</artifactId>
-	<version>1.3.300-SNAPSHOT</version>
+	<version>1.3.400-SNAPSHOT</version>
 	<packaging>eclipse-test-plugin</packaging>
 	<properties>
 		<testClass>org.eclipse.e4.core.tests.CoreTestSuite</testClass>

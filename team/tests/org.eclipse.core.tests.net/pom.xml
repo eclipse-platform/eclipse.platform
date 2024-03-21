@@ -18,7 +18,7 @@
   </parent>
   <groupId>org.eclipse.core</groupId>
   <artifactId>org.eclipse.core.tests.net</artifactId>
-  <version>1.6.300-SNAPSHOT</version>
+  <version>1.6.400-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 
   <properties>

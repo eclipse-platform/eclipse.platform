@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.core.jobs; singleton:=true
-Bundle-Version: 3.15.200.qualifier
+Bundle-Version: 3.15.300.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.core.internal.jobs;x-internal:=true,

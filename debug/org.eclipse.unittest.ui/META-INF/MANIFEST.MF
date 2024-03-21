@@ -3,7 +3,7 @@ Automatic-Module-Name: org.eclipse.unittest.ui
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.unittest.ui;singleton:=true
-Bundle-Version: 1.1.300.qualifier
+Bundle-Version: 1.1.400.qualifier
 Bundle-Activator: org.eclipse.unittest.internal.UnitTestPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %PLUGIN_NAME
 Bundle-SymbolicName: org.eclipse.ui.cheatsheets; singleton:=true
-Bundle-Version: 3.8.300.qualifier
+Bundle-Version: 3.8.400.qualifier
 Bundle-Activator: org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin
 Bundle-Vendor: %PROVIDER_NAME
 Bundle-Localization: plugin
