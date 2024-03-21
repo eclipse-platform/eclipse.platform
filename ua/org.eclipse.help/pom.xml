@@ -18,6 +18,6 @@
   </parent>
   <groupId>org.eclipse.help</groupId>
   <artifactId>org.eclipse.help</artifactId>
-  <version>3.10.300-SNAPSHOT</version>
+  <version>3.10.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

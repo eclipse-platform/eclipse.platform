@@ -4,7 +4,7 @@ Bundle-SymbolicName: org.eclipse.e4.core.services;singleton:=true
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-Version: 2.4.300.qualifier
+Bundle-Version: 2.4.400.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: jakarta.annotation;version="[2.0.0,3.0.0)",

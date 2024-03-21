@@ -18,6 +18,6 @@
   </parent>
   <groupId>org.eclipse.ui</groupId>
   <artifactId>org.eclipse.ui.intro</artifactId>
-  <version>3.7.300-SNAPSHOT</version>
+  <version>3.7.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

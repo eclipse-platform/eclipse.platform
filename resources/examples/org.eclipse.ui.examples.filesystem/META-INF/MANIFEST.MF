@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.eclipse.ui.examples.filesystem
 Bundle-Name: Efs Examples Plug-in
 Bundle-SymbolicName: org.eclipse.ui.examples.filesystem;singleton:=true
-Bundle-Version: 1.1.300.qualifier
+Bundle-Version: 1.1.400.qualifier
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,

@@ -18,7 +18,7 @@
   </parent>
   <groupId>org.eclipse.team</groupId>
   <artifactId>org.eclipse.team.tests.core</artifactId>
-  <version>3.10.300-SNAPSHOT</version>
+  <version>3.10.400-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 
   <properties>
