@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -19,13 +19,14 @@ import java.util.Enumeration;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileInfo;
-import org.eclipse.core.internal.filesystem.*;
+import org.eclipse.core.internal.filesystem.FileSystemAccess;
+import org.eclipse.core.internal.filesystem.Messages;
+import org.eclipse.core.internal.filesystem.Policy;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 
 abstract class LocalFileNatives {
 	private static boolean hasNatives = false;
-	private static boolean isUnicode = false;
 	private static int nativeAttributes = -1;
 
 	/** instance of this library */
@@ -36,7 +37,6 @@ abstract class LocalFileNatives {
 		try {
 			System.loadLibrary(LIBRARY_NAME);
 			hasNatives = true;
-			isUnicode = internalIsUnicode();
 			try {
 				nativeAttributes = nativeAttributes();
 			} catch (UnsatisfiedLinkError e) {
@@ -92,48 +92,13 @@ abstract class LocalFileNatives {
 	}
 
 	/**
-	 * Copies file attributes from source to destination. The copyLastModified attribute
-	 * indicates whether the lastModified attribute should be copied.
-	 * @return <code>true</code> for success, and <code>false</code> otherwise.
-	 */
-	public static boolean copyAttributes(String source, String destination, boolean copyLastModified) {
-		if (hasNatives)
-			// Note that support for copying last modified info is not implemented on Windows
-			return isUnicode ? internalCopyAttributesW(Convert.toPlatformChars(source), Convert.toPlatformChars(destination), copyLastModified) : internalCopyAttributes(Convert.toPlatformBytes(source), Convert.toPlatformBytes(destination), copyLastModified);
-		return false; // not supported
-	}
-
-	/**
 	 * @return The file info
 	 */
 	public static FileInfo fetchFileInfo(String fileName) {
 		FileInfo info = new FileInfo();
-		if (isUnicode)
-			internalGetFileInfoW(Convert.toPlatformChars(fileName), info);
-		else
-			internalGetFileInfo(Convert.toPlatformBytes(fileName), info);
+		internalGetFileInfoW(Convert.toPlatformChars(fileName), info);
 		return info;
 	}
-
-	/**
-	 * Copies file attributes from source to destination. The copyLastModified attribute
-	 * indicates whether the lastModified attribute should be copied.
-	 */
-	private static final native boolean internalCopyAttributes(byte[] source, byte[] destination, boolean copyLastModified);
-
-	/**
-	 * Copies file attributes from source to destination. The copyLastModified attribute
-	 * indicates whether the lastModified attribute should be copied (Unicode
-	 * version - should not be called if <code>isUnicode</code> is
-	 * <code>false</code>).
-	 */
-	private static final native boolean internalCopyAttributesW(char[] source, char[] destination, boolean copyLastModified);
-
-	/**
-	 * Stores the file information for the specified filename in the supplied file
-	 * information object.  This avoids multiple JNI calls.
-	 */
-	private static final native boolean internalGetFileInfo(byte[] fileName, IFileInfo info);
 
 	/**
 	 * Stores the file information for the specified filename in the supplied file
@@ -141,25 +106,13 @@ abstract class LocalFileNatives {
 	 */
 	private static final native boolean internalGetFileInfoW(char[] fileName, IFileInfo info);
 
-	/**
-	 * Returns <code>true</code> if the underlying file system API supports Unicode,
-	 * <code>false</code> otherwise.
-	 */
-	private static final native boolean internalIsUnicode();
-
-	/** Set the extended attributes specified in the IResource attribute. Only attributes
-	 * that the platform supports will be set. */
-	private static final native boolean internalSetFileInfo(byte[] fileName, IFileInfo attribute);
-
 	/** Set the extended attributes specified in the IResource attribute object. Only
 	 * attributes that the platform supports will be set. (Unicode version - should not
 	 * be called if <code>isUnicode</code> is <code>false</code>). */
 	private static final native boolean internalSetFileInfoW(char[] fileName, IFileInfo attribute, int options);
 
 	public static boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		if (isUnicode)
-			return internalSetFileInfoW(Convert.toPlatformChars(fileName), info, options);
-		return internalSetFileInfo(Convert.toPlatformBytes(fileName), info);
+		return internalSetFileInfoW(Convert.toPlatformChars(fileName), info, options);
 	}
 
 	/**

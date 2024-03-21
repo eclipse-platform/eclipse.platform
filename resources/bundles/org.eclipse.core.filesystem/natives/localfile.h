@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -53,52 +53,12 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_filesystem_local_LocalFile
 
 /*
  * Class:     org_eclipse_core_internal_filesystem_local_LocalFileNatives
- * Method:    internalIsUnicode
- * Signature: ()Z
- */
-JNIEXPORT jboolean JNICALL Java_org_eclipse_core_internal_filesystem_local_LocalFileNatives_internalIsUnicode
-  (JNIEnv *, jclass);
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_LocalFileNatives
- * Method:    internalGetFileInfo
- * Signature: ([CLorg/eclipse/core/filesystem/IFileInfo;)Z
- */
-JNIEXPORT jboolean JNICALL Java_org_eclipse_core_internal_filesystem_local_LocalFileNatives_internalGetFileInfo
-   (JNIEnv *env, jclass clazz, jbyteArray target, jobject fileInfo);
-   
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_LocalFileNatives
  * Method:    internalGetFileInfoW
  * Signature: ([CLorg/eclipse/core/filesystem/IFileInfo;)Z
  */
 JNIEXPORT jboolean JNICALL Java_org_eclipse_core_internal_filesystem_local_LocalFileNatives_internalGetFileInfoW
    (JNIEnv *env, jclass clazz, jcharArray target, jobject fileInfo);
    
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_LocalFileNatives
- * Method:    internalCopyAttributes
- * Signature: ([B[BZ)Z
- */
-JNIEXPORT jboolean JNICALL Java_org_eclipse_core_internal_filesystem_local_LocalFileNatives_internalCopyAttributes
-   (JNIEnv *env, jclass clazz, jbyteArray source, jbyteArray destination, jboolean copyLastModified);
-   
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_LocalFileNatives
- * Method:    internalCopyAttributesW
- * Signature: ([C[CZ)Z
- */
-JNIEXPORT jboolean JNICALL Java_org_eclipse_core_internal_filesystem_local_LocalFileNatives_internalCopyAttributesW
-  (JNIEnv *env, jclass clazz, jcharArray source, jcharArray destination, jboolean copyLastModified);
-
-/*
- * Class:     org_eclipse_core_internal_filesystem_local_LocalFileNatives
- * Method:    internalSetFileInfo
- * Signature: ([BLorg/eclipse/core/filesystem/IFileInfo;)Z
- */
-JNIEXPORT jboolean JNICALL Java_org_eclipse_core_internal_filesystem_local_LocalFileNatives_internalSetFileInfo
-  (JNIEnv *env, jclass clazz, jcharArray target, jobject obj);
-  
 /*
  * Class:     org_eclipse_core_internal_filesystem_local_LocalFileNatives
  * Method:    internalSetFileInfoW
