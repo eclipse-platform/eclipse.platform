@@ -36,7 +36,7 @@ public class NullFileStore extends FileStore {
 	 */
 	public NullFileStore(IPath path) {
 		Assert.isNotNull(path);
-		this.path = path;
+		this.path = path.makeAbsolute();
 	}
 
 	@Override
