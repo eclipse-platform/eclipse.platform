@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Eclipse launcher. Spawns eclipse executable or
- * org.eclipse.core.launcher.Main.
+ * org.eclipse.equinox.launcher.Main.
  */
 public class Eclipse extends Thread {
 	// Eclipse exit codes
@@ -81,7 +81,7 @@ public class Eclipse extends Thread {
 		}
 		cmdarray[1 + vmArgs.size()] = "-cp"; //$NON-NLS-1$
 		cmdarray[2 + vmArgs.size()] = getStartupJar();
-		cmdarray[3 + vmArgs.size()] = "org.eclipse.core.launcher.Main"; //$NON-NLS-1$
+		cmdarray[3 + vmArgs.size()] = "org.eclipse.equinox.launcher.Main"; //$NON-NLS-1$
 		for (int i = 0; i < eclipseArgs.size(); i++) {
 			cmdarray[4 + vmArgs.size() + i] = eclipseArgs.get(i);
 		}

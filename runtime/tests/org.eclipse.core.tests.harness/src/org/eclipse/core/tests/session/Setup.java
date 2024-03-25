@@ -236,7 +236,7 @@ public class Setup implements Cloneable {
 		fillClassPath(commandLine);
 		fillVMArgs(commandLine);
 		fillSystemProperties(commandLine);
-		commandLine.add("org.eclipse.core.launcher.Main");
+		commandLine.add("org.eclipse.equinox.launcher.Main");
 		fillEclipseArgs(commandLine);
 	}
 
