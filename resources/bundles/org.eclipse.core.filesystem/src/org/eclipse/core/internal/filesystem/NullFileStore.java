@@ -32,11 +32,12 @@ public class NullFileStore extends FileStore {
 
 	/**
 	 * Creates a null file store
+	 * 
 	 * @param path The path of the file in this store
 	 */
 	public NullFileStore(IPath path) {
 		Assert.isNotNull(path);
-		this.path = path;
+		this.path = path.makeAbsolute();
 	}
 
 	@Override
