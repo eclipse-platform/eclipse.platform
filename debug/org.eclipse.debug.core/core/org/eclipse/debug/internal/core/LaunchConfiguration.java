@@ -369,7 +369,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 			LaunchConfiguration config = (LaunchConfiguration) object;
 			if (!config.isWorkingCopy()) {
 				return getName().equals(config.getName()) &&
-					equalOrNull(getContainer(), config.getContainer());
+						(equalOrNull(getContainer(), config.getContainer()) || equalOrNull(getLocation(), config.getLocation()));
 			}
 		}
 		return false;
@@ -651,11 +651,15 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	@Override
 	public int hashCode() {
 		IContainer container = getContainer();
-		if (container == null) {
-			return getName().hashCode();
-		} else {
-			return getName().hashCode() + container.hashCode();
+		int result = getName().hashCode();
+		if (container != null) {
+			result += container.hashCode();
 		}
+		IPath location = getLocation();
+		if (location != null) {
+			result += location.hashCode();
+		}
+		return result;
 	}
 
 	@Override
