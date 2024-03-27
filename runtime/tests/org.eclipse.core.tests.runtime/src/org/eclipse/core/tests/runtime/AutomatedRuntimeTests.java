@@ -16,15 +16,15 @@ package org.eclipse.core.tests.runtime;
 import org.eclipse.core.tests.internal.preferences.AllPreferenceTests;
 import org.eclipse.core.tests.internal.runtime.AllInternalRuntimeTests;
 import org.eclipse.core.tests.runtime.jobs.AllJobTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Runs the sniff tests for the build. All tests listed here should be
  * automated.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SelectClasses({
 		AllInternalRuntimeTests.class,
 
 		AllRuntimeTests.class,
