@@ -38,6 +38,11 @@
     var SEARCH_RESULTS_INDEXING_PATTERN = new RegExp('[\'"]divProgress[\'"]\\s+STYLE\\s*=\\s*[\'"]\\s*width\\s*:\\s*([\\d]+)\\s*px', 'i');
     var SEARCH_RESULTS_PATTERN = new RegExp('<tr[^<]*<td[^<]*<img[^<]*</td[^<]*<td[^<]*<a\\s+(?:(?!href)(?!title)[\\w\\-]+\\s*=\\s*(?:(?:\'[^\']*\')|(?:"[^"]*"))\\s+)*(href|title)\\s*=\\s*"([^"]*)"\\s+(?:(?!href)(?!title)[\\w\\-]+\\s*=\\s*(?:(?:\'[^\']*\')|(?:"[^"]*"))\\s+)*(href|title)\\s*=\\s*"([^"]*)"[^>]*>([^<]*)</a>(?:(?:(?!<[/]?tr)[\\s\\S])*</tr\\s*>\\s*<tr(?:(?!</tr)(?!class="location">)[\\s\\S])*class="location">((?:(?!</div)[\\s\\S])*))?(?:(?:(?!</tr)(?!\\sclass=["\']description["\'])[\\s\\S])*</tr){1,2}(?:(?!</tr)(?!\\sclass=["\']description["\'])[\\s\\S])*\\sclass=["\']description["\'][^>]*>([^<]*)', 'gi');
     var SEARCH_RESULTS_BREADCRUMB_SNIPPET_PATTERN = new RegExp('<a\\s+href="([^"]+)">([^<]+)</a>', 'gi');
+    var SEARCH_SCOPE_LEVEL_ALL = 0;
+    var SEARCH_SCOPE_LEVEL_BOOK = 1;
+    var SEARCH_SCOPE_LEVEL_CHAPTER = 2;
+    var SEARCH_SCOPE_LEVEL_CUSTOM = 3;
+    var SEARCH_SCOPE_LEVEL_SHOW_COMMAND = 4;
     var SEARCH_SCOPE_CURRENT_PATTERN = new RegExp('<div\\s+id\\s*=\\s*"scope"\\s*>([^<]*)<');
     var SEARCH_SCOPE_ALL_PATTERN = new RegExp('<a\\s+(?:(?!title)[\\w\\-]+\\s*=\\s*(?:(?:\'[^\']*\')|(?:"[^"]*"))\\s+)*title\\s*=\\s*"([^"]*)"', 'gi');
     var SEARCH_SCOPE_NAME_PATTERN = new RegExp('<input\\s+type\\s*=\\s*["\']text["\']\\s+(?:(?!value)[\\w\\-]+\\s*=\\s*(?:(?:\'[^\']*\')|(?:"[^"]*"))\\s+)*value\\s*=\\s*\'([^\']*)\'', 'i');
@@ -47,6 +52,7 @@
     var SEARCH_FULL_SEARCH_CACHE_SIZE = 3;
     var SEARCH_DELAY_IN_MILLISECOND = 99;
     var SEARCH_CACHE = {fi: -1, f: [], ti: -1, t: [] };
+
 
     // TODO integration: the browser should not have to calculate the following variables itself;
     //                   only "init()" should be called instead
@@ -60,7 +66,7 @@
     var setSearchScope;
     var setSearchFieldValue;
     var currentSearch = {};
-    var searchScope = {l: 0, s: '', t: 0};
+    var searchScope = {level: SEARCH_SCOPE_LEVEL_ALL, customIndex: 0, customName: ''};
 
     addEvent(window, 'load', function() {
 
@@ -99,20 +105,20 @@
                          var scopeName = decodeHtml(match[1]);
                          if (scopeName.substring(0, 1) == '\u200B') {
                              if (scopeName.length < 3) {
-                                 searchScope.l = scopeName.length;
+                                 searchScope.level = scopeName.length;
                                  break;
                              } else {
-                                 searchScope.l = 4;
-                                 searchScope.t = scopeName.length - 3;
+                                 searchScope.level = SEARCH_SCOPE_LEVEL_CUSTOM;
+                                 searchScope.customIndex = scopeName.length - 3;
                                  continue;
                              }
                          }
                          if (searchScope.i && searchScope.i == scopeName) {
-                             searchScope.l = 4;
-                             searchScope.s = scopeName;
+                             searchScope.level = SEARCH_SCOPE_LEVEL_CUSTOM;
+                             searchScope.customName = scopeName;
                              break;
-                         } else if (searchScope.l == 4 && searchScope.t == scopeIndex) {
-                             searchScope.s = scopeName;
+                         } else if (searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM && searchScope.customIndex == scopeIndex) {
+                             searchScope.customName = scopeName;
                          }
                          scopeIndex++;
                     }
@@ -254,7 +260,7 @@
             getElementById('c').style.display = show || (searchPage && searchPage.o) ? 'none' : 'block';
             if (searchPage) searchPage.style.display = searchPage.o && !show ? 'block' : 'none';
             if (!show) return;
-            function showScopesPage(query, scopeNr) {
+            function showScopesPage(query, scopeIndex) {
                 scopesPage.innerHTML = '';
 
                 // "x" button
@@ -353,7 +359,7 @@
                                                   + '&workingSet='
                                                   + encodeURIComponent(nameInput.value)
                                                   + getHrefs());
-                                setSearchScope([4, scopeName, scopeNr]);
+                                setSearchScope([SEARCH_SCOPE_LEVEL_CUSTOM, scopeIndex, scopeName]);
                             });
                         }
                         createButton(scopesPage, '<%js:scopes_scope_cancel_button_label%>', '<%js:scopes_scope_cancel_button_description%>', function() { showScopesPage(); });
@@ -944,7 +950,7 @@
 
         var booksButton = createElement(scopeButtonWrapper, 'button', 's');
         setAttribute(booksButton, 'type', 'button');
-        booksButtonText = createElement(booksButton, 'span');
+        var booksButtonText = createElement(booksButton, 'span');
         var dropDownHandle = createElement(booksButton, 'span', 'de');
         setInnerHtml(dropDownHandle, TREE_HANDLE);
         var booksDropDown = createElement(scopeButtonWrapper, 0, 'u');
@@ -969,12 +975,12 @@
                     currentChapter = tocLi.n.t;
                 }
             }
-            menuItems.push(createElement(booksDropDownUl, 'li', searchScope.l == 0 ? 'x': 0, '<%js:scope_none_label%>'));
-            dataItems.push([0]);
-            menuItems.push(createElement(booksDropDownUl, 'li', searchScope.l == 1 ? 'x': 0, '<%js:scope_book_label%>' + (currentBook ? ': ' + currentBook : '')));
-            dataItems.push([1]);
-            menuItems.push(createElement(booksDropDownUl, 'li', searchScope.l == 2 ? 'x': 0, '<%js:scope_chapter_label%>' + (currentChapter ? ': ' + currentChapter : '')));
-            dataItems.push([2]);
+            menuItems.push(createElement(booksDropDownUl, 'li', searchScope.level == SEARCH_SCOPE_LEVEL_ALL ? 'x': '', '<%js:scope_none_label%>'));
+            dataItems.push([SEARCH_SCOPE_LEVEL_ALL]);
+            menuItems.push(createElement(booksDropDownUl, 'li', searchScope.level == SEARCH_SCOPE_LEVEL_BOOK ? 'x': '', '<%js:scope_book_label%>' + (currentBook ? ': ' + currentBook : '')));
+            dataItems.push([SEARCH_SCOPE_LEVEL_BOOK]);
+            menuItems.push(createElement(booksDropDownUl, 'li', searchScope.level == SEARCH_SCOPE_LEVEL_CHAPTER ? 'x': '', '<%js:scope_chapter_label%>' + (currentChapter ? ': ' + currentChapter : '')));
+            dataItems.push([SEARCH_SCOPE_LEVEL_CHAPTER]);
             remoteRequest(BASE_URL + 'advanced/workingSetManager.jsp?t=' + Date.now(), function(menuItems, dataItems) {
                 return function(responseText) {
                     var delimiter = 'l ';
@@ -983,14 +989,14 @@
                     for (var match; (match = SEARCH_SCOPE_ALL_PATTERN.exec(responseText)) != null;) {
                          var label = decodeHtml(match[1]);
                          if (label.substring(0, 1) == '\u200B') continue;
-                         var className = delimiter + (searchScope.l == 4 && searchScope.s == label ? 'x' : '');
+                         var className = delimiter + (searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM && searchScope.customName == label ? 'x' : '');
                          menuItems.push(createElement(booksDropDownUl, 'li', className, label));
                          delimiter = '';
-                         dataItems.push([4, label, scopeIndex]);
+                         dataItems.push([SEARCH_SCOPE_LEVEL_CUSTOM, label, scopeIndex]);
                          scopeIndex++;
                     }
                     menuItems.push(createElement(booksDropDownUl, 'li', 'l y', '<%js:scope_manage_label%>'));
-                    dataItems.push([5]);
+                    dataItems.push([SEARCH_SCOPE_LEVEL_SHOW_COMMAND]);
                     toMenu(booksButton, menuItems, dataItems, setSearchScope);
                 }
             }(menuItems, dataItems));
@@ -1022,32 +1028,33 @@
 //            booksDropDown.hasFocus = false;
 //            setTimeout(function() {if (!booksDropDown.hasFocus) booksDropDown.style.display = 'none'}, 200);
 //        });
-        if (!embeddedMode && BOOK_SCOPE_BY_DEFAULT && searchScope.l == 0 && getCookie(BOOK_SCOPE_COOKIE) != 'init') {
+        if (!embeddedMode && BOOK_SCOPE_BY_DEFAULT && searchScope.level == SEARCH_SCOPE_LEVEL_ALL && getCookie(BOOK_SCOPE_COOKIE) != 'init') {
             setCookie(BOOK_SCOPE_COOKIE, 'init');
-            setTimeout(function(){ if(setSearchScope) setSearchScope([1]); }, 420);
+            setTimeout(function(){ if(setSearchScope) setSearchScope([SEARCH_SCOPE_LEVEL_BOOK]); }, 420);
         } else {
             updateScopeButtonLabel();
         }
 
         setSearchScope = function(scopeData) {
+            level = scopeData[0];
             booksDropDown.s();
             scopeOverlay.o();
-            if (scopeData[0] == 5) {
+            if (level == SEARCH_SCOPE_LEVEL_SHOW_COMMAND) {
                 scopesPage.s(1);
                 return;
             }
-            if (searchScope.l != scopeData[0]) {
+            if (searchScope.level != level) {
                 var scopeToRemove;
-                if (searchScope.l == 1 || searchScope.l == 2 || searchScope.l == 4) {
-                    scopeToRemove = '%E2%80%8B' + (searchScope.l > 1 ? '%E2%80%8B' : '');
-                    for (var i = 0; searchScope.l == 4 && i <= searchScope.t; i++) {
+                if (searchScope.level == SEARCH_SCOPE_LEVEL_BOOK || searchScope.level == SEARCH_SCOPE_LEVEL_CHAPTER || searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM) {
+                    scopeToRemove = '%E2%80%8B' + (level != SEARCH_SCOPE_LEVEL_ALL && level != SEARCH_SCOPE_LEVEL_BOOK ? '%E2%80%8B' : '');
+                    for (var i = 0; searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM && i <= searchScope.customIndex; i++) {
                         scopeToRemove += '%E2%80%8B';
                     }
                 }
                 var scopeToAdd;
-                if (scopeData[0] == 1 || scopeData[0] == 2 || scopeData[0] == 4) {
-                    scopeToAdd = '%E2%80%8B' + (scopeData[0] > 1 ? '%E2%80%8B' : '');
-                    for (var i = 0; scopeData[0] == 4 && i <= scopeData[2]; i++) {
+                if (level == SEARCH_SCOPE_LEVEL_BOOK || level == SEARCH_SCOPE_LEVEL_CHAPTER || level == SEARCH_SCOPE_LEVEL_CUSTOM) {
+                    scopeToAdd = '%E2%80%8B' + (level != SEARCH_SCOPE_LEVEL_ALL && level != SEARCH_SCOPE_LEVEL_BOOK ? '%E2%80%8B' : '');
+                    for (var i = 0; level == SEARCH_SCOPE_LEVEL_CUSTOM && i <= scopeData[2]; i++) {
                         scopeToAdd += '%E2%80%8B';
                     }
                 }
@@ -1061,9 +1068,9 @@
                                   + '&t=' + Date.now());
                 }
             }
-            searchScope.l = scopeData[0];
-            searchScope.s = searchScope.l == 4 ? scopeData[1] : 0;
-            searchScope.t = searchScope.l == 4 ? scopeData[2] : 0;
+            searchScope.level = level;
+            searchScope.customName = searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM ? scopeData[1] : '';
+            searchScope.customIndex = searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM ? customIndex = scopeData[2] : 0;
             updateScopeButtonLabel();
         }
         updateScopeByToc = function(li) {
@@ -1072,16 +1079,16 @@
         }
         function updateScopeButtonLabel() {
             setInnerHtml(booksButtonText, '');
-            if (searchScope.l == 0 || (searchScope.l < 3 && !currentTocLi)) return;
+            if (searchScope.level == SEARCH_SCOPE_LEVEL_ALL || (searchScope.level != SEARCH_SCOPE_LEVEL_CUSTOM && !currentTocLi)) return;
             var newButtonlabel;
-            for (var tocLi = currentTocLi; searchScope.l < 3 && tocLi && tocLi.n; tocLi = tocLi.p) {
-                if (!tocLi.n.path || (searchScope.l == 2 && !tocLi.n.l)) {
+            for (var tocLi = currentTocLi; searchScope.level != SEARCH_SCOPE_LEVEL_CUSTOM && tocLi && tocLi.n; tocLi = tocLi.p) {
+                if (!tocLi.n.path || (searchScope.level == SEARCH_SCOPE_LEVEL_CHAPTER && !tocLi.n.l)) {
                     newButtonlabel = tocLi.n.t;
                     break;
                 }
             }
-            if (searchScope.l == 4) {
-                newButtonlabel = searchScope.s;
+            if (searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM) {
+                newButtonlabel = searchScope.customName;
             }
             if (newButtonlabel) {
                 booksButtonText.appendChild(document.createTextNode(BOOK_NAME_SHORTENER(newButtonlabel)));
@@ -1170,17 +1177,17 @@
             }
 
             var tocScope = currentTocLi ? currentTocLi.n : currentTocLi;
-            for (var tocLi = currentTocLi; searchScope.l < 3 && tocLi && tocLi.n; tocLi = tocLi.p) {
-                if (!tocLi.n.path || (searchScope.l == 2 && !tocLi.n.l)) {
+            for (var tocLi = currentTocLi; searchScope.level != SEARCH_SCOPE_LEVEL_CUSTOM && tocLi && tocLi.n; tocLi = tocLi.p) {
+                if (!tocLi.n.path || (searchScope.level == SEARCH_SCOPE_LEVEL_CHAPTER && !tocLi.n.l)) {
                     tocScope = tocLi.n;
                     break;
                 }
             }
             var query = searchWord.length
                         ? (  encodeURIComponent(searchWord)
-                           + ((searchScope.l == 1 || searchScope.l == 2) && tocScope && tocScope.toc ? '&toc=' + encodeURIComponent(tocScope.toc) : '')
-                           + (searchScope.l == 2 && tocScope && tocScope.path ? '&path=' + tocScope.path : '')
-                           + (searchScope.l == 4 && searchScope.s ? '&scope=' + encodeURIComponent(searchScope.s) : ''))
+                           + ((searchScope.level == SEARCH_SCOPE_LEVEL_BOOK || searchScope.level == SEARCH_SCOPE_LEVEL_CHAPTER) && tocScope && tocScope.toc ? '&toc=' + encodeURIComponent(tocScope.toc) : '')
+                           + (searchScope.level == SEARCH_SCOPE_LEVEL_CHAPTER && tocScope && tocScope.path ? '&path=' + tocScope.path : '')
+                           + (searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM && searchScope.customName ? '&scope=' + encodeURIComponent(searchScope.customName) : ''))
                         : '';
             var url =   SEARCH_BASE_URL
                       + query.replace(/(\&|$)/, (fullSearch ? '' : '*') + '$1')
@@ -1246,13 +1253,13 @@
                 return;
             }
             var currentSearchScope = {
-                /* level */               l: searchScope.l,
-                /* (custom) scope name */ s: searchScope.s,
-                /* path */                p: 0
+                level: searchScope.level,
+                customName: searchScope.customName,
+                /* path */ p: 0
             };
-            if (searchScope.l > 0 && searchScope.l < 3 && currentTocLi) {
+            if ((searchScope.level == SEARCH_SCOPE_LEVEL_BOOK || searchScope.level == SEARCH_SCOPE_LEVEL_CHAPTER) && currentTocLi) {
                 currentSearchScope.p = [currentTocLi.n];
-                for (var parentLi = currentTocLi.p; searchScope.l > 1 && parentLi && parentLi.n; parentLi = parentLi.p) {
+                for (var parentLi = currentTocLi.p; searchScope.level == SEARCH_SCOPE_LEVEL_CHAPTER && parentLi && parentLi.n; parentLi = parentLi.p) {
                     currentSearchScope.p.unshift(parentLi.n);
                 }
             }
@@ -1291,9 +1298,9 @@
                 }
             }
             var currentSearchScope = {
-                /* level */               l: scope ? 4 : (toc ? (path ? 2 : 1) : 0),
-                /* (custom) scope name */ s: scope,
-                /* path */                p: 0
+                level: scope ? SEARCH_SCOPE_LEVEL_CUSTOM : (toc ? (path ? SEARCH_SCOPE_LEVEL_CHAPTER : SEARCH_SCOPE_LEVEL_BOOK) : SEARCH_SCOPE_LEVEL_ALL),
+                customName: scope,
+                /* path */ p: 0
             };
             var scopeFound = !toc;
             if (toc && currentTocLi && currentTocLi.n) {
@@ -1445,7 +1452,7 @@
                 stopPropagation(e);
             }
 
-            var searchScopeLabel = searchScope.l > 3 ? searchScope.s : '';
+            var searchScopeLabel = searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM ? searchScope.customName : '';
             if (searchScope.p) {
                 for (var i = 0; i < searchScope.p.length; i++) {
                     if (i > 0) {
@@ -1457,7 +1464,7 @@
             var parentElement = fullSearch ? searchPage : proposals;
             setInnerHtml(parentElement, '');
             parentElement.q = query;
-            parentElement.l = (searchScope.l > 0 ? '<%js:search_scoped_title%>' : '<%js:search_title%>').replace('{0}', searchWord).replace('{1}', searchScopeLabel);
+            parentElement.l = (searchScope.level != SEARCH_SCOPE_LEVEL_ALL ? '<%js:search_scoped_title%>' : '<%js:search_title%>').replace('{0}', searchWord).replace('{1}', searchScopeLabel);
             if (fullSearch) {
                 document.title = searchPage.l + ' - ' + title;
 
@@ -1533,7 +1540,7 @@
                         var labelText = '';
                         if (isRoot) {
                             checkbox.style.display = 'none';
-                            labelText = (searchScope && searchScope.l > 0
+                            labelText = (searchScope && searchScope.level != SEARCH_SCOPE_LEVEL_ALL
                                         ? '<%js:searchpage_heading_scoped%>'
                                         : '<%js:searchpage_heading%>') + ' ';
                         } else {
@@ -1549,7 +1556,7 @@
                             }
                         }
                         var label = createElement(checkboxWithLabel, 'span', node.isNode ? 0 : 't', labelText + ' ');
-                        if (isRoot && searchScope && searchScope.l > 0 ) {
+                        if (isRoot && searchScope && searchScope.level != SEARCH_SCOPE_LEVEL_ALL ) {
                             createElement(label, 'span', 'tl', searchScopeLabel + ' ');
                         }
                         createElement(label, 'span', 'count', checkbox.numberOfResults);
