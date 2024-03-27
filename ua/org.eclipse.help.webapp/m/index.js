@@ -344,6 +344,12 @@
                             });
                         } else {
                             var deleteButton = createButton(scopesPage, '<%js:scopes_scope_delete_button_label%>', '<%js:scopes_scope_delete_button_description%>', function() {
+
+                                // if the scope to be deleted is set, unset it first
+                                if (searchScope.l == 4 && searchScope.t == scopeNr) {
+                                    setSearchScope([0, '', 0]);
+                                }
+
                                 doScopesOperation('remove&workingSet=' + encodeURIComponent(scopeName));
                             });
                             deleteButton.className = 'b br';
