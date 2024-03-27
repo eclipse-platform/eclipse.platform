@@ -31,7 +31,6 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
 import org.eclipse.swt.widgets.Display;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LaunchConfigurationTabGroupViewerTest {
@@ -70,8 +69,8 @@ public class LaunchConfigurationTabGroupViewerTest {
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(createAndSelect1LaunchConfig);
 
-		for (int i = 0; i < tabs.length; i++) {
-			assertThat(((SpyTab) tabs[i])).withFailMessage("tab %s was not initialized", i).matches(SpyTab::isInitialized);
+		for (ILaunchConfigurationTab tab : tabs) {
+			assertThat(((SpyTab) tab)).matches(SpyTab::isInitialized, "should have been initialized");
 		}
 	}
 
@@ -83,7 +82,7 @@ public class LaunchConfigurationTabGroupViewerTest {
 		};
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(createAndSelect1LaunchConfig);
-		assertThat(((SpyTab) tabs[0])).matches(SpyTab::isActivated, "is activated");
+		assertThat(((SpyTab) tabs[0])).matches(SpyTab::isActivated, "should have been activated");
 	}
 
 	@Test
@@ -104,12 +103,11 @@ public class LaunchConfigurationTabGroupViewerTest {
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(setActiveTab);
 
-		assertThat((SpyTab) tabs[0]).withFailMessage("the 1st tab of the other launch configuration shouldn't have been activated").matches(not(SpyTab::isActivated));
-		assertThat((SpyTab) tabs[secondTabIndex]).matches(SpyTab::isActivated, "is activated");
+		assertThat(((SpyTab) tabs[0])).matches(not(SpyTab::isActivated), "should not have been activated");
+		assertThat(((SpyTab) tabs[secondTabIndex])).matches(SpyTab::isActivated, "should have been activated");
 	}
 
 	@Test
-	@Ignore("https://github.com/eclipse-platform/eclipse.platform/issues/1075")
 	public void testOnlyDefaultTabInOtherConfigIsActivated() {
 		int overflowTabIndex = Integer.MAX_VALUE;
 
@@ -127,11 +125,13 @@ public class LaunchConfigurationTabGroupViewerTest {
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(setActiveTab);
 
-		assertThat(((SpyTab) tabs[0])).withFailMessage("the 1st tab of the other launch configuration should have been activated").matches(SpyTab::isActivated);
+		// The 1st tab of the other launch configuration should have been
+		// activated
+		assertThat(((SpyTab) tabs[0])).matches(SpyTab::isActivated, "Should have been activated");
 
-		// All other tabs should not have been initialized
+		// All other tabs should not have been activated
 		for (int i = 1; i < tabs.length; i++) {
-			assertThat((SpyTab) tabs[i]).withFailMessage("tab %s should not have been initialized", i).matches(not(SpyTab::isInitialized));
+			assertThat(((SpyTab) tabs[i])).matches(not(SpyTab::isActivated), "Should not have been activated");
 		}
 	}
 
@@ -149,7 +149,7 @@ public class LaunchConfigurationTabGroupViewerTest {
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(setActiveTab);
 
-		assertThat((SpyTab) tabs[secondTabIndex]).matches(SpyTab::isActivated, "is activated");
+		assertThat(((SpyTab) tabs[secondTabIndex])).matches(SpyTab::isActivated, "should have been activated");
 	}
 
 	private ILaunchConfigurationWorkingCopy createLaunchConfigurationInstance() throws CoreException {

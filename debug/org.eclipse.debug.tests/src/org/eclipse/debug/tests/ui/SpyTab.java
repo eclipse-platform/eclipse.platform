@@ -26,6 +26,11 @@ public abstract class SpyTab extends AbstractLaunchConfigurationTab {
 	private boolean activated;
 
 	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " [initialized=" + initialized + ", activated=" + activated + "]";
+	}
+
+	@Override
 	public void createControl(Composite parent) {
 	}
 
