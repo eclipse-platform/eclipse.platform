@@ -35,11 +35,11 @@
 
   <!-- This target defines the regression tests that need to be run. -->
   <target name="suite">
-    <property name="platform-debug-folder" 
-              value="${eclipse-home}/platform_debug_folder"/>
-    <delete dir="${platform-debug-folder}" quiet="true"/>
+    <property name="update-configurator-folder" 
+              value="${eclipse-home}/update_configurator_folder"/>
+    <delete dir="${update-configurator-folder}" quiet="true"/>
     <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
-      <property name="data-dir" value="${platform-debug-folder}"/>
+      <property name="data-dir" value="${update-configurator-folder}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" 
                 value="org.eclipse.update.configurator.tests.AutomatedConfiguratorSuite"/>
