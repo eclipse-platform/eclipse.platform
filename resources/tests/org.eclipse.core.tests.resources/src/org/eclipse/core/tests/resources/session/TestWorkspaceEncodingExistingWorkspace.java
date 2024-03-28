@@ -48,7 +48,7 @@ public class TestWorkspaceEncodingExistingWorkspace extends WorkspaceSessionTest
 	}
 
 	public void testExpectedEncoding1() throws Exception {
-		String defaultValue = System.getProperty("file.encoding");
+		String defaultValue = System.getProperty("native.encoding");
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
 		// Should be system default
