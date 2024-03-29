@@ -33,9 +33,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
@@ -77,6 +80,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorRegistry;
@@ -191,6 +195,10 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			if (fExtensionMap != null)
 				return fExtensionMap.get(normalizeCase(extension));
 			return null;
+		}
+
+		Collection<T> getAll() {
+			return fIdMap == null ? Collections.emptySet() : fIdMap.values();
 		}
 	}
 
@@ -983,7 +991,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	public ViewerDescriptor[] findContentViewerDescriptor(Viewer oldViewer, Object in, CompareConfiguration cc) {
-		Set<ViewerDescriptor> result = new LinkedHashSet<>();
+		LinkedHashSet<ViewerDescriptor> result = new LinkedHashSet<>();
 		if (in instanceof IStreamContentAccessor) {
 			String type= ITypedElement.TEXT_TYPE;
 
@@ -1016,6 +1024,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			return null;
 
 		ICompareInput input= (ICompareInput) in;
+		String name = input.getName();
 
 		IContentType ctype = getCommonType(input);
 		if (ctype != null) {
@@ -1054,6 +1063,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 				result.addAll(list);
 		}
 
+		Set<ViewerDescriptor> editorLinkedDescriptors = findEditorLinkedDescriptors(name, ctype, false);
+		result.addAll(editorLinkedDescriptors);
+
 		// fallback
 		String leftType= guessType(input.getLeft());
 		String rightType= guessType(input.getRight());
@@ -1069,12 +1081,77 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					result.addAll(list);
 			}
 			List<ViewerDescriptor> list = fContentMergeViewers.searchAll(ITypedElement.TEXT_TYPE);
-			if (list != null)
+			if (list != null) {
 				result.addAll(list);
-
-			return result.toArray(new ViewerDescriptor[0]);
+			}
 		}
+
+		ensureTextIsLast(result);
 		return result.isEmpty() ? null : result.toArray(new ViewerDescriptor[0]);
+	}
+
+	/**
+	 * Modifies given set to move "fallback" text descriptor to be the last one.
+	 * This is needed because we want more specific descriptors used first by default.
+	 */
+	private static void ensureTextIsLast(LinkedHashSet<ViewerDescriptor> result) {
+		if (result.size() > 1) {
+			ViewerDescriptor first = result.iterator().next();
+			if (TextMergeViewerCreator.class.getName().equals(first.getViewerClass())) {
+				result.remove(first);
+				result.add(first);
+			}
+		}
+	}
+
+	/**
+	 * @param fileName      possible file name for content in compare editor, may be
+	 *                      null
+	 * @param contentType   possible content type for content in compare editor, may
+	 *                      be null
+	 * @param firstIsEnough stop searching once first match is found
+	 * @return set of descriptors which could be found for given content type via
+	 *         "linked" editor
+	 */
+	Set<ViewerDescriptor> findEditorLinkedDescriptors(String fileName, IContentType contentType,
+			boolean firstIsEnough) {
+		if (fileName == null) {
+			if (contentType == null) {
+				contentType = fgContentTypeManager.findContentTypeFor(fileName);
+			} else {
+				return Collections.emptySet();
+			}
+		}
+
+		LinkedHashSet<ViewerDescriptor> viewers = fContentMergeViewers.getAll().stream()
+				.filter(vd -> vd.getLinkedEditorId() != null).collect(Collectors.toCollection(LinkedHashSet::new));
+		if (viewers.isEmpty()) {
+			return Collections.emptySet();
+		}
+
+		IEditorRegistry editorReg = PlatformUI.getWorkbench().getEditorRegistry();
+		LinkedHashSet<ViewerDescriptor> result = new LinkedHashSet<>();
+		IEditorDescriptor[] editors = editorReg.getEditors(fileName, contentType);
+		for (IEditorDescriptor ed : editors) {
+			addLinkedEditorContentTypes(viewers, firstIsEnough, ed.getId(), result);
+			if (firstIsEnough && !result.isEmpty()) {
+				return result;
+			}
+		}
+		return result;
+	}
+
+	private void addLinkedEditorContentTypes(LinkedHashSet<ViewerDescriptor> viewers, boolean firstIsEnough,
+			String editorId, Set<ViewerDescriptor> result) {
+		Stream<ViewerDescriptor> stream = viewers.stream().filter(vd -> editorId.equals(vd.getLinkedEditorId()));
+		if (firstIsEnough) {
+			Optional<ViewerDescriptor> first = stream.findFirst();
+			if (first.isPresent()) {
+				result.add(first.get());
+			}
+		} else {
+			stream.collect(Collectors.toCollection(() -> result));
+		}
 	}
 
 	/**
@@ -1481,6 +1558,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			if (list != null)
 				if (list.contains(vd))
 					return type;
+		}
+
+		Set<ViewerDescriptor> editorLinkedDescriptors = findEditorLinkedDescriptors(input.getName(), ctype, true);
+		if (!editorLinkedDescriptors.isEmpty()) {
+			return type;
 		}
 
 		// fallback
