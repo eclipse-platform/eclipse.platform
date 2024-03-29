@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 public class ViewerDescriptor implements IViewerDescriptor {
 	private final static String CLASS_ATTRIBUTE= "class"; //$NON-NLS-1$
 	private final static String EXTENSIONS_ATTRIBUTE= "extensions"; //$NON-NLS-1$
+	private final static String LINKED_EDITOR_ATTRIBUTE = "linkedEditor"; //$NON-NLS-1$
 	private final static String LABEL_ATTRIBUTE = "label"; //$NON-NLS-1$
 
 	private final IConfigurationElement fConfiguration;
@@ -79,4 +80,42 @@ public class ViewerDescriptor implements IViewerDescriptor {
 	String getLabel() {
 		return fConfiguration.getAttribute(LABEL_ATTRIBUTE);
 	}
+
+	String getLinkedEditorId() {
+		return fConfiguration.getAttribute(LINKED_EDITOR_ATTRIBUTE);
+	}
+
+	String getViewerClass() {
+		return fConfiguration.getAttribute(CLASS_ATTRIBUTE);
+	}
+
+	@SuppressWarnings("nls")
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("ViewerDescriptor [");
+		if (fViewerClass != null) {
+			sb.append("viewerClass=");
+			sb.append(fViewerClass);
+			sb.append(", ");
+		}
+		if (fViewerCreator != null) {
+			sb.append("viewerCreator=");
+			sb.append(fViewerCreator);
+			sb.append(", ");
+		}
+		String viewerClass = getViewerClass();
+		if (viewerClass != null) {
+			sb.append("viewerClass=");
+			sb.append(viewerClass);
+			sb.append(", ");
+		}
+		if (fConfiguration != null) {
+			sb.append("configuration=");
+			sb.append(fConfiguration);
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+
 }

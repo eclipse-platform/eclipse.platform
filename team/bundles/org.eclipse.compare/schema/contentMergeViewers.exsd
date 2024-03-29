@@ -90,6 +90,17 @@ content merge viewer and implements &lt;samp&gt;org.eclipse.compare.IViewerCreat
                </appInfo>
             </annotation>
          </attribute>
+         <attribute name="linkedEditor" type="string">
+            <annotation>
+               <documentation>
+                  Since 3.11. Editor id to consider while searching for a viewer matching a content type. 
+If the specified &quot;linked&quot; editor has content type associations, they will be also considered as possible bindings for this viewer. This is useful in cases where viewer supports same content types as &quot;linked&quot; editor (like in generic editor).
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="identifier" basedOn="org.eclipse.ui.editors/editor/@id"/>
+               </appInfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -123,6 +134,7 @@ content merge viewer and implements &lt;samp&gt;org.eclipse.compare.IViewerCreat
       </complexType>
    </element>
 
+
    <annotation>
       <appInfo>
          <meta.section type="examples"/>
@@ -153,7 +165,6 @@ for text files (extension &quot;txt&quot;):
          The contributed class must implement &lt;code&gt;org.eclipse.compare.IViewerCreator&lt;/code&gt;
       </documentation>
    </annotation>
-
 
    <annotation>
       <appInfo>

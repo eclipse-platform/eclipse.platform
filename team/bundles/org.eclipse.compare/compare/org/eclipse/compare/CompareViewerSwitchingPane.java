@@ -15,6 +15,7 @@ package org.eclipse.compare;
 
 import java.text.MessageFormat;
 
+import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
 import org.eclipse.compare.contentmergeviewer.IFlushable;
 import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.IFlushable2;
@@ -279,9 +280,15 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		if (fViewer != null) {
 			Control c= fViewer.getControl();
 			if (c != null) {
-				Object data= c.getData(CompareUI.COMPARE_VIEWER_TITLE);
-				if (data instanceof String)
-					title= (String) data;
+				if (fViewer instanceof ContentMergeViewer cmv) {
+					title = cmv.getTitle();
+				}
+				if (title == null || title.isBlank()) {
+					Object data = c.getData(CompareUI.COMPARE_VIEWER_TITLE);
+					if (data instanceof String) {
+						title = (String) data;
+					}
+				}
 				if (hadFocus)
 					c.setFocus();
 			}
