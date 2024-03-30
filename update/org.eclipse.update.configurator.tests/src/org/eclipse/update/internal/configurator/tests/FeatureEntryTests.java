@@ -13,14 +13,14 @@
  *******************************************************************************/
 package org.eclipse.update.internal.configurator.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.update.internal.configurator.FeatureEntry;
 import org.eclipse.update.internal.configurator.SiteEntry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
 public class FeatureEntryTests {
