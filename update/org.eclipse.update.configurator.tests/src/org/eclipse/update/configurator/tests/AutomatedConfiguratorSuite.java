@@ -14,16 +14,18 @@
 package org.eclipse.update.configurator.tests;
 
 import org.eclipse.update.internal.configurator.tests.FeatureEntryTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Tests for integration and nightly builds.
  *
  * @since 0.1
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ FeatureEntryTests.class })
+@Suite
+@SelectClasses({ //
+		FeatureEntryTests.class, //
+})
 public class AutomatedConfiguratorSuite {
 
 }
