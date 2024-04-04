@@ -555,10 +555,12 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * Returns a new progress monitor for this job.  Never returns null.
 	 */
 	private IProgressMonitor createMonitor(Job job) {
-		if (progressProvider != null) {
-			return progressProvider.createMonitor(job);
-		}
-		return new NullProgressMonitor();
+		IProgressMonitor monitor = null;
+		if (progressProvider != null)
+			monitor = progressProvider.createMonitor(job);
+		if (monitor == null)
+			monitor = new NullProgressMonitor();
+		return monitor;
 	}
 
 	@Override
@@ -905,10 +907,8 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			while (previous != null) {
 				// ignore jobs of lower priority (higher priority value means lower priority)
 				if (previous.getPriority() < runningJob.getPriority()) {
-					if (!previous.isSystem())
-						return true;
 					// implicit jobs should interrupt unless they act on behalf of system jobs
-					if (previous instanceof ThreadJob && ((ThreadJob) previous).shouldInterrupt())
+					if (!previous.isSystem() || (previous instanceof ThreadJob && ((ThreadJob) previous).shouldInterrupt()))
 						return true;
 				}
 				previous = previous.previous();
@@ -953,10 +953,8 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		final Semaphore barrier;
 		synchronized (lock) {
 			int state = job.getState();
-			if (state == Job.NONE)
-				return true;
 			//don't join a waiting or sleeping job when suspended (deadlock risk)
-			if (suspended && state != Job.RUNNING)
+			if ((state == Job.NONE) || (suspended && state != Job.RUNNING))
 				return true;
 			//it's an error for a job to join itself
 			if (state == Job.RUNNING && job.getThread() == Thread.currentThread())
@@ -1055,10 +1053,8 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 						Job job = event.getJob();
 						if (family == null || job.belongsTo(family)) {
 							// don't add to list if job is being rescheduled
-							if (((JobChangeEvent) event).reschedule)
-								return;
 							// if job manager is suspended we only wait for running jobs
-							if (isSuspended())
+							if (((JobChangeEvent) event).reschedule || isSuspended())
 								return;
 							boolean added = jobs.add(job);
 							assert added;
