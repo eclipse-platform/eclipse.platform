@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ReflectionUtils {
 
@@ -48,7 +50,12 @@ public class ReflectionUtils {
 	public static Object getField(Object object, String name)
 			throws IllegalArgumentException, IllegalAccessException,
 			SecurityException, NoSuchFieldException {
-		Field field = object.getClass().getDeclaredField(name);
+		Field field;
+		try {
+			field = object.getClass().getDeclaredField(name);
+		} catch (NoSuchFieldException e) {
+			field = object.getClass().getSuperclass().getDeclaredField(name);
+		}
 		field.setAccessible(true);
 		Object ret = field.get(object);
 		return ret;
