@@ -555,10 +555,12 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * Returns a new progress monitor for this job.  Never returns null.
 	 */
 	private IProgressMonitor createMonitor(Job job) {
-		if (progressProvider != null) {
-			return progressProvider.createMonitor(job);
-		}
-		return new NullProgressMonitor();
+		IProgressMonitor monitor = null;
+		if (progressProvider != null)
+			monitor = progressProvider.createMonitor(job);
+		if (monitor == null)
+			monitor = new NullProgressMonitor();
+		return monitor;
 	}
 
 	@Override
