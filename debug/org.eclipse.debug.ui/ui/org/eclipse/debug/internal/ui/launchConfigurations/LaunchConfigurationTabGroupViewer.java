@@ -1180,10 +1180,7 @@ public class LaunchConfigurationTabGroupViewer {
 	 * @return if the dialog can launch in its current state
 	 */
 	public boolean canLaunch() {
-		if(fInitializingTabs) {
-			return false;
-		}
-		if (getWorkingCopy() == null) {
+		if (fInitializingTabs || (getWorkingCopy() == null)) {
 			return false;
 		}
 		try {
@@ -1271,11 +1268,7 @@ public class LaunchConfigurationTabGroupViewer {
 	 * @return the error message for the tab
 	 */
 	public String getErrorMesssage() {
-		if (fInitializingTabs) {
-			return null;
-		}
-
-		if (getWorkingCopy() == null) {
+		if (fInitializingTabs || (getWorkingCopy() == null)) {
 			return null;
 		}
 		try {
@@ -1452,12 +1445,14 @@ public class LaunchConfigurationTabGroupViewer {
 		fCurrentTabIndex = fTabFolder.getSelectionIndex();
 
 		ILaunchConfigurationTab[] tabs = getTabs();
-		if (previousTabIndex == fCurrentTabIndex || tabs == null || tabs.length == 0
+		if (tabs == null || tabs.length == 0
 				|| previousTabIndex > (tabs.length - 1)) {
 			return;
 		}
 
-		propagateTabDeactivation(previousTabIndex);
+		if (previousTabIndex != fCurrentTabIndex) {
+			propagateTabDeactivation(previousTabIndex);
+		}
 
 		propagateTabActivation();
 	}
