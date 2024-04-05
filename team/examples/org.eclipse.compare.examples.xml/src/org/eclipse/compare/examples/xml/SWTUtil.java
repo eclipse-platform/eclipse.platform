@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -30,10 +30,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
 /**
- * Utility class to simplify access to some SWT resources. 
+ * Utility class to simplify access to some SWT resources.
  */
 public class SWTUtil {
-	
+
 	/*
 	 * Returns the standard display to be used. The method first checks, if
 	 * the thread calling this method has an associated disaply. If so, this
@@ -44,13 +44,13 @@ public class SWTUtil {
 		display= Display.getCurrent();
 		if (display == null)
 			display= Display.getDefault();
-		return display;		
+		return display;
 	}
-	
+
 	/*
 	 * Returns the shell for the given widget. If the widget doesn't represent
 	 * a SWT object that manage a shell, <code>null</code> is returned.
-	 * 
+	 *
 	 * @return the shell for the given widget
 	 */
 	public static Shell getShell(Widget widget) {
@@ -65,10 +65,10 @@ public class SWTUtil {
 		if (widget instanceof Menu)
 			return ((Menu)widget).getParent().getShell();
 		if (widget instanceof ScrollBar)
-			return ((ScrollBar)widget).getParent().getShell();			
-		return null;	
+			return ((ScrollBar)widget).getParent().getShell();
+		return null;
 	}
-	
+
 	private static double getVerticalDialogUnitSize(Control control) {
 		GC gc= new GC(control);
 		try {
@@ -78,17 +78,17 @@ public class SWTUtil {
 			gc.dispose();
 		}
 	}
-	
+
 	private static double getHorizontalDialogUnitSize(Control control) {
 		GC gc= new GC(control);
 		try {
-			int averageWidth= gc.getFontMetrics().getAverageCharWidth();
+			double averageWidth = gc.getFontMetrics().getAverageCharacterWidth();
 			return averageWidth * 0.25;
 		} finally {
 			gc.dispose();
 		}
-	}	
-	
+	}
+
 	public static int convertHeightInCharsToPixels(int chars, Control control) {
 		return convertVerticalDLUsToPixels(chars * 8, control);
 	}
@@ -100,11 +100,11 @@ public class SWTUtil {
 	public static int convertVerticalDLUsToPixels(int dlus, Control control) {
 		return (int)Math.round(dlus * getVerticalDialogUnitSize(control));
 	}
-	
+
 	public static int convertWidthInCharsToPixels(int chars, Control control) {
 		return convertHorizontalDLUsToPixels(chars * 4, control);
 	}
-	
+
 	/*
 	 * Returns a width hint for a button control.
 	 */
@@ -115,24 +115,24 @@ public class SWTUtil {
 
 	/*
 	 * Returns a height hint for a button control.
-	 */		
+	 */
 //	public static int getButtonHeigthHint(Button button) {
 //		return convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT, button);
-//	}		
+//	}
 
 	/*
 	 * Sets width and height hint for the button control.
 	 * <b>Note:</b> This is a NOP if the button's layout data is not
 	 * an instance of <code>GridData</code>.
-	 * 
+	 *
 	 * @param	the button for which to set the dimension hint
-	 */		
+	 */
 	public static void setButtonDimensionHint(Button button) {
 		Assert.isNotNull(button);
 		Object gd= button.getLayoutData();
 		if (gd instanceof GridData) {
 			//((GridData)gd).heightHint= getButtonHeigthHint(button);
-			((GridData)gd).widthHint= getButtonWidthHint(button);		 
+			((GridData)gd).widthHint= getButtonWidthHint(button);
 		}
 	}
 }
