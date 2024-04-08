@@ -106,7 +106,8 @@
                label="%cheatsheet.item"
                class="org.eclipse.ui.cheatsheets.CheatSheetExtensionFactory:helpMenuAction"
                menubarPath="help/group.tutorials"
-               id="org.eclipse.ui.cheatsheets.actions.CheatSheetHelpMenuAction">
+               id="org.eclipse.ui.cheatsheets.actions.CheatSheetHelpMenuAction"
+               icon="$nl$/icons/etool16/cheatsheet_view.png">
          </action>
       </actionSet>
    </extension>
