@@ -8,4 +8,12 @@
             </message_arguments>
         </filter>
     </resource>
+    <resource path="compare/org/eclipse/compare/CompareConfiguration.java" type="org.eclipse.compare.CompareConfiguration">
+        <filter id="336658481">
+            <message_arguments>
+                <message_argument value="org.eclipse.compare.CompareConfiguration"/>
+                <message_argument value="CONTENT_TYPE"/>
+            </message_arguments>
+        </filter>
+    </resource>
 </component>
