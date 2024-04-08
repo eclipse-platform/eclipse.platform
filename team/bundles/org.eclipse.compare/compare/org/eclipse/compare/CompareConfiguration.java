@@ -79,6 +79,14 @@ public class CompareConfiguration {
 	 */
 	public static final String MIRRORED = "MIRRORED"; //$NON-NLS-1$
 
+	/**
+	 * (Optional) id of the common content type for compare input detected by the
+	 * compare editor
+	 *
+	 * @since 3.11
+	 */
+	public static final String CONTENT_TYPE = "CONTENT_TYPE"; //$NON-NLS-1$
+
 	private static ImageDescriptor[] fgImages= new ImageDescriptor[32];
 
 	static {

@@ -1030,8 +1030,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (ctype != null) {
 			initializeRegistries();
 			List<ViewerDescriptor> list = fContentMergeViewers.searchAll(ctype);
-			if (list != null)
+			if (list != null) {
 				result.addAll(list);
+			}
+			// Add a hint for the viewers which content type we have detected
+			cc.setProperty(CompareConfiguration.CONTENT_TYPE, ctype.getId());
 		}
 
 		String[] types= getTypes(input);
