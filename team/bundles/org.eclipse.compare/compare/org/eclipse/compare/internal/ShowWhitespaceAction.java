@@ -128,6 +128,9 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 			for (int i = 0; i < viewers.length; i++) {
 				if (fNeedsPainters[i]) {
 					MergeSourceViewer viewer = viewers[i];
+					if (viewer == null) {
+						continue;
+					}
 					SourceViewer sourceViewer = viewer.getSourceViewer();
 					WhitespaceCharacterPainter painter;
 					if (fStore != null) {
