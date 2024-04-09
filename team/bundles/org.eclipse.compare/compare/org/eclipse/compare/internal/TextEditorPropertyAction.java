@@ -77,8 +77,14 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 	}
 
 	public void dispose() {
-		if (store != null)
+		if (viewers != null) {
+			for (int i = 0; i < viewers.length; i++) {
+				viewers[i] = null;
+			}
+		}
+		if (store != null) {
 			store.removePropertyChangeListener(this);
+		}
 	}
 
 	/**
