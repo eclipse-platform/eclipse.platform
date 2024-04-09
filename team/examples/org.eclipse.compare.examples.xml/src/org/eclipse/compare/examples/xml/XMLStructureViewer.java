@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,14 +14,28 @@
 package org.eclipse.compare.examples.xml;
 
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
-import org.eclipse.compare.*;
-import org.eclipse.compare.structuremergeviewer.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.action.*;
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareViewerSwitchingPane;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.structuremergeviewer.DiffNode;
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.compare.structuremergeviewer.IStructureComparator;
+import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
@@ -49,7 +63,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	protected static final char SIGN_SEPARATOR=
 		XMLStructureCreator.SIGN_SEPARATOR;
 
-	class XMLSorter extends ViewerSorter {
+	class XMLSorter extends ViewerComparator {
 
 		ArrayList fOrdered;
 		boolean fAlwaysOrderSort;
@@ -69,15 +83,13 @@ public class XMLStructureViewer extends StructureDiffViewer {
 
 		@Override
 		public int category(Object node) {
-			if (node instanceof DiffNode) {
-				Object o= ((DiffNode) node).getId();
-				if (o instanceof XMLNode) {
-					String xmlType= ((XMLNode) o).getXMLType();
+			if (node instanceof DiffNode diffNode) {
+				Object o = diffNode.getId();
+				if (o instanceof XMLNode xmlNode) {
+					String xmlType = xmlNode.getXMLType();
 					if (xmlType.equals(XMLStructureCreator.TYPE_ATTRIBUTE))
 						return 1;
-					if (xmlType.equals(XMLStructureCreator.TYPE_ELEMENT))
-						return 2;
-					if (xmlType.equals(XMLStructureCreator.TYPE_TEXT))
+					if (xmlType.equals(XMLStructureCreator.TYPE_ELEMENT) || xmlType.equals(XMLStructureCreator.TYPE_TEXT))
 						return 2;
 				}
 			}
@@ -89,10 +101,10 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			if ((fOrdered != null || fAlwaysOrderSort)
 				&& elements != null
 				&& elements.length > 0
-				&& elements[0] instanceof DiffNode) {
-				Object o= ((DiffNode) elements[0]).getId();
-				if (o instanceof XMLNode) {
-					XMLNode parent= ((XMLNode) o).getParent();
+					&& elements[0] instanceof DiffNode diffNode) {
+				Object o = diffNode.getId();
+				if (o instanceof XMLNode xmlNode) {
+					XMLNode parent = xmlNode.getParent();
 					String sig= parent.getSignature();
 					if (sig.endsWith(XMLStructureCreator.SIGN_ELEMENT)) {
 						String newSig=
@@ -147,8 +159,8 @@ public class XMLStructureViewer extends StructureDiffViewer {
 		Composite parent,
 		CompareConfiguration configuration) {
 		super(parent, configuration);
-		if (parent instanceof CompareViewerSwitchingPane) {
-			fParent= (CompareViewerSwitchingPane) parent;
+		if (parent instanceof CompareViewerSwitchingPane comparePane) {
+			fParent = comparePane;
 		}
 		initialize();
 	}
@@ -165,7 +177,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 		fOrderedElementsInternal= plugin.getOrderedElementsInternal();
 
 		XMLSorter sorter= new XMLSorter();
-		setSorter(sorter);
+		setComparator(sorter);
 
 	}
 
@@ -173,7 +185,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 		return (XMLStructureCreator) getStructureCreator();
 	}
 
-	/* (non Javadoc)
+	/*
 	 * Overridden to unregister all listeners.
 	 */
 	@Override
@@ -259,8 +271,8 @@ public class XMLStructureViewer extends StructureDiffViewer {
 		super.fillContextMenu(manager);
 		ISelection s= getSelection();
 		if (s instanceof StructuredSelection
-			&& ((StructuredSelection) s).getFirstElement() instanceof DiffNode
-			&& ((DiffNode) ((StructuredSelection) s).getFirstElement()).getId()
+				&& ((StructuredSelection) s).getFirstElement() instanceof DiffNode
+				&& ((DiffNode) ((StructuredSelection) s).getFirstElement()).getId()
 				instanceof XMLNode) {
 			DiffNode diffnode=
 				(DiffNode) ((StructuredSelection) s).getFirstElement();
@@ -270,7 +282,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			if (diffnodeIdSig.endsWith(XMLStructureCreator.SIGN_ATTRIBUTE) || (diffnodeIdSig.endsWith(XMLStructureCreator.SIGN_TEXT) && ((XMLNode) diffnode.getId()).getOrigId().endsWith("(1)"))) { //$NON-NLS-1$
 				Action action= new SetAsIdAction(diffnode);
 				if (!fIdMaps.containsKey(idmap_name)) {
-					action.setText(XMLCompareMessages.XMLStructureViewer_action_notUserIdMap); 
+					action.setText(XMLCompareMessages.XMLStructureViewer_action_notUserIdMap);
 					action.setEnabled(false);
 				} else {
 					HashMap idmapHM= (HashMap) fIdMaps.get(idmap_name);
@@ -317,7 +329,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 					}
 					if (idmapHM.containsKey(signature)) {
 						if (idmapHM.get(signature).equals(idname)) {
-							action.setText(XMLCompareMessages.XMLStructureViewer_action_setId_text1); 
+							action.setText(XMLCompareMessages.XMLStructureViewer_action_setId_text1);
 							action.setEnabled(false);
 						} else {
 							String oldId= (String) idmapHM.get(signature);
@@ -327,7 +339,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 							action.setEnabled(true);
 						}
 					} else {
-						action.setText(XMLCompareMessages.XMLStructureViewer_action_setId_text3); 
+						action.setText(XMLCompareMessages.XMLStructureViewer_action_setId_text3);
 						action.setEnabled(true);
 					}
 				}
@@ -336,7 +348,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 				diffnodeIdSig.endsWith(XMLStructureCreator.SIGN_ELEMENT)) {
 				SetOrderedAction action= new SetOrderedAction(idmap_name);
 				if (!fIdMaps.containsKey(idmap_name)) {
-					action.setText(XMLCompareMessages.XMLStructureViewer_action_notUserIdMap); 
+					action.setText(XMLCompareMessages.XMLStructureViewer_action_notUserIdMap);
 					action.setEnabled(false);
 				} else {
 					ArrayList idmapOrdered=
@@ -351,10 +363,10 @@ public class XMLStructureViewer extends StructureDiffViewer {
 								XMLStructureCreator.SIGN_ELEMENT));
 					if (idmapOrdered != null
 						&& idmapOrdered.contains(signature)) {
-						action.setText(XMLCompareMessages.XMLStructureViewer_action_setOrdered_exists); 
+						action.setText(XMLCompareMessages.XMLStructureViewer_action_setOrdered_exists);
 						action.setEnabled(false);
 					} else {
-						action.setText(XMLCompareMessages.XMLStructureViewer_action_setOrdered); 
+						action.setText(XMLCompareMessages.XMLStructureViewer_action_setOrdered);
 						action.setSignature(signature);
 						action.setEnabled(true);
 					}
@@ -507,7 +519,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			totalWork= 1;
 		else
 			totalWork= 3;
-		monitor.beginTask(XMLCompareMessages.XMLStructureViewer_matching_beginTask, totalWork); 
+		monitor.beginTask(XMLCompareMessages.XMLStructureViewer_matching_beginTask, totalWork);
 		ArrayList ordered= null;
 		if (!getXMLStructureCreator()
 			.getIdMap()
@@ -522,15 +534,15 @@ public class XMLStructureViewer extends StructureDiffViewer {
 					(ArrayList) fOrderedElementsInternal.get(
 						getXMLStructureCreator().getIdMap());
 		}
-		if (getSorter() instanceof XMLSorter)
-			 ((XMLSorter) getSorter()).setOrdered(ordered);
+		if (getComparator() instanceof XMLSorter)
+			((XMLSorter) getComparator()).setOrdered(ordered);
 		AbstractMatching m= null;
 		if (getXMLStructureCreator()
 			.getIdMap()
 			.equals(XMLStructureCreator.USE_ORDERED)) {
 			m= new OrderedMatching();
-			if (getSorter() instanceof XMLSorter)
-				 ((XMLSorter) getSorter()).setAlwaysOrderSort(true);
+			if (getComparator() instanceof XMLSorter)
+				((XMLSorter) getComparator()).setAlwaysOrderSort(true);
 		}
 		try {
 			if (m != null) {
