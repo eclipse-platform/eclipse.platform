@@ -22,12 +22,13 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class SpyTab extends AbstractLaunchConfigurationTab {
 
-	private boolean initialized;
-	private boolean activated;
+	private int initializedCount;
+	private int activatedCount;
+	private int deactivatedCount;
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [initialized=" + initialized + ", activated=" + activated + "]";
+		return getClass().getSimpleName() + " [initializedCount=" + initializedCount + ", activatedCount=" + activatedCount + ", deactivatedCount=" + deactivatedCount + "]";
 	}
 
 	@Override
@@ -41,12 +42,12 @@ public abstract class SpyTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
-		initialized = true;
+		++initializedCount;
 	}
 
 	@Override
 	public void activated(ILaunchConfigurationWorkingCopy workingCopy) {
-		activated = true;
+		++activatedCount;
 	}
 
 	@Override
@@ -58,11 +59,27 @@ public abstract class SpyTab extends AbstractLaunchConfigurationTab {
 	}
 
 	public boolean isInitialized() {
-		return initialized;
+		return initializedCount > 0;
+	}
+
+	public boolean isInitializedExactlyOnce() {
+		return initializedCount == 1;
 	}
 
 	public boolean isActivated() {
-		return activated;
+		return activatedCount > 0;
+	}
+
+	public boolean isActivatedExactlyOnce() {
+		return activatedCount == 1;
+	}
+
+	public boolean isDeactivated() {
+		return deactivatedCount > 0;
+	}
+
+	public boolean isDeactivatedExactlyOnce() {
+		return deactivatedCount == 1;
 	}
 
 	// These are necessary because I need several tabs in the launch config and

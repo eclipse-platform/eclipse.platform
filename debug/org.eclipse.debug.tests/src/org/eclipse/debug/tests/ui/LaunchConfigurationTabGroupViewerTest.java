@@ -70,7 +70,21 @@ public class LaunchConfigurationTabGroupViewerTest {
 		final ILaunchConfigurationTab[] tabs = runOnDialog(createAndSelect1LaunchConfig);
 
 		for (ILaunchConfigurationTab tab : tabs) {
-			assertThat(((SpyTab) tab)).matches(SpyTab::isInitialized, "should have been initialized");
+			assertThat(((SpyTab) tab)).matches(SpyTab::isInitializedExactlyOnce, "should have been initialized exactly once");
+		}
+	}
+
+	@Test
+	public void testNoTabsAreDeactivatedByDefault() {
+		// Create a launch configuration with a unique name
+		ThrowingRunnable<CoreException> createAndSelect1LaunchConfig = () -> {
+			fLaunchConfigurationsDialog.getTabViewer().setInput(createLaunchConfigurationInstance());
+		};
+
+		final ILaunchConfigurationTab[] tabs = runOnDialog(createAndSelect1LaunchConfig);
+
+		for (ILaunchConfigurationTab tab : tabs) {
+			assertThat(((SpyTab) tab)).matches(not(SpyTab::isDeactivated), "should NOT have been deactivated");
 		}
 	}
 
@@ -82,7 +96,29 @@ public class LaunchConfigurationTabGroupViewerTest {
 		};
 
 		final ILaunchConfigurationTab[] tabs = runOnDialog(createAndSelect1LaunchConfig);
-		assertThat(((SpyTab) tabs[0])).matches(SpyTab::isActivated, "should have been activated");
+		SpyTab defaultTab = (SpyTab) tabs[0];
+		assertThat(defaultTab).matches(SpyTab::isActivatedExactlyOnce, "should have been activated exactly once");
+		assertThat(defaultTab).matches(not(SpyTab::isDeactivated), "should NOT have been deactivated");
+	}
+
+	@Test
+	public void testActivatingTabTwiceDoesNotDeactivateIt() {
+		int tabIndex = 1;
+
+		// Create a launch configuration with a unique name
+		ThrowingRunnable<CoreException> selectTabTwice = () -> {
+			fLaunchConfigurationsDialog.getTabViewer().setInput(createLaunchConfigurationInstance());
+
+			// Activate the same tab twice
+			fLaunchConfigurationsDialog.getTabViewer().setActiveTab(tabIndex);
+			fLaunchConfigurationsDialog.getTabViewer().setActiveTab(tabIndex);
+		};
+
+		final ILaunchConfigurationTab[] tabs = runOnDialog(selectTabTwice);
+
+		SpyTab activeTab = (SpyTab) tabs[tabIndex];
+		assertThat(activeTab).matches(SpyTab::isActivatedExactlyOnce, "should have been activated exactly once");
+		assertThat(activeTab).matches(not(SpyTab::isDeactivated), "should NOT have been deactivated");
 	}
 
 	@Test
@@ -104,6 +140,12 @@ public class LaunchConfigurationTabGroupViewerTest {
 		final ILaunchConfigurationTab[] tabs = runOnDialog(setActiveTab);
 
 		assertThat(((SpyTab) tabs[0])).matches(not(SpyTab::isActivated), "should not have been activated");
+
+		// No tab should have been deactivated in the 2nd configuration
+		for (ILaunchConfigurationTab tab : tabs) {
+			assertThat(((SpyTab) tab)).matches(not(SpyTab::isDeactivated), "should not have been deactivated");
+		}
+
 		assertThat(((SpyTab) tabs[secondTabIndex])).matches(SpyTab::isActivated, "should have been activated");
 	}
 
