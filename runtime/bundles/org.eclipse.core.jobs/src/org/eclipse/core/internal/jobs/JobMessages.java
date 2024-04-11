@@ -25,6 +25,7 @@ public class JobMessages extends NLS {
 	// Job Manager and Locks
 	public static String jobs_blocked0;
 	public static String jobs_blocked1;
+	public static String jobs_unblocked;
 	public static String jobs_internalError;
 	public static String jobs_waitFamSub;
 	public static String jobs_waitFamSubOne;

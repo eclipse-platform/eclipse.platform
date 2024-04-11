@@ -103,6 +103,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	private static final String OPTION_DEBUG_JOBS = PI_JOBS + "/jobs"; //$NON-NLS-1$
 	private static final String OPTION_LOCKS = PI_JOBS + "/jobs/locks"; //$NON-NLS-1$
 	private static final String OPTION_SHUTDOWN = PI_JOBS + "/jobs/shutdown"; //$NON-NLS-1$
+	private static final String OPTION_DEBUG_BLOCKED_UNBLOCKED = PI_JOBS + "/jobs/blockedunblocked"; //$NON-NLS-1$
 
 	static DebugTrace DEBUG_TRACE;
 	static boolean DEBUG = false;
@@ -112,6 +113,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	static boolean DEBUG_DEADLOCK = false;
 	static boolean DEBUG_LOCKS = false;
 	static boolean DEBUG_SHUTDOWN = false;
+	static boolean DEBUG_BLOCKED_UNBLOCKED = false;
 
 	/**
 	 * The singleton job manager instance. It must be a singleton because
@@ -1304,6 +1306,7 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		DEBUG_DEADLOCK = options.getBooleanOption(OPTION_DEADLOCK_ERROR, false);
 		DEBUG_LOCKS = options.getBooleanOption(OPTION_LOCKS, false);
 		DEBUG_SHUTDOWN = options.getBooleanOption(OPTION_SHUTDOWN, false);
+		DEBUG_BLOCKED_UNBLOCKED = options.getBooleanOption(OPTION_DEBUG_BLOCKED_UNBLOCKED, false);
 	}
 
 	@Override
@@ -1332,6 +1335,10 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			reason = new JobStatus(IStatus.INFO, (Job) blockingJob, msg);
 		}
 		monitor.setBlocked(reason);
+
+		if (DEBUG_BLOCKED_UNBLOCKED) {
+			JobManager.debug(reason.getMessage());
+		}
 	}
 
 	/**
@@ -1342,6 +1349,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 */
 	final void reportUnblocked(IProgressMonitor monitor) {
 		monitor.clearBlocked();
+		if (DEBUG_BLOCKED_UNBLOCKED) {
+			JobManager.debug(JobMessages.jobs_unblocked);
+		}
 	}
 
 	@Override
