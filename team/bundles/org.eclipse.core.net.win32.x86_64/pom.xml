@@ -18,7 +18,7 @@
     <relativePath>../../</relativePath>
   </parent>
   <artifactId>org.eclipse.core.net.win32.x86_64</artifactId>
-  <version>1.2.200-SNAPSHOT</version>
+  <version>1.2.300-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
   <properties>

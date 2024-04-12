@@ -18,6 +18,6 @@
     <relativePath>../../</relativePath>
   </parent>
   <artifactId>org.eclipse.compare.examples</artifactId>
-  <version>3.4.300-SNAPSHOT</version>
+  <version>3.4.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
