@@ -32,9 +32,9 @@ public class Entities {
 	start++;
 	radix = 16;
       }
-      Character c =
-	Character.valueOf((char)Integer.parseInt(entity.substring(start), radix));
-      return c.toString();
+      char c =
+	(char)Integer.parseInt(entity.substring(start), radix);
+      return Character.toString(c);
     } else {
       String s = decoder.get(entity);
       if (s != null)
