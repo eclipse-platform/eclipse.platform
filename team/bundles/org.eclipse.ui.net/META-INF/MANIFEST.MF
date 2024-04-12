@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %PLUGIN_NAME
 Bundle-SymbolicName: org.eclipse.ui.net; singleton:=true
-Bundle-Version: 1.5.300.qualifier
+Bundle-Version: 1.5.400.qualifier
 Bundle-Vendor: %PLUGIN_PROVIDER
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;bundle-version="[3.3.0,4.0.0)",

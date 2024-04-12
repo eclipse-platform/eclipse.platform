@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.e4.core.di.annotations
-Bundle-Version: 1.8.300.qualifier
+Bundle-Version: 1.8.400.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.e4.core.di.annotations;version="1.6.0"
 Import-Package: jakarta.inject;version="[2.0.0,3.0.0)"
