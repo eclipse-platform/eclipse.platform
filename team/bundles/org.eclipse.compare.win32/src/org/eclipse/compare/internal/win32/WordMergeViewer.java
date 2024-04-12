@@ -122,7 +122,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 			toolBarManager.appendToGroup("file", saveAction); //$NON-NLS-1$
 		}
 		
-		inplaceAction = new Action(CompareWin32Messages.WordMergeViewer_2, Action.AS_CHECK_BOX) {
+		inplaceAction = new Action(CompareWin32Messages.WordMergeViewer_2, IAction.AS_CHECK_BOX) {
 			@Override
 			public void run() {
 				toggleInplaceExternalState();

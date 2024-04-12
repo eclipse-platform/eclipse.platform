@@ -52,6 +52,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
@@ -112,8 +113,8 @@ public class EngineResultSection {
 	}
 
 	public Control createControl(Composite parent, final FormToolkit toolkit) {
-		section = toolkit.createSection(parent, Section.SHORT_TITLE_BAR | Section.COMPACT | Section.TWISTIE
-				| Section.EXPANDED | Section.LEFT_TEXT_CLIENT_ALIGNMENT);
+		section = toolkit.createSection(parent, ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.COMPACT | ExpandableComposite.TWISTIE
+				| ExpandableComposite.EXPANDED | ExpandableComposite.LEFT_TEXT_CLIENT_ALIGNMENT);
 		// section.marginHeight = 10;
 		container = toolkit.createComposite(section);
 		TableWrapLayout layout = new TableWrapLayout();
@@ -421,7 +422,7 @@ public class EngineResultSection {
 			String elabel = null;
 			if (isPotentialHit) {
 				// add "(potential hit)"
-				elabel = Messages.bind(Messages.SearchPart_potential_hit, hit.getLabel());
+				elabel = NLS.bind(Messages.SearchPart_potential_hit, hit.getLabel());
 			}
 			else {
 				elabel = hit.getLabel();

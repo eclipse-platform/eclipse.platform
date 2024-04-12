@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.HyperlinkGroup;
+import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -96,7 +96,7 @@ public class HelpTray extends DialogTray implements IPageChangedListener {
 		ensureMinimumHeight(parent.getShell());
 
 		toolkit = new FormToolkit(parent.getDisplay());
-		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(HyperlinkGroup.UNDERLINE_HOVER);
+		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(HyperlinkSettings.UNDERLINE_HOVER);
 		toolkit.getColors().initializeSectionToolBarColors();
 		Composite container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();

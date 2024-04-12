@@ -49,6 +49,7 @@ import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -85,8 +86,8 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 	}
 
 	public DynamicHelpPart(Composite parent, FormToolkit toolkit) {
-		super(parent, toolkit, Section.EXPANDED | Section.TWISTIE
-				| Section.TITLE_BAR);
+		super(parent, toolkit, ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE
+				| ExpandableComposite.TITLE_BAR);
 		// configure section
 		Section section = getSection();
 		section.setText(Messages.SearchPart_title);

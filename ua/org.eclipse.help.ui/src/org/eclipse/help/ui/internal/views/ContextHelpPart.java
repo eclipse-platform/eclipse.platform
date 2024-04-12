@@ -74,6 +74,7 @@ import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -181,9 +182,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 	}
 
 	private static int getSectionStyle() {
-		int style = Section.EXPANDED ;
+		int style = ExpandableComposite.EXPANDED ;
 		if (RelatedTopicsPart.isUseDynamicHelp()) {
-			style = style | Section.TWISTIE;
+			style = style | ExpandableComposite.TWISTIE;
 		}
 		return style;
 	}

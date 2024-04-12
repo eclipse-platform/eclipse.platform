@@ -42,7 +42,6 @@ import org.eclipse.team.ui.TeamUI;
 import org.eclipse.team.ui.mapping.ITeamContentProviderDescriptor;
 import org.eclipse.team.ui.mapping.ITeamContentProviderManager;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
-import org.eclipse.team.ui.synchronize.ModelMergeOperation;
 import org.eclipse.team.ui.synchronize.ModelOperation;
 import org.eclipse.team.ui.synchronize.ModelSynchronizeParticipant;
 
@@ -147,7 +146,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	private ModelProvider[] getEnabledModelProviders() {
 		Set<ModelProvider> result = new HashSet<>();
 		ModelProvider[] providers = ((ModelSynchronizeParticipant)configuration.getParticipant()).getEnabledModelProviders();
-		providers = ModelMergeOperation.sortByExtension(providers);
+		providers = ModelOperation.sortByExtension(providers);
 		for (ModelProvider provider : providers) {
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
 			if (desc != null && desc.isEnabled()) {

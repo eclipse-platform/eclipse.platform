@@ -38,10 +38,10 @@ import org.eclipse.team.core.diff.IThreeWayDiff;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.mapping.IMergeContext;
 import org.eclipse.team.core.mapping.IResourceDiff;
+import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.core.mapping.ResourceMappingMerger;
 import org.eclipse.team.core.mapping.provider.MergeStatus;
 import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
-import org.eclipse.team.core.mapping.provider.SynchronizationContext;
 import org.eclipse.team.examples.filesystem.FileSystemPlugin;
 import org.eclipse.team.examples.model.ModelObject;
 import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
@@ -68,7 +68,7 @@ public class ModelMerger extends ResourceMappingMerger {
 		try {
 			IStatus status;
 			// Only override the merge for three-way synchronizations
-			if (mergeContext.getType() == SynchronizationContext.THREE_WAY) {
+			if (mergeContext.getType() == ISynchronizationContext.THREE_WAY) {
 				monitor.beginTask("Merging model elements", 100);
 				status = mergeModelElements(mergeContext, SubMonitor.convert(monitor, 50));
 				// Stop the merge if there was a failure

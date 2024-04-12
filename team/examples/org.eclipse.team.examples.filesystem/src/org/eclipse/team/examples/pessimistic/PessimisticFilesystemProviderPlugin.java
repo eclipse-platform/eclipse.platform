@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -93,7 +94,7 @@ public class PessimisticFilesystemProviderPlugin extends AbstractUIPlugin {
 	 */
 	public void logError(Throwable exception, String message) {
 		String pluginId= getBundle().getSymbolicName();
-		Status status= new Status(Status.ERROR, pluginId, Status.OK, message, exception);
+		Status status= new Status(IStatus.ERROR, pluginId, IStatus.OK, message, exception);
 		getLog().log(status);
 		if (isDebugging()) {
 			System.out.println(message);

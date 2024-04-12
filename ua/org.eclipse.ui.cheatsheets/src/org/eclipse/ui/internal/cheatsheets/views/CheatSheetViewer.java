@@ -852,7 +852,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		if (!parseStatus.isOK()) {
 			CheatSheetPlugin.getPlugin().getLog().log(parseStatus);
 		}
-		if(parseStatus.getSeverity() == Status.ERROR){
+		if(parseStatus.getSeverity() == IStatus.ERROR){
 
 			// Error during parsing.
 			// Something is wrong with the Cheat sheet content file at the xml level.

@@ -69,6 +69,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -1701,7 +1702,7 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 								getShowAllMessage(),
 								Messages.AskShowAll_toggleMessage, false,
 								store, PROMPT_KEY);
-				if (dialog.getReturnCode() != MessageDialogWithToggle.OK) {
+				if (dialog.getReturnCode() != Window.OK) {
 					showAllAction.setChecked(false);
 					return;
 				}
