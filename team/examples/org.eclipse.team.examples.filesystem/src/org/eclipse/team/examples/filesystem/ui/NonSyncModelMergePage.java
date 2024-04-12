@@ -52,7 +52,7 @@ import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
 import org.eclipse.team.examples.filesystem.FileSystemPlugin;
 import org.eclipse.team.internal.ui.mapping.SynchronizationResourceMappingContext;
 import org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter;
-import org.eclipse.team.ui.synchronize.ModelMergeOperation;
+import org.eclipse.team.ui.synchronize.ModelOperation;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.Page;
 
@@ -159,7 +159,7 @@ public class NonSyncModelMergePage extends Page {
 			return super.compare(viewer, e1, e2);
 		}
 		private int compare(ResourceMapping m1, ResourceMapping m2) {
-			ModelProvider[] sorted = ModelMergeOperation.sortByExtension(new ModelProvider[] { m1.getModelProvider(), m2.getModelProvider() });
+			ModelProvider[] sorted = ModelOperation.sortByExtension(new ModelProvider[] { m1.getModelProvider(), m2.getModelProvider() });
 			return sorted[0] == m1.getModelProvider() ? -1 : 1;
 		}
 		private String getLabel(ResourceMapping mapping) {

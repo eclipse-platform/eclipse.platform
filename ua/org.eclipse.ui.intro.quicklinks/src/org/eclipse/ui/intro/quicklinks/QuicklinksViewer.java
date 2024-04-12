@@ -56,6 +56,7 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandImageService;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.internal.intro.impl.model.AbstractIntroPartImplementation;
@@ -459,7 +460,7 @@ public class QuicklinksViewer implements IIntroContentProvider {
 
 	@Override
 	public void createContent(String id, Composite parent, FormToolkit toolkit) {
-		Section section = toolkit.createSection(parent, Section.EXPANDED);
+		Section section = toolkit.createSection(parent, ExpandableComposite.EXPANDED);
 		TableViewer tableViewer = new TableViewer(toolkit.createTable(section, SWT.FULL_SELECTION));
 		tableViewer.setLabelProvider(new URLLabelProvider() {
 			@Override

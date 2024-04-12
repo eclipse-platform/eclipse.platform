@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -453,7 +454,7 @@ public class ScopeSetDialog extends TrayDialog  {
 		String dialogTitle = isRename ?
 		  Messages.RenameDialog_wtitle : Messages.NewDialog_wtitle;
 		dialog.getShell().setText(dialogTitle);
-		if (dialog.open()==RenameDialog.OK) {
+		if (dialog.open()==Window.OK) {
 			return dialog.getNewName();
 		}
 		return null;

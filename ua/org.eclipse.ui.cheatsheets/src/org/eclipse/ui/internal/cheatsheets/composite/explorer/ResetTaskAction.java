@@ -17,6 +17,7 @@ package org.eclipse.ui.internal.cheatsheets.composite.explorer;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.cheatsheets.CheatSheetPlugin;
 import org.eclipse.ui.internal.cheatsheets.Messages;
@@ -49,7 +50,7 @@ public class ResetTaskAction extends Action {
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), restartTasks, labelProvider);
 		dlg.open();
 		labelProvider.dispose();
-		if (dlg.getReturnCode() == ConfirmRestartDialog.OK) {
+		if (dlg.getReturnCode() == Window.OK) {
 			CompositeCheatSheetModel model = (CompositeCheatSheetModel) restartTasks[0].getCompositeCheatSheet();
 			model.resetTasks(restartTasks);
 		}

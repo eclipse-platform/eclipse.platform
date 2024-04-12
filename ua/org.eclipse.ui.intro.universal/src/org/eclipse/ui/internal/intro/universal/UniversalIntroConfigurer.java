@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.util.ProductPreferences;
 import org.eclipse.help.internal.util.SequenceResolver;
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.internal.intro.impl.model.AbstractIntroIdElement;
 import org.eclipse.ui.internal.intro.impl.model.ExtensionMap;
-import org.eclipse.ui.internal.intro.impl.model.IntroTheme;
 import org.eclipse.ui.internal.intro.universal.contentdetect.ContentDetector;
 import org.eclipse.ui.internal.intro.universal.util.ImageUtil;
 import org.eclipse.ui.internal.intro.universal.util.PreferenceArbiter;
@@ -219,7 +219,7 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 	 * @return same path with a prefixed theme directory component
 	 */
 	private String getThemePrefixedPath(String path) {
-		String prefix = themeProperties != null ? themeProperties.get(IntroTheme.ATT_ID) : null;
+		String prefix = themeProperties != null ? themeProperties.get(AbstractIntroIdElement.ATT_ID) : null;
 		prefix = prefix == null ? "" : prefix.trim(); //$NON-NLS-1$
 		if (prefix.length() == 0) {
 			return null;

@@ -42,7 +42,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.HyperlinkGroup;
+import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 
@@ -60,7 +60,7 @@ public class HelpView extends ViewPart implements IPartListener2, ISelectionChan
 	@Override
 	public void createPartControl(Composite parent) {
 		toolkit = new FormToolkit(parent.getDisplay());
-		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(HyperlinkGroup.UNDERLINE_HOVER);
+		toolkit.getHyperlinkGroup().setHyperlinkUnderlineMode(HyperlinkSettings.UNDERLINE_HOVER);
 		toolkit.getColors().initializeSectionToolBarColors();
 		reusableHelpPart.createControl(parent, toolkit);
 		reusableHelpPart.setDefaultContextHelpText(Messages.HelpView_defaultText);

@@ -23,6 +23,7 @@ import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -126,7 +127,7 @@ public class ScopePreferenceDialog extends PreferenceDialog {
 		WizardDialog dialog = new WizardDialog(getShell(), wizard);
 		dialog.create();
 		dialog.getShell().setSize(400, 500);
-		if (dialog.open()==WizardDialog.OK) {
+		if (dialog.open()==Window.OK) {
 			EngineTypeDescriptor etdesc = wizard.getSelectedEngineType();
 			EngineDescriptor desc = new EngineDescriptor(descManager);
 			desc.setEngineType(etdesc);
