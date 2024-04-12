@@ -331,7 +331,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 		String NO_PROXY_BYPASS = null;
 
 		// Flags for WINHTTP_AUTOPROXY_OPTIONS::dwFlags
-		int AUTOPROXY_AUTO_DETECT = 0x00000001;;
+		int AUTOPROXY_AUTO_DETECT = 0x00000001;
 		int AUTOPROXY_CONFIG_URL = 0x00000002;
 
 		// Flags for WINHTTP_AUTOPROXY_OPTIONS::dwAutoDetectFlags

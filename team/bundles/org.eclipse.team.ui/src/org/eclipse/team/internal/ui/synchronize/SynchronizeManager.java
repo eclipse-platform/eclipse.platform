@@ -529,7 +529,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 
 		if(perspectiveDescriptor != null) {
 
-			String message;;
+			String message;
 			String desc = perspectiveDescriptor.getDescription();
 			if (desc == null) {
 				message = NLS.bind(TeamUIMessages.SynchronizeManager_30, new String[] { perspectiveDescriptor.getLabel() });

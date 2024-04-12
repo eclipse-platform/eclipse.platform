@@ -127,7 +127,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 			}
 			if (ok[0]) {
 				setWritable(readOnlyFiles);
-			};
+			}
 		} else if (readOnlyFiles.length > 0 && context == null) {
 			if (isMakeWrittableWhenContextNotProvided()) {
 				setWritable(readOnlyFiles);

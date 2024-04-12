@@ -109,7 +109,7 @@ public class SystemProxyTest {
 
 		Map<String, String> typeMap = new HashMap<>();
 		for (IProxyData p : proxiesData) {
-			assertProxyDataEqual(p, (IProxyData) proxyDataMap.get(p.getType()));
+			assertProxyDataEqual(p, proxyDataMap.get(p.getType()));
 			typeMap.put(p.getType(), p.getType());
 		}
 
@@ -122,7 +122,7 @@ public class SystemProxyTest {
 
 		Map<String, String> typeMap = new HashMap<>();
 		for (IProxyData p : proxiesData) {
-			assertProxyDataEqual(p, (IProxyData) proxyDataMap.get(p.getType()));
+			assertProxyDataEqual(p, proxyDataMap.get(p.getType()));
 			typeMap.put(p.getType(), p.getType());
 		}
 

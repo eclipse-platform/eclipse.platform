@@ -157,7 +157,6 @@ public class WebappResources {
 	private static ResourceBundle getResourceBundle(String key) {
 		ResourceBundle bundle;
 
-	;
 		Bundle hostBundle = Platform.getBundle(FrameworkUtil.getBundle(HelpWebappPlugin.class).getSymbolicName());
 		if (hostBundle == null)
 			return null;
