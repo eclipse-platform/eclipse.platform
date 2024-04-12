@@ -85,7 +85,7 @@ public class Utils {
 			((MultiStatus) status).add(childrenStatus);
 			((MultiStatus) status).addAll(childrenStatus);
 		} else {
-			StringBuilder completeString = new StringBuilder(); //$NON-NLS-1$
+			StringBuilder completeString = new StringBuilder();
 			if (s != null)
 				completeString.append(s);
 			if (e != null) {

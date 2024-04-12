@@ -118,7 +118,7 @@ public final class MergeAllOperation extends SynchronizationOperation {
 	}
 
 	@Override
-	protected String getJobName() {;
+	protected String getJobName() {
 		return jobName;
 	}
 }

@@ -172,7 +172,7 @@ public class ResourceContentTests {
 				resources.add(project.getFile(path));
 			}
 		}
-		return (IResource[]) resources.toArray(new IResource[resources.size()]);
+		return resources.toArray(new IResource[resources.size()]);
 	}
 
 	@Test

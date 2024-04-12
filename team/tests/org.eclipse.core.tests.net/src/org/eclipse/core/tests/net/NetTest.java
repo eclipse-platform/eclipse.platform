@@ -140,7 +140,7 @@ public class NetTest {
 	}
 
 	private IProxyData getProxyData(String type) {
-		IProxyData data = (IProxyData) dataCache.get(type);
+		IProxyData data = dataCache.get(type);
 		if (data == null) {
 			data = this.getProxyManager().getProxyData(type);
 			assertProxyDataEqual(data);
@@ -230,7 +230,7 @@ public class NetTest {
 	}
 
 	private void performSettingData() throws CoreException {
-		IProxyData[] data = (IProxyData[]) dataCache.values().toArray(new IProxyData[dataCache.size()]);
+		IProxyData[] data = dataCache.values().toArray(new IProxyData[dataCache.size()]);
 		this.getProxyManager().setProxyData(data);
 		for (IProxyData proxyData : data) {
 			assertProxyDataEqual(proxyData);
