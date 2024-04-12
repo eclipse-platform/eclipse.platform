@@ -94,6 +94,7 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		return hierarchicalDescriptor;
 	}
 
+	@Override
 	public ViewerComparator getViewerComparator() {
 		return new SynchronizeModelElementComparator();
 	}
