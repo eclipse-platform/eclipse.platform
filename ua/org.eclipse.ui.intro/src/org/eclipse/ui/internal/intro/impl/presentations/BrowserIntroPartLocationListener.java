@@ -69,14 +69,14 @@ public class BrowserIntroPartLocationListener implements LocationListener {
 			if (browser.getData("frameNavigation") != null) { //$NON-NLS-1$
 				// this is at least the second frame navigation, remove last
 				// history since it was added just as a filler.
-				if (event.top == false && browser.getData("tempUrl") != null //$NON-NLS-1$
+				if (!event.top && browser.getData("tempUrl") != null //$NON-NLS-1$
 						&& browser.getData("tempUrl").equals("true")) { //$NON-NLS-1$ //$NON-NLS-2$
 					implementation.getHistory().removeLastHistory();
 					flagRemovedTempUrl();
 				}
 			}
 
-			if (event.top == true) {
+			if (event.top) {
 				// we are navigating to a regular fully qualified URL. Event.top
 				// is true.
 				flagStartOfFrameNavigation();
@@ -84,7 +84,7 @@ public class BrowserIntroPartLocationListener implements LocationListener {
 			}
 
 			if (browser.getData("frameNavigation") == null //$NON-NLS-1$
-					&& event.top == false) {
+					&& !event.top) {
 				// a new url navigation that is not in a top frame. It can
 				// be a navigation url due to frames, it can be due to a true
 				// single Frame navigation (when you click on a link inside a

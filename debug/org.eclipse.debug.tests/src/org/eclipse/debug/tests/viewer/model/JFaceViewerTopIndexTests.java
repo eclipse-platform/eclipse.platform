@@ -178,7 +178,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		waitWhile(t -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE | MODEL_CHANGED_COMPLETE), createListenerErrorMessage());
 
 		// Validate that the first node is expanded
-		assertTrue(getCTargetViewer().getExpandedState(firstElemPath) == true);
+		assertTrue(getCTargetViewer().getExpandedState(firstElemPath));
 
 		// Stop forcing view updates.
 		autopopulateAgent.dispose();
@@ -260,7 +260,7 @@ public class JFaceViewerTopIndexTests extends AbstractViewerModelTest implements
 		TreePath lastElemePath = model.findElement(lastElem.getLabel());
 
 		// Validate that the last node is expanded
-		assertTrue(getCTargetViewer().getExpandedState(lastElemePath) == true);
+		assertTrue(getCTargetViewer().getExpandedState(lastElemePath));
 
 		// Stop forcing view updates.
 		fViewer.setAutoExpandLevel(0);

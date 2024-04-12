@@ -199,7 +199,7 @@ public class InfoCenterPage extends RootScopePage {
 			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
 				final Object element = event.getElement();
-				if (tree.getGrayed(element) == false)
+				if (!tree.getGrayed(element))
 					BusyIndicator.showWhile(getShell().getDisplay(),
 							() -> setSubtreeChecked(element, tree.getChecked(element), false));
 			}

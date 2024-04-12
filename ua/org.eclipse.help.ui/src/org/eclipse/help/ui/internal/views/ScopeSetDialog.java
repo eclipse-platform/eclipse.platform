@@ -483,7 +483,7 @@ public class ScopeSetDialog extends TrayDialog  {
 
 	private void updateButtons() {
 		IStructuredSelection ssel = viewer.getStructuredSelection();
-		editButton.setEnabled(ssel.isEmpty()==false);
+		editButton.setEnabled(!ssel.isEmpty());
 		ScopeSet set = (ScopeSet)ssel.getFirstElement();
 		boolean editableSet = set!=null && set.isEditable() && !set.isImplicit();
 		removeButton.setEnabled(editableSet);

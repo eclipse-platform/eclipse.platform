@@ -192,12 +192,12 @@ abstract public class PopupTests extends AbstractViewerModelTest implements ITes
 
 		// Validate data
 		model.validateData(fViewer, TreePath.EMPTY, true);
-		assertTrue(getCTargetViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
+		assertTrue(getCTargetViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
 		// On windows, getExpandedState() may return true for an element with no children:
 		// assertTrue(getCTargetViewer().getExpandedState(model.findElement("3.0 - new")) == false);
-		assertTrue(getCTargetViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getCTargetViewer().getExpandedState(model.findElement("3.2")) == true); //$NON-NLS-1$
-		assertTrue(getCTargetViewer().getExpandedState(model.findElement("3.3")) == true); //$NON-NLS-1$
+		assertTrue(getCTargetViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertTrue(getCTargetViewer().getExpandedState(model.findElement("3.2"))); //$NON-NLS-1$
+		assertTrue(getCTargetViewer().getExpandedState(model.findElement("3.3"))); //$NON-NLS-1$
 		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
 	}
 

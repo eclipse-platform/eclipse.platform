@@ -57,7 +57,7 @@ public class TableRenderingCellModifier implements ICellModifier {
 				return false;
 			}
 
-			if (fRendering.getMemoryBlock().supportsValueModification() == false) {
+			if (!fRendering.getMemoryBlock().supportsValueModification()) {
 				return false;
 			}
 
