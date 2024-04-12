@@ -76,6 +76,7 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 	public CharsetDeltaJob(Workspace workspace) {
 		super(Messages.resources_charsetBroadcasting);
 		this.workspace = workspace;
+		setRule(workspace.getRoot()); // make sure workspace.prepareOperation() does not block
 	}
 
 	private void addToQueue(ICharsetListenerFilter filter) {
@@ -237,10 +238,10 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 
 	public void shutdown() {
 		try {
-			// try to prevent execution of this job to avoid prevent "already shutdown.":
+			// try to prevent execution of this job to avoid "already shutdown.":
 			cancel();
 			// if job is already running wait for it to finish:
-			join();
+			join(3000, null);
 		} catch (InterruptedException e) {
 			// ignore
 		}
