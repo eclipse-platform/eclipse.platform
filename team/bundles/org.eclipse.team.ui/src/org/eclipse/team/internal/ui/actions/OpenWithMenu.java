@@ -88,7 +88,7 @@ public class OpenWithMenu extends ContributionItem {
 	/*
 	 * Compares the labels from two IEditorDescriptor objects
 	 */
-	private static final Comparator<IEditorDescriptor> comparer = new Comparator<IEditorDescriptor>() {
+	private static final Comparator<IEditorDescriptor> comparer = new Comparator<>() {
 		private final Collator collator = Collator.getInstance();
 
 		@Override

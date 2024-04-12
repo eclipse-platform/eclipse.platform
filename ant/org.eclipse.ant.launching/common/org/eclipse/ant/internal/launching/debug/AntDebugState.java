@@ -36,9 +36,9 @@ public class AntDebugState {
 
 	private final IDebugBuildLogger fLogger;
 	@SuppressWarnings("unused")
-	private final Stack<Task> fTasks = new Stack<Task>();
+	private final Stack<Task> fTasks = new Stack<>();
 	@SuppressWarnings("unused")
-	private final Map<Task, Object> fTaskToProxies = new HashMap<Task, Object>();
+	private final Map<Task, Object> fTaskToProxies = new HashMap<>();
 	private Task fCurrentTask;
 	private Task fStepOverTask;
 	private Task fStepIntoTask;
@@ -51,9 +51,9 @@ public class AntDebugState {
 	private Map<Project, Vector<?>> fProjectToTargetNames = null;
 	private Map<Project, Map<Target, Vector<Target>>> fProjectToMapOfTargetToBuildSequence = null;
 	@SuppressWarnings("unused")
-	private final Stack<Target> fTargetsToExecute = new Stack<Target>();
+	private final Stack<Target> fTargetsToExecute = new Stack<>();
 	@SuppressWarnings("unused")
-	private final Stack<Target> fTargetsExecuting = new Stack<Target>();
+	private final Stack<Target> fTargetsExecuting = new Stack<>();
 
 	private boolean fConsiderTargetBreakpoints = false;
 	private boolean fShouldSuspend;
@@ -67,8 +67,8 @@ public class AntDebugState {
 
 	@SuppressWarnings("unused")
 	public void buildStarted() {
-		fProjectToTargetNames = new HashMap<Project, Vector<?>>();
-		fProjectToMapOfTargetToBuildSequence = new HashMap<Project, Map<Target, Vector<Target>>>();
+		fProjectToTargetNames = new HashMap<>();
+		fProjectToMapOfTargetToBuildSequence = new HashMap<>();
 	}
 
 	/**
@@ -307,7 +307,7 @@ public class AntDebugState {
 			if (ref != null) {
 				fProjectToTargetNames.put(eventProject, (Vector<?>) ref);
 				@SuppressWarnings("unused")
-				HashMap<Target, Vector<Target>> targetToBuildSequence = new HashMap<Target, Vector<Target>>();
+				HashMap<Target, Vector<Target>> targetToBuildSequence = new HashMap<>();
 				setTargetToExecute(initializeBuildSequenceInformation(event, targetToBuildSequence));
 				fProjectToMapOfTargetToBuildSequence.put(eventProject, targetToBuildSequence);
 			}
