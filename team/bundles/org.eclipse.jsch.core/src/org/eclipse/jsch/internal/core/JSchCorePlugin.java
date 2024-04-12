@@ -240,12 +240,12 @@ public class JSchCorePlugin extends Plugin{
   @Override
   public void start(BundleContext context) throws Exception{
     super.start(context);
-    tracker=new ServiceTracker<Object, Object>(getBundle().getBundleContext(),
+    tracker=new ServiceTracker<>(getBundle().getBundleContext(),
         IProxyService.class.getName(), null);
     tracker.open();
     jschService=getBundle().getBundleContext().registerService(
         IJSchService.class.getName(), JSchProvider.getInstance(),
-        new Hashtable<String, Object>());
+        new Hashtable<>());
   }
 
   @Override

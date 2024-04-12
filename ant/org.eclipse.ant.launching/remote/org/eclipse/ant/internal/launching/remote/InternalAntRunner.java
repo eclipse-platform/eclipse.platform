@@ -115,7 +115,7 @@ public class InternalAntRunner {
 	private boolean scriptExecuted = false;
 
 	@SuppressWarnings("unused")
-	private final List<String> propertyFiles = new ArrayList<String>();
+	private final List<String> propertyFiles = new ArrayList<>();
 
 	/**
 	 * The Ant InputHandler class. There may be only one input handler.
@@ -160,7 +160,7 @@ public class InternalAntRunner {
 		// We could be using Arrays.asList() here, but it does not specify
 		// what kind of list it will return. We need a list that
 		// implements the method List.remove(Object) and ArrayList does.
-		ArrayList<String> result = new ArrayList<String>(args.length);
+		ArrayList<String> result = new ArrayList<>(args.length);
 		for (String arg : args) {
 			result.add(arg);
 		}
@@ -262,9 +262,9 @@ public class InternalAntRunner {
 		Target currentTarget;
 		// split the targets in top-level and sub-targets depending
 		// on the presence of a description
-		List<String> topNames = new ArrayList<String>();
-		List<String> topDescriptions = new ArrayList<String>();
-		List<String> subNames = new ArrayList<String>();
+		List<String> topNames = new ArrayList<>();
+		List<String> topDescriptions = new ArrayList<>();
+		List<String> subNames = new ArrayList<>();
 
 		while (ptargets.hasMoreElements()) {
 			currentTarget = ptargets.nextElement();
@@ -287,13 +287,13 @@ public class InternalAntRunner {
 
 		String defaultTargetName = project.getDefaultTarget();
 		if (defaultTargetName != null && !IAntCoreConstants.EMPTY_STRING.equals(defaultTargetName)) { // shouldn't need to check but...
-			List<String> defaultName = new ArrayList<String>(1);
+			List<String> defaultName = new ArrayList<>(1);
 			List<String> defaultDesc = null;
 			defaultName.add(defaultTargetName);
 
 			int indexOfDefDesc = topNames.indexOf(defaultTargetName);
 			if (indexOfDefDesc >= 0) {
-				defaultDesc = new ArrayList<String>(1);
+				defaultDesc = new ArrayList<>(1);
 				defaultDesc.add(topDescriptions.get(indexOfDefDesc));
 			}
 			printTargets(project, defaultName, defaultDesc, RemoteAntMessages.getString("InternalAntRunner.Default_target__3"), maxLength); //$NON-NLS-1$
@@ -799,7 +799,7 @@ public class InternalAntRunner {
 				throw new BuildException(RemoteAntMessages.getString("InternalAntRunner.You_must_specify_a_classname_when_using_the_-listener_argument_1")); //$NON-NLS-1$
 			}
 			if (buildListeners == null) {
-				buildListeners = new ArrayList<String>(1);
+				buildListeners = new ArrayList<>(1);
 			}
 			buildListeners.add(arg);
 			arg = getArgument(commands, "-listener"); //$NON-NLS-1$
@@ -958,7 +958,7 @@ public class InternalAntRunner {
 		String arg = getArgument(commands, "-eclipseTask"); //$NON-NLS-1$
 		while (arg != null) {
 			if (eclipseSpecifiedTasks == null) {
-				eclipseSpecifiedTasks = new HashMap<String, String>();
+				eclipseSpecifiedTasks = new HashMap<>();
 			}
 			int index = arg.indexOf(',');
 			if (index != -1) {
@@ -972,7 +972,7 @@ public class InternalAntRunner {
 		arg = getArgument(commands, "-eclipseType"); //$NON-NLS-1$
 		while (arg != null) {
 			if (eclipseSpecifiedTypes == null) {
-				eclipseSpecifiedTypes = new HashMap<String, String>();
+				eclipseSpecifiedTypes = new HashMap<>();
 			}
 			int index = arg.indexOf(',');
 			if (index != -1) {
@@ -1022,7 +1022,7 @@ public class InternalAntRunner {
 	@SuppressWarnings("unused")
 	private void processTargets(List<String> commands) {
 		if (targets == null) {
-			targets = new Vector<String>(commands.size());
+			targets = new Vector<>(commands.size());
 		}
 		for (String string : commands) {
 			targets.add(string);
@@ -1117,7 +1117,7 @@ public class InternalAntRunner {
 					continue;
 				}
 				if (userProperties == null) {
-					userProperties = new HashMap<String, String>();
+					userProperties = new HashMap<>();
 				}
 				userProperties.put(name, value);
 				commands.remove(args[i]);
@@ -1296,7 +1296,7 @@ public class InternalAntRunner {
 						filename, e.getMessage() });
 			}
 			if (userProperties == null) {
-				userProperties = new HashMap<String, String>();
+				userProperties = new HashMap<>();
 			}
 			Enumeration<?> propertyNames = props.propertyNames();
 			while (propertyNames.hasMoreElements()) {

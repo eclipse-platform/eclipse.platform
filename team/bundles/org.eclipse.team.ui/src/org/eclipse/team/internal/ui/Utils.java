@@ -183,7 +183,7 @@ public class Utils {
 		}
 	}
 
-	public static final Comparator<IResource> resourceComparator = new Comparator<IResource>() {
+	public static final Comparator<IResource> resourceComparator = new Comparator<>() {
 		@Override
 		public boolean equals(Object obj) {
 			return false;
