@@ -183,7 +183,7 @@ public class BreakpointWorkingSetPage extends WizardPage implements IWorkingSetP
 		String errorMessage= null;
 		String newText= fWorkingSetName.getText();
 
-		if (newText.equals(newText.trim()) == false) {
+		if (!newText.equals(newText.trim())) {
 			errorMessage = DebugUIViewsMessages.BreakpointWorkingSetPage_4;
 		}
 		if (newText.equals(IInternalDebugCoreConstants.EMPTY_STRING)) {
@@ -195,7 +195,7 @@ public class BreakpointWorkingSetPage extends WizardPage implements IWorkingSetP
 			errorMessage= DebugUIViewsMessages.BreakpointWorkingSetPage_5;
 		}
 		fFirstCheck= false;
-		if (errorMessage == null && (fWorkingSet == null || newText.equals(fWorkingSet.getName()) == false)) {
+		if (errorMessage == null && (fWorkingSet == null || !newText.equals(fWorkingSet.getName()))) {
 			for (IWorkingSet workingSet : PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSets()) {
 				if (newText.equals(workingSet.getName())) {
 					errorMessage= DebugUIViewsMessages.BreakpointWorkingSetPage_6;

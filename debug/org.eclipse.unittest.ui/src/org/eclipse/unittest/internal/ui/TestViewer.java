@@ -468,7 +468,7 @@ class TestViewer {
 				viewer.setInput(null);
 				// Set either the failures or the skipped tests filter
 				ViewerFilter filter = fFailuresOnlyFilter;
-				if (ignoredOnly == true) {
+				if (ignoredOnly) {
 					filter = fIgnoredOnlyFilter;
 				}
 				viewer.addFilter(filter);
@@ -678,7 +678,7 @@ class TestViewer {
 				}
 			}
 
-			while (parent != null && !fTestRunSession.equals(parent) && fTreeViewer.getExpandedState(parent) == false) {
+			while (parent != null && !fTestRunSession.equals(parent) && !fTreeViewer.getExpandedState(parent)) {
 				fAutoClose.add(parent); // add to auto-opened elements -> close later if STATUS_OK
 				parent = (ITestSuiteElement) fTreeContentProvider.getParent(parent);
 			}

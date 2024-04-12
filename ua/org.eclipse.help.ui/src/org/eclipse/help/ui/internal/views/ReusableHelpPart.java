@@ -1068,7 +1068,7 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 	}
 
 	private boolean flipPages(HelpPartPage oldPage, HelpPartPage newPage) {
-		if (newPage.canOpen() == false)
+		if (!newPage.canOpen())
 			return false;
 		if (oldPage != null) {
 			oldPage.stop();
@@ -1094,7 +1094,7 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 			mform.refresh();
 		mform.getForm().getBody().layout(true);
 		mform.reflow(true);
-		if (newPage.getId().equals(IHelpUIConstants.HV_BROWSER_PAGE) == false) {
+		if (!newPage.getId().equals(IHelpUIConstants.HV_BROWSER_PAGE)) {
 			if (!history.isBlocked()) {
 				history.addEntry(new HistoryEntry(HistoryEntry.PAGE, newPage
 						.getId(), null));

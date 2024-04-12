@@ -15,6 +15,7 @@
 package org.eclipse.debug.tests.viewer.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -303,14 +304,14 @@ abstract public class StateTests extends AbstractViewerModelTest implements ITes
 
 		// Validate data
 		model.validateData(fViewer, TreePath.EMPTY, true);
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 	}
 
 	@Test
@@ -347,16 +348,16 @@ abstract public class StateTests extends AbstractViewerModelTest implements ITes
 
 		// Validate data
 		model.validateData(fViewer, TreePath.EMPTY, true);
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("1.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("1"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("1.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 	}
 
 	@Test
@@ -401,14 +402,14 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 		// Validate data
 		model.validateData(fViewer, TreePath.EMPTY, true);
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 
 		// Note: in past it was observed sub-optimal coalescing in this test due
 		// to scattered update requests from viewer.
@@ -583,13 +584,13 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 		// Validate data
 		model.validateData(fViewer, TreePath.EMPTY, true);
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
 		// On windows, getExpandedState() may return true for an element with no children:
 		// assertTrue(getCTargetViewer().getExpandedState(model.findElement("3.0 - new")) == false);
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.2")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.3")) == true); //$NON-NLS-1$
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.2"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.3"))); //$NON-NLS-1$
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 	}
 
 	@Test
@@ -614,7 +615,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 //            new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findElement("6") });
 		TreeSelection originalSelection = new TreeSelection(model.findElement("5.1.1")); //$NON-NLS-1$
 		fViewer.setSelection(originalSelection);
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 
 		// Run this test ten times as we've seen intermittent failures related
 		// to timing in it.
@@ -630,14 +631,14 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 			// Validate data
 			model.validateData(fViewer, TreePath.EMPTY, true);
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-			assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+			assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+			assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+			assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+			assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+			assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+			assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+			assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+			assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 
 			// Update the model again
 			model.addElementChild(TreePath.EMPTY, null, 0, new TestElement(model, "1", new TestElement[0])); //$NON-NLS-1$
@@ -650,14 +651,14 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 
 			// Validate data
 			model.validateData(fViewer, TreePath.EMPTY, true);
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-			assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-			assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+			assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+			assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+			assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+			assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+			assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+			assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+			assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+			assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 		}
 	}
 
@@ -692,14 +693,14 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		waitWhile(t -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		// Validate data
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 
 		// Update the model again
 		model.addElementChild(TreePath.EMPTY, null, 0, new TestElement(model, "1", new TestElement[0])); //$NON-NLS-1$
@@ -710,14 +711,14 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		waitWhile(t -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		// Validate data
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 	}
 
 	/**
@@ -821,7 +822,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 
 		// Check to make sure that the state restore didn't change the selection.
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == false); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
 	}
 
 	@Test
@@ -860,7 +861,7 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		waitWhile(t -> !fListener.isFinished(ALL_UPDATES_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 
 		// Check to make sure that the state restore didn't change the selection.
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
 	}
 
 	@Test
@@ -1094,16 +1095,16 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		waitWhile(t -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE), createListenerErrorMessage());
 
 		// Validate data (only select visible elements).
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("1.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("1"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("1.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 	}
 
 	/**
@@ -1162,16 +1163,16 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		waitWhile(t -> !fListener.isFinished(CONTENT_SEQUENCE_COMPLETE | STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 
 		// Validate data
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("1.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("4")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1")) == true); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("6")) == false); //$NON-NLS-1$
-		assertTrue( areTreeSelectionsEqual(originalSelection, (ITreeSelection)fViewer.getSelection()) );
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("1"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("1.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("3.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("4"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5"))); //$NON-NLS-1$
+		assertTrue(getInternalViewer().getExpandedState(model.findElement("5.1"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("6"))); //$NON-NLS-1$
+		assertTrue(areTreeSelectionsEqual(originalSelection, (ITreeSelection) fViewer.getSelection()));
 	}
 
 	@Test
@@ -1233,8 +1234,8 @@ new TreePath[] { model.findElement("5"), model.findElement("5.1"), model.findEle
 		waitWhile(t -> !fListener.isFinished(STATE_RESTORE_COMPLETE), createListenerErrorMessage());
 
 		// Check to make sure that the state restore didn't change the selection.
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("2")) == false); //$NON-NLS-1$
-		assertTrue(getInternalViewer().getExpandedState(model.findElement("3")) == false); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("2"))); //$NON-NLS-1$
+		assertFalse(getInternalViewer().getExpandedState(model.findElement("3"))); //$NON-NLS-1$
 		assertEquals(new TreeSelection(model.findElement("1")), fViewer.getSelection()); //$NON-NLS-1$
 	}
 

@@ -473,7 +473,7 @@ public abstract class WorkingDirectoryBlock extends AbstractLaunchConfigurationT
 			fFileSystemButton.setEnabled(enabled);
 		}
 		// in the case where the 'other' text is selected and we want to enable
-		if(fUseOtherDirButton.getSelection() && enabled == true) {
+		if(fUseOtherDirButton.getSelection() && enabled) {
 			fOtherWorkingText.setEnabled(enabled);
 		}
 	}

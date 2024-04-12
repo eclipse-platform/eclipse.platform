@@ -134,7 +134,7 @@ public class AntModel implements IAntModel {
 
 	private final IPreferenceChangeListener fCoreListener = event -> {
 		if (IAntCoreConstants.PREFERENCE_CLASSPATH_CHANGED.equals(event.getKey())) {
-			if (Boolean.parseBoolean((String) event.getNewValue()) == true) {
+			if (Boolean.parseBoolean((String) event.getNewValue())) {
 				reconcileForPropertyChange(true);
 			}
 		}

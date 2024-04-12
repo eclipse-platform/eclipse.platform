@@ -189,7 +189,7 @@ public class LocalHelpPage extends RootScopePage {
 			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
 				final Object element = event.getElement();
-				if (contentTree.getGrayed(element) == false)
+				if (!contentTree.getGrayed(element))
 					BusyIndicator.showWhile(getShell().getDisplay(),
 							() -> setSubtreeChecked(element, contentTree.getChecked(element), false,
 									contentTree, contentTreeContentProvider));
@@ -238,7 +238,7 @@ public class LocalHelpPage extends RootScopePage {
 			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
 				final Object element = event.getElement();
-				if (criteriaTree.getGrayed(element) == false)
+				if (!criteriaTree.getGrayed(element))
 					BusyIndicator.showWhile(getShell().getDisplay(),
 							() -> setSubtreeChecked(element, criteriaTree.getChecked(element), false,
 									criteriaTree, criteriaTreeContentProvider));

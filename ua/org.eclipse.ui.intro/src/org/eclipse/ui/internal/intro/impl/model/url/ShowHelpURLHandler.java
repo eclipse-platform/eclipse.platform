@@ -39,7 +39,7 @@ public class ShowHelpURLHandler {
 
 		boolean isEmbedded = (embed != null && embed
 			.equals(IntroURL.VALUE_TRUE)) ? true : false;
-		if (isEmbedded == false)
+		if (!isEmbedded)
 			// still false, check the embedTarget. If embedTarget is set, then
 			// we
 			// have embedded by default.

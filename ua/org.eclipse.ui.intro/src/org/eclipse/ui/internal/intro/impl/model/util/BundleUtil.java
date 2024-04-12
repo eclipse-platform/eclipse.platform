@@ -249,7 +249,7 @@ public class BundleUtil {
 			localURL = FileLocator.toFileURL(localURL);
 			String result = localURL.toExternalForm();
 			if (result.startsWith("file:/")) { //$NON-NLS-1$
-				if (result.startsWith("file:///")==false) { //$NON-NLS-1$
+				if (!result.startsWith("file:///")) { //$NON-NLS-1$
 					result = "file:///"+result.substring(6); //$NON-NLS-1$
 				}
 			}

@@ -515,7 +515,7 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	private void handleIncludeStyleInheritence(IntroInclude include,
 			AbstractIntroElement target) {
 
-		if (include.getMergeStyle() == false)
+		if (!include.getMergeStyle())
 			// target styles are not needed. nothing to do.
 			return;
 

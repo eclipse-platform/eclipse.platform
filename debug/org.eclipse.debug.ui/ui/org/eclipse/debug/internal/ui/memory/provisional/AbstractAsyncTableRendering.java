@@ -2374,7 +2374,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 		}
 
 		// do not do anything if already visible
-		if (isVisible() == true) {
+		if (isVisible()) {
 			// super should always be called
 			super.becomesVisible();
 			return;
