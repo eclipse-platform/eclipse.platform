@@ -46,12 +46,12 @@ public class TerminateAction {
 	@CanExecute
 	public boolean isEnabled() {
 		Set<ILaunchObject> elements = view.get();
-		return !elements.isEmpty() && elements.stream().allMatch(m -> m.canTerminate());
+		return !elements.isEmpty() && elements.stream().allMatch(ILaunchObject::canTerminate);
 	}
 
 	@Execute
 	public void run() {
-		view.get().forEach(e -> e.terminate());
+		view.get().forEach(ILaunchObject::terminate);
 	}
 
 }

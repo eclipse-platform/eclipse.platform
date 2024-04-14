@@ -42,7 +42,7 @@ public class LaunchViewModel implements ILaunchModel {
 	private static LaunchViewModel service;
 
 	private final List<Runnable> updateListeners = new ArrayList<>();
-	private final Runnable providerUpdateListener = () -> fireUpdate();
+	private final Runnable providerUpdateListener = this::fireUpdate;
 
 	public Set<ILaunchObjectProvider> getProviders() {
 		return providers;
@@ -53,7 +53,7 @@ public class LaunchViewModel implements ILaunchModel {
 		LaunchObjectContainerModel root = new LaunchObjectContainerModel();
 
 		// find all objects from services, sorted by prio (highest prio first).
-		Set<LaunchObjectModel> allObjects = providers.stream().map(p -> p.getLaunchObjects()).flatMap(o -> o.stream().map(LaunchObjectModel::new)).collect(Collectors.toCollection(TreeSet::new));
+		Set<LaunchObjectModel> allObjects = providers.stream().map(ILaunchObjectProvider::getLaunchObjects).flatMap(o -> o.stream().map(LaunchObjectModel::new)).collect(Collectors.toCollection(TreeSet::new));
 
 		// create favorite container
 		LaunchObjectFavoriteContainerModel favorites = new LaunchObjectFavoriteContainerModel();

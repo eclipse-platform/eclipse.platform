@@ -118,7 +118,7 @@ public class LaunchViewImpl implements Supplier<Set<ILaunchObject>> {
 		tree.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		createMenus(part);
 
-		tree.getViewer().addDoubleClickListener((e) -> {
+		tree.getViewer().addDoubleClickListener(e -> {
 			ITreeSelection selection = tree.getViewer().getStructuredSelection();
 			if (selection.isEmpty()) {
 				return;

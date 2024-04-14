@@ -234,9 +234,7 @@ public class EventsView extends TableWithTotalView {
 			}
 		};
 		resetAction.setToolTipText("Reset all event statistics"); //$NON-NLS-1$
-		resetAction.setImageDescriptor(ImageDescriptor.createFromURLSupplier(true, () -> {
-			return EventsView.class.getResource("/icons/clear.gif"); //$NON-NLS-1$
-		}));
+		resetAction.setImageDescriptor(ImageDescriptor.createFromURLSupplier(true, () -> EventsView.class.getResource("/icons/clear.gif")));
 		// Add copy selection action
 
 		IActionBars bars = getViewSite().getActionBars();

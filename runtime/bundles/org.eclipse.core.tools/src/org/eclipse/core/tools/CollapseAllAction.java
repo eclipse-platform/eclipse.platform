@@ -29,9 +29,7 @@ public class CollapseAllAction extends Action {
 		super(label);
 		this.setToolTipText(label);
 		this.viewer = viewer;
-		this.setImageDescriptor(ImageDescriptor.createFromURLSupplier(true, () -> {
-			return CollapseAllAction.class.getResource("/icons/collapseall.gif"); //$NON-NLS-1$
-		}));
+		this.setImageDescriptor(ImageDescriptor.createFromURLSupplier(true, () -> CollapseAllAction.class.getResource("/icons/collapseall.gif")));
 	}
 
 	@Override

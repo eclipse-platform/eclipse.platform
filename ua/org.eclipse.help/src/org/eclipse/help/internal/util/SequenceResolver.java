@@ -100,7 +100,7 @@ public class SequenceResolver<T> {
 	 */
 	private void prepareDataStructures(List<T> primary, List<List<T>> secondary) {
 		primaryList = new ListWithIterator<>(primary);
-		secondaryLists = secondary.stream().map(list -> new ListWithIterator<>(list)).collect(toList());
+		secondaryLists = secondary.stream().map(ListWithIterator::new).collect(toList());
 		processedItems = new HashSet<>();
 	}
 

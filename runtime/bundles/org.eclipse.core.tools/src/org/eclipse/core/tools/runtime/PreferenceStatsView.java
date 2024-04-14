@@ -64,9 +64,7 @@ public class PreferenceStatsView extends SpyView {
 		UpdateAction() {
 			super("Update view"); //$NON-NLS-1$
 			this.setToolTipText("Update"); //$NON-NLS-1$
-			this.setImageDescriptor(ImageDescriptor.createFromURLSupplier(true, () -> {
-				return PreferenceStatsView.class.getResource("/icons/refresh.gif"); //$NON-NLS-1$
-			}));
+			this.setImageDescriptor(ImageDescriptor.createFromURLSupplier(true, () -> PreferenceStatsView.class.getResource("/icons/refresh.gif")));
 		}
 
 		@Override

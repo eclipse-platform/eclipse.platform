@@ -96,7 +96,7 @@ public class MessageRegistryTest {
 		TestObject o = ContextInjectionFactory.make(TestObject.class, this.context);
 
 		TestLocalizableObject control = new TestLocalizableObject();
-		o.registry.register(control::setLocalizableValue, (m) -> m.message);
+		o.registry.register(control::setLocalizableValue, m -> m.message);
 
 		// test value is set
 		assertNotNull(control.getLocalizableValue());
