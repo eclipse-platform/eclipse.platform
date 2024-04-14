@@ -280,7 +280,7 @@ public class ApiDocTest {
 		State state = service.getState(false);
 		for (BundleDescription bundle : state.getBundles()) {
 			bundle.getCapabilities(BundleRevision.PACKAGE_NAMESPACE)
-					.forEach((t) -> exportedPackageIds.add((String) t.getAttributes().get("osgi.wiring.package")));
+					.forEach(t -> exportedPackageIds.add((String) t.getAttributes().get("osgi.wiring.package")));
 		}
 
 		TreeSet<String> unexpectedPackageIds = new TreeSet<>(packageIds);

@@ -74,7 +74,7 @@ public class AuthorizationHandler {
 			return true;
 		if (keyringFile == null) {
 			boolean found = ServiceCaller.callOnce(AuthorizationHandler.class, Location.class,
-					Location.CONFIGURATION_FILTER, (configurationLocation) -> {
+					Location.CONFIGURATION_FILTER, configurationLocation -> {
 						File file = new File(configurationLocation.getURL().getPath() + "/org.eclipse.core.runtime"); //$NON-NLS-1$
 						file = new File(file, F_KEYRING);
 						keyringFile = file.getAbsolutePath();

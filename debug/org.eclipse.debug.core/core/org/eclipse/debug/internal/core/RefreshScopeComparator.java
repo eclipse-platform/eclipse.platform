@@ -36,9 +36,9 @@ public class RefreshScopeComparator implements Comparator<String> {
 		}
 	}
 
-	private static final Comparator<IResource> RESOURCE = Comparator.nullsFirst(Comparator.comparing(r -> r.toString()));
+	private static final Comparator<IResource> RESOURCE = Comparator.nullsFirst(Comparator.comparing(IResource::toString));
 	private static final Comparator<IResource[]> ARRAY = Comparator.nullsFirst((IResource[] s1, IResource[] s2) -> Arrays.compare(s1, s2, RESOURCE));
-	private static final Comparator<String> MEMENTO = Comparator.nullsFirst(Comparator.comparing(m -> toResources(m), ARRAY));
+	private static final Comparator<String> MEMENTO = Comparator.nullsFirst(Comparator.comparing(RefreshScopeComparator::toResources, ARRAY));
 
 	@Override
 	public int compare(String o1, String o2) {

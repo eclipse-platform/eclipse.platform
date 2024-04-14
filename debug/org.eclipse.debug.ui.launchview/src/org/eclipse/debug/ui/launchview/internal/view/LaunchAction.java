@@ -65,7 +65,7 @@ public class LaunchAction {
 	@CanExecute
 	public boolean isEnabled() {
 		Set<ILaunchObject> elements = view.get();
-		return !elements.isEmpty() && elements.stream().allMatch((m) -> {
+		return !elements.isEmpty() && elements.stream().allMatch(m -> {
 			try {
 				return m.getType().getDelegates(Collections.singleton(mode.getIdentifier())).length > 0;
 			} catch (CoreException e) {

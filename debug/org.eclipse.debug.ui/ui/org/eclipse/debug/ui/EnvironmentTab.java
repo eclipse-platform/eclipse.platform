@@ -758,7 +758,7 @@ public class EnvironmentTab extends AbstractLaunchConfigurationTab {
 	 */
 	private void handleEnvCopyButtonSelected() {
 		Iterable<?> iterable = () -> environmentTable.getStructuredSelection().iterator();
-		String data = StreamSupport.stream(iterable.spliterator(), false).filter(o -> o instanceof EnvironmentVariable)
+		String data = StreamSupport.stream(iterable.spliterator(), false).filter(EnvironmentVariable.class::isInstance)
 				.map(EnvironmentVariable.class::cast).map(var -> String.format("%s=%s", var.getName(), var.getValue())) //$NON-NLS-1$
 				.collect(Collectors.joining(System.lineSeparator()));
 
