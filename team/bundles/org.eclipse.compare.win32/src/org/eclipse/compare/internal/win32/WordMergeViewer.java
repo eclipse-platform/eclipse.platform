@@ -51,8 +51,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -83,12 +81,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	public WordMergeViewer(Composite parent, CompareConfiguration configuration) {
 		super(configuration);
 		createContentArea(parent);
-		getControl().addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				handleDispose();
-			}
-		});
+		getControl().addDisposeListener(event -> handleDispose());
 		getControl().setData(CompareUI.COMPARE_VIEWER_TITLE, CompareWin32Messages.WordMergeViewer_1);
 		IToolBarManager toolBarManager = CompareViewerPane.getToolBarManager(parent);
 		if (toolBarManager != null) {
@@ -272,35 +265,30 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	
 	@Override
 	public void flush(IProgressMonitor monitor) {
-		Display.getDefault().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				if (isReallyDirty())
-					saveDocument();
+		Display.getDefault().syncExec(() -> {
+			if (isReallyDirty()) {
+				saveDocument();
 			}
 		});
 	}
 
 
 	protected void toggleInplaceExternalState() {
-		BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
-			@Override
-			public void run() {
-				try {
-					if (isReallyDirty()) {
-						// If the file is dirty, save the result file before switching so our changes are not lost
-						try {
-							File result = getResultFile();
-							wordArea.saveAsDocument(result.getAbsolutePath());
-						} catch (IOException e) {
-							throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, e.getMessage(), e));
-						}
+		BusyIndicator.showWhile(Display.getDefault(), () -> {
+			try {
+				if (isReallyDirty()) {
+					// If the file is dirty, save the result file before switching so our changes are not lost
+					try {
+						File result = getResultFile();
+						wordArea.saveAsDocument(result.getAbsolutePath());
+					} catch (IOException e) {
+						throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, e.getMessage(), e));
 					}
-					openComparison(!wordArea.isInplace());
-				} catch (CoreException e) {
-					ErrorDialog.openError(WordMergeViewer.this.composite.getShell(), null, null, e.getStatus());
-					Activator.log(e);
 				}
+				openComparison(!wordArea.isInplace());
+			} catch (CoreException e) {
+				ErrorDialog.openError(WordMergeViewer.this.composite.getShell(), null, null, e.getStatus());
+				Activator.log(e);
 			}
 		});
 	}
@@ -468,13 +456,10 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	}
 
 	private void handleDispose() {
-		BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
-			@Override
-			public void run() {
-				wordArea.dispose();
-				formToolkit.dispose();
-				reset();
-			}
+		BusyIndicator.showWhile(Display.getDefault(), () -> {
+			wordArea.dispose();
+			formToolkit.dispose();
+			reset();
 		});
 	}
 	

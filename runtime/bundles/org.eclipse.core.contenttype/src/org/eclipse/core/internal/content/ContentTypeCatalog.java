@@ -708,21 +708,18 @@ public final class ContentTypeCatalog {
 		for (ContentType root : source) {
 			// From a given content type, check if it matches, and
 			// include any children that match as well.
-			internalAccept(new ContentTypeVisitor() {
-				@Override
-				public int visit(ContentType type) {
-					if (type != root && type.hasBuiltInAssociations())
-						// this content type has built-in associations - visit it later as root
-						return RETURN;
-					if (type == root && !type.hasFileSpec(context, fileSpecText, fileSpecType))
-						// it is the root and does not match the file name - do not add it nor look into its children
-						return RETURN;
-					// either the content type is the root and matches the file name or
-					// is a sub content type and does not have built-in files specs
-					if (!existing.contains(type))
-						destination.add(type);
-					return CONTINUE;
-				}
+			internalAccept(contentType -> {
+				if (contentType != root && contentType.hasBuiltInAssociations())
+					// this content type has built-in associations - visit it later as root
+					return ContentTypeVisitor.RETURN;
+				if (contentType == root && !contentType.hasFileSpec(context, fileSpecText, fileSpecType))
+					// it is the root and does not match the file name - do not add it nor look into its children
+					return ContentTypeVisitor.RETURN;
+				// either the content type is the root and matches the file name or
+				// is a sub content type and does not have built-in files specs
+				if (!existing.contains(contentType))
+					destination.add(contentType);
+				return ContentTypeVisitor.CONTINUE;
 			}, root);
 		}
 		return destination;

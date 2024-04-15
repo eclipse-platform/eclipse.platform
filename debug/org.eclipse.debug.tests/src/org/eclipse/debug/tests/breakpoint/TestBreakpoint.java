@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IBreakpoint;
 
@@ -43,14 +42,11 @@ public class TestBreakpoint extends Breakpoint {
 
 	TestBreakpoint(String text, final String markerType) {
 		final IResource resource = ResourcesPlugin.getWorkspace().getRoot();
-		IWorkspaceRunnable wr = new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				// create the marker
-				setMarker(resource.createMarker(markerType));
-				ensureMarker().setAttribute(ID, getModelIdentifier());
-				ensureMarker().setAttribute(TEXT_ATTRIBUTE, text);
-			}
+		IWorkspaceRunnable wr = monitor -> {
+			// create the marker
+			setMarker(resource.createMarker(markerType));
+			ensureMarker().setAttribute(ID, getModelIdentifier());
+			ensureMarker().setAttribute(TEXT_ATTRIBUTE, text);
 		};
 		try {
 			ResourcesPlugin.getWorkspace().run(wr, null);

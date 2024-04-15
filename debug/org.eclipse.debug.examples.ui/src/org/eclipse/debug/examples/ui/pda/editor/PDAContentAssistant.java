@@ -16,10 +16,8 @@ package org.eclipse.debug.examples.ui.pda.editor;
 
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.swt.widgets.Shell;
 
 public class PDAContentAssistant extends ContentAssistant {
 
@@ -36,11 +34,6 @@ public class PDAContentAssistant extends ContentAssistant {
 	}
 
 	private IInformationControlCreator getInformationControlCreator() {
-		return new IInformationControlCreator() {
-			@Override
-			public IInformationControl createInformationControl(Shell parent) {
-				return new DefaultInformationControl(parent);
-			}
-		};
+		return parent -> new DefaultInformationControl(parent);
 	}
 }

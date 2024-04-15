@@ -14,7 +14,6 @@
 package org.eclipse.core.internal.expressions.tests;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.eclipse.core.expressions.ICountable;
 import org.eclipse.core.expressions.IIterable;
@@ -26,21 +25,12 @@ public class CollectionAdapterFactory implements IAdapterFactory {
 
 	@Override
 	public <T> T getAdapter(final Object adaptableObject, Class<T> adapterType) {
-		if (adapterType.equals(IIterable.class) && adaptableObject instanceof ExpressionTests.CollectionWrapper) {
-			return adapterType.cast(new IIterable<String>() {
-				@Override
-				public Iterator<String> iterator() {
-					return ((ExpressionTests.CollectionWrapper)adaptableObject).collection.iterator();
-				}
-			});
-		}
-		if (adapterType.equals(ICountable.class) && adaptableObject instanceof ExpressionTests.CollectionWrapper) {
-			return adapterType.cast(new ICountable() {
-				@Override
-				public int count() {
-					return ((ExpressionTests.CollectionWrapper)adaptableObject).collection.size();
-				}
-			});
+		if (adaptableObject instanceof ExpressionTests.CollectionWrapper wrapper) {
+			if (adapterType.equals(IIterable.class)) {
+				return adapterType.cast(((IIterable<String>) () -> wrapper.collection.iterator()));
+			} else if (adapterType.equals(ICountable.class)) {
+				return adapterType.cast((ICountable) () -> wrapper.collection.size());
+			}
 		}
 		return null;
 	}

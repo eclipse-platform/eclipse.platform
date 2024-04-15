@@ -497,7 +497,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				return null;
 			final Viewer v = CompareUI.findStructureViewer(oldViewer, input, parent, configuration);
 			if (v != null) {
-				v.getControl().addDisposeListener(e -> v.removeSelectionChangedListener(InternalOutlineViewerCreator.this));
+				v.getControl().addDisposeListener(event -> v.removeSelectionChangedListener(InternalOutlineViewerCreator.this));
 				v.addSelectionChangedListener(this);
 			}
 
@@ -2059,7 +2059,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		// 1st row
 		if (fMarginWidth > 0) {
 			fAncestorCanvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
-			fAncestorCanvas.addPaintListener(e -> paintSides(e.gc, fAncestor, fAncestorCanvas, false));
+			fAncestorCanvas.addPaintListener(event -> paintSides(event.gc, fAncestor, fAncestorCanvas, false));
 			fAncestorCanvas.addMouseListener(
 				new MouseAdapter() {
 					@Override
@@ -2088,7 +2088,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		// 2nd row
 		if (fMarginWidth > 0) {
 			fLeftCanvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
-			fLeftCanvas.addPaintListener(e -> paintSides(e.gc, fLeft, fLeftCanvas, false));
+			fLeftCanvas.addPaintListener(event -> paintSides(event.gc, fLeft, fLeftCanvas, false));
 			fLeftCanvas.addMouseListener(
 				new MouseAdapter() {
 					@Override
@@ -2144,7 +2144,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		if (fMarginWidth > 0) {
 			fRightCanvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
-			fRightCanvas.addPaintListener(e -> paintSides(e.gc, fRight, fRightCanvas, fSynchronizedScrolling));
+			fRightCanvas.addPaintListener(event -> paintSides(event.gc, fRight, fRightCanvas, fSynchronizedScrolling));
 			fRightCanvas.addMouseListener(
 				new MouseAdapter() {
 					@Override
@@ -2163,17 +2163,16 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		fVScrollBar.setIncrement(1);
 		fVScrollBar.setVisible(true);
 		fVScrollBar.addListener(SWT.Selection,
-			e -> {
-				int vpos= ((ScrollBar) e.widget).getSelection();
+			event -> {
+				int vpos= ((ScrollBar) event.widget).getSelection();
 				synchronizedScrollVertical(vpos);
 			}
 		);
 
 		fBirdsEyeCanvas = new Canvas(composite, SWT.DOUBLE_BUFFERED);
-		fBirdsEyeCanvas.addPaintListener(e -> {
+		fBirdsEyeCanvas.addPaintListener(event -> {
 			updateVScrollBar(); // Update scroll bar here as initially viewport height is wrong
-			paintBirdsEyeView((Canvas) e.widget, e.gc);
-
+			paintBirdsEyeView((Canvas) event.widget, event.gc);
 		});
 
 		fBirdsEyeCanvas.addMouseListener(
@@ -2455,7 +2454,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 			final Canvas canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);
 
-			canvas.addPaintListener(e -> paintCenter((Canvas) e.widget, e.gc));
+			canvas.addPaintListener(event -> paintCenter((Canvas) event.widget, event.gc));
 			new HoverResizer(canvas, HORIZONTAL);
 
 			Cursor normalCursor= canvas.getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
@@ -2641,9 +2640,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		if (!fConfirmSave)
 			viewer.hideSaveAction();
 
-		te.addPaintListener(
-			e -> paint(e, viewer)
-		);
+		te.addPaintListener(event -> paint(event, viewer));
 		te.addKeyListener(
 			new KeyAdapter() {
 				@Override
