@@ -14,6 +14,7 @@
 package org.eclipse.compare.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -266,6 +267,13 @@ public class PatchBuilderTest {
 		assertThat(actual).isNotSameAs(lines).containsExactly(lines);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
+	}
+
+	@Test
+	public void testReadNotValidPatch() throws CoreException, IOException {
+		IStorage patch = new StringStorage("not_a_patch.txt");
+		IFilePatch[] filePatches = ApplyPatchOperation.parsePatch(patch);
+		assertArrayEquals(new IFilePatch[0], filePatches);
 	}
 
 	private void assertHunkEquals(Hunk h1, Hunk h2) {
