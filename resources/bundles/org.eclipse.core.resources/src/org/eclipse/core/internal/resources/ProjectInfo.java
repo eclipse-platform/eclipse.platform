@@ -23,17 +23,17 @@ import org.eclipse.core.runtime.content.IContentTypeMatcher;
 
 public class ProjectInfo extends ResourceInfo {
 
-	/** The description of this object */
-	protected ProjectDescription description;
+	/** The description of this object, synchronized access */
+	private ProjectDescription description;
 
-	/** The list of natures for this project */
-	protected HashMap<String, IProjectNature> natures;
+	/** The list of natures for this project, synchronized access */
+	private HashMap<String, IProjectNature> natures;
 
 	/** The property store for this resource (used only by the compatibility fragment) */
-	protected Object propertyStore;
+	private volatile Object propertyStore;
 
 	/** The content type matcher for this project. */
-	protected IContentTypeMatcher matcher;
+	private volatile IContentTypeMatcher matcher;
 
 	/**
 	 * Discards stale natures on this project after project description
@@ -41,6 +41,10 @@ public class ProjectInfo extends ResourceInfo {
 	 */
 	public synchronized void discardNatures() {
 		natures = null;
+	}
+
+	synchronized void discardDescription() {
+		description = null;
 	}
 
 	/**
@@ -68,7 +72,7 @@ public class ProjectInfo extends ResourceInfo {
 	/**
 	 * Returns the description associated with this info.  The return value may be null.
 	 */
-	public ProjectDescription getDescription() {
+	public synchronized ProjectDescription getDescription() {
 		return description;
 	}
 
@@ -79,8 +83,7 @@ public class ProjectInfo extends ResourceInfo {
 		return matcher;
 	}
 
-	public IProjectNature getNature(String natureId) {
-		// thread safety: (Concurrency001)
+	public synchronized IProjectNature getNature(String natureId) {
 		HashMap<String, IProjectNature> temp = natures;
 		if (temp == null)
 			return null;
@@ -98,7 +101,7 @@ public class ProjectInfo extends ResourceInfo {
 	/**
 	 * Sets the description associated with this info.  The value may be null.
 	 */
-	public void setDescription(ProjectDescription value) {
+	public synchronized void setDescription(ProjectDescription value) {
 		if (description != null) {
 			//if we already have a description, assign the new
 			//build spec on top of the old one to ensure we maintain

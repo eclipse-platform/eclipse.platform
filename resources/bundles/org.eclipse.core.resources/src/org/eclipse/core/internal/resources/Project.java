@@ -775,8 +775,8 @@ public class Project extends Container implements IProject {
 		projectDesc.setVariableDescriptions(internalDesc.getVariables());
 
 		//clear properties, markers, and description for the new project, because they shouldn't be copied.
-		info.description = null;
-		info.natures = null;
+		info.discardDescription();
+		info.discardNatures();
 		info.setMarkers(null);
 		info.clearSessionProperties();
 	}
