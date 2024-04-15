@@ -942,12 +942,9 @@ public class ConsoleDocumentAdapterTests extends AbstractDebugTest {
 	@Test
 	public void testInvalidInvocations() {
 		final AtomicInteger expectedErrors = new AtomicInteger(0);
-		final ILogListener logListener = new ILogListener() {
-			@Override
-			public void logging(IStatus status, String plugin) {
-				if (status.matches(IStatus.ERROR)) {
-					expectedErrors.decrementAndGet();
-				}
+		final ILogListener logListener = (status, plugin) -> {
+			if (status.matches(IStatus.ERROR)) {
+				expectedErrors.decrementAndGet();
 			}
 		};
 		try {

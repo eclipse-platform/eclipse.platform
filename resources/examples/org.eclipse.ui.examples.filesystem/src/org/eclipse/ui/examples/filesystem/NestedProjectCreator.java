@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
@@ -70,12 +69,7 @@ public class NestedProjectCreator {
 
 	private void doCreateNestedProjects(final IProject[] projects, Shell shell) throws InvocationTargetException, InterruptedException {
 		final Object[] result = new Object[1];
-		context.run(true, true, new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) {
-				result[0] = findNestedProjects(projects);
-			}
-		});
+		context.run(true, true, monitor -> result[0] = findNestedProjects(projects));
 		if (result[0] == null)
 			return;
 		IProjectDescription[] rawDescriptions = (IProjectDescription[]) result[0];

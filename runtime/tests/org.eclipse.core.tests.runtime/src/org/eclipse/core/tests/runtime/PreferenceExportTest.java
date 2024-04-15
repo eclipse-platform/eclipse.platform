@@ -103,12 +103,7 @@ public class PreferenceExportTest {
 		//add a property change listener that asserts key identity
 		Plugin testPlugin = RuntimeTestsPlugin.getPlugin();
 		Preferences prefs = testPlugin.getPluginPreferences();
-		Preferences.IPropertyChangeListener listener = new Preferences.IPropertyChangeListener() {
-			@Override
-			public void propertyChange(Preferences.PropertyChangeEvent event) {
-				assertSame("1.0", event.getProperty(), key);
-			}
-		};
+		Preferences.IPropertyChangeListener listener = event -> assertSame("1.0", event.getProperty(), key);
 		prefs.addPropertyChangeListener(listener);
 		try {
 			//add a preference on the runtime plugin

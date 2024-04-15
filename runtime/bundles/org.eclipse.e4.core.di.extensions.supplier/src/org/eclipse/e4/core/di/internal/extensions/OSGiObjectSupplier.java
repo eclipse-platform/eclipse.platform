@@ -27,7 +27,6 @@ import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;
 import org.eclipse.e4.core.di.suppliers.IRequestor;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.SynchronousBundleListener;
@@ -102,14 +101,11 @@ public class OSGiObjectSupplier extends ExtendedObjectSupplier implements EventH
 	private void track(final Bundle bundle, final IRequestor requestor) {
 		// A _synchronous_ BundleListener asserts that the BC is un-injected,
 		// _before_ it becomes invalid (state-wise).
-		BundleListener listener = new SynchronousBundleListener() {
-			@Override
-			public void bundleChanged(BundleEvent event) {
-				if (event.getBundle().equals(bundle)) {
-					if (requestor.isValid()) {
-						requestor.resolveArguments(false);
-						requestor.execute();
-					}
+		SynchronousBundleListener listener = event -> {
+			if (event.getBundle().equals(bundle)) {
+				if (requestor.isValid()) {
+					requestor.resolveArguments(false);
+					requestor.execute();
 				}
 			}
 		};

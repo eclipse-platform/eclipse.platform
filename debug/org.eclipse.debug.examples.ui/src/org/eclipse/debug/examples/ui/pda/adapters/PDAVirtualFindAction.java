@@ -219,28 +219,23 @@ public class PDAVirtualFindAction extends Action implements IUpdate {
 		VirtualTreeModelViewer virtualViewer = initVirtualViewer(fClientViewer, listener);
 
 		ProgressMonitorDialog dialog = new TimeTriggeredProgressMonitorDialog(fClientViewer.getControl().getShell(), 500);
-		final IProgressMonitor monitor = dialog.getProgressMonitor();
 		dialog.setCancelable(true);
 
 		try {
-			dialog.run(
-				true, true,
-				new IRunnableWithProgress() {
-					@Override
-					public void run(final IProgressMonitor m) throws InvocationTargetException, InterruptedException {
-						synchronized(listener) {
-							listener.fProgressMonitor = m;
-							listener.fProgressMonitor.beginTask(DebugUIPlugin.removeAccelerators(getText()), listener.fRemainingUpdatesCount);
-						}
+			IRunnableWithProgress progressRedirecter = monitor -> {
+				synchronized (listener) {
+					listener.fProgressMonitor = monitor;
+					listener.fProgressMonitor.beginTask(DebugUIPlugin.removeAccelerators(getText()), listener.fRemainingUpdatesCount);
+				}
 
-						while ((!listener.fLabelUpdatesComplete || !listener.fViewerUpdatesComplete) && !listener.fProgressMonitor.isCanceled()) {
-							Thread.sleep(1);
-						}
-						synchronized(listener) {
-							listener.fProgressMonitor = null;
-						}
-					}
-				});
+				while ((!listener.fLabelUpdatesComplete || !listener.fViewerUpdatesComplete) && !listener.fProgressMonitor.isCanceled()) {
+					Thread.sleep(1);
+				}
+				synchronized (listener) {
+					listener.fProgressMonitor = null;
+				}
+			};
+			dialog.run(true, true, progressRedirecter);
 		} catch (InvocationTargetException e) {
 			DebugUIPlugin.log(e);
 			return;
@@ -249,7 +244,7 @@ public class PDAVirtualFindAction extends Action implements IUpdate {
 		}
 
 		VirtualItem root = virtualViewer.getTree();
-		if (!monitor.isCanceled()) {
+		if (!dialog.getProgressMonitor().isCanceled()) {
 			List<VirtualItem> list = new ArrayList<>();
 			collectAllChildren(root, list);
 			FindLabelProvider labelProvider = new FindLabelProvider(virtualViewer, list);
@@ -266,16 +261,14 @@ public class PDAVirtualFindAction extends Action implements IUpdate {
 
 	private int calcUpdatesCount(IModelDelta stateDelta) {
 		final int[] count = new int[] {0};
-		stateDelta.accept( new IModelDeltaVisitor() {
-			@Override
-			public boolean visit(IModelDelta delta, int depth) {
-				if ((delta.getFlags() & IModelDelta.EXPAND) != 0) {
-					count[0] += delta.getChildCount();
-					return true;
-				}
-				return false;
+		IModelDeltaVisitor deltaCounter = (delta, depth) -> {
+			if ((delta.getFlags() & IModelDelta.EXPAND) != 0) {
+				count[0] += delta.getChildCount();
+				return true;
 			}
-		});
+			return false;
+		};
+		stateDelta.accept(deltaCounter);
 
 		// Double it to account for separate element and label update ticks.
 		return count[0] * 2;
