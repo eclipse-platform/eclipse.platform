@@ -556,23 +556,7 @@ public class RenderingsUtil {
 		{
 			// convert string to byte
 			String oneByte = str.substring(i*2, i*2+2);
-
-			Integer number = Integer.valueOf(oneByte, 16);
-			if (number.compareTo(Integer.valueOf(Byte.toString(Byte.MAX_VALUE))) > 0)
-			{
-				int temp = number.intValue();
-				temp = temp - 256;
-
-				String tempStr = Integer.toString(temp);
-
-				Byte myByte = Byte.valueOf(tempStr);
-				bytes[i] = myByte.byteValue();
-			}
-			else
-			{
-				Byte myByte = Byte.valueOf(oneByte, 16);
-				bytes[i] = myByte.byteValue();
-			}
+			bytes[i] = (byte) Integer.parseInt(oneByte, 16);
 		}
 
 		return bytes;
