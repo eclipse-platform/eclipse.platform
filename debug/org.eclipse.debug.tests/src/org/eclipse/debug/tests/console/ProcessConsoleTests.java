@@ -37,6 +37,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
@@ -108,7 +110,18 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 
 		super.tearDown();
 
-		assertThat(loggedErrors).as("logged errors").isEmpty();
+		assertThat(errorsToStrings()).as("logged errors").isEmpty();
+	}
+
+	private Stream<String> errorsToStrings() {
+		return loggedErrors.stream().map(status -> status.toString() + throwableToString(status.getException()));
+	}
+
+	private static String throwableToString(Throwable throwable) {
+		if (throwable == null) {
+			return "";
+		}
+		return System.lineSeparator() + "Stack trace: " + Stream.of(throwable.getStackTrace()).map(Object::toString).collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	/**
