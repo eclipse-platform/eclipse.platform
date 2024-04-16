@@ -4,3 +4,4 @@ Bug 465126 - Comparator errors related to Eclipse-SourceBundle
 Bug 534597 - Unanticipated comparator errors in I20180511-2000
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1184
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1659
+https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1979
