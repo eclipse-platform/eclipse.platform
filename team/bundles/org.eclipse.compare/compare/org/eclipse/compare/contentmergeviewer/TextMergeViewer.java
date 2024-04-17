@@ -5408,27 +5408,30 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	private void updateToolbarLabel() {
 		final String DIFF_COUNT_ID = "DiffCount"; //$NON-NLS-1$
-		ToolBarManager tbm =
-				(ToolBarManager) getToolBarManager(fComposite.getParent());
+		boolean isUpdateNeeded = false;
+		ToolBarManager tbm = (ToolBarManager) getToolBarManager(fComposite.getParent());
 		int differenceCount = fMerger.changesCount();
-		if (tbm != null) {
+		if (tbm != null && tbm.getItems().length > 0) {
 
 			String label = MessageFormat.format(CompareMessages.TextMergeViewer_differences, differenceCount);
-			LabelContributionItem labelContributionItem = new LabelContributionItem(DIFF_COUNT_ID,
-					label);
+			LabelContributionItem labelContributionItem = new LabelContributionItem(DIFF_COUNT_ID, label);
 
 			if (tbm.find(DIFF_COUNT_ID) != null) {
 				tbm.replaceItem(DIFF_COUNT_ID, labelContributionItem);
-			} else {
+				isUpdateNeeded = true;
+			} else if (tbm.find("diffLabel") != null) { //$NON-NLS-1$
 				tbm.appendToGroup("diffLabel", labelContributionItem); //$NON-NLS-1$
+				isUpdateNeeded = true;
 			}
-			fComposite.getDisplay().asyncExec(() -> {
-				// relayout in next tick
-				ToolBar control = tbm.getControl();
-				if (control != null && !control.isDisposed()) {
-					tbm.update(true);
-				}
-			});
+			if (isUpdateNeeded) {
+				fComposite.getDisplay().asyncExec(() -> {
+					// relayout in next tick
+					ToolBar control = tbm.getControl();
+					if (control != null && !control.isDisposed()) {
+						tbm.update(true);
+					}
+				});
+			}
 		}
 	}
 
