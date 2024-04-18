@@ -711,16 +711,20 @@ public final class ContentTypeCatalog {
 			internalAccept(new ContentTypeVisitor() {
 				@Override
 				public int visit(ContentType type) {
-					if (type != root && type.hasBuiltInAssociations())
+					if (type != root && type.hasBuiltInAssociations()) {
 						// this content type has built-in associations - visit it later as root
 						return RETURN;
-					if (type == root && !type.hasFileSpec(context, fileSpecText, fileSpecType))
-						// it is the root and does not match the file name - do not add it nor look into its children
-						return RETURN;
-					// either the content type is the root and matches the file name or
-					// is a sub content type and does not have built-in files specs
-					if (!existing.contains(type))
-						destination.add(type);
+					}
+					if (type == root) {
+						if (!type.hasFileSpec(context, fileSpecText, fileSpecType)) {
+							// it is the root and does not match the file name - do not add it nor look into its children
+							return RETURN;
+						}
+						// the content type is the root and matches the file name
+						if (!existing.contains(type)) {
+							destination.add(type);
+						}						
+					}
 					return CONTINUE;
 				}
 			}, root);
