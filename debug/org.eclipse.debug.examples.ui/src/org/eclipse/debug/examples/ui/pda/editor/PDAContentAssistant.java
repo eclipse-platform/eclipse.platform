@@ -34,6 +34,6 @@ public class PDAContentAssistant extends ContentAssistant {
 	}
 
 	private IInformationControlCreator getInformationControlCreator() {
-		return parent -> new DefaultInformationControl(parent);
+		return DefaultInformationControl::new;
 	}
 }
