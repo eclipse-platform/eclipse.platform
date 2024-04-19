@@ -117,7 +117,11 @@
       <activityPatternBinding
             activityId="org.eclipse.javaDevelopment"
             pattern="org\.eclipse\.jdt\.core/javanature">
-
+      </activityPatternBinding>
+      
+      <activityPatternBinding
+            activityId="org.eclipse.javaDevelopment"
+            pattern="org\.eclipse\.jdt.*">
       </activityPatternBinding>
       
       <activityPatternBinding
