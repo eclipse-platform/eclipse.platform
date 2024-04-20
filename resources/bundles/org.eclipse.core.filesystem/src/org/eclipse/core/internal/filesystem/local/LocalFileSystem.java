@@ -24,6 +24,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.provider.FileSystem;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.environment.Constants;
 
 /**
@@ -34,12 +35,12 @@ public class LocalFileSystem extends FileSystem {
 	/**
 	 * Cached constant indicating if the current OS is Mac OSX
 	 */
-	static final boolean MACOSX = LocalFileSystem.getOS().equals(Constants.OS_MACOSX);
+	static final boolean MACOSX = Platform.OS.isMac();
 
 	/**
 	 * Whether the current file system is case sensitive
 	 */
-	private static final boolean caseSensitive = MACOSX ? false : new java.io.File("a").compareTo(new java.io.File("A")) != 0; //$NON-NLS-1$ //$NON-NLS-2$
+	private static final boolean CASE_SENSITIVE = !MACOSX && new java.io.File("a").compareTo(new java.io.File("A")) != 0; //$NON-NLS-1$ //$NON-NLS-2$
 
 	/**
 	 * The attributes of this file system. The initial value of -1 is used
@@ -60,25 +61,11 @@ public class LocalFileSystem extends FileSystem {
 		return INSTANCE;
 	}
 
-	/**
-	 * Returns the current OS.  This is equivalent to Platform.getOS(), but
-	 * is tolerant of the platform runtime not being present.
-	 */
-	static String getOS() {
-		return System.getProperty("osgi.os", ""); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/**
-	 * Creates a new local file system.
-	 */
-	public LocalFileSystem() {
-		super();
-	}
-
 	@Override
 	public int attributes() {
-		if (attributes != -1)
+		if (attributes != -1) {
 			return attributes;
+		}
 		attributes = 0;
 
 		//try to query supported attributes from native lib impl
@@ -93,14 +80,14 @@ public class LocalFileSystem extends FileSystem {
 		attributes |= EFS.ATTRIBUTE_READ_ONLY;
 
 		// this must be kept in sync with functionality of previous libs not implementing nativeAttributes method
-		String os = getOS();
-		String arch = System.getProperty("osgi.arch", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		if (os.equals(Constants.OS_WIN32))
+		String os = Platform.getOS();
+		if (Constants.OS_WIN32.equals(os)) {
 			attributes |= EFS.ATTRIBUTE_ARCHIVE | EFS.ATTRIBUTE_HIDDEN;
-		else if (os.equals(Constants.OS_LINUX) || (os.equals(Constants.OS_SOLARIS) && arch.equals(Constants.ARCH_SPARC)))
+		} else if (Constants.OS_LINUX.equals(os) || (Constants.OS_SOLARIS.equals(os) && Constants.ARCH_SPARC.equals(Platform.getOSArch()))) {
 			attributes |= EFS.ATTRIBUTE_EXECUTABLE | EFS.ATTRIBUTE_SYMLINK | EFS.ATTRIBUTE_LINK_TARGET;
-		else if (os.equals(Constants.OS_MACOSX) || os.equals(Constants.OS_HPUX) || os.equals(Constants.OS_QNX))
+		} else if (Constants.OS_MACOSX.equals(os) || Constants.OS_HPUX.equals(os) || Constants.OS_QNX.equals(os)) {
 			attributes |= EFS.ATTRIBUTE_EXECUTABLE;
+		}
 		return attributes;
 	}
 
@@ -131,6 +118,6 @@ public class LocalFileSystem extends FileSystem {
 
 	@Override
 	public boolean isCaseSensitive() {
-		return caseSensitive;
+		return CASE_SENSITIVE;
 	}
 }
