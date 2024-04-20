@@ -16,7 +16,6 @@ package org.eclipse.core.internal.filesystem.local;
 
 import java.io.UnsupportedEncodingException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.environment.Constants;
 
 public class Convert {
 
@@ -24,7 +23,7 @@ public class Convert {
 	private static String defaultEncoding = Platform.getSystemCharset().name();
 
 	/** Indicates if we are running on windows */
-	private static final boolean isWindows = Constants.OS_WIN32.equals(LocalFileSystem.getOS());
+	private static final boolean IS_WINDOWS = Platform.OS.isWindows();
 
 	private static final String WIN32_FILE_PREFIX = "\\\\?\\"; //$NON-NLS-1$
 	private static final String WIN32_UNC_FILE_PREFIX = "\\\\?\\UNC"; //$NON-NLS-1$
@@ -126,8 +125,9 @@ public class Convert {
 	 */
 	public static char[] toPlatformChars(String target) {
 		//Windows use special prefix to handle long filenames
-		if (!isWindows)
+		if (!IS_WINDOWS) {
 			return target.toCharArray();
+		}
 		//convert UNC path of form \\server\path to unicode form \\?\UNC\server\path
 		if (target.startsWith("\\\\")) { //$NON-NLS-1$
 			int nameLength = target.length();
