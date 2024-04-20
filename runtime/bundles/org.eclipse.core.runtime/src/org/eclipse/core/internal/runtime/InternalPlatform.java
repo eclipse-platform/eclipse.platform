@@ -431,10 +431,6 @@ public final class InternalPlatform {
 		return new Log(bundle, null);
 	}
 
-	public String getNL() {
-		return getBundleContext().getProperty(PROP_NL);
-	}
-
 	/**
 	 * Unicode locale extensions are defined using command line parameter -nlExtensions,
 	 * or the system property "osgi.nl.extensions".
@@ -459,17 +455,29 @@ public final class InternalPlatform {
 	}
 
 	public String getOS() {
-		return getBundleContext().getProperty(PROP_OS);
+		return getContextProperty(PROP_OS);
+	}
+
+	public String getWS() {
+		return getContextProperty(PROP_WS);
 	}
 
 	public String getOSArch() {
-		return getBundleContext().getProperty(PROP_ARCH);
+		return getContextProperty(PROP_ARCH);
+	}
+
+	public String getNL() {
+		return getContextProperty(PROP_NL);
+	}
+
+	private String getContextProperty(String key) {
+		BundleContext ctx = context;
+		return ctx != null ? ctx.getProperty(key) : System.getProperty(key);
 	}
 
 	public PlatformAdmin getPlatformAdmin() {
 		return platformTracker == null ? null : platformTracker.getService();
 	}
-
 
 	public IPreferencesService getPreferencesService() {
 		return preferencesTracker == null ? null : preferencesTracker.getService();
@@ -547,10 +555,6 @@ public final class InternalPlatform {
 	public Location getUserLocation() {
 		assertInitialized();
 		return userLocation.getService();
-	}
-
-	public String getWS() {
-		return getBundleContext().getProperty(PROP_WS);
 	}
 
 	private void initializeAuthorizationHandler() {
