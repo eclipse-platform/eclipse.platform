@@ -270,11 +270,33 @@ public class FileInfo implements IFileInfo {
 			this.linkTarget = value;
 	}
 
-	/**
-	 * For debugging purposes only.
-	 */
 	@Override
 	public String toString() {
-		return name;
+		StringBuilder sb = new StringBuilder();
+		sb.append("FileInfo ["); //$NON-NLS-1$
+		if (name != null) {
+			sb.append("name="); //$NON-NLS-1$
+			sb.append(name);
+			sb.append(", "); //$NON-NLS-1$
+		}
+		sb.append("length="); //$NON-NLS-1$
+		sb.append(length);
+		sb.append(", lastModified="); //$NON-NLS-1$
+		sb.append(lastModified);
+		sb.append(", exists="); //$NON-NLS-1$
+		sb.append(exists());
+		sb.append(", "); //$NON-NLS-1$
+		if (linkTarget != null) {
+			sb.append("linkTarget="); //$NON-NLS-1$
+			sb.append(linkTarget);
+			sb.append(", "); //$NON-NLS-1$
+		}
+		sb.append("attributes="); //$NON-NLS-1$
+		sb.append(attributes);
+		sb.append(", errorCode="); //$NON-NLS-1$
+		sb.append(errorCode);
+		sb.append("]"); //$NON-NLS-1$
+		return sb.toString();
 	}
+
 }

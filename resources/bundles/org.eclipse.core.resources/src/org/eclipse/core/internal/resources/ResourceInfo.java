@@ -16,10 +16,16 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.TreeMap;
 import org.eclipse.core.internal.localstore.FileStoreRoot;
-import org.eclipse.core.internal.utils.*;
+import org.eclipse.core.internal.utils.IStringPoolParticipant;
+import org.eclipse.core.internal.utils.ObjectMap;
+import org.eclipse.core.internal.utils.StringPool;
 import org.eclipse.core.internal.watson.IElementTreeData;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.QualifiedName;
@@ -489,6 +495,32 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	/** for debugging only **/
 	@Override
 	public String toString() {
-		return "" + fileStoreRoot + " modStamp=" + modStamp; //$NON-NLS-1$ //$NON-NLS-2$
+		Map<String, Integer> flagsMap = new TreeMap<>();
+		Field[] fields = ICoreConstants.class.getFields();
+		for (Field field : fields) {
+			String name = field.getName();
+			if (name.startsWith("M_")) { //$NON-NLS-1$
+				try {
+					flagsMap.put(name, field.getInt(null));
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					// don't care
+				}
+			}
+		}
+		StringBuilder sb = new StringBuilder(fileStoreRoot + " modStamp=" + modStamp); //$NON-NLS-1$
+		sb.append(", exists="); //$NON-NLS-1$
+		sb.append(flags != NULL_FLAG);
+		sb.append(", syncInfo="); //$NON-NLS-1$
+		sb.append(localInfo);
+		sb.append(", flags ["); //$NON-NLS-1$
+		for (Map.Entry<String, Integer> entry : flagsMap.entrySet()) {
+			String flag = entry.getKey();
+			Integer val = entry.getValue();
+			if (isSet(flags, val)) {
+				sb.append(flag).append(',');
+			}
+		}
+		sb.append("]"); //$NON-NLS-1$
+		return sb.toString();
 	}
 }
