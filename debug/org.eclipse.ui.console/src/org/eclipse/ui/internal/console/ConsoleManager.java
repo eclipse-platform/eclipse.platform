@@ -204,13 +204,12 @@ public class ConsoleManager implements IConsoleManager {
 		List<IConsole> added = new ArrayList<>(consoles.length);
 		synchronized (fConsoles) {
 			for (IConsole console : consoles) {
-				if(console instanceof TextConsole) {
-					TextConsole ioconsole = (TextConsole)console;
-					createPatternMatchListeners(ioconsole);
-				}
 				if (!fConsoles.contains(console)) {
 					fConsoles.add(console);
 					added.add(console);
+					if (console instanceof TextConsole ioconsole) {
+						createPatternMatchListeners(ioconsole);
+					}
 				}
 			}
 		}
