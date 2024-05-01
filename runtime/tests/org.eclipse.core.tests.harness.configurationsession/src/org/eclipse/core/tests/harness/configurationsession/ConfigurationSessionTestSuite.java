@@ -11,7 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.tests.session;
+package org.eclipse.core.tests.harness.configurationsession;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -38,7 +38,10 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.eclipse.core.tests.session.SessionTestSuite;
+import org.eclipse.core.tests.session.Setup;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
+import org.eclipse.core.tests.session.TestDescriptor;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.junit.Assert;
 import org.osgi.framework.Bundle;
@@ -89,6 +92,8 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		addBundle(org.eclipse.core.tests.harness.TestHarnessPlugin.class); // org.eclipse.core.tests.harness
 		addBundle(org.eclipse.test.performance.Performance.class); // org.eclipse.test.performance
 
+		addBundle(ConfigurationSessionTestSuite.class); // org.eclipse.core.tests.harness.configurationsession
+		
 		addBundle(org.eclipse.jdt.internal.junit.runner.ITestLoader.class); // org.eclipse.jdt.junit.runtime
 		addBundle(org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader.class); // org.eclipse.jdt.junit4.runtime
 		addBundle(org.eclipse.pde.internal.junit.runtime.CoreTestApplication.class); // org.eclipse.pde.junit.runtime

@@ -32,7 +32,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.session.ConfigurationSessionTestSuite;
+import org.eclipse.core.tests.harness.configurationsession.ConfigurationSessionTestSuite;
 import org.eclipse.osgi.service.datalocation.Location;
 
 public class PlatformURLSessionTest extends TestCase {
