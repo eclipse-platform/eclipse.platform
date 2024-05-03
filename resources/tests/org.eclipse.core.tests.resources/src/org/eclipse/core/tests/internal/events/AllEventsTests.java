@@ -13,10 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.events;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ BuildProjectFromMultipleJobsTest.class })
+@Suite
+@SelectClasses({ //
+		BuildProjectFromMultipleJobsTest.class, //
+})
 public class AllEventsTests {
 }

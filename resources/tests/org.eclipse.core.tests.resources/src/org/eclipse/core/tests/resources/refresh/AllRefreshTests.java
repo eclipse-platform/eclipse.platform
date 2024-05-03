@@ -13,13 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.refresh;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Runs all tests in this package.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ RefreshProviderTest.class, RefreshJobTest.class })
+@Suite
+@SelectClasses({ //
+		RefreshProviderTest.class, //
+		RefreshJobTest.class //
+})
 public class AllRefreshTests {
 }

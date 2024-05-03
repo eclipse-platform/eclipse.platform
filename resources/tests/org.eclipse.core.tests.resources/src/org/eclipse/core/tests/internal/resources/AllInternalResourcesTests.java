@@ -14,15 +14,15 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * The suite method for this class contains test suites for all automated tests
  * in this test package.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ //
+@Suite
+@SelectClasses({ //
 		Bug544975Test.class, //
 		ModelObjectReaderWriterTest.class, //
 		ProjectBuildConfigsTest.class, //
@@ -31,6 +31,7 @@ import org.junit.runners.Suite;
 		ProjectReferencesTest.class, //
 		ResourceInfoTest.class, //
 		WorkspaceConcurrencyTest.class, //
-		WorkspacePreferencesTest.class, })
+		WorkspacePreferencesTest.class, //
+})
 public class AllInternalResourcesTests {
 }

@@ -13,10 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.dtree;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ DeltaDataTreeTest.class })
+@Suite
+@SelectClasses({ //
+		DeltaDataTreeTest.class, //
+})
 public class AllDtreeTests {
 }

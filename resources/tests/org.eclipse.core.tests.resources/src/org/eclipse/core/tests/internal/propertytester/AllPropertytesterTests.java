@@ -13,11 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.propertytester;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ FilePropertyTesterTest.class })
+@Suite
+@SelectClasses({ //
+		FilePropertyTesterTest.class, //
+})
 public class AllPropertytesterTests {
 
 }
