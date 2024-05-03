@@ -13,11 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ PlatformTest.class })
+@Suite
+@SelectClasses({ //
+		PlatformTest.class, //
+})
 public class AllRuntimeTests {
 
 }

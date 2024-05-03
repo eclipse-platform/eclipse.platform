@@ -13,14 +13,23 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
-import org.eclipse.core.tests.runtime.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.core.tests.runtime.PreferenceExportTest;
+import org.eclipse.core.tests.runtime.PreferenceForwarderTest;
+import org.eclipse.core.tests.runtime.PreferencesTest;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ EclipsePreferencesTest.class, PreferencesServiceTest.class, IScopeContextTest.class,
-		TestBug388004.class, TestBug380859.class, PreferenceExportTest.class, PreferenceForwarderTest.class,
-		PreferencesTest.class })
+@Suite
+@SelectClasses({ //
+		EclipsePreferencesTest.class, //
+		PreferencesServiceTest.class, //
+		IScopeContextTest.class, //
+		TestBug388004.class, //
+		TestBug380859.class, //
+		PreferenceExportTest.class, //
+		PreferenceForwarderTest.class, //
+		PreferencesTest.class, //
+})
 @SuppressWarnings("deprecation")
 public class AllPreferenceTests {
 }
