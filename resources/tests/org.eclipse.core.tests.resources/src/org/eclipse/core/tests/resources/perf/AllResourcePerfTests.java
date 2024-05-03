@@ -13,19 +13,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.perf;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * @since 3.1
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ //
+@Suite
+@SelectClasses({ //
 		BenchCopyFile.class, //
 		BenchElementTree.class, //
 		// BenchFileStore.class, // very long running
 		BenchMiscWorkspace.class, //
-		BenchWorkspace.class,
+		BenchWorkspace.class, //
 		BuilderPerformanceTest.class, //
 		ConcurrencyPerformanceTest.class, //
 		ContentDescriptionPerformanceTest.class, //

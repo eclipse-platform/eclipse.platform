@@ -13,13 +13,17 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.watson;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-		DeltaChainFlatteningTest.class, DeltaFlatteningTest.class, ElementTreeDeltaChainTest.class,
-		ElementTreeIteratorTest.class, ElementTreeHasChangesTest.class, TreeFlatteningTest.class
+@Suite
+@SelectClasses({ //
+		DeltaChainFlatteningTest.class, //
+		DeltaFlatteningTest.class, //
+		ElementTreeDeltaChainTest.class, //
+		ElementTreeIteratorTest.class, //
+		ElementTreeHasChangesTest.class, //
+		TreeFlatteningTest.class, //
 })
 public class AllWatsonTests {
 

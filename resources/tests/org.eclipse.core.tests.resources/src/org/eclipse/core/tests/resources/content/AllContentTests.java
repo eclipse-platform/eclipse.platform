@@ -13,15 +13,22 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Runs all content type tests
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ IContentTypeManagerTest.class, SpecificContextTest.class, ContentDescriptionTest.class,
-		XMLContentDescriberTest.class, LazyInputStreamTest.class, LazyReaderTest.class, TestBug94498.class })
+@Suite
+@SelectClasses({ //
+		IContentTypeManagerTest.class, //
+		SpecificContextTest.class, //
+		ContentDescriptionTest.class, //
+		XMLContentDescriberTest.class, //
+		LazyInputStreamTest.class, //
+		LazyReaderTest.class, //
+		TestBug94498.class, //
+})
 public class AllContentTests {
 
 }

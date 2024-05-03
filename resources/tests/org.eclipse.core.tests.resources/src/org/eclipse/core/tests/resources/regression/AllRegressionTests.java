@@ -14,14 +14,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * A suite that runs all regression tests.
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ //
+@Suite
+@SelectClasses({ //
 		Bug_006708.class, //
 		Bug_025457.class, //
 		Bug_026294.class, //

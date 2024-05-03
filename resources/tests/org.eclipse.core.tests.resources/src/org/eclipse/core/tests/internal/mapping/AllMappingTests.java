@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.mapping;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Suite containing all tests in the org.eclipse.core.tests.internal.mapping
@@ -22,10 +22,10 @@ import org.junit.runners.Suite;
  *
  * @since 3.2
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ 
-	ChangeValidationTest.class,
-	TestProjectDeletion.class
-	})
+@Suite
+@SelectClasses({ //
+		ChangeValidationTest.class, //
+		TestProjectDeletion.class, //
+})
 public class AllMappingTests {
 }
