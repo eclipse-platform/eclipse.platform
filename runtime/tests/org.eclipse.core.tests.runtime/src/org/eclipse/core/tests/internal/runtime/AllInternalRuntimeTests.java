@@ -13,10 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.runtime;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ LogSerializationTest.class, PlatformURLLocalTest.class, PlatformURLSessionTest.class })
+@Suite
+@SelectClasses({ //
+		LogSerializationTest.class, //
+		PlatformURLLocalTest.class, //
+		PlatformURLSessionTest.class })
 public class AllInternalRuntimeTests {
 }
