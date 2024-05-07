@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.doc.internal.linkchecker;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +41,7 @@ import org.eclipse.help.internal.search.SearchHit;
 import org.eclipse.help.internal.search.SearchQuery;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LinkTest {
 
@@ -99,8 +99,8 @@ public class LinkTest {
 				}
 			}
 		});
-		assertEquals(Collections.emptySet().toString(), ex.toString());
-		assertEquals(Collections.emptySet().toString(), linkFailures.toString());
+		assertThat(ex).isEmpty();
+		assertThat(linkFailures).isEmpty();
 	}
 
 	private static final Pattern HREF = Pattern.compile("<a href=\"([^\"]+)\"");

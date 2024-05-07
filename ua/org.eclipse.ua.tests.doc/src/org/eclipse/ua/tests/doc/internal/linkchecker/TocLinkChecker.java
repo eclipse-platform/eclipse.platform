@@ -14,12 +14,13 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.doc.internal.linkchecker;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.eclipse.help.internal.validation.TocValidator;
 import org.eclipse.help.internal.validation.TocValidator.BrokenLink;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Contains tests for the documentation bundles that
@@ -124,6 +125,6 @@ public class TocLinkChecker {
 		for (BrokenLink link : failures) {
 			message.append("Invalid link in \"" + link.getTocID() + "\": " + link.getHref() + "\n");
 		}
-		Assert.assertTrue(message.toString(), failures.isEmpty());
+		assertThat(failures).withFailMessage(message.toString()).isEmpty();
 	}
 }
