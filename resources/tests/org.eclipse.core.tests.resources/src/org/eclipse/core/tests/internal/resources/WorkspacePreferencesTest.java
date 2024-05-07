@@ -14,17 +14,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.resources;
 
+import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import junit.framework.ComparisonFailure;
-import junit.framework.Test;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.resources.WorkspacePreferences;
 import org.eclipse.core.resources.IWorkspace;
@@ -33,95 +34,111 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.io.TempDir;
 
-public class WorkspacePreferencesTest extends WorkspaceSessionTest {
+@SuppressWarnings("deprecation")
+public class WorkspacePreferencesTest {
+
+	@TempDir
+	static Path tempDirectory;
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withWorkspaceAt(tempDirectory).create();
+
 	private IWorkspace workspace;
 	private Preferences preferences;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void retrieveWorkspaceAndPreferences() throws CoreException {
 		workspace = ResourcesPlugin.getWorkspace();
 		preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
-		workspace.setDescription(Workspace.defaultWorkspaceDescription());
 	}
 
-	private void setDefaultWorkspaceDescription() throws CoreException {
+	@AfterEach
+	public void restoreWorkspaceDescription() throws CoreException {
 		workspace.setDescription(Workspace.defaultWorkspaceDescription());
 	}
 
 	/**
 	 * Tests properties state in a brand new workspace (must match defaults).
 	 */
+	@Test
 	public void testDefaults() throws CoreException {
 		IWorkspaceDescription description = Workspace.defaultWorkspaceDescription();
 
-		assertEquals("1.0", description, preferences);
+		assertMatchesPreferences(preferences, description);
 
 		// ensures that all properties in the default workspace description
 		// appear as non-default-default properties in the property store
 		// Don't include the default build order here as it is equivalent to the
 		// String default-default (ResourcesPlugin.PREF_BUILD_ORDER).
-		String[] descriptionProperties = {ResourcesPlugin.PREF_AUTO_BUILDING, ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER, ResourcesPlugin.PREF_FILE_STATE_LONGEVITY, ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS, ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE, ResourcesPlugin.PREF_MAX_FILE_STATES, ResourcesPlugin.PREF_SNAPSHOT_INTERVAL};
+		String[] descriptionProperties = { ResourcesPlugin.PREF_AUTO_BUILDING, ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER,
+				ResourcesPlugin.PREF_FILE_STATE_LONGEVITY, ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS,
+				ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE, ResourcesPlugin.PREF_MAX_FILE_STATES,
+				ResourcesPlugin.PREF_SNAPSHOT_INTERVAL };
 		List<String> defaultPropertiesList = Arrays.asList(preferences.defaultPropertyNames());
 		for (String property : descriptionProperties) {
-			assertTrue("2.0 - Description property is not default: " + property, defaultPropertiesList.contains(property));
+			assertThat(defaultPropertiesList).as("check description properties are default").contains(property);
 		}
-
-		setDefaultWorkspaceDescription();
 	}
 
 	/**
 	 * Makes changes in the preferences and ensure they are reflected in the
 	 * workspace description.
 	 */
+	@Test
 	public void testSetPreferences() throws CoreException {
 		preferences.setValue(ResourcesPlugin.PREF_AUTO_BUILDING, true);
-		assertTrue("1.0", workspace.getDescription().isAutoBuilding());
+		assertThat(workspace.getDescription()).matches(IWorkspaceDescription::isAutoBuilding, "is auto-building");
 
 		preferences.setValue(ResourcesPlugin.PREF_AUTO_BUILDING, false);
-		assertTrue("1.1", !workspace.getDescription().isAutoBuilding());
+		assertThat(workspace.getDescription()).matches(not(IWorkspaceDescription::isAutoBuilding),
+				"is not auto-building");
 
 		preferences.setValue(ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER, true);
-		assertTrue("2.0", workspace.getDescription().getBuildOrder() == null);
+		assertThat(workspace.getDescription().getBuildOrder()).isNull();
 
 		preferences.setValue(ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER, false);
-		assertTrue("2.1", workspace.getDescription().getBuildOrder() != null);
+		assertThat(workspace.getDescription().getBuildOrder()).isNotNull();
 
 		preferences.setValue(ResourcesPlugin.PREF_BUILD_ORDER, "x/y,:z/z");
-		List<String> expectedList = Arrays.asList(new String[] {"x", "y,:z", "z"});
-		List<String> actualList = Arrays.asList(workspace.getDescription().getBuildOrder());
-		assertEquals("2.2", expectedList, actualList);
+		assertThat(workspace.getDescription().getBuildOrder()).containsExactly("x", "y,:z", "z");
 
 		preferences.setValue(ResourcesPlugin.PREF_BUILD_ORDER, "");
 		assertThat(workspace.getDescription().getBuildOrder()).isEmpty();
 
 		long snapshotInterval = 800000000L;
 		preferences.setValue(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL, snapshotInterval);
-		assertEquals("3.0", snapshotInterval, workspace.getDescription().getSnapshotInterval());
+		assertThat(workspace.getDescription().getSnapshotInterval()).isEqualTo(snapshotInterval);
 
 		long defaultSnapshotInterval = preferences.getDefaultLong(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL);
 		preferences.setValue(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL, defaultSnapshotInterval);
-		assertEquals("3.1", defaultSnapshotInterval, workspace.getDescription().getSnapshotInterval());
+		assertThat(workspace.getDescription().getSnapshotInterval()).isEqualTo(defaultSnapshotInterval);
 
 		preferences.setToDefault(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL);
-		assertEquals("3.2", defaultSnapshotInterval, workspace.getDescription().getSnapshotInterval());
-		assertEquals("Description not synchronized", workspace.getDescription(), preferences);
+		assertThat(workspace.getDescription().getSnapshotInterval()).isEqualTo(defaultSnapshotInterval);
+		assertMatchesPreferences(preferences, workspace.getDescription());
 
 		preferences.setValue(ResourcesPlugin.PREF_KEEP_DERIVED_STATE, false);
-		assertFalse("4.0", workspace.getDescription().isKeepDerivedState());
+		assertThat(workspace.getDescription()).matches(not(IWorkspaceDescription::isKeepDerivedState),
+				"does not keep derived state");
 
 		preferences.setValue(ResourcesPlugin.PREF_KEEP_DERIVED_STATE, true);
-		assertTrue("4.1", workspace.getDescription().isKeepDerivedState());
-
-		setDefaultWorkspaceDescription();
+		assertThat(workspace.getDescription()).matches(IWorkspaceDescription::isKeepDerivedState,
+				"keeps derived state");
 	}
 
 	/**
-	 * Ensures property change events are properly fired when setting workspace description.
+	 * Ensures property change events are properly fired when setting workspace
+	 * description.
 	 */
+	@Test
 	public void testEvents() throws CoreException {
 		IWorkspaceDescription original = workspace.getDescription();
 
@@ -129,7 +146,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		// 1 - PREF_AUTO_BUILDING
 		modified.setAutoBuilding(!original.isAutoBuilding());
 		// 2 - PREF_DEFAULT_BUILD_ORDER and 3 - PREF_BUILD_ORDER
-		modified.setBuildOrder(new String[] {"a", "b", "c"});
+		modified.setBuildOrder(new String[] { "a", "b", "c" });
 		// 3 - PREF_APPLY_FILE_STATE_POLICY
 		modified.setApplyFileStatePolicy(!original.isApplyFileStatePolicy());
 		// 4 - PREF_FILE_STATE_LONGEVITY
@@ -150,22 +167,19 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		try {
 			preferences.addPropertyChangeListener(listener);
 			workspace.setDescription(original);
-
-			// no events should have been fired
-			assertEquals("1.1 - wrong number of properties changed ", 0, changedProperties.size());
+			assertThat(changedProperties).as("check no events have been fired").isEmpty();
 			workspace.setDescription(modified);
-			// the right number of events should have been fired
-			assertEquals("2.1 - wrong number of properties changed ", 10, changedProperties.size());
+			assertThat(changedProperties).as("check right number of events has been fired").hasSize(10);
 		} finally {
 			preferences.removePropertyChangeListener(listener);
 		}
-
-		setDefaultWorkspaceDescription();
 	}
 
 	/**
-	 * Ensures preferences with both default/non-default values are properly exported/imported.
+	 * Ensures preferences with both default/non-default values are properly
+	 * exported/imported.
 	 */
+	@Test
 	public void testImportExport() throws CoreException {
 		IPath originalPreferencesFile = getRandomLocation().append("original.epf");
 		IPath modifiedPreferencesFile = getRandomLocation().append("modified.epf");
@@ -177,13 +191,14 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 			// preferences file can be generated
 			preferences.setValue("foo.bar", createRandomString());
 
-			// exports original preferences (only default values - except for bogus preference above)
+			// exports original preferences (only default values - except for bogus
+			// preference above)
 			Preferences.exportPreferences(originalPreferencesFile);
 
 			// creates a modified description
 			IWorkspaceDescription modified = workspace.getDescription();
 			modified.setAutoBuilding(!original.isAutoBuilding());
-			modified.setBuildOrder(new String[] {"a", "b", "c"});
+			modified.setBuildOrder(new String[] { "a", "b", "c" });
 			modified.setApplyFileStatePolicy(!original.isApplyFileStatePolicy());
 			modified.setFileStateLongevity((original.getFileStateLongevity() + 1) * 2);
 			modified.setMaxBuildIterations((original.getMaxBuildIterations() + 1) * 2);
@@ -194,7 +209,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 
 			// sets modified description
 			workspace.setDescription(modified);
-			assertEquals("2.1", modified, workspace.getDescription());
+			assertDescriptionEquals(modified, workspace.getDescription());
 
 			// exports modified preferences
 			Preferences.exportPreferences(modifiedPreferencesFile);
@@ -202,29 +217,28 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 			// imports original preferences
 			Preferences.importPreferences(originalPreferencesFile);
 			// ensures preferences exported match the imported ones
-			assertEquals("4.1", original, workspace.getDescription());
+			assertDescriptionEquals(original, workspace.getDescription());
 
 			// imports modified preferences
 			Preferences.importPreferences(modifiedPreferencesFile);
 
 			// ensures preferences exported match the imported ones
-			assertEquals("5.1", modified, workspace.getDescription());
+			assertDescriptionEquals(modified, workspace.getDescription());
 		} finally {
 			removeFromFileSystem(originalPreferencesFile.removeLastSegments(1).toFile());
 			removeFromFileSystem(modifiedPreferencesFile.removeLastSegments(1).toFile());
 		}
-
-		setDefaultWorkspaceDescription();
 	}
 
 	/**
-	 * Makes changes through IWorkspace#setDescription and checks if the changes
-	 * are reflected in the preferences.
+	 * Makes changes through IWorkspace#setDescription and checks if the changes are
+	 * reflected in the preferences.
 	 */
+	@Test
 	public void testSetDescription() throws CoreException {
 		IWorkspaceDescription description = workspace.getDescription();
 		description.setAutoBuilding(false);
-		description.setBuildOrder(new String[] {"a", "b,c", "c"});
+		description.setBuildOrder(new String[] { "a", "b,c", "c" });
 		description.setFileStateLongevity(60000 * 5);
 		description.setMaxBuildIterations(35);
 		description.setMaxFileStates(16);
@@ -232,7 +246,7 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		description.setSnapshotInterval(1234567);
 		description.setKeepDerivedState(true);
 		workspace.setDescription(description);
-		assertEquals("2.1 - Preferences not synchronized", description, preferences);
+		assertMatchesPreferences(preferences, description);
 
 		// try to make changes without committing them
 
@@ -243,48 +257,64 @@ public class WorkspacePreferencesTest extends WorkspaceSessionTest {
 		// try to make a change
 		description.setFileStateLongevity(100000);
 		// the original value should remain set
-		assertEquals("3.1", 90000, workspace.getDescription().getFileStateLongevity());
-		assertEquals("3.2", 90000, preferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY));
-
-		setDefaultWorkspaceDescription();
+		assertThat(workspace.getDescription().getFileStateLongevity()).isEqualTo(90000);
+		assertThat(preferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY)).isEqualTo(90000);
 	}
 
 	/**
 	 * Compares the values in a workspace description with the corresponding
 	 * properties in a preferences object.
 	 */
-	public void assertEquals(String message, IWorkspaceDescription description, Preferences expectedPreferences) throws ComparisonFailure {
-		assertEquals(message + " - 1", description.isAutoBuilding(), expectedPreferences.getBoolean(ResourcesPlugin.PREF_AUTO_BUILDING));
-		assertEquals(message + " - 2", description.getBuildOrder() == null, expectedPreferences.getBoolean(ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER));
-		assertEquals(message + " - 3", WorkspacePreferences.convertStringArraytoString(description.getBuildOrder()), expectedPreferences.getString(ResourcesPlugin.PREF_BUILD_ORDER));
-		assertEquals(message + " - 4", description.isApplyFileStatePolicy(), expectedPreferences.getBoolean(ResourcesPlugin.PREF_APPLY_FILE_STATE_POLICY));
-		assertEquals(message + " - 5", description.getFileStateLongevity(), expectedPreferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY));
-		assertEquals(message + " - 6", description.getMaxFileStates(), expectedPreferences.getInt(ResourcesPlugin.PREF_MAX_FILE_STATES));
-		assertEquals(message + " - 7", description.getMaxFileStateSize(), expectedPreferences.getLong(ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE));
-		assertEquals(message + " - 8", description.getSnapshotInterval(), expectedPreferences.getLong(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL));
-		assertEquals(message + " - 9", description.getMaxBuildIterations(), expectedPreferences.getLong(ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS));
-		assertEquals(message + " -10", description.isKeepDerivedState(),
-				expectedPreferences.getBoolean(ResourcesPlugin.PREF_KEEP_DERIVED_STATE));
+	private void assertMatchesPreferences(Preferences expectedPreferences, IWorkspaceDescription actualDescription)
+			throws ComparisonFailure {
+		assertThat(actualDescription.isAutoBuilding()).as("check auto building")
+				.isEqualTo(expectedPreferences.getBoolean(ResourcesPlugin.PREF_AUTO_BUILDING));
+		assertThat(actualDescription.getBuildOrder() == null).as("check default build order")
+				.isEqualTo(expectedPreferences.getBoolean(ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER));
+		assertThat(WorkspacePreferences.convertStringArraytoString(actualDescription.getBuildOrder()))
+				.as("check build order").isEqualTo(expectedPreferences.getString(ResourcesPlugin.PREF_BUILD_ORDER));
+		assertThat(actualDescription.isApplyFileStatePolicy()).as("check apply file state policy")
+				.isEqualTo(expectedPreferences.getBoolean(ResourcesPlugin.PREF_APPLY_FILE_STATE_POLICY));
+		assertThat(actualDescription.getFileStateLongevity()).as("check file state longevity")
+				.isEqualTo(expectedPreferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY));
+		assertThat(actualDescription.getMaxFileStates()).as("check max files states")
+				.isEqualTo(expectedPreferences.getInt(ResourcesPlugin.PREF_MAX_FILE_STATES));
+		assertThat(actualDescription.getMaxFileStateSize()).as("check max file state size")
+				.isEqualTo(expectedPreferences.getLong(ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE));
+		assertThat(actualDescription.getSnapshotInterval()).as("check snapshot interval")
+				.isEqualTo(expectedPreferences.getLong(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL));
+		assertThat(actualDescription.getMaxBuildIterations()).as("check max build iterations")
+				.isEqualTo(expectedPreferences.getLong(ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS));
+		assertThat(actualDescription.isKeepDerivedState()).as("check keep derived state")
+				.isEqualTo(expectedPreferences.getBoolean(ResourcesPlugin.PREF_KEEP_DERIVED_STATE));
 	}
 
 	/**
 	 * Compares two workspace description objects..
 	 */
-	public void assertEquals(String message, IWorkspaceDescription description1, IWorkspaceDescription description2) throws ComparisonFailure {
-		assertEquals(message + " - 1", description1.isAutoBuilding(), description2.isAutoBuilding());
-		assertThat(description1.getBuildOrder()).as(message + " - 2").isEqualTo(description2.getBuildOrder());
-		assertEquals(message + " - 3", WorkspacePreferences.convertStringArraytoString(description1.getBuildOrder()), WorkspacePreferences.convertStringArraytoString(description2.getBuildOrder()));
-		assertEquals(message + " - 4", description1.isApplyFileStatePolicy(), description2.isApplyFileStatePolicy());
-		assertEquals(message + " - 5", description1.getFileStateLongevity(), description2.getFileStateLongevity());
-		assertEquals(message + " - 6", description1.getMaxFileStates(), description2.getMaxFileStates());
-		assertEquals(message + " - 7", description1.getMaxFileStateSize(), description2.getMaxFileStateSize());
-		assertEquals(message + " - 8", description1.getSnapshotInterval(), description2.getSnapshotInterval());
-		assertEquals(message + " - 9", description1.getMaxBuildIterations(), description2.getMaxBuildIterations());
-		assertEquals(message + " -10", description1.isKeepDerivedState(), description2.isKeepDerivedState());
-	}
-
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, WorkspacePreferencesTest.class);
+	private void assertDescriptionEquals(IWorkspaceDescription expectedDescription, IWorkspaceDescription actualDescription)
+			throws ComparisonFailure {
+		assertThat(actualDescription.isAutoBuilding()).as("check auto building")
+				.isEqualTo(expectedDescription.isAutoBuilding());
+		assertThat(actualDescription.getBuildOrder()).as("check default build order")
+				.isEqualTo(expectedDescription.getBuildOrder());
+		assertThat(WorkspacePreferences.convertStringArraytoString(actualDescription.getBuildOrder()))
+				.as("check build order")
+				.isEqualTo(WorkspacePreferences.convertStringArraytoString(expectedDescription.getBuildOrder()));
+		assertThat(actualDescription.isApplyFileStatePolicy()).as("check apply file state policy")
+				.isEqualTo(expectedDescription.isApplyFileStatePolicy());
+		assertThat(actualDescription.getFileStateLongevity()).as("check file state longevity")
+				.isEqualTo(expectedDescription.getFileStateLongevity());
+		assertThat(actualDescription.getMaxFileStates()).as("check max files states")
+				.isEqualTo(expectedDescription.getMaxFileStates());
+		assertThat(actualDescription.getMaxFileStateSize()).as("check max file state size")
+				.isEqualTo(expectedDescription.getMaxFileStateSize());
+		assertThat(actualDescription.getSnapshotInterval()).as("check snapshot interval")
+				.isEqualTo(expectedDescription.getSnapshotInterval());
+		assertThat(actualDescription.getMaxBuildIterations()).as("check max build iterations")
+				.isEqualTo(expectedDescription.getMaxBuildIterations());
+		assertThat(actualDescription.isKeepDerivedState()).as("check keep derived state")
+				.isEqualTo(expectedDescription.isKeepDerivedState());
 	}
 
 }
