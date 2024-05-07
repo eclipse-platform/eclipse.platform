@@ -165,6 +165,7 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 		ContentTypeBuilder builder = createBuilder(newCatalog);
 		try {
 			builder.buildCatalog(getContext());
+			builder.applyProductPreferences();
 			// only remember catalog if building it was successful
 			catalog = newCatalog;
 		} catch (InvalidRegistryObjectException e) {
