@@ -48,7 +48,7 @@ import org.eclipse.core.runtime.jobs.JobGroup;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link JobGroup}.

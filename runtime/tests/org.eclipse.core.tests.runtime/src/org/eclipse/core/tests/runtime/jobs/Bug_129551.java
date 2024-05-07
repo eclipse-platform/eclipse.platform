@@ -16,8 +16,8 @@ package org.eclipse.core.tests.runtime.jobs;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Regression test for bug 129551.  A job changes to the ABOUT_TO_RUN
@@ -55,7 +55,7 @@ public class Bug_129551 extends AbstractJobTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		//don't use fussy progress monitor, because in this case we kill
 		// a job before it has started running

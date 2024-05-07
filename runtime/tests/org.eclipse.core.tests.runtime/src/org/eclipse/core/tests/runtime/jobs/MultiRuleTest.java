@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link MultiRule}.

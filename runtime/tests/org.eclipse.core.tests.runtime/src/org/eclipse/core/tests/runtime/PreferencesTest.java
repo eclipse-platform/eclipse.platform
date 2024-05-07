@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.Preferences;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test suite for API class org.eclipse.core.runtime.Preferences

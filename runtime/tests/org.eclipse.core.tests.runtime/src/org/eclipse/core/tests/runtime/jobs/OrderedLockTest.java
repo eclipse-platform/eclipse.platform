@@ -33,17 +33,14 @@ import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.LockListener;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.runtime.jobs.LockAcquiringRunnable.RandomOrder;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.RepeatedTest;
 
 /**
  * Tests implementation of ILock objects
  */
 @SuppressWarnings("restriction")
 public class OrderedLockTest {
-	@Rule
-	public RetryTestRule retry = new RetryTestRule(10); // executes all tests in the Class multiple times
-
+	private static final int REPETITIONS = 10;
 	/**
 	 * Creates n runnables on the given lock and adds them to the given list.
 	 */
@@ -53,7 +50,7 @@ public class OrderedLockTest {
 		}
 	}
 
-	@Test
+	@RepeatedTest(REPETITIONS)
 	public void testComplex() {
 		DeadlockDetector.runSilent(() -> {
 			ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
@@ -71,7 +68,7 @@ public class OrderedLockTest {
 		});
 	}
 
-	@Test
+	@RepeatedTest(REPETITIONS)
 	public void testManyLocksAndThreads() {
 		int numberOfLocks = 10;
 		int numberOfThreads = 10;
@@ -101,7 +98,7 @@ public class OrderedLockTest {
 		});
 	}
 
-	@Test
+	@RepeatedTest(REPETITIONS)
 	public void testSimple() {
 		DeadlockDetector.runSilent(() -> {
 			ArrayList<LockAcquiringRunnable> allRunnables = new ArrayList<>();
@@ -117,7 +114,7 @@ public class OrderedLockTest {
 		});
 	}
 
-	@Test
+	@RepeatedTest(REPETITIONS)
 	public void testLockAcquireInterrupt() throws InterruptedException {
 		final TestBarrier2 barrier = new TestBarrier2();
 		LockManager manager = new LockManager();
@@ -153,7 +150,7 @@ public class OrderedLockTest {
 	 * test that an acquire call that times out does not
 	 * become the lock owner (regression test)
 	 */
-	@Test
+	@RepeatedTest(REPETITIONS)
 	public void testLockTimeout() {
 		//create a new lock manager and 1 lock
 		final LockManager manager = new LockManager();
@@ -206,7 +203,7 @@ public class OrderedLockTest {
 	 * test that when a Lock Listener forces the Lock Manager to grant a lock
 	 * to a waiting thread, that other threads in the queue don't get disposed (regression test)
 	 */
-	@Test
+	@RepeatedTest(REPETITIONS)
 	public void testLockRequestDisappearence() {
 		// create a new lock manager and 1 lock
 		final LockManager manager = new LockManager();

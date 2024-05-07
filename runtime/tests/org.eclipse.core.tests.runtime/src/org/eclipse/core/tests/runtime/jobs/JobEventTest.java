@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.runtime.jobs.OrderAsserter.Event;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for bug https://github.com/eclipse-platform/eclipse.platform/issues/193

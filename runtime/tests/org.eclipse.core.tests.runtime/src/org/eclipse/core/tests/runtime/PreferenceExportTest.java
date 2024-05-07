@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Preferences;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the Preferences import/export feature.
@@ -31,7 +31,7 @@ import org.junit.Test;
 @Deprecated
 public class PreferenceExportTest {
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		//remove properties modified by this test
 		Plugin testPlugin = RuntimeTestsPlugin.getPlugin();

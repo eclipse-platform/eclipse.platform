@@ -54,10 +54,10 @@ import org.eclipse.core.runtime.jobs.LockListener;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the implemented get/set methods of the abstract class Job
@@ -68,7 +68,7 @@ public class JobTest extends AbstractJobTest {
 	protected Job shortJob;
 
 	@Test
-	@Ignore("see bug 43591")
+	@Disabled("see bug 43591")
 	public void testDone() {
 		//calling the done method on a job that is not executing asynchronously should have no effect
 
@@ -110,13 +110,13 @@ public class JobTest extends AbstractJobTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		shortJob = new TestJob("Short Test Job", 10, 1); // job that tests wait on
 		longJob = new TestJob("Long Test Job", 10000000, 10); // job that never finishes in time
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		Job.getJobManager().setProgressProvider(null);
 		Job.getJobManager().setLockListener(null);

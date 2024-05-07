@@ -22,8 +22,8 @@ import org.eclipse.core.internal.jobs.JobListeners;
 import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Common superclass for all tests of the org.eclipse.core.runtime.jobs API. Provides
@@ -81,7 +81,7 @@ public class AbstractJobTest  {
 		return ((JobManager) (Job.getJobManager())).now();
 	}
 
-	@Before
+	@BeforeEach
 	public void setProgressProvider() throws Exception {
 		assertNoTimeoutOccured();
 		manager = Job.getJobManager();
@@ -89,7 +89,7 @@ public class AbstractJobTest  {
 		manager.setProgressProvider(progressProvider);
 	}
 
-	@After
+	@AfterEach
 	public void resetProgressProvider() throws Exception {
 		progressProvider.sanityCheck();
 		Job.getJobManager().setProgressProvider(null);

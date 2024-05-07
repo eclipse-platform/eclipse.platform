@@ -13,8 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.perf;
 
-import org.eclipse.test.performance.*;
-import org.junit.Test;
+import org.eclipse.test.performance.Dimension;
+import org.eclipse.test.performance.Performance;
+import org.eclipse.test.performance.PerformanceMeter;
+import org.junit.jupiter.api.Test;
 
 public class StartupTest {
 

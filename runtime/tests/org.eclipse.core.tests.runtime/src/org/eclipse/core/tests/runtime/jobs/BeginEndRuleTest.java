@@ -37,8 +37,8 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests API methods IJobManager.beginRule and IJobManager.endRule
@@ -319,7 +319,7 @@ public class BeginEndRuleTest extends AbstractJobTest {
 	}
 
 	@Test
-	@Ignore("see bug 43460")
+	@Disabled("see bug 43460")
 	public void testEndNullRule() {
 		//see bug #43460
 		//end null IScheduleRule without begin

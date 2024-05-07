@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.harness.TestJob;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Regression test for bug 550738.
@@ -70,7 +70,7 @@ public class Bug_550738 extends AbstractJobTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void removeProgressProvider() throws Exception {
 		// don't use fussy progress monitor, because in this test we may kill
 		// a job before it has started running

@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Bug_478634 extends AbstractJobTest {
 

@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Regression test for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=320329.

@@ -19,14 +19,22 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicIntegerArray;
-import org.eclipse.core.internal.jobs.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.*;
+import org.eclipse.core.internal.jobs.DeadlockDetector;
+import org.eclipse.core.internal.jobs.JobManager;
+import org.eclipse.core.internal.jobs.LockManager;
+import org.eclipse.core.internal.jobs.OrderedLock;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobManager;
+import org.eclipse.core.runtime.jobs.ILock;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests implementation of ILock objects
@@ -35,8 +43,12 @@ import org.junit.rules.TestName;
 public class DeadlockDetectionTest {
 	private final IJobManager manager = Job.getJobManager();
 
-	@Rule
-	public TestName name = new TestName();
+	private String testName;
+
+	@BeforeEach
+	public void setTestName(TestInfo testInfo) {
+		this.testName = testInfo.getDisplayName();
+	}
 
 	/**
 	 * Creates n runnables on the given lock and adds them to the given list.
@@ -44,7 +56,7 @@ public class DeadlockDetectionTest {
 	private void createRunnables(ILock[] locks, int n, ArrayList<RandomTestRunnable> allRunnables, boolean cond) {
 		for (int i = 0; i < n; i++) {
 			allRunnables
-					.add(new RandomTestRunnable(locks, name.getMethodName() + " # " + (allRunnables.size() + 1), cond));
+					.add(new RandomTestRunnable(locks, testName + " # " + (allRunnables.size() + 1), cond));
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
