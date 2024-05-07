@@ -11,6 +11,7 @@
 package org.eclipse.core.tests.harness.session;
 
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.Objects;
 import org.eclipse.core.tests.harness.session.samples.SampleSessionTests;
 import org.eclipse.core.tests.session.Setup;
@@ -74,6 +75,7 @@ public class SessionTestExtension implements InvocationInterceptor {
 	public static class SessionTestExtensionBuilder {
 		private final String storedPluginId;
 		private String storedApplicationId = CORE_TEST_APPLICATION;
+		private Path storedWorkspaceDirectory;
 
 		private SessionTestExtensionBuilder(String pluginId) {
 			Objects.requireNonNull(pluginId);
@@ -85,8 +87,37 @@ public class SessionTestExtension implements InvocationInterceptor {
 			return this;
 		}
 
+		/**
+		 * Sets the used workspace folder by using the passed path for the "data"
+		 * property of the Eclipse instance. Usually, a temporary folder can be used.
+		 * <p>
+		 * <b>Example Usage:</b>
+		 *
+		 * <pre>
+		 * &#64;TempDir
+		 * static Path tempDirectory;
+		 *
+		 * &#64;RegisterExtension
+		 * static SessionTestExtension extension = SessionTestExtension.forPlugin("").withWorkspaceAt(tempDirectory).create();
+		 * </pre>
+		 *
+		 * @param workspaceDirectory the folder to be used for the workspace
+		 */
+		public SessionTestExtensionBuilder withWorkspaceAt(Path workspaceDirectory) {
+			this.storedWorkspaceDirectory = workspaceDirectory;
+			return this;
+		}
+
+		/**
+		 * {@return a <code>SessionTestExtension</code> created with the information in
+		 * this builder}
+		 */
 		public SessionTestExtension create() {
-			return new SessionTestExtension(storedPluginId, storedApplicationId);
+			SessionTestExtension extension = new SessionTestExtension(storedPluginId, storedApplicationId);
+			if (storedWorkspaceDirectory != null) {
+				extension.setEclipseArgument(Setup.DATA, storedWorkspaceDirectory.toString());
+			}
+			return extension;
 		}
 	}
 
