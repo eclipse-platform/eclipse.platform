@@ -19,6 +19,7 @@ import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.osgi.util.NLS;
@@ -110,24 +111,39 @@ public class ContentTypeBuilder {
 	}
 
 	/**
-	 * Applies any existing preferences to content types as a batch operation.
+	 * Applies any existing user preferences to content types as a batch operation.
 	 */
 	private void applyPreferences() {
+		final ContentTypeCatalog localCatalog = catalog;
+		final IEclipsePreferences root = localCatalog.getManager().getPreferences();
+		applyPreferences(localCatalog, root, true);
+	}
+
+	private static void applyPreferences(final ContentTypeCatalog localCatalog, final IEclipsePreferences root,
+			final boolean userDefined) {
 		try {
-			final ContentTypeCatalog localCatalog = catalog;
-			final IEclipsePreferences root = localCatalog.getManager().getPreferences();
 			root.accept(node -> {
-				if (node == root)
+				if (node == root) {
 					return true;
+				}
 				ContentType contentType = localCatalog.internalGetContentType(node.name());
-				if (contentType != null)
-					contentType.processPreferences(node);
+				if (contentType != null) {
+					contentType.processPreferences(node, userDefined);
+				}
 				// content type nodes don't have any children anyway
 				return false;
 			});
 		} catch (BackingStoreException bse) {
 			ContentType.log(ContentMessages.content_errorLoadingSettings, bse);
 		}
+	}
+
+	/**
+	 * Applies any existing product preferences to content types as a batch
+	 * operation.
+	 */
+	public void applyProductPreferences() {
+		applyPreferences(catalog, DefaultScope.INSTANCE.getNode(ContentTypeManager.CONTENT_TYPE_PREF_NODE), false);
 	}
 
 	/**
