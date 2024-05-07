@@ -16,13 +16,17 @@ package org.eclipse.ua.tests.doc;
 import org.eclipse.ua.tests.doc.internal.linkchecker.ApiDocTest;
 import org.eclipse.ua.tests.doc.internal.linkchecker.LinkTest;
 import org.eclipse.ua.tests.doc.internal.linkchecker.TocLinkChecker;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /*
  * Tests all user assistance functionality (automated).
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ TocLinkChecker.class, ApiDocTest.class, LinkTest.class })
+@Suite
+@SelectClasses({ //
+		TocLinkChecker.class, //
+		ApiDocTest.class, //
+		LinkTest.class //
+})
 public class AllTests {
 }

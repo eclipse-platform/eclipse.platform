@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ua.tests.doc.internal.linkchecker;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.net.URL;
@@ -42,7 +42,7 @@ import org.eclipse.help.internal.toc.TocFileParser;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.eclipse.osgi.service.resolver.State;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -175,7 +175,7 @@ public class ApiDocTest {
 		checkExtensionPoints(extIds, problems);
 		checkPackages(packageIds, problems);
 
-		assertEquals("", problems.toString());
+		assertThat(problems).isEmpty();
 	}
 
 	private static void checkExtensionPoints(Set<String> extIds, StringBuilder problems) throws Exception {
