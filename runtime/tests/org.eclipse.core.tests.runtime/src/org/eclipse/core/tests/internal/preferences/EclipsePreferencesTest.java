@@ -55,9 +55,9 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -133,6 +133,12 @@ public class EclipsePreferencesTest {
 			log.append(event.getNewValue() == null ? "null" : event.getNewValue());
 			log.append("]");
 		}
+	}
+
+	@AfterEach
+	public void tearDown() throws Exception {
+		Preferences node = getScopeRoot();
+		node.removeNode();
 	}
 
 	private IEclipsePreferences getScopeRoot() {
@@ -518,7 +524,7 @@ public class EclipsePreferencesTest {
 	 * TODO re-enable when the bug is fixed
 	 */
 	@Test
-	@Ignore("see bug 367366")
+	@Disabled("see bug 367366")
 	public void _testRemoveDeletesFile() throws BackingStoreException {
 		Preferences node = InstanceScope.INSTANCE.getNode("foo");
 		Preferences parent = node.parent();
@@ -817,12 +823,6 @@ public class EclipsePreferencesTest {
 		tracer.log.setLength(0);
 		root.node(name);
 		assertEquals("3.0", "", tracer.log.toString());
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		Preferences node = getScopeRoot();
-		node.removeNode();
 	}
 
 	/*

@@ -26,9 +26,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
 public class LogSerializationTest {
@@ -166,7 +166,7 @@ public class LogSerializationTest {
 		return reader.readLogFile(logFile.getAbsolutePath());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		//setup the log file
 		if (logFile == null) {
@@ -174,7 +174,7 @@ public class LogSerializationTest {
 		}
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		logFile.delete();
 	}

@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.TestBarrier2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Make sure that IProgressMonitor's blocked/unblocked is invoked.
@@ -265,5 +265,5 @@ public class Bug_311756 extends AbstractJobTest {
 		}
 		assertEquals(blocked[0] == UNSET ? "setBlocked never called" : "clearBlocked never called", CLEARED, blocked[0]);
 	}
-	
+
 }

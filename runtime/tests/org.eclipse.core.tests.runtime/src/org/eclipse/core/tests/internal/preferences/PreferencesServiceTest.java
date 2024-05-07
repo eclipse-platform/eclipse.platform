@@ -57,9 +57,9 @@ import org.eclipse.core.runtime.preferences.PreferenceFilterEntry;
 import org.eclipse.core.runtime.preferences.UserScope;
 import org.eclipse.core.tests.harness.FileSystemHelper;
 import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -131,6 +131,12 @@ public class PreferencesServiceTest {
 			}
 		}
 	}
+
+	@AfterEach
+	public void tearDown() throws Exception {
+		Platform.getPreferencesService().getRootNode().node(TestScope.SCOPE).removeNode();
+	}
+
 
 	@Test
 	public void testImportExportBasic() throws Exception {
@@ -409,11 +415,6 @@ public class PreferencesServiceTest {
 			assertNotNull("9.0." + i, actual);
 			assertEquals("9.1." + i, defaultValue, actual);
 		}
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		Platform.getPreferencesService().getRootNode().node(TestScope.SCOPE).removeNode();
 	}
 
 	@Test
@@ -1075,7 +1076,7 @@ public class PreferencesServiceTest {
 	}
 
 	@Test
-	@Ignore("not implemented yet")
+	@Disabled("not implemented yet")
 	public void testApplyWithTransfers() {
 	}
 

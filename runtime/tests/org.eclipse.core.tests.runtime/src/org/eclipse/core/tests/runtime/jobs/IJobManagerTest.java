@@ -52,9 +52,9 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the API of the class IJobManager
@@ -138,7 +138,7 @@ public class IJobManagerTest extends AbstractJobTest {
 		return "UNKNOWN";
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		completedJobs = new AtomicInteger();
 		scheduledJobs = new AtomicInteger();
@@ -149,7 +149,7 @@ public class IJobManagerTest extends AbstractJobTest {
 		}
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		for (IJobChangeListener jobListener : jobListeners) {
 			if (jobListener instanceof TestJobListener) {

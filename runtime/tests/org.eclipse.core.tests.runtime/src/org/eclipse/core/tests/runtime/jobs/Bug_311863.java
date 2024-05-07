@@ -16,7 +16,7 @@ package org.eclipse.core.tests.runtime.jobs;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.TestBarrier2;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Regression test for bug 311863

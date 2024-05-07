@@ -47,11 +47,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.osgi.framework.log.FrameworkLog;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -67,10 +65,7 @@ public class PlatformTest {
 	private ServiceReference<FrameworkLog> logRef;
 	private java.io.File originalLocation;
 
-	@Rule
-	public final TestName testName = new TestName();
-
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		//ensure platform locations are initialized
 		Platform.getLogFileLocation();
@@ -81,7 +76,7 @@ public class PlatformTest {
 		originalLocation = logService.getFile();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		//undo any damage done by log location test
 		logService.setFile(originalLocation, true);
@@ -196,7 +191,7 @@ public class PlatformTest {
 	 */
 	@Test
 	public void testIsFragment() throws Exception {
-		String bundleName = testName.getMethodName();
+		String bundleName = "testIsFragment";
 		File config = RuntimeTestsPlugin.getContext().getDataFile(bundleName);
 		Files.createDirectories(config.toPath());
 
@@ -249,11 +244,10 @@ public class PlatformTest {
 	 */
 	@Test
 	public void testGetBundle() throws Exception {
-		Map<String, Bundle> bundles = createSimpleTestBundles("1.0.0", "2.0.0");
-		Bundle bundle;
-		String bundleName = testName.getMethodName();
+		String bundleName = "testGetBundle";
+		Map<String, Bundle> bundles = createSimpleTestBundles(bundleName, "1.0.0", "2.0.0");
 
-		bundle = Platform.getBundle(bundleName);
+		Bundle bundle = Platform.getBundle(bundleName);
 		assertNull(bundleName + " bundle just installed, but not started => expect null result", bundle);
 		for (Bundle b : bundles.values()) {
 			b.start();
@@ -315,11 +309,10 @@ public class PlatformTest {
 	 */
 	@Test
 	public void testGetBundles() throws Exception {
-		Map<String, Bundle> bundles = createSimpleTestBundles("1.0.0", "3.0.0", "2.0.0");
-		Bundle bundle;
-		String bundleName = testName.getMethodName();
+		String bundleName = "testGetBundles";
+		Map<String, Bundle> bundles = createSimpleTestBundles(bundleName, "1.0.0", "3.0.0", "2.0.0");
 
-		bundle = Platform.getBundle(bundleName);
+		Bundle bundle = Platform.getBundle(bundleName);
 		assertNull(bundleName + " bundle just installed, but not started => expect null result", bundle);
 		for (Bundle b : bundles.values()) {
 			b.start();
@@ -359,9 +352,9 @@ public class PlatformTest {
 	 * bundles are packaged to jars and installed into the container. The jars are
 	 * marked for deletion on exit.
 	 */
-	private Map<String, Bundle> createSimpleTestBundles(String... versions) throws BundleException, IOException {
+	private Map<String, Bundle> createSimpleTestBundles(String bundleName, String... versions)
+			throws BundleException, IOException {
 		Map<String, Bundle> bundles = new HashMap<>();
-		String bundleName = testName.getMethodName();
 		File config = RuntimeTestsPlugin.getContext().getDataFile(bundleName);
 		Files.createDirectories(config.toPath());
 

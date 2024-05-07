@@ -13,21 +13,22 @@
  *******************************************************************************/
 package org.eclipse.core.tests.runtime.jobs;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicInteger;
-import junit.framework.TestCase;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for bug https://github.com/eclipse-platform/eclipse.platform/issues/160
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class Bug_574883Join extends TestCase {
+public class Bug_574883Join {
 
 	static class SerialExecutor extends Job {
 
@@ -124,9 +125,9 @@ public class Bug_574883Join extends TestCase {
 				}
 			}
 		}
-		assertEquals("Job was not (re)scheduled " + scheduleFails + "/" + run + " times. example: " + firstMessage, 0,
-				scheduleFails);
-		assertEquals("Job was not joined " + joinFails + "/" + run + " times. example: " + firstMessage, 0, joinFails);
+		assertEquals(0, scheduleFails,
+				"Job was not (re)scheduled " + scheduleFails + "/" + run + " times. example: " + firstMessage);
+		assertEquals(0, joinFails, "Job was not joined " + joinFails + "/" + run + " times. example: " + firstMessage);
 	}
 
 	/** do not inline - so that SerialExecutor can be garbage collected **/
