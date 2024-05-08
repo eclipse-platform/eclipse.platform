@@ -17,6 +17,7 @@ Require-Bundle: org.junit,
 Import-Package: org.assertj.core.api,
  org.junit.jupiter.api,
  org.junit.jupiter.api.extension,
+ org.junit.jupiter.api.function,
  org.junit.jupiter.api.io,
  org.junit.platform.suite.api
 Bundle-ActivationPolicy: lazy

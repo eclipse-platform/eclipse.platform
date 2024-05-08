@@ -29,7 +29,7 @@ public class CustomSessionWorkspaceImpl implements CustomSessionWorkspace {
 
 	@Override
 	public CustomSessionWorkspace setWorkspaceDirectory(Path workspaceDirectory) {
-		Objects.nonNull(workspaceDirectory);
+		Objects.requireNonNull(workspaceDirectory);
 		this.workspaceDirectory = workspaceDirectory;
 		return this;
 	}
