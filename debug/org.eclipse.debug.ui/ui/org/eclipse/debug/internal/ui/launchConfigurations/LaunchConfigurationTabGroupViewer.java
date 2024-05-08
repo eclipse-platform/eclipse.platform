@@ -867,15 +867,16 @@ public class LaunchConfigurationTabGroupViewer {
 		// Update the name field
 		fNameWidget.setText(getWorkingCopy().getName());
 
-		fCurrentTabIndex = fTabFolder.getSelectionIndex();
+		fCurrentTabIndex = -1;
 
 		// Turn off initializing flag to update message
 		fInitializingTabs = false;
 
 		// Try to activate the same (type of) tab that was active before.
 		if (!setActiveTab(lastActiveTabKind)) {
-			// The tab with the wanted class wasn't found. Try to activate the first one
-			setActiveTab(0);
+			// The tab with the wanted class wasn't found. Try to activate the default tab
+			int defaultTabIndex = Math.max(fTabFolder.getSelectionIndex(), 0);
+			setActiveTab(defaultTabIndex);
 		}
 
 		if (!fViewform.isVisible()) {
