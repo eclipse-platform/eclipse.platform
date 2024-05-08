@@ -698,15 +698,13 @@ public class LaunchConfigurationTabGroupViewer {
 	}
 
 	protected void refreshTabs0(boolean refreshTabs) {
-		final boolean refresh = refreshTabs;
-		Runnable r = () -> {
+		BusyIndicator.showWhile(getShell().getDisplay(), () -> {
 			fViewform.setRedraw(false);
-			fRefreshTabs = !refresh;
-			displayInstanceTabs(refresh);
+			fRefreshTabs = !refreshTabs;
+			displayInstanceTabs(refreshTabs);
 			refreshStatus();
 			fViewform.setRedraw(true);
-		};
-		BusyIndicator.showWhile(getShell().getDisplay(), r);
+		});
 	}
 
 	/**
@@ -715,11 +713,10 @@ public class LaunchConfigurationTabGroupViewer {
 	 * @param input the new input, possibly <code>null</code>
 	 */
 	protected void inputChanged(Object input) {
-		final Object finput = input;
-		Runnable r = () -> {
+		BusyIndicator.showWhile(getShell().getDisplay(), () -> {
 			try {
 				fViewform.setRedraw(false);
-				if (finput instanceof ILaunchConfiguration configuration) {
+				if (input instanceof ILaunchConfiguration configuration) {
 					boolean refreshTabs = true;
 					if (fWorkingCopy != null
 							&& fWorkingCopy.getOriginal() != null //
@@ -731,7 +728,7 @@ public class LaunchConfigurationTabGroupViewer {
 					fWorkingCopy = configuration.getWorkingCopy();
 					// Need to refresh all the time as tabs might have changed
 					displayInstanceTabs(refreshTabs);
-				} else if (finput instanceof ILaunchConfigurationType configuration) {
+				} else if (input instanceof ILaunchConfigurationType configuration) {
 					fDescription = getDescription(configuration);
 					setNoInput();
 				} else {
@@ -744,8 +741,7 @@ public class LaunchConfigurationTabGroupViewer {
 				refreshStatus();
 				fViewform.setRedraw(true);
 			}
-		};
-		BusyIndicator.showWhile(getShell().getDisplay(), r);
+		});
 	}
 
 	/**
