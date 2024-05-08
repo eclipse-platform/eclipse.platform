@@ -194,6 +194,26 @@ public class LaunchConfigurationTabGroupViewerTest {
 		assertThat(((SpyTab) tabs[secondTabIndex])).matches(SpyTab::isActivated, "should have been activated");
 	}
 
+	@Test
+	public void testActivateAllTabs() {
+		ThrowingRunnable<CoreException> activateSeveralTab = () -> {
+			// Create and select launch config
+			fLaunchConfigurationsDialog.getTabViewer().setInput(createLaunchConfigurationInstance());
+
+			// Select all tabs
+			for (int i = 0; i < fLaunchConfigurationsDialog.getTabViewer().getTabs().length; i++) {
+				fLaunchConfigurationsDialog.getTabViewer().setActiveTab(i);
+			}
+		};
+
+		final ILaunchConfigurationTab[] tabs = runOnDialog(activateSeveralTab);
+
+		// All tabs should have been activated exactly once
+		for (int i = 0; i < tabs.length; i++) {
+			assertThat(((SpyTab) tabs[i])).matches(SpyTab::isActivatedExactlyOnce, "Tab '" + i + "' should have been activated exactly once");
+		}
+	}
+
 	private ILaunchConfigurationWorkingCopy createLaunchConfigurationInstance() throws CoreException {
 		return fLaunchConfigurationType.newInstance(null, "MyLaunchConfiguration_" + System.currentTimeMillis());
 	}
