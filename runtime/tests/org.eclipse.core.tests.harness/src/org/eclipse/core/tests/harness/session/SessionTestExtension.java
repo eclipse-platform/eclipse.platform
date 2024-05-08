@@ -14,6 +14,8 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.tests.harness.session.customization.CustomSessionConfigurationImpl;
 import org.eclipse.core.tests.harness.session.customization.CustomSessionWorkspaceImpl;
 import org.eclipse.core.tests.harness.session.customization.SessionCustomization;
 import org.eclipse.core.tests.harness.session.samples.SampleSessionTests;
@@ -150,6 +152,44 @@ public class SessionTestExtension implements InvocationInterceptor {
 		}
 
 		/**
+		 * Sets the given session configuration that uses a custom "config.ini" file
+		 * with a defined set of bundles to be used. The customization can be
+		 * instantiated via
+		 * {@link SessionTestExtension#createCustomSessionConfiguration()}. By default,
+		 * a temporary folder is used as a configuration directory.
+		 * <p>
+		 * <b>Example usage with default configuration directory:</b>
+		 *
+		 * <pre>
+		 * &#64;RegisterExtension
+		 * SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin("")
+		 * 		.withConfiguration(SessionTestExtension.createCustomConfiguration()).create();
+		 * </pre>
+		 *
+		 * <b>Example usage with custom configuration directory:</b>
+		 *
+		 * <pre>
+		 * &#64;TempDir
+		 * Path configurationDirectory;
+		 *
+		 * &#64;RegisterExtension
+		 * SessionTestExtension extension = SessionTestExtension.forPlugin("")
+		 * 		.withConfiguration(
+		 * 				SessionTestExtension.createCustomConfiguration().setConfigurationDirectory(configurationDirectory))
+		 * 		.create();
+		 * </pre>
+		 *
+		 * @param sessionConfiguration the custom configuration to use for the session
+		 *                             tests
+		 */
+		public SessionTestExtensionBuilder withCustomization(CustomSessionConfiguration sessionConfiguration) {
+			Objects.requireNonNull(sessionConfiguration);
+			sessionConfiguration.addBundle(Platform.getBundle(storedPluginId));
+			this.storedSessionCustomizations.add(sessionConfiguration);
+			return this;
+		}
+
+		/**
 		 * {@return a <code>SessionTestExtension</code> created with the information in
 		 * this builder}
 		 */
@@ -170,6 +210,14 @@ public class SessionTestExtension implements InvocationInterceptor {
 	 */
 	public static CustomSessionWorkspace createCustomWorkspace() {
 		return new CustomSessionWorkspaceImpl();
+	}
+
+	/**
+	 * {@return a custom Eclipse instance configuration that, by default, uses a
+	 * temporary folder to store the configuration files}
+	 */
+	public static CustomSessionConfiguration createCustomConfiguration() {
+		return new CustomSessionConfigurationImpl();
 	}
 
 	public void setEclipseArgument(String key, String value) {
