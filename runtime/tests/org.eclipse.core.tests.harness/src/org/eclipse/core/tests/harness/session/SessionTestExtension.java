@@ -11,12 +11,16 @@
 package org.eclipse.core.tests.harness.session;
 
 import java.lang.reflect.Method;
-import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import org.eclipse.core.tests.harness.session.customization.CustomSessionWorkspaceImpl;
+import org.eclipse.core.tests.harness.session.customization.SessionCustomization;
 import org.eclipse.core.tests.harness.session.samples.SampleSessionTests;
 import org.eclipse.core.tests.session.Setup;
 import org.eclipse.core.tests.session.SetupManager;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
@@ -24,7 +28,7 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 
 /**
  * A JUnit 5 extension that will execute every test method in a class in its own
- * session, i.e., in an own Eclipse application instance. It is instantiate via
+ * session, i.e., in an own Eclipse application instance. It is instantiated via
  * a builder created with {@link SessionTestExtension#forPlugin(String)}. For an
  * example, see the {@link SampleSessionTests} class.
  * <p>
@@ -32,13 +36,21 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
  *
  * <pre>
  * &#64;RegisterExtension
- * static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_HARNESS).create();
+ * SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_HARNESS).create();
  * </pre>
  *
- * <b>Note:</b> This does not enforce an execution order of test cases. If a
- * specific execution order is required, it has to be ensured by different
- * means, such as using a test method order annotation like
+ * <b>Execution Order:</b> Note that this does not enforce an execution order of
+ * test cases. If a specific execution order is required, it has to be ensured
+ * by different means, such as using a test method order annotation like
  * {@link TestMethodOrder}.
+ * <p>
+ * <b>Execution Scope:</b> Note that by default a test class is instantiated
+ * with {@link Lifecycle#PER_METHOD}, so a new extension with a new
+ * configuration will be created for each test method. Often different test
+ * methods are supposed to share a common workspace or configuration. Then, to
+ * use the same extension across all test methods, it must either be defined
+ * {@code static} or the lifecycle of the test class has to be set to
+ * {@link Lifecycle#PER_CLASS}:
  *
  * @see SessionShouldError
  *
@@ -49,6 +61,8 @@ public class SessionTestExtension implements InvocationInterceptor {
 	private final RemoteTestExecutor testExecutor;
 
 	private final Setup setup;
+
+	private final Set<SessionCustomization> sessionCustomizations = new HashSet<>();
 
 	private SessionTestExtension(String pluginId, String applicationId) {
 		try {
@@ -75,36 +89,63 @@ public class SessionTestExtension implements InvocationInterceptor {
 	public static class SessionTestExtensionBuilder {
 		private final String storedPluginId;
 		private String storedApplicationId = CORE_TEST_APPLICATION;
-		private Path storedWorkspaceDirectory;
+		private Set<SessionCustomization> storedSessionCustomizations = new HashSet<>();
 
 		private SessionTestExtensionBuilder(String pluginId) {
 			Objects.requireNonNull(pluginId);
 			this.storedPluginId = pluginId;
 		}
 
+		/**
+		 * Sets the ID of the Eclipse application to start for running the session
+		 * tests.
+		 *
+		 * @param applicationId the ID of the Eclipse application to run the tests in,
+		 *                      must not be {@code null}
+		 *
+		 * @return this
+		 */
 		public SessionTestExtensionBuilder withApplicationId(String applicationId) {
+			Objects.requireNonNull(applicationId);
 			storedApplicationId = applicationId;
 			return this;
 		}
 
 		/**
-		 * Sets the used workspace folder by using the passed path for the "data"
-		 * property of the Eclipse instance. Usually, a temporary folder can be used.
+		 * Sets the given session workspace by using the path of the passed
+		 * customization for the "data" property of the Eclipse instance. The
+		 * customization can be instantiated via
+		 * {@link SessionTestExtension#createCustomWorkspace()}. By default, a temporary
+		 * folder is used for the workspace.
 		 * <p>
-		 * <b>Example Usage:</b>
+		 * <b>Example usage with default workspace directory:</b>
+		 *
+		 * <pre>
+		 * &#64;RegisterExtension
+		 * SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin("")
+		 * 		.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+		 * </pre>
+		 *
+		 * <b>Example usage with custom workspace directory:</b>
 		 *
 		 * <pre>
 		 * &#64;TempDir
-		 * static Path tempDirectory;
+		 * Path workspaceDirectory;
 		 *
 		 * &#64;RegisterExtension
-		 * static SessionTestExtension extension = SessionTestExtension.forPlugin("").withWorkspaceAt(tempDirectory).create();
+		 * SessionTestExtension extension = SessionTestExtension.forPlugin("")
+		 * 		.withCustomization(SessionTestExtension.createCustomWorkspace().setWorkspaceDirectory(workspaceDirectory))
+		 * 		.create();
 		 * </pre>
 		 *
-		 * @param workspaceDirectory the folder to be used for the workspace
+		 * @param sessionWorkspace the customization object for specifying the workspace
+		 *                         directory, must not be {@code null}
+		 *
+		 * @return this
 		 */
-		public SessionTestExtensionBuilder withWorkspaceAt(Path workspaceDirectory) {
-			this.storedWorkspaceDirectory = workspaceDirectory;
+		public SessionTestExtensionBuilder withCustomization(CustomSessionWorkspace sessionWorkspace) {
+			Objects.requireNonNull(sessionWorkspace);
+			this.storedSessionCustomizations.add(sessionWorkspace);
 			return this;
 		}
 
@@ -114,11 +155,21 @@ public class SessionTestExtension implements InvocationInterceptor {
 		 */
 		public SessionTestExtension create() {
 			SessionTestExtension extension = new SessionTestExtension(storedPluginId, storedApplicationId);
-			if (storedWorkspaceDirectory != null) {
-				extension.setEclipseArgument(Setup.DATA, storedWorkspaceDirectory.toString());
-			}
+			storedSessionCustomizations.forEach(customization -> extension.addSessionCustomization(customization));
 			return extension;
 		}
+	}
+
+	private void addSessionCustomization(SessionCustomization sessionCustomization) {
+		this.sessionCustomizations.add(sessionCustomization);
+	}
+
+	/**
+	 * {@return a custom workspace configuration that, by default, uses a temporary
+	 * folder to store the workspace files}
+	 */
+	public static CustomSessionWorkspace createCustomWorkspace() {
+		return new CustomSessionWorkspaceImpl();
 	}
 
 	public void setEclipseArgument(String key, String value) {
@@ -141,7 +192,24 @@ public class SessionTestExtension implements InvocationInterceptor {
 
 		boolean shouldFail = extensionContext.getTestMethod().get().getAnnotation(SessionShouldError.class) != null;
 		invocation.skip();
-		testExecutor.executeRemotely(testClass, testMethod, shouldFail);
+		try {
+			prepareSession();
+			testExecutor.executeRemotely(testClass, testMethod, shouldFail);
+		} finally {
+			cleanupSession();
+		}
+	}
+
+	private void prepareSession() throws Exception {
+		for (SessionCustomization customization : sessionCustomizations) {
+			customization.prepareSession(setup);
+		}
+	}
+
+	private void cleanupSession() throws Exception {
+		for (SessionCustomization customization : sessionCustomizations) {
+			customization.cleanupSession(setup);
+		}
 	}
 
 }
