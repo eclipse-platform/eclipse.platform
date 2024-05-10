@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
  */
 public class SampleSessionTests {
 	@RegisterExtension
-	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_HARNESS).create();
+	SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_HARNESS).create();
 
 	@Nested
 	public class Successful {
