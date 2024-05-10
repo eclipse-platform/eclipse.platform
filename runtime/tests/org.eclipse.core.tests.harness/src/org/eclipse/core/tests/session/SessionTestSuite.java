@@ -28,7 +28,6 @@ public class SessionTestSuite extends TestSuite {
 	public static final String UI_TEST_APPLICATION = "org.eclipse.pde.junit.runtime.uitestapplication"; //$NON-NLS-1$
 	protected String applicationId = CORE_TEST_APPLICATION;
 	private final Set<TestCase> crashTests = new HashSet<>();
-	private final Set<TestCase> localTests = new HashSet<>();
 	// the id for the plug-in whose classloader ought to be used to load the test case class
 	protected String pluginId;
 	private Setup setup;
@@ -59,14 +58,6 @@ public class SessionTestSuite extends TestSuite {
 	 */
 	public void addCrashTest(TestCase test) {
 		crashTests.add(test);
-		super.addTest(test);
-	}
-
-	/**
-	 * Adds a local test, a test that is run locally, not in a separate session.
-	 */
-	public void addLocalTest(TestCase test) {
-		localTests.add(test);
 		super.addTest(test);
 	}
 
@@ -116,11 +107,6 @@ public class SessionTestSuite extends TestSuite {
 		return allTests;
 	}
 
-	private boolean isLocalTest(Test test) {
-		return localTests.contains(test);
-	}
-
-
 	protected Setup newSetup() throws SetupException {
 		Setup base =  SetupManager.getInstance().getDefaultSetup();
 		base.setSystemProperty("org.eclipse.update.reconcile", "false"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -142,12 +128,7 @@ public class SessionTestSuite extends TestSuite {
 		if (test instanceof TestDescriptor) {
 			runSessionTest((TestDescriptor) test, result);
 		} else if (test instanceof TestCase) {
-			if (isLocalTest(test)) {
-				// local, ordinary test - just run it
-				test.run(result);
-			} else {
-				runSessionTest(new TestDescriptor((TestCase) test), result);
-			}
+			runSessionTest(new TestDescriptor((TestCase) test), result);
 		} else if (test instanceof TestSuite) {
 			// find and run the test cases that make up the suite
 			runTestSuite((TestSuite) test, result);
