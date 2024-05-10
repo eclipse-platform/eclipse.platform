@@ -29,7 +29,6 @@ public class SampleTests extends TestSuite {
 		// these tests should run in the same session (don't add to a non-shared session test suite)
 		SessionTestSuite shared = new SessionTestSuite(PI_HARNESS);
 		shared.addTestSuite(SameSessionTest.class);
-		shared.setSharedSession(true);
 		addTest(shared);
 		// play with a crash test
 		addTest(SampleCrashTest.suite());
