@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.StoredFields;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -157,23 +158,26 @@ public class LocalSearchManager {
 
 	public static List<SearchHit> asList(TopDocs topDocs, IndexSearcher searcher) {
 		List<SearchHit> list = new ArrayList<>(topDocs.scoreDocs.length);
-
-		for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-			try {
-				Document doc = searcher.doc(scoreDoc.doc);
-				float score = scoreDoc.score;
-				String href = doc.get("name"); //$NON-NLS-1$
-				String summary = doc.get("summary");			 //$NON-NLS-1$
-				String id = doc.get("id"); //$NON-NLS-1$
-				String participantId = doc.get("participantId"); //$NON-NLS-1$
-				String label = doc.get("raw_title"); //$NON-NLS-1$
-				boolean isPotentialHit = (doc.get("filters") != null); //$NON-NLS-1$
-				list.add(new SearchHit(href, label, summary, score, null, id, participantId, isPotentialHit));
+		try {
+			StoredFields storedFields = searcher.storedFields();
+			for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+				try {
+					Document doc = storedFields.document(scoreDoc.doc);
+					float score = scoreDoc.score;
+					String href = doc.get("name"); //$NON-NLS-1$
+					String summary = doc.get("summary"); //$NON-NLS-1$
+					String id = doc.get("id"); //$NON-NLS-1$
+					String participantId = doc.get("participantId"); //$NON-NLS-1$
+					String label = doc.get("raw_title"); //$NON-NLS-1$
+					boolean isPotentialHit = (doc.get("filters") != null); //$NON-NLS-1$
+					list.add(new SearchHit(href, label, summary, score, null, id, participantId, isPotentialHit));
+				} catch (IOException e) {
+					ILog.of(LocalSearchManager.class).error("An error occured while reading search hits", e); //$NON-NLS-1$
+					continue;
+				}
 			}
-			catch (IOException e) {
-				ILog.of(LocalSearchManager.class).error("An error occured while reading search hits", e); //$NON-NLS-1$
-				continue;
-			}
+		} catch (IOException e) {
+			ILog.of(LocalSearchManager.class).error("An error occured while reading stored fields", e); //$NON-NLS-1$
 		}
 		return list;
 	}
@@ -341,9 +345,7 @@ public class LocalSearchManager {
 	public boolean isParticipantBound(String pluginId, String participantId) {
 		List<ParticipantDescriptor> list = getParticipantDescriptors(pluginId);
 		if (list != null) {
-			Iterator<ParticipantDescriptor> iter = list.iterator();
-			while (iter.hasNext()) {
-				ParticipantDescriptor desc = iter.next();
+			for (ParticipantDescriptor desc : list) {
 				if (participantId.equals(desc.getId())) {
 					return true;
 				}
@@ -394,9 +396,7 @@ public class LocalSearchManager {
 	 * cached data to reduce runtime memory footprint.
 	 */
 	public void clearSearchParticipants() {
-		Iterator<ParticipantDescriptor> iter = searchParticipantsById.values().iterator();
-		while (iter.hasNext()) {
-			ParticipantDescriptor desc = iter.next();
+		for (ParticipantDescriptor desc : searchParticipantsById.values()) {
 			desc.clear();
 		}
 	}
