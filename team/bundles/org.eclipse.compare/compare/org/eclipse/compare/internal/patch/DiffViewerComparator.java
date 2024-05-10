@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -19,9 +19,9 @@ import java.util.regex.Pattern;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
 import org.eclipse.jface.util.Policy;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 
-public class DiffViewerComparator extends ViewerSorter {
+public class DiffViewerComparator extends ViewerComparator {
 
 	public boolean isSorterProperty(Object element, Object property) {
 		return false;
