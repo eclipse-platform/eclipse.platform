@@ -62,12 +62,9 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 	private IPath configurationPath = FileSystemHelper.getRandomLocation(FileSystemHelper.getTempDir());
 	private boolean prime = true;
 	private boolean readOnly;
-	// should the test cases be run in alphabetical order?
-	private boolean shouldSort;
 
 	public ConfigurationSessionTestSuite(String pluginId, Class<?> theClass) {
 		super(pluginId, theClass);
-		this.shouldSort = true;
 	}
 
 	public ConfigurationSessionTestSuite(String pluginId, String name) {
@@ -269,7 +266,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 					fail(e);
 				}
 			}
-			if (!shouldSort || isSharedSession()) {
+			if (isSharedSession()) {
 				// for shared sessions, we don't control the execution of test cases
 				super.run(result);
 				return;
