@@ -269,7 +269,7 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 					fail(e);
 				}
 			}
-			if (!shouldSort || isSharedSession()) {
+			if (!shouldSort) {
 				// for shared sessions, we don't control the execution of test cases
 				super.run(result);
 				return;

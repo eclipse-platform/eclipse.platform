@@ -21,7 +21,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.tests.session.SetupManager.SetupException;
 
 public class SessionTestSuite extends TestSuite {
@@ -33,8 +32,6 @@ public class SessionTestSuite extends TestSuite {
 	// the id for the plug-in whose classloader ought to be used to load the test case class
 	protected String pluginId;
 	private Setup setup;
-	// true if test cases should run in the same (shared) session
-	private boolean sharedSession;
 	protected SessionTestRunner testRunner;
 
 	public SessionTestSuite(String pluginId) {
@@ -123,44 +120,11 @@ public class SessionTestSuite extends TestSuite {
 		return localTests.contains(test);
 	}
 
-	public boolean isSharedSession() {
-		return sharedSession;
-	}
 
 	protected Setup newSetup() throws SetupException {
 		Setup base =  SetupManager.getInstance().getDefaultSetup();
 		base.setSystemProperty("org.eclipse.update.reconcile", "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		return base;
-	}
-
-	/**
-	 * Runs this session test suite.
-	 */
-	@Override
-	public void run(TestResult result) {
-		if (!sharedSession) {
-			super.run(result);
-			return;
-		}
-		// running this session test suite in shared mode
-		Enumeration<Test> tests = tests();
-		Assert.isTrue(tests.hasMoreElements(), "A single test suite must be provided");
-		Test onlyTest = tests.nextElement();
-		Assert.isTrue(!tests.hasMoreElements(), "Only a single test suite can be run");
-		Assert.isTrue(onlyTest instanceof TestSuite, "Only test suites can be run in shared session mode");
-		TestSuite nested = (TestSuite) onlyTest;
-		try {
-			// in shared mode no TestDescriptors are used, need to set up environment ourselves
-			Setup localSetup = (Setup) getSetup().clone();
-			localSetup.setEclipseArgument(Setup.APPLICATION, applicationId);
-			localSetup.setEclipseArgument("testpluginname", pluginId);
-			localSetup.setEclipseArgument("classname", (nested.getName() != null ? nested.getName() : nested.getClass().getName()));
-			// run the session tests
-			new SessionTestRunner().run(this, result, localSetup, false);
-		} catch (SetupException e) {
-			result.addError(this, e.getCause());
-			return;
-		}
 	}
 
 	protected void runSessionTest(TestDescriptor test, TestResult result) {
@@ -175,11 +139,6 @@ public class SessionTestSuite extends TestSuite {
 
 	@Override
 	public final void runTest(Test test, TestResult result) {
-		if (sharedSession) {
-			// just for safety, prevent anybody from calling this API - we don't run individual tests when in shared mode
-			throw new UnsupportedOperationException();
-		}
-
 		if (test instanceof TestDescriptor) {
 			runSessionTest((TestDescriptor) test, result);
 		} else if (test instanceof TestCase) {
@@ -220,7 +179,4 @@ public class SessionTestSuite extends TestSuite {
 		this.setup = setup;
 	}
 
-	public void setSharedSession(boolean sharedSession) {
-		this.sharedSession = sharedSession;
-	}
 }
