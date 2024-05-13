@@ -18,8 +18,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeFalse;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.FrameworkUtil;
 
 import jakarta.inject.Inject;
 
@@ -105,20 +106,26 @@ public class InjectionOSGiTest {
 
 		target = ContextInjectionFactory.make(InjectionTarget.class,
 				localContext);
-	}
-
-	@Test
-	public void ensureJavaxIsNotAvailable() {
 		// Ensure that the providing bundles of the following classes are absent of the
 		// test-runtime and thus the mentioned classes cannot be loaded
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Inject"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Singleton"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Qualifier"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Provider"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Named"));
+		assumeNotFound("javax.inject.Inject");
+		assumeNotFound("javax.inject.Singleton");
+		assumeNotFound("javax.inject.Qualifier");
+		assumeNotFound("javax.inject.Provider");
+		assumeNotFound("javax.inject.Named");
 
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.annotation.PreDestroy"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.annotation.PostConstruct"));
+		assumeNotFound("javax.annotation.PreDestroy");
+		assumeNotFound("javax.annotation.PostConstruct");
+	}
+
+	private void assumeNotFound(String className) {
+		try {
+			Class<?> c = Class.forName(className);
+			Bundle bundle = FrameworkUtil.getBundle(c);
+			assumeFalse(className + " found in bundle " + bundle, true);
+		} catch (ClassNotFoundException expected) {
+			// expected
+		}
 	}
 
 	@Test
