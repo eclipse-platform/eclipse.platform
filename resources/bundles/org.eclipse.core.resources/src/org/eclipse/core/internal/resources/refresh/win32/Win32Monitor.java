@@ -19,14 +19,24 @@ package org.eclipse.core.internal.resources.refresh.win32;
 
 import java.io.Closeable;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.refresh.IRefreshMonitor;
 import org.eclipse.core.resources.refresh.IRefreshResult;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
@@ -176,7 +186,8 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 		protected void findNextChange() {
 			if (!Win32Natives.FindNextChangeNotification(handleValue)) {
 				int error = Win32Natives.GetLastError();
-				if (error != Win32Natives.ERROR_INVALID_HANDLE && error != Win32Natives.ERROR_SUCCESS) {
+				if (error != Win32Natives.ERROR_INVALID_HANDLE && error != Win32Natives.ERROR_SUCCESS
+						&& error != Win32Natives.ERROR_ACCESS_DENIED) {
 					addException(NLS.bind(Messages.WM_errFindChange, Integer.toString(error)));
 				}
 				removeHandle(this);
