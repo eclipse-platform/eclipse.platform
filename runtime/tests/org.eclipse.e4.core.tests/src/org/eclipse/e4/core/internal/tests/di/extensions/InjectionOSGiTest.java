@@ -28,6 +28,7 @@ import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.extensions.OSGiBundle;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -109,6 +110,13 @@ public class InjectionOSGiTest {
 
 	@Test
 	public void ensureJavaxIsNotAvailable() {
+		// This entire test-plugin is not really useful if javax.inject and
+		// jakarta.inject is available and this test-case fails then.
+		// However due to the way I-build tests are set up (i.e. by using a built
+		// Eclipse installation) exactly that's the case.
+		// -> Disable this for I-build tests
+		Assume.assumeFalse("org.eclipse.ant.core.antRunner".equals(System.getProperty("eclipse.application")));
+
 		// Ensure that the providing bundles of the following classes are absent of the
 		// test-runtime and thus the mentioned classes cannot be loaded
 		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Inject"));
