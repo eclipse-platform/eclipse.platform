@@ -44,6 +44,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 	private static final String PROP_INSTALL_AREA = "osgi.install.area";
 	private static final String PROP_CONFIG_AREA_READ_ONLY = InternalPlatform.PROP_CONFIG_AREA + ".readOnly";
 	private static final String PROP_CONFIG_CASCADED = "osgi.configuration.cascaded";
+	private static final String PROP_SHARED_CONFIG_AREA = "osgi.sharedConfiguration.area";
 
 	private final Collection<BundleReference> bundleReferences = new ArrayList<>();
 	private Path configurationDirectory;
@@ -156,6 +157,15 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 		if (firstExecutedSession) {
 			createOrRefreshConfigIni();
 		}
+		// Recreating the config.ini when "cascaded==true" is a work around
+		// update.configurator's class PlatformConfiguration.initializeCurrent(). That
+		// method will overwrite config.ini for shared configurations. As there is no
+		// switch to alter that behavior, this workaround generates a new config.ini for
+		// every test run. In 2007, this was introduced as a temporary workaround as
+		// update.configurator was expected to be close to be being retired.
+		if (cascaded) {
+			createOrRefreshConfigIni();
+		}
 	}
 
 	@Override
@@ -188,6 +198,9 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 		contents.put(PROP_BUNDLES_DEFAULT_START_LEVEL, "4");
 		contents.put(PROP_INSTALL_AREA, Platform.getInstallLocation().getURL().toExternalForm());
 		contents.put(PROP_CONFIG_CASCADED, Boolean.valueOf(cascaded).toString());
+		if (cascaded) {
+			contents.put(PROP_SHARED_CONFIG_AREA, Platform.getConfigurationLocation().getURL().toExternalForm());
+		}
 		contents.put(PROP_CONFIG_AREA_READ_ONLY, Boolean.valueOf(readOnly).toString());
 		// save the properties
 		Path configINI = getConfigurationDirectory().resolve("config.ini");
