@@ -45,6 +45,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 	private static final String PROP_CONFIG_AREA_READ_ONLY = InternalPlatform.PROP_CONFIG_AREA + ".readOnly";
 	private static final String PROP_CONFIG_CASCADED = "osgi.configuration.cascaded";
 	private static final String PROP_SHARED_CONFIG_AREA = "osgi.sharedConfiguration.area";
+	private static final String TEMP_DIR_PREFIX = "eclipse_session_configuration";
 
 	private final Collection<BundleReference> bundleReferences = new ArrayList<>();
 	private Path configurationDirectory;
@@ -141,7 +142,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 
 	private Path getConfigurationDirectory() throws IOException {
 		if (configurationDirectory == null) {
-			this.configurationDirectory = Files.createTempDirectory(null);
+			this.configurationDirectory = Files.createTempDirectory(TEMP_DIR_PREFIX);
 			this.configurationDirectory.toFile().deleteOnExit();
 		}
 		return configurationDirectory;

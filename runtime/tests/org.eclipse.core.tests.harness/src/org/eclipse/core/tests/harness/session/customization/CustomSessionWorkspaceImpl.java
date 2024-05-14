@@ -22,6 +22,7 @@ import org.eclipse.core.tests.session.Setup;
  */
 public class CustomSessionWorkspaceImpl implements CustomSessionWorkspace {
 	private Path workspaceDirectory;
+	private static final String TEMP_DIR_PREFIX = "eclipse_session_workspace";
 
 	public CustomSessionWorkspaceImpl() {
 		// nothing to initialize
@@ -36,7 +37,7 @@ public class CustomSessionWorkspaceImpl implements CustomSessionWorkspace {
 
 	private Path getWorkspaceDirectory() throws IOException {
 		if (workspaceDirectory == null) {
-			this.workspaceDirectory = Files.createTempDirectory(null);
+			this.workspaceDirectory = Files.createTempDirectory(TEMP_DIR_PREFIX);
 			this.workspaceDirectory.toFile().deleteOnExit();
 		}
 		return workspaceDirectory;
