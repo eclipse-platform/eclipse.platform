@@ -2238,7 +2238,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	private Diff handleMouseInSides(Canvas canvas, MergeSourceViewer tp, int my) {
 
-		int lineHeight= tp.getSourceViewer().getTextWidget().getLineHeight();
 		int visibleHeight= tp.getViewportHeight();
 
 		if (! fHighlightRanges)
@@ -2258,8 +2257,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					continue;
 
 				tp.getLineRange(diff.getPosition(leg), region);
-				int y= (region.x * lineHeight) + shift;
-				int h= region.y * lineHeight;
+				int y = getHeightBetweenLines(tp, 0, region.x) + shift;
+				int h = getHeightBetweenLines(tp, region.x, region.x + region.y);
 
 				if (y+h < 0)
 					continue;
@@ -2278,7 +2277,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		if (! fSynchronizedScrolling)
 			return null;
 
-		int lineHeight= fLeft.getSourceViewer().getTextWidget().getLineHeight();
 		int visibleHeight= fRight.getViewportHeight();
 
 		Point size= canvas.getSize();
@@ -2302,12 +2300,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					continue;
 
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
-				int ly= (region.x * lineHeight) + lshift;
-				int lh= region.y * lineHeight;
+				int ly = getHeightBetweenLines(fLeft, 0, region.x) + lshift;
+				int lh = getHeightBetweenLines(fLeft, region.x, region.x + region.y);
 
 				fRight.getLineRange(diff.getPosition(RIGHT_CONTRIBUTOR), region);
-				int ry= (region.x * lineHeight) + rshift;
-				int rh= region.y * lineHeight;
+				int ry = getHeightBetweenLines(fRight, 0, region.x) + rshift;
+				int rh = getHeightBetweenLines(fRight, region.x, region.x + region.y);
 
 				if (Math.max(ly+lh, ry+rh) < 0)
 					continue;
@@ -4197,6 +4195,24 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 	}
 
+	/**
+	 *
+	 * The height in the Text Widget between the two specified lines. The line
+	 * height also depends on spacing and vertical indent.
+	 *
+	 * @param tp
+	 * @param line
+	 * @return
+	 */
+	private int getHeightBetweenLines(MergeSourceViewer tp, int fromLine, int toLine) {
+		StyledText w = tp.getSourceViewer().getTextWidget();
+		int height = 0;
+		for (int i = fromLine; i < toLine; i++) {
+			height += w.getLineHeight(i) + w.getLineSpacing() + w.getLineVerticalIndent(i);
+		}
+		return height;
+	}
+
 	private void invalidateLines() {
 		if (isThreeWay() && isAncestorVisible()) {
 			if (Utilities.okToUse(fAncestorCanvas))
@@ -4246,8 +4262,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		if (! fSynchronizedScrolling)
 			return;
 
-		int lineHeightLeft= fLeft.getSourceViewer().getTextWidget().getLineHeight();
-		int lineHeightRight= fRight.getSourceViewer().getTextWidget().getLineHeight();
 		int visibleHeight= fRight.getViewportHeight();
 
 		Point size= canvas.getSize();
@@ -4281,12 +4295,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					continue;
 
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
-				int ly= (region.x * lineHeightLeft) + lshift;
-				int lh= region.y * lineHeightLeft;
+				int ly = getHeightBetweenLines(fLeft, 0, region.x) + lshift;
+				int lh = getHeightBetweenLines(fLeft, region.x, region.x + region.y);
 
 				fRight.getLineRange(diff.getPosition(RIGHT_CONTRIBUTOR), region);
-				int ry= (region.x * lineHeightRight) + rshift;
-				int rh= region.y * lineHeightRight;
+				int ry = getHeightBetweenLines(fRight, 0, region.x) + rshift;
+				int rh = getHeightBetweenLines(fRight, region.x, region.x + region.y);
 
 				if (Math.max(ly+lh, ry+rh) < 0)
 					continue;
@@ -4389,7 +4403,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		Display display= canvas.getDisplay();
 
-		int lineHeight= tp.getSourceViewer().getTextWidget().getLineHeight();
 		int visibleHeight= tp.getViewportHeight();
 
 		Point size= canvas.getSize();
@@ -4425,8 +4438,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					continue;
 
 				tp.getLineRange(diff.getPosition(leg), region);
-				int y= (region.x * lineHeight) + shift;
-				int h= region.y * lineHeight;
+				int y = getHeightBetweenLines(tp, 0, region.x) + shift;
+				int h = getHeightBetweenLines(tp, region.x, region.x + region.y);
 
 				if (y+h < 0)
 					continue;
@@ -4471,7 +4484,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		Display display= canvas.getDisplay();
 
-		int lineHeight= tp.getSourceViewer().getTextWidget().getLineHeight();
 		int w= canvas.getSize().x;
 		int shift= tp.getVerticalScrollOffset() + (2-LW);
 		int maxh= event.y+event.height; 	// visibleHeight
@@ -4491,8 +4503,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				continue;
 
 			tp.getLineRange(diff.getPosition(leg), range);
-			int y= (range.x * lineHeight) + shift;
-			int h= range.y * lineHeight;
+			int y = getHeightBetweenLines(tp, 0, range.x) + shift;
+			int h = getHeightBetweenLines(tp, range.x, range.x + range.y);
 
 			if (y+h < event.y)
 				continue;
