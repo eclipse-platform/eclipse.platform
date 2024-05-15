@@ -38,7 +38,7 @@ public class CompileErrorPromptStatusHandler implements IStatusHandler {
 			}
 		}
 
-		Shell shell = DebugUIPlugin.getShell();
+		Shell shell = DebugUIPlugin.getShellForModalDialog();
 		String title = LaunchConfigurationsMessages.CompileErrorPromptStatusHandler_0;
 		String message = LaunchConfigurationsMessages.CompileErrorPromptStatusHandler_1;
 		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
