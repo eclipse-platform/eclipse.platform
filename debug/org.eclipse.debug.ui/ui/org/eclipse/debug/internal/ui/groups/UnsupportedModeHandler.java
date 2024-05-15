@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.debug.internal.ui.DebugUIMessages;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PlatformUI;
@@ -35,7 +36,7 @@ public class UnsupportedModeHandler implements IStatusHandler {
 			final String[] data = (String[]) source;
 			PlatformUI.getWorkbench().getDisplay()
 					.asyncExec(() -> MessageDialog.openError(
-							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+							DebugUIPlugin.getShellForModalDialog(),
 							DebugUIMessages.GroupLaunch_Error,
 							NLS.bind(DebugUIMessages.GroupLaunch_Cannot_launch, data[0], data[1])));
 		}

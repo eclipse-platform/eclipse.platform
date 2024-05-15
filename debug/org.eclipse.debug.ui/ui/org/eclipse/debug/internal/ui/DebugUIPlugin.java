@@ -373,6 +373,22 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 	}
 
 	/**
+	 * Returns shell that can be used to get the best parenting possible for a modal
+	 * dialog, or, if there is no one, currently active workbench window shell or
+	 * <code>null</code> if none.
+	 *
+	 * @return the modal shell or currently active workbench window shell or
+	 *         <code>null</code>
+	 */
+	public static Shell getShellForModalDialog() {
+		Shell shell = PlatformUI.getWorkbench().getModalDialogShellProvider().getShell();
+		if (shell == null) {
+			shell = getShell();
+		}
+		return shell;
+	}
+
+	/**
 	 * Returns the default label provider for the debug UI.
 	 * @return the singleton {@link DefaultLabelProvider}
 	 */

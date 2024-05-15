@@ -53,7 +53,7 @@ public class CompileErrorProjectPromptStatusHandler implements IStatusHandler {
 				}
 			}
 		}
-		Shell shell = DebugUIPlugin.getShell();
+		Shell shell = DebugUIPlugin.getShellForModalDialog();
 		StringBuilder projectList = new StringBuilder();
 		//we need to limit this
 		int size = Math.min(20, projects.size());

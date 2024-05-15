@@ -241,7 +241,7 @@ public class SaveScopeResourcesHandler implements IStatusHandler {
 		if(save) {
 			IResource[] resources = getScopedDirtyResources(projects);
 			if(prompt && (resources.length > 0)) {
-				ScopedResourcesSelectionDialog lsd = new ScopedResourcesSelectionDialog(DebugUIPlugin.getShell(),
+				ScopedResourcesSelectionDialog lsd = new ScopedResourcesSelectionDialog(DebugUIPlugin.getShellForModalDialog(),
 						new AdaptableList(resources),
 						new WorkbenchContentProvider(),
 						new SaveResourceDialogWorkbenchLabelProvider());

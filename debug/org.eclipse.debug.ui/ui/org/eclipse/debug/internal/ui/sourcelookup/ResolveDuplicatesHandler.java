@@ -45,7 +45,7 @@ public class ResolveDuplicatesHandler implements IStatusHandler {
 		} else if(sources.isEmpty()) {
 			return null;
 		}
-		ElementListSelectionDialog dialog = new ElementListSelectionDialog(DebugUIPlugin.getShell(), new SourceElementLabelProvider());
+		ElementListSelectionDialog dialog = new ElementListSelectionDialog(DebugUIPlugin.getShellForModalDialog(), new SourceElementLabelProvider());
 		dialog.setMultipleSelection(false);
 		dialog.setTitle(SourceLookupUIMessages.ResolveDuplicatesHandler_0);
 		dialog.setMessage(SourceLookupUIMessages.ResolveDuplicatesHandler_1);

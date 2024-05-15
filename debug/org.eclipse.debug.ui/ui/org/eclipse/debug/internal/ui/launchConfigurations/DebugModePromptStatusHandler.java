@@ -50,7 +50,7 @@ public class DebugModePromptStatusHandler implements IStatusHandler {
 			}
 		}
 
-		Shell activeShell = DebugUIPlugin.getShell();
+		Shell activeShell = DebugUIPlugin.getShellForModalDialog();
 		String title = LaunchConfigurationsMessages.DebugModePromptStatusHandler_0;
 		String message = LaunchConfigurationsMessages.DebugModePromptStatusHandler_1;
 
