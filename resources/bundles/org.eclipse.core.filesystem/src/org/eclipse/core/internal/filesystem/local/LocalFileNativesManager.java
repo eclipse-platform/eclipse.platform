@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.internal.filesystem.local.nio.DefaultHandler;
-import org.eclipse.core.internal.filesystem.local.nio.DosHandler;
 import org.eclipse.core.internal.filesystem.local.nio.PosixHandler;
 import org.eclipse.core.internal.filesystem.local.unix.UnixFileHandler;
 import org.eclipse.core.internal.filesystem.local.unix.UnixFileNatives;
@@ -73,7 +72,7 @@ public class LocalFileNativesManager {
 			if (views.contains("posix")) { //$NON-NLS-1$
 				HANDLER = new PosixHandler();
 			} else if (views.contains("dos")) { //$NON-NLS-1$
-				HANDLER = new DosHandler();
+				HANDLER = new Win32Handler();
 			} else {
 				HANDLER = new DefaultHandler();
 			}

@@ -25,8 +25,8 @@ public class Convert {
 	/** Indicates if we are running on windows */
 	private static final boolean IS_WINDOWS = Platform.OS.isWindows();
 
-	private static final String WIN32_FILE_PREFIX = "\\\\?\\"; //$NON-NLS-1$
-	private static final String WIN32_UNC_FILE_PREFIX = "\\\\?\\UNC"; //$NON-NLS-1$
+	public static final String WIN32_RAW_PATH_PREFIX = "\\\\?\\"; //$NON-NLS-1$
+	public static final String WIN32_UNC_RAW_PATH_PREFIX = "\\\\?\\UNC"; //$NON-NLS-1$
 
 	/**
 	 * Calling new String(byte[] s) creates a new encoding object and other garbage.
@@ -68,7 +68,7 @@ public class Convert {
 
 	/**
 	 * Converts a file name to a unicode char[] suitable for use by native methods.
-	 * See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/fileio/fs/naming_a_file.asp
+	 * See https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file
 	 */
 	public static char[] toPlatformChars(String target) {
 		//Windows use special prefix to handle long filenames
@@ -78,17 +78,17 @@ public class Convert {
 		//convert UNC path of form \\server\path to unicode form \\?\UNC\server\path
 		if (target.startsWith("\\\\")) { //$NON-NLS-1$
 			int nameLength = target.length();
-			int prefixLength = WIN32_UNC_FILE_PREFIX.length();
+			int prefixLength = WIN32_UNC_RAW_PATH_PREFIX.length();
 			char[] result = new char[prefixLength + nameLength - 1];
-			WIN32_UNC_FILE_PREFIX.getChars(0, prefixLength, result, 0);
+			WIN32_UNC_RAW_PATH_PREFIX.getChars(0, prefixLength, result, 0);
 			target.getChars(1, nameLength, result, prefixLength);
 			return result;
 		}
 		//convert simple path of form c:\path to unicode form \\?\c:\path
 		int nameLength = target.length();
-		int prefixLength = WIN32_FILE_PREFIX.length();
+		int prefixLength = WIN32_RAW_PATH_PREFIX.length();
 		char[] result = new char[prefixLength + nameLength];
-		WIN32_UNC_FILE_PREFIX.getChars(0, prefixLength, result, 0);
+		WIN32_RAW_PATH_PREFIX.getChars(0, prefixLength, result, 0);
 		target.getChars(0, nameLength, result, prefixLength);
 		return result;
 	}
