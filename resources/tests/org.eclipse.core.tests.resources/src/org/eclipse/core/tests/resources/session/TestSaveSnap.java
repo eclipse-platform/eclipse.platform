@@ -19,23 +19,36 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests saving the workspace, then performing snapshots, then crashing and recovering
  */
-public class TestSaveSnap extends WorkspaceSerializationTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSaveSnap {
+	private static final String PROJECT = "Project";
+	private static final String FOLDER = "Folder";
+	private static final String FILE = "File";
 
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
+	@Test
+	@Order(1)
 	public void test1() throws Exception {
 		/* create some resource handles */
 		IProject project = getWorkspace().getRoot().getProject(PROJECT);
@@ -43,14 +56,14 @@ public class TestSaveSnap extends WorkspaceSerializationTest {
 		project.open(createTestMonitor());
 
 		/* full save */
-		workspace.save(true, createTestMonitor());
+		getWorkspace().save(true, createTestMonitor());
 
 		/* do more stuff */
 		IFolder folder = project.getFolder(FOLDER);
 		folder.create(true, true, createTestMonitor());
 
 		//snapshot
-		workspace.save(false, createTestMonitor());
+		getWorkspace().save(false, createTestMonitor());
 
 		/* do even more stuff */
 		IFile file = folder.getFile(FILE);
@@ -60,11 +73,13 @@ public class TestSaveSnap extends WorkspaceSerializationTest {
 		}
 
 		//snapshot
-		workspace.save(false, createTestMonitor());
+		getWorkspace().save(false, createTestMonitor());
 
 		//exit without saving
 	}
 
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject(PROJECT);
 		IFolder folder = project.getFolder(FOLDER);
@@ -81,7 +96,4 @@ public class TestSaveSnap extends WorkspaceSerializationTest {
 		assertExistsInWorkspace(new IResource[] { project, folder, file });
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestSaveSnap.class);
-	}
 }

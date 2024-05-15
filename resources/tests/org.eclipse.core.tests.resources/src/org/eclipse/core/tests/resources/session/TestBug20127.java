@@ -20,28 +20,40 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests regression of bug 20127 - error restoring builder state after
  * project move.
  */
-public class TestBug20127 extends WorkspaceSerializationTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestBug20127 {
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
 	/**
-	 * Setup.  Creates a project with a builder, with a built state,
-	 * autobuild off.
+	 * Setup. Creates a project with a builder, with a built state, autobuild off.
 	 */
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
-		IProject project = workspace.getRoot().getProject("Project1");
+		IProject project = getWorkspace().getRoot().getProject("Project1");
 		createInWorkspace(project);
 		setAutoBuilding(false);
 
@@ -50,7 +62,7 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 				.withTestBuilderId("Project1Build1").apply();
 
 		//initial build
-		workspace.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		getWorkspace().save(true, createTestMonitor());
 	}
@@ -58,28 +70,29 @@ public class TestBug20127 extends WorkspaceSerializationTest {
 	/**
 	 * Rename the project without invoking any builds.
 	 */
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
-		IProject project = workspace.getRoot().getProject("Project1");
+		IProject project = getWorkspace().getRoot().getProject("Project1");
 		IProjectDescription desc = project.getDescription();
 		desc.setName("MovedProject");
 		project.move(desc, IResource.NONE, createTestMonitor());
-		workspace.save(true, createTestMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
 	/**
 	 * If this session starts correctly then the bug is fixed
 	 */
+	@Test
+	@Order(3)
 	public void test3() throws CoreException {
-		IProject oldLocation = workspace.getRoot().getProject("Project1");
-		IProject newLocation = workspace.getRoot().getProject("MovedProject");
+		IProject oldLocation = getWorkspace().getRoot().getProject("Project1");
+		IProject newLocation = getWorkspace().getRoot().getProject("MovedProject");
 
 		assertFalse(oldLocation.exists());
 		assertTrue(newLocation.exists());
 		assertTrue(newLocation.isOpen());
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug20127.class);
-	}
 }

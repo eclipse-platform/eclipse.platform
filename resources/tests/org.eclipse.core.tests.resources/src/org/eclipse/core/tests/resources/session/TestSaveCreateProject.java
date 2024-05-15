@@ -14,33 +14,48 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests recovery after adding a project and not saving
  */
-public class TestSaveCreateProject extends WorkspaceSerializationTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSaveCreateProject {
+	private static final String PROJECT = "Project";
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		/* create some resource handles */
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
-		workspace.save(true, createTestMonitor());
+		IProject project = getWorkspace().getRoot().getProject(PROJECT);
+		getWorkspace().save(true, createTestMonitor());
 
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 	}
 
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IWorkspaceRoot root = getWorkspace().getRoot();
 		assertThat(root.exists()).isTrue();
 		IResource[] children = root.members();
 		assertThat(children).singleElement().asInstanceOf(InstanceOfAssertFactories.type(IProject.class))
@@ -50,7 +65,4 @@ public class TestSaveCreateProject extends WorkspaceSerializationTest {
 				});
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestSaveCreateProject.class);
-	}
 }
