@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
@@ -21,27 +22,38 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.eclipse.core.tests.internal.builders.DeltaVerifierBuilder;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * When a builder is run, it reports what projects it is interested in obtaining
  * deltas for the next time it is run.  This class tests that this list of "interesting"
  * projects is correctly saved between sessions.
  */
-public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestInterestingProjectPersistence {
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
 	//various resource handles
 	private IProject project1;
 	private IProject project2;
@@ -52,9 +64,8 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 	private IFile file3;
 	private IFile file4;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project1 = root.getProject("Project1");
 		project2 = root.getProject("Project2");
@@ -69,6 +80,8 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 	/**
 	 * Create projects, setup a builder, and do an initial build.
 	 */
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		IResource[] resources = {project1, project2, project3, project4, file1, file2, file3, file4};
 		createInWorkspace(resources);
@@ -87,6 +100,8 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 	/**
 	 * Check that "no interesting builders" case suceeded, then ask for more projects.
 	 */
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
 		DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		builder.checkDeltas(new IProject[] {project1, project2, project3, project4});
@@ -96,12 +111,12 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		ArrayList<IProject> received = builder.getReceivedDeltas();
 
 		// should have received only a delta for project1
-		assertEquals("1.0", 1, received.size());
-		assertTrue("1.1", received.contains(project1));
+		assertThat(received).hasSize(1);
+		assertTrue(received.contains(project1));
 
 		// should be no empty deltas
 		ArrayList<IProject> empty = builder.getEmptyDeltas();
-		assertEquals("1.2", 0, empty.size());
+		assertThat(empty).isEmpty();
 
 		// save
 		getWorkspace().save(true, createTestMonitor());
@@ -110,6 +125,8 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 	/**
 	 * Check that interesting projects (1, 2, and 4) were stored and retrieved
 	 */
+	@Test
+	@Order(3)
 	public void test3() throws CoreException {
 		DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
 		builder.checkDeltas(new IProject[] {project1, project2, project3, project4});
@@ -138,7 +155,4 @@ public class TestInterestingProjectPersistence extends WorkspaceSessionTest {
 		getWorkspace().save(true, createTestMonitor());
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestInterestingProjectPersistence.class);
-	}
 }

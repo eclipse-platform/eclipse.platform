@@ -23,7 +23,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.io.ByteArrayInputStream;
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -31,24 +30,34 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests that multiple builders of the same type can be installed on a single
  * project, and that their deltas are correctly serialized and associated with
  * the correct builder in the next session.
  */
-public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestMultipleBuildersOfSameType {
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
 	//various resource handles
 	private IProject project1;
 	private IFolder sorted1, unsorted1;
 	private IFile unsortedFile1;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project1 = root.getProject("Project1");
 		unsorted1 = project1.getFolder(SortBuilder.UNSORTED_FOLDER);
@@ -59,6 +68,8 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 	/**
 	 * Create projects, setup a builder, and do an initial build.
 	 */
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		IResource[] resources = {project1, unsorted1, sorted1, unsortedFile1};
 		createInWorkspace(resources);
@@ -82,6 +93,8 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 	 * Do another build immediately after restart.  Builder1 should be invoked because it cares
 	 * about changes made by Builder2 during the last build phase.
 	 */
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		//Only builder1 should have been built
@@ -90,10 +103,6 @@ public class TestMultipleBuildersOfSameType extends WorkspaceSessionTest {
 			assertThat(first.wasBuilt()).isTrue();
 			assertThat(first.wasIncrementalBuild()).isTrue();
 		}, second -> assertThat(second.wasAutoBuild()).isFalse());
-	}
-
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestMultipleBuildersOfSameType.class);
 	}
 
 }

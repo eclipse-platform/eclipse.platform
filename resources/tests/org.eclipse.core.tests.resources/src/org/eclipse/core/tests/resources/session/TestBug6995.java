@@ -20,28 +20,39 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests the fix for bug 6995.  In this bug, a snapshot immediately after startup and
  * before doing any builds was losing the old built tree.  A subsequent build would
  * revert to a full build.
  */
-public class TestBug6995 extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestBug6995 {
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
 	/**
 	 * Create a project and configure a builder for it.
 	 */
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		setAutoBuilding(false);
@@ -64,6 +75,8 @@ public class TestBug6995 extends WorkspaceSessionTest {
 	/**
 	 * After restarted the workspace, do a snapshot, then try to build.
 	 */
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject("Project");
@@ -82,7 +95,4 @@ public class TestBug6995 extends WorkspaceSessionTest {
 		assertTrue(builder.wasIncrementalBuild());
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug6995.class);
-	}
 }

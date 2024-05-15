@@ -21,10 +21,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -33,17 +33,25 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.eclipse.core.tests.internal.builders.SnowBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests persistence cases for builders that are missing or disabled.
  */
-public class TestMissingBuilder extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestMissingBuilder {
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
 	/**
 	 * Returns true if this project's build spec has the given builder,
 	 * and false otherwise.
@@ -67,6 +75,8 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 * Setup.  Create a project that has a disabled builder due to
 	 * missing nature prerequisite.
 	 */
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 		createInWorkspace(project);
@@ -95,6 +105,8 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 * Now assert that the disabled builder was carried forward and that
 	 * it still doesn't build.
 	 */
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 
@@ -115,6 +127,8 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 	 * Test again in another workspace.  This ensures that disabled builders
 	 * that were never instantiated get carried forward correctly.
 	 */
+	@Test
+	@Order(3)
 	public void test3() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("P1");
 
@@ -138,10 +152,6 @@ public class TestMissingBuilder extends WorkspaceSessionTest {
 		waitForBuild();
 		builder.assertLifecycleEvents();
 		assertTrue(builder.wasDeltaNull());
-
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestMissingBuilder.class);
-	}
 }

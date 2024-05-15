@@ -16,22 +16,28 @@ package org.eclipse.core.tests.resources.content;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class TestBug94498 extends TestCase {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestBug94498 {
 
 	private static final String FILE_NAME = "foo.bar.zoo";
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug94498.class);
-	}
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		IContentType text = Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
 		assertThat(text).isNotNull();
@@ -40,10 +46,13 @@ public class TestBug94498 extends TestCase {
 		assertThat(fileSpecs).containsExactly(FILE_NAME);
 	}
 
+	@Test
+	@Order(2)
 	public void test2() {
 		IContentType text = Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
 		assertThat(text).isNotNull();
 		String[] fileSpecs = text.getFileSpecs(IContentType.FILE_NAME_SPEC | IContentType.IGNORE_PRE_DEFINED);
 		assertThat(fileSpecs).containsExactly(FILE_NAME);
 	}
+
 }

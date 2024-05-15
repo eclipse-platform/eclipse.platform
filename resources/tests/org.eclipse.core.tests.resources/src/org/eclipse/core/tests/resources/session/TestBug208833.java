@@ -17,26 +17,37 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests regression of bug 208833 - project resource tree is deleted when Eclipse fails to access its metainfo
  * during startup. It results in empty resource tree when the project's metadata is accessible again and the project is open.
  */
-public class TestBug208833 extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestBug208833 {
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
 	/**
 	 * Setup.  Creates a project with a file.
 	 */
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 
@@ -59,6 +70,8 @@ public class TestBug208833 extends WorkspaceSessionTest {
 	/**
 	 * Eclipse started again.
 	 */
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 
@@ -80,7 +93,4 @@ public class TestBug208833 extends WorkspaceSessionTest {
 		assertTrue(file1.exists());
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug208833.class);
-	}
 }

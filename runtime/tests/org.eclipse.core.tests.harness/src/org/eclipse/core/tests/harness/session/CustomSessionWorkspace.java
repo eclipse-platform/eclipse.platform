@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness.session;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import org.eclipse.core.tests.harness.session.customization.SessionCustomization;
 
@@ -17,6 +18,11 @@ import org.eclipse.core.tests.harness.session.customization.SessionCustomization
  * A session customization to use a custom workspace directory.
  */
 public interface CustomSessionWorkspace extends SessionCustomization {
+
+	/**
+	 * {@return the path of the used workspace directory}
+	 */
+	public Path getWorkspaceDirectory() throws IOException;
 
 	/**
 	 * Sets the given workspace directory. If not called, a temporary folder is used

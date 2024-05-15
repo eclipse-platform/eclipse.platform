@@ -220,8 +220,28 @@ public class SessionTestExtension implements InvocationInterceptor {
 		return new CustomSessionConfigurationImpl();
 	}
 
+	/**
+	 * Sets the given Eclipse program argument to the given value for sessions
+	 * executed with this extension.
+	 *
+	 * @param key   the Eclipse argument key, must not be {@code null}
+	 * @param value the Eclipse argument value to set, may be {@code null} to remove
+	 *              the key
+	 */
 	public void setEclipseArgument(String key, String value) {
 		setup.setEclipseArgument(key, value);
+	}
+
+	/**
+	 * Sets the given system property to the given value for sessions executed with
+	 * this extension.
+	 *
+	 * @param key   the system property key, must not be {@code null}
+	 * @param value the system property value to set, may be {@code null} to remove
+	 *              the key
+	 */
+	public void setSystemProperty(String key, String value) {
+		setup.setSystemProperty(key, value);
 	}
 
 	@Override

@@ -20,36 +20,45 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Copies the tests from HistoryStoreTest#testFindDeleted, phrased
  * as a session test.
  */
-public class FindDeletedMembersTest extends WorkspaceSessionTest {
-	//common objects
-	protected IWorkspaceRoot root;
-	protected IProject project;
-	protected IFile pfile;
-	protected IFile folderAsFile;
-	protected IFolder folder;
-	protected IFile file;
-	protected IFile file1;
-	protected IFile file2;
-	protected IFolder folder2;
-	protected IFile file3;
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class FindDeletedMembersTest {
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
+	//common objects
+	private IWorkspaceRoot root;
+	private IProject project;
+	private IFile pfile;
+	private IFile folderAsFile;
+	private IFolder folder;
+	private IFile file;
+	private IFile file1;
+	private IFile file2;
+	private IFolder folder2;
+	private IFile file3;
+
+	@BeforeEach
+	public void setUp() throws Exception {
 		root = getWorkspace().getRoot();
 		project = root.getProject("MyProject");
 		pfile = project.getFile("file.txt");
@@ -66,6 +75,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		getWorkspace().save(true, createTestMonitor());
 	}
 
+	@Test
+	@Order(1)
 	public void test1() throws Exception {
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
@@ -80,6 +91,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		saveWorkspace();
 	}
 
+	@Test
+	@Order(2)
 	public void test2() throws Exception {
 		// the deleted file should show up as a deleted member of project
 		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor()))
@@ -100,6 +113,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		saveWorkspace();
 	}
 
+	@Test
+	@Order(3)
 	public void test3() throws Exception {
 		// the deleted file should no longer show up as a deleted member of project
 		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
@@ -127,6 +142,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		saveWorkspace();
 	}
 
+	@Test
+	@Order(4)
 	public void test4() throws Exception {
 		// the deleted file should show up as a deleted member
 		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
@@ -148,6 +165,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		saveWorkspace();
 	}
 
+	@Test
+	@Order(5)
 	public void test5() throws Exception {
 		// the deleted file should show up as a deleted member of project
 		assertThat(project.findDeletedMembersWithHistory(IResource.DEPTH_ONE, createTestMonitor())).isEmpty();
@@ -187,6 +206,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		saveWorkspace();
 	}
 
+	@Test
+	@Order(6)
 	public void test6() throws Exception {
 		// under root
 		assertThat(root.findDeletedMembersWithHistory(IResource.DEPTH_ZERO, createTestMonitor())).isEmpty();
@@ -215,6 +236,8 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		saveWorkspace();
 	}
 
+	@Test
+	@Order(7)
 	public void test7() throws Exception {
 		// once the project is gone, so is all the history for that project
 		// under root
@@ -240,7 +263,4 @@ public class FindDeletedMembersTest extends WorkspaceSessionTest {
 		saveWorkspace();
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, FindDeletedMembersTest.class);
-	}
 }
