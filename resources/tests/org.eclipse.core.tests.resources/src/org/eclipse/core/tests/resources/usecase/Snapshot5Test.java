@@ -19,6 +19,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -29,12 +31,12 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * Only verifies previous session.
  */
-public class Snapshot5Test extends SnapshotTest {
+public class Snapshot5Test {
 	public void testVerifyPreviousSession() throws CoreException {
 		// MyProject
-		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
-		assertTrue("0.0", project.exists());
-		assertTrue("0.1", project.isOpen());
+		IProject project = getWorkspace().getRoot().getProject(SnapshotTest.PROJECT_1);
+		assertTrue(project.exists());
+		assertTrue(project.isOpen());
 
 		// verify existence of children
 		IResource[] resources = buildResources(project, Snapshot4Test.defineHierarchy1());
@@ -51,8 +53,8 @@ public class Snapshot5Test extends SnapshotTest {
 		assertDoesNotExistInWorkspace(folder);
 
 		// Project2
-		project = getWorkspace().getRoot().getProject(PROJECT_2);
-		assertTrue("3.0", !project.exists());
+		project = getWorkspace().getRoot().getProject(SnapshotTest.PROJECT_2);
+		assertFalse(project.exists());
 	}
 
 }
