@@ -14,40 +14,32 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.Setup;
-import org.eclipse.core.tests.session.SetupManager.SetupException;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests that encoding is set according to jvm arguments
  */
-public class TestWorkspaceEncodingWithJvmArgs extends WorkspaceSessionTest {
+public class TestWorkspaceEncodingWithJvmArgs {
 
 	private static final String CHARSET = "UTF-16";
 
-	public static Test suite() {
-		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS,
-				TestWorkspaceEncodingWithJvmArgs.class);
-		try {
+	@RegisterExtension
+	SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
-			// add pluginCustomization argument
-			Setup setup = suite.getSetup();
-			setup.setSystemProperty("file.encoding", CHARSET);
-		} catch (SetupException e) {
-			// ignore, the test will fail for us
-		}
-		return suite;
+	@BeforeEach
+	public void setUpSession() {
+		sessionTestExtension.setSystemProperty("file.encoding", "UTF-16");
 	}
 
-	public TestWorkspaceEncodingWithJvmArgs() {
-		super();
-	}
-
+	@Test
 	public void testExpectedEncoding() throws Exception {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		// Should be system default
@@ -58,4 +50,5 @@ public class TestWorkspaceEncodingWithJvmArgs extends WorkspaceSessionTest {
 		String charset = workspace.getRoot().getDefaultCharset(false);
 		assertEquals(CHARSET, charset);
 	}
+
 }

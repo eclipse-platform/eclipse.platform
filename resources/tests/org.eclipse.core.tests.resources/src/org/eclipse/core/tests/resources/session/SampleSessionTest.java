@@ -15,26 +15,36 @@ package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
- * This class is a simple example of how session tests operate.  Each method
- * starting with "test" will be invoked, in the order they are declared, in a separate
- * runtime instance of the workspace.  Contents on disk are automatically
- * cleaned up after the last test method is run.
+ * This class is a simple example of how session tests operate. Each method
+ * starting with "test" will be invoked, in the order they are declared, in a
+ * separate runtime instance of the workspace. Contents on disk are
+ * automatically cleaned up after the last test method is run.
  */
-public class SampleSessionTest extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class SampleSessionTest {
 
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
+	@Test
+	@Order(1)
 	public void test1() throws Exception {
-		//create a project, save workspace
+		// create a project, save workspace
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject p1 = workspace.getRoot().getProject("P1");
 		p1.create(null);
@@ -44,16 +54,14 @@ public class SampleSessionTest extends WorkspaceSessionTest {
 		workspace.save(true, null);
 	}
 
+	@Test
+	@Order(2)
 	public void test2() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject p1 = workspace.getRoot().getProject("P1");
 		IFile file = p1.getFile("foo.txt");
 		assertTrue(p1.exists());
 		assertTrue(file.exists());
-	}
-
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, SampleSessionTest.class);
 	}
 
 }

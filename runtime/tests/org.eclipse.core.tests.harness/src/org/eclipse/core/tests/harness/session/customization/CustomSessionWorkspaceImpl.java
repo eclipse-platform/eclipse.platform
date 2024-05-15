@@ -37,7 +37,8 @@ public class CustomSessionWorkspaceImpl implements CustomSessionWorkspace {
 		return this;
 	}
 
-	private Path getWorkspaceDirectory() throws IOException {
+	@Override
+	public Path getWorkspaceDirectory() throws IOException {
 		if (workspaceDirectory == null) {
 			this.workspaceDirectory = Files.createTempDirectory(TEMP_DIR_PREFIX);
 			deleteOnShutdownRecursively(workspaceDirectory);

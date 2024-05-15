@@ -19,6 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.core.internal.resources.ContentDescriptionManager;
 import org.eclipse.core.internal.resources.Workspace;
@@ -28,11 +29,13 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.eclipse.core.tests.resources.ContentDescriptionManagerTest;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests that the content description cache is preserved across sessions.
@@ -42,12 +45,15 @@ import junit.framework.Test;
  * in the second session.  For details, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=94859.
  * @since 3.2
  */
-public class TestBug93473 extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestBug93473 {
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug93473.class);
-	}
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
+	@Test
+	@Order(1)
 	public void test1stSession() throws CoreException {
 		final IWorkspace workspace = getWorkspace();
 
@@ -79,6 +85,8 @@ public class TestBug93473 extends WorkspaceSessionTest {
 		workspace.save(true, createTestMonitor());
 	}
 
+	@Test
+	@Order(2)
 	public void test2ndSession() {
 		// cache should preserve state across sessions
 		assertEquals(ContentDescriptionManager.USED_CACHE,

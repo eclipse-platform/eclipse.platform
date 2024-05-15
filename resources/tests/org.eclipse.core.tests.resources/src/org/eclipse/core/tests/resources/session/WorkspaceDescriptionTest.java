@@ -18,19 +18,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Ensures that the workspace description is correctly persisted across
  * sessions.
  */
-public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class WorkspaceDescriptionTest {
 	private static final String[] BUILD_ORDER = new String[] {"Foo"};
 	private static final boolean APPLY_POLICY = false;
 	private static final long STATE_LONGEVITY = 123456;
@@ -38,6 +42,12 @@ public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
 	private static final long MAX_FILE_SIZE = 1024 * 53;
 	private static final long SNAPSHOT_INTERVAL = 4321;
 
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceDescription desc = workspace.getDescription();
@@ -52,6 +62,8 @@ public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
 		workspace.save(true, createTestMonitor());
 	}
 
+	@Test
+	@Order(2)
 	public void test2() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceDescription desc = workspace.getDescription();
@@ -66,7 +78,4 @@ public class WorkspaceDescriptionTest extends WorkspaceSessionTest {
 				.isEqualTo(SNAPSHOT_INTERVAL);
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, WorkspaceDescriptionTest.class);
-	}
 }

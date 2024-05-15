@@ -17,7 +17,12 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.eclipse.core.internal.resources.TestingSupport;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -25,54 +30,36 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.SessionTestSuite;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.tests.harness.session.CustomSessionWorkspace;
+import org.eclipse.core.tests.harness.session.SessionShouldError;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Test for bug 294854
  */
-public class TestBug294854 extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestBug294854 {
 	private static final String PROJECT_OLD_NAME = "project_old_name";
 	private static final String PROJECT_NEW_NAME = "project_new_name";
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(TestBug294854.class.getName());
-		//		suite.addTest(new TestBug294854("testRenameUsingResourcePath_01"));
+	private static final String RESET_WORKSPACE_BEFORE_TAG = "RESET_WORKSPACE";
 
-		SessionTestSuite scenario1 = new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, "renameUsingProjectDescription");
-		scenario1.addCrashTest(new TestBug294854("testRenameUsingProjectDescription_01"));
-		scenario1.addTest(new TestBug294854("testRenameUsingProjectDescription_02"));
+	private static CustomSessionWorkspace sessionWorkspace = SessionTestExtension.createCustomWorkspace();
 
-		SessionTestSuite scenario2 = new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, "renameUsingResourcePath");
-		scenario2.addCrashTest(new TestBug294854("testRenameUsingResourcePath_01"));
-		scenario2.addTest(new TestBug294854("testRenameUsingResourcePath_02"));
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(sessionWorkspace).create();
 
-		SessionTestSuite scenario3 = new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, "delete");
-		scenario3.addCrashTest(new TestBug294854("testDelete_01"));
-		scenario3.addTest(new TestBug294854("testDelete_02"));
-
-		SessionTestSuite scenario4 = new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS,
-				"deleteWithoutWaitingForSnapshot");
-		scenario4.addCrashTest(new TestBug294854("testDeleteWithoutWaitingForSnapshot_01"));
-		scenario4.addTest(new TestBug294854("testDeleteWithoutWaitingForSnapshot_02"));
-
-		suite.addTest(scenario1);
-		suite.addTest(scenario2);
-		suite.addTest(scenario3);
-		suite.addTest(scenario4);
-
-		return suite;
-	}
-
-	public TestBug294854(String name) {
-		super(name);
-	}
-
-	private IProject createProject() throws CoreException {
+	private static IProject createProject() throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_OLD_NAME);
 		createInWorkspace(project);
@@ -85,16 +72,28 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		return project;
 	}
 
-	private boolean checkProjectExists(String name) {
+	private static boolean checkProjectExists(String name) {
 		IProject project = getWorkspace().getRoot().getProject(name);
 		return project.exists();
 	}
 
-	private boolean checkProjectIsOpen(String name) {
+	private static boolean checkProjectIsOpen(String name) {
 		IProject project = getWorkspace().getRoot().getProject(name);
 		return project.isOpen();
 	}
 
+	@BeforeEach
+	public void resetWorkspace(TestInfo testInfo) throws IOException {
+		if (testInfo.getTags().contains(RESET_WORKSPACE_BEFORE_TAG)) {
+			Path newWorkspace = Files.createTempDirectory(null);
+			newWorkspace.toFile().deleteOnExit();
+			sessionWorkspace.setWorkspaceDirectory(newWorkspace);
+		}
+	}
+
+	@Test
+	@SessionShouldError
+	@Order(1)
 	public void testRenameUsingProjectDescription_01() throws CoreException, InterruptedException {
 		IProject project = createProject();
 
@@ -110,17 +109,22 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		System.exit(1);
 	}
 
+	@Test
+	@Order(2)
 	public void testRenameUsingProjectDescription_02() {
 		assertFalse(checkProjectExists(PROJECT_OLD_NAME));
 		assertTrue(checkProjectExists(PROJECT_NEW_NAME));
 	}
 
+	@Test
+	@Tag(RESET_WORKSPACE_BEFORE_TAG)
+	@SessionShouldError
+	@Order(11)
 	public void testRenameUsingResourcePath_01() throws CoreException, InterruptedException {
 		IProject project = createProject();
-
+		IPath newLocation = project.getFullPath().removeLastSegments(1).append(PROJECT_NEW_NAME);
 		// move project using IPath
-		project.move(project.getFullPath().removeLastSegments(1).append(PROJECT_NEW_NAME), true, createTestMonitor());
-
+		project.move(newLocation, true, createTestMonitor());
 		// wait for the snapshot job to run
 		TestingSupport.waitForSnapshot();
 
@@ -128,11 +132,17 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		System.exit(1);
 	}
 
+	@Test
+	@Order(12)
 	public void testRenameUsingResourcePath_02() {
 		assertFalse(checkProjectExists(PROJECT_OLD_NAME));
 		assertTrue(checkProjectExists(PROJECT_NEW_NAME));
 	}
 
+	@Test
+	@Tag(RESET_WORKSPACE_BEFORE_TAG)
+	@SessionShouldError
+	@Order(21)
 	public void testDelete_01() throws CoreException {
 		IProject project = createProject();
 
@@ -146,10 +156,16 @@ public class TestBug294854 extends WorkspaceSessionTest {
 		System.exit(1);
 	}
 
+	@Test
+	@Order(22)
 	public void testDelete_02() {
 		assertFalse(checkProjectExists(PROJECT_OLD_NAME));
 	}
 
+	@Test
+	@Tag(RESET_WORKSPACE_BEFORE_TAG)
+	@SessionShouldError
+	@Order(31)
 	public void testDeleteWithoutWaitingForSnapshot_01() throws CoreException {
 		IProject project = createProject();
 
@@ -162,14 +178,18 @@ public class TestBug294854 extends WorkspaceSessionTest {
 				System.exit(1);
 			}
 		};
-		getWorkspace().addResourceChangeListener(selfDeregisteringExistingChangeListener, IResourceChangeEvent.POST_CHANGE);
+		getWorkspace().addResourceChangeListener(selfDeregisteringExistingChangeListener,
+				IResourceChangeEvent.POST_CHANGE);
 
 		// delete project
 		project.delete(true, createTestMonitor());
 	}
 
+	@Test
+	@Order(32)
 	public void testDeleteWithoutWaitingForSnapshot_02() {
 		assertTrue(checkProjectExists(PROJECT_OLD_NAME));
 		assertFalse(checkProjectIsOpen(PROJECT_OLD_NAME));
 	}
+
 }

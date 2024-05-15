@@ -26,30 +26,36 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests for bug 266907
  */
-public class Bug_266907 extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class Bug_266907 {
 
 	private static final String PROJECT_NAME = "Project";
 	private static final String FILE_NAME = "File";
 	private static final String MARKER_ATTRIBUTE_NAME = "AttributeName";
 	private static final String MARKER_ATTRIBUTE = "Attribute";
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, Bug_266907.class);
-	}
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
+	@Test
+	@Order(1)
 	public void test1CreateProjectAndDeleteProjectFile() throws Exception {
 		// Ensure that no asynchronous save job restores the .project file after
 		// deleting it by suspending the JobManager for this workspace session
@@ -81,6 +87,8 @@ public class Bug_266907 extends WorkspaceSessionTest {
 		dotProject.delete();
 	}
 
+	@Test
+	@Order(2)
 	public void test2RestoreWorkspaceFile() throws Exception {
 		final IWorkspace workspace = getWorkspace();
 		IProject project = workspace.getRoot().getProject(PROJECT_NAME);

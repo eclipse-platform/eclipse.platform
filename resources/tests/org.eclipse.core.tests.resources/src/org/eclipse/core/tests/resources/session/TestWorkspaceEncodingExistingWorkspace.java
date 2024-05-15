@@ -14,39 +14,38 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.CustomSessionWorkspace;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests that explicit workspace encoding not set if there are projects defined
  */
-public class TestWorkspaceEncodingExistingWorkspace extends WorkspaceSessionTest {
+public class TestWorkspaceEncodingExistingWorkspace {
 
-	public static Test suite() {
-		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS,
-				TestWorkspaceEncodingExistingWorkspace.class);
-		Path wspRoot = suite.getInstanceLocation().toFile().toPath();
-		Path projectsTree = wspRoot.resolve(".metadata/.plugins/org.eclipse.core.resources/.projects");
-		try {
-			Files.createDirectories(projectsTree);
-		} catch (IOException e) {
-			fail("Unable to create directories: " + projectsTree + System.lineSeparator() + e);
-		}
-		return suite;
+	private CustomSessionWorkspace sessionWorkspace = SessionTestExtension.createCustomWorkspace();
+
+	@RegisterExtension
+	SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(sessionWorkspace).create();
+
+	@BeforeEach
+	public void setUpWorkspace() throws IOException {
+		Path projectsTree = sessionWorkspace.getWorkspaceDirectory().resolve(".metadata/.plugins/org.eclipse.core.resources/.projects");
+		Files.createDirectories(projectsTree);
 	}
 
-	public TestWorkspaceEncodingExistingWorkspace() {
-		super();
-	}
-
+	@Test
 	public void testExpectedEncoding1() throws Exception {
 		String defaultValue = System.getProperty("native.encoding");
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();

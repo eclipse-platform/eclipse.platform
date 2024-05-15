@@ -14,51 +14,45 @@
 package org.eclipse.core.tests.resources.session;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import junit.framework.Test;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.harness.FileSystemHelper;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.Setup;
-import org.eclipse.core.tests.session.SetupManager.SetupException;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests that encoding is set according to plugin customization
  */
-public class TestWorkspaceEncodingWithPluginCustomization extends WorkspaceSessionTest {
+public class TestWorkspaceEncodingWithPluginCustomization {
 
 	private static final String CHARSET = "UTF-16";
 	private static final String FILE_NAME = FileSystemHelper.getTempDir().append("plugin_customization_encoding.ini").toOSString();
 
-	public static Test suite() {
-		WorkspaceSessionTestSuite suite = new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS,
-				TestWorkspaceEncodingWithPluginCustomization.class);
-		try {
-			// create plugin_customization.ini file
-			File file = new File(FILE_NAME);
-			try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-				writer.write("org.eclipse.core.resources/encoding=" + CHARSET);
-			}
+	@RegisterExtension
+	SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
-			// add pluginCustomization argument
-			Setup setup = suite.getSetup();
-			setup.setEclipseArgument("pluginCustomization", file.toString());
-		} catch (IOException | SetupException e) {
-			// ignore, the test will fail for us
+	@BeforeEach
+	public void setUpSession() throws IOException {
+		// create plugin_customization.ini file
+		File file = new File(FILE_NAME);
+		file.deleteOnExit();
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+			writer.write("org.eclipse.core.resources/encoding=" + CHARSET);
 		}
-		return suite;
+		// add pluginCustomization argument
+		sessionTestExtension.setEclipseArgument("pluginCustomization", file.toString());
 	}
 
-	public TestWorkspaceEncodingWithPluginCustomization() {
-		super();
-	}
-
+	@Test
 	public void testExpectedEncoding() throws Exception {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		// Should be system default
@@ -69,4 +63,5 @@ public class TestWorkspaceEncodingWithPluginCustomization extends WorkspaceSessi
 		String charset = workspace.getRoot().getDefaultCharset(false);
 		assertEquals(CHARSET, charset);
 	}
+
 }

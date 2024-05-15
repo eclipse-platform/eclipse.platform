@@ -16,30 +16,44 @@ package org.eclipse.core.tests.resources.session;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests regression of bug 30015.  Due to this bug, it was impossible to restore
  * a project whose location was relative to a workspace path variable.
  */
-public class TestBug30015 extends WorkspaceSessionTest {
-	protected static final String PROJECT_NAME = "Project";
-	protected static final String VAR_NAME = "ProjectLocatio";
-	protected IPath varValue;
-	protected IPath rawLocation;
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestBug30015 {
+
+	private static final String PROJECT_NAME = "Project";
+	private static final String VAR_NAME = "ProjectLocatio";
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
+	private IPath varValue;
+	private IPath rawLocation;
 
 	/**
 	 * Create and open the project
 	 */
+	@SuppressWarnings("deprecation")
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		varValue = Platform.getLocation().removeLastSegments(1);
 		rawLocation = IPath.fromOSString(VAR_NAME).append("ProjectLocation");
@@ -58,6 +72,9 @@ public class TestBug30015 extends WorkspaceSessionTest {
 	/**
 	 * See if the project was successfully restored.
 	 */
+	@SuppressWarnings("deprecation")
+	@Test
+	@Order(2)
 	public void test2() {
 		varValue = Platform.getLocation().removeLastSegments(1);
 		rawLocation = IPath.fromOSString(VAR_NAME).append("ProjectLocation");
@@ -70,7 +87,4 @@ public class TestBug30015 extends WorkspaceSessionTest {
 		assertEquals(varValue.append(rawLocation.lastSegment()), project.getLocation());
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBug30015.class);
-	}
 }
