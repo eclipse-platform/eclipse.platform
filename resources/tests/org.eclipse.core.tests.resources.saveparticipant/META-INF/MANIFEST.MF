@@ -9,11 +9,12 @@ Export-Package: org.eclipse.core.tests.resources.saveparticipant
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.tests.harness,
  org.eclipse.core.runtime,
- org.junit,
  org.eclipse.core.tests.resources,
  org.eclipse.core.tests.resources.saveparticipant1,
  org.eclipse.core.tests.resources.saveparticipant2,
  org.eclipse.core.tests.resources.saveparticipant3,
  org.eclipse.core.filesystem
+Import-Package: org.junit.jupiter.api,
+ org.junit.jupiter.api.extension
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy

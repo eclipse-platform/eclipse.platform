@@ -13,37 +13,43 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.saveparticipant;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Runs all the SaveManager tests as a single session test.
  */
-public class SaveManagerTest extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class SaveManagerTest {
+
+	public static final String PI_RESOURCES_SAVEPARTICIPANT_TESTS = "org.eclipse.core.tests.resources.saveparticipant";
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension
+			.forPlugin(PI_RESOURCES_SAVEPARTICIPANT_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
 	/** project names */
 	static final String PROJECT_1 = "MyProject";
 	static final String PROJECT_2 = "Project2";
-
-	/** activities */
-	static final String COMMENT_1 = "COMMENT ONE";
-	static final String COMMENT_2 = "COMMENT TWO";
 
 	/** plugin ids */
 	static final String PI_SAVE_PARTICIPANT_1 = "org.eclipse.core.tests.resources.saveparticipant1";
 	static final String PI_SAVE_PARTICIPANT_2 = "org.eclipse.core.tests.resources.saveparticipant2";
 	static final String PI_SAVE_PARTICIPANT_3 = "org.eclipse.core.tests.resources.saveparticipant3";
 
-	public SaveManagerTest() {
-	}
-
-	public SaveManagerTest(String name) {
-		super(name);
-	}
-
-	protected String[] defineHierarchy(String project) {
+	static String[] defineHierarchy(String project) {
 		if (project.equals(PROJECT_1))
 			return defineHierarchy1();
 		if (project.equals(PROJECT_2))
@@ -51,15 +57,15 @@ public class SaveManagerTest extends WorkspaceSessionTest {
 		return new String[0];
 	}
 
-	protected String[] defineHierarchy1() {
+	private static String[] defineHierarchy1() {
 		return new String[] {"/folder110/", "/folder110/folder120/", "/folder110/folder120/folder130/", "/folder110/folder120/folder130/folder140/", "/folder110/folder120/folder130/folder140/folder150/", "/folder110/folder120/folder130/folder140/folder150/file160", "/folder110/folder120/folder130/folder140/file150", "/folder110/folder121/", "/folder110/folder121/folder131/", "/folder110/folder120/folder130/folder141/"};
 	}
 
-	protected String[] defineHierarchy2() {
+	private static String[] defineHierarchy2() {
 		return new String[] {"/file110", "/folder110/", "/folder110/file120", "/folder111/", "/folder111/folder120/", "/folder111/file121"};
 	}
 
-	public void saveWorkspace() throws CoreException {
+	private void saveWorkspace() throws CoreException {
 		getWorkspace().save(true, null);
 	}
 
@@ -75,27 +81,32 @@ public class SaveManagerTest extends WorkspaceSessionTest {
 		workspace.setDescription(desc);
 	}
 
+	@Test
+	@Order(1)
 	public void test1() throws Exception {
 		SaveManager1Test test = new SaveManager1Test();
-		test.saveWorkspace();
+		saveWorkspace();
 		test.testCreateMyProject();
 		test.testCreateProject2();
 		test.testAddSaveParticipant();
 		test.testBuilder();
-		test.saveWorkspace();
+		saveWorkspace();
 		test.testPostSave();
-
 	}
 
+	@Test
+	@Order(2)
 	public void test2() throws Exception {
 		SaveManager2Test test = new SaveManager2Test();
 		test.testVerifyRestoredWorkspace();
 		test.testBuilder();
 		test.testSaveParticipant();
 		test.testVerifyProject2();
-		test.saveWorkspace();
+		saveWorkspace();
 	}
 
+	@Test
+	@Order(3)
 	public void test3() throws Exception {
 		SaveManager3Test test = new SaveManager3Test();
 		test.testSaveParticipant();
@@ -111,4 +122,5 @@ public class SaveManagerTest extends WorkspaceSessionTest {
 			return true;
 		});
 	}
+
 }
