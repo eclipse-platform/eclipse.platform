@@ -18,6 +18,8 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -28,7 +30,7 @@ import org.eclipse.core.runtime.CoreException;
  * This session only performs a full save. The workspace should stay
  * the same.
  */
-public class Snapshot3Test extends SnapshotTest {
+public class Snapshot3Test {
 
 	protected static String[] defineHierarchy1() {
 		return Snapshot2Test.defineHierarchy1();
@@ -44,9 +46,9 @@ public class Snapshot3Test extends SnapshotTest {
 
 	public void testVerifyPreviousSession() throws CoreException {
 		// MyProject
-		IProject project = getWorkspace().getRoot().getProject(PROJECT_1);
-		assertTrue("0.0", project.exists());
-		assertTrue("0.1", project.isOpen());
+		IProject project = getWorkspace().getRoot().getProject(SnapshotTest.PROJECT_1);
+		assertTrue(project.exists());
+		assertTrue(project.isOpen());
 
 		// verify existence of children
 		IResource[] resources = buildResources(project, Snapshot2Test.defineHierarchy1());
@@ -54,12 +56,12 @@ public class Snapshot3Test extends SnapshotTest {
 		assertExistsInWorkspace(resources);
 
 		// Project2
-		project = getWorkspace().getRoot().getProject(PROJECT_2);
-		assertTrue("3.0", project.exists());
-		assertTrue("3.1", project.isOpen());
+		project = getWorkspace().getRoot().getProject(SnapshotTest.PROJECT_2);
+		assertTrue(project.exists());
+		assertTrue(project.isOpen());
 
 		assertThat(project.members()).hasSize(4);
-		assertNotNull("4.1", project.findMember(IProjectDescription.DESCRIPTION_FILE_NAME));
+		assertNotNull(project.findMember(IProjectDescription.DESCRIPTION_FILE_NAME));
 
 		// verify existence of children
 		resources = buildResources(project, Snapshot2Test.defineHierarchy2());

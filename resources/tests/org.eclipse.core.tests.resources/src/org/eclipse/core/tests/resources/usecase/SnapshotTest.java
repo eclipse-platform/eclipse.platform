@@ -15,17 +15,20 @@ package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 
-import junit.framework.Test;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceSessionTest;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Runs all the snapshot usecase tests as a single session test.
  * Each test method will run a different snapshot test.
  */
-public class SnapshotTest extends WorkspaceSessionTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class SnapshotTest {
 
 	/** activities */
 	static final String COMMENT_1 = "COMMENT ONE";
@@ -35,30 +38,22 @@ public class SnapshotTest extends WorkspaceSessionTest {
 	static final String PROJECT_1 = "MyProject";
 	static final String PROJECT_2 = "Project2";
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, SnapshotTest.class);
-	}
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
-	private boolean skipTest() {
-		//skip on Mac due to unknown failure (bug 127752)
-		//TODO re-enable after M5 build
-		return OS.isMac();
-	}
-
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
-		if (skipTest()) {
-			return;
-		}
 		Snapshot1Test test = new Snapshot1Test();
 		test.testCreateMyProject();
 		test.testCreateProject2();
 		test.testSnapshotWorkspace();
 	}
 
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
-		if (skipTest()) {
-			return;
-		}
 		Snapshot2Test test = new Snapshot2Test();
 		test.testVerifyPreviousSession();
 		test.testChangeMyProject();
@@ -66,29 +61,26 @@ public class SnapshotTest extends WorkspaceSessionTest {
 		test.testSnapshotWorkspace();
 	}
 
+	@Test
+	@Order(3)
 	public void test3() throws CoreException {
-		if (skipTest()) {
-			return;
-		}
 		Snapshot3Test test = new Snapshot3Test();
 		test.testVerifyPreviousSession();
 		test.testSaveWorkspace();
 	}
 
+	@Test
+	@Order(4)
 	public void test4() throws CoreException {
-		if (skipTest()) {
-			return;
-		}
 		Snapshot4Test test = new Snapshot4Test();
 		test.testVerifyPreviousSession();
 		test.testChangeMyProject();
 		test.testChangeProject2();
 	}
 
+	@Test
+	@Order(5)
 	public void test5() throws CoreException {
-		if (skipTest()) {
-			return;
-		}
 		Snapshot5Test test = new Snapshot5Test();
 		test.testVerifyPreviousSession();
 	}
