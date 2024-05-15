@@ -24,7 +24,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
 import java.io.ByteArrayInputStream;
-import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -32,22 +31,33 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
 import org.eclipse.core.tests.internal.builders.TestBuilder;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Tests that builder deltas are correctly serialized.
  */
-public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestBuilderDeltaSerialization {
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
 	//various resource handles
 	private IProject project1, project2;
 	private IFolder sorted1, sorted2, unsorted1, unsorted2;
 	private IFile unsortedFile1, unsortedFile2;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp() throws Exception {
 		IWorkspaceRoot root = getWorkspace().getRoot();
 		project1 = root.getProject("Project1");
 		unsorted1 = project1.getFolder(SortBuilder.UNSORTED_FOLDER);
@@ -63,6 +73,8 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	/**
 	 * Create projects, setup a builder, and do an initial build.
 	 */
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		IResource[] resources = {project1, project2, unsorted1, unsorted2, sorted1, sorted2, unsortedFile1, unsortedFile2};
 		createInWorkspace(resources);
@@ -83,7 +95,7 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 				.withAdditionalBuildArgument(TestBuilder.INTERESTING_PROJECT, project1.getName()).apply();
 
 		// initial build -- created sortedFile1 and sortedFile2
-		workspace.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
+		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
 		getWorkspace().save(true, createTestMonitor());
 	}
@@ -92,6 +104,8 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 	 * Do another build immediately after restart.  Builder1 should be invoked because it cares
 	 * about changes made by Builder2 during the last build phase.
 	 */
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 		//Only builder1 should have been built
@@ -100,10 +114,6 @@ public class TestBuilderDeltaSerialization extends WorkspaceSerializationTest {
 			assertThat(first.wasBuilt()).isTrue();
 			assertThat(first.wasIncrementalBuild()).isTrue();
 		}, second -> assertThat(second.wasAutoBuild()).isFalse());
-	}
-
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestBuilderDeltaSerialization.class);
 	}
 
 }

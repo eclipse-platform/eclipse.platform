@@ -13,22 +13,38 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.session;
 
+import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.session.WorkspaceSessionTestSuite;
-
-import junit.framework.Test;
+import org.eclipse.core.tests.harness.session.SessionTestExtension;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  * Create a project, close it, save, crash, recover.  Recovered project should still be closed.
  */
-public class TestSaveWithClosedProject extends WorkspaceSerializationTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class TestSaveWithClosedProject {
+	private static final String PROJECT = "Project";
+	private static final String FILE = "File";
+
+	@RegisterExtension
+	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
+			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
+
+	@Test
+	@Order(1)
 	public void test1() throws CoreException {
 		/* create some resource handles */
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
@@ -38,9 +54,11 @@ public class TestSaveWithClosedProject extends WorkspaceSerializationTest {
 		file.create(createRandomContentsStream(), true, null);
 		project.close(createTestMonitor());
 
-		workspace.save(true, createTestMonitor());
+		getWorkspace().save(true, createTestMonitor());
 	}
 
+	@Test
+	@Order(2)
 	public void test2() throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PROJECT);
 		IFile file = project.getFile(FILE);
@@ -55,7 +73,4 @@ public class TestSaveWithClosedProject extends WorkspaceSerializationTest {
 		assertTrue(file.exists());
 	}
 
-	public static Test suite() {
-		return new WorkspaceSessionTestSuite(PI_RESOURCES_TESTS, TestSaveWithClosedProject.class);
-	}
 }
