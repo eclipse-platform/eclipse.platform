@@ -11,6 +11,7 @@
 package org.eclipse.core.tests.harness.session.customization;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.core.tests.harness.session.customization.SessionCustomizationUtil.deleteOnShutdownRecursively;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -143,7 +144,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 	private Path getConfigurationDirectory() throws IOException {
 		if (configurationDirectory == null) {
 			this.configurationDirectory = Files.createTempDirectory(TEMP_DIR_PREFIX);
-			this.configurationDirectory.toFile().deleteOnExit();
+			deleteOnShutdownRecursively(configurationDirectory);
 		}
 		return configurationDirectory;
 	}
