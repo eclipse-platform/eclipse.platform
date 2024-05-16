@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness.session.customization;
 
+import static org.eclipse.core.tests.harness.session.customization.SessionCustomizationUtil.deleteOnShutdownRecursively;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,7 +40,7 @@ public class CustomSessionWorkspaceImpl implements CustomSessionWorkspace {
 	private Path getWorkspaceDirectory() throws IOException {
 		if (workspaceDirectory == null) {
 			this.workspaceDirectory = Files.createTempDirectory(TEMP_DIR_PREFIX);
-			this.workspaceDirectory.toFile().deleteOnExit();
+			deleteOnShutdownRecursively(workspaceDirectory);
 		}
 		return workspaceDirectory;
 	}
