@@ -49,6 +49,7 @@ import org.junit.platform.suite.api.Suite;
 		org.eclipse.core.tests.resources.usecase.SnapshotTest.class, //
 		ProjectDescriptionDynamicTest.class, //
 		TestBug202384.class, //
+		TestBug208833.class, //
 		TestBug369177.class, //
 		TestBug316182.class, //
 		TestBug294854.class, //
