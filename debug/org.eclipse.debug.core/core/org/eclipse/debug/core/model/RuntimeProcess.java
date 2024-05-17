@@ -269,8 +269,12 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 				try { // (in total don't wait longer than TERMINATION_TIMEOUT)
 					long waitStart = System.currentTimeMillis();
 					if (process.waitFor(TERMINATION_TIMEOUT, TimeUnit.MILLISECONDS)) {
+						int exitValue = process.exitValue();
 						synchronized (this) {
-							fExitValue = process.exitValue();
+							fExitValue = exitValue;
+							// synchronously remember thread is terminated
+							// before later asynchronously done in terminated():
+							fTerminated = true;
 						}
 						if (waitFor(descendants, waitStart)) {
 							return;
