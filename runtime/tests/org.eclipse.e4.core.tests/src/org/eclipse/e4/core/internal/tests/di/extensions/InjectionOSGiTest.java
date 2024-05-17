@@ -115,7 +115,7 @@ public class InjectionOSGiTest {
 		// However due to the way I-build tests are set up (i.e. by using a built
 		// Eclipse installation) exactly that's the case.
 		// -> Disable this for I-build tests
-		Assume.assumeFalse("org.eclipse.ant.core.antRunner".equals(System.getProperty("eclipse.application")));
+		Assume.assumeFalse(Boolean.parseBoolean(System.getenv().getOrDefault("ECLIPSE_I_BUILD_TEST", "false")));
 
 		// Ensure that the providing bundles of the following classes are absent of the
 		// test-runtime and thus the mentioned classes cannot be loaded
