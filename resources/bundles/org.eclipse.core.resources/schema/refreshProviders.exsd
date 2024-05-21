@@ -111,7 +111,8 @@
          <meta.section type="implementation"/>
       </appInfo>
       <documentation>
-         The &lt;tt&gt;org.eclipse.core.resources.win32&lt;/tt&gt; fragment provides a native refresh monitor that uses win32 file system notification callbacks.  The workspace also supplies a default naive polling-based monitor that can be used for file systems that do not have native refresh callbacks available.
+         For Windows this Plug-in provides a native refresh monitor that uses win32 file system notification callbacks.
+The workspace also supplies a default naive polling-based monitor that can be used for file systems that do not have native refresh callbacks available.
       </documentation>
    </annotation>
 
