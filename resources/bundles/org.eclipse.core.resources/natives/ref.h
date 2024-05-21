@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004, 2016 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -17,23 +17,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/* Inaccessible static: INVALID_HANDLE_VALUE */
-/* Inaccessible static: ERROR_SUCCESS */
-/* Inaccessible static: ERROR_INVALID_HANDLE */
-/* Inaccessible static: FILE_NOTIFY_ALL */
-/* Inaccessible static: MAXIMUM_WAIT_OBJECTS */
-/* Inaccessible static: MAX_PATH */
-/* Inaccessible static: INFINITE */
-/* Inaccessible static: WAIT_TIMEOUT */
-/* Inaccessible static: WAIT_OBJECT_0 */
-/* Inaccessible static: WAIT_FAILED */
-/* Inaccessible static: FILE_NOTIFY_CHANGE_FILE_NAME */
-/* Inaccessible static: FILE_NOTIFY_CHANGE_DIR_NAME */
-/* Inaccessible static: FILE_NOTIFY_CHANGE_ATTRIBUTES */
-/* Inaccessible static: FILE_NOTIFY_CHANGE_SIZE */
-/* Inaccessible static: FILE_NOTIFY_CHANGE_LAST_WRITE */
-/* Inaccessible static: FILE_NOTIFY_CHANGE_SECURITY */
-/* Inaccessible static: UNICODE */
+#undef org_eclipse_core_internal_resources_refresh_win32_Win32Natives_ERROR_ACCESS_DENIED
+#define org_eclipse_core_internal_resources_refresh_win32_Win32Natives_ERROR_ACCESS_DENIED 5L
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
  * Method:    FindFirstChangeNotificationW
@@ -41,14 +26,6 @@ extern "C" {
  */
 JNIEXPORT jlong JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_FindFirstChangeNotificationW
   (JNIEnv *, jclass, jstring, jboolean, jint);
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    FindFirstChangeNotificationA
- * Signature: ([BZI)J
- */
-JNIEXPORT jlong JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_FindFirstChangeNotificationA
-  (JNIEnv *, jclass, jbyteArray, jboolean, jint);
 
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
@@ -76,14 +53,6 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Wi
 
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    IsUnicode
- * Signature: ()Z
- */
-JNIEXPORT jboolean JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_IsUnicode
-  (JNIEnv *, jclass);
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
  * Method:    GetLastError
  * Signature: ()I
  */
@@ -108,14 +77,6 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Wi
 
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    FILE_NOTIFY_CHANGE_ATTRIBUTES
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_FILE_1NOTIFY_1CHANGE_1ATTRIBUTES
-  (JNIEnv *, jclass);
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
  * Method:    FILE_NOTIFY_CHANGE_SIZE
  * Signature: ()I
  */
@@ -132,34 +93,10 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Wi
 
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    FILE_NOTIFY_CHANGE_SECURITY
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_FILE_1NOTIFY_1CHANGE_1SECURITY
-  (JNIEnv *, jclass);
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
  * Method:    MAXIMUM_WAIT_OBJECTS
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_MAXIMUM_1WAIT_1OBJECTS
-  (JNIEnv *, jclass);
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    MAX_PATH
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_MAX_1PATH
-  (JNIEnv *, jclass);
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    INFINITE
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_INFINITE
   (JNIEnv *, jclass);
 
 /*

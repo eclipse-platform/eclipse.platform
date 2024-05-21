@@ -37,23 +37,12 @@ public class Win32Natives {
 
 	/** Access is denied. */
 	public static final int ERROR_ACCESS_DENIED = 5;
-	/**
-	 * The combination of all of the error constants.
-	 */
-	public static int FILE_NOTIFY_ALL;
+
 	/**
 	 * A constant which indicates the maximum number of objects
 	 * that can be passed into WaitForMultipleObjects.
 	 */
 	public static final int MAXIMUM_WAIT_OBJECTS;
-	/**
-	 * A constant which indicates the maximum length of a pathname.
-	 */
-	public static final int MAX_PATH;
-	/**
-	 * A constant which expresses the concept of the infinite.
-	 */
-	public static final int INFINITE;
 
 	/* wait return values */
 	/**
@@ -87,10 +76,6 @@ public class Win32Natives {
 	 */
 	public static final int FILE_NOTIFY_CHANGE_DIR_NAME;
 	/**
-	 * Change filter for monitoring file/directory attribute changes.
-	 */
-	public static final int FILE_NOTIFY_CHANGE_ATTRIBUTES;
-	/**
 	 * Change filter for monitoring file size changes.
 	 */
 	public static final int FILE_NOTIFY_CHANGE_SIZE;
@@ -98,29 +83,17 @@ public class Win32Natives {
 	 * Change filter for monitoring the file write timestamp
 	 */
 	public static final int FILE_NOTIFY_CHANGE_LAST_WRITE;
-	/**
-	 * Change filter for monitoring the security descriptors
-	 * of files.
-	 */
-	public static final int FILE_NOTIFY_CHANGE_SECURITY;
 
-	/**
-	 * Flag indicating whether or not the OS supports unicode calls.
-	 */
-	public static final boolean UNICODE;
 	/*
 	 * Make requests to set the constants.
 	 */
 	static {
 		System.loadLibrary("win32refresh"); //$NON-NLS-1$
-		UNICODE = IsUnicode();
 		INVALID_HANDLE_VALUE = INVALID_HANDLE_VALUE();
 		ERROR_SUCCESS = ERROR_SUCCESS();
 		ERROR_INVALID_HANDLE = ERROR_INVALID_HANDLE();
 
 		MAXIMUM_WAIT_OBJECTS = MAXIMUM_WAIT_OBJECTS();
-		MAX_PATH = MAX_PATH();
-		INFINITE = INFINITE();
 
 		WAIT_TIMEOUT = WAIT_TIMEOUT();
 		WAIT_OBJECT_0 = WAIT_OBJECT_0();
@@ -129,11 +102,8 @@ public class Win32Natives {
 
 		FILE_NOTIFY_CHANGE_FILE_NAME = FILE_NOTIFY_CHANGE_FILE_NAME();
 		FILE_NOTIFY_CHANGE_DIR_NAME = FILE_NOTIFY_CHANGE_DIR_NAME();
-		FILE_NOTIFY_CHANGE_ATTRIBUTES = FILE_NOTIFY_CHANGE_ATTRIBUTES();
 		FILE_NOTIFY_CHANGE_SIZE = FILE_NOTIFY_CHANGE_SIZE();
 		FILE_NOTIFY_CHANGE_LAST_WRITE = FILE_NOTIFY_CHANGE_LAST_WRITE();
-		FILE_NOTIFY_CHANGE_SECURITY = FILE_NOTIFY_CHANGE_SECURITY();
-		FILE_NOTIFY_ALL = FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_DIR_NAME | FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_SECURITY;
 	}
 
 	/**
@@ -142,11 +112,10 @@ public class Win32Natives {
 	 * subtree under the directory using FindNextChangeNotification or
 	 * WaitForMultipleObjects.
 	 * <p>
-	 * If the OS supports unicode the path must be no longer than 2^15 - 1 characters.
-	 * Otherwise, the path cannot be longer than MAX_PATH. In either case, if the given
-	 * path is too long ERROR_INVALID_HANDLE is returned.
+	 * The path must be no longer than 2^15 - 1 characters, if the given path is too
+	 * long {@link #ERROR_INVALID_HANDLE} is returned.
 	 *
-	 * @param lpPathName The path of the file.
+	 * @param lpPathName The path to the directory to be monitored.
 	 * @param bWatchSubtree If <code>true</code>, specifies that the entire
 	 * 	tree under the given path should be monitored. If <code>false</code>
 	 *  specifies that just the named path should be monitored.
@@ -158,9 +127,7 @@ public class Win32Natives {
 	 *  ERROR_INVALID_HANDLE  if the attempt fails.
 	 */
 	public static long FindFirstChangeNotification(String lpPathName, boolean bWatchSubtree, int dwNotifyFilter) {
-		if (UNICODE)
-			return FindFirstChangeNotificationW(lpPathName, bWatchSubtree, dwNotifyFilter);
-		return FindFirstChangeNotificationA(Convert.toPlatformBytes(lpPathName), bWatchSubtree, dwNotifyFilter);
+		return FindFirstChangeNotificationW(lpPathName, bWatchSubtree, dwNotifyFilter);
 	}
 
 	/**
@@ -182,27 +149,6 @@ public class Win32Natives {
 	 *  ERROR_INVALID_HANDLE  if the attempt fails.
 	 */
 	private static native long FindFirstChangeNotificationW(String lpPathName, boolean bWatchSubtree, int dwNotifyFilter);
-
-	/**
-	 * Creates a change notification object for the given path. This notification object
-	 * allows the client to monitor changes to the directory and the subtree
-	 * under the directory using FindNextChangeNotification or
-	 * WaitForMultipleObjects.
-	 *
-	 * @param lpPathName The path to the directory to be monitored,  cannot be <code>null</code>,
-	 *  or  be longer
-	 *  than MAX_PATH.  This path must be in platform bytes converted.
-	 * @param bWatchSubtree If <code>true</code>, specifies that the entire
-	 * 	tree under the given path should be monitored. If <code>false</code>
-	 *  specifies that just the named path should be monitored.
-	 * @param dwNotifyFilter Any combination of FILE_NOTIFY_CHANGE_FILE_NAME,
-	 *  FILE_NOTIFY_CHANGE_DIR_NAME,   FILE_NOTIFY_CHANGE_ATTRIBUTES,
-	 *  FILE_NOTIFY_CHANGE_SIZE,  FILE_NOTIFY_CHANGE_LAST_WRITE, or
-	 *  FILE_NOTIFY_CHANGE_SECURITY.
-	 * @return long The handle to the find change notification object or
-	 *  ERROR_INVALID_HANDLE  if the attempt fails.
-	 */
-	private static native long FindFirstChangeNotificationA(byte[] lpPathName, boolean bWatchSubtree, int dwNotifyFilter);
 
 	/**
 	 * Stops and disposes of the change notification object that corresponds to the given
@@ -248,14 +194,6 @@ public class Win32Natives {
 	public static native int WaitForMultipleObjects(int nCount, long[] lpHandles, boolean bWaitAll, int dwMilliseconds);
 
 	/**
-	 * Answers <code>true</code> if the operating system supports
-	 * long filenames.
-	 * @return boolean <code>true</code> if the operating system supports
-	 * long filenames, <code>false</code> otherwise.
-	 */
-	private static native boolean IsUnicode();
-
-	/**
 	 * Answers the last error set in the current thread.
 	 * @return int the last error
 	 */
@@ -274,12 +212,6 @@ public class Win32Natives {
 	private static native int FILE_NOTIFY_CHANGE_DIR_NAME();
 
 	/**
-	 * Returns the constant FILE_NOTIFY_CHANGE_ATTRIBUTES.
-	 * @return int
-	 */
-	private static native int FILE_NOTIFY_CHANGE_ATTRIBUTES();
-
-	/**
 	 * Returns the constant FILE_NOTIFY_CHANGE_SIZE.
 	 * @return int
 	 */
@@ -292,28 +224,10 @@ public class Win32Natives {
 	private static native int FILE_NOTIFY_CHANGE_FILE_NAME();
 
 	/**
-	 * Returns the constant FILE_NOTIFY_CHANGE_SECURITY.
-	 * @return int
-	 */
-	private static native int FILE_NOTIFY_CHANGE_SECURITY();
-
-	/**
 	 * Returns the constant MAXIMUM_WAIT_OBJECTS.
 	 * @return int
 	 */
 	private static native int MAXIMUM_WAIT_OBJECTS();
-
-	/**
-	 * Returns the constant MAX_PATH.
-	 * @return int
-	 */
-	private static native int MAX_PATH();
-
-	/**
-	 * Returns the constant INFINITE.
-	 * @return int
-	 */
-	private static native int INFINITE();
 
 	/**
 	 * Returns the constant WAIT_OBJECT_0.
