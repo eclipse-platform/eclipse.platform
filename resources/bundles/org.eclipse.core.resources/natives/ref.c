@@ -54,34 +54,6 @@ JNIEXPORT jlong JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_W
 
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    FindFirstChangeNotificationA
- * Signature: ([BZI)J
- */
-JNIEXPORT jlong JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_FindFirstChangeNotificationA
-(JNIEnv * env, jclass this, jbyteArray lpPathName, jboolean bWatchSubtree, jint dwNotifyFilter) {
-	jlong result;
-	jsize numberOfChars;
-	jbyte *path, *temp;
-	
-	// create a new byte array to hold the null terminated path
-	numberOfChars = (*env)->GetArrayLength(env, lpPathName);
-	path = malloc((numberOfChars + 1) * sizeof(jbyte));
-
-	// get the path bytes from the vm, copy them, and release them
-	temp = (*env)->GetByteArrayElements(env, lpPathName, 0);
-	memcpy(path, temp, numberOfChars * sizeof(jbyte));
-	(*env)->ReleaseByteArrayElements(env, lpPathName, temp, 0);
-
-	// null terminate the path, make the request, and release the path memory
-	path[numberOfChars] = '\0';
-	result = (jlong) FindFirstChangeNotificationA(path, bWatchSubtree, dwNotifyFilter);
-	free(path);
-
-	return result;
-}
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
  * Method:    FindCloseChangeNotification
  * Signature: (J)Z
  */
@@ -124,23 +96,6 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Wi
 
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    IsUnicode
- * Signature: ()Z
- */
-JNIEXPORT jboolean JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_IsUnicode
-  (JNIEnv *env, jclass this) {
-  	OSVERSIONINFO osvi;
-  	memset(&osvi, 0, sizeof(OSVERSIONINFO));
-  	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-  	if (! GetVersionEx (&osvi) ) 
-    	return JNI_FALSE;
-    if (osvi.dwMajorVersion >= 5)
-    	return JNI_TRUE;
-    return JNI_FALSE;
-}
-  
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
  * Method:    GetLastError
  * Signature: ()I
  */
@@ -171,16 +126,6 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Wi
 
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    FILE_NOTIFY_CHANGE_ATTRIBUTES
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_FILE_1NOTIFY_1CHANGE_1ATTRIBUTES
-(JNIEnv *env, jclass this) {
-	return FILE_NOTIFY_CHANGE_ATTRIBUTES;
-}
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
  * Method:    FILE_NOTIFY_CHANGE_SIZE
  * Signature: ()I
  */
@@ -202,42 +147,12 @@ JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Wi
 
 /*
  * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    FILE_NOTIFY_CHANGE_SECURITY
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_FILE_1NOTIFY_1CHANGE_1SECURITY
-(JNIEnv *env, jclass this) {
-	return FILE_NOTIFY_CHANGE_SECURITY;
-}
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
  * Method:    MAXIMUM_WAIT_OBJECTS
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_MAXIMUM_1WAIT_1OBJECTS
 (JNIEnv *env, jclass this) {
 	return MAXIMUM_WAIT_OBJECTS;
-}
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    MAX_PATH
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_MAX_1PATH
-(JNIEnv *env, jclass this) {
-	return MAX_PATH;
-}
-
-/*
- * Class:     org_eclipse_core_internal_resources_refresh_win32_Win32Natives
- * Method:    INFINITE
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_org_eclipse_core_internal_resources_refresh_win32_Win32Natives_INFINITE
-(JNIEnv *env, jclass this) {
-	return INFINITE;
 }
 
 /*

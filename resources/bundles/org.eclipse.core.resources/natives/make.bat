@@ -11,22 +11,20 @@
 @rem Contributors:
 @rem     IBM Corporation - initial API and implementation
 @rem ***************************************************************************
+@echo off
 REM build JNI header file
-cd ..\bin
-"C:\Program Files\Java\jdk1.8.0_65\bin\javah.exe" org.eclipse.core.internal.resources.refresh.win32.Win32Natives
-move org_eclipse_core_internal_resources_refresh_win32_Win32Natives.h ..\natives\ref2.h
+cd %~dp0\..\src
+
+"%JAVA_HOME%\bin\javac" -h . org\eclipse\core\internal\resources\refresh\win32\Win32Natives.java
+del org\eclipse\core\internal\resources\refresh\win32\Win32Natives.class
+move org_eclipse_core_internal_resources_refresh_win32_Win32Natives.h ..\natives\ref.h
 
 REM compile and link
+if "%MSVC_HOME%"=="" set MSVC_HOME=C:\Program Files\Microsoft Visual Studio\2022\Community
 cd ..\natives
-set win_include="C:\Program Files\Microsoft Visual Studio 14.0\VC\include"
-set jdk_include="C:\Program Files\Java\jdk1.8.0_65\include"
 
 set dll_name=win32refresh.dll
 
-call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64_x86
-"cl.exe" -I%win_include% -I%jdk_include% -I%jdk_include%\win32 -LD ref.c -Fe%dll_name%
-move %dll_name% ..\..\org.eclipse.core.resources.win32.x86\os\win32\x86\%dll_name%
-
-call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
-"cl.exe" -I%win_include% -I%jdk_include% -I%jdk_include%\win32 -LD ref.c -Fe%dll_name%
+call "%MSVC_HOME%\VC\Auxiliary\Build\vcvarsall.bat" amd64
+"cl.exe" -I%JAVA_HOME%\include -I%JAVA_HOME%\include\win32 -LD ref.c -Fe%dll_name%
 move %dll_name% ..\..\org.eclipse.core.resources.win32.x86_64\os\win32\x86_64\%dll_name%
