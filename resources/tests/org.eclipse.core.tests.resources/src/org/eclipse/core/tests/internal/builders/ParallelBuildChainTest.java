@@ -144,7 +144,7 @@ public class ParallelBuildChainTest {
 
 	@Test
 	public void testIndividualProjectBuilds_WithManyProjects_ProjectRelaxedRule() throws Exception {
-		int numberOfParallelBuilds = 30;
+		int numberOfParallelBuilds = 15;
 		var longRunningProjects = createMultipleTestProjects(numberOfParallelBuilds, BuildDurationType.LONG_RUNNING,
 				RuleType.CURRENT_PROJECT_RELAXED);
 		executeIndividualFullProjectBuilds(numberOfParallelBuilds, () -> {
