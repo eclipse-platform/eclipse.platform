@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.tests.harness.session.ExecuteInHost;
 import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ public class TestWorkspaceEncodingWithJvmArgs {
 			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
 	@BeforeEach
+	@ExecuteInHost
 	public void setUpSession() {
 		sessionTestExtension.setSystemProperty("file.encoding", "UTF-16");
 	}

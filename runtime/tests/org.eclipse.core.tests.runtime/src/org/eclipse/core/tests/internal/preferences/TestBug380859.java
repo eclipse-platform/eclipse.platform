@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.tests.harness.session.ExecuteInHost;
 import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,7 @@ public class TestBug380859 {
 	static SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RUNTIME_TESTS).create();
 
 	@BeforeAll
+	@ExecuteInHost
 	public static void createCustomizationFile() throws IOException {
 		Path customizationFilePath = tempDirectory.resolve(CUSTOMIZATION_FILE_NAME);
 		try (BufferedWriter writer = Files.newBufferedWriter(customizationFilePath)) {

@@ -23,6 +23,7 @@ import java.io.IOException;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.harness.FileSystemHelper;
+import org.eclipse.core.tests.harness.session.ExecuteInHost;
 import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,7 @@ public class TestWorkspaceEncodingWithPluginCustomization {
 			.withCustomization(SessionTestExtension.createCustomWorkspace()).create();
 
 	@BeforeEach
+	@ExecuteInHost
 	public void setUpSession() throws IOException {
 		// create plugin_customization.ini file
 		File file = new File(FILE_NAME);

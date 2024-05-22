@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness.session;
 
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -19,14 +18,9 @@ import org.eclipse.core.tests.harness.session.customization.CustomSessionConfigu
 import org.eclipse.core.tests.harness.session.customization.CustomSessionWorkspaceImpl;
 import org.eclipse.core.tests.harness.session.customization.SessionCustomization;
 import org.eclipse.core.tests.harness.session.samples.SampleSessionTests;
-import org.eclipse.core.tests.session.Setup;
-import org.eclipse.core.tests.session.SetupManager;
-import org.eclipse.core.tests.session.SetupManager.SetupException;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.InvocationInterceptor;
-import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 
 /**
  * A JUnit 5 extension that will execute every test method in a class in its own
@@ -57,24 +51,8 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
  * @see SessionShouldError
  *
  */
-public class SessionTestExtension implements InvocationInterceptor {
+public interface SessionTestExtension extends InvocationInterceptor {
 	public static final String CORE_TEST_APPLICATION = "org.eclipse.pde.junit.runtime.coretestapplication"; //$NON-NLS-1$
-
-	private final RemoteTestExecutor testExecutor;
-
-	private final Setup setup;
-
-	private final Set<SessionCustomization> sessionCustomizations = new HashSet<>();
-
-	private SessionTestExtension(String pluginId, String applicationId) {
-		try {
-			this.setup = SetupManager.getInstance().getDefaultSetup();
-			setup.setSystemProperty("org.eclipse.update.reconcile", "false");
-			testExecutor = new RemoteTestExecutor(setup, applicationId, pluginId);
-		} catch (SetupException e) {
-			throw new IllegalStateException("unable to create setup", e);
-		}
-	}
 
 	/**
 	 * Creates a builder for the session test extension. Make sure to finally call
@@ -194,14 +172,13 @@ public class SessionTestExtension implements InvocationInterceptor {
 		 * this builder}
 		 */
 		public SessionTestExtension create() {
-			SessionTestExtension extension = new SessionTestExtension(storedPluginId, storedApplicationId);
+			if (RemoteTestExecutor.isRemoteExecution()) {
+				return new SessionTestExtensionRemote();
+			}
+			SessionTestExtensionHost extension = new SessionTestExtensionHost(storedPluginId, storedApplicationId);
 			storedSessionCustomizations.forEach(customization -> extension.addSessionCustomization(customization));
 			return extension;
 		}
-	}
-
-	private void addSessionCustomization(SessionCustomization sessionCustomization) {
-		this.sessionCustomizations.add(sessionCustomization);
 	}
 
 	/**
@@ -228,9 +205,7 @@ public class SessionTestExtension implements InvocationInterceptor {
 	 * @param value the Eclipse argument value to set, may be {@code null} to remove
 	 *              the key
 	 */
-	public void setEclipseArgument(String key, String value) {
-		setup.setEclipseArgument(key, value);
-	}
+	public void setEclipseArgument(String key, String value);
 
 	/**
 	 * Sets the given system property to the given value for sessions executed with
@@ -240,44 +215,6 @@ public class SessionTestExtension implements InvocationInterceptor {
 	 * @param value the system property value to set, may be {@code null} to remove
 	 *              the key
 	 */
-	public void setSystemProperty(String key, String value) {
-		setup.setSystemProperty(key, value);
-	}
-
-	@Override
-	public void interceptTestMethod(Invocation<Void> invocation, ReflectiveInvocationContext<Method> invocationContext,
-			ExtensionContext extensionContext) throws Throwable {
-		/**
-		 * Ensure that we do not recursively make a remote call if we are already in
-		 * remote execution
-		 */
-		if (RemoteTestExecutor.isRemoteExecution()) {
-			invocation.proceed();
-			return;
-		}
-		String testClass = extensionContext.getTestClass().get().getName();
-		String testMethod = extensionContext.getTestMethod().get().getName();
-
-		boolean shouldFail = extensionContext.getTestMethod().get().getAnnotation(SessionShouldError.class) != null;
-		invocation.skip();
-		try {
-			prepareSession();
-			testExecutor.executeRemotely(testClass, testMethod, shouldFail);
-		} finally {
-			cleanupSession();
-		}
-	}
-
-	private void prepareSession() throws Exception {
-		for (SessionCustomization customization : sessionCustomizations) {
-			customization.prepareSession(setup);
-		}
-	}
-
-	private void cleanupSession() throws Exception {
-		for (SessionCustomization customization : sessionCustomizations) {
-			customization.cleanupSession(setup);
-		}
-	}
+	public void setSystemProperty(String key, String value);
 
 }
