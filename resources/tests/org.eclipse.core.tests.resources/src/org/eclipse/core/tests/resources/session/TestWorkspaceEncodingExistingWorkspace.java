@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.tests.harness.session.CustomSessionWorkspace;
+import org.eclipse.core.tests.harness.session.ExecuteInHost;
 import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,7 @@ public class TestWorkspaceEncodingExistingWorkspace {
 			.withCustomization(sessionWorkspace).create();
 
 	@BeforeEach
+	@ExecuteInHost
 	public void setUpWorkspace() throws IOException {
 		Path projectsTree = sessionWorkspace.getWorkspaceDirectory().resolve(".metadata/.plugins/org.eclipse.core.resources/.projects");
 		Files.createDirectories(projectsTree);

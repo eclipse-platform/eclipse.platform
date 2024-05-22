@@ -32,6 +32,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.session.CustomSessionWorkspace;
+import org.eclipse.core.tests.harness.session.ExecuteInHost;
 import org.eclipse.core.tests.harness.session.SessionShouldError;
 import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,6 +84,7 @@ public class TestBug294854 {
 	}
 
 	@BeforeEach
+	@ExecuteInHost
 	public void resetWorkspace(TestInfo testInfo) throws IOException {
 		if (testInfo.getTags().contains(RESET_WORKSPACE_BEFORE_TAG)) {
 			Path newWorkspace = Files.createTempDirectory(null);
