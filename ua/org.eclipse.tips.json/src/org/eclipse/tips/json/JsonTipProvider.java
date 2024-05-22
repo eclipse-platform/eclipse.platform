@@ -41,6 +41,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 
 /**
@@ -110,7 +111,7 @@ public abstract class JsonTipProvider extends TipProvider {
 		try (InputStream stream = fJsonUrl.openStream();
 				InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
 			JsonReader jreader = new JsonReader(reader);
-			jreader.setLenient(true);
+			jreader.setStrictness(Strictness.LENIENT);
 			Object result = JsonParser.parseReader(jreader);
 			if (result instanceof JsonObject) {
 				return (JsonObject) result;
