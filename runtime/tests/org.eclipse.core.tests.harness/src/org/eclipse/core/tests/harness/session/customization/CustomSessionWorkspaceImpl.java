@@ -34,14 +34,14 @@ public class CustomSessionWorkspaceImpl implements CustomSessionWorkspace {
 	public CustomSessionWorkspace setWorkspaceDirectory(Path workspaceDirectory) {
 		Objects.requireNonNull(workspaceDirectory);
 		this.workspaceDirectory = workspaceDirectory;
+		deleteOnShutdownRecursively(workspaceDirectory);
 		return this;
 	}
 
 	@Override
 	public Path getWorkspaceDirectory() throws IOException {
 		if (workspaceDirectory == null) {
-			this.workspaceDirectory = Files.createTempDirectory(TEMP_DIR_PREFIX);
-			deleteOnShutdownRecursively(workspaceDirectory);
+			setWorkspaceDirectory(Files.createTempDirectory(TEMP_DIR_PREFIX));
 		}
 		return workspaceDirectory;
 	}
