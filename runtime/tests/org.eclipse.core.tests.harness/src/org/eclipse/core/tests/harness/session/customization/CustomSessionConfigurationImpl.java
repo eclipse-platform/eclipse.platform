@@ -138,13 +138,13 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 	public CustomSessionConfiguration setConfigurationDirectory(Path configurationDirectory) {
 		Objects.requireNonNull(configurationDirectory);
 		this.configurationDirectory = configurationDirectory;
+		deleteOnShutdownRecursively(configurationDirectory);
 		return this;
 	}
 
 	private Path getConfigurationDirectory() throws IOException {
 		if (configurationDirectory == null) {
-			this.configurationDirectory = Files.createTempDirectory(TEMP_DIR_PREFIX);
-			deleteOnShutdownRecursively(configurationDirectory);
+			setConfigurationDirectory(Files.createTempDirectory(TEMP_DIR_PREFIX));
 		}
 		return configurationDirectory;
 	}
