@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness.session;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import org.eclipse.core.tests.harness.session.customization.SessionCustomization;
 import org.osgi.framework.Bundle;
@@ -19,6 +20,11 @@ import org.osgi.framework.Bundle;
  * "config.ini" file with a defined set of bundles to be used.
  */
 public interface CustomSessionConfiguration extends SessionCustomization {
+
+	/**
+	 * {@return the path of the used configuration directory}
+	 */
+	public Path getConfigurationDirectory() throws IOException;
 
 	/**
 	 * Sets the given configuration directory. If not called, a temporary folder is

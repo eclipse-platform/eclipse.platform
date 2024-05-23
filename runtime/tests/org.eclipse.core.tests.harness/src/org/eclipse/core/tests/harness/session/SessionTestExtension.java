@@ -14,7 +14,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.tests.harness.session.customization.CustomSessionConfigurationDummy;
 import org.eclipse.core.tests.harness.session.customization.CustomSessionConfigurationImpl;
+import org.eclipse.core.tests.harness.session.customization.CustomSessionWorkspaceDummy;
 import org.eclipse.core.tests.harness.session.customization.CustomSessionWorkspaceImpl;
 import org.eclipse.core.tests.harness.session.customization.SessionCustomization;
 import org.eclipse.core.tests.harness.session.samples.SampleSessionTests;
@@ -186,6 +188,9 @@ public interface SessionTestExtension extends InvocationInterceptor {
 	 * folder to store the workspace files}
 	 */
 	public static CustomSessionWorkspace createCustomWorkspace() {
+		if (RemoteTestExecutor.isRemoteExecution()) {
+			return new CustomSessionWorkspaceDummy();
+		}
 		return new CustomSessionWorkspaceImpl();
 	}
 
@@ -194,6 +199,9 @@ public interface SessionTestExtension extends InvocationInterceptor {
 	 * temporary folder to store the configuration files}
 	 */
 	public static CustomSessionConfiguration createCustomConfiguration() {
+		if (RemoteTestExecutor.isRemoteExecution()) {
+			return new CustomSessionConfigurationDummy();
+		}
 		return new CustomSessionConfigurationImpl();
 	}
 

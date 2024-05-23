@@ -142,7 +142,8 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 		return this;
 	}
 
-	private Path getConfigurationDirectory() throws IOException {
+	@Override
+	public Path getConfigurationDirectory() throws IOException {
 		if (configurationDirectory == null) {
 			setConfigurationDirectory(Files.createTempDirectory(TEMP_DIR_PREFIX));
 		}
