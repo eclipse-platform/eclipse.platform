@@ -5,3 +5,4 @@ Bug 547066 - IBuild I20190507-1800 failed due to unresolved project dependencies
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1184
 XML Refactoring
 https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/1659
+https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/2044
