@@ -6,3 +6,4 @@ Update to com.google.gson from maven central
 Update to gson 2.9.1
 Update to gson 2.10
 Update to gson 2.10.1
+https://github.com/eclipse-platform/eclipse.platform.releng.aggregator/issues/2044
