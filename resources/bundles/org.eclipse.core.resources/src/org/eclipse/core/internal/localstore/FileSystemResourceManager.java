@@ -424,11 +424,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 * are not considered.
 	 */
 	private boolean descriptionChanged(IFile descriptionFile, byte[] newContents) {
-		//buffer size: twice the description length, but maximum 8KB
-		int bufsize = newContents.length > 4096 ? 8192 : newContents.length * 2;
-		try (
-			InputStream oldStream = new BufferedInputStream(descriptionFile.getContents(true), bufsize);
-		) {
+		try {
+			InputStream oldStream = new ByteArrayInputStream(descriptionFile.readAllBytes());
 			InputStream newStream = new ByteArrayInputStream(newContents);
 			//compare streams char by char, ignoring line endings
 			int newChar = newStream.read();

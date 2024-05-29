@@ -471,9 +471,7 @@ public class IResourceTest {
 		});
 		IResourceChangeListener listener = event -> {
 			listenerInMainThreadCallback.set(() -> {
-				try (InputStream is = target.getContents(true)) {
-					assertTrue("4.0", compareContent(createInputStream(newContents), is));
-				}
+				assertEquals("4.0", newContents, target.readString());
 			});
 		};
 		try {

@@ -39,7 +39,6 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
-import java.io.ByteArrayInputStream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
@@ -2550,7 +2549,7 @@ public class IProjectTest  {
 
 		// modify the file to create an entry in the history
 		monitor.prepare();
-		file.setContents(new ByteArrayInputStream(createRandomString().getBytes()), true, true, monitor);
+		file.setContents(createRandomString().getBytes(), true, true, monitor);
 		monitor.assertUsedUp();
 
 		// delete the project and check that its metadata is also deleted

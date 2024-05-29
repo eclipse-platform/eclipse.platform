@@ -319,7 +319,7 @@ public class WorkspaceTest {
 		assertTrue(fileTarget.exists());
 		String testString = createRandomString();
 		monitor = new FussyProgressMonitor();
-		fileTarget.setContents(createInputStream(testString), true, false, monitor);
+		fileTarget.setContents(testString.getBytes(), true, false, monitor);
 		monitor.assertUsedUp();
 		try (InputStream content = fileTarget.getContents(false)) {
 			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
