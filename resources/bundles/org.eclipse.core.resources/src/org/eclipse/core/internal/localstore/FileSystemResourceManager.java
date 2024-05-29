@@ -870,6 +870,19 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	}
 
 	public InputStream read(IFile target, boolean force, IProgressMonitor monitor) throws CoreException {
+		IFileStore store = getFileStore(target, force);
+		try {
+			return store.openInputStream(EFS.NONE, monitor);
+		} catch (CoreException e) {
+			if (e.getStatus().getCode() == EFS.ERROR_NOT_EXISTS) {
+				String message = NLS.bind(Messages.localstore_fileNotFound, store.toString());
+				throw new ResourceException(IResourceStatus.RESOURCE_NOT_FOUND, target.getFullPath(), message, e);
+			}
+			throw e;
+		}
+	}
+
+	private IFileStore getFileStore(IFile target, boolean force) throws ResourceException, CoreException {
 		IFileStore store = getStore(target);
 		if (lightweightAutoRefreshEnabled || !force) {
 			final IFileInfo fileInfo = store.fetchInfo();
@@ -878,9 +891,10 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				String message = NLS.bind(Messages.localstore_fileNotFound, store.toString());
 				throw new ResourceException(IResourceStatus.RESOURCE_NOT_FOUND, target.getFullPath(), message, null);
 			}
-			ResourceInfo info = ((Resource) target).getResourceInfo(true, false);
-			int flags = ((Resource) target).getFlags(info);
-			((Resource) target).checkExists(flags, true);
+			Resource resource = (Resource) target;
+			ResourceInfo info = resource.getResourceInfo(true, false);
+			int flags = resource.getFlags(info);
+			resource.checkExists(flags, true);
 			if (fileInfo.getLastModified() != info.getLocalSyncInfo()) {
 				asyncRefresh(target);
 				if (!force) {
@@ -889,8 +903,14 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				}
 			}
 		}
+		return store;
+	}
+
+	/** @see #read(IFile, boolean, IProgressMonitor) **/
+	public byte[] readAllBytes(IFile target, boolean force, IProgressMonitor monitor) throws CoreException {
+		IFileStore store = getFileStore(target, force);
 		try {
-			return store.openInputStream(EFS.NONE, monitor);
+			return store.readAllBytes(EFS.NONE, monitor);
 		} catch (CoreException e) {
 			if (e.getStatus().getCode() == EFS.ERROR_NOT_EXISTS) {
 				String message = NLS.bind(Messages.localstore_fileNotFound, store.toString());
@@ -1191,59 +1211,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		try (content) {
 			Resource targetResource = (Resource) target;
 			IFileStore store = getStore(target);
-			if (fileInfo.getAttribute(EFS.ATTRIBUTE_READ_ONLY)) {
-				String message = NLS.bind(Messages.localstore_couldNotWriteReadOnly, target.getFullPath());
-				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, target.getFullPath(), message, null);
-			}
-			long lastModified = fileInfo.getLastModified();
-			ResourceInfo immutableTargetResourceInfo = targetResource.getResourceInfo(true, false);
-			if (immutableTargetResourceInfo == null) {
-				// If the resource info is null, the resource does not exist in the workspace.
-				// This violates the method contract, so throw an according exception.
-				targetResource.checkExists(targetResource.getFlags(immutableTargetResourceInfo), true);
-			}
-			if (BitMask.isSet(updateFlags, IResource.FORCE)) {
-				if (append && !target.isLocal(IResource.DEPTH_ZERO) && !fileInfo.exists()) {
-					// force=true, local=false, existsInFileSystem=false
-					String message = NLS.bind(Messages.resources_mustBeLocal, target.getFullPath());
-					throw new ResourceException(IResourceStatus.RESOURCE_NOT_LOCAL, target.getFullPath(), message, null);
-				}
-			} else {
-				if (target.isLocal(IResource.DEPTH_ZERO)) {
-					// test if timestamp is the same since last synchronization
-					if (lastModified != immutableTargetResourceInfo.getLocalSyncInfo()) {
-						asyncRefresh(target);
-						String message = NLS.bind(Messages.localstore_resourceIsOutOfSync, target.getFullPath());
-						throw new ResourceException(IResourceStatus.OUT_OF_SYNC_LOCAL, target.getFullPath(), message, null);
-					}
-					if (!fileInfo.exists()) {
-						asyncRefresh(target);
-						String message = NLS.bind(Messages.localstore_resourceDoesNotExist, target.getFullPath());
-						throw new ResourceException(IResourceStatus.NOT_FOUND_LOCAL, target.getFullPath(), message, null);
-					}
-				} else {
-					if (fileInfo.exists()) {
-						String message = NLS.bind(Messages.localstore_resourceExists, target.getFullPath());
-						throw new ResourceException(IResourceStatus.EXISTS_LOCAL, target.getFullPath(), message, null);
-					}
-					if (append) {
-						String message = NLS.bind(Messages.resources_mustBeLocal, target.getFullPath());
-						throw new ResourceException(IResourceStatus.RESOURCE_NOT_LOCAL, target.getFullPath(), message, null);
-					}
-				}
-			}
-			// add entry to History Store.
-			if (BitMask.isSet(updateFlags, IResource.KEEP_HISTORY) && fileInfo.exists()
-					&& FileSystemResourceManager.storeHistory(target))
-				//never move to the history store, because then the file is missing if write fails
-				getHistoryStore().addState(target.getFullPath(), store, fileInfo, false);
-			if (!fileInfo.exists()) {
-				IFileStore parent = store.getParent();
-				IFileInfo parentInfo = parent.fetchInfo();
-				if (!parentInfo.exists()) {
-					parent.mkdir(EFS.NONE, null);
-				}
-			}
+			prepareWrite(target, fileInfo, updateFlags, append, targetResource, store);
 
 			// On Windows an attempt to open an output stream on a hidden file results in FileNotFoundException.
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=194216
@@ -1268,22 +1236,120 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				String msg = NLS.bind(Messages.localstore_couldNotWrite, store.toString());
 				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(store.toString()), msg, e);
 			}
-			// get the new last modified time and stash in the info
-			lastModified = store.fetchInfo().getLastModified();
-			ResourceInfo mutableTargetResourceInfo = targetResource.getResourceInfo(false, true);
-			if (mutableTargetResourceInfo == null) {
-				// If the resource info is null, the resource must have been concurrently
-				// removed from the workspace. This violates the method contract, so throw an
-				// according exception.
-				targetResource.checkExists(targetResource.getFlags(mutableTargetResourceInfo), true);
-			}
-			updateLocalSync(mutableTargetResourceInfo, lastModified);
-			mutableTargetResourceInfo.incrementContentId();
-			mutableTargetResourceInfo.clear(M_CONTENT_CACHE);
-			workspace.updateModificationStamp(mutableTargetResourceInfo);
+			finishWrite(targetResource, store);
 		} catch (IOException streamCloseIgnored) {
 			// ignore;
 		}
+	}
+
+	private void prepareWrite(IFile target, IFileInfo fileInfo, int updateFlags, boolean append,
+			Resource targetResource, IFileStore store) throws CoreException {
+		if (fileInfo.getAttribute(EFS.ATTRIBUTE_READ_ONLY)) {
+			String message = NLS.bind(Messages.localstore_couldNotWriteReadOnly, target.getFullPath());
+			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, target.getFullPath(), message, null);
+		}
+		long lastModified = fileInfo.getLastModified();
+		ResourceInfo immutableTargetResourceInfo = targetResource.getResourceInfo(true, false);
+		if (immutableTargetResourceInfo == null) {
+			// If the resource info is null, the resource does not exist in the workspace.
+			// This violates the method contract, so throw an according exception.
+			targetResource.checkExists(targetResource.getFlags(immutableTargetResourceInfo), true);
+		}
+		if (BitMask.isSet(updateFlags, IResource.FORCE)) {
+			if (append && !target.isLocal(IResource.DEPTH_ZERO) && !fileInfo.exists()) {
+				// force=true, local=false, existsInFileSystem=false
+				String message = NLS.bind(Messages.resources_mustBeLocal, target.getFullPath());
+				throw new ResourceException(IResourceStatus.RESOURCE_NOT_LOCAL, target.getFullPath(), message, null);
+			}
+		} else {
+			if (target.isLocal(IResource.DEPTH_ZERO)) {
+				// test if timestamp is the same since last synchronization
+				if (lastModified != immutableTargetResourceInfo.getLocalSyncInfo()) {
+					asyncRefresh(target);
+					String message = NLS.bind(Messages.localstore_resourceIsOutOfSync, target.getFullPath());
+					throw new ResourceException(IResourceStatus.OUT_OF_SYNC_LOCAL, target.getFullPath(), message, null);
+				}
+				if (!fileInfo.exists()) {
+					asyncRefresh(target);
+					String message = NLS.bind(Messages.localstore_resourceDoesNotExist, target.getFullPath());
+					throw new ResourceException(IResourceStatus.NOT_FOUND_LOCAL, target.getFullPath(), message, null);
+				}
+			} else {
+				if (fileInfo.exists()) {
+					String message = NLS.bind(Messages.localstore_resourceExists, target.getFullPath());
+					throw new ResourceException(IResourceStatus.EXISTS_LOCAL, target.getFullPath(), message, null);
+				}
+				if (append) {
+					String message = NLS.bind(Messages.resources_mustBeLocal, target.getFullPath());
+					throw new ResourceException(IResourceStatus.RESOURCE_NOT_LOCAL, target.getFullPath(), message,
+							null);
+				}
+			}
+		}
+		// add entry to History Store.
+		if (BitMask.isSet(updateFlags, IResource.KEEP_HISTORY) && fileInfo.exists()
+				&& FileSystemResourceManager.storeHistory(target))
+			// never move to the history store, because then the file is missing if write
+			// fails
+			getHistoryStore().addState(target.getFullPath(), store, fileInfo, false);
+		if (!fileInfo.exists()) {
+			IFileStore parent = store.getParent();
+			IFileInfo parentInfo = parent.fetchInfo();
+			if (!parentInfo.exists()) {
+				parent.mkdir(EFS.NONE, null);
+			}
+		}
+	}
+
+	private void finishWrite(Resource targetResource, IFileStore store) throws CoreException {
+		// get the new last modified time and stash in the info
+		long lastModified = store.fetchInfo().getLastModified();
+		ResourceInfo mutableTargetResourceInfo = targetResource.getResourceInfo(false, true);
+		if (mutableTargetResourceInfo == null) {
+			// If the resource info is null, the resource must have been concurrently
+			// removed from the workspace. This violates the method contract, so throw an
+			// according exception.
+			targetResource.checkExists(targetResource.getFlags(mutableTargetResourceInfo), true);
+		}
+		updateLocalSync(mutableTargetResourceInfo, lastModified);
+		mutableTargetResourceInfo.incrementContentId();
+		mutableTargetResourceInfo.clear(M_CONTENT_CACHE);
+		workspace.updateModificationStamp(mutableTargetResourceInfo);
+	}
+
+	/**
+	 * like
+	 * {@link #write(IFile, InputStream, IFileInfo, int, boolean, IProgressMonitor)}
+	 * but with byte array content instead of stream
+	 */
+	public void write(IFile target, byte[] content, IFileInfo fileInfo, int updateFlags, boolean append,
+			IProgressMonitor monitor) throws CoreException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 4);
+		Resource targetResource = (Resource) target;
+		IFileStore store = getStore(target);
+		prepareWrite(target, fileInfo, updateFlags, append, targetResource, store);
+
+		// On Windows an attempt to open an output stream on a hidden file results in
+		// FileNotFoundException.
+		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=194216
+		boolean restoreHiddenAttribute = false;
+		if (fileInfo.exists() && fileInfo.getAttribute(EFS.ATTRIBUTE_HIDDEN)
+				&& Platform.getOS().equals(Platform.OS_WIN32)) {
+			fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, false);
+			store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
+			restoreHiddenAttribute = true;
+		} else {
+			subMonitor.split(1);
+		}
+		int options = append ? EFS.APPEND : EFS.NONE;
+		store.write(content, options, subMonitor.split(1));
+		if (restoreHiddenAttribute) {
+			fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, true);
+			store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
+		} else {
+			subMonitor.split(1);
+		}
+		finishWrite(targetResource, store);
 	}
 
 	/**

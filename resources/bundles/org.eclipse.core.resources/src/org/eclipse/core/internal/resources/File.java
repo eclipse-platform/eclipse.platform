@@ -290,6 +290,7 @@ public class File extends Resource implements IFile {
 		return getContents(getLocalManager().isLightweightAutoRefreshEnabled());
 	}
 
+	/** like {@link #readAllBytes()} **/
 	@Override
 	public InputStream getContents(boolean force) throws CoreException {
 		ResourceInfo info = getResourceInfo(false, false);
@@ -297,6 +298,17 @@ public class File extends Resource implements IFile {
 		checkAccessible(flags);
 		checkLocal(flags, DEPTH_ZERO);
 		return getLocalManager().read(this, force, null);
+	}
+
+	/** like {@link #getContents(boolean)} with parameter force=true **/
+	@Override
+	public byte[] readAllBytes() throws CoreException {
+		boolean force = true;
+		ResourceInfo info = getResourceInfo(false, false);
+		int flags = getFlags(info);
+		checkAccessible(flags);
+		checkLocal(flags, DEPTH_ZERO);
+		return getLocalManager().readAllBytes(this, force, null);
 	}
 
 	@Deprecated
@@ -327,6 +339,14 @@ public class File extends Resource implements IFile {
 		workspace.getAliasManager().updateAliases(this, getStore(), IResource.DEPTH_ZERO, monitor);
 	}
 
+	protected void internalSetContents(byte[] content, IFileInfo fileInfo, int updateFlags, boolean append,
+			IProgressMonitor monitor) throws CoreException {
+		if (content == null)
+			content = new byte[0];
+		getLocalManager().write(this, content, fileInfo, updateFlags, append, monitor);
+		updateMetadataFiles();
+		workspace.getAliasManager().updateAliases(this, getStore(), IResource.DEPTH_ZERO, monitor);
+	}
 	/**
 	 * Optimized refreshLocal for files.  This implementation does not block the workspace
 	 * for the common case where the file exists both locally and on the file system, and
@@ -367,6 +387,32 @@ public class File extends Resource implements IFile {
 			}
 		} catch (IOException streamCloseIgnored) {
 			// ignore;
+		} finally {
+			subMonitor.done();
+		}
+	}
+	@Override
+	public void setContents(byte[] content, int updateFlags, IProgressMonitor monitor) throws CoreException {
+		String message = NLS.bind(Messages.resources_settingContents, getFullPath());
+		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 100);
+		try {
+			if (workspace.shouldValidate)
+				workspace.validateSave(this);
+			final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
+			SubMonitor newChild = subMonitor.newChild(1);
+			try {
+				workspace.prepareOperation(rule, newChild);
+				ResourceInfo info = getResourceInfo(false, false);
+				checkAccessible(getFlags(info));
+				workspace.beginOperation(true);
+				IFileInfo fileInfo = getStore().fetchInfo();
+				internalSetContents(content, fileInfo, updateFlags, false, subMonitor.newChild(99));
+			} catch (OperationCanceledException e) {
+				workspace.getWorkManager().operationCanceled();
+				throw e;
+			} finally {
+				workspace.endOperation(rule, true);
+			}
 		} finally {
 			subMonitor.done();
 		}

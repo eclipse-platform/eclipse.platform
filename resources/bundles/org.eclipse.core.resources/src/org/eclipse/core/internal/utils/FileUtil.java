@@ -21,6 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -28,12 +33,14 @@ import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
 
@@ -338,6 +345,71 @@ public class FileUtil {
 			String msg = NLS.bind(Messages.localstore_couldNotWrite, path);
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(path), msg, e);
 		}
+	}
+
+	public static char[] readAllChars(IFile file) throws CoreException {
+		byte[] content = file.readAllBytes();
+		Charset charset = getCharset(file, content);
+		return FileUtil.toCharArray(content, charset);
+	}
+
+	public static String readString(IFile file) throws CoreException {
+		byte[] content = file.readAllBytes();
+		Charset charset = getCharset(file, content);
+		return FileUtil.toString(content, charset);
+	}
+
+	private static Charset getCharset(IFile file, byte[] content) {
+		Charset charset;
+		try {
+			String encoding = file.getCharset(); // TODO possible optimization: use content while evaluating BOM
+			charset = Charset.forName(encoding);
+		} catch (CoreException | IllegalArgumentException ce) {
+			// encoding is not supported
+			charset = Charset.defaultCharset();
+		}
+		return charset;
+	}
+
+	private static String toString(byte[] content, Charset charset) {
+		int start = getContentStart(content, charset);
+		return new String(content, start, content.length - start, charset);
+	}
+
+	private static char[] toCharArray(byte[] content, Charset charset) {
+		int start = getContentStart(content, charset);
+		return decode(content, start, content.length - start, charset);
+	}
+
+	private static int getContentStart(byte[] content, Charset charset) {
+		/** encoded UTF Byte-Order-Mark U+FEFF **/
+		byte[] bom = null;
+		if (StandardCharsets.UTF_8.equals(charset)) {
+			bom = IContentDescription.BOM_UTF_8;
+		} else if (StandardCharsets.UTF_16BE.equals(charset)) {
+			bom = IContentDescription.BOM_UTF_16BE;
+		} else if (StandardCharsets.UTF_16LE.equals(charset)) {
+			bom = IContentDescription.BOM_UTF_16LE;
+		}
+		boolean startsWithBom = bom != null && bom.length <= content.length
+				&& Arrays.equals(content, 0, bom.length, bom, 0, bom.length);
+		return startsWithBom ? bom.length : 0;
+	}
+
+	/**
+	 * conversionless implementation of
+	 *
+	 * @return new String(srcBytes, start, length, charset).toCharArray();
+	 **/
+	private static char[] decode(byte[] content, int start, int length, Charset charset) {
+		ByteBuffer srcBuffer = ByteBuffer.wrap(content, start, length);
+		CharBuffer destBuffer = charset.decode(srcBuffer);
+		char[] dst = destBuffer.array();
+		int chars = destBuffer.remaining();
+		if (chars != dst.length) {
+			dst = Arrays.copyOf(dst, chars);
+		}
+		return dst;
 	}
 
 	/**
