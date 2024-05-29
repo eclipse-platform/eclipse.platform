@@ -134,16 +134,14 @@ public class Bug_303517 {
 
 		// Touch on file-system
 		touchInFilesystem(f);
-		try (InputStream in = f.getContents(true)) {
-		}
+		f.readAllBytes();
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is now in sync.
-		try (InputStream in = f.getContents()) {
-		}
+		f.readAllBytes();
 
 		// Test that getContent(true) on an out-if-sync deleted file throws a CoreException
 		// with IResourceStatus.RESOURCE_NOT_FOUND error code.

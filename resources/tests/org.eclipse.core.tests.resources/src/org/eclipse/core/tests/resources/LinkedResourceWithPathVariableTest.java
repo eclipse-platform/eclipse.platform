@@ -273,7 +273,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertNotNull("5.1", file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
+		assertEquals("5.3", "contents for a file", file.readString());
 	}
 
 	/**
@@ -330,7 +330,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertNotNull("5.1", file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
+		assertEquals("5.3", "contents for a file", file.readString());
 	}
 
 	/**
@@ -509,7 +509,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertDoesNotExistInWorkspace(file);
 
 		file.createLink(variableBasedLocation, IResource.ALLOW_MISSING_LOCAL, null);
-		file.setContents(createInputStream("contents for a file"), IResource.FORCE, null);
+		file.setContents("contents for a file".getBytes(), IResource.FORCE, null);
 
 		// now the file exists in both workspace and file system
 		assertExistsInWorkspace(file);
@@ -545,7 +545,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertNotNull("5.1", file.getLocation());
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
+		assertEquals("5.3", "contents for a file", file.readString());
 	}
 
 	/**
@@ -859,7 +859,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertExistsInWorkspace(file);
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
+		assertEquals("5.3", "contents for a file", file.readString());
 	}
 
 	/**
@@ -925,7 +925,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertExistsInWorkspace(file);
 		assertExistsInFileSystem(file);
 		// the contents must be the original ones
-		assertTrue("5.3", compareContent(file.getContents(true), createInputStream("contents for a file")));
+		assertEquals("5.3", "contents for a file", file.readString());
 	}
 
 	/**

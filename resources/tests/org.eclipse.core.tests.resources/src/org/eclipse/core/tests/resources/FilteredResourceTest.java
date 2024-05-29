@@ -24,7 +24,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertThrows;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -488,9 +487,7 @@ public class FilteredResourceTest {
 			fileInputStream.transferTo(originalContentStream);
 			String originalContent = new String(originalContentStream.toByteArray(), StandardCharsets.UTF_8);
 			String newContent = originalContent + "w";
-			ByteArrayInputStream modifiedContentStream = new ByteArrayInputStream(
-					newContent.getBytes(StandardCharsets.UTF_8));
-			file.setContents(modifiedContentStream, false, false, null);
+			file.setContents(newContent.getBytes(StandardCharsets.UTF_8), false, false, null);
 		}
 	}
 
