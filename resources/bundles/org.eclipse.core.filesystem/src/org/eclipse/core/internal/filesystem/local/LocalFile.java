@@ -31,6 +31,7 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.StandardOpenOption;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -447,6 +448,7 @@ public class LocalFile extends FileStore {
 		}
 	}
 
+	/** @see #readAllBytes(int, IProgressMonitor) */
 	@Override
 	public InputStream openInputStream(int options, IProgressMonitor monitor) throws CoreException {
 		try {
@@ -467,6 +469,28 @@ public class LocalFile extends FileStore {
 		}
 	}
 
+	/** @see #openInputStream(int, IProgressMonitor) */
+	@Override
+	public byte[] readAllBytes(int options, IProgressMonitor monitor) throws CoreException {
+		try {
+			return Files.readAllBytes(file.toPath());
+		} catch (IOException e) {
+			String message;
+			if (!file.exists()) {
+				message = NLS.bind(Messages.fileNotFound, filePath);
+				Policy.error(EFS.ERROR_NOT_EXISTS, message, e);
+			} else if (file.isDirectory()) {
+				message = NLS.bind(Messages.notAFile, filePath);
+				Policy.error(EFS.ERROR_WRONG_TYPE, message, e);
+			} else {
+				message = NLS.bind(Messages.couldNotRead, filePath);
+				Policy.error(EFS.ERROR_READ, message, e);
+			}
+			return null;
+		}
+	}
+
+	/** @see #write(byte[], int, IProgressMonitor) */
 	@Override
 	public OutputStream openOutputStream(int options, IProgressMonitor monitor) throws CoreException {
 		try {
@@ -483,6 +507,30 @@ public class LocalFile extends FileStore {
 				Policy.error(EFS.ERROR_WRITE, message, e);
 			}
 			return null;
+		}
+	}
+
+	/** @see #openOutputStream(int, IProgressMonitor) */
+	@Override
+	public void write(byte[] content, int options, IProgressMonitor monitor) throws CoreException {
+		try {
+			boolean append = (options & EFS.APPEND) != 0;
+			if (append) {
+				Files.write(file.toPath(), content, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+			} else {
+				Files.write(file.toPath(), content); // default uses StandardOpenOption.TRUNCATE_EXISTING
+			}
+		} catch (IOException e) {
+			checkReadOnlyParent(file, e);
+			String message;
+			String path = filePath;
+			if (file.isDirectory()) {
+				message = NLS.bind(Messages.notAFile, path);
+				Policy.error(EFS.ERROR_WRONG_TYPE, message, e);
+			} else {
+				message = NLS.bind(Messages.couldNotWrite, path);
+				Policy.error(EFS.ERROR_WRITE, message, e);
+			}
 		}
 	}
 

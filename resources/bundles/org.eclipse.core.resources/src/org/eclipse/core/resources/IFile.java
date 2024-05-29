@@ -15,10 +15,20 @@
  *******************************************************************************/
 package org.eclipse.core.resources;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.internal.utils.FileUtil;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 
@@ -1162,6 +1172,98 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * @since 2.0
 	 */
 	void setContents(IFileState source, int updateFlags, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Equivalent of calling
+	 * {@link #setContents(InputStream, boolean, boolean, IProgressMonitor)} with
+	 * {@code new ByteArrayInputStream(content)} as {@code InputStream}. This is
+	 * preferable (potentially faster) when the content is available as byte array
+	 * anyway.
+	 *
+	 * @param content     the content bytes
+	 * @param force       a flag controlling how to deal with resources that are not
+	 *                    in sync with the local file system
+	 * @param keepHistory a flag indicating whether or not store the current
+	 *                    contents in the local history
+	 * @param monitor     a progress monitor, or <code>null</code> if progress
+	 *                    reporting is not desired
+	 * @throws CoreException if this method fails or is canceled.
+	 * @since 3.21
+	 */
+	public default void setContents(byte[] content, boolean force, boolean keepHistory, IProgressMonitor monitor)
+			throws CoreException {
+		int updateFlags = (force ? IResource.FORCE : IResource.NONE)
+				| (keepHistory ? IResource.KEEP_HISTORY : IResource.NONE);
+		setContents(content, updateFlags, monitor);
+	}
+
+	/**
+	 * Equivalent of calling
+	 * {@link #setContents(InputStream, int, IProgressMonitor)} with
+	 * {@code new ByteArrayInputStream(content)} as {@code InputStream}. This is
+	 * preferable (potentially faster) when the content is available as byte array
+	 * anyway.
+	 *
+	 * @param content     the content bytes
+	 * @param updateFlags bit-wise or of update flag constants (<code>FORCE</code>
+	 *                    and <code>KEEP_HISTORY</code>)
+	 * @param monitor     a progress monitor, or <code>null</code> if progress
+	 *                    reporting is not desired
+	 * @throws CoreException if this method fails or is canceled.
+	 * @since 3.21
+	 */
+	public default void setContents(byte[] content, int updateFlags, IProgressMonitor monitor) throws CoreException {
+		// Meant to be overridden for local files with Files.write
+		setContents(new ByteArrayInputStream(content), updateFlags, monitor);
+	}
+
+	/**
+	 * Reads the content in a byte array. This method is not intended for reading in
+	 * large files that do not fit in a byte array. Preferable (faster) equivalent
+	 * of calling {@code getContents(true).readAllBytes()}.
+	 *
+	 * @return content bytes
+	 * @throws CoreException on error
+	 * @see #getContents(boolean)
+	 * @since 3.21
+	 */
+	public default byte[] readAllBytes() throws CoreException {
+		// Meant to be overridden for local files
+		// as Files.readAllBytes is ~ 1.5 times faster
+		try (InputStream stream = getContents(true)) {
+			return stream.readAllBytes();
+		} catch (IOException e) {
+			throw new CoreException(Status.error("Error reading " + getFullPath(), e)); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Reads the content as char array. Skips the UTF BOM header if any. This method
+	 * is not intended for reading in large files that do not fit in a char array.
+	 * Preferable (potentially faster) equivalent of calling
+	 * {@code readString().toCharArray()}.
+	 *
+	 * @return content as char array without UTF BOM header
+	 * @throws CoreException on error
+	 * @see #readString()
+	 * @since 3.21
+	 */
+	public default char[] readAllChars() throws CoreException {
+		return FileUtil.readAllChars(this);
+	}
+
+	/**
+	 * Reads the content as String. Skips the UTF BOM header if any. This method is
+	 * not intended for reading in large files that do not fit in a String.
+	 *
+	 * @return content String without UTF BOM header
+	 * @throws CoreException on error
+	 * @see #readAllBytes()
+	 * @since 3.21
+	 */
+	public default String readString() throws CoreException {
+		return FileUtil.readString(this);
+	}
 
 	/**
 	 * Returns line separator appropriate for the given file.

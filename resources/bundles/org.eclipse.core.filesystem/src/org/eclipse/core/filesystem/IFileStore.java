@@ -15,12 +15,17 @@
 ******************************************************************************/
 package org.eclipse.core.filesystem;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import org.eclipse.core.filesystem.provider.FileStore;
 import org.eclipse.core.internal.filesystem.FileStoreUtil;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Status;
 
 /**
  * A file store is responsible for storage and retrieval of a single file in some file system.
@@ -413,6 +418,29 @@ public interface IFileStore extends IAdaptable {
 	public InputStream openInputStream(int options, IProgressMonitor monitor) throws CoreException;
 
 	/**
+	 * Returns the bytes contents of this file. This method is not intended for reading in
+	 * large files that do not fit in a byte array. Preferable over calling
+	 * {@code openInputStream(options, monitor).readAllBytes()}
+	 * @param options bit-wise or of option flag constants (currently only {@link EFS#NONE}
+	 * is applicable).
+	 * @param monitor a progress monitor, or <code>null</code> if progress
+	 *    reporting and cancellation are not desired
+	 * @return contents of this file as byte array.
+	 * @throws CoreException if this method fails.
+	 * @see #openInputStream(int, IProgressMonitor)
+	 * @since 1.11
+	 */
+	public default byte[] readAllBytes(int options, IProgressMonitor monitor) throws CoreException {
+		// Default implementation is meant to be overridden for local files
+		// as Files.readAllBytes is ~ 1.5 times faster
+		try (InputStream stream = openInputStream(options, monitor)) {
+			return stream.readAllBytes();
+		} catch (IOException e) {
+			throw new CoreException(Status.error("Error reading " + getName(), e)); //$NON-NLS-1$
+		}
+	}
+
+	/**
 	 * Returns an open output stream on the contents of this file. The number of
 	 * concurrently open streams depends on implementation and can be limited.
 	 * The caller is responsible for closing the provided stream when it is no longer
@@ -448,6 +476,31 @@ public interface IFileStore extends IAdaptable {
 	 * </ul>
 	 */
 	public OutputStream openOutputStream(int options, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Writes the contents to this file.
+	 * <p>
+	 * The {@link EFS#APPEND} update flag controls where
+	 * output is written to the file. If this flag is specified, content written
+	 * to the stream will be appended to the end of the file. If this flag is
+	 * not specified, the contents of the existing file, if any, is truncated to zero
+	 * and the new output will be written from the start of the file.
+	 * </p>
+	 *
+	 * @param content contents given as byte array
+	 * @param options bit-wise or of option flag constants ({@link EFS#APPEND}).
+	 * @param monitor a progress monitor, or <code>null</code> if progress
+	 *    reporting and cancellation are not desired
+	 * @see #openOutputStream(int, IProgressMonitor)
+	 * @since 1.11
+	 * **/
+	public default void write(byte[] content, int options, IProgressMonitor monitor) throws CoreException {
+		try (OutputStream out = openOutputStream(options, monitor)) {
+			out.write(content);
+		} catch (IOException e) {
+			throw new CoreException(Status.error(e.getMessage(), e));
+		}
+	}
 
 	/**
 	 * Writes information about this file to the underlying file system. Only

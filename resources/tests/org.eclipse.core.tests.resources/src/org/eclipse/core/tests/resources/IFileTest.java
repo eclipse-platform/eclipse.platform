@@ -30,6 +30,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
@@ -38,7 +39,10 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -937,6 +941,46 @@ public class IFileTest {
 
 		try (InputStream content = target.getContents(false)) {
 			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
+		}
+	}
+
+	@Test
+	public void testReadAll() throws IOException, CoreException {
+		List<Charset> charsets = List.of(StandardCharsets.ISO_8859_1, StandardCharsets.UTF_8, StandardCharsets.UTF_16BE,
+				StandardCharsets.UTF_16LE);
+		List<String> fileTypes = List.of(".txt", "");
+		String BOM = "\uFEFF";
+		Charset defaultCharset = Charset.forName(projects[0].getDefaultCharset());
+		for (String fileType : fileTypes) {
+			for (Charset charset : charsets) {
+				for (int bomCount = 0; bomCount <= (charset.name().contains("UTF") ? 1 : 0); bomCount++) {
+					IFile target = projects[0].getFile("file1" + charset.name() + "_" + bomCount + fileType);
+					target.create(null, false, null);
+					String testString = "hallo";
+					boolean setCharset = bomCount == 0;
+					if (setCharset) {
+						target.setCharset(charset.name(), null);
+					}
+					FussyProgressMonitor monitor = new FussyProgressMonitor();
+					byte[] content = ((bomCount == 1 ? BOM : "") + testString).getBytes(charset);
+					target.setContents(content, true, false, monitor);
+					monitor.assertUsedUp();
+					byte[] allBytes = target.readAllBytes();
+					assertArrayEquals(target.getName(), content, allBytes);
+					char[] allChars = target.readAllChars();
+					String readString = target.readString();
+					String expected;
+					if (!setCharset && fileType.isEmpty() && charset != defaultCharset) {
+						// BOM present but ignored for unknown filetype
+						expected = new String(content, defaultCharset);
+					} else {
+						// ".txt" files autodetect charset by BOM if present
+						expected = testString;
+					}
+					assertArrayEquals(target.getName(), expected.toCharArray(), allChars);
+					assertEquals(target.getName(), expected, readString);
+				}
+			}
 		}
 	}
 
