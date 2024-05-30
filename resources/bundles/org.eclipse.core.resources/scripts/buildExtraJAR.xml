@@ -32,38 +32,14 @@
 
 	<target name="ant_tasks/resources-ant.jar" depends="init" unless="ant_tasks/resources-ant.jar">
 		<property name="destdir" value="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
-		<delete dir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
-		<mkdir dir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
-		<!-- compile the source code -->
-		<javac destdir="${temp.folder}/ant_tasks/resources-ant.jar.bin" failonerror="true" verbose="true" debug="on" target="11" source="11">
-			<compilerarg value="-warn:-unavoidableGenericProblems"/>
-			<classpath>
-				<dirset dir="${basedir}/..">
-					<include name="org.eclipse.core.resources/bin"/>
-					<include name="org.eclipse.core.runtime/bin"/>
-					<include name="org.eclipse.equinox.common/bin"/>
-					<include name="org.eclipse.core.jobs/bin"/>
-					<include name="org.eclipse.osgi/bin"/>
-					<include name="org.eclipse.ant.core/bin"/>
-				</dirset>
-				<fileset dir="${eclipse.home}">
-					<include name="plugins/org.eclipse.core.resources*.jar"/>
-					<include name="plugins/org.eclipse.core.runtime*.jar"/>
-					<include name="plugins/org.eclipse.equinox.common*.jar"/>
-					<include name="plugins/org.eclipse.core.jobs*.jar"/>
-					<include name="plugins/org.eclipse.osgi*.jar"/>
-					<include name="plugins/org.eclipse.ant.core*.jar"/>
-				</fileset>
-			</classpath>
-			<src path="src_ant/"/>
-		</javac>
+		<delete dir="${destdir}"/>
+		<mkdir dir="${destdir}"/>
 		<!-- copy necessary resources -->
-		<copy todir="${temp.folder}/ant_tasks/resources-ant.jar.bin">
-			<fileset dir="src_ant/" excludes="**/*.java"/>
+		<copy todir="${destdir}">
+			<fileset dir="${basedir}/bin_ant/"/>
 		</copy>
 		<mkdir dir="${build.result.folder}"/>
-		<jar jarfile="${build.result.folder}/resources-ant.jar" basedir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
-		<delete dir="${temp.folder}/ant_tasks/resources-ant.jar.bin"/>
+		<jar jarfile="${build.result.folder}/resources-ant.jar" basedir="${destdir}"/>
 		<delete dir="${temp.folder}"/>
 	</target>
 
