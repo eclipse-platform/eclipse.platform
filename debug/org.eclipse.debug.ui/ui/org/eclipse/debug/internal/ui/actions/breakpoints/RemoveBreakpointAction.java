@@ -45,12 +45,24 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 
 public class RemoveBreakpointAction extends AbstractSelectionActionDelegate {
+	@Override
+	public void runWithEvent(IAction action, Event event) {
+		if (event.keyCode == SWT.DEL && !(event.widget instanceof Tree)) {
+			// Do not delete breakpoint when key DEL is used for example in condition editor
+			// https://github.com/eclipse-jdt/eclipse.jdt.debug/issues/444
+			return;
+		}
+		super.runWithEvent(action, event);
+	}
 
 	@Override
 	public void run(IAction action) {
