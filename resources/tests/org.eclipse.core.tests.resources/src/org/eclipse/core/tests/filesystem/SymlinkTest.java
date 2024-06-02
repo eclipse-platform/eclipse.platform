@@ -74,6 +74,8 @@ public class SymlinkTest {
 				FileSystemHelper.canCreateSymLinks());
 	}
 
+	// TODO: test hard-links too?
+
 	protected void fetchFileInfos() {
 		iDir = aDir.fetchInfo();
 		iFile = aFile.fetchInfo();
