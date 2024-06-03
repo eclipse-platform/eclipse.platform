@@ -19,6 +19,10 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.expressions.EvaluationResult;
+import org.eclipse.core.expressions.Expression;
+import org.eclipse.core.expressions.IEvaluationContext;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.internal.ui.views.DebugUIViewsMessages;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.PopupDialog;
@@ -27,6 +31,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.ISources;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerActivation;
@@ -65,7 +70,7 @@ public abstract class DebugPopup extends PopupDialog {
 	 *  the dialog, or <code>null</code>
 	 */
 	public DebugPopup(Shell parent, Point anchor, String commandId) {
-		super(parent, PopupDialog.INFOPOPUPRESIZE_SHELLSTYLE, true, true, false, true, false, null, null);
+		super(parent, PopupDialog.INFOPOPUPRESIZE_SHELLSTYLE, true, true, false, true, false, true, null, null);
 		fAnchor = anchor;
 		fCommandId = commandId;
 	}
@@ -189,7 +194,14 @@ public abstract class DebugPopup extends PopupDialog {
 			};
 
 			fHandlerService = workbench.getAdapter(IHandlerService.class);
-			fActivation = fHandlerService.activateHandler(commandId, fCloseHandler);
+			fActivation = fHandlerService.activateHandler(commandId, fCloseHandler, new Expression() {
+				@Override
+				public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
+					return EvaluationResult.valueOf( //
+							context.getVariable(ISources.ACTIVE_SHELL_NAME) instanceof Shell shell //
+									&& shell.getData() == DebugPopup.this);
+				}
+			});
 		}
 
 		String infoText = getInfoText();
