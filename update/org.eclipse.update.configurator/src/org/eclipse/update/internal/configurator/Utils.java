@@ -289,21 +289,21 @@ public class Utils {
 		}
 		return false;
 	}
-	
+
 	public static Locale getDefaultLocale() {
 		String nl = getNL();
 		// sanity test
 		if (nl == null)
 			return Locale.getDefault();
-		
+
 		// break the string into tokens to get the Locale object
-		StringTokenizer locales = new StringTokenizer(nl,"_"); //$NON-NLS-1$
+		StringTokenizer locales = new StringTokenizer(nl, "_"); //$NON-NLS-1$
 		if (locales.countTokens() == 1)
-			return new Locale(locales.nextToken(), ""); //$NON-NLS-1$
+			return Locale.of(locales.nextToken());
 		else if (locales.countTokens() == 2)
-			return new Locale(locales.nextToken(), locales.nextToken());
+			return Locale.of(locales.nextToken(), locales.nextToken());
 		else if (locales.countTokens() == 3)
-			return new Locale(locales.nextToken(), locales.nextToken(), locales.nextToken());
+			return Locale.of(locales.nextToken(), locales.nextToken(), locales.nextToken());
 		else
 			return Locale.getDefault();
 	}
