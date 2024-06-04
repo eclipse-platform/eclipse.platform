@@ -44,12 +44,10 @@ public class FieldRequestor extends Requestor<Field> {
 		Object userObject = getRequestingObject();
 		if (userObject == null)
 			return false;
-		if (!field.isAccessible()) {
-			field.setAccessible(true);
-		}
 		try {
+			field.trySetAccessible();
 			field.set(userObject, value);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
 			throw new InjectionException(e);
 		}
 		return true;

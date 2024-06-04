@@ -31,17 +31,15 @@ public class ConstructorRequestor extends Requestor<Constructor<?>> {
 	@Override
 	public Object execute() throws InjectionException {
 		Object result = null;
-		if (!location.isAccessible()) {
-			location.setAccessible(true);
-		}
 		boolean pausedRecording = false;
 		if ((primarySupplier != null)) {
 			primarySupplier.pauseRecording();
 			pausedRecording = true;
 		}
 		try {
+			location.trySetAccessible();
 			result = location.newInstance(actualArgs);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
 			throw new InjectionException(e);
 		} catch (InstantiationException e) {
 			throw new InjectionException("Unable to instantiate " + location, e); //$NON-NLS-1$

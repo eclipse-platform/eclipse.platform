@@ -46,17 +46,15 @@ public class MethodRequestor extends Requestor<Method> {
 		if (userObject == null)
 			return null;
 		Object result = null;
-		if (!location.isAccessible()) {
-			location.setAccessible(true);
-		}
 		boolean pausedRecording = false;
 		if ((primarySupplier != null)) {
 			primarySupplier.pauseRecording();
 			pausedRecording = true;
 		}
 		try {
+			location.trySetAccessible();
 			result = location.invoke(userObject, actualArgs);
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
 			throw new InjectionException(e);
 		} catch (InvocationTargetException e) {
 			Throwable originalException = e.getCause();
