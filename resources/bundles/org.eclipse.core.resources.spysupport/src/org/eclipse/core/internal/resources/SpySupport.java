@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.core.internal.utils.Cache;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -70,10 +70,5 @@ public class SpySupport {
 			legacyElements.add(e.getValue());
 		}
 		return legacyElements.toArray();
-	}
-	public static boolean isContentDescriptionCached(File file) {
-		ResourceInfo info = file.getResourceInfo(false, false);
-		Cache.Entry entry = ((Workspace) ResourcesPlugin.getWorkspace()).getContentDescriptionManager().getCache().getEntry(file.getFullPath(), false);
-		return entry != null && info.getContentId() == entry.getTimestamp();
 	}
 }

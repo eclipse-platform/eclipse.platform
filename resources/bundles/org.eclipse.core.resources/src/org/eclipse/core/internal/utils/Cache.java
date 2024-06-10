@@ -13,198 +13,66 @@
  *******************************************************************************/
 package org.eclipse.core.internal.utils;
 
-import org.eclipse.core.runtime.Assert;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A cache that keeps a collection of at most maximumCapacity+threshold entries.
- * When the number of entries exceeds that limit, least recently used entries are removed
- * so the current size is the same as the maximum capacity.
+ * A cache for entries that have a resource modification timestamp to identify
+ * if the value is still up-to-date.
  */
-public class Cache {
-	public class Entry implements KeyedHashSet.KeyedElement {
-		Object cached;
-		Object key;
-		Entry next;
-		Entry previous;
-		long timestamp;
+public class Cache<K, V> {
+	private final ConcurrentHashMap<K, EntryRef<K, V>> map = new ConcurrentHashMap<>();
+	private final ReferenceQueue<Entry<V>> referenceQueue = new ReferenceQueue<>();
 
-		public Entry(Object key, Object cached, long timestamp) {
+	private static class EntryRef<K, V> extends SoftReference<Entry<V>> {
+		private final K key;
+
+		public EntryRef(K key, Entry<V> entry, ReferenceQueue<Entry<V>> queue) {
+			super(entry, queue);
 			this.key = key;
-			this.cached = cached;
-			this.timestamp = timestamp;
 		}
+	}
 
-		@Override
-		public boolean compare(KeyedHashSet.KeyedElement other) {
-			if (!(other instanceof Entry))
-				return false;
-			Entry otherEntry = (Entry) other;
-			return key.equals(otherEntry.key);
-		}
-
-		/* Removes this entry from the cache */
-		public void discard() {
-			unchain();
-			cached = null;
-			entries.remove(this);
-		}
-
-		public Object getCached() {
+	public static record Entry<V>(V cached, long timestamp) {
+		public V getCached() {
 			return cached;
-		}
-
-		@Override
-		public Object getKey() {
-			return key;
-		}
-
-		@Override
-		public int getKeyHashCode() {
-			return key.hashCode();
-		}
-
-		public Entry getNext() {
-			return next;
-		}
-
-		public Entry getPrevious() {
-			return previous;
 		}
 
 		public long getTimestamp() {
 			return timestamp;
 		}
-
-		public boolean isHead() {
-			return previous == null;
-		}
-
-		public boolean isTail() {
-			return next == null;
-		}
-
-		/* Inserts into the head of the list  */
-		void makeHead() {
-			Entry oldHead = head;
-			head = this;
-			next = oldHead;
-			previous = null;
-			if (oldHead == null)
-				tail = this;
-			else
-				oldHead.previous = this;
-		}
-
-		public void setCached(Object cached) {
-			this.cached = cached;
-		}
-
-		public void setTimestamp(long timestamp) {
-			this.timestamp = timestamp;
-		}
-
-		@Override
-		public String toString() {
-			return key + " -> " + cached + " [" + timestamp + ']'; //$NON-NLS-1$ //$NON-NLS-2$
-		}
-
-		/* Removes from the linked list, but not from the entries collection */
-		void unchain() {
-			// it may be in the tail
-			if (tail == this)
-				tail = previous;
-			else
-				next.previous = previous;
-			// it may be in the head
-			if (head == this)
-				head = next;
-			else
-				previous.next = next;
-		}
 	}
 
-	KeyedHashSet entries;
-	Entry head;
-	private final int maximumCapacity;
-	Entry tail;
-	private final double threshold;
-
-	public Cache(int maximumCapacity) {
-		this(Math.min(KeyedHashSet.MINIMUM_SIZE, maximumCapacity), maximumCapacity, 0.25);
-	}
-
-	public Cache(int initialCapacity, int maximumCapacity, double threshold) {
-		Assert.isTrue(maximumCapacity >= initialCapacity, "maximum capacity < initial capacity"); //$NON-NLS-1$
-		Assert.isTrue(threshold >= 0 && threshold <= 1, "threshold should be between 0 and 1"); //$NON-NLS-1$
-		Assert.isTrue(initialCapacity > 0, "initial capacity must be greater than zero"); //$NON-NLS-1$
-		entries = new KeyedHashSet(initialCapacity);
-		this.maximumCapacity = maximumCapacity;
-		this.threshold = threshold;
-	}
-
-	public void addEntry(Object key, Object toCache) {
+	public void addEntry(K key, V toCache) {
 		addEntry(key, toCache, 0);
 	}
 
-	public Entry addEntry(Object key, Object toCache, long timestamp) {
-		Entry newHead = (Entry) entries.getByKey(key);
-		if (newHead == null)
-			entries.add(newHead = new Entry(key, toCache, timestamp));
-		newHead.cached = toCache;
-		newHead.timestamp = timestamp;
-		newHead.makeHead();
-		int extraEntries = entries.size() - maximumCapacity;
-		if (extraEntries > maximumCapacity * threshold)
-			// we have reached our limit - ensure we are under the maximum capacity
-			// by discarding older entries
-			packEntries(extraEntries);
-		return newHead;
+	@SuppressWarnings("unchecked")
+	private void cleanup(){
+		// remove keys of Entries that have been Garbage collected:
+		EntryRef<K, V> e = null;
+		while ((e = (EntryRef<K, V>) referenceQueue.poll()) != null) {
+            map.remove(e.key);
+        }
+	}
+	public Entry<V> addEntry(K key, V toCache, long timestamp) {
+		cleanup();
+		Entry<V> e = new Entry<>(toCache, timestamp);
+		map.put(key, new EntryRef<>(key, e, referenceQueue));
+		return e;
 	}
 
-	public Entry getEntry(Object key) {
-		return getEntry(key, true);
-	}
-
-	public Entry getEntry(Object key, boolean update) {
-		Entry existing = (Entry) entries.getByKey(key);
-		if (existing == null)
+	public Entry<V> getEntry(K key) {
+		cleanup();
+		SoftReference<Entry<V>> ref = map.get(key);
+		if (ref == null) {
 			return null;
-		if (!update)
-			return existing;
-		existing.unchain();
-		existing.makeHead();
-		return existing;
-	}
-
-	public Entry getHead() {
-		return head;
-	}
-
-	public Entry getTail() {
-		return tail;
-	}
-
-	private void packEntries(int extraEntries) {
-		// should remove in an ad-hoc way to get better performance
-		Entry current = tail;
-		for (; current != null && extraEntries > 0; extraEntries--) {
-			current.discard();
-			current = current.previous;
 		}
+		return ref.get();
 	}
 
-	public long size() {
-		return entries.size();
-	}
-
-	public void discardAll() {
-		entries.clear();
-		head = tail = null;
-	}
-
-	public void dispose() {
-		discardAll();
-		entries = null;
-		head = tail = null;
+	public void clear() {
+		map.clear();
 	}
 }
