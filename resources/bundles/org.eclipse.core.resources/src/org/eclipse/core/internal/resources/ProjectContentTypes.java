@@ -15,15 +15,23 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.internal.utils.Cache;
+import org.eclipse.core.internal.utils.Cache.Entry;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager.ISelectionPolicy;
 import org.eclipse.core.runtime.content.IContentTypeMatcher;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -102,7 +110,7 @@ public class ProjectContentTypes {
 
 	private static final String PREF_LOCAL_CONTENT_TYPE_SETTINGS = "enabled"; //$NON-NLS-1$
 	private static final Preferences PROJECT_SCOPE = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
-	private final Cache contentTypesPerProject;
+	private final Cache<String, Set<String>> contentTypesPerProject = new Cache<>();
 	private final Workspace workspace;
 
 	static boolean usesContentTypePreferences(String projectName) {
@@ -129,8 +137,6 @@ public class ProjectContentTypes {
 
 	public ProjectContentTypes(Workspace workspace) {
 		this.workspace = workspace;
-		// keep cache small
-		this.contentTypesPerProject = new Cache(5, 30, 0.4);
 	}
 
 	/**
@@ -166,7 +172,6 @@ public class ProjectContentTypes {
 		return Platform.getContentTypeManager().getMatcher(projectContentTypeSelectionPolicy, projectContentTypeSelectionPolicy);
 	}
 
-	@SuppressWarnings({"unchecked"})
 	private Set<String> getAssociatedContentTypes(Project project) {
 		final ResourceInfo info = project.getResourceInfo(false, false);
 		if (info == null)
@@ -174,22 +179,15 @@ public class ProjectContentTypes {
 			return null;
 		final String projectName = project.getName();
 		synchronized (contentTypesPerProject) {
-			Cache.Entry entry = contentTypesPerProject.getEntry(projectName);
-			if (entry != null)
-				// we have an entry...
-				if (entry.getTimestamp() == info.getContentId())
-					// ...and it is not stale, so just return it
-					return (Set<String>) entry.getCached();
-			// no cached information found, have to collect associated content types
-			Set<String> result = collectAssociatedContentTypes(project);
-			if (entry == null)
-				// there was no entry before - create one
-				entry = contentTypesPerProject.addEntry(projectName, result, info.getContentId());
-			else {
-				// just update the existing entry
-				entry.setTimestamp(info.getContentId());
-				entry.setCached(result);
+			Entry<Set<String>> entry = contentTypesPerProject.getEntry(projectName);
+			int contentId = info.getContentId();
+			if (entry != null && entry.getTimestamp() == contentId) {
+				// use up-to-date cache
+				return entry.getCached();
 			}
+			// no up-to-date cached information found
+			Set<String> result = collectAssociatedContentTypes(project);
+			contentTypesPerProject.addEntry(projectName, result, contentId);
 			return result;
 		}
 	}

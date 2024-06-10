@@ -35,6 +35,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.events.ILifecycleListener;
 import org.eclipse.core.internal.events.LifecycleEvent;
 import org.eclipse.core.internal.utils.Cache;
+import org.eclipse.core.internal.utils.Cache.Entry;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.internal.watson.ElementTreeIterator;
@@ -235,7 +236,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 
 	private static final String PT_CONTENTTYPES = "contentTypes"; //$NON-NLS-1$
 
-	private Cache cache;
+	private final Cache<IPath, IContentDescription> cache = new Cache<>();
 
 	private volatile byte cacheState;
 
@@ -269,7 +270,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		try {
 			setCacheState(FLUSHING_CACHE);
 			// flush the MRU cache
-			cache.discardAll();
+			cache.clear();
 			SubMonitor subMonitor = SubMonitor.convert(monitor);
 			if (toClean.isEmpty()) {
 				// no project was added, must be a global flush
@@ -317,10 +318,6 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 			Policy.debug("Content type cache for " + root + " flushed in " + (System.currentTimeMillis() - flushStart) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
-	Cache getCache() {
-		return cache;
-	}
-
 	/** Public so tests can examine it. */
 	public byte getCacheState() {
 		if (cacheState != 0) {
@@ -364,7 +361,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		if (getCacheState() == INVALID_CACHE) {
 			// discard the cache, so it can be used before the flush job starts
 			setCacheState(ABOUT_TO_FLUSH);
-			cache.discardAll();
+			cache.clear();
 			// the cache is not good, flush it
 			flushJob.schedule(1000);
 		}
@@ -390,10 +387,10 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		if (inSync) {
 			// tries to get a description from the cache
 			synchronized (this) {
-				Cache.Entry entry = cache.getEntry(file.getFullPath());
+				Entry<IContentDescription> entry = cache.getEntry(file.getFullPath());
 				if (entry != null && entry.getTimestamp() == getTimestamp(info))
 					// there was a description in the cache, and it was up to date
-					return (IContentDescription) entry.getCached();
+					return entry.getCached();
 			}
 		}
 
@@ -403,10 +400,10 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 
 		synchronized (this) {
 			// tries to get a description from the cache
-			Cache.Entry entry = cache.getEntry(file.getFullPath());
+			Entry<IContentDescription> entry = cache.getEntry(file.getFullPath());
 			if (entry != null && inSync && entry.getTimestamp() == getTimestamp(info))
 				// there was a description in the cache, and it was up to date
-				return (IContentDescription) entry.getCached();
+				return entry.getCached();
 
 			if (getCacheState() != ABOUT_TO_FLUSH) {
 				// we are going to add an entry to the cache or update the resource info - remember that
@@ -427,14 +424,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 				}
 			}
 			// we actually got a description filled by a describer (or a default description for a non-obvious type)
-			if (entry == null)
-				// there was no entry before - create one
-				entry = cache.addEntry(file.getFullPath(), newDescription, getTimestamp(info));
-			else {
-				// just update the existing entry
-				entry.setTimestamp(getTimestamp(info));
-				entry.setCached(newDescription);
-			}
+			entry = cache.addEntry(file.getFullPath(), newDescription, getTimestamp(info));
 			return newDescription;
 		}
 	}
@@ -470,7 +460,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 			try {
 				// discard the cache, so it can be used before the flush job starts
 				setCacheState(ABOUT_TO_FLUSH);
-				cache.discardAll();
+				cache.clear();
 			} catch (CoreException e) {
 				Policy.log(e.getStatus());
 			}
@@ -579,8 +569,7 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		if (registry != null)
 			registry.removeRegistryChangeListener(this);
-		cache.dispose();
-		cache = null;
+		cache.clear();
 		flushJob.cancel();
 		flushJob = null;
 		projectContentTypes = null;
@@ -588,7 +577,6 @@ public class ContentDescriptionManager implements IManager, IRegistryChangeListe
 
 	@Override
 	public void startup(IProgressMonitor monitor) throws CoreException {
-		cache = new Cache(100, 1000, 0.1);
 		projectContentTypes = new ProjectContentTypes(workspace);
 		getCacheState();
 		if (cacheState == FLUSHING_CACHE || cacheState == ABOUT_TO_FLUSH)

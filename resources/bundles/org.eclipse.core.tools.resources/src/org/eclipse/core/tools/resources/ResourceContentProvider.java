@@ -14,10 +14,24 @@
 package org.eclipse.core.tools.resources;
 
 import java.util.Map;
-import org.eclipse.core.internal.resources.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.tools.*;
+import org.eclipse.core.internal.resources.File;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.IMarkerSetElement;
+import org.eclipse.core.internal.resources.MarkerSet;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.tools.AbstractTreeContentProvider;
+import org.eclipse.core.tools.ByteUtil;
+import org.eclipse.core.tools.Messages;
+import org.eclipse.core.tools.TreeContentProviderNode;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
@@ -211,8 +225,7 @@ public class ResourceContentProvider extends AbstractTreeContentProvider {
 		File file = (File) resource;
 		// creates a node for flags
 		try {
-			boolean cached = org.eclipse.core.internal.resources.SpySupport.isContentDescriptionCached(file);
-			String description = file.getContentDescription() + " (" + NLS.bind(Messages.resource_content_description_from_cache, Boolean.toString(cached)) + ")"; //$NON-NLS-1$//$NON-NLS-2$
+			String description = String.valueOf(file.getContentDescription());
 			TreeContentProviderNode contentDescriptionNode = createNode(Messages.resource_content_description, description);
 			getRootNode().addChild(contentDescriptionNode);
 		} catch (CoreException ce) {

@@ -62,7 +62,6 @@ public class Messages extends NLS {
 
 	public static String resource_content_description;
 	public static String resource_error_content_description;
-	public static String resource_content_description_from_cache;
 
 	public static String resource_markers;
 	public static String resource_error_marker;
