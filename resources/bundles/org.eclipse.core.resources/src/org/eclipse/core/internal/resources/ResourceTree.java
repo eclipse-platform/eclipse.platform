@@ -1017,7 +1017,7 @@ class ResourceTree implements IResourceTree {
 					IFile newDestination = destination.getParent().getFile(IPath.fromOSString(destination.getName()));
 					newSource.move(newDestination.getFullPath(), false, null);
 					if (!ZipFileUtil.isNested(destination.getLocationURI())) {
-						ZipFileTransformer.openZipFile(newDestination, monitor.slice(4), false);
+						ZipFileTransformer.openZipFile(newDestination, false);
 					}
 					return;
 				} catch (URISyntaxException | CoreException e) {

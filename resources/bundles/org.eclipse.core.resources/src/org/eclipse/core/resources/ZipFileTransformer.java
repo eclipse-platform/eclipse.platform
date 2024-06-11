@@ -22,10 +22,8 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.filesystem.ZipFileUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
 
 /**
  * Utility class for opening and closing zip files.
@@ -70,19 +68,20 @@ public class ZipFileTransformer {
 	 * This method prevents opening linked zip files. zip files must be local to be
 	 * opened. Otherwise a CoreException is thrown.
 	 *
-	 * @param file    The file representing the zip file to open.
-	 * @param monitor monitor indicating the completion progress
+	 * @param file              The file representing the zip file to open.
+	 * @param backgroundRefresh A boolean indicating wether the zip file should be
+	 *                          loaded in the background or in the foreground. When
+	 *                          testing the boolean should be false.
 	 *
 	 */
-	public static void openZipFile(IFile file, IProgressMonitor monitor, boolean backgroundRefresh)
+	public static void openZipFile(IFile file, boolean backgroundRefresh)
 			throws URISyntaxException, CoreException {
-		SubMonitor subMonitor = SubMonitor.convert(monitor, 20);
 		try (InputStream fis = file.getContents()) {
 			ZipFileUtil.checkFileForZipHeader(fis);
 			// Additional operations can continue here if header is correct
 		} catch (IOException e) {
 			// If the header is incorrect or there's an IO error, handle gracefully
-			throw new CoreException(new Status(IStatus.ERROR, "your.plugin.id", //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
 					"Failed to open ZIP file due to incorrect file header: " + file.getName(), e)); //$NON-NLS-1$
 		}
 
@@ -99,12 +98,11 @@ public class ZipFileTransformer {
 
 		URI zipURI = new URI("zip", null, "/", file.getLocationURI().toString(), null); //$NON-NLS-1$ //$NON-NLS-2$
 		IFolder link = file.getParent().getFolder(IPath.fromOSString(file.getName()));
-		subMonitor.split(1);
 		int flags = backgroundRefresh ? IResource.REPLACE | IResource.BACKGROUND_REFRESH : IResource.REPLACE;
 
 		try {
-			link.createLink(zipURI, flags, subMonitor.split(19));
-			link.refreshLocal(0, subMonitor);
+			link.createLink(zipURI, flags, null);
+			link.refreshLocal(0, null);
 		} catch (CoreException e) {
 			throw new CoreException(
 					new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, "Zip File could not be opened")); //$NON-NLS-1$

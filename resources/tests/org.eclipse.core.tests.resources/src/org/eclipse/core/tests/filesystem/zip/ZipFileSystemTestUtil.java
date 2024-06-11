@@ -29,7 +29,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ZipFileTransformer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.junit.Assert;
 
@@ -116,11 +115,11 @@ class ZipFileSystemTestUtil {
 	}
 
 	static void openZipFile(IFile file) throws URISyntaxException, CoreException, IOException {
-		ZipFileTransformer.openZipFile(file, new NullProgressMonitor(), false);
+		ZipFileTransformer.openZipFile(file, false);
 	}
 
 	static void openZipFileBackground(IFile file) throws URISyntaxException, CoreException, IOException {
-		ZipFileTransformer.openZipFile(file, new NullProgressMonitor(), true);
+		ZipFileTransformer.openZipFile(file, true);
 	}
 
 	static void closeZipFile(IFolder folder) throws Exception {
