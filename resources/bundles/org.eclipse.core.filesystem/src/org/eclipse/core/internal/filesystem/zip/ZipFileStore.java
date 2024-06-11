@@ -20,18 +20,13 @@ import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystems;
-import java.nio.file.FileVisitOption;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,46 +70,16 @@ public class ZipFileStore extends FileStore {
 	}
 
 	private ZipEntry[] childEntries(IProgressMonitor monitor) throws CoreException {
-		List<ZipEntry> entryList = new ArrayList<>();
-		String myName = path.toString();
-
 		try (FileSystem zipFs = openZipFileSystem()) {
-			Path zipRoot = zipFs.getPath(myName);
-			Files.walkFileTree(zipRoot, EnumSet.noneOf(FileVisitOption.class), 1, new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-					String entryName = zipRoot.relativize(file).toString();
-					if (!Files.isDirectory(file)) {
-						// For files, read attributes and create ZipEntry
-						ZipEntry zipEntry = new ZipEntry(entryName);
-						zipEntry.setSize(attrs.size());
-						zipEntry.setTime(attrs.lastModifiedTime().toMillis());
-						// Compressed size is not directly available; method is set based on ZIP standard
-						zipEntry.setMethod(ZipEntry.DEFLATED);
-						entryList.add(zipEntry);
-					} else {
-						// For directories, simply add them with a trailing slash
-						entryList.add(new ZipEntry(entryName + "/")); //$NON-NLS-1$
-					}
-					return FileVisitResult.CONTINUE;
-				}
-
-				@Override
-				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-					// Include directories only if they are not the root directory
-					if (!dir.equals(zipRoot)) {
-						String dirName = zipRoot.relativize(dir).toString() + "/"; //$NON-NLS-1$
-						entryList.add(new ZipEntry(dirName));
-					}
-					return FileVisitResult.CONTINUE;
-				}
-			});
+			Path zipRoot = zipFs.getPath(path.toString());
+			ZipEntryFileVisitor visitor = new ZipEntryFileVisitor(zipRoot);
+			Files.walkFileTree(zipRoot, visitor);
+			return visitor.getEntries().toArray(new ZipEntry[0]);
 		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error reading ZIP file", e)); //$NON-NLS-1$
 		}
-
-		return entryList.toArray(new ZipEntry[0]);
 	}
+
 
 	@Override
 	public IFileInfo[] childInfos(int options, IProgressMonitor monitor) throws CoreException {
