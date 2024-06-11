@@ -16,6 +16,7 @@ package org.eclipse.core.internal.resources;
 
 import java.net.URI;
 import org.eclipse.core.filesystem.*;
+import java.net.URISyntaxException;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.localstore.FileSystemResourceManager;
 import org.eclipse.core.internal.properties.IPropertyManager;
@@ -345,27 +346,48 @@ class ResourceTree implements IResourceTree {
 		if (!folder.exists())
 			return true;
 
-		// Don't delete contents if this is a linked resource
-		if (folder.isLinked()) {
-			deletedFolder(folder);
-			return true;
-		}
-
-		// If the folder doesn't exist on disk then update the tree and return.
 		IFileStore fileStore = localManager.getStore(folder);
-		if (!fileStore.fetchInfo().exists()) {
-			deletedFolder(folder);
-			return true;
-		}
+		if (ZipFileUtil.isOpenZipFile(fileStore)) {
+			try {
+				// folder is opened zip file
+				deletedFolder(folder);
+				// if the IResource.CLOSE_ZIP_FILE flag is set, the file should not be deleted
+				// in the file system.
+				if ((flags & (IResource.CLOSE_ZIP_FILE)) != 0) {
+					return true;
+				}
+				IFile file = folder.getParent().getFile(IPath.fromOSString(folder.getName()));
+				IFileStore parentStore = localManager.getStore(file);
+				parentStore.delete(EFS.NONE, Policy.subMonitorFor(monitor, Policy.totalWork / 4));
+				return true;
+			} catch (CoreException e) {
+				failed(e.getStatus());
+			}
+		} else {
+			// Don't delete contents if this is a linked resource
+			if (folder.isLinked()) {
+				deletedFolder(folder);
+				return true;
+			}
 
-		try {
-			//this will delete local and workspace
-			localManager.delete(folder, flags, Policy.subMonitorFor(monitor, Policy.totalWork));
-		} catch (CoreException ce) {
-			message = NLS.bind(Messages.localstore_couldnotDelete, folder.getFullPath());
-			IStatus status = new ResourceStatus(IStatus.ERROR, IResourceStatus.FAILED_DELETE_LOCAL, folder.getFullPath(), message, ce);
-			failed(status);
-			return false;
+			// If the folder doesn't exist on disk then update the tree and return.
+
+			if (!fileStore.fetchInfo().exists()) {
+				deletedFolder(folder);
+				return true;
+			}
+
+			try {
+				// this will delete local and workspace
+				localManager.delete(folder, flags, Policy.subMonitorFor(monitor, Policy.totalWork));
+			} catch (CoreException ce) {
+				message = NLS.bind(Messages.localstore_couldnotDelete, folder.getFullPath());
+				IStatus status = new ResourceStatus(IStatus.ERROR, IResourceStatus.FAILED_DELETE_LOCAL,
+						folder.getFullPath(), message, ce);
+				failed(status);
+				return false;
+			}
+			return true;
 		}
 		return true;
 	}
@@ -988,8 +1010,27 @@ class ResourceTree implements IResourceTree {
 			if (!source.exists() || destination.exists() || !destination.getParent().isAccessible())
 				throw new IllegalArgumentException();
 
-			// Check to see if we are synchronized with the local file system. If we are in sync then we can
-			// short circuit this method and do a file system only move. Otherwise we have to recursively
+			if (ZipFileUtil.isOpenZipFile(source.getLocationURI())) {
+				try {
+					ZipFileTransformer.closeZipFile(source);
+					IFile newSource = source.getParent().getFile(IPath.fromOSString(source.getName()));
+					IFile newDestination = destination.getParent().getFile(IPath.fromOSString(destination.getName()));
+					newSource.move(newDestination.getFullPath(), false, null);
+					if (!ZipFileUtil.isNested(destination.getLocationURI())) {
+						ZipFileTransformer.openZipFile(newDestination, monitor.slice(4), false);
+					}
+					return;
+				} catch (URISyntaxException | CoreException e) {
+					message = NLS.bind(Messages.localstore_couldNotMove, source);
+					IStatus status = new ResourceStatus(IStatus.ERROR, source.getFullPath(), message, e);
+					failed(status);
+				}
+			}
+
+			// Check to see if we are synchronized with the local file system. If we are in
+			// sync then we can
+			// short circuit this method and do a file system only move. Otherwise we have
+			// to recursively
 			// try and move all resources, doing it in a best-effort manner.
 			boolean force = (flags & IResource.FORCE) != 0;
 			if (!force && !isSynchronized(source, IResource.DEPTH_INFINITE)) {
