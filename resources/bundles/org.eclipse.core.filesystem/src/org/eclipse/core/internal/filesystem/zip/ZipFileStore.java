@@ -355,17 +355,6 @@ public class ZipFileStore extends FileStore {
 			Path dirInZipPath = zipFs.getPath(this.path.toString());
 			if (Files.notExists(dirInZipPath)) {
 				Files.createDirectories(dirInZipPath);
-
-				// To ensure the directory is actually added to the ZIP, we
-				// might need to add a temporary file
-				// in this directory. This is a workaround and should be used
-				// with caution.
-				Path tempFileInDir = dirInZipPath.resolve(".keep"); //$NON-NLS-1$
-				Files.createFile(tempFileInDir);
-
-				// Immediately delete the temporary file after creation to just
-				// keep the directory
-				Files.delete(tempFileInDir);
 			}
 		} catch (IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error creating directory in ZIP file", e)); //$NON-NLS-1$
