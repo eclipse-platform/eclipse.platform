@@ -260,4 +260,11 @@ public class LaunchConfigurationViewer extends TreeViewer {
 	protected void setLaunchConfigurationView(LaunchConfigurationView launchConfigurationView) {
 		fView = launchConfigurationView;
 	}
+
+	@Override
+	public void refresh(boolean updateLabels) {
+		filterChanged();
+		super.refresh(updateLabels);
+	}
+
 }
