@@ -141,7 +141,7 @@ public class ZipFileStore extends FileStore {
 	/**
 	 * Computes the simple file name for a given zip entry.
 	 */
-	private String computeName(ZipEntry entry) {
+	private static String computeName(ZipEntry entry) {
 		String name = entry.getName();
 		// removes "/" at the end
 		if (name.endsWith("/")) { //$NON-NLS-1$
@@ -174,7 +174,7 @@ public class ZipFileStore extends FileStore {
 	 * @param entry the zip entry
 	 * @return The file info for a zip entry
 	 */
-	private IFileInfo convertZipEntryToFileInfo(ZipEntry entry) {
+	private static IFileInfo convertZipEntryToFileInfo(ZipEntry entry) {
 		FileInfo info = new FileInfo(computeName(entry));
 		if (entry.isDirectory()) {
 			info.setLastModified(EFS.NONE);
