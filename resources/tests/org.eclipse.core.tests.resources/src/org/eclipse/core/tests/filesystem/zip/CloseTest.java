@@ -19,8 +19,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 public class CloseTest {
 
@@ -34,14 +33,14 @@ public class CloseTest {
 		ZipFileSystemTestSetup.teardown();
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCloseZipFile(String zipFileName) throws Exception {
+	@Test
+	public void testCloseZipFile() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
-				.getFolder(zipFileName);
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		ensureExists(openedZipFile);
 		ZipFileSystemTestUtil.closeZipFile(openedZipFile);
-		IFile zipFile = ZipFileSystemTestSetup.firstProject.getFile(zipFileName);
+		IFile zipFile = ZipFileSystemTestSetup.firstProject
+				.getFile(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		// Don't use Utility method ensureDoesNotExist because the fileStore is still
 		// available after closing. The fileStore is the File itself in the local file
 		// system that still exists after closing.

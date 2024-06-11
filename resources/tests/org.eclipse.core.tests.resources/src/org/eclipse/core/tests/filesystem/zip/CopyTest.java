@@ -23,8 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -41,27 +40,25 @@ public class CopyTest {
 		ZipFileSystemTestSetup.teardown();
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCopyZipFile(String zipFileName) throws Exception {
+	@Test
+	public void testCopyZipFile() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
-				.getFolder(zipFileName);
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		ensureExists(openedZipFile);
 		IFolder destinationFolder = ZipFileSystemTestSetup.firstProject.getFolder("Folder");
 		destinationFolder.create(true, true, getMonitor());
 		ensureExists(destinationFolder);
 		IFolder copyDestination = ZipFileSystemTestSetup.firstProject
-				.getFolder("Folder" + "/" + zipFileName);
+				.getFolder("Folder" + "/" + ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		openedZipFile.copy(copyDestination.getFullPath(), true, getMonitor());
 		ensureExists(copyDestination);
 		ensureExists(openedZipFile);
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCopyFileInsideOfZipFile(String zipFileName) throws Exception {
+	@Test
+	public void testCopyFileInsideOfZipFile() throws Exception {
 		IFile textFile = ZipFileSystemTestSetup.firstProject.getFile(
-				zipFileName + "/" + ZipFileSystemTestSetup.TEXT_FILE_NAME);
+				ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME + "/" + ZipFileSystemTestSetup.TEXT_FILE_NAME);
 		ensureExists(textFile);
 		IFolder destinationFolder = ZipFileSystemTestSetup.firstProject.getFolder("Folder");
 		destinationFolder.create(true, true, getMonitor());
@@ -73,10 +70,10 @@ public class CopyTest {
 		ensureExists(textFile);
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCopyFolderInsideOfZipFile(String zipFileName) throws Exception {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject.getFolder(zipFileName);
+	@Test
+	public void testCopyFolderInsideOfZipFile() throws Exception {
+		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		ensureExists(openedZipFile);
 		IFolder newFolder = ZipFileSystemTestSetup.firstProject.getFolder("NewFolder");
 		ensureDoesNotExist(newFolder);
@@ -97,9 +94,8 @@ public class CopyTest {
 		assertTextFileContent(textFile, "Foo");
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCopyFileIntoZipFile(String zipFileName) throws Exception {
+	@Test
+	public void testCopyFileIntoZipFile() throws Exception {
 		IFile textFile = ZipFileSystemTestSetup.firstProject.getFile("NewFile.txt");
 		ensureDoesNotExist(textFile);
 		String text = "Foo";
@@ -108,16 +104,15 @@ public class CopyTest {
 		stream.close();
 		ensureExists(textFile);
 		IFile copyDestination = ZipFileSystemTestSetup.firstProject
-				.getFile(zipFileName + "/" + "NewFile.txt");
+				.getFile(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME + "/" + "NewFile.txt");
 		textFile.copy(copyDestination.getFullPath(), true, getMonitor());
 		ensureExists(copyDestination);
 		ensureExists(textFile);
 		assertTextFileContent(textFile, "Foo");
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCopyFolderIntoZipFile(String zipFileName) throws Exception {
+	@Test
+	public void testCopyFolderIntoZipFile() throws Exception {
 		IFile textFile = ZipFileSystemTestSetup.firstProject.getFile("NewFile.txt");
 		ensureDoesNotExist(textFile);
 		String text = "Foo";
@@ -125,17 +120,18 @@ public class CopyTest {
 		textFile.create(stream, true, getMonitor());
 		stream.close();
 		ensureExists(textFile);
-		IFile copyDestination = ZipFileSystemTestSetup.firstProject.getFile(zipFileName + "/" + "NewFile.txt");
+		IFile copyDestination = ZipFileSystemTestSetup.firstProject
+				.getFile(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME + "/" + "NewFile.txt");
 		textFile.copy(copyDestination.getFullPath(), true, getMonitor());
 		ensureExists(copyDestination);
 		ensureExists(textFile);
 		assertTextFileContent(textFile, "Foo");
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCopyFileFromOutsideOfZipFIleIntoFolderInZipFile(String zipFileName) throws Exception {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject.getFolder(zipFileName);
+	@Test
+	public void testCopyFileFromOutsideOfZipFIleIntoFolderInZipFile() throws Exception {
+		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		IFolder newFolder = openedZipFile.getFolder("NewFolder");
 		ensureDoesNotExist(newFolder);
 		newFolder.create(false, true, getMonitor());
@@ -155,10 +151,10 @@ public class CopyTest {
 		assertTextFileContent(textFile, "Foo");
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCopyFolderIntoFolderInZipFile(String zipFileName) throws Exception {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject.getFolder(zipFileName);
+	@Test
+	public void testCopyFolderIntoFolderInZipFile() throws Exception {
+		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		IFolder firstNewFolder = openedZipFile.getFolder("FirstNewFolder");
 		ensureDoesNotExist(firstNewFolder);
 		firstNewFolder.create(false, true, getMonitor());
@@ -182,10 +178,10 @@ public class CopyTest {
 		assertTextFileContent(textFile, "Foo");
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testCopyFileFromOneFolderToOtherFolderInsideofZipFile(String zipFileName) throws Exception {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject.getFolder(zipFileName);
+	@Test
+	public void testCopyFileFromOneFolderToOtherFolderInsideofZipFile() throws Exception {
+		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		IFolder firstNewFolder = openedZipFile.getFolder("FirstNewFolder");
 		ensureDoesNotExist(firstNewFolder);
 		firstNewFolder.create(false, true, getMonitor());

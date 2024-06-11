@@ -23,8 +23,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
 public class DeleteTest {
 
@@ -38,33 +37,32 @@ public class DeleteTest {
 		ZipFileSystemTestSetup.teardown();
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testDeleteZipFile(String zipFileName) throws CoreException, IOException {
+	@Test
+	public void testDeleteZipFile() throws CoreException, IOException {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
-				.getFolder(zipFileName);
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		ensureExists(openedZipFile);
 		openedZipFile.delete(false, false, getMonitor());
 		ensureDoesNotExist(openedZipFile);
-		IFile zipFile = ZipFileSystemTestSetup.firstProject.getFile(zipFileName);
+		IFile zipFile = ZipFileSystemTestSetup.firstProject
+				.getFile(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		ensureDoesNotExist(zipFile);
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testDeleteFileInsideOfZipFile(String zipFileName) throws CoreException, IOException {
+	@Test
+	public void testDeleteFileInsideOfZipFile() throws CoreException, IOException {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
-				.getFolder(zipFileName);
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		IFile textFile = openedZipFile.getFile(ZipFileSystemTestSetup.TEXT_FILE_NAME);
 		ensureExists(textFile);
 		textFile.delete(true, getMonitor());
 		ensureDoesNotExist(textFile);
 	}
 
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testDeleteEmptyFolder(String zipFileName) throws CoreException, IOException {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject.getFolder(zipFileName);
+	@Test
+	public void testDeleteEmptyFolder() throws CoreException, IOException {
+		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		IFolder folder = openedZipFile.getFolder("FolderToDelete");
 		ensureDoesNotExist(folder);
 		folder.create(true, true, getMonitor());
@@ -73,11 +71,10 @@ public class DeleteTest {
 		ensureDoesNotExist(folder);
 	}
 
-
-	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
-	public void testDeleteFolderWithChildren(String zipFileName) throws CoreException, IOException {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject.getFolder(zipFileName);
+	@Test
+	public void testDeleteFolderWithChildren() throws CoreException, IOException {
+		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		IFolder folder = openedZipFile.getFolder("FolderToDelete");
 		ensureDoesNotExist(folder);
 		folder.create(true, true, getMonitor());
