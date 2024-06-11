@@ -15,25 +15,16 @@ package org.eclipse.core.filesystem;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Set;
+import java.util.zip.ZipInputStream;
 import org.eclipse.core.internal.filesystem.zip.ZipFileStore;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Utility class to determine if a file is an archive based on file header information.
- * This class checks for known file signatures to identify if a given file is a ZIP archive
- * or a format based on ZIP, such as EPUB, JAR, ODF, and OOXML.
+ * Utility class to determine if a file is ZIP archive.
  *
  * @since 1.11
  */
 public class ZipFileUtil {
-
-	// Initializes known archive file signatures from Wikipedia's list of file signatures in the following order:
-	// 1. Standard ZIP file, 2. Empty archive, 3.  Spanned archive
-	// (https://en.wikipedia.org/wiki/List_of_file_signatures)
-	private static final Set<Integer> ARCHIVE_FILE_SIGNATURES = Set.of(0x504B0304, 0x504B0506, 0x504B0708);
 
 	/**
 	 * Determines if the given {@link IFileStore} represents an open ZIP file.
@@ -84,25 +75,22 @@ public class ZipFileUtil {
 
 	/**
 	 * Checks if the provided {@link InputStream} represents a ZIP archive
-	 * by reading its first four bytes and comparing them against known ZIP file signatures.
-	 * This method throws {@link IOException} if the file signature does not match any known ZIP archive signatures.
+	 * by attempting to open it as a ZIP archive.
+	 * This method throws {@link IOException} if the stream does not represent a valid ZIP archive.
 	 *
 	 * @param fis The {@link InputStream} of the file to check.
-	 * @throws IOException If the file signature does not match known ZIP archive signatures
+	 * @throws IOException If the stream does not represent a valid ZIP archive
 	 *                     or an I/O error occurs during reading from the stream.
 	 */
-	public static void checkFileForZipHeader(InputStream fis) throws IOException {
-		byte[] bytes = new byte[4];
-		if (fis.read(bytes) == bytes.length) {
-			ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN);
-			int header = buffer.getInt();
-
-			if (!ARCHIVE_FILE_SIGNATURES.contains(header)) {
-				throw new IOException("Invalid archive file signature."); // Throws IOException if header is not recognized //$NON-NLS-1$
+	public static void canZipFileBeOpened(InputStream fis) throws IOException {
+		// Use ZipInputStream to try reading the InputStream as a ZIP file
+		try (ZipInputStream zipStream = new ZipInputStream(fis)) {
+			// Attempt to read the first entry from the zip stream
+			if (zipStream.getNextEntry() == null) {
+				// If there are no entries, then it might not be a ZIP file or it's empty
+				throw new IOException();
 			}
-		} else {
-			// Handle the case where not enough bytes are read
-			throw new IOException("Could not read enough data to check ZIP file header."); //$NON-NLS-1$
+			// Successfully reading an entry implies it's likely a valid ZIP file
 		}
 	}
 }

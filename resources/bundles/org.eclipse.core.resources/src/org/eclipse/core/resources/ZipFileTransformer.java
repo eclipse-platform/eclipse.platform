@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.zip.ZipException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
@@ -77,12 +78,15 @@ public class ZipFileTransformer {
 	public static void openZipFile(IFile file, boolean backgroundRefresh)
 			throws URISyntaxException, CoreException {
 		try (InputStream fis = file.getContents()) {
-			ZipFileUtil.checkFileForZipHeader(fis);
+			ZipFileUtil.canZipFileBeOpened(fis);
 			// Additional operations can continue here if header is correct
 		} catch (IOException e) {
-			// If the header is incorrect or there's an IO error, handle gracefully
+			if (e instanceof ZipException && e.getMessage().equals("encrypted ZIP entry not supported")) { //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
+						"Opening encrypted ZIP files is not supported: " + file.getName(), e)); //$NON-NLS-1$
+			}
 			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
-					"Failed to open ZIP file due to incorrect file header: " + file.getName(), e)); //$NON-NLS-1$
+					"The file is either empty or doesn't represent a ZIP file: " + file.getName(), e)); //$NON-NLS-1$
 		}
 
 		if (file.isLinked()) {
