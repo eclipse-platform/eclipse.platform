@@ -67,6 +67,7 @@ public final class LaunchConfigurationFilteredTree extends FilteredTree {
 		fFilters = filters;
 		fPatternFilter = filter;
 		fTreeStyle = treeStyle;
+		filter.setIncludeLeadingWildcard(true);
 	}
 
 	/**
