@@ -38,6 +38,7 @@ public class ZipEntryFileVisitor extends SimpleFileVisitor<Path> {
 		if (!dir.equals(zipRoot)) {
 			String dirName = zipRoot.relativize(dir).toString() + "/"; //$NON-NLS-1$
 			entryList.add(new ZipEntry(dirName));
+			return FileVisitResult.SKIP_SUBTREE; // Skip the subdirectories
 		}
 		return FileVisitResult.CONTINUE;
 	}
