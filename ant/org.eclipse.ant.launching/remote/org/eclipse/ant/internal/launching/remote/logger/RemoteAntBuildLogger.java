@@ -236,7 +236,6 @@ public class RemoteAntBuildLogger extends DefaultLogger {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void messageLogged(BuildEvent event) {
 		if (event.getPriority() > msgOutputLevel && event.getPriority() != InternalAntRunner.MSG_PROJECT_HELP) {

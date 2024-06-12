@@ -25,7 +25,6 @@ public class EclipseDefaultExecutor extends DefaultExecutor {
 
 	private static final EclipseSingleCheckExecutor SUB_EXECUTOR = new EclipseSingleCheckExecutor();
 
-	@SuppressWarnings("unused")
 	@Override
 	public void executeTargets(Project project, String[] targetNames) throws BuildException {
 		Vector<String> v = new Vector<>();
