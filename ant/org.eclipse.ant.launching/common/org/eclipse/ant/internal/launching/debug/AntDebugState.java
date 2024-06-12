@@ -16,7 +16,6 @@ package org.eclipse.ant.internal.launching.debug;
 
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -35,9 +34,7 @@ public class AntDebugState {
 	private static final String fgAntCallTaskName = "antcall"; //$NON-NLS-1$
 
 	private final IDebugBuildLogger fLogger;
-	@SuppressWarnings("unused")
 	private final Stack<Task> fTasks = new Stack<>();
-	@SuppressWarnings("unused")
 	private final Map<Task, Object> fTaskToProxies = new HashMap<>();
 	private Task fCurrentTask;
 	private Task fStepOverTask;
@@ -50,9 +47,7 @@ public class AntDebugState {
 
 	private Map<Project, Vector<?>> fProjectToTargetNames = null;
 	private Map<Project, Map<Target, Vector<Target>>> fProjectToMapOfTargetToBuildSequence = null;
-	@SuppressWarnings("unused")
 	private final Stack<Target> fTargetsToExecute = new Stack<>();
-	@SuppressWarnings("unused")
 	private final Stack<Target> fTargetsExecuting = new Stack<>();
 
 	private boolean fConsiderTargetBreakpoints = false;
@@ -65,7 +60,6 @@ public class AntDebugState {
 		fLogger = logger;
 	}
 
-	@SuppressWarnings("unused")
 	public void buildStarted() {
 		fProjectToTargetNames = new HashMap<>();
 		fProjectToMapOfTargetToBuildSequence = new HashMap<>();
@@ -306,7 +300,6 @@ public class AntDebugState {
 			Object ref = eventProject.getReference(IAntCoreConstants.TARGET_VECTOR_NAME);
 			if (ref != null) {
 				fProjectToTargetNames.put(eventProject, (Vector<?>) ref);
-				@SuppressWarnings("unused")
 				HashMap<Target, Vector<Target>> targetToBuildSequence = new HashMap<>();
 				setTargetToExecute(initializeBuildSequenceInformation(event, targetToBuildSequence));
 				fProjectToMapOfTargetToBuildSequence.put(eventProject, targetToBuildSequence);
@@ -429,9 +422,7 @@ public class AntDebugState {
 				// sub build target dependencies
 				String targetName = task.getOwningTarget().getName();
 				if (targetName != null && targetName.length() != 0) { // skip for implicit target
-					Iterator<Target> itr = fTargetsToExecute.iterator();
-					while (itr.hasNext()) {
-						Target target = itr.next();
+					for (Target target : fTargetsToExecute) {
 						if (target.getProject() != projectExecuting) {
 							targetToExecute = target;
 							continue;

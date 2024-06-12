@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -114,7 +113,6 @@ public class InternalAntRunner {
 
 	private boolean scriptExecuted = false;
 
-	@SuppressWarnings("unused")
 	private final List<String> propertyFiles = new ArrayList<>();
 
 	/**
@@ -152,7 +150,6 @@ public class InternalAntRunner {
 	/*
 	 * Helper method to ensure an array is converted into an ArrayList.
 	 */
-	@SuppressWarnings("unused")
 	static ArrayList<String> getArrayList(String[] args) {
 		if (args == null) {
 			return null;
@@ -248,7 +245,6 @@ public class InternalAntRunner {
 	 * @param project
 	 *            the project to list targets from
 	 */
-	@SuppressWarnings("unused")
 	private void printTargets(Project project) {
 		// notify the logger that project help message are coming
 		// since there is no buildstarted or targetstarted to
@@ -618,9 +614,7 @@ public class InternalAntRunner {
 		if (!isVersionCompatible("1.5")) { //$NON-NLS-1$
 			BuildEvent event = new BuildEvent(project);
 			event.setException(error);
-			Iterator<BuildListener> iter = project.getBuildListeners().iterator();
-			while (iter.hasNext()) {
-				BuildListener listener = iter.next();
+			for (BuildListener listener : project.getBuildListeners()) {
 				listener.buildFinished(event);
 			}
 		} else {
@@ -790,7 +784,6 @@ public class InternalAntRunner {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private boolean preprocessCommandLine(List<String> commands) {
 
 		String arg = getArgument(commands, "-listener"); //$NON-NLS-1$
@@ -953,7 +946,6 @@ public class InternalAntRunner {
 		return true;
 	}
 
-	@SuppressWarnings("unused")
 	private void processTasksAndTypes(List<String> commands) {
 		String arg = getArgument(commands, "-eclipseTask"); //$NON-NLS-1$
 		while (arg != null) {
@@ -1019,7 +1011,6 @@ public class InternalAntRunner {
 	/*
 	 * Checks for targets specified at the command line.
 	 */
-	@SuppressWarnings("unused")
 	private void processTargets(List<String> commands) {
 		if (targets == null) {
 			targets = new Vector<>(commands.size());
@@ -1095,11 +1086,9 @@ public class InternalAntRunner {
 		return exceptionToBeThrown;
 	}
 
-	@SuppressWarnings("unused")
 	private void processMinusDProperties(List<String> commands) {
 		String[] args = commands.toArray(new String[commands.size()]);
-		for (int i = 0; i < args.length; i++) {
-			String arg = args[i];
+		for (String arg : args) {
 			if (arg.startsWith("-D")) { //$NON-NLS-1$
 				String name = arg.substring(2, arg.length());
 				String value = null;
@@ -1120,7 +1109,7 @@ public class InternalAntRunner {
 					userProperties = new HashMap<>();
 				}
 				userProperties.put(name, value);
-				commands.remove(args[i]);
+				commands.remove(arg);
 			}
 		}
 	}
@@ -1283,7 +1272,6 @@ public class InternalAntRunner {
 	/**
 	 * Load all properties from the files specified by -propertyfile.
 	 */
-	@SuppressWarnings("unused")
 	private void loadPropertyFiles() {
 		for (String filename : propertyFiles) {
 			File file = getFileRelativeToBaseDir(filename);

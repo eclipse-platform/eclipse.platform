@@ -23,7 +23,6 @@ import org.apache.tools.ant.helper.SingleCheckExecutor;
 
 public class EclipseSingleCheckExecutor extends SingleCheckExecutor {
 
-	@SuppressWarnings("unused")
 	@Override
 	public void executeTargets(Project project, String[] targetNames) throws BuildException {
 		Vector<String> v = new Vector<>();
