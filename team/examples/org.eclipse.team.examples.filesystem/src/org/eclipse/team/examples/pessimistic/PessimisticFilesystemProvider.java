@@ -584,7 +584,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 		if (!prepend) {
 			buffer.append(System.getProperty("line.separator") + text);
 		}
-		file.setContents(new ByteArrayInputStream(buffer.toString().getBytes()), false, false, null);
+		file.setContents(buffer.toString().getBytes(), false, false, null);
 	}
 
 	public static String getFileContents(IFile file) throws IOException, CoreException {

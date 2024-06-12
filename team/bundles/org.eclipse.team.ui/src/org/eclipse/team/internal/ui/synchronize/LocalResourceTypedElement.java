@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.synchronize;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.compare.ISharedDocumentAdapter;
@@ -93,16 +91,11 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 				saveDocument(true, monitor);
 			} else {
 				IResource resource = getResource();
-				if (resource instanceof IFile) {
-					try (ByteArrayInputStream is = new ByteArrayInputStream(getContent())) {
-						IFile file = (IFile) resource;
-						if (file.exists())
-							file.setContents(is, false, true, monitor);
-						else
-							file.create(is, false, monitor);
+				if (resource instanceof IFile file) {
+					byte[] content = getContent();
+					try {
+						file.createOrReplace(content, false, false, true, monitor);
 						fDirty = false;
-					} catch (IOException closeException) {
-						// ignored
 					} finally {
 						fireContentChanged();
 					}

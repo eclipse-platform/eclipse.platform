@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -73,18 +72,10 @@ public class BufferedResourceNode extends ResourceNode {
 				return;
 			}
 			IResource resource = getResource();
-			if (resource instanceof IFile) {
+			if (resource instanceof IFile file) {
 				byte[] bytes = getContent();
-				try (ByteArrayInputStream is = new ByteArrayInputStream(bytes)) {
-					IFile file = (IFile) resource;
-					if (file.exists())
-						file.setContents(is, false, true, pm);
-					else
-						file.create(is, false, pm);
-					fDirty = false;
-				} catch (IOException closeException) {
-					// Silently ignored
-				}
+				file.createOrReplace(bytes, false, false, true, pm);
+				fDirty = false;
 			}
 		}
 	}
