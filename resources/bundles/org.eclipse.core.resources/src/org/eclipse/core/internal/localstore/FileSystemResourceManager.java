@@ -1275,7 +1275,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 					throw new ResourceException(IResourceStatus.NOT_FOUND_LOCAL, target.getFullPath(), message, null);
 				}
 			} else {
-				if (fileInfo.exists()) {
+				if (!BitMask.isSet(updateFlags, IResource.REPLACE) && fileInfo.exists()) {
 					String message = NLS.bind(Messages.localstore_resourceExists, target.getFullPath());
 					throw new ResourceException(IResourceStatus.EXISTS_LOCAL, target.getFullPath(), message, null);
 				}

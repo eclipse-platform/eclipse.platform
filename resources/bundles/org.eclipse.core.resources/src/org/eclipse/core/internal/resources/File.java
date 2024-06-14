@@ -126,7 +126,7 @@ public class File extends Resource implements IFile {
 			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
 			try {
 				workspace.prepareOperation(rule, subMonitor.newChild(1));
-				checkCreatable();
+				checkCreatable(updateFlags);
 				workspace.beginOperation(true);
 				IFileStore store = getStore();
 				IFileInfo localInfo = create(updateFlags, subMonitor.newChild(40), store);
@@ -172,7 +172,7 @@ public class File extends Resource implements IFile {
 			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
 			try {
 				workspace.prepareOperation(rule, subMonitor.newChild(1));
-				checkCreatable();
+				checkCreatable(updateFlags);
 				workspace.beginOperation(true);
 				IFileStore store = getStore();
 				IFileInfo localInfo = create(updateFlags, subMonitor.newChild(40), store);
@@ -202,8 +202,10 @@ public class File extends Resource implements IFile {
 		}
 	}
 
-	private void checkCreatable() throws CoreException {
-		checkDoesNotExist();
+	private void checkCreatable(int updateFlags) throws CoreException {
+		if ((updateFlags & IResource.REPLACE) == 0) {
+			checkDoesNotExist();
+		}
 		Container parent = (Container) getParent();
 		ResourceInfo info = parent.getResourceInfo(false, false);
 		parent.checkAccessible(getFlags(info));
@@ -230,7 +232,7 @@ public class File extends Resource implements IFile {
 				}
 			}
 		} else {
-			if (localInfo.exists()) {
+			if (!BitMask.isSet(updateFlags, IResource.REPLACE) && localInfo.exists()) {
 				// return an appropriate error message for case variant collisions
 				if (!Workspace.caseSensitive) {
 					String name = getLocalManager().getLocalName(store);

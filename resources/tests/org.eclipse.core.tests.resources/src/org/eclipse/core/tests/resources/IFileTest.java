@@ -46,12 +46,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -481,6 +483,37 @@ public class IFileTest {
 		assertEquals("notDerived", derived.readString());
 	}
 
+	@Test
+	public void testCreateOrUpdateDerived() throws CoreException {
+		/* set local history policies */
+		IWorkspaceDescription description = getWorkspace().getDescription();
+		description.setMaxFileStates(4);
+		getWorkspace().setDescription(description);
+
+		IFile derived = projects[0].getFile("derived.txt");
+		createInWorkspace(projects[0]);
+		removeFromWorkspace(derived);
+		for (int i = 0; i < 16; i++) {
+			boolean setDerived = i % 2 == 0;
+			boolean deleteBefore = (i >> 1) % 2 == 0;
+			boolean keepHistory = (i >> 2) % 2 == 0;
+			if (deleteBefore) {
+				derived.delete(false, null);
+			}
+			assertEquals(!deleteBefore, derived.exists());
+			FussyProgressMonitor monitor = new FussyProgressMonitor();
+			derived.createOrReplace(("updateOrCreate" + i).getBytes(), false, setDerived, keepHistory, monitor);
+			monitor.assertUsedUp();
+			assertEquals(setDerived, derived.isDerived());
+			assertFalse(derived.isTeamPrivateMember());
+			assertTrue(derived.exists());
+
+			IFileState[] history1 = derived.getHistory(null);
+			derived.createOrReplace(("update" + i).getBytes(), false, false, keepHistory, null);
+			IFileState[] history2 = derived.getHistory(null);
+			assertEquals(keepHistory ? 1 : 0, history2.length - history1.length);
+		}
+	}
 	@Test
 	public void testDeltaOnCreateDerived() throws CoreException {
 		IFile derived = projects[0].getFile("derived.txt");
