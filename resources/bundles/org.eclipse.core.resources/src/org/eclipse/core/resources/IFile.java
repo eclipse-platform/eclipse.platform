@@ -435,7 +435,7 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * @throws CoreException if this method fails or is canceled.
 	 * @since 3.21
 	 */
-	public default void createOrReplace(byte[] content, boolean force, boolean derived, boolean keepHistory,
+	public default void write(byte[] content, boolean force, boolean derived, boolean keepHistory,
 			IProgressMonitor monitor) throws CoreException {
 		Objects.requireNonNull(content);
 		create(content, (force ? IResource.FORCE : 0) | (derived ? IResource.DERIVED : 0)

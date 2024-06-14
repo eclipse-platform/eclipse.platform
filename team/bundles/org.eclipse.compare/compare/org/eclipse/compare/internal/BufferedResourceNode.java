@@ -74,7 +74,7 @@ public class BufferedResourceNode extends ResourceNode {
 			IResource resource = getResource();
 			if (resource instanceof IFile file) {
 				byte[] bytes = getContent();
-				file.createOrReplace(bytes, false, false, true, pm);
+				file.write(bytes, false, false, true, pm);
 				fDirty = false;
 			}
 		}

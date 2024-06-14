@@ -94,7 +94,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 				if (resource instanceof IFile file) {
 					byte[] content = getContent();
 					try {
-						file.createOrReplace(content, false, false, true, monitor);
+						file.write(content, false, false, true, monitor);
 						fDirty = false;
 					} finally {
 						fireContentChanged();

@@ -484,7 +484,7 @@ public class IFileTest {
 	}
 
 	@Test
-	public void testCreateOrUpdateDerived() throws CoreException {
+	public void testWrite() throws CoreException {
 		/* set local history policies */
 		IWorkspaceDescription description = getWorkspace().getDescription();
 		description.setMaxFileStates(4);
@@ -502,14 +502,14 @@ public class IFileTest {
 			}
 			assertEquals(!deleteBefore, derived.exists());
 			FussyProgressMonitor monitor = new FussyProgressMonitor();
-			derived.createOrReplace(("updateOrCreate" + i).getBytes(), false, setDerived, keepHistory, monitor);
+			derived.write(("updateOrCreate" + i).getBytes(), false, setDerived, keepHistory, monitor);
 			monitor.assertUsedUp();
 			assertEquals(setDerived, derived.isDerived());
 			assertFalse(derived.isTeamPrivateMember());
 			assertTrue(derived.exists());
 
 			IFileState[] history1 = derived.getHistory(null);
-			derived.createOrReplace(("update" + i).getBytes(), false, false, keepHistory, null);
+			derived.write(("update" + i).getBytes(), false, false, keepHistory, null);
 			IFileState[] history2 = derived.getHistory(null);
 			assertEquals(keepHistory ? 1 : 0, history2.length - history1.length);
 		}
