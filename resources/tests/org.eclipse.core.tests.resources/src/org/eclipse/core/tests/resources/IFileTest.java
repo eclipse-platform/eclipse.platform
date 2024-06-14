@@ -32,6 +32,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSy
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -290,6 +291,7 @@ public class IFileTest {
 		}
 	}
 
+	@SuppressWarnings("deprecation") // org.eclipse.core.resources.IResource.isLocal(int)
 	@Test
 	public void testAppendContents2() throws Exception {
 		IFile file = projects[0].getFile("file1");
@@ -454,6 +456,29 @@ public class IFileTest {
 		monitor.assertUsedUp();
 		assertTrue("2.0", !derived.isDerived());
 		assertTrue("2.1", !derived.isTeamPrivateMember());
+	}
+	@Test
+	public void testCreateBytes() throws CoreException {
+		IFile derived = projects[0].getFile("derived.txt");
+		createInWorkspace(projects[0]);
+		removeFromWorkspace(derived);
+
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		derived.create("derived".getBytes(), false, true, monitor);
+		monitor.assertUsedUp();
+		assertTrue(derived.isDerived());
+		assertFalse(derived.isTeamPrivateMember());
+		assertEquals("derived", derived.readString());
+
+		monitor.prepare();
+		derived.delete(false, monitor);
+		monitor.assertUsedUp();
+		monitor.prepare();
+		derived.create("notDerived".getBytes(), false, false, monitor);
+		monitor.assertUsedUp();
+		assertFalse(derived.isDerived());
+		assertFalse(derived.isTeamPrivateMember());
+		assertEquals("notDerived", derived.readString());
 	}
 
 	@Test
@@ -942,6 +967,16 @@ public class IFileTest {
 		try (InputStream content = target.getContents(false)) {
 			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
 		}
+	}
+
+	@Test
+	public void testCreateByteArray() throws IOException, CoreException {
+		IFile target = projects[0].getFile("file1");
+		String testString = createRandomString();
+		FussyProgressMonitor monitor = new FussyProgressMonitor();
+		target.create(testString.getBytes(), true, false, monitor);
+		monitor.assertUsedUp();
+		assertEquals(testString, target.readString());
 	}
 
 	@Test
