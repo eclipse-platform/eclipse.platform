@@ -720,16 +720,17 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		}
 		internalWorker.cancel();
 		if (toCancel != null) {
-			for (Job element : toCancel) {
-				String jobName = printJobName(element);
+			for (Job job : toCancel) {
+				String jobName = printJobName(job) + " " + printState(job); //$NON-NLS-1$
+				if (job.getThread() instanceof Thread t) {
+					StackTraceElement[] stackTrace = t.getStackTrace();
+					for (StackTraceElement stackTraceElement : stackTrace) {
+						jobName += "\n\t at " + stackTraceElement; //$NON-NLS-1$
+					}
+				}
 				//this doesn't need to be translated because it's just being logged
 				String msg = "Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: " + jobName; //$NON-NLS-1$
 				RuntimeLog.log(new Status(IStatus.WARNING, JobManager.PI_JOBS, JobManager.PLUGIN_ERROR, msg, null));
-
-				// TODO the RuntimeLog.log in its current implementation won't produce a log
-				// during this stage of shutdown. For now add a standard error output.
-				// One the logging story is improved, the System.err output below can be removed:
-				System.err.println(msg);
 			}
 		}
 		synchronized (lock) {
