@@ -124,49 +124,12 @@ public class File extends Resource implements IFile {
 		try (content) {
 			checkValidPath(path, FILE, true);
 			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
-			SubMonitor newChild = subMonitor.newChild(1);
 			try {
-				workspace.prepareOperation(rule, newChild);
-				checkDoesNotExist();
-				Container parent = (Container) getParent();
-				ResourceInfo info = parent.getResourceInfo(false, false);
-				parent.checkAccessible(getFlags(info));
-				checkValidGroupContainer(parent, false, false);
-
+				workspace.prepareOperation(rule, subMonitor.newChild(1));
+				checkCreatable();
 				workspace.beginOperation(true);
 				IFileStore store = getStore();
-				IFileInfo localInfo = store.fetchInfo();
-				if (BitMask.isSet(updateFlags, IResource.FORCE)) {
-					if (!Workspace.caseSensitive) {
-						if (localInfo.exists()) {
-							String name = getLocalManager().getLocalName(store);
-							if (name == null || localInfo.getName().equals(name)) {
-								delete(true, null);
-							} else {
-								// The file system is not case sensitive and there is already a file
-								// under this location.
-								message = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
-								throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), message, null);
-							}
-						}
-					}
-				} else {
-					if (localInfo.exists()) {
-						//return an appropriate error message for case variant collisions
-						if (!Workspace.caseSensitive) {
-							String name = getLocalManager().getLocalName(store);
-							if (name != null && !localInfo.getName().equals(name)) {
-								message = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
-								throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), message, null);
-							}
-						}
-						message = NLS.bind(Messages.resources_fileExists, store.toString());
-						throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, getFullPath(), message, null);
-					}
-				}
-				subMonitor.worked(40);
-
-				info = workspace.createResource(this, updateFlags);
+				IFileInfo localInfo = create(updateFlags, subMonitor.newChild(40), store);
 				boolean local = content != null;
 				if (local) {
 					try {
@@ -181,9 +144,7 @@ public class File extends Resource implements IFile {
 						throw e;
 					}
 				}
-				internalSetLocal(local, DEPTH_ZERO);
-				if (!local)
-					getResourceInfo(true, true).clearModificationStamp();
+				setLocal(local);
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
 				throw e;
@@ -201,6 +162,98 @@ public class File extends Resource implements IFile {
 	public void create(InputStream content, boolean force, IProgressMonitor monitor) throws CoreException {
 		// funnel all operations to central method
 		create(content, (force ? IResource.FORCE : IResource.NONE), monitor);
+	}
+
+	@Override
+	public void create(byte[] content, int updateFlags, IProgressMonitor monitor) throws CoreException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.resources_creating, getFullPath()), 100);
+		try {
+			checkValidPath(path, FILE, true);
+			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
+			try {
+				workspace.prepareOperation(rule, subMonitor.newChild(1));
+				checkCreatable();
+				workspace.beginOperation(true);
+				IFileStore store = getStore();
+				IFileInfo localInfo = create(updateFlags, subMonitor.newChild(40), store);
+				boolean local = content != null;
+				if (local) {
+					try {
+						internalSetContents(content, localInfo, updateFlags, false, subMonitor.newChild(59));
+					} catch (CoreException | OperationCanceledException e) {
+						// CoreException when a problem happened creating the file on disk
+						// OperationCanceledException when the operation of setting contents has been
+						// canceled
+						// In either case delete from the workspace and disk
+						workspace.deleteResource(this);
+						store.delete(EFS.NONE, null);
+						throw e;
+					}
+				}
+				setLocal(local);
+			} catch (OperationCanceledException e) {
+				workspace.getWorkManager().operationCanceled();
+				throw e;
+			} finally {
+				workspace.endOperation(rule, true);
+			}
+		} finally {
+			subMonitor.done();
+		}
+	}
+
+	private void checkCreatable() throws CoreException {
+		checkDoesNotExist();
+		Container parent = (Container) getParent();
+		ResourceInfo info = parent.getResourceInfo(false, false);
+		parent.checkAccessible(getFlags(info));
+		checkValidGroupContainer(parent, false, false);
+	}
+
+	private IFileInfo create(int updateFlags, SubMonitor subMonitor, IFileStore store)
+			throws CoreException, ResourceException {
+		String message;
+		IFileInfo localInfo = store.fetchInfo();
+		if (BitMask.isSet(updateFlags, IResource.FORCE)) {
+			if (!Workspace.caseSensitive) {
+				if (localInfo.exists()) {
+					String name = getLocalManager().getLocalName(store);
+					if (name == null || localInfo.getName().equals(name)) {
+						delete(true, null);
+					} else {
+						// The file system is not case sensitive and there is already a file
+						// under this location.
+						message = NLS.bind(Messages.resources_existsLocalDifferentCase,
+								IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
+						throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), message, null);
+					}
+				}
+			}
+		} else {
+			if (localInfo.exists()) {
+				// return an appropriate error message for case variant collisions
+				if (!Workspace.caseSensitive) {
+					String name = getLocalManager().getLocalName(store);
+					if (name != null && !localInfo.getName().equals(name)) {
+						message = NLS.bind(Messages.resources_existsLocalDifferentCase,
+								IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
+						throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), message, null);
+					}
+				}
+				message = NLS.bind(Messages.resources_fileExists, store.toString());
+				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, getFullPath(), message, null);
+			}
+		}
+		subMonitor.done();
+
+		workspace.createResource(this, updateFlags);
+		return localInfo;
+	}
+
+	private void setLocal(boolean local) throws CoreException {
+		internalSetLocal(local, DEPTH_ZERO);
+		if (!local)
+			getResourceInfo(true, true).clearModificationStamp();
 	}
 
 	@Override

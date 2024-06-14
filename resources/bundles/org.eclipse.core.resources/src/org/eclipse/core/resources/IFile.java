@@ -358,6 +358,50 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	void create(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException;
 
 	/**
+	 * Creates the file with the given content as byte array. Same as calling
+	 * {@link #create(InputStream, int, IProgressMonitor)} with flags depending on
+	 * the boolean parameters and a {@code new ByteArrayInputStream(content)} as
+	 * {@code InputStream}. This method is preferably over the streaming API when
+	 * the content is available as byte array anyway.
+	 *
+	 * @param content the content as byte array
+	 * @param force   a flag controlling how to deal with resources that are not in
+	 *                sync with the local file system
+	 * @param derived Specifying this flag is equivalent to atomically calling
+	 *                {@link IResource#setDerived(boolean)} immediately after
+	 *                creating the resource
+	 * @param monitor a progress monitor, or <code>null</code> if progress reporting
+	 *                is not desired
+	 * @throws CoreException if this method fails or is canceled.
+	 * @since 3.21
+	 */
+	public default void create(byte[] content, boolean force, boolean derived, IProgressMonitor monitor)
+			throws CoreException {
+		int createFlags = (force ? IResource.FORCE : IResource.NONE) | (derived ? IResource.DERIVED : IResource.NONE);
+		create(content, createFlags, monitor);
+	}
+
+	/**
+	 * Creates the file with the given content as byte array. Same as calling
+	 * {@link #create(InputStream, int, IProgressMonitor)} and a
+	 * {@code new ByteArrayInputStream(content)} as {@code InputStream}. This method
+	 * is preferably over the streaming API when the content is available as byte
+	 * array anyway.
+	 *
+	 * @param content     the content as byte array
+	 * @param createFlags bit-wise or of flag constants ({@link IResource#FORCE},
+	 *                    {@link IResource#DERIVED}, and
+	 *                    {@link IResource#TEAM_PRIVATE})
+	 * @param monitor     a progress monitor, or <code>null</code> if progress
+	 *                    reporting is not desired
+	 * @throws CoreException if this method fails or is canceled.
+	 * @since 3.21
+	 */
+	public default void create(byte[] content, int createFlags, IProgressMonitor monitor) throws CoreException {
+		create(new ByteArrayInputStream(content), createFlags, monitor);
+	}
+
+	/**
 	 * Creates a new file resource as a member of this handle's parent resource.
 	 * The file's contents will be located in the file specified by the given
 	 * file system path.  The given path must be either an absolute file system
