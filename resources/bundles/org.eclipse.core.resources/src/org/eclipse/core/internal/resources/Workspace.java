@@ -60,6 +60,7 @@ import org.eclipse.core.internal.properties.PropertyManager2;
 import org.eclipse.core.internal.refresh.RefreshManager;
 import org.eclipse.core.internal.resources.ComputeProjectOrder.Digraph;
 import org.eclipse.core.internal.resources.ComputeProjectOrder.VertexOrder;
+import org.eclipse.core.internal.utils.BitMask;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.internal.utils.StringPoolJob;
@@ -1392,7 +1393,7 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 	 * be immediately made derived, hidden and/or team private
 	 */
 	public ResourceInfo createResource(IResource resource, int updateFlags) throws CoreException {
-		ResourceInfo info = createResource(resource, null, false, false, false);
+		ResourceInfo info = createResource(resource, null, false, BitMask.isSet(updateFlags, IResource.REPLACE), false);
 		if ((updateFlags & IResource.DERIVED) != 0)
 			info.set(M_DERIVED);
 		if ((updateFlags & IResource.TEAM_PRIVATE) != 0)

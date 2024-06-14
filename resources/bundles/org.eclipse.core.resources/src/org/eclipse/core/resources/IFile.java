@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
+import java.util.Objects;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -303,6 +304,13 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * with a value of <code>true</code> immediately after creating the resource.
 	 * </p>
 	 * <p>
+	 * The {@link IResource#KEEP_HISTORY} update flag indicates that the history of this file is kept if any
+	 * </p>
+	 * <p>
+	 * The {@link IResource#REPLACE} update flag indicates that this resource is overridden if already existing.
+	 *
+	 * </p>
+	 * <p>
 	 * The {@link IResource#TEAM_PRIVATE} update flag indicates that this resource
 	 * should immediately be set as a team private resource.  Specifying this flag
 	 * is equivalent to atomically calling {@link IResource#setTeamPrivateMember(boolean)}
@@ -330,7 +338,9 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * @param source an input stream containing the initial contents of the file,
 	 *    or <code>null</code> if the file should be marked as not local
 	 * @param updateFlags bit-wise or of update flag constants
-	 *   ({@link IResource#FORCE}, {@link IResource#DERIVED}, and {@link IResource#TEAM_PRIVATE})
+	 *   ({@link IResource#FORCE}, {@link IResource#DERIVED},
+	 *    {@link IResource#KEEP_HISTORY}, {@link IResource#REPLACE},
+	 *    and {@link IResource#TEAM_PRIVATE})
 	 * @param monitor a progress monitor, or <code>null</code> if progress
 	 *    reporting is not desired
 	 * @exception CoreException if this method fails. Reasons include:
@@ -390,7 +400,9 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 *
 	 * @param content     the content as byte array
 	 * @param createFlags bit-wise or of flag constants ({@link IResource#FORCE},
-	 *                    {@link IResource#DERIVED}, and
+	 *                    {@link IResource#DERIVED},
+	 *                    {@link IResource#KEEP_HISTORY},
+	 *                    {@link IResource#REPLACE}, and
 	 *                    {@link IResource#TEAM_PRIVATE})
 	 * @param monitor     a progress monitor, or <code>null</code> if progress
 	 *                    reporting is not desired
@@ -402,81 +414,124 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	}
 
 	/**
-	 * Creates a new file resource as a member of this handle's parent resource.
-	 * The file's contents will be located in the file specified by the given
-	 * file system path.  The given path must be either an absolute file system
-	 * path, or a relative path whose first segment is the name of a workspace path
-	 * variable.
+	 * Creates the file and sets the file content. If the file already exists in
+	 * workspace its content is replaced. Shortcut for calling
+	 * {@link #create(byte[], int, IProgressMonitor)} with flags depending on the
+	 * boolean parameters given and {@link IResource#REPLACE}.
+	 *
+	 * @param content     the new content bytes. Must not be null.
+	 * @param force       a flag controlling how to deal with resources that are not
+	 *                    in sync with the local file system
+	 * @param derived     Specifying this flag is equivalent to atomically calling
+	 *                    {@link IResource#setDerived(boolean)} immediately after
+	 *                    creating the resource or non-atomically setting the
+	 *                    derived flag before setting the content of an already
+	 *                    existing file
+	 * @param keepHistory a flag indicating whether or not store the current
+	 *                    contents in the local history if the file did already
+	 *                    exist
+	 * @param monitor     a progress monitor, or <code>null</code> if progress
+	 *                    reporting is not desired
+	 * @throws CoreException if this method fails or is canceled.
+	 * @since 3.21
+	 */
+	public default void createOrReplace(byte[] content, boolean force, boolean derived, boolean keepHistory,
+			IProgressMonitor monitor) throws CoreException {
+		Objects.requireNonNull(content);
+		create(content, (force ? IResource.FORCE : 0) | (derived ? IResource.DERIVED : 0)
+				| (keepHistory ? IResource.KEEP_HISTORY : 0) | IResource.REPLACE, monitor);
+	}
+
+	/**
+	 * Creates a new file resource as a member of this handle's parent resource. The
+	 * file's contents will be located in the file specified by the given file
+	 * system path. The given path must be either an absolute file system path, or a
+	 * relative path whose first segment is the name of a workspace path variable.
 	 * <p>
 	 * The {@link IResource#ALLOW_MISSING_LOCAL} update flag controls how this
 	 * method deals with cases where the local file system file to be linked does
 	 * not exist, or is relative to a workspace path variable that is not defined.
-	 * If {@link IResource#ALLOW_MISSING_LOCAL} is specified, the operation will succeed
-	 * even if the local file is missing, or the path is relative to an undefined
-	 * variable. If {@link IResource#ALLOW_MISSING_LOCAL} is not specified, the operation
-	 * will fail in the case where the local file system file does not exist or the
-	 * path is relative to an undefined variable.
+	 * If {@link IResource#ALLOW_MISSING_LOCAL} is specified, the operation will
+	 * succeed even if the local file is missing, or the path is relative to an
+	 * undefined variable. If {@link IResource#ALLOW_MISSING_LOCAL} is not
+	 * specified, the operation will fail in the case where the local file system
+	 * file does not exist or the path is relative to an undefined variable.
 	 * </p>
 	 * <p>
-	 * The {@link IResource#REPLACE} update flag controls how this
-	 * method deals with cases where a resource of the same name as the
-	 * prospective link already exists. If {@link IResource#REPLACE}
-	 * is specified, then the existing linked resource's location is replaced
-	 * by localLocation's value.  This does <b>not</b>
-	 * cause the underlying file system contents of that resource to be deleted.
-	 * If {@link IResource#REPLACE} is not specified, this method will
-	 * fail if an existing resource exists of the same name.
+	 * The {@link IResource#REPLACE} update flag controls how this method deals with
+	 * cases where a resource of the same name as the prospective link already
+	 * exists. If {@link IResource#REPLACE} is specified, then the existing linked
+	 * resource's location is replaced by localLocation's value. This does
+	 * <b>not</b> cause the underlying file system contents of that resource to be
+	 * deleted. If {@link IResource#REPLACE} is not specified, this method will fail
+	 * if an existing resource exists of the same name.
 	 * </p>
 	 * <p>
-	 * The {@link IResource#HIDDEN} update flag indicates that this resource
-	 * should immediately be set as a hidden resource.  Specifying this flag
-	 * is equivalent to atomically calling {@link IResource#setHidden(boolean)}
-	 * with a value of <code>true</code> immediately after creating the resource.
+	 * The {@link IResource#HIDDEN} update flag indicates that this resource should
+	 * immediately be set as a hidden resource. Specifying this flag is equivalent
+	 * to atomically calling {@link IResource#setHidden(boolean)} with a value of
+	 * <code>true</code> immediately after creating the resource.
 	 * </p>
 	 * <p>
 	 * Update flags other than those listed above are ignored.
 	 * </p>
 	 * <p>
-	 * This method synchronizes this resource with the local file system at the given
-	 * location.
+	 * This method synchronizes this resource with the local file system at the
+	 * given location.
 	 * </p>
 	 * <p>
-	 * This method changes resources; these changes will be reported
-	 * in a subsequent resource change event, including an indication
-	 * that the file has been added to its parent.
+	 * This method changes resources; these changes will be reported in a subsequent
+	 * resource change event, including an indication that the file has been added
+	 * to its parent.
 	 * </p>
 	 * <p>
-	 * This method is long-running; progress and cancellation are provided
-	 * by the given progress monitor.
+	 * This method is long-running; progress and cancellation are provided by the
+	 * given progress monitor.
 	 * </p>
 	 *
 	 * @param localLocation a file system path where the file should be linked
-	 * @param updateFlags bit-wise or of update flag constants
-	 *   ({@link IResource#ALLOW_MISSING_LOCAL}, {@link IResource#REPLACE} and {@link IResource#HIDDEN})
-	 * @param monitor a progress monitor, or <code>null</code> if progress
-	 *    reporting is not desired
-	 * @exception CoreException if this method fails. Reasons include:
-	 * <ul>
-	 * <li> This resource already exists in the workspace.</li>
-	 * <li> The workspace contains a resource of a different type
-	 *      at the same path as this resource.</li>
-	 * <li> The parent of this resource does not exist.</li>
-	 * <li> The parent of this resource is not an open project</li>
-	 * <li> The name of this resource is not valid (according to
-	 *    <code>IWorkspace.validateName</code>).</li>
-	 * <li> The corresponding location in the local file system does not exist, or
-	 * is relative to an undefined variable, and <code>ALLOW_MISSING_LOCAL</code> is
-	 * not specified.</li>
-	 * <li> The corresponding location in the local file system is occupied
-	 *    by a directory (as opposed to a file).</li>
-	 * <li> Resource changes are disallowed during certain types of resource change
-	 *       event notification.  See <code>IResourceChangeEvent</code> for more details.</li>
-	 * <li>The team provider for the project which contains this folder does not permit
-	 *       linked resources.</li>
-	 * <li>This folder's project contains a nature which does not permit linked resources.</li>
-	 * </ul>
+	 * @param updateFlags   bit-wise or of update flag constants
+	 *                      ({@link IResource#ALLOW_MISSING_LOCAL},
+	 *                      {@link IResource#REPLACE} and {@link IResource#HIDDEN})
+	 * @param monitor       a progress monitor, or <code>null</code> if progress
+	 *                      reporting is not desired
+	 * @exception CoreException              if this method fails. Reasons include:
+	 *                                       <ul>
+	 *                                       <li>This resource already exists in the
+	 *                                       workspace.</li>
+	 *                                       <li>The workspace contains a resource
+	 *                                       of a different type at the same path as
+	 *                                       this resource.</li>
+	 *                                       <li>The parent of this resource does
+	 *                                       not exist.</li>
+	 *                                       <li>The parent of this resource is not
+	 *                                       an open project</li>
+	 *                                       <li>The name of this resource is not
+	 *                                       valid (according to
+	 *                                       <code>IWorkspace.validateName</code>).</li>
+	 *                                       <li>The corresponding location in the
+	 *                                       local file system does not exist, or is
+	 *                                       relative to an undefined variable, and
+	 *                                       <code>ALLOW_MISSING_LOCAL</code> is not
+	 *                                       specified.</li>
+	 *                                       <li>The corresponding location in the
+	 *                                       local file system is occupied by a
+	 *                                       directory (as opposed to a file).</li>
+	 *                                       <li>Resource changes are disallowed
+	 *                                       during certain types of resource change
+	 *                                       event notification. See
+	 *                                       <code>IResourceChangeEvent</code> for
+	 *                                       more details.</li>
+	 *                                       <li>The team provider for the project
+	 *                                       which contains this folder does not
+	 *                                       permit linked resources.</li>
+	 *                                       <li>This folder's project contains a
+	 *                                       nature which does not permit linked
+	 *                                       resources.</li>
+	 *                                       </ul>
 	 * @exception OperationCanceledException if the operation is canceled.
-	 * Cancelation can occur even if no progress monitor is provided.
+	 *                                       Cancelation can occur even if no
+	 *                                       progress monitor is provided.
 	 * @see IResource#isLinked()
 	 * @see IResource#ALLOW_MISSING_LOCAL
 	 * @see IResource#REPLACE
