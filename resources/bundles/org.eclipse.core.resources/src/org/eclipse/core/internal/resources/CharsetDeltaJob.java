@@ -240,6 +240,7 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 		try {
 			// try to prevent execution of this job to avoid "already shutdown.":
 			cancel();
+			wakeUp();
 			// if job is already running wait for it to finish:
 			join(3000, null);
 		} catch (InterruptedException e) {
