@@ -68,6 +68,7 @@ public class CharsetManager implements IManager {
 			super(Messages.resources_charsetUpdating);
 			setSystem(true);
 			setPriority(Job.INTERACTIVE);
+			setRule(workspace.getRoot());
 		}
 
 		@Override
@@ -102,7 +103,7 @@ public class CharsetManager implements IManager {
 					workspace.prepareOperation(rule, monitor);
 					workspace.beginOperation(true);
 					Map.Entry<IProject, Boolean> next;
-					while ((next = getNextChange()) != null) {
+					while (!monitor.isCanceled() && ((next = getNextChange()) != null)) {
 						//just exit if the system is shutting down or has been shut down
 						//it is too late to change the workspace at this point anyway
 						if (systemBundle.getState() != Bundle.ACTIVE)
@@ -141,6 +142,16 @@ public class CharsetManager implements IManager {
 		public boolean shouldRun() {
 			synchronized (asyncChanges) {
 				return !asyncChanges.isEmpty();
+			}
+		}
+
+		public void shutDown() {
+			cancel();
+			wakeUp();
+			try {
+				join(3000, null);
+			} catch (OperationCanceledException | InterruptedException ignored) {
+				// nothing
 			}
 		}
 	}
@@ -495,6 +506,9 @@ public class CharsetManager implements IManager {
 
 	@Override
 	public void shutdown(IProgressMonitor monitor) {
+		if (job != null) {
+			job.shutDown();
+		}
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES)
 				.removePreferenceChangeListener(preferenceChangeListener);
 
