@@ -53,7 +53,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -514,6 +516,24 @@ public class IFileTest {
 			assertEquals(keepHistory ? 1 : 0, history2.length - history1.length);
 		}
 	}
+
+	@Test
+	public void testWriteRule() throws CoreException {
+		IFile resource = projects[0].getFile("derived.txt");
+		createInWorkspace(projects[0]);
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		resource.delete(false, null);
+		workspace.run(pm -> {
+			resource.write(("create").getBytes(), false, false, false, null);
+		}, workspace.getRuleFactory().createRule(resource), IWorkspace.AVOID_UPDATE, null);
+		assertTrue(resource.exists());
+		// test that modifyRule can be used for IFile.write() if the file already exits:
+		workspace.run(pm -> {
+			resource.write(("replace").getBytes(), false, false, false, null);
+		}, workspace.getRuleFactory().modifyRule(resource), IWorkspace.AVOID_UPDATE, null);
+		assertTrue(resource.exists());
+	}
+
 	@Test
 	public void testDeltaOnCreateDerived() throws CoreException {
 		IFile derived = projects[0].getFile("derived.txt");
