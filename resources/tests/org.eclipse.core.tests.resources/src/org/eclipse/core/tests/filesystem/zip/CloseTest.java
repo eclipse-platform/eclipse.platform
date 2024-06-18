@@ -48,4 +48,31 @@ public class CloseTest {
 		ensureExists(zipFile);
 	}
 
+	/*
+	 * Test for a bug that breaks the opened zip file underneath the zip file that
+	 * is closing. The zip file underneath converts to a linked file but the local
+	 * file in the project is deleted so the linked file has no target.
+	 */
+	@Test
+	public void testCloseZipFileWithZipFileUnderneath() throws Exception {
+		IFolder firstOpenedZipFile = ZipFileSystemTestSetup.firstProject
+				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
+		ensureExists(firstOpenedZipFile);
+		String secondZipFileName = ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME.replace(".", "New.");
+		ZipFileSystemTestSetup.copyZipFileIntoProject(ZipFileSystemTestSetup.firstProject, secondZipFileName);
+		IFile secondZipFile = ZipFileSystemTestSetup.firstProject.getFile(secondZipFileName);
+		ZipFileSystemTestUtil.openZipFile(secondZipFile);
+		IFolder secondOpenedZipFile = ZipFileSystemTestSetup.firstProject.getFolder(secondZipFileName);
+		ensureExists(secondOpenedZipFile);
+
+		ZipFileSystemTestUtil.closeZipFile(firstOpenedZipFile);
+		IFile zipFile = ZipFileSystemTestSetup.firstProject
+				.getFile(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
+		// Don't use Utility method ensureDoesNotExist because the fileStore is still
+		// available after closing. The fileStore is the File itself in the local file
+		// system that still exists after closing.
+		assertTrue("folder was not properly deleted: " + firstOpenedZipFile, !firstOpenedZipFile.exists());
+		ensureExists(zipFile);
+		ensureExists(secondOpenedZipFile);
+	}
 }
