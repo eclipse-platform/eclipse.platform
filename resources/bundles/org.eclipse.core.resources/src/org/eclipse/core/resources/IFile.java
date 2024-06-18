@@ -414,7 +414,7 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 *                    in sync with the local file system
 	 * @param derived     Specifying this flag is equivalent to atomically calling
 	 *                    {@link IResource#setDerived(boolean)} immediately after
-	 *                    creating the resource or non-atomically setting the
+	 *                    creating the resource or atomically setting the
 	 *                    derived flag before setting the content of an already
 	 *                    existing file
 	 * @param keepHistory a flag indicating whether or not store the current
@@ -429,10 +429,11 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 			IProgressMonitor monitor) throws CoreException {
 		Objects.requireNonNull(content);
 		if (exists()) {
-			if (derived != isDerived()) {
-				setDerived(derived, null);
-			}
-			setContents(content, force, keepHistory, monitor);
+			int updateFlags = (derived ? IResource.DERIVED : IResource.NONE)
+					| REPLACE // REPLACE used to force update derived flag
+					| (force ? IResource.FORCE : IResource.NONE)
+					| (keepHistory ? IResource.KEEP_HISTORY : IResource.NONE);
+			setContents(content, updateFlags, monitor);
 		} else {
 			create(content, force, derived, monitor);
 		}
