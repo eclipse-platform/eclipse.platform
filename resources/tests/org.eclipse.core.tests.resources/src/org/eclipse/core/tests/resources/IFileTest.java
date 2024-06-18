@@ -500,8 +500,11 @@ public class IFileTest {
 			boolean setDerived = i % 2 == 0;
 			boolean deleteBefore = (i >> 1) % 2 == 0;
 			boolean keepHistory = (i >> 2) % 2 == 0;
+			boolean oldDerived1 = false;
 			if (deleteBefore) {
 				derived.delete(false, null);
+			} else {
+				oldDerived1 = derived.isDerived();
 			}
 			assertEquals(!deleteBefore, derived.exists());
 			FussyProgressMonitor monitor = new FussyProgressMonitor();
@@ -510,16 +513,22 @@ public class IFileTest {
 			derived.write(("updateOrCreate" + i).getBytes(), false, setDerived, keepHistory, monitor);
 			assertEquals("not atomic", 1, changeCount.get());
 			monitor.assertUsedUp();
-			assertEquals(setDerived, derived.isDerived());
+			if (deleteBefore) {
+				assertEquals(setDerived, derived.isDerived());
+			} else {
+				assertEquals(oldDerived1 || setDerived, derived.isDerived());
+			}
 			assertFalse(derived.isTeamPrivateMember());
 			assertTrue(derived.exists());
 
 			IFileState[] history1 = derived.getHistory(null);
 			changeCount.set(0);
 			derived.write(("update" + i).getBytes(), false, false, keepHistory, null);
+			boolean oldDerived2 = derived.isDerived();
+			assertEquals(oldDerived2, derived.isDerived());
 			assertEquals("not atomic", 1, changeCount.get());
 			IFileState[] history2 = derived.getHistory(null);
-			assertEquals(keepHistory ? 1 : 0, history2.length - history1.length);
+			assertEquals((keepHistory && !oldDerived2) ? 1 : 0, history2.length - history1.length);
 		}
 	}
 

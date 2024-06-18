@@ -1286,15 +1286,11 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				}
 			}
 		}
-		if (BitMask.isSet(updateFlags, IResource.REPLACE)) {
-			// forced update of derived flag during IFile.write:
+		if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
+			// update of derived flag during IFile.write:
 			Resource resource = (Resource) target;
 			ResourceInfo info = resource.getResourceInfo(false, false);
-			if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
-				info.set(ICoreConstants.M_DERIVED);
-			} else {
-				info.clear(ICoreConstants.M_DERIVED);
-			}
+			info.set(ICoreConstants.M_DERIVED);
 		}
 		// add entry to History Store.
 		if (BitMask.isSet(updateFlags, IResource.KEEP_HISTORY) && fileInfo.exists()
