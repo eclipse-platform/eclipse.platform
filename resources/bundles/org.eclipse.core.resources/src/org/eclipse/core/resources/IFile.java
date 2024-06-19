@@ -304,13 +304,6 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * with a value of <code>true</code> immediately after creating the resource.
 	 * </p>
 	 * <p>
-	 * The {@link IResource#KEEP_HISTORY} update flag indicates that the history of this file is kept if any
-	 * </p>
-	 * <p>
-	 * The {@link IResource#REPLACE} update flag indicates that this resource is overridden if already existing.
-	 *
-	 * </p>
-	 * <p>
 	 * The {@link IResource#TEAM_PRIVATE} update flag indicates that this resource
 	 * should immediately be set as a team private resource.  Specifying this flag
 	 * is equivalent to atomically calling {@link IResource#setTeamPrivateMember(boolean)}
@@ -338,9 +331,7 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * @param source an input stream containing the initial contents of the file,
 	 *    or <code>null</code> if the file should be marked as not local
 	 * @param updateFlags bit-wise or of update flag constants
-	 *   ({@link IResource#FORCE}, {@link IResource#DERIVED},
-	 *    {@link IResource#KEEP_HISTORY}, {@link IResource#REPLACE},
-	 *    and {@link IResource#TEAM_PRIVATE})
+	 *   ({@link IResource#FORCE}, {@link IResource#DERIVED}, and {@link IResource#TEAM_PRIVATE})
 	 * @param monitor a progress monitor, or <code>null</code> if progress
 	 *    reporting is not desired
 	 * @exception CoreException if this method fails. Reasons include:
@@ -400,9 +391,7 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 *
 	 * @param content     the content as byte array
 	 * @param createFlags bit-wise or of flag constants ({@link IResource#FORCE},
-	 *                    {@link IResource#DERIVED},
-	 *                    {@link IResource#KEEP_HISTORY},
-	 *                    {@link IResource#REPLACE}, and
+	 *                    {@link IResource#DERIVED}, and
 	 *                    {@link IResource#TEAM_PRIVATE})
 	 * @param monitor     a progress monitor, or <code>null</code> if progress
 	 *                    reporting is not desired
@@ -416,17 +405,19 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	/**
 	 * Creates the file and sets the file content. If the file already exists in
 	 * workspace its content is replaced. Shortcut for calling
-	 * {@link #create(byte[], int, IProgressMonitor)} with flags depending on the
-	 * boolean parameters given and {@link IResource#REPLACE}.
+	 * {@link #setContents(byte[], boolean, boolean, IProgressMonitor)} or
+	 * {@link #create(byte[], boolean, boolean, IProgressMonitor)} if the file does
+	 * not {@link #exists()}.
 	 *
 	 * @param content     the new content bytes. Must not be null.
 	 * @param force       a flag controlling how to deal with resources that are not
 	 *                    in sync with the local file system
 	 * @param derived     Specifying this flag is equivalent to atomically calling
 	 *                    {@link IResource#setDerived(boolean)} immediately after
-	 *                    creating the resource or non-atomically setting the
-	 *                    derived flag before setting the content of an already
-	 *                    existing file
+	 *                    creating the resource or atomically setting the derived
+	 *                    flag before setting the content of an already existing
+	 *                    file if derived==true. A value of false will not update
+	 *                    the derived flag of an existing file.
 	 * @param keepHistory a flag indicating whether or not store the current
 	 *                    contents in the local history if the file did already
 	 *                    exist
@@ -438,8 +429,14 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	public default void write(byte[] content, boolean force, boolean derived, boolean keepHistory,
 			IProgressMonitor monitor) throws CoreException {
 		Objects.requireNonNull(content);
-		create(content, (force ? IResource.FORCE : 0) | (derived ? IResource.DERIVED : 0)
-				| (keepHistory ? IResource.KEEP_HISTORY : 0) | IResource.REPLACE, monitor);
+		if (exists()) {
+			int updateFlags = (derived ? IResource.DERIVED : IResource.NONE)
+					| (force ? IResource.FORCE : IResource.NONE)
+					| (keepHistory ? IResource.KEEP_HISTORY : IResource.NONE);
+			setContents(content, updateFlags, monitor);
+		} else {
+			create(content, force, derived, monitor);
+		}
 	}
 
 	/**

@@ -126,7 +126,7 @@ public class File extends Resource implements IFile {
 			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
 			try {
 				workspace.prepareOperation(rule, subMonitor.newChild(1));
-				checkCreatable(updateFlags);
+				checkCreatable();
 				workspace.beginOperation(true);
 				IFileStore store = getStore();
 				IFileInfo localInfo = create(updateFlags, subMonitor.newChild(40), store);
@@ -172,7 +172,7 @@ public class File extends Resource implements IFile {
 			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
 			try {
 				workspace.prepareOperation(rule, subMonitor.newChild(1));
-				checkCreatable(updateFlags);
+				checkCreatable();
 				workspace.beginOperation(true);
 				IFileStore store = getStore();
 				IFileInfo localInfo = create(updateFlags, subMonitor.newChild(40), store);
@@ -202,10 +202,8 @@ public class File extends Resource implements IFile {
 		}
 	}
 
-	private void checkCreatable(int updateFlags) throws CoreException {
-		if ((updateFlags & IResource.REPLACE) == 0) {
-			checkDoesNotExist();
-		}
+	private void checkCreatable() throws CoreException {
+		checkDoesNotExist();
 		Container parent = (Container) getParent();
 		ResourceInfo info = parent.getResourceInfo(false, false);
 		parent.checkAccessible(getFlags(info));
@@ -232,7 +230,7 @@ public class File extends Resource implements IFile {
 				}
 			}
 		} else {
-			if (!BitMask.isSet(updateFlags, IResource.REPLACE) && localInfo.exists()) {
+			if (localInfo.exists()) {
 				// return an appropriate error message for case variant collisions
 				if (!Workspace.caseSensitive) {
 					String name = getLocalManager().getLocalName(store);
@@ -433,6 +431,10 @@ public class File extends Resource implements IFile {
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
 				IFileInfo fileInfo = getStore().fetchInfo();
+				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
+					// update of derived flag during IFile.write:
+					info.set(ICoreConstants.M_DERIVED);
+				}
 				internalSetContents(content, fileInfo, updateFlags, false, subMonitor.newChild(99));
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
@@ -461,6 +463,10 @@ public class File extends Resource implements IFile {
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
 				IFileInfo fileInfo = getStore().fetchInfo();
+				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
+					// update of derived flag during IFile.write:
+					info.set(ICoreConstants.M_DERIVED);
+				}
 				internalSetContents(content, fileInfo, updateFlags, false, subMonitor.newChild(99));
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();

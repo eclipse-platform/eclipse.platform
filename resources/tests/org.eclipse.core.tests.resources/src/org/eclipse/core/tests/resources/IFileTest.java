@@ -44,6 +44,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
@@ -53,7 +54,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -497,23 +500,60 @@ public class IFileTest {
 			boolean setDerived = i % 2 == 0;
 			boolean deleteBefore = (i >> 1) % 2 == 0;
 			boolean keepHistory = (i >> 2) % 2 == 0;
+			boolean oldDerived1 = false;
 			if (deleteBefore) {
 				derived.delete(false, null);
+			} else {
+				oldDerived1 = derived.isDerived();
 			}
 			assertEquals(!deleteBefore, derived.exists());
 			FussyProgressMonitor monitor = new FussyProgressMonitor();
+			AtomicInteger changeCount = new AtomicInteger();
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> changeCount.incrementAndGet());
 			derived.write(("updateOrCreate" + i).getBytes(), false, setDerived, keepHistory, monitor);
+			assertEquals("not atomic", 1, changeCount.get());
 			monitor.assertUsedUp();
-			assertEquals(setDerived, derived.isDerived());
+			if (deleteBefore) {
+				assertEquals(setDerived, derived.isDerived());
+			} else {
+				assertEquals(oldDerived1 || setDerived, derived.isDerived());
+			}
 			assertFalse(derived.isTeamPrivateMember());
 			assertTrue(derived.exists());
 
 			IFileState[] history1 = derived.getHistory(null);
+			changeCount.set(0);
 			derived.write(("update" + i).getBytes(), false, false, keepHistory, null);
+			boolean oldDerived2 = derived.isDerived();
+			assertEquals(oldDerived2, derived.isDerived());
+			assertEquals("not atomic", 1, changeCount.get());
 			IFileState[] history2 = derived.getHistory(null);
-			assertEquals(keepHistory ? 1 : 0, history2.length - history1.length);
+			assertEquals((keepHistory && !oldDerived2) ? 1 : 0, history2.length - history1.length);
 		}
 	}
+
+	@Test
+	public void testWriteRule() throws CoreException {
+		IFile resource = projects[0].getFile("derived.txt");
+		createInWorkspace(projects[0]);
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		resource.delete(false, null);
+		AtomicInteger changeCount = new AtomicInteger();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> changeCount.incrementAndGet());
+		workspace.run(pm -> {
+			resource.write(("create").getBytes(), false, false, false, null);
+		}, workspace.getRuleFactory().createRule(resource), IWorkspace.AVOID_UPDATE, null);
+		assertTrue(resource.exists());
+		assertEquals("not atomic", 1, changeCount.get());
+		// test that modifyRule can be used for IFile.write() if the file already exits:
+		changeCount.set(0);
+		workspace.run(pm -> {
+			resource.write(("replace").getBytes(), false, false, false, null);
+		}, workspace.getRuleFactory().modifyRule(resource), IWorkspace.AVOID_UPDATE, null);
+		assertTrue(resource.exists());
+		assertEquals("not atomic", 1, changeCount.get());
+	}
+
 	@Test
 	public void testDeltaOnCreateDerived() throws CoreException {
 		IFile derived = projects[0].getFile("derived.txt");
