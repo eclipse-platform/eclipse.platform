@@ -1334,6 +1334,27 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	}
 
 	/**
+	 * Reads the first bytes of the content in a byte array. Equivalent of calling
+	 * {@code getContents(true).readNBytes(maxBytes)} but also closing the stream.
+	 *
+	 * @param maxBytes The maximal length of the returned array. If maxBytes is
+	 *                 greater or equal to the file length the whole content is
+	 *                 returned. If maxBytes is smaller then the file length then
+	 *                 only the first maxBytes bytes are returned.
+	 * @return content bytes
+	 * @throws CoreException on error
+	 * @see #getContents(boolean)
+	 * @since 3.21
+	 */
+	public default byte[] readNBytes(int maxBytes) throws CoreException {
+		try (InputStream stream = getContents(true)) {
+			return stream.readNBytes(maxBytes);
+		} catch (IOException e) {
+			throw new CoreException(Status.error("Error reading " + getFullPath(), e)); //$NON-NLS-1$
+		}
+	}
+
+	/**
 	 * Reads the content as char array. Skips the UTF BOM header if any. This method
 	 * is not intended for reading in large files that do not fit in a char array.
 	 * Preferable (potentially faster) equivalent of calling
