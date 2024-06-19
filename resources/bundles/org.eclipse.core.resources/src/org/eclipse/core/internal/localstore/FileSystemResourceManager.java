@@ -1275,7 +1275,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 					throw new ResourceException(IResourceStatus.NOT_FOUND_LOCAL, target.getFullPath(), message, null);
 				}
 			} else {
-				if (!BitMask.isSet(updateFlags, IResource.REPLACE) && fileInfo.exists()) {
+				if (fileInfo.exists()) {
 					String message = NLS.bind(Messages.localstore_resourceExists, target.getFullPath());
 					throw new ResourceException(IResourceStatus.EXISTS_LOCAL, target.getFullPath(), message, null);
 				}
@@ -1285,12 +1285,6 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 							null);
 				}
 			}
-		}
-		if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
-			// update of derived flag during IFile.write:
-			Resource resource = (Resource) target;
-			ResourceInfo info = resource.getResourceInfo(false, false);
-			info.set(ICoreConstants.M_DERIVED);
 		}
 		// add entry to History Store.
 		if (BitMask.isSet(updateFlags, IResource.KEEP_HISTORY) && fileInfo.exists()

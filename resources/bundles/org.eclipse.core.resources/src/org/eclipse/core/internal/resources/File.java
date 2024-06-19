@@ -431,6 +431,10 @@ public class File extends Resource implements IFile {
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
 				IFileInfo fileInfo = getStore().fetchInfo();
+				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
+					// update of derived flag during IFile.write:
+					info.set(ICoreConstants.M_DERIVED);
+				}
 				internalSetContents(content, fileInfo, updateFlags, false, subMonitor.newChild(99));
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
@@ -459,6 +463,10 @@ public class File extends Resource implements IFile {
 				checkAccessible(getFlags(info));
 				workspace.beginOperation(true);
 				IFileInfo fileInfo = getStore().fetchInfo();
+				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
+					// update of derived flag during IFile.write:
+					info.set(ICoreConstants.M_DERIVED);
+				}
 				internalSetContents(content, fileInfo, updateFlags, false, subMonitor.newChild(99));
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
