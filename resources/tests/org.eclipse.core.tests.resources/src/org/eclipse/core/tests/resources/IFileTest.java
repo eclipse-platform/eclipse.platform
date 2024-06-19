@@ -1053,6 +1053,39 @@ public class IFileTest {
 	}
 
 	@Test
+	public void testReadNBytes() throws IOException, CoreException {
+		IFile file = projects[0].getFile("smallfile");
+		byte[] bytes = "1234".getBytes(StandardCharsets.US_ASCII);
+		file.write(bytes, false, false, false, null);
+		try {
+			file.readNBytes(-1);
+			assertFalse(true);
+		} catch (IllegalArgumentException expected) {
+			// expected
+		}
+		byte[] nBytes0 = file.readNBytes(0);
+		assertEquals(0, nBytes0.length);
+		byte[] nBytes1 = file.readNBytes(1);
+		assertEquals(1, nBytes1.length);
+		assertEquals('1', nBytes1[0]);
+		byte[] nBytes4 = file.readNBytes(4);
+		assertEquals(4, nBytes4.length);
+		byte[] nBytes5 = file.readNBytes(5);
+		assertEquals(4, nBytes5.length);
+		byte[] nBytesMax = file.readNBytes(Integer.MAX_VALUE);
+		assertEquals(4, nBytesMax.length);
+		assertArrayEquals(bytes, nBytesMax);
+
+		IFile largefile = projects[0].getFile("largefile");
+		byte[] largeContent = new byte[50_000_000]; // only 50 MB to prevent OutOfMemoryError on jenkins
+		largefile.write(largeContent, false, false, false, null);
+		byte[] largeBytes = largefile.readNBytes(Integer.MAX_VALUE);
+		assertEquals(largeContent.length, largeBytes.length);
+		byte[] largeBytes1 = largefile.readNBytes(1);
+		assertEquals(1, largeBytes1.length);
+	}
+
+	@Test
 	public void testReadAll() throws IOException, CoreException {
 		List<Charset> charsets = List.of(StandardCharsets.ISO_8859_1, StandardCharsets.UTF_8, StandardCharsets.UTF_16BE,
 				StandardCharsets.UTF_16LE);
