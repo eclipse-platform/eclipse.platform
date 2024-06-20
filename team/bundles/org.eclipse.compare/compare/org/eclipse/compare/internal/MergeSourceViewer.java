@@ -933,7 +933,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	 */
 	public void setBounds (int x, int y, int width, int height) {
 		if(getSourceViewer().getControl() instanceof Composite){
-			((Composite)getSourceViewer().getControl()).setBounds(x, y, width, height);
+			getSourceViewer().getControl().setBounds(x, y, width, height);
 		} else {
 			getSourceViewer().getTextWidget().setBounds(x, y, width, height);
 		}

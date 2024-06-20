@@ -141,7 +141,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 						&& twd.getDirection() == IThreeWayDiff.OUTGOING
 						&& ((IFolder)resource).members().length == 0) {
 					// Delete the local folder addition
-					((IFolder)resource).delete(false, monitor);
+					resource.delete(false, monitor);
 				} else if (resource.getType() == IResource.FOLDER
 						&& !resource.exists()
 						&& twd.getKind() == IDiff.ADD

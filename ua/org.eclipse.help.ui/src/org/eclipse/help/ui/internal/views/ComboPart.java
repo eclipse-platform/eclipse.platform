@@ -47,9 +47,9 @@ public class ComboPart {
 
 	public void addKeyListener(KeyListener listener) {
 		if (combo instanceof Combo)
-			((Combo) combo).addKeyListener(listener);
+			combo.addKeyListener(listener);
 		else
-			((CCombo) combo).addKeyListener(listener);
+			combo.addKeyListener(listener);
 	}
 
 	public void createControl(Composite parent, FormToolkit toolkit, int style) {

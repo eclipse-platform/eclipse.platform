@@ -172,7 +172,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 
 		// Complete the second set of children updates
 		for (int i = 0; i < model.fCapturedUpdates.size(); i++) {
-			((ILabelUpdate)model.fCapturedUpdates.get(i)).done();
+			model.fCapturedUpdates.get(i).done();
 		}
 
 		// Then complete the first set.
@@ -229,7 +229,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 
 		// Complete the second set of children updates
 		for (int i = 0; i < model.fCapturedUpdates.size(); i++) {
-			((ILabelUpdate)model.fCapturedUpdates.get(i)).done();
+			model.fCapturedUpdates.get(i).done();
 		}
 
 		// Then complete the first set.
@@ -281,7 +281,7 @@ abstract public class ContentTests extends AbstractViewerModelTest implements IT
 
 		// Complete the second set of children updates
 		for (int i = 0; i < model.fCapturedUpdates.size(); i++) {
-			((IChildrenUpdate)model.fCapturedUpdates.get(i)).done();
+			model.fCapturedUpdates.get(i).done();
 		}
 
 		// Then complete the first set.

@@ -129,7 +129,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	}
 
 	private Tree getTree() {
-		return ((Tree)((AbstractTreeViewer)getViewer()).getControl());
+		return ((Tree)getViewer().getControl());
 	}
 
 	/**

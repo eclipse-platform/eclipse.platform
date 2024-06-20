@@ -546,7 +546,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 						}
 					}
 					if (resource != null) {
-						IPath location = ((IFile) resource).getLocation();
+						IPath location = resource.getLocation();
 						if (location != null) {
 							List<ILaunchConfiguration> list = collectConfigurations(location);
 							return list.toArray(new ILaunchConfiguration[list.size()]);

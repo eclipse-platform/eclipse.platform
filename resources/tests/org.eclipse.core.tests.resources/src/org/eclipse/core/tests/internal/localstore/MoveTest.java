@@ -36,7 +36,6 @@ import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.ResourceInfo;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -464,7 +463,7 @@ public class MoveTest {
 		assertTrue(folder.exists());
 		// FIXME: should #move be a best effort operation?
 		// its ok for the root to be moved but ensure the destination child wasn't moved
-		IResource destChild = ((IContainer) folderDestination).getFile(IPath.fromOSString(anotherFile.getName()));
+		IResource destChild = folderDestination.getFile(IPath.fromOSString(anotherFile.getName()));
 		assertFalse(folderDestination.exists());
 		assertFalse(destChild.exists());
 		// cleanup and delete the destination
