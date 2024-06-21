@@ -689,8 +689,8 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 
 	private void updateControlsForProblemReporting(boolean reportProblems) {
 		for (int i = fComboBoxes.size() - 1; i >= 0; i--) {
-			((Control) fComboBoxes.get(i)).setEnabled(reportProblems);
-			((Control) fProblemLabels.get(i)).setEnabled(reportProblems);
+			fComboBoxes.get(i).setEnabled(reportProblems);
+			fProblemLabels.get(i).setEnabled(reportProblems);
 		}
 		fSeverityLabel.setEnabled(reportProblems);
 		fBuildFilesToIgnoreProblems.setEnabled(reportProblems);

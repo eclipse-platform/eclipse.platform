@@ -222,7 +222,7 @@ public class SortBuilder extends TestBuilder {
 			}
 			folder.delete(true, null);
 		} else if (type == IResource.FILE) {
-			((IFile) resource).delete(true, null);
+			resource.delete(true, null);
 		} else {
 			throw new ResourceException(IResourceStatus.RESOURCE_WRONG_TYPE, null, "Wrong resource type", null);
 		}

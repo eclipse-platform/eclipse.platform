@@ -406,7 +406,7 @@ public class IProjectTest  {
 		sourceChild = resources[1];
 		sourceChild.setPersistentProperty(qname, value);
 		monitor.prepare();
-		((IProject) source).copy(description, false, monitor);
+		source.copy(description, false, monitor);
 		monitor.assertUsedUp();
 		assertExistsInWorkspace(project);
 		assertExistsInWorkspace(resources);

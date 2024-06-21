@@ -114,11 +114,11 @@ public class DeadlockDetectionTest {
 		// join all threads:
 		for (int i = 0; i < allRunnables.size(); i++) {
 			try {
-				((Thread) allRunnables.get(i)).join(100000);
+				allRunnables.get(i).join(100000);
 			} catch (InterruptedException e1) {
 				//ignore
 			}
-			assertTrue("1." + i, !((Thread) allRunnables.get(i)).isAlive());
+			assertTrue("1." + i, !allRunnables.get(i).isAlive());
 		}
 		//the underlying array has to be empty
 		assertTrue("Locks not removed from graph.", lockManager.isEmpty());

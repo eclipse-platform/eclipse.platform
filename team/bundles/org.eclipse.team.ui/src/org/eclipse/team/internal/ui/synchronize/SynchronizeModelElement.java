@@ -134,7 +134,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	public ImageDescriptor getImageDescriptor(Object object) {
 		IResource resource = getResource();
 		if(resource != null) {
-			IWorkbenchAdapter adapter = ((IAdaptable) resource).getAdapter(IWorkbenchAdapter.class);
+			IWorkbenchAdapter adapter = resource.getAdapter(IWorkbenchAdapter.class);
 			return adapter.getImageDescriptor(resource);
 		}
 		return null;

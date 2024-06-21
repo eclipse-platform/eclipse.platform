@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -111,11 +110,11 @@ public class CopyTest {
 				() -> folder.copy(destinationFolder.getFullPath(), false, null));
 		assertThat(exception.getStatus().getChildren()).hasSize(2);
 		assertTrue(destinationFolder.exists());
-		assertTrue(((IContainer) destinationFolder).getFile(IPath.fromOSString(file.getName())).exists());
-		assertFalse(((IContainer) destinationFolder).getFolder(IPath.fromOSString(subfolder.getName())).exists());
-		assertFalse(((IContainer) destinationFolder).getFile(IPath.fromOSString(anotherFile.getName())).exists());
+		assertTrue(destinationFolder.getFile(IPath.fromOSString(file.getName())).exists());
+		assertFalse(destinationFolder.getFolder(IPath.fromOSString(subfolder.getName())).exists());
+		assertFalse(destinationFolder.getFile(IPath.fromOSString(anotherFile.getName())).exists());
 		/* assert properties were properly copied */
-		IResource target = ((IContainer) destinationFolder).getFile(IPath.fromOSString(file.getName()));
+		IResource target = destinationFolder.getFile(IPath.fromOSString(file.getName()));
 		for (int i = 0; i < NUMBER_OF_PROPERTIES; i++) {
 			String persistentValue = target.getPersistentProperty(propNames[i]);
 			Object sessionValue = target.getSessionProperty(propNames[i]);

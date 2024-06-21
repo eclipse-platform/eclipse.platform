@@ -22,7 +22,6 @@ import org.eclipse.debug.core.sourcelookup.containers.FolderSourceContainer;
 import org.eclipse.debug.ui.sourcelookup.AbstractSourceContainerBrowser;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
@@ -38,7 +37,7 @@ public class FolderSourceContainerBrowser extends AbstractSourceContainerBrowser
 		FolderSourceContainerDialog dialog = new FolderSourceContainerDialog(shell,  new WorkbenchLabelProvider(), new WorkbenchContentProvider());
 
 		if (dialog.open() == Window.OK) {
-			Object[] selection= ((ElementTreeSelectionDialog)dialog).getResult();
+			Object[] selection= dialog.getResult();
 			ArrayList<ISourceContainer> containers = new ArrayList<>();
 			for (Object f : selection) {
 				if (f instanceof IFolder) {
@@ -63,7 +62,7 @@ public class FolderSourceContainerBrowser extends AbstractSourceContainerBrowser
 		dialog.setInitialSelection(container.getContainer());
 		if (dialog.open() == Window.OK) {
 			container.dispose();
-			Object[] selection= ((ElementTreeSelectionDialog)dialog).getResult();
+			Object[] selection= dialog.getResult();
 			ArrayList<ISourceContainer> list = new ArrayList<>();
 			for (Object f : selection) {
 				if (f instanceof IFolder) {

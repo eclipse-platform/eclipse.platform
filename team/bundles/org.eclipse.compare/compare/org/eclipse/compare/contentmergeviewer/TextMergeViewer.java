@@ -5155,7 +5155,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		Control center= getCenterControl();
 		if (center instanceof Canvas)
-			((Canvas) center).redraw();
+			center.redraw();
 
 		if (fRightCanvas != null)
 			fRightCanvas.redraw();

@@ -792,7 +792,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		if (!inDialog && isInDialogItem() && (Platform.getBundle("org.eclipse.help.ui") != null)) { //$NON-NLS-1$
 			listener = event -> {
 				if (isTrayDialog(event.widget)) {
-					dialogOpened((TrayDialog) ((Shell) event.widget).getData());
+					dialogOpened((TrayDialog) event.widget.getData());
 				}
 			};
 			Display.getCurrent().addFilter(SWT.Show, listener);
@@ -986,7 +986,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	 * @return whether or not the widget is a TrayDialog
 	 */
 	private boolean isTrayDialog(Widget widget) {
-		return (widget instanceof Shell && ((Shell)widget).getData() instanceof TrayDialog);
+		return (widget instanceof Shell && widget.getData() instanceof TrayDialog);
 	}
 
 	/**

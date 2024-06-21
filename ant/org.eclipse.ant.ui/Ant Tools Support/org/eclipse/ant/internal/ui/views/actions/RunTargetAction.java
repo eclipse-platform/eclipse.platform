@@ -100,17 +100,17 @@ public class RunTargetAction extends Action implements IUpdate {
 		AntElementNode selection = getSelectedElement();
 		boolean enabled = false;
 		if (selection instanceof AntTargetNode) {
-			if (!((AntTargetNode) selection).isErrorNode()) {
+			if (!selection.isErrorNode()) {
 				setToolTipText(AntViewActionMessages.RunTargetAction_4);
 				enabled = true;
 			}
 		} else if (selection instanceof AntProjectNode) {
-			if (!((AntProjectNode) selection).isErrorNode()) {
+			if (!selection.isErrorNode()) {
 				enabled = true;
 				setToolTipText(AntViewActionMessages.RunTargetAction_3);
 			}
 		} else if (selection instanceof AntTaskNode) {
-			if (!((AntTaskNode) selection).isErrorNode()) {
+			if (!selection.isErrorNode()) {
 				enabled = true;
 				setToolTipText(AntViewActionMessages.RunTargetAction_0);
 			}
