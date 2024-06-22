@@ -11,7 +11,7 @@
  * Contributors:
  *     Rolf Theunissen <rolf.theunissen@gmail.com> - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.net;
+package org.eclipse.core.net.internal.proxy.win32;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -22,9 +22,6 @@ import org.eclipse.core.internal.net.Activator;
 import org.eclipse.core.internal.net.Policy;
 import org.eclipse.core.internal.net.ProxyData;
 import org.eclipse.core.internal.net.StringUtil;
-import org.eclipse.core.internal.net.proxy.win32.winhttp.ProxyBypass;
-import org.eclipse.core.internal.net.proxy.win32.winhttp.ProxyProviderUtil;
-import org.eclipse.core.internal.net.proxy.win32.winhttp.StaticProxyConfig;
 import org.eclipse.core.net.proxy.IProxyData;
 
 import com.sun.jna.LastErrorException;
@@ -48,10 +45,10 @@ import com.sun.jna.win32.W32APIOptions;
  *
  * @see "http://msdn2.microsoft.com/en-us/library/aa382925(VS.85).aspx"
  */
-public class ProxyProvider extends AbstractProxyProvider {
+public class ProxyProviderWin32 extends AbstractProxyProvider {
 
-	private static final String LIBRARY_NAME = "winhttp";
-	private static final String USER_AGENT = "WinHttpProxyProvider";
+	private static final String LIBRARY_NAME = "winhttp"; //$NON-NLS-1$
+	private static final String USER_AGENT = "WinHttpProxyProvider"; //$NON-NLS-1$
 	private static final ProxyData[] EMPTY_PROXIES = new ProxyData[0];
 
 	private static WinHttp fWinHttp;
@@ -70,18 +67,18 @@ public class ProxyProvider extends AbstractProxyProvider {
 			fWinHttp = Native.load(LIBRARY_NAME, WinHttp.class, W32APIOptions.UNICODE_OPTIONS);
 			fWinHttp = (WinHttp) Native.synchronizedLibrary(fWinHttp);
 			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-				Policy.debug("Loaded library " + System.mapLibraryName(LIBRARY_NAME));
+				Policy.debug("Loaded library " + System.mapLibraryName(LIBRARY_NAME)); //$NON-NLS-1$
 			}
 			isWinHttpLoaded = true;
 		} catch (UnsatisfiedLinkError e) {
 			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-				Policy.debug("Could not load library " + System.mapLibraryName(LIBRARY_NAME));
+				Policy.debug("Could not load library " + System.mapLibraryName(LIBRARY_NAME)); //$NON-NLS-1$
 			}
-			Activator.logError("Problem during initializing system proxy configuration.", e);
+			Activator.logError("Problem during initializing system proxy configuration.", e); //$NON-NLS-1$
 		}
 	}
 
-	public ProxyProvider() {
+	public ProxyProviderWin32() {
 		if (isWinHttpLoaded) {
 			initialize();
 		}
@@ -91,9 +88,9 @@ public class ProxyProvider extends AbstractProxyProvider {
 	public IProxyData[] select(URI uri) {
 		IProxyData[] proxies = getSystemProxyInfo(uri);
 		if (Policy.DEBUG) {
-			Policy.debug("WindowsProxyProvider#select result for [" + uri + "]");
+			Policy.debug("WindowsProxyProvider#select result for [" + uri + "]"); //$NON-NLS-1$ //$NON-NLS-2$
 			for (IProxyData proxy : proxies) {
-				System.out.println("	" + proxy);
+				System.out.println("	" + proxy); //$NON-NLS-1$
 			}
 		}
 		return proxies;
@@ -103,7 +100,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 		WinHttp.WinHttpCurrentUserIEProxyConfig proxyConfig = getProxyConfig();
 		if (proxyConfig == null) {
 			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-				Policy.debug("Error getting proxy configuration");
+				Policy.debug("Error getting proxy configuration"); //$NON-NLS-1$
 			}
 			return EMPTY_PROXIES;
 		}
@@ -120,7 +117,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 				// WPAD: Web Proxy Auto-Discovery configuration
 				if (proxyConfig.fAutoDetect) {
 					if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-						Policy.debug("Dynamic proxy configuration using WPAD");
+						Policy.debug("Dynamic proxy configuration using WPAD"); //$NON-NLS-1$
 					}
 					autoProxyOptions.dwFlags = WinHttp.AUTOPROXY_AUTO_DETECT;
 					autoProxyOptions.dwAutoDetectFlags = WinHttp.AUTO_DETECT_TYPE_DHCP | WinHttp.AUTO_DETECT_TYPE_DNS_A;
@@ -129,7 +126,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 				// When both WPAD and PAC are set, WinHTTP tries PAC only after WPAD failed
 				if (proxyConfig.lpszAutoConfigUrl != null) {
 					if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-						Policy.debug("Dynamic proxy configuration using PAC url");
+						Policy.debug("Dynamic proxy configuration using PAC url"); //$NON-NLS-1$
 					}
 					autoProxyOptions.dwFlags |= WinHttp.AUTOPROXY_CONFIG_URL;
 					autoProxyOptions.lpszAutoConfigUrl = proxyConfig.getAutoConfigUrl();
@@ -139,8 +136,8 @@ public class ProxyProvider extends AbstractProxyProvider {
 				try {
 					getProxyForUrl(hHttpSession, uri.toString(), autoProxyOptions, proxyInfo);
 					if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-						Policy.debug("Dynamic proxy configuration returned: Proxy '" + proxyInfo.getProxy()
-								+ "'; ProxyByPass '" + proxyInfo.getProxyBypass() + "';");
+						Policy.debug("Dynamic proxy configuration returned: Proxy '" + proxyInfo.getProxy() //$NON-NLS-1$
+								+ "'; ProxyByPass '" + proxyInfo.getProxyBypass() + "';"); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 
 					ProxyBypass proxyBypass = new ProxyBypass(proxyInfo.getProxyBypass());
@@ -152,7 +149,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 					// WPAD/PAC errors are intermittent, they can disappear when network
 					// configuration changes. Ignore errors, continue to static configuration.
 					if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-						Policy.debug("Dynamic proxy configuration returned error: " + formatMessage(e.getErrorCode()));
+						Policy.debug("Dynamic proxy configuration returned error: " + formatMessage(e.getErrorCode())); //$NON-NLS-1$
 					}
 				} finally {
 					proxyInfo.free();
@@ -162,8 +159,8 @@ public class ProxyProvider extends AbstractProxyProvider {
 			// Static configuration
 			if (proxyConfig.lpszProxy != null) {
 				if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-					Policy.debug("Static proxy configuration: Proxy '" + proxyConfig.getProxy() + "'; ProxyByPass '"
-							+ proxyConfig.getProxyBypass() + "';");
+					Policy.debug("Static proxy configuration: Proxy '" + proxyConfig.getProxy() + "'; ProxyByPass '" //$NON-NLS-1$//$NON-NLS-2$
+							+ proxyConfig.getProxyBypass() + "';"); //$NON-NLS-1$
 				}
 				StaticProxyConfig staticProxyConfig = getStaticConfig(proxyConfig.getProxy(),
 						proxyConfig.getProxyBypass());
@@ -175,7 +172,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 
 			// Default configuration direct connection
 			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-				Policy.debug("No proxy configuration");
+				Policy.debug("No proxy configuration"); //$NON-NLS-1$
 			}
 			return EMPTY_PROXIES;
 
@@ -189,7 +186,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 		WinHttp.WinHttpCurrentUserIEProxyConfig proxyConfig = getProxyConfig();
 		if (proxyConfig == null) {
 			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-				Policy.debug("Error getting proxy configuration");
+				Policy.debug("Error getting proxy configuration"); //$NON-NLS-1$
 			}
 			return EMPTY_PROXIES;
 		}
@@ -198,28 +195,27 @@ public class ProxyProvider extends AbstractProxyProvider {
 			if (isWinHttpInitialized && (proxyConfig.fAutoDetect || proxyConfig.lpszAutoConfigUrl != null)) {
 				// Dynamic configuration
 				if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-					Policy.debug("Dynamic proxy configuration");
+					Policy.debug("Dynamic proxy configuration"); //$NON-NLS-1$
 				}
-				ProxyData data = new ProxyData(IProxyData.HTTP_PROXY_TYPE, "", -1, false, "WINDOWS_IE");
+				ProxyData data = new ProxyData(IProxyData.HTTP_PROXY_TYPE, "", -1, false, "WINDOWS_IE"); //$NON-NLS-1$//$NON-NLS-2$
 				data.setDynamic(true);
 				return new IProxyData[] { data };
-			} else {
-				// Static Configuration
-				if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-					Policy.debug("Static proxy configuration");
-				}
-				if (proxyConfig.lpszProxy != null) {
-					StaticProxyConfig staticProxyConfig = getStaticConfig(proxyConfig.getProxy(),
-							proxyConfig.getProxyBypass());
-					return staticProxyConfig.getProxyData();
-				}
+			}
+			// Static Configuration
+			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
+				Policy.debug("Static proxy configuration"); //$NON-NLS-1$
+			}
+			if (proxyConfig.lpszProxy != null) {
+				StaticProxyConfig staticProxyConfig = getStaticConfig(proxyConfig.getProxy(),
+						proxyConfig.getProxyBypass());
+				return staticProxyConfig.getProxyData();
 			}
 		} finally {
 			proxyConfig.free();
 		}
 		// Default configuration direct connection
 		if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-			Policy.debug("No proxy configuration");
+			Policy.debug("No proxy configuration"); //$NON-NLS-1$
 		}
 		return EMPTY_PROXIES;
 	}
@@ -236,13 +232,13 @@ public class ProxyProvider extends AbstractProxyProvider {
 			if (isWinHttpInitialized && (proxyConfig.fAutoDetect || proxyConfig.lpszAutoConfigUrl != null)) {
 				// Dynamic configuration
 				if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-					Policy.debug("Dynamic proxy configuration");
+					Policy.debug("Dynamic proxy configuration"); //$NON-NLS-1$
 				}
 				return null;
 			} else if (proxyConfig.lpszProxy != null) {
 				// Static configuration
 				if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-					Policy.debug("Static proxy configuration");
+					Policy.debug("Static proxy configuration"); //$NON-NLS-1$
 				}
 				StaticProxyConfig staticProxyConfig = getStaticConfig(proxyConfig.getProxy(),
 						proxyConfig.getProxyBypass());
@@ -252,7 +248,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 			proxyConfig.free();
 		}
 		if (Policy.DEBUG_SYSTEM_PROVIDERS) {
-			Policy.debug("No proxy configuration");
+			Policy.debug("No proxy configuration"); //$NON-NLS-1$
 		}
 		return null;
 	}
@@ -264,7 +260,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 			isWinHttpInitialized = true;
 		} catch (LastErrorException e) {
 			isWinHttpInitialized = false;
-			Activator.logError("Problem during initializing WinHTTP session:" + formatMessage(e.getErrorCode()), null);
+			Activator.logError("Problem during initializing WinHTTP session:" + formatMessage(e.getErrorCode()), null); //$NON-NLS-1$
 		}
 
 	}
@@ -277,7 +273,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 				return proxyConfig;
 			} catch (LastErrorException e) {
 				proxyConfig.free();
-				Activator.logError("Problem during loading proxy configuration: " + formatMessage(e.getErrorCode()),
+				Activator.logError("Problem during loading proxy configuration: " + formatMessage(e.getErrorCode()), //$NON-NLS-1$
 						null);
 			}
 		}
@@ -424,32 +420,31 @@ public class ProxyProvider extends AbstractProxyProvider {
 			HMODULE hmodule = Kernel32.INSTANCE.GetModuleHandle(System.mapLibraryName(LIBRARY_NAME));
 
 			if (hmodule == null) {
-				return "Error code " + code + "; No error message due to failure of 'GetModuleHandle("
-						+ System.mapLibraryName(LIBRARY_NAME) + ")'.";
-			} else {
-				PointerByReference msgBuf = new PointerByReference();
-				int size = Kernel32.INSTANCE.FormatMessage(
-						WinBase.FORMAT_MESSAGE_ALLOCATE_BUFFER | WinBase.FORMAT_MESSAGE_FROM_HMODULE
-								| WinBase.FORMAT_MESSAGE_IGNORE_INSERTS,
-						hmodule.getPointer(), code, WinNT.LANG_USER_DEFAULT, msgBuf, 0, null);
-				if (size == 0) {
-					return "Error code " + code + "; No error message due to error " + Native.getLastError();
-				}
+				return "Error code " + code + "; No error message due to failure of 'GetModuleHandle(" //$NON-NLS-1$//$NON-NLS-2$
+						+ System.mapLibraryName(LIBRARY_NAME) + ")'."; //$NON-NLS-1$
+			}
+			PointerByReference msgBuf = new PointerByReference();
+			int size = Kernel32.INSTANCE.FormatMessage(
+					WinBase.FORMAT_MESSAGE_ALLOCATE_BUFFER | WinBase.FORMAT_MESSAGE_FROM_HMODULE
+							| WinBase.FORMAT_MESSAGE_IGNORE_INSERTS,
+					hmodule.getPointer(), code, WinNT.LANG_USER_DEFAULT, msgBuf, 0, null);
+			if (size == 0) {
+				return "Error code " + code + "; No error message due to error " + Native.getLastError(); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 
-				Pointer ptr = msgBuf.getValue();
-				try {
-					String str = ptr.getWideString(0);
-					return str.trim();
-				} finally {
-					Kernel32Util.freeLocalMemory(ptr);
-				}
+			Pointer ptr = msgBuf.getValue();
+			try {
+				String str = ptr.getWideString(0);
+				return str.trim();
+			} finally {
+				Kernel32Util.freeLocalMemory(ptr);
 			}
 		}
 
 		try {
 			return Kernel32Util.formatMessage(code);
 		} catch (LastErrorException e) {
-			return "Error code " + code + "; No error message due to error " + e.getErrorCode();
+			return "Error code " + code + "; No error message due to error " + e.getErrorCode(); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
