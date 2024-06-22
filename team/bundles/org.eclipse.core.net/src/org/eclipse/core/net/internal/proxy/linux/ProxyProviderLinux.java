@@ -11,7 +11,7 @@
  * Contributors:
  *     Red Hat Inc. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.net;
+package org.eclipse.core.net.internal.proxy.linux;
 
 import java.io.IOException;
 import java.net.URI;
@@ -38,7 +38,7 @@ import com.sun.jna.ptr.PointerByReference;
  * @author jjohnstn
  *
  */
-public class ProxyProvider extends AbstractProxyProvider {
+public class ProxyProviderLinux extends AbstractProxyProvider {
 
 	private static LibGio fLibGio;
 
@@ -62,7 +62,7 @@ public class ProxyProvider extends AbstractProxyProvider {
 		}
 	}
 
-	public ProxyProvider() {
+	public ProxyProviderLinux() {
 		// no initialization required
 	}
 

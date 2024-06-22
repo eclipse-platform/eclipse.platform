@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.eclipse.core.net.internal.proxy.linux.ProxyProviderLinux;
+import org.eclipse.core.net.internal.proxy.win32.ProxyProviderWin32;
 import org.eclipse.core.net.proxy.IProxyChangeEvent;
 import org.eclipse.core.net.proxy.IProxyChangeListener;
 import org.eclipse.core.net.proxy.IProxyData;
@@ -36,6 +38,7 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -62,10 +65,12 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 
 	private ProxyManager() {
 		try {
-			nativeProxyProvider = (AbstractProxyProvider) Class.forName(
-					"org.eclipse.core.net.ProxyProvider").getDeclaredConstructor().newInstance(); //$NON-NLS-1$
-		} catch (ClassNotFoundException e) {
-			// no class found
+			String os = System.getProperty("osgi.os"); //$NON-NLS-1$
+			nativeProxyProvider = switch (os) {
+			case Constants.OS_LINUX -> new ProxyProviderLinux();
+			case Constants.OS_WIN32 -> new ProxyProviderWin32();
+			default -> null;
+			};
 		} catch (Exception e) {
 			Activator.logInfo("Problems occured during the proxy provider initialization.", e); //$NON-NLS-1$
 		}

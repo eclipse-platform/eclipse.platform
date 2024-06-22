@@ -13,7 +13,7 @@
  * 	IBM Corporation - bug 246072 - adding IProxyData.source support
  *  IBM Corporation - Add proxy providers layer on the top of ProxyManager (bug 255616)
  *******************************************************************************/
-package org.eclipse.core.internal.net.proxy.win32.winhttp;
+package org.eclipse.core.net.internal.proxy.win32;
 
 import java.net.URI;
 import java.util.ArrayList;
