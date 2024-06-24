@@ -18,7 +18,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,10 +26,12 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -51,6 +53,7 @@ import org.osgi.framework.FrameworkUtil;
  * @since 1.11
  */
 public class ZipFileStore extends FileStore {
+	private static final Map<URI, ReentrantLock> uriLockMap = Collections.synchronizedMap(new HashMap<>());
 	/**
 	 * The path of this store within the zip file.
 	 */
@@ -77,6 +80,8 @@ public class ZipFileStore extends FileStore {
 			return visitor.getEntries().toArray(new ZipEntry[0]);
 		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error reading ZIP file", e)); //$NON-NLS-1$
+		} finally {
+			unlock();
 		}
 	}
 
@@ -184,6 +189,8 @@ public class ZipFileStore extends FileStore {
 			});
 		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error copying directory within ZIP", e)); //$NON-NLS-1$
+		} finally {
+			unlock();
 		}
 	}
 
@@ -207,6 +214,8 @@ public class ZipFileStore extends FileStore {
 			Files.copy(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error copying file within ZIP", e)); //$NON-NLS-1$
+		} finally {
+			unlock();
 		}
 	}
 
@@ -220,6 +229,8 @@ public class ZipFileStore extends FileStore {
 			}
 		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error deleting file from zip: " + toDelete, e)); //$NON-NLS-1$
+		} finally {
+			unlock();
 		}
 	}
 
@@ -248,6 +259,8 @@ public class ZipFileStore extends FileStore {
 			}
 		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error accessing ZIP file", e)); //$NON-NLS-1$
+		} finally {
+			unlock();
 		}
 
 		// Correctly set up FileInfo before returning
@@ -299,30 +312,18 @@ public class ZipFileStore extends FileStore {
 		return path;
 	}
 
-	private boolean isNested() {
-		return this.rootStore instanceof ZipFileStore;
-	}
-
 	@Override
 	public IFileStore mkdir(int options, IProgressMonitor monitor) throws CoreException {
-		URI zipUri;
-		try {
-			zipUri = new URI("jar:" + rootStore.toURI().toString() + "!/"); //$NON-NLS-1$ //$NON-NLS-2$
-		} catch (URISyntaxException e) {
-			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Invalid ZIP file URI", e)); //$NON-NLS-1$
-		}
-
-		Map<String, String> env = new HashMap<>();
-		env.put("create", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-
 		// Assuming the directory to create is represented by 'this.path'
-		try (FileSystem zipFs = FileSystems.newFileSystem(zipUri, env)) {
+		try (FileSystem zipFs = openZipFileSystem()) {
 			Path dirInZipPath = zipFs.getPath(this.path.toString());
 			if (Files.notExists(dirInZipPath)) {
 				Files.createDirectories(dirInZipPath);
 			}
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error creating directory in ZIP file", e)); //$NON-NLS-1$
+		} finally {
+			unlock();
 		}
 
 		// Return a file store representing the newly created directory.
@@ -352,6 +353,8 @@ public class ZipFileStore extends FileStore {
 			}
 		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error moving entry within ZIP", e)); //$NON-NLS-1$
+		} finally {
+			unlock();
 		}
 	}
 
@@ -424,31 +427,31 @@ public class ZipFileStore extends FileStore {
 
 				} catch (Exception e) {
 					throw new IOException("Failed to integrate data into ZIP file", e); //$NON-NLS-1$
+				} finally {
+					try {
+						unlock();
+					} catch (CoreException e) {
+						throw new IOException("Error accessing ZIP file", e); //$NON-NLS-1$
+					}
 				}
 			}
 		};
+	}
+
+	private static ReentrantLock getLockForURI(URI uri) {
+		return uriLockMap.computeIfAbsent(uri, k -> new ReentrantLock());
 	}
 
 	private FileSystem openZipFileSystem() throws URISyntaxException, IOException {
 		Map<String, Object> env = new HashMap<>();
 		env.put("create", "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		URI nioURI = toNioURI();
-		Path innerArchivePath = null;
-
-		if (isNested()) {
-			ZipFileStore outerZipFileStore = (ZipFileStore) this.rootStore;
-			FileSystem outerFs = outerZipFileStore.openZipFileSystem();
-			innerArchivePath = outerFs.getPath(outerZipFileStore.path.toString());
-			nioURI = innerArchivePath.toUri();
-		}
-
+		ReentrantLock lock = getLockForURI(nioURI);
+		lock.lock();
 		try {
-			if (innerArchivePath != null) {
-				return FileSystems.newFileSystem(innerArchivePath, env);
-			}
-			return FileSystems.newFileSystem(nioURI, env);
-		} catch (FileSystemAlreadyExistsException e) {
 			return FileSystems.getFileSystem(nioURI);
+		} catch (FileSystemNotFoundException e) {
+			return FileSystems.newFileSystem(nioURI, env);
 		}
 	}
 
@@ -477,6 +480,7 @@ public class ZipFileStore extends FileStore {
 		} catch (Exception e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error updating ZIP file entry information", e)); //$NON-NLS-1$
 		} finally {
+			unlock();
 			if (monitor != null) {
 				monitor.done();
 			}
@@ -508,4 +512,14 @@ public class ZipFileStore extends FileStore {
 		return new URI(ret);
 	}
 
+	void unlock() throws CoreException {
+		try {
+			ReentrantLock lock = getLockForURI(toNioURI());
+			if (lock.isHeldByCurrentThread()) {
+				lock.unlock();
+			}
+		} catch (URISyntaxException e) {
+			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error accessing ZIP file", e)); //$NON-NLS-1$
+		}
+	}
 }
