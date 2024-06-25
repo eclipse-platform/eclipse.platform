@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,9 +62,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
+import org.eclipse.osgi.service.environment.Constants;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -83,15 +86,13 @@ public class IFileTest {
 	protected static final IProgressMonitor[] PROGRESS_MONITORS = new IProgressMonitor[] {new FussyProgressMonitor(), null};
 	protected static final Boolean[] TRUE_AND_FALSE = new Boolean[] {Boolean.TRUE, Boolean.FALSE};
 	public static final String WORKSPACE_ONLY = "WorkspaceOnlyFile";
+	public static final String EXISTING_HIDDEN = ".ExistingFileHidden";
+	public static final String LOCAL_ONLY_HIDDEN = ".LocalOnlyFileHidden";
+	public static final String WORKSPACE_ONLY_HIDDEN = ".WorkspaceOnlyFileHidden";
 
 	ArrayList<IFile> allFiles = new ArrayList<>();
-	ArrayList<IFile> existingFiles = new ArrayList<>();
-	ArrayList<IFile> localOnlyFiles = new ArrayList<>();
-	ArrayList<IFile> nonExistingFiles = new ArrayList<>();
-	ArrayList<IFile> outOfSyncFiles = new ArrayList<>();
 
 	IProject[] projects = null;
-	ArrayList<IFile> workspaceOnlyFiles = new ArrayList<>();
 
 	/**
 	 * Returns true if the given container exists, and is open
@@ -141,31 +142,24 @@ public class IFileTest {
 	 */
 	public void generateInterestingFiles(IContainer container) {
 		//non-existent file
-		IFile file = container.getFile(IPath.fromOSString(DOES_NOT_EXIST));
-		nonExistingFiles.add(file);
-		allFiles.add(file);
+		allFiles.add(container.getFile(IPath.fromOSString(DOES_NOT_EXIST)));
 
 		//exists in file system only
-		file = container.getFile(IPath.fromOSString(LOCAL_ONLY));
-		localOnlyFiles.add(file);
-		allFiles.add(file);
+		allFiles.add(container.getFile(IPath.fromOSString(LOCAL_ONLY)));
+		allFiles.add(container.getFile(IPath.fromOSString(LOCAL_ONLY_HIDDEN))); // FileNotFoundException on testCreate()
 
 		if (existsAndOpen(container)) {
 
 			//existing file
-			file = container.getFile(IPath.fromOSString(EXISTING));
-			existingFiles.add(file);
-			allFiles.add(file);
+			allFiles.add(container.getFile(IPath.fromOSString(EXISTING)));
+			allFiles.add(container.getFile(IPath.fromOSString(EXISTING_HIDDEN)));
 
 			//exists in workspace only
-			file = container.getFile(IPath.fromOSString(WORKSPACE_ONLY));
-			workspaceOnlyFiles.add(file);
-			allFiles.add(file);
+			allFiles.add(container.getFile(IPath.fromOSString(WORKSPACE_ONLY)));
+			allFiles.add(container.getFile(IPath.fromOSString(WORKSPACE_ONLY_HIDDEN)));
 
 			//exists in both but is out of sync
-			file = container.getFile(IPath.fromOSString(OUT_OF_SYNC));
-			outOfSyncFiles.add(file);
-			allFiles.add(file);
+			allFiles.add(container.getFile(IPath.fromOSString(OUT_OF_SYNC)));
 		}
 	}
 
@@ -232,7 +226,8 @@ public class IFileTest {
 	 * local file system.  The file must exist in the workspace.
 	 */
 	public boolean outOfSync(IFile file) {
-		return file.getName().equals(OUT_OF_SYNC) || file.getName().equals(WORKSPACE_ONLY);
+		return file.getName().equals(OUT_OF_SYNC) || file.getName().equals(WORKSPACE_ONLY)
+				|| file.getName().equals(WORKSPACE_ONLY_HIDDEN);
 	}
 
 	/**
@@ -247,9 +242,31 @@ public class IFileTest {
 			}
 			return;
 		}
+		if (file.getName().equals(LOCAL_ONLY_HIDDEN)) {
+			removeFromWorkspace(file);
+			// project must exist to access file system store.
+			if (file.getProject().exists()) {
+				file.getRawLocation().toFile().delete();
+				createInFileSystem(file);
+				if (Constants.OS_WIN32.equals(Platform.getOS())) {
+					Files.setAttribute(file.getRawLocation().toFile().toPath(), "dos:hidden", Boolean.TRUE);
+				}
+			}
+			return;
+		}
 		if (file.getName().equals(WORKSPACE_ONLY)) {
 			createInWorkspace(file);
 			removeFromFileSystem(file);
+			return;
+		}
+		if (file.getName().equals(WORKSPACE_ONLY_HIDDEN)) {
+			file.getRawLocation().toFile().delete();
+			createInFileSystem(file);
+			if (Constants.OS_WIN32.equals(Platform.getOS())) {
+				Files.setAttribute(file.getRawLocation().toFile().toPath(), "dos:hidden", Boolean.TRUE);
+			}
+			file.refreshLocal(1, null);
+			file.getRawLocation().toFile().delete();
 			return;
 		}
 		if (file.getName().equals(DOES_NOT_EXIST)) {
@@ -262,6 +279,14 @@ public class IFileTest {
 		}
 		if (file.getName().equals(EXISTING)) {
 			createInWorkspace(file);
+			return;
+		}
+		if (file.getName().equals(EXISTING_HIDDEN)) {
+			createInWorkspace(file);
+			if (Constants.OS_WIN32.equals(Platform.getOS())) {
+				Files.setAttribute(file.getRawLocation().toFile().toPath(), "dos:hidden", Boolean.TRUE);
+			}
+			file.refreshLocal(1, null);
 			return;
 		}
 		if (file.getName().equals(OUT_OF_SYNC)) {
@@ -289,11 +314,9 @@ public class IFileTest {
 	public void testAppendContents() throws Exception {
 		IFile target = projects[0].getFile("file1");
 		target.create(createInputStream("abc"), false, null);
+		assertEquals("abc", target.readString());
 		target.appendContents(createInputStream("def"), false, false, null);
-
-		try (InputStream content = target.getContents(false)) {
-			assertTrue("3.0", compareContent(content, createInputStream("abcdef")));
-		}
+		assertEquals("abcdef", target.readString());
 	}
 
 	@SuppressWarnings("deprecation") // org.eclipse.core.resources.IResource.isLocal(int)
