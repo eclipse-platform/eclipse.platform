@@ -24,6 +24,7 @@ import java.io.Reader;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.provider.FileInfo;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.internal.utils.BitMask;
 import org.eclipse.core.internal.utils.Messages;
@@ -213,23 +214,13 @@ public class File extends Resource implements IFile {
 	private IFileInfo create(int updateFlags, SubMonitor subMonitor, IFileStore store)
 			throws CoreException, ResourceException {
 		String message;
-		IFileInfo localInfo = store.fetchInfo();
+		IFileInfo localInfo;
 		if (BitMask.isSet(updateFlags, IResource.FORCE)) {
-			if (!Workspace.caseSensitive) {
-				if (localInfo.exists()) {
-					String name = getLocalManager().getLocalName(store);
-					if (name == null || localInfo.getName().equals(name)) {
-						delete(true, null);
-					} else {
-						// The file system is not case sensitive and there is already a file
-						// under this location.
-						message = NLS.bind(Messages.resources_existsLocalDifferentCase,
-								IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
-						throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), message, null);
-					}
-				}
-			}
+			// Assume  the file does not exist - otherwise implementation fails later
+			// during actual write
+			localInfo = new FileInfo(getName()); // with exists==false
 		} else {
+			localInfo=store.fetchInfo();
 			if (localInfo.exists()) {
 				// return an appropriate error message for case variant collisions
 				if (!Workspace.caseSensitive) {
