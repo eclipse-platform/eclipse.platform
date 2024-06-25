@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 public class MoveTest {
@@ -39,6 +40,7 @@ public class MoveTest {
 		ZipFileSystemTestSetup.teardown();
 	}
 
+	@Test
 	public void testMoveZipFileWithinProject() throws CoreException, IOException {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -53,6 +55,7 @@ public class MoveTest {
 		ensureDoesNotExist(openedZipFile);
 	}
 
+	@Test
 	public void testMoveZipFileToOtherProject() throws CoreException, IOException {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -65,6 +68,7 @@ public class MoveTest {
 		ensureDoesNotExist(openedZipFile);
 	}
 
+	@Test
 	public void testMoveZipFileToOtherProjectFolder() throws CoreException, IOException {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -79,6 +83,7 @@ public class MoveTest {
 		ensureDoesNotExist(openedZipFile);
 	}
 
+	@Test
 	public void testMoveFileIntoZipFile() throws Exception {
 		IFile textFile = ZipFileSystemTestSetup.firstProject.getFile("NewFile.txt");
 		ensureDoesNotExist(textFile);
@@ -95,6 +100,7 @@ public class MoveTest {
 		ensureDoesNotExist(textFile);
 	}
 
+	@Test
 	public void testMoveFolderIntoZipFile() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -112,6 +118,7 @@ public class MoveTest {
 		ensureExists(newFolderDestination);
 	}
 
+	@Test
 	public void testMoveFolderWithContentIntoZipFile() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -136,6 +143,7 @@ public class MoveTest {
 		ensureExists(newFolderDestination);
 	}
 
+	@Test
 	public void testMoveFileFromZipFile() throws Exception {
 		IFile textFile = ZipFileSystemTestSetup.firstProject
 				.getFile(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME + "/"
@@ -148,6 +156,7 @@ public class MoveTest {
 		ensureDoesNotExist(textFile);
 	}
 
+	@Test
 	public void testMoveFolderFromZipFile() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -161,6 +170,7 @@ public class MoveTest {
 		ensureExists(folderDestination);
 	}
 
+	@Test
 	public void testMoveFolderWithContentFromZipFile() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -181,6 +191,7 @@ public class MoveTest {
 		ensureExists(folderDestination);
 	}
 
+	@Test
 	public void testMoveFolderWithContentFromZipFileIntoOtherZipFile() throws Exception {
 		IFolder firstZipFile = ZipFileSystemTestSetup.firstProject.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
 		// create and open second ZipFile
@@ -212,6 +223,7 @@ public class MoveTest {
 		ensureExists(movedTextFile);
 	}
 
+	@Test
 	public void testMoveFileInsideOfZipFile() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -228,6 +240,7 @@ public class MoveTest {
 		ensureDoesNotExist(textFile);
 	}
 
+	@Test
 	public void testMoveZipFileIntoZipFile() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
@@ -254,6 +267,7 @@ public class MoveTest {
 	 * refreshing the Workspace. This test checks if this specific error is handeled
 	 * correctly in RefreshLocalVisitor#visit()
 	 */
+	@Test
 	public void testMoveZipFileWithFolder() throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
 				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
