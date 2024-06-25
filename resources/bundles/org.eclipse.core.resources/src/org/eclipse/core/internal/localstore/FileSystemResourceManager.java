@@ -1212,7 +1212,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		try (content) {
 			Resource targetResource = (Resource) target;
 			IFileStore store = getStore(target);
-			prepareWrite(target, fileInfo, updateFlags, append, targetResource, store);
+			prepareWrite(target, fileInfo, updateFlags, append, targetResource, store, false);
 
 			int options = append ? EFS.APPEND : EFS.NONE;
 			try {
@@ -1254,7 +1254,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	}
 
 	private void prepareWrite(IFile target, IFileInfo fileInfo, int updateFlags, boolean append,
-			Resource targetResource, IFileStore store) throws CoreException {
+			Resource targetResource, IFileStore store, boolean assumeParentDirectoryExists) throws CoreException {
 		if (fileInfo.getAttribute(EFS.ATTRIBUTE_READ_ONLY)) {
 			String message = NLS.bind(Messages.localstore_couldNotWriteReadOnly, target.getFullPath());
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, target.getFullPath(), message, null);
@@ -1303,7 +1303,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			// never move to the history store, because then the file is missing if write
 			// fails
 			getHistoryStore().addState(target.getFullPath(), store, fileInfo, false);
-		if (!fileInfo.exists()) {
+		if (!assumeParentDirectoryExists && !fileInfo.exists()) {
 			IFileStore parent = store.getParent();
 			IFileInfo parentInfo = parent.fetchInfo();
 			if (!parentInfo.exists()) {
@@ -1338,7 +1338,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 4);
 		Resource targetResource = (Resource) target;
 		IFileStore store = getStore(target);
-		prepareWrite(target, fileInfo, updateFlags, append, targetResource, store);
+		prepareWrite(target, fileInfo, updateFlags, append, targetResource, store, true);
 
 		// On Windows an attempt to open an output stream on a hidden file results in
 		// FileNotFoundException.
@@ -1353,7 +1353,25 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			subMonitor.split(1);
 		}
 		int options = append ? EFS.APPEND : EFS.NONE;
-		store.write(content, options, subMonitor.split(1));
+		try {
+			store.write(content, options, subMonitor.split(1));
+		} catch (CoreException e) {
+			if (append) {
+				throw e;
+			}
+			if (e.getStatus().getCode() != EFS.ERROR_WRITE) {
+				throw e;
+			}
+			IFileStore parent = store.getParent();
+			IFileInfo parentInfo = parent.fetchInfo();
+			if (parentInfo.exists()) {
+				throw e;
+			}
+			// create missing folders:
+			parent.mkdir(EFS.NONE, null);
+			// try again:
+			store.write(content, options, null);
+		}
 		if (restoreHiddenAttribute) {
 			fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, true);
 			store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));

@@ -46,6 +46,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
@@ -507,6 +508,27 @@ public class IFileTest {
 		assertFalse(derived.isDerived());
 		assertFalse(derived.isTeamPrivateMember());
 		assertEquals("notDerived", derived.readString());
+
+		IFolder subFolder = projects[0].getFolder("subFolder");
+		subFolder.create(true, true, null);
+		subFolder.getRawLocation().toFile().delete();
+
+		IFile orphan = subFolder.getFile("myParentDoesNotExist.txt");
+		monitor.prepare();
+		orphan.write("parentDoesNotExistInFileSystemButInWorkspace".getBytes(), true, false, false, monitor);
+		monitor.assertUsedUp();
+		assertEquals("parentDoesNotExistInFileSystemButInWorkspace", orphan.readString());
+
+		monitor.prepare();
+		orphan.getParent().delete(true, null);
+		// if the parent is deleted in workspace Exception is expected:
+		try {
+			orphan.write("parentDoesNotExist - not even in workspace".getBytes(), true, false, false, monitor);
+			assertFalse("should not be reached", true);
+		} catch (ResourceException expected) {
+			monitor.assertUsedUp();
+			assertFalse(orphan.exists());
+		}
 	}
 
 	@Test
