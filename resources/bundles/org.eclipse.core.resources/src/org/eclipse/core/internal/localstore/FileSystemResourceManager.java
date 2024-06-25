@@ -23,6 +23,7 @@ package org.eclipse.core.internal.localstore;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -1213,32 +1214,42 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			IFileStore store = getStore(target);
 			prepareWrite(target, fileInfo, updateFlags, append, targetResource, store);
 
-			// On Windows an attempt to open an output stream on a hidden file results in FileNotFoundException.
-			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=194216
-			boolean restoreHiddenAttribute = false;
-			if (fileInfo.exists() && fileInfo.getAttribute(EFS.ATTRIBUTE_HIDDEN) && Platform.getOS().equals(Platform.OS_WIN32)) {
-				fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, false);
-				store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
-				restoreHiddenAttribute = true;
-			} else {
-				subMonitor.split(1);
-			}
 			int options = append ? EFS.APPEND : EFS.NONE;
-			try (OutputStream out = store.openOutputStream(options, subMonitor.split(1))) {
-				if (restoreHiddenAttribute) {
-					fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, true);
+			try {
+				boolean opened = false;
+				try (OutputStream out = store.openOutputStream(options, subMonitor.split(1))) {
+					opened = true;
+					FileUtil.transferStreams(content, out, store.toString(), subMonitor.split(1));
+				} catch (CoreException e) {
+					// On Windows an attempt to open an output stream on a hidden file results in
+					// FileNotFoundException.
+					// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=194216
+					if (opened || !(e.getCause() instanceof FileNotFoundException)
+							|| !Platform.getOS().equals(Platform.OS_WIN32)) {
+						throw e;
+					}
+					fileInfo = store.fetchInfo();
+					if (!(fileInfo.exists() && fileInfo.getAttribute(EFS.ATTRIBUTE_HIDDEN))) {
+						throw e;
+					}
+					// set hidden=false and retry:
+					fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, false);
 					store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
-				} else {
-					subMonitor.split(1);
+					try (OutputStream out = store.openOutputStream(options, null)) {
+						// restore Hidden Attribute:
+						fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, true);
+						store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
+						FileUtil.transferStreams(content, out, store.toString(), subMonitor.split(1));
+					}
 				}
-				FileUtil.transferStreams(content, out, store.toString(), subMonitor.split(1));
 			} catch (IOException e) {
+				// Exception on OutputStream.close()
 				String msg = NLS.bind(Messages.localstore_couldNotWrite, store.toString());
 				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(store.toString()), msg, e);
 			}
 			finishWrite(targetResource, store);
 		} catch (IOException streamCloseIgnored) {
-			// ignore;
+			// ignore Exception on InputStream.close()
 		}
 	}
 
