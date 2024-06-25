@@ -36,7 +36,7 @@ public interface IConstants{
   public static final  String PROXY_TYPE_HTTP="HTTP"; //$NON-NLS-1$
   public static final  String HTTP_DEFAULT_PORT="80"; //$NON-NLS-1$
   public static final  String SOCKS5_DEFAULT_PORT="1080"; //$NON-NLS-1$
-  public static final  String PRIVATE_KEYS_DEFAULT="id_dsa,id_rsa"; //$NON-NLS-1$
+  public static final  String PRIVATE_KEYS_DEFAULT="id_ed25519,id_dsa,id_rsa"; //$NON-NLS-1$
 
   public static final  String DSA="DSA"; //$NON-NLS-1$
   public static final  String RSA="RSA"; //$NON-NLS-1$
