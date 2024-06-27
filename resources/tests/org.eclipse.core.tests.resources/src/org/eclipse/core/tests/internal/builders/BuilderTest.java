@@ -31,7 +31,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -906,7 +905,7 @@ public class BuilderTest {
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();
 		AtomicReference<IOException> exception = new AtomicReference<>();
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			input.setContents(new ByteArrayInputStream(new byte[] { 5, 4, 3, 2, 1 }), IResource.NONE, createTestMonitor());
+			input.setContents(new byte[] { 5, 4, 3, 2, 1 }, IResource.NONE, createTestMonitor());
 			project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 			try (InputStream inputStream = output.getContents()) {
 				inputStream.transferTo(out);

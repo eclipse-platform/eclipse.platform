@@ -41,7 +41,6 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -688,7 +687,7 @@ public class LinkedResourceTest {
 		final byte[] finalContents = oldContents;
 		// recreate the link in a workspace runnable with create scheduling rule
 		getWorkspace().run(
-				(IWorkspaceRunnable) monitor -> dotProject.setContents(new ByteArrayInputStream(finalContents),
+				(IWorkspaceRunnable) monitor -> dotProject.setContents(finalContents,
 						IResource.NONE, createTestMonitor()),
 				getWorkspace().getRuleFactory().modifyRule(dotProject), IResource.NONE, createTestMonitor());
 	}

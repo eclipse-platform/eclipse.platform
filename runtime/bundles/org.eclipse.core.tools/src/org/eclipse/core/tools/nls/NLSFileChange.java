@@ -13,10 +13,13 @@
  *******************************************************************************/
 package org.eclipse.core.tools.nls;
 
-import java.io.*;
+import java.io.UnsupportedEncodingException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.TextFileChange;
@@ -55,8 +58,7 @@ public class NLSFileChange extends TextFileChange {
 		}
 		if (bytes == null)
 			bytes = contents.getBytes();
-		InputStream input = new BufferedInputStream(new ByteArrayInputStream(bytes));
-		file.setContents(input, IResource.FORCE, null);
+		file.setContents(bytes, IResource.FORCE, null);
 	}
 
 	@Override

@@ -704,7 +704,6 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			if (!descriptionChanged(descriptionFile, newContents))
 				return false;
 		}
-		ByteArrayInputStream in = new ByteArrayInputStream(newContents);
 		IFileStore descriptionFileStore = ((Resource) descriptionFile).getStore();
 		IFileInfo fileInfo = descriptionFileStore.fetchInfo();
 
@@ -717,7 +716,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		}
 
 		//write the project description file (don't use API because scheduling rule might not match)
-		write(descriptionFile, in, fileInfo, IResource.FORCE, false, SubMonitor.convert(null));
+		write(descriptionFile, newContents, fileInfo, IResource.FORCE, false, SubMonitor.convert(null));
 		workspace.getAliasManager().updateAliases(descriptionFile, getStore(descriptionFile), IResource.DEPTH_ZERO, SubMonitor.convert(null));
 
 		//update the timestamp on the project as well so we know when it has

@@ -18,7 +18,6 @@
 package org.eclipse.core.internal.resources;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -707,7 +706,7 @@ public class ProjectPreferences extends EclipsePreferences {
 					String fileLineSeparator = fileInWorkspace.getLineSeparator(true);
 					if (!systemLineSeparator.equals(fileLineSeparator))
 						s = s.replaceAll(systemLineSeparator, fileLineSeparator);
-					InputStream input = new ByteArrayInputStream(s.getBytes(StandardCharsets.UTF_8));
+					byte[] input = s.getBytes(StandardCharsets.UTF_8);
 					// make sure that preference folder and file are in sync
 					fileInWorkspace.getParent().refreshLocal(IResource.DEPTH_ZERO, null);
 					fileInWorkspace.refreshLocal(IResource.DEPTH_ZERO, null);

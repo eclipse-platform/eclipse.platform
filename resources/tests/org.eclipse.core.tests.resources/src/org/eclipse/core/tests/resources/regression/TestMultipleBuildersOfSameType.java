@@ -22,7 +22,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 
-import java.io.ByteArrayInputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -75,7 +74,7 @@ public class TestMultipleBuildersOfSameType {
 		createInWorkspace(resources);
 
 		// give unsorted files some initial content
-		unsortedFile1.setContents(new ByteArrayInputStream(new byte[] { 1, 4, 3 }), true, true, null);
+		unsortedFile1.setContents(new byte[] { 1, 4, 3 }, true, true, null);
 
 		setAutoBuilding(false);
 

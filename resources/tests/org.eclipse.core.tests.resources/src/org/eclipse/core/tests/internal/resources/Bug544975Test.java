@@ -18,7 +18,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -116,8 +115,7 @@ public class Bug544975Test {
 	private IFile createFile(IProject project, String fileName, String initialContents) throws CoreException {
 		IFile file = project.getFile(fileName);
 		file.create(null, true, createTestMonitor());
-		ByteArrayInputStream stream = new ByteArrayInputStream(initialContents.getBytes());
-		file.setContents(stream, IResource.FORCE, new NullProgressMonitor());
+		file.setContents(initialContents.getBytes(), IResource.FORCE, new NullProgressMonitor());
 		return file;
 	}
 

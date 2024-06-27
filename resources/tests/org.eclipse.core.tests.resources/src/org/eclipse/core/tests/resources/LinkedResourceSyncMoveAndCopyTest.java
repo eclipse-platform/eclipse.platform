@@ -27,7 +27,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.net.URI;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.projectvariables.ProjectLocationVariableResolver;
@@ -107,7 +106,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		fileLink.createLink(fileLocation, IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 
 		CoreException exception = assertThrows(CoreException.class, () -> fileLink
-				.setContents(new ByteArrayInputStream(createRandomString().getBytes()), IResource.NONE, createTestMonitor()));
+				.setContents(createRandomString().getBytes(), IResource.NONE, createTestMonitor()));
 		assertEquals("1.2", IResourceStatus.NOT_FOUND_LOCAL, exception.getStatus().getCode());
 
 		assertTrue("2.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
@@ -117,7 +116,7 @@ public class LinkedResourceSyncMoveAndCopyTest {
 		workspaceRule.deleteOnTearDown(fileLocation);
 
 		exception = assertThrows(CoreException.class, () -> fileLink
-				.setContents(new ByteArrayInputStream(createRandomString().getBytes()), IResource.NONE, createTestMonitor()));
+				.setContents(createRandomString().getBytes(), IResource.NONE, createTestMonitor()));
 		assertEquals("2.2", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		assertFalse("3.0", fileLink.isSynchronized(IResource.DEPTH_INFINITE));
