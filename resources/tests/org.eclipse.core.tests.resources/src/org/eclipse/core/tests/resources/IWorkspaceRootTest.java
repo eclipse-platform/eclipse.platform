@@ -492,9 +492,7 @@ public class IWorkspaceRootTest {
 				file.setTeamPrivateMember(true);
 			}
 		} else {
-			try (ByteArrayInputStream inputStream = new ByteArrayInputStream("content".getBytes())) {
-				file.create(inputStream, updateFlags, createTestMonitor());
-			}
+			file.create("content".getBytes(), updateFlags, createTestMonitor());
 		}
 		return file;
 	}

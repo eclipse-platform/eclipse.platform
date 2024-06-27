@@ -27,7 +27,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -394,7 +393,11 @@ public class NatureTest {
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).putInt(ResourcesPlugin.PREF_MISSING_NATURE_MARKER_SEVERITY, IMarker.SEVERITY_WARNING);
 		InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES).flush();
 		IFile dotProjectFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
-		dotProjectFile.setContents(new ByteArrayInputStream(("<projectDescription><name>" + project.getName() + "</name><natures><nature> " + NATURE_MISSING + "  </nature></natures></projectDescription>").getBytes()), false, false, createTestMonitor());
+		dotProjectFile
+				.setContents(
+						("<projectDescription><name>" + project.getName() + "</name><natures><nature> " + NATURE_MISSING
+								+ "  </nature></natures></projectDescription>").getBytes(),
+						false, false, createTestMonitor());
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		project.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 		Job.getJobManager().wakeUp(CheckMissingNaturesListener.MARKER_TYPE);

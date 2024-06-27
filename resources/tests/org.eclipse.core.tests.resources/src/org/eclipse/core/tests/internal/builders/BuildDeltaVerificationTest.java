@@ -216,8 +216,7 @@ public class BuildDeltaVerificationTest {
 	public void testChangeFile() throws CoreException {
 		/* change file1's contents */
 		verifier.addExpectedChange(file1, project1, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
-		ByteArrayInputStream in = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
-		file1.setContents(in, true, false, createTestMonitor());
+		file1.setContents(new byte[] { 4, 5, 6 }, true, false, createTestMonitor());
 		rebuild();
 		assertDelta();
 	}

@@ -591,8 +591,7 @@ public class ProjectPreferencesTest {
 		properties.remove("key3");
 		ByteArrayOutputStream tempOutput = new ByteArrayOutputStream();
 		properties.store(tempOutput, null);
-		ByteArrayInputStream tempInput = new ByteArrayInputStream(tempOutput.toByteArray());
-		prefFile.setContents(tempInput, false, false, createTestMonitor());
+		prefFile.setContents(tempOutput.toByteArray(), false, false, createTestMonitor());
 
 		// here, project preferences should have caught up with the changes
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);
@@ -642,8 +641,7 @@ public class ProjectPreferencesTest {
 
 		ByteArrayOutputStream tempOutput = new ByteArrayOutputStream();
 		properties.store(tempOutput, null);
-		ByteArrayInputStream tempInput = new ByteArrayInputStream(tempOutput.toByteArray());
-		prefFile.setContents(tempInput, false, false, createTestMonitor());
+		prefFile.setContents(tempOutput.toByteArray(), false, false, createTestMonitor());
 
 		// here, project preferences should have caught up with the changes
 		node = new ProjectScope(project).getNode(ResourcesPlugin.PI_RESOURCES);

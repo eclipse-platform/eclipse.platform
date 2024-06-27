@@ -35,10 +35,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -480,7 +478,7 @@ public class CharsetTest {
 		// returns the correct value.
 
 		// 1) first set the content type to ascii
-		file.setContents(new ByteArrayInputStream(ascii.getBytes("ascii")), IResource.FORCE, createTestMonitor());
+		file.setContents(ascii.getBytes("ascii"), IResource.FORCE, createTestMonitor());
 		assertTrue("4.0", file.getCharset().equals("ascii"));
 		assertTrue("4.1", file.getContentDescription().getCharset().equals("ascii"));
 
@@ -904,23 +902,26 @@ public class CharsetTest {
 			createInWorkspace(file, SAMPLE_XML_US_ASCII_ENCODING);
 			assertEquals("1.0", "US-ASCII", file.getCharset());
 			// content-based encoding is FRED
-			file.setContents(new ByteArrayInputStream(SAMPLE_XML_ISO_8859_1_ENCODING.getBytes(StandardCharsets.ISO_8859_1)), false, false, null);
+			file.setContents(SAMPLE_XML_ISO_8859_1_ENCODING.getBytes(StandardCharsets.ISO_8859_1), false, false, null);
 			assertEquals("2.0", "ISO-8859-1", file.getCharset());
 			// content-based encoding is UTF-8 (default for XML)
-			file.setContents(new ByteArrayInputStream(SAMPLE_XML_DEFAULT_ENCODING.getBytes(StandardCharsets.UTF_8)), false, false, null);
+			file.setContents(SAMPLE_XML_DEFAULT_ENCODING.getBytes(StandardCharsets.UTF_8), false, false, null);
 			assertEquals("3.0", "UTF-8", file.getCharset());
 			// tests with BOM -BOMs are strings for convenience, encoded itno bytes using ISO-8859-1 (which handles 128-255 bytes better)
 			// tests with UTF-8 BOM
 			String UTF8_BOM = new String(IContentDescription.BOM_UTF_8, StandardCharsets.ISO_8859_1);
-			file.setContents(new ByteArrayInputStream((UTF8_BOM + SAMPLE_XML_DEFAULT_ENCODING).getBytes(StandardCharsets.ISO_8859_1)), false, false, null);
+			file.setContents((UTF8_BOM + SAMPLE_XML_DEFAULT_ENCODING).getBytes(StandardCharsets.ISO_8859_1), false,
+					false, null);
 			assertEquals("4.0", "UTF-8", file.getCharset());
 			// tests with UTF-16 Little Endian BOM
 			String UTF16_LE_BOM = new String(IContentDescription.BOM_UTF_16LE, StandardCharsets.ISO_8859_1);
-			file.setContents(new ByteArrayInputStream((UTF16_LE_BOM + SAMPLE_XML_DEFAULT_ENCODING).getBytes(StandardCharsets.ISO_8859_1)), false, false, null);
+			file.setContents((UTF16_LE_BOM + SAMPLE_XML_DEFAULT_ENCODING).getBytes(StandardCharsets.ISO_8859_1), false,
+					false, null);
 			assertEquals("5.0", "UTF-16", file.getCharset());
 			// tests with UTF-16 Big Endian BOM
 			String UTF16_BE_BOM = new String(IContentDescription.BOM_UTF_16BE, StandardCharsets.ISO_8859_1);
-			file.setContents(new ByteArrayInputStream((UTF16_BE_BOM + SAMPLE_XML_DEFAULT_ENCODING).getBytes(StandardCharsets.ISO_8859_1)), false, false, null);
+			file.setContents((UTF16_BE_BOM + SAMPLE_XML_DEFAULT_ENCODING).getBytes(StandardCharsets.ISO_8859_1), false,
+					false, null);
 			assertEquals("6.0", "UTF-16", file.getCharset());
 		} finally {
 			clearAllEncodings(project);
@@ -1093,8 +1094,7 @@ public class CharsetTest {
 			backgroundVerifier.reset();
 			backgroundVerifier.addExpectedChange(new IResource[] {project, folder1, file1, file2, resourcesPrefs, resourcesPrefs.getParent()}, IResourceDelta.CHANGED, IResourceDelta.ENCODING);
 			// cause a resource change event without actually changing contents
-			InputStream contents = new ByteArrayInputStream(prefsContent.getBytes());
-			resourcesPrefs.setContents(contents, 0, createTestMonitor());
+			resourcesPrefs.setContents(prefsContent.getBytes(), 0, createTestMonitor());
 			assertTrue("2.1", backgroundVerifier.waitForEvent(10000));
 			assertTrue("2.2 " + backgroundVerifier.getMessage(), backgroundVerifier.isDeltaValid());
 

@@ -13,12 +13,24 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Map;
 import org.eclipse.core.internal.resources.ResourceException;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 /**
  * A <code>SortBuilder</code> maintains a collection of files located
@@ -125,8 +137,7 @@ public class SortBuilder extends TestBuilder {
 		IFile sortedFile = (IFile) convertToSortedResource(unsortedFile);
 		createResource(sortedFile);
 
-		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-		sortedFile.setContents(bis, true, false, null);
+		sortedFile.setContents(bytes, true, false, null);
 	}
 
 	@Override
