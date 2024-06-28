@@ -1359,9 +1359,6 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			if (append) {
 				throw e;
 			}
-			if (e.getStatus().getCode() != EFS.ERROR_WRITE) {
-				throw e;
-			}
 			IFileStore parent = store.getParent();
 			IFileInfo parentInfo = parent.fetchInfo();
 			if (parentInfo.exists()) {
