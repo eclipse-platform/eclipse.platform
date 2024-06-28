@@ -874,6 +874,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		try {
 			return store.openInputStream(EFS.NONE, monitor);
 		} catch (CoreException e) {
+			asyncRefresh(target);
 			if (e.getStatus().getCode() == EFS.ERROR_NOT_EXISTS) {
 				String message = NLS.bind(Messages.localstore_fileNotFound, store.toString());
 				throw new ResourceException(IResourceStatus.RESOURCE_NOT_FOUND, target.getFullPath(), message, e);
@@ -884,23 +885,14 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 
 	private IFileStore getFileStore(IFile target, boolean force) throws ResourceException, CoreException {
 		IFileStore store = getStore(target);
-		if (lightweightAutoRefreshEnabled || !force) {
+		if (!force) {
 			final IFileInfo fileInfo = store.fetchInfo();
-			if (!fileInfo.exists()) {
-				asyncRefresh(target);
-				String message = NLS.bind(Messages.localstore_fileNotFound, store.toString());
-				throw new ResourceException(IResourceStatus.RESOURCE_NOT_FOUND, target.getFullPath(), message, null);
-			}
 			Resource resource = (Resource) target;
 			ResourceInfo info = resource.getResourceInfo(true, false);
-			int flags = resource.getFlags(info);
-			resource.checkExists(flags, true);
 			if (fileInfo.getLastModified() != info.getLocalSyncInfo()) {
 				asyncRefresh(target);
-				if (!force) {
-					String message = NLS.bind(Messages.localstore_resourceIsOutOfSync, target.getFullPath());
-					throw new ResourceException(IResourceStatus.OUT_OF_SYNC_LOCAL, target.getFullPath(), message, null);
-				}
+				String message = NLS.bind(Messages.localstore_resourceIsOutOfSync, target.getFullPath());
+				throw new ResourceException(IResourceStatus.OUT_OF_SYNC_LOCAL, target.getFullPath(), message, null);
 			}
 		}
 		return store;
@@ -912,6 +904,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		try {
 			return store.readAllBytes(EFS.NONE, monitor);
 		} catch (CoreException e) {
+			asyncRefresh(target);
 			if (e.getStatus().getCode() == EFS.ERROR_NOT_EXISTS) {
 				String message = NLS.bind(Messages.localstore_fileNotFound, store.toString());
 				throw new ResourceException(IResourceStatus.RESOURCE_NOT_FOUND, target.getFullPath(), message, e);
