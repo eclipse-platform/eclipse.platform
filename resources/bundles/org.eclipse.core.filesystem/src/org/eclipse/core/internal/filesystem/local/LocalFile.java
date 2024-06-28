@@ -31,6 +31,7 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -125,28 +126,6 @@ public class LocalFile extends FileStore {
 	public String[] childNames(int options, IProgressMonitor monitor) {
 		String[] names = file.list();
 		return (names == null ? EMPTY_STRING_ARRAY : names);
-	}
-
-	@Override
-	public void copy(IFileStore destFile, int options, IProgressMonitor monitor) throws CoreException {
-		if (destFile instanceof LocalFile) {
-			File source = file;
-			File destination = ((LocalFile) destFile).file;
-			//handle case variants on a case-insensitive OS, or copying between
-			//two equivalent files in an environment that supports symbolic links.
-			//in these nothing needs to be copied (and doing so would likely lose data)
-			try {
-				if (isSameFile(source, destination)) {
-					//nothing to do
-					return;
-				}
-			} catch (IOException e) {
-				String message = NLS.bind(Messages.couldNotRead, source.getAbsolutePath());
-				Policy.error(EFS.ERROR_READ, message, e);
-			}
-		}
-		//fall through to super implementation
-		super.copy(destFile, options, monitor);
 	}
 
 	@Override
@@ -296,7 +275,7 @@ public class LocalFile extends FileStore {
 			String message = fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY) //
 					? Messages.couldnotDeleteReadOnly
 
-					// This is the worst-case scenario: something failed but we don't know what. The children were 
+					// This is the worst-case scenario: something failed but we don't know what. The children were
 					// deleted successfully and the directory is NOT read-only... there's nothing else to report.
 					: Messages.couldnotDelete;
 
@@ -439,7 +418,7 @@ public class LocalFile extends FileStore {
 				// avoid NoSuchFileException for performance reasons
 				return false;
 			}
-			// isSameFile is faster then using getCanonicalPath 
+			// isSameFile is faster then using getCanonicalPath
 			return java.nio.file.Files.isSameFile(source.toPath(), destination.toPath());
 		} catch (NoSuchFileException e) {
 			// ignore - it is the normal case that the destination does not exist.
@@ -576,5 +555,28 @@ public class LocalFile extends FileStore {
 			return FileStoreUtil.comparePathSegments(this.toURI().getPath(), ((LocalFile) other).toURI().getPath());
 		}
 		return super.compareTo(other);
+	}
+
+	@Override
+	protected void copyFile(IFileInfo sourceInfo, IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
+		if (destination instanceof LocalFile dest) {
+			try {
+				// if the source and target are the same file the method completes without copying the file
+				if ((options & EFS.OVERWRITE) == 0) {
+					Files.copy(file.toPath(), dest.file.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+				} else {
+					Files.copy(file.toPath(), dest.file.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+				}
+			} catch (IOException e) {
+				//if we failed to write, try to cleanup the half written file
+				if (!destination.fetchInfo(0, null).exists()) {
+					destination.delete(EFS.NONE, null);
+				}
+				String msg = NLS.bind(((e instanceof FileAlreadyExistsException) ? Messages.fileExists : Messages.couldNotWrite), destination);
+				Policy.error(EFS.ERROR_WRITE, msg, e);
+			}
+		} else {
+			super.copyFile(sourceInfo, destination, options, monitor);
+		}
 	}
 }
