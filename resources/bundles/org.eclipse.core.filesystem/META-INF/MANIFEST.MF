@@ -17,3 +17,5 @@ Bundle-Vendor: %providerName
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.core.filesystem
+Import-Package: com.sun.jna;version="[5.14.0,6.0.0)",
+ com.sun.jna.platform.win32;version="[5.14.0,6.0.0)"
