@@ -30,6 +30,7 @@ import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.harness.session.CustomSessionWorkspace;
+import org.eclipse.core.tests.harness.session.ExecuteInHost;
 import org.eclipse.core.tests.harness.session.SessionTestExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -52,6 +53,7 @@ public class TestBug323833 {
 			.withCustomization(sessionWorkspace).create();
 
 	@AfterAll
+	@ExecuteInHost
 	public static void restoreFileWriabilityForCleanup() throws CoreException, IOException {
 		sessionWorkspace.getWorkspaceDirectory().resolve(READONLY_FILE_NAME).toFile().setWritable(true, false);
 	}
