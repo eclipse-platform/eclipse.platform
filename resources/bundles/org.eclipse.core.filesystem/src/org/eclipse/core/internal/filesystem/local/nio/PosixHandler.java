@@ -16,8 +16,13 @@
 package org.eclipse.core.internal.filesystem.local.nio;
 
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.filesystem.EFS;
@@ -38,7 +43,7 @@ public class PosixHandler extends NativeHandler {
 
 	@Override
 	public FileInfo fetchFileInfo(String fileName) {
-		Path path = Paths.get(fileName);
+		Path path = Path.of(fileName);
 		FileInfo info = new FileInfo();
 
 		// Fill in the name of the file.
@@ -89,7 +94,7 @@ public class PosixHandler extends NativeHandler {
 
 	@Override
 	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		Path path = Paths.get(fileName);
+		Path path = Path.of(fileName);
 		Set<PosixFilePermission> perms = new HashSet<>();
 
 		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_READ))
