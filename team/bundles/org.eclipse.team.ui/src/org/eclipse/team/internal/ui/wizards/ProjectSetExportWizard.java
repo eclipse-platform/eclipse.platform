@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -133,7 +134,8 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 
 					UIProjectSetSerializationContext context = new UIProjectSetSerializationContext(getShell(), filename);
 
-					try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"))) { //$NON-NLS-1$
+					try (BufferedWriter writer = new BufferedWriter(
+							new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
 						// if file was written to the workspace, perform the validateEdit
 						if (!locationPage.isSaveToFileSystem())
 							locationPage.validateEditWorkspaceFile(getShell());

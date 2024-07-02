@@ -14,11 +14,21 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.runtime;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import org.eclipse.core.internal.runtime.Messages;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -76,7 +86,7 @@ public class PlatformLogReader {
 		InputStream input = null;
 		try {
 			input = new FileInputStream(path);
-			reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));//$NON-NLS-1$
+			reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
 			currentLine = reader.readLine();
 			while (currentLine != null) {
 				switch (getLineType()) {

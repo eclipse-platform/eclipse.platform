@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Richard Hoefter (richard.hoefter@web.de) - initial API and implementation, bug 95297, bug 97051, bug 128103, bug 201180, bug 161354, bug 313386
  *     IBM Corporation - nlsing and incorporating into Eclipse, bug 108276, bug 124210, bug 161845, bug 177833
@@ -23,10 +23,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +103,7 @@ public class BuildFileCreator {
 	/**
 	 * Constructor. Please prefer {@link #createBuildFiles(Set, Shell, IProgressMonitor)} if you do not want call the various createXXX() methods
 	 * yourself.
-	 * 
+	 *
 	 * @param project
 	 *            create buildfile for this project
 	 * @param shell
@@ -122,7 +122,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Create buildfile for given projects.
-	 * 
+	 *
 	 * @param projects
 	 *            create buildfiles for these <code>IJavaProject</code> objects
 	 * @param shell
@@ -157,9 +157,7 @@ public class BuildFileCreator {
 		Set<IFile> confirmedFiles = ExportUtil.validateEdit(shell, files);
 		SubMonitor localmonitor = SubMonitor.convert(pm, DataTransferMessages.AntBuildfileExportPage_0, confirmedFiles.size());
 		try {
-			Iterator<IJavaProject> iter = projects.iterator();
-			while (iter.hasNext()) {
-				IJavaProject currentProject = iter.next();
+			for (IJavaProject currentProject : projects) {
 				IFile file = currentProject.getProject().getFile(BuildFileCreator.BUILD_XML);
 				if (!confirmedFiles.contains(file)) {
 					continue;
@@ -190,7 +188,7 @@ public class BuildFileCreator {
 
 				// write build file
 				String xml = ExportUtil.toString(instance.doc);
-				try (InputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8"))) { //$NON-NLS-1$
+				try (InputStream is = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
 					if (file.exists()) {
 						file.setContents(is, true, true, null);
 					} else {
@@ -340,7 +338,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Create classpath tags. Allows to specify ID.
-	 * 
+	 *
 	 * @param pathId
 	 *            specify id, if null project name is used
 	 */
@@ -447,7 +445,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Add JRE to given classpath.
-	 * 
+	 *
 	 * @param element
 	 *            classpath tag
 	 */
@@ -490,7 +488,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Create init target. Creates directories and copies resources.
-	 * 
+	 *
 	 * @param srcDirs
 	 *            source directories to copy resources from
 	 * @param classDirs
@@ -575,7 +573,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Create clean target.
-	 * 
+	 *
 	 * @param classDirs
 	 *            classes directories to delete
 	 */
@@ -634,7 +632,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Create build target.
-	 * 
+	 *
 	 * @param srcDirs
 	 *            source directories of mainproject
 	 * @param classDirs
@@ -908,7 +906,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Add run targets.
-	 * 
+	 *
 	 * @throws CoreException
 	 *             thrown if problem accessing the launch configuration
 	 * @throws TransformerFactoryConfigurationError
@@ -949,7 +947,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Convert Java application launch configuration to ant target and add it to a document.
-	 * 
+	 *
 	 * @param variable2value
 	 *            adds Eclipse variables to this map, if run configuration makes use of this feature
 	 * @param conf
@@ -983,7 +981,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Convert applet launch configuration to Ant target and add it to a document.
-	 * 
+	 *
 	 * @param variable2value
 	 *            adds Eclipse variables to this map, if run configuration makes use of this feature
 	 * @param conf
@@ -1024,7 +1022,7 @@ public class BuildFileCreator {
 		{
 			// write build file
 			String html = AppletUtil.buildHTMLFile(conf);
-			InputStream is = new ByteArrayInputStream(html.getBytes("UTF-8")); //$NON-NLS-1$
+			InputStream is = new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
 			if (file.exists()) {
 				file.setContents(is, true, true, null);
 			} else {
@@ -1052,7 +1050,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Convert JUnit launch configuration to JUnit task and add it to a document.
-	 * 
+	 *
 	 * @param variable2value
 	 *            adds Eclipse variables to this map, if run configuration makes use of this feature
 	 * @param conf
@@ -1196,7 +1194,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Create child node from <code>cmdLine</code> and add it to <code>element</code> which is part of <code>doc</code>.
-	 * 
+	 *
 	 * @param cmdLineArgs
 	 *            command line arguments, separated with spaces or within double quotes, may also contain Eclipse variables
 	 * @param doc
@@ -1223,7 +1221,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Create child nodes from string map and add them to <code>element</code> which is part of <code>doc</code>.
-	 * 
+	 *
 	 * @param map
 	 *            key/value string pairs
 	 * @param doc
@@ -1249,7 +1247,7 @@ public class BuildFileCreator {
 
 	/**
 	 * Set config options.
-	 * 
+	 *
 	 * @param buildfilename
 	 *            name for Ant buildfile
 	 * @param junitdir
