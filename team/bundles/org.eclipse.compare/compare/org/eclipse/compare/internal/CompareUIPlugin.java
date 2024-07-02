@@ -1118,12 +1118,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 */
 	Set<ViewerDescriptor> findEditorLinkedDescriptors(String fileName, IContentType contentType,
 			boolean firstIsEnough) {
-		if (fileName == null) {
-			if (contentType == null) {
-				contentType = fgContentTypeManager.findContentTypeFor(fileName);
-			} else {
-				return Collections.emptySet();
-			}
+		if (fileName == null && contentType == null) {
+			return Collections.emptySet();
+		}
+		if (contentType == null) {
+			contentType = fgContentTypeManager.findContentTypeFor(fileName);
 		}
 
 		LinkedHashSet<ViewerDescriptor> viewers = fContentMergeViewers.getAll().stream()
