@@ -38,6 +38,8 @@ Import-Package: org.assertj.core.api,
  org.junit.jupiter.api,
  org.junit.jupiter.api.extension,
  org.junit.jupiter.api.io,
+ org.junit.jupiter.params;version="[5.10.0,6.0.0]",
+ org.junit.jupiter.params.provider;version="[5.10.0,6.0.0]",
  org.junit.platform.suite.api,
  org.mockito
 Bundle-ActivationPolicy: lazy
