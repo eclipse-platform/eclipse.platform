@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.AssertionFailedException;
 import org.eclipse.core.runtime.CoreException;
@@ -177,7 +178,7 @@ class RemoteTestExecutor {
 			}
 			try (Socket s = serverSocket.accept();
 					BufferedReader messageReader = new BufferedReader(
-							new InputStreamReader(s.getInputStream(), "UTF-8"))) {
+							new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8))) {
 				// main loop
 				while (true) {
 					synchronized (this) {

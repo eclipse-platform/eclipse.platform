@@ -20,6 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import org.eclipse.core.internal.propertytester.FilePropertyTester;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -106,7 +107,7 @@ public class FilePropertyTesterTest {
 		String expectedBase = "org.eclipse.core.runtime.xml";
 		String expectedExact = "org.eclipse.core.tests.resources.ns-root-element";
 		IFile target = project.getFile("tmp.xml");
-		byte[] bytes = IContentTypeManagerTest.XML_ROOT_ELEMENT_NS_MATCH1.getBytes("UTF-8");
+		byte[] bytes = IContentTypeManagerTest.XML_ROOT_ELEMENT_NS_MATCH1.getBytes(StandardCharsets.UTF_8);
 		target.create(new ByteArrayInputStream(bytes), true, createTestMonitor());
 
 		boolean ret;

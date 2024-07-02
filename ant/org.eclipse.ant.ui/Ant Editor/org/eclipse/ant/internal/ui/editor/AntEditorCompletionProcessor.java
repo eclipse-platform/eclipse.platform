@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2021 GEBIT Gesellschaft fuer EDV-Beratung
- * und Informatik-Technologien mbH, 
+ * und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial API and implementation
  * 	   IBM Corporation - bug fixes
  *     John-Mason P. Shackelford (john-mason.shackelford@pearson.com) - bug 49383, 56299, 59024
- *     Brock Janiczak (brockj_eclipse@ihug.com.au ) - bug 78028, 78030 
+ *     Brock Janiczak (brockj_eclipse@ihug.com.au ) - bug 78028, 78030
  *     Remy Chi Jian Suen - bug 277587
  *******************************************************************************/
 
@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,7 +158,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * The fully qualified name of the {@link MacroInstance} class
-	 * 
+	 *
 	 * @since 3.5.500
 	 */
 	private static final String MACROINSTANCE_NAME = "org.apache.tools.ant.taskdefs.MacroInstance"; //$NON-NLS-1$
@@ -211,7 +212,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * The proposal mode for the current content assist
-	 * 
+	 *
 	 * @see #determineProposalMode(IDocument, int, String)
 	 */
 	private int currentProposalMode = -1;
@@ -223,7 +224,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * The current task string for content assist
-	 * 
+	 *
 	 * @see #determineProposalMode(IDocument, int, String)
 	 */
 	protected String currentTaskString = null;
@@ -240,7 +241,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 	 * Parses the dtd.
 	 */
 	private ISchema parseDtd() throws ParseError, IOException {
-		try (InputStream stream = getClass().getResourceAsStream(ANT_DTD_FILENAME); Reader reader = new InputStreamReader(stream, "UTF-8");) {//$NON-NLS-1$
+		try (InputStream stream = getClass().getResourceAsStream(ANT_DTD_FILENAME); Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
 			Parser parser = new Parser();
 			ISchema schema = parser.parseDTD(reader, "project"); //$NON-NLS-1$
 			return schema;
@@ -602,7 +603,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Retrieves the representative image of a target of the given name. If the target cannot be found, <code>null</code> will be returned.
-	 * 
+	 *
 	 * @param targetName
 	 *            the target's name
 	 * @return an image suitable for representing the target, or <code>null</code> if the target cannot be found
@@ -657,7 +658,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Returns all possible attributes for the specified task.
-	 * 
+	 *
 	 * @param taskName
 	 *            the name of the task for that the attribute shall be completed
 	 * @param prefix
@@ -667,9 +668,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 		List<ICompletionProposal> proposals = new ArrayList<>();
 		IElement element = getDtd().getElement(taskName);
 		if (element != null) {
-			Iterator<String> keys = element.getAttributes().keySet().iterator();
-			while (keys.hasNext()) {
-				String attrName = keys.next();
+			for (String attrName : element.getAttributes().keySet()) {
 				if (prefix.length() == 0 || attrName.toLowerCase().startsWith(prefix)) {
 					IAttribute dtdAttributes = element.getAttributes().get(attrName);
 					String replacementString = attrName + "=\"\""; //$NON-NLS-1$
@@ -782,9 +781,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 			return;
 		}
 		List<Attribute> attributes = ((MacroDef) task).getAttributes();
-		Iterator<Attribute> itr = attributes.iterator();
-		while (itr.hasNext()) {
-			MacroDef.Attribute attribute = itr.next();
+		for (Attribute attribute : attributes) {
 			String attributeName = attribute.getName();
 			if (!(prefix.length() == 0 || attributeName.toLowerCase().startsWith(prefix))) {
 				continue;
@@ -816,11 +813,9 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 			return;
 		}
 		Map<String, TemplateElement> elements = ((MacroDef) task).getElements();
-		Iterator<String> itr = elements.keySet().iterator();
 		int prefixLength = prefix.length();
 		int replacementOffset = cursorPosition - prefixLength;
-		while (itr.hasNext()) {
-			String elementName = itr.next();
+		for (String elementName : elements.keySet()) {
 			if (!(prefixLength == 0 || elementName.toLowerCase().startsWith(prefix))) {
 				continue;
 			}
@@ -869,13 +864,13 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Returns all possible values for the specified attribute of the specified task.
-	 * 
+	 *
 	 * @param taskName
 	 *            the name of the task that the specified attribute belongs to.
-	 * 
+	 *
 	 * @param attributeName
 	 *            the name of the attribute for that the value shall be completed
-	 * 
+	 *
 	 * @param prefix
 	 *            the prefix that all proposals should start with. The prefix may be an empty string.
 	 */
@@ -1030,7 +1025,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 	 * Returns all possible proposals for the specified parent name.
 	 * <P>
 	 * No completions will be returned if <code>parentName</code> is not known.
-	 * 
+	 *
 	 * @param document
 	 *            the entire document
 	 * @param parentName
@@ -1112,10 +1107,10 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Returns proposals that define the structure of a build file.
-	 * 
+	 *
 	 * Note that template proposals which define the structure of a build file are handled by {@link #determineTemplateProposals(ITextViewer, int)}
 	 * which limits proposals by context type.
-	 * 
+	 *
 	 * @param document
 	 *            the entire document
 	 * @param prefix
@@ -1173,7 +1168,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Returns the one possible completion for the specified unclosed task .
-	 * 
+	 *
 	 * @param openElementName
 	 *            the task that hasn't been closed last
 	 * @param prefix
@@ -1284,7 +1279,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 	 * Finds a direct child element with <code>aChildElementName</code> of <code>anElement</code>.
 	 * <P>
 	 * The child will not be searched for in the whole hierarchy but only in the hierarchy step below.
-	 * 
+	 *
 	 * @return the found child or <code>null</code> if not found.
 	 */
 	protected Element findChildElementNamedOf(Element anElement, String aChildElementName) {
@@ -1314,7 +1309,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Returns the prefix in the specified document text with respect to the specified offset.
-	 * 
+	 *
 	 * @param aDocumentText
 	 *            the whole content of the edited file as String
 	 * @param anOffset
@@ -1449,11 +1444,11 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 	 * <P>
 	 * The returned string must not necessarily be a valid Ant task string. This can be tested with the method <code>inNamedTaskKnown(String)</code>
 	 * after invoking this method.
-	 * 
+	 *
 	 * @param aDocumentStringToPrefix
 	 *            the String that contains the whole string of the currently edited file from the beginning up to the prefix for code completion.
 	 *            Example: {@literal '<project default="name"><property '}.
-	 * 
+	 *
 	 * @return the extracted task string or <code>null</code> if no string could be extracted.
 	 */
 	private String getTaskStringFromDocumentStringToPrefix(String aDocumentStringToPrefix) {
@@ -1563,7 +1558,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Finds the parent task element in respect to the cursor position.
-	 * 
+	 *
 	 * @return the parent task element or <code>null</code> if not found.
 	 */
 	protected String getParentName(IDocument document, int aLineNumber, int aColumnNumber) {
@@ -1604,7 +1599,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Return the properties as defined in the entire buildfile
-	 * 
+	 *
 	 * @return a map with all the found properties
 	 */
 	private Map<String, Object> findPropertiesFromDocument() {
@@ -1642,7 +1637,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Finds the enclosing target in respect to the cursor position and returns its name
-	 * 
+	 *
 	 * @return the name of the enclosing target or <code>null</code> if not found or the element is not contained in a target.
 	 */
 	private String getEnclosingTargetName(IDocument document, int aLineNumber, int aColumnNumber) {
@@ -1680,7 +1675,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 
 	/**
 	 * Sets this processor's set of characters triggering the activation of the completion proposal computation.
-	 * 
+	 *
 	 * @param activationSet
 	 *            the activation set
 	 */

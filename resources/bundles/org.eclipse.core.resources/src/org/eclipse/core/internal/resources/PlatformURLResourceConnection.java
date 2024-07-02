@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import org.eclipse.core.internal.boot.PlatformURLConnection;
 import org.eclipse.core.internal.boot.PlatformURLHandler;
 import org.eclipse.core.internal.utils.Messages;
@@ -50,7 +51,7 @@ public class PlatformURLResourceConnection extends PlatformURLConnection {
 	@Override
 	protected URL resolve() throws IOException {
 		String filePath = url.getFile().trim();
-		filePath = URLDecoder.decode(filePath, "UTF-8"); //$NON-NLS-1$
+		filePath = URLDecoder.decode(filePath, StandardCharsets.UTF_8);
 		IPath spec = IPath.fromOSString(filePath).makeRelative();
 		if (!spec.segment(0).equals(RESOURCE))
 			throw new IOException(NLS.bind(Messages.url_badVariant, url));

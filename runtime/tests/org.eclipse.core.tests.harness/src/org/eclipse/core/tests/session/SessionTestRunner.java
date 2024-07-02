@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -186,7 +187,7 @@ public class SessionTestRunner {
 			}
 			try (Socket s = serverSocket.accept();
 					BufferedReader messageReader = new BufferedReader(
-							new InputStreamReader(s.getInputStream(), "UTF-8"))) {
+							new InputStreamReader(s.getInputStream(), StandardCharsets.UTF_8))) {
 				// main loop
 				while (true) {
 					synchronized (this) {
