@@ -492,7 +492,7 @@ public final class ResourceTestUtil {
 		String originalContent = readStringInFileSystem(file);
 		String newContent = originalContent + "f";
 		try (FileOutputStream outputStream = new FileOutputStream(file.getLocation().toFile())) {
-			outputStream.write(newContent.getBytes("UTF8"));
+			outputStream.write(newContent.getBytes(StandardCharsets.UTF_8));
 		}
 	}
 

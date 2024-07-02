@@ -17,7 +17,6 @@ package org.eclipse.core.internal.variables;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -465,9 +464,8 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 	 * @param doc document to serialize
 	 * @return the document as a string
 	 * @throws TransformerException if an unrecoverable error occurs during the serialization
-	 * @throws UnsupportedEncodingException if the encoding attempted to be used is not supported
 	 */
-	private String serializeDocument(Document doc) throws TransformerException, UnsupportedEncodingException {
+	private String serializeDocument(Document doc) throws TransformerException {
 		ByteArrayOutputStream s= new ByteArrayOutputStream();
 
 		@SuppressWarnings("restriction")
@@ -480,7 +478,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 		StreamResult outputTarget= new StreamResult(s);
 		transformer.transform(source, outputTarget);
 
-		return s.toString("UTF8"); //$NON-NLS-1$
+		return s.toString(StandardCharsets.UTF_8);
 	}
 
 	/**
