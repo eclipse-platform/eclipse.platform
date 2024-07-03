@@ -367,7 +367,7 @@ public final class ContentTypeCatalog {
 	}
 
 	IContentType[] findContentTypesFor(ContentTypeMatcher matcher, final String fileName) {
-		IContentType[] selected = concat(internalFindContentTypesFor(matcher, fileName, policyConstantGeneralIsBetter));
+		IContentType[] selected = concat(internalFindContentTypesSorted(matcher, fileName, policyConstantGeneralIsBetter));
 		// give the policy a chance to change the results
 		ISelectionPolicy policy = matcher.getPolicy();
 		if (policy != null)
@@ -460,7 +460,7 @@ public final class ContentTypeCatalog {
 		return true;
 	}
 
-	private IContentType[] internalFindContentTypesFor(ILazySource buffer, IContentType[][] subset, Comparator<IContentType> validPolicy, Comparator<IContentType> indeterminatePolicy) throws IOException {
+	private IContentType[] internalFindContentTypesForSubset(ILazySource buffer, IContentType[][] subset, Comparator<IContentType> validPolicy, Comparator<IContentType> indeterminatePolicy) throws IOException {
 		Map<String, Object> properties = new HashMap<>();
 		final List<ContentType> appropriate = new ArrayList<>(5);
 		final int validFullName = collectMatchingByContents(0, subset[0], appropriate, buffer, properties);
@@ -501,7 +501,7 @@ public final class ContentTypeCatalog {
 			indeterminatePolicy = policyConstantGeneralIsBetter;
 			validPolicy = policyConstantSpecificIsBetter;
 		} else {
-			subset = internalFindContentTypesFor(matcher, fileName, policyLexicographical);
+			subset = internalFindContentTypesSorted(matcher, fileName, policyLexicographical);
 			indeterminatePolicy = policyGeneralIsBetter;
 			validPolicy = policySpecificIsBetter;
 		}
@@ -524,7 +524,7 @@ public final class ContentTypeCatalog {
 			// only eligible content type is binary and contents are text, ignore it
 			return NO_CONTENT_TYPES;
 		}
-		return internalFindContentTypesFor(buffer, subset, validPolicy, indeterminatePolicy);
+		return internalFindContentTypesForSubset(buffer, subset, validPolicy, indeterminatePolicy);
 	}
 
 	/**
@@ -533,7 +533,7 @@ public final class ContentTypeCatalog {
 	 * @return all matching content types in the preferred order
 	 * @see IContentTypeManager#findContentTypesFor(String)
 	 */
-	synchronized private IContentType[][] internalFindContentTypesFor(ContentTypeMatcher matcher, final String fileName, Comparator<IContentType> sortingPolicy) {
+	synchronized private IContentType[][] internalFindContentTypesSorted(ContentTypeMatcher matcher, final String fileName, Comparator<IContentType> sortingPolicy) {
 		IScopeContext context = matcher.getContext();
 		IContentType[][] result = { NO_CONTENT_TYPES, NO_CONTENT_TYPES, NO_CONTENT_TYPES };
 
