@@ -697,9 +697,15 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		byte[] newContents = out.toByteArray();
 
 		//write the contents to the IFile that represents the description
-		if (!descriptionFile.exists())
+		if (!descriptionFile.exists()) {
+			// When creating a new .project file, explicitly ensure the project directory
+			// exists. Since https://github.com/eclipse-platform/eclipse.platform/pull/1446
+			// write() initially assumes that parent directories already exist (in order to
+			// optimize the most likely use-cases) and then falls back to mkdir() + retry if
+			// this is not the case. We can avoid this retry.
+			getStore(target).mkdir(EFS.NONE, null);
 			workspace.createResource(descriptionFile, false);
-		else {
+		} else {
 			//if the description has not changed, don't write anything
 			if (!descriptionChanged(descriptionFile, newContents))
 				return false;
