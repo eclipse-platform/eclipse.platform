@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -767,6 +768,21 @@ public final class ResourceTestUtil {
 			}
 		}
 		return devices;
+	}
+
+	/**
+	 * Wraps the given path into a canonical IPath.
+	 */
+	public static IPath wrapInCanonicalIPath(Path path) throws IOException {
+		return IPath.fromOSString(path.toFile().getCanonicalPath());
+	}
+
+	/**
+	 * Returns a file store for the given path referring to the local file system.
+	 */
+	public static IFileStore getFileStore(Path path) throws IOException {
+		IPath canonicalIPath = wrapInCanonicalIPath(path);
+		return EFS.getLocalFileSystem().getStore(canonicalIPath);
 	}
 
 }
