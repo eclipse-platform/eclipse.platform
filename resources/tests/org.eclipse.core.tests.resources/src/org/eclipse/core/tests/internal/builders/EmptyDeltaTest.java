@@ -21,17 +21,15 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDes
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests the callOnEmptyDelta attribute of the builder extension
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class EmptyDeltaTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testBuildEvents() throws CoreException {

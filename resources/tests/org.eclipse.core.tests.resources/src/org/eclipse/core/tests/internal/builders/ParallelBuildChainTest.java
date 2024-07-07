@@ -22,6 +22,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.TestUtil.waitForCondition;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,18 +43,15 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobGroup;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TimerBuilder.RuleType;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ParallelBuildChainTest {
 	private static final int TIMEOUT_IN_MILLIS = 30_000;
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static enum BuildDurationType {
 		/*
@@ -98,12 +96,12 @@ public class ParallelBuildChainTest {
 
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		setAutoBuilding(false);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		// Cleanup workspace first to ensure that auto-build is not started on projects
 		waitForBuild();
@@ -420,7 +418,7 @@ public class ParallelBuildChainTest {
 			TimerBuilder.abortCurrentBuilds();
 			job.cancel();
 			boolean joinSuccessful = job.join(TIMEOUT_IN_MILLIS, createTestMonitor());
-			Assert.assertTrue("timeout occurred when waiting for job that runs the build to finish", joinSuccessful);
+			assertTrue(joinSuccessful, "timeout occurred when waiting for job that runs the build to finish");
 		}
 	}
 
@@ -458,8 +456,7 @@ public class ParallelBuildChainTest {
 			TimerBuilder.abortCurrentBuilds();
 			jobGroup.cancel();
 			boolean joinSuccessful = jobGroup.join(TIMEOUT_IN_MILLIS, createTestMonitor());
-			Assert.assertTrue("timeout occurred when waiting for job group that runs the builds to finish",
-					joinSuccessful);
+			assertTrue(joinSuccessful, "timeout occurred when waiting for job group that runs the builds to finish");
 		}
 	}
 

@@ -20,7 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -35,21 +35,18 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.resources.TestPerformer;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This class tests builds that span multiple projects.  Project builders
  * can specify what other projects they are interested in receiving deltas for,
  * and they should only be receiving deltas for exactly those projects.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class MultiProjectBuildTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
 	//various resource handles
 	private IProject project1;
 	private IProject project2;
@@ -63,7 +60,7 @@ public class MultiProjectBuildTest {
 	/**
 	 * Returns an array of interesting project combinations.
 	 */
-	protected IProject[][] interestingProjects() {
+	private IProject[][] interestingProjects() {
 		//mix things up, because requests from one run affect results in the next.
 		return new IProject[][] {new IProject[] {}, new IProject[] {project3}, new IProject[] {project1}, new IProject[] {project1, project2, project3}, new IProject[] {project2}, new IProject[] {project3}, new IProject[] {project4}, new IProject[] {project1, project2}, new IProject[] {project1, project3}, new IProject[] {project3}, new IProject[] {project2, project3}, new IProject[] {project1, project2, project3}, new IProject[] {project1, project2, project4}, new IProject[] {project1}, new IProject[] {project1, project3, project4}, new IProject[] {project1, project2}, new IProject[] {project2, project3, project4}, new IProject[] {project3, project4}, new IProject[] {project1, project2, project3, project4},};
 	}
@@ -71,7 +68,7 @@ public class MultiProjectBuildTest {
 	/**
 	 * Modifies any files in the given projects, all in a single operation
 	 */
-	protected void dirty(final IProject[] projects) throws CoreException {
+	private void dirty(final IProject[] projects) throws CoreException {
 		getWorkspace().run((IWorkspaceRunnable) monitor -> {
 			for (IProject project : projects) {
 				for (IResource member : project.members()) {
@@ -87,7 +84,7 @@ public class MultiProjectBuildTest {
 	/**
 	 * Returns an array reversed.
 	 */
-	IProject[][] reverse(IProject[][] input) {
+	private IProject[][] reverse(IProject[][] input) {
 		if (input == null) {
 			return null;
 		}
@@ -102,7 +99,7 @@ public class MultiProjectBuildTest {
 	/*
 	 * @see TestCase#setUp()
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		setAutoBuilding(true);
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -131,7 +128,7 @@ public class MultiProjectBuildTest {
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
-		assertTrue("1.1", builder != null);
+		assertNotNull(builder);
 		//always check deltas for all projects
 		final IProject[] allProjects = new IProject[] {project1, project2, project3, project4};
 		builder.checkDeltas(allProjects);
@@ -218,7 +215,7 @@ public class MultiProjectBuildTest {
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		final DeltaVerifierBuilder builder = DeltaVerifierBuilder.getInstance();
-		assertTrue("1.1", builder != null);
+		assertNotNull(builder);
 		//always check deltas for all projects
 		final IProject[] allProjects = new IProject[] {project1, project2, project3, project4};
 		project2.close(createTestMonitor());

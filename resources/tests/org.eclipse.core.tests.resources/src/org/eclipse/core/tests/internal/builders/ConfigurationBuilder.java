@@ -13,11 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-import java.util.*;
-import org.eclipse.core.resources.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.junit.Assert;
 
 /**
  * A builder used that stores statistics, such as which target was built, per project build config.
@@ -74,7 +81,7 @@ public class ConfigurationBuilder extends TestBuilder {
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		super.clean(monitor);
 		IResourceDelta delta = getDelta(getProject());
-		Assert.assertNull(delta);
+		assertNull(delta);
 		buildCount++;
 		triggerForLastBuild = IncrementalProjectBuilder.CLEAN_BUILD;
 	}

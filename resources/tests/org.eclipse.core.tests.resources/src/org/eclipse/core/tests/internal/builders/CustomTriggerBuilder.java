@@ -12,11 +12,14 @@
  ******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.Map;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.junit.Assert;
 
 /**
  * A test builder that allows specification of what build triggers it responds to.
@@ -52,7 +55,7 @@ public class CustomTriggerBuilder extends TestBuilder {
 		super.clean(monitor);
 		triggerForLastBuild = IncrementalProjectBuilder.CLEAN_BUILD;
 		IResourceDelta delta = getDelta(getProject());
-		Assert.assertNull(delta);
+		assertNull(delta);
 	}
 
 	public void clearBuildTrigger() {

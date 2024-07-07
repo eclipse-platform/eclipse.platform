@@ -21,9 +21,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.Thread.State;
 import java.util.ArrayList;
@@ -57,13 +57,13 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 import org.eclipse.core.tests.resources.TestUtil;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.function.ThrowingRunnable;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This class tests extended functionality (since 3.6) which allows
@@ -72,22 +72,16 @@ import org.junit.rules.TestName;
  * When one of these builders runs, other threads may modify the workspace
  * depending on the builder's scheduling rule
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class RelaxedSchedRuleBuilderTest {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
 	private ErrorLogging errorLogging = new ErrorLogging();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		errorLogging.enable();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		errorLogging.disable();
 		TestBuilder builder = DeltaVerifierBuilder.getInstance();
@@ -296,7 +290,7 @@ public class RelaxedSchedRuleBuilderTest {
 	 * rule, is correctly present in the builder's delta.
 	 */
 	@Test
-	public void testBuilderDeltaUsingRelaxedRuleBug343256() throws Throwable {
+	public void testBuilderDeltaUsingRelaxedRuleBug343256(TestInfo testInfo) throws Throwable {
 		final int timeout = 10000;
 		String projectName = "testBuildDeltaUsingRelaxedRuleBug343256";
 		setAutoBuilding(false);
@@ -304,8 +298,9 @@ public class RelaxedSchedRuleBuilderTest {
 		final IFile foo = project.getFile("foo");
 		createInWorkspace(project);
 
-		waitForEncodingRelatedJobs(testName.getMethodName());
-		waitForContentDescriptionUpdate();
+		String testMethodName = testInfo.getTestMethod().get().getName();
+		waitForEncodingRelatedJobs(testMethodName);
+		waitForContentDescriptionUpdate(testMethodName);
 		// wait for noBuildJob so POST_BUILD will fire
 		((Workspace) getWorkspace()).getBuildManager().waitForAutoBuildOff();
 
@@ -376,8 +371,8 @@ public class RelaxedSchedRuleBuilderTest {
 				// workspace change after getRule released workspace lock and before build
 				// re-acquired it
 				boolean workspaceChangingJobAcquiringLock = waitForThreadStateWaiting(workspaceChangingJob.getThread());
-				assertTrue("timed out waiting for workspace changing job to wait for workspace lock",
-						workspaceChangingJobAcquiringLock);
+				assertTrue(workspaceChangingJobAcquiringLock,
+						"timed out waiting for workspace changing job to wait for workspace lock");
 				return project;
 			}
 
@@ -399,10 +394,10 @@ public class RelaxedSchedRuleBuilderTest {
 				assertTrue(Job.getJobManager().currentRule().equals(project));
 				// assert that the delta contains the file foo
 				IResourceDelta delta = getDelta(project);
-				assertNotNull("no workspace change occurred between getRule and build", delta);
-				assertEquals("unexpected number of changes occurred: " + ((ResourceDelta) delta).toDeepDebugString(), 1,
-						delta.getAffectedChildren().length);
-				assertEquals("unexpected resource was changed", foo, delta.getAffectedChildren()[0].getResource());
+				assertNotNull(delta, "no workspace change occurred between getRule and build");
+				assertEquals(1, delta.getAffectedChildren().length,
+						"unexpected number of changes occurred: " + ((ResourceDelta) delta).toDeepDebugString());
+				assertEquals(foo, delta.getAffectedChildren()[0].getResource(), "unexpected resource was changed");
 				tb.setStatus(TestBarrier2.STATUS_DONE);
 				return super.build(kind, args, monitor);
 			}
@@ -429,8 +424,8 @@ public class RelaxedSchedRuleBuilderTest {
 		errorLogging.assertNoErrorsLogged();
 	}
 
-	private void waitForContentDescriptionUpdate() {
-		TestUtil.waitForJobs(testName.getMethodName(), 10, 5_000,
+	private void waitForContentDescriptionUpdate(String testMethodName) {
+		TestUtil.waitForJobs(testMethodName, 10, 5_000,
 				ContentDescriptionManager.FAMILY_DESCRIPTION_CACHE_FLUSH);
 	}
 

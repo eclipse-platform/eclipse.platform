@@ -20,7 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -31,19 +31,17 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests relationship between natures and builders.  Builders that are owned
  * by a nature can only be run if their owning nature is defined on the project
  * being built.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class BuilderNatureTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	protected InputStream projectFileWithoutSnow() {
 		String contents = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<projectDescription>\n" + "	<name>P1</name>\n" + "	<comment></comment>\n" + "	<projects>\n" + "	</projects>\n" + "	<buildSpec>\n" + "		<buildCommand>\n" + "			<name>org.eclipse.core.tests.resources.snowbuilder</name>\n" + "			<arguments>\n" + "				<dictionary>\n" + "					<key>BuildID</key>\n" + "					<value>SnowBuild</value>\n" + "				</dictionary>\n" + "			</arguments>\n" + "		</buildCommand>\n" + "	</buildSpec>\n" + "	<natures>\n" + "		<nature>org.eclipse.core.tests.resources.waterNature</nature>\n" + "	</natures>\n" + "</projectDescription>";
@@ -178,7 +176,7 @@ public class BuilderNatureTest {
 		project.setDescription(desc, IResource.FORCE, createTestMonitor());
 		waitForBuild();
 		builder.assertLifecycleEvents();
-		assertTrue("5.1", builder.wasDeltaNull());
+		assertTrue(builder.wasDeltaNull());
 	}
 
 }
