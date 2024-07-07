@@ -13,15 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 import org.eclipse.core.internal.resources.ComputeProjectOrder;
 import org.eclipse.core.internal.resources.ComputeProjectOrder.Digraph;
 import org.eclipse.core.internal.resources.ComputeProjectOrder.Digraph.Edge;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ComputeProjectOrderTest {
 

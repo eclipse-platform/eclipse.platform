@@ -25,11 +25,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setBuildOrder;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForEncodingRelatedJobs;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -56,13 +56,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestBarrier2;
 import org.eclipse.core.tests.harness.TestJob;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.function.ThrowingRunnable;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This class tests public API related to building and to build specifications.
@@ -71,16 +71,11 @@ import org.junit.rules.TestName;
  * IWorkspace#build IProject#build IProjectDescription#getBuildSpec
  * IProjectDescription#setBuildSpec
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class BuilderTest {
 
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
-	@Before
-	@After
+	@BeforeEach
+	@AfterEach
 	public void resetBuilder() throws Exception {
 		TestBuilder builder = SortBuilder.getInstance();
 		if (builder != null) {
@@ -216,30 +211,30 @@ public class BuilderTest {
 		monitor.assertUsedUp();
 
 		DeltaVerifierBuilder verifier = DeltaVerifierBuilder.getInstance();
-		assertTrue("3.2", verifier.wasCleanBuild());
+		assertTrue(verifier.wasCleanBuild());
 		// Now do an incremental build - since delta was null it should appear as a clean build
 		monitor = new FussyProgressMonitor();
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
 		monitor.assertUsedUp();
-		assertTrue("3.4", verifier.wasFullBuild());
+		assertTrue(verifier.wasFullBuild());
 		// next time it will appear as an incremental build
 		project.touch(createTestMonitor());
 		monitor = new FussyProgressMonitor();
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, monitor);
 		monitor.assertUsedUp();
-		assertTrue("3.6", verifier.wasIncrementalBuild());
+		assertTrue(verifier.wasIncrementalBuild());
 
 		//do another clean
 		monitor = new FussyProgressMonitor();
 		getWorkspace().build(IncrementalProjectBuilder.CLEAN_BUILD, monitor);
 		monitor.assertUsedUp();
-		assertTrue("3.8", verifier.wasCleanBuild());
+		assertTrue(verifier.wasCleanBuild());
 
 		//doing a full build should still look like a full build
 		monitor = new FussyProgressMonitor();
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 		monitor.assertUsedUp();
-		assertTrue("3.10", verifier.wasFullBuild());
+		assertTrue(verifier.wasFullBuild());
 	}
 
 	/**
@@ -513,6 +508,7 @@ public class BuilderTest {
 		verifier.assertLifecycleEvents();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void extracted(final IProject proj1, final IProject proj2) throws CoreException {
 		// Create and set a build specs for project one
 		proj1.create(createTestMonitor());
@@ -531,6 +527,7 @@ public class BuilderTest {
 	 * to be built in the correct order.
 	 * This is a regression test for bug 330194.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testChangeDynamicBuildOrderDuringPreBuild() throws Throwable {
 		IWorkspace workspace = getWorkspace();
@@ -659,7 +656,7 @@ public class BuilderTest {
 	 * but the source project does not.
 	 */
 	@Test
-	public void testCopyProject() throws CoreException {
+	public void testCopyProject(TestInfo testInfo) throws CoreException {
 		IWorkspace workspace = getWorkspace();
 		// Create some resource handles
 		IProject proj1 = workspace.getRoot().getProject("testCopyProject" + 1);
@@ -683,7 +680,7 @@ public class BuilderTest {
 		desc.setName(proj2.getName());
 		proj1.copy(desc, IResource.NONE, createTestMonitor());
 
-		waitForEncodingRelatedJobs(testName.getMethodName());
+		waitForEncodingRelatedJobs(testInfo.getTestMethod().get().getName());
 		waitForBuild();
 		SortBuilder builder = SortBuilder.getInstance();
 		assertEquals(proj2, builder.getProject());
@@ -700,6 +697,7 @@ public class BuilderTest {
 	 * Tests an implicit workspace build order created by setting dynamic
 	 * project references.
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testDynamicBuildOrder() throws CoreException {
 		IWorkspace workspace = getWorkspace();
@@ -899,7 +897,7 @@ public class BuilderTest {
 		createInWorkspace(input, createRandomString());
 
 		waitForBuild();
-		assertTrue("1.0", output.exists());
+		assertTrue(output.exists());
 
 		//change the file and then immediately perform build
 		final ByteArrayOutputStream out = new ByteArrayOutputStream();

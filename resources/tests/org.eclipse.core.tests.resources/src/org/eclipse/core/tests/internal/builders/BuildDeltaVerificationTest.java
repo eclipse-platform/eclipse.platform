@@ -19,9 +19,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -35,21 +35,16 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests that deltas supplied to the builder are accurate
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class BuildDeltaVerificationTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
-	DeltaVerifierBuilder verifier;
-	/* some random resource handles */
 	protected static final String PROJECT1 = "Project1";
 	protected static final String PROJECT2 = "Project2";
 	protected static final String FOLDER1 = "Folder1";
@@ -57,6 +52,7 @@ public class BuildDeltaVerificationTest {
 	protected static final String FILE1 = "File1";
 	protected static final String FILE2 = "File2";
 	protected static final String FILE3 = "File3";
+
 	IProject project1;
 	IProject project2;
 	IFolder folder1;//below project2
@@ -65,6 +61,7 @@ public class BuildDeltaVerificationTest {
 	IFile file1;//below folder1
 	IFile file2;//below folder1
 	IFile file3;//below folder2
+	DeltaVerifierBuilder verifier;
 
 	/**
 	 * Tests that the builder is receiving an appropriate delta
@@ -73,15 +70,8 @@ public class BuildDeltaVerificationTest {
 		if (!verifier.isDeltaValid()) {
 			//		System.out.println(verifier.getMessage());
 		}
-		assertTrue("Should be an incremental build", verifier.wasIncrementalBuild());
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
-	}
-
-	/**
-	 * Runs code to handle a core exception
-	 */
-	protected void handleCoreException(CoreException e) {
-		assertTrue("CoreException: " + e.getMessage(), false);
+		assertTrue(verifier.wasIncrementalBuild(), "Should be an incremental build");
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 	}
 
 	/**
@@ -96,7 +86,7 @@ public class BuildDeltaVerificationTest {
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// Turn auto-building off
 		IWorkspace workspace = getWorkspace();
@@ -125,8 +115,8 @@ public class BuildDeltaVerificationTest {
 		project1.build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
 		verifier = DeltaVerifierBuilder.getInstance();
-		assertNotNull("Builder was not instantiated", verifier);
-		assertTrue("First build should be a batch build", verifier.wasFullBuild());
+		assertNotNull(verifier, "Builder was not instantiated");
+		assertTrue(verifier.wasFullBuild(), "First build should be a batch build");
 	}
 
 	/**
@@ -142,7 +132,7 @@ public class BuildDeltaVerificationTest {
 		if (verifier.wasFullBuild()) {
 			verifier.emptyBuild();
 		}
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 	}
 
 	/**
@@ -157,7 +147,7 @@ public class BuildDeltaVerificationTest {
 		if (verifier.wasFullBuild()) {
 			verifier.emptyBuild();
 		}
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 	}
 
 	/**
@@ -206,7 +196,7 @@ public class BuildDeltaVerificationTest {
 		project2.create(createTestMonitor());
 		rebuild();
 		// builder for project1 should not even be called
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+		assertTrue(verifier.isDeltaValid(), verifier.getMessage());
 	}
 
 	/**

@@ -17,8 +17,8 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -41,24 +41,18 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for various AutoBuildJob scheduling use cases
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class AutoBuildJobTest {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
 	private IProject project;
 	private AtomicLong running;
 	private AtomicLong scheduled;
@@ -80,26 +74,26 @@ public class AutoBuildJobTest {
 		}
 	};
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
 		scheduled = new AtomicLong(0);
 		running = new AtomicLong(0);
-		setupProjectWithOurBuilder();
+		setupProjectWithOurBuilder(testInfo.getTestMethod().get().getName());
 		setAutoBuilding(true);
 		Job.getJobManager().addJobChangeListener(jobChangeListener);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		Job.getJobManager().removeJobChangeListener(jobChangeListener);
 	}
 
-	private void setupProjectWithOurBuilder() throws CoreException {
-		project = getWorkspace().getRoot().getProject(testName.getMethodName());
+	private void setupProjectWithOurBuilder(String testMethodName) throws CoreException {
+		project = getWorkspace().getRoot().getProject(testMethodName);
 		project.create(createTestMonitor());
 		project.open(createTestMonitor());
 		updateProjectDescription(project).addingCommand(EmptyDeltaBuilder.BUILDER_NAME)
-				.withTestBuilderId(testName.getMethodName()).apply();
+				.withTestBuilderId(testMethodName).apply();
 	}
 
 	private void requestAutoBuildJobExecution() {
@@ -139,8 +133,8 @@ public class AutoBuildJobTest {
 
 		triggerAutoBuildAndWait();
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
-		assertEquals("Should see one scheduled() call", 1, scheduled.get());
-		assertEquals("Should see one running() call", 1, running.get());
+		assertEquals(1, scheduled.get(), "Should see one scheduled() call");
+		assertEquals(1, running.get(), "Should see one running() call");
 
 		if (cancel) {
 			assertEquals(true, cancelled.get());
@@ -167,8 +161,8 @@ public class AutoBuildJobTest {
 
 		triggerAutoBuildAndWait();
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
-		assertEquals("Should see two scheduled() calls", 2, scheduled.get());
-		assertEquals("Should see two running() calls", 2, running.get());
+		assertEquals(2, scheduled.get(), "Should see two scheduled() calls");
+		assertEquals(2, running.get(), "Should see two running() calls");
 	}
 
 	@Test
@@ -176,14 +170,14 @@ public class AutoBuildJobTest {
 		try {
 			Job.getJobManager().suspend();
 
-			assertEquals("Scheduled calls", 0, scheduled.get());
-			assertEquals("Running calls", 0, running.get());
+			assertEquals(0, scheduled.get(), "Scheduled calls");
+			assertEquals(0, running.get(), "Running calls");
 
 			triggerAutoBuildAndWait();
 			Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
 
-			assertEquals("Scheduled calls", 1, scheduled.get());
-			assertEquals("Running calls", 0, running.get());
+			assertEquals(1, scheduled.get(), "Scheduled calls");
+			assertEquals(0, running.get(), "Running calls");
 
 			assertThrows(JobManagerSuspendedException.class, () -> waitForAutoBuild(2_000));
 		} finally {
@@ -193,14 +187,14 @@ public class AutoBuildJobTest {
 
 	@Test
 	public void testWaitForAutoBuild_JobManagerIsRunning_NoExceptionIsThrown() throws Throwable {
-		assertEquals("Scheduled calls", 0, scheduled.get());
-		assertEquals("Running calls", 0, running.get());
+		assertEquals(0, scheduled.get(), "Scheduled calls");
+		assertEquals(0, running.get(), "Running calls");
 
 		triggerAutoBuildAndWait();
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
 
-		assertEquals("Scheduled calls", 1, scheduled.get());
-		assertEquals("Running calls", 1, running.get());
+		assertEquals(1, scheduled.get(), "Scheduled calls");
+		assertEquals(1, running.get(), "Running calls");
 
 		waitForAutoBuild(2_000);
 	}

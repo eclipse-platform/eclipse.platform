@@ -14,13 +14,20 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.junit.Assert;
 
 /**
  * Helper builder for cycle related tests.
@@ -49,12 +56,12 @@ public class CycleBuilder extends TestBuilder {
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		if (beforeProjects != null) {
 			for (IProject beforeProject : beforeProjects) {
-				Assert.assertTrue("Missing before project: " + beforeProject, hasBeenBuilt(beforeProject));
+				assertTrue(hasBeenBuilt(beforeProject), "Missing before project: " + beforeProject);
 			}
 		}
 		if (afterProjects != null) {
 			for (IProject afterProject : afterProjects) {
-				Assert.assertTrue("Missing after project: " + afterProject, !hasBeenBuilt(afterProject));
+				assertFalse(hasBeenBuilt(afterProject), "Missing after project: " + afterProject);
 			}
 		}
 		if (rebuildsToRequest > buildCount) {
@@ -63,7 +70,7 @@ public class CycleBuilder extends TestBuilder {
 		}
 		//ensure that subsequent builds are always incremental
 		if (buildCount > 0) {
-			Assert.assertTrue("Should be incremental build", kind == IncrementalProjectBuilder.INCREMENTAL_BUILD);
+			assertTrue(kind == IncrementalProjectBuilder.INCREMENTAL_BUILD, "Should be incremental build");
 		}
 		buildCount++;
 		return null;

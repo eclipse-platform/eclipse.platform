@@ -20,10 +20,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 import org.eclipse.core.resources.IBuildConfiguration;
@@ -38,29 +38,27 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.builders.TestBuilder.BuilderRuleCallback;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * These tests exercise the project buildConfigs functionality which allows a different
  * builder to be run for different project buildConfigs.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class BuildConfigurationsTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	private static final String variant0 = "Variant0";
+	private static final String variant1 = "Variant1";
+	private static final String variant2 = "Variant2";
 
 	private IProject project0;
 	private IProject project1;
 	private IFile file0;
 	private IFile file1;
-	private static final String variant0 = "Variant0";
-	private static final String variant1 = "Variant1";
-	private static final String variant2 = "Variant2";
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// Create resources
 		IWorkspaceRoot root = getWorkspace().getRoot();
@@ -165,22 +163,22 @@ public class BuildConfigurationsTest {
 		// was last built
 		incrementalBuild(6, tempProject, variant0, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		ConfigurationBuilder builder0 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant0));
-		assertNotNull("6.10", builder0);
+		assertNotNull(builder0);
 		ResourceDeltaVerifier verifier0 = new ResourceDeltaVerifier();
 		verifier0.addExpectedChange(tempFile0, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 		verifier0.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 		verifier0.verifyDelta(builder0.deltaForLastBuild);
-		assertTrue("6.11: " + verifier0.getMessage(), verifier0.isDeltaValid());
+		assertTrue(verifier0.isDeltaValid(), verifier0.getMessage());
 
 		// verify variant1 - only File1 is expected to have changed since it was last
 		// built
 		incrementalBuild(7, tempProject, variant1, true, 1, IncrementalProjectBuilder.INCREMENTAL_BUILD);
 		ConfigurationBuilder builder1 = ConfigurationBuilder.getBuilder(tempProject.getBuildConfig(variant1));
-		assertNotNull("7.10", builder1);
+		assertNotNull(builder1);
 		ResourceDeltaVerifier verifier1 = new ResourceDeltaVerifier();
 		verifier1.addExpectedChange(tempFile1, tempProject, IResourceDelta.CHANGED, IResourceDelta.CONTENT);
 		verifier1.verifyDelta(builder1.deltaForLastBuild);
-		assertTrue("7.11: " + verifier1.getMessage(), verifier1.isDeltaValid());
+		assertTrue(verifier1.isDeltaValid(), verifier1.getMessage());
 
 		// verify variant2 - no changes are expected since it was last built
 		incrementalBuild(8, tempProject, variant2, false, 0, 0);
@@ -213,11 +211,11 @@ public class BuildConfigurationsTest {
 		setReferences(project0, variant0, new IBuildConfiguration[] {project0.getBuildConfig(variant1), project1.getBuildConfig(variant2), project1.getBuildConfig(variant0)});
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
-		assertEquals("1.0", 4, ConfigurationBuilder.buildOrder.size());
-		assertEquals("1.1", project0.getBuildConfig(variant1), ConfigurationBuilder.buildOrder.get(0));
-		assertEquals("1.2", project1.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(1));
-		assertEquals("1.3", project1.getBuildConfig(variant2), ConfigurationBuilder.buildOrder.get(2));
-		assertEquals("1.4", project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(3));
+		assertEquals(4, ConfigurationBuilder.buildOrder.size());
+		assertEquals(project0.getBuildConfig(variant1), ConfigurationBuilder.buildOrder.get(0));
+		assertEquals(project1.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(1));
+		assertEquals(project1.getBuildConfig(variant2), ConfigurationBuilder.buildOrder.get(2));
+		assertEquals(project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(3));
 		checkBuild(2, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		checkBuild(3, project0, variant1, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 		checkBuild(4, project0, variant2, false, 0, 0);
@@ -231,9 +229,9 @@ public class BuildConfigurationsTest {
 		ConfigurationBuilder.clearBuildOrder();
 		getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, createTestMonitor());
 
-		assertEquals("8.0", 2, ConfigurationBuilder.buildOrder.size());
-		assertEquals("8.1", project1.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
-		assertEquals("8.2", project1.getBuildConfig(variant2), ConfigurationBuilder.buildOrder.get(1));
+		assertEquals(2, ConfigurationBuilder.buildOrder.size());
+		assertEquals(project1.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
+		assertEquals(project1.getBuildConfig(variant2), ConfigurationBuilder.buildOrder.get(1));
 		checkBuild(9, project0, variant0, false, 1, 0);
 		checkBuild(10, project0, variant1, false, 1, 0);
 		checkBuild(11, project0, variant2, false, 0, 0);
@@ -262,16 +260,16 @@ public class BuildConfigurationsTest {
 		project1.close(createTestMonitor());
 		// should still be able to build project 0.
 		getWorkspace().build(new IBuildConfiguration[] {project0.getBuildConfig(variant0)}, IncrementalProjectBuilder.FULL_BUILD, true, createTestMonitor());
-		assertEquals("1.0", 1, ConfigurationBuilder.buildOrder.size());
-		assertEquals("1.1", project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
+		assertEquals(1, ConfigurationBuilder.buildOrder.size());
+		assertEquals(project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
 		checkBuild(2, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
 		// Workspace full build should also build project 0
 		ConfigurationBuilder.clearStats();
 		ConfigurationBuilder.clearBuildOrder();
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
-		assertEquals("1.0", 1, ConfigurationBuilder.buildOrder.size());
-		assertEquals("1.1", project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
+		assertEquals(1, ConfigurationBuilder.buildOrder.size());
+		assertEquals(project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
 		checkBuild(2, project0, variant0, true, 1, IncrementalProjectBuilder.FULL_BUILD);
 
 		// re-open project 1
@@ -281,9 +279,9 @@ public class BuildConfigurationsTest {
 		ConfigurationBuilder.clearBuildOrder();
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, createTestMonitor());
 
-		assertEquals("8.0", 2, ConfigurationBuilder.buildOrder.size());
-		assertEquals("8.1", project1.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
-		assertEquals("8.2", project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(1));
+		assertEquals(2, ConfigurationBuilder.buildOrder.size());
+		assertEquals(project1.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(0));
+		assertEquals(project0.getBuildConfig(variant0), ConfigurationBuilder.buildOrder.get(1));
 	}
 
 	/**
@@ -321,9 +319,9 @@ public class BuildConfigurationsTest {
 	private void clean(int testId, IProject project, String variant, int expectedCount) throws CoreException {
 		project.build(project.getBuildConfig(variant), IncrementalProjectBuilder.CLEAN_BUILD, createTestMonitor());
 		ConfigurationBuilder builder = ConfigurationBuilder.getBuilder(project.getBuildConfig(variant));
-		assertNotNull(testId + ".0", builder);
-		assertEquals(testId + ".1", expectedCount, builder.buildCount);
-		assertEquals(testId + ".2", IncrementalProjectBuilder.CLEAN_BUILD, builder.triggerForLastBuild);
+		assertNotNull(builder, testId + "");
+		assertEquals(expectedCount, builder.buildCount, testId);
+		assertEquals(IncrementalProjectBuilder.CLEAN_BUILD, builder.triggerForLastBuild, testId);
 	}
 
 	/**
@@ -333,12 +331,12 @@ public class BuildConfigurationsTest {
 		project.getBuildConfig(variant);
 		ConfigurationBuilder builder = ConfigurationBuilder.getBuilder(project.getBuildConfig(variant));
 		if (builder == null) {
-			assertFalse(testId + ".1", shouldBuild);
-			assertEquals(testId + ".2", 0, expectedCount);
+			assertFalse(shouldBuild, testId + "");
+			assertEquals(0, expectedCount, testId);
 		} else {
-			assertEquals(testId + ".3", expectedCount, builder.buildCount);
+			assertEquals(expectedCount, builder.buildCount, testId);
 			if (shouldBuild) {
-				assertEquals(testId + ".4", expectedTrigger, builder.triggerForLastBuild);
+				assertEquals(expectedTrigger, builder.triggerForLastBuild, testId);
 			}
 		}
 	}

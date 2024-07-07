@@ -31,27 +31,24 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * These tests exercise the build context functionality that tells a builder in what context
  * it was called.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class BuildContextTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
 	private IProject project0;
 	private IProject project1;
 	private IProject project2;
 	private static final String variant0 = "Variant0";
 	private static final String variant1 = "Variant1";
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// Create resources
 		IWorkspaceRoot root = getWorkspace().getRoot();

@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.builders;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +27,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.junit.Assert;
 
 /**
  * An abstract builder that is designed to be extended for testing purposes.
@@ -103,7 +104,7 @@ public abstract class TestBuilder extends IncrementalProjectBuilder {
 	 * expected and actual events in preparation for the next test.
 	 */
 	public void assertLifecycleEvents() {
-		Assert.assertEquals(expectedEvents, actualEvents);
+		assertEquals(expectedEvents, actualEvents);
 		reset();
 	}
 
