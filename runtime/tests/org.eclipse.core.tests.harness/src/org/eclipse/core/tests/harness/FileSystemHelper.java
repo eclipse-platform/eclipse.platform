@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness;
 
+import static java.util.Comparator.reverseOrder;
 import static org.eclipse.core.tests.harness.TestHarnessPlugin.PI_HARNESS;
 import static org.eclipse.core.tests.harness.TestHarnessPlugin.log;
 
@@ -20,11 +21,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.junit.function.ThrowingRunnable;
 
 /**
  * Home for file system-related utility methods.
@@ -190,6 +194,61 @@ public class FileSystemHelper {
 			}
 		}
 		return canCreateSymLinks.booleanValue();
+	}
+
+	/**
+	 * Deletes the file or folder at the given path with all its contents.
+	 *
+	 * @param path the path of the file or folder to delete
+	 * @throws IOException if traversing the file tree for deletion fails
+	 */
+	public static void deleteRecursively(Path path) throws IOException {
+		Files.walk(path) //
+				.sorted(reverseOrder()) //
+				.forEach(FileSystemHelper::deleteSilently);
+	}
+
+	private static void deleteSilently(Path path) {
+		try {
+			Files.delete(path);
+		} catch (IOException exception) {
+			ILog.get().log(new Status(IStatus.WARNING, PI_HARNESS,
+					"Test file or directory could not be removed: " + path, exception));
+		}
+	}
+
+	/**
+	 * Deletes the file or folder at the given path with all its contents when the
+	 * Java runtime is shut down.
+	 *
+	 * @param path the path of the file or folder to delete on shutdown
+	 */
+	public static void deleteOnShutdownRecursively(Path path) {
+		Runnable deleteDirectory = () -> {
+			try {
+				deleteRecursively(path);
+			} catch (IOException exception) {
+				ILog.get().log(new Status(IStatus.WARNING, PI_HARNESS, "Error when removing test directory: " + path,
+						exception));
+			}
+		};
+		Runtime.getRuntime().addShutdownHook(new Thread(deleteDirectory));
+	}
+
+	/**
+	 * Recursively deletes the folder at the given path after executing the given
+	 * runnable.
+	 *
+	 * @param pathToDelete       the path of the file or folder to delete
+	 * @param operationToExecute the operation to execute
+	 * @throws Throwable if a throwable is thrown in the operation to execute
+	 */
+	public static void deleteAfterExecution(Path pathToDelete, ThrowingRunnable operationToExecute) throws Throwable {
+		try {
+			operationToExecute.run();
+		} finally {
+			FileSystemHelper.deleteRecursively(pathToDelete);
+		}
 	}
 
 }

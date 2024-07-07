@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.harness.session.customization;
 
-import static org.eclipse.core.tests.harness.session.customization.SessionCustomizationUtil.deleteOnShutdownRecursively;
+import static org.eclipse.core.tests.harness.FileSystemHelper.deleteOnShutdownRecursively;
 
 import java.io.IOException;
 import java.nio.file.Files;

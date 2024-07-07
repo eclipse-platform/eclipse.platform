@@ -11,7 +11,7 @@
 package org.eclipse.core.tests.harness.session.customization;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.core.tests.harness.session.customization.SessionCustomizationUtil.deleteOnShutdownRecursively;
+import static org.eclipse.core.tests.harness.FileSystemHelper.deleteOnShutdownRecursively;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
