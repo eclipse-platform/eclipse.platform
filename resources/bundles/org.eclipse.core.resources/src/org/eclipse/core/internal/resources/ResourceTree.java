@@ -15,15 +15,34 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
-import java.net.URISyntaxException;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.localstore.FileSystemResourceManager;
 import org.eclipse.core.internal.properties.IPropertyManager;
-import org.eclipse.core.internal.utils.*;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.internal.utils.BitMask;
+import org.eclipse.core.internal.utils.Messages;
+import org.eclipse.core.internal.utils.Policy;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.team.IResourceTree;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.osgi.util.NLS;
 
@@ -346,48 +365,28 @@ class ResourceTree implements IResourceTree {
 		if (!folder.exists())
 			return true;
 
-		IFileStore fileStore = localManager.getStore(folder);
-		if (ZipFileUtil.isOpenZipFile(fileStore)) {
-			try {
-				// folder is opened zip file
-				deletedFolder(folder);
-				// if the IResource.CLOSE_ZIP_FILE flag is set, the file should not be deleted
-				// in the file system.
-				if ((flags & (IResource.CLOSE_ZIP_FILE)) != 0) {
-					return true;
-				}
-				IFile file = folder.getParent().getFile(IPath.fromOSString(folder.getName()));
-				IFileStore parentStore = localManager.getStore(file);
-				parentStore.delete(EFS.NONE, Policy.subMonitorFor(monitor, Policy.totalWork / 4));
-				return true;
-			} catch (CoreException e) {
-				failed(e.getStatus());
-			}
-		} else {
-			// Don't delete contents if this is a linked resource
-			if (folder.isLinked()) {
-				deletedFolder(folder);
-				return true;
-			}
-
-			// If the folder doesn't exist on disk then update the tree and return.
-
-			if (!fileStore.fetchInfo().exists()) {
-				deletedFolder(folder);
-				return true;
-			}
-
-			try {
-				// this will delete local and workspace
-				localManager.delete(folder, flags, Policy.subMonitorFor(monitor, Policy.totalWork));
-			} catch (CoreException ce) {
-				message = NLS.bind(Messages.localstore_couldnotDelete, folder.getFullPath());
-				IStatus status = new ResourceStatus(IStatus.ERROR, IResourceStatus.FAILED_DELETE_LOCAL,
-						folder.getFullPath(), message, ce);
-				failed(status);
-				return false;
-			}
+		// Don't delete contents if this is a linked resource
+		if (folder.isLinked()) {
+			deletedFolder(folder);
 			return true;
+		}
+
+		// If the folder doesn't exist on disk then update the tree and return.
+		IFileStore fileStore = localManager.getStore(folder);
+		if (!fileStore.fetchInfo().exists()) {
+			deletedFolder(folder);
+			return true;
+		}
+
+		try {
+			// this will delete local and workspace
+			localManager.delete(folder, flags, Policy.subMonitorFor(monitor, Policy.totalWork));
+		} catch (CoreException ce) {
+			message = NLS.bind(Messages.localstore_couldnotDelete, folder.getFullPath());
+			IStatus status = new ResourceStatus(IStatus.ERROR, IResourceStatus.FAILED_DELETE_LOCAL,
+					folder.getFullPath(), message, ce);
+			failed(status);
+			return false;
 		}
 		return true;
 	}
@@ -1009,23 +1008,6 @@ class ResourceTree implements IResourceTree {
 			// These pre-conditions should all be ok but just in case...
 			if (!source.exists() || destination.exists() || !destination.getParent().isAccessible())
 				throw new IllegalArgumentException();
-
-			if (ZipFileUtil.isOpenZipFile(source.getLocationURI())) {
-				try {
-					ZipFileTransformer.closeZipFile(source);
-					IFile newSource = source.getParent().getFile(IPath.fromOSString(source.getName()));
-					IFile newDestination = destination.getParent().getFile(IPath.fromOSString(destination.getName()));
-					newSource.move(newDestination.getFullPath(), false, null);
-					if (!ZipFileUtil.isNested(destination.getLocationURI())) {
-						ZipFileTransformer.openZipFile(newDestination, false);
-					}
-					return;
-				} catch (URISyntaxException | CoreException e) {
-					message = NLS.bind(Messages.localstore_couldNotMove, source);
-					IStatus status = new ResourceStatus(IStatus.ERROR, source.getFullPath(), message, e);
-					failed(status);
-				}
-			}
 
 			// Check to see if we are synchronized with the local file system. If we are in
 			// sync then we can
