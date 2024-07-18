@@ -542,7 +542,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 			return false;
 		}
 		if (0 != (delta.getFlags() & IResourceDelta.OPEN)) {
-			if (delta.getResource() instanceof IProject project) {
+			if (delta.getFullPath().segmentCount() == 1 && delta.getResource() instanceof IProject project) {
 				if (project.isOpen()) {
 					LaunchManager.this.projectOpened(project);
 				} else {
@@ -551,8 +551,8 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 			}
 			return false;
 		}
-		if (delta.getResource() instanceof IFile file) {
-			if (LAUNCH_CONFIG_FILE_EXTENSIONS.contains(file.getFileExtension())) {
+		if (LAUNCH_CONFIG_FILE_EXTENSIONS.contains(delta.getFullPath().getFileExtension())) {
+			if (delta.getResource() instanceof IFile file) {
 				ILaunchConfiguration handle = new LaunchConfiguration(file);
 				switch (delta.getKind()) {
 					case IResourceDelta.ADDED:
