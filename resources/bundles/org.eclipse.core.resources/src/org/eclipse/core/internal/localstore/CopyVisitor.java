@@ -18,10 +18,25 @@ import java.net.URI;
 import java.util.LinkedList;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.Container;
+import org.eclipse.core.internal.resources.File;
+import org.eclipse.core.internal.resources.FilterDescription;
+import org.eclipse.core.internal.resources.Folder;
+import org.eclipse.core.internal.resources.Project;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.ResourceStatus;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 //
@@ -135,7 +150,7 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 	 */
 	protected RefreshLocalVisitor getRefreshLocalVisitor() {
 		if (refreshLocalVisitor == null)
-			refreshLocalVisitor = new RefreshLocalVisitor(SubMonitor.convert(null));
+			refreshLocalVisitor = new RefreshLocalVisitor(null);
 		return refreshLocalVisitor;
 	}
 

@@ -22,14 +22,28 @@ package org.eclipse.core.internal.localstore;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
-import org.eclipse.core.filesystem.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileTree;
 import org.eclipse.core.internal.refresh.RefreshJob;
-import org.eclipse.core.internal.resources.*;
+import org.eclipse.core.internal.resources.ICoreConstants;
+import org.eclipse.core.internal.resources.Resource;
+import org.eclipse.core.internal.resources.ResourceInfo;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
@@ -43,15 +57,8 @@ public class UnifiedTree {
 	/** special node to mark the separation of a node's children */
 	protected static final UnifiedTreeNode childrenMarker = new UnifiedTreeNode(null, null, null, null, false);
 
-	private static final Iterator<UnifiedTreeNode> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
-
 	/** special node to mark the beginning of a level in the tree */
 	protected static final UnifiedTreeNode levelMarker = new UnifiedTreeNode(null, null, null, null, false);
-
-	private static final IFileInfo[] NO_CHILDREN = {};
-
-	/** Singleton to indicate no local children */
-	private static final IResource[] NO_RESOURCES = {};
 
 	/**
 	 * True if the level of the children of the current node are valid according
@@ -145,7 +152,7 @@ public class UnifiedTree {
 
 		// get the list of resources in the file system
 		// don't ask for local children if we know it doesn't exist locally
-		IFileInfo[] list = node.existsInFileSystem() ? getLocalList(node) : NO_CHILDREN;
+		List<IFileInfo> list = node.existsInFileSystem() ? getLocalList(node) : List.of();
 		int localIndex = 0;
 
 		// See if the children of this resource have been computed before
@@ -155,21 +162,21 @@ public class UnifiedTree {
 
 		// get the list of resources in the workspace
 		if (!unknown && (parentType == IResource.FOLDER || parentType == IResource.PROJECT) && parent.exists(flags, true)) {
-			IResource target = null;
-			UnifiedTreeNode child = null;
-			IResource[] members;
+			List<IResource> members;
 			try {
-				members = ((IContainer) parent).members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
+				IContainer container = (IContainer) parent;
+				members = Arrays.asList(container.members(IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN));
 			} catch (CoreException e) {
-				members = NO_RESOURCES;
+				members = List.of();
 			}
 			int workspaceIndex = 0;
 			//iterate simultaneously over file system and workspace members
-			while (workspaceIndex < members.length) {
-				target = members[workspaceIndex];
+			while (workspaceIndex < members.size()) {
+				IResource target = members.get(workspaceIndex);
 				String name = target.getName();
-				IFileInfo localInfo = localIndex < list.length ? list[localIndex] : null;
+				IFileInfo localInfo = localIndex < list.size() ? list.get(localIndex) : null;
 				int comp = localInfo != null ? name.compareTo(localInfo.getName()) : -1;
+				UnifiedTreeNode child = null;
 				//special handling for linked resources
 				if (target.isLinked()) {
 					//child will be null if location is undefined
@@ -221,11 +228,11 @@ public class UnifiedTree {
 			addChildrenMarker();
 	}
 
-	protected void addChildrenFromFileSystem(UnifiedTreeNode node, IFileInfo[] childInfos, int index) {
-		if (childInfos == null)
+	protected void addChildrenFromFileSystem(UnifiedTreeNode node, List<IFileInfo> childInfos, int index) {
+		if (childInfos == null) {
 			return;
-		for (int i = index; i < childInfos.length; i++) {
-			IFileInfo info = childInfos[i];
+		}
+		for (IFileInfo info : childInfos.subList(index, childInfos.size())) {
 			//don't create a node for symbolic links that create a cycle
 			if (!info.getAttribute(EFS.ATTRIBUTE_SYMLINK) || !info.isDirectory() || !isRecursiveLink(node.getStore(), info))
 				addChildToTree(node, createChildNodeFromFileSystem(node, info));
@@ -321,14 +328,14 @@ public class UnifiedTree {
 
 		/* if the first child is still null, the node does not have any children */
 		if (node.getFirstChild() == null)
-			return EMPTY_ITERATOR;
+			return Collections.emptyIterator();
 
 		/* get the index of the first child */
 		int index = queue.indexOf(node.getFirstChild());
 
 		/* if we do not have children, just return an empty enumeration */
 		if (index == -1)
-			return EMPTY_ITERATOR;
+			return Collections.emptyIterator();
 
 		/* create an enumeration with node's children */
 		List<UnifiedTreeNode> result = new ArrayList<>(10);
@@ -350,7 +357,7 @@ public class UnifiedTree {
 		return level;
 	}
 
-	protected IFileInfo[] getLocalList(UnifiedTreeNode node) {
+	protected List<IFileInfo> getLocalList(UnifiedTreeNode node) {
 		try {
 			final IFileStore store = node.getStore();
 			IFileInfo[] list;
@@ -360,15 +367,15 @@ public class UnifiedTree {
 				list = store.childInfos(EFS.NONE, null);
 
 			if (list == null || list.length == 0)
-				return NO_CHILDREN;
+				return List.of();
 			list = ((Resource) node.getResource()).filterChildren(list, false);
-			int size = list.length;
-			if (size > 1)
-				quickSort(list, 0, size - 1);
-			return list;
+			if (list.length > 1) {
+				Arrays.sort(list);
+			}
+			return Arrays.asList(list);
 		} catch (CoreException e) {
 			//treat failure to access the directory as a non-existent directory
-			return NO_CHILDREN;
+			return List.of();
 		}
 	}
 
@@ -402,11 +409,11 @@ public class UnifiedTree {
 	private static class PatternHolder {
 		//Initialize-on-demand Holder class to avoid compiling Pattern if never needed
 		//Pattern: A UNIX or Windows relative path that just points backward
-		private static final String REGEX = Platform.getOS().equals(Platform.OS_WIN32) ? "\\.[.\\\\]*" : "\\.[./]*"; //$NON-NLS-1$ //$NON-NLS-2$
-		public static final Pattern TRIVIAL_SYMLINK_PATTERN = Pattern.compile(REGEX);
+		static final Pattern TRIVIAL_SYMLINK_PATTERN = Pattern.compile( //
+				Platform.OS.isWindows() ? "\\.[.\\\\]*" : "\\.[./]*"); //$NON-NLS-1$//$NON-NLS-2$
 
-		private static final String REGEX_BACK_REPEATING = Platform.getOS().equals(Platform.OS_WIN32) ? "(\\.\\.\\\\)+.*" : "(\\.\\./)+.*"; //$NON-NLS-1$ //$NON-NLS-2$
-		public static final Pattern REPEATING_BACKWARDS_PATTERN = Pattern.compile(REGEX_BACK_REPEATING);
+		static final Pattern REPEATING_BACKWARDS_PATTERN = Pattern.compile( //
+				Platform.OS.isWindows() ? "(\\.\\.\\\\)+.*" : "(\\.\\./)+.*"); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	/**
@@ -541,44 +548,12 @@ public class UnifiedTree {
 	}
 
 	protected boolean isValidLevel(int currentLevel, int depth) {
-		switch (depth) {
-			case IResource.DEPTH_INFINITE :
-				return true;
-			case IResource.DEPTH_ONE :
-				return currentLevel <= 1;
-			case IResource.DEPTH_ZERO :
-				return currentLevel == 0;
-			default :
-				return currentLevel + 1000 <= depth;
-		}
-	}
-
-	/**
-	 * Sorts the given array of strings in place.  This is
-	 * not using the sorting framework to avoid casting overhead.
-	 */
-	protected void quickSort(IFileInfo[] infos, int left, int right) {
-		int originalLeft = left;
-		int originalRight = right;
-		IFileInfo mid = infos[(left + right) / 2];
-		do {
-			while (mid.compareTo(infos[left]) > 0)
-				left++;
-			while (infos[right].compareTo(mid) > 0)
-				right--;
-			if (left <= right) {
-				IFileInfo tmp = infos[left];
-				infos[left] = infos[right];
-				infos[right] = tmp;
-				left++;
-				right--;
-			}
-		} while (left <= right);
-		if (originalLeft < right)
-			quickSort(infos, originalLeft, right);
-		if (left < originalRight)
-			quickSort(infos, left, originalRight);
-		return;
+		return switch (depth) {
+		case IResource.DEPTH_INFINITE -> true;
+		case IResource.DEPTH_ONE -> currentLevel <= 1;
+		case IResource.DEPTH_ZERO -> currentLevel == 0;
+		default -> currentLevel + 1000 <= depth;
+		};
 	}
 
 	/**

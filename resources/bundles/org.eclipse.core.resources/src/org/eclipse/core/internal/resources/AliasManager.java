@@ -608,8 +608,8 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 	 * @param depth whether to search for aliases on all children of the given
 	 * resource.  Only depth ZERO and INFINITE are used.
 	 */
-	@SuppressWarnings({"unchecked"})
 	public void updateAliases(IResource resource, IFileStore location, int depth, IProgressMonitor monitor) throws CoreException {
+		monitor = IProgressMonitor.nullSafe(monitor);
 		if (hasNoAliases(resource))
 			return;
 		aliases.clear();
@@ -620,8 +620,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		if (aliases.isEmpty())
 			return;
 		FileSystemResourceManager localManager = workspace.getFileSystemManager();
-		HashSet<IResource> aliasesCopy = (HashSet<IResource>) aliases.clone();
-		for (IResource alias : aliasesCopy) {
+		for (IResource alias : new ArrayList<>(aliases)) {
 			monitor.subTask(NLS.bind(Messages.links_updatingDuplicate, alias.getFullPath()));
 			if (alias.getType() == IResource.PROJECT) {
 				if (checkDeletion((Project) alias, location))
