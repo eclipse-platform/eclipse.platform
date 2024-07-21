@@ -14,11 +14,22 @@
  *******************************************************************************/
 package org.eclipse.core.filesystem.provider;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
-import org.eclipse.core.filesystem.*;
-import org.eclipse.core.internal.filesystem.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.filesystem.IFileSystem;
+import org.eclipse.core.internal.filesystem.FileCache;
+import org.eclipse.core.internal.filesystem.Messages;
+import org.eclipse.core.internal.filesystem.Policy;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.PlatformObject;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -57,7 +68,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	private static final void transferStreams(InputStream source, OutputStream destination, long length, String path, IProgressMonitor monitor) throws CoreException {
 		byte[] buffer = new byte[8192];
 		SubMonitor subMonitor = SubMonitor.convert(monitor, length >= 0 ? 1 + (int) (length / buffer.length) : 1000);
-		try {
+		try (source; destination) {
 			while (true) {
 				int bytesRead = -1;
 				try {
@@ -78,9 +89,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 				}
 				subMonitor.worked(1);
 			}
-		} finally {
-			Policy.safeClose(source);
-			Policy.safeClose(destination);
+		} catch (IOException e) { // ignore
 		}
 	}
 
@@ -193,16 +202,13 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 		long length = sourceInfo.getLength();
 		String sourcePath = toString();
 		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.copying, sourcePath), 100);
-		InputStream in = null;
-		OutputStream out = null;
-		try {
-			in = openInputStream(EFS.NONE, subMonitor.newChild(1));
-			out = destination.openOutputStream(EFS.NONE, subMonitor.newChild(1));
+		try (InputStream in = openInputStream(EFS.NONE, subMonitor.newChild(1)); //
+				OutputStream out = destination.openOutputStream(EFS.NONE, subMonitor.newChild(1));) {
 			transferStreams(in, out, length, sourcePath, subMonitor.newChild(98));
 			transferAttributes(sourceInfo, destination);
+		} catch (IOException e) {
+			// ignore
 		} catch (CoreException e) {
-			Policy.safeClose(in);
-			Policy.safeClose(out);
 			//if we failed to write, try to cleanup the half written file
 			if (!destination.fetchInfo(0, null).exists())
 				destination.delete(EFS.NONE, null);
