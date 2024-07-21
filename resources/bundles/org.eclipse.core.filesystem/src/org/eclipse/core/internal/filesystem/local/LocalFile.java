@@ -27,10 +27,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.CopyOption;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -147,6 +149,27 @@ public class LocalFile extends FileStore {
 		}
 		//fall through to super implementation
 		super.copy(destFile, options, monitor);
+	}
+
+	private static final CopyOption[] NO_OVERWRITE = {StandardCopyOption.COPY_ATTRIBUTES};
+	private static final CopyOption[] OVERWRITE_EXISTING = {StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING};
+
+	@Override
+	protected void copyFile(IFileInfo sourceInfo, IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
+		if (destination instanceof LocalFile target) {
+			try {
+				boolean overwrite = (options & EFS.OVERWRITE) != 0;
+				Files.copy(this.file.toPath(), target.file.toPath(), overwrite ? OVERWRITE_EXISTING : NO_OVERWRITE);
+			} catch (FileAlreadyExistsException e) {
+				Policy.error(EFS.ERROR_EXISTS, NLS.bind(Messages.fileExists, target.filePath), e);
+			} catch (IOException e) {
+				Policy.error(EFS.ERROR_WRITE, NLS.bind(Messages.failedCopy, this.filePath, target.filePath), e);
+			} finally {
+				IProgressMonitor.done(monitor);
+			}
+		} else {
+			super.copyFile(sourceInfo, destination, options, monitor);
+		}
 	}
 
 	@Override
