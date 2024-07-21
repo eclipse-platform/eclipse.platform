@@ -17,11 +17,9 @@
 
 package org.eclipse.ant.internal.ui.datatransfer;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -188,16 +186,8 @@ public class BuildFileCreator {
 
 				// write build file
 				String xml = ExportUtil.toString(instance.doc);
-				try (InputStream is = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
-					if (file.exists()) {
-						file.setContents(is, true, true, null);
-					} else {
-						file.create(is, true, null);
-					}
-				}
-				catch (IOException closException) {
-					// ignored
-				}
+				byte[] bytes = xml.getBytes(StandardCharsets.UTF_8);
+				file.write(bytes, true, false, true, null);
 				if (localmonitor.isCanceled()) {
 					return;
 				}
@@ -1022,12 +1012,8 @@ public class BuildFileCreator {
 		{
 			// write build file
 			String html = AppletUtil.buildHTMLFile(conf);
-			InputStream is = new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
-			if (file.exists()) {
-				file.setContents(is, true, true, null);
-			} else {
-				file.create(is, true, null);
-			}
+			byte[] bytes = html.getBytes(StandardCharsets.UTF_8);
+			file.write(bytes, true, false, true, null);
 		}
 
 		Element element = doc.createElement("target"); //$NON-NLS-1$

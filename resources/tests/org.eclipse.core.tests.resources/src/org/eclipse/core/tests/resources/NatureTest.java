@@ -27,7 +27,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,7 +38,6 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.CheckMissingNaturesListener;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.PreferenceInitializer;
-import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -380,11 +378,9 @@ public class NatureTest {
 		assertThat(marker.getAttribute("natureId")).isEqualTo(NATURE_MISSING);
 		assertThat(marker.getAttribute(IMarker.CHAR_START, -42)).isNotEqualTo(-42);
 		assertThat(marker.getAttribute(IMarker.CHAR_END, -42)).isNotEqualTo(-42);
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); InputStream input = ((IFile) marker.getResource()).getContents()) {
-			FileUtil.transferStreams(input, bos, "whatever", createTestMonitor());
-			String marked = bos.toString().substring(marker.getAttribute(IMarker.CHAR_START, -42), marker.getAttribute(IMarker.CHAR_END, -42));
-			assertThat(marked).isEqualTo(NATURE_MISSING);
-		}
+		String content = ((IFile) marker.getResource()).readString();
+		String marked = content.substring(marker.getAttribute(IMarker.CHAR_START, -42), marker.getAttribute(IMarker.CHAR_END, -42));
+		assertThat(marked).isEqualTo(NATURE_MISSING);
 	}
 
 	@Test
@@ -408,12 +404,9 @@ public class NatureTest {
 		assertThat(marker.getAttribute("natureId")).isEqualTo(NATURE_MISSING);
 		assertThat(marker.getAttribute(IMarker.CHAR_START, -42)).isNotEqualTo(-42);
 		assertThat(marker.getAttribute(IMarker.CHAR_END, -42)).isNotEqualTo(-42);
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); InputStream input = ((IFile) marker.getResource()).getContents()) {
-			FileUtil.transferStreams(input, bos, "whatever", createTestMonitor());
-			String marked = bos.toString().substring(marker.getAttribute(IMarker.CHAR_START, -42),
-					marker.getAttribute(IMarker.CHAR_END, -42));
-			assertThat(marked).isEqualTo(NATURE_MISSING);
-		}
+		String content = ((IFile) marker.getResource()).readString();
+		String marked = content.substring(marker.getAttribute(IMarker.CHAR_START, -42), marker.getAttribute(IMarker.CHAR_END, -42));
+		assertThat(marked).isEqualTo(NATURE_MISSING);
 	}
 
 	@Test

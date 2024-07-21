@@ -16,20 +16,45 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
-import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
-import org.osgi.service.component.annotations.*;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 @Component(service = IResourceChangeListener.class, property = IResourceChangeListener.PROPERTY_EVENT_MASK + ":Integer="
 		+ IResourceChangeEvent.POST_CHANGE)
@@ -238,23 +263,15 @@ public class CheckMissingNaturesListener implements IResourceChangeListener, IPr
 		}
 		Pattern pattern = Pattern.compile(".*<" + IModelObjectConstants.NATURE + ">\\s*(" + natureId.replace(".", "\\.") + ")\\s*</" + IModelObjectConstants.NATURE + ">.*", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 				Pattern.DOTALL);
-		try (
-			InputStream input = file.getContents();
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-		) {
-			IPath path = file.getLocation();
-			if (path == null) {
-				path = file.getFullPath();
-			}
-			FileUtil.transferStreams(input, output, path.toString(), new NullProgressMonitor());
-			String content = output.toString();
+		try {
+			String content = file.readString();
 			Matcher matcher = pattern.matcher(content);
 			if (matcher.matches() && matcher.groupCount() > 0) {
 				marker.setAttribute(IMarker.CHAR_START, matcher.start(1));
 				marker.setAttribute(IMarker.CHAR_END, matcher.end(1));
 			}
-		} catch (IOException | CoreException e) {
-			log.log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage(), e));
+		} catch (CoreException e) {
+			log.log(Status.error(e.getMessage(), e));
 		}
 	}
 
