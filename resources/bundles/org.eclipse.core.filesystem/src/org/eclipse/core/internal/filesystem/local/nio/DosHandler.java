@@ -18,7 +18,10 @@ package org.eclipse.core.internal.filesystem.local.nio;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.attribute.DosFileAttributeView;
 import java.nio.file.attribute.DosFileAttributes;
 import org.eclipse.core.filesystem.EFS;
@@ -39,7 +42,7 @@ public class DosHandler extends NativeHandler {
 		FileInfo info = new FileInfo();
 
 		try {
-			Path path = Paths.get(fileName);
+			Path path = Path.of(fileName);
 
 			// Use canonical file to get the correct case of filename. See bug 431983.
 			Path fileNamePath = path.toRealPath(LinkOption.NOFOLLOW_LINKS).getFileName();
@@ -91,7 +94,7 @@ public class DosHandler extends NativeHandler {
 
 	@Override
 	public boolean putFileInfo(String fileName, IFileInfo info, int options) {
-		Path path = Paths.get(fileName);
+		Path path = Path.of(fileName);
 		// To be consistent with fetchInfo do not following symbolic links to set archive, read only and hidden attributes.
 		DosFileAttributeView view = Files.getFileAttributeView(path, DosFileAttributeView.class, LinkOption.NOFOLLOW_LINKS);
 		try {
