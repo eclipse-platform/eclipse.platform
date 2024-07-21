@@ -39,16 +39,16 @@ import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.osgi.service.environment.Constants;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * Static utility methods for manipulating Files and URIs.
  */
 public class FileUtil {
-	static final boolean MACOSX = Constants.OS_MACOSX.equals(getOS());
+	static final boolean MACOSX = Platform.OS.isMac();
 
 	/**
 	 * Converts a ResourceAttributes object into an IFileInfo object.
@@ -155,14 +155,6 @@ public class FileUtil {
 		}
 		// Return the original path if it's the same as the real one.
 		return realPath.equals(path) ? path : realPath;
-	}
-
-	/**
-	 * Returns the current OS.  Equivalent to Platform.getOS(), but tolerant of the platform runtime
-	 * not being present.
-	 */
-	private static String getOS() {
-		return System.getProperty("osgi.os", ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**

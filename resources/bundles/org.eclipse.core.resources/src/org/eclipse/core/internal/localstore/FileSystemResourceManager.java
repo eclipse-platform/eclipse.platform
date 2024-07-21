@@ -722,8 +722,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		}
 
 		//write the project description file (don't use API because scheduling rule might not match)
-		write(descriptionFile, newContents, fileInfo, IResource.FORCE, false, SubMonitor.convert(null));
-		workspace.getAliasManager().updateAliases(descriptionFile, getStore(descriptionFile), IResource.DEPTH_ZERO, SubMonitor.convert(null));
+		write(descriptionFile, newContents, fileInfo, IResource.FORCE, false, null);
+		workspace.getAliasManager().updateAliases(descriptionFile, getStore(descriptionFile), IResource.DEPTH_ZERO, null);
 
 		//update the timestamp on the project as well so we know when it has
 		//been changed from the outside
@@ -788,7 +788,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 					return true;
 				break;
 		}
-		IsSynchronizedVisitor visitor = new IsSynchronizedVisitor(SubMonitor.convert(null));
+		IsSynchronizedVisitor visitor = new IsSynchronizedVisitor(null);
 		UnifiedTree tree = new UnifiedTree(target);
 		try {
 			tree.accept(visitor, depth);
@@ -954,9 +954,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		ProjectDescription description = null;
 		//hold onto any exceptions until after sync info is updated, then throw it
 		ResourceException error = null;
-		try (
-			InputStream in = new BufferedInputStream(descriptionStore.openInputStream(EFS.NONE, SubMonitor.convert(null)));
-		) {
+		try (InputStream in = new BufferedInputStream(descriptionStore.openInputStream(EFS.NONE, null));) {
 			// IFileStore#openInputStream may cancel the monitor, thus the monitor state is checked
 			description = new ProjectDescriptionReader(target).read(new InputSource(in));
 		} catch (OperationCanceledException e) {

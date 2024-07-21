@@ -67,7 +67,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
-import org.eclipse.osgi.service.environment.Constants;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -249,8 +248,8 @@ public class IFileTest {
 			if (file.getProject().exists()) {
 				file.getRawLocation().toFile().delete();
 				createInFileSystem(file);
-				if (Constants.OS_WIN32.equals(Platform.getOS())) {
-					Files.setAttribute(file.getRawLocation().toFile().toPath(), "dos:hidden", Boolean.TRUE);
+				if (Platform.OS.isWindows()) {
+					Files.setAttribute(file.getRawLocation().toPath(), "dos:hidden", Boolean.TRUE);
 				}
 			}
 			return;
@@ -263,8 +262,8 @@ public class IFileTest {
 		if (file.getName().equals(WORKSPACE_ONLY_HIDDEN)) {
 			file.getRawLocation().toFile().delete();
 			createInFileSystem(file);
-			if (Constants.OS_WIN32.equals(Platform.getOS())) {
-				Files.setAttribute(file.getRawLocation().toFile().toPath(), "dos:hidden", Boolean.TRUE);
+			if (Platform.OS.isWindows()) {
+				Files.setAttribute(file.getRawLocation().toPath(), "dos:hidden", Boolean.TRUE);
 			}
 			file.refreshLocal(1, null);
 			file.getRawLocation().toFile().delete();
@@ -284,8 +283,8 @@ public class IFileTest {
 		}
 		if (file.getName().equals(EXISTING_HIDDEN)) {
 			createInWorkspace(file);
-			if (Constants.OS_WIN32.equals(Platform.getOS())) {
-				Files.setAttribute(file.getRawLocation().toFile().toPath(), "dos:hidden", Boolean.TRUE);
+			if (Platform.OS.isWindows()) {
+				Files.setAttribute(file.getRawLocation().toPath(), "dos:hidden", Boolean.TRUE);
 			}
 			file.refreshLocal(1, null);
 			return;
