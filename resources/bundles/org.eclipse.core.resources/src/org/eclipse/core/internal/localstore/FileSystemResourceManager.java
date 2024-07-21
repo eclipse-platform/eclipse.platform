@@ -1204,7 +1204,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 	 * @see IResource#KEEP_HISTORY
 	 */
 	public void write(IFile target, InputStream content, IFileInfo fileInfo, int updateFlags, boolean append, IProgressMonitor monitor) throws CoreException {
-		SubMonitor subMonitor = SubMonitor.convert(monitor, 4);
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
 		try (content) {
 			Resource targetResource = (Resource) target;
 			IFileStore store = getStore(target);
@@ -1215,7 +1215,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 				boolean opened = false;
 				try (OutputStream out = store.openOutputStream(options, subMonitor.split(1))) {
 					opened = true;
-					FileUtil.transferStreams(content, out, store.toString(), subMonitor.split(1));
+					content.transferTo(out);
+					subMonitor.worked(95);
 				} catch (CoreException e) {
 					// On Windows an attempt to open an output stream on a hidden file results in
 					// FileNotFoundException.
@@ -1231,19 +1232,20 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 					// set hidden=false and retry:
 					fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, false);
 					store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
-					try (OutputStream out = store.openOutputStream(options, null)) {
+					try (OutputStream out = store.openOutputStream(options, subMonitor.split(1))) {
 						// restore Hidden Attribute:
 						fileInfo.setAttribute(EFS.ATTRIBUTE_HIDDEN, true);
 						store.putInfo(fileInfo, EFS.SET_ATTRIBUTES, subMonitor.split(1));
-						FileUtil.transferStreams(content, out, store.toString(), subMonitor.split(1));
+						content.transferTo(out);
+						subMonitor.worked(92);
 					}
 				}
 			} catch (IOException e) {
-				// Exception on OutputStream.close()
 				String msg = NLS.bind(Messages.localstore_couldNotWrite, store.toString());
 				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(store.toString()), msg, e);
 			}
 			finishWrite(targetResource, store);
+			subMonitor.worked(4);
 		} catch (IOException streamCloseIgnored) {
 			// ignore Exception on InputStream.close()
 		}
