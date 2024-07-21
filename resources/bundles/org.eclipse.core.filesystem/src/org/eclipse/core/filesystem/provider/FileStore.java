@@ -55,45 +55,6 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	protected static final String[] EMPTY_STRING_ARRAY = {};
 
 	/**
-	 * Transfers the contents of an input stream to an output stream, using a large
-	 * buffer.
-	 *
-	 * @param source The input stream to transfer
-	 * @param destination The destination stream of the transfer
-	 * @param length the size of the file or -1 if not known
-	 * @param path A path representing the data being transferred for use in error
-	 * messages.
-	 * @param monitor A progress monitor
-	 */
-	private static final void transferStreams(InputStream source, OutputStream destination, long length, String path, IProgressMonitor monitor) throws CoreException {
-		byte[] buffer = new byte[8192];
-		SubMonitor subMonitor = SubMonitor.convert(monitor, length >= 0 ? 1 + (int) (length / buffer.length) : 1000);
-		try (source; destination) {
-			while (true) {
-				int bytesRead = -1;
-				try {
-					bytesRead = source.read(buffer);
-				} catch (IOException e) {
-					String msg = NLS.bind(Messages.failedReadDuringWrite, path);
-					Policy.error(EFS.ERROR_READ, msg, e);
-				}
-				try {
-					if (bytesRead == -1) {
-						destination.close();
-						break;
-					}
-					destination.write(buffer, 0, bytesRead);
-				} catch (IOException e) {
-					String msg = NLS.bind(Messages.couldNotWrite, path);
-					Policy.error(EFS.ERROR_WRITE, msg, e);
-				}
-				subMonitor.worked(1);
-			}
-		} catch (IOException e) { // ignore
-		}
-	}
-
-	/**
 	 * The default implementation of {@link IFileStore#childInfos(int, IProgressMonitor)}.
 	 * Subclasses should override this method where a more efficient implementation
 	 * is possible.  This default implementation calls {@link #fetchInfo()} on each
@@ -197,17 +158,19 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	 * </ul>
 	 */
 	protected void copyFile(IFileInfo sourceInfo, IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
-		if ((options & EFS.OVERWRITE) == 0 && destination.fetchInfo().exists())
+		if ((options & EFS.OVERWRITE) == 0 && destination.fetchInfo().exists()) {
 			Policy.error(EFS.ERROR_EXISTS, NLS.bind(Messages.fileExists, destination));
-		long length = sourceInfo.getLength();
+		}
 		String sourcePath = toString();
 		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.copying, sourcePath), 100);
 		try (InputStream in = openInputStream(EFS.NONE, subMonitor.newChild(1)); //
 				OutputStream out = destination.openOutputStream(EFS.NONE, subMonitor.newChild(1));) {
-			transferStreams(in, out, length, sourcePath, subMonitor.newChild(98));
+			in.transferTo(out);
+			subMonitor.worked(93);
 			transferAttributes(sourceInfo, destination);
+			subMonitor.worked(5);
 		} catch (IOException e) {
-			// ignore
+			Policy.error(EFS.ERROR_WRITE, NLS.bind(Messages.failedCopy, sourcePath), e);
 		} catch (CoreException e) {
 			//if we failed to write, try to cleanup the half written file
 			if (!destination.fetchInfo(0, null).exists())

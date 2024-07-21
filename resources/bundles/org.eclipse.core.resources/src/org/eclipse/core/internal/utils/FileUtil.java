@@ -16,10 +16,7 @@
  *******************************************************************************/
 package org.eclipse.core.internal.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -31,18 +28,13 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.osgi.util.NLS;
 
 /**
  * Static utility methods for manipulating Files and URIs.
@@ -304,39 +296,6 @@ public class FileUtil {
 		if (scheme == null || EFS.SCHEME_FILE.equals(scheme))
 			return IPath.fromOSString(uri.getSchemeSpecificPart());
 		return null;
-	}
-
-	public static final void transferStreams(InputStream source, OutputStream destination, String path,
-			IProgressMonitor monitor) throws CoreException {
-		SubMonitor subMonitor = SubMonitor.convert(monitor);
-		try (source) {
-			try (destination) {
-				if (source instanceof ByteArrayInputStream) {
-					// ByteArrayInputStream does overload transferTo avoiding buffering
-					((ByteArrayInputStream) source).transferTo(destination);
-					subMonitor.split(1);
-				} else {
-					byte[] buffer = new byte[8192];
-					while (true) {
-						int bytesRead = -1;
-						try {
-							bytesRead = source.read(buffer);
-						} catch (IOException e) {
-							String msg = NLS.bind(Messages.localstore_failedReadDuringWrite, path);
-							throw new ResourceException(IResourceStatus.FAILED_READ_LOCAL, IPath.fromOSString(path), msg, e);
-						}
-						if (bytesRead == -1) {
-							break;
-						}
-						destination.write(buffer, 0, bytesRead);
-						subMonitor.split(1);
-					}
-				}
-			}
-		} catch (IOException e) {
-			String msg = NLS.bind(Messages.localstore_couldNotWrite, path);
-			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, IPath.fromOSString(path), msg, e);
-		}
 	}
 
 	public static char[] readAllChars(IFile file) throws CoreException {
