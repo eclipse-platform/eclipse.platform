@@ -37,7 +37,7 @@ import org.eclipse.core.runtime.Platform;
  * without it.</p>
  */
 public class LocalFileNativesManager {
-	public static final boolean PROPERTY_USE_NATIVE_DEFAULT = Platform.OS.isWindows() ? false : true;
+	public static final boolean PROPERTY_USE_NATIVE_DEFAULT = true;
 	public static final String PROPERTY_USE_NATIVES = "eclipse.filesystem.useNatives"; //$NON-NLS-1$
 	private static NativeHandler HANDLER;
 
@@ -58,13 +58,8 @@ public class LocalFileNativesManager {
 	 */
 	public static boolean setUsingNative(boolean useNatives) {
 		boolean nativesAreUsed;
-		boolean isWindowsOS = Platform.OS.isWindows();
-
-		if (useNatives && !isWindowsOS && UnixFileNatives.isUsingNatives()) {
+		if (useNatives && !Platform.OS.isWindows() && UnixFileNatives.isUsingNatives()) {
 			HANDLER = new UnixFileHandler();
-			nativesAreUsed = true;
-		} else if (useNatives && isWindowsOS && LocalFileNatives.isUsingNatives()) {
-			HANDLER = new LocalFileHandler();
 			nativesAreUsed = true;
 		} else {
 			nativesAreUsed = false;
