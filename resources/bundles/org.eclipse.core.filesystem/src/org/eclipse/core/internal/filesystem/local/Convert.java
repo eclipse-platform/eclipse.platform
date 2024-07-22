@@ -22,9 +22,6 @@ public class Convert {
 	/** Indicates the default native encoding on this platform */
 	private static String defaultEncoding = Platform.getSystemCharset().name();
 
-	/** Indicates if we are running on windows */
-	private static final boolean IS_WINDOWS = Platform.OS.isWindows();
-
 	public static final String WIN32_RAW_PATH_PREFIX = "\\\\?\\"; //$NON-NLS-1$
 	public static final String WIN32_UNC_RAW_PATH_PREFIX = "\\\\?\\UNC"; //$NON-NLS-1$
 
@@ -64,32 +61,5 @@ public class Convert {
 			defaultEncoding = null;
 			return target.getBytes();
 		}
-	}
-
-	/**
-	 * Converts a file name to a unicode char[] suitable for use by native methods.
-	 * See https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file
-	 */
-	public static char[] toPlatformChars(String target) {
-		//Windows use special prefix to handle long filenames
-		if (!IS_WINDOWS) {
-			return target.toCharArray();
-		}
-		//convert UNC path of form \\server\path to unicode form \\?\UNC\server\path
-		if (target.startsWith("\\\\")) { //$NON-NLS-1$
-			int nameLength = target.length();
-			int prefixLength = WIN32_UNC_RAW_PATH_PREFIX.length();
-			char[] result = new char[prefixLength + nameLength - 1];
-			WIN32_UNC_RAW_PATH_PREFIX.getChars(0, prefixLength, result, 0);
-			target.getChars(1, nameLength, result, prefixLength);
-			return result;
-		}
-		//convert simple path of form c:\path to unicode form \\?\c:\path
-		int nameLength = target.length();
-		int prefixLength = WIN32_RAW_PATH_PREFIX.length();
-		char[] result = new char[prefixLength + nameLength];
-		WIN32_RAW_PATH_PREFIX.getChars(0, prefixLength, result, 0);
-		target.getChars(0, nameLength, result, prefixLength);
-		return result;
 	}
 }
