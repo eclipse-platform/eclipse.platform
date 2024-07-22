@@ -990,7 +990,9 @@ public class DebugPlugin extends Plugin {
 			// builder to not break existing caller of this method
 			if (mergeOutput) {
 				ProcessBuilder pb = new ProcessBuilder(cmdLine);
-				pb.directory(workingDirectory);
+				if (workingDirectory != null) {
+					pb.directory(shortenWindowsPath(workingDirectory));
+				}
 				pb.redirectErrorStream(mergeOutput);
 				if (envp != null) {
 					Map<String, String> env = pb.environment();
@@ -1006,7 +1008,7 @@ public class DebugPlugin extends Plugin {
 			} else if (workingDirectory == null) {
 				p = Runtime.getRuntime().exec(cmdLine, envp);
 			} else {
-				p = Runtime.getRuntime().exec(cmdLine, envp, workingDirectory);
+				p = Runtime.getRuntime().exec(cmdLine, envp, shortenWindowsPath(workingDirectory));
 			}
 		} catch (IOException e) {
 			Status status = new Status(IStatus.ERROR, getUniqueIdentifier(), ERROR, DebugCoreMessages.DebugPlugin_0, e);
@@ -1018,12 +1020,34 @@ public class DebugPlugin extends Plugin {
 
 			if (handler != null) {
 				Object result = handler.handleStatus(status, null);
-				if (result instanceof Boolean && ((Boolean) result).booleanValue()) {
+				if (result instanceof Boolean resultValue && resultValue) {
 					p = exec(cmdLine, null);
 				}
 			}
 		}
 		return p;
+	}
+
+	// https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
+	private static final int WINDOWS_MAX_PATH = 258;
+
+	private static File shortenWindowsPath(File path) {
+		if (path.getPath().length() > WINDOWS_MAX_PATH && Platform.OS.isWindows()) {
+			// When spawning new processes on Windows, there is no uniform way
+			// to use long working directory paths that exceed the default path
+			// length limit, like for example using the raw path prefix '\\?\'
+			// See https://bugs.openjdk.org/browse/JDK-8315405
+			// The best we can do is trying to shorten the path and hope that
+			// it becomes sufficiently short.
+			@SuppressWarnings("restriction")
+			String shortPath = org.eclipse.core.internal.filesystem.local.Win32Handler.getShortPathName(path.toString());
+			if (shortPath != null) {
+				return new File(shortPath);
+			} else {
+				log(Status.warning("Working directory of process to create exceeds Window's MAX_PATH limit and shortening the path failed.")); //$NON-NLS-1$
+			}
+		}
+		return path;
 	}
 
 	/**

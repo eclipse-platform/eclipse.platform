@@ -111,6 +111,18 @@ public class Win32Handler extends NativeHandler {
 		return FileAPIh.SetFileAttributesW(lpFileName, fileAttributes);
 	}
 
+	public static String getShortPathName(String longPath) {
+		longPath = toLongWindowsPath(longPath);
+		char[] buffer = new char[longPath.length()];
+		// https://learn.microsoft.com/de-de/windows/win32/api/fileapi/nf-fileapi-getshortpathnamew
+		int newLength = com.sun.jna.platform.win32.Kernel32.INSTANCE.GetShortPathName(longPath, buffer, buffer.length);
+		if (0 < newLength && newLength < buffer.length) { // zero means error
+			int offset = longPath.startsWith(WIN32_UNC_RAW_PATH_PREFIX) ? WIN32_UNC_RAW_PATH_PREFIX.length() : WIN32_RAW_PATH_PREFIX.length();
+			return new String(buffer, offset, newLength);
+		}
+		return null;
+	}
+
 	private static String toLongWindowsPath(String fileName) {
 		// See https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file
 		if (fileName.startsWith("\\\\") && !fileName.startsWith(WIN32_UNC_RAW_PATH_PREFIX)) { //$NON-NLS-1$

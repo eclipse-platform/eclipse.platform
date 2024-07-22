@@ -13,26 +13,38 @@
  *******************************************************************************/
 package org.eclipse.debug.tests.launching;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IDisconnect;
 import org.eclipse.debug.core.model.IProcess;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * Tests for the {@link Launch} class
@@ -122,6 +134,30 @@ public class LaunchTests extends AbstractLaunchTest {
 	@Test
 	public void testDisconnectedAndWriteProcesses() throws Exception {
 		assertTrue(testExecution(readIsDisconnectedTask, writeProcessesTask));
+	}
+
+	@ClassRule
+	public static TemporaryFolder tempFolder = new TemporaryFolder();
+
+	@Test
+	public void testProcessLaunchWithLongWorkingDirectory() throws CoreException, IOException {
+		int rootLength = tempFolder.getRoot().toString().length();
+		String subPathElementsName = "subfolder-with-relativly-long-name";
+		String[] segments = Collections.nCopies((400 - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
+		File workingDirectory = tempFolder.newFolder(segments);
+		assertTrue(workingDirectory.toString().length() > 300);
+
+		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, false, "jdk");
+		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, true, "jdk");
+	}
+
+	private static void startProcessAndAssertOutputContains(List<String> cmdLine, File workingDirectory, boolean mergeOutput, String expectedOutput) throws CoreException, IOException {
+		Process process = DebugPlugin.exec(cmdLine.toArray(String[]::new), workingDirectory, null, mergeOutput);
+		String output;
+		try (BufferedReader outputReader = new BufferedReader(process.inputReader())) {
+			output = outputReader.lines().collect(Collectors.joining());
+		}
+		assertThat(output.toLowerCase(Locale.ENGLISH)).contains(expectedOutput);
 	}
 
 	private boolean testExecution(final Runnable readTask, final Runnable writeTask) {
