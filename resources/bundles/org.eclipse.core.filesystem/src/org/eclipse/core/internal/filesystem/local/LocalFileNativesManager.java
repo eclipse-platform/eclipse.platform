@@ -28,16 +28,16 @@ import org.eclipse.core.runtime.Platform;
  * <p>Dispatches methods backed by native code to the appropriate platform specific
  * implementation depending on a library provided by a fragment. Failing this it tries
  * to use Java 7 NIO/2 API's.</p>
- * 
- * <p>Use of native libraries can be disabled by adding -Declipse.filesystem.useNatives=false 
+ *
+ * <p>Use of native libraries can be disabled by adding -Declipse.filesystem.useNatives=false
  * to VM arguments.</p>
- * 
+ *
  * <p>Please notice that the native implementation is significantly faster than the non-native
- * one. The BenchFileStore test runs 3.1 times faster on Linux with the native code than 
+ * one. The BenchFileStore test runs 3.1 times faster on Linux with the native code than
  * without it.</p>
  */
 public class LocalFileNativesManager {
-	public static final boolean PROPERTY_USE_NATIVE_DEFAULT = true;
+	public static final boolean PROPERTY_USE_NATIVE_DEFAULT = Platform.OS.isWindows() ? false : true;
 	public static final String PROPERTY_USE_NATIVES = "eclipse.filesystem.useNatives"; //$NON-NLS-1$
 	private static NativeHandler HANDLER;
 
@@ -54,7 +54,7 @@ public class LocalFileNativesManager {
 
 	/**
 	 * Try to set the usage of natives to the provided value
-	 * @return <code>true</code> if natives are used as result of this call <code>false</code> otherwhise
+	 * @return <code>true</code> if natives are used as result of this call <code>false</code> otherwise
 	 */
 	public static boolean setUsingNative(boolean useNatives) {
 		boolean nativesAreUsed;
