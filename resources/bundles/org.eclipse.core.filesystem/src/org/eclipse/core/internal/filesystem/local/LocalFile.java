@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.Locale;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -50,7 +51,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -131,19 +131,17 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public void copy(IFileStore destFile, int options, IProgressMonitor monitor) throws CoreException {
-		if (destFile instanceof LocalFile) {
-			File source = file;
-			File destination = ((LocalFile) destFile).file;
+		if (destFile instanceof LocalFile destination) {
 			//handle case variants on a case-insensitive OS, or copying between
 			//two equivalent files in an environment that supports symbolic links.
 			//in these nothing needs to be copied (and doing so would likely lose data)
 			try {
-				if (isSameFile(source, destination)) {
+				if (isSameFile(this.file, destination.file)) {
 					//nothing to do
 					return;
 				}
 			} catch (IOException e) {
-				String message = NLS.bind(Messages.couldNotRead, source.getAbsolutePath());
+				String message = NLS.bind(Messages.couldNotRead, this.file.getAbsolutePath());
 				Policy.error(EFS.ERROR_READ, message, e);
 			}
 		}
@@ -179,8 +177,7 @@ public class LocalFile extends FileStore {
 		else
 			monitor = new InfiniteProgress(monitor);
 		try {
-			monitor.beginTask(NLS.bind(Messages.deleting, this), 200);
-			IStatus result = internalDelete(file, filePath, monitor);
+			IStatus result = internalDelete(file, monitor);
 			if (!result.isOK())
 				throw new CoreException(result);
 		} finally {
@@ -190,13 +187,17 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof LocalFile))
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof LocalFile otherFile)) {
 			return false;
+		}
 		//Mac oddity: file.equals returns false when case is different even when
 		//file system is not case sensitive (Radar bug 3190672)
-		LocalFile otherFile = (LocalFile) obj;
-		if (LocalFileSystem.MACOSX)
+		if (LocalFileSystem.MACOSX) {
 			return filePath.equalsIgnoreCase(otherFile.filePath);
+		}
 		return file.equals(otherFile.file);
 	}
 
@@ -247,7 +248,7 @@ public class LocalFile extends FileStore {
 	@Override
 	public int hashCode() {
 		if (LocalFileSystem.MACOSX)
-			return filePath.toLowerCase().hashCode();
+			return filePath.toLowerCase(Locale.ENGLISH).hashCode();
 		return file.hashCode();
 	}
 
@@ -256,10 +257,9 @@ public class LocalFile extends FileStore {
 	 * the provided status object.  The filePath is passed as a parameter
 	 * to optimize java.io.File object creation.
 	 */
-	private IStatus internalDelete(File target, String pathToDelete, IProgressMonitor monitor) {
-		if (monitor.isCanceled()) {
-			throw new OperationCanceledException();
-		}
+	private IStatus internalDelete(File target, IProgressMonitor monitor) {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.deleting, target), IProgressMonitor.UNKNOWN);
+		subMonitor.checkCanceled();
 		try {
 			try {
 				// First try to delete - this should succeed for files and symbolic links to directories.
@@ -275,29 +275,15 @@ public class LocalFile extends FileStore {
 			}
 		} catch (DirectoryNotEmptyException e) {
 			// The target is a directory and it's not empty
-			monitor.subTask(NLS.bind(Messages.deleting, target));
-			String[] directoryElements = target.list();
+			File[] directoryElements = target.listFiles();
 			if (directoryElements == null) {
-				directoryElements = EMPTY_STRING_ARRAY;
+				directoryElements = new File[0]; // Unlikely to happen if the directory is not empty
 			}
-			int parentLength = pathToDelete.length();
-
+			subMonitor.setWorkRemaining(directoryElements.length);
 			// Try to delete all children.
 			MultiStatus deleteChildrenStatus = new MultiStatus(Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, Messages.deleteProblem, null);
-			for (String element : directoryElements) {
-				if (monitor.isCanceled()) {
-					throw new OperationCanceledException();
-				}
-				// Optimized creation of child path object
-				StringBuilder childBuffer = new StringBuilder(parentLength + element.length() + 1);
-				childBuffer.append(pathToDelete);
-				childBuffer.append(File.separatorChar);
-				childBuffer.append(element);
-				String childName = childBuffer.toString();
-
-				deleteChildrenStatus.add(internalDelete(new File(childName), childName, monitor));
-
-				monitor.worked(1);
+			for (File element : directoryElements) {
+				deleteChildrenStatus.add(internalDelete(element, subMonitor.split(1)));
 			}
 
 			// Abort if one of the children couldn't be deleted.
@@ -319,7 +305,7 @@ public class LocalFile extends FileStore {
 			String message = fetchInfo().getAttribute(EFS.ATTRIBUTE_READ_ONLY) //
 					? Messages.couldnotDeleteReadOnly
 
-					// This is the worst-case scenario: something failed but we don't know what. The children were 
+					// This is the worst-case scenario: something failed but we don't know what. The children were
 					// deleted successfully and the directory is NOT read-only... there's nothing else to report.
 					: Messages.couldnotDelete;
 
@@ -337,21 +323,25 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public boolean isParentOf(IFileStore other) {
-		if (!(other instanceof LocalFile))
+		if (!(other instanceof LocalFile otherFile)) {
 			return false;
+		}
 		String thisPath = filePath;
-		String thatPath = ((LocalFile) other).filePath;
+		String thatPath = otherFile.filePath;
 		int thisLength = thisPath.length();
 		int thatLength = thatPath.length();
 		//if equal then not a parent
-		if (thisLength >= thatLength)
+		if (thisLength >= thatLength) {
 			return false;
+		}
 		if (getFileSystem().isCaseSensitive()) {
-			if (thatPath.indexOf(thisPath) != 0)
+			if (!thatPath.startsWith(thisPath)) {
 				return false;
+			}
 		} else {
-			if (thatPath.toLowerCase().indexOf(thisPath.toLowerCase()) != 0)
+			if (!thatPath.toLowerCase(Locale.ENGLISH).startsWith(thisPath.toLowerCase(Locale.ENGLISH))) {
 				return false;
+			}
 		}
 		//The common portion must end with a separator character for this to be a parent of that
 		return thisPath.charAt(thisLength - 1) == File.separatorChar || thatPath.charAt(thisLength) == File.separatorChar;
@@ -397,12 +387,12 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public void move(IFileStore destFile, int options, IProgressMonitor monitor) throws CoreException {
-		if (!(destFile instanceof LocalFile)) {
+		if (!(destFile instanceof LocalFile destinationFile)) {
 			super.move(destFile, options, monitor);
 			return;
 		}
 		File source = file;
-		File destination = ((LocalFile) destFile).file;
+		File destination = destinationFile.file;
 		boolean overwrite = (options & EFS.OVERWRITE) != 0;
 		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.moving, source.getAbsolutePath()), 1);
 		try {
@@ -462,8 +452,8 @@ public class LocalFile extends FileStore {
 				// avoid NoSuchFileException for performance reasons
 				return false;
 			}
-			// isSameFile is faster then using getCanonicalPath 
-			return java.nio.file.Files.isSameFile(source.toPath(), destination.toPath());
+			// isSameFile is faster then using getCanonicalPath
+			return Files.isSameFile(source.toPath(), destination.toPath());
 		} catch (NoSuchFileException e) {
 			// ignore - it is the normal case that the destination does not exist.
 			// slowest path though
@@ -477,17 +467,7 @@ public class LocalFile extends FileStore {
 		try {
 			return new FileInputStream(file);
 		} catch (FileNotFoundException e) {
-			String message;
-			if (!file.exists()) {
-				message = NLS.bind(Messages.fileNotFound, filePath);
-				Policy.error(EFS.ERROR_NOT_EXISTS, message, e);
-			} else if (file.isDirectory()) {
-				message = NLS.bind(Messages.notAFile, filePath);
-				Policy.error(EFS.ERROR_WRONG_TYPE, message, e);
-			} else {
-				message = NLS.bind(Messages.couldNotRead, filePath);
-				Policy.error(EFS.ERROR_READ, message, e);
-			}
+			handleReadIOException(e);
 			return null;
 		}
 	}
@@ -498,18 +478,21 @@ public class LocalFile extends FileStore {
 		try {
 			return Files.readAllBytes(file.toPath());
 		} catch (IOException e) {
-			String message;
-			if (!file.exists()) {
-				message = NLS.bind(Messages.fileNotFound, filePath);
-				Policy.error(EFS.ERROR_NOT_EXISTS, message, e);
-			} else if (file.isDirectory()) {
-				message = NLS.bind(Messages.notAFile, filePath);
-				Policy.error(EFS.ERROR_WRONG_TYPE, message, e);
-			} else {
-				message = NLS.bind(Messages.couldNotRead, filePath);
-				Policy.error(EFS.ERROR_READ, message, e);
-			}
+			handleReadIOException(e);
 			return null;
+		}
+	}
+
+	private void handleReadIOException(IOException e) throws CoreException {
+		if (!file.exists()) {
+			String message = NLS.bind(Messages.fileNotFound, filePath);
+			Policy.error(EFS.ERROR_NOT_EXISTS, message, e);
+		} else if (file.isDirectory()) {
+			String message = NLS.bind(Messages.notAFile, filePath);
+			Policy.error(EFS.ERROR_WRONG_TYPE, message, e);
+		} else {
+			String message = NLS.bind(Messages.couldNotRead, filePath);
+			Policy.error(EFS.ERROR_READ, message, e);
 		}
 	}
 
@@ -519,16 +502,7 @@ public class LocalFile extends FileStore {
 		try {
 			return new FileOutputStream(file, (options & EFS.APPEND) != 0);
 		} catch (FileNotFoundException e) {
-			checkReadOnlyParent(file, e);
-			String message;
-			String path = filePath;
-			if (file.isDirectory()) {
-				message = NLS.bind(Messages.notAFile, path);
-				Policy.error(EFS.ERROR_WRONG_TYPE, message, e);
-			} else {
-				message = NLS.bind(Messages.couldNotWrite, path);
-				Policy.error(EFS.ERROR_WRITE, message, e);
-			}
+			handleWriteIOException(e);
 			return null;
 		}
 	}
@@ -544,16 +518,18 @@ public class LocalFile extends FileStore {
 				Files.write(file.toPath(), content); // default uses StandardOpenOption.TRUNCATE_EXISTING
 			}
 		} catch (IOException e) {
-			checkReadOnlyParent(file, e);
-			String message;
-			String path = filePath;
-			if (file.isDirectory()) {
-				message = NLS.bind(Messages.notAFile, path);
-				Policy.error(EFS.ERROR_WRONG_TYPE, message, e);
-			} else {
-				message = NLS.bind(Messages.couldNotWrite, path);
-				Policy.error(EFS.ERROR_WRITE, message, e);
-			}
+			handleWriteIOException(e);
+		}
+	}
+
+	private void handleWriteIOException(IOException e) throws CoreException {
+		checkReadOnlyParent(file, e);
+		if (file.isDirectory()) {
+			String message = NLS.bind(Messages.notAFile, filePath);
+			Policy.error(EFS.ERROR_WRONG_TYPE, message, e);
+		} else {
+			String message = NLS.bind(Messages.couldNotWrite, filePath);
+			Policy.error(EFS.ERROR_WRITE, message, e);
 		}
 	}
 
@@ -592,11 +568,11 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public int compareTo(IFileStore other) {
-		if (other instanceof LocalFile) {
+		if (other instanceof LocalFile otherFile) {
 			// We can compare paths in the local file implementation, because LocalFile don't have a query string, port, or authority
 			// We use `toURI` here because it performs file normalisation e.g. /a/b/../c -> /a/c
 			// The URI is cached by the LocalFile after normalisation so this effectively results in a straight lookup
-			return FileStoreUtil.comparePathSegments(this.toURI().getPath(), ((LocalFile) other).toURI().getPath());
+			return FileStoreUtil.comparePathSegments(this.toURI().getPath(), otherFile.toURI().getPath());
 		}
 		return super.compareTo(other);
 	}
