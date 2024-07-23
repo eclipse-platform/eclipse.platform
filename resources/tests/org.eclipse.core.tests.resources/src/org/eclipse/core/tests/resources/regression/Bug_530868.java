@@ -16,7 +16,6 @@ package org.eclipse.core.tests.resources.regression;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 
 import java.io.ByteArrayInputStream;
@@ -64,8 +63,6 @@ public class Bug_530868 {
 	public void testMillisecondResolution() throws Exception {
 		assumeFalse("not relevant on Mac, as it does not have milliseconds resolution", OS.isMac());
 		try {
-			assertTrue("can only run if native provider can be enabled", LocalFileNativesManager.setUsingNative(true));
-
 			/*
 			 * Run 3 times in case we have seconds resolution due to a bug, but by chance we
 			 * happened to modify the file in-between two seconds.
