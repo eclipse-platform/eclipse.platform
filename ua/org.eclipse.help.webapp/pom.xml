@@ -53,6 +53,8 @@
           <ignoredPatterns>
             <pattern>META-INF/ECLIPSE_.RSA</pattern>
             <pattern>META-INF/ECLIPSE_.SF</pattern>
+            <pattern>META-INF/CODESIGN.RSA</pattern>
+            <pattern>META-INF/CODESIGN.SF</pattern>
           </ignoredPatterns>
         </configuration>
       </plugin>
