@@ -68,7 +68,8 @@ public class Win32Handler extends NativeHandler {
 			long handle = FileAPIh.FindFirstFileW(new WString(target), mem);
 			if (handle == FileAPIh.INVALID_HANDLE_VALUE) {
 				int error = Native.getLastError();
-				if (error != WinError.ERROR_FILE_NOT_FOUND) {
+				if (!(error == WinError.ERROR_FILE_NOT_FOUND // file not found in existing parent directory
+						|| error == WinError.ERROR_PATH_NOT_FOUND)) { // Not even the parent directory exists
 					fileInfo.setError(IFileInfo.IO_ERROR);
 				}
 				return fileInfo;
