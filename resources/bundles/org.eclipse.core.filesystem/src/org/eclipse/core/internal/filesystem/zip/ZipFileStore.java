@@ -447,7 +447,9 @@ public class ZipFileStore extends FileStore {
 		env.put("create", "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		URI nioURI = toNioURI();
 		ReentrantLock lock = getLockForURI(nioURI);
-		lock.lock();
+		if (!lock.isHeldByCurrentThread()) {
+			lock.lock();
+		}
 		try {
 			return FileSystems.getFileSystem(nioURI);
 		} catch (FileSystemNotFoundException e) {
