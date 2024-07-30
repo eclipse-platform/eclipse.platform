@@ -444,7 +444,6 @@ public class ZipFileStore extends FileStore {
 
 	private FileSystem openZipFileSystem() throws URISyntaxException, IOException {
 		Map<String, Object> env = new HashMap<>();
-		env.put("create", "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		URI nioURI = toNioURI();
 		ReentrantLock lock = getLockForURI(nioURI);
 		if (!lock.isHeldByCurrentThread()) {
