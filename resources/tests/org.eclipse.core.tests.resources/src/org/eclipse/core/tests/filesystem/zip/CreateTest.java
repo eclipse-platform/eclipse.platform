@@ -23,7 +23,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class CreateTest {
 
@@ -37,10 +38,11 @@ public class CreateTest {
 		ZipFileSystemTestSetup.teardown();
 	}
 
-	@Test
-	public void testCreateFileInsideOfZipFile() throws Exception {
+	@ParameterizedTest
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	public void testCreateFileInsideOfZipFile(String zipFileName) throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
-				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
+				.getFolder(zipFileName);
 		IFile textFile = openedZipFile.getFile("NewFile.txt");
 		ensureDoesNotExist(textFile);
 		String text = "Foo";
@@ -51,10 +53,11 @@ public class CreateTest {
 		assertTextFileContent(textFile, "Foo");
 	}
 
-	@Test
-	public void testCreateFolderInsideOfZipFile() throws Exception {
+	@ParameterizedTest
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	public void testCreateFolderInsideOfZipFile(String zipFileName) throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
-				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
+				.getFolder(zipFileName);
 		IFolder newFolder = openedZipFile.getFolder("NewFolder");
 		ensureDoesNotExist(newFolder);
 		newFolder.create(false, true, getMonitor());

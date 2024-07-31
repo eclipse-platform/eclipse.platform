@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.stream.Stream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -32,6 +33,12 @@ import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.junit.Assert;
 
 class ZipFileSystemTestUtil {
+
+	public static Stream<String> zipFileNames() {
+		return Stream.of(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME,
+				ZipFileSystemTestSetup.JAR_FILE_VIRTUAL_FOLDER_NAME,
+				ZipFileSystemTestSetup.WAR_FILE_VIRTUAL_FOLDER_NAME);
+	}
 
 	static void ensureExists(IResource resource) throws CoreException, IOException {
 		switch (resource.getType()) {
