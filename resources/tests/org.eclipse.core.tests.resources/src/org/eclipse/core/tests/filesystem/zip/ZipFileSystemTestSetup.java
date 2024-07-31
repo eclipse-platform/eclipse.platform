@@ -39,6 +39,8 @@ class ZipFileSystemTestSetup {
 	static final String SECOND_PROJECT_NAME = "SecondProject";
 	static final String ZIP_FILE_VIRTUAL_FOLDER_NAME = "BasicText.zip"; // Assuming the ZIP is represented as this
 																		// folder
+	static final String JAR_FILE_VIRTUAL_FOLDER_NAME = "BasicText.jar";
+	static final String WAR_FILE_VIRTUAL_FOLDER_NAME = "BasicText.war";
 	static final String EMPTY_ZIP_FILE_NAME = "Empty.zip";
 	static final String NESTED_ZIP_FILE_PARENT_NAME = "NestedZipFileParent.zip";
 	static final String NESTED_ZIP_FILE_CHILD_NAME = "NestedZipFileChild.zip";
@@ -51,7 +53,8 @@ class ZipFileSystemTestSetup {
 	static IProgressMonitor progressMonitor = new NullProgressMonitor();
 
 	static void defaultSetup() throws Exception {
-		String[] defaultZipFileNames = { ZIP_FILE_VIRTUAL_FOLDER_NAME };
+		String[] defaultZipFileNames = { ZIP_FILE_VIRTUAL_FOLDER_NAME, JAR_FILE_VIRTUAL_FOLDER_NAME,
+				WAR_FILE_VIRTUAL_FOLDER_NAME };
 		setup(defaultZipFileNames);
 	}
 

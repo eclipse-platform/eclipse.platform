@@ -19,7 +19,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class CloseTest {
 
@@ -33,14 +34,15 @@ public class CloseTest {
 		ZipFileSystemTestSetup.teardown();
 	}
 
-	@Test
-	public void testCloseZipFile() throws Exception {
+	@ParameterizedTest
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	public void testCloseZipFile(String zipFileName) throws Exception {
 		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
-				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
+				.getFolder(zipFileName);
 		ensureExists(openedZipFile);
 		ZipFileSystemTestUtil.closeZipFile(openedZipFile);
 		IFile zipFile = ZipFileSystemTestSetup.firstProject
-				.getFile(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
+				.getFile(zipFileName);
 		// Don't use Utility method ensureDoesNotExist because the fileStore is still
 		// available after closing. The fileStore is the File itself in the local file
 		// system that still exists after closing.
@@ -53,12 +55,13 @@ public class CloseTest {
 	 * is closing. The zip file underneath converts to a linked file but the local
 	 * file in the project is deleted so the linked file has no target.
 	 */
-	@Test
-	public void testCloseZipFileWithZipFileUnderneath() throws Exception {
+	@ParameterizedTest
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	public void testCloseZipFileWithZipFileUnderneath(String zipFileName) throws Exception {
 		IFolder firstOpenedZipFile = ZipFileSystemTestSetup.firstProject
-				.getFolder(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
+				.getFolder(zipFileName);
 		ensureExists(firstOpenedZipFile);
-		String secondZipFileName = ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME.replace(".", "New.");
+		String secondZipFileName = zipFileName.replace(".", "New.");
 		ZipFileSystemTestSetup.copyZipFileIntoProject(ZipFileSystemTestSetup.firstProject, secondZipFileName);
 		IFile secondZipFile = ZipFileSystemTestSetup.firstProject.getFile(secondZipFileName);
 		ZipFileSystemTestUtil.openZipFile(secondZipFile);
@@ -67,7 +70,7 @@ public class CloseTest {
 
 		ZipFileSystemTestUtil.closeZipFile(firstOpenedZipFile);
 		IFile zipFile = ZipFileSystemTestSetup.firstProject
-				.getFile(ZipFileSystemTestSetup.ZIP_FILE_VIRTUAL_FOLDER_NAME);
+				.getFile(zipFileName);
 		// Don't use Utility method ensureDoesNotExist because the fileStore is still
 		// available after closing. The fileStore is the File itself in the local file
 		// system that still exists after closing.
