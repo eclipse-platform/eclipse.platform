@@ -17,6 +17,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.zip.ZipException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
@@ -25,6 +28,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Utility class for opening and closing zip files.
@@ -99,6 +106,11 @@ public class ZipFileTransformer {
 					"Nested ZIP files are not allowed to be opened: " + file.getName())); //$NON-NLS-1$
 		}
 
+		if (isOnClasspath(file)) {
+			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
+					"ZIP files on classpath are not allowed to be opened: " + file.getName())); //$NON-NLS-1$
+		}
+
 
 		URI zipURI = new URI("zip", null, "/", file.getLocationURI().toString(), null); //$NON-NLS-1$ //$NON-NLS-2$
 		IFolder link = file.getParent().getFolder(IPath.fromOSString(file.getName()));
@@ -111,5 +123,42 @@ public class ZipFileTransformer {
 			throw new CoreException(
 					new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, "Zip File could not be opened")); //$NON-NLS-1$
 		}
+	}
+
+	/**
+	 * Checks if the given file is on the project's classpath.
+	 *
+	 * @param file The file to check.
+	 * @return true if the file is on the classpath; false otherwise.
+	 * @throws CoreException
+	 */
+	private static boolean isOnClasspath(IFile file) throws CoreException {
+		IProject project = file.getProject();
+		IFile classpathFile = project.getFile(".classpath"); //$NON-NLS-1$
+		if (!classpathFile.exists()) {
+			return false;
+		}
+		try (InputStream inputStream = classpathFile.getContents()) {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document document = builder.parse(inputStream);
+			NodeList classpathEntries = document.getElementsByTagName("classpathentry"); //$NON-NLS-1$
+
+			for (int i = 0; i < classpathEntries.getLength(); i++) {
+				Element classpathEntry = (Element) classpathEntries.item(i);
+				String kind = classpathEntry.getAttribute("kind"); //$NON-NLS-1$
+				String path = classpathEntry.getAttribute("path"); //$NON-NLS-1$
+
+				if ("lib".equals(kind) || "src".equals(kind)) { //$NON-NLS-1$//$NON-NLS-2$
+					if (file.exists() && file.getLocation().toString().contains(path)) {
+						return true;
+					}
+				}
+			}
+		} catch (IOException | CoreException | ParserConfigurationException | SAXException e) {
+			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
+					"ZIP files on classpath are not allowed to be opened: " + file.getName())); //$NON-NLS-1$
+		}
+		return false;
 	}
 }
