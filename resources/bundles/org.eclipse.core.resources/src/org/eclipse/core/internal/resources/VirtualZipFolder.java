@@ -106,4 +106,9 @@ public class VirtualZipFolder extends Folder {
 					new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, "Error moving ZIP file", e)); //$NON-NLS-1$
 		}
 	}
+
+	@Override
+	public IFile changeToFile() {
+		return this.getParent().getFile(new Path(this.getName()));
+	}
 }
