@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.core.internal.localstore;
 
-import org.eclipse.core.filesystem.ZipFileUtil;
 import org.eclipse.core.internal.resources.Container;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Folder;
@@ -248,7 +247,7 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 				return false;
 			}
 		} else {
-			if (!node.isFolder() && !ZipFileUtil.isOpenZipFile(target.getStore())) {
+			if (!node.isFolder()) {
 				folderToFile(node, target);
 				resourceChanged = true;
 				return false;
