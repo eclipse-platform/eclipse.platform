@@ -47,7 +47,6 @@ public class ZipFileUtil {
 		return isInsideOpenZipFile(store);
 	}
 
-	//TODO Implement this method
 	public static boolean isOpenZipFile(IFileStore store) {
 		if (isInsideOpenZipFile(store)) {
 			ZipFileStore zipStore = (ZipFileStore) store;
