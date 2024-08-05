@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
-import org.eclipse.core.tests.filesystem.zip.ConcurrencyTest;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -31,7 +30,6 @@ import org.junit.platform.suite.api.Suite;
 		PutInfoTest.class, //
 		SymlinkTest.class, //
 		URIUtilTest.class, //
-		ConcurrencyTest.class, //
 })
 public class AllFileSystemTests {
 }
