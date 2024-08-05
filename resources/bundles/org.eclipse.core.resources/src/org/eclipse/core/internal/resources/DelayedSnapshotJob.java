@@ -17,11 +17,15 @@ package org.eclipse.core.internal.resources;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.ISaveContext;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * Performs periodic saving (snapshot) of the workspace.
+ * Performs on demand or periodic saving (snapshot) of the workspace.
  */
 public class DelayedSnapshotJob extends Job {
 
@@ -37,9 +41,6 @@ public class DelayedSnapshotJob extends Job {
 		setSystem(true);
 	}
 
-	/*
-	 * @see Job#run()
-	 */
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
 		if (monitor.isCanceled())
@@ -55,5 +56,10 @@ public class DelayedSnapshotJob extends Job {
 			saveManager.operationCount = 0;
 			saveManager.snapshotRequested = false;
 		}
+	}
+
+	@Override
+	public boolean belongsTo(Object family) {
+		return DelayedSnapshotJob.class == family || ResourcesPlugin.FAMILY_SNAPSHOT == family;
 	}
 }

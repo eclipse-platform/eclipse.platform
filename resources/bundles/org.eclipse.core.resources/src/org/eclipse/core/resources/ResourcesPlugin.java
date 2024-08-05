@@ -27,13 +27,21 @@ import java.util.List;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -168,6 +176,18 @@ public final class ResourcesPlugin extends Plugin {
 	 * @since 3.4
 	 */
 	public static final Object FAMILY_MANUAL_REFRESH = new Object();
+
+	/**
+	 * Constant identifying the job family identifier for a background workspace
+	 * snapshot job. All clients that schedule background jobs for performing
+	 * background workspace snapshots should include this job family in their
+	 * implementation of <code>belongsTo</code>.
+	 *
+	 * @see IJobManager#join(Object, IProgressMonitor)
+	 * @see Job#belongsTo(Object)
+	 * @since 3.21
+	 */
+	public static final Object FAMILY_SNAPSHOT = new Object();
 
 	/**
 	 * Name of a preference indicating the encoding to use when reading text files
