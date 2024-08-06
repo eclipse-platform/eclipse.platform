@@ -29,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -473,6 +474,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	private boolean copyOperationInProgress = false;
 	private IUndoableOperation copyUndoable = null;
 	private IOperationHistoryListener operationHistoryListener;
+
+	// https://github.com/eclipse-platform/eclipse.platform.ui/issues/2143
+	// calling w.getLineHeight(line) + w.getLineSpacing() +
+	// w.getLineVerticalIndent(line); again and again for the same line is too slow
+	// we therefore introduce a line height cache by viewer
+	private final Map<MergeSourceViewer, List<Integer>> lineHeightsByViewer = new HashMap<>();
 
 	/**
 	 * Preference key for highlighting current line.
@@ -4001,6 +4008,16 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	@Override
 	protected void handlePropertyChangeEvent(PropertyChangeEvent event) {
+
+		// Property changes might change the height of lines,
+		// which means the heights cache should be cleared.
+		// But the actual height change of lines in StyledText does not happen in this
+		// method.
+		// There are other property change listeners for example:
+		// AbstractTextEditor.PropertyChangeListener,
+		// and these handle the height changes of StyledText.
+		lineHeightsByViewer.clear();
+
 		String key= event.getProperty();
 
 		if (key.equals(CompareConfiguration.IGNORE_WHITESPACE)
@@ -4206,9 +4223,29 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 */
 	private int getHeightBetweenLines(MergeSourceViewer tp, int fromLine, int toLine) {
 		StyledText w = tp.getSourceViewer().getTextWidget();
+		List<Integer> lineHeights = this.lineHeightsByViewer.get(tp);
+		if (lineHeights == null) {
+			lineHeights = new ArrayList<>();
+			lineHeights.addAll(Collections.nCopies(w.getLineCount(), null));
+			this.lineHeightsByViewer.put(tp, lineHeights);
+			tp.getSourceViewer().addTextListener(event -> {
+				List<Integer> lineHeightsList = lineHeightsByViewer.get(tp);
+				if (lineHeightsList != null) {
+					lineHeightsList.clear();
+					lineHeightsList.addAll(Collections.nCopies(w.getLineCount(), null));
+				}
+			});
+		}
+		int lineSpacing = w.getLineSpacing();
 		int height = 0;
 		for (int i = fromLine; i < toLine; i++) {
-			height += w.getLineHeight(i) + w.getLineSpacing() + w.getLineVerticalIndent(i);
+			Integer heightAtLine = lineHeights.get(i);
+			if (heightAtLine == null) {
+				int lineOffset = w.getOffsetAtLine(i);
+				heightAtLine = w.getLineHeight(lineOffset) + lineSpacing + w.getLineVerticalIndent(i);
+				lineHeights.set(i, heightAtLine);
+			}
+			height += heightAtLine;
 		}
 		return height;
 	}
