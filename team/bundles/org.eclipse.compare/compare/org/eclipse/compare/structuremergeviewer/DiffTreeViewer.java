@@ -20,6 +20,7 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareUI;
 import org.eclipse.compare.CompareViewerPane;
 import org.eclipse.compare.INavigatable;
+import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.compare.internal.patch.DiffViewerComparator;
 import org.eclipse.jface.action.Action;
@@ -29,6 +30,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -245,6 +247,7 @@ public class DiffTreeViewer extends TreeViewer {
 		setLabelProvider(diffViewerLabelProvider);
 
 		addSelectionChangedListener(event -> updateActions());
+		addDoubleClickListener(this::expandCollapseAction);
 
 		setComparator(new DiffViewerComparator());
 
@@ -668,6 +671,30 @@ public class DiffTreeViewer extends TreeViewer {
 				}
 			}
 		}
+	}
+
+	private void expandCollapseAction(DoubleClickEvent event) {
+		ISelection s = event.getSelection();
+
+		if (s.isEmpty())
+			return;
+
+		if (getElement(s) instanceof DiffNode d) {
+			if (d.getType() == ITypedElement.FOLDER_TYPE) {
+				if (getExpandedState(d))
+					collapseToLevel(d, 1);
+				else
+					expandToLevel(d, 1);
+			}
+		}
+	}
+
+	private static Object getElement(ISelection selection) {
+		if (selection instanceof IStructuredSelection ss) {
+			if (ss.size() == 1)
+				return ss.getFirstElement();
+		}
+		return null;
 	}
 
 	private void updateActions() {
