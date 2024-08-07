@@ -108,6 +108,13 @@ public class VirtualZipFolder extends Folder {
 	}
 
 	@Override
+	public IPath getLocation() {
+		String nameSegment = path.lastSegment();
+		IPath parentPath = this.getParent().getLocation();
+		return parentPath.append(nameSegment);
+	}
+
+	@Override
 	public IFile changeToFile() {
 		return this.getParent().getFile(new Path(this.getName()));
 	}
