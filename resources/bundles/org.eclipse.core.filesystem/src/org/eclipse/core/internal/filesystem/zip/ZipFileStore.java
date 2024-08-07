@@ -349,7 +349,7 @@ public class ZipFileStore extends FileStore {
 			if (Files.isDirectory(srcPath)) {
 				moveDirectory(srcPath, destPath, srcFs, destFs);
 			} else {
-				Files.move(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+				Files.move(srcPath, destPath, StandardCopyOption.COPY_ATTRIBUTES);
 			}
 		} catch (IOException | URISyntaxException e) {
 			throw new CoreException(new Status(IStatus.ERROR, getPluginId(), "Error moving entry within ZIP", e)); //$NON-NLS-1$
@@ -373,7 +373,7 @@ public class ZipFileStore extends FileStore {
 						Files.createDirectories(destination);
 					}
 				} else {
-					Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
+					Files.move(source, destination, StandardCopyOption.COPY_ATTRIBUTES);
 				}
 			} catch (IOException e) {
 				throw new RuntimeException("Failed to move files", e); //$NON-NLS-1$
