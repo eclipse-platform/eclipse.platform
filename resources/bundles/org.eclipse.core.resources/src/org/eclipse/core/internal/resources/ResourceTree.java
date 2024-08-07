@@ -15,34 +15,14 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileInfo;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.filesystem.IFileSystem;
+import org.eclipse.core.filesystem.*;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.localstore.FileSystemResourceManager;
 import org.eclipse.core.internal.properties.IPropertyManager;
-import org.eclipse.core.internal.utils.BitMask;
-import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.internal.utils.Policy;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.internal.utils.*;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.team.IResourceTree;
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ILock;
 import org.eclipse.osgi.util.NLS;
 
@@ -379,12 +359,11 @@ class ResourceTree implements IResourceTree {
 		}
 
 		try {
-			// this will delete local and workspace
+			//this will delete local and workspace
 			localManager.delete(folder, flags, Policy.subMonitorFor(monitor, Policy.totalWork));
 		} catch (CoreException ce) {
 			message = NLS.bind(Messages.localstore_couldnotDelete, folder.getFullPath());
-			IStatus status = new ResourceStatus(IStatus.ERROR, IResourceStatus.FAILED_DELETE_LOCAL,
-					folder.getFullPath(), message, ce);
+			IStatus status = new ResourceStatus(IStatus.ERROR, IResourceStatus.FAILED_DELETE_LOCAL, folder.getFullPath(), message, ce);
 			failed(status);
 			return false;
 		}
@@ -1009,10 +988,8 @@ class ResourceTree implements IResourceTree {
 			if (!source.exists() || destination.exists() || !destination.getParent().isAccessible())
 				throw new IllegalArgumentException();
 
-			// Check to see if we are synchronized with the local file system. If we are in
-			// sync then we can
-			// short circuit this method and do a file system only move. Otherwise we have
-			// to recursively
+			// Check to see if we are synchronized with the local file system. If we are in sync then we can
+			// short circuit this method and do a file system only move. Otherwise we have to recursively
 			// try and move all resources, doing it in a best-effort manner.
 			boolean force = (flags & IResource.FORCE) != 0;
 			if (!force && !isSynchronized(source, IResource.DEPTH_INFINITE)) {
