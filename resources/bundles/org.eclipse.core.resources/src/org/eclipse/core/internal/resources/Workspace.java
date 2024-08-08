@@ -47,6 +47,7 @@ import java.util.function.Predicate;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.filesystem.ZipFileUtil;
 import org.eclipse.core.internal.events.BuildManager;
 import org.eclipse.core.internal.events.ILifecycleListener;
 import org.eclipse.core.internal.events.LifecycleEvent;
@@ -2223,7 +2224,11 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 					message = "Path must include project and resource name: " + path.toString(); //$NON-NLS-1$
 					Assert.isLegal(false, message);
 				}
-				return new Folder(path.makeAbsolute(), this);
+				Folder folder = new Folder(path.makeAbsolute(), this);
+				if (ZipFileUtil.isOpenZipFile(folder.getStore())) {
+					return new VirtualZipFolder(path.makeAbsolute(), this);
+				}
+				return folder;
 			case IResource.FILE :
 				if (path.segmentCount() < ICoreConstants.MINIMUM_FILE_SEGMENT_LENGTH) {
 					message = "Path must include project and resource name: " + path.toString(); //$NON-NLS-1$
