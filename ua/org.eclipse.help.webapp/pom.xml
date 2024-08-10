@@ -38,8 +38,8 @@
               </jspc>
               <webAppSourceDirectory>${basedir}</webAppSourceDirectory>
               <useProvidedScope>true</useProvidedScope>
-              <sourceVersion>11</sourceVersion>
-              <targetVersion>11</targetVersion>
+              <sourceVersion>17</sourceVersion>
+              <targetVersion>17</targetVersion>
             </configuration>
           </execution>
         </executions>
