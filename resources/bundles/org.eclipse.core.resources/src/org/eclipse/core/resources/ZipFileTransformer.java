@@ -21,10 +21,12 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.filesystem.ZipFileUtil;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
  * Utility class for opening and closing zip files.
@@ -44,12 +46,13 @@ public class ZipFileTransformer {
 	 *
 	 */
 	public static void closeZipFile(IFolder folder) throws URISyntaxException, CoreException {
+		IProject project = folder.getProject();
 		URI zipURI = new URI(folder.getLocationURI().getQuery());
 		IFileStore parentStore = EFS.getStore(folder.getParent().getLocationURI());
 		URI childURI = parentStore.getChild(folder.getName()).toURI();
 		if (URIUtil.equals(zipURI, childURI)) {
 			folder.delete(IResource.CLOSE_ZIP_FILE, null);
-			folder.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} else {
 			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
 					"Closing of Zip File " + folder.getName() //$NON-NLS-1$
@@ -76,18 +79,10 @@ public class ZipFileTransformer {
 	 *
 	 */
 	public static void openZipFile(IFile file, boolean backgroundRefresh)
-			throws URISyntaxException, CoreException {
-		try (InputStream fis = file.getContents()) {
-			ZipFileUtil.canZipFileBeOpened(fis);
-			// Additional operations can continue here if header is correct
-		} catch (IOException e) {
-			if (e instanceof ZipException && e.getMessage().equals("encrypted ZIP entry not supported")) { //$NON-NLS-1$
-				throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
-						"Opening encrypted ZIP files is not supported: " + file.getName(), e)); //$NON-NLS-1$
-			}
-			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
-					"The file is either empty or doesn't represent a ZIP file: " + file.getName(), e)); //$NON-NLS-1$
-		}
+			throws CoreException {
+		Workspace workspace = ((Workspace) file.getWorkspace());
+		IProject project = file.getProject();
+		final ISchedulingRule rule = workspace.getRuleFactory().createRule(project);
 
 		if (file.isLinked()) {
 			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
@@ -99,17 +94,29 @@ public class ZipFileTransformer {
 					"Nested ZIP files are not allowed to be opened: " + file.getName())); //$NON-NLS-1$
 		}
 
+		IWorkspaceRunnable runnable = monitor -> {
+			try (InputStream fis = file.getContents()) {
+				ZipFileUtil.canZipFileBeOpened(fis);
+				// Additional operations can continue here if header is correct
+				URI zipURI = new URI("zip", null, "/", file.getLocationURI().toString(), null); //$NON-NLS-1$ //$NON-NLS-2$
+				IFolder link = file.getParent().getFolder(IPath.fromOSString(file.getName()));
+				int flags = backgroundRefresh ? IResource.REPLACE | IResource.BACKGROUND_REFRESH : IResource.REPLACE;
 
-		URI zipURI = new URI("zip", null, "/", file.getLocationURI().toString(), null); //$NON-NLS-1$ //$NON-NLS-2$
-		IFolder link = file.getParent().getFolder(IPath.fromOSString(file.getName()));
-		int flags = backgroundRefresh ? IResource.REPLACE | IResource.BACKGROUND_REFRESH : IResource.REPLACE;
+				link.createLink(zipURI, flags, monitor);
+				project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+			} catch (IOException e) {
+				if (e instanceof ZipException && e.getMessage().equals("encrypted ZIP entry not supported")) { //$NON-NLS-1$
+					throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
+							"Opening encrypted ZIP files is not supported: " + file.getName(), e)); //$NON-NLS-1$
+				}
+				throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
+						"The file is either empty or doesn't represent a ZIP file: " + file.getName(), e)); //$NON-NLS-1$
+			} catch (CoreException | URISyntaxException e) {
+				throw new CoreException(
+						new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, "Zip File could not be opened")); //$NON-NLS-1$
+			}
+		};
 
-		try {
-			link.createLink(zipURI, flags, null);
-			link.refreshLocal(0, null);
-		} catch (CoreException e) {
-			throw new CoreException(
-					new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, "Zip File could not be opened")); //$NON-NLS-1$
-		}
+		workspace.run(runnable, rule, IWorkspace.AVOID_UPDATE, null);
 	}
 }
