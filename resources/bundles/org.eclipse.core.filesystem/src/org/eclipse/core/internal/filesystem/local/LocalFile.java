@@ -150,10 +150,11 @@ public class LocalFile extends FileStore {
 
 	private static final CopyOption[] NO_OVERWRITE = {StandardCopyOption.COPY_ATTRIBUTES};
 	private static final CopyOption[] OVERWRITE_EXISTING = {StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING};
+	private static final int LARGE_FILE_SIZE_THRESHOLD = 1024 * 1024; // 1 MiB experimentally determined
 
 	@Override
 	protected void copyFile(IFileInfo sourceInfo, IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
-		if (destination instanceof LocalFile target) {
+		if (sourceInfo.getLength() > LARGE_FILE_SIZE_THRESHOLD && destination instanceof LocalFile target) {
 			try {
 				boolean overwrite = (options & EFS.OVERWRITE) != 0;
 				Files.copy(this.file.toPath(), target.file.toPath(), overwrite ? OVERWRITE_EXISTING : NO_OVERWRITE);
