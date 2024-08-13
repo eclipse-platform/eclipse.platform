@@ -34,7 +34,6 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.Locale;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -248,7 +247,7 @@ public class LocalFile extends FileStore {
 	@Override
 	public int hashCode() {
 		if (LocalFileSystem.MACOSX)
-			return filePath.toLowerCase(Locale.ENGLISH).hashCode();
+			return filePath.toLowerCase().hashCode();
 		return file.hashCode();
 	}
 
@@ -339,7 +338,7 @@ public class LocalFile extends FileStore {
 				return false;
 			}
 		} else {
-			if (!thatPath.toLowerCase(Locale.ENGLISH).startsWith(thisPath.toLowerCase(Locale.ENGLISH))) {
+			if (!thatPath.toLowerCase().startsWith(thisPath.toLowerCase())) {
 				return false;
 			}
 		}
