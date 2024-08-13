@@ -40,7 +40,11 @@ public class ZipFileUtil {
 	public static boolean isInsideOpenZipFile(URI locationURI) {
 		IFileStore store;
 		try {
-			store = EFS.getStore(locationURI);
+			if (locationURI != null) {
+				store = EFS.getStore(locationURI);
+			} else {
+				return false;
+			}
 		} catch (CoreException e) {
 			return false;
 		}
