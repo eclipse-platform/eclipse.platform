@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 Vector Informatik GmbH and others.
+ * Copyright (c) 2023, 2024 Vector Informatik GmbH and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -116,10 +117,19 @@ public final class ResourceTestUtil {
 	 * contents.
 	 */
 	public static void createInFileSystem(IFileStore file) throws CoreException, IOException {
+		createInFileSystem(file, 20);
+	}
+
+	/**
+	 * Create the given file and its parents in the local store with random contents
+	 * of the specified size
+	 */
+	public static void createInFileSystem(IFileStore file, int fileSizeInBytes) throws CoreException, IOException {
 		file.getParent().mkdir(EFS.NONE, null);
-		try (InputStream input = createRandomContentsStream();
-				OutputStream output = file.openOutputStream(EFS.NONE, null)) {
-			input.transferTo(output);
+		try (OutputStream output = new BufferedOutputStream(file.openOutputStream(EFS.NONE, null))) {
+			for (int size = 0; size < fileSizeInBytes; size++) {
+				output.write(RANDOM.nextInt(Byte.SIZE));
+			}
 		}
 	}
 

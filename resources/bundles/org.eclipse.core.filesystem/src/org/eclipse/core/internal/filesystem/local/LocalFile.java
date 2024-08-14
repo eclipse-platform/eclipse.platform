@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2016 IBM Corporation and others.
+ * Copyright (c) 2005, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -148,26 +148,35 @@ public class LocalFile extends FileStore {
 		super.copy(destFile, options, monitor);
 	}
 
-	private static final CopyOption[] NO_OVERWRITE = {StandardCopyOption.COPY_ATTRIBUTES};
-	private static final CopyOption[] OVERWRITE_EXISTING = {StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING};
-	private static final int LARGE_FILE_SIZE_THRESHOLD = 1024 * 1024; // 1 MiB experimentally determined
+	private static final CopyOption[] NO_OVERWRITE = {};
+	private static final CopyOption[] OVERWRITE_EXISTING = {StandardCopyOption.REPLACE_EXISTING};
+	public static final int LARGE_FILE_SIZE_THRESHOLD = 1024 * 1024; // 1 MiB experimentally determined
 
 	@Override
 	protected void copyFile(IFileInfo sourceInfo, IFileStore destination, int options, IProgressMonitor monitor) throws CoreException {
 		if (sourceInfo.getLength() > LARGE_FILE_SIZE_THRESHOLD && destination instanceof LocalFile target) {
+			SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.copying, this), 100);
 			try {
 				boolean overwrite = (options & EFS.OVERWRITE) != 0;
 				Files.copy(this.file.toPath(), target.file.toPath(), overwrite ? OVERWRITE_EXISTING : NO_OVERWRITE);
+				subMonitor.worked(93);
+				transferAttributes(sourceInfo, destination);
+				subMonitor.worked(5);
 			} catch (FileAlreadyExistsException e) {
 				Policy.error(EFS.ERROR_EXISTS, NLS.bind(Messages.fileExists, target.filePath), e);
 			} catch (IOException e) {
 				Policy.error(EFS.ERROR_WRITE, NLS.bind(Messages.failedCopy, this.filePath, target.filePath), e);
 			} finally {
-				IProgressMonitor.done(monitor);
+				subMonitor.done();
 			}
 		} else {
 			super.copyFile(sourceInfo, destination, options, monitor);
 		}
+	}
+
+	public static final void transferAttributes(IFileInfo sourceInfo, IFileStore destination) throws CoreException {
+		int options = EFS.SET_ATTRIBUTES | EFS.SET_LAST_MODIFIED;
+		destination.putInfo(sourceInfo, options, null);
 	}
 
 	@Override
