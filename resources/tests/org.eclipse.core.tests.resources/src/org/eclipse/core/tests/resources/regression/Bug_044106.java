@@ -22,9 +22,11 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.function.Predicate;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -32,9 +34,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests regression of bug 44106. In this case deleting a file which was a
@@ -44,12 +47,12 @@ import org.junit.Test;
  * Also tests bug 174492, which is a similar bug except the KEEP_HISTORY
  * flag is used when the resource is deleted from the workspace.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_044106 {
 
 	private static final Predicate<IFileStore> exists = store -> store.fetchInfo().exists();
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	private @TempDir Path tempDirectory;
 
 	private void createSymLink(String target, String local) throws InterruptedException, IOException {
 		Process p = Runtime.getRuntime().exec(new String[] { "/bin/ln", "-s", target, local });
@@ -62,7 +65,7 @@ public class Bug_044106 {
 	 */
 	private void doTestDeleteLinkedFile(int deleteFlags) throws Exception {
 		// create the file/folder that we are going to link to
-		IFileStore linkDestFile = workspaceRule.getTempStore();
+		IFileStore linkDestFile = getFileStore(tempDirectory).getChild(createUniqueString());
 		createInFileSystem(linkDestFile);
 		assertThat(linkDestFile).matches(exists, "exists");
 
@@ -99,7 +102,7 @@ public class Bug_044106 {
 			throws Exception {
 		assumeTrue("only relevant on Linux", OS.isLinux());
 
-		IFileStore linkDestLocation = workspaceRule.getTempStore();
+		IFileStore linkDestLocation = getFileStore(tempDirectory);
 		IFileStore linkDestFile = linkDestLocation.getChild(createUniqueString());
 		createInFileSystem(linkDestFile);
 		assertThat(linkDestLocation).matches(exists, "exists");

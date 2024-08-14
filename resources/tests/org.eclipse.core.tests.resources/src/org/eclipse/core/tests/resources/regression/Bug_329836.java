@@ -18,30 +18,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
 import static org.junit.Assume.assumeTrue;
 
+import java.nio.file.Path;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test for bug 329836
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_329836 {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
 	@Test
-	public void testBug() throws Exception {
+	public void testBug(@TempDir Path tempDirectory) throws Exception {
 		assumeTrue("only relevant on Mac", OS.isMac());
 
-		IFileStore fileStore = workspaceRule.getTempStore().getChild(createUniqueString());
+		IFileStore fileStore = getFileStore(tempDirectory).getChild(createUniqueString());
 		createInFileSystem(fileStore);
 
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac

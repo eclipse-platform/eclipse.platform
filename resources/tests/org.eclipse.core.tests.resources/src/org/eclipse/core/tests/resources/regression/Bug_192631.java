@@ -16,7 +16,7 @@ package org.eclipse.core.tests.resources.regression;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,19 +33,17 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.filesystem.ram.MemoryTree;
 import org.eclipse.core.tests.internal.filesystem.remote.RemoteFileSystem;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for bug 192631
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_192631 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final String USER_A = "userA";
 	private static final String USER_B = "userB";
@@ -58,12 +56,12 @@ public class Bug_192631 {
 	private static final String FOLDER_A = "/common/folderA";
 	private static final String FOLDER_B = "/common/folderB";
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		MemoryTree.TREE.deleteAll();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		MemoryTree.TREE.deleteAll();
 	}

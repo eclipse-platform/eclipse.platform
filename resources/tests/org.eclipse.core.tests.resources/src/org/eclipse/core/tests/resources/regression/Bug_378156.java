@@ -35,19 +35,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.eclipse.core.tests.resources.usecase.SignaledBuilder;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests a timing problem where a canceled waiting thread could cause a change
  * in another thread to skip building.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_378156 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	class ModifyFileJob extends WorkspaceJob {
 		private boolean cancel;

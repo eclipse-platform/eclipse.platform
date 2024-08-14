@@ -22,10 +22,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.utils.FileUtil;
@@ -37,17 +39,16 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_233939 {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
-	@Before
+	@BeforeEach
 	public void requireCanCreateSymlinks() throws IOException {
 		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
 	}
@@ -75,7 +76,7 @@ public class Bug_233939 {
 	}
 
 	@Test
-	public void testBug() throws Exception {
+	public void testBug(@TempDir Path tempDirectory) throws Exception {
 		String fileName = "file.txt";
 
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -87,7 +88,7 @@ public class Bug_233939 {
 		project.open(createTestMonitor());
 
 		// create a file: getTempStore() will be cleaned up in tearDown()
-		IFileStore tempFileStore = workspaceRule.getTempStore().getChild(fileName);
+		IFileStore tempFileStore = getFileStore(tempDirectory).getChild(fileName);
 		createInFileSystem(tempFileStore);
 		IPath fileInTempDirPath = URIUtil.toPath(tempFileStore.toURI());
 
@@ -104,9 +105,9 @@ public class Bug_233939 {
 	}
 
 	@Test
-	public void testMultipleLinksToFolder() throws Exception {
+	public void testMultipleLinksToFolder(@TempDir Path tempDirectory) throws Exception {
 		// create a folder: getTempStore() will be cleaned up in tearDown()
-		IFileStore tempStore = workspaceRule.getTempStore();
+		IFileStore tempStore = getFileStore(tempDirectory);
 		createInFileSystem(tempStore.getChild("foo.txt"));
 		IPath tempFolderPath = URIUtil.toPath(tempStore.toURI());
 

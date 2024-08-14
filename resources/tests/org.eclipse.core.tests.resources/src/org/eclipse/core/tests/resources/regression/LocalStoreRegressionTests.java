@@ -20,7 +20,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -35,14 +35,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class LocalStoreRegressionTests {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * 1FU4PJA: ITPCORE:ALL - refreshLocal for new file with depth zero doesn't work
@@ -86,7 +84,6 @@ public class LocalStoreRegressionTests {
 	public void test_1G65KR1() throws IOException {
 		/* evaluate test environment */
 		IPath root = getWorkspace().getRoot().getLocation().append("" + new Date().getTime());
-		workspaceRule.deleteOnTearDown(root);
 		File temp = root.toFile();
 		temp.mkdirs();
 
@@ -94,17 +91,21 @@ public class LocalStoreRegressionTests {
 		Workspace.clear(target); // make sure there was nothing here before
 		assertThat(target).matches(not(File::exists), "not exists");
 
-		// write chunks
-		try (SafeChunkyOutputStream output = new SafeChunkyOutputStream(target);
-				DataOutputStream dos = new DataOutputStream(output)) {
-			dos.writeLong(1234567890l);
-			output.succeed();
-		}
+		try {
+			// write chunks
+			try (SafeChunkyOutputStream output = new SafeChunkyOutputStream(target);
+					DataOutputStream dos = new DataOutputStream(output)) {
+				dos.writeLong(1234567890l);
+				output.succeed();
+			}
 
-		// read chunks
-		try (SafeChunkyInputStream input = new SafeChunkyInputStream(target);
-				DataInputStream dis = new DataInputStream(input)) {
-			assertEquals(dis.readLong(), 1234567890l);
+			// read chunks
+			try (SafeChunkyInputStream input = new SafeChunkyInputStream(target);
+					DataInputStream dis = new DataInputStream(input)) {
+				assertEquals(dis.readLong(), 1234567890l);
+			}
+		} finally {
+			removeFromFileSystem(temp);
 		}
 	}
 

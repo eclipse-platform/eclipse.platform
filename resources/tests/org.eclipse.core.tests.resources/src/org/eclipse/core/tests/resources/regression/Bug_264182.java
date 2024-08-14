@@ -17,9 +17,11 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.nio.file.Path;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -27,21 +29,20 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_264182 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	IProject project;
 	IFile dotProject;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// create a project
 		project = getWorkspace().getRoot().getProject(createUniqueString());
@@ -53,17 +54,17 @@ public class Bug_264182 {
 		setReadOnly(dotProject, true);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		// make the description writable
 		setReadOnly(dotProject, false);
 	}
 
 	@Test
-	public void testBug() throws Exception {
+	public void testBug(@TempDir Path tempDirectory) throws Exception {
 		// create a linked resource
 		final IFile file = project.getFile(createUniqueString());
-		IFileStore tempFileStore = workspaceRule.getTempStore();
+		IFileStore tempFileStore = getFileStore(tempDirectory).getChild("temp");
 		createInFileSystem(tempFileStore);
 		assertThrows(CoreException.class,
 				() -> file.createLink(tempFileStore.toURI(), IResource.NONE, new NullProgressMonitor()));

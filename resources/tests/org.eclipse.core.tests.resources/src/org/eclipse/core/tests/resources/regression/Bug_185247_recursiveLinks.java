@@ -12,15 +12,15 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.harness.FileSystemHelper.canCreateSymLinks;
 import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
-import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.nio.file.Path;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IProject;
@@ -28,26 +28,27 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests for recursive symbolic links in projects.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_185247_recursiveLinks {
 
-	@Rule
-	public TestName testName = new TestName();
+	private @TempDir Path tempDirectory;
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	private String testMethodName;
 
-	@Before
-	public void requireCanCreateSymlinks() throws IOException {
+	@BeforeEach
+	public void requireCanCreateSymlinks(TestInfo testInfo) throws IOException {
 		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+		testMethodName = testInfo.getTestMethod().get().getName();
 	}
 
 	/**
@@ -177,9 +178,8 @@ public class Bug_185247_recursiveLinks {
 	}
 
 	private void runTest(CreateTestProjectStructure createSymlinks) throws MalformedURLException, Exception {
-		String projectName = testName.getMethodName();
-		IPath testRoot = getRandomLocation();
-		workspaceRule.deleteOnTearDown(testRoot);
+		String projectName = testMethodName;
+		IPath testRoot = IPath.fromPath(tempDirectory);
 		IPath projectRoot = testRoot.append("bug185247recursive").append(projectName);
 		File directory = projectRoot.append("directory").toFile();
 		createDirectory(directory);
@@ -193,11 +193,11 @@ public class Bug_185247_recursiveLinks {
 	}
 
 	private static void createDirectory(File directory) {
-		assertTrue("failed to create test directory: " + directory, directory.mkdirs());
+		assertTrue(directory.mkdirs(), "failed to create test directory: " + directory);
 	}
 
 	void createSymlink(File directory, String linkName, String linkTarget) throws IOException {
-		assertTrue("symlinks not supported by platform", canCreateSymLinks());
+		assertTrue(canCreateSymLinks(), "symlinks not supported by platform");
 		boolean isDir = true;
 		createSymLink(directory, linkName, linkTarget, isDir);
 	}
@@ -214,7 +214,7 @@ public class Bug_185247_recursiveLinks {
 		projectDescription.setLocationURI(projectRootLocation);
 		testProject.create(projectDescription, createTestMonitor());
 		testProject.open(createTestMonitor());
-		assertTrue("expected project to be open: " + projectName, testProject.isAccessible());
+		assertTrue(testProject.isAccessible(), "expected project to be open: " + projectName);
 		return testProject;
 	}
 

@@ -16,21 +16,19 @@ package org.eclipse.core.tests.resources.regression;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class PR_1GH2B0N_Test {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void test_1GH2B0N() throws CoreException {
@@ -38,7 +36,6 @@ public class PR_1GH2B0N_Test {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IProjectDescription description = getWorkspace().newProjectDescription("MyProject");
 		IPath projectLocation = path.append(project.getName());
-		workspaceRule.deleteOnTearDown(projectLocation);
 		description.setLocation(projectLocation);
 		project.create(description, createTestMonitor());
 		project.open(createTestMonitor());

@@ -19,7 +19,7 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -28,20 +28,18 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.tests.internal.builders.ClearMarkersBuilder;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests duplicate resource change events caused by a builder that makes
  * no changes.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_147232 implements IResourceChangeListener {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Records the number of times we have seen the file creation delta
@@ -64,13 +62,13 @@ public class Bug_147232 implements IResourceChangeListener {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		// make the builder wait after running to all a POST_CHANGE event to occur before POST_BUILD
 		ClearMarkersBuilder.pauseAfterBuild = true;
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		getWorkspace().removeResourceChangeListener(this);
 		ClearMarkersBuilder.pauseAfterBuild = false;

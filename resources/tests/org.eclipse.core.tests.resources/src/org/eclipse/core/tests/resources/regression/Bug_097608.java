@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,18 +22,16 @@ import java.util.Map;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests regression of bug 97608 - error restoring workspace
  * after writing marker with value that is too long.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_097608 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tests that creating a marker with very long value causes failure.

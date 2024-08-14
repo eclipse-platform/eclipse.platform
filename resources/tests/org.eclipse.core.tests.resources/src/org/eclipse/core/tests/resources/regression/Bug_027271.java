@@ -15,38 +15,35 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests how changes in the underlying preference store may affect the path
  * variable manager.
  */
-
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_027271 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	static final String VARIABLE_PREFIX = "pathvariable."; //$NON-NLS-1$
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		clearPathVariablesProperties();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		clearPathVariablesProperties();
 	}

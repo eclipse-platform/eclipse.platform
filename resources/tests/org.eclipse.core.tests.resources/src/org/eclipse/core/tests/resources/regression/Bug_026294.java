@@ -25,8 +25,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 import java.util.function.Predicate;
@@ -38,15 +38,16 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * A parent container (projects and folders) would become out-of-sync if any of
  * its children could not be deleted for some reason. These platform-
  * specific test cases ensure that it does not happen.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_026294 {
 
 	private static final Predicate<IResource> isSynchronizedDepthInfinite = resource -> resource
@@ -54,9 +55,6 @@ public class Bug_026294 {
 
 	private static final Predicate<IResource> isSynchronizedDepthZero = resource -> resource
 			.isSynchronized(IResource.DEPTH_ZERO);
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tries to delete an open project containing an unremovable file.
@@ -76,7 +74,6 @@ public class Bug_026294 {
 
 		createInWorkspace(new IResource[] { file1, file2, file3 });
 		IPath projectRoot = project.getLocation();
-		workspaceRule.deleteOnTearDown(projectRoot);
 
 		assertExistsInFileSystem(file1);
 		assertExistsInFileSystem(file2);
@@ -145,7 +142,6 @@ public class Bug_026294 {
 
 		createInWorkspace(new IResource[] { file1, file2 });
 		IPath projectRoot = project.getLocation();
-		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks folder as read-only so its files cannot be deleted on Linux
@@ -195,7 +191,6 @@ public class Bug_026294 {
 
 		createInWorkspace(new IResource[] { file1, file2, file3 });
 		IPath projectRoot = project.getLocation();
-		workspaceRule.deleteOnTearDown(projectRoot);
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
@@ -229,10 +224,8 @@ public class Bug_026294 {
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file2 = project.getFile("file2.txt");
 		IFile projectFile = project.getFile(IPath.fromOSString(".project"));
-
 		createInWorkspace(new IResource[] { file1, file2 });
 		IPath projectRoot = project.getLocation();
-		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks folder as read-only so its files cannot be removed on Linux
@@ -273,10 +266,7 @@ public class Bug_026294 {
 		IFolder folder = project.getFolder("a_folder");
 		IFile file1 = folder.getFile("file1.txt");
 		IFile file3 = folder.getFile("file3.txt");
-
 		createInWorkspace(new IResource[] { file1, file3 });
-		IPath projectRoot = project.getLocation();
-		workspaceRule.deleteOnTearDown(projectRoot);
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
@@ -309,10 +299,7 @@ public class Bug_026294 {
 		IFolder subFolder = folder.getFolder("sub-folder");
 		IFile file1 = subFolder.getFile("file1.txt");
 		IFile file3 = folder.getFile("file3.txt");
-
 		createInWorkspace(new IResource[] { file1, file3 });
-		IPath projectRoot = project.getLocation();
-		workspaceRule.deleteOnTearDown(projectRoot);
 
 		try {
 			// marks sub-folder as read-only so its files cannot be removed on Linux

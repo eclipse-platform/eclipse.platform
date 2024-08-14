@@ -15,8 +15,8 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.ByteArrayInputStream;
 import org.eclipse.core.filesystem.provider.FileInfo;
@@ -25,33 +25,28 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for Bug 530868: millisecond resolution of file timestamps with native
  * provider.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_530868 {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject testProject;
 	private IFile testFile;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
 		testProject = getWorkspace().getRoot().getProject(Bug_530868.class + "TestProject");
 		testProject.create(createTestMonitor());
 		testProject.open(createTestMonitor());
-		testFile = testProject.getFile(testName.getMethodName());
+		testFile = testProject.getFile(testInfo.getTestMethod().get().getName());
 
 	}
 
@@ -74,8 +69,8 @@ public class Bug_530868 {
 			long timestamp3 = modifyTestFileAndFetchTimestamp("some contents 3");
 
 			String failMessage = "expected different timestamps for modifications in quick succession";
-			assertNotEquals(failMessage, timestamp1, timestamp2);
-			assertNotEquals(failMessage, timestamp2, timestamp3);
+			assertNotEquals(timestamp1, timestamp2, failMessage);
+			assertNotEquals(timestamp2, timestamp3, failMessage);
 		} finally {
 			LocalFileNativesManager.reset();
 		}

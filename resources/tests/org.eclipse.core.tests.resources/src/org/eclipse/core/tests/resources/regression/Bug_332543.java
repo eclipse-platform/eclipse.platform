@@ -16,7 +16,7 @@ package org.eclipse.core.tests.resources.regression;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -37,19 +37,17 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileStore;
 import org.eclipse.core.tests.internal.filesystem.wrapper.WrapperFileSystem;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This tests that I/O Exception on OuptuStream#close() after IFile#setContents
  * is correctly reported.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_332543 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Wrapper FS which throws an IOException when someone closes an output
@@ -77,7 +75,7 @@ public class Bug_332543 {
 		}
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		WrapperFileSystem.setCustomFileStore(null);
 	}

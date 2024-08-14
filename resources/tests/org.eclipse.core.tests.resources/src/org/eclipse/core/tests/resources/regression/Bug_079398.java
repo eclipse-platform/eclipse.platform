@@ -28,18 +28,16 @@ import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceDescription;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_079398 {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
 	@Test
-	@Ignore("Bug 78398 needs to be fixed")
+	@Disabled("Bug 78398 needs to be fixed")
 	public void testBug79398() throws Exception {
 		IProject project = getWorkspace().getRoot().getProject("myproject");
 		IFile file1 = project.getFile("myFile.txt");

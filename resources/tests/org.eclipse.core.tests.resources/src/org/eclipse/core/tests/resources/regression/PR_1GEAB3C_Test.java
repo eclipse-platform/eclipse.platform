@@ -30,16 +30,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class PR_1GEAB3C_Test {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	ResourceDeltaVerifier verifier;
 
@@ -49,7 +47,7 @@ public class PR_1GEAB3C_Test {
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
 	 */
-	@Before
+	@BeforeEach
 	public void setUp() {
 		//ensure background work is done before adding verifier
 		waitForBuild();
@@ -62,7 +60,7 @@ public class PR_1GEAB3C_Test {
 	 * Tears down the fixture, for example, close a network connection.
 	 * This method is called after a test is executed.
 	 */
-	@After
+	@AfterEach
 	public void tearDown() {
 		getWorkspace().removeResourceChangeListener(verifier);
 	}

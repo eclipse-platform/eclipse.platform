@@ -15,15 +15,15 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -35,22 +35,22 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.api.io.TempDir;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_265810 {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	private @TempDir Path tempDirectory;
 
 	List<IResourceDelta> resourceDeltas = new ArrayList<>();
 
 	public IPath createFolderAtRandomLocation() throws IOException {
-		IPath path = getRandomLocation();
+		IPath path = IPath.fromPath(tempDirectory).append(createUniqueString());
 		path.toFile().createNewFile();
-		workspaceRule.deleteOnTearDown(path);
 		return path;
 	}
 
@@ -80,7 +80,7 @@ public class Bug_265810 {
 		// save the .project [2] content
 		byte[] dotProject2 = storeDotProject(project);
 
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
+		final AtomicReference<Executable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
 		});
 
 		IResourceChangeListener listener = event -> {
@@ -116,7 +116,7 @@ public class Bug_265810 {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
 
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 
 		// create newFile as a non-linked resource
 		newFile.create(createInputStream("content"), IResource.NONE, new NullProgressMonitor());
@@ -135,7 +135,7 @@ public class Bug_265810 {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
 
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 	}
 
 	private byte[] storeDotProject(IProject project) throws Exception {
