@@ -23,7 +23,6 @@ import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
@@ -181,7 +180,9 @@ public class WorkspaceTest {
 		assertDoesNotExistInWorkspace(before);
 		assertExistsInWorkspace(after);
 		file = project.getFile(IPath.fromOSString("a/b/z"));
-		assertTrue("get not equal set", compareContent(createInputStream(content), file.getContents(false)));
+		try (InputStream fileContents = file.getContents(false)) {
+			assertThat(fileContents).hasContent(content);
+		}
 	}
 
 	@Test
@@ -322,7 +323,7 @@ public class WorkspaceTest {
 		fileTarget.setContents(testString.getBytes(), true, false, monitor);
 		monitor.assertUsedUp();
 		try (InputStream content = fileTarget.getContents(false)) {
-			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
+			assertThat(content).hasContent(testString);
 		}
 	}
 
@@ -405,7 +406,7 @@ public class WorkspaceTest {
 		target.setContents(createInputStream(testString), true, false, monitor);
 		monitor.assertUsedUp();
 		try (InputStream content = target.getContents(false)) {
-			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
+			assertThat(content).hasContent(testString);
 		}
 	}
 

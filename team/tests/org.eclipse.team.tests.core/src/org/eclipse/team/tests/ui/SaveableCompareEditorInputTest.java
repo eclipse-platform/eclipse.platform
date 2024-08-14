@@ -16,9 +16,9 @@ package org.eclipse.team.tests.ui;
 import static java.util.Collections.synchronizedList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -279,10 +279,7 @@ public class SaveableCompareEditorInputTest {
 		verifyDirtyStateChanges(compareEditorInput);
 
 		// check whether file was saved
-
-		assertTrue(compareContent(new ByteArrayInputStream(
-				(fileContents1 + appendFileContents).getBytes()),
-				file1.getContents()));
+		assertEquals(fileContents1 + appendFileContents, file1.readString());
 	}
 
 	@Test
@@ -333,10 +330,7 @@ public class SaveableCompareEditorInputTest {
 		verifyDirtyStateChanges(compareEditorInput);
 
 		// check whether file was saved
-
-		assertTrue(compareContent(new ByteArrayInputStream(
-				(fileContents1 + appendFileContents).getBytes()),
-				file1.getContents()));
+		assertEquals(fileContents1 + appendFileContents, file1.readString());
 	}
 
 	@Test
@@ -415,12 +409,8 @@ public class SaveableCompareEditorInputTest {
 				.closeEditor(editor, false);
 
 		// validate if both sides where saved
-		assertTrue(compareContent(new ByteArrayInputStream(
-				(fileContents1 + appendFileContents).getBytes()),
-				file1.getContents()));
-		assertTrue(compareContent(new ByteArrayInputStream(
-				(fileContents2 + appendFileContents).getBytes()),
-				file2.getContents()));
+		assertEquals(fileContents1 + appendFileContents, file1.readString());
+		assertEquals(fileContents2 + appendFileContents, file2.readString());
 	}
 
 	@Test

@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertFalse;
@@ -82,8 +82,9 @@ public class SafeFileInputOutputStreamTest {
 		}
 		assertTrue(target.exists());
 		assertFalse(tempFile.exists());
-		InputStream diskContents = new SafeFileInputStream(tempLocation.toOSString(), target.getAbsolutePath());
-		assertTrue(compareContent(diskContents, createInputStream(contents)));
+		try (InputStream diskContents = new SafeFileInputStream(tempLocation.toOSString(), target.getAbsolutePath())) {
+			assertThat(diskContents).hasContent(contents);
+		}
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 
@@ -98,8 +99,9 @@ public class SafeFileInputOutputStreamTest {
 		try (SafeFileOutputStream safeStream = createSafeStream(target)) {
 			createInputStream(contents).transferTo(safeStream);
 		}
-		InputStream diskContents = getContents(target);
-		assertTrue(compareContent(diskContents, createInputStream(contents)));
+		try (InputStream diskContents = getContents(target)) {
+			assertThat(diskContents).hasContent(contents);
+		}
 
 		contents = createRandomString();
 		// update target contents
@@ -110,8 +112,9 @@ public class SafeFileInputOutputStreamTest {
 			createInputStream(contents).transferTo(safeStream);
 		}
 		assertFalse(tempFile.exists());
-		diskContents = getContents(target);
-		assertTrue(compareContent(diskContents, createInputStream(contents)));
+		try (InputStream diskContents = getContents(target)) {
+			assertThat(diskContents).hasContent(contents);
+		}
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 
@@ -134,8 +137,9 @@ public class SafeFileInputOutputStreamTest {
 			createInputStream(contents).transferTo(safeStream);
 		}
 		assertFalse(tempFile.exists());
-		InputStream diskContents = getContents(target);
-		assertTrue(compareContent(diskContents, createInputStream(contents)));
+		try (InputStream diskContents = getContents(target)) {
+			assertThat(diskContents).hasContent(contents);
+		}
 
 		contents = createRandomString();
 		// now we should have a temp file
@@ -145,8 +149,9 @@ public class SafeFileInputOutputStreamTest {
 			createInputStream(contents).transferTo(safeStream);
 		}
 		assertFalse(tempFile.exists());
-		diskContents = getContents(target);
-		assertTrue(compareContent(diskContents, createInputStream(contents)));
+		try (InputStream diskContents = getContents(target)) {
+			assertThat(diskContents).hasContent(contents);
+		}
 		Workspace.clear(target); // make sure there was nothing here before
 	}
 

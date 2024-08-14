@@ -14,7 +14,6 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
@@ -22,8 +21,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySuppor
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
@@ -69,9 +68,7 @@ public class Bug_025457 {
 		//ensure source still exists and has same content
 		assertTrue("2.0", source.exists());
 		assertTrue("2.1", sourceFile.exists());
-		try (InputStream stream = sourceFile.getContents()) {
-			assertTrue("2.2", compareContent(stream, new ByteArrayInputStream(content.getBytes())));
-		}
+		assertEquals(content, sourceFile.readString());
 		//ensure destination file does not exist
 		assertTrue("2.3", !destFile.exists());
 	}

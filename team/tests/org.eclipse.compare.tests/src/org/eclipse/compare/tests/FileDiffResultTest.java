@@ -16,7 +16,6 @@ package org.eclipse.compare.tests;
 import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
@@ -115,9 +114,14 @@ public class FileDiffResultTest {
 		assertThat(filePatchResult.getOriginalContents()).isNotNull();
 		assertThat(filePatchResult.getPatchedContents()).isNotNull();
 
-		compareContent(new FileInputStream(project.getFile(NEW_FILENAME).getLocation().toFile()),
-				filePatchResult.getOriginalContents());
-		compareContent(filePatchResult.getOriginalContents(), filePatchResult.getPatchedContents());
+		try (InputStream fileInput = new FileInputStream(project.getFile(NEW_FILENAME).getLocation().toFile());
+				InputStream originalContents = filePatchResult.getOriginalContents()) {
+			assertThat(fileInput).hasSameContentAs(originalContents);
+		}
+		try (InputStream filePatched = filePatchResult.getPatchedContents();
+				InputStream originalContents = filePatchResult.getOriginalContents()) {
+			assertThat(filePatched).hasSameContentAs(originalContents);
+		}
 	}
 
 	/**
@@ -149,10 +153,15 @@ public class FileDiffResultTest {
 		assertThat(filePatchResult.getOriginalContents()).isNotNull();
 		assertThat(filePatchResult.getPatchedContents()).isNotNull();
 
-		compareContent(new FileInputStream(project.getFile(NEW_FILENAME).getLocation().toFile()),
-				filePatchResult.getOriginalContents());
+		try (InputStream fileInput = new FileInputStream(project.getFile(NEW_FILENAME).getLocation().toFile());
+				InputStream originalContents = filePatchResult.getOriginalContents()) {
+			assertThat(fileInput).hasSameContentAs(originalContents);
+		}
 		assertThat(getStringFromStream(filePatchResult.getOriginalContents())).isEqualTo("I'm a different content");
-		compareContent(filePatchResult.getOriginalContents(), filePatchResult.getPatchedContents());
+		try (InputStream filePatched = filePatchResult.getPatchedContents();
+				InputStream originalContents = filePatchResult.getOriginalContents()) {
+			assertThat(filePatched).hasSameContentAs(originalContents);
+		}
 	}
 
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=185379

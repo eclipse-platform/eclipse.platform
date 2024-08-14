@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.internal.localstore.LocalStoreTestUtil.createTree;
 import static org.eclipse.core.tests.internal.localstore.LocalStoreTestUtil.getTree;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
@@ -35,6 +35,7 @@ import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -241,15 +242,21 @@ public class FileStoreTest {
 		createFile(fileWithSmallName, content);
 		System.out.println(fileWithSmallName.fetchInfo().getName());
 		assertTrue("1.3", fileWithSmallName.fetchInfo().exists());
-		assertTrue("1.4", compareContent(createInputStream(content), fileWithSmallName.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = fileWithSmallName.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 
 		IFileStore fileWithOtherName = temp.getChild("FILENAME");
 		System.out.println(fileWithOtherName.fetchInfo().getName());
 		// file content is already the same for both Cases:
-		assertTrue("2.0", compareContent(createInputStream(content), fileWithOtherName.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = fileWithOtherName.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 		fileWithSmallName.copy(fileWithOtherName, IResource.DEPTH_INFINITE, null); // a NOP Operation
 		// file content is still the same for both Cases:
-		assertTrue("2.1", compareContent(createInputStream(content), fileWithOtherName.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = fileWithOtherName.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 		assertTrue("3.0", fileWithOtherName.fetchInfo().exists());
 		assertTrue("3.1", fileWithSmallName.fetchInfo().exists());
 		fileWithOtherName.delete(EFS.NONE, null);
@@ -271,12 +278,16 @@ public class FileStoreTest {
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
 		assertTrue("1.3", target.fetchInfo().exists());
-		assertTrue("1.4", compareContent(createInputStream(content), target.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = target.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 
 		/* temp\target -> temp\copy of target */
 		IFileStore copyOfTarget = temp.getChild("copy of target");
 		target.copy(copyOfTarget, IResource.DEPTH_INFINITE, null);
-		assertTrue("2.1", compareContent(createInputStream(content), copyOfTarget.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = copyOfTarget.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 		copyOfTarget.delete(EFS.NONE, null);
 
 		// We need to know whether or not we can unset the read-only flag
@@ -287,7 +298,9 @@ public class FileStoreTest {
 			setReadOnly(target, true);
 
 			target.copy(copyOfTarget, IResource.DEPTH_INFINITE, null);
-			assertTrue("3.1", compareContent(createInputStream(content), copyOfTarget.openInputStream(EFS.NONE, null)));
+			try (InputStream stream = copyOfTarget.openInputStream(EFS.NONE, null)) {
+				assertThat(stream).hasContent(content);
+			}
 			// reset read only flag for cleanup
 			setReadOnly(copyOfTarget, false);
 			copyOfTarget.delete(EFS.NONE, null);
@@ -304,12 +317,16 @@ public class FileStoreTest {
 		IFileStore bigFile = temp.getChild("bigFile");
 		createFile(bigFile, sb.toString());
 		assertTrue("7.1", bigFile.fetchInfo().exists());
-		assertTrue("7.2", compareContent(createInputStream(sb.toString()), bigFile.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = bigFile.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(sb.toString());
+		}
 		IFileStore destination = temp.getChild("copy of bigFile");
 		// IProgressMonitor monitor = new LoggingProgressMonitor(System.out);
 		IProgressMonitor monitor = createTestMonitor();
 		bigFile.copy(destination, EFS.NONE, monitor);
-		assertTrue("7.3", compareContent(createInputStream(sb.toString()), destination.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = destination.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(sb.toString());
+		}
 		destination.delete(EFS.NONE, null);
 	}
 
@@ -338,13 +355,17 @@ public class FileStoreTest {
 		createFile(target, content);
 		workspaceRule.deleteOnTearDown(target);
 		assertTrue("1.3", target.fetchInfo().exists());
-		assertTrue("1.4", compareContent(createInputStream(content), target.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = target.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 
 		/* c:\temp\target -> d:\temp\target */
 		IFileStore destination = tempDest.getChild(subfolderName);
 		workspaceRule.deleteOnTearDown(destination);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		assertTrue("3.1", compareContent(createInputStream(content), destination.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = destination.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\copy of target */
@@ -352,7 +373,9 @@ public class FileStoreTest {
 		destination = tempDest.getChild(copyOfSubfoldername);
 		workspaceRule.deleteOnTearDown(destination);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		assertTrue("4.1", compareContent(createInputStream(content), destination.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = destination.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a file */
@@ -362,7 +385,9 @@ public class FileStoreTest {
 		createFile(destination, anotherContent);
 		assertTrue("5.1", !destination.fetchInfo().isDirectory());
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		assertTrue("5.2", compareContent(createInputStream(content), destination.openInputStream(EFS.NONE, null)));
+		try (InputStream stream = destination.openInputStream(EFS.NONE, null)) {
+			assertThat(stream).hasContent(content);
+		}
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a folder */

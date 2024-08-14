@@ -16,7 +16,6 @@ package org.eclipse.core.tests.internal.localstore;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
@@ -524,8 +523,8 @@ public class HistoryStoreTest {
 		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 
 		// Now do the move
 		folder.copy(folder2.getFullPath(), true, createTestMonitor());
@@ -541,14 +540,14 @@ public class HistoryStoreTest {
 		// Check the local history of both files
 		states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 		states = file2.getHistory(createTestMonitor());
 		assertThat(states).hasSize(4).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[3]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[2]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[1]), third.getContents())).isTrue(),
-				fourth -> assertThat(compareContent(createInputStream(contents[0]), fourth.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[3]),
+				second -> assertThat(second.getContents()).hasContent(contents[2]),
+				third -> assertThat(third.getContents()).hasContent(contents[1]),
+				fourth -> assertThat(fourth.getContents()).hasContent(contents[0]));
 
 		project.delete(true, createTestMonitor());
 	}
@@ -596,8 +595,8 @@ public class HistoryStoreTest {
 
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 		file2.create(createInputStream(contents[3]), true, createTestMonitor());
 		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
 
@@ -637,9 +636,9 @@ public class HistoryStoreTest {
 		store.copyHistory(file, file2, false);
 		states = file2.getHistory(createTestMonitor());
 		assertThat(states).hasSize(3).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[3]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[1]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[0]), third.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[3]),
+				second -> assertThat(second.getContents()).hasContent(contents[1]),
+				third -> assertThat(third.getContents()).hasContent(contents[0]));
 	}
 
 	@Test
@@ -666,8 +665,8 @@ public class HistoryStoreTest {
 
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 		folder2.create(true, true, createTestMonitor());
 		file2.create(createInputStream(contents[3]), true, createTestMonitor());
 		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
@@ -677,9 +676,9 @@ public class HistoryStoreTest {
 		store.copyHistory(folder, folder2, false);
 		states = file2.getHistory(createTestMonitor());
 		assertThat(states).hasSize(3).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[3]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[1]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[0]), third.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[3]),
+				second -> assertThat(second.getContents()).hasContent(contents[1]),
+				third -> assertThat(third.getContents()).hasContent(contents[0]));
 	}
 
 	@Test
@@ -706,8 +705,8 @@ public class HistoryStoreTest {
 
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 		folder2.create(true, true, createTestMonitor());
 		file2.create(createInputStream(contents[3]), true, createTestMonitor());
 		file2.setContents(createInputStream(contents[4]), true, true, createTestMonitor());
@@ -717,9 +716,9 @@ public class HistoryStoreTest {
 		store.copyHistory(project, project2, false);
 		states = file2.getHistory(createTestMonitor());
 		assertThat(states).hasSize(3).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[3]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[1]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[0]), third.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[3]),
+				second -> assertThat(second.getContents()).hasContent(contents[1]),
+				third -> assertThat(third.getContents()).hasContent(contents[0]));
 	}
 
 	@Test
@@ -1027,7 +1026,7 @@ public class HistoryStoreTest {
 		for (int i = 0; i < stateArray.length; i++, myLong++) {
 			try (DataInputStream inFile = new DataInputStream(file.getContents(false))) {
 				try (DataInputStream inContents = new DataInputStream(historyStore.getContents(stateArray[i]))) {
-					assertTrue(i + " No match, files are not identical.", compareContent(inFile, inContents));
+					assertThat(inFile).as("match history state " + i).hasSameContentAs(inContents);
 				}
 			}
 		}
@@ -1036,7 +1035,7 @@ public class HistoryStoreTest {
 		for (int i = 0; i < stateArray.length; i++, myLong++) {
 			try (DataInputStream inFile = new DataInputStream(secondValidFile.getContents(false))) {
 				try (DataInputStream inContents = new DataInputStream(historyStore.getContents(stateArray[i]))) {
-					assertTrue(i + " No match, files are not identical.", compareContent(inFile, inContents));
+					assertThat(inFile).as("match history state " + i).hasSameContentAs(inContents);
 				}
 			}
 		}
@@ -1115,8 +1114,8 @@ public class HistoryStoreTest {
 		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 
 		// Now do the move
 		folder.move(folder2.getFullPath(), true, createTestMonitor());
@@ -1132,14 +1131,14 @@ public class HistoryStoreTest {
 		// Check the local history of both files
 		states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 		states = file2.getHistory(createTestMonitor());
 		assertThat(states).hasSize(4).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[3]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[2]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[1]), third.getContents())).isTrue(),
-				fourth -> assertThat(compareContent(createInputStream(contents[0]), fourth.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[3]),
+				second -> assertThat(second.getContents()).hasContent(contents[2]),
+				third -> assertThat(third.getContents()).hasContent(contents[1]),
+				fourth -> assertThat(fourth.getContents()).hasContent(contents[0]));
 
 		project.delete(true, createTestMonitor());
 	}
@@ -1181,8 +1180,8 @@ public class HistoryStoreTest {
 		file.setContents(createInputStream(contents[2]), true, true, createTestMonitor());
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 
 		// Now do the move
 		project.move(IPath.fromOSString("SecondMoveProjectProject"), true, createTestMonitor());
@@ -1202,10 +1201,10 @@ public class HistoryStoreTest {
 		assertThat(states).isEmpty();
 		states = file2.getHistory(createTestMonitor());
 		assertThat(states).hasSize(4).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[3]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[2]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[1]), third.getContents())).isTrue(),
-				fourth -> assertThat(compareContent(createInputStream(contents[0]), fourth.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[3]),
+				second -> assertThat(second.getContents()).hasContent(contents[2]),
+				third -> assertThat(third.getContents()).hasContent(contents[1]),
+				fourth -> assertThat(fourth.getContents()).hasContent(contents[0]));
 
 		project.delete(true, createTestMonitor());
 	}
@@ -1341,16 +1340,16 @@ public class HistoryStoreTest {
 		// Check log for original file.
 		states = file.getHistory(null);
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 
 		// Check log for copy.
 		states = copyFile.getHistory(null);
 		assertThat(states).hasSize(4).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[3]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[2]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[1]), third.getContents())).isTrue(),
-				fourth -> assertThat(compareContent(createInputStream(contents[0]), fourth.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[3]),
+				second -> assertThat(second.getContents()).hasContent(contents[2]),
+				third -> assertThat(third.getContents()).hasContent(contents[1]),
+				fourth -> assertThat(fourth.getContents()).hasContent(contents[0]));
 	}
 
 	/**
@@ -1406,16 +1405,16 @@ public class HistoryStoreTest {
 		// Check log for original file.
 		states = file.getHistory(null);
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 
 		// Check log for moved file.
 		states = moveFile.getHistory(null);
 		assertThat(states).hasSize(4).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[3]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[2]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[1]), third.getContents())).isTrue(),
-				fourth -> assertThat(compareContent(createInputStream(contents[0]), fourth.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[3]),
+				second -> assertThat(second.getContents()).hasContent(contents[2]),
+				third -> assertThat(third.getContents()).hasContent(contents[1]),
+				fourth -> assertThat(fourth.getContents()).hasContent(contents[0]));
 	}
 
 	/**
@@ -1451,8 +1450,8 @@ public class HistoryStoreTest {
 		/* Ensure two entries are available for the file, and that content matches. */
 		IFileState[] states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(2).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[0]), second.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[0]));
 
 		/* Delete the file. Should add an entry to the store. */
 		file.delete(true, true, createTestMonitor());
@@ -1460,9 +1459,9 @@ public class HistoryStoreTest {
 		/* Ensure three entries are available for the file, and that content matches. */
 		states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(3).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[2]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[1]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[0]), third.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[2]),
+				second -> assertThat(second.getContents()).hasContent(contents[1]),
+				third -> assertThat(third.getContents()).hasContent(contents[0]));
 		/* Roll file back to first version, and ensure that content matches. */
 		states = file.getHistory(createTestMonitor());
 		// Create the file with the contents from one of the states.
@@ -1472,12 +1471,12 @@ public class HistoryStoreTest {
 		// Check history store.
 		states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(3).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[2]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[1]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[0]), third.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[2]),
+				second -> assertThat(second.getContents()).hasContent(contents[1]),
+				third -> assertThat(third.getContents()).hasContent(contents[0]));
 
 		// Check file contents.
-		assertThat(compareContent(createInputStream(contents[2]), file.getContents(false))).isTrue();
+		assertThat(file.getContents(false)).hasContent(contents[2]);
 
 		/* Set new contents on the file. Should add an entry to the history store. */
 		file.setContents(createInputStream(contents[1]), true, true, null);
@@ -1485,10 +1484,10 @@ public class HistoryStoreTest {
 		/* Ensure four entries are available for the file, and that entries match. */
 		states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(4).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[2]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[2]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[1]), third.getContents())).isTrue(),
-				fourth -> assertThat(compareContent(createInputStream(contents[0]), fourth.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[2]),
+				second -> assertThat(second.getContents()).hasContent(contents[2]),
+				third -> assertThat(third.getContents()).hasContent(contents[1]),
+				fourth -> assertThat(fourth.getContents()).hasContent(contents[0]));
 
 		/* Roll file back to third version, and ensure that content matches. */
 		states = file.getHistory(createTestMonitor());
@@ -1498,14 +1497,14 @@ public class HistoryStoreTest {
 		// Check history log.
 		states = file.getHistory(createTestMonitor());
 		assertThat(states).hasSize(5).satisfiesExactly(
-				first -> assertThat(compareContent(createInputStream(contents[1]), first.getContents())).isTrue(),
-				second -> assertThat(compareContent(createInputStream(contents[2]), second.getContents())).isTrue(),
-				third -> assertThat(compareContent(createInputStream(contents[2]), third.getContents())).isTrue(),
-				fourth -> assertThat(compareContent(createInputStream(contents[1]), fourth.getContents())).isTrue(),
-				fifth -> assertThat(compareContent(createInputStream(contents[0]), fifth.getContents())).isTrue());
+				first -> assertThat(first.getContents()).hasContent(contents[1]),
+				second -> assertThat(second.getContents()).hasContent(contents[2]),
+				third -> assertThat(third.getContents()).hasContent(contents[2]),
+				fourth -> assertThat(fourth.getContents()).hasContent(contents[1]),
+				fifth -> assertThat(fifth.getContents()).hasContent(contents[0]));
 
 		// Check file contents.
-		assertThat(compareContent(createInputStream(contents[1]), file.getContents(false))).isTrue();
+		assertThat(file.getContents(false)).hasContent(contents[1]);
 	}
 
 }
