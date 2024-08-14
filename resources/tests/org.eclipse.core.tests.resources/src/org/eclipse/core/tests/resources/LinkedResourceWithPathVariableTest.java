@@ -21,7 +21,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExi
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
@@ -848,7 +847,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertEquals("4.2", expectedNewLocation, actualNewLocation);
 
 		// its contents are as just set
-		assertTrue("4.3", compareContent(file.getContents(), createInputStream("contents in different location")));
+		assertEquals("contents in different location", file.readString());
 
 		// clean-up
 		removeFromFileSystem(file);
@@ -914,7 +913,7 @@ public class LinkedResourceWithPathVariableTest extends LinkedResourceTest {
 		assertEquals("4.2", expectedNewLocation, actualNewLocation);
 
 		// its contents are as just set
-		assertTrue("4.3", compareContent(file.getContents(), createInputStream("contents in different location")));
+		assertEquals("contents in different location", file.readString());
 
 		// clean-up
 		removeFromFileSystem(file);

@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
@@ -149,7 +149,9 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		assertTrue(file.exists());
 		assertTrue(file.isLocal(IResource.DEPTH_ZERO));
 		assertEquals(file.getStore().fetchInfo().getLastModified(), file.getResourceInfo(false, false).getLocalSyncInfo());
-		assertTrue(compareContent(createInputStream(originalContent), getLocalManager().read(file, true, null)));
+		try (InputStream readFile = getLocalManager().read(file, true, null)) {
+			assertThat(readFile).hasContent(originalContent);
+		}
 	}
 
 	@Test
@@ -275,32 +277,30 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		/* common contents */
 		String originalContent = "this string should not be equal the other";
 		String anotherContent = "and this string should not... well, you know...";
-		InputStream original;
-		InputStream another;
 
 		/* write file for the first time */
-		original = createInputStream(originalContent);
-		write(file, original, true, null);
-
-		original = createInputStream(originalContent);
-		assertTrue("Unexpected content in " + original,
-				compareContent(original, getLocalManager().read(file, true, null)));
+		try (InputStream original = createInputStream(originalContent)) {
+			write(file, original, true, null);
+		}
+		try (InputStream readFile = getLocalManager().read(file, true, null)) {
+			assertThat(readFile).hasContent(originalContent);
+		}
 
 		/* test the overwrite parameter (false) */
-		another = createInputStream(anotherContent);
-		write(file, another, false, null);
-
-		another = createInputStream(anotherContent);
-		assertTrue("Unexpected content in " + another,
-				compareContent(another, getLocalManager().read(file, true, null)));
+		try (InputStream another = createInputStream(anotherContent)) {
+			write(file, another, false, null);
+		}
+		try (InputStream readFile = getLocalManager().read(file, true, null)) {
+			assertThat(readFile).hasContent(anotherContent);
+		}
 
 		/* test the overwrite parameter (true) */
-		original = createInputStream(originalContent);
-		write(file, original, true, null);
-
-		original = createInputStream(originalContent);
-		assertTrue("Unexpected content in " + original,
-				compareContent(original, getLocalManager().read(file, true, null)));
+		try (InputStream original = createInputStream(originalContent)) {
+			write(file, original, true, null);
+		}
+		try (InputStream readFile = getLocalManager().read(file, true, null)) {
+			assertThat(readFile).hasContent(originalContent);
+		}
 
 		/* test the overwrite parameter (false) */
 		ensureOutOfSync(file);
@@ -310,7 +310,9 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		ensureOutOfSync(file);
 		assertThrows("Should fail writing out of sync file #2", CoreException.class,
 				() -> file.setContents(another2, false, false, null));
-		file.setContents(another, true, false, null);
+		try (InputStream another = createInputStream(anotherContent)) {
+			file.setContents(another, true, false, null);
+		}
 
 		/* test the overwrite parameter (false) */
 		removeFromFileSystem(file); // FIXME Race Condition with asynchronous workplace refresh see Bug 571133

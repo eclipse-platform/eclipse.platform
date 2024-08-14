@@ -14,14 +14,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,8 +114,9 @@ public class ResourceURLTest {
 		IFile file = project.getFile("a.txt");
 		createInWorkspace(file, CONTENT);
 		URL url = new URL(PlatformURLResourceConnection.RESOURCE_URL_STRING + "My%20Project/a.txt");
-		InputStream stream = url.openStream();
-		assertTrue("1.0", compareContent(stream, createInputStream(CONTENT)));
+		try (InputStream stream = url.openStream()) {
+			assertThat(stream).hasContent(CONTENT);
+		}
 	}
 
 }

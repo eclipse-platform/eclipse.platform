@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.junit.Assert.assertFalse;
@@ -109,8 +109,9 @@ public class BlobStoreTest {
 			createInputStream(content).transferTo(output);
 		}
 		uuid = store.addBlob(target, true);
-		InputStream input = store.getBlob(uuid);
-		assertTrue(compareContent(createInputStream(content), input));
+		try (InputStream input = store.getBlob(uuid)) {
+			assertThat(input).hasContent(content);
+		}
 	}
 
 	@Test
@@ -127,8 +128,9 @@ public class BlobStoreTest {
 			createInputStream(content).transferTo(output);
 		}
 		uuid = store.addBlob(target, true);
-		InputStream input = store.getBlob(uuid);
-		assertTrue(compareContent(createInputStream(content), input));
+		try (InputStream input = store.getBlob(uuid)) {
+			assertThat(input).hasContent(content);
+		}
 	}
 
 }

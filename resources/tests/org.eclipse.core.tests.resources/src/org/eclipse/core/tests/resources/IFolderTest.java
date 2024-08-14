@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -247,7 +248,9 @@ public class IFolderTest {
 		assertDoesNotExistInWorkspace(before);
 		assertExistsInWorkspace(after);
 		file = project.getFile(IPath.fromOSString("a/b/z"));
-		assertTrue("2.1", compareContent(createInputStream(content), file.getContents(false)));
+		try (InputStream fileInput = file.getContents(false)) {
+			assertThat(fileInput).hasContent(content);
+		}
 	}
 
 	@Test

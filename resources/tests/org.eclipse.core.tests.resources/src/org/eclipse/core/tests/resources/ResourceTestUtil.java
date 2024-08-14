@@ -546,26 +546,6 @@ public final class ResourceTestUtil {
 	}
 
 	/**
-	 * Returns a boolean value indicating whether or not the contents
-	 * of the given streams are considered to be equal. Closes both input streams.
-	 */
-	public static boolean compareContent(InputStream a, InputStream b) throws IOException {
-		int c, d;
-		if (a == null && b == null) {
-			return true;
-		}
-		try (a; b) {
-			if (a == null || b == null) {
-				return false;
-			}
-			while ((c = a.read()) == (d = b.read()) && (c != -1 && d != -1)) {
-				// body not needed
-			}
-		}
-		return (c == -1 && d == -1);
-	}
-
-	/**
 	 * Enables or disables workspace autobuild. Waits for the build to be finished,
 	 * even if the autobuild value did not change and a previous build is still
 	 * running.

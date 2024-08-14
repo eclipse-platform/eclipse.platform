@@ -15,12 +15,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
@@ -679,9 +679,10 @@ public class IFileTest {
 		monitor.assertUsedUp();
 		assertTrue("2.2", emptyFile.exists());
 		try (InputStream stream = emptyFile.getContents(false)) {
-			assertTrue("2.4", stream.available() == 0);
+			assertEquals(0, stream.available());
+			assertThat(stream).hasContent(contents);
+
 		}
-		assertTrue("2.6", compareContent(emptyFile.getContents(false), createInputStream(contents)));
 
 		// creation with random content
 		IFile fileWithRandomContent = projects[0].getFile("file3");
@@ -691,7 +692,9 @@ public class IFileTest {
 		fileWithRandomContent.create(createInputStream(contents), true, monitor);
 		monitor.assertUsedUp();
 		assertTrue("3.2", fileWithRandomContent.exists());
-		assertTrue("3.2", compareContent(fileWithRandomContent.getContents(false), createInputStream(contents)));
+		try (InputStream fileInput = fileWithRandomContent.getContents(false)) {
+			assertThat(fileInput).hasContent(contents);
+		}
 
 		// try to create a file over a folder that exists
 		IFolder folder = projects[0].getFolder("folder1");
@@ -1082,7 +1085,7 @@ public class IFileTest {
 		monitor.assertUsedUp();
 
 		try (InputStream content = target.getContents(false)) {
-			assertTrue("get not equal set", compareContent(content, createInputStream(testString)));
+			assertThat(content).hasContent(testString);
 		}
 	}
 

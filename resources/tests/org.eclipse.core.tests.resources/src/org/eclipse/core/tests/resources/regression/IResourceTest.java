@@ -16,7 +16,6 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.compareContent;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
@@ -82,8 +81,9 @@ public class IResourceTest {
 		target.create(createInputStream("abc"), false, null);
 		target.appendContents(createInputStream("def"), false, true, null);
 
-		InputStream content = target.getContents(false);
-		assertTrue("3.0", compareContent(content, createInputStream("abcdef")));
+		try (InputStream content = target.getContents(false)) {
+			assertThat(content).hasContent("abcdef");
+		}
 	}
 
 	/**
@@ -458,7 +458,7 @@ public class IResourceTest {
 		target.create(createInputStream(contents), false, null);
 
 		try (InputStream is = target.getContents(false)) {
-			assertTrue("2.0", compareContent(createInputStream(contents), is));
+			assertThat(is).hasContent(contents);
 		}
 
 		final String newContents = "some other contents";
@@ -490,7 +490,7 @@ public class IResourceTest {
 		assertEquals("5.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		try (InputStream is = target.getContents(true)) {
-			assertTrue("6.0", compareContent(createInputStream(newContents), is));
+			assertThat(is).hasContent(newContents);
 		}
 	}
 
