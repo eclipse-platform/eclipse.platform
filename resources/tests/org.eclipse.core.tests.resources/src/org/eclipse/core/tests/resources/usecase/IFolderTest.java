@@ -22,7 +22,7 @@ import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.Q_NAME_
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.STRING_VALUE;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.commonFailureTestsForResource;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.isLocal;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -32,14 +32,12 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IFolderTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Tests failure on get/set methods invoked on a nonexistent folder.

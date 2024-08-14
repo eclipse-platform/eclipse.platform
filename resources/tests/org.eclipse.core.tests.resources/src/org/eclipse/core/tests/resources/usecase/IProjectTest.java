@@ -22,7 +22,7 @@ import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.Q_NAME_
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.STRING_VALUE;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.commonFailureTestsForResource;
 import static org.eclipse.core.tests.resources.usecase.IResourceTestUtil.isLocal;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Hashtable;
 import org.eclipse.core.resources.ICommand;
@@ -33,19 +33,17 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IProjectTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	public static String LOCAL_LOCATION_PATH_STRING_0;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		LOCAL_LOCATION_PATH_STRING_0 = getWorkspace().getRoot().getLocation().append("temp/location0").toOSString();
 	}

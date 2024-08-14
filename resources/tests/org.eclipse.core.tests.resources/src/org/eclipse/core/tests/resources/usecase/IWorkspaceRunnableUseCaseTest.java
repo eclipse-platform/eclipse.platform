@@ -17,9 +17,10 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setAutoBuilding;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
@@ -28,14 +29,12 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IWorkspaceRunnableUseCaseTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	protected IWorkspaceRunnable createRunnable(final IProject project, final IWorkspaceRunnable nestedOperation, final boolean triggerBuild, final Exception exceptionToThrow) {
 		return monitor -> {
@@ -78,7 +77,7 @@ public class IWorkspaceRunnableUseCaseTest {
 			builder.reset();
 			getWorkspace().run(op3, createTestMonitor());
 			waitForBuild();
-			assertTrue("1.1", builder.wasExecuted());
+			assertTrue(builder.wasExecuted());
 		}
 
 		{
@@ -90,7 +89,7 @@ public class IWorkspaceRunnableUseCaseTest {
 			assertThrows(OperationCanceledException.class, () -> getWorkspace().run(op3, createTestMonitor()));
 			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
 			// uncommented.
-			assertTrue("2.2", !builder.wasExecuted());
+			assertFalse(builder.wasExecuted());
 		}
 
 		{
@@ -103,7 +102,7 @@ public class IWorkspaceRunnableUseCaseTest {
 			assertEquals(Status.CANCEL_STATUS, exception.getStatus());
 			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
 			// uncommented.
-			assertTrue("3.1", !builder.wasExecuted());
+			assertFalse(builder.wasExecuted());
 		}
 
 		{
@@ -115,7 +114,7 @@ public class IWorkspaceRunnableUseCaseTest {
 			getWorkspace().run(op3, createTestMonitor());
 			// waitForBuild(); // TODO: The test is invalid since it fails if this line is
 			// uncommented.
-			assertTrue("4.1", !builder.wasExecuted());
+			assertFalse(builder.wasExecuted());
 		}
 	}
 
