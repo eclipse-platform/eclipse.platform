@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,33 +13,31 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.localstore;
 
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.tests.resources.ResourceTestUtil;
 
 public final class LocalStoreTestUtil {
 
 	public static void createTree(IFileStore[] tree) throws CoreException, IOException {
+		createTree(tree, 20);
+	}
+
+	public static void createTree(IFileStore[] tree, int fileSize) throws CoreException, IOException {
 		for (IFileStore element : tree) {
-			createNode(element);
+			createNode(element, fileSize);
 		}
 	}
 
-	private static void createNode(IFileStore node) throws CoreException, IOException {
+	private static void createNode(IFileStore node, int fileSize) throws CoreException, IOException {
 		char type = node.getName().charAt(0);
 		if (type == 'd') {
 			node.mkdir(EFS.NONE, null);
 		} else {
-			InputStream input = createRandomContentsStream();
-			try (OutputStream output = node.openOutputStream(EFS.NONE, null)) {
-				input.transferTo(output);
-			}
+			ResourceTestUtil.createInFileSystem(node, fileSize);
 		}
 	}
 

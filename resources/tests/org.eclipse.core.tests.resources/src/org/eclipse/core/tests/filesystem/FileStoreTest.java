@@ -13,11 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.filesystem;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.internal.localstore.LocalStoreTestUtil.createTree;
 import static org.eclipse.core.tests.internal.localstore.LocalStoreTestUtil.getTree;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
-import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
@@ -34,14 +32,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import org.eclipse.core.filesystem.EFS;
@@ -56,19 +55,22 @@ import org.eclipse.core.internal.filesystem.local.LocalFileSystem;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.osgi.util.NLS;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Basic tests for the IFileStore API
  */
 @ExtendWith(WorkspaceResetExtension.class)
 public class FileStoreTest {
+
+	private static final Random RANDOM = new Random();
 
 	private IFileStore createDir(IFileStore store, boolean clear) throws CoreException {
 		if (clear && store.fetchInfo().exists()) {
@@ -93,10 +95,12 @@ public class FileStoreTest {
 		return getFileStore(randomUniqueNotExistingPath());
 	}
 
-	private void createFile(IFileStore target, String content) throws CoreException, IOException {
-		try (OutputStream output = target.openOutputStream(EFS.NONE, null)) {
-			createInputStream(content).transferTo(output);
-		}
+	private void createFile(IFileStore target, String content) throws CoreException {
+		createFile(target, content.getBytes());
+	}
+
+	private void createFile(IFileStore target, byte[] content) throws CoreException {
+		target.write(content, EFS.NONE, null);
 	}
 
 	/**
@@ -146,9 +150,9 @@ public class FileStoreTest {
 	/**
 	 * Basically this is a test for the Windows Platform.
 	 */
-
-	@Test
-	public void testCopyAcrossVolumes() throws Throwable {
+	@ParameterizedTest(name = "File size {0} bytes")
+	@ValueSource(ints = { 10, LocalFile.LARGE_FILE_SIZE_THRESHOLD + 10 })
+	public void testCopyAcrossVolumes(int fileSize) throws Throwable {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
@@ -166,7 +170,7 @@ public class FileStoreTest {
 
 		IFileStore target = tempSrc.getChild(subfolderName);
 		createDir(target, true);
-		createTree(getTree(target));
+		createTree(getTree(target), fileSize);
 
 		/* c:\temp\target -> d:\temp\target */
 		IFileStore destination = tempDest.getChild(subfolderName);
@@ -228,34 +232,31 @@ public class FileStoreTest {
 		assertTrue(!child.fetchInfo().exists());
 	}
 
-	@Test
-	public void testCaseInsensitive() throws Throwable {
-		IFileStore temp = createDir(randomUniqueNotExistingFileStore(), true);
+	@ParameterizedTest(name = "File size {0} bytes")
+	@ValueSource(ints = { 10, LocalFile.LARGE_FILE_SIZE_THRESHOLD + 10 })
+	public void testCaseInsensitive(int fileSize) throws Throwable {
+	IFileStore temp = createDir(randomUniqueNotExistingFileStore(), true);
 		boolean isCaseSensitive = temp.getFileSystem().isCaseSensitive();
 		assumeFalse("only relevant for platforms with case-sensitive file system", isCaseSensitive);
 
+		byte[] content = new byte[fileSize];
+		RANDOM.nextBytes(content);
+
 		// create a file
-		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
 		IFileStore fileWithSmallName = temp.getChild("filename");
 		fileWithSmallName.delete(EFS.NONE, null);
 		createFile(fileWithSmallName, content);
 		System.out.println(fileWithSmallName.fetchInfo().getName());
 		assertTrue(fileWithSmallName.fetchInfo().exists());
-		try (InputStream stream = fileWithSmallName.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue( Arrays.equals(content, fileWithSmallName.readAllBytes(EFS.NONE, null)));
 
 		IFileStore fileWithOtherName = temp.getChild("FILENAME");
 		System.out.println(fileWithOtherName.fetchInfo().getName());
 		// file content is already the same for both Cases:
-		try (InputStream stream = fileWithOtherName.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue(Arrays.equals(content, fileWithOtherName.readAllBytes(EFS.NONE, null)));
 		fileWithSmallName.copy(fileWithOtherName, IResource.DEPTH_INFINITE, null); // a NOP Operation
 		// file content is still the same for both Cases:
-		try (InputStream stream = fileWithOtherName.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue(Arrays.equals(content, fileWithOtherName.readAllBytes(EFS.NONE, null)));
 		assertTrue(fileWithOtherName.fetchInfo().exists());
 		assertTrue(fileWithSmallName.fetchInfo().exists());
 		fileWithOtherName.delete(EFS.NONE, null);
@@ -267,26 +268,25 @@ public class FileStoreTest {
 		assertEquals(message, exception.getMessage());
 	}
 
-	@Test
-	public void testCopyFile() throws Throwable {
+	@ParameterizedTest(name = "File size {0} bytes")
+	@ValueSource(ints = { 10, LocalFile.LARGE_FILE_SIZE_THRESHOLD + 10 })
+	public void testCopyFile(int fileSize) throws Throwable {
 		/* build scenario */
 		IFileStore temp = createDir(randomUniqueNotExistingFileStore(), true);
+		byte[] content = new byte[fileSize];
+		RANDOM.nextBytes(content);
+
 		// create target
-		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
 		IFileStore target = temp.getChild("target");
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
 		assertTrue(target.fetchInfo().exists());
-		try (InputStream stream = target.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue(Arrays.equals(content, target.readAllBytes(EFS.NONE, null)));
 
 		/* temp\target -> temp\copy of target */
 		IFileStore copyOfTarget = temp.getChild("copy of target");
 		target.copy(copyOfTarget, IResource.DEPTH_INFINITE, null);
-		try (InputStream stream = copyOfTarget.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue(Arrays.equals(content, copyOfTarget.readAllBytes(EFS.NONE, null)));
 		copyOfTarget.delete(EFS.NONE, null);
 
 		// We need to know whether or not we can unset the read-only flag
@@ -297,9 +297,7 @@ public class FileStoreTest {
 			setReadOnly(target, true);
 
 			target.copy(copyOfTarget, IResource.DEPTH_INFINITE, null);
-			try (InputStream stream = copyOfTarget.openInputStream(EFS.NONE, null)) {
-				assertThat(stream).hasContent(content);
-			}
+			assertTrue(Arrays.equals(content, copyOfTarget.readAllBytes(EFS.NONE, null)));
 			// reset read only flag for cleanup
 			setReadOnly(copyOfTarget, false);
 			copyOfTarget.delete(EFS.NONE, null);
@@ -307,33 +305,14 @@ public class FileStoreTest {
 			setReadOnly(target, false);
 			target.delete(EFS.NONE, null);
 		}
-
-		/* copy a big file to test progress monitor */
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < 1000; i++) {
-			sb.append("asdjhasldhaslkfjhasldkfjhasdlkfjhasdlfkjhasdflkjhsdaf");
-		}
-		IFileStore bigFile = temp.getChild("bigFile");
-		createFile(bigFile, sb.toString());
-		assertTrue(bigFile.fetchInfo().exists());
-		try (InputStream stream = bigFile.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(sb.toString());
-		}
-		IFileStore destination = temp.getChild("copy of bigFile");
-		// IProgressMonitor monitor = new LoggingProgressMonitor(System.out);
-		IProgressMonitor monitor = createTestMonitor();
-		bigFile.copy(destination, EFS.NONE, monitor);
-		try (InputStream stream = destination.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(sb.toString());
-		}
-		destination.delete(EFS.NONE, null);
 	}
 
 	/**
 	 * Basically this is a test for the Windows Platform.
 	 */
-	@Test
-	public void testCopyFileAcrossVolumes() throws Throwable {
+	@ParameterizedTest(name = "File size {0} bytes")
+	@ValueSource(ints = { 10, LocalFile.LARGE_FILE_SIZE_THRESHOLD + 10 })
+	public void testCopyFileAcrossVolumes(int fileSize) throws Throwable {
 		IFileStore[] tempDirectories = getFileStoresOnTwoVolumes();
 
 		/* test if we are in the adequate environment */
@@ -346,32 +325,27 @@ public class FileStoreTest {
 		/* get the destination folder */
 		IFileStore tempDest = tempDirectories[1];
 		// create target
-		String content = "this is just a simple content \n to a simple file \n to test a 'simple' copy";
+		byte[] content = new byte[fileSize];
+		RANDOM.nextBytes(content);
 		String subfolderName = "target_" + System.currentTimeMillis();
 
 		IFileStore target = tempSrc.getChild(subfolderName);
 		target.delete(EFS.NONE, null);
 		createFile(target, content);
 		assertTrue(target.fetchInfo().exists());
-		try (InputStream stream = target.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue(Arrays.equals(content, target.readAllBytes(EFS.NONE, null)));
 
 		/* c:\temp\target -> d:\temp\target */
 		IFileStore destination = tempDest.getChild(subfolderName);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		try (InputStream stream = destination.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue(Arrays.equals(content, destination.readAllBytes(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\copy of target */
 		String copyOfSubfoldername = "copy of " + subfolderName;
 		destination = tempDest.getChild(copyOfSubfoldername);
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		try (InputStream stream = destination.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue(Arrays.equals(content, destination.readAllBytes(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a file */
@@ -380,9 +354,7 @@ public class FileStoreTest {
 		createFile(destination, anotherContent);
 		assertTrue(!destination.fetchInfo().isDirectory());
 		target.copy(destination, IResource.DEPTH_INFINITE, null);
-		try (InputStream stream = destination.openInputStream(EFS.NONE, null)) {
-			assertThat(stream).hasContent(content);
-		}
+		assertTrue(Arrays.equals(content, destination.readAllBytes(EFS.NONE, null)));
 		destination.delete(EFS.NONE, null);
 
 		/* c:\temp\target -> d:\temp\target (but the destination is already a folder */

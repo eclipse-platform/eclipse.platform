@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 SAP AG and others.
+ * Copyright (c) 2010, 2024 SAP AG and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -22,12 +22,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.filesystem.FileCache;
 import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.harness.session.CustomSessionWorkspace;
 import org.eclipse.core.tests.harness.session.ExecuteInHost;
@@ -55,19 +57,32 @@ public class TestBug323833 {
 	@AfterAll
 	@ExecuteInHost
 	public static void restoreFileWriabilityForCleanup() throws CoreException, IOException {
-		sessionWorkspace.getWorkspaceDirectory().resolve(READONLY_FILE_NAME).toFile().setWritable(true, false);
+		Path workspaceDirectory = sessionWorkspace.getWorkspaceDirectory();
+		for (int i = 1; i <= 2; i++) {
+			workspaceDirectory.resolve(READONLY_FILE_NAME + i).toFile().setWritable(true, false);
+		}
 	}
 
 	@Test
 	@Order(1)
-	public void test1() throws Exception {
+	void test1_smallFile() throws Exception {
+		test1(10, READONLY_FILE_NAME + 1);
+	}
+
+	@Test
+	@Order(2)
+	void test1_largeFile() throws Exception {
+		test1(LocalFile.LARGE_FILE_SIZE_THRESHOLD + 10, READONLY_FILE_NAME + 2);
+	}
+
+	private void test1(int fileSize, String filename) throws Exception {
 		if (!OS.isMac()) {
 			return;
 		}
 
-		IFileStore fileStore = EFS.getLocalFileSystem().getStore(getWorkspace().getRoot().getLocation())
-				.getChild(READONLY_FILE_NAME);
-		createInFileSystem(fileStore);
+		IPath workspaceRootLocation = getWorkspace().getRoot().getLocation();
+		IFileStore fileStore = EFS.getLocalFileSystem().getStore(workspaceRootLocation).getChild(filename);
+		createInFileSystem(fileStore, fileSize);
 
 		// set EFS.ATTRIBUTE_READ_ONLY which also sets EFS.IMMUTABLE on Mac
 		IFileInfo info = fileStore.fetchInfo();
@@ -75,9 +90,7 @@ public class TestBug323833 {
 		fileStore.putInfo(info, EFS.SET_ATTRIBUTES, createTestMonitor());
 
 		// create a cached file
-		File cachedFile = null;
-		cachedFile = fileStore.toLocalFile(EFS.CACHE, createTestMonitor());
-
+		File cachedFile = fileStore.toLocalFile(EFS.CACHE, createTestMonitor());
 		IFileInfo cachedFileInfo = new LocalFile(cachedFile).fetchInfo();
 
 		// check that the file in the cache has attributes set
@@ -86,7 +99,7 @@ public class TestBug323833 {
 	}
 
 	@Test
-	@Order(2)
+	@Order(3)
 	public void test2() throws CoreException {
 		if (!OS.isMac()) {
 			return;

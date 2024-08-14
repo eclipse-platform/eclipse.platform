@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,6 +25,7 @@ import org.eclipse.core.filesystem.IFileSystem;
 import org.eclipse.core.internal.filesystem.FileCache;
 import org.eclipse.core.internal.filesystem.Messages;
 import org.eclipse.core.internal.filesystem.Policy;
+import org.eclipse.core.internal.filesystem.local.LocalFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -129,7 +130,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 		// create directory
 		destination.mkdir(EFS.NONE, subMonitor.newChild(1));
 		// copy attributes
-		transferAttributes(sourceInfo, destination);
+		LocalFile.transferAttributes(sourceInfo, destination);
 
 		if (children == null)
 			return;
@@ -167,7 +168,7 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 				OutputStream out = destination.openOutputStream(EFS.NONE, subMonitor.newChild(1));) {
 			in.transferTo(out);
 			subMonitor.worked(93);
-			transferAttributes(sourceInfo, destination);
+			LocalFile.transferAttributes(sourceInfo, destination);
 			subMonitor.worked(5);
 		} catch (IOException e) {
 			Policy.error(EFS.ERROR_WRITE, NLS.bind(Messages.failedCopy, sourcePath), e);
@@ -429,8 +430,4 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	@Override
 	public abstract URI toURI();
 
-	private void transferAttributes(IFileInfo sourceInfo, IFileStore destination) throws CoreException {
-		int options = EFS.SET_ATTRIBUTES | EFS.SET_LAST_MODIFIED;
-		destination.putInfo(sourceInfo, options, null);
-	}
 }
