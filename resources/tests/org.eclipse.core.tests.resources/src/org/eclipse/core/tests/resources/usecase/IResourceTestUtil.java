@@ -14,8 +14,8 @@
 package org.eclipse.core.tests.resources.usecase;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -40,7 +40,7 @@ final class IResourceTestUtil {
 		/* Prefix to assertion messages. */
 		String method = "commonFailureTestsForResource(IResource," + (created ? "CREATED" : "NONEXISTENT") + "): ";
 		if (!created) {
-			assertTrue(method + "1", getWorkspace().getRoot().findMember(resource.getFullPath()) == null);
+			assertNull(getWorkspace().getRoot().findMember(resource.getFullPath()), method + "1");
 		}
 
 		/* Session properties */
