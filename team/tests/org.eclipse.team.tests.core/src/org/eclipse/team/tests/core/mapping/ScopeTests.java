@@ -15,7 +15,7 @@ package org.eclipse.team.tests.core.mapping;
 
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.mapping.ResourceMapping;
@@ -24,29 +24,27 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.team.core.mapping.ISynchronizationScopeManager;
 import org.eclipse.team.core.subscribers.SubscriberScopeManager;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ScopeTests {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private IProject project1, project2, project3;
 	private IWorkingSet workingSet;
 	private SubscriberScopeManager manager;
 
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		project1 = createProjectWithFile("p1", "file.txt");
 		project2 = createProjectWithFile("p2", "file.txt");
@@ -66,7 +64,7 @@ public class ScopeTests {
 		return project;
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		this.manager.dispose();
 		IWorkingSetManager manager = PlatformUI.getWorkbench().getWorkingSetManager();
@@ -85,10 +83,10 @@ public class ScopeTests {
 	}
 
 	private void testProjectContainment(ISynchronizationScopeManager sm, IProject project) {
-		if (isInWorkingSet(project) && !isInScope(sm, project))
-			fail(project.getName() + " is in the working set but not in the scope");
-		if (!isInWorkingSet(project) && isInScope(sm, project))
-			fail(project.getName() + " is in scope but not in the working set");
+		assertFalse(isInWorkingSet(project) && !isInScope(sm, project),
+				project.getName() + " is in the working set but not in the scope");
+		assertFalse(!isInWorkingSet(project) && isInScope(sm, project),
+				project.getName() + " is in scope but not in the working set");
 	}
 
 	private boolean isInScope(ISynchronizationScopeManager sm, IProject project) {

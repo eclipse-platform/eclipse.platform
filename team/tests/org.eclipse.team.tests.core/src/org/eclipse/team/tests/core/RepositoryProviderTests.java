@@ -18,12 +18,12 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -45,16 +45,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class RepositoryProviderTests {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testProvidersRegistered() throws CoreException, TeamException {
@@ -173,8 +171,9 @@ public class RepositoryProviderTests {
 				return getTeamTestStatus(IStatus.ERROR);
 			}
 		});
-		assertThrows("validate hook should veto this setContents", CoreException.class,
-				() -> file.setContents(new ByteArrayInputStream("test3".getBytes()), true, false, null));
+		assertThrows(CoreException.class,
+				() -> file.setContents(new ByteArrayInputStream("test3".getBytes()), true, false, null),
+				"validate hook should veto this setContents");
 		assertTrue(called[0]);
 
 		// test that default validator allows the modification
@@ -420,16 +419,18 @@ public class RepositoryProviderTests {
 		RepositoryProviderWithLinking.setCanHandleLinkedURI(false);
 
 		// Test shallow link
-		TeamException shallowLinkException = assertThrows("Link should be disallowed", TeamException.class,
-				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
+		TeamException shallowLinkException = assertThrows(TeamException.class,
+				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID),
+				"Link should be disallowed");
 		assertThat(shallowLinkException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 
 		// Test deep link
 		folder.delete(false, null);
 		folder = project.getFolder("folder1/folder2");
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
-		TeamException deepLinkException = assertThrows("Link should be disallowed", TeamException.class,
-				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
+		TeamException deepLinkException = assertThrows(TeamException.class,
+				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID),
+				"Link should be disallowed");
 		assertThat(deepLinkException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 
 		// Test deep failure when shallow is allowed
@@ -437,8 +438,9 @@ public class RepositoryProviderTests {
 		RepositoryProviderWithLinking.setCanHandleLinking(true);
 		folder = project.getFolder("folder1/folder2");
 		folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null);
-		TeamException shallowLinksAllowedException = assertThrows("Link should be disallowed", TeamException.class,
-				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID));
+		TeamException shallowLinksAllowedException = assertThrows(TeamException.class,
+				() -> RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID),
+				"Link should be disallowed");
 		assertThat(shallowLinksAllowedException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 	}
 
@@ -454,20 +456,23 @@ public class RepositoryProviderTests {
 		RepositoryProvider.map(project, RepositoryProviderWithLinking.TYPE_ID);
 		IFolder folder = project.getFolder("link");
 		// Test shallow link
-		CoreException shallowLinkException = assertThrows("Link should be disallowed", CoreException.class,
-				() -> folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
+		CoreException shallowLinkException = assertThrows(CoreException.class,
+				() -> folder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null),
+				"Link should be disallowed");
 		assertThat(shallowLinkException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 
 		// Test deep link
 		IFolder innerFolder = project.getFolder("folder1/folder2");
-		CoreException deepLinkException = assertThrows("Link should be disallowed", CoreException.class,
-				() -> innerFolder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
+		CoreException deepLinkException = assertThrows(CoreException.class,
+				() -> innerFolder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null),
+				"Link should be disallowed");
 		assertThat(deepLinkException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 
 		// Test deep link when shallow allowed
 		RepositoryProviderWithLinking.setCanHandleLinking(true);
-		CoreException shallowLinkAllowedException = assertThrows("Link should be disallowed", CoreException.class,
-				() -> innerFolder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null));
+		CoreException shallowLinkAllowedException = assertThrows(CoreException.class,
+				() -> innerFolder.createLink(getRandomLocation(), IResource.ALLOW_MISSING_LOCAL, null),
+				"Link should be disallowed");
 		assertThat(shallowLinkAllowedException.getStatus().getCode()).isEqualTo(IResourceStatus.LINKING_NOT_ALLOWED);
 	}
 

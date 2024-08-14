@@ -16,7 +16,7 @@ package org.eclipse.team.tests.ui.synchronize;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,21 +29,19 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.core.mapping.ISynchronizationScope;
 import org.eclipse.team.internal.ui.mapping.ResourceModelContentProvider;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ResourceContentTests {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	public static class TestableResourceModelContentProvider extends ResourceModelContentProvider {
 
@@ -75,12 +73,12 @@ public class ResourceContentTests {
 
 	private ResourceModelContentProvider provider;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		initializeProvider(null, null, null);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		cleanupProvider();
 	}
@@ -112,8 +110,8 @@ public class ResourceContentTests {
 				iterator.remove();
 			}
 		}
-		assertFalse("Tree entries were missing for " + toString(resourceSet), resourceSet.isEmpty());
-		assertFalse("Tree entries were found for " + toString(paths), paths.isEmpty());
+		assertFalse(resourceSet.isEmpty(), "Tree entries were missing for " + toString(resourceSet));
+		assertFalse(paths.isEmpty(), "Tree entries were found for " + toString(paths));
 	}
 
 	private Set getPaths(Object root) {
@@ -143,8 +141,7 @@ public class ResourceContentTests {
 	private String toString(Set set) {
 		StringBuilder buffer = new StringBuilder();
 		boolean addComma = false;
-		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
-			Object resource = iterator.next();
+		for (Object resource : set) {
 			buffer.append(toString(resource));
 			if (addComma)
 				buffer.append(", ");

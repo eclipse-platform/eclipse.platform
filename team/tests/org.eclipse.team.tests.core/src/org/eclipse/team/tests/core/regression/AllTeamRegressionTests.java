@@ -13,12 +13,11 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core.regression;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses({ //
+@Suite
+@SelectClasses({ //
 		Bug_217673.class, //
 		DoNotRemoveTest.class, //
 })

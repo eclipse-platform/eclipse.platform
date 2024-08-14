@@ -17,7 +17,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -25,15 +25,13 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.team.core.RepositoryProvider;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_217673 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void test() throws CoreException {
@@ -52,8 +50,7 @@ public class Bug_217673 {
 			linkTarget.toFile().mkdir();
 			project.getFolder("test").createLink(linkTarget, IResource.NONE,
 					null);
-			assertTrue(".project should no longer be read-only",
-					!isReadOnly(resource));
+			assertFalse(isReadOnly(resource), ".project should no longer be read-only");
 		} finally {
 			PessimisticRepositoryProvider.markWritableOnEdit = false;
 			RepositoryProvider.unmap(project);

@@ -14,12 +14,11 @@
 package org.eclipse.team.tests.core;
 
 import org.eclipse.team.tests.core.regression.AllTeamRegressionTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@SuiteClasses({ //
+@Suite
+@SelectClasses({ //
 		AllTeamRegressionTests.class, //
 		RepositoryProviderTests.class, //
 		StorageMergerTests.class, //

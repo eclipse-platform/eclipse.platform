@@ -13,26 +13,26 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.team.core.Team;
 import org.eclipse.team.core.mapping.IStorageMerger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StorageMergerTests {
 
 	@Test
 	public void testGetByExtension() {
 		IStorageMerger merger = Team.createMerger("blah");
-		assertNotNull("Merger for extension is missing", merger);
+		assertNotNull(merger, "Merger for extension is missing");
 	}
 
 	@Test
 	public void testGetByContentType() {
 		IStorageMerger merger = Team.createMerger(
 				Platform.getContentTypeManager().getContentType("org.eclipse.team.tests.core.content-type1"));
-		assertNotNull("Merger for extension is missing", merger);
+		assertNotNull(merger, "Merger for extension is missing");
 	}
 
 }

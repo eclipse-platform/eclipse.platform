@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core.regression;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -24,7 +24,7 @@ import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.actions.CompareRevisionAction;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Some internal methods can not be removed since they are used in products.
