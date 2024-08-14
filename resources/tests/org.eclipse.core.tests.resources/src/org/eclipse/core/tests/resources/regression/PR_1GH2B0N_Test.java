@@ -47,7 +47,7 @@ public class PR_1GH2B0N_Test {
 		IStatus status = getWorkspace().validateProjectLocation(project2, project.getLocation().append(project2.getName()));
 		//Note this is not the original error case -
 		//since Eclipse 3.2 a project is allowed to be nested in another project
-		assertTrue("2.0", status.isOK());
+		assertTrue(status.isOK());
 	}
 
 }

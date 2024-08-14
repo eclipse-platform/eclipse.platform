@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
@@ -20,7 +21,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.updateProjectDescription;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
-import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.Semaphore;
 import org.eclipse.core.resources.IFile;
@@ -123,7 +123,7 @@ public class Bug_378156 {
 		waitForBuild();
 
 		//the builder should have run if the bug is fixed
-		assertTrue("1.0", builder.wasExecuted());
+		assertThat(builder).matches(SignaledBuilder::wasExecuted, "was executed");
 	}
 
 	@Test
@@ -156,7 +156,7 @@ public class Bug_378156 {
 		}, null);
 		waitForBuild();
 		//the builder should have run if the bug is fixed
-		assertTrue("1.0", builder.wasExecuted());
+		assertThat(builder).matches(SignaledBuilder::wasExecuted, "was executed");
 	}
 
 }

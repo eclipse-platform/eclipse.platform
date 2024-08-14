@@ -45,17 +45,6 @@ public class PR_1GEAB3C_Test {
 
 	protected static final String VERIFIER_NAME = "TestListener";
 
-	public void assertDelta() {
-		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
-	}
-
-	/**
-	 * Runs code to handle a core exception
-	 */
-	protected void handleCoreException(CoreException e) {
-		assertTrue("CoreException: " + e.getMessage(), false);
-	}
-
 	/**
 	 * Sets up the fixture, for example, open a network connection.
 	 * This method is called before a test is executed.
@@ -102,7 +91,7 @@ public class PR_1GEAB3C_Test {
 			}
 		};
 		getWorkspace().run(body, createTestMonitor());
-		assertDelta();
+		assertTrue(verifier.getMessage(), verifier.isDeltaValid());
 	}
 
 }

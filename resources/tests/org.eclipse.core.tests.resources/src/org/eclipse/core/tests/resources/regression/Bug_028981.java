@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
@@ -60,11 +62,12 @@ public class Bug_028981 {
 		createInWorkspace(new IResource[] {teamPrivateFile, regularFile});
 		synchronizer.setSyncInfo(partner, phantomFile, createRandomString().getBytes());
 		teamPrivateFile.setTeamPrivateMember(true);
-		assertTrue("0.7", !regularFile.isPhantom() && !regularFile.isTeamPrivateMember());
-		assertTrue("0.8", teamPrivateFile.isTeamPrivateMember());
-		assertTrue("0.8b", teamPrivateFile.exists());
-		assertTrue("0.9", phantomFile.isPhantom());
-		assertTrue("0.9b", !phantomFile.exists());
+		assertThat(regularFile).matches(not(IResource::isPhantom), "is not phantom");
+		assertThat(regularFile).matches(not(IResource::isTeamPrivateMember), "is not team-private member");
+		assertThat(teamPrivateFile).matches(IResource::isTeamPrivateMember, "is team-private member");
+		assertThat(teamPrivateFile).matches(IResource::exists, "exists");
+		assertThat(phantomFile).matches(IResource::isPhantom, "is phantom");
+		assertThat(phantomFile).matches(not(IResource::exists), "not exists");
 
 		ResourceVisitorVerifier verifier = new ResourceVisitorVerifier();
 
@@ -74,7 +77,7 @@ public class Bug_028981 {
 		verifier.addExpected(settings);
 		verifier.addExpected(prefs);
 		project.accept(verifier);
-		assertTrue("1.1 - " + verifier.getMessage(), verifier.isValid());
+		assertTrue(verifier.getMessage(), verifier.isValid());
 
 		verifier.reset();
 		assertThrows(CoreException.class, () -> phantomFile.accept(verifier));
@@ -82,17 +85,17 @@ public class Bug_028981 {
 		verifier.reset();
 		verifier.addExpected(phantomFile);
 		phantomFile.accept(verifier, IResource.DEPTH_INFINITE, IContainer.INCLUDE_PHANTOMS);
-		assertTrue("3.1 - " + verifier.getMessage(), verifier.isValid());
+		assertTrue(verifier.getMessage(), verifier.isValid());
 
 		verifier.reset();
 		// no resources should be visited
 		teamPrivateFile.accept(verifier);
-		assertTrue("4.1 - " + verifier.getMessage(), verifier.isValid());
+		assertTrue(verifier.getMessage(), verifier.isValid());
 
 		verifier.reset();
 		verifier.addExpected(teamPrivateFile);
 		teamPrivateFile.accept(verifier, IResource.DEPTH_INFINITE, IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS);
-		assertTrue("5.1 - " + verifier.getMessage(), verifier.isValid());
+		assertTrue(verifier.getMessage(), verifier.isValid());
 	}
 
 }

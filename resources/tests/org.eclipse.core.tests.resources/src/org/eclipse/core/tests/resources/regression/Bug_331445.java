@@ -53,10 +53,10 @@ public class Bug_331445 {
 		project.getPathVariableManager().setURIValue(variableName, new URI(variablePath));
 		IFolder folder = project.getFolder(createUniqueString());
 		folder.createLink(IPath.fromOSString(rawLinkFolderLocation), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
-		assertNull("3.0", folder.getLocation());
-		assertEquals("4.0", IPath.fromOSString(rawLinkFolderLocation), folder.getRawLocation());
-		assertEquals("5.0", new URI(linkFolderLocation), folder.getLocationURI());
-		assertEquals("6.0", new URI(rawLinkFolderLocation), folder.getRawLocationURI());
+		assertNull(folder.getLocation());
+		assertEquals(IPath.fromOSString(rawLinkFolderLocation), folder.getRawLocation());
+		assertEquals(new URI(linkFolderLocation), folder.getLocationURI());
+		assertEquals(new URI(rawLinkFolderLocation), folder.getRawLocationURI());
 	}
 
 }

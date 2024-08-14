@@ -13,13 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -66,11 +67,11 @@ public class Bug_025457 {
 					() -> sourceFile.move(destFile.getFullPath(), IResource.NONE, createTestMonitor()));
 		}
 		//ensure source still exists and has same content
-		assertTrue("2.0", source.exists());
-		assertTrue("2.1", sourceFile.exists());
+		assertThat(source).matches(IResource::exists, "exists");
+		assertThat(sourceFile).matches(IResource::exists, "exists");
 		assertEquals(content, sourceFile.readString());
 		//ensure destination file does not exist
-		assertTrue("2.3", !destFile.exists());
+		assertThat(destFile).matches(not(IResource::exists), "not exists");
 	}
 
 	@Test
@@ -93,13 +94,13 @@ public class Bug_025457 {
 			assertThrows(CoreException.class,
 					() -> sourceFolder.move(destFolder.getFullPath(), IResource.NONE, createTestMonitor()));
 			//ensure source still exists
-			assertTrue("2.0", source.exists());
-			assertTrue("2.1", sourceFolder.exists());
-			assertTrue("2.2", sourceFile.exists());
+			assertThat(source).matches(IResource::exists, "exists");
+			assertThat(sourceFolder).matches(IResource::exists, "exists");
+			assertThat(sourceFile).matches(IResource::exists, "exists");
 
 			//ensure destination does not exist
-			assertTrue("2.3", !destFolder.exists());
-			assertTrue("2.4", !destFile.exists());
+			assertThat(destFolder).matches(not(IResource::exists), "not exists");
+			assertThat(destFile).matches(not(IResource::exists), "not exists");
 		}
 	}
 
@@ -121,12 +122,12 @@ public class Bug_025457 {
 					() -> source.move(destination.getFullPath(), IResource.NONE, createTestMonitor()));
 
 			//ensure source does not exist
-			assertTrue("2.0", !source.exists());
-			assertTrue("2.1", !sourceFile.exists());
+			assertThat(source).matches(not(IResource::exists), "not exists");
+			assertThat(sourceFile).matches(not(IResource::exists), "not exists");
 
 			//ensure destination does not exist
-			assertTrue("2.2", destination.exists());
-			assertTrue("2.3", destFile.exists());
+			assertThat(destination).matches(IResource::exists, "exists");
+			assertThat(destFile).matches(IResource::exists, "exists");
 		}
 	}
 }

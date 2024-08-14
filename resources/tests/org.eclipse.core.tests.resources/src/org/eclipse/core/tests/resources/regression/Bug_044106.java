@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInFileSystem;
@@ -21,10 +22,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -45,6 +46,8 @@ import org.junit.Test;
  */
 public class Bug_044106 {
 
+	private static final Predicate<IFileStore> exists = store -> store.fetchInfo().exists();
+
 	@Rule
 	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
@@ -61,7 +64,7 @@ public class Bug_044106 {
 		// create the file/folder that we are going to link to
 		IFileStore linkDestFile = workspaceRule.getTempStore();
 		createInFileSystem(linkDestFile);
-		assertTrue("0.1", linkDestFile.fetchInfo().exists());
+		assertThat(linkDestFile).matches(exists, "exists");
 
 		// create some resources in the workspace
 		IProject project = getWorkspace().getRoot().getProject(createUniqueString());
@@ -83,7 +86,7 @@ public class Bug_044106 {
 
 		// ensure that the folder and file weren't deleted in the filesystem
 		assertDoesNotExistInWorkspace(linkedFile);
-		assertTrue("4.1", linkDestFile.fetchInfo().exists());
+		assertThat(linkDestFile).matches(exists, "exists");
 	}
 
 	/**
@@ -99,8 +102,8 @@ public class Bug_044106 {
 		IFileStore linkDestLocation = workspaceRule.getTempStore();
 		IFileStore linkDestFile = linkDestLocation.getChild(createUniqueString());
 		createInFileSystem(linkDestFile);
-		assertTrue("0.1", linkDestLocation.fetchInfo().exists());
-		assertTrue("0.2", linkDestFile.fetchInfo().exists());
+		assertThat(linkDestLocation).matches(exists, "exists");
+		assertThat(linkDestFile).matches(exists, "exists");
 
 		// create some resources in the workspace
 		createInWorkspace(linkedFolder.getParent());
@@ -128,8 +131,8 @@ public class Bug_044106 {
 		// ensure that the folder and file weren't deleted in the filesystem
 		assertDoesNotExistInWorkspace(linkedFolder);
 		assertDoesNotExistInWorkspace(linkedFile);
-		assertTrue("4.2", linkDestLocation.fetchInfo().exists());
-		assertTrue("4.3", linkDestFile.fetchInfo().exists());
+		assertThat(linkDestLocation).matches(exists, "exists");
+		assertThat(linkDestFile).matches(exists, "exists");
 	}
 
 	@Test

@@ -13,13 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -54,9 +55,9 @@ public class LocalStoreRegressionTests {
 		/* */
 		IFile file = project.getFile("file");
 		createInFileSystem(file);
-		assertTrue("1.0", !file.exists());
+		assertThat(file).matches(not(IFile::exists), "not exists");
 		file.refreshLocal(IResource.DEPTH_ZERO, null);
-		assertTrue("1.1", file.exists());
+		assertThat(file).matches(IFile::exists, "exists");
 	}
 
 	/**
@@ -72,8 +73,8 @@ public class LocalStoreRegressionTests {
 		createInFileSystem(folder);
 		createInFileSystem(file);
 		file.refreshLocal(IResource.DEPTH_INFINITE, null);
-		assertTrue("1.1", folder.exists());
-		assertTrue("1.2", file.exists());
+		assertThat(folder).matches(IFolder::exists, "exists");
+		assertThat(file).matches(IFile::exists, "exists");
 		removeFromWorkspace(folder);
 		removeFromFileSystem(folder);
 	}
@@ -91,7 +92,7 @@ public class LocalStoreRegressionTests {
 
 		File target = new File(temp, "target");
 		Workspace.clear(target); // make sure there was nothing here before
-		assertTrue("1.0", !target.exists());
+		assertThat(target).matches(not(File::exists), "not exists");
 
 		// write chunks
 		try (SafeChunkyOutputStream output = new SafeChunkyOutputStream(target);
@@ -103,7 +104,7 @@ public class LocalStoreRegressionTests {
 		// read chunks
 		try (SafeChunkyInputStream input = new SafeChunkyInputStream(target);
 				DataInputStream dis = new DataInputStream(input)) {
-				assertEquals("3.0", dis.readLong(), 1234567890l);
+			assertEquals(dis.readLong(), 1234567890l);
 		}
 	}
 

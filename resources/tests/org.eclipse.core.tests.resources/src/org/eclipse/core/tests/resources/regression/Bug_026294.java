@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
@@ -24,10 +26,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.InputStream;
+import java.util.function.Predicate;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -46,6 +48,12 @@ import org.junit.Test;
  * specific test cases ensure that it does not happen.
  */
 public class Bug_026294 {
+
+	private static final Predicate<IResource> isSynchronizedDepthInfinite = resource -> resource
+			.isSynchronized(IResource.DEPTH_INFINITE);
+
+	private static final Predicate<IResource> isSynchronizedDepthZero = resource -> resource
+			.isSynchronized(IResource.DEPTH_ZERO);
 
 	@Rule
 	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
@@ -78,8 +86,8 @@ public class Bug_026294 {
 
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
-			assertTrue("1.2", projectFile.exists());
-			assertTrue("1.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(projectFile).matches(IResource::exists, "exists");
+			assertThat(projectFile).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, createTestMonitor()));
 
@@ -90,35 +98,35 @@ public class Bug_026294 {
 
 			assertExistsInWorkspace(file1);
 			assertExistsInFileSystem(file1);
-			assertTrue("2.2.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(file1).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			assertDoesNotExistInWorkspace(file2);
 			assertDoesNotExistInFileSystem(file2);
-			assertTrue("2.3.3", file2.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(file2).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			assertDoesNotExistInWorkspace(file3);
 			assertDoesNotExistInFileSystem(file3);
-			assertTrue("2.4.3", file3.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(file3).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			assertExistsInWorkspace(folder);
 			assertExistsInFileSystem(folder);
-			assertTrue("2.5.3", folder.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(folder).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			assertExistsInWorkspace(projectFile);
 			assertExistsInFileSystem(projectFile);
-			assertTrue("2.6.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(projectFile).matches(isSynchronizedDepthInfinite, "is synchronized");
 
-			assertTrue("2.7.0", project.isSynchronized(IResource.DEPTH_ZERO));
-			assertTrue("2.7.1", project.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(project).matches(isSynchronizedDepthZero, "is synchronized");
+			assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 		}
 
-		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 		project.delete(IResource.FORCE, createTestMonitor());
-		assertTrue("5.1", !project.exists());
-		assertTrue("5.2", !file1.exists());
-		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("5.4", project.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("6.0", !projectRoot.toFile().exists());
+		assertThat(project).matches(not(IResource::exists), "not exists");
+		assertThat(file1).matches(not(IResource::exists), "not exists");
+		assertThat(file1).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertThat(projectRoot).matches(it -> !it.toFile().exists(), "not exists");
 	}
 
 	/**
@@ -144,29 +152,29 @@ public class Bug_026294 {
 			setReadOnly(folder, true);
 
 			IFile projectFile = project.getFile(".project");
-			assertTrue("1.2", projectFile.exists());
-			assertTrue("1.3", projectFile.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(projectFile).matches(IResource::exists, "exists");
+			assertThat(projectFile).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			assertThrows(CoreException.class, () -> project.delete(IResource.FORCE, createTestMonitor()));
-			assertTrue("2.1", project.exists());
-			assertTrue("2.2", file1.exists());
-			assertTrue("2.3", !file2.exists());
-			assertTrue("2.5", folder.exists());
-			assertTrue("2.6", projectFile.exists());
-			assertTrue("2.7", project.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(project).matches(IResource::exists, "exists");
+			assertThat(file1).matches(IResource::exists, "exists");
+			assertThat(file2).matches(not(IResource::exists), "not exists");
+			assertThat(folder).matches(IResource::exists, "exists");
+			assertThat(projectFile).matches(IResource::exists, "exists");
+			assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 		} finally {
 			if (folder.exists()) {
 				setReadOnly(folder, false);
 			}
 		}
 
-		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 		project.delete(IResource.FORCE, createTestMonitor());
-		assertTrue("5.1", !project.exists());
-		assertTrue("5.2", !file1.exists());
-		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("5.4", project.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("6.0", !projectRoot.toFile().exists());
+		assertThat(project).matches(not(IResource::exists), "not exists");
+		assertThat(file1).matches(not(IResource::exists), "not exists");
+		assertThat(file1).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertThat(projectRoot).matches(it -> !it.toFile().exists(), "not exists");
 	}
 
 	/**
@@ -194,16 +202,16 @@ public class Bug_026294 {
 			project.close(createTestMonitor());
 			assertThrows(CoreException.class,
 					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor()));
-			assertTrue("2.1", project.exists());
-			assertTrue("2.7", project.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(project).matches(IResource::exists, "exists");
+			assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 			assertExistsInFileSystem(projectFile);
 
 		}
-		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
-		assertTrue("5.1", !project.exists());
-		assertTrue("5.3", project.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("6.0", !projectRoot.toFile().exists());
+		assertThat(project).matches(not(IResource::exists), "not exists");
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertThat(projectRoot).matches(it -> !it.toFile().exists(), "not exists");
 		assertDoesNotExistInFileSystem(projectFile);
 	}
 
@@ -234,8 +242,8 @@ public class Bug_026294 {
 			assertThrows(CoreException.class,
 					() -> project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor()));
 
-			assertTrue("3.0", project.exists());
-			assertTrue("3.1", project.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(project).matches(IResource::exists, "exists");
+			assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 			assertExistsInFileSystem(projectFile);
 
 			project.open(createTestMonitor());
@@ -246,9 +254,9 @@ public class Bug_026294 {
 		}
 
 		project.delete(IResource.FORCE | IResource.ALWAYS_DELETE_PROJECT_CONTENT, createTestMonitor());
-		assertTrue("6.0", !project.exists());
-		assertTrue("6.1", project.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("6.2", !projectRoot.toFile().exists());
+		assertThat(project).matches(not(IResource::exists), "not exists");
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertThat(projectRoot).matches(it -> !it.toFile().exists(), "not exists");
 		assertDoesNotExistInFileSystem(projectFile);
 	}
 
@@ -273,18 +281,18 @@ public class Bug_026294 {
 		// opens a file so it cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
 			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, createTestMonitor()));
-			assertTrue("2.2", file1.exists());
-			assertTrue("2.4", !file3.exists());
-			assertTrue("2.5", folder.exists());
-			assertTrue("2.7", folder.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(file1).matches(IResource::exists, "exists");
+			assertThat(file3).matches(not(IResource::exists), "not exists");
+			assertThat(folder).matches(IResource::exists, "exists");
+			assertThat(folder).matches(isSynchronizedDepthInfinite, "is synchronized");
 		}
 
-		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 		folder.delete(IResource.FORCE, createTestMonitor());
-		assertTrue("5.1", !file1.exists());
-		assertTrue("5.2", !folder.exists());
-		assertTrue("5.3", file1.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("5.4", folder.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(file1).matches(not(IResource::exists), "not exists");
+		assertThat(folder).matches(not(IResource::exists), "not exists");
+		assertThat(file1).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertThat(folder).matches(isSynchronizedDepthInfinite, "is synchronized");
 	}
 
 	/**
@@ -311,24 +319,24 @@ public class Bug_026294 {
 			setReadOnly(subFolder, true);
 
 			assertThrows(CoreException.class, () -> folder.delete(IResource.FORCE, createTestMonitor()));
-			assertTrue("2.2", file1.exists());
-			assertTrue("2.3", subFolder.exists());
-			assertTrue("2.4", !file3.exists());
-			assertTrue("2.5", folder.exists());
-			assertTrue("2.7", folder.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(file1).matches(IResource::exists, "exists");
+			assertThat(subFolder).matches(IResource::exists, "exists");
+			assertThat(file3).matches(not(IResource::exists), "not exists");
+			assertThat(folder).matches(IResource::exists, "exists");
+			assertThat(folder).matches(isSynchronizedDepthInfinite, "is synchronized");
 		} finally {
 			if (subFolder.exists()) {
 				setReadOnly(subFolder, false);
 			}
 		}
 
-		assertTrue("3.5", project.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(project).matches(isSynchronizedDepthInfinite, "is synchronized");
 		folder.delete(IResource.FORCE, createTestMonitor());
-		assertTrue("5.1", !file1.exists());
-		assertTrue("5.2", !subFolder.exists());
-		assertTrue("5.3", !folder.exists());
-		assertTrue("5.4", file1.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("5.5", folder.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(file1).matches(not(IResource::exists), "not exists");
+		assertThat(subFolder).matches(not(IResource::exists), "not exists");
+		assertThat(folder).matches(not(IResource::exists), "not exists");
+		assertThat(file1).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertThat(folder).matches(isSynchronizedDepthInfinite, "is synchronized");
 	}
 
 }

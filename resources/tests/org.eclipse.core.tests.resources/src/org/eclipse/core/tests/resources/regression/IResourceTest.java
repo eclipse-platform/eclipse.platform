@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
@@ -26,6 +27,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
@@ -98,9 +101,9 @@ public class IResourceTest {
 		IFile destination = outputFolder.getFile(".project");
 		createInWorkspace(new IResource[] {project, outputFolder});
 
-		assertTrue("0.0", description.exists());
+		assertThat(description).matches(IFile::exists, "exists");
 		description.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
-		assertTrue("0.1", destination.exists());
+		assertThat(destination).matches(IFile::exists, "exists");
 	}
 
 	@Test
@@ -115,12 +118,12 @@ public class IResourceTest {
 		ResourceAttributes attributes = file.getResourceAttributes();
 		attributes.setArchive(false);
 		file.setResourceAttributes(attributes);
-		assertTrue("1.0", !file.getResourceAttributes().isArchive());
+		assertThat(file).matches(it -> !it.getResourceAttributes().isArchive(), "is archive");
 		// modify the file
 		file.setContents(createRandomContentsStream(), IResource.KEEP_HISTORY, createTestMonitor());
 
 		//now the archive bit should be set
-		assertTrue("2.0", file.getResourceAttributes().isArchive());
+		assertThat(file).matches(it -> it.getResourceAttributes().isArchive(), "is archive");
 	}
 
 	/**
@@ -193,8 +196,8 @@ public class IResourceTest {
 				synchronizer.setSyncInfo(name, file, new byte[] { 1 });
 			}, null, IWorkspace.AVOID_UPDATE, createTestMonitor());
 			// ensure file was only seen by phantom listener
-			assertTrue("1.0", !seen[0]);
-			assertTrue("1.0", phantomSeen[0]);
+			assertFalse(seen[0]);
+			assertTrue(phantomSeen[0]);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -212,7 +215,7 @@ public class IResourceTest {
 		createInWorkspace(folder);
 		folder.setLocal(false, IResource.DEPTH_ZERO, createTestMonitor());
 		// non-local resource is never synchronized because it doesn't exist on disk
-		assertTrue("1.0", !project.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(project).matches(it -> !it.isSynchronized(IResource.DEPTH_INFINITE), "is synchronized");
 	}
 
 	@Test
@@ -269,7 +272,7 @@ public class IResourceTest {
 		file.create(createRandomContentsStream(), true, null);
 
 		// force = true
-		assertTrue("2.0", file.exists());
+		assertThat(file).matches(IFile::exists, "exists");
 		IFile anotherFile = project.getFile("File");
 
 		ThrowingRunnable forcedFileCreation = () -> anotherFile.create(createRandomContentsStream(), true, null);
@@ -315,18 +318,18 @@ public class IResourceTest {
 		sb.append('b');
 		IFolder folder = project.getFolder(sb.toString());
 		assertThrows(CoreException.class, () -> folder.create(true, true, null));
-		assertTrue("2.2", !folder.exists());
+		assertThat(folder).matches(not(IFolder::exists), "not exists");
 
 		IFile file = project.getFile(sb.toString());
 		assertThrows(CoreException.class, () -> file.create(createRandomContentsStream(), true, null));
-		assertTrue("3.1", !file.exists());
+		assertThat(file).matches(not(IFile::exists), "not exists");
 
 		// clean up
 		project.delete(true, true, null);
 
 		IProject finalProject = project = getWorkspace().getRoot().getProject(sb.toString());
 		assertThrows(CoreException.class, () -> finalProject.create(null));
-		assertTrue("4.1", !finalProject.exists());
+		assertThat(finalProject).matches(not(IProject::exists), "not exists");
 	}
 
 	/**
@@ -363,7 +366,7 @@ public class IResourceTest {
 		ResourceAttributes attributes = file.getResourceAttributes();
 		attributes.setReadOnly(true);
 		file.setResourceAttributes(attributes);
-		assertTrue("2.0", file.isReadOnly());
+		assertThat(file).matches(IFile::isReadOnly, "is read-only");
 
 		// doit
 		assertThrows(CoreException.class, () -> file.delete(false, createTestMonitor()));
@@ -372,7 +375,7 @@ public class IResourceTest {
 		attributes = file.getResourceAttributes();
 		attributes.setReadOnly(false);
 		file.setResourceAttributes(attributes);
-		assertTrue("4.0", !file.isReadOnly());
+		assertThat(file).matches(not(IFile::isReadOnly), "is not read-only");
 		removeFromWorkspace(new IResource[] {project, file});
 	}
 
@@ -396,7 +399,7 @@ public class IResourceTest {
 			assertThat(children).hasSize(1);
 			status = children[0];
 		}
-		assertEquals("1.2", IResourceStatus.OUT_OF_SYNC_LOCAL, status.getCode());
+		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, status.getCode());
 		//cleanup
 		removeFromWorkspace(new IResource[] {project, file});
 	}
@@ -405,7 +408,7 @@ public class IResourceTest {
 	public void testEquals_1FUOU25() {
 		IResource fileResource = getWorkspace().getRoot().getFile(IPath.fromOSString("a/b/c/d"));
 		IResource folderResource = getWorkspace().getRoot().getFolder(IPath.fromOSString("a/b/c/d"));
-		assertTrue("1FUOU25: ITPCORE:ALL - Bug in Resource.equals()", !fileResource.equals(folderResource));
+		assertNotEquals(fileResource, folderResource);
 	}
 
 	@Test
@@ -416,7 +419,7 @@ public class IResourceTest {
 		project.open(null);
 		folder.create(true, true, null);
 		IFile file = project.getFile("folder");
-		assertTrue("2.0", !file.exists());
+		assertThat(file).matches(not(IFile::exists), "not exists");
 	}
 
 	/**
@@ -437,11 +440,11 @@ public class IResourceTest {
 
 		IPath targetPath = IPath.fromOSString("Folder2/Folder3");
 		IFolder target = (IFolder) folder1.findMember(targetPath);
-		assertTrue("3.0", folder3.equals(target));
+		assertEquals(target, folder3);
 
 		targetPath = IPath.fromOSString("/Folder2/Folder3");
 		target = (IFolder) folder1.findMember(targetPath);
-		assertTrue("4.0", folder3.equals(target));
+		assertEquals(target, folder3);
 	}
 
 	/**
@@ -471,7 +474,7 @@ public class IResourceTest {
 		});
 		IResourceChangeListener listener = event -> {
 			listenerInMainThreadCallback.set(() -> {
-				assertEquals("4.0", newContents, target.readString());
+				assertEquals(newContents, target.readString());
 			});
 		};
 		try {
@@ -487,7 +490,7 @@ public class IResourceTest {
 			try (InputStream is = target.getContents(false)) {
 			}
 		});
-		assertEquals("5.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
+		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		try (InputStream is = target.getContents(true)) {
 			assertThat(is).hasContent(newContents);
@@ -506,9 +509,10 @@ public class IResourceTest {
 		project.open(null);
 		folder.create(true, true, null);
 		file.create(createRandomContentsStream(), true, null);
-		assertTrue("2.0", file.exists());
+
+		assertThat(file).matches(IFile::exists, "exists");
 		folder.refreshLocal(IResource.DEPTH_ZERO, null);
-		assertTrue("2.2", file.exists());
+		assertThat(file).matches(IFile::exists, "exists");
 	}
 
 	/**
@@ -525,7 +529,7 @@ public class IResourceTest {
 		project.open(null);
 		project.setDefaultCharset(StandardCharsets.UTF_8.name(), null);
 
-		assertTrue("Preferences saved", settingsFile.exists());
+		assertThat(settingsFile.exists()).withFailMessage("Preferences saved").isTrue();
 
 		project.close(null);
 
@@ -542,7 +546,7 @@ public class IResourceTest {
 			verifier.addExpectedChange(project.getFile(".project"), IResourceDelta.ADDED, 0);
 
 			project.open(null);
-			assertTrue(verifier.getMessage(), verifier.isDeltaValid());
+			assertThat(verifier.isDeltaValid()).withFailMessage(verifier.getMessage()).isTrue();
 		} finally {
 			workspace.removeResourceChangeListener(verifier);
 		}

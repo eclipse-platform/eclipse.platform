@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
@@ -22,7 +24,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueStri
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFile;
@@ -126,23 +127,23 @@ public class IProjectTest {
 		projectTWObuilder.reset();
 		projectONE.build(IncrementalProjectBuilder.FULL_BUILD, null);
 		waitForBuild();
-		assertTrue("1.1", projectONEbuilder.wasExecuted());
-		assertTrue("1.2", !projectTWObuilder.wasExecuted());
+		assertThat(projectONEbuilder).matches(SignaledBuilder::wasExecuted, "was executed");
+		assertThat(projectTWObuilder).matches(not(SignaledBuilder::wasExecuted), "was not executed");
 
 		projectONEbuilder.reset();
 		projectTWObuilder.reset();
 		projectTWO.build(IncrementalProjectBuilder.FULL_BUILD, SignaledBuilder.BUILDER_ID, null, null);
 		waitForBuild();
-		assertTrue("2.1", !projectONEbuilder.wasExecuted());
-		assertTrue("2.2", projectTWObuilder.wasExecuted());
+		assertThat(projectONEbuilder).matches(not(SignaledBuilder::wasExecuted), "was not executed");
+		assertThat(projectTWObuilder).matches(SignaledBuilder::wasExecuted, "was executed");
 
 		projectONEbuilder.reset();
 		projectTWObuilder.reset();
 		projectTWO.touch(null);
 		waitForBuild();
 		//project one won't be executed because project didn't change.
-		assertTrue("3.1", !projectONEbuilder.wasExecuted());
-		assertTrue("3.2", projectTWObuilder.wasExecuted());
+		assertThat(projectONEbuilder).matches(not(SignaledBuilder::wasExecuted), "was not executed");
+		assertThat(projectTWObuilder).matches(SignaledBuilder::wasExecuted, "was executed");
 	}
 
 	/*
@@ -170,10 +171,10 @@ public class IProjectTest {
 		project.open(createTestMonitor());
 
 		// verify discovery
-		assertTrue("2.0", project.isAccessible());
-		assertTrue("2.1", folder.exists());
-		assertTrue("2.2", file1.exists());
-		assertTrue("2.3", file2.exists());
+		assertThat(project).matches(IProject::isAccessible, "is accessible");
+		assertThat(folder).matches(IFolder::exists, "exists");
+		assertThat(file1).matches(IFile::exists, "exists");
+		assertThat(file2).matches(IFile::exists, "exists");
 	}
 
 	/**

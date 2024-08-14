@@ -14,18 +14,19 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.function.Predicate;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
@@ -49,6 +50,12 @@ public class Bug_303517 {
 
 	@Rule
 	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	private static final Predicate<IResource> isSynchronizedDepthInfinite = resource -> resource
+			.isSynchronized(IResource.DEPTH_INFINITE);
+
+	private static final Predicate<IResource> isSynchronizedDepthOne = resource -> resource
+			.isSynchronized(IResource.DEPTH_ONE);
 
 	private final String[] resourcePaths = new String[] { "/", "/Bug303517/", "/Bug303517/Folder/",
 			"/Bug303517/Folder/Resource", };
@@ -77,13 +84,13 @@ public class Bug_303517 {
 	@Test
 	public void testExists() throws Exception {
 		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
-		assertTrue("1.0", f.exists());
-		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(IResource::exists, "exists");
+		assertThat(f).matches(isSynchronizedDepthOne, "is synchronized");
 
 		// Touch on file-system
 		f.getLocation().toFile().delete();
 		// Core.resources still thinks the file exists
-		assertTrue("1.2", f.exists());
+		assertThat(f).matches(IResource::exists, "exists");
 		assertThrows(CoreException.class, () -> {
 			try(InputStream in = f.getContents()) {}
 		});
@@ -93,7 +100,7 @@ public class Bug_303517 {
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// Core.resources should be aware that the file no longer exists...
-		assertFalse("1.4", f.exists());
+		assertThat(f).matches(not(IResource::exists), "not exists");
 	}
 
 	/**
@@ -102,8 +109,8 @@ public class Bug_303517 {
 	@Test
 	public void testGetContents() throws Exception {
 		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
-		assertTrue("1.0", f.exists());
-		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(IResource::exists, "exists");
+		assertThat(f).matches(isSynchronizedDepthOne, "is synchronized");
 
 		// Touch on file-system
 		touchInFilesystem(f);
@@ -112,7 +119,7 @@ public class Bug_303517 {
 			}
 		});
 		// File is out-of-sync, so this is good.
-		assertEquals("2.1", IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
+		assertEquals(IResourceStatus.OUT_OF_SYNC_LOCAL, exception.getStatus().getCode());
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
@@ -129,8 +136,8 @@ public class Bug_303517 {
 	@Test
 	public void testGetContentsTrue() throws Exception {
 		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
-		assertTrue("1.0", f.exists());
-		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(IResource::exists, "exists");
+		assertThat(f).matches(isSynchronizedDepthOne, "is synchronized");
 
 		// Touch on file-system
 		touchInFilesystem(f);
@@ -150,7 +157,7 @@ public class Bug_303517 {
 			try (InputStream in = f.getContents(true)) {
 			}
 		});
-		assertEquals("2.1", IResourceStatus.RESOURCE_NOT_FOUND, exception.getStatus().getCode());
+		assertEquals(IResourceStatus.RESOURCE_NOT_FOUND, exception.getStatus().getCode());
 	}
 
 	/**
@@ -159,19 +166,19 @@ public class Bug_303517 {
 	@Test
 	public void testIsSynchronized() throws Exception {
 		IFile f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
-		assertTrue("1.0", f.exists());
-		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(IResource::exists, "exists");
+		assertThat(f).matches(isSynchronizedDepthOne, "is synchronized");
 
 		// Touch on file-system
 		touchInFilesystem(f);
-		assertFalse("1.2", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(not(isSynchronizedDepthOne), "is not synchronized");
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is now in sync.
-		assertTrue("1.3", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(isSynchronizedDepthOne, "is synchronized");
 	}
 
 	/**
@@ -180,31 +187,31 @@ public class Bug_303517 {
 	@Test
 	public void testChangeResourceGender() throws Exception {
 		IResource f = getWorkspace().getRoot().getFile(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
-		assertTrue("1.0", f.exists());
-		assertTrue("1.1", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(IResource::exists, "exists");
+		assertThat(f).matches(isSynchronizedDepthOne, "is synchronized");
 
 		// Replace the file with a folder
 		File osResource = f.getLocation().toFile();
 		osResource.delete();
 		osResource.mkdir();
-		assertTrue(osResource.exists());
+		assertThat(osResource).matches(File::exists, "exists");
 		File osChild = new File(osResource, "child");
 		osChild.createNewFile();
-		assertTrue(osChild.exists());
+		assertThat(osChild).matches(File::exists, "exists");
 
-		assertFalse("1.2", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(not(isSynchronizedDepthOne), "is not synchronized");
 
 		// Wait for auto-refresh to happen
 		Job.getJobManager().wakeUp(ResourcesPlugin.FAMILY_AUTO_REFRESH);
 		Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, createTestMonitor());
 
 		// File is no longer a file - i.e. still out-of-sync
-		assertFalse("1.3", f.exists());
-		assertFalse("1.4", f.isSynchronized(IResource.DEPTH_ONE));
+		assertThat(f).matches(not(IResource::exists), "not exists");
+		assertThat(f).matches(not(isSynchronizedDepthOne), "is not synchronized");
 		// Folder + child are now in-sync
 		f = getWorkspace().getRoot().getFolder(IPath.fromOSString(resourcePaths[resourcePaths.length - 1]));
-		assertTrue("1.5", f.exists());
-		assertTrue("1.6", f.isSynchronized(IResource.DEPTH_INFINITE));
+		assertThat(f).matches(IResource::exists, "exists");
+		assertThat(f).matches(isSynchronizedDepthInfinite, "is synchronized");
 	}
 
 }

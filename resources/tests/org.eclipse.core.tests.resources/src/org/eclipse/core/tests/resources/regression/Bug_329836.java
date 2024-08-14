@@ -14,12 +14,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.filesystem.EFS;
@@ -54,9 +53,9 @@ public class Bug_329836 {
 		info = fileStore.fetchInfo();
 
 		// check that attributes are really set
-		assertTrue("2.0", info.getAttribute(EFS.ATTRIBUTE_READ_ONLY));
+		assertThat(info).matches(it -> it.getAttribute(EFS.ATTRIBUTE_READ_ONLY), "is read only");
 		if (isAttributeSupported(EFS.ATTRIBUTE_IMMUTABLE)) {
-			assertTrue("3.0", info.getAttribute(EFS.ATTRIBUTE_IMMUTABLE));
+			assertThat(info).matches(it -> it.getAttribute(EFS.ATTRIBUTE_IMMUTABLE), "is immutable");
 		}
 
 		// unset EFS.ATTRIBUTE_READ_ONLY which also unsets EFS.IMMUTABLE on Mac
@@ -68,9 +67,9 @@ public class Bug_329836 {
 		info = fileStore.fetchInfo();
 
 		// check that attributes are really unset
-		assertFalse("5.0", info.getAttribute(EFS.ATTRIBUTE_READ_ONLY));
+		assertThat(info).matches(it -> !it.getAttribute(EFS.ATTRIBUTE_READ_ONLY), "is not read only");
 		if (isAttributeSupported(EFS.ATTRIBUTE_IMMUTABLE)) {
-			assertFalse("6.0", info.getAttribute(EFS.ATTRIBUTE_IMMUTABLE));
+			assertThat(info).matches(it -> !it.getAttribute(EFS.ATTRIBUTE_IMMUTABLE), "is not immutable");
 		}
 	}
 

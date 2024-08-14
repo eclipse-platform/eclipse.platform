@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
@@ -23,10 +25,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.InputStream;
+import java.util.function.Predicate;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.resources.IFile;
@@ -48,6 +50,12 @@ import org.junit.Test;
  * its children can't be deleted, both "a" and "b" become out-of-sync and resource info is lost.
  */
 public class Bug_032076 {
+
+	private static final Predicate<IResource> isSynchronizedDepthInfinite = resource -> resource
+			.isSynchronized(IResource.DEPTH_INFINITE);
+
+	private static final Predicate<IResource> isSynchronizedDepthZero = resource -> resource
+			.isSynchronized(IResource.DEPTH_ZERO);
 
 	@Rule
 	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
@@ -81,27 +89,27 @@ public class Bug_032076 {
 					() -> sourceFile.move(destinationFile.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 			// the source parent is in sync
-			assertTrue("3.0", sourceParent.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(sourceParent).matches(isSynchronizedDepthInfinite, "is synchronized");
 			// the target parent is in sync
-			assertTrue("3.1", destinationParent.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(destinationParent).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			// file has been copied to destination
-			assertTrue("3.4", destinationFile.exists());
+			assertThat(destinationFile).matches(IResource::exists, "exists");
 
 			// ensure marker info has not been lost
 			IMarker marker = destinationFile.findMarker(markerId);
-			assertNotNull("3.6", marker);
-			assertEquals("3.7", attributeValue, marker.getAttribute(attributeKey));
+			assertNotNull(marker);
+			assertEquals(attributeValue, marker.getAttribute(attributeKey));
 
 			// non-removable file has been moved (but not in file system - they are out-of-sync)
-			assertTrue("4.1", sourceFile.exists());
-			assertTrue("4.2", sourceFile.isSynchronized(IResource.DEPTH_ZERO));
+			assertThat(sourceFile).matches(IResource::exists, "exists");
+			assertThat(sourceFile).matches(isSynchronizedDepthZero, "is synchronized");
 
 			// refresh the source parent
 			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 			// file is still found in source tree
-			assertTrue("4.7", sourceFile.exists());
+			assertThat(sourceFile).matches(IResource::exists, "exists");
 		}
 	}
 
@@ -137,33 +145,33 @@ public class Bug_032076 {
 					() -> folder.move(destinationFolder.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 			// the source parent is in sync
-			assertTrue("3.0", sourceParent.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(sourceParent).matches(isSynchronizedDepthInfinite, "is synchronized");
 			// the target parent is in-sync
-			assertTrue("3.1", destinationParent.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(destinationParent).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			// resources have been copied to destination
-			assertTrue("3.3", destinationFolder.exists());
-			assertTrue("3.4", destinationFolder.getFile(file1.getName()).exists());
-			assertTrue("3.5", destinationFolder.getFile(file2.getName()).exists());
+			assertThat(destinationFolder).matches(IResource::exists, "exists");
+			assertThat(destinationFolder.getFile(file1.getName())).matches(IResource::exists, "exists");
+			assertThat(destinationFolder.getFile(file2.getName())).matches(IResource::exists, "exists");
 
 			// ensure marker info has not been lost
 			IMarker marker = destinationFolder.getFile(file1.getName()).findMarker(markerId);
-			assertNotNull("3.6", marker);
-			assertEquals("3.7", attributeValue, marker.getAttribute(attributeKey));
+			assertNotNull(marker);
+			assertEquals(attributeValue, marker.getAttribute(attributeKey));
 
 			// non-removable resources still exist in source
-			assertTrue("4.1", folder.exists());
-			assertTrue("4.2", file1.exists());
+			assertThat(folder).matches(IResource::exists, "exists");
+			assertThat(file1).matches(IResource::exists, "exists");
 			//this file should be successfully moved
-			assertTrue("4.3", !file2.exists());
+			assertThat(file2).matches(not(IResource::exists), "not exists");
 
 			// refresh the source parent
 			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 			// non-removable resources still in source tree
-			assertTrue("4.6", folder.exists());
-			assertTrue("4.7", file1.exists());
-			assertTrue("4.8", !file2.exists());
+			assertThat(folder).matches(IResource::exists, "exists");
+			assertThat(file1).matches(IResource::exists, "exists");
+			assertThat(file2).matches(not(IResource::exists), "not exists");
 		}
 	}
 
@@ -197,21 +205,21 @@ public class Bug_032076 {
 					() -> sourceProject.move(destinationProject.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 			// the source does not exist
-			assertTrue("3.0", !sourceProject.exists());
-			assertTrue("3.1", sourceProject.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(sourceProject).matches(not(IResource::exists), "not exists");
+			assertThat(sourceProject).matches(isSynchronizedDepthInfinite, "is synchronized");
 			// the target exists and is in sync
-			assertTrue("3.2", destinationProject.exists());
-			assertTrue("3.3", destinationProject.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(destinationProject).matches(IResource::exists, "exists");
+			assertThat(destinationProject).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			// resources have been copied to destination
-			assertTrue("3.4", destinationProject.getFile(file1.getProjectRelativePath()).exists());
-			assertTrue("3.5", destinationProject.getFile(file2.getProjectRelativePath()).exists());
+			assertThat(destinationProject.getFile(file1.getProjectRelativePath())).matches(IResource::exists, "exists");
+			assertThat(destinationProject.getFile(file2.getProjectRelativePath())).matches(IResource::exists, "exists");
 
 			// ensure marker info has not been lost
 			IMarker marker = destinationProject.getFile(file1.getProjectRelativePath()).findMarker(markerId);
-			assertNotNull("3.6", marker);
-			assertEquals("3.7", attributeValue, marker.getAttribute(attributeKey));
-			assertTrue("5.0", workspace.getRoot().isSynchronized(IResource.DEPTH_INFINITE));
+			assertNotNull(marker);
+			assertEquals(attributeValue, marker.getAttribute(attributeKey));
+			assertThat(workspace.getRoot()).matches(isSynchronizedDepthInfinite, "is synchronized");
 		}
 	}
 
@@ -249,26 +257,26 @@ public class Bug_032076 {
 					() -> sourceFile.move(destinationFile.getFullPath(), IResource.FORCE, createTestMonitor()));
 
 			// the source parent is out-of-sync
-			assertTrue("3.0", !sourceParent.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(sourceParent).matches(not(isSynchronizedDepthInfinite), "is not synchronized");
 			// the target parent is in-sync
-			assertTrue("3.1", destinationParent.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(destinationParent).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			// file has been copied to destination
-			assertTrue("3.4", destinationFile.exists());
+			assertThat(destinationFile).matches(IResource::exists, "exists");
 
 			// ensure marker info has not been lost
 			IMarker marker = destinationFile.findMarker(markerId);
-			assertNotNull("3.6", marker);
-			assertEquals("3.7", attributeValue, marker.getAttribute(attributeKey));
+			assertNotNull(marker);
+			assertEquals(attributeValue, marker.getAttribute(attributeKey));
 
 			// non-removable file has been moved (but not in file system - they are out-of-sync)
-			assertTrue("4.1", !sourceFile.exists());
+			assertThat(sourceFile).matches(not(IResource::exists), "not exists");
 
 			// refresh the source parent
 			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 			// non-removable file now reappear in the resource tree
-			assertTrue("4.7", sourceFile.exists());
+			assertThat(sourceFile).matches(IResource::exists, "exists");
 		} finally {
 			setReadOnly(roFolderStore, false);
 		}
@@ -311,38 +319,38 @@ public class Bug_032076 {
 					.move(destinationParent.getFullPath().append(roFolder.getName()), IResource.FORCE, createTestMonitor()));
 
 			// the source parent is out-of-sync
-			assertTrue("3.0", !sourceParent.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(sourceParent).matches(not(isSynchronizedDepthInfinite), "is not synchronized");
 			// the target parent is in-sync
-			assertTrue("3.1", destinationParent.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(destinationParent).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			// resources have been copied to destination
 			IFolder destinationFolder = destinationROFolder.getFolder(folder.getName());
 			IFile destinationFile1 = destinationROFolder.getFile(file1.getName());
 			IFile destinationFile2 = destinationFolder.getFile(file2.getName());
-			assertTrue("3.2", destinationROFolder.exists());
-			assertTrue("3.4", destinationFolder.exists());
-			assertTrue("3.5", destinationFile1.exists());
-			assertTrue("3.6", destinationFile2.exists());
+			assertThat(destinationROFolder).matches(IResource::exists, "exists");
+			assertThat(destinationFolder).matches(IResource::exists, "exists");
+			assertThat(destinationFile1).matches(IResource::exists, "exists");
+			assertThat(destinationFile2).matches(IResource::exists, "exists");
 
 			// ensure marker info has not been lost
 			IMarker marker = destinationROFolder.getFile(file1.getName()).findMarker(markerId);
-			assertNotNull("3.7", marker);
-			assertEquals("3.8", attributeValue, marker.getAttribute(attributeKey));
+			assertNotNull(marker);
+			assertEquals(attributeValue, marker.getAttribute(attributeKey));
 
 			// non-removable resources have been moved (but not in file system - they are out-of-sync)
-			assertTrue("4.0", !roFolder.exists());
-			assertTrue("4.1", !folder.exists());
-			assertTrue("4.2", !file1.exists());
-			assertTrue("4.3", !file2.exists());
+			assertThat(roFolder).matches(not(IResource::exists), "not exists");
+			assertThat(folder).matches(not(IResource::exists), "not exists");
+			assertThat(file1).matches(not(IResource::exists), "not exists");
+			assertThat(file2).matches(not(IResource::exists), "not exists");
 
 			// refresh the source parent
 			sourceParent.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 
 			// non-removed resources now reappear in the resource tree
-			assertTrue("4.5", roFolder.exists());
-			assertTrue("4.6", folder.exists());
-			assertTrue("4.7", file1.exists());
-			assertTrue("4.8", !file2.exists());
+			assertThat(roFolder).matches(IResource::exists, "exists");
+			assertThat(folder).matches(IResource::exists, "exists");
+			assertThat(file1).matches(IResource::exists, "exists");
+			assertThat(file2).matches(not(IResource::exists), "not exists");
 		} finally {
 			setReadOnly(roFolderLocation, false);
 			setReadOnly(destinationROFolderLocation, false);
@@ -390,22 +398,22 @@ public class Bug_032076 {
 			workspaceRule.deleteOnTearDown(destinationProject.getLocation());
 
 			// the source does not exist
-			assertTrue("3.0", !sourceProject.exists());
+			assertThat(sourceProject).matches(not(IResource::exists), "not exists");
 			// the target exists and is in sync
-			assertTrue("3.1", destinationProject.exists());
-			assertTrue("3.2", destinationProject.isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(destinationProject).matches(IResource::exists, "exists");
+			assertThat(destinationProject).matches(isSynchronizedDepthInfinite, "is synchronized");
 
 			// resources have been copied to destination
-			assertTrue("3.4", destinationProject.getFile(file1.getProjectRelativePath()).exists());
+			assertThat(destinationProject.getFile(file1.getProjectRelativePath())).matches(IResource::exists, "exists");
 
 			// ensure marker info has not been lost
 			IMarker marker = destinationProject.getFile(file1.getProjectRelativePath()).findMarker(markerId);
-			assertNotNull("3.6", marker);
-			assertEquals("3.7", attributeValue, marker.getAttribute(attributeKey));
+			assertNotNull(marker);
+			assertEquals(attributeValue, marker.getAttribute(attributeKey));
 			// project's content area still exists in file system
-			assertTrue("4.0", projectStore.fetchInfo().exists());
+			assertThat(projectStore).matches(it -> it.fetchInfo().exists(), "exists");
 
-			assertTrue("5.0", workspace.getRoot().isSynchronized(IResource.DEPTH_INFINITE));
+			assertThat(workspace.getRoot()).matches(isSynchronizedDepthInfinite, "is synchronized");
 		} finally {
 			setReadOnly(projectParentStore, false);
 		}

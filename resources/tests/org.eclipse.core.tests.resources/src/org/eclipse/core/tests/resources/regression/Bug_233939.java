@@ -22,7 +22,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSyst
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
@@ -63,7 +62,7 @@ public class Bug_233939 {
 		container.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		IResource theLink = container.findMember(linkName);
 		assertExistsInWorkspace(theLink);
-		assertTrue(theLink.getResourceAttributes().isSymbolicLink());
+		assertThat(theLink).matches(it -> it.getResourceAttributes().isSymbolicLink(), "is symbolic link");
 	}
 
 	/**

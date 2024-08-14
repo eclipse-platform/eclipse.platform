@@ -90,7 +90,7 @@ public class Bug_147232 implements IResourceChangeListener {
 		//create a file in the project to trigger a build
 		createInWorkspace(file);
 		waitForBuild();
-		assertEquals("2.0", 1, deltaSeenCount);
+		assertEquals(1, deltaSeenCount);
 	}
 
 }
