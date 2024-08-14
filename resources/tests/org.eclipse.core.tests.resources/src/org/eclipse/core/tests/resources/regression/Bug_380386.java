@@ -58,11 +58,11 @@ public class Bug_380386 {
 			}
 		}
 
-		assertNotNull("1.0", statusName);
-		assertNotNull("2.0", statusValue);
+		assertNotNull(statusName);
+		assertNotNull(statusValue);
 
-		assertTrue("3.0", statusName.isOK());
-		assertNotNull("4.0", statusValue.isOK());
+		assertTrue(statusName.isOK());
+		assertNotNull(statusValue.isOK());
 
 		pathManager.setURIValue(name, value);
 	}

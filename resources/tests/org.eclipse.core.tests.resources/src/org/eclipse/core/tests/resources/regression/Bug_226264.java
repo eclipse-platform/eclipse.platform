@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -78,7 +78,7 @@ public class Bug_226264 {
 			workspace.removeResourceChangeListener(projectDeletingChangeListener);
 		}
 
-		assertTrue("2.0: " + job.getResult(), job.getResult().isOK());
+		assertThat(job.getResult()).matches(IStatus::isOK, "is okay");
 
 		assertDoesNotExistInWorkspace(project1);
 		assertDoesNotExistInWorkspace(project2);

@@ -13,9 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertTrue;
 
+import java.util.function.Predicate;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -78,9 +79,9 @@ public class Bug_231301 {
 			workspace.removeResourceChangeListener(projectClosingChangeListener);
 		}
 
-		assertTrue("2.0: " + job.getResult(), job.getResult().isOK());
-		assertTrue("3.0", !project1.isOpen());
-		assertTrue("4.0", !project2.isOpen());
+		assertThat(job.getResult().isOK()).withFailMessage(job.getResult().toString()).isTrue();
+		assertThat(project1).matches(Predicate.not(IProject::isOpen), "is not open");
+		assertThat(project2).matches(Predicate.not(IProject::isOpen), "is not open");
 	}
 
 }

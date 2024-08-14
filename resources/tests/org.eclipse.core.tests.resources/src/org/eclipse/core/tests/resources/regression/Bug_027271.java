@@ -15,7 +15,7 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.resources.IPathVariableManager;
@@ -81,7 +81,7 @@ public class Bug_027271 {
 		//sets invalid value (invalid path)
 		IPath invalidPath = IPath.fromOSString("c:\\a\\:\\b");
 		prefs.setValue(VARIABLE_PREFIX + "ANOTHER_INVALID_VAR", invalidPath.toPortableString());
-		assertTrue("3.0", !IPath.EMPTY.isValidPath(invalidPath.toPortableString()));
+		assertFalse(IPath.EMPTY.isValidPath(invalidPath.toPortableString()));
 		assertThat(pvm.getPathVariableNames()).containsExactly("VALID_VAR");
 	}
 

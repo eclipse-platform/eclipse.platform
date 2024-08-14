@@ -13,13 +13,16 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+import java.util.function.Predicate;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
@@ -38,6 +41,9 @@ import org.junit.Test;
  * the destination directory is empty.
  */
 public class Bug_160251 {
+
+	private static final Predicate<IResource> isSynchronizedDepthInfinite = resource -> resource
+			.isSynchronized(IResource.DEPTH_INFINITE);
 
 	@Rule
 	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
@@ -60,11 +66,11 @@ public class Bug_160251 {
 		source.move(description, IResource.NONE, createTestMonitor());
 
 		//ensure project still exists
-		assertTrue("2.0", source.exists());
-		assertTrue("2.1", sourceFile.exists());
-		assertTrue("2.2", source.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("2.3", URIUtil.equals(source.getLocationURI(), destination.toURI()));
-		assertTrue("2.4", URIUtil.equals(sourceFile.getLocationURI(), destinationFile.toURI()));
+		assertThat(source).matches(IResource::exists, "exists");
+		assertThat(sourceFile).matches(IResource::exists, "exists");
+		assertThat(source).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertTrue(URIUtil.equals(source.getLocationURI(), destination.toURI()));
+		assertTrue(URIUtil.equals(sourceFile.getLocationURI(), destinationFile.toURI()));
 	}
 
 	/**
@@ -86,11 +92,11 @@ public class Bug_160251 {
 		source.move(description, IResource.NONE, createTestMonitor());
 
 		//ensure project still exists
-		assertTrue("2.0", source.exists());
-		assertTrue("2.1", sourceFile.exists());
-		assertTrue("2.2", source.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("2.3", URIUtil.equals(source.getLocationURI(), destination.toURI()));
-		assertTrue("2.4", URIUtil.equals(sourceFile.getLocationURI(), destinationFile.toURI()));
+		assertThat(source).matches(IResource::exists, "exists");
+		assertThat(sourceFile).matches(IResource::exists, "exists");
+		assertThat(source).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertTrue(URIUtil.equals(source.getLocationURI(), destination.toURI()));
+		assertTrue(URIUtil.equals(sourceFile.getLocationURI(), destinationFile.toURI()));
 	}
 
 	/**
@@ -113,11 +119,11 @@ public class Bug_160251 {
 		assertThrows(CoreException.class, () -> source.move(description, IResource.NONE, createTestMonitor()));
 
 		//ensure project still exists in old location
-		assertTrue("2.0", source.exists());
-		assertTrue("2.1", sourceFile.exists());
-		assertTrue("2.2", source.isSynchronized(IResource.DEPTH_INFINITE));
-		assertTrue("2.3", !URIUtil.equals(source.getLocationURI(), destination.toURI()));
-		assertTrue("2.4", !URIUtil.equals(sourceFile.getLocationURI(), destinationFile.toURI()));
+		assertThat(source).matches(IResource::exists, "exists");
+		assertThat(sourceFile).matches(IResource::exists, "exists");
+		assertThat(source).matches(isSynchronizedDepthInfinite, "is synchronized");
+		assertFalse(URIUtil.equals(source.getLocationURI(), destination.toURI()));
+		assertFalse(URIUtil.equals(sourceFile.getLocationURI(), destinationFile.toURI()));
 	}
 
 }

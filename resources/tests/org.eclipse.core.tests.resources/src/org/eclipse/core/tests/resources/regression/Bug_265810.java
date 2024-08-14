@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertDoesNotExistInWorkspace;
@@ -108,9 +109,9 @@ public class Bug_265810 {
 			// restore .project [1]
 			restoreDotProject(project, dotProject1);
 
-			assertEquals("9.0", 1, resourceDeltas.size());
-			assertEquals("9.1", newFile, resourceDeltas.get(0).getResource());
-			assertEquals("9.2", IResourceDelta.REMOVED, resourceDeltas.get(0).getKind());
+			assertThat(resourceDeltas).hasSize(1);
+			assertEquals(newFile, resourceDeltas.get(0).getResource());
+			assertEquals(IResourceDelta.REMOVED, resourceDeltas.get(0).getKind());
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
@@ -127,9 +128,9 @@ public class Bug_265810 {
 			// restore .project [2]
 			restoreDotProject(project, dotProject2);
 
-			assertEquals("11.0", 1, resourceDeltas.size());
-			assertEquals("11.1", newFile, resourceDeltas.get(0).getResource());
-			assertEquals("11.2", IResourceDelta.REPLACED, resourceDeltas.get(0).getFlags() & IResourceDelta.REPLACED);
+			assertThat(resourceDeltas).hasSize(1);
+			assertEquals(newFile, resourceDeltas.get(0).getResource());
+			assertEquals(IResourceDelta.REPLACED, resourceDeltas.get(0).getFlags() & IResourceDelta.REPLACED);
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}

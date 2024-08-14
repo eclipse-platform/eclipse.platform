@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -101,14 +101,14 @@ public class Bug_192631 {
 		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
 		projectA.accept(visitor);
-		assertTrue("1.1", toVisit.isEmpty());
-		assertEquals("1.2", 0, toVisitCount[0]);
+		assertThat(toVisit).isEmpty();
+		assertEquals(0, toVisitCount[0]);
 
 		toVisit.addAll(Arrays.asList(new URI[] {projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
 		projectB.accept(visitor);
-		assertTrue("2.1", toVisit.isEmpty());
-		assertEquals("2.2", 0, toVisitCount[0]);
+		assertThat(toVisit).isEmpty();
+		assertEquals(0, toVisitCount[0]);
 
 		projectA.delete(true, createTestMonitor());
 		projectB.delete(true, createTestMonitor());
@@ -147,14 +147,14 @@ public class Bug_192631 {
 		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
 		projectA.accept(visitor);
-		assertTrue("1.1", toVisit.isEmpty());
-		assertEquals("1.2", 0, toVisitCount[0]);
+		assertThat(toVisit).isEmpty();
+		assertEquals(0, toVisitCount[0]);
 
 		toVisit.addAll(Arrays.asList(new URI[] {projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
 		projectB.accept(visitor);
-		assertTrue("2.1", toVisit.isEmpty());
-		assertEquals("2.2", 0, toVisitCount[0]);
+		assertThat(toVisit).isEmpty();
+		assertEquals(0, toVisitCount[0]);
 
 		projectA.delete(true, createTestMonitor());
 		projectB.delete(true, createTestMonitor());
@@ -193,14 +193,14 @@ public class Bug_192631 {
 		toVisit.addAll(Arrays.asList(new URI[] {projectA.getLocationURI(), commonA, folderA, projectA.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
 		projectA.accept(visitor);
-		assertTrue("1.1", toVisit.isEmpty());
-		assertEquals("1.2", 0, toVisitCount[0]);
+		assertThat(toVisit).isEmpty();
+		assertEquals(0, toVisitCount[0]);
 
 		toVisit.addAll(Arrays.asList(new URI[] {projectB.getLocationURI(), commonB, folderB, projectB.getFile(".project").getLocationURI()}));
 		toVisitCount[0] = 6;
 		projectB.accept(visitor);
-		assertTrue("2.1", toVisit.isEmpty());
-		assertEquals("2.2", 0, toVisitCount[0]);
+		assertThat(toVisit).isEmpty();
+		assertEquals(0, toVisitCount[0]);
 
 		projectA.delete(true, createTestMonitor());
 		projectB.delete(true, createTestMonitor());

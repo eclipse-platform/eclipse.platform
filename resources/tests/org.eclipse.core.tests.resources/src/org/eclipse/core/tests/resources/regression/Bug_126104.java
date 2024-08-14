@@ -13,11 +13,12 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -48,14 +49,14 @@ public class Bug_126104 {
 		link.createLink(location.toURI(), IResource.ALLOW_MISSING_LOCAL, createTestMonitor());
 		IFile destination = link.getFile(source.getName());
 		source.copy(destination.getFullPath(), IResource.NONE, createTestMonitor());
-		assertTrue("1.0", destination.exists());
+		assertThat(destination).matches(IResource::exists, "exists");
 
 		//try the same thing with move
 		removeFromWorkspace(destination);
 		location.delete(EFS.NONE, createTestMonitor());
 		source.move(destination.getFullPath(), IResource.NONE, createTestMonitor());
-		assertTrue("3.0", !source.exists());
-		assertTrue("3.1", destination.exists());
+		assertThat(source).matches(not(IResource::exists), "not exists");
+		assertThat(destination).matches(IResource::exists, "exists");
 	}
 
 }

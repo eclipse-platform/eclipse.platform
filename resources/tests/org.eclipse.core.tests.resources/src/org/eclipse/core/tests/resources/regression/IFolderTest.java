@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
@@ -20,9 +22,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
+import java.util.function.Predicate;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -64,7 +66,7 @@ public class IFolderTest {
 
 		try {
 			parentFolder.setReadOnly(true);
-			assertTrue(parentFolder.isReadOnly());
+			assertThat(parentFolder).matches(IResource::isReadOnly, "is read only");
 			CoreException exception = assertThrows(CoreException.class, () -> folder.create(true, true, createTestMonitor()));
 			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
 		} finally {
@@ -87,29 +89,30 @@ public class IFolderTest {
 		file.create(null, true, createTestMonitor());
 		subFile.create(null, true, createTestMonitor());
 
-		assertTrue("1.0", !folder.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("1.1", !file.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("1.1", !subFile.isLocal(IResource.DEPTH_ZERO));
+		Predicate<IResource> isLocal = resource -> resource.isLocal(IResource.DEPTH_ZERO);
+
+		assertThat(folder).matches(not(isLocal), "not is local");
+		assertThat(file).matches(not(isLocal), "not is local");
+		assertThat(subFile).matches(not(isLocal), "not is local");
 
 		// now create the resources in the local file system and refresh
 		createInFileSystem(file);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertTrue("2.1", file.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("2.2", !folder.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("2.3", !subFile.isLocal(IResource.DEPTH_ZERO));
+		assertThat(file).matches(isLocal, "is local");
+		assertThat(folder).matches(not(isLocal), "not is local");
+		assertThat(subFile).matches(not(isLocal), "not is local");
 
 		folder.getLocation().toFile().mkdir();
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertTrue("3.1", folder.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("3.2", file.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("3.3", !subFile.isLocal(IResource.DEPTH_ZERO));
+		assertThat(folder).matches(isLocal, "is local");
+		assertThat(file).matches(isLocal, "is local");
+		assertThat(subFile).matches(not(isLocal), "not is local");
 
 		createInFileSystem(subFile);
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
-		assertTrue("4.1", subFile.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("4.2", folder.isLocal(IResource.DEPTH_ZERO));
-		assertTrue("4.3", file.isLocal(IResource.DEPTH_ZERO));
-
+		assertThat(folder).matches(isLocal, "is local");
+		assertThat(file).matches(isLocal, "is local");
+		assertThat(subFile).matches(isLocal, "is local");
 	}
 
 	/**
@@ -125,7 +128,7 @@ public class IFolderTest {
 		createInWorkspace(new IResource[] {folder});
 
 		IFileStore dir = EFS.getLocalFileSystem().fromLocalFile(folder.getLocation().toFile());
-		assertTrue(dir.fetchInfo().exists());
+		assertThat(dir).matches(it -> it.fetchInfo().exists(), "exists");
 
 		dir.mkdir(EFS.NONE, null);
 		dir.mkdir(EFS.SHALLOW, null);

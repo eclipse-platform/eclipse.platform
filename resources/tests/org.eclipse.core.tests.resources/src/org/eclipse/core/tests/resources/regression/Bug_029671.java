@@ -13,16 +13,18 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static java.util.function.Predicate.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.assertExistsInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ISynchronizer;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
@@ -61,14 +63,14 @@ public class Bug_029671 {
 			IFile targetFile = targetFolder.getFile(file.getName());
 
 			folder.move(targetFolder.getFullPath(), false, false, createTestMonitor());
-			assertTrue("3.0", folder.isPhantom());
-			assertTrue("4.0", file.isPhantom());
+			assertThat(folder).matches(IResource::isPhantom, "is phantom");
+			assertThat(file).matches(IResource::isPhantom, "is phantom");
 
 			assertExistsInWorkspace(targetFolder);
-			assertTrue("5.1", !targetFolder.isPhantom());
+			assertThat(targetFolder).matches(not(IResource::isPhantom), "is not phantom");
 
 			assertExistsInWorkspace(targetFile);
-			assertTrue("6.1", !targetFile.isPhantom());
+			assertThat(targetFile).matches(not(IResource::isPhantom), "is not phantom");
 		} finally {
 			synchronizer.remove(partner);
 		}

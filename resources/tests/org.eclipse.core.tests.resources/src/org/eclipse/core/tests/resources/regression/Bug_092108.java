@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.core.filesystem.EFS;
@@ -39,8 +39,8 @@ public class Bug_092108 {
 
 		IFileStore root = EFS.getStore(new java.io.File("c:\\").toURI());
 		IFileInfo info = root.fetchInfo();
-		assertTrue("1.0", info.exists());
-		assertTrue("1.1", info.isDirectory());
+		assertThat(info).matches(IFileInfo::exists, "exists");
+		assertThat(info).matches(IFileInfo::isDirectory, "is directory");
 	}
 
 }

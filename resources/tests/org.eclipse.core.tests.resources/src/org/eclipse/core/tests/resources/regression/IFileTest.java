@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
@@ -20,7 +21,6 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
@@ -64,7 +64,7 @@ public class IFileTest {
 
 		try {
 			folder.setReadOnly(true);
-			assertTrue(folder.isReadOnly());
+			assertThat(folder).matches(IResource::isReadOnly, "is read only");
 			CoreException exception = assertThrows(CoreException.class,
 					() -> file.create(createRandomContentsStream(), true, createTestMonitor()));
 			assertEquals(IResourceStatus.FAILED_WRITE_LOCAL, exception.getStatus().getCode());
@@ -96,7 +96,7 @@ public class IFileTest {
 
 		try {
 			folder.setReadOnly(true);
-			assertTrue(folder.isReadOnly());
+			assertThat(folder).matches(IResource::isReadOnly, "is read only");
 			CoreException exception = assertThrows(CoreException.class,
 					() -> file.create(createRandomContentsStream(), true, createTestMonitor()));
 			assertEquals(IResourceStatus.PARENT_READ_ONLY, exception.getStatus().getCode());
@@ -113,7 +113,7 @@ public class IFileTest {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile descFile = project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME);
 		createInWorkspace(project);
-		assertTrue("1.0", descFile.exists());
+		assertThat(descFile).matches(IResource::exists, "exists");
 
 		IProjectDescription desc = project.getDescription();
 
@@ -121,7 +121,7 @@ public class IFileTest {
 		long newTime = System.currentTimeMillis() + 10000;
 		descFile.setLocalTimeStamp(newTime);
 
-		assertTrue("2.0", descFile.isSynchronized(IResource.DEPTH_ZERO));
+		assertThat(descFile).matches(it -> it.isSynchronized(IResource.DEPTH_ZERO), "is synchronized");
 
 		// try setting the description -- shouldn't fail
 		project.setDescription(desc, createTestMonitor());
