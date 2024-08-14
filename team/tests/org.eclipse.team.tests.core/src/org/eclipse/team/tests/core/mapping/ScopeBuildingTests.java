@@ -16,8 +16,8 @@ package org.eclipse.team.tests.core.mapping;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -29,18 +29,16 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.team.core.mapping.ISynchronizationScopeManager;
 import org.eclipse.team.core.mapping.provider.SynchronizationScopeManager;
 import org.eclipse.team.internal.core.mapping.ResourceMappingScope;
 import org.eclipse.team.ui.synchronize.ModelOperation;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class ScopeBuildingTests {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final RuntimeException PROMPT_EXCEPTION = new RuntimeException();
 	protected static final String TEST_MODEL_PROVIDER_ID = "id1";
@@ -78,7 +76,7 @@ public class ScopeBuildingTests {
 
 	private void expectPrompt(TestResourceMappingOperation op) {
 		RuntimeException exception = assertThrows(RuntimeException.class, () -> op.run(new NullProgressMonitor()));
-		assertSame("expected prompt did not occur", exception, PROMPT_EXCEPTION);
+		assertSame(PROMPT_EXCEPTION, exception, "expected prompt did not occur");
 	}
 
 	private ResourceMapping getMapping(final IProject project, final IResource[] resources, final int depth) {

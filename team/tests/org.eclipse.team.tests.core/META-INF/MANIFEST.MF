@@ -22,12 +22,15 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.team.ui,
  org.eclipse.compare,
  org.eclipse.ui,
- org.junit,
  org.eclipse.core.tests.resources,
  org.eclipse.ui.navigator,
  org.eclipse.core.filesystem,
  org.eclipse.compare.tests
-Import-Package: org.assertj.core.api
+Import-Package: org.assertj.core.api,
+ org.junit.jupiter.api,
+ org.junit.jupiter.api.extension,
+ org.junit.jupiter.api.function,
+ org.junit.platform.suite.api
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
 Bundle-RequiredExecutionEnvironment: JavaSE-17

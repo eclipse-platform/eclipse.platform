@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.tests.core;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.io.InputStream;
 
 import org.eclipse.team.internal.core.streams.CRLFtoLFInputStream;
 import org.eclipse.team.internal.core.streams.LFtoCRLFInputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StreamTests {
 
@@ -70,7 +70,7 @@ public class StreamTests {
 			for (;;) {
 				int byte1 = in1.read();
 				int byte2 = in2.read();
-				assertEquals("Streams not equal", byte1, byte2);
+				assertEquals(byte1, byte2, "Streams not equal");
 				if (byte1 == -1) break;
 			}
 		} finally {
