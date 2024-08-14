@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -146,6 +147,7 @@ public class LaunchTests extends AbstractLaunchTest {
 		String[] segments = Collections.nCopies((400 - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
 		File workingDirectory = tempFolder.newFolder(segments);
 		assertTrue(workingDirectory.toString().length() > 300);
+		Files.createDirectories(workingDirectory.toPath());
 
 		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, false, "jdk");
 		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, true, "jdk");
