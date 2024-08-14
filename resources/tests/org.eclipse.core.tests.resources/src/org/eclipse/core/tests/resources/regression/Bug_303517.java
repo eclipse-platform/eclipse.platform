@@ -21,8 +21,8 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.buildResources;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.touchInFilesystem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.InputStream;
@@ -36,20 +36,18 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests that, when the workspace discovery a resource is out-of-sync
  * it brings the resource back into sync in a timely manner.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_303517 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private static final Predicate<IResource> isSynchronizedDepthInfinite = resource -> resource
 			.isSynchronized(IResource.DEPTH_INFINITE);
@@ -61,7 +59,7 @@ public class Bug_303517 {
 			"/Bug303517/Folder/Resource", };
 	private boolean originalRefreshSetting;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
@@ -71,7 +69,7 @@ public class Bug_303517 {
 		createInWorkspace(resources);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);

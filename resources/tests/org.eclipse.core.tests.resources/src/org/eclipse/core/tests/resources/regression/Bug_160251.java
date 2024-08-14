@@ -18,10 +18,13 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.function.Predicate;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -31,31 +34,32 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests regression of bug 160251.  In this case, attempting to move a project
  * to an existing directory on disk failed, but should succeed as long as
  * the destination directory is empty.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_160251 {
 
 	private static final Predicate<IResource> isSynchronizedDepthInfinite = resource -> resource
 			.isSynchronized(IResource.DEPTH_INFINITE);
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	private @TempDir Path tempDirectory;
 
 	/**
 	 * The destination directory does not exist.
 	 */
 	@Test
-	public void testNonExistentDestination() throws CoreException {
+	public void testNonExistentDestination() throws CoreException, IOException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
-		IFileStore destination = workspaceRule.getTempStore();
+		IFileStore destination = getFileStore(tempDirectory);
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
 		createInWorkspace(source);
 		createInWorkspace(sourceFile);
@@ -77,10 +81,10 @@ public class Bug_160251 {
 	 * The destination directory exists, but is empty
 	 */
 	@Test
-	public void testEmptyDestination() throws CoreException {
+	public void testEmptyDestination() throws CoreException, IOException {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
-		IFileStore destination = workspaceRule.getTempStore();
+		IFileStore destination = getFileStore(tempDirectory);
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
 		createInWorkspace(source);
 		createInWorkspace(sourceFile);
@@ -106,7 +110,7 @@ public class Bug_160251 {
 	public void testOccupiedDestination() throws Exception {
 		IProject source = getWorkspace().getRoot().getProject("project");
 		IFile sourceFile = source.getFile("Important.txt");
-		IFileStore destination = workspaceRule.getTempStore();
+		IFileStore destination = getFileStore(tempDirectory);
 		IFileStore destinationFile = destination.getChild(sourceFile.getName());
 		createInWorkspace(source);
 		createInWorkspace(sourceFile);

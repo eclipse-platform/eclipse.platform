@@ -15,11 +15,13 @@ package org.eclipse.core.tests.resources.regression;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
@@ -30,14 +32,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IWorkspaceTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * 1GDKIHD: ITPCORE:WINNT - API - IWorkspace.move needs to keep history
@@ -140,11 +141,11 @@ public class IWorkspaceTest {
 	}
 
 	@Test
-	public void test_8974() throws CoreException {
+	public void test_8974(@TempDir Path tempDirectory) throws CoreException, IOException {
 		IProject one = getWorkspace().getRoot().getProject("One");
-		IPath oneLocation = getRandomLocation().append(one.getName());
-		oneLocation.toFile().mkdirs();
-		workspaceRule.deleteOnTearDown(oneLocation.removeLastSegments(1));
+		Path oneTempDirectory = tempDirectory.toRealPath().resolve(one.getName());
+		IPath oneLocation = IPath.fromPath(oneTempDirectory);
+		Files.createDirectories(oneTempDirectory);
 		IProjectDescription oneDescription = getWorkspace().newProjectDescription(one.getName());
 		oneDescription.setLocation(oneLocation);
 

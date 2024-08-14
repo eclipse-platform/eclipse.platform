@@ -19,10 +19,10 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -32,15 +32,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IFileTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Bug states that the error code in the CoreException which is thrown when
@@ -48,7 +46,7 @@ public class IFileTest {
 	 * ERROR_WRITE.
 	 */
 	@Test
-	@Ignore("This test is no longer valid since the error code is dependent on whether or not the parent folder is marked as read-only. We need to write a different test to make the file.create fail.")
+	@Disabled("This test is no longer valid since the error code is dependent on whether or not the parent folder is marked as read-only. We need to write a different test to make the file.create fail.")
 	public void testBug25658() throws CoreException {
 		// We need to know whether or not we can unset the read-only flag
 		// in order to perform this test.

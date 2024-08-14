@@ -15,7 +15,7 @@ import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForBuild;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class WorkspaceResetExtension implements AfterEachCallback, BeforeEachCal
 		// Wait for any pending refresh operation, in particular from startup
 		waitForRefresh();
 		TestUtil.log(IStatus.INFO, context.getDisplayName(), "setUp");
-		assertNotNull("Workspace was not set up", getWorkspace());
+		assertNotNull(getWorkspace(), "Workspace was not set up");
 		FreezeMonitor.expectCompletionInAMinute();
 		waitForRefresh();
 	}

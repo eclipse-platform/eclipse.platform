@@ -26,12 +26,12 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.ensureOutOfSync;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isAttributeSupported;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -60,16 +60,14 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class IResourceTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * 1G9RBH5: ITPCORE:WIN98 - IFile.appendContents might lose data
@@ -170,7 +168,7 @@ public class IResourceTest {
 			}
 		}
 
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
+		final AtomicReference<Executable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
 		});
 		IResourceChangeListener listener = event -> {
 			IResourceDelta delta = event.getDelta();
@@ -201,7 +199,7 @@ public class IResourceTest {
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 	}
 
 	/**
@@ -252,7 +250,7 @@ public class IResourceTest {
 		long actual = destination.getLocation().toFile().lastModified();
 		// java.io.File.lastModified() has only second accuracy on some OSes
 		long difference = Math.abs(expected - actual);
-		assertTrue("time difference>1000ms: " + difference, difference <= 1000);
+		assertTrue(difference <= 1000, "time difference>1000ms: " + difference);
 	}
 
 	/**
@@ -275,9 +273,9 @@ public class IResourceTest {
 		assertThat(file).matches(IFile::exists, "exists");
 		IFile anotherFile = project.getFile("File");
 
-		ThrowingRunnable forcedFileCreation = () -> anotherFile.create(createRandomContentsStream(), true, null);
+		Executable forcedFileCreation = () -> anotherFile.create(createRandomContentsStream(), true, null);
 		if (caseSensitive) {
-			forcedFileCreation.run();
+			forcedFileCreation.execute();
 		} else {
 			assertThrows(CoreException.class, forcedFileCreation);
 		}
@@ -286,17 +284,17 @@ public class IResourceTest {
 		anotherFile.delete(true, false, null);
 
 		// force = false
-		ThrowingRunnable fileCreation = () -> anotherFile.create(createRandomContentsStream(), false, null);
+		Executable fileCreation = () -> anotherFile.create(createRandomContentsStream(), false, null);
 		if (caseSensitive) {
-			fileCreation.run();
+			fileCreation.execute();
 		} else {
 			assertThrows(CoreException.class, fileCreation);
 		}
 
 		// test refreshLocal
-		ThrowingRunnable refresh = () -> anotherFile.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
+		Executable refresh = () -> anotherFile.refreshLocal(IResource.DEPTH_ZERO, createTestMonitor());
 		if (caseSensitive) {
-			refresh.run();
+			refresh.execute();
 		} else {
 			assertThrows(CoreException.class, refresh);
 		}
@@ -356,7 +354,7 @@ public class IResourceTest {
 	 * OS and file system.
 	 */
 	@Test
-	@Ignore("This test cannot be done automatically because we don't know in that file system we are running. Will leave test here in case it needs to be run it in a special environment.")
+	@Disabled("This test cannot be done automatically because we don't know in that file system we are running. Will leave test here in case it needs to be run it in a special environment.")
 	public void testDelete_1GD3ZUZ() throws CoreException {
 		IProject project = getWorkspace().getRoot().getProject("MyProject");
 		IFile file = project.getFile("MyFile");
@@ -470,7 +468,7 @@ public class IResourceTest {
 			createInputStream(newContents).transferTo(output);
 		}
 
-		final AtomicReference<ThrowingRunnable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
+		final AtomicReference<Executable> listenerInMainThreadCallback = new AtomicReference<>(() -> {
 		});
 		IResourceChangeListener listener = event -> {
 			listenerInMainThreadCallback.set(() -> {
@@ -484,7 +482,7 @@ public class IResourceTest {
 		} finally {
 			getWorkspace().removeResourceChangeListener(listener);
 		}
-		listenerInMainThreadCallback.get().run();
+		listenerInMainThreadCallback.get().execute();
 
 		CoreException exception = assertThrows(CoreException.class, () -> {
 			try (InputStream is = target.getContents(false)) {

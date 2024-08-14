@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,33 +36,32 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.URIUtil;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test cases for symbolic links in projects.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_185247_LinuxTests {
+	private String testMethodName;
 
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+	private @TempDir Path tempDirectory;
 
 	private IPath testCasesLocation;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
 		assumeTrue("only relevant on Linux", OS.isLinux());
 
-		IPath randomLocation = getRandomLocation();
-		workspaceRule.deleteOnTearDown(randomLocation);
+		testMethodName = testInfo.getTestMethod().get().getName();
+		IPath randomLocation = IPath.fromPath(tempDirectory);
 		testCasesLocation = randomLocation.append("bug185247LinuxTests");
-		assertTrue("failed to create test location: " + testCasesLocation, testCasesLocation.toFile().mkdirs());
+		assertTrue(testCasesLocation.toFile().mkdirs(), "failed to create test location: " + testCasesLocation);
 		extractTestCasesArchive(testCasesLocation);
 	}
 
@@ -72,7 +70,7 @@ public class Bug_185247_LinuxTests {
 				.getEntry("resources/bug185247/bug185247_LinuxTests.zip");
 		URL archiveLocation = FileLocator.resolve(testCasesArchive);
 		File archive = URIUtil.toFile(archiveLocation.toURI());
-		assertNotNull("cannot find archive with test cases", archive);
+		assertNotNull(archive, "cannot find archive with test cases");
 		unzip(archive, outputLocation.toFile());
 	}
 
@@ -103,7 +101,7 @@ public class Bug_185247_LinuxTests {
 
 	private void runProjectTestCase() throws Exception {
 		// refresh should hang, if bug 105554 re-occurs
-		importProjectAndRefresh(testName.getMethodName());
+		importProjectAndRefresh(testMethodName);
 	}
 
 	private void importProjectAndRefresh(String projectName) throws Exception {
@@ -119,7 +117,7 @@ public class Bug_185247_LinuxTests {
 		projectDescription.setLocationURI(URI.create(projectRoot));
 		testProject.create(projectDescription, createTestMonitor());
 		testProject.open(createTestMonitor());
-		assertTrue("expected project to be open: " + projectName, testProject.isAccessible());
+		assertTrue(testProject.isAccessible(), "expected project to be open: " + projectName);
 		return testProject;
 	}
 
@@ -130,20 +128,20 @@ public class Bug_185247_LinuxTests {
 	}
 
 	private static void executeCommand(String[] command, File outputDirectory) throws Exception {
-		assertTrue("output directory does not exist: " + outputDirectory, outputDirectory.exists());
+		assertTrue(outputDirectory.exists(), "output directory does not exist: " + outputDirectory);
 		ProcessBuilder processBuilder = new ProcessBuilder(command);
 		File commandOutputFile = new File(outputDirectory, "commandOutput.txt");
 		if (!commandOutputFile.exists()) {
-			assertTrue("failed to create standard output and error file for unzip command",
-					commandOutputFile.createNewFile());
+			assertTrue(commandOutputFile.createNewFile(),
+					"failed to create standard output and error file for unzip command");
 		}
 		processBuilder.redirectOutput(commandOutputFile);
 		processBuilder.redirectError(commandOutputFile);
 		Process process = processBuilder.start();
 		int commandExitCode = process.waitFor();
 		String output = formatCommandOutput(command, commandOutputFile);
-		assertTrue("Failed to delete command output file. " + output, commandOutputFile.delete());
-		assertEquals("Failed to execute commmand. " + output, 0, commandExitCode);
+		assertTrue(commandOutputFile.delete(), "Failed to delete command output file. " + output);
+		assertEquals(0, commandExitCode, "Failed to execute commmand. " + output);
 	}
 
 	private static String formatCommandOutput(String[] command, File commandOutputFile) throws IOException {

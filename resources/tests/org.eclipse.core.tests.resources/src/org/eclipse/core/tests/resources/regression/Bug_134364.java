@@ -27,9 +27,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.internal.builders.SortBuilder;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests an error that occurs when a thread tries to read the workspace
@@ -39,10 +39,8 @@ import org.junit.Test;
  * malformed state.  The fix was to synchronize the routine that collapses
  * unused trees in ElementTree.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_134364 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	/**
 	 * Creates a project with a builder attached

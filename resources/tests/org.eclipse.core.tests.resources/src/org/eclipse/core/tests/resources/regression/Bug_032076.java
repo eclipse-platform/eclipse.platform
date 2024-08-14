@@ -20,14 +20,19 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspac
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.getFileStore;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.isReadOnlySupported;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.setReadOnly;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.function.Predicate;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.resources.Resource;
@@ -40,15 +45,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform.OS;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * When moving a resource "x" from parent "a" to parent "b", if "x" or any of
  * its children can't be deleted, both "a" and "b" become out-of-sync and resource info is lost.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_032076 {
 
 	private static final Predicate<IResource> isSynchronizedDepthInfinite = resource -> resource
@@ -56,9 +63,6 @@ public class Bug_032076 {
 
 	private static final Predicate<IResource> isSynchronizedDepthZero = resource -> resource
 			.isSynchronized(IResource.DEPTH_ZERO);
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testFileBugOnWindows() throws Exception {
@@ -71,9 +75,7 @@ public class Bug_032076 {
 		// this file will be made irremovable
 		IFile sourceFile = sourceParent.getFile("file1.txt");
 		IFile destinationFile = destinationParent.getFile(sourceFile.getName());
-
 		createInWorkspace(new IResource[] { sourceFile, destinationParent });
-		workspaceRule.deleteOnTearDown(project.getLocation());
 
 		// add a marker to a file to ensure the move operation is not losing anything
 		String attributeKey = createRandomString();
@@ -127,9 +129,7 @@ public class Bug_032076 {
 		IFile file1 = folder.getFile("file1.txt");
 		// but not this one
 		IFile file2 = folder.getFile("file2.txt");
-
 		createInWorkspace(new IResource[] { file1, file2, destinationParent });
-		workspaceRule.deleteOnTearDown(project.getLocation());
 
 		// add a marker to a file to ensure the move operation is not losing anything
 		String attributeKey = createRandomString();
@@ -186,9 +186,8 @@ public class Bug_032076 {
 		IFile file1 = sourceProject.getFile("file1.txt");
 		// but not this one
 		IFile file2 = sourceProject.getFile("file2.txt");
-
 		createInWorkspace(new IResource[] {file1, file2});
-		workspaceRule.deleteOnTearDown(sourceProject.getLocation()); // Ensure project location is moved after test
+		File originalSourceProjectLocation = sourceProject.getLocation().toFile();
 
 		// add a marker to a file to ensure the move operation is not losing anything
 		String attributeKey = createRandomString();
@@ -200,7 +199,6 @@ public class Bug_032076 {
 
 		// opens a file so it (and its parent) cannot be removed on Windows
 		try (InputStream input = file1.getContents()) {
-
 			assertThrows(CoreException.class,
 					() -> sourceProject.move(destinationProject.getFullPath(), IResource.FORCE, createTestMonitor()));
 
@@ -220,11 +218,13 @@ public class Bug_032076 {
 			assertNotNull(marker);
 			assertEquals(attributeValue, marker.getAttribute(attributeKey));
 			assertThat(workspace.getRoot()).matches(isSynchronizedDepthInfinite, "is synchronized");
+		} finally {
+			removeFromFileSystem(originalSourceProjectLocation);
 		}
 	}
 
 	@Test
-	@Ignore("test is currently failing and needs further investigation (bug 203078)")
+	@Disabled("test is currently failing and needs further investigation (bug 203078)")
 	public void testFileBugOnLinux() throws CoreException {
 		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
 
@@ -236,9 +236,7 @@ public class Bug_032076 {
 		// this file will be made un-removable
 		IFile sourceFile = roFolder.getFile("file.txt");
 		IFile destinationFile = destinationParent.getFile("file.txt");
-
 		createInWorkspace(new IResource[] { sourceFile, destinationParent });
-		workspaceRule.deleteOnTearDown(project.getLocation());
 
 		IFileStore roFolderStore = ((Resource) roFolder).getStore();
 
@@ -283,7 +281,7 @@ public class Bug_032076 {
 	}
 
 	@Test
-	@Ignore("test is currently failing and needs further investigation (bug 203078)")
+	@Disabled("test is currently failing and needs further investigation (bug 203078)")
 	public void testFolderBugOnLinux() throws CoreException {
 		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
 
@@ -296,9 +294,7 @@ public class Bug_032076 {
 		IFile file2 = folder.getFile("file2.txt");
 		IFolder destinationParent = project.getFolder("destination_parent");
 		IFolder destinationROFolder = destinationParent.getFolder(roFolder.getName());
-
 		createInWorkspace(new IResource[] { file1, file2, destinationParent });
-		workspaceRule.deleteOnTearDown(project.getLocation());
 
 		IFileStore roFolderLocation = ((Resource) roFolder).getStore();
 		IFileStore destinationROFolderLocation = ((Resource) destinationROFolder).getStore();
@@ -358,13 +354,13 @@ public class Bug_032076 {
 	}
 
 	@Test
-	@Ignore("test is currently failing and needs further investigation (bug 203078)")
-	public void testProjectBugOnLinux() throws CoreException {
+	@Disabled("test is currently failing and needs further investigation (bug 203078)")
+	public void testProjectBugOnLinux(@TempDir Path tempDirectory) throws CoreException, IOException {
 		assumeTrue("only relevant on Linux", OS.isLinux() && isReadOnlySupported());
 
 		IWorkspace workspace = getWorkspace();
 		IProject sourceProject = workspace.getRoot().getProject(createUniqueString() + ".source");
-		IFileStore projectParentStore = workspaceRule.getTempStore();
+		IFileStore projectParentStore = getFileStore(tempDirectory);
 		IFileStore projectStore = projectParentStore.getChild(sourceProject.getName());
 		IProjectDescription sourceDescription = workspace.newProjectDescription(sourceProject.getName());
 		sourceDescription.setLocationURI(projectStore.toURI());
@@ -375,11 +371,11 @@ public class Bug_032076 {
 		// create and open the source project at a non-default location
 		sourceProject.create(sourceDescription, createTestMonitor());
 		sourceProject.open(createTestMonitor());
-		workspaceRule.deleteOnTearDown(sourceProject.getLocation());
 
 		IFile file1 = sourceProject.getFile("file1.txt");
 
 		createInWorkspace(new IResource[] { file1 });
+		File originalSourceProjectLocation = sourceProject.getLocation().toFile();
 
 		// add a marker to a file to ensure the move operation is not losing anything
 		String attributeKey = createRandomString();
@@ -395,7 +391,6 @@ public class Bug_032076 {
 
 			assertThrows(CoreException.class,
 					() -> sourceProject.move(destinationDescription, IResource.FORCE, createTestMonitor()));
-			workspaceRule.deleteOnTearDown(destinationProject.getLocation());
 
 			// the source does not exist
 			assertThat(sourceProject).matches(not(IResource::exists), "not exists");
@@ -416,6 +411,7 @@ public class Bug_032076 {
 			assertThat(workspace.getRoot()).matches(isSynchronizedDepthInfinite, "is synchronized");
 		} finally {
 			setReadOnly(projectParentStore, false);
+			removeFromFileSystem(originalSourceProjectLocation);
 		}
 	}
 

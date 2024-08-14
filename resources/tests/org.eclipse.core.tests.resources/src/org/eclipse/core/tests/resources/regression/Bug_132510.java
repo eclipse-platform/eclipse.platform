@@ -19,17 +19,15 @@ import java.util.Iterator;
 import org.eclipse.core.internal.resources.LinkDescription;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests concurrent modification of the project description link table.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_132510 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testBug() {

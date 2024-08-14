@@ -13,27 +13,25 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.regression;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for Bug 380386
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_380386 {
 
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
-
 	@Test
-	@Ignore("This regression test has to be rewritten in a proper way")
+	@Disabled("This regression test has to be rewritten in a proper way")
 	public void testBug() throws Exception {
 		String path = "C:\\temp";
 		java.net.URI value = new java.io.File(path).toURI();

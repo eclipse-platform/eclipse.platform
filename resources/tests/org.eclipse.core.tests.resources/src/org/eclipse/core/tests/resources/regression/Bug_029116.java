@@ -20,18 +20,16 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test regression of bug 29116. In this bug, triggering a builder during
  * installation of a nature caused an assertion failure.
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class Bug_029116 {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	@Test
 	public void testBug() throws CoreException {
