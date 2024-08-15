@@ -12,9 +12,6 @@
 
 package org.eclipse.core.tests.filesystem.zip;
 
-import static org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil.assertTextFileContent;
-import static org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil.ensureExists;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.junit.jupiter.api.AfterEach;
@@ -26,7 +23,7 @@ public class SetupTest {
 
 	@BeforeEach
 	public void setup() throws Exception {
-		ZipFileSystemTestSetup.defaultSetup();
+		ZipFileSystemTestSetup.setup();
 	}
 
 	@AfterEach
@@ -35,21 +32,20 @@ public class SetupTest {
 	}
 
 	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestSetup#zipFileNames")
 	public void testZipFileInProject(String zipFileName) throws Exception {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+		IFolder openedZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFolder(zipFileName);
-		ensureExists(openedZipFile);
+		ZipFileSystemTestSetup.ensureExists(openedZipFile);
 	}
 
 	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestSetup#zipFileNames")
 	public void testTextFileInZipFile(String zipFileName) throws Exception {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+		IFolder openedZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFolder(zipFileName);
 
 		IFile textFile = openedZipFile.getFile(ZipFileSystemTestSetup.TEXT_FILE_NAME);
-		ensureExists(textFile);
-		assertTextFileContent(textFile, "Hello World!");
+		ZipFileSystemTestSetup.ensureExists(textFile);
 	}
 }

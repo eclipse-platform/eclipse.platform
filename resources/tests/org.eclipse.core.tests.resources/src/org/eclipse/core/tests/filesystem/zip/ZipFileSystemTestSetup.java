@@ -12,78 +12,73 @@
 
 package org.eclipse.core.tests.filesystem.zip;
 
-import static org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil.ensureExists;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.ZipFileTransformer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 
 class ZipFileSystemTestSetup {
+	static final String ZIP_FILE_NAME = "BasicText.zip";
+	static final String JAR_FILE_NAME = "BasicText.jar";
+	static final String WAR_FILE_NAME = "BasicText.war";
 
-	static final String FIRST_PROJECT_NAME = "TestProject";
-	static final String SECOND_PROJECT_NAME = "SecondProject";
-	static final String ZIP_FILE_VIRTUAL_FOLDER_NAME = "BasicText.zip"; // Assuming the ZIP is represented as this
-																		// folder
-	static final String JAR_FILE_VIRTUAL_FOLDER_NAME = "BasicText.jar";
-	static final String WAR_FILE_VIRTUAL_FOLDER_NAME = "BasicText.war";
 	static final String EMPTY_ZIP_FILE_NAME = "Empty.zip";
-	static final String NESTED_ZIP_FILE_PARENT_NAME = "NestedZipFileParent.zip";
-	static final String NESTED_ZIP_FILE_CHILD_NAME = "NestedZipFileChild.zip";
-	static final String TEXT_FILE_NAME = "Text.txt";
-	static final String DEEP_NESTED_ZIP_FILE_NAME = "DeepNested.zip";
 	static final String FAKE_ZIP_FILE_NAME = "Fake.zip";
 	static final String PASSWORD_PROTECTED_ZIP_FILE_NAME = "PasswordProtected.zip";
-	static IProject firstProject;
-	static IProject secondProject;
-	static IProgressMonitor progressMonitor = new NullProgressMonitor();
+	static final String NESTED_ZIP_FILE_PARENT_NAME = "NestedZipFileParent.zip";
+	static final String NESTED_ZIP_FILE_CHILD_NAME = "NestedZipFileChild.zip";
+	static final String DEEP_NESTED_ZIP_FILE_NAME = "DeepNested.zip";
 
-	static void defaultSetup() throws Exception {
-		String[] defaultZipFileNames = { ZIP_FILE_VIRTUAL_FOLDER_NAME, JAR_FILE_VIRTUAL_FOLDER_NAME,
-				WAR_FILE_VIRTUAL_FOLDER_NAME };
-		setup(defaultZipFileNames);
+	static final String TEXT_FILE_NAME = "Text.txt";
+
+	static List<IProject> projects = new ArrayList<>();
+	static List<String> zipFileNames = List.of(ZIP_FILE_NAME, JAR_FILE_NAME, WAR_FILE_NAME);
+
+	public static Stream<String> zipFileNames() {
+		return zipFileNames.stream();
 	}
 
-	static void setup(String[] zipFileNames) throws Exception {
-		firstProject = createProject(FIRST_PROJECT_NAME);
-		refreshProject(firstProject);
-		for (String zipFileName : zipFileNames) {
-			copyZipFileIntoProject(firstProject, zipFileName);
-			refreshProject(firstProject);
-			ZipFileSystemTestUtil.openZipFile(firstProject.getFile(zipFileName));
+	static void setup() throws Exception {
+		for (int i = 0; i <= 1; i++) {
+			projects.add(createProject("Project" + i));
+			for (String zipFileName : zipFileNames) {
+				copyZipFileIntoProject(projects.get(i), zipFileName);
+				ZipFileTransformer.openZipFile(projects.get(i).getFile(zipFileName), true);
+			}
 		}
 	}
 
-	static void setupWithTwoProjects() throws Exception {
-		defaultSetup();
-		secondProject = createProject(SECOND_PROJECT_NAME);
-		refreshProject(secondProject);
-		refreshEntireWorkspace();
-	}
-
 	static void teardown() throws Exception {
-		deleteProject(firstProject);
-		deleteProject(secondProject);
+		deleteProjects();
 	}
 
-	private static void deleteProject(IProject project) throws CoreException {
-		if (project != null && project.exists()) {
-			project.delete(true, true, progressMonitor);
-			project = null;
+	private static void deleteProjects() throws CoreException {
+		for (IProject project : projects) {
+			if (project != null && project.exists()) {
+				project.delete(true, true, new NullProgressMonitor());
+				project = null;
+			}
 		}
 	}
 
@@ -92,71 +87,42 @@ class ZipFileSystemTestSetup {
 		IProject project = workspace.getRoot().getProject(projectName);
 
 		if (!project.exists()) {
-			project.create(progressMonitor);
+			project.create(new NullProgressMonitor());
 		}
-		project.open(progressMonitor);
+		project.open(new NullProgressMonitor());
 		return project;
 	}
 
-	private static void refreshProject(IProject project) {
-		try {
-			if (project.exists() && project.isOpen()) {
-				// Refreshing the specific project
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void refreshEntireWorkspace() {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		try {
-			// IResource.DEPTH_INFINITE will cause all resources in the workspace to be
-			// refreshed.
-			workspace.getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
-
 	static void copyZipFileIntoProject(IProject project, String zipFileName) throws IOException, CoreException {
-		// Resolve the source file URL from the plugin bundle
-		URL zipFileUrl = Platform.getBundle("org.eclipse.core.tests.resources")
-				.getEntry("resources/ZipFileSystem/" + zipFileName);
-		// Ensure proper conversion from URL to URI to Path
-		URL resolvedURL = FileLocator.resolve(zipFileUrl); // Resolves any redirection or bundling
-		java.nio.file.Path sourcePath;
 		try {
-			// Convert URL to URI to Path correctly handling spaces and special characters
-			URI resolvedURI = resolvedURL.toURI();
-			sourcePath = Paths.get(resolvedURI);
+			URL zipFileUrl = Platform.getBundle("org.eclipse.core.tests.resources")
+					.getEntry("resources/ZipFileSystem/" + zipFileName);
+			Path sourcePath = Paths.get(FileLocator.resolve(zipFileUrl).toURI());
+			Path targetPath = project.getLocation().append(zipFileName).toFile().toPath();
+			Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+			project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 		} catch (URISyntaxException e) {
 			throw new IOException("Failed to resolve URI for the ZIP file", e);
 		}
-
-		// Determine the target location within the project
-		java.nio.file.Path targetPath = Paths.get(project.getLocation().toOSString(), zipFileName);
-
-		// Copy the file using java.nio.file.Files
-		Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-		// Refresh the project to make Eclipse aware of the new file
-		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 
-	static void copyAndOpenNestedZipFileIntoProject() throws IOException, CoreException, URISyntaxException {
-		copyZipFileIntoProject(firstProject, NESTED_ZIP_FILE_PARENT_NAME);
-		IFile nestedZipFileParent = firstProject.getFile(NESTED_ZIP_FILE_PARENT_NAME);
-		ensureExists(nestedZipFileParent);
-		ZipFileSystemTestUtil.openZipFile(nestedZipFileParent);
-		IFolder openedNestedZipFileParent = firstProject.getFolder(NESTED_ZIP_FILE_PARENT_NAME);
-		ensureExists(openedNestedZipFileParent);
-		IFile nestedZipFileChild = openedNestedZipFileParent.getFile(NESTED_ZIP_FILE_CHILD_NAME);
-		ensureExists(nestedZipFileChild);
-		ZipFileSystemTestUtil.openZipFile(nestedZipFileChild);
-		IFolder openedNestedZipFileChild = openedNestedZipFileParent
-				.getFolder(NESTED_ZIP_FILE_CHILD_NAME);
-		ensureExists(openedNestedZipFileChild);
+	static void ensureExistence(IResource resource, boolean shouldExist) throws CoreException, IOException {
+		IFileStore fileStore = EFS.getStore(resource.getLocationURI());
+		boolean fileStoreExists = fileStore.fetchInfo().exists();
+		assertTrue("File store existence check failed for: " + fileStore, fileStoreExists == shouldExist);
+
+		if (resource instanceof IFile file) {
+			assertTrue("File existence check failed for: " + file, file.exists() == shouldExist);
+		} else if (resource instanceof IFolder folder) {
+			assertTrue("Folder existence check failed for: " + folder, folder.exists() == shouldExist);
+		}
+	}
+
+	static void ensureExists(IResource resource) throws CoreException, IOException {
+		ensureExistence(resource, true);
+	}
+
+	static void ensureDoesNotExist(IResource resource) throws CoreException, IOException {
+		ensureExistence(resource, false);
 	}
 }

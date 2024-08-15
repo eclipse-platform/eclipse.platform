@@ -12,11 +12,11 @@
 
 package org.eclipse.core.tests.filesystem.zip;
 
-import static org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil.ensureExists;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.ZipFileTransformer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +26,7 @@ public class CloseTest {
 
 	@BeforeEach
 	public void setup() throws Exception {
-		ZipFileSystemTestSetup.defaultSetup();
+		ZipFileSystemTestSetup.setup();
 	}
 
 	@AfterEach
@@ -35,19 +35,19 @@ public class CloseTest {
 	}
 
 	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestSetup#zipFileNames")
 	public void testCloseZipFile(String zipFileName) throws Exception {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+		IFolder openedZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFolder(zipFileName);
-		ensureExists(openedZipFile);
-		ZipFileSystemTestUtil.closeZipFile(openedZipFile);
-		IFile zipFile = ZipFileSystemTestSetup.firstProject
+		ZipFileSystemTestSetup.ensureExists(openedZipFile);
+		ZipFileTransformer.closeZipFile(openedZipFile);
+		IFile zipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFile(zipFileName);
 		// Don't use Utility method ensureDoesNotExist because the fileStore is still
 		// available after closing. The fileStore is the File itself in the local file
 		// system that still exists after closing.
 		assertTrue("folder was not properly deleted: " + openedZipFile, !openedZipFile.exists());
-		ensureExists(zipFile);
+		ZipFileSystemTestSetup.ensureExists(zipFile);
 	}
 
 	/*
@@ -56,26 +56,23 @@ public class CloseTest {
 	 * file in the project is deleted so the linked file has no target.
 	 */
 	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestSetup#zipFileNames")
 	public void testCloseZipFileWithZipFileUnderneath(String zipFileName) throws Exception {
-		IFolder firstOpenedZipFile = ZipFileSystemTestSetup.firstProject
+		IFolder firstZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFolder(zipFileName);
-		ensureExists(firstOpenedZipFile);
-		String secondZipFileName = zipFileName.replace(".", "New.");
-		ZipFileSystemTestSetup.copyZipFileIntoProject(ZipFileSystemTestSetup.firstProject, secondZipFileName);
-		IFile secondZipFile = ZipFileSystemTestSetup.firstProject.getFile(secondZipFileName);
-		ZipFileSystemTestUtil.openZipFile(secondZipFile);
-		IFolder secondOpenedZipFile = ZipFileSystemTestSetup.firstProject.getFolder(secondZipFileName);
-		ensureExists(secondOpenedZipFile);
+		String secondZipFileName = zipFileName.replace(".", "2.");
+		ZipFileSystemTestSetup.copyZipFileIntoProject(ZipFileSystemTestSetup.projects.get(0), secondZipFileName);
+		ZipFileTransformer.openZipFile(ZipFileSystemTestSetup.projects.get(0).getFile(secondZipFileName), true);
+		IFolder secondZipFile = ZipFileSystemTestSetup.projects.get(0).getFolder(secondZipFileName);
 
-		ZipFileSystemTestUtil.closeZipFile(firstOpenedZipFile);
-		IFile zipFile = ZipFileSystemTestSetup.firstProject
+		ZipFileTransformer.closeZipFile(firstZipFile);
+		IFile closedZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFile(zipFileName);
 		// Don't use Utility method ensureDoesNotExist because the fileStore is still
 		// available after closing. The fileStore is the File itself in the local file
 		// system that still exists after closing.
-		assertTrue("folder was not properly deleted: " + firstOpenedZipFile, !firstOpenedZipFile.exists());
-		ensureExists(zipFile);
-		ensureExists(secondOpenedZipFile);
+		assertTrue("folder was not properly deleted: " + firstZipFile, !firstZipFile.exists());
+		ZipFileSystemTestSetup.ensureExists(closedZipFile);
+		ZipFileSystemTestSetup.ensureExists(secondZipFile);
 	}
 }

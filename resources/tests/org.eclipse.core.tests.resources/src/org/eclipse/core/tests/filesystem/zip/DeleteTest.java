@@ -12,15 +12,12 @@
 
 package org.eclipse.core.tests.filesystem.zip;
 
-import static org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil.ensureDoesNotExist;
-import static org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil.ensureExists;
-import static org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil.getMonitor;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,7 +27,7 @@ public class DeleteTest {
 
 	@BeforeEach
 	public void setup() throws Exception {
-		ZipFileSystemTestSetup.defaultSetup();
+		ZipFileSystemTestSetup.setup();
 	}
 
 	@AfterEach
@@ -39,56 +36,56 @@ public class DeleteTest {
 	}
 
 	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestSetup#zipFileNames")
 	public void testDeleteZipFile(String zipFileName) throws CoreException, IOException {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+		IFolder openedZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFolder(zipFileName);
-		ensureExists(openedZipFile);
-		openedZipFile.delete(false, false, getMonitor());
-		ensureDoesNotExist(openedZipFile);
-		IFile zipFile = ZipFileSystemTestSetup.firstProject
+		ZipFileSystemTestSetup.ensureExists(openedZipFile);
+		openedZipFile.delete(false, false, new NullProgressMonitor());
+		ZipFileSystemTestSetup.ensureDoesNotExist(openedZipFile);
+		IFile zipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFile(zipFileName);
-		ensureDoesNotExist(zipFile);
+		ZipFileSystemTestSetup.ensureDoesNotExist(zipFile);
 	}
 
 	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestSetup#zipFileNames")
 	public void testDeleteFileInsideOfZipFile(String zipFileName) throws CoreException, IOException {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+		IFolder openedZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFolder(zipFileName);
 		IFile textFile = openedZipFile.getFile(ZipFileSystemTestSetup.TEXT_FILE_NAME);
-		ensureExists(textFile);
-		textFile.delete(true, getMonitor());
-		ensureDoesNotExist(textFile);
+		ZipFileSystemTestSetup.ensureExists(textFile);
+		textFile.delete(true, new NullProgressMonitor());
+		ZipFileSystemTestSetup.ensureDoesNotExist(textFile);
 	}
 
 	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestSetup#zipFileNames")
 	public void testDeleteEmptyFolder(String zipFileName) throws CoreException, IOException {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+		IFolder openedZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFolder(zipFileName);
 		IFolder folder = openedZipFile.getFolder("FolderToDelete");
-		ensureDoesNotExist(folder);
-		folder.create(true, true, getMonitor());
-		ensureExists(folder);
-		folder.delete(true, getMonitor());
-		ensureDoesNotExist(folder);
+		ZipFileSystemTestSetup.ensureDoesNotExist(folder);
+		folder.create(true, true, new NullProgressMonitor());
+		ZipFileSystemTestSetup.ensureExists(folder);
+		folder.delete(true, new NullProgressMonitor());
+		ZipFileSystemTestSetup.ensureDoesNotExist(folder);
 	}
 
 	@ParameterizedTest
-	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestUtil#zipFileNames")
+	@MethodSource("org.eclipse.core.tests.filesystem.zip.ZipFileSystemTestSetup#zipFileNames")
 	public void testDeleteFolderWithChildren(String zipFileName) throws CoreException, IOException {
-		IFolder openedZipFile = ZipFileSystemTestSetup.firstProject
+		IFolder openedZipFile = ZipFileSystemTestSetup.projects.get(0)
 				.getFolder(zipFileName);
 		IFolder folder = openedZipFile.getFolder("FolderToDelete");
-		ensureDoesNotExist(folder);
-		folder.create(true, true, getMonitor());
-		ensureExists(folder);
+		ZipFileSystemTestSetup.ensureDoesNotExist(folder);
+		folder.create(true, true, new NullProgressMonitor());
+		ZipFileSystemTestSetup.ensureExists(folder);
 		IFile textFile = folder.getFile(ZipFileSystemTestSetup.TEXT_FILE_NAME);
-		textFile.create(new ByteArrayInputStream("Hello World!".getBytes()), true, getMonitor());
-		ensureExists(textFile);
-		folder.delete(true, getMonitor());
-		ensureDoesNotExist(folder);
-		ensureDoesNotExist(textFile);
+		textFile.create(new ByteArrayInputStream("Hello World!".getBytes()), true, new NullProgressMonitor());
+		ZipFileSystemTestSetup.ensureExists(textFile);
+		folder.delete(true, new NullProgressMonitor());
+		ZipFileSystemTestSetup.ensureDoesNotExist(folder);
+		ZipFileSystemTestSetup.ensureDoesNotExist(textFile);
 	}
 }
