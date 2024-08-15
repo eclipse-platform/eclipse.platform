@@ -15,13 +15,13 @@ package org.eclipse.core.tests.resources.refresh;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.core.resources.ResourcesPlugin.getWorkspace;
-import static org.eclipse.core.tests.harness.FileSystemHelper.getRandomLocation;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromWorkspace;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import junit.framework.AssertionFailedError;
@@ -35,42 +35,41 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.tests.resources.ResourceTestUtil;
 import org.eclipse.core.tests.resources.TestUtil;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Tests the IRefreshMonitor interface
  */
+@ExtendWith(WorkspaceResetExtension.class)
 public class RefreshProviderTest {
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private boolean originalRefreshSetting;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
-		TestRefreshProvider.reset();
 		//turn on autorefresh
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		originalRefreshSetting = prefs.getBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, false);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, true);
+		ResourceTestUtil.waitForRefresh();
+		TestRefreshProvider.reset();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		//turn off autorefresh
-		TestRefreshProvider.reset();
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(ResourcesPlugin.PI_RESOURCES);
 		prefs.putBoolean(ResourcesPlugin.PREF_AUTO_REFRESH, originalRefreshSetting);
+		ResourceTestUtil.waitForRefresh();
+		TestRefreshProvider.reset();
 	}
 
 	/**
@@ -78,9 +77,8 @@ public class RefreshProviderTest {
 	 * file is created and deleted.
 	 */
 	@Test
-	public void testLinkedFile() throws Exception {
-		IPath location = getRandomLocation();
-		workspaceRule.deleteOnTearDown(location);
+	public void testLinkedFile(@TempDir Path tempDirectory) throws Exception {
+		IPath location = IPath.fromPath(tempDirectory).append("test");
 		String name = "testUnmonitorLinkedResource";
 		IProject project = getWorkspace().getRoot().getProject(name);
 		createInWorkspace(project);
@@ -135,14 +133,14 @@ public class RefreshProviderTest {
 	 * is closed or opened.
 	 */
 	@Test
-	public void testProjectCreateDelete() throws Exception {
+	public void testProjectCreateDelete(TestInfo testInfo) throws Exception {
 		String name = "testProjectCreateDelete";
 		final int maxRuns = 1000;
 		int i = 0;
 		Map<Integer, Throwable> fails = new HashMap<>();
 		for (; i < maxRuns; i++) {
 			if (i % 50 == 0) {
-				TestUtil.waitForJobs(testName.getMethodName(), 5, 100);
+				TestUtil.waitForJobs(testInfo.getDisplayName(), 5, 100);
 			}
 			try {
 				assertTrue(createProject(name).isAccessible());
