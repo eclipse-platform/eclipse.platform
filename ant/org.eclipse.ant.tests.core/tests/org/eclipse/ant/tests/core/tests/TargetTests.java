@@ -14,10 +14,10 @@
 package org.eclipse.ant.tests.core.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
@@ -25,7 +25,7 @@ import org.eclipse.ant.core.TargetInfo;
 import org.eclipse.ant.tests.core.AbstractAntTest;
 import org.eclipse.ant.tests.core.testplugin.AntTestChecker;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TargetTests extends AbstractAntTest {
 
@@ -36,7 +36,7 @@ public class TargetTests extends AbstractAntTest {
 	public void testDefaultTarget() throws CoreException {
 		TargetInfo[] targets = getTargets("TestForEcho.xml"); //$NON-NLS-1$
 		assertThat(targets).as("number of targets in TestForEcho.xml").hasSize(2); //$NON-NLS-1$
-		assertTrue("Test for Echo should be the default target", targets[1].isDefault()); //$NON-NLS-1$
+		assertTrue(targets[1].isDefault(), "Test for Echo should be the default target"); //$NON-NLS-1$
 	}
 
 	/**

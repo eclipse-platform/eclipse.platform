@@ -15,11 +15,10 @@
 package org.eclipse.ant.tests.core.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -39,7 +38,7 @@ import org.eclipse.ant.tests.core.testplugin.ProjectHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FrameworkTests extends AbstractAntTest {
 
@@ -181,9 +180,9 @@ public class FrameworkTests extends AbstractAntTest {
 
 		run("TestForEcho.xml", new String[] {}); //$NON-NLS-1$
 		assertSuccessful();
-		assertTrue("eclipse.is.cool should have been set as Yep", "Yep".equals(AntTestChecker.getDefault().getUserProperty("eclipse.is.cool"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertTrue("AntTests should have a value of testing", "testing from properties file".equals(AntTestChecker.getDefault().getUserProperty("AntTests"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("Yep", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("testing from properties file", AntTestChecker.getDefault().getUserProperty("AntTests")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		restorePreferenceDefaults();
 	}
@@ -199,9 +198,9 @@ public class FrameworkTests extends AbstractAntTest {
 
 		run("TestForEcho.xml", new String[] {}); //$NON-NLS-1$
 		assertSuccessful();
-		assertTrue("eclipse.is.cool should have been set as Yep", "Yep".equals(AntTestChecker.getDefault().getUserProperty("eclipse.is.cool"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertTrue("JUnitTests should have a value of true", "true".equals(AntTestChecker.getDefault().getUserProperty("JUnitTest"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("Yep", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("true", AntTestChecker.getDefault().getUserProperty("JUnitTest")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		restorePreferenceDefaults();
 	}
@@ -215,9 +214,9 @@ public class FrameworkTests extends AbstractAntTest {
 
 		run("echoing.xml", new String[] { "-DAntTests=testing", "-Declipse.is.cool=true" }, false); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		assertSuccessful();
-		assertTrue("eclipse.is.cool should have been set as true", "true".equals(AntTestChecker.getDefault().getUserProperty("eclipse.is.cool"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertTrue("AntTests should have a value of testing", "testing".equals(AntTestChecker.getDefault().getUserProperty("AntTests"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("true", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("testing", AntTestChecker.getDefault().getUserProperty("AntTests")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 		restorePreferenceDefaults();
 	}
 
@@ -234,8 +233,8 @@ public class FrameworkTests extends AbstractAntTest {
 			assertEquals(antLibDir.getAbsolutePath(), System.getProperty("ant.library.dir")); //$NON-NLS-1$
 			prefs.setAntHome(""); //$NON-NLS-1$
 			run("echoing.xml"); //$NON-NLS-1$
-			assertTrue("ANT_HOME not set correctly", null == System.getProperty("ant.home")); //$NON-NLS-1$ //$NON-NLS-2$
-			assertTrue("ant.library.dir not set correctly", null == System.getProperty("ant.library.dir")); //$NON-NLS-1$ //$NON-NLS-2$
+			assertNull(System.getProperty("ant.home"), "ant.home should be null"); //$NON-NLS-1$ //$NON-NLS-2$
+			assertNull(System.getProperty("ant.library.dir"), "ant.library.dir should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		finally {
 			restorePreferenceDefaults();
@@ -290,8 +289,14 @@ public class FrameworkTests extends AbstractAntTest {
 
 		IAntClasspathEntry resultedEntries[] = prefs.getAntHomeClasspathEntries();
 		int index = resultedEntries[entries.length].getLabel().indexOf("hub"); //$NON-NLS-1$
-		assertNotSame("Missing machine details", index, -1); //$NON-NLS-1$
-		assertFalse("Incorrect classpath entry. This would have been the value before the fix", resultedEntries[entries.length].getLabel().equals(IPath.fromOSString("/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar").toOSString())); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Incorrect classpath entry", resultedEntries[entries.length].getLabel().substring(index).equals(IPath.fromOSString("hub/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar").toOSString())); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotSame(index, -1, "Missing machine details"); //$NON-NLS-1$
+		assertNotEquals(resultedEntries[entries.length].getLabel(),
+				IPath.fromOSString(
+						"/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar") //$NON-NLS-1$
+						.toOSString());
+		assertEquals(resultedEntries[entries.length].getLabel().substring(index),
+				IPath.fromOSString(
+						"hub/home/tom/.eclipse/3.8/configuration/org.eclipse.osgi/bundles/21/2/.cp/lib/remote.jar") //$NON-NLS-1$
+						.toOSString());
 	}
 }

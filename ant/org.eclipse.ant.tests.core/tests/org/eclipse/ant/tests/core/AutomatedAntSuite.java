@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -21,12 +21,12 @@ import org.eclipse.ant.tests.core.tests.PropertyTests;
 import org.eclipse.ant.tests.core.tests.TargetTests;
 import org.eclipse.ant.tests.core.tests.TaskTests;
 import org.eclipse.ant.tests.core.tests.TypeTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Test the Eclipse Ant Core.
- * 
+ *
  * To run this test suite:
  * <ol>
  * <li>Create a new JUnit plugin test launch configuration</li>
@@ -35,9 +35,17 @@ import org.junit.runners.Suite;
  * <li>Run the launch configuration. Output from the tests will be displayed in a JUnit view</li>
  * </ol>
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({ FrameworkTests.class, TargetTests.class, ProjectTests.class, OptionTests.class, TaskTests.class, TypeTests.class,
-		PropertyTests.class, AntSecurityManagerTest.class })
+@Suite
+@SelectClasses({ //
+		FrameworkTests.class, //
+		TargetTests.class, //
+		ProjectTests.class, //
+		OptionTests.class, //
+		TaskTests.class, //
+		TypeTests.class, //
+		PropertyTests.class, //
+		AntSecurityManagerTest.class //
+})
 public class AutomatedAntSuite {
-	// SUITE
+	//
 }
