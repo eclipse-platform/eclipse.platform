@@ -15,6 +15,7 @@
 package org.eclipse.ant.tests.core.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -68,7 +69,7 @@ public class FrameworkTests extends AbstractAntTest {
 
 		run("ClasspathOrdering.xml"); //$NON-NLS-1$
 		String msg = AntTestChecker.getDefault().getMessages().get(1);
-		assertTrue("Message incorrect: " + msg, msg.equals("classpathOrdering1")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("classpathOrdering1", msg); //$NON-NLS-1$
 		assertSuccessful();
 
 		restorePreferenceDefaults();
@@ -84,7 +85,7 @@ public class FrameworkTests extends AbstractAntTest {
 
 		run("ClasspathOrdering.xml"); //$NON-NLS-1$
 		msg = AntTestChecker.getDefault().getMessages().get(1);
-		assertTrue("Message incorrect: " + msg, msg.equals("classpathOrdering2")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("classpathOrdering2", msg); //$NON-NLS-1$
 		assertSuccessful();
 		restorePreferenceDefaults();
 	}
@@ -110,7 +111,7 @@ public class FrameworkTests extends AbstractAntTest {
 
 		run("ClasspathOrdering.xml"); //$NON-NLS-1$
 		String msg = AntTestChecker.getDefault().getMessages().get(1);
-		assertTrue("Message incorrect: " + msg, msg.equals("classpathOrdering1")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("classpathOrdering1", msg); //$NON-NLS-1$
 		assertSuccessful();
 
 		restorePreferenceDefaults();
@@ -126,7 +127,7 @@ public class FrameworkTests extends AbstractAntTest {
 
 		run("ClasspathOrdering.xml"); //$NON-NLS-1$
 		msg = AntTestChecker.getDefault().getMessages().get(1);
-		assertTrue("Message incorrect: " + msg, msg.equals("classpathOrdering2")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("classpathOrdering2", msg); //$NON-NLS-1$
 		assertSuccessful();
 		restorePreferenceDefaults();
 	}
@@ -160,11 +161,11 @@ public class FrameworkTests extends AbstractAntTest {
 		run("javac.xml", new String[] { "build", "refresh" }, false); // standard compiler //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		assertSuccessful();
 		IFile classFile = getProject().getFolder("temp.folder").getFolder("javac.bin").getFile("AntTestTask.class"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertTrue("Class file was not generated", classFile.exists()); //$NON-NLS-1$
+		assertThat(classFile).matches(IFile::exists, "exists"); //$NON-NLS-1$
 		run("javac.xml", new String[] { "-Duse.eclipse.compiler=true", "clean", "build", "refresh" }, false); // JDTCompiler //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 		assertSuccessful();
 		classFile = getProject().getFolder("temp.folder").getFolder("javac.bin").getFile("AntTestTask.class"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertTrue("Class file was not generated", classFile.exists()); //$NON-NLS-1$
+		assertThat(classFile).matches(IFile::exists, "exists"); //$NON-NLS-1$
 	}
 
 	/**
@@ -228,9 +229,9 @@ public class FrameworkTests extends AbstractAntTest {
 		try {
 			AntCorePreferences prefs = AntCorePlugin.getPlugin().getPreferences();
 			run("echoing.xml"); //$NON-NLS-1$
-			assertTrue("ANT_HOME not set correctly", prefs.getDefaultAntHome().equals(System.getProperty("ant.home"))); //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals(prefs.getDefaultAntHome(), System.getProperty("ant.home")); //$NON-NLS-1$
 			File antLibDir = new File(prefs.getDefaultAntHome(), ProjectHelper.LIB_FOLDER);
-			assertTrue("ant.library.dir not set correctly", antLibDir.getAbsolutePath().equals(System.getProperty("ant.library.dir"))); //$NON-NLS-1$ //$NON-NLS-2$
+			assertEquals(antLibDir.getAbsolutePath(), System.getProperty("ant.library.dir")); //$NON-NLS-1$
 			prefs.setAntHome(""); //$NON-NLS-1$
 			run("echoing.xml"); //$NON-NLS-1$
 			assertTrue("ANT_HOME not set correctly", null == System.getProperty("ant.home")); //$NON-NLS-1$ //$NON-NLS-2$

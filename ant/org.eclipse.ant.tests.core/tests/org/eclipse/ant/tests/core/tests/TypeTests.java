@@ -42,7 +42,7 @@ public class TypeTests extends AbstractAntTest {
 
 		run("CustomType.xml"); //$NON-NLS-1$
 		String msg = AntTestChecker.getDefault().getMessages().get(1);
-		assertEquals("Message incorrect: " + msg, "Test adding a custom type", msg); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("Test adding a custom type", msg); //$NON-NLS-1$
 		assertSuccessful();
 	}
 
@@ -67,7 +67,7 @@ public class TypeTests extends AbstractAntTest {
 	public void testTypeDefinedInExtensionPoint() throws CoreException {
 		run("ExtensionPointType.xml"); //$NON-NLS-1$
 		String msg = AntTestChecker.getDefault().getMessages().get(1);
-		assertEquals("Message incorrect: " + msg, "Ensure that an extension point defined type is present", msg); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("Ensure that an extension point defined type is present", msg); //$NON-NLS-1$
 		assertSuccessful();
 	}
 
