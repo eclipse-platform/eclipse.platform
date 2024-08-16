@@ -7,15 +7,15 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.tests.core.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URL;
 
@@ -26,7 +26,7 @@ import org.eclipse.ant.internal.core.AntClasspathEntry;
 import org.eclipse.ant.tests.core.AbstractAntTest;
 import org.eclipse.ant.tests.core.testplugin.AntTestChecker;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TypeTests extends AbstractAntTest {
 
@@ -51,12 +51,10 @@ public class TypeTests extends AbstractAntTest {
 		AntCorePreferences prefs = AntCorePlugin.getPlugin().getPreferences();
 		prefs.setCustomTypes(new Type[] {});
 		try {
-			CoreException ce = assertThrows("Build should have failed as type no longer defined", CoreException.class, //$NON-NLS-1$
-					() -> run("CustomType.xml")); //$NON-NLS-1$
-			assertTrue("Exception from undefined type is incorrect: " //$NON-NLS-1$
-					+ ce.getMessage(),
-					ce.getMessage().trim()
-							.endsWith("Action: Check that any <presetdef>/<macrodef> declarations have taken place.")); //$NON-NLS-1$
+			CoreException ce = assertThrows(CoreException.class, () -> run("CustomType.xml"), //$NON-NLS-1$
+					"Build should have failed as type no longer defined"); //$NON-NLS-1$
+			assertThat(ce.getMessage().trim()).as("exception from undefined type") //$NON-NLS-1$
+					.endsWith("Action: Check that any <presetdef>/<macrodef> declarations have taken place."); //$NON-NLS-1$
 		} finally {
 			restorePreferenceDefaults();
 		}
@@ -75,12 +73,10 @@ public class TypeTests extends AbstractAntTest {
 	public void testTypeDefinedInExtensionPointHeadless() {
 		AntCorePlugin.getPlugin().setRunningHeadless(true);
 		try {
-			CoreException ce = assertThrows("Build should have failed as type was not defined to run in headless", //$NON-NLS-1$
-					CoreException.class, () -> run("ExtensionPointType.xml")); //$NON-NLS-1$
-			assertTrue("Exception from undefined type is incorrect: " //$NON-NLS-1$
-					+ ce.getMessage(),
-					ce.getMessage().trim()
-							.endsWith("Action: Check that any <presetdef>/<macrodef> declarations have taken place.")); //$NON-NLS-1$
+			CoreException ce = assertThrows(CoreException.class, () -> run("ExtensionPointType.xml"), //$NON-NLS-1$
+					"Build should have failed as type was not defined to run in headless"); //$NON-NLS-1$
+			assertThat(ce.getMessage().trim()).as("exception from undefined type") //$NON-NLS-1$
+					.endsWith("Action: Check that any <presetdef>/<macrodef> declarations have taken place."); //$NON-NLS-1$
 		} finally {
 			AntCorePlugin.getPlugin().setRunningHeadless(false);
 		}

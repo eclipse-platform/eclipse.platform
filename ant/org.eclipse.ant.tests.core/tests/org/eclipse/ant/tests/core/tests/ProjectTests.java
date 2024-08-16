@@ -7,22 +7,22 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.tests.core.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.tests.core.AbstractAntTest;
 import org.eclipse.ant.tests.core.testplugin.AntTestChecker;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProjectTests extends AbstractAntTest {
 
@@ -35,18 +35,22 @@ public class ProjectTests extends AbstractAntTest {
 		run(buildFileName);
 		IFile buildFile = getBuildFile(buildFileName);
 		String fullName = buildFile.getLocation().toFile().getAbsolutePath();
-		assertEquals("eclipse.running should have been set as true", "true", AntTestChecker.getDefault().getUserProperty("eclipse.running")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		assertEquals("ant.file should have been set as the build file name", fullName, AntTestChecker.getDefault().getUserProperty("ant.file")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNotNull("ant.java.version should have been set", AntTestChecker.getDefault().getUserProperty("ant.java.version")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNotNull("ant.version should have been set", AntTestChecker.getDefault().getUserProperty("ant.version")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNotNull("eclipse.home should have been set", AntTestChecker.getDefault().getUserProperty("eclipse.home")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("true", AntTestChecker.getDefault().getUserProperty("eclipse.running"), //$NON-NLS-1$ //$NON-NLS-2$
+				"eclipse.running should have been set as true"); //$NON-NLS-1$
+		assertEquals(fullName, AntTestChecker.getDefault().getUserProperty("ant.file"), //$NON-NLS-1$
+				"ant.file should have been set as the build file name"); //$NON-NLS-1$
+		assertNotNull(AntTestChecker.getDefault().getUserProperty("ant.java.version"), //$NON-NLS-1$
+				"ant.java.version should have been set"); //$NON-NLS-1$
+		assertNotNull(AntTestChecker.getDefault().getUserProperty("ant.version"), "ant.version should have been set"); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNotNull(AntTestChecker.getDefault().getUserProperty("eclipse.home"), "eclipse.home should have been set"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Test
 	public void testValue() throws CoreException {
 		String buildFileName = "TestForEcho.xml"; //$NON-NLS-1$
 		run(buildFileName);
-		assertEquals("property.testing should have been set as true", "true", AntTestChecker.getDefault().getUserProperty("property.testing")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertEquals("true", AntTestChecker.getDefault().getUserProperty("property.testing"), //$NON-NLS-1$ //$NON-NLS-2$
+				"property.testing should have been set as true"); //$NON-NLS-1$
 	}
 
 	@Test
@@ -54,14 +58,16 @@ public class ProjectTests extends AbstractAntTest {
 
 		String buildFileName = "TestForEcho.xml"; //$NON-NLS-1$
 		run(buildFileName);
-		assertEquals("property.testing2 should have been set as hey", "hey", AntTestChecker.getDefault().getUserProperty("property.testing2")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertEquals("hey", AntTestChecker.getDefault().getUserProperty("property.testing2"), //$NON-NLS-1$ //$NON-NLS-2$
+				"property.testing2 should have been set as hey"); //$NON-NLS-1$
 	}
 
 	@Test
 	public void testClass() throws CoreException {
 		String buildFileName = "TestForEcho.xml"; //$NON-NLS-1$
 		run(buildFileName);
-		assertEquals("property.testing3 should have been set as AntTestPropertyProvider", "AntTestPropertyValueProvider", AntTestChecker.getDefault().getUserProperty("property.testing3")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertEquals("AntTestPropertyValueProvider", AntTestChecker.getDefault().getUserProperty("property.testing3"), //$NON-NLS-1$ //$NON-NLS-2$
+				"property.testing3 should have been set as AntTestPropertyProvider"); //$NON-NLS-1$
 	}
 
 	@Test
@@ -70,7 +76,8 @@ public class ProjectTests extends AbstractAntTest {
 			AntCorePlugin.getPlugin().setRunningHeadless(true);
 			String buildFileName = "TestForEcho.xml"; //$NON-NLS-1$
 			run(buildFileName);
-			assertNull("property.headless should not have been set as AntTestPropertyProvider", AntTestChecker.getDefault().getUserProperty("property.headless")); //$NON-NLS-1$ //$NON-NLS-2$
+			assertNull(AntTestChecker.getDefault().getUserProperty("property.headless"), //$NON-NLS-1$
+					"property.headless should not have been set as AntTestPropertyProvider"); //$NON-NLS-1$
 		}
 		finally {
 			AntCorePlugin.getPlugin().setRunningHeadless(false);
@@ -81,6 +88,7 @@ public class ProjectTests extends AbstractAntTest {
 	public void testNotHeadless() throws CoreException {
 		String buildFileName = "TestForEcho.xml"; //$NON-NLS-1$
 		run(buildFileName);
-		assertEquals("property.headless should have been set as AntTestPropertyProvider", "headless", AntTestChecker.getDefault().getUserProperty("property.headless")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertEquals("headless", AntTestChecker.getDefault().getUserProperty("property.headless"), //$NON-NLS-1$ //$NON-NLS-2$
+				"property.headless should have been set as AntTestPropertyProvider"); //$NON-NLS-1$
 	}
 }

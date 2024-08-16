@@ -7,19 +7,19 @@
  *  https://www.eclipse.org/legal/epl-2.0/
  *
  *  SPDX-License-Identifier: EPL-2.0
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.tests.core.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import org.eclipse.ant.tests.core.testplugin.AntTestChecker;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Version;
 
 public class OptionTests extends AbstractAntTest {
@@ -57,8 +57,9 @@ public class OptionTests extends AbstractAntTest {
 	public void testHelp() throws CoreException {
 		run("TestForEcho.xml", new String[] { "-help" }); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(36, AntTestChecker.getDefault().getMessagesLoggedCount());
-		assertTrue("Help is incorrect", getLastMessageLogged() != null //$NON-NLS-1$
-				&& AntTestChecker.getDefault().getMessages().get(0).startsWith(START_OF_HELP));
+		assertTrue(getLastMessageLogged() != null
+						&& AntTestChecker.getDefault().getMessages().get(0).startsWith(START_OF_HELP),
+				"Help is incorrect"); //$NON-NLS-1$
 	}
 
 	/**
@@ -68,8 +69,10 @@ public class OptionTests extends AbstractAntTest {
 	public void testMinusH() throws CoreException {
 		run("TestForEcho.xml", new String[] { "-h" }); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals(36, AntTestChecker.getDefault().getMessagesLoggedCount());
-		assertTrue("Help is incorrect", getLastMessageLogged() != null //$NON-NLS-1$
-				&& AntTestChecker.getDefault().getMessages().get(0).startsWith(START_OF_HELP));
+		assertTrue(
+				getLastMessageLogged() != null
+						&& AntTestChecker.getDefault().getMessages().get(0).startsWith(START_OF_HELP),
+				"Help is incorrect"); //$NON-NLS-1$
 	}
 
 	/**
@@ -117,8 +120,9 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testListenerBad() {
-		CoreException ce = assertThrows("A core exception should have occurred wrappering a class cast exception", //$NON-NLS-1$
-				CoreException.class, () -> run("TestForEcho.xml", new String[] { "-listener", "java.lang.String" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CoreException ce = assertThrows(CoreException.class,
+				() -> run("TestForEcho.xml", new String[] { "-listener", "java.lang.String" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				"A core exception should have occurred wrappering a class cast exception"); //$NON-NLS-1$
 		String msg = ce.getMessage();
 		assertEquals(
 				"java.lang.String which was specified to be a build listener is not an instance of org.apache.tools.ant.BuildListener.", //$NON-NLS-1$
@@ -131,10 +135,10 @@ public class OptionTests extends AbstractAntTest {
 	@Test
 	public void testUnknownArg() throws CoreException {
 		run("TestForEcho.xml", new String[] { "-listenr" }); //$NON-NLS-1$ //$NON-NLS-2$
-		assertTrue("Unrecognized option message should have been logged before successful build", //$NON-NLS-1$
-				(AntTestChecker.getDefault().getMessagesLoggedCount() == 6)
-						&& (getLoggedMessage(5).startsWith(UNKNOWN_ARG))
-						&& (getLastMessageLogged().startsWith(BUILD_SUCCESSFUL)));
+		assertTrue(
+				AntTestChecker.getDefault().getMessagesLoggedCount() == 6 && getLoggedMessage(5).startsWith(UNKNOWN_ARG)
+						&& getLastMessageLogged().startsWith(BUILD_SUCCESSFUL),
+				"Unrecognized option message should have been logged before successful build"); //$NON-NLS-1$
 	}
 
 	/**
@@ -142,8 +146,8 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testLogFileWithNoArg() {
-		assertThrows("You must specify a log file when using the -log argument", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", new String[] { "-logfile" })); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThrows(CoreException.class, () -> run("TestForEcho.xml", new String[] { "-logfile" }), //$NON-NLS-1$ //$NON-NLS-2$
+				"You must specify a log file when using the -log argument"); //$NON-NLS-1$
 	}
 
 	/**
@@ -173,8 +177,8 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testLoggerWithNoArg() {
-		assertThrows("You must specify a classname when using the -logger argument", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", new String[] { "-logger" })); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThrows(CoreException.class, () -> run("TestForEcho.xml", new String[] { "-logger" }), //$NON-NLS-1$ //$NON-NLS-2$
+				"You must specify a classname when using the -logger argument"); //$NON-NLS-1$
 	}
 
 	/**
@@ -183,8 +187,8 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testLoggerBad() {
-		assertThrows("A core exception should have occurred wrappering a class cast exception", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", new String[] { "-logger", "java.lang.String" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		assertThrows(CoreException.class, () -> run("TestForEcho.xml", new String[] { "-logger", "java.lang.String" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				"A core exception should have occurred wrappering a class cast exception"); //$NON-NLS-1$
 	}
 
 	/**
@@ -192,8 +196,9 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testTwoLoggers() {
-		assertThrows("As only one logger can be specified", CoreException.class, () -> run("TestForEcho.xml", //$NON-NLS-1$ //$NON-NLS-2$
-				new String[] { "-logger", "java.lang.String", "-q", "-logger", "java.lang.String" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+		assertThrows(CoreException.class, () -> run("TestForEcho.xml", //$NON-NLS-1$
+				new String[] { "-logger", "java.lang.String", "-q", "-logger", "java.lang.String" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+				"As only one logger can be specified"); //$NON-NLS-1$
 	}
 
 	/**
@@ -201,8 +206,8 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testListenerWithNoArg() {
-		assertThrows("You must specify a listeners when using the -listener argument ", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", new String[] { "-listener" })); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThrows(CoreException.class, () -> run("TestForEcho.xml", new String[] { "-listener" }), //$NON-NLS-1$ //$NON-NLS-2$
+				"You must specify a listeners when using the -listener argument "); //$NON-NLS-1$
 	}
 
 	/**
@@ -210,8 +215,9 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testListenerClassNotFound() {
-		CoreException e = assertThrows("A CoreException should have occurred as the listener class will not be found", //$NON-NLS-1$
-				CoreException.class, () -> run("TestForEcho.xml", new String[] { "-listener", "TestBuildListener" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CoreException e = assertThrows(CoreException.class,
+				() -> run("TestForEcho.xml", new String[] { "-listener", "TestBuildListener" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				"A CoreException should have occurred as the listener class will not be found"); //$NON-NLS-1$
 		String message = e.getStatus().getException().getMessage();
 		assertEquals("java.lang.ClassNotFoundException: TestBuildListener", message); //$NON-NLS-1$
 
@@ -259,9 +265,9 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testListenerMultipleWithBad() {
-		assertThrows("You must specify a listener for all -listener arguments ", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", //$NON-NLS-1$
-						new String[] { "-listener", ANT_TEST_BUILD_LISTENER, "-q", "-listener", "-verbose" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		assertThrows(CoreException.class, () -> run("TestForEcho.xml", //$NON-NLS-1$
+				new String[] { "-listener", ANT_TEST_BUILD_LISTENER, "-q", "-listener", "-verbose" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				"You must specify a listener for all -listener arguments"); //$NON-NLS-1$
 	}
 
 	/**
@@ -269,8 +275,8 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testBuildFileWithNoArg() {
-		assertThrows("You must specify a buildfile when using the -buildfile argument", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", new String[] { "-buildfile" })); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThrows(CoreException.class, () -> run("TestForEcho.xml", new String[] { "-buildfile" }), //$NON-NLS-1$ //$NON-NLS-2$
+				"You must specify a buildfile when using the -buildfile argument"); //$NON-NLS-1$
 	}
 
 	/**
@@ -300,7 +306,7 @@ public class OptionTests extends AbstractAntTest {
 				.contains("echo2"); //$NON-NLS-1$
 		assertThat(AntTestChecker.getDefault().getLoggedMessage(0)).as("Should be a no known target message") //$NON-NLS-1$
 				.contains("No known target specified."); //$NON-NLS-1$
-		assertEquals("Should not have run any targets", 0, AntTestChecker.getDefault().getTargetsStartedCount()); //$NON-NLS-1$
+		assertEquals(0, AntTestChecker.getDefault().getTargetsStartedCount(), "Should not have run any targets"); //$NON-NLS-1$
 	}
 
 	/**
@@ -314,8 +320,8 @@ public class OptionTests extends AbstractAntTest {
 				.contains("Unknown target"); //$NON-NLS-1$
 		assertThat(AntTestChecker.getDefault().getLoggedMessage(5)).as("Should be an unknown target message") //$NON-NLS-1$
 				.contains("echo2"); //$NON-NLS-1$
-		assertEquals("Should have run the Test for Echo target", 5, //$NON-NLS-1$
-				AntTestChecker.getDefault().getTargetsStartedCount());
+		assertEquals(5, AntTestChecker.getDefault().getTargetsStartedCount(),
+				"Should have run the Test for Echo target"); //$NON-NLS-1$
 	}
 
 	/**
@@ -337,7 +343,7 @@ public class OptionTests extends AbstractAntTest {
 		assertEquals(4, AntTestChecker.getDefault().getMessagesLoggedCount());
 		List<String> messages = AntTestChecker.getDefault().getMessages();
 		// ensure that echo3 target executed and only that target
-		assertTrue("echo3 target not executed", messages.get(2).equals("echo3")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("echo3", messages.get(2), "echo3 target not executed"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertSuccessful();
 	}
 
@@ -350,7 +356,7 @@ public class OptionTests extends AbstractAntTest {
 		assertEquals(5, AntTestChecker.getDefault().getMessagesLoggedCount());
 		List<String> messages = AntTestChecker.getDefault().getMessages();
 		// ensure that echo2 target executed
-		assertTrue("echo2 target not executed", messages.get(2).equals("echo2")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertEquals("echo2", messages.get(2), "echo2 target not executed"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertSuccessful();
 	}
 
@@ -372,7 +378,7 @@ public class OptionTests extends AbstractAntTest {
 		assertSuccessful();
 		assertEquals("true", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("testing", AntTestChecker.getDefault().getUserProperty("AntTests")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	}
 
@@ -385,7 +391,7 @@ public class OptionTests extends AbstractAntTest {
 		assertSuccessful();
 		assertEquals("true", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("testing", AntTestChecker.getDefault().getUserProperty("AntTests")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 
 	}
 
@@ -406,7 +412,7 @@ public class OptionTests extends AbstractAntTest {
 		assertSuccessful();
 		assertEquals("true", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("emptyStringIsMyName", AntTestChecker.getDefault().getUserProperty("")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -418,7 +424,7 @@ public class OptionTests extends AbstractAntTest {
 		assertSuccessful();
 		assertEquals("true", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("testing", AntTestChecker.getDefault().getUserProperty("AntTests")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -432,7 +438,7 @@ public class OptionTests extends AbstractAntTest {
 		assertSuccessful();
 		assertEquals("true", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("testing", AntTestChecker.getDefault().getUserProperty("AntTests")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -447,8 +453,8 @@ public class OptionTests extends AbstractAntTest {
 
 	@Test
 	public void testPropertyFileWithNoArg() {
-		assertThrows("You must specify a property filename when using the -propertyfile argument", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", new String[] { "-propertyfile" })); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThrows(CoreException.class, () -> run("TestForEcho.xml", new String[] { "-propertyfile" }), //$NON-NLS-1$ //$NON-NLS-2$
+				"You must specify a property filename when using the -propertyfile argument"); //$NON-NLS-1$
 		String msg = AntTestChecker.getDefault().getMessages().get(0);
 		assertEquals("You must specify a property filename when using the -propertyfile argument", msg); //$NON-NLS-1$
 	}
@@ -472,7 +478,7 @@ public class OptionTests extends AbstractAntTest {
 		assertSuccessful();
 		assertEquals("Yep", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("testing from properties file", AntTestChecker.getDefault().getUserProperty("AntTests")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Test
@@ -483,13 +489,14 @@ public class OptionTests extends AbstractAntTest {
 		assertSuccessful();
 		assertEquals("true", AntTestChecker.getDefault().getUserProperty("eclipse.is.cool")); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("testing", AntTestChecker.getDefault().getUserProperty("AntTests")); //$NON-NLS-1$ //$NON-NLS-2$
-		assertNull("my.name was not set and should be null", AntTestChecker.getDefault().getUserProperty("my.name")); //$NON-NLS-1$ //$NON-NLS-2$
+		assertNull(AntTestChecker.getDefault().getUserProperty("my.name"), "my.name was not set and should be null"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Test
 	public void testInputHandlerWithNoArg() {
-		CoreException ce = assertThrows("You must specify a classname when using the -inputhandler argument", //$NON-NLS-1$
-				CoreException.class, () -> run("TestForEcho.xml", new String[] { "-inputhandler" })); //$NON-NLS-1$ //$NON-NLS-2$
+		CoreException ce = assertThrows(CoreException.class,
+				() -> run("TestForEcho.xml", new String[] { "-inputhandler" }), //$NON-NLS-1$ //$NON-NLS-2$
+				"You must specify a classname when using the -inputhandler argument"); //$NON-NLS-1$
 		String msg = ce.getMessage();
 		assertEquals("You must specify a classname when using the -inputhandler argument", msg); //$NON-NLS-1$
 	}
@@ -500,11 +507,11 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testInputHandlerMultiple() {
-		CoreException ce = assertThrows("As only one input handler can be specified", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", //$NON-NLS-1$
-						new String[] { "-inputhandler", "org.apache.tools.ant.input.DefaultInputHandler", "-q", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-								"-inputhandler", //$NON-NLS-1$
-								"org.apache.tools.ant.input.DefaultInputHandler" })); //$NON-NLS-1$
+		CoreException ce = assertThrows(CoreException.class, () -> run("TestForEcho.xml", //$NON-NLS-1$
+				new String[] { "-inputhandler", "org.apache.tools.ant.input.DefaultInputHandler", "-q", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						"-inputhandler", //$NON-NLS-1$
+						"org.apache.tools.ant.input.DefaultInputHandler" }), //$NON-NLS-1$
+				"As only one input handler can be specified"); //$NON-NLS-1$
 		String msg = ce.getMessage();
 		assertEquals("Only one input handler class may be specified.", msg); //$NON-NLS-1$
 	}
@@ -515,8 +522,9 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testInputHandlerBad() {
-		CoreException ce = assertThrows("Incorrect inputhandler", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", new String[] { "-inputhandler", "java.lang.StringBuffer" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CoreException ce = assertThrows(CoreException.class,
+				() -> run("TestForEcho.xml", new String[] { "-inputhandler", "java.lang.StringBuffer" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				"Incorrect inputhandler"); //$NON-NLS-1$
 		String msg = ce.getMessage();
 		assertEquals(
 				"The specified input handler class java.lang.StringBuffer does not implement the org.apache.tools.ant.input.InputHandler interface", //$NON-NLS-1$
@@ -529,8 +537,9 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testInputHandlerBad2() {
-		CoreException ce = assertThrows("Incorrect inputhandler", CoreException.class, //$NON-NLS-1$
-				() -> run("TestForEcho.xml", new String[] { "-inputhandler", "ja.lang.StringBuffer" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		CoreException ce = assertThrows(CoreException.class,
+				() -> run("TestForEcho.xml", new String[] { "-inputhandler", "ja.lang.StringBuffer" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				"Incorrect inputhandler"); //$NON-NLS-1$
 		String msg = ce.getMessage();
 		assertThat(msg).startsWith("Unable to instantiate specified input handler class ja.lang.StringBuffer"); //$NON-NLS-1$
 	}
@@ -541,11 +550,11 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testInputHandlerWithMinusNoInput() {
-		CoreException ce = assertThrows("Build should have failed", CoreException.class, //$NON-NLS-1$
-				() -> run("input.xml", new String[] { "-inputhandler", //$NON-NLS-1$ //$NON-NLS-2$
-						"org.eclipse.ant.tests.core.support.inputHandlers.AntTestInputHandler", "-noinput" })); //$NON-NLS-1$ //$NON-NLS-2$
-		assertThat(ce.getMessage()).endsWith(
-				"Unable to respond to input request likely as a result of specifying the -noinput command"); //$NON-NLS-1$
+		CoreException ce = assertThrows(CoreException.class, () -> run("input.xml", new String[] { "-inputhandler", //$NON-NLS-1$ //$NON-NLS-2$
+				"org.eclipse.ant.tests.core.support.inputHandlers.AntTestInputHandler", "-noinput" }), //$NON-NLS-1$ //$NON-NLS-2$
+				"Build should have failed"); //$NON-NLS-1$
+		assertThat(ce.getMessage())
+				.endsWith("Unable to respond to input request likely as a result of specifying the -noinput command"); //$NON-NLS-1$
 	}
 
 	/**
@@ -553,8 +562,8 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testMinusNoInput() {
-		CoreException ce = assertThrows("Build should have failed", CoreException.class, //$NON-NLS-1$
-				() -> run("input.xml", new String[] { "-noinput" })); //$NON-NLS-1$ //$NON-NLS-2$
+		CoreException ce = assertThrows(CoreException.class, () -> run("input.xml", new String[] { "-noinput" }), //$NON-NLS-1$ //$NON-NLS-2$
+				"Build should have failed"); //$NON-NLS-1$
 		assertThat(ce.getMessage()).endsWith("Failed to read input from Console."); //$NON-NLS-1$
 	}
 
@@ -634,8 +643,8 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testMinusKeepGoing() {
-		assertThrows("The build should have failed", CoreException.class, //$NON-NLS-1$
-				() -> run("failingTarget.xml", new String[] { "-keep-going" }, false)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThrows(CoreException.class, () -> run("failingTarget.xml", new String[] { "-keep-going" }, false), //$NON-NLS-1$ //$NON-NLS-2$
+				"The build should have failed"); //$NON-NLS-1$
 		assertEquals(4, AntTestChecker.getDefault().getMessagesLoggedCount());
 		assertEquals("Still echo on failure", AntTestChecker.getDefault().getLoggedMessage(1)); //$NON-NLS-1$
 	}
@@ -645,8 +654,8 @@ public class OptionTests extends AbstractAntTest {
 	 */
 	@Test
 	public void testMinusK() {
-		assertThrows("The build should have failed", CoreException.class, //$NON-NLS-1$
-				() -> run("failingTarget.xml", new String[] { "-k" }, false)); //$NON-NLS-1$ //$NON-NLS-2$
+		assertThrows(CoreException.class, () -> run("failingTarget.xml", new String[] { "-k" }, false), //$NON-NLS-1$ //$NON-NLS-2$
+				"The build should have failed"); //$NON-NLS-1$
 		assertEquals(4, AntTestChecker.getDefault().getMessagesLoggedCount());
 		assertEquals("Still echo on failure", AntTestChecker.getDefault().getLoggedMessage(1)); //$NON-NLS-1$
 	}
