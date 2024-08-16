@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -132,20 +132,20 @@ public abstract class AbstractAntTest {
 
 	protected IFile getBuildFile(String buildFileName) {
 		IFile file = getProject().getFolder(ProjectHelper.BUILDFILES_FOLDER).getFile(buildFileName);
-		assertTrue("Could not find build file named: " + buildFileName, file.exists()); //$NON-NLS-1$
+		assertThat(file).matches(IFile::exists, "exists"); //$NON-NLS-1$
 		return file;
 	}
 
 	protected IFolder getWorkingDirectory(String workingDirectoryName) {
 		IFolder folder = getProject().getFolder(workingDirectoryName);
-		assertTrue("Could not find the working directory named: " + workingDirectoryName, folder.exists()); //$NON-NLS-1$
+		assertThat(folder).matches(IFolder::exists, "exists"); //$NON-NLS-1$
 		return folder;
 	}
 
 	protected IFile checkFileExists(String fileName) throws CoreException {
 		getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		IFile file = getProject().getFolder(ProjectHelper.BUILDFILES_FOLDER).getFile(fileName);
-		assertTrue("Could not find file named: " + fileName, file.exists()); //$NON-NLS-1$
+		assertThat(file).matches(IFile::exists, "exists"); //$NON-NLS-1$
 		return file;
 	}
 
@@ -177,7 +177,8 @@ public abstract class AbstractAntTest {
 		} else {
 			runner.run(buildFile, targets, args, workingDir, true);
 		}
-		assertTrue("Build starts did not equal build finishes", AntTestChecker.getDefault().getBuildsStartedCount() == AntTestChecker.getDefault().getBuildsFinishedCount()); //$NON-NLS-1$
+		assertEquals("Build starts did not equal build finishes", //$NON-NLS-1$
+				AntTestChecker.getDefault().getBuildsStartedCount(), AntTestChecker.getDefault().getBuildsFinishedCount());
 	}
 
 	protected TargetInfo[] getTargets(String buildFileName) throws CoreException {
