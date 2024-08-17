@@ -16,13 +16,13 @@ package org.eclipse.debug.tests.launching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.nio.file.Files;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
@@ -142,13 +143,16 @@ public class LaunchTests extends AbstractLaunchTest {
 
 	@Test
 	public void testProcessLaunchWithLongWorkingDirectory() throws CoreException, IOException {
+		assumeTrue(Platform.OS.isWindows());
+
 		int rootLength = tempFolder.getRoot().toString().length();
 		String subPathElementsName = "subfolder-with-relativly-long-name";
 		String[] segments = Collections.nCopies((400 - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
 		File workingDirectory = tempFolder.newFolder(segments);
 		assertTrue(workingDirectory.toString().length() > 300);
-		Files.createDirectories(workingDirectory.toPath());
 
+		// Just launch any process in a directory with a path longer than
+		// Window's MAX_PATH length limit
 		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, false, "jdk");
 		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, true, "jdk");
 	}
