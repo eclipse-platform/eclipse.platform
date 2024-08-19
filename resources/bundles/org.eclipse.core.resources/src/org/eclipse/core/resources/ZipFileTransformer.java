@@ -46,18 +46,29 @@ public class ZipFileTransformer {
 	 *
 	 */
 	public static void closeZipFile(IFolder folder) throws URISyntaxException, CoreException {
+		Workspace workspace = ((Workspace) folder.getWorkspace());
 		IProject project = folder.getProject();
-		URI zipURI = new URI(folder.getLocationURI().getQuery());
-		IFileStore parentStore = EFS.getStore(folder.getParent().getLocationURI());
-		URI childURI = parentStore.getChild(folder.getName()).toURI();
-		if (URIUtil.equals(zipURI, childURI)) {
-			folder.delete(IResource.CLOSE_ZIP_FILE, null);
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} else {
-			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
-					"Closing of Zip File " + folder.getName() //$NON-NLS-1$
-							+ " failed because the Zip File is not local.")); //$NON-NLS-1$
-		}
+		final ISchedulingRule rule = workspace.getRuleFactory().createRule(project);
+		IWorkspaceRunnable runnable = monitor -> {
+			try {
+				URI zipURI = new URI(folder.getLocationURI().getQuery());
+
+				IFileStore parentStore = EFS.getStore(folder.getParent().getLocationURI());
+				URI childURI = parentStore.getChild(folder.getName()).toURI();
+				if (URIUtil.equals(zipURI, childURI)) {
+					folder.delete(IResource.CLOSE_ZIP_FILE, null);
+					project.refreshLocal(IResource.DEPTH_INFINITE, null);
+				} else {
+					throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
+							"Closing of Zip File " + folder.getName() //$NON-NLS-1$
+									+ " failed because the Zip File is not local.")); //$NON-NLS-1$
+				}
+			} catch (URISyntaxException e) {
+				throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage()));
+			}
+		};
+		workspace.run(runnable, rule, IWorkspace.AVOID_UPDATE, null);
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 
 	/**
@@ -118,5 +129,6 @@ public class ZipFileTransformer {
 		};
 
 		workspace.run(runnable, rule, IWorkspace.AVOID_UPDATE, null);
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 }
