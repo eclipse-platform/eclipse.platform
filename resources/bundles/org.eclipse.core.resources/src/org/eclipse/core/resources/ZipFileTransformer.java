@@ -21,6 +21,7 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.filesystem.ZipFileUtil;
+import org.eclipse.core.internal.resources.Resource;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -46,29 +47,19 @@ public class ZipFileTransformer {
 	 *
 	 */
 	public static void closeZipFile(IFolder folder) throws URISyntaxException, CoreException {
-		Workspace workspace = ((Workspace) folder.getWorkspace());
 		IProject project = folder.getProject();
-		final ISchedulingRule rule = workspace.getRuleFactory().createRule(project);
-		IWorkspaceRunnable runnable = monitor -> {
-			try {
-				URI zipURI = new URI(folder.getLocationURI().getQuery());
+		URI zipURI = new URI(folder.getLocationURI().getQuery());
+		IFileStore parentStore = EFS.getStore(folder.getParent().getLocationURI());
+		URI childURI = parentStore.getChild(folder.getName()).toURI();
 
-				IFileStore parentStore = EFS.getStore(folder.getParent().getLocationURI());
-				URI childURI = parentStore.getChild(folder.getName()).toURI();
-				if (URIUtil.equals(zipURI, childURI)) {
-					folder.delete(IResource.CLOSE_ZIP_FILE, null);
-					project.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} else {
-					throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
-							"Closing of Zip File " + folder.getName() //$NON-NLS-1$
-									+ " failed because the Zip File is not local.")); //$NON-NLS-1$
-				}
-			} catch (URISyntaxException e) {
-				throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, e.getMessage()));
-			}
-		};
-		workspace.run(runnable, rule, IWorkspace.AVOID_UPDATE, null);
-		project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		if (URIUtil.equals(zipURI, childURI)) {
+			folder.delete(IResource.CLOSE_ZIP_FILE, null);
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} else {
+			throw new CoreException(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES,
+					"Closing of Zip File " + folder.getName() //$NON-NLS-1$
+							+ " failed because the Zip File is not local.")); //$NON-NLS-1$
+		}
 	}
 
 	/**
@@ -108,12 +99,11 @@ public class ZipFileTransformer {
 		IWorkspaceRunnable runnable = monitor -> {
 			try (InputStream fis = file.getContents()) {
 				ZipFileUtil.canZipFileBeOpened(fis);
-				// Additional operations can continue here if header is correct
 				URI zipURI = new URI("zip", null, "/", file.getLocationURI().toString(), null); //$NON-NLS-1$ //$NON-NLS-2$
 				IFolder link = file.getParent().getFolder(IPath.fromOSString(file.getName()));
-				int flags = backgroundRefresh ? IResource.REPLACE | IResource.BACKGROUND_REFRESH : IResource.REPLACE;
-
-				link.createLink(zipURI, flags, monitor);
+				((Resource) file).deleteResource(false, null);
+				workspace.broadcastPostChange();
+				link.createLink(zipURI, IResource.BACKGROUND_REFRESH, monitor);
 				project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 			} catch (IOException e) {
 				if (e instanceof ZipException && e.getMessage().equals("encrypted ZIP entry not supported")) { //$NON-NLS-1$
@@ -127,8 +117,6 @@ public class ZipFileTransformer {
 						new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, "Zip File could not be opened")); //$NON-NLS-1$
 			}
 		};
-
 		workspace.run(runnable, rule, IWorkspace.AVOID_UPDATE, null);
-		project.refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 }
