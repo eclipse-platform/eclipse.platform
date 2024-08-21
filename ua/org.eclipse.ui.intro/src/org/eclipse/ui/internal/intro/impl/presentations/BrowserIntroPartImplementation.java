@@ -641,10 +641,12 @@ public class BrowserIntroPartImplementation extends
 			return;
 		// Handle the case where we are on a static page.
 		// browser.getURL() returns the empty string if there is no current URL
-		// and returns "about:blank" if we are on a dynamic page
+		// and returns Browser's BASE_URL if we are on a dynamic page
+		// Also Handles the case where we use browser's base
+		// HTML which we do not want to cache.
 		if (browser != null && browser.getUrl() != null
 				&& browser.getUrl().length() > 0
-				&& !(browser.getUrl().equals("about:blank")) //$NON-NLS-1$
+				&& !browser.isLocationForCustomText(browser.getUrl())
 				&& !(browser.getUrl().equals("file:///"))) { //$NON-NLS-1$
 
 			String currentURL = browser.getUrl();
