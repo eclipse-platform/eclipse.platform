@@ -164,10 +164,12 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 		}
 		String sourcePath = toString();
 		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.copying, sourcePath), 100);
-		try (InputStream in = openInputStream(EFS.NONE, subMonitor.newChild(1)); //
-				OutputStream out = destination.openOutputStream(EFS.NONE, subMonitor.newChild(1));) {
-			in.transferTo(out);
-			subMonitor.worked(93);
+		try {
+			try (InputStream in = openInputStream(EFS.NONE, subMonitor.newChild(1)); //
+					OutputStream out = destination.openOutputStream(EFS.NONE, subMonitor.newChild(1));) {
+				in.transferTo(out);
+				subMonitor.worked(93);
+			} // Close the streams to ensure the target file exists before transferring attributes
 			LocalFile.transferAttributes(sourceInfo, destination);
 			subMonitor.worked(5);
 		} catch (IOException e) {

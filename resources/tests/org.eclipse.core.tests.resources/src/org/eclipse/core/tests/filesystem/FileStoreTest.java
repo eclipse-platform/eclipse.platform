@@ -55,6 +55,7 @@ import org.eclipse.core.internal.filesystem.local.LocalFileSystem;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.eclipse.osgi.util.NLS;
@@ -368,6 +369,23 @@ public class FileStoreTest {
 		createFile(target, content);
 		assertTrue(destination.fetchInfo().isDirectory());
 		destination.delete(EFS.NONE, null);
+	}
+
+	@Test
+	public void testFileAttributeCopyForSmallFiles() throws CoreException, IOException {
+		Path root = Files.createDirectories(randomUniqueNotExistingPath());
+		Path sourceFile = root.resolve("source.txt");
+		Files.writeString(sourceFile, "This is a test file.");
+		Path targetFile = root.resolve("target.txt");
+
+		IFileStore sourceStore = EFS.getLocalFileSystem().getStore(IPath.fromPath(sourceFile));
+		IFileStore targetStore = new OnCloseWritingFileStore(targetFile);
+
+		sourceStore.copy(targetStore, EFS.NONE, new NullProgressMonitor());
+
+		String sourceContent = Files.readString(sourceFile);
+		String targetContent = Files.readString(targetFile);
+		assertEquals(sourceContent, targetContent);
 	}
 
 	@Test
