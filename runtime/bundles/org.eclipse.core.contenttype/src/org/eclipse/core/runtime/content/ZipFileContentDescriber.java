@@ -17,7 +17,6 @@ import org.eclipse.core.internal.content.TextContentDescriber;
 
 /**
  * @since 3.10
- *
  */
 public class ZipFileContentDescriber extends TextContentDescriber {
 

@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2024 Vector Informatik GmbH and others.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which accompanies this distribution,
- * and is available at https://www.eclipse.org/legal/epl-2.0/
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors: IBM Corporation - initial API and implementation
+ * Contributors: Vector Informatik GmbH - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.core.internal.filesystem.zip;
 
 import java.io.ByteArrayOutputStream;
@@ -53,7 +54,19 @@ import org.osgi.framework.FrameworkUtil;
  * @since 1.11
  */
 public class ZipFileStore extends FileStore {
+
+	/**
+	 * A thread-safe map that associates each zip file's URI with a corresponding {@link ReentrantLock}.
+	 * <p>
+	 * This map is used to ensure that each zip file is accessed by only one thread at a time, preventing
+	 * concurrent access issues. The keys in the map are {@link URI} objects representing the zip files, and
+	 * the values are {@link ReentrantLock} objects that are used to control access to the corresponding zip file.
+	 * The map itself is wrapped with {@link Collections#synchronizedMap(Map)} to ensure thread safety
+	 * when accessing the map.
+	 * </p>
+	 */
 	private static final Map<URI, ReentrantLock> uriLockMap = Collections.synchronizedMap(new HashMap<>());
+
 	/**
 	 * The path of this store within the zip file.
 	 */
@@ -64,9 +77,6 @@ public class ZipFileStore extends FileStore {
 	 */
 	private final IFileStore rootStore;
 
-	/**
-	 * Creates a new zip file store.
-	 */
 	public ZipFileStore(IFileStore rootStore, IPath path) {
 		this.rootStore = rootStore;
 		this.path = path.makeRelative();
@@ -84,7 +94,6 @@ public class ZipFileStore extends FileStore {
 			unlock();
 		}
 	}
-
 
 	@Override
 	public IFileInfo[] childInfos(int options, IProgressMonitor monitor) throws CoreException {
@@ -108,16 +117,13 @@ public class ZipFileStore extends FileStore {
 		return names;
 	}
 
-	/**
-	 * Computes the simple file name for a given zip entry.
-	 */
 	private static String computeName(ZipEntry entry) {
 		String name = entry.getName();
 		// removes "/" at the end
 		if (name.endsWith("/")) { //$NON-NLS-1$
 			name = name.substring(0, name.length() - 1);
 		}
-		// creates last segment after last /
+
 		int lastIndex = name.lastIndexOf('/');
 
 		if (lastIndex != -1) {
@@ -138,12 +144,6 @@ public class ZipFileStore extends FileStore {
 		return info;
 	}
 
-	/**
-	 * Creates a file info object corresponding to a given zip entry
-	 *
-	 * @param entry the zip entry
-	 * @return The file info for a zip entry
-	 */
 	private static IFileInfo convertZipEntryToFileInfo(ZipEntry entry) {
 		FileInfo info = new FileInfo(computeName(entry));
 		if (entry.isDirectory()) {
@@ -308,6 +308,9 @@ public class ZipFileStore extends FileStore {
 		return FrameworkUtil.getBundle(this.getClass()).getSymbolicName();
 	}
 
+	/**
+	 * Returns the path of this file store.
+	 */
 	public IPath getPath() {
 		return path;
 	}
@@ -424,7 +427,6 @@ public class ZipFileStore extends FileStore {
 					// Write the ByteArrayOutputStream's data to the entry
 					// in the ZIP file
 					Files.write(entryPath, this.toByteArray(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
 				} catch (Exception e) {
 					throw new IOException("Failed to integrate data into ZIP file", e); //$NON-NLS-1$
 				} finally {
@@ -499,7 +501,6 @@ public class ZipFileStore extends FileStore {
 		try {
 			return new URI(scheme, null, pathString, rootStoreQuery, null);
 		} catch (URISyntaxException e) {
-			// should not happen
 			throw new RuntimeException(e);
 		}
 	}
@@ -513,7 +514,7 @@ public class ZipFileStore extends FileStore {
 		return new URI(ret);
 	}
 
-	void unlock() throws CoreException {
+	private void unlock() throws CoreException {
 		try {
 			ReentrantLock lock = getLockForURI(toNioURI());
 			if (lock.isHeldByCurrentThread()) {

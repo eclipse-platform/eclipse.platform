@@ -20,19 +20,13 @@ import org.eclipse.core.internal.filesystem.zip.ZipFileStore;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Utility class to determine if a file is ZIP archive.
+ * Utility class for zip files.
  *
  * @since 1.11
  */
 public class ZipFileUtil {
 
-	/**
-	 * Determines if the given {@link IFileStore} represents an open ZIP file.
-	 * This can be used to check if operations on a ZIP file should be allowed or handled differently.
-	 *
-	 * @param store The file store to check.
-	 * @return true if the store is an instance of {@link ZipFileStore}, false otherwise.
-	 */
+
 	public static boolean isInsideOpenZipFile(IFileStore store) {
 		return store instanceof ZipFileStore;
 	}
@@ -51,6 +45,13 @@ public class ZipFileUtil {
 		return isInsideOpenZipFile(store);
 	}
 
+	/**
+	 * Determines if the given {@link IFileStore} represents an open ZIP file.
+	 * This can be used to check if operations on a ZIP file should be allowed or handled differently.
+	 *
+	 * @param store The file store to check.
+	 * @return true if the store is an instance of {@link ZipFileStore}, false otherwise.
+	 */
 	public static boolean isOpenZipFile(IFileStore store) {
 		if (isInsideOpenZipFile(store)) {
 			ZipFileStore zipStore = (ZipFileStore) store;
@@ -59,6 +60,9 @@ public class ZipFileUtil {
 		return false;
 	}
 
+	/**
+	 * @see ZipFileUtil#isOpenZipFile(IFileStore)
+	 */
 	public static boolean isOpenZipFile(URI locationURI) {
 		IFileStore store;
 		try {

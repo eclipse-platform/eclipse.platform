@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024 Vector Informatik GmbH and others.
  *
- * This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
- * which accompanies this distribution, and is available at
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * Contributors: Vector Informatik GmbH - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.core.internal.resources;
 
 import java.net.URISyntaxException;
@@ -38,23 +37,15 @@ public class VirtualZipFolder extends Folder {
 	@Override
 	public void copy(IPath destination, int updateFlags, IProgressMonitor monitor) throws CoreException {
 		try {
-			// Close the current ZIP file
 			ZipFileTransformer.closeZipFile(this);
-
-			// Get the file representing the closed ZIP
 			IFile closedZipFile = this.getParent().getFile(new Path(this.getName()));
-
-			// Copy the closed ZIP file to the destination
 			closedZipFile.copy(destination, updateFlags, monitor);
-
-			// Get the copied ZIP file at the new destination
 			IFile copiedZipFile = ResourcesPlugin.getWorkspace().getRoot().getFile(destination);
 
 			// If the destination is not a nested ZIP, open the copied ZIP file
 			if (!ZipFileUtil.isInsideOpenZipFile(copiedZipFile.getLocationURI())) {
 				ZipFileTransformer.openZipFile(copiedZipFile, false);
 			}
-
 			// Reopen the original ZIP file
 			if (!ZipFileUtil.isInsideOpenZipFile(closedZipFile.getLocationURI())) {
 				ZipFileTransformer.openZipFile(closedZipFile, false);
@@ -85,16 +76,9 @@ public class VirtualZipFolder extends Folder {
 	@Override
 	public void move(IPath destination, int updateFlags, IProgressMonitor monitor) throws CoreException {
 		try {
-			// Close the current ZIP file
 			ZipFileTransformer.closeZipFile(this);
-
-			// Get the file representing the closed ZIP
 			IFile closedZipFile = this.getParent().getFile(new Path(this.getName()));
-
-			// Move the closed ZIP file to the destination
 			closedZipFile.move(destination, updateFlags, monitor);
-
-			// Get the moved ZIP file at the new destination
 			IFile movedZipFile = ResourcesPlugin.getWorkspace().getRoot().getFile(destination);
 
 			// If the destination is not a nested ZIP, open the moved ZIP file
