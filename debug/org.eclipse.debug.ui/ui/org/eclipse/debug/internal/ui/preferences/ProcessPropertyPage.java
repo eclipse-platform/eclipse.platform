@@ -17,6 +17,8 @@ package org.eclipse.debug.internal.ui.preferences;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -72,6 +74,30 @@ public class ProcessPropertyPage extends PropertyPage {
 		((GridData)text.getLayoutData()).horizontalIndent = 10;
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(text, IDebugHelpContextIds.PROCESS_PAGE_RUN_AT);
 		text.setText(getLaunchTimeText(proc));
+		text.setBackground(parent.getBackground());
+		SWTFactory.createVerticalSpacer(parent, 2);
+
+		// Elapsed Duration:
+		SWTFactory.createLabel(parent, DebugPreferencesMessages.ProcessPropertyPage_12, fHeadingFont, 1);
+		text = SWTFactory.createText(parent, SWT.READ_ONLY, 1);
+		((GridData) text.getLayoutData()).horizontalIndent = 10;
+		String elapsedString = "?"; //$NON-NLS-1$
+		try {
+			if (proc != null) {
+				String launch = proc.getAttribute(DebugPlugin.ATTR_LAUNCH_TIMESTAMP);
+				String terminate = proc.getAttribute(DebugPlugin.ATTR_TERMINATE_TIMESTAMP);
+				Date launchTime = launch == null ? null : new Date(Long.parseLong(launch));
+				Date terminateTime = terminate == null ? null : new Date(Long.parseLong(terminate));
+				Duration elapsedTime = Duration.between(launchTime != null ? launchTime.toInstant() : Instant.now(),
+						terminateTime != null ? terminateTime.toInstant() : Instant.now());
+				elapsedString = String.format("%d:%02d:%02d.%03d", elapsedTime.toHours(), //$NON-NLS-1$
+						elapsedTime.toMinutesPart(), elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+			}
+		} catch (Exception e) {
+			// ignore wrong time format
+		}
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(text, IDebugHelpContextIds.PROCESS_PAGE_TERMINATE_AT);
+		text.setText(elapsedString);
 		text.setBackground(parent.getBackground());
 		SWTFactory.createVerticalSpacer(parent, 2);
 

@@ -29,6 +29,8 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.ParseException;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -333,6 +335,14 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					}
 
 					DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+					Duration elapsedTime = Duration.between(launchTime != null ? launchTime.toInstant() : Instant.now(),
+							terminateTime != null ? terminateTime.toInstant() : Instant.now());
+					String elapsedString = String.format("%d:%02d:%02d.%03d", elapsedTime.toHours(), //$NON-NLS-1$
+							elapsedTime.toMinutesPart(), elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+					if (terminateTime == null) {
+						DebugUIPlugin.getStandardDisplay().asyncExec(
+								() -> DebugUIPlugin.getStandardDisplay().timerExec(1000, () -> resetName(false)));
+					}
 					if (launchTime != null && terminateTime != null) {
 						String launchTimeStr = dateTimeFormat.format(launchTime);
 						// Check if process started and terminated at same day. If so only print the
@@ -351,10 +361,10 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 						}
 
 						buffer.append(MessageFormat.format(ConsoleMessages.ProcessConsole_commandLabel_withStartEnd,
-								procLabel, launchTimeStr, terminateTimeStr));
+								procLabel, launchTimeStr, terminateTimeStr, elapsedString));
 					} else if (launchTime != null) {
 						buffer.append(MessageFormat.format(ConsoleMessages.ProcessConsole_commandLabel_withStart,
-								procLabel, dateTimeFormat.format(launchTime)));
+								procLabel, dateTimeFormat.format(launchTime), elapsedString));
 					} else if (terminateTime != null) {
 						buffer.append(MessageFormat.format(ConsoleMessages.ProcessConsole_commandLabel_withEnd,
 								procLabel, dateTimeFormat.format(terminateTime)));
@@ -559,7 +569,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		setName(computeName());
 		if (fProcess.isTerminated()) {
 			closeStreams();
-			resetName();
+			resetName(true);
 			DebugPlugin.getDefault().removeDebugEventListener(this);
 		}
 		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
@@ -600,7 +610,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					DebugPlugin.getDefault().removeDebugEventListener(this);
 				}
 
-				resetName();
+				resetName(true);
 			}
 		}
 	}
@@ -608,16 +618,18 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	/**
 	 * resets the name of this console to the original computed name
 	 */
-	private synchronized void resetName() {
+	private synchronized void resetName(boolean changed) {
 		final String newName = computeName();
 		String name = getName();
 		if (!name.equals(newName)) {
 			UIJob job = new UIJob("Update console title") { //$NON-NLS-1$
 				@Override
 				public IStatus runInUIThread(IProgressMonitor monitor) {
-					 ProcessConsole.this.setName(newName);
-					 warnOfContentChange();
-					 return Status.OK_STATUS;
+					ProcessConsole.this.setName(newName);
+					if (changed) {
+						warnOfContentChange();
+					}
+					return Status.OK_STATUS;
 				}
 			};
 			job.setSystem(true);
