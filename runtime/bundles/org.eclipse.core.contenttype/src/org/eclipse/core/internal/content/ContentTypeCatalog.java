@@ -14,13 +14,35 @@
  *******************************************************************************/
 package org.eclipse.core.internal.content;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.content.IContentDescriber;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.content.IContentTypeManager.ISelectionPolicy;
+import org.eclipse.core.runtime.content.IContentTypeSettings;
+import org.eclipse.core.runtime.content.ITextContentDescriber;
+import org.eclipse.core.runtime.content.XMLRootElementContentDescriber;
+import org.eclipse.core.runtime.content.XMLRootElementContentDescriber2;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.osgi.util.NLS;
 
@@ -28,7 +50,7 @@ public final class ContentTypeCatalog {
 	private static final IContentType[] NO_CONTENT_TYPES = new IContentType[0];
 
 	/**
-	 * All fields are guarded by lock on "this"
+	 * Access to all fields is synchronized by "this"
 	 */
 	private final Map<ContentType, ContentType[]> allChildren = new HashMap<>();
 	private final Map<String, IContentType> contentTypes = new HashMap<>();
@@ -725,7 +747,7 @@ public final class ContentTypeCatalog {
 		return destination;
 	}
 
-	void removeContentType(String contentTypeIdentifier) throws CoreException {
+	synchronized void removeContentType(String contentTypeIdentifier) throws CoreException {
 		ContentType contentType = getContentType(contentTypeIdentifier);
 		if (contentType == null) {
 			return;
@@ -733,7 +755,7 @@ public final class ContentTypeCatalog {
 		if (!contentType.isUserDefined()) {
 			throw new IllegalArgumentException("Content type must be user-defined."); //$NON-NLS-1$
 		}
-		contentTypes.remove(contentType.getId());
+		this.contentTypes.remove(contentType.getId());
 	}
 
 }
