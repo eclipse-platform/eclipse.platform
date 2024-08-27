@@ -385,15 +385,20 @@ public class ElementTree {
 	 * Returns the element data for the given element identifier.
 	 * The given element must be present in this tree.
 	 */
-	public synchronized Object getElementData(IPath key) {
+	public Object getElementData(IPath key) {
 		/* don't allow modification of the implicit root */
-		if (key.isRoot())
+		if (key.isRoot()) {
 			return null;
-		DataTreeLookup lookup = lookupCache; // Grab it in case it's replaced concurrently.
-		if (lookup == null || lookup.key != key)
-			lookupCache = lookup = tree.lookup(key);
-		if (lookup.isPresent)
-			return lookup.data;
+		}
+		synchronized (this) {
+			DataTreeLookup lookup = lookupCache; // Grab it in case it's replaced concurrently.
+			if (lookup == null || lookup.key != key) {
+				lookupCache = lookup = tree.lookup(key);
+			}
+			if (lookup.isPresent) {
+				return lookup.data;
+			}
+		}
 		throw createElementNotFoundException(key);
 	}
 
@@ -545,10 +550,12 @@ public class ElementTree {
 	 * Returns true if this element tree includes an element with the given
 	 * key, false otherwise.
 	 */
-	public synchronized boolean includes(IPath key) {
+	public boolean includes(IPath key) {
 		DataTreeLookup lookup = lookupCache; // Grab it in case it's replaced concurrently.
 		if (lookup == null || lookup.key != key) {
-			lookupCache = lookup = tree.lookup(key);
+			synchronized (this) {
+				lookupCache = lookup = tree.lookup(key);
+			}
 		}
 		return lookup.isPresent;
 	}
