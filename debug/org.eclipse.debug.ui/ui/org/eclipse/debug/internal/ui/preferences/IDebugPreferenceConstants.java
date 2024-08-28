@@ -187,6 +187,7 @@ public interface IDebugPreferenceConstants {
 	 *
 	 * @since 3.15
 	 */
+	String PREF_PROMPT_ENABLE_ALL_BREAKPOINTS = IDebugUIConstants.PLUGIN_ID + ".enable_all_breakpoints_prompt"; //$NON-NLS-1$
 	String PREF_PROMPT_DISABLE_ALL_BREAKPOINTS = IDebugUIConstants.PLUGIN_ID + ".disable_all_breakpoints_prompt"; //$NON-NLS-1$
 
 	/**
