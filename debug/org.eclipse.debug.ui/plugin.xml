@@ -1558,6 +1558,14 @@
                id="org.eclipse.debug.ui.actions.DisableBreakpoint">
         </action>
         <action
+               label="%EnableAllBreakpointsAction.label"
+               icon="$nl$/icons/full/elcl16/enabled_co.png"
+               helpContextId="disable_breakpoint_action_context"
+               class="org.eclipse.debug.internal.ui.actions.breakpoints.EnableAllBreakpointsAction"
+               menubarPath="breakpointGroup"
+               id="org.eclipse.debug.ui.actions.EnableAllBreakpoint">
+        </action>
+        <action
                label="%EnableBreakpointsAction.label"
                icon="$nl$/icons/full/elcl16/enabled_co.png"
                helpContextId="enable_breakpoint_action_context"

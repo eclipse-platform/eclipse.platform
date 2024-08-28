@@ -18,7 +18,6 @@ import org.eclipse.osgi.util.NLS;
 
 public class ActionMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.debug.internal.ui.actions.ActionMessages";//$NON-NLS-1$
-
 	public static String AbstractLaunchHistoryAction_0;
 	public static String AbstractLaunchHistoryAction_1;
 	public static String AbstractLaunchHistoryAction_2;
@@ -250,4 +249,7 @@ public class ActionMessages extends NLS {
 
 	public static String ToggleBreakpointsTargetManager_defaultToggleTarget_name;
 	public static String ToggleBreakpointsTargetManager_defaultToggleTarget_description;
+	public static String EnableAllBreakpointsAction_0;
+	public static String EnableAllBreakpointsAction_1;
+	public static String EnableAllBreakpointsAction_3;
 }
