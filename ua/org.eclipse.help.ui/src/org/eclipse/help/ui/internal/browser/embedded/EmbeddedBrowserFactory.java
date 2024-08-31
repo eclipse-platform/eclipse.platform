@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,6 +12,7 @@
  *     IBM Corporation - initial API and implementation
  *     Martin Oberhuber (Wind River) - [352077] error dialogs when just probing browser
  *     George Suaridze <suag@1c.ru> (1C-Soft LLC) - Bug 560168
+ *     Tue Ton - support for FreeBSD
  *******************************************************************************/
 package org.eclipse.help.ui.internal.browser.embedded;
 
@@ -66,6 +67,7 @@ public class EmbeddedBrowserFactory implements IBrowserFactory {
 	 */
 	private boolean test() {
 		if (!Constants.OS_WIN32.equalsIgnoreCase(Platform.getOS())
+				&& !Constants.OS_FREEBSD.equalsIgnoreCase(Platform.getOS())
 				&& !Constants.OS_LINUX.equalsIgnoreCase(Platform.getOS())) {
 			return false;
 		}
