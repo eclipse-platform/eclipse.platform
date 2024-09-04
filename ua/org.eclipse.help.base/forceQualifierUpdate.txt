@@ -1,3 +1,4 @@
 # To force a version qualifier update add the bug here
 Bug 403352 - Update all parent versions to match our build stream
 Bug 463085: .api_description missing for org.eclipse.help.base
+Comparator errors in I20240904-0240
