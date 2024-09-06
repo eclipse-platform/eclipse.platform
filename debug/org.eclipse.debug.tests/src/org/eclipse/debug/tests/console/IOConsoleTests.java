@@ -133,12 +133,17 @@ public class IOConsoleTests extends AbstractDebugTest {
 	}
 
 	private void assertNoError() {
+		String allErrors = loggedErrors.stream().map(IStatus::toString).collect(Collectors.joining(", "));
+		AssertionError assertionError = new AssertionError("Test triggered errors in IOConsole: " + allErrors);
 		loggedErrors.forEach(status -> {
-			if (status.getException() != null) {
-				throw new AssertionError("Test triggered errors in IOConsole", status.getException());
+			if (status.getException() instanceof Throwable e) {
+				assertionError.addSuppressed(e);
 			}
 		});
-		assertTrue("Test triggered errors in IOConsole: " + loggedErrors.stream().map(IStatus::toString).collect(Collectors.joining(", ")), loggedErrors.isEmpty());
+		if (assertionError.getSuppressed().length > 0) {
+			throw assertionError;
+		}
+		assertTrue("Test triggered errors in IOConsole: " + allErrors, loggedErrors.isEmpty());
 	}
 
 	/**
