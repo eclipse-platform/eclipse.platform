@@ -41,7 +41,7 @@ public class SourceElementWorkbenchAdapter implements IWorkbenchAdapter {
 		}
 		return null;
 	}
-	@SuppressWarnings("resource")
+
 	@Override
 	public String getLabel(Object o) {
 		if (o instanceof LocalFileStorage) {
@@ -54,7 +54,7 @@ public class SourceElementWorkbenchAdapter implements IWorkbenchAdapter {
 			StringBuilder buffer = new StringBuilder();
 			buffer.append(storage.getZipEntry().getName());
 			buffer.append(" - "); //$NON-NLS-1$
-			buffer.append(storage.getArchive().getName());
+			buffer.append(storage.getArchivePath());
 			return buffer.toString();
 		}
 		return IInternalDebugCoreConstants.EMPTY_STRING;
