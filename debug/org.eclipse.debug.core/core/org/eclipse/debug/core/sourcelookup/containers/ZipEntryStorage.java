@@ -16,6 +16,7 @@ package org.eclipse.debug.core.sourcelookup.containers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -37,7 +38,6 @@ import org.eclipse.debug.internal.core.sourcelookup.SourceLookupMessages;
  * @since 3.0
  * @noextend This class is not intended to be subclassed by clients.
  */
-@SuppressWarnings("resource")
 public class ZipEntryStorage extends PlatformObject implements IStorage {
 
 	/**
@@ -65,7 +65,7 @@ public class ZipEntryStorage extends PlatformObject implements IStorage {
 	@Override
 	public InputStream getContents() throws CoreException {
 		try {
-			return getArchive().getInputStream(getZipEntry());
+			return fArchive.getInputStream(getZipEntry());
 		} catch (IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugPlugin.ERROR, SourceLookupMessages.ZipEntryStorage_0, e));
 		}
@@ -73,7 +73,7 @@ public class ZipEntryStorage extends PlatformObject implements IStorage {
 
 	@Override
 	public IPath getFullPath() {
-		return IPath.fromOSString(getArchive().getName()).append(getZipEntry().getName());
+		return IPath.fromOSString(fArchive.getName()).append(getZipEntry().getName());
 	}
 
 	@Override
@@ -106,9 +106,26 @@ public class ZipEntryStorage extends PlatformObject implements IStorage {
 	 * Returns the archive containing the zip entry.
 	 *
 	 * @return zip file
+	 * @deprecated Granting free access to the backing zip file archive is
+	 *             dangerous because a caller could close it prematurely and
+	 *             thus break all subsequent usages. Existing callers should use
+	 *             derived methods like {@link #getArchivePath()} or
+	 *             {@link #getContents()} instead, if possible.
 	 */
+	@Deprecated(forRemoval = true, since = "3.22 (removal in 2026-12 or later)")
 	public ZipFile getArchive() {
 		return fArchive;
+	}
+
+	/**
+	 * Returns the path of the archive containing the zip entry in the
+	 * file-system.
+	 *
+	 * @return the zip file's file-system path
+	 * @since 3.22
+	 */
+	public Path getArchivePath() {
+		return Path.of(fArchive.getName());
 	}
 
 	/**
@@ -131,9 +148,9 @@ public class ZipEntryStorage extends PlatformObject implements IStorage {
 
 	@Override
 	public boolean equals(Object object) {
-		return object instanceof ZipEntryStorage &&
-			 getArchive().equals(((ZipEntryStorage)object).getArchive()) &&
-			 getZipEntry().getName().equals(((ZipEntryStorage)object).getZipEntry().getName());
+		return object instanceof ZipEntryStorage other //
+				&& fArchive.equals(other.fArchive) //
+				&& getZipEntry().getName().equals(other.getZipEntry().getName());
 	}
 
 	@Override
