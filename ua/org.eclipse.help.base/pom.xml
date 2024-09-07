@@ -23,4 +23,15 @@
   <properties>
     <defaultSigning-excludeInnerJars>true</defaultSigning-excludeInnerJars>
   </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <configuration>
+          <format>'v${buildTimestamp}'</format>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
