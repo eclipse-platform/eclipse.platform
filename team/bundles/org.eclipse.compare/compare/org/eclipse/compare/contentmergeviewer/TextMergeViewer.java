@@ -2251,7 +2251,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return null;
 
 		if (fMerger.hasChanges()) {
-			int shift= tp.getVerticalScrollOffset() + (2-LW);
+			int shift = calculateShift(tp) + (2 - LW);
 
 			Point region= new Point(0, 0);
 			char leg = getLeg(tp);
@@ -2264,6 +2264,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					continue;
 
 				tp.getLineRange(diff.getPosition(leg), region);
+				region.x -= tp.getDocumentRegionOffset();
 				int y = getHeightBetweenLines(tp, 0, region.x) + shift;
 				int h = getHeightBetweenLines(tp, region.x, region.x + region.y);
 
@@ -2293,8 +2294,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return null;
 
 		if (fMerger.hasChanges()) {
-			int lshift= fLeft.getVerticalScrollOffset();
-			int rshift= fRight.getVerticalScrollOffset();
+			int lshift = calculateShift(fLeft);
+			int rshift = calculateShift(fRight);
 
 			Point region= new Point(0, 0);
 
@@ -2307,10 +2308,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					continue;
 
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
+				region.x -= fLeft.getDocumentRegionOffset();
 				int ly = getHeightBetweenLines(fLeft, 0, region.x) + lshift;
 				int lh = getHeightBetweenLines(fLeft, region.x, region.x + region.y);
 
 				fRight.getLineRange(diff.getPosition(RIGHT_CONTRIBUTOR), region);
+				region.x -= fRight.getDocumentRegionOffset();
 				int ry = getHeightBetweenLines(fRight, 0, region.x) + rshift;
 				int rh = getHeightBetweenLines(fRight, region.x, region.x + region.y);
 
@@ -4222,6 +4225,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 * @return
 	 */
 	private int getHeightBetweenLines(MergeSourceViewer tp, int fromLine, int toLine) {
+
+		if (fromLine == toLine)
+			return 0;
 		StyledText w = tp.getSourceViewer().getTextWidget();
 		List<Integer> lineHeights = this.lineHeightsByViewer.get(tp);
 		if (lineHeights == null) {
@@ -4236,7 +4242,16 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				}
 			});
 		}
+
 		int lineSpacing = w.getLineSpacing();
+
+		// If the linenumber is higher than the number of lines, we should prevent an
+		// IndexOutOfBoundsException
+		if (toLine > w.getLineCount()){
+			int lineHeight = tp.getSourceViewer().getTextWidget().getLineHeight();
+			return (toLine - fromLine) * (lineHeight + w.getLineVerticalIndent(0)) + lineSpacing;
+		}
+
 		int height = 0;
 		for (int i = fromLine; i < toLine; i++) {
 			Integer heightAtLine = lineHeights.get(i);
@@ -4317,8 +4332,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return;
 
 		if (fMerger.hasChanges()) {
-			int lshift= fLeft.getVerticalScrollOffset();
-			int rshift= fRight.getVerticalScrollOffset();
+			int lshift = calculateShift(fLeft);
+			int rshift = calculateShift(fRight);
 
 			Point region= new Point(0, 0);
 
@@ -4332,10 +4347,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					continue;
 
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
+				region.x -= fLeft.getDocumentRegionOffset();
 				int ly = getHeightBetweenLines(fLeft, 0, region.x) + lshift;
 				int lh = getHeightBetweenLines(fLeft, region.x, region.x + region.y);
 
 				fRight.getLineRange(diff.getPosition(RIGHT_CONTRIBUTOR), region);
+				region.x -= fRight.getDocumentRegionOffset();
 				int ry = getHeightBetweenLines(fRight, 0, region.x) + rshift;
 				int rh = getHeightBetweenLines(fRight, region.x, region.x + region.y);
 
@@ -4436,6 +4453,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 	}
 
+	private int calculateShift(MergeSourceViewer tp) {
+		return tp.getSourceViewer().getTopInset() - tp.getSourceViewer().getTextWidget().getTopPixel();
+	}
+
 	private void paintSides(GC g, MergeSourceViewer tp, Canvas canvas, boolean right) {
 
 		Display display= canvas.getDisplay();
@@ -4462,7 +4483,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		if (fMerger.hasChanges()) {
 			boolean allOutgoing = allOutgoing();
-			int shift= tp.getVerticalScrollOffset() + (2-LW);
+			int shift = calculateShift(tp) + (2 - LW);
 
 			Point region= new Point(0, 0);
 			char leg = getLeg(tp);
@@ -4475,6 +4496,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					continue;
 
 				tp.getLineRange(diff.getPosition(leg), region);
+				region.x -= tp.getDocumentRegionOffset();
 				int y = getHeightBetweenLines(tp, 0, region.x) + shift;
 				int h = getHeightBetweenLines(tp, region.x, region.x + region.y);
 
@@ -4522,7 +4544,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		Display display= canvas.getDisplay();
 
 		int w= canvas.getSize().x;
-		int shift= tp.getVerticalScrollOffset() + (2-LW);
+		int shift = calculateShift(tp) + (2 - LW);
 		int maxh= event.y+event.height; 	// visibleHeight
 
 		shift += fTopInset;
@@ -4540,6 +4562,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				continue;
 
 			tp.getLineRange(diff.getPosition(leg), range);
+			range.x -= tp.getDocumentRegionOffset();
 			int y = getHeightBetweenLines(tp, 0, range.x) + shift;
 			int h = getHeightBetweenLines(tp, range.x, range.x + range.y);
 
