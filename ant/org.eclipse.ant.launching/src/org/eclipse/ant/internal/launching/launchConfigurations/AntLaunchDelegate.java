@@ -26,7 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.tools.ant.ProjectHelper;
 import org.eclipse.ant.core.AntCorePlugin;
@@ -602,23 +603,27 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 				refresher.startBackgroundRefresh();
 			}
 		} else {
-			final AtomicBoolean terminated = new AtomicBoolean(false);
+			final CountDownLatch terminated = new CountDownLatch(1);
 			IDebugEventSetListener listener = events -> {
 				for (DebugEvent event : events) {
 					for (IProcess process : processes) {
 						if (event.getSource() == process && event.getKind() == DebugEvent.TERMINATE) {
-							terminated.set(true);
-							break;
+							terminated.countDown();
+							return;
 						}
 					}
 				}
 			};
 			DebugPlugin.getDefault().addDebugEventListener(listener);
-			terminated.compareAndSet(false, launch.isTerminated());
+			if (launch.isTerminated()) {
+				terminated.countDown();
+			}
 			monitor.subTask(AntLaunchConfigurationMessages.AntLaunchDelegate_28);
-			while (!monitor.isCanceled() && !terminated.get()) {
+			while (!monitor.isCanceled()) {
 				try {
-					Thread.sleep(50);
+					if (terminated.await(50, TimeUnit.MILLISECONDS)) {
+						break;
+					}
 				}
 				catch (InterruptedException e) {
 					// do nothing
