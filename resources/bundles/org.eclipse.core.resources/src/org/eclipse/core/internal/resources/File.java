@@ -21,6 +21,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -38,6 +45,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
@@ -203,7 +211,7 @@ public class File extends Resource implements IFile {
 		}
 	}
 
-	private void checkCreatable() throws CoreException {
+	void checkCreatable() throws CoreException {
 		checkDoesNotExist();
 		Container parent = (Container) getParent();
 		ResourceInfo info = parent.getResourceInfo(false, false);
@@ -211,7 +219,7 @@ public class File extends Resource implements IFile {
 		checkValidGroupContainer(parent, false, false);
 	}
 
-	private IFileInfo create(int updateFlags, SubMonitor subMonitor, IFileStore store)
+	IFileInfo create(int updateFlags, IProgressMonitor subMonitor, IFileStore store)
 			throws CoreException, ResourceException {
 		String message;
 		IFileInfo localInfo;
@@ -391,6 +399,60 @@ public class File extends Resource implements IFile {
 		updateMetadataFiles();
 		workspace.getAliasManager().updateAliases(this, getStore(), IResource.DEPTH_ZERO, monitor);
 	}
+
+	static void internalSetMultipleContents(ConcurrentMap<File, byte[]> filesToCreate, int updateFlags, boolean append,
+			IProgressMonitor monitor, ExecutorService executorService) throws CoreException {
+		SubMonitor subMonitor = SubMonitor.convert(monitor, filesToCreate.size());
+		List<Future<CoreException>> futures = new ArrayList<>(filesToCreate.size());
+		for (Entry<File, byte[]> e : filesToCreate.entrySet()) {
+			Future<CoreException> future = executorService.submit(() -> {
+				try {
+					File file = e.getKey();
+					byte[] content = e.getValue();
+					writeSingle(updateFlags, append, subMonitor.slice(1), file, content);
+				} catch (CoreException ce) {
+					return ce;
+				}
+				return null;
+			});
+			futures.add(future);
+		}
+		CoreException ex = null;
+		for (Future<CoreException> f : futures) {
+			CoreException ce;
+			try {
+				ce = f.get();
+			} catch (InterruptedException | ExecutionException e) {
+				ce = new CoreException(Status.error("Error during parallel IO", e)); //$NON-NLS-1$
+			}
+			if (ce != null) {
+				if (ex == null) {
+					ex = ce;
+				} else {
+					ex.addSuppressed(ce);
+				}
+			}
+		}
+		if (ex != null) {
+			ex.addSuppressed(new IllegalStateException("Stacktrace of invoking parallel IO")); //$NON-NLS-1$
+			throw ex;
+		}
+		NullProgressMonitor npm = new NullProgressMonitor();
+		for (File file : filesToCreate.keySet()) {
+			file.updateMetadataFiles();
+			file.workspace.getAliasManager().updateAliases(file, file.getStore(), IResource.DEPTH_ZERO, npm);
+			file.setLocal(true);
+		}
+	}
+
+	private static void writeSingle(int updateFlags, boolean append, IProgressMonitor monitor, File file,
+			byte[] content) throws CoreException, ResourceException {
+		IFileStore store = file.getStore();
+		NullProgressMonitor npm = new NullProgressMonitor();
+		IFileInfo localInfo = file.create(updateFlags, npm, store);
+		file.getLocalManager().write(file, content, localInfo, updateFlags, append, monitor);
+	}
+
 	/**
 	 * Optimized refreshLocal for files.  This implementation does not block the workspace
 	 * for the common case where the file exists both locally and on the file system, and
