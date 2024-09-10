@@ -91,12 +91,13 @@ public class InputStreamMonitorTests extends AbstractDebugTest {
 			String text = "o\u00F6O\u00EFiI\u00D6\u00D8\u00F8";
 			monitor.startMonitoring();
 			monitor.write(text);
-			waitForElementsInStream(sysin, text.getBytes().length);
+			byte[] bytes = text.getBytes();
+			waitForElementsInStream(sysin, bytes.length);
 
 			byte[] readBack = new byte[1000];
 			int len = sysin.read(readBack);
 			String readContent = new String(readBack, 0, len);
-			assertThat(readContent).isEqualTo(text);
+			assertThat(readContent).isEqualTo(new String(bytes));
 		} finally {
 			if (monitor != null) {
 				monitor.close();
