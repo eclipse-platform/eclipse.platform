@@ -44,7 +44,12 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IContainer;
@@ -576,6 +581,94 @@ public class IFileTest {
 		}
 	}
 
+	// @Test // does not test anything but only measures the performance benefit
+	public void _testWritePerformanceBatch_() throws CoreException {
+		createInWorkspace(projects[0]);
+		Map<IFile, byte[]> fileMap2 = new HashMap<>();
+		Map<IFile, byte[]> fileMap1 = new HashMap<>();
+		for (int i = 0; i < 1000; i++) {
+			IFile file = projects[0].getFile("My" + i + ".class");
+			removeFromWorkspace(file);
+			((i % 2 == 0) ? fileMap1 : fileMap2).put(file, ("smallFileContent" + i).getBytes());
+		}
+		{
+			long n0 = System.nanoTime();
+			ExecutorService executorService = Executors.newWorkStealingPool();
+			ResourcesPlugin.getWorkspace().write(fileMap1, false, true, false, null, executorService);
+			executorService.shutdownNow();
+			long n1 = System.nanoTime();
+			System.out.println("parallel write took:" + (n1 - n0) / 1_000_000 + "ms"); // ~ 250ms with 6 cores
+		}
+		{
+			long n0 = System.nanoTime();
+			for (Entry<IFile, byte[]> e : fileMap2.entrySet()) {
+				e.getKey().write(e.getValue(), false, true, false, null);
+			}
+			long n1 = System.nanoTime();
+			System.out.println("sequential write took:" + (n1 - n0) / 1_000_000 + "ms"); // ~ 1500ms
+		}
+	}
+
+	@Test
+	public void testWrites() throws CoreException {
+		ExecutorService executorService = Executors.newWorkStealingPool();
+		IWorkspaceDescription description = getWorkspace().getDescription();
+		description.setMaxFileStates(4);
+		getWorkspace().setDescription(description);
+
+		IFile derived = projects[0].getFile("derived.txt");
+		IFile anyOther = projects[0].getFile("anyOther.txt");
+		createInWorkspace(projects[0]);
+		removeFromWorkspace(derived);
+		removeFromWorkspace(anyOther);
+		for (int i = 0; i < 16; i++) {
+			boolean setDerived = i % 2 == 0;
+			boolean deleteBefore = (i >> 1) % 2 == 0;
+			boolean keepHistory = (i >> 2) % 2 == 0;
+			boolean oldDerived1 = false;
+			if (deleteBefore) {
+				derived.delete(false, null);
+				anyOther.delete(false, null);
+			} else {
+				oldDerived1 = derived.isDerived();
+			}
+			assertEquals(!deleteBefore, derived.exists());
+			FussyProgressMonitor monitor = new FussyProgressMonitor();
+			AtomicInteger changeCount = new AtomicInteger();
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> changeCount.incrementAndGet());
+			String derivedContent = "updateOrCreate" + i;
+			String otherContent = "other" + i;
+			ResourcesPlugin.getWorkspace().write(
+					Map.of(derived, derivedContent.getBytes(), anyOther, otherContent.getBytes()), false, setDerived,
+					keepHistory, monitor, executorService);
+			assertEquals(derivedContent, new String(derived.readAllBytes()));
+			assertEquals(otherContent, new String(anyOther.readAllBytes()));
+			monitor.assertUsedUp();
+			if (deleteBefore) {
+				assertEquals(setDerived, derived.isDerived());
+			} else {
+				assertEquals(oldDerived1 || setDerived, derived.isDerived());
+			}
+			assertFalse(derived.isTeamPrivateMember());
+			assertTrue(derived.exists());
+
+			IFileState[] history1 = derived.getHistory(null);
+			changeCount.set(0);
+			derivedContent = "update" + i;
+			otherContent = "dude" + i;
+			ResourcesPlugin.getWorkspace().write(
+					Map.of(derived, derivedContent.getBytes(), anyOther, otherContent.getBytes()), false, false,
+					keepHistory,
+					null, executorService);
+			assertEquals(derivedContent, new String(derived.readAllBytes()));
+			assertEquals(otherContent, new String(anyOther.readAllBytes()));
+			boolean oldDerived2 = derived.isDerived();
+			assertEquals(oldDerived2, derived.isDerived());
+			IFileState[] history2 = derived.getHistory(null);
+			assertEquals((keepHistory && !oldDerived2) ? 1 : 0, history2.length - history1.length);
+		}
+		executorService.shutdown();
+	}
 	@Test
 	public void testWriteRule() throws CoreException {
 		IFile resource = projects[0].getFile("derived.txt");

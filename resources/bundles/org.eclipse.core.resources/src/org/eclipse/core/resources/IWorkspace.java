@@ -18,8 +18,20 @@ package org.eclipse.core.resources;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 import org.eclipse.core.resources.team.FileModificationValidationContext;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ICoreRunnable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 /**
@@ -1810,4 +1822,43 @@ public interface IWorkspace extends IAdaptable {
 	 * @since 2.1
 	 */
 	IPathVariableManager getPathVariableManager();
+
+	/**
+	 * Creates the files and sets/replaces the files content. This is a batch
+	 * version of {@code IFile.write(...)}. The files are touched in no particuar
+	 * order and the operation is not guaranteed to be atomic: Exceptions may relate
+	 * to one or multiple files - some files may have been created and other not.
+	 * IResourceChangeListener may receive one or multiple events.
+	 *
+	 * @param contentMap      the new content bytes for each IFile. The map must not
+	 *                        be null and must not contain null keys or null values.
+	 * @param force           a flag controlling how to deal with resources that are
+	 *                        not in sync with the local file system
+	 * @param derived         Specifying this flag is equivalent to atomically
+	 *                        calling {@link IResource#setDerived(boolean)}
+	 *                        immediately after creating the resource or atomically
+	 *                        setting the derived flag before setting the content of
+	 *                        an already existing file if derived==true. A value of
+	 *                        false will not update the derived flag of an existing
+	 *                        file.
+	 * @param keepHistory     a flag indicating whether or not store the current
+	 *                        contents in the local history if the file did already
+	 *                        exist
+	 * @param monitor         a progress monitor, or <code>null</code> if progress
+	 *                        reporting is not desired
+	 * @param executorService a ExecutorService to support parallel IO
+	 * @throws CoreException if this method fails or is canceled.
+	 * @since 3.22
+	 * @see IFile#write(byte[], boolean, boolean, boolean, IProgressMonitor)
+	 */
+	public default void write(Map<IFile, byte[]> contentMap, boolean force, boolean derived, boolean keepHistory,
+			IProgressMonitor monitor, ExecutorService executorService) throws CoreException {
+		// this code is just meant as an explanation and
+		// meant to be overridden with a parallel implementation for local files:
+		Objects.requireNonNull(contentMap);
+		SubMonitor subMon = SubMonitor.convert(monitor, contentMap.size());
+		for (Entry<IFile, byte[]> e : contentMap.entrySet()) {
+			e.getKey().write(e.getValue(), force, derived, keepHistory, subMon.split(1));
+		}
+	}
 }

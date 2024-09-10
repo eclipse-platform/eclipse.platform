@@ -38,10 +38,15 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 import org.eclipse.core.filesystem.EFS;
@@ -117,6 +122,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobGroup;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.util.NLS;
@@ -2789,5 +2795,93 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			// if we can't validate it, we return OK
 		}
 		return Status.OK_STATUS;
+	}
+
+	@Override
+	public void write(Map<IFile, byte[]> contentMap, boolean force, boolean derived, boolean keepHistory,
+			IProgressMonitor monitor, ExecutorService executorService) throws CoreException {
+		Objects.requireNonNull(contentMap);
+		ConcurrentMap<File, byte[]> filesToCreate = new ConcurrentHashMap<>(contentMap.size());
+		ConcurrentMap<File, byte[]> filesToReplace = new ConcurrentHashMap<>(contentMap.size());
+		int updateFlags = (derived ? IResource.DERIVED : IResource.NONE) | (force ? IResource.FORCE : IResource.NONE)
+				| (keepHistory ? IResource.KEEP_HISTORY : IResource.NONE);
+		int createFlags = (force ? IResource.FORCE : IResource.NONE) | (derived ? IResource.DERIVED : IResource.NONE);
+		SubMonitor subMon = SubMonitor.convert(monitor, contentMap.size());
+		for (Entry<IFile, byte[]> e : contentMap.entrySet()) {
+			IFile file = Objects.requireNonNull(e.getKey());
+			byte[] content = Objects.requireNonNull(e.getValue());
+			if (file.exists()) {
+				if (file instanceof File f) {
+					filesToReplace.put(f, content);
+				} else {
+					file.setContents(content, updateFlags, subMon.split(1));
+				}
+			} else {
+				if (file instanceof File f) {
+					filesToCreate.put(f, content);
+				} else {
+					file.create(content, createFlags, subMon.split(1));
+				}
+			}
+		}
+		for (Entry<File, byte[]> e : filesToReplace.entrySet()) {
+			File file = e.getKey();
+			byte[] content = e.getValue();
+			file.setContents(content, updateFlags, subMon.split(1));
+		}
+		createMultiple(filesToCreate, createFlags, subMon.split(filesToCreate.size()), executorService);
+	}
+
+	/** @see File#create(byte[], int, IProgressMonitor) **/
+	private void createMultiple(ConcurrentMap<File, byte[]> filesToCreate, int updateFlags, IProgressMonitor monitor,
+			ExecutorService executorService) throws CoreException {
+		if (filesToCreate.isEmpty()) {
+			return;
+		}
+		Set<File> files = filesToCreate.keySet();
+		for (File file : files) {
+			file.checkValidPath(file.path, IResource.FILE, true);
+		}
+
+		IPath name = files.iterator().next().getFullPath(); // XXX any name
+		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.resources_creating, name), 1);
+		try {
+			ISchedulingRule rule = MultiRule
+					.combine(files.stream().map(getRuleFactory()::createRule).toArray(ISchedulingRule[]::new));
+			NullProgressMonitor npm = new NullProgressMonitor();
+			try {
+				prepareOperation(rule, npm);
+				for (File file : files) {
+					file.checkCreatable();
+				}
+				beginOperation(true);
+				try {
+					File.internalSetMultipleContents(filesToCreate, updateFlags, false, subMonitor.newChild(1),
+							executorService);
+				} catch (CoreException | OperationCanceledException e) {
+					// CoreException when a problem happened creating a file on disk
+					// OperationCanceledException when the operation of setting contents has been
+					// canceled
+					// In either case delete from the workspace and disk
+					for (File file : files) {
+						try {
+							deleteResource(file);
+							IFileStore store = file.getStore();
+							store.delete(EFS.NONE, null);
+						} catch (Exception e2) {
+							e.addSuppressed(e);
+						}
+					}
+					throw e;
+				}
+			} catch (OperationCanceledException e) {
+				getWorkManager().operationCanceled();
+				throw e;
+			} finally {
+				endOperation(rule, true);
+			}
+		} finally {
+			subMonitor.done();
+		}
 	}
 }
