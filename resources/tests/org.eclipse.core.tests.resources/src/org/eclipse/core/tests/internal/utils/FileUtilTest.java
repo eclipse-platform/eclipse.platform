@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.utils;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
 import org.eclipse.core.filesystem.EFS;
@@ -21,9 +21,9 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.harness.FileSystemHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link FileUtil} class.
@@ -31,13 +31,13 @@ import org.junit.Test;
 public class FileUtilTest {
 	private IPath baseTestDir;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		baseTestDir = FileSystemHelper.getRandomLocation();
 		baseTestDir.toFile().mkdirs();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		FileSystemHelper.clear(baseTestDir.toFile());
 	}
