@@ -15,9 +15,9 @@
 package org.eclipse.core.tests.internal.watson;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -65,9 +65,9 @@ class TestUtil implements IPathConstants {
 	 */
 	static protected void assertEqualTrees(String msg, ElementTree expected, ElementTree actual, IPath path, int depth) {
 		/* check node at current path */
-		assertTrue(msg, expected.includes(path));
-		assertTrue(msg, actual.includes(path));
-		assertEquals(msg, expected.getElementData(path), actual.getElementData(path));
+		assertTrue(expected.includes(path), msg);
+		assertTrue(actual.includes(path), msg);
+		assertEquals(expected.getElementData(path), actual.getElementData(path), msg);
 
 		if (depth != 0) {
 			/* get the children */
@@ -80,7 +80,7 @@ class TestUtil implements IPathConstants {
 				--newDepth;
 			}
 			for (int i = 0; i < expectedChildren.length; i++) {
-				assertEquals("children IDs", expectedChildren[i], actualChildren[i]);
+				assertEquals(expectedChildren[i], actualChildren[i], "children IDs");
 				assertEqualTrees("Recursive call", expected, actual, expectedChildren[i], newDepth);
 			}
 		}
@@ -91,7 +91,7 @@ class TestUtil implements IPathConstants {
 	 */
 	static protected void assertHasPaths(ElementTree tree, IPath[] paths) {
 		for (int i = 0; i < paths.length; i++) {
-			assertTrue("assertHasPaths" + i, tree.includes(paths[i]));
+			assertTrue(tree.includes(paths[i]), "assertHasPaths" + i);
 		}
 	}
 
@@ -100,7 +100,7 @@ class TestUtil implements IPathConstants {
 	 */
 	static protected void assertNoPaths(ElementTree tree, IPath[] paths) {
 		for (IPath path : paths) {
-			assertFalse("assertNoPaths: " + path, tree.includes(path));
+			assertFalse(tree.includes(path), "assertNoPaths: " + path);
 		}
 	}
 

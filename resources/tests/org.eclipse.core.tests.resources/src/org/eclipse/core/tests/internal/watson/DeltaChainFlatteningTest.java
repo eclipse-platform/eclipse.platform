@@ -13,65 +13,36 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.watson;
 
-import java.io.*;
-import org.eclipse.core.internal.watson.*;
+import static org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.doPipeTest;
+
+import java.io.IOException;
+import org.eclipse.core.internal.watson.DefaultElementComparator;
+import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.internal.watson.ElementTreeReader;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.StreamReader;
+import org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.StreamWriter;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-public class DeltaChainFlatteningTest extends ElementTreeSerializationTest {
-	protected ElementTree[] fDeltaChain;
-	protected ElementTree[] fRefriedDeltaChain;
-
-	/**
-	 * doRead method comment.
-	 */
-	@Override
-	public Object doRead(ElementTreeReader reader, DataInputStream input) throws IOException {
-		return reader.readDeltaChain(input);
-	}
-
-	/**
-	 * Runs a test for this class at a certain depth and path
-	 */
-	@Override
-	public void doTest(IPath path, int depth) {
-		fSubtreePath = path;
-		fDepth = depth;
-		fDeltaChain = TestUtil.doRoutineOperations(fTree, project1);
-		TestUtil.scramble(fDeltaChain);
-
-		ElementTree[] refried = (ElementTree[]) doPipeTest();
-		for (int j = 0; j < refried.length; j++) {
-			TestUtil.assertEqualTrees("Same after delta chain serialize", fDeltaChain[j], refried[j], fSubtreePath, fDepth);
-		}
-	}
-
-	/**
-	 * doWrite method comment.
-	 */
-	@Override
-	public void doWrite(ElementTreeWriter writer, DataOutputStream output) throws IOException {
-		writer.writeDeltaChain(fDeltaChain, fSubtreePath, fDepth, output, DefaultElementComparator.getComparator());
-	}
-
-	/**
-	 * Sets up the delta chain to be serialized
-	 */
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-		fTree = TestUtil.createTestElementTree();
-		/* do a bunch of operations on fTree to build a delta chain */
-		fDeltaChain = TestUtil.doManyRoutineOperations(fTree, project1);
-	}
-
+public class DeltaChainFlatteningTest implements IPathConstants {
 	/**
 	 * Tests the reading and writing of element deltas
 	 */
-	@Test
-	public void test0() {
-		doExhaustiveTests();
+	@ParameterizedTest
+	@ArgumentsSource(ElementTreeSerializationTestHelper.class)
+	public void test0(IPath path, int depth) throws IOException {
+		ElementTree tree = TestUtil.createTestElementTree();
+		ElementTree[] fDeltaChain = TestUtil.doRoutineOperations(tree, project1);
+		TestUtil.scramble(fDeltaChain);
+
+		StreamWriter streamWriter = (writer, output) -> writer.writeDeltaChain(fDeltaChain, path, depth, output,
+				DefaultElementComparator.getComparator());
+		StreamReader streamReader = ElementTreeReader::readDeltaChain;
+		ElementTree[] refried = (ElementTree[]) doPipeTest(streamWriter, streamReader);
+
+		for (int j = 0; j < refried.length; j++) {
+			TestUtil.assertEqualTrees("Same after delta chain serialize", fDeltaChain[j], refried[j], path, depth);
+		}
 	}
 }
