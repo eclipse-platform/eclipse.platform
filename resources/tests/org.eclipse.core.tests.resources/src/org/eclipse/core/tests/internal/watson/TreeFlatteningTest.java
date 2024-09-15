@@ -13,74 +13,52 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.watson;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.doFileTest;
+import static org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.doPipeTest;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.file.Path;
 import org.eclipse.core.internal.resources.SaveManager;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.internal.watson.ElementTreeReader;
 import org.eclipse.core.internal.watson.ElementTreeWriter;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.StreamReader;
+import org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.StreamWriter;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
 /**
  * Unit tests for <code>ElementTreeWriter</code> and
  * <code>ElementTreeReader</code>.
  */
-public class TreeFlatteningTest extends ElementTreeSerializationTest {
+public class TreeFlatteningTest implements IPathConstants {
 
-	/**
-	 * Performs the serialization activity for this test
-	 */
-	@Override
-	public Object doRead(ElementTreeReader reader, DataInputStream input) throws IOException {
-		return reader.readTree(input);
+	private StreamReader getReader() throws IOException {
+		return (ElementTreeReader reader, DataInputStream input) -> reader.readTree(input);
 	}
 
-	/**
-	 * Runs a test for this class at a certain depth and path
-	 */
-	@Override
-	public void doTest(IPath path, int depth) {
-		/* Get an element tree from somewhere. */
-		fTree = TestUtil.createTestElementTree();
-		fSubtreePath = path;
-		fDepth = depth;
-
-		ElementTree newTree = (ElementTree) doPipeTest();
-
-		TestUtil.assertEqualTrees(this.getClass() + "test0", fTree, newTree, fSubtreePath, fDepth);
-	}
-
-	/**
-	 * Performs the serialization activity for this test
-	 */
-	@Override
-	public void doWrite(ElementTreeWriter writer, DataOutputStream output) throws IOException {
-		writer.writeTree(fTree, fSubtreePath, fDepth, output);
-	}
-
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-		fTree = TestUtil.createTestElementTree();
+	private StreamWriter getWriter(ElementTree tree, IPath path, int depth) throws IOException {
+		return (ElementTreeWriter writer, DataOutputStream output) -> writer.writeTree(tree, path, depth, output);
 	}
 
 	@Test
-	public void test0() {
-		/* Get an element tree from somewhere. */
-		fTree = TestUtil.createTestElementTree();
-		ElementTree newTree = (ElementTree) doFileTest();
+	public void test0(@TempDir Path tempDir) throws IOException {
+		ElementTree tree = TestUtil.createTestElementTree();
+		IPath testTreeRootPath = IPathConstants.solution;
+		ElementTree newTree = (ElementTree) doFileTest(tempDir, getReader(),
+				getWriter(tree, testTreeRootPath, ElementTreeWriter.D_INFINITE));
 
-		TestUtil.assertEqualTrees(this.getClass() + "test0", fTree, newTree);
+		TestUtil.assertEqualTrees(this.getClass() + "test0", tree, newTree);
 	}
 
 	@Test
@@ -128,7 +106,7 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 			System.out.println("oldest=" + trees12[oldest12].toDebugString());
 			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
 			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
-			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertArrayEquals(sorted12, sorted21);
 			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
 		}
 		{ // trees with duplicates
@@ -144,7 +122,7 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 			System.out.println("oldest=" + trees12[oldest12].toDebugString());
 			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
 			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
-			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertArrayEquals(sorted12, sorted21);
 			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
 		}
 		{ // sparse (without all intermediate trees)
@@ -159,7 +137,7 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 			System.out.println("oldest=" + trees12[oldest12].toDebugString());
 			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
 			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
-			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertArrayEquals(sorted12, sorted21);
 			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
 		}
 		{ // without newest
@@ -174,7 +152,7 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 			System.out.println("oldest=" + trees12[oldest12].toDebugString());
 			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
 			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
-			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertArrayEquals(sorted12, sorted21);
 			assertSame(tree111, sorted12[0]); // sorted by creation time desc
 		}
 		{ // without oldest
@@ -189,7 +167,7 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 			System.out.println("oldest=" + trees12[oldest12].toDebugString());
 			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
 			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
-			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertArrayEquals(sorted12, sorted21);
 			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
 		}
 		{ // trees with odd duplicates
@@ -205,7 +183,7 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 			System.out.println("oldest=" + trees12[oldest12].toDebugString());
 			ElementTree[] sorted12 = SaveManager.sortTrees(trees12);
 			ElementTree[] sorted21 = SaveManager.sortTrees(trees21);
-			assertTrue(Arrays.equals(sorted12, sorted21));
+			assertArrayEquals(sorted12, sorted21);
 			assertSame(tree1111, sorted12[0]); // sorted by creation time desc
 		}
 	}
@@ -221,35 +199,40 @@ public class TreeFlatteningTest extends ElementTreeSerializationTest {
 	/**
 	 * Tests the reading and writing of element deltas
 	 */
-	@Test
-	public void testExhaustive() {
-		doExhaustiveTests();
+	@ParameterizedTest
+	@ArgumentsSource(ElementTreeSerializationTestHelper.class)
+	public void testExhaustive(IPath path, int depth) throws IOException {
+		ElementTree tree = TestUtil.createTestElementTree();
+		ElementTree newTree = (ElementTree) doPipeTest(getWriter(tree, path, depth),
+				getReader());
+
+		TestUtil.assertEqualTrees(this.getClass() + "test0", tree, newTree, path, depth);
 	}
 
 	@Test
-	public void testNullData() {
-		/* Get an element tree from somewhere. */
-		fTree = TestUtil.createTestElementTree();
-		fTree = fTree.newEmptyDelta();
+	public void testNullData() throws IOException {
+		ElementTree tree = TestUtil.createTestElementTree();
+		tree = tree.newEmptyDelta();
+		IPath testTreeRootPath = IPathConstants.solution;
 
 		/* set some elements to have null data */
-		fTree.setElementData(solution, null);
-		fTree.setElementData(folder2, null);
-		fTree.immutable();
+		tree.setElementData(IPathConstants.solution, null);
+		tree.setElementData(IPathConstants.folder2, null);
+		tree.immutable();
 
-		ElementTree newTree = (ElementTree) doPipeTest();
+		ElementTree newTree = (ElementTree) doPipeTest(getWriter(tree, testTreeRootPath, ElementTreeWriter.D_INFINITE),
+				getReader());
 
-		TestUtil.assertEqualTrees(this.getClass() + "test0", fTree, newTree);
+		TestUtil.assertEqualTrees(this.getClass() + "test0", tree, newTree);
 	}
 
 	@Test
-	public void testWriteRoot() {
-		/* Get an element tree from somewhere. */
-		fTree = TestUtil.createTestElementTree();
-		fSubtreePath = IPath.ROOT;
+	public void testWriteRoot() throws IOException {
+		ElementTree tree = TestUtil.createTestElementTree();
+		IPath path = IPath.ROOT;
+		ElementTree newTree = (ElementTree) doPipeTest(getWriter(tree, path, ElementTreeWriter.D_INFINITE),
+				getReader());
 
-		ElementTree newTree = (ElementTree) doPipeTest();
-
-		TestUtil.assertEqualTrees(this.getClass() + "test0", fTree, newTree, fSubtreePath);
+		TestUtil.assertEqualTrees(this.getClass() + "test0", tree, newTree, path);
 	}
 }

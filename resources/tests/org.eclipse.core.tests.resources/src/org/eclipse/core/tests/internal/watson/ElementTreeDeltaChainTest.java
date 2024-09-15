@@ -13,46 +13,30 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.watson;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the ElementTree.mergeDeltaChain() method.
  */
 public class ElementTreeDeltaChainTest implements IPathConstants {
-	protected ElementTree fTree;
-	protected IPath project3;
-
-	@Before
-	public void setUp() throws Exception {
-		fTree = TestUtil.createTestElementTree();
-		project3 = solution.append("project3");
-	}
+	private static final IPath project3 = solution.append("project3");
 
 	/**
 	 * Tries some bogus merges and makes sure an exception is thrown.
 	 */
 	@Test
 	public void testIllegalMerges() {
-		fTree = fTree.newEmptyDelta();
+		ElementTree tree = TestUtil.createTestElementTree().newEmptyDelta();
 
 		/* null trees */
-		boolean caught = false;
-		Exception ex = null;
-		try {
-			fTree.mergeDeltaChain(solution, null);
-		} catch (RuntimeException e) {
-			caught = true;
-			ex = e;
-		} finally {
-			assertTrue("", caught);
-		}
+		assertThrows(RuntimeException.class, () -> tree.mergeDeltaChain(solution, null));
 
 		/* create a tree with a whole bunch of operations in project3 */
 		ElementTree projectTree = new ElementTree();
@@ -64,38 +48,16 @@ public class ElementTreeDeltaChainTest implements IPathConstants {
 		TestUtil.scramble(trees);
 
 		/* null handle */
-		caught = false;
-		try {
-			fTree.mergeDeltaChain(null, trees);
-		} catch (RuntimeException e) {
-			caught = true;
-			ex = e;
-		} finally {
-			assertTrue(ex.getMessage(), caught);
-		}
+		assertThrows(RuntimeException.class, () -> tree.mergeDeltaChain(null, trees));
 
 		/* non-existent handle */
-		caught = false;
-		try {
-			fTree.mergeDeltaChain(solution.append("bogosity"), trees);
-		} catch (RuntimeException e) {
-			caught = true;
-			ex = e;
-		} finally {
-			assertTrue(ex.getMessage(), caught);
-		}
+		assertThrows(RuntimeException.class, () -> tree.mergeDeltaChain(solution.append("bogosity"), trees));
 
 		/* immutable receiver */
-		caught = false;
-		try {
-			fTree.immutable();
-			fTree.mergeDeltaChain(solution, trees);
-		} catch (RuntimeException e) {
-			caught = true;
-			ex = e;
-		} finally {
-			assertTrue(ex.getMessage(), caught);
-		}
+		assertThrows(RuntimeException.class, () -> {
+			tree.immutable();
+			tree.mergeDeltaChain(solution, trees);
+		});
 	}
 
 	/**
@@ -103,6 +65,7 @@ public class ElementTreeDeltaChainTest implements IPathConstants {
 	 */
 	@Test
 	public void testMergeDeltaChain() {
+		ElementTree tree = TestUtil.createTestElementTree();
 		/* create a tree with a whole bunch of operations in project3 */
 		ElementTree projectTree = new ElementTree();
 		projectTree.createElement(solution, "Dummy");
@@ -119,13 +82,13 @@ public class ElementTreeDeltaChainTest implements IPathConstants {
 		TestUtil.scramble(trees, copies);
 
 		/* do a bunch of operations on fTree to build a delta chain */
-		TestUtil.doRoutineOperations(fTree, solution);
-		fTree = fTree.newEmptyDelta();
+		TestUtil.doRoutineOperations(tree, solution);
+		tree = tree.newEmptyDelta();
 
 		/* merge the delta chains */
-		ElementTree newTree = fTree.mergeDeltaChain(project3, trees);
-		assertNotEquals("returned tree should be different", newTree, fTree);
-		assertFalse("returned tree should be open", newTree.isImmutable());
+		ElementTree newTree = tree.mergeDeltaChain(project3, trees);
+		assertNotEquals(newTree, tree);
+		assertFalse(newTree.isImmutable());
 
 		/* make sure old and new trees have same structure */
 		for (int i = 0; i < trees.length; i++) {
@@ -142,13 +105,14 @@ public class ElementTreeDeltaChainTest implements IPathConstants {
 	 */
 	@Test
 	public void testMergeOverwrite() {
+		ElementTree tree = TestUtil.createTestElementTree();
 		/* create a tree with a whole bunch of operations in project3 */
 		ElementTree projectTree = new ElementTree();
 		projectTree.createElement(solution, "Dummy");
 		projectTree.createElement(project3, "project3");
 
 		/* form a delta chain on fTree */
-		ElementTree[] trees = TestUtil.doManyRoutineOperations(fTree, solution);
+		ElementTree[] trees = TestUtil.doManyRoutineOperations(tree, solution);
 
 		/* scramble the order of the project trees */
 		TestUtil.scramble(trees);
@@ -157,7 +121,7 @@ public class ElementTreeDeltaChainTest implements IPathConstants {
 		ElementTree newTree = projectTree.mergeDeltaChain(solution, trees);
 
 		assertNotEquals(newTree, projectTree);
-		assertTrue(newTree.getElementData(solution).equals("solution"));
+		assertEquals("solution", newTree.getElementData(solution));
 		TestUtil.assertTreeStructure(newTree);
 	}
 }

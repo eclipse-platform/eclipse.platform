@@ -13,51 +13,22 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.watson;
 
-import java.io.*;
-import org.eclipse.core.internal.watson.*;
+import static org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.doPipeTest;
+
+import java.io.IOException;
+import org.eclipse.core.internal.watson.DefaultElementComparator;
+import org.eclipse.core.internal.watson.ElementTree;
+import org.eclipse.core.internal.watson.ElementTreeWriter;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Before;
-import org.junit.Test;
+import org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.StreamReader;
+import org.eclipse.core.tests.internal.watson.ElementTreeSerializationTestHelper.StreamWriter;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 
-public class DeltaFlatteningTest extends ElementTreeSerializationTest {
-	protected ElementTree fNewTree;
-	protected IPath project3, folder5, file4, file5;
+public class DeltaFlatteningTest implements IPathConstants {
 
-	/**
-	 * Performs the serialization activity for this test
-	 */
-	@Override
-	public Object doRead(ElementTreeReader reader, DataInputStream input) throws IOException {
-		return reader.readDelta(fNewTree, input);
-	}
-
-	/**
-	 * Runs a test for this class at a certain depth and path
-	 */
-	@Override
-	public void doTest(IPath path, int depth) {
-
-		/* Get an element tree from somewhere. */
-		fTree = TestUtil.createTestElementTree();
-		fSubtreePath = path;
-		fDepth = depth;
-		ElementTree newTree = (ElementTree) doPipeTest();
-		TestUtil.assertEqualTrees(this.getClass() + "test0", fTree, newTree, fSubtreePath, fDepth);
-	}
-
-	/**
-	 * Performs the serialization activity for this test
-	 */
-	@Override
-	public void doWrite(ElementTreeWriter writer, DataOutputStream output) throws IOException {
-		writer.writeDelta(fTree, fNewTree, fSubtreePath, fDepth, output, DefaultElementComparator.getComparator());
-	}
-
-	@Override
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-		fTree = TestUtil.createTestElementTree();
+	private ElementTree prepareTreeForChange() {
+		ElementTree tree = TestUtil.createTestElementTree();
 		/**
 		 * The following changes will be made to the base tree:
 		 *	- add project3
@@ -69,32 +40,45 @@ public class DeltaFlatteningTest extends ElementTreeSerializationTest {
 		 *  - delete folder3
 		 */
 
-		fNewTree = fTree.newEmptyDelta();
+		ElementTree newTree = tree.newEmptyDelta();
 
-		project3 = solution.append("project3");
-		folder5 = project3.append("folder5");
-		file4 = project2.append("file4");
-		file5 = folder1.append("file5");
+		IPath project3 = solution.append("project3");
+		IPath folder5 = project3.append("folder5");
+		IPath file4 = project2.append("file4");
+		IPath file5 = folder1.append("file5");
 
-		fNewTree.createElement(project3, "project3");
-		fNewTree.createElement(folder5, "folder5");
-		fNewTree.deleteElement(file1);
-		fNewTree.createElement(folder2, "ChangedData");
-		fNewTree.createElement(file4, "file4");
-		fNewTree.createElement(file5, "file5");
-		fNewTree.deleteElement(folder3);
-		fNewTree.immutable();
+		newTree.createElement(project3, "project3");
+		newTree.createElement(folder5, "folder5");
+		newTree.deleteElement(file1);
+		newTree.createElement(folder2, "ChangedData");
+		newTree.createElement(file4, "file4");
+		newTree.createElement(file5, "file5");
+		newTree.deleteElement(folder3);
+		newTree.immutable();
 
 		/* assert the new structure */
-		TestUtil.assertHasPaths(fNewTree, new IPath[] {solution, project1, project2, project3, file2, file4, file5, folder1, folder2, folder4, folder5});
-		TestUtil.assertNoPaths(fNewTree, new IPath[] {file1, file3, folder3});
+		TestUtil.assertHasPaths(newTree, new IPath[] { solution, project1, project2, project3, file2, file4, file5,
+				folder1, folder2, folder4, folder5 });
+		TestUtil.assertNoPaths(newTree, new IPath[] { file1, file3, folder3 });
+
+		return newTree;
 	}
 
 	/**
 	 * Tests the reading and writing of element deltas
 	 */
-	@Test
-	public void test0() {
-		doExhaustiveTests();
+	@ParameterizedTest
+	@ArgumentsSource(ElementTreeSerializationTestHelper.class)
+	public void test0(IPath path, int depth) throws IOException {
+		ElementTree tree = TestUtil.createTestElementTree();
+		IPath testTreeRootPath = solution;
+		ElementTree treeForChange = prepareTreeForChange();
+
+		StreamReader streamReader = (reader, input) -> reader.readDelta(treeForChange, input);
+		StreamWriter streamWriter = (writer, output) -> writer.writeDelta(tree, treeForChange, testTreeRootPath,
+				ElementTreeWriter.D_INFINITE, output, DefaultElementComparator.getComparator());
+		ElementTree newTree = (ElementTree) doPipeTest(streamWriter, streamReader);
+
+		TestUtil.assertEqualTrees(this.getClass() + "test0", tree, newTree, path, depth);
 	}
 }

@@ -13,14 +13,14 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.watson;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.internal.events.ResourceComparator;
 import org.eclipse.core.internal.resources.ResourceInfo;
 import org.eclipse.core.internal.watson.ElementTree;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for
@@ -40,7 +40,7 @@ public class ElementTreeHasChangesTest implements IPathConstants {
 		ElementTree newTree = newTree(oldTree);
 
 		boolean hasChanges = hasChanges(oldTree, newTree);
-		assertFalse("expected no changes to be detected if the tree was not changed", hasChanges);
+		assertFalse(hasChanges, "expected no changes to be detected if the tree was not changed");
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class ElementTreeHasChangesTest implements IPathConstants {
 		add(newTree, folder1);
 
 		boolean hasChanges = hasChanges(oldTree, newTree);
-		assertTrue("expected changes to be detected after adding an element to the tree", hasChanges);
+		assertTrue(hasChanges, "expected changes to be detected after adding an element to the tree");
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class ElementTreeHasChangesTest implements IPathConstants {
 		remove(newTree, file1);
 
 		boolean hasChanges = hasChanges(oldTree, newTree);
-		assertTrue("expected changes to be detected after removing an element from the tree", hasChanges);
+		assertTrue(hasChanges, "expected changes to be detected after removing an element from the tree");
 	}
 
 	/**
@@ -84,8 +84,8 @@ public class ElementTreeHasChangesTest implements IPathConstants {
 		remove(newTree, folder1);
 
 		boolean hasChanges = hasChanges(oldTree, newTree);
-		assertTrue("expected changes to be detected after adding and removing the same element to and from the tree",
-				hasChanges);
+		assertTrue(hasChanges,
+				"expected changes to be detected after adding and removing the same element to and from the tree");
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class ElementTreeHasChangesTest implements IPathConstants {
 		newTree.setElementData(file1, "different data");
 
 		boolean hasChanges = hasChanges(oldTree, newTree);
-		assertTrue("expected changes to be detected after changing the data of a tree element", hasChanges);
+		assertTrue(hasChanges, "expected changes to be detected after changing the data of a tree element");
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class ElementTreeHasChangesTest implements IPathConstants {
 		incrementCharsetGenerationCount(newTree);
 
 		boolean hasChanges = hasChanges(oldTree, newTree);
-		assertTrue("expected changes to be detected after changing the data of the tree", hasChanges);
+		assertTrue(hasChanges, "expected changes to be detected after changing the data of the tree");
 	}
 
 	private static boolean hasChanges(ElementTree oldTree, ElementTree newTree) {

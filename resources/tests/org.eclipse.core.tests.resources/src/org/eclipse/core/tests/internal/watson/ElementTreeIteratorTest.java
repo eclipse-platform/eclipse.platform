@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.core.tests.internal.watson;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -23,7 +23,7 @@ import org.eclipse.core.internal.watson.ElementTreeIterator;
 import org.eclipse.core.internal.watson.IElementContentVisitor;
 import org.eclipse.core.internal.watson.IElementTreeData;
 import org.eclipse.core.runtime.IPath;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for <code>ElementTreeIterator</code>.
@@ -105,12 +105,12 @@ public class ElementTreeIteratorTest {
 			return true;
 		};
 		new ElementTreeIterator(tree, IPath.ROOT).iterate(elementVisitor);
-		assertEquals("1", 2 + n + n * n + n * n * n, elts.size());
+		assertThat(elts).hasSize(2 + n + n * n + n * n * n);
 
 		elts.clear();
 		IPath innerElement = IPath.ROOT.append("sol").append("proj1");
 		new ElementTreeIterator(tree, innerElement).iterate(elementVisitor);
-		assertEquals("2", 1 + n + n * n, elts.size());
+		assertThat(elts).hasSize(1 + n + n * n);
 	}
 
 	/**
