@@ -37,6 +37,7 @@
   <target name="suite">
     <property name="platform-debug-folder" 
               value="${eclipse-home}/platform_debug_folder"/>
+    <property name="org.eclipse.urischeme/skipAutoRegistration" value="true"></property>
     <delete dir="${platform-debug-folder}" quiet="true"/>
     <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${platform-debug-folder}"/>
