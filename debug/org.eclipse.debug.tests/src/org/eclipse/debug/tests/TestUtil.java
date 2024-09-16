@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -223,8 +222,9 @@ public class TestUtil {
 			}
 			jobs.forEach(Job::wakeUp);
 
-			if (!Collections.disjoint(runningJobs, jobs)) {
-				// There is a job which runs already quite some time, don't wait for it to avoid test timeouts
+			if (runningJobs.containsAll(jobs)) {
+				// There are only jobs which runs already quite some time, don't
+				// wait for them to avoid test timeouts
 				dumpRunningOrWaitingJobs(owner, jobs);
 				return true;
 			}
