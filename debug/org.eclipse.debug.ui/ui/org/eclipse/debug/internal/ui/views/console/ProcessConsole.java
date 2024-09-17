@@ -337,12 +337,16 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 					Duration elapsedTime = Duration.between(launchTime != null ? launchTime.toInstant() : Instant.now(),
 							terminateTime != null ? terminateTime.toInstant() : Instant.now());
-					String elapsedString = String.format("%d:%02d:%02d.%03d", elapsedTime.toHours(), //$NON-NLS-1$
-							elapsedTime.toMinutesPart(), elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+					String elapsedFormat = "%d:%02d:%02d.%03d"; //$NON-NLS-1$
 					if (terminateTime == null) {
+						// refresh every second:
 						DebugUIPlugin.getStandardDisplay().asyncExec(
 								() -> DebugUIPlugin.getStandardDisplay().timerExec(1000, () -> resetName(false)));
+						// pointless to update milliseconds:
+						elapsedFormat = "%d:%02d:%02d"; //$NON-NLS-1$
 					}
+					String elapsedString = String.format(elapsedFormat, elapsedTime.toHours(),
+							elapsedTime.toMinutesPart(), elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
 					if (launchTime != null && terminateTime != null) {
 						String launchTimeStr = dateTimeFormat.format(launchTime);
 						// Check if process started and terminated at same day. If so only print the
