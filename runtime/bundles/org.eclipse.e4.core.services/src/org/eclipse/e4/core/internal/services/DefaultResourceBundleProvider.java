@@ -19,6 +19,8 @@ import org.eclipse.osgi.service.localization.BundleLocalization;
 import org.osgi.framework.Bundle;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 /**
  * Default implementation of {@link ResourceBundleProvider} that simply delegates to the
@@ -45,7 +47,7 @@ public class DefaultResourceBundleProvider implements ResourceBundleProvider {
 	 *            The {@link BundleLocalization} that should be set to this
 	 *            {@link ResourceBundleProvider}
 	 */
-	@Reference
+	@Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
 	void setBundleLocalization(BundleLocalization localization) {
 		this.localization = localization;
 	}
