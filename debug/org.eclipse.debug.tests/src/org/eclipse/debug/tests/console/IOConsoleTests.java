@@ -68,6 +68,7 @@ import org.eclipse.ui.console.IConsoleDocumentPartitionerExtension;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
+import org.eclipse.ui.internal.console.ConsoleManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -162,7 +163,7 @@ public class IOConsoleTests extends AbstractDebugTest {
 		});
 		final IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		consoleManager.addConsoles(new IConsole[] { console });
-		TestUtil.waitForJobs(name.getMethodName(), 25, 10000);
+		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 25, 10000);
 		consoleManager.showConsoleView(console);
 		@SuppressWarnings("restriction")
 		final org.eclipse.ui.internal.console.IOConsolePage page = (org.eclipse.ui.internal.console.IOConsolePage) consoleView.getCurrentPage();

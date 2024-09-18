@@ -73,7 +73,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			launch = process.getLaunch();
 			launchManager.addLaunch(launch);
 			// do not wait on input read job
-			TestUtil.waitForJobs(name.getMethodName(), 0, 10000, ProcessConsole.class);
+			TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000, ProcessConsole.class);
 			assertThat(consoleManager.getConsoles()).as("console has been added").hasSize(1);
 		} finally {
 			mockProcess.destroy();
@@ -81,7 +81,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 
 		if (launch != null) {
 			launchManager.removeLaunch(launch);
-			TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
+			TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);
 			assertThat(consoleManager.getConsoles()).as("console has been removed").isEmpty();
 		}
 	}
@@ -106,7 +106,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			setPreference(DebugUIPlugin.getDefault().getPreferenceStore(), IDebugUIConstants.PREF_AUTO_REMOVE_OLD_LAUNCHES, true);
 			// Stop the JobManager to reliable trigger the tested race
 			// condition.
-			TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
+			TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);
 			Job.getJobManager().suspend();
 			launchManager.addLaunch(process1.getLaunch());
 			launchManager.addLaunch(process2.getLaunch());
@@ -114,7 +114,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			Job.getJobManager().resume();
 		}
 
-		TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
+		TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);
 		ProcessConsoleManager processConsoleManager = DebugUIPlugin.getDefault().getProcessConsoleManager();
 		ILaunch[] launches = launchManager.getLaunches();
 		Set<IConsole> openConsoles = new HashSet<>();
@@ -135,7 +135,7 @@ public class ProcessConsoleManagerTests extends AbstractDebugTest {
 			assertThat(removeAction).matches(ConsoleRemoveAllTerminatedAction::isEnabled, "is enabled");
 		}
 		removeAction.run();
-		TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
+		TestUtil.waitForJobs(name.getMethodName(), ProcessConsoleManager.class, 0, 10000);
 		assertNull("First console not removed.", processConsoleManager.getConsole(process1));
 		assertNull("Second console not removed.", processConsoleManager.getConsole(process1));
 	}

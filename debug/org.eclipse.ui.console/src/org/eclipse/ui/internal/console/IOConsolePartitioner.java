@@ -754,6 +754,11 @@ public class IOConsolePartitioner
 		}
 
 		@Override
+		public boolean belongsTo(Object family) {
+			return family == ConsoleManager.CONSOLE_JOB_FAMILY;
+		}
+
+		@Override
 		public IStatus runInUIThread(IProgressMonitor monitor) {
 			processPendingPartitions();
 			if (ASSERT) {
