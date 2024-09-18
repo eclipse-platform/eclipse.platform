@@ -30,8 +30,8 @@ Require-Bundle: org.eclipse.ant.core;bundle-version="[3.1.0,4.0.0)";resolution:=
  org.eclipse.core.filesystem;bundle-version="[1.10.0,2.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.31.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/ResourceChangeListenerRegistrar.xml,
- OSGI-INF/org.eclipse.core.internal.resources.CheckMissingNaturesListener.xml
+Service-Component: OSGI-INF/org.eclipse.core.internal.resources.CheckMissingNaturesListener.xml,
+ OSGI-INF/org.eclipse.core.internal.resources.ResourceChangeListenerRegistrar.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.core.resources
 Import-Package: com.sun.jna;version="[5.14.0,6.0.0)",

@@ -16,15 +16,38 @@ package org.eclipse.core.internal.content;
 
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.content.*;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IRegistryChangeEvent;
+import org.eclipse.core.runtime.IRegistryChangeListener;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.InvalidRegistryObjectException;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.ServiceCaller;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.core.runtime.content.IContentTypeMatcher;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.prefs.BackingStoreException;
 
+@Component(service = IContentTypeManager.class, immediate = true)
 public class ContentTypeManager extends ContentTypeMatcher implements IContentTypeManager {
 	private static class ContentTypeRegistryChangeListener implements IRegistryChangeListener {
 		@Override
@@ -74,7 +97,7 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 	 */
 	protected final ListenerList<IContentTypeChangeListener> contentTypeListeners = new ListenerList<>();
 
-
+	@Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
 	public void addRegistryChangeListener(IExtensionRegistry registry) {
 		if (registry == null)
 			return;

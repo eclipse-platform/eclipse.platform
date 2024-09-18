@@ -21,4 +21,4 @@ Import-Package: javax.xml.parsers,
  org.xml.sax.helpers
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.core.contenttype
-Service-Component: OSGI-INF/contenttypemanager.xml
+Service-Component: OSGI-INF/org.eclipse.core.internal.content.ContentTypeManager.xml

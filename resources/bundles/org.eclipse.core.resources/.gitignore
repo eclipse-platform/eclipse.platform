@@ -1,3 +1,4 @@
 temp.folder
 bin_ant
 ant_tasks
+/OSGI-INF/org.eclipse.*.xml

@@ -43,7 +43,14 @@ Export-Package: org.eclipse.e4.core.internal.services;x-friends:="org.eclipse.e4
  org.eclipse.e4.core.services.statusreporter;x-friends:="org.eclipse.e4.ui.workbench.swt,org.eclipse.e4.ui.progress,org.eclipse.ui.ide",
  org.eclipse.e4.core.services.translation
 Eclipse-ExtensibleAPI: true
-Service-Component: OSGI-INF/*.xml
+Service-Component: OSGI-INF/org.eclipse.e4.core.internal.services.DefaultResourceBundleProvider.xml,
+ OSGI-INF/org.eclipse.e4.core.internal.services.MessageFactoryServiceImpl.xml,
+ OSGI-INF/org.eclipse.e4.core.internal.services.TranslationObjectSupplier.xml,
+ OSGI-INF/org.eclipse.e4.core.internal.services.about.InstalledBundles.xml,
+ OSGI-INF/org.eclipse.e4.core.internal.services.about.InstalledFeatures.xml,
+ OSGI-INF/org.eclipse.e4.core.internal.services.about.SystemEnvironment.xml,
+ OSGI-INF/org.eclipse.e4.core.internal.services.about.SystemProperties.xml,
+ OSGI-INF/org.eclipse.e4.core.internal.services.about.UserPreferences.xml
 Require-Capability: osgi.extender;
   filter:="(&(osgi.extender=osgi.component)(version>=1.2)(!(version>=2.0)))"
 Automatic-Module-Name: org.eclipse.e4.core.services

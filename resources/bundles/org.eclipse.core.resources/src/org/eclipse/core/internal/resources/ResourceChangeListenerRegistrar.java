@@ -17,6 +17,11 @@ import java.util.Map;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
 
@@ -30,6 +35,7 @@ import org.osgi.service.log.LoggerFactory;
  * that (for example) {@link DebugOptionsListener} is used to receive callbacks.
  * </p>
  */
+@Component
 public final class ResourceChangeListenerRegistrar {
 
 	private final IWorkspace workspace;
@@ -40,7 +46,8 @@ public final class ResourceChangeListenerRegistrar {
 	 *
 	 * @param workspace the workspace to associate listeners with
 	 */
-	public ResourceChangeListenerRegistrar(IWorkspace workspace) {
+	@Activate
+	public ResourceChangeListenerRegistrar(@Reference IWorkspace workspace) {
 		this.workspace = workspace;
 	}
 
@@ -52,6 +59,7 @@ public final class ResourceChangeListenerRegistrar {
 	 *                   required
 	 *                   {@link IWorkspace#addResourceChangeListener(IResourceChangeListener, int)}
 	 */
+	@Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.AT_LEAST_ONE)
 	public void addResourceChangeListener(IResourceChangeListener listener, Map<String, Object> properties) {
 		// TODO Add as public API https://bugs.eclipse.org/bugs/show_bug.cgi?id=564985
 		Object mask = properties.get(IResourceChangeListener.PROPERTY_EVENT_MASK);
@@ -81,6 +89,7 @@ public final class ResourceChangeListenerRegistrar {
 	 *
 	 * @param factory the factory
 	 */
+	@Reference(unbind = "unsetLogger", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
 	public void setLoggerFactory(LoggerFactory factory) {
 		this.logger = factory.getLogger(ResourceChangeListenerRegistrar.class);
 	}
@@ -88,7 +97,7 @@ public final class ResourceChangeListenerRegistrar {
 	/**
 	 * Unsets the logger generated from the associated logger factory
 	 */
-	public void unsetLogger() {
+	public void unsetLogger(LoggerFactory factory) {
 		this.logger = null;
 	}
 }
