@@ -14,6 +14,7 @@
 package org.eclipse.debug.tests.console;
 
 import org.eclipse.debug.tests.TestUtil;
+import org.eclipse.ui.internal.console.ConsoleManager;
 
 /**
  * Same as {@link IOConsoleTests} but with fixed width console enabled.
@@ -29,7 +30,7 @@ public class IOConsoleFixedWidthTests extends IOConsoleTests {
 		c.getConsole().setConsoleWidth(3);
 		c.setIgnoreFixedConsole(true);
 		// console width is applied asynchronous
-		TestUtil.waitForJobs(name.getMethodName(), 50, 1000);
+		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 50, 1000);
 		return c;
 	}
 

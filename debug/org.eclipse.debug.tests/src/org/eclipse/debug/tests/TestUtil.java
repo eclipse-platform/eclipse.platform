@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -177,13 +178,14 @@ public class TestUtil {
 	 *
 	 * @param owner name of the caller which will be logged as prefix if the
 	 *            wait times out
+	 * @param jobFamily the jobFamily to wait for
 	 * @param minTimeMs minimum wait time in milliseconds
 	 * @param maxTimeMs maximum wait time in milliseconds
 	 * @return true if the method timed out, false if all the jobs terminated
 	 *         before the timeout
 	 */
-	public static boolean waitForJobs(String owner, long minTimeMs, long maxTimeMs) {
-		return waitForJobs(owner, minTimeMs, maxTimeMs, (Object[]) null);
+	public static boolean waitForJobs(String owner, Object jobFamily, long minTimeMs, long maxTimeMs) {
+		return waitForJobs(owner, jobFamily, minTimeMs, maxTimeMs, (Object[]) null);
 	}
 
 	/**
@@ -202,11 +204,16 @@ public class TestUtil {
 	 * @return true if the method timed out, false if all the jobs terminated before the timeout
 	 */
 	public static boolean waitForJobs(String owner, long minTimeMs, long maxTimeMs, Object... excludedFamilies) {
+		return waitForJobs(owner, null, minTimeMs, maxTimeMs, excludedFamilies);
+	}
+
+	public static boolean waitForJobs(String owner, Object jobFamily, long minTimeMs, long maxTimeMs, Object... excludedFamilies) {
 		if (maxTimeMs < minTimeMs) {
 			throw new IllegalArgumentException("Max time is smaller as min time!");
 		}
-		final long start = System.currentTimeMillis();
-		while (System.currentTimeMillis() - start < minTimeMs) {
+		Job.getJobManager().wakeUp(jobFamily);
+		final long start = System.nanoTime();
+		while (System.nanoTime() - start < minTimeMs * 1_000_000) {
 			processUIEvents();
 			try {
 				Thread.sleep(Math.min(10, minTimeMs));
@@ -215,7 +222,7 @@ public class TestUtil {
 			}
 		}
 		while (!Job.getJobManager().isIdle()) {
-			List<Job> jobs = getRunningOrWaitingJobs(null, excludedFamilies);
+			List<Job> jobs = getRunningOrWaitingJobs(jobFamily, excludedFamilies);
 			if (jobs.isEmpty()) {
 				// only uninteresting jobs running
 				break;
@@ -229,7 +236,7 @@ public class TestUtil {
 				return true;
 			}
 
-			if (System.currentTimeMillis() - start >= maxTimeMs) {
+			if (System.nanoTime() - start >= maxTimeMs * 1_000_000) {
 				dumpRunningOrWaitingJobs(owner, jobs);
 				return true;
 			}
@@ -239,15 +246,14 @@ public class TestUtil {
 		runningJobs.clear();
 		return false;
 	}
-
 	static Set<Job> runningJobs = new LinkedHashSet<>();
 
 	private static void dumpRunningOrWaitingJobs(String owner, List<Job> jobs) {
-		String message = "Some job is still running or waiting to run: " + dumpRunningOrWaitingJobs(jobs);
+		String message = "Some job is still running or waiting to run: " + getDump(jobs);
 		log(IStatus.ERROR, owner, message, new RuntimeException(message));
 	}
 
-	private static String dumpRunningOrWaitingJobs(List<Job> jobs) {
+	private static String getDump(List<Job> jobs) {
 		if (jobs.isEmpty()) {
 			return "";
 		}
@@ -258,6 +264,7 @@ public class TestUtil {
 			runningJobs.add(job);
 			sb.append("\n'").append(job.toString()).append("'/");
 			sb.append(job.getClass().getName());
+			sb.append(":").append(JobManager.printState(job));
 			Thread thread = job.getThread();
 			if (thread != null) {
 				ThreadInfo[] threadInfos = ManagementFactory.getThreadMXBean().getThreadInfo(new long[] { thread.getId() }, true, true);

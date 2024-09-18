@@ -53,6 +53,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.debug.tests.AbstractDebugTest;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.debug.tests.launching.LaunchConfigurationTests;
@@ -67,6 +68,7 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleInputStream;
+import org.eclipse.ui.internal.console.ConsoleManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -229,7 +231,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				final Class<?> jobFamily = org.eclipse.debug.internal.ui.views.console.ProcessConsole.class;
 				assertThat(Job.getJobManager().find(jobFamily)).as("check input read job started").hasSizeGreaterThan(0);
 				Job.getJobManager().cancel(jobFamily);
-				TestUtil.waitForJobs(name.getMethodName(), 0, 1000);
+				TestUtil.waitForJobs(name.getMethodName(), ProcessConsole.class, 0, 1000);
 				assertThat(Job.getJobManager().find(jobFamily)).as("check input read job is canceled").isEmpty();
 			} finally {
 				console.destroy();
@@ -301,7 +303,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			waitWhile(__ -> !terminationSignaled.get(), 10_000, __ -> "No console complete notification received.");
 		} finally {
 			consoleManager.removeConsoles(new IConsole[] { console });
-			TestUtil.waitForJobs(name.getMethodName(), 0, 10000);
+			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 10000);
 		}
 	}
 
@@ -422,7 +424,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				process.terminate();
 			}
 			consoleManager.removeConsoles(new IConsole[] { console });
-			TestUtil.waitForJobs(name.getMethodName(), 0, 1000);
+			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 0, 1000);
 		}
 	}
 

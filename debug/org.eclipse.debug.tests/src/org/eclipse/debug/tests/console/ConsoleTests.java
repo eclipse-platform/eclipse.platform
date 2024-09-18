@@ -39,6 +39,7 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.internal.console.ConsoleManager;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.junit.Test;
 
@@ -55,21 +56,21 @@ public class ConsoleTests extends AbstractDebugTest {
 		MessageConsole console = new MessageConsole("Test Console", //$NON-NLS-1$
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
-		TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		assertEquals("Document should be empty", "", document.get()); //$NON-NLS-1$ //$NON-NLS-2$
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
 			outStream.write(testStringBuffer, 0, 6);
 			// half of Ã¶ (\u00f6) is written so we don't expect this char in
 			// output but all previous chars can be decoded
-			TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 			assertEquals("First 4 chars should be written", testString.substring(0, 4), document.get()); //$NON-NLS-1$
 			outStream.write(testStringBuffer, 6, 6);
 			// all remaining bytes are written so we expect the whole string
 			// including the Ã¶ (\u00f6) which was at buffer boundary
-			TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 			assertEquals("whole test string should be written", testString, document.get()); //$NON-NLS-1$
 		}
-		TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		// after closing the stream, the document content should still be the
 		// same
 		assertEquals("closing the stream should not alter the document", testString, document.get()); //$NON-NLS-1$
@@ -83,15 +84,15 @@ public class ConsoleTests extends AbstractDebugTest {
 		MessageConsole console = new MessageConsole("Test Console 2", //$NON-NLS-1$
 				IConsoleConstants.MESSAGE_CONSOLE_TYPE, null, StandardCharsets.UTF_8.name(), true);
 		IDocument document = console.getDocument();
-		TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		assertEquals("Document should be empty", "", document.get()); //$NON-NLS-1$ //$NON-NLS-2$
 		try (IOConsoleOutputStream outStream = console.newOutputStream()) {
 			outStream.write(testStringBuffer);
 			// everything but pending \r should be written
-			TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 			assertEquals("First char should be written", testString.substring(0, 1), document.get()); //$NON-NLS-1$
 		}
-		TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		// after closing the stream, the document content should still be the
 		// same
 		assertEquals("closing the stream should write the pending \\r", testString, document.get()); //$NON-NLS-1$
@@ -182,7 +183,7 @@ public class ConsoleTests extends AbstractDebugTest {
 		try {
 			consoleManager.addConsoles(consoles);
 			consoleManager.showConsoleView(console);
-			TestUtil.waitForJobs(name.getMethodName(), 100, 3000);
+			TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 100, 3000);
 
 			ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
 			Command commandFindReplace = commandService.getCommand(IWorkbenchCommandConstants.EDIT_FIND_AND_REPLACE);

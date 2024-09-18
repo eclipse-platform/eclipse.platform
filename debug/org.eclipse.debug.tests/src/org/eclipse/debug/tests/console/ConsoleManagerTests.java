@@ -37,6 +37,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.internal.console.ConsoleManager;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.MessagePage;
 import org.junit.After;
@@ -85,7 +86,7 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 		firstConsole = new ConsoleMock(0);
 		manager.addConsoles(new ConsoleMock[] { firstConsole });
 		manager.showConsoleView(firstConsole);
-		TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 		TestUtil.processUIEvents(100);
 		ConsoleMock.allShownConsoles.set(0);
 	}
@@ -118,7 +119,7 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 
 		// Console manager starts a job with delay, let wait for him a bit
 		System.out.println("Waiting on jobs now..."); //$NON-NLS-1$
-		TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 
 		// Give UI a chance to proceed pending console manager jobs
 		System.out.println("Done with jobs, processing UI events again..."); //$NON-NLS-1$
@@ -161,7 +162,7 @@ public class ConsoleManagerTests extends AbstractDebugTest {
 				latch.await(1, TimeUnit.MINUTES);
 				System.out.println("Requesting to show: " + console); //$NON-NLS-1$
 				manager.showConsoleView(console);
-				TestUtil.waitForJobs(name.getMethodName(), 200, 5000);
+				TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 200, 5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				Thread.interrupted();

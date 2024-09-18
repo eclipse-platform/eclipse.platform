@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.debug.internal.ui.views.console.ProcessConsoleManager;
 import org.eclipse.debug.tests.TestUtil;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
+import org.eclipse.ui.internal.console.ConsoleManager;
 
 /**
  * Utility to help testing input and output in {@link IOConsole}.
@@ -237,7 +239,7 @@ public final class IOConsoleTestUtil {
 			// content the caret is updated
 			setCaretOffset(e.start + content.length());
 		}
-		TestUtil.waitForJobs(name, 0, 1000);
+		TestUtil.waitForJobs(name, ConsoleManager.CONSOLE_JOB_FAMILY, 0, 1000);
 		return this;
 	}
 
@@ -288,7 +290,7 @@ public final class IOConsoleTestUtil {
 			textPanel.notifyListeners(SWT.KeyDown, e);
 			textPanel.notifyListeners(SWT.KeyUp, e);
 		}
-		TestUtil.waitForJobs(name, 0, 1000);
+		TestUtil.waitForJobs(name, ConsoleManager.CONSOLE_JOB_FAMILY, 0, 1000);
 		return this;
 	}
 
@@ -693,7 +695,8 @@ public final class IOConsoleTestUtil {
 	 * @return this {@link IOConsoleTestUtil} to chain methods
 	 */
 	public IOConsoleTestUtil waitForScheduledJobs() {
-		TestUtil.waitForJobs(name, 25, 5 * 2000);
+		TestUtil.waitForJobs(name, ProcessConsoleManager.class, 25, 5 * 2000);
+		TestUtil.waitForJobs(name, ConsoleManager.CONSOLE_JOB_FAMILY, 25, 5 * 2000);
 		return this;
 	}
 

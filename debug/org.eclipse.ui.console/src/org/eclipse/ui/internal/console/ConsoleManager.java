@@ -57,6 +57,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
  * @since 3.0
  */
 public class ConsoleManager implements IConsoleManager {
+	public static final String CONSOLE_JOB_FAMILY = "CONSOLE_JOB_FAMILY"; //$NON-NLS-1$
 
 	/**
 	 * Console listeners
@@ -91,6 +92,11 @@ public class ConsoleManager implements IConsoleManager {
 		public RepaintJob() {
 			super("schedule redraw() of viewers"); //$NON-NLS-1$
 			setSystem(true);
+		}
+
+		@Override
+		public boolean belongsTo(Object family) {
+			return family == ConsoleManager.CONSOLE_JOB_FAMILY;
 		}
 
 		void addConsole(IConsole console) {
@@ -260,6 +266,11 @@ public class ConsoleManager implements IConsoleManager {
 			setPriority(Job.SHORT);
 		}
 
+		@Override
+		public boolean belongsTo(Object family) {
+			return family == ConsoleManager.CONSOLE_JOB_FAMILY;
+		}
+
 		void addConsole(IConsole console) {
 			synchronized (queue) {
 				queue.add(console);
@@ -359,6 +370,11 @@ public class ConsoleManager implements IConsoleManager {
 		if (!fWarnQueued) {
 			fWarnQueued = true;
 			Job job = new UIJob(ConsolePlugin.getStandardDisplay(), ConsoleMessages.ConsoleManager_consoleContentChangeJob) {
+				@Override
+				public boolean belongsTo(Object family) {
+					return family == ConsoleManager.CONSOLE_JOB_FAMILY;
+				}
+
 				@Override
 				public IStatus runInUIThread(IProgressMonitor monitor) {
 					IWorkbenchWindow window= PlatformUI.getWorkbench().getActiveWorkbenchWindow();
