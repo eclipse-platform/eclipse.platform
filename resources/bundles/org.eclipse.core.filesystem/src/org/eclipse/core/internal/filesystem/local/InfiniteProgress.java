@@ -14,56 +14,47 @@
 package org.eclipse.core.internal.filesystem.local;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.ProgressMonitorWrapper;
 
 /**
  * This class provides a simulation of progress. This is useful
  * for situations where computing the amount of work to do in advance
  * is too costly.  The monitor will accept any number of calls to
- * {@link #worked(int)}, and will scale the actual reported work appropriately
+ * {@link #worked()}, and will scale the actual reported work appropriately
  * so that the progress never quite completes.
  */
-public class InfiniteProgress extends ProgressMonitorWrapper {
-	/*
-	 * Fields for progress monitoring algorithm.
-	 * Initially, give progress for every 4 resources, double
-	 * this value at halfway point, then reset halfway point
-	 * to be half of remaining work.  (this gives an infinite
-	 * series that converges at total work after an infinite
-	 * number of resources).
-	 */
-	private int totalWork;
-	private int currentIncrement = 4;
-	private int halfWay;
-	private int nextProgress = currentIncrement;
-	private int worked = 0;
+public class InfiniteProgress {
+	private final int MAX_TICKS = 172; // will be reached after ~ 1 Billion #worked()
+	private int worked;
+	private int nextTickAfter = 4;
+	private int workReported;
+	private final IProgressMonitor monitor;
 
 	protected InfiniteProgress(IProgressMonitor monitor) {
-		super(monitor);
+		this.monitor = monitor;
 	}
 
-	@Override
-	public void beginTask(String name, int work) {
-		super.beginTask(name, work);
-		this.totalWork = work;
-		this.halfWay = totalWork / 2;
+	public void beginTask(String name) {
+		monitor.beginTask(name, MAX_TICKS);
 	}
 
-	@Override
-	public void worked(int work) {
-		if (--nextProgress <= 0) {
-			//we have exhausted the current increment, so report progress
-			super.worked(1);
-			worked++;
-			if (worked >= halfWay) {
-				//we have passed the current halfway point, so double the
-				//increment and reset the halfway point.
-				currentIncrement *= 2;
-				halfWay += (totalWork - halfWay) / 2;
+	public synchronized void subTask(String name) {
+		monitor.subTask(name);
+	}
+
+	public synchronized void worked() {
+		worked += 1;
+		if (worked > nextTickAfter) {
+			worked = 0;
+			// starting with linear progress converging to asymptotic logarithmic progress:
+			nextTickAfter = 1 + (int) (nextTickAfter * 1.1f);
+			if (workReported < MAX_TICKS) {
+				workReported++;
+				monitor.worked(1);
 			}
-			//reset the progress counter to another full increment
-			nextProgress = currentIncrement;
 		}
 	}
 
+	public boolean isCanceled() {
+		return monitor.isCanceled();
+	}
 }

@@ -29,11 +29,21 @@ import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -50,6 +60,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -181,14 +192,16 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public void delete(int options, IProgressMonitor monitor) throws CoreException {
-		if (monitor == null)
+		if (monitor == null) {
 			monitor = new NullProgressMonitor();
-		else
-			monitor = new InfiniteProgress(monitor);
+		}
 		try {
-			IStatus result = internalDelete(file, monitor);
-			if (!result.isOK())
+			InfiniteProgress infMonitor = new InfiniteProgress(monitor);
+			infMonitor.beginTask(NLS.bind(Messages.deleting, file));
+			IStatus result = internalDelete(file, infMonitor, FILE_SERVICE);
+			if (!result.isOK()) {
 				throw new CoreException(result);
+			}
 		} finally {
 			monitor.done();
 		}
@@ -261,40 +274,69 @@ public class LocalFile extends FileStore {
 		return file.hashCode();
 	}
 
+	private static final ForkJoinPool FILE_SERVICE = createExecutor(Math.max(1, Runtime.getRuntime().availableProcessors()));
+
+	private static ForkJoinPool createExecutor(int threadCount) {
+		return new ForkJoinPool(threadCount, pool -> {
+			final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+			worker.setName("LocalFile Deleter"); //$NON-NLS-1$
+			worker.setDaemon(true);
+			return worker;
+		}, //
+				/* UncaughtExceptionHandler */ null, //
+				/* asyncMode */ false, // Last-In-First-Out is important to delete child before parent folders
+				/* corePoolSize */ 0, //
+				/* maximumPoolSize */ threadCount, //
+				/* minimumRunnable */ 0, null, // delete algorithm does not need any
+				/* keepAliveTime */ 1, TimeUnit.MINUTES); // pool terminates 1 thread per
+	}
+
 	/**
-	 * Deletes the given file recursively, adding failure info to
-	 * the provided status object.  The filePath is passed as a parameter
-	 * to optimize java.io.File object creation.
-	 */
-	private IStatus internalDelete(File target, IProgressMonitor monitor) {
-		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.deleting, target), IProgressMonitor.UNKNOWN);
-		subMonitor.checkCanceled();
+	* Deletes the given file recursively, adding failure info to
+	* the provided status object.  The filePath is passed as a parameter
+	* to optimize java.io.File object creation.
+	*/
+	private IStatus internalDelete(File target, InfiniteProgress infMonitor, ExecutorService executorService) {
+		infMonitor.subTask(NLS.bind(Messages.deleting, target));
+		if (infMonitor.isCanceled()) {
+			throw new OperationCanceledException();
+		}
+		List<Future<IStatus>> futures = new ArrayList<>();
 		try {
 			try {
 				// First try to delete - this should succeed for files and symbolic links to directories.
 				Files.deleteIfExists(target.toPath());
+				infMonitor.worked();
 				return Status.OK_STATUS;
 			} catch (AccessDeniedException e) {
 				// If the file is read only, it can't be deleted via Files.deleteIfExists()
 				// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=500306
 				if (target.delete()) {
+					infMonitor.worked();
 					return Status.OK_STATUS;
 				}
 				throw e;
 			}
-		} catch (DirectoryNotEmptyException e) {
+		} catch (DirectoryNotEmptyException dne) {
 			// The target is a directory and it's not empty
-			File[] directoryElements = target.listFiles();
-			if (directoryElements == null) {
-				directoryElements = new File[0]; // Unlikely to happen if the directory is not empty
-			}
-			subMonitor.setWorkRemaining(directoryElements.length);
 			// Try to delete all children.
-			MultiStatus deleteChildrenStatus = new MultiStatus(Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, Messages.deleteProblem, null);
-			for (File element : directoryElements) {
-				deleteChildrenStatus.add(internalDelete(element, subMonitor.split(1)));
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(target.toPath())) {
+				ds.forEach(p -> {
+					Future<IStatus> future = executorService.submit(() -> internalDelete(p.toFile(), infMonitor, executorService));
+					futures.add(future);
+				});
+			} catch (IOException streamException) {
+				return createErrorStatus(target, Messages.deleteProblem, streamException);
 			}
+			MultiStatus deleteChildrenStatus = new MultiStatus(Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, Messages.deleteProblem, null);
 
+			for (Future<IStatus> f : futures) {
+				try {
+					deleteChildrenStatus.add(f.get());
+				} catch (InterruptedException | ExecutionException ee) {
+					deleteChildrenStatus.add(createErrorStatus(target, Messages.deleteProblem, ee));
+				}
+			}
 			// Abort if one of the children couldn't be deleted.
 			if (!deleteChildrenStatus.isOK()) {
 				return deleteChildrenStatus;
@@ -303,6 +345,7 @@ public class LocalFile extends FileStore {
 			// Try to delete the root directory
 			try {
 				if (Files.deleteIfExists(target.toPath())) {
+					infMonitor.worked();
 					return Status.OK_STATUS;
 				}
 			} catch (Exception e1) {

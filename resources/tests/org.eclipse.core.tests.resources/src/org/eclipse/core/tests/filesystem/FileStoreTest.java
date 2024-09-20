@@ -429,6 +429,51 @@ public class FileStoreTest {
 	}
 
 	@Test
+	public void testDelete() throws Throwable {
+		IFileStore tempC = createDir(randomUniqueNotExistingFileStore(), true);
+		System.out.println("Threadcount=" + Runtime.getRuntime().availableProcessors());
+		{
+			IFileStore singleDirectory = tempC.getChild("tree");
+			createDir(singleDirectory, true);
+			List<IFileStore> treeItems = new ArrayList<>();
+			for (int i = 0; i < 2300; i++) {
+				treeItems.add(singleDirectory.getChild("file" + i));
+			}
+
+			createTree(treeItems.toArray(IFileStore[]::new));
+			assertTrue(singleDirectory.fetchInfo().exists());
+			long n0 = System.nanoTime();
+			singleDirectory.delete(EFS.NONE, null);
+			long n1 = System.nanoTime();
+			System.out.println("delete singleDirectory took ms:" + (n1 - n0) / 1_000_000);
+			assertFalse(singleDirectory.fetchInfo().exists());
+		}
+
+		{
+			IFileStore binaryTree = tempC.getChild("tree");
+			createDir(binaryTree, true);
+			createChildDirs(binaryTree, 2, 10);
+			assertTrue(binaryTree.fetchInfo().exists());
+			long n0 = System.nanoTime();
+			binaryTree.delete(EFS.NONE, null);
+			long n1 = System.nanoTime();
+			System.out.println("delete binaryTree took ms:" + (n1 - n0) / 1_000_000);
+			assertFalse(binaryTree.fetchInfo().exists());
+		}
+	}
+
+	private void createChildDirs(IFileStore parent, int count, int depth) throws CoreException {
+		if (depth <= 0) {
+			return;
+		}
+		for (int i = 0; i < count; i++) {
+			IFileStore child = parent.getChild("dir-" + depth + "-" + i);
+			child.mkdir(EFS.NONE, null);
+			createChildDirs(child, count, depth - 1);
+		}
+	}
+
+	@Test
 	public void testMove() throws Throwable {
 		/* build scenario */
 		IFileStore tempC = createDir(randomUniqueNotExistingFileStore(), true);
