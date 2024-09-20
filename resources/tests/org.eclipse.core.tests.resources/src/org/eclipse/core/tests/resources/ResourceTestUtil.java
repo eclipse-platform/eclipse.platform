@@ -18,7 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -126,11 +125,9 @@ public final class ResourceTestUtil {
 	 */
 	public static void createInFileSystem(IFileStore file, int fileSizeInBytes) throws CoreException, IOException {
 		file.getParent().mkdir(EFS.NONE, null);
-		try (OutputStream output = new BufferedOutputStream(file.openOutputStream(EFS.NONE, null))) {
-			for (int size = 0; size < fileSizeInBytes; size++) {
-				output.write(RANDOM.nextInt(Byte.SIZE));
-			}
-		}
+		byte[] content = new byte[fileSizeInBytes];
+		RANDOM.nextBytes(content);
+		file.write(content, EFS.NONE, null);
 	}
 
 	/**
