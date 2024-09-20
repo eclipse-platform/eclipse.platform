@@ -29,11 +29,21 @@ import java.net.URI;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -261,14 +271,45 @@ public class LocalFile extends FileStore {
 		return file.hashCode();
 	}
 
+
+	//	private static final ExecutorService FILE_SERVICE = createExecutor(Math.max(0, Runtime.getRuntime().availableProcessors()));
+
+	private static ExecutorService createExecutor(int threadCount) {
+		if (threadCount <= 0) {
+			return null;
+		}
+		return new ForkJoinPool(threadCount, pool -> {
+			final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+			worker.setName("LocalFile Deleter"); //$NON-NLS-1$
+			worker.setDaemon(true);
+			return worker;
+		}, null, false, 0, threadCount, 0 /* or 1? */, null, /* keepAliveTime */ 5, TimeUnit.MINUTES);
+	}
+
 	/**
-	 * Deletes the given file recursively, adding failure info to
-	 * the provided status object.  The filePath is passed as a parameter
-	 * to optimize java.io.File object creation.
-	 */
+	* Deletes the given file recursively, adding failure info to
+	* the provided status object.  The filePath is passed as a parameter
+	* to optimize java.io.File object creation.
+	*/
 	private IStatus internalDelete(File target, IProgressMonitor monitor) {
+		int THREAD_COUNT;
+		try {
+			THREAD_COUNT = Integer.valueOf(System.getProperty("THREAD_COUNT")); //$NON-NLS-1$
+		} catch (Exception e) {
+			THREAD_COUNT = Math.max(1, Runtime.getRuntime().availableProcessors());
+		}
+		ExecutorService FILE_SERVICE = createExecutor(THREAD_COUNT); // XXX
+		try {
+			return internalDelete(target, monitor, FILE_SERVICE);
+		} finally {
+			FILE_SERVICE.shutdownNow(); // XXX
+		}
+	}
+
+	private IStatus internalDelete(File target, IProgressMonitor monitor, ExecutorService executorService) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.deleting, target), IProgressMonitor.UNKNOWN);
 		subMonitor.checkCanceled();
+		List<Future<IStatus>> futures = new ArrayList<>();
 		try {
 			try {
 				// First try to delete - this should succeed for files and symbolic links to directories.
@@ -282,19 +323,27 @@ public class LocalFile extends FileStore {
 				}
 				throw e;
 			}
-		} catch (DirectoryNotEmptyException e) {
+		} catch (DirectoryNotEmptyException dne) {
 			// The target is a directory and it's not empty
-			File[] directoryElements = target.listFiles();
-			if (directoryElements == null) {
-				directoryElements = new File[0]; // Unlikely to happen if the directory is not empty
-			}
-			subMonitor.setWorkRemaining(directoryElements.length);
 			// Try to delete all children.
-			MultiStatus deleteChildrenStatus = new MultiStatus(Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, Messages.deleteProblem, null);
-			for (File element : directoryElements) {
-				deleteChildrenStatus.add(internalDelete(element, subMonitor.split(1)));
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(target.toPath())) {
+				ds.forEach(p -> {
+					Future<IStatus> future = executorService.submit(() -> internalDelete(p.toFile(), subMonitor.split(1), executorService));
+					futures.add(future);
+				});
+			} catch (IOException streamException) {
+				return createErrorStatus(target, Messages.deleteProblem, streamException);
 			}
+			subMonitor.setWorkRemaining(futures.size());
+			MultiStatus deleteChildrenStatus = new MultiStatus(Policy.PI_FILE_SYSTEM, EFS.ERROR_DELETE, Messages.deleteProblem, null);
 
+			for (Future<IStatus> f : futures) {
+				try {
+					deleteChildrenStatus.add(f.get());
+				} catch (InterruptedException | ExecutionException ee) {
+					deleteChildrenStatus.add(createErrorStatus(target, Messages.deleteProblem, ee));
+				}
+			}
 			// Abort if one of the children couldn't be deleted.
 			if (!deleteChildrenStatus.isOK()) {
 				return deleteChildrenStatus;

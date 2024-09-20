@@ -429,6 +429,94 @@ public class FileStoreTest {
 	}
 
 	@Test
+	public void testDelete() throws Throwable {
+		// for a fair comparsion start with many threads to heat up the CPUs
+		for (int THREAD_COUNT = Math.max(1,
+				Runtime.getRuntime().availableProcessors() + 1); THREAD_COUNT > 0; THREAD_COUNT--) {
+			IFileStore tempC = createDir(randomUniqueNotExistingFileStore(), true);
+			System.out.println("Threadcount=" + THREAD_COUNT);
+			System.setProperty("THREAD_COUNT", Integer.toString(THREAD_COUNT));
+			{
+				IFileStore singleDirectory = tempC.getChild("tree");
+				createDir(singleDirectory, true);
+				List<IFileStore> treeItems = new ArrayList<>();
+				for (int i = 0; i < 2300; i++) {
+					treeItems.add(singleDirectory.getChild("file" + i));
+				}
+
+				createTree(treeItems.toArray(IFileStore[]::new));
+				assertTrue(singleDirectory.fetchInfo().exists());
+				long n0 = System.nanoTime();
+				singleDirectory.delete(EFS.NONE, null);
+				long n1 = System.nanoTime();
+				System.out.println("delete singleDirectory took ms:" + (n1 - n0) / 1_000_000);
+				// 327ms->126ms
+				assertFalse(singleDirectory.fetchInfo().exists());
+			}
+
+			{
+				IFileStore binaryTree = tempC.getChild("tree");
+				createDir(binaryTree, true);
+				createChildDirs(binaryTree, 2, 10);
+				assertTrue(binaryTree.fetchInfo().exists());
+				long n0 = System.nanoTime();
+				binaryTree.delete(EFS.NONE, null);
+				long n1 = System.nanoTime();
+				System.out.println("delete binaryTree took ms:" + (n1 - n0) / 1_000_000);
+				// 457ms->104ms
+				assertFalse(binaryTree.fetchInfo().exists());
+			}
+		}
+		// Threadcount=12
+		// delete singleDirectory took ms:126
+		// delete binaryTree took ms:104
+		// Threadcount=11
+		// delete singleDirectory took ms:125
+		// delete binaryTree took ms:133
+		// Threadcount=10
+		// delete singleDirectory took ms:128
+		// delete binaryTree took ms:139
+		// Threadcount=9
+		// delete singleDirectory took ms:132
+		// delete binaryTree took ms:103
+		// Threadcount=8
+		// delete singleDirectory took ms:120
+		// delete binaryTree took ms:104
+		// Threadcount=7
+		// delete singleDirectory took ms:105
+		// delete binaryTree took ms:112
+		// Threadcount=6
+		// delete singleDirectory took ms:111
+		// delete binaryTree took ms:109
+		// Threadcount=5
+		// delete singleDirectory took ms:111
+		// delete binaryTree took ms:122
+		// Threadcount=4
+		// delete singleDirectory took ms:120
+		// delete binaryTree took ms:175
+		// Threadcount=3
+		// delete singleDirectory took ms:161
+		// delete binaryTree took ms:198
+		// Threadcount=2
+		// delete singleDirectory took ms:178
+		// delete binaryTree took ms:238
+		// Threadcount=1
+		// delete singleDirectory took ms:327
+		// delete binaryTree took ms:457
+	}
+
+	private void createChildDirs(IFileStore parent, int count, int depth) throws CoreException {
+		if (depth <= 0) {
+			return;
+		}
+		for (int i = 0; i < count; i++) {
+			IFileStore child = parent.getChild("dir-" + depth + "-" + i);
+			child.mkdir(EFS.NONE, null);
+			createChildDirs(child, count, depth - 1);
+		}
+	}
+
+	@Test
 	public void testMove() throws Throwable {
 		/* build scenario */
 		IFileStore tempC = createDir(randomUniqueNotExistingFileStore(), true);
