@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2023 Hannes Wellmann and others.
+ * Copyright (c) 2023, 2026 Hannes Wellmann and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,21 +10,25 @@
  *
  * Contributors:
  *     Hannes Wellmann - initial API and implementation
+ *     Hannes Wellmann - support multiple versions of one annotation class
  *******************************************************************************/
 
 package org.eclipse.e4.core.internal.di;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;
 import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
 
@@ -42,14 +46,11 @@ public class AnnotationLookup {
 	private AnnotationLookup() {
 	}
 
-	public static record AnnotationProxy(List<Class<? extends Annotation>> classes) {
-		public AnnotationProxy {
-			classes = List.copyOf(classes);
-		}
+	public static record AnnotationProxy(Set<String> classes) {
 
 		public boolean isPresent(AnnotatedElement element) {
-			for (Class<? extends Annotation> annotationClass : classes) {
-				if (element.isAnnotationPresent(annotationClass)) {
+			for (Annotation annotation : element.getAnnotations()) {
+				if (isOfAnyTypeIn(annotation.annotationType(), classes())) {
 					return true;
 				}
 			}
@@ -57,139 +58,94 @@ public class AnnotationLookup {
 		}
 	}
 
-	static final AnnotationProxy INJECT = createProxyForClasses(jakarta.inject.Inject.class,
-			() -> javax.inject.Inject.class);
-	static final AnnotationProxy SINGLETON = createProxyForClasses(jakarta.inject.Singleton.class,
-			() -> javax.inject.Singleton.class);
-	static final AnnotationProxy QUALIFIER = createProxyForClasses(jakarta.inject.Qualifier.class,
-			() -> javax.inject.Qualifier.class);
+	static final AnnotationProxy INJECT = createProxyForClasses( //
+			"jakarta.inject.Inject", "javax.inject.Inject"); //$NON-NLS-1$ //$NON-NLS-2$
+	static final AnnotationProxy SINGLETON = createProxyForClasses( //
+			"jakarta.inject.Singleton", "javax.inject.Singleton"); //$NON-NLS-1$//$NON-NLS-2$
+	static final AnnotationProxy QUALIFIER = createProxyForClasses( //
+			"jakarta.inject.Qualifier", "javax.inject.Qualifier"); //$NON-NLS-1$//$NON-NLS-2$
 
-	static final AnnotationProxy PRE_DESTROY = createProxyForClasses(jakarta.annotation.PreDestroy.class,
-			() -> javax.annotation.PreDestroy.class);
-	public static final AnnotationProxy POST_CONSTRUCT = createProxyForClasses(jakarta.annotation.PostConstruct.class,
-			() -> javax.annotation.PostConstruct.class);
+	static final AnnotationProxy PRE_DESTROY = createProxyForClasses( //
+			"jakarta.annotation.PreDestroy", "javax.annotation.PreDestroy"); //$NON-NLS-1$//$NON-NLS-2$
+	public static final AnnotationProxy POST_CONSTRUCT = createProxyForClasses( //
+			"jakarta.annotation.PostConstruct", "javax.annotation.PostConstruct"); //$NON-NLS-1$//$NON-NLS-2$
 
-	static final AnnotationProxy OPTIONAL = createProxyForClasses(org.eclipse.e4.core.di.annotations.Optional.class,
-			null);
+	static final AnnotationProxy OPTIONAL = createProxyForClasses("org.eclipse.e4.core.di.annotations.Optional"); //$NON-NLS-1$
 
-	private static AnnotationProxy createProxyForClasses(Class<? extends Annotation> jakartaAnnotationClass,
-			Supplier<Class<? extends Annotation>> javaxAnnotationClass) {
-		List<Class<?>> classes = getAvailableClasses(jakartaAnnotationClass, javaxAnnotationClass);
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		List<Class<? extends Annotation>> annotationClasses = (List) classes;
-		return new AnnotationProxy(annotationClasses);
+	private static AnnotationProxy createProxyForClasses(String... annotationClasses) {
+		return new AnnotationProxy(Set.of(annotationClasses));
 	}
 
-	private static final List<Class<?>> PROVIDER_TYPES = getAvailableClasses(jakarta.inject.Provider.class,
-			() -> javax.inject.Provider.class);
+	private static final Set<String> PROVIDER_TYPES = Set.of( //
+			"jakarta.inject.Provider", "javax.inject.Provider"); //$NON-NLS-1$//$NON-NLS-2$
 
 	static boolean isProvider(Type type) {
-		for (Class<?> clazz : PROVIDER_TYPES) {
-			if (clazz.equals(type)) {
-				return true;
-			}
+		return PROVIDER_TYPES.contains(type.getTypeName());
+	}
+
+	public static Object getProvider(IObjectDescriptor descriptor, InjectorImpl injector,
+			PrimaryObjectSupplier provider) {
+		Class<?> providerClass;
+		if ((descriptor.getDesiredType() instanceof ParameterizedType parameterizedType
+				&& parameterizedType.getRawType() instanceof Class<?> desiredClass)) {
+			providerClass = desiredClass;
+		} else {
+			// Caller must ensure that the providerClass can be extracted
+			throw new IllegalArgumentException("Failed to obtain provider class from " + descriptor); //$NON-NLS-1$
 		}
-		return false;
-	}
-
-	@FunctionalInterface
-	private interface ProviderFactory {
-		Object create(IObjectDescriptor descriptor, IInjector injector, PrimaryObjectSupplier provider);
-	}
-
-	private static final ProviderFactory PROVIDER_FACTORY;
-	static {
-		ProviderFactory factory;
-		try {
-			/**
-			 * This subclass solely exists for the purpose to not require the presence of
-			 * the javax.inject.Provider interface in the runtime when the base-class is
-			 * loaded. This can be deleted when support for javax is removed form the
-			 * E4-injector.
-			 */
-			class JavaxCompatibilityProviderImpl<T> extends ProviderImpl<T> implements javax.inject.Provider<T> {
-				public JavaxCompatibilityProviderImpl(IObjectDescriptor descriptor, IInjector injector,
-						PrimaryObjectSupplier provider) {
-					super(descriptor, injector, provider);
-				}
-			}
-			factory = JavaxCompatibilityProviderImpl::new;
-			// Attempt to load the class early in order to enforce an early class-loading
-			// and to be able to handle the NoClassDefFoundError below in case
-			// javax-Provider is not available in the runtime:
-			factory.create(null, null, null);
-		} catch (NoClassDefFoundError e) {
-			factory = ProviderImpl::new;
-		}
-		PROVIDER_FACTORY = factory;
-	}
-
-	public static Object getProvider(IObjectDescriptor descriptor, IInjector injector, PrimaryObjectSupplier provider) {
-		return PROVIDER_FACTORY.create(descriptor, injector, provider);
+		return Proxy.newProxyInstance(providerClass.getClassLoader(), new Class[] { providerClass },
+				(proxy, method, args) -> switch (method.getName()) {
+				case "get" -> injector.makeFromProvider(descriptor, provider); //$NON-NLS-1$
+				case "hashCode" -> System.identityHashCode(proxy); //$NON-NLS-1$
+				case "equals" -> proxy == args[0]; //$NON-NLS-1$
+				case "toString" -> "Proxy for " + descriptor; //$NON-NLS-1$ //$NON-NLS-2$
+				default -> throw new UnsupportedOperationException("Unsupported method: " + method + "()"); //$NON-NLS-1$ //$NON-NLS-2$
+				});
 	}
 
 	public static String getQualifierValue(IObjectDescriptor descriptor) {
-		var annotations = NAMED_ANNOTATION2VALUE_GETTER.entrySet();
-		for (Entry<Class<? extends Annotation>, Function<Annotation, String>> entry : annotations) {
-			Class<? extends Annotation> annotationClass = entry.getKey();
-			if (descriptor.hasQualifier(annotationClass)) {
-				Annotation namedAnnotation = descriptor.getQualifier(annotationClass);
-				return entry.getValue().apply(namedAnnotation);
+		Annotation[] qualifiers = descriptor.getQualifiers();
+		if (qualifiers != null) {
+			for (Annotation annotation : qualifiers) {
+				Class<? extends Annotation> annotationType = annotation.annotationType();
+				if (isOfAnyTypeIn(annotationType, NAMED_ANNOTATIONS)) {
+					Function<Annotation, String> getter = NAMED_VALUE_GETTER.computeIfAbsent(annotationType,
+							AnnotationLookup::createValueGetter);
+					return getter.apply(annotation);
+				}
 			}
 		}
 		return null;
 	}
 
-	private static final Map<Class<? extends Annotation>, Function<Annotation, String>> NAMED_ANNOTATION2VALUE_GETTER;
+	private static final Set<String> NAMED_ANNOTATIONS = Set.of( //
+			"jakarta.inject.Named", "javax.inject.Named"); //$NON-NLS-1$//$NON-NLS-2$
 
-	static {
-		Map<Class<? extends Annotation>, Function<Annotation, String>> annotation2valueGetter = new HashMap<>();
-		annotation2valueGetter.put(jakarta.inject.Named.class, a -> ((jakarta.inject.Named) a).value());
-		loadJavaxClass(
-				() -> annotation2valueGetter.put(javax.inject.Named.class, a -> ((javax.inject.Named) a).value()));
-		NAMED_ANNOTATION2VALUE_GETTER = Map.copyOf(annotation2valueGetter);
-	}
+	private static final Map<Class<? extends Annotation>, Function<Annotation, String>> NAMED_VALUE_GETTER = Collections
+			.synchronizedMap(new WeakHashMap<>());
 
-	private static List<Class<?>> getAvailableClasses(Class<?> jakartaClass, Supplier<? extends Class<?>> javaxClass) {
-		List<Class<?>> classes = new ArrayList<>();
-		classes.add(jakartaClass);
-		if (javaxClass != null) {
-			loadJavaxClass(() -> classes.add(javaxClass.get()));
-		}
-		return classes;
-	}
-
-	private static boolean javaxWarningPrinted = false;
-
-	private static void loadJavaxClass(Runnable run) {
+	private static Function<Annotation, String> createValueGetter(Class<? extends Annotation> type) {
+		MethodHandle handle;
 		try {
-			if (!getSystemPropertyFlag("eclipse.e4.inject.javax.disabled", false)) { //$NON-NLS-1$
-				run.run();
-				if (!javaxWarningPrinted) {
-					if (getSystemPropertyFlag("eclipse.e4.inject.javax.warning", true)) { //$NON-NLS-1$
-						@SuppressWarnings("nls")
-						String message = """
-								WARNING: Annotation classes from the 'javax.inject' or 'javax.annotation' package found.
-								It is recommended to migrate to the corresponding replacements in the jakarta namespace.
-								The Eclipse E4 Platform will remove support for those javax-annotations in a future release.
-								To suppress this warning, set the VM property: -Declipse.e4.inject.javax.warning=false
-								To disable processing of 'javax' annotations entirely, set the VM property: -Declipse.e4.inject.javax.disabled=true
-								""";
-						System.err.println(message);
-					}
-					javaxWarningPrinted = true;
-				}
-			}
-		} catch (NoClassDefFoundError e) {
-			// Ignore exception: javax-annotation seems to be unavailable in the runtime
+			Lookup lookup = MethodHandles.publicLookup();
+			handle = lookup.findVirtual(type, "value", MethodType.methodType(String.class)); //$NON-NLS-1$
+		} catch (NoSuchMethodException | IllegalAccessException e) {
+			throw new IllegalStateException(e);
 		}
+		// Expect an invocation object typed as general Annotation (the specific
+		// sub-class is unknown at compile-time) to allow more performant invoke exact
+		MethodHandle methodHandle = handle.asType(handle.type().changeParameterType(0, Annotation.class));
+		return a -> {
+			try {
+				return (String) methodHandle.invokeExact(a);
+			} catch (Throwable e) {
+				throw new IllegalStateException(e);
+			}
+		};
 	}
 
-	private static boolean getSystemPropertyFlag(String key, boolean defaultValue) {
-		String value = System.getProperty(key);
-		return value == null // assume "true" if value is empty (to allow -Dkey as shorthand for -Dkey=true)
-				? defaultValue
-				: (value.isEmpty() || Boolean.parseBoolean(value));
+	private static boolean isOfAnyTypeIn(Class<? extends Annotation> annotationType, Set<String> annotations) {
+		return annotations.contains(annotationType.getName());
 	}
 
 }

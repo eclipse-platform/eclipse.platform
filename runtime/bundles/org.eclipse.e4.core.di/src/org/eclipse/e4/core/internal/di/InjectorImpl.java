@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.e4.core.di.IBinding;
 import org.eclipse.e4.core.di.IInjector;
@@ -50,8 +48,6 @@ import org.eclipse.e4.core.di.suppliers.IRequestor;
 import org.eclipse.e4.core.di.suppliers.PrimaryObjectSupplier;
 import org.eclipse.e4.core.internal.di.AnnotationLookup.AnnotationProxy;
 import org.eclipse.e4.core.internal.di.osgi.LogHelper;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 /**
  * Reflection-based dependency injector.
@@ -338,7 +334,7 @@ public class InjectorImpl implements IInjector {
 		Binding binding = findBinding(descriptor);
 		Class<?> implementationClass;
 		if (binding == null) {
-			implementationClass = getProviderType(descriptor.getDesiredType());
+			implementationClass = getProvidedType(descriptor.getDesiredType());
 		} else {
 			implementationClass = binding.getImplementationClass();
 		}
@@ -505,7 +501,7 @@ public class InjectorImpl implements IInjector {
 
 		// 1) check if we have a Provider<T>
 		for (int i = 0; i < actualArgs.length; i++) {
-			Class<?> providerClass = getProviderType(descriptors[i].getDesiredType());
+			Class<?> providerClass = getProvidedType(descriptors[i].getDesiredType());
 			if (providerClass == null) {
 				continue;
 			}
@@ -887,7 +883,7 @@ public class InjectorImpl implements IInjector {
 	/**
 	 * Returns null if not a provider
 	 */
-	private Class<?> getProviderType(Type type) {
+	private Class<?> getProvidedType(Type type) {
 		if (!(type instanceof ParameterizedType)) {
 			return null;
 		}
@@ -936,7 +932,7 @@ public class InjectorImpl implements IInjector {
 	}
 
 	private Binding findBinding(IObjectDescriptor descriptor) {
-		Class<?> desiredClass = getProviderType(descriptor.getDesiredType());
+		Class<?> desiredClass = getProvidedType(descriptor.getDesiredType());
 		if (desiredClass == null) {
 			desiredClass = getDesiredClass(descriptor.getDesiredType());
 		}
@@ -1001,23 +997,6 @@ public class InjectorImpl implements IInjector {
 		Method[] methods = getDeclaredMethods(objectClass);
 		for (Method method : methods) {
 			if (!isAnnotationPresent(method, annotation)) {
-				if (shouldDebug) {
-					for (Annotation a : method.getAnnotations()) {
-						if (annotation.classes().stream().map(Class::getName)
-								.anyMatch(a.annotationType().getName()::equals)) {
-							StringBuilder tmp = new StringBuilder();
-							tmp.append("Possbible annotation mismatch: method \""); //$NON-NLS-1$
-							tmp.append(method.toString());
-							tmp.append("\" annotated with \""); //$NON-NLS-1$
-							tmp.append(describeClass(a.annotationType()));
-							tmp.append("\" but was looking for \""); //$NON-NLS-1$
-							tmp.append(annotation.classes().stream().map(InjectorImpl::describeClass)
-									.collect(Collectors.joining(System.lineSeparator() + " or "))); //$NON-NLS-1$
-							tmp.append("\""); //$NON-NLS-1$
-							LogHelper.logWarning(tmp.toString(), null);
-						}
-					}
-				}
 				continue;
 			}
 			if (isOverridden(method, classHierarchy)) {
@@ -1036,22 +1015,6 @@ public class InjectorImpl implements IInjector {
 			requestor.setResolvedArgs(actualArgs);
 			requestor.execute();
 		}
-	}
-
-	/** Provide a human-meaningful description of the provided class */
-	private static String describeClass(Class<?> cl) {
-		Bundle b = FrameworkUtil.getBundle(cl);
-		if (b != null) {
-			return b.getSymbolicName() + ":" + b.getVersion() + ":" + cl.getName(); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		CodeSource clazzCS = cl.getProtectionDomain().getCodeSource();
-		if (clazzCS != null) {
-			return clazzCS.getLocation() + ">" + cl.getName(); //$NON-NLS-1$
-		}
-		if (cl.getClassLoader() == null) {
-			return cl.getName() + " [via bootstrap classloader]"; //$NON-NLS-1$
-		}
-		return cl.getName();
 	}
 
 	@Override
