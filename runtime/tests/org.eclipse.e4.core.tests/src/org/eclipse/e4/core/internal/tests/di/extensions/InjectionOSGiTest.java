@@ -18,9 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
@@ -106,27 +104,6 @@ public class InjectionOSGiTest {
 
 		target = ContextInjectionFactory.make(InjectionTarget.class,
 				localContext);
-	}
-
-	@Test
-	public void ensureJavaxIsNotAvailable() {
-		// This entire test-plugin is not really useful if javax.inject and
-		// jakarta.inject is available and this test-case fails then.
-		// However due to the way I-build tests are set up (i.e. by using a built
-		// Eclipse installation) exactly that's the case.
-		// -> Disable this for I-build tests
-		assumeFalse(Boolean.parseBoolean(System.getenv().getOrDefault("ECLIPSE_I_BUILD_TEST", "false")));
-
-		// Ensure that the providing bundles of the following classes are absent of the
-		// test-runtime and thus the mentioned classes cannot be loaded
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Inject"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Singleton"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Qualifier"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Provider"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.inject.Named"));
-
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.annotation.PreDestroy"));
-		assertThrows(ClassNotFoundException.class, () -> Class.forName("javax.annotation.PostConstruct"));
 	}
 
 	@Test
