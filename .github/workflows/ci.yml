@@ -10,12 +10,5 @@ on:
     branches: [ master ]
 
 jobs:
-  check-freeze-period:
-    if: github.event_name == 'pull_request'
-    uses: eclipse-platform/eclipse.platform.releng.aggregator/.github/workflows/verifyFreezePeriod.yml@master
-  check-merge-commits:
-    if: github.event_name == 'pull_request'
-    uses: eclipse-platform/eclipse.platform.releng.aggregator/.github/workflows/checkMergeCommits.yml@master
   build:
     uses: eclipse-platform/eclipse.platform.releng.aggregator/.github/workflows/mavenBuild.yml@master
-
