@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -239,13 +240,12 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	protected LaunchConfiguration(String memento) throws CoreException {
 		Exception ex = null;
 		try {
-			Element root = null;
 			@SuppressWarnings("restriction")
 			DocumentBuilder parser = org.eclipse.core.internal.runtime.XmlProcessorFactory.createDocumentBuilderWithErrorOnDOCTYPE();
 			parser.setErrorHandler(new DefaultHandler());
 			StringReader reader = new StringReader(memento);
 			InputSource source = new InputSource(reader);
-			root = parser.parse(source).getDocumentElement();
+			Element root = parser.parse(source).getDocumentElement();
 
 			String localString = root.getAttribute(IConfigurationElementConstants.LOCAL);
 			String path = root.getAttribute(IConfigurationElementConstants.PATH);
@@ -285,14 +285,11 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	@Override
 	public boolean contentsEqual(ILaunchConfiguration object) {
 		try {
-			if (object instanceof LaunchConfiguration) {
-				LaunchConfiguration otherConfig = (LaunchConfiguration) object;
-				return getName().equals(otherConfig.getName())
-					 && getType().equals(otherConfig.getType())
-					 && equalOrNull(getContainer(), otherConfig.getContainer())
-					 && getInfo().equals(otherConfig.getInfo());
-			}
-			return false;
+			return object instanceof LaunchConfiguration otherConfig //
+					&& getName().equals(otherConfig.getName()) //
+					&& getType().equals(otherConfig.getType()) //
+					&& Objects.equals(getContainer(), otherConfig.getContainer()) //
+					&& getInfo().equals(otherConfig.getInfo());
 		} catch (CoreException ce) {
 			return false;
 		}
@@ -300,8 +297,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 
 	@Override
 	public ILaunchConfigurationWorkingCopy copy(String name) throws CoreException {
-		ILaunchConfigurationWorkingCopy copy = new LaunchConfigurationWorkingCopy(this, name);
-		return copy;
+		return new LaunchConfigurationWorkingCopy(this, name);
 	}
 
 	@Override
@@ -362,32 +358,13 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (object instanceof ILaunchConfiguration) {
+		if (object instanceof LaunchConfiguration config) {
 			if (isWorkingCopy()) {
 				return this == object;
 			}
-			LaunchConfiguration config = (LaunchConfiguration) object;
 			if (!config.isWorkingCopy()) {
-				return getName().equals(config.getName()) &&
-					equalOrNull(getContainer(), config.getContainer());
+				return getName().equals(config.getName()) && Objects.equals(getContainer(), config.getContainer());
 			}
-		}
-		return false;
-	}
-
-	/**
-	 * Returns whether the given objects are equal or both <code>null</code>.
-	 *
-	 * @param o1 the object
-	 * @param o2 the object to be compared to o1
-	 * @return whether the given objects are equal or both <code>null</code>
-	 * @since 3.5
-	 */
-	protected boolean equalOrNull(Object o1, Object o2) {
-		if (o1 == null) {
-			return o2 == null;
-		} else if (o2 != null) {
-			return o1.equals(o2);
 		}
 		return false;
 	}
@@ -542,7 +519,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 		if (types == null || types.size() != paths.size()) {
 			throw new CoreException(newStatus(DebugCoreMessages.LaunchConfiguration_0, DebugPlugin.ERROR, null));
 		}
-		ArrayList<IResource> list = new ArrayList<>();
+		List<IResource> list = new ArrayList<>();
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		for(int i = 0; i < paths.size(); i++) {
 			String pathStr = paths.get(i);
@@ -650,12 +627,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 
 	@Override
 	public int hashCode() {
-		IContainer container = getContainer();
-		if (container == null) {
-			return getName().hashCode();
-		} else {
-			return getName().hashCode() + container.hashCode();
-		}
+		return Objects.hash(getName(), getContainer());
 	}
 
 	@Override
