@@ -91,7 +91,8 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public final class InternalPlatform {
 
-	private static final String[] ARCH_LIST = { Platform.ARCH_AARCH64, Platform.ARCH_X86, Platform.ARCH_X86_64 };
+	private static final String[] ARCH_LIST = { Platform.ARCH_AARCH64, Platform.ARCH_PPC64LE, Platform.ARCH_RISCV64,
+			Platform.ARCH_X86_64 };
 
 	public static final StackWalker STACK_WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
@@ -132,7 +133,7 @@ public final class InternalPlatform {
 
 	private static final InternalPlatform singleton = new InternalPlatform();
 
-	private static final String[] WS_LIST = { Platform.WS_COCOA, Platform.WS_GTK, Platform.WS_WIN32, Platform.WS_WPF };
+	private static final String[] WS_LIST = { Platform.WS_COCOA, Platform.WS_GTK, Platform.WS_WIN32 };
 	private IPath cachedInstanceLocation; // Cache the path of the instance location
 	private ServiceTracker<Location,Location> configurationLocation = null;
 	private BundleContext context;

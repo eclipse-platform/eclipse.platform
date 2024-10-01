@@ -353,7 +353,9 @@ public final class Platform {
 	 * </p>
 	 *
 	 * @since 3.0
+	 * @deprecated not supported anymore
 	 */
+	@Deprecated
 	public static final String ARCH_X86 = "x86";//$NON-NLS-1$
 
 	/**
@@ -548,7 +550,9 @@ public final class Platform {
 	 * machine using the WPF windowing system.
 	 *
 	 * @since 3.3
+	 * @deprecated not supported anymore
 	 */
+	@Deprecated
 	public static final String WS_WPF = "wpf";//$NON-NLS-1$
 
 	/**
