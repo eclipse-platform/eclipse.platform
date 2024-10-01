@@ -14,7 +14,10 @@
 
 package org.eclipse.e4.core.contexts;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.ComponentPropertyType;
 
 /**
  * A context function encapsulates evaluation of some code within an
@@ -58,8 +61,22 @@ public interface IContextFunction {
 	 * should be registered in.
 	 *
 	 * @see BundleContext#getServiceReference(String)
+	 * @see ServiceContextKey
 	 */
 	String SERVICE_CONTEXT_KEY = "service.context.key"; //$NON-NLS-1$
+
+	/**
+	 * An OSGi service component property type used to indicate the context key this
+	 * function should be registered in.
+	 *
+	 * @since 1.13
+	 * @see IContextFunction#SERVICE_CONTEXT_KEY
+	 */
+	@ComponentPropertyType
+	@Retention(RetentionPolicy.SOURCE)
+	public @interface ServiceContextKey {
+		Class<?> value();
+	}
 
 	/**
 	 * Evaluates the function based on the provided arguments and context to
