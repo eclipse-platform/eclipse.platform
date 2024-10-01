@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,11 +10,15 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Hannes Wellmann - Add IContextFunction.ServiceContextKey OSGi component property type
  *******************************************************************************/
 
 package org.eclipse.e4.core.contexts;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.ComponentPropertyType;
 
 /**
  * A context function encapsulates evaluation of some code within an
@@ -58,8 +62,22 @@ public interface IContextFunction {
 	 * should be registered in.
 	 *
 	 * @see BundleContext#getServiceReference(String)
+	 * @see ServiceContextKey
 	 */
 	String SERVICE_CONTEXT_KEY = "service.context.key"; //$NON-NLS-1$
+
+	/**
+	 * An OSGi service component property type used to indicate the context key this
+	 * function should be registered in.
+	 *
+	 * @since 1.13
+	 * @see #SERVICE_CONTEXT_KEY
+	 */
+	@ComponentPropertyType
+	@Retention(RetentionPolicy.SOURCE)
+	public @interface ServiceContextKey {
+		Class<?> value();
+	}
 
 	/**
 	 * Evaluates the function based on the provided arguments and context to
