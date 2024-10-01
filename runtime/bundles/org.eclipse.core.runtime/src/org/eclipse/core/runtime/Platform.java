@@ -410,6 +410,15 @@ public final class Platform {
 	public static final String ARCH_AARCH64 = "aarch64";//$NON-NLS-1$
 
 	/**
+	 * Constant string (value {@code aarch64} indicating the platform is running on
+	 * an RISC-V 64bit-based architecture.
+	 *
+	 * @since 3.32
+	 *
+	 */
+	public static final String ARCH_RISCV64 = "riscv64";//$NON-NLS-1$
+
+	/**
 	 * Constant string (value "amd64") indicating the platform is running on an
 	 * AMD64-based architecture.
 	 *
