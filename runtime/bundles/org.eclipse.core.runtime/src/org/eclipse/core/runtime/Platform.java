@@ -418,6 +418,14 @@ public final class Platform {
 	public static final String ARCH_AARCH64 = "aarch64";//$NON-NLS-1$
 
 	/**
+	 * Constant string (value {@code ppc64le}) indicating the platform is running on
+	 * an little-endian PowerPC 64bit based architecture.
+	 *
+	 * @since 3.32
+	 */
+	public static final String ARCH_PPC64LE = "ppc64le"; //$NON-NLS-1$
+
+	/**
 	 * Constant string (value {@code riscv64} indicating the platform is running on
 	 * an RISC-V 64bit-based architecture.
 	 *
