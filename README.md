@@ -25,8 +25,11 @@ Update provides Java interfaces like `IPlatformConfiguration`. `IPlatformConfigu
 
 Contributions are most welcome. There are many ways to contribute, from entering high quality bug reports, to contributing code or documentation changes.
 
-For a complete guide, see the https://github.com/eclipse-platform/.github/blob/main/CONTRIBUTING.md.
+For a complete guide, see the [CONTRIBUTING](https://github.com/eclipse-platform/.github/blob/main/CONTRIBUTING.md) page.
 
+[![Create Eclipse Development Environment for Eclipse Platform](https://download.eclipse.org/oomph/www/setups/svg/Eclipse_Platform.svg)](
+https://www.eclipse.org/setups/installer/?url=https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/releng/org.eclipse.platform.setup/PlatformConfiguration.setup&show=true
+"Click to open Eclipse-Installer Auto Launch or drag into your running installer")
 
 ## Issue Tracking
 
