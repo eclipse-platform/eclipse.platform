@@ -644,12 +644,8 @@ public class BrowserIntroPartImplementation extends
 		// and returns Browser's BASE_URL if we are on a dynamic page
 		// Also Handles the case where we use browser's base
 		// HTML which we do not want to cache.
-		if (browser != null && browser.getUrl() != null
-				&& browser.getUrl().length() > 0
-				&& !browser.isLocationForCustomText(browser.getUrl())
-				&& !(browser.getUrl().equals("file:///"))) { //$NON-NLS-1$
-
-			String currentURL = browser.getUrl();
+		if (browser != null && !browser.getUrlOptional().isEmpty()) {
+			String currentURL = browser.getUrlOptional().get();
 			if (currentURL != null) {
 				memento.putString(IIntroConstants.MEMENTO_CURRENT_PAGE_ATT,
 					currentURL);
