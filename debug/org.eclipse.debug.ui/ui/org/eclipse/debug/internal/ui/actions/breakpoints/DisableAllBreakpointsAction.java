@@ -48,10 +48,7 @@ public class DisableAllBreakpointsAction extends AbstractRemoveAllActionDelegate
 				DebugUIPlugin.log(e);
 			}
 		}
-		if (breakpoints.length >= 0) {
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	@Override
