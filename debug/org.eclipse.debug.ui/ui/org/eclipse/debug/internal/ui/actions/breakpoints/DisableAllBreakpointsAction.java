@@ -37,7 +37,21 @@ public class DisableAllBreakpointsAction extends AbstractRemoveAllActionDelegate
 
 	@Override
 	protected boolean isEnabled() {
-		return DebugPlugin.getDefault().getBreakpointManager().getBreakpoints().length > 0;
+		IBreakpointManager breakpointManager = DebugPlugin.getDefault().getBreakpointManager();
+		IBreakpoint[] breakpoints = breakpointManager.getBreakpoints();
+		for (IBreakpoint bp : breakpoints) {
+			try {
+				if (bp.isEnabled()) {
+					return true;
+				}
+			} catch (CoreException e) {
+				DebugUIPlugin.log(e);
+			}
+		}
+		if (breakpoints.length >= 0) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
