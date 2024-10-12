@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2019 ArSysOp and others.
+ *  Copyright (c) 2019, 2024 ArSysOp and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -69,7 +69,7 @@ public final class AboutSections {
 	 * @return the section filter string
 	 */
 	public static String createSectionFilter(String section) {
-		return new StringBuilder().append('(').append(SECTION).append('=').append(section).append(')').toString();
+		return '(' + SECTION + '=' + section + ')';
 	}
 
 }

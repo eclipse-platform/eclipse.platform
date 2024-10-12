@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2019, 2020 ArSysOp and others.
+ *  Copyright (c) 2019, 2024 ArSysOp and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -27,7 +27,8 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.component.annotations.Component;
 
-@Component(service = { ISystemInformation.class }, property = { AboutSections.SECTION + '=' + AboutSections.SECTION_INSTALLED_BUNDLES })
+@Component(service = ISystemInformation.class)
+@ISystemInformation.Section(AboutSections.SECTION_INSTALLED_BUNDLES)
 public class InstalledBundles implements ISystemInformation {
 
 	@Override
@@ -71,21 +72,14 @@ public class InstalledBundles implements ISystemInformation {
 	}
 
 	private String getStateName(int state) {
-		switch (state) {
-		case Bundle.INSTALLED:
-			return AboutMessages.bundleStateInstalled;
-		case Bundle.RESOLVED:
-			return AboutMessages.bundleStateResolved;
-		case Bundle.STARTING:
-			return AboutMessages.bundleStateStarting;
-		case Bundle.STOPPING:
-			return AboutMessages.bundleStateStopping;
-		case Bundle.UNINSTALLED:
-			return AboutMessages.bundleStateUninstalled;
-		case Bundle.ACTIVE:
-			return AboutMessages.bundleStateActive;
-		default:
-			return AboutMessages.bundleStateUnknown;
-		}
+		return switch (state) {
+		case Bundle.INSTALLED -> AboutMessages.bundleStateInstalled;
+		case Bundle.RESOLVED -> AboutMessages.bundleStateResolved;
+		case Bundle.STARTING -> AboutMessages.bundleStateStarting;
+		case Bundle.STOPPING -> AboutMessages.bundleStateStopping;
+		case Bundle.UNINSTALLED -> AboutMessages.bundleStateUninstalled;
+		case Bundle.ACTIVE -> AboutMessages.bundleStateActive;
+		default -> AboutMessages.bundleStateUnknown;
+		};
 	}
 }

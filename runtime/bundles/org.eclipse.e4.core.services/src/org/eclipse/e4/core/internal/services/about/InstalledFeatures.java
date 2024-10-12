@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2019 ArSysOp and others.
+ *  Copyright (c) 2019, 2024 ArSysOp and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -29,7 +29,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
-@Component(service = { ISystemInformation.class }, property = { AboutSections.SECTION + '=' + AboutSections.SECTION_INSTALLED_FEATURES })
+@Component(service = ISystemInformation.class)
+@ISystemInformation.Section(AboutSections.SECTION_INSTALLED_FEATURES)
 public class InstalledFeatures implements ISystemInformation {
 
 	private final List<IBundleGroupProvider> providers = new ArrayList<>();

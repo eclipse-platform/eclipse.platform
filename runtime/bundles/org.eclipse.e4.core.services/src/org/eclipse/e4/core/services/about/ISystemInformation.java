@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2019 ArSysOp and others.
+ *  Copyright (c) 2019, 2024 ArSysOp and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -14,6 +14,9 @@
 package org.eclipse.e4.core.services.about;
 
 import java.io.PrintWriter;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+import org.osgi.service.component.annotations.ComponentPropertyType;
 
 /**
  * Collects the system information for the "about"-related functionality.
@@ -30,5 +33,18 @@ public interface ISystemInformation {
 	 *               closed by implementor
 	 */
 	void append(PrintWriter writer);
+
+	/**
+	 * An OSGi service component property type to define the information to be
+	 * related with the specified section.
+	 *
+	 * @since 2.5
+	 * @see #SECTION
+	 */
+	@ComponentPropertyType
+	@Target(ElementType.TYPE)
+	public @interface Section {
+		String value();
+	}
 
 }
