@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2019 ArSysOp and others.
+ *  Copyright (c) 2019, 2024 ArSysOp and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -28,7 +28,8 @@ import org.eclipse.osgi.util.NLS;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-@Component(service = { ISystemInformation.class }, property = { AboutSections.SECTION + '=' + AboutSections.SECTION_USER_PREFERENCES })
+@Component(service = ISystemInformation.class)
+@ISystemInformation.Section(AboutSections.SECTION_USER_PREFERENCES)
 public class UserPreferences implements ISystemInformation {
 
 	private IPreferencesService preferencesService;

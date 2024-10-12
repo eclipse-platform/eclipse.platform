@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2019 ArSysOp and others.
+ *  Copyright (c) 2019, 2024 ArSysOp and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -18,7 +18,8 @@ import org.eclipse.e4.core.services.about.AboutSections;
 import org.eclipse.e4.core.services.about.ISystemInformation;
 import org.osgi.service.component.annotations.Component;
 
-@Component(service = { ISystemInformation.class }, property = { AboutSections.SECTION + '=' + AboutSections.SECTION_SYSTEM_ENVIRONMENT })
+@Component(service = ISystemInformation.class)
+@ISystemInformation.Section(AboutSections.SECTION_SYSTEM_ENVIRONMENT)
 public class SystemEnvironment extends PrintedMap {
 
 	@Override
