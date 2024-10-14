@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Component;
 /**
  * A function provided as a declarative service. See OSGI-INF/adder.xml.
  */
-@Component(service = IContextFunction.class, property = "service.context.key:String=sum")
+@Component(service = IContextFunction.class, property = IContextFunction.SERVICE_CONTEXT_KEY + "=sum")
 public class AddContextFunction extends ContextFunction {
 
 	@Override
