@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Remain Software and others
+ * Copyright (c) 2018, 2024 Remain Software and others
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -35,14 +35,14 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.osgi.service.event.propertytypes.EventTopics;
 
 /**
  * Early startup to run the TipManager in the IDE.
  */
-@Component(property = EventConstants.EVENT_TOPIC + '=' + UIEvents.UILifeCycle.APP_STARTUP_COMPLETE)
-@SuppressWarnings("restriction")
+@Component(service = EventHandler.class)
+@EventTopics(UIEvents.UILifeCycle.APP_STARTUP_COMPLETE)
 public class TipsStartupService implements EventHandler {
 
 	private static final String DBLQUOTE = "\""; //$NON-NLS-1$
@@ -54,6 +54,7 @@ public class TipsStartupService implements EventHandler {
 	private static final String SPACE = " "; //$NON-NLS-1$
 
 	@Override
+	@SuppressWarnings("restriction")
 	public void handleEvent(Event event) {
 		if (TipsPreferences.getStartupBehavior() != TipManager.START_DISABLE) {
 			Job job = new Job(Messages.Startup_1) {
