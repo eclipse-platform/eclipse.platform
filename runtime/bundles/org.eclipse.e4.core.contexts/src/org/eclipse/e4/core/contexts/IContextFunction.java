@@ -15,8 +15,10 @@
 
 package org.eclipse.e4.core.contexts;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.ComponentPropertyType;
 
@@ -74,7 +76,8 @@ public interface IContextFunction {
 	 * @see #SERVICE_CONTEXT_KEY
 	 */
 	@ComponentPropertyType
-	@Retention(RetentionPolicy.SOURCE)
+	@Retention(RetentionPolicy.CLASS)
+	@Target(ElementType.TYPE)
 	public @interface ServiceContextKey {
 		Class<?> value();
 	}
