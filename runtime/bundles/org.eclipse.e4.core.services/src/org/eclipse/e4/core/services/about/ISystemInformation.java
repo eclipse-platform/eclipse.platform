@@ -39,7 +39,7 @@ public interface ISystemInformation {
 	 * related with the specified section.
 	 *
 	 * @since 2.5
-	 * @see #SECTION
+	 * @see AboutSections#SECTION
 	 */
 	@ComponentPropertyType
 	@Target(ElementType.TYPE)
