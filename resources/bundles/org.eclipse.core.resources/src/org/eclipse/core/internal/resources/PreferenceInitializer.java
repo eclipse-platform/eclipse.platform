@@ -15,9 +15,12 @@
  *******************************************************************************/
 package org.eclipse.core.internal.resources;
 
+import java.nio.charset.StandardCharsets;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * @since 3.1
@@ -32,7 +35,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public static final boolean PREF_AUTO_REFRESH_DEFAULT = false;
 	public static final boolean PREF_LIGHTWEIGHT_AUTO_REFRESH_DEFAULT = true;
 	public static final boolean PREF_DISABLE_LINKING_DEFAULT = false;
-	public static final String PREF_ENCODING_DEFAULT = ""; //$NON-NLS-1$
+	public static final String PREF_ENCODING_DEFAULT = StandardCharsets.UTF_8.toString();
 	public static final boolean PREF_AUTO_BUILDING_DEFAULT = true;
 	public static final String PREF_BUILD_ORDER_DEFAULT = ""; //$NON-NLS-1$
 	public static final int PREF_MAX_BUILD_ITERATIONS_DEFAULT = 10;
