@@ -287,7 +287,8 @@ public class LocalFile extends FileStore {
 				/* asyncMode */ false, // Last-In-First-Out is important to delete child before parent folders
 				/* corePoolSize */ 0, //
 				/* maximumPoolSize */ threadCount, //
-				/* minimumRunnable */ 0, null, // delete algorithm does not need any
+				/* minimumRunnable */ 0, //
+				pool -> true, // if maximumPoolSize would be exceeded, don't throw RejectedExecutionException
 				/* keepAliveTime */ 1, TimeUnit.MINUTES); // pool terminates 1 thread per
 	}
 
