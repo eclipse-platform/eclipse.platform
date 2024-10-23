@@ -497,7 +497,11 @@ protected Control createContents(Composite parent){
 					final JSchException[] _e=new JSchException[1];
 					BusyIndicator.showWhile(getShell().getDisplay(), () -> {
 						try {
-							_kpair[0] = KeyPair.genKeyPair(getJSch(), __type);
+							if (__type == KeyPair.RSA) {
+								_kpair[0] = KeyPair.genKeyPair(getJSch(), __type, 2048);
+							} else {
+								_kpair[0] = KeyPair.genKeyPair(getJSch(), __type);
+							}
 						} catch (JSchException e1) {
 							_e[0] = e1;
 						}
@@ -508,7 +512,11 @@ protected Control createContents(Composite parent){
 					kpair=_kpair[0];
 
 					ByteArrayOutputStream out=new ByteArrayOutputStream();
-					kpairComment=_type+"-1024"; //$NON-NLS-1$
+					if (__type == KeyPair.RSA) {
+						kpairComment = _type + "-2048"; //$NON-NLS-1$
+					} else {
+						kpairComment = _type + "-1024"; //$NON-NLS-1$
+					}
 					kpair.writePublicKey(out, kpairComment);
 					out.close();
 					publicKeyText.setText(out.toString());
