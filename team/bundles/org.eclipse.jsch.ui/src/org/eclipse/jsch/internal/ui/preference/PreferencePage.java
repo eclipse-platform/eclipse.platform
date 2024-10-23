@@ -89,6 +89,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 		implements IWorkbenchPreferencePage{
 
 	private static final String SSH2_PREFERENCE_PAGE_CONTEXT="org.eclipse.jsch.ui.ssh2_preference_page_context"; //$NON-NLS-1$
+	private static final int RSA_KEY_SIZE = 4096;
+	private static final int DSA_KEY_SIZE = 3072;
 
 	private Label ssh2HomeLabel;
 	private Label privateKeyLabel;
@@ -494,10 +496,11 @@ protected Control createContents(Composite parent){
 
 					final KeyPair[] _kpair=new KeyPair[1];
 					final int __type=type;
+					int keySize = type == KeyPair.RSA ? RSA_KEY_SIZE : DSA_KEY_SIZE;
 					final JSchException[] _e=new JSchException[1];
 					BusyIndicator.showWhile(getShell().getDisplay(), () -> {
 						try {
-							_kpair[0] = KeyPair.genKeyPair(getJSch(), __type);
+							_kpair[0] = KeyPair.genKeyPair(getJSch(), __type, keySize);
 						} catch (JSchException e1) {
 							_e[0] = e1;
 						}
@@ -508,7 +511,7 @@ protected Control createContents(Composite parent){
 					kpair=_kpair[0];
 
 					ByteArrayOutputStream out=new ByteArrayOutputStream();
-					kpairComment=_type+"-1024"; //$NON-NLS-1$
+					kpairComment = _type + "-" + keySize; //$NON-NLS-1$
 					kpair.writePublicKey(out, kpairComment);
 					out.close();
 					publicKeyText.setText(out.toString());
