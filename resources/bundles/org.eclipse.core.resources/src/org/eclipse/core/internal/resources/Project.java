@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -21,6 +21,7 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -101,9 +102,10 @@ public class Project extends Container implements IProject {
 			IFileStore store = getStore();
 			IFileInfo localInfo = store.fetchInfo();
 			if (localInfo.exists()) {
-				String name = getLocalManager().getLocalName(store);
+				String name = localInfo.getName();
 				if (name != null && !store.getName().equals(name)) {
-					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
+					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase,
+							Path.of(store.toString()).resolveSibling(name));
 					throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), msg, null);
 				}
 			}

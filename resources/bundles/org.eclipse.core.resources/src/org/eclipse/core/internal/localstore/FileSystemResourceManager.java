@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -555,15 +555,6 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			_historyStore = new HistoryStore2(getWorkspace(), store, 256);
 		}
 		return _historyStore;
-	}
-
-	/**
-	 * Returns the real name of the resource on disk. Returns null if no local
-	 * file exists by that name.  This is useful when dealing with
-	 * case insensitive file systems.
-	 */
-	public String getLocalName(IFileStore target) {
-		return target.fetchInfo().getName();
 	}
 
 	protected IPath getProjectDefaultLocation(IProject project) {

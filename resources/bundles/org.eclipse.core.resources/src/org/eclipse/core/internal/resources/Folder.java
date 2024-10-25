@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
+import java.nio.file.Path;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.internal.utils.Messages;
@@ -47,9 +48,10 @@ public class Folder extends Container implements IFolder {
 		if (!force && localInfo.exists()) {
 			//return an appropriate error message for case variant collisions
 			if (!Workspace.caseSensitive) {
-				String name = getLocalManager().getLocalName(store);
+				String name = localInfo.getName();
 				if (name != null && !store.getName().equals(name)) {
-					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase, IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
+					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase,
+							Path.of(store.toString()).resolveSibling(name));
 					throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), msg, null);
 				}
 			}
@@ -101,14 +103,14 @@ public class Folder extends Container implements IFolder {
 			assertCreateRequirements(store, localInfo, updateFlags);
 			workspace.beginOperation(true);
 			if (force && !Workspace.caseSensitive && localInfo.exists()) {
-				String name = getLocalManager().getLocalName(store);
+				String name = localInfo.getName();
 				if (name == null || localInfo.getName().equals(name)) {
 					delete(true, null);
 				} else {
 					// The file system is not case sensitive and a case variant exists at this
 					// location
 					String msg = NLS.bind(Messages.resources_existsLocalDifferentCase,
-							IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
+							Path.of(store.toString()).resolveSibling(name));
 					throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), msg, null);
 				}
 			}
