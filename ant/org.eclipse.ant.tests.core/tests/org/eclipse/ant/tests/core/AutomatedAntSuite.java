@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.core;
 
-import org.eclipse.ant.tests.core.tests.AntSecurityManagerTest;
 import org.eclipse.ant.tests.core.tests.FrameworkTests;
 import org.eclipse.ant.tests.core.tests.OptionTests;
 import org.eclipse.ant.tests.core.tests.ProjectTests;
@@ -44,7 +43,6 @@ import org.junit.platform.suite.api.Suite;
 		TaskTests.class, //
 		TypeTests.class, //
 		PropertyTests.class, //
-		AntSecurityManagerTest.class //
 })
 public class AutomatedAntSuite {
 	//

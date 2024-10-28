@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,18 +14,12 @@
 package org.eclipse.ant.internal.core;
 
 import java.io.FileDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.SocketPermission;
 import java.security.Permission;
 import java.util.PropertyPermission;
 
-import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntSecurityException;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 
 /**
  * A security manager that always throws an <code>AntSecurityException</code> if the calling thread attempts to cause the Java Virtual Machine to
@@ -277,148 +271,4 @@ public class AntSecurityManager extends SecurityManager {
 		return super.getThreadGroup();
 	}
 
-	// --------------------------------------------------------------------------------
-	// Below are SecurityManager methods deprecated in Java 9 and removed in Java 10.
-	// They are accessed through reflections to support Java 8 and 11 at the same time.
-	// XXX: This also means you must not add @Override annotations even if Eclipse try to add them.
-	// --------------------------------------------------------------------------------
-
-	/**
-	 * @deprecated super class method has been removed in JDK 10
-	 */
-	@Deprecated
-	public void checkAwtEventQueueAccess() {
-		if (fSecurityManager != null) {
-			try {
-				final Method m = fSecurityManager.getClass().getMethod("checkAwtEventQueueAccess"); //$NON-NLS-1$
-				m.invoke(fSecurityManager);
-			}
-			catch (NoSuchMethodException e) {
-				logDeprecatedAccess(e);
-			}
-			catch (InvocationTargetException e) {
-				if (e.getTargetException() instanceof RuntimeException) {
-					throw (RuntimeException) e.getTargetException();
-				}
-				logException(e);
-			}
-			catch (IllegalAccessException | IllegalArgumentException e) {
-				logException(e);
-			}
-		}
-	}
-
-	/**
-	 * @deprecated super class method has been removed in JDK 10
-	 */
-	@Deprecated
-	public void checkMemberAccess(Class<?> clazz, int which) {
-		if (fSecurityManager != null) {
-			try {
-				final Method m = fSecurityManager.getClass().getMethod("checkMemberAccess", Class.class, int.class); //$NON-NLS-1$
-				m.invoke(fSecurityManager, clazz, which);
-			}
-			catch (NoSuchMethodException e) {
-				logDeprecatedAccess(e);
-			}
-			catch (InvocationTargetException e) {
-				if (e.getTargetException() instanceof RuntimeException) {
-					throw (RuntimeException) e.getTargetException();
-				}
-				logException(e);
-			}
-			catch (IllegalAccessException | IllegalArgumentException e) {
-				logException(e);
-			}
-		}
-	}
-
-	/**
-	 * @deprecated super class method has been removed in JDK 10
-	 */
-	@Deprecated
-	public void checkSystemClipboardAccess() {
-		if (fSecurityManager != null) {
-			try {
-				final Method m = fSecurityManager.getClass().getMethod("checkSystemClipboardAccess"); //$NON-NLS-1$
-				m.invoke(fSecurityManager);
-			}
-			catch (NoSuchMethodException e) {
-				logDeprecatedAccess(e);
-			}
-			catch (InvocationTargetException e) {
-				if (e.getTargetException() instanceof RuntimeException) {
-					throw (RuntimeException) e.getTargetException();
-				}
-				logException(e);
-			}
-			catch (IllegalAccessException | IllegalArgumentException e) {
-				logException(e);
-			}
-		}
-	}
-
-	/**
-	 * @deprecated super class method has been removed in JDK 10
-	 */
-	@Deprecated
-	public boolean checkTopLevelWindow(Object window) {
-		try {
-			if (fSecurityManager != null) {
-				final Method m = fSecurityManager.getClass().getMethod("checkTopLevelWindow", Object.class); //$NON-NLS-1$
-				return (boolean) m.invoke(fSecurityManager, window);
-			}
-			final Method m = SecurityManager.class.getMethod("checkTopLevelWindow", Object.class); //$NON-NLS-1$
-			return (boolean) m.invoke(new SecurityManager(), window);
-		}
-		catch (NoSuchMethodException e) {
-			logDeprecatedAccess(e);
-		}
-		catch (InvocationTargetException e) {
-			if (e.getTargetException() instanceof RuntimeException) {
-				throw (RuntimeException) e.getTargetException();
-			}
-			logException(e);
-		}
-		catch (IllegalAccessException | IllegalArgumentException e) {
-			logException(e);
-		}
-		return false;
-	}
-
-	/**
-	 * @deprecated super class method has been removed in JDK 10
-	 */
-	@Deprecated
-	public boolean getInCheck() {
-		try {
-			if (fSecurityManager != null) {
-				final Method m = fSecurityManager.getClass().getMethod("getInCheck"); //$NON-NLS-1$
-				return (boolean) m.invoke(fSecurityManager);
-			}
-			final Method m = SecurityManager.class.getMethod("getInCheck"); //$NON-NLS-1$
-			return (boolean) m.invoke(new SecurityManager());
-		}
-		catch (NoSuchMethodException e) {
-			logDeprecatedAccess(e);
-		}
-		catch (InvocationTargetException e) {
-			if (e.getTargetException() instanceof RuntimeException) {
-				throw (RuntimeException) e.getTargetException();
-			}
-			logException(e);
-		}
-		catch (IllegalAccessException | IllegalArgumentException e) {
-			logException(e);
-		}
-		return false;
-	}
-
-	private static void logDeprecatedAccess(Throwable e) {
-		ILog.of(AntCorePlugin.getPlugin().getBundle()).log(new Status(IStatus.WARNING, AntCorePlugin.PI_ANTCORE, InternalCoreAntMessages.AntSecurityManager_0, e));
-	}
-
-	private static void logException(Throwable e) {
-		ILog.of(AntCorePlugin.getPlugin().getBundle()).log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, e.getLocalizedMessage(), e));
-	}
 }
