@@ -16,6 +16,7 @@ package org.eclipse.core.tests.resources.content;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.internal.content.ContentTypeManager;
@@ -36,7 +37,7 @@ import org.junit.rules.TestName;
 /**
  * Tests content type matcher with a non-default context for user preferences.
  */
-public class SpecificContextTest extends ContentTypeTest {
+public class SpecificContextTest {
 
 	@Rule
 	public TestName name = new TestName();
@@ -82,17 +83,12 @@ public class SpecificContextTest extends ContentTypeTest {
 		textContentType.getSettings(scope).addFileSpec(name.getMethodName() + ".local", IContentType.FILE_NAME_SPEC);
 		// make ensure associations are properly recognized when doing content type
 		// lookup
-		assertEquals("1.0", textContentType, global.findContentTypeFor(name.getMethodName() + ".global"));
-		assertEquals("1.1", null, local.findContentTypeFor(name.getMethodName() + ".global"));
-		assertEquals("2.0", textContentType, local.findContentTypeFor(name.getMethodName() + ".local"));
-		assertEquals("2.1", null, global.findContentTypeFor(name.getMethodName() + ".local"));
+		assertEquals(textContentType, global.findContentTypeFor(name.getMethodName() + ".global"));
+		assertNull(local.findContentTypeFor(name.getMethodName() + ".global"));
+		assertEquals(textContentType, local.findContentTypeFor(name.getMethodName() + ".local"));
+		assertNull(global.findContentTypeFor(name.getMethodName() + ".local"));
 
-		try {
-			textContentType.removeFileSpec(name.getMethodName() + ".global", IContentType.FILE_NAME_SPEC);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		textContentType.removeFileSpec(name.getMethodName() + ".global", IContentType.FILE_NAME_SPEC);
 	}
 
 	@Test
@@ -103,8 +99,8 @@ public class SpecificContextTest extends ContentTypeTest {
 		IContentTypeSettings localSettings = null;
 		localSettings = textContentType.getSettings(scope);
 		// haven't added association yet
-		assertFalse("1.0", textContentType.isAssociatedWith("hello.foo", scope));
-		assertFalse("1.1", textContentType.isAssociatedWith("hello.foo"));
+		assertFalse(textContentType.isAssociatedWith("hello.foo", scope));
+		assertFalse(textContentType.isAssociatedWith("hello.foo"));
 		// associate at the scope level
 		localSettings.addFileSpec("foo", IContentType.FILE_EXTENSION_SPEC);
 		localSettings = textContentType.getSettings(scope);
@@ -112,9 +108,9 @@ public class SpecificContextTest extends ContentTypeTest {
 		String[] fileSpecs = localSettings.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
 		assertThat(fileSpecs).containsExactly("foo");
 		// now it is associated at the scope level...
-		assertTrue("2.5", textContentType.isAssociatedWith("hello.foo", scope));
+		assertTrue(textContentType.isAssociatedWith("hello.foo", scope));
 		// ...but not at the global level
-		assertFalse("2.6", textContentType.isAssociatedWith("hello.foo"));
+		assertFalse(textContentType.isAssociatedWith("hello.foo"));
 	}
 
 }

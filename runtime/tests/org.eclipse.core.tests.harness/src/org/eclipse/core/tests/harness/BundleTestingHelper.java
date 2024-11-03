@@ -14,10 +14,13 @@
 package org.eclipse.core.tests.harness;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.Callable;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.junit.Assert;
@@ -94,50 +97,39 @@ public class BundleTestingHelper {
 		return wiring.resolveBundles(asList(bundles));
 	}
 
-	public static void runWithBundles(String tag, Runnable runnable, BundleContext context, String[] locations, TestRegistryChangeListener listener) {
+	public static void runWithBundles(Callable<Void> runnable, BundleContext context, String[] locations,
+			TestRegistryChangeListener listener) throws Exception {
 		if (listener != null) {
 			listener.register();
 		}
 		try {
 			Bundle[] installed = new Bundle[locations.length];
 			for (int i = 0; i < locations.length; i++) {
-				try {
-					installed[i] = installBundle(tag + ".setup.0", context, locations[i]);
-					Assert.assertEquals(tag + ".setup.1." + locations[i], Bundle.INSTALLED, installed[i].getState());
-				} catch (BundleException | IOException e) {
-					throw new IllegalStateException(
-							"Exception occurred when setting up bundle at location " + locations[i] + ": " + e);
-				}
+				installed[i] = installBundle(context, locations[i]);
+				assertEquals(locations[i], Bundle.INSTALLED, installed[i].getState());
 			}
 			if (listener != null) {
 				listener.reset();
 			}
-			if (!BundleTestingHelper.resolveBundles(context, installed)) {
-				Assert.fail(tag + ".setup.resolveBundles");
-			}
+			assertTrue(BundleTestingHelper.resolveBundles(context, installed));
 			if (listener != null) {
 				// ensure the contributions were properly added
-				Assert.assertTrue(tag + ".setup.4", listener.eventReceived(installed.length * 10000));
+				assertTrue(listener.eventReceived(installed.length * 10000));
 			}
 			try {
-				runnable.run();
+				runnable.call();
 			} finally {
 				if (listener != null) {
 					listener.reset();
 				}
 				// remove installed bundles
-				for (int i = 0; i < installed.length; i++) {
-					try {
-						installed[i].uninstall();
-					} catch (BundleException e) {
-						throw new IllegalStateException(
-								"Exception occurred when removing bundle at location " + locations[i] + ": " + e);
-					}
+				for (Bundle element : installed) {
+					element.uninstall();
 				}
 				BundleTestingHelper.resolveBundles(context, installed);
 				if (listener != null) {
 					// ensure the contributions were properly added
-					Assert.assertTrue(tag + ".tearDown.2", listener.eventReceived(installed.length * 10000));
+					assertTrue(listener.eventReceived(installed.length * 10000));
 				}
 			}
 		} finally {

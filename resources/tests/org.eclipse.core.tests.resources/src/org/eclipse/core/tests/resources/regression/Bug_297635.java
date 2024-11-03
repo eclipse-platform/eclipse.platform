@@ -29,7 +29,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.tests.harness.BundleTestingHelper;
-import org.eclipse.core.tests.resources.content.ContentTypeTest;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -143,7 +142,7 @@ public class Bug_297635 {
 
 		public static void install() throws Exception {
 			bundle = BundleTestingHelper.installBundle("", getContext(),
-					ContentTypeTest.TEST_FILES_ROOT + TEST_BUNDLE_LOCATION);
+					"Plugin_Testing" + TEST_BUNDLE_LOCATION);
 			BundleTestingHelper.resolveBundles(getContext(), new Bundle[] { bundle });
 			bundle.start(Bundle.START_TRANSIENT);
 			registerSaveParticipant(bundle);

@@ -17,6 +17,8 @@ package org.eclipse.core.tests.resources.content;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.atIndex;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
+import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -60,10 +62,12 @@ import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestRegistryChangeListener;
 import org.junit.After;
 import org.junit.Test;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-public class IContentTypeManagerTest extends ContentTypeTest {
+public class IContentTypeManagerTest {
+	private static final String TEST_FILES_ROOT = "Plugin_Testing/";
 
 	private static class ContentTypeChangeTracer implements IContentTypeManager.IContentTypeChangeListener {
 		private final Set<IContentType> changed = new HashSet<>();
@@ -183,41 +187,38 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 	 * This test shows how we deal with aliases.
 	 */
 	@Test
-	public void testAlias() throws IOException {
+	public void testAlias() throws Exception {
 		final IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType alias = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".alias");
-		assertNotNull("0.7", alias);
+		assertNotNull(alias);
 		IContentType derived = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".derived-from-alias");
-		assertNotNull("0.8", derived);
+		assertNotNull(derived);
 		IContentType target = contentTypeManager.getContentType("org.eclipse.bundle02.missing-target");
-		assertNull("0.9", target);
+		assertNull(target);
 		IContentType[] selected;
 		selected = contentTypeManager.findContentTypesFor("foo.missing-target");
 		assertThat(selected).containsExactly(alias, derived);
-		selected = contentTypeManager.findContentTypesFor(getRandomContents(), "foo.missing-target");
+		selected = contentTypeManager.findContentTypesFor(createRandomContentsStream(), "foo.missing-target");
 		assertThat(selected).containsExactly(alias, derived);
 
 		// test late addition of content type
 		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
-		BundleTestingHelper.runWithBundles("2", () -> {
+		BundleTestingHelper.runWithBundles(() -> {
 			IContentType alias1 = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".alias");
-			assertNull("2.1.1", alias1);
+			assertNull(alias1);
 			IContentType derived1 = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".derived-from-alias");
-			assertNotNull("2.1.2", derived1);
+			assertNotNull(derived1);
 			IContentType target1 = contentTypeManager.getContentType("org.eclipse.bundle02.missing-target");
-			assertNotNull("2.1.3", target1);
+			assertNotNull(target1);
 			// checks associations
 			IContentType[] selected1 = contentTypeManager.findContentTypesFor("foo.missing-target");
 			assertThat(selected1).containsExactly(target1, derived1);
 			IContentType[] selected2;
-			try {
-				selected2 = contentTypeManager.findContentTypesFor(getRandomContents(), "foo.missing-target");
-			} catch (IOException e) {
-				throw new AssertionError(e);
-			}
+			selected2 = contentTypeManager.findContentTypesFor(createRandomContentsStream(), "foo.missing-target");
 			assertThat(selected2).containsExactly(target1, derived1);
-		}, getContext(), new String[] { ContentTypeTest.TEST_FILES_ROOT + "content/bundle02" }, listener);
+			return null;
+		}, getContext(), new String[] { TEST_FILES_ROOT + "content/bundle02" }, listener);
 	}
 
 	@Test
@@ -234,18 +235,18 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		assoc2.addFileSpec("txt_assoc2useradded", IContentType.FILE_EXTENSION_SPEC);
 
 		// test associations
-		assertTrue("1.1", assoc1.isAssociatedWith(changeCase("text.txt")));
-		assertTrue("1.2", assoc1.isAssociatedWith(changeCase("text.txt_useradded")));
-		assertTrue("1.3", assoc1.isAssociatedWith(changeCase("text.txt_pluginadded")));
-		assertTrue("1.4", assoc1.isAssociatedWith(changeCase("text.txt_assoc1pluginadded")));
-		assertTrue("1.5", assoc1.isAssociatedWith(changeCase("text.txt_assoc1useradded")));
+		assertTrue(assoc1.isAssociatedWith(changeCase("text.txt")));
+		assertTrue(assoc1.isAssociatedWith(changeCase("text.txt_useradded")));
+		assertTrue(assoc1.isAssociatedWith(changeCase("text.txt_pluginadded")));
+		assertTrue(assoc1.isAssociatedWith(changeCase("text.txt_assoc1pluginadded")));
+		assertTrue(assoc1.isAssociatedWith(changeCase("text.txt_assoc1useradded")));
 
-		assertFalse("2.1", assoc2.isAssociatedWith(changeCase("text.txt")));
-		assertFalse("2.2", assoc2.isAssociatedWith(changeCase("text.txt_useradded")));
-		assertFalse("2.3", assoc2.isAssociatedWith(changeCase("text.txt_pluginadded")));
-		assertTrue("2.4", assoc2.isAssociatedWith(changeCase("text.txt_assoc2pluginadded")));
-		assertTrue("2.5", assoc2.isAssociatedWith(changeCase("text.txt_assoc2builtin")));
-		assertTrue("2.6", assoc2.isAssociatedWith(changeCase("text.txt_assoc2useradded")));
+		assertFalse(assoc2.isAssociatedWith(changeCase("text.txt")));
+		assertFalse(assoc2.isAssociatedWith(changeCase("text.txt_useradded")));
+		assertFalse(assoc2.isAssociatedWith(changeCase("text.txt_pluginadded")));
+		assertTrue(assoc2.isAssociatedWith(changeCase("text.txt_assoc2pluginadded")));
+		assertTrue(assoc2.isAssociatedWith(changeCase("text.txt_assoc2builtin")));
+		assertTrue(assoc2.isAssociatedWith(changeCase("text.txt_assoc2useradded")));
 
 		IContentType[] selected;
 		// text built-in associations
@@ -284,9 +285,9 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		text.addFileSpec("txt_useradded", IContentType.FILE_EXTENSION_SPEC);
 
 		// test associations
-		assertTrue("0.1", text.isAssociatedWith(changeCase("text.txt")));
-		assertTrue("0.2", text.isAssociatedWith(changeCase("text.txt_useradded")));
-		assertTrue("0.3", text.isAssociatedWith(changeCase("text.txt_pluginadded")));
+		assertTrue(text.isAssociatedWith(changeCase("text.txt")));
+		assertTrue(text.isAssociatedWith(changeCase("text.txt_useradded")));
+		assertTrue(text.isAssociatedWith(changeCase("text.txt_pluginadded")));
 
 		// check provider defined settings
 		String[] providerDefinedExtensions = text
@@ -306,17 +307,17 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		text.removeFileSpec("txt", IContentType.FILE_EXTENSION_SPEC);
 		assertThat(text.getFileSpecs(IContentType.FILE_EXTENSION_SPEC | IContentType.IGNORE_USER_DEFINED))
 				.contains("txt");
-		assertTrue("3.1", text.isAssociatedWith(changeCase("text.txt")));
-		assertTrue("3.2", text.isAssociatedWith(changeCase("text.txt_useradded")));
-		assertTrue("3.3", text.isAssociatedWith(changeCase("text.txt_pluginadded")));
+		assertTrue(text.isAssociatedWith(changeCase("text.txt")));
+		assertTrue(text.isAssociatedWith(changeCase("text.txt_useradded")));
+		assertTrue(text.isAssociatedWith(changeCase("text.txt_pluginadded")));
 
 		// removing user file specs is the normal case and has to work as expected
 		text.removeFileSpec("txt_useradded", IContentType.FILE_EXTENSION_SPEC);
 		assertThat(text.getFileSpecs(IContentType.FILE_EXTENSION_SPEC | IContentType.IGNORE_PRE_DEFINED))
 				.doesNotContain("ini");
-		assertTrue("4.1", text.isAssociatedWith(changeCase("text.txt")));
-		assertFalse("4.2", text.isAssociatedWith(changeCase("text.txt_useradded")));
-		assertTrue("4.3", text.isAssociatedWith(changeCase("text.txt_pluginadded")));
+		assertTrue(text.isAssociatedWith(changeCase("text.txt")));
+		assertFalse(text.isAssociatedWith(changeCase("text.txt_useradded")));
+		assertTrue(text.isAssociatedWith(changeCase("text.txt_pluginadded")));
 	}
 
 	@Test
@@ -329,14 +330,14 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		contents = getInputStream(
 				new byte[][] { SAMPLE_BIN1_OFFSET.getBytes(), SAMPLE_BIN1_SIGNATURE, " extra contents".getBytes() });
 		IContentDescription description = contentTypeManager.getDescriptionFor(contents, null, IContentDescription.ALL);
-		assertNotNull("6.0", description);
-		assertEquals("6.1", sampleBinary1, description.getContentType());
+		assertNotNull(description);
+		assertEquals(sampleBinary1, description.getContentType());
 
 		contents = getInputStream(
 				new byte[][] { SAMPLE_BIN2_OFFSET.getBytes(), SAMPLE_BIN2_SIGNATURE, " extra contents".getBytes() });
 		description = contentTypeManager.getDescriptionFor(contents, null, IContentDescription.ALL);
-		assertNotNull("7.0", description);
-		assertEquals("7.1", sampleBinary2, description.getContentType());
+		assertNotNull(description);
+		assertEquals(sampleBinary2, description.getContentType());
 
 		// make sure we ignore that content type when contents are text
 		// (see bug 100032)
@@ -345,9 +346,9 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		assertThat(selected).hasSize(1)
 				.allSatisfy(element -> assertThat(element.getId()).isEqualTo(sampleBinary2.getId()));
 		// (we used to blow up here)
-		description = contentTypeManager.getDescriptionFor(getReader(getRandomString()), "test.samplebin2",
+		description = contentTypeManager.getDescriptionFor(getReader(createRandomString()), "test.samplebin2",
 				IContentDescription.ALL);
-		assertNull("8.3", description);
+		assertNull(description);
 	}
 
 	@Test
@@ -359,27 +360,27 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		String UTF8_BOM = new String(IContentDescription.BOM_UTF_8, StandardCharsets.ISO_8859_1);
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF8_BOM + MINIMAL_XML).getBytes(StandardCharsets.ISO_8859_1)), options);
-		assertNotNull("1.0", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
-		assertEquals("1.1", IContentDescription.BOM_UTF_8,
+		assertNotNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertEquals(IContentDescription.BOM_UTF_8,
 				description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 		// tests with UTF-16 Little Endian BOM
 		String UTF16_LE_BOM = new String(IContentDescription.BOM_UTF_16LE, StandardCharsets.ISO_8859_1);
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF16_LE_BOM + MINIMAL_XML).getBytes(StandardCharsets.ISO_8859_1)), options);
-		assertNotNull("2.0", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
-		assertEquals("2.1", IContentDescription.BOM_UTF_16LE,
+		assertNotNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertEquals(IContentDescription.BOM_UTF_16LE,
 				description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 		// tests with UTF-16 Big Endian BOM
 		String UTF16_BE_BOM = new String(IContentDescription.BOM_UTF_16BE, StandardCharsets.ISO_8859_1);
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF16_BE_BOM + MINIMAL_XML).getBytes(StandardCharsets.ISO_8859_1)), options);
-		assertNotNull("3.0", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
-		assertEquals("3.1", IContentDescription.BOM_UTF_16BE,
+		assertNotNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertEquals(IContentDescription.BOM_UTF_16BE,
 				description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 		// test with no BOM
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream(MINIMAL_XML.getBytes(StandardCharsets.ISO_8859_1)), options);
-		assertNull("4.0", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 
 		// tests for partial BOM
 		// first byte of UTF-16 Big Endian + minimal xml
@@ -387,45 +388,45 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF16_BE_BOM_1byte + MINIMAL_XML).getBytes(StandardCharsets.ISO_8859_1)),
 				options);
-		assertNull("5.0", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 		// first byte of UTF-16 Big Endian only (see
 		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=199252)
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF16_BE_BOM_1byte).getBytes(StandardCharsets.ISO_8859_1)), options);
-		assertNull("5.1", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 
 		// first byte of UTF-16 Little Endian + minimal xml
 		String UTF16_LE_BOM_1byte = new String(new byte[] { (byte) 0xFF }, StandardCharsets.ISO_8859_1);
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF16_LE_BOM_1byte + MINIMAL_XML).getBytes(StandardCharsets.ISO_8859_1)),
 				options);
-		assertNull("6.0", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 		// first byte of UTF-16 Little Endian only
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF16_LE_BOM_1byte).getBytes(StandardCharsets.ISO_8859_1)), options);
-		assertNull("6.1", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 
 		// first byte of UTF-8 + minimal xml
 		String UTF8_BOM_1byte = new String(new byte[] { (byte) 0xEF }, StandardCharsets.ISO_8859_1);
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF8_BOM_1byte + MINIMAL_XML).getBytes(StandardCharsets.ISO_8859_1)),
 				options);
-		assertNull("7.0", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 		// first byte of UTF-8 only
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF8_BOM_1byte).getBytes(StandardCharsets.ISO_8859_1)), options);
-		assertNull("7.1", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 
 		// two first bytes of UTF-8 + minimal xml
 		String UTF8_BOM_2bytes = new String(new byte[] { (byte) 0xEF, (byte) 0xBB }, StandardCharsets.ISO_8859_1);
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF8_BOM_2bytes + MINIMAL_XML).getBytes(StandardCharsets.ISO_8859_1)),
 				options);
-		assertNull("8.0", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 		// two first bytes of UTF-8 only
 		description = text.getDescriptionFor(
 				new ByteArrayInputStream((UTF8_BOM_2bytes).getBytes(StandardCharsets.ISO_8859_1)), options);
-		assertNull("8.1", description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNull(description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 	}
 
 	/**
@@ -454,39 +455,39 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		selected = manager.findContentTypesFor(getInputStream(contents0), "anything.mybinary");
 		assertThat(selected).hasSize(3);
 		// all we know is the first one is the base type (only one with a VALID match)
-		assertEquals("1.1", base, selected[0]);
+		assertEquals(base, selected[0]);
 
 		selected = manager.findContentTypesFor(getInputStream(contents0), "foo.mybinary");
 		// we know also that the second one will be derived1, because it has a full name
 		// matching
 		assertThat(selected).hasSize(3);
-		assertEquals("2.1", base, selected[0]);
-		assertEquals("2.2", derived1, selected[1]);
+		assertEquals(base, selected[0]);
+		assertEquals(derived1, selected[1]);
 
 		selected = manager.findContentTypesFor(getInputStream(contents1), "foo.mybinary");
 		// derived1 will be first because both base and derived1 have a strong content
 		// matching, so more specific wins
 		assertThat(selected).hasSize(3);
-		assertEquals("3.1", derived1, selected[0]);
-		assertEquals("3.2", base, selected[1]);
+		assertEquals(derived1, selected[0]);
+		assertEquals(base, selected[1]);
 
 		selected = manager.findContentTypesFor(getInputStream(contents2), "foo.mybinary");
 		// same as 3.* - derived1 is last because content matching is weak, althoug name
 		// matching is strong
 		assertThat(selected).hasSize(3);
-		assertEquals("4.1", derived2, selected[0]);
-		assertEquals("4.2", base, selected[1]);
+		assertEquals(derived2, selected[0]);
+		assertEquals(base, selected[1]);
 
 		selected = manager.findContentTypesFor(getInputStream(invalidContents), "foo.mybinary");
 		// all types have weak content matching only - derived1 has strong name matching
 		assertThat(selected).hasSize(3);
-		assertEquals("5.1", derived1, selected[0]);
-		assertEquals("5.2", base, selected[1]);
+		assertEquals(derived1, selected[0]);
+		assertEquals(base, selected[1]);
 
 		selected = manager.findContentTypesFor(getInputStream(invalidContents), "anything.mybinary");
 		// all types have weak content/name matching only - most general wins
 		assertThat(selected).hasSize(3);
-		assertEquals("6.1", base, selected[0]);
+		assertEquals(base, selected[0]);
 	}
 
 	/*
@@ -504,105 +505,104 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		boolean text = false;
 
 		for (int i = 0; i < 2; i++, text = !text) {
-			String sufix = text ? "-text" : "-binary";
 			IContentDescription description;
 
 			description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml",
 					IContentDescription.ALL, text);
-			assertNotNull("1.0" + sufix, description);
-			assertEquals("1.1" + sufix, xmlType, description.getContentType());
-			assertSame("1.2", xmlType.getDefaultDescription(), description);
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
+			assertSame(xmlType.getDefaultDescription(), description);
 
 			description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml",
 					new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull("2.0" + sufix, description);
-			assertEquals("2.1" + sufix, xmlType, description.getContentType());
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
 			// the default charset should have been filled by the content type manager
-			assertEquals("2.2" + sufix, "UTF-8", description.getProperty(IContentDescription.CHARSET));
-			assertSame("2.3", xmlType.getDefaultDescription(), description);
+			assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
+			assertSame(xmlType.getDefaultDescription(), description);
 
 			description = getDescriptionFor(finder, XML_ISO_8859_1, StandardCharsets.ISO_8859_1, "foo.xml",
 					new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull("2.3a" + sufix, description);
-			assertEquals("2.3b" + sufix, xmlType, description.getContentType());
-			assertEquals("2.3c" + sufix, "ISO-8859-1", description.getProperty(IContentDescription.CHARSET));
-			assertNotSame("2.3d", xmlType.getDefaultDescription(), description);
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
+			assertEquals("ISO-8859-1", description.getProperty(IContentDescription.CHARSET));
+			assertNotSame(xmlType.getDefaultDescription(), description);
 
 			// ensure we handle single quotes properly (bug 65443)
 			description = getDescriptionFor(finder, XML_ISO_8859_1_SINGLE_QUOTES, StandardCharsets.ISO_8859_1,
 					"foo.xml", new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull("2.3e" + sufix, description);
-			assertEquals("2.3f" + sufix, xmlType, description.getContentType());
-			assertEquals("2.3g" + sufix, "ISO-8859-1", description.getProperty(IContentDescription.CHARSET));
-			assertNotSame("2.3h", xmlType.getDefaultDescription(), description);
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
+			assertEquals("ISO-8859-1", description.getProperty(IContentDescription.CHARSET));
+			assertNotSame(xmlType.getDefaultDescription(), description);
 
 			description = getDescriptionFor(finder, XML_UTF_16, StandardCharsets.UTF_16, "foo.xml",
 					new QualifiedName[] { IContentDescription.CHARSET, IContentDescription.BYTE_ORDER_MARK }, text);
-			assertNotNull("2.4a" + sufix, description);
-			assertEquals("2.4b" + sufix, xmlType, description.getContentType());
-			assertEquals("2.4c" + sufix, "UTF-16", description.getProperty(IContentDescription.CHARSET));
-			assertTrue("2.4d" + sufix, text || IContentDescription.BOM_UTF_16BE == description
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
+			assertEquals("UTF-16", description.getProperty(IContentDescription.CHARSET));
+			assertTrue(text || IContentDescription.BOM_UTF_16BE == description
 					.getProperty(IContentDescription.BYTE_ORDER_MARK));
-			assertNotSame("2.4e", xmlType.getDefaultDescription(), description);
+			assertNotSame(xmlType.getDefaultDescription(), description);
 
 			description = getDescriptionFor(finder, XML_UTF_16BE, StandardCharsets.UTF_8, "foo.xml",
 					new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull("2.5a" + sufix, description);
-			assertEquals("2.5b" + sufix, xmlType, description.getContentType());
-			assertEquals("2.5c" + sufix, "UTF-16BE", description.getProperty(IContentDescription.CHARSET));
-			assertNotSame("2.5d", xmlType.getDefaultDescription(), description);
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
+			assertEquals("UTF-16BE", description.getProperty(IContentDescription.CHARSET));
+			assertNotSame(xmlType.getDefaultDescription(), description);
 
 			description = getDescriptionFor(finder, XML_UTF_16LE, StandardCharsets.UTF_8, "foo.xml",
 					new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull("2.6a" + sufix, description);
-			assertEquals("2.6b" + sufix, xmlType, description.getContentType());
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
 			// the default charset should have been filled by the content type manager
-			assertEquals("2.6c" + sufix, "UTF-16LE", description.getProperty(IContentDescription.CHARSET));
-			assertNotSame("2.6d", xmlType.getDefaultDescription(), description);
+			assertEquals("UTF-16LE", description.getProperty(IContentDescription.CHARSET));
+			assertNotSame(xmlType.getDefaultDescription(), description);
 
 			description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml",
 					IContentDescription.ALL, text);
-			assertNotNull("4.0" + sufix, description);
-			assertEquals("4.1" + sufix, xmlType, description.getContentType());
-			assertEquals("4.2" + sufix, "UTF-8", description.getProperty(IContentDescription.CHARSET));
-			assertNotNull("5.0" + sufix, mytext);
-			assertEquals("5.0b" + sufix, "BAR", mytext.getDefaultCharset());
-			assertSame("5.0c", xmlType.getDefaultDescription(), description);
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
+			assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
+			assertNotNull(mytext);
+			assertEquals("BAR", mytext.getDefaultCharset());
+			assertSame(xmlType.getDefaultDescription(), description);
 
 			description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
-			assertNotNull("5.1" + sufix, description);
-			assertEquals("5.2" + sufix, mytext, description.getContentType());
-			assertEquals("5.3" + sufix, "BAR", description.getProperty(IContentDescription.CHARSET));
-			assertSame("5.4", mytext.getDefaultDescription(), description);
+			assertNotNull(description);
+			assertEquals(mytext, description.getContentType());
+			assertEquals("BAR", description.getProperty(IContentDescription.CHARSET));
+			assertSame(mytext.getDefaultDescription(), description);
 			// now plays with setting a non-default default charset
 			mytext.setDefaultCharset("FOO");
 
 			description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
-			assertNotNull("5.5" + sufix, description);
-			assertEquals("5.6" + sufix, mytext, description.getContentType());
-			assertEquals("5.7" + sufix, "FOO", description.getProperty(IContentDescription.CHARSET));
-			assertSame("5.8", mytext.getDefaultDescription(), description);
+			assertNotNull(description);
+			assertEquals(mytext, description.getContentType());
+			assertEquals("FOO", description.getProperty(IContentDescription.CHARSET));
+			assertSame(mytext.getDefaultDescription(), description);
 			mytext.setDefaultCharset(null);
 
 			description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
-			assertNotNull("5.10" + sufix, description);
-			assertEquals("5.11" + sufix, mytext, description.getContentType());
-			assertEquals("5.12" + sufix, "BAR", description.getProperty(IContentDescription.CHARSET));
-			assertSame("5.13", mytext.getDefaultDescription(), description);
+			assertNotNull(description);
+			assertEquals(mytext, description.getContentType());
+			assertEquals("BAR", description.getProperty(IContentDescription.CHARSET));
+			assertSame(mytext.getDefaultDescription(), description);
 
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=176354
 			description = getDescriptionFor(finder,
 					"<?xml version=\'1.0\' encoding=\'UTF-8\'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tns=\"http://www.example.org/\" xmlns:ns0=\"http://another.example.org/\"><soapenv:Header /><soapenv:Body><ns0:x /></soapenv:Body></soapenv:Envelope>",
 					StandardCharsets.UTF_8, "foo.xml", new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull("5.14" + sufix, description);
-			assertEquals("5.15" + sufix, xmlType, description.getContentType());
-			assertEquals("5.16" + sufix, "UTF-8", description.getProperty(IContentDescription.CHARSET));
-			assertEquals("5.17", xmlType.getDefaultDescription().getCharset(), description.getCharset());
+			assertNotNull(description);
+			assertEquals(xmlType, description.getContentType());
+			assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
+			assertEquals(xmlType.getDefaultDescription().getCharset(), description.getCharset());
 		}
-		assertNotNull("6.0", mytext1);
-		assertEquals("6.1", "BAR", mytext1.getDefaultCharset());
-		assertNotNull("6.2", mytext2);
-		assertEquals("6.3", null, mytext2.getDefaultCharset());
+		assertNotNull(mytext1);
+		assertEquals("BAR", mytext1.getDefaultCharset());
+		assertNotNull(mytext2);
+		assertNull(mytext2.getDefaultCharset());
 
 	}
 
@@ -622,23 +622,23 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 
 		// if only inappropriate is provided, none will be selected
 		finder = contentTypeManager.getMatcher(new SubsetSelectionPolicy(new IContentType[] { inappropriate }), null);
-		assertNull("1.0", finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
+		assertNull(finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
 
 		// if inappropriate and appropriate are provided, appropriate will be selected
 		finder = contentTypeManager
 				.getMatcher(new SubsetSelectionPolicy(new IContentType[] { inappropriate, appropriate }), null);
-		assertEquals("2.0", appropriate, finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
+		assertEquals(appropriate, finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
 
 		// if inappropriate, appropriate and a more specific appropriate type are
 		// provided, the specific type will be selected
 		finder = contentTypeManager.getMatcher(
 				new SubsetSelectionPolicy(new IContentType[] { inappropriate, appropriate, appropriateSpecific1 }),
 				null);
-		assertEquals("3.0", appropriateSpecific1, finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
+		assertEquals(appropriateSpecific1, finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
 		finder = contentTypeManager.getMatcher(
 				new SubsetSelectionPolicy(new IContentType[] { inappropriate, appropriate, appropriateSpecific2 }),
 				null);
-		assertEquals("3.1", appropriateSpecific2, finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
+		assertEquals(appropriateSpecific2, finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
 
 		// if all are provided, the more specific types will appear before the more
 		// generic types
@@ -657,7 +657,7 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		// are provided, the specific type will be selected
 		finder = contentTypeManager.getMatcher(
 				new SubsetSelectionPolicy(new IContentType[] { appropriate, appropriateSpecific1LowPriority }), null);
-		assertEquals("5.0", appropriateSpecific1LowPriority,
+		assertEquals(appropriateSpecific1LowPriority,
 				finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
 
 		// if appropriate and two specific appropriate types (but one with lower
@@ -667,7 +667,7 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 				new SubsetSelectionPolicy(
 						new IContentType[] { appropriate, appropriateSpecific1, appropriateSpecific1LowPriority }),
 				null);
-		assertEquals("5.1", appropriateSpecific1, finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
+		assertEquals(appropriateSpecific1, finder.findContentTypeFor(getInputStream(MINIMAL_XML), null));
 	}
 
 	@Test
@@ -677,9 +677,9 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentType mytext = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "mytext");
 		IContentType mytext1 = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "mytext1");
 		IContentType mytext2 = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "mytext2");
-		assertNotNull("0.1", mytext);
-		assertNotNull("0.2", mytext1);
-		assertNotNull("0.3", mytext2);
+		assertNotNull(mytext);
+		assertNotNull(mytext1);
+		assertNotNull(mytext2);
 
 		QualifiedName charset = IContentDescription.CHARSET;
 		QualifiedName localCharset = new QualifiedName(PI_RESOURCES_TESTS, "charset");
@@ -692,31 +692,31 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentTypeMatcher finder = contentTypeManager.getMatcher(new LocalSelectionPolicy(), null);
 
 		description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, true);
-		assertNotNull("1.0", description);
-		assertEquals("1.1", mytext, description.getContentType());
-		assertEquals("1.2", "value1", description.getProperty(property1));
-		assertNull("1.3", description.getProperty(property2));
-		assertEquals("1.4", "value3", description.getProperty(property3));
-		assertEquals("1.5", "BAR", description.getProperty(charset));
+		assertNotNull(description);
+		assertEquals(mytext, description.getContentType());
+		assertEquals("value1", description.getProperty(property1));
+		assertNull(description.getProperty(property2));
+		assertEquals("value3", description.getProperty(property3));
+		assertEquals("BAR", description.getProperty(charset));
 
 		description = getDescriptionFor(finder, "some contents", null, "abc.tzt1", IContentDescription.ALL, true);
-		assertNotNull("2.0", description);
-		assertEquals("2.1", mytext1, description.getContentType());
-		assertEquals("2.2", "value1", description.getProperty(property1));
-		assertEquals("2.3", "value2", description.getProperty(property2));
-		assertNull("2.4", description.getProperty(property3));
-		assertEquals("2.5", "value4", description.getProperty(property4));
-		assertEquals("2.6", "BAR", description.getProperty(charset));
+		assertNotNull(description);
+		assertEquals(mytext1, description.getContentType());
+		assertEquals("value1", description.getProperty(property1));
+		assertEquals("value2", description.getProperty(property2));
+		assertNull(description.getProperty(property3));
+		assertEquals("value4", description.getProperty(property4));
+		assertEquals("BAR", description.getProperty(charset));
 
 		description = getDescriptionFor(finder, "some contents", null, "abc.tzt2", IContentDescription.ALL, true);
-		assertNotNull("3.0", description);
-		assertEquals("3.1", mytext2, description.getContentType());
-		assertNull("3.2", description.getProperty(property1));
-		assertNull("3.3", description.getProperty(property2));
-		assertNull("3.4", description.getProperty(property3));
-		assertNull("3.5", description.getProperty(property4));
-		assertNull("3.6", description.getProperty(charset));
-		assertEquals("3.7", "mytext2", description.getProperty(localCharset));
+		assertNotNull(description);
+		assertEquals(mytext2, description.getContentType());
+		assertNull(description.getProperty(property1));
+		assertNull(description.getProperty(property2));
+		assertNull(description.getProperty(property3));
+		assertNull(description.getProperty(property4));
+		assertNull(description.getProperty(charset));
+		assertEquals("mytext2", description.getProperty(localCharset));
 	}
 
 	/**
@@ -730,9 +730,9 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 
 		IContentType fooBarType = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "fooBar");
-		assertNotNull("1.0", fooBarType);
+		assertNotNull(fooBarType);
 		IContentType subFooBarType = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "subFooBar");
-		assertNotNull("1.1", subFooBarType);
+		assertNotNull(subFooBarType);
 		// ensure we don't get fooBar twice
 		IContentTypeMatcher finder = contentTypeManager.getMatcher(new LocalSelectionPolicy(), null);
 		IContentType[] fooBarAssociated = finder.findContentTypesFor(changeCase("foo.bar"));
@@ -748,39 +748,40 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 	 * content types are dynamicaly added/removed).
 	 */
 	@Test
-	public void testDynamicChanges() {
+	public void testDynamicChanges() throws Exception {
 		final IContentType[] text = new IContentType[4];
 		final IContentTypeManager manager = Platform.getContentTypeManager();
 		text[0] = manager.getContentType(IContentTypeManager.CT_TEXT);
-		assertNotNull("1.0", text[0]);
+		assertNotNull(text[0]);
 		text[1] = manager.getContentType(IContentTypeManager.CT_TEXT);
-		assertNotNull("1.1", text[1]);
+		assertNotNull(text[1]);
 		text[0] = ((ContentTypeHandler) text[0]).getTarget();
 		text[1] = ((ContentTypeHandler) text[1]).getTarget();
-		assertEquals("2.0", text[0], text[1]);
-		assertEquals("2.1", text[0], text[1]);
+		assertEquals(text[0], text[1]);
+		assertEquals(text[0], text[1]);
 		// make arbitrary dynamic changes to the contentTypes extension point
 		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
-		BundleTestingHelper.runWithBundles("3", () -> {
+		BundleTestingHelper.runWithBundles(() -> {
 			IContentType missing = manager.getContentType("org.eclipse.bundle01.missing");
-			assertNotNull("3.1", missing);
+			assertNotNull(missing);
 			// ensure the content type instances are different
 			text[2] = manager.getContentType(IContentTypeManager.CT_TEXT);
-			assertNotNull("3.2", text[2]);
+			assertNotNull(text[2]);
 			text[2] = ((ContentTypeHandler) text[2]).getTarget();
-			assertEquals("3.3", text[0], text[2]);
-			assertNotSame("3.4", text[0], text[2]);
-		}, getContext(), new String[] { ContentTypeTest.TEST_FILES_ROOT + "content/bundle01" }, listener);
-		assertNull("4.0", manager.getContentType("org.eclipse.bundle01.missing"));
+			assertEquals(text[0], text[2]);
+			assertNotSame(text[0], text[2]);
+			return null;
+		}, getContext(), new String[] { TEST_FILES_ROOT + "content/bundle01" }, listener);
+		assertNull(manager.getContentType("org.eclipse.bundle01.missing"));
 		// ensure the content type instances are all different
 		text[3] = manager.getContentType(IContentTypeManager.CT_TEXT);
-		assertNotNull("5.0", text[3]);
+		assertNotNull(text[3]);
 		text[3] = ((ContentTypeHandler) text[3]).getTarget();
-		assertEquals("5.1", text[0], text[3]);
-		assertEquals("5.2", text[2], text[3]);
-		assertNotSame("5.3", text[0], text[3]);
-		assertNotSame("5.4", text[2], text[3]);
+		assertEquals(text[0], text[3]);
+		assertEquals(text[2], text[3]);
+		assertNotSame(text[0], text[3]);
+		assertNotSame(text[2], text[3]);
 	}
 
 	/**
@@ -788,51 +789,52 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 	 * org.eclipse.core.contenttype.contentTypes extension point.
 	 */
 	@Test
-	public void testDynamicChangesNewExtension() {
+	public void testDynamicChangesNewExtension() throws Exception {
 		final IContentType[] text = new IContentType[4];
 		final IContentTypeManager manager = Platform.getContentTypeManager();
 		text[0] = manager.getContentType(IContentTypeManager.CT_TEXT);
-		assertNotNull("1.0", text[0]);
+		assertNotNull(text[0]);
 		text[1] = manager.getContentType(IContentTypeManager.CT_TEXT);
-		assertNotNull("1.1", text[1]);
+		assertNotNull(text[1]);
 		text[0] = ((ContentTypeHandler) text[0]).getTarget();
 		text[1] = ((ContentTypeHandler) text[1]).getTarget();
-		assertEquals("2.0", text[0], text[1]);
-		assertSame("2.1", text[0], text[1]);
+		assertEquals(text[0], text[1]);
+		assertSame(text[0], text[1]);
 		// make arbitrary dynamic changes to the contentTypes extension point
 		TestRegistryChangeListener listener = new TestRegistryChangeListener(IContentConstants.CONTENT_NAME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
-		BundleTestingHelper.runWithBundles("3", () -> {
+		BundleTestingHelper.runWithBundles(() -> {
 			IContentType contentType = manager.getContentType("org.eclipse.bug485227.bug485227_contentType");
-			assertNotNull("3.1 Contributed content type not found", contentType);
+			assertNotNull("Contributed content type not found", contentType);
 			// ensure the content type instances are different
 			text[2] = manager.getContentType(IContentTypeManager.CT_TEXT);
-			assertNotNull("3.2 Text content type not modified", text[2]);
+			assertNotNull("Text content type not modified", text[2]);
 			text[2] = ((ContentTypeHandler) text[2]).getTarget();
-			assertEquals("3.3", text[0], text[2]);
-			assertNotSame("3.4", text[0], text[2]);
-			assertEquals("3.5 default extension not associated", contentType,
+			assertEquals(text[0], text[2]);
+			assertNotSame(text[0], text[2]);
+			assertEquals("default extension not associated", contentType,
 					manager.findContentTypeFor("file.bug485227"));
-			assertEquals("3.6 additional extension not associated", contentType,
+			assertEquals("additional extension not associated", contentType,
 					manager.findContentTypeFor("file.bug485227_2"));
-		}, getContext(), new String[] { ContentTypeTest.TEST_FILES_ROOT + "content/bug485227" }, listener);
-		assertNull("4.0 Content type not cleared after bundle uninstall",
+			return null;
+		}, getContext(), new String[] { TEST_FILES_ROOT + "content/bug485227" }, listener);
+		assertNull("Content type not cleared after bundle uninstall",
 				manager.getContentType("org.eclipse.bug485227.bug485227_contentType"));
 		// ensure the content type instances are all different
 		text[3] = manager.getContentType(IContentTypeManager.CT_TEXT);
-		assertNotNull("5.0", text[3]);
+		assertNotNull(text[3]);
 		text[3] = ((ContentTypeHandler) text[3]).getTarget();
-		assertEquals("5.1", text[0], text[3]);
-		assertEquals("5.2", text[2], text[3]);
-		assertNotSame("5.3", text[0], text[3]);
-		assertNotSame("5.4", text[2], text[3]);
+		assertEquals(text[0], text[3]);
+		assertEquals(text[2], text[3]);
+		assertNotSame(text[0], text[3]);
+		assertNotSame(text[2], text[3]);
 	}
 
 	@Test
 	public void testEvents() throws CoreException {
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType myType = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".myContent");
-		assertNotNull("0.9", myType);
+		assertNotNull(myType);
 
 		ContentTypeChangeTracer tracer;
 
@@ -841,32 +843,32 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 
 		// add a file spec and check event
 		myType.addFileSpec("another.file.name", IContentType.FILE_NAME_SPEC);
-		assertTrue("1.1", tracer.isOnlyChange(myType));
+		assertTrue(tracer.isOnlyChange(myType));
 
 		// remove a non-existing file spec - should not cause an event to be fired
 		tracer.reset();
 		myType.removeFileSpec("another.file.name", IContentType.FILE_EXTENSION_SPEC);
-		assertTrue("2.1", !tracer.isOnlyChange(myType));
+		assertFalse(tracer.isOnlyChange(myType));
 
 		// add a file spec again and check no event is generated
 		tracer.reset();
 		myType.addFileSpec("another.file.name", IContentType.FILE_NAME_SPEC);
-		assertTrue("3.1", !tracer.isOnlyChange(myType));
+		assertFalse(tracer.isOnlyChange(myType));
 
 		// remove a file spec and check event
 		tracer.reset();
 		myType.removeFileSpec("another.file.name", IContentType.FILE_NAME_SPEC);
-		assertTrue("4.1", tracer.isOnlyChange(myType));
+		assertTrue(tracer.isOnlyChange(myType));
 
 		// change the default charset and check event
 		tracer.reset();
 		myType.setDefaultCharset("FOO");
-		assertTrue("5.1", tracer.isOnlyChange(myType));
+		assertTrue(tracer.isOnlyChange(myType));
 
 		// set the default charset to the same - no event should be generated
 		tracer.reset();
 		myType.setDefaultCharset("FOO");
-		assertTrue("6.1", !tracer.isOnlyChange(myType));
+		assertFalse(tracer.isOnlyChange(myType));
 
 		myType.setDefaultCharset("ABC");
 	}
@@ -877,26 +879,26 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		// when not submitting contents, for related types, most general type prevails
 		IContentType conflict1a = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict1");
 		IContentType conflict1b = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict1");
-		assertNotNull("1.0", conflict1a);
-		assertNotNull("1.1", conflict1b);
+		assertNotNull(conflict1a);
+		assertNotNull(conflict1b);
 		IContentType preferredConflict1 = manager.findContentTypeFor("test.conflict1");
-		assertNotNull("1.2", preferredConflict1);
-		assertEquals("1.3", conflict1a, preferredConflict1);
+		assertNotNull(preferredConflict1);
+		assertEquals(conflict1a, preferredConflict1);
 
 		IContentType conflict2base = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict2");
 		IContentType conflict2sub = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict2");
-		assertNotNull("2.0", conflict2base);
-		assertNotNull("2.1", conflict2sub);
+		assertNotNull(conflict2base);
+		assertNotNull(conflict2sub);
 
 		// when submitting contents, for related types with indeterminate match, general
 		// comes first
-		IContentType[] selectedConflict2 = manager.findContentTypesFor(getRandomContents(), "test.conflict2");
+		IContentType[] selectedConflict2 = manager.findContentTypesFor(createRandomContentsStream(), "test.conflict2");
 		assertThat(selectedConflict2).containsExactly(conflict2base, conflict2sub);
 
 		IContentType conflict2abase = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict2a");
 		IContentType conflict2asub = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict2a");
-		assertNotNull("2.5", conflict2abase);
-		assertNotNull("2.6", conflict2asub);
+		assertNotNull(conflict2abase);
+		assertNotNull(conflict2asub);
 
 		// when submitting contents, for related types with valid match, specific
 		// comes first
@@ -911,42 +913,42 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentType conflict3base = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict3");
 		IContentType conflict3sub = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict3");
 		IContentType conflict3unrelated = manager.getContentType(PI_RESOURCES_TESTS + ".unrelated_conflict3");
-		assertNotNull("3.0.1", conflict3base);
-		assertNotNull("3.0.2", conflict3sub);
-		assertNotNull("3.0.3", conflict3unrelated);
+		assertNotNull(conflict3base);
+		assertNotNull(conflict3sub);
+		assertNotNull(conflict3unrelated);
 
 		// Two unrelated types (sub_conflict3 and unrelated conflict3) are in conflict.
 		// Order will be arbitrary (lexicographically).
 
-		IContentType[] selectedConflict3 = manager.findContentTypesFor(getRandomContents(), "test.conflict3");
+		IContentType[] selectedConflict3 = manager.findContentTypesFor(createRandomContentsStream(), "test.conflict3");
 		assertThat(selectedConflict3).containsExactly(conflict3sub, conflict3unrelated);
 
 		IContentType conflict4base = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict4");
 		IContentType conflict4sub = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict4");
 		IContentType conflict4unrelated_lowPriority = manager.getContentType(PI_RESOURCES_TESTS + ".unrelated_conflict4");
-		assertNotNull("5.0.1", conflict4base);
-		assertNotNull("5.0.2", conflict4sub);
-		assertNotNull("5.0.4", conflict4unrelated_lowPriority);
+		assertNotNull(conflict4base);
+		assertNotNull(conflict4sub);
+		assertNotNull(conflict4unrelated_lowPriority);
 
 		// Two unrelated types (sub_conflict4 and unrelated conflict4) are in conflict,
 		// but with different priorities
 		// Order will be based on priority
 
-		IContentType[] selectedConflict4 = manager.findContentTypesFor(getRandomContents(), "test.conflict4");
+		IContentType[] selectedConflict4 = manager.findContentTypesFor(createRandomContentsStream(), "test.conflict4");
 		assertThat(selectedConflict4).containsExactly(conflict4sub, conflict4unrelated_lowPriority);
 
 		IContentType conflict5base = manager.getContentType(PI_RESOURCES_TESTS + ".base_conflict5");
 		IContentType conflict5sub_lowPriority = manager.getContentType(PI_RESOURCES_TESTS + ".sub_conflict5");
 		IContentType conflict5unrelated = manager.getContentType(PI_RESOURCES_TESTS + ".unrelated_conflict5");
-		assertNotNull("6.0.1", conflict5base);
-		assertNotNull("6.0.2", conflict5sub_lowPriority);
-		assertNotNull("6.0.5", conflict5unrelated);
+		assertNotNull(conflict5base);
+		assertNotNull(conflict5sub_lowPriority);
+		assertNotNull(conflict5unrelated);
 
 		// Two unrelated types (sub_conflict5 and unrelated conflict5) are in conflict,
 		// but with different priorities
 		// Order will be based on priority
 
-		IContentType[] selectedConflict5 = manager.findContentTypesFor(getRandomContents(), "test.conflict5");
+		IContentType[] selectedConflict5 = manager.findContentTypesFor(createRandomContentsStream(), "test.conflict5");
 		assertThat(selectedConflict5).containsExactly(conflict5unrelated, conflict5sub_lowPriority);
 	}
 
@@ -961,12 +963,12 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentType single;
 
 		single = finder.findContentTypeFor(getInputStream("Just a test"), changeCase("file.txt"));
-		assertNotNull("1.0", single);
-		assertEquals("1.1", textContentType, single);
+		assertNotNull(single);
+		assertEquals(textContentType, single);
 
 		single = finder.findContentTypeFor(getInputStream(XML_UTF_8, StandardCharsets.UTF_8), changeCase("foo.xml"));
-		assertNotNull("2.0", single);
-		assertEquals("2.1", xmlContentType, single);
+		assertNotNull(single);
+		assertEquals(xmlContentType, single);
 
 		IContentType[] multiple = finder.findContentTypesFor(getInputStream(XML_UTF_8, StandardCharsets.UTF_8), null);
 		assertThat(multiple).contains(xmlContentType);
@@ -1023,33 +1025,30 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 	}
 
 	@Test
-	public void testInvalidMarkup() {
+	public void testInvalidMarkup() throws Exception {
 		final IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentTypeMatcher finder = contentTypeManager.getMatcher(new LocalSelectionPolicy(), null);
 		assertThat(finder.findContentTypesFor("invalid.missing.identifier")).isEmpty();
 		assertThat(finder.findContentTypesFor("invalid.missing.name")).isEmpty();
-		assertNull("3.0", contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "invalid-missing-name"));
+		assertNull(contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "invalid-missing-name"));
 		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
-		BundleTestingHelper.runWithBundles("1", () -> {
+		BundleTestingHelper.runWithBundles(() -> {
 			// ensure the invalid content types are not available
 			assertThat(contentTypeManager.findContentTypesFor("invalid.missing.identifier")).isEmpty();
 			assertThat(contentTypeManager.findContentTypesFor("invalid.missing.name")).isEmpty();
-			assertNull("1.4", contentTypeManager.getContentType("org.eclipse.bundle03.invalid-missing-name"));
+			assertNull(contentTypeManager.getContentType("org.eclipse.bundle03.invalid-missing-name"));
 			// this content type has good markup, but invalid describer class
 			IContentType invalidDescriber = contentTypeManager.getContentType("org.eclipse.bundle03.invalid-describer");
-			assertNotNull("1.5", invalidDescriber);
+			assertNotNull(invalidDescriber);
 			// name based matching should work fine
-			assertEquals("1.6", invalidDescriber, contentTypeManager.findContentTypeFor("invalid.describer"));
+			assertEquals(invalidDescriber, contentTypeManager.findContentTypeFor("invalid.describer"));
 			// the describer class is invalid, content matchong should fail
 			IContentType nullContentType;
-			try {
-				nullContentType = contentTypeManager.findContentTypeFor(getRandomContents(), "invalid.describer");
-			} catch (IOException e) {
-				throw new AssertionError(e);
-			}
-			assertNull("1.7", nullContentType);
-		}, getContext(), new String[] { ContentTypeTest.TEST_FILES_ROOT + "content/bundle03" }, listener);
+			nullContentType = contentTypeManager.findContentTypeFor(createRandomContentsStream(), "invalid.describer");
+			assertNull(nullContentType);
+			return null;
+		}, getContext(), new String[] { TEST_FILES_ROOT + "content/bundle03" }, listener);
 	}
 
 	/**
@@ -1108,14 +1107,14 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentType xmlBasedSpecificNameContentType = contentTypeManager
 				.getContentType(PI_RESOURCES_TESTS + '.' + "xml-based-specific-name");
 		IContentType binaryContentType = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "sample-binary1");
-		assertTrue("1.0", textContentType.isKindOf(textContentType));
-		assertTrue("2.0", xmlContentType.isKindOf(textContentType));
-		assertFalse("2.1", textContentType.isKindOf(xmlContentType));
-		assertTrue("2.2", xmlContentType.isKindOf(xmlContentType));
-		assertTrue("3.0", xmlBasedDifferentExtensionContentType.isKindOf(textContentType));
-		assertTrue("3.1", xmlBasedDifferentExtensionContentType.isKindOf(xmlContentType));
-		assertFalse("4.0", xmlBasedDifferentExtensionContentType.isKindOf(xmlBasedSpecificNameContentType));
-		assertFalse("5.0", binaryContentType.isKindOf(textContentType));
+		assertTrue(textContentType.isKindOf(textContentType));
+		assertTrue(xmlContentType.isKindOf(textContentType));
+		assertFalse(textContentType.isKindOf(xmlContentType));
+		assertTrue(xmlContentType.isKindOf(xmlContentType));
+		assertTrue(xmlBasedDifferentExtensionContentType.isKindOf(textContentType));
+		assertTrue(xmlBasedDifferentExtensionContentType.isKindOf(xmlContentType));
+		assertFalse(xmlBasedDifferentExtensionContentType.isKindOf(xmlBasedSpecificNameContentType));
+		assertFalse(binaryContentType.isKindOf(textContentType));
 	}
 
 	@Test
@@ -1149,25 +1148,25 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 	public void testMyContentDescriber() throws IOException {
 		IContentTypeManager manager = Platform.getContentTypeManager();
 		IContentType myContent = manager.getContentType(PI_RESOURCES_TESTS + '.' + "myContent");
-		assertNotNull("0.5", myContent);
-		assertEquals("0.6", myContent, manager.findContentTypeFor("myContent.mc1"));
-		assertEquals("0.7", myContent, manager.findContentTypeFor("myContent.mc2"));
-		assertEquals("0.8", myContent, manager.findContentTypeFor("foo.myContent1"));
-		assertEquals("0.9", myContent, manager.findContentTypeFor("bar.myContent2"));
+		assertNotNull(myContent);
+		assertEquals(myContent, manager.findContentTypeFor("myContent.mc1"));
+		assertEquals(myContent, manager.findContentTypeFor("myContent.mc2"));
+		assertEquals(myContent, manager.findContentTypeFor("foo.myContent1"));
+		assertEquals(myContent, manager.findContentTypeFor("bar.myContent2"));
 		IContentDescription description = manager.getDescriptionFor(
 				getInputStream(MyContentDescriber.SIGNATURE, StandardCharsets.US_ASCII), "myContent.mc1",
 				IContentDescription.ALL);
-		assertNotNull("1.0", description);
-		assertEquals("1.1", myContent, description.getContentType());
-		assertNotSame("1.2", myContent.getDefaultDescription(), description);
+		assertNotNull(description);
+		assertEquals(myContent, description.getContentType());
+		assertNotSame(myContent.getDefaultDescription(), description);
 		for (int i = 0; i < MyContentDescriber.MY_OPTIONS.length; i++) {
-			assertEquals("2." + i, MyContentDescriber.MY_OPTION_VALUES[i],
+			assertEquals(i + "", MyContentDescriber.MY_OPTION_VALUES[i],
 					description.getProperty(MyContentDescriber.MY_OPTIONS[i]));
 		}
 	}
 
 	@Test
-	public void testNoExtensionAssociation() {
+	public void testNoExtensionAssociation() throws Exception {
 		// TODO use a IContentTypeMatcher instead
 		final IContentTypeManager manager = Platform.getContentTypeManager();
 
@@ -1176,7 +1175,7 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 
 		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
-		BundleTestingHelper.runWithBundles("1", () -> {
+		BundleTestingHelper.runWithBundles(() -> {
 			final String namespace = "org.eclipse.bundle04";
 
 			IContentType empty1 = manager.getContentType(namespace + ".empty_extension1");
@@ -1185,11 +1184,11 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 			IContentType empty4 = manager.getContentType(namespace + ".empty_extension4");
 			IContentType nonEmpty = manager.getContentType(namespace + ".non_empty_extension");
 
-			assertNotNull("1.1.1", empty1);
-			assertNotNull("1.1.2", empty2);
-			assertNotNull("1.1.3", empty3);
-			assertNotNull("1.1.4", empty4);
-			assertNotNull("1.1.5", nonEmpty);
+			assertNotNull(empty1);
+			assertNotNull(empty2);
+			assertNotNull(empty3);
+			assertNotNull(empty4);
+			assertNotNull(nonEmpty);
 
 			IContentType[] selected1 = manager.findContentTypesFor("file_with_no_extension");
 			assertThat(selected1).containsExactlyInAnyOrder(empty1, empty2, empty3, empty4);
@@ -1197,24 +1196,17 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 			selected1 = manager.findContentTypesFor("file_with_extension.non-empty");
 			assertThat(selected1).containsExactly(nonEmpty);
 
-			try {
-				nonEmpty.addFileSpec("", IContentType.FILE_EXTENSION_SPEC);
-			} catch (CoreException e) {
-				throw new AssertionError(e);
-			}
+			nonEmpty.addFileSpec("", IContentType.FILE_EXTENSION_SPEC);
 			try {
 				selected1 = manager.findContentTypesFor("file_with_no_extension");
 				assertThat(selected1).hasSize(5).containsOnlyOnce(nonEmpty);
 			} finally {
-				try {
-					nonEmpty.removeFileSpec("", IContentType.FILE_EXTENSION_SPEC);
-				} catch (CoreException e) {
-					throw new AssertionError(e);
-				}
+				nonEmpty.removeFileSpec("", IContentType.FILE_EXTENSION_SPEC);
 			}
 			selected1 = manager.findContentTypesFor("file_with_no_extension");
 			assertThat(selected1).hasSize(4).doesNotContain(nonEmpty);
-		}, getContext(), new String[] { ContentTypeTest.TEST_FILES_ROOT + "content/bundle04" }, listener);
+			return null;
+		}, getContext(), new String[] { TEST_FILES_ROOT + "content/bundle04" }, listener);
 	}
 
 	@Test
@@ -1227,9 +1219,9 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		manager.getContentType(PI_RESOURCES_TESTS + ".dtd");
 		// for an empty file, the most generic content type should be returned
 		IContentType selected = finder.findContentTypeFor(getInputStream(""), "foo.xml");
-		assertEquals("1.0", xml, selected);
+		assertEquals(xml, selected);
 		// it should be equivalent to omitting the contents
-		assertEquals("1.1", xml, finder.findContentTypeFor("foo.xml"));
+		assertEquals(xml, finder.findContentTypeFor("foo.xml"));
 	}
 
 	/**
@@ -1237,12 +1229,12 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 	 * content types are missing).
 	 */
 	@Test
-	public void testOrphanContentType() {
+	public void testOrphanContentType() throws Exception {
 		final IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentType orphan = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".orphan");
-		assertNull("0.8", orphan);
+		assertNull(orphan);
 		IContentType missing = contentTypeManager.getContentType("org.eclipse.bundle01.missing");
-		assertNull("0.9", missing);
+		assertNull(missing);
 		assertThat(contentTypeManager.findContentTypesFor("foo.orphan")).isEmpty();
 		assertThat(contentTypeManager.findContentTypesFor("orphan.orphan")).isEmpty();
 		assertThat(contentTypeManager.findContentTypesFor("foo.orphan2")).isEmpty();
@@ -1251,17 +1243,18 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		TestRegistryChangeListener listener = new TestRegistryChangeListener(Platform.PI_RUNTIME,
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 
-		BundleTestingHelper.runWithBundles("2", () -> {
+		BundleTestingHelper.runWithBundles(() -> {
 			IContentType orphan1 = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".orphan");
-			assertNotNull("2.1", orphan1);
+			assertNotNull(orphan1);
 			IContentType missing1 = contentTypeManager.getContentType("org.eclipse.bundle01.missing");
-			assertNotNull("2.2", missing1);
+			assertNotNull(missing1);
 			// checks orphan's associations
 			assertThat(contentTypeManager.findContentTypesFor("foo.orphan")).containsExactly(orphan1);
 			assertThat(contentTypeManager.findContentTypesFor("orphan.orphan")).containsExactly(orphan1);
 			// check whether an orphan association was added to the dynamically added bundle
 			assertThat(contentTypeManager.findContentTypesFor("foo.orphan2")).containsExactly(missing1);
-		}, getContext(), new String[] { ContentTypeTest.TEST_FILES_ROOT + "content/bundle01" }, listener);
+			return null;
+		}, getContext(), new String[] { TEST_FILES_ROOT + "content/bundle01" }, listener);
 	}
 
 	/**
@@ -1273,57 +1266,57 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentType text = manager.getContentType(IContentTypeManager.CT_TEXT);
 		Preferences textPrefs = InstanceScope.INSTANCE.getNode(ContentTypeManager.CONTENT_TYPE_PREF_NODE)
 				.node(text.getId());
-		assertNotNull("0.1", text);
+		assertNotNull(text);
 
 		// ensure the "default charset" preference is being properly used
-		assertNull("1.0", text.getDefaultCharset());
-		assertNull("1.1", textPrefs.get(ContentType.PREF_DEFAULT_CHARSET, null));
+		assertNull(text.getDefaultCharset());
+		assertNull(textPrefs.get(ContentType.PREF_DEFAULT_CHARSET, null));
 		text.setDefaultCharset("UTF-8");
-		assertEquals("1.2", "UTF-8", textPrefs.get(ContentType.PREF_DEFAULT_CHARSET, null));
+		assertEquals("UTF-8", textPrefs.get(ContentType.PREF_DEFAULT_CHARSET, null));
 		text.setDefaultCharset(null);
-		assertNull("1.3", textPrefs.get(ContentType.PREF_DEFAULT_CHARSET, null));
+		assertNull(textPrefs.get(ContentType.PREF_DEFAULT_CHARSET, null));
 
 		// ensure the file spec preferences are being properly used
 		// some sanity checking
-		assertFalse("2.01", text.isAssociatedWith("xyz.foo"));
-		assertFalse("2.01", text.isAssociatedWith("xyz.bar"));
-		assertFalse("2.03", text.isAssociatedWith("foo.ext"));
-		assertFalse("2.04", text.isAssociatedWith("bar.ext"));
+		assertFalse(text.isAssociatedWith("xyz.foo"));
+		assertFalse(text.isAssociatedWith("xyz.bar"));
+		assertFalse(text.isAssociatedWith("foo.ext"));
+		assertFalse(text.isAssociatedWith("bar.ext"));
 		// Null entries first to avoid interference from other tests
 		textPrefs.remove(ContentType.PREF_FILE_NAMES);
 		textPrefs.remove(ContentType.PREF_FILE_EXTENSIONS);
 		// play with file name associations first...
-		assertNull("2.0a", textPrefs.get(ContentType.PREF_FILE_NAMES, null));
-		assertNull("2.0b", textPrefs.get(ContentType.PREF_FILE_EXTENSIONS, null));
+		assertNull(textPrefs.get(ContentType.PREF_FILE_NAMES, null));
+		assertNull(textPrefs.get(ContentType.PREF_FILE_EXTENSIONS, null));
 		text.addFileSpec("foo.ext", IContentType.FILE_NAME_SPEC);
-		assertTrue("2.1", text.isAssociatedWith("foo.ext"));
-		assertEquals("2.2", "foo.ext", textPrefs.get(ContentType.PREF_FILE_NAMES, null));
+		assertTrue(text.isAssociatedWith("foo.ext"));
+		assertEquals("foo.ext", textPrefs.get(ContentType.PREF_FILE_NAMES, null));
 		text.addFileSpec("bar.ext", IContentType.FILE_NAME_SPEC);
-		assertTrue("2.3", text.isAssociatedWith("bar.ext"));
-		assertEquals("2.4", "foo.ext,bar.ext", textPrefs.get(ContentType.PREF_FILE_NAMES, null));
+		assertTrue(text.isAssociatedWith("bar.ext"));
+		assertEquals("foo.ext,bar.ext", textPrefs.get(ContentType.PREF_FILE_NAMES, null));
 		// ... and then with file extensions
 		text.addFileSpec("foo", IContentType.FILE_EXTENSION_SPEC);
-		assertTrue("2.5", text.isAssociatedWith("xyz.foo"));
-		assertEquals("2.6", "foo", textPrefs.get(ContentType.PREF_FILE_EXTENSIONS, null));
+		assertTrue(text.isAssociatedWith("xyz.foo"));
+		assertEquals("foo", textPrefs.get(ContentType.PREF_FILE_EXTENSIONS, null));
 		text.addFileSpec("bar", IContentType.FILE_EXTENSION_SPEC);
-		assertTrue("2.7", text.isAssociatedWith("xyz.bar"));
-		assertEquals("2.4", "foo,bar", textPrefs.get(ContentType.PREF_FILE_EXTENSIONS, null));
+		assertTrue(text.isAssociatedWith("xyz.bar"));
+		assertEquals("foo,bar", textPrefs.get(ContentType.PREF_FILE_EXTENSIONS, null));
 		// remove all associations made
 		text.removeFileSpec("foo.ext", IContentType.FILE_NAME_SPEC);
 		text.removeFileSpec("bar.ext", IContentType.FILE_NAME_SPEC);
 		text.removeFileSpec("foo", IContentType.FILE_EXTENSION_SPEC);
 		text.removeFileSpec("bar", IContentType.FILE_EXTENSION_SPEC);
 		// ensure all is as before
-		assertFalse("3.1", text.isAssociatedWith("xyz.foo"));
-		assertFalse("3.2", text.isAssociatedWith("xyz.bar"));
-		assertFalse("3.3", text.isAssociatedWith("foo.ext"));
-		assertFalse("3.4", text.isAssociatedWith("bar.ext"));
+		assertFalse(text.isAssociatedWith("xyz.foo"));
+		assertFalse(text.isAssociatedWith("xyz.bar"));
+		assertFalse(text.isAssociatedWith("foo.ext"));
+		assertFalse(text.isAssociatedWith("bar.ext"));
 
 		// ensure the serialization format is correct
 		try {
 			text.addFileSpec("foo.bar", IContentType.FILE_NAME_SPEC);
 			textPrefs.sync();
-			assertEquals("4.0", "foo.bar", textPrefs.get(ContentType.PREF_FILE_NAMES, null));
+			assertEquals("foo.bar", textPrefs.get(ContentType.PREF_FILE_NAMES, null));
 		} finally {
 			// clean-up
 			text.removeFileSpec("foo.bar", IContentType.FILE_NAME_SPEC);
@@ -1336,52 +1329,52 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentTypeMatcher finder = contentTypeManager.getMatcher(new LocalSelectionPolicy(), null);
 
 		IContentType textContentType = contentTypeManager.getContentType(Platform.PI_RUNTIME + '.' + "text");
-		assertNotNull("1.0", textContentType);
-		assertTrue("1.1", isText(contentTypeManager, textContentType));
-		assertNotNull("1.2", ((ContentTypeHandler) textContentType).getTarget().getDescriber());
+		assertNotNull(textContentType);
+		assertTrue(isText(contentTypeManager, textContentType));
+		assertNotNull(((ContentTypeHandler) textContentType).getTarget().getDescriber());
 
 		IContentType xmlContentType = contentTypeManager.getContentType(Platform.PI_RUNTIME + ".xml");
-		assertNotNull("2.0", xmlContentType);
-		assertTrue("2.1", isText(contentTypeManager, xmlContentType));
-		assertEquals("2.2", textContentType, xmlContentType.getBaseType());
+		assertNotNull(xmlContentType);
+		assertTrue(isText(contentTypeManager, xmlContentType));
+		assertEquals(textContentType, xmlContentType.getBaseType());
 		IContentDescriber xmlDescriber = ((ContentTypeHandler) xmlContentType).getTarget().getDescriber();
-		assertNotNull("2.3", xmlDescriber);
-		assertTrue("2.4", xmlDescriber instanceof XMLContentDescriber);
+		assertNotNull(xmlDescriber);
+		assertThat(xmlDescriber).isInstanceOf(XMLContentDescriber.class);
 
 		IContentType xmlBasedDifferentExtensionContentType = contentTypeManager
 				.getContentType(PI_RESOURCES_TESTS + '.' + "xml-based-different-extension");
-		assertNotNull("3.0", xmlBasedDifferentExtensionContentType);
-		assertTrue("3.1", isText(contentTypeManager, xmlBasedDifferentExtensionContentType));
-		assertEquals("3.2", xmlContentType, xmlBasedDifferentExtensionContentType.getBaseType());
+		assertNotNull(xmlBasedDifferentExtensionContentType);
+		assertTrue(isText(contentTypeManager, xmlBasedDifferentExtensionContentType));
+		assertEquals(xmlContentType, xmlBasedDifferentExtensionContentType.getBaseType());
 
 		IContentType xmlBasedSpecificNameContentType = contentTypeManager
 				.getContentType(PI_RESOURCES_TESTS + '.' + "xml-based-specific-name");
-		assertNotNull("4.0", xmlBasedSpecificNameContentType);
-		assertTrue("4.1", isText(contentTypeManager, xmlBasedSpecificNameContentType));
-		assertEquals("4.2", xmlContentType, xmlBasedSpecificNameContentType.getBaseType());
+		assertNotNull(xmlBasedSpecificNameContentType);
+		assertTrue(isText(contentTypeManager, xmlBasedSpecificNameContentType));
+		assertEquals(xmlContentType, xmlBasedSpecificNameContentType.getBaseType());
 
 		IContentType[] xmlTypes = finder.findContentTypesFor(changeCase("foo.xml"));
 		assertThat(xmlTypes).contains(xmlContentType);
 
 		IContentType binaryContentType = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "sample-binary1");
-		assertNotNull("6.0", binaryContentType);
-		assertFalse("6.1", isText(contentTypeManager, binaryContentType));
-		assertNull("6.2", binaryContentType.getBaseType());
+		assertNotNull(binaryContentType);
+		assertFalse(isText(contentTypeManager, binaryContentType));
+		assertNull(binaryContentType.getBaseType());
 
 		IContentType[] binaryTypes = finder.findContentTypesFor(changeCase("foo.samplebin1"));
 		assertThat(binaryTypes).containsExactly(binaryContentType);
 
 		IContentType myText = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".mytext");
-		assertNotNull("8.0", myText);
-		assertEquals("8.1", "BAR", myText.getDefaultCharset());
+		assertNotNull(myText);
+		assertEquals("BAR", myText.getDefaultCharset());
 
 		IContentType[] fooBarTypes = finder.findContentTypesFor(changeCase("foo.bar"));
 		assertThat(fooBarTypes).hasSize(2);
 
 		IContentType fooBar = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".fooBar");
-		assertNotNull("9.1", fooBar);
+		assertNotNull(fooBar);
 		IContentType subFooBar = contentTypeManager.getContentType(PI_RESOURCES_TESTS + ".subFooBar");
-		assertNotNull("9.2", subFooBar);
+		assertNotNull(subFooBar);
 		assertThat(fooBarTypes).contains(fooBar, subFooBar);
 	}
 
@@ -1447,17 +1440,17 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentDescription description = contentTypeManager.getDescriptionFor(getInputStream(
 				new byte[][] { IContentDescription.BOM_UTF_16BE, XML_ROOT_ELEMENT_NO_DECL.getBytes("UTF-16BE") }),
 				"fake.xml", IContentDescription.ALL);
-		assertNotNull("6.0", description);
-		assertEquals("6.1", rootElement, description.getContentType());
-		assertEquals("6.2", IContentDescription.BOM_UTF_16BE,
+		assertNotNull(description);
+		assertEquals(rootElement, description.getContentType());
+		assertEquals(IContentDescription.BOM_UTF_16BE,
 				description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 
 		description = contentTypeManager.getDescriptionFor(getInputStream(
 				new byte[][] { IContentDescription.BOM_UTF_16LE, XML_ROOT_ELEMENT_NO_DECL.getBytes("UTF-16LE") }),
 				"fake.xml", IContentDescription.ALL);
-		assertNotNull("7.0", description);
-		assertEquals("7.1", rootElement, description.getContentType());
-		assertEquals("7.2", IContentDescription.BOM_UTF_16LE,
+		assertNotNull(description);
+		assertEquals(rootElement, description.getContentType());
+		assertEquals(IContentDescription.BOM_UTF_16LE,
 				description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 
 		// due to bug 67048, the test below fails with Crimson parser (does not handle
@@ -1466,9 +1459,9 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		// byte[][]
 		// {IContentDescription.BOM_UTF_8,XML_ROOT_ELEMENT_NO_DECL.getBytes("UTF-8")}),
 		// "fake.xml", IContentDescription.ALL);
-		// assertTrue("7.0", description != null);
-		// assertEquals("7.1", rootElement, description.getContentType());
-		// assertEquals("7.2", IContentDescription.BOM_UTF_8,
+		// assertTrue(description != null);
+		// assertEquals(rootElement, description.getContentType());
+		// assertEquals(IContentDescription.BOM_UTF_8,
 		// description.getProperty(IContentDescription.BYTE_ORDER_MARK));
 
 		// bug 84354
@@ -1494,8 +1487,8 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentType rootElement = manager.getContentType(PI_RESOURCES_TESTS + ".root-element");
 		IContentType selected = manager.findContentTypeFor(
 				getInputStream(comment + XML_ROOT_ELEMENT_NO_DECL, StandardCharsets.US_ASCII), "fake.xml");
-		assertNotNull("1.0", selected);
-		assertEquals("1.1", rootElement, selected);
+		assertNotNull(selected);
+		assertEquals(rootElement, selected);
 	}
 
 	/**
@@ -1506,14 +1499,14 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		IContentTypeManager manager = Platform.getContentTypeManager();
 		IContentType text = manager.getContentType((Platform.PI_RUNTIME + ".text"));
 
-		assertNull("0.1", manager.findContentTypeFor("test.mytext"));
+		assertNull(manager.findContentTypeFor("test.mytext"));
 		// associate a user-defined file spec
 		text.addFileSpec("mytext", IContentType.FILE_EXTENSION_SPEC);
 		boolean assertionFailed = false;
 		try {
 			IContentType result = manager.findContentTypeFor("test.mytext");
-			assertNotNull("1.1", result);
-			assertEquals("1.2", text, result);
+			assertNotNull(result);
+			assertEquals(text, result);
 		} catch (AssertionError afe) {
 			assertionFailed = true;
 			throw afe;
@@ -1522,7 +1515,7 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 			assertFalse(assertionFailed);
 		}
 		IContentType result = manager.findContentTypeFor("test.mytext");
-		assertNull("3.0", result);
+		assertNull(result);
 	}
 
 	@Test
@@ -1549,6 +1542,10 @@ public class IContentTypeManagerTest extends ContentTypeTest {
 		contentTypes = contentTypeManager.findContentTypesFor(
 				getInputStream(XML_ROOT_ELEMENT_NS_MATCH2, StandardCharsets.UTF_8), "Bug182337.Bug182337");
 		assertThat(contentTypes).isEmpty();
+	}
+
+	private BundleContext getContext() {
+		return Platform.getBundle(PI_RESOURCES_TESTS).getBundleContext();
 	}
 
 }
