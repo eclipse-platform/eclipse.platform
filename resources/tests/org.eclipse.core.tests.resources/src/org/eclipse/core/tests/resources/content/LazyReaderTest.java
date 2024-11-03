@@ -14,15 +14,15 @@
 package org.eclipse.core.tests.resources.content;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.Reader;
 import org.eclipse.core.internal.content.LazyReader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link LazyReader}.
@@ -179,7 +179,7 @@ public class LazyReaderTest {
 
 			objectUnderTest.skip(1);
 
-			assertTrue("The buffer size suffered an Overflow", objectUnderTest.getBufferSize() > Integer.MAX_VALUE);
+			assertTrue(objectUnderTest.getBufferSize() > Integer.MAX_VALUE, "The buffer size suffered an Overflow");
 		}
 	}
 }

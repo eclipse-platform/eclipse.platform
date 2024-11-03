@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.content;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Ensures the XMLContentDescriber is able to handle encodings properly.
@@ -102,9 +102,9 @@ public class XMLContentDescriberTest {
 		IContentDescription description = null;
 		for (boolean[] flag : flags) {
 			description = Platform.getContentTypeManager().getDescriptionFor(getInputStream(encodingInContent, encoding, flag[0], flag[1], flag[2]), "fake.xml", new QualifiedName[] {IContentDescription.CHARSET});
-			assertNotNull(Arrays.toString(flag), description);
-			assertEquals(Arrays.toString(flag), Platform.PI_RUNTIME + ".xml", description.getContentType().getId());
-			assertEquals(Arrays.toString(flag), expectedEncoding, description.getProperty(IContentDescription.CHARSET));
+			assertNotNull(description, Arrays.toString(flag));
+			assertEquals(Platform.PI_RUNTIME + ".xml", description.getContentType().getId(), Arrays.toString(flag));
+			assertEquals(expectedEncoding, description.getProperty(IContentDescription.CHARSET), Arrays.toString(flag));
 		}
 	}
 
@@ -114,9 +114,9 @@ public class XMLContentDescriberTest {
 		IContentDescription description = null;
 		for (boolean[] flag : flags) {
 			description = Platform.getContentTypeManager().getDescriptionFor(getReader(encodingInContent, flag[0], flag[1], flag[2]), "fake.xml", new QualifiedName[] {IContentDescription.CHARSET});
-			assertNotNull(Arrays.toString(flag), description);
-			assertEquals(Arrays.toString(flag), Platform.PI_RUNTIME + ".xml", description.getContentType().getId());
-			assertEquals(Arrays.toString(flag), expectedEncoding, description.getProperty(IContentDescription.CHARSET));
+			assertNotNull(description, Arrays.toString(flag));
+			assertEquals(Platform.PI_RUNTIME + ".xml", description.getContentType().getId(), Arrays.toString(flag));
+			assertEquals(expectedEncoding, description.getProperty(IContentDescription.CHARSET), Arrays.toString(flag));
 		}
 	}
 
