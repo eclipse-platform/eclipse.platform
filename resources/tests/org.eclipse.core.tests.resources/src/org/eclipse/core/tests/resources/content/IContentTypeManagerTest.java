@@ -19,14 +19,14 @@ import static org.assertj.core.api.Assertions.atIndex;
 import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RESOURCES_TESTS;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomContentsStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
@@ -60,8 +60,10 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.tests.harness.BundleTestingHelper;
 import org.eclipse.core.tests.harness.FussyProgressMonitor;
 import org.eclipse.core.tests.harness.TestRegistryChangeListener;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -174,7 +176,7 @@ public class IContentTypeManagerTest {
 		return candidate.isKindOf(text);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		// some tests here will trigger a charset delta job (any causing
 		// ContentTypeChangeEvents to be broadcast)
@@ -492,8 +494,10 @@ public class IContentTypeManagerTest {
 
 	/*
 	 * Tests both text and byte stream-based getDescriptionFor methods.
-	 */@Test
-	public void testContentDescription() throws IOException, CoreException {
+	 */
+	@ParameterizedTest
+	@ValueSource(booleans = { true, false })
+	public void testContentDescription(boolean text) throws IOException, CoreException {
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		IContentTypeMatcher finder = contentTypeManager.getMatcher(new LocalSelectionPolicy(), null);
 
@@ -502,103 +506,100 @@ public class IContentTypeManagerTest {
 		IContentType mytext1 = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "mytext1");
 		IContentType mytext2 = contentTypeManager.getContentType(PI_RESOURCES_TESTS + '.' + "mytext2");
 
-		boolean text = false;
+		IContentDescription description;
 
-		for (int i = 0; i < 2; i++, text = !text) {
-			IContentDescription description;
+		description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml", IContentDescription.ALL,
+				text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		assertSame(xmlType.getDefaultDescription(), description);
 
-			description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml",
-					IContentDescription.ALL, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			assertSame(xmlType.getDefaultDescription(), description);
+		description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml",
+				new QualifiedName[] { IContentDescription.CHARSET }, text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		// the default charset should have been filled by the content type manager
+		assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
+		assertSame(xmlType.getDefaultDescription(), description);
 
-			description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml",
-					new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			// the default charset should have been filled by the content type manager
-			assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
-			assertSame(xmlType.getDefaultDescription(), description);
+		description = getDescriptionFor(finder, XML_ISO_8859_1, StandardCharsets.ISO_8859_1, "foo.xml",
+				new QualifiedName[] { IContentDescription.CHARSET }, text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		assertEquals("ISO-8859-1", description.getProperty(IContentDescription.CHARSET));
+		assertNotSame(xmlType.getDefaultDescription(), description);
 
-			description = getDescriptionFor(finder, XML_ISO_8859_1, StandardCharsets.ISO_8859_1, "foo.xml",
-					new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			assertEquals("ISO-8859-1", description.getProperty(IContentDescription.CHARSET));
-			assertNotSame(xmlType.getDefaultDescription(), description);
+		// ensure we handle single quotes properly (bug 65443)
+		description = getDescriptionFor(finder, XML_ISO_8859_1_SINGLE_QUOTES, StandardCharsets.ISO_8859_1, "foo.xml",
+				new QualifiedName[] { IContentDescription.CHARSET }, text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		assertEquals("ISO-8859-1", description.getProperty(IContentDescription.CHARSET));
+		assertNotSame(xmlType.getDefaultDescription(), description);
 
-			// ensure we handle single quotes properly (bug 65443)
-			description = getDescriptionFor(finder, XML_ISO_8859_1_SINGLE_QUOTES, StandardCharsets.ISO_8859_1,
-					"foo.xml", new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			assertEquals("ISO-8859-1", description.getProperty(IContentDescription.CHARSET));
-			assertNotSame(xmlType.getDefaultDescription(), description);
+		description = getDescriptionFor(finder, XML_UTF_16, StandardCharsets.UTF_16, "foo.xml",
+				new QualifiedName[] { IContentDescription.CHARSET, IContentDescription.BYTE_ORDER_MARK }, text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		assertEquals("UTF-16", description.getProperty(IContentDescription.CHARSET));
+		assertTrue(text
+				|| IContentDescription.BOM_UTF_16BE == description.getProperty(IContentDescription.BYTE_ORDER_MARK));
+		assertNotSame(xmlType.getDefaultDescription(), description);
 
-			description = getDescriptionFor(finder, XML_UTF_16, StandardCharsets.UTF_16, "foo.xml",
-					new QualifiedName[] { IContentDescription.CHARSET, IContentDescription.BYTE_ORDER_MARK }, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			assertEquals("UTF-16", description.getProperty(IContentDescription.CHARSET));
-			assertTrue(text || IContentDescription.BOM_UTF_16BE == description
-					.getProperty(IContentDescription.BYTE_ORDER_MARK));
-			assertNotSame(xmlType.getDefaultDescription(), description);
+		description = getDescriptionFor(finder, XML_UTF_16BE, StandardCharsets.UTF_8, "foo.xml",
+				new QualifiedName[] { IContentDescription.CHARSET }, text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		assertEquals("UTF-16BE", description.getProperty(IContentDescription.CHARSET));
+		assertNotSame(xmlType.getDefaultDescription(), description);
 
-			description = getDescriptionFor(finder, XML_UTF_16BE, StandardCharsets.UTF_8, "foo.xml",
-					new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			assertEquals("UTF-16BE", description.getProperty(IContentDescription.CHARSET));
-			assertNotSame(xmlType.getDefaultDescription(), description);
+		description = getDescriptionFor(finder, XML_UTF_16LE, StandardCharsets.UTF_8, "foo.xml",
+				new QualifiedName[] { IContentDescription.CHARSET }, text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		// the default charset should have been filled by the content type manager
+		assertEquals("UTF-16LE", description.getProperty(IContentDescription.CHARSET));
+		assertNotSame(xmlType.getDefaultDescription(), description);
 
-			description = getDescriptionFor(finder, XML_UTF_16LE, StandardCharsets.UTF_8, "foo.xml",
-					new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			// the default charset should have been filled by the content type manager
-			assertEquals("UTF-16LE", description.getProperty(IContentDescription.CHARSET));
-			assertNotSame(xmlType.getDefaultDescription(), description);
+		description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml", IContentDescription.ALL,
+				text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
+		assertNotNull(mytext);
+		assertEquals("BAR", mytext.getDefaultCharset());
+		assertSame(xmlType.getDefaultDescription(), description);
 
-			description = getDescriptionFor(finder, MINIMAL_XML, StandardCharsets.UTF_8, "foo.xml",
-					IContentDescription.ALL, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
-			assertNotNull(mytext);
-			assertEquals("BAR", mytext.getDefaultCharset());
-			assertSame(xmlType.getDefaultDescription(), description);
+		description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
+		assertNotNull(description);
+		assertEquals(mytext, description.getContentType());
+		assertEquals("BAR", description.getProperty(IContentDescription.CHARSET));
+		assertSame(mytext.getDefaultDescription(), description);
+		// now plays with setting a non-default default charset
+		mytext.setDefaultCharset("FOO");
 
-			description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
-			assertNotNull(description);
-			assertEquals(mytext, description.getContentType());
-			assertEquals("BAR", description.getProperty(IContentDescription.CHARSET));
-			assertSame(mytext.getDefaultDescription(), description);
-			// now plays with setting a non-default default charset
-			mytext.setDefaultCharset("FOO");
+		description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
+		assertNotNull(description);
+		assertEquals(mytext, description.getContentType());
+		assertEquals("FOO", description.getProperty(IContentDescription.CHARSET));
+		assertSame(mytext.getDefaultDescription(), description);
+		mytext.setDefaultCharset(null);
 
-			description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
-			assertNotNull(description);
-			assertEquals(mytext, description.getContentType());
-			assertEquals("FOO", description.getProperty(IContentDescription.CHARSET));
-			assertSame(mytext.getDefaultDescription(), description);
-			mytext.setDefaultCharset(null);
+		description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
+		assertNotNull(description);
+		assertEquals(mytext, description.getContentType());
+		assertEquals("BAR", description.getProperty(IContentDescription.CHARSET));
+		assertSame(mytext.getDefaultDescription(), description);
 
-			description = getDescriptionFor(finder, "some contents", null, "abc.tzt", IContentDescription.ALL, text);
-			assertNotNull(description);
-			assertEquals(mytext, description.getContentType());
-			assertEquals("BAR", description.getProperty(IContentDescription.CHARSET));
-			assertSame(mytext.getDefaultDescription(), description);
+		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=176354
+		description = getDescriptionFor(finder,
+				"<?xml version=\'1.0\' encoding=\'UTF-8\'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tns=\"http://www.example.org/\" xmlns:ns0=\"http://another.example.org/\"><soapenv:Header /><soapenv:Body><ns0:x /></soapenv:Body></soapenv:Envelope>",
+				StandardCharsets.UTF_8, "foo.xml", new QualifiedName[] { IContentDescription.CHARSET }, text);
+		assertNotNull(description);
+		assertEquals(xmlType, description.getContentType());
+		assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
+		assertEquals(xmlType.getDefaultDescription().getCharset(), description.getCharset());
 
-			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=176354
-			description = getDescriptionFor(finder,
-					"<?xml version=\'1.0\' encoding=\'UTF-8\'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:tns=\"http://www.example.org/\" xmlns:ns0=\"http://another.example.org/\"><soapenv:Header /><soapenv:Body><ns0:x /></soapenv:Body></soapenv:Envelope>",
-					StandardCharsets.UTF_8, "foo.xml", new QualifiedName[] { IContentDescription.CHARSET }, text);
-			assertNotNull(description);
-			assertEquals(xmlType, description.getContentType());
-			assertEquals("UTF-8", description.getProperty(IContentDescription.CHARSET));
-			assertEquals(xmlType.getDefaultDescription().getCharset(), description.getCharset());
-		}
 		assertNotNull(mytext1);
 		assertEquals("BAR", mytext1.getDefaultCharset());
 		assertNotNull(mytext2);
@@ -805,21 +806,20 @@ public class IContentTypeManagerTest {
 				ContentTypeBuilder.PT_CONTENTTYPES, null, null);
 		BundleTestingHelper.runWithBundles(() -> {
 			IContentType contentType = manager.getContentType("org.eclipse.bug485227.bug485227_contentType");
-			assertNotNull("Contributed content type not found", contentType);
+			assertNotNull(contentType, "Contributed content type not found");
 			// ensure the content type instances are different
 			text[2] = manager.getContentType(IContentTypeManager.CT_TEXT);
-			assertNotNull("Text content type not modified", text[2]);
+			assertNotNull(text[2], "Text content type not modified");
 			text[2] = ((ContentTypeHandler) text[2]).getTarget();
 			assertEquals(text[0], text[2]);
 			assertNotSame(text[0], text[2]);
-			assertEquals("default extension not associated", contentType,
-					manager.findContentTypeFor("file.bug485227"));
-			assertEquals("additional extension not associated", contentType,
-					manager.findContentTypeFor("file.bug485227_2"));
+			assertEquals(contentType, manager.findContentTypeFor("file.bug485227"), "default extension not associated");
+			assertEquals(contentType, manager.findContentTypeFor("file.bug485227_2"),
+					"additional extension not associated");
 			return null;
 		}, getContext(), new String[] { TEST_FILES_ROOT + "content/bug485227" }, listener);
-		assertNull("Content type not cleared after bundle uninstall",
-				manager.getContentType("org.eclipse.bug485227.bug485227_contentType"));
+		assertNull(manager.getContentType("org.eclipse.bug485227.bug485227_contentType"),
+				"Content type not cleared after bundle uninstall");
 		// ensure the content type instances are all different
 		text[3] = manager.getContentType(IContentTypeManager.CT_TEXT);
 		assertNotNull(text[3]);
@@ -981,7 +981,7 @@ public class IContentTypeManagerTest {
 
 		IContentType targetContentType = contentTypeManager
 				.getContentType("org.eclipse.core.tests.resources.predefinedContentTypeWithRegexp");
-		assertNotNull("Target content-type not found", targetContentType);
+		assertNotNull(targetContentType, "Target content-type not found");
 
 		IContentType single = finder.findContentTypeFor(getInputStream("Just a test"),
 				"somepredefinedContentTypeWithRegexpFile");
@@ -1000,17 +1000,17 @@ public class IContentTypeManagerTest {
 		IContentType textContentType = contentTypeManager.getContentType(Platform.PI_RUNTIME + '.' + "text");
 
 		IContentType single = finder.findContentTypeFor(getInputStream("Just a test"), "someText.unknown");
-		assertNull("File pattern unknown at that point", single);
+		assertNull(single, "File pattern unknown at that point");
 
 		textContentType.addFileSpec("*Text*", IContentType.FILE_PATTERN_SPEC);
 		try {
 			single = finder.findContentTypeFor(getInputStream("Just a test"), "someText.unknown");
-			assertEquals("Text content should now match *Text* files", textContentType, single);
+			assertEquals(textContentType, single, "Text content should now match *Text* files");
 		} finally {
 			textContentType.removeFileSpec("*Text*", IContentType.FILE_PATTERN_SPEC);
 		}
 		single = finder.findContentTypeFor(getInputStream("Just a test"), "someText.unknown");
-		assertNull("File pattern unknown at that point", single);
+		assertNull(single, "File pattern unknown at that point");
 	}
 
 	@Test
@@ -1160,8 +1160,8 @@ public class IContentTypeManagerTest {
 		assertEquals(myContent, description.getContentType());
 		assertNotSame(myContent.getDefaultDescription(), description);
 		for (int i = 0; i < MyContentDescriber.MY_OPTIONS.length; i++) {
-			assertEquals(i + "", MyContentDescriber.MY_OPTION_VALUES[i],
-					description.getProperty(MyContentDescriber.MY_OPTIONS[i]));
+			assertEquals(MyContentDescriber.MY_OPTION_VALUES[i],
+					description.getProperty(MyContentDescriber.MY_OPTIONS[i]), i + "");
 		}
 	}
 

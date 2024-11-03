@@ -14,8 +14,9 @@
 package org.eclipse.core.tests.harness;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -23,7 +24,6 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.junit.Assert;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -48,9 +48,8 @@ public class BundleTestingHelper {
 
 	public static Bundle installBundle(String tag, BundleContext context, String location) throws BundleException, MalformedURLException, IOException {
 		URL entry = context.getBundle().getEntry(location);
-		if (entry == null) {
-			Assert.fail(tag + " entry " + location + " could not be found in " + context.getBundle().getSymbolicName());
-		}
+		assertNotNull(entry,
+				tag + " entry " + location + " could not be found in " + context.getBundle().getSymbolicName());
 		return context.installBundle(FileLocator.toFileURL(entry).toExternalForm());
 	}
 
@@ -106,7 +105,7 @@ public class BundleTestingHelper {
 			Bundle[] installed = new Bundle[locations.length];
 			for (int i = 0; i < locations.length; i++) {
 				installed[i] = installBundle(context, locations[i]);
-				assertEquals(locations[i], Bundle.INSTALLED, installed[i].getState());
+				assertEquals(Bundle.INSTALLED, installed[i].getState(), locations[i]);
 			}
 			if (listener != null) {
 				listener.reset();

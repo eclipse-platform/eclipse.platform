@@ -14,15 +14,15 @@
 package org.eclipse.core.tests.resources.content;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.core.internal.content.LazyInputStream;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link LazyInputStream}.
@@ -169,7 +169,7 @@ public class LazyInputStreamTest {
 		ByteArrayInputStream underlying = new ByteArrayInputStream(contents);
 		OpenLazyInputStream stream = new OpenLazyInputStream(underlying, 7);
 		for (int i = 0; i < VARIOUS_INTS.length; i++) {
-			assertEquals(i + "", VARIOUS_INTS[i], stream.read());
+			assertEquals(VARIOUS_INTS[i], stream.read(), i + "");
 		}
 		stream.close();
 	}
@@ -196,7 +196,7 @@ public class LazyInputStreamTest {
 
 			objectUnderTest.skip(1);
 
-			assertTrue("The buffer size suffered an Overflow", objectUnderTest.getBufferSize() > Integer.MAX_VALUE);
+			assertTrue(objectUnderTest.getBufferSize() > Integer.MAX_VALUE, "The buffer size suffered an Overflow");
 		}
 
 	}

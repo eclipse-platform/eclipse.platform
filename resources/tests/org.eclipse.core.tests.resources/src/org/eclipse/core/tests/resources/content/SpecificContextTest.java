@@ -14,10 +14,10 @@
 package org.eclipse.core.tests.resources.content;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.internal.content.ContentTypeManager;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
@@ -30,17 +30,13 @@ import org.eclipse.core.runtime.content.IContentTypeMatcher;
 import org.eclipse.core.runtime.content.IContentTypeSettings;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Tests content type matcher with a non-default context for user preferences.
  */
 public class SpecificContextTest {
-
-	@Rule
-	public TestName name = new TestName();
 
 	/**
 	 * A minimal scope implementation.
@@ -70,25 +66,26 @@ public class SpecificContextTest {
 	}
 
 	@Test
-	public void testContentTypeLookup() throws CoreException {
+	public void testContentTypeLookup(TestInfo testInfo) throws CoreException {
+		String testName = testInfo.getDisplayName();
 		IContentTypeManager global = Platform.getContentTypeManager();
 		final SingleNodeScope scope = new SingleNodeScope();
 		IContentTypeMatcher local = global.getMatcher(new LocalSelectionPolicy(), scope);
 		IContentType textContentType = global.getContentType(Platform.PI_RUNTIME + '.' + "text");
 		// added "<test case name>.global" to the text content type as a global file
 		// spec
-		textContentType.addFileSpec(name.getMethodName() + ".global", IContentType.FILE_NAME_SPEC);
+		textContentType.addFileSpec(testName + ".global", IContentType.FILE_NAME_SPEC);
 		// added "<test case name>.local" to the text content type as a local
 		// (scope-specific) file spec
-		textContentType.getSettings(scope).addFileSpec(name.getMethodName() + ".local", IContentType.FILE_NAME_SPEC);
+		textContentType.getSettings(scope).addFileSpec(testName + ".local", IContentType.FILE_NAME_SPEC);
 		// make ensure associations are properly recognized when doing content type
 		// lookup
-		assertEquals(textContentType, global.findContentTypeFor(name.getMethodName() + ".global"));
-		assertNull(local.findContentTypeFor(name.getMethodName() + ".global"));
-		assertEquals(textContentType, local.findContentTypeFor(name.getMethodName() + ".local"));
-		assertNull(global.findContentTypeFor(name.getMethodName() + ".local"));
+		assertEquals(textContentType, global.findContentTypeFor(testName + ".global"));
+		assertNull(local.findContentTypeFor(testName + ".global"));
+		assertEquals(textContentType, local.findContentTypeFor(testName + ".local"));
+		assertNull(global.findContentTypeFor(testName + ".local"));
 
-		textContentType.removeFileSpec(name.getMethodName() + ".global", IContentType.FILE_NAME_SPEC);
+		textContentType.removeFileSpec(testName + ".global", IContentType.FILE_NAME_SPEC);
 	}
 
 	@Test

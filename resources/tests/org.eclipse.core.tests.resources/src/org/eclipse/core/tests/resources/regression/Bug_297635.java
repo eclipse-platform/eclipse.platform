@@ -142,7 +142,7 @@ public class Bug_297635 {
 
 		public static void install() throws Exception {
 			bundle = BundleTestingHelper.installBundle("", getContext(),
-					"Plugin_Testing" + TEST_BUNDLE_LOCATION);
+					"Plugin_Testing/" + TEST_BUNDLE_LOCATION);
 			BundleTestingHelper.resolveBundles(getContext(), new Bundle[] { bundle });
 			bundle.start(Bundle.START_TRANSIENT);
 			registerSaveParticipant(bundle);
