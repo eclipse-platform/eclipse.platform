@@ -16,7 +16,7 @@ Contents
 *   [2 Part II -- The Rich Client Platform](#Part-II----The-Rich-Client-Platform)
     *   [2.1 All about Plug-ins](#All-about-Plug-ins)
     *   [2.2 Runtime Facilities](#Runtime-Facilities)
-    *   [2.3 Standard Widget Toolkit (SWT)](#Standard-Widget-Toolkit-.28SWT.29)
+    *   [2.3 Standard Widget Toolkit (SWT)](#standard-widget-toolkit-swt)
     *   [2.4 JFace](#JFace)
     *   [2.5 Generic Workbench](#Generic-Workbench)
     *   [2.6 Perspectives and Views](#Perspectives-and-Views)
