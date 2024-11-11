@@ -31,6 +31,11 @@ For a complete guide, see the [CONTRIBUTING](https://github.com/eclipse-platform
 https://www.eclipse.org/setups/installer/?url=https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/releng/org.eclipse.platform.setup/PlatformConfiguration.setup&show=true
 "Click to open Eclipse-Installer Auto Launch or drag into your running installer")
 
+## Documentation
+
+For additional documentation, please refer to the [docs directory](./docs) and [The Official Eclipse FAQs](./docs/FAQ/The_Official_Eclipse_FAQs.md).
+
+
 ## Issue Tracking
 
 This project uses Github to track ongoing development and issues. In case you have an issue, please read the information about Eclipse being a [community project](https://github.com/eclipse-platform#community) and bear in mind that this project is almost entirely developed by volunteers. So the contributors may not be able to look into every reported issue. You will also find the information about [how to find and report issues](https://github.com/eclipse-platform#reporting-issues) in repositories of the `eclipse-platform` organization there. Be sure to search for existing issues before you create another one.
