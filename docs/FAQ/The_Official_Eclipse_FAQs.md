@@ -34,7 +34,7 @@ Contents
         *   [3.5.2 This is a DSL of your own](#This-is-a-DSL-of-your-own)
         *   [3.5.3 Legacy](#Legacy)
     *   [3.6 Java Development Tool API](#Java-Development-Tool-API)
-*   [4 Where to buy the original book](#Where-to-buy-the-original-book)
+*   [4 This content is based on](#This-content-is-based-on)
 
 Part I -- The Eclipse Ecosystem
 -------------------------------
@@ -602,12 +602,10 @@ Finally, the JDT is a useful set of plug-ins in its own right, but it has also b
 *   [FAQ How do I participate in a refactoring?](./FAQ_How_do_I_participate_in_a_refactoring.md "FAQ How do I participate in a refactoring?")
 *   [FAQ What is LTK?](./FAQ_What_is_LTK.md "FAQ What is LTK?")
 
-Where to buy the original book
-------------------------------
 
-The initial contents for these FAQ pages has come from The Offical Eclipse 3.0 FAQs written by John Arthorne and Chris Laffra.
+### Acknowledgement
+
+The initial contents for these FAQ pages has come from [The Offical Eclipse 3.0 FAQs](https://www.amazon.com/exec/obidos/ASIN/0321268385) written by John Arthorne and Chris Laffra.
 
 Permission to publish the FAQ book contents here has been graciously offered by Addison-Wesley, publishers of the official Eclipse Series which wouldn't be possible without the great help from Greg Doench.
-
-The book can be purchased from [Amazon.com](http://www.amazon.com/exec/obidos/ASIN/0321268385)
 
