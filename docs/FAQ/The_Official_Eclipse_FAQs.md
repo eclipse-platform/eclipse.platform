@@ -56,7 +56,6 @@ An open source project would be nothing without a supporting community. The Ecli
 *   [FAQ What open source projects are based on Eclipse?](./FAQ_What_open_source_projects_are_based_on_Eclipse.md "FAQ What open source projects are based on Eclipse?")
 *   [FAQ What academic research projects are based on Eclipse?](./FAQ_What_academic_research_projects_are_based_on_Eclipse.md "FAQ What academic research projects are based on Eclipse?")
 *   [FAQ Who uses Eclipse in the classroom?](./FAQ_Who_uses_Eclipse_in_the_classroom.md "FAQ Who uses Eclipse in the classroom?")
-*   [FAQ What is an Eclipse Innovation Grant?](./FAQ_What_is_an_Eclipse_Innovation_Grant.md "FAQ What is an Eclipse Innovation Grant?")
 *   [FAQ What Eclipse newsgroups are available?](./FAQ_What_Eclipse_newsgroups_are_available.md "FAQ What Eclipse newsgroups are available?")
 *   [FAQ How do I get access to Eclipse newsgroups?](./FAQ_How_do_I_get_access_to_Eclipse_newsgroups.md "FAQ How do I get access to Eclipse newsgroups?")
 *   [FAQ What Eclipse mailing lists are available?](./FAQ_What_Eclipse_mailing_lists_are_available.md "FAQ What Eclipse mailing lists are available?")
