@@ -192,7 +192,7 @@ public class Project extends Container implements IProject {
 	 */
 	protected void checkDescription(IProject project, IProjectDescription desc, boolean moving) throws CoreException {
 		URI location = desc.getLocationURI();
-		String message = Messages.resources_invalidProjDesc;
+		String message = NLS.bind(Messages.resources_invalidProjDesc, project.getName(), String.valueOf(location));
 		MultiStatus status = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.INVALID_VALUE, message, null);
 		status.merge(workspace.validateName(desc.getName(), IResource.PROJECT));
 		if (moving) {
