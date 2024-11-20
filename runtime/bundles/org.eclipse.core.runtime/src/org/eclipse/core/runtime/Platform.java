@@ -272,7 +272,7 @@ public final class Platform {
 	 * @since 3.0
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String OS_AIX = "aix";//$NON-NLS-1$
 
 	/**
@@ -287,7 +287,7 @@ public final class Platform {
 	 *
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String OS_SOLARIS = "solaris";//$NON-NLS-1$
 
 	/**
@@ -302,7 +302,7 @@ public final class Platform {
 	 *
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String OS_HPUX = "hpux";//$NON-NLS-1$
 
 	/**
@@ -317,7 +317,7 @@ public final class Platform {
 	 *
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String OS_QNX = "qnx";//$NON-NLS-1$
 
 	/**
@@ -355,7 +355,7 @@ public final class Platform {
 	 * @since 3.0
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String ARCH_X86 = "x86";//$NON-NLS-1$
 
 	/**
@@ -370,7 +370,7 @@ public final class Platform {
 	 *
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String ARCH_PA_RISC = "PA_RISC";//$NON-NLS-1$
 
 	/**
@@ -385,7 +385,7 @@ public final class Platform {
 	 *
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String ARCH_PPC = "ppc";//$NON-NLS-1$
 
 	/**
@@ -400,7 +400,7 @@ public final class Platform {
 	 *
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String ARCH_SPARC = "sparc";//$NON-NLS-1$
 
 	/**
@@ -455,7 +455,7 @@ public final class Platform {
 	 *
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String ARCH_IA64 = "ia64"; //$NON-NLS-1$
 
 	/**
@@ -493,7 +493,7 @@ public final class Platform {
 	 *
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String WS_MOTIF = "motif";//$NON-NLS-1$
 
 	/**
@@ -519,7 +519,7 @@ public final class Platform {
 	 * @since 3.0
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String WS_PHOTON = "photon";//$NON-NLS-1$
 
 	/**
@@ -534,7 +534,7 @@ public final class Platform {
 	 *
 	 * @since 3.0
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String WS_CARBON = "carbon";//$NON-NLS-1$
 
 	/**
@@ -552,7 +552,7 @@ public final class Platform {
 	 * @since 3.3
 	 * @deprecated not supported anymore
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static final String WS_WPF = "wpf";//$NON-NLS-1$
 
 	/**
@@ -671,7 +671,7 @@ public final class Platform {
 	 * @see Bundle#getEntry(String)
 	 * @deprecated use {@link FileLocator#toFileURL(URL)} instead
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static URL asLocalURL(URL url) throws IOException {
 		return FileLocator.toFileURL(url);
 	}
@@ -680,7 +680,7 @@ public final class Platform {
 	 * Takes down the splash screen if one was put up.
 	 * @deprecated use {@link IApplicationContext#applicationRunning()} instead
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static void endSplash() {
 		InternalPlatform.getDefault().endSplash();
 	}
@@ -810,7 +810,7 @@ public final class Platform {
 	 * As the org.eclipse.core.runtime.compatibility plug-in has been removed in
 	 * Eclipse 4.6 this method is not supported anymore.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static Plugin getPlugin(String id) {
 		return null;
 	}
@@ -851,7 +851,7 @@ public final class Platform {
 	 * @see Bundle#getEntry(String)
 	 * @deprecated use {@link FileLocator#resolve(URL)} instead
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static URL resolve(URL url) throws IOException {
 		return FileLocator.resolve(url);
 	}
@@ -864,7 +864,7 @@ public final class Platform {
 	 * @param runnable the runnable to run
 	 * @deprecated clients should use <code>SafeRunner#run</code> instead
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static void run(ISafeRunnable runnable) {
 		SafeRunner.run(runnable);
 	}
@@ -897,7 +897,7 @@ public final class Platform {
 	 * @since 3.0
 	 * @deprecated use {@link FileLocator#find(Bundle, IPath)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static URL find(Bundle bundle, IPath path) {
 		return FileLocator.find(bundle, path);
 	}
@@ -959,7 +959,7 @@ public final class Platform {
 	 * @since 3.0
 	 * @deprecated use {@link FileLocator#find(Bundle, IPath, Map)} instead
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static URL find(Bundle bundle, IPath path, Map<String,String> override) {
 		return FileLocator.find(bundle, path, override);
 	}
@@ -1219,7 +1219,7 @@ public final class Platform {
 	 *             clients, see javadoc for details.
 	 * @since 3.0
 	 */
-	@Deprecated(forRemoval = true)
+	@Deprecated(forRemoval = true, since = "2024-03") // 2024-03 was added later for information purposes
 	public static PlatformAdmin getPlatformAdmin() {
 		return InternalPlatform.getDefault().getPlatformAdmin();
 	}
