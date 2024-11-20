@@ -336,9 +336,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		return null;
 	}
 
-	@Override
-	public void createControl(Composite parent) {
-
+	public final void createControl(Composite parent, boolean allowMultiSelection) {
 		localComposite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = 0;
@@ -348,7 +346,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		data.grabExcessVerticalSpace = true;
 		localComposite.setLayoutData(data);
 
-		treeViewer = createTree(localComposite);
+		treeViewer = createTree(localComposite, allowMultiSelection);
 
 		contributeActions();
 
@@ -360,6 +358,11 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE);
 
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(localComposite, IHelpContextIds.LOCAL_HISTORY_PAGE);
+	}
+
+	@Override
+	public void createControl(Composite parent) {
+		createControl(parent, true);
 	}
 
 	private void contributeActions() {
@@ -599,8 +602,12 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 	 * @return the group control
 	 */
 	protected TreeViewer createTree(Composite parent) {
+		return createTree(parent, true);
+	}
+
+	protected final TreeViewer createTree(Composite parent, boolean allowMultiSelection) {
 		historyTableProvider = new LocalFileHistoryTableProvider();
-		TreeViewer viewer = historyTableProvider.createTree(parent);
+		TreeViewer viewer = historyTableProvider.createTree(parent, allowMultiSelection);
 		viewer.setContentProvider(new LocalHistoryContentProvider());
 		return viewer;
 	}

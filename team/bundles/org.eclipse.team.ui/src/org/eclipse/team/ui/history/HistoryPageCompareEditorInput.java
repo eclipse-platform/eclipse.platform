@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.history.DialogHistoryPageSite;
+import org.eclipse.team.internal.ui.history.LocalHistoryPage;
 import org.eclipse.team.ui.PageCompareEditorInput;
 import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.part.Page;
@@ -79,11 +80,23 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 
 	@Override
 	protected IPage createPage(CompareViewerPane parent, IToolBarManager toolBarManager) {
+		return createPage(parent, toolBarManager, true);
+	}
+
+	/**
+	 * @since 3.11
+	 */
+	protected final IPage createPage(CompareViewerPane parent, IToolBarManager toolBarManager,
+			boolean allowMultiSelection) {
 		site = new DialogHistoryPageSite(parent.getShell());
 		historyPage = (IHistoryPage)pageSource.createPage(object);
 		historyPage.setSite(site);
 		site.setToolBarManager(toolBarManager);
-		((Page) historyPage).createControl(parent);
+		if (historyPage instanceof LocalHistoryPage localHistoryPage) {
+			localHistoryPage.createControl(parent, allowMultiSelection);
+		} else {
+			((Page) historyPage).createControl(parent);
+		}
 		historyPage.setInput(object);
 		String description = historyPage.getDescription();
 		if (description == null)

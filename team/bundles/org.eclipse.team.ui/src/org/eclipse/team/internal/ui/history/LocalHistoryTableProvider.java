@@ -291,7 +291,15 @@ public class LocalHistoryTableProvider {
 	 * @return TableViewer
 	 */
 	public TreeViewer createTree(Composite parent) {
-		Tree tree = new Tree(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
+		return createTree(parent, true);
+	}
+
+	public TreeViewer createTree(Composite parent, boolean allowMultiSelection) {
+		int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION;
+		if (allowMultiSelection) {
+			style = style | SWT.MULTI;
+		}
+		Tree tree = new Tree(parent, style);
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(false);
 
