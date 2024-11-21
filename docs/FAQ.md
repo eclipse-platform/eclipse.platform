@@ -1,4 +1,7 @@
-# NOTE: LOTS OF QUESTIONS AND ANSWERS ARE NOT UP TO DATE
+# NOTE: Please move to  [The Official Eclipse FAQs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/FAQ/The_Official_Eclipse_FAQs.md")
+
+
+# THIS IS THE OLD IRC FAQ AND LOTS OF QUESTIONS AND ANSWERS ARE NOT UP TO DATE
 
 # This document is based on frequently asked questions in a older support channel of Eclipse called IRC and was located in a wiki which has been deprecreated
 # In Febr. 2024 the most outdated content has been removed or updated but if you see something which you can improve / update please send a PR for this repo
@@ -110,8 +113,7 @@ General
 
 ### I'm new, what should I read first?
 
-*   [Recommended Eclipse Reading List](http://www.ibm.com/developerworks/opensource/library/os-ecl-read/)
-*   [The Official Eclipse FAQs - Getting Started](/The_Official_Eclipse_FAQs#Getting_Started "The Official Eclipse FAQs")
+*   [The Official Eclipse FAQs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/FAQ/The_Official_Eclipse_FAQs.md")
 
 Installation, Startup and Runtime
 ---------------------------------
