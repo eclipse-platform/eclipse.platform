@@ -15,12 +15,8 @@ Contents
 If you're using the Generic and Extensible editor
 -------------------------------------------------
 
-Add hover support via the org.eclipse.ui.genericeditor.contentAssistProcessors extension point, providing an implemention IContentAssistProcessor.
+Add content assists via the org.eclipse.ui.genericeditor.contentAssistProcessors extension point, providing an implemention IContentAssistProcessor.
 
-If you're extensing the StructuredTextEditor
---------------------------------------------
-
-TODO
 
 If it's your own editor
 -----------------------
