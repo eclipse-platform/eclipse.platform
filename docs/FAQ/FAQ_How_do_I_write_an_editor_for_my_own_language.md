@@ -4,7 +4,8 @@ FAQ How do I write an editor for my own language?
 Contributing to Generic and Extensible editor
 ---------------------------------------------
 
-Since Eclipse 4.7.M3, you can consider simply adding extensions to the [Generic Editor](https://www.eclipse.org/eclipse/news/4.7/M3/#generic-editor) . This will allow you to write support for textual edition of a language with less boiler plate.
+Define an extension for the [Generic Editor](https://www.eclipse.org/eclipse/news/4.7/M3/#generic-editor).
+This allows you to write support for textual edition of a language with less boiler plate.
 
 Implementing your own editor
 ----------------------------
@@ -94,10 +95,14 @@ For scanning the underlying document to draw it using different colors and fonts
 
 For each of the keywords in our little language, we define a word entry in our WordRule. We pass our keyword detector, together with rules for recognizing comments, strings, and white spaces to the scanner. With this simple set of rules, the scanner can segment a stream of bytes into sections and then use the underlying rules to color the sections.
 
+[Eclipse TM4E - TextMate and language-configuration support](https://github.com/eclipse-tm4e/tm4e) allows to configure syntax highlighting and certain editor actions based on configuration files.
+
 See Also:
 ---------
 
 *   [FAQ How do I create my own editor?](./FAQ_How_do_I_create_my_own_editor.md "FAQ How do I create my own editor?")
 *   [FAQ How do I get started with creating a custom text editor?](./FAQ_How_do_I_get_started_with_creating_a_custom_text_editor.md "FAQ How do I get started with creating a custom text editor?")
 *   [FAQ How do I add Content Assist to my language editor?](./FAQ_How_do_I_add_Content_Assist_to_my_language_editor.md "FAQ How do I add Content Assist to my language editor?")
+*   [Eclipse TM4E - TextMate and language-configuration support](https://github.com/eclipse-tm4e/tm4e)
+
 
