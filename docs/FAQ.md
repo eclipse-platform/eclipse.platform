@@ -1,4 +1,4 @@
-# NOTE: Please move to  [The Official Eclipse FAQs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/FAQ/The_Official_Eclipse_FAQs.md")
+# NOTE: Please move to  [The Official Eclipse FAQs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/FAQ/The_Official_Eclipse_FAQs.md)
 
 
 # THIS IS THE OLD IRC FAQ AND LOTS OF QUESTIONS AND ANSWERS ARE NOT UP TO DATE
