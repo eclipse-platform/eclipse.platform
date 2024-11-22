@@ -146,7 +146,7 @@ This chapter describes the mechanics of plug-in development, such as creating pl
 *   [FAQ How do I add images and other resources to a runtime JAR file?](./FAQ_How_do_I_add_images_and_other_resources_to_a_runtime_JAR_file.md "FAQ How do I add images and other resources to a runtime JAR file?")
 *   [FAQ Can I add icons declared by my plugin.xml in the runtime JAR?](./FAQ_Can_I_add_icons_declared_by_my_plugin_xml_in_the_runtime_JAR.md "FAQ Can I add icons declared by my plugin.xml in the runtime JAR?")
 *   [FAQ When does PDE change a plug-in's Java build path?](./FAQ_When_does_PDE_change_a_plug-ins_Java_build_path.md "FAQ When does PDE change a plug-in's Java build path?")
-*   [FAQ What is a PDE JUnit test?](./FAQ_What_is_a_PDE_JUnit_test.md "FAQ What is a PDE JUnit test?")
+*   [FAQ What is a JUnit Plug-in testt?](./FAQ_What_is_a_PDE_JUnit_test.md "FAQ What is a JUnit Plug-in test?")
 *   [FAQ Where can I find the Eclipse plug-ins?](./FAQ_Where_can_I_find_the_Eclipse_plug-ins.md "FAQ Where can I find the Eclipse plug-ins?")
 *   [FAQ How do I find a particular class from an Eclipse plug-in?](./FAQ_How_do_I_find_a_particular_class_from_an_Eclipse_plug-in.md "FAQ How do I find a particular class from an Eclipse plug-in?")
 *   [FAQ Why do I get a 'plug-in was unable to load class' error when I activate a menu or toolbar action?](./FAQ_Why_do_I_get_a_plug-in_was_unable_to_load_class_error_when_I_activate_a_menu_or_toolbar_action.md "FAQ Why do I get a 'plug-in was unable to load class' error when I activate a menu or toolbar action?")
