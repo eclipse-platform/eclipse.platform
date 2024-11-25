@@ -18,7 +18,7 @@
   </parent>
   <groupId>org.eclipse.help</groupId>
   <artifactId>org.eclipse.help.base</artifactId>
-  <version>4.4.600-SNAPSHOT</version>
+  <version>4.4.700-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <properties>
     <defaultSigning-excludeInnerJars>true</defaultSigning-excludeInnerJars>
