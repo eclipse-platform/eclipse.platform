@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -38,8 +38,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -64,7 +64,6 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -308,79 +307,6 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	}
 
 	/**
-	 * Visitor for handling a resource begin deleted, and the need to check mapped configurations
-	 * for auto-deletion
-	 * @since 3.4
-	 */
-	class MappedResourceVisitor implements IResourceDeltaVisitor {
-
-		@Override
-		public boolean visit(IResourceDelta delta) throws CoreException {
-			if (0 != (delta.getFlags() & IResourceDelta.OPEN)) {
-				return false;
-			}
-			if(delta.getKind() == IResourceDelta.REMOVED && delta.getFlags() != IResourceDelta.MOVED_TO) {
-				ArrayList<ILaunchConfiguration> configs = collectAssociatedLaunches(delta.getResource());
-				for (ILaunchConfiguration config : configs) {
-					try {
-						config.delete();
-					} catch (CoreException e) {
-						DebugPlugin.log(e.getStatus());
-					}
-				}
-				return false;
-			}
-			return true;
-		}
-	}
-
-	/**
-	 * Visitor for handling resource deltas.
-	 */
-	class LaunchManagerVisitor implements IResourceDeltaVisitor {
-
-		@Override
-		public boolean visit(IResourceDelta delta) {
-			if (delta == null) {
-				return false;
-			}
-			if (0 != (delta.getFlags() & IResourceDelta.OPEN)) {
-				if (delta.getResource() instanceof IProject) {
-					IProject project = (IProject)delta.getResource();
-					if (project.isOpen()) {
-						LaunchManager.this.projectOpened(project);
-					} else {
-						LaunchManager.this.projectClosed(project);
-					}
-				}
-				return false;
-			}
-			IResource resource = delta.getResource();
-			if (resource instanceof IFile) {
-				IFile file = (IFile)resource;
-				if (ILaunchConfiguration.LAUNCH_CONFIGURATION_FILE_EXTENSION.equals(file.getFileExtension()) || ILaunchConfiguration.LAUNCH_CONFIGURATION_PROTOTYPE_FILE_EXTENSION.equals(file.getFileExtension())) {
-					ILaunchConfiguration handle = new LaunchConfiguration(file);
-					switch (delta.getKind()) {
-						case IResourceDelta.ADDED :
-							LaunchManager.this.launchConfigurationAdded(handle);
-							break;
-						case IResourceDelta.REMOVED :
-							LaunchManager.this.launchConfigurationDeleted(handle);
-							break;
-						case IResourceDelta.CHANGED :
-							LaunchManager.this.launchConfigurationChanged(handle);
-							break;
-						default:
-							break;
-					}
-				}
-				return false;
-			}
-			return true;
-		}
-	}
-
-	/**
 	 * Notifies a launch listener (single launch) in a safe runnable to handle
 	 * exceptions.
 	 */
@@ -430,30 +356,6 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 				default:
 					break;
 			}
-		}
-	}
-
-	/**
-	 * Collects files whose extension matches the launch configuration file
-	 * extension.
-	 */
-	static class ResourceProxyVisitor implements IResourceProxyVisitor {
-
-		private final List<IResource> fList;
-
-		protected ResourceProxyVisitor(List<IResource> list) {
-			fList= list;
-		}
-
-		@Override
-		public boolean visit(IResourceProxy proxy) {
-			if (proxy.getType() == IResource.FILE) {
-				if (ILaunchConfiguration.LAUNCH_CONFIGURATION_FILE_EXTENSION.equalsIgnoreCase(proxy.requestFullPath().getFileExtension()) || ILaunchConfiguration.LAUNCH_CONFIGURATION_PROTOTYPE_FILE_EXTENSION.equalsIgnoreCase(proxy.requestFullPath().getFileExtension())) {
-					fList.add(proxy.requestResource());
-				}
-				return false;
-			}
-			return true;
 		}
 	}
 
@@ -627,11 +529,49 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 */
 	private ListenerList<ILaunchesListener> fLaunchesListeners = new ListenerList<>();
 
+	private static final Set<String> LAUNCH_CONFIG_FILE_EXTENSIONS = Set.of( //
+			ILaunchConfiguration.LAUNCH_CONFIGURATION_FILE_EXTENSION, //
+			ILaunchConfiguration.LAUNCH_CONFIGURATION_PROTOTYPE_FILE_EXTENSION);
+
 	/**
 	 * Visitor used to process resource deltas,
 	 * to update launch configuration index.
 	 */
-	private LaunchManagerVisitor fgVisitor;
+	private final IResourceDeltaVisitor fLaunchManagerVisitor = delta -> {
+		if (delta == null) {
+			return false;
+		}
+		if (0 != (delta.getFlags() & IResourceDelta.OPEN)) {
+			if (delta.getFullPath().segmentCount() == 1 && delta.getResource() instanceof IProject project) {
+				if (project.isOpen()) {
+					LaunchManager.this.projectOpened(project);
+				} else {
+					LaunchManager.this.projectClosed(project);
+				}
+			}
+			return false;
+		}
+		if (LAUNCH_CONFIG_FILE_EXTENSIONS.contains(delta.getFullPath().getFileExtension())) {
+			if (delta.getResource() instanceof IFile file) {
+				ILaunchConfiguration handle = new LaunchConfiguration(file);
+				switch (delta.getKind()) {
+					case IResourceDelta.ADDED:
+						LaunchManager.this.launchConfigurationAdded(handle);
+						break;
+					case IResourceDelta.REMOVED:
+						LaunchManager.this.launchConfigurationDeleted(handle);
+						break;
+					case IResourceDelta.CHANGED:
+						LaunchManager.this.launchConfigurationChanged(handle);
+						break;
+					default:
+						break;
+				}
+			}
+			return false;
+		}
+		return true;
+	};
 
 	/**
 	 * Visitor used to process a deleted resource,
@@ -640,7 +580,23 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 *
 	 * @since 3.4
 	 */
-	private MappedResourceVisitor fgMRVisitor;
+	private final IResourceDeltaVisitor fMappedResourceVisitor = delta -> {
+		if (0 != (delta.getFlags() & IResourceDelta.OPEN)) {
+			return false;
+		}
+		if (delta.getKind() == IResourceDelta.REMOVED && delta.getFlags() != IResourceDelta.MOVED_TO) {
+			List<ILaunchConfiguration> configs = collectAssociatedLaunches(delta.getResource());
+			for (ILaunchConfiguration config : configs) {
+				try {
+					config.delete();
+				} catch (CoreException e) {
+					DebugPlugin.log(e.getStatus());
+				}
+			}
+			return false;
+		}
+		return true;
+	};
 
 	/**
 	 * Whether this manager is listening for resource change events
@@ -842,7 +798,16 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 			return Collections.emptyList();
 		}
 		List<IResource> list = new ArrayList<>(10);
-		ResourceProxyVisitor visitor= new ResourceProxyVisitor(list);
+		IResourceProxyVisitor visitor = proxy -> {
+			if (proxy.getType() == IResource.FILE) {
+				String fileExtension = proxy.requestFullPath().getFileExtension();
+				if (LAUNCH_CONFIG_FILE_EXTENSIONS.contains(fileExtension.toLowerCase(Locale.ENGLISH))) {
+					list.add(proxy.requestResource());
+				}
+				return false;
+			}
+			return true;
+		};
 		try {
 			container.accept(visitor, IResource.NONE);
 		} catch (CoreException ce) {
@@ -1129,31 +1094,6 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 		}
 	}
 
-	/**
-	 * Returns the resource delta visitor for the launch manager.
-	 *
-	 * @return the resource delta visitor for the launch manager
-	 */
-	private LaunchManagerVisitor getDeltaVisitor() {
-		if (fgVisitor == null) {
-			fgVisitor= new LaunchManagerVisitor();
-		}
-		return fgVisitor;
-	}
-
-	/**
-	 * Returns the resource delta visitor for auto-removal of mapped launch configurations
-	 * @return the resource delta visitor for auto-removal of mapped launch configurations
-	 *
-	 * @since 3.4
-	 */
-	private MappedResourceVisitor getMappedResourceVisitor() {
-		if(fgMRVisitor == null) {
-			fgMRVisitor = new MappedResourceVisitor();
-		}
-		return fgMRVisitor;
-	}
-
 	@Override
 	public String[] getEnvironment(ILaunchConfiguration configuration) throws CoreException {
 		Map<String, String> configEnv = configuration.getAttribute(ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null);
@@ -1314,9 +1254,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 			return allConfigs.toArray(new ILaunchConfiguration[allConfigs.size()]);
 		} else {
 			List<ILaunchConfiguration> select = new ArrayList<>(allConfigs.size());
-			Iterator<ILaunchConfiguration> iterator = allConfigs.iterator();
-			while (iterator.hasNext()) {
-				ILaunchConfiguration config = iterator.next();
+			for (ILaunchConfiguration config : allConfigs) {
 				try {
 					if ((config.getKind() & kinds) > 0) {
 						select.add(config);
@@ -1499,19 +1437,16 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 				try {
 					Element root = DebugPlugin.parseDocument(preferred);
 					NodeList nodes = root.getElementsByTagName(IConfigurationElementConstants.DELEGATE);
-					Element element = null;
-					String typeid = null;
-					Set<String> modeset = null;
 					for(int i = 0; i < nodes.getLength(); i++) {
-						element = (Element) nodes.item(i);
+						Element element = (Element) nodes.item(i);
 						String delegateid = element.getAttribute(IConfigurationElementConstants.ID);
-						typeid = element.getAttribute(IConfigurationElementConstants.TYPE_ID);
+						String typeid = element.getAttribute(IConfigurationElementConstants.TYPE_ID);
 						String[] modes = element.getAttribute(IConfigurationElementConstants.MODES).split(","); //$NON-NLS-1$
-						modeset = new HashSet<>(Arrays.asList(modes));
+						Set<String> modeset = new HashSet<>(Arrays.asList(modes));
 						LaunchDelegate delegate = getLaunchDelegateExtension(typeid, delegateid, modeset);
 						if (delegate != null) {
 							//take type id, modeset, delegate and create entry
-							if(!IInternalDebugCoreConstants.EMPTY_STRING.equals(typeid) && modeset != null) {
+							if (!typeid.isEmpty() && modeset != null) {
 								fPreferredDelegates.add(new PreferredDelegate(delegate, typeid, modeset));
 							}
 						}
@@ -2126,15 +2061,11 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta delta = event.getDelta();
 		if (delta != null) {
-			LaunchManagerVisitor visitor = getDeltaVisitor();
-			MappedResourceVisitor v = null;
-			if (isDeleteConfigurations()) {
-				v = getMappedResourceVisitor();
-			}
 			try {
-				delta.accept(visitor);
-				if (v != null) {
-					delta.accept(v);
+				boolean deleteConfigurations = isDeleteConfigurations();
+				delta.accept(fLaunchManagerVisitor);
+				if (deleteConfigurations) {
+					delta.accept(fMappedResourceVisitor);
 				}
 			} catch (CoreException e) {
 				DebugPlugin.log(e.getStatus());
@@ -2150,14 +2081,13 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 	 * @param resource the resource to collect launch configurations for
 	 * @return the list of associated launch configurations
 	 */
-	private ArrayList<ILaunchConfiguration> collectAssociatedLaunches(IResource resource) {
-		ArrayList<ILaunchConfiguration> list = new ArrayList<>();
+	private static List<ILaunchConfiguration> collectAssociatedLaunches(IResource resource) {
+		List<ILaunchConfiguration> list = new ArrayList<>();
 		try {
 			ILaunchConfiguration[] configs = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations();
-			IResource[] resources = null;
 			for (ILaunchConfiguration config : configs) {
 				if(config.isLocal()) {
-					resources = config.getMappedResources();
+					IResource[] resources = config.getMappedResources();
 					if(resources != null) {
 						for (IResource res : resources) {
 							if(resource.equals(res) ||
