@@ -20,6 +20,7 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({ //
 		ObjectMapTest.class, //
-		FileUtilTest.class, })
+		FileUtilTest.class, //
+		TextMatcherTest.class })
 public class AllUtilsTests {
 }
