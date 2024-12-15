@@ -411,7 +411,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	public Set<String> getPluginPaths() {
 
 		HashSet<String> paths = new HashSet<>();
-	
+
 		for (ISiteEntry site : getConfiguredSites()) {
 			for (String plugin : site.getPlugins()) {
 				paths.add(plugin);
@@ -429,12 +429,12 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 		Utils.debug("computed plug-ins:"); //$NON-NLS-1$
 
 		ISiteEntry[] sites = getConfiguredSites();
-		for (int i = 0; i < sites.length; i++) {
-			if (!(sites[i] instanceof SiteEntry)) {
-				Utils.debug("Site " + sites[i].getURL() + " is not a SiteEntry"); //$NON-NLS-1$ //$NON-NLS-2$
+		for (ISiteEntry site : sites) {
+			if (!(site instanceof SiteEntry)) {
+				Utils.debug("Site " + site.getURL() + " is not a SiteEntry"); //$NON-NLS-1$ //$NON-NLS-2$
 				continue;
 			}
-			for (PluginEntry plugin : ((SiteEntry) sites[i]).getPluginEntries()) {
+			for (PluginEntry plugin : ((SiteEntry) site).getPluginEntries()) {
 				allPlugins.add(plugin);
 				Utils.debug("   " + plugin.getURL()); //$NON-NLS-1$
 			}
@@ -494,7 +494,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 			// not a file protocol - attempt to save to the URL
 			URLConnection uc = url.openConnection();
 			uc.setDoOutput(true);
-			
+
 			try(OutputStream os = uc.getOutputStream()) {
 				saveAsXML(os);
 				config.setDirty(false);
@@ -595,9 +595,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	/**
 	 * Starts a platform installed at specified installURL using configuration located at platformConfigLocation.
 	 */
-	public static synchronized void startup(URL installURL, Location platformConfigLocation) throws Exception {
-		PlatformConfiguration.installURL = installURL;
-
+	public static synchronized void startup(Location platformConfigLocation) throws Exception {
 		// create current configuration
 		if (currentPlatformConfiguration == null) {
 			currentPlatformConfiguration = new PlatformConfiguration(platformConfigLocation);
@@ -645,7 +643,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 
 			// try loading the configuration
 			try {
-				config = loadConfig(configFileURL, installURL);
+				config = loadConfig(configFileURL, getInstallURL());
 				Utils.debug("Using configuration " + configFileURL.toString()); //$NON-NLS-1$
 			} catch (Exception e) {
 				// failed to load, see if we can find pre-initialized configuration.
@@ -655,7 +653,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 						throw new IOException(); // no platform.xml found, need to create default site
 
 					URL sharedConfigFileURL = new URL(parentLocation.getURL(), CONFIG_NAME);
-					config = loadConfig(sharedConfigFileURL, installURL);
+					config = loadConfig(sharedConfigFileURL, getInstallURL());
 
 					// pre-initialized config loaded OK ... copy any remaining update metadata
 					// Only copy if the default config location is not the install location
@@ -667,7 +665,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 					return;
 				} catch (Exception ioe) {
 					Utils.debug("Creating default configuration from " + configFileURL.toExternalForm()); //$NON-NLS-1$
-					createDefaultConfiguration(configFileURL, installURL);
+					createDefaultConfiguration(configFileURL, getInstallURL());
 				}
 			} finally {
 				// if config == null an unhandled exception has been thrown and we allow it to propagate
@@ -951,6 +949,9 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	}
 
 	public static URL getInstallURL() {
+		if (installURL == null) {
+			installURL = Utils.getInstallURL();
+		}
 		return installURL;
 	}
 
