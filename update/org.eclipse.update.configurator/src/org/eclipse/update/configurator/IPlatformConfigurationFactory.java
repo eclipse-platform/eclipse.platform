@@ -27,7 +27,7 @@ import java.net.URL;
  * @deprecated The org.eclipse.update component has been replaced by Equinox p2.
  * This API will be deleted in a future release. See bug 311590 for details.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "2025-03")
 public interface IPlatformConfigurationFactory {
 	/**
 	 * Returns the current platform configuration.
