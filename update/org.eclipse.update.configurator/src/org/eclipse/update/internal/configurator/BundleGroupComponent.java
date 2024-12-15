@@ -7,37 +7,58 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.runtime.IBundleGroup;
 import org.eclipse.core.runtime.IBundleGroupProvider;
+import org.eclipse.update.configurator.IPlatformConfiguration;
+import org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry;
+import org.eclipse.update.configurator.IPlatformConfigurationFactory;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Declarative services component that provides an implementation of
  * {@link IBundleGroupProvider}. This allows the bundle group provider to be
  * made available in the service registry before this bundle has started.
  */
-@Component
+@Component(service = IBundleGroupProvider.class)
+@SuppressWarnings("deprecation")
 public class BundleGroupComponent implements IBundleGroupProvider {
+
+
+	private IPlatformConfigurationFactory factory;
+
+	@Activate
+	public BundleGroupComponent(@Reference IPlatformConfigurationFactory factory) {
+		this.factory = factory;
+	}
 
 	@Override
 	public IBundleGroup[] getBundleGroups() {
-		ConfigurationActivator activator = ConfigurationActivator.getConfigurator();
-		if (activator.bundleGroupProviderSR != null)
-			// we manually registered the group in the activator; return no groups
-			// the manually registered service will handle the groups we know about
+		IPlatformConfiguration configuration = factory.getCurrentPlatformConfiguration();
+		if (configuration == null) {
 			return new IBundleGroup[0];
-		return activator.getBundleGroups();
+		}
+		IPlatformConfiguration.IFeatureEntry[] features = configuration.getConfiguredFeatureEntries();
+		ArrayList<IBundleGroup> bundleGroups = new ArrayList<>(features.length);
+		for (IFeatureEntry feature : features) {
+			if (feature instanceof FeatureEntry && ((FeatureEntry) feature).hasBranding())
+				bundleGroups.add((IBundleGroup) feature);
+		}
+		return bundleGroups.toArray(new IBundleGroup[bundleGroups.size()]);
 	}
 
 	@Override
 	public String getName() {
-		return ConfigurationActivator.getConfigurator().getName();
+		return Messages.BundleGroupProvider;
 	}
 
 }
