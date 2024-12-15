@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexFormatTooOldException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
@@ -121,10 +122,22 @@ public class PrebuiltIndexCompatibility {
 			IndexSearcher searcher;
 			try (Directory luceneDirectory = new NIOFSDirectory(new File(filePath).toPath())) {
 				try (DirectoryReader luceneDirectoryReader = DirectoryReader.open(luceneDirectory)) {
+					// This code never reached because the index is not
+					// readable.
 					searcher = new IndexSearcher(luceneDirectoryReader);
 					TopDocs hits = searcher.search(luceneQuery, 500);
-					assertTrue(hits.totalHits.value >= 1);
+					assertTrue(hits.totalHits != null);
 				}
+			} catch (IndexFormatTooOldException ex) {
+				// Lucene 10.x throws this more explicit exception whereas 9.x
+				// throws IllegalArgumentException.
+				// Note that in
+				// org.eclipse.help.internal.search.SearchIndex.SearchIndex(File,
+				// String, AnalyzerDescriptor, TocManager, String)
+				// it catches all these:
+				// catch (IndexFormatTooOldException | IndexNotFoundException |
+				// IllegalArgumentException e)
+				throw new IllegalArgumentException(ex);
 			}
 		} else {
 			fail("Cannot resolve to file protocol");
