@@ -14,6 +14,7 @@
 package org.eclipse.ant.tests.core.testplugin;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -219,7 +220,7 @@ public class AntTestChecker {
 	}
 
 	public List<String> getMessages() {
-		return messages;
+		return Collections.unmodifiableList(messages);
 	}
 
 	public List<String> getListeners() {
