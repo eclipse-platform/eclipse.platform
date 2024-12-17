@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -182,12 +182,11 @@ public class WebappResources {
 		// break the string into tokens to get the Locale object
 		StringTokenizer locales = new StringTokenizer(nl, "_"); //$NON-NLS-1$
 		if (locales.countTokens() == 1)
-			return new Locale(locales.nextToken(), ""); //$NON-NLS-1$
+			return Locale.of(locales.nextToken(), ""); //$NON-NLS-1$
 		else if (locales.countTokens() == 2)
-			return new Locale(locales.nextToken(), locales.nextToken());
+			return Locale.of(locales.nextToken(), locales.nextToken());
 		else if (locales.countTokens() == 3)
-			return new Locale(locales.nextToken(), locales.nextToken(), locales
-					.nextToken());
+			return Locale.of(locales.nextToken(), locales.nextToken(), locales.nextToken());
 		else
 			return Locale.getDefault();
 	}

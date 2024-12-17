@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2016 IBM Corporation and others.
+ * Copyright (c) 2007, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -111,12 +111,11 @@ public class NavServlet extends HttpServlet {
 		// break the string into tokens to get the Locale object
 		StringTokenizer locales = new StringTokenizer(nl, "_"); //$NON-NLS-1$
 		if (locales.countTokens() == 1)
-			locale = new Locale(locales.nextToken(), ""); //$NON-NLS-1$
+			locale = Locale.of(locales.nextToken(), ""); //$NON-NLS-1$
 		else if (locales.countTokens() == 2)
-			locale = new Locale(locales.nextToken(), locales.nextToken());
+			locale = Locale.of(locales.nextToken(), locales.nextToken());
 		else if (locales.countTokens() == 3)
-			locale = new Locale(locales.nextToken(), locales.nextToken(), locales
-					.nextToken());
+			locale = Locale.of(locales.nextToken(), locales.nextToken(), locales.nextToken());
 		else
 			locale = Locale.getDefault();
 		return locale;

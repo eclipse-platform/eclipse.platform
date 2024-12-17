@@ -459,10 +459,9 @@ public class UrlUtil {
 	 */
 	public static Locale getLocale(String localeStr) {
 		if (localeStr.length() >= 5) {
-			return new Locale(localeStr.substring(0, 2), localeStr.substring(3,
-					5));
+			return Locale.of(localeStr.substring(0, 2), localeStr.substring(3, 5));
 		} else if (localeStr.length() >= 2) {
-			return new Locale(localeStr.substring(0, 2), ""); //$NON-NLS-1$
+			return Locale.of(localeStr.substring(0, 2), ""); //$NON-NLS-1$
 		} else {
 			return Locale.getDefault();
 		}
