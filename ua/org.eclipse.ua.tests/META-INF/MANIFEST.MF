@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: User Assistance Test
 Bundle-SymbolicName: org.eclipse.ua.tests;singleton:=true
-Bundle-Version: 3.6.500.qualifier
+Bundle-Version: 3.7.0.qualifier
 Require-Bundle: org.eclipse.help.ui,
  org.eclipse.help.webapp,
  org.eclipse.test.performance,
@@ -21,7 +21,7 @@ Import-Package: javax.servlet;version="3.1.0",
  org.junit.jupiter.api,
  org.junit.jupiter.api.function,
  org.junit.platform.suite.api
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.eclipse.ua.tests,
  org.eclipse.ua.tests.browser.servlet,
  org.eclipse.ua.tests.cheatsheet,
