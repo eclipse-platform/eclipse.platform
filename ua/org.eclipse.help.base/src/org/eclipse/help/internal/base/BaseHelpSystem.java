@@ -324,8 +324,7 @@ public final class BaseHelpSystem {
 			Class<?> c = bundle.loadClass(className);
 			Object o = c.getDeclaredConstructor().newInstance();
 			//Runnable runnable = null;
-			if (o instanceof ILiveHelpAction) {
-				ILiveHelpAction helpExt = (ILiveHelpAction) o;
+			if (o instanceof ILiveHelpAction helpExt) {
 				if (arg != null)
 					helpExt.setInitializationString(arg);
 				Thread runnableLiveHelp = new Thread(helpExt);
