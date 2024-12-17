@@ -50,6 +50,7 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.TaskAdapter;
 import org.apache.tools.ant.util.FileUtils;
+import org.apache.tools.ant.util.JavaEnvUtils;
 import org.eclipse.ant.internal.launching.remote.logger.RemoteAntBuildLogger;
 
 /**
@@ -57,6 +58,17 @@ import org.eclipse.ant.internal.launching.remote.logger.RemoteAntBuildLogger;
  * when running in the platform.
  */
 public class InternalAntRunner {
+
+	private static final boolean IS_SECURITY_MANAGER_SUPPORTED = isSecurityManagerAllowed();
+
+	private static boolean isSecurityManagerAllowed() {
+		String sm = System.getProperty("java.security.manager"); //$NON-NLS-1$
+		if (sm == null) { // default is 'disallow' since 18 and was 'allow' before
+			return !JavaEnvUtils.isAtLeastJavaVersion("18"); //$NON-NLS-1$
+		}
+		// Value is either 'disallow' or 'allow' or specifies the SecurityManager class to set
+		return !"disallow".equals(sm); //$NON-NLS-1$
+	}
 
 	/**
 	 * Message priority for project help messages.
@@ -443,7 +455,9 @@ public class InternalAntRunner {
 				printArguments(getCurrentProject());
 			}
 			try {
-				System.setSecurityManager(new AntSecurityManager(originalSM, Thread.currentThread()));
+				if (IS_SECURITY_MANAGER_SUPPORTED) {
+					System.setSecurityManager(new AntSecurityManager(originalSM, Thread.currentThread()));
+				}
 			}
 			catch (UnsupportedOperationException ex) {
 				logMessage(null, RemoteAntMessages.getString("InternalAntRunner.SecurityManagerError"), Project.MSG_WARN); //$NON-NLS-1$
