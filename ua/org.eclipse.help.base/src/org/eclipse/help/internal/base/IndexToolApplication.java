@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -46,10 +46,10 @@ public class IndexToolApplication implements IApplication {
 			}
 			Locale locale;
 			if (localeStr.length() >= 5) {
-				locale = new Locale(localeStr.substring(0, 2), localeStr.substring(3, 5));
+				locale = Locale.of(localeStr.substring(0, 2), localeStr.substring(3, 5));
 			}
 			else {
-				locale = new Locale(localeStr.substring(0, 2), ""); //$NON-NLS-1$
+				locale = Locale.of(localeStr.substring(0, 2), ""); //$NON-NLS-1$
 			}
 			preindex(directory, locale);
 		}

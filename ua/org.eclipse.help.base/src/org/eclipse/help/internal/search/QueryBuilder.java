@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,7 +14,9 @@
  *     Sopot Cela - Bug 466829
  *******************************************************************************/
 package org.eclipse.help.internal.search;
-import java.io.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -22,12 +24,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import org.apache.lucene.analysis.*;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.index.*;
-import org.apache.lucene.search.*;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanQuery.Builder;
-import org.eclipse.help.internal.base.*;
+import org.apache.lucene.search.BoostQuery;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.Query;
+import org.eclipse.help.internal.base.BaseHelpSystem;
+import org.eclipse.help.internal.base.HelpBasePlugin;
 /**
  * Build query acceptable by the search engine.
  */
@@ -57,10 +65,9 @@ public class QueryBuilder {
 		this.searchWords = searchWords;
 		String language = analyzerDesc.getLang();
 		if (language.length() >= 5) {
-			this.locale = new Locale(language.substring(0, 2), language
-					.substring(3, 5));
+			this.locale = Locale.of(language.substring(0, 2), language.substring(3, 5));
 		} else {
-			this.locale = new Locale(language.substring(0, 2), ""); //$NON-NLS-1$
+			this.locale = Locale.of(language.substring(0, 2), ""); //$NON-NLS-1$
 		}
 		this.analyzerDesc = analyzerDesc;
 		this.analyzer = analyzerDesc.getAnalyzer();
@@ -297,8 +304,7 @@ public class QueryBuilder {
 	}
 	private Query orQueries(Collection<Query> queries) {
 		Builder builder = new BooleanQuery.Builder();
-		for (Iterator<Query> it = queries.iterator(); it.hasNext();) {
-			Query q = it.next();
+		for (Query q : queries) {
 			builder.add(q, BooleanClause.Occur.SHOULD);
 		}
 		return builder.build();
