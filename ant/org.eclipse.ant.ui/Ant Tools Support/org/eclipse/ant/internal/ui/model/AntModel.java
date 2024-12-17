@@ -49,6 +49,7 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.TaskAdapter;
 import org.apache.tools.ant.UnknownElement;
+import org.apache.tools.ant.util.JavaEnvUtils;
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntCorePreferences;
 import org.eclipse.ant.core.AntSecurityException;
@@ -88,6 +89,17 @@ import org.xml.sax.SAXParseException;
 
 @SuppressWarnings("removal") // SecurityManager
 public class AntModel implements IAntModel {
+
+	private static final boolean IS_SECURITY_MANAGER_SUPPORTED = isSecurityManagerAllowed();
+
+	private static boolean isSecurityManagerAllowed() {
+		String sm = System.getProperty("java.security.manager"); //$NON-NLS-1$
+		if (sm == null) { // default is 'disallow' since 18 and was 'allow' before
+			return !JavaEnvUtils.isAtLeastJavaVersion("18"); //$NON-NLS-1$
+		}
+		// Value is either 'disallow' or 'allow' or specifies the SecurityManager class to set
+		return !"disallow".equals(sm); //$NON-NLS-1$
+	}
 
 	private static ClassLoader fgClassLoader;
 	private static int fgInstanceCount = 0;
@@ -363,8 +375,10 @@ public class AntModel implements IAntModel {
 				SecurityManager origSM = System.getSecurityManager();
 				processAntHome(true);
 				try {
-					// set a security manager to disallow system exit and system property setting
-					System.setSecurityManager(new AntSecurityManager(origSM, Thread.currentThread(), false));
+					if (IS_SECURITY_MANAGER_SUPPORTED) {
+						// set a security manager to disallow system exit and system property setting
+						System.setSecurityManager(new AntSecurityManager(origSM, Thread.currentThread(), false));
+					}
 					resolveBuildfile();
 					endReporting();
 					// clear the additional property-holder(s) to avoid potential memory leaks
@@ -379,7 +393,9 @@ public class AntModel implements IAntModel {
 				finally {
 					Thread.currentThread().setContextClassLoader(originalClassLoader);
 					getClassLoader(null);
-					System.setSecurityManager(origSM);
+					if (System.getSecurityManager() instanceof AntSecurityManager) {
+						System.setSecurityManager(origSM);
+					}
 					project.fireBuildFinished(null); // cleanup (IntrospectionHelper)
 				}
 			}
@@ -550,9 +566,7 @@ public class AntModel implements IAntModel {
 
 	private void resolveBuildfile() {
 		Collection<AntTaskNode> nodeCopy = new ArrayList<>(fTaskNodes);
-		Iterator<AntTaskNode> iter = nodeCopy.iterator();
-		while (iter.hasNext()) {
-			AntTaskNode node = iter.next();
+		for (AntTaskNode node : nodeCopy) {
 			fNodeBeingResolved = node;
 			fNodeBeingResolvedIndex = -1;
 			if (node.configure(false)) {
@@ -1439,10 +1453,8 @@ public class AntModel implements IAntModel {
 		if (fCurrentNodeIdentifiers == null || fDefinerNodeIdentifierToDefinedTasks == null) {
 			return;
 		}
-		Iterator<String> iter = fDefinerNodeIdentifierToDefinedTasks.keySet().iterator();
 		ComponentHelper helper = ComponentHelper.getComponentHelper(fProjectNode.getProject());
-		while (iter.hasNext()) {
-			String key = iter.next();
+		for (String key : fDefinerNodeIdentifierToDefinedTasks.keySet()) {
 			if (fCurrentNodeIdentifiers.get(key) == null) {
 				removeDefinerTasks(key, helper.getAntTypeTable());
 			}
@@ -1579,9 +1591,7 @@ public class AntModel implements IAntModel {
 		}
 
 		Set<Task> nodes = fTaskToNode.keySet();
-		Iterator<Task> iter = nodes.iterator();
-		while (iter.hasNext()) {
-			Task task = iter.next();
+		for (Task task : nodes) {
 			Task tmptask = task;
 			if (tmptask instanceof UnknownElement) {
 				UnknownElement element = (UnknownElement) tmptask;
@@ -1720,9 +1730,7 @@ public class AntModel implements IAntModel {
 			fCurrentNodeIdentifiers.remove(identifier);
 		}
 		fDefinerNodeIdentifierToDefinedTasks.put(identifier, newTasks);
-		Iterator<String> iter = newTasks.iterator();
-		while (iter.hasNext()) {
-			String name = iter.next();
+		for (String name : newTasks) {
 			fTaskNameToDefiningNode.put(name, node);
 		}
 	}
@@ -1800,9 +1808,7 @@ public class AntModel implements IAntModel {
 	private String getUserPrefixMapping(String prefix) {
 		if (fNamespacePrefixMappings != null) {
 			Set<Entry<String, String>> entrySet = fNamespacePrefixMappings.entrySet();
-			Iterator<Entry<String, String>> entries = entrySet.iterator();
-			while (entries.hasNext()) {
-				Map.Entry<String, String> entry = entries.next();
+			for (Entry<String, String> entry : entrySet) {
 				if (entry.getValue().equals(prefix)) {
 					return entry.getKey();
 				}
