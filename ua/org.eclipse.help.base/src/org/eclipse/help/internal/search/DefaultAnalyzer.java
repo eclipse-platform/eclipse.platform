@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the
  * accompanying materials are made available under the terms of the Eclipse Public License 2.0
@@ -53,7 +53,7 @@ public final class DefaultAnalyzer extends Analyzer {
 		}
 		if (locale == null && userLocale.getDisplayVariant().length() > 0) {
 			// Check if the locale without variant is supported by BreakIterator
-			Locale countryLocale = new Locale(userLocale.getLanguage(), userLocale.getCountry());
+			Locale countryLocale = Locale.of(userLocale.getLanguage(), userLocale.getCountry());
 			for (Locale availableLocale : availableLocales) {
 				if (countryLocale.equals(availableLocale)) {
 					locale = countryLocale;
@@ -63,7 +63,7 @@ public final class DefaultAnalyzer extends Analyzer {
 		}
 		if (locale == null && userLocale.getCountry().length() > 0) {
 			// Check if at least the language is supported by BreakIterator
-			Locale language = new Locale(userLocale.getLanguage(), ""); //$NON-NLS-1$
+			Locale language = Locale.of(userLocale.getLanguage(), ""); //$NON-NLS-1$
 			for (Locale availableLocale : availableLocales) {
 				if (language.equals(availableLocale)) {
 					locale = language;
@@ -79,7 +79,7 @@ public final class DefaultAnalyzer extends Analyzer {
 									+ localeString
 									+ ", or Java Virtual Machine needs to be upgraded to version with proper support for locale {0}.", //$NON-NLS-1$
 							null);
-			locale = new Locale("en", "US"); //$NON-NLS-1$ //$NON-NLS-2$
+			locale = Locale.of("en", "US"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -95,11 +95,11 @@ public final class DefaultAnalyzer extends Analyzer {
 		// break the string into tokens to get the Locale object
 		StringTokenizer locales = new StringTokenizer(clientLocale, "_"); //$NON-NLS-1$
 		if (locales.countTokens() == 1)
-			return new Locale(locales.nextToken(), ""); //$NON-NLS-1$
+			return Locale.of(locales.nextToken(), ""); //$NON-NLS-1$
 		else if (locales.countTokens() == 2)
-			return new Locale(locales.nextToken(), locales.nextToken());
+			return Locale.of(locales.nextToken(), locales.nextToken());
 		else if (locales.countTokens() == 3)
-			return new Locale(locales.nextToken(), locales.nextToken(), locales.nextToken());
+			return Locale.of(locales.nextToken(), locales.nextToken(), locales.nextToken());
 		else
 			return Locale.getDefault();
 	}
