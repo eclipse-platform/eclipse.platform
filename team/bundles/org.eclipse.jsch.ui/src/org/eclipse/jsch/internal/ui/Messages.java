@@ -99,6 +99,7 @@ public class Messages extends NLS{
 	public static String CVSSSH2PreferencePage_145;
 	public static String CVSSSH2PreferencePage_146;
 	public static String CVSSSH2PreferencePage_147;
+	public static String CVSSSH2PreferencePage_148;
 	public static String KeyboardInteractiveDialog_0;
 	public static String KeyboardInteractiveDialog_1;
 	public static String KeyboardInteractiveDialog_2;

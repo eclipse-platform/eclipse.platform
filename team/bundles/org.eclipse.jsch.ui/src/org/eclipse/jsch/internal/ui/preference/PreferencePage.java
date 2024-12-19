@@ -53,6 +53,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -66,6 +67,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -89,8 +91,11 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 		implements IWorkbenchPreferencePage{
 
 	private static final String SSH2_PREFERENCE_PAGE_CONTEXT="org.eclipse.jsch.ui.ssh2_preference_page_context"; //$NON-NLS-1$
-	private static final int RSA_KEY_SIZE = 4096;
-	private static final int DSA_KEY_SIZE = 3072;
+	private static final int RSA_MAX_KEY_SIZE = 15360;
+	private static final int DSA_MAX_KEY_SIZE = 3072;
+	private static final int INITIAL_KEY_SIZE = 4096;
+	private static final int MIN_KEY_SIZE = 2048;
+	private static final int KEY_SIZE_INCREMENT = 1024;
 
 	private Label ssh2HomeLabel;
 	private Label privateKeyLabel;
@@ -101,6 +106,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 	private Button ssh2HomeBrowse;
 	Button keyGenerateDSA;
 	Button keyGenerateRSA;
+	private Spinner keySizeValue;
 	private Button keyLoad;
 	private Button keyExport;
 	Button saveKeyPair;
@@ -305,6 +311,13 @@ protected Control createContents(Composite parent){
 		gd.horizontalSpan=1;
 		keyLoad.setLayoutData(gd);
 
+		final Label keySizeValueLabel = new Label(group, SWT.NONE);
+		keySizeValueLabel.setText(Messages.CVSSSH2PreferencePage_148);
+		keySizeValue = new Spinner(group, SWT.BORDER);
+		int maxKeySize = Math.max(DSA_MAX_KEY_SIZE, RSA_MAX_KEY_SIZE);
+		keySizeValue.setValues(INITIAL_KEY_SIZE, MIN_KEY_SIZE, maxKeySize, 0, KEY_SIZE_INCREMENT, KEY_SIZE_INCREMENT);
+		keySizeValue.addKeyListener(KeyListener.keyPressedAdapter(e -> e.doit = false));
+
 		publicKeylabel=new Label(group, SWT.NONE);
 		publicKeylabel.setText(Messages.CVSSSH2PreferencePage_39);
 		gd=new GridData();
@@ -485,18 +498,22 @@ protected Control createContents(Composite parent){
 					if(e.widget==keyGenerateDSA){
 						type=KeyPair.DSA;
 						_type=IConstants.DSA;
+						if (keySizeValue.getSelection() > DSA_MAX_KEY_SIZE) {
+							keySizeValue.setSelection(DSA_MAX_KEY_SIZE);
+						}
 					}
 					else if(e.widget==keyGenerateRSA){
 						type=KeyPair.RSA;
 						_type=IConstants.RSA;
 					}
+					// TODO: ECDSA
 					else{
 						return;
 					}
 
 					final KeyPair[] _kpair=new KeyPair[1];
 					final int __type=type;
-					int keySize = type == KeyPair.RSA ? RSA_KEY_SIZE : DSA_KEY_SIZE;
+					int keySize = keySizeValue.getSelection();
 					final JSchException[] _e=new JSchException[1];
 					BusyIndicator.showWhile(getShell().getDisplay(), () -> {
 						try {
