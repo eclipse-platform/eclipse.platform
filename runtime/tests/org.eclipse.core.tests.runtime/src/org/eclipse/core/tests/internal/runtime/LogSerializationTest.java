@@ -35,10 +35,6 @@ public class LogSerializationTest {
 
 	static class TestException extends Exception {
 		private static final long serialVersionUID = 1L;
-
-		TestException() {
-			super();
-		}
 	}
 
 	private File logFile = null;
@@ -139,7 +135,16 @@ public class LogSerializationTest {
 			interestingChildren[i] = subArray;
 		}
 		int childOff = 0;
-		return new IStatus[] {new MultiStatus("plugin-id", 1, interestingChildren[childOff++ % len], "message", null), new MultiStatus("org.foo.bar", 5, interestingChildren[childOff++ % len], "message", new NullPointerException()), new MultiStatus("plugin-id", 8, interestingChildren[childOff++ % len], "message", null), new MultiStatus("plugin-id", 0, interestingChildren[childOff++ % len], "message", new IllegalStateException()), new MultiStatus("plugin-id", 65756, interestingChildren[childOff++ % len], "message", null), new MultiStatus(".", 1, interestingChildren[childOff++ % len], "message", null), new MultiStatus("org.foo.blaz", 1, interestingChildren[childOff++ % len], "", null), new MultiStatus("plugin-id", 1, interestingChildren[childOff++ % len], "%$(% 98%(%(*^", null),
+		return new IStatus[] { new MultiStatus("plugin-id", 1, interestingChildren[childOff++ % len], "message", null),
+				new MultiStatus("org.foo.bar", 5, interestingChildren[childOff++ % len], "message",
+						new TestException()),
+				new MultiStatus("plugin-id", 8, interestingChildren[childOff++ % len], "message", null),
+				new MultiStatus("plugin-id", 0, interestingChildren[childOff++ % len], "message",
+						new TestException()),
+				new MultiStatus("plugin-id", 65756, interestingChildren[childOff++ % len], "message", null),
+				new MultiStatus(".", 1, interestingChildren[childOff++ % len], "message", null),
+				new MultiStatus("org.foo.blaz", 1, interestingChildren[childOff++ % len], "", null),
+				new MultiStatus("plugin-id", 1, interestingChildren[childOff++ % len], "%$(% 98%(%(*^", null),
 				new MultiStatus("plugin-id", 1, "message", null), new MultiStatus("..", 87326, "", null),};
 	}
 
