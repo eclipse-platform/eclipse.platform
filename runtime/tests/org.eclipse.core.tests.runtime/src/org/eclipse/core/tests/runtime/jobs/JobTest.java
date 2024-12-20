@@ -443,6 +443,10 @@ public class JobTest extends AbstractJobTest {
 
 	}
 
+	static class TestException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+	}
+
 	/**
 	 * Test of an ill-behaving {@link Job#shouldRun()}.
 	 */
@@ -463,7 +467,7 @@ public class JobTest extends AbstractJobTest {
 
 			@Override
 			public boolean shouldRun() {
-				throw new RuntimeException("Exception thrown on purpose as part of a test");
+				throw new TestException();
 			}
 		}
 		ShouldRunJob j = new ShouldRunJob();
@@ -1085,7 +1089,7 @@ public class JobTest extends AbstractJobTest {
 		shortJob.addJobChangeListener(new JobChangeAdapter() {
 			@Override
 			public void done(IJobChangeEvent event) {
-				throw new RuntimeException("This exception thrown on purpose as part of a test");
+				throw new TestException();
 			}
 		});
 		final AtomicIntegerArray status = new AtomicIntegerArray(new int[1]);

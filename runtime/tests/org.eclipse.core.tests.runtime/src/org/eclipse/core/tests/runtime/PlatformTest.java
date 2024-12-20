@@ -142,6 +142,9 @@ public class PlatformTest {
 		assertEquals("4.0", initialLocation, Platform.getLogFileLocation());
 	}
 
+	static class TestException extends Exception {
+		private static final long serialVersionUID = 1L;
+	}
 	@Test
 	public void testRunnable() {
 		final List<Throwable> exceptions = new ArrayList<>();
@@ -152,7 +155,7 @@ public class PlatformTest {
 		ILogListener logListener = (status, plugin) -> collected.add(status);
 		Platform.addLogListener(logListener);
 
-		final Exception exception = new Exception("PlatformTest.testRunnable: this exception is thrown on purpose as part of the test.");
+		final Exception exception = new TestException();
 		ISafeRunnable runnable = new ISafeRunnable() {
 			@Override
 			public void handleException(Throwable t) {
