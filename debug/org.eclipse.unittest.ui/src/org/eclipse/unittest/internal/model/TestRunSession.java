@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.unittest.internal.UnitTestPlugin;
 import org.eclipse.unittest.internal.launcher.TestViewSupportRegistry;
@@ -78,7 +79,7 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 	 */
 	private HashMap<String, TestElement> fIdToTest;
 
-	volatile Instant fStartTime;
+	private final AtomicReference<Instant> fStartTime = new AtomicReference<>();
 	volatile Integer fPredefinedTestCount;
 
 	volatile boolean fIsAborted;
@@ -105,7 +106,7 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 		fIdToTest = new HashMap<>();
 
 		fTestRunnerClient = null;
-		fStartTime = startTime;
+		fStartTime.set(startTime);
 
 		fSessionListeners = new ListenerList<>();
 	}
@@ -254,7 +255,7 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 	 * @return an {@link Instant} object indicating a test run session start time
 	 */
 	public Instant getStartTime() {
-		return fStartTime;
+		return fStartTime.get();
 	}
 
 	/**
@@ -273,7 +274,7 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 	 *
 	 * @param listener an {@link ITestSessionListener} object
 	 */
-	public synchronized void addTestSessionListener(ITestSessionListener listener) {
+	public void addTestSessionListener(ITestSessionListener listener) {
 		fSessionListeners.add(listener);
 	}
 
@@ -381,7 +382,8 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 		 * @param testCount number of tests in this run
 		 */
 		public void testRunStarted(Integer testCount) {
-			fStartTime = Instant.now();
+			// only update if not already set!
+			fStartTime.compareAndSet(null, Instant.now());
 			fPredefinedTestCount = testCount;
 
 			for (ITestSessionListener listener : fSessionListeners) {
@@ -590,7 +592,12 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 
 	@Override
 	public String toString() {
-		return fTestRunName + " " + DateFormat.getDateTimeInstance().format(new Date(fStartTime.toEpochMilli())); //$NON-NLS-1$
+		Instant startTime = getStartTime();
+		if (startTime == null) {
+			return fTestRunName + " (not started)"; //$NON-NLS-1$
+		} else {
+			return fTestRunName + " " + DateFormat.getDateTimeInstance().format(new Date(startTime.toEpochMilli())); //$NON-NLS-1$
+		}
 	}
 
 	@Override
