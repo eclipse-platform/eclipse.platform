@@ -722,8 +722,9 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		if (toCancel != null) {
 			for (Job job : toCancel) {
 				String jobName = printJobName(job) + " " + printState(job); //$NON-NLS-1$
-				if (job.getThread() instanceof Thread t) {
-					StackTraceElement[] stackTrace = t.getStackTrace();
+				Thread thread = job.getThread();
+				if (thread != null) {
+					StackTraceElement[] stackTrace = thread.getStackTrace();
 					for (StackTraceElement stackTraceElement : stackTrace) {
 						jobName += "\n\t at " + stackTraceElement; //$NON-NLS-1$
 					}
