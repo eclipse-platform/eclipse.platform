@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.ant.tests.ui; singleton:=true
-Bundle-Version: 3.11.400.qualifier
+Bundle-Version: 3.12.0.qualifier
 Bundle-ClassPath: anttestsui.jar
 Bundle-Activator: org.eclipse.ant.tests.ui.testplugin.AntUITestPlugin
 Bundle-Vendor: %providerName
@@ -43,6 +43,6 @@ Import-Package: org.assertj.core.api,
  org.junit.jupiter.api,
  org.junit.platform.suite.api
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Eclipse-BundleShape: dir
 Automatic-Module-Name: org.eclipse.ant.tests.ui
