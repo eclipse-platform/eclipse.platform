@@ -267,7 +267,8 @@ public class TestUtil {
 			sb.append(":").append(JobManager.printState(job));
 			Thread thread = job.getThread();
 			if (thread != null) {
-				ThreadInfo[] threadInfos = ManagementFactory.getThreadMXBean().getThreadInfo(new long[] { thread.getId() }, true, true);
+				ThreadInfo[] threadInfos = ManagementFactory.getThreadMXBean().getThreadInfo(new long[] {
+						thread.threadId() }, true, true);
 				if (threadInfos[0] != null) {
 					sb.append("\nthread info: ").append(threadInfos[0]);
 				}
