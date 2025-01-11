@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1213,7 +1212,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 		ILaunchConfiguration handle = wc.doSave();
 		assertTrue("Configuration should exist", handle.exists()); //$NON-NLS-1$
 
-		File dir = TestsPlugin.getFileInPlugin(IPath.fromOSString("test-import")); //$NON-NLS-1$
+		File dir = TestsPlugin.getFileInPlugin("test-import"); //$NON-NLS-1$
 		assertTrue("Import directory does not exist", dir.exists()); //$NON-NLS-1$
 		LaunchManager manager = (LaunchManager) getLaunchManager();
 
@@ -1231,12 +1230,10 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 			assertTrue("Import4 should be removed", removed.contains(handle)); //$NON-NLS-1$
 
 			// should be 5 added
-			List<?> added = listener.getAdded();
+			List<ILaunchConfiguration> added = listener.getAdded();
 			assertEquals("Should be 5 added configs", 5, added.size()); //$NON-NLS-1$
 			Set<String> names = new HashSet<>();
-			Iterator<?> iterator = added.iterator();
-			while (iterator.hasNext()) {
-				ILaunchConfiguration lc = (ILaunchConfiguration) iterator.next();
+			for (ILaunchConfiguration lc : added) {
 				names.add(lc.getName());
 			}
 			assertTrue("Missing Name", names.contains("Import1")); //$NON-NLS-1$ //$NON-NLS-2$
