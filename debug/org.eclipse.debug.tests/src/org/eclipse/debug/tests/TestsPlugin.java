@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Wind River Systems and others.
+ * Copyright (c) 2009, 2025 Wind River Systems and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -38,15 +37,17 @@ public class TestsPlugin {
 	public static final String PLUGIN_ID = "org.eclipse.debug.tests"; //$NON-NLS-1$
 
 	/**
-	 * Returns the file corresponding to the specified path from within this bundle
-	 * @return the file corresponding to the specified path from within this bundle, or
-	 * <code>null</code> if not found
+	 * Returns the file corresponding to the specified path from within this
+	 * bundle
+	 *
+	 * @return the file corresponding to the specified path from within this
+	 *         bundle, or <code>null</code> if not found
 	 */
-	public static File getFileInPlugin(IPath path) {
+	public static File getFileInPlugin(String path) {
 		try {
 			Bundle bundle = FrameworkUtil.getBundle(TestsPlugin.class);
-			URL installURL = new URL(bundle.getEntry("/"), path.toString()); //$NON-NLS-1$
-			URL localURL= FileLocator.toFileURL(installURL);//Platform.asLocalURL(installURL);
+			URL installURL = bundle.getEntry("/" + path); //$NON-NLS-1$
+			URL localURL = FileLocator.toFileURL(installURL);
 			return new File(localURL.getFile());
 		} catch (IOException e) {
 			return null;
@@ -55,6 +56,7 @@ public class TestsPlugin {
 
 	/**
 	 * Creates a new project with the specified name
+	 *
 	 * @return a new project with the specified name
 	 */
 	public static IProject createProject(String projectName) throws CoreException {
