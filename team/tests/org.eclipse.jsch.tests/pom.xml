@@ -16,7 +16,6 @@
     <artifactId>eclipse.platform.team.tests</artifactId>
     <version>4.35.0-SNAPSHOT</version>
   </parent>
-  <groupId>org.eclipse.jsch</groupId>
   <artifactId>org.eclipse.jsch.tests</artifactId>
   <version>1.6.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
