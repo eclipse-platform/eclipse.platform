@@ -38,11 +38,6 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
  */
 class AntPreviewerUpdater {
 
-	private Color fForegroundColor = null;
-	private Color fBackgroundColor = null;
-	private Color fSelectionBackgroundColor = null;
-	private Color fSelectionForegroundColor = null;
-
 	/**
 	 * Creates a source preview updater for the given viewer, configuration and preference store.
 	 * 
@@ -122,44 +117,20 @@ class AntPreviewerUpdater {
 				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_FOREGROUND, styledText.getDisplay());
 		styledText.setForeground(color);
 
-		if (fForegroundColor != null) {
-			fForegroundColor.dispose();
-		}
-
-		fForegroundColor = color;
-
 		// ---------- background color ----------------------
 		color = store.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT) ? null
 				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND, styledText.getDisplay());
 		styledText.setBackground(color);
-
-		if (fBackgroundColor != null) {
-			fBackgroundColor.dispose();
-		}
-
-		fBackgroundColor = color;
 
 		// ----------- selection foreground color --------------------
 		color = store.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_SELECTION_FOREGROUND_SYSTEM_DEFAULT) ? null
 				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_SELECTION_FOREGROUND, styledText.getDisplay());
 		styledText.setSelectionForeground(color);
 
-		if (fSelectionForegroundColor != null) {
-			fSelectionForegroundColor.dispose();
-		}
-
-		fSelectionForegroundColor = color;
-
 		// ---------- selection background color ----------------------
 		color = store.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_SELECTION_BACKGROUND_SYSTEM_DEFAULT) ? null
 				: createColor(store, AbstractTextEditor.PREFERENCE_COLOR_SELECTION_BACKGROUND, styledText.getDisplay());
 		styledText.setSelectionBackground(color);
-
-		if (fSelectionBackgroundColor != null) {
-			fSelectionBackgroundColor.dispose();
-		}
-
-		fSelectionBackgroundColor = color;
 	}
 
 	/**
@@ -192,25 +163,4 @@ class AntPreviewerUpdater {
 		return null;
 	}
 
-	public void dispose() {
-		if (fForegroundColor != null) {
-			fForegroundColor.dispose();
-			fForegroundColor = null;
-		}
-
-		if (fBackgroundColor != null) {
-			fBackgroundColor.dispose();
-			fBackgroundColor = null;
-		}
-
-		if (fSelectionForegroundColor != null) {
-			fSelectionForegroundColor.dispose();
-			fSelectionForegroundColor = null;
-		}
-
-		if (fSelectionBackgroundColor != null) {
-			fSelectionBackgroundColor.dispose();
-			fSelectionBackgroundColor = null;
-		}
-	}
 }

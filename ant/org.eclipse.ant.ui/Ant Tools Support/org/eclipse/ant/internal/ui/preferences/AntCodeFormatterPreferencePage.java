@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -44,7 +44,6 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 public class AntCodeFormatterPreferencePage extends AbstractAntEditorPreferencePage {
 
 	private SourceViewer fPreviewViewer;
-	private AntPreviewerUpdater fPreviewerUpdater;
 
 	@Override
 	protected OverlayPreferenceStore createOverlayStore() {
@@ -137,7 +136,7 @@ public class AntCodeFormatterPreferencePage extends AbstractAntEditorPreferenceP
 		fPreviewViewer.getTextWidget().setFont(font);
 
 		IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] { getOverlayStore(), EditorsUI.getPreferenceStore() });
-		fPreviewerUpdater = new AntPreviewerUpdater(fPreviewViewer, configuration, store);
+		new AntPreviewerUpdater(fPreviewViewer, configuration, store);
 
 		String content = loadPreviewContentFromFile("FormatPreviewCode.txt"); //$NON-NLS-1$
 		content = formatContent(content, store);
@@ -157,14 +156,6 @@ public class AntCodeFormatterPreferencePage extends AbstractAntEditorPreferenceP
 	@Override
 	protected void handleDefaults() {
 		// do nothing
-	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-		if (fPreviewerUpdater != null) {
-			fPreviewerUpdater.dispose();
-		}
 	}
 
 	@Override
