@@ -24,13 +24,14 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -364,15 +365,14 @@ public class PatchTest {
 		assertTrue(patchdataFolderFile.isDirectory());
 		File[] listOfSubfolders = patchdataFolderFile.listFiles((FileFilter) File::isDirectory);
 		for (File subfolder : listOfSubfolders) {
-			IPath pcPath = IPath.fromOSString(subfolder.getPath() + "/" + PATCH_CONFIGURATION);
-			File pcFile = pcPath.toFile();
+			Path pcPath = IPath.fromOSString(subfolder.getPath() + "/" + PATCH_CONFIGURATION).toPath();
 
 			if (subfolder.getName().equals("CVS"))
 				continue;
-			if (pcFile.exists()) {
+			if (Files.exists(pcPath)) {
 				Properties properties = new Properties();
 				try {
-					properties.load(new FileInputStream(pcFile));
+					properties.load(Files.newBufferedReader(pcPath));
 				} catch (IOException e) {
 					fail("IOException occured while loading the Patch Configuration file for " + subfolder.toString());
 				}

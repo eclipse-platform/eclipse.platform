@@ -14,7 +14,6 @@
 package org.eclipse.ua.tests.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -39,16 +38,6 @@ public class FileUtil {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Gets the contents of the file with the given absolute path as a String (file must
-	 * be encoded as UTF-8).
-	 */
-	public static String getContents(String absolutePath) throws IOException {
-		try (FileInputStream fis = new FileInputStream(absolutePath)) {
-			return readString(fis);
-		}
 	}
 
 	/**

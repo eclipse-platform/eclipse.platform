@@ -19,9 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -499,9 +497,7 @@ public final class ResourceTestUtil {
 	private static void modifyInFileSystem(IFile file) throws FileNotFoundException, IOException {
 		String originalContent = readStringInFileSystem(file);
 		String newContent = originalContent + "f";
-		try (FileOutputStream outputStream = new FileOutputStream(file.getLocation().toFile())) {
-			outputStream.write(newContent.getBytes(StandardCharsets.UTF_8));
-		}
+		Files.writeString(file.getLocation().toPath(), newContent, StandardCharsets.UTF_8);
 	}
 
 	/**
@@ -510,11 +506,7 @@ public final class ResourceTestUtil {
 	public static String readStringInFileSystem(IFile file) throws IOException {
 		IPath location = file.getLocation();
 		assertNotNull("location was null for file: " + file, location);
-		try (FileInputStream inputStream = new FileInputStream(location.toFile())) {
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			inputStream.transferTo(outputStream);
-			return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
-		}
+		return new String(Files.readAllBytes(location.toPath()), StandardCharsets.UTF_8);
 	}
 
 	/**

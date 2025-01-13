@@ -27,11 +27,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonito
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createUniqueString;
 import static org.junit.Assert.assertThrows;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -272,7 +270,7 @@ public class NatureTest {
 		java.io.File desc = descStore.toLocalFile(EFS.NONE, createTestMonitor());
 
 		java.io.File descTmp = new java.io.File(desc.getPath() + ".tmp");
-		copy(desc, descTmp);
+		Files.copy(desc.toPath(), descTmp.toPath());
 
 		setNatures(project, new String[] { NATURE_EARTH }, false);
 
@@ -283,24 +281,11 @@ public class NatureTest {
 		// timestamp during the copy
 		Thread.sleep(1000);
 
-		copy(descTmp, desc);
+		Files.copy(descTmp.toPath(), desc.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertDoesNotHaveNature(NATURE_EARTH);
 		assertThat(project.getNature(NATURE_EARTH)).isNull();
-	}
-
-	private void copy(java.io.File src, java.io.File dst) throws IOException {
-		try (
-			InputStream in = new FileInputStream(src);
-			OutputStream out = new FileOutputStream(dst);
-		) {
-			byte[] buffer = new byte[1024];
-			int read;
-			while ((read = in.read(buffer)) > 0) {
-				out.write(buffer, 0, read);
-			}
-		}
 	}
 
 	/**

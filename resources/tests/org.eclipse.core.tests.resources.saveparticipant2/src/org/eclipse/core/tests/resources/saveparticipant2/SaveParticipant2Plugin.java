@@ -13,9 +13,24 @@
  *******************************************************************************/
 package org.eclipse.core.tests.resources.saveparticipant2;
 
-import java.io.*;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ISaveContext;
+import org.eclipse.core.resources.ISaveParticipant;
+import org.eclipse.core.resources.ISavedState;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.tests.resources.ResourceDeltaVerifier;
 
 /**
@@ -115,7 +130,7 @@ public class SaveParticipant2Plugin extends Plugin implements ISaveParticipant {
 	 */
 	private void readExpectedSavedNumber() {
 		IPath location = getStateLocation().append(SAVE_NUMBER_LOCATION);
-		try (DataInputStream input = new DataInputStream(new FileInputStream(location.toOSString()))) {
+		try (DataInputStream input = new DataInputStream(Files.newInputStream(location.toPath()))) {
 			expectedPreviousSaveNumber = input.readInt();
 		} catch (IOException e) {
 			expectedPreviousSaveNumber = 0;

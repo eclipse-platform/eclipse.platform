@@ -17,12 +17,11 @@ package org.eclipse.core.tests.harness;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Assert;
@@ -109,7 +108,7 @@ public class FileSystemComparator {
 	public Object loadSnapshot(File rootLocation) throws IOException {
 		File summaryFile = new File(rootLocation, SNAPSHOT_FILE_NAME);
 		Map<String, FileSummary> snapshot = new HashMap<>();
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(summaryFile)))) {
+		try (BufferedReader in = Files.newBufferedReader(summaryFile.toPath())) {
 			String line;
 			while ((line = in.readLine()) != null) {
 				String path = line;

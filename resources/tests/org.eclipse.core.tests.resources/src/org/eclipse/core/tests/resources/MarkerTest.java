@@ -30,11 +30,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1086,7 +1086,7 @@ public class MarkerTest {
 		assertMarkersDoNotExist(expected);
 
 		// read in the markers from the file
-		try (InputStream fileInput = new FileInputStream(file)) {
+		try (InputStream fileInput = Files.newInputStream(file.toPath())) {
 			try (DataInputStream input = new DataInputStream(fileInput)) {
 				IWorkspaceRunnable body = monitor -> {
 					MarkerReader reader = new MarkerReader((Workspace) getWorkspace());
@@ -1175,7 +1175,7 @@ public class MarkerTest {
 		assertMarkersDoNotExist(expected);
 
 		// read in the markers from the file
-		try (InputStream fileInput = new FileInputStream(file)) {
+		try (InputStream fileInput = Files.newInputStream(file.toPath())) {
 			try (DataInputStream input = new DataInputStream(fileInput)) {
 				IWorkspaceRunnable body = monitor -> {
 					MarkerReader reader = new MarkerReader((Workspace) getWorkspace());

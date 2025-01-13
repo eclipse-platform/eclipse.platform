@@ -28,7 +28,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -458,12 +459,12 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	 * Tests the property proposals for the case that they are defined in a dependent targets.
 	 */
 	@Test
-	public void testPropertyProposalDefinedInDependantTargets() throws FileNotFoundException {
+	public void testPropertyProposalDefinedInDependantTargets() throws IOException {
 		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("dependencytest.xml")); //$NON-NLS-1$
 
 		File file = getBuildFile("dependencytest.xml"); //$NON-NLS-1$
 		processor.setEditedFile(file);
-		String documentText = getFileContentAsString(file);
+		String documentText = Files.readString(file.toPath());
 
 		processor.setLineNumber(35);
 		processor.setColumnNumber(41);
