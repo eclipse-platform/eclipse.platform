@@ -16,12 +16,11 @@ package org.eclipse.compare.tests;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -89,8 +88,8 @@ public class PatchUtils {
 		@Override
 		public InputStream getContents() throws CoreException {
 			try {
-				return new FileInputStream(file);
-			} catch (FileNotFoundException e) {
+				return Files.newInputStream(file.toPath());
+			} catch (IOException e) {
 				// ignore, should never happen
 			}
 			return null;

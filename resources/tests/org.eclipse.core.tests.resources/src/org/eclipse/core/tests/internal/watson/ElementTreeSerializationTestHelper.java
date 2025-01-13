@@ -19,10 +19,9 @@ import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.file.Files;
@@ -147,14 +146,14 @@ public final class ElementTreeSerializationTestHelper implements ArgumentsProvid
 
 		/* Write the element tree. */
 		Files.createDirectories(tempDir);
-		File tempFile = tempDir.resolve("TestFlattening").toFile();
-		try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+		Path tempFile = tempDir.resolve("TestFlattening");
+		try (OutputStream fos = Files.newOutputStream(tempFile)) {
 			DataOutputStream dos = new DataOutputStream(fos);
 			writing.doWrite(writer, dos);
 		}
 
 		/* Read the element tree. */
-		try (FileInputStream fis = new FileInputStream(tempFile); DataInputStream dis = new DataInputStream(fis)) {
+		try (InputStream fis = Files.newInputStream(tempFile); DataInputStream dis = new DataInputStream(fis)) {
 			newTree = reading.doRead(reader, dis);
 		}
 		return newTree;

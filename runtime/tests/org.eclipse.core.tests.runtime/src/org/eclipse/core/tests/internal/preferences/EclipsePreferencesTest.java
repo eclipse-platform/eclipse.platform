@@ -25,10 +25,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1055,7 +1057,7 @@ public class EclipsePreferencesTest {
 
 	@Test
 	public void test_68897() throws Exception {
-		File file = FileSystemHelper.getRandomLocation().toFile();
+		Path file = FileSystemHelper.getRandomLocation().toPath();
 		IPreferencesService service = Platform.getPreferencesService();
 
 		IEclipsePreferences rootPreferences = service.getRootNode();
@@ -1066,10 +1068,10 @@ public class EclipsePreferencesTest {
 		child.flush();
 		pref.flush();
 		rootPreferences.flush();
-		try (FileOutputStream outputStream = new FileOutputStream(file)) {
+		try (OutputStream outputStream = Files.newOutputStream(file)) {
 			service.exportPreferences(rootPreferences, outputStream, (String[]) null);
 		}
-		try (FileInputStream inputStream = new FileInputStream(file)) {
+		try (InputStream inputStream = Files.newInputStream(file)) {
 			IExportedPreferences epref = service.readPreferences(inputStream);
 			service.applyPreferences(epref);
 		}

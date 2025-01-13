@@ -21,11 +21,8 @@ import static org.eclipse.core.tests.resources.ResourceTestPluginConstants.PI_RE
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -73,18 +70,14 @@ public class Bug_266907 {
 		marker.setAttribute(MARKER_ATTRIBUTE_NAME, MARKER_ATTRIBUTE);
 
 		// remember the location of .project to delete is at the end
-		File dotProject = project.getFile(".project").getLocation().toFile();
+		Path dotProject = project.getFile(".project").getLocation().toPath();
 
 		workspace.save(true, createTestMonitor());
 
 		// move .project to a temp location
-		File dotProjectCopy = getTempDir().append("dotProjectCopy").toFile();
-		dotProjectCopy.createNewFile();
-		try (InputStream input = new FileInputStream(dotProject);
-				OutputStream output = new FileOutputStream(dotProjectCopy)) {
-			input.transferTo(output);
-		}
-		dotProject.delete();
+		Path dotProjectCopy = getTempDir().append("dotProjectCopy").toPath();
+		Files.copy(dotProject, dotProjectCopy);
+		Files.delete(dotProject);
 	}
 
 	@Test
@@ -97,15 +90,11 @@ public class Bug_266907 {
 		assertThat(project).matches(not(IProject::isAccessible), "is not accessible");
 
 		// recreate .project
-		File dotProject = project.getFile(".project").getLocation().toFile();
-		File dotProjectCopy = getTempDir().append("dotProjectCopy").toFile();
+		Path dotProject = project.getFile(".project").getLocation().toPath();
+		Path dotProjectCopy = getTempDir().append("dotProjectCopy").toPath();
 
-		dotProject.createNewFile();
-		try (InputStream input = new FileInputStream(dotProjectCopy);
-				OutputStream output = new FileOutputStream(dotProject)) {
-			input.transferTo(output);
-		}
-		dotProjectCopy.delete();
+		Files.copy(dotProjectCopy, dotProject);
+		Files.delete(dotProjectCopy);
 
 		project.open(createTestMonitor());
 		assertThat(project).matches(IProject::isAccessible, "is accessible");

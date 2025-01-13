@@ -37,7 +37,6 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -45,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -244,10 +244,8 @@ public class ProjectPreferencesTest {
 		// get settings filename
 		File file = getFileInFilesystem(project, qualifier);
 		Properties props = new Properties();
-		try (FileInputStream fileInput = new FileInputStream(file)) {
-			try (InputStream input = new BufferedInputStream(fileInput)) {
-				props.load(input);
-			}
+		try (BufferedReader reader = Files.newBufferedReader(file.toPath())) {
+			props.load(reader);
 		}
 
 		// change settings in the file
@@ -987,10 +985,8 @@ public class ProjectPreferencesTest {
 		// get settings filename
 		File file = getFileInFilesystem(project, qualifier);
 		Properties props = new Properties();
-		try (InputStream fileInput = new FileInputStream(file)) {
-			try (InputStream input = new BufferedInputStream(fileInput)) {
-				props.load(input);
-			}
+		try (BufferedReader input = Files.newBufferedReader(file.toPath())) {
+			props.load(input);
 		}
 
 		// reset the listener
@@ -1052,16 +1048,9 @@ public class ProjectPreferencesTest {
 		node.flush();
 		assertEquals("1.00", oldValue, node.get(key, null));
 
-		byte[] buffer = null;
 		// copy the data into a buffer for later use
 		File fileInFS = getFileInFilesystem(project, qualifier);
-		try (InputStream fileInput = new FileInputStream(fileInFS)) {
-			try (InputStream input = new BufferedInputStream(fileInput)) {
-				ByteArrayOutputStream output = new ByteArrayOutputStream(1024);
-				buffer = output.toByteArray();
-				input.transferTo(output);
-			}
-		}
+		byte[] buffer = Files.readAllBytes(fileInFS.toPath());
 
 		// remove the file from the project
 		IFile fileInWS = getFileInWorkspace(project, qualifier);

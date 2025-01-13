@@ -22,9 +22,9 @@ import static org.eclipse.core.tests.resources.ResourceTestUtil.createRandomCont
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 import org.eclipse.compare.internal.Utilities;
@@ -114,7 +114,7 @@ public class FileDiffResultTest {
 		assertThat(filePatchResult.getOriginalContents()).isNotNull();
 		assertThat(filePatchResult.getPatchedContents()).isNotNull();
 
-		try (InputStream fileInput = new FileInputStream(project.getFile(NEW_FILENAME).getLocation().toFile());
+		try (InputStream fileInput = Files.newInputStream(project.getFile(NEW_FILENAME).getLocation().toPath());
 				InputStream originalContents = filePatchResult.getOriginalContents()) {
 			assertThat(fileInput).hasSameContentAs(originalContents);
 		}
@@ -153,7 +153,7 @@ public class FileDiffResultTest {
 		assertThat(filePatchResult.getOriginalContents()).isNotNull();
 		assertThat(filePatchResult.getPatchedContents()).isNotNull();
 
-		try (InputStream fileInput = new FileInputStream(project.getFile(NEW_FILENAME).getLocation().toFile());
+		try (InputStream fileInput = Files.newInputStream(project.getFile(NEW_FILENAME).getLocation().toPath());
 				InputStream originalContents = filePatchResult.getOriginalContents()) {
 			assertThat(fileInput).hasSameContentAs(originalContents);
 		}

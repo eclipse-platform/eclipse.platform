@@ -7,13 +7,15 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     John-Mason P. Shackelford - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor.formatter;
 
 import static org.junit.Assert.assertEquals;
+
+import java.nio.file.Files;
 
 import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlDocumentFormatter;
@@ -92,8 +94,8 @@ public class XmlDocumentFormatterTest extends AbstractAntUITest {
 
 		XmlDocumentFormatter xmlFormatter = new XmlDocumentFormatter();
 		xmlFormatter.setDefaultLineDelimiter(System.getProperty("line.separator")); //$NON-NLS-1$
-		String result = xmlFormatter.format(getFileContentAsString(getBuildFile(sourceFileName)), prefs);
-		String expectedResult = getFileContentAsString(getBuildFile(targetFileName));
+		String result = xmlFormatter.format(Files.readString(getBuildFile(sourceFileName).toPath()), prefs);
+		String expectedResult = Files.readString(getBuildFile(targetFileName).toPath());
 
 		assertEquals(expectedResult, result);
 	}

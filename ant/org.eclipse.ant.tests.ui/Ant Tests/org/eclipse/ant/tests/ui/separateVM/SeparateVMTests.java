@@ -20,7 +20,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,7 +252,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	 * Tests specifying the XmlLogger as a listener (bug 80435)
 	 */
 	@Test
-	public void testXmlLoggerListener() throws CoreException, FileNotFoundException {
+	public void testXmlLoggerListener() throws CoreException, IOException {
 		launch("echoingSepVM", "-listener org.apache.tools.ant.XmlLogger"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertLines(6);
 		assertTrue("Incorrect last message. Should start with Total time:. Message: " //$NON-NLS-1$
@@ -262,7 +263,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		IFile iFile = getProject().getFolder("buildfiles").getFile("log.xml"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertTrue("Could not find log file named: log.xml", iFile.exists()); //$NON-NLS-1$
 		File file = iFile.getLocation().toFile();
-		String content = getFileContentAsString(file);
+		String content = Files.readString(file.toPath());
 		assertTrue("XML logging file is empty", content.length() > 0); //$NON-NLS-1$
 	}
 

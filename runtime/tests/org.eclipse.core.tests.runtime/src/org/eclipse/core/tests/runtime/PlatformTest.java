@@ -23,8 +23,6 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
@@ -203,7 +201,7 @@ public class PlatformTest {
 		headers.put(Constants.BUNDLE_VERSION, "1.0.0");
 		File testBundleJarFile = createBundle(config, bundleName, headers, emptyMap());
 		Bundle hostBundle = getContext().installBundle(testBundleJarFile.getName(),
-				new FileInputStream(testBundleJarFile));
+				Files.newInputStream(testBundleJarFile.toPath()));
 		assertNotNull(hostBundle);
 
 		assertFalse(Platform.isFragment(hostBundle));
@@ -214,7 +212,7 @@ public class PlatformTest {
 		headers.put(Constants.FRAGMENT_HOST, bundleName);
 		testBundleJarFile = createBundle(config, fragmentName, headers, emptyMap());
 		Bundle fragmentBundle = getContext().installBundle(testBundleJarFile.getName(),
-				new FileInputStream(testBundleJarFile));
+				Files.newInputStream(testBundleJarFile.toPath()));
 		assertNotNull(fragmentBundle);
 
 		assertTrue(Platform.isFragment(fragmentBundle));
@@ -367,7 +365,7 @@ public class PlatformTest {
 			headers.put(Constants.BUNDLE_VERSION, v);
 			File testBundleJarFile = createBundle(config, bundleName + "_" + v, headers, emptyMap());
 			Bundle testBundle = getContext().installBundle(testBundleJarFile.getName(),
-					new FileInputStream(testBundleJarFile));
+					Files.newInputStream(testBundleJarFile.toPath()));
 			assertNotNull(testBundle);
 			bundles.put(v, testBundle);
 		}
@@ -387,7 +385,7 @@ public class PlatformTest {
 			attributes.putValue(entry.getKey(), entry.getValue());
 		}
 		File file = new File(outputDir, "bundle" + bundleName + ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
-		try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(file), m)) {
+		try (JarOutputStream jos = new JarOutputStream(Files.newOutputStream(file.toPath()), m)) {
 			if (entries != null) {
 				for (Map<String, String> entryMap : entries) {
 					for (Map.Entry<String, String> entry : entryMap.entrySet()) {

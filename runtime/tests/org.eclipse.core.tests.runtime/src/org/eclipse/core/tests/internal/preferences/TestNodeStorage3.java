@@ -13,15 +13,14 @@
  ******************************************************************************/
 package org.eclipse.core.tests.internal.preferences;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Properties;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceStorage;
@@ -61,11 +60,10 @@ public class TestNodeStorage3 extends AbstractPreferenceStorage {
 		if (!file.exists()) {
 			return null;
 		}
-		InputStream input;
 		try {
-			input = new BufferedInputStream(new FileInputStream(file));
+			InputStream input = Files.newInputStream(file.toPath());
 			return loadProperties(input);
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			throw new BackingStoreException("Exception while trying to open preference file: " + file.getAbsolutePath(), e);
 		}
 	}

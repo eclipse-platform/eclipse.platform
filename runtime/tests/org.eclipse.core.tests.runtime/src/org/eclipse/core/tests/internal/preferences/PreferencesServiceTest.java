@@ -24,11 +24,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -720,7 +720,7 @@ public class PreferencesServiceTest {
 
 		// warning for old versions
 		properties = new Properties();
-		try (InputStream input = new FileInputStream(path.toFile())) {
+		try (InputStream input = Files.newInputStream(path.toPath())) {
 			properties.load(input);
 		}
 		// change all version numbers to "0" so the validation will fail
@@ -730,7 +730,7 @@ public class PreferencesServiceTest {
 				properties.put(key, "0");
 			}
 		}
-		try (OutputStream output = new FileOutputStream(path.toFile())) {
+		try (OutputStream output = Files.newOutputStream(path.toPath())) {
 			properties.store(output, null);
 		}
 		result = org.eclipse.core.runtime.Preferences.validatePreferenceVersions(path);

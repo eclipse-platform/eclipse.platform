@@ -19,10 +19,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IPath;
@@ -36,15 +34,6 @@ import org.junit.Test;
  * Tests the file caching provided by FileStore.toLocalFile.
  */
 public class FileCacheTest {
-
-	/**
-	 * Returns the byte[] contents of the given file.
-	 */
-	private byte[] getBytes(File cachedFile) throws FileNotFoundException, IOException {
-		try (FileInputStream in = new FileInputStream(cachedFile)) {
-			return in.readAllBytes();
-		}
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -66,7 +55,7 @@ public class FileCacheTest {
 		File cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
 		assertTrue("1.0", cachedFile.exists());
 		assertTrue("1.1", !cachedFile.isDirectory());
-		assertThat(getBytes(cachedFile)).containsExactly(contents);
+		assertThat(Files.readAllBytes(cachedFile.toPath())).containsExactly(contents);
 
 		// write out new file contents
 		byte[] newContents = "newContents".getBytes();
@@ -75,13 +64,13 @@ public class FileCacheTest {
 		}
 
 		// old cache will be out of date
-		assertThat(newContents).isNotEqualTo(getBytes(cachedFile));
+		assertThat(newContents).isNotEqualTo(Files.readAllBytes(cachedFile.toPath()));
 
 		// fetching the cache again should return up to date file
 		cachedFile = store.toLocalFile(EFS.CACHE, getMonitor());
 		assertTrue("3.0", cachedFile.exists());
 		assertTrue("3.1", !cachedFile.isDirectory());
-		assertThat(getBytes(cachedFile)).containsExactly(newContents);
+		assertThat(Files.readAllBytes(cachedFile.toPath())).containsExactly(newContents);
 	}
 
 	@Test

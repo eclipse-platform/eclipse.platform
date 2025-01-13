@@ -13,9 +13,9 @@
  *******************************************************************************/
 package org.eclipse.team.examples.filesystem.history;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IPath;
@@ -48,8 +48,8 @@ public class FileSystemFileRevision extends FileRevision {
 			@Override
 			public InputStream getContents() {
 				try {
-					return new FileInputStream(remoteFile);
-				} catch (FileNotFoundException e) {
+					return Files.newInputStream(remoteFile.toPath());
+				} catch (IOException e) {
 					// ignore
 				}
 

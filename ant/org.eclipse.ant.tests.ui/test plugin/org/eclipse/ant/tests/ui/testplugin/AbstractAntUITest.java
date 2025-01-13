@@ -19,14 +19,13 @@ import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 
 import javax.xml.parsers.SAXParser;
 
@@ -208,15 +207,12 @@ public abstract class AbstractAntUITest {
 	 */
 	protected IDocument getDocument(String fileName) {
 		File file = getBuildFile(fileName);
-		InputStream in;
 		try {
-			in = new FileInputStream(file);
-		}
-		catch (FileNotFoundException e) {
+			String initialContent = Files.readString(file.toPath());
+			return new Document(initialContent);
+		} catch (IOException e) {
 			return null;
 		}
-		String initialContent = getStreamContentAsString(in);
-		return new Document(initialContent);
 	}
 
 	/**
@@ -367,17 +363,6 @@ public abstract class AbstractAntUITest {
 		ILaunchConfiguration config = getLaunchManager().getLaunchConfiguration(file);
 		assertTrue("Could not find launch configuration for " + buildFileName, config.exists()); //$NON-NLS-1$
 		return config;
-	}
-
-	/**
-	 * Returns the content of the specified file as <code>String</code>.
-	 */
-	protected String getFileContentAsString(File aFile) throws FileNotFoundException {
-		InputStream stream = new FileInputStream(aFile);
-		InputStreamReader reader = new InputStreamReader(stream);
-		BufferedReader bufferedReader = new BufferedReader(reader);
-
-		return getReaderContentAsString(bufferedReader);
 	}
 
 	/**

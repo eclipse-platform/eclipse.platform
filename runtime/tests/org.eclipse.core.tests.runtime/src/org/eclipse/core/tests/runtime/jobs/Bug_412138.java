@@ -17,11 +17,11 @@ import static org.eclipse.core.tests.runtime.RuntimeTestsPlugin.PI_RUNTIME_TESTS
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -120,12 +120,9 @@ public class Bug_412138 {
 		if (file.exists()) {
 			try {
 				AssertionFailedError e;
-				try (ObjectInputStream stream = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+				try (ObjectInputStream stream = new ObjectInputStream(Files.newInputStream(file.toPath()))) {
 					e = (AssertionFailedError) stream.readObject();
 				}
-				throw e;
-			} catch (IOException | ClassNotFoundException e) {
-				// re-throw since file existence already says the test failed
 				throw e;
 			} finally {
 				// helper file is no longer needed
