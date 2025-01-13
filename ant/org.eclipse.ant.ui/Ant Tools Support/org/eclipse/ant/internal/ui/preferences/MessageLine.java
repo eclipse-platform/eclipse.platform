@@ -84,12 +84,4 @@ public class MessageLine extends CLabel {
 		setBackground(fNormalMsgAreaBackground);
 	}
 
-	@Override
-	public void dispose() {
-		if (fErrorMsgAreaBackground != null) {
-			fErrorMsgAreaBackground.dispose();
-			fErrorMsgAreaBackground = null;
-		}
-		super.dispose();
-	}
 }
