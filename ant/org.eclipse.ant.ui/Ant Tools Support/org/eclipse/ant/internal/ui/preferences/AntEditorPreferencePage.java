@@ -16,7 +16,6 @@ package org.eclipse.ant.internal.ui.preferences;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -105,7 +104,7 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 
 	/**
 	 * Item in the highlighting color list.
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	private static class HighlightingColorListItem {
@@ -122,7 +121,7 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 
 		/**
 		 * Initialize the item with the given values.
-		 * 
+		 *
 		 * @param displayName
 		 *            the display name
 		 * @param colorKey
@@ -180,7 +179,7 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 
 	/**
 	 * Color list label provider.
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	private static class ColorListLabelProvider extends LabelProvider implements IColorProvider {
@@ -203,7 +202,7 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 
 	/**
 	 * Color list content provider.
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	private static class ColorListContentProvider implements IStructuredContentProvider {
@@ -239,7 +238,6 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 	private final List<HighlightingColorListItem> fHighlightingColorList = new ArrayList<>(5);
 
 	private SourceViewer fPreviewViewer;
-	private AntPreviewerUpdater fPreviewerUpdater;
 
 	private SelectionListener fSelectionListener;
 	protected Map<String, String> fWorkingValues;
@@ -522,7 +520,7 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 		fPreviewViewer.getTextWidget().setFont(font);
 
 		IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] { getOverlayStore(), EditorsUI.getPreferenceStore() });
-		fPreviewerUpdater = new AntPreviewerUpdater(fPreviewViewer, configuration, store);
+		new AntPreviewerUpdater(fPreviewViewer, configuration, store);
 
 		String content = loadPreviewContentFromFile("SyntaxPreviewCode.txt"); //$NON-NLS-1$
 		IDocument document = new Document(content);
@@ -542,21 +540,13 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 
 	/**
 	 * Returns the current highlighting color list item.
-	 * 
+	 *
 	 * @return the current highlighting color list item
 	 * @since 3.0
 	 */
 	private HighlightingColorListItem getHighlightingColorListItem() {
 		IStructuredSelection selection = (IStructuredSelection) fHighlightingColorListViewer.getSelection();
 		return (HighlightingColorListItem) selection.getFirstElement();
-	}
-
-	@Override
-	public void dispose() {
-		super.dispose();
-		if (fPreviewerUpdater != null) {
-			fPreviewerUpdater.dispose();
-		}
 	}
 
 	private Composite createProblemsTabContent(TabFolder folder) {
@@ -712,10 +702,8 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 
 	@Override
 	public boolean performOk() {
-		Iterator<String> iter = fWorkingValues.keySet().iterator();
 		IPreferenceStore store = getPreferenceStore();
-		while (iter.hasNext()) {
-			String key = iter.next();
+		for (String key : fWorkingValues.keySet()) {
 			store.putValue(key, fWorkingValues.get(key));
 		}
 		if (store.needsSaving()) {
