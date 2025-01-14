@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -24,7 +24,6 @@ import org.eclipse.ant.internal.ui.editor.AntEditor;
 import org.eclipse.ant.internal.ui.editor.text.XMLTextHover;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.eclipse.ant.tests.ui.testplugin.ProjectCreationDecorator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -359,11 +358,10 @@ public class AntEditorTests extends AbstractAntUITest {
 	 */
 	@Test
 	public void testOpenImportWithByteOrderMark() throws PartInitException {
-		if (ProjectCreationDecorator.isJ2SE15Compatible()) {
-			IFile file = getIFile("importWithByteOrderMark.xml"); //$NON-NLS-1$
-			AntEditor editor = (AntEditor) EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true); //$NON-NLS-1$
-			assertNotNull("Should have imported target", editor.getAntModel().getTargetNode("build")); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+		IFile file = getIFile("importWithByteOrderMark.xml"); //$NON-NLS-1$
+		AntEditor editor = (AntEditor) EditorTestHelper.openInEditor(file,
+				"org.eclipse.ant.ui.internal.editor.AntEditor", true); //$NON-NLS-1$
+		assertNotNull("Should have imported target", editor.getAntModel().getTargetNode("build")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private int getOffsetWithinLine(AntEditor editor, int lineNumber, int offsetInLine) throws BadLocationException {
