@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,7 +14,6 @@
 
 package org.eclipse.ua.tests.doc.internal.actions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.ILog;
@@ -30,14 +29,12 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class CheckTocAction implements IWorkbenchWindowActionDelegate {
 	private IWorkbenchWindow window;
-	public static List<BrokenLink> errors = new ArrayList<>();
 
-	public static void showErrors() {
+	private static void showErrors(List<BrokenLink> errors) {
 		if (errors.isEmpty()) {
 			reportStatus("No errors detected in load");
 		}
-		for (int i = 0; i < errors.size(); i++) {
-			BrokenLink link = errors.get(i);
+		for (BrokenLink link : errors) {
 			reportStatus("Invalid link in \"" + link.getTocID() + "\": " + link.getHref());
 		}
 	}
@@ -66,22 +63,22 @@ public class CheckTocAction implements IWorkbenchWindowActionDelegate {
 		if (dlg.getReturnCode() == Window.CANCEL) {
 			return;
 		}
-		Toc[] tocsToCheck = dlg.getTocsToCheck();
+		List<Toc> tocsToCheck = dlg.getTocsToCheck();
 		checkTocFilesExist(tocsToCheck);
 
 	}
 
-	public  void checkTocFilesExist(Toc[] tocsToCheck) {
+	public void checkTocFilesExist(List<Toc> tocsToCheck) {
 		for (Toc toc : tocsToCheck) {
 			String id = toc.getTocContribution().getId();
 			reportStatus("Testing " + id);
 			String[] href = { id };
 			try {
-				errors = TocValidator.validate(href);
+				List<BrokenLink> errors = TocValidator.validate(href);
+				showErrors(errors);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			showErrors();
 		}
 	}
 

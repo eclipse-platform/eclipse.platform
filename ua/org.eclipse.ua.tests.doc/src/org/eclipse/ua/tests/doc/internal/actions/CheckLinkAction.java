@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -64,10 +64,9 @@ public class CheckLinkAction implements ILiveHelpAction {
 				System.out.println("Checked " + count + " links");
 			}
 			//System.out.println("Process " + next);
-			URL url;
 			boolean opened;
 			try {
-				url = new URL(next);
+				URL url = new URL(next);
 				//URLConnection connection = url.openConnection();
 				//connection.
 				try (InputStream input = url.openStream()) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2016 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -84,8 +84,7 @@ public class LoadTocAction implements IWorkbenchWindowActionDelegate {
 		} else {
 			reportStatus("Testing complete, errors found");
 		}
-		for (Iterator<String> iter = errors.iterator(); iter.hasNext();) {
-			String errorMessage = iter.next();
+		for (String errorMessage : errors) {
 			reportStatus(errorMessage);
 		}
 		errors = null;
@@ -170,11 +169,11 @@ public class LoadTocAction implements IWorkbenchWindowActionDelegate {
 			return;
 		}
 		int testKind = dlg.getTestKind();
-		PrioritizedFilter[] filters = new PrioritizedFilter[] {
+		PrioritizedFilter[] filters = {
 				new PrioritizedFilter(new OnLoadFilter(testKind), 1),
 				new PrioritizedFilter(new AddScriptFilter(), 2)};
 		ExtraFilters.setFilters(filters);
-		Toc[] tocsToCheck = dlg.getTocsToCheck();
+		List<Toc> tocsToCheck = dlg.getTocsToCheck();
 		if (testKind == SelectTocDialog.PAGES_EXIST) {
 			new CheckTocAction().checkTocFilesExist(tocsToCheck);
 			return;
