@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2013 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.ant.internal.ui.IAntUIConstants;
@@ -92,13 +91,6 @@ public class ProjectHelper {
 	}
 
 	/**
-	 * Removes an IProject.
-	 */
-	public static void delete(IProject project) throws CoreException {
-		project.delete(true, true, null);
-	}
-
-	/**
 	 * Adds a folder to an IProject.
 	 */
 	public static IFolder addFolder(IProject project, String containerName) throws CoreException {
@@ -135,9 +127,7 @@ public class ProjectHelper {
 				subDirs.add(file);
 			}
 		}
-		Iterator<File> iter = subDirs.iterator();
-		while (iter.hasNext()) {
-			File subDir = iter.next();
+		for (File subDir : subDirs) {
 			addFiles(subDir, collection);
 		}
 	}

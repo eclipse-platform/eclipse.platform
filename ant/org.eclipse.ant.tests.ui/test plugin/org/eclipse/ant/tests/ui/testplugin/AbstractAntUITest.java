@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.nio.file.Files;
 
 import javax.xml.parsers.SAXParser;
@@ -42,6 +43,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -74,6 +77,8 @@ import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.progress.UIJob;
 import org.junit.Before;
 import org.junit.Rule;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -161,7 +166,7 @@ public abstract class AbstractAntUITest {
 			IProject project = ProjectHelper.createProject(ProjectHelper.PROJECT_NAME);
 			IFolder folder = ProjectHelper.addFolder(project, "buildfiles"); //$NON-NLS-1$
 			ProjectHelper.addFolder(project, "launchConfigurations"); //$NON-NLS-1$
-			File root = AntUITestPlugin.getDefault().getFileInPlugin(ProjectHelper.TEST_BUILDFILES_DIR);
+			File root = getFileInPlugin(ProjectHelper.TEST_BUILDFILES_DIR);
 			ProjectHelper.importFilesFromDirectory(root, folder.getFullPath(), null);
 
 			ProjectHelper.createLaunchConfigurationForBoth("echoing"); //$NON-NLS-1$
@@ -188,6 +193,17 @@ public abstract class AbstractAntUITest {
 
 			// do not show the Ant build failed error dialog
 			AntUIPlugin.getDefault().getPreferenceStore().setValue(IAntUIPreferenceConstants.ANT_ERROR_DIALOG, false);
+		}
+	}
+
+	public static File getFileInPlugin(IPath path) {
+		try {
+			Bundle bundle = FrameworkUtil.getBundle(AbstractAntUITest.class);
+			URL installURL = bundle.getEntry("/" + path.toString()); //$NON-NLS-1$
+			URL localURL = FileLocator.toFileURL(installURL);
+			return new File(localURL.getFile());
+		} catch (IOException e) {
+			return null;
 		}
 	}
 
