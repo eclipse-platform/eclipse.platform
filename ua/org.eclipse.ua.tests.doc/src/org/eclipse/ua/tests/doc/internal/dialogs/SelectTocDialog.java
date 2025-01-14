@@ -96,13 +96,12 @@ public class SelectTocDialog extends Dialog {
 		super.okPressed();
 	}
 
-	public Toc[] getTocsToCheck() {
-		ArrayList<Toc> selected = new ArrayList<>();
+	public java.util.List<Toc> getTocsToCheck() {
+		java.util.List<Toc> selected = new ArrayList<>();
 		for (int selectedToc : selectedTocs) {
 			selected.add(tocs[selectedToc]);
 		}
-		Toc[] tocsToCheck = selected.toArray(new Toc[0]) ;
-		return tocsToCheck;
+		return selected;
 	}
 
 	public int getTestKind() {
