@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
@@ -1013,6 +1014,7 @@ public class ExpressionTests {
 	}
 
 	@Test
+	@Disabled("CI test environment too unstable for performance tests")
 	public void testSubTypeTiming() throws Exception {
 		HashSet<?> o1 = new HashSet<>();
 
