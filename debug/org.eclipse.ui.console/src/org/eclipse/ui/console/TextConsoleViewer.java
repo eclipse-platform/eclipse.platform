@@ -18,7 +18,6 @@ package org.eclipse.ui.console;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -63,6 +62,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.internal.console.ConsoleDocumentAdapter;
 import org.eclipse.ui.internal.console.ConsoleHyperlinkPosition;
 import org.eclipse.ui.progress.WorkbenchJob;
@@ -124,10 +124,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		}
 	};
 
-	// to store to user scroll lock action
-	private final AtomicBoolean userHoldsScrollLock = new AtomicBoolean(false);
-
-	WorkbenchJob revealJob = new WorkbenchJob("Reveal End of Document") {//$NON-NLS-1$
+	WorkbenchJob revealJob = new WorkbenchJob("Reveal End of Document") { //$NON-NLS-1$
 		@Override
 		public IStatus runInUIThread(IProgressMonitor monitor) {
 			scrollToEndOfDocument();
@@ -147,29 +144,28 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 
 	// set the scroll Lock setting for Console Viewer and Console View
 	private void setScrollLock(boolean lock) {
-		userHoldsScrollLock.set(lock);
 		if (scrollLockStateProvider != null && scrollLockStateProvider.getAutoScrollLock() != lock) {
 			scrollLockStateProvider.setAutoScrollLock(lock);
 		}
 	}
 
 	/*
-	 * Checks if at the end of document
+	 * Checks if last visible line is same as line count, implying end of the
+	 * document.
 	 */
-	private boolean checkEndOfDocument() {
+	private boolean isAtEndOfDocument() {
 		StyledText textWidget = getTextWidget();
 		if (textWidget != null && !textWidget.isDisposed()) {
-			int partialBottomIndex = JFaceTextUtil.getPartialBottomIndex(textWidget);
+			int lastVisibleLineIndex = JFaceTextUtil.getPartialBottomIndex(textWidget);
 			int lineCount = textWidget.getLineCount();
-			int delta = textWidget.getVerticalBar().getIncrement();
-			return lineCount - partialBottomIndex < delta;
+			return lineCount == lastVisibleLineIndex + 1;
 		}
 		return false;
 	}
 
 	/*
-	 * Check if user preference is enabled for auto scroll lock and the document is empty or the line count is smaller than each
-	 * vertical scroll
+	 * Checks if user preference is enabled for auto scroll lock. and if the view is
+	 * empty or the content is minimal, implying no need for scrolling.
 	 */
 	private boolean isAutoScrollLockNotApplicable() {
 		if (!consoleAutoScrollLock) {
@@ -177,21 +173,12 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		}
 		StyledText textWidget = getTextWidget();
 		if (textWidget != null && !textWidget.isDisposed()) {
-			return (textWidget.getLineCount() <= textWidget.getVerticalBar().getIncrement());
-		}
-		return false;
-	}
-
-	/*
-	 * Checks if at the start of document
-	 */
-	private boolean checkStartOfDocument() {
-		StyledText textWidget = getTextWidget();
-		if (textWidget != null && !textWidget.isDisposed()) {
-			int partialTopIndex = JFaceTextUtil.getPartialTopIndex(textWidget);
-			int lineCount = textWidget.getLineCount();
-			int delta = textWidget.getVerticalBar().getIncrement();
-			return lineCount - partialTopIndex < delta;
+			ScrollBar scrollBar = textWidget.getVerticalBar();
+			/**
+			 * Value for pageIncrement is only set when lines exceed one page, otherwise it
+			 * is 1
+			 */
+			return scrollBar.getPageIncrement() == 1;
 		}
 		return false;
 	}
@@ -253,6 +240,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		styledText.addListener(SWT.MouseUp, mouseUpListener);
 		// event listener used to send event to vertical scroll bar
 		styledText.getVerticalBar().addSelectionListener(new SelectionAdapter() {
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (isAutoScrollLockNotApplicable()) {
@@ -260,23 +248,22 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 				}
 				// scroll lock if vertical scroll bar dragged, OR selection on
 				// vertical bar used
-				if (e.detail == SWT.TOP || e.detail == SWT.HOME) {
+				if (e.detail == SWT.HOME || e.detail == SWT.TOP) {
 					// selecting TOP or HOME should lock
 					setScrollLock(true);
-				}
-				if (e.detail == SWT.ARROW_UP || e.detail == SWT.PAGE_UP) {
+				} else if (e.detail == SWT.PAGE_UP || e.detail == SWT.ARROW_UP) {
 					setScrollLock(true);
 				} else if (e.detail == SWT.END || e.detail == SWT.BOTTOM) {
 					// selecting BOTTOM or END from vertical scroll makes it
 					// reveal the end
 					setScrollLock(false);
 				} else if (e.detail == SWT.DRAG) {
-					if (checkEndOfDocument()) {
+					if (isAtEndOfDocument()) {
 						setScrollLock(false);
 					} else {
 						setScrollLock(true);
 					}
-				} else if ((e.detail == SWT.PAGE_DOWN || e.detail == SWT.ARROW_DOWN) && checkEndOfDocument()) {
+				} else if ((e.detail == SWT.PAGE_DOWN || e.detail == SWT.ARROW_DOWN) && isAtEndOfDocument()) {
 					// unlock if Down at the end of document
 					setScrollLock(false);
 				}
@@ -291,12 +278,12 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 				// lock the scroll if PAGE_UP ,HOME or TOP selected
 				if (e.keyCode == SWT.HOME || e.keyCode == SWT.TOP) {
 					setScrollLock(true);
-				} else if ((e.keyCode == SWT.PAGE_UP || e.keyCode == SWT.ARROW_UP) && !checkStartOfDocument()) {
+				} else if ((e.keyCode == SWT.PAGE_UP || e.keyCode == SWT.ARROW_UP)) {
 					setScrollLock(true);
 				} else if ((e.keyCode == SWT.END && (e.stateMask & SWT.CTRL) != 0) || e.keyCode == SWT.BOTTOM) {
 					// pressing CTRL+END reveals the end
 					setScrollLock(false);
-				} else if ((e.keyCode == SWT.PAGE_DOWN || e.keyCode == SWT.ARROW_DOWN) && checkEndOfDocument()) {
+				} else if ((e.keyCode == SWT.PAGE_DOWN || e.keyCode == SWT.ARROW_DOWN) && isAtEndOfDocument()) {
 					// unlock if Down at the end of document
 					setScrollLock(false);
 				}
@@ -306,11 +293,13 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 			if (isAutoScrollLockNotApplicable()) {
 				return;
 			}
-			if (e.count < 0) { // Mouse dragged down
-				if (checkEndOfDocument()) {
+			if (e.count < 0) { // Mouse scroll down
+				if (isAtEndOfDocument()) {
 					setScrollLock(false);
+				} else {
+					setScrollLock(true);
 				}
-			} else if (!userHoldsScrollLock.get()) {
+			} else if (e.count > 0) { // Mouse scroll up
 				setScrollLock(true);
 			}
 		});
@@ -330,6 +319,7 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		document.addDocumentListener(documentListener);
 		document.addPositionUpdater(positionUpdater);
 	}
+
 
 	/**
 	 * Sets the tab width used by this viewer.
