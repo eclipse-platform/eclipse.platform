@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011  John-Mason P. Shackelford and others.
+ * Copyright (c) 2000, 2025  John-Mason P. Shackelford and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  * 	   John-Mason P. Shackelford - initial API and implementation
  *     IBM Corporation - bug fixes
@@ -27,11 +27,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.templates.Template;
-import org.eclipse.jface.text.templates.persistence.TemplatePersistenceData;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.text.templates.TemplatePersistenceData;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.templates.TemplatePreferencePage;
 
@@ -79,8 +79,7 @@ public class AntTemplatePreferencePage extends TemplatePreferencePage {
 		IStructuredSelection selection = (IStructuredSelection) getTableViewer().getSelection();
 		SourceViewer viewer = getViewer();
 
-		if (selection.size() == 1 && selection.getFirstElement() instanceof TemplatePersistenceData) {
-			TemplatePersistenceData data = (TemplatePersistenceData) selection.getFirstElement();
+		if (selection.size() == 1 && selection.getFirstElement() instanceof TemplatePersistenceData data) {
 			Template template = data.getTemplate();
 			if (AntUIPlugin.getDefault().getPreferenceStore().getBoolean(getFormatterPreferenceKey())) {
 				String formatted = XmlFormatter.format(template.getPattern(), fFormattingPreferences);
