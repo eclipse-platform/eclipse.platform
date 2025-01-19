@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -62,8 +62,8 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 			createWrappingLabel(composite, description, 1);
 
 		viewer = new CommonViewer(TEAM_NAVIGATOR_CONTENT, composite, SWT.BORDER);
-		viewer.setSorter(new CommonViewerSorter());
-		viewer.setSorter(new TeamViewerSorter((CommonViewerSorter)viewer.getSorter()));
+		viewer.setComparator(new CommonViewerSorter());
+		viewer.setComparator(new TeamViewerSorter((CommonViewerSorter) viewer.getSorter()));
 		viewer.getNavigatorContentService().bindExtensions(TeamUI.getTeamContentProviderManager().getContentProviderIds(scope), true);
 		viewer.getNavigatorContentService().getActivationService().activateExtensions(TeamUI.getTeamContentProviderManager().getContentProviderIds(scope), true);
 		GridData data = new GridData(GridData.FILL_BOTH);
