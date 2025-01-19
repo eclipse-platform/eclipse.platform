@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -52,9 +52,9 @@ import org.eclipse.team.internal.core.FileContentManager;
 import org.eclipse.team.internal.core.Messages;
 import org.eclipse.team.internal.core.Policy;
 import org.eclipse.team.internal.core.StorageMergerRegistry;
-import org.eclipse.team.internal.core.WildcardStringMatcher;
 import org.eclipse.team.internal.core.TeamPlugin;
 import org.eclipse.team.internal.core.TeamResourceChangeListener;
+import org.eclipse.team.internal.core.WildcardStringMatcher;
 import org.eclipse.team.internal.core.importing.BundleImporterExtension;
 
 /**
@@ -186,7 +186,7 @@ public final class Team {
 	 * @return all known file types
 	 * @deprecated Use <code>getFileContentManager().getExtensionMappings()</code> instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static IFileTypeInfo[] getAllTypes() {
 		final IStringMapping [] mappings= fFileContentManager.getExtensionMappings();
 		final IFileTypeInfo [] infos= new IFileTypeInfo[mappings.length];
@@ -366,9 +366,7 @@ public final class Team {
 					}
 				}
 
-				Iterator<String> it = pIgnore.keySet().iterator();
-				while (it.hasNext()) {
-					String pattern = it.next();
+				for (String pattern : pIgnore.keySet()) {
 					if (!gIgnore.containsKey(pattern)) {
 						gIgnore.put(pattern, pIgnore.get(pattern));
 					}
@@ -531,7 +529,7 @@ public final class Team {
 	 * @since 3.0
 	 * @deprecated Use Team.getFileContentManager().getDefaultExtensionMappings() instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-03")
 	public static IFileTypeInfo[] getDefaultTypes() {
 		return asFileTypeInfo(getFileContentManager().getDefaultExtensionMappings());
 	}
