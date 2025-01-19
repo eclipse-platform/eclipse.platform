@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,9 +16,7 @@ package org.eclipse.debug.examples.ui.pda;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -118,11 +116,6 @@ public class DebugUIPlugin extends AbstractUIPlugin {
 		super.stop(context);
 		plugin = null;
 		resourceBundle = null;
-		Iterator<Entry<RGB, Color>> colors = fColors.entrySet().iterator();
-		while (colors.hasNext()) {
-			Entry<RGB, Color> entry = colors.next();
-			entry.getValue().dispose();
-		}
 	}
 
 	/**
