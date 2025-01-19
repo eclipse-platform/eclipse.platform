@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -21,7 +21,7 @@ package org.eclipse.team.core;
  * @deprecated Use the <code>IFileContentManager</code> API instead.
  * @noimplement This interface is not intended to be implemented by clients.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "2025-03")
 public interface IFileTypeInfo {
 	/**
 	 * Returns the string specifying the file extension
