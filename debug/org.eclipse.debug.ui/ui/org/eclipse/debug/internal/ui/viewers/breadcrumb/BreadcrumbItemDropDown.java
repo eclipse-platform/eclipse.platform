@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2017 IBM Corporation and others.
+ * Copyright (c) 2008, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -96,7 +96,6 @@ class BreadcrumbItemDropDown implements IBreadcrumbDropDownSite {
 				gc.fillPolygon(new int[] {
 						0, 0, ARROW_SIZE, ARROW_SIZE, 0, ARROW_SIZE * 2 });
 				gc.dispose();
-				triangleColor.dispose();
 
 				ImageData imageData = image.getImageData(zoom);
 				image.dispose();

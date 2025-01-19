@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2013 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -166,9 +166,6 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 			font.dispose();
 		}
 		fFontCache.clear();
-		for (Color color : fColorCache.values()) {
-			color.dispose();
-		}
 		fColorCache.clear();
 
 		if (fModel != null) {
