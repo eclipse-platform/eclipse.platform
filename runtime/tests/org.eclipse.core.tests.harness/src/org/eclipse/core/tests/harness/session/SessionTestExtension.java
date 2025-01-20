@@ -135,7 +135,7 @@ public interface SessionTestExtension extends InvocationInterceptor {
 		 * Sets the given session configuration that uses a custom "config.ini" file
 		 * with a defined set of bundles to be used. The customization can be
 		 * instantiated via
-		 * {@link SessionTestExtension#createCustomSessionConfiguration()}. By default,
+		 * {@link SessionTestExtension#createCustomConfiguration()}. By default,
 		 * a temporary folder is used as a configuration directory.
 		 * <p>
 		 * <b>Example usage with default configuration directory:</b>
