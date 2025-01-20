@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -88,7 +88,7 @@ public class AntTaskNode extends AntElementNode {
 
 	/**
 	 * The reference id for this task
-	 * 
+	 *
 	 * @param id
 	 *            The reference id for this task
 	 */
@@ -98,7 +98,7 @@ public class AntTaskNode extends AntElementNode {
 
 	/**
 	 * Returns the reference id for this task or <code>null</code> if it has no reference id.
-	 * 
+	 *
 	 * @return The reference id for this task
 	 */
 	public String getId() {
@@ -108,7 +108,7 @@ public class AntTaskNode extends AntElementNode {
 	/**
 	 * Configures the associated task if required. Allows subclasses to do specific configuration (such as executing the task) by calling
 	 * <code>nodeSpecificConfigure</code>
-	 * 
+	 *
 	 * @return whether the configuration of this node could have impact on other nodes
 	 */
 	public boolean configure(boolean validateFully) {
@@ -187,7 +187,7 @@ public class AntTaskNode extends AntElementNode {
 		List<Integer> results = new ArrayList<>();
 		RuntimeConfigurable wrapper = getTask().getRuntimeConfigurableWrapper();
 		Map<String, Object> attributeMap = wrapper.getAttributeMap();
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		for (String key : attributeMap.keySet()) {
 			String value = (String) attributeMap.get(key);
 			int identifierCorrection = 1;

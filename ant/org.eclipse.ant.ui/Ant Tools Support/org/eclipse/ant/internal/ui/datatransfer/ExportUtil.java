@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2017 Richard Hoefter and others.
+ * Copyright (c) 2004, 2025 Richard Hoefter and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -7,11 +7,11 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
- *     Richard Hoefter (richard.hoefter@web.de) - initial API and implementation, bug 95300, bug 95297, bug 128104, bug 201180, bug 288830 
- *     IBM Corporation - NLS'ing and incorporating into Eclipse. 
- *                     - Bug 177833 Class created from combination of all utility classes of contribution 
+ *     Richard Hoefter (richard.hoefter@web.de) - initial API and implementation, bug 95300, bug 95297, bug 128104, bug 201180, bug 288830
+ *     IBM Corporation - NLS'ing and incorporating into Eclipse.
+ *                     - Bug 177833 Class created from combination of all utility classes of contribution
  *                     - Bug 267459 Java project with an external jar file from C:\ on the build path throws a NPE during the Ant Buildfile generation.
  *                     - bug fixing
  *******************************************************************************/
@@ -134,7 +134,7 @@ public class ExportUtil {
 
 	/**
 	 * Convert Eclipse path to absolute filename.
-	 * 
+	 *
 	 * @param file
 	 *            Project root optionally followed by resource name. An absolute path is simply converted to a string.
 	 * @return full qualified path
@@ -192,7 +192,7 @@ public class ExportUtil {
 
 	/**
 	 * Remove project root from given project file.
-	 * 
+	 *
 	 * @param newProjectRoot
 	 *            replace project root, e.g. with a variable ${project.location}
 	 */
@@ -213,7 +213,7 @@ public class ExportUtil {
 
 	/**
 	 * Get for given project all directly dependent projects.
-	 * 
+	 *
 	 * @return set of IJavaProject objects
 	 */
 	public static List<IJavaProject> getClasspathProjects(IJavaProject project) throws JavaModelException {
@@ -239,7 +239,7 @@ public class ExportUtil {
 
 	/**
 	 * Get for given project all directly and indirectly dependent projects.
-	 * 
+	 *
 	 * @return set of IJavaProject objects
 	 */
 	public static List<IJavaProject> getClasspathProjectsRecursive(IJavaProject project) throws JavaModelException {
@@ -259,7 +259,7 @@ public class ExportUtil {
 
 	/**
 	 * Sort projects according to General -&gt; Workspace -&gt; Build Order.
-	 * 
+	 *
 	 * @param javaProjects
 	 *            list of IJavaProject objects
 	 * @return list of IJavaProject objects with new order
@@ -303,10 +303,10 @@ public class ExportUtil {
 
 	/**
 	 * Returns cyclic dependency marker for a given project.
-	 * 
+	 *
 	 * <p>
 	 * See org.eclipse.jdt.core.tests.model.ClasspathTests.numberOfCycleMarkers.
-	 * 
+	 *
 	 * @param javaProject
 	 *            project for which cyclic dependency marker should be found
 	 * @return cyclic dependency marker for a given project or <code>null</code> if there is no such marker
@@ -324,7 +324,7 @@ public class ExportUtil {
 
 	/**
 	 * Find JUnit tests. Same tests are also returned by Eclipse run configuration wizard.
-	 * 
+	 *
 	 * @param containerHandle
 	 *            project, package or source folder
 	 */
@@ -411,7 +411,7 @@ public class ExportUtil {
 	/**
 	 * Platform specific newline character(s).
 	 */
-	public static final String NEWLINE = System.getProperty("line.separator"); //$NON-NLS-1$
+	public static final String NEWLINE = System.lineSeparator();
 
 	public static String removePrefix(String s, String prefix) {
 		if (s == null) {
@@ -483,7 +483,7 @@ public class ExportUtil {
 
 	/**
 	 * Converts collection to a separated string.
-	 * 
+	 *
 	 * @param c
 	 *            collection
 	 * @param separator
@@ -504,7 +504,7 @@ public class ExportUtil {
 
 	/**
 	 * Remove duplicates preserving original order.
-	 * 
+	 *
 	 * @param l
 	 *            list to remove duplicates from
 	 * @return new list without duplicates
@@ -548,7 +548,7 @@ public class ExportUtil {
 
 	/**
 	 * Request write access to given file. Depending on the version control plug-in opens a confirm checkout dialog.
-	 * 
+	 *
 	 * @param shell
 	 *            parent instance for dialogs
 	 * @param file
@@ -561,7 +561,7 @@ public class ExportUtil {
 
 	/**
 	 * Request write access to given files. Depending on the version control plug-in opens a confirm checkout dialog.
-	 * 
+	 *
 	 * @param shell
 	 *            parent instance for dialogs
 	 * @return <code>IFile</code> objects for which user confirmed checkout
@@ -633,7 +633,7 @@ public class ExportUtil {
 
 	/**
 	 * Add variable/value for Eclipse variable. If given string is no variable, nothing is added.
-	 * 
+	 *
 	 * @param variable2valueMap
 	 *            property map to add variable/value
 	 * @param s

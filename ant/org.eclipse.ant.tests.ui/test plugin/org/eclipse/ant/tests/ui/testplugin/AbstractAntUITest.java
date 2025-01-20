@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2003, 2021 IBM Corporation and others.
+ *  Copyright (c) 2003, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -285,7 +285,7 @@ public abstract class AbstractAntUITest {
 
 			while (line != null) {
 				if (result.length() != 0) {
-					result.append(System.getProperty("line.separator")); //$NON-NLS-1$
+					result.append(System.lineSeparator());
 				}
 				result.append(line);
 				line = bufferedReader.readLine();

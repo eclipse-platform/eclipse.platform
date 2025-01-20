@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2023 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  * Portions Copyright  2000-2005 The Apache Software Foundation
  *
  * This program and the accompanying materials are made
@@ -328,7 +328,7 @@ public class InternalAntRunner {
 	 */
 	private void printTargets(Project project, List<String> names, List<String> descriptions, String heading, int maxlen) {
 		// now, start printing the targets and their descriptions
-		String lSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lSep = System.lineSeparator();
 
 		String spaces = "    "; //$NON-NLS-1$
 		while (spaces.length() < maxlen) {
@@ -1164,7 +1164,7 @@ public class InternalAntRunner {
 	 * Logs a message with the client outlining the usage of <b>Ant</b>.
 	 */
 	private void printUsage() {
-		String lSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lSep = System.lineSeparator();
 		StringBuilder msg = new StringBuilder();
 		msg.append("ant ["); //$NON-NLS-1$
 		msg.append(RemoteAntMessages.getString("InternalAntRunner.options_13")); //$NON-NLS-1$

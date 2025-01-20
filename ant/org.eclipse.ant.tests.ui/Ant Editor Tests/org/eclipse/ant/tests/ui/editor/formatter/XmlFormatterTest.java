@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 John-Mason P. Shackelford and others.
+ * Copyright (c) 2004, 2025 John-Mason P. Shackelford and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     John-Mason P. Shackelford - initial API and implementation
  *     IBM Corporation - bug 84342
@@ -37,7 +37,7 @@ public class XmlFormatterTest {
 			node.putInt(AntEditorPreferenceConstants.FORMATTER_TAB_SIZE, 4);
 			node.flush();
 		}
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		String xmlDoc = "<project default=\"go\"><target name=\"go\" description=\"Demonstrate the wrapping of long tags.\"><echo>hi</echo></target></project>"; //$NON-NLS-1$
 		String formattedDoc = XmlFormatter.format(xmlDoc);
 		String expected = "<project default=\"go\">" + lineSep + "\t<target name=\"go\"" + lineSep //$NON-NLS-1$ //$NON-NLS-2$
@@ -74,7 +74,7 @@ public class XmlFormatterTest {
 				return 6;
 			}
 		};
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		String xmlDoc = "<project default=\"go\"><target name=\"go\" description=\"Demonstrate the wrapping of long tags.\"><echo>hi</echo></target></project>"; //$NON-NLS-1$
 		String formattedDoc = XmlFormatter.format(xmlDoc, prefs);
 		String expected = "<project default=\"go\">" + lineSep + "      <target name=\"go\"" + lineSep //$NON-NLS-1$ //$NON-NLS-2$
@@ -114,7 +114,7 @@ public class XmlFormatterTest {
 				return 6;
 			}
 		};
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		String xmlDoc = "<project default=\"go\"><target name=\"go\" description=\"Demonstrate the wrapping of long tags.\"><echo>hi</echo></target>" //$NON-NLS-1$
 				+ lineSep + lineSep + "</project>"; //$NON-NLS-1$
 		String formattedDoc = XmlFormatter.format(xmlDoc, prefs);

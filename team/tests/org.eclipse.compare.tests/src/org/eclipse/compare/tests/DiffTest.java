@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -35,7 +35,7 @@ public class DiffTest {
 	private static final String _123 = "123"; //$NON-NLS-1$
 	// private static final String _456= "456"; //$NON-NLS-1$
 
-	static final String SEPARATOR = System.getProperty("line.separator"); //$NON-NLS-1$
+	static final String SEPARATOR = System.lineSeparator();
 
 	@Test
 	public void testLineAddition() {

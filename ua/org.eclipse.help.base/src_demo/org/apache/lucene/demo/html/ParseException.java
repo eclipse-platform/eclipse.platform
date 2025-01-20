@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -118,14 +118,14 @@ public String getMessage() {
     }
     StringBuilder expected = new StringBuilder();
     int maxSize = 0;
-    for (int i = 0; i < expectedTokenSequences.length; i++) {
-      if (maxSize < expectedTokenSequences[i].length) {
-        maxSize = expectedTokenSequences[i].length;
+    for (int[] element : expectedTokenSequences) {
+      if (maxSize < element.length) {
+        maxSize = element.length;
       }
-      for (int j = 0; j < expectedTokenSequences[i].length; j++) {
-        expected.append(tokenImage[expectedTokenSequences[i][j]]).append(" "); //$NON-NLS-1$
+      for (int j = 0; j < element.length; j++) {
+        expected.append(tokenImage[element[j]]).append(" "); //$NON-NLS-1$
       }
-      if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+      if (element[element.length - 1] != 0) {
         expected.append("..."); //$NON-NLS-1$
       }
       expected.append(eol).append("    "); //$NON-NLS-1$
@@ -155,7 +155,7 @@ public String getMessage() {
   /**
    * The end of line string for this machine.
    */
-  protected String eol = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+	protected String eol = System.lineSeparator();
 
   /**
    * Used to convert raw characters to their escaped version
