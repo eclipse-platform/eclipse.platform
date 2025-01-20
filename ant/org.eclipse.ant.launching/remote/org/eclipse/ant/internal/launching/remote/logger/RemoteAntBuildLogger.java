@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2016 IBM Corporation and others.
+ * Copyright (c) 2003, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -30,7 +30,6 @@ import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.util.StringUtils;
-import org.eclipse.ant.internal.launching.debug.AntDebugState;
 import org.eclipse.ant.internal.launching.remote.AntSecurityException;
 import org.eclipse.ant.internal.launching.remote.IAntCoreConstants;
 import org.eclipse.ant.internal.launching.remote.InternalAntRunner;
@@ -358,7 +357,7 @@ public class RemoteAntBuildLogger extends DefaultLogger {
 
 	private void marshalTargetMessage(BuildEvent event) {
 		Target target = event.getTarget();
-		Location location = AntDebugState.getLocation(target);
+		Location location = target.getLocation();
 
 		StringBuilder message = new StringBuilder();
 		message.append(MessageIds.TARGET);

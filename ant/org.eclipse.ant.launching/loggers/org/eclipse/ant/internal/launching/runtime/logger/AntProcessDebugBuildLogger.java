@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2016 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -219,8 +219,8 @@ public class AntProcessDebugBuildLogger extends AntProcessBuildLogger implements
 		if (fBreakpoints == null || location == null || location == Location.UNKNOWN_LOCATION) {
 			return null;
 		}
-		int lineNumber = fDebugState.getLineNumber(location);
-		File locationFile = new File(fDebugState.getFileName(location));
+		int lineNumber = location.getLineNumber();
+		File locationFile = new File(location.getFileName());
 		for (IBreakpoint bp : fBreakpoints) {
 			ILineBreakpoint breakpoint = (ILineBreakpoint) bp;
 			int breakpointLineNumber;
