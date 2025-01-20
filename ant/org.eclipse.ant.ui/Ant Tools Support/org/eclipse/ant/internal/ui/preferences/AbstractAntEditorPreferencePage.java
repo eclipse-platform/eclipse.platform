@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -330,7 +330,7 @@ public abstract class AbstractAntEditorPreferencePage extends PreferencePage imp
 
 	protected String loadPreviewContentFromFile(String filename) {
 		String line;
-		String separator = System.getProperty("line.separator"); //$NON-NLS-1$
+		String separator = System.lineSeparator();
 		StringBuilder buffer = new StringBuilder(512);
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(filename)))) {
 			while ((line = reader.readLine()) != null) {

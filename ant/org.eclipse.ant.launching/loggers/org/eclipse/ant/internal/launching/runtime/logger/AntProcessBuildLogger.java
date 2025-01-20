@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -63,7 +63,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
 
 		StringBuffer fullMessage = new StringBuffer();
 		if (!loggingToLogFile()) {
-			fullMessage.append(System.getProperty("line.separator")); //$NON-NLS-1$
+			fullMessage.append(System.lineSeparator());
 		}
 		if (event.getException() == null && event.getTask() != null && !fEmacsMode) {
 			adornMessage(event, fullMessage);
@@ -117,7 +117,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
 			appendAndLink(fullMessage, location, label, offset, line);
 			line = r.readLine();
 			while (line != null) {
-				fullMessage.append(System.getProperty("line.separator")); //$NON-NLS-1$
+				fullMessage.append(System.lineSeparator());
 				fullMessage.append(column);
 				appendAndLink(fullMessage, location, label, offset, line);
 				line = r.readLine();
@@ -262,7 +262,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
 			result.append(RuntimeMessages.AntProcessBuildLogger__milliseconds_6);
 		}
 
-		result.append(System.getProperty("line.separator")); //$NON-NLS-1$
+		result.append(System.lineSeparator());
 		return result.toString();
 	}
 
@@ -282,7 +282,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
 			return;
 		}
 		Target target = event.getTarget();
-		StringBuilder msg = new StringBuilder(System.getProperty("line.separator")); //$NON-NLS-1$
+		StringBuilder msg = new StringBuilder(System.lineSeparator());
 		String targetName = target.getName();
 		msg.append(targetName);
 		msg.append(':');

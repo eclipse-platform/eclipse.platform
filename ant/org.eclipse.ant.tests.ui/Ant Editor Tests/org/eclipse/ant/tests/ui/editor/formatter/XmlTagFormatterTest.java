@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 John-Mason P. Shackelford and others.
+ * Copyright (c) 2004, 2025 John-Mason P. Shackelford and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     John-Mason P. Shackelford - initial API and implementation
  *     IBM Corporation - Bug 84342
@@ -192,7 +192,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 
 	@Test
 	public void testFormat01() throws Exception {
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		String indent = "\t"; //$NON-NLS-1$
 		String source = "<target name=\"myTargetName\" depends=\"a,b,c,d,e,f,g\" description=\"This is a very long element which ought to be wrapped.\">"; //$NON-NLS-1$
 		String target = "<target name=\"myTargetName\"" + lineSep //$NON-NLS-1$
@@ -204,7 +204,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 
 	@Test
 	public void testFormat02() throws Exception {
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		String indent = "\t"; //$NON-NLS-1$
 		String source = "<target name=\"myTargetName\" depends=\"a,b,c,d,e,f,g\" description=\"This is a very long element which ought to be wrapped.\">"; //$NON-NLS-1$
 		String target = "<target name=\"myTargetName\"" + lineSep //$NON-NLS-1$
@@ -217,7 +217,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 
 	@Test
 	public void testBug73411() throws Exception {
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		String indent = "\t"; //$NON-NLS-1$
 		String source = "<target name='myTargetName' depends=\"a,b,c,d,e,f,g\" description=\'This is a very long element which ought to be \"wrapped\".'>"; //$NON-NLS-1$
 		String target = "<target name='myTargetName'" + lineSep //$NON-NLS-1$
@@ -307,7 +307,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 
 		tag.setClosed(true);
 
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		assertEquals("<myElement attribute1=\"value1\"" + lineSep //$NON-NLS-1$
 				+ "\t\t             attribute2=\"value2\" />", //$NON-NLS-1$
 				tagFormatter.wrapTag(tag, dontAlignCloseChar, "\t\t  ", lineSep)); //$NON-NLS-1$
@@ -334,7 +334,7 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
 		// Ordinarily the double space after the element name would be repaired
 		// but if the formatter is working correctly these examples will be
 		// considered malformed and will be passed through untouched.
-		String lineSep = System.getProperty("line.separator"); //$NON-NLS-1$
+		String lineSep = System.lineSeparator();
 		String source1 = "<echo  file=\"foo\">" + lineSep + "&lt;html>&lt;body>&lt;pre>" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "${compilelog}&lt;/pre>&lt;/body>&lt;/html>"; //$NON-NLS-1$
 		FormattingPreferences prefs = getPreferences(true, false, 60);

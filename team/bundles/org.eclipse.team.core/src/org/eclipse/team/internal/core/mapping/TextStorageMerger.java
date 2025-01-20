@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2017 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -49,7 +49,7 @@ public class TextStorageMerger implements IStorageMerger {
 
 		try {
 			boolean firstLine = true;
-			String lineSeparator= System.getProperty("line.separator"); //$NON-NLS-1$
+			String lineSeparator = System.lineSeparator();
 			if (lineSeparator == null)
 				lineSeparator= "\n"; //$NON-NLS-1$
 

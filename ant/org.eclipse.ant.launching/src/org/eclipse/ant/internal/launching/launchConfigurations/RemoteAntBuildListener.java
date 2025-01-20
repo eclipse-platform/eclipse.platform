@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2003, 2016 IBM Corporation and others.
+ *  Copyright (c) 2003, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -192,7 +192,7 @@ public class RemoteAntBuildListener implements ILaunchesListener {
 			if (index > 0) {
 				int priority = Integer.parseInt(message.substring(0, index));
 				String msg = message.substring(index + 1);
-				writeMessage(msg + System.getProperty("line.separator"), priority); //$NON-NLS-1$
+				writeMessage(msg + System.lineSeparator(), priority);
 				if (msg.startsWith("BUILD FAILED")) { //$NON-NLS-1$
 					fBuildFailed = true;
 				} else if (fBuildFailed) {
@@ -222,7 +222,7 @@ public class RemoteAntBuildListener implements ILaunchesListener {
 			int lineNumber = Integer.parseInt(tokenizer.nextToken());
 			generateLink(msg, location, lineNumber, 0, msg.length() - 1);
 		}
-		writeMessage(msg + System.getProperty("line.separator"), Project.MSG_INFO); //$NON-NLS-1$
+		writeMessage(msg + System.lineSeparator(), Project.MSG_INFO);
 	}
 
 	private void receiveTaskMessage(String message) {
@@ -269,7 +269,7 @@ public class RemoteAntBuildListener implements ILaunchesListener {
 
 		StringBuffer fullMessage = new StringBuffer();
 		adornMessage(taskName, line, fullMessage);
-		writeMessage(fullMessage.append(System.getProperty("line.separator")).toString(), priority); //$NON-NLS-1$
+		writeMessage(fullMessage.append(System.lineSeparator()).toString(), priority);
 	}
 
 	private void generateLink(String line, String fileName, int lineNumber, int offset, int length) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 John-Mason P. Shackelford and others.
+ * Copyright (c) 2004, 2025 John-Mason P. Shackelford and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -93,7 +93,7 @@ public class XmlDocumentFormatterTest extends AbstractAntUITest {
 	private void simpleTest(String sourceFileName, String targetFileName, FormattingPreferences prefs) throws Exception {
 
 		XmlDocumentFormatter xmlFormatter = new XmlDocumentFormatter();
-		xmlFormatter.setDefaultLineDelimiter(System.getProperty("line.separator")); //$NON-NLS-1$
+		xmlFormatter.setDefaultLineDelimiter(System.lineSeparator());
 		String result = xmlFormatter.format(Files.readString(getBuildFile(sourceFileName).toPath()), prefs);
 		String expectedResult = Files.readString(getBuildFile(targetFileName).toPath());
 
