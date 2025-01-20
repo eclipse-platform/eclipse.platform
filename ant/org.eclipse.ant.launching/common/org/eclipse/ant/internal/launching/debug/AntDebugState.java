@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -225,7 +225,7 @@ public class AntDebugState {
 		if (considerTargetBreakpoints()) {
 			Target targetExecuting = getTargetExecuting();
 			if (targetExecuting != null) {
-				return getLocation(targetExecuting);
+				return targetExecuting.getLocation();
 			}
 		}
 		return null;
@@ -320,77 +320,15 @@ public class AntDebugState {
 		setConsiderTargetBreakpoints(true);
 	}
 
-	public int getLineNumber(Location location) {
-		try { // succeeds with Ant newer than 1.6
-			return location.getLineNumber();
-		}
-		catch (NoSuchMethodError e) {
-			// Ant before 1.6
-			String locationString = location.toString();
-			if (locationString.length() == 0) {
-				return 0;
-			}
-			// filename: lineNumber: ("c:\buildfile.xml: 12: ")
-			int lastIndex = locationString.lastIndexOf(':');
-			int index = locationString.lastIndexOf(':', lastIndex - 1);
-			if (index != -1) {
-				try {
-					return Integer.parseInt(locationString.substring(index + 1, lastIndex));
-				}
-				catch (NumberFormatException nfe) {
-					return 0;
-				}
-			}
-			return 0;
-		}
-	}
-
-	public static Location getLocation(Target target) {
-		try {// succeeds with Ant newer than 1.6.2
-			return target.getLocation();
-		}
-		catch (NoSuchMethodError e) {
-			return Location.UNKNOWN_LOCATION;
-		}
-	}
-
-	public String getFileName(Location location) {
-		try {// succeeds with Ant newer than 1.6
-			return location.getFileName();
-		}
-		catch (NoSuchMethodError e) {
-			// Ant before 1.6
-			String locationString = location.toString();
-			if (locationString.length() == 0) {
-				return null;
-			}
-			// filename: lineNumber: ("c:\buildfile.xml: 12: ")
-			int lastIndex = locationString.lastIndexOf(':');
-			int index = locationString.lastIndexOf(':', lastIndex - 1);
-			if (index == -1) {
-				index = lastIndex; // only the filename is known
-			}
-			if (index != -1) {
-				// bug 84403
-				// if (locationString.startsWith("file:")) {
-				// return FileUtils.newFileUtils().fromURI(locationString);
-				// }
-				// remove file:
-				return locationString.substring(5, index);
-			}
-			return null;
-		}
-	}
-
 	private void appendToStack(StringBuffer stackRepresentation, String targetName, String taskName, Location location) {
 		stackRepresentation.append(targetName);
 		stackRepresentation.append(DebugMessageIds.MESSAGE_DELIMITER);
 		stackRepresentation.append(taskName);
 		stackRepresentation.append(DebugMessageIds.MESSAGE_DELIMITER);
 
-		stackRepresentation.append(getFileName(location));
+		stackRepresentation.append(location.getFileName());
 		stackRepresentation.append(DebugMessageIds.MESSAGE_DELIMITER);
-		stackRepresentation.append(getLineNumber(location));
+		stackRepresentation.append(location.getLineNumber());
 		stackRepresentation.append(DebugMessageIds.MESSAGE_DELIMITER);
 	}
 
@@ -412,7 +350,7 @@ public class AntDebugState {
 		}
 
 		if (!isAfterTaskEvent()) {
-			appendToStack(stackRepresentation, targetExecuting.getName(), IAntCoreConstants.EMPTY_STRING, getLocation(targetExecuting));
+			appendToStack(stackRepresentation, targetExecuting.getName(), IAntCoreConstants.EMPTY_STRING, targetExecuting.getLocation());
 		}
 		for (int i = tasks.size() - 1; i >= 0; i--) {
 			Task task = tasks.get(i);
@@ -450,7 +388,7 @@ public class AntDebugState {
 			for (int i = startIndex; i <= dependancyStackDepth; i++) {
 				stackTarget = buildSequence.get(i);
 				if (stackTarget.dependsOn(targetExecuting.getName())) {
-					appendToStack(stackRepresentation, stackTarget.getName(), IAntCoreConstants.EMPTY_STRING, getLocation(stackTarget));
+					appendToStack(stackRepresentation, stackTarget.getName(), IAntCoreConstants.EMPTY_STRING, stackTarget.getLocation());
 				}
 			}
 		}

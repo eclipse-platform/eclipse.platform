@@ -28,7 +28,6 @@ import org.eclipse.ant.internal.core.IAntCoreConstants;
 import org.eclipse.ant.internal.launching.AntLaunch;
 import org.eclipse.ant.internal.launching.AntLaunching;
 import org.eclipse.ant.internal.launching.AntLaunchingUtil;
-import org.eclipse.ant.internal.launching.debug.AntDebugState;
 import org.eclipse.ant.internal.launching.launchConfigurations.AntProcess;
 import org.eclipse.ant.internal.launching.launchConfigurations.AntStreamMonitor;
 import org.eclipse.ant.internal.launching.launchConfigurations.AntStreamsProxy;
@@ -287,7 +286,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
 		msg.append(targetName);
 		msg.append(':');
 		String message = msg.toString();
-		Location location = AntDebugState.getLocation(target);
+		Location location = target.getLocation();
 		if (location != null && location != Location.UNKNOWN_LOCATION) {
 			IRegion region = new Region(0, targetName.length());
 			AntProcess antProcess = getAntProcess(fProcessId);

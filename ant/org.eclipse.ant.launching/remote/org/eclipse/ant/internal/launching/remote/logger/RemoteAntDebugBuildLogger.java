@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2016 IBM Corporation and others.
+ * Copyright (c) 2003, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -302,8 +302,8 @@ public class RemoteAntDebugBuildLogger extends RemoteAntBuildLogger implements I
 		if (fBreakpoints == null || location == null || location == Location.UNKNOWN_LOCATION) {
 			return null;
 		}
-		String fileName = fDebugState.getFileName(location);
-		int lineNumber = fDebugState.getLineNumber(location);
+		String fileName = location.getFileName();
+		int lineNumber = location.getLineNumber();
 		for (RemoteAntBreakpoint breakpoint : fBreakpoints) {
 			if (breakpoint.isAt(fileName, lineNumber)) {
 				return breakpoint;
