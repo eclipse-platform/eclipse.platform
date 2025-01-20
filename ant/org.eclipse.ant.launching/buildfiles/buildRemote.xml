@@ -30,7 +30,7 @@
 		<property name="destdir" value="${temp.folder}/lib/remote.jar.bin"/>
 		<delete dir="${destdir}"/>
 		<mkdir dir="${destdir}"/>
-		<javac source="11" target="11" destdir="${destdir}" failonerror="true" verbose="false" debug="on" includeAntRuntime="yes"
+		<javac release="11" destdir="${destdir}" failonerror="true" verbose="false" debug="on" includeAntRuntime="yes"
 				classpath="${basedir}/bin">
 			<src path="${basedir}/remote"/>
 			<compilerarg value="-Xlint"/>
