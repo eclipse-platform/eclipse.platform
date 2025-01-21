@@ -95,7 +95,7 @@
          <meta.section type="apiinfo"/>
       </appInfo>
       <documentation>
-         The supplied search processor class must extend the abstract class &lt;samp&gt;org.eclipse.help.AbstractSearchProcessor&lt;/samp&gt;.  The processor has the opportunity to modify a search string, provide alternate search expressions, or modify the search result set.
+         The supplied search processor class must extend the abstract class &lt;samp&gt;org.eclipse.help.search.AbstractSearchProcessor&lt;/samp&gt;.  The processor has the opportunity to modify a search string, provide alternate search expressions, or modify the search result set.
       </documentation>
    </annotation>
 
