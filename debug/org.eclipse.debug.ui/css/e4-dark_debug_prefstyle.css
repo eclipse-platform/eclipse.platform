@@ -26,15 +26,15 @@ IEclipsePreferences#org-eclipse-debug-ui {
 		'org.eclipse.debug.ui.outColor=235,235,235'
 }
 
-#DebugBreadcrumbComposite
-#DebugBreadcrumbComposite > Composite,
-#DebugBreadcrumbItemComposite,
-#DebugBreadcrumbItemDetailComposite,
-#DebugBreadcrumbItemDetailTextComposite,
-#DebugBreadcrumbItemDetailImageComposite,
-#DebugBreadcrumbItemDetailTextLabel,
-#DebugBreadcrumbItemDetailImageLabel,
-#DebugBreadcrumbItemDropDownToolBar
+.View #DebugBreadcrumbComposite
+.View #DebugBreadcrumbComposite > Composite,
+.View #DebugBreadcrumbItemComposite,
+.View #DebugBreadcrumbItemDetailComposite,
+.View #DebugBreadcrumbItemDetailTextComposite,
+.View #DebugBreadcrumbItemDetailImageComposite,
+.View #DebugBreadcrumbItemDetailTextLabel,
+.View #DebugBreadcrumbItemDetailImageLabel,
+.View #DebugBreadcrumbItemDropDownToolBar
 {
     /*
      * Bug 465666
@@ -43,7 +43,28 @@ IEclipsePreferences#org-eclipse-debug-ui {
      * the background with the lighter color used for the background
      * of toolbars and make the foreground color brighter too.
      */
-    background-color:#515658;
+    background-color:#2F2F2F;
+    color: white;
+}
+
+.Editor #DebugBreadcrumbComposite
+.Editor #DebugBreadcrumbComposite > Composite,
+.Editor #DebugBreadcrumbItemComposite,
+.Editor #DebugBreadcrumbItemDetailComposite,
+.Editor #DebugBreadcrumbItemDetailTextComposite,
+.Editor #DebugBreadcrumbItemDetailImageComposite,
+.Editor #DebugBreadcrumbItemDetailTextLabel,
+.Editor #DebugBreadcrumbItemDetailImageLabel,
+.Editor #DebugBreadcrumbItemDropDownToolBar
+{
+    /*
+     * Bug 465666
+     *
+     * Note: as we can't change the arrow to black, we configure
+     * the background with the lighter color used for the background
+     * of toolbars and make the foreground color brighter too.
+     */
+    background-color:#1E1F22;
     color: white;
 }
 
