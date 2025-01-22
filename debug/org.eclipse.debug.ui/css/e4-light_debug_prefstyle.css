@@ -9,17 +9,30 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-#DebugBreadcrumbComposite
-#DebugBreadcrumbComposite > Composite,
-#DebugBreadcrumbItemComposite,
-#DebugBreadcrumbItemDetailComposite,
-#DebugBreadcrumbItemDetailTextComposite,
-#DebugBreadcrumbItemDetailImageComposite,
-#DebugBreadcrumbItemDetailTextLabel,
-#DebugBreadcrumbItemDetailImageLabel,
-#DebugBreadcrumbItemDropDownToolBar
+.View #DebugBreadcrumbComposite
+.View #DebugBreadcrumbComposite > Composite,
+.View #DebugBreadcrumbItemComposite,
+.View #DebugBreadcrumbItemDetailComposite,
+.View #DebugBreadcrumbItemDetailTextComposite,
+.View #DebugBreadcrumbItemDetailImageComposite,
+.View #DebugBreadcrumbItemDetailTextLabel,
+.View #DebugBreadcrumbItemDetailImageLabel,
+.View #DebugBreadcrumbItemDropDownToolBar
 {
-    background-color:COLOR-WIDGET-LIGHT-SHADOW;
+    background-color:'#org-eclipse-ui-workbench-SECONDARY_BACKGROUND';
+}
+
+.Editor #DebugBreadcrumbComposite
+.Editor #DebugBreadcrumbComposite > Composite,
+.Editor #DebugBreadcrumbItemComposite,
+.Editor #DebugBreadcrumbItemDetailComposite,
+.Editor #DebugBreadcrumbItemDetailTextComposite,
+.Editor #DebugBreadcrumbItemDetailImageComposite,
+.Editor #DebugBreadcrumbItemDetailTextLabel,
+.Editor #DebugBreadcrumbItemDetailImageLabel,
+.Editor #DebugBreadcrumbItemDropDownToolBar
+{
+    background-color:#FFFFFF;
 }
 
 #VariablesViewer {
