@@ -94,8 +94,12 @@ public class XmlDocumentFormatterTest extends AbstractAntUITest {
 
 		XmlDocumentFormatter xmlFormatter = new XmlDocumentFormatter();
 		xmlFormatter.setDefaultLineDelimiter(System.lineSeparator());
-		String result = xmlFormatter.format(Files.readString(getBuildFile(sourceFileName).toPath()), prefs);
-		String expectedResult = Files.readString(getBuildFile(targetFileName).toPath());
+		// file content read via the helper method as it unifies the line separator to
+		// the system one
+		String result = xmlFormatter.format(
+				getReaderContentAsString(Files.newBufferedReader(getBuildFile(sourceFileName).toPath())), prefs);
+		String expectedResult = getReaderContentAsString(
+				Files.newBufferedReader((getBuildFile(targetFileName).toPath())));
 
 		assertEquals(expectedResult, result);
 	}
