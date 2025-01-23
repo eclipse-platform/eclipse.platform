@@ -12,5 +12,5 @@ on:
 jobs:
   build:
     steps:
-        run: git config --global core.autocrlf false
-        uses: eclipse-platform/eclipse.platform.releng.aggregator/.github/workflows/mavenBuild.yml@master
+        - run: git config --global core.autocrlf false
+        - uses: eclipse-platform/eclipse.platform.releng.aggregator/.github/workflows/mavenBuild.yml@master
