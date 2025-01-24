@@ -75,24 +75,24 @@ public class ProjectPreferences extends EclipsePreferences {
 	 */
 	private static final Set<String> loadedNodes = ConcurrentHashMap.newKeySet();
 	private IFile file;
-	private boolean initialized = false;
+	private volatile boolean initialized;
 	/**
 	 * Flag indicating that this node is currently reading values from disk,
 	 * to avoid flushing during a read.
 	 */
-	private boolean isReading;
+	private volatile boolean isReading;
 	/**
 	 * Flag indicating that this node is currently writing values to disk,
 	 * to avoid re-reading after the write completes.
 	 */
-	private boolean isWriting;
+	private volatile boolean isWriting;
 	private IEclipsePreferences loadLevel;
 	private final IProject project;
 	private final String qualifier;
 
 	// cache
 	private final int segmentCount;
-	private Workspace workspace;
+	private volatile Workspace workspace;
 
 	static void deleted(IFile file) throws CoreException {
 		IPath path = file.getFullPath();
