@@ -66,11 +66,13 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	private ProxyManager() {
 		try {
 			String os = System.getProperty("osgi.os"); //$NON-NLS-1$
-			nativeProxyProvider = switch (os) {
-			case Constants.OS_LINUX -> new ProxyProviderLinux();
-			case Constants.OS_WIN32 -> new ProxyProviderWin32();
-			default -> null;
-			};
+			if (os != null) {
+				nativeProxyProvider = switch (os) {
+				case Constants.OS_LINUX -> new ProxyProviderLinux();
+				case Constants.OS_WIN32 -> new ProxyProviderWin32();
+				default -> null;
+				};
+			}
 		} catch (Exception e) {
 			Activator.logInfo("Problems occured during the proxy provider initialization.", e); //$NON-NLS-1$
 		}
