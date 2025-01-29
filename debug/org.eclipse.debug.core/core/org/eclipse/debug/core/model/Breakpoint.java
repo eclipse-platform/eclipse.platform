@@ -32,6 +32,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.internal.core.BreakpointManager;
 import org.eclipse.debug.internal.core.DebugCoreMessages;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * Abstract implementation of a breakpoint. This class is
@@ -58,7 +59,7 @@ public abstract class Breakpoint extends PlatformObject implements IBreakpoint, 
 	/**
 	 * Underlying marker.
 	 */
-	private IMarker fMarker= null;
+	private volatile IMarker fMarker;
 
 	/**
 	 * @see IBreakpoint#setMarker(IMarker)
@@ -66,7 +67,6 @@ public abstract class Breakpoint extends PlatformObject implements IBreakpoint, 
 	@Override
 	public void setMarker(IMarker marker) throws CoreException {
 		fMarker= marker;
-
 	}
 
 	/**
@@ -292,10 +292,15 @@ public abstract class Breakpoint extends PlatformObject implements IBreakpoint, 
 	 *  this breakpoint or the associated marker does not exist
 	 */
 	protected IMarker ensureMarker() throws DebugException {
+		String message = null;
 		IMarker m = getMarker();
-		if (m == null || !m.exists()) {
-			throw new DebugException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugException.REQUEST_FAILED,
-				DebugCoreMessages.Breakpoint_no_associated_marker, null));
+		if (m == null) {
+			message = DebugCoreMessages.Breakpoint_no_associated_marker;
+		} else if (!m.exists()) {
+			message = NLS.bind(DebugCoreMessages.Breakpoint_marker_does_not_exist, m.toString());
+		}
+		if (message != null) {
+			throw new DebugException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugException.REQUEST_FAILED, message, null));
 		}
 		return m;
 	}
