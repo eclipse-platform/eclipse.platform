@@ -21,6 +21,7 @@ public class DebugCoreMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.debug.internal.core.DebugCoreMessages";//$NON-NLS-1$
 
 	public static String Breakpoint_no_associated_marker;
+	public static String Breakpoint_marker_does_not_exist;
 	public static String BreakpointManager_Missing_breakpoint_definition;
 	public static String BreakpointManager_Missing_model_identifier;
 	public static String DebugEvent_illegal_detail;
