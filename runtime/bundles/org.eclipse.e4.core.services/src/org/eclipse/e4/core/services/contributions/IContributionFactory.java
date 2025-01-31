@@ -16,8 +16,10 @@ package org.eclipse.e4.core.services.contributions;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.osgi.framework.Bundle;
 
-// TBD this became an utility method to create object from a bundle.
-// Change it into an utility method somewhere.
+/**
+ * {@link IContributionFactory} is responsible to create contributions and check
+ * if a contribution is enabled
+ */
 public interface IContributionFactory {
 
 	Object create(String uriString, IEclipseContext context);
@@ -25,5 +27,9 @@ public interface IContributionFactory {
 	Object create(String uriString, IEclipseContext context, IEclipseContext staticContext);
 
 	Bundle getBundle(String uriString);
+
+	default boolean isEnabled(String uriString) {
+		return uriString != null;
+	}
 
 }
