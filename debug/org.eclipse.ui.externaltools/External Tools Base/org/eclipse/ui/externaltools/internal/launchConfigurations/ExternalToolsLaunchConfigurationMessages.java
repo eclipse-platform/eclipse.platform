@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -11,6 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     dakshinamurthy.karra@gmail.com - bug 165371
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.ui.externaltools.internal.launchConfigurations;
 
@@ -25,7 +26,6 @@ public class ExternalToolsLaunchConfigurationMessages extends NLS {
 	public static String ExternalToolsMainTab_Working__Directory__5;
 	public static String ExternalToolsMainTab_Browse_Wor_kspace____6;
 	public static String ExternalToolsMainTab_Browse_F_ile_System____7;
-	public static String ExternalToolsMainTab_Error_reading_configuration_10;
 	public static String ExternalToolsMainTab__Main_17;
 	public static String ExternalToolsMainTab_External_tool_location_cannot_be_empty_18;
 	public static String ExternalToolsMainTab_External_tool_location_does_not_exist_19;
@@ -36,7 +36,6 @@ public class ExternalToolsLaunchConfigurationMessages extends NLS {
 	public static String ExternalToolsMainTab__Arguments___1;
 	public static String ExternalToolsMainTab_Varia_bles____2;
 	public static String ExternalToolsMainTab_3;
-	public static String ExternalToolsMainTab_Error_reading_configuration_7;
 	public static String ExternalToolsMainTab_Not_a_directory;
 	public static String ExternalToolsMainTab_30;
 	public static String ExternalToolsMainTab_31;
