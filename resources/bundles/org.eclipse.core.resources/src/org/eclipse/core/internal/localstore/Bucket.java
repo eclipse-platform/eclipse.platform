@@ -380,6 +380,9 @@ public abstract class Bucket {
 				resultEntries.put(readEntryKey(source), readEntryValue(source));
 			}
 			return resultEntries;
+		} catch (RuntimeException e) {
+			String msg = NLS.bind(Messages.properties_readProperties, indexFile.toString());
+			throw new ResourceException(IResourceStatus.FAILED_READ_METADATA, null, msg, e);
 		}
 	}
 
