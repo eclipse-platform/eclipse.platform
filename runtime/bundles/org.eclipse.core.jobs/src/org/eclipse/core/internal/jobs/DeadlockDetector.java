@@ -16,6 +16,9 @@ package org.eclipse.core.internal.jobs;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.internal.runtime.RuntimeLog;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
@@ -304,23 +307,29 @@ public class DeadlockDetector {
 		 * or conflict with a lock the given lock will acquire implicitly
 		 * (locks are acquired implicitly when a conflicting lock is acquired)
 		 */
-		ArrayList<ISchedulingRule> conflicting = new ArrayList<>(1);
-		//only need two passes through all the locks to pick up all conflicting rules
-		int NUM_PASSES = 2;
-		conflicting.add(lock);
 		graph[threadIndex][lockIndex]++;
-		for (int i = 0; i < NUM_PASSES; i++) {
-			for (int k = 0; k < conflicting.size(); k++) {
-				ISchedulingRule current = conflicting.get(k);
-				for (int j = 0; j < locks.size(); j++) {
-					ISchedulingRule possible = locks.get(j);
-					if (!conflicting.contains(possible) && current.isConflicting(possible)) {
-						conflicting.add(possible);
-						graph[threadIndex][j]++;
-					}
+
+		// first pass tests against lock:
+		Collection<ISchedulingRule> conflicting = computeConflicting(threadIndex, Set.of(lock));
+
+		// second pass tests also transitive:
+		if (conflicting.size() > 1) {
+			computeConflicting(threadIndex, conflicting);
+		}
+	}
+
+	private Collection<ISchedulingRule> computeConflicting(int threadIndex, Collection<ISchedulingRule> candidates) {
+		Collection<ISchedulingRule> conflicting = new HashSet<>(candidates);
+		for (ISchedulingRule current : candidates) {
+			for (int j = 0; j < locks.size(); j++) {
+				ISchedulingRule possible = locks.get(j);
+				if (!conflicting.contains(possible) && current.isConflicting(possible)) {
+					conflicting.add(possible);
+					graph[threadIndex][j]++;
 				}
 			}
 		}
+		return conflicting;
 	}
 
 	/**
