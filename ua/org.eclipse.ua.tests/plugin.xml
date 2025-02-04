@@ -9,7 +9,7 @@
     https://www.eclipse.org/legal/epl-2.0/
 
     SPDX-License-Identifier: EPL-2.0
-   
+
     Contributors:
          IBM Corporation - initial API and implementation
          George Suaridze <suag@1c.ru> (1C-Soft LLC) - Bug 559885
@@ -17,7 +17,7 @@
 
 <plugin>
 
-   <!-- 
+   <!--
       Cheat sheet test content
    -->
    <extension
@@ -224,14 +224,14 @@
       </cheatsheet>
    </extension>
 
-   <!-- 
+   <!--
       Cheat sheet context help test
    -->
-   <extension point="org.eclipse.help.contexts"> 
+   <extension point="org.eclipse.help.contexts">
        <contexts file="data/cheatsheet/contexts.xml"/>
    </extension>
 
-   <!-- 
+   <!--
       Command used in tests
    -->
    <extension
@@ -297,7 +297,7 @@
             introId="org.eclipse.ua.tests.intro.static"
             productId="org.eclipse.ua.tests.testproduct">
       </introProductBinding>
-   </extension>   
+   </extension>
    <extension
          point="org.eclipse.ui.intro.config">
       <config
@@ -358,7 +358,7 @@
             </implementation>
          </presentation>
       </config>
-      
+
       <config
             introId="org.eclipse.ua.tests.intro.static"
             id="org.eclipse.ua.tests.intro.config.static"
@@ -389,7 +389,7 @@
             content="data/intro/dynamicXML/ext.xml"
             configId="org.eclipse.ua.tests.intro.config.dynamicXML">
       </configExtension>
-      
+
       <configExtension
             content="data/intro/anchors/extn1.xml"
             configId="org.eclipse.ua.tests.intro.config.anchors">
@@ -416,16 +416,16 @@
       </configExtension>
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
-            content="data/intro/search/samplesExtensionContent.xml"/>  
-      
+            content="data/intro/search/samplesExtensionContent.xml"/>
+
       <!-- 3.2 welcome content used for open welcome performance test -->
       <!-- filtered unless running test -->
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
-            content="data/intro/performance/org.eclipse.jdt/overviewExtensionContent.xml"/>  
+            content="data/intro/performance/org.eclipse.jdt/overviewExtensionContent.xml"/>
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
-            content="data/intro/performance/org.eclipse.jdt/tutorialsExtensionContent.xml"/>  
+            content="data/intro/performance/org.eclipse.jdt/tutorialsExtensionContent.xml"/>
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
             content="data/intro/performance/org.eclipse.jdt/samplesExtensionContent.xml"/>
@@ -433,8 +433,8 @@
             configId="org.eclipse.ui.intro.universalConfig"
             content="data/intro/performance/org.eclipse.jdt/newsExtensionContent.xml"/>
       <configExtension
-            configId="org.eclipse.ui.intro.universalConfig" 
-            content="data/intro/performance/org.eclipse.pde/overviewExtensionContent.xml"/>  
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="data/intro/performance/org.eclipse.pde/overviewExtensionContent.xml"/>
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
             content="data/intro/performance/org.eclipse.pde/tutorialsExtensionContent.xml"/>
@@ -446,7 +446,7 @@
             content="data/intro/performance/org.eclipse.pde/samplesExtensionContent2.xml"/>
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
-            content="data/intro/performance/org.eclipse.pde/newsExtensionContent.xml"/> 
+            content="data/intro/performance/org.eclipse.pde/newsExtensionContent.xml"/>
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
             content="data/intro/performance/org.eclipse.platform/overviewEx.xml"/>
@@ -507,7 +507,7 @@
       </toc>
    </extension>
 
-   <extension point= "org.eclipse.help.contentExtension"> 
+   <extension point= "org.eclipse.help.contentExtension">
       <contentExtension file="data/help/dynamic/include/extension.xml"/>
       <contentExtension file="data/help/dynamic/extension/extension.xml"/>
       <contentExtension file="data/help/dynamic/shared/extension.xml"/>
@@ -529,12 +529,12 @@
    <!--
       A dummy product used to arrange the welcome contributions for the performance test.
    -->
-   <extension id="dummy" point="org.eclipse.core.runtime.products"> 
-      <product name="dummyProductName" application="org.eclipse.ui.ide.workbench" description="dummyProductName"> 
+   <extension id="dummy" point="org.eclipse.core.runtime.products">
+      <product name="dummyProductName" application="org.eclipse.ui.ide.workbench" description="dummyProductName">
          <property name="preferenceCustomization" value="data/intro/performance/plugin_customization.ini"/>
-      </product> 
-   </extension> 
-   
+      </product>
+   </extension>
+
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
@@ -552,7 +552,7 @@
             producer="org.eclipse.ua.tests.util.UATestContentProducer">
       </contentProducer>
    </extension>
-   
+
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
        <servlet
@@ -641,7 +641,7 @@
              alias="/index"
              class="org.eclipse.ua.tests.help.remote.MockIndexServlet">
        </servlet>
-      
+
       <serviceSelector
             filter="(other.info=org.eclipse.ua.tests)">
       </serviceSelector>
@@ -704,6 +704,9 @@
                value="data/criteria_customization.ini">
          </property>
       </product>
+   </extension>
+   <extension point="org.eclipse.help.base.searchProcessor">
+      <processor class="org.eclipse.ua.tests.help.search.WrappedSearchProcessor"/>
    </extension>
 
 </plugin>

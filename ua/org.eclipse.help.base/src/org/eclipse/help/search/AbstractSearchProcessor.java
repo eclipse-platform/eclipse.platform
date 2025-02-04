@@ -14,6 +14,8 @@
 
 package org.eclipse.help.search;
 
+import org.eclipse.help.IHelpResource;
+
 /**
  * This class is responsible for handling any pre or post
  * search processing events, including query manipulation
@@ -34,20 +36,52 @@ public abstract class AbstractSearchProcessor {
 	 * See {@link SearchProcessorInfo} for types of information that can be used by
 	 * the search display.
 	 *
-	 * @return <code>SearchProcessorInfo</code>, or <code>null</code> for no changes.
+	 * If a {@link SearchProcessorInfo} with an empty, non-{@code null} query
+	 * ({@code ""}) is returned, no search will be executed, resulting in no search
+	 * results.
+	 *
+	 * @return {@link SearchProcessorInfo}, or {@code null} for no changes.
 	 */
 	public abstract SearchProcessorInfo preSearch(String query);
 
 	/**
 	 * This method is called after the search is performed.
 	 *
-	 * Results are stored as an array of ISearchResult containing
-	 * all available data.
+	 * This method can be used to return a modified result set. For example, one can
+	 * change the result score of an item, add new results to the top of the list,
+	 * or remove results.
 	 *
-	 * This method can be used to return a modified result set.  For example, one can change the
-	 * result score of an item, add new results to the top of the list, or remove results.
+	 * This method exists for backwards compatibility. Overwrite
+	 * {@link #postSearch(String, String, ISearchResult[], String, IHelpResource[])}
+	 * if more information like the locale, etc. is needed instead.
 	 *
-	 * @return <code>{@link ISearchResult}[]</code>, or <code>null</code> for no changes.
+	 * @return The modified results, or {@code null} for no changes.
 	 */
 	public abstract ISearchResult[] postSearch(String query, ISearchResult[] results);
+
+	/**
+	 * This method is called after the search is performed.
+	 *
+	 * This method can be used to return a modified result set. For example, one can
+	 * change the result score of an item, add new results to the top of the list,
+	 * or remove results.
+	 *
+	 * @param query         The actually query that was executed (after any changes
+	 *                      made by {@link #preSearch(String)}).
+	 * @param originalQuery The original query before any changes made by
+	 *                      {@link #preSearch(String)}.
+	 * @param results       The results of the executed query.
+	 * @param results       The locale.
+	 * @param results       The set scopes (might be {@code null}).
+	 *
+	 * @return The modified results, or {@code null} for no changes.
+	 *
+	 * @see #postSearch(String, ISearchResult[])
+	 *
+	 * @since 4.5
+	 */
+	public ISearchResult[] postSearch(String query, String originalQuery, ISearchResult[] results, String locale,
+			IHelpResource[] scopes) {
+		return postSearch(query, results);
+	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2006, 2012 IBM Corporation and others.
+ *  Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -32,6 +32,7 @@ import org.junit.platform.suite.api.Suite;
 		MetaKeywords.class, //
 		SearchParticipantTest.class, //
 		SearchParticipantXMLTest.class, //
+		SearchProcessorTest.class, //
 		SearchRanking.class, //
 		WorkingSetManagerTest.class, //
 		InfocenterWorkingSetManagerTest.class, //

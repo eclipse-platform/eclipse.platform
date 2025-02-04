@@ -135,6 +135,7 @@ public class SearchData extends ActivitiesData {
 	}
 
 	public void readSearchResults() {
+		String originalSearchWord = searchWord;
 
 		// try loading search results or get the indexing progress info.
 		if (isSearchRequest() && !isScopeRequest()) {
@@ -167,7 +168,7 @@ public class SearchData extends ActivitiesData {
 			}
 			altList.sort(null);
 
-			loadSearchResults();
+			SearchResults searchResults = loadSearchResults();
 			if (queryException != null) {
 				return;
 			}
@@ -183,9 +184,9 @@ public class SearchData extends ActivitiesData {
 				ISearchResult results[] = SearchManager.convertHitsToResults(hits);
 				boolean reset= false;
 				for (AbstractSearchProcessor processor : processors) {
-					ISearchResult tmp[] = processor.postSearch(searchWord,results);
-					if (tmp!=null)
-					{
+					ISearchResult tmp[] = processor.postSearch(searchWord, originalSearchWord, results, getLocale(),
+							searchResults == null ? null : searchResults.getScopes());
+					if (tmp != null) {
 						reset = true;
 						results = tmp;
 					}
@@ -438,20 +439,23 @@ public class SearchData extends ActivitiesData {
 	 * Call the search engine, and get results or the percentage of indexed
 	 * documents.
 	 */
-	private void loadSearchResults() {
+	private SearchResults loadSearchResults() {
 		try {
 			SearchProgressMonitor pm = SearchProgressMonitor
 					.getProgressMonitor(getLocale());
 			if (pm.isDone()) {
 				this.indexCompletion = 100;
 				SearchResults results = createHitCollector();
-				BaseHelpSystem.getSearchManager().search(createSearchQuery(),
-						results, pm);
-				hits = results.getSearchHits();
+				if ("".equals(searchWord)) { //$NON-NLS-1$
+					hits = new SearchHit[0];
+				} else {
+					BaseHelpSystem.getSearchManager().search(createSearchQuery(), results, pm);
+					hits = results.getSearchHits();
+				}
 				if (hits == null) {
 					ILog.of(getClass()).warn("No search results returned.  Help index is in use."); //$NON-NLS-1$
 				}
-				return;
+				return results;
 			}
 			// progress
 			indexCompletion = pm.getPercentage();
@@ -459,13 +463,12 @@ public class SearchData extends ActivitiesData {
 				// 38573 We do not have results, so index cannot be 100
 				indexCompletion = 100 - 1;
 			}
-			return;
 		} catch (QueryTooComplexException qe) {
 			queryException = qe;
 		} catch (Exception e) {
 			this.indexCompletion = 0;
 		}
-
+		return null;
 	}
 
 	private ISearchQuery createSearchQuery() {

@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.help.IHelpResource;
 import org.eclipse.help.IToc;
 import org.eclipse.help.ITopic;
 import org.eclipse.help.base.AbstractHelpScope;
@@ -297,4 +298,9 @@ public class SearchResults implements ISearchHitCollector {
 	public void addQTCException(QueryTooComplexException exception) throws QueryTooComplexException {
 		this.searchException = exception;
 	}
+
+	public IHelpResource[] getScopes() {
+		return scopes == null ? null : scopes.toArray(IHelpResource[]::new);
+	}
+
 }
