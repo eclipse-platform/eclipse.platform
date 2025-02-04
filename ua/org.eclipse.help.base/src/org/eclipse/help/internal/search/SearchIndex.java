@@ -133,7 +133,7 @@ public class SearchIndex implements IHelpSearchIndex {
 
 	private final HTMLSearchParticipant htmlSearchParticipant;
 
-	private IndexSearcher searcher;
+	private volatile IndexSearcher searcher;
 
 	private final Object searcherCreateLock = new Object();
 
@@ -141,11 +141,33 @@ public class SearchIndex implements IHelpSearchIndex {
 
 	private volatile boolean closed = false;
 
-	// Collection of searches occuring now
+	// Collection of searches occurring now
 	private final Collection<Thread> searches = new ArrayList<>();
 
 	private FileLock lock;
 	private RandomAccessFile raf =  null;
+
+	public class SearcherInfo implements AutoCloseable {
+
+		private SearcherInfo() {
+		}
+
+		@Override
+		public void close() throws Exception {
+			synchronized (searches) {
+				searches.remove(Thread.currentThread());
+			}
+		}
+
+		public IndexSearcher getIndexSearcher() {
+			return searcher;
+		}
+
+		public AnalyzerDescriptor getAnalyzerDescriptor() {
+			return analyzerDescriptor;
+		}
+
+	}
 
 	/**
 	 * Constructor.
@@ -629,38 +651,26 @@ public class SearchIndex implements IHelpSearchIndex {
 	/**
 	 * Performs a query search on this index
 	 */
-	public void search(ISearchQuery searchQuery, ISearchHitCollector collector)
-			throws QueryTooComplexException {
-		try {
-			if (closed)
-				return;
-			registerSearch(Thread.currentThread());
-			if (closed)
-				return;
+	public void search(ISearchQuery searchQuery, ISearchHitCollector collector) throws QueryTooComplexException {
+		try (var searcherInfo = openSearcher()) {
+			if (searcherInfo == null)
+				return; // already closed
 			QueryBuilder queryBuilder = new QueryBuilder(searchQuery.getSearchWord(), analyzerDescriptor);
-			Query luceneQuery = queryBuilder.getLuceneQuery(searchQuery.getFieldNames(), searchQuery
-					.isFieldSearch());
+			Query luceneQuery = queryBuilder.getLuceneQuery(searchQuery.getFieldNames(), searchQuery.isFieldSearch());
 			if (HelpPlugin.DEBUG_SEARCH) {
-				System.out.println("Search Query: " + luceneQuery.toString()); //$NON-NLS-1$
+				System.out.println("Search Query: " + luceneQuery); //$NON-NLS-1$
 			}
-			String highlightTerms = queryBuilder.gethighlightTerms();
-			if (luceneQuery != null) {
-				if (searcher == null) {
-					openSearcher();
-				}
-				TopDocs topDocs = searcher.search(luceneQuery, 1000);
-				collector.addHits(LocalSearchManager.asList(topDocs, searcher), highlightTerms);
-			}
+			if (luceneQuery == null)
+				return;
+			TopDocs topDocs = searcher.search(luceneQuery, 1000);
+			collector.addHits(LocalSearchManager.asList(topDocs, searcher), queryBuilder.gethighlightTerms());
 		} catch (IndexSearcher.TooManyClauses tmc) {
 			collector.addQTCException(new QueryTooComplexException());
 		} catch (QueryTooComplexException qe) {
 			collector.addQTCException(qe);
 		} catch (Exception e) {
-			ILog.of(getClass()).error(
-					"Exception occurred performing search for: " //$NON-NLS-1$
+			ILog.of(getClass()).error("Exception occurred performing search for: " //$NON-NLS-1$
 					+ searchQuery.getSearchWord() + ".", e); //$NON-NLS-1$
-		} finally {
-			unregisterSearch(Thread.currentThread());
 		}
 	}
 
@@ -806,12 +816,27 @@ public class SearchIndex implements IHelpSearchIndex {
 	}
 
 	@SuppressWarnings("resource")
-	public void openSearcher() throws IOException {
-		synchronized (searcherCreateLock) {
-			if (searcher == null) {
-				searcher = new IndexSearcher(DirectoryReader.open(luceneDirectory));
+	public SearcherInfo openSearcher() {
+		if (closed)
+			return null;
+		synchronized (searches) {
+			searches.add(Thread.currentThread());
+		}
+		if (closed)
+			return null;
+		if (searcher == null) {
+			synchronized (searcherCreateLock) {
+				if (searcher == null) {
+					try {
+						searcher = new IndexSearcher(DirectoryReader.open(luceneDirectory));
+					} catch (Exception e) {
+						ILog.of(getClass()).error("Failed to open search index. Index directory: " + indexDir, e); //$NON-NLS-1$
+						return null;
+					}
+				}
 			}
 		}
+		return new SearcherInfo();
 	}
 
 	/**
@@ -927,18 +952,6 @@ public class SearchIndex implements IHelpSearchIndex {
 	 */
 	public TocManager getTocManager() {
 		return tocManager;
-	}
-
-	private void registerSearch(Thread t) {
-		synchronized (searches) {
-			searches.add(t);
-		}
-	}
-
-	private void unregisterSearch(Thread t) {
-		synchronized (searches) {
-			searches.remove(t);
-		}
 	}
 
 	/**
