@@ -29,6 +29,7 @@ import org.eclipse.debug.core.ILaunch;
 public interface ITestRunnerClient {
 
 	/**
+	 * Some random code change
 	 * Starts monitoring test execution.
 	 *
 	 * @see #stopMonitoring()
