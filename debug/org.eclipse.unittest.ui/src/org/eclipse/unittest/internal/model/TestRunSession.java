@@ -590,6 +590,10 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 
 	@Override
 	public String toString() {
+		Instant startTime = getStartTime();
+		if (startTime == null) {
+			return fTestRunName + " (not started)"; //$NON-NLS-1$
+		}
 		return fTestRunName + " " + DateFormat.getDateTimeInstance().format(new Date(fStartTime.toEpochMilli())); //$NON-NLS-1$
 	}
 
