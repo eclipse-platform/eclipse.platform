@@ -102,6 +102,7 @@ public final class InternalPlatform {
 
 	private boolean splashEnded = false;
 	private volatile boolean initialized;
+	private volatile boolean stopped;
 	private static final String KEYRING = "-keyring"; //$NON-NLS-1$
 	private String keyringFile;
 
@@ -182,8 +183,13 @@ public final class InternalPlatform {
 
 	private void assertInitialized() {
 		//avoid the Policy.bind if assertion is true
-		if (!initialized)
-			Assert.isTrue(false, Messages.meta_appNotInit);
+		if (!initialized) {
+			if (stopped) {
+				Assert.isTrue(false, Messages.meta_appStopped);
+			} else {
+				Assert.isTrue(false, Messages.meta_appNotInit);
+			}
+		}
 	}
 
 	/**
@@ -677,6 +683,7 @@ public final class InternalPlatform {
 		processCommandLine(getEnvironmentInfoService().getNonFrameworkArgs());
 		initializeDebugFlags();
 		initialized = true;
+		stopped = false;
 		initializeAuthorizationHandler();
 		startServices();
 	}
@@ -691,6 +698,7 @@ public final class InternalPlatform {
 		stopServices(); // should be done after preferences shutdown
 		initialized = false;
 		closeOSGITrackers();
+		stopped = true;
 		context = null;
 	}
 

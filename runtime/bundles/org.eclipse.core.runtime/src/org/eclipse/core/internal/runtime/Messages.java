@@ -29,7 +29,9 @@ public class Messages extends NLS {
 
 	// metadata
 	public static String meta_appNotInit;
+	public static String meta_appStopped;
 	public static String meta_exceptionParsingLog;
+
 	// parsing/resolve
 	public static String plugin_deactivatedLoad;
 
