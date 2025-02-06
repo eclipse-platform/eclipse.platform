@@ -972,7 +972,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			String msg = NLS.bind(Messages.resources_readProjectMeta, target.getName());
 			error = new ResourceException(IResourceStatus.FAILED_READ_METADATA, target.getFullPath(), msg, e);
 		} catch (IOException ex) {
-			// ignore
+			Policy.log(ex);
 		}
 		if (error == null && description == null) {
 			String msg = NLS.bind(Messages.resources_readProjectMeta, target.getName());

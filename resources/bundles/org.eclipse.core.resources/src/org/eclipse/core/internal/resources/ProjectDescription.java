@@ -19,13 +19,35 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.internal.utils.FileUtil;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IDynamicReferenceProvider;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 
 public class ProjectDescription extends ModelObject implements IProjectDescription {
 	// constants
@@ -100,7 +122,7 @@ public class ProjectDescription extends ModelObject implements IProjectDescripti
 
 	// fields
 	protected URI location = null;
-	protected String[] natures = EMPTY_STRING_ARRAY;
+	protected volatile String[] natures = EMPTY_STRING_ARRAY;
 	protected URI snapshotLocation = null;
 
 	public ProjectDescription() {
