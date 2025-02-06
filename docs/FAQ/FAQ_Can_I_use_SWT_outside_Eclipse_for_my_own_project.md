@@ -1,5 +1,4 @@
 
-
 FAQ Can I use SWT outside Eclipse for my own project?
 =====================================================
 
@@ -13,8 +12,6 @@ java -cp swt.jar;. -Djava.library.path=. BrowserSnippet
 
 This command line assumes that java is on your execution path and that both swt.jar and the SWT dynamic link library are located in the current working directory.
 
-  
-
 See Also:
 ---------
 
@@ -22,4 +19,3 @@ See Also:
 *   [FAQ How do I create an executable JAR file for a stand-alone SWT program?](./FAQ_How_do_I_create_an_executable_JAR_file_for_a_stand-alone_SWT_program.md "FAQ How do I create an executable JAR file for a stand-alone SWT program?")
 *   [FAQ\_How\_is\_Eclipse\_licensed?](./FAQ_How_is_Eclipse_licensed.md "FAQ How is Eclipse licensed?")
 *   [FAQ\_How\_do\_I\_display\_a\_Web\_page\_in_SWT?](./FAQ_How_do_I_display_a_Web_page_in_SWT.md "FAQ How do I display a Web page in SWT?")
-
