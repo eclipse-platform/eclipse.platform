@@ -277,12 +277,13 @@ public class NatureTest {
 		assertHasEnabledNature(NATURE_EARTH);
 		assertThat(project.getNature(NATURE_EARTH)).isNotNull();
 
+		Files.copy(descTmp.toPath(), desc.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		// Make sure enough time has past to bump file's
 		// timestamp during the copy
-		Thread.sleep(1000);
+		org.eclipse.core.tests.resources.ResourceTestUtil
+				.touchInFilesystem(project.getFile(IProjectDescription.DESCRIPTION_FILE_NAME));
 
-		Files.copy(descTmp.toPath(), desc.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
+		// should read file from filesystem, creating new IProjectDescription:
 		project.refreshLocal(IResource.DEPTH_INFINITE, createTestMonitor());
 		assertDoesNotHaveNature(NATURE_EARTH);
 		assertThat(project.getNature(NATURE_EARTH)).isNull();
