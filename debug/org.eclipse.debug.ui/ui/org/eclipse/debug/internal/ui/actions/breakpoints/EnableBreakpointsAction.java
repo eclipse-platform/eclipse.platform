@@ -134,7 +134,7 @@ public class EnableBreakpointsAction implements IViewActionDelegate, IPartListen
 		}
 	}
 
-	private IStructuredSelection getSelection() {
+	protected IStructuredSelection getSelection() {
 		return (IStructuredSelection)getView().getViewSite().getSelectionProvider().getSelection();
 	}
 
