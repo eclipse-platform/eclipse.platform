@@ -92,6 +92,9 @@ import org.osgi.framework.Version;
  */
 public class SearchIndex implements IHelpSearchIndex {
 
+	private static final int MAX_HITS_BEFORE_FILTERING = Platform.getPreferencesService()
+			.getInt(HelpBasePlugin.PLUGIN_ID, "maxHitsBeforeFiltering", 1_000, null); //$NON-NLS-1$
+
 	private IndexReader ir;
 
 	private IndexWriter iw;
@@ -662,7 +665,7 @@ public class SearchIndex implements IHelpSearchIndex {
 			}
 			if (luceneQuery == null)
 				return;
-			TopDocs topDocs = searcher.search(luceneQuery, 1000);
+			TopDocs topDocs = searcher.search(luceneQuery, MAX_HITS_BEFORE_FILTERING);
 			collector.addHits(LocalSearchManager.asList(topDocs, searcher), queryBuilder.gethighlightTerms());
 		} catch (IndexSearcher.TooManyClauses tmc) {
 			collector.addQTCException(new QueryTooComplexException());
