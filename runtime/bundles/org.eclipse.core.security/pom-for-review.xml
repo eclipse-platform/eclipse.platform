@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+
+DO NOT MODIFY - GENERATED CODE
+
+
+-->
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse</groupId>
+    <artifactId>bundles</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../.polyglot.pom.tycho</relativePath>
+  </parent>
+  <artifactId>org.eclipse.core.security</artifactId>
+  <version>1.0.4-SNAPSHOT</version>
+  <packaging>eclipse-plugin</packaging>
+  <name>[bundle] Security Option</name>
+  <organization>
+    <name>Delmarva Security</name>
+  </organization>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>eclipse-classpath-add-source-1</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>eclipse-classpath-add-source-2</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>eclipse-classpath-add-test-source-3</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/test/resources</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
