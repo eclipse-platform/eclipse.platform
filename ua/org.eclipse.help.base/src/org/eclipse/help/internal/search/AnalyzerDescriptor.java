@@ -54,7 +54,7 @@ public class AnalyzerDescriptor {
 					+ "#" //$NON-NLS-1$
 					+ HelpBasePlugin.getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION)
 					+ "?locale=" + locale; //$NON-NLS-1$
-			this.luceneAnalyzer = new DefaultAnalyzer(locale);
+			this.luceneAnalyzer = new DefaultAnalyzer();
 			this.lang = locale;
 		}
 	}
@@ -65,7 +65,7 @@ public class AnalyzerDescriptor {
 	 * @return Returns a Analyzer
 	 */
 	public Analyzer getAnalyzer() {
-		return new SmartAnalyzer(lang, luceneAnalyzer);
+		return new SmartAnalyzer(luceneAnalyzer);
 	}
 
 	/**

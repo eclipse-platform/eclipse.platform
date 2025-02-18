@@ -25,13 +25,10 @@ public final class SmartAnalyzer extends AnalyzerWrapper {
 	Analyzer pluggedInAnalyzer;
 	Analyzer exactAnalyzer;
 
-	/**
-	 * Constructor for SmartAnalyzer.
-	 */
-	public SmartAnalyzer(String locale, Analyzer pluggedInAnalyzer) {
+	public SmartAnalyzer(Analyzer pluggedInAnalyzer) {
 		super(PER_FIELD_REUSE_STRATEGY);
 		this.pluggedInAnalyzer = pluggedInAnalyzer;
-		this.exactAnalyzer = new DefaultAnalyzer(locale);
+		this.exactAnalyzer = new DefaultAnalyzer();
 	}
 
 	@Override
