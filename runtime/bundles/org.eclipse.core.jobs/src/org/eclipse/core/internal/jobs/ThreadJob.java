@@ -234,41 +234,26 @@ class ThreadJob extends Job {
 	
 	public static boolean identifyThreadAction() {
 		String threadName = Thread.currentThread().getName();
-		Job[] jobs = Job.getJobManager().find(null);
-
-		// Get the job running in the current thread
-		Job currentJob = null;
-		for (Job job : jobs) {
-			if (job.getThread() == Thread.currentThread()) {
-				currentJob = job;
-				break;
-			}
-		}
+		Job currentJob = Job.getJobManager().currentJob();
 
 		// UI Thread (User interactions)
-		if (threadName.equals("main")) { //$NON-NLS-1$
-			return true; // This is the UI Thread! (Handling direct user interactions)
+		if ("main".equals(threadName)) { //$NON-NLS-1$
+			return true;
 		}
 
 		// Background Worker Threads
-		if (threadName.contains("Worker")) { //$NON-NLS-1$
-			if (currentJob != null) {
-				String jobName = currentJob.getName();
-
-				if (jobName.toLowerCase().contains("save") || jobName.toLowerCase().contains("edit")) { //$NON-NLS-1$ //$NON-NLS-2$
-					return true; // This thread is handling a FILE SAVE/EDIT operation.
-				} else if (jobName.toLowerCase().contains("vcs") || jobName.toLowerCase().contains("git") //$NON-NLS-1$ //$NON-NLS-2$
-						|| jobName.toLowerCase().contains("commit")) { //$NON-NLS-1$
-					return true; // This thread is handling a VCS (Version Control) operation.
-				} else if (jobName.toLowerCase().contains("build") || jobName.toLowerCase().contains("debug")) { //$NON-NLS-1$ //$NON-NLS-2$
-					return false; // This thread is handling a BUILD/RUN/DEBUG job.
-				} else {
-					return false; // This thread is handling an unknown background job
-				}
+		if (threadName.contains("Worker") && currentJob != null) { //$NON-NLS-1$
+			String jobName = currentJob.getName().toLowerCase();
+			if (jobName.contains("build")) { //$NON-NLS-1$
+				// This thread is handling a BUILD job
+				return false;
 			}
+			// Any other worker-thread job
+			return false;
 		}
-		// If not identified
-		return false; // Thread not recognized
+
+		// Everything else defaults to false
+		return false;
 	}
 
 	/**
