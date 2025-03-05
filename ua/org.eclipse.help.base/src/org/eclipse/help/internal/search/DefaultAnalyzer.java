@@ -16,93 +16,15 @@
  *******************************************************************************/
 package org.eclipse.help.internal.search;
 
-import java.text.BreakIterator;
-import java.util.Locale;
-import java.util.StringTokenizer;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * Lucene Analyzer. LowerCaseFilter-&gt;StandardTokenizer
  */
 public final class DefaultAnalyzer extends Analyzer {
-
-	private Locale locale;
-
-	/**
-	 * Creates a new analyzer using the given locale.
-	 */
-	public DefaultAnalyzer(String localeString) {
-		super();
-		// Create a locale object for a given locale string
-		Locale userLocale = getLocale(localeString);
-
-		// Check if the locale is supported by BreakIterator
-		// check here to do it only once.
-		Locale[] availableLocales = BreakIterator.getAvailableLocales();
-		for (Locale availableLocale : availableLocales) {
-			if (userLocale.equals(availableLocale)) {
-				locale = userLocale;
-				break;
-			}
-		}
-		if (locale == null && userLocale.getDisplayVariant().length() > 0) {
-			// Check if the locale without variant is supported by BreakIterator
-			Locale countryLocale = Locale.of(userLocale.getLanguage(), userLocale.getCountry());
-			for (Locale availableLocale : availableLocales) {
-				if (countryLocale.equals(availableLocale)) {
-					locale = countryLocale;
-					break;
-				}
-			}
-		}
-		if (locale == null && userLocale.getCountry().length() > 0) {
-			// Check if at least the language is supported by BreakIterator
-			Locale language = Locale.of(userLocale.getLanguage(), ""); //$NON-NLS-1$
-			for (Locale availableLocale : availableLocales) {
-				if (language.equals(availableLocale)) {
-					locale = language;
-					break;
-				}
-			}
-		}
-
-		if (locale == null) {
-			// Locale is not supported, will use en_US
-			ILog.of(getClass()).error(
-							"Text Analyzer could not be created for locale {0}.  An analyzer that extends org.eclipse.help.luceneAnalyzer extension point needs to be plugged in for locale " //$NON-NLS-1$
-									+ localeString
-									+ ", or Java Virtual Machine needs to be upgraded to version with proper support for locale {0}.", //$NON-NLS-1$
-							null);
-			locale = Locale.of("en", "US"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-	}
-
-	/**
-	 * Creates a Locale object out of a string representation
-	 */
-	private Locale getLocale(String clientLocale) {
-		if (clientLocale == null)
-			clientLocale = Platform.getNL();
-		if (clientLocale == null)
-			clientLocale = Locale.getDefault().toString();
-
-		// break the string into tokens to get the Locale object
-		StringTokenizer locales = new StringTokenizer(clientLocale, "_"); //$NON-NLS-1$
-		if (locales.countTokens() == 1)
-			return Locale.of(locales.nextToken(), ""); //$NON-NLS-1$
-		else if (locales.countTokens() == 2)
-			return Locale.of(locales.nextToken(), locales.nextToken());
-		else if (locales.countTokens() == 3)
-			return Locale.of(locales.nextToken(), locales.nextToken(), locales.nextToken());
-		else
-			return Locale.getDefault();
-	}
 
 	/*
 	 * Can't use try-with-resources because the Lucene internally reuses
