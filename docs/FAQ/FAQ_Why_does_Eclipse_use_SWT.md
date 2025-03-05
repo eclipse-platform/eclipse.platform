@@ -1,5 +1,4 @@
 
-
 FAQ Why does Eclipse use SWT?
 =============================
 
@@ -15,4 +14,3 @@ See Also:
 ---------
 
 *   [FAQ How do I embed AWT and Swing inside SWT?](./FAQ_How_do_I_embed_AWT_and_Swing_inside_SWT.md "FAQ How do I embed AWT and Swing inside SWT?")
-
