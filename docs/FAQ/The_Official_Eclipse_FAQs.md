@@ -8,33 +8,35 @@ Note that this FAQ is updated less frequently than [this FAQ](/IRC_FAQ "IRC FAQ"
 Contents
 --------
 
-*   [1 Part I -- The Eclipse Ecosystem](#Part-I----The-Eclipse-Ecosystem)
-    *   [1.1 The Eclipse Community](#The-Eclipse-Community)
-    *   [1.2 Getting Started](#Getting-Started)
-    *   [1.3 Java Development in Eclipse](#Java-Development-in-Eclipse)
-    *   [1.4 Plug-In Development Environment](#Plug-In-Development-Environment)
-*   [2 Part II -- The Rich Client Platform](#Part-II----The-Rich-Client-Platform)
-    *   [2.1 All about Plug-ins](#All-about-Plug-ins)
-    *   [2.2 Runtime Facilities](#Runtime-Facilities)
-    *   [2.3 Standard Widget Toolkit (SWT)](#standard-widget-toolkit-swt)
-    *   [2.4 JFace](#JFace)
-    *   [2.5 Generic Workbench](#Generic-Workbench)
-    *   [2.6 Perspectives and Views](#Perspectives-and-Views)
-    *   [2.7 Generic Editors](#Generic-Editors)
-    *   [2.8 Actions, Commands, and Activities](#Actions.2C-Commands.2C-and-Activities)
-    *   [2.9 Building Your Own Application](#Building-Your-Own-Application)
-    *   [2.10 Productizing an Eclipse Offering](#Productizing-an-Eclipse-Offering)
-*   [3 Part III -- The Eclipse IDE Platform](#Part-III----The-Eclipse-IDE-Platform)
-    *   [3.1 Text Editors](#Text-Editors)
-    *   [3.2 Help, Search, and Compare](#Help.2C-Search.2C-and-Compare)
-    *   [3.3 Workspace and Resources API](#Workspace-and-Resources-API)
-    *   [3.4 Workbench IDE](#Workbench-IDE)
-    *   [3.5 Implementing Support for Your Own Language](#Implementing-Support-for-Your-Own-Language)
-        *   [3.5.1 The language already has parsers, compilers, and other services](#The-language-already-has-parsers.2C-compilers.2C-and-other-services)
-        *   [3.5.2 This is a DSL of your own](#This-is-a-DSL-of-your-own)
-        *   [3.5.3 Legacy](#Legacy)
-    *   [3.6 Java Development Tool API](#Java-Development-Tool-API)
-*   [4 This content is based on](#This-content-is-based-on)
+- [The Official Eclipse FAQs](#the-official-eclipse-faqs)
+  - [Contents](#contents)
+  - [Part I -- The Eclipse Ecosystem](#part-i----the-eclipse-ecosystem)
+    - [The Eclipse Community](#the-eclipse-community)
+    - [Getting Started](#getting-started)
+    - [Java Development in Eclipse](#java-development-in-eclipse)
+    - [Plug-In Development Environment](#plug-in-development-environment)
+  - [Part II -- The Rich Client Platform](#part-ii----the-rich-client-platform)
+    - [All about Plug-ins](#all-about-plug-ins)
+    - [Runtime Facilities](#runtime-facilities)
+    - [Standard Widget Toolkit (SWT)](#standard-widget-toolkit-swt)
+    - [JFace](#jface)
+    - [Generic Workbench](#generic-workbench)
+    - [Perspectives and Views](#perspectives-and-views)
+    - [Generic Editors](#generic-editors)
+    - [Actions, Commands, and Activities](#actions-commands-and-activities)
+    - [Building Your Own Application](#building-your-own-application)
+    - [Productizing an Eclipse Offering](#productizing-an-eclipse-offering)
+  - [Part III -- The Eclipse IDE Platform](#part-iii----the-eclipse-ide-platform)
+    - [Text Editors](#text-editors)
+    - [Help, Search, and Compare](#help-search-and-compare)
+    - [Workspace and Resources API](#workspace-and-resources-api)
+    - [Workbench IDE](#workbench-ide)
+    - [Implementing Support for Your Own Language](#implementing-support-for-your-own-language)
+      - [The language already has parsers, compilers, and other services](#the-language-already-has-parsers-compilers-and-other-services)
+      - [This is a DSL of your own](#this-is-a-dsl-of-your-own)
+      - [Legacy](#legacy)
+    - [Java Development Tool API](#java-development-tool-api)
+    - [Acknowledgement](#acknowledgement)
 
 Part I -- The Eclipse Ecosystem
 -------------------------------
@@ -196,8 +198,6 @@ Part I discussed the Eclipse ecosystem: how to run it, how to use it, and how to
 *   [FAQ How do I make my plug-in dynamic enabled?](./FAQ_How_do_I_make_my_plug-in_dynamic_enabled.md "FAQ How do I make my plug-in dynamic enabled?")
 *   [FAQ How do I make my plug-in dynamic aware?](./FAQ_How_do_I_make_my_plug-in_dynamic_aware.md "FAQ How do I make my plug-in dynamic aware?")
 
-  
-
 ### Runtime Facilities
 
 Above, we already discussed most of the basic functionality of the org.eclipse.core.runtime plug-in. This chapter covers the remaining facilities of Eclipse Platform runtime: APIs for logging, tracing, storing preferences, and other such core functionality. These various services, although not strictly needed by all plug-ins, are common enough that they merit being located directly alongside the Eclipse kernel. In Eclipse 3.0, this plug-in was expanded to add infrastructure for running and managing background operations. This chapter answers some of the questions that may arise when you start to use this new concurrency infrastructure.
@@ -216,6 +216,12 @@ Above, we already discussed most of the basic functionality of the org.eclipse.c
 *   [FAQ How do I find out whether a particular job is running?](./FAQ_How_do_I_find_out_whether_a_particular_job_is_running.md "FAQ How do I find out whether a particular job is running?")
 *   [FAQ How can I track the lifecycle of jobs?](./FAQ_How_can_I_track_the_lifecycle_of_jobs.md "FAQ How can I track the lifecycle of jobs?")
 *   [FAQ How do I create a repeating background task?](./FAQ_How_do_I_create_a_repeating_background_task.md "FAQ How do I create a repeating background task?")
+*   [FAQ How do I explicitly use Chromium as the Browser's underlying renderer?](./FAQ-How-do-I-explicitly-use-Chromium-as-the-Browser's-underlying-renderer.md "FAQ How do I explicitly use Chromium as the Browser's underlying renderer?")
+*   [FAQ How do I explicitly use Edge as the Browser's underlying renderer?](./FAQ-How-do-I-explicitly-use-Edge-as-the-Browser's-underlying-renderer.md "FAQ How do I explicitly use Edge as the Browser's underlying renderer?")
+*   [FAQ How do I specify the default type of native renderer that is used by the Browser?](./FAQ-How-do-I-specify-the-default-type-of-native-renderer-that-is-used-by-the-Browser.md "FAQ How do I specify the default type of native renderer that is used by the Browser?")
+*   [FAQ Which GTK version do I need to run SWT?](./FAQ-Which-GTK-version-do-I-need-to-run-SWT.md "FAQ Which GTK version do I need to run SWT?")
+*   [FAQ Which platforms support the SWT Browser, and which native renderers are available?](./FAQ-Which-platforms-support-the-SWT-Browser,-and-which-native-renderers-are-available.md "FAQ Which platforms support the SWT Browser, and which native renderers are available?")
+
 
 ### Standard Widget Toolkit (SWT)
 
