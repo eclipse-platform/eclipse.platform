@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.execFactories">
+      <execFactory
+            class="org.eclipse.debug.terminal.PtyExecFactory"
+            id="org.eclipse.debug.terminal.execFactory"
+            priority="100">
+      </execFactory>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.processFactories">
+      <processFactory
+            class="org.eclipse.debug.terminal.PtyProcessFactory"
+            id="org.eclipse.debug.terminal.processFactory">
+      </processFactory>
+   </extension>
+
+</plugin>
