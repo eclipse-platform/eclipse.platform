@@ -18,7 +18,6 @@
     <version>4.37.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.eclipse.platform</groupId>
   <artifactId>eclipse.platform.debug</artifactId>
   <packaging>pom</packaging>
 
@@ -37,6 +36,7 @@
     <module>org.eclipse.ui.console</module>
     <module>org.eclipse.ui.externaltools</module>
     <module>org.eclipse.unittest.ui</module>
+    <module>org.eclipse.debug.terminal</module>
   </modules>
 </project>
 

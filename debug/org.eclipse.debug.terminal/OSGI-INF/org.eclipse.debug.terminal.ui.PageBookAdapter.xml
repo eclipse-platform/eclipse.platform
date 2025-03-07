@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.4.0" name="org.eclipse.debug.terminal.ui.PageBookAdapter">
+   <property name="adaptableClass" type="String" value="org.eclipse.debug.terminal.PtyRuntimeProcess"/>
+   <property name="adapterNames" type="String" value="org.eclipse.ui.part.IPageBookViewPage"/>
+   <service>
+      <provide interface="org.eclipse.core.runtime.IAdapterFactory"/>
+   </service>
+   <implementation class="org.eclipse.debug.terminal.ui.PageBookAdapter"/>
+</scr:component>
