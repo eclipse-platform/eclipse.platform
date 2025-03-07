@@ -388,6 +388,8 @@ public class DebugPlugin extends Plugin {
 	 */
 	private static DebugPlugin fgDebugPlugin= null;
 
+	static ExecFactory factory;
+
 	/**
 	 * The singleton breakpoint manager.
 	 */
@@ -981,7 +983,13 @@ public class DebugPlugin extends Plugin {
 	 * @since 3.14
 	 */
 	public static Process exec(String[] cmdLine, File workingDirectory, String[] envp, boolean mergeOutput) throws CoreException {
-		Process p = null;
+		ExecFactory builder;
+		synchronized (DebugPlugin.class) {
+			builder = factory;
+		}
+		if (builder != null) {
+			return builder.exec(cmdLine, shortenWindowsPath(workingDirectory), envp, mergeOutput);
+		}
 		try {
 			// starting with and without merged output could be done with the
 			// same process builder approach but since the handling of
@@ -1004,11 +1012,11 @@ public class DebugPlugin extends Plugin {
 						}
 					}
 				}
-				p = pb.start();
+				return pb.start();
 			} else if (workingDirectory == null) {
-				p = Runtime.getRuntime().exec(cmdLine, envp);
+				return Runtime.getRuntime().exec(cmdLine, envp);
 			} else {
-				p = Runtime.getRuntime().exec(cmdLine, envp, shortenWindowsPath(workingDirectory));
+				return Runtime.getRuntime().exec(cmdLine, envp, shortenWindowsPath(workingDirectory));
 			}
 		} catch (IOException e) {
 			Status status = new Status(IStatus.ERROR, getUniqueIdentifier(), ERROR, DebugCoreMessages.DebugPlugin_0, e);
@@ -1021,17 +1029,20 @@ public class DebugPlugin extends Plugin {
 			if (handler != null) {
 				Object result = handler.handleStatus(status, null);
 				if (result instanceof Boolean resultValue && resultValue) {
-					p = exec(cmdLine, null);
+					return exec(cmdLine, null);
 				}
 			}
 		}
-		return p;
+		return null;
 	}
 
 	// https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
 	private static final int WINDOWS_MAX_PATH = 258;
 
 	private static File shortenWindowsPath(File path) {
+		if (path == null) {
+			return null;
+		}
 		if (path.getPath().length() > WINDOWS_MAX_PATH && Platform.OS.isWindows()) {
 			// When spawning new processes on Windows, there is no uniform way
 			// to use long working directory paths that exceed the default path
