@@ -31,6 +31,8 @@ public class DebugCoreMessages extends NLS {
 	public static String DebugPlugin_2;
 	public static String DebugPlugin_3;
 	public static String DebugPlugin_4;
+	public static String DebugPlugin_invalid_exec_factory;
+	public static String DebugPlugin_invalid_exec_factory_priority;
 	public static String DebugPlugin_5;
 	public static String DebugPlugin_6;
 	public static String DebugPlugin_7;
