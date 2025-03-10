@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -221,25 +222,24 @@ public class File extends Resource implements IFile {
 
 	IFileInfo create(int updateFlags, IProgressMonitor subMonitor, IFileStore store)
 			throws CoreException, ResourceException {
-		String message;
 		IFileInfo localInfo;
 		if (BitMask.isSet(updateFlags, IResource.FORCE)) {
-			// Assume  the file does not exist - otherwise implementation fails later
+			// Assume the file does not exist - otherwise implementation fails later
 			// during actual write
 			localInfo = new FileInfo(getName()); // with exists==false
 		} else {
-			localInfo=store.fetchInfo();
+			localInfo = store.fetchInfo();
 			if (localInfo.exists()) {
 				// return an appropriate error message for case variant collisions
 				if (!Workspace.caseSensitive) {
-					String name = getLocalManager().getLocalName(store);
+					String name = localInfo.getName();
 					if (name != null && !localInfo.getName().equals(name)) {
-						message = NLS.bind(Messages.resources_existsLocalDifferentCase,
-								IPath.fromOSString(store.toString()).removeLastSegments(1).append(name).toOSString());
+						String message = NLS.bind(Messages.resources_existsLocalDifferentCase,
+								Path.of(store.toString()).resolveSibling(name));
 						throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, getFullPath(), message, null);
 					}
 				}
-				message = NLS.bind(Messages.resources_fileExists, store.toString());
+				String message = NLS.bind(Messages.resources_fileExists, store.toString());
 				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, getFullPath(), message, null);
 			}
 		}
