@@ -119,7 +119,7 @@ public abstract class AbstractSourceLookupDirector implements ISourceLookupDirec
 		/**
 		 * Returns any exception that occurred during source lookup.
 		 *
-		 * @return the (any) exception that occured during source lookup
+		 * @return the (any) exception that occurred during source lookup
 		 */
 		public Throwable getException() {
 			return fException;

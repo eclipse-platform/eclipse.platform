@@ -102,7 +102,7 @@ public class ReadOnlyMarkerPropertySource implements IPropertySource {
 			return marker.getAttribute(name);
 		} catch (CoreException e) {
 			ILog.of(ReadOnlyMarkerPropertySource.class).log(e.getStatus());
-			return "exception occured accessing: " + name;
+			return "exception occurred accessing: " + name;
 		}
 	}
 

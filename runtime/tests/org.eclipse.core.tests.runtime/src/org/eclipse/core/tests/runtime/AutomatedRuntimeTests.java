@@ -31,7 +31,7 @@ import org.junit.platform.suite.api.Suite;
 		XmlProcessorFactoryTest.class, //
 		/*
 		 * Intentional the LAST TEST in the list to let
-		 * JobEventTest.testNoTimeoutOccured() verify the other tests:
+		 * JobEventTest.testNoTimeoutOccurred() verify the other tests:
 		 */
 		AllJobTests.class, //
 })

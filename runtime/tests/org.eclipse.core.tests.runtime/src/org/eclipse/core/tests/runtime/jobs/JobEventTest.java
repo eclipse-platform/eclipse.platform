@@ -433,7 +433,7 @@ public class JobEventTest extends AbstractJobTest {
 		final int DEADLOCK_TIMEOUT = 250;
 		final int ABORT_TEST_TIMEOUT = 60_000;
 		try {
-			assertNoTimeoutOccured(); // before changing timeout
+			assertNoTimeoutOccurred(); // before changing timeout
 			JobListeners.setJobListenerTimeout(DEADLOCK_TIMEOUT);
 			threadDeadlockingWithJobListener.start();
 			jobWithListener.schedule();
