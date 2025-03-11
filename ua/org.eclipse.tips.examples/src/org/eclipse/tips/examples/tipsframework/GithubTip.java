@@ -53,7 +53,7 @@ public class GithubTip extends Tip implements IHtmlTip {
 		});
 
 		ArrayList<TipAction> actions = new ArrayList<>();
-		actions.add(new TipAction("Show in Github", "Opens a browser.", runner, null));
+		actions.add(new TipAction("Show in GitHub", "Opens a browser.", runner, null));
 		return actions;
 	}
 
@@ -71,7 +71,7 @@ public class GithubTip extends Tip implements IHtmlTip {
 	public String getHTML() {
 		return """
 				<h2>Incubating on GitHub</h2>
-				We are incubating this project on Github and we could use your help.
+				We are incubating this project on GitHub and we could use your help.
 				Press the <b>More...</b> button to open the GitHub repository.<br><br>
 				We are looking forward to your pull requests.<br>""";
 	}
