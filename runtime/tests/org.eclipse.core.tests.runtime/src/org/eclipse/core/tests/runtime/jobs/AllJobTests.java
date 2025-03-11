@@ -47,7 +47,7 @@ import org.junit.platform.suite.api.Suite;
 		GithubBug_193.class, //
 		WorkerPoolTest.class, //
 		/*
-		 * Intentional the LAST TEST in the list to testNoTimeoutOccured() in the other
+		 * Intentional the LAST TEST in the list to testNoTimeoutOccurred() in the other
 		 * tests:
 		 */
 		JobEventTest.class, //

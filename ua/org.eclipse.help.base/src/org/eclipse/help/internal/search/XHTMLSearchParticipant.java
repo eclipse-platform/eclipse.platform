@@ -101,7 +101,7 @@ public class XHTMLSearchParticipant extends SearchParticipantXML {
 			return DynamicXHTMLProcessor.process(name, in, locale, false);
 		}
 		catch (Throwable t) {
-			String msg = "An error occured while pre-processing help XHTML document \"" + name + "\" for search indexing"; //$NON-NLS-1$ //$NON-NLS-2$
+			String msg = "An error occurred while pre-processing help XHTML document \"" + name + "\" for search indexing"; //$NON-NLS-1$ //$NON-NLS-2$
 			ILog.of(getClass()).error(msg, t);
 			return in;
 		}

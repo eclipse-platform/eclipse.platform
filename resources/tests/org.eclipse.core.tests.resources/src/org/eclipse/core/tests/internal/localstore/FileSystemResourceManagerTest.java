@@ -451,7 +451,7 @@ public class FileSystemResourceManagerTest implements ICoreConstants {
 		} catch (Throwable t) {
 			// Bug 541493: we see unlikely stack traces reported by JUnit here, log the
 			// exceptions in case JUnit filters stack frames
-			String errorMessage = "exception occured during write of file: " + file;
+			String errorMessage = "exception occurred during write of file: " + file;
 			IStatus errorStatus = new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, errorMessage, t);
 			ResourcesPlugin.getPlugin().getLog().log(errorStatus);
 			throw t;
