@@ -132,8 +132,7 @@ public class DirectorySourceContainer extends CompositeSourceContainer {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof DirectorySourceContainer) {
-			DirectorySourceContainer container = (DirectorySourceContainer) obj;
+		if (obj instanceof DirectorySourceContainer container) {
 			return container.getDirectory().equals(getDirectory());
 		}
 		return false;

@@ -195,8 +195,7 @@ public final class XMLMemento {
 		// Find the first node which is a child of this node.
 		for (int nX = 0; nX < size; nX++) {
 			Node node = nodes.item(nX);
-			if (node instanceof Element) {
-				Element element1 = (Element) node;
+			if (node instanceof Element element1) {
 				if (element1.getNodeName().equals(type)) {
 					return new XMLMemento(factory, element1);
 				}
@@ -223,8 +222,7 @@ public final class XMLMemento {
 		ArrayList<Element> list = new ArrayList<>(size);
 		for (int nX = 0; nX < size; nX++) {
 			Node node = nodes.item(nX);
-			if (node instanceof Element) {
-				Element element1 = (Element) node;
+			if (node instanceof Element element1) {
 				if (element1.getNodeName().equals(type)) {
 					list.add(element1);
 				}
