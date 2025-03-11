@@ -527,10 +527,9 @@ public class Launch extends PlatformObject implements ILaunch, IDisconnect, ILau
 		readLock.lock();
 		try {
 			for (IProcess process : getProcesses0()) {
-				if (process instanceof IDisconnect) {
-					IDisconnect dis = (IDisconnect) process;
-					if (dis.canDisconnect()) {
-						dis.disconnect();
+				if (process instanceof IDisconnect disc) {
+					if (disc.canDisconnect()) {
+						disc.disconnect();
 					}
 				}
 			}

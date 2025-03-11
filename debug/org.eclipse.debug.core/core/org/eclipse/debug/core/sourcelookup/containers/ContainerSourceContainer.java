@@ -148,8 +148,7 @@ public abstract class ContainerSourceContainer extends CompositeSourceContainer 
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && obj instanceof ContainerSourceContainer) {
-			ContainerSourceContainer loc = (ContainerSourceContainer) obj;
+		if (obj != null && obj instanceof ContainerSourceContainer loc) {
 			return loc.getContainer().equals(getContainer());
 		}
 		return false;

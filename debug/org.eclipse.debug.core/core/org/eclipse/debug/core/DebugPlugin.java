@@ -1272,8 +1272,7 @@ public class DebugPlugin extends Plugin {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof StatusHandlerKey) {
-				StatusHandlerKey s = (StatusHandlerKey)obj;
+			if (obj instanceof StatusHandlerKey s) {
 				return fCode == s.fCode && fPluginId.equals(s.fPluginId);
 			}
 			return false;

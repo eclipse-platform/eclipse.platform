@@ -52,14 +52,11 @@ public class StepFiltersCommand extends ForEachCommand implements IStepFiltersHa
 	}
 
 	private IDebugTarget[] getDebugTargets(Object element) {
-		if (element instanceof IDebugElement) {
-			IDebugElement debugElement = (IDebugElement) element;
+		if (element instanceof IDebugElement debugElement) {
 			return new IDebugTarget[] { debugElement.getDebugTarget() };
-		} else if (element instanceof ILaunch) {
-			ILaunch launch = (ILaunch) element;
+		} else if (element instanceof ILaunch launch) {
 			return launch.getDebugTargets();
-		} else if (element instanceof IProcess) {
-			IProcess process = (IProcess) element;
+		} else if (element instanceof IProcess process) {
 			return process.getLaunch().getDebugTargets();
 		} else {
 			return new IDebugTarget[0];

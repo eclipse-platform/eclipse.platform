@@ -109,11 +109,9 @@ public abstract class AbstractSourceContainer extends PlatformObject implements 
 	protected boolean isFindDuplicates() {
 		ISourceLookupDirector director = getDirector();
 		if (director != null) {
-			if (director instanceof AbstractSourceLookupDirector) {
-				AbstractSourceLookupDirector asld = (AbstractSourceLookupDirector) director;
+			if (director instanceof AbstractSourceLookupDirector asld) {
 				ISourceLookupParticipant participant = asld.getCurrentParticipant();
-				if (participant instanceof AbstractSourceLookupParticipant	) {
-					AbstractSourceLookupParticipant aslp = (AbstractSourceLookupParticipant) participant;
+				if (participant instanceof AbstractSourceLookupParticipant aslp	) {
 					return aslp.isFindDuplicates();
 				}
 			}
