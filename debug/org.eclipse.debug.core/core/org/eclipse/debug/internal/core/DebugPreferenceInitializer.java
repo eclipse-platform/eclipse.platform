@@ -31,6 +31,7 @@ public class DebugPreferenceInitializer extends AbstractPreferenceInitializer {
 		Preferences.setDefaultBoolean(DebugPlugin.getUniqueIdentifier(), DebugPlugin.PREF_DELETE_CONFIGS_ON_PROJECT_DELETE, false);
 		Preferences.setDefaultBoolean(DebugPlugin.getUniqueIdentifier(), IInternalDebugCoreConstants.PREF_ENABLE_STATUS_HANDLERS, true);
 		Preferences.setDefaultBoolean(DebugPlugin.getUniqueIdentifier(), IInternalDebugCoreConstants.PREF_BREAKPOINT_MANAGER_ENABLED_STATE, true);
+		Preferences.setDefaultBoolean(DebugPlugin.getUniqueIdentifier(), DebugPlugin.PREF_SHOW_BREAKPOINT_GROUPBY_TYPE_SHORTCUTS, true);
 		Preferences.savePreferences(DebugPlugin.getUniqueIdentifier());
 	}
 
