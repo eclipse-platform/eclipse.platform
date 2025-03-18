@@ -342,7 +342,7 @@ public class MarkerView extends ViewPart implements ISelectionListener, IResourc
 					warningMsg = "No markers found for: " + resource.getFullPath();
 				}
 			} catch (CoreException e) {
-				errorMsg = "Exception" + e.getMessage() + " occured obtaining markers for" + resource.getFullPath();
+				errorMsg = "Exception" + e.getMessage() + " occurred obtaining markers for" + resource.getFullPath();
 				return;
 			}
 		}

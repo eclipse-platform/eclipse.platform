@@ -22,9 +22,12 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -169,6 +172,14 @@ public class DebugPlugin extends Plugin {
 	 * @since 3.0
 	 */
 	public static final String EXTENSION_POINT_PROCESS_FACTORIES = "processFactories"; //$NON-NLS-1$
+
+	/**
+	 * Simple identifier constant (value <code>"execFactories"</code>) for the
+	 * exec factories extension point.
+	 *
+	 * @since 3.23
+	 */
+	public static final String EXTENSION_POINT_EXEC_FACTORIES = "execFactories"; //$NON-NLS-1$
 
 	/**
 	 * Simple identifier constant (value <code>"logicalStructureTypes"</code>) for the
@@ -437,6 +448,11 @@ public class DebugPlugin extends Plugin {
 	 * @since 3.0
 	 */
 	private HashMap<String, IConfigurationElement> fProcessFactories = null;
+
+	/**
+	 * List of exec factories.
+	 */
+	private List<ExecFactoryFacade> execFactories;
 
 	/**
 	 * Service tracker for the workspace service
@@ -981,7 +997,24 @@ public class DebugPlugin extends Plugin {
 	 * @since 3.14
 	 */
 	public static Process exec(String[] cmdLine, File workingDirectory, String[] envp, boolean mergeOutput) throws CoreException {
-		Process p = null;
+		List<ExecFactoryFacade> factories = DebugPlugin.getDefault().getExecFactories();
+		Optional<File> directory = shortenWindowsPath(workingDirectory);
+		Optional<Map<String, String>> envMap = Optional.ofNullable(envp).map(array -> {
+			Map<String, String> map = new LinkedHashMap<>();
+			for (String e : array) {
+				int index = e.indexOf('=');
+				if (index != -1) {
+					map.put(e.substring(0, index), e.substring(index + 1));
+				}
+			}
+			return Map.copyOf(map);
+		});
+		for (ExecFactoryFacade holder : factories) {
+			Optional<Process> exec = holder.exec(cmdLine.clone(), directory, envMap, mergeOutput);
+			if (exec.isPresent()) {
+				return exec.get();
+			}
+		}
 		try {
 			// starting with and without merged output could be done with the
 			// same process builder approach but since the handling of
@@ -990,25 +1023,18 @@ public class DebugPlugin extends Plugin {
 			// builder to not break existing caller of this method
 			if (mergeOutput) {
 				ProcessBuilder pb = new ProcessBuilder(cmdLine);
-				if (workingDirectory != null) {
-					pb.directory(shortenWindowsPath(workingDirectory));
-				}
+				directory.ifPresent(pb::directory);
 				pb.redirectErrorStream(mergeOutput);
-				if (envp != null) {
+				if (envMap.isPresent()) {
 					Map<String, String> env = pb.environment();
 					env.clear();
-					for (String e : envp) {
-						int index = e.indexOf('=');
-						if (index != -1) {
-							env.put(e.substring(0, index), e.substring(index + 1));
-						}
-					}
+					env.putAll(envMap.get());
 				}
-				p = pb.start();
-			} else if (workingDirectory == null) {
-				p = Runtime.getRuntime().exec(cmdLine, envp);
+				return pb.start();
+			} else if (directory.isEmpty()) {
+				return Runtime.getRuntime().exec(cmdLine, envp);
 			} else {
-				p = Runtime.getRuntime().exec(cmdLine, envp, shortenWindowsPath(workingDirectory));
+				return Runtime.getRuntime().exec(cmdLine, envp, directory.get());
 			}
 		} catch (IOException e) {
 			Status status = new Status(IStatus.ERROR, getUniqueIdentifier(), ERROR, DebugCoreMessages.DebugPlugin_0, e);
@@ -1021,18 +1047,18 @@ public class DebugPlugin extends Plugin {
 			if (handler != null) {
 				Object result = handler.handleStatus(status, null);
 				if (result instanceof Boolean resultValue && resultValue) {
-					p = exec(cmdLine, null);
+					return exec(cmdLine, null);
 				}
 			}
 		}
-		return p;
+		return null;
 	}
 
 	// https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
 	private static final int WINDOWS_MAX_PATH = 258;
 
-	private static File shortenWindowsPath(File path) {
-		if (path.getPath().length() > WINDOWS_MAX_PATH && Platform.OS.isWindows()) {
+	private static Optional<File> shortenWindowsPath(File path) {
+		if (path != null && path.getPath().length() > WINDOWS_MAX_PATH && Platform.OS.isWindows()) {
 			// When spawning new processes on Windows, there is no uniform way
 			// to use long working directory paths that exceed the default path
 			// length limit, like for example using the raw path prefix '\\?\'
@@ -1042,12 +1068,12 @@ public class DebugPlugin extends Plugin {
 			@SuppressWarnings("restriction")
 			String shortPath = org.eclipse.core.internal.filesystem.local.Win32Handler.getShortPathName(path.toString());
 			if (shortPath != null) {
-				return new File(shortPath);
+				return Optional.of(new File(shortPath));
 			} else {
 				log(Status.warning("Working directory of process to create exceeds Window's MAX_PATH limit and shortening the path failed.")); //$NON-NLS-1$
 			}
 		}
-		return path;
+		return Optional.ofNullable(path);
 	}
 
 	/**
@@ -1189,6 +1215,39 @@ public class DebugPlugin extends Plugin {
 		}
 	}
 
+	private synchronized List<ExecFactoryFacade> getExecFactories() {
+		if (execFactories == null) {
+			IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(DebugPlugin.PI_DEBUG_CORE, EXTENSION_POINT_EXEC_FACTORIES);
+			IConfigurationElement[] infos = extensionPoint.getConfigurationElements();
+			List<ExecFactoryFacade> list = new ArrayList<>();
+			for (IConfigurationElement configurationElement : infos) {
+				String clz = configurationElement.getAttribute("class"); //$NON-NLS-1$
+				if (clz != null) {
+					int priority;
+					String attribute = configurationElement.getAttribute("priority"); //$NON-NLS-1$
+					if (attribute == null) {
+						priority = 0;
+					}
+					try {
+						priority = Integer.parseInt(attribute);
+					} catch (NumberFormatException e) {
+						log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_invalid_exec_factory, new Object[] {
+								configurationElement.getContributor().getName() }), null));
+						priority = 0;
+					}
+					list.add(new ExecFactoryFacade(configurationElement, priority));
+				} else {
+					String badDefiner = configurationElement.getContributor().getName();
+					log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_invalid_exec_factory, new Object[] {
+							badDefiner }), null));
+				}
+			}
+			list.sort(Comparator.comparingInt(ExecFactoryFacade::getPriority).reversed());
+			execFactories = List.copyOf(list);
+		}
+		return execFactories;
+	}
+
 	private void invalidStatusHandler(Exception e, String id) {
 		log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_5, new Object[] { id }), e));
 	}
@@ -1213,12 +1272,39 @@ public class DebugPlugin extends Plugin {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof StatusHandlerKey) {
-				StatusHandlerKey s = (StatusHandlerKey)obj;
+			if (obj instanceof StatusHandlerKey s) {
 				return fCode == s.fCode && fPluginId.equals(s.fPluginId);
 			}
 			return false;
 		}
+	}
+
+	private class ExecFactoryFacade implements ExecFactory {
+
+		private IConfigurationElement element;
+		private int priority;
+
+		ExecFactoryFacade(IConfigurationElement element, int priority) {
+			this.element = element;
+			this.priority = priority;
+		}
+
+		public int getPriority() {
+			return priority;
+		}
+
+		@Override
+		public Optional<Process> exec(String[] cmdLine, Optional<File> workingDirectory, Optional<Map<String, String>> environment, boolean mergeOutput) throws CoreException {
+			ExecFactory extension;
+			try {
+				extension = (ExecFactory) element.createExecutableExtension(IConfigurationElementConstants.CLASS);
+			} catch (CoreException e) {
+				log(e);
+				return Optional.empty();
+			}
+			return extension.exec(cmdLine, workingDirectory, environment, mergeOutput);
+		}
+
 	}
 
 	/**

@@ -29,10 +29,6 @@ import org.junit.platform.suite.api.Suite;
 		AllRuntimeTests.class, //
 		AllPreferenceTests.class, //
 		XmlProcessorFactoryTest.class, //
-		/*
-		 * Intentional the LAST TEST in the list to let
-		 * JobEventTest.testNoTimeoutOccured() verify the other tests:
-		 */
 		AllJobTests.class, //
 })
 public class AutomatedRuntimeTests {

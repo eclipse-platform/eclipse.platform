@@ -147,7 +147,7 @@ public class JettyHelpServer extends HelpServer {
 			execute(stopRunnable);
 		}
 		catch (Exception e) {
-			ILog.of(getClass()).error("An error occured while stopping the help server", e); //$NON-NLS-1$
+			ILog.of(getClass()).error("An error occurred while stopping the help server", e); //$NON-NLS-1$
 		}
 	}
 

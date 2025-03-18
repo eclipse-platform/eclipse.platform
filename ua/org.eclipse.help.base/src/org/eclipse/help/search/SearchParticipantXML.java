@@ -374,7 +374,7 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 			return processor.process(in, name, null);
 		}
 		catch (Throwable t) {
-			String msg = "An error occured while pre-processing user assistance document \"" + name + "\" for search indexing"; //$NON-NLS-1$ //$NON-NLS-2$
+			String msg = "An error occurred while pre-processing user assistance document \"" + name + "\" for search indexing"; //$NON-NLS-1$ //$NON-NLS-2$
 			ILog.of(getClass()).error(msg, t);
 			return in;
 		}

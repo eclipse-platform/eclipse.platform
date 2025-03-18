@@ -141,7 +141,7 @@ public class LocalSearchManager {
 					participant.clear();
 				}
 				catch (Throwable t) {
-					ILog.of(getClass()).error("Error occured in search participant's clear() operation: " //$NON-NLS-1$
+					ILog.of(getClass()).error("Error occurred in search participant's clear() operation: " //$NON-NLS-1$
 									+ participant.getClass().getName(), t);
 				}
 			}
@@ -172,12 +172,12 @@ public class LocalSearchManager {
 					boolean isPotentialHit = (doc.get("filters") != null); //$NON-NLS-1$
 					list.add(new SearchHit(href, label, summary, score, null, id, participantId, isPotentialHit));
 				} catch (IOException e) {
-					ILog.of(LocalSearchManager.class).error("An error occured while reading search hits", e); //$NON-NLS-1$
+					ILog.of(LocalSearchManager.class).error("An error occurred while reading search hits", e); //$NON-NLS-1$
 					continue;
 				}
 			}
 		} catch (IOException e) {
-			ILog.of(LocalSearchManager.class).error("An error occured while reading stored fields", e); //$NON-NLS-1$
+			ILog.of(LocalSearchManager.class).error("An error occurred while reading stored fields", e); //$NON-NLS-1$
 		}
 		return list;
 	}

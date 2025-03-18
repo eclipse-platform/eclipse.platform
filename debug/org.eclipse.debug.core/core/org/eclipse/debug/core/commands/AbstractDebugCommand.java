@@ -187,8 +187,7 @@ public abstract class AbstractDebugCommand implements IDebugCommandHandler {
 
 		@Override
 		public boolean isConflicting(ISchedulingRule rule) {
-			if (rule instanceof SerialPerObjectRule) {
-				SerialPerObjectRule vup = (SerialPerObjectRule) rule;
+			if (rule instanceof SerialPerObjectRule vup) {
 				return fObject == vup.fObject;
 			}
 			return false;

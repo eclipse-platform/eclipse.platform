@@ -1,7 +1,7 @@
 FAQ How can I search the existing list of bugs in Eclipse?
 ==========================================================
 
-Eclipse uses Github for hosting and issues for bug reports and feature requests.
+Eclipse uses GitHub for hosting and issues for bug reports and feature requests.
 Currently the following are the most active repositories for the Eclipse top level project:
 
 

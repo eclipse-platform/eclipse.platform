@@ -44,6 +44,7 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -93,6 +94,7 @@ import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IHyperlink;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleInputStream;
@@ -102,6 +104,7 @@ import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -278,6 +281,15 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public IPageBookViewPage createPage(IConsoleView view) {
+		IPageBookViewPage adapt = Adapters.adapt(getProcess(), IPageBookViewPage.class);
+		if (adapt != null) {
+			return adapt;
+		}
+		return super.createPage(view);
 	}
 
 	/**

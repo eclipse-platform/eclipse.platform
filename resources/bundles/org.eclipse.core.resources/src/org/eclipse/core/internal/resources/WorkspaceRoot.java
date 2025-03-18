@@ -15,6 +15,7 @@
 package org.eclipse.core.internal.resources;
 
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.filesystem.URIUtil;
@@ -159,8 +160,10 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 		Project result = projectTable.get(name);
 		if (result == null) {
 			IPath projectPath = new Path(null, name).makeAbsolute();
-			String message = "Path for project must have only one segment."; //$NON-NLS-1$
-			Assert.isLegal(projectPath.segmentCount() == ICoreConstants.PROJECT_SEGMENT_LENGTH, message);
+			int segmentCount = projectPath.segmentCount();
+			String message = MessageFormat.format("Path for project must have only one segment but has {0}: {1}", //$NON-NLS-1$
+					segmentCount, projectPath);
+			Assert.isLegal(segmentCount == ICoreConstants.PROJECT_SEGMENT_LENGTH, message);
 			//try to get the project using a canonical name
 			String canonicalName = projectPath.lastSegment();
 			result = projectTable.computeIfAbsent(canonicalName, n -> new Project(projectPath, workspace));
