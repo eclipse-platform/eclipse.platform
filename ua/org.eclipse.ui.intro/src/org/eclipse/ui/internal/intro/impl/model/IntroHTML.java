@@ -64,7 +64,7 @@ public class IntroHTML extends AbstractTextElement {
 	}
 
 	/**
-	 * Retruns the intro image element embedded in this element.
+	 * Returns the intro image element embedded in this element.
 	 */
 	private IntroImage getIntroImage(Element element, String base) {
 		try {

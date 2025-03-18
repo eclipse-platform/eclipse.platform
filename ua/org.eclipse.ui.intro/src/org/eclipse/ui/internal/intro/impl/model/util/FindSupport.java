@@ -53,7 +53,7 @@ public class FindSupport {
 	}
 
 	/**
-	 * Proposed API for Platform in Eclispe 3.2.
+	 * Proposed API for Platform in Eclipse 3.2.
 	 * Same as @link #find(Bundle, IPath) except multiple entries can be
 	 * returned if more than one entry matches the path in the host and
 	 * any of its fragments.
