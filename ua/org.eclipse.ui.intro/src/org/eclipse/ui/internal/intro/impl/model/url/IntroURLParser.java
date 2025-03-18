@@ -135,7 +135,7 @@ public class IntroURLParser {
 
 
 	/**
-	 * Retruns the path attribute of the passed URL, stripped out of the leading
+	 * Returns the path attribute of the passed URL, stripped out of the leading
 	 * "/". Returns null if the url does not have a path.
 	 */
 	private String getPathAsAction(URL url) {
@@ -148,7 +148,7 @@ public class IntroURLParser {
 	}
 
 	/**
-	 * Retruns the Query part of the URL as an instance of a Properties class.
+	 * Returns the Query part of the URL as an instance of a Properties class.
 	 */
 	public Properties getQueryParameters(URL url) {
 		// parser all query parameters.
