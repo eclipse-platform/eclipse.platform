@@ -208,7 +208,7 @@ class ThreadJob extends Job {
 		boolean interruptedDuringWaitForRun;
 		try {
 			// just return if lock listener decided to grant immediate access
-			if (manager.getLockManager().aboutToWait(blocker) || identifyThreadAction()) {
+			if (manager.getLockManager().aboutToWait(blocker) || manager.getLockManager().isUI()) {
 				return threadJob;
 			}
 			result = waitForRun(threadJob, monitor, blockingJob);
@@ -229,31 +229,6 @@ class ThreadJob extends Job {
 			throw new OperationCanceledException();
 		}
 		return result;
-	}
-
-	
-	public static boolean identifyThreadAction() {
-		String threadName = Thread.currentThread().getName();
-		Job currentJob = Job.getJobManager().currentJob();
-
-		// UI Thread (User interactions)
-		if ("main".equals(threadName)) { //$NON-NLS-1$
-			return true;
-		}
-
-		// Background Worker Threads
-		if (threadName.contains("Worker") && currentJob != null) { //$NON-NLS-1$
-			String jobName = currentJob.getName().toLowerCase();
-			if (jobName.contains("build")) { //$NON-NLS-1$
-				// This thread is handling a BUILD job
-				return false;
-			}
-			// Any other worker-thread job
-			return false;
-		}
-
-		// Everything else defaults to false
-		return false;
 	}
 
 	/**
