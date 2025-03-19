@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.core.security.identification.PublishPasswordUpdate">
-   <reference bind="bindSubscriberService" interface="org.eclipse.core.security.identification.PublishPasswordUpdateIFC" name="SubscribeService" unbind="unbindSubscriberService"/>
-   <implementation class="org.eclipse.core.security.identification.PublishPasswordUpdate"/>
-   <service>
-   	 <provide interface="org.eclipse.core.security.identification.PublishPasswordUpdateIFC"/>
-   </service>
-</scr:component>
