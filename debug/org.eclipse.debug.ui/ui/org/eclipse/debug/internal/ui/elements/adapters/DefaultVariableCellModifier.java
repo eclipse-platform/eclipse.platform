@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,17 +18,17 @@ import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.DefaultLabelProvider;
 import org.eclipse.debug.internal.ui.actions.variables.details.DetailPaneAssignValueAction;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.viewers.ICellModifier;
 
 /**
  * @since 3.2
  */
-@SuppressWarnings("deprecation")
 public class DefaultVariableCellModifier implements ICellModifier {
 
 	@Override
 	public boolean canModify(Object element, String property) {
-		if (VariableColumnPresentation.COLUMN_VARIABLE_VALUE.equals(property)) {
+		if (IDebugUIConstants.COLUMN_ID_VARIABLE_VALUE.equals(property)) {
 			if (element instanceof IVariable) {
 				return ((IVariable) element).supportsValueModification();
 			}
@@ -38,7 +38,7 @@ public class DefaultVariableCellModifier implements ICellModifier {
 
 	@Override
 	public Object getValue(Object element, String property) {
-		if (VariableColumnPresentation.COLUMN_VARIABLE_VALUE.equals(property)) {
+		if (IDebugUIConstants.COLUMN_ID_VARIABLE_VALUE.equals(property)) {
 			if (element instanceof IVariable) {
 				IVariable variable = (IVariable) element;
 				try {
@@ -55,7 +55,7 @@ public class DefaultVariableCellModifier implements ICellModifier {
 	public void modify(Object element, String property, Object value) {
 		Object oldValue = getValue(element, property);
 		if (!value.equals(oldValue)) {
-			if (VariableColumnPresentation.COLUMN_VARIABLE_VALUE.equals(property)) {
+			if (IDebugUIConstants.COLUMN_ID_VARIABLE_VALUE.equals(property)) {
 				if (element instanceof IVariable) {
 					if (value instanceof String) {
 						// The value column displays special characters escaped, so encode the string with any special characters escaped properly
