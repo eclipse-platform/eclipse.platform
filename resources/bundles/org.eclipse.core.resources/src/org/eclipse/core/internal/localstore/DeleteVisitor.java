@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -30,7 +30,7 @@ import org.eclipse.osgi.util.NLS;
 public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 	protected boolean force;
 	protected boolean keepHistory;
-	protected IProgressMonitor monitor;
+	protected SubMonitor monitor;
 	protected List<Resource> skipList;
 	protected MultiStatus status;
 
@@ -44,7 +44,7 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 		this.ticks = ticks;
 		this.force = (flags & IResource.FORCE) != 0;
 		this.keepHistory = (flags & IResource.KEEP_HISTORY) != 0;
-		this.monitor = monitor;
+		this.monitor = SubMonitor.convert(monitor, ticks);
 		status = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_DELETE_LOCAL, Messages.localstore_deleteProblem, null);
 	}
 
@@ -63,7 +63,7 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 			int work = ticks < 0 ? 0 : ticks;
 			ticks -= work;
 			if (deleteLocalFile)
-				localFile.delete(EFS.NONE, Policy.subMonitorFor(monitor, work));
+				localFile.delete(EFS.NONE, monitor.split(work));
 			else
 				monitor.worked(work);
 			//delete from tree
