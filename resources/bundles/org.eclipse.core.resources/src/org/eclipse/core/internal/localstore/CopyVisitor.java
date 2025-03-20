@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -68,13 +68,16 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 
 	private final FileSystemResourceManager localManager;
 
-	public CopyVisitor(IResource rootSource, IResource destination, int updateFlags, IProgressMonitor monitor) {
+	/** amount of ticks consumed by the current file. Either 0 (out-of-sync) or 1 (in-sync) */
+	private int work;
+
+	public CopyVisitor(IResource rootSource, IResource destination, int updateFlags, IProgressMonitor monitor, int ticks) {
 		this.localManager = ((Resource) rootSource).getLocalManager();
 		this.rootDestination = destination;
 		this.updateFlags = updateFlags;
 		this.isDeep = (updateFlags & IResource.SHALLOW) == 0;
 		this.force = (updateFlags & IResource.FORCE) != 0;
-		this.monitor = SubMonitor.convert(monitor);
+		this.monitor = SubMonitor.convert(monitor, ticks);
 		this.segmentsToDrop = rootSource.getFullPath().segmentCount();
 		this.status = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IStatus.INFO, Messages.localstore_copyProblem, null);
 	}
@@ -111,10 +114,12 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 
 			IFileStore sourceStore = node.getStore();
 			IFileStore destinationStore = destination.getStore();
+			SubMonitor subMonitor = SubMonitor.convert(monitor.newChild(work), 2);
+			work = 0;
 			//ensure the parent of the root destination exists (bug 126104)
 			if (destination == rootDestination)
-				destinationStore.getParent().mkdir(EFS.NONE, monitor.newChild(0));
-			sourceStore.copy(destinationStore, EFS.SHALLOW, monitor.newChild(0));
+				destinationStore.getParent().mkdir(EFS.NONE, subMonitor.newChild(1));
+			sourceStore.copy(destinationStore, EFS.SHALLOW, subMonitor.newChild(1));
 			//create the destination in the workspace
 			ResourceInfo info = localManager.getWorkspace().createResource(destination, updateFlags);
 			localManager.updateLocalSync(info, destinationStore.fetchInfo().getLastModified());
@@ -189,7 +194,7 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 	@Override
 	public boolean visit(UnifiedTreeNode node) throws CoreException {
 		monitor.checkCanceled();
-		int work = 1;
+		work = 1;
 		try {
 			//location can be null if based on an undefined variable
 			if (node.getStore() == null) {
@@ -221,7 +226,10 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 			}
 			return copy(node);
 		} finally {
-			monitor.worked(work);
+			if (work != 0) {
+				monitor.worked(work);
+			}
+			work = 0;
 		}
 	}
 
