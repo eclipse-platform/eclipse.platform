@@ -16,7 +16,7 @@
 <cheatsheet title="Keyword Index">
    <intro>
       <description>
-         Tests for the index view. These tests require org.eclispe.ua.tests to be installed.
+         Tests for the index view. These tests require org.eclipse.ua.tests to be installed.
       </description>
    </intro>
    <item title="Test Index View" dialog="false" skip="false">

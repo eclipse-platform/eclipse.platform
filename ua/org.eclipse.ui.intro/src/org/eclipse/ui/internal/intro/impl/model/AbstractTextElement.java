@@ -29,7 +29,7 @@ public abstract class AbstractTextElement extends AbstractIntroContainer {
 	}
 
 	/**
-	 * Retruns the intro text element embedded in this element.
+	 * Returns the intro text element embedded in this element.
 	 */
 	public IntroText getIntroText() {
 		AbstractIntroElement[] children = getChildren();
