@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2010 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -28,6 +28,7 @@ public class BreakpointGroupMessages extends NLS {
 	public static String GroupBreakpointsByDialog_5;
 	public static String GroupBreakpointsByDialog_6;
 	public static String GroupBreakpointsByDialog_7;
+	public static String GroupBreakpointsByDialog_8;
 	public static String PasteBreakpointsAction_0;
 	public static String PasteBreakpointsAction_1;
 	public static String RemoveFromWorkingSetAction_0;
