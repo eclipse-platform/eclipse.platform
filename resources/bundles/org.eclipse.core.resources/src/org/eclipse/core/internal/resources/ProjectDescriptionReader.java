@@ -233,26 +233,31 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			state = S_BUILD_COMMAND;
 			BuildCommand command = (BuildCommand) objectStack.peek();
 			//presence of this element indicates the builder is configurable
+			String string = charBuffer.toString();
 			command.setConfigurable(true);
 			//clear all existing values
-			command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
-			command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
-			command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, false);
-			command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
+			parseBuildTriggers(command, string);
+		}
+	}
 
-			//set new values according to value in the triggers element
-			StringTokenizer tokens = new StringTokenizer(charBuffer.toString(), ","); //$NON-NLS-1$
-			while (tokens.hasMoreTokens()) {
-				String next = tokens.nextToken();
-				if (next.equalsIgnoreCase(TRIGGER_AUTO)) {
-					command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, true);
-				} else if (next.equalsIgnoreCase(TRIGGER_CLEAN)) {
-					command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, true);
-				} else if (next.equalsIgnoreCase(TRIGGER_FULL)) {
-					command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
-				} else if (next.equalsIgnoreCase(TRIGGER_INCREMENTAL)) {
-					command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
-				}
+	static void parseBuildTriggers(BuildCommand command, String string) {
+		command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
+		command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, false);
+		command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, false);
+		command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, false);
+
+		// set new values according to value in the triggers element
+		StringTokenizer tokens = new StringTokenizer(string, ","); //$NON-NLS-1$
+		while (tokens.hasMoreTokens()) {
+			String next = tokens.nextToken();
+			if (next.equalsIgnoreCase(TRIGGER_AUTO)) {
+				command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, true);
+			} else if (next.equalsIgnoreCase(TRIGGER_CLEAN)) {
+				command.setBuilding(IncrementalProjectBuilder.CLEAN_BUILD, true);
+			} else if (next.equalsIgnoreCase(TRIGGER_FULL)) {
+				command.setBuilding(IncrementalProjectBuilder.FULL_BUILD, true);
+			} else if (next.equalsIgnoreCase(TRIGGER_INCREMENTAL)) {
+				command.setBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD, true);
 			}
 		}
 	}

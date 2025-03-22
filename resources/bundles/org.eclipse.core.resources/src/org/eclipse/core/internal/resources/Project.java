@@ -326,7 +326,7 @@ public class Project extends Container implements IProject {
 					updateDescription();
 					// make sure the .location file is written
 					workspace.getMetaArea().writePrivateDescription(this);
-				} else {
+				} else if (!desc.isWorkspacePrivate()) {
 					// write out the project
 					writeDescription(IResource.FORCE);
 				}
