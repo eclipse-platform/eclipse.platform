@@ -217,7 +217,7 @@ Above, we already discussed most of the basic functionality of the org.eclipse.c
 *   [FAQ How can I track the lifecycle of jobs?](./FAQ_How_can_I_track_the_lifecycle_of_jobs.md "FAQ How can I track the lifecycle of jobs?")
 *   [FAQ How do I create a repeating background task?](./FAQ_How_do_I_create_a_repeating_background_task.md "FAQ How do I create a repeating background task?")
 *   [FAQ How do I explicitly use Chromium as the Browser's underlying renderer?](./FAQ-How-do-I-explicitly-use-Chromium-as-the-Browser's-underlying-renderer.md "FAQ How do I explicitly use Chromium as the Browser's underlying renderer?")
-*   [FAQ How do I explicitly use Edge as the Browser's underlying renderer?](./FAQ-How-do-I-explicitly-use-Edge-as-the-Browser's-underlying-renderer.md "FAQ How do I explicitly use Edge as the Browser's underlying renderer?")
+*   [FAQ How do I use Edge/IE as the Browser's underlying renderer?](./FAQ_How_do_I_use_Edge-IE_as_the_Browser's_underlying_renderer.md "FAQ How do I use Edge/IE as the Browser's underlying renderer?")
 *   [FAQ How do I specify the default type of native renderer that is used by the Browser?](./FAQ-How-do-I-specify-the-default-type-of-native-renderer-that-is-used-by-the-Browser.md "FAQ How do I specify the default type of native renderer that is used by the Browser?")
 *   [FAQ Which GTK version do I need to run SWT?](./FAQ-Which-GTK-version-do-I-need-to-run-SWT.md "FAQ Which GTK version do I need to run SWT?")
 *   [FAQ Which platforms support the SWT Browser, and which native renderers are available?](./FAQ-Which-platforms-support-the-SWT-Browser,-and-which-native-renderers-are-available.md "FAQ Which platforms support the SWT Browser, and which native renderers are available?")
