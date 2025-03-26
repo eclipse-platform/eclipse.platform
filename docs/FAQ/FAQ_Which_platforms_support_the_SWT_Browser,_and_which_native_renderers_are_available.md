@@ -5,12 +5,14 @@ The SWT Browser is currently available on all supported platforms. Available ren
 
 | Renderer              | Platform         | Style Flag     | Default |
 | --------------------- | ---------------- | -------------- | ------- |
-| Internet Explorer     | Windows          | `SWT.IE`       | Yes     |
+| Edge (Chromium-based) | Windows          | `SWT.EDGE`     | Yes     |
 | WebKit                | macOS, Linux GTK | `SWT.WEBKIT`   | Yes     |
-| Edge (Chromium-based) | Windows          | `SWT.EDGE`     | No      |
+| Internet Explorer     | Windows          | `SWT.IE`       | No      |
 | Chromium              | All              | `SWT.CHROMIUM` | No      |
 
 _Note: As of Eclipse/SWT 4.8, Mozilla (`XULRunner`) renderer is no longer supported, `SWT.MOZILLA` flag is deprecated and has no effect._
+
+_Note: As of Eclipse/SWT 4.35, Edge became the default browser on Windows._
 
 Browser instances created with style `SWT.NONE` will use the default platform renderer according to the table above. The default renderer does not require additional software installation. It is possible to override the default native renderer. See [How do I specify the default type of native renderer that is used by the Browser](./FAQ-How-do-I-specify-the-default-type-of-native-renderer-that-is-used-by-the-Browser).
 
