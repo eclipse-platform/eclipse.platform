@@ -235,7 +235,7 @@ public abstract class AbstractIntroElement implements Cloneable {
 	}
 
 	/**
-	 * DOM getAttribute retruns an empty string (not null) if attribute is not
+	 * DOM getAttribute returns an empty string (not null) if attribute is not
 	 * defined. Override this behavior to be consistent with Intro Model, and
 	 * IConfiguration element.
 	 */
@@ -305,10 +305,10 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 * <p>
 	 * Rules:
 	 * <ul>
-	 * <li>For the model root, it retruns null.</li>
+	 * <li>For the model root, it returns null.</li>
 	 * <li>For the introPart presentation it returns a model root.</li>
 	 * <li>For Pages, it returns an intro model root.</li>
-	 * <li>For all other elements, it retruns a subclass of abstract container.
+	 * <li>For all other elements, it returns a subclass of abstract container.
 	 * </li>
 	 * <li>for divs that are children of configs (shared divs), it returns the
 	 * holding model root.</li>

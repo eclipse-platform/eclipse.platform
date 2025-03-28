@@ -107,7 +107,7 @@ public class ConfiguratorUtils {
 	}
 
 	/**
-	 * @return the URL of this eclispe installation
+	 * @return the URL of this eclipse installation
 	 */
 	public static URL getInstallURL() {
 		return Utils.getInstallURL();
