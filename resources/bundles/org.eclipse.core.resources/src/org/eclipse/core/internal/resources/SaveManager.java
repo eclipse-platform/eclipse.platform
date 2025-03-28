@@ -1371,6 +1371,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * @return Status object containing non-critical warnings, or an OK status.
 	 */
 	protected IStatus saveMetaInfo(Project project, IProgressMonitor monitor) throws CoreException {
+		if (project.internalGetDescription().isWorkspacePrivate()) {
+			return Status.OK_STATUS;
+		}
 		long start = System.currentTimeMillis();
 		//if there is nothing on disk, write the description
 		if (!workspace.getFileSystemManager().hasSavedDescription(project)) {
