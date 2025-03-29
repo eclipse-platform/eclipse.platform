@@ -1505,14 +1505,14 @@
                definitionId="org.eclipse.ui.edit.copy"
                helpContextId="copy_breakpoints_action_context"
                class="org.eclipse.debug.internal.ui.actions.breakpointGroups.CopyBreakpointsActionDelegate"
-               menubarPath="breakpointGroup"
+               menubarPath="BreakpointAdditionalGroup"
                id="org.eclipse.debug.ui.breakpointsView.toolbar.copy"/>
          <action
                label="%SelectAll.label"
                helpContextId="select_all_breakpoints_action_context"
                definitionId="org.eclipse.ui.edit.selectAll"
                class="org.eclipse.debug.internal.ui.actions.breakpoints.SelectAllBreakpointsAction"
-               menubarPath="breakpointGroup"
+               menubarPath="BreakpointAdditionalGroup"
                id="org.eclipse.debug.ui.actions.SelectAllBreakpointsAction">
          </action>
          <action
@@ -1520,7 +1520,7 @@
                icon="$nl$/icons/full/elcl16/rem_all_co.png"
                helpContextId="remove_all_breakpoints_action_context"
                class="org.eclipse.debug.internal.ui.actions.breakpoints.RemoveAllBreakpointsAction"
-               menubarPath="breakpointGroup"
+               menubarPath="BreakpointAdditionalGroup"
                id="org.eclipse.debug.ui.actions.RemoveAllBreakpoints">
          </action>
          <action
@@ -1528,7 +1528,7 @@
                icon="$nl$/icons/full/elcl16/rem_all_triggers.png"
                helpContextId="remove_all_breakpoints_action_context"
                class="org.eclipse.debug.internal.ui.actions.breakpoints.RemoveAllTriggerPointsAction"
-               menubarPath="breakpointGroup"
+               menubarPath="BreakpointAdditionalGroup"
                id="org.eclipse.debug.ui.actions.RemoveAllTriggerpoints">
          </action>
         <action
@@ -1536,7 +1536,7 @@
                icon="$nl$/icons/full/elcl16/rem_co.png"
                helpContextId="remove_breakpoint_action_context"
                class="org.eclipse.debug.internal.ui.actions.breakpoints.RemoveBreakpointAction"
-               menubarPath="breakpointGroup"
+               menubarPath="BreakpointAdditionalGroup"
                enablesFor="+"
                id="org.eclipse.debug.ui.breakpointsView.toolbar.remove">
         </action>
@@ -1545,7 +1545,7 @@
                icon="$nl$/icons/full/elcl16/disabled_co.png"
                helpContextId="disable_breakpoint_action_context"
                class="org.eclipse.debug.internal.ui.actions.breakpoints.DisableAllBreakpointsAction"
-               menubarPath="breakpointGroup"
+               menubarPath="BreakpointAdditionalGroup"
                id="org.eclipse.debug.ui.actions.DisableAllBreakpoint">
         </action>
         <action
