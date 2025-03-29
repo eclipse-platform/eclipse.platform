@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -2829,15 +2829,14 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			byte[] content = e.getValue();
 			file.setContents(content, updateFlags, subMon.split(1));
 		}
-		createMultiple(filesToCreate, createFlags, subMon.split(filesToCreate.size()), executorService);
+		if (!filesToCreate.isEmpty()) {
+			createMultiple(filesToCreate, createFlags, subMon.split(filesToCreate.size()), executorService);
+		}
 	}
 
 	/** @see File#create(byte[], int, IProgressMonitor) **/
 	private void createMultiple(ConcurrentMap<File, byte[]> filesToCreate, int updateFlags, IProgressMonitor monitor,
 			ExecutorService executorService) throws CoreException {
-		if (filesToCreate.isEmpty()) {
-			return;
-		}
 		Set<File> files = filesToCreate.keySet();
 		for (File file : files) {
 			file.checkValidPath(file.path, IResource.FILE, true);
