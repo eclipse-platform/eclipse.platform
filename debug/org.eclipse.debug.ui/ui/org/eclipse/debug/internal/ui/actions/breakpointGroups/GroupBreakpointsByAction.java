@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2013 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.breakpoints.provisional.IBreakpointOrganizer;
@@ -132,17 +134,21 @@ public class GroupBreakpointsByAction extends AbstractBreakpointsViewAction impl
 
 	private void addAccel(int accel, IAction action, String label) {
 		StringBuilder actionLabel= new StringBuilder();
-		if (accel != 10) {
-			if (accel < 10) {
-				// add the numerical accelerators 1 through 9
-				actionLabel.append('&');
+		boolean showAcc = Platform.getPreferencesService().getBoolean(DebugPlugin.getUniqueIdentifier(),
+				DebugPlugin.PREF_SHOW_BREAKPOINT_GROUPBY_TYPE_SHORTCUTS, true, null);
+		if (showAcc) {
+			if (accel != 10) {
+				if (accel < 10) {
+					// add the numerical accelerators 1 through 9
+					actionLabel.append('&');
+				}
+				actionLabel.append(accel);
+			} else {
+				actionLabel.append("1&0"); //$NON-NLS-1$
 			}
-			actionLabel.append(accel);
-		} else {
-			actionLabel.append("1&0"); //$NON-NLS-1$
+			accel++;
+			actionLabel.append(' ');
 		}
-		accel++;
-		actionLabel.append(' ');
 		actionLabel.append(label);
 		action.setText(actionLabel.toString());
 	}

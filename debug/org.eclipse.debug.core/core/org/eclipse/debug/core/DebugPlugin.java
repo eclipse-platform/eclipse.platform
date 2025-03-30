@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -378,6 +378,13 @@ public class DebugPlugin extends Plugin {
 	 * @since 3.8
 	 */
 	public static final String ATTR_PATH = PI_DEBUG_CORE + ".ATTR_PATH"; //$NON-NLS-1$
+
+	/**
+	 * Attribute key for breakpoint grouping types accelerators
+	 *
+	 * @since 3.23
+	 */
+	public static final String PREF_SHOW_BREAKPOINT_GROUPBY_TYPE_SHORTCUTS = PI_DEBUG_CORE + ".PREF_FOR_BP_GROUP_TYPE_ACCELERATOR"; //$NON-NLS-1$
 
 	/**
 	 * Launch configuration attribute that designates whether or not the

@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.internal.core.Preferences;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.debug.internal.ui.breakpoints.provisional.IBreakpointOrganizer;
@@ -73,6 +76,7 @@ public class GroupBreakpointsByDialog extends TrayDialog {
 	private Button fRemoveButton;
 	private Button fMoveUpButton;
 	private Button fMoveDownButton;
+	private Button fBreakpointGroupAccel;
 
 	/**
 	 * Selection listener that listens to selection from all buttons in this
@@ -127,6 +131,15 @@ public class GroupBreakpointsByDialog extends TrayDialog {
 
 		initializeContent();
 		updateViewers();
+
+		fBreakpointGroupAccel = new Button(composite, SWT.CHECK);
+		fBreakpointGroupAccel.setText(BreakpointGroupMessages.GroupBreakpointsByDialog_8);
+		GridData gridDataCheckbox = new GridData();
+		gridDataCheckbox.horizontalSpan = 3;
+		fBreakpointGroupAccel.setLayoutData(gridDataCheckbox);
+		boolean set = Platform.getPreferencesService().getBoolean(DebugPlugin.getUniqueIdentifier(),
+				DebugPlugin.PREF_SHOW_BREAKPOINT_GROUPBY_TYPE_SHORTCUTS, true, null);
+		fBreakpointGroupAccel.setSelection(set);
 		Dialog.applyDialogFont(parentComposite);
 		return parentComposite;
 	}
@@ -254,6 +267,8 @@ public class GroupBreakpointsByDialog extends TrayDialog {
 	 */
 	@Override
 	protected void okPressed() {
+		Preferences.setBoolean(DebugPlugin.getUniqueIdentifier(),
+				DebugPlugin.PREF_SHOW_BREAKPOINT_GROUPBY_TYPE_SHORTCUTS, fBreakpointGroupAccel.getSelection(), null);
 		Object[] factories= fSelectedOrganizersProvider.getElements(null);
 		while (factories.length > 0) {
 			Object factory= factories[0];

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 Vector Informatik GmbH and others.
+ * Copyright (c) 2023, 2025 Vector Informatik GmbH and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -63,6 +63,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.tests.harness.FileSystemHelper;
@@ -187,8 +188,9 @@ public final class ResourceTestUtil {
 	 */
 	public static void createInWorkspace(final IResource[] resources) throws CoreException {
 		IWorkspaceRunnable body = monitor -> {
+			SubMonitor subMonitor = SubMonitor.convert(monitor, resources.length);
 			for (IResource resource : resources) {
-				createInWorkspace(resource, monitor);
+				createInWorkspace(resource, subMonitor.split(1));
 			}
 		};
 		getWorkspace().run(body, createTestMonitor());
@@ -198,19 +200,21 @@ public final class ResourceTestUtil {
 		if (resource == null || resource.exists()) {
 			return;
 		}
+		SubMonitor subMonitor = SubMonitor.convert(monitor, 2);
 		if (!resource.getParent().exists()) {
-			createInWorkspace(resource.getParent(), monitor);
+			createInWorkspace(resource.getParent(), subMonitor.split(1));
 		}
 		switch (resource.getType()) {
 		case IResource.FILE:
-			((IFile) resource).create(nullInputStream(), true, monitor);
+			((IFile) resource).create(nullInputStream(), true, subMonitor.split(1));
 			break;
 		case IResource.FOLDER:
-			((IFolder) resource).create(true, true, monitor);
+			((IFolder) resource).create(true, true, subMonitor.split(1));
 			break;
 		case IResource.PROJECT:
-			((IProject) resource).create(monitor);
-			((IProject) resource).open(monitor);
+			subMonitor.setWorkRemaining(2);
+			((IProject) resource).create(subMonitor.split(1));
+			((IProject) resource).open(subMonitor.split(1));
 			break;
 		}
 	}
