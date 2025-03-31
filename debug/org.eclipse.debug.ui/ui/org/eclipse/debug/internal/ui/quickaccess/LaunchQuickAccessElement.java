@@ -52,7 +52,7 @@ public class LaunchQuickAccessElement extends QuickAccessElement {
 
 	private static void registerImage(String key) {
 		Bundle bundle = FrameworkUtil.getBundle(DebugPluginImages.class);
-		String path = "$nl$/icons/full/ovr16/quickaccess_" + key + ".png"; //$NON-NLS-1$ //$NON-NLS-2$
+		String path = "$nl$/icons/full/ovr16/quickaccess_" + key + ".svg"; //$NON-NLS-1$ //$NON-NLS-2$
 		if (bundle == null) {
 			REGISTRY.put(key, ImageDescriptor.getMissingImageDescriptor());
 		} else {
