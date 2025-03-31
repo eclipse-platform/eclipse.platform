@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.0 r9654"
+   sodipodi:docname="expression_obj.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="15.999999"
+     inkscape:cx="13.456912"
+     inkscape:cy="3.444714"
+     inkscape:document-units="px"
+     inkscape:current-layer="g8159"
+     showgrid="true"
+     inkscape:window-width="469"
+     inkscape:window-height="455"
+     inkscape:window-x="75"
+     inkscape:window-y="75"
+     inkscape:window-maximized="0"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4092" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline"
+     transform="translate(0,-1036.3622)">
+    <g
+       style="display:inline"
+       id="g8159"
+       transform="translate(-8.2201163,-12.904699)">
+      <path
+         style="font-size:7.78048944000000020px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#396595;fill-opacity:1;stroke:none;font-family:Sans"
+         d="M 0.96875 1.25 L 2.875 3.96875 L 0.8125 6.90625 L 2.03125 6.90625 L 3.4375 4.71875 L 4.84375 6.90625 L 6.09375 6.90625 L 4 3.96875 L 5.90625 1.25 L 4.65625 1.25 L 3.4375 3.21875 L 2.1875 1.25 L 0.96875 1.25 z M 7.96875 1.25 L 7.96875 3.28125 L 6.09375 3.28125 L 6.09375 4.09375 L 7.96875 4.09375 L 7.96875 6.125 L 8.78125 6.125 L 8.78125 4.09375 L 10.65625 4.09375 L 10.65625 3.28125 L 8.78125 3.28125 L 8.78125 1.25 L 7.96875 1.25 z M 10.9375 1.25 L 13.03125 6.90625 C 12.713758 7.8191227 12.305946 8.2812486 11.8125 8.28125 C 11.735996 8.2812486 11.67599 8.292804 11.59375 8.28125 C 11.511508 8.2696933 11.424078 8.249563 11.34375 8.21875 L 11.34375 9.125 C 11.435554 9.155812 11.543407 9.1759424 11.65625 9.1875 C 11.769092 9.1990531 11.877593 9.2187477 12 9.21875 C 12.263936 9.2187477 12.500065 9.1448755 12.6875 9.03125 C 12.874932 8.9176203 13.044054 8.764717 13.1875 8.5625 C 13.330942 8.3602797 13.443917 8.1249293 13.5625 7.84375 C 13.681078 7.5625689 13.811266 7.245207 13.9375 6.90625 L 16.0625 1.25 L 14.96875 1.25 L 13.5 5.6875 L 12 1.25 L 10.9375 1.25 z M 7.875 7.75 C 7.1922058 7.7500084 6.6454949 7.9659881 6.25 8.40625 C 5.8694264 8.835334 5.687499 9.4123662 5.6875 10.125 L 6.625 10.125 C 6.6249981 9.1698448 7.0429619 8.6875074 7.875 8.6875 C 8.1809469 8.6875074 8.4613002 8.8022589 8.71875 9 C 8.9948473 9.2164109 9.1249956 9.4515185 9.125 9.75 C 9.1249956 10.201469 8.9682571 10.571385 8.625 10.84375 C 8.3078527 11.090008 7.9771215 11.351233 7.65625 11.59375 C 7.312986 11.966864 7.1562476 12.493519 7.15625 13.1875 L 7.15625 13.90625 L 8.09375 13.90625 L 8.09375 13.1875 C 8.0937466 12.724847 8.2705417 12.32461 8.625 12 L 9.625 11.1875 C 9.9794494 10.814395 10.156245 10.352114 10.15625 9.78125 C 10.156245 9.2178605 9.9262692 8.7117353 9.4375 8.3125 C 8.9785702 7.9319358 8.449586 7.7500084 7.875 7.75 z M 1.0625 9.0625 L 1.0625 9.875 L 4.03125 9.875 L 4.03125 9.0625 L 1.0625 9.0625 z M 1.0625 11.15625 L 1.0625 11.9375 L 4.03125 11.9375 L 4.03125 11.15625 L 1.0625 11.15625 z M 7.03125 15.03125 L 7.03125 16.15625 L 8.21875 16.15625 L 8.21875 15.03125 L 7.03125 15.03125 z "
+         transform="translate(8.2201163,1049.2669)"
+         id="text4105" />
+      <text
+         xml:space="preserve"
+         style="font-size:10px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Gautami;-inkscape-font-specification:Gautami"
+         x="31.619894"
+         y="1061.2869"
+         id="text4105-1"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan4107-7"
+           x="31.619894"
+           y="1061.2869">Gautami</tspan></text>
+    </g>
+  </g>
+</svg>
