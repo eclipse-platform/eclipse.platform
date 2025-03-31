@@ -253,7 +253,7 @@ public interface IDebugPreferenceConstants {
 	 *
 	 * @since 3.1
 	 */
-	String PREF_TABLE_RENDERING_PAGE_SIZE = "org.eclispe.debug.ui.memory.pageSize"; //$NON-NLS-1$
+	String PREF_TABLE_RENDERING_PAGE_SIZE = "org.eclipse.debug.ui.memory.pageSize"; //$NON-NLS-1$
 
 	/**
 	 * Default page size when dynamic loading mode is off.  This preference is stored
@@ -321,21 +321,21 @@ public interface IDebugPreferenceConstants {
 	 *
 	 * @since 3.3
 	 */
-	String PREF_TABLE_RENDERING_PRE_BUFFER_SIZE = "org.eclispe.debug.ui.memory.preBufferSize"; //$NON-NLS-1$
+	String PREF_TABLE_RENDERING_PRE_BUFFER_SIZE = "org.eclipse.debug.ui.memory.preBufferSize"; //$NON-NLS-1$
 
 	/**
 	 * Number of lines to preload after the visible region in the table rendering
 	 *
 	 * @since 3.3
 	 */
-	String PREF_TABLE_RENDERING_POST_BUFFER_SIZE = "org.eclispe.debug.ui.memory.postBufferSize"; //$NON-NLS-1$
+	String PREF_TABLE_RENDERING_POST_BUFFER_SIZE = "org.eclipse.debug.ui.memory.postBufferSize"; //$NON-NLS-1$
 
 	/**
 	 * The layout mode in Debug view.
 	 *
 	 * @since 3.5
 	 */
-	String DEBUG_VIEW_MODE = "org.eclispe.debug.ui.Debug_view.mode"; //$NON-NLS-1$
+	String DEBUG_VIEW_MODE = "org.eclipse.debug.ui.Debug_view.mode"; //$NON-NLS-1$
 	String DEBUG_VIEW_MODE_AUTO = "Debug_view.mode.auto"; //$NON-NLS-1$
 	String DEBUG_VIEW_MODE_COMPACT = "Debug_view.mode.compact"; //$NON-NLS-1$
 	String DEBUG_VIEW_MODE_FULL = "Debug_view.mode.full"; //$NON-NLS-1$
@@ -345,14 +345,14 @@ public interface IDebugPreferenceConstants {
 	 *
 	 * @since 3.5
 	 */
-	String DEBUG_VIEW_BREADCRUMB_AUTO_EXPAND_DROP_DOWN = "org.eclispe.debug.ui.Debug_view.Breadcrumb.dropDownAutoexpand"; //$NON-NLS-1$
+	String DEBUG_VIEW_BREADCRUMB_AUTO_EXPAND_DROP_DOWN = "org.eclipse.debug.ui.Debug_view.Breadcrumb.dropDownAutoexpand"; //$NON-NLS-1$
 
 	/**
 	 * Perspectives in which the debug toolbar is hidden.
 	 *
 	 * @since 3.8
 	 */
-	String DEBUG_VIEW_TOOLBAR_HIDDEN_PERSPECTIVES = "org.eclispe.debug.ui.Debug_view.debug_toolbar_hidden_perspectives"; //$NON-NLS-1$
+	String DEBUG_VIEW_TOOLBAR_HIDDEN_PERSPECTIVES = "org.eclipse.debug.ui.Debug_view.debug_toolbar_hidden_perspectives"; //$NON-NLS-1$
 }
 
 
