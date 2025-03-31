@@ -95,3 +95,4 @@ Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.ui.forms.widgets
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: org.eclipse.debug.ui
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"
