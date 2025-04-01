@@ -18,3 +18,4 @@ Bundle-Activator: org.eclipse.compare.internal.win32.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Automatic-Module-Name: org.eclipse.compare.win32
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"

@@ -914,7 +914,7 @@ public class Utilities {
 			image = PlatformUI.getWorkbench().getSharedImages().getImage(
 			/* IWorkbenchGraphicConstants */"IMG_LCL_VIEW_MENU"); //$NON-NLS-1$
 		} else {
-			image = CompareUIPlugin.getImageDescriptor("elcl16/view_menu.png").createImage(); //$NON-NLS-1$
+			image = CompareUIPlugin.getImageDescriptor("elcl16/view_menu.svg").createImage(); //$NON-NLS-1$
 			item.addDisposeListener(e -> {
 				Image img = item.getImage();
 				if ((img != null) && (!img.isDisposed())) {

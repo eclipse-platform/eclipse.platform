@@ -727,7 +727,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			return selectedEdition.getImage();
 		if (selectedEdition instanceof HistoryItem) {
 			if (fTimeImage == null) {
-				String iconName= Utilities.getString(fBundle, "timeIcon", "obj16/resource_obj.png"); //$NON-NLS-1$ //$NON-NLS-2$
+				String iconName= Utilities.getString(fBundle, "timeIcon", "obj16/resource_obj.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 				ImageDescriptor id= CompareUIPlugin.getImageDescriptor(iconName);
 				if (id != null)
 					fTimeImage= id.createImage();
@@ -1031,7 +1031,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 		if (lastDay == null || day != dayNumber(((Date)lastDay.getData()).getTime())) {
 			lastDay= new TreeItem(fEditionTree, SWT.NONE);
 			if (fDateImage == null) {
-				String iconName= Utilities.getString(fBundle, "dateIcon", "obj16/day_obj.png"); //$NON-NLS-2$ //$NON-NLS-1$
+				String iconName= Utilities.getString(fBundle, "dateIcon", "obj16/day_obj.svg"); //$NON-NLS-2$ //$NON-NLS-1$
 				ImageDescriptor id= CompareUIPlugin.getImageDescriptor(iconName);
 				if (id != null)
 					fDateImage= id.createImage();
