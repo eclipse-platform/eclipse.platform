@@ -201,7 +201,7 @@ public class PatchUITest {
 	}
 
 	private void openPatchWizard() {
-		ImageDescriptor patchWizardImage = CompareUIPlugin.getImageDescriptor("wizban/applypatch_wizban.png");
+		ImageDescriptor patchWizardImage = CompareUIPlugin.getImageDescriptor("wizban/applypatch_wizban.svg");
 		String patchWizardTitle = PatchMessages.PatchWizard_title;
 
 		IStorage patch = null;

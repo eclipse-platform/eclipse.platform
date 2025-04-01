@@ -58,7 +58,7 @@ public class PatchWizard extends Wizard {
 	public PatchWizard(IStorage patch, IResource target, CompareConfiguration configuration) {
 		Assert.isNotNull(configuration);
 		this.fConfiguration = configuration;
-		setDefaultPageImageDescriptor(CompareUIPlugin.getImageDescriptor("wizban/applypatch_wizban.png")); //$NON-NLS-1$
+		setDefaultPageImageDescriptor(CompareUIPlugin.getImageDescriptor("wizban/applypatch_wizban.svg")); //$NON-NLS-1$
 		setWindowTitle(PatchMessages.PatchWizard_title);
 		initializeDialogSettings();
 		fPatcher= new WorkspacePatcher(target);
