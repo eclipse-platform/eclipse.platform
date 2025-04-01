@@ -54,42 +54,42 @@ public class AntUIImages {
 	 */
 	private static void declareImages() {
 		// Ant Editor images
-		declareRegistryImage(IAntUIConstants.IMG_PROPERTY, OBJECT + "property_obj.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_TASK_PROPOSAL, OBJECT + "task_obj.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_TEMPLATE_PROPOSAL, OBJECT + "template_obj.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_PROPERTY, OBJECT + "property_obj.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_TASK_PROPOSAL, OBJECT + "task_obj.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_TEMPLATE_PROPOSAL, OBJECT + "template_obj.svg"); //$NON-NLS-1$
 
-		declareRegistryImage(IAntUIConstants.IMG_SEGMENT_EDIT, T_ETOOL + "segment_edit.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_MARK_OCCURRENCES, T_ETOOL + "mark_occurrences.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_SEGMENT_EDIT, T_ETOOL + "segment_edit.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_MARK_OCCURRENCES, T_ETOOL + "mark_occurrences.svg"); //$NON-NLS-1$
 
 		// Ant View Actions
-		declareRegistryImage(IAntUIConstants.IMG_ANT, OBJECT + "ant.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_REMOVE, LOCALTOOL + "remove_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_REMOVE_ALL, LOCALTOOL + "removeall_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ADD, LOCALTOOL + "add_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_RUN, LOCALTOOL + "run_tool.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_SEARCH, LOCALTOOL + "search.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT, OBJECT + "ant.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_REMOVE, LOCALTOOL + "remove_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_REMOVE_ALL, LOCALTOOL + "removeall_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ADD, LOCALTOOL + "add_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_RUN, LOCALTOOL + "run_tool.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_SEARCH, LOCALTOOL + "search.svg"); //$NON-NLS-1$
 
-		declareRegistryImage(IAntUIConstants.IMG_FILTER_INTERNAL_TARGETS, LOCALTOOL + "filter_internal_targets.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_FILTER_IMPORTED_ELEMENTS, LOCALTOOL + "filter_imported_elements.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_FILTER_PROPERTIES, LOCALTOOL + "filter_properties.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_FILTER_TOP_LEVEL, LOCALTOOL + "filter_top_level.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_LINK_WITH_EDITOR, LOCALTOOL + "synced.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_SORT_OUTLINE, LOCALTOOL + "alpha_mode.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_REFRESH, LOCALTOOL + "refresh.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_FILTER_INTERNAL_TARGETS, LOCALTOOL + "filter_internal_targets.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_FILTER_IMPORTED_ELEMENTS, LOCALTOOL + "filter_imported_elements.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_FILTER_PROPERTIES, LOCALTOOL + "filter_properties.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_FILTER_TOP_LEVEL, LOCALTOOL + "filter_top_level.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_LINK_WITH_EDITOR, LOCALTOOL + "synced.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_SORT_OUTLINE, LOCALTOOL + "alpha_mode.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_REFRESH, LOCALTOOL + "refresh.svg"); //$NON-NLS-1$
 
 		// Ant View Labels
-		declareRegistryImage(IAntUIConstants.IMG_ANT_PROJECT, OBJECT + "ant_buildfile.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_TARGET, OBJECT + "targetpublic_obj.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_TARGET_INTERNAL, OBJECT + "targetinternal_obj.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_DEFAULT_TARGET, OBJECT + "defaulttarget_obj.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_TARGET_ERROR, OBJECT + "ant_target_err.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_PROJECT, OBJECT + "ant_buildfile.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_TARGET, OBJECT + "targetpublic_obj.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_TARGET_INTERNAL, OBJECT + "targetinternal_obj.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_DEFAULT_TARGET, OBJECT + "defaulttarget_obj.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_TARGET_ERROR, OBJECT + "ant_target_err.svg"); //$NON-NLS-1$
 
 		// ANT objects
-		declareRegistryImage(IAntUIConstants.IMG_TAB_CLASSPATH, OBJECT + "classpath.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_TYPE, OBJECT + "type.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_TASKDEF, OBJECT + "taskdef_obj.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_MACRODEF, OBJECT + "macrodef_obj.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_IMPORT, OBJECT + "import_obj.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_TAB_CLASSPATH, OBJECT + "classpath.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_TYPE, OBJECT + "type.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_TASKDEF, OBJECT + "taskdef_obj.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_MACRODEF, OBJECT + "macrodef_obj.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_IMPORT, OBJECT + "import_obj.svg"); //$NON-NLS-1$
 		declareRegistryImage(IAntUIConstants.IMG_ANT_ECLIPSE_RUNTIME_OBJECT, OBJECT + "eclipse16.png"); //$NON-NLS-1$
 
 		declareRegistryImage(IAntUIConstants.IMG_WIZARD_BANNER, WIZ + "ant_wiz.png"); //$NON-NLS-1$
@@ -97,9 +97,9 @@ public class AntUIImages {
 		declareRegistryImage(IAntUIConstants.IMG_TAB_ANT_TARGETS, LOCALTOOL + "ant_targets.png"); //$NON-NLS-1$
 
 		// Overlays
-		declareRegistryImage(IAntUIConstants.IMG_OVR_ERROR, OVR + "error_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_OVR_WARNING, OVR + "warning_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_OVR_IMPORT, OVR + "import_co.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_OVR_ERROR, OVR + "error_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_OVR_WARNING, OVR + "warning_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_OVR_IMPORT, OVR + "import_co.svg"); //$NON-NLS-1$
 	}
 
 	/**
