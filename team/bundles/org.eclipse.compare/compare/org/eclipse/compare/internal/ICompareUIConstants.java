@@ -18,23 +18,23 @@ public interface ICompareUIConstants {
 	public final String PREFIX = CompareUIPlugin.getPluginId() + "."; //$NON-NLS-1$
 
 	public static final String DTOOL_NEXT= "dlcl16/next_nav.png";	//$NON-NLS-1$
-	public static final String ETOOL_NEXT= "elcl16/next_nav.png";	//$NON-NLS-1$
+	public static final String ETOOL_NEXT = "elcl16/next_nav.svg"; //$NON-NLS-1$
 	public static final String CTOOL_NEXT= ETOOL_NEXT;
 
 	public static final String DTOOL_PREV= "dlcl16/prev_nav.png";	//$NON-NLS-1$
-	public static final String ETOOL_PREV= "elcl16/prev_nav.png";	//$NON-NLS-1$
+	public static final String ETOOL_PREV = "elcl16/prev_nav.svg"; //$NON-NLS-1$
 	public static final String CTOOL_PREV= ETOOL_PREV;
 
-	public static final String HUNK_OBJ = "obj16/hunk_obj.png"; //$NON-NLS-1$
+	public static final String HUNK_OBJ = "obj16/hunk_obj.svg"; //$NON-NLS-1$
 
-	public static final String ERROR_OVERLAY= "ovr16/error_ov.png"; //$NON-NLS-1$
-	public static final String IS_MERGED_OVERLAY= "ovr16/merged_ov.png"; //$NON-NLS-1$
-	public static final String REMOVED_OVERLAY= "ovr16/removed_ov.png"; //$NON-NLS-1$
-	public static final String WARNING_OVERLAY= "ovr16/warning_ov.png"; //$NON-NLS-1$
+	public static final String ERROR_OVERLAY = "ovr16/error_ov.svg"; //$NON-NLS-1$
+	public static final String IS_MERGED_OVERLAY = "ovr16/merged_ov.svg"; //$NON-NLS-1$
+	public static final String REMOVED_OVERLAY = "ovr16/removed_ov.svg"; //$NON-NLS-1$
+	public static final String WARNING_OVERLAY = "ovr16/warning_ov.svg"; //$NON-NLS-1$
 
-	public static final String RETARGET_PROJECT= "eview16/compare_view.png";	//$NON-NLS-1$
+	public static final String RETARGET_PROJECT = "eview16/compare_view.svg"; //$NON-NLS-1$
 
-	public static final String IGNORE_WHITESPACE_ENABLED= "etool16/ignorews_edit.png";	//$NON-NLS-1$
+	public static final String IGNORE_WHITESPACE_ENABLED = "etool16/ignorews_edit.svg"; //$NON-NLS-1$
 	public static final String IGNORE_WHITESPACE_DISABLED= "dtool16/ignorews_edit.png";	//$NON-NLS-1$
 
 	public static final String PROP_ANCESTOR_VISIBLE = PREFIX + "AncestorVisible"; //$NON-NLS-1$

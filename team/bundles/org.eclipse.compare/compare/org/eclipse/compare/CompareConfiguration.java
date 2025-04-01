@@ -91,36 +91,49 @@ public class CompareConfiguration {
 
 	static {
 		// Not swapped (a.k.a. left is local)
-		fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.png"); //$NON-NLS-1$
-		fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_inadd_ov.png"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outadd_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.ADDITION] = CompareUIPlugin.getImageDescriptor("ovr16/add_ov.svg"); //$NON-NLS-1$
+		fgImages[Differencer.LEFT + Differencer.ADDITION] = CompareUIPlugin.getImageDescriptor("ovr16/r_inadd_ov.svg"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.ADDITION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/r_outadd_ov.svg"); //$NON-NLS-1$
 
-		fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.png"); //$NON-NLS-1$
-		fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_indel_ov.png"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outdel_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.DELETION] = CompareUIPlugin.getImageDescriptor("ovr16/del_ov.svg"); //$NON-NLS-1$
+		fgImages[Differencer.LEFT + Differencer.DELETION] = CompareUIPlugin.getImageDescriptor("ovr16/r_indel_ov.svg"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.DELETION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/r_outdel_ov.svg"); //$NON-NLS-1$
 
-		fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_inchg_ov.png"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_outchg_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.LEFT + Differencer.CHANGE] = CompareUIPlugin.getImageDescriptor("ovr16/r_inchg_ov.svg"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.CHANGE] = CompareUIPlugin.getImageDescriptor("ovr16/r_outchg_ov.svg"); //$NON-NLS-1$
 
-		fgImages[Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.png"); //$NON-NLS-1$
-		fgImages[Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.png"); //$NON-NLS-1$
-		fgImages[Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.CONFLICTING + Differencer.ADDITION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/confadd_ov.svg"); //$NON-NLS-1$
+		fgImages[Differencer.CONFLICTING + Differencer.DELETION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/confdel_ov.svg"); //$NON-NLS-1$
+		fgImages[Differencer.CONFLICTING + Differencer.CHANGE] = CompareUIPlugin
+				.getImageDescriptor("ovr16/confchg_ov.svg"); //$NON-NLS-1$
 
 		// Mirrored (a.k.a. right is local)
-		fgImages[16 + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.png"); //$NON-NLS-1$
-		fgImages[16 + Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/inadd_ov.png"); //$NON-NLS-1$
-		fgImages[16 + Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/outadd_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.ADDITION] = CompareUIPlugin.getImageDescriptor("ovr16/add_ov.svg"); //$NON-NLS-1$
+		fgImages[16 + Differencer.LEFT + Differencer.ADDITION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/inadd_ov.svg"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.ADDITION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/outadd_ov.svg"); //$NON-NLS-1$
 
-		fgImages[16 + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.png"); //$NON-NLS-1$
-		fgImages[16 + Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/indel_ov.png"); //$NON-NLS-1$
-		fgImages[16 + Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/outdel_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.DELETION] = CompareUIPlugin.getImageDescriptor("ovr16/del_ov.svg"); //$NON-NLS-1$
+		fgImages[16 + Differencer.LEFT + Differencer.DELETION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/indel_ov.svg"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.DELETION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/outdel_ov.svg"); //$NON-NLS-1$
 
-		fgImages[16 + Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/inchg_ov.png"); //$NON-NLS-1$
-		fgImages[16 + Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/outchg_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.LEFT + Differencer.CHANGE] = CompareUIPlugin.getImageDescriptor("ovr16/inchg_ov.svg"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.CHANGE] = CompareUIPlugin
+				.getImageDescriptor("ovr16/outchg_ov.svg"); //$NON-NLS-1$
 
-		fgImages[16 + Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.png"); //$NON-NLS-1$
-		fgImages[16 + Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.png"); //$NON-NLS-1$
-		fgImages[16 + Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.CONFLICTING + Differencer.ADDITION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/confadd_ov.svg"); //$NON-NLS-1$
+		fgImages[16 + Differencer.CONFLICTING + Differencer.DELETION] = CompareUIPlugin
+				.getImageDescriptor("ovr16/confdel_ov.svg"); //$NON-NLS-1$
+		fgImages[16 + Differencer.CONFLICTING + Differencer.CHANGE] = CompareUIPlugin
+				.getImageDescriptor("ovr16/confchg_ov.svg"); //$NON-NLS-1$
 	}
 
 	private final IPreferenceStore fPreferenceStore;

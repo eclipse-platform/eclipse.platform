@@ -176,7 +176,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 */
 	public static final String PROP_SELECTED_EDITION= ICompareUIConstants.PROP_SELECTED_EDITION;
 
-	private static final String COMPARE_EDITOR_IMAGE_NAME= "eview16/compare_view.png"; //$NON-NLS-1$
+	private static final String COMPARE_EDITOR_IMAGE_NAME = "eview16/compare_view.svg"; //$NON-NLS-1$
 	private static Image fgTitleImage;
 
 	private Splitter fComposite;

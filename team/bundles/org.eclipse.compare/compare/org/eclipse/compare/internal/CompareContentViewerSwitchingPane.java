@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPane {
-	private static final String OPTIMIZED_INFO_IMAGE_NAME = "obj16/message_info.png"; //$NON-NLS-1$
+	private static final String OPTIMIZED_INFO_IMAGE_NAME = "obj16/message_info.svg"; //$NON-NLS-1$
 	public static final String OPTIMIZED_ALGORITHM_USED = "OPTIMIZED_ALGORITHM_USED"; //$NON-NLS-1$
 	public static final String DISABLE_CAPPING_TEMPORARILY = "DISABLE_CAPPING_TEMPORARILY"; //$NON-NLS-1$
 
