@@ -16,16 +16,21 @@ package org.eclipse.debug.internal.ui.views.launch;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
 import org.eclipse.debug.ui.IDebugModelPresentation;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Translates images, colors, and fonts into image descriptors, RGBs, and font
@@ -139,6 +144,20 @@ public class DebugElementHelper {
 		if (color != null) {
 			return color.getRGB();
 		}
+
+		if (element instanceof Breakpoint breakpoint) {
+			if (breakpoint.getBreakpointLabel() != null) {
+				final RGB[] rgb = new RGB[1];
+				Display.getDefault().syncExec(() -> {
+					Color redColor = Display.getDefault().getSystemColor(SWT.COLOR_RED);
+					rgb[0] = redColor.getRGB();
+				});
+				if (rgb[0] != null) {
+					return rgb[0];
+				}
+			}
+			return null;
+		}
 		return null;
 	}
 
@@ -217,7 +236,16 @@ public class DebugElementHelper {
 		if (font != null) {
 			return font.getFontData()[0];
 		}
+		if (element instanceof Breakpoint breakpoint) {
+			if (breakpoint.getBreakpointLabel() != null) {
+				var fontNew = JFaceResources.getFontDescriptor(IDebugUIConstants.PREF_VARIABLE_TEXT_FONT)
+						.getFontData()[0];
+				return new FontData(fontNew.getName(), fontNew.getHeight(), fontNew.getStyle() ^ SWT.BOLD);
+			}
+
+		}
 		return null;
+
 	}
 
 	/**
