@@ -1483,6 +1483,15 @@
                id="org.eclipse.debug.ui.breakpointsView.toolbar.remove">
         </action>
         <action
+               label="%breakpointLabel.label"
+               icon="$nl$/icons/full/elcl16/bp_label.svg"
+               tooltip="%breakpointLabel.tooltip"
+               class="org.eclipse.debug.internal.ui.actions.breakpoints.BreakpointLabelAction"
+               menubarPath="breakpointGroup"
+               enablesFor="1"
+               id="org.eclipse.debug.ui.breakpointsView.breakpointLabel">
+        </action>
+        <action
                label="%DisableAllBreakpointsAction.label"
                icon="$nl$/icons/full/elcl16/disabled_co.svg"
                helpContextId="disable_breakpoint_action_context"

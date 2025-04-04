@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -45,7 +45,6 @@ import org.eclipse.osgi.util.NLS;
 
 public abstract class Breakpoint extends PlatformObject implements IBreakpoint, ITriggerPoint {
 
-
 	/**
 	 * Creates a breakpoint.
 	 *
@@ -60,6 +59,13 @@ public abstract class Breakpoint extends PlatformObject implements IBreakpoint, 
 	 * Underlying marker.
 	 */
 	private volatile IMarker fMarker;
+
+	/**
+	 * Attribute for custom labeling in breakpoints
+	 *
+	 * @since 3.23
+	 */
+	private final String LABEL = "breakpointLabel"; //$NON-NLS-1$
 
 	/**
 	 * @see IBreakpoint#setMarker(IMarker)
@@ -382,6 +388,26 @@ public abstract class Breakpoint extends PlatformObject implements IBreakpoint, 
 		}
 		builder.append("]"); //$NON-NLS-1$
 		return builder.toString();
+	}
+
+	/**
+	 * Returns the label associated with this breakpoint, or <code>null</code>
+	 * if no specific label was defined.
+	 *
+	 * @since 3.23
+	 */
+	public String getBreakpointLabel() {
+		return getMarker().getAttribute(LABEL, null);
+	}
+
+	/**
+	 * Sets a new label for the breakpoint.
+	 *
+	 * @param labelValue provide by the user
+	 * @since 3.23
+	 */
+	public void setBreakpointLabel(String labelValue) throws CoreException {
+		setAttribute(LABEL, labelValue);
 	}
 
 }
