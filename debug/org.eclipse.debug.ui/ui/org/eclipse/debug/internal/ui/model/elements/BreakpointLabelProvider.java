@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2009, 2010 Texas Instruments and others
+ * Copyright (c) 2009, 2025 Texas Instruments and others
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@
 package org.eclipse.debug.internal.ui.model.elements;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
@@ -31,6 +32,11 @@ public class BreakpointLabelProvider extends DebugElementLabelProvider {
 	@Override
 	protected String getLabel(TreePath elementPath, IPresentationContext presentationContext, String columnId, int columnIndex) throws CoreException {
 		if (columnIndex == 0) {
+			if (elementPath.getFirstSegment() instanceof Breakpoint breakpoint) {
+				if (breakpoint.getBreakpointLabel() != null) {
+					return breakpoint.getBreakpointLabel();
+				}
+			}
 			return super.getLabel(elementPath, presentationContext, columnId, columnIndex);
 		} else {
 			return IInternalDebugCoreConstants.EMPTY_STRING;
