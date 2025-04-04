@@ -222,4 +222,3 @@ public interface IBreakpoint extends IAdaptable {
 
 }
 
-
