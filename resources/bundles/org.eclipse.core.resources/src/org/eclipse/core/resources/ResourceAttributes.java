@@ -36,19 +36,21 @@ public class ResourceAttributes {
 
 	/**
 	 * Creates a new resource attributes instance with attributes
-	 * taken from the specified file in the file system.  If the specified
-	 * file does not exist or is not accessible, this method has the
-	 * same effect as calling the default constructor.
+	 * taken from the specified file in the file system.
+	 * <p>
+	 * If the specified file does not exist or is not accessible,
+	 * returns an empty {@link Optional}.
+	 * </p>
 	 *
 	 * @param file The file to get attributes from
-	 * @return A resource attributes object
+	 * @return An {@link Optional} containing a resource attributes object if successful,
+	 *         or an empty {@link Optional} if the file is not accessible.
 	 */
-	public static ResourceAttributes fromFile(java.io.File file) {
+	public static Optional<ResourceAttributes> fromFile(java.io.File file) {
 		try {
-			return FileUtil.fileInfoToAttributes(EFS.getStore(file.toURI()).fetchInfo());
+			return Optional.of(FileUtil.fileInfoToAttributes(EFS.getStore(file.toURI()).fetchInfo()));
 		} catch (CoreException e) {
-			//file could not be accessed
-			return new ResourceAttributes();
+			return Optional.empty();
 		}
 	}
 
@@ -146,15 +148,23 @@ public class ResourceAttributes {
 	}
 
 	/**
-	 * Clears all of the bits indicated by the mask.
+	 * Sets or clears the bits indicated by the given mask based on the specified value.
+	 * <p>
+	 * This method is intended for internal use only. Clients should use specific setter methods
+	 * such as {@link #setArchive(boolean)}, {@link #setExecutable(boolean)} instead.
+	 * </p>
+	 *
+	 * @param mask The attribute mask to modify.
+	 * @param value <code>true</code> to set the bits, <code>false</code> to clear them.
 	 * @nooverride This method is not intended to be re-implemented or extended by clients.
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
-	public void set(int mask, boolean value) {
+	public ResourceAttributes set(int mask, boolean value) {
 		if (value)
 			attributes |= mask;
 		else
 			attributes &= ~mask;
+		return this;
 	}
 
 	/**
