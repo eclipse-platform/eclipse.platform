@@ -38,3 +38,4 @@ Import-Package: jakarta.annotation;version="[2.1.0,3.0.0)",
  org.xml.sax
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.eclipse.ui.intro
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"

@@ -34,7 +34,7 @@
       <intro
             class="org.eclipse.ui.intro.config.CustomizableIntroPart"
             contentDetector="org.eclipse.ui.internal.intro.universal.contentdetect.ContentDetector"
-            icon="$nl$/icons/welcome16.png"
+            icon="$nl$/icons/welcome16.svg"
             id="org.eclipse.ui.intro.universal"/>
    </extension>
    <extension

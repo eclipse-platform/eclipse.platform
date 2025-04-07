@@ -74,10 +74,10 @@ public class FormIntroPartImplementation extends
 		// REVISIT: register all common images here. Even if this part
 		// implementation is created again, the images will remain in plugin
 		// registry.
-		ImageUtil.registerImage(ImageUtil.DEFAULT_ROOT_LINK, "overview_48.png"); //$NON-NLS-1$
+		ImageUtil.registerImage(ImageUtil.DEFAULT_ROOT_LINK, "overview_48.svg"); //$NON-NLS-1$
 		ImageUtil.registerImage(ImageUtil.DEFAULT_SMALL_ROOT_LINK,
-			"overview_32.png"); //$NON-NLS-1$
-		ImageUtil.registerImage(ImageUtil.DEFAULT_FORM_BG, "form_banner.png"); //$NON-NLS-1$
+			"overview_32.svg"); //$NON-NLS-1$
+		ImageUtil.registerImage(ImageUtil.DEFAULT_FORM_BG, "form_banner.svg"); //$NON-NLS-1$
 		ImageUtil.registerImage(ImageUtil.DEFAULT_LINK, "welcome_item.gif"); //$NON-NLS-1$
 	}
 

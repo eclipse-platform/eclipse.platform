@@ -17,3 +17,4 @@ Bundle-Activator: org.eclipse.ui.internal.intro.universal.UniversalIntroPlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy;exclude:="org.eclipse.ui.internal.intro.universal.contentdetect"
 Automatic-Module-Name: org.eclipse.ui.intro.universal
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"

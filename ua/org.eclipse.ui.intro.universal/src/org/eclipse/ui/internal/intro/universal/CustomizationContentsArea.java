@@ -460,12 +460,12 @@ public class CustomizationContentsArea {
 				}
 			});
 		}
-		extensionImage = ImageUtil.createImage("full/obj16/extension_obj.png"); //$NON-NLS-1$
-		ihighImage = ImageUtil.createImage("full/obj16/ihigh_obj.png"); //$NON-NLS-1$
-		ilowImage = ImageUtil.createImage("full/obj16/ilow_obj.png"); //$NON-NLS-1$
-		inewImage = ImageUtil.createImage("full/obj16/inew_obj.png"); //$NON-NLS-1$
-		icalloutImage = ImageUtil.createImage("full/obj16/icallout_obj.png"); //$NON-NLS-1$
-		themeImage = ImageUtil.createImage("welcome16.png"); //$NON-NLS-1$
+		extensionImage = ImageUtil.createImage("full/obj16/extension_obj.svg"); //$NON-NLS-1$
+		ihighImage = ImageUtil.createImage("full/obj16/ihigh_obj.svg"); //$NON-NLS-1$
+		ilowImage = ImageUtil.createImage("full/obj16/ilow_obj.svg"); //$NON-NLS-1$
+		inewImage = ImageUtil.createImage("full/obj16/inew_obj.svg"); //$NON-NLS-1$
+		icalloutImage = ImageUtil.createImage("full/obj16/icallout_obj.svg"); //$NON-NLS-1$
+		themeImage = ImageUtil.createImage("welcome16.svg"); //$NON-NLS-1$
 		addPages();
 		org.eclipse.jface.dialogs.Dialog.applyDialogFont(container);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.ui.intro.universal.universalWelcomePreference"); //$NON-NLS-1$
