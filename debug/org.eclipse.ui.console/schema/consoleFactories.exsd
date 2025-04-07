@@ -94,7 +94,7 @@
   &lt;consoleFactory 
      label=&quot;Command Console&quot;
      class=&quot;com.example.CommandConsoleFactory&quot;
-     icon=&quot;icons/cmd_console.png&quot;&gt;
+     icon=&quot;icons/cmd_console.svg&quot;&gt;
   &lt;/consoleFactory&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
