@@ -348,13 +348,13 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		return null;
 	}
 
-	public static final String FILE_DIRTY_OVR = "ovr/dirty_ov.png"; //$NON-NLS-1$
-	public static final String FILE_CHECKEDIN_OVR = "ovr/version_controlled.png"; //$NON-NLS-1$
-	public static final String FILE_CHECKEDOUT_OVR = "ovr/checkedout_ov.png"; //$NON-NLS-1$
-	public static final String FILE_CONFLICT_OVR = "ovr/confchg_ov.png"; //$NON-NLS-1$
-	public static final String FILE_ERROR_OVR = "ovr/error_co.png"; //$NON-NLS-1$
-	public static final String FILE_WARNING_OVR = "ovr/warning_co.png"; //$NON-NLS-1$
-	public static final String FILE_HOURGLASS_OVR = "ovr/waiting_ovr.png"; //$NON-NLS-1$
+	public static final String FILE_DIRTY_OVR = "ovr/dirty_ov.svg"; //$NON-NLS-1$
+	public static final String FILE_CHECKEDIN_OVR = "ovr/version_controlled.svg"; //$NON-NLS-1$
+	public static final String FILE_CHECKEDOUT_OVR = "ovr/checkedout_ov.svg"; //$NON-NLS-1$
+	public static final String FILE_CONFLICT_OVR = "ovr/confchg_ov.svg"; //$NON-NLS-1$
+	public static final String FILE_ERROR_OVR = "ovr/error_co.svg"; //$NON-NLS-1$
+	public static final String FILE_WARNING_OVR = "ovr/warning_co.svg"; //$NON-NLS-1$
+	public static final String FILE_HOURGLASS_OVR = "ovr/waiting_ovr.svg"; //$NON-NLS-1$
 	/*
 	 * Initializes the table of images used in this plugin. The plugin is
 	 * provided because this method is called before the plugin staic
