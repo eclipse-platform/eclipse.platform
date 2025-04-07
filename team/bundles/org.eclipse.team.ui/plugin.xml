@@ -291,7 +291,7 @@
       </category>
       <view
             name="%SyncView.name"
-            icon="$nl$/icons/full/eview16/synch_synch.png"
+            icon="$nl$/icons/full/eview16/synch_synch.svg"
             fastViewWidthRatio="0.25"
             category="org.eclipse.team.ui"
             allowMultiple="true"
@@ -302,12 +302,12 @@
             allowMultiple="true"
             category="org.eclipse.team.ui"
             class="org.eclipse.team.internal.ui.history.GenericHistoryView"
-            icon="icons/full/eview16/history_view.png"
+            icon="icons/full/eview16/history_view.svg"
             id="org.eclipse.team.ui.GenericHistoryView"
             name="%HistoryView"/>
     <!--  <view
             name="%CompareView.name"
-            icon="$nl$/icons/full/eview16/compare_view.png"
+            icon="$nl$/icons/full/eview16/compare_view.svg"
             fastViewWidthRatio="0.25"
             category="org.eclipse.team.ui"
             class="org.eclipse.team.internal.ui.synchronize.CompareView"
@@ -319,7 +319,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             name="%Synchronizing.perspective"
-            icon="$nl$/icons/full/eview16/synch_synch.png"
+            icon="$nl$/icons/full/eview16/synch_synch.svg"
             class="org.eclipse.team.internal.ui.synchronize.TeamSynchronizingPerspective"
             id="org.eclipse.team.ui.TeamSynchronizingPerspective">
          <description>
@@ -349,7 +349,7 @@
 
       <wizard
             name="%ProjectSetImportWizard.name"
-            icon="$nl$/icons/full/obj/import_projectset.png"
+            icon="$nl$/icons/full/obj/import_projectset.svg"
             class="org.eclipse.team.internal.ui.wizards.ProjectSetImportWizard"
             category="org.eclipse.team.ui.importWizards"
             id="org.eclipse.team.ui.ProjectSetImportWizard">
@@ -373,7 +373,7 @@
       </category>
       <wizard
             name="%ProjectSetExportWizard.name"
-            icon="$nl$/icons/full/obj/export_projectset.png"
+            icon="$nl$/icons/full/obj/export_projectset.svg"
             class="org.eclipse.team.internal.ui.wizards.ProjectSetExportWizard"
             category="org.eclipse.team.ui.exportWizards"
             id="org.eclipse.team.ui.ProjectSetExportWizard">
@@ -501,7 +501,7 @@
                label="%Command.syncAll.name"
                tooltip="%Command.syncAll.name"
                class="org.eclipse.team.internal.ui.synchronize.actions.GlobalRefreshAction"
-               icon="$nl$/icons/full/elcl16/synch_participants.png"
+               icon="$nl$/icons/full/elcl16/synch_participants.svg"
                style="pulldown"
                id="org.eclipse.team.ui.synchronizeAll">
          </action>
@@ -625,7 +625,7 @@
          point="org.eclipse.team.ui.synchronizeParticipants">
       <participant
             class="org.eclipse.team.ui.synchronize.ModelSynchronizeParticipant"
-            icon="$nl$/icons/full/eview16/synch_synch.png"
+            icon="$nl$/icons/full/eview16/synch_synch.svg"
             id="org.eclipse.team.ui.synchronization_context_synchronize_participant"
             name="%ModelSyncParticipant"
             persistent="false">
@@ -637,7 +637,7 @@
          point="org.eclipse.team.ui.teamContentProviders">
       <teamContentProvider
             contentExtensionId="org.eclipse.team.ui.resourceContent"
-            icon="$nl$/icons/full/obj/workspace_obj.png"
+            icon="$nl$/icons/full/obj/workspace_obj.svg"
             modelProviderId="org.eclipse.core.resources.modelProvider"
             preferencePage="org.eclipse.team.internal.ui.preferences.ResourceModelPreferencePage"
             supportsFlatLayout="true"/>
@@ -658,7 +658,7 @@
          point="org.eclipse.ui.preferenceTransfer">
       <transfer
             id="org.eclipse.team.transfer.ignores"
-            icon="$nl$/icons/full/obj/ignoreprefs.png"
+            icon="$nl$/icons/full/obj/ignoreprefs.svg"
             name="%ignoresTransferName">
          <mapping
                scope="instance">
@@ -678,7 +678,7 @@
       <wizard
             class="org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchSynchronizationWizard"
             description="%PatchSyncWizard_description"
-            icon="icons/full/obj/hunk_obj.png"
+            icon="icons/full/obj/hunk_obj.svg"
             id="org.eclipse.team.ui.applyPatchWizard"
             name="%PatchSyncWizard">
       </wizard>
@@ -687,7 +687,7 @@
          point="org.eclipse.team.ui.synchronizeParticipants">
       <participant
             class="org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchModelSynchronizeParticipant"
-            icon="icons/full/obj/hunk_obj.png"
+            icon="icons/full/obj/hunk_obj.svg"
             id="org.eclipse.team.ui.applyPatchModelParticipant"
             name="%PatchSyncParticipant"
             persistent="false">
@@ -705,7 +705,7 @@
             point="org.eclipse.ui.navigator.navigatorContent">
          <navigatorContent
                contentProvider="org.eclipse.team.internal.ui.synchronize.patch.PatchSyncContentProvider"
-               icon="icons/full/obj/hunk_obj.png"
+               icon="icons/full/obj/hunk_obj.svg"
                id="org.eclipse.team.ui.patchSyncNavigatorContent"
                labelProvider="org.eclipse.team.internal.ui.synchronize.patch.PatchSyncLabelProvider"
                name="%PatchNavigatorContent"
@@ -788,7 +788,7 @@
             point="org.eclipse.team.ui.teamContentProviders">
          <teamContentProvider
                contentExtensionId="org.eclipse.team.ui.patchSyncNavigatorContent"
-               icon="icons/full/obj/hunk_obj.png"
+               icon="icons/full/obj/hunk_obj.svg"
                modelProviderId="org.eclipse.team.ui.patchModelProvider">
          </teamContentProvider>
       </extension>
