@@ -45,7 +45,7 @@
          point="org.eclipse.ui.views">
       <view
             name="%CHEAT_SHEETS"
-            icon="$nl$/icons/view16/cheatsheet_view.png"
+            icon="$nl$/icons/view16/cheatsheet_view.svg"
             category="org.eclipse.help.ui"
             fastViewWidthRatio="0.5"
             class="org.eclipse.ui.internal.cheatsheets.views.CheatSheetView"
@@ -170,10 +170,10 @@
          point="org.eclipse.ui.commandImages">
       <image
             commandId="org.eclipse.ui.cheatsheets.openCheatSheet"
-            icon="$nl$/icons/view16/cheatsheet_view.png"/>
+            icon="$nl$/icons/view16/cheatsheet_view.svg"/>
       <image
             commandId="org.eclipse.ui.cheatsheets.openCheatSheetURL"
-            icon="$nl$/icons/view16/cheatsheet_view.png"/>
+            icon="$nl$/icons/view16/cheatsheet_view.svg"/>
    </extension>
     <extension
     	point="org.eclipse.ui.bindings">
@@ -212,7 +212,7 @@
    <extension
          point="org.eclipse.help.base.searchParticipant">
       <searchParticipant
-            icon="$nl$/icons/view16/cheatsheet_view.png"
+            icon="$nl$/icons/view16/cheatsheet_view.svg"
             id="org.eclipse.ui.cheatsheets"
             name="%searchParticipant.name"
             participant="org.eclipse.ui.internal.cheatsheets.CheatsheetSearchParticipant"/>
@@ -221,11 +221,11 @@
          point="org.eclipse.ui.cheatsheets.cheatSheetContent">
       <taskEditor
             class="org.eclipse.ui.internal.cheatsheets.composite.views.CheatsheetTaskEditor"
-            icon="$nl$/icons/obj16/cheatsheet_task.png"
+            icon="$nl$/icons/obj16/cheatsheet_task.svg"
             id="cheatsheet"/>
       <taskExplorer
             class="org.eclipse.ui.internal.cheatsheets.composite.explorer.TreeTaskExplorer"
-            icon="$nl$/icons/elcl16/tree_explorer.png"
+            icon="$nl$/icons/elcl16/tree_explorer.svg"
             id="tree"
             name="Tree"/>
    </extension>

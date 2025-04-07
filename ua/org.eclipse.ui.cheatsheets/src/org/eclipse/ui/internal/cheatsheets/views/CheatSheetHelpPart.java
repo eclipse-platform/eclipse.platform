@@ -66,7 +66,7 @@ public class CheatSheetHelpPart extends AbstractFormPart implements IHelpPart {
 	 * @param tbm the toolbar to contribute to
 	 */
 	private void contributeToToolBar(IToolBarManager tbm) {
-		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("collapseall.png");//$NON-NLS-1$
+		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("collapseall.svg");//$NON-NLS-1$
 		ImageDescriptor collapseImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), path);
 		CheatSheetExpandRestoreAction expandRestoreAction = new CheatSheetExpandRestoreAction(Messages.COLLAPSE_ALL_BUT_CURRENT_TOOLTIP, false, viewer);
 		expandRestoreAction.setToolTipText(Messages.COLLAPSE_ALL_BUT_CURRENT_TOOLTIP);

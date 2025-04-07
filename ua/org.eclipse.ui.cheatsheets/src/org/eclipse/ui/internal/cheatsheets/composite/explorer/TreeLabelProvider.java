@@ -115,18 +115,18 @@ public class TreeLabelProvider extends LabelProvider {
 			images.put(ICompositeCheatSheetTask.NOT_STARTED, baseImage);
 
 			createImageWithOverlay(ICompositeCheatSheetTask.IN_PROGRESS,
-					"$nl$/icons/ovr16/task_in_progress.png", //$NON-NLS-1$
+					"$nl$/icons/ovr16/task_in_progress.svg", //$NON-NLS-1$
 					images,
 					desc);
 			createImageWithOverlay(ICompositeCheatSheetTask.SKIPPED,
-					"$nl$/icons/ovr16/task_skipped.png", //$NON-NLS-1$
+					"$nl$/icons/ovr16/task_skipped.svg", //$NON-NLS-1$
 					images,
 					desc);
 			createDisabledImage(kind, BLOCKED,
 					images,
 					baseImage);
 			createImageWithOverlay(ICompositeCheatSheetTask.COMPLETED,
-					"$nl$/icons/ovr16/task_complete.png", //$NON-NLS-1$
+					"$nl$/icons/ovr16/task_complete.svg", //$NON-NLS-1$
 					images,
 					desc);
 
@@ -137,13 +137,13 @@ public class TreeLabelProvider extends LabelProvider {
 	private ImageDescriptor getPredefinedImageDescriptor(String kind, boolean isEnabled) {
 		String filename;
 		if (ICompositeCheatsheetTags.CHEATSHEET_TASK_KIND.equals(kind)) {
-			filename = "cheatsheet_task.png"; //$NON-NLS-1$
+			filename = "cheatsheet_task.svg"; //$NON-NLS-1$
 		} else if (ITaskGroup.SET.equals(kind)) {
-			filename = "task_set.png"; //$NON-NLS-1$
+			filename = "task_set.svg"; //$NON-NLS-1$
 		} else if (ITaskGroup.CHOICE.equals(kind)) {
-			filename = "task_choice.png"; //$NON-NLS-1$
+			filename = "task_choice.svg"; //$NON-NLS-1$
 		} else if (ITaskGroup.SEQUENCE.equals(kind)) {
-			filename = "task_sequence.png"; //$NON-NLS-1$
+			filename = "task_sequence.svg"; //$NON-NLS-1$
 		} else {
 			return null;
 		}

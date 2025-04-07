@@ -24,7 +24,7 @@ import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
 
 public class SkipAction extends Action {
 
-	private static final String SKIP_CCS_TASK_GIF = "skip_ccs_task.png"; //$NON-NLS-1$
+	private static final String SKIP_CCS_TASK_GIF = "skip_ccs_task.svg"; //$NON-NLS-1$
 	private final AbstractTask task;
 
 	public SkipAction(ICompositeCheatSheetTask task) {
