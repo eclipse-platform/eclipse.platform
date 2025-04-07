@@ -55,10 +55,10 @@ public class ConsolePluginImages {
 		// Actions
 
 		//local toolbars
-		declareRegistryImage(IConsoleConstants.IMG_LCL_CLEAR, LOCALTOOL + "clear_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_PIN, LOCALTOOL + "pin.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_LOCK, LOCALTOOL + "lock_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_WRAP, LOCALTOOL + "wordwrap.png"); //$NON-NLS-1$
+		declareRegistryImage(IConsoleConstants.IMG_LCL_CLEAR, LOCALTOOL + "clear_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_PIN, LOCALTOOL + "pin.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_LOCK, LOCALTOOL + "lock_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_WRAP, LOCALTOOL + "wordwrap.svg"); //$NON-NLS-1$
 
 		// disabled local toolbars
 		declareRegistryImage(IInternalConsoleConstants.IMG_DLCL_CLEAR, DLCL + "clear_co.png"); //$NON-NLS-1$
@@ -69,15 +69,15 @@ public class ConsolePluginImages {
 		declareRegistryImage(IInternalConsoleConstants.IMG_DLCL_NEW_CON, DLCL + "new_con.png"); //$NON-NLS-1$
 
 		// enabled local toolbars
-		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_CLEAR, ELCL + "clear_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_PIN, ELCL + "pin.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_LOCK, ELCL + "lock_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_WRAP, ELCL + "wordwrap.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_CLOSE, ELCL + "rem_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_NEW_CON, ELCL + "new_con.png"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_CLEAR, ELCL + "clear_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_PIN, ELCL + "pin.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_LOCK, ELCL + "lock_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_WRAP, ELCL + "wordwrap.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_CLOSE, ELCL + "rem_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_NEW_CON, ELCL + "new_con.svg"); //$NON-NLS-1$
 
 		// Views
-		declareRegistryImage(IConsoleConstants.IMG_VIEW_CONSOLE, VIEW + "console_view.png"); //$NON-NLS-1$
+		declareRegistryImage(IConsoleConstants.IMG_VIEW_CONSOLE, VIEW + "console_view.svg"); //$NON-NLS-1$
 	}
 
 	/**
