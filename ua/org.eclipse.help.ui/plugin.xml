@@ -77,7 +77,7 @@
       </category>
       <view
             allowMultiple="false"
-            icon="$nl$/icons/view16/help_view.png"
+            icon="$nl$/icons/view16/help_view.svg"
             class="org.eclipse.help.ui.internal.views.HelpView"
             category="org.eclipse.help.ui"
             name="%HelpViewName"
@@ -100,7 +100,7 @@
             scopeFactory="org.eclipse.help.ui.internal.search.LocalSearchScopeFactory"
             label="%LocalHelp.label"
             class="org.eclipse.help.internal.search.federated.LocalHelp"
-            icon="$nl$/icons/obj16/slocalhelp_obj.png"
+            icon="$nl$/icons/obj16/slocalhelp_obj.svg"
             pageClass="org.eclipse.help.ui.internal.search.LocalHelpPage"
             id="org.eclipse.help.ui.localSearch">
          <description>
@@ -111,7 +111,7 @@
             scopeFactory="org.eclipse.help.ui.internal.search.InfoCenterSearchScopeFactory"
             label="%InfoCenter.label"
             class="org.eclipse.help.internal.search.InfoCenter"
-            icon="$nl$/icons/obj16/sinfocenter_obj.png"
+            icon="$nl$/icons/obj16/sinfocenter_obj.svg"
             pageClass="org.eclipse.help.ui.internal.search.InfoCenterPage"
             id="org.eclipse.help.ui.infoCenter">
          <description>
@@ -122,7 +122,7 @@
             scopeFactory="org.eclipse.help.ui.internal.search.WebSearchScopeFactory"
             label="%WebSearch.label"
             class="org.eclipse.help.internal.search.WebSearch"
-            icon="$nl$/icons/obj16/sweb_obj.png"
+            icon="$nl$/icons/obj16/sweb_obj.svg"
             id="org.eclipse.help.ui.web"
             pageClass="org.eclipse.help.ui.internal.search.WebSearchPage">
          <description>
@@ -164,7 +164,7 @@
          point="org.eclipse.ui.commandImages">
       <image
             commandId="org.eclipse.help.ui.indexcommand"
-            icon="icons/etool16/index_co.png">
+            icon="icons/etool16/index_co.svg">
       </image>
    </extension>
    <extension
