@@ -687,7 +687,7 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 		customizeAction
 				.setToolTipText(Messages.SharedIntroConfigurer_customize_text);
 		customizeAction.setImageDescriptor(ImageUtil
-				.createImageDescriptor("full/elcl16/configure.png")); //$NON-NLS-1$
+				.createImageDescriptor("full/elcl16/configure.svg")); //$NON-NLS-1$
 		site.getActionBars().getToolBarManager().appendToGroup(TB_ADDITIONS,
 				customizeAction);
 	}
