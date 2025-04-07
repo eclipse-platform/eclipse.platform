@@ -40,8 +40,8 @@ public class IntroModelLabelProvider extends LabelProvider {
 
 	static {
 		ImageUtil.registerImage(ImageUtil.INTRO_MODEL_CONTAINER,
-			"container_obj.png"); //$NON-NLS-1$
-		ImageUtil.registerImage(ImageUtil.INTRO_MODEL_LEAF, "topic.png"); //$NON-NLS-1$
+			"container_obj.svg"); //$NON-NLS-1$
+		ImageUtil.registerImage(ImageUtil.INTRO_MODEL_LEAF, "topic.svg"); //$NON-NLS-1$
 	}
 
 	public IntroModelLabelProvider() {
