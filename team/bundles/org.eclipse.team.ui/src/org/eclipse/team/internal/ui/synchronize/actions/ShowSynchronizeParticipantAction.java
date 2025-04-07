@@ -82,8 +82,8 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 
 	private static final class ParticipantOverlay extends CompositeImageDescriptor {
 
-		private final ImageData pinnedData = TeamUIPlugin.getImageDescriptor("ovr/pinned_ovr.png").getImageData(); //$NON-NLS-1$
-		private final ImageData scheduledData = TeamUIPlugin.getImageDescriptor("ovr/waiting_ovr.png").getImageData(); //$NON-NLS-1$
+		private final ImageData pinnedData = TeamUIPlugin.getImageDescriptor("ovr/pinned_ovr.svg").getImageData(); //$NON-NLS-1$
+		private final ImageData scheduledData = TeamUIPlugin.getImageDescriptor("ovr/waiting_ovr.svg").getImageData(); //$NON-NLS-1$
 		private ImageData imageData;
 		private ISynchronizeParticipant participant;
 
