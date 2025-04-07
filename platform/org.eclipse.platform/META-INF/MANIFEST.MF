@@ -15,3 +15,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.platform.internal;x-internal:=true
 Eclipse-BundleShape: dir
 Automatic-Module-Name: org.eclipse.platform
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"
