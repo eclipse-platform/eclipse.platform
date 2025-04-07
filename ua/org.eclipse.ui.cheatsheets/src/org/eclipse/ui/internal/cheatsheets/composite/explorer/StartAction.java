@@ -24,7 +24,7 @@ import org.eclipse.ui.internal.provisional.cheatsheets.ICompositeCheatSheetTask;
 
 public class StartAction extends Action {
 	private final AbstractTask task;
-	private static final String START_CCS_TASK_GIF = "start_ccs_task.png"; //$NON-NLS-1$
+	private static final String START_CCS_TASK_GIF = "start_ccs_task.svg"; //$NON-NLS-1$
 
 	public StartAction(ICompositeCheatSheetTask task) {
 		this.task = (AbstractTask) task;

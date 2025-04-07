@@ -34,7 +34,7 @@ public class CheatSheetExpandRestoreAction extends Action {
 		super(title);
 		this.viewer = viewer;
 
-		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("collapse_expand_all.png");//$NON-NLS-1$
+		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("collapse_expand_all.svg");//$NON-NLS-1$
 		collapseImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), path);
 		path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_DLCL).append("collapse_expand_all.png");//$NON-NLS-1$
 		disabledImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), path);

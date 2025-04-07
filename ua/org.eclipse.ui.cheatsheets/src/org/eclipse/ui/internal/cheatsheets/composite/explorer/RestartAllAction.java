@@ -31,7 +31,7 @@ public class RestartAllAction extends Action {
 	public RestartAllAction(ICompositeCheatSheet model) {
 		this.model = model;
 		this.setText(Messages.RESTART_ALL_MENU);
-		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("restart_all.png");//$NON-NLS-1$
+		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("restart_all.svg");//$NON-NLS-1$
 		ImageDescriptor restartImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), path);
 		this.setImageDescriptor(restartImage);
 	}
