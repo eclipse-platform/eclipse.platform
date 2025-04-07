@@ -36,7 +36,7 @@ public class ResetTaskAction extends Action {
 	public ResetTaskAction(ICompositeCheatSheetTask task) {
 		this.task = (AbstractTask) task;
 		this.setText(Messages.COMPOSITE_MENU_RESET);
-		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("return_to_start.png");//$NON-NLS-1$
+		IPath path = CheatSheetPlugin.ICONS_PATH.append(CheatSheetPlugin.T_ELCL).append("return_to_start.svg");//$NON-NLS-1$
 		ImageDescriptor restartImage = CheatSheetPlugin.createImageDescriptor(CheatSheetPlugin.getPlugin().getBundle(), path);
 		this.setImageDescriptor(restartImage);
 	}
