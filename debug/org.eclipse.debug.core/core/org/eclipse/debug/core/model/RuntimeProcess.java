@@ -166,6 +166,22 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 		launch.addProcess(this);
 		fMonitor.start();
 		fireCreationEvent();
+		startStreams();
+	}
+
+	/**
+	 * Called after notification that this runtime process is created to start
+	 * the reading of streams. Must be overridden if a custom
+	 * {@link IStreamsProxy} instance is provided by
+	 * {@link #createStreamsProxy()} that do not extends {@link StreamsProxy}
+	 * and does not start the stream reading in any other mean.
+	 *
+	 * @since 3.23
+	 */
+	protected void startStreams() {
+		if (fStreamsProxy instanceof StreamsProxy impl) {
+			impl.startMonitoring(fThreadNameSuffix);
+		}
 	}
 
 	private static String getPidInfo(Process process, ILaunch launch) {
@@ -389,7 +405,7 @@ public class RuntimeProcess extends PlatformObject implements IProcess {
 		if (charset == null) {
 			charset = Platform.getSystemCharset();
 		}
-		return new StreamsProxy(getSystemProcess(), charset, fThreadNameSuffix);
+		return new StreamsProxy(getSystemProcess(), charset);
 	}
 
 	/**

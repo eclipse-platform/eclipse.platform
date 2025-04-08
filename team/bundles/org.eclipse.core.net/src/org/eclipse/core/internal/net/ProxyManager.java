@@ -74,7 +74,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 				};
 			}
 		} catch (Exception e) {
-			Activator.logInfo("Problems occured during the proxy provider initialization.", e); //$NON-NLS-1$
+			Activator.logInfo("Problems occurred during the proxy provider initialization.", e); //$NON-NLS-1$
 		}
 		preferenceManager = Activator.getInstance().getPreferenceManager();
 	}

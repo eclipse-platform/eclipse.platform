@@ -28,6 +28,7 @@
    <extension-point id="statusHandlers" name="%statusHandlerExtensionPointName" schema="schema/statusHandlers.exsd"/>
    <extension-point id="watchExpressionDelegates" name="%watchExpressionDelegatesName" schema="schema/watchExpressionDelegates.exsd"/>
    <extension-point id="processFactories" name="%processFactoriesExtensionPointName" schema="schema/processFactories.exsd"/>
+   <extension-point id="execFactories" name="%execFactoriesExtensionPointName" schema="schema/execFactories.exsd"/>
    <extension-point id="logicalStructureTypes" name="%logicalStructureTypesExtensionPointName" schema="schema/logicalStructureTypes.exsd"/>
    <extension-point id="sourceContainerTypes" name="%sourceContainerTypesName" schema="schema/sourceContainerTypes.exsd"/>
    <extension-point id="sourcePathComputers" name="%sourcePathComputersName" schema="schema/sourcePathComputers.exsd"/>

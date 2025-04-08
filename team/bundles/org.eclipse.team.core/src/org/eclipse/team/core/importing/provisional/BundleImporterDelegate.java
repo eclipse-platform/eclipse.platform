@@ -80,7 +80,7 @@ public abstract class BundleImporterDelegate implements IBundleImporterDelegate 
 								results[i] = new ScmUrlImportDescription(url, project);
 							}
 						} catch (BundleException e) {
-							TeamPlugin.log(IStatus.ERROR, "An exception occured while parsing a manifest header", e);//$NON-NLS-1$
+							TeamPlugin.log(IStatus.ERROR, "An exception occurred while parsing a manifest header", e);//$NON-NLS-1$
 						}
 					}
 				}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -378,7 +378,8 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, destination.getFullPath(), message, null);
 		}
 		getHistoryStore().copyHistory(target, destination, false);
-		CopyVisitor visitor = new CopyVisitor(target, destination, updateFlags, subMonitor.split(100));
+		int totalWork = ((Resource) target).countResources(IResource.DEPTH_INFINITE, false);
+		CopyVisitor visitor = new CopyVisitor(target, destination, updateFlags, subMonitor.split(100), totalWork);
 		UnifiedTree tree = new UnifiedTree(target);
 		tree.accept(visitor, IResource.DEPTH_INFINITE);
 		IStatus status = visitor.getStatus();

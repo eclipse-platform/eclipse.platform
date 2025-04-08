@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -337,9 +337,8 @@ class ResourceTree implements IResourceTree {
 	 */
 	private boolean internalDeleteFolder(IFolder folder, int flags, IProgressMonitor monitor) {
 		String message = NLS.bind(Messages.resources_deleting, folder.getFullPath());
-		monitor.beginTask("", Policy.totalWork); //$NON-NLS-1$
-		monitor.subTask(message);
-		Policy.checkCanceled(monitor);
+		SubMonitor subMonitor = SubMonitor.convert(monitor, Policy.totalWork).checkCanceled();
+		subMonitor.subTask(message);
 
 		// Do nothing if the folder doesn't exist in the workspace.
 		if (!folder.exists())
@@ -360,7 +359,7 @@ class ResourceTree implements IResourceTree {
 
 		try {
 			//this will delete local and workspace
-			localManager.delete(folder, flags, Policy.subMonitorFor(monitor, Policy.totalWork));
+			localManager.delete(folder, flags, subMonitor.split(Policy.totalWork, SubMonitor.SUPPRESS_NONE));
 		} catch (CoreException ce) {
 			message = NLS.bind(Messages.localstore_couldnotDelete, folder.getFullPath());
 			IStatus status = new ResourceStatus(IStatus.ERROR, IResourceStatus.FAILED_DELETE_LOCAL, folder.getFullPath(), message, ce);
@@ -907,7 +906,7 @@ class ResourceTree implements IResourceTree {
 		try {
 			lock.acquire();
 			String message = NLS.bind(Messages.resources_moving, source.getFullPath());
-			monitor.subTask(message);
+			monitor.beginTask(message, Policy.totalWork);
 
 			// These pre-conditions should all be ok but just in case...
 			if (!source.exists() || destination.exists() || !destination.getParent().isAccessible())

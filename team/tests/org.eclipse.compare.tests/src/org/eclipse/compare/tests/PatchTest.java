@@ -295,7 +295,7 @@ public class PatchTest {
 		if (failures.size() == 1) {
 			throw failures.get(0);
 		} else if (failures.size() > 1) {
-			AssertionError aggregatedFailure = new AssertionError("Failures occured while testing data from patchdata subfolder");
+			AssertionError aggregatedFailure = new AssertionError("Failures occurred while testing data from patchdata subfolder");
 			failures.forEach(failure -> aggregatedFailure.addSuppressed(failure));
 			throw aggregatedFailure;
 		}
@@ -343,7 +343,7 @@ public class PatchTest {
 						try {
 							properties.load(jes.getContents());
 						} catch (IOException e) {
-							fail("IOException occured while loading the Patch Configuration file for "
+							fail("IOException occurred while loading the Patch Configuration file for "
 									+ entryName.toString());
 						}
 						processProperties(result, properties, entryName);
@@ -374,7 +374,7 @@ public class PatchTest {
 				try {
 					properties.load(Files.newBufferedReader(pcPath));
 				} catch (IOException e) {
-					fail("IOException occured while loading the Patch Configuration file for " + subfolder.toString());
+					fail("IOException occurred while loading the Patch Configuration file for " + subfolder.toString());
 				}
 				processProperties(result, properties, subfolder.getName());
 			} else {

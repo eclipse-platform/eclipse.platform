@@ -119,7 +119,7 @@ public abstract class AbstractSourceLookupDirector implements ISourceLookupDirec
 		/**
 		 * Returns any exception that occurred during source lookup.
 		 *
-		 * @return the (any) exception that occured during source lookup
+		 * @return the (any) exception that occurred during source lookup
 		 */
 		public Throwable getException() {
 			return fException;
@@ -474,8 +474,7 @@ public abstract class AbstractSourceLookupDirector implements ISourceLookupDirec
 		List<Object> sources = query.getSourceElements();
 		Throwable exception = query.getException();
 		if (exception != null) {
-			if (exception instanceof CoreException) {
-				CoreException ce = (CoreException) exception;
+			if (exception instanceof CoreException ce) {
 				if (ce.getStatus().getSeverity() == IStatus.ERROR) {
 					DebugPlugin.log(ce);
 				}

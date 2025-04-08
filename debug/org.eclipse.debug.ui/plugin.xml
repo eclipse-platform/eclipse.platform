@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <!--
-     Copyright (c) 2005, 2021 IBM Corporation and others.
+     Copyright (c) 2005, 2025 IBM Corporation and others.
 
      This program and the accompanying materials
      are made available under the terms of the Eclipse Public License 2.0
@@ -1547,6 +1547,15 @@
                class="org.eclipse.debug.internal.ui.actions.breakpoints.DisableAllBreakpointsAction"
                menubarPath="breakpointGroup"
                id="org.eclipse.debug.ui.actions.DisableAllBreakpoint">
+        </action>
+        <action
+               label="%DisableOtherBreakpointsAction.label"
+               icon="$nl$/icons/full/elcl16/disabled_co.png"
+               helpContextId="disable_breakpoint_action_context"
+               class="org.eclipse.debug.internal.ui.actions.breakpoints.DisableAllOtherBreakpointsAction"
+               menubarPath="breakpointGroup"
+               enablesFor="+"
+               id="org.eclipse.debug.ui.actions.DisableAllOtherBreakpoint">
         </action>
         <action
                label="%DisableBreakpointsAction.label"

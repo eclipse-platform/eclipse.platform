@@ -347,7 +347,7 @@ public final class Team {
 									TeamPlugin
 											.log(IStatus.WARNING,
 													NLS.bind(
-															Messages.Team_Conflict_occured_for_ignored_resources_pattern,
+															Messages.Team_Conflict_occurred_for_ignored_resources_pattern,
 															new Object[] {
 																	pattern,
 																	collectContributingExtentionsToDisplay(

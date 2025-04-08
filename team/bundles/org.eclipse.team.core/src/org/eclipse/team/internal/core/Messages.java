@@ -67,7 +67,7 @@ public class Messages extends NLS {
 	public static String RemoteSyncElement_auto;
 
 	public static String Team_Error_loading_ignore_state_from_disk_1;
-	public static String Team_Conflict_occured_for_ignored_resources_pattern;
+	public static String Team_Conflict_occurred_for_ignored_resources_pattern;
 
 	public static String RemoteContentsCache_cacheDisposed;
 	public static String RemoteContentsCache_fileError;

@@ -42,7 +42,7 @@ public interface ISearchEngineResultCollector {
 	void accept(ISearchEngineResult[] searchResults);
 
 	/**
-	 * Notifies the collector that an error has occured in the search engine.
+	 * Notifies the collector that an error has occurred in the search engine.
 	 * The kinds of errors that are reported this way are not abnormal problems
 	 * or internal errors. Unexpected problems should be left to the job manager
 	 * to handle by throwing a <code>CoreException</code>. Use this method to

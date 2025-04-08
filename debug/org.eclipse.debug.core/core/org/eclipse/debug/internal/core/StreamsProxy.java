@@ -15,6 +15,8 @@ package org.eclipse.debug.internal.core;
 
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import org.eclipse.debug.core.model.IBinaryStreamMonitor;
@@ -33,41 +35,73 @@ public class StreamsProxy implements IBinaryStreamsProxy {
 	/**
 	 * The monitor for the output stream (connected to standard out of the process)
 	 */
-	private OutputStreamMonitor fOutputMonitor;
+	private final OutputStreamMonitor fOutputMonitor;
 	/**
 	 * The monitor for the error stream (connected to standard error of the process)
 	 */
-	private OutputStreamMonitor fErrorMonitor;
+	private final OutputStreamMonitor fErrorMonitor;
 	/**
 	 * The monitor for the input stream (connected to standard in of the process)
 	 */
-	private InputStreamMonitor fInputMonitor;
+	private final InputStreamMonitor fInputMonitor;
 	/**
 	 * Records the open/closed state of communications with
 	 * the underlying streams.  Note: fClosed is initialized to
 	 * <code>false</code> by default.
 	 */
 	private boolean fClosed;
+	private boolean started;
 
 	/**
 	 * Creates a <code>StreamsProxy</code> on the streams of the given system
-	 * process.
+	 * process and starts the monitoring.
 	 *
 	 * @param process system process to create a streams proxy on
 	 * @param charset the process's charset or <code>null</code> if default
 	 * @param suffix Thread name suffix
 	 */
-	@SuppressWarnings("resource")
 	public StreamsProxy(Process process, Charset charset, String suffix) {
+		this(process, charset);
+		startMonitoring(suffix);
+	}
+
+	/**
+	 * Creates a <code>StreamsProxy</code> on the streams of the given system
+	 * process, monitoring must be started separately.
+	 *
+	 * @param process system process to create a streams proxy on
+	 * @param charset the process's charset or <code>null</code> if default
+	 */
+	@SuppressWarnings("resource")
+	public StreamsProxy(Process process, Charset charset) {
 		if (process == null) {
-			return;
+			fOutputMonitor = new OutputStreamMonitor(InputStream.nullInputStream(), charset);
+			fErrorMonitor = new OutputStreamMonitor(InputStream.nullInputStream(), charset);
+			fInputMonitor = new InputStreamMonitor(OutputStream.nullOutputStream(), charset);
+		} else {
+			fOutputMonitor = new OutputStreamMonitor(process.getInputStream(), charset);
+			fErrorMonitor = new OutputStreamMonitor(process.getErrorStream(), charset);
+			fInputMonitor = new InputStreamMonitor(process.getOutputStream(), charset);
 		}
-		fOutputMonitor = new OutputStreamMonitor(process.getInputStream(), charset);
-		fErrorMonitor = new OutputStreamMonitor(process.getErrorStream(), charset);
-		fInputMonitor = new InputStreamMonitor(process.getOutputStream(), charset);
+	}
+
+	/**
+	 * Starts the monitoring of streams using the given suffix
+	 *
+	 * @param suffix
+	 */
+	public void startMonitoring(String suffix) {
+		start();
 		fOutputMonitor.startMonitoring("Output Stream Monitor" + suffix); //$NON-NLS-1$
 		fErrorMonitor.startMonitoring("Error Stream Monitor" + suffix); //$NON-NLS-1$
 		fInputMonitor.startMonitoring("Input Stream Monitor" + suffix); //$NON-NLS-1$
+	}
+
+	private synchronized void start() {
+		if (started) {
+			throw new IllegalStateException("Already started!"); //$NON-NLS-1$
+		}
+		started = true;
 	}
 
 	/**
@@ -78,7 +112,7 @@ public class StreamsProxy implements IBinaryStreamsProxy {
 	 * @param encoding the process's encoding or <code>null</code> if default
 	 * @deprecated use {@link #StreamsProxy(Process, Charset, String)} instead
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06")
 	public StreamsProxy(Process process, String encoding) {
 		// This constructor was once removed in favor of the Charset variant
 		// but Bug 562653 brought up a client which use this internal class via
@@ -178,4 +212,5 @@ public class StreamsProxy implements IBinaryStreamsProxy {
 			throw new IOException();
 		}
 	}
+
 }

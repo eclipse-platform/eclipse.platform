@@ -107,7 +107,7 @@ public class RemoteHelp {
 	}
 
 	/*
-	 * Sets the latest exception to have occured while communicating
+	 * Sets the latest exception to have occurred while communicating
 	 * with the remote help server.
 	 */
 	public static void setError(Throwable t) {

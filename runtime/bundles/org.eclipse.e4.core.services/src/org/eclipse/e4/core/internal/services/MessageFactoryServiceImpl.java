@@ -156,7 +156,7 @@ public class MessageFactoryServiceImpl implements IMessageFactoryService {
 	 *            bundle with a given locale.
 	 *
 	 * @return The created instance of the given messages class and {@link Locale} or
-	 *         <code>null</code> if an error occured on creating the instance.
+	 *         <code>null</code> if an error occurred on creating the instance.
 	 */
 	@SuppressWarnings("deprecation")
 	private <M> M createInstance(Locale locale, Class<M> messages, Message annotation,

@@ -135,8 +135,7 @@ public class LogicalStructureType implements ILogicalStructureType, ILogicalStru
 	@Override
 	public String getDescription(IValue value) {
 		ILogicalStructureTypeDelegate delegate = getDelegate();
-		if (delegate instanceof ILogicalStructureTypeDelegate2) {
-			ILogicalStructureTypeDelegate2 d2 = (ILogicalStructureTypeDelegate2) delegate;
+		if (delegate instanceof ILogicalStructureTypeDelegate2 d2) {
 			return d2.getDescription(value);
 		}
 		if (!fVerifiedDescription) {

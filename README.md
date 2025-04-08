@@ -38,7 +38,7 @@ For additional documentation, please refer to the [docs directory](./docs) and [
 
 ## Issue Tracking
 
-This project uses Github to track ongoing development and issues. In case you have an issue, please read the information about Eclipse being a [community project](https://github.com/eclipse-platform#community) and bear in mind that this project is almost entirely developed by volunteers. So the contributors may not be able to look into every reported issue. You will also find the information about [how to find and report issues](https://github.com/eclipse-platform#reporting-issues) in repositories of the `eclipse-platform` organization there. Be sure to search for existing issues before you create another one.
+This project uses GitHub to track ongoing development and issues. In case you have an issue, please read the information about Eclipse being a [community project](https://github.com/eclipse-platform#community) and bear in mind that this project is almost entirely developed by volunteers. So the contributors may not be able to look into every reported issue. You will also find the information about [how to find and report issues](https://github.com/eclipse-platform#reporting-issues) in repositories of the `eclipse-platform` organization there. Be sure to search for existing issues before you create another one.
 
 In case you want to report an issue that is specific to this `eclipse.platform` repository, you can [find existing issues](https://github.com/eclipse-platform/eclipse.platform/issues) or [create new issues](https://github.com/eclipse-platform/eclipse.platform/issues/new) within this repository.
 

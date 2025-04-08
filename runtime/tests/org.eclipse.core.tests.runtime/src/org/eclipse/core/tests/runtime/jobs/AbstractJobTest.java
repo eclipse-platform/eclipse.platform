@@ -83,7 +83,7 @@ public class AbstractJobTest  {
 
 	@BeforeEach
 	public void setProgressProvider() throws Exception {
-		assertNoTimeoutOccured();
+		assertNoTimeoutOccurred();
 		manager = Job.getJobManager();
 		progressProvider = new FussyProgressProvider();
 		manager.setProgressProvider(progressProvider);
@@ -93,10 +93,10 @@ public class AbstractJobTest  {
 	public void resetProgressProvider() throws Exception {
 		progressProvider.sanityCheck();
 		Job.getJobManager().setProgressProvider(null);
-		assertNoTimeoutOccured();
+		assertNoTimeoutOccurred();
 	}
 
-	protected final void assertNoTimeoutOccured() throws Exception {
+	protected final void assertNoTimeoutOccurred() throws Exception {
 		int jobListenerTimeout = JobListeners.getJobListenerTimeout();
 		JobListeners.resetJobListenerTimeout();
 		int defaultTimeout = JobListeners.getJobListenerTimeout();

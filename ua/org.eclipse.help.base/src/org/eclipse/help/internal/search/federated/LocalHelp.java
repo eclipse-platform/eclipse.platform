@@ -156,7 +156,7 @@ public class LocalHelp implements ISearchEngine2 {
 		}
 		catch (Throwable t) {
 			ILog.of(getClass())
-					.error("Error occured in search participant trying to open document with id: " + id //$NON-NLS-1$
+					.error("Error occurred in search participant trying to open document with id: " + id //$NON-NLS-1$
 							+ ", participant: " + participant.getClass().getName(), t); //$NON-NLS-1$
 			return false;
 		}

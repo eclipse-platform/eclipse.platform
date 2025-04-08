@@ -356,8 +356,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 				return false;
 			}
 			IResource resource = delta.getResource();
-			if (resource instanceof IFile) {
-				IFile file = (IFile)resource;
+			if (resource instanceof IFile file) {
 				if (ILaunchConfiguration.LAUNCH_CONFIGURATION_FILE_EXTENSION.equals(file.getFileExtension()) || ILaunchConfiguration.LAUNCH_CONFIGURATION_PROTOTYPE_FILE_EXTENSION.equals(file.getFileExtension())) {
 					ILaunchConfiguration handle = new LaunchConfiguration(file);
 					switch (delta.getKind()) {
@@ -2199,8 +2198,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 		for (ILaunch launch : getLaunches()) {
 			if(launch != null) {
 				try {
-					if (launch instanceof IDisconnect) {
-						IDisconnect disconnect = (IDisconnect)launch;
+					if (launch instanceof IDisconnect disconnect) {
 						if (disconnect.canDisconnect()) {
 							disconnect.disconnect();
 						}
