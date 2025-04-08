@@ -5,7 +5,7 @@
       <e4view
             category="org.eclipse.debug.ui"
             class="org.eclipse.debug.ui.launchview.internal.view.LaunchViewImpl"
-            icon="$nl$/icons/run_exc.png"
+            icon="$nl$/icons/run_exc.svg"
             id="org.eclipse.debug.ui.launchView"
             name="%LaunchView.name"
             restorable="true">
