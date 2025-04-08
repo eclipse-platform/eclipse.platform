@@ -21,3 +21,4 @@ Export-Package: org.eclipse.debug.ui.launchview;x-internal:=true,
 Automatic-Module-Name: org.eclipse.debug.ui.launchview
 Service-Component: OSGI-INF/org.eclipse.debug.ui.launchview.internal.impl.DebugCoreProvider.xml,
  OSGI-INF/org.eclipse.debug.ui.launchview.internal.model.LaunchViewModel.xml
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"
