@@ -36,6 +36,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.BrowserFunction;
 import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
@@ -166,16 +167,13 @@ public class EmbeddedBrowser {
 		shell.open();
 		//browser.setUrl("about:blank");
 
+		addNeedModalBrowserFunction(browser);
+		addResetNeedModalLocationListener(browser);
+
 		browser.addLocationListener(new LocationAdapter() {
 
 			@Override
 			public void changing(LocationEvent e) {
-				// hack to know when help webapp needs modal window
-				modalRequestTime = 0;
-				if (e.location != null
-						&& e.location.startsWith("javascript://needModal")) { //$NON-NLS-1$
-					modalRequestTime = System.currentTimeMillis();
-				}
 				if (!e.doit && e.location != null
 						&& e.location.startsWith("https://")) { //$NON-NLS-1$
 					try {
@@ -211,19 +209,33 @@ public class EmbeddedBrowser {
 		initialize(browser);
 		event.browser = browser;
 
-		browser.addLocationListener(new LocationAdapter() {
+		addNeedModalBrowserFunction(browser);
+		addResetNeedModalLocationListener(browser);
+	}
 
-			@Override
-			public void changing(LocationEvent e) {
-				// hack to know when help webapp needs modal window
-				modalRequestTime = 0;
-				if (e.location != null
-						&& e.location.startsWith("javascript://needModal")) { //$NON-NLS-1$
-					modalRequestTime = System.currentTimeMillis();
-				}
+	// hack to know when help webapp needs modal window
+	// use a browser function to be more robust
+	// see also https://github.com/eclipse-platform/eclipse.platform.swt/issues/2006
+	private void addNeedModalBrowserFunction(Browser browser) {
+		browser.getDisplay().asyncExec(() -> {
+			if (browser.isDisposed()) {
+				return;
 			}
+			new BrowserFunction(browser, "swtHintNeedModalPopup") { //$NON-NLS-1$
+				@Override
+				public Object function(Object[] arguments) {
+					super.function(arguments);
+					modalRequestTime = System.currentTimeMillis();
+					return null;
+				}
+			};
 		});
 	}
+
+	private void addResetNeedModalLocationListener(Browser browser) {
+		LocationListener.changingAdapter(e -> modalRequestTime = 0);
+	}
+
 	private static void initializeShell(Shell s) {
 		s.setText(initialTitle);
 		final Image[] shellImages = createImages();
