@@ -163,9 +163,8 @@ public class BreakpointsViewer extends CheckboxTreeViewer {
 		TreePath path = getTreePathFromItem(item);
 		if(path != null) {
 			Object element = path.getLastSegment();
-			if(element instanceof IBreakpoint) {
+			if(element instanceof IBreakpoint breakpoint) {
 				IBreakpointContainer container = null;
-				IBreakpoint breakpoint = (IBreakpoint) element;
 				for(int i = path.getSegmentCount()-2; i > -1; i--) {
 					container = (IBreakpointContainer) path.getSegment(i);
 					if(container.contains(breakpoint) && container.getOrganizer().canAdd(breakpoint, container.getCategory())) {
@@ -236,8 +235,7 @@ public class BreakpointsViewer extends CheckboxTreeViewer {
 			List<IBreakpoint> list = entry.getValue();
 			IBreakpointOrganizer organizer = container.getOrganizer();
 			IBreakpoint[] breakpoints = list.toArray(new IBreakpoint[list.size()]);
-			if (organizer instanceof IBreakpointOrganizerDelegateExtension) {
-				IBreakpointOrganizerDelegateExtension extension = (IBreakpointOrganizerDelegateExtension) organizer;
+			if (organizer instanceof IBreakpointOrganizerDelegateExtension extension) {
 				extension.removeBreakpoints(breakpoints, container.getCategory());
 			} else {
 				for (IBreakpoint bp : breakpoints) {
@@ -315,13 +313,12 @@ public class BreakpointsViewer extends CheckboxTreeViewer {
 		}
 		IBreakpoint breakpoint = null;
 		Object element = target.getData();
-		IBreakpointContainer container = (element instanceof IBreakpointContainer ? (IBreakpointContainer)element : getAddableContainer(target));
+		IBreakpointContainer container = (element instanceof IBreakpointContainer i ? i : getAddableContainer(target));
 		if(container == null) {
 			return false;
 		}
 		IBreakpointOrganizer organizer = container.getOrganizer();
-		if (organizer instanceof IBreakpointOrganizerDelegateExtension) {
-			IBreakpointOrganizerDelegateExtension extension = (IBreakpointOrganizerDelegateExtension) organizer;
+		if (organizer instanceof IBreakpointOrganizerDelegateExtension extension) {
 			Object[] array = selection.toArray();
 			IBreakpoint[] breakpoints = new IBreakpoint[array.length];
 			System.arraycopy(array, 0, breakpoints, 0, array.length);

@@ -1269,12 +1269,10 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 			action.run();
 		} else {
 			ISelection selection = getVariablesViewer().getSelection();
-			if (selection instanceof TreeSelection) {
-				TreeSelection ss = (TreeSelection) selection;
+			if (selection instanceof TreeSelection ss) {
 				if (ss.size() == 1) {
 					Widget item = getVariablesViewer().findItem(ss.getPaths()[0]);
-					if (item instanceof TreeItem) {
-						TreeItem ti = (TreeItem) item;
+					if (item instanceof TreeItem ti) {
 						if (ti.getExpanded()) {
 							ti.setExpanded(false);
 						} else {

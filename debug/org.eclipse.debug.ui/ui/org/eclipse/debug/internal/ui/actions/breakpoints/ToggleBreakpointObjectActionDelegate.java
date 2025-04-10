@@ -70,8 +70,7 @@ public abstract class ToggleBreakpointObjectActionDelegate implements IObjectAct
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		boolean enabled = false;
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			this.fSelection = ss;
 			// selectionChagned() can sometimes be called before setActivePart().
 			// Guard here against that possibility.

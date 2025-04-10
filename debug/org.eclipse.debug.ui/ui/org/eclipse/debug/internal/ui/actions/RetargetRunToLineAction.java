@@ -42,8 +42,7 @@ public class RetargetRunToLineAction extends RetargetAction {
 
 		protected void contextActivated(ISelection selection) {
 			fTargetElement = null;
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
+			if (selection instanceof IStructuredSelection ss) {
 				if (ss.size() == 1) {
 					fTargetElement = (ISuspendResume)
 						DebugPlugin.getAdapter(ss.getFirstElement(), ISuspendResume.class);

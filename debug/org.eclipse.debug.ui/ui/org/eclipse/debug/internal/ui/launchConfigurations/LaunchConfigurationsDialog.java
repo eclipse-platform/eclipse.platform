@@ -1165,8 +1165,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		if(fSetDefaultOnOpen) {
 			try {
 				Object o = fInitialSelection.getFirstElement();
-				if(o instanceof ILaunchConfigurationWorkingCopy) {
-					ILaunchConfigurationWorkingCopy wc = (ILaunchConfigurationWorkingCopy) o;
+				if(o instanceof ILaunchConfigurationWorkingCopy wc) {
 					doSetDefaults(wc);
 					setInitialSelection(new StructuredSelection(wc.doSave()));
 				}

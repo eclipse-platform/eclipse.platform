@@ -1151,8 +1151,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 		if (targetException instanceof CoreException) {
 			t = targetException;
 		}
-		if (t instanceof CoreException) {
-			CoreException ce = (CoreException)t;
+		if (t instanceof CoreException ce) {
 			IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(ce.getStatus());
 			if (handler != null) {
 				ILaunchGroup group = DebugUITools.getLaunchGroup(configuration, mode);

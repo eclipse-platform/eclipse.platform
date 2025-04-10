@@ -65,9 +65,7 @@ public class RemoveFromWorkingSetAction extends BreakpointSelectionAction {
 	 */
 	protected BreakpointSetElement[] getRemovableBreakpoints(IStructuredSelection selection) {
 		List<BreakpointSetElement> res = new ArrayList<>();
-		if (selection instanceof ITreeSelection) {
-			ITreeSelection tSel = (ITreeSelection)selection;
-
+		if (selection instanceof ITreeSelection tSel) {
 			for (TreePath path : tSel.getPaths()) {
 				// We can remove Breakpoints from their working set if any of their parents is a non "Other" breakpoint working set
 				IBreakpoint breakpoint = (IBreakpoint)DebugPlugin.getAdapter(path.getLastSegment(), IBreakpoint.class);
@@ -77,9 +75,7 @@ public class RemoveFromWorkingSetAction extends BreakpointSelectionAction {
 					for (int j = 0; j < parents.getSegmentCount(); j++) {
 						Object parent = parents.getSegment(j);
 
-						if (parent instanceof IBreakpointContainer) {
-							IBreakpointContainer container = (IBreakpointContainer)parent;
-
+						if (parent instanceof IBreakpointContainer container) {
 							// Test if this is a working set container.
 							if (container.getCategory() instanceof WorkingSetCategory) {
 								// Test if this container allows to remove this breakpoint.

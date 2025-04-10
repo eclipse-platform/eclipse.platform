@@ -282,8 +282,7 @@ public class ExpressionInformationControlCreator implements IInformationControlC
 
 			fDetailPaneComposite = SWTFactory.createComposite(fSashForm, 1, 1, GridData.FILL_BOTH);
 			Layout layout = fDetailPaneComposite.getLayout();
-			if (layout instanceof GridLayout) {
-				GridLayout gl = (GridLayout) layout;
+			if (layout instanceof GridLayout gl) {
 				gl.marginHeight = 0;
 				gl.marginWidth = 0;
 			}

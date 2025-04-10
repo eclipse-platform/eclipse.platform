@@ -443,8 +443,7 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 					restoreQueue(currentBatch);
 					return Status.CANCEL_STATUS;
 				}
-				if (task instanceof DelayedDoModelChange) {
-					DelayedDoModelChange change = (DelayedDoModelChange) task;
+				if (task instanceof DelayedDoModelChange change) {
 					if (!change.proxy.isDisposed()) {
 						doModelChanged(change.delta, change.proxy);
 					}
@@ -667,8 +666,8 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 			for (int j = 0; j < filters.length; j++) {
 				if (filters[j] instanceof TreeModelViewerFilter) {
 					// Skip the filter if not applicable to parent element
-					Object parentElement = parentElementOrTreePath instanceof TreePath
-						? ((TreePath)parentElementOrTreePath).getLastSegment() : parentElementOrTreePath;
+					Object parentElement = parentElementOrTreePath instanceof TreePath t
+						? t.getLastSegment() : parentElementOrTreePath;
 					if (parentElement == null) {
 						parentElement = fViewer.getInput();
 					}
@@ -1123,8 +1122,7 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 			Iterator<ViewerUpdateMonitor> iterator = requests.iterator();
 			while (iterator.hasNext()) {
 				ViewerUpdateMonitor update = iterator.next();
-				if (update instanceof IChildrenUpdate) {
-					IChildrenUpdate childrenUpdate = (IChildrenUpdate) update;
+				if (update instanceof IChildrenUpdate childrenUpdate) {
 					if (childrenUpdate.getOffset() > modelIndex) {
 						// Cancel update and remove from requests list.  Removing from
 						// fRequestsInProgress ensures that isRequestBlocked() won't be triggered
@@ -1145,8 +1143,7 @@ public class TreeModelContentProvider implements ITreeModelContentProvider, ICon
 		requests = fWaitingRequests.get(parentPath);
 		if (requests != null) {
 			for (ViewerUpdateMonitor update : requests) {
-				if (update instanceof IChildrenUpdate) {
-					IChildrenUpdate childrenUpdate = (IChildrenUpdate) update;
+				if (update instanceof IChildrenUpdate childrenUpdate) {
 					if (childrenUpdate.getOffset() > modelIndex) {
 						((ChildrenUpdate) childrenUpdate).setOffset(childrenUpdate.getOffset() - 1);
 						if (DebugUIPlugin.DEBUG_CONTENT_PROVIDER && DebugUIPlugin.DEBUG_TEST_PRESENTATION_ID(getPresentationContext())) {

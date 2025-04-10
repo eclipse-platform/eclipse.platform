@@ -36,8 +36,7 @@ public class LaunchDelegateNotAvailableHandler implements IStatusHandler {
 	 */
 	@Override
 	public Object handleStatus(IStatus status, Object source) throws CoreException {
-		if(source instanceof Object[]) {
-			Object[] infos = (Object[]) source;
+		if(source instanceof Object[] infos) {
 			if(infos.length == 2) {
 				final ILaunchConfiguration config = (ILaunchConfiguration) infos[0];
 				final String mode = (String) infos[1];

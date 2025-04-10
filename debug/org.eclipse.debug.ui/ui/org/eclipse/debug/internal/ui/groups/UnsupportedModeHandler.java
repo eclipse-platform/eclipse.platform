@@ -32,8 +32,7 @@ public class UnsupportedModeHandler implements IStatusHandler {
 
 	@Override
 	public Object handleStatus(IStatus status, Object source) throws CoreException {
-		if (source instanceof String[]) {
-			final String[] data = (String[]) source;
+		if (source instanceof final String[] data) {
 			PlatformUI.getWorkbench().getDisplay()
 					.asyncExec(() -> MessageDialog.openError(
 							DebugUIPlugin.getShellForModalDialog(),

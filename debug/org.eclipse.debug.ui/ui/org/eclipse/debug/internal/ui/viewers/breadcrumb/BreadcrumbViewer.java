@@ -284,9 +284,7 @@ public abstract class BreadcrumbViewer extends StructuredViewer {
 	}
 
 	private boolean myDoUpdateItem(Widget widget, Object element, boolean fullMap) {
-		if (widget instanceof BreadcrumbItem) {
-			final BreadcrumbItem item= (BreadcrumbItem) widget;
-
+		if (widget instanceof final BreadcrumbItem item) {
 			// remember element we are showing
 			if (fullMap) {
 				associate(element, item);

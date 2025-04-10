@@ -158,9 +158,8 @@ public class ChangeVariableValueAction extends SelectionProviderAction {
 		Iterator<Object> iter = sel.iterator();
 		if (iter.hasNext()) {
 			Object object= iter.next();
-			if (object instanceof IValueModification) {
+			if (object instanceof IValueModification varMod) {
 				isApplicable = true;
-				IValueModification varMod= (IValueModification)object;
 				if (!varMod.supportsValueModification()) {
 					setEnabled(false);
 					return;

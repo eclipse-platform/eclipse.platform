@@ -27,8 +27,7 @@ public class ProcessTypePropertyTester extends PropertyTester {
 
 	@Override
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-		if (receiver instanceof TextConsole) {
-			TextConsole console = (TextConsole) receiver;
+		if (receiver instanceof TextConsole console) {
 			IProcess process = (IProcess) console.getAttribute(IDebugUIConstants.ATTR_CONSOLE_PROCESS);
 			if (process != null) {
 				String type = process.getAttribute(IProcess.ATTR_PROCESS_TYPE);

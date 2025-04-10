@@ -803,8 +803,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					data = fBinaryStreamMonitor.getData();
 				}
 				contents = fStreamMonitor.getContents();
-				if (fStreamMonitor instanceof IFlushableStreamMonitor) {
-					IFlushableStreamMonitor m = (IFlushableStreamMonitor) fStreamMonitor;
+				if (fStreamMonitor instanceof IFlushableStreamMonitor m) {
 					m.flushContents();
 					m.setBuffered(false);
 				}

@@ -185,8 +185,7 @@ public class RunDebugPropertiesPage extends PropertyPage {
 		viewer.setInput(collectConfigCandidates(resource));
 		viewer.addSelectionChangedListener(event -> {
 			ISelection sel = event.getSelection();
-			if(sel instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) sel;
+			if(sel instanceof IStructuredSelection ss) {
 				boolean empty = ss.isEmpty();
 				int size = ss.size();
 				fEditButton.setEnabled(!empty && size == 1);

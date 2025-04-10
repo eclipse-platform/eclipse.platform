@@ -113,8 +113,7 @@ public class ModulesView extends VariablesView {
 	}
 
 	private void updateContextHelp(Object context) {
-		if (context instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) context;
+		if (context instanceof IAdaptable adaptable) {
 			if (adaptable.getAdapter(IHelpContextIdProvider.class) != null) {
 				IHelpContextIdProvider provider = adaptable
 						.getAdapter(IHelpContextIdProvider.class);
@@ -145,8 +144,7 @@ public class ModulesView extends VariablesView {
 	}
 
 	private String getViewName(Object context) {
-		if (context instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) context;
+		if (context instanceof IAdaptable adaptable) {
 			if (adaptable.getAdapter(ILabelProvider.class) != null) {
 				ILabelProvider provider = adaptable
 						.getAdapter(ILabelProvider.class);
@@ -161,8 +159,7 @@ public class ModulesView extends VariablesView {
 
 	private Image getViewImage(Object context)
 	{
-		if (context instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) context;
+		if (context instanceof IAdaptable adaptable) {
 			if (adaptable.getAdapter(ILabelProvider.class) != null) {
 				ILabelProvider provider = adaptable
 						.getAdapter(ILabelProvider.class);

@@ -115,8 +115,7 @@ public class SourceLookupService implements IDebugContextListener, ISourceDispla
 			return;
 		}
 
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+		if (selection instanceof IStructuredSelection structuredSelection) {
 			if (structuredSelection.size() == 1) {
 				Object context = (structuredSelection).getFirstElement();
 				IWorkbenchPage page = null;
@@ -132,8 +131,7 @@ public class SourceLookupService implements IDebugContextListener, ISourceDispla
 
 	@Override
 	public void displaySource(Object context, IWorkbenchPage page, boolean forceSourceLookup) {
-		if (context instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) context;
+		if (context instanceof IAdaptable adaptable) {
 			ISourceDisplay adapter = adaptable.getAdapter(ISourceDisplay.class);
 			if (adapter == null && !(context instanceof PlatformObject)) {
 				// for objects that don't properly subclass PlatformObject to inherit default

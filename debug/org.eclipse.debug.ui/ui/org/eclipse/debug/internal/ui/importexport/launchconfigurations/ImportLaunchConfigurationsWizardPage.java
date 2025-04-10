@@ -308,8 +308,7 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 		return new WorkbenchContentProvider() {
 			@Override
 			public Object[] getChildren(Object o) {
-				if (o instanceof DebugFileSystemElement) {
-					DebugFileSystemElement element = (DebugFileSystemElement) o;
+				if (o instanceof DebugFileSystemElement element) {
 					return element.getFiles().getChildren(element);
 				}
 				return new Object[0];
@@ -322,8 +321,7 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 		return new WorkbenchContentProvider() {
 			@Override
 			public Object[] getChildren(Object o) {
-				if (o instanceof DebugFileSystemElement) {
-					DebugFileSystemElement element = (DebugFileSystemElement) o;
+				if (o instanceof DebugFileSystemElement element) {
 					return element.getFolders().getChildren();
 				}
 				return new Object[0];
@@ -331,8 +329,7 @@ public class ImportLaunchConfigurationsWizardPage extends WizardResourceImportPa
 
 			@Override
 			public boolean hasChildren(Object o) {
-				if (o instanceof DebugFileSystemElement) {
-					DebugFileSystemElement element = (DebugFileSystemElement) o;
+				if (o instanceof DebugFileSystemElement element) {
 					if (element.isPopulated()) {
 						return getChildren(element).length > 0;
 					}

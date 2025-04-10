@@ -85,9 +85,8 @@ public class LaunchConfigurationTreeContentProvider implements ITreeContentProvi
 				if (((ILaunchConfiguration) parentElement).isPrototype()) {
 					return ((ILaunchConfiguration) parentElement).getPrototypeChildren().toArray();
 				}
-			} else if (parentElement instanceof ILaunchConfigurationType) {
+			} else if (parentElement instanceof ILaunchConfigurationType type) {
 				List<ILaunchConfiguration> configs = new ArrayList<>();
-				ILaunchConfigurationType type = (ILaunchConfigurationType) parentElement;
 				ILaunchConfiguration[] launchConfigurations = getLaunchManager().getLaunchConfigurations(type, ILaunchConfiguration.CONFIGURATION);
 				for (ILaunchConfiguration launchConfig : launchConfigurations) {
 					if (launchConfig.getPrototype() == null) {

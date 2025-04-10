@@ -231,11 +231,9 @@ public class DelegatingModelPresentation implements IDebugModelPresentation, IDe
 	 */
 	protected IDebugModelPresentation getConfiguredPresentation(Object element) {
 		String id= null;
-		if (element instanceof IDebugElement) {
-			IDebugElement de= (IDebugElement) element;
+		if (element instanceof IDebugElement de) {
 			id= de.getModelIdentifier();
-		} else if (element instanceof IMarker) {
-			IMarker m= (IMarker) element;
+		} else if (element instanceof IMarker m) {
 			IBreakpoint bp = DebugPlugin.getDefault().getBreakpointManager().getBreakpoint(m);
 			if (bp != null) {
 				id= bp.getModelIdentifier();
@@ -320,8 +318,7 @@ public class DelegatingModelPresentation implements IDebugModelPresentation, IDe
 	@Override
 	public Color getForeground(Object element) {
 		IDebugModelPresentation presentation = getConfiguredPresentation(element);
-		if (presentation instanceof IColorProvider) {
-			IColorProvider colorProvider = (IColorProvider) presentation;
+		if (presentation instanceof IColorProvider colorProvider) {
 			return colorProvider.getForeground(element);
 		}
 		return null;
@@ -330,8 +327,7 @@ public class DelegatingModelPresentation implements IDebugModelPresentation, IDe
 	@Override
 	public Color getBackground(Object element) {
 		IDebugModelPresentation presentation = getConfiguredPresentation(element);
-		if (presentation instanceof IColorProvider) {
-			IColorProvider colorProvider = (IColorProvider) presentation;
+		if (presentation instanceof IColorProvider colorProvider) {
 			return colorProvider.getBackground(element);
 		}
 		return null;
@@ -340,8 +336,7 @@ public class DelegatingModelPresentation implements IDebugModelPresentation, IDe
 	@Override
 	public Font getFont(Object element) {
 		IDebugModelPresentation presentation = getConfiguredPresentation(element);
-		if (presentation instanceof IFontProvider) {
-			IFontProvider fontProvider = (IFontProvider) presentation;
+		if (presentation instanceof IFontProvider fontProvider) {
 			return fontProvider.getFont(element);
 		}
 		return null;
@@ -354,9 +349,8 @@ public class DelegatingModelPresentation implements IDebugModelPresentation, IDe
 		String id = null;
 		Image image = null;
 		String text = null;
-		if (presentation instanceof IInstructionPointerPresentation) {
+		if (presentation instanceof IInstructionPointerPresentation pointerPresentation) {
 			// first check if an annotaion object is provided
-			IInstructionPointerPresentation pointerPresentation = (IInstructionPointerPresentation) presentation;
 			annotation = pointerPresentation.getInstructionPointerAnnotation(editorPart, frame);
 			if (annotation == null) {
 				// next check for a marker annotation specification extension
