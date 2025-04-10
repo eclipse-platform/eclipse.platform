@@ -61,7 +61,9 @@ public class NewMemoryViewAction implements IViewActionDelegate {
 
 	private void setInitialSelection(IViewPart newView) {
 		ISelection selection = fView.getSite().getSelectionProvider().getSelection();
-		if (selection instanceof IStructuredSelection strucSel) {
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection strucSel = (IStructuredSelection) selection;
+
 			// return if current selection is empty
 			if (strucSel.isEmpty())
 				return;
@@ -82,7 +84,8 @@ public class NewMemoryViewAction implements IViewActionDelegate {
 	}
 
 	private void setInitialViewSettings(IViewPart newView) {
-		if (fView != null && newView instanceof MemoryView newMView) {
+		if (fView != null && newView instanceof MemoryView) {
+			MemoryView newMView = (MemoryView) newView;
 			IMemoryViewPane[] viewPanes = fView.getViewPanes();
 			int orientation = fView.getViewPanesOrientation();
 			for (IMemoryViewPane viewPane : viewPanes) {

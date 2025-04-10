@@ -78,7 +78,8 @@ public class EnvironmentVariable
 	@Override
 	public boolean equals(Object obj) {
 		boolean equal = false;
-		if (obj instanceof EnvironmentVariable var) {
+		if (obj instanceof EnvironmentVariable) {
+			EnvironmentVariable var = (EnvironmentVariable)obj;
 			equal = var.getName().equals(name);
 		}
 		return equal;

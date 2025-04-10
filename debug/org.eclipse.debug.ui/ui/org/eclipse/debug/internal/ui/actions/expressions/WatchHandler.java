@@ -77,7 +77,8 @@ public class WatchHandler extends AbstractHandler {
 	private void createExpression(Object element) {
 		String expressionString;
 		try {
-			if (element instanceof IVariable variable) {
+			if (element instanceof IVariable) {
+				IVariable variable = (IVariable)element;
 				IWatchExpressionFactoryAdapter factory = getFactory(variable);
 				expressionString = variable.getName();
 				if (factory != null) {

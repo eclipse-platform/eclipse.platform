@@ -168,7 +168,8 @@ public class ProcessConsoleManager implements ILaunchListener {
 	public IConsole getConsole(IProcess process) {
 		IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager();
 		for (IConsole console : manager.getConsoles()) {
-			if (console instanceof ProcessConsole pc) {
+			if (console instanceof ProcessConsole) {
+				ProcessConsole pc = (ProcessConsole)console;
 				if (pc.getProcess().equals(process)) {
 					return pc;
 				}

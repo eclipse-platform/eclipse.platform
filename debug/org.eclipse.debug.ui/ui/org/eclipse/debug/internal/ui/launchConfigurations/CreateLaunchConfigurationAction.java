@@ -59,7 +59,8 @@ public class CreateLaunchConfigurationAction extends AbstractLaunchConfiguration
 		if(object != null) {
 			ILaunchConfigurationType type= null;
 			// Construct a new config of the selected type
-			if (object instanceof ILaunchConfiguration config) {
+			if (object instanceof ILaunchConfiguration) {
+				ILaunchConfiguration config= (ILaunchConfiguration) object;
 				try {
 					type = config.getType();
 				} catch (CoreException e) {

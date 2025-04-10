@@ -566,7 +566,8 @@ public class BreakpointsView extends VariablesView implements IBreakpointManager
 	 * TODO remove in favor of using <code>TreeItem</code> as paste target
 	 */
 	public boolean performPaste(Object target, ISelection selection) {
-		if (target instanceof IBreakpointContainer container && selection instanceof IStructuredSelection) {
+		if (target instanceof IBreakpointContainer && selection instanceof IStructuredSelection) {
+			IBreakpointContainer container = (IBreakpointContainer) target;
 			for (Object object : (IStructuredSelection) selection) {
 				IBreakpoint breakpoint = (IBreakpoint)DebugPlugin.getAdapter(object, IBreakpoint.class);
 				if (breakpoint != null) {
@@ -648,7 +649,8 @@ public class BreakpointsView extends VariablesView implements IBreakpointManager
 			Object element = null;
 			for (int i = path.getSegmentCount()-1; i > -1; i--) {
 				element = path.getSegment(i);
-				if (element instanceof IBreakpointContainer container) {
+				if (element instanceof IBreakpointContainer) {
+					IBreakpointContainer container = (IBreakpointContainer) element;
 					if (container.contains(breakpoint) || !container.getOrganizer().canAdd(breakpoint, container.getCategory())) {
 						return false;
 					}
@@ -715,7 +717,8 @@ public class BreakpointsView extends VariablesView implements IBreakpointManager
 			List<IBreakpoint> list = entry.getValue();
 			IBreakpointOrganizer organizer = container.getOrganizer();
 			IBreakpoint[] breakpoints = list.toArray(new IBreakpoint[list.size()]);
-			if (organizer instanceof IBreakpointOrganizerDelegateExtension extension) {
+			if (organizer instanceof IBreakpointOrganizerDelegateExtension) {
+				IBreakpointOrganizerDelegateExtension extension = (IBreakpointOrganizerDelegateExtension) organizer;
 				extension.removeBreakpoints(breakpoints, container.getCategory());
 			} else {
 				for (IBreakpoint breakpoint : breakpoints) {
@@ -749,7 +752,8 @@ public class BreakpointsView extends VariablesView implements IBreakpointManager
 				breakpoints.add(breakpoint);
 			}
 		}
-		if (organizer instanceof IBreakpointOrganizerDelegateExtension extension) {
+		if (organizer instanceof IBreakpointOrganizerDelegateExtension) {
+			IBreakpointOrganizerDelegateExtension extension = (IBreakpointOrganizerDelegateExtension) organizer;
 			extension.addBreakpoints(
 				breakpoints.toArray(new IBreakpoint[breakpoints.size()]),
 				container.getCategory());

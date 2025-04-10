@@ -133,7 +133,8 @@ public class PerspectiveManager implements ILaunchListener, ISuspendTriggerListe
 				}
 				catch (CoreException e) {return false;}
 			}
-			else if(object instanceof PerspectiveContext context) {
+			else if(object instanceof PerspectiveContext) {
+				PerspectiveContext context = (PerspectiveContext) object;
 				type = context.getLaunchConfigurationType();
 				delegate = context.getLaunchDelegate();
 			}

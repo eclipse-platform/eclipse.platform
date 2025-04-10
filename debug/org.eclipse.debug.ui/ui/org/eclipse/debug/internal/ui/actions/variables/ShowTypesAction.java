@@ -68,7 +68,8 @@ public class ShowTypesAction extends Action {
 		if (debugLabelProvider != null) {
 			Boolean typesStatus = on ? Boolean.TRUE : Boolean.FALSE;
 			debugLabelProvider.setAttribute(IDebugModelPresentation.DISPLAY_VARIABLE_TYPE_NAMES, typesStatus);
-			if (viewer instanceof TreeModelViewer treeViewer) {
+			if (viewer instanceof TreeModelViewer) {
+				TreeModelViewer treeViewer = (TreeModelViewer) viewer;
 				treeViewer.getPresentationContext().setProperty(IDebugModelPresentation.DISPLAY_VARIABLE_TYPE_NAMES, typesStatus);
 			}
 			BusyIndicator.showWhile(viewer.getControl().getDisplay(), () -> viewer.refresh());

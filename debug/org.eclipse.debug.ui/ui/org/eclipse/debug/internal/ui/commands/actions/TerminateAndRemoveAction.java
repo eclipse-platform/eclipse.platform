@@ -156,7 +156,8 @@ public class TerminateAndRemoveAction extends DebugCommandAction {
 			} else {
 				sel = getDebugContextService().getActiveContext();
 			}
-			if (sel instanceof IStructuredSelection ss) {
+			if (sel instanceof IStructuredSelection) {
+				IStructuredSelection ss = (IStructuredSelection) sel;
 				postExecute(new Request(), ss.toArray());
 			}
 		}

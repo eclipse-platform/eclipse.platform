@@ -126,7 +126,8 @@ public class TableRenderingLabelProviderEx extends TableRenderingLabelProvider i
 	 * @return memory rendering element or <code>null</code>
 	 */
 	private MemoryRenderingElement getMemoryRenderingElement(Object element, int columnIndex) {
-		if (element instanceof TableRenderingLine line) {
+		if (element instanceof TableRenderingLine) {
+			TableRenderingLine line = (TableRenderingLine) element;
 			BigInteger lineAddress = new BigInteger(line.getAddress(), 16);
 			int offset = (columnIndex - 1) * fRendering.getBytesPerColumn();
 			if (offset < fRendering.getBytesPerLine() && (offset + fRendering.getBytesPerColumn()) <= fRendering.getBytesPerLine()) {

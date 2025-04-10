@@ -98,7 +98,8 @@ public class LaunchPerspectivePreferencePage extends PreferencePage implements I
 		}
 		@Override
 		public boolean equals(Object o) {
-			if(o instanceof PerspectiveChange change) {
+			if(o instanceof PerspectiveChange) {
+				PerspectiveChange change = (PerspectiveChange) o;
 				return change.getDelegate() == fDelegate &&
 						change.getType().equals(fType) &&
 						change.getModes().equals(fModes);
@@ -129,7 +130,8 @@ public class LaunchPerspectivePreferencePage extends PreferencePage implements I
 	static final class PerspectiveContentProvider implements ITreeContentProvider {
 		@Override
 		public Object[] getChildren(Object parentElement) {
-			if(parentElement instanceof ILaunchConfigurationType type) {
+			if(parentElement instanceof ILaunchConfigurationType) {
+				ILaunchConfigurationType type = (ILaunchConfigurationType) parentElement;
 				return ((LaunchManager)DebugPlugin.getDefault().getLaunchManager()).getLaunchDelegates(type.getIdentifier());
 			}
 			return new Object[0];
@@ -214,7 +216,8 @@ public class LaunchPerspectivePreferencePage extends PreferencePage implements I
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			Object o = e.getSource();
-			if(o instanceof Combo combo) {
+			if(o instanceof Combo) {
+				Combo combo = (Combo) o;
 				LaunchDelegate delegate = null;
 				ILaunchConfigurationType type = null;
 				PerspectiveChange change = null;

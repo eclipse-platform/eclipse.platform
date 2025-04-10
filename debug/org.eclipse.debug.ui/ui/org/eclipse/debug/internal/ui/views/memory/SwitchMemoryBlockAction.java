@@ -268,7 +268,8 @@ public class SwitchMemoryBlockAction extends Action implements IViewActionDelega
 	 * @return the memory blocks tree viewer or <code>null</code>
 	 */
 	private StructuredViewer getViewer() {
-		if (fView instanceof MemoryView memView) {
+		if (fView instanceof MemoryView) {
+			MemoryView memView = (MemoryView) fView;
 			IMemoryViewPane pane = memView.getViewPane(MemoryBlocksTreeViewPane.PANE_ID);
 			if (pane instanceof MemoryBlocksTreeViewPane) {
 				StructuredViewer viewer = ((MemoryBlocksTreeViewPane) pane).getViewer();
@@ -290,7 +291,8 @@ public class SwitchMemoryBlockAction extends Action implements IViewActionDelega
 
 	private void switchToNext() {
 		IAdaptable context = getDebugContext();
-		if (context instanceof IDebugElement debugContext) {
+		if (context instanceof IDebugElement) {
+			IDebugElement debugContext = (IDebugElement) context;
 			IMemoryBlockRetrieval retrieval = MemoryViewUtil.getMemoryBlockRetrieval(debugContext);
 
 			if (retrieval != null) {

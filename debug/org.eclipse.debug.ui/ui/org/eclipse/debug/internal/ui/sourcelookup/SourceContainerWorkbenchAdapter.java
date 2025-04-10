@@ -40,18 +40,22 @@ public class SourceContainerWorkbenchAdapter implements IWorkbenchAdapter {
 	}
 	@Override
 	public String getLabel(Object o) {
-		if (o instanceof DirectorySourceContainer container) {
+		if (o instanceof DirectorySourceContainer) {
+			DirectorySourceContainer container = (DirectorySourceContainer) o;
 			File file = container.getDirectory();
 			IPath path = IPath.fromOSString(file.getAbsolutePath());
 			return SourceElementWorkbenchAdapter.getQualifiedName(path);
 		}
-		if (o instanceof FolderSourceContainer container) {
+		if (o instanceof FolderSourceContainer) {
+			FolderSourceContainer container = (FolderSourceContainer) o;
 			return SourceElementWorkbenchAdapter.getQualifiedName(container.getContainer().getFullPath());
 		}
-		if (o instanceof ArchiveSourceContainer container) {
+		if (o instanceof ArchiveSourceContainer) {
+			ArchiveSourceContainer container = (ArchiveSourceContainer)o;
 			return SourceElementWorkbenchAdapter.getQualifiedName(container.getFile().getFullPath());
 		}
-		if (o instanceof ExternalArchiveSourceContainer container) {
+		if (o instanceof ExternalArchiveSourceContainer) {
+			ExternalArchiveSourceContainer container = (ExternalArchiveSourceContainer)o;
 			IPath path = IPath.fromOSString(container.getName());
 			return SourceElementWorkbenchAdapter.getQualifiedName(path);
 		}

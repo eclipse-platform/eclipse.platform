@@ -58,7 +58,8 @@ public class AsynchronousSchedulingRuleFactory {
 
 		@Override
 		public boolean isConflicting(ISchedulingRule rule) {
-			if (rule instanceof SerialPerObjectRule vup) {
+			if (rule instanceof SerialPerObjectRule) {
+				SerialPerObjectRule vup = (SerialPerObjectRule) rule;
 				return fObject == vup.fObject;
 			}
 			return false;

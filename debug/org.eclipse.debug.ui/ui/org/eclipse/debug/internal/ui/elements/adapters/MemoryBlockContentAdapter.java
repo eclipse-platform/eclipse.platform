@@ -46,10 +46,11 @@ public class MemoryBlockContentAdapter extends AsynchronousContentAdapter {
 			return new Object[0];
 		}
 
-		if (!(context instanceof MemoryViewPresentationContext memoryViewContext)) {
+		if (!(context instanceof MemoryViewPresentationContext)) {
 			return new Object[0];
 		}
 
+		MemoryViewPresentationContext memoryViewContext = (MemoryViewPresentationContext) context;
 		IMemoryRendering rendering = memoryViewContext.getRendering();
 
 		if (!(rendering instanceof AbstractAsyncTableRendering)) {
@@ -379,10 +380,11 @@ public class MemoryBlockContentAdapter extends AsynchronousContentAdapter {
 	private Object[] organizeLines(long numberOfLines, MemoryByte[] memoryBuffer, BigInteger address, boolean manageDelta, MemoryViewPresentationContext context) {
 		ArrayList<MemorySegment> lineCache = new ArrayList<>();
 		IMemoryRendering rendering = context.getRendering();
-		if (!(rendering instanceof AbstractAsyncTableRendering tableRendering)) {
+		if (!(rendering instanceof AbstractAsyncTableRendering)) {
 			return lineCache.toArray();
 		}
 
+		AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering) rendering;
 		int addressableUnit = tableRendering.getBytesPerLine() / tableRendering.getAddressableSize();
 
 		for (int i = 0; i < numberOfLines; i++) {

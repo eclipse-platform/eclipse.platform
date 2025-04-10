@@ -57,7 +57,8 @@ public class ResetMemoryBlockAction implements IViewActionDelegate {
 		Iterator<Object> iter = fSelectedMB.iterator();
 		while (iter.hasNext()) {
 			IMemoryBlock mb = (IMemoryBlock) iter.next();
-			if (fView instanceof MemoryView memView) {
+			if (fView instanceof MemoryView) {
+				MemoryView memView = (MemoryView) fView;
 				IMemoryRenderingContainer[] containers = memView.getMemoryRenderingContainers();
 
 				for (IMemoryRenderingContainer container : containers) {
@@ -72,7 +73,8 @@ public class ResetMemoryBlockAction implements IViewActionDelegate {
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		action.setEnabled(!selection.isEmpty());
-		if (selection instanceof IStructuredSelection strucSel) {
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection strucSel = (IStructuredSelection) selection;
 			Object[] objs = strucSel.toArray();
 			fSelectedMB.clear();
 			for (Object obj : objs) {

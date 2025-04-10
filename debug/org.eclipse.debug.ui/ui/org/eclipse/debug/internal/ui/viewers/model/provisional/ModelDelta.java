@@ -152,7 +152,8 @@ public class ModelDelta implements IModelDelta {
 			mapNodes();
 		}
 		Object nodeOrNodes = fNodesMap.get(element);
-		if (nodeOrNodes instanceof ModelDelta node) {
+		if (nodeOrNodes instanceof ModelDelta) {
+			ModelDelta node = (ModelDelta)nodeOrNodes;
 			if (index == node.getIndex()) {
 				return node;
 			}
@@ -184,8 +185,9 @@ public class ModelDelta implements IModelDelta {
 			// Edge case: already a node for given element was added.
 			ModelDelta[] nodes = new ModelDelta[] { (ModelDelta)oldValue, node };
 			fNodesMap.put(node.getElement(), nodes);
-		} else if (oldValue instanceof ModelDelta[] oldNodes) {
+		} else if (oldValue instanceof ModelDelta[]) {
 			// Even more remote case: multiple delta nodes for the same element were already added
+			ModelDelta[] oldNodes = (ModelDelta[])oldValue;
 			ModelDelta[] newNodes = new ModelDelta[oldNodes.length + 1];
 			System.arraycopy(oldNodes, 0, newNodes, 0, oldNodes.length);
 			newNodes[newNodes.length - 1] = node;

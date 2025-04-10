@@ -152,7 +152,8 @@ public class SelectedResourceManager  {
 			IWorkbenchPage page  = window.getActivePage();
 			if(page != null) {
 				IWorkbenchPart part = page.getActivePart();
-				if(part instanceof IEditorPart epart) {
+				if(part instanceof IEditorPart) {
+					IEditorPart epart = (IEditorPart) part;
 					resource = epart.getEditorInput().getAdapter(IResource.class);
 				}
 				else if(part != null) {
@@ -161,7 +162,8 @@ public class SelectedResourceManager  {
 						ISelectionProvider provider = site.getSelectionProvider();
 						if(provider != null) {
 							ISelection selection = provider.getSelection();
-							if(selection instanceof IStructuredSelection ss) {
+							if(selection instanceof IStructuredSelection) {
+								IStructuredSelection ss = (IStructuredSelection) selection;
 								if(!ss.isEmpty()) {
 									Iterator<?> iterator = ss.iterator();
 									while (iterator.hasNext() && resource == null) {

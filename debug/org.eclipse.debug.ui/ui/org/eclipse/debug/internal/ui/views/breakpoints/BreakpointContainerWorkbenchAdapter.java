@@ -36,7 +36,8 @@ public class BreakpointContainerWorkbenchAdapter implements IWorkbenchAdapter, I
 
 	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
-		if (object instanceof IBreakpointContainer container) {
+		if (object instanceof IBreakpointContainer) {
+			IBreakpointContainer container = (IBreakpointContainer) object;
 			IAdaptable category = container.getCategory();
 			if (category != null) {
 				IWorkbenchAdapter adapter = category.getAdapter(IWorkbenchAdapter.class);
@@ -51,7 +52,8 @@ public class BreakpointContainerWorkbenchAdapter implements IWorkbenchAdapter, I
 
 	@Override
 	public String getLabel(Object object) {
-		if (object instanceof IBreakpointContainer container) {
+		if (object instanceof IBreakpointContainer) {
+			IBreakpointContainer container = (IBreakpointContainer) object;
 			IAdaptable category = container.getCategory();
 			if (category != null) {
 				IWorkbenchAdapter adapter = category.getAdapter(IWorkbenchAdapter.class);
@@ -71,7 +73,8 @@ public class BreakpointContainerWorkbenchAdapter implements IWorkbenchAdapter, I
 
 	@Override
 	public RGB getForeground(Object object) {
-		if (object instanceof IBreakpointContainer container) {
+		if (object instanceof IBreakpointContainer) {
+			IBreakpointContainer container = (IBreakpointContainer) object;
 			IAdaptable category = container.getCategory();
 			IWorkbenchAdapter2 adapter = category.getAdapter(IWorkbenchAdapter2.class);
 			if (adapter != null) {
@@ -83,7 +86,8 @@ public class BreakpointContainerWorkbenchAdapter implements IWorkbenchAdapter, I
 
 	@Override
 	public RGB getBackground(Object object) {
-		if (object instanceof IBreakpointContainer container) {
+		if (object instanceof IBreakpointContainer) {
+			IBreakpointContainer container = (IBreakpointContainer) object;
 			IAdaptable category = container.getCategory();
 			IWorkbenchAdapter2 adapter = category.getAdapter(IWorkbenchAdapter2.class);
 			if (adapter != null) {
@@ -95,7 +99,8 @@ public class BreakpointContainerWorkbenchAdapter implements IWorkbenchAdapter, I
 
 	@Override
 	public FontData getFont(Object object) {
-		if (object instanceof IBreakpointContainer container) {
+		if (object instanceof IBreakpointContainer) {
+			IBreakpointContainer container = (IBreakpointContainer) object;
 			IAdaptable category = container.getCategory();
 			IWorkbenchAdapter2 adapter = category.getAdapter(IWorkbenchAdapter2.class);
 			if (adapter != null) {

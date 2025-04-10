@@ -185,7 +185,8 @@ public final class LaunchConfigurationFilteredTree extends FilteredTree {
 	public String computeContextId() {
 		try {
 			ISelection selection = getViewer().getSelection();
-			if (!selection.isEmpty() && selection instanceof IStructuredSelection structuredSelection ) {
+			if (!selection.isEmpty() && selection instanceof IStructuredSelection ) {
+				IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 				Object firstSelected = structuredSelection.getFirstElement();
 				ILaunchConfigurationType configType = null;
 				if (firstSelected instanceof ILaunchConfigurationType) {

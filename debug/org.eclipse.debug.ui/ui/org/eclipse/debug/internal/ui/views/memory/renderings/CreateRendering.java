@@ -224,8 +224,10 @@ public class CreateRendering extends AbstractMemoryRendering implements IMemoryR
 		ISelection selection = fViewer.getSelection();
 		Object[] renderings = null;
 
-		if (selection instanceof IStructuredSelection strucSelection)
+		if (selection instanceof IStructuredSelection)
 		{
+			IStructuredSelection strucSelection = (IStructuredSelection)selection;
+
 			renderings = strucSelection.toArray();
 		}
 

@@ -66,7 +66,8 @@ public class BreakpointMementoProvider extends ElementMementoProvider {
 
 	@Override
 	protected boolean isEqual(Object element, IMemento memento, IPresentationContext context) throws CoreException {
-		if (element instanceof IBreakpoint breakpoint) {
+		if (element instanceof IBreakpoint) {
+			IBreakpoint breakpoint =(IBreakpoint)element;
 			IMarker marker = breakpoint.getMarker();
 
 			long markerId = marker.getId();

@@ -37,7 +37,8 @@ public class VariableLabelProvider extends DebugElementLabelProvider {
 	protected RGB getBackground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		Object element = elementPath.getLastSegment();
 		if (columnId != null) {
-			if (element instanceof IVariable variable) {
+			if (element instanceof IVariable) {
+				IVariable variable = (IVariable) element;
 				if (variable.hasValueChanged()) {
 					return DebugUIPlugin.getPreferenceColor(IDebugUIConstants.PREF_CHANGED_VALUE_BACKGROUND).getRGB();
 				}
@@ -50,7 +51,8 @@ public class VariableLabelProvider extends DebugElementLabelProvider {
 	protected RGB getForeground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		Object element = elementPath.getLastSegment();
 		if (columnId == null) {
-			if (element instanceof IVariable variable) {
+			if (element instanceof IVariable) {
+				IVariable variable = (IVariable) element;
 				if (variable.hasValueChanged()) {
 					return DebugUIPlugin.getPreferenceColor(IDebugUIConstants.PREF_CHANGED_DEBUG_ELEMENT_COLOR).getRGB();
 				}

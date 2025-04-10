@@ -242,7 +242,8 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 		boolean update = false;
 		for (int i = 0; i < elements.length; i++) {
 			IAdaptable adaptable = elements[i];
-			if (adaptable instanceof IBreakpoint breakpoint) {
+			if (adaptable instanceof IBreakpoint) {
+				IBreakpoint breakpoint = (IBreakpoint) adaptable;
 				if (!manager.isRegistered(breakpoint)) {
 					update = true;
 					elements[i] = null;
@@ -308,7 +309,8 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 
 	@Override
 	public boolean canRemove(IBreakpoint breakpoint, IAdaptable category) {
-		if (category instanceof WorkingSetCategory wsc) {
+		if (category instanceof WorkingSetCategory) {
+			WorkingSetCategory wsc = (WorkingSetCategory) category;
 			return IDebugUIConstants.BREAKPOINT_WORKINGSET_ID.equals(wsc.getWorkingSet().getId());
 		}
 		return super.canRemove(breakpoint, category);
@@ -316,7 +318,8 @@ public class BreakpointSetOrganizer extends AbstractBreakpointOrganizerDelegate 
 
 	@Override
 	public boolean canAdd(IBreakpoint breakpoint, IAdaptable category) {
-		if (category instanceof WorkingSetCategory wsc) {
+		if (category instanceof WorkingSetCategory) {
+			WorkingSetCategory wsc = (WorkingSetCategory) category;
 			return IDebugUIConstants.BREAKPOINT_WORKINGSET_ID.equals(wsc.getWorkingSet().getId());
 		}
 		return super.canAdd(breakpoint, category);

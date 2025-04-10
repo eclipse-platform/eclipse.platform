@@ -29,7 +29,8 @@ public class BreakpointContainerMementoProvider extends DebugElementMementoProvi
 
 	@Override
 	protected String getElementName(Object element, IPresentationContext context) throws CoreException {
-		if (element instanceof IBreakpointContainer container) {
+		if (element instanceof IBreakpointContainer) {
+			IBreakpointContainer container = (IBreakpointContainer) element;
 			IAdaptable category = container.getCategory();
 			if (category != null) {
 				IWorkbenchAdapter adapter = category.getAdapter(IWorkbenchAdapter.class);

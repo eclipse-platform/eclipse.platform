@@ -21,7 +21,8 @@ public class StringVariableLabelProvider extends LabelProvider {
 
 		@Override
 		public String getText(Object element) {
-			if (element instanceof IStringVariable variable) {
+			if (element instanceof IStringVariable) {
+				IStringVariable variable = (IStringVariable)element;
 				return variable.getName();
 			}
 			return super.getText(element);

@@ -137,9 +137,10 @@ public class TableRenderingPropertiesPage extends PropertyPage implements
 				addProperty(composite, DebugUIMessages.TableRenderingPropertiesPage_16, dataEndian);
 
 
-				if (rendering instanceof AbstractIntegerRendering intRendering)
+				if (rendering instanceof AbstractIntegerRendering)
 				{
 
+					AbstractIntegerRendering intRendering = (AbstractIntegerRendering)rendering;
 					String displayEndian = DebugUIMessages.TableRenderingPropertiesPage_17;
 					endianess = intRendering.getDisplayEndianess();
 

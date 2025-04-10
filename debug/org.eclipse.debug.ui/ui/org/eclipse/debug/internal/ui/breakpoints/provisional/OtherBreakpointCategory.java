@@ -80,7 +80,8 @@ public class OtherBreakpointCategory extends PlatformObject implements IWorkbenc
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof OtherBreakpointCategory category) {
+		if (obj instanceof OtherBreakpointCategory) {
+			OtherBreakpointCategory category = (OtherBreakpointCategory) obj;
 			return fOrganizer.equals(category.fOrganizer);
 		}
 		return false;

@@ -71,7 +71,8 @@ public class WorkingSetCategory extends PlatformObject implements IWorkbenchAdap
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof WorkingSetCategory category) {
+		if (obj instanceof WorkingSetCategory) {
+			WorkingSetCategory category = (WorkingSetCategory) obj;
 			return category.getWorkingSet().equals(fWorkingSet);
 		}
 		return false;

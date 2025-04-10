@@ -396,7 +396,8 @@ public class LazyModelPresentation implements IDebugModelPresentation, IDebugEdi
 	@Override
 	public Color getForeground(Object element) {
 		IDebugModelPresentation presentation = getPresentation();
-		if (presentation instanceof IColorProvider colorProvider) {
+		if (presentation instanceof IColorProvider) {
+			IColorProvider colorProvider = (IColorProvider) presentation;
 			return colorProvider.getForeground(element);
 		}
 		return null;
@@ -405,7 +406,8 @@ public class LazyModelPresentation implements IDebugModelPresentation, IDebugEdi
 	@Override
 	public Color getBackground(Object element) {
 		IDebugModelPresentation presentation = getPresentation();
-		if (presentation instanceof IColorProvider colorProvider) {
+		if (presentation instanceof IColorProvider) {
+			IColorProvider colorProvider = (IColorProvider) presentation;
 			return colorProvider.getBackground(element);
 		}
 		return null;
@@ -414,7 +416,8 @@ public class LazyModelPresentation implements IDebugModelPresentation, IDebugEdi
 	@Override
 	public Font getFont(Object element) {
 		IDebugModelPresentation presentation = getPresentation();
-		if (presentation instanceof IFontProvider fontProvider) {
+		if (presentation instanceof IFontProvider) {
+			IFontProvider fontProvider = (IFontProvider) presentation;
 			return fontProvider.getFont(element);
 		}
 		return null;
@@ -423,7 +426,8 @@ public class LazyModelPresentation implements IDebugModelPresentation, IDebugEdi
 	@Override
 	public Annotation getInstructionPointerAnnotation(IEditorPart editorPart, IStackFrame frame) {
 		IDebugModelPresentation presentation = getPresentation();
-		if (presentation instanceof IInstructionPointerPresentation pointerPresentation) {
+		if (presentation instanceof IInstructionPointerPresentation) {
+			IInstructionPointerPresentation pointerPresentation = (IInstructionPointerPresentation) presentation;
 			return pointerPresentation.getInstructionPointerAnnotation(editorPart, frame);
 		}
 		return null;
@@ -432,7 +436,8 @@ public class LazyModelPresentation implements IDebugModelPresentation, IDebugEdi
 	@Override
 	public String getInstructionPointerAnnotationType(IEditorPart editorPart, IStackFrame frame) {
 		IDebugModelPresentation presentation = getPresentation();
-		if (presentation instanceof IInstructionPointerPresentation pointerPresentation) {
+		if (presentation instanceof IInstructionPointerPresentation) {
+			IInstructionPointerPresentation pointerPresentation = (IInstructionPointerPresentation) presentation;
 			return pointerPresentation.getInstructionPointerAnnotationType(editorPart, frame);
 		}
 		return null;
@@ -441,7 +446,8 @@ public class LazyModelPresentation implements IDebugModelPresentation, IDebugEdi
 	@Override
 	public Image getInstructionPointerImage(IEditorPart editorPart, IStackFrame frame) {
 		IDebugModelPresentation presentation = getPresentation();
-		if (presentation instanceof IInstructionPointerPresentation pointerPresentation) {
+		if (presentation instanceof IInstructionPointerPresentation) {
+			IInstructionPointerPresentation pointerPresentation = (IInstructionPointerPresentation) presentation;
 			return pointerPresentation.getInstructionPointerImage(editorPart, frame);
 		}
 		return null;
@@ -450,7 +456,8 @@ public class LazyModelPresentation implements IDebugModelPresentation, IDebugEdi
 	@Override
 	public String getInstructionPointerText(IEditorPart editorPart, IStackFrame frame) {
 		IDebugModelPresentation presentation = getPresentation();
-		if (presentation instanceof IInstructionPointerPresentation pointerPresentation) {
+		if (presentation instanceof IInstructionPointerPresentation) {
+			IInstructionPointerPresentation pointerPresentation = (IInstructionPointerPresentation) presentation;
 			return pointerPresentation.getInstructionPointerText(editorPart, frame);
 		}
 		return null;

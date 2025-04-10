@@ -385,7 +385,8 @@ public class MemoryView extends ViewPart implements IMemoryRenderingSite2 {
 
 					IMemoryRenderingContainer container = getContainer(fActivePaneId);
 
-					if (container != null && container instanceof RenderingViewPane pane) {
+					if (container != null && container instanceof RenderingViewPane) {
+						RenderingViewPane pane = (RenderingViewPane) container;
 						if (pane.canAddRendering()) {
 							pane.showCreateRenderingTab();
 						}

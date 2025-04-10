@@ -172,7 +172,8 @@ public class ExpressionContentProvider extends VariableContentProvider {
 
 	@Override
 	protected Object[] getAllChildren(Object parent, IPresentationContext context) throws CoreException {
-		if (parent instanceof IErrorReportingExpression expression) {
+		if (parent instanceof IErrorReportingExpression) {
+			IErrorReportingExpression expression = (IErrorReportingExpression) parent;
 			if (expression.hasErrors()) {
 				String[] messages = expression.getErrorMessages();
 				LinkedHashSet<ErrorMessageElement> set = new LinkedHashSet<>(messages.length);
@@ -182,7 +183,8 @@ public class ExpressionContentProvider extends VariableContentProvider {
 				return set.toArray();
 			}
 		}
-		if (parent instanceof IExpression expression) {
+		if (parent instanceof IExpression) {
+			IExpression expression = (IExpression) parent;
 			IValue value = expression.getValue();
 			if (value != null) {
 				return getValueChildren(expression, value, context);
@@ -193,7 +195,8 @@ public class ExpressionContentProvider extends VariableContentProvider {
 
 	@Override
 	protected boolean hasChildren(Object element, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
-		if (element instanceof IErrorReportingExpression expression) {
+		if (element instanceof IErrorReportingExpression) {
+			IErrorReportingExpression expression = (IErrorReportingExpression) element;
 			if (expression.hasErrors()) {
 				return true;
 			}

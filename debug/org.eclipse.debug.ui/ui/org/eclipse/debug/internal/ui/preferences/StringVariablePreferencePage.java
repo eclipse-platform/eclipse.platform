@@ -657,7 +657,8 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 		}
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof VariableWrapper variable) {
+			if (element instanceof VariableWrapper) {
+				VariableWrapper variable= (VariableWrapper) element;
 				switch (columnIndex) {
 					case 0 :
 						StringBuilder name = new StringBuilder();

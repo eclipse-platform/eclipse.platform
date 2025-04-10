@@ -58,7 +58,8 @@ public class DebugTextHover implements ITextHover, ITextHoverExtension, ITextHov
 			return null;
 		}
 		Object object = getHoverInfo2(textViewer, hoverRegion);
-		if (object instanceof IVariable var) {
+		if (object instanceof IVariable) {
+			IVariable var = (IVariable) object;
 			return getVariableText(var);
 		}
 		return null;

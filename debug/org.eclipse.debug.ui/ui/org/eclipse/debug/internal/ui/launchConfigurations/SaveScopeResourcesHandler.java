@@ -162,7 +162,8 @@ public class SaveScopeResourcesHandler implements IStatusHandler {
 		// retrieve config and projects
 		ILaunchConfiguration config = null;
 		IProject[] projects = null;
-		if (source instanceof Object[] objects) {
+		if (source instanceof Object[]) {
+			Object[] objects = (Object[]) source;
 			if (objects.length == 2) {
 				 config = (ILaunchConfiguration) objects[0];
 				 projects = (IProject[]) objects[1];

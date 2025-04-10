@@ -49,8 +49,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	protected String[] getLabels(Object element, IPresentationContext context)
 			throws CoreException {
 
-		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
+		if (context instanceof MemoryViewPresentationContext)
 		{
+			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -111,8 +112,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 		}
 		else
 		{
-			if (element instanceof MemorySegment segment)
+			if (element instanceof MemorySegment)
 			{
+				MemorySegment segment = (MemorySegment)element;
 				if (segment.getBytes().length != tableRendering.getBytesPerLine())
 					return IInternalDebugCoreConstants.EMPTY_STRING;
 			}
@@ -141,8 +143,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	@Override
 	protected ImageDescriptor[] getImageDescriptors(Object element,
 			IPresentationContext context) throws CoreException {
-		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
+		if (context instanceof MemoryViewPresentationContext)
 		{
+			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -167,8 +170,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 		if (columnIndex == 0)
 			return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_OBJECT_MEMORY);
 
-		if (element instanceof MemorySegment segment)
+		if (element instanceof MemorySegment)
 		{
+			MemorySegment segment = (MemorySegment)element;
 			if (segment.getBytes().length != tableRendering.getBytesPerLine())
 				return null;
 
@@ -213,8 +217,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	@Override
 	protected FontData[] getFontDatas(Object element,
 			IPresentationContext context) throws CoreException {
-		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
+		if (context instanceof MemoryViewPresentationContext)
 		{
+			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -235,8 +240,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 
 	private FontData getColumnFontData(Object element, int columnIndex, AbstractAsyncTableRendering tableRendering)
 	{
-		if (element instanceof MemorySegment segment)
+		if (element instanceof MemorySegment)
 		{
+			MemorySegment segment = (MemorySegment)element;
 			if (segment.getBytes().length != tableRendering.getBytesPerLine())
 				return null;
 
@@ -258,8 +264,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	protected RGB[] getForegrounds(Object element, IPresentationContext context)
 			throws CoreException {
 
-		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
+		if (context instanceof MemoryViewPresentationContext)
 		{
+			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -286,8 +293,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 		if (columnIndex == 0)
 			return null;
 
-		if (element instanceof MemorySegment segment)
+		if (element instanceof MemorySegment)
 		{
+			MemorySegment segment = (MemorySegment)element;
 			if (segment.getBytes().length != tableRendering.getBytesPerLine())
 				return null;
 
@@ -310,8 +318,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 		if (columnIndex == 0)
 			return null;
 
-		if (element instanceof MemorySegment segment)
+		if (element instanceof MemorySegment)
 		{
+			MemorySegment segment = (MemorySegment)element;
 			if (segment.getBytes().length != tableRendering.getBytesPerLine())
 				return null;
 
@@ -358,8 +367,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	protected RGB[] getBackgrounds(Object element, IPresentationContext context)
 			throws CoreException {
 
-		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
+		if (context instanceof MemoryViewPresentationContext)
 		{
+			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -390,7 +400,8 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	 * @return memory rendering element or <code>null</code>
 	 */
 	private MemoryRenderingElement getMemoryRenderingElement(Object element, int columnIndex, AbstractBaseTableRendering rendering) {
-		if (element instanceof MemorySegment line) {
+		if (element instanceof MemorySegment) {
+			MemorySegment line = (MemorySegment) element;
 			BigInteger address = line.getAddress();
 			int offset = (columnIndex - 1) * rendering.getBytesPerColumn();
 			if (offset < rendering.getBytesPerLine() && (offset + rendering.getBytesPerColumn()) <= rendering.getBytesPerLine()) {

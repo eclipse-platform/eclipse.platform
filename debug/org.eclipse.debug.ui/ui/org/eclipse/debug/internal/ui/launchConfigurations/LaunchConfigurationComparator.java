@@ -44,7 +44,8 @@ public class LaunchConfigurationComparator extends WorkbenchViewerComparator {
 	@Override
 	public int category(Object element) {
 		Map<ILaunchConfigurationType, Integer> map = getCategories();
-		if (element instanceof ILaunchConfiguration configuration) {
+		if (element instanceof ILaunchConfiguration) {
+			ILaunchConfiguration configuration = (ILaunchConfiguration) element;
 			try {
 				Integer i = map.get(configuration.getType());
 				if (i != null) {

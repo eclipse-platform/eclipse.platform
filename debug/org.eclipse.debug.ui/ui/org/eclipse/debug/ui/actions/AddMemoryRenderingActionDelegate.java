@@ -192,9 +192,10 @@ public class AddMemoryRenderingActionDelegate extends Action implements IViewAct
 		}
 
 		IAddMemoryRenderingsTarget target = null;
-		if (fCurrentSelection instanceof IStructuredSelection strucSel)
+		if (fCurrentSelection instanceof IStructuredSelection)
 		{
 			// get target from current selection
+			IStructuredSelection strucSel = (IStructuredSelection)fCurrentSelection;
 			Object obj = strucSel.getFirstElement();
 			target = getAddMemoryRenderingTarget(obj);
 		}

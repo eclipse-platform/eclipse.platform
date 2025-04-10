@@ -34,7 +34,8 @@ public class ExpressionLabelProvider extends VariableLabelProvider {
 	@Override
 	protected RGB getForeground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		Object element = elementPath.getLastSegment();
-		if (element instanceof IErrorReportingExpression expression) {
+		if (element instanceof IErrorReportingExpression) {
+			IErrorReportingExpression expression = (IErrorReportingExpression) element;
 			if (expression.hasErrors()) {
 				if (columnId == null || columnId.equals(IDebugUIConstants.COLUMN_ID_VARIABLE_VALUE)) {
 					return new RGB(255, 0, 0);
@@ -140,7 +141,8 @@ protected String getLabel(TreePath elementPath, IPresentationContext context, St
 	 * @since 3.6
 	 */
 	protected String getExpressionValueText(IExpression expression, IValue value, IPresentationContext context) throws CoreException {
-		if (expression instanceof IWatchExpression watchExpression) {
+		if (expression instanceof IWatchExpression) {
+			IWatchExpression watchExpression = (IWatchExpression)expression;
 			StringBuilder result = new StringBuilder();
 
 			if (watchExpression.isPending() && value == null) {

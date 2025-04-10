@@ -147,7 +147,8 @@ public class MemoryRetrievalProxy extends AbstractModelProxy implements IMemoryB
 
 	private IStructuredSelection getCurrentSelection() {
 		Viewer viewer = getViewer();
-		if (viewer instanceof StructuredViewer sv) {
+		if (viewer instanceof StructuredViewer) {
+			StructuredViewer sv = (StructuredViewer) viewer;
 			ISelection selection = sv.getSelection();
 			if (selection instanceof IStructuredSelection) {
 				return (IStructuredSelection) selection;

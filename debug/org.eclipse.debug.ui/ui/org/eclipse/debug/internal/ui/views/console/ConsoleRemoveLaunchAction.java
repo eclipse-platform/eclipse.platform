@@ -130,7 +130,8 @@ public class ConsoleRemoveLaunchAction extends Action implements IViewActionDele
 		}
 		// else get dynmically, as this action was created via plug-in XML view contribution
 		IConsole console = fConsoleView.getConsole();
-		if (console instanceof ProcessConsole pconsole) {
+		if (console instanceof ProcessConsole) {
+			ProcessConsole pconsole = (ProcessConsole) console;
 			return pconsole.getProcess().getLaunch();
 		}
 		return null;

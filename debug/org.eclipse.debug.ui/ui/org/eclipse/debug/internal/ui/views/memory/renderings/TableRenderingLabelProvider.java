@@ -52,8 +52,10 @@ public class TableRenderingLabelProvider extends AbstractTableRenderingLabelProv
 
 	@Override
 	public Color getForeground(Object element) {
-		if (element instanceof TableRenderingLine line)
+		if (element instanceof TableRenderingLine)
 		{
+			TableRenderingLine line = (TableRenderingLine)element;
+
 			if (line.isMonitored) {
 				return DebugUIPlugin.getPreferenceColor(IDebugUIConstants.PREF_MEMORY_HISTORY_KNOWN_COLOR);
 			}

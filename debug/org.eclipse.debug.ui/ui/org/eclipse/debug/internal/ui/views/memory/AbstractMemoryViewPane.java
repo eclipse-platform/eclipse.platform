@@ -204,7 +204,8 @@ public abstract class AbstractMemoryViewPane implements IMemoryBlockListener, IS
 	@Override
 	public IMemoryViewTab getTopMemoryTab() {
 
-		if (fStackLayout.topControl instanceof CTabFolder folder) {
+		if (fStackLayout.topControl instanceof CTabFolder) {
+			CTabFolder folder = (CTabFolder) fStackLayout.topControl;
 			if (!folder.isDisposed()) {
 				int index = folder.getSelectionIndex();
 				if (index >= 0) {
@@ -262,13 +263,14 @@ public abstract class AbstractMemoryViewPane implements IMemoryBlockListener, IS
 	public void handleDebugEvents(DebugEvent[] events) {
 		for (DebugEvent event : events) {
 			Object source = event.getSource();
-			if (event.getKind() == DebugEvent.TERMINATE && source instanceof final IMemoryBlockRetrieval ret) {
+			if (event.getKind() == DebugEvent.TERMINATE && source instanceof IMemoryBlockRetrieval) {
 				if (isDisposed()) {
 					return;
 				}
 
 				// When a memory block retrieval terminates, it and its
 				// tab folders should be removed from our map.
+				final IMemoryBlockRetrieval ret = (IMemoryBlockRetrieval) source;
 				if (ret != null) {
 					Display.getDefault().asyncExec(() -> {
 						if (isDisposed()) {

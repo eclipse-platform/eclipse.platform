@@ -245,7 +245,8 @@ public abstract class DebugCommandAction extends Action implements IDebugContext
 		}
 
 		ISelection selection = getContext();
-		if (selection instanceof IStructuredSelection ss && isEnabled()) {
+		if (selection instanceof IStructuredSelection && isEnabled()) {
+			IStructuredSelection ss = (IStructuredSelection) selection;
 			boolean enabled = execute(ss.toArray());
 			// disable the action according to the command
 			setEnabled(enabled);

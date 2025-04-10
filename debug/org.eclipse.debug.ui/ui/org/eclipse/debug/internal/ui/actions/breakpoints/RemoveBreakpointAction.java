@@ -83,8 +83,9 @@ public class RemoveBreakpointAction extends AbstractSelectionActionDelegate {
 				IBreakpoint breakpoint = (IBreakpoint)DebugPlugin.getAdapter(next, IBreakpoint.class);
 				if (breakpoint != null) {
 					breakpointsToDelete.add(breakpoint);
-				} else if (next instanceof IBreakpointContainer bpc) {
+				} else if (next instanceof IBreakpointContainer) {
 					//the the container is a workingset, ask if they want to delete it as well
+					IBreakpointContainer bpc = (IBreakpointContainer) next;
 					if(bpc.getCategory() instanceof WorkingSetCategory) {
 						IWorkingSet set = ((WorkingSetCategory)bpc.getCategory()).getWorkingSet();
 						if(!prompted) {

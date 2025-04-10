@@ -129,7 +129,8 @@ public class ShowSupportedBreakpointsAction extends ToggleFilterAction implement
 	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (selection instanceof IStructuredSelection ss) {
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection ss= (IStructuredSelection)selection;
 			List<IDebugTarget> debugTargets= getDebugTargets(ss);
 			if (!isChecked()) {
 				fDebugTargets= debugTargets;

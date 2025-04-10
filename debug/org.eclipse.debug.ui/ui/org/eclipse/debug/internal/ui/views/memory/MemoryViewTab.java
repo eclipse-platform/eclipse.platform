@@ -188,7 +188,8 @@ public class MemoryViewTab implements IMemoryViewTab, IPropertyChangeListener, L
 				if (event.getSource() == fRendering) {
 					if (event.getProperty().equals(IBasicPropertyConstants.P_TEXT)) {
 						Object value = event.getNewValue();
-						if (value != null && value instanceof String label) {
+						if (value != null && value instanceof String) {
+							String label = (String) value;
 							setTabLabel(label);
 						} else {
 							setTabLabel(fRendering.getLabel());
@@ -197,7 +198,8 @@ public class MemoryViewTab implements IMemoryViewTab, IPropertyChangeListener, L
 
 					if (event.getProperty().equals(IBasicPropertyConstants.P_IMAGE)) {
 						Object value = event.getNewValue();
-						if (value != null && value instanceof Image image) {
+						if (value != null && value instanceof Image) {
+							Image image = (Image) value;
 							fTabItem.setImage(image);
 						} else {
 							fTabItem.setImage(fRendering.getImage());

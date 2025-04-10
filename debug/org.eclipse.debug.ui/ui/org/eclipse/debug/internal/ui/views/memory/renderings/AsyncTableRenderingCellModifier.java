@@ -121,10 +121,11 @@ public class AsyncTableRenderingCellModifier implements ICellModifier {
 
 		// give back the value of the column
 
-		if (!(element instanceof MemorySegment line)) {
+		if (!(element instanceof MemorySegment)) {
 			return null;
 		}
 
+		MemorySegment line = (MemorySegment) element;
 		try {
 			if (TableRenderingLine.P_ADDRESS.equals(property)) {
 				return line.getAddress();

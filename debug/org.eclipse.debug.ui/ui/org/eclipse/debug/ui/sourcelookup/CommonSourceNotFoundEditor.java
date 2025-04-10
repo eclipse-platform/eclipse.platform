@@ -248,7 +248,8 @@ public class CommonSourceNotFoundEditor extends EditorPart implements IReusableE
 	 */
 	protected Object getArtifact() {
 		IEditorInput editorInput = getEditorInput();
-		if (editorInput instanceof CommonSourceNotFoundEditorInput input) {
+		if (editorInput instanceof CommonSourceNotFoundEditorInput) {
+			CommonSourceNotFoundEditorInput input = (CommonSourceNotFoundEditorInput) editorInput;
 			return input.getArtifact();
 		}
 		return null;
@@ -266,7 +267,8 @@ public class CommonSourceNotFoundEditor extends EditorPart implements IReusableE
 			@Override
 			public void launchesTerminated(ILaunch[] launches) {
 				Object artifact = getArtifact();
-				if (artifact instanceof IDebugElement element) {
+				if (artifact instanceof IDebugElement) {
+					IDebugElement element = (IDebugElement)artifact;
 					for (ILaunch launch : launches) {
 						if (launch.equals(element.getLaunch())) {
 							closeEditor();

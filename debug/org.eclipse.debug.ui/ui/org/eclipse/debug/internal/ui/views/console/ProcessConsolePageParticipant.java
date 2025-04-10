@@ -85,7 +85,8 @@ public class ProcessConsolePageParticipant implements IConsolePageParticipant, I
 		@Override
 		public Object execute(ExecutionEvent event) throws org.eclipse.core.commands.ExecutionException {
 			IStreamsProxy proxy = getProcess().getStreamsProxy();
-			if (proxy instanceof IStreamsProxy2 proxy2) {
+			if (proxy instanceof IStreamsProxy2) {
+				IStreamsProxy2 proxy2 = (IStreamsProxy2) proxy;
 				try {
 					proxy2.closeInputStream();
 				} catch (IOException e1) {

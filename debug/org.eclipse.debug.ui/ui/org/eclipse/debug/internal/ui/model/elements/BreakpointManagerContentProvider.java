@@ -441,7 +441,8 @@ public class BreakpointManagerContentProvider extends ElementContentProvider
 			delta.setChildCount(children.length);
 			for (int i = 0; i < children.length; i++) {
 				ModelDelta childDelta = delta.addNode(children[i], i, IModelDelta.NO_CHANGE);
-				if (children[i] instanceof BreakpointContainer childContainer) {
+				if (children[i] instanceof BreakpointContainer) {
+					BreakpointContainer childContainer = (BreakpointContainer)children[i];
 					boolean containsBP = false;
 					for (IBreakpoint containerBP : childContainer.getBreakpoints()) {
 						if (breakpoints.contains(containerBP)) {
@@ -972,7 +973,8 @@ public class BreakpointManagerContentProvider extends ElementContentProvider
 	@Override
 	protected int getChildCount(Object element, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
 		Object input = monitor.getViewerInput();
-		if (input instanceof DefaultBreakpointsViewInput bpManagerInput) {
+		if (input instanceof DefaultBreakpointsViewInput) {
+			DefaultBreakpointsViewInput bpManagerInput = (DefaultBreakpointsViewInput)input;
 			InputData inputData = getInputData(bpManagerInput);
 			if (inputData != null) {
 				return inputData.fContainer.getChildren().length;
@@ -984,7 +986,8 @@ public class BreakpointManagerContentProvider extends ElementContentProvider
 	@Override
 	protected Object[] getChildren(Object parent, int index, int length, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
 		Object input = monitor.getViewerInput();
-		if (input instanceof DefaultBreakpointsViewInput bpManagerInput) {
+		if (input instanceof DefaultBreakpointsViewInput) {
+			DefaultBreakpointsViewInput bpManagerInput = (DefaultBreakpointsViewInput)input;
 			InputData inputData = getInputData(bpManagerInput);
 			if (inputData != null) {
 				Object[] children =  inputData.fContainer.getChildren();

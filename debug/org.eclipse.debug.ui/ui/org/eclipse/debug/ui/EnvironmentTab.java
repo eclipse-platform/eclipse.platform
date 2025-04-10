@@ -173,7 +173,8 @@ public class EnvironmentTab extends AbstractLaunchConfigurationTab {
 			if (newInput == null) {
 				return;
 			}
-			if (viewer instanceof TableViewer tableViewer) {
+			if (viewer instanceof TableViewer) {
+				TableViewer tableViewer = (TableViewer) viewer;
 				if (tableViewer.getTable().isDisposed()) {
 					return;
 				}

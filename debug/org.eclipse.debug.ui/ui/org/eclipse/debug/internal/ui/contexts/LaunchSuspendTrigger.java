@@ -79,7 +79,8 @@ public class LaunchSuspendTrigger implements ISuspendTrigger, IDebugEventSetList
 			if (event.getKind() == DebugEvent.SUSPEND && !event.isEvaluation() && event.getDetail() != DebugEvent.STEP_END) {
 				//				 Don't switch perspective for evaluations or stepping
 				Object source = event.getSource();
-				if (source instanceof IAdaptable adaptable) {
+				if (source instanceof IAdaptable) {
+					IAdaptable adaptable = (IAdaptable) source;
 					ILaunch launch = adaptable.getAdapter(ILaunch.class);
 					if (fLaunch.equals(launch)) {
 						// only notify for this launch

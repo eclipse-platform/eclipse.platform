@@ -86,7 +86,8 @@ public class IndexedVariablePartition extends PlatformObject implements IVariabl
 
 	@Override
 	public String getReferenceTypeName() throws DebugException {
-		if (fOriginalVariable instanceof IVariable variable) {
+		if (fOriginalVariable instanceof IVariable) {
+			IVariable variable = (IVariable) fOriginalVariable;
 			return variable.getReferenceTypeName();
 		}
 		return IInternalDebugCoreConstants.EMPTY_STRING;
@@ -139,7 +140,8 @@ public class IndexedVariablePartition extends PlatformObject implements IVariabl
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof IndexedVariablePartition partition) {
+		if (obj instanceof IndexedVariablePartition) {
+			IndexedVariablePartition partition = (IndexedVariablePartition)obj;
 			return fOriginalVariable.equals(partition.fOriginalVariable) &&
 				fOffset == partition.fOffset && fLength == partition.fLength;
 		}

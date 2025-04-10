@@ -66,7 +66,8 @@ public class BreakpointTypeCategory extends PlatformObject implements IBreakpoin
 
 	@Override
 	public boolean equals(Object object) {
-		if (object instanceof BreakpointTypeCategory type) {
+		if (object instanceof BreakpointTypeCategory) {
+			BreakpointTypeCategory type = (BreakpointTypeCategory) object;
 			return type.getName().equals(getName());
 		}
 		return false;

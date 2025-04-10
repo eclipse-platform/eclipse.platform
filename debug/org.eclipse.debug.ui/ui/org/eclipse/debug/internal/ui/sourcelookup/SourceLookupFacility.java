@@ -230,9 +230,10 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 			if (this == obj) {
 				return true;
 			}
-			if (!(obj instanceof ArtifactWithLocator other)) {
+			if (!(obj instanceof ArtifactWithLocator)) {
 				return false;
 			}
+			ArtifactWithLocator other = (ArtifactWithLocator) obj;
 			return Objects.equals(artifact, other.artifact) && Objects.equals(locator, other.locator);
 		}
 
@@ -295,7 +296,8 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 		String editorId = null;
 		IEditorInput editorInput = null;
 		Object sourceElement = null;
-		if (localLocator instanceof ISourceLookupDirector director) {
+		if (localLocator instanceof ISourceLookupDirector) {
+			ISourceLookupDirector director = (ISourceLookupDirector) localLocator;
 			sourceElement = director.getSourceElement(artifact);
 		} else {
 			if (artifact instanceof IStackFrame) {
@@ -307,7 +309,8 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 				editorInput = new CommonSourceNotFoundEditorInput(artifact);
 				editorId = IDebugUIConstants.ID_COMMON_SOURCE_NOT_FOUND_EDITOR;
 			} else {
-				if (artifact instanceof IStackFrame frame) {
+				if (artifact instanceof IStackFrame) {
+					IStackFrame frame = (IStackFrame) artifact;
 					editorInput = new SourceNotFoundEditorInput(frame);
 					editorId = IInternalDebugUIConstants.ID_SOURCE_NOT_FOUND_EDITOR;
 				}
@@ -763,9 +766,10 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 			if (this == obj) {
 				return true;
 			}
-			if (!(obj instanceof SourceLookupTask other)) {
+			if (!(obj instanceof SourceLookupTask)) {
 				return false;
 			}
+			SourceLookupTask other = (SourceLookupTask) obj;
 			return fForce == other.fForce && Objects.equals(fPage, other.fPage)
 					&& Objects.equals(fLocator, other.fLocator) && Objects.equals(fTarget, other.fTarget);
 		}
@@ -820,9 +824,10 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 			if (this == obj) {
 				return true;
 			}
-			if (!(obj instanceof SourceDisplayRequest other)) {
+			if (!(obj instanceof SourceDisplayRequest)) {
 				return false;
 			}
+			SourceDisplayRequest other = (SourceDisplayRequest) obj;
 			return Objects.equals(fPage, other.fPage) && Objects.equals(fResult, other.fResult);
 		}
 
@@ -933,10 +938,12 @@ public class SourceLookupFacility implements IPageListener, IPartListener2, IPro
 	 * @param source thread or debug target
 	 */
 	private void clearSourceSelection(Object source) {
-		if (source instanceof IThread thread) {
+		if (source instanceof IThread) {
+			IThread thread = (IThread) source;
 			DecorationManager.removeDecorations(thread);
 			InstructionPointerManager.getDefault().removeAnnotations(thread);
-		} else if (source instanceof IDebugTarget target) {
+		} else if (source instanceof IDebugTarget) {
+			IDebugTarget target = (IDebugTarget) source;
 			DecorationManager.removeDecorations(target);
 			InstructionPointerManager.getDefault().removeAnnotations(target);
 		}

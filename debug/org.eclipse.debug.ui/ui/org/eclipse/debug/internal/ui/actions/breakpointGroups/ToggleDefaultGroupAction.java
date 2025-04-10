@@ -42,10 +42,12 @@ public class ToggleDefaultGroupAction extends AbstractBreakpointsViewAction {
 	@Override
 	public void selectionChanged(IAction action, ISelection sel) {
 		fSelectedSet = null;
-		if (sel instanceof IStructuredSelection selection) {
+		if (sel instanceof IStructuredSelection) {
+			IStructuredSelection selection = (IStructuredSelection) sel;
 			if (selection.size() == 1) {
 				Object firstElement = selection.getFirstElement();
-				if (firstElement instanceof IBreakpointContainer container) {
+				if (firstElement instanceof IBreakpointContainer) {
+					IBreakpointContainer container = (IBreakpointContainer) firstElement;
 					if (container.getCategory() instanceof WorkingSetCategory) {
 						WorkingSetCategory category = (WorkingSetCategory)container.getCategory();
 						if (IDebugUIConstants.BREAKPOINT_WORKINGSET_ID.equals(category.getWorkingSet().getId())) {

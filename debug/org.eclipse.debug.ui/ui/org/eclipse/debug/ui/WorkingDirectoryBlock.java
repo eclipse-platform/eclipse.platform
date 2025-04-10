@@ -216,7 +216,8 @@ public abstract class WorkingDirectoryBlock extends AbstractLaunchConfigurationT
 		dialog.showClosedProjects(false);
 		dialog.open();
 		Object[] results = dialog.getResult();
-		if ((results != null) && (results.length > 0) && (results[0] instanceof IPath path)) {
+		if ((results != null) && (results.length > 0) && (results[0] instanceof IPath)) {
+			IPath path = (IPath)results[0];
 			String containerName = path.makeRelative().toString();
 			setOtherWorkingDirectoryText("${workspace_loc:" + containerName + "}"); //$NON-NLS-1$ //$NON-NLS-2$
 		}

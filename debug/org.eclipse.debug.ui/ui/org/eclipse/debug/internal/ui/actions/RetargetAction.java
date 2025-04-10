@@ -133,7 +133,8 @@ public abstract class RetargetAction implements IWorkbenchWindowActionDelegate, 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		// if the active part did not provide an adapter, see if the selection does
-		if (fTargetAdapter == null && selection instanceof IStructuredSelection ss) {
+		if (fTargetAdapter == null && selection instanceof IStructuredSelection) {
+			IStructuredSelection ss = (IStructuredSelection) selection;
 			if (!ss.isEmpty()) {
 				Object object = ss.getFirstElement();
 				if (object instanceof IAdaptable) {

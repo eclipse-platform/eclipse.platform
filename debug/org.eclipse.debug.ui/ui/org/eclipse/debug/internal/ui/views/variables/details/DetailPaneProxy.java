@@ -257,7 +257,8 @@ public class DetailPaneProxy implements ISaveablePart {
 	 * @param hasFocus  whether the detail pane control has the focus
 	 */
 	protected void updateSelectionProvider(boolean hasFocus) {
-		if (fParentContainer instanceof final IDetailPaneContainer2 container2) {
+		if (fParentContainer instanceof IDetailPaneContainer2) {
+			final IDetailPaneContainer2 container2 = (IDetailPaneContainer2) fParentContainer;
 			if (fCurrentPane instanceof IDetailPane2) {
 				final ISelectionProvider provider= hasFocus ? ((IDetailPane2) fCurrentPane).getSelectionProvider() : null;
 				container2.setSelectionProvider(provider);

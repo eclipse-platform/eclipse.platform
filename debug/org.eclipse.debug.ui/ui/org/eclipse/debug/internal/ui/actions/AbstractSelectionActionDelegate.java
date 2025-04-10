@@ -74,7 +74,8 @@ public abstract class AbstractSelectionActionDelegate implements IViewActionDele
 
 	@Override
 	public void selectionChanged(IAction action, ISelection s) {
-		if (s instanceof IStructuredSelection ss) {
+		if (s instanceof IStructuredSelection) {
+			IStructuredSelection ss = (IStructuredSelection) s;
 			action.setEnabled(getEnableStateForSelection(ss));
 			setSelection(ss);
 		} else {

@@ -51,7 +51,8 @@ public class CopyBreakpointsActionDelegate extends VirtualCopyToClipboardActionD
 		IAction pasteAction = ((AbstractDebugView)getView()).getAction(IDebugView.PASTE_ACTION);
 		// update the enablement of the paste action
 		// workaround since the clipboard does not suppot callbacks
-		if (pasteAction instanceof PasteBreakpointsAction pba) {
+		if (pasteAction instanceof PasteBreakpointsAction) {
+			PasteBreakpointsAction pba = (PasteBreakpointsAction) pasteAction;
 			if (pba.getStructuredSelection() != null) {
 				pba.selectionChanged(pba.getStructuredSelection());
 			}
@@ -79,11 +80,12 @@ public class CopyBreakpointsActionDelegate extends VirtualCopyToClipboardActionD
 		// remove deleted breakpoints from drag/drop clipboard
 		if (fStamp == LocalSelectionTransfer.getTransfer().getSelectionSetTime()) {
 			ISelection selection = LocalSelectionTransfer.getTransfer().getSelection();
-			if (selection instanceof IStructuredSelection ss) {
+			if (selection instanceof IStructuredSelection) {
 				Set<IBreakpoint> removed = new HashSet<>();
 				Collections.addAll(removed, breakpoints);
 				boolean modified = false;
 				List<Object> remain = new ArrayList<>();
+				IStructuredSelection ss = (IStructuredSelection) selection;
 				Iterator<?> iterator = ss.iterator();
 				while (iterator.hasNext()) {
 					Object bp = iterator.next();

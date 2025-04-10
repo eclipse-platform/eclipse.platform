@@ -113,8 +113,9 @@ public class GoToAddressAction extends Action
 		// look at this address and figure out if a new memory block should
 		// be opened.
 		IMemoryBlock mb = fRendering.getMemoryBlock();
-		if (mb instanceof IMemoryBlockExtension mbExt)
+		if (mb instanceof IMemoryBlockExtension)
 		{
+			IMemoryBlockExtension mbExt = (IMemoryBlockExtension)mb;
 			BigInteger mbStart = mbExt.getMemoryBlockStartAddress();
 			BigInteger mbEnd = mbExt.getMemoryBlockEndAddress();
 

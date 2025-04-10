@@ -119,9 +119,10 @@ public class ResourceExtender extends PropertyTester {
 	 * @return whether or not the given resource has the given content type
 	 */
 	private boolean matchesContentType(IResource resource, String contentType) {
-		if (resource == null || !(resource instanceof IFile file) || !resource.exists()) {
+		if (resource == null || !(resource instanceof IFile) || !resource.exists()) {
 			return false;
 		}
+		IFile file = (IFile) resource;
 		IContentDescription description;
 		try {
 			description = file.getContentDescription();

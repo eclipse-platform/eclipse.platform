@@ -97,7 +97,8 @@ public class LaunchersPreferencePage extends PreferencePage implements IWorkbenc
 			if(element instanceof ILaunchConfigurationType) {
 				return super.getText(element);
 			}
-			else if(element instanceof DuplicateDelegate dd) {
+			else if(element instanceof DuplicateDelegate) {
+				DuplicateDelegate dd = (DuplicateDelegate) element;
 				return LaunchConfigurationPresentationManager.getDefault().getLaunchModeNames(dd.getModeSet()).toString();
 			}
 			else if(element instanceof ILaunchDelegate){
@@ -113,7 +114,8 @@ public class LaunchersPreferencePage extends PreferencePage implements IWorkbenc
 	class TreeProvider implements ITreeContentProvider {
 		@Override
 		public Object[] getChildren(Object parentElement) {
-			if(parentElement instanceof ILaunchConfigurationType type) {
+			if(parentElement instanceof ILaunchConfigurationType) {
+				ILaunchConfigurationType type = (ILaunchConfigurationType) parentElement;
 				Set<DuplicateDelegate> dupes = fDuplicates.get(type);
 				if(dupes != null) {
 					return dupes.toArray();
@@ -186,8 +188,9 @@ public class LaunchersPreferencePage extends PreferencePage implements IWorkbenc
 		fTreeViewer.expandToLevel(2);
 		fTreeViewer.addSelectionChangedListener(event -> {
 			Object obj = event.getStructuredSelection().getFirstElement();
-			if(obj instanceof DuplicateDelegate dd) {
+			if(obj instanceof DuplicateDelegate) {
 				fTableViewer.setAllChecked(false);
+				DuplicateDelegate dd = (DuplicateDelegate) obj;
 				fTableViewer.setInput(dd.getDelegates());
 				fTableViewer.setSelection(null);
 				obj = fDupeSelections.get(dd);

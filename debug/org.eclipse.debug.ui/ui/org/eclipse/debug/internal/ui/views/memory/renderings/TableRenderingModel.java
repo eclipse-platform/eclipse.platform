@@ -55,7 +55,8 @@ public class TableRenderingModel extends AbstractVirtualContentTableModel implem
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			IMemoryBlock mb = getMemoryBlock();
-			if (mb instanceof IMemoryBlockExtension mbExt) {
+			if (mb instanceof IMemoryBlockExtension) {
+				IMemoryBlockExtension mbExt = (IMemoryBlockExtension) mb;
 				fMBSupportsChangeManagement = mbExt.supportsChangeManagement();
 			}
 			return Status.OK_STATUS;
@@ -71,11 +72,13 @@ public class TableRenderingModel extends AbstractVirtualContentTableModel implem
 
 	@Override
 	public int indexOfKey(Object key) {
-		if (key instanceof BigInteger address) {
+		if (key instanceof BigInteger) {
+			BigInteger address = (BigInteger) key;
 			Object items[] = getElements();
 
 			for (int i = 0; i < items.length; i++) {
-				if (items[i] != null && items[i] instanceof MemorySegment line) {
+				if (items[i] != null && items[i] instanceof MemorySegment) {
+					MemorySegment line = (MemorySegment) items[i];
 					if (line.containsAddress(address)) {
 						return i;
 					}
@@ -88,7 +91,9 @@ public class TableRenderingModel extends AbstractVirtualContentTableModel implem
 
 	@Override
 	public int columnOf(Object element, Object key) {
-		if (element instanceof MemorySegment line && key instanceof BigInteger address) {
+		if (element instanceof MemorySegment && key instanceof BigInteger) {
+			BigInteger address = (BigInteger) key;
+			MemorySegment line = (MemorySegment) element;
 			if (line.containsAddress(address)) {
 				if (getAddressableUnitsPerColumn() > 0) {
 					BigInteger offset = address.subtract(line.getAddress());
@@ -131,7 +136,8 @@ public class TableRenderingModel extends AbstractVirtualContentTableModel implem
 	@Override
 	public Object getKey(int idx, int col) {
 		Object element = getElement(idx);
-		if (element != null && element instanceof MemorySegment segment) {
+		if (element != null && element instanceof MemorySegment) {
+			MemorySegment segment = (MemorySegment) element;
 			BigInteger rowAddress = segment.getAddress();
 
 			int offset;
@@ -181,7 +187,8 @@ public class TableRenderingModel extends AbstractVirtualContentTableModel implem
 		}
 
 		for (Object obj : newElements) {
-			if (obj instanceof MemorySegment newSegment) {
+			if (obj instanceof MemorySegment) {
+				MemorySegment newSegment = (MemorySegment) obj;
 				MemorySegment oldSegment = (MemorySegment) fCache.get(newSegment.getAddress());
 
 				if (oldSegment != null) {
