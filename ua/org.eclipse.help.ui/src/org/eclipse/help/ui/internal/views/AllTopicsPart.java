@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -22,9 +22,10 @@ import org.eclipse.help.internal.UAElement;
 import org.eclipse.help.internal.toc.Toc;
 import org.eclipse.help.ui.internal.HelpUIResources;
 import org.eclipse.help.ui.internal.IHelpUIConstants;
-import org.eclipse.help.ui.internal.util.OverlayIcon;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -159,8 +160,8 @@ public class AllTopicsPart extends HyperlinkTreePart {
 		}
 
 		private boolean isNotEmpty(ITopic[] topics) {
-			for (int i = 0; i < topics.length; i++) {
-				if (isNotEmpty(topics[i]))
+			for (ITopic topic : topics) {
+				if (isNotEmpty(topic))
 					return true;
 			}
 			return false;
@@ -205,8 +206,7 @@ public class AllTopicsPart extends HyperlinkTreePart {
 				.getImageDescriptor(IHelpUIConstants.IMAGE_CONTAINER);
 		ImageDescriptor ovr = HelpUIResources
 				.getImageDescriptor(IHelpUIConstants.IMAGE_DOC_OVR);
-		ImageDescriptor desc = new OverlayIcon(base,
-				new ImageDescriptor[][] { { ovr } });
+		ImageDescriptor desc = new DecorationOverlayIcon(base, ovr, IDecoration.TOP_RIGHT);
 		containerWithTopicImage = desc.createImage();
 	}
 
@@ -239,8 +239,7 @@ public class AllTopicsPart extends HyperlinkTreePart {
 
 	public void selectReveal(String href) {
 		IToc[] tocs = HelpSystem.getTocs();
-		for (int i = 0; i < tocs.length; i++) {
-			IToc toc = tocs[i];
+		for (IToc toc : tocs) {
 			ITopic topic = toc.getTopic(href);
 			if (topic != null) {
 				selectReveal(topic);
