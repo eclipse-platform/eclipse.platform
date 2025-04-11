@@ -193,7 +193,7 @@ function quickSearch(quickSearchType, errorMsg) {		//search this topic and all s
 		}		
 		// move the dialog just a bit higher than the middle
 		if (t-50 > 0) t = t-50;
-	  	window.location="javascript://needModal";  
+		if (typeof top.swtHintNeedModalPopup === "function") top.swtHintNeedModalPopup();
 	  	// Defect 593 ends
 
 		var quickSearchWindow = window.open("quickSearch.jsp" + parameters, "QuickSearch", "location=no, status=no,resizable=yes,height="+h+",width="+w +",left="+l+",top="+t);		

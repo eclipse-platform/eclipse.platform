@@ -183,7 +183,7 @@ if (data.isIE()){
 	// move the dialog just a bit higher than the middle
 	if (t-50 > 0) t = t-50;
 	
-	window.location="javascript://needModal";
+	if (typeof top.swtHintNeedModalPopup === "function") top.swtHintNeedModalPopup();
 	advancedDialog = window.open("workingSetManager.jsp?workingSet="+encodeURIComponent(workingSet), "advancedDialog", "resizable=yes,height="+h+",width="+w+",left="+l+",top="+t );
 	advancedDialog.focus(); 
 }
