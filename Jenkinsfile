@@ -11,6 +11,9 @@ pipeline {
 		maven 'apache-maven-latest'
 		jdk 'temurin-jdk21-latest'
 	}
+	environment {
+		MAVEN_OPTS = '-Xmx1500m'
+	}
 	stages {
 		stage('Build') {
 			steps {
