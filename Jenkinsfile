@@ -37,10 +37,11 @@ pipeline {
 					recordIssues enabledForFailure: true, publishAllIssues:false, ignoreQualityGate:true,
 						tools: [
 							eclipse(name: 'Compiler', pattern: '**/target/compilelogs/*.xml'),
+							javaDoc(),
 							issues(name: 'API Tools', id: 'apitools', pattern: '**/target/apianalysis/*.xml')
 						],
 						qualityGates: [[threshold: 1, type: 'DELTA', unstable: true]]
-					recordIssues enabledForFailure: true, publishAllIssues:false, tools: [mavenConsole(), javaDoc()]
+					recordIssues enabledForFailure: true, publishAllIssues:false, tools: [mavenConsole()]
 				}
 			}
 		}
