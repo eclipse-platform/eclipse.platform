@@ -130,7 +130,7 @@ if (!data.isSearchRequest()) {
 <TABLE BORDER='0'>
 	<TR><TD><%=ServletResources.getString("Indexing", request)%></TD></TR>
 	<TR><TD ALIGN='<%=isRTL?"RIGHT":"LEFT"%>'>
-		<DIV STYLE='width:100px;height:16px;border:1px solid ThreeDShadow;'>
+		<DIV STYLE='width:100px;height:16px;border:1px solid CanvasText;'>
 			<DIV ID='divProgress' STYLE='width:<%=data.getIndexedPercentage()%>px;height:100%;background-color:Highlight'></DIV>
 		</DIV>
 	</TD></TR>

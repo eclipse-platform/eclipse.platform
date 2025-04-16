@@ -46,7 +46,7 @@ BODY {
     font:<%=prefs.getViewFont()%>;
     font-size:.875rem;
 	background-color: <%=prefs.getToolbarBackground()%>;
-	color:WindowText; 	
+	color:CanvasText; 	
 }
 
 TABLE {
@@ -76,13 +76,13 @@ FORM {
 }
 
 #workingSetContainer {
-	color:WindowText; 
-	border: 2px inset ThreeDHighlight;
+	color:CanvasText; 
+	border: 2px inset CanvasText;
 	margin:0px 5px;
 	padding:5px;
 	overflow:auto;
 	height:140px;
-	background:Window;
+	background:Canvas;
 }
 
 #buttonArea {

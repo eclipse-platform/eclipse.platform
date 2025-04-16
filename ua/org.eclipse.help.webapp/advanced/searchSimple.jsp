@@ -71,7 +71,7 @@ INPUT {
 #searchWord {	
 	padding-left:4px;
 	padding-right:4px;
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 }
 
 #go {
@@ -82,13 +82,13 @@ INPUT {
 <% 
     } else {
 %>
-    background:ThreeDShadow;
+    background:CanvasText;
 <%
     }
 %>
-	color:Window;
+	color:Canvas;
 	font-weight:bold;
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 }
 
 
