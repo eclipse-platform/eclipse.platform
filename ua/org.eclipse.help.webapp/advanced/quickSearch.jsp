@@ -39,7 +39,7 @@ BODY {
 	font:<%=prefs.getViewFont()%>;
 	font-size:.875rem;
 	background-color: <%=prefs.getToolbarBackground()%>;
-	color:WindowText; 	
+	color:CanvasText; 	
 }
 
 TABLE {

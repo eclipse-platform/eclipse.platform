@@ -68,7 +68,7 @@ IMG.expander, IMG.h {
 
 A {
 	text-decoration:none; 
-	color:WindowText;
+	color:CanvasText;
 	padding-<%=isRTL?"left":"right"%>:2px;
 	/* this works in ie5.5, but not in ie5.0  */
 	white-space: nowrap;
@@ -99,7 +99,7 @@ A.nolink {
 }
 
 A.nolink:link, A.nolink:visited {
-	color:WindowText;
+	color:CanvasText;
 }
 
 A.nolink:hover {

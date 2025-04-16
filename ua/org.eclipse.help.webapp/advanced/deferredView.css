@@ -15,7 +15,7 @@
 body { 
 	font: <%=prefs.getViewFont()%>;
 	font-size: .875rem;
-	color: WindowText;
+	color: CanvasText;
 	margin-top: 8px;
 	margin-left: 10px;
 	margin-right: 10px;

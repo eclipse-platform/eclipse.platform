@@ -23,18 +23,18 @@ body{
 
 #titleText {
 	font-weight:bold;
-	color:WindowText;
+	color:CanvasText;
 }
 
 .printAlertDiv {
     width:400px;
-    border:1px solid ThreeDShadow;
+    border:1px solid CanvasText;
     background:button;
 }
 
 .caption {
-	background:ActiveCaption;
-	color:CaptionText;
+	background:Canvas;
+	color:CanvasText;
 	height: 30px;
 }
 

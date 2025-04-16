@@ -41,7 +41,7 @@ BODY {
 	font: <%=prefs.getViewFont()%>;
 	font-size: .875rem;
 	background:<%=prefs.getToolbarBackground()%>;
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 	padding:0px;
 	margin:0px;
 }
@@ -72,14 +72,14 @@ FORM {
 }
 
 #searchWord {
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 	width:100%;
 	font:icon;
 	font-size:.875rem;
 }
 
 #booksContainer {
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 	margin:0px 10px;
 	overflow:auto;
 }
@@ -99,7 +99,7 @@ FORM {
 if (data.isMozilla()) {
 %>
 input[type="checkbox"] {
-	border:2px solid ThreeDShadow; 
+	border:2px solid CanvasText; 
 	margin:0xp; 
 	padding:0px;	
 	height:12px;
@@ -225,7 +225,7 @@ for (int i=0; i<tocData.getTocCount(); i++)
   			<table cellspacing=10 cellpading=0 border=0 align=<%=isRTL?"left":"right"%>  style="background:transparent;">
 				<tr>
 					<td>
-						<input id="searchButton" class='button' type="submit" role="button" onclick="doAdvancedSearch()" value="<%=ServletResources.getString("SearchLabel", request)%>"  id="go" alt="<%=ServletResources.getString("SearchLabel", request)%>" title="<%=ServletResources.getString("SearchLabel", request)%>">
+						<input class='button' type="submit" role="button" onclick="doAdvancedSearch()" value="<%=ServletResources.getString("GO", request)%>"  id="go" alt="<%=ServletResources.getString("SearchLabel", request)%>" title="<%=ServletResources.getString("GO", request)%>">
 					</td>
 					<td>
 					  	<input class='button' type="button" onclick="window.close()"  type="button"  value="<%=ServletResources.getString("Cancel", request)%>"  id="cancel" alt="<%=ServletResources.getString("Cancel", request)%>" title="<%=ServletResources.getString("Cancel", request)%>">
