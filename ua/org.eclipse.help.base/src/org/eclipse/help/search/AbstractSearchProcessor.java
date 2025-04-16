@@ -71,8 +71,8 @@ public abstract class AbstractSearchProcessor {
 	 * @param originalQuery The original query before any changes made by
 	 *                      {@link #preSearch(String)}.
 	 * @param results       The results of the executed query.
-	 * @param results       The locale.
-	 * @param results       The set scopes (might be {@code null}).
+	 * @param locale        The locale.
+	 * @param scopes        The set scopes (might be {@code null}).
 	 *
 	 * @return The modified results, or {@code null} for no changes.
 	 *
