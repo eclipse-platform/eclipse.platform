@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2020 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -252,4 +252,6 @@ public class ActionMessages extends NLS {
 	public static String EnableAllBreakpointsAction_0;
 	public static String EnableAllBreakpointsAction_1;
 	public static String EnableAllBreakpointsAction_3;
+	public static String BreakpointLabelDialog;
+
 }
