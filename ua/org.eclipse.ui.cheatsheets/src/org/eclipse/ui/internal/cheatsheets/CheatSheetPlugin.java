@@ -129,89 +129,89 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
-		IPath path = ICONS_PATH.append(T_OBJ).append("cheatsheet_obj.png");//$NON-NLS-1$
+		IPath path = ICONS_PATH.append(T_OBJ).append("cheatsheet_obj.svg");//$NON-NLS-1$
 		ImageDescriptor imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_OBJ, imageDescriptor);
 
-		path = ICONS_PATH.append(T_OBJ).append("skip_status.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_OBJ).append("skip_status.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_ITEM_SKIP, imageDescriptor);
 
-		path = ICONS_PATH.append(T_OBJ).append("complete_status.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_OBJ).append("complete_status.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_ITEM_COMPLETE, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("linkto_help.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("linkto_help.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_ITEM_HELP, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("start_cheatsheet.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("start_cheatsheet.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_START, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("restart_cheatsheet.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("restart_cheatsheet.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_RESTART, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("start_task.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("start_task.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_ITEM_BUTTON_START, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("skip_task.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("skip_task.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_ITEM_BUTTON_SKIP, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("complete_task.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("complete_task.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_ITEM_BUTTON_COMPLETE, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("restart_task.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("restart_task.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_ITEM_BUTTON_RESTART, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("return_to_start.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("return_to_start.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_RETURN, imageDescriptor);
 
-		path = ICONS_PATH.append(T_OBJ).append("error.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_OBJ).append("error.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.ERROR, imageDescriptor);
 
 		// Images used by composites
 
-		path = ICONS_PATH.append(T_OBJ).append("composite_obj.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_OBJ).append("composite_obj.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.COMPOSITE_OBJ, imageDescriptor);
 
-		path = ICONS_PATH.append(T_OBJ).append("information.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_OBJ).append("information.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.INFORMATION, imageDescriptor);
 
-		path = ICONS_PATH.append(T_OBJ).append("warning.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_OBJ).append("warning.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.WARNING, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("start_ccs_task.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("start_ccs_task.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.COMPOSITE_TASK_START, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("skip_ccs_task.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("skip_ccs_task.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.COMPOSITE_TASK_SKIP, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("review_ccs_task.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("review_ccs_task.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.COMPOSITE_TASK_REVIEW, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("goto_ccs_task.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("goto_ccs_task.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.COMPOSITE_GOTO_TASK, imageDescriptor);
 
-		path = ICONS_PATH.append(T_ELCL).append("restart_all.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_ELCL).append("restart_all.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.COMPOSITE_RESTART_ALL, imageDescriptor);
 
-		path = ICONS_PATH.append(T_VIEW).append("cheatsheet_view.png");//$NON-NLS-1$
+		path = ICONS_PATH.append(T_VIEW).append("cheatsheet_view.svg");//$NON-NLS-1$
 		imageDescriptor = createImageDescriptor(getPlugin().getBundle(), path);
 		reg.put(ICheatSheetResource.CHEATSHEET_VIEW, imageDescriptor);
 	}
