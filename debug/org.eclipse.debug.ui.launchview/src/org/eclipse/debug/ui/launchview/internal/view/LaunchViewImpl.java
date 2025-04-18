@@ -153,12 +153,12 @@ public class LaunchViewImpl implements Supplier<Set<ILaunchObject>> {
 
 		MDirectMenuItem refresh = MMenuFactory.INSTANCE.createDirectMenuItem();
 		refresh.setLabel(LaunchViewMessages.LaunchView_Refresh);
-		refresh.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/refresh.png"); //$NON-NLS-1$ //$NON-NLS-2$
+		refresh.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/refresh.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 		refresh.setObject(new RefreshHandler());
 
 		MDirectMenuItem terminateAll = MMenuFactory.INSTANCE.createDirectMenuItem();
 		terminateAll.setLabel(LaunchViewMessages.LaunchView_TerminateAll);
-		terminateAll.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/terminate_all_co.png"); //$NON-NLS-1$ //$NON-NLS-2$
+		terminateAll.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/terminate_all_co.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 		terminateAll.setObject(new TerminateAllHandler());
 
 		viewMenu.getChildren().add(refresh);

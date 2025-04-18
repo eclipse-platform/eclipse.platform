@@ -33,7 +33,7 @@ public class EditAction {
 		MDirectMenuItem item = MMenuFactory.INSTANCE.createDirectMenuItem();
 		item.setLabel(LaunchViewMessages.EditAction_Edit);
 		item.setObject(this);
-		item.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/edit_template.png"); //$NON-NLS-1$ //$NON-NLS-2$
+		item.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/edit_template.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 		return item;
 	}
 

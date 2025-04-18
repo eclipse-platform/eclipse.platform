@@ -36,9 +36,9 @@ public class LaunchAction {
 
 	static {
 		COMMON_MODE_ICONS = new TreeMap<>();
-		COMMON_MODE_ICONS.put("run", "icons/run_exc.png"); //$NON-NLS-1$//$NON-NLS-2$
-		COMMON_MODE_ICONS.put("debug", "icons/debug_exc.png"); //$NON-NLS-1$ //$NON-NLS-2$
-		COMMON_MODE_ICONS.put("profile", "icons/profile_exc.png"); //$NON-NLS-1$ //$NON-NLS-2$
+		COMMON_MODE_ICONS.put("run", "icons/run_exc.svg"); //$NON-NLS-1$//$NON-NLS-2$
+		COMMON_MODE_ICONS.put("debug", "icons/debug_exc.svg"); //$NON-NLS-1$ //$NON-NLS-2$
+		COMMON_MODE_ICONS.put("profile", "icons/profile_exc.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 		COMMON_MODE_ICONS.put("coverage", "icons/coverage.png"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
