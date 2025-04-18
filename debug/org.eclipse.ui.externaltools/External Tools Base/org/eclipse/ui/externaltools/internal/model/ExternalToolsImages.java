@@ -55,8 +55,8 @@ public class ExternalToolsImages {
 	 */
 	private static void declareImages() {
 		// Objects
-		declareRegistryImage(IExternalToolConstants.IMG_TAB_MAIN, OBJECT + "main_tab.png"); //$NON-NLS-1$
-		declareRegistryImage(IExternalToolConstants.IMG_TAB_BUILD, OBJECT + "build_tab.png"); //$NON-NLS-1$
+		declareRegistryImage(IExternalToolConstants.IMG_TAB_MAIN, OBJECT + "main_tab.svg"); //$NON-NLS-1$
+		declareRegistryImage(IExternalToolConstants.IMG_TAB_BUILD, OBJECT + "build_tab.svg"); //$NON-NLS-1$
 	}
 
 	/**

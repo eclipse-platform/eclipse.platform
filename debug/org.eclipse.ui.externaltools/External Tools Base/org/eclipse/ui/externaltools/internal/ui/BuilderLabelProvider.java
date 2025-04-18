@@ -32,8 +32,8 @@ import org.eclipse.ui.externaltools.internal.ui.BuilderPropertyPage.ErrorConfig;
 
 
 class BuilderLabelProvider extends LabelProvider {
-		private static final String IMG_BUILDER = "icons/full/obj16/builder.png"; //$NON-NLS-1$;
-		private static final String IMG_INVALID_BUILD_TOOL = "icons/full/obj16/invalid_build_tool.png"; //$NON-NLS-1$
+		private static final String IMG_BUILDER = "icons/full/obj16/builder.svg"; //$NON-NLS-1$ ;
+		private static final String IMG_INVALID_BUILD_TOOL = "icons/full/obj16/invalid_build_tool.svg"; //$NON-NLS-1$
 		IDebugModelPresentation debugModelPresentation= DebugUITools.newDebugModelPresentation();
 
 		private final Image builderImage = ExternalToolsPlugin.getDefault().getImageDescriptor(IMG_BUILDER).createImage();
