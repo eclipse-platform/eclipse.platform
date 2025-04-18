@@ -68,7 +68,7 @@ public class CustomizationDialog extends TrayDialog {
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(Messages.WelcomeCustomizationPreferencePage_Customize);
-		newShell.setImage(ImageUtil.createImage("full/elcl16/configure.png")); //$NON-NLS-1$);
+		newShell.setImage(ImageUtil.createImage("full/elcl16/configure.svg")); //$NON-NLS-1$);
 	}
 
 }
