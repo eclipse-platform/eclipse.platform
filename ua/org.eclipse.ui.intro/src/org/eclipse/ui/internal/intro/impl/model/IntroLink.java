@@ -79,7 +79,7 @@ public class IntroLink extends AbstractTextElement {
 	}
 
 	/**
-	 * Retruns an IntroURL instance if link has a valid intro url. Returns null
+	 * Returns an IntroURL instance if link has a valid intro url. Returns null
 	 * otherwise.
 	 *
 	 * @return Returns the introURL.

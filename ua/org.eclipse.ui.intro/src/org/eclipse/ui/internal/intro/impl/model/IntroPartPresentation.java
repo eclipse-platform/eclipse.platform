@@ -263,7 +263,7 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	}
 
 	/**
-	 * Retruns a list of valid implementation elements of the config. Choose correct implementation
+	 * Returns a list of valid implementation elements of the config. Choose correct implementation
 	 * element based on os atrributes. Rules: get current OS, choose first contributrion, with os
 	 * that matches OS. Otherwise, choose first contribution with no os. Returns null if no valid
 	 * implementation is found.

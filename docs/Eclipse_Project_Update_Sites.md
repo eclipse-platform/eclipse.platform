@@ -6,7 +6,7 @@ This site contains information about the artifacts created by the Eclipse projec
 
 ### Eclipse build repositories
 
-The Eclispe project also publish unreleased versions of its artifacts.
+The Eclipse project also publish unreleased versions of its artifacts.
 Committers and early adopters, [look below for unversioned repositories.](#Non-versioned-repository-URLs)
 
 #### Versioned repository URLs
