@@ -385,19 +385,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		createImageDescriptor(plugin, ITeamUIImages.IMG_COLLAPSE_ALL);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_COLLAPSE_ALL_ENABLED);
 
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_INCOMING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_OUTGOING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_CONFLICTING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_REFRESH_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_IGNORE_WHITESPACE_DISABLED);
-
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE);
-
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE_DISABLED);
 
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP_ENABLED);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE_ENABLED);

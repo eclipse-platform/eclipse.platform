@@ -68,50 +68,6 @@ public interface ITeamUIImages {
 	/**
 	 * Identifies an incoming change.
 	 */
-	public final String IMG_DLG_SYNC_INCOMING_DISABLED = "dlcl16/incom_synch.png"; //$NON-NLS-1$
-	/**
-	 * Identifies an outgoing change.
-	 */
-	public final String IMG_DLG_SYNC_OUTGOING_DISABLED = "dlcl16/outgo_synch.png"; //$NON-NLS-1$
-	/**
-	 * Identifies a conflicting change.
-	 */
-	public final String IMG_DLG_SYNC_CONFLICTING_DISABLED = "dlcl16/conflict_synch.png"; //$NON-NLS-1$
-	/**
-	 * Identifies a refresh action.
-	 */
-	public final String IMG_REFRESH_DISABLED = "dlcl16/refresh.png"; //$NON-NLS-1$
-	/**
-	 * Identifies a refresh with repository action.
-	 */
-	public final String IMG_REFRESH_REMOTE_DISABLED = "dlcl16/refresh_remote.png"; //$NON-NLS-1$
-	/**
-	 * Identifies a link with action.
-	 */
-	public final String IMG_LINK_WITH_DISABLED = "dlcl16/synced.png"; //$NON-NLS-1$
-	/**
-	 * Identifies an ignore white space action.
-	 */
-	public final String IMG_IGNORE_WHITESPACE_DISABLED = "dlcl16/ignorews_edit.png"; //$NON-NLS-1$
-	/**
-	 * Identifies a collapse all action.
-	 */
-	public final String IMG_COLLAPSE_ALL_DISABLED = "dlcl16/collapseall.png"; //$NON-NLS-1$
-	/**
-	 * Identifies the incoming mode for synchronizing.
-	 */
-	public final String IMG_SYNC_MODE_CATCHUP_DISABLED = "dlcl16/catchup_rls.png"; //$NON-NLS-1$
-	/**
-	 * Identifies the outgoing mode for synchronizing.
-	 */
-	public final String IMG_SYNC_MODE_RELEASE_DISABLED = "dlcl16/release_rls.png"; //$NON-NLS-1$
-	/**
-	 * Identifies the both mode for synchronizing.
-	 */
-	public final String IMG_SYNC_MODE_FREE_DISABLED = "dlcl16/catchuprelease_rls.png"; //$NON-NLS-1$
-	/**
-	 * Identifies an incoming change.
-	 */
 	public final String IMG_DLG_SYNC_INCOMING_ENABLED = "elcl16/incom_synch.svg"; //$NON-NLS-1$
 	/**
 	 * Identifies an outgoing change.
