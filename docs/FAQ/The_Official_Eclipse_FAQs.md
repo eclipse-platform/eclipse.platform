@@ -3,7 +3,7 @@
 The Official Eclipse FAQs
 =========================
 
-Note that this FAQ is updated less frequently than [this FAQ](/IRC_FAQ "IRC FAQ"). You may find your answer there before it makes its way here.
+Note that this FAQ is updated less frequently than [this FAQ](../FAQ.md "IRC FAQ"). You may find your answer there before it makes its way here.
 
 Contents
 --------
