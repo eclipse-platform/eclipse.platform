@@ -65,7 +65,6 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	public static final IPath ICONS_PATH = IPath.fromOSString("$nl$/icons/"); //$NON-NLS-1$
 	public static final String T_OBJ = "obj16/"; //$NON-NLS-1$
 	public static final String T_ELCL = "elcl16/"; //$NON-NLS-1$
-	public static final String T_DLCL = "dlcl16/"; //$NON-NLS-1$
 	public static final String T_VIEW = "view16/"; //$NON-NLS-1$
 
 	/**
