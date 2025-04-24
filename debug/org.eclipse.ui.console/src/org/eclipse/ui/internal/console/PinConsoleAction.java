@@ -35,7 +35,6 @@ public class PinConsoleAction extends Action implements IUpdate {
 		super(ConsoleMessages.PinConsoleAction_0, IAction.AS_CHECK_BOX);
 		setToolTipText(ConsoleMessages.PinConsoleAction_1);
 		setImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_PIN));
-		setDisabledImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_DLCL_PIN));
 		setHoverImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_LCL_PIN));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IConsoleHelpContextIds.CONSOLE_PIN_CONSOLE_ACITON);
 		fView = view;

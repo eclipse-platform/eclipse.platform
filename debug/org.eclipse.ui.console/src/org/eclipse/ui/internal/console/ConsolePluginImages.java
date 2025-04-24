@@ -44,7 +44,6 @@ public class ConsolePluginImages {
 
 	// Use IPath and toOSString to build the names to ensure they have the slashes correct
 	private final static String LOCALTOOL= "clcl16/"; //basic colors - size 16x16 //$NON-NLS-1$
-	private final static String DLCL= "dlcl16/"; //disabled - size 16x16 //$NON-NLS-1$
 	private final static String ELCL= "elcl16/"; //enabled - size 16x16 //$NON-NLS-1$
 	private final static String VIEW= "cview16/"; // views //$NON-NLS-1$
 
@@ -59,14 +58,6 @@ public class ConsolePluginImages {
 		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_PIN, LOCALTOOL + "pin.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_LOCK, LOCALTOOL + "lock_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_WRAP, LOCALTOOL + "wordwrap.svg"); //$NON-NLS-1$
-
-		// disabled local toolbars
-		declareRegistryImage(IInternalConsoleConstants.IMG_DLCL_CLEAR, DLCL + "clear_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_DLCL_PIN, DLCL + "pin.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_DLCL_LOCK, DLCL + "lock_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_DLCL_WRAP, DLCL + "wordwrap.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_DLCL_CLOSE, DLCL + "rem_co.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_DLCL_NEW_CON, DLCL + "new_con.png"); //$NON-NLS-1$
 
 		// enabled local toolbars
 		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_CLEAR, ELCL + "clear_co.svg"); //$NON-NLS-1$

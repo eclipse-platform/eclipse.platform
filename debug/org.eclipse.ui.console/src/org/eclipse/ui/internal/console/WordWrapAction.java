@@ -40,7 +40,6 @@ public class WordWrapAction extends Action implements IPropertyChangeListener {
 
 		setToolTipText(ConsoleMessages.WordWrapAction_1);
 		setHoverImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_LCL_WRAP));
-		setDisabledImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_DLCL_WRAP));
 		setImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_WRAP));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IConsoleHelpContextIds.CONSOLE_WORD_WRAP_ACTION);
 
