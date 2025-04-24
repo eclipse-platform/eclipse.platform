@@ -34,7 +34,6 @@ public class CloseConsoleAction extends Action {
 
 	public CloseConsoleAction(IConsole console) {
 		super(ConsoleMessages.CloseConsoleAction_0, ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_CLOSE));
-		setDisabledImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_DLCL_CLOSE));
 		setToolTipText(ConsoleMessages.CloseConsoleAction_1);
 		fConsole = console;
 	}
