@@ -106,7 +106,7 @@ public class TreeLabelProvider extends LabelProvider {
 	 */
 	private ImageSet createImages(String kind) {
 		ImageSet images = new ImageSet();
-		ImageDescriptor desc = getPredefinedImageDescriptor(kind, true);
+		ImageDescriptor desc = getPredefinedImageDescriptor(kind);
 		if (desc == null) {
 			desc = TaskEditorManager.getInstance().getImageDescriptor(kind);
 		}
@@ -134,7 +134,7 @@ public class TreeLabelProvider extends LabelProvider {
 		return images;
 	}
 
-	private ImageDescriptor getPredefinedImageDescriptor(String kind, boolean isEnabled) {
+	private ImageDescriptor getPredefinedImageDescriptor(String kind) {
 		String filename;
 		if (ICompositeCheatsheetTags.CHEATSHEET_TASK_KIND.equals(kind)) {
 			filename = "cheatsheet_task.svg"; //$NON-NLS-1$
@@ -147,13 +147,7 @@ public class TreeLabelProvider extends LabelProvider {
 		} else {
 			return null;
 		}
-		String iconPath =  "$nl$/icons/"; //$NON-NLS-1$
-		if (isEnabled) {
-			iconPath += CheatSheetPlugin.T_OBJ;
-		} else {
-			iconPath += CheatSheetPlugin.T_DLCL;
-		}
-		iconPath += filename;
+		String iconPath = "$nl$/icons/" + CheatSheetPlugin.T_OBJ + filename; //$NON-NLS-1$
 		return createImageDescriptor(iconPath);
 	}
 
@@ -165,18 +159,7 @@ public class TreeLabelProvider extends LabelProvider {
 	}
 
 	private void createDisabledImage(String kind, int state, ImageSet images, Image baseImage) {
-		// The four images for task_set, task_sequence, task_choice and cheatsheet_task can be found
-		// in icons/dlcl16.
-		// TODO extend the extension point to allow disabled images to be specified.
-		//if
-
-		ImageDescriptor desc = getPredefinedImageDescriptor(kind, false);
-		Image disabledImage;
-		if (desc != null) {
-			disabledImage = desc.createImage();
-		} else {
-			disabledImage = createGrayedImage(baseImage);
-		}
+		Image disabledImage = createGrayedImage(baseImage);
 		images.put(state, disabledImage);
 	}
 
