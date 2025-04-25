@@ -61,8 +61,6 @@ public abstract class AbstractIntroPartImplementation {
 			setToolTipText(Messages.Browser_backwardButton_tooltip);
 			setImageDescriptor(ImageUtil
 				.createImageDescriptor("full/elcl16/backward_nav.svg")); //$NON-NLS-1$
-			setDisabledImageDescriptor(ImageUtil
-				.createImageDescriptor("full/dlcl16/backward_nav.png")); //$NON-NLS-1$
 		}
 
 		@Override
@@ -77,8 +75,6 @@ public abstract class AbstractIntroPartImplementation {
 			setToolTipText(Messages.Browser_forwardButton_tooltip);
 			setImageDescriptor(ImageUtil
 				.createImageDescriptor("full/elcl16/forward_nav.svg")); //$NON-NLS-1$
-			setDisabledImageDescriptor(ImageUtil
-				.createImageDescriptor("full/dlcl16/forward_nav.png")); //$NON-NLS-1$
 		}
 
 		@Override
@@ -93,8 +89,6 @@ public abstract class AbstractIntroPartImplementation {
 			setToolTipText(Messages.Browser_homeButton_tooltip);
 			setImageDescriptor(ImageUtil
 				.createImageDescriptor("full/elcl16/home_nav.svg")); //$NON-NLS-1$
-			setDisabledImageDescriptor(ImageUtil
-				.createImageDescriptor("full/dlcl16/home_nav.png")); //$NON-NLS-1$
 		}
 
 		@Override
