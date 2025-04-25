@@ -18,12 +18,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.internal.util.ProductPreferences;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.ui.internal.intro.impl.FontSelection;
@@ -55,7 +53,6 @@ public class IntroHTMLGenerator {
 	private AbstractIntroPage introPage;
 
 	private IIntroContentProviderSite providerSite;
-	private boolean backgroundSizeWorks;
 
 	/**
 	 * Generates the HTML code that will be presented in the browser widget for the provided intro
@@ -70,29 +67,10 @@ public class IntroHTMLGenerator {
 		this.introPage = page;
 		this.providerSite = providerSite;
 
-		initializeBackgroundSizeWorks();
-
 		// generate and add the appropriate encoding to the top of the document
 		// generateEncoding();
 		// create the main HTML element, and all of its contents.
 		return generateHTMLElement();
-	}
-
-	private void initializeBackgroundSizeWorks() {
-		// Internet Explorer <= 9 doesn't properly handle background-size
-		backgroundSizeWorks = true;
-		try {
-			if (isIE()) {
-				Class<?> ieClass = Class.forName("org.eclipse.swt.browser.IE"); //$NON-NLS-1$
-				Field field = ieClass.getDeclaredField("IEVersion"); //$NON-NLS-1$
-				field.setAccessible(true);
-				int value = field.getInt(ieClass);
-				// We specifically care about background-size which works in 9+
-				backgroundSizeWorks = value <= 0 || value >= 9;
-			}
-		} catch(Exception e) {
-			// IE not found
-		}
 	}
 
 	private boolean isIE() {
@@ -443,14 +421,7 @@ public class IntroHTMLGenerator {
 			String imageUrl = element.getBackgroundImage();
 			imageUrl = BundleUtil.getResolvedResourceLocation(element.getBase(), imageUrl, element
 					.getBundle());
-			String style;
-			if (Platform.getWS().equals(Platform.WS_WIN32) && !backgroundSizeWorks && imageUrl.toLowerCase().endsWith(".png")) { //$NON-NLS-1$
-				// IE 5.5+ does not handle alphas in PNGs without
-				// this hack. Remove when IE7 becomes widespread
-				style = "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + imageUrl + "', sizingMethod='crop');"; //$NON-NLS-1$ //$NON-NLS-2$
-			} else {
-				style = "background-image : url(" + imageUrl + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-			}
+			String style = "background-image : url(" + imageUrl + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 			divElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_STYLE, style);
 		}
 		// Add any children of the div, in the order they are defined
@@ -1018,21 +989,11 @@ public class IntroHTMLGenerator {
 			int indentLevel) {
 		HTMLElement image = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_IMG, indentLevel, true,
 				false);
-		boolean pngOnWin32 = imageSrc != null && Platform.getWS().equals(Platform.WS_WIN32)
-				&& !backgroundSizeWorks && imageSrc.toLowerCase().endsWith(".png"); //$NON-NLS-1$
-		if (imageSrc == null || pngOnWin32) {
-			// we must handle PNGs here - IE does not support alpha blanding well.
-			// We will set the alpha image loader and load the real image
-			// that way. The 'src' attribute in the image itself will
-			// get the blank image.
+		if (imageSrc == null) {
 			String blankImageURL = BundleUtil.getResolvedResourceLocation(
 					IIntroHTMLConstants.IMAGE_SRC_BLANK, IIntroConstants.PLUGIN_ID);
 			if (blankImageURL != null) {
 				image.addAttribute(IIntroHTMLConstants.ATTRIBUTE_SRC, blankImageURL);
-				if (pngOnWin32) {
-					String style = "filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + imageSrc + "', sizingMethod='image')"; //$NON-NLS-1$//$NON-NLS-2$
-					image.addAttribute(IIntroHTMLConstants.ATTRIBUTE_STYLE, style);
-				}
 			}
 		} else
 			image.addAttribute(IIntroHTMLConstants.ATTRIBUTE_SRC, imageSrc);
