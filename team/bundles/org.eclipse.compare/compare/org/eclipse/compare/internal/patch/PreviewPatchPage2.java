@@ -170,8 +170,7 @@ public class PreviewPatchPage2 extends WizardPage {
 	private void updateActions(IStructuredSelection ss) {
 		fExcludeAction.setEnabled(false);
 		fIncludeAction.setEnabled(false);
-		for (Iterator<?> it = ss.iterator(); it.hasNext();) {
-			Object element = it.next();
+		for (Object element : ss) {
 			if (element instanceof PatchDiffNode) {
 				if (((PatchDiffNode) element).isEnabled()) {
 					fExcludeAction.setEnabled(true);
@@ -305,7 +304,6 @@ public class PreviewPatchPage2 extends WizardPage {
 		};
 		fIgnoreWhiteSpace.setChecked(false);
 		fIgnoreWhiteSpace.setToolTipText(PatchMessages.PreviewPatchPage2_IgnoreWSTooltip);
-		fIgnoreWhiteSpace.setDisabledImageDescriptor(CompareUIPlugin.getImageDescriptor(ICompareUIConstants.IGNORE_WHITESPACE_DISABLED));
 
 		fReversePatch = new Action(PatchMessages.PreviewPatchPage_ReversePatch_text){
 			@Override

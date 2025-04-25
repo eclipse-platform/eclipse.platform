@@ -35,7 +35,6 @@ public interface ICompareUIConstants {
 	public static final String RETARGET_PROJECT = "eview16/compare_view.svg"; //$NON-NLS-1$
 
 	public static final String IGNORE_WHITESPACE_ENABLED = "etool16/ignorews_edit.svg"; //$NON-NLS-1$
-	public static final String IGNORE_WHITESPACE_DISABLED= "dtool16/ignorews_edit.png";	//$NON-NLS-1$
 
 	public static final String PROP_ANCESTOR_VISIBLE = PREFIX + "AncestorVisible"; //$NON-NLS-1$
 	public static final String PROP_IGNORE_ANCESTOR = PREFIX + "IgnoreAncestor"; //$NON-NLS-1$
