@@ -10,7 +10,6 @@
             name="%View.label"
             icon="$nl$/icons/full/eview16/unit.png"
             category="org.eclipse.debug.ui"
-            fastViewWidthRatio="0.40"
             class="org.eclipse.unittest.internal.ui.TestRunnerViewPart"
             id="org.eclipse.unittest.ui.ResultView">
       </view>

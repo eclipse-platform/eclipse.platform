@@ -292,7 +292,6 @@
       <view
             name="%SyncView.name"
             icon="$nl$/icons/full/eview16/synch_synch.svg"
-            fastViewWidthRatio="0.25"
             category="org.eclipse.team.ui"
             allowMultiple="true"
             class="org.eclipse.team.internal.ui.synchronize.SynchronizeView"
@@ -308,7 +307,6 @@
     <!--  <view
             name="%CompareView.name"
             icon="$nl$/icons/full/eview16/compare_view.svg"
-            fastViewWidthRatio="0.25"
             category="org.eclipse.team.ui"
             class="org.eclipse.team.internal.ui.synchronize.CompareView"
             id="org.eclipse.team.sync.views.CompareView">
