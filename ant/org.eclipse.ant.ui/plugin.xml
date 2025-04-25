@@ -38,7 +38,6 @@
             name="%View.antView"
             icon="$nl$/icons/full/eview16/ant_view.svg"
             category="org.eclipse.ant.ui.views"
-            fastViewWidthRatio="0.40"
             class="org.eclipse.ant.internal.ui.views.AntView"
             id="org.eclipse.ant.ui.views.AntView">
       </view>

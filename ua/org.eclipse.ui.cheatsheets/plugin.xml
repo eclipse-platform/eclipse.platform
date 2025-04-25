@@ -47,7 +47,6 @@
             name="%CHEAT_SHEETS"
             icon="$nl$/icons/view16/cheatsheet_view.svg"
             category="org.eclipse.help.ui"
-            fastViewWidthRatio="0.5"
             class="org.eclipse.ui.internal.cheatsheets.views.CheatSheetView"
             id="org.eclipse.ui.cheatsheets.views.CheatSheetView">
       </view>
