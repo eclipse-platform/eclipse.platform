@@ -55,9 +55,6 @@ public class ConsolePluginImages {
 
 		//local toolbars
 		declareRegistryImage(IConsoleConstants.IMG_LCL_CLEAR, LOCALTOOL + "clear_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_PIN, LOCALTOOL + "pin.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_LOCK, LOCALTOOL + "lock_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalConsoleConstants.IMG_LCL_WRAP, LOCALTOOL + "wordwrap.svg"); //$NON-NLS-1$
 
 		// enabled local toolbars
 		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_CLEAR, ELCL + "clear_co.svg"); //$NON-NLS-1$
