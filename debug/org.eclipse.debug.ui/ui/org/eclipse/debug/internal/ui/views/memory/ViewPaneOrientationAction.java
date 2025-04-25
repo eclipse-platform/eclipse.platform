@@ -34,15 +34,13 @@ class ViewPaneOrientationAction extends Action {
 		if (orientation == MemoryView.HORIZONTAL_VIEW_ORIENTATION) {
 			setText(DebugUIMessages.ViewPaneOrientationAction_0);
 			setToolTipText(DebugUIMessages.ViewPaneOrientationAction_1);
-			setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DETAIL_PANE_RIGHT));
+			setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DETAIL_PANE_RIGHT));
 			setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE_RIGHT));
-			setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DETAIL_PANE_RIGHT));
 		} else if (orientation == MemoryView.VERTICAL_VIEW_ORIENTATION) {
 			setText(DebugUIMessages.ViewPaneOrientationAction_2);
 			setToolTipText(DebugUIMessages.ViewPaneOrientationAction_3);
-			setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DETAIL_PANE_UNDER));
+			setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DETAIL_PANE_UNDER));
 			setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_DETAIL_PANE_UNDER));
-			setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DETAIL_PANE_UNDER));
 		}
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.MEMORY_VIEW_PANE_ORIENTATION_ACTION);
 	}

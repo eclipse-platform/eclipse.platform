@@ -303,8 +303,7 @@ public class AddMemoryRenderingActionDelegate extends Action implements IViewAct
 			bindAction(action);
 
 			action.setText(ActionMessages.AddMemoryRenderingActionDelegate_2);
-			action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_MONITOR_EXPRESSION));
-			action.setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_ADD));
+			action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_ADD));
 			action.setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_MONITOR_EXPRESSION));
 		}
 	}

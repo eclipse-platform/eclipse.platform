@@ -27,9 +27,9 @@ import org.eclipse.debug.core.model.IMemoryBlockRetrieval;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.views.memory.MemoryViewUtil;
 import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.memory.AbstractMemoryRendering;
 import org.eclipse.debug.ui.memory.IMemoryRendering;
 import org.eclipse.debug.ui.memory.IMemoryRenderingBindingsListener;
@@ -83,8 +83,8 @@ public class CreateRendering extends AbstractMemoryRendering implements IMemoryR
 
 		@Override
 		public Image getImage(Object element) {
-			return DebugUIPlugin.getImageDescriptorRegistry().get(
-					DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_MONITOR_EXPRESSION));
+			return DebugUIPlugin.getImageDescriptorRegistry()
+					.get(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_ADD));
 		}
 
 		@Override
@@ -300,8 +300,8 @@ public class CreateRendering extends AbstractMemoryRendering implements IMemoryR
 
 	@Override
 	public Image getImage() {
-		return DebugUIPlugin.getImageDescriptorRegistry().get(
-				DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_MONITOR_EXPRESSION));
+		return DebugUIPlugin.getImageDescriptorRegistry()
+				.get(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_ADD));
 	}
 
 	@Override
