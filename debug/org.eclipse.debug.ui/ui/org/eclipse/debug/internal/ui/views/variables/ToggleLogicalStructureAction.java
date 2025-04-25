@@ -37,7 +37,6 @@ public class ToggleLogicalStructureAction extends Action {
 		super(null, IAction.AS_CHECK_BOX);
 		setView(view);
 		setToolTipText(VariablesViewMessages.ToggleObjectBrowsersAction_1);
-		setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_SHOW_LOGICAL_STRUCTURE));
 		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_SHOW_LOGICAL_STRUCTURE));
 		setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_SHOW_LOGICAL_STRUCTURE));
 		setId(ID);

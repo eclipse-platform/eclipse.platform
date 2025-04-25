@@ -41,7 +41,6 @@ public class ResetToBaseAddressAction extends Action {
 		setToolTipText(DebugUIMessages.ResetMemoryBlockAction_tootip);
 
 		setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_RESET_MEMORY));
-		setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_RESET_MEMORY));
 		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_RESET_MEMORY));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugUIConstants.PLUGIN_ID + ".ResetBaseAddressContextAction_context"); //$NON-NLS-1$
 	}

@@ -56,8 +56,7 @@ public class ChangeVariableValueAction extends SelectionProviderAction {
 	public ChangeVariableValueAction(VariablesView view) {
 		super(view.getViewer(), ActionMessages.ChangeVariableValue_title);
 		setDescription(ActionMessages.ChangeVariableValue_toolTipText);
-		setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_CHANGE_VARIABLE_VALUE));
-		setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_CHANGE_VARIABLE_VALUE));
+		setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_CHANGE_VARIABLE_VALUE));
 		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_CHANGE_VARIABLE_VALUE));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(
 			this,

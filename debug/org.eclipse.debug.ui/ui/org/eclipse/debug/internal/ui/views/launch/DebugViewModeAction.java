@@ -53,14 +53,12 @@ class DebugViewModeAction extends Action {
 			setText(LaunchViewMessages.DebugViewModeAction_Auto_label);
 			setToolTipText(LaunchViewMessages.DebugViewModeAction_Auto_tooltip);
 			setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DETAIL_PANE_AUTO));
-			setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DETAIL_PANE_AUTO));
 			setDescription(LaunchViewMessages.DebugViewModeAction_Auto_description);
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.DEBUG_VIEW_MODE_AUTO_ACTION);
 		} else if (mode == IDebugPreferenceConstants.DEBUG_VIEW_MODE_FULL) {
 			setText(LaunchViewMessages.DebugViewModeAction_Full_label);
 			setToolTipText(LaunchViewMessages.DebugViewModeAction_Full_tooltip);
-			setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DETAIL_PANE_HIDE));
-			setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DETAIL_PANE_HIDE));
+			setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_DETAIL_PANE_HIDE));
 			setDescription(LaunchViewMessages.DebugViewModeAction_Full_description);
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.DEBUG_VIEW_MODE_FULL_ACTION);
 		} else {
@@ -68,7 +66,6 @@ class DebugViewModeAction extends Action {
 			setToolTipText(LaunchViewMessages.DebugViewModeAction_Compact_tooltip);
 			setDescription(LaunchViewMessages.DebugViewModeAction_Compact_description);
 			setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DEBUG_VIEW_COMPACT_LAYOUT));
-			setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_DEBUG_VIEW_COMPACT_LAYOUT));
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.DEBUG_VIEW_MODE_COMPACT_ACTION);
 		}
 	}

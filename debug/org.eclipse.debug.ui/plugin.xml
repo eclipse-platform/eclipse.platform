@@ -326,7 +326,6 @@
          </menu>
          <action
                id="org.eclipse.debug.ui.actions.ToggleStepFilters"
-               hoverIcon="$nl$/icons/full/elcl16/stepbystep_co.svg"
                class="org.eclipse.debug.internal.ui.commands.actions.ToggleStepFiltersCommandActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.ToggleStepFilters"
                disabledIcon="$nl$/icons/full/dlcl16/stepbystep_co.png"
@@ -363,7 +362,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.StepReturn"
-               hoverIcon="$nl$/icons/full/elcl16/stepreturn_co.svg"
                class="org.eclipse.debug.internal.ui.commands.actions.StepReturnCommandActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.StepReturn"
                disabledIcon="$nl$/icons/full/dlcl16/stepreturn_co.png"
@@ -376,7 +374,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.StepOver"
-               hoverIcon="$nl$/icons/full/elcl16/stepover_co.svg"
                class="org.eclipse.debug.internal.ui.commands.actions.StepOverCommandActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.StepOver"
                disabledIcon="$nl$/icons/full/dlcl16/stepover_co.png"
@@ -389,7 +386,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.StepInto"
-               hoverIcon="$nl$/icons/full/elcl16/stepinto_co.svg"
                class="org.eclipse.debug.internal.ui.commands.actions.StepIntoCommandActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.StepInto"
                disabledIcon="$nl$/icons/full/dlcl16/stepinto_co.png"
@@ -402,7 +398,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.toolbar.Disconnect"
-               hoverIcon="$nl$/icons/full/elcl16/disconnect_co.svg"
                class="org.eclipse.debug.internal.ui.commands.actions.DisconnectCommandActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.Disconnect"
                disabledIcon="$nl$/icons/full/dlcl16/disconnect_co.png"
@@ -415,7 +410,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.Terminate"
-               hoverIcon="$nl$/icons/full/elcl16/terminate_co.svg"
                class="org.eclipse.debug.internal.ui.commands.actions.TerminateCommandActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.Terminate"
                disabledIcon="$nl$/icons/full/dlcl16/terminate_co.png"
@@ -428,7 +422,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.Suspend"
-               hoverIcon="$nl$/icons/full/elcl16/suspend_co.svg"
                class="org.eclipse.debug.internal.ui.commands.actions.SuspendCommandActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.Suspend"
                disabledIcon="$nl$/icons/full/dlcl16/suspend_co.png"
@@ -441,7 +434,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.Resume"
-               hoverIcon="$nl$/icons/full/elcl16/resume_co.svg"
                class="org.eclipse.debug.internal.ui.commands.actions.ResumeCommandActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.Resume"
                disabledIcon="$nl$/icons/full/dlcl16/resume_co.png"
@@ -502,7 +494,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.DebugLast"
-               hoverIcon="$nl$/icons/full/elcl16/debuglast_co.svg"
                class="org.eclipse.debug.internal.ui.actions.DebugLastAction"
                definitionId="org.eclipse.debug.ui.commands.DebugLast"
                disabledIcon="$nl$/icons/full/dlcl16/debuglast_co.png"
@@ -513,7 +504,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.RunLast"
-               hoverIcon="$nl$/icons/full/elcl16/runlast_co.svg"
                class="org.eclipse.debug.internal.ui.actions.RunLastAction"
                definitionId="org.eclipse.debug.ui.commands.RunLast"
                disabledIcon="$nl$/icons/full/dlcl16/runlast_co.png"
@@ -525,7 +515,6 @@
          <action
                id="org.eclipse.debug.internal.ui.actions.RunDropDownAction"
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
-               hoverIcon="$nl$/icons/full/etool16/run_exc.svg"
                class="org.eclipse.debug.internal.ui.actions.RunToolbarAction"
                disabledIcon="$nl$/icons/full/dtool16/run_exc.png"
                icon="$nl$/icons/full/etool16/run_exc.svg"
@@ -562,7 +551,6 @@
          <action
                id="org.eclipse.debug.internal.ui.actions.DebugDropDownAction"
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
-               hoverIcon="$nl$/icons/full/etool16/debug_exc.svg"
                class="org.eclipse.debug.internal.ui.actions.DebugToolbarAction"
                disabledIcon="$nl$/icons/full/dtool16/debug_exc.png"
                icon="$nl$/icons/full/etool16/debug_exc.svg"
@@ -589,7 +577,6 @@
          <action
                id="org.eclipse.debug.internal.ui.actions.ProfileDropDownAction"
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
-               hoverIcon="$nl$/icons/full/etool16/profile_exc.svg"
                class="org.eclipse.debug.internal.ui.actions.ProfileToolbarAction"
                disabledIcon="$nl$/icons/full/dtool16/profile_exc.png"
                icon="$nl$/icons/full/etool16/profile_exc.svg"
@@ -625,7 +612,6 @@
          </action>
          <action
                id="org.eclipse.debug.ui.actions.ProfileLast"
-               hoverIcon="$nl$/icons/full/etool16/profile_exc.svg"
                class="org.eclipse.debug.internal.ui.actions.ProfileLastAction"
                definitionId="org.eclipse.debug.ui.commands.ProfileLast"
                disabledIcon="$nl$/icons/full/dtool16/profile_exc.png"
@@ -800,7 +786,6 @@
          <action
                id="org.eclipse.debug.ui.debugview.toolbar.removeAllTerminated"
                toolbarPath="threadGroup"
-               hoverIcon="$nl$/icons/full/elcl16/rem_all_co.svg"
                class="org.eclipse.debug.internal.ui.actions.RemoveAllTerminatedAction"
                disabledIcon="$nl$/icons/full/dlcl16/rem_all_co.png"
                icon="$nl$/icons/full/elcl16/rem_all_co.svg"
@@ -811,7 +796,6 @@
          <action
                id="org.eclipse.debug.ui.debugview.toolbar.collapseAll"
                toolbarPath="threadGroup"
-               hoverIcon="$nl$/icons/full/elcl16/collapseall.svg"
                class="org.eclipse.debug.internal.ui.actions.LaunchCollapseAllAction"
                disabledIcon="$nl$/icons/full/dlcl16/collapseall.png"
                icon="$nl$/icons/full/elcl16/collapseall.svg"
@@ -828,7 +812,6 @@
          <action
                id="org.eclipse.debug.ui.breakpointsView.toolbar.removeAll"
                toolbarPath="breakpointGroup"
-               hoverIcon="$nl$/icons/full/elcl16/rem_all_co.svg"
                class="org.eclipse.debug.internal.ui.actions.breakpoints.RemoveAllBreakpointsAction"
                disabledIcon="$nl$/icons/full/dlcl16/rem_all_co.png"
                icon="$nl$/icons/full/elcl16/rem_all_co.svg"
@@ -840,7 +823,6 @@
                id="org.eclipse.debug.ui.breakpointsView.toolbar.remove"
                definitionId="org.eclipse.ui.edit.delete"
                toolbarPath="breakpointGroup"
-               hoverIcon="$nl$/icons/full/elcl16/rem_co.svg"
                class="org.eclipse.debug.internal.ui.actions.breakpoints.RemoveBreakpointAction"
                disabledIcon="$nl$/icons/full/dlcl16/rem_co.png"
                icon="$nl$/icons/full/elcl16/rem_co.svg"
@@ -929,7 +911,6 @@
          <action
                id="org.eclipse.debug.ui.expresssionsView.toolbar.removeAll"
                toolbarPath="expressionGroup"
-               hoverIcon="$nl$/icons/full/elcl16/rem_all_co.svg"
                class="org.eclipse.debug.internal.ui.actions.expressions.RemoveAllExpressionsAction"
                disabledIcon="$nl$/icons/full/dlcl16/rem_all_co.png"
                icon="$nl$/icons/full/elcl16/rem_all_co.svg"
@@ -941,7 +922,6 @@
                id="org.eclipse.debug.ui.expresssionsView.toolbar.remove"
                toolbarPath="expressionGroup"
                definitionId="org.eclipse.ui.edit.delete"
-               hoverIcon="$nl$/icons/full/elcl16/rem_co.svg"
                class="org.eclipse.debug.internal.ui.actions.expressions.RemoveExpressionAction"
                disabledIcon="$nl$/icons/full/dlcl16/rem_co.png"
                icon="$nl$/icons/full/elcl16/rem_co.svg"
@@ -959,7 +939,6 @@
                label="%addWatchExpressionAction.label"
                toolbarPath="expressionGroup"
                icon="$nl$/icons/full/elcl16/monitorexpression_tsk.svg"
-               hoverIcon="$nl$/icons/full/elcl16/monitorexpression_tsk.svg"
                helpContextId="add_watch_expression_context"
                class="org.eclipse.debug.internal.ui.actions.expressions.AddWatchExpressionAction"
                tooltip="%addWatchExpressionAction.tooltip"
@@ -990,7 +969,6 @@
                tooltip="%NewMemoryViewAction.tooltip"/>
          <action
                disabledIcon="$nl$/icons/full/dlcl16/var_cntnt_prvdr.png"
-               hoverIcon="$nl$/icons/full/elcl16/var_cntnt_prvdr.svg"
                toolbarPath="MemoryMonitorsGroup"
                label="%ToggleMemoryMonitorsPaneAction.name"
                tooltip="%ToggleMemoryMonitorsPaneAction.tooltip"
@@ -1000,7 +978,6 @@
                id="org.eclipse.debug.ui.togglemonitors"/>
          <action
                disabledIcon="$nl$/icons/full/dlcl16/synced.png"
-               hoverIcon="$nl$/icons/full/elcl16/synced.svg"
                toolbarPath="RenderingPanesGroup"
                label="%LinkRenderingPanesAction.name"
                tooltip="%LinkRenderingPanesAction.tooltip"
@@ -1018,7 +995,6 @@
                tooltip="%TableRenderingPrefActionName"/>
          <action
                disabledIcon="$nl$/icons/full/dlcl16/det_pane_right.png"
-               hoverIcon="$nl$/icons/full/elcl16/det_pane_right.svg"
                toolbarPath="RenderingPanesGroup"
                label="%ToggleSplitPaneAction.name"
                tooltip="%ToggleSplitPaneAction.tooltip"
@@ -1030,7 +1006,6 @@
                class="org.eclipse.debug.internal.ui.views.memory.SwitchMemoryBlockAction"
                disabledIcon="$nl$/icons/full/dlcl16/display_selected_mb.png"
                helpContextId="switchMemoryBlockAction_context"
-               hoverIcon="$nl$/icons/full/elcl16/display_selected_mb.svg"
                icon="$nl$/icons/full/elcl16/display_selected_mb.svg"
                id="org.eclipse.debug.ui.switchMemoryBlock"
                label="%switchMemoryBlock.label"

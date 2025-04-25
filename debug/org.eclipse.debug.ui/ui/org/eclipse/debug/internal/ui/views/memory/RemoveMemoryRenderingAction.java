@@ -41,7 +41,6 @@ public class RemoveMemoryRenderingAction extends Action {
 
 		setToolTipText(DebugUIMessages.RemoveMemoryRenderingAction_Remove_rendering);
 		setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_REMOVE_MEMORY));
-		setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_REMOVE_MEMORY));
 		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_REMOVE_MEMORY));
 		fViewPane = viewPane;
 	}
