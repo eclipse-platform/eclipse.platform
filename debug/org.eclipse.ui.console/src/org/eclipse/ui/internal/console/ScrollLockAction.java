@@ -31,7 +31,6 @@ public class ScrollLockAction extends Action {
 		fConsoleView = consoleView;
 
 		setToolTipText(ConsoleMessages.ScrollLockAction_1);
-		setHoverImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_LCL_LOCK));
 		setImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_LOCK));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IConsoleHelpContextIds.CONSOLE_SCROLL_LOCK_ACTION);
 		boolean checked = fConsoleView.getScrollLock();

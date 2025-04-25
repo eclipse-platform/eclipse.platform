@@ -16,11 +16,6 @@ package org.eclipse.ui.internal.console;
 
 public interface IInternalConsoleConstants {
 
-	// tool images
-	String IMG_LCL_PIN = "IMG_LCL_PIN"; //$NON-NLS-1$
-	String IMG_LCL_LOCK = "IMG_LCL_LOCK"; //$NON-NLS-1$
-	String IMG_LCL_WRAP = "IMG_LCL_WRAP"; //$NON-NLS-1$
-
 	// enabled local tool images
 	String IMG_ELCL_PIN = "IMG_ELCL_PIN"; //$NON-NLS-1$
 	String IMG_ELCL_CLEAR= "IMG_ELCL_CLEAR"; //$NON-NLS-1$
