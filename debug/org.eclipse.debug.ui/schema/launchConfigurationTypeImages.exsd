@@ -71,7 +71,7 @@
   &lt;launchConfigurationTypeImage
      id=&quot;com.example.FirstLaunchConfigurationTypeImage&quot;
      configTypeID=&quot;com.example.FirstLaunchConfigurationType&quot;
-     icon=&quot;icons/FirstLaunchConfigurationType.png&quot;&gt;
+     icon=&quot;icons/FirstLaunchConfigurationType.svg&quot;&gt;
   &lt;/launchConfigurationTypeImage&gt;
  &lt;/extension&gt;
 &lt;/pre&gt;
