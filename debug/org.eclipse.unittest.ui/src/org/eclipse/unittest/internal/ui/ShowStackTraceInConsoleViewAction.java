@@ -32,7 +32,6 @@ public class ShowStackTraceInConsoleViewAction extends Action {
 		setDescription(Messages.ShowStackTraceInConsoleViewAction_description);
 		setToolTipText(Messages.ShowStackTraceInConsoleViewAction_tooltip);
 
-		setHoverImageDescriptor(Images.getImageDescriptor("elcl16/open_console.png")); //$NON-NLS-1$
 		setImageDescriptor(Images.getImageDescriptor("elcl16/open_console.png")); //$NON-NLS-1$
 		setDisabledImageDescriptor(Images.getImageDescriptor("dlcl16/open_console.png")); //$NON-NLS-1$
 

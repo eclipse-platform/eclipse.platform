@@ -25,7 +25,6 @@ import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.internal.console.ConsoleMessages;
 import org.eclipse.ui.internal.console.ConsolePluginImages;
 import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
-import org.eclipse.ui.internal.console.IInternalConsoleConstants;
 
 /**
  * Clears the output in a text console.
@@ -48,8 +47,7 @@ public class ClearOutputAction extends Action {
 	private ClearOutputAction() {
 		super(ConsoleMessages.ClearOutputAction_title);
 		setToolTipText(ConsoleMessages.ClearOutputAction_toolTipText);
-		setHoverImageDescriptor(ConsolePluginImages.getImageDescriptor(IConsoleConstants.IMG_LCL_CLEAR));
-		setImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_CLEAR));
+		setImageDescriptor(ConsolePluginImages.getImageDescriptor(IConsoleConstants.IMG_LCL_CLEAR));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IConsoleHelpContextIds.CLEAR_CONSOLE_ACTION);
 	}
 

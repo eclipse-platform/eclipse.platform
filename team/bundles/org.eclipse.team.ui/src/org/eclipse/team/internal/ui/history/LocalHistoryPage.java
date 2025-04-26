@@ -380,7 +380,6 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		groupByDateMode.setChecked(groupingOn);
 		groupByDateMode.setToolTipText(TeamUIMessages.LocalHistoryPage_GroupRevisionsByDateTip);
 		groupByDateMode.setDisabledImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DATES_CATEGORY));
-		groupByDateMode.setHoverImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DATES_CATEGORY));
 
 		//Collapse All
 		collapseAll =  new Action(TeamUIMessages.LocalHistoryPage_CollapseAllAction, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COLLAPSE_ALL)) {
@@ -391,7 +390,6 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		};
 		collapseAll.setToolTipText(TeamUIMessages.LocalHistoryPage_CollapseAllTip);
 		collapseAll.setDisabledImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COLLAPSE_ALL));
-		collapseAll.setHoverImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COLLAPSE_ALL));
 
 		IHistoryPageSite historyPageSite = getHistoryPageSite();
 		if (!historyPageSite.isModal()) {
@@ -407,7 +405,6 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				};
 				compareModeAction.setToolTipText(TeamUIMessages.LocalHistoryPage_CompareModeTip);
 				compareModeAction.setDisabledImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPARE_VIEW));
-				compareModeAction.setHoverImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPARE_VIEW));
 				compareModeAction.setChecked(compareMode == ON);
 
 				getContentsAction = getContextMenuAction(TeamUIMessages.LocalHistoryPage_GetContents, true /* needs progress */, monitor -> {

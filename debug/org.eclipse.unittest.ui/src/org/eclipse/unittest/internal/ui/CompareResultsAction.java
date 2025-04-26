@@ -39,7 +39,6 @@ public class CompareResultsAction extends Action {
 		setToolTipText(Messages.CompareResultsAction_tooltip);
 
 		setDisabledImageDescriptor(Images.getImageDescriptor("dlcl16/compare.png")); //$NON-NLS-1$
-		setHoverImageDescriptor(Images.getImageDescriptor("elcl16/compare.png")); //$NON-NLS-1$
 		setImageDescriptor(Images.getImageDescriptor("elcl16/compare.png")); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IUnitTestHelpContextIds.ENABLEFILTER_ACTION);
 		fView = view;

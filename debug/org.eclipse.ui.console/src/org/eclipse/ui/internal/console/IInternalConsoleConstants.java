@@ -18,7 +18,6 @@ public interface IInternalConsoleConstants {
 
 	// enabled local tool images
 	String IMG_ELCL_PIN = "IMG_ELCL_PIN"; //$NON-NLS-1$
-	String IMG_ELCL_CLEAR= "IMG_ELCL_CLEAR"; //$NON-NLS-1$
 	String IMG_ELCL_LOCK = "IMG_ELCL_LOCK"; //$NON-NLS-1$
 	String IMG_ELCL_WRAP = "IMG_ELCL_WRAP"; //$NON-NLS-1$
 	String IMG_ELCL_CLOSE = "IMG_ELCL_CLOSE"; //$NON-NLS-1$

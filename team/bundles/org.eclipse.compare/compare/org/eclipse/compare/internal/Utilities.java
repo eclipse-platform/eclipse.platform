@@ -287,7 +287,6 @@ public class Utilities {
 			id= CompareUIPlugin.getImageDescriptor(ePath);
 			if (id != null) {
 				a.setImageDescriptor(id);
-				a.setHoverImageDescriptor(id);
 			}
 		}
 	}

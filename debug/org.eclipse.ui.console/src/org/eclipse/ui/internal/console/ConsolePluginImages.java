@@ -43,7 +43,6 @@ public class ConsolePluginImages {
 	}
 
 	// Use IPath and toOSString to build the names to ensure they have the slashes correct
-	private final static String LOCALTOOL= "clcl16/"; //basic colors - size 16x16 //$NON-NLS-1$
 	private final static String ELCL= "elcl16/"; //enabled - size 16x16 //$NON-NLS-1$
 	private final static String VIEW= "cview16/"; // views //$NON-NLS-1$
 
@@ -54,10 +53,9 @@ public class ConsolePluginImages {
 		// Actions
 
 		//local toolbars
-		declareRegistryImage(IConsoleConstants.IMG_LCL_CLEAR, LOCALTOOL + "clear_co.svg"); //$NON-NLS-1$
+		declareRegistryImage(IConsoleConstants.IMG_LCL_CLEAR, ELCL + "clear_co.svg"); //$NON-NLS-1$
 
 		// enabled local toolbars
-		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_CLEAR, ELCL + "clear_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_PIN, ELCL + "pin.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_LOCK, ELCL + "lock_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalConsoleConstants.IMG_ELCL_WRAP, ELCL + "wordwrap.svg"); //$NON-NLS-1$
