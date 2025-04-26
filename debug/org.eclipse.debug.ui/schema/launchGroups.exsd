@@ -140,8 +140,8 @@
      id=&quot;com.example.ExampleLaunchGroupId&quot;
      mode=&quot;run&quot;
      label=&quot;Run&quot;
-     image=&quot;icons\run.png&quot;
-     bannerImage=&quot;icons\runBanner.png&quot;&gt;
+     image=&quot;icons\run.svg&quot;
+     bannerImage=&quot;icons\runBanner.svg&quot;&gt;
   &lt;/launchGroup&gt;
  &lt;/extension&gt;
 &lt;/pre&gt;

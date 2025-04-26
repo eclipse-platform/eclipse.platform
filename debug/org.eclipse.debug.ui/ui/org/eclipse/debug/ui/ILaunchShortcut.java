@@ -40,7 +40,7 @@ import org.eclipse.ui.IEditorPart;
  *           class="org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut"
  *           description="%JavaLaunchShortcut.description"
  *           helpContextId="org.eclipse.jdt.debug.ui.shortcut_local_java_application"
- *           icon="$nl$/icons/full/etool16/java_app.png"
+ *           icon="$nl$/icons/full/etool16/java_app.svg"
  *           id="org.eclipse.jdt.debug.ui.localJavaShortcut"
  *           label="%JavaApplicationShortcut.label"
  *           modes="run, debug"&gt;
