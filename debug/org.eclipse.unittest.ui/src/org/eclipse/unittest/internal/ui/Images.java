@@ -71,7 +71,6 @@ public class Images {
 			action.setDisabledImageDescriptor(id);
 
 		ImageDescriptor descriptor = createImageDescriptor("e" + type, relPath, true); //$NON-NLS-1$
-		action.setHoverImageDescriptor(descriptor);
 		action.setImageDescriptor(descriptor);
 	}
 

@@ -169,7 +169,6 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 			id= getImageDescriptor(ePath);
 			if (id != null) {
 				a.setImageDescriptor(id);
-				a.setHoverImageDescriptor(id);
 			}
 		}
 	}
