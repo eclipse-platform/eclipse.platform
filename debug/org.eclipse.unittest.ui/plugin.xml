@@ -59,7 +59,6 @@
          point="org.eclipse.ui.commandImages">
       <image
             commandId="org.eclipse.unittest.ui.history"
-            disabledIcon="icons/full/dlcl16/history_list.png"
             icon="icons/full/elcl16/history_list.png">
       </image>
    </extension>
