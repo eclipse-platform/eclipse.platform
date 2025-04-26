@@ -29,7 +29,6 @@ public class ShowPreviousFailureAction extends Action {
 	 */
 	public ShowPreviousFailureAction(TestRunnerViewPart part) {
 		super(Messages.ShowPreviousFailureAction_label);
-		setDisabledImageDescriptor(Images.getImageDescriptor("dlcl16/select_prev.png")); //$NON-NLS-1$
 		setImageDescriptor(Images.getImageDescriptor("elcl16/select_prev.png")); //$NON-NLS-1$
 		setToolTipText(Messages.ShowPreviousFailureAction_tooltip);
 		fPart = part;
