@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IReusableEditor;
@@ -61,11 +62,6 @@ public final class CompareUI {
 	public static final String PREFERENCE_PAGE_ID= "org.eclipse.compare.internal.ComparePreferencePage"; //$NON-NLS-1$
 
 	/**
-	 * Image descriptor for the disabled icon of the 'Next' tool bar button.
-	 * @since 2.0
-	 */
-	public static final ImageDescriptor DESC_DTOOL_NEXT= CompareUIPlugin.getImageDescriptor(ICompareUIConstants.DTOOL_NEXT);
-	/**
 	 * Image descriptor for the normal icon of the 'Next' tool bar button.
 	 * @since 2.0
 	 */
@@ -75,12 +71,12 @@ public final class CompareUI {
 	 * @since 2.0
 	 */
 	public static final ImageDescriptor DESC_ETOOL_NEXT= CompareUIPlugin.getImageDescriptor(ICompareUIConstants.ETOOL_NEXT);
-
 	/**
-	 * Image descriptor for the disabled icon of the 'Previous' tool bar button.
+	 * Image descriptor for the disabled icon of the 'Next' tool bar button.
 	 * @since 2.0
 	 */
-	public static final ImageDescriptor DESC_DTOOL_PREV= CompareUIPlugin.getImageDescriptor(ICompareUIConstants.DTOOL_PREV);
+	public static final ImageDescriptor DESC_DTOOL_NEXT= ImageDescriptor.createWithFlags(DESC_ETOOL_NEXT, SWT.IMAGE_DISABLE);
+
 	/**
 	 * Image descriptor for the normal icon of the 'Previous' tool bar button.
 	 * @since 2.0
@@ -91,6 +87,11 @@ public final class CompareUI {
 	 * @since 2.0
 	 */
 	public static final ImageDescriptor DESC_ETOOL_PREV= CompareUIPlugin.getImageDescriptor(ICompareUIConstants.ETOOL_PREV);
+	/**
+	 * Image descriptor for the disabled icon of the 'Previous' tool bar button.
+	 * @since 2.0
+	 */
+	public static final ImageDescriptor DESC_DTOOL_PREV= ImageDescriptor.createWithFlags(DESC_ETOOL_PREV, SWT.IMAGE_DISABLE);
 
 	/**
 	 * Name of the title property of a compare viewer.

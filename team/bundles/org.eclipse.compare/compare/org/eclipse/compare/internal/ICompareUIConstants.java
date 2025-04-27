@@ -17,11 +17,9 @@ package org.eclipse.compare.internal;
 public interface ICompareUIConstants {
 	public final String PREFIX = CompareUIPlugin.getPluginId() + "."; //$NON-NLS-1$
 
-	public static final String DTOOL_NEXT= "dlcl16/next_nav.png";	//$NON-NLS-1$
 	public static final String ETOOL_NEXT = "elcl16/next_nav.svg"; //$NON-NLS-1$
 	public static final String CTOOL_NEXT= ETOOL_NEXT;
 
-	public static final String DTOOL_PREV= "dlcl16/prev_nav.png";	//$NON-NLS-1$
 	public static final String ETOOL_PREV = "elcl16/prev_nav.svg"; //$NON-NLS-1$
 	public static final String CTOOL_PREV= ETOOL_PREV;
 
