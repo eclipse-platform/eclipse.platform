@@ -305,8 +305,6 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 		magnifyAction.setText(Messages.BrowserPart_magnifyTooltip);
 		magnifyAction.setImageDescriptor(HelpUIResources
 				.getImageDescriptor(IHelpUIConstants.IMAGE_MAGNIFY));
-		magnifyAction.setDisabledImageDescriptor(HelpUIResources
-				.getImageDescriptor(IHelpUIConstants.IMAGE_D_MAGNIFY));
 
 		reduceAction = new Action() {
 
@@ -319,8 +317,6 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 		reduceAction.setText(Messages.BrowserPart_reduceTooltip);
 		reduceAction
 				.setImageDescriptor(HelpUIResources.getImageDescriptor(IHelpUIConstants.IMAGE_REDUCE));
-		reduceAction.setDisabledImageDescriptor(HelpUIResources
-				.getImageDescriptor(IHelpUIConstants.IMAGE_D_REDUCE));
 		menuManager.add(new Separator());
 		menuManager.add(reduceAction);
 		menuManager.add(magnifyAction);

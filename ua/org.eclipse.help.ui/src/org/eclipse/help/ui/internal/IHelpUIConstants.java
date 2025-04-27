@@ -50,8 +50,6 @@ public interface IHelpUIConstants {
 	public static final String IMAGE_HIGHLIGHT = "elcl16/highlight.svg"; //$NON-NLS-1$
 	public static final String IMAGE_MAGNIFY = "elcl16/magnify_font.svg"; //$NON-NLS-1$
 	public static final String IMAGE_REDUCE = "elcl16/reduce_font.svg"; //$NON-NLS-1$
-	public static final String IMAGE_D_MAGNIFY = "dlcl16/magnify_font.svg"; //$NON-NLS-1$
-	public static final String IMAGE_D_REDUCE = "dlcl16/reduce_font.svg"; //$NON-NLS-1$
 	public static final String IMAGE_COLLAPSE_ALL = "elcl16/collapseall.svg"; //$NON-NLS-1$
 	public static final String IMAGE_CLOSE = "elcl16/close.svg"; //$NON-NLS-1$
 	public static final String IMAGE_CLOSE_HOT = "elcl16/close_hot.svg"; //$NON-NLS-1$
