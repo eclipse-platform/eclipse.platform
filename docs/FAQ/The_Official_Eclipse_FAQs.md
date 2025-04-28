@@ -5,38 +5,6 @@ The Official Eclipse FAQs
 
 Note that this FAQ is updated less frequently than [this FAQ](../FAQ.md "IRC FAQ"). You may find your answer there before it makes its way here.
 
-Contents
---------
-
-- [The Official Eclipse FAQs](#the-official-eclipse-faqs)
-  - [Contents](#contents)
-  - [Part I -- The Eclipse Ecosystem](#part-i----the-eclipse-ecosystem)
-    - [The Eclipse Community](#the-eclipse-community)
-    - [Getting Started](#getting-started)
-    - [Java Development in Eclipse](#java-development-in-eclipse)
-    - [Plug-In Development Environment](#plug-in-development-environment)
-  - [Part II -- The Rich Client Platform](#part-ii----the-rich-client-platform)
-    - [All about Plug-ins](#all-about-plug-ins)
-    - [Runtime Facilities](#runtime-facilities)
-    - [Standard Widget Toolkit (SWT)](#standard-widget-toolkit-swt)
-    - [JFace](#jface)
-    - [Generic Workbench](#generic-workbench)
-    - [Perspectives and Views](#perspectives-and-views)
-    - [Generic Editors](#generic-editors)
-    - [Actions, Commands, and Activities](#actions-commands-and-activities)
-    - [Building Your Own Application](#building-your-own-application)
-    - [Productizing an Eclipse Offering](#productizing-an-eclipse-offering)
-  - [Part III -- The Eclipse IDE Platform](#part-iii----the-eclipse-ide-platform)
-    - [Text Editors](#text-editors)
-    - [Help, Search, and Compare](#help-search-and-compare)
-    - [Workspace and Resources API](#workspace-and-resources-api)
-    - [Workbench IDE](#workbench-ide)
-    - [Implementing Support for Your Own Language](#implementing-support-for-your-own-language)
-      - [The language already has parsers, compilers, and other services](#the-language-already-has-parsers-compilers-and-other-services)
-      - [This is a DSL of your own](#this-is-a-dsl-of-your-own)
-      - [Legacy](#legacy)
-    - [Java Development Tool API](#java-development-tool-api)
-    - [Acknowledgement](#acknowledgement)
 
 Part I -- The Eclipse Ecosystem
 -------------------------------

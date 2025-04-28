@@ -3,30 +3,6 @@
 Status Handling Best Practices
 ==============================
 
-Contents
---------
-
-*   [1 Introduction](#Introduction)
-*   [2 Messages](#Messages)
-    *   [2.1 Message content](#Message-content)
-    *   [2.2 Provide additional information in your message](#Provide-additional-information-in-your-message)
-    *   [2.3 Attempt to use a unique identifier](#Attempt-to-use-a-unique-identifier)
-    *   [2.4 Developing messages in eclipse: using the NLS.bind method](#developing-messages-in-eclipse-using-the-nlsbind-method)
-*   [3 About logging and Error Dialog](#About-logging-and-Error-Dialog)
-    *   [3.1 The concept of a LogRecord](#The-concept-of-a-LogRecord)
-    *   [3.2 Best practices for logging](#Best-practices-for-logging)
-*   [4 The Eclipse IStatus](#The-Eclipse-IStatus)
-    *   [4.1 Calling the Status API](#Calling-the-Status-API)
-    *   [4.2 Implementing your own Status](#Implementing-your-own-Status)
-*   [5 The Eclipse 3.3 Status handler framework](#the-eclipse-33-status-handler-framework)
-*   [6 Using the new Eclipse status handler API](#Using-the-new-Eclipse-status-handler-API)
-    *   [6.1 Calling the StatusManager handle method](#Calling-the-StatusManager-handle-method)
-*   [7 Developing a StatusHandler](#Developing-a-StatusHandler)
-    *   [7.1 Implementing the handle method](#Implementing-the-handle-method)
-*   [8 Developing an ErrorSupportProvider](#Developing-an-ErrorSupportProvider)
-    *   [8.1 Registering your ErrorSupportProvider](#Registering-your-ErrorSupportProvider)
-    *   [8.2 Implementing the createSupportArea method](#Implementing-the-createSupportArea-method)
-    *   [8.3 The flow](#The-flow)
 
 Introduction
 ============

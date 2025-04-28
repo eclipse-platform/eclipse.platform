@@ -22,13 +22,6 @@ Moreover the active window may not be the _appropriate_ window. On some window s
 
 To avoid getting null windows and pages, you should get your window or a page in another way.
 
-Contents
---------
-
-*   [1 Within a Workbench Part](#Within-a-Workbench-Part)
-*   [2 Within a Command Handler](#Within-a-Command-Handler)
-*   [3 Within an Action](#Within-an-Action)
-*   [4 From an IEclipseContext or IServiceLocator](#From-an-IEclipseContext-or-IServiceLocator)
 
 Within a Workbench Part
 -----------------------

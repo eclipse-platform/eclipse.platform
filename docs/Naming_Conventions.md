@@ -1,23 +1,6 @@
 Naming Conventions
 ==================
 
-Contents
---------
-
-*   [1 General](#General)
-    *   [1.1 Eclipse Workspace Projects](#Eclipse-Workspace-Projects)
-    *   [1.2 Java Packages](#Java-Packages)
-    *   [1.3 API Packages](#API-Packages)
-    *   [1.4 Internal Implementation Packages](#Internal-Implementation-Packages)
-    *   [1.5 Test Suite Packages](#Test-Suite-Packages)
-    *   [1.6 Examples Packages](#Examples-Packages)
-    *   [1.7 Additional rules](#Additional-rules)
-*   [2 Classes and Interfaces](#Classes-and-Interfaces)
-*   [3 Methods](#Methods)
-*   [4 Variables](#Variables)
-*   [5 Constants](#Constants)
-*   [6 Plug-ins and Extension Points](#Plug-ins-and-Extension-Points)
-*   [7 System Files and Settings](#System-Files-and-Settings)
 
 General
 -------
@@ -104,7 +87,7 @@ The names of API packages need to make sense to the ISV.
 The number of different packages that the ISV needs to remember should be small, since a profusion of API packages can make it difficult for ISVs to know which packages they need to import. 
 Within an API package, all public classes and interfaces are considered API. 
 The names of API packages should not contain internal, tests, or examples to avoid confusion with the scheme for naming non-API packages. 
-Consult [Eclipse/API Central](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Provisional_API_Guidelines.md) for more detailed information on choosing and naming API elements.
+Consult [Eclipse/API Central](Provisional_API_Guidelines.md) for more detailed information on choosing and naming API elements.
 
 ### Internal Implementation Packages
 

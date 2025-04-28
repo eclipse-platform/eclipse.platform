@@ -1,19 +1,6 @@
 Eclipse API and Provisional Guidelines
 ======================================
 
-Contents
---------
-
-*   [1 Overview](#Overview)
-*   [2 Before the API freeze](#Before-the-API-freeze)
-    *   [2.1 Package naming](#Package-naming)
-    *   [2.2 Bundle manifest](#Bundle-manifest)
-    *   [2.3 Javadoc](#Javadoc)
-*   [3 After the API freeze](#After-the-API-freeze)
-    *   [3.1 Package naming](#Package-naming-2)
-    *   [3.2 Bundle manifest](#Bundle-manifest-2)
-    *   [3.3 Javadoc](#Javadoc-2)
-*   [4 Changing provisional APIs](#Changing-provisional-APIs)
 
 Overview
 --------
@@ -32,7 +19,7 @@ Definition of terms used in this document:
 
 A package must be exported via the MANIFEST.MF to be considered API.
 However, any package that does contain the segment "internal" and which has not set the x-internal or the x-friends directive in the MANIFEST.MF is not API. 
-See [Naming Conventions](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Naming_Conventions.md) for details)
+See [Naming Conventions](Naming_Conventions.md) for details)
 
 **Internal API**
 
