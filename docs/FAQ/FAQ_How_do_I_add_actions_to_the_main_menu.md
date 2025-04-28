@@ -3,19 +3,6 @@
 FAQ How do I add actions to the main menu?
 ==========================================
 
-Contents
---------
-
-*   [1 Overview](#Overview)
-*   [2 Common Menupaths](#Common-Menupaths)
-    *   [2.1 Standard Menus](#Standard-Menus)
-    *   [2.2 Standard group for adding top level menus](#Standard-group-for-adding-top-level-menus)
-    *   [2.3 Standard file actions](#Standard-file-actions)
-    *   [2.4 Most Recently Used File group](#Most-Recently-Used-File-group)
-    *   [2.5 Standard edit actions](#Standard-edit-actions)
-    *   [2.6 Standard help actions](#Standard-help-actions)
-*   [3 See Also](#See-Also)
-
 Overview
 --------
 

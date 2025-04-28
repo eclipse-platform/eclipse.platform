@@ -4,17 +4,6 @@ Eclipse/API Central/Deprecation Policy
 This page contains Eclipse Project guidelines on API deprecation. 
 This page is maintained by the [Eclipse/PMC](https://eclipse.dev/eclipse/team-leaders.php).
 
-Contents
---------
-
-*   [1 What is Deprecation?](#What-is-Deprecation.3F)
-    *   [1.1 Process to deprecate an API](#Process-to-deprecate-an-API)
-*   [2 Identifying Deprecated API](#Identifying-Deprecated-API)
-    *   [2.1 Java API](#Java-API)
-    *   [2.2 Extension Points](#Extension-Points)
-*   [3 Removal of Deprecated API](#Removal-of-Deprecated-API)
-    *   [3.1 Third Party API](#Third-Party-API)
-
 
 What is Deprecation?
 ====================
@@ -32,7 +21,7 @@ Identifying Deprecated API
 ==========================
 
 This section describes how clients can identify what API is deprecated. 
-To identify API from non-API, see [Provisional API Guidelines](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Provisional_API_Guidelines.md)
+To identify API from non-API, see [Provisional API Guidelines](Provisional_API_Guidelines.md)
 
 Java API
 --------
@@ -54,7 +43,7 @@ Extension Points
 Elements and attributes in extension points are deprecated by setting the "Deprecated" property to true in the PDE extension point schema editor. 
 The entire extension point can be deprecated by deprecating the "extension" element, which is the top level element at the root of any contribution to the extension point.
 
-![Schema-deprecation.png](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/images/Schema-deprecation.png)
+![Schema-deprecation.png](images/Schema-deprecation.png)
 
 Removal of Deprecated API
 =========================

@@ -12,7 +12,7 @@ Conditions can also be expressed in terms of other breakpoint attributes, such a
 It can occur that an error message is issued when a conditional breakpoint gets hit, even though the breakpoint condition appears to be syntactically correct:
   
 
-![Conditional breakpoint in java.lang.Class.PNG](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/FAQ/images/Conditional_Breakpoint_Error.PNG)  
+![Conditional breakpoint in java.lang.Class.PNG](images/Conditional_Breakpoint_Error.PNG)  
 
   
 
@@ -20,7 +20,7 @@ This can happen if you are setting a breakpoint in a class whose class file does
 
 In the **Variables** view of the debugger, the argument will appear as `arg`_n_, and that placeholder name can actually also be used in the conditional expression for the breakpoint. So, instead of using the variable name `className` in your conditional expression, you simply use the placeholder `arg0`:
 
-![Conditional breakpoint in java.lang.Class.PNG](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/FAQ/images/Conditional_breakpoint_in_java.lang.Class.PNG)  
+![Conditional breakpoint in java.lang.Class.PNG](images/Conditional_breakpoint_in_java.lang.Class.PNG)  
 
 
   

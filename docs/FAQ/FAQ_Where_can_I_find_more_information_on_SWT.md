@@ -1,16 +1,6 @@
 FAQ Where can I find more information on SWT?
 =============================================
 
-Contents
---------
-
-- [FAQ Where can I find more information on SWT?](#faq-where-can-i-find-more-information-on-swt)
-  - [Contents](#contents)
-  - [Books](#books)
-  - [Websites](#websites)
-  - [Articles](#articles)
-  - [Discussion forums](#discussion-forums)
-  - [See Also](#see-also)
 
 Books
 -----

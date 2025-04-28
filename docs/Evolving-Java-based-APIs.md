@@ -4,27 +4,13 @@ Evolving Java-based APIs
 Document is currently split in 3 parts:
 
 *   Part 1: What is an API? (this page)
-*   [Part 2: Achieving API Binary Compatibility](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md)
-*   [Part 3: Other Notes](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-3.md)
+*   [Part 2: Achieving API Binary Compatibility](Evolving-Java-based-APIs-2.md)
+*   [Part 3: Other Notes](Evolving-Java-based-APIs-3.md)
 
 This document is about how to evolve Java-based APIs while maintaining compatibility with existing client code. 
 Without loss of generality, we'll assume that there is a generic **Component** with a **Component API**, with one party providing the Component and controlling its API. 
 The other party, or parties, write **Client** code that use the Component's services through its API. This is a very typical arrangement.
 
-Contents
---------
-
-*   [1 API Java Elements](#API-Java-Elements)
-*   [2 API Prime Directive](#API-Prime-Directive)
-*   [3 Achieving API Contract Compatibility](#Achieving-API-Contract-Compatibility)
-    *   [3.1 Example 1 - Changing a method postcondition](#Example-1---Changing-a-method-postcondition)
-    *   [3.2 Example 2 - Changing a method precondition](#Example-2---Changing-a-method-precondition)
-    *   [3.3 Example 3 - Changing a field invariant](#Example-3---Changing-a-field-invariant)
-    *   [3.4 Example 4 - Adding an API method](#Example-4---Adding-an-API-method)
-    *   [3.5 General Rules for Contract Compatibility](#General-Rules-for-Contract-Compatibility)
-*   [4 Achieving API Binary Compatibility](#Achieving-API-Binary-Compatibility)
-*   [5 Other Notes](#Other-Notes)
-*   [6 Bundle Versioning](#Bundle-Versioning)
 
 API Java Elements
 -----------------
@@ -207,16 +193,16 @@ Whether a particular Component API change breaks or maintains contract compatibi
 Achieving API Binary Compatibility
 ----------------------------------
 
-See [Part 2](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md).
+See [Part 2](Evolving-Java-based-APIs-2.md).
 
 Other Notes
 -----------
 
-See [Part 3](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-3.md).
+See [Part 3](Evolving-Java-based-APIs-3.md).
 
 Bundle Versioning
 -----------------
 
-See [Version Numbering](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/VersionNumbering.md)
+See [Version Numbering](VersionNumbering.md)
 
 
