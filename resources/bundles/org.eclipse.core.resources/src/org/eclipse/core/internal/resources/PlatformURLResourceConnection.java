@@ -104,7 +104,7 @@ public class PlatformURLResourceConnection extends PlatformURLConnection {
 		if (rootURL != null)
 			return;
 		try {
-			rootURL = root.toFile().toURL();
+			rootURL = root.toFile().toURI().toURL();
 		} catch (MalformedURLException e) {
 			// should never happen but if it does, the resource URL cannot be supported.
 			return;
