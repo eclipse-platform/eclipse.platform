@@ -66,6 +66,7 @@
     <module>resources</module>
     <module>debug</module>
     <module>ua</module>
+    <module>terminal/plugins/org.eclipse.tm.terminal.control</module>
   </modules>
   <build>
     <pluginManagement>
