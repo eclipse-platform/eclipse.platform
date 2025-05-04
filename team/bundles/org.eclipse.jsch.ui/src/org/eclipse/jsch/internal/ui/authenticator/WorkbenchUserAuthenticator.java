@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -218,7 +218,7 @@ public boolean promptForHostKeyChange(final IJSchLocation location){
 		final boolean[] openConfirm=new boolean[] {false};
 		final Display display=getStandardDisplay();
 		display.syncExec(() -> openConfirm[0] = MessageDialog.openConfirm(null, Messages.WorkbenchUserAuthenticator_1,
-				NLS.bind(Messages.WorkbenchUserAuthenticator_2, new String[] { location.getHost() })));
+				NLS.bind(Messages.WorkbenchUserAuthenticator_2, location.getHost())));
 		if(!openConfirm[0]){
 			throw new OperationCanceledException();
 		}

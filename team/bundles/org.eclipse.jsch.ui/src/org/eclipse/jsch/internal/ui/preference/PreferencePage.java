@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -571,8 +571,7 @@ protected Control createContents(Composite parent){
 					PassphrasePrompt prompt=null;
 					while(_kpair.isEncrypted()){
 						if(prompt==null){
-							prompt=new PassphrasePrompt(NLS.bind(
-									Messages.CVSSSH2PreferencePage_126, new String[] {pkey}));
+							prompt = new PassphrasePrompt(NLS.bind(Messages.CVSSSH2PreferencePage_126, pkey));
 						}
 						Display.getDefault().syncExec(prompt);
 						String passphrase=prompt.getPassphrase();
@@ -581,9 +580,8 @@ protected Control createContents(Composite parent){
 						if(_kpair.decrypt(passphrase)){
 							break;
 						}
-						MessageDialog.openError(getShell(),
-								Messages.CVSSSH2PreferencePage_error, NLS.bind(
-										Messages.CVSSSH2PreferencePage_129, new String[] {pkey}));
+						MessageDialog.openError(getShell(), Messages.CVSSSH2PreferencePage_error,
+								NLS.bind(Messages.CVSSSH2PreferencePage_129, pkey));
 					}
 					if(_kpair.isEncrypted()){
 						return;
@@ -688,8 +686,7 @@ protected Control createContents(Composite parent){
 				}
 
 				if(user.length()==0||host.length()==0||port==-1){
-					setErrorMessage(NLS.bind(Messages.CVSSSH2PreferencePage_108,
-							new String[] {target[0]}));
+					setErrorMessage(NLS.bind(Messages.CVSSSH2PreferencePage_108, target[0]));
 					return;
 				}
 
@@ -744,9 +741,8 @@ protected Control createContents(Composite parent){
 				File _home=new File(home);
 
 				if(!_home.exists()){
-					if(!MessageDialog.openConfirm(getShell(),
-							Messages.CVSSSH2PreferencePage_confirmation, NLS.bind(
-									Messages.CVSSSH2PreferencePage_50, new String[] {home}))){
+					if (!MessageDialog.openConfirm(getShell(), Messages.CVSSSH2PreferencePage_confirmation,
+							NLS.bind(Messages.CVSSSH2PreferencePage_50, home))) {
 						return;
 					}
 					if(!_home.mkdirs()){
@@ -765,9 +761,8 @@ protected Control createContents(Composite parent){
 				}
 
 				if(new File(file).exists()){
-					if(!MessageDialog.openConfirm(getShell(),
-							Messages.CVSSSH2PreferencePage_confirmation, //
-							NLS.bind(Messages.CVSSSH2PreferencePage_53, new String[] {file}))){
+					if (!MessageDialog.openConfirm(getShell(), Messages.CVSSSH2PreferencePage_confirmation, //
+							NLS.bind(Messages.CVSSSH2PreferencePage_53, file))) {
 						return;
 					}
 				}
@@ -1546,9 +1541,8 @@ public boolean performOk(){
 			String home=ssh2HomeText.getText();
 			File _home=new File(home);
 			if(!_home.exists()){
-				if(MessageDialog.openQuestion(getShell(),
-						Messages.CVSSSH2PreferencePage_question, NLS.bind(
-								Messages.CVSSSH2PreferencePage_99, new String[] {home}))){
+				if (MessageDialog.openQuestion(getShell(), Messages.CVSSSH2PreferencePage_question,
+						NLS.bind(Messages.CVSSSH2PreferencePage_99, home))) {
 					if(!(_home.mkdirs())){
 						setErrorMessage(Messages.CVSSSH2PreferencePage_100+home);
 						return false;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -147,8 +147,7 @@ protected Control createDialogArea(Composite parent){
 		if(comment!=null){
 			Label label=new Label(main, SWT.WRAP);
 			if(isUsernameMutable){
-				label.setText(NLS.bind(Messages.UserValidationDialog_labelUser,
-						new String[] {comment}));
+				label.setText(NLS.bind(Messages.UserValidationDialog_labelUser, comment));
 			}
 			else{
 				label.setText(NLS.bind(Messages.UserValidationDialog_labelPassword,
