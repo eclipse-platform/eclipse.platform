@@ -555,7 +555,7 @@ public class Utils {
 			descriptionKey = prefix + descriptionKey;
 		}
 		String s = null;
-		if(bindings != null) {
+		if (bindings != null) {
 			s = NLS.bind(getString(labelKey, bundle), bindings);
 		} else {
 			s = getString(labelKey, bundle);
@@ -570,20 +570,14 @@ public class Utils {
 			a.setDescription(s);
 		String relPath = getString(imageKey, bundle);
 		if (relPath != null && !relPath.equals(imageKey) && relPath.trim().length() > 0) {
-			String dPath;
 			String ePath;
 			if (relPath.contains("/")) { //$NON-NLS-1$
 				String path = relPath.substring(1);
-				dPath = 'd' + path;
 				ePath = 'e' + path;
 			} else {
-				dPath = "dlcl16/" + relPath; //$NON-NLS-1$
 				ePath = "elcl16/" + relPath; //$NON-NLS-1$
 			}
-			ImageDescriptor id = TeamImages.getImageDescriptor(dPath);
-			if (id != null)
-				a.setDisabledImageDescriptor(id);
-			id = TeamUIPlugin.getImageDescriptor(ePath);
+			ImageDescriptor id = TeamImages.getImageDescriptor(ePath);
 			if (id != null)
 				a.setImageDescriptor(id);
 		}
