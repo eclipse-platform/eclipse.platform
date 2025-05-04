@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2007, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,11 +13,20 @@
  *******************************************************************************/
 package org.eclipse.jsch.internal.core;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 import com.jcraft.jsch.SocketFactory;
@@ -128,7 +137,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
         throw (IOException)exception[0];
     }
     if (socket[0] == null) {
-      throw new InterruptedIOException(NLS.bind(Messages.Util_timeout, new String[] { host })); 
+      throw new InterruptedIOException(NLS.bind(Messages.Util_timeout, host));
     }
     return socket[0];
   }
