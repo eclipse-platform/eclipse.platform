@@ -1282,6 +1282,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		setTerminalTitle(title, TerminalTitleRequestor.OTHER);
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public void setTerminalTitle(String title, TerminalTitleRequestor requestor) {
 		if (fTerminalListener instanceof ITerminalListener3 listener3) {
