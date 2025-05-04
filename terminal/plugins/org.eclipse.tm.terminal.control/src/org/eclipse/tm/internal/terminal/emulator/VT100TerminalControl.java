@@ -202,8 +202,6 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	 * @param target Callback for notifying the owner of Terminal state changes.
 	 * @param wndParent The Window parent to embed the Terminal in.
 	 * @param connectors Provided connectors.
-	 * @param preferenceStore If non-<code>null</code>, the Terminal widget will pick up settings
-	 *    from the given store.
 	 * @since 3.2
 	 */
 	public VT100TerminalControl(ITerminalListener target, Composite wndParent, ITerminalConnector[] connectors) {

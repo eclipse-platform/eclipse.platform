@@ -19,8 +19,10 @@ import org.eclipse.swt.widgets.Composite;
  */
 public interface ICommandInputField {
 	/**
-	 * @param parent
-	 * @param terminal
+	 * Create Control
+	 *
+	 * @param parent the parent of the input field
+	 * @param terminal the terminal
 	 */
 	void createControl(Composite parent, ITerminalViewControl terminal);
 
@@ -28,7 +30,7 @@ public interface ICommandInputField {
 
 	/**
 	 * Sets the font of a control created with {@link #createControl(Composite, ITerminalViewControl)}
-	 * @param control
+	 *
 	 * @param font the new text font
 	 */
 	void setFont(Font font);

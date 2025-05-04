@@ -142,9 +142,10 @@ public interface ITerminalViewControl {
 	void connectTerminal();
 
 	/**
-	 * @param write a single character to terminal
+	 * write a single character to terminal
+	 * @param c char to write
 	 */
-	void sendKey(char arg0);
+	void sendKey(char c);
 
 	/**
 	 * @param string write string to terminal

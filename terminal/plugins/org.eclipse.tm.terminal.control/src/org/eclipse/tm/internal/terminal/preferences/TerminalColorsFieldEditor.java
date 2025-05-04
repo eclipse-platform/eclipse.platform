@@ -63,7 +63,6 @@ public class TerminalColorsFieldEditor extends FieldEditor {
 	/**
 	 * Creates a field editor for editing colors of {@link TerminalColor}.
 	 * The preference names used are as they are returned from {@link TerminalColor#getPreferenceName()}
-	 * @param labelText
 	 * @param parent
 	 */
 	public TerminalColorsFieldEditor(Composite parent) {
