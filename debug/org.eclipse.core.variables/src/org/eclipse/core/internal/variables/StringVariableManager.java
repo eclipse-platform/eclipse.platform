@@ -223,7 +223,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 		for (IConfigurationElement element : elements) {
 			String name= element.getAttribute(ATTR_NAME);
 			if (name == null) {
-				VariablesPlugin.logMessage(NLS.bind("Variable extension missing required 'name' attribute: {0}", new String[] {element.getDeclaringExtension().getLabel()}), null); //$NON-NLS-1$
+				VariablesPlugin.logMessage(NLS.bind("Variable extension missing required 'name' attribute: {0}", element.getDeclaringExtension().getLabel()), null); //$NON-NLS-1$
 				continue;
 			}
 			String description= element.getAttribute(ATTR_DESCRIPTION);
@@ -246,7 +246,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 		for (IConfigurationElement element : elements) {
 			String name= element.getAttribute(ATTR_NAME);
 			if (name == null) {
-				VariablesPlugin.logMessage(NLS.bind("Variable extension missing required 'name' attribute: {0}", new String[] {element.getDeclaringExtension().getLabel()}), null); //$NON-NLS-1$
+				VariablesPlugin.logMessage(NLS.bind("Variable extension missing required 'name' attribute: {0}", element.getDeclaringExtension().getLabel()), null); //$NON-NLS-1$
 				continue;
 			}
 			String description= element.getAttribute(ATTR_DESCRIPTION);
@@ -295,7 +295,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element= (Element) node;
 				if (!element.getNodeName().equals(VALUE_VARIABLE_TAG)) {
-					VariablesPlugin.logMessage(NLS.bind("Invalid XML element encountered while loading value variables: {0}", new String[] {node.getNodeName()}), null); //$NON-NLS-1$
+					VariablesPlugin.logMessage(NLS.bind("Invalid XML element encountered while loading value variables: {0}", node.getNodeName()), null); //$NON-NLS-1$
 					continue;
 				}
 				String name= element.getAttribute(NAME_TAG);
@@ -360,7 +360,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 		MultiStatus status = new MultiStatus(VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, VariablesMessages.StringVariableManager_26, null);
 		for (IValueVariable variable : variables) {
 			if (getValueVariable(variable.getName()) != null) {
-				status.add(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.StringVariableManager_27, new String[]{variable.getName()}), null));
+				status.add(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.StringVariableManager_27, variable.getName()), null));
 			}
 		}
 		if (status.isOK()) {

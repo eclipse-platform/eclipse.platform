@@ -103,7 +103,7 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 
 		if (id == null || id.trim().isEmpty()
 		|| ver == null || ver.trim().isEmpty()) {
-			System.out.println(NLS.bind(Messages.FeatureParser_IdOrVersionInvalid, (new String[] { id, ver})));
+			System.out.println(NLS.bind(Messages.FeatureParser_IdOrVersionInvalid, id, ver));
 		} else {
 //			String label = attributes.getValue("label"); //$NON-NLS-1$
 //			String provider = attributes.getValue("provider-name"); //$NON-NLS-1$
@@ -118,16 +118,16 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 			plugin.setPluginIdentifier(id);
 			plugin.setPluginVersion(ver);
 			feature.addPlugin(plugin);
-			
+
 			Utils.
 				debug("End process DefaultFeature tag: id:" +id + " ver:" +ver + " url:" + feature.getURL()); 	 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 	}
-	
+
 	private void processLicense(Attributes attributes ){
 		feature.setLicenseURL(attributes.getValue("url")); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {

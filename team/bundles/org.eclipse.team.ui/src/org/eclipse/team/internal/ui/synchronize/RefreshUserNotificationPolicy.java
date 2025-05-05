@@ -90,7 +90,8 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 				if(prompt) {
 					return TeamUIMessages.RefreshSubscriberJob_2a;
 				} else {
-					return NLS.bind(TeamUIMessages.RefreshSubscriberJob_2b, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()) });
+					return NLS.bind(TeamUIMessages.RefreshSubscriberJob_2b,
+							Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()));
 				}
 			}
 		};
@@ -99,9 +100,9 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 	private void notifyIfNeededModal(final IRefreshEvent event) {
 		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
 			String title = (event.getRefreshType() == IRefreshEvent.SCHEDULED_REFRESH
-					? NLS.bind(TeamUIMessages.RefreshCompleteDialog_4a, new String[] { Utils.getTypeName(participant) })
+					? NLS.bind(TeamUIMessages.RefreshCompleteDialog_4a, Utils.getTypeName(participant))
 					: NLS.bind(TeamUIMessages.RefreshCompleteDialog_4,
-							new String[] { Utils.getTypeName(participant) }));
+							Utils.getTypeName(participant)));
 			MessageDialog.openInformation(Utils.getShell(null), title, event.getStatus().getMessage());
 		});
 	}

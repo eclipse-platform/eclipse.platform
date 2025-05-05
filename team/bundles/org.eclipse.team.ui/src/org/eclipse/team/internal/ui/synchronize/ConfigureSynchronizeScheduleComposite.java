@@ -111,7 +111,8 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		Composite area = this;
 
-		createWrappingLabel(area, NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_1, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, schedule.getParticipant().getName()) }), 0, 3);
+		createWrappingLabel(area, NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_1,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, schedule.getParticipant().getName())), 0, 3);
 
 		enableBackgroundRefresh = new Button(area, SWT.CHECK);
 		GridData gridData = new GridData();
@@ -171,7 +172,8 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.horizontalSpan = 3;
 		label.setLayoutData(gridData);
-		label.setText(NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_2, new String[] { SubscriberRefreshSchedule.refreshEventAsString(schedule.getLastRefreshEvent()) }));
+		label.setText(NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_2,
+				SubscriberRefreshSchedule.refreshEventAsString(schedule.getLastRefreshEvent())));
 
 		initializeValues();
 		updateEnablements();
@@ -214,8 +216,8 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		ISynchronizeParticipant participant = schedule.getParticipant();
 		if (!participant.isPinned() && schedule.isEnabled()) {
 			participant.setPinned(MessageDialog.openQuestion(getShell(),
-					NLS.bind(TeamUIMessages.ConfigureSynchronizeScheduleComposite_0, new String[] { Utils.getTypeName(participant) }),
-					NLS.bind(TeamUIMessages.ConfigureSynchronizeScheduleComposite_1, new String[] { Utils.getTypeName(participant) })));
+					NLS.bind(TeamUIMessages.ConfigureSynchronizeScheduleComposite_0, Utils.getTypeName(participant)),
+					NLS.bind(TeamUIMessages.ConfigureSynchronizeScheduleComposite_1, Utils.getTypeName(participant))));
 		}
 		schedule.getRefreshable().setRefreshSchedule(schedule);
 	}

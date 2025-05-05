@@ -70,12 +70,14 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 						if (Utils.isShowAuthor()) {
 							String author = ((FileRevisionTypedElement)element).getAuthor();
 							if (author != null) {
-								return NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelAuthorExists, new String[] { revision.getContentIdentifier(), author });
+								return NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelAuthorExists,
+										revision.getContentIdentifier(), author);
 							} else if (revision.isPropertyMissing()) {
 								fetchAuthors(rdci);
 							}
 						}
-						return NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelExists, new String[] { revision.getContentIdentifier() });
+						return NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelExists,
+								revision.getContentIdentifier());
 					} else {
 						return TeamUIMessages.SyncInfoCompareInput_baseLabel;
 					}
@@ -101,13 +103,14 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 						if (Utils.isShowAuthor()) {
 							String author= ((LocalResourceTypedElement)element).getAuthor();
 							if (author != null) {
-								return NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelAuthorExists, new String[] { localContentId, author });
+								return NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelAuthorExists,
+										localContentId, author);
 							} else { // NOTE: Must not check for revision#isPropertyMissing() as this will always return true for the workspace file revision
 								fetchAuthors(rdci);
 							}
 						}
 					}
-					return NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelExists, new String[] { localContentId });
+					return NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelExists, localContentId);
 				} else {
 					return TeamUIMessages.SyncInfoCompareInput_localLabel;
 				}
@@ -132,12 +135,14 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 						if (Utils.isShowAuthor()) {
 							String author = ((FileRevisionTypedElement)element).getAuthor();
 							if (author != null) {
-								return NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelAuthorExists, new String[] { revision.getContentIdentifier(), author });
+								return NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelAuthorExists,
+										revision.getContentIdentifier(), author);
 							} else if (revision.isPropertyMissing()) {
 								fetchAuthors(rdci);
 							}
 						}
-						return NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelExists, new String[] { revision.getContentIdentifier() });
+						return NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelExists,
+								revision.getContentIdentifier());
 					} else {
 						return TeamUIMessages.SyncInfoCompareInput_remoteLabel;
 					}

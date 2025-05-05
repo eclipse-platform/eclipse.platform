@@ -201,7 +201,8 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 				this.setText(TeamUIMessages.CompareRevisionAction_Local);
 			else if (el instanceof FileRevision){
 				FileRevision tempFileRevision = (FileRevision) el;
-				this.setText(NLS.bind(TeamUIMessages.CompareRevisionAction_Revision, new String[]{tempFileRevision.getContentIdentifier()}));
+				this.setText(NLS.bind(TeamUIMessages.CompareRevisionAction_Revision,
+						tempFileRevision.getContentIdentifier()));
 			}
 			else
 				this.setText(TeamUIMessages.CompareRevisionAction_CompareWithCurrent);

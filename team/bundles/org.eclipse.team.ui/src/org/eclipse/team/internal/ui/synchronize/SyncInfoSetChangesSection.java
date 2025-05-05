@@ -228,7 +228,8 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 		link.setBackground(getListBackgroundColor());
 		link.setUnderlined(true);
 
-		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_10, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_10,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 
 		return composite;
 	}

@@ -303,8 +303,7 @@ public class AntRunner implements IApplication {
 	 */
 	public void run(IProgressMonitor monitor) throws CoreException {
 		if (buildRunning) {
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_RUNNING_BUILD, NLS.bind(InternalCoreAntMessages.AntRunner_Already_in_progess, new String[] {
-					buildFileLocation }), null);
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_RUNNING_BUILD, NLS.bind(InternalCoreAntMessages.AntRunner_Already_in_progess, buildFileLocation), null);
 			throw new CoreException(status);
 		}
 		buildRunning = true;
@@ -450,7 +449,7 @@ public class AntRunner implements IApplication {
 		if (missingClassName != null) {
 			missingClassName = missingClassName.replace('/', '.');
 			message = InternalCoreAntMessages.AntRunner_Could_not_find_one_or_more_classes__Please_check_the_Ant_classpath__2;
-			message = NLS.bind(message, new String[] { missingClassName });
+			message = NLS.bind(message, missingClassName);
 		} else {
 			message = InternalCoreAntMessages.AntRunner_Could_not_find_one_or_more_classes__Please_check_the_Ant_classpath__1;
 		}

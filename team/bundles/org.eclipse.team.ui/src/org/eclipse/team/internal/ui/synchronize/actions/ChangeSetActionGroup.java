@@ -159,7 +159,9 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		public void run() {
 			ActiveChangeSet set = getSelectedSet();
 			if (set == null) return;
-			if (MessageDialog.openConfirm(getConfiguration().getSite().getShell(), TeamUIMessages.ChangeSetActionGroup_0, NLS.bind(TeamUIMessages.ChangeSetActionGroup_1, new String[] { LegacyActionTools.escapeMnemonics(set.getTitle()) }))) { //
+			if (MessageDialog.openConfirm(getConfiguration().getSite().getShell(),
+					TeamUIMessages.ChangeSetActionGroup_0, NLS.bind(TeamUIMessages.ChangeSetActionGroup_1,
+							LegacyActionTools.escapeMnemonics(set.getTitle())))) { //
 				getActiveChangeSetManager().remove(set);
 			}
 		}

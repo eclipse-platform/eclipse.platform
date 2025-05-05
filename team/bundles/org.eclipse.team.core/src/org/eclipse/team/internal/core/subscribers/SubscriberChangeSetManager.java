@@ -262,7 +262,8 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 
 	public SubscriberChangeSetManager(Subscriber subscriber) {
 		collector = new ResourceCollector(subscriber);
-		handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, new String[] { subscriber.getName() }), NLS.bind(Messages.SubscriberChangeSetCollector_2, new String[] { subscriber.getName() })); //
+		handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, subscriber.getName()),
+				NLS.bind(Messages.SubscriberChangeSetCollector_2, subscriber.getName()));
 	}
 
 	@Override

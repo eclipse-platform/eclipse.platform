@@ -97,7 +97,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		this.description = description;
 		this.resource = sync.getLocal();
 		this.node = new MyDiffNode(null, sync);
-		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { sync.getLocal().getName() }));
+		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, sync.getLocal().getName()));
 	}
 
 	/**
@@ -201,7 +201,8 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 
 	@Override
 	public String getToolTipText() {
-		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(30, description), node.getResource().getFullPath().toString() });
+		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, Utils.shortenText(30, description),
+				node.getResource().getFullPath().toString());
 	}
 
 	@Override

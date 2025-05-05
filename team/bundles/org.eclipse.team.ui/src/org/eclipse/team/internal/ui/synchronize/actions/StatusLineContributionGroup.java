@@ -92,14 +92,19 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 				incoming.setText(Integer.toString(workspaceIncoming));
 				outgoing.setText(Integer.toString(workspaceOutgoing));
 
-				conflicting.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_conflicting }));
-				outgoing.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_outgoing }));
-				incoming.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_incoming }));
+				conflicting.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip,
+						TeamUIMessages.StatisticsPanel_conflicting));
+				outgoing.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip,
+						TeamUIMessages.StatisticsPanel_outgoing));
+				incoming.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip,
+						TeamUIMessages.StatisticsPanel_incoming));
 			} else {
 				if (total == 1) {
-					totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalSingular, new String[] { Integer.toString(total) }));
+					totalChanges.setText(
+							NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalSingular, Integer.toString(total)));
 				} else {
-					totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalPlural, new String[] { Integer.toString(total) }));
+					totalChanges.setText(
+							NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalPlural, Integer.toString(total)));
 				}
 			}
 		});

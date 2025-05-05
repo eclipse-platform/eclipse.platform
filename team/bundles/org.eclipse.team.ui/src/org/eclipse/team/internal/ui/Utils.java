@@ -408,27 +408,30 @@ public class Utils {
 		}
 		if (localContentId != null) {
 			if (localAuthor != null) {
-				config.setLeftLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelAuthorExists, new String[] { localContentId, localAuthor }));
+				config.setLeftLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelAuthorExists, localContentId,
+						localAuthor));
 			} else {
-				config.setLeftLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelExists, new String[] { localContentId }));
+				config.setLeftLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelExists, localContentId));
 			}
 		} else {
 			config.setLeftLabel(TeamUIMessages.SyncInfoCompareInput_localLabel);
 		}
 		if (remote != null) {
 			if (remoteAuthor != null) {
-				config.setRightLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelAuthorExists, new String[] { remoteContentId, remoteAuthor }));
+				config.setRightLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelAuthorExists,
+						remoteContentId, remoteAuthor));
 			} else {
-				config.setRightLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelExists, new String[] { remoteContentId }));
+				config.setRightLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelExists, remoteContentId));
 			}
 		} else {
 			config.setRightLabel(TeamUIMessages.SyncInfoCompareInput_remoteLabel);
 		}
 		if (base != null) {
 			if (baseAuthor != null) {
-				config.setAncestorLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelAuthorExists, new String[] { baseContentId, baseAuthor }));
+				config.setAncestorLabel(
+						NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelAuthorExists, baseContentId, baseAuthor));
 			} else {
-				config.setAncestorLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelExists, new String[] { baseContentId }));
+				config.setAncestorLabel(NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelExists, baseContentId));
 			}
 		} else {
 			config.setAncestorLabel(TeamUIMessages.SyncInfoCompareInput_baseLabel);
@@ -556,7 +559,7 @@ public class Utils {
 		}
 		String s = null;
 		if (bindings != null) {
-			s = NLS.bind(getString(labelKey, bundle), bindings);
+			s = NLS.bind(getString(labelKey, bundle), (Object[]) bindings);
 		} else {
 			s = getString(labelKey, bundle);
 		}
@@ -1117,7 +1120,7 @@ public class Utils {
 			// ignore
 		} catch (CoreException e) {
 			TeamUIPlugin.log(IStatus.ERROR, NLS.bind("An error occurred reading the contents of file {0}", //$NON-NLS-1$
-					new String[] { editorInput.getName() }), e);
+					editorInput.getName()), e);
 		}
 		return null;
 	}

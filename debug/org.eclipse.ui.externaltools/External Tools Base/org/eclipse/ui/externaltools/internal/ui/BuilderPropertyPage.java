@@ -221,9 +221,9 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 					if (shell == null) {
 						return;
 					}
-					IStatus status = new Status(IStatus.ERROR, ExternalToolsPlugin.PLUGIN_ID, 0, NLS.bind(ExternalToolsUIMessages.BuilderPropertyPage_Exists, new String[]{config.getName()}), null);
+					IStatus status = new Status(IStatus.ERROR, ExternalToolsPlugin.PLUGIN_ID, 0, NLS.bind(ExternalToolsUIMessages.BuilderPropertyPage_Exists, config.getName()), null);
 					ErrorDialog.openError(getShell(), ExternalToolsUIMessages.BuilderPropertyPage_errorTitle,
-							NLS.bind(ExternalToolsUIMessages.BuilderPropertyPage_External_Tool_Builder__0__Not_Added_2, new String[]{config.getName()}),
+							NLS.bind(ExternalToolsUIMessages.BuilderPropertyPage_External_Tool_Builder__0__Not_Added_2, config.getName()),
 							status);
 					userHasMadeChanges= true;
 				} else {
@@ -920,8 +920,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 						} catch (CoreException e) {
 							Shell shell = getShell();
 							if (shell != null) {
-								MessageDialog.openError(shell, ExternalToolsUIMessages.BuilderPropertyPage_39, NLS.bind(ExternalToolsUIMessages.BuilderPropertyPage_40, new String[] {
-										workingCopy.getName() }));
+								MessageDialog.openError(shell, ExternalToolsUIMessages.BuilderPropertyPage_39, NLS.bind(ExternalToolsUIMessages.BuilderPropertyPage_40, workingCopy.getName()));
 							}
 						}
 					}

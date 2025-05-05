@@ -730,7 +730,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		}
 
 		return NLS.bind(PatchMessages.PreviewPatchPage2_AddedRemovedLines,
-				new String[] { added + "", removed + "" }); //$NON-NLS-1$ //$NON-NLS-2$
+				added + "", removed + ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
