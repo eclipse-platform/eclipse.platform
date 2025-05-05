@@ -180,7 +180,8 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			if (remote == null || !getLocalFile(diff).exists()) {
 				// Nothing we can do so return a conflict status
 				// TODO: Should we handle the case where the local and remote have the same contents for a conflicting addition?
-				return new MergeStatus(TeamPlugin.ID, NLS.bind(Messages.MergeContext_1, new String[] { diff.getPath().toString() }), new IFile[] { getLocalFile(diff) });
+				return new MergeStatus(TeamPlugin.ID, NLS.bind(Messages.MergeContext_1, diff.getPath().toString()),
+						new IFile[] { getLocalFile(diff) });
 			}
 			// We have a conflict, a local, base and remote so we can do
 			// a three-way merge
@@ -268,7 +269,8 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		try {
 			return new BufferedOutputStream(new FileOutputStream(tmpFile));
 		} catch (FileNotFoundException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind("Could not open temporary file {0} for writing: {1}", new String[] { tmpFile.getAbsolutePath(), e.getMessage() }), e); //$NON-NLS-1$
+			TeamPlugin.log(IStatus.ERROR, NLS.bind("Could not open temporary file {0} for writing: {1}", //$NON-NLS-1$
+					tmpFile.getAbsolutePath(), e.getMessage()), e);
 			return new ByteArrayOutputStream();
 		}
 	}
@@ -290,7 +292,8 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		try {
 			return new BufferedInputStream(new FileInputStream(tmpFile));
 		} catch (FileNotFoundException e) {
-			throw new CoreException(new Status(IStatus.ERROR, TeamPlugin.ID, IMergeStatus.INTERNAL_ERROR, NLS.bind(Messages.MergeContext_4, new String[] { tmpFile.getAbsolutePath(), e.getMessage() }), e));
+			throw new CoreException(new Status(IStatus.ERROR, TeamPlugin.ID, IMergeStatus.INTERNAL_ERROR,
+					NLS.bind(Messages.MergeContext_4, tmpFile.getAbsolutePath(), e.getMessage()), e));
 		}
 	}
 

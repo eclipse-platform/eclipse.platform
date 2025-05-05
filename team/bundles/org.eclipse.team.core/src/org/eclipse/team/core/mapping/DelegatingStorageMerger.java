@@ -91,7 +91,7 @@ public class DelegatingStorageMerger implements IStorageMerger {
 					Messages.DelegatingStorageMerger_0, null);
 		if (ancestor == null && !merger.canMergeWithoutAncestor()) {
 			return new Status(IStatus.WARNING, TeamPlugin.ID, CONFLICT,
-					NLS.bind(Messages.MergeContext_1, new String[] { target.getFullPath().toString() }), null);
+					NLS.bind(Messages.MergeContext_1, target.getFullPath().toString()), null);
 		}
 		return merger.merge(output, outputEncoding, ancestor, target, other, monitor);
 	}

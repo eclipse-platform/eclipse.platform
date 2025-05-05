@@ -688,8 +688,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 
 		String library = element.getAttribute(AntCorePlugin.LIBRARY);
 		if (library == null) {
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_Library_not_specified_for___0__4, new String[] {
-					objectName }), null);
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_Library_not_specified_for___0__4, objectName), null);
 			AntCorePlugin.getPlugin().getLog().log(status);
 			return false;
 		}
@@ -707,8 +706,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 			}
 
 			// type specifies a library that does not exist
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(errorMessage, new String[] {
-					library, element.getContributor().getName() }), null);
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(errorMessage, library, element.getContributor().getName()), null);
 			AntCorePlugin.getPlugin().getLog().log(status);
 			return false;
 		}
@@ -719,8 +717,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 		}
 		catch (Exception e) {
 			// likely extra classpath entry library that does not exist
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_8, new String[] {
-					library, element.getContributor().getName() }), null);
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_8, library, element.getContributor().getName()), null);
 			AntCorePlugin.getPlugin().getLog().log(status);
 		}
 		return false;
@@ -743,8 +740,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 					addPluginClassLoader(bundle);
 				} else {
 					// extra classpath entry that does not exist
-					IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_6, new String[] {
-							library, element.getContributor().getName() }), null);
+					IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_6, library, element.getContributor().getName()), null);
 					AntCorePlugin.getPlugin().getLog().log(status);
 					continue;
 				}
@@ -757,8 +753,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 			}
 			catch (Exception e) {
 				// likely extra classpath entry that does not exist
-				IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_6, new String[] {
-						library, element.getContributor().getName() }), null);
+				IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_6, library, element.getContributor().getName()), null);
 				AntCorePlugin.getPlugin().getLog().log(status);
 				continue;
 			}
@@ -1133,8 +1128,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 					prereqs.add(new Relation(currentFrag, hostWires.get(0).getProvider()));
 				}
 			} else {
-				AntCorePlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_MALFORMED_URL, NLS.bind(InternalCoreAntMessages.AntCorePreferences_1, new String[] {
-						currentFrag.getSymbolicName() }), null));
+				AntCorePlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_MALFORMED_URL, NLS.bind(InternalCoreAntMessages.AntCorePreferences_1, currentFrag.getSymbolicName()), null));
 			}
 		}
 

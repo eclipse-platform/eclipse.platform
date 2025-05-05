@@ -166,7 +166,7 @@ public class ResourceVariantCache {
 			}
 		}
 		if (! file.exists() && ! file.mkdirs()) {
-			TeamPlugin.log(new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { file.getAbsolutePath() })));
+			TeamPlugin.log(new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, file.getAbsolutePath())));
 		}
 		cacheEntries = new HashMap<>();
 		lastCacheCleanup = -1;
@@ -193,14 +193,14 @@ public class ResourceVariantCache {
 		if (file.isDirectory()) {
 			File[] children = file.listFiles();
 			if(children == null) {
-				throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { file.getAbsolutePath() }));
+				throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, file.getAbsolutePath()));
 			}
 			for (File f : children) {
 				deleteFile(f);
 			}
 		}
 		if (! file.delete()) {
-			throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { file.getAbsolutePath() }));
+			throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, file.getAbsolutePath()));
 		}
 	}
 
@@ -215,7 +215,7 @@ public class ResourceVariantCache {
 	private synchronized ResourceVariantCacheEntry internalGetCacheEntry(String id) {
 		if (cacheEntries == null) {
 			// This probably means that the cache has been disposed
-			throw new IllegalStateException(NLS.bind(Messages.RemoteContentsCache_cacheDisposed, new String[] { name }));
+			throw new IllegalStateException(NLS.bind(Messages.RemoteContentsCache_cacheDisposed, name));
 		}
 		ResourceVariantCacheEntry entry = cacheEntries.get(id);
 		if (entry != null) {

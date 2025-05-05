@@ -105,7 +105,7 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 			label = super.toDiffString();
 		} else {
 			label = SyncInfoToDiffConverter.diffDirectionToString(getDirection());
-			label = NLS.bind(Messages.concatStrings, new String[] { label, super.toDiffString() });
+			label = NLS.bind(Messages.concatStrings, label, super.toDiffString());
 		}
 		return label;
 	}

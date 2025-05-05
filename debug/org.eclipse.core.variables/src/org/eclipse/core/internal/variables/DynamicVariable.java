@@ -37,25 +37,25 @@ public class DynamicVariable extends StringVariable implements IDynamicVariable 
 		if (!supportsArgument()) {
 			// check for an argument - not supported
 			if (argument != null && argument.length() > 0) {
-				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.DynamicVariable_0, new String[]{argument, getName()}), null));
+				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.DynamicVariable_0, argument, getName()), null));
 			}
 		}
 		if (fResolver == null) {
 			String name = getConfigurationElement().getAttribute("resolver"); //$NON-NLS-1$
 			if (name == null) {
-				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Contributed context variable {0} must specify a resolver.",new String[]{getName()}), null)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Contributed context variable {0} must specify a resolver.", getName()), null)); //$NON-NLS-1$
 			}
 			Object object = getConfigurationElement().createExecutableExtension("resolver"); //$NON-NLS-1$
 			if (object instanceof IDynamicVariableResolver) {
 				fResolver = (IDynamicVariableResolver)object;
 			} else {
-				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Contributed context variable resolver for {0} must be an instance of IContextVariableResolver.",new String[]{getName()}), null)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Contributed context variable resolver for {0} must be an instance of IContextVariableResolver.", getName()), null)); //$NON-NLS-1$
 			}
 		}
 		try {
 			return fResolver.resolveValue(this, argument);
 		} catch (RuntimeException e) {
-			throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Error while evaluating variable {0}.",new String[]{getName()}), e)); //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Error while evaluating variable {0}.", getName()), e)); //$NON-NLS-1$
 		}
 	}
 

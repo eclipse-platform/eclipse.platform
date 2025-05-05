@@ -105,7 +105,7 @@ public class StringSubstitutionEngine {
 						problemVariableList.append(", "); //$NON-NLS-1$
 					}
 					problemVariableList.setLength(problemVariableList.length()-2); //truncate the last ", "
-					throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.REFERENCE_CYCLE_ERROR, NLS.bind(VariablesMessages.StringSubstitutionEngine_4, new String[]{problemVariableList.toString()}), null));
+					throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.REFERENCE_CYCLE_ERROR, NLS.bind(VariablesMessages.StringSubstitutionEngine_4, problemVariableList.toString()), null));
 				}
 			}
 
@@ -260,7 +260,7 @@ public class StringSubstitutionEngine {
 			if (dynamicVariable == null) {
 				// no variables with the given name
 				if (reportUndefinedVariables) {
-					throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.StringSubstitutionEngine_3, new String[]{name}), null));
+					throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.StringSubstitutionEngine_3, name), null));
 				}
 				// leave as is
 				return getOriginalVarText(var);
@@ -283,7 +283,7 @@ public class StringSubstitutionEngine {
 			return getOriginalVarText(var);
 		}
 		// error - an argument specified for a value variable
-		throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.StringSubstitutionEngine_4, new String[]{valueVariable.getName()}), null));
+		throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.StringSubstitutionEngine_4, valueVariable.getName()), null));
 	}
 
 	private String getOriginalVarText(VariableReference var) {

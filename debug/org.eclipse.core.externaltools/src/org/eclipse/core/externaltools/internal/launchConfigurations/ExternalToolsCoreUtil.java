@@ -70,7 +70,7 @@ public class ExternalToolsCoreUtil {
 	public static IPath getLocation(ILaunchConfiguration configuration) throws CoreException {
 		String location = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, (String) null);
 		if (location == null) {
-			abort(NLS.bind(ExternalToolsProgramMessages.ExternalToolsUtil_Location_not_specified_by__0__1, new String[] { configuration.getName()}), null, 0);
+			abort(NLS.bind(ExternalToolsProgramMessages.ExternalToolsUtil_Location_not_specified_by__0__1, configuration.getName()), null, 0);
 		} else {
 			String expandedLocation = getStringVariableManager().performStringSubstitution(location);
 			if (expandedLocation == null || expandedLocation.length() == 0) {

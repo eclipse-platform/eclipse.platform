@@ -147,7 +147,8 @@ public class LaunchConfigurationPresentationManager {
 			Status status = new Status(IStatus.ERROR,
 					DebugUIPlugin.getUniqueIdentifier(),
 					NLS.bind(LaunchConfigurationsMessages.LaunchConfigurationPresentationManager_0,
-							new String[]{oldext.getIdentifier(), oldext.getTypeIdentifier(), mode.toString(), newext.getIdentifier()}));
+							oldext.getIdentifier(), oldext.getTypeIdentifier(), mode.toString(),
+							newext.getIdentifier()));
 			DebugUIPlugin.log(status);
 		}
 	}
