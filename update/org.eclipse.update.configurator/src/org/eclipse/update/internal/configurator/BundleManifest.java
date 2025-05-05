@@ -13,11 +13,17 @@
  *     James D Miles (IBM Corp.) - bug 182666, trim spaces from version id
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
-import java.io.*;
-import java.util.jar.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
-import org.eclipse.osgi.util.*;
-import org.osgi.framework.*;
+import org.eclipse.osgi.util.ManifestElement;
+import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 /**
  * Parses MANIFEST.MF
  */
@@ -52,7 +58,7 @@ public class BundleManifest implements IConfigurationConstants {
 	/**
 	 * Parses manifest, creates PluginEntry if manifest is valid, stores
 	 * exception if any occurs
-	 * 
+	 *
 	 * @param in
 	 *            InputStream
 	 */
@@ -77,7 +83,7 @@ public class BundleManifest implements IConfigurationConstants {
 			// plugin version
 			String version = a.getValue(Constants.BUNDLE_VERSION);
 			if (version == null) {
-				Utils.log(NLS.bind(Messages.BundleManifest_noVersion, (new String[] { Constants.BUNDLE_VERSION, id })));
+				Utils.log(NLS.bind(Messages.BundleManifest_noVersion, Constants.BUNDLE_VERSION, id));
 				return;
 			}
 			version = version.trim();
@@ -109,7 +115,7 @@ public class BundleManifest implements IConfigurationConstants {
 	}
 	/**
 	 * Obtains PluginEntry from a manifest.
-	 * 
+	 *
 	 * @return PluginEntry or null if valid manifest does not exist
 	 * @throws IOException
 	 *             if exception during parsing
@@ -117,7 +123,7 @@ public class BundleManifest implements IConfigurationConstants {
 	public PluginEntry getPluginEntry() throws IOException {
 		if (exception != null) {
 			throw exception;
-		} 
-		return pluginEntry;		
+		}
+		return pluginEntry;
 	}
 }

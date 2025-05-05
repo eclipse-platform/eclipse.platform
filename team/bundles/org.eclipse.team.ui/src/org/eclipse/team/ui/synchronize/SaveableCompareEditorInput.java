@@ -300,7 +300,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			throws InvocationTargetException, InterruptedException {
 		final ICompareInput input = prepareCompareInput(monitor);
 		if (input != null)
-			setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { input.getName()}));
+			setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, input.getName()));
 		return input;
 	}
 

@@ -187,7 +187,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		IDiff node = getDiff(element);
 		if (node != null && node.getKind() != IDiff.NO_CHANGE) {
 			String syncKindString = node.toDiffString();
-			return NLS.bind(TeamUIMessages.AbstractSynchronizationLabelProvider_0, new String[] { base, syncKindString });
+			return NLS.bind(TeamUIMessages.AbstractSynchronizationLabelProvider_0, base, syncKindString);
 		}
 		return base;
 	}

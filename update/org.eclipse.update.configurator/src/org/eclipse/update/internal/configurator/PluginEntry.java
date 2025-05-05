@@ -22,7 +22,7 @@ public class PluginEntry {
 	private boolean isFragment = false;
 	private VersionedIdentifier versionId;
 	private String url;
-	
+
 	public PluginEntry() {
 		super();
 	}
@@ -34,7 +34,7 @@ public class PluginEntry {
 	public String getURL() {
 		return url;
 	}
-	
+
 	/**
 	 * url is relative to the site
 	 */
@@ -44,7 +44,7 @@ public class PluginEntry {
 
 	/**
 	 * Returns the plug-in identifier for this entry.
-	 * 
+	 *
 	 * @return the plug-in identifier, or <code>null</code>
 	 */
 	public String getPluginIdentifier() {
@@ -53,7 +53,7 @@ public class PluginEntry {
 
 	/**
 	 * Returns the plug-in version for this entry.
-	 * 
+	 *
 	 * @return the plug-in version, or <code>null</code>
 	 */
 	public String getPluginVersion() {
@@ -61,10 +61,10 @@ public class PluginEntry {
 	}
 
 	/**
-	 * Indicates whether the entry describes a full plug-in, or 
+	 * Indicates whether the entry describes a full plug-in, or
 	 * a plug-in fragment.
-	 * 
-	 * @return <code>true</code> if the entry is a plug-in fragment, 
+	 *
+	 * @return <code>true</code> if the entry is a plug-in fragment,
 	 * <code>false</code> if the entry is a plug-in
 	 */
 	public boolean isFragment() {
@@ -124,7 +124,7 @@ public class PluginEntry {
 				versionId = new VersionedIdentifier(id, ver);
 				return versionId;
 			} catch (Exception e) {
-				Utils.log(NLS.bind(Messages.PluginEntry_versionError, (new String[] { id, ver })));
+				Utils.log(NLS.bind(Messages.PluginEntry_versionError, id, ver));
 			}
 		}
 
@@ -133,18 +133,18 @@ public class PluginEntry {
 	}
 
 	/**
-	 * Sets the identifier of this plugin entry. 
+	 * Sets the identifier of this plugin entry.
 	 */
 	void setVersionedIdentifier(VersionedIdentifier identifier) {
 		setPluginIdentifier(identifier.getIdentifier());
 		setPluginVersion(identifier.getVersion().toString());
-	}	
+	}
 
 	/**
 	 * Compares two plugin entries for equality
-	 * 
+	 *
 	 * @param object plugin entry object to compare with
-	 * @return <code>true</code> if the two entries are equal, 
+	 * @return <code>true</code> if the two entries are equal,
 	 * <code>false</code> otherwise
 	 */
 	@Override
@@ -154,7 +154,7 @@ public class PluginEntry {
 		PluginEntry e = (PluginEntry) object;
 		return getVersionedIdentifier().equals(e.getVersionedIdentifier());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getVersionedIdentifier().hashCode();

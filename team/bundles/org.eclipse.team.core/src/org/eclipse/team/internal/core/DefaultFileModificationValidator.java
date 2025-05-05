@@ -43,7 +43,9 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 	protected IStatus getDefaultStatus(IFile file) {
 		return
 			file.isReadOnly()
-			? new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.READ_ONLY_LOCAL, NLS.bind(Messages.FileModificationValidator_fileIsReadOnly, new String[] { file.getFullPath().toString() }), null, file)
+					? new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.READ_ONLY_LOCAL,
+							NLS.bind(Messages.FileModificationValidator_fileIsReadOnly, file.getFullPath().toString()),
+							null, file)
 				: Status.OK_STATUS;
 	}
 

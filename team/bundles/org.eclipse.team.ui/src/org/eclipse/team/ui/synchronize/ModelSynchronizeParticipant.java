@@ -203,7 +203,7 @@ public class ModelSynchronizeParticipant extends
 		String name = super.getName();
 		if (description == null)
 			description = Utils.getScopeDescription(getContext().getScope());
-		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, new String[] { name, description });
+		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, name, description);
 	}
 
 	/**
@@ -414,9 +414,11 @@ public class ModelSynchronizeParticipant extends
 			mappingCount = mappings.length;
 		}
 		if (mappingCount == 1) {
-			return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), Utils.getLabel(mappings[0]) });
+			return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, getShortName(),
+					Utils.getLabel(mappings[0]));
 		}
-		return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(mappingCount) });
+		return NLS.bind(TeamUIMessages.Participant_synchronizingResources, getShortName(),
+				Integer.toString(mappingCount));
 	}
 
 	private IRefreshable createRefreshable() {
@@ -424,7 +426,8 @@ public class ModelSynchronizeParticipant extends
 
 			@Override
 			public RefreshParticipantJob createJob(String interval) {
-				String jobName = NLS.bind(TeamUIMessages.RefreshSchedule_15, new String[] { ModelSynchronizeParticipant.this.getName(), interval });
+				String jobName = NLS.bind(TeamUIMessages.RefreshSchedule_15, ModelSynchronizeParticipant.this.getName(),
+						interval);
 				return new RefreshModelParticipantJob(ModelSynchronizeParticipant.this,
 						jobName,
 						jobName,

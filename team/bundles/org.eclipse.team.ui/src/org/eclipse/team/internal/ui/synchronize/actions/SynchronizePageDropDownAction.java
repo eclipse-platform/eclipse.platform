@@ -151,7 +151,8 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 		ISynchronizeParticipantReference[] refs = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
 		String text = null;
 		if(current != null && refs.length > 0) {
-			text = NLS.bind(TeamUIMessages.GlobalRefreshAction_5, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, current.getName()) });
+			text = NLS.bind(TeamUIMessages.GlobalRefreshAction_5,
+					Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, current.getName()));
 			setToolTipText(text);
 			setText(text);
 		} else {

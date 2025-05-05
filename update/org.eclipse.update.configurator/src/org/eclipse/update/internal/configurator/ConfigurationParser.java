@@ -64,8 +64,8 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 
 	public Configuration parse(URL url, URL installLocation) throws Exception {
 
-		// DEBUG:		
-		Utils.debug("Start parsing Configuration:" + url); //$NON-NLS-1$	
+		// DEBUG:
+		Utils.debug("Start parsing Configuration:" + url); //$NON-NLS-1$
 		long lastModified = 0;
 		this.configURL = url;
 		this.installLocation = installLocation;
@@ -97,7 +97,7 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
-		// DEBUG:		
+		// DEBUG:
 		Utils.debug("Start Element: uri:" + uri + " local Name:" + localName + " qName:" + qName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		try {
 
@@ -119,13 +119,13 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 			}
 
 		} catch (MalformedURLException e) {
-			throw new SAXException(NLS.bind(Messages.InstalledSiteParser_UnableToCreateURL, (new String[] { e.getMessage() })), e);
+			throw new SAXException(NLS.bind(Messages.InstalledSiteParser_UnableToCreateURL, (e.getMessage())), e);
 		} catch (CoreException e) {
-			throw new SAXException(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, (new String[] { e.toString() })), e);
+			throw new SAXException(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, (e.toString())), e);
 		}
 	}
 
-	/** 
+	/**
 	 * process the Site info
 	 */
 	private void processSite(Attributes attributes)
@@ -133,11 +133,11 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 
 		if (config == null)
 			return;
-		
+
 		// reset current site
 		currentSiteURL = null;
-		
-		String urlString = attributes.getValue(CFG_URL); 
+
+		String urlString = attributes.getValue(CFG_URL);
 		if (urlString == null)
 			return;
 
@@ -149,21 +149,21 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 			url = new URL(PlatformConfiguration.getInstallURL(), urlString);
 			return;
 		}
-		
+
 		// when reading externalized URLs, need to convert them to absolute form
 		String property = System.getProperty(URL_PROPERTY, EMPTY_STRING);
 		URL root = property == null || property.length() == 0 ? Utils.getInstallURL() : new URL(property);
 		url = Utils.makeAbsolute(root, url);
-		
+
 		if (!isValidSite(url))
 			return;
-		
+
 		// use this new site
 		currentSiteURL = url;
 
 		int policyType;
 		String[] policyList = null;
-		String typeString = attributes.getValue(CFG_POLICY); 
+		String typeString = attributes.getValue(CFG_POLICY);
 		if (typeString == null) {
 			policyType = PlatformConfiguration.getDefaultPolicy();
 			policyList = DEFAULT_POLICY_LIST;
@@ -192,33 +192,33 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 		SitePolicy sp = new SitePolicy(policyType, policyList);
 		SiteEntry site = new SiteEntry(url, sp);
 
-		String flag = attributes.getValue(CFG_UPDATEABLE); 
+		String flag = attributes.getValue(CFG_UPDATEABLE);
 		if (flag != null) {
 			if (flag.equals("true")) //$NON-NLS-1$
 				site.setUpdateable(true);
 			else
 				site.setUpdateable(false);
 		}
-		
-		flag = attributes.getValue(CFG_ENABLED); 
+
+		flag = attributes.getValue(CFG_ENABLED);
 		if (flag != null && flag.equals("false")) //$NON-NLS-1$
 			site.setEnabled(false);
 		else
 			site.setEnabled(true);
 
-		String linkname = attributes.getValue(CFG_LINK_FILE); 
+		String linkname = attributes.getValue(CFG_LINK_FILE);
 		if (linkname != null && !linkname.isEmpty()) {
 			site.setLinkFileName(linkname.replace('/', File.separatorChar));
 		}
 
-		// DEBUG:		
+		// DEBUG:
 		Utils.debug("End process config site url:" + urlString + " policy:" + typeString + " updatable:"+flag ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		
+
 		currentSiteURL = site.getURL();
 		config.addSiteEntry(currentSiteURL.toExternalForm(), site);
 	}
-	
-	/** 
+
+	/**
 	 * process the DefaultFeature info
 	 */
 	private void processFeature(Attributes attributes)
@@ -226,19 +226,19 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 
 		if (currentSiteURL == null)
 			return; // the site was not correct
-			
-		String id = attributes.getValue(CFG_FEATURE_ENTRY_ID); 
+
+		String id = attributes.getValue(CFG_FEATURE_ENTRY_ID);
 		if (id == null)
 			return;
-		String version = attributes.getValue(CFG_FEATURE_ENTRY_VERSION); 
-		String pluginVersion = attributes.getValue(CFG_FEATURE_ENTRY_PLUGIN_VERSION); 
+		String version = attributes.getValue(CFG_FEATURE_ENTRY_VERSION);
+		String pluginVersion = attributes.getValue(CFG_FEATURE_ENTRY_PLUGIN_VERSION);
 		if (pluginVersion == null || pluginVersion.trim().length() == 0)
 			pluginVersion = version;
-		String pluginIdentifier = attributes.getValue(CFG_FEATURE_ENTRY_PLUGIN_IDENTIFIER); 
+		String pluginIdentifier = attributes.getValue(CFG_FEATURE_ENTRY_PLUGIN_IDENTIFIER);
 		if (pluginIdentifier != null && pluginIdentifier.trim().length() == 0)
 			pluginIdentifier = null;
-		String application = attributes.getValue(CFG_FEATURE_ENTRY_APPLICATION); 
-		
+		String application = attributes.getValue(CFG_FEATURE_ENTRY_APPLICATION);
+
 		// get install locations
 		String locations = attributes.getValue(CFG_FEATURE_ENTRY_ROOT);
 		StringTokenizer st = locations != null ? new StringTokenizer(locations,",") : new StringTokenizer(""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -255,29 +255,29 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 
 		// get primary flag
 		boolean primary = false;
-		String flag = attributes.getValue(CFG_FEATURE_ENTRY_PRIMARY); 
+		String flag = attributes.getValue(CFG_FEATURE_ENTRY_PRIMARY);
 		if (flag != null) {
 			if (flag.equals("true")) //$NON-NLS-1$
 				primary = true;
 		}
-		
+
 		FeatureEntry featureEntry =  new FeatureEntry(id, version, pluginIdentifier, pluginVersion, primary, application, roots);
 
 		// set the url
-		String url = attributes.getValue(CFG_URL); 
+		String url = attributes.getValue(CFG_URL);
 		if (url != null && url.trim().length() > 0)
 			featureEntry.setURL(url);
-		
+
 		SiteEntry site = config.getSiteEntry(currentSiteURL.toExternalForm());
 		site.addFeatureEntry(featureEntry);
-		
+
 		// configured ?
 //		String configuredString = attributes.getValue("configured"); //$NON-NLS-1$
 //		boolean configured = configuredString.trim().equalsIgnoreCase("true") ? true : false; //$NON-NLS-1$
 	}
 
 
-	/** 
+	/**
 	 * process the Config info
 	 */
 	private void processConfig(Attributes attributes) {
@@ -291,14 +291,14 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 				config = new Configuration(new Date(time));
 			} catch (NumberFormatException e1) {
 				time = new Date().getTime();
-				Utils.log(NLS.bind(Messages.InstalledSiteParser_date, (new String[] { date })));
+				Utils.log(NLS.bind(Messages.InstalledSiteParser_date, (date)));
 				config = new Configuration(); // constructed with current date
 			}
 		}
-		
+
 		config.setURL(configURL);
 		config.setInstallLocation(installLocation);
-		
+
 		try {
 			String sharedURLString = attributes.getValue(CFG_SHARED_URL);
 			if (sharedURLString != null) {
@@ -320,34 +320,34 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 			}
 		} catch (Exception e) {
 			// could not load from shared install
-			Utils.log(Utils.newStatus(Messages.ConfigurationParser_cannotLoadSharedInstall, e)); 
+			Utils.log(Utils.newStatus(Messages.ConfigurationParser_cannotLoadSharedInstall, e));
 		}
 
 		String flag = attributes.getValue(CFG_TRANSIENT);
 		if (flag != null) {
 			config.setTransient(flag.equals("true")); //$NON-NLS-1$
 		}
-		
-		// DEBUG:		
+
+		// DEBUG:
 		Utils.debug("End Processing Config Tag: date:" + attributes.getValue(CFG_DATE)); //$NON-NLS-1$
 	}
-	
+
 	private boolean isValidSite(URL url) {
 		URL resolvedURL=  url;
 		if (url.getProtocol().equals("platform")) { //$NON-NLS-1$
-			try {				
+			try {
 				// resolve the config location relative to the configURL
-				if (url.getPath().startsWith("/config")) {	
+				if (url.getPath().startsWith("/config")) {
 					URL config_loc = new URL(configURL, "..");
 					resolvedURL = PlatformConfiguration.resolvePlatformURL(url, config_loc); // 19536
 				}
-				else 
+				else
 					resolvedURL = PlatformConfiguration.resolvePlatformURL(url, config.getInstallURL()); // 19536
 			} catch (IOException e) {
 				// will use the baseline URL ...
 			}
 		}
-		
+
 		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL()))
 			return false;
 
@@ -363,8 +363,8 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		super.endElement(uri, localName, qName);
-		
-		// DEBUG:		
+
+		// DEBUG:
 		Utils.debug("End Element: uri:" + uri + " local Name:" + localName + " qName:" + qName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		try {
 
@@ -372,7 +372,7 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 
 			if (tag.equalsIgnoreCase(CFG)) {
 				// This is a bit of a hack.
-				// When no features were added to the site, but the site is initialized from platform.xml 
+				// When no features were added to the site, but the site is initialized from platform.xml
 				// we need to set the feature set to empty, so we don't try to detect them.
 				for (SiteEntry site : config.getSites())
 					site.initialized();

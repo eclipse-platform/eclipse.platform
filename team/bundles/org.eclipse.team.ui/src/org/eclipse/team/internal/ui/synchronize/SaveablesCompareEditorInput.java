@@ -250,16 +250,16 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	public String getToolTipText() {
 		String[] labels = getLabels();
 		if (labels.length == 3)
-			return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_threeWayTooltip, labels);
-		return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_twoWayTooltip, labels);
+			return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_threeWayTooltip, (Object[]) labels);
+		return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_twoWayTooltip, (Object[]) labels);
 	}
 
 	@Override
 	public String getTitle() {
 		String[] labels = getLabels();
 		if (labels.length == 3)
-			return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_threeWayTitle, labels);
-		return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_twoWayTitle, labels);
+			return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_threeWayTitle, (Object[]) labels);
+		return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_twoWayTitle, (Object[]) labels);
 	}
 
 	private IWorkbenchPage getPage() {
@@ -462,7 +462,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		final ICompareInput input = prepareCompareInput(monitor);
 		if (input != null)
 			setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title,
-					new String[] { input.getName() }));
+					input.getName()));
 		return input;
 	}
 

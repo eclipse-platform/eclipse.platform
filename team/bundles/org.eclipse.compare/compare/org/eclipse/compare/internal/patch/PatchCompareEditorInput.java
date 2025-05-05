@@ -84,38 +84,39 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 				if (node instanceof PatchProjectDiffNode) {
 					PatchProjectDiffNode projectNode = (PatchProjectDiffNode) node;
 					if (!Utilities.getProject(projectNode.getDiffProject()).exists()) {
-						text = NLS.bind(PatchMessages.Diff_2Args, new String[]{text, PatchMessages.PreviewPatchLabelDecorator_ProjectDoesNotExist});
+						text = NLS.bind(PatchMessages.Diff_2Args, text,
+								PatchMessages.PreviewPatchLabelDecorator_ProjectDoesNotExist);
 					}
 				}
 				if (!node.isEnabled()) {
 					return NLS.bind(PatchMessages.Diff_2Args,
-							new String[]{text, PatchMessages.PatcherCompareEditorInput_NotIncluded});
+							text, PatchMessages.PatcherCompareEditorInput_NotIncluded);
 				}
 				if (node instanceof PatchFileDiffNode) {
 					PatchFileDiffNode fileNode = (PatchFileDiffNode) node;
 					if (getPatcher().hasCachedContents(fileNode.getDiffResult().getDiff())) {
-						text = NLS.bind(PatchMessages.Diff_2Args, new String[] {text, PatchMessages.HunkMergePage_Merged});
+						text = NLS.bind(PatchMessages.Diff_2Args, text, PatchMessages.HunkMergePage_Merged);
 					}
 					if (!fileNode.fileExists()) {
-						text = NLS.bind(PatchMessages.Diff_2Args, new String[] {text, PatchMessages.PatchCompareEditorInput_0});
+						text = NLS.bind(PatchMessages.Diff_2Args, text, PatchMessages.PatchCompareEditorInput_0);
 					}
 				}
 				if (node instanceof HunkDiffNode) {
 					HunkDiffNode hunkNode = (HunkDiffNode) node;
 					if (hunkNode.isManuallyMerged()) {
-						text = NLS.bind(PatchMessages.Diff_2Args, new String[] {text, PatchMessages.HunkMergePage_Merged});
+						text = NLS.bind(PatchMessages.Diff_2Args, text, PatchMessages.HunkMergePage_Merged);
 					}
 					if (hunkNode.isFuzzUsed()) {
 						text = NLS.bind(PatchMessages.Diff_2Args,
-								new String[] { text,
+								text,
 								NLS.bind(hunkNode.isAllContextIgnored() ? PatchMessages.PreviewPatchPage_AllContextIgnored : PatchMessages.PreviewPatchPage_FuzzUsed,
-										new String[] { hunkNode.getHunkResult().getFuzz() + ""}) }); //$NON-NLS-1$
+										hunkNode.getHunkResult().getFuzz() + "")); //$NON-NLS-1$
 					}
 				}
 				if (getPatcher().isRetargeted(node.getPatchElement()))
 					return NLS.bind(PatchMessages.Diff_2Args,
-							new String[]{getPatcher().getOriginalPath(node.getPatchElement()).toString(),
-							NLS.bind(PatchMessages.PreviewPatchPage_Target, new String[]{node.getName()})});
+							getPatcher().getOriginalPath(node.getPatchElement()).toString(),
+							NLS.bind(PatchMessages.PreviewPatchPage_Target, node.getName()));
 			}
 			return text;
 		}
