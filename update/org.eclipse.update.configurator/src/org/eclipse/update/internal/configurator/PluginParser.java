@@ -90,19 +90,19 @@ public class PluginParser extends DefaultHandler implements IConfigurationConsta
 		String tag = localName.trim();
 
 		if (tag.equalsIgnoreCase(CFG_PLUGIN)) {
-			pluginEntry.isFragment(false);			
+			pluginEntry.isFragment(false);
 			processPlugin(attributes);
 			return;
 		}
 
 		if (tag.equalsIgnoreCase(CFG_FRAGMENT)) {
-			pluginEntry.isFragment(true);			
+			pluginEntry.isFragment(true);
 			processPlugin(attributes);
 			return;
 		}
 	}
 
-	/** 
+	/**
 	 * process plugin entry info
 	 */
 	private void processPlugin(Attributes attributes) throws ParseCompleteException {
@@ -110,14 +110,14 @@ public class PluginParser extends DefaultHandler implements IConfigurationConsta
 		String version = attributes.getValue("version"); //$NON-NLS-1$
 		if (id == null || id.trim().length() == 0) {
 			id = "_no_id_"; //$NON-NLS-1$
-			Utils.log(NLS.bind(Messages.PluginParser_plugin_no_id, (new String[] { location })));
+			Utils.log(NLS.bind(Messages.PluginParser_plugin_no_id, location));
 		}
 		if (version == null || version.trim().length() == 0) {
 			version = "0.0.0"; //$NON-NLS-1$
-			Utils.log(NLS.bind(Messages.PluginParser_plugin_no_version, (new String[] { location })));
+			Utils.log(NLS.bind(Messages.PluginParser_plugin_no_version, location));
 		}
 		pluginEntry.setVersionedIdentifier(new VersionedIdentifier(id, version));
-		
+
 		// stop parsing now
 		throw new ParseCompleteException(""); //$NON-NLS-1$
 	}

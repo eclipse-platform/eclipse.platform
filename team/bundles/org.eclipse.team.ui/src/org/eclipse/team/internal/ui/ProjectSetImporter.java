@@ -121,7 +121,8 @@ public class ProjectSetImporter {
 							providerType = TeamPlugin.getAliasType(id);
 						}
 						if (providerType == null) {
-							throw new TeamException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_0, new String[] { id }), null));
+							throw new TeamException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0,
+									NLS.bind(TeamUIMessages.ProjectSetImportWizard_0, id), null));
 						}
 						ProjectSetCapability serializer = providerType.getProjectSetCapability();
 						ProjectSetCapability.ensureBackwardsCompatible(providerType, serializer);

@@ -292,11 +292,11 @@ public class SynchronizeManager implements ISynchronizeManager {
 					savedState = null;
 					return participant;
 				} catch (PartInitException e) {
-					throw new TeamException(NLS.bind(TeamUIMessages.SynchronizeManager_11, new String[] { descriptor.getName() }), e);
+					throw new TeamException(NLS.bind(TeamUIMessages.SynchronizeManager_11, descriptor.getName()), e);
 				} catch (CoreException e) {
 					throw TeamException.asTeamException(e);
 				} catch(Exception e) {
-					throw new TeamException(NLS.bind(TeamUIMessages.SynchronizeManager_11, new String[] { descriptor.getName() }), e);
+					throw new TeamException(NLS.bind(TeamUIMessages.SynchronizeManager_11, descriptor.getName()), e);
 				}
 			}
 
@@ -352,7 +352,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 		SynchronizeParticipantDescriptor desc = participantRegistry.find(type);
 		// ensure that the view id is valid
 		if (desc == null)
-			throw new PartInitException(NLS.bind(TeamUIMessages.SynchronizeManager_19, new String[] { type }));
+			throw new PartInitException(NLS.bind(TeamUIMessages.SynchronizeManager_19, type));
 		// ensure that multiple instances are allowed if a secondary id is given
 		if (secondaryId != null) {
 //		    if (!desc.isMultipleInstances()) {
@@ -491,7 +491,8 @@ public class SynchronizeManager implements ISynchronizeManager {
 				return (ISynchronizeView) part;
 			} catch (ClassCastException e) {
 				// Strange that we cannot cast the part (see bug 53671)
-				TeamUIPlugin.log(IStatus.ERROR, NLS.bind(TeamUIMessages.SynchronizeManager_18, new String[] { part.getClass().getName() }), e);
+				TeamUIPlugin.log(IStatus.ERROR,
+						NLS.bind(TeamUIMessages.SynchronizeManager_18, part.getClass().getName()), e);
 				return null;
 			}
 		} catch (PartInitException pe) {
@@ -532,9 +533,9 @@ public class SynchronizeManager implements ISynchronizeManager {
 			String message;
 			String desc = perspectiveDescriptor.getDescription();
 			if (desc == null) {
-				message = NLS.bind(TeamUIMessages.SynchronizeManager_30, new String[] { perspectiveDescriptor.getLabel() });
+				message = NLS.bind(TeamUIMessages.SynchronizeManager_30, perspectiveDescriptor.getLabel());
 			} else {
-				message = NLS.bind(TeamUIMessages.SynchronizeManager_32, new String[] { perspectiveDescriptor.getLabel(), desc });
+				message = NLS.bind(TeamUIMessages.SynchronizeManager_32, perspectiveDescriptor.getLabel(), desc);
 			}
 			MessageDialogWithToggle m = MessageDialogWithToggle.openYesNoQuestion(Utils.getShell(null),
 						TeamUIMessages.SynchronizeManager_27,
@@ -610,7 +611,8 @@ public class SynchronizeManager implements ISynchronizeManager {
 					String key = Utils.getKey(id, secondayId);
 					participantReferences.put(key, new ParticipantInstance(desc, secondayId, displayName, memento2.getChild(CTX_PARTICIPANT_DATA)));
 				} else {
-					TeamUIPlugin.log(new Status(IStatus.ERROR, TeamUIPlugin.ID, 1, NLS.bind(TeamUIMessages.SynchronizeManager_9, new String[] { id }), null));
+					TeamUIPlugin.log(new Status(IStatus.ERROR, TeamUIPlugin.ID, 1,
+							NLS.bind(TeamUIMessages.SynchronizeManager_9, id), null));
 				}
 			}
 		}

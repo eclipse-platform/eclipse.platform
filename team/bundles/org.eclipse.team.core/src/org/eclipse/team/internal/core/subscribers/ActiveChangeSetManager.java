@@ -332,7 +332,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 				prefs.node(string).removeNode();
 			}
 		} catch (BackingStoreException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_5, new String[] { getName() }), e);
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_5, getName()), e);
 		}
 		ChangeSet[] sets = getSets();
 		for (ChangeSet set : sets) {
@@ -354,7 +354,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_3, new String[] { getName() }), e);
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_3, getName()), e);
 		}
 	}
 
@@ -406,7 +406,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 				}
 			}
 		} catch (BackingStoreException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_4, new String[] { getName() }), e);
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_4, getName()), e);
 		}
 	}
 

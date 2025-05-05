@@ -117,7 +117,7 @@ public class ProgramLaunchDelegate extends LaunchConfigurationDelegate {
 		if (p != null) {
 			monitor.beginTask(NLS.bind(
 					ExternalToolsProgramMessages.ProgramLaunchDelegate_3,
-					new String[] { configuration.getName() }),
+					configuration.getName()),
 					IProgressMonitor.UNKNOWN);
 			String label = getProcessLabel(location, p);
 			process = DebugPlugin.newProcess(launch, p, label, processAttributes);

@@ -79,7 +79,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		this.input = input;
 		contextListener = cache -> closeEditor(true);
 		getCompareConfiguration().addPropertyChangeListener(this);
-		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { input.getName() }));
+		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, input.getName()));
 	}
 
 	private static CompareConfiguration createCompareConfiguration(ISynchronizePageConfiguration pageConfiguration) {
@@ -173,7 +173,8 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		} else {
 			fullPath = getName();
 		}
-		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()), fullPath });
+		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()), fullPath);
 	}
 
 	@Override

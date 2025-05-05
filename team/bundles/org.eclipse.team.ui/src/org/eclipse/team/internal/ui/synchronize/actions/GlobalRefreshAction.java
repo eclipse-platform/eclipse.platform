@@ -245,7 +245,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 			if (!id.equals(NO_DEFAULT_PARTICPANT)) {
 				ISynchronizeParticipantReference ref = TeamUI.getSynchronizeManager().get(id, secondaryId);
 				if (ref != null) {
-					actionProxy.setToolTipText(NLS.bind(TeamUIMessages.GlobalRefreshAction_5, new String[] { ref.getDisplayName() }));
+					actionProxy.setToolTipText(NLS.bind(TeamUIMessages.GlobalRefreshAction_5, ref.getDisplayName()));
 					return;
 				}
 			}
