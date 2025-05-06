@@ -310,6 +310,14 @@
             </separator>
          </menu>
          <action
+               label="%CompareWithClipboardAction.label"
+               tooltip="%CompareWithClipboardAction.tooltip"
+               class="org.eclipse.compare.internal.ClipboardCompare"
+               menubarPath="compareWithMenu/compareWithGroup"
+               enablesFor="1"
+               id="compareWithClipboard ">
+         </action>
+         <action
                label="%CompareWithHistoryAction.label"
                tooltip="%CompareWithHistoryAction.tooltip"
                class="org.eclipse.compare.internal.CompareWithEditionAction"
