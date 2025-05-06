@@ -296,6 +296,14 @@
                enablesFor="1"
                id="replaceWithPreviousFromHistory">
          </action>
+         <action
+               label="%ReplaceWithClipboardAction.label"
+               tooltip="%ReplaceWithClipboardAction.tooltip"
+               class="org.eclipse.compare.internal.ClipboardReplace"
+               menubarPath="replaceWithMenu/replaceWithGroup"
+               enablesFor="1"
+               id="replaceWithClipboard">
+         </action>
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
@@ -309,6 +317,14 @@
                   name="compareWithGroup">
             </separator>
          </menu>
+         <action
+               label="%CompareWithClipboardAction.label"
+               tooltip="%CompareWithClipboardAction.tooltip"
+               class="org.eclipse.compare.internal.ClipboardCompare"
+               menubarPath="compareWithMenu/compareWithGroup"
+               enablesFor="1"
+               id="compareWithClipboard">
+         </action>
          <action
                label="%CompareWithHistoryAction.label"
                tooltip="%CompareWithHistoryAction.tooltip"
