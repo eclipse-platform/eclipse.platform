@@ -14,8 +14,9 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
 
@@ -24,8 +25,8 @@ import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.InjectionException;
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AutoConstructWithCreatableTest {
 
@@ -60,7 +61,7 @@ public class AutoConstructWithCreatableTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void createContext() {
 		context = EclipseContextFactory.create();
 	}
@@ -89,11 +90,9 @@ public class AutoConstructWithCreatableTest {
 	/**
 	 * Checks that only classes with @Creatable are auto-constructed
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testNonCreatableInstanceAreNotCreated() {
-		ContextInjectionFactory.make(Consumer2.class, context);
-		// should not be reached as exception is thrown
-		assertTrue(false);
+		assertThrows(InjectionException.class, () -> ContextInjectionFactory.make(Consumer2.class, context));
 	}
 
 	@Test // ensure "normal" dependency injection

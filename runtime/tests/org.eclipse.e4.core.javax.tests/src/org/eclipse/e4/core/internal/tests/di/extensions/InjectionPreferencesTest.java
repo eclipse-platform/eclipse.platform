@@ -14,9 +14,9 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di.extensions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import javax.inject.Inject;
 
@@ -28,7 +28,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**

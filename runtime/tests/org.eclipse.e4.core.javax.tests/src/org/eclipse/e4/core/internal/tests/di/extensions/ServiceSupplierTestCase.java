@@ -1,9 +1,9 @@
 package org.eclipse.e4.core.internal.tests.di.extensions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -18,9 +18,10 @@ import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.extensions.Service;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -82,7 +83,7 @@ public class ServiceSupplierTestCase {
 
 	private final List<ServiceRegistration<?>> registrations = new ArrayList<>();
 
-	@After
+	@AfterEach
 	public void cleanup() {
 		this.registrations.forEach( ServiceRegistration::unregister);
 	}
@@ -120,7 +121,8 @@ public class ServiceSupplierTestCase {
 		assertSame(FilterServiceB.class, bean.serviceList.get(1).getClass());
 	}
 
-	@Test(timeout = 30000)
+	@Test
+	@Timeout(value = 30)
 	public void testDynamicAdd() {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		IEclipseContext serviceContext = EclipseContextFactory.getServiceContext(context);
@@ -214,7 +216,8 @@ public class ServiceSupplierTestCase {
 		assertSame(SampleServiceB.class, bean.serviceList.get(1).getClass());
 	}
 
-	@Test(timeout = 30000)
+	@Test
+	@Timeout(value = 30)
 	public void testCleanup() {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		IEclipseContext eclipseContext = EclipseContextFactory.getServiceContext(context);
@@ -293,7 +296,7 @@ public class ServiceSupplierTestCase {
 	}
 
 	@Test
-	@Ignore("See Bug 572546")
+	@Disabled("See Bug 572546")
 	public void testUselessUpdates() throws InterruptedException {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		IEclipseContext serviceContext = EclipseContextFactory.getServiceContext(context);

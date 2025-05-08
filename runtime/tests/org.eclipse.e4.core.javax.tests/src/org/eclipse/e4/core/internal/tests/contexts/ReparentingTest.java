@@ -15,10 +15,10 @@
 
 package org.eclipse.e4.core.internal.tests.contexts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,7 +29,7 @@ import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.contexts.RunAndTrack;
 import org.eclipse.e4.core.internal.tests.contexts.inject.ObjectSuperClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for changing a context's parent.
@@ -54,7 +54,7 @@ public class ReparentingTest {
 		assertEquals(2, ((Integer) child.get("sum")).intValue());
 		child.setParent(EclipseContextFactory.create());
 		assertEquals(6, ((Integer) parent.get("sum")).intValue());
-		assertNull("Expected null but was: " + child.get("sum"), child.get("sum"));
+		assertNull(child.get("sum"), "Expected null but was: " + child.get("sum"));
 	}
 
 	/**

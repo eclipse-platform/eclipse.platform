@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di.extensions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -30,8 +30,8 @@ import org.eclipse.e4.core.di.suppliers.IObjectDescriptor;
 import org.eclipse.e4.core.di.suppliers.IRequestor;
 import org.eclipse.e4.core.internal.di.osgi.ProviderHelper;
 import org.eclipse.e4.core.internal.tests.di.extensions.InjectionEventTest.EventAdminHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -80,7 +80,7 @@ public class ExtendedSupplierInjectionTests {
 
 	private EventAdminHelper helper;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		InjectionEventTest.ensureEventAdminStarted();
 		BundleContext bundleContext = FrameworkUtil.getBundle(getClass())

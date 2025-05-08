@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.about;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -30,7 +30,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.about.AboutSections;
 import org.eclipse.e4.core.services.about.ISystemInformation;
 import org.eclipse.e4.core.services.translation.TranslationService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -44,7 +44,7 @@ public class AboutTest {
 		String section = AboutSections.SECTION_SYSTEM_ENVIRONMENT;
 		BundleContext context = FrameworkUtil.getBundle(AboutTest.class).getBundleContext();
 		ServiceReference<ISystemInformation> reference = reference(context, section);
-		assertEquals("Invalid service metadata", section, reference.getProperty(AboutSections.SECTION));
+		assertEquals(section, reference.getProperty(AboutSections.SECTION), "Invalid service metadata");
 	}
 
 	@Test
@@ -126,7 +126,7 @@ public class AboutTest {
 		Optional<ServiceReference<ISystemInformation>> first = context
 				.getServiceReferences(ISystemInformation.class, filter)
 				.stream().findFirst();
-		assumeTrue("No reference found", first.isPresent());
+		assumeTrue(first.isPresent(), "No reference found");
 		return first.get();
 	}
 }
