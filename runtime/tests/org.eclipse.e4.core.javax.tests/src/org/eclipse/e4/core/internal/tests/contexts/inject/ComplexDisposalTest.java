@@ -14,7 +14,7 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ import org.eclipse.e4.core.contexts.ContextFunction;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * See bug 296337: duplicate disposal of an object
@@ -66,9 +66,9 @@ public class ComplexDisposalTest {
 
 		assertEquals(0, test.getCount());
 		context.dispose();
-		assertEquals("Context disposed, @PreDestroy should've been called", 1, test.getCount());
+		assertEquals(1, test.getCount(), "Context disposed, @PreDestroy should've been called");
 		parentContext.dispose();
-		assertEquals("Parent context disposed, @PreDestroy should not have been called again", 1, test.getCount());
+		assertEquals(1, test.getCount(), "Parent context disposed, @PreDestroy should not have been called again");
 	}
 
 	@Test
@@ -81,9 +81,9 @@ public class ComplexDisposalTest {
 
 		assertEquals(0, test.getCount());
 		context.dispose();
-		assertEquals("Context disposed, @PreDestroy should've been called", 1, test.getCount());
+		assertEquals(1, test.getCount(), "Context disposed, @PreDestroy should've been called");
 		parentContext.dispose();
-		assertEquals("Parent context disposed, @PreDestroy should not have been called again", 1, test.getCount());
+		assertEquals(1, test.getCount(), "Parent context disposed, @PreDestroy should not have been called again");
 	}
 
 	@Test
@@ -97,8 +97,8 @@ public class ComplexDisposalTest {
 
 		assertEquals(0, test.getCount());
 		context.dispose();
-		assertEquals("Context disposed, @PreDestroy should've been called", 1, test.getCount());
+		assertEquals(1, test.getCount(), "Context disposed, @PreDestroy should've been called");
 		parentContext.dispose();
-		assertEquals("Parent context disposed, @PreDestroy should not have been called again", 1, test.getCount());
+		assertEquals(1, test.getCount(), "Parent context disposed, @PreDestroy should not have been called again");
 	}
 }

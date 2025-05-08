@@ -14,12 +14,12 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.nls;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 
 import org.eclipse.e4.core.internal.services.ResourceBundleHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
 public class LocaleTransformationTest {

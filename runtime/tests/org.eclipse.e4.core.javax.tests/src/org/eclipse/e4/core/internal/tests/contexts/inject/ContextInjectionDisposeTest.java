@@ -14,10 +14,10 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for injection handling of context dispose, and handling disposal of

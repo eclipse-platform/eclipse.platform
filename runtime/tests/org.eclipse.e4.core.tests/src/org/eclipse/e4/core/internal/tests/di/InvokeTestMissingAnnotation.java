@@ -14,11 +14,13 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.di.InjectionException;
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that that no method is called, it the @Execute annotation is not
@@ -41,10 +43,11 @@ public class InvokeTestMissingAnnotation {
 	/**
 	 * Checks that no methods is called and that an execution is thrown
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testCallMethodsWithMissingAnnotation() {
 		TestSuperclass editor = new TestSuperclass();
-		ContextInjectionFactory.invoke(editor, Execute.class, EclipseContextFactory.create());
+		assertThrows(InjectionException.class,
+				() -> ContextInjectionFactory.invoke(editor, Execute.class, EclipseContextFactory.create()));
 	}
 
 	/**

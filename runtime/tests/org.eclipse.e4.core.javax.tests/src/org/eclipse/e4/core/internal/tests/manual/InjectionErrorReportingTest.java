@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.manual;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -24,7 +26,7 @@ import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.InjectionException;
 import org.eclipse.e4.core.di.annotations.Creatable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Manual test to observe error reporting. The JUnits in this
@@ -124,82 +126,88 @@ public class InjectionErrorReportingTest {
 	/**
 	 * Shows the error message for an unresolved method argument
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testMethodInjectionError() {
 		IEclipseContext context = EclipseContextFactory.create();
 		TestData methodValue = new TestData();
 		context.set("testing", methodValue);
 		InjectedMethod object = new InjectedMethod();
-		ContextInjectionFactory.inject(object, context);
+		assertThrows(InjectionException.class, () -> ContextInjectionFactory.inject(object, context));
 	}
 
 	/**
 	 * Shows the error message in case method call throws an exception
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testMethodInjectionNullError() {
 		IEclipseContext context = EclipseContextFactory.create();
 		TestData methodValue = new TestData();
 		context.set("testing", methodValue);
 		InjectedMethodNull object = new InjectedMethodNull();
-		ContextInjectionFactory.inject(object, context);
+		assertThrows(InjectionException.class, () -> ContextInjectionFactory.inject(object, context));
 	}
 
 	/**
 	 * Shows the error message for an unresolved constructor argument
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testConstructorInjectionError() {
 		IEclipseContext context = EclipseContextFactory.create();
 		TestData methodValue = new TestData();
 		context.set("testing", methodValue);
 		ContextInjectionFactory.make(InjectedConstructor.class, context);
+		assertThrows(InjectionException.class,
+				() -> ContextInjectionFactory.inject(InjectedConstructor.class, context));
 
 	}
 
 	/**
 	 * Shows the error message for an exception in the injected constructor
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testConstructorCastError() {
 		IEclipseContext context = EclipseContextFactory.create();
 		TestData methodValue = new TestData();
 		context.set("testing", methodValue);
 		ContextInjectionFactory.make(InjectedConstructorCast.class, context);
+		assertThrows(InjectionException.class,
+				() -> ContextInjectionFactory.inject(InjectedConstructor.class, context));
 	}
 
 	/**
 	 * Shows the error message for an unresolved field value
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testFieldInjectionError() {
 		IEclipseContext context = EclipseContextFactory.create();
 		TestData methodValue = new TestData();
 		context.set("testing", methodValue);
 		InjectedField object = new InjectedField();
-		ContextInjectionFactory.inject(object, context);
+		assertThrows(InjectionException.class, () -> ContextInjectionFactory.inject(object, context));
 	}
 
 	/**
 	 * Shows the error message in case @PostConstruct method call throws an exception
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testPostConstructError() {
 		IEclipseContext context = EclipseContextFactory.create();
 		TestData methodValue = new TestData();
 		context.set("testing", methodValue);
 		ContextInjectionFactory.make(InjectedPostConstruct.class, context);
+		assertThrows(InjectionException.class,
+				() -> ContextInjectionFactory.inject(InjectedConstructor.class, context));
 	}
 
 	/**
 	 * Shows the error message in case @PreDestory method call throws an exception
 	 */
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testPreDestoryError() {
 		IEclipseContext context = EclipseContextFactory.create();
 		TestData methodValue = new TestData();
 		context.set("testing", methodValue);
-		ContextInjectionFactory.make(InjectedPreDestroy.class, context);
+		assertThrows(InjectionException.class, () -> ContextInjectionFactory.inject(InjectedPreDestroy.class, context));
 		context.dispose();
 	}
 
@@ -209,12 +217,12 @@ public class InjectionErrorReportingTest {
 	 * the fix for bug 457687 now exposes java.lang.Errors (such as
 	 * StackOverflowError) rather than wrapping them in an InjectionException.
 	 */
-	@Test(expected = StackOverflowError.class)
+	@Test
 	public void testRecursionError() {
 		IEclipseContext context = EclipseContextFactory.create();
 		ContextInjectionFactory.make(InjectedRecursive.class, context);
 
 		context.set(InjectedRecursive.class, new InjectedRecursive());
-		ContextInjectionFactory.make(InjectedRecursive.class, context);
+		assertThrows(StackOverflowError.class, () -> ContextInjectionFactory.inject(InjectedRecursive.class, context));
 	}
 }

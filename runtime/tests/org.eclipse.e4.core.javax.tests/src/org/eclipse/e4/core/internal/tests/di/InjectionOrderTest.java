@@ -14,8 +14,8 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -25,7 +25,7 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.InjectionException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InjectionOrderTest {
 

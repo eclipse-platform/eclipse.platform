@@ -14,9 +14,9 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.contexts.RunAndTrack;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for the basic context injection functionality

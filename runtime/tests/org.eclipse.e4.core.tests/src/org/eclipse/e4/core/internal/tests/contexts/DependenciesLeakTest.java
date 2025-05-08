@@ -14,15 +14,15 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.e4.core.contexts.ContextFunction;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.internal.contexts.EclipseContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DependenciesLeakTest {
 
@@ -47,7 +47,7 @@ public class DependenciesLeakTest {
 	private IEclipseContext perspectiveContext;
 	private IEclipseContext partContext;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		windowContext = EclipseContextFactory.create("Window");
 		perspectiveContext = windowContext.createChild("Perspective");

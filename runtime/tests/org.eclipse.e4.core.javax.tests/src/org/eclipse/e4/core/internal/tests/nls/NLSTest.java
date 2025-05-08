@@ -15,8 +15,8 @@
 
 package org.eclipse.e4.core.internal.tests.nls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Locale;
 
@@ -27,9 +27,9 @@ import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.nls.Translation;
 import org.eclipse.e4.core.services.translation.TranslationService;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 public class NLSTest {
@@ -67,7 +67,7 @@ public class NLSTest {
 	private IEclipseContext context;
 	private Locale beforeLocale;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.context = EclipseContextFactory.getServiceContext(FrameworkUtil.getBundle(getClass()).getBundleContext());
 		ContextInjectionFactory.setDefault(context);
@@ -77,7 +77,7 @@ public class NLSTest {
 		Locale.setDefault(new Locale("en"));
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		Locale.setDefault(beforeLocale);
 	}

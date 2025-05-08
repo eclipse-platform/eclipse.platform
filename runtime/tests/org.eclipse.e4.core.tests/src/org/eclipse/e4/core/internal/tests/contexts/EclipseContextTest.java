@@ -14,10 +14,10 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.e4.core.contexts.ContextFunction;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
@@ -25,8 +25,8 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.contexts.RunAndTrack;
 import org.eclipse.e4.core.di.IInjector;
 import org.eclipse.e4.core.internal.contexts.EclipseContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 public class EclipseContextTest {
@@ -43,7 +43,7 @@ public class EclipseContextTest {
 
 	private int runCounter;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		parentContext = EclipseContextFactory.create("EclipseContextTest" + "-parent");
 		context = parentContext.createChild("EclipseContextTest");
@@ -52,18 +52,18 @@ public class EclipseContextTest {
 
 	@Test
 	public void testContainsKey() {
-		assertFalse("1.0", context.containsKey("function"));
-		assertFalse("1.1", context.containsKey("separator"));
+		assertFalse(context.containsKey("function"));
+		assertFalse(context.containsKey("separator"));
 
 		context.set("separator", ",");
-		assertTrue("2.1", context.containsKey("separator"));
+		assertTrue(context.containsKey("separator"));
 
 		// null value is still a value
 		context.set("separator", null);
-		assertTrue("3.0", context.containsKey("separator"));
+		assertTrue(context.containsKey("separator"));
 
 		context.remove("separator");
-		assertFalse("4.0", context.containsKey("separator"));
+		assertFalse(context.containsKey("separator"));
 	}
 
 	@Test
