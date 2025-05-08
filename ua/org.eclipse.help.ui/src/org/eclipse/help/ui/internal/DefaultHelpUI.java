@@ -1,5 +1,5 @@
 /***************************************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,6 +18,7 @@ package org.eclipse.help.ui.internal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
@@ -333,6 +334,7 @@ public class DefaultHelpUI extends AbstractHelpUI {
 												 * If the context help has no description text and exactly one
 												 * topic, go straight to the topic and skip context help.
 												 */
+					Objects.requireNonNull(context, "context must not be null when displaying help content"); //$NON-NLS-1$
 					String contextText = context.getText();
 					IHelpResource[] topics = context.getRelatedTopics();
 					boolean isSingleChoiceWithoutDescription = contextText == null && topics.length == 1;
