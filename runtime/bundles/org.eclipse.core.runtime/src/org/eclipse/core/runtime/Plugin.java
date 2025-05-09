@@ -213,7 +213,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @return a URL for the given path or <code>null</code>
 	 * @deprecated use {@link FileLocator#find(Bundle, IPath, Map)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final URL find(IPath path) {
 		return FileLocator.find(getBundle(), path, null);
 	}
@@ -232,7 +232,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @return a URL for the given path or <code>null</code>
 	 * @deprecated use {@link FileLocator#find(Bundle, IPath, Map)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final URL find(IPath path, Map<String,String> override) {
 		return FileLocator.find(getBundle(), path, override);
 	}
@@ -424,7 +424,7 @@ public abstract class Plugin implements BundleActivator {
 	 *		}
 	 * </pre>
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	protected void initializeDefaultPluginPreferences() {
 		// default implementation of this method - spec'd to do nothing
 	}
@@ -437,7 +437,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @since 3.0
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final void internalInitializeDefaultPluginPreferences() {
 		initializeDefaultPluginPreferences();
 	}
@@ -479,7 +479,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @see #openStream(IPath,boolean)
 	 * @deprecated use {@link FileLocator#openStream(Bundle, IPath, boolean)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final InputStream openStream(IPath file) throws IOException {
 		return FileLocator.openStream(getBundle(), file, false);
 	}
@@ -502,7 +502,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @exception IOException if the given path cannot be found in this plug-in
 	 * @deprecated use {@link FileLocator#openStream(Bundle, IPath, boolean)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final InputStream openStream(IPath file, boolean substituteArgs) throws IOException {
 		return FileLocator.openStream(getBundle(), file, substituteArgs);
 	}
@@ -576,7 +576,7 @@ public abstract class Plugin implements BundleActivator {
 	 *
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public void shutdown() throws CoreException {
 		// intentionally left empty
 	}
