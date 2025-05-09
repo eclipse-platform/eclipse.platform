@@ -129,6 +129,12 @@
             activityId="org.eclipse.plugInDevelopment"
             pattern="org\.eclipse\.pde/.*">
       </activityPatternBinding>
+
+      <activityPatternBinding
+            activityId="org.eclipse.plugInDevelopment"
+            pattern="org\.eclipse\.swt\.tools.*">
+      </activityPatternBinding>
+      
       <activityPatternBinding
             activityId="org.eclipse.debugSupport"
             pattern="org\.eclipse\.debug\.ui/.*">
