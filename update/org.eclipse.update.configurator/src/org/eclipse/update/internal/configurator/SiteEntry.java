@@ -33,6 +33,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 
+@SuppressWarnings("removal")
 public class SiteEntry implements IPlatformConfiguration.ISiteEntry, IConfigurationConstants{	
 	private static final String MAC_OS_MARKER = ".DS_Store"; //$NON-NLS-1$
 	

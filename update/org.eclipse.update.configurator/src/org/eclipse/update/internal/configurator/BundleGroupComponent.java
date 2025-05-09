@@ -17,9 +17,6 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IBundleGroup;
 import org.eclipse.core.runtime.IBundleGroupProvider;
-import org.eclipse.update.configurator.IPlatformConfiguration;
-import org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry;
-import org.eclipse.update.configurator.IPlatformConfigurationFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -30,26 +27,28 @@ import org.osgi.service.component.annotations.Reference;
  * made available in the service registry before this bundle has started.
  */
 @Component(service = IBundleGroupProvider.class)
-@SuppressWarnings("deprecation")
+@SuppressWarnings("removal")
 public class BundleGroupComponent implements IBundleGroupProvider {
 
 
-	private IPlatformConfigurationFactory factory;
+	private org.eclipse.update.configurator.IPlatformConfigurationFactory factory;
 
 	@Activate
-	public BundleGroupComponent(@Reference IPlatformConfigurationFactory factory) {
+	public BundleGroupComponent(@Reference org.eclipse.update.configurator.IPlatformConfigurationFactory factory) {
 		this.factory = factory;
 	}
 
 	@Override
 	public IBundleGroup[] getBundleGroups() {
-		IPlatformConfiguration configuration = factory.getCurrentPlatformConfiguration();
+		org.eclipse.update.configurator.IPlatformConfiguration configuration = factory
+				.getCurrentPlatformConfiguration();
 		if (configuration == null) {
 			return new IBundleGroup[0];
 		}
-		IPlatformConfiguration.IFeatureEntry[] features = configuration.getConfiguredFeatureEntries();
+		org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry[] features = configuration
+				.getConfiguredFeatureEntries();
 		ArrayList<IBundleGroup> bundleGroups = new ArrayList<>(features.length);
-		for (IFeatureEntry feature : features) {
+		for (org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry feature : features) {
 			if (feature instanceof FeatureEntry && ((FeatureEntry) feature).hasBranding())
 				bundleGroups.add((IBundleGroup) feature);
 		}

@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("removal")
 @Component(service = IPlatformConfigurationFactory.class)
 public class PlatformConfigurationFactory implements IPlatformConfigurationFactory {
 	private Location configLocation;
