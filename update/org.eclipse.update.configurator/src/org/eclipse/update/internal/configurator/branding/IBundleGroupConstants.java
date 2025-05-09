@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.update.internal.configurator.branding;
 
-import org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry;
-
 /**
  * These constants define the set of properties that the UI expects to
  * be available via <code>IBundleGroup.getProperty(String)</code>.
