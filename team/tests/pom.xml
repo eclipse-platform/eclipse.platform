@@ -25,7 +25,6 @@
   <modules>
     <module>org.eclipse.compare.tests</module>
     <module>org.eclipse.core.tests.net</module>
-    <module>org.eclipse.jsch.tests</module>
     <module>org.eclipse.team.tests.core</module>
   </modules>
 </project>
