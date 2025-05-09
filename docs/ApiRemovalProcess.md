@@ -22,7 +22,7 @@ Example of a deprecation comment:
  * @noimplement
  * @deprecated This XXX (class/method/field) will be removed in a future release. Use XXX instead.
  */
-@Deprecated(forRemoval = true, since = "4.16")
+@Deprecated(forRemoval = true, since = "2025-06")
 ``` 
 * The PMC may decide to back out of an API removal
 * In general, removing a deprecated API does NOT cause the increase of the major version segment.
