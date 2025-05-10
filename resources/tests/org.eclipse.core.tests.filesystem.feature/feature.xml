@@ -20,6 +20,12 @@
    </license>
 
    <plugin
+         id="org.eclipse.core.filesystem.freebsd.x86_64"
+         os="freebsd"
+         arch="x86_64"
+         version="0.0.0"/>
+
+   <plugin
          id="org.eclipse.core.filesystem.linux.x86_64"
          os="linux"
          arch="x86_64"
