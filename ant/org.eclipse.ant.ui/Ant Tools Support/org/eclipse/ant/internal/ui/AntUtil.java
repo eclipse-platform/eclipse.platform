@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.ant.internal.ui;
 
@@ -20,7 +21,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -100,7 +100,7 @@ public final class AntUtil {
 
 	/**
 	 * Returns a single-string of the strings for storage.
-	 * 
+	 *
 	 * @param strings
 	 *            the array of strings
 	 * @return a single-string representation of the strings or <code>null</code> if the array is empty.
@@ -112,7 +112,7 @@ public final class AntUtil {
 	/**
 	 * Returns an array of targets to be run, or <code>null</code> if none are specified (indicating the default target or implicit target should be
 	 * run).
-	 * 
+	 *
 	 * @param configuration
 	 *            launch configuration
 	 * @return array of target names, or <code>null</code>
@@ -126,7 +126,7 @@ public final class AntUtil {
 	/**
 	 * Returns a map of properties to be defined for the build, or <code>null</code> if none are specified (indicating no additional properties
 	 * specified for the build).
-	 * 
+	 *
 	 * @param configuration
 	 *            launch configuration
 	 * @return map of properties (name --&gt; value), or <code>null</code>
@@ -139,7 +139,7 @@ public final class AntUtil {
 
 	/**
 	 * Returns a String specifying the Ant home to use for the build.
-	 * 
+	 *
 	 * @param configuration
 	 *            launch configuration
 	 * @return String specifying Ant home to use or <code>null</code>
@@ -153,7 +153,7 @@ public final class AntUtil {
 	/**
 	 * Returns an array of property files to be used for the build, or <code>null</code> if none are specified (indicating no additional property
 	 * files specified for the build).
-	 * 
+	 *
 	 * @param configuration
 	 *            launch configuration
 	 * @return array of property file names, or <code>null</code>
@@ -195,7 +195,7 @@ public final class AntUtil {
 	}
 
 	private static Map<String, String> getAllProperties(ILaunchConfiguration config) throws CoreException {
-		String allArgs = config.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, (String) null);
+		String allArgs = IExternalToolConstants.LAUNCH_ATTRIBUTE_ARGUMENTS.read(config);
 		Map<String, String> properties = new HashMap<>();
 		if (allArgs != null) {
 			// filter arguments to avoid resolving variables that will prompt the user
@@ -213,9 +213,7 @@ public final class AntUtil {
 		}
 		Map<String, String> configProperties = getProperties(config);
 		if (configProperties != null) {
-			Iterator<String> keys = configProperties.keySet().iterator();
-			while (keys.hasNext()) {
-				String name = keys.next();
+			for (String name : configProperties.keySet()) {
 				if (properties.get(name) == null) {
 					properties.put(name, configProperties.get(name));
 				}
@@ -349,11 +347,11 @@ public final class AntUtil {
 
 	/**
 	 * Returns the list of URLs that define the custom classpath for the Ant build, or <code>null</code> if the global classpath is to be used.
-	 * 
+	 *
 	 * @param config
 	 *            launch configuration
 	 * @return a list of <code>URL</code>
-	 * 
+	 *
 	 * @throws CoreException
 	 *             if file does not exist, IO problems, or invalid format.
 	 */
@@ -373,7 +371,7 @@ public final class AntUtil {
 
 	/**
 	 * Returns the list of target names to run
-	 * 
+	 *
 	 * @param extraAttibuteValue
 	 *            the external tool's extra attribute value for the run targets key.
 	 * @return a list of target names
@@ -384,7 +382,7 @@ public final class AntUtil {
 
 	/**
 	 * Returns the list of Strings that were delimiter separated.
-	 * 
+	 *
 	 * @param delimString
 	 *            the String to be tokenized based on the delimiter
 	 * @param delim
@@ -397,7 +395,7 @@ public final class AntUtil {
 
 	/**
 	 * Returns an IFile with the given fully qualified path (relative to the workspace root). The returned IFile may or may not exist.
-	 * 
+	 *
 	 * @param fullPath
 	 *            the path to look up
 	 * @return the {@link IFile} which may or may not exist
@@ -446,9 +444,9 @@ public final class AntUtil {
 	/**
 	 * Returns the workspace file associated with the given path in the local file system, or <code>null</code> if none. If the path happens to be a
 	 * relative path, then the path is interpreted as relative to the specified parent file.
-	 * 
+	 *
 	 * Attempts to handle linked files; the first found linked file with the correct path is returned.
-	 * 
+	 *
 	 * @return file or <code>null</code>
 	 * @see org.eclipse.core.resources.IWorkspaceRoot#findFilesForLocation(IPath)
 	 */
@@ -459,7 +457,7 @@ public final class AntUtil {
 	/**
 	 * Migrates the classpath in the given configuration from the old format to the new format. The old format is not preserved. Instead, the default
 	 * classpath will be used. However, ANT_HOME settings are preserved.
-	 * 
+	 *
 	 * @param configuration
 	 *            a configuration to migrate
 	 * @throws CoreException
@@ -500,7 +498,7 @@ public final class AntUtil {
 
 	/**
 	 * Opens the given editor on the buildfile of the provided node and selects that node in the editor.
-	 * 
+	 *
 	 * @param page
 	 *            the page to open the editor in
 	 * @param editorDescriptor
@@ -540,7 +538,7 @@ public final class AntUtil {
 
 	/**
 	 * Opens an editor on the buildfile of the provided node and selects that node in the editor.
-	 * 
+	 *
 	 * @param page
 	 *            the page to open the editor in
 	 * @param node
@@ -639,9 +637,9 @@ public final class AntUtil {
 
 	/**
 	 * Returns if the given extension is a known extension to Ant i.e. a supported content type extension.
-	 * 
+	 *
 	 * @return true if the file extension is supported false otherwise
-	 * 
+	 *
 	 * @since 3.8
 	 */
 	public static boolean isKnownAntFile(File file) {
@@ -666,7 +664,7 @@ public final class AntUtil {
 
 	/**
 	 * Returns an array of build file names from the ant preference store
-	 * 
+	 *
 	 * @return an array of build file names
 	 * @since 3.6
 	 */
@@ -682,7 +680,7 @@ public final class AntUtil {
 
 	/**
 	 * Returns if the given file is a known build file name, based on the given names from the Ant &gt; Names preference
-	 * 
+	 *
 	 * @return true if the name of the file is given in the Ant &gt; Names preference, false otherwise
 	 * @since 3.6
 	 */
@@ -698,7 +696,7 @@ public final class AntUtil {
 
 	/**
 	 * A helper method to extract the build filename extensions as defined in the extender of the content-types extension-point.
-	 * 
+	 *
 	 * @return An empty array or list of filename extensions as specified in the content-types extension
 	 * @since 3.8
 	 */
@@ -719,7 +717,7 @@ public final class AntUtil {
 
 	/**
 	 * A helper method to construct a RegEx pattern out of the extensions
-	 * 
+	 *
 	 * @return A String that is a RegEx pattern representing the extensions
 	 * @since 3.8
 	 */
@@ -734,7 +732,7 @@ public final class AntUtil {
 	/**
 	 * Returns if the given file name is known as a build file. This method consults all of the known file extensions from the Ant-defined content
 	 * types
-	 * 
+	 *
 	 * @return <code>true</code> if the file name matches an Ant build file pattern <code>false</code> otherwise
 	 * @since 3.8
 	 */
