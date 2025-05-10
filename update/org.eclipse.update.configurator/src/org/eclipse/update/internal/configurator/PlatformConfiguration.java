@@ -501,7 +501,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 			} catch (CoreException e) {
 				Utils.log(e.getMessage());
 				Utils.log(e.getStatus());
-				throw new IOException(NLS.bind(Messages.cfig_unableToSave, (new String[] {url.toExternalForm()})));
+				throw new IOException(NLS.bind(Messages.cfig_unableToSave, (url.toExternalForm())));
 			}
 		} else {
 			// file protocol - do safe i/o
@@ -569,7 +569,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 				changeStamp = config.getDate().getTime();
 				config.setDirty(false);
 			} catch (CoreException e) {
-				throw new IOException(NLS.bind(Messages.cfig_unableToSave, (new String[] {cfigTmp.getAbsolutePath()})));
+				throw new IOException(NLS.bind(Messages.cfig_unableToSave, (cfigTmp.getAbsolutePath())));
 			}
 
 			// at this point we have old config (if existed) as "bak" and the
@@ -583,7 +583,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 				// case we will restart with the previous state.
 				Utils.log(Messages.PlatformConfiguration_cannotRenameTempFile);
 
-				throw new IOException(NLS.bind(Messages.cfig_unableToSave, (new String[] {cfigTmp.getAbsolutePath()})));
+				throw new IOException(NLS.bind(Messages.cfig_unableToSave, (cfigTmp.getAbsolutePath())));
 			}
 		}
 	}

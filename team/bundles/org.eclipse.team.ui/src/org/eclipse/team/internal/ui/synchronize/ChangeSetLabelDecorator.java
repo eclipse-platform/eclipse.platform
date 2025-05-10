@@ -51,7 +51,7 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 		if (element instanceof ChangeSetDiffNode) {
 			ChangeSet set = ((ChangeSetDiffNode)element).getSet();
 			if (set instanceof ActiveChangeSet && isDefaultActiveSet((ActiveChangeSet)set)) {
-				text = NLS.bind(TeamUIMessages.CommitSetDiffNode_0, new String[] { text });
+				text = NLS.bind(TeamUIMessages.CommitSetDiffNode_0, text);
 			}
 		}
 		return text;

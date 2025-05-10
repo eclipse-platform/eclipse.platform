@@ -34,7 +34,7 @@ public class SyncByteConverter {
 	public static byte[] setSlot(byte[] syncBytes, int slot, byte[] newBytes) throws TeamException {
 		int start = startOfSlot(syncBytes, slot);
 		if (start == -1) {
-			throw new TeamException(NLS.bind(Messages.SyncByteConverter_1, new String[] { new String(syncBytes) }));
+			throw new TeamException(NLS.bind(Messages.SyncByteConverter_1, new String(syncBytes)));
 		}
 		int end = startOfSlot(syncBytes, slot + 1);
 		int totalLength = start + 1 + newBytes.length;

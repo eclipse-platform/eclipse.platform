@@ -89,10 +89,10 @@ public class ContributedValueVariable extends StringVariable implements IValueVa
 							IValueVariableInitializer initializer = (IValueVariableInitializer)object;
 							initializer.initialize(this);
 						} else {
-							VariablesPlugin.logMessage(NLS.bind("Unable to initialize variable {0} - initializer must be an instance of IValueVariableInitializer.", new String[]{getName()}), null); //$NON-NLS-1$
+							VariablesPlugin.logMessage(NLS.bind("Unable to initialize variable {0} - initializer must be an instance of IValueVariableInitializer.", getName()), null); //$NON-NLS-1$
 						}
 					} catch (CoreException e) {
-						VariablesPlugin.logMessage(NLS.bind("Unable to initialize variable {0}",new String[]{getName()}), e); //$NON-NLS-1$
+						VariablesPlugin.logMessage(NLS.bind("Unable to initialize variable {0}", getName()), e); //$NON-NLS-1$
 					}
 				}
 			} else {

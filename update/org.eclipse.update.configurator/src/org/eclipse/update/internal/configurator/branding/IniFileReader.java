@@ -61,7 +61,7 @@ public class IniFileReader {
 
 	/**
 	 * Creates an INI file reader that can parse the contents into key,value pairs.
-	 * 
+	 *
 	 * @param featureId the unique identifier of the feature, must not be <code>null</code>
 	 * @param pluginId the unique identifier of the feature plug-in, must not be <code>null</code>
 	 * @param iniFilename the INI file name, must not be <code>null</code>
@@ -70,11 +70,11 @@ public class IniFileReader {
 	 */
 	public IniFileReader(String featureId, String pluginId, String iniFilename, String propertiesFilename, String mappingsFilename) {
 		super();
-		
+
 		if (featureId == null || pluginId == null || iniFilename == null) {
 			throw new IllegalArgumentException();
 		}
-			
+
 		this.featureId = featureId;
 		this.pluginId = pluginId;
 		this.iniFilename = iniFilename;
@@ -85,19 +85,19 @@ public class IniFileReader {
 	/**
 	 * Read the contents of the INI, properties, and mappings files.
 	 * Does nothing if the content has already been read and parsed.
-	 * 
+	 *
 	 * @return an <code>IStatus</code> indicating the success or failure
 	 * 	of reading and parsing the INI file content
 	 */
 	public IStatus load() {
 		if (ini != null)
 			return OK_STATUS;
-			
+
 		// attempt to locate the corresponding plugin
 		bundle = Utils.getBundle(pluginId);
 		if (bundle == null || bundle.getState() == Bundle.UNINSTALLED || bundle.getState() == Bundle.INSTALLED) {
 			bundle = null; // make it null for other test down the road
-			String message = NLS.bind(Messages.IniFileReader_MissingDesc, (new String[] { featureId }));
+			String message = NLS.bind(Messages.IniFileReader_MissingDesc, featureId);
 			return new Status(IStatus.ERROR, PID, 0, message, null);
 		}
 
@@ -106,10 +106,10 @@ public class IniFileReader {
 		IOException ioe = null;
 		iniURL = FileLocator.find(bundle, IPath.fromOSString(NLS_TAG).append(iniFilename), null);
 		if (iniURL == null) {
-			String message = NLS.bind(Messages.IniFileReader_OpenINIError, (new String[] { iniFilename }));
+			String message = NLS.bind(Messages.IniFileReader_OpenINIError, iniFilename);
 			return new Status(IStatus.ERROR, PID, 0, message, ioe);
 		}
-		
+
 		// Determine the properties file location
 		URL propertiesURL = null;
 		if (propertiesFilename != null && !propertiesFilename.isEmpty()) {
@@ -125,11 +125,11 @@ public class IniFileReader {
 		// OK to pass null properties and/or mapping file
 		return load(iniURL, propertiesURL, mappingsURL);
 	}
-		
+
 	/**
 	 * Returns the string value for the given key, or <code>null</code>.
 	 * The string value is NLS if requested.
-	 * 
+	 *
 	 * @return the string value for the given key, or <code>null</code>
 	 */
 	public String getString(String key, boolean doNls, Hashtable<String, String> runtimeMappings) {
@@ -144,7 +144,7 @@ public class IniFileReader {
 
 	/**
 	 * Returns a URL for the given key, or <code>null</code>.
-	 * 
+	 *
 	 * @return a URL for the given key, or <code>null</code>
 	 */
 	public URL getURL(String key) {
@@ -160,12 +160,12 @@ public class IniFileReader {
 		}
 		return url;
 	}
-	
+
 	/**
 	 * Returns a array of URL for the given key, or <code>null</code>. The
 	 * property value should be a comma separated list of urls, tokens for
 	 * which bundle cannot build an url will have a null entry.
-	 * 
+	 *
 	 * @param key name of the property containing the requested urls
 	 * @return a URL for the given key, or <code>null</code>
 	 * @since 3.0
@@ -192,7 +192,7 @@ public class IniFileReader {
 
 	/**
 	 * Returns the feature plugin label, or <code>null</code>.
-	 * 
+	 *
 	 * @return the feature plugin lable, or <code>null</code> if none.
 	 */
 	public String getFeaturePluginLabel() {
@@ -200,10 +200,10 @@ public class IniFileReader {
 			return null;
 		return bundle.getHeaders().get(Constants.BUNDLE_NAME);
 	}
-	
+
 	/**
 	 * Returns the provider name for this feature, or <code>null</code>.
-	 * 
+	 *
 	 * @return the provider name for this feature, or <code>null</code>
 	 */
 	public String getProviderName() {
@@ -211,15 +211,15 @@ public class IniFileReader {
 			return null;
 		return bundle.getHeaders().get(Constants.BUNDLE_VENDOR);
 	}
-	
+
 	/*
-	 * Returns a resource string corresponding to the given argument 
+	 * Returns a resource string corresponding to the given argument
 	 * value and bundle.
 	 * If the argument value specifies a resource key, the string
 	 * is looked up in the given resource bundle. If the argument does not
 	 * specify a valid key, the argument itself is returned as the
 	 * resource string. The key lookup is performed against the
-	 * specified resource bundle. If a resource string 
+	 * specified resource bundle. If a resource string
 	 * corresponding to the key is not found in the resource bundle
 	 * the key value, or any default text following the key in the
 	 * argument value is returned as the resource string.
@@ -245,7 +245,7 @@ public class IniFileReader {
 	 * @return the resource string
 	 */
 	public String getResourceString(String value, Hashtable<String, String> runtimeMappings) {
-		
+
 		if (value == null)
 			return null;
 		String s = value.trim();
@@ -281,7 +281,7 @@ public class IniFileReader {
 				}
 			}
 		}
-	
+
 		if (result.indexOf('{') != -1) {
 			// We test for the curly braces since due to NL issues we do not
 			// want to use MessageFormat unless we have to.
@@ -291,8 +291,8 @@ public class IniFileReader {
 				//ignore and return string without bound parameters
 			}
 		}
-		
-		return result;	
+
+		return result;
 	}
 
 	/*
@@ -307,7 +307,7 @@ public class IniFileReader {
 			ini.load(is);
 		} catch (IOException e) {
 			ini = null;
-			String message = NLS.bind(Messages.IniFileReader_ReadIniError, (new String[] { iniURL.toExternalForm() }));
+			String message = NLS.bind(Messages.IniFileReader_ReadIniError, iniURL.toExternalForm());
 			return new Status(IStatus.ERROR, PID, 0, message, e);
 		} finally {
 			try {
@@ -324,7 +324,7 @@ public class IniFileReader {
 				properties = new PropertyResourceBundle(is);
 			} catch (IOException e) {
 				properties = null;
-				String message = NLS.bind(Messages.IniFileReader_ReadPropError, (new String[] { propertiesURL.toExternalForm() }));
+				String message = NLS.bind(Messages.IniFileReader_ReadPropError, propertiesURL.toExternalForm());
 				return new Status(IStatus.ERROR, PID, 0, message, e);
 			} finally {
 				try {
@@ -343,7 +343,7 @@ public class IniFileReader {
 				bundle = new PropertyResourceBundle(is);
 			} catch (IOException e) {
 				bundle = null;
-				String message = NLS.bind(Messages.IniFileReader_ReadMapError, (new String[] { mappingsURL.toExternalForm() }));
+				String message = NLS.bind(Messages.IniFileReader_ReadMapError, mappingsURL.toExternalForm());
 				return new Status(IStatus.ERROR, PID, 0, message, e);
 			} finally {
 				try {
@@ -368,7 +368,7 @@ public class IniFileReader {
 			}
 		}
 		mappings = mappingsList.toArray(new String[mappingsList.size()]);
-		
+
 		return OK_STATUS;
 	}
 }

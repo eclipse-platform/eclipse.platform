@@ -231,9 +231,9 @@ public class SubscriberRefreshSchedule {
 		if (changeCount == 0) {
 			text.append(TeamUIMessages.RefreshSchedule_7);
 		} else if (changeCount == 1) {
-			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesSingular, new String[] { Integer.toString(changeCount) }));
+			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesSingular, Integer.toString(changeCount)));
 		} else {
-			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesPlural, new String[] { Integer.toString(changeCount) }));
+			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesPlural, Integer.toString(changeCount)));
 		}
 		return text.toString();
 	}
@@ -261,7 +261,7 @@ public class SubscriberRefreshSchedule {
 		} else {
 			unit = (hours ? TeamUIMessages.RefreshSchedule_11 : TeamUIMessages.RefreshSchedule_12);
 		}
-		return NLS.bind(TeamUIMessages.RefreshSchedule_13, new String[] { Long.toString(minutes), unit });
+		return NLS.bind(TeamUIMessages.RefreshSchedule_13, Long.toString(minutes), unit);
 	}
 
 	public IRefreshable getRefreshable() {

@@ -169,7 +169,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	public String getName() {
 		IFileRevision rev = getAdapter(IFileRevision.class);
 		if (rev != null)
-			return NLS.bind(TeamUIMessages.nameAndRevision, new String[] { rev.getName(), rev.getContentIdentifier()});
+			return NLS.bind(TeamUIMessages.nameAndRevision, rev.getName(), rev.getContentIdentifier());
 		IFileState state = getAdapter(IFileState.class);
 		if (state != null)
 			return state.getName() +  " " + DateFormat.getInstance().format(new Date(state.getModificationTime())) ; //$NON-NLS-1$

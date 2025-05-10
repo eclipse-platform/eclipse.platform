@@ -773,7 +773,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		if (viewSite != null && syncMode != null) {
 			viewSite.getActionBars().getStatusLineManager().setMessage(
 					NLS.bind(TeamUIMessages.SynchronizeView_statusLine,
-							new String[] { description, syncMode }));
+							description, syncMode));
 		}
 	}
 

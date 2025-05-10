@@ -76,7 +76,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 			if (!isContentsCached()) {
 				// The cache may have been cleared if someone held
 				// on to the storage too long
-				throw new TeamException(NLS.bind(Messages.CachedResourceVariant_0, new String[] { getCachePath() }));
+				throw new TeamException(NLS.bind(Messages.CachedResourceVariant_0, getCachePath()));
 			}
 			return getCachedContents();
 		}
@@ -102,7 +102,9 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 				String charSet = TeamPlugin.getCharset(getName(), contents);
 				return charSet;
 			} catch (IOException e) {
-				throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.FAILED_DESCRIBING_CONTENTS, NLS.bind(Messages.CachedResourceVariant_1, new String[] { getFullPath().toString() }), e));
+				throw new TeamException(
+						new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.FAILED_DESCRIBING_CONTENTS,
+								NLS.bind(Messages.CachedResourceVariant_1, getFullPath().toString()), e));
 			}
 		}
 	}

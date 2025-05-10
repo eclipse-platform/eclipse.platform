@@ -85,17 +85,14 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 			}
 		} else {
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_2,
-					new String[] { TAG_TEAM_CONTENT_PROVIDER,
-							id == null ? "" : id })); //$NON-NLS-1$
+					TAG_TEAM_CONTENT_PROVIDER, id == null ? "" : id)); //$NON-NLS-1$
 		}
 		if (modelProviderId == null)
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_1,
-					new String[] { ATT_MODEL_PROVIDER_ID,
-							TAG_TEAM_CONTENT_PROVIDER, id == null ? "" : id })); //$NON-NLS-1$
+					ATT_MODEL_PROVIDER_ID, TAG_TEAM_CONTENT_PROVIDER, id == null ? "" : id)); //$NON-NLS-1$
 		if (contentExtensionId == null)
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_1,
-					new String[] { ATT_CONTENT_EXTENSION_ID,
-							TAG_TEAM_CONTENT_PROVIDER, id == null ? "" : id })); //$NON-NLS-1$
+					ATT_CONTENT_EXTENSION_ID, TAG_TEAM_CONTENT_PROVIDER, id == null ? "" : id)); //$NON-NLS-1$
 	}
 
 	protected void fail(String reason) throws CoreException {
@@ -167,7 +164,8 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 		try {
 			return getParentPreferences().nodeExists(getPreferenceName());
 		} catch (BackingStoreException e) {
-			TeamUIPlugin.log(IStatus.ERROR, NLS.bind("Error accessing team content preference store for {0}", new String[] { getModelProviderId() }), e);  //$NON-NLS-1$
+			TeamUIPlugin.log(IStatus.ERROR,
+					NLS.bind("Error accessing team content preference store for {0}", getModelProviderId()), e); //$NON-NLS-1$
 			return false;
 		}
 	}
@@ -193,7 +191,8 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 		try {
 			internalGetPreferences().flush();
 		} catch (BackingStoreException e) {
-			TeamUIPlugin.log(IStatus.ERROR, NLS.bind("Error flushing team content preference store for {0}", new String[] { getModelProviderId() }), e);  //$NON-NLS-1$
+			TeamUIPlugin.log(IStatus.ERROR,
+					NLS.bind("Error flushing team content preference store for {0}", getModelProviderId()), e); //$NON-NLS-1$
 		}
 	}
 
