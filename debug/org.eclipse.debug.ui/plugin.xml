@@ -3363,7 +3363,7 @@ M4 = Platform-specific fourth key
          point="org.eclipse.ui.genericeditor.icons">
       <icon
             contentType="org.eclipse.debug.core.launch"
-            icon="icons/full/obj16/launchConfiguration.png">
+            icon="icons/full/obj16/launchConfiguration.svg">
       </icon>
    </extension>
    <extension
