@@ -29,5 +29,5 @@ public class WordViewerCreator implements IViewerCreator {
 		return new WordMergeViewer(parent, config);
 	}
 
-	
+
 }

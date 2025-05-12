@@ -40,11 +40,11 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * This class is the plug-in runtime class for the 
+ * This class is the plug-in runtime class for the
  * <code>"org.eclipse.compare.xml"</code> plug-in.
  */
 public final class XMLPlugin extends AbstractUIPlugin {
-	
+
 	public static final String PLUGIN_ID= "org.eclipse.compare.examples.xml"; //$NON-NLS-1$
 
 	private static final String ID_MAPPING_EXTENSION_POINT= "idMapping"; //$NON-NLS-1$
@@ -57,7 +57,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 	private static final String MAPPING_ID_SOURCE_BODY= "body"; //$NON-NLS-1$
 	private static final String ORDERED_ELEMENT_NAME= "ordered"; //$NON-NLS-1$
 	private static final String ORDERED_SIGNATURE_ATTRIBUTE= "signature"; //$NON-NLS-1$
-	
+
 	public static final String DEFAULT_PREFIX = "XML"; //$NON-NLS-1$
 	public static final String IMAGE_TYPE_PREFIX = "xml_"; //$NON-NLS-1$
 	public static final String IMAGE_TYPE_ORDERED_SUFFIX = "_ordered"; //$NON-NLS-1$
@@ -65,19 +65,19 @@ public final class XMLPlugin extends AbstractUIPlugin {
 	public static final String IDMAP_PREFIX = "idmap"; //$NON-NLS-1$
 	public static final char IDMAP_SEPARATOR = '*';
 	public static final char IDMAP_FIELDS_SEPARATOR = '!';
-	
+
 	public static final String ORDERED_PREFERENCE_NAME = "ordered"; //$NON-NLS-1$
 	public static final char ORDERED_FIELDS_SEPARATOR = IDMAP_FIELDS_SEPARATOR;
-	
+
 	private static XMLPlugin fgXMLPlugin;
 	private IPreferenceStore fPrefStore;
-	
+
 	private HashMap fIdMapsInternal;
 	private HashMap fIdMaps;
 	private HashMap fIdExtensionToName;
 	private HashMap fOrderedElementsInternal;
 	private HashMap fOrderedElements;
-	
+
 	private final ListenerList fViewers= new ListenerList();
 
 
@@ -86,7 +86,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 	 * structure creators, content merge viewers, and structure merge viewers
 	 * contributed to this plug-in's extension points.
 	 * <p>
-	 * Note that instances of plug-in runtime classes are automatically created 
+	 * Note that instances of plug-in runtime classes are automatically created
 	 * by the platform in the course of plug-in activation.
 	 */
 	public XMLPlugin() {
@@ -94,11 +94,11 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		Assert.isTrue(fgXMLPlugin == null);
 		fgXMLPlugin= this;
 	}
-	
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		
+
 		CompareUI.removeAllStructureViewerAliases(DEFAULT_PREFIX);
 		initPrefStore();
 		CompareUI.registerImageDescriptor(IMAGE_TYPE_PREFIX + XMLStructureCreator.TYPE_ELEMENT, getImageDescriptor("obj16/element_obj.gif")); //$NON-NLS-1$
@@ -107,11 +107,11 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		CompareUI.registerImageDescriptor(IMAGE_TYPE_PREFIX + XMLStructureCreator.TYPE_ELEMENT + IMAGE_TYPE_ORDERED_SUFFIX, getImageDescriptor("obj16/element_ordered_obj.gif")); //$NON-NLS-1$
 		registerExtensions();
 	}
-		
+
 	protected ImageDescriptor getImageDescriptor(String relativePath) {
-		
+
 		//URL installURL= getDescriptor().getInstallURL();
-		
+
 		URL installURL= fgXMLPlugin.getBundle().getEntry("/"); //$NON-NLS-1$
 		if (installURL != null) {
 			try {
@@ -135,7 +135,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Reads the Preference Store associated with XMLPlugin and initializes ID Mappings.
-	 */	
+	 */
 	public void initPrefStore() {
 		fIdMaps = new HashMap();
 		fIdExtensionToName= new HashMap();
@@ -162,7 +162,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 					CompareUI.addStructureViewerAlias(DEFAULT_PREFIX, IdMapExtension);
 				}
 			}
-			
+
 			if (fIdMaps.containsKey(IdMapName)) {
 				HashMap Mappings = (HashMap) fIdMaps.get(IdMapName);
 				Mappings.put(IdMapSignature,IdMapAttribute);
@@ -174,7 +174,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 			start = end+1;
 			end = IdMapPrefValue.indexOf(IDMAP_SEPARATOR,end+1);
 		}
-		
+
 		fOrderedElements= new HashMap();
 		String OrderedPrefValue= fPrefStore.getString(ORDERED_PREFERENCE_NAME);
 		StringTokenizer orderedTokens= new StringTokenizer(OrderedPrefValue, (Character.valueOf(ORDERED_FIELDS_SEPARATOR)).toString());
@@ -192,7 +192,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		}
 
 	}
-	
+
 	/*
 	 * Updates the user Id Mappings, the IdExtensionToName mappings and refreshes the preference store.
 	 * @param IdMap the new Id Mappings
@@ -232,7 +232,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		}
 		fPrefStore.setValue(IDMAP_PREFERENCE_NAME,IdMapPrefValue.toString());
 		//fPrefStore.setValue(IDMAP_PREFERENCE_NAME,"");
-		
+
 		//stores OrderedElements
 		if (OrderedElements != null) {
 			fOrderedElements= OrderedElements;
@@ -259,15 +259,15 @@ public final class XMLPlugin extends AbstractUIPlugin {
 			}
 		}
 	}
-	
+
 	public HashMap getIdMaps() {
 		return fIdMaps;
 	}
-	
+
 	public HashMap getIdMapsInternal() {
 		return fIdMapsInternal;
 	}
-	
+
 	public HashMap getIdExtensionToName() {
 		return fIdExtensionToName;
 	}
@@ -286,7 +286,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 	 */
 	private void registerExtensions() {
 		IExtensionRegistry registry= Platform.getExtensionRegistry();
-		
+
 		// collect all Id Mappings
 		IConfigurationElement[] idmaps= registry.getConfigurationElementsFor(PLUGIN_ID, ID_MAPPING_EXTENSION_POINT);
 		fIdMapsInternal = new HashMap();
@@ -335,7 +335,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 					ext_name= ext_name.toLowerCase();
 					fIdExtensionToName.put(ext_name,idmap_name);
 					CompareUI.addStructureViewerAlias(DEFAULT_PREFIX, ext_name);
-				}				
+				}
 			}
 		}
 	}
@@ -350,7 +350,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 			return window.getShell();
 		return null;
 	}
-	
+
 	public static IWorkbenchWindow getActiveWorkbenchWindow() {
 		IWorkbenchWindow window= PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		if (window == null) {
@@ -387,16 +387,16 @@ public final class XMLPlugin extends AbstractUIPlugin {
 				return;
 			}
 		}
-	}	
-	
+	}
+
 	public static void log(Throwable e) {
 		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
-	
+
 	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
-	
+
 	public static String getPluginId() {
 		return getDefault().getBundle().getSymbolicName();
 	}

@@ -32,22 +32,22 @@ import org.eclipse.core.runtime.IStatus;
  * The status message must be passed over as StatusInfo object and can be
  * an error, warning or ok. The OK button is enabled or disabled depending
  * on the status.
- */ 
+ */
 public abstract class StatusDialog extends Dialog {
-	
+
 	private Button fOkButton;
 	private MessageLine fStatusLine;
 	private IStatus fLastStatus;
 	private String fTitle;
 	private Image fImage;
-	
+
 	/*
 	 * Creates an instane of a status dialog.
 	 */
 	public StatusDialog(Shell parent) {
 		super(parent);
 	}
-	
+
 	/*
 	 * Specifies whether status line appears to the left of the buttons (default)
 	 * or above them.
@@ -57,8 +57,8 @@ public abstract class StatusDialog extends Dialog {
 	 */
 	public void setStatusLineAboveButtons(boolean aboveButtons) {
 		// empty default implementation
-	}	
-	
+	}
+
 	/*
 	 * Update the dialog's status line to reflect the given status.
 	 * It is save to call this method before the dialog has been opened.
@@ -67,10 +67,10 @@ public abstract class StatusDialog extends Dialog {
 		fLastStatus= status;
 		if (fStatusLine != null && !fStatusLine.isDisposed()) {
 			updateButtonsEnableState(status);
-			StatusUtil.applyToStatusLine(fStatusLine, status);	
+			StatusUtil.applyToStatusLine(fStatusLine, status);
 		}
 	}
-	
+
 	/*
 	 * Returns the last status.
 	 */
@@ -87,7 +87,7 @@ public abstract class StatusDialog extends Dialog {
 		if (fOkButton != null && !fOkButton.isDisposed())
 			fOkButton.setEnabled(!status.matches(IStatus.ERROR));
 	}
-	
+
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
@@ -114,7 +114,7 @@ public abstract class StatusDialog extends Dialog {
 		fOkButton= createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
-	
+
 	@Override
 	protected Control createButtonBar(Composite parent) {
 		Composite composite= new Composite(parent, SWT.NULL);
@@ -124,7 +124,7 @@ public abstract class StatusDialog extends Dialog {
 		layout.marginWidth= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		fStatusLine= new MessageLine(composite);
 		fStatusLine.setAlignment(SWT.LEFT);
 		fStatusLine.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -133,7 +133,7 @@ public abstract class StatusDialog extends Dialog {
 		super.createButtonBar(composite);
 		return composite;
 	}
-	
+
 	/**
 	 * Sets the title for this dialog.
 	 * @param title the title.
@@ -154,6 +154,6 @@ public abstract class StatusDialog extends Dialog {
 		Shell shell= getShell();
 		if ((shell != null) && !shell.isDisposed())
 			shell.setImage(fImage);
-	}	
-	
+	}
+
 }

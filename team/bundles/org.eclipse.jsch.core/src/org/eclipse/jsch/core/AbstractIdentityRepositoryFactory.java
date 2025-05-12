@@ -26,7 +26,7 @@ public abstract class AbstractIdentityRepositoryFactory{
    * <code>com.jcraft.com.jsch.IdentityRepository</code>. The ssh client will
    * retrieve public keys from it, ask for signing data with a private key
    * included in it.
-   * 
+   *
    * @return an instance of <code>IdentityRepository</code>
    */
   public abstract IdentityRepository create();

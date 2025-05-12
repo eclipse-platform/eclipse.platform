@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -36,5 +36,5 @@ public class Policy{
       return monitor;
     return SubMonitor.convert(monitor, ticks);
   }
-  
+
 }

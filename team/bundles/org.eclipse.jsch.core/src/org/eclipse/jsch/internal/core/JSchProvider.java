@@ -32,7 +32,7 @@ import com.jcraft.jsch.*;
  * @since 1.0
  */
 class JSchProvider implements IJSchService {
-  
+
   private static JSchProvider instance;
 
   @Override
@@ -45,15 +45,15 @@ class JSchProvider implements IJSchService {
     if(JSchCorePlugin.getPlugin().isNeedToLoadKeys()){
       JSchCorePlugin.getPlugin().loadPrivateKeys();
     }
-    
+
     return Utils.createSession(JSchCorePlugin.getPlugin().getJSch(), username, host, port);
   }
-  
+
   @Override
   public Session createSession(IJSchLocation location, UserInfo uinfo) throws JSchException {
 
     Session session=createSession(location.getHost(), location.getPort(), location.getUsername());
-    
+
     if(uinfo==null){
       IUserAuthenticator authenticator=getPluggedInAuthenticator();
       if(authenticator==null)
@@ -62,34 +62,34 @@ class JSchProvider implements IJSchService {
     }
     if(uinfo!=null)
       session.setUserInfo(uinfo);
-    
+
     return session;
   }
-  
+
   public Session createSession(IJSchLocation location) throws JSchException {
     return createSession(location, null);
   }
-  
+
   @Override
   public void connect(Session session, int timeout,
       IProgressMonitor monitor) throws JSchException{
     session.setSocketFactory(new ResponsiveSocketFactory(monitor, timeout));
-    
+
     UserInfo ui=session.getUserInfo();
-    
+
     if(ui!=null && (ui instanceof UserInfoImpl))
       ((UserInfoImpl)ui).aboutToConnect();
-    
+
     try{
       session.connect();
     }
-    catch(java.lang.ArrayIndexOutOfBoundsException e){  
+    catch(java.lang.ArrayIndexOutOfBoundsException e){
       // TODO This catch clause has been added to work around
       // Bug 217980 and will be deleted in the future.
       throw new JSchException("invalid server's version string");//$NON-NLS-1$
     }
     catch(JSchException e){
-      
+
       // Try again since the previous prompt may have obtained
       // the proper credential from the user.
       // This logic had been implemented in org.eclipse.team.internal.ccvs.ssh2.JSchSession#getSession.
@@ -106,16 +106,16 @@ class JSchProvider implements IJSchService {
         connect(session, timeout, monitor);
         return;
       }
-      
+
       if(session.isConnected())
         session.disconnect();
       throw e;
     }
-    
+
     if(ui!=null && (ui instanceof UserInfoImpl))
       ((UserInfoImpl)ui).connectionMade();
   }
-  
+
   @Override
   public Proxy getProxyForHost(String host, String proxyType) {
     return Utils.getProxyForHost(host, proxyType);
@@ -140,7 +140,7 @@ class JSchProvider implements IJSchService {
       new JSchException(e.getMessage());
     }
   }
-  
+
   /**
    * Search for an instance of IUserAuthenticator provided from other plug-in.
    * @see org.eclipse.jsch.internal.ui.authenticator.WorkbenchUserAuthenticator
@@ -159,12 +159,12 @@ class JSchProvider implements IJSchService {
               IStatus.ERROR,
               NLS
                   .bind(
-                      "User autheticator {0} is missing required fields", (new Object[] {extension.getUniqueIdentifier()})), null);//$NON-NLS-1$ 
+                      "User autheticator {0} is missing required fields", (new Object[] {extension.getUniqueIdentifier()})), null);//$NON-NLS-1$
       return null;
     }
     try{
       IConfigurationElement config=configs[0];
-      return (IUserAuthenticator)config.createExecutableExtension("run");//$NON-NLS-1$ 
+      return (IUserAuthenticator)config.createExecutableExtension("run");//$NON-NLS-1$
     }
     catch(CoreException ex){
       JSchCorePlugin
@@ -172,11 +172,11 @@ class JSchProvider implements IJSchService {
               IStatus.ERROR,
               NLS
                   .bind(
-                      "Unable to instantiate user authenticator {0}", (new Object[] {extension.getUniqueIdentifier()})), ex);//$NON-NLS-1$ 
+                      "Unable to instantiate user authenticator {0}", (new Object[] {extension.getUniqueIdentifier()})), ex);//$NON-NLS-1$
       return null;
     }
   }
-  
+
   @Override
   public JSch getJSch(){
     return JSchCorePlugin.getPlugin().getJSch();
@@ -185,7 +185,7 @@ class JSchProvider implements IJSchService {
   private boolean isAuthenticationFailure(JSchException ee){
     return ee.getMessage().equals("Auth fail"); //$NON-NLS-1$
   }
-  
+
   private boolean hasPromptExceededTimeout(Session session){
     if(session.getUserInfo()==null || !(session.getUserInfo() instanceof UserInfoImpl))
       return false;

@@ -38,9 +38,9 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
   private long endTime;
   private boolean prompting;
   private final long timeout;
-  
+
   private int reuse=0;
-  
+
   UserInfoImpl(IJSchLocation location, IUserAuthenticator authenticator, long timeout){
     this.location=location;
     this.username=location.getUsername();
@@ -126,7 +126,7 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
   public boolean promptPassword(String message){
     try{
       startTimer();
-      
+
       String _password=promptSecret(message, true);
       if(_password!=null){
         password=_password;
@@ -157,7 +157,7 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
     }
     try{
       startTimer();
-      
+
       if(attemptCount==0&&password!=null&&prompt.length==1
           &&prompt[0].trim().equalsIgnoreCase("password:")){ //$NON-NLS-1$
         // Return the provided password the first time but always prompt on subsequent tries
@@ -202,7 +202,7 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
       location.setPassword(password);
     }
   }
-  
+
   private synchronized void startTimer(){
     prompting=true;
     startTime=System.currentTimeMillis();
@@ -212,7 +212,7 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
     prompting=false;
     endTime=System.currentTimeMillis();
   }
-  
+
   public long getLastDuration(){
     return Math.max(0, endTime-startTime);
   }
@@ -223,7 +223,7 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
     }
     return false;
   }
-  
+
   public boolean isPrompting(){
     return prompting;
   }
@@ -231,7 +231,7 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
   public synchronized int incReuse(){
     return reuse++;
   }
-  
+
   String getUsername(){
     return username;
   }

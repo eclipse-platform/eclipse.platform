@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -27,7 +27,7 @@ public class Messages extends NLS{
   public static String JSchRepositoryLocation_73;
   public static String JSchRepositoryLocation_74;
   public static String JSchRepositoryLocation_75;
-  
+
   static{
     // load message values from bundle file
     NLS.initializeMessages(BUNDLE_NAME, Messages.class);
