@@ -34,11 +34,11 @@ import com.jcraft.jsch.Session;
 
 
 /**
- * 
+ *
  * @since 1.0
  */
 public class Utils{
-  
+
   /* should have at least one element */
   private static final String[] PREFERRED_AUTH_METHODS=new String[] {
       "gssapi-with-mic", "publickey", "password", "keyboard-interactive"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -46,7 +46,7 @@ public class Utils{
   public static String getDefaultAuthMethods(){
     return getDefaultMethods(PREFERRED_AUTH_METHODS);
   }
-  
+
   private static final String[] PREFERRED_KEX_METHODS=new String[] {
     "diffie-hellman-group1-sha1",          //$NON-NLS-1$
     "diffie-hellman-group14-sha1",         //$NON-NLS-1$
@@ -57,7 +57,7 @@ public class Utils{
   public static String getDefaultKEXMethods(){
     return getDefaultMethods(PREFERRED_KEX_METHODS);
   }
-  
+
   private static final String[] PREFERRED_MAC_METHODS=new String[] {
     "hmac-md5",      //$NON-NLS-1$
     "hmac-sha1",     //$NON-NLS-1$
@@ -69,7 +69,7 @@ public class Utils{
   public static String getDefaultMACMethods(){
     return getDefaultMethods(PREFERRED_MAC_METHODS);
   }
-  
+
   private static String getDefaultMethods(String[] methods){
     String defaultValue = methods[0];
     for(int i = 1; i < methods.length; i++){
@@ -129,13 +129,13 @@ public class Utils{
     Session session=jsch.getSession(username, hostname, port);
     setProxy(session);
     Hashtable<String, String> config=new Hashtable<>();
-    config.put("PreferredAuthentications", //$NON-NLS-1$ 
+    config.put("PreferredAuthentications", //$NON-NLS-1$
         getEnabledPreferredAuthMethods());
-    config.put("kex", //$NON-NLS-1$ 
+    config.put("kex", //$NON-NLS-1$
         getEnabledPreferredKEXMethods());
-    config.put("mac.c2s", //$NON-NLS-1$ 
+    config.put("mac.c2s", //$NON-NLS-1$
         getEnabledPreferredMACMethods());
-    config.put("mac.s2c", //$NON-NLS-1$ 
+    config.put("mac.s2c", //$NON-NLS-1$
         getEnabledPreferredMACMethods());
     session.setConfig(config);
     return session;
@@ -222,7 +222,7 @@ public class Utils{
     }
     return proxy;
   }
-  
+
   public static void migrateSSH2Preferences() {
     Preferences preferences = JSchCorePlugin.getPlugin().getPluginPreferences();
     if(!preferences.getBoolean(IConstants.PREF_HAS_MIGRATED_SSH2_PREFS)){
@@ -230,7 +230,7 @@ public class Utils{
       migrateSSH2Preferences(InstanceScope.INSTANCE.getNode("")); //$NON-NLS-1$
     }
   }
-  
+
   public static void migrateSSH2Preferences(org.osgi.service.prefs.Preferences node) {
     try{
       if(node.nodeExists("org.eclipse.team.cvs.ssh2")){ //$NON-NLS-1$
@@ -253,7 +253,7 @@ public class Utils{
       // do nothing
     }
   }
-  
+
   public static String getEnabledPreferredAuthMethods(){
     IPreferencesService service = Platform.getPreferencesService();
     return service.getString(JSchCorePlugin.ID,
@@ -277,7 +277,7 @@ public class Utils{
     return service.getString(JSchCorePlugin.ID,
         IConstants.PREF_PREFERRED_AUTHENTICATION_METHODS_ORDER, getDefaultAuthMethods(), null);
   }
-  
+
   public static void setEnabledPreferredAuthMethods(String methods, String order){
     IPreferencesService service=Platform.getPreferencesService();
     service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
@@ -302,13 +302,13 @@ public class Utils{
     return service.getString(JSchCorePlugin.ID,
         IConstants.PREF_PREFERRED_KEYEXCHANGE_METHODS, getDefaultKEXMethods(), null);
   }
-  
+
   public static String getKEXMethodsOrder(){
     IPreferencesService service = Platform.getPreferencesService();
     return service.getString(JSchCorePlugin.ID,
         IConstants.PREF_PREFERRED_KEYEXCHANGE_METHODS_ORDER, getDefaultKEXMethods(), null);
   }
-  
+
   public static void setEnabledPreferredKEXMethods(String methods, String order){
     IPreferencesService service=Platform.getPreferencesService();
     service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
@@ -316,19 +316,19 @@ public class Utils{
     service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
         IConstants.PREF_PREFERRED_KEYEXCHANGE_METHODS_ORDER, order);
   }
-  
+
   public static String getEnabledPreferredMACMethods(){
     IPreferencesService service = Platform.getPreferencesService();
     return service.getString(JSchCorePlugin.ID,
         IConstants.PREF_PREFERRED_MAC_METHODS, getDefaultMACMethods(), null);
   }
-  
+
   public static String getMACMethodsOrder(){
     IPreferencesService service = Platform.getPreferencesService();
     return service.getString(JSchCorePlugin.ID,
         IConstants.PREF_PREFERRED_MAC_METHODS_ORDER, getDefaultMACMethods(), null);
   }
-  
+
   public static void setEnabledPreferredMACMethods(String methods, String order){
     IPreferencesService service=Platform.getPreferencesService();
     service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(

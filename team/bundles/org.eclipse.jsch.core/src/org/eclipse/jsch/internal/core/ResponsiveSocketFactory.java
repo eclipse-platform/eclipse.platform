@@ -69,7 +69,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
     socket.setSoTimeout(timeout);
     return socket;
   }
-  
+
   /**
    * Helper method that will time out when making a socket connection.
    * This is required because there is no way to provide a timeout value
@@ -77,7 +77,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
    * timeout at all.
    */
   private Socket createSocket(final String host, final int port, int timeout, IProgressMonitor monitor) throws UnknownHostException, IOException {
-    
+
     // Start a thread to open a socket
     final Socket[] socket = new Socket[] { null };
     final Exception[] exception = new Exception[] {null };
@@ -99,7 +99,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
       }
     });
     thread.start();
-    
+
     // Wait the appropriate number of seconds
     if (timeout == 0) timeout = DEFAULT_TIMEOUT;
     for (int i = 0; i < timeout; i++) {
@@ -141,14 +141,14 @@ public class ResponsiveSocketFactory implements SocketFactory {
     }
     return socket[0];
   }
-  
+
   /* private */  Socket internalCreateSocket(final String host, final int port)
       throws UnknownHostException, IOException{
     Class<?> proxyClass = getProxyClass();
     if (proxyClass != null) {
       // We need to disable proxy support for the socket
       try{
-        
+
         // Obtain the value of the NO_PROXY static field of the proxy class
         Field field = proxyClass.getField("NO_PROXY"); //$NON-NLS-1$
         Object noProxyObject = field.get(null);
@@ -181,11 +181,11 @@ public class ResponsiveSocketFactory implements SocketFactory {
       catch(InvocationTargetException e){
         JSchCorePlugin.log(IStatus.ERROR, NLS.bind("An internal error occurred while connecting to {0}", host), e); //$NON-NLS-1$
       }
-      
+
     }
     return new Socket(host, port);
   }
-  
+
   private synchronized Class<?> getProxyClass() {
     if (hasProxyClass && proxyClass == null) {
       try{

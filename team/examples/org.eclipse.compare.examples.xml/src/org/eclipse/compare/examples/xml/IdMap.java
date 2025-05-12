@@ -79,22 +79,22 @@ public class IdMap {
 		fExtension= extension.toLowerCase();
 		fOrdered= ordered;
 	}
-	
+
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof IdMap))
 			return false;
-			
+
 		IdMap idmap= (IdMap) object;
 
 		if (idmap == this)
-			return true;		
+			return true;
 
 		return
 			idmap.getName().equals(fName) &&
 			idmap.getMappings().equals(fMappings);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return fName.hashCode() ^ fMappings.hashCode();
@@ -103,7 +103,7 @@ public class IdMap {
 	public void setName(String name) {
 		fName = name;
 	}
-	
+
 	public String getName() {
 		return fName;
 	}
@@ -111,7 +111,7 @@ public class IdMap {
 	public void setMappings(Vector mappings) {
 		fMappings = mappings;
 	}
-	
+
 	public Vector getMappings() {
 		return fMappings;
 	}
@@ -119,15 +119,15 @@ public class IdMap {
 	public void setInternal(boolean bool) {
 		fInternal = bool;
 	}
-	
+
 	public boolean isInternal() {
 		return fInternal;
 	}
-	
+
 	public void setExtension(String extension) {
 		fExtension= extension;
 	}
-	
+
 	public String getExtension() {
 		return fExtension;
 	}

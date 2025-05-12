@@ -44,7 +44,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Abstract class that caches any remote contents in local so that external 
+ * Abstract class that caches any remote contents in local so that external
  * tools can be used to show a comparison.
  */
 public abstract class AbstractMergeViewer extends Viewer {
@@ -108,14 +108,14 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return false;
 	}
-	
+
 	protected File getFileForSingleSide() throws CoreException {
 		File file = getFileForLeft();
 		if (file != null && file.exists())
 			return file;
 		return getFileForRight();
 	}
-	
+
 	protected File getFileForRight() throws CoreException {
 		if (rightFile != null)
 			return rightFile;
@@ -147,7 +147,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return null;
 	}
-	
+
 	protected File getResultFile() throws IOException {
 		if (resultFile != null)
 			return resultFile;
@@ -157,7 +157,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 		resultFile.delete();
 		return resultFile;
 	}
-	
+
 	protected boolean hasResultFile() {
 		return resultFile != null;
 	}
@@ -198,7 +198,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 
 	protected ICompareInput getCompareInput() {
 		if (input instanceof ICompareInput) {
-			return (ICompareInput) input;	
+			return (ICompareInput) input;
 		}
 		return null;
 	}
@@ -214,7 +214,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return null;
 	}
-	
+
 	protected IFile getEclipseFile(Object element) {
 		if (element instanceof IResourceProvider) {
 			IResourceProvider rp = (IResourceProvider) element;
@@ -235,7 +235,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return null;
 	}
-	
+
 	protected IEditableContent getSaveTarget() {
 		IEditableContent left = getEditableLeft();
 		IEditableContent right = getEditableRight();
@@ -247,30 +247,30 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return null;
 	}
-	
+
 	private IEditableContent getEditableLeft() {
 		ICompareInput compareInput = getCompareInput();
 		if (compareInput != null) {
 			ITypedElement left = compareInput.getLeft();
 			if (left instanceof IEditableContent && configuration.isLeftEditable()) {
 				return (IEditableContent) left;
-			}	
-		}	
+			}
+		}
 		return null;
 	}
-	
+
 	private IEditableContent getEditableRight() {
 		ICompareInput compareInput = getCompareInput();
 		if (compareInput != null) {
 			ITypedElement right = compareInput.getRight();
 			if (right instanceof IEditableContent && configuration.isRightEditable()) {
 				return (IEditableContent) right;
-				
-			}	
-		}	
+
+			}
+		}
 		return null;
 	}
-	
+
 	protected byte[] asBytes(File file) throws IOException {
 		try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();

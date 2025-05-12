@@ -16,7 +16,7 @@ package org.eclipse.jsch.core;
 /**
  * This interface abstracts the password store.  The given password
  * will be stored to via this interface.
- * 
+ *
  * This interface is intended to be implemented by clients.
  * @since 1.1
  */
@@ -26,14 +26,14 @@ public interface IPasswordStore{
    * @param location location string helper
    */
   public void clear(IJSchLocation location);
-  
+
   /**
    * This method will check if the password is cached or not.
    * @param location location string helper
    * @return whether the password is cached.
    */
   public boolean isCached(IJSchLocation location);
-  
+
   /**
    * The new password "location.getPassword()" will be
    * cached.

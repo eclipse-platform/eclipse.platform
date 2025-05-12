@@ -30,9 +30,9 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 
 	public ChooseMatcherDropDownAction(XMLStructureViewer viewer) {
 		fViewer = viewer;
-		setText(XMLCompareMessages.ChooseMatcherDropDownAction_text); 
+		setText(XMLCompareMessages.ChooseMatcherDropDownAction_text);
 		setImageDescriptor(XMLPlugin.getDefault().getImageDescriptor("obj16/smartmode_co.gif")); //$NON-NLS-1$
-		setToolTipText(XMLCompareMessages.ChooseMatcherDropDownAction_tooltip); 
+		setToolTipText(XMLCompareMessages.ChooseMatcherDropDownAction_tooltip);
 		setMenuCreator(this);
 	}
 
@@ -75,7 +75,7 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 			String idmap_name = (String)iter_idmaps.next();
 			userIdMapsAL.add(idmap_name);
 		}
-		
+
 		HashMap OrderedElements= plugin.getOrderedElements();
 		Set keySetOrdered= OrderedElements.keySet();
 		for (Iterator iter_orderedElements= keySetOrdered.iterator(); iter_orderedElements.hasNext();) {
@@ -90,7 +90,7 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 		for (Object userIdA : userIdMapsA) {
 			addActionToMenu(menu, new SelectMatcherAction((String) userIdA, fViewer));
 		}
-		
+
 		return menu;
 	}
 

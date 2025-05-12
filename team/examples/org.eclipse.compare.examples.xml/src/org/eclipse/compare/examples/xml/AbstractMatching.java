@@ -34,13 +34,13 @@ public abstract class AbstractMatching {
 	Vector fNLeft;
 	Vector fNRight;
 	Vector fMatches;
-	
+
 	/* methods used for match */
 
 	/* finds all the leaves of a tree and puts them in a vector */
 	protected void findLeaves(XMLNode root, ArrayList<XMLNode> leaves) {
 		if (isLeaf(root)) {
-			leaves.add(root);			
+			leaves.add(root);
 		} else {
 			Object[] children = root.getChildren();
 			for (Object child : children) {
@@ -67,7 +67,7 @@ public abstract class AbstractMatching {
 			}
 		}
 	}
-	
+
 	/* counts # of nodes in tree including root */
 	protected int countNodes(XMLNode root) {
 		if (root == null) return 0;
@@ -87,7 +87,7 @@ public abstract class AbstractMatching {
 			i++;
 		return i;
 	}
-	
+
 	/* returns index of node y in fNRight */
 	protected int indexOfRN (XMLNode y) {
 		int j= 0;
@@ -102,41 +102,41 @@ public abstract class AbstractMatching {
 	}
 
 	protected class XMLComparator implements IRangeComparator {
-	
+
 		private final Object[] fXML_elements;
-	
+
 		public XMLComparator(Object[] xml_elements) {
 			fXML_elements= xml_elements;
 		}
-	
+
 		@Override
 		public int getRangeCount() {
 			return fXML_elements.length;
 		}
-	
+
 		@Override
 		public boolean rangesEqual(
 			int thisIndex,
 			IRangeComparator other_irc,
 			int otherIndex) {
-			
+
 			if (other_irc instanceof XMLComparator) {
 				XMLComparator other= (XMLComparator) other_irc;
 				//return ((XMLNode)fXML_elements[thisIndex]).subtreeEquals(other.getXML_elements()[otherIndex]);
-				
+
 				//ordered compare of subtrees
 				//boolean result= ((XMLNode)fXML_elements[thisIndex]).subtreeEquals(other.getXML_elements()[otherIndex]);
-				
+
 				//taking ids into account
 				boolean sameId= false;
 				XMLNode thisNode= (XMLNode)fXML_elements[thisIndex];
-				XMLNode otherNode= (XMLNode)other.getXML_elements()[otherIndex]; 
+				XMLNode otherNode= (XMLNode)other.getXML_elements()[otherIndex];
 				if ( thisNode.usesIDMAP() && otherNode.usesIDMAP() ) {
 					if ( otherNode.getOrigId().equals(thisNode.getOrigId()) ) {
 						sameId= true;
 					}
 				}
-				
+
 				//unordered compare of subtrees
 				// TODO The dist method is order dependent but should not be
 				int distance= dist(thisNode, otherNode);
@@ -144,7 +144,7 @@ public abstract class AbstractMatching {
 			}
 			return false;
 		}
-	
+
 		@Override
 		public boolean skipRangeComparison(
 			int length,
@@ -152,23 +152,23 @@ public abstract class AbstractMatching {
 			IRangeComparator other) {
 			return false;
 		}
-	
+
 		public Object[] getXML_elements() {
 			return fXML_elements;
 		}
-	
+
 	}
 
 	/* represents a matching between a node in the Left tree and a node in the Right tree */
 	static class Match {
 		public XMLNode fx;
 		public XMLNode fy;
-		
+
 		Match(XMLNode x, XMLNode y) {
 			fx = x;
-			fy = y;	
+			fy = y;
 		}
-		
+
 		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof Match) {
@@ -179,10 +179,10 @@ public abstract class AbstractMatching {
 			return false;
 		}
 	}
-	
+
 	protected int handleRangeDifferencer(Object[] xc_elements, Object[] yc_elements, ArrayList<Match> DTMatching, int distance) {
 		RangeDifference[] differences= RangeDifferencer.findDifferences(new XMLComparator(xc_elements), new XMLComparator(yc_elements));
-		
+
 		int cur_pos_left= 0;
 		int cur_pos_right= 0;
 		for (RangeDifference rd : differences) {
@@ -239,7 +239,7 @@ public abstract class AbstractMatching {
 //			else
 //				cur_pos_right= cur_pos_greater;
 		}
-		
+
 		for (int i= cur_pos_left; i < xc_elements.length; i++) {
 			//distance += fDT[indexOfLN( (XMLNode)xc_elements[cur_pos_left])][indexOfRN( (XMLNode)yc_elements[cur_pos_right])];
 			//DTMatching.addAll(fDT_Matchings[index_left][index_right]);
@@ -247,7 +247,7 @@ public abstract class AbstractMatching {
 			cur_pos_left++;
 			cur_pos_right++;
 		}
-		
+
 		return distance;
 	}
 
@@ -260,7 +260,7 @@ public abstract class AbstractMatching {
 		int index_x= indexOfLN(x);
 		int index_y= indexOfRN(y);
 		if (fDT[index_x][index_y] != NO_ENTRY) return fDT[index_x][index_y];
-		
+
 		if (isLeaf(x) && isLeaf(y)) {
 			if (x.getXMLType() == XMLStructureCreator.TYPE_ELEMENT) {
 				if ( x.getSignature().equals(y.getSignature()) ) {
@@ -308,6 +308,6 @@ public abstract class AbstractMatching {
 		}
 		return ret;
 	}
-	
+
 	abstract int handleXandYnotLeaves(XMLNode x, XMLNode y);
 }

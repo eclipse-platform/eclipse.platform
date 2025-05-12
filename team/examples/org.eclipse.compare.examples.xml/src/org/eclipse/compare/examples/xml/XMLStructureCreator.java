@@ -56,11 +56,11 @@ import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 public class XMLStructureCreator implements IStructureCreator {
 
 	protected static final boolean DEBUG_MODE= false;
-	
-	public static final String DEFAULT_NAME= XMLCompareMessages.XMLStructureCreator_pluginname; 
 
-	public static final String USE_UNORDERED= XMLCompareMessages.XMLStructureCreator_unordered; 
-	public static final String USE_ORDERED= XMLCompareMessages.XMLStructureCreator_ordered; 
+	public static final String DEFAULT_NAME= XMLCompareMessages.XMLStructureCreator_pluginname;
+
+	public static final String USE_UNORDERED= XMLCompareMessages.XMLStructureCreator_unordered;
+	public static final String USE_ORDERED= XMLCompareMessages.XMLStructureCreator_ordered;
 	public static final String DEFAULT_IDMAP= USE_ORDERED;
 
 	public static final String TYPE_ELEMENT= "element"; //$NON-NLS-1$
@@ -74,8 +74,8 @@ public class XMLStructureCreator implements IStructureCreator {
 	public static final String SIGN_ELEMENT= SIGN_ENCLOSING + TYPE_ELEMENT + SIGN_ENCLOSING;
 	public static final String SIGN_TEXT= SIGN_ENCLOSING + TYPE_TEXT + SIGN_ENCLOSING;
 	public static final String SIGN_ATTRIBUTE= SIGN_ENCLOSING + TYPE_ATTRIBUTE + SIGN_ENCLOSING;
-	
-	public static final String IDMAP_UNORDERED= XMLCompareMessages.XMLStructureCreator_idmap_unordered; 
+
+	public static final String IDMAP_UNORDERED= XMLCompareMessages.XMLStructureCreator_idmap_unordered;
 	public static final char ID_SEPARATOR= '<';
 	public static final char ID_TYPE_BODY= '<';
 
@@ -107,7 +107,7 @@ public class XMLStructureCreator implements IStructureCreator {
 		}
 
 		// DocumentHandler methods
-		
+
 		/* Processing instruction. */
 		@Override
 		public void processingInstruction(String target, String data) {
@@ -579,7 +579,7 @@ public class XMLStructureCreator implements IStructureCreator {
 		IStreamContentAccessor sca= (IStreamContentAccessor) input;
 
 		try {
-			// Input parsed with parser.parse(new InputSource(sca.getContents));	
+			// Input parsed with parser.parse(new InputSource(sca.getContents));
 
 			String contents= readString(sca);
 			if (contents == null)
@@ -644,7 +644,7 @@ public class XMLStructureCreator implements IStructureCreator {
 			try {
 				bca.setContent(contents.getBytes(encoding));
 			} catch (UnsupportedEncodingException e) {
-				bca.setContent(contents.getBytes());	
+				bca.setContent(contents.getBytes());
 			}
 		}
 	}

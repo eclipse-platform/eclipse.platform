@@ -80,7 +80,7 @@ public interface IUserAuthenticator{
    * @param location The repository location to authenticate the user for or <code>null</code>
    * if this authentication is not for a CVS repository location.
    * @param userInfo The object to place user validation information into.
-   * @param message An optional message to display if, e.g., previous authentication failed. 
+   * @param message An optional message to display if, e.g., previous authentication failed.
    */
   public void promptForUserInfo(IJSchLocation location,
       IUserInfo userInfo, String message);
@@ -97,17 +97,17 @@ public interface IUserAuthenticator{
    * @param instruction A message for the instruction.
    * @param prompt Labels for text fields.
    * @param echo the array to show which fields are secret.
-   * @return the entered values, or null if the user canceled. 
+   * @return the entered values, or null if the user canceled.
    */
   public String[] promptForKeyboradInteractive(IJSchLocation location,
       String destination, String name, String instruction, String[] prompt,
       boolean[] echo);
 
   /**
-   * Prompts the authenticator for additional information regarding this authentication 
+   * Prompts the authenticator for additional information regarding this authentication
    * request. A default implementation of this method should return the <code>defaultResponse</code>,
    * whereas alternate implementations could prompt the user with a dialog.
-   * 
+   *
    * @param location the repository location for this authentication or <code>null</code>
    * if this authentication is not for a CVS repository location.
    * @param promptType one of the following values:
