@@ -117,7 +117,7 @@ public class DebugCoreProvider extends AbstractLaunchObjectProvider implements I
 		MDirectMenuItem delete = MMenuFactory.INSTANCE.createDirectMenuItem();
 		delete.setLabel(LaunchViewMessages.DebugCoreProvider_delete);
 		delete.setTooltip(LaunchViewMessages.DebugCoreProvider_deleteHint);
-		delete.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/delete_exc.png"); //$NON-NLS-1$ //$NON-NLS-2$
+		delete.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/delete_exc.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 		delete.setObject(new Object() {
 
 			@Execute

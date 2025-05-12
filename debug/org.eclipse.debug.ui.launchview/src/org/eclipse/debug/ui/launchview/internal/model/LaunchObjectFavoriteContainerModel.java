@@ -20,7 +20,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class LaunchObjectFavoriteContainerModel extends LaunchObjectContainerModel {
 
-	private static final Image FAV_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(LaunchViewBundleInfo.PLUGIN_ID, "icons/favorite_star.png") //$NON-NLS-1$
+	private static final Image FAV_ICON = AbstractUIPlugin.imageDescriptorFromPlugin(LaunchViewBundleInfo.PLUGIN_ID, "icons/favorite_star.svg") //$NON-NLS-1$
 			.createImage();
 
 	public LaunchObjectFavoriteContainerModel() {

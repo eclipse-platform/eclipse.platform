@@ -90,11 +90,11 @@ public class AntUIImages {
 		declareRegistryImage(IAntUIConstants.IMG_ANT_TASKDEF, OBJECT + "taskdef_obj.svg"); //$NON-NLS-1$
 		declareRegistryImage(IAntUIConstants.IMG_ANT_MACRODEF, OBJECT + "macrodef_obj.svg"); //$NON-NLS-1$
 		declareRegistryImage(IAntUIConstants.IMG_ANT_IMPORT, OBJECT + "import_obj.svg"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_ANT_ECLIPSE_RUNTIME_OBJECT, OBJECT + "eclipse16.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_ANT_ECLIPSE_RUNTIME_OBJECT, OBJECT + "eclipse16.svg"); //$NON-NLS-1$
 
 		declareRegistryImage(IAntUIConstants.IMG_WIZARD_BANNER, WIZ + "ant_wiz.png"); //$NON-NLS-1$
 		declareRegistryImage(IAntUIConstants.IMG_EXPORT_WIZARD_BANNER, WIZ + "export_ant_wiz.png"); //$NON-NLS-1$
-		declareRegistryImage(IAntUIConstants.IMG_TAB_ANT_TARGETS, LOCALTOOL + "ant_targets.png"); //$NON-NLS-1$
+		declareRegistryImage(IAntUIConstants.IMG_TAB_ANT_TARGETS, LOCALTOOL + "ant_targets.svg"); //$NON-NLS-1$
 
 		// Overlays
 		declareRegistryImage(IAntUIConstants.IMG_OVR_ERROR, OVR + "error_co.svg"); //$NON-NLS-1$
