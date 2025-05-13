@@ -55,6 +55,7 @@ public interface IHelpUIConstants {
 	public static final String IMAGE_CLOSE_HOT = "elcl16/close_hot.svg"; //$NON-NLS-1$
 	public static final String IMAGE_SYNC_TOC = "elcl16/synch_toc_nav.svg"; //$NON-NLS-1$
 	public static final String IMAGE_SHOW_ALL = "elcl16/show_all.svg"; //$NON-NLS-1$
+	public static final String IMAGE_SYNC_SEL = "elcl16/synced.svg"; //$NON-NLS-1$
 	public static final String IMAGE_DOC_OVR = "ovr16/doc_co.svg"; //$NON-NLS-1$
 	public static final String IMAGE_SCOPE_SET = "obj16/scopeset_obj.svg"; //$NON-NLS-1$
 	public static final String IMAGE_SEARCH_WIZ = "wizban/newsearch_wiz.svg"; //$NON-NLS-1$

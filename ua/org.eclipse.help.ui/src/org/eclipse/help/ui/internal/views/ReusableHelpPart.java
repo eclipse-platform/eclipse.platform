@@ -187,6 +187,8 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 
 	public IMenuManager menuManager;
 
+	private Action linkWithSelection;
+
 	private abstract class BusyRunAction extends Action {
 		public BusyRunAction(String name) {
 			super(name);
@@ -933,6 +935,20 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 				.getImageDescriptor(IHelpUIConstants.IMAGE_ADD_BOOKMARK));
 		if (actionBars != null && actionBars.getMenuManager() != null)
 			contributeToDropDownMenu(actionBars.getMenuManager());
+
+		linkWithSelection = new Action() {
+			@Override
+			public void run() {
+				BusyIndicator.showWhile(getControl().getDisplay(), () -> toggleSyncSel(linkWithSelection.isChecked()));
+			}
+		};
+		linkWithSelection.setImageDescriptor(HelpUIResources.getImageDescriptor(IHelpUIConstants.IMAGE_SYNC_SEL));
+		linkWithSelection.setToolTipText(Messages.LinkWithSelection_tooltip);
+		toolBarManager.insertBefore("back", linkWithSelection); //$NON-NLS-1$
+		if (!HelpBasePlugin.getActivitySupport().isUserCanToggleFiltering()) {
+			toolBarManager.insertBefore("back", new Separator()); //$NON-NLS-1$
+		}
+		linkWithSelection.setChecked(HelpBasePlugin.getActivitySupport().isLinkWithSelectionEnabled());
 
 		roleFilter = new RoleFilter();
 		uaFilter = new UAFilter();
@@ -1713,6 +1729,10 @@ public class ReusableHelpPart implements IHelpUIConstants, IActivityManagerListe
 			HelpPartPage page = (HelpPartPage) pages.get(i);
 			page.toggleRoleFilter();
 		}
+	}
+
+	private void toggleSyncSel(boolean checked) {
+		HelpBasePlugin.getActivitySupport().setLinkWithSelection(checked);
 	}
 
 	public void saveState(IMemento memento) {
