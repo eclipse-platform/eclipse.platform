@@ -57,6 +57,14 @@ public interface IHelpActivitySupport {
 
 	public void setFilteringEnabled(boolean enabled);
 
+	public default boolean isLinkWithSelectionEnabled() {
+		return true;
+	}
+
+	public default void setLinkWithSelection(boolean enabled) {
+		// does nothing by default
+	}
+
 	public boolean isUserCanToggleFiltering();
 
 	/**

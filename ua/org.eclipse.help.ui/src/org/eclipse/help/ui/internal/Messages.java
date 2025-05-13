@@ -147,6 +147,7 @@ public final class Messages extends NLS {
 	public static String RootScopePage_desc;
 	public static String AllTopicsPart_collapseAll_tooltip;
 	public static String AllTopicsPart_showAll_tooltip;
+	public static String LinkWithSelection_tooltip;
 	public static String BookmarksPart_savedTopics;
 	public static String BookmarksPart_delete;
 	public static String BookmarksPart_deleteAll;

@@ -19,6 +19,7 @@ import org.eclipse.help.IContext;
 import org.eclipse.help.IContextProvider;
 import org.eclipse.help.IHelpResource;
 import org.eclipse.help.internal.HelpPlugin;
+import org.eclipse.help.internal.base.HelpBasePlugin;
 import org.eclipse.help.ui.internal.IHelpUIConstants;
 import org.eclipse.help.ui.internal.Messages;
 import org.eclipse.jface.dialogs.IPageChangeProvider;
@@ -133,6 +134,9 @@ public class HelpView extends ViewPart implements IPartListener2, ISelectionChan
 		Display display = part.getSite().getShell().getDisplay();
 		Control c = display.getFocusControl();
 		if (c != null && c.isVisible() && !c.isDisposed()) {
+			if (!HelpBasePlugin.getActivitySupport().isLinkWithSelectionEnabled()) {
+				return;
+			}
 			IContextProvider provider = part.getAdapter(IContextProvider.class);
 			if (provider != null) {
 				reusableHelpPart.update(provider, null, part, c, false);
