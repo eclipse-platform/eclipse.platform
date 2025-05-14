@@ -8,11 +8,6 @@
             id="org.eclipse.debug.terminal.execFactory1"
             priority="100">
       </execFactory>
-      <execFactory
-            class="org.eclipse.debug.terminal.Pty4jExecFactory"
-            id="org.eclipse.debug.terminal.execFactory2"
-            priority="0">
-      </execFactory>
    </extension>
    <extension
          point="org.eclipse.debug.core.processFactories">
