@@ -5,7 +5,7 @@
          point="org.eclipse.debug.core.execFactories">
       <execFactory
             class="org.eclipse.debug.terminal.PtyExecFactory"
-            id="org.eclipse.debug.terminal.execFactory1"
+            id="org.eclipse.debug.terminal.execFactory"
             priority="100">
       </execFactory>
    </extension>
@@ -13,7 +13,7 @@
          point="org.eclipse.debug.core.processFactories">
       <processFactory
             class="org.eclipse.debug.terminal.PtyProcessFactory"
-            id="org.eclipse.debug.terminal.processFactory.cdt">
+            id="org.eclipse.debug.terminal.processFactory">
       </processFactory>
    </extension>
 
