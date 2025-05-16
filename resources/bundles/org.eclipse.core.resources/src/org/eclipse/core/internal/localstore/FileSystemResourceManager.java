@@ -683,7 +683,7 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		if (hasPrivateChanges)
 			getWorkspace().getMetaArea().writePrivateDescription(target);
 		//can't do anything if there's no description
-		if (!hasPublicChanges || (description == null))
+		if (!hasPublicChanges || (description == null) || description.isWorkspacePrivate())
 			return false;
 
 		//write the model to a byte array
@@ -938,9 +938,15 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 		if (creation) {
 			privateDescription = new ProjectDescription();
 			getWorkspace().getMetaArea().readPrivateDescription(target, privateDescription);
+			if (privateDescription.isWorkspacePrivate()) {
+				return privateDescription;
+			}
 			projectLocation = privateDescription.getLocationURI();
 		} else {
 			IProjectDescription description = ((Project) target).internalGetDescription();
+			if (description instanceof ProjectDescription impl && impl.isWorkspacePrivate()) {
+				return impl;
+			}
 			if (description != null && description.getLocationURI() != null) {
 				projectLocation = description.getLocationURI();
 			}
