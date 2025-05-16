@@ -23,6 +23,7 @@
 
   <properties>
     <skipAPIAnalysis>true</skipAPIAnalysis>
+    <tycho.source.skip>true</tycho.source.skip>
   </properties>
 
 </project>
