@@ -44,17 +44,22 @@ public class PropertyTesterDescriptor implements IPropertyTester {
 				null));
 		}
 		StringBuilder buffer= new StringBuilder(","); //$NON-NLS-1$
-		String properties= element.getAttribute(PROPERTIES);
-		if (properties == null) {
+		try {
+			String properties= element.getAttribute(PROPERTIES);
+			if (properties == null) {
+				throw new CoreException(new Status(IStatus.ERROR, PropertyTesterDescriptor.class,
+					IStatus.ERROR,
+					ExpressionMessages.PropertyTesterDescritpri_no_properties,
+					null));
+			}
+			for (int i= 0; i < properties.length(); i++) {
+				char ch= properties.charAt(i);
+				if (!Character.isWhitespace(ch))
+					buffer.append(ch);
+			}
+		} catch (final RuntimeException ex) {
 			throw new CoreException(new Status(IStatus.ERROR, PropertyTesterDescriptor.class,
-				IStatus.ERROR,
-				ExpressionMessages.PropertyTesterDescritpri_no_properties,
-				null));
-		}
-		for (int i= 0; i < properties.length(); i++) {
-			char ch= properties.charAt(i);
-			if (!Character.isWhitespace(ch))
-				buffer.append(ch);
+					IStatus.ERROR, ex.toString(), null));
 		}
 		buffer.append(',');
 		fProperties= buffer.toString();
