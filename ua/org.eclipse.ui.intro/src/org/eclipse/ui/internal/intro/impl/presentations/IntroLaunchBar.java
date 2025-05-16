@@ -16,10 +16,6 @@ package org.eclipse.ui.internal.intro.impl.presentations;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import jakarta.inject.Inject;
-
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.MElementContainer;
@@ -63,6 +59,10 @@ import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.config.IIntroURL;
 import org.eclipse.ui.intro.config.IntroURLFactory;
 import org.osgi.framework.FrameworkUtil;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
 
 /**
  * This class is responsible for creating the intro launch bar in the provided parent. It creates
@@ -393,15 +393,14 @@ public class IntroLaunchBar {
 			}
 		};
 		action.setToolTipText(Messages.IntroLaunchBar_restore_tooltip);
-		action.setImageDescriptor(ImageUtil.createImageDescriptor("full/etool16/restore_welcome.png")); //$NON-NLS-1$
+		action.setImageDescriptor(ImageUtil.createImageDescriptor("full/etool16/restore_welcome.svg")); //$NON-NLS-1$
 		// toolBarManager.add(closeAction);
 		toolBarManager.add(action);
 		toolBarManager.add(new Separator());
 		if (element == null)
 			return;
 		IntroLaunchBarShortcut[] shortcuts = element.getShortcuts();
-		for (int i = 0; i < shortcuts.length; i++) {
-			IntroLaunchBarShortcut shortcut = shortcuts[i];
+		for (IntroLaunchBarShortcut shortcut : shortcuts) {
 			addShortcut(shortcut, toolBarManager);
 		}
 	}
