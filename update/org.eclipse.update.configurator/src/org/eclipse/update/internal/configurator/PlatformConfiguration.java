@@ -122,7 +122,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 		// Retrieve install location with respect to given url if possible
 		try {
 			if (url != null && url.getProtocol().equals("file") && url.getPath().endsWith("configuration/org.eclipse.update/platform.xml")) {
-				installLocation = IPath.fromOSString(url.getPath()).removeLastSegments(3).toFile().toURL();
+				installLocation = IPath.fromOSString(url.getPath()).removeLastSegments(3).toFile().toURI().toURL();
 			}
 		} catch (Exception e) {
 			//
@@ -853,7 +853,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 						if (workingDir != null && workingDir.exists()) {
 							File[] backups = workingDir.listFiles((FileFilter) pathname -> pathname.isFile() && pathname.getName().endsWith(".xml"));
 							if (backups != null && backups.length > 0) {
-								URL backupUrl = backups[backups.length - 1].toURL();
+								URL backupUrl = backups[backups.length - 1].toURI().toURL();
 								config = parser.parse(backupUrl, installLocation);
 							}
 						}
@@ -914,7 +914,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 			if (base_path_Location == null) {
 				url = FileLocator.toFileURL(url);
 				File f = new File(url.getFile());
-				url = f.toURL();
+				url = f.toURI().toURL();
 			} else {
 				final String BASE = "platform:/base/";
 				final String CONFIG = "platform:/config/";
