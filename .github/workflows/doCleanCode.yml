@@ -1,0 +1,19 @@
+name: Perform Code Clean
+concurrency: 
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 2 * * *'
+
+jobs:
+  clean-code:
+    uses: eclipse-platform/eclipse.platform.releng.aggregator/.github/workflows/cleanCode.yml@master
+    with:
+      author: Eclipse Platform Bot <platform-bot@eclipse.org>
+      do-quickfix: false
+      do-cleanups: true
+      bundle-folders: ant/*/ debug/*/ resources/bundles/*/ runtime/bundles/*/ team/bundles/*/ ua/*/ update/*/ platform/*/
+    secrets:
+      token: ${{ secrets.PLATFORM_BOT_PAT }}
