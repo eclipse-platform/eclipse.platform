@@ -190,7 +190,7 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 				SelectionListener.widgetSelectedAdapter(e -> runTipAction(fCurrentTip.getActions().get(0))));
 
 		fMultiActionMenuButton = new Button(fMultiActionComposite, SWT.NONE);
-		fMultiActionMenuButton.setImage(DefaultTipManager.getImage("icons/popup_menu.png", resourceManager)); //$NON-NLS-1$
+		fMultiActionMenuButton.setImage(DefaultTipManager.getImage("icons/popup_menu.svg", resourceManager)); //$NON-NLS-1$
 		fMultiActionMenuButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> showActionMenu()));
 
 		fEmptyActionComposite = new Composite(actionComposite, SWT.NONE);
@@ -239,11 +239,11 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 	private Image getStartupItemImage(int startup) {
 		switch (startup) {
 		case 1:
-			return DefaultTipManager.getImage("icons/lightbulb.png", resourceManager); //$NON-NLS-1$
+			return DefaultTipManager.getImage("icons/lightbulb.svg", resourceManager); //$NON-NLS-1$
 		case 2:
-			return DefaultTipManager.getImage("icons/stop.png", resourceManager); //$NON-NLS-1$
+			return DefaultTipManager.getImage("icons/stop.svg", resourceManager); //$NON-NLS-1$
 		default:
-			return DefaultTipManager.getImage("icons/run_exc.png", resourceManager); //$NON-NLS-1$
+			return DefaultTipManager.getImage("icons/run_exc.svg", resourceManager); //$NON-NLS-1$
 		}
 	}
 

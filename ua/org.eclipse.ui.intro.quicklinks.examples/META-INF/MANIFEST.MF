@@ -9,3 +9,4 @@ Require-Bundle: org.eclipse.ui.intro;bundle-version="3.4.300",
  org.eclipse.ui.intro.universal;bundle-version="3.2.800",
  org.eclipse.ui.intro.quicklinks
 Bundle-Localization: plugin
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"
