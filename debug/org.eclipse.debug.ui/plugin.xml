@@ -3045,6 +3045,11 @@ M4 = Platform-specific fourth key
           icon="$nl$/icons/full/obj16/fldr_obj.svg"
           id="org.eclipse.debug.ui.workingSetOrganizer"/>
           <breakpointOrganizer
+                label="%BreakpointEnablement.label"
+                class="org.eclipse.debug.internal.ui.views.breakpoints.BreakpointEnablement"
+                icon="$nl$/icons/full/obj16/brkp_grp4.svg"
+                id="org.eclipse.debug.ui.breakpointEnablement"/>
+          <breakpointOrganizer
                 othersLabel="%BreakpointType.others"
                 label="%BreakpointType.label"
                 icon="$nl$/icons/full/obj16/brkp_type.svg"
