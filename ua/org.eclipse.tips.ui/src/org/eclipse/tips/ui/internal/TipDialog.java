@@ -110,7 +110,7 @@ public class TipDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell pNewShell) {
 		super.configureShell(pNewShell);
-		Image pluginImage = DefaultTipManager.getImage("icons/lightbulb.png", resourceManager); //$NON-NLS-1$
+		Image pluginImage = DefaultTipManager.getImage("icons/lightbulb.svg", resourceManager); //$NON-NLS-1$
 		if (pluginImage != null) {
 			pNewShell.setImage(pluginImage);
 		}

@@ -12,3 +12,4 @@ Export-Package: org.eclipse.tips.ui,
  org.eclipse.tips.ui.internal.util;x-friends:="org.eclipse.tips.tests"
 Automatic-Module-Name: org.eclipse.tips.ui
 Bundle-Vendor: %Bundle-Vendor
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"

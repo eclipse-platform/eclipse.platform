@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Shell;
  *    &lt;sourceContainerPresentation
  *          browserClass=&quot;org.eclipse.debug.internal.ui.sourcelookup.browsers.ProjectSourceContainerBrowser&quot;
  *          containerTypeID=&quot;org.eclipse.debug.core.containerType.project&quot;
- *          icon=&quot;icons/full/obj16/prj_obj.png&quot;
+ *          icon=&quot;icons/full/obj16/prj_obj.svg&quot;
  *          id=&quot;org.eclipse.debug.ui.containerPresentation.project&quot;&gt;
  *    &lt;/sourceContainerPresentation&gt;
  * &lt;/extension&gt;

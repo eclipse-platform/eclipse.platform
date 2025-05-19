@@ -37,7 +37,7 @@
       <!-- Open the Import Existing Project -->
       <command
             description="%importexistingproject.description"
-            icon="platform:/plugin/org.eclipse.ui/icons/full/wizban/import_wiz.png"
+            icon="platform:/plugin/org.eclipse.ui/icons/full/wizban/import_wiz.svg"
             id="org.eclipse.ui.file.import(importWizardId=org.eclipse.ui.wizards.import.ExternalProject)"
             label="%importexistingproject.label"
             resolution="standby">
@@ -46,7 +46,7 @@
       <!-- Cause all New XXX quicklinks to use the wizban/new_wiz image -->
       <override
             command="org.eclipse.ui.newWizard*"
-            icon="platform:/plugin/org.eclipse.ui/icons/full/wizban/new_wiz.png"
+            icon="platform:/plugin/org.eclipse.ui/icons/full/wizban/new_wiz.svg"
             theme="org.eclipse.ui.intro.universal.solstice">
       </override>
       
