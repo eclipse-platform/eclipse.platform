@@ -1,0 +1,15 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+	<title>brkp_grp</title>
+	<defs>
+		<image  width="17" height="16" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAQCAMAAADH72RtAAAAAXNSR0IB2cksfwAAAGBQTFRFAAAAPjsuU1BDVlNGUk9DPzwwW1lNyce/4+LbyMa+WlhMUk9DtLGnysi+sa+lUE1BUU9Csa6isK2hUE5BTUs+m5iMrquemZaKTUs+VlNGrKqewsC1q6mdPjsvVVJGUk9Dw+LY9wAAACB0Uk5TACG/274e4////+PD////v+D//9zA////vuP///8c272PXtXDAAAAQ0lEQVR4nGNkQAeMg0WEEQR+I4kwsoJFfiNEuBkZQeo+IkQEGME63yJERCBqXiBEWIFCjH9ZHiPZxfpfivHfYyzuAQDQgQsRSsLW3gAAAABJRU5ErkJggg=="/>
+		<image  width="17" height="16" id="img2" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAQCAMAAADH72RtAAAAAXNSR0IB2cksfwAAAGBQTFRFAAAAPjsuU1BDVlNGUk9DPzwwW1lNyce/4+LbyMa+WlhMUk9DtLGnysi+sa+lUE1BUU9Csa6isK2hUE5BTUs+m5iMrquemZaKTUs+VlNGrKqewsC1q6mdPjsvVVJGUk9Dw+LY9wAAACB0Uk5TACG/274e4////+PD////v+D//9zA////vuP///8c272PXtXDAAAAQ0lEQVR4nGNkQAeMg0WEEQR+I4kwsoJFfiNEuBkZQeo+IkQEGME63yJERCBqXiBEWIFCjH9ZHiPZxfpfivHfYyzuAQDQgQsRSsLW3gAAAABJRU5ErkJggg=="/>
+		<image  width="7" height="7" id="img3" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAMAAADzjKfhAAAAAXNSR0IB2cksfwAAAGBQTFRFAAAAHzZrM0h6N0t9M0l5IjVlPFCAnK/QtMfknK7QOk+AMEh6fJfDjanUepXBMEd4Lkd6ZozEZYvDLUZ5K0R3VHmzXofBU3ixK0J2MUl8aIi6dpjKGzdsMEZ4Mkh6MUZ4tWWvnQAAACB0Uk5TACG/274e4////+PD////v+D//9zA////vuP//xy+272RaLIbAAAALUlEQVR4nGNkYASB34yMrBCam5GRASQmAKRAtAiUzwpk/P/PzMjAKsHI+PcJAHywBmNVmJQJAAAAAElFTkSuQmCC"/>
+	</defs>
+	<style>
+	</style>
+	<g id="layer1">
+		<use id="Hue/Saturation 3 copy" href="#img1" x="-4" y="-7"/>
+		<use id="Hue/Saturation 3" href="#img2" x="0" y="0"/>
+		<use id="Hue/Saturation 1" href="#img3" x="1" y="8"/>
+	</g>
+</svg>
