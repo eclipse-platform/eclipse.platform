@@ -224,12 +224,12 @@ public class DebugPluginImages {
 		declareRegistryImage(IDebugUIConstants.IMG_PERSPECTIVE_DEBUG, VIEW + "debug_persp.svg"); //$NON-NLS-1$
 
 		//Wizard Banners
-		declareRegistryImage(IDebugUIConstants.IMG_WIZBAN_DEBUG, WIZBAN + "debug_wiz.png"); //$NON-NLS-1$
-		declareRegistryImage(IDebugUIConstants.IMG_WIZBAN_RUN, WIZBAN + "run_wiz.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_WIZBAN_IMPORT_BREAKPOINTS, WIZBAN + "import_brkpts_wizban.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_WIZBAN_EXPORT_BREAKPOINTS, WIZBAN + "export_brkpts_wizban.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_WIZBAN_IMPORT_CONFIGS, WIZBAN + "import_config_wizban.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_WIZBAN_EXPORT_CONFIGS, WIZBAN + "export_config_wizban.png"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_WIZBAN_DEBUG, WIZBAN + "debug_wiz.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_WIZBAN_RUN, WIZBAN + "run_wiz.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_WIZBAN_IMPORT_BREAKPOINTS, WIZBAN + "import_brkpts_wizban.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_WIZBAN_EXPORT_BREAKPOINTS, WIZBAN + "export_brkpts_wizban.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_WIZBAN_IMPORT_CONFIGS, WIZBAN + "import_config_wizban.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_WIZBAN_EXPORT_CONFIGS, WIZBAN + "export_config_wizban.svg"); //$NON-NLS-1$
 
 		// Overlays
 		declareRegistryImage(IDebugUIConstants.IMG_OVR_ERROR, OVR + "error.svg"); //$NON-NLS-1$
@@ -243,10 +243,10 @@ public class DebugPluginImages {
 		declareRegistryImage(IInternalDebugUIConstants.IMG_SRC_LOOKUP_MENU_ELCL,
 				IInternalDebugUIConstants.IMG_SRC_LOOKUP_MENU_DLCL, ELCL + "edtsrclkup_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_SRC_LOOKUP_TAB, ELCL + "edtsrclkup_co.svg"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ADD_SRC_LOC_WIZ, WIZBAN + "addsrcloc_wiz.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_EDIT_SRC_LOC_WIZ, WIZBAN + "edtsrclkup_wiz.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_ADD_SRC_DIR_WIZ, WIZBAN + "adddir_wiz.png"); //$NON-NLS-1$
-		declareRegistryImage(IInternalDebugUIConstants.IMG_EDIT_SRC_DIR_WIZ, WIZBAN + "editdir_wiz.png"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ADD_SRC_LOC_WIZ, WIZBAN + "addsrcloc_wiz.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_EDIT_SRC_LOC_WIZ, WIZBAN + "edtsrclkup_wiz.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ADD_SRC_DIR_WIZ, WIZBAN + "adddir_wiz.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_EDIT_SRC_DIR_WIZ, WIZBAN + "editdir_wiz.svg"); //$NON-NLS-1$
 
 		// launch configuration types
 		//try to get the images from the config types themselves, cache those that could not be found

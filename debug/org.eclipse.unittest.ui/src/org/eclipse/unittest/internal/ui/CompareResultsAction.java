@@ -38,7 +38,7 @@ public class CompareResultsAction extends Action {
 		setDescription(Messages.CompareResultsAction_description);
 		setToolTipText(Messages.CompareResultsAction_tooltip);
 
-		setImageDescriptor(Images.getImageDescriptor("elcl16/compare.png")); //$NON-NLS-1$
+		setImageDescriptor(Images.getImageDescriptor("elcl16/compare.svg")); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IUnitTestHelpContextIds.ENABLEFILTER_ACTION);
 		fView = view;
 	}

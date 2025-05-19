@@ -32,7 +32,7 @@ public class ShowStackTraceInConsoleViewAction extends Action {
 		setDescription(Messages.ShowStackTraceInConsoleViewAction_description);
 		setToolTipText(Messages.ShowStackTraceInConsoleViewAction_tooltip);
 
-		setImageDescriptor(Images.getImageDescriptor("elcl16/open_console.png")); //$NON-NLS-1$
+		setImageDescriptor(Images.getImageDescriptor("elcl16/open_console.svg")); //$NON-NLS-1$
 
 		fDelegate = null;
 	}

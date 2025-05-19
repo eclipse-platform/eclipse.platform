@@ -34,7 +34,7 @@
             locationURI="menu:help?before=tipsAndTricks">
          <command
                commandId="org.eclipse.tips.ide.command.open"
-               icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.png"
+               icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.svg"
                id="org.eclipse.tips.ide.tip.menu"
                label="%command.label"
                style="push"> variable="newtips">
@@ -48,7 +48,7 @@
                label="%toolbar.label">
             <command
                   commandId="org.eclipse.tips.ide.command.trim.open"
-                  icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.png"
+                  icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.svg"
                   id="org.eclipse.tips.ide.tip.tool"
                   label="%command.label.0"
                   style="push">
@@ -112,7 +112,7 @@
       <e4view
             category="org.eclipse.help.ui"
             class="org.eclipse.tips.ide.internal.TipPart"
-            icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.png"
+            icon="platform:/plugin/org.eclipse.tips.ui/icons/lightbulb.svg"
             id="org.eclipse.tips.ide.tipPart"
             name="%e4view.name"
             restorable="true">

@@ -33,7 +33,7 @@ public class ScrollLockAction extends Action {
 		super(Messages.ScrollLockAction_action_label);
 		fRunnerViewPart = viewer;
 		setToolTipText(Messages.ScrollLockAction_action_tooltip);
-		setImageDescriptor(Images.getImageDescriptor("elcl16/lock.png")); //$NON-NLS-1$
+		setImageDescriptor(Images.getImageDescriptor("elcl16/lock.svg")); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IUnitTestHelpContextIds.OUTPUT_SCROLL_LOCK_ACTION);
 		setChecked(false);
 	}

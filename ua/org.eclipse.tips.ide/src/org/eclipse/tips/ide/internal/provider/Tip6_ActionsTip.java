@@ -51,7 +51,7 @@ public class Tip6_ActionsTip extends Tip implements IHtmlTip {
 	@Override
 	public List<TipAction> getActions() {
 		TipAction tip1 = tip(Messages.Tip6_ActionsTip_tip_clock_title, Messages.Tip6_ActionsTip_tip_clock_message,
-				"icons/clock.png", () -> MessageDialog.openConfirm(null, //$NON-NLS-1$
+				"icons/clock.svg", () -> MessageDialog.openConfirm(null, //$NON-NLS-1$
 				getSubject(), DateFormat.getTimeInstance().format(Calendar.getInstance().getTime())));
 		TipAction tip2 = tip(Messages.Tip6_ActionsTip_tip_preferences_title,
 				Messages.Tip6_ActionsTip_tip_preferences_message, null, () -> {
@@ -63,7 +63,7 @@ public class Tip6_ActionsTip extends Tip implements IHtmlTip {
 			}
 		});
 		TipAction tip3 = tip(Messages.Tip6_ActionsTip_tip_dialog_title, Messages.Tip6_ActionsTip_tip_dialog_message,
-				"icons/asterisk.png", //$NON-NLS-1$
+				"icons/asterisk.svg", //$NON-NLS-1$
 				() -> MessageDialog.openConfirm(null, getSubject(), Messages.Tip6_ActionsTip_tip_dialog_result));
 		return List.of(tip1, tip2, tip3);
 	}

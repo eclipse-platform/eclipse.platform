@@ -29,7 +29,7 @@ public class ShowNextFailureAction extends Action {
 	 */
 	public ShowNextFailureAction(TestRunnerViewPart part) {
 		super(Messages.ShowNextFailureAction_label);
-		setImageDescriptor(Images.getImageDescriptor("elcl16/select_next.png")); //$NON-NLS-1$
+		setImageDescriptor(Images.getImageDescriptor("elcl16/select_next.svg")); //$NON-NLS-1$
 		setToolTipText(Messages.ShowNextFailureAction_tooltip);
 		fPart = part;
 	}

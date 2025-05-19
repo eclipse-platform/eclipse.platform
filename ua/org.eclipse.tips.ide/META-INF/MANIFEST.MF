@@ -19,3 +19,4 @@ Export-Package: org.eclipse.tips.ide.internal;x-internal:=true
 Bundle-Vendor: %Bundle-Vendor
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/org.eclipse.tips.ide.internal.TipsStartupService.xml
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"

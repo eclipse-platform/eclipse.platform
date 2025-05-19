@@ -1743,7 +1743,7 @@
          point="org.eclipse.debug.ui.launchGroups">
       <launchGroup
             label="%DebugLaunchGroup.label"
-            bannerImage="$nl$/icons/full/wizban/debug_wiz.png"
+            bannerImage="$nl$/icons/full/wizban/debug_wiz.svg"
             image="$nl$/icons/full/etool16/debug_exc.svg"
             mode="debug"
             id="org.eclipse.debug.ui.launchGroup.debug"
@@ -1751,7 +1751,7 @@
       </launchGroup>
       <launchGroup
             label="%RunLaunchGroup.label"
-            bannerImage="$nl$/icons/full/wizban/run_wiz.png"
+            bannerImage="$nl$/icons/full/wizban/run_wiz.svg"
             image="$nl$/icons/full/etool16/run_exc.svg"
             mode="run"
             id="org.eclipse.debug.ui.launchGroup.run"
@@ -1759,7 +1759,7 @@
       </launchGroup>
       <launchGroup
             label="%ProfileLaunchGroup.label"
-            bannerImage="$nl$/icons/full/wizban/profile_wiz.png"
+            bannerImage="$nl$/icons/full/wizban/profile_wiz.svg"
             image="$nl$/icons/full/etool16/profile_exc.svg"
             mode="profile"
             id="org.eclipse.debug.ui.launchGroup.profile"
