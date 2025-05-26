@@ -126,7 +126,7 @@ public class WorkspacePatcher extends Patcher {
 							// patch it and collect rejected hunks
 							List<String> result= apply(diff, file, true, failed);
 							if (result != null)
-								store(LineReader.createString(isPreserveLineDelimeters(), result), file, SubMonitor.convert(pm, workTicks));
+								store(LineReader.createString(isPreserveLineDelimiters(), result), file, SubMonitor.convert(pm, workTicks));
 							workTicks -= WORK_UNIT;
 							break;
 						case FilePatch2.DELETION :
@@ -137,7 +137,7 @@ public class WorkspacePatcher extends Patcher {
 							// patch it and collect rejected hunks
 							result= apply(diff, file, false, failed);
 							if (result != null)
-								store(LineReader.createString(isPreserveLineDelimeters(), result), file, SubMonitor.convert(pm, workTicks));
+								store(LineReader.createString(isPreserveLineDelimiters(), result), file, SubMonitor.convert(pm, workTicks));
 							workTicks -= WORK_UNIT;
 							break;
 						default:

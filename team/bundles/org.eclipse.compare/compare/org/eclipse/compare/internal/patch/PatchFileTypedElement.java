@@ -103,7 +103,7 @@ public class PatchFileTypedElement implements ITypedElement,
 			lines = result.getBeforeLines();
 		}
 		String contents = LineReader.createString(getPatcher()
-				.isPreserveLineDelimeters(), lines);
+				.isPreserveLineDelimiters(), lines);
 		String charSet = getCharset();
 		byte[] bytes = null;
 		if (charSet != null) {

@@ -440,7 +440,7 @@ public class LaunchConfigurationInfo {
 	 *             if an exception occurs creating the XML
 	 */
 	@SuppressWarnings("unchecked")
-	protected String getAsXML(String lineDelimeter) throws CoreException, IOException, ParserConfigurationException, TransformerException {
+	protected String getAsXML(String lineDelimiter) throws CoreException, IOException, ParserConfigurationException, TransformerException {
 		Document doc = LaunchManager.getDocument();
 		Element configRootElement = doc.createElement(LAUNCH_CONFIGURATION);
 		doc.appendChild(configRootElement);
@@ -488,7 +488,7 @@ public class LaunchConfigurationInfo {
 			configRootElement.appendChild(element);
 		}
 
-		return LaunchManager.serializeDocument(doc, lineDelimeter);
+		return LaunchManager.serializeDocument(doc, lineDelimiter);
 	}
 
 	/**

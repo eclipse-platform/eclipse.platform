@@ -698,7 +698,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	}
 
 	@Test
-	public void testSharedConfigurationLineDelimeters() throws CoreException {
+	public void testSharedConfigurationLineDelimiters() throws CoreException {
 		// we must test non-system-default separator
 		final String systemSeparator = System.lineSeparator();
 		final String nonSystemSeparator = "\n".equals(systemSeparator) ? "\r\n" : "\n";
