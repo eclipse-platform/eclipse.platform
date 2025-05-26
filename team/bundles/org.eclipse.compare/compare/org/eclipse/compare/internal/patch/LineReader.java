@@ -83,10 +83,10 @@ public class LineReader {
 	/*
 	 * Concatenates all strings found in the given List.
 	 */
-	public static String createString(boolean preserveLineDelimeters, List<String> lines) {
+	public static String createString(boolean preserveLineDelimiters, List<String> lines) {
 		StringBuilder sb = new StringBuilder();
 		Iterator<String> iter = lines.iterator();
-		if (preserveLineDelimeters) {
+		if (preserveLineDelimiters) {
 			while (iter.hasNext())
 				sb.append(iter.next());
 		} else {
