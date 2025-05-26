@@ -202,7 +202,7 @@ public class Hunk implements IHunk {
 					continue;
 				}
 				return false;
-			} else if (isDeletedDelimeter(controlChar, reverse)) {
+			} else if (isDeletedDelimiter(controlChar, reverse)) {
 				// deleted lines
 
 				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
@@ -235,7 +235,7 @@ public class Hunk implements IHunk {
 				// fails. In other words, all lines considered for deletion
 				// must be found one by one.
 				return false;
-			} else if (isAddedDelimeter(controlChar, reverse)) {
+			} else if (isAddedDelimiter(controlChar, reverse)) {
 
 				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
 					return false;
@@ -349,7 +349,7 @@ public class Hunk implements IHunk {
 				}
 				Assert.isTrue(false, "doPatch: context doesn't match"); //$NON-NLS-1$
 //					pos++;
-			} else if (isDeletedDelimeter(controlChar, reverse)) {
+			} else if (isDeletedDelimiter(controlChar, reverse)) {
 				// deleted lines
 				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
 					// context lines inside hunk don't match
@@ -371,7 +371,7 @@ public class Hunk implements IHunk {
 				contextLinesMatched = true;
 
 				lines.remove(pos);
-			} else if (isAddedDelimeter(controlChar, reverse)) {
+			} else if (isAddedDelimiter(controlChar, reverse)) {
 				// added lines
 				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
 					Assert.isTrue(false, "doPatch: context lines inside hunk don't match"); //$NON-NLS-1$
@@ -402,11 +402,11 @@ public class Hunk implements IHunk {
 		return getShift(reverse);
 	}
 
-	private boolean isDeletedDelimeter(char controlChar, boolean reverse) {
+	private boolean isDeletedDelimiter(char controlChar, boolean reverse) {
 		return (!reverse && controlChar == '-') || (reverse && controlChar == '+');
 	}
 
-	private boolean isAddedDelimeter(char controlChar, boolean reverse) {
+	private boolean isAddedDelimiter(char controlChar, boolean reverse) {
 		return (reverse && controlChar == '-') || (!reverse && controlChar == '+');
 	}
 
@@ -465,9 +465,9 @@ public class Hunk implements IHunk {
 			char c = line.charAt(0);
 			if (c == ' ') {
 				result.append(rest);
-			} else if (isDeletedDelimeter(c, reverse) && !isAfterState) {
+			} else if (isDeletedDelimiter(c, reverse) && !isAfterState) {
 				result.append(rest);
-			} else if (isAddedDelimeter(c, reverse) && isAfterState) {
+			} else if (isAddedDelimiter(c, reverse) && isAfterState) {
 				result.append(rest);
 			}
 		}

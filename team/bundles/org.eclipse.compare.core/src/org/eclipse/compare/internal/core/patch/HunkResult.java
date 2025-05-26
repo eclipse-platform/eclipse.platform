@@ -247,7 +247,7 @@ public class HunkResult {
 			}
 			// Only return the full context if we could apply the hunk
 			if (!problemFound)
-				return LineReader.createString(this.fDiffResult.isPreserveLineDelimeters(), lines);
+				return LineReader.createString(this.fDiffResult.isPreserveLineDelimiters(), lines);
 		}
 		return getHunk().getContents(afterState, getConfiguration().isReversed());
 	}

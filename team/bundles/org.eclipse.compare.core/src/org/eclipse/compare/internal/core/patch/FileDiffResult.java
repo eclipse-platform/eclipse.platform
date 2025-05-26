@@ -285,13 +285,13 @@ public class FileDiffResult implements IFilePatchResult {
 
 	@Override
 	public InputStream getOriginalContents() {
-		String contents = LineReader.createString(isPreserveLineDelimeters(), getBeforeLines());
+		String contents = LineReader.createString(isPreserveLineDelimiters(), getBeforeLines());
 		return asInputStream(contents, getCharset());
 	}
 
 	@Override
 	public InputStream getPatchedContents() {
-		String contents = LineReader.createString(isPreserveLineDelimeters(), getLines());
+		String contents = LineReader.createString(isPreserveLineDelimiters(), getLines());
 		return asInputStream(contents, getCharset());
 	}
 
@@ -300,7 +300,7 @@ public class FileDiffResult implements IFilePatchResult {
 		return this.charset;
 	}
 
-	public boolean isPreserveLineDelimeters() {
+	public boolean isPreserveLineDelimiters() {
 		return false;
 	}
 
