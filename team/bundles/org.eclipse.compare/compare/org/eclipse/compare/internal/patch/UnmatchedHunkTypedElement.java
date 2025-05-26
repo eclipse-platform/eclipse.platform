@@ -87,7 +87,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 			return new ByteArrayInputStream(getPatcher().getCachedContents(getDiff()));
 		// Otherwise return the after state of the diff result
 		List<String> lines = getHunkResult().getDiffResult().getAfterLines();
-		String content = LineReader.createString(getHunkResult().getDiffResult().isPreserveLineDelimeters(), lines);
+		String content = LineReader.createString(getHunkResult().getDiffResult().isPreserveLineDelimiters(), lines);
 		byte[] bytes = null;
 		if (getCharset() != null)
 			try {

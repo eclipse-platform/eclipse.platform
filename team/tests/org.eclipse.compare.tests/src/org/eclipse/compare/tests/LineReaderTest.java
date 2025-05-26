@@ -43,13 +43,13 @@ public class LineReaderTest  {
 			LineReader lr = new LineReader(reader);
 		List<String> inLines= lr.readLines();
 		assertThat(inLines).hasSize(3).satisfiesExactlyInAnyOrder(
-				first -> assertThat(convertLineDelimeters(first)).isEqualTo("[1]\n"),
-				second -> assertThat(convertLineDelimeters(second)).isEqualTo("[2]\n"),
-				third -> assertThat(convertLineDelimeters(third)).isEqualTo("[3]\n"));
+				first -> assertThat(convertLineDelimiters(first)).isEqualTo("[1]\n"),
+				second -> assertThat(convertLineDelimiters(second)).isEqualTo("[2]\n"),
+				third -> assertThat(convertLineDelimiters(third)).isEqualTo("[3]\n"));
 		}
 	}
 
-	private String convertLineDelimeters(Object object) {
+	private String convertLineDelimiters(Object object) {
 		String line = (String)object;
 		if (line.endsWith("\r\n"))
 			return line.substring(0, line.length() - 2) + "\n";
@@ -62,8 +62,8 @@ public class LineReaderTest  {
 			LineReader lr = new LineReader(reader);
 		List<String> inLines= lr.readLines();
 		assertThat(inLines).hasSize(3).satisfiesExactlyInAnyOrder(
-				first -> assertThat(convertLineDelimeters(first)).isEqualTo("[1]\n"),
-				second -> assertThat(convertLineDelimeters(second)).isEqualTo("[2]\n"),
+				first -> assertThat(convertLineDelimiters(first)).isEqualTo("[1]\n"),
+				second -> assertThat(convertLineDelimiters(second)).isEqualTo("[2]\n"),
 				third -> assertThat(third).isEqualTo("[3]"));
 		}
 	}

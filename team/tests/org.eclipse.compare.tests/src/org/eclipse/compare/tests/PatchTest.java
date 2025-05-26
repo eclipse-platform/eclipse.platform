@@ -529,7 +529,7 @@ public class PatchTest {
 
 			Object[] expected = expectedLines.toArray();
 
-			String resultString = LineReader.createString(patcher.isPreserveLineDelimeters(), inLines);
+			String resultString = LineReader.createString(patcher.isPreserveLineDelimiters(), inLines);
 			LineReader resultReader = new LineReader(new BufferedReader(new StringReader(resultString)));
 			Object[] result = resultReader.readLines().toArray();
 

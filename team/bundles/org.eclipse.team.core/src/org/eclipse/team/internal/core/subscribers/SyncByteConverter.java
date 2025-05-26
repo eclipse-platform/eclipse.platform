@@ -69,16 +69,16 @@ public class SyncByteConverter {
 	}
 
 	/**
-	 * Return the offset the the Nth delimeter from the given start index.
+	 * Return the offset the the Nth delimiter from the given start index.
 	 * @return int
 	 */
-	private static int getOffsetOfDelimeter(byte[] bytes, byte delimiter, int start, int n) {
+	private static int getOffsetOfDelimiter(byte[] bytes, byte delimiter, int start, int n) {
 		int count = 0;
 		for (int i = start; i < bytes.length; i++) {
 			if (bytes[i] == delimiter) count++;
 			if (count == n) return i;
 		}
-		// the Nth delimeter was not found
+		// the Nth delimiter was not found
 		return -1;
 	}
 
@@ -97,11 +97,11 @@ public class SyncByteConverter {
 			// make start -1 so that end determination will start at offset 0.
 			start = -1;
 		} else {
-			start = getOffsetOfDelimeter(bytes, delimiter, 0, index);
+			start = getOffsetOfDelimiter(bytes, delimiter, 0, index);
 			if (start == -1) return null;
 		}
 		// Find the ending index
-		int end = getOffsetOfDelimeter(bytes, delimiter, start + 1, 1);
+		int end = getOffsetOfDelimiter(bytes, delimiter, start + 1, 1);
 		// Calculate the length
 		int length;
 		if (end == -1 || includeRest) {

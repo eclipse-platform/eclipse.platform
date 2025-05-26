@@ -278,7 +278,7 @@ public class PreferenceFileHandler {
 		return isICEnabled;
 	}
 
-	public String getDelimeter() {
+	public String getDelimiter() {
 		return PREFERENCE_ENTRY_DELIMITER;
 	}
 
