@@ -136,7 +136,7 @@
          point="org.eclipse.debug.ui.launchGroups">
       <launchGroup
             label="%ExternalToolsLaunchGroup.label"
-            bannerImage="$nl$/icons/full/wizban/ext_tools_wiz.png"
+            bannerImage="$nl$/icons/full/wizban/ext_tools_wiz.svg"
             category="org.eclipse.ui.externaltools"
             image="$nl$/icons/full/obj16/external_tools.svg"
             mode="run"
@@ -145,7 +145,7 @@
       </launchGroup>
       <launchGroup
             label="%ExternalToolsLaunchGroup.label"
-            bannerImage="$nl$/icons/full/wizban/ext_tools_wiz.png"
+            bannerImage="$nl$/icons/full/wizban/ext_tools_wiz.svg"
             category="org.eclipse.ui.externaltools.builder"
             image="$nl$/icons/full/obj16/external_tools.svg"
             public="false"

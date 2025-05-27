@@ -34,8 +34,8 @@ public class CounterPanel extends Composite {
 	protected int fIgnoredCount;
 	protected int fAssumptionFailedCount;
 
-	private final Image fErrorIcon = Images.createImage("ovr16/error_ovr.png"); //$NON-NLS-1$
-	private final Image fFailureIcon = Images.createImage("ovr16/failed_ovr.png"); //$NON-NLS-1$
+	private final Image fErrorIcon = Images.createImage("ovr16/error_ovr.svg"); //$NON-NLS-1$
+	private final Image fFailureIcon = Images.createImage("ovr16/failed_ovr.svg"); //$NON-NLS-1$
 
 	/**
 	 * Constructs a CounterPanel object
