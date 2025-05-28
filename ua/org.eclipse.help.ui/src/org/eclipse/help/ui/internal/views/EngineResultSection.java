@@ -34,7 +34,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -158,9 +157,9 @@ public class EngineResultSection {
 		searchResults.setImage(ISharedImages.IMG_OBJS_ERROR_TSK, PlatformUI.getWorkbench().getSharedImages()
 				.getImage(ISharedImages.IMG_OBJS_ERROR_TSK));
 		searchResults.setImage(desc.getId(), desc.getIconImage());
-		Image grayedImage = getGrayedImage(desc.getIconImage());
-		searchResults.setImage(KEY_PREFIX_GRAYED + desc.getId(), grayedImage);
-		searchResults.addDisposeListener(e -> grayedImage.dispose());
+		Image disabledImage = new Image(desc.getIconImage().getDevice(), desc.getIconImage(), SWT.IMAGE_GRAY);
+		searchResults.setImage(KEY_PREFIX_GRAYED + desc.getId(), disabledImage);
+		searchResults.addDisposeListener(e -> disabledImage.dispose());
 		searchResults.addHyperlinkListener(new IHyperlinkListener() {
 
 			@Override
@@ -307,39 +306,6 @@ public class EngineResultSection {
 			sorter.sort(null, results);
 		}
 		return results;
-	}
-
-	/**
-	 * Returns a copy of the given image but grayed and half transparent.
-	 * This gives the icon a grayed/disabled look.
-	 *
-	 * @param image the image to gray
-	 * @return the grayed image
-	 */
-	private Image getGrayedImage(Image image) {
-		// first gray the image
-		Image temp = new Image(image.getDevice(), image, SWT.IMAGE_GRAY);
-		// then add alpha to blend it 50/50 with the background
-		ImageData data = temp.getImageData();
-		ImageData maskData = data.getTransparencyMask();
-		if (maskData != null) {
-			for (int y=0;y<maskData.height;++y) {
-				for (int x=0;x<maskData.width;++x) {
-					if (maskData.getPixel(x, y) == 0) {
-						// masked; set to transparent
-						data.setAlpha(x, y, 0);
-					}
-					else {
-						// not masked; set to translucent
-						data.setAlpha(x, y, 128);
-					}
-				}
-			}
-			data.maskData = null;
-		}
-		Image grayed = new Image(image.getDevice(), data);
-		temp.dispose();
-		return grayed;
 	}
 
 	void updateResults(boolean reflow) {
