@@ -149,7 +149,7 @@ public class TreeModelLabelProvider extends ColumnLabelProvider
 		}
 		Image image = fImageCache.get(descriptor);
 		if (image == null) {
-			image = new Image(getDisplay(), descriptor.getImageData());
+			image = descriptor.createImage();
 			fImageCache.put(descriptor, image);
 		}
 		return image;
