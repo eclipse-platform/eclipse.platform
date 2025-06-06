@@ -73,11 +73,13 @@ public final class AntLaunchingUtil {
 	 * @return a single-string representation of the strings or <code>null</code> if the array is empty.
 	 */
 	public static String combineStrings(String[] strings) {
-		if (strings.length == 0)
+		if (strings.length == 0) {
 			return null;
+		}
 
-		if (strings.length == 1)
+		if (strings.length == 1) {
 			return strings[0];
+		}
 
 		StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < strings.length - 1; i++) {
@@ -231,7 +233,7 @@ public final class AntLaunchingUtil {
 	private static String expandVariableString(String variableString, String invalidMessage) throws CoreException {
 		String expandedString = VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(variableString);
 		if (expandedString == null || expandedString.length() == 0) {
-			String msg = MessageFormat.format(invalidMessage, new Object[] { variableString });
+			String msg = MessageFormat.format(invalidMessage, variableString);
 			throw new CoreException(new Status(IStatus.ERROR, AntLaunching.PLUGIN_ID, 0, msg, null));
 		}
 		return expandedString;
