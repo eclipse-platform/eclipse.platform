@@ -47,7 +47,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	/**
 	 * Mark the scenario of this test case to be included into the global performance summary. The summary shows the given dimension of the scenario
 	 * and labels the scenario with the short name.
-	 * 
+	 *
 	 * @param shortName
 	 *            a short (shorter than 40 characters) descritive name of the scenario
 	 * @param dimension
@@ -61,7 +61,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	/**
 	 * Mark the scenario of this test case to be included into the performance summary. The summary shows the given dimension of the scenario and
 	 * labels the scenario with the short name.
-	 * 
+	 *
 	 * @param shortName
 	 *            a short (shorter than 40 characters) descriptive name of the scenario
 	 * @param dimension
@@ -75,7 +75,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	/**
 	 * Mark the scenario represented by the given PerformanceMeter to be included into the global performance summary. The summary shows the given
 	 * dimensions of the scenario and labels the scenario with the short name.
-	 * 
+	 *
 	 * @param shortName
 	 *            a short (shorter than 40 characters) descriptive name of the scenario
 	 * @param dimensions
@@ -104,7 +104,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Asserts default properties of the measurements captured for this test case.
-	 * 
+	 *
 	 * @throws RuntimeException
 	 *             if the properties do not hold
 	 */
@@ -115,7 +115,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	/**
 	 * Asserts that the measurement specified by the given dimension is within a certain range with respect to some reference value. If the specified
 	 * dimension isn't available, the call has no effect.
-	 * 
+	 *
 	 * @param dim
 	 *            the Dimension to check
 	 * @param lowerPercentage
@@ -131,7 +131,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Launches the Ant build for this config. Waits for all of the lines to be appended to the console.
-	 * 
+	 *
 	 * @param config
 	 *            the launch configuration to execute
 	 * @param i

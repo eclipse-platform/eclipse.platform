@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Object Factory Inc. - Initial implementation
  *     IBM Corporation - bug fixing
@@ -31,7 +31,7 @@ import org.eclipse.ant.internal.ui.dtd.Parser;
 
 /**
  * This class is intended to be used from the command line (hence the uncapitalized class name).
- * 
+ *
  * @author Bob Foster
  */
 @SuppressWarnings("restriction")
@@ -81,17 +81,17 @@ public class dumper {
 
 	/**
 	 * Dump dfm as a series of states.
-	 * 
+	 *
 	 * <pre>
 	 * {@code
-	 * S0  a=>S1 b=>S2 
+	 * S0  a=>S1 b=>S2
 	 * S1  c=>S2
 	 * S2* d=>S2
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * Where * indicates accepting state.
-	 * 
+	 *
 	 * @param dfm
 	 *            to dump
 	 */

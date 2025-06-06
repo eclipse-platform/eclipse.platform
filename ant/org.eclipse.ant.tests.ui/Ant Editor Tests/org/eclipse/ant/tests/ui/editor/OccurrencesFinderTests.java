@@ -371,7 +371,7 @@ public class OccurrencesFinderTests extends AbstractAntUITest {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param lineNumber
 	 *            zero based
 	 * @param offsetInLine
