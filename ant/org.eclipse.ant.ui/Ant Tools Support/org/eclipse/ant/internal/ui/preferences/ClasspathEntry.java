@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -42,8 +42,7 @@ public class ClasspathEntry extends AbstractClasspathEntry {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof IAntClasspathEntry) {
-			IAntClasspathEntry other = (IAntClasspathEntry) obj;
+		if (obj instanceof IAntClasspathEntry other) {
 			return other.getLabel().equals(getLabel());
 		}
 		return false;

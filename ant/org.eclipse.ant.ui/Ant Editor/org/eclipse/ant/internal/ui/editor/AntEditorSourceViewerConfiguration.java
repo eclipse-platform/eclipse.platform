@@ -9,7 +9,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial API and implementation
  * 	   IBM Corporation - bug fixes
@@ -199,7 +199,7 @@ public class AntEditorSourceViewerConfiguration extends AntSourceViewerConfigura
 	/**
 	 * Returns the information presenter control creator. The creator is a factory creating the presenter controls for the given source viewer. This
 	 * implementation always returns a creator for <code>DefaultInformationControl</code> instances.
-	 * 
+	 *
 	 * @return an information control creator
 	 * @since 3.1
 	 */

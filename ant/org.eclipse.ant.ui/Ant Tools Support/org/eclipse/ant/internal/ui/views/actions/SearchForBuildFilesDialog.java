@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -62,7 +62,7 @@ public class SearchForBuildFilesDialog extends InputDialog {
 	private List<IResource> results = new ArrayList<>();
 	/**
 	 * List of <code>IResource</code> objects in which to search.
-	 * 
+	 *
 	 * If the searchScopes are <code>null</code>, the user has asked to search the workspace. If the searchScopes are empty, the user has asked to
 	 * search a working set that has no resources.
 	 */
@@ -199,7 +199,7 @@ public class SearchForBuildFilesDialog extends InputDialog {
 
 	/**
 	 * Programatically selects the given radio button, deselecting the other radio button.
-	 * 
+	 *
 	 * @param button
 	 *            the radio button to select. This parameter must be one of either the <code>workingSetScopeButton</code> or the
 	 *            <code>workspaceScopeButton</code> or this method will have no effect.
@@ -292,7 +292,7 @@ public class SearchForBuildFilesDialog extends InputDialog {
 	/**
 	 * Sets the current working set search scope. This populates the search scope with resources found in the given working set and updates the
 	 * enabled state of the dialog based on the sets contents.
-	 * 
+	 *
 	 * @param set
 	 *            the working set scope for the search
 	 */

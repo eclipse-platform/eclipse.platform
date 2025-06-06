@@ -589,7 +589,7 @@ public class AntModel implements IAntModel {
 		String defaultTargetName = fProjectNode.getDefaultTargetName();
 		if (defaultTargetName != null && fProjectNode.getProject().getTargets().get(defaultTargetName) == null) {
 			// no default target when one specified (default target does not have to be specified)
-			String message = MessageFormat.format(AntModelMessages.AntModel_43, new Object[] { defaultTargetName });
+			String message = MessageFormat.format(AntModelMessages.AntModel_43, defaultTargetName);
 			IProblem problem = createProblem(message, fProjectNode.getOffset(), fProjectNode.getSelectionLength(), AntModelProblem.SEVERITY_ERROR);
 			acceptProblem(problem);
 			markHierarchy(fProjectNode, AntModelProblem.SEVERITY_ERROR, message);
@@ -617,7 +617,7 @@ public class AntModel implements IAntModel {
 	private void checkMissingDependencies(IAntElement node, IAntElement originalNode) {
 		String missing = ((AntTargetNode) node).checkDependencies();
 		if (missing != null) {
-			String message = MessageFormat.format(AntModelMessages.AntModel_44, new Object[] { missing });
+			String message = MessageFormat.format(AntModelMessages.AntModel_44, missing);
 			IAntElement importNode = node.getImportNode();
 			if (importNode != null) {
 				node = importNode;
@@ -1313,8 +1313,7 @@ public class AntModel implements IAntModel {
 		}
 		markHierarchy(node, severity, exception.getMessage());
 
-		if (exception instanceof SAXParseException) {
-			SAXParseException parseException = (SAXParseException) exception;
+		if (exception instanceof SAXParseException parseException) {
 			if (node.getOffset() == -1) {
 				computeEndLocationForErrorNode(node, parseException.getLineNumber() - 1, parseException.getColumnNumber());
 			} else {
@@ -1413,8 +1412,7 @@ public class AntModel implements IAntModel {
 		if (projectNode.hasChildren()) {
 			List<IAntElement> possibleTargets = projectNode.getChildNodes();
 			for (IAntElement node : possibleTargets) {
-				if (node instanceof AntTargetNode) {
-					AntTargetNode targetNode = (AntTargetNode) node;
+				if (node instanceof AntTargetNode targetNode) {
 					if (targetName.equalsIgnoreCase(targetNode.getTarget().getName())) {
 						return targetNode;
 					}
@@ -1593,8 +1591,7 @@ public class AntModel implements IAntModel {
 		Set<Task> nodes = fTaskToNode.keySet();
 		for (Task task : nodes) {
 			Task tmptask = task;
-			if (tmptask instanceof UnknownElement) {
-				UnknownElement element = (UnknownElement) tmptask;
+			if (tmptask instanceof UnknownElement element) {
 				RuntimeConfigurable wrapper = element.getWrapper();
 				Map<String, Object> attributes = wrapper.getAttributeMap();
 				String id = (String) attributes.get("id"); //$NON-NLS-1$

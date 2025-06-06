@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *		IBM Corporation - bug fixes
@@ -24,7 +24,7 @@ import org.eclipse.ant.internal.ui.dtd.IModel;
 
 /**
  * IModel implementation.
- * 
+ *
  * @author Bob Foster
  */
 public class Model implements IModel {
@@ -65,11 +65,13 @@ public class Model implements IModel {
 	}
 
 	public void addModel(IModel model) {
-		if (fContents != null)
+		if (fContents != null) {
 			throw new IllegalStateException(AntDTDSchemaMessages.Model_model_may_not_be_changed);
+		}
 
-		if (fContentsList == null)
+		if (fContentsList == null) {
 			fContentsList = new LinkedList<>();
+		}
 
 		fContentsList.add(model);
 	}
@@ -81,10 +83,12 @@ public class Model implements IModel {
 	private static final String[] fOps = { "?", ",", "|", "&", "!!!" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
 	private Nfm qualifyNfm(Nfm nfm) {
-		if (nfm == null)
+		if (nfm == null) {
 			return null;
-		if (fMin == 1 && fMax == 1)
+		}
+		if (fMin == 1 && fMax == 1) {
 			return nfm;
+		}
 		if (fMin == 0 && fMax == 1) {
 			return Nfm.getQuestion(nfm);
 		}
@@ -95,8 +99,9 @@ public class Model implements IModel {
 			return Nfm.getPlus(nfm);
 		}
 		// the following cases cannot be reached by DTD models
-		if (fMax == 0)
+		if (fMax == 0) {
 			return Nfm.getNfm(null);
+		}
 		if (fMax == UNBOUNDED) {
 			return Nfm.getUnbounded(nfm, fMin);
 		}
@@ -146,8 +151,9 @@ public class Model implements IModel {
 			if (fContentsList != null) {
 				fContents = fContentsList.toArray(new IModel[fContentsList.size()]);
 				fContentsList = null;
-			} else
+			} else {
 				fContents = fEmptyContents;
+			}
 		}
 		return fContents;
 	}
@@ -178,8 +184,9 @@ public class Model implements IModel {
 				while (it.hasNext()) {
 					Model model = (Model) it.next();
 					model.stringRep(buf);
-					if (it.hasNext())
+					if (it.hasNext()) {
 						buf.append(getOperator());
+					}
 				}
 				buf.append(')');
 				buf.append(getQualifier());

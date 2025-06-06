@@ -79,8 +79,7 @@ public class ProjectCreator {
 			}
 		}
 		catch (BuildException be) {
-			IStatus status = new Status(IStatus.ERROR, AntUIPlugin.PI_ANTUI, IStatus.OK, MessageFormat.format(DataTransferMessages.ProjectCreator_0, new Object[] {
-					be.getLocalizedMessage() }), be);
+			IStatus status = new Status(IStatus.ERROR, AntUIPlugin.PI_ANTUI, IStatus.OK, MessageFormat.format(DataTransferMessages.ProjectCreator_0, be.getLocalizedMessage()), be);
 			throw new CoreException(status);
 		}
 	}

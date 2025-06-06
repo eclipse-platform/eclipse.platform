@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     John-Mason P. Shackelford (john-mason.shackelford@pearson.com) - bug 49380, 49445, 53547
@@ -104,7 +104,7 @@ public class AntUIImages {
 
 	/**
 	 * Declare an Image in the registry table.
-	 * 
+	 *
 	 * @param key
 	 *            The key to use when registering the image
 	 * @param path
@@ -137,7 +137,7 @@ public class AntUIImages {
 	 * create/find the image should it be needed. The image is not actually allocated until requested.
 	 *
 	 * Prefix conventions
-	 * 
+	 *
 	 * <pre>
 	 *      Wizard Banners          WIZBAN_
 	 *      Preference Banners      PREF_BAN_
@@ -159,7 +159,7 @@ public class AntUIImages {
 	 * The images (typically gifs) are found in the same location as this plugin class. This may mean the same package directory as the package
 	 * holding this class. The images are declared using this.getClass() to ensure they are looked up via this plugin class.
 	 * </p>
-	 * 
+	 *
 	 * @see org.eclipse.jface.resource.ImageRegistry
 	 */
 	public static ImageRegistry initializeImageRegistry() {
@@ -200,7 +200,7 @@ public class AntUIImages {
 
 	/**
 	 * Returns whether the images have been initialized.
-	 * 
+	 *
 	 * @return whether the images have been initialized
 	 */
 	public synchronized static boolean isInitialized() {

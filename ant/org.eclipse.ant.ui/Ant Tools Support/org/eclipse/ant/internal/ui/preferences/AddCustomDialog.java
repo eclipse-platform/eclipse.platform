@@ -165,8 +165,7 @@ public class AddCustomDialog extends StatusDialog {
 			file.close();
 		}
 		catch (IOException e) {
-			AntUIPlugin.log(MessageFormat.format(AntPreferencesMessages.AddCustomDialog_Could_not_close_zip_file__0__4, new Object[] {
-					file.getName() }), e);
+			AntUIPlugin.log(MessageFormat.format(AntPreferencesMessages.AddCustomDialog_Could_not_close_zip_file__0__4, file.getName()), e);
 			return false;
 		}
 
@@ -237,7 +236,7 @@ public class AddCustomDialog extends StatusDialog {
 		} else if (!editing) {
 			for (String aName : existingNames) {
 				if (aName.equals(customName)) {
-					status.setError(MessageFormat.format(alreadyExistsErrorMsg, new Object[] { customName }));
+					status.setError(MessageFormat.format(alreadyExistsErrorMsg, customName));
 					updateStatus(status);
 					return;
 				}
@@ -251,7 +250,7 @@ public class AddCustomDialog extends StatusDialog {
 
 	/**
 	 * Sets the source name of the import to be the supplied path. Adds the name of the path to the list of items in the source combo and selects it.
-	 * 
+	 *
 	 * @param path
 	 *            the path to be added
 	 */
@@ -473,8 +472,7 @@ public class AddCustomDialog extends StatusDialog {
 		return new WorkbenchContentProvider() {
 			@Override
 			public Object[] getChildren(Object o) {
-				if (o instanceof MinimizedFileSystemElement) {
-					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
+				if (o instanceof MinimizedFileSystemElement element) {
 					return element.getFiles(currentProvider).toArray();
 				}
 				return new Object[0];
@@ -489,8 +487,7 @@ public class AddCustomDialog extends StatusDialog {
 		return new WorkbenchContentProvider() {
 			@Override
 			public Object[] getChildren(Object o) {
-				if (o instanceof MinimizedFileSystemElement) {
-					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
+				if (o instanceof MinimizedFileSystemElement element) {
 					return element.getFolders(currentProvider).toArray();
 				}
 				return new Object[0];
@@ -498,8 +495,7 @@ public class AddCustomDialog extends StatusDialog {
 
 			@Override
 			public boolean hasChildren(Object o) {
-				if (o instanceof MinimizedFileSystemElement) {
-					MinimizedFileSystemElement element = (MinimizedFileSystemElement) o;
+				if (o instanceof MinimizedFileSystemElement element) {
 					if (element.isPopulated()) {
 						return getChildren(element).length > 0;
 					}

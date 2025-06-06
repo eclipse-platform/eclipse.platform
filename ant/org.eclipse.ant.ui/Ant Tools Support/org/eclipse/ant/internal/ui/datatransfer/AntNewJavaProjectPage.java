@@ -154,7 +154,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Creates the project location specification controls.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 */
@@ -169,7 +169,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Creates the project name specification controls.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 */
@@ -198,7 +198,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Creates the project location specification controls.
-	 * 
+	 *
 	 * @param projectGroup
 	 *            the parent composite
 	 */
@@ -231,7 +231,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Returns the current project name
-	 * 
+	 *
 	 * @return the project name
 	 */
 	private String getProjectName(AntProjectNode projectNode) {
@@ -244,7 +244,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Returns the value of the project name field with leading and trailing spaces removed.
-	 * 
+	 *
 	 * @return the project name in the field
 	 */
 	private String getProjectNameFieldValue() {
@@ -256,7 +256,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Returns the value of the project location field with leading and trailing spaces removed.
-	 * 
+	 *
 	 * @return the project location directory in the field
 	 */
 	private String getProjectLocationFieldValue() {
@@ -286,7 +286,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Returns whether this page's controls currently all contain valid values.
-	 * 
+	 *
 	 * @return <code>true</code> if all controls are valid, and <code>false</code> if at least one is invalid
 	 */
 	private boolean validatePage() {
@@ -371,7 +371,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 	/**
 	 * Creates a new project resource based on the Ant buildfile. The classpath is configured based on the classpath of the javac declaration in the
 	 * buildfile.
-	 * 
+	 *
 	 * @return the created project resource, or <code>null</code> if the project was not created
 	 */
 	protected IJavaProject createProject() {
@@ -477,8 +477,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 		for (IAntElement node : children) {
 			if (node instanceof AntTargetNode) {
 				getJavacNodes(javacNodes, node);
-			} else if (node instanceof AntTaskNode) {
-				AntTaskNode task = (AntTaskNode) node;
+			} else if (node instanceof AntTaskNode task) {
 				if ("javac".equals(task.getName())) { //$NON-NLS-1$
 					javacNodes.add(task);
 				}
@@ -496,7 +495,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Creates the table which displays the available targets
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 */
@@ -527,7 +526,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 	/**
 	 * Return the number of rows available in the current display using the current font.
-	 * 
+	 *
 	 * @param parent
 	 *            The Composite whose Font will be queried.
 	 * @return int The result of the display size divided by the font size.

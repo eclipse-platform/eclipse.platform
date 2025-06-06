@@ -40,7 +40,7 @@ public class RefreshBuildFilesAction extends Action implements IUpdate {
 
 	/**
 	 * Creates a new <code>RefreshBuildFilesAction</code> which will refresh buildfiles in the given Ant view.
-	 * 
+	 *
 	 * @param view
 	 *            the Ant view whose selection this action will use when determining which buildfiles to refresh.
 	 */
@@ -74,8 +74,7 @@ public class RefreshBuildFilesAction extends Action implements IUpdate {
 				AntProjectNodeProxy project;
 				while (iter.hasNext()) {
 					project = (AntProjectNodeProxy) iter.next();
-					monitor.subTask(MessageFormat.format(AntViewActionMessages.RefreshBuildFilesAction_Refreshing__0__4, new Object[] {
-							project.getBuildFileName() }));
+					monitor.subTask(MessageFormat.format(AntViewActionMessages.RefreshBuildFilesAction_Refreshing__0__4, project.getBuildFileName()));
 					project.parseBuildFile(true);
 					monitor.worked(1);
 				}
@@ -92,7 +91,7 @@ public class RefreshBuildFilesAction extends Action implements IUpdate {
 
 	/**
 	 * Returns the selected project nodes to refresh
-	 * 
+	 *
 	 * @return Set the selected <code>AntProjectNode</code>s to refresh.
 	 */
 	private Set<AntProjectNode> getSelectedProjects() {

@@ -41,7 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 /**
- * 
+ *
  * Code mostly a copy of the OpenWithMenu which cannot be effectively sub-classed
  */
 public class AntOpenWithMenu extends ContributionItem {
@@ -75,7 +75,7 @@ public class AntOpenWithMenu extends ContributionItem {
 
 	/**
 	 * Returns an image to show for the corresponding editor descriptor.
-	 * 
+	 *
 	 * @param editorDesc
 	 *            the editor descriptor, or <code>null</code> for the system editor
 	 * @return the image or <code>null</code>
@@ -128,7 +128,7 @@ public class AntOpenWithMenu extends ContributionItem {
 
 	/**
 	 * Creates the menu item for the editor descriptor.
-	 * 
+	 *
 	 * @param menu
 	 *            the menu to add the item to
 	 * @param descriptor
@@ -225,7 +225,7 @@ public class AntOpenWithMenu extends ContributionItem {
 
 	/**
 	 * Opens the given editor on the selected file.
-	 * 
+	 *
 	 * @param editorDescriptor
 	 *            the editor descriptor, or <code>null</code> for the system editor
 	 */
@@ -235,7 +235,7 @@ public class AntOpenWithMenu extends ContributionItem {
 
 	/**
 	 * Creates the menu item for the default editor
-	 * 
+	 *
 	 * @param menu
 	 *            the menu to add the item to
 	 * @param file
@@ -257,8 +257,7 @@ public class AntOpenWithMenu extends ContributionItem {
 							IDE.openEditor(fPage, fileResource, true);
 						}
 						catch (PartInitException e) {
-							AntUIPlugin.log(MessageFormat.format(AntViewActionMessages.AntViewOpenWithMenu_Editor_failed, new Object[] {
-									fileResource.getLocation().toOSString() }), e);
+							AntUIPlugin.log(MessageFormat.format(AntViewActionMessages.AntViewOpenWithMenu_Editor_failed, fileResource.getLocation().toOSString()), e);
 						}
 					}
 					break;

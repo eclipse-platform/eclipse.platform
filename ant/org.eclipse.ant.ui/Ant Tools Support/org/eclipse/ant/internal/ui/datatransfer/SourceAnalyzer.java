@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Richard Hoefter (richard.hoefter@web.de) - initial API and implementation, bug 313386
  *     IBM Corporation - incorporating into Eclipse
@@ -50,7 +50,7 @@ public class SourceAnalyzer {
 
 	/**
 	 * Check if source directories of project has cycles or if there are dependencies between them that are not conform with classpath order.
-	 * 
+	 *
 	 * <p>
 	 * NOTE: Unused references in classes are not considered if they cause cycles or classpath order problems. This is because this class analyzes the
 	 * bytecode and indeed the compiler throws unused references away.
@@ -117,7 +117,7 @@ public class SourceAnalyzer {
 
 	/**
 	 * Determine for each source directory which other source directories it requires.
-	 * 
+	 *
 	 * @return Map string to Set of strings. (Maps source dir to Set of required source dirs.)
 	 */
 	private static Map<String, Set<String>> determineRequiredSrcDirs(Map<String, String> src2dir, Map<String, Set<String>> srcdir2classes) {
@@ -141,7 +141,7 @@ public class SourceAnalyzer {
 
 	private static void showCycleWarning(String projectName, Shell shell, List<String> cycle, StringBuffer message) {
 
-		String m = MessageFormat.format(DataTransferMessages.SourceAnalyzer_0, new Object[] { projectName });
+		String m = MessageFormat.format(DataTransferMessages.SourceAnalyzer_0, projectName);
 		message.append(m);
 		message.append(ExportUtil.NEWLINE);
 
@@ -164,7 +164,7 @@ public class SourceAnalyzer {
 			for (String requiredSrc : srcdir2sourcedirs.get(srcdir)) {
 				int i = classpath.srcDirs.indexOf(requiredSrc);
 				if (i > classpathIndex) {
-					String s = MessageFormat.format(DataTransferMessages.SourceAnalyzer_3, new Object[] { projectName });
+					String s = MessageFormat.format(DataTransferMessages.SourceAnalyzer_3, projectName);
 					MessageDialog.openWarning(shell, DataTransferMessages.SourceAnalyzer_2, s + ExportUtil.NEWLINE + requiredSrc + " <-> " + srcdir //$NON-NLS-1$
 							+ ExportUtil.NEWLINE);
 					break;
@@ -175,7 +175,7 @@ public class SourceAnalyzer {
 
 	/**
 	 * Find all classes that are required by given class file.
-	 * 
+	 *
 	 * @param file
 	 *            a ".class" file
 	 * @return set of strings, each contains a full qualified class name (forward slash as package separator)
@@ -206,7 +206,7 @@ public class SourceAnalyzer {
 
 	/**
 	 * Find all files with particular extension under given directory.
-	 * 
+	 *
 	 * @param dir
 	 *            directory to start search
 	 * @param extension
@@ -233,7 +233,7 @@ public class SourceAnalyzer {
 
 	/**
 	 * Check if given graph that is described through a map is cyclic.
-	 * 
+	 *
 	 * @param srcdir2sourcedirs
 	 *            Maps string to set of strings. The keys are the graph nodes which are mapped to its neighbors.
 	 * @param cycle

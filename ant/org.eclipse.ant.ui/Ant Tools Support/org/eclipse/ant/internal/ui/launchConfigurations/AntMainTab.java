@@ -153,7 +153,7 @@ public class AntMainTab extends ExternalToolsMainTab {
 
 	/**
 	 * Creates the controls needed to edit the set input handler attribute of an Ant build
-	 * 
+	 *
 	 * @param parent
 	 *            the composite to create the controls in
 	 */

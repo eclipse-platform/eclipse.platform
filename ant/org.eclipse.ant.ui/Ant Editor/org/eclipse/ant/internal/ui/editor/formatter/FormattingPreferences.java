@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2011 John-Mason P. Shackelford and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     John-Mason P. Shackelford - initial API and implementation
  * 	   IBM Corporation - bug 52076
@@ -70,7 +70,7 @@ public class FormattingPreferences {
 
 	/**
 	 * Sets the preference store for these formatting preferences.
-	 * 
+	 *
 	 * @param prefs
 	 *            the preference store to use as a reference for the formatting preferences
 	 */

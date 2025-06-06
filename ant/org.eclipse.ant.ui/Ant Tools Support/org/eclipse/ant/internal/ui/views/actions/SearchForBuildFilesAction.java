@@ -60,8 +60,7 @@ public class SearchForBuildFilesAction extends Action {
 						monitor.beginTask(AntViewActionMessages.SearchForBuildFilesAction_Processing_search_results_3, files.length);
 						for (int i = 0; i < files.length && !monitor.isCanceled(); i++) {
 							String buildFileName = files[i].getFullPath().toString();
-							monitor.subTask(MessageFormat.format(AntViewActionMessages.SearchForBuildFilesAction_Adding__0__4, new Object[] {
-									buildFileName }));
+							monitor.subTask(MessageFormat.format(AntViewActionMessages.SearchForBuildFilesAction_Adding__0__4, buildFileName));
 							if (alreadyAdded(buildFileName)) {
 								// Don't parse projects that have already been added.
 								continue;

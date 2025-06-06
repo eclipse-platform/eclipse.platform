@@ -20,7 +20,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 
 /**
  * Workbench advisor to run an ant script after starting the workbench and then exit the workbench. Used with {@link WorkbenchAntRunner}.
- * 
+ *
  * @since 3.4
  */
 public class AntRunnerWorkbenchAdvisor extends WorkbenchAdvisor {

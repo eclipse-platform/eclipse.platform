@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 
 /**
  * Groups the Ant folding actions.
- * 
+ *
  * @since 3.1
  */
 public class FoldingActionGroup extends ActionGroup {
@@ -39,7 +39,7 @@ public class FoldingActionGroup extends ActionGroup {
 	/**
 	 * Creates a new projection action group for <code>editor</code>. If the supplied viewer is not an instance of <code>ProjectionViewer</code>, the
 	 * action group is disabled.
-	 * 
+	 *
 	 * @param editor
 	 *            the text editor to operate on
 	 * @param viewer
@@ -85,13 +85,13 @@ public class FoldingActionGroup extends ActionGroup {
 
 	/**
 	 * Returns <code>true</code> if the group is enabled.
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * Invariant: isEnabled() <=> fViewer and all actions are != null.
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * @return <code>true</code> if the group is enabled
 	 */
 	private boolean isEnabled() {

@@ -1,15 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2016 GEBIT Gesellschaft fuer EDV-Beratung
- * und Informatik-Technologien mbH, 
+ * und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial API and implementation
  * 	   IBM Corporation - bug fixes
@@ -98,8 +98,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			if (element instanceof AntElementNode) {
-				AntElementNode node = (AntElementNode) element;
+			if (element instanceof AntElementNode node) {
 				if (fFilterTopLevel && (node instanceof AntTaskNode && parentElement instanceof AntProjectNode)) {
 					return false;
 				}
@@ -137,7 +136,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Sets whether internal targets should be filtered out of the outline.
-	 * 
+	 *
 	 * @param filter
 	 *            whether or not internal targets should be filtered out
 	 */
@@ -148,7 +147,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Sets whether imported elements should be filtered out of the outline.
-	 * 
+	 *
 	 * @param filter
 	 *            whether or not imported elements should be filtered out
 	 */
@@ -167,7 +166,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Sets whether properties should be filtered out of the outline.
-	 * 
+	 *
 	 * @param filter
 	 *            whether or not properties should be filtered out
 	 */
@@ -178,7 +177,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Sets whether internal targets should be filtered out of the outline.
-	 * 
+	 *
 	 * @param filter
 	 *            whether or not internal targets should be filtered out
 	 */
@@ -189,7 +188,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Returns whether internal targets are currently being filtered out of the outline.
-	 * 
+	 *
 	 * @return whether or not internal targets are being filtered out
 	 */
 	protected boolean filterInternalTargets() {
@@ -198,7 +197,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Returns whether imported elements are currently being filtered out of the outline.
-	 * 
+	 *
 	 * @return whether or not imported elements are being filtered out
 	 */
 	protected boolean filterImportedElements() {
@@ -207,7 +206,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Returns whether properties are currently being filtered out of the outline.
-	 * 
+	 *
 	 * @return whether or not properties are being filtered out
 	 */
 	protected boolean filterProperties() {
@@ -216,7 +215,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Returns whether top level tasks/types are currently being filtered out of the outline.
-	 * 
+	 *
 	 * @return whether or not top level tasks/types are being filtered out
 	 */
 	protected boolean filterTopLevel() {
@@ -225,7 +224,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Sets whether elements should be sorted in the outline.
-	 * 
+	 *
 	 * @param sort
 	 *            whether or not elements should be sorted
 	 */
@@ -244,7 +243,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	/**
 	 * Returns whether elements are currently being sorted.
-	 * 
+	 *
 	 * @return whether elements are currently being sorted
 	 */
 	protected boolean isSort() {
@@ -438,8 +437,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 
 	private AntElementNode getSelectedNode() {
 		ISelection iselection = getSelection();
-		if (iselection instanceof IStructuredSelection) {
-			IStructuredSelection selection = (IStructuredSelection) iselection;
+		if (iselection instanceof IStructuredSelection selection) {
 			if (selection.size() == 1) {
 				Object selected = selection.getFirstElement();
 				if (selected instanceof AntElementNode) {
@@ -478,8 +476,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 	public void select(AntElementNode node) {
 		if (getTreeViewer() != null) {
 			ISelection s = getTreeViewer().getSelection();
-			if (s instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) s;
+			if (s instanceof IStructuredSelection ss) {
 				List<?> nodes = ss.toList();
 				if (!nodes.contains(node)) {
 					s = (node == null ? StructuredSelection.EMPTY : new StructuredSelection(node));

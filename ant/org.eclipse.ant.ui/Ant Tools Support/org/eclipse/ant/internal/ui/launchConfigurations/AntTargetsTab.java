@@ -176,7 +176,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Creates the selection count widget
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 */
@@ -190,7 +190,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Creates the widgets that display the target order
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 */
@@ -231,7 +231,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Creates the toggle to filter internal targets from the table
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 */
@@ -247,7 +247,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Creates the toggle to sort targets in the table
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 */
@@ -297,7 +297,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Sets the sorting of targets in this tab. See the sort constants defined above.
-	 * 
+	 *
 	 * @param column
 	 *            the column which should be sorted on
 	 */
@@ -327,7 +327,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Creates the table which displays the available targets
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 */
@@ -390,8 +390,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 		fTableViewer.addDoubleClickListener(event -> {
 			ISelection selection = event.getSelection();
-			if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
+			if (!selection.isEmpty() && selection instanceof IStructuredSelection ss) {
 				Object element = ss.getFirstElement();
 				boolean checked = !fTableViewer.getChecked(element);
 				fTableViewer.setChecked(element, checked);
@@ -423,7 +422,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Return the number of rows available in the current display using the current font.
-	 * 
+	 *
 	 * @param parent
 	 *            The Composite whose Font will be queried.
 	 * @return int The result of the display size divided by the font size.
@@ -439,7 +438,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 	/**
 	 * Updates the ordered targets list in response to an element being checked or unchecked. When the element is checked, it's added to the list.
 	 * When unchecked, it's removed.
-	 * 
+	 *
 	 * @param element
 	 *            the element in question
 	 * @param checked
@@ -467,11 +466,9 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 		String total = Integer.toString(visible);
 		int numHidden = all - visible;
 		if (numHidden > 0) {
-			fSelectionCountLabel.setText(MessageFormat.format(AntLaunchConfigurationMessages.AntTargetsTab_13, new Object[] { numSelected,
-					String.valueOf(all), String.valueOf(numHidden) }));
+			fSelectionCountLabel.setText(MessageFormat.format(AntLaunchConfigurationMessages.AntTargetsTab_13, numSelected, String.valueOf(all), String.valueOf(numHidden)));
 		} else {
-			fSelectionCountLabel.setText(MessageFormat.format(AntLaunchConfigurationMessages.AntTargetsTab__0__out_of__1__selected_7, new Object[] {
-					numSelected, total }));
+			fSelectionCountLabel.setText(MessageFormat.format(AntLaunchConfigurationMessages.AntTargetsTab__0__out_of__1__selected_7, numSelected, total));
 		}
 
 		fOrderButton.setEnabled(checked.length > 1);
@@ -491,7 +488,7 @@ public class AntTargetsTab extends AbstractLaunchConfigurationTab {
 
 	/**
 	 * Returns all targets in the buildfile.
-	 * 
+	 *
 	 * @return all targets in the buildfile
 	 */
 	private AntTargetNode[] getTargets() {

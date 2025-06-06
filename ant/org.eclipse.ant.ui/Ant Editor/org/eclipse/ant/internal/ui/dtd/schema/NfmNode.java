@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2005 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *******************************************************************************/
@@ -20,10 +20,10 @@ import org.eclipse.ant.internal.ui.dtd.util.FactoryObject;
 /**
  * Non-deterministic finite state machine node.
  * <p>
- * 
+ *
  * Following Aho &amp; Ullman, nfm nodes contain two transition links. The graph is constructed so that no node requires more than two links. There
  * are exactly these kinds of nodes:
- * 
+ *
  * <pre>
  * 	Symbol	Next1	Next2	Meaning
  * 	  "a"	 fwd	 null	Regexp "a"
@@ -38,9 +38,9 @@ import org.eclipse.ant.internal.ui.dtd.util.FactoryObject;
  * 	  null	 fwd	 null	Internal node of |.
  * 							fwd points to stop node.
  * </pre>
- * 
+ *
  * See Nfm for pictures of how nodes are used.
- * 
+ *
  * @author Bob Foster
  */
 public class NfmNode implements FactoryObject {
@@ -100,8 +100,9 @@ public class NfmNode implements FactoryObject {
 
 	private static NfmNode getFree() {
 		NfmNode nfm = (NfmNode) fFactory.getFree();
-		if (nfm == null)
+		if (nfm == null) {
 			nfm = new NfmNode();
+		}
 		nfm.next(fUsed);
 		fUsed = nfm;
 		return nfm;

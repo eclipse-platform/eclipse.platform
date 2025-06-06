@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Richard Hoefter (richard.hoefter@web.de) - initial API and implementation, bug 95298, bug 192726, bug 201180
  *     IBM Corporation - nlsing and incorporating into Eclipse, bug 108276
@@ -71,7 +71,7 @@ public class EclipseClasspath {
 
 	/**
 	 * Initialize object with runtime classpath of given launch configuration.
-	 * 
+	 *
 	 * @param project
 	 *            project that contains given launch configuration conf
 	 * @param conf
@@ -162,7 +162,7 @@ public class EclipseClasspath {
 
 	/**
 	 * Check if given source path is a linked resource. Add values to {@link #variable2valueMap} accordingly.
-	 * 
+	 *
 	 * @param srcDirPath
 	 *            source dir as IPath
 	 * @return source directory with reference, e.g. ${MYPATH}/src, if it is no link, orginal source dir is returned
@@ -227,7 +227,7 @@ public class EclipseClasspath {
 
 	/**
 	 * Checks if file is a class directory of a subproject and fills string buffers with resolved values.
-	 * 
+	 *
 	 * @param file
 	 *            file to check
 	 * @param jarFile
@@ -370,12 +370,12 @@ public class EclipseClasspath {
 	 * Check if given string is a project reference.
 	 */
 	public static boolean isProjectReference(String s) {
-		return s.startsWith("${") && s.endsWith(".classpath}"); //$NON-NLS-1$ //$NON-NLS-2$ 
+		return s.startsWith("${") && s.endsWith(".classpath}"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
 	 * Resolves given project reference to a project.
-	 * 
+	 *
 	 * @return <code>null</code> if project is not resolvable
 	 */
 	public static IJavaProject resolveProjectReference(String s) {
@@ -387,21 +387,21 @@ public class EclipseClasspath {
 	 * Check if given string is a user library reference.
 	 */
 	public static boolean isUserLibraryReference(String s) {
-		return s.startsWith("${") && s.endsWith(".userclasspath}"); //$NON-NLS-1$ //$NON-NLS-2$ 
+		return s.startsWith("${") && s.endsWith(".userclasspath}"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
 	 * Check if given string is a user system library reference. This library is added to the compiler boot classpath.
 	 */
 	public static boolean isUserSystemLibraryReference(String s) {
-		return s.startsWith("${") && s.endsWith(".bootclasspath}"); //$NON-NLS-1$ //$NON-NLS-2$ 
+		return s.startsWith("${") && s.endsWith(".bootclasspath}"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
 	 * Check if given string is a library reference. e.g. Plug-in dependencies are library references.
 	 */
 	public static boolean isLibraryReference(String s) {
-		return s.startsWith("${") && s.endsWith(".libraryclasspath}"); //$NON-NLS-1$ //$NON-NLS-2$ 
+		return s.startsWith("${") && s.endsWith(".libraryclasspath}"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -413,11 +413,11 @@ public class EclipseClasspath {
 
 	/**
 	 * Resolves given user (system) library or plugin reference to its container.
-	 * 
+	 *
 	 * <p>
 	 * NOTE: The library can only be resolved if an EclipseClasspath object was created which had a reference to this library. The class holds an
 	 * internal cache to circumvent that UserLibraryManager is an internal class.
-	 * 
+	 *
 	 * @return null if library is not resolvable
 	 */
 	public static IClasspathContainer resolveUserLibraryReference(String s) {
@@ -428,16 +428,16 @@ public class EclipseClasspath {
 	 * Check if given string is a linked resource.
 	 */
 	public static boolean isLinkedResource(String s) {
-		return s.startsWith("${") && s.endsWith(".link}"); //$NON-NLS-1$ //$NON-NLS-2$ 
+		return s.startsWith("${") && s.endsWith(".link}"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
 	 * Get source folder name of a linked resource.
-	 * 
+	 *
 	 * @see #isLinkedResource(String)
 	 */
 	public static String getLinkedResourceName(String s) {
-		return ExportUtil.removePrefixAndSuffix(s, "${", ".link}"); //$NON-NLS-1$ //$NON-NLS-2$ 
+		return ExportUtil.removePrefixAndSuffix(s, "${", ".link}"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -459,7 +459,7 @@ public class EclipseClasspath {
 
 	/**
 	 * Convert a VariableClasspathEntry to a IClasspathEntry.
-	 * 
+	 *
 	 * <p>
 	 * This is a workaround as entry.getClasspathEntry() returns null.
 	 */

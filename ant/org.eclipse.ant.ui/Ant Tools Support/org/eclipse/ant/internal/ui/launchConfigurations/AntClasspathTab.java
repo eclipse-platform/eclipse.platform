@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -47,7 +47,7 @@ public class AntClasspathTab extends JavaClasspathTab {
 
 	/**
 	 * Creates actions to manipulate the classpath.
-	 * 
+	 *
 	 * @param pathButtonComp
 	 *            composite buttons are contained in
 	 * @since 3.0

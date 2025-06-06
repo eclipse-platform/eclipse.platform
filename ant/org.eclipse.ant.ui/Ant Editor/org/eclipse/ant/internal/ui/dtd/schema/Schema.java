@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2019 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *******************************************************************************/
@@ -21,7 +21,7 @@ import org.eclipse.ant.internal.ui.dtd.ISchema;
 /**
  * This is a very simple schema suitable for DTDs. Once constructed, a schema is immutable and could be used by multiple threads. However, since in
  * general the schema will reflect the internal DTD subset, re-use for multiple documents is problematic.
- * 
+ *
  * @author Bob Foster
  */
 public class Schema implements ISchema {
@@ -46,7 +46,7 @@ public class Schema implements ISchema {
 
 	/**
 	 * Add a visible element to the schema.
-	 * 
+	 *
 	 * @param element
 	 *            Element to add.
 	 */
@@ -56,7 +56,7 @@ public class Schema implements ISchema {
 
 	/**
 	 * Sets the exception thrown by then parser when the schema was built. Note that the exception does not necessarily mean the schema is incomplete.
-	 * 
+	 *
 	 * @param e
 	 *            the Exception
 	 */

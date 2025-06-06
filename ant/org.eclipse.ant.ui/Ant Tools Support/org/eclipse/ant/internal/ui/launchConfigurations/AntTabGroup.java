@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     dakshinamurthy.karra@gmail.com - bug 165371
@@ -41,8 +41,7 @@ public class AntTabGroup extends AbstractLaunchConfigurationTabGroup {
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
 			boolean captureOutput = configuration.getAttribute(IExternalToolConstants.ATTR_CAPTURE_OUTPUT, true);
-			if (!captureOutput && configuration instanceof ILaunchConfigurationWorkingCopy) {
-				ILaunchConfigurationWorkingCopy copy = (ILaunchConfigurationWorkingCopy) configuration;
+			if (!captureOutput && configuration instanceof ILaunchConfigurationWorkingCopy copy) {
 				copy.setAttribute(IExternalToolConstants.ATTR_CAPTURE_OUTPUT, (String) null);
 				copy.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, false);
 				copy.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
@@ -77,8 +76,7 @@ public class AntTabGroup extends AbstractLaunchConfigurationTabGroup {
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		// set default name for script
 		IResource resource = DebugUITools.getSelectedResource();
-		if (resource != null && resource instanceof IFile) {
-			IFile file = (IFile) resource;
+		if (resource != null && resource instanceof IFile file) {
 			if (AntUtil.isKnownAntFile(file)) {
 				String projectName = file.getProject().getName();
 				StringBuilder buffer = new StringBuilder(projectName);

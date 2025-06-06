@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *      IBM Corporation - Fix for bug 40951
@@ -27,7 +27,7 @@ import org.xml.sax.ext.DeclHandler;
  * SchemaFactory is a SAX DeclHandler that converts DTD ELEMENT and ATTLIST declarations to schema form on the fly. The only two methods available to
  * external users of SchemaFactory are its constructor and <code>getSchema()</code>. The latter returns the schema built by this process and should
  * not be called until the XML parser to which this handler is attached has finished parsing.
- * 
+ *
  * @author Bob Foster
  */
 public class SchemaFactory implements DeclHandler {
@@ -76,11 +76,11 @@ public class SchemaFactory implements DeclHandler {
 			element.addAttribute(attr);
 
 			String[] enumeration = null;
-			if (fTypes.contains(type))
+			if (fTypes.contains(type)) {
 				attr.setType(type);
-			else if (type.startsWith("NOTATION")) //$NON-NLS-1$
+			} else if (type.startsWith("NOTATION")) { //$NON-NLS-1$
 				enumeration = parseValues(type.substring("NOTATION".length() + 1), ','); //$NON-NLS-1$
-			else {
+			} else {
 				type = stripSurroundingParentheses(type);
 				enumeration = parseValues(type, '|');
 			}
@@ -126,8 +126,9 @@ public class SchemaFactory implements DeclHandler {
 		LinkedList<String> values = new LinkedList<>();
 		while (start < len) {
 			pos = type.indexOf(separator, start);
-			if (pos < 0)
+			if (pos < 0) {
 				pos = len;
+			}
 			String term = type.substring(start, pos);
 			start = pos + 1;
 			values.add(term);
@@ -140,7 +141,7 @@ public class SchemaFactory implements DeclHandler {
 		Element element = getElement(name);
 		if (!element.isUndefined()) {
 			// if the element has already been defined, this is an error
-			throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Doubly_defined, new Object[] { name }));
+			throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Doubly_defined, name));
 		}
 
 		fElement = element;
@@ -158,7 +159,7 @@ public class SchemaFactory implements DeclHandler {
 	/**
 	 * Convert model string to IModel. The <code>fElement</code> variable is an implicit argument to this method, and it sets <code>fBuf</code>,
 	 * <code>fPos</code> and <code>fLen</code> for use by other parser methods.
-	 * 
+	 *
 	 * @param model
 	 *            String from DTD, with parameter entities replaced.
 	 * @return IModel
@@ -170,8 +171,7 @@ public class SchemaFactory implements DeclHandler {
 		fBuf = model.toCharArray();
 		fLen = fBuf.length;
 		if (fBuf[0] != '(') {
-			throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Start_with_left_parenthesis, new Object[] {
-					fElement.getName() }));
+			throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Start_with_left_parenthesis, fElement.getName()));
 		}
 
 		boolean ortext = model.startsWith("(#PCDATA|"); //$NON-NLS-1$
@@ -186,7 +186,7 @@ public class SchemaFactory implements DeclHandler {
 
 	/**
 	 * Scan a parenthesized expression starting from the left parenthesis or leftmost operator.
-	 * 
+	 *
 	 * @return IModel
 	 */
 	private IModel scanExpr() throws SAXException {
@@ -197,7 +197,7 @@ public class SchemaFactory implements DeclHandler {
 
 	/**
 	 * Scan a parenthesized expression with the first term in hand.
-	 * 
+	 *
 	 * @param term
 	 *            The first operand in the expression, pre-scanned.
 	 * @return IModel
@@ -209,8 +209,7 @@ public class SchemaFactory implements DeclHandler {
 		if (fBuf[fPos] != ')') {
 			char op = fBuf[fPos];
 			if (op != '|' && op != ',') {
-				throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Expecting_operator_or_right_parenthesis, new Object[] {
-						fElement.getName(), String.valueOf(fBuf) }));
+				throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Expecting_operator_or_right_parenthesis, fElement.getName(), String.valueOf(fBuf)));
 			}
 			Model model = new Model(op == '|' ? IModel.CHOICE : IModel.SEQUENCE);
 			model.addModel(term);
@@ -222,8 +221,7 @@ public class SchemaFactory implements DeclHandler {
 				model.addModel(next);
 			}
 			if (fBuf[fPos] != ')') {
-				throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Expecting_operator_or_right_parenthesis, new Object[] {
-						fElement.getName(), String.valueOf(fBuf) }));
+				throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Expecting_operator_or_right_parenthesis, fElement.getName(), String.valueOf(fBuf)));
 			}
 			fPos++;
 		}
@@ -232,13 +230,14 @@ public class SchemaFactory implements DeclHandler {
 
 	/**
 	 * Scan an element name or a parenthesized sub-expression.
-	 * 
+	 *
 	 * @return IModel
 	 */
 	private IModel scanElement() throws SAXException {
 		checkLen();
-		if (fBuf[fPos] == '(')
+		if (fBuf[fPos] == '(') {
 			return scanExpr();
+		}
 		StringBuilder sb = new StringBuilder();
 		while (fBuf[fPos] != '|' && fBuf[fPos] != ',' && fBuf[fPos] != ')' && fBuf[fPos] != '*' && fBuf[fPos] != '+' && fBuf[fPos] != '?') {
 			sb.append(fBuf[fPos++]);
@@ -253,8 +252,7 @@ public class SchemaFactory implements DeclHandler {
 
 	private void checkLen() throws SAXException {
 		if (fPos == fLen) {
-			throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Unexpected_end, new Object[] { fElement.getName(),
-					String.valueOf(fBuf) }));
+			throw new SAXException(MessageFormat.format(AntDTDSchemaMessages.SchemaFactory_Unexpected_end, fElement.getName(), String.valueOf(fBuf)));
 		}
 	}
 

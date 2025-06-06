@@ -218,11 +218,12 @@ public abstract class AbstractAntEditorPreferencePage extends PreferencePage imp
 		} else {
 			try {
 				int value = Integer.parseInt(number);
-				if (value < 0)
-					status.setError(MessageFormat.format(errorMessages[1], new Object[] { number }));
+				if (value < 0) {
+					status.setError(MessageFormat.format(errorMessages[1], number));
+				}
 			}
 			catch (NumberFormatException e) {
-				status.setError(MessageFormat.format(errorMessages[1], new Object[] { number }));
+				status.setError(MessageFormat.format(errorMessages[1], number));
 			}
 		}
 		return status;

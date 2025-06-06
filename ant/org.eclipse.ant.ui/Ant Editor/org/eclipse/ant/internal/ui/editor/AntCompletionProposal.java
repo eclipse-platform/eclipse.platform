@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -50,7 +50,7 @@ public class AntCompletionProposal implements ICompletionProposal, ICompletionPr
 
 	/**
 	 * Creates a new Ant completion proposal. All fields are initialized based on the provided information.
-	 * 
+	 *
 	 * @param replacementString
 	 *            the actual string to be inserted into the document
 	 * @param replacementOffset

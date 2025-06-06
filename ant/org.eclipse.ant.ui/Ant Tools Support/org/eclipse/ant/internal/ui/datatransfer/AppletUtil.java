@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Richard Hoefter (richard.hoefter@web.de) - initial API and implementation
  *     IBM Corporation - nlsing and incorporating into Eclipse
@@ -30,7 +30,7 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
 /**
  * Helper class to access private method <code>org.eclipse.jdt.internal.launching.JavaAppletLaunchConfigurationDelegate}.buildHTMLFile()</code>.
- * 
+ *
  * <p>
  * Source was copied and slightly modified.
  */
@@ -48,7 +48,7 @@ public class AppletUtil {
 
 	/**
 	 * Using the specified launch configuration, build an HTML file that specifies the applet to launch.
-	 * 
+	 *
 	 * @return the created HTML file
 	 */
 	public static String buildHTMLFile(ILaunchConfiguration configuration) throws CoreException {
@@ -95,7 +95,7 @@ public class AppletUtil {
 
 	/**
 	 * Returns the main type name specified by the given launch configuration, or <code>null</code> if none.
-	 * 
+	 *
 	 * @param configuration
 	 *            launch configuration
 	 * @return the main type name specified by the given launch configuration, or <code>null</code> if none

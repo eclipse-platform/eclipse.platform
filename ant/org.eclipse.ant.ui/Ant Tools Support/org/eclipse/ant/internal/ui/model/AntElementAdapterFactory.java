@@ -24,8 +24,7 @@ public class AntElementAdapterFactory implements IAdapterFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-		if (adaptableObject instanceof AntElementNode) {
-			AntElementNode node = (AntElementNode) adaptableObject;
+		if (adaptableObject instanceof AntElementNode node) {
 			if (IResource.class.equals(adapterType)) {
 				return (T) node.getIFile();
 			}
