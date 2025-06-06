@@ -49,11 +49,9 @@ public class PopFrameActionDelegate implements IObjectActionDelegate, IActionDel
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			Object element = ss.getFirstElement();
-			if (element instanceof PDAStackFrame) {
-				PDAStackFrame frame = (PDAStackFrame) element;
+			if (element instanceof PDAStackFrame frame) {
 				//#ifdef ex5
 //#				// TODO: Exercise 5 - enable the action if the frame's thread supports it
 				//#else

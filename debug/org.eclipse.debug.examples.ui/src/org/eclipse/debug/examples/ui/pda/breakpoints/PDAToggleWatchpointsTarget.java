@@ -54,8 +54,7 @@ public class PDAToggleWatchpointsTarget extends PDABreakpointAdapter {
 	public boolean canToggleWatchpoints(IWorkbenchPart part, ISelection selection) {
 		if (super.canToggleWatchpoints(part, selection)) {
 			return true;
-		} else if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection)selection;
+		} else if (selection instanceof IStructuredSelection ss) {
 			return ss.getFirstElement() instanceof PDAVariable;
 		}
 		return false;
@@ -65,10 +64,9 @@ public class PDAToggleWatchpointsTarget extends PDABreakpointAdapter {
 	public void toggleWatchpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
 		String[] variableAndFunctionName = getVariableAndFunctionName(part, selection);
 
-		if (variableAndFunctionName != null && part instanceof ITextEditor && selection instanceof ITextSelection) {
+		if (variableAndFunctionName != null && part instanceof ITextEditor editorPart && selection instanceof ITextSelection) {
 			// Selection inside text editor.  Create a watchpoint based on
 			// current source line.
-			ITextEditor editorPart = (ITextEditor)part;
 			int lineNumber = ((ITextSelection)selection).getStartLine();
 			IResource resource = editorPart.getEditorInput().getAdapter(IResource.class);
 			String var = variableAndFunctionName[0];

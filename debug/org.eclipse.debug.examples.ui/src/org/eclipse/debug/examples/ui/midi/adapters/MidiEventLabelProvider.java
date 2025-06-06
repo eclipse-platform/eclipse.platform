@@ -45,8 +45,7 @@ public class MidiEventLabelProvider extends ElementLabelProvider {
 			}
 			return buffer.toString();
 		} else if (TrackColumnPresentation.COL_COMMAND.equals(columnId)) {
-			if (message instanceof ShortMessage) {
-				ShortMessage sm = (ShortMessage) message;
+			if (message instanceof ShortMessage sm) {
 				StringBuilder buf = new StringBuilder();
 				appendByte(buf, (byte)sm.getCommand());
 				return buf.toString();

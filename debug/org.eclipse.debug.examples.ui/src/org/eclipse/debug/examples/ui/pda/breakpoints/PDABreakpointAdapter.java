@@ -76,8 +76,7 @@ public class PDABreakpointAdapter implements IToggleBreakpointsTargetExtension {
 	 * given part, or <code>null</code> if none
 	 */
 	private ITextEditor getEditor(IWorkbenchPart part) {
-		if (part instanceof ITextEditor) {
-			ITextEditor editorPart = (ITextEditor) part;
+		if (part instanceof ITextEditor editorPart) {
 			IResource resource = editorPart.getEditorInput().getAdapter(IResource.class);
 			if (resource != null) {
 				String extension = resource.getFileExtension();
@@ -101,8 +100,7 @@ public class PDABreakpointAdapter implements IToggleBreakpointsTargetExtension {
 	@Override
 	public void toggleWatchpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
 		String[] variableAndFunctionName = getVariableAndFunctionName(part, selection);
-		if (variableAndFunctionName != null && part instanceof ITextEditor && selection instanceof ITextSelection) {
-			ITextEditor editorPart = (ITextEditor)part;
+		if (variableAndFunctionName != null && part instanceof ITextEditor editorPart && selection instanceof ITextSelection) {
 			int lineNumber = ((ITextSelection)selection).getStartLine();
 			IResource resource = editorPart.getEditorInput().getAdapter(IResource.class);
 			String var = variableAndFunctionName[0];
@@ -123,8 +121,7 @@ public class PDABreakpointAdapter implements IToggleBreakpointsTargetExtension {
 		IBreakpoint[] breakpoints = DebugPlugin.getDefault().getBreakpointManager().getBreakpoints(DebugCorePlugin.ID_PDA_DEBUG_MODEL);
 		for (int i = 0; i < breakpoints.length; i++) {
 			IBreakpoint breakpoint = breakpoints[i];
-			if (breakpoint instanceof PDAWatchpoint && resource.equals(breakpoint.getMarker().getResource())) {
-				PDAWatchpoint watchpoint = (PDAWatchpoint)breakpoint;
+			if (breakpoint instanceof PDAWatchpoint watchpoint && resource.equals(breakpoint.getMarker().getResource())) {
 				String otherVar = watchpoint.getVariableName();
 				String otherFcn = watchpoint.getFunctionName();
 				if (otherVar.equals(var) && otherFcn.equals(fcn)) {
@@ -148,8 +145,7 @@ public class PDABreakpointAdapter implements IToggleBreakpointsTargetExtension {
 	 */
 	protected String[] getVariableAndFunctionName(IWorkbenchPart part, ISelection selection) {
 		ITextEditor editor = getEditor(part);
-		if (editor != null && selection instanceof ITextSelection) {
-			ITextSelection textSelection = (ITextSelection) selection;
+		if (editor != null && selection instanceof ITextSelection textSelection) {
 			IDocumentProvider documentProvider = editor.getDocumentProvider();
 			try {
 				documentProvider.connect(this);
