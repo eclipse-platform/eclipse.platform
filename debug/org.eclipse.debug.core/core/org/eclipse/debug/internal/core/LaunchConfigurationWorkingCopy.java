@@ -245,7 +245,7 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 	 * @throws CoreException if a problem is encountered
 	 */
 	private void doSave0(IProgressMonitor monitor) throws CoreException {
-		SubMonitor lmonitor = SubMonitor.convert(monitor, MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_0, new Object[] { getName() }), 2);
+		SubMonitor lmonitor = SubMonitor.convert(monitor, MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_0, getName()), 2);
 		try {
 			// set up from/to information if this is a move
 			boolean moved = (!isNew() && isMoved());
@@ -286,7 +286,7 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 			throw new DebugException(
 					new Status(
 						IStatus.ERROR, DebugPlugin.getUniqueIdentifier(),
- DebugException.REQUEST_FAILED, MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy__0__occurred_generating_launch_configuration_XML__1, new Object[] { e.toString() }), null
+ DebugException.REQUEST_FAILED, MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy__0__occurred_generating_launch_configuration_XML__1, e.toString()), null
 						)
 					);
 		}
@@ -322,7 +322,7 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 					throw new DebugException(
 						new Status(
 						 IStatus.ERROR, DebugPlugin.getUniqueIdentifier(),
- DebugException.REQUEST_FAILED, MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy__0__occurred_generating_launch_configuration_XML__1, new Object[] { ie.toString() }), null
+ DebugException.REQUEST_FAILED, MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy__0__occurred_generating_launch_configuration_XML__1, ie.toString()), null
 						)
 					);
 				}
@@ -353,7 +353,7 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 						added = true;
 						//create file input stream: work one unit in a sub monitor
 						smonitor = lmonitor.newChild(1);
-						smonitor.setTaskName(MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_2, new Object[] { getName() }));
+						smonitor.setTaskName(MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_2, getName()));
 						file.create(stream, false, smonitor);
 					} else {
 						// validate edit
@@ -366,7 +366,7 @@ public class LaunchConfigurationWorkingCopy extends LaunchConfiguration implemen
 						}
 						//set the contents of the file: work 1 unit in a sub monitor
 						smonitor = lmonitor.newChild(1);
-						smonitor.setTaskName(MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_3, new Object[] { getName() }));
+						smonitor.setTaskName(MessageFormat.format(DebugCoreMessages.LaunchConfigurationWorkingCopy_3, getName()));
 						file.setContents(stream, true, false, smonitor);
 					}
 				} catch (IOException closeException) {
