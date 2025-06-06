@@ -206,8 +206,7 @@ public class AntStackFrame extends AntDebugElement implements IStackFrame {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof AntStackFrame) {
-			AntStackFrame sf = (AntStackFrame) obj;
+		if (obj instanceof AntStackFrame sf) {
 			if (getSourceName() != null) {
 				return getSourceName().equals(sf.getSourceName()) && sf.getLineNumber() == getLineNumber() && sf.fId == fId;
 			}

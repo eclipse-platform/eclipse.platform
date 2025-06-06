@@ -35,13 +35,11 @@ class InputHandlerSetter {
 				handler = (InputHandler) (Class.forName(inputHandlerClassname).getConstructor().newInstance());
 			}
 			catch (ClassCastException e) {
-				String msg = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.The_specified_input_handler_class_{0}_does_not_implement_the_org.apache.tools.ant.input.InputHandler_interface_5"), new Object[] { //$NON-NLS-1$
-						inputHandlerClassname });
+				String msg = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.The_specified_input_handler_class_{0}_does_not_implement_the_org.apache.tools.ant.input.InputHandler_interface_5"), inputHandlerClassname);
 				throw new BuildException(msg, e);
 			}
 			catch (Exception e) {
-				String msg = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Unable_to_instantiate_specified_input_handler_class_{0}___{1}_6"), new Object[] { //$NON-NLS-1$
-						inputHandlerClassname, e.getClass().getName() });
+				String msg = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Unable_to_instantiate_specified_input_handler_class_{0}___{1}_6"), inputHandlerClassname, e.getClass().getName());
 				throw new BuildException(msg, e);
 			}
 		}

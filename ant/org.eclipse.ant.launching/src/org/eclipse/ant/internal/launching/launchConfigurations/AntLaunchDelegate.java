@@ -124,8 +124,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		if (!path.isEmpty()) {
 			IPath jrePath = IPath.fromPortableString(path);
 			IVMInstall vm = JavaRuntime.getVMInstall(jrePath);
-			if (vm instanceof AbstractVMInstall) {
-				AbstractVMInstall install = (AbstractVMInstall) vm;
+			if (vm instanceof AbstractVMInstall install) {
 				vmver = install.getJavaVersion();
 				// versionToJdkLevel only handles 3 char versions = 1.5, 1.6, 1.9, etc
 				if (vmver.length() > 3) {
@@ -143,8 +142,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		}
 		if (vmver == null) {
 			IVMInstall vm = JavaRuntime.getDefaultVMInstall();
-			if (vm instanceof AbstractVMInstall) {
-				AbstractVMInstall install = (AbstractVMInstall) vm;
+			if (vm instanceof AbstractVMInstall install) {
 				vmver = install.getJavaVersion();
 			}
 
@@ -162,11 +160,9 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		boolean isSeparateJRE = AntLaunchingUtil.isSeparateJREAntBuild(configuration);
 
 		if (AntLaunchingUtil.isLaunchInBackground(configuration)) {
-			monitor.beginTask(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__1, new Object[] {
-					configuration.getName() }), 10);
+			monitor.beginTask(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__1, configuration.getName()), 10);
 		} else {
-			monitor.beginTask(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Running__0__2, new Object[] {
-					configuration.getName() }), 100);
+			monitor.beginTask(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Running__0__2, configuration.getName()), 100);
 		}
 
 		// resolve location
@@ -178,8 +174,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		}
 
 		if (!isSeparateJRE && AntRunner.isBuildRunning()) {
-			IStatus status = new Status(IStatus.ERROR, AntLaunching.PLUGIN_ID, 1, MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Build_In_Progress, new Object[] {
-					location.toOSString() }), null);
+			IStatus status = new Status(IStatus.ERROR, AntLaunching.PLUGIN_ID, 1, MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Build_In_Progress, location.toOSString()), null);
 			throw new CoreException(status);
 		}
 
@@ -255,8 +250,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 		StringBuffer commandLine = generateCommandLine(location, arguments, userProperties, propertyFiles, targets, antHome, basedir, isSeparateJRE, captureOutput, setInputHandler, vmver);
 
 		if (isSeparateJRE) {
-			monitor.beginTask(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__1, new Object[] {
-					configuration.getName() }), 10);
+			monitor.beginTask(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__1, configuration.getName()), 10);
 			runInSeparateVM(configuration, launch, monitor, idStamp, antHome, port, requestPort, commandLine, captureOutput, setInputHandler);
 		} else {
 			runInSameVM(configuration, launch, monitor, location, idStamp, runner, commandLine);
