@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -29,14 +29,14 @@ public interface IAntModel {
 
 	/**
 	 * Returns the project node for this Ant model
-	 * 
+	 *
 	 * @return the project node for this Ant model
 	 */
 	AntProjectNode getProjectNode();
 
 	/**
 	 * Returns the name of the external entity defined by the specified path
-	 * 
+	 *
 	 * @param path
 	 *            the path to the entity
 	 * @return the name or the entity or <code>null</code> if no entity could be resolved
@@ -45,7 +45,7 @@ public interface IAntModel {
 
 	/**
 	 * Returns the location provider for this Ant model
-	 * 
+	 *
 	 * @return the location provider for this Ant model
 	 */
 	LocationProvider getLocationProvider();
@@ -62,7 +62,7 @@ public interface IAntModel {
 
 	/**
 	 * Sets the classloader for this Ant model
-	 * 
+	 *
 	 * @param newClassLoader
 	 *            the classloader to use when resolving this Ant model
 	 */
@@ -71,7 +71,7 @@ public interface IAntModel {
 	/**
 	 * Sets the extra properties to be used for parsing If global settings as defined in the Ant UI preferences are to be used this method does not
 	 * need to be called.
-	 * 
+	 *
 	 * @param properties
 	 *            the properties to ensure are set for parsing.
 	 */
@@ -80,7 +80,7 @@ public interface IAntModel {
 	/**
 	 * Sets the property files to be used for parsing If global settings as defined in the Ant UI preferences are to be used this method does not need
 	 * to be called.
-	 * 
+	 *
 	 * @param propertyFiles
 	 *            the file names of the property files to use for parsing
 	 */
@@ -88,7 +88,7 @@ public interface IAntModel {
 
 	/**
 	 * Returns the Eclipse resource for the buildfile this Ant model represents
-	 * 
+	 *
 	 * @return the Eclipse resource or <code>null</code> if the buildfile is not in the workspace
 	 */
 	IFile getFile();
@@ -96,7 +96,7 @@ public interface IAntModel {
 	/**
 	 * Returns the encoding from the backing {@link IAntModel}. If the model is <code>null</code> or the encoding cannot be computed from the location
 	 * backing the model, <code>UTF-8</code> is returned
-	 * 
+	 *
 	 * @return the encoding
 	 * @since 3.7
 	 */
@@ -104,7 +104,7 @@ public interface IAntModel {
 
 	/**
 	 * Handles a <code>BuildException</code> that occurred during parsing.
-	 * 
+	 *
 	 * @param be
 	 *            the build exception that occurred
 	 * @param node
@@ -116,7 +116,7 @@ public interface IAntModel {
 
 	/**
 	 * Returns the project node for this Ant model
-	 * 
+	 *
 	 * @param reconcile
 	 *            whether or not to ensure the Ant model is reconciled before retrieving the project node
 	 * @return the project node for this Ant model
@@ -125,7 +125,7 @@ public interface IAntModel {
 
 	/**
 	 * Adds the new target to this Ant model
-	 * 
+	 *
 	 * @param newTarget
 	 *            the new Apache Ant target
 	 * @param lineNumber
@@ -137,7 +137,7 @@ public interface IAntModel {
 
 	/**
 	 * Adds the new project to this Ant model
-	 * 
+	 *
 	 * @param project
 	 *            the new Apache Ant project
 	 * @param lineNumber
@@ -149,7 +149,7 @@ public interface IAntModel {
 
 	/**
 	 * Return the <code>java.io.File</code> that is the buildfile that this Ant model represents
-	 * 
+	 *
 	 * @return the <code>java.io.File</code> that is the buildfile
 	 */
 	// TODO Could this just be getPath().toLocation();
@@ -157,28 +157,28 @@ public interface IAntModel {
 
 	/**
 	 * Returns whether this model contains task information
-	 * 
+	 *
 	 * @return whether task information is included in this model
 	 */
 	boolean canGetTaskInfo();
 
 	/**
 	 * Returns whether this model contains lexical information
-	 * 
+	 *
 	 * @return whether lexical information is included in this model
 	 */
 	boolean canGetLexicalInfo();
 
 	/**
 	 * Returns whether this model contains position information for the elements
-	 * 
+	 *
 	 * @return whether position information is included in this model
 	 */
 	boolean canGetPositionInfo();
 
 	/**
 	 * Adds a comment to the Ant model Only called if <code>canGetLexicalInfo()</code> is <code>true</code>
-	 * 
+	 *
 	 * @param lineNumber
 	 *            the line number of the comment
 	 * @param columnNumber
@@ -190,7 +190,7 @@ public interface IAntModel {
 
 	/**
 	 * Adds a DTD element to the Ant model Only called if <code>canGetLexicalInfo()</code> is <code>true</code>
-	 * 
+	 *
 	 * @param name
 	 *            the name of the DTD element
 	 * @param lineNumber
@@ -202,7 +202,7 @@ public interface IAntModel {
 
 	/**
 	 * Adds the external entity to the Ant model
-	 * 
+	 *
 	 * @param name
 	 *            the name of the external entity
 	 * @param currentEntityPath
@@ -212,7 +212,7 @@ public interface IAntModel {
 
 	/**
 	 * Adds a task element to the Ant model Only called if <code>canGetTaskInfo()</code>() is <code>true</code>
-	 * 
+	 *
 	 * @param newTask
 	 *            the new Apache Ant task
 	 * @param parentTask
@@ -228,7 +228,7 @@ public interface IAntModel {
 
 	/**
 	 * Sets the length of the current element that was just finished being parsed
-	 * 
+	 *
 	 * @param lineNumber
 	 *            the current line number of parsing
 	 * @param columnNumber
@@ -238,7 +238,7 @@ public interface IAntModel {
 
 	/**
 	 * Returns the offset in the document associated with this Ant model for the given line number and position in the line
-	 * 
+	 *
 	 * @param lineNumber
 	 *            the line number in the doc
 	 * @param column
@@ -249,7 +249,7 @@ public interface IAntModel {
 
 	/**
 	 * Handles a fatal error from an exception during parsing.
-	 * 
+	 *
 	 * @param e
 	 *            the exception that occurred
 	 */
@@ -257,7 +257,7 @@ public interface IAntModel {
 
 	/**
 	 * Handles a fatal error from an exception during parsing.
-	 * 
+	 *
 	 * @param e
 	 *            the exception that occurred
 	 */
@@ -265,7 +265,7 @@ public interface IAntModel {
 
 	/**
 	 * Handles a warning from an exception during parsing.
-	 * 
+	 *
 	 * @param e
 	 *            the exception that occurred
 	 */
@@ -277,7 +277,7 @@ public interface IAntModel {
 
 	/**
 	 * Returns the text in the document of this Ant model for the given offset and length
-	 * 
+	 *
 	 * @param offset
 	 *            the offset within the document
 	 * @param length
@@ -288,7 +288,7 @@ public interface IAntModel {
 
 	/**
 	 * Caches the text from the provided defining node so that the node definitions are only updated if the text changes on reconciliation
-	 * 
+	 *
 	 * @param node
 	 *            the defining task node to cache the associated text
 	 */
@@ -296,7 +296,7 @@ public interface IAntModel {
 
 	/**
 	 * Record the prefix-URI Namespace mapping.
-	 * 
+	 *
 	 * @param prefix
 	 *            The Namespace prefix being declared.
 	 * @param uri

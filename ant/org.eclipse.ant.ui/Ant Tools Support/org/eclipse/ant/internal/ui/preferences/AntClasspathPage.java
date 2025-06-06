@@ -54,7 +54,7 @@ public class AntClasspathPage implements IAntBlockContainer {
 
 	/**
 	 * Returns the specified user classpath entries
-	 * 
+	 *
 	 * @return set of user classpath entries
 	 */
 	protected IAntClasspathEntry[] getAdditionalEntries() {

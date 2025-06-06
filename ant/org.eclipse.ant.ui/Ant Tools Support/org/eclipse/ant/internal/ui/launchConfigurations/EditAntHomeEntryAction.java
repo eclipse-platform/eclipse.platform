@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -33,7 +33,7 @@ import org.osgi.framework.FrameworkUtil;
 
 /**
  * Edits the Ant Home classpath entry.
- * 
+ *
  * @since 3.0
  */
 public class EditAntHomeEntryAction extends RuntimeClasspathAction {
@@ -42,7 +42,7 @@ public class EditAntHomeEntryAction extends RuntimeClasspathAction {
 
 	/**
 	 * Constructs an action to edit the Ant Home setting for a launch config.
-	 * 
+	 *
 	 * @param viewer
 	 *            classpath viewer
 	 */

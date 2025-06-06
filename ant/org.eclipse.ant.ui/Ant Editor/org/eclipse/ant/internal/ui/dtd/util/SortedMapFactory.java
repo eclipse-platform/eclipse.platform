@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *      IBM Corporation - fix for Bug 110636
@@ -18,7 +18,7 @@ import java.util.Comparator;
 
 /**
  * Can be inherited or used statically.
- * 
+ *
  * @author Bob Foster
  */
 public class SortedMapFactory {
@@ -35,8 +35,9 @@ public class SortedMapFactory {
 
 	public static SortedMap getMap(IMapHolder holder, Comparator<Object> comp) {
 		SortedMap map = (SortedMap) fFactory.getFree();
-		if (map == null)
+		if (map == null) {
 			map = new SortedMap();
+		}
 		map.setMapHolder(holder);
 		map.setComparator(comp);
 		return map;

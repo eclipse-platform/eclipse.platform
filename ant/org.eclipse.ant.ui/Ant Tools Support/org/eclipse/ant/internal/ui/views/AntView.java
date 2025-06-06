@@ -90,7 +90,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * The view root elements
-	 * 
+	 *
 	 * @since 3.5.00
 	 */
 	private final List<AntProjectNode> fInput = new ArrayList<>();
@@ -189,7 +189,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Creates a pop-up menu on the given control
-	 * 
+	 *
 	 * @param menuControl
 	 *            the control with which the pop-up menu will be associated
 	 */
@@ -207,7 +207,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Adds actions to the context menu
-	 * 
+	 *
 	 * @param menu
 	 *            The menu to contribute to
 	 */
@@ -362,8 +362,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 	 * Returns text appropriate for display in the workbench status line for the given node.
 	 */
 	private String getStatusLineText(AntElementNode node) {
-		if (node instanceof AntProjectNode) {
-			AntProjectNode project = (AntProjectNode) node;
+		if (node instanceof AntProjectNode project) {
 			StringBuilder message = new StringBuilder(project.getBuildFileName());
 			String description = project.getDescription();
 			if (description != null && description.length() > 0) {
@@ -371,8 +370,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 				message.append(description);
 			}
 			return message.toString();
-		} else if (node instanceof AntTargetNode) {
-			AntTargetNode target = (AntTargetNode) node;
+		} else if (node instanceof AntTargetNode target) {
 			StringBuilder message = new StringBuilder();
 			Enumeration<String> depends = target.getTarget().getDependencies();
 			if (depends.hasMoreElements()) {
@@ -397,7 +395,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Returns the tree viewer that displays the projects in this view
-	 * 
+	 *
 	 * @return TreeViewer this view's project viewer
 	 */
 	public TreeViewer getViewer() {
@@ -406,7 +404,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Returns the <code>AntProjectNode</code>s currently displayed in this view.
-	 * 
+	 *
 	 * @return AntProjectNode[] the <code>ProjectNode</code>s currently displayed in this view
 	 */
 	public AntProjectNode[] getProjects() {
@@ -415,7 +413,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Adds the given project to the view
-	 * 
+	 *
 	 * @param project
 	 *            the project to add
 	 */
@@ -428,7 +426,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Removes the given project from the view
-	 * 
+	 *
 	 * @param project
 	 *            the project to remove
 	 */
@@ -452,7 +450,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 	/**
 	 * Removes the given list of <code>AntProjectNode</code> objects from the view. This method should be called whenever multiple projects are to be
 	 * removed because this method optimizes the viewer refresh associated with removing multiple items.
-	 * 
+	 *
 	 * @param projectNodes
 	 *            the list of <code>ProjectNode</code> objects to remove
 	 */
@@ -509,7 +507,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Restore the viewer content that was persisted
-	 * 
+	 *
 	 * @param memento
 	 *            the memento containing the persisted viewer content
 	 */
@@ -549,7 +547,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 	/**
 	 * Saves the state of the viewer into the dialog settings. Works around the issues of {@link #saveState(IMemento))} not being called when a view
 	 * is closed while the workbench is still running
-	 * 
+	 *
 	 * @since 3.5.500
 	 */
 	private void saveViewerState() {
@@ -619,7 +617,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Update the view for the given resource delta. The delta is a resource delta for the given build file in the view
-	 * 
+	 *
 	 * @param delta
 	 *            a delta for a build file in the view
 	 * @param project
@@ -656,8 +654,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 		IStructuredSelection selection = (IStructuredSelection) getViewer().getSelection();
 		if (selection.size() == 1) {
 			Object element = selection.getFirstElement();
-			if (element instanceof AntElementNode) {
-				AntElementNode node = (AntElementNode) element;
+			if (element instanceof AntElementNode node) {
 				return node;
 			}
 		}
@@ -679,7 +676,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Returns whether internal targets are currently being filtered out of the view.
-	 * 
+	 *
 	 * @return whether or not internal targets are being filtered out
 	 */
 	public boolean isFilterInternalTargets() {
@@ -688,7 +685,7 @@ public class AntView extends ViewPart implements IResourceChangeListener, IShowI
 
 	/**
 	 * Sets whether internal targets should be filtered out of the view.
-	 * 
+	 *
 	 * @param filter
 	 *            whether or not internal targets should be filtered out
 	 */

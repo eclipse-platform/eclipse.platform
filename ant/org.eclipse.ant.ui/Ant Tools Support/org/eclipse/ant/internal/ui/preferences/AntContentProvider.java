@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -44,7 +44,7 @@ public class AntContentProvider implements IStructuredContentProvider {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param defaultcomparator
 	 *            if the default comparator should be used for the returned data
 	 * @since 3.5
@@ -112,7 +112,7 @@ public class AntContentProvider implements IStructuredContentProvider {
 
 	/**
 	 * Returns the default comparator which compares the {@link #toString()} value of the elements for ordering
-	 * 
+	 *
 	 * @return the default comparator
 	 */
 	protected ViewerComparator getComparator() {

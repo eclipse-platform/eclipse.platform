@@ -6,7 +6,7 @@
 t https://www.eclipse.org/legal/epl-2.0/
 t
 t SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  * IBM - Initial API and implementation
  **********************************************************************/

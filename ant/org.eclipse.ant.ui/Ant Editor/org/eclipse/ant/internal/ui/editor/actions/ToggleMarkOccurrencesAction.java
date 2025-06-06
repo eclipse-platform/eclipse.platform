@@ -28,7 +28,7 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 /**
  * A toolbar action which toggles the {@linkplain org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants#EDITOR_MARK_OCCURRENCES mark
  * occurrences preference}.
- * 
+ *
  * @since 3.1
  */
 public class ToggleMarkOccurrencesAction extends TextEditorAction implements IPropertyChangeListener {
@@ -87,7 +87,8 @@ public class ToggleMarkOccurrencesAction extends TextEditorAction implements IPr
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getProperty().equals(AntEditorPreferenceConstants.EDITOR_MARK_OCCURRENCES))
+		if (event.getProperty().equals(AntEditorPreferenceConstants.EDITOR_MARK_OCCURRENCES)) {
 			setChecked(Boolean.parseBoolean(event.getNewValue().toString()));
+		}
 	}
 }

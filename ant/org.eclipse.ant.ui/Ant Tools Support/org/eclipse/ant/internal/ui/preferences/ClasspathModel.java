@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -100,7 +100,7 @@ public class ClasspathModel extends AbstractClasspathEntry {
 
 	/**
 	 * Returns entries of the specified kind, possibly empty.
-	 * 
+	 *
 	 * @param entryType
 	 *            kind of entries to retrieve
 	 * @return entries of the specified kind, possibly empty

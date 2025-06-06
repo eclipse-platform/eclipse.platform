@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -44,7 +44,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public final static String CODEASSIST_AUTOINSERT = "content_assist_autoinsert"; //$NON-NLS-1$
@@ -62,7 +62,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	public final static String CODEASSIST_USER_DEFINED_TASKS = "content_assist_userDefinedTasks"; //$NON-NLS-1$
@@ -165,7 +165,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static String BUILDFILE_IGNORE_ALL = "ignoreAll"; //$NON-NLS-1$
@@ -175,7 +175,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>String</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static String BUILDFILE_NAMES_TO_IGNORE = "ignoreNames"; //$NON-NLS-1$
@@ -185,7 +185,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_FOLDING_ENABLED = "editor_folding_enabled"; //$NON-NLS-1$
@@ -195,7 +195,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_FOLDING_COMMENTS = "editor_folding_comments"; //$NON-NLS-1$
@@ -205,7 +205,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_FOLDING_TARGETS = "editor_folding_targets"; //$NON-NLS-1$
@@ -215,7 +215,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_FOLDING_DTD = "editor_folding_dtd"; //$NON-NLS-1$
@@ -225,7 +225,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_FOLDING_DEFINING = "editor_folding_defining"; //$NON-NLS-1$
@@ -235,7 +235,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_SHOW_SEGMENTS = "editor_show_segments"; //$NON-NLS-1$
@@ -245,7 +245,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_MARK_OCCURRENCES = "editor_mark_occurrences"; //$NON-NLS-1$
@@ -255,7 +255,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_RECONCILE = "editor_reconcile"; //$NON-NLS-1$
@@ -265,7 +265,7 @@ public class AntEditorPreferenceConstants {
 	 * <p>
 	 * Value is of type <code>Boolean</code>.
 	 * </p>
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String EDITOR_STICKY_OCCURRENCES = "stickyOccurrences"; //$NON-NLS-1$

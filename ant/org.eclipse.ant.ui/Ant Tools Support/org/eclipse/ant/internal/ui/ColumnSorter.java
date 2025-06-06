@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.TableColumn;
 /**
  * A sorter that can be attached to a given column in a given viewer. This comparator uses the {@link AntObjectLabelProvider} to get the text to
  * compare
- * 
+ *
  * @since 3.5
  */
 public abstract class ColumnSorter extends ViewerComparator {
@@ -63,7 +63,7 @@ public abstract class ColumnSorter extends ViewerComparator {
 
 	/**
 	 * Returns the compare text that should be used for the given object coming from the given column index
-	 * 
+	 *
 	 * @return the text to compare with
 	 */
 	public abstract String getCompareText(Object obj, int columnindex);
@@ -97,7 +97,7 @@ public abstract class ColumnSorter extends ViewerComparator {
 
 	/**
 	 * Returns the index of the given column in the backing table for this page, or 0
-	 * 
+	 *
 	 * @return the index of the column in the backing table for this page or 0
 	 */
 	private int getColumnIndex() {

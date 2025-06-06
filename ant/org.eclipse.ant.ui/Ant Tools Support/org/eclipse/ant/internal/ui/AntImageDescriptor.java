@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     John-Mason P. Shackelford (john-mason.shackelford@pearson.com) - bug 49445
@@ -39,7 +39,7 @@ public class AntImageDescriptor extends CompositeImageDescriptor {
 
 	/**
 	 * Create a new AntImageDescriptor.
-	 * 
+	 *
 	 * @param baseImage
 	 *            an image descriptor used as the base image
 	 * @param flags
@@ -61,11 +61,10 @@ public class AntImageDescriptor extends CompositeImageDescriptor {
 
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof AntImageDescriptor)) {
+		if (!(object instanceof AntImageDescriptor other)) {
 			return false;
 		}
 
-		AntImageDescriptor other = (AntImageDescriptor) object;
 		return (getBaseImage().equals(other.getBaseImage()) && getFlags() == other.getFlags());
 	}
 

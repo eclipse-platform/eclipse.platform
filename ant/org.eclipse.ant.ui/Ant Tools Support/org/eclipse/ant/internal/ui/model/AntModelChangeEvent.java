@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -34,7 +34,7 @@ public class AntModelChangeEvent {
 
 	/**
 	 * Returns whether the Ant model has changed as a result of a preference change.
-	 * 
+	 *
 	 * @return whether the model has changed from a preference change.
 	 */
 	public boolean isPreferenceChange() {

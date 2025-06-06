@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -42,10 +42,12 @@ public class XMLAnnotationHover implements IAnnotationHover {
 		if (position.getOffset() > -1 && position.getLength() > -1) {
 			try {
 				int xmlAnnotationLine = document.getLineOfOffset(position.getOffset());
-				if (line == xmlAnnotationLine)
+				if (line == xmlAnnotationLine) {
 					return 1;
-				if (xmlAnnotationLine <= line && line <= document.getLineOfOffset(position.getOffset() + position.getLength()))
+				}
+				if (xmlAnnotationLine <= line && line <= document.getLineOfOffset(position.getOffset() + position.getLength())) {
 					return 2;
+				}
 			}
 			catch (BadLocationException x) {
 				// do nothing
@@ -63,8 +65,9 @@ public class XMLAnnotationHover implements IAnnotationHover {
 		IDocument document = viewer.getDocument();
 		IAnnotationModel model = viewer.getAnnotationModel();
 
-		if (model == null)
+		if (model == null) {
 			return null;
+		}
 
 		List<Annotation> exact = new ArrayList<>();
 
@@ -72,14 +75,15 @@ public class XMLAnnotationHover implements IAnnotationHover {
 		Map<Position, Object> messagesAtPosition = new HashMap<>();
 		while (e.hasNext()) {
 			Object o = e.next();
-			if (o instanceof Annotation) {
-				Annotation a = (Annotation) o;
+			if (o instanceof Annotation a) {
 				Position position = model.getPosition(a);
-				if (position == null)
+				if (position == null) {
 					continue;
+				}
 
-				if (isDuplicateXMLAnnotation(messagesAtPosition, position, a.getText()))
+				if (isDuplicateXMLAnnotation(messagesAtPosition, position, a.getText())) {
 					continue;
+				}
 
 				switch (compareRulerLine(position, document, line)) {
 					case 1:
@@ -96,8 +100,9 @@ public class XMLAnnotationHover implements IAnnotationHover {
 
 	private boolean isDuplicateXMLAnnotation(Map<Position, Object> messagesAtPosition, Position position, String message) {
 		if (messagesAtPosition.containsKey(position)) {
-			if (message.equals(messagesAtPosition.get(position)))
+			if (message.equals(messagesAtPosition.get(position))) {
 				return true;
+			}
 
 			if (messagesAtPosition.get(position) instanceof List) {
 				@SuppressWarnings("unchecked")
@@ -112,8 +117,9 @@ public class XMLAnnotationHover implements IAnnotationHover {
 				messages.add(message);
 				messagesAtPosition.put(position, messages);
 			}
-		} else
+		} else {
 			messagesAtPosition.put(position, message);
+		}
 		return false;
 	}
 
@@ -177,8 +183,9 @@ public class XMLAnnotationHover implements IAnnotationHover {
 
 		HTMLPrinter.startBulletList(buffer);
 		Iterator<String> e = messages.iterator();
-		while (e.hasNext())
+		while (e.hasNext()) {
 			HTMLPrinter.addBullet(buffer, HTMLPrinter.convertToHTMLContent(e.next()));
+		}
 		HTMLPrinter.endBulletList(buffer);
 
 		HTMLPrinter.addPageEpilog(buffer);

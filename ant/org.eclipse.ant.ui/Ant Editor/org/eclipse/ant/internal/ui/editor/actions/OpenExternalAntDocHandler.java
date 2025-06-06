@@ -39,7 +39,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Default handler for the Open External Documentation command for the Ant editor
- * 
+ *
  * @since 3.5.400
  */
 public class OpenExternalAntDocHandler extends AbstractHandler {
@@ -47,11 +47,9 @@ public class OpenExternalAntDocHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IEditorPart part = HandlerUtil.getActiveEditor(event);
-		if (part instanceof AntEditor) {
-			AntEditor editor = (AntEditor) part;
+		if (part instanceof AntEditor editor) {
 			ISelection s = HandlerUtil.getCurrentSelection(event);
-			if (s instanceof ITextSelection) {
-				ITextSelection ts = (ITextSelection) s;
+			if (s instanceof ITextSelection ts) {
 				AntModel model = editor.getAntModel();
 				AntElementNode node = null;
 				if (model != null) {
@@ -94,8 +92,7 @@ public class OpenExternalAntDocHandler extends AbstractHandler {
 			} else {
 				pathBuffer.append("using.html#targets"); //$NON-NLS-1$
 			}
-		} else if (node instanceof AntTaskNode) {
-			AntTaskNode taskNode = (AntTaskNode) node;
+		} else if (node instanceof AntTaskNode taskNode) {
 			if (editor.getAntModel().getDefininingTaskNode(taskNode.getTask().getTaskName()) == null) {
 				// not a user defined task
 				appendTaskPath(taskNode, pathBuffer);

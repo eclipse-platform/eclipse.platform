@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -57,7 +57,7 @@ public class GlobalClasspathEntries extends AbstractClasspathEntry {
 
 	/**
 	 * Set the child entries of this classpath entry.
-	 * 
+	 *
 	 * @param entries
 	 *            The child entries.
 	 */

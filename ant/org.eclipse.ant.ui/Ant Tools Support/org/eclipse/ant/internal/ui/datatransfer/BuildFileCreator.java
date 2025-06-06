@@ -749,8 +749,9 @@ public class BuildFileCreator {
 				classpathRefElement.setAttribute("refid", projectName + ".classpath"); //$NON-NLS-1$ //$NON-NLS-2$
 				javacElement.appendChild(classpathRefElement);
 				element.appendChild(javacElement);
-				if (!JavaRuntime.isModularProject(project))
+				if (!JavaRuntime.isModularProject(project)) {
 					addCompilerBootClasspath(srcDirs, javacElement);
+				}
 			}
 		}
 		root.appendChild(element);

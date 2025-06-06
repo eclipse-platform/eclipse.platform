@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -22,7 +22,7 @@ import org.eclipse.jface.text.rules.ITokenScanner;
 
 /**
  * Considers multilines as damage regions even if the document partitioning has not changed.
- * 
+ *
  * @see org.eclipse.jface.text.rules.DefaultDamagerRepairer
  */
 public class MultilineDamagerRepairer extends DefaultDamagerRepairer {

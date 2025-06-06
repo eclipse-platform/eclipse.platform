@@ -60,21 +60,21 @@ public class AntPropertiesBlock {
 
 	/**
 	 * Constant representing the id of the settings for the property table column widths
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	private static final String PROPERTY_COLUMN_WIDTH = "ant.properties.block.property.columnWidth"; //$NON-NLS-1$
 
 	/**
 	 * Constant representing the id of the settings for the property table sort column
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	private static final String PROPERTY_SORT_COLUMN = "ant.properties.block.property.sortColumn"; //$NON-NLS-1$
 
 	/**
 	 * Constant representing the id of the settings for the property table sort direction
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	private static final String PROPERTY_SORT_DIRECTION = "ant.properties.block.property.sortDirection"; //$NON-NLS-1$
@@ -297,7 +297,7 @@ public class AntPropertiesBlock {
 
 	/**
 	 * Used to persist any settings for the block that the user has set
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	public void saveSettings() {
@@ -308,7 +308,7 @@ public class AntPropertiesBlock {
 
 	/**
 	 * Persist table settings into the give dialog store.
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	private void saveColumnSettings() {
@@ -326,7 +326,7 @@ public class AntPropertiesBlock {
 
 	/**
 	 * Restore table settings from the given dialog store.
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	private void restoreColumnSettings() {
@@ -338,7 +338,7 @@ public class AntPropertiesBlock {
 
 	/**
 	 * Restores the column widths from dialog settings
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	private void restoreColumnWidths() {
@@ -363,7 +363,7 @@ public class AntPropertiesBlock {
 
 	/**
 	 * Return the number of rows available in the current display using the current font.
-	 * 
+	 *
 	 * @param parent
 	 *            The Composite whose Font will be queried.
 	 * @return The result of the display size divided by the font size.
@@ -491,12 +491,10 @@ public class AntPropertiesBlock {
 			String propertyName = property.getName();
 			if (propertyName.equals(name)) {
 				if (property.isDefault()) {
-					MessageDialog.openError(propertyTableViewer.getControl().getShell(), AntPreferencesMessages.AntPropertiesBlock_17, MessageFormat.format(AntPreferencesMessages.AntPropertiesBlock_18, new Object[] {
-							propertyName, property.getPluginLabel() }));
+					MessageDialog.openError(propertyTableViewer.getControl().getShell(), AntPreferencesMessages.AntPropertiesBlock_17, MessageFormat.format(AntPreferencesMessages.AntPropertiesBlock_18, propertyName, property.getPluginLabel()));
 					return false;
 				}
-				boolean overWrite = MessageDialog.openQuestion(propertyTableViewer.getControl().getShell(), AntPreferencesMessages.AntPropertiesBlock_15, MessageFormat.format(AntPreferencesMessages.AntPropertiesBlock_16, new Object[] {
-						name }));
+				boolean overWrite = MessageDialog.openQuestion(propertyTableViewer.getControl().getShell(), AntPreferencesMessages.AntPropertiesBlock_15, MessageFormat.format(AntPreferencesMessages.AntPropertiesBlock_16, name));
 				if (!overWrite) {
 					return false;
 				}
@@ -524,8 +522,7 @@ public class AntPropertiesBlock {
 		Iterator<Object> itr = newSelection.iterator();
 		while (itr.hasNext()) {
 			Object element = itr.next();
-			if (element instanceof Property) {
-				Property property = (Property) element;
+			if (element instanceof Property property) {
 				if (property.isDefault()) {
 					enabled = false;
 					break;

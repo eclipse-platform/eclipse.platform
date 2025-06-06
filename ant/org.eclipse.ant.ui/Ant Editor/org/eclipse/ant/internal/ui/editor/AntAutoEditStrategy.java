@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -41,7 +41,7 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Sets the indentation based on the Ant element node that contains the offset of the document command.
-	 * 
+	 *
 	 * @param d
 	 *            the document to work on
 	 * @param c
@@ -114,8 +114,9 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	private boolean isLineDelimiter(IDocument document, String text) {
 		String[] delimiters = document.getLegalLineDelimiters();
-		if (delimiters != null)
+		if (delimiters != null) {
 			return TextUtilities.equals(delimiters, text) > -1;
+		}
 		return false;
 	}
 
@@ -199,7 +200,7 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Indents line <code>line</code> in <code>document</code> with <code>indent</code>. Leaves leading comment signs alone.
-	 * 
+	 *
 	 * @param document
 	 *            the document
 	 * @param line
@@ -219,7 +220,7 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Cuts the visual equivalent of <code>toDelete</code> characters out of the indentation of line <code>line</code> in <code>document</code>.
-	 * 
+	 *
 	 * @param document
 	 *            the document
 	 * @param line
@@ -237,8 +238,9 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		int to = from;
 		while (toDelete > 0 && to < endOffset) {
 			char ch = document.getChar(to);
-			if (!Character.isWhitespace(ch))
+			if (!Character.isWhitespace(ch)) {
 				break;
+			}
 			toDelete -= computeVisualLength(ch);
 			if (toDelete >= 0) {
 				to++;
@@ -252,7 +254,7 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Returns the visual length of a given character taking into account the visual tabulator length.
-	 * 
+	 *
 	 * @param ch
 	 *            the character to measure
 	 * @return the visual length of <code>ch</code>
@@ -267,7 +269,7 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * Returns the visual length of a given <code>CharSequence</code> taking into account the visual tabulator length.
-	 * 
+	 *
 	 * @param seq
 	 *            the string to measure
 	 * @return the visual length of <code>seq</code>
@@ -290,7 +292,7 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	/**
 	 * Computes the difference of two indentations and returns the difference in length of current and correct. If the return value is positive,
 	 * <code>addition</code> is initialized with a substring of that length of <code>correct</code>.
-	 * 
+	 *
 	 * @param correct
 	 *            the correct indentation
 	 * @param current
@@ -321,7 +323,7 @@ public class AntAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	/**
 	 * The preference setting for the visual tabulator display.
-	 * 
+	 *
 	 * @return the number of spaces displayed for a tabulator in the editor
 	 */
 	private int getVisualTabLengthPreference() {

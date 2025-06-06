@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2005 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *******************************************************************************/
@@ -31,15 +31,15 @@ import org.xml.sax.ext.DeclHandler;
 
 /**
  * Simple parser for DTDs. Returns ISchema representing the DTD.
- * 
+ *
  * To parse a DTD, you must parse an XML document. The <code>parseDTD()</code> method builds a temporary XML document in memory that refers to or
  * includes the DTD.
- * 
+ *
  * There is no dependency in this package on any code outside the package except XMLReader.
- * 
+ *
  * To hide the underlying parser, XML parser exceptions are wrapped by a ParseError. Unless debugging, the two string constants are sufficient to
  * determine the cause of the error.
- * 
+ *
  * @author Bob Foster
  */
 public class Parser {
@@ -56,7 +56,7 @@ public class Parser {
 	/**
 	 * Parse the XML document at the input source and return a document walker that can be used to validate any document with the same DTD (internal
 	 * and external) or provide user assistance for this document.
-	 * 
+	 *
 	 * @param inputSource
 	 *            Source for XML document to start DTD parse. Must contain a DOCTYPE declaration with internal or external subset, or both.
 	 * @param entityResolver
@@ -112,7 +112,7 @@ public class Parser {
 	/**
 	 * Parse the XML document at the argument URL and return a document walker that can be used to validate any document with the same DTD (internal
 	 * and external) or provide user assistance for this document.
-	 * 
+	 *
 	 * @param url
 	 *            Of XML document to start DTD parse. Must contain a DOCTYPE declaration with internal or external subset, or both.
 	 * @return IWalker that can be used to traverse document.
@@ -126,7 +126,7 @@ public class Parser {
 	/**
 	 * Parse the XML document using the argument reader and return a document walker that can be used to validate any document with the same DTD
 	 * (internal and external) or provide user assistance for this document.
-	 * 
+	 *
 	 * @param reader
 	 *            Reader for XML document to start DTD parse. Must contain a DOCTYPE declaration with internal or external subset, or both.
 	 * @return IWalker that can be used to traverse document.
@@ -140,7 +140,7 @@ public class Parser {
 	/**
 	 * Parse the DTD with the given public and system ids and return a document walker that can be used to validate or provide user assistance for any
 	 * document with the same external DTD and no internal subset.
-	 * 
+	 *
 	 * @param pub
 	 *            PUBLIC id of DTD.
 	 * @param sys
@@ -158,7 +158,7 @@ public class Parser {
 	/**
 	 * Parse the DTD from the reader and return a document walker that can be used to validate or provide user assistance for any document with the
 	 * same external DTD and no internal subset.
-	 * 
+	 *
 	 * @param reader
 	 *            Reader for external subset DTD
 	 * @param root
@@ -199,8 +199,9 @@ public class Parser {
 
 		@Override
 		public InputSource resolveEntity(String publicId, String systemId) {
-			if (publicId.equals(INTERNAL) && systemId.equals(INTERNAL))
+			if (publicId.equals(INTERNAL) && systemId.equals(INTERNAL)) {
 				return new InputSource(reader);
+			}
 			return null;
 		}
 	}

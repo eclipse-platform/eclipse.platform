@@ -2,11 +2,11 @@
  * Copyright (c) 2000, 2015 IBM Corporation and others.
  * Portions Copyright  2000-2004 The Apache Software Foundation
  *
- * This program and the accompanying materials are made 
- * available under the terms of the Apache Software License v2.0 which 
- * accompanies this distribution and is available at 
+ * This program and the accompanying materials are made
+ * available under the terms of the Apache Software License v2.0 which
+ * accompanies this distribution and is available at
  * http://www.apache.org/licenses/LICENSE-2.0.
- * 
+ *
  * Contributors:
  *     IBM Corporation - derived implementation
  *******************************************************************************/
@@ -64,7 +64,7 @@ public class AntModelProject extends Project {
 	 * <p>
 	 * Allows us to register a {@link PropertyHelper.PropertySetter} delegate for this project
 	 * </p>
-	 * 
+	 *
 	 * @noreference This constructor is not intended to be referenced by clients.
 	 */
 	public AntModelProject() {
@@ -140,8 +140,7 @@ public class AntModelProject extends Project {
 		T ref = super.getReference(key);/* references.get(key); */
 		if (ref == null) {
 			ref = (T) idrefs.get(key);
-			if (ref instanceof UnknownElement) {
-				UnknownElement ue = (UnknownElement) ref;
+			if (ref instanceof UnknownElement ue) {
 				ue.maybeConfigure();
 				return (T) ue.getRealThing();
 			}

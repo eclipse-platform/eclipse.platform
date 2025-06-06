@@ -26,11 +26,10 @@ public class JavacTableLabelProvider extends AntModelLabelProvider {
 
 	@Override
 	public StyledString getStyledText(Object element) {
-		if (element instanceof AntElementNode) {
-			AntElementNode node = (AntElementNode) element;
+		if (element instanceof AntElementNode node) {
 			AntElementNode parent = (AntElementNode) node.getParentNode();
 			if (parent != null) {
-				return new StyledString(MessageFormat.format(DataTransferMessages.JavacTableLabelProvider_0, new Object[] { parent.getLabel() }));
+				return new StyledString(MessageFormat.format(DataTransferMessages.JavacTableLabelProvider_0, parent.getLabel()));
 			}
 		}
 		return super.getStyledText(element);

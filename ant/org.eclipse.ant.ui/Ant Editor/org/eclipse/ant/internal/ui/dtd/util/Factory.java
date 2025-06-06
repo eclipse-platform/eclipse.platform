@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *******************************************************************************/
@@ -18,7 +18,7 @@ import java.lang.ref.SoftReference;
 /**
  * Factory maintains a free list and, with FactoryObject, serves as a basis for factories of all types. Factory should only be subclassed in singleton
  * classes; for static factories, it may be instantiated as a static object.
- * 
+ *
  * @author Bob Foster
  */
 public class Factory {

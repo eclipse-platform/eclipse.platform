@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -116,7 +116,7 @@ public class RenameInFileAction extends SelectionDispatchAction {
 
 	/**
 	 * Set the Ant editor associated with the action
-	 * 
+	 *
 	 * @param editor
 	 *            the ant editor to do the renames
 	 */
