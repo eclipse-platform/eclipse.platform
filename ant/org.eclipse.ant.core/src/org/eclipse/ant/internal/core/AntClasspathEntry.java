@@ -80,8 +80,7 @@ public class AntClasspathEntry implements IAntClasspathEntry {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof IAntClasspathEntry) {
-			IAntClasspathEntry other = (IAntClasspathEntry) obj;
+		if (obj instanceof IAntClasspathEntry other) {
 			return entryString.equals(other.getLabel());
 		}
 		return false;
