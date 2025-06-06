@@ -100,10 +100,9 @@ public class TargetInfo {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof TargetInfo)) {
+		if (!(obj instanceof TargetInfo other)) {
 			return false;
 		}
-		TargetInfo other = (TargetInfo) obj;
 		return getName().equals(other.getName());
 	}
 

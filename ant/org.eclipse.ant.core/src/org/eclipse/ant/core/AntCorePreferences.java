@@ -663,8 +663,9 @@ public class AntCorePreferences implements IPropertyChangeListener {
 			}
 		}
 
-		if (urlFile == null || !urlFile.exists())
+		if (urlFile == null || !urlFile.exists()) {
 			return null;
+		}
 
 		String path = urlFile.getAbsolutePath();
 		return new URL(IAntCoreConstants.FILE_PROTOCOL + (urlFile.isDirectory() ? path + "/" : path)); //$NON-NLS-1$
@@ -1231,11 +1232,12 @@ public class AntCorePreferences implements IPropertyChangeListener {
 			BundleRevision from = mapping.from;
 			Integer fromCount = counts.get(from);
 			BundleRevision to = mapping.to;
-			if (to == null)
+			if (to == null) {
 				counts.put(from, Integer.valueOf(0));
-			else {
-				if (counts.get(to) == null)
+			} else {
+				if (counts.get(to) == null) {
 					counts.put(to, Integer.valueOf(0));
+				}
 				fromCount = fromCount == null ? Integer.valueOf(1) : Integer.valueOf(fromCount.intValue() + 1);
 				counts.put(from, fromCount);
 			}
