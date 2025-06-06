@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Tests methods from {@link AntModelProject}
- * 
+ *
  * @since 3.5.1
  */
 public class ModelProjectTests {

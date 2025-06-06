@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -55,8 +55,7 @@ public class AntViewTests extends AbstractAntUITest {
 		IContributionItem[] actions = toolBarMgr.getItems();
 		if (actions != null && actions.length > 0) {
 			for (IContributionItem action : actions) {
-				if (action instanceof ActionContributionItem) {
-					ActionContributionItem actionItem = (ActionContributionItem) action;
+				if (action instanceof ActionContributionItem actionItem) {
 					if (actionItem.getAction() instanceof AddBuildFilesAction) {
 						return (AddBuildFilesAction) actionItem.getAction();
 					}

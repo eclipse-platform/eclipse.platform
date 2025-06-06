@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -146,7 +146,7 @@ public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
 	/**
 	 * Returns the edited File that org.eclipse.ant.internal.ui.editor.AntEditorCompletionProcessor sets or a temporary file, which only serves as a
 	 * dummy.
-	 * 
+	 *
 	 * @see org.eclipse.ant.internal.ui.editor.AntEditorCompletionProcessor#getEditedFile()
 	 */
 	@Override

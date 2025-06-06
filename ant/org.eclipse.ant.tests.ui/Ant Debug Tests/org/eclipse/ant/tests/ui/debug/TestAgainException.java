@@ -15,7 +15,7 @@ package org.eclipse.ant.tests.ui.debug;
 
 /**
  * Exception to indicate a test should be run again when it fails.
- * 
+ *
  * @since 3.8
  */
 public class TestAgainException extends RuntimeException {
