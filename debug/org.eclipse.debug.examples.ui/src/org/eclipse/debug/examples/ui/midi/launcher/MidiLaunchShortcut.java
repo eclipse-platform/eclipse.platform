@@ -44,12 +44,10 @@ public class MidiLaunchShortcut implements ILaunchShortcut {
 
 	@Override
 	public void launch(ISelection selection, String mode) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				Object element = ss.getFirstElement();
-				if (element instanceof IFile) {
-					IFile file = (IFile) element;
+				if (element instanceof IFile file) {
 					ILaunchConfiguration configuration = getConfiguration(file);
 					if (configuration != null) {
 						DebugUITools.launch(configuration, mode);

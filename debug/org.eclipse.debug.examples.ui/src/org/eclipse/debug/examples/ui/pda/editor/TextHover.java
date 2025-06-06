@@ -49,15 +49,13 @@ public class TextHover implements ITextHover {
 		IAdaptable debugContext = DebugUITools.getDebugContext();
 		if (debugContext instanceof PDAStackFrame) {
 			frame = (PDAStackFrame) debugContext;
-		} else if (debugContext instanceof PDAThread) {
-			PDAThread thread = (PDAThread) debugContext;
+		} else if (debugContext instanceof PDAThread thread) {
 			try {
 				frame = (PDAStackFrame) thread.getTopStackFrame();
 			} catch (DebugException e) {
 				return null;
 			}
-		} else if (debugContext instanceof PDADebugTarget) {
-			PDADebugTarget target = (PDADebugTarget) debugContext;
+		} else if (debugContext instanceof PDADebugTarget target) {
 			try {
 				IThread[] threads = target.getThreads();
 				if (threads.length > 0) {

@@ -46,8 +46,9 @@ public class WordFinder {
 
 			while (pos >= 0) {
 				c= document.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c))
+				if (!Character.isJavaIdentifierPart(c)) {
 					break;
+				}
 				--pos;
 			}
 
@@ -58,8 +59,9 @@ public class WordFinder {
 
 			while (pos < length) {
 				c= document.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c))
+				if (!Character.isJavaIdentifierPart(c)) {
 					break;
+				}
 				++pos;
 			}
 
@@ -69,12 +71,13 @@ public class WordFinder {
 		}
 
 		if (start > -1 && end > -1) {
-			if (start == offset && end == offset)
+			if (start == offset && end == offset) {
 				return new Region(offset, 0);
-			else if (start == offset)
+			} else if (start == offset) {
 				return new Region(start, end - start);
-			else
+			} else {
 				return new Region(start + 1, end - start - 1);
+			}
 		}
 
 		return null;

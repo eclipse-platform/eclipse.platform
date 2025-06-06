@@ -16,7 +16,6 @@ package org.eclipse.debug.examples.ui.midi.launcher;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 /**
  * Tab group for a MIDI file.
@@ -26,9 +25,6 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 public class MidiTabGroup extends AbstractLaunchConfigurationTabGroup {
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		setTabs(new ILaunchConfigurationTab[] {
-				new MidiMainTab(),
-				new CommonTab()
-		});
+		setTabs(new MidiMainTab(), new CommonTab());
 	}
 }
