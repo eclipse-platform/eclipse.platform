@@ -192,7 +192,7 @@ public class InternalAntRunner {
 			}
 		}
 		catch (ClassCastException e) {
-			String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.{0}_which_was_specified_to_be_a_build_listener_is_not_an_instance_of_org.apache.tools.ant.BuildListener._1"), clazz);
+			String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.{0}_which_was_specified_to_be_a_build_listener_is_not_an_instance_of_org.apache.tools.ant.BuildListener._1"), clazz); //$NON-NLS-1$
 			logMessage(null, message, Project.MSG_ERR);
 			throw new BuildException(message, e);
 		}
@@ -432,7 +432,7 @@ public class InternalAntRunner {
 				}
 			}
 
-			getCurrentProject().log(MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Build_file__{0}_1"), getBuildFileLocation()));
+			getCurrentProject().log(MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Build_file__{0}_1"), getBuildFileLocation())); //$NON-NLS-1$
 
 			setTasks();
 			setTypes();
@@ -579,12 +579,12 @@ public class InternalAntRunner {
 				buildLogger = (BuildLogger) (Class.forName(loggerClassname).getConstructor().newInstance());
 			}
 			catch (ClassCastException e) {
-				String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.{0}_which_was_specified_to_perform_logging_is_not_an_instance_of_org.apache.tools.ant.BuildLogger._2"), loggerClassname);
+				String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.{0}_which_was_specified_to_perform_logging_is_not_an_instance_of_org.apache.tools.ant.BuildLogger._2"), loggerClassname); //$NON-NLS-1$
 				logMessage(null, message, Project.MSG_ERR);
 				throw new BuildException(message, e);
 			}
 			catch (Exception e) {
-				String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Unable_to_instantiate_logger__{0}_6"), loggerClassname);
+				String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Unable_to_instantiate_logger__{0}_6"), loggerClassname); //$NON-NLS-1$
 				logMessage(null, message, Project.MSG_ERR);
 				throw new BuildException(message, e);
 			}
@@ -684,7 +684,7 @@ public class InternalAntRunner {
 				antVersionNumber = versionNumber;
 			}
 			catch (IOException ioe) {
-				throw new BuildException(MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Could_not_load_the_version_information._{0}_9"), ioe.getMessage()), ioe);
+				throw new BuildException(MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Could_not_load_the_version_information._{0}_9"), ioe.getMessage()), ioe); //$NON-NLS-1$
 			}
 			catch (NullPointerException npe) {
 				throw new BuildException(RemoteAntMessages.getString("InternalAntRunner.Could_not_load_the_version_information._10"), npe); //$NON-NLS-1$
@@ -895,7 +895,7 @@ public class InternalAntRunner {
 			}
 			catch (IOException e) {
 				// just log message and ignore exception
-				logMessage(getCurrentProject(), MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Could_not_write_to_the_specified_log_file__{0}._Make_sure_the_path_exists_and_you_have_write_permissions._2"), arg), Project.MSG_ERR);
+				logMessage(getCurrentProject(), MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Could_not_write_to_the_specified_log_file__{0}._Make_sure_the_path_exists_and_you_have_write_permissions._2"), arg), Project.MSG_ERR); //$NON-NLS-1$
 				return false;
 			}
 
@@ -1011,7 +1011,7 @@ public class InternalAntRunner {
 		}
 
 		// warn of ignored commands
-		String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Unknown_argument__{0}_2"), s.substring(1));
+		String message = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Unknown_argument__{0}_2"), s.substring(1)); //$NON-NLS-1$
 		logMessage(currentProject, message, Project.MSG_WARN);
 	}
 
@@ -1037,7 +1037,7 @@ public class InternalAntRunner {
 		// this stream is closed in the finally block of run(list)
 		out = new PrintStream(new FileOutputStream(logFile));
 		err = out;
-		logMessage(getCurrentProject(), MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Using_{0}_file_as_build_log._1"), logFile.getCanonicalPath()), Project.MSG_INFO);
+		logMessage(getCurrentProject(), MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Using_{0}_file_as_build_log._1"), logFile.getCanonicalPath()), Project.MSG_INFO); //$NON-NLS-1$
 		if (buildLogger != null) {
 			buildLogger.setErrorPrintStream(err);
 			buildLogger.setOutputPrintStream(out);
@@ -1287,7 +1287,7 @@ public class InternalAntRunner {
 				props.load(fis);
 			}
 			catch (IOException e) {
-				fEarlyErrorMessage = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Could_not_load_property_file_{0}__{1}_4"), filename, e.getMessage());
+				fEarlyErrorMessage = MessageFormat.format(RemoteAntMessages.getString("InternalAntRunner.Could_not_load_property_file_{0}__{1}_4"), filename, e.getMessage()); //$NON-NLS-1$
 			}
 			if (userProperties == null) {
 				userProperties = new HashMap<>();
