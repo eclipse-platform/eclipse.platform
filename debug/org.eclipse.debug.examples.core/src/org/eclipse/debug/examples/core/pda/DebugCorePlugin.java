@@ -114,8 +114,9 @@ public class DebugCorePlugin extends Plugin {
 	 */
 	public ResourceBundle getResourceBundle() {
 		try {
-			if (resourceBundle == null)
+			if (resourceBundle == null) {
 				resourceBundle = ResourceBundle.getBundle("org.eclipse.debug.examples.core.pda.DebugCorePluginResources"); //$NON-NLS-1$
+			}
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
