@@ -832,12 +832,11 @@ public class LaunchConfigurationInfo {
 	public boolean equals(Object obj) {
 
 		// Make sure it's a LaunchConfigurationInfo object
-		if (!(obj instanceof LaunchConfigurationInfo)) {
+		if (!(obj instanceof LaunchConfigurationInfo other)) {
 			return false;
 		}
 
 		// Make sure the types are the same
-		LaunchConfigurationInfo other = (LaunchConfigurationInfo) obj;
 		if (!fType.getIdentifier().equals(other.getType().getIdentifier())) {
 			return false;
 		}

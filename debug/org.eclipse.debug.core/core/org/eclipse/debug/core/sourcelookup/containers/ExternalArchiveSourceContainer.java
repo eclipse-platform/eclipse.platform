@@ -239,9 +239,9 @@ public class ExternalArchiveSourceContainer extends AbstractSourceContainer {
 		} catch (IOException e) {
 			File file = new File(fArchivePath);
 			if (file.exists()) {
-				abort(MessageFormat.format(SourceLookupMessages.ExternalArchiveSourceContainer_2, new Object[] { fArchivePath }), e);
+				abort(MessageFormat.format(SourceLookupMessages.ExternalArchiveSourceContainer_2, fArchivePath), e);
 			} else {
-				warn(MessageFormat.format(SourceLookupMessages.ExternalArchiveSourceContainer_1, new Object[] { fArchivePath }), e);
+				warn(MessageFormat.format(SourceLookupMessages.ExternalArchiveSourceContainer_1, fArchivePath), e);
 			}
 		}
 		return null;

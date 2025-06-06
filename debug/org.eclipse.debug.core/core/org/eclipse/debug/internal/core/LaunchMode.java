@@ -71,7 +71,7 @@ public class LaunchMode implements ILaunchMode {
 	 * @throws CoreException if a problem is encountered
 	 */
 	private void missingAttribute(String attrName) throws CoreException {
-		throw new CoreException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugPlugin.ERROR, MessageFormat.format(DebugCoreMessages.LaunchMode_1, new Object[] { attrName }), null));
+		throw new CoreException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugPlugin.ERROR, MessageFormat.format(DebugCoreMessages.LaunchMode_1, attrName), null));
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class LaunchMode implements ILaunchMode {
 	public String getLaunchAsLabel() {
 		String label = fConfigurationElement.getAttribute(IConfigurationElementConstants.LAUNCH_AS_LABEL);
 		if (label == null) {
-			return MessageFormat.format(DebugCoreMessages.LaunchMode_0, new Object[] { getLabel() });
+			return MessageFormat.format(DebugCoreMessages.LaunchMode_0, getLabel());
 		}
 		return label;
 	}

@@ -163,7 +163,7 @@ public abstract class LaunchConfigurationDelegate implements ILaunchConfiguratio
 			monitor.subTask(DebugCoreMessages.LaunchConfigurationDelegate_6);
 			List<IAdaptable> errors = new ArrayList<>();
 			for (IProject project : projects) {
-				monitor.subTask(MessageFormat.format(DebugCoreMessages.LaunchConfigurationDelegate_7, new Object[] { project.getName() }));
+				monitor.subTask(MessageFormat.format(DebugCoreMessages.LaunchConfigurationDelegate_7, project.getName()));
 				if (existsProblems(project)) {
 					errors.add(project);
 				}
