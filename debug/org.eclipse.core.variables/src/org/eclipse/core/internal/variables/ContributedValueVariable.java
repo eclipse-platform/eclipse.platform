@@ -85,8 +85,7 @@ public class ContributedValueVariable extends StringVariable implements IValueVa
 				if (className != null) {
 					try {
 						Object object = getConfigurationElement().createExecutableExtension("initializerClass"); //$NON-NLS-1$
-						if (object instanceof IValueVariableInitializer) {
-							IValueVariableInitializer initializer = (IValueVariableInitializer)object;
+						if (object instanceof IValueVariableInitializer initializer) {
 							initializer.initialize(this);
 						} else {
 							VariablesPlugin.logMessage(NLS.bind("Unable to initialize variable {0} - initializer must be an instance of IValueVariableInitializer.", new String[]{getName()}), null); //$NON-NLS-1$

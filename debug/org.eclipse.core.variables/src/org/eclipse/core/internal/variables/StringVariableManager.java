@@ -232,8 +232,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 			if (old != null) {
 				DynamicVariable oldVariable = (DynamicVariable)old;
 				VariablesPlugin.logMessage(NLS.bind("Dynamic variable extension from bundle ''{0}'' overrides existing extension variable ''{1}'' from bundle ''{2}''", //$NON-NLS-1$
-						new String[] {element.getDeclaringExtension().getContributor().getName(),oldVariable.getName(),
-							oldVariable.getConfigurationElement().getDeclaringExtension().getContributor().getName()}), null);
+						element.getDeclaringExtension().getContributor().getName(), oldVariable.getName(), oldVariable.getConfigurationElement().getDeclaringExtension().getContributor().getName()), null);
 			}
 		}
 	}
@@ -258,8 +257,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 			if (old != null) {
 				StringVariable oldVariable = (StringVariable)old;
 				VariablesPlugin.logMessage(NLS.bind("Contributed variable extension from bundle ''{0}'' overrides existing extension variable ''{1}'' from  bundle ''{2}''", //$NON-NLS-1$
-						new String[] {element.getDeclaringExtension().getContributor().getName(),oldVariable.getName(),
-							oldVariable.getConfigurationElement().getDeclaringExtension().getContributor().getName()}), null);
+						element.getDeclaringExtension().getContributor().getName(), oldVariable.getName(), oldVariable.getConfigurationElement().getDeclaringExtension().getContributor().getName()), null);
 			}
 		}
 	}
