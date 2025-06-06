@@ -92,8 +92,7 @@ public class SampleModelPresentation implements IDebugModelPresentation, IColorP
 	@Override
 	public Color getForeground(Object element) {
 
-		if (element instanceof MemoryRenderingElement) {
-			MemoryRenderingElement elm = (MemoryRenderingElement) element;
+		if (element instanceof MemoryRenderingElement elm) {
 			MemoryByte[] bytes = elm.getBytes();
 			if (!bytes[0].isWritable()) {
 				return blue;
