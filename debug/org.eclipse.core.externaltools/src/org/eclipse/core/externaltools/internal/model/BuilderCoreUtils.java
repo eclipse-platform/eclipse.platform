@@ -202,8 +202,7 @@ public class BuilderCoreUtils {
 			}
 		} else {
 			ILaunchConfiguration temp = config;
-			if (config instanceof ILaunchConfigurationWorkingCopy) {
-				ILaunchConfigurationWorkingCopy workingCopy = (ILaunchConfigurationWorkingCopy) config;
+			if (config instanceof ILaunchConfigurationWorkingCopy workingCopy) {
 				if (workingCopy.getOriginal() != null) {
 					temp = workingCopy.getOriginal();
 				}
