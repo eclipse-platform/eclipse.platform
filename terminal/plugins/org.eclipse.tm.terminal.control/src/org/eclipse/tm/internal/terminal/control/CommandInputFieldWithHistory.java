@@ -42,14 +42,14 @@ import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 /**
  * Manages the Command History for the command line input
  * of the terminal control.
- * <li>
- * <ul>Navigate with ARROW_UP,ARROW_DOWN,PAGE_UP,PAGE_DOWN
- * <ul>ESC to cancel history editing
- * <ul>History can be edited (by moving up and edit) but changes are
- * not persistent (like in bash).
- * <ul>If the same command is entered multiple times in a row,
- * only one entry is kept in the history.
- * </li>
+ * <ul>
+ * <li>Navigate with ARROW_UP,ARROW_DOWN,PAGE_UP,PAGE_DOWN</li>
+ * <li>ESC to cancel history editing</li>
+ * <li>History can be edited (by moving up and edit) but changes are
+ * not persistent (like in bash).</li>
+ * <li>If the same command is entered multiple times in a row,
+ * only one entry is kept in the history.</li>
+ * </ul>
  *
  */
 public class CommandInputFieldWithHistory implements ICommandInputField {

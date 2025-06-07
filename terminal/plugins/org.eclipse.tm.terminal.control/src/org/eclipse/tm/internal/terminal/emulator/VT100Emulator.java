@@ -60,10 +60,6 @@ import org.eclipse.tm.terminal.model.TerminalStyle;
  * return, linefeed, and a subset of ANSI escape sequences sufficient to allow
  * use of screen-oriented applications, such as vi, Emacs, and any GNU
  * readline-enabled application (Bash, bc, ncftp, etc.).
- * <p>
- *
- * @author Fran Litterio <francis.litterio@windriver.com>
- * @author Chris Thew <chris.thew@windriver.com>
  */
 public class VT100Emulator implements ControlListener {
 	/** This is a character processing state: Initial state. */

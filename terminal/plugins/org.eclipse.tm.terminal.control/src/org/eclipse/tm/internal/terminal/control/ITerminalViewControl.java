@@ -194,7 +194,7 @@ public interface ITerminalViewControl {
 
 	/**
 	 * @since 5.1
-	 * @deprecated call {@link #setTerminalTitle(String, String)} instead
+	 * @deprecated call {@link #setTerminalTitle(String, TerminalTitleRequestor)} instead
 	 */
 	@Deprecated(forRemoval = true)
 	void setTerminalTitle(String newTitle);

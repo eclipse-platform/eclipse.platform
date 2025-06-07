@@ -42,8 +42,8 @@ public interface ITerminalTextData extends ITerminalTextDataReadOnly {
 
 	/**
 	 * Set a single character and the associated {@link TerminalStyle}.
-	 * @param line line must be >=0 and < height
-	 * @param column column must be >=0 and < width
+	 * @param line line must be &gt;=0 and &lt; height
+	 * @param column column must be &gt;=0 and &lt; width
 	 * @param c the new character at this position
 	 * @param style the style or null
 	 * @since 5.0
@@ -52,8 +52,8 @@ public interface ITerminalTextData extends ITerminalTextDataReadOnly {
 
 	/**
 	 * Set an array of characters showing in the same {@link TerminalStyle}.
-	 * @param line line must be >=0 and < height
-	 * @param column column must be >=0 and < width
+	 * @param line line must be &gt;=0 and &lt; height
+	 * @param column column must be &gt;=0 and &lt; width
 	 * @param chars the new characters at this position
 	 * @param style the style or null
 	 * @since 5.0
@@ -62,8 +62,8 @@ public interface ITerminalTextData extends ITerminalTextDataReadOnly {
 
 	/**
 	 * Set a subrange of an array of characters showing in the same {@link TerminalStyle}.
-	 * @param line line must be >=0 and < height
-	 * @param column column must be >=0 and < width
+	 * @param line line must be &gt;=0 and &lt; height
+	 * @param column column must be &gt;=0 and &lt; width
 	 * @param chars the new characters at this position
 	 * @param start the start index in the chars array
 	 * @param len the number of characters to insert. Characters beyond width are not inserted.

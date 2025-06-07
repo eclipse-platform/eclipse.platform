@@ -166,9 +166,6 @@ public abstract class VirtualCanvas extends Canvas {
 		}
 	}
 
-	/**
-	 * @private
-	 */
 	protected boolean inClipping(Rectangle clipping, Rectangle r) {
 		// TODO check if this is OK in all cases (the <=!)
 		//
@@ -186,7 +183,7 @@ public abstract class VirtualCanvas extends Canvas {
 
 	/**
 	 * @return the screen rect in virtual space (starting with (0,0))
-	 * of the visible screen. (x,y>=0)
+	 * of the visible screen. (x,y&gt;=0)
 	 */
 	protected Rectangle getScreenRectInVirtualSpace() {
 		Rectangle r = new Rectangle(fClientArea.x - fVirtualBounds.x, fClientArea.y - fVirtualBounds.y,
@@ -196,7 +193,7 @@ public abstract class VirtualCanvas extends Canvas {
 
 	/**
 	 * @return the rect in virtual space (starting with (0,0))
-	 * of the visible screen. (x,y>=0)
+	 * of the visible screen. (x,y&gt;=0)
 	 */
 	protected Rectangle getRectInVirtualSpace(Rectangle r) {
 		return new Rectangle(r.x - fVirtualBounds.x, r.y - fVirtualBounds.y, r.width, r.height);

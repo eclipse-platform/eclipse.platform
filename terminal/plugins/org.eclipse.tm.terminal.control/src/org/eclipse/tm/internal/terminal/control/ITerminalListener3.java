@@ -12,7 +12,7 @@ package org.eclipse.tm.internal.terminal.control;
 /**
  * Terminal listener allowing to listen to terminal selection changes.
  * The interface overrides the deprecated {@link #setTerminalTitle(String)} with
- * {@link #setTerminalTitle(String, String)} that should be called instead.
+ * {@link #setTerminalTitle(String, TerminalTitleRequestor)} that should be called instead.
  *
  * @since 5.5
  */

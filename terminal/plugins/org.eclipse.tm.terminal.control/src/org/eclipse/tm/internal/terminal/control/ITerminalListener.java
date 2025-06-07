@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.tm.internal.terminal.control;
 
+import org.eclipse.tm.internal.terminal.control.ITerminalListener3.TerminalTitleRequestor;
 import org.eclipse.tm.internal.terminal.provisional.api.TerminalState;
 
 /**
@@ -29,7 +30,7 @@ public interface ITerminalListener {
 
 	/**
 	 * @deprecated Migrate to implementing {@link ITerminalListener3} and
-	 * override {@link ITerminalListener3#setTerminalTitle(String, String)
+	 * override {@link ITerminalListener3#setTerminalTitle(String, TerminalTitleRequestor)}
 	 * @param title
 	 */
 	@Deprecated(forRemoval = true)
