@@ -72,7 +72,7 @@ public class SiteEntry implements IPlatformConfiguration.ISiteEntry, IConfigurat
 		if (url.getProtocol().equals("file")) { //$NON-NLS-1$
 			try {
 				// TODO remove this when platform fixes local file url's
-				this.url = new File(url.getFile()).toURL(); 
+				this.url = new File(url.getFile()).toURI().toURL(); 
 			} catch (MalformedURLException e1) {
 				this.url = url;
 			}
@@ -279,7 +279,7 @@ public class SiteEntry implements IPlatformConfiguration.ISiteEntry, IConfigurat
 					if (featureXML.lastModified() <= featuresChangeStamp &&
 						dir.lastModified() <= featuresChangeStamp)
 						continue;
-					URL featureURL = featureXML.toURL();
+					URL featureURL = featureXML.toURI().toURL();
 					FeatureEntry featureEntry = featureParser.parse(featureURL);
 					if (featureEntry != null)
 						addFeatureEntry(featureEntry);

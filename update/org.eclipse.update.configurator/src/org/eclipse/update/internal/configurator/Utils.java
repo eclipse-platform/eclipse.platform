@@ -411,7 +411,7 @@ public class Utils {
 		try {
 			IPath absolutePath = IPath.fromOSString(base.getPath()).append(relativeLocation.getPath());
 			// File.toURL() is the best way to create a file: URL
-			return absolutePath.toFile().toURL();
+			return absolutePath.toFile().toURI().toURL();
 		} catch (MalformedURLException e) {
 			// cannot happen since we are building from two existing valid URLs
 			Utils.log(e.getLocalizedMessage());
@@ -488,7 +488,7 @@ public class Utils {
 				char[] chars = path.toCharArray();
 				chars[0] = Character.toLowerCase(chars[0]);
 				path = new String(chars);
-				return new File(path).toURL().toExternalForm();
+				return new File(path).toURI().toURL().toExternalForm();
 			}
 		} catch (MalformedURLException e) {
 			// default to original url
