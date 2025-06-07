@@ -404,7 +404,8 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		data.grabExcessVerticalSpace = true;
 		composite.setLayoutData(data);
 
-		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_3, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_3,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 
 		final boolean[] remember = new boolean[] { false };
 		final PreferenceStore store = (PreferenceStore) getConfiguration()
@@ -467,9 +468,11 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		data.grabExcessVerticalSpace = true;
 		composite.setLayoutData(data);
 		if (isRefreshRunning()) {
-			createDescriptionLabel(composite,NLS.bind(TeamUIMessages.DiffTreeChangesSection_6, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+			createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_6,
+					Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 		} else {
-			createDescriptionLabel(composite,NLS.bind(TeamUIMessages.DiffTreeChangesSection_7, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+			createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_7,
+					Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 		}
 		return composite;
 	}
@@ -495,17 +498,18 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		IModelProviderDescriptor oldDesc = ModelProvider.getModelProviderDescriptor(oldId);
 		String message;
 		String modeToString = Utils.modeToString(getConfiguration().getMode());
-		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_0, new String[] {
+		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_0,
 					provider.getDescriptor().getLabel(),
-					modeToString });
-		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_1, new String[] { modeToString, oldDesc.getLabel(), message });
+				modeToString);
+		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_1, modeToString, oldDesc.getLabel(), message);
 
 		createDescriptionLabel(composite, message);
 
 		Label warning = new Label(composite, SWT.NONE);
 		warning.setImage(TeamUIPlugin.getPlugin().getImage(ISharedImages.IMG_WARNING_OVR));
 
-		Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_2, new String[] { provider.getDescriptor().getLabel() }), SWT.WRAP);
+		Hyperlink link = getForms().createHyperlink(composite,
+				NLS.bind(TeamUIMessages.DiffTreeChangesSection_2, provider.getDescriptor().getLabel()), SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -583,7 +587,8 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		data.grabExcessVerticalSpace = true;
 		composite.setLayoutData(data);
 
-		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_10, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_10,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 
 		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.ChangesSection_8, SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {

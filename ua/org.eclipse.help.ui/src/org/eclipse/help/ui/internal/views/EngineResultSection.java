@@ -583,8 +583,8 @@ public class EngineResultSection {
 			int from = (resultOffset + 1);
 			int to = (resultOffset + HITS_PER_PAGE);
 			to = Math.min(to, size);
-			section.setText(NLS.bind(Messages.EngineResultSection_sectionTitle_hitsRange, new String[] {
-					desc.getLabel(), "" + from, "" + to, "" + size })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			section.setText(NLS.bind(Messages.EngineResultSection_sectionTitle_hitsRange, desc.getLabel(), "" + from, //$NON-NLS-1$
+					"" + to, "" + size)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -607,8 +607,8 @@ public class EngineResultSection {
 		if (control instanceof Composite) {
 			Composite parent = (Composite) control;
 			Control[] children = parent.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				recursiveSetMenu(children[i], menu);
+			for (Control child : children) {
+				recursiveSetMenu(child, menu);
 			}
 		}
 	}

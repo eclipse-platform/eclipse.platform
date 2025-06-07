@@ -122,7 +122,8 @@ public class ModelSynchronizePage extends AbstractSynchronizePage {
 				ModelProvider provider = (ModelProvider) input;
 				configuration.setProperty(
 						ISynchronizePageConfiguration.P_PAGE_DESCRIPTION,
-						NLS.bind(TeamUIMessages.ShowModelProviderAction_0, new String[] {Utils.getLabel(provider), Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, configuration.getParticipant().getName()) }));
+						NLS.bind(TeamUIMessages.ShowModelProviderAction_0, Utils.getLabel(provider), Utils.shortenText(
+								SynchronizeView.MAX_NAME_LENGTH, configuration.getParticipant().getName())));
 			} else if (input != null) {
 				configuration.setProperty(
 						ISynchronizePageConfiguration.P_PAGE_DESCRIPTION,

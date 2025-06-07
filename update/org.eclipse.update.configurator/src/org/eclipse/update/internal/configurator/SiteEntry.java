@@ -274,7 +274,7 @@ public class SiteEntry
 					return false;
 				boolean valid = f.isDirectory() && (new File(f,FEATURE_XML).exists());
 				if (!valid)
-					Utils.log(NLS.bind(Messages.SiteEntry_cannotFindFeatureInDir, (new String[] { f.getAbsolutePath() })));
+					Utils.log(NLS.bind(Messages.SiteEntry_cannotFindFeatureInDir, f.getAbsolutePath()));
 				return valid;
 			});
 
@@ -289,7 +289,8 @@ public class SiteEntry
 					if (featureEntry != null)
 						addFeatureEntry(featureEntry);
 				} catch (MalformedURLException e) {
-					Utils.log(NLS.bind(Messages.InstalledSiteParser_UnableToCreateURLForFile, (new String[] { featuresDir.getAbsolutePath() })));
+					Utils.log(NLS.bind(Messages.InstalledSiteParser_UnableToCreateURLForFile,
+							featuresDir.getAbsolutePath()));
 				}
 			}
 		}
@@ -368,10 +369,10 @@ public class SiteEntry
 			}
 		} catch (IOException e5) {
 			String pluginFileString2 = pluginURL + "!" + entryName; //$NON-NLS-1$
-			Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorAccessing, (new String[] { pluginFileString2 })));
+			Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorAccessing, pluginFileString2));
 		} catch (SAXException e3) {
 			String pluginFileString1 = pluginURL + "!" + entryName; //$NON-NLS-1$
-			Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, (new String[] { pluginFileString1 })));
+			Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, pluginFileString1));
 		} finally {
 			if (bundleManifestIn != null) {
 				try {
@@ -430,12 +431,13 @@ public class SiteEntry
 		} catch (IOException e) {
 			String pluginFileString = pluginFile.getAbsolutePath();
 			if (ConfigurationActivator.DEBUG)
-				Utils.log(Utils.newStatus(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, (new String[] { pluginFileString })), e));
+				Utils.log(
+						Utils.newStatus(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, pluginFileString), e));
 			else
-				Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorAccessing, (new String[] { pluginFileString })));
+				Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorAccessing, pluginFileString));
 		} catch (SAXException e) {
 			String pluginFileString = pluginFile.getAbsolutePath();
-			Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, (new String[] { pluginFileString })));
+			Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, pluginFileString));
 		}
 	}
 
@@ -500,7 +502,7 @@ public class SiteEntry
 			return pluginsChangeStamp;
 
 		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL())) {
-			Utils.log(NLS.bind(Messages.SiteEntry_computePluginStamp, (new String[] { resolvedURL.toExternalForm() })));
+			Utils.log(NLS.bind(Messages.SiteEntry_computePluginStamp, resolvedURL.toExternalForm()));
 			return 0;
 		}
 
@@ -508,7 +510,7 @@ public class SiteEntry
 		File root = new File(resolvedURL.getFile().replace('/', File.separatorChar));
 		File pluginsDir = new File(root, PLUGINS);
 		if (!pluginsDir.exists() || !pluginsDir.isDirectory()) {
-			Utils.debug(NLS.bind(Messages.SiteEntry_pluginsDir, (new String[] { pluginsDir.getAbsolutePath() })));
+			Utils.debug(NLS.bind(Messages.SiteEntry_pluginsDir, pluginsDir.getAbsolutePath()));
 			return 0;
 		}
 

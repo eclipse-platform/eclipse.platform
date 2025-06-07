@@ -446,7 +446,7 @@ public abstract class RefreshParticipantJob extends Job {
 		} else {
 			// No changes found
 			code = IRefreshEvent.STATUS_NO_CHANGES;
-			text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_6, new String[] { getName() }));
+			text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_6, getName()));
 		}
 		return new Status(IStatus.OK, TeamUIPlugin.ID, code, text.toString(), null);
 	}

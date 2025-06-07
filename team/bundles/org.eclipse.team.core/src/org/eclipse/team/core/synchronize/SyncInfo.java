@@ -376,18 +376,24 @@ public class SyncInfo implements IAdaptable {
 				case INCOMING: label = Messages.RemoteSyncElement_incoming; break;
 			}
 			switch(kind & CHANGE_MASK) {
-				case CHANGE: label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_change }); break; //
-				case ADDITION: label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_addition }); break; //
-				case DELETION: label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_deletion }); break; //
+			case CHANGE:
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_change);
+				break; //
+			case ADDITION:
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_addition);
+				break; //
+			case DELETION:
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_deletion);
+				break; //
 			}
 			if((kind & MANUAL_CONFLICT) != 0) {
-				label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_manual }); //
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_manual); //
 			}
 			if((kind & AUTOMERGE_CONFLICT) != 0) {
-				label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_auto }); //
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_auto); //
 			}
 		}
-		return NLS.bind(Messages.RemoteSyncElement_delimit, new String[] { label });
+		return NLS.bind(Messages.RemoteSyncElement_delimit, label);
 	}
 
 	/**

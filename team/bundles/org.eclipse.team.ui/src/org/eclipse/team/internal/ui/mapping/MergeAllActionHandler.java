@@ -162,10 +162,10 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 		final boolean[] result = new boolean[] {true};
 		TeamUIPlugin.getStandardDisplay().syncExec(() -> {
 			String sizeString = Long.toString(count);
-			String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, new String[] { sizeString }) :
-				NLS.bind(TeamUIMessages.MergeAllActionHandler_2, new String[] { sizeString });
+			String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, sizeString)
+					: NLS.bind(TeamUIMessages.MergeAllActionHandler_2, sizeString);
 			result[0] = MessageDialog.openQuestion(getConfiguration().getSite().getShell(),
-					NLS.bind(TeamUIMessages.MergeAllActionHandler_3, new String[] { sizeString }), message);
+					NLS.bind(TeamUIMessages.MergeAllActionHandler_3, sizeString), message);
 		});
 		return result[0];
 	}
