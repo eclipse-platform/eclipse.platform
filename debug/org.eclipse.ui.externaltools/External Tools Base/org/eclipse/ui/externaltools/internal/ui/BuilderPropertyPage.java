@@ -659,8 +659,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 		TableItem selection= items[0];
 		if (selection != null) {
 			Object data = selection.getData();
-			if (data instanceof ILaunchConfiguration) {
-				ILaunchConfiguration config= (ILaunchConfiguration) data;
+			if (data instanceof ILaunchConfiguration config) {
 				userHasMadeChanges= true;
 				boolean wasAutobuilding= ResourcesPlugin.getWorkspace().getDescription().isAutoBuilding();
 				try {
@@ -675,8 +674,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 						handleException(e);
 					}
 				}
-			} else if (data instanceof ICommand) {
-				ICommand command= (ICommand) data;
+			} else if (data instanceof ICommand command) {
 				if (command.isConfigurable()) {
 					if (editCommand(command)) {
 						userHasMadeChanges= true;
@@ -739,8 +737,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 			}
 			for (TableItem item : items) {
 				Object data= item.getData();
-				if (data instanceof ILaunchConfiguration) {
-					ILaunchConfiguration config= (ILaunchConfiguration)data;
+				if (data instanceof ILaunchConfiguration config) {
 					String builderName= null;
 					try {
 						builderName = config.getAttribute(IExternalToolConstants.ATTR_DISABLED_BUILDER, (String)null);
@@ -779,8 +776,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 	 * @return whether the given element is enabled
 	 */
 	private boolean isEnabled(Object element) {
-		if (element instanceof ICommand) {
-			ICommand command = (ICommand) element;
+		if (element instanceof ICommand command) {
 			String val = command.getArguments().get(COMMAND_ENABLED);
 			if(val != null) {
 				//null means enabled, see #doPerformOk
@@ -906,8 +902,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 						command.setArguments(args);
 				}
 				}
-			} else if (data instanceof ILaunchConfiguration) {
-				ILaunchConfiguration config= (ILaunchConfiguration) data;
+			} else if (data instanceof ILaunchConfiguration config) {
 				String disabledBuilderName;
 				try {
 					disabledBuilderName = config.getAttribute(IExternalToolConstants.ATTR_DISABLED_BUILDER, (String)null);
@@ -917,8 +912,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 					}
 				} catch (CoreException e1) {
 				}
-				if (config instanceof ILaunchConfigurationWorkingCopy) {
-					ILaunchConfigurationWorkingCopy workingCopy = ((ILaunchConfigurationWorkingCopy) config);
+				if (config instanceof ILaunchConfigurationWorkingCopy workingCopy) {
 					// Save any changes to the config (such as enable/disable)
 					if (workingCopy.isDirty()) {
 						try {
@@ -1133,8 +1127,7 @@ public final class BuilderPropertyPage extends PropertyPage implements ICheckSta
 		int numCommands = builderTable.getItemCount();
 		for (int i = 0; i < numCommands; i++) {
 			Object data = builderTable.getItem(i).getData();
-			if (data instanceof ICommand) {
-				ICommand command= (ICommand)data;
+			if (data instanceof ICommand command) {
 				Map<String, String> args = command.getArguments();
 				args.remove(COMMAND_ENABLED);
 				command.setArguments(args);
