@@ -786,7 +786,6 @@ public final class IOConsoleTestUtil {
 	 *
 	 * @return output partition identifier
 	 */
-	@SuppressWarnings("restriction")
 	public static String outputPartitionType() {
 		return org.eclipse.ui.internal.console.IOConsolePartition.OUTPUT_PARTITION_TYPE;
 	}
@@ -797,7 +796,6 @@ public final class IOConsoleTestUtil {
 	 *
 	 * @return input partition identifier
 	 */
-	@SuppressWarnings("restriction")
 	public static String inputPartitionType() {
 		return org.eclipse.ui.internal.console.IOConsolePartition.INPUT_PARTITION_TYPE;
 	}

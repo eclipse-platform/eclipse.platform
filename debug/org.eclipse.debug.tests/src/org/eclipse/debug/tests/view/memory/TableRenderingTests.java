@@ -32,7 +32,6 @@ import org.junit.Test;
  * Tests for translation of memory bytes between in-memory representation and UI
  * presentation
  */
-@SuppressWarnings("restriction")
 public class TableRenderingTests {
 
 	private static final byte[] BYTES_1 = new byte[] { (byte) 0x87 };

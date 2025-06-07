@@ -86,7 +86,7 @@ import org.osgi.service.prefs.Preferences;
 @SuppressWarnings("deprecation")
 public class LaunchConfigurationTests extends AbstractLaunchTest implements ILaunchConfigurationListener {
 
-	@SuppressWarnings({ "restriction", "unused" })
+	@SuppressWarnings({ "unused" })
 	// Only ensures org.eclipse.ui.externaltools is required
 	private static final org.eclipse.ui.externaltools.internal.model.BuilderUtils ref = null;
 

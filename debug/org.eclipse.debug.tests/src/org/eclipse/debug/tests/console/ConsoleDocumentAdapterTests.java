@@ -46,7 +46,6 @@ import org.junit.Test;
  * Primary tests fixed width mode and calculation of {@link TextChangingEvent}s.
  * </p>
  */
-@SuppressWarnings("restriction")
 public class ConsoleDocumentAdapterTests extends AbstractDebugTest {
 
 	/**
