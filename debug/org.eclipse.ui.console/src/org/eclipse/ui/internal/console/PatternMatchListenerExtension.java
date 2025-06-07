@@ -87,7 +87,7 @@ public class PatternMatchListenerExtension implements IPluginContribution {
 		if (fEnablementExpression == null) {
 			IConfigurationElement[] elements = fConfig.getChildren(ExpressionTagNames.ENABLEMENT);
 			if (elements.length == 0) {
-				String message = MessageFormat.format("{0} " + getLocalId() + " {1} " + getPluginId() + " {2}", new Object[] { ConsoleMessages.PatternMatchListenerExtension_3, ConsoleMessages.PatternMatchListenerExtension_4, ConsoleMessages.PatternMatchListenerExtension_5 }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				String message = MessageFormat.format("{0} " + getLocalId() + " {1} " + getPluginId() + " {2}", ConsoleMessages.PatternMatchListenerExtension_3, ConsoleMessages.PatternMatchListenerExtension_4, ConsoleMessages.PatternMatchListenerExtension_5); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				ConsolePlugin.log(new Status(IStatus.WARNING, ConsolePlugin.getUniqueIdentifier(), IStatus.OK, message, null));
 			}
 			IConfigurationElement enablement = elements.length > 0 ? elements[0] : null;

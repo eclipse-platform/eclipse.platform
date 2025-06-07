@@ -141,8 +141,7 @@ class ConsoleDropDownAction extends Action implements IMenuCreator, IConsoleList
 	@Override
 	public void runWithEvent(Event event) {
 		// Show menu on drop-down button, run action otherwise
-		if (event.detail == SWT.ARROW && event.widget instanceof ToolItem) {
-			ToolItem toolItem = (ToolItem) event.widget;
+		if (event.detail == SWT.ARROW && event.widget instanceof ToolItem toolItem) {
 			Control control = toolItem.getParent();
 			Menu menu = getMenu(control);
 
