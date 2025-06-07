@@ -26,7 +26,6 @@ import org.eclipse.debug.internal.ui.model.elements.SerialExecutor;
 import org.eclipse.debug.tests.AbstractDebugTest;
 import org.junit.Test;
 
-@SuppressWarnings("restriction")
 public class SerialExecutorTest extends AbstractDebugTest {
 	@Override
 	public void tearDown() throws Exception {

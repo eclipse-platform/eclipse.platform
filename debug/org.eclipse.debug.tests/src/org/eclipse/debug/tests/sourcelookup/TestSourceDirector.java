@@ -23,8 +23,7 @@ public class TestSourceDirector extends AbstractSourceLookupDirector {
 	public Object getSourceElement(Object element) {
 		if (element instanceof String) {
 			return element.toString() + System.currentTimeMillis();
-		} else if (element instanceof IStackFrame) {
-			IStackFrame frame = (IStackFrame) element;
+		} else if (element instanceof IStackFrame frame) {
 			return frame.getModelIdentifier() + System.currentTimeMillis();
 		}
 		return super.getSourceElement(element);

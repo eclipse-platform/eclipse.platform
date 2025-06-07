@@ -60,8 +60,7 @@ abstract public class FilterTests extends AbstractViewerModelTest implements ITe
 
 		 @Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			if (element instanceof TestElement) {
-				TestElement te = (TestElement)element;
+			if (element instanceof TestElement te) {
 				return !fPattern.matcher(te.getLabel()).find();
 			}
 
@@ -88,8 +87,7 @@ abstract public class FilterTests extends AbstractViewerModelTest implements ITe
 
 		 @Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			if (element instanceof TestElement) {
-				TestElement te = (TestElement)element;
+			if (element instanceof TestElement te) {
 				return !fPattern.matcher(te.getLabel()).find();
 			}
 
