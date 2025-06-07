@@ -357,11 +357,9 @@ public class AntElementNode implements IAdaptable, IAntElement {
 		if (!(o1 instanceof AntElementNode || o2 instanceof AntElementNode)) {
 			return o2.equals(o1);
 		}
-		if (!(o1 instanceof AntElementNode e1 && o2 instanceof AntElementNode)) {
+		if (!(o1 instanceof AntElementNode e1 && o2 instanceof AntElementNode e2)) {
 			return false;
 		}
-
-		AntElementNode e2 = (AntElementNode) o2;
 
 		return e1.getElementPath().equals(e2.getElementPath());
 	}
