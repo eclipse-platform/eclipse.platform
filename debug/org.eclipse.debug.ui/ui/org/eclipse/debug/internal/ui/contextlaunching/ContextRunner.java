@@ -204,7 +204,7 @@ public final class ContextRunner {
 							else {
 								String msg = ContextMessages.ContextRunner_7;
 								if(!resource.isAccessible()) {
-									msg = MessageFormat.format(ContextMessages.ContextRunner_13, new Object[] { resource.getName() });
+									msg = MessageFormat.format(ContextMessages.ContextRunner_13, resource.getName());
 								}
 								MessageDialog.openInformation(DebugUIPlugin.getShell(), ContextMessages.ContextRunner_0, msg);
 							}
@@ -289,9 +289,7 @@ public final class ContextRunner {
 					} else {
 						String label = launchMode.getLabel();
 						String modeLabel = DebugUIPlugin.removeAccelerators(label);
-						MessageDialog.openInformation(DebugUIPlugin.getShell(), MessageFormat.format(ContextMessages.ContextRunner_1, new Object[] { modeLabel }), MessageFormat.format(ContextMessages.ContextRunner_3, new Object[] {
-								configuration.getName(),
-								modeLabel.toLowerCase() }));
+						MessageDialog.openInformation(DebugUIPlugin.getShell(), MessageFormat.format(ContextMessages.ContextRunner_1, modeLabel), MessageFormat.format(ContextMessages.ContextRunner_3, configuration.getName(), modeLabel.toLowerCase()));
 					}
 					return false;
 				}

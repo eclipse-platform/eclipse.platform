@@ -88,11 +88,10 @@ public class SourceLookupResult implements ISourceLookupResult {
 			return true;
 		}
 
-		if (!(obj instanceof SourceLookupResult)) {
+		if (!(obj instanceof SourceLookupResult other)) {
 			return false;
 		}
 
-		SourceLookupResult other = (SourceLookupResult) obj;
 		return Objects.equals(fEditorId, other.fEditorId)
 				&& Objects.equals(fArtifact, other.fArtifact)
 				&& Objects.equals(fEditorInput, other.fEditorInput)

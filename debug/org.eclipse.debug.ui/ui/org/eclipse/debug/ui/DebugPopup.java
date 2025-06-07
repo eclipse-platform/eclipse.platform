@@ -93,8 +93,7 @@ public abstract class DebugPopup extends PopupDialog {
 
 			String infoText = null;
 			if (formattedBinding != null) {
-				infoText = MessageFormat.format(DebugUIViewsMessages.InspectPopupDialog_1, new Object[] {
-						formattedBinding, getActionText() });
+				infoText = MessageFormat.format(DebugUIViewsMessages.InspectPopupDialog_1, formattedBinding, getActionText());
 			}
 			return infoText;
 		}

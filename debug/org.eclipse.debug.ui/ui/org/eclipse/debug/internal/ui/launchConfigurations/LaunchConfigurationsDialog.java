@@ -927,7 +927,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	protected String getShellTitle() {
 		String title = null;
 		if(getLaunchGroup() != null) {
-			title = MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationsDialog_configurations, new Object[] { DebugUIPlugin.removeAccelerators(getLaunchGroup().getLabel()) });
+			title = MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationsDialog_configurations, DebugUIPlugin.removeAccelerators(getLaunchGroup().getLabel()));
 		}
 		if (title == null) {
 			title = LaunchConfigurationsMessages.LaunchConfigurationDialog_Launch_Configurations_18;
@@ -1121,7 +1121,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 				w1 = DEFAULT_SASH_WEIGHTS[0];
 				w2 = DEFAULT_SASH_WEIGHTS[1];
 			}
-			fSashForm.setWeights(new int[] {w1, w2});
+			fSashForm.setWeights(w1, w2);
 		}
 		super.initializeBounds();
 	}
@@ -1165,8 +1165,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		if(fSetDefaultOnOpen) {
 			try {
 				Object o = fInitialSelection.getFirstElement();
-				if(o instanceof ILaunchConfigurationWorkingCopy) {
-					ILaunchConfigurationWorkingCopy wc = (ILaunchConfigurationWorkingCopy) o;
+				if(o instanceof ILaunchConfigurationWorkingCopy wc) {
 					doSetDefaults(wc);
 					setInitialSelection(new StructuredSelection(wc.doSave()));
 				}
@@ -1549,7 +1548,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	 * <code>IDialogConstants</code>.
 	 */
 	private int showDiscardChangesDialog() {
-		StringBuilder buffer = new StringBuilder(MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationDialog_The_configuration___35, new Object[] { fTabViewer.getWorkingCopy().getName() }));
+		StringBuilder buffer = new StringBuilder(MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationDialog_The_configuration___35, fTabViewer.getWorkingCopy().getName()));
 		buffer.append(fTabViewer.getErrorMesssage());
 		buffer.append(LaunchConfigurationsMessages.LaunchConfigurationDialog_Do_you_wish_to_discard_changes_37);
 		MessageDialog dialog = new MessageDialog(getShell(),
@@ -1587,7 +1586,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	 * <code>IDialogConstants</code>.
 	 */
 	private int showSaveChangesDialog() {
-		String message = MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationDialog_The_configuration___29, new Object[] { fTabViewer.getWorkingCopy().getName() });
+		String message = MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationDialog_The_configuration___29, fTabViewer.getWorkingCopy().getName());
 		MessageDialog dialog = new MessageDialog(getShell(),
 												 LaunchConfigurationsMessages.LaunchConfigurationFilteredTree_save_changes,
 												 null,

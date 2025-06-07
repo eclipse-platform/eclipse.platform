@@ -95,8 +95,7 @@ class GroupLaunchConfigurationSelectionDialog extends TitleAreaDialog implements
 			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				try {
-					if (element instanceof ILaunchConfigurationType) {
-						ILaunchConfigurationType type = (ILaunchConfigurationType) element;
+					if (element instanceof ILaunchConfigurationType type) {
 						if (type.equals(groupType)) {
 							// we're hiding ourselves. if we're the only group,
 							// don't show the type.
@@ -104,8 +103,7 @@ class GroupLaunchConfigurationSelectionDialog extends TitleAreaDialog implements
 						}
 
 						return getLaunchManager().getLaunchConfigurations(type, ILaunchConfiguration.CONFIGURATION).length > 0;
-					} else if (element instanceof ILaunchConfiguration) {
-						ILaunchConfiguration c = (ILaunchConfiguration) element;
+					} else if (element instanceof ILaunchConfiguration c) {
 						if (c.getName().equals(self.getName()) && c.getType().equals(groupType)) {
 							return false;
 						}

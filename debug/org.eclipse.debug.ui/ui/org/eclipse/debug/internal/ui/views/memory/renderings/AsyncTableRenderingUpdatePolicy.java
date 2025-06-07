@@ -46,8 +46,9 @@ public class AsyncTableRenderingUpdatePolicy extends TableUpdatePolicy
 		if (model != null)
 		{
 			IContentChangeComputer computer = null;
-			if (model instanceof IContentChangeComputer)
+			if (model instanceof IContentChangeComputer) {
 				computer = (IContentChangeComputer)model;
+			}
 
 			clearCache(computer);
 
@@ -92,16 +93,18 @@ public class AsyncTableRenderingUpdatePolicy extends TableUpdatePolicy
 	 * @param computer the change computer to clear the cache for
 	 */
 	protected void clearCache(IContentChangeComputer computer) {
-		if (computer != null)
+		if (computer != null) {
 			computer.clearCache();
+		}
 	}
 
 	private void notifyRendering(IModelDelta node, IModelProxy proxy) {
 		if (getTableViewer() != null)
 		{
 			IModelChangedListener listener = getTableViewer().getRendering().getAdapter(IModelChangedListener.class);
-			if (listener != null)
+			if (listener != null) {
 				listener.modelChanged(node, proxy);
+			}
 		}
 	}
 
@@ -131,8 +134,9 @@ public class AsyncTableRenderingUpdatePolicy extends TableUpdatePolicy
 										try {
 											rendering.goToAddress(address);
 										} catch (DebugException e) {
-											if (getTableViewer() != null)
+											if (getTableViewer() != null) {
 												getTableViewer().handlePresentationFailure(null, e.getStatus());
+											}
 										}
 										return Status.OK_STATUS;
 									}};
@@ -152,23 +156,26 @@ public class AsyncTableRenderingUpdatePolicy extends TableUpdatePolicy
 				}
 			}
 		} catch (DebugException e) {
-			if (getTableViewer() != null)
+			if (getTableViewer() != null) {
 				getTableViewer().handlePresentationFailure(null, e.getStatus());
+			}
 		}
 	}
 
 	private BigInteger getMemoryBlockBaseAddress(IMemoryBlock mb) throws DebugException
 	{
-		if (mb instanceof IMemoryBlockExtension)
+		if (mb instanceof IMemoryBlockExtension) {
 			return ((IMemoryBlockExtension)mb).getBigBaseAddress();
-		else
+		} else {
 			return BigInteger.valueOf(mb.getStartAddress());
+		}
 	}
 
 	private AsyncTableRenderingViewer getTableViewer()
 	{
-		if (getViewer() instanceof AsyncTableRenderingViewer)
+		if (getViewer() instanceof AsyncTableRenderingViewer) {
 			return (AsyncTableRenderingViewer)getViewer();
+		}
 		return null;
 	}
 
@@ -180,8 +187,9 @@ public class AsyncTableRenderingUpdatePolicy extends TableUpdatePolicy
 			if (context.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering rendering = (AbstractAsyncTableRendering)context.getRendering();
-				if (!rendering.isVisible())
+				if (!rendering.isVisible()) {
 					return false;
+				}
 			}
 		}
 		return true;

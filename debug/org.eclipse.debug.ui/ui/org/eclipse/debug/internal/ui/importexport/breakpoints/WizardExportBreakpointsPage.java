@@ -117,7 +117,7 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 		BreakpointsViewer viewer = fTView.getViewer();
 		viewer.getTree().selectAll();
 		viewer.setCheckedElements(viewer.getStructuredSelection().toArray());
-		viewer.setGrayedElements(new Object[] {});
+		viewer.setGrayedElements();
 		viewer.getTree().deselectAll();
 		setPageComplete(detectPageComplete());
 	}
@@ -128,7 +128,7 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 	private void handleDeselectAllPressed() {
 		BreakpointsViewer viewer = fTView.getViewer();
 		viewer.setCheckedElements(new Object[] {});
-		viewer.setGrayedElements(new Object[] {});
+		viewer.setGrayedElements();
 		setPageComplete(detectPageComplete());
 	}
 
@@ -292,7 +292,7 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 			}
 			saveWidgetState();
 			if(path.toFile().exists() && !fOverwriteExistingFilesCheckbox.getSelection()) {
-				if (!MessageDialog.openQuestion(null, ImportExportMessages.WizardBreakpointsPage_12, MessageFormat.format(ImportExportMessages.ImportExportOperations_0, new Object[] { path.toPortableString() }))) {
+				if (!MessageDialog.openQuestion(null, ImportExportMessages.WizardBreakpointsPage_12, MessageFormat.format(ImportExportMessages.ImportExportOperations_0, path.toPortableString()))) {
 					return false;
 				}
 			}

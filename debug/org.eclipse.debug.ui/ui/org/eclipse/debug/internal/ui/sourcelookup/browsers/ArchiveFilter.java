@@ -81,8 +81,7 @@ public class ArchiveFilter extends ViewerFilter {
 		try {
 			IResource[] resources = container.members();
 			for (IResource resource : resources) {
-				if (resource instanceof IFile) {
-					IFile file = (IFile)resource;
+				if (resource instanceof IFile file) {
 					String ext = file.getFileExtension();
 					if (ext != null && (ext.equalsIgnoreCase("jar") || ext.equalsIgnoreCase("zip"))) { //$NON-NLS-1$ //$NON-NLS-2$
 						set.add(file);

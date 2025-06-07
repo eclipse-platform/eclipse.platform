@@ -129,7 +129,7 @@ public class WizardImportBreakpointsPage extends WizardPage implements Listener 
 		}
 		File file = new File(fileName);
 		if (!file.exists() || file.isDirectory()) {
-			setMessage(MessageFormat.format(ImportExportMessages.WizardImportBreakpointsPage_1, new Object[] { fileName }), ERROR);
+			setMessage(MessageFormat.format(ImportExportMessages.WizardImportBreakpointsPage_1, fileName), ERROR);
 			return false;
 		}
 

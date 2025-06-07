@@ -186,11 +186,9 @@ public class AddMemoryBlockAction extends Action implements IDebugContextListene
 		for (String e : expressionsArray) {
 			String expression = e.trim();
 			try {
-				if (standardMemRetrieval instanceof IMemoryBlockRetrievalExtension) {
+				if (standardMemRetrieval instanceof IMemoryBlockRetrievalExtension memRetrieval) {
 					// if the debug session supports
 					// IMemoryBlockExtensionRetrieval
-					IMemoryBlockRetrievalExtension memRetrieval = (IMemoryBlockRetrievalExtension) standardMemRetrieval;
-
 					// get extended memory block with the expression entered
 					IMemoryBlockExtension memBlock = memRetrieval.getExtendedMemoryBlock(expression, elem);
 

@@ -301,8 +301,7 @@ public class ToggleBreakpointsTargetManager implements IToggleBreakpointsTargetM
 	private static class ToggleBreakpointsTargetAdapterFactory implements IToggleBreakpointsTargetFactory {
 
 		private Object getSelectionElement(ISelection selection) {
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection)selection;
+			if (selection instanceof IStructuredSelection ss) {
 				return ss.getFirstElement();
 			}
 			return null;
@@ -735,8 +734,7 @@ public class ToggleBreakpointsTargetManager implements IToggleBreakpointsTargetM
 			Iterator<Annotation> iterator = annotationModel.getAnnotationIterator();
 			while (iterator.hasNext()) {
 				Annotation annot = iterator.next();
-				if (annot instanceof SimpleMarkerAnnotation) {
-					SimpleMarkerAnnotation markerAnnotation = (SimpleMarkerAnnotation) annot;
+				if (annot instanceof SimpleMarkerAnnotation markerAnnotation) {
 					IMarker marker = markerAnnotation.getMarker();
 					try {
 						if (marker.isSubtypeOf(IBreakpoint.BREAKPOINT_MARKER)) {

@@ -62,8 +62,7 @@ public class LookupSourceAction extends SelectionListenerAction {
 	@Override
 	public void run() {
 		ISelection selection = fView.getViewer().getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				IWorkbenchPage page = fView.getSite().getPage();
 				SourceLookupManager.getDefault().displaySource(ss.getFirstElement(), page, true);

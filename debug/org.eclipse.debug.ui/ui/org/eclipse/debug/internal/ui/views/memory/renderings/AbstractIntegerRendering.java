@@ -36,8 +36,9 @@ public abstract class AbstractIntegerRendering extends AbstractAsyncTableRenderi
 		super.init(container, block);
 
 		// default to big endian for simple memory block
-		if (!(block instanceof IMemoryBlockExtension))
+		if (!(block instanceof IMemoryBlockExtension)) {
 			fDisplayEndianess = RenderingsUtil.BIG_ENDIAN;
+		}
 	}
 
 	/**
@@ -57,18 +58,21 @@ public abstract class AbstractIntegerRendering extends AbstractAsyncTableRenderi
 	protected int getBytesEndianess(MemoryByte[] data) {
 		int endianess = RenderingsUtil.ENDIANESS_UNKNOWN;
 
-		if (!data[0].isEndianessKnown())
+		if (!data[0].isEndianessKnown()) {
 			return endianess;
+		}
 
-		if (data[0].isBigEndian())
+		if (data[0].isBigEndian()) {
 			endianess = RenderingsUtil.BIG_ENDIAN;
-		else
+		} else {
 			endianess = RenderingsUtil.LITTLE_ENDIAN;
+		}
 		for (int i=1; i<data.length; i++)
 		{
 			// if endianess is not known for a byte, return unknown
-			if (!data[i].isEndianessKnown())
+			if (!data[i].isEndianessKnown()) {
 				return RenderingsUtil.ENDIANESS_UNKNOWN;
+			}
 
 			int byteEndianess = data[i].isBigEndian()?RenderingsUtil.BIG_ENDIAN:RenderingsUtil.LITTLE_ENDIAN;
 			if (byteEndianess != endianess)

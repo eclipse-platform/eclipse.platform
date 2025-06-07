@@ -44,13 +44,11 @@ public class SourceElementWorkbenchAdapter implements IWorkbenchAdapter {
 
 	@Override
 	public String getLabel(Object o) {
-		if (o instanceof LocalFileStorage) {
-			LocalFileStorage storage = (LocalFileStorage) o;
+		if (o instanceof LocalFileStorage storage) {
 			IPath path = storage.getFullPath();
 			return getQualifiedName(path);
 		}
-		if (o instanceof ZipEntryStorage) {
-			ZipEntryStorage storage = (ZipEntryStorage)o;
+		if (o instanceof ZipEntryStorage storage) {
 			StringBuilder buffer = new StringBuilder();
 			buffer.append(storage.getZipEntry().getName());
 			buffer.append(" - "); //$NON-NLS-1$

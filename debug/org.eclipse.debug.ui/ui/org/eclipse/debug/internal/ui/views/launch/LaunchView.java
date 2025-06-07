@@ -381,8 +381,7 @@ public class LaunchView extends AbstractDebugView
 		protected void possibleChange(TreePath element, int type) {
 			DebugContextEvent event = null;
 			synchronized (this) {
-				if (fContext instanceof ITreeSelection) {
-					ITreeSelection ss = (ITreeSelection) fContext;
+				if (fContext instanceof ITreeSelection ss) {
 					for (TreePath path : ss.getPaths()) {
 						if (path.startsWith(element, null)) {
 							if (path.getSegmentCount() == element.getSegmentCount()) {
@@ -408,8 +407,7 @@ public class LaunchView extends AbstractDebugView
 					public IStatus runInUIThread(IProgressMonitor monitor) {
 						// verify selection is still the same context since job was scheduled
 						synchronized (TreeViewerContextProvider.this) {
-							if (fContext instanceof IStructuredSelection) {
-								IStructuredSelection ss = (IStructuredSelection) fContext;
+							if (fContext instanceof IStructuredSelection ss) {
 								Object changed = ((IStructuredSelection)finalEvent.getContext()).getFirstElement();
 								if (!(ss.size() == 1 && ss.getFirstElement().equals(changed))) {
 									return Status.OK_STATUS;
@@ -1118,10 +1116,9 @@ public class LaunchView extends AbstractDebugView
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
 		ISelection selection= event.getSelection();
-		if (!(selection instanceof IStructuredSelection)) {
+		if (!(selection instanceof IStructuredSelection ss)) {
 			return;
 		}
-		IStructuredSelection ss= (IStructuredSelection)selection;
 		Object o= ss.getFirstElement();
 		if (o == null || o instanceof IStackFrame) {
 			return;
@@ -1283,14 +1280,12 @@ public class LaunchView extends AbstractDebugView
 	public boolean show(ShowInContext context) {
 		ISelection selection = context.getSelection();
 		if (selection != null) {
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection)selection;
+			if (selection instanceof IStructuredSelection ss) {
 				if (ss.size() == 1) {
 					Object obj = ss.getFirstElement();
 					if (obj instanceof IDebugTarget || obj instanceof IProcess) {
 						Viewer viewer = getViewer();
-						if (viewer instanceof InternalTreeModelViewer) {
-							InternalTreeModelViewer tv = (InternalTreeModelViewer) viewer;
+						if (viewer instanceof InternalTreeModelViewer tv) {
 							tv.setSelection(selection, true, true);
 						} else {
 							viewer.setSelection(selection, true);
@@ -1309,8 +1304,7 @@ public class LaunchView extends AbstractDebugView
 			IStructuredSelection selection = (IStructuredSelection)getViewer().getSelection();
 			if (selection.size() == 1) {
 				Object object = selection.getFirstElement();
-				if (object instanceof IAdaptable) {
-					IAdaptable adaptable = (IAdaptable) object;
+				if (object instanceof IAdaptable adaptable) {
 					IShowInSource show = adaptable.getAdapter(IShowInSource.class);
 					if (show != null) {
 						return show.getShowInContext();
@@ -1327,8 +1321,7 @@ public class LaunchView extends AbstractDebugView
 			IStructuredSelection selection = (IStructuredSelection)getViewer().getSelection();
 			if (selection.size() == 1) {
 				Object object = selection.getFirstElement();
-				if (object instanceof IAdaptable) {
-					IAdaptable adaptable = (IAdaptable) object;
+				if (object instanceof IAdaptable adaptable) {
 					IShowInTargetList show = adaptable.getAdapter(IShowInTargetList.class);
 					if (show != null) {
 						return show.getShowInTargetIds();

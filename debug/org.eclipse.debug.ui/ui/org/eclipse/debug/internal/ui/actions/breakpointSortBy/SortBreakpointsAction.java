@@ -32,7 +32,7 @@ public class SortBreakpointsAction extends Action {
 
 	/**
 	 * Creates a new action which will sort breakpoints in the given breakpoint
-	 * view 
+	 * view
 	 */
 	public SortBreakpointsAction(BreakpointsView view, String name, int sortingBy) {
 		super(name, IAction.AS_RADIO_BUTTON);

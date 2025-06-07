@@ -130,8 +130,7 @@ public abstract class RelaunchLastAction implements IWorkbenchWindowActionDelega
 				} else {
 					String configName = configuration.getName();
 					String title = ActionMessages.RelaunchLastAction_Cannot_relaunch_1;
-					String message = MessageFormat.format(ActionMessages.RelaunchLastAction_Cannot_relaunch___0___because_it_does_not_support__2__mode_2, new Object[] {
-							configName, getMode() });
+					String message = MessageFormat.format(ActionMessages.RelaunchLastAction_Cannot_relaunch___0___because_it_does_not_support__2__mode_2, configName, getMode());
 					MessageDialog.openError(getShell(), title, message);
 				}
 			} else {

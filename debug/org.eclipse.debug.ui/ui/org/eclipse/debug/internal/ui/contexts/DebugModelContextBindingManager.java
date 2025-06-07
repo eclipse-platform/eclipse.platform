@@ -181,8 +181,7 @@ public class DebugModelContextBindingManager implements IDebugContextListener, I
 	public void debugContextChanged(DebugContextEvent event) {
 		if ((event.getFlags() & DebugContextEvent.ACTIVATED) > 0) {
 			ISelection selection = event.getContext();
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
+			if (selection instanceof IStructuredSelection ss) {
 				Iterator<?> iterator = ss.iterator();
 				while (iterator.hasNext()) {
 					activated(iterator.next());

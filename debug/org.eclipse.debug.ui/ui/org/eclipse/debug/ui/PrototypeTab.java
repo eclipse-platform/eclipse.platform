@@ -529,7 +529,7 @@ public class PrototypeTab extends AbstractLaunchConfigurationTab {
 	/**
 	 * Content provider for the prototype attributes table
 	 */
-	private class PrototypeAttributesContentProvider implements ITreeContentProvider {
+	private static class PrototypeAttributesContentProvider implements ITreeContentProvider {
 
 		@Override
 		public Object[] getElements(Object inputElement) {

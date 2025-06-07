@@ -102,7 +102,7 @@ public class LaunchAction extends Action {
 				if(store.getBoolean(IInternalDebugUIConstants.PREF_REMOVE_FROM_LAUNCH_HISTORY)) {
 					MessageDialogWithToggle mdwt = MessageDialogWithToggle.openYesNoQuestion(DebugUIPlugin.getShell(),
 							ActionMessages.LaunchAction_0,
- MessageFormat.format(ActionMessages.LaunchAction_1, new Object[] { fConfiguration.getName() }),
+ MessageFormat.format(ActionMessages.LaunchAction_1, fConfiguration.getName()),
 							ActionMessages.LaunchAction_2,
 							false,
 							null,
@@ -147,7 +147,7 @@ public class LaunchAction extends Action {
 			if (history != null) {
 				history.removeFromHistory(fConfiguration);
 			} else {
-				DebugUIPlugin.logErrorMessage(MessageFormat.format("Unable to remove configuration [{0}] from launch history. The launch history for mode [{1}] does not exist.", new Object[]{config.getName(), group.getMode()})); //$NON-NLS-1$
+				DebugUIPlugin.logErrorMessage(MessageFormat.format("Unable to remove configuration [{0}] from launch history. The launch history for mode [{1}] does not exist.", config.getName(), group.getMode())); //$NON-NLS-1$
 			}
 		}
 	}

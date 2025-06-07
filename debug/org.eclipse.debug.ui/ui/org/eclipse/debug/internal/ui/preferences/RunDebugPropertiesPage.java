@@ -108,7 +108,7 @@ public class RunDebugPropertiesPage extends PropertyPage {
 
 		SWTFactory.createWrapLabel(topComposite, DebugPreferencesMessages.DefaultLaunchConfigurationsPropertiesPage_0, 2, 300);
 		SWTFactory.createVerticalSpacer(topComposite, 2);
-		SWTFactory.createWrapLabel(topComposite, MessageFormat.format(DebugPreferencesMessages.DefaultLaunchConfigurationsPropertiesPage_1, new Object[] { getResource().getName() }), 2, 300);
+		SWTFactory.createWrapLabel(topComposite, MessageFormat.format(DebugPreferencesMessages.DefaultLaunchConfigurationsPropertiesPage_1, getResource().getName()), 2, 300);
 		fViewer = createViewer(topComposite);
 
 		Composite buttonComp = SWTFactory.createComposite(topComposite, 1, 1, GridData.FILL_VERTICAL);
@@ -185,8 +185,7 @@ public class RunDebugPropertiesPage extends PropertyPage {
 		viewer.setInput(collectConfigCandidates(resource));
 		viewer.addSelectionChangedListener(event -> {
 			ISelection sel = event.getSelection();
-			if(sel instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) sel;
+			if(sel instanceof IStructuredSelection ss) {
 				boolean empty = ss.isEmpty();
 				int size = ss.size();
 				fEditButton.setEnabled(!empty && size == 1);
@@ -405,7 +404,7 @@ public class RunDebugPropertiesPage extends PropertyPage {
 			fViewer.refresh(config, true, true);
 		}
 		else if(ret == IDialogConstants.ABORT_ID) {
-			setErrorMessage(MessageFormat.format(DebugPreferencesMessages.RunDebugPropertiesPage_0, new Object[] { config.getName() }));
+			setErrorMessage(MessageFormat.format(DebugPreferencesMessages.RunDebugPropertiesPage_0, config.getName()));
 		}
 	}
 
@@ -495,7 +494,7 @@ public class RunDebugPropertiesPage extends PropertyPage {
 						fViewer.setSelection(new StructuredSelection(wc));
 					}
 					else if(ret == IDialogConstants.ABORT_ID) {
-						setErrorMessage(MessageFormat.format(DebugPreferencesMessages.RunDebugPropertiesPage_0, new Object[] { wc.getName() }));
+						setErrorMessage(MessageFormat.format(DebugPreferencesMessages.RunDebugPropertiesPage_0, wc.getName()));
 					}
 				} catch (CoreException e) {
 					setErrorMessage(e.getMessage());

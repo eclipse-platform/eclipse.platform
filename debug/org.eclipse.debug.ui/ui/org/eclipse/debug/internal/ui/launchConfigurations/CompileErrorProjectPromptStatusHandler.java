@@ -65,12 +65,12 @@ public class CompileErrorProjectPromptStatusHandler implements IStatusHandler {
 		}
 		String projectMessage = null;
 		if(projects.size() > 20) {
-			projectMessage = MessageFormat.format(LaunchConfigurationsMessages.CompileErrorProjectPromptStatusHandler_0, new Object[]{projectList.toString()});
+			projectMessage = MessageFormat.format(LaunchConfigurationsMessages.CompileErrorProjectPromptStatusHandler_0, projectList.toString());
 		} else{
 			projectMessage = projectList.toString();
 		}
 		String title =  LaunchConfigurationsMessages.CompileErrorPromptStatusHandler_0;
-		String message = MessageFormat.format(LaunchConfigurationsMessages.CompileErrorPromptStatusHandler_2, new Object[] { projectMessage });
+		String message = MessageFormat.format(LaunchConfigurationsMessages.CompileErrorPromptStatusHandler_2, projectMessage);
 		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
 
 		String pref = store.getString(IInternalDebugUIConstants.PREF_CONTINUE_WITH_COMPILE_ERROR);

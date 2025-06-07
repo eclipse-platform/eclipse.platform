@@ -94,8 +94,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public void replace(Object parentOrTreePath, int index, Object element) {
-			if (parentOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)parentOrTreePath;
+			if (parentOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					SubTreeModelViewer.this.replace(createSubPath(path), index, element);
 				}
@@ -106,8 +105,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public void setChildCount(Object elementOrTreePath, int count) {
-			if (elementOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)elementOrTreePath;
+			if (elementOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					SubTreeModelViewer.this.setChildCount(createSubPath(path), count);
 				}
@@ -118,8 +116,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public void setHasChildren(Object elementOrTreePath, boolean hasChildren) {
-			if (elementOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)elementOrTreePath;
+			if (elementOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					SubTreeModelViewer.this.setHasChildren(createSubPath(path), hasChildren);
 				}
@@ -135,8 +132,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public void setExpandedState(Object elementOrTreePath, boolean expanded) {
-			if (elementOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)elementOrTreePath;
+			if (elementOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					SubTreeModelViewer.this.setExpandedState(createSubPath(path), expanded);
 				}
@@ -147,8 +143,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public void expandToLevel(Object elementOrTreePath, int level) {
-			if (elementOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)elementOrTreePath;
+			if (elementOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					SubTreeModelViewer.this.expandToLevel(createSubPath(path), level);
 				}
@@ -159,8 +154,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public void remove(Object elementOrTreePath) {
-			if (elementOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)elementOrTreePath;
+			if (elementOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					SubTreeModelViewer.this.remove(createSubPath(path));
 				}
@@ -171,8 +165,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public void remove(Object parentOrTreePath, final int index) {
-			if (parentOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)parentOrTreePath;
+			if (parentOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					SubTreeModelViewer.this.remove(createSubPath(path), index);
 				}
@@ -183,8 +176,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public void insert(Object parentOrTreePath, Object element, int position) {
-			if (parentOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)parentOrTreePath;
+			if (parentOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					SubTreeModelViewer.this.insert(createSubPath(path), element, position);
 				}
@@ -195,8 +187,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public boolean getExpandedState(Object elementOrTreePath) {
-			if (elementOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)elementOrTreePath;
+			if (elementOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					return SubTreeModelViewer.this.getExpandedState(createSubPath(path));
 				}
@@ -216,8 +207,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public boolean getHasChildren(Object elementOrTreePath) {
-			if (elementOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)elementOrTreePath;
+			if (elementOrTreePath instanceof TreePath path) {
 				if (path.startsWith(fRootPath, null)) {
 					return SubTreeModelViewer.this.getHasChildren(createSubPath(path));
 				}
@@ -545,8 +535,7 @@ public class SubTreeModelViewer extends TreeModelViewer {
 
 		@Override
 		public boolean shouldFilter(Object parentElementOrTreePath, Object element) {
-			if (parentElementOrTreePath instanceof TreePath) {
-				TreePath path = (TreePath)parentElementOrTreePath;
+			if (parentElementOrTreePath instanceof TreePath path) {
 				return fBaseProvider.shouldFilter(createFullPath(path), element);
 			} else {
 				return fBaseProvider.shouldFilter(parentElementOrTreePath, element);

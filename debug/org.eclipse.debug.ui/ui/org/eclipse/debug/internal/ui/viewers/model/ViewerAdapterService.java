@@ -127,8 +127,7 @@ public class ViewerAdapterService {
 	 * @return selection policy or <code>null</code>
 	 */
 	public static IModelSelectionPolicy getSelectionPolicy(ISelection selection, IPresentationContext context) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			Object element = ss.getFirstElement();
 			IModelSelectionPolicyFactory factory = (IModelSelectionPolicyFactory) getAdapter(element, IModelSelectionPolicyFactory.class);
 			if (factory != null) {

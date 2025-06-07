@@ -48,13 +48,12 @@ public class WatchExpressionCellModifier implements ICellModifier {
 		Object oldValue = getValue(element, property);
 		if (!value.equals(oldValue)) {
 			if (IDebugUIConstants.COLUMN_ID_VARIABLE_NAME.equals(property)) {
-				if (element instanceof IWatchExpression) {
+				if (element instanceof IWatchExpression expression) {
 					if (value instanceof String) {
 						// The value column displays special characters
 						// escaped, so encode the string with any special
 						// characters escaped properly
 						String expressionText = DefaultLabelProvider.encodeEsacpedChars((String)value);
-						IWatchExpression expression = (IWatchExpression) element;
 						// Bug 345974 see ExpressionManagerContentProvider.AddNewExpressionElement.modify does not allow an empty string
 						if (expressionText.trim().length() > 0) {
 							expression.setExpressionText(expressionText);

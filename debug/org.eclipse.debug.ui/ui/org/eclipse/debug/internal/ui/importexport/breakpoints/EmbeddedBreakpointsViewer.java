@@ -139,7 +139,7 @@ public class EmbeddedBreakpointsViewer {
 	 * Performs the initialization of the viewer from a selection
 	 */
 	private void initViewerState() {
-		fViewer.setGrayedElements(new Object[] {});
+		fViewer.setGrayedElements();
 		fViewer.setCheckedElements(new Object[] {});
 		ArrayList<IBreakpoint> list = new ArrayList<>();
 		for (Object item : fSelection.toArray()) {

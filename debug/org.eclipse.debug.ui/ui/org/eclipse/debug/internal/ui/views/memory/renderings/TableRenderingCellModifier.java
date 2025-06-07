@@ -101,11 +101,10 @@ public class TableRenderingCellModifier implements ICellModifier {
 	public Object getValue(Object element, String property) {
 		// give back the value of the column
 
-		if (!(element instanceof TableRenderingLine)) {
+		if (!(element instanceof TableRenderingLine line)) {
 			return null;
 		}
 
-		TableRenderingLine line = (TableRenderingLine) element;
 		try {
 			if (TableRenderingLine.P_ADDRESS.equals(property)) {
 				return line.getAddress();

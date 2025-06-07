@@ -150,7 +150,7 @@ public class ExportBreakpointsOperation implements IRunnableWithProgress {
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
 		} catch (IOException e) {
-			throw new InvocationTargetException(e, MessageFormat.format("There was a problem writing file: {0}", new Object[] { fFileName })); //$NON-NLS-1$
+			throw new InvocationTargetException(e, MessageFormat.format("There was a problem writing file: {0}", fFileName)); //$NON-NLS-1$
 		}
 		finally {
 			localmonitor.done();

@@ -135,8 +135,7 @@ public class DebugElementHelper {
 	 */
 	public static RGB getForeground(Object element, IDebugModelPresentation presentation) {
 		Color color = null;
-		if (presentation instanceof IColorProvider) {
-			IColorProvider colorProvider = (IColorProvider) presentation;
+		if (presentation instanceof IColorProvider colorProvider) {
 			color = colorProvider.getForeground(element);
 		} else {
 			color = getPresentation().getForeground(element);
@@ -189,8 +188,7 @@ public class DebugElementHelper {
 	 */
 	public static RGB getBackground(Object element, IDebugModelPresentation presentation) {
 		Color color = null;
-		if (presentation instanceof IColorProvider) {
-			IColorProvider colorProvider = (IColorProvider) presentation;
+		if (presentation instanceof IColorProvider colorProvider) {
 			color = colorProvider.getBackground(element);
 		} else {
 			color = getPresentation().getBackground(element);
@@ -227,8 +225,7 @@ public class DebugElementHelper {
 	 */
 	public static FontData getFont(Object element, IDebugModelPresentation presentation) {
 		Font font = null;
-		if (presentation instanceof IFontProvider) {
-			IFontProvider provider = (IFontProvider) presentation;
+		if (presentation instanceof IFontProvider provider) {
 			font = provider.getFont(element);
 		} else {
 			font = getPresentation().getFont(element);

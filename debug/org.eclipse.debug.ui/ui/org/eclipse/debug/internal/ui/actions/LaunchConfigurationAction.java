@@ -43,8 +43,7 @@ public class LaunchConfigurationAction extends Action {
 	 * @param image the image for the action
 	 */
 	public LaunchConfigurationAction(ILaunchConfiguration config, String mode, String text, ImageDescriptor image, int accelerator) {
-		super(MessageFormat.format(ActionMessages.LaunchConfigurationAction_0, new Object[] {
-				Integer.toString(accelerator), text }), image);
+		super(MessageFormat.format(ActionMessages.LaunchConfigurationAction_0, Integer.toString(accelerator), text), image);
 		fConfig = config;
 		fMode = mode;
 	}

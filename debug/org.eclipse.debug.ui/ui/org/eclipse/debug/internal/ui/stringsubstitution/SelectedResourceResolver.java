@@ -34,7 +34,7 @@ public class SelectedResourceResolver extends ResourceResolver implements IDynam
 		if (resource != null) {
 			return translateToValue(resource, variable);
 		}
-		abort(MessageFormat.format(StringSubstitutionMessages.SelectedResourceResolver_0, new Object[] { getReferenceExpression(variable, argument) }), null);
+		abort(MessageFormat.format(StringSubstitutionMessages.SelectedResourceResolver_0, getReferenceExpression(variable, argument)), null);
 		return null;
 	}
 
