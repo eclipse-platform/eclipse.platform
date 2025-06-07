@@ -718,7 +718,7 @@ public class IOConsolePartitioner
 	/**
 	 * Holds data until updateJob can be run and the document can be updated.
 	 */
-	private class PendingPartition {
+	private static class PendingPartition {
 		private final CharSequence text;
 		private final IOConsoleOutputStream stream;
 

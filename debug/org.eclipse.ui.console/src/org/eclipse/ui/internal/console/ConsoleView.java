@@ -260,8 +260,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	protected void updateHelp() {
 		IConsole console = getConsole();
 		String helpContextId = null;
-		if (console instanceof AbstractConsole) {
-			AbstractConsole abs = (AbstractConsole) console;
+		if (console instanceof AbstractConsole abs) {
 			helpContextId = abs.getHelpContextId();
 		}
 		if (helpContextId == null) {
@@ -474,8 +473,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		mgr.add(fDisplayConsoleAction);
 		if (fOpenConsoleAction != null) {
 			mgr.add(fOpenConsoleAction);
-			if (mgr instanceof ToolBarManager) {
-				ToolBarManager tbm= (ToolBarManager) mgr;
+			if (mgr instanceof ToolBarManager tbm) {
 				final ToolBar tb= tbm.getControl();
 				tb.addMouseListener(new MouseAdapter() {
 					@Override
@@ -704,8 +702,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 	 * @return true if the specified part reference is the console view
 	 */
 	protected boolean isThisPart(IWorkbenchPartReference partRef) {
-		if (partRef instanceof IViewReference) {
-			IViewReference viewRef = (IViewReference) partRef;
+		if (partRef instanceof IViewReference viewRef) {
 			if (getViewSite() != null && viewRef.getId().equals(getViewSite().getId())) {
 				String secId = viewRef.getSecondaryId();
 				String mySec = null;

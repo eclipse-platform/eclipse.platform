@@ -64,8 +64,7 @@ public class EnableDisableHandler extends AbstractHandler implements IElementUpd
 	// it has a "dummy" event that I've created.
 	private static boolean wasMyEvent(ExecutionEvent executionEvent) {
 		Object trigger = executionEvent.getTrigger();
-		if (trigger instanceof Event) {
-			Event internalEvent = (Event) trigger;
+		if (trigger instanceof Event internalEvent) {
 			if (internalEvent.time == 0 && internalEvent.type == 0) { // My event
 				return true;
 			}
