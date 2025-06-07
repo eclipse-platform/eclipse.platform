@@ -30,14 +30,12 @@ import org.eclipse.tm.internal.terminal.control.impl.TerminalPlugin;
  * A simple logger class. Every method in this class is static, so they can be
  * called from both class and instance methods. To use this class, write code
  * like this:
- * <p>
  *
  * <pre>
  * Logger.log(&quot;something has happened&quot;);
  * Logger.log(&quot;counter is &quot; + counter);
  * </pre>
  *
- * @author Fran Litterio <francis.litterio@windriver.com>
  * <p>
  * <strong>EXPERIMENTAL</strong>. This class or interface has been added as
  * part of a work in progress. There is no guarantee that this API will

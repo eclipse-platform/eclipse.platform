@@ -156,7 +156,7 @@ public interface ITerminalControl {
 	OutputStream getRemoteToTerminalOutputStream();
 
 	/**
-	 * @deprecated call {@link #setTerminalTitle(String, String)} instead
+	 * @deprecated call {@link #setTerminalTitle(String, TerminalTitleRequestor)} instead
 	 */
 	@Deprecated(forRemoval = true)
 	void setTerminalTitle(String title);

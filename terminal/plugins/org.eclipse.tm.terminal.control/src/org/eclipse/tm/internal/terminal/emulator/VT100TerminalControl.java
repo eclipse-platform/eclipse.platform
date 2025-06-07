@@ -132,8 +132,6 @@ import org.eclipse.ui.keys.IBindingService;
  * methods in the nested classes directly access the fields of the enclosing class.
  * One day we should pull the nested classes out into their own source files (but still
  * in this package).
- *
- * @author Chris Thew <chris.thew@windriver.com>
  */
 public class VT100TerminalControl implements ITerminalControlForText, ITerminalControl, ITerminalViewControl {
 	protected final static String[] LINE_DELIMITERS = { "\n" }; //$NON-NLS-1$

@@ -281,9 +281,9 @@ public class PipedInputStream extends InputStream {
 	}
 
 	/**
-	 * Closing a <tt>PipedInputStream</tt> is the same as closing the output stream.
+	 * Closing a {@code PipedInputStream} is the same as closing the output stream.
 	 * The stream will allow reading data that's still in the pipe after which it will
-	 * throw an <tt>IOException</tt>.
+	 * throw an {@code IOException}.
 	 */
 	@Override
 	public void close() throws IOException {

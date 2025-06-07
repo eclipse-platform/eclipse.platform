@@ -121,7 +121,7 @@ public interface IVT100EmulatorBackend {
 	 * There are never any ANSI control characters or escape sequences in the
 	 * text being displayed by this method (this includes newlines, carriage
 	 * returns, and tabs).
-	 * <p>
+	 * </p>
 	 */
 	void appendString(String buffer);
 
@@ -143,7 +143,7 @@ public interface IVT100EmulatorBackend {
 	 * code) _always_ interprets a CR to mean "move the cursor to the beginning
 	 * of the current line" and a NL to mean "move the cursor to the same column
 	 * on the next line".
-	 * <p>
+	 * </p>
 	 */
 	void processNewline();
 

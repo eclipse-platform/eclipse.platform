@@ -64,6 +64,7 @@ package org.eclipse.tm.terminal.model;
  * <code>detectScrolling</code> parameter. The object will keep track of
  * scrolling. The UI must <b>first</b> handle the scrolling and then use the
  * {@link #hasLineChanged(int)} method to determine scrolling:
+ * </p>
  *
  * <pre>
  * // scroll the visible region of the UI &lt;b&gt;before&lt;/b&gt; drawing the changed lines.
@@ -76,7 +77,6 @@ package org.eclipse.tm.terminal.model;
  * 			drawCharacter(column, line, snap.getChar(column, line), snap.getStyle(column, line));
  * </pre>
  *
- * </p>
  * <p>
  * <b>Threading Note</b>: This class is not thread safe! All methods have to be
  * called by the a same thread, that created the instance by calling

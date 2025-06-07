@@ -31,23 +31,23 @@ public interface ITerminalTextDataReadOnly {
 	int getHeight();
 
 	/**
-	 * @param line be >=0 and < height
-	 * @param startCol must be >=0 and < width
-	 * @param numberOfCols must be > 0
+	 * @param line be &gt;=0 and &lt; height
+	 * @param startCol must be &gt;=0 and &lt; width
+	 * @param numberOfCols must be &gt; 0
 	 * @return a the line segments of the specified range
 	 */
 	LineSegment[] getLineSegments(int line, int startCol, int numberOfCols);
 
 	/**
-	 * @param line must be >=0 and < height
-	 * @param column must be >=0 and < width
+	 * @param line must be &gt;=0 and &lt; height
+	 * @param column must be &gt;=0 and &lt; width
 	 * @return the character at column,line
 	 */
 	char getChar(int line, int column);
 
 	/**
-	 * @param line must be >=0 and < height
-	 * @param column must be >=0 and < width
+	 * @param line must be &gt;=0 and &lt; height
+	 * @param column must be &gt;=0 and &lt; width
 	 * @return style at column,line or null
 	 * @since 5.0
 	 */
