@@ -42,8 +42,7 @@ public class LaunchViewLabelProvider extends BaseLabelProvider implements IStyle
 
 	@Override
 	public Image getImage(Object element) {
-		if (element instanceof LaunchObjectModel) {
-			LaunchObjectModel obj = (LaunchObjectModel) element;
+		if (element instanceof LaunchObjectModel obj) {
 			if (obj.getObject() != null && obj.getObject().canTerminate()) {
 				return getCachedRunningImage(obj);
 			}
