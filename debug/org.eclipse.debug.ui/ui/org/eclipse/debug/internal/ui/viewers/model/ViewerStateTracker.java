@@ -194,8 +194,7 @@ class ViewerStateTracker {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof CompareRequestKey) {
-				CompareRequestKey key = (CompareRequestKey) obj;
+			if (obj instanceof CompareRequestKey key) {
 				return key.fDelta.equals(fDelta) && key.fPath.equals(fPath);
 			}
 			return false;

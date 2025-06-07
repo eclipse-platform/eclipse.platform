@@ -235,8 +235,7 @@ class CommonTabLite extends AbstractLaunchConfigurationTab {
 		dialog.setDialogBoundsSettings(getDialogBoundsSettings(), Dialog.DIALOG_PERSISTSIZE);
 		dialog.open();
 		Object[] results = dialog.getResult();
-		if ((results != null) && (results.length > 0) && (results[0] instanceof IPath)) {
-			IPath path = (IPath)results[0];
+		if ((results != null) && (results.length > 0) && (results[0] instanceof IPath path)) {
 			String containerName = path.toOSString();
 			fSharedLocationText.setText(containerName);
 		}

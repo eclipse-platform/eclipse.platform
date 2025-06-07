@@ -202,11 +202,9 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 					}
 				} else if (element instanceof IExpression) {
 					val = ((IExpression)element).getValue();
-				} else if (element instanceof IBreakpoint) {
-					IBreakpoint bp = (IBreakpoint) element;
+				} else if (element instanceof IBreakpoint bp) {
 					message = bp.getMarker().getAttribute(IMarker.MESSAGE, ""); //$NON-NLS-1$
-				} else if (element instanceof IBreakpointContainer) {
-					IBreakpointContainer c = (IBreakpointContainer) element;
+				} else if (element instanceof IBreakpointContainer c) {
 					IAdaptable category = c.getCategory();
 					if (category != null) {
 						IWorkbenchAdapter adapter = category.getAdapter(IWorkbenchAdapter.class);

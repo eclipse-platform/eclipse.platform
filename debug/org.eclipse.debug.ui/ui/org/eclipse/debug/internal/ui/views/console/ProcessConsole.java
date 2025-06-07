@@ -207,10 +207,10 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 				fFileOutputStream = new FileOutputStream(outputFile, append);
 				fileLoc = outputFile.getAbsolutePath();
 
-				message = MessageFormat.format(ConsoleMessages.ProcessConsole_1, new Object[] { fileLoc });
+				message = MessageFormat.format(ConsoleMessages.ProcessConsole_1, fileLoc);
 				addPatternMatchListener(new ConsoleLogFilePatternMatcher(fileLoc));
 			} catch (FileNotFoundException e) {
-				message = MessageFormat.format(ConsoleMessages.ProcessConsole_2, new Object[] { file });
+				message = MessageFormat.format(ConsoleMessages.ProcessConsole_2, file);
 			} catch (CoreException e) {
 				DebugUIPlugin.log(e);
 			}
@@ -235,7 +235,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 				}
 
 			} catch (FileNotFoundException e) {
-				message = MessageFormat.format(ConsoleMessages.ProcessConsole_3, new Object[] { fStdInFile });
+				message = MessageFormat.format(ConsoleMessages.ProcessConsole_3, fStdInFile);
 			}
 			if (message != null) {
 				try (IOConsoleOutputStream stream = newOutputStream()) {
@@ -398,7 +398,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 		}
 
 		if (process.isTerminated()) {
-			return MessageFormat.format(ConsoleMessages.ProcessConsole_0, new Object[] { label });
+			return MessageFormat.format(ConsoleMessages.ProcessConsole_0, label);
 		}
 		return label;
 	}
@@ -803,8 +803,7 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					data = fBinaryStreamMonitor.getData();
 				}
 				contents = fStreamMonitor.getContents();
-				if (fStreamMonitor instanceof IFlushableStreamMonitor) {
-					IFlushableStreamMonitor m = (IFlushableStreamMonitor) fStreamMonitor;
+				if (fStreamMonitor instanceof IFlushableStreamMonitor m) {
 					m.flushContents();
 					m.setBuffered(false);
 				}

@@ -48,8 +48,9 @@ public class MemoryViewElementMementoProvider extends ElementMementoProvider {
 			if (element instanceof IMemoryBlock || element instanceof IMemoryBlockRetrieval)
 			{
 				Integer objectId = memento.getInteger(OBJECT_ID);
-				if (objectId != null && objectId.intValue() == element.hashCode())
+				if (objectId != null && objectId.intValue() == element.hashCode()) {
 					return true;
+				}
 			}
 		}
 		return false;

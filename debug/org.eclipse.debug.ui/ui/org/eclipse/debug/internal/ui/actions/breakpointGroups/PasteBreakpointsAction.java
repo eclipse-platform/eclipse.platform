@@ -79,8 +79,7 @@ public class PasteBreakpointsAction extends BreakpointSelectionAction {
 	protected boolean updateSelection(IStructuredSelection selection) {
 		// can't paste into "Others" (only move)
 		Object target = getTarget();
-		if (target instanceof IBreakpointContainer) {
-			IBreakpointContainer container = (IBreakpointContainer) target;
+		if (target instanceof IBreakpointContainer container) {
 			if (container.getCategory() instanceof OtherBreakpointCategory) {
 				return false;
 			}

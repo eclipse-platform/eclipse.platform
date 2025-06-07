@@ -78,10 +78,11 @@ public class GoToAddressComposite {
 
 	public Button getButton(int id)
 	{
-		if (id == IDialogConstants.OK_ID)
+		if (id == IDialogConstants.OK_ID) {
 			return fOKButton;
-		else if (id == IDialogConstants.CANCEL_ID)
+		} else if (id == IDialogConstants.CANCEL_ID) {
 			return fCancelButton;
+		}
 		return null;
 	}
 
@@ -156,16 +157,19 @@ public class GoToAddressComposite {
 		BigInteger gotoAddress = new BigInteger(expression, radix);
 
 		BigInteger address = baseAddress;
-		if (isJump())
+		if (isJump()) {
 			address = selectedAddress;
+		}
 
-		if (address == null)
+		if (address == null) {
 			throw new NumberFormatException(DebugUIMessages.GoToAddressComposite_7);
+		}
 
-		if (add)
+		if (add) {
 			gotoAddress = address.add(gotoAddress);
-		else
+		} else {
 			gotoAddress = address.subtract(gotoAddress);
+		}
 
 		return gotoAddress;
 	}

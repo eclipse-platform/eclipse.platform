@@ -269,8 +269,7 @@ public class ViewPaneRenderingMgr implements IDebugEventSetListener {
 		StringBuilder id = new StringBuilder();
 		IMemoryRenderingSite renderingSite = fViewPane.getMemoryRenderingSite();
 		IWorkbenchPartSite ps = renderingSite.getSite();
-		if (ps instanceof IViewSite) {
-			IViewSite vs = (IViewSite) ps;
+		if (ps instanceof IViewSite vs) {
 			String secondaryId = vs.getSecondaryId();
 			if (secondaryId != null) {
 				id.append(secondaryId);
@@ -387,8 +386,7 @@ public class ViewPaneRenderingMgr implements IDebugEventSetListener {
 	private String getViewSiteSecondaryId() {
 		IMemoryRenderingSite renderingSite = fViewPane.getMemoryRenderingSite();
 		IWorkbenchPartSite ps = renderingSite.getSite();
-		if (ps instanceof IViewSite) {
-			IViewSite vs = (IViewSite) ps;
+		if (ps instanceof IViewSite vs) {
 			String secondaryId = vs.getSecondaryId();
 			return secondaryId;
 		}

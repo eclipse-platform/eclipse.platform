@@ -47,11 +47,9 @@ public class DefaultSelectionPolicy implements IModelSelectionPolicy {
 	@Override
 	public boolean contains(ISelection selection, IPresentationContext context) {
 		if (IDebugUIConstants.ID_DEBUG_VIEW.equals(context.getId())) {
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
+			if (selection instanceof IStructuredSelection ss) {
 				Object element = ss.getFirstElement();
-				if (element instanceof IDebugElement) {
-					IDebugElement debugElement = (IDebugElement) element;
+				if (element instanceof IDebugElement debugElement) {
 					return fDebugElement.getDebugTarget().equals(debugElement.getDebugTarget());
 				}
 			}
@@ -62,9 +60,7 @@ public class DefaultSelectionPolicy implements IModelSelectionPolicy {
 	@Override
 	public boolean overrides(ISelection existing, ISelection candidate, IPresentationContext context) {
 		if (IDebugUIConstants.ID_DEBUG_VIEW.equals(context.getId())) {
-			if (existing instanceof IStructuredSelection && candidate instanceof IStructuredSelection) {
-				IStructuredSelection ssExisting = (IStructuredSelection) existing;
-				IStructuredSelection ssCandidate = (IStructuredSelection) candidate;
+			if (existing instanceof IStructuredSelection ssExisting && candidate instanceof IStructuredSelection ssCandidate) {
 				return overrides(ssExisting.getFirstElement(), ssCandidate.getFirstElement());
 			}
 		}
@@ -78,9 +74,7 @@ public class DefaultSelectionPolicy implements IModelSelectionPolicy {
 		if (existing.equals(candidate)) {
 			return true;
 		}
-		if (existing instanceof IStackFrame && candidate instanceof IStackFrame) {
-			IStackFrame curr = (IStackFrame) existing;
-			IStackFrame next = (IStackFrame) candidate;
+		if (existing instanceof IStackFrame curr && candidate instanceof IStackFrame next) {
 			return curr.getThread().equals(next.getThread()) || !isSticky(existing);
 		}
 		return !isSticky(existing);
@@ -102,8 +96,7 @@ public class DefaultSelectionPolicy implements IModelSelectionPolicy {
 	 * @return <code>true</code> if the selection should remain on the given element <code>false</code> otherwise
 	 */
 	protected boolean isSticky(Object element) {
-		if (element instanceof IStackFrame) {
-			IStackFrame frame = (IStackFrame) element;
+		if (element instanceof IStackFrame frame) {
 			return frame.isSuspended() || frame.isStepping();
 		}
 		return false;

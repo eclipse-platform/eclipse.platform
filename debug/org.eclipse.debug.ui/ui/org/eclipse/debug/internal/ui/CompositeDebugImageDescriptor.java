@@ -61,10 +61,9 @@ public class CompositeDebugImageDescriptor extends CompositeImageDescriptor {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof CompositeDebugImageDescriptor)){
+		if (!(object instanceof CompositeDebugImageDescriptor other)){
 			return false;
 		}
-		CompositeDebugImageDescriptor other= (CompositeDebugImageDescriptor)object;
 		return (getBaseImage().equals(other.getBaseImage()) && getFlags() == other.getFlags());
 	}
 

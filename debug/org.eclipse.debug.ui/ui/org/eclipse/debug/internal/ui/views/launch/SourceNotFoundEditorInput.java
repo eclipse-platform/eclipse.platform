@@ -97,7 +97,7 @@ public class SourceNotFoundEditorInput extends PlatformObject implements IEditor
 	 */
 	@Override
 	public String getToolTipText() {
-		return MessageFormat.format(DebugUIViewsMessages.SourceNotFoundEditorInput_Source_not_found_for__0__2, new Object[] { fFrameText });
+		return MessageFormat.format(DebugUIViewsMessages.SourceNotFoundEditorInput_Source_not_found_for__0__2, fFrameText);
 	}
 
 }

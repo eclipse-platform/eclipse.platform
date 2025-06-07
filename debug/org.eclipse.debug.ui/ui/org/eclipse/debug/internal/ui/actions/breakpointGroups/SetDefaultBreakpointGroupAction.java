@@ -31,7 +31,7 @@ public class SetDefaultBreakpointGroupAction extends AbstractBreakpointsViewActi
 		sbwsd.setTitle(BreakpointGroupMessages.SetDefaultBreakpointGroupAction_0);
 		IWorkingSet workingSet = BreakpointSetOrganizer.getDefaultWorkingSet();
 		if (workingSet != null){
-			sbwsd.setInitialSelections(new Object[]{workingSet});
+			sbwsd.setInitialSelections(workingSet);
 		}
 		if(sbwsd.open() == Window.OK) {
 			BreakpointSetOrganizer.setDefaultWorkingSet((IWorkingSet) sbwsd.getResult()[0]);

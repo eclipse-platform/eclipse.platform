@@ -101,7 +101,7 @@ public class StringVariablePresentationManager {
 		for (IConfigurationElement element : elements) {
 			String name= element.getAttribute(ATTR_NAME);
 			if (name == null) {
-				DebugUIPlugin.logErrorMessage(MessageFormat.format("String variable presentation extension missing required 'variableName' attribute: {0}", new Object[] { element.getDeclaringExtension().getLabel() })); //$NON-NLS-1$
+				DebugUIPlugin.logErrorMessage(MessageFormat.format("String variable presentation extension missing required 'variableName' attribute: {0}", element.getDeclaringExtension().getLabel())); //$NON-NLS-1$
 				continue;
 			}
 			fConfigurations.put(name, element);

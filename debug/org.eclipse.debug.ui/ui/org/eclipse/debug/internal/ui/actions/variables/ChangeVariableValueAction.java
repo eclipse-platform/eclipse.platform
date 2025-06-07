@@ -124,7 +124,7 @@ public class ChangeVariableValueAction extends SelectionProviderAction {
 			DebugUIPlugin.errorDialog(shell, ActionMessages.ChangeVariableValue_errorDialogTitle,ActionMessages.ChangeVariableValue_errorDialogMessage, exception);	//
 			return;
 		}
-		ChangeVariableValueInputDialog inputDialog = new ChangeVariableValueInputDialog(shell, ActionMessages.ChangeVariableValue_1, MessageFormat.format(ActionMessages.ChangeVariableValue_2, new Object[] { name }), value, input -> {
+		ChangeVariableValueInputDialog inputDialog = new ChangeVariableValueInputDialog(shell, ActionMessages.ChangeVariableValue_1, MessageFormat.format(ActionMessages.ChangeVariableValue_2, name), value, input -> {
 			try {
 				if (fVariable.verifyValue(input)) {
 					return null; // null means valid
@@ -158,9 +158,8 @@ public class ChangeVariableValueAction extends SelectionProviderAction {
 		Iterator<Object> iter = sel.iterator();
 		if (iter.hasNext()) {
 			Object object= iter.next();
-			if (object instanceof IValueModification) {
+			if (object instanceof IValueModification varMod) {
 				isApplicable = true;
-				IValueModification varMod= (IValueModification)object;
 				if (!varMod.supportsValueModification()) {
 					setEnabled(false);
 					return;

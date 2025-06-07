@@ -75,8 +75,9 @@ public class DefaultModelProxyFactory implements IModelProxyFactory {
 			}
 		}
 		if (IDebugUIConstants.ID_MEMORY_VIEW.equals(id)) {
-			if (element instanceof IMemoryBlockRetrieval)
+			if (element instanceof IMemoryBlockRetrieval) {
 				return new MemoryRetrievalProxy((IMemoryBlockRetrieval)element);
+			}
 		}
 		if (IDebugUIConstants.ID_BREAKPOINT_VIEW.equals(id)) {
 			if (element instanceof DefaultBreakpointsViewInput) {
@@ -92,8 +93,9 @@ public class DefaultModelProxyFactory implements IModelProxyFactory {
 		{
 			if (((MemoryViewPresentationContext)context).getRendering() instanceof AbstractAsyncTableRendering)
 			{
-				if (element instanceof IMemoryBlock)
+				if (element instanceof IMemoryBlock) {
 					return new MemoryBlockProxy((IMemoryBlock)element);
+				}
 			}
 		}
 

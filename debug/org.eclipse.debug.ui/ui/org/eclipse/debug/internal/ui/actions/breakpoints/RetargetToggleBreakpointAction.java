@@ -29,8 +29,7 @@ public class RetargetToggleBreakpointAction extends RetargetBreakpointAction {
 
 	@Override
 	protected void performAction(Object target, ISelection selection, IWorkbenchPart part) throws CoreException {
-		if (target instanceof IToggleBreakpointsTargetExtension) {
-			IToggleBreakpointsTargetExtension ext = (IToggleBreakpointsTargetExtension) target;
+		if (target instanceof IToggleBreakpointsTargetExtension ext) {
 			ext.toggleBreakpoints(part, selection);
 		} else {
 			((IToggleBreakpointsTarget)target).toggleLineBreakpoints(part, selection);
@@ -39,8 +38,7 @@ public class RetargetToggleBreakpointAction extends RetargetBreakpointAction {
 
 	@Override
 	protected boolean canPerformAction(Object target, ISelection selection, IWorkbenchPart part) {
-		if (target instanceof IToggleBreakpointsTargetExtension) {
-			IToggleBreakpointsTargetExtension ext = (IToggleBreakpointsTargetExtension) target;
+		if (target instanceof IToggleBreakpointsTargetExtension ext) {
 			return ext.canToggleBreakpoints(part, selection);
 		} else {
 			return ((IToggleBreakpointsTarget)target).canToggleLineBreakpoints(part, selection);

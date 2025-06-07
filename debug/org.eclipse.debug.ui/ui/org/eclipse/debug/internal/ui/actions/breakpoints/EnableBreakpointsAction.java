@@ -141,11 +141,9 @@ public class EnableBreakpointsAction implements IViewActionDelegate, IPartListen
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		setAction(action);
-		if (!(selection instanceof IStructuredSelection)) {
+		if (!(selection instanceof IStructuredSelection sel)) {
 			return;
 		}
-		IStructuredSelection sel= (IStructuredSelection)selection;
-
 		Iterator<?> itr = sel.iterator();
 		boolean allEnabled= true;
 		boolean allDisabled= true;

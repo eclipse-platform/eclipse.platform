@@ -31,8 +31,7 @@ public class BreakpointsPathDecorator extends BaseLabelProvider implements ILabe
 
 	@Override
 	public String decorateText(String text, Object element) {
-		if (element instanceof IBreakpoint) {
-			IBreakpoint breakpoint = (IBreakpoint) element;
+		if (element instanceof IBreakpoint breakpoint) {
 			IMarker marker = breakpoint.getMarker();
 			if (marker == null) {
 				return null;

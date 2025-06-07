@@ -436,8 +436,7 @@ public abstract class AbstractDebugView extends PageBookView implements IDebugVi
 		IToolBarManager tbm= getViewSite().getActionBars().getToolBarManager();
 		IContributionItem[] items= tbm.getItems();
 		for (IContributionItem contitem : items) {
-			if (contitem instanceof ActionContributionItem) {
-				ActionContributionItem item= (ActionContributionItem)contitem;
+			if (contitem instanceof ActionContributionItem item) {
 				IAction action= item.getAction();
 				if (action.getStyle() == IAction.AS_CHECK_BOX && action.isEnabled()) {
 					saveCheckedActionState(action);

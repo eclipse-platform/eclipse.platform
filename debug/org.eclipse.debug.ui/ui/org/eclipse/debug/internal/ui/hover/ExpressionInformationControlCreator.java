@@ -282,8 +282,7 @@ public class ExpressionInformationControlCreator implements IInformationControlC
 
 			fDetailPaneComposite = SWTFactory.createComposite(fSashForm, 1, 1, GridData.FILL_BOTH);
 			Layout layout = fDetailPaneComposite.getLayout();
-			if (layout instanceof GridLayout) {
-				GridLayout gl = (GridLayout) layout;
+			if (layout instanceof GridLayout gl) {
 				gl.marginHeight = 0;
 				gl.marginWidth = 0;
 			}
@@ -362,7 +361,7 @@ public class ExpressionInformationControlCreator implements IInformationControlC
 				if (tree > 0) {
 					int details = getIntSetting(settings, SASH_WEIGHT_DETAILS);
 					if (details > 0) {
-						fSashForm.setWeights(new int[]{tree, details});
+						fSashForm.setWeights(tree, details);
 					}
 				}
 			}

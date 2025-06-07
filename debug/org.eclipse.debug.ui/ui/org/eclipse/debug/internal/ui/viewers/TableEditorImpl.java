@@ -80,8 +80,9 @@ public abstract class TableEditorImpl {
 					// even if there is no control.
 					final Control control = fCellEditor.getControl();
 					fCellEditor.activate();
-					if (control == null)
+					if (control == null) {
 						return;
+					}
 					setLayoutData(fCellEditor.getLayoutData());
 					setEditor(control, fTableItem, fColumnNumber);
 					fCellEditor.setFocus();
@@ -195,13 +196,15 @@ public abstract class TableEditorImpl {
 	 * Start editing the given element.
 	 */
 	public void editElement(Object element, int column) {
-		if (fCellEditor != null)
+		if (fCellEditor != null) {
 			applyEditorValue();
+		}
 
 		setSelection(new StructuredSelection(element), true);
 		Item[] selection = getSelection();
-		if (selection.length != 1)
+		if (selection.length != 1) {
 			return;
+		}
 
 		fTableItem = selection[0];
 
@@ -252,11 +255,13 @@ public abstract class TableEditorImpl {
 	 *            the mouse event that should be handled
 	 */
 	public void handleMouseDown(MouseEvent event) {
-		if (event.button != 1)
+		if (event.button != 1) {
 			return;
+		}
 
-		if (fCellEditor != null)
+		if (fCellEditor != null) {
 			applyEditorValue();
+		}
 
 		// activate the cell editor immediately. If a second mouseDown
 		// is received prior to the expiration of the doubleClick time then
@@ -314,8 +319,9 @@ public abstract class TableEditorImpl {
 				// /Do what ???
 			}
 			String property = null;
-			if (fColumnProperties != null && fColumnNumber < fColumnProperties.length)
+			if (fColumnProperties != null && fColumnNumber < fColumnProperties.length) {
 				property = fColumnProperties[fColumnNumber];
+			}
 			fCellModifier.modify(tableItem, property, cellEditor.getValue());
 		}
 	}

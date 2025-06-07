@@ -162,7 +162,7 @@ public class WatchExpressionDialog extends StatusDialog {
 		fCheckBox.setFont(font);
 
 		String tipText = MessageFormat.format(ActionMessages.WatchExpressionDialog_5,
- new Object[] { getCtrlReturnText() });
+ getCtrlReturnText());
 		fTip= new Label(container, SWT.LEFT);
 		fTip.setText(tipText);
 		fTip.setFont(font);
