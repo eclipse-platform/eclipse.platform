@@ -56,11 +56,13 @@ public class CopyFailureListAction extends Action {
 		try {
 			fClipboard.setContents(new String[] { getAllFailureTraces() }, new Transfer[] { plainTextTransfer });
 		} catch (SWTError e) {
-			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
+			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
+			}
 			if (MessageDialog.openQuestion(fRunner.getSite().getShell(), Messages.CopyFailureList_problem,
-					Messages.CopyFailureList_clipboard_busy))
+					Messages.CopyFailureList_clipboard_busy)) {
 				run();
+			}
 		}
 	}
 

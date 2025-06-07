@@ -35,9 +35,9 @@ public class UnitTestProgressBar extends Canvas {
 	private int fCurrentTickCount = 0;
 	private int fMaxTickCount = 0;
 	private int fColorBarWidth = 0;
-	private Color fOKColor;
-	private Color fFailureColor;
-	private Color fStoppedColor;
+	private final Color fOKColor;
+	private final Color fFailureColor;
+	private final Color fStoppedColor;
 	private boolean fError;
 	private boolean fStopped = false;
 
@@ -102,8 +102,9 @@ public class UnitTestProgressBar extends Canvas {
 		fCurrentTickCount = ticksDone;
 		fMaxTickCount = maximum;
 		fColorBarWidth = scale(ticksDone);
-		if (!noChange)
+		if (!noChange) {
 			redraw();
+		}
 	}
 
 	private void paintStep(int startX, int endX) {
@@ -116,12 +117,13 @@ public class UnitTestProgressBar extends Canvas {
 	}
 
 	private void setStatusColor(GC gc) {
-		if (fStopped)
+		if (fStopped) {
 			gc.setBackground(fStoppedColor);
-		else if (fError)
+		} else if (fError) {
 			gc.setBackground(fFailureColor);
-		else
+		} else {
 			gc.setBackground(fOKColor);
+		}
 	}
 
 	/**
@@ -135,8 +137,9 @@ public class UnitTestProgressBar extends Canvas {
 	private int scale(int value) {
 		if (fMaxTickCount > 0) {
 			Rectangle r = getClientArea();
-			if (r.width != 0)
+			if (r.width != 0) {
 				return Math.max(0, value * (r.width - 2) / fMaxTickCount);
+			}
 		}
 		return value;
 	}
@@ -170,10 +173,12 @@ public class UnitTestProgressBar extends Canvas {
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 		checkWidget();
 		Point size = new Point(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		if (wHint != SWT.DEFAULT)
+		if (wHint != SWT.DEFAULT) {
 			size.x = wHint;
-		if (hHint != SWT.DEFAULT)
+		}
+		if (hHint != SWT.DEFAULT) {
 			size.y = hHint;
+		}
 		return size;
 	}
 
@@ -192,8 +197,9 @@ public class UnitTestProgressBar extends Canvas {
 			fError = true;
 			x = 1;
 		}
-		if (fCurrentTickCount == fMaxTickCount)
+		if (fCurrentTickCount == fMaxTickCount) {
 			fColorBarWidth = getClientArea().width - 1;
+		}
 		paintStep(x, fColorBarWidth);
 	}
 

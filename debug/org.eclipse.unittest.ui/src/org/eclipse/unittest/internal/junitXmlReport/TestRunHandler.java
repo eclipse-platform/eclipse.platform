@@ -97,8 +97,9 @@ public class TestRunHandler extends DefaultHandler {
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-		if (fMonitor.isCanceled())
+		if (fMonitor.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 
 		if (fLocator != null) {
 			int line = fLocator.getLineNumber();
@@ -109,8 +110,9 @@ public class TestRunHandler extends DefaultHandler {
 			}
 		}
 
-		if (Thread.interrupted())
+		if (Thread.interrupted()) {
 			throw new OperationCanceledException();
+		}
 
 		switch (qName) {
 		case IXMLTags.NODE_TESTRUN:
@@ -217,8 +219,7 @@ public class TestRunHandler extends DefaultHandler {
 	}
 
 	private void readDuration(ITestElement testElement, Attributes attributes) {
-		if (testElement instanceof TestElement) {
-			TestElement element = (TestElement) testElement;
+		if (testElement instanceof TestElement element) {
 			String timeString = attributes.getValue(IXMLTags.ATTR_DURATION);
 			if (timeString != null) {
 				try {
@@ -270,8 +271,9 @@ public class TestRunHandler extends DefaultHandler {
 		case IXMLTags.NODE_FAILURE:
 		case IXMLTags.NODE_ERROR: {
 			ITestElement testElement = fTestCase;
-			if (testElement == null)
+			if (testElement == null) {
 				testElement = fTestSuite;
+			}
 			handleFailure(testElement);
 			break;
 		}
@@ -295,8 +297,9 @@ public class TestRunHandler extends DefaultHandler {
 			break;
 		case IXMLTags.NODE_SKIPPED: {
 			TestElement testElement = fTestCase;
-			if (testElement == null)
+			if (testElement == null) {
 				testElement = fTestSuite;
+			}
 			if (fFailureBuffer != null && fFailureBuffer.length() > 0) {
 				handleFailure(testElement);
 				testElement.setAssumptionFailed(true);

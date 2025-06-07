@@ -67,19 +67,22 @@ public class UnitTestCopyAction extends SelectionListenerAction {
 		} else if (fTestElement != null) {
 			source = fTestElement.getTestName();
 		}
-		if (source == null || source.length() == 0)
+		if (source == null || source.length() == 0) {
 			return;
+		}
 
 		TextTransfer plainTextTransfer = TextTransfer.getInstance();
 		try {
 			fClipboard.setContents(new String[] { convertLineTerminators(source) },
 					new Transfer[] { plainTextTransfer });
 		} catch (SWTError e) {
-			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
+			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
+			}
 			if (MessageDialog.openQuestion(fView.getComposite().getShell(), Messages.CopyTraceAction_problem,
-					Messages.CopyTraceAction_clipboard_busy))
+					Messages.CopyTraceAction_clipboard_busy)) {
 				run();
+			}
 		}
 	}
 
