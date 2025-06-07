@@ -28,8 +28,9 @@ public class TestListenerRegistry {
 	 * @return a {@link TestListenerRegistry} object
 	 */
 	public static TestListenerRegistry getDefault() {
-		if (fgRegistry != null)
+		if (fgRegistry != null) {
 			return fgRegistry;
+		}
 
 		fgRegistry = new TestListenerRegistry();
 		return fgRegistry;

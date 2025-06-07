@@ -83,10 +83,12 @@ public class FailureTableDisplay implements ITraceDisplay {
 	}
 
 	private void disposeIcons() {
-		if (fExceptionIcon != null && !fExceptionIcon.isDisposed())
+		if (fExceptionIcon != null && !fExceptionIcon.isDisposed()) {
 			fExceptionIcon.dispose();
-		if (fStackIcon != null && !fStackIcon.isDisposed())
+		}
+		if (fStackIcon != null && !fStackIcon.isDisposed()) {
 			fStackIcon.dispose();
+		}
 	}
 
 	/**

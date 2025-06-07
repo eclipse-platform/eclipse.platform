@@ -68,8 +68,9 @@ public class TextualTrace {
 		try {
 			// first line contains the thrown exception
 			line = readLine(bufferedReader);
-			if (line == null)
+			if (line == null) {
 				return;
+			}
 
 			displayWrappedLine(display, maxLabelLength, line, LINE_TYPE_EXCEPTION);
 
@@ -108,8 +109,9 @@ public class TextualTrace {
 	}
 
 	private String filterStack(String stackTrace, Collection<StringMatcher> filterPatterns) {
-		if (filterPatterns == null || filterPatterns.isEmpty() || stackTrace == null)
+		if (filterPatterns == null || filterPatterns.isEmpty() || stackTrace == null) {
 			return stackTrace;
+		}
 
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);
@@ -120,8 +122,9 @@ public class TextualTrace {
 		boolean firstLine = true;
 		try {
 			while ((line = bufferedReader.readLine()) != null) {
-				if (firstLine || !filterLine(filterPatterns, line))
+				if (firstLine || !filterLine(filterPatterns, line)) {
 					printWriter.println(line);
+				}
 				firstLine = false;
 			}
 		} catch (IOException e) {

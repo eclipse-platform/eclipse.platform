@@ -95,8 +95,9 @@ public class FailureTraceUIBlock implements IMenuListener {
 			}
 			if (fTable.getSelection().length != 0) {
 				IAction a = createOpenEditorAction(getSelectedText());
-				if (a != null)
+				if (a != null) {
 					a.run();
+				}
 			}
 		});
 
@@ -117,8 +118,9 @@ public class FailureTraceUIBlock implements IMenuListener {
 	public void menuAboutToShow(IMenuManager manager) {
 		if (fTable.getSelectionCount() > 0) {
 			IAction a = createOpenEditorAction(getSelectedText());
-			if (a != null)
+			if (a != null) {
 				manager.add(a);
+			}
 			manager.add(new UnitTestCopyAction(FailureTraceUIBlock.this, fClipboard));
 		}
 		// fix for bug 68058
@@ -214,8 +216,9 @@ public class FailureTraceUIBlock implements IMenuListener {
 	}
 
 	private Collection<StringMatcher> getFilterPatterns() {
-		if (UnitTestPreferencesConstants.getFilterStack())
+		if (UnitTestPreferencesConstants.getFilterStack()) {
 			return getFilterPatterns(fFailure.getTestRunSession());
+		}
 		return Collections.emptySet();
 	}
 
