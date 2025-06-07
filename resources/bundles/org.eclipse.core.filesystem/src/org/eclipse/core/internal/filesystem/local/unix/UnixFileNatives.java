@@ -44,8 +44,9 @@ public abstract class UnixFileNatives {
 			initializeStructStatFieldIDs();
 			_libattr = libattr();
 		} catch (UnsatisfiedLinkError e) {
-			if (isLibraryPresent())
+			if (isLibraryPresent()) {
 				logMissingNativeLibrary(e);
+			}
 		} finally {
 			usingNatives = _usingNatives;
 			libattr = _libattr;
@@ -65,11 +66,13 @@ public abstract class UnixFileNatives {
 	}
 
 	public static int getSupportedAttributes() {
-		if (!usingNatives)
+		if (!usingNatives) {
 			return -1;
+		}
 		int ret = EFS.ATTRIBUTE_READ_ONLY | EFS.ATTRIBUTE_EXECUTABLE | EFS.ATTRIBUTE_SYMLINK | EFS.ATTRIBUTE_LINK_TARGET | EFS.ATTRIBUTE_OWNER_READ | EFS.ATTRIBUTE_OWNER_WRITE | EFS.ATTRIBUTE_OWNER_EXECUTE | EFS.ATTRIBUTE_GROUP_READ | EFS.ATTRIBUTE_GROUP_WRITE | EFS.ATTRIBUTE_GROUP_EXECUTE | EFS.ATTRIBUTE_OTHER_READ | EFS.ATTRIBUTE_OTHER_WRITE | EFS.ATTRIBUTE_OTHER_EXECUTE;
-		if (isSupported(CHFLAGS_SUPPORTED))
+		if (isSupported(CHFLAGS_SUPPORTED)) {
 			ret |= EFS.ATTRIBUTE_IMMUTABLE;
+		}
 		return ret;
 	}
 
@@ -83,20 +86,24 @@ public abstract class UnixFileNatives {
 					info = stat.toFileInfo();
 				} else {
 					info = new FileInfo();
-					if (getErrno() != ENOENT)
+					if (getErrno() != ENOENT) {
 						info.setError(IFileInfo.IO_ERROR);
+					}
 				}
 				info.setAttribute(EFS.ATTRIBUTE_SYMLINK, true);
 				byte target[] = new byte[UnixFileFlags.PATH_MAX];
 				int length = readlink(name, target, target.length);
-				if (length > 0)
+				if (length > 0) {
 					info.setStringAttribute(EFS.ATTRIBUTE_LINK_TARGET, bytesToFileName(target, length));
-			} else
+				}
+			} else {
 				info = stat.toFileInfo();
+			}
 		} else {
 			info = new FileInfo();
-			if (getErrno() != ENOENT)
+			if (getErrno() != ENOENT) {
 				info.setError(IFileInfo.IO_ERROR);
+			}
 		}
 
 		if (info.getName() == null) {
@@ -113,8 +120,9 @@ public abstract class UnixFileNatives {
 	public static boolean putFileInfo(String fileName, IFileInfo info, int options) {
 		int code = 0;
 		byte[] name = fileNameToBytes(fileName);
-		if (name == null)
+		if (name == null) {
 			return false;
+		}
 
 		// In case uchg flag is to be removed do it before calling chmod
 		if (!info.getAttribute(EFS.ATTRIBUTE_IMMUTABLE) && isSupported(CHFLAGS_SUPPORTED)) {
@@ -129,24 +137,33 @@ public abstract class UnixFileNatives {
 
 		// Change permissions
 		int mode = 0;
-		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_READ))
+		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_READ)) {
 			mode |= UnixFileFlags.S_IRUSR;
-		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_WRITE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_WRITE)) {
 			mode |= UnixFileFlags.S_IWUSR;
-		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_EXECUTE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_EXECUTE)) {
 			mode |= UnixFileFlags.S_IXUSR;
-		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_READ))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_READ)) {
 			mode |= UnixFileFlags.S_IRGRP;
-		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_WRITE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_WRITE)) {
 			mode |= UnixFileFlags.S_IWGRP;
-		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_EXECUTE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_EXECUTE)) {
 			mode |= UnixFileFlags.S_IXGRP;
-		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_READ))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_READ)) {
 			mode |= UnixFileFlags.S_IROTH;
-		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_WRITE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_WRITE)) {
 			mode |= UnixFileFlags.S_IWOTH;
-		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_EXECUTE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_EXECUTE)) {
 			mode |= UnixFileFlags.S_IXOTH;
+		}
 		code |= chmod(name, mode);
 
 		// In case uchg flag is to be added do it after calling chmod
@@ -170,20 +187,23 @@ public abstract class UnixFileNatives {
 	}
 
 	public static int getFlag(String flag) {
-		if (!usingNatives)
+		if (!usingNatives) {
 			return -1;
+		}
 		return getflag(flag.getBytes(StandardCharsets.US_ASCII));
 	}
 
 	private static byte[] fileNameToBytes(String fileName) {
-		if (isSupported(UNICODE_SUPPORTED))
+		if (isSupported(UNICODE_SUPPORTED)) {
 			return tounicode(fileName.toCharArray());
+		}
 		return Convert.toPlatformBytes(fileName);
 	}
 
 	private static String bytesToFileName(byte[] buf, int length) {
-		if (isSupported(UNICODE_SUPPORTED))
+		if (isSupported(UNICODE_SUPPORTED)) {
 			return new String(buf, 0, length);
+		}
 		return Convert.fromPlatformBytes(buf, length);
 	}
 

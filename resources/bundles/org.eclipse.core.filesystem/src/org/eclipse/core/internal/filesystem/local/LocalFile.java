@@ -85,8 +85,9 @@ public class LocalFile extends FileStore {
 	private URI uri;
 
 	private static int attributes(File aFile) {
-		if (!aFile.exists() || aFile.canWrite())
+		if (!aFile.exists() || aFile.canWrite()) {
 			return EFS.NONE;
+		}
 		return EFS.ATTRIBUTE_READ_ONLY;
 	}
 
@@ -269,8 +270,9 @@ public class LocalFile extends FileStore {
 
 	@Override
 	public int hashCode() {
-		if (LocalFileSystem.MACOSX)
+		if (LocalFileSystem.MACOSX) {
 			return filePath.toLowerCase().hashCode();
+		}
 		return file.hashCode();
 	}
 
@@ -593,16 +595,19 @@ public class LocalFile extends FileStore {
 			success &= LocalFileNativesManager.putFileInfo(filePath, info, options);
 		}
 		//native does not currently set last modified
-		if ((options & EFS.SET_LAST_MODIFIED) != 0)
+		if ((options & EFS.SET_LAST_MODIFIED) != 0) {
 			success &= file.setLastModified(info.getLastModified());
-		if (!success && !file.exists())
+		}
+		if (!success && !file.exists()) {
 			Policy.error(EFS.ERROR_NOT_EXISTS, NLS.bind(Messages.fileNotFound, filePath));
+		}
 	}
 
 	@Override
 	public File toLocalFile(int options, IProgressMonitor monitor) throws CoreException {
-		if (options == EFS.CACHE)
+		if (options == EFS.CACHE) {
 			return super.toLocalFile(options, monitor);
+		}
 		return file;
 	}
 

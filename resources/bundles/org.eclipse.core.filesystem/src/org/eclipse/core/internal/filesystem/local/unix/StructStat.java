@@ -39,28 +39,39 @@ public class StructStat {
 			lastModified += st_mtime_msec;
 		}
 		info.setLastModified(lastModified);
-		if ((st_mode & UnixFileFlags.S_IFMT) == UnixFileFlags.S_IFDIR)
+		if ((st_mode & UnixFileFlags.S_IFMT) == UnixFileFlags.S_IFDIR) {
 			info.setDirectory(true);
-		if ((st_flags & (UnixFileFlags.UF_IMMUTABLE | UnixFileFlags.SF_IMMUTABLE)) != 0)
+		}
+		if ((st_flags & (UnixFileFlags.UF_IMMUTABLE | UnixFileFlags.SF_IMMUTABLE)) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_IMMUTABLE, true);
-		if ((st_mode & UnixFileFlags.S_IRUSR) == 0) // Set to true in FileInfo constructor
+		}
+		if ((st_mode & UnixFileFlags.S_IRUSR) == 0) { // Set to true in FileInfo constructor
 			info.setAttribute(EFS.ATTRIBUTE_OWNER_READ, false);
-		if ((st_mode & UnixFileFlags.S_IWUSR) == 0) // Set to true in FileInfo constructor
+		}
+		if ((st_mode & UnixFileFlags.S_IWUSR) == 0) { // Set to true in FileInfo constructor
 			info.setAttribute(EFS.ATTRIBUTE_OWNER_WRITE, false);
-		if ((st_mode & UnixFileFlags.S_IXUSR) != 0)
+		}
+		if ((st_mode & UnixFileFlags.S_IXUSR) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_OWNER_EXECUTE, true);
-		if ((st_mode & UnixFileFlags.S_IRGRP) != 0)
+		}
+		if ((st_mode & UnixFileFlags.S_IRGRP) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_GROUP_READ, true);
-		if ((st_mode & UnixFileFlags.S_IWGRP) != 0)
+		}
+		if ((st_mode & UnixFileFlags.S_IWGRP) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_GROUP_WRITE, true);
-		if ((st_mode & UnixFileFlags.S_IXGRP) != 0)
+		}
+		if ((st_mode & UnixFileFlags.S_IXGRP) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_GROUP_EXECUTE, true);
-		if ((st_mode & UnixFileFlags.S_IROTH) != 0)
+		}
+		if ((st_mode & UnixFileFlags.S_IROTH) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_OTHER_READ, true);
-		if ((st_mode & UnixFileFlags.S_IWOTH) != 0)
+		}
+		if ((st_mode & UnixFileFlags.S_IWOTH) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_OTHER_WRITE, true);
-		if ((st_mode & UnixFileFlags.S_IXOTH) != 0)
+		}
+		if ((st_mode & UnixFileFlags.S_IXOTH) != 0) {
 			info.setAttribute(EFS.ATTRIBUTE_OTHER_EXECUTE, true);
+		}
 		return info;
 	}
 

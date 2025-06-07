@@ -92,24 +92,33 @@ public class PosixHandler extends NativeHandler {
 		Path path = Paths.get(fileName);
 		Set<PosixFilePermission> perms = new HashSet<>();
 
-		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_READ))
+		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_READ)) {
 			perms.add(PosixFilePermission.OWNER_READ);
-		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_WRITE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_WRITE)) {
 			perms.add(PosixFilePermission.OWNER_WRITE);
-		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_EXECUTE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OWNER_EXECUTE)) {
 			perms.add(PosixFilePermission.OWNER_EXECUTE);
-		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_READ))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_READ)) {
 			perms.add(PosixFilePermission.GROUP_READ);
-		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_WRITE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_WRITE)) {
 			perms.add(PosixFilePermission.GROUP_WRITE);
-		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_EXECUTE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_GROUP_EXECUTE)) {
 			perms.add(PosixFilePermission.GROUP_EXECUTE);
-		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_READ))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_READ)) {
 			perms.add(PosixFilePermission.OTHERS_READ);
-		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_WRITE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_WRITE)) {
 			perms.add(PosixFilePermission.OTHERS_WRITE);
-		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_EXECUTE))
+		}
+		if (info.getAttribute(EFS.ATTRIBUTE_OTHER_EXECUTE)) {
 			perms.add(PosixFilePermission.OTHERS_EXECUTE);
+		}
 
 		PosixFileAttributeView view = Files.getFileAttributeView(path, PosixFileAttributeView.class);
 		try {

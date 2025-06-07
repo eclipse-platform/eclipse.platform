@@ -157,11 +157,13 @@ public abstract class FileSystem extends PlatformObject implements IFileSystem {
 	 * @param aScheme The scheme of the file system.
 	 */
 	public final void initialize(String aScheme) {
-		if (aScheme == null)
+		if (aScheme == null) {
 			throw new NullPointerException();
+		}
 		//scheme cannot be changed after creation
-		if (this.scheme != null)
+		if (this.scheme != null) {
 			throw new IllegalStateException("File system already initialized"); //$NON-NLS-1$
+		}
 		this.scheme = aScheme;
 	}
 
