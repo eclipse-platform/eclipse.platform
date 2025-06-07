@@ -37,8 +37,9 @@ public class LaunchUpdateIntroAction implements IIntroAction {
 	public void run(IIntroSite site, Properties params) {
 		Shell currentShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		currentShell.getDisplay().asyncExec(() -> {
-			if (!executeUpdateCommand(COMMAND_P2))
+			if (!executeUpdateCommand(COMMAND_P2)) {
 				executeUpdateCommand(COMMAND_UPDATE_MANAGER);
+			}
 		});
 	}
 
