@@ -43,8 +43,9 @@ public class SpySupport {
 	 */
 	public static Map<QualifiedName, Object> getSessionProperties(IResource resource) {
 		ResourceInfo info = ((Resource) resource).getResourceInfo(true, false);
-		if (info == null)
+		if (info == null) {
 			return null;
+		}
 		return getSessionProperties(info);
 	}
 	@SuppressWarnings("unchecked")
