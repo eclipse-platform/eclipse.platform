@@ -864,10 +864,13 @@ public class DebugPlugin extends Plugin {
 	 */
 	public static IProcess newProcess(ILaunch launch, Process process, String label, Map<String, String> attributes) {
 		ILaunchConfiguration config= launch.getLaunchConfiguration();
-		String processFactoryID= null;
+		String processFactoryID = null;
+		// FIXME hack for demo purpose we need an UI for the user to decide if a
+		// terminal
+		// is wanted
 		if (config != null) {
 			try {
-				processFactoryID= config.getAttribute(ATTR_PROCESS_FACTORY_ID, (String)null);
+				processFactoryID = config.getAttribute(ATTR_PROCESS_FACTORY_ID, "org.eclipse.debug.terminal.processFactory.cdt"); //$NON-NLS-1$
 			} catch (CoreException e) {
 			}
 		}
@@ -1028,6 +1031,7 @@ public class DebugPlugin extends Plugin {
 			// environment variables is slightly different between
 			// ProcessBuilder and Runtime.exec only the new option uses process
 			// builder to not break existing caller of this method
+
 			if (mergeOutput) {
 				ProcessBuilder pb = new ProcessBuilder(cmdLine);
 				directory.ifPresent(pb::directory);
