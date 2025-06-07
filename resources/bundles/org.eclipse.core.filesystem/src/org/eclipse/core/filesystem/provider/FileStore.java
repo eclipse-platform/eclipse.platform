@@ -82,8 +82,9 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	public IFileStore[] childStores(int options, IProgressMonitor monitor) throws CoreException {
 		String[] children = childNames(options, monitor);
 		IFileStore[] wrapped = new IFileStore[children.length];
-		for (int i = 0; i < wrapped.length; i++)
+		for (int i = 0; i < wrapped.length; i++) {
 			wrapped[i] = getChild(children[i]);
+		}
 		return wrapped;
 	}
 
@@ -132,8 +133,9 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 		// copy attributes
 		LocalFile.transferAttributes(sourceInfo, destination);
 
-		if (children == null)
+		if (children == null) {
 			return;
+		}
 		// copy children
 		for (IFileStore c : children) {
 			c.copy(destination.getChild(c.getName()), options, subMonitor.newChild(1));
@@ -176,8 +178,9 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 			Policy.error(EFS.ERROR_WRITE, NLS.bind(Messages.failedCopy, sourcePath), e);
 		} catch (CoreException e) {
 			//if we failed to write, try to cleanup the half written file
-			if (!destination.fetchInfo(0, null).exists())
+			if (!destination.fetchInfo(0, null).exists()) {
 				destination.delete(EFS.NONE, null);
+			}
 			throw e;
 		}
 	}
@@ -213,10 +216,12 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!(obj instanceof FileStore))
+		}
+		if (!(obj instanceof FileStore)) {
 			return false;
+		}
 		return toURI().equals(((FileStore) obj).toURI());
 	}
 
@@ -247,8 +252,9 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	@Override
 	public IFileStore getChild(IPath path) {
 		IFileStore result = this;
-		for (int i = 0, imax = path.segmentCount(); i < imax; i++)
+		for (int i = 0, imax = path.segmentCount(); i < imax; i++) {
 			result = result.getChild(path.segment(i));
+		}
 		return result;
 	}
 
@@ -264,12 +270,13 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 		String segment = null;
 		for (int i = 0, imax = path.segmentCount(); i < imax; i++) {
 			segment = path.segment(i);
-			if (segment.equals(".")) //$NON-NLS-1$
+			if (segment.equals(".")) { //$NON-NLS-1$
 				continue;
-			else if (segment.equals("..") && result.getParent() != null) //$NON-NLS-1$
+			} else if (segment.equals("..") && result.getParent() != null) { //$NON-NLS-1$
 				result = result.getParent();
-			else
+			} else {
 				result = result.getChild(segment);
+			}
 		}
 		return result;
 	}
@@ -324,10 +331,12 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	public boolean isParentOf(IFileStore other) {
 		while (true) {
 			other = other.getParent();
-			if (other == null)
+			if (other == null) {
 				return false;
-			if (this.equals(other))
+			}
+			if (this.equals(other)) {
 				return true;
+			}
 		}
 	}
 
@@ -412,8 +421,9 @@ public abstract class FileStore extends PlatformObject implements IFileStore {
 	@Override
 	public java.io.File toLocalFile(int options, IProgressMonitor monitor) throws CoreException {
 		//caching is the only recognized option
-		if (options != EFS.CACHE)
+		if (options != EFS.CACHE) {
 			return null;
+		}
 		return FileCache.getCache().cache(this, monitor);
 	}
 

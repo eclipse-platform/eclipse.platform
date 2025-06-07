@@ -64,8 +64,9 @@ public class DefaultHandler extends NativeHandler {
 			// Since we will be using a mixture of pre Java 7 API's which do not support the
 			// retrieval of information for the symbolic link itself instead of the target
 			// we will only support the following details if the symbolic link target exists.
-			if (!exists)
+			if (!exists) {
 				return info;
+			}
 
 			info.setLastModified(readAttributes.lastModifiedTime().toMillis());
 			info.setLength(readAttributes.size());
@@ -92,11 +93,13 @@ public class DefaultHandler extends NativeHandler {
 		// taken above in fetchInfo.
 		File file = new File(fileName);
 		if (info.getAttribute(EFS.ATTRIBUTE_READ_ONLY)) {
-			if (!file.setReadOnly())
+			if (!file.setReadOnly()) {
 				return false;
+			}
 		} else {
-			if (!file.setWritable(true))
+			if (!file.setWritable(true)) {
 				return false;
+			}
 		}
 		// If setExecutable succeeds, then the whole method succeeds.
 		return file.setExecutable(info.getAttribute(EFS.ATTRIBUTE_EXECUTABLE));
