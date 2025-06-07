@@ -295,7 +295,7 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 		}
 		Image image = fImageCache.get(descriptor);
 		if (image == null) {
-			image = new Image(getControl().getDisplay(), descriptor.getImageData());
+			image = descriptor.createImage();
 			fImageCache.put(descriptor, image);
 		}
 		return image;
