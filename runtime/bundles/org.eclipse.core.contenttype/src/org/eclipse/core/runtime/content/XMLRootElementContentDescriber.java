@@ -71,20 +71,24 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	 * </ul>
 	 */
 	private int checkCriteria(InputSource contents, Map<String, Object> properties) throws IOException {
-		if (!XMLRootElementContentDescriber2.isProcessed(properties))
+		if (!XMLRootElementContentDescriber2.isProcessed(properties)) {
 			XMLRootElementContentDescriber2.fillContentProperties(contents, properties);
+		}
 		return checkCriteria(properties);
 	}
 
 	private int checkCriteria(Map<String, Object> properties) throws IOException {
 		Boolean result = (Boolean) properties.get(XMLRootElementContentDescriber2.RESULT);
-		if (!result.booleanValue())
+		if (!result.booleanValue()) {
 			return INDETERMINATE;
+		}
 		// Check to see if we matched our criteria.
-		if ((dtdToFind != null) && (!dtdToFind.equals(properties.get(XMLRootElementContentDescriber2.DTD))))
+		if ((dtdToFind != null) && (!dtdToFind.equals(properties.get(XMLRootElementContentDescriber2.DTD)))) {
 			return INDETERMINATE;
-		if ((elementToFind != null) && (!elementToFind.equals(properties.get(XMLRootElementContentDescriber2.ELEMENT))))
+		}
+		if ((elementToFind != null) && (!elementToFind.equals(properties.get(XMLRootElementContentDescriber2.ELEMENT)))) {
 			return INDETERMINATE;
+		}
 		// We must be okay then.
 		return VALID;
 	}
@@ -102,8 +106,9 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	 */
 	public int describe(InputStream contents, IContentDescription description, Map<String, Object> properties) throws IOException {
 		// call the basic XML describer to do basic recognition
-		if (super.describe2(contents, description, properties) == INVALID)
+		if (super.describe2(contents, description, properties) == INVALID) {
 			return INVALID;
+		}
 		// super.describe will have consumed some chars, need to rewind
 		contents.reset();
 		// Check to see if we matched our criteria.
@@ -123,8 +128,9 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	 */
 	public int describe(Reader contents, IContentDescription description, Map<String, Object> properties) throws IOException {
 		// call the basic XML describer to do basic recognition
-		if (super.describe2(contents, description, properties) == INVALID)
+		if (super.describe2(contents, description, properties) == INVALID) {
 			return INVALID;
+		}
 		// super.describe will have consumed some chars, need to rewind
 		contents.reset();
 		// Check to see if we matched our criteria.
@@ -136,9 +142,9 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	 */
 	@Override
 	public void setInitializationData(final IConfigurationElement config, final String propertyName, final Object data) throws CoreException {
-		if (data instanceof String)
+		if (data instanceof String) {
 			elementToFind = (String) data;
-		else if (data instanceof Hashtable) {
+		} else if (data instanceof Hashtable) {
 			Hashtable<?, ?> parameters = (Hashtable<?, ?>) data;
 			dtdToFind = (String) parameters.get(DTD_TO_FIND);
 			elementToFind = (String) parameters.get(ELEMENT_TO_FIND);

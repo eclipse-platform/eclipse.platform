@@ -55,8 +55,9 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 			// no changes related to the content type registry
 			if (event.getExtensionDeltas(IContentConstants.RUNTIME_NAME, ContentTypeBuilder.PT_CONTENTTYPES).length == 0
 					&& event.getExtensionDeltas(IContentConstants.CONTENT_NAME,
-							ContentTypeBuilder.PT_CONTENTTYPES).length == 0)
+							ContentTypeBuilder.PT_CONTENTTYPES).length == 0) {
 				return;
+			}
 			getInstance().invalidate();
 		}
 	}
@@ -99,8 +100,9 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 
 	@Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
 	public void addRegistryChangeListener(IExtensionRegistry registry) {
-		if (registry == null)
+		if (registry == null) {
 			return;
+		}
 		// Different instances of listener required. See documentation of
 		// IExtensionRegistry.addRegistryChangeListener(IRegistryChangeListener, String).
 		registry.addRegistryChangeListener(runtimeExtensionListener, IContentConstants.RUNTIME_NAME);
@@ -117,8 +119,9 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 	}
 
 	public void removeRegistryChangeListener(IExtensionRegistry registry) {
-		if (registry == null)
+		if (registry == null) {
 			return;
+		}
 		getInstance().invalidate();
 		registry.removeRegistryChangeListener(runtimeExtensionListener);
 		registry.removeRegistryChangeListener(contentExtensionListener);
@@ -173,15 +176,17 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 		IContentType[] types = currentCatalog.getAllContentTypes();
 		IContentType[] result = new IContentType[types.length];
 		int generation = currentCatalog.getGeneration();
-		for (int i = 0; i < result.length; i++)
+		for (int i = 0; i < result.length; i++) {
 			result[i] = new ContentTypeHandler((ContentType) types[i], generation);
+		}
 		return result;
 	}
 
 	protected synchronized ContentTypeCatalog getCatalog() {
-		if (catalog != null)
+		if (catalog != null) {
 			// already has one
 			return catalog;
+		}
 		// create new catalog
 		ContentTypeCatalog newCatalog = new ContentTypeCatalog(this, catalogGeneration++);
 		// build catalog by parsing the extension registry
@@ -222,8 +227,9 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 	 * Causes a new catalog to be built afresh next time an API call is made.
 	 */
 	synchronized void invalidate() {
-		if (DebuggingHolder.DEBUGGING && catalog != null)
+		if (DebuggingHolder.DEBUGGING && catalog != null) {
 			ContentMessages.message("Registry discarded"); //$NON-NLS-1$
+		}
 		catalog = null;
 	}
 

@@ -31,10 +31,12 @@ public class ContentTypeSettings implements IContentTypeSettings, IContentTypeIn
 		Preferences contentTypeNode = ContentTypeManager.getInstance().getPreferences(context).node(contentTypeId);
 		String key = ContentType.getPreferenceKey(type);
 		List<String> existingValues = Util.parseItemsIntoList(contentTypeNode.get(key, null));
-		for (String existingValue : existingValues)
-			if (existingValue.equalsIgnoreCase(fileSpec))
+		for (String existingValue : existingValues) {
+			if (existingValue.equalsIgnoreCase(fileSpec)) {
 				// don't do anything if already exists
 				return;
+			}
+		}
 		existingValues.add(fileSpec);
 		// set new preference value
 		String newValue = Util.toListString(existingValues.toArray());
@@ -64,13 +66,15 @@ public class ContentTypeSettings implements IContentTypeSettings, IContentTypeIn
 		if (contentTypePrefs.nodeExists(id)) {
 			Preferences contentTypeNode = contentTypePrefs.node(id);
 			String propertyValue = contentTypeNode.get(key.getLocalName(), null);
-			if (propertyValue != null)
+			if (propertyValue != null) {
 				return propertyValue;
+			}
 		}
 		// try built-in settings
 		String propertyValue = current.basicGetDefaultProperty(key);
-		if (propertyValue != null)
+		if (propertyValue != null) {
 			return propertyValue;
+		}
 		// try ancestor
 		ContentType baseType = (ContentType) current.getBaseType();
 		return baseType == null ? null : internalGetDefaultProperty(baseType, contentTypePrefs, key);
@@ -80,18 +84,22 @@ public class ContentTypeSettings implements IContentTypeSettings, IContentTypeIn
 		Preferences contentTypeNode = ContentTypeManager.getInstance().getPreferences(context).node(contentTypeId);
 		String key = ContentType.getPreferenceKey(type);
 		String existing = contentTypeNode.get(key, null);
-		if (existing == null)
+		if (existing == null) {
 			// content type has no settings - nothing to do
 			return;
+		}
 		List<String> existingValues = Util.parseItemsIntoList(contentTypeNode.get(key, null));
 		int index = -1;
 		int existingCount = existingValues.size();
-		for (int i = 0; index == -1 && i < existingCount; i++)
-			if (existingValues.get(i).equalsIgnoreCase(fileSpec))
+		for (int i = 0; index == -1 && i < existingCount; i++) {
+			if (existingValues.get(i).equalsIgnoreCase(fileSpec)) {
 				index = i;
-		if (index == -1)
+			}
+		}
+		if (index == -1) {
 			// did not find the file spec to be removed - nothing to do
 			return;
+		}
 		existingValues.remove(index);
 		// set new preference value
 		String newValue = Util.toListString(existingValues.toArray());

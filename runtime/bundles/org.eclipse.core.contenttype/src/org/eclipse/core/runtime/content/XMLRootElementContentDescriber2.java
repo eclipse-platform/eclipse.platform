@@ -130,15 +130,17 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 	 * </ul>
 	 */
 	private int checkCriteria(InputSource contents, Map<String, Object> properties) throws IOException {
-		if (!isProcessed(properties))
+		if (!isProcessed(properties)) {
 			fillContentProperties(contents, properties);
+		}
 		return checkCriteria(properties);
 	}
 
 	private int checkCriteria(Map<String, Object> properties) throws IOException {
 		Boolean result = (Boolean) properties.get(RESULT);
-		if (!result.booleanValue())
+		if (!result.booleanValue()) {
 			return INDETERMINATE;
+		}
 		// Check to see if we matched our criteria.
 		if (elementsToFind != null) {
 			boolean foundOne = false;
@@ -148,8 +150,9 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 				String element = (String) properties.get(ELEMENT);
 				foundOne |= elementsToFind[i].matches(namespace, element, dtd);
 			}
-			if (!foundOne)
+			if (!foundOne) {
 				return INDETERMINATE;
+			}
 		}
 		// We must be okay then.
 		return VALID;
@@ -165,8 +168,9 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 	 */
 	public int describe(InputStream contents, IContentDescription description, Map<String, Object> properties) throws IOException {
 		// call the basic XML describer to do basic recognition
-		if (super.describe2(contents, description, properties) == INVALID)
+		if (super.describe2(contents, description, properties) == INVALID) {
 			return INVALID;
+		}
 		// super.describe will have consumed some chars, need to rewind
 		contents.reset();
 		// Check to see if we matched our criteria.
@@ -183,8 +187,9 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 	 */
 	public int describe(Reader contents, IContentDescription description, Map<String, Object> properties) throws IOException {
 		// call the basic XML describer to do basic recognition
-		if (super.describe2(contents, description, properties) == INVALID)
+		if (super.describe2(contents, description, properties) == INVALID) {
 			return INVALID;
+		}
 		// super.describe will have consumed some chars, need to rewind
 		contents.reset();
 		// Check to see if we matched our criteria.
@@ -194,8 +199,9 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 	static boolean isProcessed(Map<String, Object> properties) {
 		Boolean result = (Boolean) properties.get(RESULT);
 		// It can be set to false which means that content can't be parsed
-		if (result != null)
+		if (result != null) {
 			return true;
+		}
 		return false;
 	}
 
@@ -217,22 +223,25 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 			throw new RuntimeException(message);
 		}
 		String element = xmlHandler.getRootName();
-		if (element != null)
+		if (element != null) {
 			properties.put(ELEMENT, element);
+		}
 		String dtd = xmlHandler.getDTD();
-		if (dtd != null)
+		if (dtd != null) {
 			properties.put(DTD, dtd);
+		}
 		String namespace = xmlHandler.getRootNamespace();
-		if (namespace != null)
+		if (namespace != null) {
 			properties.put(NAMESPACE, namespace);
+		}
 		properties.put(RESULT, Boolean.TRUE);
 	}
 
 	@Override
 	public void setInitializationData(final IConfigurationElement config, final String propertyName, final Object data) throws CoreException {
-		if (data instanceof String)
+		if (data instanceof String) {
 			elementsToFind = new QualifiedElement[] {new QualifiedElement((String) data)};
-		else if (data instanceof Hashtable) {
+		} else if (data instanceof Hashtable) {
 			List<QualifiedElement> elements = null;
 
 			// the describer parameters have to be read again, because "element" parameter can be specified multiple times
@@ -243,8 +252,9 @@ public final class XMLRootElementContentDescriber2 extends XMLContentDescriber i
 			for (IConfigurationElement param : params) {
 				pname = param.getAttribute("name"); //$NON-NLS-1$
 				if (ELEMENT_TO_FIND.equals(pname)) {
-					if (elements == null)
+					if (elements == null) {
 						elements = new LinkedList<>();
+					}
 					elements.add(new QualifiedElement(param.getAttribute("value"))); //$NON-NLS-1$
 				}
 			}

@@ -40,8 +40,9 @@ public class LazyReader extends Reader implements ILazySource {
 	}
 
 	private int computeBlockSize(int blockIndex) {
-		if (blockIndex < blocks.length - 1)
+		if (blockIndex < blocks.length - 1) {
 			return blockCapacity;
+		}
 		int blockSize = (int) (bufferSize % blockCapacity);
 		return blockSize == 0 ? blockCapacity : blockSize;
 	}
@@ -140,8 +141,9 @@ public class LazyReader extends Reader implements ILazySource {
 		// read a block from the underlying stream
 		char[] newBlock = new char[blockCapacity];
 		int readCount = in.read(newBlock);
-		if (readCount == -1)
+		if (readCount == -1) {
 			return 0;
+		}
 		// expand blocks array
 		char[][] tmpBlocks = new char[blocks.length + 1][];
 		System.arraycopy(blocks, 0, tmpBlocks, 0, blocks.length);
@@ -163,8 +165,9 @@ public class LazyReader extends Reader implements ILazySource {
 	@Override
 	public int read() throws IOException {
 		ensureAvailable(1);
-		if (bufferSize <= offset)
+		if (bufferSize <= offset) {
 			return -1;
+		}
 		char nextChar = blocks[getCurrentBlockIndex()][getOffsetInCurrentBlock()];
 		increaseOffset(1);
 		return nextChar;
@@ -204,8 +207,9 @@ public class LazyReader extends Reader implements ILazySource {
 
 	@Override
 	public long skip(long toSkip) throws IOException {
-		if (toSkip <= 0)
+		if (toSkip <= 0) {
 			return 0;
+		}
 		ensureAvailable(toSkip);
 		long skipped = Math.min(toSkip, bufferSize - offset);
 		increaseOffset(skipped);
