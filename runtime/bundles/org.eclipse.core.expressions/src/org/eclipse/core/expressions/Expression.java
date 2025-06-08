@@ -237,11 +237,13 @@ public abstract class Expression {
 
 	@Override
 	public int hashCode() {
-		if (fHashCode != HASH_CODE_NOT_COMPUTED)
+		if (fHashCode != HASH_CODE_NOT_COMPUTED) {
 			return fHashCode;
+		}
 		fHashCode= computeHashCode();
-		if (fHashCode == HASH_CODE_NOT_COMPUTED)
+		if (fHashCode == HASH_CODE_NOT_COMPUTED) {
 			fHashCode++;
+		}
 		return fHashCode;
 	}
 }

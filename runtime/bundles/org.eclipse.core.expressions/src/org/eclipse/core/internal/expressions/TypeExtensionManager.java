@@ -98,8 +98,9 @@ public class TypeExtensionManager implements IRegistryChangeListener {
 
 	public synchronized Property getProperty(Object receiver, String namespace, String method, boolean forcePluginActivation) throws CoreException  {
 		long start= 0;
-		if (Expressions.TRACING)
+		if (Expressions.TRACING) {
 			start= System.currentTimeMillis();
+		}
 
 		// if we call a static method than the receiver is the class object
 		Class<?> clazz= receiver instanceof Class ? (Class<?>)receiver : receiver.getClass();
@@ -182,9 +183,9 @@ public class TypeExtensionManager implements IRegistryChangeListener {
 		}
 		String typeName= type.getName();
 		List<IConfigurationElement> typeConfigs= fConfigurationElementMap.get(typeName);
-		if (typeConfigs == null)
+		if (typeConfigs == null) {
 			return EMPTY_PROPERTY_TESTER_ARRAY;
-		else {
+		} else {
 			IPropertyTester[] result= new IPropertyTester[typeConfigs.size()];
 			for (int i= 0; i < result.length; i++) {
 				IConfigurationElement config= typeConfigs.get(i);

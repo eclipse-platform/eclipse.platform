@@ -24,10 +24,10 @@ public class AndExpression extends CompositeExpression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof AndExpression))
+		if (!(object instanceof final AndExpression that)) {
 			return false;
+		}
 
-		final AndExpression that= (AndExpression)object;
 		return equals(this.fExpressions, that.fExpressions);
 	}
 

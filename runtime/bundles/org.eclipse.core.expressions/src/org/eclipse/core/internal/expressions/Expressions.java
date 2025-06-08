@@ -65,8 +65,9 @@ public class Expressions {
 
 	public static boolean isInstanceOf(Object element, String type) {
 		// null isn't an instanceof of anything.
-		if (element == null)
+		if (element == null) {
 			return false;
+		}
 		return isSubtype(element.getClass(), type);
 	}
 
@@ -75,8 +76,9 @@ public class Expressions {
 		Map<String, Boolean> nameMap = knownClassesMap.get(clazz);
 		if (nameMap != null) {
 			Object obj = nameMap.get(type);
-			if (obj != null)
+			if (obj != null) {
 				return ((Boolean)obj).booleanValue();
+			}
 		}
 		if (nameMap == null) {
 			nameMap = new HashMap<>();
@@ -153,15 +155,18 @@ public class Expressions {
 	}
 
 	public static boolean uncachedIsSubtype(Class<?> clazz, String type) {
-		if (clazz.getName().equals(type))
+		if (clazz.getName().equals(type)) {
 			return true;
+		}
 		Class<?> superClass= clazz.getSuperclass();
-		if (superClass != null && uncachedIsSubtype(superClass, type))
+		if (superClass != null && uncachedIsSubtype(superClass, type)) {
 			return true;
+		}
 		Class<?>[] interfaces= clazz.getInterfaces();
 		for (Class<?> interfaze : interfaces) {
-			if (uncachedIsSubtype(interfaze, type))
+			if (uncachedIsSubtype(interfaze, type)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -177,8 +182,9 @@ public class Expressions {
 	public static void checkAttribute(String name, String value, String[] validValues) throws CoreException {
 		checkAttribute(name, value);
 		for (String validValue : validValues) {
-			if (value.equals(validValue))
+			if (value.equals(validValue)) {
 				return;
+			}
 		}
 		throw new CoreException(new ExpressionStatus(
 			ExpressionStatus.WRONG_ATTRIBUTE_VALUE,
@@ -186,16 +192,18 @@ public class Expressions {
 	}
 
 	public static void checkCollection(Object var, Expression expression) throws CoreException {
-		if (var instanceof Collection)
+		if (var instanceof Collection) {
 			return;
+		}
 		throw new CoreException(new ExpressionStatus(
 			ExpressionStatus.VARIABLE_IS_NOT_A_COLLECTION,
 			Messages.format(ExpressionMessages.Expression_variable_not_a_collection, expression.toString())));
 	}
 
 	public static void checkList(Object var, Expression expression) throws CoreException {
-		if (var instanceof List)
+		if (var instanceof List) {
 			return;
+		}
 		throw new CoreException(new ExpressionStatus(
 			ExpressionStatus.VARIABLE_IS_NOT_A_LIST,
 			Messages.format(ExpressionMessages.Expression_variable_not_a_list, expression.toString())));
@@ -218,11 +226,13 @@ public class Expressions {
 		} else {
 			IAdapterManager manager= Platform.getAdapterManager();
 			IIterable<?> result= manager.getAdapter(var, IIterable.class);
-			if (result != null)
+			if (result != null) {
 				return result;
+			}
 
-			if (manager.queryAdapter(var, IIterable.class.getName()) == IAdapterManager.NOT_LOADED)
+			if (manager.queryAdapter(var, IIterable.class.getName()) == IAdapterManager.NOT_LOADED) {
 				return null;
+			}
 
 			throw new CoreException(new ExpressionStatus(
 				ExpressionStatus.VARIABLE_IS_NOT_A_COLLECTION,
@@ -247,11 +257,13 @@ public class Expressions {
 		} else {
 			IAdapterManager manager= Platform.getAdapterManager();
 			ICountable result= manager.getAdapter(var, ICountable.class);
-			if (result != null)
+			if (result != null) {
 				return result;
+			}
 
-			if (manager.queryAdapter(var, ICountable.class.getName()) == IAdapterManager.NOT_LOADED)
+			if (manager.queryAdapter(var, ICountable.class.getName()) == IAdapterManager.NOT_LOADED) {
 				return null;
+			}
 
 			throw new CoreException(new ExpressionStatus(
 				ExpressionStatus.VARIABLE_IS_NOT_A_COLLECTION,
@@ -261,15 +273,17 @@ public class Expressions {
 
 	public static boolean getOptionalBooleanAttribute(IConfigurationElement element, String attributeName) {
 		String value= element.getAttribute(attributeName);
-		if (value == null)
+		if (value == null) {
 			return false;
+		}
 		return Boolean.parseBoolean(value);
 	}
 
 	public static boolean getOptionalBooleanAttribute(Element element, String attributeName) {
 		String value= element.getAttribute(attributeName);
-		if (value.isEmpty())
+		if (value.isEmpty()) {
 			return false;
+		}
 		return Boolean.parseBoolean(value);
 	}
 
@@ -311,8 +325,9 @@ public class Expressions {
 		boolean inString= false;
 		for (int i= start; i < str.length(); i++) {
 			char ch= str.charAt(i);
-			if (ch == ',' && ! inString)
+			if (ch == ',' && ! inString) {
 				return i;
+			}
 			if (ch == '\'') {
 				if (!inString) {
 					inString= true;
@@ -325,10 +340,11 @@ public class Expressions {
 				return i;
 			}
 		}
-		if (inString)
+		if (inString) {
 			throw new CoreException(new ExpressionStatus(
 				ExpressionStatus.STRING_NOT_TERMINATED,
 				Messages.format(ExpressionMessages.Expression_string_not_terminated, str)));
+		}
 
 		return -1;
 	}
@@ -364,10 +380,11 @@ public class Expressions {
 		for (int i= 0; i < str.length(); i++) {
 			char ch= str.charAt(i);
 			if (ch == '\'') {
-				if (i == str.length() - 1 || str.charAt(i + 1) != '\'')
+				if (i == str.length() - 1 || str.charAt(i + 1) != '\'') {
 					throw new CoreException(new ExpressionStatus(
 						ExpressionStatus.STRING_NOT_CORRECT_ESCAPED,
 						Messages.format(ExpressionMessages.Expression_string_not_correctly_escaped, str)));
+				}
 				result.append('\'');
 				i++;
 			} else {
