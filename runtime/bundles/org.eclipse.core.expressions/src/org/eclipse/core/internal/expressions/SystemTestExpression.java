@@ -60,8 +60,9 @@ public class SystemTestExpression extends Expression {
 	@Override
 	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
 		String str= System.getProperty(fProperty);
-		if (str == null)
+		if (str == null) {
 			return EvaluationResult.FALSE;
+		}
 		return EvaluationResult.valueOf(str.equals(fExpectedValue));
 	}
 
@@ -72,10 +73,10 @@ public class SystemTestExpression extends Expression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof SystemTestExpression))
+		if (!(object instanceof final SystemTestExpression that)) {
 			return false;
+		}
 
-		final SystemTestExpression that= (SystemTestExpression)object;
 		return this.fProperty.equals(that.fProperty)
 				&& this.fExpectedValue.equals(that.fExpectedValue);
 	}

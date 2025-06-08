@@ -82,10 +82,10 @@ public class ResolveExpression extends CompositeExpression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof ResolveExpression))
+		if (!(object instanceof final ResolveExpression that)) {
 			return false;
+		}
 
-		final ResolveExpression that= (ResolveExpression)object;
 		return this.fVariable.equals(that.fVariable)
 				&& equals(this.fArgs, that.fArgs)
 				&& equals(this.fExpressions, that.fExpressions);

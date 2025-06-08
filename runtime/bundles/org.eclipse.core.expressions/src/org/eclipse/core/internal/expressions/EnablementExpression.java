@@ -44,18 +44,19 @@ public class EnablementExpression extends CompositeExpression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof EnablementExpression))
+		if (!(object instanceof final EnablementExpression that)) {
 			return false;
+		}
 
-		final EnablementExpression that= (EnablementExpression)object;
 		return equals(this.fExpressions, that.fExpressions);
 	}
 
 	@Override
 	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
 		long start= 0;
-		if (Expressions.TRACING)
+		if (Expressions.TRACING) {
 			start= System.currentTimeMillis();
+		}
 		EvaluationResult result= evaluateAnd(context);
 		if (Expressions.TRACING) {
 			System.out.println("[Enablement Expression] - evaluation time: " + //$NON-NLS-1$

@@ -49,10 +49,12 @@ public class ToStringSorter {
 		String midToString= this.sortedStrings[midIndex];
 
 		do {
-			while (compare(this.sortedStrings[left], midToString))
+			while (compare(this.sortedStrings[left], midToString)) {
 				left++;
-			while (compare(midToString, this.sortedStrings[right]))
+			}
+			while (compare(midToString, this.sortedStrings[right])) {
 				right--;
+			}
 			if (left <= right) {
 				Object tmp= this.sortedObjects[left];
 				this.sortedObjects[left]= this.sortedObjects[right];
@@ -65,10 +67,12 @@ public class ToStringSorter {
 			}
 		} while (left <= right);
 
-		if (originalLeft < right)
+		if (originalLeft < right) {
 			quickSort(originalLeft, right);
-		if (left < originalRight)
+		}
+		if (left < originalRight) {
 			quickSort(left, originalRight);
+		}
 	}
 
 	/**
@@ -85,7 +89,8 @@ public class ToStringSorter {
 		// copy the array so can return a new sorted collection
 		System.arraycopy(unSortedObjects, 0, this.sortedObjects, 0, size);
 		System.arraycopy(unsortedStrings, 0, this.sortedStrings, 0, size);
-		if (size > 1)
+		if (size > 1) {
 			quickSort(0, size - 1);
+		}
 	}
 }

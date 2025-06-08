@@ -53,8 +53,9 @@ public class PropertyTesterDescriptor implements IPropertyTester {
 		}
 		for (int i= 0; i < properties.length(); i++) {
 			char ch= properties.charAt(i);
-			if (!Character.isWhitespace(ch))
+			if (!Character.isWhitespace(ch)) {
 				buffer.append(ch);
+			}
 		}
 		buffer.append(',');
 		fProperties= buffer.toString();

@@ -61,10 +61,10 @@ public class AdaptExpression extends CompositeExpression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof AdaptExpression))
+		if (!(object instanceof final AdaptExpression that)) {
 			return false;
+		}
 
-		final AdaptExpression that= (AdaptExpression)object;
 		return this.fTypeName.equals(that.fTypeName)
 				&& equals(this.fExpressions, that.fExpressions);
 	}
@@ -77,8 +77,9 @@ public class AdaptExpression extends CompositeExpression {
 
 	@Override
 	public EvaluationResult evaluate(IEvaluationContext context) throws CoreException {
-		if (fTypeName == null)
+		if (fTypeName == null) {
 			return EvaluationResult.FALSE;
+		}
 		Object var = context.getDefaultVariable();
 		if (var == null) {
 			return EvaluationResult.FALSE;

@@ -46,10 +46,10 @@ public class NotExpression extends Expression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof NotExpression))
+		if (!(object instanceof final NotExpression that)) {
 			return false;
+		}
 
-		final NotExpression that= (NotExpression)object;
 		return this.fExpression.equals(that.fExpression);
 	}
 
