@@ -70,24 +70,28 @@ public class ContentTypeHandler implements IContentType {
 	@Override
 	public void addFileSpec(String fileSpec, int type) throws CoreException {
 		final IContentType target = getTarget();
-		if (target != null)
+		if (target != null) {
 			target.addFileSpec(fileSpec, type);
+		}
 	}
 
 	@Override
 	public boolean equals(Object another) {
-		if (another instanceof ContentType)
+		if (another instanceof ContentType) {
 			return id.equals(((ContentType) another).id);
-		if (another instanceof ContentTypeHandler)
+		}
+		if (another instanceof ContentTypeHandler) {
 			return id.equals(((ContentTypeHandler) another).id);
+		}
 		return false;
 	}
 
 	@Override
 	public IContentType getBaseType() {
 		final ContentType target = getTarget();
-		if (target == null)
+		if (target == null) {
 			return null;
+		}
 		final ContentType baseType = (ContentType) target.getBaseType();
 		return (baseType != null) ? new ContentTypeHandler(baseType, baseType.getCatalog().getGeneration()) : null;
 	}
@@ -136,8 +140,9 @@ public class ContentTypeHandler implements IContentType {
 	@Override
 	public IContentTypeSettings getSettings(IScopeContext context) throws CoreException {
 		final ContentType target = getTarget();
-		if (target == null)
+		if (target == null) {
 			return null;
+		}
 		// the content type may returned itself as the settings object (instance scope context)
 		final IContentTypeSettings settings = target.getSettings(context);
 		// in that case, return this same handler; otherwise, just return the settings
@@ -180,8 +185,9 @@ public class ContentTypeHandler implements IContentType {
 
 	@Override
 	public boolean isKindOf(IContentType another) {
-		if (another instanceof ContentTypeHandler)
+		if (another instanceof ContentTypeHandler) {
 			another = ((ContentTypeHandler) another).getTarget();
+		}
 		final IContentType target = getTarget();
 		return (target != null) ? target.isKindOf(another) : false;
 	}
@@ -189,15 +195,17 @@ public class ContentTypeHandler implements IContentType {
 	@Override
 	public void removeFileSpec(String fileSpec, int type) throws CoreException {
 		final IContentType target = getTarget();
-		if (target != null)
+		if (target != null) {
 			target.removeFileSpec(fileSpec, type);
+		}
 	}
 
 	@Override
 	public void setDefaultCharset(String userCharset) throws CoreException {
 		final IContentType target = getTarget();
-		if (target != null)
+		if (target != null) {
 			target.setDefaultCharset(userCharset);
+		}
 	}
 
 	@Override

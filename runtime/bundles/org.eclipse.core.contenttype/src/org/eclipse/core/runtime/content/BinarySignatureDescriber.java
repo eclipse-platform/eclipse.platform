@@ -68,13 +68,17 @@ public final class BinarySignatureDescriber implements IContentDescriber, IExecu
 	public int describe(InputStream contents, IContentDescription description) throws IOException {
 		byte[] buffer = new byte[signature.length];
 		int notValid = required ? INVALID : INDETERMINATE;
-		if (contents.skip(offset) < offset)
+		if (contents.skip(offset) < offset) {
 			return notValid;
-		if (contents.read(buffer) != buffer.length)
+		}
+		if (contents.read(buffer) != buffer.length) {
 			return notValid;
-		for (int i = 0; i < signature.length; i++)
-			if (signature[i] != buffer[i])
+		}
+		for (int i = 0; i < signature.length; i++) {
+			if (signature[i] != buffer[i]) {
 				return notValid;
+			}
+		}
 		return VALID;
 	}
 
@@ -86,19 +90,21 @@ public final class BinarySignatureDescriber implements IContentDescriber, IExecu
 	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		try {
-			if (data instanceof String)
+			if (data instanceof String) {
 				signature = parseSignature((String) data);
-			else if (data instanceof Hashtable) {
+			} else if (data instanceof Hashtable) {
 				Hashtable<?,?> parameters = (Hashtable<?,?>) data;
 				if (!parameters.containsKey(SIGNATURE)) {
 					String message = NLS.bind(ContentMessages.content_badInitializationData, BinarySignatureDescriber.class.getName());
 					throw new CoreException(new Status(IStatus.ERROR, ContentMessages.OWNER_NAME, 0, message, null));
 				}
 				signature = parseSignature((String) parameters.get(SIGNATURE));
-				if (parameters.containsKey(OFFSET))
+				if (parameters.containsKey(OFFSET)) {
 					offset = Integer.parseInt((String) parameters.get(OFFSET));
-				if (parameters.containsKey(REQUIRED))
+				}
+				if (parameters.containsKey(REQUIRED)) {
 					required = Boolean.parseBoolean((String) parameters.get(REQUIRED));
+				}
 			}
 		} catch (NumberFormatException nfe) {
 			String message = NLS.bind(ContentMessages.content_badInitializationData, BinarySignatureDescriber.class.getName());
@@ -109,11 +115,13 @@ public final class BinarySignatureDescriber implements IContentDescriber, IExecu
 	private static byte[] parseSignature(String data) {
 		List<Byte> bytes = new ArrayList<>();
 		StringTokenizer tokenizer = new StringTokenizer(data, " \t\n\r\f,"); //$NON-NLS-1$
-		while (tokenizer.hasMoreTokens())
+		while (tokenizer.hasMoreTokens()) {
 			bytes.add(Byte.valueOf((byte) Integer.parseInt(tokenizer.nextToken().trim(), 16)));
+		}
 		byte[] signature = new byte[bytes.size()];
-		for (int i = 0; i < signature.length; i++)
+		for (int i = 0; i < signature.length; i++) {
 			signature[i] = bytes.get(i).byteValue();
+		}
 		return signature;
 	}
 }

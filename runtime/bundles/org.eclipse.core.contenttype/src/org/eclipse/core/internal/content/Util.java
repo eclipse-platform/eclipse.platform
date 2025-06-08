@@ -24,11 +24,13 @@ public class Util {
 	}
 
 	public static String[] parseItems(String string, String separator) {
-		if (string == null)
+		if (string == null) {
 			return new String[0];
+		}
 		StringTokenizer tokenizer = new StringTokenizer(string, separator, true);
-		if (!tokenizer.hasMoreTokens())
+		if (!tokenizer.hasMoreTokens()) {
 			return new String[] {string.trim()};
+		}
 		String first = tokenizer.nextToken().trim();
 		boolean wasSeparator = false;
 		if (first.equals(separator)) {
@@ -37,8 +39,9 @@ public class Util {
 			wasSeparator = true;
 		}
 		// simple cases, do not create temporary list
-		if (!tokenizer.hasMoreTokens())
+		if (!tokenizer.hasMoreTokens()) {
 			return wasSeparator ? /* two empty strings */new String[] {first, first} : /*single non-empty element  */new String[] {first};
+		}
 		ArrayList<String> items = new ArrayList<>();
 		items.add(first);
 		String current;
@@ -46,15 +49,18 @@ public class Util {
 			current = tokenizer.nextToken().trim();
 			boolean isSeparator = current.equals(separator);
 			if (isSeparator) {
-				if (wasSeparator)
+				if (wasSeparator) {
 					items.add(""); //$NON-NLS-1$
-			} else
+				}
+			} else {
 				items.add(current);
+			}
 			wasSeparator = isSeparator;
 		} while (tokenizer.hasMoreTokens());
-		if (wasSeparator)
+		if (wasSeparator) {
 			// trailing separator
 			items.add(""); //$NON-NLS-1$
+		}
 		return items.toArray(new String[items.size()]);
 	}
 
@@ -64,8 +70,9 @@ public class Util {
 
 	public static List<String> parseItemsIntoList(String string, String separator) {
 		List<String> items = new ArrayList<>(5);
-		if (string == null)
+		if (string == null) {
 			return items;
+		}
 		StringTokenizer tokenizer = new StringTokenizer(string, separator, true);
 		if (!tokenizer.hasMoreTokens()) {
 			items.add(string.trim());
@@ -79,22 +86,26 @@ public class Util {
 			wasSeparator = true;
 		}
 		items.add(first);
-		if (!tokenizer.hasMoreTokens())
+		if (!tokenizer.hasMoreTokens()) {
 			return items;
+		}
 		String current;
 		do {
 			current = tokenizer.nextToken().trim();
 			boolean isSeparator = current.equals(separator);
 			if (isSeparator) {
-				if (wasSeparator)
+				if (wasSeparator) {
 					items.add(""); //$NON-NLS-1$
-			} else
+				}
+			} else {
 				items.add(current);
+			}
 			wasSeparator = isSeparator;
 		} while (tokenizer.hasMoreTokens());
-		if (wasSeparator)
+		if (wasSeparator) {
 			// trailing separator
 			items.add(""); //$NON-NLS-1$
+		}
 		return items;
 	}
 
@@ -103,8 +114,9 @@ public class Util {
 	}
 
 	public static String toListString(Object[] list, String separator) {
-		if (list == null || list.length == 0)
+		if (list == null || list.length == 0) {
 			return null;
+		}
 		StringBuilder result = new StringBuilder();
 		for (Object element : list) {
 			result.append(element);
@@ -125,17 +137,20 @@ public class Util {
 			//look for the UTF-8 Byte Order Mark (BOM)
 			int second = input.read();
 			int third = input.read();
-			if (second == 0xBB && third == 0xBF)
+			if (second == 0xBB && third == 0xBF) {
 				return IContentDescription.BOM_UTF_8;
+			}
 			break;
 		case 0xFE:
 			//look for the UTF-16 BOM
-			if (input.read() == 0xFF)
+			if (input.read() == 0xFF) {
 				return IContentDescription.BOM_UTF_16BE;
+			}
 			break;
 		case 0xFF:
-			if (input.read() == 0xFE)
+			if (input.read() == 0xFE) {
 				return IContentDescription.BOM_UTF_16LE;
+			}
 			break;
 		default:
 			break;
