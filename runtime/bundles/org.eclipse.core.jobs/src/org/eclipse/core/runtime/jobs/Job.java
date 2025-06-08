@@ -16,6 +16,8 @@
  *******************************************************************************/
 package org.eclipse.core.runtime.jobs;
 
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
 import org.eclipse.core.internal.jobs.InternalJob;
 import org.eclipse.core.internal.jobs.JobManager;
 import org.eclipse.core.runtime.*;
@@ -192,6 +194,82 @@ public abstract class Job extends InternalJob {
 				return Status.OK_STATUS;
 			}
 		};
+	}
+
+	/**
+	 * Performs a one shot background job execution returning a value as an
+	 * syncronous computation to the caller with the follwoing side-effects:
+	 * <ul>
+	 * <li>If the {@link CompletableFuture} is canceled, best effort is made to also
+	 * cancel the job</li>
+	 * <li>If the backing {@link Job} is canceled, best effort it made to also
+	 * cancel the {@link CompletableFuture}</li>
+	 * </ul>
+	 *
+	 * @since 3.14
+	 */
+	public static CompletableFuture<?> execute(String name, IJobRunnable runnable) {
+		return compute(name, monitor -> {
+			runnable.run(monitor);
+			return null;
+		});
+	}
+
+	/**
+	 * Performs a one shot background job execution returning a value as an
+	 * syncronous computation to the caller with the follwoing side-effects:
+	 * <ul>
+	 * <li>If the {@link CompletableFuture} is canceled, best effort is made to also
+	 * cancel the job</li>
+	 * <li>If the backing {@link Job} is canceled, best effort it made to also
+	 * cancel the {@link CompletableFuture}</li>
+	 * </ul>
+	 *
+	 * @since 3.14
+	 */
+	public static <T> CompletableFuture<T> compute(String name, IJobCallable<T> callable) {
+		CompletableFuture<T> future = new CompletableFuture<>();
+		Job job = new Job(name) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
+					if (future.isCancelled()) {
+						// it might be canceled before the job has a chance to run...
+						// In this case we should not run at all..
+						return Status.CANCEL_STATUS;
+					}
+					T value = callable.call(monitor);
+					future.complete(value);
+					return Status.OK_STATUS;
+				} catch (CancellationException e) {
+					future.cancel(true);
+					return Status.CANCEL_STATUS;
+				} catch (CoreException e) {
+					future.completeExceptionally(e);
+					IStatus st = e.getStatus();
+					return new Status(st.getSeverity(), st.getPlugin(), st.getCode(), st.getMessage(), e);
+				} catch (Exception e) {
+					future.completeExceptionally(e);
+					return Status.error(name, e);
+				}
+			}
+
+			@Override
+			protected void canceling() {
+				super.canceling();
+				if (!future.isCancelled()) {
+					future.cancel(true);
+				}
+			}
+		};
+		future.exceptionally(ex -> {
+			if (ex instanceof CancellationException) {
+				job.cancel();
+			}
+			return null;
+		});
+		job.schedule();
+		return future;
 	}
 
 	/**
@@ -652,6 +730,72 @@ public abstract class Job extends InternalJob {
 	 */
 	public final void schedule() {
 		super.schedule(0L);
+	}
+
+	/**
+	 * Schedule the job and returns a {@link CompletableFuture} that can be used to
+	 * observe the job state:
+	 * <ul>
+	 * <li>If the job is canceled, the future will be canceled and vice versa</li>
+	 * <li>When the job completes with an CANCEL status the future will be
+	 * canceled</li>
+	 * <li>When the job completes with an ERROR status the future will complete
+	 * exceptionally with a {@link CoreException}</li>
+	 * <li>In all other cases the future is completed with the job execution
+	 * status.</li>
+	 * </ul>
+	 *
+	 * @see #schedule()
+	 * @since 3.14
+	 */
+	public final CompletableFuture<IStatus> future() {
+		CompletableFuture<IStatus> future = new CompletableFuture<>();
+		JobChangeAdapter listener = new JobChangeAdapter() {
+
+			volatile boolean sceduled;
+
+			@Override
+			public void done(IJobChangeEvent event) {
+				if (sceduled && event.getJob() == Job.this) {
+					removeJobChangeListener(this);
+					if (future.isDone()) {
+						// nothing more to do...
+						return;
+					}
+					IStatus result = event.getResult();
+					if (result.getSeverity() == IStatus.CANCEL) {
+						future.cancel(true);
+						return;
+					}
+					if (result.getSeverity() == IStatus.ERROR) {
+						future.completeExceptionally(new CoreException(result));
+						return;
+					}
+					future.complete(result);
+				}
+			}
+
+			@Override
+			public void scheduled(IJobChangeEvent event) {
+				if (event.getJob() == Job.this) {
+					sceduled = true;
+				}
+			}
+		};
+		addJobChangeListener(listener);
+		if (trySchedule(0)) {
+			future.exceptionally(ex -> {
+				if (ex instanceof CancellationException) {
+					cancel();
+				}
+				return null;
+			});
+		} else {
+			removeJobChangeListener(listener);
+			// schedule not performed -> cancel
+			future.cancel(true);
+		}
+		return future;
 	}
 
 	/**
