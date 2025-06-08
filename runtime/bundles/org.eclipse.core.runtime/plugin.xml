@@ -2,5 +2,4 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="preferences" name="%preferencesName" schema="schema/preferences.exsd"/>
-   <extension-point id="contentTypes" name="%contentTypesName" schema="schema/contentTypes.exsd"/>
 </plugin>
