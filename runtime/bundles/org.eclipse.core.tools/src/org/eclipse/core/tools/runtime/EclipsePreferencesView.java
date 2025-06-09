@@ -43,8 +43,9 @@ public class EclipsePreferencesView extends ViewPart {
 		@Override
 		public Object[] getElements(Object parent) {
 			if (parent.equals(getViewSite())) {
-				if (invisibleRoot == null)
+				if (invisibleRoot == null) {
 					invisibleRoot = Platform.getPreferencesService().getRootNode();
+				}
 				return new Object[] {invisibleRoot};
 			}
 			return getChildren(parent);
@@ -57,23 +58,25 @@ public class EclipsePreferencesView extends ViewPart {
 
 		@Override
 		public Object getParent(Object child) {
-			if (child instanceof IEclipsePreferences)
+			if (child instanceof IEclipsePreferences) {
 				return ((IEclipsePreferences) child).parent();
+			}
 			return null;
 		}
 
 		@Override
 		public Object[] getChildren(Object parent) {
 			ArrayList<Object> result = new ArrayList<>();
-			if (parent instanceof IEclipsePreferences) {
-				IEclipsePreferences node = (IEclipsePreferences) parent;
+			if (parent instanceof IEclipsePreferences node) {
 				try {
 					String[] childrenNames = node.childrenNames();
-					for (int i = 0; childrenNames != null && i < childrenNames.length; i++)
+					for (int i = 0; childrenNames != null && i < childrenNames.length; i++) {
 						result.add(node.node(childrenNames[i]));
+					}
 					String[] keys = node.keys();
-					for (String key : keys)
+					for (String key : keys) {
 						result.add(key + '=' + node.get(key, "")); //$NON-NLS-1$
+					}
 				} catch (BackingStoreException e) {
 					e.printStackTrace();
 				}
@@ -83,13 +86,14 @@ public class EclipsePreferencesView extends ViewPart {
 
 		@Override
 		public boolean hasChildren(Object parent) {
-			if (parent instanceof IEclipsePreferences)
+			if (parent instanceof IEclipsePreferences) {
 				try {
 					IEclipsePreferences node = (IEclipsePreferences) parent;
 					return node.childrenNames().length != 0 || node.keys().length != 0;
 				} catch (BackingStoreException e) {
 					e.printStackTrace();
 				}
+			}
 			return false;
 		}
 	}
@@ -99,11 +103,11 @@ public class EclipsePreferencesView extends ViewPart {
 		@Override
 		public String getText(Object obj) {
 			String result = obj.toString();
-			if (obj instanceof IEclipsePreferences) {
-				IEclipsePreferences node = (IEclipsePreferences) obj;
+			if (obj instanceof IEclipsePreferences node) {
 				result = node.name();
-				if (result.isEmpty())
+				if (result.isEmpty()) {
 					result = "<root>"; //$NON-NLS-1$
+				}
 			}
 			return result;
 		}
@@ -111,8 +115,9 @@ public class EclipsePreferencesView extends ViewPart {
 		@Override
 		public Image getImage(Object obj) {
 			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			if (obj instanceof IEclipsePreferences)
+			if (obj instanceof IEclipsePreferences) {
 				imageKey = ISharedImages.IMG_OBJ_FOLDER;
+			}
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
 	}

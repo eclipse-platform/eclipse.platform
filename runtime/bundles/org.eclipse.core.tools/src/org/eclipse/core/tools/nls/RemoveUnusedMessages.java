@@ -79,8 +79,9 @@ public class RemoveUnusedMessages extends Refactoring {
 
 	@Override
 	public RefactoringStatus checkFinalConditions(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-		if (monitor == null)
+		if (monitor == null) {
 			monitor = new NullProgressMonitor();
+		}
 		change = new CompositeChange("Accessor Class Changes");
 		RefactoringStatus result = new RefactoringStatus();
 		ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) accessorClass.getResource());
@@ -94,32 +95,37 @@ public class RemoveUnusedMessages extends Refactoring {
 		monitor.beginTask("Searching for references.", fields.length + 10);
 		try {
 			for (IField field : fields) {
-				if (monitor.isCanceled())
+				if (monitor.isCanceled()) {
 					throw new OperationCanceledException();
+				}
 				String fieldName = field.getElementName();
 				monitor.subTask("Searching for references to: " + fieldName);
 				int flags = field.getFlags();
 				// only want to look at the public static String fields
-				if (!(Flags.isPublic(flags) && Flags.isStatic(flags)))
+				if (!(Flags.isPublic(flags) && Flags.isStatic(flags))) {
 					continue;
+				}
 				// search for references
 				ICompilationUnit[] affectedUnits = RefactoringSearchEngine.findAffectedCompilationUnits(
 						SearchPattern.createPattern(field, IJavaSearchConstants.REFERENCES),
 						RefactoringScopeFactory.create(accessorClass), Policy.subMonitorFor(monitor, 1), result);
 				// there are references so go to the next field
-				if (affectedUnits.length > 0)
+				if (affectedUnits.length > 0) {
 					continue;
+				}
 				System.out.println("Found unused field: " + fieldName);
 				toDelete.add(fieldName);
 			}
 			System.out.println("Analysis of " + fields.length + " messages found " + toDelete.size() + " unused messages");
 
 			// any work to do?
-			if (toDelete.isEmpty())
+			if (toDelete.isEmpty()) {
 				return result;
+			}
 
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
+			}
 
 			// remove the field and its corresponding entry in the messages.properties file
 			processAST(root, rewriter, toDelete);
@@ -150,8 +156,9 @@ public class RemoveUnusedMessages extends Refactoring {
 			@Override
 			public boolean visit(VariableDeclarationFragment node) {
 				// check to see if its in our list of fields to delete
-				if (!toDelete.contains(node.getName().toString()))
+				if (!toDelete.contains(node.getName().toString())) {
 					return true;
+				}
 				rewriter.remove(node.getParent(), null);
 				return true;
 			}

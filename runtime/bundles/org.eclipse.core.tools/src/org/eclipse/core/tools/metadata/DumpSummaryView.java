@@ -76,8 +76,9 @@ public class DumpSummaryView extends SpyView {
 	void load(IDump dump) {
 
 		// now is safe to get the part title
-		if (initialTitle == null)
+		if (initialTitle == null) {
 			this.initialTitle = this.getTitle();
+		}
 
 		// sets title and tool tip
 		File file = dump.getFile();
@@ -86,10 +87,11 @@ public class DumpSummaryView extends SpyView {
 
 		// generates text to be shown on this view
 		StringBuilder output = new StringBuilder();
-		if (dump.isFailed())
+		if (dump.isFailed()) {
 			output.append(dump.getFailureReason().toString());
-		else
+		} else {
 			output.append("No errors. "); //$NON-NLS-1$
+		}
 		output.append(dump.getOffset());
 		output.append('/');
 		output.append(dump.getFile().length());

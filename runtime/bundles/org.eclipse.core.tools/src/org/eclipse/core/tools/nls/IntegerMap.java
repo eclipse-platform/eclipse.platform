@@ -30,8 +30,9 @@ public class IntegerMap {
 	public int get(int key) {
 		for (int i = 0; i < keys.length; i++) {
 			int current = keys[i];
-			if (current != 0 && current == key)
+			if (current != 0 && current == key) {
 				return values[i];
+			}
 		}
 		return DEFAULT;
 	}
@@ -52,8 +53,9 @@ public class IntegerMap {
 		}
 
 		// grow if needed, then fill the empty slot
-		if (emptySlot == -1)
+		if (emptySlot == -1) {
 			emptySlot = grow();
+		}
 		keys[emptySlot] = key;
 		values[emptySlot] = value;
 	}

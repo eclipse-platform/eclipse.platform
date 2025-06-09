@@ -72,15 +72,17 @@ public class MetadataTreeView extends SpyView {
 		@Override
 		public void run() {
 			IStructuredSelection sel = MetadataTreeView.this.viewer.getStructuredSelection();
-			if (sel == null || sel.isEmpty())
+			if (sel == null || sel.isEmpty()) {
 				return;
+			}
 
 			TreeContentProviderNode fileNode = (TreeContentProviderNode) sel.getFirstElement();
 
 			File file = (File) fileNode.getValue();
 			// we have no interest in directories
-			if (!file.isFile())
+			if (!file.isFile()) {
 				return;
+			}
 
 			try {
 				DumpContentsView dumpView = (DumpContentsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(DumpContentsView.VIEW_ID);
@@ -116,13 +118,15 @@ public class MetadataTreeView extends SpyView {
 
 			dirDialog.setText("Open a metadata directory"); //$NON-NLS-1$
 			dirDialog.setMessage("Please choose a directory where to look for metadata files"); //$NON-NLS-1$
-			if (metadataPath != null)
+			if (metadataPath != null) {
 				dirDialog.setFilterPath(metadataPath.getAbsolutePath());
+			}
 
 			String dirPath = dirDialog.open();
 
-			if (dirPath == null)
+			if (dirPath == null) {
 				return;
+			}
 
 			setMetadataRoot(new File(dirPath));
 		}
@@ -170,8 +174,9 @@ public class MetadataTreeView extends SpyView {
 	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 	 */
 	protected void setMetadataRoot(final File file) {
-		if (file == null)
+		if (file == null) {
 			return;
+		}
 		if (!file.isDirectory()) {
 			ErrorUtil.showErrorMessage("Selected item is not a directory", "Error selecting metadata location"); //$NON-NLS-1$ //$NON-NLS-2$
 			return;

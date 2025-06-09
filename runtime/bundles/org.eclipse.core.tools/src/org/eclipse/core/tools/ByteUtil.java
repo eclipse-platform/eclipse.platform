@@ -35,11 +35,12 @@ public class ByteUtil {
 			result.append(',');
 		}
 		// adds an ellipsis if there is too much bytes to show
-		if (max > 0 && max < byteArray.length)
+		if (max > 0 && max < byteArray.length) {
 			result.append("..."); //$NON-NLS-1$
 		// or remove the trailing comma
-		else
+		} else {
 			result.deleteCharAt(result.length() - 1);
+		}
 		result.append(']');
 		return result.toString();
 	}

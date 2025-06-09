@@ -43,8 +43,9 @@ public class MeteredInputStream extends PushbackInputStream {
 	@Override
 	public int read() throws IOException {
 		int byteRead = super.read();
-		if (byteRead >= 0)
+		if (byteRead >= 0) {
 			offset++;
+		}
 		return byteRead;
 	}
 
@@ -76,8 +77,9 @@ public class MeteredInputStream extends PushbackInputStream {
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
 		int read = super.read(b, off, len);
-		if (read > 0)
+		if (read > 0) {
 			offset += read;
+		}
 		return read;
 	}
 

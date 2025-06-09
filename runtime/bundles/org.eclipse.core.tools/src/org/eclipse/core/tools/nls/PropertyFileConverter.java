@@ -123,8 +123,9 @@ public class PropertyFileConverter {
 	 * Remove the properties in the specified list from the file.
 	 */
 	public Change trim(IFile propertiesFile, List<String> toDelete) throws IOException, CoreException {
-		if (toDelete == null || toDelete.isEmpty())
+		if (toDelete == null || toDelete.isEmpty()) {
 			return null;
+		}
 
 		StringBuilder bundle = new StringBuilder();
 
@@ -241,8 +242,9 @@ public class PropertyFileConverter {
 		//skip leading comment characters
 		while (offset < line.length()) {
 			char c = line.charAt(offset);
-			if (c != '!' && c != '#')
+			if (c != '!' && c != '#') {
 				break;
+			}
 			offset++;
 		}
 		comment.append(line.substring(offset));
@@ -257,28 +259,32 @@ public class PropertyFileConverter {
 	public static String convertToJavaIdentifier(String key) {
 		String string = key.trim();
 		int len = string.length();
-		if (len == 0)
+		if (len == 0) {
 			return string;
+		}
 		StringBuilder result = new StringBuilder();
 		char c = string.charAt(0);
-		if (Character.isJavaIdentifierStart(c))
+		if (Character.isJavaIdentifierStart(c)) {
 			result.append(c);
-		else {
+		} else {
 			//if it's a valid part, just add an underscore first but keep the character
 			result.append('_');
-			if (Character.isJavaIdentifierPart(c))
+			if (Character.isJavaIdentifierPart(c)) {
 				result.append(c);
+			}
 		}
 		for (int i = 1; i < len; i++) {
 			c = string.charAt(i);
-			if (Character.isJavaIdentifierPart(c))
+			if (Character.isJavaIdentifierPart(c)) {
 				result.append(c);
-			else
+			} else {
 				result.append('_');
+			}
 		}
 		//preserve trailing space
-		if (key.endsWith(" ")) //$NON-NLS-1$
+		if (key.endsWith(" ")) { //$NON-NLS-1$
 			result.append(' ');
+		}
 		return makeUnique(result.toString());
 	}
 
@@ -289,8 +295,9 @@ public class PropertyFileConverter {
 	private static String makeUnique(String originalKey) {
 		String attempt = originalKey;
 		int counter = 0;
-		while (keywords.contains(attempt))
+		while (keywords.contains(attempt)) {
 			attempt = originalKey + counter++;
+		}
 		return attempt;
 	}
 
@@ -304,8 +311,9 @@ public class PropertyFileConverter {
 		for (int i = 0; i < len; i++) {
 			char c = line.charAt(i);
 			//whitespace, colon, or equals characters represent key separators
-			if (Character.isWhitespace(c) || c == ':' || c == '=')
+			if (Character.isWhitespace(c) || c == ':' || c == '=') {
 				break;
+			}
 			key.append(c);
 		}
 		return key.toString();
@@ -318,8 +326,9 @@ public class PropertyFileConverter {
 		//note that literal escaped slash characters at the end of a line are not
 		//treated as continuation markers.
 		boolean continuation = false;
-		for (int i = line.length() - 1; (i >= 0) && (line.charAt(i) == '\\'); i--)
+		for (int i = line.length() - 1; (i >= 0) && (line.charAt(i) == '\\'); i--) {
 			continuation = !continuation;
+		}
 		return continuation;
 	}
 
@@ -327,8 +336,9 @@ public class PropertyFileConverter {
 	 * Returns whether the given line contains a key that needs to be converted.
 	 */
 	private boolean skipLine(String line) {
-		if (line.isEmpty())
+		if (line.isEmpty()) {
 			return true;
+		}
 		char first = line.charAt(0);
 		return first == '#' || first == '!';
 	}

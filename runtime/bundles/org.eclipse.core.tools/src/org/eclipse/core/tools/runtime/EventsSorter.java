@@ -79,19 +79,23 @@ public class EventsSorter extends ViewerComparator implements ISorter {
 			@Override
 			public int compare(PerformanceStats s1, PerformanceStats s2) {
 				//always sort failures above non-failures
-				if (s1.isFailure() && !s2.isFailure())
+				if (s1.isFailure() && !s2.isFailure()) {
 					return -1;
-				if (s2.isFailure() && !s1.isFailure())
+				}
+				if (s2.isFailure() && !s1.isFailure()) {
 					return 1;
+				}
 				int[] columnSortOrder = SORT_ORDERS_BY_COLUMN[columnNumber];
 				int result = 0;
 				for (int element : columnSortOrder) {
 					result = compareColumnValue(element, s1, s2);
-					if (result != 0)
+					if (result != 0) {
 						break;
+					}
 				}
-				if (reversed)
+				if (reversed) {
 					result = -result;
+				}
 				return result;
 			}
 

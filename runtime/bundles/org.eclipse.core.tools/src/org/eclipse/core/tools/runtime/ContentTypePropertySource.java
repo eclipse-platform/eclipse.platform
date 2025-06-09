@@ -49,26 +49,32 @@ public class ContentTypePropertySource implements IPropertySource, IAdaptable {
 
 	@Override
 	public Object getPropertyValue(Object id) {
-		if (id.equals(UNIQUE_ID.getId()))
+		if (id.equals(UNIQUE_ID.getId())) {
 			return type.getId();
-		if (id.equals(NAME.getId()))
+		}
+		if (id.equals(NAME.getId())) {
 			return type.getName();
+		}
 		if (id.equals(PARENT_ID.getId())) {
 			IContentType baseType = type.getBaseType();
 			return baseType == null ? null : baseType.getId();
 		}
-		if (id.equals(FILE_NAMES.getId()))
+		if (id.equals(FILE_NAMES.getId())) {
 			return toString(type.getFileSpecs(IContentType.FILE_NAME_SPEC));
-		if (id.equals(FILE_EXTENSIONS.getId()))
+		}
+		if (id.equals(FILE_EXTENSIONS.getId())) {
 			return toString(type.getFileSpecs(IContentType.FILE_EXTENSION_SPEC));
-		if (id.equals(DEFAULT_CHARSET.getId()))
+		}
+		if (id.equals(DEFAULT_CHARSET.getId())) {
 			return type.getDefaultCharset();
+		}
 		return null;
 	}
 
 	private Object toString(String[] fileNames) {
-		if (fileNames.length == 0)
+		if (fileNames.length == 0) {
 			return ""; //$NON-NLS-1$
+		}
 		StringBuilder result = new StringBuilder();
 		for (String fileName : fileNames) {
 			result.append(fileName);
@@ -95,8 +101,9 @@ public class ContentTypePropertySource implements IPropertySource, IAdaptable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ContentTypePropertySource))
+		if (!(obj instanceof ContentTypePropertySource)) {
 			return false;
+		}
 		return type.getId().equals(((ContentTypePropertySource) obj).type.getId());
 	}
 
@@ -112,8 +119,9 @@ public class ContentTypePropertySource implements IPropertySource, IAdaptable {
 
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IPropertySource.class)
+		if (adapter == IPropertySource.class) {
 			return adapter.cast(this);
+		}
 		return null;
 	}
 }
