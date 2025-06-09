@@ -47,8 +47,9 @@ public class JobActivator implements BundleActivator {
 		JobOSGiUtils.getDefault().openServices();
 
 		boolean shouldRegister = !"false".equalsIgnoreCase(context.getProperty(PROP_REGISTER_JOB_SERVICE)); //$NON-NLS-1$
-		if (shouldRegister)
+		if (shouldRegister) {
 			registerServices();
+		}
 	}
 
 	/**

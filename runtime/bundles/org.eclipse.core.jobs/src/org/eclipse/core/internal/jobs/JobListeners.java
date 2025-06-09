@@ -172,11 +172,13 @@ public class JobListeners {
 	private void handleException(IJobChangeListener listener, Throwable e) {
 		//this code is roughly copied from InternalPlatform.run(ISafeRunnable),
 		//but in-lined here for performance reasons
-		if (e instanceof OperationCanceledException)
+		if (e instanceof OperationCanceledException) {
 			return;
+		}
 		String pluginId = JobOSGiUtils.getDefault().getBundleId(listener);
-		if (pluginId == null)
+		if (pluginId == null) {
 			pluginId = JobManager.PI_JOBS;
+		}
 		String message = NLS.bind(JobMessages.meta_pluginProblems, pluginId);
 		RuntimeLog.log(new Status(IStatus.ERROR, pluginId, JobManager.PLUGIN_ERROR, message, e));
 	}
