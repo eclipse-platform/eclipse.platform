@@ -34,8 +34,9 @@ public class Log implements ILog, SynchronousLogListener, LogFilter {
 	private final Set<ILogListener> logListeners = new HashSet<>(5);
 
 	public Log(Bundle plugin, Logger logger) {
-		if (plugin == null)
+		if (plugin == null) {
 			throw new IllegalArgumentException("Logging bundle must not be null."); //$NON-NLS-1$
+		}
 		this.bundle = plugin;
 		this.logger = logger;
 	}
