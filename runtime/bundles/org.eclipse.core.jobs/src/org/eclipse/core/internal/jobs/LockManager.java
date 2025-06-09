@@ -78,8 +78,9 @@ public class LockManager {
 	private final Map<Thread, Deque<LockState[]>> suspendedLocks = new HashMap<>();
 
 	public void aboutToRelease() {
-		if (lockListener == null)
+		if (lockListener == null) {
 			return;
+		}
 		try {
 			lockListener.aboutToRelease();
 		} catch (Exception | LinkageError e) {
@@ -88,8 +89,9 @@ public class LockManager {
 	}
 
 	public boolean canBlock() {
-		if (lockListener == null)
+		if (lockListener == null) {
 			return true;
+		}
 		try {
 			return lockListener.canBlock();
 		} catch (Exception | LinkageError e) {
@@ -99,8 +101,9 @@ public class LockManager {
 	}
 
 	public boolean aboutToWait(Thread lockOwner) {
-		if (lockListener == null)
+		if (lockListener == null) {
 			return false;
+		}
 		try {
 			return lockListener.aboutToWait(lockOwner);
 		} catch (Exception | LinkageError e) {
@@ -114,8 +117,9 @@ public class LockManager {
 	 */
 	void addLockThread(Thread thread, ISchedulingRule lock) {
 		DeadlockDetector tempLocks = locks;
-		if (tempLocks == null)
+		if (tempLocks == null) {
 			return;
+		}
 		try {
 			synchronized (tempLocks) {
 				try {
@@ -134,8 +138,9 @@ public class LockManager {
 	 */
 	void addLockWaitThread(Thread thread, ISchedulingRule lock) {
 		DeadlockDetector tempLocks = locks;
-		if (tempLocks == null)
+		if (tempLocks == null) {
 			return;
+		}
 		try {
 			Deadlock found = null;
 			synchronized (tempLocks) {
@@ -145,14 +150,16 @@ public class LockManager {
 					throw createDebugException(tempLocks, e);
 				}
 			}
-			if (found == null)
+			if (found == null) {
 				return;
+			}
 			// if deadlock was detected, the found variable will contain all the information about it,
 			// including which locks to suspend for which thread to resolve the deadlock.
 			ISchedulingRule[] toSuspend = found.getLocks();
 			LockState[] suspended = new LockState[toSuspend.length];
-			for (int i = 0; i < toSuspend.length; i++)
+			for (int i = 0; i < toSuspend.length; i++) {
 				suspended[i] = LockState.suspend((OrderedLock) toSuspend[i]);
+			}
 			synchronized (suspendedLocks) {
 				suspendedLocks.computeIfAbsent(found.getCandidate(), key -> new ArrayDeque<>()).push(suspended);
 			}
@@ -217,11 +224,13 @@ public class LockManager {
 		//all job threads have to be treated as lock owners because UI thread
 		//may try to join a job
 		Thread current = Thread.currentThread();
-		if (current instanceof Worker)
+		if (current instanceof Worker) {
 			return true;
+		}
 		DeadlockDetector tempLocks = locks;
-		if (tempLocks == null)
+		if (tempLocks == null) {
 			return false;
+		}
 		synchronized (tempLocks) {
 			return tempLocks.contains(Thread.currentThread());
 		}
@@ -239,8 +248,9 @@ public class LockManager {
 	 */
 	void removeLockCompletely(Thread thread, ISchedulingRule rule) {
 		DeadlockDetector tempLocks = locks;
-		if (tempLocks == null)
+		if (tempLocks == null) {
 			return;
+		}
 		try {
 			synchronized (tempLocks) {
 				try {
@@ -259,8 +269,9 @@ public class LockManager {
 	 */
 	void removeLockThread(Thread thread, ISchedulingRule lock) {
 		DeadlockDetector tempLocks = locks;
-		if (tempLocks == null)
+		if (tempLocks == null) {
 			return;
+		}
 		try {
 			synchronized (tempLocks) {
 				try {
@@ -281,8 +292,9 @@ public class LockManager {
 	 */
 	void removeLockWaitThread(Thread thread, ISchedulingRule lock) {
 		DeadlockDetector tempLocks = locks;
-		if (tempLocks == null)
+		if (tempLocks == null) {
 			return;
+		}
 		try {
 			synchronized (tempLocks) {
 				try {
@@ -307,11 +319,13 @@ public class LockManager {
 			LockState[] toResume;
 			synchronized (suspendedLocks) {
 				Deque<LockState[]> prevLocks = suspendedLocks.get(owner);
-				if (prevLocks == null)
+				if (prevLocks == null) {
 					return;
+				}
 				toResume = prevLocks.pop();
-				if (prevLocks.isEmpty())
+				if (prevLocks.isEmpty()) {
 					suspendedLocks.remove(owner);
+				}
 			}
 			for (LockState element : toResume) {
 				if (!element.resume()) {

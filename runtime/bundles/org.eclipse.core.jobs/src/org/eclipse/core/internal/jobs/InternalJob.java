@@ -183,8 +183,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	final void addLast(InternalJob entry) {
 		InternalJob last = this;
 		//find the end of the queue
-		while (last.previous != null)
+		while (last.previous != null) {
 			last = last.previous;
+		}
 		//add the new entry to the end of the queue
 		last.previous = entry;
 		entry.next = last;
@@ -238,8 +239,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	protected Object getProperty(QualifiedName key) {
 		// thread safety: (Concurrency001 - copy on write)
 		Map<QualifiedName, Object> temp = properties;
-		if (temp == null)
+		if (temp == null) {
 			return null;
+		}
 		return temp.get(key);
 	}
 
@@ -335,11 +337,13 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	 */
 	final boolean isConflicting(InternalJob otherJob) {
 		ISchedulingRule otherRule = otherJob.getRule();
-		if (schedulingRule == null || otherRule == null)
+		if (schedulingRule == null || otherRule == null) {
 			return false;
+		}
 		//if one of the rules is a compound rule, it must be asked the question.
-		if (schedulingRule.getClass() == MultiRule.class)
+		if (schedulingRule.getClass() == MultiRule.class) {
 			return schedulingRule.isConflicting(otherRule);
+		}
 		return otherRule.isConflicting(schedulingRule);
 	}
 
@@ -377,10 +381,12 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	 * Removes this entry from any list it belongs to.  Returns the receiver.
 	 */
 	final InternalJob remove() {
-		if (next != null)
+		if (next != null) {
 			next.setPrevious(previous);
-		if (previous != null)
+		}
+		if (previous != null) {
 			previous.setNext(next);
+		}
 		next = previous = null;
 		return this;
 	}
@@ -392,8 +398,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	protected abstract IStatus run(IProgressMonitor progressMonitor);
 
 	protected void schedule(long delay) {
-		if (shouldSchedule())
+		if (shouldSchedule()) {
 			manager.schedule(this, delay);
+		}
 	}
 
 	/**
@@ -451,8 +458,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	protected void setProgressGroup(IProgressMonitor group, int ticks) {
 		Assert.isNotNull(group);
 		IProgressMonitor pm = manager.createMonitor(this, group, ticks);
-		if (pm != null)
+		if (pm != null) {
 			setProgressMonitor(pm);
+		}
 	}
 
 	/**
@@ -467,20 +475,23 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 	protected void setProperty(QualifiedName key, Object value) {
 		// thread safety: (Concurrency001 - copy on write)
 		if (value == null) {
-			if (properties == null)
+			if (properties == null) {
 				return;
+			}
 			ObjectMap<QualifiedName, Object> temp = new ObjectMap<>(properties);
 			temp.remove(key);
-			if (temp.isEmpty())
+			if (temp.isEmpty()) {
 				properties = null;
-			else
+			} else {
 				properties = temp;
+			}
 		} else {
 			ObjectMap<QualifiedName, Object> temp = properties;
-			if (temp == null)
+			if (temp == null) {
 				temp = new ObjectMap<>(5);
-			else
+			} else {
 				temp = new ObjectMap<>(properties);
+			}
 			temp.put(key, value);
 			properties = temp;
 		}
@@ -511,8 +522,9 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 
 	protected void setSystem(boolean value) {
 		synchronized (jobStateLock) {
-			if (getState() != Job.NONE)
+			if (getState() != Job.NONE) {
 				throw new IllegalStateException();
+			}
 			flags = value ? flags | M_SYSTEM : flags & ~M_SYSTEM;
 		}
 	}
@@ -523,15 +535,17 @@ public abstract class InternalJob extends PlatformObject implements Comparable<I
 
 	protected void setUser(boolean value) {
 		synchronized (jobStateLock) {
-			if (getState() != Job.NONE)
+			if (getState() != Job.NONE) {
 				throw new IllegalStateException();
+			}
 			flags = value ? flags | M_USER : flags & ~M_USER;
 		}
 	}
 
 	protected void setJobGroup(JobGroup jobGroup) {
-		if (getState() != Job.NONE)
+		if (getState() != Job.NONE) {
 			throw new IllegalStateException("Setting job group of an already scheduled job is not allowed"); //$NON-NLS-1$
+		}
 		this.jobGroup = jobGroup;
 	}
 

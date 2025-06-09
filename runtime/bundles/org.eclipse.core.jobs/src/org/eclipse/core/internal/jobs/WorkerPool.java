@@ -96,8 +96,9 @@ class WorkerPool {
 	private synchronized void decrementBusyThreads() {
 		//impossible to have less than zero busy threads
 		if (--busyThreads < 0) {
-			if (JobManager.DEBUG)
+			if (JobManager.DEBUG) {
 				Assert.isTrue(false, Integer.toString(busyThreads));
+			}
 			busyThreads = 0;
 		}
 	}
@@ -127,15 +128,17 @@ class WorkerPool {
 	 * OutOfMemoryError conditions and thus must be paranoid about allocating objects.
 	 */
 	protected synchronized void endWorker(Worker worker) {
-		if (remove(worker) && JobManager.DEBUG)
+		if (remove(worker) && JobManager.DEBUG) {
 			JobManager.debug("worker removed from pool: " + worker); //$NON-NLS-1$
+		}
 	}
 
 	private synchronized void incrementBusyThreads() {
 		//impossible to have more busy threads than there are threads
 		if (++busyThreads > numThreads) {
-			if (JobManager.DEBUG)
+			if (JobManager.DEBUG) {
 				Assert.isTrue(false, Integer.toString(busyThreads) + ',' + numThreads);
+			}
 			busyThreads = numThreads;
 		}
 	}
@@ -155,8 +158,9 @@ class WorkerPool {
 			Worker worker = new Worker(this);
 			worker.setDaemon(isDaemon);
 			add(worker);
-			if (JobManager.DEBUG)
+			if (JobManager.DEBUG) {
 				JobManager.debug("worker added to pool: " + worker); //$NON-NLS-1$
+			}
 			worker.start();
 			return;
 		}
@@ -194,13 +198,15 @@ class WorkerPool {
 	private synchronized void sleep(long duration) {
 		sleepingThreads++;
 		busyThreads--;
-		if (JobManager.DEBUG)
+		if (JobManager.DEBUG) {
 			JobManager.debug("worker sleeping for: " + duration + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		try {
 			wait(duration);
 		} catch (InterruptedException e) {
-			if (JobManager.DEBUG)
+			if (JobManager.DEBUG) {
 				JobManager.debug("worker interrupted while waiting... :-|"); //$NON-NLS-1$
+			}
 		} finally {
 			sleepingThreads--;
 			busyThreads++;
@@ -254,8 +260,9 @@ class WorkerPool {
 					}
 				}
 				//if we didn't sleep but there was no job available, make sure we sleep to avoid a tight loop (bug 260724)
-				if (hint <= 0 && job == null)
+				if (hint <= 0 && job == null) {
 					sleep(50);
+				}
 			}
 			if (job != null) {
 				//if this job has a rule, then we are essentially acquiring a lock
@@ -265,13 +272,15 @@ class WorkerPool {
 					manager.getLockManager().addLockThread(Thread.currentThread(), job.getRule());
 				}
 				//see if we need to wake another worker
-				if (manager.sleepHint() < InternalJob.T_INFINITE)
+				if (manager.sleepHint() < InternalJob.T_INFINITE) {
 					jobQueued();
+				}
 			}
 		} finally {
 			//decrement busy thread count if we're not running a job
-			if (job == null && busy)
+			if (job == null && busy) {
 				decrementBusyThreads();
+			}
 		}
 		return job;
 	}

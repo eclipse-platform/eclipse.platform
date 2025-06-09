@@ -99,8 +99,9 @@ public class DeadlockDetector {
 		//get the thread that block the given thread from running
 		Thread[] blocking = blockingThreads(next);
 		//if the thread is not blocked by other threads, then it is not part of a deadlock
-		if (blocking.length == 0)
+		if (blocking.length == 0) {
 			return false;
+		}
 		boolean inCycle = false;
 		for (Thread element : blocking) {
 			//if we have already visited the given thread, then we found a cycle
@@ -110,10 +111,11 @@ public class DeadlockDetector {
 				//otherwise, add the thread to our list and recurse deeper
 				deadlockedThreads.add(element);
 				//if the thread is not part of a cycle, remove it from the list
-				if (addCycleThreads(deadlockedThreads, element))
+				if (addCycleThreads(deadlockedThreads, element)) {
 					inCycle = true;
-				else
+				} else {
 					deadlockedThreads.remove(element);
+				}
 			}
 		}
 		return inCycle;
@@ -146,8 +148,9 @@ public class DeadlockDetector {
 				waitingThreads[i]++;
 				for (int j = 0; j < graph[i].length; j++) {
 					if (graph[i][j] == WAITING_FOR_LOCK) {
-						if (checkWaitCycles(waitingThreads, j))
+						if (checkWaitCycles(waitingThreads, j)) {
 							return true;
+						}
 					}
 				}
 				//this thread is not involved in a cycle yet, so remove the visited flag
@@ -201,11 +204,13 @@ public class DeadlockDetector {
 		int index = indexOf(current, false);
 
 		for (int j = 0; j < graph[index].length; j++) {
-			if (graph[index][j] > NO_STATE)
+			if (graph[index][j] > NO_STATE) {
 				ownedLocks.add(locks.get(j));
+			}
 		}
-		if (ownedLocks.isEmpty())
+		if (ownedLocks.isEmpty()) {
 			Assert.isLegal(false, "A thread with no locks is part of a deadlock."); //$NON-NLS-1$
+		}
 		return ownedLocks.toArray();
 	}
 
@@ -218,8 +223,9 @@ public class DeadlockDetector {
 		 * if the thread that caused deadlock doesn't own any locks, then it is not part
 		 * of the deadlock (it just caused it because of a rule it tried to acquire)
 		 */
-		if (ownsLocks(cause))
+		if (ownsLocks(cause)) {
 			deadlockedThreads.add(cause);
+		}
 		addCycleThreads(deadlockedThreads, cause);
 		return deadlockedThreads.toArray(new Thread[deadlockedThreads.size()]);
 	}
@@ -228,18 +234,22 @@ public class DeadlockDetector {
 	 * Returns the thread(s) that own the given lock.
 	 */
 	private Thread[] getThreadsOwningLock(ISchedulingRule rule) {
-		if (rule == null)
+		if (rule == null) {
 			return new Thread[0];
+		}
 		int lockIndex = indexOf(rule, false);
 		ArrayList<Thread> blocking = new ArrayList<>(1);
 		for (int i = 0; i < graph.length; i++) {
-			if (graph[i][lockIndex] > NO_STATE)
+			if (graph[i][lockIndex] > NO_STATE) {
 				blocking.add(lockThreads.get(i));
+			}
 		}
-		if ((blocking.isEmpty()) && (JobManager.DEBUG_LOCKS))
+		if ((blocking.isEmpty()) && (JobManager.DEBUG_LOCKS)) {
 			System.out.println("Lock " + rule + " is involved in deadlock but is not owned by any thread."); //$NON-NLS-1$ //$NON-NLS-2$
-		if ((blocking.size() > 1) && (rule instanceof ILock) && (JobManager.DEBUG_LOCKS))
+		}
+		if ((blocking.size() > 1) && (rule instanceof ILock) && (JobManager.DEBUG_LOCKS)) {
 			System.out.println("Lock " + rule + " is owned by more than 1 thread, but it is not a rule."); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		return blocking.toArray(new Thread[blocking.size()]);
 	}
 
@@ -250,8 +260,9 @@ public class DeadlockDetector {
 		int index = indexOf(current, false);
 		//find the lock that this thread is waiting for
 		for (int j = 0; j < graph[index].length; j++) {
-			if (graph[index][j] == WAITING_FOR_LOCK)
+			if (graph[index][j] == WAITING_FOR_LOCK) {
 				return locks.get(j);
+			}
 		}
 		//it can happen that a thread is not waiting for any lock (it is not really part of the deadlock)
 		return null;
@@ -298,10 +309,12 @@ public class DeadlockDetector {
 	void lockAcquired(Thread owner, ISchedulingRule lock) {
 		int lockIndex = indexOf(lock, true);
 		int threadIndex = indexOf(owner, true);
-		if (resize)
+		if (resize) {
 			resizeGraph();
-		if (graph[threadIndex][lockIndex] == WAITING_FOR_LOCK)
+		}
+		if (graph[threadIndex][lockIndex] == WAITING_FOR_LOCK) {
 			graph[threadIndex][lockIndex] = NO_STATE;
+		}
 		/**
 		 * acquire all locks that conflict with the given lock
 		 * or conflict with a lock the given lock will acquire implicitly
@@ -340,13 +353,15 @@ public class DeadlockDetector {
 		int threadIndex = indexOf(owner, false);
 		//make sure the lock and thread exist in the graph
 		if (threadIndex < 0) {
-			if (JobManager.DEBUG_LOCKS)
+			if (JobManager.DEBUG_LOCKS) {
 				System.out.println("[lockReleased] Lock " + lock + " was already released by thread " + owner.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			return;
 		}
 		if (lockIndex < 0) {
-			if (JobManager.DEBUG_LOCKS)
+			if (JobManager.DEBUG_LOCKS) {
 				System.out.println("[lockReleased] Thread " + owner.getName() + " already released lock " + lock); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			return;
 		}
 		//if this lock was suspended, set it to NO_STATE
@@ -360,16 +375,18 @@ public class DeadlockDetector {
 			if (((!(lock instanceof ILock) && !(locks.get(j) instanceof ILock) && (graph[threadIndex][j] > NO_STATE))
 					|| lock.isConflicting(locks.get(j)))) {
 				if (graph[threadIndex][j] == NO_STATE) {
-					if (JobManager.DEBUG_LOCKS)
+					if (JobManager.DEBUG_LOCKS) {
 						System.out.println("[lockReleased] More releases than acquires for thread " + owner.getName() + " and lock " + lock); //$NON-NLS-1$ //$NON-NLS-2$
+					}
 				} else {
 					graph[threadIndex][j]--;
 				}
 			}
 		}
 		//if this thread just released the given lock, try to simplify the graph
-		if (graph[threadIndex][lockIndex] == NO_STATE)
+		if (graph[threadIndex][lockIndex] == NO_STATE) {
 			reduceGraph(threadIndex, lock);
+		}
 	}
 
 	/**
@@ -381,13 +398,15 @@ public class DeadlockDetector {
 		int threadIndex = indexOf(owner, false);
 		//need to make sure that the given thread and rule were not already removed from the graph
 		if (threadIndex < 0) {
-			if (JobManager.DEBUG_LOCKS)
+			if (JobManager.DEBUG_LOCKS) {
 				System.out.println("[lockReleasedCompletely] Lock " + rule + " was already released by thread " + owner.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			return;
 		}
 		if (ruleIndex < 0) {
-			if (JobManager.DEBUG_LOCKS)
+			if (JobManager.DEBUG_LOCKS) {
 				System.out.println("[lockReleasedCompletely] Thread " + owner.getName() + " already released lock " + rule); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			return;
 		}
 		/**
@@ -396,8 +415,9 @@ public class DeadlockDetector {
 		 * if we are releasing a lock, then only update the one entry for the lock
 		 */
 		for (int j = 0; j < graph[threadIndex].length; j++) {
-			if (!(locks.get(j) instanceof ILock) && (graph[threadIndex][j] > NO_STATE))
+			if (!(locks.get(j) instanceof ILock) && (graph[threadIndex][j] > NO_STATE)) {
 				graph[threadIndex][j] = NO_STATE;
+			}
 		}
 		reduceGraph(threadIndex, rule);
 	}
@@ -411,8 +431,9 @@ public class DeadlockDetector {
 		int lockIndex = indexOf(lock, false);
 		int[] temp = new int[lockThreads.size()];
 		//check if the addition of the waiting thread caused deadlock
-		if (!checkWaitCycles(temp, lockIndex))
+		if (!checkWaitCycles(temp, lockIndex)) {
 			return null;
+		}
 		//there is a deadlock in the graph
 		Thread[] threads = getThreadsInDeadlock(client);
 		//find a thread whose locks can be suspended to resolve the deadlock
@@ -420,13 +441,15 @@ public class DeadlockDetector {
 		ISchedulingRule[] locksToSuspend = realLocksForThread(candidate);
 		Deadlock deadlock = new Deadlock(threads, locksToSuspend, candidate);
 		reportDeadlock(deadlock);
-		if (JobManager.DEBUG_DEADLOCK)
+		if (JobManager.DEBUG_DEADLOCK) {
 			throw new IllegalStateException("Deadlock detected. Caused by thread " + client.getName() + '.'); //$NON-NLS-1$
+		}
 		// Update the graph to indicate that the locks will now be suspended.
 		// To indicate that the lock will be suspended, we set the thread to wait for the lock.
 		// When the lock is forced to be released, the entry will be cleared.
-		for (ISchedulingRule element : locksToSuspend)
+		for (ISchedulingRule element : locksToSuspend) {
 			setToWait(deadlock.getCandidate(), element, true);
+		}
 		return deadlock;
 	}
 
@@ -440,19 +463,22 @@ public class DeadlockDetector {
 		int threadIndex = indexOf(owner, false);
 		//make sure the thread and lock exist in the graph
 		if (threadIndex < 0) {
-			if (JobManager.DEBUG_LOCKS)
+			if (JobManager.DEBUG_LOCKS) {
 				System.out.println("Thread " + owner.getName() + " was already removed."); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			return;
 		}
 		if (lockIndex < 0) {
-			if (JobManager.DEBUG_LOCKS)
+			if (JobManager.DEBUG_LOCKS) {
 				System.out.println("Lock " + lock + " was already removed."); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			return;
 		}
 		if (graph[threadIndex][lockIndex] != WAITING_FOR_LOCK) {
 			// Lock has already been granted, nothing to do...
-			if (JobManager.DEBUG_LOCKS)
+			if (JobManager.DEBUG_LOCKS) {
 				System.out.println("Lock " + lock + " already granted to depth: " + graph[threadIndex][lockIndex]); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			return;
 		}
 		graph[threadIndex][lockIndex] = NO_STATE;
@@ -465,8 +491,9 @@ public class DeadlockDetector {
 	private boolean ownsLocks(Thread cause) {
 		int threadIndex = indexOf(cause, false);
 		for (int j = 0; j < graph[threadIndex].length; j++) {
-			if (graph[threadIndex][j] > NO_STATE)
+			if (graph[threadIndex][j] > NO_STATE) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -480,8 +507,9 @@ public class DeadlockDetector {
 		for (int j = 0; j < graph[threadIndex].length; j++) {
 			if (graph[threadIndex][j] > NO_STATE) {
 				Object lock = locks.get(j);
-				if (lock instanceof ILock)
+				if (lock instanceof ILock) {
 					return true;
+				}
 			}
 		}
 		return false;
@@ -496,8 +524,9 @@ public class DeadlockDetector {
 		for (int j = 0; j < graph[threadIndex].length; j++) {
 			if (graph[threadIndex][j] > NO_STATE) {
 				Object lock = locks.get(j);
-				if (!(lock instanceof ILock))
+				if (!(lock instanceof ILock)) {
 					return true;
+				}
 			}
 		}
 		return false;
@@ -511,11 +540,13 @@ public class DeadlockDetector {
 		int threadIndex = indexOf(owner, false);
 		ArrayList<ISchedulingRule> ownedLocks = new ArrayList<>(1);
 		for (int j = 0; j < graph[threadIndex].length; j++) {
-			if ((graph[threadIndex][j] > NO_STATE) && (locks.get(j) instanceof ILock))
+			if ((graph[threadIndex][j] > NO_STATE) && (locks.get(j) instanceof ILock)) {
 				ownedLocks.add(locks.get(j));
+			}
 		}
-		if (ownedLocks.isEmpty())
+		if (ownedLocks.isEmpty()) {
 			Assert.isLegal(false, "A thread with no real locks was chosen to resolve deadlock."); //$NON-NLS-1$
+		}
 		return ownedLocks.toArray(new ISchedulingRule[ownedLocks.size()]);
 	}
 
@@ -532,8 +563,9 @@ public class DeadlockDetector {
 		 * (consist of locks which conflict with the given lock, or of locks which are rules)
 		 */
 		for (int j = 0; j < numLocks; j++) {
-			if (!(locks.get(j) instanceof ILock) || (lock.isConflicting(locks.get(j))))
+			if (!(locks.get(j) instanceof ILock) || (lock.isConflicting(locks.get(j)))) {
 				emptyColumns[j] = true;
+			}
 		}
 
 		boolean rowEmpty = true;
@@ -564,11 +596,13 @@ public class DeadlockDetector {
 			}
 		}
 		//if no columns or rows are empty, return right away
-		if ((numEmpty == 0) && (!rowEmpty))
+		if ((numEmpty == 0) && (!rowEmpty)) {
 			return;
+		}
 
-		if (rowEmpty)
+		if (rowEmpty) {
 			lockThreads.remove(row);
+		}
 
 		//new graph (the list of locks and the list of threads are already updated)
 		final int numThreads = lockThreads.size();
@@ -586,8 +620,9 @@ public class DeadlockDetector {
 			if ((i == row) && rowEmpty) {
 				numRowsSkipped++;
 				//check if we need to skip the last row
-				if (i >= graph.length - numRowsSkipped)
+				if (i >= graph.length - numRowsSkipped) {
 					break;
+				}
 			}
 			//the number of columns we need to skip to get the correct entry from the old graph
 			//needs to be reset for every new row
@@ -596,12 +631,14 @@ public class DeadlockDetector {
 				while (emptyColumns[j + numColsSkipped]) {
 					numColsSkipped++;
 					//check if we need to skip the last column
-					if (j >= graph[i].length - numColsSkipped)
+					if (j >= graph[i].length - numColsSkipped) {
 						break;
+					}
 				}
 				//need to break out of the outer loop
-				if (j >= graph[i].length - numColsSkipped)
+				if (j >= graph[i].length - numColsSkipped) {
 					break;
+				}
 				tempGraph[i][j] = graph[i + numRowsSkipped][j + numColsSkipped];
 			}
 		}
@@ -676,8 +713,9 @@ public class DeadlockDetector {
 			return;
 		}
 		int[][] tempGraph = new int[newRows][newCols];
-		for (int i = 0; i < graph.length; i++)
+		for (int i = 0; i < graph.length; i++) {
 			System.arraycopy(graph[i], 0, tempGraph[i], 0, graph[i].length);
+		}
 		graph = tempGraph;
 		resize = false;
 	}
@@ -695,8 +733,9 @@ public class DeadlockDetector {
 		}
 		//next look for any candidate with a real lock (a lock that can be suspended)
 		for (Thread candidate : candidates) {
-			if (ownsRealLocks(candidate))
+			if (ownsRealLocks(candidate)) {
 				return candidate;
+			}
 		}
 		//unnecessary, return the first entry in the array by default
 		return candidates[0];
@@ -712,16 +751,19 @@ public class DeadlockDetector {
 		 * then we need to transfer all positive entries for a conflicting rule to the
 		 * newly added rule in order to synchronize the graph.
 		 */
-		if (!suspend && !(lock instanceof ILock))
+		if (!suspend && !(lock instanceof ILock)) {
 			needTransfer = true;
+		}
 		int lockIndex = indexOf(lock, !suspend);
 		int threadIndex = indexOf(owner, !suspend);
-		if (resize)
+		if (resize) {
 			resizeGraph();
+		}
 
 		graph[threadIndex][lockIndex] = WAITING_FOR_LOCK;
-		if (needTransfer)
+		if (needTransfer) {
 			fillPresentEntries(lock, lockIndex);
+		}
 	}
 
 	/**
