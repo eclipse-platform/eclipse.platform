@@ -72,8 +72,9 @@ public class WeakGroupedListenerList {
 
 	public synchronized Set<Computation> getListeners(String groupName) {
 		Set<Computation> computations = listeners.get(groupName);
-		if (computations == null)
+		if (computations == null) {
 			return null;
+		}
 		Set<Computation> result = new HashSet<>(computations.size());
 		for (Computation computation : computations) {
 			if (computation.isValid()) {

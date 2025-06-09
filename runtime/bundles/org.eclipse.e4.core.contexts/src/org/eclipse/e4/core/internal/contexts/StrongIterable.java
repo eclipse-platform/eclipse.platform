@@ -50,8 +50,9 @@ public final class StrongIterable<T> implements Iterable<T> {
 
 			@Override
 			public boolean hasNext() {
-				if (next != null)
+				if (next != null) {
 					return true;
+				}
 				while (i.hasNext()) {
 					next = i.next().get();
 					if (next == null) {

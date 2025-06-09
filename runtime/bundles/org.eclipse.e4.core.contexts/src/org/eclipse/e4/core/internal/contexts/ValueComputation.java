@@ -41,8 +41,9 @@ public class ValueComputation extends Computation {
 
 	@Override
 	public void handleInvalid(ContextChangeEvent event, Set<Scheduled> scheduled) {
-		if (cachedValue == NotAValue) // already invalidated
+		if (cachedValue == NotAValue) { // already invalidated
 			return;
+		}
 		cachedValue = NotAValue;
 		originatingContext.invalidate(name, ContextChangeEvent.RECALC, event.getOldValue(), IInjector.NOT_A_VALUE, scheduled);
 	}
@@ -55,8 +56,9 @@ public class ValueComputation extends Computation {
 	}
 
 	public Object get() {
-		if (cachedValue != NotAValue)
+		if (cachedValue != NotAValue) {
 			return cachedValue;
+		}
 		if (computing) {
 			boolean hasCycle = originatingContext.hasComputation(this);
 			if (hasCycle) {
@@ -84,8 +86,9 @@ public class ValueComputation extends Computation {
 
 	@Override
 	public String toString() {
-		if (function == null)
+		if (function == null) {
 			return super.toString();
+		}
 		return function.toString();
 	}
 
@@ -100,12 +103,15 @@ public class ValueComputation extends Computation {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		ValueComputation other = (ValueComputation) obj;
 		return Objects.equals(this.function, other.function) && Objects.equals(this.name, other.name)
 				&& Objects.equals(this.originatingContext, other.originatingContext);

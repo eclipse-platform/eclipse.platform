@@ -59,21 +59,24 @@ public class EclipseContextOSGi extends EclipseContext implements ServiceListene
 
 	@Override
 	public boolean containsKey(String name, boolean localOnly) {
-		if (super.containsKey(name, localOnly))
+		if (super.containsKey(name, localOnly)) {
 			return true;
+		}
 		Object result = lookup(name, this);
 		return (result != null);
 	}
 
 	@Override
 	public Object lookup(String name, EclipseContext originatingContext) {
-		if (name == null)
+		if (name == null) {
 			return null;
+		}
 		if (refs.containsKey(name)) { // retrieve service again
 			// This could be reached, for instance, if previously stored service value is overridden or removed from the context.
 			ServiceReference<?> ref = refs.get(name);
-			if (ref == null)
+			if (ref == null) {
 				return null;
+			}
 			Object service = bundleContext.getService(ref);
 			bundleContext.ungetService(ref);
 			localValues.put(name, service);
@@ -93,8 +96,9 @@ public class EclipseContextOSGi extends EclipseContext implements ServiceListene
 	@Override
 	public void dispose() {
 		for (ServiceReference<?> ref : refs.values()) {
-			if (ref != null)
+			if (ref != null) {
 				bundleContext.ungetService(ref);
+			}
 		}
 		refs.clear();
 		bundleContext.removeServiceListener(this);
@@ -138,9 +142,11 @@ public class EclipseContextOSGi extends EclipseContext implements ServiceListene
 		// OSGi framework shutdown will triggered uninjection of all consumed
 		// OSGi service. To avoid this, we detect framework shutdown and release
 		// services.
-		if (event.getType() != BundleEvent.STOPPING)
+		if (event.getType() != BundleEvent.STOPPING) {
 			return;
-		if (event.getBundle().getBundleId() == 0)
+		}
+		if (event.getBundle().getBundleId() == 0) {
 			dispose();
+		}
 	}
 }
