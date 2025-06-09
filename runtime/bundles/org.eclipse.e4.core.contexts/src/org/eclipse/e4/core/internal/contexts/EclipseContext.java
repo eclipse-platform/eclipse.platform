@@ -81,12 +81,15 @@ public class EclipseContext implements IEclipseContext {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			Scheduled other = (Scheduled) obj;
 			return Objects.equals(this.event, other.event) && Objects.equals(this.runnable, other.runnable);
 		}
@@ -130,10 +133,12 @@ public class EclipseContext implements IEclipseContext {
 
 	public EclipseContext(IEclipseContext parent) {
 		setParent(parent);
-		if (parent == null)
+		if (parent == null) {
 			waiting = Collections.synchronizedList(new ArrayList<>());
-		if (debugAddOn != null)
+		}
+		if (debugAddOn != null) {
 			debugAddOn.notify(this, IEclipseContextDebugger.EventType.CONSTRUCTED, null);
+		}
 	}
 
 	public Iterable<EclipseContext> getChildren() {
@@ -147,13 +152,16 @@ public class EclipseContext implements IEclipseContext {
 	}
 
 	public boolean containsKey(String name, boolean localOnly) {
-		if (isSetLocally(name))
+		if (isSetLocally(name)) {
 			return true;
-		if (localOnly)
+		}
+		if (localOnly) {
 			return false;
+		}
 		EclipseContext parent = getParent();
-		if (parent != null && parent.containsKey(name, localOnly))
+		if (parent != null && parent.containsKey(name, localOnly)) {
 			return true;
+		}
 		return false;
 	}
 
@@ -196,8 +204,9 @@ public class EclipseContext implements IEclipseContext {
 		EclipseContext rootContext = null;
 		if (parent != null) {
 			rootContext = getRoot();
-			if (this == parent.getActiveChild())
+			if (this == parent.getActiveChild()) {
 				parent.set(ACTIVE_CHILD, null);
+			}
 		}
 
 		localValues.clear();
@@ -252,10 +261,12 @@ public class EclipseContext implements IEclipseContext {
 		Value<Object> value = localValues.getValue(name);
 		if (value.isPresent()) {
 			result = value.unwrapped();
-			if (result == null)
+			if (result == null) {
 				return null;
-		} else
+			}
+		} else {
 			result = lookup(name, originatingContext);
+		}
 
 		// if we found something, compute the concrete value and return
 		if (result != null) {
@@ -314,8 +325,9 @@ public class EclipseContext implements IEclipseContext {
 
 	protected boolean isLocalEquals(String name, Object newValue) {
 		Value<Object> value = localValues.getValue(name);
-		if (!value.isPresent())
+		if (!value.isPresent()) {
 			return false;
+		}
 		return (value.unwrapped() == newValue);
 	}
 
@@ -340,10 +352,11 @@ public class EclipseContext implements IEclipseContext {
 		boolean result = computation.update(event);
 		if (result) {
 			Reference<Object> ref = computation.getReference();
-			if (ref != null)
+			if (ref != null) {
 				activeComputations.put(ref, computation);
-			else
+			} else {
 				activeRATs.add(computation);
+			}
 		}
 	}
 
@@ -380,8 +393,9 @@ public class EclipseContext implements IEclipseContext {
 			ContextChangeEvent event = new ContextChangeEvent(this, ContextChangeEvent.UNINJECTED, nullArgs, null, null);
 			for (; ref != null; ref = referenceQueue.poll()) {
 				TrackableComputationExt obsoleteComputation = activeComputations.remove(ref);
-				if (obsoleteComputation == null)
+				if (obsoleteComputation == null) {
 					continue;
+				}
 				obsoleteComputation.update(event);
 			}
 		}
@@ -390,8 +404,9 @@ public class EclipseContext implements IEclipseContext {
 	@Override
 	public void modify(String name, Object value) {
 		Set<Scheduled> scheduled = new LinkedHashSet<>();
-		if (!internalModify(name, value, scheduled))
+		if (!internalModify(name, value, scheduled)) {
 			set(name, value);
+		}
 		processScheduled(scheduled);
 	}
 
@@ -403,14 +418,16 @@ public class EclipseContext implements IEclipseContext {
 				throw new IllegalArgumentException(tmp);
 			}
 			Object oldValue = localValues.putAndGetOld(name, value).unwrapped();
-			if (oldValue != value)
+			if (oldValue != value) {
 				invalidate(name, ContextChangeEvent.ADDED, oldValue, value, scheduled);
+			}
 			return true;
 		}
 
 		EclipseContext parent = getParent();
-		if (parent != null)
+		if (parent != null) {
 			return parent.internalModify(name, value, scheduled);
+		}
 		return false;
 	}
 
@@ -422,10 +439,12 @@ public class EclipseContext implements IEclipseContext {
 	@Override
 	public void setParent(IEclipseContext parent) {
 		EclipseContext parentContext = (EclipseContext) localValues.get(PARENT);
-		if (parent == parentContext)
+		if (parent == parentContext) {
 			return; // no-op
-		if (parentContext != null)
+		}
+		if (parentContext != null) {
 			selfRef.clear(); // remove from parent
+		}
 		Set<Scheduled> scheduled = new LinkedHashSet<>();
 		EclipseContext newParent = (EclipseContext) parent;
 		handleReparent(newParent, scheduled);
@@ -444,16 +463,18 @@ public class EclipseContext implements IEclipseContext {
 	@Override
 	public String toString() {
 		Object debugString = localValues.get(DEBUG_STRING);
-		return debugString instanceof String ? ((String) debugString) : ANONYMOUS_CONTEXT_NAME;
+		return debugString instanceof String s ? s : ANONYMOUS_CONTEXT_NAME;
 	}
 
 	private void trackAccess(String name) {
 		Stack<Computation> current = getCalculatedComputations();
-		if (current.isEmpty())
+		if (current.isEmpty()) {
 			return;
+		}
 		Computation computation = current.peek(); // only track in the top-most one
-		if (computation == null)
+		if (computation == null) {
 			return;
+		}
 		addDependency(name, computation);
 	}
 
@@ -463,28 +484,33 @@ public class EclipseContext implements IEclipseContext {
 
 	@Override
 	public void declareModifiable(String name) {
-		if (name == null)
+		if (name == null) {
 			return;
-		if (modifiable == null)
+		}
+		if (modifiable == null) {
 			modifiable = new HashSet<>(3);
+		}
 		modifiable.add(name);
 		localValues.putIfAbsent(name, null);
 	}
 
 	private boolean checkModifiable(String name) {
-		if (modifiable == null)
+		if (modifiable == null) {
 			return false;
+		}
 		return modifiable.contains(name);
 	}
 
 	public void removeListenersTo(Object object) {
-		if (object == null)
+		if (object == null) {
 			return;
+		}
 		ContextChangeEvent event = new ContextChangeEvent(this, ContextChangeEvent.UNINJECTED, new Object[] {object}, null, null);
 		Set<Computation> comps = getListeners();
 		for (Computation computation : comps) {
-			if (computation instanceof TrackableComputationExt)
+			if (computation instanceof TrackableComputationExt) {
 				((TrackableComputationExt) computation).update(event);
+			}
 		}
 	}
 
@@ -502,12 +528,14 @@ public class EclipseContext implements IEclipseContext {
 
 		// 2) for each used name:
 		for (String name : usedNames) {
-			if (localValues.containsKey(name))
+			if (localValues.containsKey(name)) {
 				continue; // it is a local value
+			}
 			Object oldValue = get(name);
 			Object newValue = (newParent != null) ? newParent.internalGet(this, name, false) : null;
-			if (oldValue != newValue)
+			if (oldValue != newValue) {
 				invalidate(name, ContextChangeEvent.ADDED, oldValue, newValue, scheduled);
+			}
 		}
 
 		invalidateLocalComputations(scheduled);
@@ -543,15 +571,17 @@ public class EclipseContext implements IEclipseContext {
 			parent.processWaiting();
 			return;
 		}
-		if (waiting == null || waiting.isEmpty())
+		if (waiting == null || waiting.isEmpty()) {
 			return;
+		}
 		// create update notifications
 		Computation[] ls = waiting.toArray(new Computation[waiting.size()]);
 		waiting.clear();
 		ContextChangeEvent event = new ContextChangeEvent(this, ContextChangeEvent.UPDATE, null, null, null);
 		for (Computation element : ls) {
-			if (element instanceof TrackableComputationExt)
+			if (element instanceof TrackableComputationExt) {
 				((TrackableComputationExt) element).update(event);
+			}
 		}
 	}
 
@@ -562,8 +592,9 @@ public class EclipseContext implements IEclipseContext {
 			parent.addWaiting(cp);
 			return;
 		}
-		if (waiting == null) // could happen on re-parent
+		if (waiting == null) { // could happen on re-parent
 			waiting = Collections.synchronizedList(new ArrayList<>());
+		}
 		waiting.add(cp);
 	}
 
@@ -654,10 +685,12 @@ public class EclipseContext implements IEclipseContext {
 	@Override
 	public void activate() {
 		EclipseContext parent = getParent();
-		if (parent == null)
+		if (parent == null) {
 			return;
-		if (this == parent.getActiveChild())
+		}
+		if (this == parent.getActiveChild()) {
 			return;
+		}
 		parent.set(ACTIVE_CHILD, this);
 		if (debugAddOn != null) {
 			debugAddOn.notify(this, IEclipseContextDebugger.EventType.ACTIVATED, null);
@@ -674,10 +707,12 @@ public class EclipseContext implements IEclipseContext {
 	@Override
 	public void deactivate() {
 		EclipseContext parent = getParent();
-		if (parent == null)
+		if (parent == null) {
 			return;
-		if (this != parent.getActiveChild())
+		}
+		if (this != parent.getActiveChild()) {
 			return; // this is not an active context; return
+		}
 		parent.set(ACTIVE_CHILD, null);
 		if (debugAddOn != null) {
 			debugAddOn.notify(this, IEclipseContextDebugger.EventType.DEACTIVATED, null);
@@ -753,8 +788,9 @@ public class EclipseContext implements IEclipseContext {
 	public void popComputation(Computation comp) {
 		Stack<Computation> current = getCalculatedComputations();
 		Computation ended = current.pop();
-		if (ended != comp)
+		if (ended != comp) {
 			throw new IllegalArgumentException("Internal error: Invalid nested computation processing"); //$NON-NLS-1$
+		}
 	}
 
 	/**

@@ -48,12 +48,15 @@ public class TrackableComputationExt extends Computation {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		TrackableComputationExt other = (TrackableComputationExt) obj;
 		return Objects.equals(this.originatingContext, other.originatingContext)
 				&& Objects.equals(this.runnable, other.runnable);
@@ -91,18 +94,20 @@ public class TrackableComputationExt extends Computation {
 			if (cachedEvent != null) {
 				if (runnable instanceof RunAndTrackExt) {
 					result = ((RunAndTrackExt) runnable).update(event.getContext(), event.getEventType(), event.getArguments());
-					if (eventType != ContextChangeEvent.DISPOSE && eventType != ContextChangeEvent.UNINJECTED)
+					if (eventType != ContextChangeEvent.DISPOSE && eventType != ContextChangeEvent.UNINJECTED) {
 						cachedEvent = null;
+					}
 				} else if (eventType != ContextChangeEvent.DISPOSE && eventType != ContextChangeEvent.UNINJECTED) {
 					result = runnable.changed(originatingContext);
 					cachedEvent = null;
 				}
 			}
 			if (eventType != ContextChangeEvent.UPDATE) {
-				if (runnable instanceof RunAndTrackExt)
+				if (runnable instanceof RunAndTrackExt) {
 					result = ((RunAndTrackExt) runnable).update(event.getContext(), event.getEventType(), event.getArguments());
-				else if (eventType != ContextChangeEvent.DISPOSE && eventType != ContextChangeEvent.UNINJECTED)
+				} else if (eventType != ContextChangeEvent.DISPOSE && eventType != ContextChangeEvent.UNINJECTED) {
 					result = runnable.changed(originatingContext);
+				}
 			}
 		} finally {
 			((EclipseContext) originatingContext).popComputation(this);
@@ -127,8 +132,9 @@ public class TrackableComputationExt extends Computation {
 	}
 
 	public Reference<Object> getReference() {
-		if (runnable instanceof RunAndTrackExt)
+		if (runnable instanceof RunAndTrackExt) {
 			return ((RunAndTrackExt) runnable).getReference();
+		}
 		return null;
 	}
 
