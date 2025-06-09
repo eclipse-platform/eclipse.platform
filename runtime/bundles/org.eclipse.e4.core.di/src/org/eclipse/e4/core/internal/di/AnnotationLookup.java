@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2023 Hannes Wellmann and others.
+ * Copyright (c) 2023, 2024 Hannes Wellmann and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,18 +10,24 @@
  *
  * Contributors:
  *     Hannes Wellmann - initial API and implementation
+ *     Hannes Wellmann - support multiple versions of one annotation class
  *******************************************************************************/
 
 package org.eclipse.e4.core.internal.di;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import org.eclipse.e4.core.di.IInjector;
@@ -42,14 +48,15 @@ public class AnnotationLookup {
 	private AnnotationLookup() {
 	}
 
-	public static record AnnotationProxy(List<Class<? extends Annotation>> classes) {
+	public static record AnnotationProxy(List<String> classes) {
+
 		public AnnotationProxy {
 			classes = List.copyOf(classes);
 		}
 
 		public boolean isPresent(AnnotatedElement element) {
-			for (Class<? extends Annotation> annotationClass : classes) {
-				if (element.isAnnotationPresent(annotationClass)) {
+			for (Annotation annotation : element.getAnnotations()) {
+				if (classes.contains(annotation.annotationType().getName())) {
 					return true;
 				}
 			}
@@ -57,114 +64,119 @@ public class AnnotationLookup {
 		}
 	}
 
-	static final AnnotationProxy INJECT = createProxyForClasses(jakarta.inject.Inject.class,
-			() -> javax.inject.Inject.class);
-	static final AnnotationProxy SINGLETON = createProxyForClasses(jakarta.inject.Singleton.class,
-			() -> javax.inject.Singleton.class);
-	static final AnnotationProxy QUALIFIER = createProxyForClasses(jakarta.inject.Qualifier.class,
-			() -> javax.inject.Qualifier.class);
+	static final AnnotationProxy INJECT = createProxyForClasses("jakarta.inject.Inject", //$NON-NLS-1$
+			"javax.inject.Inject"); //$NON-NLS-1$
+	static final AnnotationProxy SINGLETON = createProxyForClasses("jakarta.inject.Singleton", //$NON-NLS-1$
+			"javax.inject.Singleton"); //$NON-NLS-1$
+	static final AnnotationProxy QUALIFIER = createProxyForClasses("jakarta.inject.Qualifier", //$NON-NLS-1$
+			"javax.inject.Qualifier"); //$NON-NLS-1$
 
-	static final AnnotationProxy PRE_DESTROY = createProxyForClasses(jakarta.annotation.PreDestroy.class,
-			() -> javax.annotation.PreDestroy.class);
-	public static final AnnotationProxy POST_CONSTRUCT = createProxyForClasses(jakarta.annotation.PostConstruct.class,
-			() -> javax.annotation.PostConstruct.class);
+	static final AnnotationProxy PRE_DESTROY = createProxyForClasses("jakarta.annotation.PreDestroy", //$NON-NLS-1$
+			"javax.annotation.PreDestroy"); //$NON-NLS-1$
+	public static final AnnotationProxy POST_CONSTRUCT = createProxyForClasses("jakarta.annotation.PostConstruct", //$NON-NLS-1$
+			"javax.annotation.PostConstruct"); //$NON-NLS-1$
 
-	static final AnnotationProxy OPTIONAL = createProxyForClasses(org.eclipse.e4.core.di.annotations.Optional.class,
-			null);
+	static final AnnotationProxy OPTIONAL = createProxyForClasses("org.eclipse.e4.core.di.annotations.Optional", null); //$NON-NLS-1$
 
-	private static AnnotationProxy createProxyForClasses(Class<? extends Annotation> jakartaAnnotationClass,
-			Supplier<Class<? extends Annotation>> javaxAnnotationClass) {
-		List<Class<?>> classes = getAvailableClasses(jakartaAnnotationClass, javaxAnnotationClass);
-		@SuppressWarnings({ "rawtypes", "unchecked" })
-		List<Class<? extends Annotation>> annotationClasses = (List) classes;
-		return new AnnotationProxy(annotationClasses);
+	private static AnnotationProxy createProxyForClasses(String jakartaAnnotationClass,
+			String javaxAnnotationClass) {
+		return new AnnotationProxy(getAvailableClasses(jakartaAnnotationClass, javaxAnnotationClass));
 	}
 
-	private static final List<Class<?>> PROVIDER_TYPES = getAvailableClasses(jakarta.inject.Provider.class,
-			() -> javax.inject.Provider.class);
+	private static final Set<String> PROVIDER_TYPES = Set
+			.copyOf(getAvailableClasses("jakarta.inject.Provider", "javax.inject.Provider")); //$NON-NLS-1$//$NON-NLS-2$
 
 	static boolean isProvider(Type type) {
-		for (Class<?> clazz : PROVIDER_TYPES) {
-			if (clazz.equals(type)) {
-				return true;
-			}
-		}
-		return false;
+		return PROVIDER_TYPES.contains(type.getTypeName());
 	}
 
-	@FunctionalInterface
-	private interface ProviderFactory {
-		Object create(IObjectDescriptor descriptor, IInjector injector, PrimaryObjectSupplier provider);
-	}
-
-	private static final ProviderFactory PROVIDER_FACTORY;
-	static {
-		ProviderFactory factory;
-		try {
-			/**
-			 * This subclass solely exists for the purpose to not require the presence of
-			 * the javax.inject.Provider interface in the runtime when the base-class is
-			 * loaded. This can be deleted when support for javax is removed form the
-			 * E4-injector.
-			 */
-			class JavaxCompatibilityProviderImpl<T> extends ProviderImpl<T> implements javax.inject.Provider<T> {
-				public JavaxCompatibilityProviderImpl(IObjectDescriptor descriptor, IInjector injector,
-						PrimaryObjectSupplier provider) {
-					super(descriptor, injector, provider);
-				}
-			}
-			factory = JavaxCompatibilityProviderImpl::new;
-			// Attempt to load the class early in order to enforce an early class-loading
-			// and to be able to handle the NoClassDefFoundError below in case
-			// javax-Provider is not available in the runtime:
-			factory.create(null, null, null);
-		} catch (NoClassDefFoundError e) {
-			factory = ProviderImpl::new;
-		}
-		PROVIDER_FACTORY = factory;
-	}
+	private static final Map<Class<?>, MethodHandle> PROVIDER_FACTORYS = new ConcurrentHashMap<>();
 
 	public static Object getProvider(IObjectDescriptor descriptor, IInjector injector, PrimaryObjectSupplier provider) {
-		return PROVIDER_FACTORY.create(descriptor, injector, provider);
+
+		Supplier<Object> genericProvider = () -> ((InjectorImpl) injector).makeFromProvider(descriptor, provider);
+
+		Class<?> providerClass;
+		if ((descriptor.getDesiredType() instanceof ParameterizedType parameterizedType
+				&& parameterizedType.getRawType() instanceof Class<?> clazz)) {
+			providerClass = clazz;
+		} else {
+			throw new IllegalStateException(); // The caller must ensure the providerClass can be extracted
+		}
+		// At runtime dynamically create a method-reference that implements the specific
+		// providerClass 'foo.bar.Provider':
+		// (foo.bar.Provider) genericProvider::get
+		MethodHandle factory = PROVIDER_FACTORYS.computeIfAbsent(providerClass, providerType -> {
+			try {
+				MethodHandles.Lookup lookup = MethodHandles.lookup();
+				MethodType suppliedType = MethodType.methodType(Object.class);
+				CallSite callSite = LambdaMetafactory.metafactory(lookup, "get", //$NON-NLS-1$
+						MethodType.methodType(providerClass, Supplier.class), suppliedType.erase(), //
+						lookup.findVirtual(Supplier.class, "get", MethodType.methodType(Object.class)), //$NON-NLS-1$
+						suppliedType);
+				return callSite.getTarget();
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+		});
+		try {
+			Object providerImpl = factory.bindTo(genericProvider).invoke();
+			return providerClass.cast(providerImpl);
+		} catch (Throwable e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	public static String getQualifierValue(IObjectDescriptor descriptor) {
-		var annotations = NAMED_ANNOTATION2VALUE_GETTER.entrySet();
-		for (Entry<Class<? extends Annotation>, Function<Annotation, String>> entry : annotations) {
-			Class<? extends Annotation> annotationClass = entry.getKey();
-			if (descriptor.hasQualifier(annotationClass)) {
-				Annotation namedAnnotation = descriptor.getQualifier(annotationClass);
-				return entry.getValue().apply(namedAnnotation);
+		Annotation[] qualifiers = descriptor.getQualifiers();
+		if (qualifiers != null) {
+			for (Annotation namedAnnotation : qualifiers) {
+				Class<? extends Annotation> annotationType = namedAnnotation.annotationType();
+				if (NAMED_ANNOTATION_CLASSES.contains(annotationType.getName())) {
+					return namedAnnotationValueGetter(annotationType).apply(namedAnnotation);
+				}
 			}
 		}
 		return null;
 	}
 
-	private static final Map<Class<? extends Annotation>, Function<Annotation, String>> NAMED_ANNOTATION2VALUE_GETTER;
-
-	static {
-		Map<Class<? extends Annotation>, Function<Annotation, String>> annotation2valueGetter = new HashMap<>();
-		annotation2valueGetter.put(jakarta.inject.Named.class, a -> ((jakarta.inject.Named) a).value());
-		loadJavaxClass(
-				() -> annotation2valueGetter.put(javax.inject.Named.class, a -> ((javax.inject.Named) a).value()));
-		NAMED_ANNOTATION2VALUE_GETTER = Map.copyOf(annotation2valueGetter);
+	private static Function<Annotation, String> namedAnnotationValueGetter(
+			Class<? extends Annotation> annotationType) {
+		return NAMED_ANNOTATION2VALUE_GETTER2.computeIfAbsent(annotationType, type -> {
+			try {
+				// At runtime dynamically create the method-reference: 'foo.bar.Named::value'
+				// where 'foo.bar.Named' is the passed specific annotationType. Invoking the
+				// returned Function built from the method reference is much faster than using
+				// reflection.
+				MethodHandles.Lookup lookup = MethodHandles.lookup();
+				MethodType functionApplySignature = MethodType.methodType(String.class, type);
+				CallSite site = LambdaMetafactory.metafactory(lookup, "apply", //$NON-NLS-1$
+						MethodType.methodType(Function.class), functionApplySignature.erase(),
+						lookup.findVirtual(type, "value", MethodType.methodType(String.class)), //$NON-NLS-1$
+						functionApplySignature);
+				return (Function<Annotation, String>) site.getTarget().invokeExact();
+			} catch (Throwable e) {
+				throw new IllegalStateException(e);
+			}
+		});
 	}
 
-	private static List<Class<?>> getAvailableClasses(Class<?> jakartaClass, Supplier<? extends Class<?>> javaxClass) {
-		List<Class<?>> classes = new ArrayList<>();
-		classes.add(jakartaClass);
-		if (javaxClass != null) {
-			loadJavaxClass(() -> classes.add(javaxClass.get()));
-		}
-		return classes;
+	private static final Map<Class<? extends Annotation>, Function<Annotation, String>> NAMED_ANNOTATION2VALUE_GETTER2 = new ConcurrentHashMap<>();
+	private static final Set<String> NAMED_ANNOTATION_CLASSES = Set.of("jakarta.inject.Named", "javax.inject.Named"); //$NON-NLS-1$//$NON-NLS-2$
+	// TODO: warn about the javax-class?
+
+	private static List<String> getAvailableClasses(String jakartaClass, String javaxClass) {
+		return javaxClass != null && canLoadJavaxClass(javaxClass) //
+				? List.of(jakartaClass, javaxClass)
+				: List.of(jakartaClass);
 	}
 
 	private static boolean javaxWarningPrinted = false;
 
-	private static void loadJavaxClass(Runnable run) {
+	private static boolean canLoadJavaxClass(String className) {
 		try {
 			if (!getSystemPropertyFlag("eclipse.e4.inject.javax.disabled", false)) { //$NON-NLS-1$
-				run.run();
+				Class.forName(className); // fails if absent
 				if (!javaxWarningPrinted) {
 					if (getSystemPropertyFlag("eclipse.e4.inject.javax.warning", true)) { //$NON-NLS-1$
 						@SuppressWarnings("nls")
@@ -179,10 +191,12 @@ public class AnnotationLookup {
 					}
 					javaxWarningPrinted = true;
 				}
+				return true;
 			}
-		} catch (NoClassDefFoundError e) {
+		} catch (NoClassDefFoundError | ClassNotFoundException e) {
 			// Ignore exception: javax-annotation seems to be unavailable in the runtime
 		}
+		return false;
 	}
 
 	private static boolean getSystemPropertyFlag(String key, boolean defaultValue) {
