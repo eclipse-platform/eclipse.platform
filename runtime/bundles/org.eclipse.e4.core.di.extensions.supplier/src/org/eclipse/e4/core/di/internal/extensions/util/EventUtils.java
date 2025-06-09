@@ -55,8 +55,9 @@ final public class EventUtils {
 		} else {
 			Dictionary<String, Object> d = new Hashtable<>(2);
 			d.put(EventConstants.EVENT_TOPIC, topic);
-			if (data != null)
+			if (data != null) {
 				d.put(DATA, data);
+			}
 			event = new Event(topic, d);
 		}
 		return event;
