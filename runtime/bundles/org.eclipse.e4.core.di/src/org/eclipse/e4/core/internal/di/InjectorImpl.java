@@ -118,19 +118,22 @@ public class InjectorImpl implements IInjector {
 		// or constructor only), create a pseudo-link to track supplier's disposal
 		boolean haveLink = false;
 		for (Requestor<?> requestor : requestors) {
-			if (requestor.shouldTrack())
+			if (requestor.shouldTrack()) {
 				haveLink = true;
+			}
 		}
-		if (!haveLink)
+		if (!haveLink) {
 			requestors.add(new ClassRequestor(object.getClass(), this, objectSupplier, tempSupplier, object, true));
+		}
 
 		// Then ask suppliers to fill actual values {requestor, descriptor[], actualvalues[] }
 		resolveRequestorArgs(requestors, objectSupplier, tempSupplier, false, true, true);
 
 		// Call requestors in order
 		for (Requestor<?> requestor : requestors) {
-			if (requestor.isResolved())
+			if (requestor.isResolved()) {
 				requestor.execute();
+			}
 		}
 		rememberInjectedObject(object, objectSupplier);
 
@@ -177,8 +180,9 @@ public class InjectorImpl implements IInjector {
 	@Override
 	public void uninject(Object object, PrimaryObjectSupplier objectSupplier) {
 		try {
-			if (!forgetInjectedObject(object, objectSupplier))
+			if (!forgetInjectedObject(object, objectSupplier)) {
 				return; // not injected at this time
+			}
 			processAnnotated(AnnotationLookup.PRE_DESTROY, object, object.getClass(), objectSupplier, null,
 					new ArrayList<>(5));
 
@@ -192,9 +196,9 @@ public class InjectorImpl implements IInjector {
 				if (unresolved == -1) {
 					requestor.setResolvedArgs(actualArgs);
 					requestor.execute();
-				} else if (requestor.isOptional())
+				} else if (requestor.isOptional()) {
 					requestor.setResolvedArgs(null);
-				else if (shouldDebug) {
+				} else if (shouldDebug) {
 					StringBuilder tmp = new StringBuilder();
 					tmp.append("Uninjecting object \""); //$NON-NLS-1$
 					tmp.append(object.toString());
@@ -283,24 +287,27 @@ public class InjectorImpl implements IInjector {
 			boolean throwUnresolved, boolean initial, boolean track) {
 		Method[] methods = getDeclaredMethods(currentClass);
 		for (Method method : methods) {
-			if (method.getAnnotation(qualifier) == null)
+			if (method.getAnnotation(qualifier) == null) {
 				continue;
+			}
 			MethodRequestor requestor = new MethodRequestor(method, this, objectSupplier, tempSupplier, userObject,
 					track);
 
 			Object[] actualArgs = resolveArgs(requestor, objectSupplier, tempSupplier, false, initial, track);
 			int unresolved = unresolved(actualArgs);
 			if (unresolved != -1) {
-				if (throwUnresolved)
+				if (throwUnresolved) {
 					reportUnresolvedArgument(requestor, unresolved);
+				}
 				continue;
 			}
 			requestor.setResolvedArgs(actualArgs);
 			return requestor.execute();
 		}
 		Class<?> superClass = currentClass.getSuperclass();
-		if (superClass == null)
+		if (superClass == null) {
 			return defaultValue;
+		}
 
 		return invokeUsingClass(userObject, superClass, qualifier, defaultValue, objectSupplier, tempSupplier,
 				throwUnresolved, initial, track);
@@ -315,8 +322,9 @@ public class InjectorImpl implements IInjector {
 	private Class<?> getImplementationClass(Class<?> clazz) {
 		IObjectDescriptor descriptor = new ObjectDescriptor(clazz, null);
 		Binding binding = findBinding(descriptor);
-		if (binding == null)
+		if (binding == null) {
 			return getDesiredClass(descriptor.getDesiredType());
+		}
 		return binding.getImplementationClass();
 	}
 
@@ -329,32 +337,37 @@ public class InjectorImpl implements IInjector {
 	public Object makeFromProvider(IObjectDescriptor descriptor, PrimaryObjectSupplier objectSupplier) {
 		Binding binding = findBinding(descriptor);
 		Class<?> implementationClass;
-		if (binding == null)
+		if (binding == null) {
 			implementationClass = getProviderType(descriptor.getDesiredType());
-		else
+		} else {
 			implementationClass = binding.getImplementationClass();
+		}
 		if (objectSupplier != null) {
 			IObjectDescriptor actualClass = new ObjectDescriptor(implementationClass, null);
 			Object[] actualArgs = new Object[] {IInjector.NOT_A_VALUE};
 			objectSupplier.get(new IObjectDescriptor[] {actualClass}, actualArgs, null, false, true, false);
-			if (actualArgs[0] != IInjector.NOT_A_VALUE)
+			if (actualArgs[0] != IInjector.NOT_A_VALUE) {
 				return actualArgs[0];
+			}
 		}
 		return internalMake(implementationClass, objectSupplier, null);
 	}
 
 	private Object internalMake(Class<?> clazz, PrimaryObjectSupplier objectSupplier, PrimaryObjectSupplier tempSupplier) {
-		if (shouldDebug && classesBeingCreated.contains(clazz))
+		if (shouldDebug && classesBeingCreated.contains(clazz)) {
 			LogHelper.logWarning("Possible recursive reference trying to create class \"" + clazz.getName() + "\".", null); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		try {
-			if (shouldDebug)
+			if (shouldDebug) {
 				classesBeingCreated.add(clazz);
+			}
 
 			boolean isSingleton = isAnnotationPresent(clazz, AnnotationLookup.SINGLETON);
 			if (isSingleton) {
 				synchronized (singletonCache) {
-					if (singletonCache.containsKey(clazz))
+					if (singletonCache.containsKey(clazz)) {
 						return singletonCache.get(clazz);
+					}
 				}
 			}
 
@@ -367,8 +380,9 @@ public class InjectorImpl implements IInjector {
 			for (Constructor<?> constructor : sortedConstructors) {
 				// skip private and protected constructors; allow public and package visibility
 				int modifiers = constructor.getModifiers();
-				if (((modifiers & Modifier.PRIVATE) != 0) || ((modifiers & Modifier.PROTECTED) != 0))
+				if (((modifiers & Modifier.PRIVATE) != 0) || ((modifiers & Modifier.PROTECTED) != 0)) {
 					continue;
+				}
 
 				// unless this is the default constructor, it has to be tagged
 				if (!isAnnotationPresent(constructor, AnnotationLookup.INJECT)
@@ -377,8 +391,9 @@ public class InjectorImpl implements IInjector {
 				}
 				ConstructorRequestor requestor = new ConstructorRequestor(constructor, this, objectSupplier, tempSupplier);
 				Object[] actualArgs = resolveArgs(requestor, objectSupplier, tempSupplier, false, true, false);
-				if (unresolved(actualArgs) != -1)
+				if (unresolved(actualArgs) != -1) {
 					continue;
+				}
 				requestor.setResolvedArgs(actualArgs);
 
 				Object newInstance = requestor.execute();
@@ -396,8 +411,9 @@ public class InjectorImpl implements IInjector {
 		} catch (NoClassDefFoundError | NoSuchMethodError e) {
 			throw new InjectionException(e);
 		} finally {
-			if (shouldDebug)
+			if (shouldDebug) {
 				classesBeingCreated.remove(clazz);
+			}
 		}
 	}
 
@@ -405,11 +421,11 @@ public class InjectorImpl implements IInjector {
 		Requestor<?> internalRequestor = ((Requestor<?>) requestor);
 		Object[] actualArgs = resolveArgs(internalRequestor, internalRequestor.getPrimarySupplier(), internalRequestor.getTempSupplier(), false, initial, internalRequestor.shouldTrack());
 		int unresolved = unresolved(actualArgs);
-		if (unresolved == -1)
+		if (unresolved == -1) {
 			internalRequestor.setResolvedArgs(actualArgs);
-		else if (internalRequestor.isOptional())
+		} else if (internalRequestor.isOptional()) {
 			internalRequestor.setResolvedArgs(null);
-		else {
+		} else {
 			String msg = resolutionError(internalRequestor, unresolved);
 			LogHelper.logError(msg, null);
 		}
@@ -417,8 +433,9 @@ public class InjectorImpl implements IInjector {
 
 	public void disposed(PrimaryObjectSupplier objectSupplier) {
 		Set<IdentityWeakReference<?>> references = getSupplierObjects(objectSupplier);
-		if (references == null)
+		if (references == null) {
 			return;
+		}
 		Object[] objects = new Object[references.size()];
 		int count = 0;
 		for (WeakReference<?> ref : references) {
@@ -430,8 +447,9 @@ public class InjectorImpl implements IInjector {
 		}
 		for (int i = 0; i < count; i++) {
 			Object object = objects[i];
-			if (!forgetInjectedObject(object, objectSupplier))
+			if (!forgetInjectedObject(object, objectSupplier)) {
 				continue; // not injected at this time
+			}
 			processAnnotated(AnnotationLookup.PRE_DESTROY, object, object.getClass(), objectSupplier, null,
 					new ArrayList<>(5));
 		}
@@ -447,10 +465,11 @@ public class InjectorImpl implements IInjector {
 				continue;
 			}
 
-			if (requestor.isOptional())
+			if (requestor.isOptional()) {
 				requestor.setResolvedArgs(null);
-			else
+			} else {
 				reportUnresolvedArgument(requestor, unresolved);
+			}
 		}
 	}
 
@@ -495,11 +514,13 @@ public class InjectorImpl implements IInjector {
 
 		// 2) try extended suppliers
 		for (int i = 0; i < actualArgs.length; i++) {
-			if (actualArgs[i] != NOT_A_VALUE)
+			if (actualArgs[i] != NOT_A_VALUE) {
 				continue; // already resolved
+			}
 			ExtendedObjectSupplier extendedSupplier = findExtendedSupplier(descriptors[i]);
-			if (extendedSupplier == null)
+			if (extendedSupplier == null) {
 				continue;
+			}
 			actualArgs[i] = extendedSupplier.get(descriptors[i], requestor, requestor.shouldTrack() && track, requestor.shouldGroupUpdates());
 			if (actualArgs[i] == NOT_A_VALUE) {
 				// Use special marker to prevent these annotated arguments from being resolved using temporary and primary suppliers
@@ -508,34 +529,41 @@ public class InjectorImpl implements IInjector {
 		}
 
 		// 3) use the temporary supplier
-		if (tempSupplier != null)
+		if (tempSupplier != null) {
 			tempSupplier.get(descriptors, actualArgs, requestor, initial, false /* no tracking */, requestor.shouldGroupUpdates());
+		}
 
 		// 4) use the primary supplier
-		if (objectSupplier != null)
+		if (objectSupplier != null) {
 			objectSupplier.get(descriptors, actualArgs, requestor, initial, requestor.shouldTrack() && track, requestor.shouldGroupUpdates());
+		}
 
 		// 5) try the bindings
 		for (int i = 0; i < actualArgs.length; i++) {
-			if (actualArgs[i] != NOT_A_VALUE)
+			if (actualArgs[i] != NOT_A_VALUE) {
 				continue; // already resolved
+			}
 			Binding binding = findBinding(descriptors[i]);
-			if (binding != null)
+			if (binding != null) {
 				actualArgs[i] = internalMake(binding.getImplementationClass(), objectSupplier, tempSupplier);
+			}
 		}
 
 		// 5) create simple classes (implied bindings) - unless we uninject or optional
 		if (!uninject && !requestor.isOptional()) {
 			for (int i = 0; i < actualArgs.length; i++) {
-				if (actualArgs[i] != NOT_A_VALUE)
+				if (actualArgs[i] != NOT_A_VALUE) {
 					continue; // already resolved
-				if (descriptors[i].hasQualifier(Optional.class))
+				}
+				if (descriptors[i].hasQualifier(Optional.class)) {
 					continue;
+				}
 				try {
 					Class<?> desiredClass = getDesiredClass(descriptors[i].getDesiredType());
 					Creatable creatableAnnotation = desiredClass.getAnnotation(Creatable.class);
-					if (creatableAnnotation == null)
+					if (creatableAnnotation == null) {
 						continue;
+					}
 					actualArgs[i] = internalMake(getDesiredClass(descriptors[i].getDesiredType()), objectSupplier, tempSupplier);
 				} catch (InjectionException e) {
 					e.printStackTrace();
@@ -549,48 +577,52 @@ public class InjectorImpl implements IInjector {
 			if (actualArgs[i] != null && actualArgs[i] != IInjector.NOT_A_VALUE && actualArgs[i] != EOS_NOT_A_VALUE) {
 				Class<?> descriptorsClass = getDesiredClass(descriptors[i].getDesiredType());
 				if (descriptorsClass.isPrimitive()) { // support type autoboxing
-					if (descriptorsClass.equals(boolean.class))
+					if (descriptorsClass.equals(boolean.class)) {
 						descriptorsClass = Boolean.class;
-					else if (descriptorsClass.equals(int.class))
+					} else if (descriptorsClass.equals(int.class)) {
 						descriptorsClass = Integer.class;
-					else if (descriptorsClass.equals(char.class))
+					} else if (descriptorsClass.equals(char.class)) {
 						descriptorsClass = Character.class;
-					else if (descriptorsClass.equals(float.class))
+					} else if (descriptorsClass.equals(float.class)) {
 						descriptorsClass = Float.class;
-					else if (descriptorsClass.equals(double.class))
+					} else if (descriptorsClass.equals(double.class)) {
 						descriptorsClass = Double.class;
-					else if (descriptorsClass.equals(long.class))
+					} else if (descriptorsClass.equals(long.class)) {
 						descriptorsClass = Long.class;
-					else if (descriptorsClass.equals(short.class))
+					} else if (descriptorsClass.equals(short.class)) {
 						descriptorsClass = Short.class;
-					else if (descriptorsClass.equals(byte.class))
+					} else if (descriptorsClass.equals(byte.class)) {
 						descriptorsClass = Byte.class;
+					}
 				}
-				if (!descriptorsClass.isAssignableFrom(actualArgs[i].getClass()))
+				if (!descriptorsClass.isAssignableFrom(actualArgs[i].getClass())) {
 					actualArgs[i] = IInjector.NOT_A_VALUE;
+				}
 			}
 			if (actualArgs[i] == IInjector.NOT_A_VALUE || actualArgs[i] == EOS_NOT_A_VALUE) { // still unresolved?
 				if (descriptors[i].hasQualifier(Optional.class)) { // uninject or optional - fill defaults
 					Class<?> descriptorsClass = getDesiredClass(descriptors[i].getDesiredType());
 					if (descriptorsClass.isPrimitive()) {
-						if (descriptorsClass.equals(boolean.class))
+						if (descriptorsClass.equals(boolean.class)) {
 							actualArgs[i] = DEFAULT_BOOLEAN;
-						else if (descriptorsClass.equals(int.class))
+						} else if (descriptorsClass.equals(int.class)) {
 							actualArgs[i] = DEFAULT_INTEGER;
-						else if (descriptorsClass.equals(char.class))
+						} else if (descriptorsClass.equals(char.class)) {
 							actualArgs[i] = DEFAULT_CHAR;
-						else if (descriptorsClass.equals(float.class))
+						} else if (descriptorsClass.equals(float.class)) {
 							actualArgs[i] = DEFAULT_FLOAT;
-						else if (descriptorsClass.equals(double.class))
+						} else if (descriptorsClass.equals(double.class)) {
 							actualArgs[i] = DEFAULT_DOUBLE;
-						else if (descriptorsClass.equals(long.class))
+						} else if (descriptorsClass.equals(long.class)) {
 							actualArgs[i] = DEFAULT_LONG;
-						else if (descriptorsClass.equals(short.class))
+						} else if (descriptorsClass.equals(short.class)) {
 							actualArgs[i] = DEFAULT_SHORT;
-						else if (descriptorsClass.equals(byte.class))
+						} else if (descriptorsClass.equals(byte.class)) {
 							actualArgs[i] = DEFAULT_BYTE;
-					} else
+						}
+					} else {
 						actualArgs[i] = null;
+					}
 				} else if (actualArgs[i] == EOS_NOT_A_VALUE) {
 					// Wasn't @Optional, so replace with NOT_A_VALUE
 					actualArgs[i] = IInjector.NOT_A_VALUE;
@@ -602,8 +634,9 @@ public class InjectorImpl implements IInjector {
 
 	private ExtendedObjectSupplier findExtendedSupplier(IObjectDescriptor descriptor) {
 		Annotation[] qualifiers = descriptor.getQualifiers();
-		if (qualifiers == null)
+		if (qualifiers == null) {
 			return null;
+		}
 		for (Annotation qualifier : qualifiers) {
 			Class<?> type = qualifier.annotationType();
 			String key = ((Class<?>) type).getName();
@@ -615,16 +648,18 @@ public class InjectorImpl implements IInjector {
 			} catch (NoClassDefFoundError e) {
 				return null; // OSGi framework not present
 			}
-			if (supplier != null)
+			if (supplier != null) {
 				return supplier;
+			}
 		}
 		return null;
 	}
 
 	private int unresolved(Object[] actualArgs) {
 		for (int i = 0; i < actualArgs.length; i++) {
-			if (actualArgs[i] == IInjector.NOT_A_VALUE)
+			if (actualArgs[i] == IInjector.NOT_A_VALUE) {
 				return i;
+			}
 		}
 		return -1;
 	}
@@ -655,8 +690,9 @@ public class InjectorImpl implements IInjector {
 			injectedStaticMethods = processMethods(userObject, objectSupplier, tempSupplier, objectsClass, classHierarchy, track, requestors);
 			injectedStaticFields = processFields(userObject, objectSupplier, tempSupplier, objectsClass, track, requestors);
 		}
-		if (injectedStaticFields || injectedStaticMethods)
+		if (injectedStaticFields || injectedStaticMethods) {
 			rememberInjectedStatic(objectsClass);
+		}
 	}
 
 	private boolean hasInjectedStatic(Class<?> objectsClass) {
@@ -679,8 +715,9 @@ public class InjectorImpl implements IInjector {
 		Field[] fields = getDeclaredFields(objectsClass);
 		for (Field field : fields) {
 			if (Modifier.isStatic(field.getModifiers())) {
-				if (hasInjectedStatic(objectsClass))
+				if (hasInjectedStatic(objectsClass)) {
 					continue;
+				}
 				injectedStatic = true;
 			}
 			if (!isAnnotationPresent(field, AnnotationLookup.INJECT)) {
@@ -738,10 +775,12 @@ public class InjectorImpl implements IInjector {
 	 */
 	private boolean isOverridden(Method method, List<Class<?>> classHierarchy) {
 		int modifiers = method.getModifiers();
-		if (Modifier.isPrivate(modifiers))
+		if (Modifier.isPrivate(modifiers)) {
 			return false;
-		if (Modifier.isStatic(modifiers))
+		}
+		if (Modifier.isStatic(modifiers)) {
 			return false;
+		}
 		// method is not private if we reached this line, check not(public OR protected)
 		boolean isDefault = !(Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers));
 
@@ -752,37 +791,46 @@ public class InjectorImpl implements IInjector {
 			Method[] methods = getDeclaredMethods(subClass);
 			Method matchingMethod = null;
 			for (Method candidate : methods) {
-				if (!methodName.equals(candidate.getName()))
+				if (!methodName.equals(candidate.getName())) {
 					continue;
+				}
 				Class<?>[] candidateParams = candidate.getParameterTypes();
-				if (candidateParams.length != methodParamsLength)
+				if (candidateParams.length != methodParamsLength) {
 					continue;
+				}
 				boolean paramsMatch = true;
 				for (int i = 0; i < methodParamsLength; i++) {
-					if (candidateParams[i].equals(methodParams[i])) // strictly speaking, need to add erasures
+					if (candidateParams[i].equals(methodParams[i])) { // strictly speaking, need to add erasures
 						continue;
+					}
 					paramsMatch = false;
 				}
-				if (!paramsMatch)
+				if (!paramsMatch) {
 					continue;
+				}
 				matchingMethod = candidate;
 				break;
 			}
-			if (matchingMethod == null)
+			if (matchingMethod == null) {
 				continue;
+			}
 
 			if (isDefault) { // must be in the same package to override
 				Package originalPackage = method.getDeclaringClass().getPackage();
 				Package overridePackage = subClass.getPackage();
 
-				if (originalPackage == null && overridePackage == null)
+				if (originalPackage == null && overridePackage == null) {
 					return true;
-				if (originalPackage == null || overridePackage == null)
+				}
+				if (originalPackage == null || overridePackage == null) {
 					return false;
-				if (originalPackage.equals(overridePackage))
+				}
+				if (originalPackage.equals(overridePackage)) {
 					return true;
-			} else
+				}
+			} else {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -824,12 +872,14 @@ public class InjectorImpl implements IInjector {
 	}
 
 	private Class<?> getDesiredClass(Type desiredType) {
-		if (desiredType instanceof Class<?>)
+		if (desiredType instanceof Class<?>) {
 			return (Class<?>) desiredType;
+		}
 		if (desiredType instanceof ParameterizedType) {
 			Type rawType = ((ParameterizedType) desiredType).getRawType();
-			if (rawType instanceof Class<?>)
+			if (rawType instanceof Class<?>) {
 				return (Class<?>) rawType;
+			}
 		}
 		return null;
 	}
@@ -838,17 +888,20 @@ public class InjectorImpl implements IInjector {
 	 * Returns null if not a provider
 	 */
 	private Class<?> getProviderType(Type type) {
-		if (!(type instanceof ParameterizedType))
+		if (!(type instanceof ParameterizedType)) {
 			return null;
+		}
 		Type rawType = ((ParameterizedType) type).getRawType();
 		if (!AnnotationLookup.isProvider(rawType)) {
 			return null;
 		}
 		Type[] actualTypes = ((ParameterizedType) type).getActualTypeArguments();
-		if (actualTypes.length != 1)
+		if (actualTypes.length != 1) {
 			return null;
-		if (!(actualTypes[0] instanceof Class<?>))
+		}
+		if (!(actualTypes[0] instanceof Class<?>)) {
 			return null;
+		}
 		return (Class<?>) actualTypes[0];
 	}
 
@@ -884,8 +937,9 @@ public class InjectorImpl implements IInjector {
 
 	private Binding findBinding(IObjectDescriptor descriptor) {
 		Class<?> desiredClass = getProviderType(descriptor.getDesiredType());
-		if (desiredClass == null)
+		if (desiredClass == null) {
 			desiredClass = getDesiredClass(descriptor.getDesiredType());
+		}
 		synchronized (bindings) {
 			Set<Binding> collection = bindings.get(desiredClass);
 			if (collection == null) {
@@ -903,17 +957,20 @@ public class InjectorImpl implements IInjector {
 			}
 
 			for (Binding collectionBinding : collection) {
-				if (eq(collectionBinding.getQualifierName(), desiredQualifierName))
+				if (eq(collectionBinding.getQualifierName(), desiredQualifierName)) {
 					return collectionBinding;
+				}
 			}
 			desiredQualifierName = desiredClass.getName();
 			for (Binding collectionBinding : collection) {
 				Class<?> bindingClass = collectionBinding.getDescribedClass();
-				if (bindingClass == null)
+				if (bindingClass == null) {
 					continue;
+				}
 				String simpleClassName = bindingClass.getName();
-				if (eq(simpleClassName, desiredQualifierName))
+				if (eq(simpleClassName, desiredQualifierName)) {
 					return collectionBinding;
+				}
 			}
 		}
 		return null;
@@ -923,10 +980,12 @@ public class InjectorImpl implements IInjector {
 	 * Are two, possibly null, string equal?
 	 */
 	private boolean eq(String str1, String str2) {
-		if (str1 == null && str2 == null)
+		if (str1 == null && str2 == null) {
 			return true;
-		if (str1 == null || str2 == null)
+		}
+		if (str1 == null || str2 == null) {
 			return false;
+		}
 		return str1.equals(str2);
 	}
 
@@ -961,8 +1020,9 @@ public class InjectorImpl implements IInjector {
 				}
 				continue;
 			}
-			if (isOverridden(method, classHierarchy))
+			if (isOverridden(method, classHierarchy)) {
 				continue;
+			}
 
 			MethodRequestor requestor = new MethodRequestor(method, this, objectSupplier, tempSupplier, userObject, false);
 			Object[] actualArgs = resolveArgs(requestor, objectSupplier, tempSupplier, false, false, false);

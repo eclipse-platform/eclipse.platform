@@ -33,10 +33,12 @@ public class CoreLogger {
 	}
 
 	static private void baseLog(String msg, Throwable e) {
-		if (msg != null)
+		if (msg != null) {
 			System.err.println(msg);
-		if (e != null)
+		}
+		if (e != null) {
 			e.printStackTrace();
+		}
 	}
 
 }

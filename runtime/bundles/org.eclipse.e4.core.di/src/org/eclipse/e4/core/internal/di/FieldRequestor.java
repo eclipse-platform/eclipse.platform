@@ -27,8 +27,9 @@ public class FieldRequestor extends Requestor<Field> {
 
 	@Override
 	public Object execute() throws InjectionException {
-		if (actualArgs == null)
+		if (actualArgs == null) {
 			return null; // optional field
+		}
 		setField(location, actualArgs[0]);
 		clearResolvedArgs();
 		return null;
@@ -42,8 +43,9 @@ public class FieldRequestor extends Requestor<Field> {
 
 	private boolean setField(Field field, Object value) throws InjectionException {
 		Object userObject = getRequestingObject();
-		if (userObject == null)
+		if (userObject == null) {
 			return false;
+		}
 		try {
 			field.trySetAccessible();
 			field.set(userObject, value);
@@ -57,8 +59,9 @@ public class FieldRequestor extends Requestor<Field> {
 	public String toString() {
 		StringBuilder tmp = new StringBuilder();
 		Object object = getRequestingObject();
-		if (object != null)
+		if (object != null) {
 			tmp.append(object.getClass().getSimpleName());
+		}
 		tmp.append('.');
 		tmp.append(location.getName());
 		return tmp.toString();

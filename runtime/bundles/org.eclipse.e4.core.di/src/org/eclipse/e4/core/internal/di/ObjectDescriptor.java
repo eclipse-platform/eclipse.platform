@@ -36,13 +36,16 @@ public class ObjectDescriptor implements IObjectDescriptor {
 
 	@Override
 	public boolean hasQualifier(Class<? extends Annotation> clazz) {
-		if (clazz == null)
+		if (clazz == null) {
 			return false;
-		if (annotations == null)
+		}
+		if (annotations == null) {
 			return false;
+		}
 		for (Annotation annotation : annotations) {
-			if (annotation.annotationType().equals(clazz))
+			if (annotation.annotationType().equals(clazz)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -57,13 +60,16 @@ public class ObjectDescriptor implements IObjectDescriptor {
 	 */
 	@Override
 	public <T extends Annotation> T getQualifier(Class<T> clazz) {
-		if (clazz == null)
+		if (clazz == null) {
 			return null;
-		if (annotations == null)
+		}
+		if (annotations == null) {
 			return null;
+		}
 		for (Annotation annotation : annotations) {
-			if (annotation.annotationType().equals(clazz))
+			if (annotation.annotationType().equals(clazz)) {
 				return clazz.cast(annotation);
+			}
 		}
 		return null;
 	}
@@ -71,18 +77,20 @@ public class ObjectDescriptor implements IObjectDescriptor {
 	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder();
-		if (desiredType instanceof Class<?>)
+		if (desiredType instanceof Class<?>) {
 			buffer.append(((Class<?>) desiredType).getSimpleName());
-		else if (desiredType != null)
+		} else if (desiredType != null) {
 			buffer.append(desiredType);
+		}
 		if (annotations != null) {
 			buffer.append('[');
 			boolean first = true;
 			for (Annotation annotation : annotations) {
-				if (first)
+				if (first) {
 					first = false;
-				else
+				} else {
 					buffer.append(',');
+				}
 				buffer.append(annotation.toString());
 			}
 			buffer.append(']');
@@ -91,8 +99,9 @@ public class ObjectDescriptor implements IObjectDescriptor {
 	}
 
 	private Annotation[] qualifiers(Annotation[] allAnnotations) {
-		if (allAnnotations.length == 0)
+		if (allAnnotations.length == 0) {
 			return null;
+		}
 		Annotation[] result;
 		List<Annotation> qualifiers = new ArrayList<>();
 		for (Annotation annotation : allAnnotations) {
@@ -100,8 +109,9 @@ public class ObjectDescriptor implements IObjectDescriptor {
 				qualifiers.add(annotation);
 			}
 		}
-		if (qualifiers.isEmpty())
+		if (qualifiers.isEmpty()) {
 			return null;
+		}
 		result = new Annotation[qualifiers.size()];
 		qualifiers.toArray(result);
 		return result;
