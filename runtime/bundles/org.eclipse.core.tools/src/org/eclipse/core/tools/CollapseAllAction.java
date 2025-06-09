@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 public class CollapseAllAction extends Action {
 
 	private static final String label = "Collapse All"; //$NON-NLS-1$
-	private TreeViewer viewer;
+	private final TreeViewer viewer;
 
 	public CollapseAllAction(TreeViewer viewer) {
 		super(label);

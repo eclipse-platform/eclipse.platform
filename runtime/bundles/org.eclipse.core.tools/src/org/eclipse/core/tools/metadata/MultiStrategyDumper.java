@@ -55,16 +55,18 @@ public abstract class MultiStrategyDumper extends AbstractDumper {
 			input.unread(c);
 			IStringDumpingStrategy strategy = getStringDumpingStrategy(dataInput);
 			String dumpedContents = strategy.dumpStringContents(dataInput);
-			if (dumpedContents == null)
+			if (dumpedContents == null) {
 				break;
+			}
 			contents.append("Format: "); //$NON-NLS-1$
 			contents.append(strategy.getFormatDescription());
 			contents.append("\n\n"); //$NON-NLS-1$
 			contents.append(dumpedContents);
 			contents.append("\n"); //$NON-NLS-1$
 		}
-		if (contents.length() == 0)
+		if (contents.length() == 0) {
 			contents.append("No contents\n"); //$NON-NLS-1$
+		}
 	}
 
 	/**

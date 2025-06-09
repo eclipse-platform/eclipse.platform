@@ -93,8 +93,9 @@ public class MessageBundleRefactoring extends Refactoring {
 				RefactoringScopeFactory.create(fAccessorClass), Policy.subMonitorFor(monitor, 5), result);
 		monitor.beginTask("", affectedUnits.length + 1);
 		for (ICompilationUnit unit : affectedUnits) {
-			if (unit.equals(fAccessorClass.getCompilationUnit()))
+			if (unit.equals(fAccessorClass.getCompilationUnit())) {
 				continue;
+			}
 			processCompilationUnit(result, unit, Policy.subMonitorFor(monitor, 1));
 		}
 		processPropertiesFile(result, Policy.subMonitorFor(monitor, 1));
@@ -150,25 +151,29 @@ public class MessageBundleRefactoring extends Refactoring {
 			@Override
 			public boolean visit(MethodInvocation node) {
 				Name messageBundleName = getMessageBundleReceiver(node);
-				if (messageBundleName == null)
+				if (messageBundleName == null) {
 					return true;
+				}
 				IMethodBinding method = node.resolveMethodBinding();
 				// TODO here we have to do some checks whether the called method on the
 				// resource bundle is something we have to rewrite. This depends on
 				// the kind of the bundle and needs some AI.
 				ITypeBinding[] params = method.getParameterTypes();
-				if (params.length == 0)
+				if (params.length == 0) {
 					return true;
-				if (!"java.lang.String".equals(params[0].getQualifiedName()))
+				}
+				if (!"java.lang.String".equals(params[0].getQualifiedName())) {
 					return true;
+				}
 				List<Expression> args = node.arguments();
-				if (args.size() != 1)
+				if (args.size() != 1) {
 					return true;
+				}
 				Expression obj = args.get(0);
-				if (!(obj instanceof StringLiteral))
+				if (!(obj instanceof StringLiteral string)) {
 					return true;
+				}
 				// compute the key of the message property
-				StringLiteral string = (StringLiteral) obj;
 				String key = PropertyFileConverter.convertToJavaIdentifier(string.getLiteralValue());
 
 				// create the field access object
@@ -187,8 +192,9 @@ public class MessageBundleRefactoring extends Refactoring {
 
 			private Name getMessageBundleReceiver(MethodInvocation node) {
 				Expression expression = node.getExpression();
-				if (expression == null)
+				if (expression == null) {
 					return null;
+				}
 				if (expression instanceof Name && Bindings.equals(fAccessorTypeBinding, ((Name) expression).resolveBinding())) {
 					return (Name) expression;
 				}

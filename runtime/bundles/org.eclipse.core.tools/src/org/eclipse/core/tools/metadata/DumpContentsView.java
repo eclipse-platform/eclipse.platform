@@ -132,8 +132,9 @@ public class DumpContentsView extends SpyView {
 
 		// now it is safe to get the part title
 		// (during createPartControl it gets Workbench window title)
-		if (initialTitle == null)
+		if (initialTitle == null) {
 			this.initialTitle = this.getTitle();
+		}
 
 		// updates title and title tool tip
 		this.setContentDescription(initialTitle + " : " + this.currentFile.getName()); //$NON-NLS-1$
@@ -150,16 +151,18 @@ public class DumpContentsView extends SpyView {
 		DumpSummaryView summaryView = (DumpSummaryView) page.findView(summaryId);
 
 		// if it is not the case and the dump failed, tries to open it
-		if (summaryView == null && dump.isFailed())
+		if (summaryView == null && dump.isFailed()) {
 			try {
 				summaryView = (DumpSummaryView) page.showView(summaryId);
 			} catch (PartInitException pie) {
 				ErrorUtil.logException(pie, "Error opening view"); //$NON-NLS-1$
 			}
+		}
 
 		// if the Dump Summary view is available, updates it
-		if (summaryView != null)
+		if (summaryView != null) {
 			summaryView.load(dump);
+		}
 	}
 
 	/**
@@ -189,8 +192,9 @@ public class DumpContentsView extends SpyView {
 
 			// if a file hasn't been selected, ignore
 			String filePath = fileDialog.open();
-			if (filePath == null)
+			if (filePath == null) {
 				return;
+			}
 
 			// opens the selected file
 			DumpContentsView.this.setFile(new File(filePath));

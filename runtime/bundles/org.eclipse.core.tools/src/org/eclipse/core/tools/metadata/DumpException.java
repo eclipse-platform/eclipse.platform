@@ -83,8 +83,9 @@ public class DumpException extends Exception {
 	@Override
 	public void printStackTrace(PrintStream output) {
 		super.printStackTrace(output);
-		if (cause == null)
+		if (cause == null) {
 			return;
+		}
 		output.println("*** Caused by:"); //$NON-NLS-1$
 		cause.printStackTrace(output);
 	}
@@ -99,8 +100,9 @@ public class DumpException extends Exception {
 	@Override
 	public void printStackTrace(PrintWriter output) {
 		super.printStackTrace(output);
-		if (cause == null)
+		if (cause == null) {
 			return;
+		}
 		output.println("*** Caused by:"); //$NON-NLS-1$
 		cause.printStackTrace(output);
 	}

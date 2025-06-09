@@ -111,8 +111,9 @@ public class MetadataTreeContentProvider extends AbstractTreeContentProvider {
 				return Status.OK_STATUS;
 			} finally {
 				final Viewer tmpViewer = viewer;
-				if (!tmpViewer.getControl().isDisposed())
+				if (!tmpViewer.getControl().isDisposed()) {
 					tmpViewer.getControl().getDisplay().asyncExec(() -> tmpViewer.refresh());
+				}
 			}
 		}
 
@@ -141,8 +142,9 @@ public class MetadataTreeContentProvider extends AbstractTreeContentProvider {
 	 */
 	boolean extractInfo(File dir, TreeContentProviderNode dirNode, IProgressMonitor monitor) {
 
-		if (monitor.isCanceled())
+		if (monitor.isCanceled()) {
 			return false;
+		}
 
 		TreeContentProviderNode childNode;
 
@@ -164,9 +166,10 @@ public class MetadataTreeContentProvider extends AbstractTreeContentProvider {
 			for (File subDir : subDirs) {
 				// constructs a node for each subdir...
 				childNode = makeNode(subDir);
-				if (extractInfo(subDir, childNode, Policy.subMonitorFor(monitor, 98 / subDirs.length)))
+				if (extractInfo(subDir, childNode, Policy.subMonitorFor(monitor, 98 / subDirs.length))) {
 					// ...but only adds them if they have files of registered types
 					dirNode.addChild(childNode);
+				}
 			}
 			// returns true if this dir has any file of any registered type
 			return selectedFiles.length > 0 || dirNode.hasChildren();

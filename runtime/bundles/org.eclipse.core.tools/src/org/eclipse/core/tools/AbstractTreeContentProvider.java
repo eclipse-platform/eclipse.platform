@@ -66,10 +66,10 @@ public abstract class AbstractTreeContentProvider implements ITreeContentProvide
 	 */
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (!(parentElement instanceof TreeContentProviderNode))
+		if (!(parentElement instanceof TreeContentProviderNode treeNode)) {
 			return null;
+		}
 
-		TreeContentProviderNode treeNode = (TreeContentProviderNode) parentElement;
 		return treeNode.getChildren();
 	}
 
@@ -84,10 +84,10 @@ public abstract class AbstractTreeContentProvider implements ITreeContentProvide
 	 */
 	@Override
 	public Object getParent(Object element) {
-		if (!(element instanceof TreeContentProviderNode))
+		if (!(element instanceof TreeContentProviderNode treeNode)) {
 			return null;
+		}
 
-		TreeContentProviderNode treeNode = (TreeContentProviderNode) element;
 		return treeNode.getParent();
 	}
 
@@ -114,8 +114,9 @@ public abstract class AbstractTreeContentProvider implements ITreeContentProvide
 	 */
 	@Override
 	public Object[] getElements(Object inputElement) {
-		if (rootNode == null)
+		if (rootNode == null) {
 			return new Object[0];
+		}
 
 		return omitRoot ? rootNode.getChildren() : new Object[] {rootNode};
 	}
@@ -175,8 +176,9 @@ public abstract class AbstractTreeContentProvider implements ITreeContentProvide
 			return;
 		}
 
-		if (!acceptInput(input))
+		if (!acceptInput(input)) {
 			return;
+		}
 
 		rootNode = createNode("root"); //$NON-NLS-1$
 		rebuild(viewer, input);

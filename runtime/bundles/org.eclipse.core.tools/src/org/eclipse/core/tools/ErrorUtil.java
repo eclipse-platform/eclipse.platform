@@ -31,8 +31,9 @@ public class ErrorUtil {
 	 * @param userMessage an optional  higher-level explanation for the exception
 	 */
 	public static void logException(Exception exception, String userMessage) {
-		if (userMessage == null)
+		if (userMessage == null) {
 			userMessage = exception.getMessage();
+		}
 		IStatus status = new Status(IStatus.ERROR, ErrorUtil.class, -1, userMessage, exception);
 		ILog.of(ErrorUtil.class).log(status);
 	}
@@ -44,8 +45,9 @@ public class ErrorUtil {
 	 */
 	public static void showErrorMessage(String message, String title) {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		if (title == null)
+		if (title == null) {
 			title = "Error in Spy plug-in"; //$NON-NLS-1$
+		}
 		MessageDialog.openError(shell, title, message);
 	}
 }

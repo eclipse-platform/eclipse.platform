@@ -78,8 +78,9 @@ public abstract class TableWithTotalView extends ViewPart implements ISelectionP
 					// Three state sort for column 0.  !flat/!reverse -> flat/!reverse -> flat/reverse
 					if (column == 0) {
 						if (flat) {
-							if (oldSorter.isReversed())
+							if (oldSorter.isReversed()) {
 								flat = false;
+							}
 							oldSorter.setReversed(!oldSorter.isReversed());
 						} else {
 							flat = true;
@@ -90,8 +91,9 @@ public abstract class TableWithTotalView extends ViewPart implements ISelectionP
 						oldSorter.setReversed(!oldSorter.isReversed());
 					}
 				}
-				if (viewer.getContentProvider() instanceof IFlattable)
+				if (viewer.getContentProvider() instanceof IFlattable) {
 					((IFlattable) viewer.getContentProvider()).setFlat(flat);
+				}
 				viewer.refresh();
 				viewer.setSelection(selection);
 			}
@@ -199,15 +201,17 @@ public abstract class TableWithTotalView extends ViewPart implements ISelectionP
 				IStructuredSelection selection = viewer.getStructuredSelection();
 				String result = ""; //$NON-NLS-1$
 				String[] columnHeaders = getColumnHeaders();
-				for (String columnHeader : columnHeaders)
+				for (String columnHeader : columnHeaders) {
 					result += columnHeader + ","; //$NON-NLS-1$
+				}
 				result += "\n\n"; //$NON-NLS-1$
 
 				ITableLabelProvider labelProvider = (ITableLabelProvider) viewer.getLabelProvider();
 				for (Iterator<?> iterator = selection.iterator(); iterator.hasNext();) {
 					Object selectedItem = iterator.next();
-					for (int i = 0; i < columnHeaders.length; i++)
+					for (int i = 0; i < columnHeaders.length; i++) {
 						result += labelProvider.getColumnText(selectedItem, i) + ","; //$NON-NLS-1$
+					}
 					result += "\n"; //$NON-NLS-1$
 				}
 				clipboard.setContents(new Object[] {result}, new Transfer[] {TextTransfer.getInstance()});
@@ -268,7 +272,8 @@ public abstract class TableWithTotalView extends ViewPart implements ISelectionP
 
 	@Override
 	public void setFocus() {
-		if (tableTree != null)
+		if (tableTree != null) {
 			tableTree.setFocus();
+		}
 	}
 }

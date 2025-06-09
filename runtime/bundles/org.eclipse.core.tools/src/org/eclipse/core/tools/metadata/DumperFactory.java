@@ -43,8 +43,9 @@ public class DumperFactory {
 	 */
 	public synchronized static DumperFactory getInstance() {
 		// currently we allow only one instance for this class
-		if (ref == null)
+		if (ref == null) {
 			ref = new DumperFactory();
+		}
 		return ref;
 	}
 
@@ -60,9 +61,11 @@ public class DumperFactory {
 		IExtensionPoint dumpersPoint = Platform.getExtensionRegistry().getExtensionPoint(TOOLS_EXTENSION_POINT,
 				PT_METADATA_DUMPERS);
 		IConfigurationElement[] dumperDefinitions = dumpersPoint.getConfigurationElements();
-		for (IConfigurationElement dumperDefinition : dumperDefinitions)
-			if (dumperDefinition.getName().equals(ELEM_DUMPER))
+		for (IConfigurationElement dumperDefinition : dumperDefinitions) {
+			if (dumperDefinition.getName().equals(ELEM_DUMPER)) {
 				configuration.put(dumperDefinition.getAttribute(ATTR_FILE_NAME), dumperDefinition);
+			}
+		}
 	}
 
 	/**
@@ -96,12 +99,13 @@ public class DumperFactory {
 			throw new DumpException(NO_DUMPER_MSG);
 		}
 		// legacy-style definition (from the properties file)
-		if (dumper instanceof String)
+		if (dumper instanceof String) {
 			try {
 				return (IDumper) Class.forName((String) dumper).getDeclaredConstructor().newInstance();
 			} catch (Exception e) {
 				throw new DumpException("Error instantiating dumper named " + dumper + " for <" + fileName + "> file", e); //$NON-NLS-1$ //$NON-NLS-2$
 			}
+		}
 		// dumper defined through extension mechanism
 		try {
 			return (IDumper) ((IConfigurationElement) dumper).createExecutableExtension("class"); //$NON-NLS-1$
