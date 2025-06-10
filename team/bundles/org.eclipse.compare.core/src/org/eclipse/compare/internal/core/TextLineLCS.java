@@ -30,8 +30,9 @@ public class TextLineLCS extends LCS {
 
 	public TextLine[][] getResult() {
 		int length = getLength();
-		if (length == 0)
+		if (length == 0) {
 			return new TextLine[2][0];
+		}
 		TextLine[][] result = new TextLine[2][];
 
 		// compact and shift the result

@@ -151,8 +151,9 @@ public final class RangeDifferencer {
 	 */
 	public static RangeDifference[] findDifferences(AbstractRangeDifferenceFactory factory, IProgressMonitor pm, IRangeComparator ancestor, IRangeComparator left, IRangeComparator right) {
 		try {
-			if (ancestor == null)
+			if (ancestor == null) {
 				return findDifferences(factory, pm, left, right);
+			}
 			SubMonitor monitor = SubMonitor.convert(pm, Messages.RangeComparatorLCS_0, 100);
 			RangeDifference[] leftAncestorScript= null;
 			RangeDifference[] rightAncestorScript= findDifferences(factory, monitor.newChild(50), ancestor, right);
@@ -160,8 +161,9 @@ public final class RangeDifferencer {
 				monitor.setWorkRemaining(100);
 				leftAncestorScript= findDifferences(factory, monitor.newChild(50), ancestor, left);
 			}
-			if (rightAncestorScript == null || leftAncestorScript == null)
+			if (rightAncestorScript == null || leftAncestorScript == null) {
 				return null;
+			}
 
 			DifferencesIterator myIter= new DifferencesIterator(rightAncestorScript);
 			DifferencesIterator yourIter= new DifferencesIterator(leftAncestorScript);
@@ -183,11 +185,11 @@ public final class RangeDifferencer {
 				//
 				// take the next diff that is closer to the start
 				//
-				if (myIter.fDifference == null)
+				if (myIter.fDifference == null) {
 					startThread= yourIter;
-				else if (yourIter.fDifference == null)
+				} else if (yourIter.fDifference == null) {
 					startThread= myIter;
-				else { // not at end of both scripts take the lowest range
+				} else { // not at end of both scripts take the lowest range
 					if (myIter.fDifference.leftStart < yourIter.fDifference.leftStart) { // 2 -> common (Ancestor) change range
 						startThread= myIter;
 					} else if (myIter.fDifference.leftStart > yourIter.fDifference.leftStart) {
@@ -239,8 +241,9 @@ public final class RangeDifferencer {
 			diff3.remove(0);
 			return diff3.toArray(EMPTY_RESULT);
 		} finally {
-			if (pm != null)
+			if (pm != null) {
 				pm.done();
+			}
 		}
 	}
 
@@ -296,8 +299,9 @@ public final class RangeDifferencer {
 
 		for (RangeDifference es : in) {
 			rd= factory.createRangeDifference(RangeDifference.NOCHANGE, mstart, es.rightStart() - mstart, ystart, es.leftStart() - ystart);
-			if (rd.maxLength() != 0)
+			if (rd.maxLength() != 0) {
 				out.add(rd);
+			}
 
 			out.add(es);
 
@@ -305,8 +309,9 @@ public final class RangeDifferencer {
 			ystart= es.leftEnd();
 		}
 		rd= factory.createRangeDifference(RangeDifference.NOCHANGE, mstart, right.getRangeCount() - mstart, ystart, left.getRangeCount() - ystart);
-		if (rd.maxLength() > 0)
+		if (rd.maxLength() > 0) {
 			out.add(rd);
+		}
 
 		return out.toArray(EMPTY_RESULT);
 	}
@@ -361,8 +366,9 @@ public final class RangeDifferencer {
 	 * @since org.eclipse.compare.core 3.5
 	 */
 	public static RangeDifference[] findRanges(AbstractRangeDifferenceFactory factory, IProgressMonitor pm, IRangeComparator ancestor, IRangeComparator left, IRangeComparator right) {
-		if (ancestor == null)
+		if (ancestor == null) {
 			return findRanges(factory,pm, left, right);
+		}
 
 		RangeDifference[] in= findDifferences(factory, pm, ancestor, left, right);
 		List<RangeDifference> out= new ArrayList<>();
@@ -375,8 +381,9 @@ public final class RangeDifferencer {
 
 		for (RangeDifference es : in) {
 			rd= factory.createRangeDifference(RangeDifference.NOCHANGE, mstart, es.rightStart() - mstart, ystart, es.leftStart() - ystart, astart, es.ancestorStart() - astart);
-			if (rd.maxLength() > 0)
+			if (rd.maxLength() > 0) {
 				out.add(rd);
+			}
 
 			out.add(es);
 
@@ -385,8 +392,9 @@ public final class RangeDifferencer {
 			astart= es.ancestorEnd();
 		}
 		rd= factory.createRangeDifference(RangeDifference.NOCHANGE, mstart, right.getRangeCount() - mstart, ystart, left.getRangeCount() - ystart, astart, ancestor.getRangeCount() - astart);
-		if (rd.maxLength() > 0)
+		if (rd.maxLength() > 0) {
 			out.add(rd);
+		}
 
 		return out.toArray(EMPTY_RESULT);
 	}
@@ -432,10 +440,11 @@ public final class RangeDifferencer {
 		}
 
 		if (kind == RangeDifference.ERROR) { // overlapping change (conflict) -> compare the changed ranges
-			if (rangeSpansEqual(right, rightStart, rightEnd - rightStart, left, leftStart, leftEnd - leftStart))
+			if (rangeSpansEqual(right, rightStart, rightEnd - rightStart, left, leftStart, leftEnd - leftStart)) {
 				kind= RangeDifference.ANCESTOR;
-			else
+			} else {
 				kind= RangeDifference.CONFLICT;
+			}
 		}
 		return configurator.createRangeDifference(kind, rightStart, rightEnd - rightStart, leftStart, leftEnd - leftStart, changeRangeStart, changeRangeEnd - changeRangeStart);
 	}
@@ -447,11 +456,13 @@ public final class RangeDifferencer {
 		if (rightLen == leftLen) {
 			int i= 0;
 			for (i= 0; i < rightLen; i++) {
-				if (!rangesEqual(right, rightStart + i, left, leftStart + i))
+				if (!rangesEqual(right, rightStart + i, left, leftStart + i)) {
 					break;
+				}
 			}
-			if (i == rightLen)
+			if (i == rightLen) {
 				return true;
+			}
 		}
 		return false;
 	}

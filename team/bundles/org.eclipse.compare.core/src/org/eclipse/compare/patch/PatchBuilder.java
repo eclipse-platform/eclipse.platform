@@ -240,10 +240,8 @@ public class PatchBuilder {
 	static class HunkComparator implements Comparator<IHunk> {
 		@Override
 		public int compare(IHunk arg0, IHunk arg1) {
-			if ((arg0 != null && arg0 instanceof Hunk)
-					&& (arg1 != null && arg1 instanceof Hunk)) {
-				Hunk hunk0 = (Hunk) arg0;
-				Hunk hunk1 = (Hunk) arg1;
+			if ((arg0 != null && arg0 instanceof Hunk hunk0)
+					&& (arg1 != null && arg1 instanceof Hunk hunk1)) {
 				int shift = hunk0.getStart(true) - hunk1.getStart(true);
 				return shift;
 			}

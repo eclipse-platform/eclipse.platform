@@ -89,13 +89,16 @@ public class PatchReader {
 
 		// read leading garbage
 		while (true) {
-			if (!reread)
+			if (!reread) {
 				line= lr.readLine();
+			}
 			reread= false;
-			if (line == null)
+			if (line == null) {
 				break;
-			if (line.length() < 4)
+			}
+			if (line.length() < 4) {
 				continue; // too short
+			}
 
 			if (line.startsWith(PatchReader.MULTIPROJECTPATCH_PROJECT)) {
 				projectName= line.substring(2).trim();
@@ -161,30 +164,35 @@ public class PatchReader {
 
 		while (true) {
 			// read leading garbage
-			if (!reread)
+			if (!reread) {
 				line= lr.readLine();
+			}
 			reread= false;
-			if (line == null)
+			if (line == null) {
 				break;
+			}
 
 			// remember some infos
 			if (line.startsWith("Index: ")) { //$NON-NLS-1$
 				fileName= line.substring(7).trim();
 			} else if (line.startsWith("diff")) { //$NON-NLS-1$
-				if (!foundDiff && GIT_PATCH_PATTERN.matcher(line).matches())
+				if (!foundDiff && GIT_PATCH_PATTERN.matcher(line).matches()) {
 					this.fIsGitPatch= true;
+				}
 				foundDiff= true;
 				diffArgs= line.substring(4).trim();
 			} else if (line.startsWith("--- ")) { //$NON-NLS-1$
 				line= readUnifiedDiff(diffs, lr, line, diffArgs, fileName);
-				if (!headerLines.isEmpty() && !diffs.isEmpty())
+				if (!headerLines.isEmpty() && !diffs.isEmpty()) {
 					setHeader(diffs.get(diffs.size() - 1), headerLines);
+				}
 				diffArgs= fileName= null;
 				reread= true;
 			} else if (line.startsWith("*** ")) { //$NON-NLS-1$
 				line= readContextDiff(diffs, lr, line, diffArgs, fileName);
-				if (!headerLines.isEmpty() && !diffs.isEmpty())
+				if (!headerLines.isEmpty() && !diffs.isEmpty()) {
 					setHeader(diffs.get(diffs.size() - 1), headerLines);
+				}
 				diffArgs= fileName= null;
 				reread= true;
 			}
@@ -216,8 +224,9 @@ public class PatchReader {
 
 		// read info about new file
 		line= reader.readLine();
-		if (line == null || !line.startsWith("+++ ")) //$NON-NLS-1$
+		if (line == null || !line.startsWith("+++ ")) { //$NON-NLS-1$
 			return line;
+		}
 
 		String[] newArgs= split(line.substring(4));
 
@@ -241,8 +250,9 @@ public class PatchReader {
 			while (true) {
 
 				line= reader.readLine();
-				if (line == null)
+				if (line == null) {
 					return null;
+				}
 
 				if (reader.lineContentLength(line) == 0) {
 					//System.out.println("Warning: found empty line in hunk; ignored");
@@ -297,8 +307,9 @@ public class PatchReader {
 								char lc= line.charAt(end);
 								if (lc == '\n') {
 									end--;
-									if (end > 0 && line.charAt(end) == '\r')
+									if (end > 0 && line.charAt(end) == '\r') {
 										end--;
+									}
 								} else if (lc == '\r') {
 									end--;
 								}
@@ -311,16 +322,19 @@ public class PatchReader {
 					case '#':
 						break;
 					case 'I':
-						if (line.indexOf("Index:") == 0) //$NON-NLS-1$
+						if (line.indexOf("Index:") == 0) { //$NON-NLS-1$
 							break;
+						}
 						//$FALL-THROUGH$
 					case 'd':
-						if (line.indexOf("diff ") == 0) //$NON-NLS-1$
+						if (line.indexOf("diff ") == 0) { //$NON-NLS-1$
 							break;
+						}
 						//$FALL-THROUGH$
 					case 'B':
-						if (line.indexOf("Binary files differ") == 0) //$NON-NLS-1$
+						if (line.indexOf("Binary files differ") == 0) { //$NON-NLS-1$
 							break;
+						}
 						//$FALL-THROUGH$
 					default:
 						break;
@@ -328,8 +342,9 @@ public class PatchReader {
 				return line;
 			}
 		} finally {
-			if (lines.size() > 0)
+			if (lines.size() > 0) {
 				Hunk.createHunk(diff, oldRange, newRange, lines, encounteredPlus, encounteredMinus, encounteredSpace);
+			}
 		}
 	}
 
@@ -342,8 +357,9 @@ public class PatchReader {
 
 		// read info about new file
 		line= reader.readLine();
-		if (line == null || !line.startsWith("--- ")) //$NON-NLS-1$
+		if (line == null || !line.startsWith("--- ")) { //$NON-NLS-1$
 			return line;
+		}
 
 		String[] newArgs= split(line.substring(4));
 
@@ -368,12 +384,14 @@ public class PatchReader {
 			while (true) {
 
 				line= reader.readLine();
-				if (line == null)
+				if (line == null) {
 					return line;
+				}
 
 				int l= line.length();
-				if (l == 0)
+				if (l == 0) {
 					continue;
+				}
 				if (l > 1) {
 					switch (line.charAt(0)) {
 					case '*':
@@ -444,8 +462,9 @@ public class PatchReader {
 			}
 		} finally {
 			// flush last hunk
-			if (oldLines.size() > 0 || newLines.size() > 0)
+			if (oldLines.size() > 0 || newLines.size() > 0) {
 				Hunk.createHunk(diff, oldRange, newRange, unifyLines(oldLines, newLines), encounteredPlus, encounteredMinus, encounteredSpace);
+			}
 		}
 	}
 
@@ -478,16 +497,18 @@ public class PatchReader {
 			}
 
 			// EOF
-			if (oc == 0 && nc == 0)
+			if (oc == 0 && nc == 0) {
 				break;
+			}
 
 			// deletion in old
 			if (oc == '-') {
 				do {
 					result.add('-' + o.substring(2));
 					oi++;
-					if (oi >= ol.length)
+					if (oi >= ol.length) {
 						break;
+					}
 					o= ol[oi];
 				} while (o.charAt(0) == '-');
 				continue;
@@ -498,8 +519,9 @@ public class PatchReader {
 				do {
 					result.add('+' + n.substring(2));
 					ni++;
-					if (ni >= nl.length)
+					if (ni >= nl.length) {
 						break;
+					}
 					n= nl[ni];
 				} while (n.charAt(0) == '+');
 				continue;
@@ -511,8 +533,9 @@ public class PatchReader {
 				do {
 					result.add('-' + o.substring(2));
 					oi++;
-					if (oi >= ol.length)
+					if (oi >= ol.length) {
 						break;
+					}
 					o= ol[oi];
 				} while (o.charAt(0) == '!');
 
@@ -520,8 +543,9 @@ public class PatchReader {
 				do {
 					result.add('+' + n.substring(2));
 					ni++;
-					if (ni >= nl.length)
+					if (ni >= nl.length) {
 						break;
+					}
 					n= nl[ni];
 				} while (n.charAt(0) == '!');
 
@@ -535,8 +559,9 @@ public class PatchReader {
 					result.add(' ' + o.substring(2));
 					oi++;
 					ni++;
-					if (oi >= ol.length || ni >= nl.length)
+					if (oi >= ol.length || ni >= nl.length) {
 						break;
+					}
 					o= ol[oi];
 					n= nl[ni];
 				} while (o.charAt(0) == ' ' && n.charAt(0) == ' ');
@@ -547,8 +572,9 @@ public class PatchReader {
 				do {
 					result.add(' ' + o.substring(2));
 					oi++;
-					if (oi >= ol.length)
+					if (oi >= ol.length) {
 						break;
+					}
 					o= ol[oi];
 				} while (o.charAt(0) == ' ');
 				continue;
@@ -558,8 +584,9 @@ public class PatchReader {
 				do {
 					result.add(' ' + n.substring(2));
 					ni++;
-					if (ni >= nl.length)
+					if (ni >= nl.length) {
 						break;
+					}
 					n= nl[ni];
 				} while (n.charAt(0) == ' ');
 				continue;
@@ -604,13 +631,17 @@ public class PatchReader {
 	private IPath extractPath(String[] args, int n, String path2) {
 		if (n < args.length) {
 			String path= args[n];
-			if (DEV_NULL.equals(path))
+			if (DEV_NULL.equals(path)) {
 				return null;
+			}
 			int pos= path.lastIndexOf(':');
-			if (pos >= 0)
+			if (pos >= 0) {
 				path= path.substring(0, pos);
+			}
 			if (path2 != null && !path2.equals(path)) {
-				if (DEBUG) System.out.println("path mismatch: " + path2); //$NON-NLS-1$
+				if (DEBUG) {
+					System.out.println("path mismatch: " + path2); //$NON-NLS-1$
+				}
 				path= path2;
 			}
 			return IPath.fromOSString(path);
@@ -630,13 +661,17 @@ public class PatchReader {
 		pair[0]= pair[1]= -1;
 		int startPos= line.indexOf(start);
 		if (startPos < 0) {
-			if (DEBUG) System.out.println("parsing error in extractPair: couldn't find \'" + start + "\'"); //$NON-NLS-1$ //$NON-NLS-2$
+			if (DEBUG) {
+				System.out.println("parsing error in extractPair: couldn't find \'" + start + "\'"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			return;
 		}
 		line= line.substring(startPos+1);
 		int endPos= line.indexOf(' ');
 		if (endPos < 0) {
-			if (DEBUG) System.out.println("parsing error in extractPair: couldn't find end blank"); //$NON-NLS-1$
+			if (DEBUG) {
+				System.out.println("parsing error in extractPair: couldn't find end blank"); //$NON-NLS-1$
+			}
 			return;
 		}
 		line= line.substring(0, endPos);
@@ -659,8 +694,9 @@ public class PatchReader {
 		StringTokenizer st= new StringTokenizer(line, "\t"); //$NON-NLS-1$
 		while (st.hasMoreElements()) {
 			String token= st.nextToken().trim();
-			if (token.length() > 0)
+			if (token.length() > 0) {
 				l.add(token);
+			}
 		}
 		return l.toArray(new String[l.size()]);
 	}
@@ -682,8 +718,9 @@ public class PatchReader {
 	}
 
 	public FilePatch2[] getAdjustedDiffs() {
-		if (!isWorkspacePatch() || this.fDiffs.length == 0)
+		if (!isWorkspacePatch() || this.fDiffs.length == 0) {
 			return this.fDiffs;
+		}
 		List<FilePatch2> result = new ArrayList<>();
 		for (FilePatch2 diff : this.fDiffs) {
 			result.add(diff.asRelativeDiff());

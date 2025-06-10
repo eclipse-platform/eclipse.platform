@@ -35,10 +35,11 @@ import java.util.List;
 		this.fArray= differenceRanges;
 		this.fIndex= 0;
 		this.fRange= new ArrayList<>();
-		if (this.fIndex < this.fArray.length)
+		if (this.fIndex < this.fArray.length) {
 			this.fDifference= this.fArray[this.fIndex++];
-		else
+		} else {
 			this.fDifference= null;
+		}
 	}
 
 	/*
@@ -54,10 +55,11 @@ import java.util.List;
 	void next() {
 		this.fRange.add(this.fDifference);
 		if (this.fDifference != null) {
-			if (this.fIndex < this.fArray.length)
+			if (this.fIndex < this.fArray.length) {
 				this.fDifference= this.fArray[this.fIndex++];
-			else
+			} else {
 				this.fDifference= null;
+			}
 		}
 	}
 
@@ -66,8 +68,9 @@ import java.util.List;
 	 * This method returns the other iterator.
 	 */
 	DifferencesIterator other(DifferencesIterator right, DifferencesIterator left) {
-		if (this == right)
+		if (this == right) {
 			return left;
+		}
 		return right;
 	}
 

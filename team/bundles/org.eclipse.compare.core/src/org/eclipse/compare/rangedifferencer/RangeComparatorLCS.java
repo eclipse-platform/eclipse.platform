@@ -32,8 +32,9 @@ import org.eclipse.core.runtime.*;
 			lcs.longestCommonSubsequence(monitor.newChild(95));
 			return lcs.getDifferences(monitor.newChild(5), factory);
 		} finally {
-			if (pm != null)
+			if (pm != null) {
 				pm.done();
+			}
 		}
 	}
 
@@ -86,18 +87,22 @@ import org.eclipse.core.runtime.*;
 					// Move both LCS lists to the next occupied slot
 					while ((l1= this.lcs[0][index1]) == 0) {
 						index1++;
-						if (index1 >= this.lcs[0].length)
+						if (index1 >= this.lcs[0].length) {
 							break;
+						}
 					}
-					if (index1 >= this.lcs[0].length)
+					if (index1 >= this.lcs[0].length) {
 						break;
+					}
 					while ((l2= this.lcs[1][index2]) == 0) {
 						index2++;
-						if (index2 >= this.lcs[1].length)
+						if (index2 >= this.lcs[1].length) {
 							break;
+						}
 					}
-					if (index2 >= this.lcs[1].length)
+					if (index2 >= this.lcs[1].length) {
 						break;
+					}
 					// Convert the entry to an array index (see setLcs(int, int))
 					int end1 = l1 - 1;
 					int end2 = l2 - 1;
@@ -136,8 +141,9 @@ import org.eclipse.core.runtime.*;
 	}
 
 	private void worked(SubMonitor subMonitor, int work) {
-		if (subMonitor.isCanceled())
+		if (subMonitor.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 		subMonitor.worked(work);
 	}
 
@@ -154,8 +160,9 @@ import org.eclipse.core.runtime.*;
 	private void compactAndShiftLCS(int[] lcsSide, int length,
 			IRangeComparator comparator) {
 		// If the LCS is empty, just return
-		if (length == 0)
+		if (length == 0) {
 			return;
+		}
 		// Skip any leading empty slots
 		int j = 0;
 		while (lcsSide[j] == 0) {
