@@ -331,8 +331,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	/** line width of change borders */
 	private static final int LW= 1;
 
-	private boolean fShowCurrentOnly= false;
-	private boolean fShowCurrentOnly2= false;
 	private int fMarginWidth= MARGIN_WIDTH;
 	private int fTopInset;
 
@@ -408,7 +406,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	private boolean fShowPseudoConflicts= false;
 
-	private boolean fUseSplines= true;
 	private boolean fUseSingleLine= true;
 	private boolean fHighlightTokenChanges = false;
 
@@ -425,7 +422,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	private MergeSourceViewer fFocusPart;
 
-	private boolean fSubDoc= true;
 	private IPositionUpdater fPositionUpdater;
 	private boolean fIsMac;
 
@@ -784,14 +780,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		 */
 		private void updateViewerDocumentRange(MergeSourceViewer tp, Position range) {
 			tp.setRegion(range);
-			if (this.fViewer.fSubDoc) {
-				if (range != null) {
-					IRegion r= this.fViewer.normalizeDocumentRegion(tp.getSourceViewer().getDocument(), TextMergeViewer.toRegion(range));
-					tp.getSourceViewer().setVisibleRegion(r.getOffset(), r.getLength());
-				} else
-					tp.getSourceViewer().resetVisibleRegion();
-			} else
+			if (range != null) {
+				IRegion r = this.fViewer.normalizeDocumentRegion(tp.getSourceViewer().getDocument(),
+						TextMergeViewer.toRegion(range));
+				tp.getSourceViewer().setVisibleRegion(r.getOffset(), r.getLength());
+			} else {
 				tp.getSourceViewer().resetVisibleRegion();
+			}
 		}
 
 		/*
@@ -809,7 +804,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			SourceViewer sourceViewer = tp.getSourceViewer();
 			sourceViewer.setRedraw(false);
 			try {
-				if (this.fViewer.fSubDoc && range != null) {
+				if (range != null) {
 					IRegion r= this.fViewer.normalizeDocumentRegion(document, TextMergeViewer.toRegion(range));
 					sourceViewer.setDocument(document, r.getOffset(), r.getLength());
 				} else {
@@ -1632,10 +1627,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 			fSynchronizedScrolling= fPreferenceStore.getBoolean(ComparePreferencePage.SYNCHRONIZE_SCROLLING);
 			fShowPseudoConflicts= fPreferenceStore.getBoolean(ComparePreferencePage.SHOW_PSEUDO_CONFLICTS);
-			//fUseSplines= fPreferenceStore.getBoolean(ComparePreferencePage.USE_SPLINES);
 			fUseSingleLine= fPreferenceStore.getBoolean(ComparePreferencePage.USE_SINGLE_LINE);
 			fHighlightTokenChanges= fPreferenceStore.getBoolean(ComparePreferencePage.HIGHLIGHT_TOKEN_CHANGES);
-			//fUseResolveUI= fPreferenceStore.getBoolean(ComparePreferencePage.USE_RESOLVE_UI);
 		}
 
 		buildControl(parent);
@@ -2260,9 +2253,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				if (diff.isDeleted())
 					continue;
 
-				if (fShowCurrentOnly2 && !isCurrentDiff(diff))
-					continue;
-
 				tp.getLineRange(diff.getPosition(leg), region);
 				region.x -= tp.getDocumentRegionOffset();
 				int y = getHeightBetweenLines(tp, 0, region.x) + shift;
@@ -2302,9 +2292,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			for (Iterator<?> iterator = fMerger.changesIterator(); iterator.hasNext();) {
 				Diff diff = (Diff) iterator.next();
 				if (diff.isDeleted())
-					continue;
-
-				if (fShowCurrentOnly2 && !isCurrentDiff(diff))
 					continue;
 
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
@@ -3110,9 +3097,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return false;
 
 		if (diff == null || diff.isToken())
-			return false;
-
-		if (fShowCurrentOnly && !isCurrentDiff(diff))
 			return false;
 
 		return true;
@@ -4036,13 +4020,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			if (fFocusPart != null)
 				handleSelectionChanged(fFocusPart);
 
-//		} else if (key.equals(ComparePreferencePage.USE_SPLINES)) {
-//			fUseSplines= fPreferenceStore.getBoolean(ComparePreferencePage.USE_SPLINES);
-//			invalidateLines();
-
 		} else if (key.equals(ComparePreferencePage.USE_SINGLE_LINE)) {
 			fUseSingleLine= fPreferenceStore.getBoolean(ComparePreferencePage.USE_SINGLE_LINE);
-//			fUseResolveUI= fUseSingleLine;
 			fBasicCenterCurve= null;
 			updateControls();
 			invalidateLines();
@@ -4051,11 +4030,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			fHighlightTokenChanges= fPreferenceStore.getBoolean(ComparePreferencePage.HIGHLIGHT_TOKEN_CHANGES);
 			updateControls();
 			updatePresentation();
-
-//		} else if (key.equals(ComparePreferencePage.USE_RESOLVE_UI)) {
-//			fUseResolveUI= fPreferenceStore.getBoolean(ComparePreferencePage.USE_RESOLVE_UI);
-//			updateResolveStatus();
-//			invalidateLines();
 
 		} else if (key.equals(fSymbolicFontName)) {
 			updateFont();
@@ -4343,9 +4317,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				if (diff.isDeleted())
 					continue;
 
-				if (fShowCurrentOnly2 && !isCurrentDiff(diff))
-					continue;
-
 				fLeft.getLineRange(diff.getPosition(LEFT_CONTRIBUTOR), region);
 				region.x -= fLeft.getDocumentRegionOffset();
 				int ly = getHeightBetweenLines(fLeft, 0, region.x) + lshift;
@@ -4379,40 +4350,26 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					g.drawRectangle(0-1, ly, w2, lh);	// left
 					g.drawRectangle(w-w2, ry, w2, rh);	// right
 
-					if (fUseSplines) {
-						int[] points= getCenterCurvePoints(w2, ly+lh/2, w-w2, ry+rh/2);
-						for (int i= 1; i < points.length; i++)
-							g.drawLine(w2+i-1, points[i-1], w2+i, points[i]);
-					} else {
-						g.drawLine(w2, ly+lh/2, w-w2, ry+rh/2);
-					}
+					int[] points = getCenterCurvePoints(w2, ly + lh / 2, w - w2, ry + rh / 2);
+					for (int i = 1; i < points.length; i++)
+						g.drawLine(w2 + i - 1, points[i - 1], w2 + i, points[i]);
 				} else {
 					// two lines
-					if (fUseSplines) {
-						g.setBackground(fillColor);
+					g.setBackground(fillColor);
 
-						g.setLineWidth(0 /* LW */);
-						g.setForeground(strokeColor);
+					g.setLineWidth(0 /* LW */);
+					g.setForeground(strokeColor);
 
-						int[] topPoints= getCenterCurvePoints(fPts[0], fPts[1], fPts[2], fPts[3]);
-						int[] bottomPoints= getCenterCurvePoints(fPts[6], fPts[7], fPts[4], fPts[5]);
+					int[] topPoints = getCenterCurvePoints(fPts[0], fPts[1], fPts[2], fPts[3]);
+					int[] bottomPoints = getCenterCurvePoints(fPts[6], fPts[7], fPts[4], fPts[5]);
+					g.setForeground(fillColor);
+					g.drawLine(0, bottomPoints[0], 0, topPoints[0]);
+					for (int i = 1; i < bottomPoints.length; i++) {
 						g.setForeground(fillColor);
-						g.drawLine(0, bottomPoints[0], 0, topPoints[0]);
-						for (int i= 1; i < bottomPoints.length; i++) {
-							g.setForeground(fillColor);
-							g.drawLine(i, bottomPoints[i], i, topPoints[i]);
-							g.setForeground(strokeColor);
-							g.drawLine(i-1, topPoints[i-1], i, topPoints[i]);
-							g.drawLine(i-1, bottomPoints[i-1], i, bottomPoints[i]);
-						}
-					} else {
-						g.setBackground(fillColor);
-						g.fillPolygon(fPts);
-
-						g.setLineWidth(0 /* LW */);
+						g.drawLine(i, bottomPoints[i], i, topPoints[i]);
 						g.setForeground(strokeColor);
-						g.drawLine(fPts[0], fPts[1], fPts[2], fPts[3]);
-						g.drawLine(fPts[6], fPts[7], fPts[4], fPts[5]);
+						g.drawLine(i - 1, topPoints[i - 1], i, topPoints[i]);
+						g.drawLine(i - 1, bottomPoints[i - 1], i, bottomPoints[i]);
 					}
 				}
 
@@ -4492,9 +4449,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				if (diff.isDeleted())
 					continue;
 
-				if (fShowCurrentOnly2 && !isCurrentDiff(diff))
-					continue;
-
 				tp.getLineRange(diff.getPosition(leg), region);
 				region.x -= tp.getDocumentRegionOffset();
 				int y = getHeightBetweenLines(tp, 0, region.x) + shift;
@@ -4556,9 +4510,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		for (Iterator<?> iterator = fMerger.changesIterator(); iterator.hasNext();) {
 			Diff diff = (Diff) iterator.next();
 			if (diff.isDeleted())
-				continue;
-
-			if (fShowCurrentOnly && !isCurrentDiff(diff))
 				continue;
 
 			tp.getLineRange(diff.getPosition(leg), range);
