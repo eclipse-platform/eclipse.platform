@@ -262,15 +262,17 @@ public class PreferenceManager {
 		// migrate enabled status
 		if (configuration.get(ProxyManager.PREF_ENABLED, null) == null) {
 			String instanceEnabled = instanceScope.get(ProxyManager.PREF_ENABLED, null);
-			if (instanceEnabled != null)
+			if (instanceEnabled != null) {
 				configuration.put(ProxyManager.PREF_ENABLED, instanceEnabled);
+			}
 		}
 
 		// migrate enabled status
 		if (configuration.get(ProxyManager.PREF_OS, null) == null) {
 			String instanceEnabled = instanceScope.get(ProxyManager.PREF_OS, null);
-			if (instanceEnabled != null)
+			if (instanceEnabled != null) {
 				configuration.put(ProxyManager.PREF_OS, instanceEnabled);
+			}
 		}
 
 		// migrate non proxied hosts if not already set
@@ -288,8 +290,9 @@ public class PreferenceManager {
 			if (data.getHost() == null) {
 				ProxyType instanceType = new ProxyType(type.getName(), instanceManager);
 				IProxyData instanceData = instanceType.getProxyData(ProxyType.DO_NOT_VERIFY);
-				if (instanceData.getHost() != null)
+				if (instanceData.getHost() != null) {
 					type.setProxyData(instanceData);
+				}
 			}
 		}
 
@@ -306,8 +309,9 @@ public class PreferenceManager {
 	private void migrateUpdateHttpProxy(Preferences instanceScope, ProxyType[] proxies, boolean isInitialize) {
 		if (!instanceScope.getBoolean(PREF_HAS_MIGRATED, false)) {
 			// Only set the migration bit when initializing
-			if (isInitialize)
+			if (isInitialize) {
 				instanceScope.putBoolean(PREF_HAS_MIGRATED, true);
+			}
 			String httpProxyHost = getHostToMigrate(isInitialize /* checkSystemProperties */);
 			int port = getPortToMigrate(isInitialize /* checkSystemProperties */);
 			boolean httpProxyEnable = getEnablementToMigrate(isInitialize /* checkSystemProperties */);
@@ -331,8 +335,9 @@ public class PreferenceManager {
 		if (checkSystemProperties && "".equals(httpProxyHost)) { //$NON-NLS-1$
 			httpProxyHost = System.getProperty("http.proxyHost", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		if ("".equals(httpProxyHost)) //$NON-NLS-1$
+		if ("".equals(httpProxyHost)) { //$NON-NLS-1$
 			httpProxyHost = null;
+		}
 		return httpProxyHost;
 	}
 
@@ -342,12 +347,13 @@ public class PreferenceManager {
 			httpProxyPort = System.getProperty("http.proxyPort", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		int port = -1;
-		if (httpProxyPort != null && !"".equals(httpProxyPort)) //$NON-NLS-1$
+		if (httpProxyPort != null && !"".equals(httpProxyPort)) { //$NON-NLS-1$
 			try {
 				port = Integer.parseInt(httpProxyPort);
 			} catch (NumberFormatException e) {
 				// Ignore
 			}
+		}
 		return port;
 	}
 

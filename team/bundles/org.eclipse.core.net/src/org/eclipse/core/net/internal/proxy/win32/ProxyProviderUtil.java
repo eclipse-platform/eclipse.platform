@@ -89,8 +89,9 @@ public final class ProxyProviderUtil {
 			// The scheme of the uri is irrelevant. We add the http://
 			// scheme to enable class URI to parse the stuff
 			String augmentedURI = proxyDefinition.substring(urlStart);
-			if (!augmentedURI.contains("://")) //$NON-NLS-1$
+			if (!augmentedURI.contains("://")) { //$NON-NLS-1$
 				augmentedURI = "http://" + augmentedURI; //$NON-NLS-1$
+			}
 			URI uri = new URI(augmentedURI);
 			host = uri.getHost();
 			port = uri.getPort() > 0 ? uri.getPort()
@@ -109,23 +110,28 @@ public final class ProxyProviderUtil {
 			return;
 		}
 
-		if (protocol == null)
+		if (protocol == null) {
 			universalProxies.add(createProxy(IProxyData.HTTP_PROXY_TYPE, host,
 					port));
-		else
+		} else {
 			addProtocolSpecificProxy(protocolSpecificProxies, protocol,
 					createProxy(resolveProxyType(protocol), host, port));
+		}
 	}
 
 	private static int getProxyDefaultPort(String protocol) {
-		if (protocol == null)
+		if (protocol == null) {
 			return PROXY_DEFAULT_PORT;
-		if (IProxyData.HTTP_PROXY_TYPE.equalsIgnoreCase(protocol))
+		}
+		if (IProxyData.HTTP_PROXY_TYPE.equalsIgnoreCase(protocol)) {
 			return HTTPPROXY_DEFAULT_PORT;
-		if (IProxyData.HTTPS_PROXY_TYPE.equalsIgnoreCase(protocol))
+		}
+		if (IProxyData.HTTPS_PROXY_TYPE.equalsIgnoreCase(protocol)) {
 			return HTTPSPROXY_DEFAULT_PORT;
-		if (IProxyData.SOCKS_PROXY_TYPE.equalsIgnoreCase(protocol))
+		}
+		if (IProxyData.SOCKS_PROXY_TYPE.equalsIgnoreCase(protocol)) {
 			return SOCKSPROXY_DEFAULT_PORT;
+		}
 
 		return PROXY_DEFAULT_PORT;
 	}
@@ -191,8 +197,9 @@ public final class ProxyProviderUtil {
 	 */
 	public static List<IProxyData> getProxies(String pacFindProxyForUrlResult) {
 		if (pacFindProxyForUrlResult == null
-				|| pacFindProxyForUrlResult.trim().length() == 0)
+				|| pacFindProxyForUrlResult.trim().length() == 0) {
 			return Collections.emptyList();
+		}
 
 		final List<IProxyData> result = new ArrayList<>();
 		final StringTokenizer scanner = new StringTokenizer(
@@ -200,29 +207,34 @@ public final class ProxyProviderUtil {
 		while (scanner.hasMoreTokens()) {
 			final String pacProxy = scanner.nextToken().trim();
 			final IProxyData proxy = getProxy(pacProxy);
-			if (proxy != null)
+			if (proxy != null) {
 				result.add(proxy);
+			}
 		}
 
 		return result;
 	}
 
 	private static IProxyData getProxy(String pacProxy) {
-		if (pacProxy == null || pacProxy.length() == 0)
+		if (pacProxy == null || pacProxy.length() == 0) {
 			return null;
+		}
 
-		if (!startsWithProxyType(pacProxy))
+		if (!startsWithProxyType(pacProxy)) {
 			// Assume "PROXY" type!
 			pacProxy = "PROXY " + pacProxy; //$NON-NLS-1$
+		}
 		StringTokenizer scanner = new StringTokenizer(pacProxy);
 		String pacProxyType = scanner.nextToken();
 		String proxyType = PROXY_TYPE_MAP.get(pacProxyType);
-		if (proxyType == null || proxyType.equals(NO_PROXY))
+		if (proxyType == null || proxyType.equals(NO_PROXY)) {
 			return null;
+		}
 
 		String pacHostnameAndPort = null;
-		if (scanner.hasMoreTokens())
+		if (scanner.hasMoreTokens()) {
 			pacHostnameAndPort = scanner.nextToken();
+		}
 		String hostname = getHostname(pacHostnameAndPort);
 		if (hostname != null) {
 			int port = getPort(pacHostnameAndPort);
@@ -237,9 +249,11 @@ public final class ProxyProviderUtil {
 
 	private static boolean startsWithProxyType(String pacProxy) {
 		Iterator<String> iter = PROXY_TYPE_MAP.keySet().iterator();
-		while (iter.hasNext())
-			if (pacProxy.startsWith(iter.next()))
+		while (iter.hasNext()) {
+			if (pacProxy.startsWith(iter.next())) {
 				return true;
+			}
+		}
 
 		return false;
 	}
