@@ -786,8 +786,7 @@ public class ViewContextService implements IDebugContextListener, IPerspectiveLi
 
 	public void contextActivated(ISelection selection) {
 		if (isEnabledPerspective()) {
-			if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
+			if (selection instanceof IStructuredSelection ss && !selection.isEmpty()) {
 				Iterator<?> iterator = ss.iterator();
 				while (iterator.hasNext()) {
 					Object target = iterator.next();

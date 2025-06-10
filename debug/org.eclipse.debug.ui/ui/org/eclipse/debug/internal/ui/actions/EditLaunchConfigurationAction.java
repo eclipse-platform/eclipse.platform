@@ -95,7 +95,7 @@ public class EditLaunchConfigurationAction extends SelectionListenerAction {
 					setLaunchConfiguration(configuration);
 					setMode(launch.getLaunchMode());
 					setIsTerminated(launch.isTerminated());
-					setText(MessageFormat.format(ActionMessages.EditLaunchConfigurationAction_1, new Object[] { configuration.getName() }));
+					setText(MessageFormat.format(ActionMessages.EditLaunchConfigurationAction_1, configuration.getName()));
 					ImageDescriptor descriptor = null;
 					try {
 						descriptor = DebugPluginImages.getImageDescriptor(configuration.getType().getIdentifier());

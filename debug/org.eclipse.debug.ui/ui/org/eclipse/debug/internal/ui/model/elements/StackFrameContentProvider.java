@@ -42,9 +42,8 @@ public class StackFrameContentProvider extends ElementContentProvider {
 	 * @return the collection of children, or an empty collection, never <code>null</code>
 	 */
 	protected Object[] getAllChildren(Object parent, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
-		if (parent instanceof IStackFrame) {
+		if (parent instanceof IStackFrame frame) {
 			String id = context.getId();
-			IStackFrame frame = (IStackFrame) parent;
 			if (id.equals(IDebugUIConstants.ID_VARIABLE_VIEW)) {
 				return frame.getVariables();
 			} else if (id.equals(IDebugUIConstants.ID_REGISTER_VIEW)) {

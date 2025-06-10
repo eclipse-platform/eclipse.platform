@@ -126,8 +126,7 @@ public class VariableContentProvider extends ElementContentProvider {
 			return EMPTY;
 		}
 		IValue logicalValue = getLogicalValue(value, context);
-		if (logicalValue instanceof IIndexedValue) {
-			IIndexedValue indexedValue = (IIndexedValue) logicalValue;
+		if (logicalValue instanceof IIndexedValue indexedValue) {
 			int partitionSize = computeParitionSize(indexedValue);
 			if (partitionSize > 1) {
 				int offset = indexedValue.getInitialOffset();

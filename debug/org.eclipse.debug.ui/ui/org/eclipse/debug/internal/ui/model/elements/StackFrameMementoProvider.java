@@ -27,8 +27,7 @@ public class StackFrameMementoProvider extends DebugElementMementoProvider {
 
 	@Override
 	protected String getElementName(Object element, IPresentationContext context) throws CoreException {
-		if (element instanceof IStackFrame) {
-			IStackFrame frame = (IStackFrame) element;
+		if (element instanceof IStackFrame frame) {
 			if (IDebugUIConstants.ID_REGISTER_VIEW.equals(context.getId())) {
 				// for registers view attempt to maintain expansion for target rather than each frame
 				return frame.getModelIdentifier();

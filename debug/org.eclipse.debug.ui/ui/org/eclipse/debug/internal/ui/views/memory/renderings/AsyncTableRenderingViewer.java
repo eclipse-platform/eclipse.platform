@@ -765,9 +765,8 @@ public class AsyncTableRenderingViewer extends AsyncVirtualContentTableViewer {
 		final KeyEvent e = event;
 		Display.getDefault().asyncExec(() -> {
 			Object obj = e.getSource();
-			if (obj instanceof Control)
+			if (obj instanceof Control control)
 			{
-				Control control = (Control) obj;
 				int row = fCellEditorListener.getRow();
 				int col = fCellEditorListener.getCol();
 
@@ -804,10 +803,8 @@ public class AsyncTableRenderingViewer extends AsyncVirtualContentTableViewer {
 		if (numCharsPerByte > 0)
 		{
 			Object value = getCellEditors()[col].getValue();
-			if (getCellEditors()[col] instanceof TextCellEditor && value instanceof String)
+			if (getCellEditors()[col] instanceof TextCellEditor && value instanceof String str)
 			{
-				String str = (String)value;
-
 				if (str.length() > fRendering.getBytesPerColumn()*numCharsPerByte)
 				{
 					String newValue = str;

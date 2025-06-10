@@ -31,8 +31,7 @@ public class CompileErrorPromptStatusHandler implements IStatusHandler {
 
 	@Override
 	public Object handleStatus(IStatus status, Object source) throws CoreException {
-		if (source instanceof ILaunchConfiguration) {
-			ILaunchConfiguration config = (ILaunchConfiguration)source;
+		if (source instanceof ILaunchConfiguration config) {
 			if (DebugUITools.isPrivate(config)) {
 				return Boolean.TRUE;
 			}

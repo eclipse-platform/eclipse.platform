@@ -73,8 +73,7 @@ public class MessageDetailPane implements IDetailPane {
 		// re-create controls if the layout has changed
 		if (selection != null && selection.size() == 1) {
 			Object input = selection.getFirstElement();
-			if (input instanceof String) {
-				String message = (String) input;
+			if (input instanceof String message) {
 				fLabel.setText(message);
 				fControlParent.layout(true);
 			}

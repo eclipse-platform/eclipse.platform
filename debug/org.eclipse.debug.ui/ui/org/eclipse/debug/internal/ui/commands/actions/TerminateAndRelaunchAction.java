@@ -59,8 +59,7 @@ public class TerminateAndRelaunchAction extends DebugCommandAction {
 	protected ISelection getContext() {
 		// Convert action context to contain only launch objects (bug 356651).
 		ISelection context = super.getContext();
-		if (context instanceof IStructuredSelection && !context.isEmpty()) {
-			IStructuredSelection ss = (IStructuredSelection)context;
+		if (context instanceof IStructuredSelection ss && !context.isEmpty()) {
 			Set<ILaunch> launches = new HashSet<>(ss.size());
 			for (Iterator<Object> itr = ss.iterator(); itr.hasNext();) {
 				ILaunch launch = DebugUIPlugin.getLaunch(itr.next());

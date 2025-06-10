@@ -1099,7 +1099,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 				 * Build & launch (98)
 				 */
 				final SubMonitor subMonitor = SubMonitor.convert(monitor, MessageFormat
-						.format(DebugUIMessages.DebugUIPlugin_25, new Object[] { configuration.getName() }), 100);
+						.format(DebugUIMessages.DebugUIPlugin_25, configuration.getName()), 100);
 				try {
 					jobManager.join(ResourcesPlugin.FAMILY_MANUAL_BUILD, subMonitor.split(1));
 					jobManager.join(ResourcesPlugin.FAMILY_AUTO_BUILD, subMonitor.split(1));
@@ -1127,7 +1127,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 				 * Setup progress monitor - Build & launch (1)
 				 */
 				final SubMonitor subMonitor = SubMonitor.convert(monitor, MessageFormat
-						.format(DebugUIMessages.DebugUIPlugin_25, new Object[] { configuration.getName() }), 1);
+						.format(DebugUIMessages.DebugUIPlugin_25, configuration.getName()), 1);
 				try {
 					buildAndLaunch(configuration, mode, subMonitor);
 				} catch (CoreException e) {
@@ -1151,8 +1151,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 		if (targetException instanceof CoreException) {
 			t = targetException;
 		}
-		if (t instanceof CoreException) {
-			CoreException ce = (CoreException)t;
+		if (t instanceof CoreException ce) {
 			IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(ce.getStatus());
 			if (handler != null) {
 				ILaunchGroup group = DebugUITools.getLaunchGroup(configuration, mode);
@@ -1207,7 +1206,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 			}
 		}
 		final boolean waitInJob = wait;
-		Job job = new Job(MessageFormat.format(DebugUIMessages.DebugUIPlugin_25, new Object[] {configuration.getName()})) {
+		Job job = new Job(MessageFormat.format(DebugUIMessages.DebugUIPlugin_25, configuration.getName())) {
 			@Override
 			public IStatus run(final IProgressMonitor monitor) {
 				/* Setup progress monitor
@@ -1280,7 +1279,7 @@ public class DebugUIPlugin extends AbstractUIPlugin implements ILaunchListener, 
 
 		job.setPriority(Job.INTERACTIVE);
 		job.setProperty(IProgressConstants2.SHOW_IN_TASKBAR_ICON_PROPERTY, Boolean.TRUE);
-		job.setName(MessageFormat.format(DebugUIMessages.DebugUIPlugin_25, new Object[] {configuration.getName()}));
+		job.setName(MessageFormat.format(DebugUIMessages.DebugUIPlugin_25, configuration.getName()));
 
 		if (wait) {
 			progressService.showInDialog(getShell(), job);

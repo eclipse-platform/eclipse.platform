@@ -129,19 +129,16 @@ public class AvailableLogicalStructuresAction extends Action implements IMenuCre
 		setValue(null);
 		setTypes(null);
 		ISelection s = getView().getViewer().getSelection();
-		if (s instanceof IStructuredSelection) {
-			IStructuredSelection selection = (IStructuredSelection) s;
+		if (s instanceof IStructuredSelection selection) {
 			if (selection.size() == 1) {
 				Object obj = selection.getFirstElement();
 				IValue value = null;
-				if (obj instanceof IVariable) {
-					IVariable var = (IVariable) obj;
+				if (obj instanceof IVariable var) {
 					try {
 						value = var.getValue();
 					} catch (DebugException e) {
 					}
-				} else if (obj instanceof IExpression) {
-					IExpression expression = (IExpression) obj;
+				} else if (obj instanceof IExpression expression) {
 					value = expression.getValue();
 				}
 				if (value != null) {

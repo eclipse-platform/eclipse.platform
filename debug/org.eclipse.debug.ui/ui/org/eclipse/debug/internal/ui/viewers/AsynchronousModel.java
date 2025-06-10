@@ -250,8 +250,7 @@ public abstract class AsynchronousModel {
 		IModelProxyFactory adapter = null;
 		if (element instanceof IModelProxyFactory) {
 			adapter = (IModelProxyFactory) element;
-		} else if (element instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) element;
+		} else if (element instanceof IAdaptable adaptable) {
 			adapter = adaptable.getAdapter(IModelProxyFactory.class);
 		}
 		return adapter;
@@ -430,8 +429,7 @@ public abstract class AsynchronousModel {
 		IAsynchronousLabelAdapter adapter = null;
 		if (element instanceof IAsynchronousLabelAdapter) {
 			adapter = (IAsynchronousLabelAdapter) element;
-		} else if (element instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) element;
+		} else if (element instanceof IAdaptable adaptable) {
 			adapter = adaptable.getAdapter(IAsynchronousLabelAdapter.class);
 		}
 		// if no adapter, use default (i.e. model presentation)
@@ -453,8 +451,7 @@ public abstract class AsynchronousModel {
 		IAsynchronousContentAdapter adapter = null;
 		if (element instanceof IAsynchronousContentAdapter) {
 			adapter = (IAsynchronousContentAdapter) element;
-		} else if (element instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) element;
+		} else if (element instanceof IAdaptable adaptable) {
 			adapter = adaptable.getAdapter(IAsynchronousContentAdapter.class);
 		}
 		return adapter;

@@ -59,11 +59,10 @@ public class BreakpointsComparator extends ViewerComparator {
 	 */
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
-		if (!(e1 instanceof IBreakpoint)) {
+		if (!(e1 instanceof IBreakpoint b1)) {
 			return super.compare(viewer, e1, e2);
 		}
 
-		IBreakpoint b1= (IBreakpoint)e1;
 		IBreakpoint b2= (IBreakpoint)e2;
 		String modelId1= b1.getModelIdentifier();
 		String modelId2= b2.getModelIdentifier();

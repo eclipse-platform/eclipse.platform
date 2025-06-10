@@ -52,8 +52,7 @@ public class EnableWatchExpressionAction implements IViewActionDelegate, IAction
 					fireWatchExpressionChanged(expression);
 				}
 			}
-		} else if (fSelection instanceof IWatchExpression) {
-			IWatchExpression expression= ((IWatchExpression) fSelection);
+		} else if (fSelection instanceof IWatchExpression expression) {
 			expression.setEnabled(fEnable);
 			fireWatchExpressionChanged(expression);
 		}

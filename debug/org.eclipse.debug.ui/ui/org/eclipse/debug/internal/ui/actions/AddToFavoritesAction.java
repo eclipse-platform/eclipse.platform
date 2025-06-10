@@ -88,7 +88,7 @@ public class AddToFavoritesAction extends SelectionListenerAction {
 					setGroup(group);
 					setLaunchConfiguration(configuration);
 					setMode(launch.getLaunchMode());
-					setText(MessageFormat.format(ActionMessages.AddToFavoritesAction_1, new Object[] { DebugUIPlugin.removeAccelerators(getGroup().getLabel()) }));
+					setText(MessageFormat.format(ActionMessages.AddToFavoritesAction_1, DebugUIPlugin.removeAccelerators(getGroup().getLabel())));
 				}
 			}
 		}

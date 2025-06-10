@@ -35,8 +35,7 @@ public class BreakpointFactory implements IElementFactory {
 			IElementFactory elementFactory = PlatformUI.getWorkbench().getElementFactory(factoryId);
 			if (elementFactory != null) {
 				IAdaptable adaptable = elementFactory.createElement(memento);
-				if (adaptable instanceof IResource) {
-					IResource resource = (IResource) adaptable;
+				if (adaptable instanceof IResource resource) {
 					try {
 						long id = Long.parseLong(longString);
 						IMarker marker = resource.findMarker(id);

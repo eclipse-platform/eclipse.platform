@@ -46,13 +46,10 @@ public class EditBreakpointGroupAction extends AbstractBreakpointsViewAction {
 	@Override
 	public void selectionChanged(IAction action, ISelection sel) {
 		fSet = null;
-		if (sel instanceof IStructuredSelection) {
-			IStructuredSelection selection= (IStructuredSelection) sel;
-
+		if (sel instanceof IStructuredSelection selection) {
 			if (selection.size() == 1) {
 				Object element = selection.getFirstElement();
-				if (element instanceof IBreakpointContainer) {
-					IBreakpointContainer container = (IBreakpointContainer)element;
+				if (element instanceof IBreakpointContainer container) {
 					IAdaptable category = container.getCategory();
 					if (category instanceof WorkingSetCategory) {
 						IWorkingSet set = ((WorkingSetCategory)category).getWorkingSet();

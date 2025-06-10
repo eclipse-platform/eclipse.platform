@@ -30,15 +30,17 @@ public class PinMemoryBlockAction implements IViewActionDelegate {
 
 	@Override
 	public void init(IViewPart view) {
-		if (view instanceof MemoryView)
+		if (view instanceof MemoryView) {
 			fView = (MemoryView) view;
+		}
 
 	}
 
 	@Override
 	public void run(IAction action) {
-		if (fView == null)
+		if (fView == null) {
 			return;
+		}
 
 		boolean pin = !fView.isPinMBDisplay();
 		fView.setPinMBDisplay(pin);

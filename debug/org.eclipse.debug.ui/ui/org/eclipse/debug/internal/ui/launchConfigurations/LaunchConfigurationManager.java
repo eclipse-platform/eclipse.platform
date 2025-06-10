@@ -936,8 +936,7 @@ public class LaunchConfigurationManager implements ILaunchListener, ISavePartici
 	 * @since 3.3
 	 */
 	public ILaunchConfiguration isSharedConfig(Object receiver) {
-		if(receiver instanceof IFile) {
-			IFile file = (IFile) receiver;
+		if(receiver instanceof IFile file) {
 			String ext = file.getFileExtension();
 			if(ext == null) {
 				return null;
@@ -949,8 +948,7 @@ public class LaunchConfigurationManager implements ILaunchListener, ISavePartici
 				}
 			}
 		}
-		else if(receiver instanceof IFileEditorInput) {
-			IFileEditorInput input = (IFileEditorInput) receiver;
+		else if(receiver instanceof IFileEditorInput input) {
 			return isSharedConfig(input.getFile());
 		}
 		else if(receiver instanceof IEditorPart) {
@@ -1188,7 +1186,7 @@ public class LaunchConfigurationManager implements ILaunchListener, ISavePartici
 	/**
 	 * Sets the given launch to be the most recent launch in the launch
 	 * history (for applicable histories).
-	 * 
+	 *
 	 * @param launch the launch to prepend to its associated histories
 	 * @since 3.3
 	 */

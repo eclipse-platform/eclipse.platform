@@ -71,8 +71,7 @@ public class RunToLineAction extends Action implements IUpdate {
 
 		protected void contextActivated(ISelection selection) {
 			fTargetElement = null;
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
+			if (selection instanceof IStructuredSelection ss) {
 				if (ss.size() == 1) {
 					fTargetElement = (ISuspendResume) DebugPlugin.getAdapter(ss.getFirstElement(), ISuspendResume.class);
 				}
@@ -212,8 +211,7 @@ public class RunToLineAction extends Action implements IUpdate {
 		if (fDocument != null) {
 			return fDocument;
 		}
-		if (fActivePart instanceof ITextEditor) {
-			ITextEditor editor = (ITextEditor) fActivePart;
+		if (fActivePart instanceof ITextEditor editor) {
 			IDocumentProvider provider = editor.getDocumentProvider();
 			if (provider != null) {
 				return provider.getDocument(editor.getEditorInput());

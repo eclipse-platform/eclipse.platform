@@ -360,14 +360,14 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 									if (errors == null) {
 										errors = new ArrayList<>(configs.length);
 									}
-									errors.add(new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), MessageFormat.format(WizardMessages.ExportLaunchConfigurationsWizardPage_19, new Object[] { launchConfig.getName() }), null));
+									errors.add(new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), MessageFormat.format(WizardMessages.ExportLaunchConfigurationsWizardPage_19, launchConfig.getName()), null));
 								} else {
 									newfile = new File(destpath.append(file.getName()).toOSString());
 									if(newfile.exists() && !overwrite) {
 										if(nowall) {
 											continue;
 										}
-										dialog = new MessageDialog(DebugUIPlugin.getShell(), WizardMessages.ExportLaunchConfigurationsWizardPage_11, null, MessageFormat.format(WizardMessages.ExportLaunchConfigurationsWizardPage_12, new Object[] { file.getName() }), MessageDialog.QUESTION, new String[] {
+										dialog = new MessageDialog(DebugUIPlugin.getShell(), WizardMessages.ExportLaunchConfigurationsWizardPage_11, null, MessageFormat.format(WizardMessages.ExportLaunchConfigurationsWizardPage_12, file.getName()), MessageDialog.QUESTION, new String[] {
 											WizardMessages.ExportLaunchConfigurationsWizardPage_13,
 											WizardMessages.ExportLaunchConfigurationsWizardPage_14,
 											WizardMessages.ExportLaunchConfigurationsWizardPage_15,

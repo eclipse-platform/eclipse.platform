@@ -30,8 +30,9 @@ public class MemoryBlockLabelProvider extends DebugElementLabelProvider {
 			throws CoreException {
 		Object element = elementPath.getLastSegment();
 
-		if (element instanceof IMemoryBlock)
+		if (element instanceof IMemoryBlock) {
 			return getLabel((IMemoryBlock)element);
+		}
 
 		return super.getLabel(elementPath, presentationContext, columnId);
 	}
@@ -43,8 +44,9 @@ public class MemoryBlockLabelProvider extends DebugElementLabelProvider {
 
 		Object element = elementPath.getLastSegment();
 
-		if (element instanceof IMemoryBlock)
+		if (element instanceof IMemoryBlock) {
 			return DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_OBJS_VARIABLE);
+		}
 
 		return super.getImageDescriptor(elementPath, presentationContext, columnId);
 	}

@@ -154,10 +154,9 @@ public class LogicalStructureCache {
 		}
 
 		public void dispose() {
-			if (!(fType instanceof ILogicalStructureTypeDelegate3)) {
+			if (!(fType instanceof ILogicalStructureTypeDelegate3 typeDelegate)) {
 				return;
 			}
-			ILogicalStructureTypeDelegate3 typeDelegate = (ILogicalStructureTypeDelegate3) fType;
 			synchronized (fKnownValues) {
 				fKnownValues.values().forEach(typeDelegate::releaseValue);
 			}

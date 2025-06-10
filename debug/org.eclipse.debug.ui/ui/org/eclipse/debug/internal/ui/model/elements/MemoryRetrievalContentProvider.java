@@ -48,8 +48,9 @@ public class MemoryRetrievalContentProvider extends ElementContentProvider {
 		{
 			if (parent instanceof IMemoryBlockRetrieval)
 			{
-				if (((IMemoryBlockRetrieval)parent).supportsStorageRetrieval())
+				if (((IMemoryBlockRetrieval)parent).supportsStorageRetrieval()) {
 					return DebugPlugin.getDefault().getMemoryBlockManager().getMemoryBlocks((IMemoryBlockRetrieval)parent);
+				}
 			}
 		}
 		return EMPTY;

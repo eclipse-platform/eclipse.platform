@@ -48,8 +48,9 @@ public class MemorySegment extends PlatformObject {
 
 	public boolean containsAddress(BigInteger address)
 	{
-		if (getAddress().compareTo(address) <= 0 && getEndAddress().compareTo(address) >= 0)
+		if (getAddress().compareTo(address) <= 0 && getEndAddress().compareTo(address) >= 0) {
 			return true;
+		}
 		return false;
 	}
 
@@ -69,11 +70,13 @@ public class MemorySegment extends PlatformObject {
 	 */
 	public MemoryByte[] getBytes(int start, int length)
 	{
-		if (start < 0)
+		if (start < 0) {
 			return new MemoryByte[0];
+		}
 
-		if (start + length > fBytes.length)
+		if (start + length > fBytes.length) {
 			return new MemoryByte[0];
+		}
 
 		ArrayList<MemoryByte> ret = new ArrayList<>();
 

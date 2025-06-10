@@ -69,9 +69,8 @@ public class RunToLineHandler implements IDebugEventSetListener, IBreakpointMana
 	public void handleDebugEvents(DebugEvent[] events) {
 		for (DebugEvent event : events) {
 			Object source= event.getSource();
-			if (source instanceof IThread && event.getKind() == DebugEvent.SUSPEND &&
+			if (source instanceof IThread thread && event.getKind() == DebugEvent.SUSPEND &&
 					event.getDetail() == DebugEvent.BREAKPOINT) {
-				IThread thread = (IThread) source;
 				IDebugTarget suspendee = thread.getAdapter(IDebugTarget.class);
 				if (fTarget.equals(suspendee)) {
 					// cleanup if the breakpoint was hit or not

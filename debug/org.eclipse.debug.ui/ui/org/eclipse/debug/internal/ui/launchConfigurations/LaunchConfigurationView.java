@@ -456,9 +456,7 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 	 */
 	public void updateFilterLabel() {
 		LaunchConfigurationViewer viewer = (LaunchConfigurationViewer) getViewer();
-		fFilteredNotice.setText(MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationView_0, new Object[] {
-				Integer.toString(viewer.getNonFilteredChildCount()),
-				Integer.toString(viewer.getTotalChildCount()) }));
+		fFilteredNotice.setText(MessageFormat.format(LaunchConfigurationsMessages.LaunchConfigurationView_0, Integer.toString(viewer.getNonFilteredChildCount()), Integer.toString(viewer.getTotalChildCount())));
 	}
 
 	/**

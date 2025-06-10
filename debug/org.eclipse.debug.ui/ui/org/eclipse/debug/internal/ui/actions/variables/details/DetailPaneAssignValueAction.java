@@ -80,8 +80,7 @@ public class DetailPaneAssignValueAction extends Action{
 				variable.setValue(newValueExpression);
 			} else {
 				if (shell != null) {
-					DebugUIPlugin.errorDialog(shell, ActionMessages.DetailPaneAssignValueAction_2, MessageFormat.format(ActionMessages.DetailPaneAssignValueAction_3, new Object[] {
-							newValueExpression, variable.getName() }), new StatusInfo(IStatus.ERROR, ActionMessages.DetailPaneAssignValueAction_4)); //
+					DebugUIPlugin.errorDialog(shell, ActionMessages.DetailPaneAssignValueAction_2, MessageFormat.format(ActionMessages.DetailPaneAssignValueAction_3, newValueExpression, variable.getName()), new StatusInfo(IStatus.ERROR, ActionMessages.DetailPaneAssignValueAction_4)); //
 				}
 			}
 		} catch (DebugException e) {

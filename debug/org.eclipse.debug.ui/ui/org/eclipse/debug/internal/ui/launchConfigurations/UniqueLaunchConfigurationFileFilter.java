@@ -42,9 +42,7 @@ public class UniqueLaunchConfigurationFileFilter extends ViewerFilter {
 
 		Map<String, List<ILaunchConfiguration>> configPathMap = new HashMap<>();
 		for (Object element : elements) {
-			if (element instanceof ILaunchConfiguration) {
-				ILaunchConfiguration config = (ILaunchConfiguration) element;
-
+			if (element instanceof ILaunchConfiguration config) {
 				String path = toLaunchFileLocation(config);
 				if (!configPathMap.containsKey(path)) {
 					configPathMap.put(path, new ArrayList<>());

@@ -26,8 +26,9 @@ public class MemoryBlockLabelAdapter extends AsynchronousDebugLabelAdapter {
 
 	@Override
 	protected ImageDescriptor[] getImageDescriptors(Object element, IPresentationContext context) throws CoreException {
-		if (element instanceof IMemoryBlock)
+		if (element instanceof IMemoryBlock) {
 			return new ImageDescriptor[]{DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_OBJS_VARIABLE)};
+		}
 
 		return new ImageDescriptor[0];
 	}
@@ -54,8 +55,9 @@ public class MemoryBlockLabelAdapter extends AsynchronousDebugLabelAdapter {
 
 	@Override
 	protected String[] getLabels(Object element, IPresentationContext context) throws CoreException {
-		if (element instanceof IMemoryBlock)
+		if (element instanceof IMemoryBlock) {
 			return new String[]{getLabel((IMemoryBlock)element)};
+		}
 		return super.getLabels(element, context);
 	}
 }

@@ -228,8 +228,7 @@ public class ExpressionDropAdapter extends ViewerDropAdapter {
 			Iterator<?> iterator = selection.iterator();
 			while (iterator.hasNext()) {
 				Object element = iterator.next();
-				if (element instanceof IVariable){
-					IVariable variable = (IVariable) element;
+				if (element instanceof IVariable variable){
 					if (variable instanceof IndexedVariablePartition) {
 						break;
 					} else if (manager.hasWatchExpressionDelegate(variable.getModelIdentifier()) && isFactoryEnabled(variable)) {
@@ -292,8 +291,7 @@ public class ExpressionDropAdapter extends ViewerDropAdapter {
 	 */
 	private boolean isFactoryEnabled(IVariable variable) {
 		IWatchExpressionFactoryAdapter factory = getFactory(variable);
-		if (factory instanceof IWatchExpressionFactoryAdapterExtension) {
-			IWatchExpressionFactoryAdapterExtension ext = (IWatchExpressionFactoryAdapterExtension) factory;
+		if (factory instanceof IWatchExpressionFactoryAdapterExtension ext) {
 			return ext.canCreateWatchExpression(variable);
 		}
 		return true;
@@ -442,8 +440,7 @@ public class ExpressionDropAdapter extends ViewerDropAdapter {
 	 */
 	private String createExpressionString(Object element) {
 		try {
-			if (element instanceof IVariable) {
-				IVariable variable = (IVariable)element;
+			if (element instanceof IVariable variable) {
 				IWatchExpressionFactoryAdapter factory = getFactory(variable);
 				String exp = variable.getName();
 				if (factory != null) {

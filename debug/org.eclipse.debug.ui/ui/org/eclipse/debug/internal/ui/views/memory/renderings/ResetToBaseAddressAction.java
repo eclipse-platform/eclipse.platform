@@ -57,7 +57,7 @@ public class ResetToBaseAddressAction extends Action {
 		// they have migrated to the new #resetRendering API
 		Class<? extends AbstractBaseTableRendering> renderingClass = fRendering.getClass();
 		try {
-			Method method = renderingClass.getMethod("reset", new Class[] {}); //$NON-NLS-1$
+			Method method = renderingClass.getMethod("reset"); //$NON-NLS-1$
 			if (method.getDeclaringClass().equals(AbstractTableRendering.class)) {
 				// client has not overrode, call new method
 				try {

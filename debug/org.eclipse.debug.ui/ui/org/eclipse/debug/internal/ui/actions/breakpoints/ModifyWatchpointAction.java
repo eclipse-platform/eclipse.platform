@@ -71,8 +71,7 @@ public abstract class ModifyWatchpointAction implements IObjectActionDelegate, I
 				Iterator<?> iterator = fWatchpoints.iterator();
 				while (iterator.hasNext()) {
 					Object next = iterator.next();
-					if (next instanceof IWatchpoint) {
-						IWatchpoint watchpoint = (IWatchpoint) next;
+					if (next instanceof IWatchpoint watchpoint) {
 						action.setChecked(isChecked(watchpoint));
 						if (!isEnabled(watchpoint)) {
 							action.setEnabled(false);

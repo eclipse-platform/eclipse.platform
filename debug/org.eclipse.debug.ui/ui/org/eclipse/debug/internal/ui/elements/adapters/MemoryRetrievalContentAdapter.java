@@ -43,8 +43,9 @@ public class MemoryRetrievalContentAdapter extends AsynchronousContentAdapter{
 		{
 			if (element instanceof IMemoryBlockRetrieval)
 			{
-				if (((IMemoryBlockRetrieval)element).supportsStorageRetrieval())
+				if (((IMemoryBlockRetrieval)element).supportsStorageRetrieval()) {
 					return DebugPlugin.getDefault().getMemoryBlockManager().getMemoryBlocks((IMemoryBlockRetrieval)element).length > 0;
+				}
 			}
 		}
 		return false;

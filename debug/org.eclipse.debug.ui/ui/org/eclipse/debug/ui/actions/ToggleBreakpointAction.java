@@ -168,8 +168,7 @@ public class ToggleBreakpointAction extends Action implements IUpdate {
 			return null;
 		}
 
-		if (fPart instanceof ITextEditor) {
-			ITextEditor editor= (ITextEditor)fPart;
+		if (fPart instanceof ITextEditor editor) {
 			IDocumentProvider provider = editor.getDocumentProvider();
 			if (provider != null) {
 				return provider.getDocument(editor.getEditorInput());
@@ -199,8 +198,7 @@ public class ToggleBreakpointAction extends Action implements IUpdate {
 						setEnabled(false);
 						return;
 					}
-					if (adapter instanceof IToggleBreakpointsTargetExtension) {
-						IToggleBreakpointsTargetExtension extension = (IToggleBreakpointsTargetExtension) adapter;
+					if (adapter instanceof IToggleBreakpointsTargetExtension extension) {
 						if (extension.canToggleBreakpoints(fPart, selection)) {
 							setEnabled(true);
 							return;

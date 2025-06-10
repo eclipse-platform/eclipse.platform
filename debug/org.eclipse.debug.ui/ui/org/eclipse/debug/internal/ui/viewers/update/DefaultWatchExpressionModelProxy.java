@@ -102,9 +102,8 @@ public class DefaultWatchExpressionModelProxy extends DefaultExpressionModelProx
 	 */
 	protected void contextActivated(ISelection selection) {
 		if (fWindow != null) {
-			if (selection instanceof IStructuredSelection) {
+			if (selection instanceof IStructuredSelection ss) {
 				IDebugElement context = null;
-				IStructuredSelection ss = (IStructuredSelection)selection;
 				if (ss.size() < 2) {
 					Object object = ss.getFirstElement();
 					if (object instanceof IDebugElement) {

@@ -228,7 +228,7 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 	private int fPreBuffer;
 	private int fPostBuffer;
 
-	private class EventHandleLock
+	private static class EventHandleLock
 	{
 		Object fOwner;
 
@@ -396,11 +396,10 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 			return;
 		}
 
-		if (!(evtSrc instanceof IMemoryRendering)) {
+		if (!(evtSrc instanceof IMemoryRendering rendering)) {
 			return;
 		}
 
-		IMemoryRendering rendering = (IMemoryRendering)evtSrc;
 		IMemoryBlock memoryBlock = rendering.getMemoryBlock();
 
 		// do not handle event from renderings displaying other memory blocks
@@ -3299,11 +3298,10 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 		}
 
 		Object data = rowItem.getData();
-		if (data == null || !(data instanceof TableRenderingLine)) {
+		if (data == null || !(data instanceof TableRenderingLine line)) {
 			return new MemoryByte[0];
 		}
 
-		TableRenderingLine line = (TableRenderingLine)data;
 		int offset = (col-1)*(getAddressableUnitPerColumn()*getAddressableSize());
 		int end = offset + (getAddressableUnitPerColumn()*getAddressableSize());
 
@@ -3748,9 +3746,7 @@ public abstract class AbstractTableRendering extends AbstractBaseTableRendering 
 			BigInteger address = getAddressFromTableItem(item, col);
 			if (address != null) {
 				Object data = item.getData();
-				if (data instanceof TableRenderingLine) {
-					TableRenderingLine line = (TableRenderingLine) data;
-
+				if (data instanceof TableRenderingLine line) {
 					if (col > 0) {
 						int start = (col - 1) * getBytesPerColumn();
 						int end = start + getBytesPerColumn();

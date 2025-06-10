@@ -166,8 +166,7 @@ public class ImportBreakpointsOperation implements IRunnableWithProgress {
 				try (Reader reader = new InputStreamReader(new FileInputStream(fFileName), StandardCharsets.UTF_8)) {
 					memento = XMLMemento.createReadRoot(reader);
 				} catch (FileNotFoundException e) {
-					throw new InvocationTargetException(e, MessageFormat.format("Breakpoint import file not found: {0}", new Object[] { //$NON-NLS-1$
-							fFileName }));
+					throw new InvocationTargetException(e, MessageFormat.format("Breakpoint import file not found: {0}", fFileName)); //$NON-NLS-1$
 				} catch (IOException e) {
 					throw new InvocationTargetException(e);
 				}
@@ -228,7 +227,7 @@ public class ImportBreakpointsOperation implements IRunnableWithProgress {
 		}
 		catch(CoreException ce) {
 			throw new InvocationTargetException(ce,
- MessageFormat.format("There was a problem importing breakpoints from: {0}", new Object[] { fFileName })); //$NON-NLS-1$
+ MessageFormat.format("There was a problem importing breakpoints from: {0}", fFileName)); //$NON-NLS-1$
 		}
 		finally {
 			localmonitor.done();

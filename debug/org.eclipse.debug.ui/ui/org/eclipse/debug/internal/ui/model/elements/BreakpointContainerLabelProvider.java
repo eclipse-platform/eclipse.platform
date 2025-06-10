@@ -50,8 +50,7 @@ public class BreakpointContainerLabelProvider extends DebugElementLabelProvider 
 	@Override
 	public boolean getChecked(TreePath path, IPresentationContext presentationContext) throws CoreException {
 		Object lastSegment = path.getLastSegment();
-		if (lastSegment instanceof IBreakpointContainer) {
-			IBreakpointContainer container = (IBreakpointContainer) lastSegment;
+		if (lastSegment instanceof IBreakpointContainer container) {
 			for (IBreakpoint breakpoint : container.getBreakpoints()) {
 				if (breakpoint.isEnabled()) {
 					return true;
@@ -67,9 +66,7 @@ public class BreakpointContainerLabelProvider extends DebugElementLabelProvider 
 	@Override
 	public boolean getGrayed(TreePath path, IPresentationContext presentationContext) throws CoreException {
 		Object lastSegment = path.getLastSegment();
-		if (lastSegment instanceof IBreakpointContainer) {
-			IBreakpointContainer container = (IBreakpointContainer) lastSegment;
-
+		if (lastSegment instanceof IBreakpointContainer container) {
 			// Return true, gray if some breakpoints are enabled and some are disabled.
 			// return false if all breakpoints are either disabled or all are enabled.
 			boolean hasEnabled = false;

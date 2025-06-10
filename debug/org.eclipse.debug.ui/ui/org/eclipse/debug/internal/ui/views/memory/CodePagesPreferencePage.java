@@ -54,8 +54,9 @@ public class CodePagesPreferencePage extends FieldEditorPreferencePage {
 	@Override
 	public boolean performOk() {
 
-		if (fAsciiCodePage == null || fEbcdicCodePage == null)
+		if (fAsciiCodePage == null || fEbcdicCodePage == null) {
 			return super.performOk();
+		}
 
 		// check that the codepages are supported
 		String asciiCodePage = fAsciiCodePage.getStringValue();

@@ -289,7 +289,7 @@ public class VirtualFindAction extends Action implements IUpdate {
 			DebugUIPlugin.errorDialog(
 				fClientViewer.getControl().getShell(),
 				ActionMessages.VirtualFindAction_0,
- MessageFormat.format(ActionMessages.VirtualFindAction_1, new Object[] { labelProvider.getText(findItem) }),
+ MessageFormat.format(ActionMessages.VirtualFindAction_1, labelProvider.getText(findItem)),
 				new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), ActionMessages.VirtualFindAction_1));
 		}
 	}

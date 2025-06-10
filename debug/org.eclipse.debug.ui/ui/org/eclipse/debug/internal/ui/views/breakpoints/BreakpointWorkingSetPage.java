@@ -109,7 +109,7 @@ public class BreakpointWorkingSetPage extends WizardPage implements IWorkingSetP
 				BreakpointsViewer viewer = fTViewer.getViewer();
 				viewer.getTree().selectAll();
 				viewer.setCheckedElements(viewer.getStructuredSelection().toArray());
-				viewer.setGrayedElements(new Object[] {});
+				viewer.setGrayedElements();
 				viewer.getTree().deselectAll();
 				validateInput();
 			}

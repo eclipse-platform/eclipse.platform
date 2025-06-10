@@ -96,8 +96,9 @@ public class MemoryViewTreeModelContentProvider extends TreeModelContentProvider
 		Object input = getViewer().getInput();
 		if (input instanceof IMemoryBlockRetrieval) {
 			IMemoryBlock[] memoryBlocks = DebugPlugin.getDefault().getMemoryBlockManager().getMemoryBlocks((IMemoryBlockRetrieval) input);
-			if (memoryBlocks.length == 1)
+			if (memoryBlocks.length == 1) {
 				return true;
+			}
 		}
 		return false;
 	}

@@ -222,8 +222,7 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 		} else {
 			label= ActionMessages.AbstractLaunchHistoryAction_4;
 		}
-		return MessageFormat.format(ActionMessages.AbstractLaunchHistoryAction_0, new Object[] {
-				label, launchName });
+		return MessageFormat.format(ActionMessages.AbstractLaunchHistoryAction_0, label, launchName);
 	}
 
 	/**
@@ -249,11 +248,10 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 			label = ActionMessages.AbstractLaunchHistoryAction_4;
 		}
 		if(IInternalDebugCoreConstants.EMPTY_STRING.equals(launchName)) {
-			return MessageFormat.format(ActionMessages.AbstractLaunchHistoryAction_5, new Object[] { label });
+			return MessageFormat.format(ActionMessages.AbstractLaunchHistoryAction_5, label);
 		}
 		else {
-			return MessageFormat.format(ActionMessages.AbstractLaunchHistoryAction_0, new Object[] {
-					label, launchName });
+			return MessageFormat.format(ActionMessages.AbstractLaunchHistoryAction_0, label, launchName);
 		}
 	}
 
