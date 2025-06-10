@@ -80,10 +80,12 @@ public class FilePatch2 implements IFilePatch2 {
 	 * @param diffProject the parent project
 	 */
 	void setProject(DiffProject diffProject) {
-		if (this.fProject == diffProject)
+		if (this.fProject == diffProject) {
 			return;
-		if (this.fProject != null)
+		}
+		if (this.fProject != null) {
 			this.fProject.remove(this);
+		}
 		this.fProject= diffProject;
 	}
 
@@ -95,14 +97,17 @@ public class FilePatch2 implements IFilePatch2 {
 	 */
 	public IPath getPath(boolean reverse) {
 		if (getDiffType(reverse) == ADDITION) {
-			if (reverse)
+			if (reverse) {
 				return this.fOldPath;
+			}
 			return this.fNewPath;
 		}
-		if (reverse && this.fNewPath != null)
+		if (reverse && this.fNewPath != null) {
 			return this.fNewPath;
-		if (this.fOldPath != null)
+		}
+		if (this.fOldPath != null) {
 			return this.fOldPath;
+		}
 		return this.fNewPath;
 	}
 
@@ -178,8 +183,9 @@ public class FilePatch2 implements IFilePatch2 {
 	 */
 	public IPath getStrippedPath(int strip, boolean reverse) {
 		IPath path= getPath(reverse);
-		if (strip > 0 && strip < path.segmentCount())
+		if (strip > 0 && strip < path.segmentCount()) {
 			path= path.removeFirstSegments(strip);
+		}
 		return path;
 	}
 
@@ -191,10 +197,12 @@ public class FilePatch2 implements IFilePatch2 {
 		//Update prefix count - go through all of the diffs and find the smallest
 		//path segment contained in all diffs.
 		int length= 99;
-		if (this.fOldPath != null)
+		if (this.fOldPath != null) {
 			length= Math.min(length, this.fOldPath.segmentCount());
-		if (this.fNewPath != null)
+		}
+		if (this.fNewPath != null) {
 			length= Math.min(length, this.fNewPath.segmentCount());
+		}
 		return length;
 	}
 
@@ -212,8 +220,9 @@ public class FilePatch2 implements IFilePatch2 {
 	}
 
 	public FilePatch2 asRelativeDiff() {
-		if (this.fProject == null)
+		if (this.fProject == null) {
 			return this;
+		}
 		IPath adjustedOldPath = null;
 		if (this.fOldPath != null) {
 			adjustedOldPath = new Path(null, this.fProject.getName()).append(this.fOldPath);
