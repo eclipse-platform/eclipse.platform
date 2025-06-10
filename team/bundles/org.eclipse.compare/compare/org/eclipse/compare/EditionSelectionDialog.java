@@ -170,8 +170,6 @@ public class EditionSelectionDialog extends ResizableDialog {
 	// Configuration options
 	private CompareConfiguration fCompareConfiguration;
 	private ArrayList<Object> fArrayList= new ArrayList<>();
-	/** use a side-by-side compare viewer */
-	private boolean fCompare= true;
 	/** show target on right hand side */
 	private boolean fTargetIsRight= false;
 	/** hide entries which have identical content */
@@ -1114,13 +1112,6 @@ public class EditionSelectionDialog extends ResizableDialog {
 	}
 
 	private void setInput(Object input) {
-		if (!fCompare && input instanceof ICompareInput) {
-			ICompareInput ci= (ICompareInput) input;
-			if (fTargetIsRight)
-				input= ci.getLeft();
-			else
-				input= ci.getRight();
-		}
 		fContentPane.setInput(input);
 		if (fStructuredComparePane != null)
 			fStructuredComparePane.setInput(input);
