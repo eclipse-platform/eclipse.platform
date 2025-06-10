@@ -228,11 +228,13 @@ protected Control createContents(Composite parent){
 				if(!new File(home).exists()){
 					while(true){
 						int foo=home.lastIndexOf(java.io.File.separator, home.length());
-						if(foo==-1)
+						if(foo==-1) {
 							break;
+						}
 						home=home.substring(0, foo);
-						if(new File(home).exists())
+						if(new File(home).exists()) {
 							break;
+						}
 					}
 				}
 
@@ -268,8 +270,9 @@ protected Control createContents(Composite parent){
 				}
 
 				for (String foo : files) {
-					if(keys.length()!=0)
+					if(keys.length()!=0) {
 						keys=keys+","; //$NON-NLS-1$
+					}
 					keys=keys+dir+foo;
 				}
 				privateKeyText.setText(keys);
@@ -353,8 +356,9 @@ protected Control createContents(Composite parent){
 		keyCommentText.setLayoutData(gd);
 
 		keyCommentText.addModifyListener(e -> {
-			if(kpair==null)
+			if(kpair==null) {
 				return;
+			}
 			try{
 				ByteArrayOutputStream out=new ByteArrayOutputStream();
 				kpairComment = keyCommentText.getText();
@@ -575,8 +579,9 @@ protected Control createContents(Composite parent){
 						}
 						Display.getDefault().syncExec(prompt);
 						String passphrase=prompt.getPassphrase();
-						if(passphrase==null)
+						if(passphrase==null) {
 							break;
+						}
 						if(_kpair.decrypt(passphrase)){
 							break;
 						}
@@ -601,8 +606,9 @@ protected Control createContents(Composite parent){
 						byte[] buf=new byte[(int)f.length()];
 						while(i<buf.length){
 							int j=fis.read(buf, i, buf.length-i);
-							if(j<=0)
+							if(j<=0) {
 								break;
+							}
 							i+=j;
 						}
 						String pubkey=new String(buf);
@@ -648,8 +654,9 @@ protected Control createContents(Composite parent){
 		keyExport.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){
-				if(kpair==null)
+				if(kpair==null) {
 					return;
+				}
 
 				setErrorMessage(null);
 
@@ -717,8 +724,9 @@ protected Control createContents(Composite parent){
 		saveKeyPair.addSelectionListener(new SelectionAdapter(){
 			@Override
 	public void widgetSelected(SelectionEvent e){
-				if(kpair==null)
+				if(kpair==null) {
 					return;
+				}
 
 				String pass=keyPassphrase1Text.getText();
 				/*
@@ -800,8 +808,9 @@ protected Control createContents(Composite parent){
 					if (!pkey.isAbsolute()) {
 						pkey = new java.io.File(home, p);
 					}
-					if(pkey.equals(mypkey))
+					if(pkey.equals(mypkey)) {
 						return;
+					}
 				}
 
 				if(dir.equals(home)){
@@ -809,8 +818,9 @@ protected Control createContents(Composite parent){
 				else{
 					dir+=java.io.File.separator;
 				}
-				if(pkeys.length()>0)
+				if(pkeys.length()>0) {
 					pkeys+=","; //$NON-NLS-1$
+				}
 				pkeys=pkeys+dir+fd.getFileName();
 				privateKeyText.setText(pkeys);
 			}
@@ -918,8 +928,9 @@ protected Control createContents(Composite parent){
 
 			@Override
 			public Object[] getElements(Object inputElement){
-				if(inputElement==null)
+				if(inputElement==null) {
 					return null;
+				}
 				return (Object[])inputElement;
 			}
 		});

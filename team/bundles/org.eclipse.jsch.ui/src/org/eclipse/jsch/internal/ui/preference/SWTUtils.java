@@ -89,8 +89,9 @@ public class SWTUtils {
 		final Group group= new Group(parent, SWT.NONE);
 		group.setFont(parent.getFont());
 		group.setLayoutData(createHFillGridData());
-		if (text != null)
+		if (text != null) {
 			group.setText(text);
+		}
 		group.setLayout(createGridLayout(rows, new PixelConverter(parent), margins));
 		return group;
 	}
@@ -103,8 +104,9 @@ public class SWTUtils {
 		final Group group= new Group(parent, SWT.NONE);
 		group.setFont(parent.getFont());
 		group.setLayoutData(createHVFillGridData());
-		if (text != null)
+		if (text != null) {
 			group.setText(text);
+		}
 		group.setLayout(createGridLayout(rows, new PixelConverter(parent), margins));
 		return group;
 	}
@@ -164,8 +166,9 @@ public class SWTUtils {
 
 	public static Label createLabel(Composite parent, String message, int span) {
 		final Label label= new Label(parent, SWT.WRAP);
-		if (message != null)
+		if (message != null) {
 			label.setText(message);
+		}
 		label.setLayoutData(createHFillGridData(span));
 		return label;
 	}
@@ -232,8 +235,9 @@ public class SWTUtils {
 		int minimum= converter.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		for (int i = start; i <= end; i++) {
 			final int length= controls[i].computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-			if (minimum < length)
+			if (minimum < length) {
 				minimum= length;
+			}
 		}
 		return minimum;
 	}
@@ -256,8 +260,9 @@ public class SWTUtils {
 		int minimum= 0;
 		for (String string : strings) {
 			final int length = converter.convertWidthInCharsToPixels(string.length());
-			if (minimum < length)
+			if (minimum < length) {
 				minimum= length;
+			}
 		}
 		return minimum;
 	}
