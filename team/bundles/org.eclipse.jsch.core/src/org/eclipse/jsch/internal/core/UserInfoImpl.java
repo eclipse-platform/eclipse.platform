@@ -131,8 +131,9 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
       if(_password!=null){
         password=_password;
         // Cache the password with the repository location on the memory.
-        if(location!=null)
+        if(location!=null){
           location.setPassword(password);
+        }
       }
       return _password!=null;
     }
@@ -166,8 +167,9 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
       }
       String[] result=authenticator.promptForKeyboradInteractive(location,
           destination, name, instruction, prompt, echo);
-      if(result==null)
+      if(result==null){
         return null; // canceled
+      }
       if(result.length==1&&prompt.length==1
           &&prompt[0].trim().equalsIgnoreCase("password:")){ //$NON-NLS-1$
         password=result[0];

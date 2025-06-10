@@ -128,8 +128,9 @@ public class JSchCorePlugin extends Plugin{
           break;
         }
       }
-      if(irepo!=null)
+      if(irepo!=null){
         break;
+      }
     }
 
     if(irepo!=null){
@@ -147,8 +148,9 @@ public class JSchCorePlugin extends Plugin{
     IExtension[] extensions=Platform.getExtensionRegistry().getExtensionPoint(
         JSchCorePlugin.ID, JSchCorePlugin.PT_IDENTITYREPOSITORY).getExtensions();
 
-    if(extensions.length==0)
+    if(extensions.length==0){
       return new IdentityRepository[0];
+    }
 
     ArrayList<IdentityRepository> tmp = new ArrayList<>();
     for(IExtension extension : extensions) {
@@ -189,8 +191,9 @@ public class JSchCorePlugin extends Plugin{
     Preferences preferences=JSchCorePlugin.getPlugin().getPluginPreferences();
     String ssh_home=preferences.getString(IConstants.KEY_SSH2HOME);
 
-    if(ssh_home.length()==0)
+    if(ssh_home.length()==0){
       ssh_home=PreferenceInitializer.SSH_HOME_DEFAULT;
+    }
 
     java.io.File file=new java.io.File(ssh_home, "known_hosts"); //$NON-NLS-1$
     try{

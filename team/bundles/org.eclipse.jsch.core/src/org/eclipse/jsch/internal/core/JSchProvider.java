@@ -56,12 +56,14 @@ class JSchProvider implements IJSchService {
 
     if(uinfo==null){
       IUserAuthenticator authenticator=getPluggedInAuthenticator();
-      if(authenticator==null)
+      if(authenticator==null){
         authenticator=new NullUserAuthenticator();
+      }
       uinfo=new UserInfoImpl(location, authenticator, (JSchCorePlugin.getPlugin().getTimeout() * 1000));
     }
-    if(uinfo!=null)
+    if(uinfo!=null){
       session.setUserInfo(uinfo);
+    }
 
     return session;
   }
@@ -77,8 +79,9 @@ class JSchProvider implements IJSchService {
 
     UserInfo ui=session.getUserInfo();
 
-    if(ui!=null && (ui instanceof UserInfoImpl))
+    if(ui!=null && (ui instanceof UserInfoImpl)){
       ((UserInfoImpl)ui).aboutToConnect();
+    }
 
     try{
       session.connect();
@@ -107,13 +110,15 @@ class JSchProvider implements IJSchService {
         return;
       }
 
-      if(session.isConnected())
+      if(session.isConnected()){
         session.disconnect();
+      }
       throw e;
     }
 
-    if(ui!=null && (ui instanceof UserInfoImpl))
+    if(ui!=null && (ui instanceof UserInfoImpl)){
       ((UserInfoImpl)ui).connectionMade();
+    }
   }
 
   @Override
@@ -122,8 +127,9 @@ class JSchProvider implements IJSchService {
   }
 
   public static IJSchService getInstance(){
-    if (instance == null)
+    if (instance == null){
       instance = new JSchProvider();
+    }
     return instance;
   }
 
@@ -149,8 +155,9 @@ class JSchProvider implements IJSchService {
   private IUserAuthenticator getPluggedInAuthenticator(){
     IExtension[] extensions=Platform.getExtensionRegistry().getExtensionPoint(
         JSchCorePlugin.ID, JSchCorePlugin.PT_AUTHENTICATOR).getExtensions();
-    if(extensions.length==0)
+    if(extensions.length==0){
       return null;
+    }
     IExtension extension=extensions[0];
     IConfigurationElement[] configs=extension.getConfigurationElements();
     if(configs.length==0){
@@ -187,8 +194,9 @@ class JSchProvider implements IJSchService {
   }
 
   private boolean hasPromptExceededTimeout(Session session){
-    if(session.getUserInfo()==null || !(session.getUserInfo() instanceof UserInfoImpl))
+    if(session.getUserInfo()==null || !(session.getUserInfo() instanceof UserInfoImpl)){
       return false;
+    }
     return ((UserInfoImpl)session.getUserInfo()).hasPromptExceededTimeout();
   }
 
