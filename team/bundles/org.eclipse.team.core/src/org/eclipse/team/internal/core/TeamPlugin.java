@@ -170,12 +170,13 @@ final public class TeamPlugin extends Plugin {
 		try {
 			return contentTypeManager.getDescriptionFor(stream, name, IContentDescription.ALL);
 		} finally {
-			if (stream != null)
+			if (stream != null) {
 				try {
 					stream.close();
 				} catch (IOException e) {
 					// Ignore exceptions on close
 				}
+			}
 		}
 	}
 

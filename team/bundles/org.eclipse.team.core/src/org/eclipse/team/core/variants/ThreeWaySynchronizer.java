@@ -134,9 +134,13 @@ public class ThreeWaySynchronizer {
 		try {
 			beginOperation();
 			byte[] syncBytes = internalGetSyncBytes(resource);
-			if (syncBytes == null) return null;
+			if (syncBytes == null) {
+				return null;
+			}
 			byte[] baseBytes = getSlot(syncBytes, 1);
-			if (baseBytes == null || baseBytes.length == 0) return null;
+			if (baseBytes == null || baseBytes.length == 0) {
+				return null;
+			}
 			return baseBytes;
 		} finally {
 			endOperation();
@@ -176,7 +180,9 @@ public class ThreeWaySynchronizer {
 				endOperation();
 			}
 		} finally {
-			if (rule != null) endBatching(rule, null);
+			if (rule != null) {
+				endBatching(rule, null);
+			}
 		}
 	}
 
@@ -210,9 +216,13 @@ public class ThreeWaySynchronizer {
 		try {
 			beginOperation();
 			byte[] syncBytes = internalGetSyncBytes(resource);
-			if (syncBytes == null) return null;
+			if (syncBytes == null) {
+				return null;
+			}
 			byte[] remoteBytes = getSlot(syncBytes, 2);
-			if (remoteBytes == null || remoteBytes.length == 0) return null;
+			if (remoteBytes == null || remoteBytes.length == 0) {
+				return null;
+			}
 			return remoteBytes;
 		} finally {
 			endOperation();
@@ -249,7 +259,9 @@ public class ThreeWaySynchronizer {
 					syncBytes = toBytes(slots);
 				} else {
 					byte[] currentRemote = getSlot(syncBytes, 2);
-					if (equals(remoteBytes, currentRemote)) return false;
+					if (equals(remoteBytes, currentRemote)) {
+						return false;
+					}
 					syncBytes = setSlot(syncBytes, 2, remoteBytes);
 				}
 				internalSetSyncBytes(resource, syncBytes);
@@ -259,7 +271,9 @@ public class ThreeWaySynchronizer {
 				endOperation();
 			}
 		} finally {
-			if (rule != null) endBatching(rule, null);
+			if (rule != null) {
+				endBatching(rule, null);
+			}
 		}
 	}
 
@@ -279,7 +293,9 @@ public class ThreeWaySynchronizer {
 				byte[] syncBytes = internalGetSyncBytes(resource);
 				if (syncBytes != null) {
 					String currentRemote = new String(getSlot(syncBytes, 2));
-					if (currentRemote.length() == 0) return false;
+					if (currentRemote.length() == 0) {
+						return false;
+					}
 					syncBytes = setSlot(syncBytes, 2, new byte[0]);
 					internalSetSyncBytes(resource, syncBytes);
 					batchingLock.resourceChanged(resource);
@@ -290,7 +306,9 @@ public class ThreeWaySynchronizer {
 				endOperation();
 			}
 		} finally {
-			if (rule != null) endBatching(rule, null);
+			if (rule != null) {
+				endBatching(rule, null);
+			}
 		}
 	}
 
@@ -379,7 +397,9 @@ public class ThreeWaySynchronizer {
 				endOperation();
 			}
 		} finally {
-			if (rule != null) endBatching(rule, null);
+			if (rule != null) {
+				endBatching(rule, null);
+			}
 		}
 	}
 
@@ -400,7 +420,9 @@ public class ThreeWaySynchronizer {
 		} catch (CoreException e) {
 			throw TeamException.asTeamException(e);
 		} finally {
-			if (rule != null) endBatching(rule, Policy.subMonitorFor(monitor, 10));
+			if (rule != null) {
+				endBatching(rule, Policy.subMonitorFor(monitor, 10));
+			}
 			monitor.done();
 		}
 	}
@@ -434,7 +456,9 @@ public class ThreeWaySynchronizer {
 	 */
 	private byte[] internalGetSyncBytes(IResource resource) throws TeamException {
 		byte[] bytes = cache.getBytes(resource);
-		if (bytes != null && equals(bytes, IGNORED_BYTES)) return null;
+		if (bytes != null && equals(bytes, IGNORED_BYTES)) {
+			return null;
+		}
 		return bytes;
 	}
 
@@ -461,9 +485,13 @@ public class ThreeWaySynchronizer {
 		try {
 			beginOperation();
 			byte[] syncBytes = internalGetSyncBytes(resource);
-			if (syncBytes == null) return -1;
+			if (syncBytes == null) {
+				return -1;
+			}
 			byte[] bytes = getSlot(syncBytes, 0);
-			if (bytes == null || bytes.length == 0) return -1;
+			if (bytes == null || bytes.length == 0) {
+				return -1;
+			}
 			return Long.parseLong(new String(bytes));
 		} finally {
 			endOperation();
@@ -471,9 +499,13 @@ public class ThreeWaySynchronizer {
 	}
 
 	private boolean equals(byte[] syncBytes, byte[] oldBytes) {
-		if (syncBytes.length != oldBytes.length) return false;
+		if (syncBytes.length != oldBytes.length) {
+			return false;
+		}
 		for (int i = 0; i < oldBytes.length; i++) {
-			if (oldBytes[i] != syncBytes[i]) return false;
+			if (oldBytes[i] != syncBytes[i]) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -487,7 +519,9 @@ public class ThreeWaySynchronizer {
 		// the workspace lock is held. If we obtain our lock, there is
 		// a chance of deadlock. It is OK if we don't as we are still protected
 		// by scheduling rules and the workspace lock.
-		if (ResourcesPlugin.getWorkspace().isTreeLocked()) return;
+		if (ResourcesPlugin.getWorkspace().isTreeLocked()) {
+			return;
+		}
 		lock.acquire();
 	}
 
@@ -496,7 +530,9 @@ public class ThreeWaySynchronizer {
 	 */
 	private void endOperation() {
 		// See beginOperation() for a description of why the lock is not obtained when the tree is locked
-		if (ResourcesPlugin.getWorkspace().isTreeLocked()) return;
+		if (ResourcesPlugin.getWorkspace().isTreeLocked()) {
+			return;
+		}
 		lock.release();
 	}
 

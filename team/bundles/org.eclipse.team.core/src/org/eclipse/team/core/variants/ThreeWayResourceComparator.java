@@ -53,7 +53,9 @@ public class ThreeWayResourceComparator implements IResourceVariantComparator {
 				return false;
 			}
 			// If there is no base, the local cannot match the remote
-			if (getSynchronizer().getBaseBytes(local) == null) return false;
+			if (getSynchronizer().getBaseBytes(local) == null) {
+				return false;
+			}
 			// Otherwise, assume they are the same if the remote equals the base
 			return equals(getSynchronizer().getBaseBytes(local), getBytes(remote));
 		} catch (TeamException e) {
@@ -83,9 +85,13 @@ public class ThreeWayResourceComparator implements IResourceVariantComparator {
 	}
 
 	private boolean equals(byte[] syncBytes, byte[] oldBytes) {
-		if (syncBytes.length != oldBytes.length) return false;
+		if (syncBytes.length != oldBytes.length) {
+			return false;
+		}
 		for (int i = 0; i < oldBytes.length; i++) {
-			if (oldBytes[i] != syncBytes[i]) return false;
+			if (oldBytes[i] != syncBytes[i]) {
+				return false;
+			}
 		}
 		return true;
 	}

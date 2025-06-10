@@ -36,7 +36,9 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 	@Override
 	public boolean select(SyncInfo info) {
 		// if there's no set, the resource is included
-		if (isEmpty()) return true;
+		if (isEmpty()) {
+			return true;
+		}
 		return isIncluded(info.getLocal());
 	}
 
@@ -60,7 +62,9 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 
 	public IResource[] getRoots(Subscriber subscriber) {
 		IResource[] roots = subscriber.roots();
-		if (isEmpty()) return roots;
+		if (isEmpty()) {
+			return roots;
+		}
 
 		// filter the roots by the selected working set
 		Set<IResource> result = new HashSet<>();

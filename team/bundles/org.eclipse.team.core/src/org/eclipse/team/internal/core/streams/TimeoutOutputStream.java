@@ -83,13 +83,17 @@ public class TimeoutOutputStream extends FilterOutputStream {
 	public void close() throws IOException {
 		Thread oldThread;
 		synchronized (this) {
-			if (thread == null) return;
+			if (thread == null) {
+				return;
+			}
 			oldThread = thread;
 			closeRequested = true;
 			thread.interrupt();
 			checkError();
 		}
-		if (closeTimeout == -1) return;
+		if (closeTimeout == -1) {
+			return;
+		}
 		try {
 			oldThread.join(closeTimeout);
 		} catch (InterruptedException e) {
@@ -97,7 +101,9 @@ public class TimeoutOutputStream extends FilterOutputStream {
 		}
 		synchronized (this) {
 			checkError();
-			if (thread != null) throw new InterruptedIOException();
+			if (thread != null) {
+				throw new InterruptedIOException();
+			}
 		}
 	}
 
@@ -166,8 +172,12 @@ public class TimeoutOutputStream extends FilterOutputStream {
 	 */
 	private void syncCommit(boolean partial) throws IOException {
 		checkError(); // check errors before allowing the addition of new bytes
-		if (partial && length != iobuffer.length || length == 0) return;
-		if (waitingForClose) throw new IOException(Messages.TimeoutOutputStream_cannotWriteToStream);
+		if (partial && length != iobuffer.length || length == 0) {
+			return;
+		}
+		if (waitingForClose) {
+			throw new IOException(Messages.TimeoutOutputStream_cannotWriteToStream);
+		}
 		notify();
 		try {
 			wait(writeTimeout);
@@ -175,7 +185,9 @@ public class TimeoutOutputStream extends FilterOutputStream {
 			Thread.currentThread().interrupt(); // we weren't expecting to be interrupted
 		}
 		checkError(); // check errors before allowing the addition of new bytes
-		if (partial && length != iobuffer.length || length == 0) return;
+		if (partial && length != iobuffer.length || length == 0) {
+			return;
+		}
 		throw new InterruptedIOException();
 	}
 
@@ -237,8 +249,12 @@ public class TimeoutOutputStream extends FilterOutputStream {
 			int off, len;
 			synchronized (this) {
 				for (;;) {
-					if (closeRequested && length == 0) return; // quit signal
-					if (length != 0 || flushRequested) break;
+					if (closeRequested && length == 0) {
+						return; // quit signal
+					}
+					if (length != 0 || flushRequested) {
+						break;
+					}
 					try {
 						wait();
 					} catch (InterruptedException e) {
@@ -247,7 +263,9 @@ public class TimeoutOutputStream extends FilterOutputStream {
 				}
 				off = head;
 				len = iobuffer.length - head;
-				if (len > length) len = length;
+				if (len > length) {
+					len = length;
+				}
 				if (flushRequested && bytesUntilFlush < 0) {
 					flushRequested = false;
 					bytesUntilFlush = length;

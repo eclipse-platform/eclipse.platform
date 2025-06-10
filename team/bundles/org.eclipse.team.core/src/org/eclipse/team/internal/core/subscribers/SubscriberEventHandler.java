@@ -207,9 +207,10 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 			} catch (TeamException e) {
 				// We only handle the exception if the resource's project is accessible.
 				// The project close delta will clean up.
-				if (resource.getProject().isAccessible())
+				if (resource.getProject().isAccessible()) {
 					handleException(e, resource, ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(
 							Messages.SubscriberEventHandler_8, resource.getFullPath().toString(), e.getMessage()));
+				}
 			}
 		}
 

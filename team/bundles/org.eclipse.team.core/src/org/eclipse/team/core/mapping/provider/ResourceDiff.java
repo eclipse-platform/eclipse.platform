@@ -77,11 +77,11 @@ public class ResourceDiff extends TwoWayDiff implements IResourceDiff {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
+		}
 		if (super.equals(obj)) {
-			if (obj instanceof ResourceDiff) {
-				ResourceDiff other = (ResourceDiff) obj;
+			if (obj instanceof ResourceDiff other) {
 				return getResource().equals(getResource())
 					&& revisionsEqual(getBeforeState(), other.getBeforeState())
 					&& revisionsEqual(getAfterState(), other.getAfterState());
@@ -91,10 +91,12 @@ public class ResourceDiff extends TwoWayDiff implements IResourceDiff {
 	}
 
 	private boolean revisionsEqual(IFileRevision revision, IFileRevision revision2) {
-		if (revision == null)
+		if (revision == null) {
 			return revision2 == null;
-		if (revision2 == null)
+		}
+		if (revision2 == null) {
 			return false;
+		}
 		return revision.equals(revision2);
 	}
 

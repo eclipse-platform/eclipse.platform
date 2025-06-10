@@ -110,7 +110,9 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 		} finally {
 			monitor.done();
 		}
-		if (changedResources == null) return new IResource[0];
+		if (changedResources == null) {
+			return new IResource[0];
+		}
 		return changedResources;
 	}
 
@@ -185,7 +187,9 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 		if (changed) {
 			changedResources.add(local);
 		}
-		if (depth == IResource.DEPTH_ZERO) return;
+		if (depth == IResource.DEPTH_ZERO) {
+			return;
+		}
 		Map<IResource, IResourceVariant> children = mergedMembers(local, remote, monitor);
 		for (IResource localChild : children.keySet()) {
 			IResourceVariant remoteChild = children.get(localChild);

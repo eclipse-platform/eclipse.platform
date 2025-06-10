@@ -45,8 +45,9 @@ public abstract class ChangeSetManager {
 	 * @param set the set whose title has changed
 	 */
 	protected void fireNameChangedEvent(final ChangeSet set) {
-		if (initializing)
+		if (initializing) {
 			return;
+		}
 		if (contains(set)) {
 			Object[] listeners = getListeners();
 			for (Object l : listeners) {
@@ -72,8 +73,9 @@ public abstract class ChangeSetManager {
 	 * @param defaultSet the new default
 	 */
 	protected void fireDefaultChangedEvent(final ChangeSet oldSet, final ChangeSet defaultSet) {
-		if (initializing)
+		if (initializing) {
 			return;
+		}
 		Object[] listeners = getListeners();
 		for (Object l : listeners) {
 			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
@@ -106,8 +108,9 @@ public abstract class ChangeSetManager {
 	 * @param set the added set
 	 */
 	protected void handleSetAdded(final ChangeSet set) {
-		if (initializing)
+		if (initializing) {
 			return;
+		}
 		Object[] listeners = getListeners();
 		for (Object l : listeners) {
 			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
@@ -140,8 +143,9 @@ public abstract class ChangeSetManager {
 	 * @param set the removed set
 	 */
 	protected void handleSetRemoved(final ChangeSet set) {
-		if (initializing)
+		if (initializing) {
 			return;
+		}
 		Object[] listeners = getListeners();
 		for (Object l : listeners) {
 			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
@@ -203,8 +207,9 @@ public abstract class ChangeSetManager {
 	 * Fire resource change notifications to the listeners.
 	 */
 	protected void fireResourcesChangedEvent(final ChangeSet changeSet, final IPath[] allAffectedResources) {
-		if (initializing)
+		if (initializing) {
 			return;
+		}
 		Object[] listeners = getListeners();
 		for (Object l : listeners) {
 			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;

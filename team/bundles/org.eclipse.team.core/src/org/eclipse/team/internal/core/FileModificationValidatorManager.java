@@ -68,12 +68,15 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 			//if no provider or no validator use the default validator
 			if (provider != null) {
 				FileModificationValidator v = provider.getFileModificationValidator2();
-				if (v != null) validator = v;
+				if (v != null) {
+					validator = v;
+				}
 			}
 
 			IStatus status = validator.validateEdit(filesArray, context);
-			if(!status.isOK())
+			if(!status.isOK()) {
 				allOK = false;
+			}
 
 			returnStati.add(status);
 		}
@@ -94,7 +97,9 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 		//if no provider or no validator use the default validator
 		if (provider != null) {
 			FileModificationValidator v = provider.getFileModificationValidator2();
-			if (v != null) validator = v;
+			if (v != null) {
+				validator = v;
+			}
 		}
 
 		return validator.validateSave(file);

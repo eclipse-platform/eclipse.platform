@@ -30,8 +30,9 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 	public ResourceMapping getMapping(Object modelObject) {
 		ResourceMapping[] mappings = getMappings();
 		for (ResourceMapping mapping : mappings) {
-			if (mapping.getModelObject().equals(modelObject))
+			if (mapping.getModelObject().equals(modelObject)) {
 				return mapping;
+			}
 		}
 		return null;
 	}
@@ -55,8 +56,9 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 		CompoundResourceTraversal traversal = new CompoundResourceTraversal();
 		for (ResourceMapping mapping : mappings) {
 			ResourceTraversal[] traversals = getTraversals(mapping);
-			if (traversals != null)
+			if (traversals != null) {
 				traversal.addTraversals(traversals);
+			}
 		}
 		return traversal.asTraversals();
 	}
@@ -67,8 +69,9 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 		ResourceMapping[] mappings = getMappings();
 		for (ResourceMapping mapping : mappings) {
 			ModelProvider modelProvider = mapping.getModelProvider();
-			if (modelProvider != null)
+			if (modelProvider != null) {
 				result.add(modelProvider);
+			}
 		}
 		return result.toArray(new ModelProvider[result.size()]);
 	}

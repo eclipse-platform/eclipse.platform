@@ -53,8 +53,9 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 	public boolean contains(IResource resource) {
 		ResourceTraversal[] traversals = getTraversals();
 		for (ResourceTraversal traversal : traversals) {
-			if (traversal.contains(resource))
+			if (traversal.contains(resource)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -69,11 +70,13 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 			IResource root = (IResource) iter.next();
 			IPath rootPath = root.getFullPath();
 			// If there is a higher resource in the collection, skip this one
-			if (rootPath.isPrefixOf(resourcePath))
+			if (rootPath.isPrefixOf(resourcePath)) {
 				return;
+			}
 			// If there are lower resources, remove them
-			if (resourcePath.isPrefixOf(rootPath))
+			if (resourcePath.isPrefixOf(rootPath)) {
 				iter.remove();
+			}
 		}
 		// There were no higher resources, so add this one
 		roots.add(resource);

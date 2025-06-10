@@ -60,8 +60,9 @@ public class LocalFileHistory extends FileHistory {
 				}
 			}
 		}
-		if (fileRevision == null)
+		if (fileRevision == null) {
 			return new IFileRevision[0];
+		}
 		return new IFileRevision[] {fileRevision};
 	}
 
@@ -79,8 +80,9 @@ public class LocalFileHistory extends FileHistory {
 
 	@Override
 	public IFileRevision[] getFileRevisions() {
-		if (revisions == null)
+		if (revisions == null) {
 			return new IFileRevision[0];
+		}
 		return revisions;
 	}
 
@@ -114,8 +116,9 @@ public class LocalFileHistory extends FileHistory {
 			for (int i = 0; i < fileStates.length; i++) {
 				revisions[i] = new LocalFileRevision(fileStates[i]);
 			}
-			if (currentRevision != null)
+			if (currentRevision != null) {
 				revisions[fileStates.length] = currentRevision;
+			}
 		} catch (CoreException e) {
 			throw TeamException.asTeamException(e);
 		} finally {

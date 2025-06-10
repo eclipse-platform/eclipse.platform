@@ -70,8 +70,9 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 
 	@Override
 	public ResourceMapping[] getMappings() {
-		if (mappingsToTraversals.isEmpty())
+		if (mappingsToTraversals.isEmpty()) {
 			return inputMappings;
+		}
 		return mappingsToTraversals.keySet().toArray(new ResourceMapping[mappingsToTraversals.size()]);
 	}
 
@@ -125,8 +126,7 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 	@Override
 	public IProject[] getProjects() {
 		ResourceMappingContext context = getContext();
-		if (context instanceof RemoteResourceMappingContext) {
-			RemoteResourceMappingContext rrmc = (RemoteResourceMappingContext) context;
+		if (context instanceof RemoteResourceMappingContext rrmc) {
 			return rrmc.getProjects();
 		}
 		return ResourcesPlugin.getWorkspace().getRoot().getProjects();

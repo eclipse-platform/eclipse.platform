@@ -113,8 +113,9 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	@Override
 	public boolean isModified(IFile file) throws CoreException {
 		IDiff diff = getDiff(file);
-		if (diff != null)
+		if (diff != null) {
 			return isModified(diff);
+		}
 		return false;
 	}
 
@@ -125,8 +126,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	public boolean isModified(IDiff diff) {
 		if (diff != null) {
-			if (diff instanceof IThreeWayDiff) {
-				IThreeWayDiff twd = (IThreeWayDiff) diff;
+			if (diff instanceof IThreeWayDiff twd) {
 				int dir = twd.getDirection();
 				return dir == IThreeWayDiff.OUTGOING || dir == IThreeWayDiff.CONFLICTING;
 			} else {
@@ -323,8 +323,9 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	protected void save(Preferences prefs) {
 		// No need to save the sets if the manager has never been initialized
-		if (!isInitialized())
+		if (!isInitialized()) {
 			return;
+		}
 		// Clear the persisted state before saving the new state
 		try {
 			String[] oldSetNames = prefs.childrenNames();

@@ -58,7 +58,9 @@ public class ResourceVariantCacheEntry {
 	}
 
 	public InputStream getContents() throws TeamException {
-		if (state != READY) return null;
+		if (state != READY) {
+			return null;
+		}
 		registerHit();
 		File ioFile = getFile();
 		try {
@@ -167,7 +169,9 @@ public class ResourceVariantCacheEntry {
 	 * @see org.eclipse.team.core.sync.ICacheEntry#getSize()
 	 */
 	public long getSize() {
-		if (state != READY) return 0;
+		if (state != READY) {
+			return 0;
+		}
 		File ioFile = getFile();
 		if (ioFile.exists()) {
 			return ioFile.length();

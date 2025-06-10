@@ -50,7 +50,9 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 
 	@Override
 	public SyncInfo getSyncInfo(IResource resource) throws TeamException {
-		if (!isSupervised(resource)) return null;
+		if (!isSupervised(resource)) {
+			return null;
+		}
 		IResourceVariant remoteResource = getRemoteTree().getResourceVariant(resource);
 		IResourceVariant baseResource;
 		if (getResourceComparator().isThreeWay()) {

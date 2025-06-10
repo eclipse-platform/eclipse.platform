@@ -62,7 +62,9 @@ public class SyncByteConverter {
 		for (int j = 0; j < syncBytes.length; j++) {
 			if (syncBytes[j] == SEPARATOR_BYTE) {
 				count++;
-				if (count == slot) return j;
+				if (count == slot) {
+					return j;
+				}
 			}
 		}
 		return -1;
@@ -75,8 +77,12 @@ public class SyncByteConverter {
 	private static int getOffsetOfDelimiter(byte[] bytes, byte delimiter, int start, int n) {
 		int count = 0;
 		for (int i = start; i < bytes.length; i++) {
-			if (bytes[i] == delimiter) count++;
-			if (count == n) return i;
+			if (bytes[i] == delimiter) {
+				count++;
+			}
+			if (count == n) {
+				return i;
+			}
 		}
 		// the Nth delimiter was not found
 		return -1;
@@ -98,7 +104,9 @@ public class SyncByteConverter {
 			start = -1;
 		} else {
 			start = getOffsetOfDelimiter(bytes, delimiter, 0, index);
-			if (start == -1) return null;
+			if (start == -1) {
+				return null;
+			}
 		}
 		// Find the ending index
 		int end = getOffsetOfDelimiter(bytes, delimiter, start + 1, 1);

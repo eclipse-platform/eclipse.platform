@@ -131,16 +131,18 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				mappingLock.acquire();
 				RepositoryProvider existingProvider = null;
 
-				if(project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY) != null)
+				if(project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY) != null) {
 					existingProvider = getProvider(project);	// get the real one, not the nature one
+				}
 
 				//if we already have a provider, and its the same ID, we're ok
 				//if the ID's differ, unmap the existing.
 				if(existingProvider != null) {
-					if(existingProvider.getID().equals(id))
+					if(existingProvider.getID().equals(id)) {
 						return;	//nothing to do
-					else
+					} else {
 						unmap(project);
+					}
 				}
 
 				// Create the provider as a session property before adding the persistent
@@ -196,9 +198,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	private static RepositoryProvider mapNewProvider(final IProject project, final String id) throws TeamException {
 		final RepositoryProvider provider = newProvider(id); 	// instantiate via extension point
 
-		if(provider == null)
+		if(provider == null) {
 			throw new TeamException(
 					NLS.bind(Messages.RepositoryProvider_couldNotInstantiateProvider, project.getName(), id));
+		}
 
 		// validate that either the provider supports linked resources or the project has no linked resources
 		if (!provider.canHandleLinkedResourceURI()) {
@@ -207,17 +210,17 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 					if (proxy.isLinked()) {
 						if (!provider.canHandleLinkedResources() ||
 								proxy.requestFullPath().segmentCount() > 2 ||
-								!EFS.SCHEME_FILE.equals(proxy.requestResource().getLocationURI().getScheme()))
+								!EFS.SCHEME_FILE.equals(proxy.requestResource().getLocationURI().getScheme())) {
 							throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID,
 									IResourceStatus.LINKING_NOT_ALLOWED,
 									NLS.bind(Messages.RepositoryProvider_linkedURIsExist, project.getName(), id),
 									null));
+						}
 					}
 					return true;
 				}, IResource.NONE);
 			} catch (CoreException e) {
-				if (e instanceof TeamException) {
-					TeamException te = (TeamException) e;
+				if (e instanceof TeamException te) {
 					throw te;
 				}
 				throw new TeamException(e);
@@ -308,12 +311,16 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 							null);
 				}
 
-				if (provider != null) provider.deconfigure();
+				if (provider != null) {
+					provider.deconfigure();
+				}
 
 				project.setSessionProperty(TeamPlugin.PROVIDER_PROP_KEY, null);
 				project.setPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY, null);
 
-				if (provider != null) provider.deconfigured();
+				if (provider != null) {
+					provider.deconfigured();
+				}
 
 				//removing the nature would've caused project description delta, so trigger one
 				project.touch(null);
@@ -440,8 +447,9 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 */
 	public FileModificationValidator getFileModificationValidator2() {
 		final IFileModificationValidator fileModificationValidator = getFileModificationValidator();
-		if (fileModificationValidator == null)
+		if (fileModificationValidator == null) {
 			return null;
+		}
 		return new FileModificationValidator() {
 			@Override
 			public IStatus validateSave(IFile file) {
@@ -452,10 +460,11 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 					FileModificationValidationContext context) {
 				// Extract the shell from the context in order to invoke the old API
 				Object shell;
-				if (context == null)
+				if (context == null) {
 					shell = null;
-				else
+				} else {
 					shell = context.getShell();
+				}
 				return fileModificationValidator.validateEdit(files, shell);
 			}
 		};
@@ -538,18 +547,21 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				//-----------------------------
 				//First, look for the session property
 				RepositoryProvider provider = lookupProviderProp(project);
-				if(provider != null)
+				if(provider != null) {
 					return provider;
+				}
 				// Do a quick check to see it the project is known to be unshared.
 				// This is done to avoid accessing the persistent property store
-				if (isMarkedAsUnshared(project))
+				if (isMarkedAsUnshared(project)) {
 					return null;
+				}
 
 				// -----------------------------
 				//Next, check if it has the ID as a persistent property, if yes then instantiate provider
 				String id = project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY);
-				if(id != null)
+				if(id != null) {
 					return mapExistingProvider(project, id);
+				}
 
 				//Couldn't find using new method, fall back to lookup using natures for backwards compatibility
 				//-----------------------------
@@ -613,8 +625,9 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				}
 				// Do a quick check to see it the project is known to be unshared.
 				// This is done to avoid accessing the persistent property store
-				if (isMarkedAsUnshared(project))
+				if (isMarkedAsUnshared(project)) {
 					return null;
+				}
 
 				// There isn't one so check the persistent property
 				String existingID = project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY);
@@ -635,8 +648,9 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				// if the nature id given is not in the team set then return
 				// null.
 				IProjectNatureDescriptor desc = ResourcesPlugin.getWorkspace().getNatureDescriptor(id);
-				if(desc == null) //for backwards compatibility, may not have any nature by that ID
+				if(desc == null) { //for backwards compatibility, may not have any nature by that ID
 					return null;
+				}
 
 				String[] setIds = desc.getNatureSetIds();
 				for (String setId : setIds) {
@@ -671,16 +685,22 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * @since 2.1
 	 */
 	public static boolean isShared(IProject project) {
-		if (!project.isAccessible()) return false;
+		if (!project.isAccessible()) {
+			return false;
+		}
 		try {
-			if (lookupProviderProp(project) != null) return true;
+			if (lookupProviderProp(project) != null) {
+				return true;
+			}
 			// Do a quick check to see it the project is known to be unshared.
 			// This is done to avoid accessing the persistent property store
-			if (isMarkedAsUnshared(project))
+			if (isMarkedAsUnshared(project)) {
 				return false;
+			}
 			boolean shared = project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY) != null;
-			if (!shared)
+			if (!shared) {
 				markAsUnshared(project);
+			}
 			return shared;
 		} catch (CoreException e) {
 			TeamPlugin.log(e);
@@ -907,8 +927,9 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 */
 	public final Subscriber getSubscriber() {
 		RepositoryProviderType type = RepositoryProviderType.getProviderType(getID());
-		if (type != null)
+		if (type != null) {
 			return type.getSubscriber();
+		}
 		return null;
 	}
 }

@@ -52,11 +52,13 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 	@Override
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
 		IFile[] readOnlyFiles = getReadOnly(files);
-		if (readOnlyFiles.length == 0)
+		if (readOnlyFiles.length == 0) {
 			return Status.OK_STATUS;
+		}
 		synchronized (this) {
-			if (uiValidator == null)
+			if (uiValidator == null) {
 				uiValidator = loadUIValidator();
+			}
 		}
 		if (uiValidator != null) {
 			return uiValidator.validateEdit(files, context);
@@ -75,8 +77,9 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 
 		for (int i = 0; i < files.length; i++) {
 			stati[i] = getDefaultStatus(files[i]);
-			if(! stati[i].isOK())
+			if(! stati[i].isOK()) {
 				allOK = false;
+			}
 		}
 
 		return new MultiStatus(TeamPlugin.ID,
@@ -99,11 +102,13 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 
 	@Override
 	public IStatus validateSave(IFile file) {
-		if (!file.isReadOnly())
+		if (!file.isReadOnly()) {
 			return Status.OK_STATUS;
+		}
 		synchronized (this) {
-			if (uiValidator == null)
+			if (uiValidator == null) {
 				uiValidator = loadUIValidator();
+			}
 		}
 		if (uiValidator != null) {
 			return uiValidator.validateSave(file);

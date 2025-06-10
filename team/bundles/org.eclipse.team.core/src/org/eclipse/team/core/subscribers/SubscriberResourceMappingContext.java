@@ -81,7 +81,9 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 			ensureRefreshed(resource, IResource.DEPTH_ONE, NONE, monitor);
 			SyncInfo syncInfo = subscriber.getSyncInfo(resource);
 			validateRemote(resource, syncInfo);
-			if (syncInfo == null) return false;
+			if (syncInfo == null) {
+				return false;
+			}
 			int direction = SyncInfo.getDirection(syncInfo.getKind());
 			return direction == SyncInfo.INCOMING || direction == SyncInfo.CONFLICTING;
 		} finally {
@@ -92,7 +94,9 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	@Override
 	public boolean hasLocalChange(IResource resource, IProgressMonitor monitor) throws CoreException {
 		SyncInfo syncInfo = subscriber.getSyncInfo(resource);
-		if (syncInfo == null) return false;
+		if (syncInfo == null) {
+			return false;
+		}
 		int direction = SyncInfo.getDirection(syncInfo.getKind());
 		return direction == SyncInfo.OUTGOING || direction == SyncInfo.CONFLICTING;
 	}
@@ -198,14 +202,17 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 		if (autoRefresh) {
 			if (depth == IResource.DEPTH_INFINITE) {
 				// If the resource or a parent was refreshed deeply, no need to do it again
-				if (wasRefreshedDeeply(resource))
+				if (wasRefreshedDeeply(resource)) {
 					return;
+				}
 				// if the resource is a file, a shallow refresh is enough
-				if (resource.getType() == IResource.FILE && wasRefreshedShallow(resource))
+				if (resource.getType() == IResource.FILE && wasRefreshedShallow(resource)) {
 					return;
+				}
 			} else {
-				if (wasRefreshedShallow(resource))
+				if (wasRefreshedShallow(resource)) {
 					return;
+				}
 			}
 			refresh(new IResource[] { resource }, depth, flags, monitor);
 		}
@@ -217,12 +224,15 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	 * direct parent if the resource is a file.
 	 */
 	private boolean wasRefreshedShallow(IResource resource) {
-		if  (shallowRefresh.contains(resource))
+		if  (shallowRefresh.contains(resource)) {
 			return true;
-		if (resource.getType() == IResource.FILE && shallowRefresh.contains(resource.getParent()))
+		}
+		if (resource.getType() == IResource.FILE && shallowRefresh.contains(resource.getParent())) {
 			return true;
-		if (wasRefreshedDeeply(resource))
+		}
+		if (wasRefreshedDeeply(resource)) {
 			return true;
+		}
 		return false;
 	}
 
@@ -230,10 +240,12 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	 * Look for a deep refresh of the resource or any of it's parents
 	 */
 	private boolean wasRefreshedDeeply(IResource resource) {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return false;
-		if (deepRefresh.contains(resource))
+		}
+		if (deepRefresh.contains(resource)) {
 			return true;
+		}
 		return wasRefreshedDeeply(resource.getParent());
 	}
 
@@ -242,9 +254,13 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	 * remote resource if it is OK. A return of null indicates that there is no remote.
 	 */
 	private IResourceVariant validateRemote(IResource resource, SyncInfo syncInfo) throws CoreException {
-		if (syncInfo == null) return null;
+		if (syncInfo == null) {
+			return null;
+		}
 		IResourceVariant remote = syncInfo.getRemote();
-		if (remote == null) return null;
+		if (remote == null) {
+			return null;
+		}
 		return validateRemote(resource, remote);
 	}
 
@@ -263,9 +279,13 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	 * base resource if it is OK. A return of null indicates that there is no base.
 	 */
 	private IResourceVariant validateBase(IResource resource, SyncInfo syncInfo) throws CoreException {
-		if (syncInfo == null) return null;
+		if (syncInfo == null) {
+			return null;
+		}
 		IResourceVariant base = syncInfo.getBase();
-		if (base == null) return null;
+		if (base == null) {
+			return null;
+		}
 		return validateRemote(resource, base);
 	}
 

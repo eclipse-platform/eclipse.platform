@@ -61,7 +61,9 @@ public class InfiniteSubProgressMonitor extends SubProgressMonitor {
 
 	@Override
 	public void worked(int work) {
-		if (worked >= totalWork) return;
+		if (worked >= totalWork) {
+			return;
+		}
 		if (--nextProgress <= 0) {
 			super.worked(1);
 			worked++;

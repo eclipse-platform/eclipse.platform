@@ -126,8 +126,7 @@ public class BatchingLock {
 		}
 		private ISchedulingRule getRuleForResoure(ISchedulingRule resourceRule) {
 			ISchedulingRule rule;
-			if (resourceRule instanceof IResource) {
-				IResource resource = (IResource)resourceRule;
+			if (resourceRule instanceof IResource resource) {
 				if (resource.getType() == IResource.ROOT) {
 					// Never lock the whole workspace
 					rule = NULL_SCHEDULING_RULE;
@@ -265,7 +264,9 @@ public class BatchingLock {
 				Thread thisThread = Thread.currentThread();
 				infos.put(thisThread, info);
 				added = true;
-				if(Policy.DEBUG_THREADING) System.out.println("[" + thisThread.getName() + "] acquired batching lock on " + resourceRule); //$NON-NLS-1$ //$NON-NLS-2$
+				if(Policy.DEBUG_THREADING) {
+					System.out.println("[" + thisThread.getName() + "] acquired batching lock on " + resourceRule); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 			}
 		}
 		try {
@@ -309,7 +310,9 @@ public class BatchingLock {
 		synchronized (infos) {
 			if (!info.isNested()) {
 				Thread thisThread = Thread.currentThread();
-				if(Policy.DEBUG_THREADING) System.out.println("[" + thisThread.getName() + "] released batching lock"); //$NON-NLS-1$ //$NON-NLS-2$
+				if(Policy.DEBUG_THREADING) {
+					System.out.println("[" + thisThread.getName() + "] released batching lock"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 				infos.remove(thisThread);
 			}
 		}

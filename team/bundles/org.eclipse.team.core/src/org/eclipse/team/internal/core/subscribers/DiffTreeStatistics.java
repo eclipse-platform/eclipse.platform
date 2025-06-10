@@ -125,8 +125,7 @@ public class DiffTreeStatistics {
 
 	private int getState(IDiff delta) {
 		int state = delta.getKind();
-		if (delta instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) delta;
+		if (delta instanceof IThreeWayDiff twd) {
 			state |= twd.getDirection();
 		}
 		return state;

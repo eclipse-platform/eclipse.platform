@@ -61,13 +61,14 @@ public class ResourceVariantFileRevision extends FileRevision implements IAdapta
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IResourceVariant.class)
+		if (adapter == IResourceVariant.class) {
 			return (T) variant;
+		}
 		Object object = Platform.getAdapterManager().getAdapter(this, adapter);
-		if (object != null)
+		if (object != null) {
 			return (T) object;
-		if (variant instanceof IAdaptable ) {
-			IAdaptable  adaptable = (IAdaptable ) variant;
+		}
+		if (variant instanceof IAdaptable adaptable ) {
 			return adaptable.getAdapter(adapter);
 		}
 		return null;
@@ -75,8 +76,7 @@ public class ResourceVariantFileRevision extends FileRevision implements IAdapta
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof ResourceVariantFileRevision) {
-			ResourceVariantFileRevision fileRevision = (ResourceVariantFileRevision) obj;
+		if (obj instanceof ResourceVariantFileRevision fileRevision) {
 			return fileRevision.getVariant().equals(getVariant());
 		}
 		return false;

@@ -87,13 +87,17 @@ public class TimeoutInputStream extends FilterInputStream {
 	public void close() throws IOException {
 		Thread oldThread;
 		synchronized (this) {
-			if (thread == null) return;
+			if (thread == null) {
+				return;
+			}
 			oldThread = thread;
 			closeRequested = true;
 			thread.interrupt();
 			checkError();
 		}
-		if (closeTimeout == -1) return;
+		if (closeTimeout == -1) {
+			return;
+		}
 		try {
 			oldThread.join(closeTimeout);
 		} catch (InterruptedException e) {
@@ -101,7 +105,9 @@ public class TimeoutInputStream extends FilterInputStream {
 		}
 		synchronized (this) {
 			checkError();
-			if (thread != null) throw new InterruptedIOException();
+			if (thread != null) {
+				throw new InterruptedIOException();
+			}
 		}
 	}
 
@@ -111,7 +117,9 @@ public class TimeoutInputStream extends FilterInputStream {
 	 */
 	@Override
 	public synchronized int available() throws IOException {
-		if (length == 0) checkError();
+		if (length == 0) {
+			checkError();
+		}
 		return length > 0 ? length : 0;
 	}
 
@@ -123,9 +131,13 @@ public class TimeoutInputStream extends FilterInputStream {
 	 */
 	@Override
 	public synchronized int read() throws IOException {
-		if (! syncFill()) return -1; // EOF reached
+		if (! syncFill()) {
+			return -1; // EOF reached
+		}
 		int b = iobuffer[head++] & 255;
-		if (head == iobuffer.length) head = 0;
+		if (head == iobuffer.length) {
+			head = 0;
+		}
 		length--;
 		notify();
 		return b;
@@ -139,12 +151,18 @@ public class TimeoutInputStream extends FilterInputStream {
 	 */
 	@Override
 	public synchronized int read(byte[] buffer, int off, int len) throws IOException {
-		if (! syncFill()) return -1; // EOF reached
+		if (! syncFill()) {
+			return -1; // EOF reached
+		}
 		int pos = off;
-		if (len > length) len = length;
+		if (len > length) {
+			len = length;
+		}
 		while (len-- > 0) {
 			buffer[pos++] = iobuffer[head++];
-			if (head == iobuffer.length) head = 0;
+			if (head == iobuffer.length) {
+				head = 0;
+			}
 			length--;
 		}
 		notify();
@@ -162,7 +180,9 @@ public class TimeoutInputStream extends FilterInputStream {
 		long amount = 0;
 		try {
 			do {
-				if (! syncFill()) break; // EOF reached
+				if (! syncFill()) {
+					break; // EOF reached
+				}
 				int skip = (int) Math.min(count - amount, length);
 				head = (head + skip) % iobuffer.length;
 				length -= skip;
@@ -190,18 +210,26 @@ public class TimeoutInputStream extends FilterInputStream {
 	 * @throws InterruptedIOException if EOF not reached but no bytes are available
 	 */
 	private boolean syncFill() throws IOException {
-		if (length != 0) return true;
+		if (length != 0) {
+			return true;
+		}
 		checkError(); // check errors only after we have read all remaining bytes
-		if (waitingForClose) return false;
+		if (waitingForClose) {
+			return false;
+		}
 		notify();
 		try {
 			wait(readTimeout);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt(); // we weren't expecting to be interrupted
 		}
-		if (length != 0) return true;
+		if (length != 0) {
+			return true;
+		}
 		checkError(); // check errors only after we have read all remaining bytes
-		if (waitingForClose) return false;
+		if (waitingForClose) {
+			return false;
+		}
 		throw new InterruptedIOException();
 	}
 
@@ -262,7 +290,9 @@ public class TimeoutInputStream extends FilterInputStream {
 			int off, len;
 			synchronized (this) {
 				while (isBufferFull()) {
-					if (closeRequested) return; // quit signal
+					if (closeRequested) {
+						return; // quit signal
+					}
 					waitForRead();
 				}
 				off = (head + length) % iobuffer.length;
@@ -273,7 +303,9 @@ public class TimeoutInputStream extends FilterInputStream {
 				// the i/o operation might block without releasing the lock,
 				// so we do this outside of the synchronized block
 				count = in.read(iobuffer, off, len);
-				if (count == -1) return; // EOF encountered
+				if (count == -1) {
+					return; // EOF encountered
+				}
 			} catch (InterruptedIOException e) {
 				count = e.bytesTransferred; // keep partial transfer
 			}
@@ -317,7 +349,9 @@ public class TimeoutInputStream extends FilterInputStream {
 			int len = length;
 			while (len-- > 0) {
 				newBuffer[pos++] = iobuffer[head++];
-				if (head == iobuffer.length) head = 0;
+				if (head == iobuffer.length) {
+					head = 0;
+				}
 			}
 			iobuffer = newBuffer;
 			head = 0;
