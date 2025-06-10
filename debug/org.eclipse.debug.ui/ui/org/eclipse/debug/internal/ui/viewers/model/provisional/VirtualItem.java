@@ -75,7 +75,7 @@ public class VirtualItem {
 
 		@Override
 		public int compareTo(Object obj) {
-			return obj instanceof Index ? fIndexValue.compareTo(((Index)obj).fIndexValue) : 0;
+			return obj instanceof Index i ? fIndexValue.compareTo(i.fIndexValue) : 0;
 		}
 
 		@Override

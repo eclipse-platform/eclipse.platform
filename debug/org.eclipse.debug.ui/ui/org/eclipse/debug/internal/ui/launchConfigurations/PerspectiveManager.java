@@ -133,8 +133,7 @@ public class PerspectiveManager implements ILaunchListener, ISuspendTriggerListe
 				}
 				catch (CoreException e) {return false;}
 			}
-			else if(object instanceof PerspectiveContext) {
-				PerspectiveContext context = (PerspectiveContext) object;
+			else if(object instanceof PerspectiveContext context) {
 				type = context.getLaunchConfigurationType();
 				delegate = context.getLaunchDelegate();
 			}
@@ -385,7 +384,7 @@ public class PerspectiveManager implements ILaunchListener, ISuspendTriggerListe
 		} catch (WorkbenchException e) {
 			DebugUIPlugin.errorDialog(DebugUIPlugin.getShell(),
 			LaunchConfigurationsMessages.PerspectiveManager_Error_1,
- MessageFormat.format(LaunchConfigurationsMessages.PerspectiveManager_Unable_to_switch_to_perspective___0__2, new Object[] { id }),
+ MessageFormat.format(LaunchConfigurationsMessages.PerspectiveManager_Unable_to_switch_to_perspective___0__2, id),
 			e);
 		}
 	}
@@ -420,7 +419,7 @@ public class PerspectiveManager implements ILaunchListener, ISuspendTriggerListe
 	protected void switchFailed(final Throwable t, final String launchName) {
 		sync(() -> DebugUIPlugin.errorDialog(DebugUIPlugin.getShell(),
 				LaunchConfigurationsMessages.PerspectiveManager_Error_1,
- MessageFormat.format(LaunchConfigurationsMessages.PerspectiveManager_Unable_to_switch_perpsectives_as_specified_by_launch___0__4, new Object[] { launchName }),
+ MessageFormat.format(LaunchConfigurationsMessages.PerspectiveManager_Unable_to_switch_perpsectives_as_specified_by_launch___0__4, launchName),
 				t));
 	}
 

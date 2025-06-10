@@ -194,8 +194,7 @@ public class MemoryViewUtil {
 		}
 
 		// check if the object can adapt to a memory block retrieval
-		if (object instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) object;
+		if (object instanceof IAdaptable adaptable) {
 			retrieval = adaptable.getAdapter(IMemoryBlockRetrieval.class);
 		}
 
@@ -206,8 +205,7 @@ public class MemoryViewUtil {
 		}
 
 		// otherewise, default back to the debug target
-		if (retrieval == null && object instanceof IDebugElement) {
-			IDebugElement de = (IDebugElement) object;
+		if (retrieval == null && object instanceof IDebugElement de) {
 			retrieval = de.getDebugTarget();
 		}
 

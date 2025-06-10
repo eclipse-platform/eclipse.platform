@@ -56,14 +56,16 @@ public class DefaultEndianessAction implements IObjectActionDelegate {
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection == null)
+		if (selection == null) {
 			return;
+		}
 
 		if (selection instanceof IStructuredSelection)
 		{
 			Object obj = ((IStructuredSelection)selection).getFirstElement();
-			if (obj == null)
+			if (obj == null) {
 				return;
+			}
 
 			if (obj instanceof AbstractIntegerRendering)
 			{

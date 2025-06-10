@@ -126,8 +126,7 @@ public class ChildrenUpdate extends ViewerUpdateMonitor implements IChildrenUpda
 	 */
 	@Override
 	public synchronized boolean coalesce(ViewerUpdateMonitor request) {
-		if (request instanceof ChildrenUpdate) {
-			ChildrenUpdate cu = (ChildrenUpdate) request;
+		if (request instanceof ChildrenUpdate cu) {
 			if (getElement().equals(cu.getElement()) && getElementPath().equals(cu.getElementPath())) {
 				int end = fIndex + fLength;
 				int otherStart = cu.getOffset();

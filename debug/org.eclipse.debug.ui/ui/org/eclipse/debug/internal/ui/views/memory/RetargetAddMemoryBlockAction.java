@@ -52,8 +52,9 @@ public class RetargetAddMemoryBlockAction extends AddMemoryBlockAction {
 			try {
 				if (target.supportsAddMemoryBlocks(getMemoryView())) {
 					target.addMemoryBlocks(getMemoryView(), getMemoryView().getSite().getSelectionProvider().getSelection());
-				} else
+				} else {
 					super.run();
+				}
 			} catch (CoreException e) {
 				DebugUIPlugin.errorDialog(DebugUIPlugin.getShell(), ActionMessages.RetargetAddMemoryBlockAction_0, ActionMessages.RetargetAddMemoryBlockAction_1, e);
 			}
@@ -70,12 +71,14 @@ public class RetargetAddMemoryBlockAction extends AddMemoryBlockAction {
 
 			if (target != null) {
 				if (target.supportsAddMemoryBlocks(getMemoryView())) {
-					if (getMemoryView().getSite().getSelectionProvider() != null)
+					if (getMemoryView().getSite().getSelectionProvider() != null) {
 						setEnabled(target.canAddMemoryBlocks(getMemoryView(), getMemoryView().getSite().getSelectionProvider().getSelection()));
-					else
+					} else {
 						super.updateAction(debugContext);
-				} else
+					}
+				} else {
 					super.updateAction(debugContext);
+				}
 			} else {
 				super.updateAction(debugContext);
 			}
@@ -87,8 +90,9 @@ public class RetargetAddMemoryBlockAction extends AddMemoryBlockAction {
 	private IAddMemoryBlocksTarget getAddMemoryBlocksTarget(Object debugContext) {
 		IMemoryBlockRetrieval standardMemRetrieval = MemoryViewUtil.getMemoryBlockRetrieval(debugContext);
 
-		if (standardMemRetrieval == null)
+		if (standardMemRetrieval == null) {
 			return null;
+		}
 
 		IAddMemoryBlocksTarget target = null;
 

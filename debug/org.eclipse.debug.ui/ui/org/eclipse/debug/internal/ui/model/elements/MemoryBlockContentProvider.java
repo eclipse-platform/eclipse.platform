@@ -47,8 +47,9 @@ public class MemoryBlockContentProvider extends ElementContentProvider {
 
 	@Override
 	protected boolean supportsContextId(String id) {
-		if (id.equals(IDebugUIConstants.ID_MEMORY_VIEW))
+		if (id.equals(IDebugUIConstants.ID_MEMORY_VIEW)) {
 			return true;
+		}
 		return false;
 	}
 

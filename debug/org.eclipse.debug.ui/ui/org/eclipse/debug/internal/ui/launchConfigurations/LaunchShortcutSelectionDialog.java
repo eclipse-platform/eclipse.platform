@@ -63,7 +63,7 @@ public class LaunchShortcutSelectionDialog extends AbstractDebugListSelectionDia
 		if (lmode != null) {
 			fModeName = DebugUIPlugin.removeAccelerators(lmode.getLabel());
 		}
-		setTitle(MessageFormat.format(LaunchConfigurationsMessages.LaunchShortcutSelectionDialog_0, new Object[] { fModeName }));
+		setTitle(MessageFormat.format(LaunchConfigurationsMessages.LaunchShortcutSelectionDialog_0, fModeName));
 	}
 
 	@Override
@@ -107,11 +107,10 @@ public class LaunchShortcutSelectionDialog extends AbstractDebugListSelectionDia
 	@Override
 	protected String getViewerLabel() {
 		if(fResource == null) {
-			return MessageFormat.format(LaunchConfigurationsMessages.LaunchShortcutSelectionDialog_4, new Object[] { fModeName.toLowerCase() });
+			return MessageFormat.format(LaunchConfigurationsMessages.LaunchShortcutSelectionDialog_4, fModeName.toLowerCase());
 		}
 		else {
-			return MessageFormat.format(LaunchConfigurationsMessages.LaunchShortcutSelectionDialog_1, new Object[] {
-					fModeName.toLowerCase(), fResource.getName() });
+			return MessageFormat.format(LaunchConfigurationsMessages.LaunchShortcutSelectionDialog_1, fModeName.toLowerCase(), fResource.getName());
 		}
 	}
 

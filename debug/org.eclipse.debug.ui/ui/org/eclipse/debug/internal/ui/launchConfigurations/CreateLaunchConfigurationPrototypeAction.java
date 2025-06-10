@@ -61,8 +61,7 @@ public class CreateLaunchConfigurationPrototypeAction extends AbstractLaunchConf
 		if (object != null) {
 			ILaunchConfigurationType type = null;
 			// Construct a new configuration prototype of the selected type
-			if (object instanceof ILaunchConfiguration) {
-				ILaunchConfiguration config = (ILaunchConfiguration) object;
+			if (object instanceof ILaunchConfiguration config) {
 				try {
 					type = config.getType();
 				} catch (CoreException e) {
@@ -103,8 +102,7 @@ public class CreateLaunchConfigurationPrototypeAction extends AbstractLaunchConf
 			if (object != null) {
 				ILaunchConfigurationType type = null;
 				// Construct a new configuration prototype of the selected type
-				if (object instanceof ILaunchConfiguration) {
-					ILaunchConfiguration config = (ILaunchConfiguration) object;
+				if (object instanceof ILaunchConfiguration config) {
 					try {
 						type = config.getType();
 					} catch (CoreException e) {

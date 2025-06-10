@@ -154,7 +154,7 @@ public class WizardImportBreakpointsSelectionPage extends WizardPage implements 
 		BreakpointsViewer viewer = fTView.getViewer();
 		viewer.getTree().selectAll();
 		viewer.setCheckedElements(viewer.getStructuredSelection().toArray());
-		viewer.setGrayedElements(new Object[] {});
+		viewer.setGrayedElements();
 		viewer.getTree().deselectAll();
 		setErrorMessage(null);
 		setPageComplete(true);
@@ -166,7 +166,7 @@ public class WizardImportBreakpointsSelectionPage extends WizardPage implements 
 	private void handleDeselectAllPressed() {
 		BreakpointsViewer viewer = fTView.getViewer();
 		viewer.setCheckedElements(new Object[] {});
-		viewer.setGrayedElements(new Object[] {});
+		viewer.setGrayedElements();
 		setErrorMessage(ImportExportMessages.WizardImportBreakpointsSelectionPage_1);
 		setPageComplete(false);
 	}

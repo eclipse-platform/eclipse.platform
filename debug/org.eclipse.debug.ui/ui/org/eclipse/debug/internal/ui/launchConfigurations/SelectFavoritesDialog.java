@@ -80,7 +80,7 @@ public class SelectFavoritesDialog extends AbstractDebugCheckboxSelectionDialog 
 		super(parentShell);
 		fHistory = history;
 		fCurrentFavoriteSet = favorites;
-		setTitle(MessageFormat.format(LaunchConfigurationsMessages.FavoritesDialog_0, new Object[] { getModeLabel() }));
+		setTitle(MessageFormat.format(LaunchConfigurationsMessages.FavoritesDialog_0, getModeLabel()));
 		setShowSelectAllButtons(true);
 	}
 

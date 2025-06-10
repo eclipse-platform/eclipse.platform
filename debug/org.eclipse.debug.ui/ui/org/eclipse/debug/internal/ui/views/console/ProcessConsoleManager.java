@@ -168,8 +168,7 @@ public class ProcessConsoleManager implements ILaunchListener {
 	public IConsole getConsole(IProcess process) {
 		IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager();
 		for (IConsole console : manager.getConsoles()) {
-			if (console instanceof ProcessConsole) {
-				ProcessConsole pc = (ProcessConsole)console;
+			if (console instanceof ProcessConsole pc) {
 				if (pc.getProcess().equals(process)) {
 					return pc;
 				}
@@ -276,7 +275,7 @@ public class ProcessConsoleManager implements ILaunchListener {
 				}
 				DebugUIPlugin.logErrorMessage(MessageFormat.format(
 						"Extension {0} must specify an instanceof IConsoleColorProvider for class attribute.", //$NON-NLS-1$
-						new Object[] { extension.getDeclaringExtension().getUniqueIdentifier() }));
+						extension.getDeclaringExtension().getUniqueIdentifier()));
 			} catch (CoreException e) {
 				DebugUIPlugin.log(e);
 			}

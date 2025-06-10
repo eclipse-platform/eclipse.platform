@@ -173,8 +173,7 @@ public class EnvironmentTab extends AbstractLaunchConfigurationTab {
 			if (newInput == null) {
 				return;
 			}
-			if (viewer instanceof TableViewer) {
-				TableViewer tableViewer = (TableViewer) viewer;
+			if (viewer instanceof TableViewer tableViewer) {
 				if (tableViewer.getTable().isDisposed()) {
 					return;
 				}
@@ -563,7 +562,7 @@ public class EnvironmentTab extends AbstractLaunchConfigurationTab {
 				boolean overWrite = MessageDialog.openQuestion(getShell(),
 						LaunchConfigurationsMessages.EnvironmentTab_12,
 						MessageFormat.format(LaunchConfigurationsMessages.EnvironmentTab_13,
-								new Object[] { newVariableName }));
+								newVariableName));
 				if (!overWrite) {
 					return false;
 				}
@@ -590,7 +589,7 @@ public class EnvironmentTab extends AbstractLaunchConfigurationTab {
 
 				boolean overWrite = MessageDialog.openQuestion(getShell(),
 						LaunchConfigurationsMessages.EnvironmentTab_12,
-						MessageFormat.format(LaunchConfigurationsMessages.EnvironmentTab_13, new Object[] { name })); //
+						MessageFormat.format(LaunchConfigurationsMessages.EnvironmentTab_13, name)); //
 				if (!overWrite) {
 					return false;
 				}
@@ -638,7 +637,7 @@ public class EnvironmentTab extends AbstractLaunchConfigurationTab {
 			boolean overWrite = MessageDialog.openQuestion(getShell(),
 					LaunchConfigurationsMessages.EnvironmentTab_Paste_Overwrite_Title,
 					MessageFormat.format(LaunchConfigurationsMessages.EnvironmentTab_Paste_Overwrite_Message,
-							new Object[] { names })); //
+							names)); //
 			if (!overWrite) {
 				return 0;
 			}
@@ -984,7 +983,7 @@ public class EnvironmentTab extends AbstractLaunchConfigurationTab {
 				public String getText(Object element) {
 					EnvironmentVariable var = (EnvironmentVariable) element;
 					return MessageFormat.format(LaunchConfigurationsMessages.EnvironmentTab_7,
-							new Object[] { var.getName(), var.getValue() });
+							var.getName(), var.getValue());
 				}
 
 				@Override

@@ -92,8 +92,7 @@ public class LaunchConfigurationPropertiesDialog extends LaunchConfigurationsDia
 	@Override
 	protected void initializeContent() {
 		ILaunchConfiguration launchConfiguration = getLaunchConfiguration();
-		if (shouldSetDefaultsOnOpen() && launchConfiguration instanceof ILaunchConfigurationWorkingCopy) {
-			ILaunchConfigurationWorkingCopy wc = (ILaunchConfigurationWorkingCopy) launchConfiguration;
+		if (shouldSetDefaultsOnOpen() && launchConfiguration instanceof ILaunchConfigurationWorkingCopy wc) {
 			doSetDefaults(wc);
 		}
 		getTabViewer().setInput(launchConfiguration);

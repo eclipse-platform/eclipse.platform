@@ -361,11 +361,13 @@ public class FormatTableRenderingDialog extends TrayDialog
 
 		private boolean isValid(int rowSize, int colSize)
 		{
-			if (rowSize % colSize != 0)
+			if (rowSize % colSize != 0) {
 				return false;
+			}
 
-			if (colSize > rowSize)
+			if (colSize > rowSize) {
 				return false;
+			}
 
 			return true;
 		}
@@ -413,8 +415,9 @@ public class FormatTableRenderingDialog extends TrayDialog
 			IPersistableDebugElement elmt = fRendering.getMemoryBlock().getAdapter(IPersistableDebugElement.class);
 			if (elmt != null)
 			{
-				if (elmt.supportsProperty(fRendering, IDebugPreferenceConstants.PREF_ROW_SIZE_BY_MODEL))
+				if (elmt.supportsProperty(fRendering, IDebugPreferenceConstants.PREF_ROW_SIZE_BY_MODEL)) {
 					return getDefaultFromPersistableElement(IDebugPreferenceConstants.PREF_ROW_SIZE_BY_MODEL);
+				}
 			}
 
 			size = getDefaultRowSize(fRendering.getMemoryBlock().getModelIdentifier());
@@ -428,8 +431,9 @@ public class FormatTableRenderingDialog extends TrayDialog
 			IPersistableDebugElement elmt = fRendering.getMemoryBlock().getAdapter(IPersistableDebugElement.class);
 			if (elmt != null)
 			{
-				if (elmt.supportsProperty(fRendering, IDebugPreferenceConstants.PREF_COL_SIZE_BY_MODEL))
+				if (elmt.supportsProperty(fRendering, IDebugPreferenceConstants.PREF_COL_SIZE_BY_MODEL)) {
 					return getDefaultFromPersistableElement(IDebugPreferenceConstants.PREF_COL_SIZE_BY_MODEL);
+				}
 			}
 
 			size = getDefaultColumnSize(fRendering.getMemoryBlock().getModelIdentifier());
@@ -534,8 +538,9 @@ public class FormatTableRenderingDialog extends TrayDialog
 		@Override
 		protected Control createButtonBar(Composite parent) {
 			Control ret =  super.createButtonBar(parent);
-			if (fDisableCancel)
+			if (fDisableCancel) {
 				getButton(IDialogConstants.CANCEL_ID).setEnabled(false);
+			}
 			updateButtons();
 			return ret;
 		}

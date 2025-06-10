@@ -297,11 +297,11 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 				String currentName = currentVariable.getName();
 				if (currentName.equals(name)) {
 					if (currentVariable.isReadOnly()){
-						MessageDialog.openError(getShell(), DebugPreferencesMessages.StringVariablePreferencePage_23, MessageFormat.format(DebugPreferencesMessages.StringVariablePreferencePage_22, new Object[] { name }));
+						MessageDialog.openError(getShell(), DebugPreferencesMessages.StringVariablePreferencePage_23, MessageFormat.format(DebugPreferencesMessages.StringVariablePreferencePage_22, name));
 						return false;
 					}
 					else {
-						MessageDialog dialog = new MessageDialog(getShell(), DebugPreferencesMessages.SimpleVariablePreferencePage_15, null, MessageFormat.format(DebugPreferencesMessages.SimpleVariablePreferencePage_16, new Object[] { name }), MessageDialog.QUESTION, new String[] {
+						MessageDialog dialog = new MessageDialog(getShell(), DebugPreferencesMessages.SimpleVariablePreferencePage_15, null, MessageFormat.format(DebugPreferencesMessages.SimpleVariablePreferencePage_16, name), MessageDialog.QUESTION, new String[] {
 								IDialogConstants.YES_LABEL,
 								IDialogConstants.NO_LABEL,
 								IDialogConstants.CANCEL_LABEL }, 0);
@@ -336,7 +336,7 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 		String value= variable.getValue();
 		String description= variable.getDescription();
 		String name= variable.getName();
-		MultipleInputDialog dialog = new MultipleInputDialog(getShell(), MessageFormat.format(DebugPreferencesMessages.SimpleVariablePreferencePage_14, new Object[] { name }));
+		MultipleInputDialog dialog = new MultipleInputDialog(getShell(), MessageFormat.format(DebugPreferencesMessages.SimpleVariablePreferencePage_14, name));
 		dialog.addBrowseField(VALUE_LABEL, value, true);
 		dialog.addTextField(DESCRIPTION_LABEL, description, true);
 
@@ -368,7 +368,7 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 			}
 		}
 		if (contributedVariablesToRemove.length() > 0) {
-			boolean remove = MessageDialog.openQuestion(getShell(), DebugPreferencesMessages.SimpleLaunchVariablePreferencePage_21, MessageFormat.format(DebugPreferencesMessages.SimpleLaunchVariablePreferencePage_22, new Object[] { contributedVariablesToRemove.toString() })); //
+			boolean remove = MessageDialog.openQuestion(getShell(), DebugPreferencesMessages.SimpleLaunchVariablePreferencePage_21, MessageFormat.format(DebugPreferencesMessages.SimpleLaunchVariablePreferencePage_22, contributedVariablesToRemove.toString())); //
 			if (!remove) {
 				return;
 			}
@@ -657,8 +657,7 @@ public class StringVariablePreferencePage extends PreferencePage implements IWor
 		}
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof VariableWrapper) {
-				VariableWrapper variable= (VariableWrapper) element;
+			if (element instanceof VariableWrapper variable) {
 				switch (columnIndex) {
 					case 0 :
 						StringBuilder name = new StringBuilder();

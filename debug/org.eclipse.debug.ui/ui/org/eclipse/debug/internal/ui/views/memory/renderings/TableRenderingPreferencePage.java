@@ -192,8 +192,9 @@ public class TableRenderingPreferencePage extends PreferencePage implements
 	public boolean performOk() {
 		boolean auto = fAuto.getSelection();
 		boolean currentValue = getPreferenceStore().getBoolean(IDebugPreferenceConstants.PREF_DYNAMIC_LOAD_MEM);
-		if (auto != currentValue)
+		if (auto != currentValue) {
 			getPreferenceStore().setValue(IDebugPreferenceConstants.PREF_DYNAMIC_LOAD_MEM, auto);
+		}
 
 		fPageSize.store();
 		fPreBufferSize.store();

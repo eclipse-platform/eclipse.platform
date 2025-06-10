@@ -65,8 +65,7 @@ public class BreakpointsDragAdapter extends DragSourceAdapter implements Transfe
 		ISelection selection = fViewer.getSelection();
 		LocalSelectionTransfer.getTransfer().setSelection(selection);
 		LocalSelectionTransfer.getTransfer().setSelectionSetTime(event.time & 0xFFFFFFFFL);
-		if (fViewer instanceof BreakpointsViewer) {
-			BreakpointsViewer viewer = (BreakpointsViewer)fViewer;
+		if (fViewer instanceof BreakpointsViewer viewer) {
 			fItems = viewer.getSelectedItems();
 			event.doit = viewer.canDrag(fItems);
 		} else {
@@ -97,8 +96,7 @@ public class BreakpointsDragAdapter extends DragSourceAdapter implements Transfe
 	public void dragFinished(DragSourceEvent event) {
 		if (event.detail == DND.DROP_MOVE) {
 			// remove from source on move operation
-			if (fViewer instanceof BreakpointsViewer) {
-				BreakpointsViewer viewer = (BreakpointsViewer)fViewer;
+			if (fViewer instanceof BreakpointsViewer viewer) {
 				viewer.performDrag(fItems);
 			} else {
 				fView.performDrag(fTreePaths);

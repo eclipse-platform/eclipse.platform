@@ -83,7 +83,7 @@ public class CommonSourceNotFoundEditorInput extends PlatformObject implements I
 
 	@Override
 	public String getToolTipText() {
-		return MessageFormat.format(SourceLookupUIMessages.addSourceLocation_editorMessage, new Object[] { fLabel });
+		return MessageFormat.format(SourceLookupUIMessages.addSourceLocation_editorMessage, fLabel);
 	}
 
 	/**

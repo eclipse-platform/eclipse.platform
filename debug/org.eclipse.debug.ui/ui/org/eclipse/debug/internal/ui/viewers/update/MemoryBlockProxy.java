@@ -29,14 +29,16 @@ public class MemoryBlockProxy extends EventHandlerModelProxy  {
 
 		@Override
 		protected boolean handlesEvent(DebugEvent event) {
-			if (event.getKind() == DebugEvent.CHANGE && event.getSource() == fMemoryBlock)
+			if (event.getKind() == DebugEvent.CHANGE && event.getSource() == fMemoryBlock) {
 				return true;
+			}
 
 			Object src = event.getSource();
 			if (src instanceof IDebugElement)
 			{
-				if (event.getKind() == DebugEvent.SUSPEND && ((IDebugElement)src).getDebugTarget() == fMemoryBlock.getDebugTarget())
+				if (event.getKind() == DebugEvent.SUSPEND && ((IDebugElement)src).getDebugTarget() == fMemoryBlock.getDebugTarget()) {
 					return true;
+				}
 			}
 			return false;
 		}

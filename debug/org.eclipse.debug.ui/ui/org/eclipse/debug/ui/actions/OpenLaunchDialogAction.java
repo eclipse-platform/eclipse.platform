@@ -63,7 +63,7 @@ public class OpenLaunchDialogAction extends Action implements IActionDelegate2, 
 		ILaunchGroup group = DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchGroup(fIdentifier);
 		if(group != null) {
 			String lbl = group.getLabel();
-			String actionLabel = MessageFormat.format(ActionMessages.OpenLaunchDialogAction_1, new Object[] { lbl });
+			String actionLabel = MessageFormat.format(ActionMessages.OpenLaunchDialogAction_1, lbl);
 			setText(DebugUIPlugin.adjustDBCSAccelerator(actionLabel));
 		}
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.OPEN_LAUNCH_CONFIGURATION_ACTION);
