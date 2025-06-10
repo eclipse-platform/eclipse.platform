@@ -51,11 +51,9 @@ public class PsfFilenameStore extends PsfStore {
 		IWorkbenchPage pg = wnd.getActivePage();
 		ISelection sel = pg.getSelection();
 
-		if (!(sel instanceof IStructuredSelection)) {
+		if (!(sel instanceof IStructuredSelection selection)) {
 			return;
 		}
-		IStructuredSelection selection = (IStructuredSelection)sel;
-
 		Object firstElement = selection.getFirstElement();
 		if (!(firstElement instanceof IAdaptable)) {
 			return;

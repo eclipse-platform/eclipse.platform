@@ -50,8 +50,7 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 		try {
 			monitor.beginTask(null, selection.size() * 100);
 			CompoundResourceTraversal traversal = new CompoundResourceTraversal();
-			if (selection instanceof ITreeSelection) {
-				ITreeSelection ts = (ITreeSelection) selection;
+			if (selection instanceof ITreeSelection ts) {
 				TreePath[] paths = ts.getPaths();
 				for (TreePath path : paths) {
 					ResourceTraversal[] traversals = getTraversals(path, Policy.subMonitorFor(monitor, 100));
@@ -77,8 +76,9 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 	 */
 	private ResourceTraversal[] getTraversals(Object element, IProgressMonitor monitor) throws CoreException {
 		ResourceMapping mapping = Utils.getResourceMapping(element);
-		if (mapping != null)
+		if (mapping != null) {
 			return mapping.getTraversals(getResourceMappingContext(), monitor);
+		}
 		return null;
 	}
 
@@ -104,15 +104,15 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 				if (path.getSegmentCount() == 1) {
 					return new ResourceTraversal[] { new ResourceTraversal(set.getResources(), IResource.DEPTH_ZERO, IResource.NONE) };
 				}
-				if (o instanceof IResource) {
-					IResource resource = (IResource) o;
+				if (o instanceof IResource resource) {
 					int depth = getTraversalCalculator().getLayoutDepth(resource, path);
 					IDiff[] diffs = set.getDiffTree().getDiffs(resource, depth);
 					Set<IResource> resources = new HashSet<>();
 					for (IDiff diff : diffs) {
 						IResource r = ResourceDiffTree.getResourceFor(diff);
-						if (r != null)
+						if (r != null) {
 							resources.add(r);
+						}
 					}
 					return new ResourceTraversal[] { new ResourceTraversal(resources.toArray(new IResource[resources.size()]), IResource.DEPTH_ZERO, IResource.NONE) };
 				}

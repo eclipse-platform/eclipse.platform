@@ -107,7 +107,9 @@ public class MultipleYesNoPrompter {
 	 */
 	private boolean confirmOverwrite(String msg) throws InterruptedException {
 		Shell shell = shellProvider.getShell();
-		if (shell == null) return false;
+		if (shell == null) {
+			return false;
+		}
 		final MessageDialog dialog =
 			new MessageDialog(shell, title, null, msg, MessageDialog.QUESTION, buttons, 0);
 

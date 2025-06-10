@@ -44,12 +44,15 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 	public TeamStateChangeEvent(ISubscriberChangeEvent[] deltas) {
 		for (ISubscriberChangeEvent event : deltas) {
 			IResource resource = event.getResource();
-			if ((event.getFlags() & ISubscriberChangeEvent.ROOT_ADDED) != 0)
+			if ((event.getFlags() & ISubscriberChangeEvent.ROOT_ADDED) != 0) {
 				rootAdded(resource);
-			if ((event.getFlags() & ISubscriberChangeEvent.ROOT_REMOVED) != 0)
+			}
+			if ((event.getFlags() & ISubscriberChangeEvent.ROOT_REMOVED) != 0) {
 				rootRemoved(resource);
-			if ((event.getFlags() & ISubscriberChangeEvent.SYNC_CHANGED) != 0)
+			}
+			if ((event.getFlags() & ISubscriberChangeEvent.SYNC_CHANGED) != 0) {
 				changed(resource);
+			}
 			// Indicate that the ancestors may have changed as well
 			while (resource.getType() != IResource.PROJECT) {
 				resource = resource.getParent();
@@ -99,8 +102,9 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 
 	@Override
 	public boolean hasChange(IResource resource) {
-		if (changes.contains(resource))
+		if (changes.contains(resource)) {
 			return true;
+		}
 		if (isChildOfChangedRoot(resource)) {
 			return true;
 		}
@@ -108,10 +112,12 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 	}
 
 	private boolean isChildOfChangedRoot(IResource resource) {
-		if (resource == null || resource.getType() == IResource.ROOT)
+		if (resource == null || resource.getType() == IResource.ROOT) {
 			return false;
-		if (addedRoots.contains(resource) || removedRoots.contains(resource))
+		}
+		if (addedRoots.contains(resource) || removedRoots.contains(resource)) {
 			return true;
+		}
 		return isChildOfChangedRoot(resource.getParent());
 	}
 

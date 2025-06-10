@@ -97,8 +97,9 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 						event.getCheckable().setChecked(event.getElement(), event.getChecked());
 					}
 					updateOKStatus();
-				} else
+				} else {
 					updateOKStatus();
+				}
 			}
 		});
 		fViewer.getTree().addTreeListener(new TreeListener(){
@@ -110,8 +111,9 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 
 			@Override
 			public void treeExpanded(TreeEvent e) {
-				if (isWorkingSetSelected())
+				if (isWorkingSetSelected()) {
 					checkWorkingSetElements();
+				}
 			}
 		});
 		fViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));

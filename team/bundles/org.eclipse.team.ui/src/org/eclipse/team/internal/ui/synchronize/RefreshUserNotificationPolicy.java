@@ -58,10 +58,14 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 	@Override
 	public ActionFactory.IWorkbenchAction refreshDone(final IRefreshEvent event) {
 		// Ensure that this event was generated for this participant
-		if (event.getParticipant() != participant) return null;
+		if (event.getParticipant() != participant) {
+			return null;
+		}
 		// If the event is for a canceled operation, there's nothing to do
 		int severity = event.getStatus().getSeverity();
-		if(severity == IStatus.CANCEL || severity == IStatus.ERROR) return null;
+		if(severity == IStatus.CANCEL || severity == IStatus.ERROR) {
+			return null;
+		}
 		// Decide on what action to take after the refresh is completed
 		return new WorkbenchAction() {
 			@Override
@@ -108,8 +112,7 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 	}
 
 	protected boolean handleRefreshDone(final IRefreshEvent event, boolean prompt) {
-		if (participant instanceof SubscriberParticipant) {
-			SubscriberParticipant sp = (SubscriberParticipant) participant;
+		if (participant instanceof SubscriberParticipant sp) {
 			SyncInfo[] infos = ((RefreshChangeListener)event.getChangeDescription()).getChanges();
 			List<IResource> selectedResources = new ArrayList<>();
 			selectedResources.addAll(Arrays.asList(((RefreshChangeListener)event.getChangeDescription()).getResources()));

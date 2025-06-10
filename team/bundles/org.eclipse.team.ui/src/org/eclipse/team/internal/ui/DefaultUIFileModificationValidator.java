@@ -137,8 +137,9 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 	}
 
 	private Shell getShell(FileModificationValidationContext context) {
-		if (context.getShell() != null)
+		if (context.getShell() != null) {
 			return (Shell)context.getShell();
+		}
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		if (window != null) {

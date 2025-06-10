@@ -208,12 +208,14 @@ public class LocalHistoryTableProvider {
 			} else {
 				for (int columnSortOrder : SORT_ORDERS_BY_COLUMN[columnNumber]) {
 					result = compareColumnValue(columnSortOrder, date1, date2);
-					if (result != 0)
+					if (result != 0) {
 						break;
+					}
 				}
 			}
-			if (reversed)
+			if (reversed) {
 				result = -result;
+			}
 			return result;
 		}
 
@@ -223,8 +225,9 @@ public class LocalHistoryTableProvider {
 		int compareColumnValue(int columnNumber, long date1, long date2) {
 			switch (columnNumber) {
 				case 0 : /* date */
-					if (date1 == date2)
+					if (date1 == date2) {
 						return 0;
+					}
 
 					return date1 > date2 ? -1 : 1;
 
@@ -326,14 +329,13 @@ public class LocalHistoryTableProvider {
 
 	protected long getModificationDate(Object element) {
 		IModificationDate md = Adapters.adapt(element, IModificationDate.class);
-		if (md != null)
+		if (md != null) {
 			return md.getModificationDate();
-		if (element instanceof IFileState) {
-			IFileState fs = (IFileState) element;
+		}
+		if (element instanceof IFileState fs) {
 			return fs.getModificationTime();
 		}
-		if (element instanceof IFile) {
-			IFile f = (IFile) element;
+		if (element instanceof IFile f) {
 			return f.getLocalTimeStamp();
 		}
 		return -1;
@@ -350,8 +352,7 @@ public class LocalHistoryTableProvider {
 	}
 
 	protected boolean isDeletedEdition(Object element) {
-		if (element instanceof IFile) {
-			IFile f = (IFile) element;
+		if (element instanceof IFile f) {
 			return !f.exists();
 		}
 		return false;
@@ -366,8 +367,9 @@ public class LocalHistoryTableProvider {
 	}
 
 	public synchronized DateFormat getDateFormat() {
-		if (dateFormat == null)
+		if (dateFormat == null) {
 			dateFormat = DateFormat.getInstance();
+		}
 		return dateFormat;
 	}
 }

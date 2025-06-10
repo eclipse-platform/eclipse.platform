@@ -73,8 +73,9 @@ public class ResourceMappingSelectionArea extends DialogArea {
 		layout.horizontalSpacing = 0;
 		composite.setLayout(layout);
 
-		if (description != null)
+		if (description != null) {
 			createWrappingLabel(composite, description, 1);
+		}
 
 		createViewer(composite);
 		GridData data = new GridData(GridData.FILL_BOTH);
@@ -88,12 +89,14 @@ public class ResourceMappingSelectionArea extends DialogArea {
 			viewer.addSelectionChangedListener(event -> {
 				ResourceMapping oldSelection = selectedMapping;
 				selectedMapping = internalGetSelectedMapping();
-				if (oldSelection != selectedMapping)
+				if (oldSelection != selectedMapping) {
 					firePropertyChangeChange(SELECTED_MAPPING, oldSelection, selectedMapping);
+				}
 			});
 		}
-		if (isSupportsChecking())
+		if (isSupportsChecking()) {
 			initializeCheckboxViewer(composite);
+		}
 	}
 
 	private void initializeCheckboxViewer(Composite composite) {
@@ -101,8 +104,9 @@ public class ResourceMappingSelectionArea extends DialogArea {
 		checkboxViewer.addCheckStateListener(event -> {
 			ResourceMapping[] oldMappings = checkedMappings;
 			checkedMappings = internalGetCheckedMappings();
-			if (oldMappings != checkedMappings)
+			if (oldMappings != checkedMappings) {
 				firePropertyChangeChange(CHECKED_MAPPINGS, oldMappings, checkedMappings);
+			}
 		});
 		checkboxViewer.setCheckedElements(mappings);
 		checkedMappings = mappings;
@@ -131,16 +135,18 @@ public class ResourceMappingSelectionArea extends DialogArea {
 	}
 
 	private void createViewer(Composite composite) {
-		if (isSupportsChecking())
+		if (isSupportsChecking()) {
 			viewer = CheckboxTableViewer.newCheckList(composite, getViewerStyle());
-		else
+		} else {
 			viewer = new TableViewer(new Table(composite, getViewerStyle()));
+		}
 	}
 
 	private int getViewerStyle() {
 		int style = SWT.BORDER;
-		if (isSupportsSelection())
+		if (isSupportsSelection()) {
 			style |= SWT.SINGLE;
+		}
 		return style;
 	}
 
@@ -170,11 +176,11 @@ public class ResourceMappingSelectionArea extends DialogArea {
 
 	/* private */ ResourceMapping internalGetSelectedMapping() {
 		ISelection selection = viewer.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			Object firstElement = ss.getFirstElement();
-			if (firstElement instanceof ResourceMapping)
+			if (firstElement instanceof ResourceMapping) {
 				return (ResourceMapping)firstElement;
+			}
 		}
 		return null;
 	}

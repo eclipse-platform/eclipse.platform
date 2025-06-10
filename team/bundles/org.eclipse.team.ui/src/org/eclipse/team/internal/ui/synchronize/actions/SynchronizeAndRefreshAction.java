@@ -50,17 +50,19 @@ public class SynchronizeAndRefreshAction extends Action {
 	 */
 	private void refreshLocal() {
 		final ISelectionProvider selectionProvider= fView.getSite().getSelectionProvider();
-		if (selectionProvider == null)
+		if (selectionProvider == null) {
 			return;
+		}
 
 		ISelection selection= selectionProvider.getSelection();
-		if (!(selection instanceof IStructuredSelection))
+		if (!(selection instanceof IStructuredSelection)) {
 			return;
+		}
 
 		RefreshAction refreshAction= new RefreshAction(fView.getSite());
-		if (selection.isEmpty())
+		if (selection.isEmpty()) {
 			refreshAction.refreshAll();
-		else {
+		} else {
 			refreshAction.selectionChanged((IStructuredSelection)selection);
 			refreshAction.run();
 		}

@@ -111,8 +111,7 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 	protected boolean isVisible(IDiff node) {
 		ISynchronizePageConfiguration configuration = getConfiguration();
 		if (configuration.getComparisonType() == ISynchronizePageConfiguration.THREE_WAY
-				&& node instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) node;
+				&& node instanceof IThreeWayDiff twd) {
 			int mode = configuration.getMode();
 			switch (mode) {
 			case ISynchronizePageConfiguration.INCOMING_MODE:
@@ -215,8 +214,9 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 			result[0] = dialog.open();
 		};
 		shell.getDisplay().syncExec(runnable);
-		if (result[0] == 2)
+		if (result[0] == 2) {
 			throw new InterruptedException();
+		}
 		return result[0] == 0;
 	}
 

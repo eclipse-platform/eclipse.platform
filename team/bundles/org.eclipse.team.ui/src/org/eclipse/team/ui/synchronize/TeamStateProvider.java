@@ -128,8 +128,9 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	private int internalGetDecoratedStateMask(String providerId) {
 		TeamDecoratorDescription decoratorDescription = TeamDecoratorManager
 				.getInstance().getDecoratorDescription(providerId);
-		if (decoratorDescription != null)
+		if (decoratorDescription != null) {
 			return decoratorDescription.getDecoratedDirectionFlags();
+		}
 		return 0;
 	}
 
@@ -137,16 +138,18 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 		Set<String> providerIds = new HashSet<>();
 		for (IProject project : projects) {
 			String id = getProviderId(project);
-			if (id != null)
+			if (id != null) {
 				providerIds.add(id);
+			}
 		}
 		return providerIds.toArray(new String[providerIds.size()]);
 	}
 
 	private String getProviderId(IProject project) {
 		RepositoryProvider provider = RepositoryProvider.getProvider(project);
-		if (provider != null)
+		if (provider != null) {
 			return provider.getID();
+		}
 		return null;
 	}
 
@@ -172,8 +175,9 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	private String getDecoratorId(String providerId) {
 		TeamDecoratorDescription decoratorDescription = TeamDecoratorManager
 				.getInstance().getDecoratorDescription(providerId);
-		if (decoratorDescription != null)
+		if (decoratorDescription != null) {
 			return decoratorDescription.getDecoratorId();
+		}
 		return null;
 	}
 

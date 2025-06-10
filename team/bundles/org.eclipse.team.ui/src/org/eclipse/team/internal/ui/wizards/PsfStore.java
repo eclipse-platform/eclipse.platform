@@ -85,13 +85,15 @@ public abstract class PsfStore {
 	}
 
 	private IDialogSettings getSettingsSection() {
-		if (_section != null)
+		if (_section != null) {
 			return _section;
+		}
 
 		IDialogSettings settings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(PsfStore.class)).getDialogSettings();
 		_section = settings.getSection(STORE_SECTION);
-		if (_section != null)
+		if (_section != null) {
 			return _section;
+		}
 
 		_section = settings.addNewSection(STORE_SECTION);
 		return _section;

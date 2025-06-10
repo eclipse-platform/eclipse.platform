@@ -116,17 +116,20 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 			if (o1 instanceof FullPathSyncInfoElement && o2 instanceof FullPathSyncInfoElement) {
 				IResource r1 = ((FullPathSyncInfoElement)o1).getResource();
 				IResource r2 = ((FullPathSyncInfoElement)o2).getResource();
-				if(resourceCriteria == NAME)
+				if(resourceCriteria == NAME) {
 					return compareNames(r1.getName(), r2.getName());
-				else if(resourceCriteria == PATH)
+				} else if(resourceCriteria == PATH) {
 					return compareNames(r1.getFullPath().toString(), r2.getFullPath().toString());
-				else if(resourceCriteria == PARENT_NAME)
+				} else if(resourceCriteria == PARENT_NAME) {
 					return compareNames(r1.getParent().getName(), r2.getParent().getName());
-				else return 0;
-			} else if (o1 instanceof ISynchronizeModelElement)
+				} else {
+					return 0;
+				}
+			} else if (o1 instanceof ISynchronizeModelElement) {
 				return 1;
-			else if (o2 instanceof ISynchronizeModelElement)
+			} else if (o2 instanceof ISynchronizeModelElement) {
 				return -1;
+			}
 
 			return 0;
 		}
@@ -243,7 +246,9 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 
 	@Override
 	protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
-		if (node == getModelRoot());
+		if (node == getModelRoot()) {
+			;
+		}
 		SyncInfo[] infos = getSyncInfoSet().getSyncInfos();
 		List<IDiffElement> result = new ArrayList<>();
 		for (SyncInfo info : infos) {

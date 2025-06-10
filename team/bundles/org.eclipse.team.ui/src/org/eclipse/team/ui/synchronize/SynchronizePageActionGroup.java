@@ -187,7 +187,9 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 * @return the group for the given id or <code>null</code>
 	 */
 	protected IContributionItem findGroup(IContributionManager menu, String groupId) {
-		if(menu == null) return null;
+		if(menu == null) {
+			return null;
+		}
 		IContributionItem item = menu.find(((SynchronizePageConfiguration)configuration).getGroupId(groupId));
 		if (item == null) {
 			// Context menus do not change the id
@@ -216,7 +218,9 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	}
 
 	private boolean internalAppendToGroup(IContributionManager manager, String groupId, IAction action) {
-		if (manager == null || action == null) return false;
+		if (manager == null || action == null) {
+			return false;
+		}
 		IContributionItem group = findGroup(manager, groupId);
 		if (group != null) {
 			manager.appendToGroup(group.getId(), action);
@@ -238,7 +242,9 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 * and <code>false</code> if the action was not added
 	 */
 	protected boolean appendToGroup(IContributionManager manager, String groupId, IContributionItem item) {
-		if (manager == null || item == null) return false;
+		if (manager == null || item == null) {
+			return false;
+		}
 		IContributionItem group = findGroup(manager, groupId);
 		if (group != null) {
 			manager.appendToGroup(group.getId(), item);
@@ -276,8 +282,9 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		if (id != null) {
 			site.getActionBars().setGlobalActionHandler(id, action);
 			IKeyBindingService keyBindingService = site.getKeyBindingService();
-			if(keyBindingService != null)
+			if(keyBindingService != null) {
 				keyBindingService.registerAction(action);
+			}
 		}
 	}
 

@@ -63,8 +63,9 @@ public abstract class CompareInputChangeNotifier implements
 			connections++;
 		}
 		public void decrement() {
-			if (connections > 0)
+			if (connections > 0) {
 				connections--;
+			}
 
 		}
 		public boolean isDisconnected() {
@@ -102,8 +103,9 @@ public abstract class CompareInputChangeNotifier implements
 			RunnableEvent[] events;
 			synchronized (pendingRunnables) {
 				synchronized (changedInputs) {
-					if (changedInputs.isEmpty() && pendingRunnables.isEmpty())
+					if (changedInputs.isEmpty() && pendingRunnables.isEmpty()) {
 						return false;
+					}
 					toDispatch = changedInputs.toArray(new ICompareInput[changedInputs.size()]);
 					events = pendingRunnables.toArray(new RunnableEvent[pendingRunnables.size()]);
 					changedInputs.clear();
@@ -124,14 +126,14 @@ public abstract class CompareInputChangeNotifier implements
 			switch (type) {
 				case BackgroundEventHandler.RUNNABLE_EVENT :
 					RunnableEvent runnableEvent = ((RunnableEvent)event);
-					if (runnableEvent.isPreemtive())
+					if (runnableEvent.isPreemtive()) {
 						executeRunnableNow(event, monitor);
-					else
+					} else {
 						executeRunnableDuringDispatch(event);
+					}
 					break;
 				case COMPARE_INPUT_CHANGE :
-					if (event instanceof InputChangeEvent) {
-						InputChangeEvent changeEvent = (InputChangeEvent) event;
+					if (event instanceof InputChangeEvent changeEvent) {
 						ICompareInput[] inputs = changeEvent.getChangedInputs();
 						synchronized (changedInputs) {
 							Collections.addAll(changedInputs, inputs);
@@ -205,8 +207,9 @@ public abstract class CompareInputChangeNotifier implements
 	 */
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-		if (eventHandler != null)
+		if (eventHandler != null) {
 			eventHandler.shutdown();
+		}
 	}
 
 	/**
@@ -334,8 +337,9 @@ public abstract class CompareInputChangeNotifier implements
 				}
 			}
 		}
-		if (!changedInputs.isEmpty())
+		if (!changedInputs.isEmpty()) {
 			handleInputChanges(changedInputs.toArray(new ICompareInput[changedInputs.size()]), true);
+		}
 	}
 
 	/**
@@ -364,8 +368,9 @@ public abstract class CompareInputChangeNotifier implements
 			}
 			realChanges = result.toArray(new ICompareInput[result.size()]);
 		}
-		if (realChanges.length > 0)
+		if (realChanges.length > 0) {
 			inputsChanged(realChanges);
+		}
 	}
 
 	/**
@@ -375,8 +380,7 @@ public abstract class CompareInputChangeNotifier implements
 	 * @return whether the given compare input has changed
 	 */
 	protected boolean isChanged(ICompareInput input) {
-		if (input instanceof AbstractCompareInput) {
-			AbstractCompareInput ci = (AbstractCompareInput) input;
+		if (input instanceof AbstractCompareInput ci) {
 			return ci.needsUpdate();
 		}
 		return false;
@@ -389,8 +393,7 @@ public abstract class CompareInputChangeNotifier implements
 	 * @param input the changed compare input
 	 */
 	protected void fireChange(ICompareInput input) {
-		if (input instanceof AbstractCompareInput) {
-			AbstractCompareInput ci = (AbstractCompareInput) input;
+		if (input instanceof AbstractCompareInput ci) {
 			ci.update();
 		}
 	}

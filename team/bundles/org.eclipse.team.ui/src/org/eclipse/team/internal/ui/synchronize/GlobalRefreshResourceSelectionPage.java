@@ -73,8 +73,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 		private final LabelProvider workbenchProvider = new WorkbenchLabelProvider();
 		@Override
 		public String getText(Object element) {
-			if(element instanceof IContainer) {
-				IContainer c = (IContainer)element;
+			if(element instanceof IContainer c) {
 				if(c.getType() != IResource.PROJECT && resources.contains(c)) {
 					return c.getFullPath().toString();
 				}

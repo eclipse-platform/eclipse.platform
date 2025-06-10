@@ -210,7 +210,9 @@ public class SynchronizeManager implements ISynchronizeManager {
 		}
 
 		public void save(IMemento memento) {
-			if (dead) return;
+			if (dead) {
+				return;
+			}
 			String key = Utils.getKey(descriptor.getId(), getSecondaryId());
 			ISynchronizeParticipant ref = participants.get(key);
 			if(ref != null) {
@@ -222,9 +224,12 @@ public class SynchronizeManager implements ISynchronizeManager {
 
 		@Override
 		public boolean equals(Object other) {
-			if(other == this) return true;
-			if (! (other instanceof ISynchronizeParticipantReference)) return false;
-			ISynchronizeParticipantReference otherRef = (ISynchronizeParticipantReference) other;
+			if(other == this) {
+				return true;
+			}
+			if (! (other instanceof ISynchronizeParticipantReference otherRef)) {
+				return false;
+			}
 			String otherSecondaryId = otherRef.getSecondaryId();
 			return otherRef.getId().equals(getId()) && Utils.equalObject(getSecondaryId(), otherSecondaryId);
 		}
@@ -257,14 +262,17 @@ public class SynchronizeManager implements ISynchronizeManager {
 
 		@Override
 		public ISynchronizeParticipant getParticipant() throws TeamException {
-			if (dead) return null;
+			if (dead) {
+				return null;
+			}
 			String key = Utils.getKey(descriptor.getId(), getSecondaryId());
 			try {
 				ISynchronizeParticipant participant = participants.get(key);
 				if (participant == null) {
 					participant = instantiate();
-					if(participant != null)
+					if(participant != null) {
 						participants.put(key, participant);
+					}
 				}
 				return participant;
 			} catch (TeamException e) {
@@ -306,8 +314,9 @@ public class SynchronizeManager implements ISynchronizeManager {
 		public void dispose() {
 			try {
 				ISynchronizeParticipant participant = getParticipant();
-				if (participant != null)
+				if (participant != null) {
 					participant.dispose();
+				}
 			} catch (TeamException e) {
 				// Ignore since we are disposing anyway;
 			} finally {
@@ -351,8 +360,9 @@ public class SynchronizeManager implements ISynchronizeManager {
 	private ParticipantInstance createParticipantReference(String type, String secondaryId, String displayName) throws PartInitException {
 		SynchronizeParticipantDescriptor desc = participantRegistry.find(type);
 		// ensure that the view id is valid
-		if (desc == null)
+		if (desc == null) {
 			throw new PartInitException(NLS.bind(TeamUIMessages.SynchronizeManager_19, type));
+		}
 		// ensure that multiple instances are allowed if a secondary id is given
 		if (secondaryId != null) {
 //		    if (!desc.isMultipleInstances()) {
@@ -412,8 +422,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	}
 
 	private boolean isDirty(ISynchronizeParticipant p) {
-		if (p instanceof ModelSynchronizeParticipant) {
-			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) p;
+		if (p instanceof ModelSynchronizeParticipant msp) {
 			Saveable s = msp.getActiveSaveable();
 			if (s != null && s.isDirty()) {
 				return true;
@@ -482,8 +491,9 @@ public class SynchronizeManager implements ISynchronizeManager {
 		try {
 			if (activePage == null) {
 				activePage = TeamUIPlugin.getActivePage();
-				if (activePage == null)
+				if (activePage == null) {
 					return null;
+				}
 			}
 			//IViewPart part = activePage.showView(ISynchronizeView.VIEW_ID, Long.toString(System.currentTimeMillis()), IWorkbenchPage.VIEW_ACTIVATE);
 			IViewPart part = activePage.showView(ISynchronizeView.VIEW_ID);
@@ -628,7 +638,9 @@ public class SynchronizeManager implements ISynchronizeManager {
 		for (ISynchronizeParticipantReference element : participantReferences.values()) {
 			ParticipantInstance ref = (ParticipantInstance) element;
 			// Participants can opt out of being saved between sessions
-			if(! ref.getDescriptor().isPersistent()) continue;
+			if(! ref.getDescriptor().isPersistent()) {
+				continue;
+			}
 			// Create the state placeholder for a participant
 			IMemento participantNode = xmlMemento.createChild(CTX_PARTICIPANT);
 			participantNode.putString(CTX_ID, ref.getId());

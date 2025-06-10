@@ -92,8 +92,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 				return syncInfo.getLocal().getType() == IResource.FILE;
 			}
 			ISynchronizeParticipant p = getConfiguration().getParticipant();
-			if (p instanceof ModelSynchronizeParticipant) {
-				ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) p;
+			if (p instanceof ModelSynchronizeParticipant msp) {
 				return msp.hasCompareInputFor(selectedObject);
 			}
 			return true;
@@ -143,18 +142,21 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 	}
 
 	private static boolean hasNextPrev(TreeViewer viewer, TreeItem item, boolean next) {
-		if (item == null || !(viewer instanceof ITreeViewerAccessor))
+		if (item == null || !(viewer instanceof ITreeViewerAccessor)) {
 			return false;
+		}
 		TreeItem children[] = null;
 		if (next) {
-			if (viewer.isExpandable(item.getData()))
+			if (viewer.isExpandable(item.getData())) {
 				return true;
+			}
 			while(item != null) {
 				TreeItem parent = item.getParentItem();
-				if (parent != null)
+				if (parent != null) {
 					children = parent.getItems();
-				else
+				} else {
 					children = item.getParent().getItems();
+				}
 				if (children != null && children.length > 0) {
 					if (children[children.length - 1] != item) {
 						// The item is not the last so there must be a next
@@ -168,10 +170,11 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 		} else {
 			while(item != null) {
 				TreeItem parent = item.getParentItem();
-				if (parent != null)
+				if (parent != null) {
 					children = parent.getItems();
-				else
+				} else {
 					children = item.getParent().getItems();
+				}
 				if (children != null && children.length > 0) {
 					if (children[0] != item) {
 						// The item is not the first so there must be a previous
@@ -187,29 +190,34 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 	}
 
 	private static TreeItem findNextPrev(TreeViewer viewer, TreeItem item, boolean next) {
-		if (item == null || !(viewer instanceof ITreeViewerAccessor))
+		if (item == null || !(viewer instanceof ITreeViewerAccessor)) {
 			return null;
+		}
 		TreeItem children[] = null;
 		ITreeViewerAccessor treeAccessor = (ITreeViewerAccessor) viewer;
 		if (!next) {
 			TreeItem parent = item.getParentItem();
-			if (parent != null)
+			if (parent != null) {
 				children = parent.getItems();
-			else
+			} else {
 				children = item.getParent().getItems();
+			}
 			if (children != null && children.length > 0) {
 				// goto previous child
 				int index = 0;
-				for (; index < children.length; index++)
-					if (children[index] == item)
+				for (; index < children.length; index++) {
+					if (children[index] == item) {
 						break;
+					}
+				}
 				if (index > 0) {
 					item = children[index - 1];
 					while (true) {
 						treeAccessor.createChildren(item);
 						int n = item.getItemCount();
-						if (n <= 0)
+						if (n <= 0) {
 							break;
+						}
 						item.setExpanded(true);
 						item = item.getItems()[n - 1];
 					}
@@ -230,16 +238,19 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 			while (item != null) {
 				children = null;
 				TreeItem parent = item.getParentItem();
-				if (parent != null)
+				if (parent != null) {
 					children = parent.getItems();
-				else
+				} else {
 					children = item.getParent().getItems();
+				}
 				if (children != null && children.length > 0) {
 					// goto next child
 					int index = 0;
-					for (; index < children.length; index++)
-						if (children[index] == item)
+					for (; index < children.length; index++) {
+						if (children[index] == item) {
 							break;
+						}
+					}
 					if (index < children.length - 1) {
 						// next
 						return children[index + 1];
@@ -285,11 +296,13 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 	 */
 	public static boolean navigate(TreeViewer viewer, boolean next, boolean fireOpen, boolean expandOnly) {
 		Tree tree = viewer.getTree();
-		if (tree == null)
+		if (tree == null) {
 			return false;
+		}
 		TreeItem item = getNextItem(viewer, next);
-		if (item != null)
+		if (item != null) {
 			setSelection(viewer, item, fireOpen, expandOnly);
+		}
 		return item == null;
 	}
 
@@ -298,10 +311,12 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 		if (item != null) {
 			while (true) {
 				item = findNextPrev(viewer, item, next);
-				if (item == null)
+				if (item == null) {
 					break;
-				if (item.getItemCount() <= 0)
+				}
+				if (item.getItemCount() <= 0) {
 					break;
+				}
 			}
 		}
 		return item;
@@ -309,12 +324,14 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 
 	private static TreeItem getCurrentItem(TreeViewer viewer) {
 		Tree tree = viewer.getTree();
-		if (tree == null)
+		if (tree == null) {
 			return null;
+		}
 		TreeItem item = null;
 		TreeItem children[] = tree.getSelection();
-		if (children != null && children.length > 0)
+		if (children != null && children.length > 0) {
 			item = children[0];
+		}
 		if (item == null) {
 			children = tree.getItems();
 			if (children != null && children.length > 0) {
@@ -393,8 +410,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 				@Override
 				public boolean openSelectedChange() {
 					Viewer v = getViewer();
-					if (v instanceof ITreeViewerAccessor && !v.getControl().isDisposed()) {
-						ITreeViewerAccessor tva = (ITreeViewerAccessor) v;
+					if (v instanceof ITreeViewerAccessor tva && !v.getControl().isDisposed()) {
 						tva.openSelection();
 						return true;
 					}
@@ -422,7 +438,9 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 	 */
 	@Override
 	protected boolean handleDoubleClick(StructuredViewer viewer, DoubleClickEvent event) {
-		if (super.handleDoubleClick(viewer, event)) return true;
+		if (super.handleDoubleClick(viewer, event)) {
+			return true;
+		}
 		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 		Object element = getFirstElementOrPath(selection);
 		AbstractTreeViewer treeViewer = (AbstractTreeViewer) getViewer();
@@ -437,11 +455,11 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 	}
 
 	private Object getFirstElementOrPath(IStructuredSelection selection) {
-		if (selection instanceof TreeSelection) {
-			TreeSelection ts = (TreeSelection) selection;
+		if (selection instanceof TreeSelection ts) {
 			TreePath[] paths = ts.getPaths();
-			if (paths.length > 0)
+			if (paths.length > 0) {
 				return paths[0];
+			}
 		}
 		Object element = selection.getFirstElement();
 		return element;
@@ -449,8 +467,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 
 	private Object getFirstElement(IStructuredSelection selection) {
 		Object element = getFirstElementOrPath(selection);
-		if (element instanceof TreePath) {
-			TreePath path = (TreePath) element;
+		if (element instanceof TreePath path) {
 			element = path.getLastSegment();
 		}
 		return element;

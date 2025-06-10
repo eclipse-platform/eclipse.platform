@@ -116,8 +116,9 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 
 	@Override
 	public boolean close() {
-		if (dlgTitleImage != null)
+		if (dlgTitleImage != null) {
 			dlgTitleImage.dispose();
+		}
 		return super.close();
 	}
 
@@ -125,8 +126,9 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 		wsTableViewer.addSelectionChangedListener(event -> {
 			IStructuredSelection s = event.getStructuredSelection();
 			Object obj = s.getFirstElement();
-			if (obj instanceof IWorkingSet)
+			if (obj instanceof IWorkingSet) {
 				wsNameText.setText(((IWorkingSet) obj).getName());
+			}
 		});
 
 		wsNameText.addModifyListener(e -> setErrorMessage(null));

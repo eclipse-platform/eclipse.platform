@@ -53,8 +53,7 @@ public class RefreshActionContribution extends SynchronizePageActionGroup {
 			refreshSelectionAction.setId("org.eclipse.team.ui.synchronizeLast"); //$NON-NLS-1$
 
 			Object o = participant.getAdapter(IRefreshable.class);
-			if (o instanceof IRefreshable) {
-				final IRefreshable refreshable = (IRefreshable) o;
+			if (o instanceof final IRefreshable refreshable) {
 				configureSchedule = new Action() {
 					@Override
 					public void run() {

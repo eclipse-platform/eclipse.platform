@@ -56,12 +56,13 @@ public class GenericHistoryDropAdapter extends PluginDropAdapter {
 
 	@Override
 	public boolean performDrop(Object data) {
-		if (data == null)
+		if (data == null) {
 			return false;
-		if (data instanceof IResource[]) {
-			IResource[] sources = (IResource[]) data;
-			if (sources.length == 0)
+		}
+		if (data instanceof IResource[] sources) {
+			if (sources.length == 0) {
 				return false;
+			}
 			IResource resource = sources[0];
 			//Allow all resources types through to the view, the individual pages can decide
 			//which ones to handle

@@ -69,8 +69,9 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 
 	@Override
 	public IHistoryView getHistoryView() {
-		if (historyView != null)
+		if (historyView != null) {
 			return historyView;
+		}
 
 		return null;
 	}

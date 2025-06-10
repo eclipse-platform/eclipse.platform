@@ -55,8 +55,9 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		if (resource != null) {
 			if (resource.getType() == IResource.FILE) {
 				IDiff node = context.getDiffTree().getDiff(resource);
-				if (node != null)
+				if (node != null) {
 					return new ResourceDiffCompareInput(node, context);
+				}
 			}
 		}
 		return null;
@@ -73,14 +74,15 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		IWorkbenchAdapter adapter = Adapters.adapt(object, IWorkbenchAdapter.class);
 		if (adapter != null) {
 			String label = adapter.getLabel(object);
-			if (label != null)
+			if (label != null) {
 				return label;
+			}
 		}
 		IResource resource = Utils.getResource(object);
-		if (resource != null)
+		if (resource != null) {
 			return resource.getName();
-		if (object instanceof ModelProvider) {
-			ModelProvider provider = (ModelProvider) object;
+		}
+		if (object instanceof ModelProvider provider) {
 			if (provider.getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID)) {
 				return TeamUIMessages.SynchronizationCompareAdapter_0;
 			}
@@ -98,8 +100,9 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 			Object parent = object;
 			do {
 				String segment = adapter.getLabel(parent);
-				if (segment != null && segment.length() > 0)
+				if (segment != null && segment.length() > 0) {
 					segments.add(0, segment);
+				}
 				parent = adapter.getParent(parent);
 			} while (parent != null);
 			if (!segments.isEmpty()) {
@@ -117,19 +120,21 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	public ImageDescriptor getImageDescriptor(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
 		ImageDescriptor image = getImageDescriptorFromWorkbenchAdapter(object);
-		if (image != null)
+		if (image != null) {
 			return image;
+		}
 		IResource resource = Utils.getResource(object);
 		if (resource != null) {
 			image = getImageDescriptorFromWorkbenchAdapter(resource);
-			if (image != null)
+			if (image != null) {
 				return image;
+			}
 		}
-		if (object instanceof ModelProvider) {
-			ModelProvider provider = (ModelProvider) object;
+		if (object instanceof ModelProvider provider) {
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
-			if (desc != null)
+			if (desc != null) {
 				return desc.getImageDescriptor();
+			}
 		}
 		return null;
 	}

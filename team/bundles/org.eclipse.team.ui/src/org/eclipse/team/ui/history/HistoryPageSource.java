@@ -42,12 +42,14 @@ public abstract class HistoryPageSource implements IHistoryPageSource {
 				IFileHistoryProvider fileHistoryProvider = provider.getFileHistoryProvider();
 				if (fileHistoryProvider != null) {
 					IHistoryPageSource pageSource = Adapters.adapt(fileHistoryProvider, IHistoryPageSource.class);
-					if (pageSource != null)
+					if (pageSource != null) {
 						return pageSource;
+					}
 				}
 				IHistoryPageSource pageSource = Adapters.adapt(provider, IHistoryPageSource.class);
-				if (pageSource != null)
+				if (pageSource != null) {
 					return pageSource;
+				}
 			}
 		}
 		IHistoryPageSource pageSource = Adapters.adapt(object, IHistoryPageSource.class);

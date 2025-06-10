@@ -87,8 +87,9 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 			fMenu = menuManager.createContextMenu(parent);
 			final ISynchronizeParticipantReference[] participants = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
 			addParticipantsToMenu(participants);
-			if (participants.length > 0)
+			if (participants.length > 0) {
 				menuManager.add(new Separator());
+			}
 			menuManager.add(synchronizeAction);
 			menuManager.update(true);
 		} else {

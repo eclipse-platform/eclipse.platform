@@ -191,8 +191,9 @@ public class SubscriberRefreshSchedule {
 	public void saveState(IMemento memento) {
 		memento.putString(CTX_REFRESHSCHEDULE_ENABLED, Boolean.toString(enabled));
 		memento.putInteger(CTX_REFRESHSCHEDULE_INTERVAL, (int)refreshInterval);
-		if (refreshStart != null)
+		if (refreshStart != null) {
 			memento.putString(CTX_REFRESHSCHEDULE_START, Long.toString(refreshStart.getTime()));
+		}
 		memento.putString(CTX_REFRESHSCHEDULE_RUNONCE, Boolean.toString(runOnce));
 	}
 
@@ -243,8 +244,9 @@ public class SubscriberRefreshSchedule {
 	}
 
 	private String getRefreshIntervalAsString() {
-		if (runOnce)
+		if (runOnce) {
 			return TeamUIMessages.RefreshSchedule_16;
+		}
 		boolean hours = false;
 		long seconds = getRefreshInterval();
 		if(seconds <= 60) {

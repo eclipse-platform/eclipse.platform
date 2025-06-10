@@ -129,8 +129,9 @@ public class SaveablePartDialog extends TrayDialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		if (fContextId != null)
+		if (fContextId != null) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, fContextId);
+		}
 	}
 
 	@Override
@@ -149,10 +150,12 @@ public class SaveablePartDialog extends TrayDialog {
 			width= parentSize.x-100;
 			height= parentSize.y-100;
 		}
-		if (width < 700)
+		if (width < 700) {
 			width= 700;
-		if (height < 500)
+		}
+		if (height < 500) {
 			height= 500;
+		}
 		return new Point(width, height);
 	}
 }

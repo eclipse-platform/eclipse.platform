@@ -87,8 +87,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	private boolean matches(IPage page, Object object, IHistoryPageSource pageSource) {
 		if (page instanceof IHistoryPage) {
 			Object input = ((IHistoryPage)page).getInput();
-			if (input != null)
+			if (input != null) {
 				return input.equals(object) && sameSource(getPageSourceFor(object, pageSource), getCurrentPageSource());
+			}
 		}
 		return false;
 	}
@@ -168,8 +169,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 		public NavigationHistoryEntry getPreviousEntry() {
 			int next = position - 1;
-			if (next < 0)
+			if (next < 0) {
 				next = size() - 1;
+			}
 			return getEntry(next);
 		}
 
@@ -177,8 +179,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 				IHistoryPageSource pageSource) {
 			NavigationHistoryEntry[] historyEntries = getEntries();
 			for (NavigationHistoryEntry historyEntry : historyEntries) {
-				if (historyEntry.matches(historyPage, pageSource))
+				if (historyEntry.matches(historyPage, pageSource)) {
 					historyEntry.name = historyPage.getName();
+				}
 			}
 			navigateAction.update();
 		}
@@ -197,8 +200,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj instanceof NavigationHistoryEntry) {
-				NavigationHistoryEntry other = (NavigationHistoryEntry) obj;
+			if (obj instanceof NavigationHistoryEntry other) {
 				return other.object.equals(this.object) && sameSource(source, other.source);
 			}
 			return false;
@@ -246,8 +248,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		}
 
 		protected void updateMenuState() {
-			if (menuManager != null)
+			if (menuManager != null) {
 				menuManager.update(true);
+			}
 		}
 
 		protected abstract IAction[] getDropDownActions();
@@ -314,8 +317,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		private void updateCheckState() {
 			IAction[] actions = getActions();
 			for (IAction action : actions) {
-				if (action instanceof NavigationHistoryEntryAction) {
-					NavigationHistoryEntryAction a = (NavigationHistoryEntryAction) action;
+				if (action instanceof NavigationHistoryEntryAction a) {
 					a.update();
 				}
 			}
@@ -327,8 +329,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		}
 
 		private IAction[] getActions() {
-			if (actions == null)
+			if (actions == null) {
 				actions = createActions();
+			}
 			return actions;
 		}
 	}
@@ -376,8 +379,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	@Override
 	public void partActivated(IWorkbenchPart part) {
 		// don't call super.partActivated(IWorkbenchPart), it will be done in #showHistoryPageFor(...)
-		if (part instanceof IEditorPart)
+		if (part instanceof IEditorPart) {
 			editorActivated((IEditorPart) part);
+		}
 	}
 
 	private final ISelectionListener selectionListener = new ISelectionListener() {
@@ -385,16 +389,17 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			if (isUpdatingSelection)
+			if (isUpdatingSelection) {
 				return;
+			}
 
 			try {
 				isUpdatingSelection = true;
-				if (GenericHistoryView.this == part)
+				if (GenericHistoryView.this == part) {
 					return;
+				}
 
-				if (selection instanceof IStructuredSelection) {
-					IStructuredSelection structSelection = (IStructuredSelection) selection;
+				if (selection instanceof IStructuredSelection structSelection) {
 					// Always take the first element - this is not intended to work with multiple selection
 					// Also, hang on to this selection for future use in case the history view is not visible
 					lastSelectedElement = structSelection.getFirstElement();
@@ -425,8 +430,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		}
 
 		// Use active editor as fallback
-		if (lastSelectedElement == null)
+		if (lastSelectedElement == null) {
 			lastSelectedElement= getSite().getPage().getActiveEditor();
+		}
 	}
 
 	@Override
@@ -550,20 +556,20 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 	private void showLastSelectedElement() {
 		if (lastSelectedElement != null) {
-			if (lastSelectedElement instanceof IEditorPart)
+			if (lastSelectedElement instanceof IEditorPart) {
 				editorActivated((IEditorPart)lastSelectedElement);
-			else {
+			} else {
 				Object resource;
-				if (lastSelectedElement instanceof SyncInfoModelElement) {
-					SyncInfoModelElement syncInfoModelElement = (SyncInfoModelElement) lastSelectedElement;
+				if (lastSelectedElement instanceof SyncInfoModelElement syncInfoModelElement) {
 					resource = syncInfoModelElement.getSyncInfo().getLocal();
 				} else {
 					resource= Adapters.adapt(lastSelectedElement, IResource.class);
 				}
-				if (resource != null)
+				if (resource != null) {
 					showHistoryPageFor(resource, false, false, null);
-				else
+				} else {
 					showHistoryPageFor(lastSelectedElement, false, false, null);
+				}
 			}
 
 			// reset lastSelectedElement to null to prevent updating history view if it just gets focus
@@ -580,8 +586,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	private void addNavigationHistoryEntry() {
 		if (getCurrentPage() != null) {
 			Object input = getHistoryPage().getInput();
-			if (input != null)
+			if (input != null) {
 				navigationHistory.addEntry(input, getHistoryPage().getName(), getPageSourceFor(input, null));
+			}
 		}
 	}
 
@@ -599,13 +606,15 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 		// Check to see if history view is visible - if it's not, don't bother
 		// going to the trouble of fetching the history
-		if (!checkIfPageIsVisible())
+		if (!checkIfPageIsVisible()) {
 			return null;
+		}
 
 		// Ensure that there is a page source available
 		pageSource = getPageSourceFor(object, pageSource);
-		if (pageSource == null || !pageSource.canShowHistoryFor(object))
+		if (pageSource == null || !pageSource.canShowHistoryFor(object)) {
 			return null;
+		}
 
 		// Check to see if the object is already being displayed in another page
 		IHistoryPage existingPage = checkForExistingPage(object, refresh, force, pageSource);
@@ -636,17 +645,18 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	protected PageRec getPageRec(IWorkbenchPart part) {
 		PageRec rec = super.getPageRec(part);
 		if (rec != null) {
-			if (part instanceof HistoryPageSourceWorkbenchPart) {
-				HistoryPageSourceWorkbenchPart p = (HistoryPageSourceWorkbenchPart)part;
+			if (part instanceof HistoryPageSourceWorkbenchPart p) {
 				IHistoryPage historyPage = (IHistoryPage) rec.page;
 				Object newInput= p.getObject();
 				if (!historyPage.isValidInput(newInput)) {
-					if (historyPage instanceof EditionHistoryPage)
+					if (historyPage instanceof EditionHistoryPage) {
 						((EditionHistoryPage)historyPage).setInput(((ElementLocalHistoryPageSource)p.getSource()).internalGetFile(newInput), newInput);
-					else
+					} else {
 						return null; // Create a new page
-				} else
+					}
+				} else {
 					historyPage.setInput(newInput);
+				}
 
 				((HistoryPage)historyPage).setHistoryView(this);
 				setContentDescription(historyPage.getName());
@@ -656,14 +666,16 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	}
 
 	private IHistoryPageSource getPageSourceFor(Object object, IHistoryPageSource pageSource) {
-		if (object == null || pageSource != null)
+		if (object == null || pageSource != null) {
 			return pageSource;
+		}
 		IResource resource = Utils.getResource(object);
 		if (resource == null) {
 			return Adapters.adapt(object, IHistoryPageSource.class);
 		} else {
-			if (resource.getProject() == null)
+			if (resource.getProject() == null) {
 				return null;
+			}
 			// check to see if resource is managed
 			RepositoryProvider teamProvider = RepositoryProvider.getProvider(resource.getProject());
 			if (teamProvider == null){
@@ -673,8 +685,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 				IFileHistoryProvider fileHistory = teamProvider.getFileHistoryProvider();
 				if (fileHistory != null) {
 					IHistoryPageSource source = Adapters.adapt(fileHistory, IHistoryPageSource.class);
-					if (source != null)
+					if (source != null) {
 						return source;
+					}
 				}
 				return Adapters.adapt(teamProvider, IHistoryPageSource.class);
 			}
@@ -693,8 +706,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 			String id = VIEW_ID + System.currentTimeMillis();
 			IViewPart view = getSite().getPage().showView(VIEW_ID, id, IWorkbenchPage.VIEW_CREATE);
 			getSite().getPage().activate(view);
-			if (view instanceof GenericHistoryView)
+			if (view instanceof GenericHistoryView) {
 				return ((GenericHistoryView) view).showHistoryPageFor(object, refresh, true, source);
+			}
 
 		} catch (PartInitException e) {
 		}
@@ -704,11 +718,13 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	private IHistoryPage checkForExistingPage(Object object, boolean refresh, boolean thisViewOnly, IHistoryPageSource pageSource) {
 		// first check to see if the main history view contains the current resource
 		IHistoryPage tempPage = checkForExistingPage(object, refresh, pageSource);
-		if (tempPage != null || thisViewOnly)
+		if (tempPage != null || thisViewOnly) {
 			return tempPage;
+		}
 		tempPage = searchHistoryViewsForObject(object, refresh, pageSource);
-		if (tempPage != null)
+		if (tempPage != null) {
 			getSite().getPage().bringToTop((IWorkbenchPart)tempPage.getHistoryView());
+		}
 		return tempPage;
 	}
 
@@ -718,8 +734,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 			if (matches(getCurrentPage(), object, pageSource)) {
 				//current page contains object, so just refresh it
 				IHistoryPage tempPage = (IHistoryPage) getCurrentPage();
-				if (refresh)
+				if (refresh) {
 					tempPage.refresh();
+				}
 				return tempPage;
 			}
 		}
@@ -732,8 +749,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		for (IViewReference h : historyViews) {
 			if (h.getId().equals(VIEW_ID)) {
 				IViewPart historyView = h.getView(true);
-				if (historyView instanceof GenericHistoryView) {
-					GenericHistoryView ghv = (GenericHistoryView)historyView;
+				if (historyView instanceof GenericHistoryView ghv) {
 					IHistoryPage historyPage = ghv.checkForExistingPage(object, refresh, pageSource);
 					if (historyPage != null) {
 						return historyPage;
@@ -750,8 +766,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		for (IViewReference h : historyViews) {
 			if (h.getId().equals(VIEW_ID)) {
 				IViewPart historyView = h.getView(false);
-				if (!((GenericHistoryView)historyView).isViewPinned())
+				if (!((GenericHistoryView)historyView).isViewPinned()) {
 					return (GenericHistoryView) historyView;
+				}
 			}
 		}
 		return null;
@@ -783,8 +800,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	@Override
 	protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
 		IPage page = pageRecord.page;
-		if (page instanceof IHistoryPage)
+		if (page instanceof IHistoryPage) {
 			((IHistoryPage)page).removePropertyChangeListener(this);
+		}
 		page.dispose();
 		pageRecord.dispose();
 	}
@@ -796,8 +814,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 	@Override
 	protected boolean isImportant(IWorkbenchPart part) {
-		if (part instanceof HistoryPageSourceWorkbenchPart) {
-			HistoryPageSourceWorkbenchPart p = (HistoryPageSourceWorkbenchPart)part;
+		if (part instanceof HistoryPageSourceWorkbenchPart p) {
 			Object object = p.getObject();
 			return p.getSource().canShowHistoryFor(object);
 		}
@@ -833,8 +850,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		} else {
 			// see if it adapts to an IHistoryPageSource
 			Object pageSource = Adapters.adapt(input, IHistoryPageSource.class);
-			if (pageSource != null)
+			if (pageSource != null) {
 				showHistory(input);
+			}
 		}
 	}
 
@@ -845,8 +863,9 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	@Override
 	public void dispose() {
 		//Remove the drop listener
-		if (dropTarget != null && !dropTarget.isDisposed())
+		if (dropTarget != null && !dropTarget.isDisposed()) {
 			dropTarget.removeDropListener(dropAdapter);
+		}
 
 		//Remove the selection listener
 		getSite().getPage().removePostSelectionListener(selectionListener);
@@ -892,20 +911,21 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	private void showHistory(Object object) {
 		// Only show the history if the input differs
 		// (i.e. don't do the change if the input is the same but the page source differs; bug 167648)
-		if (getHistoryPage().getInput() != object)
+		if (getHistoryPage().getInput() != object) {
 			showHistoryPageFor(object, false, false, null);
+		}
 	}
 
 	@Override
 	public boolean show(ShowInContext context) {
 		ISelection selection = context.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				// If we can show the selection, return.
 				// Otherwise, fall through and attempt to show the input
-				if ((showHistoryFor(ss.getFirstElement()) != null))
+				if ((showHistoryFor(ss.getFirstElement()) != null)) {
 					return true;
+				}
 			}
 		}
 		if (context.getInput() != null) {

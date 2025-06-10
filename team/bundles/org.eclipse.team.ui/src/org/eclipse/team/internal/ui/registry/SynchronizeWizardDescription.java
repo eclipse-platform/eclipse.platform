@@ -74,11 +74,13 @@ public class SynchronizeWizardDescription {
 	}
 
 	public ImageDescriptor getImageDescriptor() {
-		if (imageDescriptor != null)
+		if (imageDescriptor != null) {
 			return imageDescriptor;
+		}
 		String iconName = configElement.getAttribute(ATT_ICON);
-		if (iconName == null)
+		if (iconName == null) {
 			return null;
+		}
 		imageDescriptor = TeamUIPlugin.getImageDescriptorFromExtension(configElement.getDeclaringExtension(), iconName);
 		return imageDescriptor;
 	}

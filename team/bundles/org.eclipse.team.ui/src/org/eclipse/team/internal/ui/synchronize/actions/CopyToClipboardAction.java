@@ -86,14 +86,14 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		StringBuilder buf = new StringBuilder();
 		int i = 0;
 		IStructuredSelection structuredSelection = getStructuredSelection();
-		if (structuredSelection instanceof TreeSelection) {
-			TreeSelection ts = (TreeSelection) structuredSelection;
+		if (structuredSelection instanceof TreeSelection ts) {
 			TreePath[] paths = ts.getPaths();
 			for (TreePath path : paths) {
 				String text = getTextFor(path);
 				if (text != null && text.length() > 0) {
-					if (i > 0)
+					if (i > 0) {
 						buf.append(EOL);
+					}
 					buf.append(text);
 					i++;
 				}
@@ -101,15 +101,17 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		} else {
 			for (Object element : structuredSelection) {
 				if (element instanceof ITypedElement) {
-					if (i > 0)
+					if (i > 0) {
 						buf.append(EOL);
+					}
 					buf.append(((ITypedElement)element).getName());
 					i++;
 				} else {
 					IResource resource = Utils.getResource(element);
 					if (resource != null) {
-						if (i > 0)
+						if (i > 0) {
 							buf.append(EOL);
+						}
 						buf.append(resource.getName());
 						i++;
 					}
@@ -127,16 +129,14 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		INavigatorContentService service = getNavigatorContentService();
 		if (service != null) {
 			ILabelProvider provider = service.createCommonLabelProvider();
-			if (provider instanceof ITreePathLabelProvider) {
-				ITreePathLabelProvider tplp = (ITreePathLabelProvider) provider;
+			if (provider instanceof ITreePathLabelProvider tplp) {
 				ViewerLabel viewerLabel = new ViewerLabel("", null); //$NON-NLS-1$
 				tplp.updateLabel(viewerLabel, path);
 				return viewerLabel.getText();
 			}
 			return provider.getText(element);
 		}
-		if (element instanceof IResource) {
-			IResource resource = (IResource) element;
+		if (element instanceof IResource resource) {
 			return resource.getName();
 		}
 		return null;
@@ -155,8 +155,9 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		for (int i = 0; i < length; i++) {
 			final IPath location = resources[i].getLocation();
 			// location may be null. See bug 29491.
-			if (location != null)
+			if (location != null) {
 				fileNames[actualLength++] = location.toOSString();
+			}
 		}
 		// was one or more of the locations null?
 		if (actualLength < length) {
@@ -191,22 +192,26 @@ class CopyToClipboardAction extends SelectionListenerAction {
 				data.add(names);
 				dataTypes.add(TextTransfer.getInstance());
 			}
-			if (!data.isEmpty())
+			if (!data.isEmpty()) {
 				fClipboard.setContents(
 						data.toArray(),
 						dataTypes.toArray(new Transfer[dataTypes.size()]));
+			}
 		} catch (SWTError e) {
-			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
+			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD) {
 				throw e;
-			if (MessageDialog.openQuestion(fShell, TeamUIMessages.CopyToClipboardAction_3, TeamUIMessages.CopyToClipboardAction_4))
+			}
+			if (MessageDialog.openQuestion(fShell, TeamUIMessages.CopyToClipboardAction_3, TeamUIMessages.CopyToClipboardAction_4)) {
 				setClipboard(resources, fileNames, names);
+			}
 		}
 	}
 
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		if (!super.updateSelection(selection))
+		if (!super.updateSelection(selection)) {
 			return false;
+		}
 		// Calling our own selection utility because the elements in the
 		// synchronize view can't adapt to IResource because we don't want the usual object
 		// contribution/ on them.
@@ -215,23 +220,28 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		if (selectedResources.size() > 0 && selectedNonResources.isEmpty()) {
 			boolean projSelected = selectionIsOfType(IResource.PROJECT);
 			boolean fileFoldersSelected = selectionIsOfType(IResource.FILE | IResource.FOLDER);
-			if (!projSelected && !fileFoldersSelected)
+			if (!projSelected && !fileFoldersSelected) {
 				return false;
+			}
 			// selection must be homogeneous
-			if (projSelected && fileFoldersSelected)
+			if (projSelected && fileFoldersSelected) {
 				return false;
+			}
 			// must have a common parent
 			IContainer firstParent = ((IResource) selectedResources.get(0)).getParent();
-			if (firstParent == null)
+			if (firstParent == null) {
 				return false;
+			}
 			Iterator resourcesEnum = selectedResources.iterator();
 			while (resourcesEnum.hasNext()) {
 				IResource currentResource = (IResource) resourcesEnum.next();
-				if (!currentResource.getParent().equals(firstParent))
+				if (!currentResource.getParent().equals(firstParent)) {
 					return false;
+				}
 				// resource location must exist
-				if (currentResource.getLocation() == null)
+				if (currentResource.getLocation() == null) {
 					return false;
+				}
 			}
 			return true;
 		} else if (selectedNonResources.size() > 0 && selectedResources.isEmpty()) {

@@ -125,14 +125,16 @@ public class ApplyPatchModelSynchronizeParticipant extends
 		ModelProvider[] enabledProviders = super.getEnabledModelProviders();
 		// add Patch model provider if it's not there
 		for (ModelProvider provider : enabledProviders) {
-			if (provider.getId().equals(PatchModelProvider.ID))
+			if (provider.getId().equals(PatchModelProvider.ID)) {
 				return enabledProviders;
+			}
 		}
 		ModelProvider[] extended = new ModelProvider[enabledProviders.length + 1];
 		System.arraycopy(enabledProviders, 0, extended, 0, enabledProviders.length);
 		PatchModelProvider provider = PatchModelProvider.getProvider();
-		if (provider == null)
+		if (provider == null) {
 			return enabledProviders;
+		}
 		extended[extended.length - 1] = provider;
 		return extended;
 	}
@@ -142,8 +144,9 @@ public class ApplyPatchModelSynchronizeParticipant extends
 		// consult adapter first
 		ISynchronizationCompareAdapter adapter = Utils
 				.getCompareAdapter(object);
-		if (adapter != null)
+		if (adapter != null) {
 			return adapter.asCompareInput(getContext(), object);
+		}
 		if (object instanceof ICompareInput) {
 			return (ICompareInput) object;
 		}

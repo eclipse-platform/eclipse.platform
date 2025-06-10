@@ -180,8 +180,9 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 	 */
 	protected void setInput() {
 		configuration.setProperty(SynchronizePageConfiguration.P_MODEL, modelProvider.getModelRoot());
-		if(advisor != null)
+		if(advisor != null) {
 			advisor.setInput(modelProvider);
+		}
 	}
 
 	/**
@@ -253,7 +254,9 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
-		if (toggleModelProviderActions == null) return;
+		if (toggleModelProviderActions == null) {
+			return;
+		}
 		IToolBarManager toolbar = actionBars.getToolBarManager();
 		IMenuManager menu = actionBars.getMenuManager();
 		IContributionItem group = findGroup(menu, ISynchronizePageConfiguration.LAYOUT_GROUP);

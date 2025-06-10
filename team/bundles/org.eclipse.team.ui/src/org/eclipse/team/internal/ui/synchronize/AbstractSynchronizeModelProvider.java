@@ -224,7 +224,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	@Override
 	public StructuredViewer getViewer() {
 		ISynchronizePage page = configuration.getPage();
-		if (page == null) return null;
+		if (page == null) {
+			return null;
+		}
 		Viewer viewer = page.getViewer();
 		if (viewer instanceof AbstractTreeViewer) {
 			return (AbstractTreeViewer)viewer;
@@ -300,8 +302,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			// For non-resource elements, show the same propogaqted marker as the children
 			IDiffElement[] children = element.getChildren();
 			for (IDiffElement child : children) {
-				if (child instanceof ISynchronizeModelElement) {
-					ISynchronizeModelElement childElement = (ISynchronizeModelElement)child;
+				if (child instanceof ISynchronizeModelElement childElement) {
 					if (childElement.getProperty(ISynchronizeModelElement.PROPAGATED_ERROR_MARKER_PROPERTY)) {
 						property = ISynchronizeModelElement.PROPAGATED_ERROR_MARKER_PROPERTY;
 						break;
@@ -385,8 +386,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 					addToViewer(getModelRoot());
 				}
 				//	restore expansion state
-				if (isRootProvider())
+				if (isRootProvider()) {
 					restoreViewerState();
+				}
 			} finally {
 				viewer.getControl().setRedraw(true);
 			}
@@ -466,8 +468,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 				}
 			}
 		}
-		if (!expandedElements.isEmpty())
+		if (!expandedElements.isEmpty()) {
 			((AbstractTreeViewer) viewer).setExpandedElements(expandedElements.toArray());
+		}
 	}
 
 	protected IResource[] getResources(Object[] objects) {
@@ -476,8 +479,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			for (Object object : objects) {
 				if (object instanceof ISynchronizeModelElement) {
 					IResource resource = ((ISynchronizeModelElement) object).getResource();
-					if(resource != null)
+					if(resource != null) {
 						result.add(resource);
+					}
 				}
 			}
 		}
@@ -509,8 +513,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 
 	private IResource[] getCachedResources(String configProperty) {
 		List paths = (List)getConfiguration().getProperty(configProperty);
-		if (paths == null)
+		if (paths == null) {
 			return new IResource[0];
+		}
 		IContainer container = ResourcesPlugin.getWorkspace().getRoot();
 		ArrayList<IResource> resources = new ArrayList<>();
 		for (Object path2 : paths) {
@@ -540,16 +545,18 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 				if (viewer != null && !viewer.getControl().isDisposed()) {
 					expandedResources[0] = getExpandedResources();
 					selectedResources[0] = getSelectedResources();
-					if (storeChecks)
+					if (storeChecks) {
 						checkedResources [0] = getCheckedResources();
+					}
 				}
 			});
 
 			// Save expansion and selection
 			cacheResources(expandedResources[0], P_VIEWER_EXPANSION_STATE);
 			cacheResources(selectedResources[0], P_VIEWER_SELECTION_STATE);
-			if (storeChecks)
+			if (storeChecks) {
 				cacheResources(checkedResources[0], P_VIEWER_CHECKED_STATE);
+			}
 		}
 	}
 
@@ -586,8 +593,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 				selectedElements.add(elements[0]);
 			}
 		}
-		if (!selectedElements.isEmpty())
+		if (!selectedElements.isEmpty()) {
 			viewer.setSelection(new StructuredSelection(selectedElements));
+		}
 	}
 
 	/*
@@ -597,20 +605,23 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void checkResources(IResource[] resourcesToCheck) {
 		Set<ISynchronizeModelElement> checkedElements = new HashSet<>();
 		StructuredViewer viewer = getViewer();
-		if (!(viewer instanceof CheckboxTreeViewer))
+		if (!(viewer instanceof CheckboxTreeViewer)) {
 			return;
+		}
 
 		for (IResource resource : resourcesToCheck) {
-			if (resource.getType() != IResource.FILE)
+			if (resource.getType() != IResource.FILE) {
 				continue;
+			}
 			ISynchronizeModelElement[] elements = getModelObjects(resource);
 			// Only expand when there is one element per resource
 			if (elements.length == 1) {
 				Collections.addAll(checkedElements, elements);
 			}
 		}
-		if (!checkedElements.isEmpty())
+		if (!checkedElements.isEmpty()) {
 			((CheckboxTreeViewer) viewer).setCheckedElements(checkedElements.toArray());
+		}
 	}
 
 	/*
@@ -868,7 +879,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			}
 		} else {
 			SynchronizeModelElement parent = ((SynchronizeModelElement)node.getParent());
-			if (parent != null) parent.remove(node);
+			if (parent != null) {
+				parent.remove(node);
+			}
 		}
 	}
 
@@ -880,8 +893,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		// Clear all the children of the node
 		IDiffElement[] children = node.getChildren();
 		for (IDiffElement element : children) {
-			if (element instanceof ISynchronizeModelElement) {
-				ISynchronizeModelElement sme = (ISynchronizeModelElement) element;
+			if (element instanceof ISynchronizeModelElement sme) {
 				ISynchronizeModelProvider provider = getProvider(sme);
 				if (provider != null && provider instanceof AbstractSynchronizeModelProvider) {
 					((AbstractSynchronizeModelProvider)provider).recursiveClearModelObjects(sme);
@@ -891,8 +903,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			}
 		}
 		// Notify the update handler that the node has been cleared
-		if (node != getModelRoot())
+		if (node != getModelRoot()) {
 			updateHandler.modelObjectCleared(node);
+		}
 	}
 
 	/*
@@ -900,7 +913,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * diff tree.
 	 */
 	private ISynchronizeModelElement getRootToClear(ISynchronizeModelElement node) {
-		if (node == getModelRoot()) return node;
+		if (node == getModelRoot()) {
+			return node;
+		}
 		ISynchronizeModelElement parent = (ISynchronizeModelElement)node.getParent();
 		if (parent != null && parent != getModelRoot() && !isOutOfSync(parent) && parent.getChildren().length == 1) {
 			return getRootToClear(parent);

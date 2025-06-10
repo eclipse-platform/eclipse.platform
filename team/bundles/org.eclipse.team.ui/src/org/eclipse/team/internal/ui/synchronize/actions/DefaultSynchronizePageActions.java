@@ -57,8 +57,12 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
-		if (openWithActions != null) openWithActions.fillActionBars(actionBars);
-		if (refactorActions != null) refactorActions.fillActionBars(actionBars);
+		if (openWithActions != null) {
+			openWithActions.fillActionBars(actionBars);
+		}
+		if (refactorActions != null) {
+			refactorActions.fillActionBars(actionBars);
+		}
 		if (actionBars != null && showPreferences != null) {
 			IMenuManager menu = actionBars.getMenuManager();
 			appendToGroup(menu, ISynchronizePageConfiguration.PREFERENCES_GROUP, showPreferences);
@@ -67,8 +71,12 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 
 	@Override
 	public void updateActionBars() {
-		if (openWithActions != null) openWithActions.updateActionBars();
-		if (refactorActions != null) refactorActions.updateActionBars();
+		if (openWithActions != null) {
+			openWithActions.updateActionBars();
+		}
+		if (refactorActions != null) {
+			refactorActions.updateActionBars();
+		}
 	}
 
 	@Override
@@ -88,13 +96,21 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (refactorActions != null) refactorActions.dispose();
-		if (openWithActions != null) openWithActions.dispose();
+		if (refactorActions != null) {
+			refactorActions.dispose();
+		}
+		if (openWithActions != null) {
+			openWithActions.dispose();
+		}
 	}
 
 	@Override
 	public void setContext(ActionContext context) {
-		if (openWithActions != null) openWithActions.setContext(context);
-		if (refactorActions != null) refactorActions.setContext(context);
+		if (openWithActions != null) {
+			openWithActions.setContext(context);
+		}
+		if (refactorActions != null) {
+			refactorActions.setContext(context);
+		}
 	}
 }

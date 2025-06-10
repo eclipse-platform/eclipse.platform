@@ -207,8 +207,9 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 
 	@Override
 	public boolean equals(Object other) {
-		if (other == this)
+		if (other == this) {
 			return true;
+		}
 		if (other instanceof SyncInfoCompareInput) {
 			SyncInfo otherSyncInfo = ((SyncInfoCompareInput) other).getSyncInfo();
 			SyncInfo thisSyncInfo = getSyncInfo();
@@ -247,11 +248,9 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	private boolean isSelectedInSynchronizeView() {
 		if (synchronizeConfiguration != null) {
 			ISelection s = synchronizeConfiguration.getSite().getSelectionProvider().getSelection();
-			if (s instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) s;
+			if (s instanceof IStructuredSelection ss) {
 				Object element = ss.getFirstElement();
-				if (element instanceof SyncInfoModelElement) {
-					SyncInfoModelElement sime = (SyncInfoModelElement) element;
+				if (element instanceof SyncInfoModelElement sime) {
 					return sime.getSyncInfo().getLocal().equals(resource);
 				}
 			}

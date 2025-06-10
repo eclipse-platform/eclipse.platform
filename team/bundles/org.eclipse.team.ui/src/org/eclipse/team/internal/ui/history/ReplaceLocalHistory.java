@@ -45,8 +45,9 @@ public class ReplaceLocalHistory extends ShowLocalHistory {
 	public void run(IAction action) {
 		final IFile file = (IFile) getSelection().getFirstElement();
 		IFileState states[]= getLocalHistory();
-		if (states == null || states.length == 0)
+		if (states == null || states.length == 0) {
 			return;
+		}
 		Runnable r = () -> showCompareInDialog(getShell(), file);
 		TeamUIPlugin.getStandardDisplay().asyncExec(r);
 	}

@@ -89,16 +89,15 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 
 	private static FileRevisionTypedElement getRightContributor(IDiff node) {
 		// For a resource diff, use the after state
-		if (node instanceof IResourceDiff) {
-			IResourceDiff rd = (IResourceDiff) node;
+		if (node instanceof IResourceDiff rd) {
 			return asTypedElement(rd.getAfterState(), getLocalEncoding(node));
 		}
-		if (node instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) node;
+		if (node instanceof IThreeWayDiff twd) {
 			IResourceDiff diff = (IResourceDiff)twd.getRemoteChange();
 			// If there is a remote change, use the after state
-			if (diff != null)
+			if (diff != null) {
 				return getRightContributor(diff);
+			}
 			// There's no remote change so use the before state of the local
 			diff = (IResourceDiff)twd.getLocalChange();
 			return asTypedElement(diff.getBeforeState(), getLocalEncoding(node));
@@ -113,11 +112,11 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	}
 
 	private static FileRevisionTypedElement getAncestor(IDiff node) {
-		if (node instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) node;
+		if (node instanceof IThreeWayDiff twd) {
 			IResourceDiff diff = (IResourceDiff)twd.getLocalChange();
-			if (diff == null)
+			if (diff == null) {
 				diff = (IResourceDiff)twd.getRemoteChange();
+			}
 			return asTypedElement(diff.getBeforeState(), getLocalEncoding(node));
 
 		}
@@ -126,8 +125,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 
 	private static String getLocalEncoding(IDiff node) {
 		IResource resource = ResourceDiffTree.getResourceFor(node);
-		if (resource instanceof IEncodedStorage) {
-			IEncodedStorage es = (IEncodedStorage) resource;
+		if (resource instanceof IEncodedStorage es) {
 			try {
 				return es.getCharset();
 			} catch (CoreException e) {
@@ -138,8 +136,9 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	}
 
 	private static FileRevisionTypedElement asTypedElement(IFileRevision state, String localEncoding) {
-		if (state == null)
+		if (state == null) {
 			return null;
+		}
 		return new FileRevisionTypedElement(state, localEncoding);
 	}
 
@@ -152,18 +151,17 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	private static void ensureContentsCached(Object ancestor, Object right,
 			IProgressMonitor monitor) throws CoreException {
 		SubMonitor sm = SubMonitor.convert(monitor, 100);
-		if (ancestor instanceof FileRevisionTypedElement) {
-			FileRevisionTypedElement fste = (FileRevisionTypedElement) ancestor;
+		if (ancestor instanceof FileRevisionTypedElement fste) {
 			fste.cacheContents(sm.newChild(50));
 		} else {
 			sm.setWorkRemaining(50);
 		}
-		if (right instanceof FileRevisionTypedElement) {
-			FileRevisionTypedElement fste = (FileRevisionTypedElement) right;
+		if (right instanceof FileRevisionTypedElement fste) {
 			fste.cacheContents(sm.newChild(50));
 		}
-		if (monitor != null)
+		if (monitor != null) {
 			monitor.done();
+		}
 	}
 
 	/**
@@ -213,8 +211,9 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	@Override
 	public String getFullPath() {
 		final IResource resource = ResourceDiffTree.getResourceFor(node);
-		if (resource != null)
+		if (resource != null) {
 			return resource.getFullPath().toString();
+		}
 		return getName();
 	}
 
@@ -222,8 +221,9 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	public boolean isCompareInputFor(Object object) {
 		final IResource resource = ResourceDiffTree.getResourceFor(node);
 		IResource other = Utils.getResource(object);
-		if (resource != null && other != null)
+		if (resource != null && other != null) {
 			return resource.equals(other);
+		}
 		return false;
 	}
 
@@ -244,10 +244,10 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 
 	@Override
 	public boolean equals(Object other) {
-		if (other == this)
+		if (other == this) {
 			return true;
-		if (other instanceof ResourceDiffCompareInput) {
-			ResourceDiffCompareInput otherInput = (ResourceDiffCompareInput) other;
+		}
+		if (other instanceof ResourceDiffCompareInput otherInput) {
 			return (isEqual(getLeft(), otherInput.getLeft())
 					&& isEqual(getRight(), otherInput.getRight())
 					&& isEqual(getAncestor(), otherInput.getAncestor()));
@@ -259,8 +259,9 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		if (e1 == null) {
 			return e2 == null;
 		}
-		if (e2 == null)
+		if (e2 == null) {
 			return false;
+		}
 		return e1.equals(e2);
 	}
 
@@ -299,8 +300,9 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	}
 
 	private boolean propogateAuthorIfSameRevision(FileRevisionTypedElement oldContributor, FileRevisionTypedElement newContributor) {
-		if (oldContributor == null || newContributor == null)
+		if (oldContributor == null || newContributor == null) {
 			return false;
+		}
 		String author= oldContributor.getAuthor();
 		if (newContributor.getAuthor() == null && author != null && oldContributor.getContentIdentifier().equals(newContributor.getContentIdentifier())) {
 			newContributor.setAuthor(author);
@@ -310,8 +312,9 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	}
 
 	private boolean propogateAuthorIfSameRevision(FileRevisionTypedElement oldContributor, LocalResourceTypedElement newContributor) {
-		if (oldContributor == null || newContributor == null)
+		if (oldContributor == null || newContributor == null) {
 			return false;
+		}
 		String author= oldContributor.getAuthor();
 		if (newContributor.getAuthor() == null && author != null && oldContributor.getContentIdentifier().equals(getLocalContentId())) {
 			newContributor.setAuthor(author);

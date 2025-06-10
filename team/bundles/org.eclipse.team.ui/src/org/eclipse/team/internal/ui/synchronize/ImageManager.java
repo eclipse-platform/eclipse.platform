@@ -52,16 +52,19 @@ public class ImageManager {
 	}
 
 	private static Viewer getViewer(ISynchronizePageConfiguration configuration) {
-		if (configuration == null)
+		if (configuration == null) {
 			return null;
-		if (configuration.getPage() == null)
+		}
+		if (configuration.getPage() == null) {
 			return null;
+		}
 		return configuration.getPage().getViewer();
 	}
 
 	public Image getImage(ImageDescriptor descriptor) {
-		if (descriptor == null || disposed)
+		if (descriptor == null || disposed) {
 			return null;
+		}
 		ResourceManager manager = getResourceManager();
 		Image image = manager.create(descriptor);
 		return image;
@@ -83,8 +86,9 @@ public class ImageManager {
 	}
 
 	public Image getImage(Image base, int compareKind) {
-		if (disposed)
+		if (disposed) {
 			return null;
+		}
 		return compareConfig.getImage(base, compareKind);
 	}
 }

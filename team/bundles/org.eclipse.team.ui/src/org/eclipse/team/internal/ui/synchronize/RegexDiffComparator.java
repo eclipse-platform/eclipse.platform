@@ -42,8 +42,9 @@ public class RegexDiffComparator extends RangeDifferenceComparator {
 			IDocument lDoc, IDocument rDoc) {
 		try {
 			for (RangeDifference diff : ranges) {
-				if (diff.kind() == RangeDifference.NOCHANGE)
+				if (diff.kind() == RangeDifference.NOCHANGE) {
 					continue;
+				}
 
 				DocLineComparator sleft = new DocLineComparator(lDoc, null,
 						shouldIgnoreWhitespace());
@@ -64,9 +65,10 @@ public class RegexDiffComparator extends RangeDifferenceComparator {
 				boolean m1 = pattern.matcher(left).matches();
 				boolean m2 = pattern.matcher(right).matches();
 
-				if (!m1 && !m2)
+				if (!m1 && !m2) {
 					// it's false that all diffs match the pattern
 					return false;
+				}
 			}
 		} catch (BadLocationException e) {
 			// ignore

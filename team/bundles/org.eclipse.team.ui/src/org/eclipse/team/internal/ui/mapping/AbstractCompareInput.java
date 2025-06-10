@@ -86,12 +86,14 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	}
 
 	private boolean containsListener(ICompareInputChangeListener listener) {
-		if (listeners.isEmpty())
+		if (listeners.isEmpty()) {
 			return false;
+		}
 		Object[] allListeners = listeners.getListeners();
 		for (Object object : allListeners) {
-			if (object == listener)
+			if (object == listener) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -120,10 +122,12 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	 * this input
 	 */
 	private ITypedElement getMainElement() {
-		if (left != null)
+		if (left != null) {
 			return left;
-		if (right != null)
+		}
+		if (right != null) {
 			return right;
+		}
 		return ancestor;
 	}
 

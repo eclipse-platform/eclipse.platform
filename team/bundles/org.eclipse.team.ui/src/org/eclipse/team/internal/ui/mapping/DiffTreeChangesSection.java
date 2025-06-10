@@ -94,23 +94,27 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			@Override
 			public void running(IJobChangeEvent event) {
 				if (isJobOfInterest(event.getJob())) {
-					if (context.getDiffTree().isEmpty())
+					if (context.getDiffTree().isEmpty()) {
 						calculateDescription();
+					}
 				}
 			}
 			private boolean isJobOfInterest(Job job) {
-				if (job.belongsTo(getConfiguration().getParticipant()))
+				if (job.belongsTo(getConfiguration().getParticipant())) {
 					return true;
+				}
 				SubscriberDiffTreeEventHandler handler = getHandler();
-				if (handler != null && handler.getEventHandlerJob() == job)
+				if (handler != null && handler.getEventHandlerJob() == job) {
 					return true;
+				}
 				return false;
 			}
 			@Override
 			public void done(IJobChangeEvent event) {
 				if (isJobOfInterest(event.getJob())) {
-					if (context.getDiffTree().isEmpty())
+					if (context.getDiffTree().isEmpty()) {
 						calculateDescription();
+					}
 				}
 			}
 		};
@@ -265,8 +269,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		} else {
 			ISynchronizePageConfiguration configuration = getConfiguration();
 			String id = (String)configuration.getProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER);
-			if (id == null)
+			if (id == null) {
 				id = ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER;
+			}
 			if (id.equals(ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE)) {
 				if (getChangesInMode(getConfiguration().getMode()) > 0 && isAtLeastOneProviderDisabled()) {
 					// There are changes in this mode but they are not visible so enable
@@ -347,10 +352,11 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_9, Integer.valueOf(changesCount));
 		}
 		final ITeamContentProviderDescriptor[] descriptors = getEnabledContentDescriptors();
-		if (descriptors.length == 0)
+		if (descriptors.length == 0) {
 			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_10, message);
-		else
+		} else {
 			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_11, message);
+		}
 
 		createDescriptionLabel(composite, message);
 
@@ -388,8 +394,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		Set<ITeamContentProviderDescriptor> result = new HashSet<>();
 		for (ModelProvider provider : providers) {
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
-			if (desc != null && desc.isEnabled())
+			if (desc != null && desc.isEnabled()) {
 				result.add(desc);
+			}
 		}
 		return result.toArray(new ITeamContentProviderDescriptor[result.size()]);
 	}
@@ -539,8 +546,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	private void handleEmptyViewer() {
 		// Override stand behavior to do our best to show something
 		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
-			if (!getContainer().isDisposed())
+			if (!getContainer().isDisposed()) {
 				updatePage(getEmptyChangesComposite(getContainer()));
+			}
 		});
 	}
 
@@ -565,8 +573,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 
 	private boolean isViewerEmpty() {
 		Viewer v = getPage().getViewer();
-		if (v instanceof CommonViewerAdvisor.NavigableCommonViewer) {
-			CommonViewerAdvisor.NavigableCommonViewer cv = (CommonViewerAdvisor.NavigableCommonViewer) v;
+		if (v instanceof CommonViewerAdvisor.NavigableCommonViewer cv) {
 			return cv.isEmpty();
 		}
 		return false;
@@ -606,10 +613,11 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 				errors = null;
 				calculateDescription();
 				SubscriberDiffTreeEventHandler handler = getHandler();
-				if (handler != null)
+				if (handler != null) {
 					handler.initializeIfNeeded();
-				else
+				} else {
 					getConfiguration().getParticipant().run(getConfiguration().getSite().getPart());
+				}
 			}
 		});
 		getForms().getHyperlinkGroup().add(link);

@@ -74,8 +74,9 @@ public class EditionHistoryPage extends LocalHistoryPage {
 
 		@Override
 		protected ITypedElement getElementFor(IResource resource) {
-			if (resource.equals(file))
+			if (resource.equals(file)) {
 				return localFileElement;
+			}
 			return super.getElementFor(resource);
 		}
 
@@ -92,8 +93,7 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		}
 
 		private ITypedElement getEdition(ITypedElement input) {
-			if (input instanceof FileRevisionTypedElement) {
-				FileRevisionTypedElement te = (FileRevisionTypedElement) input;
+			if (input instanceof FileRevisionTypedElement te) {
 				return getEditionFor(te.getRevision());
 			}
 			return null;
@@ -142,15 +142,17 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		}
 		@Override
 		public <T> T getAdapter(Class<T> adapter) {
-			if (adapter == IFile.class)
+			if (adapter == IFile.class) {
 				return null;
+			}
 			return super.getAdapter(adapter);
 		}
 
 		@Override
 		protected void handleDispose() {
-			if (leftIsLocal && structureCreator != null)
+			if (leftIsLocal && structureCreator != null) {
 				internalDestroy(structureCreator, getLeft());
+			}
 			structureCreator = null;
 			super.handleDispose();
 		}
@@ -159,13 +161,15 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	public static ITypedElement getPreviousState(IFile file, Object element) throws TeamException {
 		LocalResourceTypedElement localFileElement= new LocalResourceTypedElement(file);
 		IStructureCreator structureCreator = CompareUI.createStructureCreator(localFileElement);
-		if (structureCreator == null)
+		if (structureCreator == null) {
 			return null;
+		}
 		LocalFileHistory history = new LocalFileHistory(file, false);
 		history.refresh(new NullProgressMonitor());
 		IFileRevision[] revisions = history.getFileRevisions();
-		if (revisions.length == 0)
+		if (revisions.length == 0) {
 			return null;
+		}
 		sortDescending(revisions);
 		ITypedElement localEdition = null;
 		try {
@@ -177,8 +181,9 @@ public class EditionHistoryPage extends LocalHistoryPage {
 				}
 			}
 		} finally {
-			if (localEdition != null)
+			if (localEdition != null) {
 				destroyLocalEdition(structureCreator, localFileElement, localEdition);
+			}
 		}
 		return null;
 	}
@@ -231,8 +236,9 @@ public class EditionHistoryPage extends LocalHistoryPage {
 				firePropertyChange(this, IHistoryPage.P_DESCRIPTION, oldDesc, getDescription());
 			}
 		} finally {
-			if (localEdition == null && te != null)
+			if (localEdition == null && te != null) {
 				internalDestroy(structureCreator, te);
+			}
 			monitor.done();
 		}
 	}
@@ -260,8 +266,9 @@ public class EditionHistoryPage extends LocalHistoryPage {
 
 	private static boolean contentsEqual(IStructureCreator creator, ITypedElement previousEdition,
 			ITypedElement edition) {
-		if (previousEdition == null || creator == null || edition == null)
+		if (previousEdition == null || creator == null || edition == null) {
 			return false;
+		}
 		String contents1 = creator.getContents(previousEdition, false /* TODO: Ignore whitespace */);
 		String contents2 = creator.getContents(edition, false /* TODO: Ignore whitespace */);
 		return (contents1 != null && contents2 != null && contents1.equals(contents2));
@@ -270,8 +277,9 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	@Override
 	public ICompareInput getCompareInput(Object object) {
 		ITypedElement edition = getEditionFor(object);
-		if (edition != null && localEdition != null)
+		if (edition != null && localEdition != null) {
 			return new DiffNode(localEdition, edition);
+		}
 		return null;
 	}
 
@@ -280,11 +288,11 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	}
 
 	private static ITypedElement createLocalEdition(IStructureCreator creator, ITypedElement input, Object element) {
-		if (creator == null)
+		if (creator == null) {
 			return null;
+		}
 		ITypedElement result = null;
-		if (creator instanceof IStructureCreator2) {
-			IStructureCreator2 sc2 = (IStructureCreator2) creator;
+		if (creator instanceof IStructureCreator2 sc2) {
 			try {
 				result = sc2.createElement(element, input, null);
 			} catch (CoreException e) {
@@ -302,11 +310,13 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	}
 
 	private static ITypedElement createEdition(IStructureCreator creator, Object element, ITypedElement input) {
-		if (creator == null)
+		if (creator == null) {
 			return null;
+		}
 		IStructureComparator edition = creator.locate(element, input);
-		if (edition instanceof ITypedElement)
+		if (edition instanceof ITypedElement) {
 			return (ITypedElement) edition;
+		}
 		return null;
 	}
 
@@ -326,58 +336,63 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	}
 
 	private void disconnect() {
-		if (localFileElement != null)
+		if (localFileElement != null) {
 			localFileElement.discardBuffer();
+		}
 		internalDestroy(structureCreator, localEdition);
 		localEdition = null;
 		structureCreator = null;
 	}
 
 	private static void internalDestroy(IStructureCreator creator, ITypedElement te) {
-		if (te != null && creator instanceof IStructureCreator2) {
-			IStructureCreator2 sc2 = (IStructureCreator2) creator;
+		if (te != null && creator instanceof IStructureCreator2 sc2) {
 			sc2.destroy(te);
 		}
 	}
 
 	private static void destroyLocalEdition(
 			IStructureCreator structureCreator, LocalResourceTypedElement localFileElement, ITypedElement localEdition) {
-		if (localFileElement != null)
+		if (localFileElement != null) {
 			localFileElement.discardBuffer();
-		if (localEdition != null && structureCreator instanceof IStructureCreator2) {
-			IStructureCreator2 sc2 = (IStructureCreator2) structureCreator;
+		}
+		if (localEdition != null && structureCreator instanceof IStructureCreator2 sc2) {
 			sc2.destroy(localEdition);
 		}
 	}
 
 	@Override
 	protected String getNoChangesMessage() {
-		if (name != null)
+		if (name != null) {
 			return NLS.bind(TeamUIMessages.EditionHistoryPage_0, name);
+		}
 		return TeamUIMessages.EditionHistoryPage_1;
 	}
 
 	@Override
 	protected Image getImage(Object object) {
-		if (object == localEdition)
+		if (object == localEdition) {
 			return localEdition.getImage();
+		}
 		Object revision = getRevisionFor(object);
-		if (revision != null)
+		if (revision != null) {
 			return super.getImage(revision);
+		}
 		return super.getImage(object);
 	}
 
 	@Override
 	protected String getLabel(Object object) {
 		Object revision = getRevisionFor(object);
-		if (revision != null)
+		if (revision != null) {
 			return super.getLabel(revision);
+		}
 		return super.getLabel(object);
 	}
 
 	private Object getRevisionFor(Object object) {
-		if (object == localEdition)
+		if (object == localEdition) {
 			return localFileElement;
+		}
 		for (IFileRevision revision : editions.keySet()) {
 			if (editions.get(revision) == object) {
 				return revision;
@@ -388,15 +403,17 @@ public class EditionHistoryPage extends LocalHistoryPage {
 
 	@Override
 	public String getName() {
-		if (name != null)
+		if (name != null) {
 			return name;
+		}
 		return super.getName();
 	}
 
 	@Override
 	public String getDescription() {
-		if (name != null)
+		if (name != null) {
 			return NLS.bind(TeamUIMessages.EditionHistoryPage_2, name);
+		}
 		return super.getDescription();
 	}
 

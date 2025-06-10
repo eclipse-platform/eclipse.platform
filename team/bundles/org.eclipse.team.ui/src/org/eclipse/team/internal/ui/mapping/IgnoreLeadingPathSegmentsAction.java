@@ -59,8 +59,9 @@ public class IgnoreLeadingPathSegmentsAction extends Action {
 				Integer.toString(oldValue), input -> {
 					try {
 						int i = Integer.parseInt(input);
-						if (i < 0 || i > maxValue)
+						if (i < 0 || i > maxValue) {
 							return TeamUIMessages.IgnoreLeadingPathSegmentsDialog_numberOutOfRange;
+						}
 					} catch (NumberFormatException x) {
 						return TeamUIMessages.IgnoreLeadingPathSegmentsDialog_notANumber;
 					}

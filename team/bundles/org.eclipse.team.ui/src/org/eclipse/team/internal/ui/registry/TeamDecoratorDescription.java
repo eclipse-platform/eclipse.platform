@@ -70,12 +70,14 @@ public class TeamDecoratorDescription {
 				}
 			}
 		}
-		if (repositoryId == null)
+		if (repositoryId == null) {
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_1, ATT_REPOSITORY_ID, TAG_TEAM_DECORATOR,
 					id == null ? "" : id)); //$NON-NLS-1$
-		if (repositoryId == null)
+		}
+		if (repositoryId == null) {
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_1, ATT_DECORATOR_ID, TAG_TEAM_DECORATOR,
 					id == null ? "" : id)); //$NON-NLS-1$
+		}
 	}
 
 	protected void fail(String reason) throws CoreException {

@@ -57,8 +57,7 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 
 		ICommonViewerSite cvs = getActionSite().getViewSite();
 		ISynchronizePageConfiguration configuration = getSynchronizePageConfiguration();
-		if (cvs instanceof ICommonViewerWorkbenchSite && configuration != null) {
-			ICommonViewerWorkbenchSite cvws = (ICommonViewerWorkbenchSite) cvs;
+		if (cvs instanceof ICommonViewerWorkbenchSite cvws && configuration != null) {
 			final IWorkbenchPartSite wps = cvws.getSite();
 			if (wps instanceof IViewSite) {
 				refactorActions = new RefactorActionGroup(configuration.getSite(), getNavigatorContentService(configuration));
@@ -68,8 +67,7 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 
 	private INavigatorContentService getNavigatorContentService(ISynchronizePageConfiguration configuration) {
 		Viewer v = configuration.getPage().getViewer();
-		if (v instanceof CommonViewer) {
-			CommonViewer cv = (CommonViewer) v;
+		if (v instanceof CommonViewer cv) {
 			return cv.getNavigatorContentService();
 		}
 		return null;
@@ -78,7 +76,9 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
-		if (refactorActions != null) refactorActions.fillActionBars(actionBars);
+		if (refactorActions != null) {
+			refactorActions.fillActionBars(actionBars);
+		}
 	}
 
 	@Override
@@ -93,18 +93,24 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	@Override
 	public void updateActionBars() {
 		super.updateActionBars();
-		if (refactorActions != null) refactorActions.updateActionBars();
+		if (refactorActions != null) {
+			refactorActions.updateActionBars();
+		}
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (refactorActions != null) refactorActions.dispose();
+		if (refactorActions != null) {
+			refactorActions.dispose();
+		}
 	}
 
 	@Override
 	public void setContext(ActionContext context) {
 		super.setContext(context);
-		if (refactorActions != null) refactorActions.setContext(context);
+		if (refactorActions != null) {
+			refactorActions.setContext(context);
+		}
 	}
 }
