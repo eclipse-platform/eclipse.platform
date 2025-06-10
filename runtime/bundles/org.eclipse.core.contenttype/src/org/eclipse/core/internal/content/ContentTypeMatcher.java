@@ -47,8 +47,9 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 	public IContentType findContentTypeFor(String fileName) {
 		// basic implementation just gets all content types
 		ContentTypeCatalog currentCatalog = getCatalog();
-		IContentType[] associated = currentCatalog.findContentTypesFor(this, fileName);
-		return associated.length == 0 ? null : new ContentTypeHandler((ContentType) associated[0], currentCatalog.getGeneration());
+		IContentType associated = currentCatalog.findFirstContentTypeFor(this, fileName);
+		return associated == null ? null
+				: new ContentTypeHandler((ContentType) associated, currentCatalog.getGeneration());
 	}
 
 	@Override
