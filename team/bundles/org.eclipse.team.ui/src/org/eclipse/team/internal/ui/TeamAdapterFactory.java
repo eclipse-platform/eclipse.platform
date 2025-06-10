@@ -48,8 +48,7 @@ public class TeamAdapterFactory implements IAdapterFactory {
 		if(adaptableObject instanceof DiffNode && adapterType == IWorkbenchAdapter.class) {
 			return (T) diffNodeAdapter;
 		}
-		if (adaptableObject instanceof ModelProvider) {
-			ModelProvider provider = (ModelProvider) adaptableObject;
+		if (adaptableObject instanceof ModelProvider provider) {
 			if (provider.getDescriptor().getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID)) {
 				if (adapterType == IResourceMappingMerger.class) {
 					return (T) new DefaultResourceMappingMerger((ModelProvider)adaptableObject);
@@ -62,8 +61,7 @@ public class TeamAdapterFactory implements IAdapterFactory {
 		if (adaptableObject instanceof ModelProvider && adapterType == ISynchronizationCompareAdapter.class) {
 			return (T) COMPARE_ADAPTER;
 		}
-		if (adaptableObject instanceof RepositoryProviderType && adapterType == ITeamStateProvider.class) {
-			RepositoryProviderType rpt = (RepositoryProviderType) adaptableObject;
+		if (adaptableObject instanceof RepositoryProviderType rpt && adapterType == ITeamStateProvider.class) {
 			return (T) TeamUIPlugin.getPlugin().getDecoratedStateProvider(rpt);
 		}
 

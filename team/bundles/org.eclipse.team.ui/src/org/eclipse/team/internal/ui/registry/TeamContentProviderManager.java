@@ -46,8 +46,9 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	private final ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	public static ITeamContentProviderManager getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new TeamContentProviderManager();
+		}
 		return instance;
 	}
 
@@ -62,8 +63,9 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		List<String> result = new ArrayList<>();
 		ITeamContentProviderDescriptor[] descriptors = getDescriptors();
 		for (ITeamContentProviderDescriptor descriptor : descriptors) {
-			if (descriptor.isEnabled() && scope.getMappings(descriptor.getModelProviderId()).length > 0)
+			if (descriptor.isEnabled() && scope.getMappings(descriptor.getModelProviderId()).length > 0) {
 				result.add(descriptor.getContentExtensionId());
+			}
 		}
 		return result.toArray(new String[result.size()]);
 	}
@@ -75,8 +77,9 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	}
 
 	protected void lazyInitialize() {
-		if (descriptors != null)
+		if (descriptors != null) {
 			return;
+		}
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(TeamUIPlugin.ID, PT_TEAM_CONTENT_PROVIDERS);
 		IExtension[] extensions = point.getExtensions();
 		descriptors = new HashMap<>(extensions.length * 2);
@@ -87,8 +90,9 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);
 			}
-			if (desc != null)
+			if (desc != null) {
 				descriptors.put(desc.getModelProviderId(), desc);
+			}
 		}
 	}
 

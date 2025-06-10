@@ -87,11 +87,15 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	private void createActions() {
 		// Create the actions
 		int supportedModes = configuration.getSupportedModes();
-		if (supportedModes == 0) return;
+		if (supportedModes == 0) {
+			return;
+		}
 		int currentMode = configuration.getMode();
 		if ((supportedModes & currentMode) == 0) {
 			currentMode = getSupportedMode(supportedModes);
-			if (currentMode == 0) return;
+			if (currentMode == 0) {
+				return;
+			}
 			configuration.setMode(currentMode);
 		}
 		if((supportedModes & ISynchronizePageConfiguration.INCOMING_MODE) != 0) {

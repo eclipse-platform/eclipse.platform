@@ -49,8 +49,9 @@ public class NavigationActionGroup extends SynchronizePageActionGroup {
 			collapseAll = new Action() {
 				@Override
 				public void run() {
-					if (viewer.getControl().isDisposed() || !(viewer instanceof AbstractTreeViewer))
+					if (viewer.getControl().isDisposed() || !(viewer instanceof AbstractTreeViewer)) {
 						return;
+					}
 					viewer.getControl().setRedraw(false);
 					((AbstractTreeViewer)viewer).collapseToLevel(viewer.getInput(), AbstractTreeViewer.ALL_LEVELS);
 					viewer.getControl().setRedraw(true);
@@ -67,21 +68,25 @@ public class NavigationActionGroup extends SynchronizePageActionGroup {
 	}
 	@Override
 	public void fillContextMenu(IMenuManager manager) {
-		if (manager == null || expandAllAction == null)
+		if (manager == null || expandAllAction == null) {
 			return;
+		}
 
-		if (manager.find(TeamUIPlugin.REMOVE_FROM_VIEW_ACTION_ID) != null)
+		if (manager.find(TeamUIPlugin.REMOVE_FROM_VIEW_ACTION_ID) != null) {
 			manager.insertBefore(TeamUIPlugin.REMOVE_FROM_VIEW_ACTION_ID, expandAllAction);
-		else
+		} else {
 			appendToGroup(manager, ISynchronizePageConfiguration.NAVIGATE_GROUP, expandAllAction);
+		}
 	}
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		IToolBarManager manager = actionBars.getToolBarManager();
 		appendToGroup(manager, ISynchronizePageConfiguration.NAVIGATE_GROUP, collapseAll);
-		if (gotoNext != null)
+		if (gotoNext != null) {
 			appendToGroup(manager, ISynchronizePageConfiguration.NAVIGATE_GROUP, gotoNext);
-		if (gotoPrevious != null)
+		}
+		if (gotoPrevious != null) {
 			appendToGroup(manager, ISynchronizePageConfiguration.NAVIGATE_GROUP, gotoPrevious);
+		}
 	}
 }

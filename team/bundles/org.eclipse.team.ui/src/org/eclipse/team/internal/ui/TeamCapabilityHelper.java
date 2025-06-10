@@ -125,8 +125,9 @@ public class TeamCapabilityHelper {
 	 * @param workbenchActivitySupport the activity support
 	 */
 	protected void processProject(IProject project, IWorkbenchActivitySupport workbenchActivitySupport) throws CoreException {
-		if (!project.isOpen())
+		if (!project.isOpen()) {
 			return;
+		}
 		String id = getProviderIdFor(project);
 		processRepositoryId(id, workbenchActivitySupport);
 	}
@@ -138,23 +139,26 @@ public class TeamCapabilityHelper {
 	 * @param workbenchActivitySupport the activity support
 	 */
 	public void processRepositoryId(String id, IWorkbenchActivitySupport workbenchActivitySupport) {
-		if (id == null)
+		if (id == null) {
 			return;
+		}
 		IActivityManager activityManager = workbenchActivitySupport
 		.getActivityManager();
 		Set<String> activities = new HashSet<>(activityManager.getEnabledActivityIds());
 		boolean changed = false;
 
 		IPluginContribution contribution = providerIdToPluginId.get(id);
-		if (contribution == null)
+		if (contribution == null) {
 			return; //bad provider ID.
+		}
 		IIdentifier identifier = activityManager.getIdentifier(WorkbenchActivityHelper.createUnifiedId(contribution));
 		if (activities.addAll(identifier.getActivityIds())) {
 			changed = true;
 		}
 
-		if (changed)
+		if (changed) {
 			workbenchActivitySupport.setEnabledActivityIds(activities);
+		}
 	}
 
 	/**
@@ -170,8 +174,7 @@ public class TeamCapabilityHelper {
 		if(project.isAccessible()) {
 			//First, look for the session property
 			Object prop = project.getSessionProperty(TeamPlugin.PROVIDER_PROP_KEY);
-			if(prop != null && prop instanceof RepositoryProvider) {
-				RepositoryProvider provider = (RepositoryProvider) prop;
+			if(prop != null && prop instanceof RepositoryProvider provider) {
 				return provider.getID();
 			}
 			//Next, check if it has the ID as a persistent property

@@ -61,8 +61,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 		@Override
 		public String getAncestorLabel(Object input) {
-			if (input instanceof ResourceDiffCompareInput) {
-				ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
+			if (input instanceof ResourceDiffCompareInput rdci) {
 				ITypedElement element = rdci.getAncestor();
 				if (element != null) {
 					final IFileRevision revision = ((FileRevisionTypedElement)element).getFileRevision();
@@ -94,8 +93,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 		@Override
 		public String getLeftLabel(Object input) {
-			if (input instanceof ResourceDiffCompareInput) {
-				ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
+			if (input instanceof ResourceDiffCompareInput rdci) {
 				String localContentId = rdci.getLocalContentId();
 				if (localContentId != null) {
 					ITypedElement element= rdci.getLeft();
@@ -126,8 +124,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 		@Override
 		public String getRightLabel(Object input) {
-			if (input instanceof ResourceDiffCompareInput) {
-				ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
+			if (input instanceof ResourceDiffCompareInput rdci) {
 				ITypedElement element = rdci.getRight();
 				if (element != null) {
 					final IFileRevision revision = ((FileRevisionTypedElement)element).getFileRevision();
@@ -153,8 +150,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 		@Override
 		public Image getImage(Object element) {
-			if (element instanceof ICompareInput) {
-				ICompareInput ci = (ICompareInput) element;
+			if (element instanceof ICompareInput ci) {
 				return ci.getImage();
 			}
 			return null;
@@ -162,8 +158,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 		@Override
 		public String getText(Object element) {
-			if (element instanceof ICompareInput) {
-				ICompareInput ci = (ICompareInput) element;
+			if (element instanceof ICompareInput ci) {
 				return ci.getName();
 			}
 			return null;
@@ -224,24 +219,28 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		IDiff[] added = event.getAdditions();
 		for (IDiff diff : added) {
 			ICompareInput input = findInput(ResourceDiffTree.getResourceFor(diff));
-			if (input != null)
+			if (input != null) {
 				changedInputs.add(input);
+			}
 		}
 		IDiff[] changed = event.getChanges();
 		for (IDiff diff : changed) {
 			ICompareInput input = findInput(ResourceDiffTree.getResourceFor(diff));
-			if (input != null)
+			if (input != null) {
 				changedInputs.add(input);
+			}
 		}
 		IPath[] paths = event.getRemovals();
 		for (IPath path : paths) {
 			ICompareInput input = findInput(path);
-			if (input != null)
+			if (input != null) {
 				changedInputs.add(input);
+			}
 		}
 
-		if (!changedInputs.isEmpty())
+		if (!changedInputs.isEmpty()) {
 			handleInputChanges(changedInputs.toArray(new ICompareInput[changedInputs.size()]), false);
+		}
 	}
 
 	@Override
@@ -252,14 +251,14 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	@Override
 	protected IResource[] getResources(ICompareInput input) {
 		IResource resource = getResource(input);
-		if (resource == null)
+		if (resource == null) {
 			return new IResource[0];
+		}
 		return new IResource[] { resource };
 	}
 
 	private IResource getResource(ICompareInput input) {
-		if (input instanceof IResourceProvider) {
-			IResourceProvider rp = (IResourceProvider) input;
+		if (input instanceof IResourceProvider rp) {
 			return rp.getResource();
 		}
 		return Utils.getResource(input);
@@ -289,8 +288,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 	@Override
 	protected void prepareInput(ICompareInput input, IProgressMonitor monitor) {
-		if (input instanceof ResourceDiffCompareInput) {
-			ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
+		if (input instanceof ResourceDiffCompareInput rdci) {
 			IResource resource = rdci.getResource();
 			IDiff diff = getContext().getDiffTree().getDiff(resource);
 			try {
@@ -312,15 +310,17 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	}
 
 	public void fetchAuthors(final ResourceDiffCompareInput input) {
-		if (fetchingInput == input)
+		if (fetchingInput == input) {
 			return;
+		}
 		fetchingInput= input;
 		runInBackground(monitor -> fetchAuthors(input, monitor));
 	}
 
 	protected void fetchAuthors(ResourceDiffCompareInput input, IProgressMonitor monitor) throws CoreException {
-		if (input.updateAuthorInfo(monitor))
+		if (input.updateAuthorInfo(monitor)) {
 			fireLabelProviderChange(input);
+		}
 	}
 
 	private void fireLabelProviderChange(Object input) {

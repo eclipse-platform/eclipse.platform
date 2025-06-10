@@ -76,8 +76,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 
 	@Override
 	public Font getFont(Object element) {
-		if (element instanceof ISynchronizeModelElement) {
-			ISynchronizeModelElement node = (ISynchronizeModelElement)element;
+		if (element instanceof ISynchronizeModelElement node) {
 			if(node.getProperty(ISynchronizeModelElement.BUSY_PROPERTY)) {
 				if (busyFont == null) {
 					Font defaultFont = JFaceResources.getDefaultFont();
@@ -97,8 +96,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 	public Image getImage(Object element) {
 		Image base = workbenchLabelProvider.getImage(element);
 		if (base != null) {
-			if (element instanceof ISynchronizeModelElement) {
-				ISynchronizeModelElement syncNode = (ISynchronizeModelElement) element;
+			if (element instanceof ISynchronizeModelElement syncNode) {
 				int kind = syncNode.getKind();
 				Image decoratedImage;
 				decoratedImage = getCompareImage(base, kind);

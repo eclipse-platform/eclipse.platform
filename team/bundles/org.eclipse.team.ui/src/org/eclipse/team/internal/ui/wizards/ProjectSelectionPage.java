@@ -135,8 +135,7 @@ public class ProjectSelectionPage extends WizardPage {
 
 	private IProject getSelectedProject() {
 		ISelection selection = projectViewer.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			return (IProject)ss.getFirstElement();
 		}
 		return null;

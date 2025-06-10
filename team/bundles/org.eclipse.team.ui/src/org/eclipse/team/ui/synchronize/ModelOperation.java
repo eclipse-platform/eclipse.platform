@@ -269,8 +269,9 @@ public abstract class ModelOperation extends TeamOperation {
 					independant = false;
 				}
 			}
-			if (independant)
+			if (independant) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -280,8 +281,9 @@ public abstract class ModelOperation extends TeamOperation {
 		List<ModelProvider> result = new ArrayList<>();
 		input.addAll(Arrays.asList(inputModelProviders));
 		for (ModelProvider provider : modelProviders) {
-			if (!input.contains(provider))
+			if (!input.contains(provider)) {
 				result.add(provider);
+			}
 		}
 		return result.toArray(new ModelProvider[result.size()]);
 	}
@@ -302,16 +304,18 @@ public abstract class ModelOperation extends TeamOperation {
 		IResource[] scopeRoots = scopeTraversal.getResources();
 		for (IResource scopeResource : scopeRoots) {
 			for (IResource inputResource : inputRoots) {
-				if (overlaps(scopeResource, scopeTraversal.getDepth(), inputResource, inputTraversal.getDepth()))
+				if (overlaps(scopeResource, scopeTraversal.getDepth(), inputResource, inputTraversal.getDepth())) {
 					return true;
+				}
 			}
 		}
 		return false;
 	}
 
 	private boolean overlaps(IResource scopeResource, int scopeDepth, IResource inputResource, int inputDepth) {
-		if (scopeResource.equals(inputResource))
+		if (scopeResource.equals(inputResource)) {
 			return true;
+		}
 		if (scopeDepth == IResource.DEPTH_INFINITE && scopeResource.getFullPath().isPrefixOf(inputResource.getFullPath())) {
 			return true;
 		}
@@ -336,8 +340,9 @@ public abstract class ModelOperation extends TeamOperation {
 	}
 
 	private boolean isIndependantModel(String modelProviderId, String id) {
-		if (id.equals(modelProviderId))
+		if (id.equals(modelProviderId)) {
 			return false;
+		}
 		IModelProviderDescriptor desc1 = ModelProvider.getModelProviderDescriptor(modelProviderId);
 		IModelProviderDescriptor desc2 = ModelProvider.getModelProviderDescriptor(id);
 		return !(isExtension(desc1, desc2) || isExtension(desc2, desc1));

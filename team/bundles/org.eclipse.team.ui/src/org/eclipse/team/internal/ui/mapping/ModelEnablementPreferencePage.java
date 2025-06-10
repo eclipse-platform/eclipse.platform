@@ -83,8 +83,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			}
 			@Override
 			public Object[] getElements(Object element) {
-				if (element instanceof ITeamContentProviderManager) {
-					ITeamContentProviderManager manager = (ITeamContentProviderManager) element;
+				if (element instanceof ITeamContentProviderManager manager) {
 					return manager.getDescriptors();
 				}
 				return new Object[0];
@@ -94,8 +93,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			Map<ITeamContentProviderDescriptor, Image> images = new HashMap<>();
 			@Override
 			public String getText(Object element) {
-				if (element instanceof ITeamContentProviderDescriptor) {
-					ITeamContentProviderDescriptor desc = (ITeamContentProviderDescriptor) element;
+				if (element instanceof ITeamContentProviderDescriptor desc) {
 					return getTextFor(desc);
 				}
 				return super.getText(element);
@@ -103,8 +101,9 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			private String getTextFor(ITeamContentProviderDescriptor teamContentDescriptor) {
 				String name = teamContentDescriptor.getName();
 
-				if (name != null && !name.isEmpty())
+				if (name != null && !name.isEmpty()) {
 					return name;
+				}
 
 				String modelProviderID = teamContentDescriptor.getModelProviderId();
 				IModelProviderDescriptor desc = ModelProvider.getModelProviderDescriptor(modelProviderID);
@@ -115,8 +114,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			}
 			@Override
 			public Image getImage(Object element) {
-				if (element instanceof ITeamContentProviderDescriptor) {
-					ITeamContentProviderDescriptor desc = (ITeamContentProviderDescriptor) element;
+				if (element instanceof ITeamContentProviderDescriptor desc) {
 					Image image = images.get(desc);
 					if (image == null) {
 						ImageDescriptor idesc = desc.getImageDescriptor();
@@ -142,13 +140,12 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		tableViewer.setComparator(new ViewerComparator() {
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
-				if (e1 instanceof ITeamContentProviderDescriptor && e2 instanceof ITeamContentProviderDescriptor) {
-					ITeamContentProviderDescriptor d1 = (ITeamContentProviderDescriptor) e1;
-					ITeamContentProviderDescriptor d2 = (ITeamContentProviderDescriptor) e2;
+				if (e1 instanceof ITeamContentProviderDescriptor d1 && e2 instanceof ITeamContentProviderDescriptor d2) {
 					IModelProviderDescriptor md1 = ModelProvider.getModelProviderDescriptor(d1.getModelProviderId());
 					IModelProviderDescriptor md2 = ModelProvider.getModelProviderDescriptor(d2.getModelProviderId());
-					if (md1 != null && md2 != null)
+					if (md1 != null && md2 != null) {
 						return getLabel(md1).compareTo(getLabel(md2));
+					}
 				}
 				return super.compare(viewer, e1, e2);
 			}
@@ -217,12 +214,13 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 	private String getLabel(IModelProviderDescriptor desc) {
 		// Only do this for the resource model since we don;t want to
 		// load all model providers (see bug 133604)
-		if (desc.getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID))
+		if (desc.getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID)) {
 			try {
 				return Utils.getLabel(desc.getModelProvider());
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);
 			}
+		}
 		return desc.getLabel();
 	}
 

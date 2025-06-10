@@ -114,12 +114,12 @@ public class ModelSynchronizePage extends AbstractSynchronizePage {
 				return false;
 			}
 			String currentSetting = (String)configuration.getProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER);
-			if (currentSetting != null && currentSetting.equals(newValue))
+			if (currentSetting != null && currentSetting.equals(newValue)) {
 				return false;
+			}
 
 			Object input = getViewerInput(configuration,(String) newValue);
-			if (input instanceof ModelProvider) {
-				ModelProvider provider = (ModelProvider) input;
+			if (input instanceof ModelProvider provider) {
 				configuration.setProperty(
 						ISynchronizePageConfiguration.P_PAGE_DESCRIPTION,
 						NLS.bind(TeamUIMessages.ShowModelProviderAction_0, Utils.getLabel(provider), Utils.shortenText(
@@ -143,8 +143,9 @@ public class ModelSynchronizePage extends AbstractSynchronizePage {
 				return false;
 			}
 			String currentSetting = (String)configuration.getProperty(ITeamContentProviderManager.PROP_PAGE_LAYOUT);
-			if (currentSetting != null && currentSetting.equals(newValue))
+			if (currentSetting != null && currentSetting.equals(newValue)) {
 				return false;
+			}
 
 			IDialogSettings pageSettings = configuration.getSite().getPageSettings();
 			if(pageSettings != null) {

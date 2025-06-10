@@ -102,8 +102,7 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 			if (this.participant.isPinned()) {
 				drawImage(pinnedData, this.imageData.width - pinnedData.width, 0);
 			}
-			if (this.participant instanceof SubscriberParticipant) {
-				SubscriberParticipant participant = ( SubscriberParticipant) this.participant;
+			if (this.participant instanceof SubscriberParticipant participant) {
 				SubscriberRefreshSchedule schedule = participant.getRefreshSchedule();
 				if(schedule!=null && schedule.isEnabled()) {
 					drawImage(scheduledData, 0, 0);

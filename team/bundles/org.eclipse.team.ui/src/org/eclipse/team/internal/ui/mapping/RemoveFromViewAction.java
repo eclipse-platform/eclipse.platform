@@ -66,8 +66,9 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 
 	private void performRemove(IProgressMonitor monitor) throws CoreException {
 		IResource[] resources = getVisibleResources(monitor);
-		if (resources.length == 0)
+		if (resources.length == 0) {
 			return;
+		}
 		ResourceDiffTree tree = (ResourceDiffTree)getSynchronizationContext().getDiffTree();
 		try {
 			tree.beginInput();
@@ -112,8 +113,9 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		// Only enable if the selected elements adapt to IResource
-		if (selection.isEmpty())
+		if (selection.isEmpty()) {
 			return false;
+		}
 		for (Object element : selection) {
 			if (Utils.getResource(element) == null) {
 				return false;

@@ -89,8 +89,9 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (saveDirtyEditors() && promptToUpdate())
+		if (saveDirtyEditors() && promptToUpdate()) {
 			return super.execute(event);
+		}
 		return null;
 	}
 
@@ -157,8 +158,9 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 			return false;
 		}
 		final long count = tree.countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK) + tree.countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK);
-		if (count == 0)
+		if (count == 0) {
 			return false;
+		}
 		final boolean[] result = new boolean[] {true};
 		TeamUIPlugin.getStandardDisplay().syncExec(() -> {
 			String sizeString = Long.toString(count);

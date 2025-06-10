@@ -72,8 +72,9 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 				showAllAction.setChecked(getActiveProviderId().equals(ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE));
 				showAllFlatAction.setChecked(isFlatEnabled());
 				ModelProvider[] modelProviders = getEnabledModelProviders();
-				if (modelProviders.length > 0)
+				if (modelProviders.length > 0) {
 					menuManager.add(new Separator());
+				}
 				addModelsToMenu(modelProviders);
 				menuManager.add(new Separator());
 				menuManager.add(showAllFlatAction);
@@ -136,8 +137,9 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	}
 
 	public void dispose() {
-		if (menuCreator != null)
+		if (menuCreator != null) {
 			menuCreator.dispose();
+		}
 		getSynchronizationContext().getScope().removeScopeChangeListener(this);
 		configuration.removePropertyChangeListener(listener);
 		TeamUI.getTeamContentProviderManager().removePropertyChangeListener(listener);
@@ -167,15 +169,17 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 
 	private String getActiveProviderId() {
 		String id = (String)configuration.getProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER);
-		if (id == null)
+		if (id == null) {
 			id = ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE;
+		}
 		return id;
 	}
 
 	private ModelProvider getNextProvider() {
 		ModelProvider[] providers = getSynchronizationContext().getScope().getModelProviders();
-		if (providers.length == 0)
+		if (providers.length == 0) {
 			return null;
+		}
 		providers = ModelOperation.sortByExtension(providers);
 		String id = getActiveProviderId();
 		int index = 0;
@@ -187,15 +191,18 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 					break;
 				}
 			}
-			if (index == providers.length)
+			if (index == providers.length) {
 				index = 0;
+			}
 		}
 		return providers[index];
 	}
 
 	public void update() {
 		ModelProvider next = getNextProvider();
-		if (next == null) return;
+		if (next == null) {
+			return;
+		}
 		String text = NLS.bind(TeamUIMessages.ModelSelectionDropDownAction_1, next.getDescriptor().getLabel());
 		setToolTipText(text);
 		setText(text);
@@ -204,11 +211,9 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 			showAllFlatAction.setChecked(isFlatEnabled());
 			IContributionItem[] items = menuManager.getItems();
 			for (IContributionItem item : items) {
-				if (item instanceof ActionContributionItem) {
-					ActionContributionItem aci = (ActionContributionItem) item;
+				if (item instanceof ActionContributionItem aci) {
 					IAction a = aci.getAction();
-					if (a instanceof ShowModelProviderAction) {
-						ShowModelProviderAction action = (ShowModelProviderAction) a;
+					if (a instanceof ShowModelProviderAction action) {
 						action.setChecked(action.getProviderId().equals(getActiveProviderId()));
 					}
 				}
@@ -225,7 +230,9 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	@Override
 	public void run() {
 		ModelProvider next = getNextProvider();
-		if (next == null) return;
+		if (next == null) {
+			return;
+		}
 		Action action = new ShowModelProviderAction(configuration, next);
 		action.run();
 	}

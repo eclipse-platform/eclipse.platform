@@ -149,8 +149,7 @@ public class ModelSynchronizeParticipant extends
 	};
 
 	private final IPropertyListener dirtyListener = (source, propId) -> {
-		if (source instanceof SaveableComparison && propId == SaveableComparison.PROP_DIRTY) {
-			SaveableComparison scm = (SaveableComparison) source;
+		if (source instanceof SaveableComparison scm && propId == SaveableComparison.PROP_DIRTY) {
 			boolean isDirty = scm.isDirty();
 			firePropertyChange(ModelSynchronizeParticipant.this, PROP_DIRTY, Boolean.valueOf(!isDirty), Boolean.valueOf(isDirty));
 		}
@@ -201,8 +200,9 @@ public class ModelSynchronizeParticipant extends
 	@Override
 	public String getName() {
 		String name = super.getName();
-		if (description == null)
+		if (description == null) {
 			description = Utils.getScopeDescription(getContext().getScope());
+		}
 		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, name, description);
 	}
 
@@ -229,8 +229,9 @@ public class ModelSynchronizeParticipant extends
 		configuration.setMode(ISynchronizePageConfiguration.BOTH_MODE);
 		configuration.setProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT, getContext());
 		configuration.setProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_SCOPE, getContext().getScope());
-		if (getHandler() != null)
+		if (getHandler() != null) {
 			configuration.setProperty(StartupPreferencePage.STARTUP_PREFERENCES, preferences);
+		}
 	}
 
 	/**
@@ -326,8 +327,9 @@ public class ModelSynchronizeParticipant extends
 		}
 		// Get a compare input from the model provider's compare adapter
 		ISynchronizationCompareAdapter adapter = Utils.getCompareAdapter(object);
-		if (adapter != null)
+		if (adapter != null) {
 			return adapter.asCompareInput(getContext(), object);
+		}
 		return null;
 	}
 
@@ -341,8 +343,9 @@ public class ModelSynchronizeParticipant extends
 	public boolean hasCompareInputFor(Object object) {
 		// Get a content viewer from the model provider's compare adapter
 		ISynchronizationCompareAdapter adapter = Utils.getCompareAdapter(object);
-		if (adapter != null)
+		if (adapter != null) {
 			return adapter.hasCompareInput(getContext(), object);
+		}
 		return false;
 	}
 
@@ -365,10 +368,12 @@ public class ModelSynchronizeParticipant extends
 	}
 
 	private void internalRefresh(ResourceMapping[] mappings, String jobName, String taskName, IWorkbenchSite site, IRefreshSubscriberListener listener) {
-		if (jobName == null)
+		if (jobName == null) {
 			jobName = getShortTaskName();
-		if (taskName == null)
+		}
+		if (taskName == null) {
 			taskName = getLongTaskName(mappings);
+		}
 		Job.getJobManager().cancel(this);
 		RefreshParticipantJob job = new RefreshModelParticipantJob(this, jobName, taskName, mappings, listener);
 		job.setUser(true);
@@ -466,8 +471,9 @@ public class ModelSynchronizeParticipant extends
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 		IMemento settings = memento.createChild(CTX_PARTICIPANT_SETTINGS);
-		if (description != null)
+		if (description != null) {
 			settings.putString(CTX_DESCRIPTION, description);
+		}
 		refreshSchedule.saveState(settings.createChild(CTX_REFRESH_SCHEDULE_SETTINGS));
 		saveMappings(settings);
 		settings.putString(CTX_STARTUP_ACTION, preferences.getString(StartupPreferencePage.PROP_STARTUP_ACTION));
@@ -493,11 +499,13 @@ public class ModelSynchronizeParticipant extends
 		if(memento != null) {
 			IMemento settings = memento.getChild(CTX_PARTICIPANT_SETTINGS);
 			String startupAction = settings.getString(StartupPreferencePage.PROP_STARTUP_ACTION);
-			if (startupAction != null)
+			if (startupAction != null) {
 				preferences.putValue(StartupPreferencePage.PROP_STARTUP_ACTION, startupAction);
+			}
 			ResourceMapping[] mappings = loadMappings(settings);
-			if (mappings.length == 0)
+			if (mappings.length == 0) {
 				throw new PartInitException(NLS.bind(TeamUIMessages.ModelSynchronizeParticipant_0, getId()));
+			}
 			initializeContext(mappings);
 			if(settings != null) {
 				SubscriberRefreshSchedule schedule = SubscriberRefreshSchedule.init(settings.getChild(CTX_REFRESH_SCHEDULE_SETTINGS), createRefreshable());
@@ -609,8 +617,9 @@ public class ModelSynchronizeParticipant extends
 			activeSaveable.addPropertyListener(dirtyListener);
 			isDirty = activeSaveable.isDirty();
 		}
-		if (isDirty != wasDirty)
+		if (isDirty != wasDirty) {
 			firePropertyChange(this, PROP_DIRTY, Boolean.valueOf(wasDirty), Boolean.valueOf(isDirty));
+		}
 	}
 
 	/**
@@ -626,8 +635,9 @@ public class ModelSynchronizeParticipant extends
 	public boolean checkForBufferChange(Shell shell, ISynchronizationCompareInput input, boolean cancelAllowed, IProgressMonitor monitor) throws CoreException {
 		SaveableComparison currentBuffer = getActiveSaveable();
 		SaveableComparison targetBuffer = input.getSaveable();
-		if (monitor == null)
+		if (monitor == null) {
 			monitor = new NullProgressMonitor();
+		}
 		try {
 			ModelParticipantAction.handleTargetSaveableChange(shell, targetBuffer, currentBuffer, cancelAllowed, Policy.subMonitorFor(monitor, 10));
 		} catch (InterruptedException e) {

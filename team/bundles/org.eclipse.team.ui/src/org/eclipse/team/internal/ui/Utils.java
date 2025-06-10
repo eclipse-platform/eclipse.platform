@@ -147,10 +147,12 @@ public class Utils {
 			int originalRight = right;
 			Object mid = sortedCollection[(left + right) >>> 1];
 			do {
-				while (compare(sortedCollection[left], mid))
+				while (compare(sortedCollection[left], mid)) {
 					left++;
-				while (compare(mid, sortedCollection[right]))
+				}
+				while (compare(mid, sortedCollection[right])) {
 					right--;
+				}
 				if (left <= right) {
 					Object tmp = sortedCollection[left];
 					sortedCollection[left] = sortedCollection[right];
@@ -159,10 +161,12 @@ public class Utils {
 					right--;
 				}
 			} while (left <= right);
-			if (originalLeft < right)
+			if (originalLeft < right) {
 				sortedCollection = quickSort(sortedCollection, originalLeft, right);
-			if (left < originalRight)
+			}
+			if (left < originalRight) {
 				sortedCollection = quickSort(sortedCollection, left, originalRight);
+			}
 			return sortedCollection;
 		}
 
@@ -177,8 +181,9 @@ public class Utils {
 			Object[] sortedCollection = new Object[size];
 			//copy the array so can return a new sorted collection
 			System.arraycopy(unSortedCollection, 0, sortedCollection, 0, size);
-			if (size > 1)
+			if (size > 1) {
 				quickSort(sortedCollection, 0, size - 1);
+			}
 			return sortedCollection;
 		}
 	}
@@ -232,8 +237,9 @@ public class Utils {
 				dialog = true;
 			}
 		}
-		if (status == null)
+		if (status == null) {
 			return;
+		}
 		if (!status.isOK()) {
 			IStatus toShow = status;
 			if (status.isMultiStatus()) {
@@ -295,8 +301,9 @@ public class Utils {
 			//new TimeoutProgressMonitorDialog(parent, TIMEOUT).run(true
 			// /*fork*/, cancelable, runnable);
 		} finally {
-			if (createdShell)
+			if (createdShell) {
 				parent.dispose();
+			}
 		}
 	}
 
@@ -307,8 +314,9 @@ public class Utils {
 	public static Shell getShell(IWorkbenchSite site, boolean syncIfNecessary) {
 		if(site != null) {
 			Shell shell = site.getShell();
-			if (!shell.isDisposed())
+			if (!shell.isDisposed()) {
 				return shell;
+			}
 		}
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		if (workbench != null) {
@@ -321,7 +329,9 @@ public class Utils {
 		Display display = Display.getCurrent();
 		if (display == null) {
 			display = Display.getDefault();
-			if (display.isDisposed()) return null;
+			if (display.isDisposed()) {
+				return null;
+			}
 			if (syncIfNecessary) {
 				final Shell[] result = new Shell[] { null };
 				Runnable r = () -> result[0] = new Shell(Display.getDefault());
@@ -329,7 +339,9 @@ public class Utils {
 				return result[0];
 			}
 		}
-		if (display.isDisposed()) return null;
+		if (display.isDisposed()) {
+			return null;
+		}
 		return new Shell(display);
 	}
 	/*
@@ -367,8 +379,9 @@ public class Utils {
 	public static Shell findShell() {
 		Display display = TeamUIPlugin.getStandardDisplay();
 		Shell activeShell = display.getActiveShell();
-		if (activeShell != null)
+		if (activeShell != null) {
 			return activeShell;
+		}
 		// worst case, just create our own.
 		return new Shell(display);
 	}
@@ -392,18 +405,20 @@ public class Utils {
 		String baseContentId= base != null ? base.getContentIdentifier() : null;
 		if (isShowAuthor()) {
 			baseAuthor = getAuthor(base, monitor);
-			if (baseContentId != null && baseContentId.equals(remoteContentId))
+			if (baseContentId != null && baseContentId.equals(remoteContentId)) {
 				remoteAuthor= baseAuthor;
-			else
+			} else {
 				remoteAuthor= getAuthor(remote, monitor);
+			}
 
 			if (localContentId != null) {
-				if (localContentId.equals(baseContentId))
+				if (localContentId.equals(baseContentId)) {
 					localAuthor= baseAuthor;
-				else if (localContentId.equals(remoteAuthor))
+				} else if (localContentId.equals(remoteAuthor)) {
 					localAuthor= remoteAuthor;
-				else
+				} else {
 					localAuthor= sync.getLocalAuthor(monitor);
+				}
 			}
 		}
 		if (localContentId != null) {
@@ -457,11 +472,11 @@ public class Utils {
 	private static String getAuthor(IResourceVariant variant,
 			IProgressMonitor monitor) {
 		String author = null;
-		if (variant instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) variant;
+		if (variant instanceof IAdaptable adaptable) {
 			IFileRevision revision = adaptable.getAdapter(IFileRevision.class);
-			if (revision == null)
+			if (revision == null) {
 				return null;
+			}
 			try {
 				IFileRevision complete = revision.withAllProperties(monitor);
 				if (complete != null) {
@@ -475,20 +490,20 @@ public class Utils {
 	}
 
 	public static String getLocalContentId(IDiff diff) {
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			diff = twd.getLocalChange();
-			if (diff == null)
+			if (diff == null) {
 				diff = twd.getRemoteChange();
+			}
 		}
-		if (diff instanceof IResourceDiff) {
-			IResourceDiff rd = (IResourceDiff) diff;
+		if (diff instanceof IResourceDiff rd) {
 			IResource resource = rd.getResource();
 			IFileHistoryProvider provider = getHistoryProvider(resource);
 			if (provider != null) {
 				IFileRevision revision = provider.getWorkspaceFileRevision(resource);
-				if (revision != null)
+				if (revision != null) {
 					return revision.getContentIdentifier();
+				}
 			}
 		}
 		return null;
@@ -496,22 +511,20 @@ public class Utils {
 
 	public static IFileHistoryProvider getHistoryProvider(IResource resource) {
 		RepositoryProvider rp = RepositoryProvider.getProvider(resource.getProject());
-		if (rp != null)
+		if (rp != null) {
 			return rp.getFileHistoryProvider();
+		}
 		return null;
 	}
 
 	public static IFileRevision getBase(IDiff diff) {
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			IDiff remoteChange = twd.getRemoteChange();
-			if (remoteChange instanceof IResourceDiff) {
-				IResourceDiff rd = (IResourceDiff) remoteChange;
+			if (remoteChange instanceof IResourceDiff rd) {
 				return rd.getBeforeState();
 			}
 			IDiff localChange = twd.getLocalChange();
-			if (localChange instanceof IResourceDiff) {
-				IResourceDiff ld = (IResourceDiff) localChange;
+			if (localChange instanceof IResourceDiff ld) {
 				return ld.getBeforeState();
 			}
 		}
@@ -519,20 +532,16 @@ public class Utils {
 	}
 
 	public static IFileRevision getRemote(IDiff diff) {
-		if (diff instanceof IResourceDiff) {
-			IResourceDiff rd = (IResourceDiff) diff;
+		if (diff instanceof IResourceDiff rd) {
 			return rd.getAfterState();
 		}
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			IDiff remoteChange = twd.getRemoteChange();
-			if (remoteChange instanceof IResourceDiff) {
-				IResourceDiff rd = (IResourceDiff) remoteChange;
+			if (remoteChange instanceof IResourceDiff rd) {
 				return rd.getAfterState();
 			}
 			IDiff localChange = twd.getLocalChange();
-			if (localChange instanceof IResourceDiff) {
-				IResourceDiff ld = (IResourceDiff) localChange;
+			if (localChange instanceof IResourceDiff ld) {
 				return ld.getBeforeState();
 			}
 		}
@@ -563,14 +572,17 @@ public class Utils {
 		} else {
 			s = getString(labelKey, bundle);
 		}
-		if (s != null)
+		if (s != null) {
 			a.setText(s);
+		}
 		s = getString(tooltipKey, bundle);
-		if (s != null)
+		if (s != null) {
 			a.setToolTipText(s);
+		}
 		s = getString(descriptionKey, bundle);
-		if (s != null)
+		if (s != null) {
 			a.setDescription(s);
+		}
 		String relPath = getString(imageKey, bundle);
 		if (relPath != null && !relPath.equals(imageKey) && relPath.trim().length() > 0) {
 			String ePath;
@@ -581,8 +593,9 @@ public class Utils {
 				ePath = "elcl16/" + relPath; //$NON-NLS-1$
 			}
 			ImageDescriptor id = TeamImages.getImageDescriptor(ePath);
-			if (id != null)
+			if (id != null) {
 				a.setImageDescriptor(id);
+			}
 		}
 	}
 
@@ -641,8 +654,7 @@ public class Utils {
 				} else {
 					adapted = Adapters.adapt(element, IResource.class);
 				}
-				if (adapted instanceof IResource) {
-					IResource resource = (IResource) adapted;
+				if (adapted instanceof IResource resource) {
 					isResource = true;
 					if (resource.getType() != IResource.ROOT) {
 						resources.add(resource);
@@ -660,8 +672,9 @@ public class Utils {
 				}
 			}
 			if (!isResource) {
-				if (nonResources != null)
+				if (nonResources != null) {
 					nonResources.add(element);
+				}
 			}
 		}
 		return resources.toArray(new IResource[resources.size()]);
@@ -771,8 +784,12 @@ public class Utils {
 	}
 
 	public static boolean equalObject(Object o1, Object o2) {
-		if (o1 == null && o2 == null) return true;
-		if (o1 == null || o2 == null) return false;
+		if (o1 == null && o2 == null) {
+			return true;
+		}
+		if (o1 == null || o2 == null) {
+			return false;
+		}
 		return o1.equals(o2);
 	}
 
@@ -784,7 +801,9 @@ public class Utils {
 		StringBuilder  buffer = new StringBuilder();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
-			if(i > 0) buffer.append(", "); //$NON-NLS-1$
+			if(i > 0) {
+				buffer.append(", "); //$NON-NLS-1$
+			}
 			buffer.append(resource.getFullPath());
 		}
 		return buffer.toString();
@@ -801,8 +820,9 @@ public class Utils {
 	 */
 	public static String shortenText(int maxWidth, String textValue) {
 		int length = textValue.length();
-		if (length < maxWidth)
+		if (length < maxWidth) {
 			return textValue;
+		}
 		String ellipsis = "..."; //$NON-NLS-1$
 		int subStrLen = (maxWidth - ellipsis.length()) / 2;
 		int addtl = (maxWidth - ellipsis.length()) % 2;
@@ -826,15 +846,23 @@ public class Utils {
 	 * @return whether it is safe to update the viewer
 	 */
 	public static boolean canUpdateViewer(StructuredViewer viewer) {
-		if(viewer == null || viewer.getControl().isDisposed()) return false;
+		if(viewer == null || viewer.getControl().isDisposed()) {
+			return false;
+		}
 		Display display = viewer.getControl().getDisplay();
-		if (display == null) return false;
-		if (display.getThread() != Thread.currentThread ()) return false;
+		if (display == null) {
+			return false;
+		}
+		if (display.getThread() != Thread.currentThread ()) {
+			return false;
+		}
 		return true;
 	}
 
 	public static void asyncExec(final Runnable r, StructuredViewer v) {
-		if(v == null) return;
+		if(v == null) {
+			return;
+		}
 		final Control ctrl = v.getControl();
 		if (ctrl != null && !ctrl.isDisposed()) {
 			ctrl.getDisplay().asyncExec(() -> {
@@ -846,7 +874,9 @@ public class Utils {
 	}
 
 	public static void syncExec(final Runnable r, StructuredViewer v) {
-		if(v == null) return;
+		if(v == null) {
+			return;
+		}
 		final Control ctrl = v.getControl();
 		syncExec(r, ctrl);
 	}
@@ -894,8 +924,9 @@ public class Utils {
 			return (ModelProvider) o;
 		}
 		ResourceMapping mapping = getResourceMapping(o);
-		if (mapping != null)
+		if (mapping != null) {
 			return mapping.getModelProvider();
+		}
 		return null;
 	}
 
@@ -903,13 +934,13 @@ public class Utils {
 		IResource resource = null;
 		if (o instanceof IResource) {
 			resource = (IResource) o;
-		} else if (o instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) o;
+		} else if (o instanceof IAdaptable adaptable) {
 			resource = adaptable.getAdapter(IResource.class);
 			if (resource == null) {
 				IContributorResourceAdapter adapter = adaptable.getAdapter(IContributorResourceAdapter.class);
-				if (adapter != null)
+				if (adapter != null) {
 					resource = adapter.getAdaptedResource(adaptable);
+				}
 			}
 		}
 		return resource;
@@ -920,15 +951,13 @@ public class Utils {
 		if (o instanceof ResourceMapping) {
 			return (ResourceMapping) o;
 		}
-		if (o instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) o;
+		if (o instanceof IAdaptable adaptable) {
 			Object adapted = adaptable.getAdapter(ResourceMapping.class);
 			if (adapted instanceof ResourceMapping) {
 				return(ResourceMapping) adapted;
 			}
 			adapted = adaptable.getAdapter(IContributorResourceAdapter.class);
-			if (adapted instanceof IContributorResourceAdapter2) {
-				IContributorResourceAdapter2 cra = (IContributorResourceAdapter2) adapted;
+			if (adapted instanceof IContributorResourceAdapter2 cra) {
 				return cra.getAdaptedResourceMapping(adaptable);
 			}
 		} else {
@@ -944,8 +973,9 @@ public class Utils {
 		List<ResourceMapping> result = new ArrayList<>();
 		for (Object object : objects) {
 			ResourceMapping mapping = getResourceMapping(object);
-			if (mapping != null)
+			if (mapping != null) {
 				result.add(mapping);
+			}
 		}
 		return result.toArray(new ResourceMapping[result.size()]);
 	}
@@ -953,11 +983,13 @@ public class Utils {
 	public static String getLabel(ResourceMapping mapping) {
 		ModelProvider provider = mapping.getModelProvider();
 		ISynchronizationCompareAdapter adapter = getCompareAdapter(provider);
-		if (adapter == null)
+		if (adapter == null) {
 			return ""; //$NON-NLS-1$
+		}
 		String pathString = adapter.getPathString(mapping);
-		if (pathString == null || pathString.length() == 0)
+		if (pathString == null || pathString.length() == 0) {
 			return adapter.getName(mapping);
+		}
 		return pathString;
 	}
 
@@ -965,8 +997,9 @@ public class Utils {
 		ResourceMapping mapping = Utils.getResourceMapping(provider);
 		if (mapping != null) {
 			String base = Utils.getLabel(mapping);
-			if (base != null && base.length() > 0)
+			if (base != null && base.length() > 0) {
 				return base;
+			}
 		}
 		return provider.getDescriptor().getLabel();
 	}
@@ -975,14 +1008,16 @@ public class Utils {
 		ResourceMapping[] mappings = scope.getInputMappings();
 		if (mappings.length == 1) {
 			String label = getLabel(mappings[0]);
-			if (label == null)
+			if (label == null) {
 				return TeamUIMessages.Utils_19;
-			else
+			} else {
 				return label;
+			}
 		}
 		String desc = convertSelection(mappings);
-		if (desc.length() > 0)
+		if (desc.length() > 0) {
 			return shortenText(30, desc);
+		}
 		return NLS.bind(TeamUIMessages.Utils_18, Integer.valueOf(mappings.length));
 	}
 
@@ -992,7 +1027,9 @@ public class Utils {
 		for (ResourceMapping resourceMapping : mappings) {
 			String label = getLabel(resourceMapping);
 			if (label != null) {
-				if(hadOne) buffer.append(", "); //$NON-NLS-1$
+				if(hadOne) {
+					buffer.append(", "); //$NON-NLS-1$
+				}
 				hadOne = true;
 				buffer.append(label);
 			}
@@ -1018,15 +1055,16 @@ public class Utils {
 	 * @return whether the editor associated with a descriptor is a text editor
 	 */
 	public static boolean isTextEditor(IEditorDescriptor descriptor) throws CoreException {
-		if (!(descriptor instanceof EditorDescriptor))
+		if (!(descriptor instanceof EditorDescriptor desc)) {
 			return false;
+		}
 
-		EditorDescriptor desc = (EditorDescriptor) descriptor;
 		String className = desc.getClassName();
 		String contributor = desc.getPluginId();
 
-		if (className == null || contributor == null)
+		if (className == null || contributor == null) {
 			return false;
+		}
 
 		try {
 			Bundle bundle= Platform.getBundle(contributor);

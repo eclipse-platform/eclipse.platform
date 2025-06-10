@@ -47,17 +47,14 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 	public void save(ResourceMapping[] mappings, IMemento memento) {
 		for (ResourceMapping mapping : mappings) {
 			Object object = mapping.getModelObject();
-			if (object instanceof IResource) {
-				IResource resource = (IResource) object;
+			if (object instanceof IResource resource) {
 				IMemento child = memento.createChild(RESOURCES);
 				child.putInteger(RESOURCE_TYPE, resource.getType());
 				child.putString(RESOURCE_PATH, resource.getFullPath().toString());
-			} else if (object instanceof IWorkingSet) {
-				IWorkingSet ws = (IWorkingSet) object;
+			} else if (object instanceof IWorkingSet ws) {
 				IMemento child = memento.createChild(WORKING_SETS);
 				child.putString(WORKING_SET_NAME, ws.getName());
-			} else if (object instanceof ModelProvider) {
-				ModelProvider provider = (ModelProvider) object;
+			} else if (object instanceof ModelProvider provider) {
 				IMemento child = memento.createChild(MODEL_PROVIDERS);
 				child.putString(MODEL_PROVIDER_ID, provider.getId());
 			}
@@ -70,12 +67,14 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 		List<ResourceMapping> result = new ArrayList<>();
 		for (IMemento child : children) {
 			Integer typeInt = child.getInteger(RESOURCE_TYPE);
-			if (typeInt == null)
+			if (typeInt == null) {
 				continue;
+			}
 			int type = typeInt.intValue();
 			String pathString = child.getString(RESOURCE_PATH);
-			if (pathString == null)
+			if (pathString == null) {
 				continue;
+			}
 			IPath path = IPath.fromOSString(pathString);
 			IResource resource;
 			switch (type) {
@@ -105,29 +104,34 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 		children = memento.getChildren(WORKING_SETS);
 		for (IMemento child : children) {
 			String name = child.getString(WORKING_SET_NAME);
-			if (name == null)
+			if (name == null) {
 				continue;
+			}
 			IWorkingSet set = PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(name);
 			if (set != null) {
 				ResourceMapping mapping = Utils.getResourceMapping(set);
-				if (mapping != null)
+				if (mapping != null) {
 					result.add(mapping);
+				}
 			}
 		}
 		children = memento.getChildren(MODEL_PROVIDERS);
 		for (IMemento child : children) {
 			String id = child.getString(MODEL_PROVIDER_ID);
-			if (id == null)
+			if (id == null) {
 				continue;
+			}
 			IModelProviderDescriptor desc = ModelProvider.getModelProviderDescriptor(id);
-			if (desc == null)
+			if (desc == null) {
 				continue;
+			}
 			try {
 				ModelProvider provider = desc.getModelProvider();
 				if (provider != null) {
 					ResourceMapping mapping = Utils.getResourceMapping(provider);
-					if (mapping != null)
+					if (mapping != null) {
 						result.add(mapping);
+					}
 				}
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);

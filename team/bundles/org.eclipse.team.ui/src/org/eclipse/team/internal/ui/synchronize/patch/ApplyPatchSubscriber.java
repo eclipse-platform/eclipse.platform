@@ -51,8 +51,9 @@ public class ApplyPatchSubscriber extends Subscriber {
 		@Override
 		protected int calculateKind() throws TeamException {
 			// TODO: this works only for files, see bug 300214
-			if (!getPatcher().isEnabled(PatchModelProvider.getPatchObject(getLocal(), patcher)))
+			if (!getPatcher().isEnabled(PatchModelProvider.getPatchObject(getLocal(), patcher))) {
 				return IN_SYNC;
+			}
 
 			// same story here, one merged hunk is enough to consider the file as merged
 			if (getRemote() != null) {
@@ -66,8 +67,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 			} else {
 				// deletions don't have the remote variant, but still can be manually merged
 				Object patchObject = PatchModelProvider.getPatchObject(getLocal(), patcher);
-				if (patchObject instanceof FilePatch2) {
-					FilePatch2 filePatch2 = (FilePatch2) patchObject;
+				if (patchObject instanceof FilePatch2 filePatch2) {
 					IHunk[] hunks = filePatch2.getHunks();
 					for (IHunk hunk : hunks) {
 						if (patcher.isManuallyMerged((Hunk) hunk)) {
@@ -79,8 +79,9 @@ public class ApplyPatchSubscriber extends Subscriber {
 			int kind = super.calculateKind();
 			// mark diffs with problems as conflicts
 			if (getRemote() != null
-					&& getPatcher().getDiffResult(((PatchedFileVariant)getRemote()).getDiff()).containsProblems())
+					&& getPatcher().getDiffResult(((PatchedFileVariant)getRemote()).getDiff()).containsProblems()) {
 				kind |= CONFLICTING;
+			}
 			return kind;
 		}
 	}
@@ -106,18 +107,22 @@ public class ApplyPatchSubscriber extends Subscriber {
 
 	@Override
 	public SyncInfo getSyncInfo(IResource resource) throws TeamException {
-		if (!isSupervised(resource)) return null;
+		if (!isSupervised(resource)) {
+			return null;
+		}
 		// TODO: called too many times, optimize
 		refresh(new IResource[] { resource }, IResource.DEPTH_ZERO, null);
 		try {
 			FilePatch2 diff = (FilePatch2) PatchModelProvider.getPatchObject(resource, getPatcher());
 			// use null as remote variant for deletions
 			IResourceVariant remote = null;
-			if (diff.getDiffType(patcher.isReversed()) != FilePatch2.DELETION)
+			if (diff.getDiffType(patcher.isReversed()) != FilePatch2.DELETION) {
 				remote =  new PatchedFileVariant(getPatcher(), diff);
+			}
 			IResourceVariant base = null;
-			if (diff.getDiffType(patcher.isReversed()) != FilePatch2.ADDITION)
+			if (diff.getDiffType(patcher.isReversed()) != FilePatch2.ADDITION) {
 				base = new LocalResourceVariant(resource);
+			}
 			SyncInfo info = new ApplyPatchSyncInfo(resource, base, remote, getResourceComparator());
 			info.init();
 			return info;
@@ -136,16 +141,18 @@ public class ApplyPatchSubscriber extends Subscriber {
 	public IResource[] members(IResource resource) throws TeamException {
 		//XXX: what if there is an addition in the patch that needs to add 3 subfolders?
 		try {
-			if(resource.getType() == IResource.FILE)
+			if(resource.getType() == IResource.FILE) {
 				// file has no IResource members
 				return new IResource[0];
+			}
 			IContainer container = (IContainer) resource;
 
 			// workspace container members
 			List<IResource> existingChildren = new ArrayList<>();
 
-			if (container.isAccessible())
+			if (container.isAccessible()) {
 				existingChildren.addAll(Arrays.asList(container.members()));
+			}
 
 			// patch members, subscriber location
 			FilePatch2[] diffs = getPatcher().getDiffs();
@@ -170,8 +177,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 		Set<FilePatch2> diffs = new HashSet<>();
 		for (IResource resource : resources) {
 			Object object = PatchModelProvider.getPatchObject(resource, getPatcher());
-			if (object instanceof FilePatch2) {
-				FilePatch2 filePatch = (FilePatch2) object;
+			if (object instanceof FilePatch2 filePatch) {
 				diffs.add(filePatch);
 			}
 		}
@@ -187,8 +193,9 @@ public class ApplyPatchSubscriber extends Subscriber {
 				// return array of projects from the patch
 				DiffProject diffProject = ((PatchProjectDiffNode) child).getDiffProject();
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(diffProject.getName());
-				if (project.isAccessible())
+				if (project.isAccessible()) {
 					roots.add(project);
+				}
 			}
 		} else {
 			roots.add(getPatcher().getTarget());

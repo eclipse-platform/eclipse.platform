@@ -85,8 +85,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 					return new FastDiffFilter() {
 						@Override
 						public boolean select(IDiff node) {
-							if (node instanceof IThreeWayDiff) {
-								IThreeWayDiff twd = (IThreeWayDiff) node;
+							if (node instanceof IThreeWayDiff twd) {
 								if (twd.getDirection() == IThreeWayDiff.CONFLICTING
 										|| twd.getDirection() == IThreeWayDiff.INCOMING) {
 									return true;
@@ -99,8 +98,9 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 				@Override
 				protected String getJobName() {
 					IDiff[] diffs = getTargetDiffs();
-					if (diffs.length == 1)
+					if (diffs.length == 1) {
 						return TeamUIMessages.ResourceMarkAsMergedHandler_0;
+					}
 					return NLS.bind(TeamUIMessages.ResourceMarkAsMergedHandler_1, Integer.toString(diffs.length));
 				}
 			};
@@ -127,8 +127,9 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (saveDirtyEditors())
+		if (saveDirtyEditors()) {
 			return super.execute(event);
+		}
 		return null;
 	}
 

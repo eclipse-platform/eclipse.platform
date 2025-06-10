@@ -98,10 +98,12 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		if(titleImage != null) {
 			titleImage.dispose();
 		}
-		if (page != null)
+		if (page != null) {
 			page.dispose();
-		if (site != null)
+		}
+		if (site != null) {
 			site.dispose();
+		}
 		pageConfiguration.removePropertyChangeListener(listener);
 		super.dispose();
 	}
@@ -121,8 +123,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 
 	@Override
 	public boolean isDirty() {
-		if (participant instanceof ModelSynchronizeParticipant) {
-			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
+		if (participant instanceof ModelSynchronizeParticipant msp) {
 			SaveableComparison currentBuffer = msp.getActiveSaveable();
 			if (currentBuffer != null) {
 				return currentBuffer.isDirty();
@@ -149,8 +150,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		// TODO needs to work for models
 		super.doSave(pm);
 		Object input = viewer.getInput();
-		if (input instanceof ISynchronizeModelElement) {
-			ISynchronizeModelElement root = (ISynchronizeModelElement)input;
+		if (input instanceof ISynchronizeModelElement root) {
 			if (root != null && root instanceof DiffNode) {
 				try {
 					commit(pm, (DiffNode)root);
@@ -241,8 +241,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		try {
 			// First, see if the active buffer is changing
 			checkForBufferChange(pageConfiguration.getSite().getShell(), input, false /* cancel not allowed */, monitor);
-			if (input instanceof SyncInfoModelElement) {
-				final SyncInfoModelElement node = (SyncInfoModelElement) input;
+			if (input instanceof final SyncInfoModelElement node) {
 				IResource resource = node.getResource();
 				if (resource != null && resource.getType() == IResource.FILE) {
 					participant.prepareCompareInput(node, configuration, monitor);
@@ -262,10 +261,8 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 
 	private void checkForBufferChange(Shell shell, final ICompareInput input, boolean cancelAllowed, IProgressMonitor monitor) throws CoreException {
 		ISynchronizeParticipant participant = pageConfiguration.getParticipant();
-		if (participant instanceof ModelSynchronizeParticipant) {
-			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
-			if (input instanceof ISynchronizationCompareInput) {
-				ISynchronizationCompareInput mci = (ISynchronizationCompareInput) input;
+		if (participant instanceof ModelSynchronizeParticipant msp) {
+			if (input instanceof ISynchronizationCompareInput mci) {
 				msp.checkForBufferChange(shell, mci, cancelAllowed, monitor);
 			}
 		}
@@ -285,12 +282,14 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 
 	private static void commit(IProgressMonitor pm, DiffNode node) throws CoreException {
 		ITypedElement left = node.getLeft();
-		if (left instanceof LocalResourceTypedElement)
+		if (left instanceof LocalResourceTypedElement) {
 			((LocalResourceTypedElement) left).commit(pm);
+		}
 
 		ITypedElement right = node.getRight();
-		if (right instanceof LocalResourceTypedElement)
+		if (right instanceof LocalResourceTypedElement) {
 			((LocalResourceTypedElement) right).commit(pm);
+		}
 
 		IDiffElement[] children = node.getChildren();
 		for (IDiffElement c : children) {
@@ -323,15 +322,14 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	@Override
 	protected ICompareInput getCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.getCompareInput(selection);
-		if (compareInput != null)
+		if (compareInput != null) {
 			return compareInput;
+		}
 
-		if (selection != null && selection instanceof IStructuredSelection) {
-			IStructuredSelection ss= (IStructuredSelection) selection;
+		if (selection != null && selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				Object o = ss.getFirstElement();
-				if (participant instanceof ModelSynchronizeParticipant) {
-					ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
+				if (participant instanceof ModelSynchronizeParticipant msp) {
 					return msp.asCompareInput(o);
 				}
 			}

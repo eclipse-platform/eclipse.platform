@@ -77,7 +77,9 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		@Override
 		public void fillActionBars(IActionBars actionBars) {
 			super.fillActionBars(actionBars);
-			if (modes == null) return;
+			if (modes == null) {
+				return;
+			}
 			IToolBarManager manager = actionBars.getToolBarManager();
 			IContributionItem group = findGroup(manager, ISynchronizePageConfiguration.MODE_GROUP);
 			if (manager != null && group != null) {
@@ -213,7 +215,9 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	}
 
 	private boolean internalSetMode(int oldMode, int mode) {
-		if(oldMode == mode) return false;
+		if(oldMode == mode) {
+			return false;
+		}
 		updateMode(mode);
 		IDialogSettings settings = getSettings();
 		if (settings != null) {
@@ -229,12 +233,15 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	 */
 	@Override
 	public <T> T getAdapter(Class<T> key) {
-		if (key.equals(ISelectionProvider.class))
+		if (key.equals(ISelectionProvider.class)) {
 			return (T) changesViewer;
+		}
 		if (key == IShowInSource.class) {
 			return (T) (IShowInSource) () -> {
 				StructuredViewer v = (StructuredViewer)changesViewer;
-				if (v == null) return null;
+				if (v == null) {
+					return null;
+				}
 				ISelection s = v.getSelection();
 				if (s instanceof IStructuredSelection) {
 					Object[] resources = Utils.getResources(((IStructuredSelection)s).toArray());

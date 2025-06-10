@@ -134,10 +134,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 					exc[0] = e;
 				}
 			});
-			if (exc[0] != null)
+			if (exc[0] != null) {
 				throw exc[0];
-			else
+			} else {
 				return ret[0];
+			}
 		}
 	}
 
@@ -151,7 +152,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 */
 	public static IWorkbenchPage getActivePage() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) return null;
+		if (window == null) {
+			return null;
+		}
 		return window.getActivePage();
 	}
 
@@ -247,8 +250,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 			debugRegistration.unregister();
 			debugRegistration = null;
 
-			if (synchronizeManager != null)
+			if (synchronizeManager != null) {
 				synchronizeManager.dispose();
+			}
 		} finally {
 			super.stop(context);
 		}
@@ -454,8 +458,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 
 	public synchronized TeamStateProvider getDecoratedStateProvider(RepositoryProviderType rpt) {
 		TeamStateProvider provider = decoratedStateProviders.get(rpt.getID());
-		if (provider != null)
+		if (provider != null) {
 			return provider;
+		}
 		Subscriber subscriber = rpt.getSubscriber();
 		if (subscriber != null) {
 			provider = new SubscriberTeamStateProvider(subscriber);
@@ -472,8 +477,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * provider
 	 */
 	public synchronized ITeamStateProvider getDecoratedStateProvider() {
-		if (provider == null)
+		if (provider == null) {
 			provider = new WorkspaceTeamStateProvider();
+		}
 		return provider;
 	}
 

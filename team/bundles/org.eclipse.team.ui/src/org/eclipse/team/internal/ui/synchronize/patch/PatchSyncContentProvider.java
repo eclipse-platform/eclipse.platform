@@ -47,8 +47,9 @@ public class PatchSyncContentProvider extends SynchronizationContentProvider {
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (delegate != null)
+		if (delegate != null) {
 			delegate.dispose();
+		}
 	}
 
 	@Override
@@ -98,18 +99,21 @@ public class PatchSyncContentProvider extends SynchronizationContentProvider {
 		if (element instanceof PatchDiffNode) {
 			final IResource resource = PatchModelProvider
 					.getResource((PatchDiffNode) element);
-			if (resource == null)
+			if (resource == null) {
 				return false;
-			if (scope.contains(resource))
+			}
+			if (scope.contains(resource)) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	@Override
 	public boolean hasChildren(final Object element) {
-		if (element instanceof HunkDiffNode)
+		if (element instanceof HunkDiffNode) {
 			return false;
+		}
 		return super.hasChildren(element);
 	}
 
@@ -118,10 +122,10 @@ public class PatchSyncContentProvider extends SynchronizationContentProvider {
 		Object[] children = super.getChildren(parent);
 		List result = new ArrayList();
 		for (Object c : children) {
-			if (c instanceof PatchDiffNode) {
-				PatchDiffNode node = (PatchDiffNode) c;
-				if (node.isEnabled())
+			if (c instanceof PatchDiffNode node) {
+				if (node.isEnabled()) {
 					result.add(node); // hide disabled nodes
+				}
 			}
 		}
 		return result.toArray();

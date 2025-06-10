@@ -117,8 +117,9 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 		((Page) historyPage).createControl(parent);
 		historyPage.setInput(object);
 		String description = historyPage.getDescription();
-		if (description == null)
+		if (description == null) {
 			description = ""; //$NON-NLS-1$
+		}
 		setPageDescription(description);
 		return ((Page) historyPage).getControl();
 	}
@@ -131,12 +132,12 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 	@Override
 	protected ICompareInput getCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.getCompareInput(selection);
-		if (compareInput != null)
+		if (compareInput != null) {
 			return compareInput;
+		}
 		IHistoryCompareAdapter compareAdapter = Adapters.adapt(historyPage, IHistoryCompareAdapter.class);
 		if (compareAdapter != null){
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss= (IStructuredSelection) selection;
+			if (selection instanceof IStructuredSelection ss) {
 				if (ss.size() == 1) {
 					Object o = ss.getFirstElement();
 					return compareAdapter.getCompareInput(o);
@@ -157,7 +158,8 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (historyPage != null)
+		if (historyPage != null) {
 			historyPage.dispose();
+		}
 	}
 }

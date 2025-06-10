@@ -56,8 +56,9 @@ public class OpenWithActionGroup extends ActionGroup {
 		IWorkbenchSite ws = getSite().getWorkbenchSite();
 		if (ws != null) {
 			openFileAction = new OpenFileInSystemEditorAction(ws.getPage());
-			if (includeOpenInCompare)
+			if (includeOpenInCompare) {
 				openInCompareAction = new OpenInCompareAction(configuration);
+			}
 		}
 	}
 
@@ -90,8 +91,9 @@ public class OpenWithActionGroup extends ActionGroup {
 	private void fillOpenWithMenu(IMenuManager menu, String groupId, IStructuredSelection selection) {
 
 		// Only supported if at least one file is selected.
-		if (selection == null || selection.size() < 1)
+		if (selection == null || selection.size() < 1) {
 			return;
+		}
 		Object[] elements = selection.toArray();
 		IResource resources[] = Utils.getResources(elements);
 		if (resources.length == 0) {
@@ -100,8 +102,7 @@ public class OpenWithActionGroup extends ActionGroup {
 				// a compare input
 				if (elements.length > 0) {
 					ISynchronizeParticipant participant = getParticipant();
-					if (participant instanceof ModelSynchronizeParticipant) {
-						ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
+					if (participant instanceof ModelSynchronizeParticipant msp) {
 						boolean allElementsHaveCompareInput = true;
 						for (Object element : elements) {
 							if (!msp.hasCompareInputFor(element)) {
@@ -184,19 +185,22 @@ public class OpenWithActionGroup extends ActionGroup {
 		String keyBinding = null;
 
 		IBindingService bindingService = PlatformUI.getWorkbench().getAdapter(IBindingService.class);
-		if (bindingService != null)
+		if (bindingService != null) {
 			keyBinding = bindingService
 					.getBestActiveBindingFormattedFor(IWorkbenchCommandConstants.NAVIGATE_SHOW_IN_QUICK_MENU);
+		}
 
-		if (keyBinding == null)
+		if (keyBinding == null) {
 			keyBinding = ""; //$NON-NLS-1$
+		}
 
 		return NLS
 				.bind(TeamUIMessages.SaveableCompareEditorInput_0, keyBinding);
 	}
 
 	public void openInCompareEditor() {
-		if (openInCompareAction != null)
+		if (openInCompareAction != null) {
 			openInCompareAction.run();
+		}
 	}
 }

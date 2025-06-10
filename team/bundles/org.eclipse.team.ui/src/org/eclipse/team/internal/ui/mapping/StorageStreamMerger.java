@@ -54,10 +54,12 @@ public class StorageStreamMerger implements IStorageMerger {
 					targetStream, getEncoding(targetStorage, outputEncoding),
 					remoteStream, getEncoding(otherStorage, outputEncoding),
 					monitor);
-			if (status.isOK())
+			if (status.isOK()) {
 				return status;
-			if (status.getCode() == IStreamMerger.CONFLICT)
+			}
+			if (status.getCode() == IStreamMerger.CONFLICT) {
 				return new Status(status.getSeverity(), status.getPlugin(), CONFLICT, status.getMessage(), status.getException());
+			}
 		} catch (IOException closeException) {
 			// Ignore
 		}
@@ -65,12 +67,12 @@ public class StorageStreamMerger implements IStorageMerger {
 	}
 
 	private String getEncoding(IStorage ancestorStorage, String outputEncoding) {
-		if (ancestorStorage instanceof IEncodedStorage) {
-			IEncodedStorage es = (IEncodedStorage) ancestorStorage;
+		if (ancestorStorage instanceof IEncodedStorage es) {
 			try {
 				String charSet = es.getCharset();
-				if (charSet != null)
+				if (charSet != null) {
 					return charSet;
+				}
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);
 			}

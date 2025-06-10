@@ -180,8 +180,9 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		Object oldValue = properties.get(key);
 		if (page == null || page.aboutToChangeProperty(this, key, newValue)) {
 			properties.put(key, newValue);
-			if (oldValue == null || !oldValue.equals(newValue))
+			if (oldValue == null || !oldValue.equals(newValue)) {
 				firePropertyChange(key, oldValue, newValue);
+			}
 		}
 	}
 
@@ -196,8 +197,9 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		synchronized(actionContributions) {
 			// Determine the action state while locked so we handle the addition properly below
 			currentActionState = actionState;
-			if (currentActionState != DISPOSED)
+			if (currentActionState != DISPOSED) {
 				actionContributions.add(contribution);
+			}
 		}
 		if (currentActionState == INITIALIZED) {
 			// This is tricky because we are doing the initialize while not locked.
@@ -434,7 +436,9 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 			groups = getDefault(menuPropertyId);
 		}
 		for (String string : groups) {
-			if (string.equals(groupId)) return true;
+			if (string.equals(groupId)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -493,8 +497,9 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 
 	@Override
 	public void setMode(int mode) {
-		if (isModeSupported(mode))
+		if (isModeSupported(mode)) {
 			setProperty(P_MODE, Integer.valueOf(mode));
+		}
 	}
 
 	public boolean isModeSupported(int mode) {
@@ -577,8 +582,9 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 	@Override
 	public String getViewerId() {
 		String viewerId = (String)getProperty(P_VIEWER_ID);
-		if (viewerId != null)
+		if (viewerId != null) {
 			return viewerId;
+		}
 		return CommonViewerAdvisor.TEAM_NAVIGATOR_CONTENT;
 	}
 
@@ -590,8 +596,7 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 	 */
 	public boolean isVisible(IDiff node) {
 		if (getComparisonType() == ISynchronizePageConfiguration.THREE_WAY
-				&& node instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) node;
+				&& node instanceof IThreeWayDiff twd) {
 			return includeDirection(twd.getDirection());
 		}
 		return getComparisonType() == ISynchronizePageConfiguration.TWO_WAY && node instanceof IResourceDiff;

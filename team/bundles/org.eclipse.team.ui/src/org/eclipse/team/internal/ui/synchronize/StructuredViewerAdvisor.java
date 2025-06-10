@@ -127,8 +127,9 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		if (getActionGroup() != null) {
 			getActionGroup().dispose();
 		}
-		if (statusLine != null)
+		if (statusLine != null) {
 			statusLine.dispose();
+		}
 		TeamUIPlugin.getPlugin().getPreferenceStore().removePropertyChangeListener(propertyListener);
 	}
 
@@ -179,8 +180,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	protected boolean handleDoubleClick(StructuredViewer viewer, DoubleClickEvent event) {
 		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 		Object node = selection.getFirstElement();
-		if (node != null && node instanceof SyncInfoModelElement) {
-			SyncInfoModelElement syncNode = (SyncInfoModelElement) node;
+		if (node != null && node instanceof SyncInfoModelElement syncNode) {
 			IResource resource = syncNode.getResource();
 			if (syncNode != null && resource != null && resource.getType() == IResource.FILE) {
 				// The open is handled by the open strategy but say we handled
@@ -193,8 +193,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 
 	private void handleOpen() {
 		Object o = getConfiguration().getProperty(SynchronizePageConfiguration.P_OPEN_ACTION);
-		if (o instanceof IAction) {
-			IAction action = (IAction)o;
+		if (o instanceof IAction action) {
 			action.run();
 		}
 	}
@@ -321,8 +320,9 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		if (targetID != null) {
 			IWorkbenchSite workbenchSite = getConfiguration().getSite().getWorkbenchSite();
 			IWorkbenchPartSite ws = null;
-			if (workbenchSite instanceof IWorkbenchPartSite)
+			if (workbenchSite instanceof IWorkbenchPartSite) {
 				ws = (IWorkbenchPartSite)workbenchSite;
+			}
 			if (ws != null) {
 				ws.registerContextMenu(targetID, menuMgr, viewer);
 			}

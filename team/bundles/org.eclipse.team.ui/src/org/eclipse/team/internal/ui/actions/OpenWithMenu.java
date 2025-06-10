@@ -289,8 +289,8 @@ public class OpenWithMenu extends ContributionItem {
 		try {
 			IProgressMonitor monitor = new NullProgressMonitor();
 			IStorage storage = fileRevision.getStorage(monitor);
-			IEditorInput editorInput = storage instanceof IFile ?
-					new FileEditorInput((IFile) storage) :
+			IEditorInput editorInput = storage instanceof IFile i ?
+					new FileEditorInput(i) :
 					FileRevisionEditorInput.createEditorInputFor(fileRevision, monitor);
 			if (openUsingDescriptor) {
 				// Discouraged access to open system editors.
@@ -319,15 +319,17 @@ public class OpenWithMenu extends ContributionItem {
 
 		IFileRevision revision = null;
 
-		if (structSel == null)
+		if (structSel == null) {
 			return null;
+		}
 
 		Object[] objArray = structSel.toArray();
 
 		for (Object tempRevision : objArray) {
 			// If not a revision, don't try opening
-			if (tempRevision instanceof AbstractHistoryCategory)
+			if (tempRevision instanceof AbstractHistoryCategory) {
 				continue;
+			}
 
 			revision = (IFileRevision) tempRevision;
 		}

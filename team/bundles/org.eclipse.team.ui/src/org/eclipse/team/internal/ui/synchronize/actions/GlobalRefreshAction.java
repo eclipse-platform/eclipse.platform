@@ -102,10 +102,12 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		if (window != null) {
 			IHandlerService hs = window.getService(IHandlerService.class);
 			if (hs != null) {
-				if (syncAll != null)
+				if (syncAll != null) {
 					hs.deactivateHandler(syncAll);
-				if (syncLatest != null)
+				}
+				if (syncLatest != null) {
 					hs.deactivateHandler(syncLatest);
+				}
 			}
 		}
 	}
@@ -128,8 +130,9 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 				Action action = new RefreshParticipantAction(i + 1, description);
 				menuManager.add(action);
 			}
-			if (participants.length > 0)
+			if (participants.length > 0) {
 				menuManager.add(new Separator());
+			}
 			menuManager.add(synchronizeAction);
 		} else {
 			fMenu = menuManager.getMenu();

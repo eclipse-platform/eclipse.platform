@@ -32,8 +32,9 @@ public class TeamDecoratorManager {
 	Map<String, TeamDecoratorDescription> descriptors;
 
 	public static TeamDecoratorManager getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new TeamDecoratorManager();
+		}
 		return instance;
 	}
 
@@ -48,8 +49,9 @@ public class TeamDecoratorManager {
 	}
 
 	protected void lazyInitialize() {
-		if (descriptors != null)
+		if (descriptors != null) {
 			return;
+		}
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(TeamUIPlugin.ID, PT_TEAM_DECORATORS);
 		IExtension[] extensions = point.getExtensions();
 		descriptors = new HashMap<>(extensions.length * 2 + 1);
@@ -60,8 +62,9 @@ public class TeamDecoratorManager {
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);
 			}
-			if (desc != null)
+			if (desc != null) {
 				descriptors.put(desc.getRepositoryId(), desc);
+			}
 		}
 	}
 }

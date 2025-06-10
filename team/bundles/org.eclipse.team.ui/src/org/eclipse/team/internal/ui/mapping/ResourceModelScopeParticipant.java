@@ -68,13 +68,11 @@ public class ResourceModelScopeParticipant implements
 		ResourceMapping[] mappings = scope.getMappings(provider.getDescriptor().getId());
 		for (ResourceMapping mapping : mappings) {
 			Object modelObject = mapping.getModelObject();
-			if (modelObject instanceof IResource) {
-				IResource resource = (IResource) modelObject;
+			if (modelObject instanceof IResource resource) {
 				if (resource.getType() == IResource.ROOT) {
 					return true;
 				}
-			} else if (modelObject instanceof ModelProvider) {
-				ModelProvider provider = (ModelProvider) modelObject;
+			} else if (modelObject instanceof ModelProvider provider) {
 				if (provider.getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID)) {
 					return true;
 				}
@@ -99,8 +97,7 @@ public class ResourceModelScopeParticipant implements
 		for (ResourceMapping mapping : mappings) {
 			boolean refresh = false;
 			Object modelObject = mapping.getModelObject();
-			if (modelObject instanceof IWorkingSet) {
-				IWorkingSet set = (IWorkingSet)modelObject;
+			if (modelObject instanceof IWorkingSet set) {
 				IAdaptable[] elements = set.getElements();
 				for (IAdaptable adaptable : elements) {
 					ResourceMapping m = Adapters.adapt(adaptable, ResourceMapping.class);
@@ -113,16 +110,15 @@ public class ResourceModelScopeParticipant implements
 							}
 						}
 					}
-					if (refresh)
+					if (refresh) {
 						break;
+					}
 				}
-			} else if (modelObject instanceof IResource) {
-				IResource resource = (IResource) modelObject;
+			} else if (modelObject instanceof IResource resource) {
 				if (resource.getType() == IResource.ROOT) {
 					refresh = true;
 				}
-			} else if (modelObject instanceof ModelProvider) {
-				ModelProvider mp = (ModelProvider) modelObject;
+			} else if (modelObject instanceof ModelProvider mp) {
 				try {
 					ResourceMapping[] list = mp.getMappings(project, ResourceMappingContext.LOCAL_CONTEXT, null);
 					if (list.length > 0) {
@@ -141,8 +137,9 @@ public class ResourceModelScopeParticipant implements
 	@Override
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-		if (PlatformUI.isWorkbenchRunning())
+		if (PlatformUI.isWorkbenchRunning()) {
 			PlatformUI.getWorkbench().getWorkingSetManager().removePropertyChangeListener(this);
+		}
 	}
 
 	@Override
@@ -155,12 +152,14 @@ public class ResourceModelScopeParticipant implements
 			if (resource.getType() == IResource.PROJECT
 					&& ((delta.getKind() & (IResourceDelta.ADDED | IResourceDelta.REMOVED)) != 0
 					|| (delta.getFlags() & IResourceDelta.OPEN) != 0)) {
-				if (isInContext(resource))
+				if (isInContext(resource)) {
 					collectMappings((IProject)resource, result);
+				}
 			}
 		}
-		if (!result.isEmpty())
+		if (!result.isEmpty()) {
 			fireChange(result.toArray(new ResourceMapping[result.size()]));
+		}
 
 
 	}

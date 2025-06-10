@@ -64,8 +64,9 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 			} else {
 				syncInfoSet = activeCollector.getSyncInfoSet(set);
 			}
-			if (syncInfoSet != null)
+			if (syncInfoSet != null) {
 				createChangeSetModelElement(set, syncInfoSet);
+			}
 		}
 
 		@Override
@@ -329,8 +330,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	 */
 	public ChangeSetCapability getChangeSetCapability() {
 		ISynchronizeParticipant participant = getConfiguration().getParticipant();
-		if (participant instanceof IChangeSetProvider) {
-			IChangeSetProvider provider = (IChangeSetProvider) participant;
+		if (participant instanceof IChangeSetProvider provider) {
 			return provider.getChangeSetCapability();
 		}
 		return null;

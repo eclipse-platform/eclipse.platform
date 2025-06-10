@@ -68,8 +68,9 @@ public final class MergeAllOperation extends SynchronizationOperation {
 				} else {
 					IStatus status = ModelMergeOperation.validateMerge(getMergeContext(), Policy.subMonitorFor(monitor, 10));
 					if (!status.isOK()) {
-						if (!promptToContinue(status))
+						if (!promptToContinue(status)) {
 							return;
+						}
 					}
 					status = performMerge(Policy.subMonitorFor(monitor, 90));
 					if (!status.isOK()) {
@@ -96,10 +97,11 @@ public final class MergeAllOperation extends SynchronizationOperation {
 
 						@Override
 						protected void buttonPressed(int id) {
-							if (id == IDialogConstants.YES_ID)
+							if (id == IDialogConstants.YES_ID) {
 								super.buttonPressed(IDialogConstants.OK_ID);
-							else if (id == IDialogConstants.NO_ID)
+							} else if (id == IDialogConstants.NO_ID) {
 								super.buttonPressed(IDialogConstants.CANCEL_ID);
+							}
 							super.buttonPressed(id);
 						}
 					};

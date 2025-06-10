@@ -140,13 +140,12 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		viewer.addSelectionChangedListener(event -> {
 			// Initialize the wizard so we can tell whether to enable the Next button
 			ISelection selection = event.getSelection();
-			if (selection == null || !(selection instanceof IStructuredSelection)) {
+			if (selection == null || !(selection instanceof IStructuredSelection ss)) {
 				selectedWizard = null;
 				selectedWizardId = null;
 				setPageComplete(false);
 				return;
 			}
-			IStructuredSelection ss = (IStructuredSelection)selection;
 			if (ss.size() != 1) {
 				selectedWizard = null;
 				selectedWizardId = null;
@@ -169,9 +168,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		viewer.setComparator(new ViewerComparator() {
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
-				if (e1 instanceof ConfigurationWizardElement && e2 instanceof ConfigurationWizardElement) {
-					ConfigurationWizardElement wizard1 = (ConfigurationWizardElement) e1;
-					ConfigurationWizardElement wizard2 = (ConfigurationWizardElement) e2;
+				if (e1 instanceof ConfigurationWizardElement wizard1 && e2 instanceof ConfigurationWizardElement wizard2) {
 					return wizard1.getLabel(wizard1).compareToIgnoreCase(wizard2.getLabel(wizard2));
 				}
 				return super.compare(viewer, e1, e2);
@@ -208,8 +205,9 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	/* package */ IProject[] getUnsharedProjects() {
 		java.util.List<IProject> unshared = new ArrayList<>();
 		for (IProject project : projects) {
-			if (!RepositoryProvider.isShared(project))
+			if (!RepositoryProvider.isShared(project)) {
 				unshared.add(project);
+			}
 		}
 		return unshared.toArray(new IProject[unshared.size()]);
 	}
@@ -223,8 +221,12 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	 */
 	@Override
 	public IWizardPage getNextPage() {
-		if (selectedWizard == null) return null;
-		if(! WorkbenchActivityHelper.allowUseOf(getTriggerPoint(), viewer.getStructuredSelection().getFirstElement())) return null;
+		if (selectedWizard == null) {
+			return null;
+		}
+		if(! WorkbenchActivityHelper.allowUseOf(getTriggerPoint(), viewer.getStructuredSelection().getFirstElement())) {
+			return null;
+		}
 		return selectedWizard.getStartingPage();
 	}
 
@@ -254,11 +256,13 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		if (this.settings == null) {
 			this.settings = dialogSettings.addNewSection("ConfigureProjectWizard"); //$NON-NLS-1$
 		}
-		if (settings != null)
+		if (settings != null) {
 			selectedWizardId = settings.get(SELECTED_WIZARD_ID);
+		}
 
-		if (selectedWizardId==null)
+		if (selectedWizardId==null) {
 			return;
+		}
 
 		// TODO: any checks here?
 		Object[] children = ((AdaptableList) viewer.getInput()).getChildren();

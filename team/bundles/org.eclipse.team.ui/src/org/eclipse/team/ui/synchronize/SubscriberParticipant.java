@@ -263,7 +263,9 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * @return the <code>Subscriber</code> associated with this this participant.
 	 */
 	public Subscriber getSubscriber() {
-		if (collector == null) return null;
+		if (collector == null) {
+			return null;
+		}
 		return collector.getSubscriber();
 	}
 
@@ -503,10 +505,12 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * @param listener the listener to handle the refresh workflow
 	 */
 	private void internalRefresh(IResource[] resources, String jobName, String taskName, IWorkbenchSite site, IRefreshSubscriberListener listener) {
-		if (jobName == null)
+		if (jobName == null) {
 			jobName = getShortTaskName();
-		if (taskName == null)
+		}
+		if (taskName == null) {
 			taskName = getLongTaskName(resources);
+		}
 		Job.getJobManager().cancel(this);
 		RefreshParticipantJob job = new RefreshSubscriberParticipantJob(this, jobName, taskName, resources, listener);
 		job.setUser(true);

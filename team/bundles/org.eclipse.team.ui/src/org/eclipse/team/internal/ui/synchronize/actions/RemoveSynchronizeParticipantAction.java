@@ -111,8 +111,9 @@ public class RemoveSynchronizeParticipantAction extends Action {
 			ISynchronizeParticipant p;
 			try {
 				p = reference.getParticipant();
-				if (! p.isPinned())
+				if (! p.isPinned()) {
 					removals.add(p);
+				}
 			} catch (TeamException e) {
 				// keep going
 			}
@@ -167,15 +168,17 @@ public class RemoveSynchronizeParticipantAction extends Action {
 
 			int result = dlg.open();
 			//Just return false to prevent the operation continuing
-			if (result == IDialogConstants.CANCEL_ID)
+			if (result == IDialogConstants.CANCEL_ID) {
 				return false;
+			}
 
 			dirtyModels = Arrays.asList(dlg.getResult());
 		}
 
 		// If the editor list is empty return.
-		if (dirtyModels.isEmpty())
+		if (dirtyModels.isEmpty()) {
 			return true;
+		}
 
 		// Create save block.
 		final List finalModels = dirtyModels;
@@ -190,8 +193,9 @@ public class RemoveSynchronizeParticipantAction extends Action {
 						ErrorDialog.openError(view.getSite().getShell(), null, e.getMessage(), e.getStatus());
 					}
 				}
-				if (monitor.isCanceled())
+				if (monitor.isCanceled()) {
 					break;
+				}
 			}
 			monitor.done();
 		};
@@ -210,11 +214,11 @@ public class RemoveSynchronizeParticipantAction extends Action {
 	private List<Saveable> getDirtyModels(ISynchronizeParticipant[] participants) {
 		List<Saveable> result = new ArrayList<>();
 		for (ISynchronizeParticipant participant : participants) {
-			if (participant instanceof ModelSynchronizeParticipant) {
-				ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
+			if (participant instanceof ModelSynchronizeParticipant msp) {
 				Saveable s = msp.getActiveSaveable();
-				if (s != null && s.isDirty())
+				if (s != null && s.isDirty()) {
 					result.add(s);
+				}
 			}
 		}
 		return result;

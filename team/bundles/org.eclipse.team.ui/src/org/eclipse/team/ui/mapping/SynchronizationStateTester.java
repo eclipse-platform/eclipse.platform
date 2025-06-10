@@ -155,8 +155,9 @@ public class SynchronizationStateTester {
 	 */
 	public int getState(Object element, int stateMask, IProgressMonitor monitor) throws CoreException {
 		ITeamStateDescription desc = getTeamStateProvider().getStateDescription(element, stateMask, new String[0], monitor);
-		if (desc != null)
+		if (desc != null) {
 			return desc.getStateFlags();
+		}
 		return IDiff.NO_CHANGE;
 	}
 

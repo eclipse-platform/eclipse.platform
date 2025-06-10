@@ -51,12 +51,14 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 	}
 
 	protected void calculateDescription() {
-		if (getContainer().isDisposed())
+		if (getContainer().isDisposed()) {
 			return;
+		}
 		if(getVisibleChangesCount() == 0) {
 			TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
-				if (!getContainer().isDisposed())
+				if (!getContainer().isDisposed()) {
 					updatePage(getEmptyChangesComposite(getContainer()));
+				}
 			});
 		} else {
 			TeamUIPlugin.getStandardDisplay().asyncExec(() -> updatePage(null));
@@ -64,7 +66,9 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 	}
 
 	protected void updatePage(Composite message) {
-		if (getContainer().isDisposed()) return;
+		if (getContainer().isDisposed()) {
+			return;
+		}
 		if(messageArea != null) {
 			messageArea.dispose();
 			messageArea = null;

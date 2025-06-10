@@ -132,8 +132,9 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	};
 
 	private final ISelectionListener selectionListener = (part, selection) -> {
-		if(selection instanceof IStructuredSelection)
+		if(selection instanceof IStructuredSelection) {
 			TeamAction.this.selection = (IStructuredSelection)selection;
+		}
 	};
 
 	/**
@@ -171,8 +172,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		if (c.isInstance(adaptable)) {
 			return (T) adaptable;
 		}
-		if (adaptable instanceof IAdaptable) {
-			IAdaptable a = (IAdaptable) adaptable;
+		if (adaptable instanceof IAdaptable a) {
 			T adapter = a.getAdapter(c);
 			if (c.isInstance(adapter)) {
 				return adapter;
@@ -188,7 +188,9 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 */
 	protected IProject[] getSelectedProjects() {
 		IResource[] selectedResources = getSelectedResources();
-		if (selectedResources.length == 0) return new IProject[0];
+		if (selectedResources.length == 0) {
+			return new IProject[0];
+		}
 		ArrayList<IProject> projects = new ArrayList<>();
 		for (IResource resource : selectedResources) {
 			if (resource.getType() == IResource.PROJECT) {
@@ -219,8 +221,9 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	}
 
 	protected IStructuredSelection getSelection() {
-		if (selection == null)
+		if (selection == null) {
 			selection = StructuredSelection.EMPTY;
+		}
 		return selection;
 	}
 
@@ -235,8 +238,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		ArrayList<ResourceMapping> providerMappings = new ArrayList<>();
 		for (Object object : elements) {
 			Object adapted = getResourceMapping(object);
-			if (adapted instanceof ResourceMapping) {
-				ResourceMapping mapping = (ResourceMapping) adapted;
+			if (adapted instanceof ResourceMapping mapping) {
 				if (providerId == null || isMappedToProvider(mapping, providerId)) {
 					providerMappings.add(mapping);
 				}
@@ -246,8 +248,9 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	}
 
 	private Object getResourceMapping(Object object) {
-		if (object instanceof ResourceMapping)
+		if (object instanceof ResourceMapping) {
 			return object;
+		}
 		return Utils.getResourceMapping(object);
 	}
 
@@ -276,9 +279,13 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 			return window.getShell();
 		} else {
 			IWorkbench workbench = PlatformUI.getWorkbench();
-			if (workbench == null) return null;
+			if (workbench == null) {
+				return null;
+			}
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-			if (window == null) return null;
+			if (window == null) {
+				return null;
+			}
 			return window.getShell();
 		}
 	}

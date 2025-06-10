@@ -87,12 +87,14 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_2,
 					TAG_TEAM_CONTENT_PROVIDER, id == null ? "" : id)); //$NON-NLS-1$
 		}
-		if (modelProviderId == null)
+		if (modelProviderId == null) {
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_1,
 					ATT_MODEL_PROVIDER_ID, TAG_TEAM_CONTENT_PROVIDER, id == null ? "" : id)); //$NON-NLS-1$
-		if (contentExtensionId == null)
+		}
+		if (contentExtensionId == null) {
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_1,
 					ATT_CONTENT_EXTENSION_ID, TAG_TEAM_CONTENT_PROVIDER, id == null ? "" : id)); //$NON-NLS-1$
+		}
 	}
 
 	protected void fail(String reason) throws CoreException {
@@ -111,19 +113,22 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		if (imageDescriptor != null)
+		if (imageDescriptor != null) {
 			return imageDescriptor;
+		}
 		String iconName = configElement.getAttribute(ATT_ICON);
-		if (iconName == null)
+		if (iconName == null) {
 			return null;
+		}
 		imageDescriptor = TeamUIPlugin.getImageDescriptorFromExtension(configElement.getDeclaringExtension(), iconName);
 		return imageDescriptor;
 	}
 
 	@Override
 	public IPreferencePage createPreferencePage() throws CoreException {
-		if (configElement.getAttribute(ATT_PREFERENCE_PAGE) == null)
+		if (configElement.getAttribute(ATT_PREFERENCE_PAGE) == null) {
 			return null;
+		}
 		Object obj = RegistryReader.createExtension(configElement, ATT_PREFERENCE_PAGE);
 		return (IPreferencePage) obj;
 	}
@@ -204,8 +209,9 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 
 	@Override
 	public String getName() {
-		if (contentProviderName != null)
+		if (contentProviderName != null) {
 			return contentProviderName;
+		}
 
 		return null;
 	}

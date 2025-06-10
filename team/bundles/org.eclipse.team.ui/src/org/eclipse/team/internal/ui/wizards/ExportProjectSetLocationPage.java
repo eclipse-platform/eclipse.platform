@@ -126,8 +126,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		data.widthHint = Math.max(widthHint, browseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		browseButton.setLayoutData(data);
 		browseButton.addListener(SWT.Selection, event -> {
-			if (!isSaveToFileSystem())
+			if (!isSaveToFileSystem()) {
 				saveToFileSystem = true;
+			}
 
 			FileDialog d = new FileDialog(getShell(), SWT.SAVE);
 			d.setFilterExtensions(new String[] {"*.psf"}); //$NON-NLS-1$
@@ -179,8 +180,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		wsBrowseButton.setLayoutData(gd);
 		wsBrowseButton.setText(TeamUIMessages.ExportProjectSetMainPage_Browse);
 		wsBrowseButton.addListener(SWT.Selection, event -> {
-			if (isSaveToFileSystem())
+			if (isSaveToFileSystem()) {
 				saveToFileSystem = false;
+			}
 
 			WorkspaceDialog d = new WorkspaceDialog(getShell());
 			d.open();
@@ -235,8 +237,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 	}
 
 	public void refreshWorkspaceFile(IProgressMonitor monitor) throws CoreException {
-		if (workspaceFile != null)
+		if (workspaceFile != null) {
 			workspaceFile.refreshLocal(IResource.DEPTH_ONE, monitor);
+		}
 	}
 
 	public String getFileName() {
@@ -338,9 +341,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		private void getSelectedContainer() {
 			Object obj = wsTreeViewer.getStructuredSelection().getFirstElement();
 
-			if (obj instanceof IContainer)
+			if (obj instanceof IContainer) {
 				wsContainer = (IContainer) obj;
-			else if (obj instanceof IFile) {
+			} else if (obj instanceof IFile) {
 				wsContainer = ((IFile) obj).getParent();
 			}
 		}
@@ -366,10 +369,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 				if (obj != null) {
 
 				}
-				if (obj instanceof IContainer)
+				if (obj instanceof IContainer) {
 					wsContainer = (IContainer) obj;
-				else if (obj instanceof IFile) {
-					IFile tempFile = (IFile) obj;
+				} else if (obj instanceof IFile tempFile) {
 					wsContainer = tempFile.getParent();
 					wsFilenameText.setText(tempFile.getName());
 				}
@@ -379,10 +381,11 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 				ISelection s = event.getSelection();
 				if (s instanceof IStructuredSelection) {
 					Object item = ((IStructuredSelection) s).getFirstElement();
-					if (wsTreeViewer.getExpandedState(item))
+					if (wsTreeViewer.getExpandedState(item)) {
 						wsTreeViewer.collapseToLevel(item, 1);
-					else
+					} else {
 						wsTreeViewer.expandToLevel(item, 1);
+					}
 				}
 			});
 
@@ -413,8 +416,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			if (element instanceof IWorkspace) {
 				// check if closed projects should be shown
 				IProject[] allProjects = ((IWorkspace) element).getRoot().getProjects();
-				if (showClosedProjects)
+				if (showClosedProjects) {
 					return allProjects;
+				}
 
 				ArrayList accessibleProjects = new ArrayList();
 				for (IProject project : allProjects) {
@@ -431,8 +435,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 
 
 	public void validateEditWorkspaceFile(Shell shell) throws TeamException {
-		if (workspaceFile == null || ! workspaceFile.exists() || !workspaceFile.isReadOnly())
+		if (workspaceFile == null || ! workspaceFile.exists() || !workspaceFile.isReadOnly()) {
 			return;
+		}
 		IStatus status = ResourcesPlugin.getWorkspace().validateEdit(new IFile[] {workspaceFile}, shell);
 		if (!status.isOK()) {
 			throw new TeamException(status);

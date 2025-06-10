@@ -36,15 +36,17 @@ public class StreamMergerDelegate implements IStreamMergerDelegate {
 			IContentType type = DelegatingStorageMerger.getContentType(target);
 			if (type != null) {
 				IStreamMerger merger = CompareUI.createStreamMerger(type);
-				if (merger != null)
+				if (merger != null) {
 					return new StorageStreamMerger(merger);
+				}
 			}
 		} catch (CoreException e) {
 			TeamUIPlugin.log(e);
 		}
 		IStreamMerger merger = CompareUI.createStreamMerger(DelegatingStorageMerger.getExtension(target.getName()));
-		if (merger != null)
+		if (merger != null) {
 			return new StorageStreamMerger(merger);
+		}
 		return null;
 	}
 
