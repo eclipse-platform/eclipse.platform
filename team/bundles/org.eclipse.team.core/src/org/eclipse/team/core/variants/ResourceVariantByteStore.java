@@ -115,9 +115,13 @@ public abstract class ResourceVariantByteStore {
 		} else if (syncBytes2 == null) {
 			return false;
 		}
-		if (syncBytes1.length != syncBytes2.length) return false;
+		if (syncBytes1.length != syncBytes2.length) {
+			return false;
+		}
 		for (int i = 0; i < syncBytes1.length; i++) {
-			if (syncBytes1[i] != syncBytes2[i]) return false;
+			if (syncBytes1[i] != syncBytes2[i]) {
+				return false;
+			}
 		}
 		return true;
 	}

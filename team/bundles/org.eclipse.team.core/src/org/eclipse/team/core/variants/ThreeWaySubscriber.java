@@ -90,9 +90,15 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 	 */
 	@Override
 	public boolean isSupervised(IResource resource) throws TeamException {
-		if (!isChildOfRoot(resource)) return false;
-		if (getSynchronizer().isIgnored(resource)) return false;
-		if (Team.isIgnoredHint(resource)) return false;
+		if (!isChildOfRoot(resource)) {
+			return false;
+		}
+		if (getSynchronizer().isIgnored(resource)) {
+			return false;
+		}
+		if (Team.isIgnoredHint(resource)) {
+			return false;
+		}
 		return true;
 	}
 

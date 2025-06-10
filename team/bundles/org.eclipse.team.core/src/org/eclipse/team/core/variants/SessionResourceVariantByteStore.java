@@ -95,7 +95,9 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 	public boolean setBytes(IResource resource, byte[] bytes) throws TeamException {
 		Assert.isNotNull(bytes);
 		byte[] oldBytes = internalGetSyncBytes(resource);
-		if (oldBytes != null && equals(oldBytes, bytes)) return false;
+		if (oldBytes != null && equals(oldBytes, bytes)) {
+			return false;
+		}
 		internalSetSyncInfo(resource, bytes);
 		return true;
 	}
@@ -106,7 +108,9 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 
 	private void internalAddToParent(IResource resource) {
 		IContainer parent = resource.getParent();
-		if (parent == null) return;
+		if (parent == null) {
+			return;
+		}
 		List<IResource> members = membersCache.get(parent);
 		if (members == null) {
 			members = new ArrayList<>();

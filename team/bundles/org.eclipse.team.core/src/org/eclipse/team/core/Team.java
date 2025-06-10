@@ -138,7 +138,9 @@ public final class Team {
 	 * @return whether the file should be ignored
 	 */
 	public static boolean isIgnoredHint(IResource resource) {
-		if (resource.isDerived()) return true;
+		if (resource.isDerived()) {
+			return true;
+		}
 		return matchesEnabledIgnore(resource);
 	}
 
@@ -150,7 +152,9 @@ public final class Team {
 	 */
 	@Deprecated
 	public static boolean isIgnoredHint(IFile file) {
-		if (file.isDerived()) return true;
+		if (file.isDerived()) {
+			return true;
+		}
 		return matchesEnabledIgnore(file);
 	}
 
@@ -400,14 +404,19 @@ public final class Team {
 	 * Reads global ignore preferences and populates globalIgnore
 	 */
 	private static void readIgnoreState() throws TeamException {
-		if (readBackwardCompatibleIgnoreState()) return;
+		if (readBackwardCompatibleIgnoreState()) {
+			return;
+		}
 		Preferences pref = TeamPlugin.getPlugin().getPluginPreferences();
-		if (!pref.contains(PREF_TEAM_IGNORES)) return;
+		if (!pref.contains(PREF_TEAM_IGNORES)) {
+			return;
+		}
 		pref.addPropertyChangeListener(event -> {
 			// when a property is changed, invalidate our cache so that
 			// properties will be recalculated.
-			if(event.getProperty().equals(PREF_TEAM_IGNORES))
+			if(event.getProperty().equals(PREF_TEAM_IGNORES)) {
 				globalIgnore = null;
+			}
 		});
 		String prefIgnores = pref.getString(PREF_TEAM_IGNORES);
 		StringTokenizer tok = new StringTokenizer(prefIgnores, PREF_TEAM_SEPARATOR);
@@ -415,7 +424,9 @@ public final class Team {
 		try {
 			while (true) {
 				pattern = tok.nextToken();
-				if (pattern.length()==0) return;
+				if (pattern.length()==0) {
+					return;
+				}
 				enabled = tok.nextToken();
 				globalIgnore.put(pattern, Boolean.valueOf(enabled));
 			}
@@ -431,7 +442,9 @@ public final class Team {
 		String GLOBALIGNORE_FILE = ".globalIgnores"; //$NON-NLS-1$
 		IPath pluginStateLocation = TeamPlugin.getPlugin().getStateLocation().append(GLOBALIGNORE_FILE);
 		File f = pluginStateLocation.toFile();
-		if (!f.exists()) return false;
+		if (!f.exists()) {
+			return false;
+		}
 		try {
 			try (DataInputStream dis = new DataInputStream(new FileInputStream(f))) {
 				int ignoreCount = 0;

@@ -45,12 +45,14 @@ public class PluginStringMappings {
 		final SortedMap<String, Integer> result= new TreeMap<>();
 
 		final TeamPlugin plugin = TeamPlugin.getPlugin();
-		if (plugin == null)
+		if (plugin == null) {
 			return result;
+		}
 
 		final IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, fExtensionID);//TeamPlugin.FILE_TYPES_EXTENSION);
-		if (extension == null)
+		if (extension == null) {
 			return result;
+		}
 
 		final IExtension[] extensions =  extension.getExtensions();
 
@@ -59,8 +61,9 @@ public class PluginStringMappings {
 			for (IConfigurationElement configElement : configElements) {
 				final String ext = configElement.getAttribute(fAttributeName); //"extension");
 				final String type = configElement.getAttribute("type"); //$NON-NLS-1$
-				if (ext == null || type == null)
+				if (ext == null || type == null) {
 					continue;
+				}
 				if (type.equals("text")) { //$NON-NLS-1$
 					result.put(ext, Integer.valueOf(Team.TEXT));
 				} else if (type.equals("binary")) { //$NON-NLS-1$

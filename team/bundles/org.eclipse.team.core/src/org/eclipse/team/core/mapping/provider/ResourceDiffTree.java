@@ -46,18 +46,18 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 	 * @return the resource for the diff node
 	 */
 	public static IResource getResourceFor(IDiff node) {
-		if (node instanceof IResourceDiff) {
-			IResourceDiff rd = (IResourceDiff) node;
+		if (node instanceof IResourceDiff rd) {
 			return rd.getResource();
 		}
-		if (node instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) node;
+		if (node instanceof IThreeWayDiff twd) {
 			IDiff child = twd.getLocalChange();
-			if (child != null)
+			if (child != null) {
 				return getResourceFor(child);
+			}
 			child = twd.getRemoteChange();
-			if (child != null)
+			if (child != null) {
 				return getResourceFor(child);
+			}
 		}
 		Assert.isLegal(false);
 		return null;
@@ -70,11 +70,11 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 
 	@Override
 	public IResource getResource(IDiff diff) {
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			IResourceDiff localChange = ((IResourceDiff)twd.getLocalChange());
-			if (localChange != null)
+			if (localChange != null) {
 				return localChange.getResource();
+			}
 			return ((IResourceDiff)twd.getRemoteChange()).getResource();
 		} else {
 			return ((IResourceDiff)diff).getResource();
@@ -116,8 +116,9 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 
 	private IResource internalGetResource(IPath fullPath, boolean container) {
 		if (container) {
-			if (fullPath.segmentCount() == 1)
+			if (fullPath.segmentCount() == 1) {
 				return ResourcesPlugin.getWorkspace().getRoot().getProject(fullPath.segment(0));
+			}
 			return ResourcesPlugin.getWorkspace().getRoot().getFolder(fullPath);
 		}
 		return ResourcesPlugin.getWorkspace().getRoot().getFile(fullPath);
@@ -174,8 +175,9 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 				return false;
 			});
 		} catch (RuntimeException e) {
-			if (e == found)
+			if (e == found) {
 				return true;
+			}
 			throw e;
 		}
 		return false;

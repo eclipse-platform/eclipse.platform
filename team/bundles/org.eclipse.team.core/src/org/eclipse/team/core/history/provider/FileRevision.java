@@ -83,10 +83,10 @@ public abstract class FileRevision implements IFileRevision {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj == this)
+			if (obj == this) {
 				return true;
-			if (obj instanceof LocalFileRevision) {
-				LocalFileRevision other = (LocalFileRevision) obj;
+			}
+			if (obj instanceof LocalFileRevision other) {
 				return other.file.equals(this.file);
 			}
 			return false;

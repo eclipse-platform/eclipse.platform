@@ -85,8 +85,9 @@ public class UserStringMappings {
 	}
 
 	public int getType(String string) {
-		if (string == null)
+		if (string == null) {
 			return Team.UNKNOWN;
+		}
 		final Integer type = referenceMap().get(string);
 		return type != null ? type.intValue() : Team.UNKNOWN;
 	}
@@ -113,8 +114,9 @@ public class UserStringMappings {
 	protected Map<String, Integer> loadMappingsFromPreferences() {
 		final Map<String, Integer> result = new HashMap<>();
 
-		if (!nodeAccessibleAndExists(fKey))
+		if (!nodeAccessibleAndExists(fKey)) {
 			return result;
+		}
 		final StringTokenizer tok = new StringTokenizer(mappings(), PREF_TEAM_SEPARATOR);
 		try {
 			while (tok.hasMoreElements()) {
@@ -144,7 +146,8 @@ public class UserStringMappings {
 	}
 
 	private void preferenceChanged(PreferenceChangeEvent event) {
-		if (fKey.equals(event.getKey()))
+		if (fKey.equals(event.getKey())) {
 			fMap = null;
+		}
 	}
 }

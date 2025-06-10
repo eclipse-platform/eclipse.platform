@@ -60,8 +60,9 @@ public class StorageMergerRegistry {
 	public IStorageMerger createStreamMerger(String type) {
 		initializeRegistry();
 		StorageMergerDescriptor descriptor= (StorageMergerDescriptor) search(type);
-		if (descriptor != null)
+		if (descriptor != null) {
 			return descriptor.createStreamMerger();
+		}
 		return null;
 	}
 
@@ -75,8 +76,9 @@ public class StorageMergerRegistry {
 	public IStorageMerger createStreamMerger(IContentType type) {
 		initializeRegistry();
 		StorageMergerDescriptor descriptor= (StorageMergerDescriptor) search(type);
-		if (descriptor != null)
+		if (descriptor != null) {
 			return descriptor.createStreamMerger();
+		}
 		return null;
 	}
 
@@ -97,31 +99,35 @@ public class StorageMergerRegistry {
 		// collect all IStreamMergers
 		IConfigurationElement[] elements= registry.getConfigurationElementsFor(TeamPlugin.ID, STORAGE_MERGER_EXTENSION_POINT);
 		for (IConfigurationElement element : elements) {
-			if (STORAGE_MERGER.equals(element.getName()))
+			if (STORAGE_MERGER.equals(element.getName())) {
 				register(element, new StorageMergerDescriptor(element));
-			else if (CONTENT_TYPE_BINDING.equals(element.getName()))
+			} else if (CONTENT_TYPE_BINDING.equals(element.getName())) {
 				createBinding(element, STORAGE_MERGER_ID_ATTRIBUTE);
+			}
 		}
 	}
 
 	private static String normalizeCase(String s) {
-		if (NORMALIZE_CASE && s != null)
+		if (NORMALIZE_CASE && s != null) {
 			return s.toUpperCase();
+		}
 		return s;
 	}
 
 	void register(IConfigurationElement element, Object data) {
 		String id = element.getAttribute(ID_ATTRIBUTE);
 		if (id != null) {
-			if (fIdMap == null)
+			if (fIdMap == null) {
 				fIdMap = new HashMap<>();
+			}
 			fIdMap.put(id, data);
 		}
 
 		String types = element.getAttribute(EXTENSIONS_ATTRIBUTE);
 		if (types != null) {
-			if (fExtensionMap == null)
+			if (fExtensionMap == null) {
 				fExtensionMap = new HashMap<>();
+			}
 			StringTokenizer tokenizer = new StringTokenizer(types, ","); //$NON-NLS-1$
 			while (tokenizer.hasMoreElements()) {
 				String extension = tokenizer.nextToken().trim();
@@ -133,15 +139,17 @@ public class StorageMergerRegistry {
 	void createBinding(IConfigurationElement element, String idAttributeName) {
 		String type = element.getAttribute(CONTENT_TYPE_ID_ATTRIBUTE);
 		String id = element.getAttribute(idAttributeName);
-		if (id == null)
+		if (id == null) {
 			logErrorMessage(NLS.bind("Target attribute id '{0}' missing", idAttributeName)); //$NON-NLS-1$
+		}
 		if (type != null && id != null && fIdMap != null) {
 			Object o = fIdMap.get(id);
 			if (o != null) {
 				IContentType ct = Platform.getContentTypeManager().getContentType(type);
 				if (ct != null) {
-					if (fContentTypeBindings == null)
+					if (fContentTypeBindings == null) {
 						fContentTypeBindings = new HashMap<>();
+					}
 					fContentTypeBindings.put(ct, o);
 				} else {
 					logErrorMessage(NLS.bind("Content type id '{0}' not found", type)); //$NON-NLS-1$
@@ -160,16 +168,18 @@ public class StorageMergerRegistry {
 		if (fContentTypeBindings != null) {
 			for (; type != null; type = type.getBaseType()) {
 				Object data = fContentTypeBindings.get(type);
-				if (data != null)
+				if (data != null) {
 					return data;
+				}
 			}
 		}
 		return null;
 	}
 
 	Object search(String extension) {
-		if (fExtensionMap != null)
+		if (fExtensionMap != null) {
 			return fExtensionMap.get(normalizeCase(extension));
+		}
 		return null;
 	}
 }

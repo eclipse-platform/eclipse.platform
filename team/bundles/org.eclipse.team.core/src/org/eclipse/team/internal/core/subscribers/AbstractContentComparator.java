@@ -78,14 +78,12 @@ public abstract class AbstractContentComparator {
 		try {
 			if (resource instanceof IFile) {
 				return new BufferedInputStream(((IFile) resource).getContents());
-			} else if (resource instanceof IResourceVariant) {
-				IResourceVariant remote = (IResourceVariant) resource;
+			} else if (resource instanceof IResourceVariant remote) {
 				if (!remote.isContainer()) {
 					return new BufferedInputStream(remote.getStorage(monitor)
 							.getContents());
 				}
-			} else if (resource instanceof IFileRevision) {
-				IFileRevision remote = (IFileRevision) resource;
+			} else if (resource instanceof IFileRevision remote) {
 				return new BufferedInputStream(remote.getStorage(monitor)
 						.getContents());
 			}

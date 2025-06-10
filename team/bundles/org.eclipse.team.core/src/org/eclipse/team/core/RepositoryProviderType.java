@@ -87,8 +87,9 @@ public abstract class RepositoryProviderType extends PlatformObject {
 	public static RepositoryProviderType getProviderType(String id) {
 		RepositoryProviderType type = allProviderTypes.get(id);
 
-		if(type != null)
+		if(type != null) {
 			return type;
+		}
 
 		//If there isn't one in the table, we'll try to create one from the extension point
 		//Its possible that newProviderType() will return null, but in that case it will have also logged the error	so just return the result
@@ -107,8 +108,9 @@ public abstract class RepositoryProviderType extends PlatformObject {
 	 */
 	public static RepositoryProviderType getTypeForScheme(String scheme) {
 		for (RepositoryProviderType type : allProviderTypes.values()) {
-			if (type.getFileSystemScheme() != null && type.getFileSystemScheme().equals(scheme))
+			if (type.getFileSystemScheme() != null && type.getFileSystemScheme().equals(scheme)) {
 				return type;
+			}
 		}
 		return findProviderForScheme(scheme);
 	}

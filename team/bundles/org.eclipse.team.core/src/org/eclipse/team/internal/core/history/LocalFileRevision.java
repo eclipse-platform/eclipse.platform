@@ -69,8 +69,9 @@ public class LocalFileRevision extends FileRevision {
 
 	@Override
 	public String getContentIdentifier() {
-		if (file != null)
+		if (file != null) {
 			return baseRevision == null ?  NLS.bind(Messages.LocalFileRevision_currentVersion, "") : NLS.bind(Messages.LocalFileRevision_currentVersion, baseRevision.getContentIdentifier()); //$NON-NLS-1$
+		}
 		return ""; //$NON-NLS-1$
 	}
 
@@ -81,8 +82,9 @@ public class LocalFileRevision extends FileRevision {
 
 	@Override
 	public String getComment() {
-		if (file != null)
+		if (file != null) {
 			return Messages.LocalFileRevision_currentVersionTag;
+		}
 		return null;
 	}
 
@@ -161,8 +163,9 @@ public class LocalFileRevision extends FileRevision {
 
 	@Override
 	public URI getURI() {
-		if (file != null)
+		if (file != null) {
 			return file.getLocationURI();
+		}
 
 		return URIUtil.toURI(state.getFullPath());
 	}
@@ -181,14 +184,16 @@ public class LocalFileRevision extends FileRevision {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
-		if (obj instanceof LocalFileRevision) {
-			LocalFileRevision other = (LocalFileRevision) obj;
-			if (file != null && other.file != null)
+		}
+		if (obj instanceof LocalFileRevision other) {
+			if (file != null && other.file != null) {
 				return file.equals(other.file);
-			if (state != null && other.state != null)
+			}
+			if (state != null && other.state != null) {
 				return statesEqual(state, other.state);
+			}
 		}
 		return false;
 	}
@@ -199,10 +204,12 @@ public class LocalFileRevision extends FileRevision {
 
 	@Override
 	public int hashCode() {
-		if (file != null)
+		if (file != null) {
 			return file.hashCode();
-		if (state != null)
+		}
+		if (state != null) {
 			return (int)state.getModificationTime();
+		}
 		return super.hashCode();
 	}
 }

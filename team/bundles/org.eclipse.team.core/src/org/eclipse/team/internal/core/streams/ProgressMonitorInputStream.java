@@ -139,7 +139,9 @@ public abstract class ProgressMonitorInputStream extends FilterInputStream {
 	private void update(boolean now) {
 		if (bytesRead >= nextUpdate || now) {
 			nextUpdate = bytesRead - (bytesRead % updateIncrement);
-			if (nextUpdate != lastUpdate) updateMonitor(nextUpdate, bytesTotal, monitor);
+			if (nextUpdate != lastUpdate) {
+				updateMonitor(nextUpdate, bytesTotal, monitor);
+			}
 			lastUpdate = nextUpdate;
 			nextUpdate += updateIncrement;
 		}

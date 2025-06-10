@@ -45,7 +45,9 @@ public class SyncInfoTreeChangeEvent extends SyncInfoSetChangeEvent implements I
 			for (Iterator<IResource> iter = removedSubtrees.iterator(); iter.hasNext();) {
 				IResource element = iter.next();
 				// check if the root is already in the list
-				if (root.equals(element)) return;
+				if (root.equals(element)) {
+					return;
+				}
 				if (isParent(root, element)) {
 					// the root invalidates the current element
 					iter.remove();

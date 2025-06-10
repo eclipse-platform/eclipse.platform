@@ -56,7 +56,9 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	public void close() throws IOException {
 		try {
 			if (discardOnClose) {
-				while (bytesRemaining != 0 && skip(bytesRemaining) != 0);
+				while (bytesRemaining != 0 && skip(bytesRemaining) != 0) {
+					;
+				}
 			}
 		} catch (OperationCanceledException e) {
 			// The receiver is likely wrapping a PollingInputStream which could throw
@@ -75,7 +77,9 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	@Override
 	public int available() throws IOException {
 		int amount = in.available();
-		if (amount > bytesRemaining) amount = (int) bytesRemaining;
+		if (amount > bytesRemaining) {
+			amount = (int) bytesRemaining;
+		}
 		return amount;
 	}
 
@@ -88,9 +92,13 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	 */
 	@Override
 	public int read() throws IOException {
-		if (bytesRemaining == 0) return -1;
+		if (bytesRemaining == 0) {
+			return -1;
+		}
 		int b = in.read();
-		if (b != -1) bytesRemaining -= 1;
+		if (b != -1) {
+			bytesRemaining -= 1;
+		}
 		return b;
 	}
 
@@ -104,12 +112,16 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	@Override
 	public int read(byte[] buffer, int offset, int length) throws IOException {
 		if (length > bytesRemaining) {
-			if (bytesRemaining == 0) return -1;
+			if (bytesRemaining == 0) {
+				return -1;
+			}
 			length = (int) bytesRemaining;
 		}
 		try {
 			int count = in.read(buffer, offset, length);
-			if (count != -1) bytesRemaining -= count;
+			if (count != -1) {
+				bytesRemaining -= count;
+			}
 			return count;
 		} catch (InterruptedIOException e) {
 			bytesRemaining -= e.bytesTransferred;
@@ -126,7 +138,9 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	 */
 	@Override
 	public long skip(long amount) throws IOException {
-		if (amount > bytesRemaining) amount = bytesRemaining;
+		if (amount > bytesRemaining) {
+			amount = bytesRemaining;
+		}
 		try {
 			long count = in.skip(amount);
 			bytesRemaining -= count;

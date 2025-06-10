@@ -64,13 +64,21 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 			} else {
 				// Handle project moves
 				// Only consider project additions that are moves
-				if (delta.getKind() != IResourceDelta.ADDED) continue;
-				if ((delta.getFlags() & IResourceDelta.MOVED_FROM) == 0) continue;
+				if (delta.getKind() != IResourceDelta.ADDED) {
+					continue;
+				}
+				if ((delta.getFlags() & IResourceDelta.MOVED_FROM) == 0) {
+					continue;
+				}
 				// Only consider projects that have a provider
 				RepositoryProvider provider = RepositoryProvider.getProvider(project);
-				if (provider == null) continue;
+				if (provider == null) {
+					continue;
+				}
 				// Only consider providers whose project is not mapped properly already
-				if (provider.getProject().equals(project)) continue;
+				if (provider.getProject().equals(project)) {
+					continue;
+				}
 				// Tell the provider about it's new project
 				provider.setProject(project);
 			}
@@ -138,8 +146,9 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 	}
 
 	private boolean isSuffix(IPath path, IPath suffix) {
-		if (path.segmentCount() < suffix.segmentCount())
+		if (path.segmentCount() < suffix.segmentCount()) {
 			return false;
+		}
 		for (int i = 0; i < suffix.segmentCount(); i++) {
 			if (!suffix.segment(i).equals(path.segment(path.segmentCount() - suffix.segmentCount() + i))) {
 				return false;

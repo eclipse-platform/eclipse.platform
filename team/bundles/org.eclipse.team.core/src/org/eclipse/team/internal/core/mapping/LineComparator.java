@@ -63,8 +63,9 @@ class LineComparator implements IRangeComparator {
 			int length = super.read(buffer, off, len);
 			if (length != -1) {
 				int index = off + length - 1;
-				if (index >= buffer.length)
+				if (index >= buffer.length) {
 					index = buffer.length - 1;
+				}
 				trailingLF = isLineFeed(buffer[index]);
 			}
 			return length;
@@ -90,11 +91,11 @@ class LineComparator implements IRangeComparator {
 
 	private static String getEncoding(IStorage storage, String outputEncoding)
 			throws CoreException {
-		if (storage instanceof IEncodedStorage) {
-			IEncodedStorage es = (IEncodedStorage) storage;
+		if (storage instanceof IEncodedStorage es) {
 			String charset = es.getCharset();
-			if (charset != null)
+			if (charset != null) {
 				return charset;
+			}
 		}
 		return outputEncoding;
 	}

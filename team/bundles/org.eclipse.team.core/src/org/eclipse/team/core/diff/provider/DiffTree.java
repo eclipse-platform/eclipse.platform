@@ -90,8 +90,9 @@ public class DiffTree implements IDiffTree {
 	public void accept(IPath path, IDiffVisitor visitor, int depth) {
 		IDiff delta = getDiff(path);
 		if (delta == null || visitor.visit(delta)) {
-			if (depth == IResource.DEPTH_ZERO)
+			if (depth == IResource.DEPTH_ZERO) {
 				return;
+			}
 			IPath[] children = getChildren(path);
 			for (IPath child : children) {
 				accept(child, visitor, depth == IResource.DEPTH_ONE ? IResource.DEPTH_ZERO : IResource.DEPTH_INFINITE);
@@ -241,7 +242,9 @@ public class DiffTree implements IDiffTree {
 		final Map<Integer, Set<IPath>> propertyChanges = this.propertyChanges;
 		this.propertyChanges = new HashMap<>();
 
-		if(event.isEmpty() && ! event.isReset() && propertyChanges.isEmpty()) return;
+		if(event.isEmpty() && ! event.isReset() && propertyChanges.isEmpty()) {
+			return;
+		}
 		Object[] listeners = this.listeners.getListeners();
 		for (Object l : listeners) {
 			final IDiffChangeListener listener = (IDiffChangeListener) l;
@@ -254,8 +257,9 @@ public class DiffTree implements IDiffTree {
 				public void run() throws Exception {
 					try {
 						lockedForModification = true;
-						if (!event.isEmpty() || event.isReset())
+						if (!event.isEmpty() || event.isReset()) {
 							listener.diffsChanged(event, Policy.subMonitorFor(monitor, 100));
+						}
 						for (Integer key : propertyChanges.keySet()) {
 							Set<IPath> paths = propertyChanges.get(key);
 							listener.propertyChanged(DiffTree.this, key.intValue(), paths.toArray(new IPath[paths
@@ -294,8 +298,7 @@ public class DiffTree implements IDiffTree {
 			statistics.add(delta);
 		}
 		boolean isConflict = false;
-		if (delta instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) delta;
+		if (delta instanceof IThreeWayDiff twd) {
 			isConflict = twd.getDirection() == IThreeWayDiff.CONFLICTING;
 		}
 		setPropertyToRoot(delta, P_HAS_DESCENDANT_CONFLICTS, isConflict);
@@ -342,8 +345,9 @@ public class DiffTree implements IDiffTree {
 
 	@Override
 	public long countFor(int state, int mask) {
-		if (state == 0)
+		if (state == 0) {
 			return size();
+		}
 		return statistics.countFor(state, mask);
 	}
 
@@ -414,8 +418,9 @@ public class DiffTree implements IDiffTree {
 				return false;
 			}, IResource.DEPTH_INFINITE);
 		} catch (RuntimeException e) {
-			if (e == found)
+			if (e == found) {
 				return true;
+			}
 			throw e;
 		}
 		return false;

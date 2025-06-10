@@ -37,14 +37,18 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 
 	@Override
 	public void disconnect() {
-		if (inputSyncSet == null) return;
+		if (inputSyncSet == null) {
+			return;
+		}
 		inputSyncSet.removeSyncSetChangedListener(this);
 		inputSyncSet = null;
 	}
 
 	@Override
 	protected void fetchInput(IProgressMonitor monitor) {
-		if (inputSyncSet == null) return;
+		if (inputSyncSet == null) {
+			return;
+		}
 		SyncInfo[] infos = inputSyncSet.getSyncInfos();
 		for (SyncInfo info : infos) {
 			collect(info, monitor);

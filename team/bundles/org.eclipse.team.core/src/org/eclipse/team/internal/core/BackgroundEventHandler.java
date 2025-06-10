@@ -432,8 +432,9 @@ public abstract class BackgroundEventHandler {
 	 */
 	protected boolean isReadyForDispatch(boolean wait) {
 		// Check if the time since the last dispatch is greater than the delay.
-		if (isDispatchDelayExceeded())
+		if (isDispatchDelayExceeded()) {
 			return true;
+		}
 
 		synchronized(this) {
 			// If we have incoming events, process them before dispatching

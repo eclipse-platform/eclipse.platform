@@ -81,8 +81,9 @@ public class BundleImporterExtension implements IBundleImporter {
 				}
 				@Override
 				protected RepositoryProviderType getProviderType() {
-					if (providerType == null)
+					if (providerType == null) {
 						providerType = RepositoryProviderType.getProviderType(element.getAttribute("repository")); //$NON-NLS-1$
+					}
 					return providerType;
 				}
 			};
