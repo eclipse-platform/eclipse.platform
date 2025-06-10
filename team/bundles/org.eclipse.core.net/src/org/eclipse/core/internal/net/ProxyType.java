@@ -70,16 +70,18 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		String value = System.getProperty(PROP_SOCKS_SYSTEM_PROPERTY_HANDLING);
 		if (value == null) {
 			socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
-		} else switch (value) {
-		case "always": //$NON-NLS-1$
-			socksSystemPropertySetting = ALWAYS_SET;
-			break;
-		case "never": //$NON-NLS-1$
-			socksSystemPropertySetting = NEVER_SET;
-			break;
-		default:
-			socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
-			break;
+		} else {
+			switch (value) {
+			case "always": //$NON-NLS-1$
+				socksSystemPropertySetting = ALWAYS_SET;
+				break;
+			case "never": //$NON-NLS-1$
+				socksSystemPropertySetting = NEVER_SET;
+				break;
+			default:
+				socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
+				break;
+			}
 		}
 	}
 
@@ -90,8 +92,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	public static String convertHostsToPropertyString(String[] value) {
 		StringBuilder buffer = new StringBuilder();
 
-		if (value == null)
+		if (value == null) {
 			return ""; //$NON-NLS-1$
+		}
 
 		if (value.length > 0) {
 			buffer.append(value[0]);
@@ -136,8 +139,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	private IProxyData createProxyData(String type, String node, int verifyFlag) {
 		String host = preferenceManager.getString(node, PREF_PROXY_HOST);
-		if (host != null && host.length() == 0)
+		if (host != null && host.length() == 0) {
 			host = null;
+		}
 		int port = preferenceManager.getInt(node, PREF_PROXY_PORT);
 		boolean requiresAuth = preferenceManager.getBoolean(node, PREF_PROXY_HAS_AUTH);
 		ProxyData proxyData = new ProxyData(type, host, port, requiresAuth,
@@ -156,8 +160,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	public boolean setProxyData(IProxyData proxyData) {
 		Assert.isTrue(proxyData.getType().equals(getName()));
 		IProxyData oldData = getProxyData(VERIFY_EQUAL);
-		if (oldData.equals(proxyData))
+		if (oldData.equals(proxyData)) {
 			return false;
+		}
 		saveProxyAuth(proxyData);
 		try {
 			updatingPreferences = true;
@@ -175,8 +180,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	/*package*/  void updatePreferencesIfMissing(IProxyData proxyData) {
 		String node = getPreferenceNode();
-		if (preferenceManager.getString(node, PREF_PROXY_HOST) == null)
+		if (preferenceManager.getString(node, PREF_PROXY_HOST) == null) {
 			updatePreferences(node, proxyData);
+		}
 	}
 
 	private void updatePreferences(String node, IProxyData proxyData) {
@@ -318,17 +324,20 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	}
 
 	private boolean shouldSetSocksSystemProperties() {
-		if (socksSystemPropertySetting == ALWAYS_SET)
+		if (socksSystemPropertySetting == ALWAYS_SET) {
 			return true;
-		if (socksSystemPropertySetting == NEVER_SET)
+		}
+		if (socksSystemPropertySetting == NEVER_SET) {
 			return false;
+		}
 		return hasJavaNetProxyClass();
 	}
 
 	private boolean verifySystemPropertyEquals(String key, String expected) {
 		String value = System.getProperty(key);
-		if (value == expected)
+		if (value == expected) {
 			return true;
+		}
 		if (value == null && expected != null) {
 			Activator.logInfo(NLS.bind("System property {0} is not set but should be {1}.", key, expected), null); //$NON-NLS-1$
 			return false;
@@ -338,7 +347,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 			return false;
 		}
 		if (!value.equals(expected)) {
-			Activator.logInfo(NLS.bind("System property {0} is set to {1} but should be {2}.", new Object[] {key, value, expected }), null); //$NON-NLS-1$
+			Activator.logInfo(NLS.bind("System property {0} is set to {1} but should be {2}.", key, value, expected), null); //$NON-NLS-1$
 			return false;
 		}
 		return true;
@@ -515,8 +524,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		} else {
 			if (!shouldSetSocksSystemProperties()) {
 				// Log an error if we are not setting the property because we are using a pre-1.5 JRE
-				if (socksSystemPropertySetting == ONLY_SET_FOR_1_5_OR_LATER)
+				if (socksSystemPropertySetting == ONLY_SET_FOR_1_5_OR_LATER) {
 					Activator.logError("Setting the SOCKS system properties for a 1.4 VM can interfere with other proxy services (e.g. JSch). Please upgrade to a 1.5 JRE or later if you need to use Java's SOCKS proxy support.", null); //$NON-NLS-1$
+				}
 				return;
 			}
 			sysProps.put("socksProxyHost", data.getHost()); //$NON-NLS-1$
@@ -543,18 +553,21 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	private ISecurePreferences getNode() {
 		ISecurePreferences root = SecurePreferencesFactory.getDefault();
-		if (root == null)
+		if (root == null) {
 			return null;
+		}
 		ISecurePreferences node = root.node(PREFERENCES_CONTEXT);
-		if (getName() != null)
+		if (getName() != null) {
 			return node.node(getName());
+		}
 		return node;
 	}
 
 	private void loadProxyAuth(IProxyData data) {
 		ISecurePreferences node = getNode();
-		if (node == null)
+		if (node == null) {
 			return;
+		}
 		try {
 			data.setUserid(node.get(INFO_PROXY_USER, null));
 			data.setPassword(node.get(INFO_PROXY_PASS, null));
@@ -565,18 +578,21 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	private void saveProxyAuth(IProxyData data) {
 		ISecurePreferences node= getNode();
-		if (node == null)
+		if (node == null) {
 			return;
+		}
 		try {
-			if (data.getUserId() != null)
+			if (data.getUserId() != null) {
 				node.put(INFO_PROXY_USER, data.getUserId(), true /* store encrypted */);
-			else
+			} else {
 				node.remove(INFO_PROXY_USER);
+			}
 
-			if (data.getPassword() != null)
+			if (data.getPassword() != null) {
 				node.put(INFO_PROXY_PASS, data.getPassword(), true /* store encrypted */);
-			else
+			} else {
 				node.remove(INFO_PROXY_PASS);
+			}
 		} catch (StorageException e) {
 			Activator.logError(e.getMessage(), e);
 			return;
@@ -604,8 +620,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	@Override
 	public void added(NodeChangeEvent event) {
 		// Add a preference listener so we'll get changes to the fields of the node
-		if (event.getChild().name().equals(getName()))
+		if (event.getChild().name().equals(getName())) {
 			((IEclipsePreferences)event.getChild()).addPreferenceChangeListener(this);
+		}
 	}
 
 	@Override
@@ -615,8 +632,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
-		if (updatingPreferences)
+		if (updatingPreferences) {
 			return;
+		}
 		updateSystemProperties(getProxyData(DO_NOT_VERIFY));
 
 	}

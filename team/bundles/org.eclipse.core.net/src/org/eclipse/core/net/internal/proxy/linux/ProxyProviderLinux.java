@@ -115,15 +115,17 @@ public class ProxyProviderLinux extends AbstractProxyProvider {
 	public String[] getNonProxiedHosts() {
 		String[] npHosts;
 
-		if (Policy.DEBUG_SYSTEM_PROVIDERS)
+		if (Policy.DEBUG_SYSTEM_PROVIDERS) {
 			Policy.debug("Getting no_proxy"); //$NON-NLS-1$
+		}
 
 		// First try the environment variable which is a URL
 		String npEnv = getEnv("no_proxy"); //$NON-NLS-1$
 		if (npEnv != null) {
 			npHosts = StringUtil.split(npEnv, new String[] { "," }); //$NON-NLS-1$
-			for (int i = 0; i < npHosts.length; i++)
+			for (int i = 0; i < npHosts.length; i++) {
 				npHosts[i] = npHosts[i].trim();
+			}
 			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
 				Policy.debug("Got Env no_proxy: " + npEnv); //$NON-NLS-1$
 				debugPrint(npHosts);
@@ -156,8 +158,9 @@ public class ProxyProviderLinux extends AbstractProxyProvider {
 		ProxyData pd = null;
 		String envName = null;
 
-		if (Policy.DEBUG_SYSTEM_PROVIDERS)
+		if (Policy.DEBUG_SYSTEM_PROVIDERS) {
 			Policy.debug("Getting proxies for: " + protocol); //$NON-NLS-1$
+		}
 
 		try {
 			// protocol schemes are ISO 8859 (ASCII)
@@ -166,8 +169,9 @@ public class ProxyProviderLinux extends AbstractProxyProvider {
 			// First try the environment variable which is a URL
 			envName = protocol + "_proxy"; //$NON-NLS-1$
 			String proxyEnv = getEnv(envName);
-			if (Policy.DEBUG_SYSTEM_PROVIDERS)
+			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
 				Policy.debug("Got proxyEnv: " + proxyEnv); //$NON-NLS-1$
+			}
 
 			if (proxyEnv != null) {
 				int colonInd = proxyEnv.indexOf(":"); //$NON-NLS-1$
@@ -197,8 +201,9 @@ public class ProxyProviderLinux extends AbstractProxyProvider {
 					pd.setPassword(password);
 				}
 				pd.setSource("LINUX_ENV"); //$NON-NLS-1$
-				if (Policy.DEBUG_SYSTEM_PROVIDERS)
+				if (Policy.DEBUG_SYSTEM_PROVIDERS) {
 					Policy.debug("Got Env proxy: " + pd); //$NON-NLS-1$
+				}
 				return pd;
 			}
 		} catch (Exception e) {
@@ -211,8 +216,9 @@ public class ProxyProviderLinux extends AbstractProxyProvider {
 				// Then ask Gnome
 				pd = getGSettingsProxyInfo(protocol);
 				if (pd != null) {
-					if (Policy.DEBUG_SYSTEM_PROVIDERS)
+					if (Policy.DEBUG_SYSTEM_PROVIDERS) {
 						Policy.debug("Got Gnome proxy: " + pd); //$NON-NLS-1$
+					}
 					pd.setSource("LINUX_GNOME"); //$NON-NLS-1$
 					return pd;
 				}
@@ -256,8 +262,9 @@ public class ProxyProviderLinux extends AbstractProxyProvider {
 	}
 
 	private void debugPrint(String[] strs) {
-		for (int i = 0; i < strs.length; i++)
+		for (int i = 0; i < strs.length; i++) {
 			System.out.println(i + ": " + strs[i]); //$NON-NLS-1$
+		}
 	}
 
 	private interface LibGio extends Library {
@@ -279,14 +286,16 @@ public class ProxyProviderLinux extends AbstractProxyProvider {
 			socksProxySettings = fLibGio.g_settings_new ("org.gnome.system.proxy.socks"); //$NON-NLS-1$
 			ftpProxySettings = fLibGio.g_settings_new ("org.gnome.system.proxy.ftp"); //$NON-NLS-1$
 			isGnomeLibLoaded= true;
-			if (Policy.DEBUG_SYSTEM_PROVIDERS)
+			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
 				Policy.debug("Loaded " + //$NON-NLS-1$
 						System.mapLibraryName(LIBRARY_NAME) + " library"); //$NON-NLS-1$
+			}
 		} catch (UnsatisfiedLinkError e) {
 			isGnomeLibLoaded= false;
-			if (Policy.DEBUG_SYSTEM_PROVIDERS)
+			if (Policy.DEBUG_SYSTEM_PROVIDERS) {
 				Policy.debug("Could not load library: " //$NON-NLS-1$
 						+ System.mapLibraryName(LIBRARY_NAME));
+			}
 		}
 	}
 

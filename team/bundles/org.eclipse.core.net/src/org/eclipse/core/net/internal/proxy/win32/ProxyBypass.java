@@ -53,8 +53,9 @@ public class ProxyBypass {
 	 */
 	public boolean bypassProxyFor(URI uri) {
 		final String host = uri.getHost();
-		if (host == null)
+		if (host == null) {
 			return false;
+		}
 		return (isLocal(host) && isBypassLocalAddresses(proxyBypass))
 				|| isInBypassList(host);
 	}
