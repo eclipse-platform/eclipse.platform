@@ -14,11 +14,19 @@
  *******************************************************************************/
 package org.eclipse.core.internal.content;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.core.runtime.content.IContentTypeMatcher;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.osgi.service.prefs.BackingStoreException;
@@ -47,8 +55,9 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 	public IContentType findContentTypeFor(String fileName) {
 		// basic implementation just gets all content types
 		ContentTypeCatalog currentCatalog = getCatalog();
-		IContentType[] associated = currentCatalog.findContentTypesFor(this, fileName);
-		return associated.length == 0 ? null : new ContentTypeHandler((ContentType) associated[0], currentCatalog.getGeneration());
+		return currentCatalog.findFirstContentTypeFor(this, fileName)
+				.map(contentType -> new ContentTypeHandler((ContentType) contentType, currentCatalog.getGeneration()))
+				.orElse(null);
 	}
 
 	@Override
