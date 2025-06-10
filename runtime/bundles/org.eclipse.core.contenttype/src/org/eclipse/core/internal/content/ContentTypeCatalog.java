@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.core.internal.content;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -28,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.CoreException;
@@ -409,13 +413,22 @@ public final class ContentTypeCatalog {
 	}
 
 	IContentType[] findContentTypesFor(ContentTypeMatcher matcher, final String fileName) {
-		IContentType[] selected = concat(internalFindContentTypesSorted(matcher, fileName, policyConstantGeneralIsBetter));
+		IContentType[] selected = concat(internalFindContentTypesSorted(matcher, fileName, policyConstantGeneralIsBetter ,false));
 		// give the policy a chance to change the results
 		ISelectionPolicy policy = matcher.getPolicy();
 		if (policy != null) {
 			selected = applyPolicy(policy, selected, true, false);
 		}
 		return selected;
+	}
+
+	Optional<IContentType> findFirstContentTypeFor(ContentTypeMatcher matcher, final String fileName) {
+		ISelectionPolicy policy = matcher.getPolicy();
+		IContentType[] selected = concat(internalFindContentTypesSorted(matcher, fileName, policyConstantGeneralIsBetter, policy == null));
+		// give the policy a chance to change the results
+		if (policy != null)
+			selected = applyPolicy(policy, selected, true, false);
+		return selected.length != 0 ? of(selected[0]) : empty();
 	}
 
 	synchronized public IContentType[] getAllContentTypes() {
@@ -555,7 +568,7 @@ public final class ContentTypeCatalog {
 			indeterminatePolicy = policyConstantGeneralIsBetter;
 			validPolicy = policyConstantSpecificIsBetter;
 		} else {
-			subset = internalFindContentTypesSorted(matcher, fileName, policyLexicographical);
+			subset = internalFindContentTypesSorted(matcher, fileName, policyLexicographical, false);
 			indeterminatePolicy = policyGeneralIsBetter;
 			validPolicy = policySpecificIsBetter;
 		}
@@ -590,7 +603,7 @@ public final class ContentTypeCatalog {
 	 * @return all matching content types in the preferred order
 	 * @see IContentTypeManager#findContentTypesFor(String)
 	 */
-	synchronized private IContentType[][] internalFindContentTypesSorted(ContentTypeMatcher matcher, final String fileName, Comparator<IContentType> sortingPolicy) {
+	synchronized private IContentType[][] internalFindContentTypesSorted(ContentTypeMatcher matcher, final String fileName, Comparator<IContentType> sortingPolicy, boolean quickFinish) {
 		IScopeContext context = matcher.getContext();
 		IContentType[][] result = { NO_CONTENT_TYPES, NO_CONTENT_TYPES, NO_CONTENT_TYPES };
 
@@ -609,6 +622,9 @@ public final class ContentTypeCatalog {
 		result[0] = selectedByName.toArray(new IContentType[selectedByName.size()]);
 		if (result[0].length > 1) {
 			Arrays.sort(result[0], sortingPolicy);
+			if (quickFinish) {
+				return result;
+			}
 		}
 
 		final String fileExtension = ContentTypeManager.getFileExtension(fileName);
@@ -628,6 +644,9 @@ public final class ContentTypeCatalog {
 		}
 		if (result[1].length > 1) {
 			Arrays.sort(result[1], sortingPolicy);
+			if (quickFinish) {
+				return result;
+			}
 		}
 
 		final Set<ContentType> allByFilePattern;
