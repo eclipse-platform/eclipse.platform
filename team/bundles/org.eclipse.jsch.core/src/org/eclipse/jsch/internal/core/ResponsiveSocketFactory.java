@@ -41,21 +41,24 @@ public class ResponsiveSocketFactory implements SocketFactory {
   private static Class<?> proxyClass;
   private static boolean hasProxyClass = true;
   public ResponsiveSocketFactory(IProgressMonitor monitor, int timeout) {
-    if (monitor == null)
+    if (monitor == null){
       monitor = new NullProgressMonitor();
+    }
     this.monitor = monitor;
     this.timeout=timeout;
   }
   @Override
   public InputStream getInputStream(Socket socket) throws IOException {
-    if (in == null)
+    if (in == null){
       in = socket.getInputStream();
+    }
     return in;
   }
   @Override
   public OutputStream getOutputStream(Socket socket) throws IOException {
-    if (out == null)
+    if (out == null){
       out = socket.getOutputStream();
+    }
     return out;
   }
   @Override
@@ -101,7 +104,9 @@ public class ResponsiveSocketFactory implements SocketFactory {
     thread.start();
 
     // Wait the appropriate number of seconds
-    if (timeout == 0) timeout = DEFAULT_TIMEOUT;
+    if (timeout == 0){
+      timeout = DEFAULT_TIMEOUT;
+    }
     for (int i = 0; i < timeout; i++) {
       try {
         // wait for the thread to complete or 1 second, which ever comes first
@@ -131,10 +136,12 @@ public class ResponsiveSocketFactory implements SocketFactory {
       }
     }
     if (exception[0] != null) {
-      if (exception[0] instanceof UnknownHostException)
+      if (exception[0] instanceof UnknownHostException){
         throw (UnknownHostException)exception[0];
-      else
+      }
+      else{
         throw (IOException)exception[0];
+      }
     }
     if (socket[0] == null) {
       throw new InterruptedIOException(NLS.bind(Messages.Util_timeout, host));
@@ -154,8 +161,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
         Object noProxyObject = field.get(null);
         Constructor<Socket> constructor = Socket.class.getConstructor(proxyClass);
         Object o = constructor.newInstance(noProxyObject);
-        if(o instanceof Socket){
-          Socket socket=(Socket)o;
+        if(o instanceof Socket socket){
           socket.connect(new InetSocketAddress(host, port), timeout * 1000);
           return socket;
         }

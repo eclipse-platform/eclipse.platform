@@ -60,8 +60,9 @@ public class JSchLocation extends PlatformObject implements IJSchLocation{
 
   @Override
   public void setUsername(String user){
-    if(userFixed)
+    if(userFixed){
       throw new UnsupportedOperationException();
+    }
     this.user=user;
   }
 
@@ -72,8 +73,9 @@ public class JSchLocation extends PlatformObject implements IJSchLocation{
 
   @Override
   public void setPassword(String password){
-    if(password!=null)
+    if(password!=null){
       this.password=password;
+    }
   }
 
   @Override

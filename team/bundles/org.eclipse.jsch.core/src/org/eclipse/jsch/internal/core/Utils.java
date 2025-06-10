@@ -83,8 +83,9 @@ public class Utils{
     String ssh_home=preferences.getString(IConstants.KEY_SSH2HOME);
     String pkeys=preferences.getString(IConstants.KEY_PRIVATEKEY);
 
-    if(ssh_home.length()==0)
+    if(ssh_home.length()==0){
       ssh_home=PreferenceInitializer.SSH_HOME_DEFAULT;
+    }
 
     java.io.File file;
     String[] pkey=pkeys.split(","); //$NON-NLS-1$
@@ -104,8 +105,9 @@ public class Utils{
           }
         }
         try{
-          if(notyet)
+          if(notyet){
             jsch.addIdentity(file.getPath());
+          }
           if(result.length()==0){
             result=p;
           }
@@ -124,8 +126,9 @@ public class Utils{
 
   public static Session createSession(JSch jsch, String username,
       String hostname, int port) throws JSchException{
-    if(port == -1)
+    if(port == -1){
       port = IConstants.SSH_DEFAULT_PORT;
+    }
     Session session=jsch.getSession(username, hostname, port);
     setProxy(session);
     Hashtable<String, String> config=new Hashtable<>();
@@ -143,57 +146,70 @@ public class Utils{
 
   public static void setProxy(Session session){
     Proxy proxy=getProxyForHost(session.getHost(), IProxyData.SOCKS_PROXY_TYPE);
-    if(proxy==null)
+    if(proxy==null){
       proxy=getProxyForHost(session.getHost(), IProxyData. HTTPS_PROXY_TYPE);
-    if(proxy!=null)
+    }
+    if(proxy!=null){
       session.setProxy(proxy);
+    }
   }
 
   private static int getPort(IProxyData data){
     int port=data.getPort();
     if(port==-1){
-      if(data.getType().equals(IProxyData.HTTP_PROXY_TYPE))
+      if(data.getType().equals(IProxyData.HTTP_PROXY_TYPE)){
         port=80;
-      else if(data.getType().equals(IProxyData.HTTPS_PROXY_TYPE))
+      }
+      else if(data.getType().equals(IProxyData.HTTPS_PROXY_TYPE)){
         port=443;
-      else if(data.getType().equals(IProxyData.SOCKS_PROXY_TYPE))
+      }
+      else if(data.getType().equals(IProxyData.SOCKS_PROXY_TYPE)){
         port=1080;
+      }
     }
     return port;
   }
 
   private static IProxyData getProxyData(String host, String type){
     IProxyService proxyService=JSchCorePlugin.getPlugin().getProxyService();
-    if(proxyService==null)
+    if(proxyService==null){
       return null;
+    }
     IProxyData data=proxyService.getProxyDataForHost(host, type);
-    if(data==null||data.getHost()==null||getJSchProxyType(data)==null)
+    if(data==null||data.getHost()==null||getJSchProxyType(data)==null){
       return null;
+    }
     return data;
   }
 
   private static String getJSchProxyType(IProxyData data){
-    if(data.getType().equals(IProxyData.HTTPS_PROXY_TYPE))
+    if(data.getType().equals(IProxyData.HTTPS_PROXY_TYPE)){
       return IConstants.PROXY_TYPE_HTTP;
-    if(data.getType().equals(IProxyData.SOCKS_PROXY_TYPE))
+    }
+    if(data.getType().equals(IProxyData.SOCKS_PROXY_TYPE)){
       return IConstants.PROXY_TYPE_SOCKS5;
+    }
     return null;
   }
 
   public static Proxy getProxyForHost(String host, String proxyType){
     IProxyService proxyService=JSchCorePlugin.getPlugin().getProxyService();
-    if(proxyService==null)
+    if(proxyService==null){
       return null;
+    }
     boolean useProxy=proxyService.isProxiesEnabled();
-    if(!useProxy)
+    if(!useProxy){
       return null;
+    }
     Proxy proxy=null;
     IProxyData data=getProxyData(host, proxyType);
-    if(data==null)
+    if(data==null){
       return null;
+    }
     String _type=getJSchProxyType(data);
-    if(_type==null)
+    if(_type==null){
       return null;
+    }
     String _host=data.getHost();
     int _port=getPort(data);
 
@@ -266,8 +282,9 @@ public class Utils{
     for(int i=0; i<repositories.length; i++){
       IdentityRepository c = repositories[i];
       s+=c.getName();
-      if(i+1<repositories.length)
+      if(i+1<repositories.length){
         s+=","; //$NON-NLS-1$
+      }
     }
     return s;
   }
