@@ -107,7 +107,7 @@ public class CriteriaDefinitionManager {
 					contribution.setId(contrib[j].getId());
 					contribution.setLocale(contrib[j].getLocale());
 					ICriteriaDefinition criteria = contrib[j].getCriteriaDefinition();
-					contribution.setCriteriaDefinition(criteria instanceof CriteriaDefinition ? (CriteriaDefinition)criteria  : (CriteriaDefinition)UAElementFactory.newElement(criteria));
+					contribution.setCriteriaDefinition(criteria instanceof CriteriaDefinition ? criteria  : (CriteriaDefinition)UAElementFactory.newElement(criteria));
 					contributions.add(contribution);
 				}
 			}
