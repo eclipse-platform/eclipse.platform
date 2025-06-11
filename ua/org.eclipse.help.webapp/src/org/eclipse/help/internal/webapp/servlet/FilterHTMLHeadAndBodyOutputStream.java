@@ -275,8 +275,9 @@ public class FilterHTMLHeadAndBodyOutputStream extends FilterOutputStream {
 	private void parseMetaTag(ByteArrayOutputStream buffer) {
 		try (ByteArrayInputStream is = new ByteArrayInputStream(buffer.toByteArray())) {
 			String value = HTMLDocParser.getCharsetFromHTML(is);
-			if (value != null)
+			if (value != null) {
 				this.charset = value;
+			}
 		} catch (IOException e) {
 		}
 	}

@@ -81,10 +81,12 @@ public class EclipseConnector {
 
 		// URL
 		String pathInfo = req.getPathInfo();
-		if (pathInfo == null)
+		if (pathInfo == null) {
 			return;
-		if (pathInfo.startsWith("/")) //$NON-NLS-1$
+		}
+		if (pathInfo.startsWith("/")) { //$NON-NLS-1$
 			pathInfo = pathInfo.substring(1);
+		}
 		String query = req.getQueryString();
 		String url = query == null ? pathInfo : (pathInfo + "?" + query); //$NON-NLS-1$
 
@@ -267,8 +269,9 @@ public class EclipseConnector {
 			// jar:file:...
 			long expiration = con.getExpiration();
 			maxAge = (expiration - System.currentTimeMillis()) / 1000;
-			if (maxAge < 0)
+			if (maxAge < 0) {
 				maxAge = 0;
+			}
 		} catch (Exception e) {
 		}
 		resp.setHeader("Cache-Control", "max-age=" + maxAge); //$NON-NLS-1$ //$NON-NLS-2$
@@ -300,8 +303,9 @@ public class EclipseConnector {
 			int len = 0;
 			while (true) {
 				len = dataStream.read(buffer); // Read file into the byte array
-				if (len == -1)
+				if (len == -1) {
 					break;
+				}
 				out.write(buffer, 0, len);
 			}
 		} catch (Exception e) {
@@ -367,8 +371,9 @@ public class EclipseConnector {
 	{
 		boolean isRTopicPath=false;
 
-		if(servletPath.equals("/rtopic")) //$NON-NLS-1$
+		if(servletPath.equals("/rtopic")) { //$NON-NLS-1$
 			isRTopicPath = true;
+		}
 
 		return isRTopicPath;
 	}

@@ -57,11 +57,12 @@ public class ActivitiesData extends RequestData {
 	 * @return "hidden", "off", or "on"
 	 */
 	public String getButtonState() {
-		if (!HelpBasePlugin.getActivitySupport().isUserCanToggleFiltering())
+		if (!HelpBasePlugin.getActivitySupport().isUserCanToggleFiltering()) {
 			return "hidden"; //$NON-NLS-1$
-		else if (HelpBasePlugin.getActivitySupport().isFilteringEnabled())
+		} else if (HelpBasePlugin.getActivitySupport().isFilteringEnabled()) {
 			return "off"; //$NON-NLS-1$
-		else
+		} else {
 			return "on"; //$NON-NLS-1$
+		}
 	}
 }

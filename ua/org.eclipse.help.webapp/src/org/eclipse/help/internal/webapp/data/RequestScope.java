@@ -126,11 +126,13 @@ public class RequestScope {
 //			AbstractHelpScope scope = ScopeRegistry.getInstance().parseScopePhrases(phrases);
 			for (int p=0;p<phrases.length;p++)
 			{
-				if (!(phrases[p].startsWith("(") && !phrases[p].startsWith("("))) //$NON-NLS-1$ //$NON-NLS-2$
+				if (!(phrases[p].startsWith("(") && !phrases[p].startsWith("("))) { //$NON-NLS-1$ //$NON-NLS-2$
 					phrases[p] = '('+phrases[p]+')';
+				}
 				scopeStr+=phrases[p];
-				if (p<phrases.length-1)
+				if (p<phrases.length-1) {
 					scopeStr+=ScopeRegistry.SCOPE_AND;
+				}
 			}
 		}
 		CookieUtil.deleteObsoleteCookies(request, response);

@@ -41,10 +41,11 @@ public class ExtensionParser extends ResultParser {
 		}
 
 		ParseElement elem = new ParseElement(properties, element);
-		if (element != null)
+		if (element != null) {
 			element.addChild(elem);
-		else
+		} else {
 			items.add(elem);
+		}
 
 		element = elem;
 
@@ -61,8 +62,9 @@ public class ExtensionParser extends ResultParser {
 				String content = new String(ch, start, length);
 
 				String existing = (String) properties.get(currentTag);
-				if (existing == null)
+				if (existing == null) {
 					existing = ""; //$NON-NLS-1$
+				}
 
 				content = content.replaceAll("[\\n\\t]", "").trim(); //$NON-NLS-1$ //$NON-NLS-2$
 

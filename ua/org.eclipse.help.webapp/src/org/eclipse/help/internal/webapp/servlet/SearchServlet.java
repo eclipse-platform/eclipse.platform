@@ -68,9 +68,9 @@ public class SearchServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		String response = processRequest(req, resp);
-		if ("".equals(response)) //$NON-NLS-1$
+		if ("".equals(response)) { //$NON-NLS-1$
 			resp.sendError(400); // bad request; missing parameter
-		else {
+		} else {
 			@SuppressWarnings("resource")
 			PrintWriter writer = resp.getWriter();
 			writer.write(response);

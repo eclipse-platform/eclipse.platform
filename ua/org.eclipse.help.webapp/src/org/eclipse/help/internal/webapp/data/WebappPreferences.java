@@ -71,8 +71,9 @@ public class WebappPreferences {
 
 	public String getImagesDirectory() {
 		String imagesDirectory = getPreferenceString("imagesDirectory"); //$NON-NLS-1$
-		if (imagesDirectory != null && imagesDirectory.startsWith("/")) //$NON-NLS-1$
+		if (imagesDirectory != null && imagesDirectory.startsWith("/")) { //$NON-NLS-1$
 			imagesDirectory = UrlUtil.getHelpURL(imagesDirectory);
+		}
 		return imagesDirectory;
 
 	}

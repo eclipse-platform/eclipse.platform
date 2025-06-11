@@ -72,8 +72,9 @@ public class HighlightFilter implements IFilter {
 		StringBuilder buf2 = new StringBuilder(sheetRefPart1);
 		// append comma separated list of keywords
 		Iterator<String> it = keywords.iterator();
-		if (!it.hasNext())
+		if (!it.hasNext()) {
 			return null;
+		}
 		String keyword = it.next();
 		buf.append("\"").append(keyword).append("\""); //$NON-NLS-1$ //$NON-NLS-2$
 		while (it.hasNext()) {
@@ -141,13 +142,15 @@ public class HighlightFilter implements IFilter {
 	 * @return Collection of String
 	 */
 	private Collection<String> encodeKeyWords(Collection<String> col) {
-		if (col == null)
+		if (col == null) {
 			return col;
+		}
 		Collection<String> result = new ArrayList<>();
 		for (String word : col) {
 			int l = word.length();
-			if (l < 1)
+			if (l < 1) {
 				continue;
+			}
 			result.add(UrlUtil.JavaScriptEncode(word));
 		}
 		return result;
@@ -160,21 +163,25 @@ public class HighlightFilter implements IFilter {
 	 * @return Collection of String
 	 */
 	private Collection<String> removeWildCards(Collection<String> col) {
-		if (col == null)
+		if (col == null) {
 			return col;
+		}
 
 		// Split words into parts: before "*" and after "*"
 		Collection<String> resultPass1 = new ArrayList<>();
 		for (String word : col) {
 			int index;
 			while ((index = word.indexOf('*')) >= 0) {
-				if (index > 0)
+				if (index > 0) {
 					resultPass1.add(word.substring(0, index));
-				if (word.length() > index)
+				}
+				if (word.length() > index) {
 					word = word.substring(index + 1);
+				}
 			}
-			if (word.length() > 0)
+			if (word.length() > 0) {
 				resultPass1.add(word);
+			}
 		}
 
 		// Split words into parts: before "?" and after "?"
@@ -182,13 +189,16 @@ public class HighlightFilter implements IFilter {
 		for (String word : resultPass1) {
 			int index;
 			while ((index = word.indexOf('?')) >= 0) {
-				if (index > 0)
+				if (index > 0) {
 					resultPass2.add(word.substring(0, index));
-				if (word.length() > index)
+				}
+				if (word.length() > index) {
 					word = word.substring(index + 1);
+				}
 			}
-			if (word.length() > 0)
+			if (word.length() > 0) {
 				resultPass2.add(word);
+			}
 		}
 
 		return resultPass2;

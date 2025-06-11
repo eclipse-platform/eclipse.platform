@@ -97,13 +97,14 @@ public class BookmarksData extends RequestData {
 
 	private int getOperation() {
 		String op = request.getParameter("operation"); //$NON-NLS-1$
-		if ("add".equals(op)) //$NON-NLS-1$
+		if ("add".equals(op)) { //$NON-NLS-1$
 			return ADD;
-		else if ("remove".equals(op)) //$NON-NLS-1$
+		} else if ("remove".equals(op)) { //$NON-NLS-1$
 			return REMOVE;
-		else if ("removeAll".equals(op)) //$NON-NLS-1$
+		} else if ("removeAll".equals(op)) { //$NON-NLS-1$
 			return REMOVE_ALL;
-		else
+		} else {
 			return NONE;
+		}
 	}
 }

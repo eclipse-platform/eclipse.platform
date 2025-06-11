@@ -60,8 +60,9 @@ public class IconFinder {
 	}
 
 	private static String getEntry(String IconKey) {
-		if (IconPathMap == null)
+		if (IconPathMap == null) {
 			return null;
+		}
 		Object key = IconPathMap.get(IconKey);
 		return (String) key;
 	}
@@ -139,14 +140,18 @@ public class IconFinder {
 					String contributorID = iconElem.getContributor().getName();
 
 					for (String attr : attrs) {
-						if (attr.equals(OPEN_ICON_PATH))
+						if (attr.equals(OPEN_ICON_PATH)) {
 							IconFinder.setIconImagePath(contributorID, iconElem.getAttribute(OPEN_ICON_PATH),iconElem.getAttribute(TOC_ICON_ID) + OPEN);
-						if (attr.equals(CLOSED_ICON_PATH))
+						}
+						if (attr.equals(CLOSED_ICON_PATH)) {
 							IconFinder.setIconImagePath(contributorID,iconElem.getAttribute(CLOSED_ICON_PATH),iconElem.getAttribute(TOC_ICON_ID)+ CLOSED);
-						if (attr.equals(LEAF_ICON_PATH))
+						}
+						if (attr.equals(LEAF_ICON_PATH)) {
 							IconFinder.setIconImagePath(contributorID, iconElem.getAttribute(LEAF_ICON_PATH),iconElem.getAttribute(TOC_ICON_ID) + LEAF);
-						if (attr.equals(ICON_ALT_TEXT))
+						}
+						if (attr.equals(ICON_ALT_TEXT)) {
 							IconFinder.setIconAltText(iconElem.getAttribute(ICON_ALT_TEXT),iconElem.getAttribute(TOC_ICON_ID) + ALT);
+						}
 					}
 				}
 			}

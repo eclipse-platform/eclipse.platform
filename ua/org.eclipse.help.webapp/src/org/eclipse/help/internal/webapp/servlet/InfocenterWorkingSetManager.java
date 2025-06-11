@@ -74,9 +74,10 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 
 	@Override
 	public AdaptableTocsArray getRoot() {
-		if (root == null)
+		if (root == null) {
 			root = new AdaptableTocsArray(HelpPlugin.getTocManager().getTocs(
 					locale));
+		}
 		return root;
 	}
 
@@ -85,8 +86,9 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 	 */
 	@Override
 	public void addWorkingSet(WorkingSet workingSet) throws IOException {
-		if (workingSet == null || workingSets.contains(workingSet))
+		if (workingSet == null || workingSets.contains(workingSet)) {
 			return;
+		}
 		workingSets.add(workingSet);
 		saveState();
 	}
@@ -110,14 +112,16 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 	 */
 	@Override
 	public WorkingSet getWorkingSet(String name) {
-		if (name == null || workingSets == null)
+		if (name == null || workingSets == null) {
 			return null;
+		}
 
 		Iterator<WorkingSet> iter = workingSets.iterator();
 		while (iter.hasNext()) {
 			WorkingSet workingSet = iter.next();
-			if (name.equals(workingSet.getName()))
+			if (name.equals(workingSet.getName())) {
 				return workingSet;
+			}
 		}
 		return null;
 	}
@@ -211,13 +215,15 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 			for (int j = 1; j < nameAndCriteria.length; ++j) {
 				String criterion = nameAndCriteria[j];
 				String[] keyAndValue = criterion.split("#", -1); //$NON-NLS-1$
-				if(keyAndValue.length != 2)
+				if(keyAndValue.length != 2) {
 					continue;
+				}
 				String key = URLCoder.decode(keyAndValue[0]);
 				String value = URLCoder.decode(keyAndValue[1]);
 				String[] criterionValues = value.split(",", -1); //$NON-NLS-1$
-				if(criterionValues.length < 1)
+				if(criterionValues.length < 1) {
 					continue;
+				}
 
 				List<String> criterionValuesList = Arrays.asList(criterionValues);
 				CriterionResource criterionResource = new CriterionResource(key, criterionValuesList);
@@ -354,8 +360,9 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 	@Override
 	public AdaptableTopic getAdaptableTopic(String id) {
 
-		if (id == null || id.length() == 0)
+		if (id == null || id.length() == 0) {
 			return null;
+		}
 
 		// toc id's are hrefs: /pluginId/path/to/toc.xml
 		// topic id's are based on parent toc id and index of topic:
@@ -373,11 +380,13 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 
 			String tocStr = id.substring(0, id.lastIndexOf('_', len - 2));
 			AdaptableToc toc = getAdaptableToc(tocStr);
-			if (toc == null)
+			if (toc == null) {
 				return null;
+			}
 			IAdaptable[] topics = toc.getChildren();
-			if (index < 0 || index >= topics.length)
+			if (index < 0 || index >= topics.length) {
 				return null;
+			}
 			return (AdaptableTopic) topics[index];
 		}
 
@@ -418,8 +427,9 @@ public class InfocenterWorkingSetManager implements IHelpWorkingSetManager {
 		List<String> criterionIds = new ArrayList<>();
 		if(null != allCriteriaValues){
 			for (String criterion : allCriteriaValues.keySet()) {
-				if(null == criterion || 0 == criterion.length() || 0 == getCriterionValueIds(criterion).length)
+				if(null == criterion || 0 == criterion.length() || 0 == getCriterionValueIds(criterion).length) {
 					continue;
+				}
 				criterionIds.add(criterion);
 			}
 			criterionIds.sort(null);

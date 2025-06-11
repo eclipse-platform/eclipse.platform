@@ -53,8 +53,9 @@ public class ContentService extends HttpServlet {
 		String baseURL = req.getRequestURL().toString();
 		String contentURL = baseURL.replaceFirst(Utils.SERVICE_CONTEXT, ""); //$NON-NLS-1$
 		String query = req.getQueryString();
-		if (query != null)
+		if (query != null) {
 			contentURL += '?' + query;
+		}
 
 		URL url = new URL(contentURL);
 		URLConnection con = ProxyUtil.getConnection(url);

@@ -51,8 +51,9 @@ public class SearchParser extends ResultParser {
 			for (int i = 0; i < attrs.getLength(); i++) {
 				String qname = attrs.getQName(i);
 				String val = attrs.getValue(i);
-				if (qname.equalsIgnoreCase(XMLHelper.ATTR_HREF))
+				if (qname.equalsIgnoreCase(XMLHelper.ATTR_HREF)) {
 					qname = XMLHelper.CATEGORY_HREF;
+				}
 				properties.put(qname, val);
 			}
 		}
@@ -62,16 +63,18 @@ public class SearchParser extends ResultParser {
 	public void characters(char[] ch, int start, int length) {
 
 		if (currentTag.equalsIgnoreCase(XMLHelper.ELEMENT_HIT)
-				|| currentTag.equalsIgnoreCase(XMLHelper.ELEMENT_HITS))
+				|| currentTag.equalsIgnoreCase(XMLHelper.ELEMENT_HITS)) {
 			return;
+		}
 
 		if (properties != null)
 		{
 			String content = new String(ch, start, length);
 
 			String existing = (String) properties.get(currentTag);
-			if (existing == null)
+			if (existing == null) {
 				existing = ""; //$NON-NLS-1$
+			}
 
 			content = content.replaceAll("[\\n\\t]", "").trim(); //$NON-NLS-1$ //$NON-NLS-2$
 

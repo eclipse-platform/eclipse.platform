@@ -57,8 +57,9 @@ public class TopicFinder {
 				// if no match has been found, check if there is an anchor
 				if (foundTopicPath == null) {
 					index = topicHref.indexOf('#');
-					if (index != -1)
+					if (index != -1) {
 						topicHref = topicHref.substring(0, index);
+					}
 				}
 				// if there was an anchor, search again without it
 			} while (foundTopicPath == null && index != -1);
@@ -215,8 +216,9 @@ public class TopicFinder {
 	 * @return -1 if the toc is not found
 	 */
 	private int findTocContainingTopic(String topic) {
-		if (topic == null || topic.isEmpty())
+		if (topic == null || topic.isEmpty()) {
 			return -1;
+		}
 
 		int index = topic.indexOf("/topic/"); //$NON-NLS-1$
 		if (index != -1) {
@@ -243,14 +245,16 @@ public class TopicFinder {
 			}
 		}
 		index = topic.indexOf('?');
-		if (index != -1)
+		if (index != -1) {
 			topic = topic.substring(0, index);
+		}
 
-		if (topic == null || topic.isEmpty())
+		if (topic == null || topic.isEmpty()) {
 			return -1;
+		}
 
 		// try to find in enabled tocs first
-		for (int i = 0; i < tocs.length; i++)
+		for (int i = 0; i < tocs.length; i++) {
 			if (isEnabled(tocs[i])) {
 				if (tocs[i].getTopic(topic) != null) {
 					return i;
@@ -260,11 +264,15 @@ public class TopicFinder {
 					return i;
 				}
 			}
+		}
 		// try disabled tocs second
-		for (int i = 0; i < tocs.length; i++)
-			if (!isEnabled(tocs[i]))
-				if (tocs[i].getTopic(topic) != null)
+		for (int i = 0; i < tocs.length; i++) {
+			if (!isEnabled(tocs[i])) {
+				if (tocs[i].getTopic(topic) != null) {
 					return i;
+				}
+			}
+		}
 		// nothing found
 		return -1;
 	}
@@ -300,17 +308,21 @@ public class TopicFinder {
 			}
 		}
 		index = topic.indexOf('?');
-		if (index != -1)
+		if (index != -1) {
 			topic = topic.substring(0, index);
+		}
 
-		if (topic == null || topic.isEmpty())
+		if (topic == null || topic.isEmpty()) {
 			return null;
+		}
 
-		if (selectedToc < 0)
+		if (selectedToc < 0) {
 			return null;
+		}
 		IToc selectedToc2 = tocs[selectedToc];
-		if (selectedToc2 == null)
+		if (selectedToc2 == null) {
 			return null;
+		}
 		ITopic selectedTopic = selectedToc2.getTopic(topic);
 		if (selectedTopic != null) {
 			return selectedTopic;
@@ -330,8 +342,9 @@ public class TopicFinder {
 	 */
 	private boolean isEnabled(IToc toc) {
 		boolean tocEnabled = ScopeUtils.showInTree(toc, scope);
-		if (!tocEnabled)
+		if (!tocEnabled) {
 			return false;
+		}
 		ITopic[] topics = toc.getTopics();
 		for (ITopic topic : topics) {
 			if (ScopeUtils.showInTree(topic, scope)) {

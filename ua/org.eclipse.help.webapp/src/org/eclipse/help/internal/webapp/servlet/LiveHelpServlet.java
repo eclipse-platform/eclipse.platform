@@ -89,11 +89,13 @@ public class LiveHelpServlet extends HttpServlet {
 			return;
 		}
 		String pluginID = req.getParameter("pluginID"); //$NON-NLS-1$
-		if (pluginID == null)
+		if (pluginID == null) {
 			return;
+		}
 		String className = req.getParameter("class"); //$NON-NLS-1$
-		if (className == null)
+		if (className == null) {
 			return;
+		}
 		String arg = req.getParameter("arg"); //$NON-NLS-1$
 		BaseHelpSystem.runLiveHelp(pluginID, className, arg);
 		/*

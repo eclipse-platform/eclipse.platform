@@ -60,7 +60,8 @@ public class ContentServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		if (connector != null)
+		if (connector != null) {
 			connector.transfer(req, resp);
+		}
 	}
 }

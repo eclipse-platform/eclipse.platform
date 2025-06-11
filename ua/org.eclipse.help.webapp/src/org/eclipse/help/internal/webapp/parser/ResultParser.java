@@ -88,15 +88,17 @@ public class ResultParser extends DefaultHandler {
 
 		for (int i = 0; i < items.size(); i++) {
 
-			if (i > 0)
+			if (i > 0) {
 				buf.append(JSonHelper.COMMA);
+			}
 
 			ParseElement element = items.get(i);
 			buf.append(element.toJSON(1));
 		}
 
-		if (!items.isEmpty())
+		if (!items.isEmpty()) {
 			buf.append(JSonHelper.NEWLINE + JSonHelper.SPACE);
+		}
 
 		buf.append(JSonHelper.END_BRACKET);
 		buf.append(JSonHelper.NEWLINE);

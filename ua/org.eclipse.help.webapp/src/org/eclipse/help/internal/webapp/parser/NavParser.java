@@ -39,10 +39,11 @@ public class NavParser extends ResultParser {
 		}
 
 		ParseElement elem = new ParseElement(properties, element);
-		if (element != null)
+		if (element != null) {
 			element.addChild(elem);
-		else
+		} else {
 			items.add(elem);
+		}
 
 		element = elem;
 	}
@@ -75,8 +76,9 @@ public class NavParser extends ResultParser {
 		buf.append(JSonHelper.COMMA);
 
 		ParseElement elem = items.get(0);
-		if (elem != null)
+		if (elem != null) {
 			buf.append(elem.toJSON());
+		}
 
 		buf.append(JSonHelper.END_BRACE);
 
