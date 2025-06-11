@@ -120,10 +120,14 @@ public class IndexData extends ActivitiesData {
 			boolean singleTopic = topics.length == 1;
 
 			out.write("<li>"); //$NON-NLS-1$
-			if (usePlusMinus) generatePlusImage(multipleTopics);
+			if (usePlusMinus) {
+				generatePlusImage(multipleTopics);
+			}
 			generateAnchor(singleTopic, entry, level);
 			if (multipleTopics || subentries.length > 0) {
-				if (multipleTopics) generateTopicList(entry);
+				if (multipleTopics) {
+					generateTopicList(entry);
+				}
 				generateSubentries(entry, level + 1);
 			}
 			out.write("</li>\n"); //$NON-NLS-1$

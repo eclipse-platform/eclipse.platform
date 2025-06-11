@@ -110,8 +110,9 @@ public class ParseElement {
 
 			for (int i = 0; i < children.size(); i++) {
 
-				if (i > 0)
+				if (i > 0) {
 					buff.append(JSonHelper.COMMA);
+				}
 
 				ParseElement element = children.get(i);
 				buff.append(element.toJSON(level + 2));
@@ -165,8 +166,9 @@ public class ParseElement {
 
 			for (int i = 0; i < children.size(); i++) {
 
-				if (i > 0)
+				if (i > 0) {
 					buff.append(JSonHelper.COMMA);
+				}
 
 				ParseElement child = children.get(i);
 				buff.append(child.toJSON(1));

@@ -109,8 +109,9 @@ public class WebappResources {
 	 * @return ResourceBundle or null if not found
 	 */
 	private static ResourceBundle getBundle(Locale locale) {
-		if (locale == null)
+		if (locale == null) {
 			locale = getDefaultLocale();
+		}
 
 		// check cache
 		ResourceBundle bundle = resourceBundleTable
@@ -158,12 +159,14 @@ public class WebappResources {
 		ResourceBundle bundle;
 
 		Bundle hostBundle = Platform.getBundle(FrameworkUtil.getBundle(HelpWebappPlugin.class).getSymbolicName());
-		if (hostBundle == null)
+		if (hostBundle == null) {
 			return null;
+		}
 
 		URL url = hostBundle.getResource("org/eclipse/help/internal/webapp/WebappResources" + key + ".properties");  //$NON-NLS-1$//$NON-NLS-2$
-		if (url == null)
+		if (url == null) {
 			return null;
+		}
 
 		try (InputStream in= url.openStream()) {
 			bundle= new PropertyResourceBundle(in);
@@ -176,18 +179,20 @@ public class WebappResources {
 	private static Locale getDefaultLocale() {
 		String nl = Platform.getNL();
 		// sanity test
-		if (nl == null)
+		if (nl == null) {
 			return Locale.getDefault();
+		}
 
 		// break the string into tokens to get the Locale object
 		StringTokenizer locales = new StringTokenizer(nl, "_"); //$NON-NLS-1$
-		if (locales.countTokens() == 1)
+		if (locales.countTokens() == 1) {
 			return Locale.of(locales.nextToken(), ""); //$NON-NLS-1$
-		else if (locales.countTokens() == 2)
+		} else if (locales.countTokens() == 2) {
 			return Locale.of(locales.nextToken(), locales.nextToken());
-		else if (locales.countTokens() == 3)
+		} else if (locales.countTokens() == 3) {
 			return Locale.of(locales.nextToken(), locales.nextToken(), locales.nextToken());
-		else
+		} else {
 			return Locale.getDefault();
+		}
 	}
 }

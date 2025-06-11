@@ -101,8 +101,9 @@ public class SearchData extends ActivitiesData {
 		super(context, request, response);
 		wsmgr = new WebappWorkingSetManager(request, response, getLocale());
 		this.topicHref = request.getParameter("topic"); //$NON-NLS-1$
-		if (topicHref != null && topicHref.length() == 0)
+		if (topicHref != null && topicHref.length() == 0) {
 			topicHref = null;
+		}
 
 		searchWord = request.getParameter("searchWord"); //$NON-NLS-1$
 		readDisplayFlags(request, response);
@@ -157,13 +158,15 @@ public class SearchData extends ActivitiesData {
 									alternate+
 									"</a></div>"; //$NON-NLS-1$
 
-							if (!altList.contains(div))
+							if (!altList.contains(div)) {
 								altList.add(div);
+							}
 						}
 					}
 					String query = result.getQuery();
-					if (query!=null)
+					if (query!=null) {
 						searchWord = query;
+					}
 				}
 			}
 			altList.sort(null);
@@ -191,10 +194,12 @@ public class SearchData extends ActivitiesData {
 						results = tmp;
 					}
 				}
-				if (reset)
+				if (reset) {
 					hits = SearchManager.convertResultsToHits(results);
-				if (isShowCategories())
+				}
+				if (isShowCategories()) {
 					primallySortByCategory(hits);
+				}
 			}
 		}
 	}
@@ -285,8 +290,9 @@ public class SearchData extends ActivitiesData {
 	}
 
 	public String getTopicTocLabel(int i) {
-		if (hits[i].getToc() != null)
+		if (hits[i].getToc() != null) {
 			return UrlUtil.htmlEncode(hits[i].getToc().getLabel());
+		}
 		return ""; //$NON-NLS-1$
 	}
 
@@ -362,8 +368,9 @@ public class SearchData extends ActivitiesData {
 	 * Returns the search query
 	 */
 	public String getSearchWord() {
-		if (searchWord == null)
+		if (searchWord == null) {
 			return ""; //$NON-NLS-1$
+		}
 		return searchWord;
 	}
 
@@ -376,8 +383,9 @@ public class SearchData extends ActivitiesData {
 			// select all books
 			TocData tocData = new TocData(context, request, response);
 			books = new String[tocData.getTocCount()];
-			for (int i = 0; i < books.length; i++)
+			for (int i = 0; i < books.length; i++) {
 				books[i] = tocData.getTocHref(i);
+			}
 		}
 		return books;
 	}
@@ -389,8 +397,9 @@ public class SearchData extends ActivitiesData {
 		TocData tocData = new TocData(context, request, response);
 		String href = tocData.getTocHref(toc);
 		String[] books = request.getParameterValues("scope"); //$NON-NLS-1$
-		if (books == null)
+		if (books == null) {
 			return false;
+		}
 		for (String book : books) {
 			if (book.equals(href)) {
 				return true;
@@ -406,8 +415,9 @@ public class SearchData extends ActivitiesData {
 	 * @return String
 	 */
 	public String getScope() {
-		if (workingSetName != null && workingSetName.length() != 0)
+		if (workingSetName != null && workingSetName.length() != 0) {
 			return workingSetName;
+		}
 
 		if (isSearchRequest()) {
 			workingSetName = request.getParameter("scope"); //$NON-NLS-1$
@@ -421,8 +431,9 @@ public class SearchData extends ActivitiesData {
 
 		if (workingSetName == null || workingSetName.length() == 0
 				|| getMode() == RequestData.MODE_INFOCENTER
-				&& wsmgr.getWorkingSet(workingSetName) == null)
+				&& wsmgr.getWorkingSet(workingSetName) == null) {
 			workingSetName = ServletResources.getString("All", request); //$NON-NLS-1$
+		}
 		return workingSetName;
 	}
 
@@ -649,15 +660,17 @@ public class SearchData extends ActivitiesData {
 
 	public String getPreProcessorResults()
 	{
-		if (altList==null || altList.isEmpty())
+		if (altList==null || altList.isEmpty()) {
 			return ""; //$NON-NLS-1$
+		}
 
 		StringBuilder result = new StringBuilder();
 
 		result.append(ServletResources.getString("AlternateSearchQueries", request)); //$NON-NLS-1$
 		result.append("<ul>"); //$NON-NLS-1$
-		for (int a=0;a<altList.size();a++)
+		for (int a=0;a<altList.size();a++) {
 			result.append("<li>"+altList.get(a)+"</li>"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		result.append("</ul>"); //$NON-NLS-1$
 
 		return result.toString();
@@ -703,7 +716,9 @@ public class SearchData extends ActivitiesData {
 		List<String> itemsToOrder = new ArrayList<>();
 		for (int i = 0; i < toSort.length; i++) {
 			IHelpResource cat = toSort[i].getCategory();
-			if (cat == null) continue;
+			if (cat == null) {
+				continue;
+			}
 			String href = cat.getHref();
 			String label = cat.getLabel();
 			if (href != null && label != null) {
@@ -722,23 +737,42 @@ public class SearchData extends ActivitiesData {
 		Arrays.sort(toSort, (hit1, hit2) -> {
 			IHelpResource c1 = hit1.getCategory();
 			IHelpResource c2 = hit2.getCategory();
-			if (c1 == null && c2 == null) return 0;
-			if (c1 == null) return 1;
-			if (c2 == null) return -1;
+			if (c1 == null && c2 == null) {
+				return 0;
+			}
+			if (c1 == null) {
+				return 1;
+			}
+			if (c2 == null) {
+				return -1;
+			}
 
 			// ordering after TOC ordering
-			if (catOrder.containsKey(c1.getHref()) && catOrder.containsKey(c2.getHref()))
+			if (catOrder.containsKey(c1.getHref()) && catOrder.containsKey(c2.getHref())) {
 				return catOrder.get(c1.getHref()).intValue() - catOrder.get(c2.getHref()).intValue();
+			}
 
 			// alphabetical ordering by category label
 			String l1 = c1.getLabel();
 			String l2 = c2.getLabel();
-			if (l1 == null && l2 == null) return 0;
-			if (l1 == null) return 1;
-			if (l2 == null) return -1;
-			if (l1.length() == 0 && l2.length() == 0) return 0;
-			if (l1.length() == 0) return 1;
-			if (l2.length() == 0) return -1;
+			if (l1 == null && l2 == null) {
+				return 0;
+			}
+			if (l1 == null) {
+				return 1;
+			}
+			if (l2 == null) {
+				return -1;
+			}
+			if (l1.length() == 0 && l2.length() == 0) {
+				return 0;
+			}
+			if (l1.length() == 0) {
+				return 1;
+			}
+			if (l2.length() == 0) {
+				return -1;
+			}
 			return l1.compareToIgnoreCase(l2);
 		});
 	}

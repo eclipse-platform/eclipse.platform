@@ -57,7 +57,9 @@ public class UrlUtil {
 	 * Encodes string for embedding in JavaScript source
 	 */
 	public static String JavaScriptEncode(String str) {
-		if (str == null) return null;
+		if (str == null) {
+			return null;
+		}
 		char[] wordChars = new char[str.length()];
 		str.getChars(0, str.length(), wordChars, 0);
 		StringBuilder jsEncoded = new StringBuilder();
@@ -136,8 +138,9 @@ public class UrlUtil {
 			InetAddress[] addr = InetAddress.getAllByName(hostname);
 			for (InetAddress element : addr) {
 				// test all addresses retrieved from the local machine
-				if (element.getHostAddress().equals(reqIP))
+				if (element.getHostAddress().equals(reqIP)) {
 					return true;
+				}
 			}
 		} catch (IOException ioe) {
 		}
@@ -164,13 +167,15 @@ public class UrlUtil {
 	 * @return a path that can be used as the href value of an anchor
 	 */
 	public static String getHelpURL(String url, int depth) {
-		if (url == null || url.length() == 0)
+		if (url == null || url.length() == 0) {
 			url = "about:blank"; //$NON-NLS-1$
-		else if (url.startsWith("http:/") || url.startsWith("https:/")); //$NON-NLS-1$ //$NON-NLS-2$
-		else if (url.startsWith("file:/") || url.startsWith("jar:file:/")) //$NON-NLS-1$ //$NON-NLS-2$
+		} else if (url.startsWith("http:/") || url.startsWith("https:/")) { //$NON-NLS-1$ //$NON-NLS-2$
+			;
+		} else if (url.startsWith("file:/") || url.startsWith("jar:file:/")) { //$NON-NLS-1$ //$NON-NLS-2$
 			url = getHelpUrlPrefix(depth) +'/' + url;
-		else
+		} else {
 			url =  getHelpUrlPrefix(depth) + url;
+		}
 		return url;
 	}
 
@@ -260,8 +265,9 @@ public class UrlUtil {
 
 	public static boolean isBot(HttpServletRequest request) {
 		String agent = request.getHeader("User-Agent"); //$NON-NLS-1$
-		if (agent==null)
+		if (agent==null) {
 			return false;
+		}
 		agent=agent.toLowerCase(Locale.ENGLISH);
 		// sample substring Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 		return agent.contains("bot") || agent.contains("crawl")//$NON-NLS-1$ //$NON-NLS-2$
@@ -274,8 +280,9 @@ public class UrlUtil {
 	}
 
 	public static boolean isIE(String agent) {
-		if (agent==null)
+		if (agent==null) {
 			return false;
+		}
 		agent=agent.toLowerCase(Locale.ENGLISH);
 
 		// When accessing with Bobby identified Bobby return 5.5 to allow
@@ -294,8 +301,9 @@ public class UrlUtil {
 	}
 
 	public static String getIEVersion(String agent) {
-		if (agent==null)
+		if (agent==null) {
 			return "0"; //$NON-NLS-1$
+		}
 
 		agent=agent.toLowerCase(Locale.ENGLISH);
 		// When accessing with Bobby identified Bobby return 5.5 to allow
@@ -306,11 +314,13 @@ public class UrlUtil {
 		//
 
 		int start = agent.indexOf("msie ") + "msie ".length(); //$NON-NLS-1$ //$NON-NLS-2$
-		if (start < "msie ".length() || start >= agent.length()) //$NON-NLS-1$
+		if (start < "msie ".length() || start >= agent.length()) { //$NON-NLS-1$
 			return "0"; //$NON-NLS-1$
+		}
 		int end = agent.indexOf(";", start); //$NON-NLS-1$
-		if (end <= start)
+		if (end <= start) {
 			return "0"; //$NON-NLS-1$
+		}
 		return agent.substring(start, end);
 	}
 
@@ -326,8 +336,9 @@ public class UrlUtil {
 	}
 
 	public static boolean isMozilla(String agent) {
-		if (agent==null)
+		if (agent==null) {
 			return false;
+		}
 		agent=agent.toLowerCase(Locale.ENGLISH);
 		return agent.contains("mozilla/5"); //$NON-NLS-1$
 	}
@@ -338,17 +349,21 @@ public class UrlUtil {
 	}
 
 	public static String getMozillaVersion(String agent) {
-		if (agent==null)
+		if (agent==null) {
 			return "0"; //$NON-NLS-1$
+		}
 		agent=agent.toLowerCase(Locale.ENGLISH);
-		if (!agent.contains("mozilla/5")) //$NON-NLS-1$
+		if (!agent.contains("mozilla/5")) { //$NON-NLS-1$
 			return "0"; //$NON-NLS-1$
+		}
 		int start = agent.indexOf("rv:") + "rv:".length(); //$NON-NLS-1$ //$NON-NLS-2$
-		if (start < "rv:".length() || start >= agent.length()) //$NON-NLS-1$
+		if (start < "rv:".length() || start >= agent.length()) { //$NON-NLS-1$
 			return "0"; //$NON-NLS-1$
+		}
 		int end = agent.indexOf(")", start); //$NON-NLS-1$
-		if (end <= start)
+		if (end <= start) {
 			return "0"; //$NON-NLS-1$
+		}
 		return agent.substring(start, end);
 	}
 
@@ -358,23 +373,27 @@ public class UrlUtil {
 	}
 
 	public static boolean isOpera(String agent) {
-		if (agent==null)
+		if (agent==null) {
 			return false;
+		}
 		agent=agent.toLowerCase(Locale.ENGLISH);
 		return agent.contains("opera"); //$NON-NLS-1$
 	}
 
 	public static String getOperaVersion(String agent) {
-		if (agent==null)
+		if (agent==null) {
 			return "0"; //$NON-NLS-1$
+		}
 		agent=agent.toLowerCase(Locale.ENGLISH);
 		final String OperaPrefix = "opera/"; //$NON-NLS-1$
 		int start = agent.indexOf(OperaPrefix) + OperaPrefix.length();
-		if (start < OperaPrefix.length() || start >= agent.length())
+		if (start < OperaPrefix.length() || start >= agent.length()) {
 			return "0"; //$NON-NLS-1$
+		}
 		int end = agent.indexOf(" (", start); //$NON-NLS-1$
-		if (end <= start)
+		if (end <= start) {
 			return "0"; //$NON-NLS-1$
+		}
 		return agent.substring(start, end);
 	}
 
@@ -384,8 +403,9 @@ public class UrlUtil {
 	}
 
 	public static boolean isSafari(String agent) {
-		if (agent==null)
+		if (agent==null) {
 			return false;
+		}
 		agent=agent.toLowerCase(Locale.ENGLISH);
 		return agent.contains("safari/"); //$NON-NLS-1$
 	}
@@ -397,8 +417,9 @@ public class UrlUtil {
 
 	public static String getSafariVersion(String agent) {
 		String version = "0"; //$NON-NLS-1$
-		if (agent==null)
+		if (agent==null) {
 			return version;
+		}
 		agent=agent.toLowerCase(Locale.ENGLISH);
 		Matcher m = safariPattern.matcher(agent);
 		boolean matched = m.find();

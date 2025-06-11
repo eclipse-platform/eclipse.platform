@@ -113,8 +113,9 @@ public class BreadcrumbsFilter implements IFilter {
 		pathBuf.append(path[0]);
 
 		boolean isMirrored = org.eclipse.help.internal.util.ProductPreferences.isRTL();
-		if(isMirrored)
+		if(isMirrored) {
 			buf.append("\u202B"); //$NON-NLS-1$ //append RLE marker at the beginning
+		}
 
 		buf.append("<div class=\"help_breadcrumbs\">"); //$NON-NLS-1$
 
@@ -142,10 +143,11 @@ public class BreadcrumbsFilter implements IFilter {
 			// add separator
 			if (i < path.length - 2 || path.length == 2) {
 				// always add if there's only one link
-				if(isMirrored)
+				if(isMirrored) {
 					buf.append(" \u200F> "); //$NON-NLS-1$ //append RLM marker before >
-				else
+				} else {
 					buf.append(" > "); //$NON-NLS-1$
+				}
 			}
 
 			// move to the next topic in the path
@@ -155,8 +157,9 @@ public class BreadcrumbsFilter implements IFilter {
 		}
 		buf.append("</div>"); //$NON-NLS-1$
 
-		if(isMirrored)
+		if(isMirrored) {
 			buf.append("\u202C"); //$NON-NLS-1$ //append PDF marker at the end
+		}
 
 		return buf.toString();
 	}

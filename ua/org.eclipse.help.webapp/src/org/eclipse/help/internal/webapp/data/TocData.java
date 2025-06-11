@@ -76,14 +76,18 @@ public class TocData extends ActivitiesData {
 		this.scope = RequestScope.getScope(request, response, false);
 
 
-		if (tocParameter != null && tocParameter.length() == 0)
+		if (tocParameter != null && tocParameter.length() == 0) {
 			tocParameter = null;
-		if (topicHref != null && topicHref.length() == 0)
+		}
+		if (topicHref != null && topicHref.length() == 0) {
 			topicHref = null;
-		if (expandPathParam != null && expandPathParam.length() == 0)
+		}
+		if (expandPathParam != null && expandPathParam.length() == 0) {
 			expandPathParam = null;
-		if (completePath != null && completePath.length() == 0)
+		}
+		if (completePath != null && completePath.length() == 0) {
 			completePath = null;
+		}
 
 		String anchor = request.getParameter("anchor"); //$NON-NLS-1$
 		if (topicHref != null && anchor != null) {
@@ -156,15 +160,17 @@ public class TocData extends ActivitiesData {
 	 * @return String
 	 */
 	public String getSelectedTopic() {
-		if (topicHref != null && topicHref.length() > 0)
+		if (topicHref != null && topicHref.length() > 0) {
 			return UrlUtil.getHelpURL(topicHref);
-		else
-		if (selectedToc == -1)
+		} else
+		if (selectedToc == -1) {
 			return null;
+		}
 		IToc toc = tocs[selectedToc];
 		ITopic tocDescription = toc.getTopic(null);
-		if (tocDescription != null)
+		if (tocDescription != null) {
 			return UrlUtil.getHelpURL(tocDescription.getHref());
+		}
 		return UrlUtil.getHelpURL(null);
 	}
 
@@ -297,8 +303,9 @@ public class TocData extends ActivitiesData {
 	 * @return List of ITopic
 	 */
 	private List<ITopic> getEnabledSubtopicList(Object element) {
-		if (element instanceof IToc toc && !isEnabled(toc))
+		if (element instanceof IToc toc && !isEnabled(toc)) {
 			return Collections.emptyList();
+		}
 		List<ITopic> children;
 		if (element instanceof IToc toc) {
 			children = Arrays.asList((toc).getTopics());
@@ -332,8 +339,9 @@ public class TocData extends ActivitiesData {
 	private void generateTopicLinks(ITopic topic, Writer w, int indent) {
 		String topicHref = topic.getHref();
 		try {
-			if (indent == 0)
+			if (indent == 0) {
 				w.write("<b>"); //$NON-NLS-1$
+			}
 			for (int tab = 0; tab < indent; tab++) {
 				w.write("&nbsp;&nbsp;"); //$NON-NLS-1$
 			}
@@ -350,8 +358,9 @@ public class TocData extends ActivitiesData {
 				w.write(UrlUtil.htmlEncode(topic.getLabel()));
 			}
 			w.write("<br>\n"); //$NON-NLS-1$
-			if (indent == 0)
+			if (indent == 0) {
 				w.write("</b>"); //$NON-NLS-1$
+			}
 		} catch (IOException ioe) {
 		}
 		ITopic[] topics = topic.getSubtopics();

@@ -82,17 +82,18 @@ public class ToolbarData extends RequestData {
 
 		List<ToolbarButton> buttonList = new ArrayList<>();
 		for (int i = 0; i < names.length; i++) {
-			if ("".equals(names[i])) //$NON-NLS-1$
+			if ("".equals(names[i])) { //$NON-NLS-1$
 				buttonList.add(new ToolbarButton());
-			else{
+			} else{
 				// Is this a valid javascript name (and not a script injection)
 				Matcher matcher = jsNamePattern.matcher(names[i]);
-				if (matcher.matches())
+				if (matcher.matches()) {
 					buttonList.add(new ToolbarButton(names[i], ServletResources
 							.getString(tooltips[i], request), preferences
 							.getImagesDirectory()
 							+ "/e_" + images[i], //$NON-NLS-1$
 							actions[i], params[i], states[i]));
+				}
 			}
 		}
 
@@ -161,14 +162,16 @@ public class ToolbarData extends RequestData {
 	}
 
 	public String getName() {
-		if (request.getParameter("view") == null) //$NON-NLS-1$
+		if (request.getParameter("view") == null) { //$NON-NLS-1$
 			return ""; //$NON-NLS-1$
+		}
 		return request.getParameter("view"); //$NON-NLS-1$
 	}
 
 	public String getTitle() {
-		if (request.getParameter("view") == null) //$NON-NLS-1$
+		if (request.getParameter("view") == null) { //$NON-NLS-1$
 			return ""; //$NON-NLS-1$
+		}
 		return ServletResources.getString(request.getParameter("view"), //$NON-NLS-1$
 					request);
 	}

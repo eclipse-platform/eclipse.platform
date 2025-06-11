@@ -40,10 +40,11 @@ public class IndexFragmentParser extends ResultParser{
 			}
 
 			ParseElement elem = new ParseElement(properties, element);
-			if (element != null)
+			if (element != null) {
 				element.addChild(elem);
-			else
+			} else {
 				items.add(elem);
+			}
 
 			element = elem;
 		}

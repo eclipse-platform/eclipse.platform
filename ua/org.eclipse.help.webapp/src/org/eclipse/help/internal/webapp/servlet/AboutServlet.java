@@ -112,10 +112,12 @@ public class AboutServlet extends HttpServlet {
 		String build = System.getProperty("eclipse.buildId", null); //$NON-NLS-1$
 		if (app != null || build != null) {
 			buf.append("<p>"); //$NON-NLS-1$
-			if (app != null)
+			if (app != null) {
 				buf.append(WebappResources.getString("application", locale, app) + "<br/>");//$NON-NLS-1$ //$NON-NLS-2$
-			if (build != null)
+			}
+			if (build != null) {
 				buf.append(WebappResources.getString("buildId", locale, build) + "<br/>");//$NON-NLS-1$ //$NON-NLS-2$
+			}
 			buf.append("</p>"); //$NON-NLS-1$
 		}
 

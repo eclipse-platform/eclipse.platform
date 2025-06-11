@@ -35,8 +35,9 @@ public class ServletResources {
 
 	public static String getConfirmShowAllExplanation(HttpServletRequest request) {
 		String  message = HelpBasePlugin.getActivitySupport().getShowAllMessage();
-		if (message==null)
+		if (message==null) {
 			message = getString("confirmShowAllExplanation", request); //$NON-NLS-1$
+		}
 		return message;
 	}
 

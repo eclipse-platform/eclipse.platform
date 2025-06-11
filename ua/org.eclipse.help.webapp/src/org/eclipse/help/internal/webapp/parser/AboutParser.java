@@ -29,8 +29,9 @@ public class AboutParser extends ResultParser {
 	public AboutParser(long service) {
 		super(JSonHelper.TITLE);
 		this.service = service;
-		if (this.service == Utils.ABOUT_PLUGIN)
+		if (this.service == Utils.ABOUT_PLUGIN) {
 			this.setIdentifier(JSonHelper.PLUGIN_ID);
+		}
 	}
 
 	@Override
@@ -43,8 +44,9 @@ public class AboutParser extends ResultParser {
 		if (!((service == Utils.PREFERENCE
 					&& (name.equalsIgnoreCase(XMLHelper.ELEMENT_PREFERENCES)
 							|| name.equalsIgnoreCase(XMLHelper.ELEMENT_PLUGIN)))
-				|| service == Utils.ABOUT_PLUGIN))
+				|| service == Utils.ABOUT_PLUGIN)) {
 			properties.put(JSonHelper.PROPERTY_VALUE, ""); //$NON-NLS-1$
+		}
 
 		for (int i = 0; i < attrs.getLength(); i++) {
 			String qname = attrs.getQName(i);
@@ -53,10 +55,11 @@ public class AboutParser extends ResultParser {
 		}
 
 		ParseElement elem = new ParseElement(properties, element);
-		if (element != null)
+		if (element != null) {
 			element.addChild(elem);
-		else
+		} else {
 			items.add(elem);
+		}
 
 		element = elem;
 	}
@@ -66,8 +69,9 @@ public class AboutParser extends ResultParser {
 		if ((service == Utils.PREFERENCE
 				&& (currentTag.equalsIgnoreCase(XMLHelper.ELEMENT_PREFERENCES)
 					|| currentTag.equalsIgnoreCase(XMLHelper.ELEMENT_PLUGIN)))
-			|| service == Utils.ABOUT_PLUGIN)
+			|| service == Utils.ABOUT_PLUGIN) {
 			return;
+		}
 
 		if (element != null && !currentTag.isEmpty()) {
 
@@ -77,8 +81,9 @@ public class AboutParser extends ResultParser {
 				String content = new String(ch, start, length);
 
 				String existing = (String) properties.get(currentTag);
-				if (existing == null)
+				if (existing == null) {
 					existing = ""; //$NON-NLS-1$
+				}
 
 				content = content.replaceAll("[\\n\\t]", "").trim(); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -117,8 +122,9 @@ public class AboutParser extends ResultParser {
 		buf.append(JSonHelper.COMMA);
 
 		ParseElement elem = items.get(0);
-		if (elem != null)
+		if (elem != null) {
 			buf.append(elem.toJSON());
+		}
 
 		buf.append(JSonHelper.END_BRACE);
 
