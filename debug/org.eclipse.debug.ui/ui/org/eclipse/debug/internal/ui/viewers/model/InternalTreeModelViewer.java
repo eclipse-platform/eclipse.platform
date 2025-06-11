@@ -1382,7 +1382,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 		String[] columnIds = getVisibleColumns();
 
 		if (widget != null && widget instanceof TreeItem item && !widget.isDisposed()) {
-			
+
 			/*Object data = item.getData();
 			int itemCount = item.getItemCount();
 			item.clearAll(false);
