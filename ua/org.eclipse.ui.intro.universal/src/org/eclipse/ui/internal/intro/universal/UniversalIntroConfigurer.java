@@ -61,10 +61,11 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 	public String getVariable(String variableName) {
 		if (variableName.equals(HIGH_CONTRAST)) {
 			boolean highContrast = ImageUtil.isHighContrast();
-			if (highContrast)
+			if (highContrast) {
 				return variableName;
-			else
+			} else {
 				return ""; //$NON-NLS-1$
+			}
 		}
 		IProduct product = Platform.getProduct();
 		if (product != null) {
@@ -77,8 +78,9 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 			// if intro description for the page is not defined
 			// return a blank string to prevent the variable
 			// from showing up in the page
-			if (variableName.startsWith(VAR_INTRO_DESCRIPTION_PREFIX))
+			if (variableName.startsWith(VAR_INTRO_DESCRIPTION_PREFIX)) {
 				return ""; //$NON-NLS-1$
+			}
 			// nothing - try preferences
 			// try to prefix with a product id first
 			String key = product.getId() + "_" + variableName; //$NON-NLS-1$
@@ -88,9 +90,9 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 				key = variableName;
 				value = Platform.getPreferencesService().getString(UniversalIntroPlugin.PLUGIN_ID,  key, "", null); //$NON-NLS-1$
 			}
-			if (value.length() > 0)
+			if (value.length() > 0) {
 				value = resolveVariable(product.getDefiningBundle(), value);
-			else {
+			} else {
 				// pass it to the theme
 				value = getThemeProperty(variableName);
 			}
@@ -231,8 +233,9 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 		String value = product.getProperty(variableName);
 		if (value == null) {
 			// return default values
-			if (variableName.equals(VAR_INTRO_BACKGROUND_IMAGE))
+			if (variableName.equals(VAR_INTRO_BACKGROUND_IMAGE)) {
 				return "css/graphics/root/welcomebckgrd.jpg"; //$NON-NLS-1$
+			}
 		}
 		return value;
 	}
@@ -241,16 +244,20 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 	public IntroElement[] getGroupChildren(String pageId, String groupId) {
 		// root-like pages have more details on the page and action links
 		boolean rootLike = pageId.equals(ID_ROOT) || isStartPage(pageId) || pageId.equals(ID_STANDBY);
-		if (rootLike && groupId.equals(DIV_PAGE_LINKS))
-				return getRootPageLinks(pageId.equals(ID_STANDBY));
-		if (rootLike && groupId.equals(DIV_ACTION_LINKS))
-				return getRootPageActionLinks(pageId.equals(ID_STANDBY));
+		if (rootLike && groupId.equals(DIV_PAGE_LINKS)) {
+			return getRootPageLinks(pageId.equals(ID_STANDBY));
+		}
+		if (rootLike && groupId.equals(DIV_ACTION_LINKS)) {
+			return getRootPageActionLinks(pageId.equals(ID_STANDBY));
+		}
 		// other pages
-		if (groupId.equals(DIV_PAGE_LINKS))
+		if (groupId.equals(DIV_PAGE_LINKS)) {
 			return getNavLinks(pageId);
+		}
 		if (groupId.equals(DIV_LAYOUT_TOP_LEFT) || groupId.equals(DIV_LAYOUT_TOP_RIGHT)
-				|| groupId.equals(DIV_LAYOUT_BOTTOM_LEFT) || groupId.equals(DIV_LAYOUT_BOTTOM_RIGHT))
+				|| groupId.equals(DIV_LAYOUT_BOTTOM_LEFT) || groupId.equals(DIV_LAYOUT_BOTTOM_RIGHT)) {
 			return getContent(pageId, groupId);
+		}
 		return new IntroElement[0];
 	}
 
@@ -263,8 +270,9 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 			while (stok.hasMoreTokens()) {
 				String id = stok.nextToken().trim();
 				IntroElement page = createLaunchBarShortcut(id);
-				if (page != null)
+				if (page != null) {
 					links.add(page);
+				}
 			}
 		}
 		return links.toArray(new IntroElement[links.size()]);
@@ -278,16 +286,18 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 			while (stok.hasMoreTokens()) {
 				String id = stok.nextToken().trim();
 				IntroElement page = createRootPageLink(id, standby);
-				if (page != null)
+				if (page != null) {
 					links.add(page);
+				}
 			}
 		}
 		// add workbench link if so configured by the theme
 		String wb = getVariable(VAR_WORKBENCH_AS_ROOT_LINK);
 		if (wb!=null && wb.equalsIgnoreCase("true")) { //$NON-NLS-1$
 			IntroElement page = createRootPageLink(ID_WORKBENCH, standby);
-			if (page !=null)
+			if (page !=null) {
 				links.add(page);
+			}
 		}
 		return links.toArray(new IntroElement[links.size()]);
 	}
@@ -298,8 +308,9 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 		// not already configured as a root link
 		if (wb==null || !wb.equalsIgnoreCase("true")) { //$NON-NLS-1$
 			IntroElement page = createRootPageLink(ID_WORKBENCH, standby);
-			if (page !=null)
+			if (page !=null) {
 				return new IntroElement[] { page };
+			}
 		}
 		return new IntroElement [0];
 	}
@@ -320,8 +331,9 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 			while (stok.hasMoreTokens()) {
 				String id = stok.nextToken().trim();
 				IntroElement page = createNavLink(id, pageId, counter);
-				if (page != null)
+				if (page != null) {
 					links.add(page);
+				}
 			}
 		}
 
@@ -330,119 +342,143 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 
 	private IntroElement createRootPageLink(String id, boolean standby) {
 
-		if (id.equals(ID_OVERVIEW))
+		if (id.equals(ID_OVERVIEW)) {
 			return createRootLink(
 					Messages.SharedIntroConfigurer_overview_name,
 					createPageURL(id, standby), id, "overview_img", Messages.SharedIntroConfigurer_overview_alt, //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_overview_tooltip, "left"); //$NON-NLS-1$
-		if (id.equals(ID_FIRSTSTEPS))
+		}
+		if (id.equals(ID_FIRSTSTEPS)) {
 			return createRootLink(
 					Messages.SharedIntroConfigurer_firststeps_name,
 					createPageURL(id, standby), id, "firststeps_img", Messages.SharedIntroConfigurer_firststeps_alt, //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_firststeps_tooltip, "left"); //$NON-NLS-1$
-		if (id.equals(ID_TUTORIALS))
+		}
+		if (id.equals(ID_TUTORIALS)) {
 			return createRootLink(
 					Messages.SharedIntroConfigurer_tutorials_name,
 					createPageURL(id, standby), id, "tutorials_img", Messages.SharedIntroConfigurer_tutorials_alt, //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_tutorials_tooltip, "left"); //$NON-NLS-1$
-		if (id.equals(ID_SAMPLES))
+		}
+		if (id.equals(ID_SAMPLES)) {
 			return createRootLink(
 					Messages.SharedIntroConfigurer_samples_name,
 					createPageURL(id, standby), id, "samples_img", Messages.SharedIntroConfigurer_samples_alt, Messages.SharedIntroConfigurer_samples_tooltip, "right"); //$NON-NLS-1$ //$NON-NLS-2$
-		if (id.equals(ID_WHATSNEW))
+		}
+		if (id.equals(ID_WHATSNEW)) {
 			return createRootLink(
 					Messages.SharedIntroConfigurer_whatsnew_name,
 					createPageURL(id, standby), id, "whatsnew_img", Messages.SharedIntroConfigurer_whatsnew_alt, //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_whatsnew_tooltip, "right"); //$NON-NLS-1$
-		if (id.equals(ID_MIGRATE))
+		}
+		if (id.equals(ID_MIGRATE)) {
 			return createRootLink(
 					Messages.SharedIntroConfigurer_migrate_name,
 					createPageURL(id, standby), id, "migrate_img",  Messages.SharedIntroConfigurer_migrate_alt, Messages.SharedIntroConfigurer_migrate_tooltip, "right"); //$NON-NLS-1$ //$NON-NLS-2$
-		if (id.equals(ID_WEBRESOURCES))
+		}
+		if (id.equals(ID_WEBRESOURCES)) {
 			return createRootLink(
 					Messages.SharedIntroConfigurer_webresources_name,
 					createPageURL(id, standby), id,"webresources_img",  //$NON-NLS-1$
 					Messages.SharedIntroConfigurer_webresources_alt,
 					Messages.SharedIntroConfigurer_webresources_tooltip,
 					"right"); //$NON-NLS-1$
-		if (id.equals(ID_WORKBENCH))
+		}
+		if (id.equals(ID_WORKBENCH)) {
 			return createRootLink(
 					Messages.SharedIntroConfigurer_workbench_name,
 					"http://org.eclipse.ui.intro/switchToLaunchBar", id, "workbench_img",  //$NON-NLS-1$ //$NON-NLS-2$
 					Messages.SharedIntroConfigurer_workbench_alt,
 					Messages.SharedIntroConfigurer_workbench_tooltip,
 					"right"); //$NON-NLS-1$
+		}
 		return null;
 	}
 
 	private IntroElement createNavLink(String id, String pageId, int [] counter) {
-		if (id.equals(ID_OVERVIEW))
+		if (id.equals(ID_OVERVIEW)) {
 			return createNavLink(Messages.SharedIntroConfigurer_overview_nav,
 					createPageURL(id, false), id, "left nav_link"+(++counter[0])); //$NON-NLS-1$
-		if (id.equals(ID_FIRSTSTEPS))
+		}
+		if (id.equals(ID_FIRSTSTEPS)) {
 			return createNavLink(Messages.SharedIntroConfigurer_firststeps_nav,
 					createPageURL(id, false), id, "left  nav_link"+(++counter[0])); //$NON-NLS-1$
-		if (id.equals(ID_TUTORIALS))
+		}
+		if (id.equals(ID_TUTORIALS)) {
 			return createNavLink(Messages.SharedIntroConfigurer_tutorials_nav,
 					createPageURL(id, false), id, "left nav_link"+(++counter[0])); //$NON-NLS-1$
-		if (id.equals(ID_SAMPLES))
+		}
+		if (id.equals(ID_SAMPLES)) {
 			return createNavLink(Messages.SharedIntroConfigurer_samples_nav,
 					createPageURL(id, false), id, "right nav_link"+(++counter[0])); //$NON-NLS-1$
-		if (id.equals(ID_WHATSNEW))
+		}
+		if (id.equals(ID_WHATSNEW)) {
 			return createNavLink(Messages.SharedIntroConfigurer_whatsnew_nav,
 					createPageURL(id, false), id, "right nav_link"+(++counter[0])); //$NON-NLS-1$
-		if (id.equals(ID_MIGRATE))
+		}
+		if (id.equals(ID_MIGRATE)) {
 			return createNavLink(Messages.SharedIntroConfigurer_migrate_nav,
 					createPageURL(id, false), id, "right nav_link"+(++counter[0])); //$NON-NLS-1$
-		if (id.equals(ID_WEBRESOURCES))
+		}
+		if (id.equals(ID_WEBRESOURCES)) {
 			return createNavLink(
 					Messages.SharedIntroConfigurer_webresources_nav,
 					createPageURL(id, false), id, "right nav_link"+(++counter[0])); //$NON-NLS-1$
-		if (id.equals(ID_WORKBENCH))
+		}
+		if (id.equals(ID_WORKBENCH)) {
 			return createNavLink(
 					Messages.SharedIntroConfigurer_workbench_name,
 					"http://org.eclipse.ui.intro/switchToLaunchBar", //$NON-NLS-1$
 					id,
 					"right nav_link"+(++counter[0])); //$NON-NLS-1$
+		}
 		return null;
 	}
 
 	private String createPageURL(String id, boolean standby) {
 		String url = "http://org.eclipse.ui.intro/showPage?id=" + id; //$NON-NLS-1$
-		if (standby)
+		if (standby) {
 			url += "&standby=false"; //$NON-NLS-1$
+		}
 		return url;
 	}
 
 	private IntroElement createLaunchBarShortcut(String id) {
-		if (id.equals(ID_OVERVIEW))
+		if (id.equals(ID_OVERVIEW)) {
 			return createShortcutLink(
 					getThemeProperty(LAUNCHBAR_OVERVIEW_ICON), Messages.SharedIntroConfigurer_overview_nav,
 					id);
-		if (id.equals(ID_FIRSTSTEPS))
+		}
+		if (id.equals(ID_FIRSTSTEPS)) {
 			return createShortcutLink(
 					getThemeProperty(LAUNCHBAR_FIRSTSTEPS_ICON), Messages.SharedIntroConfigurer_firststeps_nav,
 					id);
-		if (id.equals(ID_TUTORIALS))
+		}
+		if (id.equals(ID_TUTORIALS)) {
 			return createShortcutLink(
 					getThemeProperty(LAUNCHBAR_TUTORIALS_ICON), Messages.SharedIntroConfigurer_tutorials_nav,
 					id);
-		if (id.equals(ID_SAMPLES))
+		}
+		if (id.equals(ID_SAMPLES)) {
 			return createShortcutLink(
 					getThemeProperty(LAUNCHBAR_SAMPLES_ICON), Messages.SharedIntroConfigurer_samples_nav,
 					id);
-		if (id.equals(ID_WHATSNEW))
+		}
+		if (id.equals(ID_WHATSNEW)) {
 			return createShortcutLink(
 					getThemeProperty(LAUNCHBAR_WHATSNEW_ICON), Messages.SharedIntroConfigurer_whatsnew_nav,
 					id);
-		if (id.equals(ID_MIGRATE))
+		}
+		if (id.equals(ID_MIGRATE)) {
 			return createShortcutLink(
 					getThemeProperty(LAUNCHBAR_MIGRATE_ICON), Messages.SharedIntroConfigurer_migrate_nav,
 					id);
-		if (id.equals(ID_WEBRESOURCES))
+		}
+		if (id.equals(ID_WEBRESOURCES)) {
 			return createShortcutLink(
 					getThemeProperty(LAUNCHBAR_WEBRESOURCES_ICON), Messages.SharedIntroConfigurer_webresources_nav,
 					id);
+		}
 		return null;
 	}
 
@@ -461,8 +497,9 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 		if (highContrast) {
 			String key = HIGH_CONTRAST_PREFIX+id;
 			String value = getVariable(key);
-			if (value!=null)
+			if (value!=null) {
 				img.setAttribute("src", value); //$NON-NLS-1$
+			}
 		}
 		img.setAttribute("alt", imgAlt); //$NON-NLS-1$
 		img.setAttribute("title", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -485,8 +522,9 @@ public class UniversalIntroConfigurer extends IntroConfigurer implements
 			img.setAttribute("style-id", "content-img"); //$NON-NLS-1$ //$NON-NLS-2$
 			String key = HIGH_CONTRAST_NAV_PREFIX+id;
 			String value = getVariable(key);
-			if (value!=null)
+			if (value!=null) {
 				img.setAttribute("src", value); //$NON-NLS-1$
+			}
 			img.setAttribute("alt", label); //$NON-NLS-1$
 			element.addChild(img);
 			styleId += " "+HIGH_CONTRAST; //$NON-NLS-1$

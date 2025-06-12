@@ -46,8 +46,9 @@ public class IntroData {
 	public IntroData(String productId, String fileNameOrData, boolean active) {
 		this.productId = productId;
 		this.active = active;
-		if (fileNameOrData!=null)
+		if (fileNameOrData!=null) {
 			initialize(fileNameOrData);
+		}
 	}
 
 	public String getProductId() {
@@ -64,8 +65,9 @@ public class IntroData {
 
 	private void initialize(String fileNameOrData) {
 		Document doc = parse(fileNameOrData);
-		if (doc == null)
+		if (doc == null) {
 			return;
+		}
 		Element root = doc.getDocumentElement();
 		NodeList pages = root.getChildNodes();
 		for (int i = 0; i < pages.getLength(); i++) {
@@ -96,19 +98,22 @@ public class IntroData {
 
 	private void addCandidate(IConfigurationElement element) {
 		String fileName = element.getAttribute("content"); //$NON-NLS-1$
-		if (fileName==null)
+		if (fileName==null) {
 			return;
+		}
 		String bundleId = element.getDeclaringExtension().getContributor().getName();
 		Bundle bundle = Platform.getBundle(bundleId);
-		if (bundle==null)
+		if (bundle==null) {
 			return;
+		}
 		String content = BundleUtil.getResolvedResourceLocation("", fileName, //$NON-NLS-1$
 					bundle);
 		IntroContentParser parser = new IntroContentParser(content);
 		Document dom = parser.getDocument();
 		// dom can be null if the content file cannot be found
-		if (dom==null)
+		if (dom==null) {
 			return;
+		}
 		Element root = dom.getDocumentElement();
 		Element extension = null;
 		NodeList children = root.getChildNodes();
@@ -122,18 +127,22 @@ public class IntroData {
 				}
 			}
 		}
-		if (extension==null)
+		if (extension==null) {
 			return;
+		}
 		String id = extension.getAttribute("id"); //$NON-NLS-1$
 		String name = extension.getAttribute("name"); //$NON-NLS-1$
 		String path = extension.getAttribute("path"); //$NON-NLS-1$
-		if (id==null || path==null)
+		if (id==null || path==null) {
 			return;
+		}
 		int at = path.lastIndexOf("/@"); //$NON-NLS-1$
-		if (at == -1)
+		if (at == -1) {
 			return;
-		if (path.charAt(path.length()-1)!='@')
+		}
+		if (path.charAt(path.length()-1)!='@') {
 			return;
+		}
 		String pageId = path.substring(0, at);
 		PageData pd = pages.get(pageId);
 		if (pd==null) {
@@ -157,9 +166,9 @@ public class IntroData {
 				//This is actual content, not the file name
 				StringReader reader = new StringReader(fileNameOrData);
 				document = parser.parse(new InputSource(reader));
-			}
-			else
+			} else {
 				document = parser.parse(fileNameOrData);
+			}
 			return document;
 
 		} catch (SAXParseException spe) {
@@ -172,14 +181,16 @@ public class IntroData {
 
 			// Use the contained exception.
 			Exception x = spe;
-			if (spe.getException() != null)
+			if (spe.getException() != null) {
 				x = spe.getException();
+			}
 			Log.error(buffer.toString(), x);
 
 		} catch (SAXException sxe) {
 			Exception x = sxe;
-			if (sxe.getException() != null)
+			if (sxe.getException() != null) {
 				x = sxe.getException();
+			}
 			Log.error(x.getMessage(), x);
 
 		} catch (ParserConfigurationException pce) {
