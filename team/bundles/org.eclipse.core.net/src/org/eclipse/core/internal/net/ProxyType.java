@@ -543,10 +543,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	}
 
 	public void initialize() {
-		// On mac, the system proxy configuration is set by the JVM automatically
-		boolean isMac = "macosx".equals(System.getProperty("osgi.os"));  //$NON-NLS-1$//$NON-NLS-2$
-		int verify = isMac ? DO_NOT_VERIFY : VERIFY_EMPTY;
-		updateSystemProperties(getProxyData(verify));
+		updateSystemProperties(getProxyData(DO_NOT_VERIFY));
 		preferenceManager.addNodeChangeListener(PREF_PROXY_DATA_NODE, this);
 		preferenceManager.addPreferenceChangeListener(getPreferenceNode(), this);
 	}
