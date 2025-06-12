@@ -177,12 +177,13 @@ public class CustomizationContentsArea {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (obj == this)
+			if (obj == this) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (obj instanceof RootPage) {
-				RootPage page = (RootPage) obj;
+			}
+			if (obj instanceof RootPage page) {
 				return page.id.equals(id) && page.name.equals(name);
 			}
 			return false;
@@ -198,8 +199,9 @@ public class CustomizationContentsArea {
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			if (inputElement == ROOT_PAGE_TABLE)
+			if (inputElement == ROOT_PAGE_TABLE) {
 				return ROOT_PAGE_TABLE;
+			}
 			if (inputElement instanceof GroupData) {
 				return ((GroupData) inputElement).getChildren();
 			}
@@ -277,30 +279,34 @@ public class CustomizationContentsArea {
 			BaseData target = (BaseData) getCurrentTarget();
 			int loc = getCurrentLocation();
 			GroupData gd = (GroupData) getViewer().getInput();
-			if (gd == null)
+			if (gd == null) {
 				gd = createTargetGd(getViewer());
+			}
 			BaseData[] sel = (BaseData[]) data;
 
 			int index = target != null ? gd.getIndexOf(target) : -1;
 			int startingIndex = getStartIndex(gd, sel);
 			if (target != null) {
 				if (loc == LOCATION_AFTER
-						|| (loc == LOCATION_ON && startingIndex != -1 && startingIndex < index))
+						|| (loc == LOCATION_ON && startingIndex != -1 && startingIndex < index)) {
 					index++;
-				else if (index > 0 && loc == LOCATION_BEFORE)
+				} else if (index > 0 && loc == LOCATION_BEFORE) {
 					index--;
+				}
 			}
 
 			for (BaseData ed : sel) {
-				if (index == -1)
+				if (index == -1) {
 					gd.add(ed);
-				else
+				} else {
 					gd.add(index++, ed);
+				}
 			}
-			if (getViewer().getInput() != null)
+			if (getViewer().getInput() != null) {
 				getViewer().refresh();
-			else
+			} else {
 				getViewer().setInput(gd);
+			}
 			updateColumnSizes((TableViewer) getViewer());
 			return true;
 		}
@@ -308,8 +314,9 @@ public class CustomizationContentsArea {
 		private int getStartIndex(GroupData gd, BaseData[] sel) {
 			for (BaseData ed : sel) {
 				int index = gd.getIndexOf(ed.getId());
-				if (index != -1)
+				if (index != -1) {
 					return index;
+				}
 			}
 			return -1;
 		}
@@ -327,18 +334,17 @@ public class CustomizationContentsArea {
 			if (obj instanceof RootPage) {
 				return ((RootPage) obj).getNameNoMnemonic();
 			}
-			if (obj instanceof ExtensionData) {
-				ExtensionData ed = (ExtensionData) obj;
+			if (obj instanceof ExtensionData ed) {
 				String name = ed.getName();
-				if (name != null && name.length() > 0)
+				if (name != null && name.length() > 0) {
 					return name;
+				}
 				return ed.getId();
 			}
 			if (obj instanceof SeparatorData) {
 				return Messages.WelcomeCustomizationPreferencePage_horizontalSeparator;
 			}
-			if (obj instanceof IntroTheme) {
-				IntroTheme bg = (IntroTheme) obj;
+			if (obj instanceof IntroTheme bg) {
 				return bg.getName();
 			}
 			return super.getText(obj);
@@ -346,8 +352,7 @@ public class CustomizationContentsArea {
 
 		@Override
 		public Image getImage(Object obj) {
-			if (obj instanceof ExtensionData) {
-				ExtensionData ed = (ExtensionData) obj;
+			if (obj instanceof ExtensionData ed) {
 				switch (ed.getImportance()) {
 				case ExtensionData.HIGH:
 					return ihighImage;
@@ -360,22 +365,25 @@ public class CustomizationContentsArea {
 				}
 				return extensionImage;
 			}
-			if (obj instanceof IntroTheme)
+			if (obj instanceof IntroTheme) {
 				return themeImage;
+			}
 			return null;
 		}
 
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
-			if (columnIndex == 0)
+			if (columnIndex == 0) {
 				return getImage(element);
+			}
 			return null;
 		}
 
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
-			if (columnIndex == 1 || element instanceof IntroTheme || element instanceof RootPage)
+			if (columnIndex == 1 || element instanceof IntroTheme || element instanceof RootPage) {
 				return getText(element);
+			}
 			return null;
 		}
 	}
@@ -580,8 +588,9 @@ public class CustomizationContentsArea {
 	}
 
 	private void updatePageContainer(String pageId, PageData pd) {
-		if (pageId == null)
+		if (pageId == null) {
 			return;
+		}
 		refreshQuadrant(topLeft, pd, IUniversalIntroConstants.DIV_LAYOUT_TOP_LEFT);
 		refreshQuadrant(topRight, pd, IUniversalIntroConstants.DIV_LAYOUT_TOP_RIGHT);
 		refreshQuadrant(bottomLeft, pd, IUniversalIntroConstants.DIV_LAYOUT_BOTTOM_LEFT);
@@ -592,20 +601,23 @@ public class CustomizationContentsArea {
 	private void refreshQuadrant(TableViewer viewer, PageData pd, String quadrant) {
 		GroupData gd = pd!=null?pd.findGroup(quadrant):null;
 		viewer.setInput(gd);
-		if (gd!=null)
+		if (gd!=null) {
 			updateColumnSizes(viewer);
+		}
 	}
 
 	private void onTabChange(CTabItem item) {
 		String id = (String) item.getData();
-		if (item.getControl() == pageContainer)
+		if (item.getControl() == pageContainer) {
 			updatePageContainer(id, (PageData) item.getData("pageData")); //$NON-NLS-1$
+		}
 	}
 
 	private void loadData(boolean fromDefault) {
 		IProduct product = Platform.getProduct();
-		if (product == null)
+		if (product == null) {
 			return;
+		}
 		String pid = product.getId();
 		introRootPages.clear();
 		// 1. Root pages
@@ -625,14 +637,17 @@ public class CustomizationContentsArea {
 		useRelativeFonts.setSelection(FontSelection.FONT_RELATIVE.equals(fontStyle));
 		// 3. Active theme
 		String value = getIntroPreference(INTRO_THEME, fromDefault, pid, IntroPlugin.PLUGIN_ID);
-		if (value.length() > 0)
+		if (value.length() > 0) {
 			introThemeId = value;
+		}
 		// 4. Intro data
 		value = getIntroPreference(INTRO_DATA, fromDefault, pid, UniversalIntroPlugin.PLUGIN_ID);
-		if (value.length() == 0)
+		if (value.length() == 0) {
 			value = null;
-		if (value != null && value.startsWith("product:")) //$NON-NLS-1$
+		}
+		if (value != null && value.startsWith("product:")) { //$NON-NLS-1$
 			value = value.substring(8);
+		}
 		value = BundleUtil.getResolvedResourceLocation(value, product.getDefiningBundle());
 		introData = new IntroData(pid, value, true);
 		introData.addImplicitContent();
@@ -697,8 +712,9 @@ public class CustomizationContentsArea {
 		ArrayList<RootPage> selected = new ArrayList<>();
 		for (RootPage element : ROOT_PAGE_TABLE) {
 			String id = element.id;
-			if (introRootPages.contains(id))
+			if (introRootPages.contains(id)) {
 				selected.add(element);
+			}
 		}
 		rootPages.setCheckedElements(selected.toArray());
 	}
@@ -711,8 +727,9 @@ public class CustomizationContentsArea {
 
 	private void updateThemePreview() {
 		themes.setInput(themes);
-		if (introTheme != null)
+		if (introTheme != null) {
 			themes.setSelection(new StructuredSelection(introTheme), true);
+		}
 		themePreview.redraw();
 	}
 
@@ -742,8 +759,9 @@ public class CustomizationContentsArea {
 				url.append("http://org.eclipse.ui.intro/showPage?id="); //$NON-NLS-1$
 				url.append(currentPageId);
 				IIntroURL introURL = IntroURLFactory.createIntroURL(url.toString());
-				if (introURL != null)
+				if (introURL != null) {
 					introURL.execute();
+				}
 			}
 		}
 	}
@@ -753,8 +771,9 @@ public class CustomizationContentsArea {
 		// Dispose all the root page tabs
 		CTabItem[] items = tabFolder.getItems();
 		for (CTabItem item : items) {
-			if (item.getData("pageData") != null) //$NON-NLS-1$
+			if (item.getData("pageData") != null) { //$NON-NLS-1$
 				item.dispose();
+			}
 		}
 		// Add them back in based on the checked state
 		addRootPages();
@@ -770,8 +789,9 @@ public class CustomizationContentsArea {
 		IEclipsePreferences uprefs = InstanceScope.INSTANCE.getNode(UniversalIntroPlugin.PLUGIN_ID);
 		boolean toAll = applyToAll.getSelection();
 		IProduct product = Platform.getProduct();
-		if (product == null)
+		if (product == null) {
 			return;
+		}
 		String pid = product.getId();
 		StringBuilder sbuf = new StringBuilder();
 		if (introRootPages.isEmpty()) {
@@ -780,8 +800,9 @@ public class CustomizationContentsArea {
 			sbuf.append(NO_ROOT_PAGES);
 		}
 		for (int i = 0; i < introRootPages.size(); i++) {
-			if (i > 0)
+			if (i > 0) {
 				sbuf.append(","); //$NON-NLS-1$
+			}
 			sbuf.append(introRootPages.get(i));
 		}
 		String key = pid + "_" + INTRO_ROOT_PAGES; //$NON-NLS-1$
@@ -873,11 +894,13 @@ public class CustomizationContentsArea {
 		gd.heightHint = 120+20;
 		themePreview.setLayoutData(gd);
 		themePreview.addPaintListener(e -> {
-			if (introTheme == null)
+			if (introTheme == null) {
 				return;
+			}
 			Image bgImage = introTheme.getPreviewImage();
-			if (bgImage == null)
+			if (bgImage == null) {
 				return;
+			}
 			//Rectangle carea = themePreview.getClientArea();
 			Rectangle ibounds = bgImage.getBounds();
 			e.gc.drawImage(bgImage, 0, 0, ibounds.width, ibounds.height, 10, 10, 160, 120);
@@ -896,8 +919,7 @@ public class CustomizationContentsArea {
 				@Override
 				public boolean select(Viewer viewer, Object parentElement,
 						Object element) {
-					if (element instanceof RootPage) {
-						RootPage rootPageElement = (RootPage) element;
+					if (element instanceof RootPage rootPageElement) {
 						String rootPageId = rootPageElement.getId();
 						return (introData.getPage(rootPageId) != null);
 					}
@@ -927,8 +949,9 @@ public class CustomizationContentsArea {
 	}
 
 	private void addPage(String id) {
-		if (!getRootPageSelected(id))
+		if (!getRootPageSelected(id)) {
 			return;
+		}
 		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
 		item.setText(getRootPageName(id));
 		item.setControl(pageContainer);
@@ -941,8 +964,9 @@ public class CustomizationContentsArea {
 		CTabItem[] items = tabFolder.getItems();
 		if (checked) {
 			for (CTabItem item : items) {
-				if (item.getData() != null)
+				if (item.getData() != null) {
 					item.dispose();
+				}
 			}
 			introRootPages.add(id);
 			addRootPages();
@@ -960,16 +984,18 @@ public class CustomizationContentsArea {
 
 	private String getRootPageName(String id) {
 		for (RootPage element : ROOT_PAGE_TABLE) {
-			if (element.id.equals(id))
+			if (element.id.equals(id)) {
 				return element.getName();
+			}
 		}
 		return "?"; //$NON-NLS-1$
 	}
 
 	private boolean getRootPageSelected(String id) {
 		for (String cid : introRootPages) {
-			if (cid.equals(id))
+			if (cid.equals(id)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -1014,10 +1040,10 @@ public class CustomizationContentsArea {
 
 			@Override
 			public Object getValue(Object element, String property) {
-				if (element instanceof ExtensionData) {
-					ExtensionData ed = (ExtensionData) element;
-					if (property.equals(IUniversalIntroConstants.P_IMPORTANCE))
+				if (element instanceof ExtensionData ed) {
+					if (property.equals(IUniversalIntroConstants.P_IMPORTANCE)) {
 						return Integer.valueOf(ed.getImportance());
+					}
 				}
 				return null;
 			}
@@ -1089,9 +1115,9 @@ public class CustomizationContentsArea {
 			boolean addDeleteSeparator=false;
 
 			for (Object obj : ssel) {
-				if (obj instanceof SeparatorData)
+				if (obj instanceof SeparatorData) {
 					addDeleteSeparator=true;
-				else {
+				} else {
 					addDeleteSeparator=false;
 					break;
 				}
@@ -1110,8 +1136,9 @@ public class CustomizationContentsArea {
 
 	private void addMoveToAction(MenuManager menu, final TableViewer target, final TableViewer source,
 			String name) {
-		if (source == target)
+		if (source == target) {
 			return;
+		}
 		Action action = new Action(name) {
 
 			@Override
@@ -1125,10 +1152,11 @@ public class CustomizationContentsArea {
 	private void doMove(Viewer viewer, boolean up) {
 		Object obj = ((StructuredSelection) viewer.getSelection()).getFirstElement();
 		GroupData gd = (GroupData) viewer.getInput();
-		if (up)
+		if (up) {
 			gd.moveUp((BaseData) obj);
-		else
+		} else {
 			gd.moveDown((BaseData) obj);
+		}
 		viewer.refresh();
 	}
 
@@ -1168,10 +1196,11 @@ public class CustomizationContentsArea {
 		}
 		source.refresh();
 		updateColumnSizes(source);
-		if (target.getInput() != null)
+		if (target.getInput() != null) {
 			target.refresh();
-		else
+		} else {
 			target.setInput(targetGd);
+		}
 		updateColumnSizes(target);
 	}
 
@@ -1182,18 +1211,19 @@ public class CustomizationContentsArea {
 
 	private GroupData createTargetGd(Viewer target) {
 		GroupData targetGd = null;
-		if (target == topLeft)
+		if (target == topLeft) {
 			targetGd = new GroupData(PageData.P_TOP_LEFT, false);
-		else if (target == topRight)
+		} else if (target == topRight) {
 			targetGd = new GroupData(PageData.P_TOP_RIGHT, false);
-		else if (target == bottomLeft)
+		} else if (target == bottomLeft) {
 			targetGd = new GroupData(PageData.P_BOTTOM_LEFT, false);
-		else if (target == bottomRight)
+		} else if (target == bottomRight) {
 			targetGd = new GroupData(PageData.P_BOTTOM_RIGHT, false);
-		else if (target == available)
+		} else if (target == available) {
 			targetGd = new GroupData(IUniversalIntroConstants.HIDDEN, false);
-		else
+		} else {
 			return null;
+		}
 		CTabItem item = tabFolder.getSelection();
 		PageData pd = (PageData) item.getData("pageData"); //$NON-NLS-1$
 		if (pd == null) {
@@ -1207,8 +1237,9 @@ public class CustomizationContentsArea {
 	}
 
 	private void selectFirstPage() {
-		if (firstPageId == null)
+		if (firstPageId == null) {
 			return;
+		}
 		CTabItem[] items = tabFolder.getItems();
 		for (int i = 0; i < items.length; i++) {
 			CTabItem item = items[i];

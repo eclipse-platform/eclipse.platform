@@ -59,8 +59,7 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 				byte[] buffer = bd.getId().getBytes();
 				writeOut.writeInt(bd.getId().length());
 				writeOut.write(buffer);
-				if (bd instanceof ExtensionData) {
-					ExtensionData ed = (ExtensionData)bd;
+				if (bd instanceof ExtensionData ed) {
 					writeOut.writeInt(ed.getName().length());
 					buffer = ed.getName().getBytes();
 					writeOut.write(buffer);
@@ -77,8 +76,9 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 	public Object nativeToJava(TransferData transferData) {
 		if (isSupportedType(transferData)) {
 			byte[] buffer = (byte[]) super.nativeToJava(transferData);
-			if (buffer == null)
+			if (buffer == null) {
 				return null;
+			}
 
 			BaseData[] myData = new BaseData[0];
 			ByteArrayInputStream in = new ByteArrayInputStream(buffer);
@@ -103,10 +103,11 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 
 					BaseData[] newMyData = new BaseData[myData.length + 1];
 					System.arraycopy(myData, 0, newMyData, 0, myData.length);
-					if (separator)
+					if (separator) {
 						newMyData[myData.length] = new SeparatorData(id);
-					else
+					} else {
 						newMyData[myData.length] = new ExtensionData(id, name, importance);
+					}
 					myData = newMyData;
 				}
 			} catch (IOException ex) {
@@ -120,13 +121,13 @@ public class ExtensionDataTransfer extends ByteArrayTransfer {
 
 
 	boolean checkMyType(Object object) {
-		if (object == null || !(object instanceof BaseData[]) || ((BaseData[]) object).length == 0) {
+		if (object == null || !(object instanceof BaseData[] myTypes) || myTypes.length == 0) {
 			return false;
 		}
-		BaseData[] myTypes = (BaseData[]) object;
 		for (BaseData myType : myTypes) {
-			if (myType == null || myType.getId() == null || myType instanceof ExtensionData && ((ExtensionData)myType).getName() == null)
+			if (myType == null || myType.getId() == null || myType instanceof ExtensionData && ((ExtensionData)myType).getName() == null) {
 				return false;
+			}
 		}
 		return true;
 	}

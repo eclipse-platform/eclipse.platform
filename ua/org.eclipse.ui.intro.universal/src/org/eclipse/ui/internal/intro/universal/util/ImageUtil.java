@@ -158,9 +158,10 @@ public final class ImageUtil {
 	public static void registerImage(String key, String imageName) {
 		ImageRegistry registry = UniversalIntroPlugin.getDefault()
 				.getVolatileImageRegistry();
-		if (registry.getDescriptor(key) != null)
+		if (registry.getDescriptor(key) != null) {
 			// key has already been registered. do nothing.
 			return;
+		}
 		registry.put(key, createImageDescriptor(imageName));
 	}
 
@@ -168,18 +169,20 @@ public final class ImageUtil {
 
 		ImageRegistry registry = UniversalIntroPlugin.getDefault()
 				.getVolatileImageRegistry();
-		if (registry.getDescriptor(key) != null)
+		if (registry.getDescriptor(key) != null) {
 			// key has already been registered. do nothing.
 			return;
+		}
 		registry.put(key, createImageDescriptor(bundle, imageName));
 	}
 
 	public static void registerImage(String key, IPath base, String imageName) {
 		ImageRegistry registry = UniversalIntroPlugin.getDefault()
 				.getVolatileImageRegistry();
-		if (registry.getDescriptor(key) != null)
+		if (registry.getDescriptor(key) != null) {
 			// key has already been registered. do nothing.
 			return;
+		}
 		registry.put(key, createImageDescriptor(base, imageName));
 	}
 

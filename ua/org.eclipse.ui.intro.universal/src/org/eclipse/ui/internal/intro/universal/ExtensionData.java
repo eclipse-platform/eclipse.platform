@@ -131,10 +131,11 @@ public class ExtensionData extends BaseData {
 	public void write(PrintWriter writer, String indent) {
 		writer.print(indent);
 		writer.print("<extension id=\"" + id + "\""); //$NON-NLS-1$ //$NON-NLS-2$
-		if (!isHidden())
+		if (!isHidden()) {
 			writer
 					.println(" importance=\"" + getImportanceAttributeValue() + "\"/>"); //$NON-NLS-1$ //$NON-NLS-2$
-		else
+		} else {
 			writer.println("/>"); //$NON-NLS-1$
+		}
 	}
 }
