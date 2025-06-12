@@ -73,18 +73,21 @@ public class ApiDocTest {
 		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 			switch (state) {
 			case 0:
-				if ("element".equalsIgnoreCase(qName) && "extension".equals(attributes.getValue("name")))
+				if ("element".equalsIgnoreCase(qName) && "extension".equals(attributes.getValue("name"))) {
 					state = 1;
+				}
 				break;
 
 			case 1:
-				if ("annotation".equalsIgnoreCase(qName))
+				if ("annotation".equalsIgnoreCase(qName)) {
 					state = 2;
+				}
 				break;
 
 			case 2:
-				if ("appInfo".equalsIgnoreCase(qName))
+				if ("appInfo".equalsIgnoreCase(qName)) {
 					state = 3;
+				}
 				break;
 
 			case 3:

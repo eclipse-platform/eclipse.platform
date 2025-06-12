@@ -78,7 +78,9 @@ public class LoadTocAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	public static void showErrors() {
-		if (errors == null) return;
+		if (errors == null) {
+			return;
+		}
 		if (errors.isEmpty()) {
 			reportStatus("Testing complete, no errors found");
 		} else {
@@ -218,7 +220,9 @@ public class LoadTocAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	private boolean isFiltered(String href) {
-		if (!href.startsWith("/")) return true;
+		if (!href.startsWith("/")) {
+			return true;
+		}
 		//if (href.startsWith("/org.eclipse.pde.doc.user/reference")) return true;
 		//if (href.startsWith("/org.eclipse.platform.doc.isv/reference")) return true;
 		//if (href.startsWith("/org.eclipse.platform.doc.isv/samples")) return true;
