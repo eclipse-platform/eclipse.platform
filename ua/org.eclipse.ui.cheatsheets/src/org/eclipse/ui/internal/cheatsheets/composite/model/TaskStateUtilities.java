@@ -81,11 +81,21 @@ public class TaskStateUtilities {
 	 * and it has no skipped ot completed ancestors.
 	 */
 	public static boolean isSkipEnabled(ICompositeCheatSheetTask task) {
-		if (!task.isSkippable()) return false;
-		if (task.getState() == ICompositeCheatSheetTask.COMPLETED) return false;
-		if (task.getState() == ICompositeCheatSheetTask.SKIPPED) return false;
-		if (findCompletedAncestor(task) != null) return false;
-		if (findSkippedAncestor(task) != null) return false;
+		if (!task.isSkippable()) {
+			return false;
+		}
+		if (task.getState() == ICompositeCheatSheetTask.COMPLETED) {
+			return false;
+		}
+		if (task.getState() == ICompositeCheatSheetTask.SKIPPED) {
+			return false;
+		}
+		if (findCompletedAncestor(task) != null) {
+			return false;
+		}
+		if (findSkippedAncestor(task) != null) {
+			return false;
+		}
 		return true;
 	}
 
@@ -95,7 +105,9 @@ public class TaskStateUtilities {
 	 * are not completed can be started
 	 */
 	public static boolean isStartEnabled(ICompositeCheatSheetTask task) {
-		if (!(task instanceof IEditableTask)) return false;
+		if (!(task instanceof IEditableTask)) {
+			return false;
+		}
 		return isStartable(task);
 	}
 
@@ -112,11 +124,21 @@ public class TaskStateUtilities {
 	 * that would prevent it or its children from being started.
 	 */
 	private static boolean isStartable(ICompositeCheatSheetTask task) {
-		if (task.getState() != ICompositeCheatSheetTask.NOT_STARTED) return false;
-		if (findSkippedAncestor(task) != null) return false;
-		if (findCompletedAncestor(task) != null) return false;
-		if (!task.requiredTasksCompleted()) return false;
-		if (findBlockedAncestor(task) != null) return false;
+		if (task.getState() != ICompositeCheatSheetTask.NOT_STARTED) {
+			return false;
+		}
+		if (findSkippedAncestor(task) != null) {
+			return false;
+		}
+		if (findCompletedAncestor(task) != null) {
+			return false;
+		}
+		if (!task.requiredTasksCompleted()) {
+			return false;
+		}
+		if (findBlockedAncestor(task) != null) {
+			return false;
+		}
 		return true;
 	}
 

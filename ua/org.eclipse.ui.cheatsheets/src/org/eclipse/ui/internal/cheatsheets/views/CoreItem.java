@@ -318,8 +318,9 @@ public class CoreItem extends ViewItem {
 			handleSubButtons();
 		}
 
-		if (buttonsHandled)
+		if (buttonsHandled) {
 			return;
+		}
 
 		createButtonComposite();
 		createButtons(item.getExecutable());
@@ -355,10 +356,9 @@ public class CoreItem extends ViewItem {
 		int i=0;
 		for (Iterator<AbstractSubItem> iter = item.getSubItems().iterator(); iter.hasNext(); i++) {
 			AbstractSubItem subItem = iter.next();
-			if( subItem instanceof RepeatedSubItem ) {
+			if( subItem instanceof RepeatedSubItem repeatedSubItem ) {
 
 				//Get the sub item to add.
-				RepeatedSubItem repeatedSubItem = (RepeatedSubItem)subItem;
 				String values = repeatedSubItem.getValues();
 				values = viewer.getManager().getVariableData(values);
 				if(values == null || values.length() <= 0 || (values.startsWith("${") && values.endsWith("}"))) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -382,10 +382,8 @@ public class CoreItem extends ViewItem {
 
 				// Decrement the counter by because the outer loop increments it prior to the next iteration
 				i--;
-			} else if( subItem instanceof ConditionalSubItem ) {
+			} else if( subItem instanceof ConditionalSubItem sub ) {
 				//Get the sub item to add.
-				ConditionalSubItem sub = (ConditionalSubItem)subItem;
-
 				sub.setSelectedSubItem(viewer.getManager());
 				SubItem selectedSubItem = sub.getSelectedSubItem();
 
@@ -439,8 +437,9 @@ public class CoreItem extends ViewItem {
 	}
 
 	private void handleSubButtons() {
-		if (buttonsHandled)
+		if (buttonsHandled) {
 			return;
+		}
 		//Instantiate the list to store the sub item composites.
 		listOfSubItemCompositeHolders = new ArrayList<>(20);
 
@@ -553,8 +552,9 @@ public class CoreItem extends ViewItem {
 		if(l != null){
 			for(int j=0; j<l.size(); j++){
 				SubItemCompositeHolder s = l.get(j);
-				if(s.isCompleted() || s.isSkipped())
+				if(s.isCompleted() || s.isSkipped()) {
 					s.getCheckDoneLabel().setVisible(false); //setImage(null);
+				}
 				if(s.getStartButton() != null) {
 					s.getStartButton().setImage(CheatSheetPlugin.getPlugin().getImage(ICheatSheetResource.CHEATSHEET_ITEM_BUTTON_START));
 					s.getStartButton().setToolTipText(Messages.PERFORM_TASK_TOOLTIP);

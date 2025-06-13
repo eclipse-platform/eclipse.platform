@@ -121,8 +121,9 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	 * Logs an Error message with an exception.
 	 */
 	public static synchronized void logError(String message, Throwable ex) {
-		if (message == null)
+		if (message == null) {
 			message = ""; //$NON-NLS-1$
+		}
 		CheatSheetPlugin.getPlugin().getLog().error(message, ex);
 	}
 

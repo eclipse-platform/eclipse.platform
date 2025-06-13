@@ -30,8 +30,9 @@ public class OverlayIcon extends AbstractOverlayIcon {
 			Point size) {
 		super(overlays, size);
 		fBase = base;
-		if (fBase == null)
+		if (fBase == null) {
 			fBase = ImageDescriptor.getMissingImageDescriptor();
+		}
 	}
 
 	@Override

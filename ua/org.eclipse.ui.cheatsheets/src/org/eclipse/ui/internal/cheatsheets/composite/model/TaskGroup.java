@@ -56,7 +56,9 @@ public class TaskGroup extends AbstractTask implements ITaskGroup {
 
 	@Override
 	public ICompositeCheatSheetTask[] getSubtasks() {
-		if (subtasks==null) return EMPTY;
+		if (subtasks==null) {
+			return EMPTY;
+		}
 		return subtasks.toArray(new ICompositeCheatSheetTask[subtasks.size()]);
 	}
 

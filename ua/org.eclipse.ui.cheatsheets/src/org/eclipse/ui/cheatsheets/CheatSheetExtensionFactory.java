@@ -54,8 +54,9 @@ public class CheatSheetExtensionFactory implements IExecutableExtensionFactory,
 
 	@Override
 	public Object create() throws CoreException {
-		if (HELP_MENU_ACTION.equals(id))
+		if (HELP_MENU_ACTION.equals(id)) {
 			return configure(new CheatSheetHelpMenuAction());
+		}
 		throw new CoreException(new Status(IStatus.ERROR,
 				"org.eclipse.ui.cheatsheets", //$NON-NLS-1$
 				0, "Unknown id in data argument for " + getClass(), null)); //$NON-NLS-1$
@@ -64,12 +65,13 @@ public class CheatSheetExtensionFactory implements IExecutableExtensionFactory,
 	@Override
 	public void setInitializationData(IConfigurationElement config,
 			String propertyName, Object data) throws CoreException {
-		if (data instanceof String)
+		if (data instanceof String) {
 			id = (String) data;
-		else
+		} else {
 			throw new CoreException(new Status(IStatus.ERROR,
 					PlatformUI.PLUGIN_ID, 0,
 					"Data argument must be a String for " + getClass(), null)); //$NON-NLS-1$
+		}
 		this.config = config;
 		this.propertyName = propertyName;
 	}

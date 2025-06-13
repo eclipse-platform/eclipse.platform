@@ -82,8 +82,7 @@ public class TreeLabelProvider extends LabelProvider {
 
 	@Override
 	public Image getImage(Object obj) {
-		if (obj instanceof ICompositeCheatSheetTask) {
-			ICompositeCheatSheetTask task = (ICompositeCheatSheetTask) obj;
+		if (obj instanceof ICompositeCheatSheetTask task) {
 			return lookupImage(task.getKind(), task.getState(), TaskStateUtilities.isBlocked(task));
 		}
 		return super.getImage(obj);
@@ -170,7 +169,9 @@ public class TreeLabelProvider extends LabelProvider {
 	private ImageDescriptor createImageDescriptor(String relativePath) {
 		Bundle bundle = CheatSheetPlugin.getPlugin().getBundle();
 		URL url = FileLocator.find(bundle, IPath.fromOSString(relativePath), null);
-		if (url == null) return null;
+		if (url == null) {
+			return null;
+		}
 		try {
 			url = FileLocator.resolve(url);
 			return ImageDescriptor.createFromURL(url);
