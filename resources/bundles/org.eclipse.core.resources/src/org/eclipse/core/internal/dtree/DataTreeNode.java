@@ -55,8 +55,9 @@ public class DataTreeNode extends AbstractDataTreeNode {
 	 */
 	@Override
 	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, IPath key) {
-		if (parentTree.includes(key))
+		if (parentTree.includes(key)) {
 			return parentTree.copyCompleteSubtree(key);
+		}
 		return new DeletedNode(name);
 	}
 
@@ -116,8 +117,9 @@ public class DataTreeNode extends AbstractDataTreeNode {
 
 	@Override
 	AbstractDataTreeNode compareWithParent(IPath key, DeltaDataTree parent, IComparator comparator) {
-		if (!parent.includes(key))
+		if (!parent.includes(key)) {
 			return convertToAddedComparisonNode(this, NodeComparison.K_ADDED);
+		}
 		DataTreeNode inParent = (DataTreeNode) parent.copyCompleteSubtree(key);
 		return inParent.compareWith(this, comparator);
 	}
@@ -218,47 +220,52 @@ public class DataTreeNode extends AbstractDataTreeNode {
 				AbstractDataTreeNode deltaNode = forwardDeltaWithOrNullIfEqual(oldNodes[oldIndex++], newNodes[newIndex++], comparer);
 				if (deltaNode != null) {
 					if (numChildDeltas >= childDeltaMax) {
-						if (childDeltas == null)
+						if (childDeltas == null) {
 							childDeltas = new AbstractDataTreeNode[childDeltaMax = 5];
-						else
+						} else {
 							System.arraycopy(childDeltas, 0, childDeltas = new AbstractDataTreeNode[childDeltaMax = childDeltaMax * 2 + 1], 0, numChildDeltas);
+						}
 					}
 					childDeltas[numChildDeltas++] = deltaNode;
 				}
 			} else if (compare < 0) {
 				if (numChildDeltas >= childDeltaMax) {
-					if (childDeltas == null)
+					if (childDeltas == null) {
 						childDeltas = new AbstractDataTreeNode[childDeltaMax = 5];
-					else
+					} else {
 						System.arraycopy(childDeltas, 0, childDeltas = new AbstractDataTreeNode[childDeltaMax = childDeltaMax * 2 + 1], 0, numChildDeltas);
+					}
 				}
 				childDeltas[numChildDeltas++] = new DeletedNode(oldName);
 				oldIndex++;
 			} else {
 				if (numChildDeltas >= childDeltaMax) {
-					if (childDeltas == null)
+					if (childDeltas == null) {
 						childDeltas = new AbstractDataTreeNode[childDeltaMax = 5];
-					else
+					} else {
 						System.arraycopy(childDeltas, 0, childDeltas = new AbstractDataTreeNode[childDeltaMax = childDeltaMax * 2 + 1], 0, numChildDeltas);
+					}
 				}
 				childDeltas[numChildDeltas++] = newNodes[newIndex++];
 			}
 		}
 		while (oldIndex < oldNodes.length) {
 			if (numChildDeltas >= childDeltaMax) {
-				if (childDeltas == null)
+				if (childDeltas == null) {
 					childDeltas = new AbstractDataTreeNode[childDeltaMax = 5];
-				else
+				} else {
 					System.arraycopy(childDeltas, 0, childDeltas = new AbstractDataTreeNode[childDeltaMax = childDeltaMax * 2 + 1], 0, numChildDeltas);
+				}
 			}
 			childDeltas[numChildDeltas++] = new DeletedNode(oldNodes[oldIndex++].name);
 		}
 		while (newIndex < newNodes.length) {
 			if (numChildDeltas >= childDeltaMax) {
-				if (childDeltas == null)
+				if (childDeltas == null) {
 					childDeltas = new AbstractDataTreeNode[childDeltaMax = 5];
-				else
+				} else {
 					System.arraycopy(childDeltas, 0, childDeltas = new AbstractDataTreeNode[childDeltaMax = childDeltaMax * 2 + 1], 0, numChildDeltas);
+				}
 			}
 			childDeltas[numChildDeltas++] = newNodes[newIndex++];
 		}
@@ -346,8 +353,9 @@ public class DataTreeNode extends AbstractDataTreeNode {
 		super.storeStrings(set);
 		//copy data for thread safety
 		Object o = data;
-		if (o instanceof IStringPoolParticipant)
+		if (o instanceof IStringPoolParticipant) {
 			((IStringPoolParticipant) o).shareStrings(set);
+		}
 	}
 
 	@Override

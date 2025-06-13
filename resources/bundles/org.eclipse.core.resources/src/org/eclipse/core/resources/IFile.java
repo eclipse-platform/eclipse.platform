@@ -941,7 +941,6 @@ public interface IFile extends IResource, IEncodedStorage, IAdaptable {
 	 * @see IResource#isReadOnly()
 	 * @see IStorage#isReadOnly()
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	boolean isReadOnly();
 

@@ -231,8 +231,9 @@ public abstract class InternalBuilder {
 	final void setBuildConfig(IBuildConfiguration value) {
 		Assert.isNotNull(value);
 		buildConfiguration = value;
-		if (context == null)
+		if (context == null) {
 			context = new BuildContext(buildConfiguration);
+		}
 	}
 
 	/**
