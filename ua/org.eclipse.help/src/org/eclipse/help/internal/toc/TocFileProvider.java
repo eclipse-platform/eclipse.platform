@@ -52,8 +52,7 @@ public class TocFileProvider extends AbstractTocProvider {
 			}
 			catch (Throwable t) {
 				String locationInfo = ""; //$NON-NLS-1$
-				if (t instanceof SAXParseException) {
-					SAXParseException spe = (SAXParseException) t;
+				if (t instanceof SAXParseException spe) {
 					locationInfo = " at line " + spe.getLineNumber()  //$NON-NLS-1$
 								 + ", column " + spe.getColumnNumber(); //$NON-NLS-1$
 				}

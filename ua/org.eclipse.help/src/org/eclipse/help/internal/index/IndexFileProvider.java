@@ -57,8 +57,9 @@ public class IndexFileProvider extends AbstractIndexProvider {
 
 				// Use the contained exception.
 				Exception x = spe;
-				if (spe.getException() != null)
+				if (spe.getException() != null) {
 					x = spe.getException();
+				}
 				ILog.of(getClass()).error(buffer.toString(), x);
 
 			}

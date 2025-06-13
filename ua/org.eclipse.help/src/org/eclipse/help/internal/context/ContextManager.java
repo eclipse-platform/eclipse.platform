@@ -45,8 +45,9 @@ public class ContextManager {
 
 	public ContextManager()
 	{
-		if (HelpPlugin.DEBUG_CONTEXT)
+		if (HelpPlugin.DEBUG_CONTEXT) {
 			checkContextProviders();
+		}
 	}
 
 	/*
@@ -88,8 +89,9 @@ public class ContextManager {
 
 			String id = contextId;
 			ArrayList<String> potentialMatches = new ArrayList<>();
-			if ((index = contextId.lastIndexOf('.'))>-1)
+			if ((index = contextId.lastIndexOf('.'))>-1) {
 				id = contextId.substring(index+1);
+			}
 
 			String warning = "Registered Context Provider IDs:\n"; //$NON-NLS-1$
 			Iterator<String> iter = contextIDsByPluginId.keySet().iterator();
@@ -109,8 +111,9 @@ public class ContextManager {
 			warning+="--------------------------------"; //$NON-NLS-1$
 			System.out.println(warning);
 
-			if (!potentialMatches.isEmpty())
+			if (!potentialMatches.isEmpty()) {
 				System.out.println("The ID searched is "+contextId+".  Did you mean to call setHelp with:\n"+potentialMatches); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		}
 
 		return null;

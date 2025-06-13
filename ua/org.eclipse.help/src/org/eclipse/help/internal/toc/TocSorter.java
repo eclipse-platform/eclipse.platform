@@ -73,8 +73,7 @@ public class TocSorter {
 			String key = iter.next();
 			Object value = categorized.get(key);
 			ITocContribution toc;
-			if (value instanceof TocCategory) {
-				TocCategory category = (TocCategory)value;
+			if (value instanceof TocCategory category) {
 				toc = category.get(0);
 			} else {
 				toc = (ITocContribution)value;
