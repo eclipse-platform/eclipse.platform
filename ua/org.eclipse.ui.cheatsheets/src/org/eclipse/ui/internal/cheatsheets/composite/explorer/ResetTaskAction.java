@@ -44,7 +44,9 @@ public class ResetTaskAction extends Action {
 	@Override
 	public void run() {
 		AbstractTask[] restartTasks = TaskStateUtilities.getRestartTasks(task);
-		if (restartTasks.length == 0) return;
+		if (restartTasks.length == 0) {
+			return;
+		}
 		TreeLabelProvider labelProvider = new TreeLabelProvider();
 		ConfirmRestartDialog dlg = new ConfirmRestartDialog(
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), restartTasks, labelProvider);

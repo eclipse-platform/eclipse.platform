@@ -61,8 +61,9 @@ public class CheatSheetHistory {
 		for (int i = 0; i < children.length && i < DEFAULT_DEPTH; i++) {
 			CheatSheetElement element =
 				reg.findCheatSheet(children[i].getID());
-			if (element != null)
+			if (element != null) {
 				history.add(element);
+			}
 		}
 		return new Status(IStatus.OK,ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID,0,ICheatSheetResource.EMPTY_STRING,null);
 	}
@@ -80,14 +81,16 @@ public class CheatSheetHistory {
 
 	public void add(String id) {
 		CheatSheetElement element = reg.findCheatSheet(id);
-		if (element != null)
+		if (element != null) {
 			add(element);
+		}
 	}
 
 	public void add(CheatSheetElement element) {
 		// Avoid duplicates
-		if (history.contains(element))
+		if (history.contains(element)) {
 			return;
+		}
 
 		// If the shortcut list will be too long, remove oldest ones
 		int size = history.size();
@@ -114,8 +117,9 @@ public class CheatSheetHistory {
 			}
 		}
 
-		if (change)
+		if (change) {
 			fireChange();
+		}
 	}
 
 	/**
@@ -129,11 +133,13 @@ public class CheatSheetHistory {
 	 */
 	public int copyItems(List<CheatSheetElement> dest, int destStart, int count) {
 		int itemCount = count;
-		if (itemCount > history.size())
+		if (itemCount > history.size()) {
 			itemCount = history.size();
+		}
 
-		for (int i = 0; i < itemCount; i++)
+		for (int i = 0; i < itemCount; i++) {
 			dest.add(destStart + i, history.get(i));
+		}
 
 		return itemCount;
 	}

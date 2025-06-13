@@ -109,21 +109,27 @@ public abstract class AbstractTask implements ICompositeCheatSheetTask {
 
 	@Override
 	public ICompositeCheatSheetTask[] getRequiredTasks() {
-		if (requiredTasks==null) return EMPTY;
+		if (requiredTasks==null) {
+			return EMPTY;
+		}
 		return requiredTasks.toArray(new ICompositeCheatSheetTask[requiredTasks.size()]);
 	}
 
 	public ICompositeCheatSheetTask[] getSuccessorTasks() {
-		if (successorTasks==null) return EMPTY;
+		if (successorTasks==null) {
+			return EMPTY;
+		}
 		return successorTasks.toArray(new ICompositeCheatSheetTask[successorTasks.size()]);
 	}
 
 	public void addRequiredTask(AbstractTask task) {
-		if (requiredTasks==null)
+		if (requiredTasks==null) {
 			requiredTasks = new ArrayList<>();
+		}
 		requiredTasks.add(task);
-		if (task.successorTasks==null)
+		if (task.successorTasks==null) {
 			task.successorTasks = new ArrayList<>();
+		}
 		task.successorTasks.add(this);
 	}
 

@@ -106,8 +106,9 @@ public class CheatSheetPage extends Page implements IMenuContributor {
 
 	@Override
 	protected String getTitle() {
-		if (cheatSheet != null && cheatSheet.getTitle() != null)
+		if (cheatSheet != null && cheatSheet.getTitle() != null) {
 			return cheatSheet.getTitle();
+		}
 		return ICheatSheetResource.EMPTY_STRING;
 	}
 
@@ -167,16 +168,13 @@ public class CheatSheetPage extends Page implements IMenuContributor {
 			rgb = FormColors.blend(rgb, white, 30);
 			// If these values are in the range of 201 to 220, then decrease
 			// white by 20%
-			if (FormColors.testTwoPrimaryColors(rgb, 200, 221))
+			if (FormColors.testTwoPrimaryColors(rgb, 200, 221)) {
 				rgb = FormColors.blend(rgb, black, 80);
-			// If these values are in the range of 221 to 240, then decrease
-			// white by 40%
-			else if (FormColors.testTwoPrimaryColors(rgb, 222, 241))
+			} else if (FormColors.testTwoPrimaryColors(rgb, 222, 241)) {
 				rgb = FormColors.blend(rgb, black, 60);
-			// If these values are in the range of 241 to 255, then decrease
-			// white by 70%
-			else if (FormColors.testTwoPrimaryColors(rgb, 240, 256))
+			} else if (FormColors.testTwoPrimaryColors(rgb, 240, 256)) {
 				rgb = FormColors.blend(rgb, black, 30);
+			}
 			introColor = new Color(display, rgb);
 			inactiveColor2 = new Color(display, rgb);
 		}

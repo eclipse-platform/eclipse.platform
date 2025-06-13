@@ -52,7 +52,9 @@ public class CompositeCheatSheetSaveHelper {
 	}
 
 	public IStatus loadCompositeState(CompositeCheatSheetModel model, Map<String, String> layoutData) {
-		if (stateManager instanceof NoSaveStateManager) return Status.OK_STATUS;
+		if (stateManager instanceof NoSaveStateManager) {
+			return Status.OK_STATUS;
+		}
 		XMLMemento readMemento = CheatSheetPlugin.getPlugin().readMemento(model.getId() + DOT_XML);
 		if (readMemento == null) {
 			return Status.OK_STATUS;
@@ -123,7 +125,9 @@ public class CompositeCheatSheetSaveHelper {
 	 * @param layoutData Will contain pairs of name/value Strings used to save and restore layout
 	 */
 	public IStatus saveCompositeState(CompositeCheatSheetModel model, Map<String, String> layoutData) {
-		if (stateManager instanceof NoSaveStateManager) return Status.OK_STATUS;
+		if (stateManager instanceof NoSaveStateManager) {
+			return Status.OK_STATUS;
+		}
 		XMLMemento writeMemento = XMLMemento.createWriteRoot(ICompositeCheatsheetTags.COMPOSITE_CHEATSHEET_STATE);
 		writeMemento.putString(IParserTags.ID, model.getId());
 		saveTaskState(writeMemento, (AbstractTask)model.getRootTask());

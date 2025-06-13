@@ -42,12 +42,11 @@ public class DialogIntegerValueConverter extends
 	public String convertToString(Object parameterValue)
 			throws ParameterValueConversionException {
 
-		if (!(parameterValue instanceof Integer)) {
+		if (!(parameterValue instanceof Integer i)) {
 			throw new ParameterValueConversionException(
 					"value for conversion must be an Integer"); //$NON-NLS-1$
 		}
 
-		Integer i = (Integer) parameterValue;
 		return Integer.toString(i.intValue());
 	}
 

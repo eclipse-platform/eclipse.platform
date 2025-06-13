@@ -71,8 +71,9 @@ public class CheatSheetSaveHelper {
 		Hashtable<String, String> subskippedTable = new Hashtable<>(10);
 
 		int buttonState = 0;
-		if (buttonIsDown)
+		if (buttonIsDown) {
 			buttonState = 1;
+		}
 
 		props.put(IParserTags.ID, csID);
 		props.put(IParserTags.CURRENT, Integer.toString(currentItemNum));
@@ -82,8 +83,9 @@ public class CheatSheetSaveHelper {
 		ArrayList<String> completedList = new ArrayList<>();
 		ArrayList<String> expandedList = new ArrayList<>();
 
-		if (expandRestoreStates == null)
+		if (expandRestoreStates == null) {
 			expandRestoreStates = new ArrayList<>();
+		}
 
 		// Assemble lists of expanded items and completed items.
 		for (int i = 0; i < items.size(); i++) {
@@ -95,8 +97,7 @@ public class CheatSheetSaveHelper {
 				expandedList.add(Integer.toString(i));
 			}
 
-			if (item instanceof CoreItem) {
-				CoreItem withsubs = (CoreItem) item;
+			if (item instanceof CoreItem withsubs) {
 				ArrayList<SubItemCompositeHolder> compList = withsubs
 						.getListOfSubItemCompositeHolders();
 				if (compList != null) {
@@ -104,22 +105,26 @@ public class CheatSheetSaveHelper {
 					StringBuilder completedsubItems = new StringBuilder();
 					for (int j = 0; j < compList.size(); j++) {
 						SubItemCompositeHolder sch = compList.get(j);
-						if (sch.isCompleted())
+						if (sch.isCompleted()) {
 							completedsubItems.append(Integer.toString(j) + ","); //$NON-NLS-1$
-						if (sch.isSkipped())
+						}
+						if (sch.isSkipped()) {
 							skippedsubItems.append(Integer.toString(j) + ","); //$NON-NLS-1$
+						}
 					}
 					if (completedsubItems.toString().length() > 0) {
 						String csi = completedsubItems.toString();
-						if (csi.endsWith(",")) //$NON-NLS-1$
+						if (csi.endsWith(",")) { //$NON-NLS-1$
 							csi = csi.substring(0, csi.length() - 1);
+						}
 						subcompletedTable.put(Integer.toString(i), csi);
 
 					}
 					if (skippedsubItems.toString().length() > 0) {
 						String csi = skippedsubItems.toString();
-						if (csi.endsWith(",")) //$NON-NLS-1$
+						if (csi.endsWith(",")) { //$NON-NLS-1$
 							csi = csi.substring(0, csi.length() - 1);
+						}
 						subskippedTable.put(Integer.toString(i), csi);
 					}
 				}
@@ -131,10 +136,12 @@ public class CheatSheetSaveHelper {
 		props.put(IParserTags.EXPANDED, expandedList);
 		props.put(IParserTags.EXPANDRESTORE, expandRestoreStates);
 		props.put(IParserTags.BUTTON, Integer.toString(buttonState));
-		if (subcompletedTable != null)
+		if (subcompletedTable != null) {
 			props.put(IParserTags.SUBITEMCOMPLETED, subcompletedTable);
-		if (subskippedTable != null)
+		}
+		if (subskippedTable != null) {
 			props.put(IParserTags.SUBITEMSKIPPED, subskippedTable);
+		}
 
 		return props;
 	}

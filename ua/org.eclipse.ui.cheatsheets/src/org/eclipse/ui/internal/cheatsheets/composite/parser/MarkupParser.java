@@ -40,8 +40,9 @@ public class MarkupParser {
 					for (int x = 0; x < attributes.getLength(); x++) {
 						Node attribute = attributes.item(x);
 						String attributeName = attribute.getNodeName();
-						if (attributeName == null)
+						if (attributeName == null) {
 							continue;
+						}
 						text.append(' ');
 						text.append(attributeName);
 						text.append(" = \""); //$NON-NLS-1$
@@ -61,8 +62,9 @@ public class MarkupParser {
 
 	public static String escapeText(String input) {
 		StringBuilder result = new StringBuilder(input.length() + 10);
-		for (int i = 0; i < input.length(); ++i)
+		for (int i = 0; i < input.length(); ++i) {
 			appendEscapedChar(result, input.charAt(i));
+		}
 		return result.toString();
 	}
 

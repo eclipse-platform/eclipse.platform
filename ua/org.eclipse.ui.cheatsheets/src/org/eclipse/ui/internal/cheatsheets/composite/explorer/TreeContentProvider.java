@@ -27,8 +27,9 @@ class TreeContentProvider implements ITreeContentProvider {
 			final Object[] rootTask = {((ICompositeCheatSheet) parentElement).getRootTask()};
 			return rootTask;
 		}
-		if (parentElement instanceof ITaskGroup)
+		if (parentElement instanceof ITaskGroup) {
 			return ((ITaskGroup) parentElement).getSubtasks();
+		}
 		return new Object[0];
 	}
 
@@ -42,10 +43,12 @@ class TreeContentProvider implements ITreeContentProvider {
 
 	@Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof ICompositeCheatSheet)
+		if (element instanceof ICompositeCheatSheet) {
 			return true;
-		if (element instanceof ITaskGroup)
+		}
+		if (element instanceof ITaskGroup) {
 			return ((ITaskGroup) element).getSubtasks().length > 0;
+		}
 		return false;
 	}
 

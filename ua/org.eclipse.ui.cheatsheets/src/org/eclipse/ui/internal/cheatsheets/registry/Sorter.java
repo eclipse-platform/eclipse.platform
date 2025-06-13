@@ -38,10 +38,12 @@ public abstract class Sorter {
 		Object mid = sortedCollection[(left + right) / 2];
 
 		do {
-			while (compare(sortedCollection[left], mid))
+			while (compare(sortedCollection[left], mid)) {
 				left++;
-			while (compare(mid, sortedCollection[right]))
+			}
+			while (compare(mid, sortedCollection[right])) {
 				right--;
+			}
 			if (left <= right) {
 				Object tmp = sortedCollection[left];
 				sortedCollection[left] = sortedCollection[right];
@@ -52,10 +54,12 @@ public abstract class Sorter {
 		}
 		while (left <= right);
 
-		if (originalLeft < right)
+		if (originalLeft < right) {
 			sortedCollection = quickSort(sortedCollection, originalLeft, right);
-		if (left < originalRight)
+		}
+		if (left < originalRight) {
 			sortedCollection = quickSort(sortedCollection, left, originalRight);
+		}
 
 		return sortedCollection;
 	}
@@ -70,8 +74,9 @@ public abstract class Sorter {
 
 		//copy the array so can return a new sorted collection
 		System.arraycopy(unSortedCollection, 0, sortedCollection, 0, size);
-		if (size > 1)
+		if (size > 1) {
 			quickSort(sortedCollection, 0, size - 1);
+		}
 
 		return sortedCollection;
 	}

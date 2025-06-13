@@ -139,8 +139,9 @@ public abstract class RegistryReader {
 	 */
 	private void readElements(IConfigurationElement[] elements) {
 		for (int i = 0; i < elements.length; i++) {
-			if (!readElement(elements[i]))
+			if (!readElement(elements[i])) {
 				logUnknownElement(elements[i]);
+			}
 		}
 	}
 
@@ -161,8 +162,9 @@ public abstract class RegistryReader {
 		if (point != null) {
 			IExtension[] extensions = point.getExtensions();
 			extensions = orderExtensions(extensions);
-			for (IExtension extension : extensions)
+			for (IExtension extension : extensions) {
 				readExtension(extension);
+			}
 		}
 	}
 }
