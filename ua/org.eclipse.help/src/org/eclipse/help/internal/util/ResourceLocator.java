@@ -81,8 +81,9 @@ public class ResourceLocator {
 			if (producer == null) {
 				try {
 					Object o = config.createExecutableExtension("producer"); //$NON-NLS-1$
-					if (o instanceof IHelpContentProducer)
+					if (o instanceof IHelpContentProducer) {
 						producer = (IHelpContentProducer) o;
+					}
 				} catch (CoreException ce) {
 					ILog.of(getClass())
 							.error("Exception occurred creating help content producer for plug-in " //$NON-NLS-1$
@@ -102,8 +103,7 @@ public class ResourceLocator {
 				// it will be recreated on demand
 				synchronized (contentProducers) {
 					Object obj = contentProducers.get(affectedPlugin);
-					if (obj instanceof ProducerDescriptor) {
-						ProducerDescriptor desc = (ProducerDescriptor) obj;
+					if (obj instanceof ProducerDescriptor desc) {
 						desc.reset();
 					}
 				}
@@ -119,8 +119,9 @@ public class ResourceLocator {
 	private static IHelpContentProducer getContentProducer(String pluginId) {
 		synchronized (contentProducers) {
 			Object obj = getProducerDescriptor(pluginId);
-			if (obj == null || obj == STATIC_DOCS_ONLY)
+			if (obj == null || obj == STATIC_DOCS_ONLY) {
 				return null;
+			}
 			return ((ProducerDescriptor) obj).getProducer();
 		}
 	}
@@ -205,10 +206,10 @@ public class ResourceLocator {
 		// try existing ones
 		for (Iterator<Object> iter = contentProducers.values().iterator(); iter.hasNext();) {
 			Object obj = iter.next();
-			if (obj instanceof ProducerDescriptor) {
-				ProducerDescriptor desc = (ProducerDescriptor) obj;
-				if (desc.matches(refId))
+			if (obj instanceof ProducerDescriptor desc) {
+				if (desc.matches(refId)) {
 					return desc;
+				}
 			}
 		}
 		// not created yet. Find the matching configuration element,
@@ -219,8 +220,9 @@ public class ResourceLocator {
 				String id = elements[i].getDeclaringExtension().getUniqueIdentifier();
 				if (refId.equals(id)) {
 					Object obj = getProducerDescriptor(elements[i].getContributor().getName());
-					if (obj instanceof ProducerDescriptor)
+					if (obj instanceof ProducerDescriptor) {
 						return (ProducerDescriptor)obj;
+					}
 				}
 			}
 		}
@@ -264,8 +266,9 @@ public class ResourceLocator {
 	 */
 	public static InputStream openFromPlugin(String pluginId, String file, String locale) {
 		Bundle bundle = Platform.getBundle(pluginId);
-		if (bundle != null)
+		if (bundle != null) {
 			return openFromPlugin(bundle, file, locale);
+		}
 		return null;
 	}
 
@@ -309,8 +312,9 @@ public class ResourceLocator {
 				cache.put(pluginID + '/' + pathPrefix.get(i) + zip, cached);
 			}
 
-			if (cached == ZIP_NOT_FOUND || cached.toString().startsWith("jar:")) //$NON-NLS-1$
+			if (cached == ZIP_NOT_FOUND || cached.toString().startsWith("jar:")) { //$NON-NLS-1$
 				continue;
+			}
 
 			// cached should be a zip file that is actually on the filesystem
 			// now check if the file is in this zip
@@ -348,12 +352,13 @@ public class ResourceLocator {
 
 		ArrayList<String> pathPrefix = getPathPrefix(locale);
 		URL flatFileURL = find(pluginDesc, IPath.fromOSString(file), pathPrefix);
-		if (flatFileURL != null)
+		if (flatFileURL != null) {
 			try {
 				return flatFileURL.openStream();
 			} catch (IOException e) {
 				return null;
 			}
+		}
 		return null;
 	}
 
@@ -368,8 +373,9 @@ public class ResourceLocator {
 		// try to find the actual file.
 		for (int i = 0; i < pathPrefix.size(); i++) {
 			URL url = FileLocator.find(pluginDesc, IPath.fromOSString(pathPrefix.get(i) + flatFilePath), null);
-			if (url != null)
+			if (url != null) {
 				return url;
+			}
 		}
 		return null;
 	}
@@ -391,20 +397,25 @@ public class ResourceLocator {
 		// now
 		String ws = Platform.getWS();
 		String os = Platform.getOS();
-		if (locale == null)
+		if (locale == null) {
 			locale = Platform.getNL();
+		}
 
-		if (ws != null)
+		if (ws != null) {
 			pathPrefix.add("ws/" + ws + '/'); //$NON-NLS-1$
+		}
 
-		if (os != null && !os.equals("OS_UNKNOWN")) //$NON-NLS-1$
+		if (os != null && !os.equals("OS_UNKNOWN")) { //$NON-NLS-1$
 			pathPrefix.add("os/" + os + '/'); //$NON-NLS-1$
+		}
 
-		if (locale != null && locale.length() >= 5)
+		if (locale != null && locale.length() >= 5) {
 			pathPrefix.add("nl/" + locale.substring(0, 2) + '/' + locale.substring(3, 5) + '/'); //$NON-NLS-1$
+		}
 
-		if (locale != null && locale.length() >= 2)
+		if (locale != null && locale.length() >= 2) {
 			pathPrefix.add("nl/" + locale.substring(0, 2) + '/'); //$NON-NLS-1$
+		}
 
 		// the plugin root
 		pathPrefix.add(""); //$NON-NLS-1$
@@ -432,13 +443,15 @@ public class ResourceLocator {
 	}
 
 	private static void findTopicPaths(Bundle pluginDesc, String directory, String locale, Set<String> paths) {
-		if (directory.endsWith("/")) //$NON-NLS-1$
+		if (directory.endsWith("/")) { //$NON-NLS-1$
 			directory = directory.substring(0, directory.length() - 1);
+		}
 		ArrayList<String> pathPrefix = getPathPrefix(locale);
 		for (int i = 0; i < pathPrefix.size(); i++) {
 			String path = pathPrefix.get(i) + directory;
-			if (path.length() == 0)
+			if (path.length() == 0) {
 				path = "/"; //$NON-NLS-1$
+			}
 			Enumeration<String> entries = pluginDesc.getEntryPaths(path);
 			if (entries != null) {
 				while (entries.hasMoreElements()) {

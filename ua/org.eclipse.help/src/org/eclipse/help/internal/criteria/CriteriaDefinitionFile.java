@@ -44,9 +44,10 @@ public class CriteriaDefinitionFile {
 	}
 
 	public InputStream getInputStream() throws IOException {
-		if (pluginId != null)
+		if (pluginId != null) {
 			return ResourceLocator.openFromPlugin(pluginId, file, locale);
-		else
+		} else {
 			return new FileInputStream(file);
+		}
 	}
 }

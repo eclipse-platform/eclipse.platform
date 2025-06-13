@@ -141,9 +141,8 @@ public class TocManager {
 	public synchronized int[] getTopicPath(String href, String locale) {
 		ITopic topic = getTopic(href, locale);
 		try {
-			if (topic != null && topic instanceof UAElement) {
+			if (topic != null && topic instanceof UAElement element) {
 				List<Integer> path = new ArrayList<>();
-				UAElement element = (UAElement) topic;
 				while (!(element instanceof Toc)) {
 					UAElement parent = element.getParentElement();
 					path.add(Integer.valueOf(indexOf(parent, (Topic)element)));
@@ -222,11 +221,12 @@ public class TocManager {
 						contribution.setLocale(contrib[j].getLocale());
 						contribution.setPrimary(contrib[j].isPrimary());
 						IToc toc = contrib[j].getToc();
-						Toc t = toc instanceof Toc ? (Toc)toc : (Toc)UAElementFactory.newElement(toc);
+						Toc t = toc instanceof Toc t2 ? t2 : (Toc)UAElementFactory.newElement(toc);
 						t.setLinkTo(contrib[j].getLinkTo());
 						contribution.setToc(t);
-						if(!contributions.containsKey(contrib[j].getId()))
+						if(!contributions.containsKey(contrib[j].getId())) {
 							contributions.put(contrib[j].getId(), contribution);
+						}
 					}
 				}
 				catch (Throwable t) {
