@@ -58,10 +58,11 @@ public class DefaultPreferenceFileHandler extends PreferenceFileHandler {
 
 
 		// The size of any of the array elements should equal the number of remote infocenters
-		if (this.nameEntries == null)
+		if (this.nameEntries == null) {
 			this.numEntries = 0;
-		else
+		} else {
 			this.numEntries = this.nameEntries.length;
+		}
 
 	}
 

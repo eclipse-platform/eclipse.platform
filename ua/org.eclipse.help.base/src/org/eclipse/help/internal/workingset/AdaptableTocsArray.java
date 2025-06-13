@@ -39,8 +39,9 @@ public class AdaptableTocsArray implements IAdaptable {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IToc[].class)
+		if (adapter == IToc[].class) {
 			return (T) element;
+		}
 		return null;
 	}
 
@@ -61,8 +62,9 @@ public class AdaptableTocsArray implements IAdaptable {
 		if (map == null) {
 			getChildren(); // make sure children are initialized
 			map = new HashMap<>(children.length);
-			for (AdaptableToc child : children)
+			for (AdaptableToc child : children) {
 				map.put(child.getHref(), child);
+			}
 		}
 		return map.get(href);
 	}
@@ -84,11 +86,10 @@ public class AdaptableTocsArray implements IAdaptable {
 		if (this == object) {
 			return true;
 		}
-		if (!(object instanceof AdaptableTocsArray)) {
+		if (!(object instanceof AdaptableTocsArray res)) {
 			return false;
 		}
 
-		AdaptableTocsArray res = (AdaptableTocsArray) object;
 		return Arrays.equals(asArray(), res.asArray());
 	}
 
@@ -99,8 +100,9 @@ public class AdaptableTocsArray implements IAdaptable {
 	 */
 	@Override
 	public int hashCode() {
-		if (element == null)
+		if (element == null) {
 			return -1;
+		}
 		return Arrays.hashCode(element);
 	}
 }

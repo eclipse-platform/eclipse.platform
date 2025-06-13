@@ -75,10 +75,12 @@ public class BookmarkManager extends Observable {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if ((obj == null) || (getClass() != obj.getClass()))
+			}
+			if ((obj == null) || (getClass() != obj.getClass())) {
 				return false;
+			}
 			Bookmark other = (Bookmark) obj;
 			return Objects.equals(href, other.href) && Objects.equals(label, other.label);
 		}
@@ -125,14 +127,16 @@ public class BookmarkManager extends Observable {
 			// separate the url and title by vertical bar
 
 			// check for duplicates
-			if (bookmarks.contains("," + encode(bookmarkURL) + "|")) //$NON-NLS-1$ //$NON-NLS-2$
+			if (bookmarks.contains("," + encode(bookmarkURL) + "|")) { //$NON-NLS-1$ //$NON-NLS-2$
 				return;
+			}
 			bookmarks = bookmarks
 					+ "," + encode(bookmarkURL) + "|" + encode(title); //$NON-NLS-1$ //$NON-NLS-2$
 			saveBookmarks(bookmarks);
 			Bookmark bookmark = new Bookmark(title, bookmarkURL);
-			if (this.bookmarks!=null)
+			if (this.bookmarks!=null) {
 				this.bookmarks.add(bookmark);
+			}
 			setChanged();
 			notifyObservers(new BookmarkEvent(ADD, bookmark));
 		}
@@ -153,13 +157,15 @@ public class BookmarkManager extends Observable {
 			String bookmarks = readBookmarks();
 			String removeString = "," + encode(bookmarkURL) + "|" + encode(title); //$NON-NLS-1$ //$NON-NLS-2$
 			int i = bookmarks.indexOf(removeString);
-			if (i == -1)
+			if (i == -1) {
 				return;
+			}
 			bookmarks = bookmarks.substring(0, i)
 					+ bookmarks.substring(i + removeString.length());
 			saveBookmarks(bookmarks);
-			if (this.bookmarks!=null)
+			if (this.bookmarks!=null) {
 				this.bookmarks.remove(bookmark);
+			}
 			setChanged();
 			notifyObservers(new BookmarkEvent(REMOVE, bookmark));
 		}
@@ -167,8 +173,9 @@ public class BookmarkManager extends Observable {
 
 	public void removeAllBookmarks() {
 		saveBookmarks(""); //$NON-NLS-1$
-		if (bookmarks!=null)
+		if (bookmarks!=null) {
 			bookmarks.clear();
+		}
 		setChanged();
 		notifyObservers(new BookmarkEvent(REMOVE_ALL, null));
 	}

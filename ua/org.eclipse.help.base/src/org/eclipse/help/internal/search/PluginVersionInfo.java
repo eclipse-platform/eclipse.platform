@@ -85,8 +85,9 @@ public class PluginVersionInfo extends HelpProperties {
 			if (fragmentBundles != null) {
 				for (Bundle fragmentBundle : fragmentBundles) {
 					if (fragmentBundle.getState() == Bundle.INSTALLED
-							|| fragmentBundle.getState() == Bundle.UNINSTALLED)
+							|| fragmentBundle.getState() == Bundle.UNINSTALLED) {
 						continue;
+					}
 					appendBundleInformation(pluginVersionAndFragments,
 							fragmentBundle.getSymbolicName(),
 							fragmentBundle.getHeaders().get(
@@ -99,8 +100,9 @@ public class PluginVersionInfo extends HelpProperties {
 
 	protected void appendBundleInformation(StringBuilder buffer, String id,
 			String version) {
-		if (buffer.length()>0)
+		if (buffer.length()>0) {
 			buffer.append(SEPARATOR);
+		}
 		buffer.append(id);
 		buffer.append(SEPARATOR);
 		buffer.append(version);
@@ -113,8 +115,9 @@ public class PluginVersionInfo extends HelpProperties {
 	 * @return true if contributions have changed
 	 */
 	public boolean detectChange() {
-		if (!doComparison)
+		if (!doComparison) {
 			return hasChanged;
+		}
 		// Create table of contributions present before last save()
 		HelpProperties oldContrs = new HelpProperties(this.name, dir);
 		if (!ignoreSavedVersions) {
@@ -155,8 +158,9 @@ public class PluginVersionInfo extends HelpProperties {
 	 *         upgraded
 	 */
 	public Collection<String> getAdded() {
-		if (doComparison)
+		if (doComparison) {
 			detectChange();
+		}
 		return added;
 	}
 
@@ -165,8 +169,9 @@ public class PluginVersionInfo extends HelpProperties {
 	 *         upgraded
 	 */
 	public Collection<String> getRemoved() {
-		if (doComparison)
+		if (doComparison) {
 			detectChange();
+		}
 		return removed;
 	}
 

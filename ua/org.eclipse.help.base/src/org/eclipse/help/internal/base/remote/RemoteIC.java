@@ -102,20 +102,27 @@ public class RemoteIC {
 
 	@Override
 public boolean equals(Object anotherObject)throws ClassCastException {
-		if (!(anotherObject instanceof RemoteIC))
+		if (!(anotherObject instanceof RemoteIC)) {
 			return false;
-		if ( !(((RemoteIC) anotherObject).getName().equals(this.getName())))
+		}
+		if ( !(((RemoteIC) anotherObject).getName().equals(this.getName()))) {
 			return false;
-		if ( !(((RemoteIC) anotherObject).getHost().equals(this.getHost())))
+		}
+		if ( !(((RemoteIC) anotherObject).getHost().equals(this.getHost()))) {
 			return false;
-		if ( !(((RemoteIC) anotherObject).getPath().equals(this.getPath())))
+		}
+		if ( !(((RemoteIC) anotherObject).getPath().equals(this.getPath()))) {
 			return false;
-		if ( !(((RemoteIC) anotherObject).getProtocol().equals(this.getProtocol())))
+		}
+		if ( !(((RemoteIC) anotherObject).getProtocol().equals(this.getProtocol()))) {
 			return false;
-		if ( !(((RemoteIC) anotherObject).getPort().equals(this.getPort())))
+		}
+		if ( !(((RemoteIC) anotherObject).getPort().equals(this.getPort()))) {
 			return false;
-		if ( !(((RemoteIC) anotherObject).isEnabled()==this.isEnabled()))
+		}
+		if ( !(((RemoteIC) anotherObject).isEnabled()==this.isEnabled())) {
 			return false;
+		}
 
 		//if we made it here, the the objects are the same
 		return true;
