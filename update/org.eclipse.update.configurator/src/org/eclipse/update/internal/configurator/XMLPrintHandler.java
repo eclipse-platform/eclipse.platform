@@ -80,7 +80,7 @@ public class XMLPrintHandler {
 				}
 			}
 			printBeginElement(xmlWriter,tempElementString.toString());
-			
+
 			// do this recursively for the child nodes.
 			NodeList childNodes = node.getChildNodes();
 			if (childNodes != null) {
@@ -89,18 +89,18 @@ public class XMLPrintHandler {
 					printNode(xmlWriter, childNodes.item(i),encoding);
 				}
 			}
-			
+
 			printEndElement(xmlWriter,node.getNodeName());
 			break;
 		}
-		
+
 		case Node.TEXT_NODE: {
 			xmlWriter.write(encode(node.getNodeValue()).toString());
 			break;
 		}
 		default: {
 			throw new UnsupportedOperationException(Messages.XMLPrintHandler_unsupportedNodeType);
-			
+
 		}
 		}
 
