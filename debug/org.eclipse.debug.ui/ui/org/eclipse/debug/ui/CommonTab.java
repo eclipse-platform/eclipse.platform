@@ -33,6 +33,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -98,6 +100,7 @@ import org.osgi.framework.FrameworkUtil;
  */
 public class CommonTab extends AbstractLaunchConfigurationTab {
 
+	private static final String TERMINAL_PROCESS_FACTORY_ID = "org.eclipse.debug.terminal.processFactory"; //$NON-NLS-1$
 	/**
 	 * Constant representing the id of the {@link IDialogSettings} location for the {@link ContainerSelectionDialog} used
 	 * on this tab
@@ -130,6 +133,8 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	private Button forceSystemEncodingButton;
 	private Combo fEncodingCombo;
 	private Button fConsoleOutput;
+	private Button noConsoleOutput;
+	private Button terminalOutput;
 	private Button fFileOutput;
 	private Button fFileBrowse;
 	private Text fFileText;
@@ -153,6 +158,7 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	 * Modify listener that simply updates the owning launch configuration dialog.
 	 */
 	private final ModifyListener fBasicModifyListener = evt -> scheduleUpdateJob();
+	private boolean hasTerminalSupport;
 
 	/**
 	 * Constructs a new tab with default context help.
@@ -160,6 +166,7 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	public CommonTab() {
 		super();
 		setHelpContextId(IDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_COMMON_TAB);
+		hasTerminalSupport = hasTerminalSupport();
 	}
 
 	@Override
@@ -311,8 +318,22 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 
 	private void createInputCaptureComponent(Composite parent){
 		Composite comp1 = SWTFactory.createComposite(parent, parent.getFont(), 5, 5, GridData.FILL_BOTH, 0, 0);
-		fConsoleOutput = createCheckButton(comp1, LaunchConfigurationsMessages.CommonTab_5);
-		fConsoleOutput.addSelectionListener(widgetSelectedAdapter(e -> updateLaunchConfigurationDialog()));
+		if (hasTerminalSupport) {
+			SelectionListener adapter = widgetSelectedAdapter(e -> updateLaunchConfigurationDialog());
+			Composite buttonComposite = new Composite(comp1, SWT.NONE);
+			buttonComposite.setLayout(new GridLayout(3, false));
+			fConsoleOutput = createRadioButton(buttonComposite, LaunchConfigurationsMessages.CommonTab_24);
+			fConsoleOutput.addSelectionListener(adapter);
+			terminalOutput = createRadioButton(buttonComposite, LaunchConfigurationsMessages.CommonTab_23);
+			terminalOutput.addSelectionListener(adapter);
+			noConsoleOutput = createRadioButton(buttonComposite,
+					LaunchConfigurationsMessages.CommonTab_disable_console_input);
+			noConsoleOutput.addSelectionListener(adapter);
+
+		} else {
+			fConsoleOutput = createCheckButton(comp1, LaunchConfigurationsMessages.CommonTab_5);
+			fConsoleOutput.addSelectionListener(widgetSelectedAdapter(e -> updateLaunchConfigurationDialog()));
+		}
 
 		Composite comp = SWTFactory.createComposite(comp1, comp1.getFont(), 5, 5, GridData.FILL_BOTH, 0, 0);
 		fInputFileCheckButton = createCheckButton(comp, LaunchConfigurationsMessages.CommonTab_17);
@@ -388,6 +409,20 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 
 		setInputFileEnabled(false);
 	}
+
+	private static boolean hasTerminalSupport() {
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
+				.getExtensionPoint(DebugPlugin.getUniqueIdentifier(), DebugPlugin.EXTENSION_POINT_PROCESS_FACTORIES);
+		IConfigurationElement[] infos = extensionPoint.getConfigurationElements();
+		for (IConfigurationElement configurationElement : infos) {
+			String id = configurationElement.getAttribute("id"); //$NON-NLS-1$
+			if (TERMINAL_PROCESS_FACTORY_ID.equals(id)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Enables or disables the output capture widgets based on the the specified enablement
 	 * @param enable if the output capture widgets should be enabled or not
@@ -665,8 +700,20 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 			supportsMergeOutput = configuration.getType().supportsOutputMerging();
 		} catch (CoreException e) {
 		}
-
-		fConsoleOutput.setSelection(outputToConsole);
+		if (hasTerminalSupport) {
+			if (outputToConsole) {
+				if (TERMINAL_PROCESS_FACTORY_ID
+						.equals(getAttribute(configuration, DebugPlugin.ATTR_PROCESS_FACTORY_ID, ""))) { //$NON-NLS-1$
+					terminalOutput.setSelection(true);
+				} else {
+					fConsoleOutput.setSelection(true);
+				}
+			} else {
+				noConsoleOutput.setSelection(true);
+			}
+		} else {
+			fConsoleOutput.setSelection(outputToConsole);
+		}
 		fAppend.setSelection(append);
 		if (supportsMergeOutput) {
 			fMergeOutput = createCheckButton(fIoComposit, LaunchConfigurationsMessages.CommonTab_21);
@@ -994,11 +1041,25 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 		}
 		configuration.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, encoding);
 		boolean captureOutput = false;
-		if (fConsoleOutput.getSelection()) {
-			captureOutput = true;
-			configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, (String) null);
+		if (hasTerminalSupport) {
+			if (noConsoleOutput.getSelection()) {
+				configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
+			} else {
+				captureOutput = true;
+				configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, (String) null);
+				if (terminalOutput.getSelection()) {
+					configuration.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, TERMINAL_PROCESS_FACTORY_ID);
+				} else {
+					configuration.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, (String) null);
+				}
+			}
 		} else {
-			configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
+			if (fConsoleOutput.getSelection()) {
+				captureOutput = true;
+				configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, (String) null);
+			} else {
+				configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
+			}
 		}
 		if (fInputFileCheckButton.getSelection()) {
 			configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, fInputFileLocationText.getText());

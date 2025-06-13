@@ -48,6 +48,10 @@ public class LaunchConfigurationsMessages extends NLS {
 	public static String CommonTab_20;
 	public static String CommonTab_21;
 	public static String CommonTab_22;
+
+	public static String CommonTab_23;
+
+	public static String CommonTab_24;
 	public static String CommonTab_3;
 	public static String CommonTab_4;
 	public static String CommonTab_5;
@@ -65,6 +69,8 @@ public class LaunchConfigurationsMessages extends NLS {
 	public static String CommonTab_AttributeLabel_LaunchInBackground;
 	public static String CommonTab_AttributeLabel_FavoriteGroups;
 	public static String CommonTab_AttributeLabel_TerminateDescendants;
+
+	public static String CommonTab_disable_console_input;
 
 	public static String CompileErrorProjectPromptStatusHandler_0;
 	public static String CompileErrorProjectPromptStatusHandler_1;
