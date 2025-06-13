@@ -100,10 +100,12 @@ public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAcc
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IHunk.class)
+		if (adapter == IHunk.class) {
 			return (T) fHunkResult.getHunk();
-		if (adapter == HunkResult.class)
+		}
+		if (adapter == HunkResult.class) {
 			return (T) fHunkResult;
+		}
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 }

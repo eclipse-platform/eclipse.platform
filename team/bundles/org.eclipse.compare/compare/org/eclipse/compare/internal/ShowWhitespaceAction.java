@@ -80,8 +80,9 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 			fAlpha = fStore.getInt(AbstractTextEditor.PREFERENCE_WHITESPACE_CHARACTER_ALPHA_VALUE);
 		}
 		if (checked != isChecked()) {
-			if (toggleState(checked))
+			if (toggleState(checked)) {
 				setChecked(checked);
+			}
 		} else if (fNeedsPainters != null && checked) {
 			hideWhitespace();
 			showWhitespace();
@@ -103,8 +104,9 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 
 	@Override
 	protected boolean toggleState(boolean checked) {
-		if (fNeedsPainters == null)
+		if (fNeedsPainters == null) {
 			return false; // Not initialized yet
+		}
 		if (checked) {
 			showWhitespace();
 		} else {
@@ -114,14 +116,16 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 	}
 
 	private synchronized Map<MergeSourceViewer, WhitespaceCharacterPainter> getPainters() {
-		if (fPainters == null)
+		if (fPainters == null) {
 			fPainters = new HashMap<>();
+		}
 		return fPainters;
 	}
 
 	private void showWhitespace() {
-		if (isWhitespaceShowing)
+		if (isWhitespaceShowing) {
 			return;
+		}
 		try {
 			Map<MergeSourceViewer, WhitespaceCharacterPainter> painters = getPainters();
 			MergeSourceViewer[] viewers = getViewers();

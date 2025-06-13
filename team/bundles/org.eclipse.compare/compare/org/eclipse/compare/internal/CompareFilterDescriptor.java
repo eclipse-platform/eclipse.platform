@@ -82,8 +82,9 @@ public class CompareFilterDescriptor {
 		if (bundle != null) {
 			String path = Utilities.getString(fResourceBundle,
 					FILTER_IMAGE_ATTRIBUTE, FILTER_IMAGE_ATTRIBUTE);
-			if (path != null)
+			if (path != null) {
 				url = FileLocator.find(bundle, IPath.fromOSString(path), null);
+			}
 		}
 		fImageDescriptor = (url == null) ? null : ImageDescriptor
 				.createFromURL(url);

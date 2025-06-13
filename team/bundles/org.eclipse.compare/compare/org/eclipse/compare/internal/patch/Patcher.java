@@ -107,8 +107,9 @@ public class Patcher implements IHunkFilter {
 	 * If <code>parse</code> hasn't been called returns <code>null</code>.
 	 */
 	public FilePatch2[] getDiffs() {
-		if (fDiffs == null)
+		if (fDiffs == null) {
 			return new FilePatch2[0];
+		}
 		return fDiffs;
 	}
 
@@ -234,9 +235,9 @@ public class Patcher implements IHunkFilter {
 
 		IFile singleFile= null;	// file to be patched
 		IContainer container= null;
-		if (fTarget instanceof IContainer)
+		if (fTarget instanceof IContainer) {
 			container= (IContainer) fTarget;
-		else if (fTarget instanceof IFile) {
+		} else if (fTarget instanceof IFile) {
 			singleFile= (IFile) fTarget;
 			container= singleFile.getParent();
 		} else {
@@ -245,9 +246,9 @@ public class Patcher implements IHunkFilter {
 
 		// get all files to be modified in order to call validateEdit
 		List<IFile> list= new ArrayList<>();
-		if (singleFile != null)
+		if (singleFile != null) {
 			list.add(singleFile);
-		else {
+		} else {
 			for (i= 0; i < fDiffs.length; i++) {
 				FilePatch2 diff= fDiffs[i];
 				if (isEnabled(diff)) {
@@ -275,8 +276,9 @@ public class Patcher implements IHunkFilter {
 			if (isEnabled(diff)) {
 
 				IPath path= getPath(diff);
-				if (pm != null)
+				if (pm != null) {
 					pm.subTask(path.toString());
+				}
 
 				IFile file= singleFile != null
 								? singleFile
@@ -289,8 +291,9 @@ public class Patcher implements IHunkFilter {
 				case FilePatch2.ADDITION:
 					// patch it and collect rejected hunks
 					List<String> result= apply(diff, file, true, failed);
-					if (result != null)
+					if (result != null) {
 						store(LineReader.createString(isPreserveLineDelimiters(), result), file, SubMonitor.convert(pm, workTicks));
+					}
 					workTicks-= WORK_UNIT;
 					break;
 				case FilePatch2.DELETION:
@@ -300,8 +303,9 @@ public class Patcher implements IHunkFilter {
 				case FilePatch2.CHANGE:
 					// patch it and collect rejected hunks
 					result= apply(diff, file, false, failed);
-					if (result != null)
+					if (result != null) {
 						store(LineReader.createString(isPreserveLineDelimiters(), result), file, SubMonitor.convert(pm, workTicks));
+					}
 					workTicks-= WORK_UNIT;
 					break;
 				default:
@@ -325,10 +329,12 @@ public class Patcher implements IHunkFilter {
 			}
 
 			if (pm != null) {
-				if (pm.isCanceled())
+				if (pm.isCanceled()) {
 					break;
-				if (workTicks > 0)
+				}
+				if (workTicks > 0) {
 					pm.worked(workTicks);
+				}
 			}
 		}
 	}
@@ -338,8 +344,9 @@ public class Patcher implements IHunkFilter {
 		if (path.segmentCount() > 1) {
 			pp= path.removeLastSegments(1);
 			pp= pp.append(path.lastSegment() + REJECT_FILE_EXTENSION);
-		} else
+		} else {
 			pp= IPath.fromOSString(path.lastSegment() + REJECT_FILE_EXTENSION);
+		}
 		return pp;
 	}
 
@@ -369,8 +376,9 @@ public class Patcher implements IHunkFilter {
 				String expectedLD= getLineDelimiterPreference(file);
 				if (expectedLD != null) {
 					String patchLD= TextUtilities.determineLineDelimiter(contents, expectedLD);
-					if (!expectedLD.equals(patchLD))
+					if (!expectedLD.equals(patchLD)) {
 						contents= contents.replaceAll(patchLD, expectedLD);
+					}
 				}
 			}
 		}
@@ -392,8 +400,9 @@ public class Patcher implements IHunkFilter {
 			// project preference
 			scopeContext= new IScopeContext[] { new ProjectScope(file.getProject()) };
 			String lineDelimiter= Platform.getPreferencesService().getString(Platform.PI_RUNTIME, Platform.PREF_LINE_SEPARATOR, null, scopeContext);
-			if (lineDelimiter != null)
+			if (lineDelimiter != null) {
 				return lineDelimiter;
+			}
 		}
 		// workspace preference
 		scopeContext= new IScopeContext[] { InstanceScope.INSTANCE };
@@ -417,8 +426,9 @@ public class Patcher implements IHunkFilter {
 	}
 
 	public static String getRejected(List<Hunk> failedHunks) {
-		if (failedHunks.size() <= 0)
+		if (failedHunks.size() <= 0) {
 			return null;
+		}
 
 		String lineSeparator = System.lineSeparator();
 		StringBuilder sb= new StringBuilder();
@@ -439,15 +449,18 @@ public class Patcher implements IHunkFilter {
 			IContainer childContainer;
 			if (container instanceof IWorkspaceRoot) {
 				IProject project = ((IWorkspaceRoot)container).getProject(path.segment(0));
-				if (!project.exists())
+				if (!project.exists()) {
 					project.create(null);
-				if (!project.isOpen())
+				}
+				if (!project.isOpen()) {
 					project.open(null);
+				}
 				childContainer = project;
 			} else {
 				IFolder f= container.getFolder(path.uptoSegment(1));
-				if (!f.exists())
+				if (!f.exists()) {
 					f.create(false, true, null);
+				}
 				childContainer = f;
 			}
 			return createPath(childContainer, path.removeFirstSegments(1));
@@ -476,14 +489,14 @@ public class Patcher implements IHunkFilter {
 	 * @return IFile which matches the passed in path or null if none found
 	 */
 	public IFile existsInTarget(IPath path) {
-		if (fTarget instanceof IFile) { // special case
-			IFile file= (IFile) fTarget;
-			if (matches(file.getFullPath(), path))
+		if (fTarget instanceof IFile file) { // special case
+			if (matches(file.getFullPath(), path)) {
 				return file;
-		} else if (fTarget instanceof IContainer) {
-			IContainer c= (IContainer) fTarget;
-			if (c.exists(path))
+			}
+		} else if (fTarget instanceof IContainer c) {
+			if (c.exists(path)) {
 				return c.getFile(path);
+			}
 		}
 		return null;
 	}
@@ -494,8 +507,9 @@ public class Patcher implements IHunkFilter {
 	 */
 	private boolean matches(IPath fullpath, IPath path) {
 		for (IPath p= fullpath; path.segmentCount()<=p.segmentCount(); p= p.removeFirstSegments(1)) {
-			if (p.equals(path))
+			if (p.equals(path)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -508,8 +522,9 @@ public class Patcher implements IHunkFilter {
 			for (FilePatch2 diff : fDiffs) {
 				length= Math.min(length, diff.segmentCount());
 			}
-			if (ResourcesPlugin.getWorkspace().getRoot().equals(fTarget))
+			if (ResourcesPlugin.getWorkspace().getRoot().equals(fTarget)) {
 				length--;
+			}
 		}
 		return length;
 	}
@@ -533,12 +548,15 @@ public class Patcher implements IHunkFilter {
 	}
 
 	public void setEnabled(Object element, boolean enabled) {
-		if (element instanceof DiffProject)
+		if (element instanceof DiffProject) {
 			setEnabledProject((DiffProject) element, enabled);
-		if (element instanceof FilePatch2)
+		}
+		if (element instanceof FilePatch2) {
 			setEnabledFile((FilePatch2)element, enabled);
-		if (element instanceof Hunk)
+		}
+		if (element instanceof Hunk) {
 			setEnabledHunk((Hunk) element, enabled);
+		}
 	}
 
 	private void setEnabledProject(DiffProject projectDiff, boolean enabled) {
@@ -561,8 +579,9 @@ public class Patcher implements IHunkFilter {
 			FilePatch2 file = hunk.getParent();
 			disabledElements.remove(file);
 			DiffProject project = file.getProject();
-			if (project != null)
+			if (project != null) {
 				disabledElements.remove(project);
+			}
 		} else {
 			disabledElements.add(hunk);
 			FilePatch2 file = hunk.getParent();
@@ -571,24 +590,26 @@ public class Patcher implements IHunkFilter {
 				DiffProject project = file.getProject();
 				if (project != null
 						&& disabledElements.containsAll(Arrays.asList(project
-								.getFileDiffs())))
+								.getFileDiffs()))) {
 					disabledElements.add(project);
+				}
 			}
 		}
 	}
 
 	public boolean isEnabled(Object element) {
-		if (disabledElements.contains(element))
+		if (disabledElements.contains(element)) {
 			return false;
+		}
 		Object parent = getElementParent(element);
-		if (parent == null)
+		if (parent == null) {
 			return true;
+		}
 		return isEnabled(parent);
 	}
 
 	protected Object getElementParent(Object element) {
-		if (element instanceof Hunk) {
-			Hunk hunk = (Hunk) element;
+		if (element instanceof Hunk hunk) {
 			return hunk.getParent();
 		}
 		return null;
@@ -603,8 +624,9 @@ public class Patcher implements IHunkFilter {
 		try {
 			monitor.beginTask(Messages.Patcher_2, IProgressMonitor.UNKNOWN);
 			FilePatch2[] diffs= getDiffs();
-			if (diffs==null||diffs.length<=0)
+			if (diffs==null||diffs.length<=0) {
 				return -1;
+			}
 			int fuzz= -1;
 			for (FilePatch2 d : diffs) {
 				IFile file= getTargetFile(d);
@@ -612,8 +634,9 @@ public class Patcher implements IHunkFilter {
 					List<String> lines= LineReader.load(file, false);
 					FileDiffResult result = getDiffResult(d);
 					int f = result.calculateFuzz(lines, monitor);
-					if (f > fuzz)
+					if (f > fuzz) {
 						fuzz = f;
+					}
 				}
 			}
 			return fuzz;
@@ -751,19 +774,20 @@ public class Patcher implements IHunkFilter {
 	}
 
 	public void setManuallyMerged(Hunk hunk, boolean merged) {
-		if (merged)
+		if (merged) {
 			mergedHunks.add(hunk);
-		else
+		} else {
 			mergedHunks.remove(hunk);
+		}
 	}
 
 	public IProject getTargetProject(FilePatch2 diff) {
 		DiffProject dp = getProject(diff);
-		if (dp != null)
+		if (dp != null) {
 			return Utilities.getProject(dp);
+		}
 		IResource tr = getTarget();
-		if (tr instanceof IWorkspaceRoot) {
-			IWorkspaceRoot root = (IWorkspaceRoot) tr;
+		if (tr instanceof IWorkspaceRoot root) {
 			return root.getProject(diff.getPath(isReversed()).segment(0));
 		}
 		return tr.getProject();
@@ -775,8 +799,9 @@ public class Patcher implements IHunkFilter {
 
 	public boolean hasRejects() {
 		for (FileDiffResult result : diffResults.values()) {
-			if (result.hasRejects())
+			if (result.hasRejects()) {
 				return true;
+			}
 		}
 		return false;
 	}

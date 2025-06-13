@@ -53,14 +53,15 @@ public class TokenComparator implements ITokenComparator {
 			char c= fText.charAt(i);
 
 			char category= '?';	// unspecified category
-			if (Character.isWhitespace(c))
+			if (Character.isWhitespace(c)) {
 				category= ' ';	// white space category
-			else if (Character.isDigit(c))
+			} else if (Character.isDigit(c)) {
 				category= '0';	// digits
-			else if (Character.isLetter(c))
+			} else if (Character.isLetter(c)) {
 				category= 'a';	// letters
-			else if (c == '\"' || c == '\'')
+			} else if (c == '\"' || c == '\'') {
 				category= '\"';	// quotes (see bug 198671)
+			}
 
 			if (category != lastCategory) {
 				// start a new token
@@ -78,15 +79,17 @@ public class TokenComparator implements ITokenComparator {
 
 	@Override
 	public int getTokenStart(int index) {
-		if (index < fCount)
+		if (index < fCount) {
 			return fStarts[index];
+		}
 		return fText.length();
 	}
 
 	@Override
 	public int getTokenLength(int index) {
-		if (index < fCount)
+		if (index < fCount) {
 			return fLengths[index];
+		}
 		return 0;
 	}
 
@@ -96,8 +99,9 @@ public class TokenComparator implements ITokenComparator {
 			TokenComparator tc= (TokenComparator) other;
 			int thisLen= getTokenLength(thisIndex);
 			int otherLen= tc.getTokenLength(otherIndex);
-			if (thisLen == otherLen)
+			if (thisLen == otherLen) {
 				return fText.regionMatches(false, getTokenStart(thisIndex), tc.fText, tc.getTokenStart(otherIndex), thisLen);
+			}
 		}
 		return false;
 	}
@@ -105,20 +109,25 @@ public class TokenComparator implements ITokenComparator {
 	@Override
 	public boolean skipRangeComparison(int length, int max, IRangeComparator other) {
 
-		if (getRangeCount() < 50 || other.getRangeCount() < 50)
+		if (getRangeCount() < 50 || other.getRangeCount() < 50) {
 			return false;
+		}
 
-		if (max < 100)
+		if (max < 100) {
 			return false;
+		}
 
-		if (length < 100)
+		if (length < 100) {
 			return false;
+		}
 
-		if (max > 800)
+		if (max > 800) {
 			return true;
+		}
 
-		if (length < max / 4)
+		if (length < max / 4) {
 			return false;
+		}
 
 		return true;
 	}

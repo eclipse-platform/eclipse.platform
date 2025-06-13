@@ -122,16 +122,18 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 		public TextOperationAction(int operationCode, String actionDefinitionId, boolean mutable, boolean selection, boolean content) {
 			super(mutable, selection, content);
-			if (actionDefinitionId != null)
+			if (actionDefinitionId != null) {
 				setActionDefinitionId(actionDefinitionId);
+			}
 			fOperationCode= operationCode;
 			update();
 		}
 
 		@Override
 		public void run() {
-			if (isEnabled())
+			if (isEnabled()) {
 				getSourceViewer().doOperation(fOperationCode);
+			}
 		}
 
 		@Override
@@ -293,10 +295,10 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		private void selectAndReveal(int selectionStart, int selectionLength, int revealStart, int revealLength) {
 
 			ISelection selection = getSelectionProvider().getSelection();
-			if (selection instanceof ITextSelection) {
-				ITextSelection textSelection = (ITextSelection) selection;
-				if (textSelection.getOffset() != 0	|| textSelection.getLength() != 0)
+			if (selection instanceof ITextSelection textSelection) {
+				if (textSelection.getOffset() != 0	|| textSelection.getLength() != 0) {
 					markInNavigationHistory();
+				}
 			}
 
 			StyledText widget= MergeSourceViewer.this.getSourceViewer().getTextWidget();
@@ -316,8 +318,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 		private void adjustHighlightRange(int offset, int length) {
 
-			if (MergeSourceViewer.this instanceof ITextViewerExtension5) {
-				ITextViewerExtension5 extension= (ITextViewerExtension5) MergeSourceViewer.this;
+			if (MergeSourceViewer.this instanceof ITextViewerExtension5 extension) {
 				extension.exposeModelRange(new Region(offset, length));
 			} else if (!isVisible(MergeSourceViewer.this.getSourceViewer(), offset, length)) {
 				MergeSourceViewer.this.getSourceViewer().resetVisibleRegion();
@@ -325,8 +326,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		}
 
 		private /*static*/ final boolean isVisible(ITextViewer viewer, int offset, int length) {
-			if (viewer instanceof ITextViewerExtension5) {
-				ITextViewerExtension5 extension= (ITextViewerExtension5) viewer;
+			if (viewer instanceof ITextViewerExtension5 extension) {
 				IRegion overlap= extension.modelRange2WidgetRange(new Region(offset, length));
 				return overlap != null;
 			}
@@ -363,8 +363,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 		@Override
 		public IEditorInput getEditorInput() {
-			if (MergeSourceViewer.this.fContainer.getWorkbenchPart() instanceof IEditorPart)
+			if (MergeSourceViewer.this.fContainer.getWorkbenchPart() instanceof IEditorPart) {
 				return ((IEditorPart) MergeSourceViewer.this.fContainer.getWorkbenchPart()).getEditorInput();
+			}
 			return null;
 		}
 
@@ -503,8 +504,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		}
 
 		IOperationHistory history = getHistory();
-		if (history != null)
+		if (history != null) {
 			history.addOperationHistoryListener(this);
+		}
 
 		// don't add save when in a dialog, IWorkbenchPart is null in dialog containers
 		fAddSaveAction = fContainer.getWorkbenchPart() != null;
@@ -527,8 +529,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	public void setFont(Font font) {
 		StyledText te= getSourceViewer().getTextWidget();
-		if (te != null)
+		if (te != null) {
 			te.setFont(font);
+		}
 		if (fLineNumberColumn != null) {
 			fLineNumberColumn.setFont(font);
 			layoutViewer();
@@ -537,16 +540,19 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	public void setBackgroundColor(Color color) {
 		StyledText te= getSourceViewer().getTextWidget();
-		if (te != null)
+		if (te != null) {
 			te.setBackground(color);
-		if (fLineNumberColumn != null)
+		}
+		if (fLineNumberColumn != null) {
 			fLineNumberColumn.setBackground(color);
+		}
 	}
 
 	public void setForegroundColor(Color color) {
 		StyledText te= getSourceViewer().getTextWidget();
-		if (te != null)
+		if (te != null) {
 			te.setForeground(color);
+		}
 	}
 
 	public void setEnabled(boolean enabled) {
@@ -577,8 +583,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	}
 
 	public void setSelection(Position position) {
-		if (position != null)
+		if (position != null) {
 			getSourceViewer().setSelectedRange(position.getOffset(), position.getLength());
+		}
 	}
 
 	public void setLineBackground(Position position, Color c) {
@@ -612,8 +619,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		IRegion region= getSourceViewer().getVisibleRegion();
 
 		int length= region.getLength();
-		if (length == 0)
+		if (length == 0) {
 			return 0;
+		}
 
 		IDocument doc= getSourceViewer().getDocument();
 		int startLine= 0;
@@ -637,16 +645,18 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	public int getViewportLines() {
 		StyledText te= getSourceViewer().getTextWidget();
 		Rectangle clArea= te.getClientArea();
-		if (!clArea.isEmpty())
+		if (!clArea.isEmpty()) {
 			return clArea.height / te.getLineHeight();
+		}
 		return 0;
 	}
 
 	public int getViewportHeight() {
 		StyledText te= getSourceViewer().getTextWidget();
 		Rectangle clArea= te.getClientArea();
-		if (!clArea.isEmpty())
+		if (!clArea.isEmpty()) {
 			return clArea.height;
+		}
 		return 0;
 	}
 
@@ -733,12 +743,14 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 		if (srcViewSize > srcExtentSize) {
 
-			if (line < 0)
+			if (line < 0) {
 				line= 0;
+			}
 
 			int cp= getSourceViewer().getTopIndex();
-			if (cp != line)
+			if (cp != line) {
 				getSourceViewer().setTopIndex(line + getDocumentRegionOffset());
+			}
 		}
 	}
 
@@ -750,43 +762,52 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		IAction action= fActions.get(actionId);
 		if (action == null) {
 			action= createAction(actionId);
-			if (action == null)
+			if (action == null) {
 				return null;
-			if (action instanceof MergeViewerAction) {
-				MergeViewerAction mva = (MergeViewerAction) action;
-				if (mva.isContentDependent())
+			}
+			if (action instanceof MergeViewerAction mva) {
+				if (mva.isContentDependent()) {
 					getSourceViewer().addTextListener(this);
-				if (mva.isSelectionDependent())
+				}
+				if (mva.isSelectionDependent()) {
 					getSourceViewer().addSelectionChangedListener(this);
+				}
 
 				Utilities.initAction(action, fResourceBundle, "action." + actionId + ".");			 //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			addAction(actionId, action);
 
 		}
-		if (action instanceof MergeViewerAction) {
-			MergeViewerAction mva = (MergeViewerAction) action;
-			if (mva.isEditableDependent() && !getSourceViewer().isEditable())
+		if (action instanceof MergeViewerAction mva) {
+			if (mva.isEditableDependent() && !getSourceViewer().isEditable()) {
 				return null;
+			}
 		}
 		return action;
 	}
 
 	protected IAction createAction(String actionId) {
-		if (UNDO_ID.equals(actionId))
+		if (UNDO_ID.equals(actionId)) {
 			return new TextOperationAction(ITextOperationTarget.UNDO, IWorkbenchCommandConstants.EDIT_UNDO, true, false, true);
-		if (REDO_ID.equals(actionId))
+		}
+		if (REDO_ID.equals(actionId)) {
 			return new TextOperationAction(ITextOperationTarget.REDO, IWorkbenchCommandConstants.EDIT_REDO, true, false, true);
-		if (CUT_ID.equals(actionId))
+		}
+		if (CUT_ID.equals(actionId)) {
 			return new TextOperationAction(ITextOperationTarget.CUT, IWorkbenchCommandConstants.EDIT_CUT, true, true, false);
-		if (COPY_ID.equals(actionId))
+		}
+		if (COPY_ID.equals(actionId)) {
 			return new TextOperationAction(ITextOperationTarget.COPY, IWorkbenchCommandConstants.EDIT_COPY, false, true, false);
-		if (PASTE_ID.equals(actionId))
+		}
+		if (PASTE_ID.equals(actionId)) {
 			return new TextOperationAction(ITextOperationTarget.PASTE, IWorkbenchCommandConstants.EDIT_PASTE, true, false, false);
-		if (DELETE_ID.equals(actionId))
+		}
+		if (DELETE_ID.equals(actionId)) {
 			return new TextOperationAction(ITextOperationTarget.DELETE, IWorkbenchCommandConstants.EDIT_DELETE, true, false, false);
-		if (SELECT_ALL_ID.equals(actionId))
+		}
+		if (SELECT_ALL_ID.equals(actionId)) {
 			return new TextOperationAction(ITextOperationTarget.SELECT_ALL, IWorkbenchCommandConstants.EDIT_SELECT_ALL, false, false, false);
+		}
 		return null;
 	}
 
@@ -795,10 +816,10 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		Iterator<IAction> e= fActions.values().iterator();
 		while (e.hasNext()) {
 			IAction next = e.next();
-			if (next instanceof MergeViewerAction) {
-				MergeViewerAction action = (MergeViewerAction) next;
-				if (action.isSelectionDependent())
+			if (next instanceof MergeViewerAction action) {
+				if (action.isSelectionDependent()) {
 					action.update();
+				}
 			}
 		}
 	}
@@ -812,10 +833,10 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		Iterator<IAction> e= fActions.values().iterator();
 		while (e.hasNext()) {
 			IAction next = e.next();
-			if (next instanceof MergeViewerAction) {
-				MergeViewerAction action = (MergeViewerAction) next;
-				if (action.isContentDependent())
+			if (next instanceof MergeViewerAction action) {
+				if (action.isContentDependent()) {
 					action.update();
+				}
 			}
 		}
 	}
@@ -830,8 +851,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		addMenu(menu, UNDO_ID);
 		addMenu(menu, REDO_ID);
 		menu.add(new GroupMarker("save")); //$NON-NLS-1$
-		if (fAddSaveAction)
+		if (fAddSaveAction) {
 			addSave(menu);
+		}
 		menu.add(new Separator("file")); //$NON-NLS-1$
 
 		menu.add(new Separator("ccp")); //$NON-NLS-1$
@@ -862,8 +884,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	private void addMenu(IMenuManager menu, String actionId) {
 		IAction action= getAction(actionId);
-		if (action != null)
+		if (action != null) {
 			menu.add(action);
+		}
 	}
 
 	private void addSave(IMenuManager menu) {
@@ -880,8 +903,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 			}
 			// save is an editable dependent action, ie add only when edit
 			// is possible
-			if (handler.isHandled() && getSourceViewer().isEditable())
+			if (handler.isHandled() && getSourceViewer().isEditable()) {
 				menu.add(fSaveContributionItem);
+			}
 		}
 	}
 
@@ -897,8 +921,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		EditorsUI.getPreferenceStore().removePropertyChangeListener(fPreferenceChangeListener);
 
 		IOperationHistory history = getHistory();
-		if (history != null)
+		if (history != null) {
 			history.removeOperationHistoryListener(this);
+		}
 	}
 
 	/**
@@ -908,22 +933,20 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		Iterator<IAction> e= fActions.values().iterator();
 		while (e.hasNext()) {
 			IAction next = e.next();
-			if (next instanceof MergeViewerAction) {
-				MergeViewerAction action = (MergeViewerAction) next;
+			if (next instanceof MergeViewerAction action) {
 				action.update();
-			} else if (next instanceof FindReplaceAction) {
-				FindReplaceAction action = (FindReplaceAction) next;
+			} else if (next instanceof FindReplaceAction action) {
 				action.update();
-			} else if (next instanceof ChangeEncodingAction) {
-				ChangeEncodingAction action = (ChangeEncodingAction) next;
+			} else if (next instanceof ChangeEncodingAction action) {
 				action.update();
 			}
 		}
 	}
 
 	public void configure(SourceViewerConfiguration configuration) {
-		if (isConfigured )
+		if (isConfigured ) {
 			getSourceViewer().unconfigure();
+		}
 		isConfigured = true;
 		getSourceViewer().configure(configuration);
 	}
@@ -974,11 +997,13 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	}
 
 	private void updateLineNumberColumnPresentation(boolean refresh) {
-		if (fLineNumberColumn == null)
+		if (fLineNumberColumn == null) {
 			return;
+		}
 		RGB rgb=  getColorFromStore(EditorsUI.getPreferenceStore(), AbstractDecoratedTextEditorPreferenceConstants.EDITOR_LINE_NUMBER_RULER_COLOR);
-		if (rgb == null)
+		if (rgb == null) {
 			rgb= new RGB(0, 0, 0);
+		}
 		ISharedTextColors sharedColors= getSharedColors();
 		fLineNumberColumn.setForeground(sharedColors.getColor(rgb));
 		if (refresh) {
@@ -988,8 +1013,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	private void layoutViewer() {
 		Control parent= getSourceViewer().getControl();
-		if (parent instanceof Composite && !parent.isDisposed())
+		if (parent instanceof Composite && !parent.isDisposed()) {
 			((Composite) parent).layout(true);
+		}
 	}
 
 	private ISharedTextColors getSharedColors() {
@@ -999,10 +1025,11 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	private RGB getColorFromStore(IPreferenceStore store, String key) {
 		RGB rgb= null;
 		if (store.contains(key)) {
-			if (store.isDefault(key))
+			if (store.isDefault(key)) {
 				rgb= PreferenceConverter.getDefaultColor(store, key);
-			else
+			} else {
 				rgb= PreferenceConverter.getColor(store, key);
+			}
 		}
 		return rgb;
 	}
@@ -1049,8 +1076,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	private IUndoContext getUndoContext() {
 		IUndoManager undoManager = getSourceViewer().getUndoManager();
-		if (undoManager instanceof IUndoManagerExtension)
+		if (undoManager instanceof IUndoManagerExtension) {
 			return ((IUndoManagerExtension)undoManager).getUndoContext();
+		}
 		return null;
 	}
 

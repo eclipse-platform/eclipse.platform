@@ -81,8 +81,7 @@ public class ImageMergeViewer extends ContentMergeViewer {
 		if (canvas != null) {
 			InputStream stream= null;
 			try {
-				if (input instanceof IStreamContentAccessor) {
-					IStreamContentAccessor sca= (IStreamContentAccessor) input;
+				if (input instanceof IStreamContentAccessor sca) {
 					if (sca != null) {
 						try {
 							stream= sca.getContents();

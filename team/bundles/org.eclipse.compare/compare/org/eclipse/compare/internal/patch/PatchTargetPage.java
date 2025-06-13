@@ -201,8 +201,9 @@ public class PatchTargetPage extends WizardPage {
 			selectTarget.setSelection(true);
 			error = PatchMessages.InputPatchPage_NothingSelected_message;
 			setPageComplete(false);
-			if (fShowError)
+			if (fShowError) {
 				setErrorMessage(error);
+			}
 			return;
 		}
 		setErrorMessage(null);

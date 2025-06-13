@@ -87,11 +87,13 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				Control content= getContent();
-				if (content != null && content.getBounds().contains(e.x, e.y))
+				if (content != null && content.getBounds().contains(e.x, e.y)) {
 					return;
+				}
 				Control parent= getParent();
-				if (parent instanceof Splitter)
+				if (parent instanceof Splitter) {
 					((Splitter)parent).setMaximizedControl(CompareViewerPane.this);
+				}
 			}
 		};
 
@@ -136,8 +138,9 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	 */
 	public void setText(String label) {
 		CLabel cl= (CLabel) getTopLeft();
-		if (cl != null && !cl.isDisposed())
+		if (cl != null && !cl.isDisposed()) {
 			cl.setText(label);
+		}
 	}
 
 	/**
@@ -148,8 +151,9 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	 */
 	public void setImage(Image image) {
 		CLabel cl= (CLabel) getTopLeft();
-		if (cl != null)
+		if (cl != null) {
 			cl.setImage(image);
+		}
 	}
 
 	/**
@@ -160,8 +164,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	 * @return a <code>ToolBarManager</code> if the given parent is a <code>CompareViewerPane</code> otherwise <code>null</code>
 	 */
 	public static ToolBarManager getToolBarManager(Composite parent) {
-		if (parent instanceof CompareViewerPane) {
-			CompareViewerPane pane= (CompareViewerPane) parent;
+		if (parent instanceof CompareViewerPane pane) {
 			return pane.getToolBarManager();
 		}
 		return null;
@@ -183,8 +186,9 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	//---- private stuff
 
 	private ToolBarManager getToolBarManager() {
-		if (fToolBarManager != null && fToolBarManager.getControl() == null)
+		if (fToolBarManager != null && fToolBarManager.getControl() == null) {
 			return null;
+		}
 		if (fToolBarManager == null) {
 			final ToolBar tb = new ToolBar(this, SWT.FLAT);
 			setTopCenter(tb);
@@ -225,8 +229,9 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	 * @since 3.3
 	 */
 	public void setInput(Object input) {
-		if (fInput != input)
+		if (fInput != input) {
 			fInput= input;
+		}
 	}
 
 	@Override

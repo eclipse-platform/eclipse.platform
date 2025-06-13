@@ -48,8 +48,9 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 
 	@Override
 	public InputStream getContents() throws CoreException {
-		if (fContent != null)
+		if (fContent != null) {
 			return new ByteArrayInputStream(fContent);
+		}
 		return createStream();
 	}
 
@@ -100,8 +101,9 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 
 	@Override
 	public void addContentChangeListener(IContentChangeListener listener) {
-		if (fChangeNotifier == null)
+		if (fChangeNotifier == null) {
 			fChangeNotifier= new ContentChangeNotifier(this);
+		}
 		fChangeNotifier.addContentChangeListener(listener);
 	}
 
@@ -109,8 +111,9 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 	public void removeContentChangeListener(IContentChangeListener listener) {
 		if (fChangeNotifier != null) {
 			fChangeNotifier.removeContentChangeListener(listener);
-			if (fChangeNotifier.isEmpty())
+			if (fChangeNotifier.isEmpty()) {
 				fChangeNotifier= null;
+			}
 		}
 	}
 

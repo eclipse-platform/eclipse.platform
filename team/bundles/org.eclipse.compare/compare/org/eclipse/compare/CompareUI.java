@@ -171,8 +171,9 @@ public final class CompareUI {
 	 */
 	private static void openCompareEditorOnPage(CompareEditorInput input, IWorkbenchPage page, boolean activate) {
 		CompareUIPlugin plugin= CompareUIPlugin.getDefault();
-		if (plugin != null)
+		if (plugin != null) {
 			plugin.openCompareEditor(input, page, null, activate);
+		}
 	}
 
 	/**
@@ -202,8 +203,9 @@ public final class CompareUI {
 	 */
 	private static void reuseCompareEditor(CompareEditorInput input, IReusableEditor editor, boolean activate) {
 		CompareUIPlugin plugin= CompareUIPlugin.getDefault();
-		if (plugin != null)
+		if (plugin != null) {
 			plugin.openCompareEditor(input, null, editor, activate);
+		}
 	}
 
 	/**
@@ -214,8 +216,9 @@ public final class CompareUI {
 	 */
 	public static void openCompareDialog(CompareEditorInput input) {
 		CompareUIPlugin plugin= CompareUIPlugin.getDefault();
-		if (plugin != null)
+		if (plugin != null) {
 			plugin.openCompareDialog(input);
+		}
 	}
 
 	/**

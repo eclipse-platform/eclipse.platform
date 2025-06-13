@@ -125,10 +125,11 @@ public class ExceptionHandler {
 			msg.write(message);
 			msg.write("\n\n"); //$NON-NLS-1$
 		}
-		if (exceptionMessage == null || exceptionMessage.length() == 0)
+		if (exceptionMessage == null || exceptionMessage.length() == 0) {
 			msg.write(CompareMessages.ExceptionDialog_seeErrorLogMessage);
-		else
+		} else {
 			msg.write(exceptionMessage);
+		}
 		MessageDialog.openError(shell, title, msg.toString());
 	}
 }

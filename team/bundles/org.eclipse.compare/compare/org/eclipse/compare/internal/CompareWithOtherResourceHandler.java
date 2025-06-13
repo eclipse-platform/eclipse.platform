@@ -47,8 +47,9 @@ public class CompareWithOtherResourceHandler extends AbstractHandler {
 		if (input.isEnabled(selection) || selectionSize == 1) {
 
 			// CompareAction#run(ISelection)
-			if (!input.setSelection(selection, workbenchPage.getWorkbenchWindow().getShell(), false))
+			if (!input.setSelection(selection, workbenchPage.getWorkbenchWindow().getShell(), false)) {
 				return null;
+			}
 			input.initializeCompareConfiguration();
 			CompareUI.openCompareEditorOnPage(input, workbenchPage);
 		}

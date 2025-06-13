@@ -81,8 +81,7 @@ public class Splitter extends SashForm {
 		if (wasEmpty != isEmpty()) {
 			// recursively walk up
 			Composite parent= getParent();
-			if (parent instanceof Splitter) {
-				Splitter sp= (Splitter) parent;
+			if (parent instanceof Splitter sp) {
 				sp.setVisible(this, visible);
 				sp.layout();
 			}
@@ -97,15 +96,17 @@ public class Splitter extends SashForm {
 	 */
 	@Override
 	public void setMaximizedControl(Control control) {
-		if (control == null || control == getMaximizedControl())
+		if (control == null || control == getMaximizedControl()) {
 			super.setMaximizedControl(null);
-		else
+		} else {
 			super.setMaximizedControl(control);
+		}
 
 		// recursively walk upward
 		Composite parent= getParent();
-		if (parent instanceof Splitter)
+		if (parent instanceof Splitter) {
 			((Splitter) parent).setMaximizedControl(this);
+		}
 
 		layout(true);
 	}
@@ -115,9 +116,11 @@ public class Splitter extends SashForm {
 	 */
 	private boolean isEmpty() {
 		Control[] controls= getChildren();
-		for (Control control : controls)
-			if (isVisible(control))
+		for (Control control : controls) {
+			if (isVisible(control)) {
 				return false;
+			}
+		}
 		return true;
 	}
 
@@ -126,11 +129,13 @@ public class Splitter extends SashForm {
 	 * Sash, this method always returns false.
 	 */
 	private boolean isVisible(Control child) {
-		if (child instanceof Sash)
+		if (child instanceof Sash) {
 			return false;
+		}
 		Object data= child.getData(VISIBILITY);
-		if (data instanceof Boolean)
+		if (data instanceof Boolean) {
 			return ((Boolean)data).booleanValue();
+		}
 		return true;
 	}
 }

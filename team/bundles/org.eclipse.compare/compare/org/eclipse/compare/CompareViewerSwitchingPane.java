@@ -92,10 +92,10 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 
 		addDisposeListener(
 			e -> {
-				if (fViewer != null)
+				if (fViewer != null) {
 					fViewer.removeSelectionChangedListener(CompareViewerSwitchingPane.this);
-				if (fViewer instanceof StructuredViewer) {
-					StructuredViewer sv= (StructuredViewer) fViewer;
+				}
+				if (fViewer instanceof StructuredViewer sv) {
 					sv.removeDoubleClickListener(CompareViewerSwitchingPane.this);
 					sv.removeOpenListener(CompareViewerSwitchingPane.this);
 				}
@@ -114,16 +114,16 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	}
 
 	private void setViewer(Viewer newViewer) {
-		if (newViewer == fViewer)
+		if (newViewer == fViewer) {
 			return;
+		}
 
 		boolean oldEmpty= isEmpty();
 
 		if (fViewer != null) {
 			fViewer.removeSelectionChangedListener(this);
 
-			if (fViewer instanceof StructuredViewer) {
-				StructuredViewer sv= (StructuredViewer) fViewer;
+			if (fViewer instanceof StructuredViewer sv) {
 				sv.removeDoubleClickListener(this);
 				sv.removeOpenListener(this);
 			}
@@ -133,8 +133,9 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 
 			fViewer.setInput(null);
 
-			if (content != null && !content.isDisposed())
+			if (content != null && !content.isDisposed()) {
 				content.dispose();
+			}
 		} else {
 			oldEmpty= false;
 		}
@@ -154,16 +155,16 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 
 			fViewer.addSelectionChangedListener(this);
 
-			if (fViewer instanceof StructuredViewer) {
-				StructuredViewer sv= (StructuredViewer) fViewer;
+			if (fViewer instanceof StructuredViewer sv) {
 				sv.addDoubleClickListener(this);
 				sv.addOpenListener(this);
 			}
 
 			if (oldEmpty != newEmpty) {	// re-layout my container
 				Composite parent= getParent();
-				if (parent instanceof Splitter)
+				if (parent instanceof Splitter) {
 					((Splitter)parent).setVisible(this, fControlVisibility ? !newEmpty : true);
+				}
 			}
 
 			layout(true);
@@ -197,24 +198,29 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 
 	@Override
 	public ISelection getSelection() {
-		if (fViewer != null)
+		if (fViewer != null) {
 			return fViewer.getSelection();
+		}
 		return super.getSelection();
 	}
 
 	@Override
 	public void setSelection(ISelection s) {
-		if (fViewer != null)
+		if (fViewer != null) {
 			fViewer.setSelection(s);
+		}
 	}
 
 	private boolean hasFocus2() {
 		// do we have focus?
 		Display display= getDisplay();
-		if (display != null)
-			for (Control focus= display.getFocusControl(); focus != null; focus= focus.getParent())
-				if (focus == this)
+		if (display != null) {
+			for (Control focus= display.getFocusControl(); focus != null; focus= focus.getParent()) {
+				if (focus == this) {
 					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -245,8 +251,9 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	 */
 	@Override
 	public void setInput(Object input) {
-		if (!inputChanged(input))
+		if (!inputChanged(input)) {
 			return;
+		}
 
 		boolean hadFocus = hasFocus2();
 
@@ -254,12 +261,14 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 
 		// viewer switching
 		Viewer newViewer= null;
-		if (input != null)
+		if (input != null) {
 			newViewer= getViewer(fViewer, input);
+		}
 
 		if (newViewer == null) {
-			if (fViewer instanceof NullViewer)
+			if (fViewer instanceof NullViewer) {
 				return;
+			}
 			newViewer= new NullViewer(this);
 		}
 
@@ -268,12 +277,14 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		// set input
 		fViewer.setInput(input);
 
-		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl()))
+		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl())) {
 			return;
+		}
 
 		Image image= null;
-		if (!(fViewer instanceof NullViewer) && input instanceof ICompareInput)
+		if (!(fViewer instanceof NullViewer) && input instanceof ICompareInput) {
 			image= ((ICompareInput)input).getImage();
+		}
 		setImage(image);
 
 		String title= null;
@@ -289,8 +300,9 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 						title = (String) data;
 					}
 				}
-				if (hadFocus)
+				if (hadFocus) {
 					c.setFocus();
+				}
 			}
 		}
 
@@ -319,8 +331,9 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 				String format= CompareMessages.CompareViewerSwitchingPane_Titleformat;
 				String t= MessageFormat.format(format, fTitle, fTitleArgument);
 				setText(t);
-			} else
+			} else {
 				setText(fTitle);
+			}
 		} else {
 			setText("");	//$NON-NLS-1$
 		}
@@ -330,32 +343,38 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == INavigatable.class) {
-			if (isEmpty())
+			if (isEmpty()) {
 				return null;
+			}
 			Viewer viewer= getViewer();
-			if (viewer == null)
+			if (viewer == null) {
 				return null;
+			}
 			Control control= viewer.getControl();
-			if (control == null)
+			if (control == null) {
 				return null;
+			}
 			Object data= control.getData(INavigatable.NAVIGATOR_PROPERTY);
-			if (data instanceof INavigatable)
+			if (data instanceof INavigatable) {
 				return (T) data;
+			}
 		}
 		if (adapter == IFlushable.class) {
 			Viewer v= getViewer();
 			if (v != null) {
 				IFlushable flushable = Adapters.adapt(v, IFlushable.class);
-				if (flushable != null)
+				if (flushable != null) {
 					return (T) flushable;
+				}
 			}
 		}
 		if (adapter == IFlushable2.class) {
 			Viewer v= getViewer();
 			if (v != null) {
 				IFlushable2 flushable = Adapters.adapt(v, IFlushable2.class);
-				if (flushable != null)
+				if (flushable != null) {
 					return (T) flushable;
+				}
 			}
 		}
 		return super.getAdapter(adapter);
@@ -367,8 +386,9 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		if (v != null) {
 			Control c= v.getControl();
 			if (c != null) {
-				if (c.setFocus())
+				if (c.setFocus()) {
 					return true;
+				}
 			}
 		}
 		return super.setFocus();

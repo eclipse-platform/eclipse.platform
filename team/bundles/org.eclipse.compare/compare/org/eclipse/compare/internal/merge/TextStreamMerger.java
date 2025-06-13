@@ -48,8 +48,9 @@ public class TextStreamMerger implements IStreamMerger {
 
 		try {
 			String lineSeparator = System.lineSeparator();
-			if (lineSeparator == null)
+			if (lineSeparator == null) {
 				lineSeparator= "\n"; //$NON-NLS-1$
+			}
 
 			RangeDifference[] diffs= RangeDifferencer.findRanges(monitor, a, t, o);
 

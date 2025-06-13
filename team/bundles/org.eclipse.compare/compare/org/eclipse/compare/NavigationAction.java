@@ -70,8 +70,9 @@ public class NavigationAction extends Action {
 				if (atEnd && shell != null) {
 
 					Display display= shell.getDisplay();
-					if (display != null)
+					if (display != null) {
 						display.beep();
+					}
 
 					String title;
 					String message;

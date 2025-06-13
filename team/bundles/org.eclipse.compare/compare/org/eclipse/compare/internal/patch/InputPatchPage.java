@@ -148,8 +148,9 @@ public class InputPatchPage extends WizardPage {
 	}
 
 	/* package */ String getPatchName() {
-		if (getInputMethod() == CLIPBOARD)
+		if (getInputMethod() == CLIPBOARD) {
 			return PatchMessages.InputPatchPage_Clipboard;
+		}
 		return getPatchFilePath();
 	}
 
@@ -197,8 +198,9 @@ public class InputPatchPage extends WizardPage {
 	 */
 	@Override
 	public IWizardPage getNextPage() {
-		if (!checkPageComplete())
+		if (!checkPageComplete()) {
 			return this;
+		}
 
 		WorkspacePatcher patcher= ((PatchWizard) getWizard()).getPatcher();
 
@@ -211,8 +213,9 @@ public class InputPatchPage extends WizardPage {
 		if (patcher.isWorkspacePatch()) {
 			// skip 'Patch Target' page
 			IWizardPage page = super.getNextPage();
-			if (page.getName().equals(PatchTargetPage.PATCHTARGETPAGE_NAME))
+			if (page.getName().equals(PatchTargetPage.PATCHTARGETPAGE_NAME)) {
 				return page.getNextPage();
+			}
 		}
 
 		// If this is a git patch set the workspace root as the target and skip the target selection page
@@ -250,8 +253,9 @@ public class InputPatchPage extends WizardPage {
 	 * Reads in the patch contents
 	 */
 	public void readInPatch(){
-		if (fPatchRead)
+		if (fPatchRead) {
 			return;
+		}
 
 		WorkspacePatcher patcher= ((PatchWizard) getWizard()).getPatcher();
 		// Create a reader for the input
@@ -281,8 +285,9 @@ public class InputPatchPage extends WizardPage {
 				Clipboard clipboard = new Clipboard(c.getDisplay());
 				Object o = clipboard.getContents(TextTransfer.getInstance());
 				clipboard.dispose();
-				if (o instanceof String)
+				if (o instanceof String) {
 					return new StringReader((String) o);
+				}
 			}
 			fPatchSource = PatchMessages.InputPatchPage_Clipboard_title;
 		} else if (inputMethod == FILE) {
@@ -301,8 +306,9 @@ public class InputPatchPage extends WizardPage {
 			if (patchFileURL != null) {
 				try {
 					String contents = Utilities.getURLContents(new URL(patchFileURL), getContainer());
-					if (contents != null)
+					if (contents != null) {
 						return new StringReader(contents);
+					}
 				} catch (MalformedURLException | InvocationTargetException | OperationCanceledException
 						| InterruptedException e) { // ignore
 				}
@@ -407,8 +413,9 @@ public class InputPatchPage extends WizardPage {
 		fUseClipboardButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (!fUseClipboardButton.getSelection())
+				if (!fUseClipboardButton.getSelection()) {
 					return;
+				}
 
 				clearErrorMessage();
 				fShowError= true;
@@ -424,8 +431,9 @@ public class InputPatchPage extends WizardPage {
 		fUsePatchFileButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (!fUsePatchFileButton.getSelection())
+				if (!fUsePatchFileButton.getSelection()) {
 					return;
+				}
 				//If there is anything typed in at all
 				clearErrorMessage();
 				fShowError= (fPatchFileNameField.getText() != ""); //$NON-NLS-1$
@@ -479,8 +487,9 @@ public class InputPatchPage extends WizardPage {
 		fUseWorkspaceButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (!fUseWorkspaceButton.getSelection())
+				if (!fUseWorkspaceButton.getSelection()) {
 					return;
+				}
 				clearErrorMessage();
 				// If there is anything typed in at all
 				fShowError= (!fTreeViewer.getSelection().isEmpty());
@@ -500,17 +509,18 @@ public class InputPatchPage extends WizardPage {
 
 		fTreeViewer.addDoubleClickListener(event -> {
 			ISelection selection= event.getSelection();
-			if (selection instanceof TreeSelection) {
-				TreeSelection treeSel= (TreeSelection) selection;
+			if (selection instanceof TreeSelection treeSel) {
 				Object res= treeSel.getFirstElement();
 				if (res != null) {
 					if (res instanceof IProject || res instanceof IFolder) {
-						if (fTreeViewer.getExpandedState(res))
+						if (fTreeViewer.getExpandedState(res)) {
 							fTreeViewer.collapseToLevel(res, 1);
-						else
+						} else {
 							fTreeViewer.expandToLevel(res, 1);
-					} else if (res instanceof IFile)
+						}
+					} else if (res instanceof IFile) {
 						fPatchWizard.showPage(getNextPage());
+					}
 				}
 			}
 		});
@@ -556,21 +566,25 @@ public class InputPatchPage extends WizardPage {
 				clipboard.dispose();
 				if (o instanceof String) {
 					String s= ((String) o).trim();
-					if (s.length() > 0)
+					if (s.length() > 0) {
 						gotPatch= true;
-					else
+					} else {
 						error= PatchMessages.InputPatchPage_ClipboardIsEmpty_message;
-				} else
+					}
+				} else {
 					error= PatchMessages.InputPatchPage_NoTextInClipboard_message;
-			} else
+				}
+			} else {
 				error= PatchMessages.InputPatchPage_CouldNotReadClipboard_message;
+			}
 		} else if (inputMethod==FILE) {
 			String path= fPatchFileNameField.getText();
 			if (path != null && path.length() > 0) {
 				File file= new File(path);
 				gotPatch= file.exists() && file.isFile() && file.length() > 0;
-				if (!gotPatch)
+				if (!gotPatch) {
 					error= PatchMessages.InputPatchPage_CannotLocatePatch_message + path;
+				}
 			} else {
 				error= PatchMessages.InputPatchPage_NoFileName_message;
 			}
@@ -600,8 +614,9 @@ public class InputPatchPage extends WizardPage {
 					} else {
 						File actualFile= location.toFile();
 						gotPatch= actualFile.exists()&&actualFile.isFile()&&actualFile.length() > 0;
-						if (!gotPatch)
+						if (!gotPatch) {
 							error= PatchMessages.InputPatchPage_FileSelectedNotPatch_message;
+						}
 					}
 				}
 			} else {
@@ -611,8 +626,9 @@ public class InputPatchPage extends WizardPage {
 
 		setPageComplete(gotPatch);
 
-		if (fShowError)
+		if (fShowError) {
 			setErrorMessage(error);
+		}
 	}
 
 	protected void handlePatchFileBrowseButtonPressed() {
@@ -627,8 +643,9 @@ public class InputPatchPage extends WizardPage {
 		}
 		dialog.setFilterPath(patchFilePath);
 		String res= dialog.open();
-		if (res == null)
+		if (res == null) {
 			return;
+		}
 
 		patchFilePath= dialog.getFileName();
 		IPath filterPath= IPath.fromOSString(dialog.getFilterPath());
@@ -653,9 +670,11 @@ public class InputPatchPage extends WizardPage {
 
 			String[] currentItems= fPatchFileNameField.getItems();
 			int selectionIndex= -1;
-			for (int i= 0; i < currentItems.length; i++)
-				if (currentItems[i].equals(path))
+			for (int i= 0; i < currentItems.length; i++) {
+				if (currentItems[i].equals(path)) {
 					selectionIndex= i;
+				}
+			}
 
 			if (selectionIndex < 0) {	// not found in history
 				int oldLength= currentItems.length;
@@ -724,26 +743,29 @@ public class InputPatchPage extends WizardPage {
 
 			// set filenames history
 			String[] sourceNames= settings.getArray(STORE_PATCH_FILES_ID);
-			if (sourceNames != null)
+			if (sourceNames != null) {
 				for (String sourceName : sourceNames) {
 					if (sourceName != null && sourceName.length() > 0) {
 						fPatchFileNameField.add(sourceName);
 					}
 				}
+			}
 
 			// set patch file path
 			String patchFilePath= settings.get(STORE_PATCH_FILES_ID);
-			if (patchFilePath != null)
+			if (patchFilePath != null) {
 				setSourceName(patchFilePath);
+			}
 
 			// set URLs history
 			String[] sourceURLs= settings.getArray(STORE_PATCH_URLS_ID);
-			if (sourceURLs != null)
+			if (sourceURLs != null) {
 				for (String sourceURL : sourceURLs) {
 					if (sourceURL != null && sourceURL.length() > 0) {
 						fPatchURLField.add(sourceURL);
 					}
 				}
+			}
 
 			// If the previous apply patch was used with a clipboard, we need to check
 			// if there is a valid patch on the clipboard. This will be done in adjustToCurrentTarget()
@@ -772,8 +794,9 @@ public class InputPatchPage extends WizardPage {
 				//check to see if the current input is set to workspace - if it is switch it
 				//back to clipboard since there is no corresponding element to go along with
 				//the tree viewer
-				if (inputMethod == WORKSPACE)
+				if (inputMethod == WORKSPACE) {
 					inputMethod= FILE;
+				}
 			}
 		}
 
@@ -794,16 +817,18 @@ public class InputPatchPage extends WizardPage {
 
 			// update source names history
 			String[] sourceNames= settings.getArray(STORE_PATCH_FILES_ID);
-			if (sourceNames == null)
+			if (sourceNames == null) {
 				sourceNames= new String[0];
+			}
 
 			sourceNames= addToHistory(sourceNames, getPatchFilePath());
 			settings.put(STORE_PATCH_FILES_ID, sourceNames);
 
 			// update source URLs history
 			String[] sourceURLs= settings.getArray(STORE_PATCH_URLS_ID);
-			if (sourceURLs == null)
+			if (sourceURLs == null) {
 				sourceURLs= new String[0];
+			}
 
 			sourceURLs= addToHistory(sourceURLs, fPatchURLField.getText());
 			settings.put(STORE_PATCH_URLS_ID, sourceURLs);
@@ -873,8 +898,7 @@ public class InputPatchPage extends WizardPage {
 			Clipboard clipboard= new Clipboard(c.getDisplay());
 			Object o= clipboard.getContents(TextTransfer.getInstance());
 			clipboard.dispose();
-			if (o instanceof String) {
-				String s = (String) o;
+			if (o instanceof String s) {
 				try (Reader reader = new StringReader(s)) {
 					if (isPatchFile(reader)) {
 						setInputButtonState(CLIPBOARD);
@@ -907,8 +931,9 @@ public class InputPatchPage extends WizardPage {
 		}
 
 		IFilePatch2[] diffs= patcher.getDiffs();
-		if (diffs == null || diffs.length == 0)
+		if (diffs == null || diffs.length == 0) {
 			return false;
+		}
 		return true;
 	}
 
@@ -959,18 +984,22 @@ public class InputPatchPage extends WizardPage {
 	}
 
 	protected int getInputMethod() {
-		if (fUseClipboardButton.getSelection())
+		if (fUseClipboardButton.getSelection()) {
 			return CLIPBOARD;
-		if (fUsePatchFileButton.getSelection())
+		}
+		if (fUsePatchFileButton.getSelection()) {
 			return FILE;
-		if(fUseURLButton.getSelection())
+		}
+		if(fUseURLButton.getSelection()) {
 			return URL;
+		}
 		return WORKSPACE;
 	}
 
 	private String getPatchFilePath() {
-		if (fPatchFileNameField != null)
+		if (fPatchFileNameField != null) {
 			return fPatchFileNameField.getText();
+		}
 		return ""; //$NON-NLS-1$
 	}
 
@@ -990,8 +1019,9 @@ public class InputPatchPage extends WizardPage {
 
 		// since only one new item was added, we can be over the limit
 		// by at most one item
-		if (l.size() > COMBO_HISTORY_LENGTH)
+		if (l.size() > COMBO_HISTORY_LENGTH) {
 			l.remove(COMBO_HISTORY_LENGTH);
+		}
 
 		return l.toArray(new String[l.size()]);
 	}
