@@ -102,8 +102,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 
 			@Override
 			public void changing(LocationEvent event) {
-				if (redirectLink(event.location))
+				if (redirectLink(event.location)) {
 					event.doit = false;
+				}
 				if (!event.doit && event.location != null
 						&& event.location.startsWith("https://")) { //$NON-NLS-1$
 					try {
@@ -129,8 +130,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 
 			@Override
 			public void changed(ProgressEvent e) {
-				if (e.current == e.total)
+				if (e.current == e.total) {
 					return;
+				}
 
 				if (lastProgress == -1) {
 					lastProgress = 0;
@@ -145,8 +147,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 					monitor = null;
 					return;
 				}
-				if (monitor != null)
+				if (monitor != null) {
 					monitor.worked(e.current - lastProgress);
+				}
 				lastProgress = e.current;
 			}
 
@@ -169,13 +172,16 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 			}
 		});
 		browser.addStatusTextListener(event -> {
-			if (processQuery(event.text))
+			if (processQuery(event.text)) {
 				return;
+			}
 			IStatusLineManager statusLine = BrowserPart.this.parent.getStatusLineManager();
-			if (statusLine != null)
+			if (statusLine != null) {
 				statusLine.setMessage(event.text);
-			if (event.text.contains("://")) //$NON-NLS-1$
+			}
+			if (event.text.contains("://")) { //$NON-NLS-1$
 				statusURL = event.text;
+			}
 		});
 		browser.addOpenWindowListener(event -> {
 			if (statusURL != null) {
@@ -255,7 +261,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 				IScopeContext instanceScope = InstanceScope.INSTANCE;
 				IEclipsePreferences prefs = instanceScope.getNode(HelpBasePlugin.PLUGIN_ID);
 				prefs.putBoolean(HIGHLIGHT_ON, highlightAction.isChecked());
-				if (browser.getUrl().contains("resultof")) browser.execute("setHighlight(" +highlightAction.isChecked()+");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				if (browser.getUrl().contains("resultof")) { //$NON-NLS-1$
+					browser.execute("setHighlight(" +highlightAction.isChecked()+");"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 			}
 		};
 		highlightAction.setChecked(highlight);
@@ -328,8 +336,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 		this.id = id;
 		if (memento != null) {
 			String href = memento.getString("BrowserPart.url"); //$NON-NLS-1$
-			if (href != null)
+			if (href != null) {
 				showURL(BaseHelpSystem.resolve(href, "/help/ntopic").toString()); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -352,8 +361,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 
 	@Override
 	public void setFocus() {
-		if (browser != null)
+		if (browser != null) {
 			browser.setFocus();
+		}
 	}
 
 	public void showURL(String url) {
@@ -424,8 +434,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 			query = u.getQuery();
 		} catch (MalformedURLException mue) {
 		}
-		if (query == null)
+		if (query == null) {
 			return;
+		}
 		StringTokenizer st = new StringTokenizer(query, "=&"); //$NON-NLS-1$
 		if (st.countTokens() < 6) {
 			return;
@@ -436,8 +447,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 		String className = URLCoder.decode(st.nextToken());
 		st.nextToken();
 		String arg = URLCoder.decode(st.nextToken());
-		if (pluginId == null || className == null || arg == null)
+		if (pluginId == null || className == null || arg == null) {
 			return;
+		}
 		BaseHelpSystem.runLiveHelp(pluginId, className, arg);
 	}
 
@@ -453,8 +465,9 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 
 	@Override
 	public IAction getGlobalAction(String id) {
-		if (id.equals(ActionFactory.PRINT.getId()))
+		if (id.equals(ActionFactory.PRINT.getId())) {
 			return printAction;
+		}
 		return null;
 	}
 

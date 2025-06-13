@@ -77,8 +77,9 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 			scopeSetLink.setText(set.getName());
 			scopeSetManager.setActiveSet(set);
 			scopeSection.layout();
-			if (parent != null)
+			if (parent != null) {
 				parent.reflow();
+			}
 		}
 
 	}
@@ -158,8 +159,9 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 				if (searchJobs.length == 0) {
 					// search finished
 					searchInProgress = false;
-					if (container.isDisposed())
+					if (container.isDisposed()) {
 						return;
+					}
 					container.getDisplay().asyncExec(this);
 					SearchResultsPart results = (SearchResultsPart) parent
 							.findPart(IHelpUIConstants.HV_FSEARCH_RESULT);
@@ -187,12 +189,14 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 		@Override
 		public void run() {
 			searchWordCombo.getControl().setEnabled(!searchInProgress);
-			if (!searchInProgress)
+			if (!searchInProgress) {
 				goButton.setEnabled(true);
-			if (searchInProgress)
+			}
+			if (searchInProgress) {
 				goButton.setText(Messages.SearchPart_stop);
-			else
+			} else {
 				goButton.setText(Messages.SearchPart_go);
+			}
 			parent.getForm().getForm().setBusy(searchInProgress);
 			goButton.getParent().layout();
 		}
@@ -390,18 +394,17 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 		scopeSetManager.setActiveSet(set);
 		updateMasters(set);
 		scopeSection.layout();
-		if (parent != null)
+		if (parent != null) {
 			parent.reflow();
+		}
 	}
 
 	private void updateMasters(ScopeSet set) {
 		Control[] children = ((Composite) scopeSection.getClient()).getChildren();
 		for (Control child : children) {
-			if (child instanceof Button) {
-				Button master = (Button) child;
+			if (child instanceof Button master) {
 				Object data = master.getData();
-				if (data != null && data instanceof EngineDescriptor) {
-					EngineDescriptor ed = (EngineDescriptor) data;
+				if (data != null && data instanceof EngineDescriptor ed) {
 					master.setSelection(set.getEngineEnabled(ed));
 				}
 			}
@@ -471,8 +474,9 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 				reflowNeeded = true;
 			}
 		}
-		if (reflowNeeded)
+		if (reflowNeeded) {
 			parent.reflow();
+		}
 	}
 
 	private void updateEngine(EngineDescriptor desc) {
@@ -491,8 +495,9 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 				break;
 			}
 		}
-		if (reflowNeeded)
+		if (reflowNeeded) {
 			parent.reflow();
+		}
 	}
 
 	public void startSearch(String text) {
@@ -523,23 +528,26 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 		// items.add(current.getExpression());
 		for (int i = sets.length - 1; i >= 0; i--) {
 			HistoryScopeSet sset = (HistoryScopeSet) sets[i];
-			if (current != null && sset == current)
+			if (current != null && sset == current) {
 				continue;
-			if (sets.length - i > COMBO_HISTORY_SIZE)
+			}
+			if (sets.length - i > COMBO_HISTORY_SIZE) {
 				toDelete.add(sset);
+			}
 			items.add(sset.getExpression());
 		}
 		for (HistoryScopeSet sset : toDelete) {
 			scopeSetManager.remove(sset);
 		}
-		if (items.size() > 0)
+		if (items.size() > 0) {
 			searchWordCombo.setItems(items.toArray(new String[items.size()]));
+		}
 	}
 
 	private void handleButtonPressed() {
-		if (searchWordCombo.getControl().isEnabled())
+		if (searchWordCombo.getControl().isEnabled()) {
 			doSearch(searchWordCombo.getText());
-		else {
+		} else {
 			goButton.setEnabled(false);
 			stop();
 		}
@@ -553,15 +561,17 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 		ScopeSet set = scopeSetManager.getActiveSet();
 		if (!fromHistory && set instanceof HistoryScopeSet) {
 			String setExpression = ((HistoryScopeSet) set).getExpression();
-			if (setExpression.equals(text))
+			if (setExpression.equals(text)) {
 				fromHistory = true;
+			}
 		}
 		if (!fromHistory) {
 			storeSearchHistory(text);
 			boolean switchedSet = scopeSetManager.restoreLastExplicitSet();
 			set = scopeSetManager.getActiveSet();
-			if (switchedSet)
+			if (switchedSet) {
 				setActiveScopeSet(set);
+			}
 		}
 		ArrayList<FederatedSearchEntry> entries = new ArrayList<>();
 		final SearchResultsPart results = (SearchResultsPart) parent
@@ -625,8 +635,9 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 				eds.add(ed);
 			}
 		}
-		if (entries.isEmpty())
+		if (entries.isEmpty()) {
 			return;
+		}
 		FederatedSearchEntry[] array = entries.toArray(new FederatedSearchEntry[entries.size()]);
 		if (scopeSection.isExpanded()) {
 			scopeSection.setExpanded(false);
@@ -668,8 +679,9 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 	@Override
 	public void dispose() {
 		ScopeSet activeSet = scopeSetManager.getActiveSet();
-		if (activeSet != null)
+		if (activeSet != null) {
 			activeSet.save();
+		}
 		if (engineObserver != null) {
 			parent.getEngineManager().deleteObserver(engineObserver);
 			engineObserver = null;
@@ -696,16 +708,18 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 		loadEngines(filteringGroup, parent.getForm().getToolkit());
 		createAdvancedLink(filteringGroup, parent.getForm().getToolkit());
 		parent.hookFormText(searchWordText);
-		if (memento != null)
+		if (memento != null) {
 			restorePart(memento);
+		}
 	}
 
 	private void restorePart(IMemento memento) {
 		String setName = memento.getString("activeSet"); //$NON-NLS-1$
 		if (setName != null) {
 			ScopeSet sset = scopeSetManager.findSet(setName);
-			if (sset != null)
+			if (sset != null) {
 				scopeSetManager.setActiveSet(sset);
+			}
 		}
 		String expression = memento.getString("expression"); //$NON-NLS-1$
 		if (expression != null && expression.length() > 0) {
@@ -753,8 +767,9 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 
 	@Override
 	public IAction getGlobalAction(String id) {
-		if (id.equals(ActionFactory.COPY.getId()))
+		if (id.equals(ActionFactory.COPY.getId())) {
 			return parent.getCopyAction();
+		}
 		return null;
 	}
 
@@ -778,8 +793,9 @@ public class SearchPart extends AbstractFormPart implements IHelpPart, IHelpUICo
 	@Override
 	public void saveState(IMemento memento) {
 		ScopeSet sset = scopeSetManager.getActiveSet();
-		if (sset != null)
+		if (sset != null) {
 			memento.putString("activeSet", sset.getName()); //$NON-NLS-1$
+		}
 		memento.putString("expression", searchWordCombo.getText()); //$NON-NLS-1$
 	}
 }

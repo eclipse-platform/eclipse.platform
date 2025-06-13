@@ -34,10 +34,12 @@ public class HelpUIEventLoop {
 	 */
 	public static void run() {
 		try {
-			if (display == null)
+			if (display == null) {
 				display = Display.getCurrent();
-			if (display == null)
+			}
+			if (display == null) {
 				display = new Display();
+			}
 		} finally {
 			started = true;
 		}
@@ -61,11 +63,12 @@ public class HelpUIEventLoop {
 
 	public static void wakeup() {
 		Display d = display;
-		if (d != null)
+		if (d != null) {
 			try {
 				d.wake();
 			} catch (Exception e) {
 			}
+		}
 	}
 
 	/**

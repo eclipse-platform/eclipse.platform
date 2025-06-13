@@ -41,8 +41,7 @@ public class CloseHelpTrayHandler extends AbstractHandler {
 			Shell shell = Display.getCurrent().getActiveShell();
 			if (shell != null && !shell.isDisposed()) {
 				Object shellData = shell.getData();
-				if (shellData instanceof TrayDialog) {
-					TrayDialog trayDialog = (TrayDialog)shellData;
+				if (shellData instanceof TrayDialog trayDialog) {
 					if (trayDialog.getTray() instanceof HelpTray) {
 						trayDialog.closeTray();
 					}

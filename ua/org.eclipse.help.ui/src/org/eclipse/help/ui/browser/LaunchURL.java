@@ -73,8 +73,9 @@ public class LaunchURL implements IWorkbenchWindowActionDelegate,
 		if (data != null && data instanceof Hashtable) {
 			url = ((Hashtable<String, String>) data).get("url"); //$NON-NLS-1$
 		}
-		if (url == null || url.length() == 0)
+		if (url == null || url.length() == 0) {
 			url = config.getAttribute("url"); //$NON-NLS-1$
+		}
 	}
 
 	@Override

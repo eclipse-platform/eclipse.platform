@@ -25,8 +25,9 @@ public class HistoryScopeSet extends ScopeSet {
 
 	public HistoryScopeSet(String name, String expression) {
 		super(name);
-		if (expression!=null)
+		if (expression!=null) {
 			setExpression(expression);
+		}
 	}
 
 	public HistoryScopeSet(HistoryScopeSet set) {

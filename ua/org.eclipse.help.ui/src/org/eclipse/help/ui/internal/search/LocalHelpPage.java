@@ -71,9 +71,10 @@ public class LocalHelpPage extends RootScopePage {
 	@Override
 	public void init(IEngineDescriptor ed, String scopeSetName) {
 		super.init(ed, scopeSetName);
-		if (scopeSetName != null)
+		if (scopeSetName != null) {
 			workingSet = BaseHelpSystem.getWorkingSetManager().getWorkingSet(
 					scopeSetName);
+		}
 	}
 
 	/**
@@ -121,10 +122,11 @@ public class LocalHelpPage extends RootScopePage {
 			}
 		});
 
-		if (workingSet == null)
+		if (workingSet == null) {
 			searchAll.setSelection(true);
-		else
+		} else {
 			searchSelected.setSelection(true);
+		}
 
 		Label contentLabel = new Label(parent, SWT.WRAP);
 		contentLabel.setFont(font);
@@ -189,10 +191,11 @@ public class LocalHelpPage extends RootScopePage {
 			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
 				final Object element = event.getElement();
-				if (!contentTree.getGrayed(element))
+				if (!contentTree.getGrayed(element)) {
 					BusyIndicator.showWhile(getShell().getDisplay(),
 							() -> setSubtreeChecked(element, contentTree.getChecked(element), false,
 									contentTree, contentTreeContentProvider));
+				}
 			}
 		});
 		contentTree.getTree().setEnabled(workingSet != null);
@@ -238,10 +241,11 @@ public class LocalHelpPage extends RootScopePage {
 			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
 				final Object element = event.getElement();
-				if (!criteriaTree.getGrayed(element))
+				if (!criteriaTree.getGrayed(element)) {
 					BusyIndicator.showWhile(getShell().getDisplay(),
 							() -> setSubtreeChecked(element, criteriaTree.getChecked(element), false,
 									criteriaTree, criteriaTreeContentProvider));
+				}
 			}
 		});
 		criteriaTree.getTree().setEnabled(workingSet != null);
@@ -249,8 +253,9 @@ public class LocalHelpPage extends RootScopePage {
 
 
 	private void initializeCheckedState() {
-		if (workingSet == null)
+		if (workingSet == null) {
 			return;
+		}
 
 		BusyIndicator.showWhile(getShell().getDisplay(), () -> {
 			initializeContentTree();
@@ -266,12 +271,14 @@ public class LocalHelpPage extends RootScopePage {
 
 	void updateParentState(Object child, boolean baseChildState,
 						   CheckboxTreeViewer tree, ITreeContentProvider contentProvider) {
-		if (child == null)
+		if (child == null) {
 			return;
+		}
 
 		Object parent = contentProvider.getParent(child);
-		if (parent == null)
+		if (parent == null) {
 			return;
+		}
 
 		boolean allSameState = true;
 		Object[] children = null;
@@ -301,10 +308,12 @@ public class LocalHelpPage extends RootScopePage {
 			if (state) {
 				tree.setChecked(element, true);
 				tree.setGrayed(element, false);
-			} else
+			} else {
 				tree.setGrayChecked(element, false);
-			if (isExpandable(element, contentProvider))
+			}
+			if (isExpandable(element, contentProvider)) {
 				setSubtreeChecked(element, state, checkExpandedState, tree, contentProvider);
+			}
 		}
 	}
 
@@ -313,10 +322,11 @@ public class LocalHelpPage extends RootScopePage {
 			CheckboxTreeViewer tree, ITreeContentProvider contentProvider) {
 		Object[] children = contentProvider.getChildren(parent);
 		for (int i = 0; i < children.length; i++) {
-			if (tree.getGrayed(children[i]))
+			if (tree.getGrayed(children[i])) {
 				findCheckedElements(checkedResources, children[i], tree, contentProvider);
-			else if (tree.getChecked(children[i]))
+			} else if (tree.getChecked(children[i])) {
 				checkedResources.add(children[i]);
+			}
 		}
 	}
 
@@ -348,9 +358,10 @@ public class LocalHelpPage extends RootScopePage {
 			Object element = event.getElement();
 			boolean state = event.getChecked();
 			tree.setGrayed(element, false);
-			if (isExpandable(element, contentProvider))
+			if (isExpandable(element, contentProvider)) {
 				setSubtreeChecked(element, state, state, tree, contentProvider);
 			// only check subtree if state is set to true
+			}
 
 			updateParentState(element, state, tree, contentProvider);
 			// validateInput();
@@ -383,12 +394,13 @@ public class LocalHelpPage extends RootScopePage {
 
 	@Override
 	public boolean performOk() {
-		if (searchSelected.getSelection())
+		if (searchSelected.getSelection()) {
 			BaseHelpSystem.getWorkingSetManager()
 					.addWorkingSet(getWorkingSet());
-		else
+		} else {
 			BaseHelpSystem.getWorkingSetManager().removeWorkingSet(
 					getWorkingSet());
+		}
 
 		getPreferenceStore().setValue(
 				getKey(LocalSearchScopeFactory.P_WORKING_SET),
@@ -408,8 +420,9 @@ public class LocalHelpPage extends RootScopePage {
 		contentTree.setCheckedElements(elements);
 		for (int i = 0; i < elements.length; i++) {
 			Object element = elements[i];
-			if (isExpandable(element, contentTreeContentProvider))
+			if (isExpandable(element, contentTreeContentProvider)) {
 				setSubtreeChecked(element, true, true, contentTree, contentTreeContentProvider);
+			}
 			updateParentState(element, true, contentTree, contentTreeContentProvider);
 		}
 	}

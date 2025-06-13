@@ -241,8 +241,7 @@ public class HelpTray extends DialogTray implements IPageChangedListener {
 			c = ((IDialogPage) page).getControl();
 		} else {
 			c = shell.getDisplay().getFocusControl();
-			if (c instanceof TabFolder) {
-				TabFolder folder = (TabFolder) c;
+			if (c instanceof TabFolder folder) {
 				TabItem[] selection = folder.getSelection();
 				if (selection.length == 1) {
 					c = selection[0].getControl();

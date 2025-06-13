@@ -76,36 +76,43 @@ public class EngineDescriptor implements IEngineDescriptor {
 
 	@Override
 	public String getLabel() {
-		if (label != null)
+		if (label != null) {
 			return label;
+		}
 		String clabel = null;
-		if (config != null)
+		if (config != null) {
 			clabel = config.getAttribute(IHelpUIConstants.ATT_LABEL);
-		if (clabel == null)
+		}
+		if (clabel == null) {
 			clabel = etdesc.getLabel();
+		}
 		return clabel;
 	}
 
 	@Override
 	public String getId() {
-		if (id != null)
+		if (id != null) {
 			return id;
+		}
 		return config.getAttribute(IHelpUIConstants.ATT_ID);
 	}
 
 	@Override
 	public String getEngineTypeId() {
-		if (etdesc != null)
+		if (etdesc != null) {
 			return etdesc.getId();
+		}
 		return config.getAttribute(IHelpUIConstants.ATT_ENGINE_TYPE_ID);
 	}
 
 	public boolean isEnabled() {
-		if (userDefined)
+		if (userDefined) {
 			return true;
+		}
 		String aenabled = config.getAttribute(IHelpUIConstants.ATT_ENABLED);
-		if (aenabled != null)
+		if (aenabled != null) {
 			return aenabled.equals("true"); //$NON-NLS-1$
+		}
 		return false;
 	}
 
@@ -115,17 +122,20 @@ public class EngineDescriptor implements IEngineDescriptor {
 
 	@Override
 	public String getDescription() {
-		if (desc != null)
+		if (desc != null) {
 			return desc;
+		}
 		String cdesc = null;
 		if (config != null) {
 			IConfigurationElement[] children = config
 					.getChildren(IHelpUIConstants.TAG_DESC);
-			if (children.length == 1)
+			if (children.length == 1) {
 				cdesc = children[0].getValue();
+			}
 		}
-		if (cdesc == null)
+		if (cdesc == null) {
 			return etdesc.getDescription();
+		}
 		return cdesc;
 	}
 
@@ -148,8 +158,9 @@ public class EngineDescriptor implements IEngineDescriptor {
 
 	@Override
 	public Dictionary<String, Object> getParameters() {
-		if (parameters != null)
+		if (parameters != null) {
 			return parameters;
+		}
 		parameters = new Hashtable<>();
 		parameters.put(P_MASTER, isEnabled() ? Boolean.TRUE : Boolean.FALSE);
 		if (config != null) {
@@ -158,8 +169,9 @@ public class EngineDescriptor implements IEngineDescriptor {
 				IConfigurationElement param = params[i];
 				String name = param.getAttribute(IHelpUIConstants.ATT_NAME);
 				String value = param.getAttribute(IHelpUIConstants.ATT_VALUE);
-				if (name != null && value != null)
+				if (name != null && value != null) {
 					parameters.put(name, value);
+				}
 			}
 		}
 		return parameters;
@@ -184,8 +196,9 @@ public class EngineDescriptor implements IEngineDescriptor {
 	public void setLabel(String label) {
 		if (isUserDefined()) {
 			this.label = label;
-			if (manager!=null)
+			if (manager!=null) {
 				manager.notifyPropertyChange(this);
+			}
 		}
 	}
 
@@ -193,8 +206,9 @@ public class EngineDescriptor implements IEngineDescriptor {
 	public void setDescription(String desc) {
 		if (isUserDefined()) {
 			this.desc = desc;
-			if (manager!=null)
+			if (manager!=null) {
 				manager.notifyPropertyChange(this);
+			}
 		}
 	}
 

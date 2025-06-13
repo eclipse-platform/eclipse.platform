@@ -76,7 +76,9 @@ public class HelpUIResources {
 		ImageDescriptor desc = registry.getDescriptor(name);
 		if (desc==null) {
 			Bundle bundle = Platform.getBundle(bundleId);
-			if (bundle==null) return null;
+			if (bundle==null) {
+				return null;
+			}
 			URL url = FileLocator.find(bundle, IPath.fromOSString(name), null);
 			desc = ImageDescriptor.createFromURL(url);
 			registry.put(name, desc);
@@ -89,7 +91,9 @@ public class HelpUIResources {
 		ImageDescriptor desc = registry.getDescriptor(key);
 		if (desc==null) {
 			Bundle bundle = Platform.getBundle(bundleId);
-			if (bundle == null) return null;
+			if (bundle == null) {
+				return null;
+			}
 			URL url = FileLocator.find(bundle, IPath.fromOSString(path), null);
 			desc = ImageDescriptor.createFromURL(url);
 			registry.put(key, desc);
@@ -158,12 +162,15 @@ public class HelpUIResources {
 					String contributorID = iconElem.getContributor().getName();
 
 					for (int k=0; k < attrs.length; k++){
-						if(attrs[k].equals(OPEN_ICON_PATH))
+						if(attrs[k].equals(OPEN_ICON_PATH)) {
 							HelpUIResources.getIconImageDescriptor(contributorID, iconElem.getAttribute(OPEN_ICON_PATH), iconElem.getAttribute(TOC_ICON_ID) + OPEN);
-						if(attrs[k].equals(CLOSED_ICON_PATH))
+						}
+						if(attrs[k].equals(CLOSED_ICON_PATH)) {
 							HelpUIResources.getIconImageDescriptor(contributorID, iconElem.getAttribute(CLOSED_ICON_PATH), iconElem.getAttribute(TOC_ICON_ID) + CLOSED);
-						if(attrs[k].equals(LEAF_ICON_PATH))
+						}
+						if(attrs[k].equals(LEAF_ICON_PATH)) {
 							HelpUIResources.getIconImageDescriptor(contributorID, iconElem.getAttribute(LEAF_ICON_PATH), iconElem.getAttribute(TOC_ICON_ID) + LEAF);
+						}
 					}
 
 				}

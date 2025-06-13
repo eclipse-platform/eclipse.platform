@@ -190,8 +190,9 @@ public class ScopeSetDialog extends TrayDialog  {
 		@Override
 		public String getText(Object obj) {
 			String name = findNewName((ScopeSet)obj);
-			if (name!=null)
+			if (name!=null) {
 				return name;
+			}
 			return ((ScopeSet)obj).getName();
 		}
 		private String findNewName(ScopeSet set) {
@@ -306,8 +307,9 @@ public class ScopeSetDialog extends TrayDialog  {
 	}
 
 	public ScopeSet getActiveSet() {
-		if (result!=null && result.length>0)
+		if (result!=null && result.length>0) {
 			return (ScopeSet)result[0];
+		}
 		return null;
 	}
 
@@ -434,10 +436,11 @@ public class ScopeSetDialog extends TrayDialog  {
 			String oldName = rop!=null?rop.newName:set.getName();
 			String newName = getNewName(oldName, true);
 			if (newName!=null) {
-				if (rop!=null)
+				if (rop!=null) {
 					rop.newName = newName;
-				else
+				} else {
 					scheduleOperation(new RenameOperation(set, newName));
+				}
 				viewer.update(set, null);
 				updateButtons();
 			}
@@ -477,8 +480,9 @@ public class ScopeSetDialog extends TrayDialog  {
 	}
 
 	private void scheduleOperation(PendingOperation op) {
-		if (operations==null)
+		if (operations==null) {
 			operations = new ArrayList<>();
+		}
 		operations.add(op);
 	}
 
@@ -496,8 +500,9 @@ public class ScopeSetDialog extends TrayDialog  {
 			for (int i=0; i<operations.size(); i++) {
 				PendingOperation op = operations.get(i);
 				if (op.getClass().equals(type)) {
-					if (op.set.equals(set))
+					if (op.set.equals(set)) {
 						return op;
+					}
 				}
 			}
 		}

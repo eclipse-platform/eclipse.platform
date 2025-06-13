@@ -31,18 +31,20 @@ public class HelpWorkingSetTreeContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof AdaptableTocsArray)
+		if (parentElement instanceof AdaptableTocsArray) {
 			return ((AdaptableTocsArray) parentElement).getChildren();
-		else if (parentElement instanceof AdaptableToc)
+		} else if (parentElement instanceof AdaptableToc) {
 			return ((AdaptableToc) parentElement).getChildren();
-		else
+		} else {
 			return new IAdaptable[0];
+		}
 	}
 
 	@Override
 	public Object getParent(Object element) {
-		if (element instanceof AdaptableHelpResource)
+		if (element instanceof AdaptableHelpResource) {
 			return ((AdaptableHelpResource) element).getParent();
+		}
 		return null;
 	}
 

@@ -172,16 +172,18 @@ public abstract class RootScopePage extends PreferencePage implements
 		boolean first = disabledStates.isEmpty();
 		for (int i = 0; i < children.length; i++) {
 			Control child = children[i];
-			if (child == masterButton)
+			if (child == masterButton) {
 				continue;
+			}
 			if (!enabled) {
 				disabledStates.put(child, Boolean.valueOf(child.isEnabled()));
 				child.setEnabled(false);
 			} else {
 				Boolean savedState = disabledStates.get(child);
-				if (!first)
+				if (!first) {
 					child.setEnabled(savedState != null ? savedState
 							.booleanValue() : true);
+				}
 			}
 		}
 	}

@@ -114,8 +114,7 @@ public class ScopePreferenceDialog extends PreferenceDialog {
 
 	private void treeSelectionChanged(Object obj) {
 		boolean removable = false;
-		if (obj instanceof ScopePreferenceManager.EnginePreferenceNode) {
-			ScopePreferenceManager.EnginePreferenceNode node = (ScopePreferenceManager.EnginePreferenceNode)obj;
+		if (obj instanceof ScopePreferenceManager.EnginePreferenceNode node) {
 			EngineDescriptor desc = node.getDescriptor();
 			removable = desc.isUserDefined();
 		}
@@ -143,8 +142,7 @@ public class ScopePreferenceDialog extends PreferenceDialog {
 
 	private void doDelete() {
 		Object obj = getTreeViewer().getStructuredSelection().getFirstElement();
-		if (obj instanceof ScopePreferenceManager.EnginePreferenceNode) {
-			ScopePreferenceManager.EnginePreferenceNode node = (ScopePreferenceManager.EnginePreferenceNode)obj;
+		if (obj instanceof ScopePreferenceManager.EnginePreferenceNode node) {
 			EngineDescriptor desc = node.getDescriptor();
 			//ScopePreferenceManager mng = (ScopePreferenceManager)getPreferenceManager();
 			getTreeViewer().remove(node);
@@ -153,8 +151,9 @@ public class ScopePreferenceDialog extends PreferenceDialog {
 	}
 
 	private void scheduleOperation(int action, EngineDescriptor desc) {
-		if (pendingOperations==null)
+		if (pendingOperations==null) {
 			pendingOperations = new ArrayList<>();
+		}
 		pendingOperations.add(new PendingOperation(action, desc));
 	}
 
@@ -165,10 +164,11 @@ public class ScopePreferenceDialog extends PreferenceDialog {
 			// process pending operations
 			for (int i=0; i<pendingOperations.size(); i++) {
 				PendingOperation op = pendingOperations.get(i);
-				if (op.action==NEW_ID)
+				if (op.action==NEW_ID) {
 					descManager.add(op.desc);
-				else
+				} else {
 					descManager.remove(op.desc);
+				}
 			}
 			pendingOperations = null;
 		}

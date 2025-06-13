@@ -103,8 +103,9 @@ public class HyperlinkHandler implements MouseListener, MouseTrackListener, Pain
 
 	@Override
 	public void mouseDown(MouseEvent e) {
-		if (e.button == 1)
+		if (e.button == 1) {
 			return;
+		}
 		lastLink = (Control) e.widget;
 	}
 
@@ -112,34 +113,44 @@ public class HyperlinkHandler implements MouseListener, MouseTrackListener, Pain
 	public void mouseEnter(MouseEvent e) {
 		Control control = (Control) e.widget;
 
-		if (isHyperlinkCursorUsed())
+		if (isHyperlinkCursorUsed()) {
 			control.setCursor(hyperlinkCursor);
-		if (activeBackground != null)
+		}
+		if (activeBackground != null) {
 			control.setBackground(activeBackground);
-		if (activeForeground != null)
+		}
+		if (activeForeground != null) {
 			control.setForeground(activeForeground);
-		if (hyperlinkUnderlineMode == UNDERLINE_ROLLOVER)
+		}
+		if (hyperlinkUnderlineMode == UNDERLINE_ROLLOVER) {
 			underline(control, true);
+		}
 		IHyperlinkListener action = getLinkListener(control);
-		if (action != null)
+		if (action != null) {
 			action.linkEntered(control);
+		}
 	}
 
 	@Override
 	public void mouseExit(MouseEvent e) {
 		Control control = (Control) e.widget;
 
-		if (isHyperlinkCursorUsed())
+		if (isHyperlinkCursorUsed()) {
 			control.setCursor(null);
-		if (hyperlinkUnderlineMode == UNDERLINE_ROLLOVER)
+		}
+		if (hyperlinkUnderlineMode == UNDERLINE_ROLLOVER) {
 			underline(control, false);
-		if (background != null)
+		}
+		if (background != null) {
 			control.setBackground(background);
-		if (foreground != null)
+		}
+		if (foreground != null) {
 			control.setForeground(foreground);
+		}
 		IHyperlinkListener action = getLinkListener(control);
-		if (action != null)
+		if (action != null) {
 			action.linkExited(control);
+		}
 	}
 
 	@Override
@@ -148,24 +159,27 @@ public class HyperlinkHandler implements MouseListener, MouseTrackListener, Pain
 
 	@Override
 	public void mouseUp(MouseEvent e) {
-		if (e.button != 1)
+		if (e.button != 1) {
 			return;
+		}
 		IHyperlinkListener action = getLinkListener((Control) e.widget);
 
 		if (action != null) {
 			Control c = (Control) e.widget;
 			c.setCursor(busyCursor);
 			action.linkActivated(c);
-			if (!c.isDisposed())
+			if (!c.isDisposed()) {
 				c.setCursor(isHyperlinkCursorUsed() ? hyperlinkCursor : null);
+			}
 		}
 	}
 
 	@Override
 	public void paintControl(PaintEvent e) {
 		Control control = (Control) e.widget;
-		if (hyperlinkUnderlineMode == UNDERLINE_ALWAYS)
+		if (hyperlinkUnderlineMode == UNDERLINE_ALWAYS) {
 			HyperlinkHandler.underline(control, true);
+		}
 	}
 	/**
 	 * @param control
@@ -174,22 +188,26 @@ public class HyperlinkHandler implements MouseListener, MouseTrackListener, Pain
 	 *            org.eclipse.help.ui.internal.IHyperlinkListener
 	 */
 	public void registerHyperlink(Control control, IHyperlinkListener listener) {
-		if (background != null)
+		if (background != null) {
 			control.setBackground(background);
-		if (foreground != null)
+		}
+		if (foreground != null) {
 			control.setForeground(foreground);
+		}
 		control.addMouseListener(this);
 		control.addMouseTrackListener(this);
 		control.addListener(SWT.DefaultSelection, this);
 
-		if (hyperlinkUnderlineMode == UNDERLINE_ALWAYS)
+		if (hyperlinkUnderlineMode == UNDERLINE_ALWAYS) {
 			control.addPaintListener(this);
+		}
 		hyperlinkListeners.put(control, listener);
 		removeDisposedLinks();
 	}
 	public IHyperlinkListener getLinkListener(Control c) {
-		if (c instanceof Label)
+		if (c instanceof Label) {
 			c = c.getParent();
+		}
 		return hyperlinkListeners.get(c);
 	}
 
@@ -257,8 +275,9 @@ public class HyperlinkHandler implements MouseListener, MouseTrackListener, Pain
 	 */
 	public static void underline(Control control, boolean inside) {
 
-		if (control instanceof HyperlinkLabel)
+		if (control instanceof HyperlinkLabel) {
 			control = ((HyperlinkLabel) control).getLabel();
+		}
 
 		Composite parent = control.getParent();
 		Rectangle bounds = control.getBounds();

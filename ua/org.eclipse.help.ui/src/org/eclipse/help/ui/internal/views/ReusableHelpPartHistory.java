@@ -38,8 +38,9 @@ public class ReusableHelpPartHistory {
 			}
 		}
 		queue.add(entry);
-		if (queue.size()>CAPACITY)
+		if (queue.size()>CAPACITY) {
 			queue.removeFirst();
+		}
 		cursor = queue.size()-1;
 	}
 

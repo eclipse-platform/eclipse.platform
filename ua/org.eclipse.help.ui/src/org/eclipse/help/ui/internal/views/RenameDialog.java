@@ -63,8 +63,9 @@ public class RenameDialog extends SelectionStatusDialog {
 		this.isCaseSensitive = isCaseSensitive;
 		initialize();
 		if (names!=null){
-			for (int i = 0; i<names.length; i++)
+			for (int i = 0; i<names.length; i++) {
 				addOldName(names[i]);
+			}
 		}
 		setOldName(oldName);
 	}
@@ -75,14 +76,16 @@ public class RenameDialog extends SelectionStatusDialog {
 		this.setHelpAvailable(false);
 	}
 	public void addOldName(String oldName){
-		if (!oldNames.contains(oldName))
+		if (!oldNames.contains(oldName)) {
 			oldNames.add(oldName);
+		}
 
 	}
 	public void setOldName(String oldName) {
 		this.oldName = oldName;
-		if (text!=null)
+		if (text!=null) {
 			text.setText(oldName);
+		}
 		this.newName = oldName;
 	}
 

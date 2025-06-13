@@ -93,29 +93,32 @@ public class ICButtons implements SelectionListener{
 	public void widgetSelected(SelectionEvent e) {
 		if (e.getSource() instanceof Button)
 		{
-			if (e.getSource()==addIC)
+			if (e.getSource()==addIC) {
 				addIC();
-			else if (e.getSource()==editIC)
+			} else if (e.getSource()==editIC) {
 				editIC();
-			else if (e.getSource()==removeIC)
+			} else if (e.getSource()==removeIC) {
 				removeIC();
-			else if (e.getSource()==testIC)
+			} else if (e.getSource()==testIC) {
 				testIC();
-			else if (e.getSource()==enableIC)
+			} else if (e.getSource()==enableIC) {
 				enableIC();
-			else if (e.getSource()==moveUp)
+			} else if (e.getSource()==moveUp) {
 				move(-1);
-			else if (e.getSource()==moveDown)
+			} else if (e.getSource()==moveDown) {
 				move(1);
+			}
 		}
-		else if (e.getSource() instanceof Table)
+		else if (e.getSource() instanceof Table) {
 			updateButtonStates();
+		}
 	}
 
 	@Override
 	public void widgetDefaultSelected(SelectionEvent e) {
-		if (e.getSource() instanceof Table)
+		if (e.getSource() instanceof Table) {
 			editIC();
+		}
 	}
 
 	public void addIC()
@@ -131,8 +134,9 @@ public class ICButtons implements SelectionListener{
 	{
 		IStructuredSelection selection = (IStructuredSelection)page.getTable().getSelection();
 		IC ic = (IC)selection.getFirstElement();
-		if (ic==null)
+		if (ic==null) {
 			return;
+		}
 
 		ICDialog dialog = new ICDialog(page.getShell(),ic);
 
@@ -161,8 +165,9 @@ public class ICButtons implements SelectionListener{
 
 		if (shouldRemove)
 		{
-			for (int i=0;i<ics.size();i++)
+			for (int i=0;i<ics.size();i++) {
 				page.getTable().removeIC(ics.get(i));
+			}
 			updateButtonStates();
 		}
 	}
@@ -171,8 +176,9 @@ public class ICButtons implements SelectionListener{
 	{
 		IStructuredSelection selection = (IStructuredSelection)page.getTable().getSelection();
 		IC ic = (IC)selection.getFirstElement();
-		if (ic==null)
+		if (ic==null) {
 			return;
+		}
 
 		ICDialog dialog = new ICDialog(page.getShell(),ic,true);
 

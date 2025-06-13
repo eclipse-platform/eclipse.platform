@@ -133,8 +133,9 @@ public class EngineResultSection {
 
 			@Override
 			public void expansionStateChanging(ExpansionEvent e) {
-				if (needsUpdating)
+				if (needsUpdating) {
 					asyncUpdateResults(true, false);
+				}
 			}
 		});
 		return section;
@@ -172,8 +173,9 @@ public class EngineResultSection {
 					doBookmark(e.getLabel(), shref);
 				} else if (shref.startsWith(CAT_HEADING_PREFIX)) {
 					part.doCategoryLink(shref.substring(CAT_HEADING_PREFIX.length()));
-				} else
+				} else {
 					part.doOpenLink(e.getHref());
+				}
 			}
 
 			@Override
@@ -248,8 +250,9 @@ public class EngineResultSection {
 	}
 
 	public synchronized void completed() {
-		if (hits.isEmpty() && !searchResults.isDisposed())
+		if (hits.isEmpty() && !searchResults.isDisposed()) {
 			asyncUpdateResults(false, false);
+		}
 	}
 
 	public synchronized void canceling() {
@@ -293,14 +296,16 @@ public class EngineResultSection {
 				list = new ArrayList<>();
 				for (int i = 0; i < hits.size(); i++) {
 					ISearchEngineResult hit = hits.get(i);
-					if (HelpBasePlugin.getActivitySupport().isEnabled(hit.getHref()))
+					if (HelpBasePlugin.getActivitySupport().isEnabled(hit.getHref())) {
 						list.add(hit);
+					}
 				}
 			}
 		}
 		ISearchEngineResult[] results = list.toArray(new ISearchEngineResult[list.size()]);
-		if (part.getShowCategories())
+		if (part.getShowCategories()) {
 			sorter.sort(null, results);
+		}
 		return results;
 	}
 
@@ -387,8 +392,9 @@ public class EngineResultSection {
 					else {
 						id = registerHitIcon(iconURL);
 					}
-					if (id != null)
+					if (id != null) {
 						imageId = id;
+					}
 				}
 			}
 
@@ -400,15 +406,15 @@ public class EngineResultSection {
 			buff.append("\">"); //$NON-NLS-1$
 			buff.append("<a href=\""); //$NON-NLS-1$
 			String href=null;
-			if (hit instanceof ISearchEngineResult2) {
-				ISearchEngineResult2 hit2 = (ISearchEngineResult2)hit;
+			if (hit instanceof ISearchEngineResult2 hit2) {
 				if (((ISearchEngineResult2)hit).canOpen()) {
 					href = "open:"+desc.getId()+"?id="+hit2.getId(); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 			if (href==null) {
-				if (hit.getForceExternalWindow())
+				if (hit.getForceExternalWindow()) {
 					href = "nw:";//$NON-NLS-1$
+				}
 				href = EscapeUtils.escapeSpecialChars(hit.toAbsoluteHref(hit.getHref(), false));
 			}
 			buff.append(href);
@@ -441,14 +447,16 @@ public class EngineResultSection {
 			}
 			buff.append("</li>"); //$NON-NLS-1$
 		}
-		if (errorStatus != null)
+		if (errorStatus != null) {
 			updateErrorStatus(buff);
+		}
 		updateNavigation(results.length);
 		buff.append("</form>"); //$NON-NLS-1$
 		searchResults.setText(buff.toString(), true, false);
 		section.layout();
-		if (reflow)
+		if (reflow) {
 			part.reflow();
+		}
 	}
 
 	/**
@@ -495,8 +503,9 @@ public class EngineResultSection {
 		buff.append("</b>"); //$NON-NLS-1$
 		buff.append("<br/>"); //$NON-NLS-1$
 		Throwable t = errorStatus.getException();
-		if (t != null && t.getMessage() != null)
+		if (t != null && t.getMessage() != null) {
 			buff.append(EscapeUtils.escapeSpecialChars(t.getMessage()));
+		}
 		buff.append("</li>"); //$NON-NLS-1$
 	}
 
@@ -573,13 +582,13 @@ public class EngineResultSection {
 		} else {
 			section.setTextClient(null);
 		}
-		if (size == 1)
+		if (size == 1) {
 			section.setText(NLS.bind(Messages.EngineResultSection_sectionTitle_hit, desc.getLabel(), "" //$NON-NLS-1$
 					+ hits.size()));
-		else if (size <= HITS_PER_PAGE)
+		} else if (size <= HITS_PER_PAGE) {
 			section.setText(NLS.bind(Messages.EngineResultSection_sectionTitle_hits, desc.getLabel(),
 					"" + hits.size())); //$NON-NLS-1$
-		else {
+		} else {
 			int from = (resultOffset + 1);
 			int to = (resultOffset + HITS_PER_PAGE);
 			to = Math.min(to, size);
@@ -604,8 +613,7 @@ public class EngineResultSection {
 
 	private void recursiveSetMenu(Control control, Menu menu) {
 		control.setMenu(menu);
-		if (control instanceof Composite) {
-			Composite parent = (Composite) control;
+		if (control instanceof Composite parent) {
 			Control[] children = parent.getChildren();
 			for (Control child : children) {
 				recursiveSetMenu(child, menu);

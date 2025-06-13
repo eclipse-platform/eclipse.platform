@@ -44,8 +44,9 @@ public class OpenBundleResourceHandler extends AbstractHandler {
 			url = null;
 		} else {
 			try {
-				if(pluginPath.startsWith("/")) //$NON-NLS-1$
+				if(pluginPath.startsWith("/")) { //$NON-NLS-1$
 					pluginPath = pluginPath.substring(1);
+				}
 				url = new URL(Platform.getInstanceLocation().getURL().toString()+pluginId+"/"+pluginPath); //$NON-NLS-1$
 				workspaceFile = new File(url.getFile());
 				if(!workspaceFile.exists())
