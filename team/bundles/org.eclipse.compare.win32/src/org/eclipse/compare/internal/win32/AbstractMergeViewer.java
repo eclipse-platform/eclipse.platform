@@ -101,8 +101,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 	}
 
 	protected boolean isOneSided() {
-		if (input instanceof ICompareInput) {
-			ICompareInput ci = (ICompareInput) input;
+		if (input instanceof ICompareInput ci) {
 			int type = ci.getKind() & Differencer.CHANGE_TYPE_MASK;
 			return type != Differencer.CHANGE;
 		}
@@ -111,14 +110,16 @@ public abstract class AbstractMergeViewer extends Viewer {
 
 	protected File getFileForSingleSide() throws CoreException {
 		File file = getFileForLeft();
-		if (file != null && file.exists())
+		if (file != null && file.exists()) {
 			return file;
+		}
 		return getFileForRight();
 	}
 
 	protected File getFileForRight() throws CoreException {
-		if (rightFile != null)
+		if (rightFile != null) {
 			return rightFile;
+		}
 		ICompareInput ci = getCompareInput();
 		if (ci != null) {
 			ITypedElement right = ci.getRight();
@@ -133,8 +134,9 @@ public abstract class AbstractMergeViewer extends Viewer {
 	}
 
 	protected File getFileForLeft() throws CoreException {
-		if (leftFile != null)
+		if (leftFile != null) {
 			return leftFile;
+		}
 		ICompareInput ci = getCompareInput();
 		if (ci != null) {
 			ITypedElement left = ci.getLeft();
@@ -149,8 +151,9 @@ public abstract class AbstractMergeViewer extends Viewer {
 	}
 
 	protected File getResultFile() throws IOException {
-		if (resultFile != null)
+		if (resultFile != null) {
 			return resultFile;
+		}
 		resultFile = File.createTempFile("merge", ".doc"); //$NON-NLS-1$ //$NON-NLS-2$
 		resultFile.deleteOnExit();
 		// Need to delete the file so that clients will know that the files doesn't exist yet
@@ -163,8 +166,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 	}
 
 	private File cacheContents(ITypedElement element) throws CoreException {
-		if (element instanceof IStreamContentAccessor) {
-			IStreamContentAccessor sca = (IStreamContentAccessor) element;
+		if (element instanceof IStreamContentAccessor sca) {
 			InputStream contents = sca.getContents();
 			if (contents != null) {
 				try {
@@ -216,15 +218,13 @@ public abstract class AbstractMergeViewer extends Viewer {
 	}
 
 	protected IFile getEclipseFile(Object element) {
-		if (element instanceof IResourceProvider) {
-			IResourceProvider rp = (IResourceProvider) element;
+		if (element instanceof IResourceProvider rp) {
 			IResource resource = rp.getResource();
 			if (resource.getType() == IResource.FILE) {
 				return (IFile)resource;
 			}
 		}
-		if (element instanceof IAdaptable) {
-			IAdaptable a = (IAdaptable) element;
+		if (element instanceof IAdaptable a) {
 			Object result = a.getAdapter(IResource.class);
 			if (result == null) {
 				result = a.getAdapter(IFile.class);
