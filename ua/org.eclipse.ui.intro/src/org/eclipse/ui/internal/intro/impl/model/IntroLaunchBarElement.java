@@ -69,22 +69,28 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 		String location = getCfgElement().getAttribute("location"); //$NON-NLS-1$
 
 		if (location != null) {
-			if (location.equals("left")) //$NON-NLS-1$
+			if (location.equals("left")) { //$NON-NLS-1$
 				return SWT.LEFT;
-			if (location.equals("bottom")) //$NON-NLS-1$
+			}
+			if (location.equals("bottom")) { //$NON-NLS-1$
 				return SWT.BOTTOM;
-			if (location.equals("right")) //$NON-NLS-1$
+			}
+			if (location.equals("right")) { //$NON-NLS-1$
 				return SWT.RIGHT;
+			}
 		}
 		// default to the initial fast view location
 		String fastviewLocation = PlatformUI.getPreferenceStore().getString(
 			IWorkbenchPreferenceConstants.INITIAL_FAST_VIEW_BAR_LOCATION);
-		if (fastviewLocation.equals(IWorkbenchPreferenceConstants.LEFT))
+		if (fastviewLocation.equals(IWorkbenchPreferenceConstants.LEFT)) {
 			return SWT.LEFT;
-		if (fastviewLocation.equals(IWorkbenchPreferenceConstants.RIGHT))
+		}
+		if (fastviewLocation.equals(IWorkbenchPreferenceConstants.RIGHT)) {
 			return SWT.RIGHT;
-		if (fastviewLocation.equals(IWorkbenchPreferenceConstants.BOTTOM))
+		}
+		if (fastviewLocation.equals(IWorkbenchPreferenceConstants.BOTTOM)) {
 			return SWT.BOTTOM;
+		}
 		// just in case
 		return SWT.RIGHT;
 	}
@@ -115,8 +121,9 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 	 */
 	private String getHandleImage() {
 		IConfigurationElement handle = getHandleElement();
-		if (handle == null)
+		if (handle == null) {
 			return null;
+		}
 		return handle.getAttribute("image"); //$NON-NLS-1$
 	}
 
@@ -126,16 +133,18 @@ public class IntroLaunchBarElement extends AbstractIntroElement {
 	 */
 	public ImageDescriptor getHandleImageDescriptor() {
 		String path = getHandleImage();
-		if (path == null)
+		if (path == null) {
 			return null;
+		}
 		return ImageUtil.createImageDescriptor(getBundle(), path);
 	}
 
 	private IConfigurationElement getHandleElement() {
 		IConfigurationElement[] children = getCfgElement().getChildren(
 			"handle"); //$NON-NLS-1$
-		if (children.length > 0)
+		if (children.length > 0) {
 			return children[0];
+		}
 		return null;
 	}
 

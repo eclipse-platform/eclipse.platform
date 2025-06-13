@@ -62,8 +62,9 @@ public class IntroImage extends AbstractBaseIntroElement {
 	 * @return Returns the src value, already resolved as a local url.
 	 */
 	public String getSrc() {
-		if (src==null)// Resolve src.
+		if (src==null) { // Resolve src.
 			src = BundleUtil.getResolvedResourceLocation(base, getSrcAsIs(), getBundle());
+		}
 		return src;
 	}
 

@@ -171,8 +171,9 @@ public class BrowserIntroPartImplementation extends
 				url.append("http://org.eclipse.ui.intro/showPage?id="); //$NON-NLS-1$
 				url.append(currentPageId);
 				IIntroURL introURL = IntroURLFactory.createIntroURL(url.toString());
-				if (introURL != null)
+				if (introURL != null) {
 					introURL.execute();
+				}
 			}
 		}
 	}
@@ -205,8 +206,9 @@ public class BrowserIntroPartImplementation extends
 	@Override
 	public void createPartControl(Composite parent) {
 		long start = 0;
-		if (Log.logPerformance)
+		if (Log.logPerformance) {
 			start = System.currentTimeMillis();
+		}
 
 		browser = new Browser(parent, SWT.NONE);
 
@@ -230,23 +232,26 @@ public class BrowserIntroPartImplementation extends
 				urlListener.flagEndOfNavigation();
 				urlListener.flagEndOfFrameNavigation();
 				urlListener.flagRemovedTempUrl();
-				if (!getModel().isDynamic())
+				if (!getModel().isDynamic()) {
 					updateNavigationActionsState();
+				}
 			}
 		});
 
 		// Enable IE pop-up menu only in debug mode.
 		browser.addListener(SWT.MenuDetect, event -> {
-			if (IntroPlugin.getDefault().isDebugging())
+			if (IntroPlugin.getDefault().isDebugging()) {
 				event.doit = true;
-			else
+			} else {
 				event.doit = false;
+			}
 		});
 
 		// if we are logging performance, log actual UI creation time for
 		// browser.
-		if (Log.logPerformance)
+		if (Log.logPerformance) {
 			Util.logPerformanceTime("creating a new Browser() took:", start); //$NON-NLS-1$
+		}
 
 		addToolBarActions();
 
@@ -256,10 +261,11 @@ public class BrowserIntroPartImplementation extends
 		}
 
 		 // root page is what decides if the model is dynamic or not.
-		if (getModel().isDynamic())
+		if (getModel().isDynamic()) {
 			handleDynamicIntro();
-		else
+		} else {
 			handleStaticIntro();
+		}
 	}
 
 
@@ -316,9 +322,9 @@ public class BrowserIntroPartImplementation extends
 			return true;
 		}
 
-		if (page.isXHTMLPage())
+		if (page.isXHTMLPage()) {
 			content = generateXHTMLPage(page, this);
-		else {
+		} else {
 			HTMLElement html = getHTMLGenerator().generateHTMLforPage(page,
 				this);
 			if (html != null) {
@@ -329,18 +335,21 @@ public class BrowserIntroPartImplementation extends
 					if (props!=null) {
 						String value = (String)props.get("standardSupport"); //$NON-NLS-1$
 						String doctype=null;
-						if ("html5".equalsIgnoreCase(value)) //$NON-NLS-1$
+						if ("html5".equalsIgnoreCase(value)) { //$NON-NLS-1$
 							doctype = "<!DOCTYPE html>\n"; //$NON-NLS-1$
-						else if ("strict".equalsIgnoreCase(value)) //$NON-NLS-1$
+						} else if ("strict".equalsIgnoreCase(value)) { //$NON-NLS-1$
 							doctype = generateDoctype(true);
-						else if ("loose".equalsIgnoreCase(value)) //$NON-NLS-1$
+						} else if ("loose".equalsIgnoreCase(value)) { //$NON-NLS-1$
 							doctype = generateDoctype(false);
-						if (doctype!=null)
+						}
+						if (doctype!=null) {
 							content = doctype+html.toString();
+						}
 					}
 				}
-				if (content==null)
+				if (content==null) {
 					content = html.toString();
+				}
 			}
 		}
 
@@ -354,8 +363,9 @@ public class BrowserIntroPartImplementation extends
 		boolean success = false;
 		if (browser != null) {
 			long start = 0;
-			if (Log.logPerformance)
+			if (Log.logPerformance) {
 				start = System.currentTimeMillis();
+			}
 			browser.addLocationListener(new LocationAdapter() {
 				@Override
 				public void changed(LocationEvent event) {
@@ -365,12 +375,14 @@ public class BrowserIntroPartImplementation extends
 				}
 			});
 			success = browser.setText(content);
-			if (Log.logPerformance)
+			if (Log.logPerformance) {
 				Util
 					.logPerformanceTime("setText() on the browser took:", start); //$NON-NLS-1$
+			}
 
-			if (!success)
+			if (!success) {
 				Log.error("Unable to set HTML on the browser", null); //$NON-NLS-1$
+			}
 		}
 
 
@@ -459,10 +471,11 @@ public class BrowserIntroPartImplementation extends
 			// retrieve it, otherwise load the class.
 			IIntroXHTMLContentProvider providerClass = (IIntroXHTMLContentProvider) ContentProviderManager
 				.getInst().getContentProvider(provider);
-			if (providerClass == null)
+			if (providerClass == null) {
 				// content provider never created before, create it.
 				providerClass = (IIntroXHTMLContentProvider) ContentProviderManager
 					.getInst().createContentProvider(provider, site);
+			}
 
 			if (providerClass != null) {
 				// create a div with the same id as the contentProvider, pass it
@@ -509,8 +522,9 @@ public class BrowserIntroPartImplementation extends
 	 * Return the cached IntroHTMLGenerator
 	 */
 	private IntroHTMLGenerator getHTMLGenerator() {
-		if (htmlGenerator == null)
+		if (htmlGenerator == null) {
 			htmlGenerator = new IntroHTMLGenerator();
+		}
 
 		return htmlGenerator;
 	}
@@ -547,14 +561,16 @@ public class BrowserIntroPartImplementation extends
 	public void dynamicStandbyStateChanged(boolean standby,
 			boolean isStandbyPartNeeded) {
 
-		if (isStandbyPartNeeded)
+		if (isStandbyPartNeeded) {
 			// we have a standby part, nothing more to do in presentation.
 			return;
+		}
 
-		if (history.currentLocationIsUrl())
+		if (history.currentLocationIsUrl()) {
 			// last page disaplyed was a url. It is already set in the browser
 			// and stored in history. Nothing more to do.
 			return;
+		}
 
 
 
@@ -563,8 +579,9 @@ public class BrowserIntroPartImplementation extends
 		IntroModelRoot model = getModel();
 		AbstractIntroPage homePage = model.getHomePage();
 		AbstractIntroPage standbyPage = model.getStandbyPage();
-		if (standbyPage == null)
+		if (standbyPage == null) {
 			standbyPage = homePage;
+		}
 
 		if (standby) {
 			generateContentForPage(standbyPage);
@@ -593,9 +610,10 @@ public class BrowserIntroPartImplementation extends
 	public void propertyChanged(Object source, int propId) {
 		if (propId == IntroModelRoot.CURRENT_PAGE_PROPERTY_ID) {
 			String pageId = getModel().getCurrentPageId();
-			if (pageId == null || pageId.isEmpty())
+			if (pageId == null || pageId.isEmpty()) {
 				// page ID was not set properly. exit.
 				return;
+			}
 			// update the presentation's content based on the model changes
 			updateContent();
 		}
@@ -633,8 +651,9 @@ public class BrowserIntroPartImplementation extends
 	 */
 	@Override
 	protected void saveCurrentPage(IMemento memento) {
-		if (memento == null)
+		if (memento == null) {
 			return;
+		}
 		// Handle the case where we are on a static page.
 		// browser.getURL() returns the empty string if there is no current URL
 		// and returns "about:blank" if we are on a dynamic page
@@ -674,13 +693,15 @@ public class BrowserIntroPartImplementation extends
 					getModel().setCurrentPageId(page.getId(), false);
 					success = generateContentForPage(page);
 				}
-			} else
+			} else {
 				success = false;
+			}
 			// update history only in dynamic case.
 			updateNavigationActionsState();
-		} else
+		} else {
 			// static HTML case. use browser real Back.
 			success = browser.back();
+		}
 
 		return success;
 	}
@@ -702,13 +723,15 @@ public class BrowserIntroPartImplementation extends
 					getModel().setCurrentPageId(page.getId(), false);
 					success = generateContentForPage(page);
 				}
-			} else
+			} else {
 				success = false;
+			}
 			// update history only in dynamic case.
 			updateNavigationActionsState();
-		} else
+		} else {
 			// static HTML case. use browser real Forward.
 			success = browser.forward();
+		}
 
 		return success;
 	}
@@ -725,8 +748,9 @@ public class BrowserIntroPartImplementation extends
 			// setting the root page will not fire an event. So, force a
 			// generation
 			// of root page.
-			if (history.currentLocationIsUrl())
+			if (history.currentLocationIsUrl()) {
 				generateContentForPage(rootPage);
+			}
 
 			success = getModel().setCurrentPageId(rootPage.getId());
 			updateHistory(rootPage);
@@ -768,10 +792,11 @@ public class BrowserIntroPartImplementation extends
 			updateNavigationActionsState();
 		}
 
-		if (getModel().isDynamic())
+		if (getModel().isDynamic()) {
 			dynamicStandbyStateChanged(standby, isStandbyPartNeeded);
-		else
+		} else {
 			staticStandbyStateChanged(standby);
+		}
 	}
 
 
@@ -782,9 +807,10 @@ public class BrowserIntroPartImplementation extends
 		// defined in the root page. But first check memento if we can
 		// restore last visited page.
 		String url = getCachedCurrentPage();
-		if (!History.isURL(url))
+		if (!History.isURL(url)) {
 			// no cached state, or invalid state.
 			url = getModel().getHomePage().getUrl();
+		}
 
 		if (url == null) {
 			// We have no content to display. log an error
@@ -803,13 +829,15 @@ public class BrowserIntroPartImplementation extends
 	public void staticStandbyStateChanged(boolean standby) {
 		AbstractIntroPage homePage = getModel().getHomePage();
 		AbstractIntroPage standbyPage = getModel().getStandbyPage();
-		if (standbyPage == null)
+		if (standbyPage == null) {
 			standbyPage = homePage;
+		}
 
-		if (standby)
+		if (standby) {
 			browser.setUrl(standbyPage.getUrl());
-		else
+		} else {
 			browser.setUrl(homePage.getUrl());
+		}
 	}
 
 

@@ -127,8 +127,9 @@ public class StandbyPart implements IIntroConstants {
 	 * @see org.eclipse.ui.intro.IIntroPart#saveState(org.eclipse.ui.IMemento)
 	 */
 	private IMemento getMemento(IMemento memento, String key) {
-		if (memento == null)
+		if (memento == null) {
 			return null;
+		}
 		return memento.getChild(key);
 	}
 
@@ -163,9 +164,10 @@ public class StandbyPart implements IIntroConstants {
 		boolean success = false;
 		if (memento != null) {
 			success = restoreState(memento);
-			if (!success)
+			if (!success) {
 				// add empty standby content.
 				addAndShowEmptyPart(Messages.StandbyPart_canNotRestore);
+			}
 		}
 
 		updateReturnLinkLabel();
@@ -175,8 +177,9 @@ public class StandbyPart implements IIntroConstants {
 	 * Empty content part used as backup for failures.
 	 */
 	private void addAndShowEmptyPart(String message) {
-		if (emptyPart == null)
+		if (emptyPart == null) {
 			emptyPart = new EmptyStandbyContentPart();
+		}
 		addStandbyContentPart(EMPTY_STANDBY_CONTENT_PART, emptyPart);
 		emptyPart.setMessage(message);
 		setTopControl(EMPTY_STANDBY_CONTENT_PART);
@@ -188,8 +191,9 @@ public class StandbyPart implements IIntroConstants {
 	private boolean restoreState(IMemento memento) {
 		String contentPartId = memento
 			.getString(MEMENTO_STANDBY_CONTENT_PART_ID_ATT);
-		if (contentPartId == null)
+		if (contentPartId == null) {
 			return false;
+		}
 		// create the cached content part. Content parts are responsible for
 		// storing and reading their input state.
 		return showContentPart(contentPartId, null);
@@ -212,8 +216,7 @@ public class StandbyPart implements IIntroConstants {
 
 			Object standbyContentObject = ModelLoaderUtil.createClassInstance(
 				pluginId, standbyContentClassName);
-			if (standbyContentObject instanceof IStandbyContentPart) {
-				IStandbyContentPart contentPart = (IStandbyContentPart) standbyContentObject;
+			if (standbyContentObject instanceof IStandbyContentPart contentPart) {
 				Control c = addStandbyContentPart(partId, contentPart);
 				if (c != null) {
 					try {
@@ -271,9 +274,10 @@ public class StandbyPart implements IIntroConstants {
 			Control control = standbyContent.getControl();
 			controlKey = new ControlKey(control, standbyContent, partId);
 			cachedContentParts.put(partId, controlKey);
-			if (partId.equals(EMPTY_STANDBY_CONTENT_PART))
+			if (partId.equals(EMPTY_STANDBY_CONTENT_PART)) {
 				// just in case it was created explicity, reuse it.
 				emptyPart = (EmptyStandbyContentPart) standbyContent;
+			}
 
 			if (controlKey.getControl() == null) {
 				// control is null. This means that interface was not
@@ -308,8 +312,9 @@ public class StandbyPart implements IIntroConstants {
 	private void setTopControl(Control c) {
 		StackLayout layout = (StackLayout) content.getLayout();
 		layout.topControl = c;
-		if (c instanceof Composite)
+		if (c instanceof Composite) {
 			((Composite) c).layout();
+		}
 		content.layout();
 		container.layout();
 	}
@@ -318,13 +323,15 @@ public class StandbyPart implements IIntroConstants {
 		String linkText = Messages.StandbyPart_returnToIntro;
 		returnLink.setText(linkText);
 		AbstractIntroPage page = model.getCurrentPage();
-		if (page == null)
+		if (page == null) {
 			// page will be null in static intro.
 			return;
+		}
 
 		String toolTip = Messages.StandbyPart_returnTo;
-		if (page.getTitle() != null)
+		if (page.getTitle() != null) {
 			toolTip += " " + page.getTitle(); //$NON-NLS-1$
+		}
 
 		returnLink.setToolTipText(toolTip);
 	}
@@ -360,9 +367,10 @@ public class StandbyPart implements IIntroConstants {
 		// save cached content part id.
 		if (cachedControlKey != null) {
 			String contentPartId = cachedControlKey.getContentPartId();
-			if (contentPartId == EMPTY_STANDBY_CONTENT_PART)
+			if (contentPartId == EMPTY_STANDBY_CONTENT_PART) {
 				// do not create memento for empty standby.
 				return;
+			}
 			memento.putString(MEMENTO_STANDBY_CONTENT_PART_ID_ATT,
 				contentPartId);
 			// give standby part its own child to create a name space for
@@ -372,8 +380,9 @@ public class StandbyPart implements IIntroConstants {
 			// pass new memento to correct standby part.
 			IStandbyContentPart standbyContentpart = cachedControlKey
 				.getContentPart();
-			if (standbyContentpart != null)
+			if (standbyContentpart != null) {
 				standbyContentpart.saveState(standbyContentPartMemento);
+			}
 		}
 	}
 
@@ -388,8 +397,9 @@ public class StandbyPart implements IIntroConstants {
 		// grab foxus first, then delegate. This way if content part does
 		// nothing on focus, part still works.
 		returnLink.setFocus();
-		if (cachedControlKey != null)
+		if (cachedControlKey != null) {
 			cachedControlKey.getContentPart().setFocus();
+		}
 	}
 
 
@@ -399,8 +409,9 @@ public class StandbyPart implements IIntroConstants {
 	 * IStandbyContentPart. If not, returns null.
 	 */
 	private ControlKey getCachedContent(String key) {
-		if (cachedContentParts.containsKey(key))
+		if (cachedContentParts.containsKey(key)) {
 			return cachedContentParts.get(key);
+		}
 		return null;
 	}
 

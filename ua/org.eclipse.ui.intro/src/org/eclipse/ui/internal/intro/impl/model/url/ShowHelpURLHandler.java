@@ -34,16 +34,18 @@ public class ShowHelpURLHandler {
 
 
 	public boolean showHelpTopic(String href, String embed, String embedTarget) {
-		if (href == null)
+		if (href == null) {
 			return false;
+		}
 
 		boolean isEmbedded = (embed != null && embed
 			.equals(IntroURL.VALUE_TRUE)) ? true : false;
-		if (!isEmbedded)
+		if (!isEmbedded) {
 			// still false, check the embedTarget. If embedTarget is set, then
 			// we
 			// have embedded by default.
 			isEmbedded = (embedTarget != null) ? true : false;
+		}
 
 		IntroPartPresentation presentation = IntroPlugin.getDefault()
 			.getIntroModelRoot().getPresentation();
@@ -61,8 +63,9 @@ public class ShowHelpURLHandler {
 			href = PlatformUI.getWorkbench().getHelpSystem()
 				.resolve(href, true).toExternalForm();
 
-			if (embedTarget == null)
+			if (embedTarget == null) {
 				return impl.getBrowser().setUrl(href);
+			}
 
 			// embedded in Div case.
 			IntroModelRoot model = IntroPlugin.getDefault().getIntroModelRoot();
@@ -91,10 +94,11 @@ public class ShowHelpURLHandler {
 		IntroModelRoot model = (IntroModelRoot) currentPage.getParentPage()
 			.getParent();
 		String currentPageId = null;
-		if (currentPage.isIFramePage())
+		if (currentPage.isIFramePage()) {
 			currentPageId = currentPage.getUnmangledId();
-		else
+		} else {
 			currentPageId = currentPage.getId();
+		}
 		String mangledPageId = currentPageId + "_" + "WITH_IFRAME"; //$NON-NLS-1$ //$NON-NLS-2$
 
 		// get current standby state.
@@ -121,9 +125,10 @@ public class ShowHelpURLHandler {
 		// embed url as IFrame in target div. We need to find target div in
 		// cloned page not in the original page.
 		boolean canInjectFrame = clonedPage.injectIFrame(href, embedTarget);
-		if (!canInjectFrame)
+		if (!canInjectFrame) {
 			// Called method handles error.
 			return false;
+		}
 
 		clonedPage.setId(mangledPageId);
 		model.addChild(clonedPage);

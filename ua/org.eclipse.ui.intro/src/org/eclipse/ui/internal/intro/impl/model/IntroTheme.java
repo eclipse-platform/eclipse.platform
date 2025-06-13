@@ -71,15 +71,17 @@ public class IntroTheme extends AbstractIntroIdElement {
 
 	private void loadProperties(IConfigurationElement element) {
 		IConfigurationElement [] children = element.getChildren("property"); //$NON-NLS-1$
-		if (children.length==0)
+		if (children.length==0) {
 			return;
+		}
 		properties = new Hashtable<>();
 		for (int i=0; i<children.length; i++) {
 			IConfigurationElement property = children[i];
 			String name = property.getAttribute("name"); //$NON-NLS-1$
 			String value = property.getAttribute("value"); //$NON-NLS-1$
-			if (name!=null && value!=null)
+			if (name!=null && value!=null) {
 				properties.put(name, value);
+			}
 		}
 		// Put the theme id in the properties too
 		properties.put(ATT_ID, getId());

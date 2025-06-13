@@ -59,10 +59,11 @@ public class PageStyleManager extends SharedStyleManager {
 		context.bundle = page.getBundle();
 
 		// honor shared-style.
-		if (page.injectSharedStyle())
+		if (page.injectSharedStyle()) {
 			properties = new Properties(sharedProperties);
-		else
+		} else {
 			properties = new Properties();
+		}
 		String altStyle = page.getAltStyle();
 		if (altStyle != null) {
 			load(properties, altStyle, context);
@@ -119,13 +120,15 @@ public class PageStyleManager extends SharedStyleManager {
 	 */
 	private Properties findPropertyOwner(String key) {
 		// search for the key in this page's properties first.
-		if (properties.containsKey(key))
+		if (properties.containsKey(key)) {
 			return properties;
+		}
 
 		// search inherited properties second.
 		for (Properties aProperties : altStyleContexts.keySet()) {
-			if (aProperties.containsKey(key))
+			if (aProperties.containsKey(key)) {
 				return aProperties;
+			}
 		}
 		// we did not find the key. Return the local properties anyway.
 		return properties;
@@ -142,8 +145,9 @@ public class PageStyleManager extends SharedStyleManager {
 	protected StyleContext getAssociatedContext(String key) {
 		Properties aProperties = findPropertyOwner(key);
 		StyleContext context = altStyleContexts.get(aProperties);
-		if (context != null)
+		if (context != null) {
 			return context;
+		}
 		return super.getAssociatedContext(key);
 	}
 
@@ -194,8 +198,9 @@ public class PageStyleManager extends SharedStyleManager {
 	private int getIntProperty(AbstractBaseIntroElement element,
 			String qualifier, int defaultValue) {
 		StringBuilder buff = ModelLoaderUtil.createPathToElementKey(element, true);
-		if (buff == null)
+		if (buff == null) {
 			return defaultValue;
+		}
 		String key = buff.append(qualifier).toString();
 		return getIntProperty(key, defaultValue);
 	}
@@ -203,8 +208,9 @@ public class PageStyleManager extends SharedStyleManager {
 	private boolean getBooleanProperty(AbstractBaseIntroElement element,
 			String qualifier, boolean defaultValue) {
 		StringBuilder buff = ModelLoaderUtil.createPathToElementKey(element, true);
-		if (buff == null)
+		if (buff == null) {
 			return defaultValue;
+		}
 		String key = buff.append(qualifier).toString();
 		return getBooleanProperty(key, defaultValue);
 	}
@@ -212,8 +218,9 @@ public class PageStyleManager extends SharedStyleManager {
 	private int getIntProperty(String key, int defaulValue) {
 		int intValue = defaulValue;
 		String value = getProperty(key);
-		if (value == null)
+		if (value == null) {
 			return intValue;
+		}
 
 		try {
 			intValue = Integer.parseInt(value);
@@ -241,8 +248,9 @@ public class PageStyleManager extends SharedStyleManager {
 	 */
 	public String getDescription(IntroGroup group) {
 		StringBuilder buff = ModelLoaderUtil.createPathToElementKey(group, true);
-		if (buff == null)
+		if (buff == null) {
 			return null;
+		}
 		String key = buff.append(".description-id").toString(); //$NON-NLS-1$
 		return doGetDescription(group, key);
 	}
@@ -259,8 +267,9 @@ public class PageStyleManager extends SharedStyleManager {
 	 * Returns null if no default style found, or any id in path is null.
 	 */
 	public String getPageDescription() {
-		if (page.getId() == null)
+		if (page.getId() == null) {
 			return null;
+		}
 		String key = page.getId() + ".description-id"; //$NON-NLS-1$
 		return doGetDescription(page, key);
 	}
@@ -268,10 +277,12 @@ public class PageStyleManager extends SharedStyleManager {
 	private String doGetDescription(AbstractIntroContainer parent, String key) {
 		String path = getProperty(key);
 		String description = null;
-		if (path != null)
+		if (path != null) {
 			description = findTextFromPath(parent, path);
-		if (description != null)
+		}
+		if (description != null) {
 			return description;
+		}
 		return findTextFromStyleId(parent, getDescriptionStyleId());
 	}
 
@@ -292,10 +303,12 @@ public class PageStyleManager extends SharedStyleManager {
 		String key = page.getId() + ".subtitle-id"; //$NON-NLS-1$
 		String path = getProperty(key);
 		String description = null;
-		if (path != null)
+		if (path != null) {
 			description = findTextFromPath(page, path);
-		if (description != null)
+		}
+		if (description != null) {
 			return description;
+		}
 		return findTextFromStyleId(page, getPageSubTitleStyleId());
 	}
 
@@ -321,9 +334,10 @@ public class PageStyleManager extends SharedStyleManager {
 		IntroText[] allText = (IntroText[]) parent
 			.getChildrenOfType(AbstractIntroElement.TEXT);
 		for (int i = 0; i < allText.length; i++) {
-			if (allText[i].getStyleId() == null)
+			if (allText[i].getStyleId() == null) {
 				// not all elements have style id.
 				continue;
+			}
 			if (allText[i].getStyleId().equals(styleId)) {
 				makeFiltered(allText[i]);
 				return allText[i].getText();
@@ -337,8 +351,9 @@ public class PageStyleManager extends SharedStyleManager {
 	 * the correct type.
 	 */
 	private AbstractIntroElement makeFiltered(AbstractIntroElement element) {
-		if (element.isOfType(AbstractIntroElement.BASE_ELEMENT))
+		if (element.isOfType(AbstractIntroElement.BASE_ELEMENT)) {
 			((AbstractBaseIntroElement) element).setFilterState(true);
+		}
 		return element;
 	}
 
@@ -367,16 +382,18 @@ public class PageStyleManager extends SharedStyleManager {
 
 	public Color getColor(FormToolkit toolkit, AbstractBaseIntroElement element) {
 		StringBuilder buff = ModelLoaderUtil.createPathToElementKey(element, true);
-		if (buff == null)
+		if (buff == null) {
 			return null;
+		}
 		String key = buff.append(".font.fg").toString(); //$NON-NLS-1$
 		return getColor(toolkit, key);
 	}
 
 	public Color getBackgrond(FormToolkit toolkit, AbstractBaseIntroElement element) {
 		StringBuilder buff = ModelLoaderUtil.createPathToElementKey(element, true);
-		if (buff == null)
+		if (buff == null) {
 			return null;
+		}
 		String key = buff.append(".bg").toString(); //$NON-NLS-1$
 		return getColor(toolkit, key);
 	}
@@ -400,8 +417,9 @@ public class PageStyleManager extends SharedStyleManager {
 			// bold is not specified by ID. Check to see if there is a style-id
 			// specified for bold.
 			value = getProperty("bold-style-id"); //$NON-NLS-1$
-			if (value != null && text.getStyleId() != null)
+			if (value != null && text.getStyleId() != null) {
 				return text.getStyleId().equals(value);
+			}
 		}
 		return false;
 	}
@@ -411,8 +429,9 @@ public class PageStyleManager extends SharedStyleManager {
 		if (buff != null) {
 			String key = buff.append(suffix).toString();
 			String value = getProperty(key);
-			if (value != null)
+			if (value != null) {
 				return value;
+			}
 			// try the page.id key
 			buff = ModelLoaderUtil.createPathToElementKey(element, false);
 			if (buff!= null) {
@@ -447,9 +466,10 @@ public class PageStyleManager extends SharedStyleManager {
 			value = getProperty(key, false);
 		}
 		if (value == null && page.getId() != null
-				&& key.startsWith(page.getId()))
+				&& key.startsWith(page.getId())) {
 			// did not use the key as-is. Trim pageId and try again.
 			key = key.substring(page.getId().length());
+		}
 
 		// pageKey can not become an implicit key.
 		String pageKey = createImageKey(page, null, qualifier);
@@ -462,8 +482,9 @@ public class PageStyleManager extends SharedStyleManager {
 		StringBuilder buff = null;
 		if (link != null) {
 			buff = ModelLoaderUtil.createPathToElementKey(link, true);
-			if (buff == null)
+			if (buff == null) {
 				return ""; //$NON-NLS-1$
+			}
 		} else {
 			buff = new StringBuilder();
 			buff.append(page.getId());
@@ -475,8 +496,9 @@ public class PageStyleManager extends SharedStyleManager {
 
 	private String createImageByIdKey(AbstractIntroPage page, IntroLink link,
 			String qualifier) {
-		if (link==null || link.getId()==null)
+		if (link==null || link.getId()==null) {
 			return ""; //$NON-NLS-1$
+		}
 		StringBuilder buff = new StringBuilder();
 		buff.append(page.getId());
 		buff.append("."); //$NON-NLS-1$
@@ -495,8 +517,9 @@ public class PageStyleManager extends SharedStyleManager {
 		} else {
 			key = buff!=null?buff.toString():null;
 		}
-		if (ImageUtil.hasImage(key))
+		if (ImageUtil.hasImage(key)) {
 			return ImageUtil.getImage(key);
+		}
 		// key not already registered.
 		if (buff != null) {
 			StyleContext acontext = getAssociatedContext(key);

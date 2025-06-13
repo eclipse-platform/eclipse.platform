@@ -72,9 +72,10 @@ public class ModelUtil {
 	 */
 	public static String resolveURL(String url, String pluginId) {
 		Bundle bundle = null;
-		if (pluginId != null)
+		if (pluginId != null) {
 			// if pluginId is not null, use it.
 			bundle = Platform.getBundle(pluginId);
+		}
 		return resolveURL("", url, bundle); //$NON-NLS-1$
 	}
 
@@ -100,11 +101,13 @@ public class ModelUtil {
 	 */
 	public static String resolveURL(String base, String url, Bundle bundle) {
 		// quick exit
-		if (url == null)
+		if (url == null) {
 			return null;
+		}
 		IntroURLParser parser = new IntroURLParser(url);
-		if (parser.hasProtocol())
+		if (parser.hasProtocol()) {
 			return url;
+		}
 		// make plugin relative url. Only now we need the bundle.
 		return BundleUtil.getResolvedResourceLocation(base, url, bundle);
 	}
@@ -117,9 +120,10 @@ public class ModelUtil {
 		try {
 			FileLocator.toFileURL(bundle.getEntry("/")); //$NON-NLS-1$
 		} catch (Exception e) {
-			if (contentFile != null)
+			if (contentFile != null) {
 				Log.error("Failed to extract Intro content folder for: " //$NON-NLS-1$
 						+ contentFile, e);
+			}
 		}
 	}
 
@@ -181,9 +185,10 @@ public class ModelUtil {
 		NodeList headList = dom.getElementsByTagName(TAG_HEAD);
 		Element head = (Element) headList.item(0);
 		NodeList baseList = head.getElementsByTagName(TAG_BASE);
-		if (baseList.getLength() == 0)
+		if (baseList.getLength() == 0) {
 			// no base defined, signal failure.
 			return null;
+		}
 
 		return (Element) baseList.item(baseList.getLength() - 1);
 
@@ -204,8 +209,9 @@ public class ModelUtil {
 			for (int i = 0; i < styleList.getLength(); i++) {
 				Element style = (Element) styleList.item(0);
 				String styleString = style.getAttribute(ATT_HREF);
-				if (styleString.equals(cssUrl))
+				if (styleString.equals(cssUrl)) {
 					return;
+				}
 			}
 		}
 
@@ -214,11 +220,12 @@ public class ModelUtil {
 		styleToAdd.setAttribute(ATT_HREF, cssUrl);
 		styleToAdd.setAttribute(ATT_REL, "stylesheet"); //$NON-NLS-1$
 		styleToAdd.setAttribute(ATT_TYPE, "text/css"); //$NON-NLS-1$
-		if (styleList != null && styleList.getLength() >= 1)
+		if (styleList != null && styleList.getLength() >= 1) {
 			styleList.item(0).getParentNode().insertBefore(styleToAdd,
 				styleList.item(0));
-		else
+		} else {
 			head.appendChild(styleToAdd);
+		}
 
 	}
 
@@ -274,9 +281,10 @@ public class ModelUtil {
 		for (int i = 0; i < allChildElements.getLength(); i++) {
 			// we know that the nodelist is of elements.
 			Element aElement = (Element) allChildElements.item(i);
-			if (aElement.getParentNode().equals(parent))
+			if (aElement.getParentNode().equals(parent)) {
 				// first level child element. add it.
 				vector.add(aElement);
+			}
 		}
 		Element[] filteredElements = new Element[vector.size()];
 		vector.copyInto(filteredElements);
@@ -295,10 +303,11 @@ public class ModelUtil {
 		for (int i = 0; i < allChildElements.getLength(); i++) {
 			// we know that the nodelist is of elements.
 			Element aElement = (Element) allChildElements.item(i);
-			if (aElement.getParentNode().equals(dom.getDocumentElement()))
+			if (aElement.getParentNode().equals(dom.getDocumentElement())) {
 				// first level child element. add it. Cant use getParent
 				// here.
 				vector.add(aElement);
+			}
 		}
 		Element[] filteredElements = new Element[vector.size()];
 		vector.copyInto(filteredElements);
@@ -322,8 +331,9 @@ public class ModelUtil {
 		NodeList children = dom.getElementsByTagNameNS("*", localElementName); //$NON-NLS-1$
 		for (int i = 0; i < children.getLength(); i++) {
 			Element element = (Element) children.item(i);
-			if (element.getAttribute("id").equals(id)) //$NON-NLS-1$
+			if (element.getAttribute("id").equals(id)) { //$NON-NLS-1$
 				return element;
+			}
 		}
 		// non found.
 		return null;
@@ -375,8 +385,9 @@ public class ModelUtil {
 			String base, Bundle bundle) {
 		if (element.hasAttribute(attributeName)) {
 			String attributeValue = element.getAttribute(attributeName);
-			if (new IntroURLParser(attributeValue).hasProtocol())
+			if (new IntroURLParser(attributeValue).hasProtocol()) {
 				return;
+			}
 
 			// resolve the resource against the nl mechanism.
 			String attributePath = BundleUtil.getResolvedResourceLocation(base,
@@ -392,8 +403,9 @@ public class ModelUtil {
 				&& element.getAttribute(ATT_VALUE_TYPE).equals("ref") //$NON-NLS-1$
 				&& element.getLocalName().equals(TAG_PARAM)) {
 			String value = element.getAttribute(ATT_VALUE);
-			if (new IntroURLParser(value).hasProtocol())
+			if (new IntroURLParser(value).hasProtocol()) {
 				return;
+			}
 			// resolve the resource against the nl mechanism.
 			String attributePath = BundleUtil.getResolvedResourceLocation(base,
 				value, bundle);
@@ -408,8 +420,9 @@ public class ModelUtil {
 	 */
 	public static Node[] getArray(NodeList nodeList) {
 		Node[] nodes = new Node[nodeList.getLength()];
-		for (int i = 0; i < nodeList.getLength(); i++)
+		for (int i = 0; i < nodeList.getLength(); i++) {
 			nodes[i] = nodeList.item(i);
+		}
 		return nodes;
 	}
 

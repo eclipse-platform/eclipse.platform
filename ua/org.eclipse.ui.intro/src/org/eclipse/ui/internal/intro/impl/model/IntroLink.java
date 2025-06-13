@@ -47,8 +47,9 @@ public class IntroLink extends AbstractTextElement {
 		if (url != null) {
 			// check the URL.
 			IntroURLParser parser = new IntroURLParser(url);
-			if (parser.hasIntroUrl())
+			if (parser.hasIntroUrl()) {
 				introURL = parser.getIntroURL();
+			}
 		}
 
 		// There should be at most one img element.

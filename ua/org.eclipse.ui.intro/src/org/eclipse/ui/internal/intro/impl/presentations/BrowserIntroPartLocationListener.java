@@ -40,24 +40,27 @@ public class BrowserIntroPartLocationListener implements LocationListener {
 	@Override
 	public void changed(LocationEvent event) {
 		String url = event.location;
-		if (url == null)
+		if (url == null) {
 			return;
+		}
 
 		// guard against unnecessary History updates.
 		Browser browser = (Browser) event.getSource();
 		if (browser.getData("navigation") != null //$NON-NLS-1$
-				&& browser.getData("navigation").equals("true")) //$NON-NLS-1$ //$NON-NLS-2$
+				&& browser.getData("navigation").equals("true")) { //$NON-NLS-1$ //$NON-NLS-2$
 			return;
+		}
 
 		IntroModelRoot model = implementation.getModel();
 		IntroURLParser parser = new IntroURLParser(url);
 		if (!parser.hasProtocol() || parser.getHost() == null
-				|| parser.getHost().isEmpty())
+				|| parser.getHost().isEmpty()) {
 			// This will filter out two navigation events fired by the browser
 			// on a setText. (about:blank and
 			// res://C:\WINDOWS\System32\shdoclc.dll/navcancl.htm on windows,
 			// and file:/// on Linux)
 			return;
+		}
 
 		if (model.isDynamic()) {
 			// Update the history even with real URLs. Note that if we have
@@ -117,8 +120,9 @@ public class BrowserIntroPartLocationListener implements LocationListener {
 	@Override
 	public void changing(LocationEvent event) {
 		String url = event.location;
-		if (url == null)
+		if (url == null) {
 			return;
+		}
 
 		IntroModelRoot model = implementation.getModel();
 		IntroURLParser parser = new IntroURLParser(url);
@@ -136,8 +140,9 @@ public class BrowserIntroPartLocationListener implements LocationListener {
 			// supported here, only Help system injected iframes.
 			if (model.isDynamic()) {
 				if ((introURL.getParameter(IntroURL.KEY_EMBED_TARGET) != null)
-						&& introURL.getAction().equals(IntroURL.SHOW_PAGE))
+						&& introURL.getAction().equals(IntroURL.SHOW_PAGE)) {
 					flagStartOfNavigation();
+				}
 			}
 			return;
 		}
@@ -149,8 +154,9 @@ public class BrowserIntroPartLocationListener implements LocationListener {
 
 
 	public void flagStartOfFrameNavigation() {
-		if (implementation.getBrowser().getData("frameNavigation") == null) //$NON-NLS-1$
+		if (implementation.getBrowser().getData("frameNavigation") == null) { //$NON-NLS-1$
 			implementation.getBrowser().setData("frameNavigation", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	public void flagEndOfFrameNavigation() {
@@ -159,8 +165,9 @@ public class BrowserIntroPartLocationListener implements LocationListener {
 
 
 	public void flagStartOfNavigation() {
-		if (implementation.getBrowser().getData("navigation") == null) //$NON-NLS-1$
+		if (implementation.getBrowser().getData("navigation") == null) { //$NON-NLS-1$
 			implementation.getBrowser().setData("navigation", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	public void flagEndOfNavigation() {
@@ -169,8 +176,9 @@ public class BrowserIntroPartLocationListener implements LocationListener {
 
 
 	public void flagStoredTempUrl() {
-		if (implementation.getBrowser().getData("tempUrl") == null) //$NON-NLS-1$
+		if (implementation.getBrowser().getData("tempUrl") == null) { //$NON-NLS-1$
 			implementation.getBrowser().setData("tempUrl", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	public void flagRemovedTempUrl() {

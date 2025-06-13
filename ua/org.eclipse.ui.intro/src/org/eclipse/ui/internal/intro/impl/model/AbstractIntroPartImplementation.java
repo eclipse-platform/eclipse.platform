@@ -242,11 +242,12 @@ public abstract class AbstractIntroPartImplementation {
 						"(perf stats) setting standby state (zooming, displaying content) took:", //$NON-NLS-1$
 						+setStandbyStateStats.getRunningTime());
 				setStandbyStateStats.reset();
-			} else
+			} else {
 				Util
 					.logPerformanceTime(
 						"setting standby state (zooming, generating content, setText() ) took:", //$NON-NLS-1$
 						+start);
+			}
 
 			if (logUIcreationTime) {
 				if (PerformanceStats.ENABLED) {
@@ -259,10 +260,11 @@ public abstract class AbstractIntroPartImplementation {
 							"END - (perf stats): creating CustomizableIntroPart view took:", //$NON-NLS-1$
 							+stats.getRunningTime());
 					stats.reset();
-				} else
+				} else {
 					Util.logPerformanceTime(
 						"END: creating CustomizableIntroPart view took:", //$NON-NLS-1$
 						+IntroPlugin.getDefault().gettUICreationStartTime());
+				}
 
 
 				// prevent further logging of UI creation time.
@@ -306,8 +308,9 @@ public abstract class AbstractIntroPartImplementation {
 	protected void saveCurrentPage(IMemento memento) {
 		IntroModelRoot model = getModel();
 
-		if (memento == null || model == null)
+		if (memento == null || model == null) {
 			return;
+		}
 		String currentPage = model.getCurrentPageId();
 		if (currentPage != null && currentPage.length() > 0) {
 			memento.putString(IIntroConstants.MEMENTO_CURRENT_PAGE_ATT,

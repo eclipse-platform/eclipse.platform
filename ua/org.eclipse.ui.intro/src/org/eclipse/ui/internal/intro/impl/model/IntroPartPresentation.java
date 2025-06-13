@@ -108,8 +108,9 @@ public class IntroPartPresentation extends AbstractIntroElement {
 				StringTokenizer stok = new StringTokenizer(value, ","); //$NON-NLS-1$
 				for (;stok.hasMoreTokens();) {
 					String oneStyle = stok.nextToken().trim();
-					if (root!=null)
+					if (root!=null) {
 						oneStyle = root.resolveVariables(oneStyle);
+					}
 					list.add(oneStyle);
 				}
 				implementationStyles = list.toArray(new String[list.size()]);
@@ -160,9 +161,10 @@ public class IntroPartPresentation extends AbstractIntroElement {
 			// There should only be one head element. Since elements where
 			// obtained by name, no point validating name.
 			IConfigurationElement[] headElements = element.getChildren(IntroHead.TAG_HEAD);
-			if (headElements.length == 0)
+			if (headElements.length == 0) {
 				// no contributions. done.
 				return null;
+			}
 			IntroHead head = new IntroHead(headElements[0]);
 			head.setParent(this);
 			return head;
@@ -180,15 +182,17 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	 */
 
 	public IntroLaunchBarElement getLaunchBarElement() {
-		if (launchBar != null)
+		if (launchBar != null) {
 			return launchBar;
+		}
 		IConfigurationElement[] children = getCfgElement().getChildren("launchBar"); //$NON-NLS-1$
 		if (children.length > 0) {
 			launchBar = new IntroLaunchBarElement(children[0]);
 			launchBar.setParent(this);
-			if (children.length > 1)
+			if (children.length > 1) {
 				Log
 						.warning("Mutiple Intro Launch bars defined when only one is allowed. Only first one was loaded. "); //$NON-NLS-1$
+			}
 		}
 		return launchBar;
 	}
@@ -215,9 +219,10 @@ public class IntroPartPresentation extends AbstractIntroElement {
 			updatePresentationAttributes(implementationElement);
 			try {
 				implementation = createIntroPartImplementation(getImplementationKind());
-				if (implementation == null)
+				if (implementation == null) {
 					// failed to create executable.
 					continue;
+				}
 
 				implementation.init(introPart, memento);
 				implementation.createPartControl(parent);
@@ -227,9 +232,10 @@ public class IntroPartPresentation extends AbstractIntroElement {
 					Map<String, String> properties = theme != null ? theme.getProperties() : null;
 					model.getConfigurer().init(introPart.getIntroSite(), properties);
 				}
-				if (Log.logInfo)
+				if (Log.logInfo) {
 					Log.info("Loading Intro UI implementation from: " //$NON-NLS-1$
 							+ ModelLoaderUtil.getLogString(implementationElement, "kind")); //$NON-NLS-1$
+				}
 				break;
 			} catch (SWTError e) {
 				Log.warning("Failed to create Intro UI implementation from: " //$NON-NLS-1$
@@ -277,9 +283,10 @@ public class IntroPartPresentation extends AbstractIntroElement {
 		IConfigurationElement[] implementationElements = configElement.getChildren(TAG_IMPLEMENTATION);
 		// IConfigurationElement implementationElement = null;
 
-		if (implementationElements.length == 0)
+		if (implementationElements.length == 0) {
 			// no contributions. done.
 			return validList;
+		}
 
 		String currentOS = Platform.getOS();
 		String currentWS = Platform.getWS();
@@ -288,9 +295,10 @@ public class IntroPartPresentation extends AbstractIntroElement {
 		// without WS.
 		for (int i = 0; i < implementationElements.length; i++) {
 			String os = implementationElements[i].getAttribute(ATT_OS);
-			if (os == null)
+			if (os == null) {
 				// no os, no match.
 				continue;
+			}
 
 			if (listValueHasValue(os, currentOS)) {
 				// found implementation with correct OS. Now try if WS
@@ -302,8 +310,9 @@ public class IntroPartPresentation extends AbstractIntroElement {
 					validList.add(implementationElements[i]);
 				} else {
 					// good OS, and we have WS.
-					if (listValueHasValue(ws, currentWS))
+					if (listValueHasValue(ws, currentWS)) {
 						validList.add(implementationElements[i]);
+					}
 				}
 			}
 		}
@@ -322,8 +331,9 @@ public class IntroPartPresentation extends AbstractIntroElement {
 					validList.add(implementationElements[i]);
 				} else {
 					// no OS, and we have WS.
-					if (listValueHasValue(ws, currentWS))
+					if (listValueHasValue(ws, currentWS)) {
 						validList.add(implementationElements[i]);
+					}
 				}
 
 			}
@@ -340,8 +350,9 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	private boolean listValueHasValue(String stringValue, String value) {
 		String[] attributeValues = stringValue.split(","); //$NON-NLS-1$
 		for (int i = 0; i < attributeValues.length; i++) {
-			if (attributeValues[i].equalsIgnoreCase(value))
+			if (attributeValues[i].equalsIgnoreCase(value)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -354,9 +365,10 @@ public class IntroPartPresentation extends AbstractIntroElement {
 		IConfigurationElement[] implementationElements = getCfgElement().getChildren(TAG_IMPLEMENTATION);
 		// IConfigurationElement implementationElement = null;
 
-		if (implementationElements.length == 0)
+		if (implementationElements.length == 0) {
 			// no implementations. done.
 			return null;
+		}
 
 		// loop through all to find one with matching kind.
 		for (int i = 0; i < implementationElements.length; i++) {
@@ -376,13 +388,16 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	 */
 	private AbstractIntroPartImplementation createIntroPartImplementation(String implementationType) {
 		// quick exits
-		if (implementationType == null)
+		if (implementationType == null) {
 			return null;
+		}
 		if (!implementationType.equals(BROWSER_IMPL_KIND) && !implementationType.equals(FORMS_IMPL_KIND)
-				&& !implementationType.equals(TEXT_IMPL_KIND))
+				&& !implementationType.equals(TEXT_IMPL_KIND)) {
 			return null;
-		if (implementationType.equals(BROWSER_IMPL_KIND) && IntroPlugin.DEBUG_NO_BROWSER)
+		}
+		if (implementationType.equals(BROWSER_IMPL_KIND) && IntroPlugin.DEBUG_NO_BROWSER) {
 			return null;
+		}
 
 		AbstractIntroPartImplementation implementation = null;
 		try {
@@ -423,43 +438,50 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	 *            the memento in which to store state information
 	 */
 	public void saveState(IMemento memento) {
-		if (implementation != null)
+		if (implementation != null) {
 			implementation.saveState(memento);
+		}
 	}
 
 
 	public void setFocus() {
-		if (implementation != null)
+		if (implementation != null) {
 			implementation.setFocus();
+		}
 	}
 
 	public void standbyStateChanged(boolean standby, boolean isStandbyPartNeeded) {
-		if (implementation != null)
+		if (implementation != null) {
 			implementation.standbyStateChanged(standby, isStandbyPartNeeded);
+		}
 	}
 
 	public void updateHistory(AbstractIntroPage page) {
-		if (implementation != null)
+		if (implementation != null) {
 			implementation.updateHistory(page);
+		}
 	}
 
 
 
 	public boolean navigateForward() {
-		if (implementation != null)
+		if (implementation != null) {
 			return implementation.navigateForward();
+		}
 		return false;
 	}
 
 	public boolean navigateBackward() {
-		if (implementation != null)
+		if (implementation != null) {
 			return implementation.navigateBackward();
+		}
 		return false;
 	}
 
 	public boolean navigateHome() {
-		if (implementation != null)
+		if (implementation != null) {
 			return implementation.navigateHome();
+		}
 		return false;
 	}
 
@@ -468,8 +490,9 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	 * Called when the IntroPart is disposed. Forwards the call to the implementation class.
 	 */
 	public void dispose() {
-		if (implementation != null)
+		if (implementation != null) {
 			implementation.dispose();
+		}
 	}
 
 	/**
@@ -479,8 +502,9 @@ public class IntroPartPresentation extends AbstractIntroElement {
 	 * @see org.eclipse.core.runtime.IRegistryChangeListener#registryChanged(org.eclipse.core.runtime.IRegistryChangeEvent)
 	 */
 	public void registryChanged(IRegistryChangeEvent event) {
-		if (implementation != null)
+		if (implementation != null) {
 			implementation.registryChanged(event);
+		}
 	}
 
 	/**

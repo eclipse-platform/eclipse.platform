@@ -99,9 +99,9 @@ public class FormIntroPartImplementation extends
 
 	@Override
 	public void createPartControl(Composite container) {
-		if (getModel().isDynamic())
+		if (getModel().isDynamic()) {
 			dynamicCreatePartControl(container);
-		else {
+		} else {
 			staticCreatePartControl(container);
 		}
 	}
@@ -126,16 +126,17 @@ public class FormIntroPartImplementation extends
 		// Define presentation title color and image.
 		Form mainForm = toolkit.createForm(container);
 		Color fg = sharedStyleManager.getColor(toolkit, "title.fg"); //$NON-NLS-1$
-		if (fg != null)
+		if (fg != null) {
 			mainForm.setForeground(fg);
+		}
 		Image bgImage = sharedStyleManager.getImage("title.image", null, null); //$NON-NLS-1$
 		if (bgImage != null) {
 			mainForm.setBackgroundImage(bgImage);
 			String repeat = sharedStyleManager
 				.getProperty("title.image.repeat"); //$NON-NLS-1$
-			if (repeat != null && repeat.equalsIgnoreCase("true")) //$NON-NLS-1$
-
+			if (repeat != null && repeat.equalsIgnoreCase("true")) { //$NON-NLS-1$
 				mainForm.setBackgroundImageTiled(true);
+			}
 		}
 
 		mainPageBook = createMainPageBook(toolkit, mainForm);
@@ -193,10 +194,10 @@ public class FormIntroPartImplementation extends
 			sharedStyleManager.getProperties());
 		boolean pageHasNavigation = styleManager.showHomePageNavigation();
 		if (pageToShow != null) {
-			if (pageBook.hasPage(pageToShow.getId()))
+			if (pageBook.hasPage(pageToShow.getId())) {
 				// we are showing Home Page.
 				pageBook.showPage(pageToShow.getId());
-			else {
+			} else {
 				if (pageHasNavigation) {
 					// page or Home Page with a page layout and navigation, set
 					// the page id to the static PageFormWithNavigation id.
@@ -222,8 +223,9 @@ public class FormIntroPartImplementation extends
 
 	@Override
 	public void dispose() {
-		if (toolkit != null)
+		if (toolkit != null) {
 			toolkit.dispose();
+		}
 	}
 
 	/**
@@ -238,9 +240,10 @@ public class FormIntroPartImplementation extends
 	public void propertyChanged(Object source, int propId) {
 		if (propId == IntroModelRoot.CURRENT_PAGE_PROPERTY_ID) {
 			String pageId = getModel().getCurrentPageId();
-			if (pageId == null || pageId.isEmpty())
+			if (pageId == null || pageId.isEmpty()) {
 				// If page ID was not set properly. exit.
 				return;
+			}
 
 			showPage(getModel().getCurrentPage());
 		}
@@ -270,10 +273,11 @@ public class FormIntroPartImplementation extends
 	@Override
 	protected void doStandbyStateChanged(boolean standby,
 			boolean isStandbyPartNeeded) {
-		if (getModel().isDynamic())
+		if (getModel().isDynamic()) {
 			dynamicStandbyStateChanged(standby, isStandbyPartNeeded);
-		else
+		} else {
 			staticStandbyStateChanged(standby);
+		}
 	}
 
 
@@ -289,22 +293,25 @@ public class FormIntroPartImplementation extends
 			updateNavigationActionsState();
 		}
 
-		if (isStandbyPartNeeded)
+		if (isStandbyPartNeeded) {
 			// we have a standby part, nothing more to do in presentation.
 			return;
+		}
 
 		// try to show a cached page.
 		AbstractIntroPage pageToShow = null;
 		if (standby) {
 			// we are in standby. Show standby page, in PageForm.
 			pageToShow = getModel().getStandbyPage();
-			if (pageToShow == null)
+			if (pageToShow == null) {
 				pageToShow = getModel().getHomePage();
-		} else
+			}
+		} else {
 			// if we are showing a regular intro page, or if the Home Page
 			// has a regular page layout, set the page id to the static PageForm
 			// id.
 			pageToShow = getModel().getCurrentPage();
+		}
 
 		showPage(pageToShow);
 	}
@@ -352,24 +359,26 @@ public class FormIntroPartImplementation extends
 		} else if (pageFormWithNav.hasPage(page.getId())) {
 			pageFormWithNav.showPage(page, sharedStyleManager);
 			formPageId = PageFormWithNavigation.PAGE_FORM_WITH_NAVIGATION_ID;
-		} else if (mainPageBook.hasPage(page.getId()))
+		} else if (mainPageBook.hasPage(page.getId())) {
 			formPageId = page.getId();
-		else
+		} else {
 			return false;
+		}
 
 		mainPageBook.showPage(formPageId);
 		return true;
 	}
 
 	private void removeCachedPage(AbstractIntroPage page) {
-		if (pageForm.hasPage(page.getId()))
+		if (pageForm.hasPage(page.getId())) {
 			pageForm.removePage(page.getId());
-		else if (pageFormWithNav.hasPage(page.getId()))
+		} else if (pageFormWithNav.hasPage(page.getId())) {
 			pageFormWithNav.removePage(page.getId());
-		else if (mainPageBook.hasPage(page.getId()))
+		} else if (mainPageBook.hasPage(page.getId())) {
 			mainPageBook.removePage(page.getId());
-		else
+		} else {
 			return;
+		}
 	}
 
 
@@ -387,12 +396,13 @@ public class FormIntroPartImplementation extends
 		AbstractIntroPage page = ContentProviderManager.getInst()
 			.getContentProviderParentPage(provider);
 		if (incremental) {
-			if (pageForm.hasPage(page.getId()))
+			if (pageForm.hasPage(page.getId())) {
 				pageForm.reflow();
-			else if (pageFormWithNav.hasPage(page.getId()))
+			} else if (pageFormWithNav.hasPage(page.getId())) {
 				pageFormWithNav.reflow();
-			else if (mainPageBook.hasPage(page.getId()))
+			} else if (mainPageBook.hasPage(page.getId())) {
 				mainPageBook.reflow(true);
+			}
 		}
 		else {
 			removeCachedPage(page);
@@ -403,8 +413,9 @@ public class FormIntroPartImplementation extends
 	@Override
 	public void setFocus() {
 		if (model.isDynamic()) {
-			if (mainPageBook.getCurrentPage() != null)
+			if (mainPageBook.getCurrentPage() != null) {
 				mainPageBook.getCurrentPage().setFocus();
+			}
 		}
 	}
 
@@ -415,10 +426,10 @@ public class FormIntroPartImplementation extends
 			// dynamic case. Uses navigation history.
 			if (history.canNavigateBackward()) {
 				history.navigateHistoryBackward();
-				if (history.currentLocationIsUrl())
+				if (history.currentLocationIsUrl()) {
 					success = Util.openBrowser(history
 						.getCurrentLocationAsUrl());
-				else {
+				} else {
 					// Set current page, and this will triger regen.
 					CustomizableIntroPart currentIntroPart = (CustomizableIntroPart) IntroPlugin
 						.getIntro();
@@ -442,10 +453,10 @@ public class FormIntroPartImplementation extends
 			// dynamic case. Uses navigation history.
 			if (history.canNavigateForward()) {
 				history.navigateHistoryForward();
-				if (history.currentLocationIsUrl())
+				if (history.currentLocationIsUrl()) {
 					success = Util.openBrowser(history
 						.getCurrentLocationAsUrl());
-				else {
+				} else {
 					// Set current page, and this will triger regen.
 					CustomizableIntroPart currentIntroPart = (CustomizableIntroPart) IntroPlugin
 						.getIntro();
@@ -533,8 +544,9 @@ public class FormIntroPartImplementation extends
 	public void staticStandbyStateChanged(boolean standby) {
 		AbstractIntroPage homePage = getModel().getHomePage();
 		AbstractIntroPage standbyPage = getModel().getStandbyPage();
-		if (standbyPage == null)
+		if (standbyPage == null) {
 			standbyPage = homePage;
+		}
 
 		if (standby) {
 			welcomeLink.setHref(standbyPage.getUrl());

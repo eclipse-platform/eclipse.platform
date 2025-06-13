@@ -49,12 +49,14 @@ public class IntroHTML extends AbstractTextElement {
 		src = getAttribute(element, ATT_SRC);
 		html_type = getAttribute(element, ATT_TYPE);
 		encoding = getAttribute(element, ATT_ENCODING);
-		if (encoding == null)
+		if (encoding == null) {
 			encoding = "UTF-8"; //$NON-NLS-1$
+		}
 		if (html_type != null && !html_type.equalsIgnoreCase("inline") //$NON-NLS-1$
-				&& !html_type.equalsIgnoreCase("embed")) //$NON-NLS-1$
+				&& !html_type.equalsIgnoreCase("embed")) { //$NON-NLS-1$
 			// if type is not correct, null it.
 			html_type = null;
+		}
 
 		// description will be null if there is no description element.
 		introImage = getIntroImage(element, base);
@@ -72,9 +74,10 @@ public class IntroHTML extends AbstractTextElement {
 			// obtained by name, no point validating name.
 			NodeList imageElements = element
 				.getElementsByTagName(IntroImage.TAG_IMAGE);
-			if (imageElements.getLength() == 0)
+			if (imageElements.getLength() == 0) {
 				// no contributions. done.
 				return null;
+			}
 			IntroImage image = new IntroImage((Element) imageElements.item(0),
 				getBundle(), base);
 			image.setParent(this);

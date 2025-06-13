@@ -36,8 +36,9 @@ public class ModelLoaderUtil {
 	public static boolean isValidElementName(IConfigurationElement element,
 			String validName) {
 
-		if (element.getName().equals(validName))
+		if (element.getName().equals(validName)) {
 			return true;
+		}
 		// bad element name.
 		return false;
 	}
@@ -55,9 +56,10 @@ public class ModelLoaderUtil {
 			IConfigurationElement[] configElements, String logAttribute) {
 
 		int arraySize = configElements.length;
-		if (arraySize == 0)
+		if (arraySize == 0) {
 			// No one contributed to extension. return null.
 			return null;
+		}
 
 		// we should only have one, so use first one.
 		IConfigurationElement configElement = configElements[0];
@@ -68,10 +70,11 @@ public class ModelLoaderUtil {
 
 		if (arraySize != 1) {
 			// we have more than one, warn in the log.
-			for (int i = 1; i < arraySize; i++)
+			for (int i = 1; i < arraySize; i++) {
 				// log each extra extension.
 				Log.warning(getLogString(configElements[i], logAttribute)
 						+ " ignored due to multiple contributions"); //$NON-NLS-1$
+			}
 		}
 		return configElement;
 	}
@@ -128,11 +131,13 @@ public class ModelLoaderUtil {
 	 */
 	public static Object createClassInstance(String pluginId, String className) {
 		// quick exits.
-		if (pluginId == null || className == null)
+		if (pluginId == null || className == null) {
 			return null;
+		}
 		Bundle bundle = Platform.getBundle(pluginId);
-		if (!BundleUtil.bundleHasValidState(bundle))
+		if (!BundleUtil.bundleHasValidState(bundle)) {
 			return null;
+		}
 
 		Class<?> aClass;
 		Object aObject;
@@ -155,15 +160,17 @@ public class ModelLoaderUtil {
 	 */
 	public static StringBuilder createPathToElementKey(
 			AbstractIntroIdElement element, boolean full) {
-		if (element.getId() == null)
+		if (element.getId() == null) {
 			return null;
+		}
 		StringBuilder buffer = new StringBuilder(element.getId());
 		AbstractBaseIntroElement parent = (AbstractBaseIntroElement) element
 			.getParent();
 		while (parent != null
 				&& !parent.isOfType(AbstractIntroElement.MODEL_ROOT)) {
-			if (parent.getId() == null)
+			if (parent.getId() == null) {
 				return null;
+			}
 			buffer.insert(0, parent.getId() + "."); //$NON-NLS-1$
 			parent = (AbstractBaseIntroElement) parent.getParent();
 		}

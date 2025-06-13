@@ -170,8 +170,9 @@ public class IntroPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		inst = this;
-		if (Log.logInfo)
+		if (Log.logInfo) {
 			Log.info("IntroPlugin - calling start on Intro bundle"); //$NON-NLS-1$
+		}
 		// Setup debugging options
 		DEBUG = isDebugging();
 		if (DEBUG) {
