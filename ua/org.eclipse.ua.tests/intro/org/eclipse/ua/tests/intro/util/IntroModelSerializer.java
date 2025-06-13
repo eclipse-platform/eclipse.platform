@@ -76,8 +76,9 @@ public class IntroModelSerializer {
 		text.append("\nHome page id = " //$NON-NLS-1$
 				+ model.getPresentation().getHomePageId());
 		IntroHead headContent = model.getPresentation().getHead();
-		if (headContent != null)
+		if (headContent != null) {
 			text.append("\nPresentation Shared Head = " + headContent.getSrc()); //$NON-NLS-1$
+		}
 		text.append("\nNumber of pages (not including Root Page) = " //$NON-NLS-1$
 				+ model.getPages().length);
 		text.append("\nNumber of shared groups = " //$NON-NLS-1$
@@ -106,13 +107,15 @@ public class IntroModelSerializer {
 	private void printPageStyles(AbstractIntroPage page, StringBuilder text) {
 		text.append("\n\tpage styles are = "); //$NON-NLS-1$
 		String[] styles = page.getStyles();
-		for (String style : styles)
+		for (String style : styles) {
 			text.append(filterURL(style + "\n\t\t\t")); //$NON-NLS-1$
+		}
 		text.append("\n\tpage alt-styles are = "); //$NON-NLS-1$
 
 		final Map<String, Bundle> altStylesHashtable = page.getAltStyles();
-		if (altStylesHashtable == null)
+		if (altStylesHashtable == null) {
 			return;
+		}
 
 		Set<String> set = altStylesHashtable.keySet();
 		String[] sorted = new String[set.size()];
@@ -221,10 +224,12 @@ public class IntroModelSerializer {
 		text.append(indent + "src = " + html.getSrc()); //$NON-NLS-1$
 		text.append(indent + "isInlined = " + html.isInlined()); //$NON-NLS-1$
 		text.append(indent + "style-id = " + html.getStyleId()); //$NON-NLS-1$
-		if (html.getIntroImage() != null)
+		if (html.getIntroImage() != null) {
 			printImage(text, html.getIntroImage(), indent + "\t\t"); //$NON-NLS-1$
-		if (html.getIntroText() != null)
+		}
+		if (html.getIntroText() != null) {
 			printText(text, html.getIntroText(), indent + "\t\t"); //$NON-NLS-1$
+		}
 
 	}
 
@@ -259,8 +264,9 @@ public class IntroModelSerializer {
 		indent = indent + "\t\t"; //$NON-NLS-1$
 		text.append(indent + "class = " + provider.getClassName()); //$NON-NLS-1$
 		text.append(indent + "pluginId = " + provider.getPluginId()); //$NON-NLS-1$
-		if (provider.getIntroText() != null)
+		if (provider.getIntroText() != null) {
 			printText(text, provider.getIntroText(), indent + "\t\t"); //$NON-NLS-1$
+		}
 
 	}
 

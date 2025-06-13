@@ -73,11 +73,13 @@ public class TocManagerTest {
 		HelpPlugin.getTocManager().clearCache();
 		AbstractTocProvider [] tocProviders = HelpPlugin.getTocManager().getTocProviders();
 		for (AbstractTocProvider tocProvider : tocProviders) {
-			if(tocProvider instanceof TocFileProvider)
+			if(tocProvider instanceof TocFileProvider) {
 				localPriority = tocProvider.getPriority();
+			}
 
-			if(tocProvider instanceof RemoteTocProvider)
+			if(tocProvider instanceof RemoteTocProvider) {
 				remotePriority = tocProvider.getPriority();
+			}
 		}
 
 		assertTrue(localPriority<remotePriority);
@@ -93,11 +95,13 @@ public class TocManagerTest {
 
 		AbstractTocProvider [] tocProviders = HelpPlugin.getTocManager().getTocProviders();
 		for (AbstractTocProvider tocProvider : tocProviders) {
-			if(tocProvider instanceof TocFileProvider)
+			if(tocProvider instanceof TocFileProvider) {
 				localPriority = tocProvider.getPriority();
+			}
 
-			if(tocProvider instanceof RemoteTocProvider)
+			if(tocProvider instanceof RemoteTocProvider) {
 				remotePriority = tocProvider.getPriority();
+			}
 		}
 
 		assertTrue(remotePriority<localPriority);
@@ -108,10 +112,11 @@ public class TocManagerTest {
 		HashSet<String> contributionsFound = new HashSet<>();
 
 		for (TocContribution tocContribution : tocContributions) {
-			if(contributionsFound.contains(tocContribution.getId()))
+			if(contributionsFound.contains(tocContribution.getId())) {
 				return true;
-			else
+			} else {
 				contributionsFound.add(tocContribution.getId());
+			}
 		}
 
 		return false;

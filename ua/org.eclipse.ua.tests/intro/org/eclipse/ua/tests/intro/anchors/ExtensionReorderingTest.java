@@ -162,8 +162,9 @@ public class ExtensionReorderingTest {
 			String currentAttributeValue = configElement
 				.getAttribute(attributeName);
 			if (currentAttributeValue != null
-					&& currentAttributeValue.equals(attributeValue))
+					&& currentAttributeValue.equals(attributeValue)) {
 				elements.add(configElement);
+			}
 		}
 
 		// now return array.
