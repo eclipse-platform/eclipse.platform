@@ -67,16 +67,19 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * @return Returns all the children of this container.
 	 */
 	public AbstractIntroElement[] getChildren() {
-		if (!loaded)
+		if (!loaded) {
 			loadChildren();
+		}
 
-		if (!loaded)
+		if (!loaded) {
 			// if loaded still is false, something went wrong. This could happen
 			// when loading content from another external content files.
 			return new AbstractIntroElement[0];
+		}
 
-		if (!resolved)
+		if (!resolved) {
 			resolveChildren();
+		}
 
 		Vector filtered = filterChildren(children);
 
@@ -129,8 +132,9 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 		Vector<AbstractIntroElement> typedChildren = new Vector<>();
 		for (int i = 0; i < childrenElements.length; i++) {
 			AbstractIntroElement element = childrenElements[i];
-			if (element.isOfType(elementMask))
+			if (element.isOfType(elementMask)) {
 				typedChildren.addElement(element);
+			}
 		}
 		return convertToModelArray(typedChildren, elementMask);
 	}
@@ -216,8 +220,9 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 		Vector<Node> vector = new Vector<>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
-			if (node.getNodeType() == Node.ELEMENT_NODE)
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				vector.add(node);
+			}
 		}
 		Element[] filteredElements = new Element[vector.size()];
 		vector.copyInto(filteredElements);
@@ -256,9 +261,10 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	protected void insertElementsBefore(Element[] childElements, Bundle bundle,
 			String base, AbstractIntroElement child, String mixinStyle) {
 		int childLocation = children.indexOf(child);
-		if (childLocation == -1)
+		if (childLocation == -1) {
 			// bad reference child.
 			return;
+		}
 		insertElementsBefore(childElements, bundle, base, childLocation, mixinStyle);
 	}
 
@@ -272,32 +278,33 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 			Bundle bundle, String base) {
 
 		AbstractIntroElement child = null;
-		if (childElement.getNodeName().equalsIgnoreCase(IntroGroup.TAG_GROUP))
+		if (childElement.getNodeName().equalsIgnoreCase(IntroGroup.TAG_GROUP)) {
 			child = new IntroGroup(childElement, bundle, base);
-		else if (childElement.getNodeName()
-			.equalsIgnoreCase(IntroLink.TAG_LINK))
+		} else if (childElement.getNodeName()
+			.equalsIgnoreCase(IntroLink.TAG_LINK)) {
 			child = new IntroLink(childElement, bundle, base);
-		else if (childElement.getNodeName()
-			.equalsIgnoreCase(IntroText.TAG_TEXT))
+		} else if (childElement.getNodeName()
+			.equalsIgnoreCase(IntroText.TAG_TEXT)) {
 			child = new IntroText(childElement, bundle);
-		else if (childElement.getNodeName().equalsIgnoreCase(
-			IntroImage.TAG_IMAGE))
+		} else if (childElement.getNodeName().equalsIgnoreCase(
+			IntroImage.TAG_IMAGE)) {
 			child = new IntroImage(childElement, bundle, base);
-		else if (childElement.getNodeName().equalsIgnoreCase(
-				IntroSeparator.TAG_HR))
+		} else if (childElement.getNodeName().equalsIgnoreCase(
+				IntroSeparator.TAG_HR)) {
 			child = new IntroSeparator(childElement, bundle, base);
-		else if (childElement.getNodeName()
-			.equalsIgnoreCase(IntroHTML.TAG_HTML))
+		} else if (childElement.getNodeName()
+			.equalsIgnoreCase(IntroHTML.TAG_HTML)) {
 			child = new IntroHTML(childElement, bundle, base);
-		else if (childElement.getNodeName().equalsIgnoreCase(
-			IntroInclude.TAG_INCLUDE))
+		} else if (childElement.getNodeName().equalsIgnoreCase(
+			IntroInclude.TAG_INCLUDE)) {
 			child = new IntroInclude(childElement, bundle);
-		else if (childElement.getNodeName().equalsIgnoreCase(
-			IntroAnchor.TAG_ANCHOR))
+		} else if (childElement.getNodeName().equalsIgnoreCase(
+			IntroAnchor.TAG_ANCHOR)) {
 			child = new IntroAnchor(childElement, bundle);
-		else if (childElement.getNodeName().equalsIgnoreCase(
-			IntroContentProvider.TAG_CONTENT_PROVIDER))
+		} else if (childElement.getNodeName().equalsIgnoreCase(
+			IntroContentProvider.TAG_CONTENT_PROVIDER)) {
 			child = new IntroContentProvider(childElement, bundle);
+		}
 		return child;
 	}
 
@@ -328,16 +335,18 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 */
 	private void resolveInclude(IntroInclude include) {
 		AbstractIntroElement target = findIncludeTarget(include);
-		if (target == null)
+		if (target == null) {
 			// target could not be found.
 			return;
+		}
 		if (target.isOfType(AbstractIntroElement.GROUP
 				| AbstractIntroElement.ABSTRACT_TEXT
 				| AbstractIntroElement.IMAGE | AbstractIntroElement.TEXT
-				| AbstractIntroElement.PAGE_TITLE))
+				| AbstractIntroElement.PAGE_TITLE)) {
 			// be picky about model elements to include. Can not use
 			// BASE_ELEMENT model class because pages can not be included.
 			insertTarget(include, target);
+		}
 	}
 
 	/**
@@ -370,12 +379,14 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 		IntroModelRoot targetModelRoot = (IntroModelRoot) getParentPage()
 			.getParent();
 		String targetConfigID = include.getConfigId();
-		if (targetConfigID != null)
+		if (targetConfigID != null) {
 			targetModelRoot = ExtensionPointManager.getInst().getModel(
 				targetConfigID);
-		if (targetModelRoot == null)
+		}
+		if (targetModelRoot == null) {
 			// if the target config was not found, skip this include.
 			return null;
+		}
 		AbstractIntroElement target = findTarget(targetModelRoot, path);
 		return target;
 	}
@@ -390,13 +401,15 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 			String path) {
 		// extract path segments. Get first segment to start search.
 		String[] pathSegments = path.split("/"); //$NON-NLS-1$
-		if (container == null)
+		if (container == null) {
 			return null;
+		}
 
 		AbstractIntroElement target = container.findChild(pathSegments[0]);
-		if (target == null)
+		if (target == null) {
 			// there is no direct child with the specified first path segment.
 			return null;
+		}
 
 		// found parent segment. now find each child segment.
 		for (int i = 1; i < pathSegments.length; i++) {
@@ -406,9 +419,10 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 			}
 			String pathSegment = pathSegments[i];
 			target = ((AbstractIntroContainer) target).findChild(pathSegment);
-			if (target == null)
+			if (target == null) {
 				// tried to find next segment and failed.
 				return null;
+			}
 		}
 		return target;
 	}
@@ -421,8 +435,9 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 			IntroModelRoot root = getModelRoot();
 			if (root!=null) {
 				path = root.resolvePath(extensionId, path);
-				if (path==null)
+				if (path==null) {
 					return null;
+				}
 			}
 
 		}
@@ -456,22 +471,25 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	 * @see org.eclipse.ui.internal.intro.impl.model.IntroElement#getType()
 	 */
 	public AbstractIntroElement findChild(String elementId, int elementMask) {
-		if (!loaded)
+		if (!loaded) {
 			loadChildren();
+		}
 
 		for (int i = 0; i < children.size(); i++) {
 			AbstractIntroElement aChild = children.elementAt(i);
-			if (!aChild.isOfType(ID_ELEMENT))
+			if (!aChild.isOfType(ID_ELEMENT)) {
 				// includes and heads do not have ids, and so can not be
 				// referenced directly. This means that they can not be
 				// targets for other includes. Skip, just in case someone
 				// adds an id to it! Also, this applies to all elements in
 				// the model that do not have ids.
 				continue;
+			}
 			AbstractIntroIdElement child = (AbstractIntroIdElement) aChild;
 			if (child.getId() != null && child.getId().equals(elementId)
-					&& child.isOfType(elementMask))
+					&& child.isOfType(elementMask)) {
 				return child;
+			}
 		}
 		// no child with given id and type found.
 		return null;
@@ -481,9 +499,10 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 
 	private void insertTarget(IntroInclude include, AbstractIntroElement target) {
 		int includeLocation = children.indexOf(include);
-		if (includeLocation == -1)
+		if (includeLocation == -1) {
 			// should never be here.
 			return;
+		}
 		children.remove(includeLocation);
 		// handle merging target styles first, before changing target parent to
 		// enable inheritance of styles.
@@ -515,23 +534,26 @@ public abstract class AbstractIntroContainer extends AbstractBaseIntroElement {
 	private void handleIncludeStyleInheritence(IntroInclude include,
 			AbstractIntroElement target) {
 
-		if (!include.getMergeStyle())
+		if (!include.getMergeStyle()) {
 			// target styles are not needed. nothing to do.
 			return;
+		}
 
 		if (target.getParent().getType() == AbstractIntroElement.MODEL_ROOT
-				|| target.getParentPage().equals(include.getParentPage()))
+				|| target.getParentPage().equals(include.getParentPage())) {
 			// If we are including from this same page ie: target is in the
 			// same page, OR if we are including a shared group, defined
 			// under a config, do not include styles.
 			return;
+		}
 
 		// Update the parent page styles. skip style if it is null. Note,
 		// include both the target page styles and inherited styles. The full
 		// page styles need to be include.
 		String style = target.getParentPage().getStyle();
-		if (style != null)
+		if (style != null) {
 			getParentPage().addStyle(style);
+		}
 
 		// for alt-style cache bundle for loading resources.
 		style = target.getParentPage().getAltStyle();

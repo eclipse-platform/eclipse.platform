@@ -25,14 +25,16 @@ public class IntroModelContentProvider implements ITreeContentProvider {
 	public Object[] getChildren(Object element) {
 
 		AbstractIntroElement introElement = null;
-		if (element instanceof AbstractIntroElement)
+		if (element instanceof AbstractIntroElement) {
 			// synch the resource first.
 			introElement = (AbstractIntroElement) element;
+		}
 
 		if (introElement != null
 				&& introElement
-					.isOfType(AbstractIntroElement.ABSTRACT_CONTAINER))
+					.isOfType(AbstractIntroElement.ABSTRACT_CONTAINER)) {
 			return ((AbstractIntroContainer) introElement).getChildren();
+		}
 
 		return new Object[0];
 	}
@@ -52,13 +54,15 @@ public class IntroModelContentProvider implements ITreeContentProvider {
 	@Override
 	public boolean hasChildren(Object element) {
 		AbstractIntroElement introElement = null;
-		if (element instanceof AbstractIntroElement)
+		if (element instanceof AbstractIntroElement) {
 			// synch the resource first.
 			introElement = (AbstractIntroElement) element;
+		}
 		if (introElement != null
 				&& introElement
-					.isOfType(AbstractIntroElement.ABSTRACT_CONTAINER))
+					.isOfType(AbstractIntroElement.ABSTRACT_CONTAINER)) {
 			return true;
+		}
 		return false;
 	}
 

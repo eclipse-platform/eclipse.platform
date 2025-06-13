@@ -62,8 +62,9 @@ public class IntroHTMLGenerator {
 	 *            the page to generate HTML for
 	 */
 	public HTMLElement generateHTMLforPage(AbstractIntroPage page, IIntroContentProviderSite providerSite) {
-		if (page == null)
+		if (page == null) {
 			return null;
+		}
 		this.introPage = page;
 		this.providerSite = providerSite;
 
@@ -154,20 +155,23 @@ public class IntroHTMLGenerator {
 		// create the BASE element
 		String basePath = BundleUtil.getResolvedResourceLocation(introPage.getBase(), introPage.getBundle());
 		HTMLElement base = generateBaseElement(indentLevel + 1, basePath);
-		if (base != null)
+		if (base != null) {
 			head.addContent(base);
+		}
 		// create the HTML style block
 		head.addContent(generateStyleElement(indentLevel + 1));
 		// add the presentation style
 		String[] presentationStyles = IntroPlugin.getDefault().getIntroModelRoot().getPresentation()
 				.getImplementationStyles();
 		if (presentationStyles != null && introPage.injectSharedStyle()) {
-			for (int i=0; i<presentationStyles.length; i++)
+			for (int i=0; i<presentationStyles.length; i++) {
 				head.addContent(generateLinkElement(presentationStyles[i], indentLevel + 1));
+			}
 		}
 		String pageStyle = introPage.getStyle();
-		if (pageStyle != null)
+		if (pageStyle != null) {
 			head.addContent(generateLinkElement(pageStyle, indentLevel + 1));
+		}
 		// add javascript
 		head.addContent(generateJavascriptElement(indentLevel + 1));
 
@@ -175,8 +179,9 @@ public class IntroHTMLGenerator {
 		String[] pageStyles = introPage.getStyles();
 		for (int i = 0; i < pageStyles.length; i++) {
 			pageStyle = pageStyles[i];
-			if (pageStyle != null)
+			if (pageStyle != null) {
 				head.addContent(generateLinkElement(pageStyle, indentLevel + 1));
+			}
 		}
 		// if there is additional head conent specified in an external file,
 		// include it. Additional head content can be specified at the
@@ -187,8 +192,9 @@ public class IntroHTMLGenerator {
 		IntroHead introHead = IntroPlugin.getDefault().getIntroModelRoot().getPresentation().getHead();
 		if (introHead != null) {
 			content = readFromFile(introHead.getSrc(), introHead.getInlineEncoding());
-			if (content != null)
+			if (content != null) {
 				head.addContent(content);
+			}
 		}
 		// For the page's head contribution:
 		// TODO: there should only be one of these at the page level, not a
@@ -198,8 +204,9 @@ public class IntroHTMLGenerator {
 			introHead = htmlHeads[i];
 			if (introHead != null) {
 				content = readFromFile(introHead.getSrc(), introHead.getInlineEncoding());
-				if (content != null)
+				if (content != null) {
 					head.addContent(content);
+				}
 			}
 		}
 		return head;
@@ -270,11 +277,13 @@ public class IntroHTMLGenerator {
 		// Create the div that contains the page content
 		String pageId = (introPage.getId() != null) ? introPage.getId() : IIntroHTMLConstants.DIV_ID_PAGE;
 		HTMLElement pageContentDiv = generateDivElement(pageId, indentLevel + 1);
-		if (introPage.getStyleId() != null)
+		if (introPage.getStyleId() != null) {
 			pageContentDiv.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, introPage.getStyleId());
-		if (introPage.getBackgroundImage() != null)
+		}
+		if (introPage.getBackgroundImage() != null) {
 			pageContentDiv.addAttribute(IIntroHTMLConstants.ATTRIBUTE_STYLE,
 					"background-image : url(" + introPage.getBackgroundImage() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 
 		// Add any children of the page, in the order they are defined
 		AbstractIntroElement[] children = introPage.getChildren();
@@ -302,12 +311,14 @@ public class IntroHTMLGenerator {
 	 * @return an HTMLElement
 	 */
 	private HTMLElement generateIntroElement(AbstractIntroElement element, int indentLevel) {
-		if (element == null)
+		if (element == null) {
 			return null;
+		}
 		// check to see if this element should be filtered from the HTML
 		// presentation
-		if (filteredFromPresentation(element))
+		if (filteredFromPresentation(element)) {
 			return null;
+		}
 		switch (element.getType()) {
 		case AbstractIntroElement.GROUP:
 			return generateIntroDiv((IntroGroup) element, indentLevel);
@@ -356,8 +367,9 @@ public class IntroHTMLGenerator {
 		HTMLElement divElement = generateDivElement(element.getId(), indentLevel);
 		HTMLElement childContainer = divElement;
 		// if a div class was specified, add it
-		if (element.getStyleId() != null)
+		if (element.getStyleId() != null) {
 			divElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, element.getStyleId());
+		}
 		// Create the div label, if specified
 		if (element.getLabel() != null) {
 			if (element.isExpandable()) {
@@ -393,8 +405,9 @@ public class IntroHTMLGenerator {
 						.getResolvedResourceLocation(IIntroHTMLConstants.IMAGE_SRC_BLANK,
 								IIntroConstants.PLUGIN_ID));
 				toggleImageClosed.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, "section-toggle-image-closed"); //$NON-NLS-1$
-				if (element.isExpanded())
+				if (element.isExpanded()) {
 					toggleImageClosed.addAttribute(IIntroHTMLConstants.ATTRIBUTE_STYLE, "display: none"); //$NON-NLS-1$
+				}
 				link.addContent(toggleImageClosed);
 				HTMLElement toggleImageOpen = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_IMG,
 						indentLevel + 2, false, false);
@@ -403,13 +416,15 @@ public class IntroHTMLGenerator {
 						.getResolvedResourceLocation(IIntroHTMLConstants.IMAGE_SRC_BLANK,
 								IIntroConstants.PLUGIN_ID));
 				toggleImageOpen.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, "section-toggle-image-open"); //$NON-NLS-1$
-				if (element.isExpanded())
+				if (element.isExpanded()) {
 					toggleImageOpen.addAttribute(IIntroHTMLConstants.ATTRIBUTE_STYLE, "display: inline"); //$NON-NLS-1$
+				}
 				link.addContent(toggleImageOpen);
 				childContainer = generateDivElement(clientId, indentLevel + 1);
 				childContainer.addAttribute("class", "section-body"); //$NON-NLS-1$//$NON-NLS-2$
-				if (element.isExpanded())
+				if (element.isExpanded()) {
 					childContainer.addAttribute(IIntroHTMLConstants.ATTRIBUTE_STYLE, "display: block"); //$NON-NLS-1$
+				}
 				divElement.addContent(childContainer);
 			} else {
 				HTMLElement divLabel = generateTextElement(IIntroHTMLConstants.ELEMENT_H4, null,
@@ -438,14 +453,16 @@ public class IntroHTMLGenerator {
 	}
 
 	private void addMixinStyle(HTMLElement element, String mixinStyle) {
-		if (mixinStyle == null)
+		if (mixinStyle == null) {
 			return;
+		}
 		String key = "class"; //$NON-NLS-1$
 		String original = element.getElementAttributes().get(key);
-		if (original == null)
+		if (original == null) {
 			original = mixinStyle;
-		else
+		} else {
 			original += " " + mixinStyle; //$NON-NLS-1$
+		}
 		element.addAttribute(key, original);
 	}
 
@@ -490,8 +507,9 @@ public class IntroHTMLGenerator {
 		// add link image, if one is specified
 		if (element.getImg() != null) {
 			HTMLElement img = generateIntroElement(element.getImg(), indentBase + 1);
-			if (img != null)
+			if (img != null) {
 				anchor1.addContent(img);
+			}
 		}
 		if (!useTable) {
 			HTMLElement imageDiv = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_DIV, indentBase+1, false);
@@ -509,8 +527,9 @@ public class IntroHTMLGenerator {
 		IntroText linkText = element.getIntroText();
 		if (linkText != null && linkText.getText() != null) {
 			HTMLElement text = generateIntroElement(linkText, indentBase + 3);
-			if (text != null)
+			if (text != null) {
 				labelAnchor.addContent(text);
+			}
 		}
 		if (!useTable) {
 			return anchor1;
@@ -540,8 +559,9 @@ public class IntroHTMLGenerator {
 	 * @return an HTMLElement
 	 */
 	private HTMLElement generateIntroHTML(IntroHTML element, int indentLevel) {
-		if (element.isInlined())
+		if (element.isInlined()) {
 			return generateInlineIntroHTML(element, indentLevel);
+		}
 
 		return generateEmbeddedIntroHTML(element, indentLevel);
 	}
@@ -564,17 +584,20 @@ public class IntroHTMLGenerator {
 	private HTMLElement generateIntroImage(IntroImage element, int indentLevel) {
 		HTMLElement imageElement = generateImageElement(element.getSrc(), element.getAlt(),element.getTitle(), element
 				.getStyleId(), indentLevel);
-		if (element.getId() != null)
+		if (element.getId() != null) {
 			imageElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_ID, element.getId());
+		}
 		return imageElement;
 	}
 
 	private HTMLElement generateIntroSeparator(IntroSeparator element, int indentLevel) {
 		HTMLElement hrElement = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_HR, indentLevel, false);
-		if (element.getId() != null)
+		if (element.getId() != null) {
 			hrElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_ID, element.getId());
-		if (element.getStyleId() != null)
+		}
+		if (element.getStyleId() != null) {
 			hrElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_STYLE, element.getStyleId());
+		}
 		return hrElement;
 	}
 
@@ -663,9 +686,10 @@ public class IntroHTMLGenerator {
 		// If we've already loaded the content provider for this element,
 		// retrieve it, otherwise load the class
 		IIntroContentProvider providerClass = ContentProviderManager.getInst().getContentProvider(element);
-		if (providerClass == null)
+		if (providerClass == null) {
 			// content provider never created before, create it.
 			providerClass = ContentProviderManager.getInst().createContentProvider(element, providerSite);
+		}
 
 		if (providerClass != null) {
 			StringWriter stringWriter = new StringWriter();
@@ -685,8 +709,9 @@ public class IntroHTMLGenerator {
 						: IIntroHTMLConstants.SPAN_CLASS_TEXT;
 				HTMLElement text = generateTextElement(IIntroHTMLConstants.ELEMENT_PARAGRAPH, htmlText
 						.getId(), textClass, element.getText(), indentLevel);
-				if (text != null)
+				if (text != null) {
 					divElement.addContent(text);
+				}
 			}
 		}
 		return divElement;
@@ -714,12 +739,15 @@ public class IntroHTMLGenerator {
 		HTMLElement objectElement = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_OBJECT, indentLevel,
 				true);
 		objectElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_TYPE, IIntroHTMLConstants.OBJECT_TYPE);
-		if (element.getId() != null)
+		if (element.getId() != null) {
 			objectElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_ID, element.getId());
-		if (element.getSrc() != null)
+		}
+		if (element.getSrc() != null) {
 			objectElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_DATA, element.getSrc());
-		if (element.getStyleId() != null)
+		}
+		if (element.getStyleId() != null) {
 			objectElement.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, element.getStyleId());
+		}
 		// The alternative content is added in case the browser can not render
 		// the specified content.
 		IntroText htmlText = element.getIntroText();
@@ -728,13 +756,15 @@ public class IntroHTMLGenerator {
 					: IIntroHTMLConstants.SPAN_CLASS_TEXT;
 			HTMLElement text = generateTextElement(IIntroHTMLConstants.ELEMENT_PARAGRAPH, htmlText.getId(),
 					textClass, element.getText(), indentLevel);
-			if (text != null)
+			if (text != null) {
 				objectElement.addContent(text);
+			}
 		}
 		if (element.getIntroImage() != null) {
 			HTMLElement img = generateIntroImage(element.getIntroImage(), indentLevel);
-			if (img != null)
+			if (img != null) {
 				objectElement.addContent(img);
+			}
 		}
 		return objectElement;
 	}
@@ -752,8 +782,9 @@ public class IntroHTMLGenerator {
 	private HTMLElement generateBaseElement(int indentLevel, String baseURL) {
 		HTMLElement base = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_BASE, indentLevel, true,
 				false);
-		if (baseURL != null)
+		if (baseURL != null) {
 			base.addAttribute(IIntroHTMLConstants.ATTRIBUTE_HREF, baseURL);
+		}
 		return base;
 	}
 
@@ -801,8 +832,9 @@ public class IntroHTMLGenerator {
 	private HTMLElement generateTitleElement(String title, int indentLevel) {
 		HTMLElement titleElement = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_TITLE, indentLevel,
 				false);
-		if (title != null)
+		if (title != null) {
 			titleElement.addContent(title);
+		}
 		return titleElement;
 	}
 
@@ -826,8 +858,9 @@ public class IntroHTMLGenerator {
 				false);
 		link.addAttribute(IIntroHTMLConstants.ATTRIBUTE_RELATIONSHIP, IIntroHTMLConstants.LINK_REL);
 		link.addAttribute(IIntroHTMLConstants.ATTRIBUTE_TYPE, IIntroHTMLConstants.LINK_STYLE);
-		if (href != null)
+		if (href != null) {
 			link.addAttribute(IIntroHTMLConstants.ATTRIBUTE_HREF, href);
+		}
 		return link;
 	}
 
@@ -848,14 +881,17 @@ public class IntroHTMLGenerator {
 	 */
 	private HTMLElement generateAnchorElement(IntroLink link, int indentLevel) {
 		HTMLElement anchor = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_ANCHOR, indentLevel, true);
-		if (link.getId() != null)
+		if (link.getId() != null) {
 			anchor.addAttribute(IIntroHTMLConstants.ATTRIBUTE_ID, link.getId());
-		if (link.getUrl() != null)
+		}
+		if (link.getUrl() != null) {
 			anchor.addAttribute(IIntroHTMLConstants.ATTRIBUTE_HREF, link.getUrl());
-		if (link.getStyleId() != null)
+		}
+		if (link.getStyleId() != null) {
 			anchor.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, link.getStyleId());
-		else
+		} else {
 			anchor.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, IIntroHTMLConstants.ANCHOR_CLASS_LINK);
+		}
 		return anchor;
 	}
 
@@ -920,12 +956,15 @@ public class IntroHTMLGenerator {
 			int indentLevel) {
 		// Create the span: <SPAN>spanContent</SPAN>
 		HTMLElement span = new HTMLElement(IIntroHTMLConstants.ELEMENT_SPAN);
-		if (spanID != null)
+		if (spanID != null) {
 			span.addAttribute(IIntroHTMLConstants.ATTRIBUTE_ID, spanID);
-		if (spanClass != null)
+		}
+		if (spanClass != null) {
 			span.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, spanClass);
-		if (spanContent != null)
+		}
+		if (spanContent != null) {
 			span.addContent(spanContent);
+		}
 		if (type != null) {
 		// Create the enclosing text element: <P><SPAN>spanContent</SPAN></P>
 		HTMLElement text = new FormattedHTMLElement(type, indentLevel, false);
@@ -964,8 +1003,9 @@ public class IntroHTMLGenerator {
 	 */
 	private HTMLElement generateDivElement(String divId, int indentLevel) {
 		HTMLElement div = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_DIV, indentLevel, true);
-		if (divId != null)
+		if (divId != null) {
 			div.addAttribute(IIntroHTMLConstants.ATTRIBUTE_ID, divId);
+		}
 		return div;
 	}
 
@@ -995,16 +1035,19 @@ public class IntroHTMLGenerator {
 			if (blankImageURL != null) {
 				image.addAttribute(IIntroHTMLConstants.ATTRIBUTE_SRC, blankImageURL);
 			}
-		} else
+		} else {
 			image.addAttribute(IIntroHTMLConstants.ATTRIBUTE_SRC, imageSrc);
-		if (altText == null)
+		}
+		if (altText == null) {
 			altText = ""; //$NON-NLS-1$
+		}
 		image.addAttribute(IIntroHTMLConstants.ATTRIBUTE_ALT, altText);
 		if (title != null) {
 			image.addAttribute(IIntroHTMLConstants.ATTRIBUTE_TITLE, title);
 		}
-		if (imageClass != null)
+		if (imageClass != null) {
 			image.addAttribute(IIntroHTMLConstants.ATTRIBUTE_CLASS, imageClass);
+		}
 		return image;
 	}
 
@@ -1047,12 +1090,15 @@ public class IntroHTMLGenerator {
 	private HTMLElement generateIFrameElement(String src, String frameborder, String scrolling,
 			int indentLevel) {
 		HTMLElement iframe = new FormattedHTMLElement(IIntroHTMLConstants.ELEMENT_IFrame, indentLevel, false);
-		if (src != null)
+		if (src != null) {
 			iframe.addAttribute(IIntroHTMLConstants.ATTRIBUTE_SRC, src);
-		if (frameborder != null)
+		}
+		if (frameborder != null) {
 			iframe.addAttribute(IIntroHTMLConstants.ATTRIBUTE_FRAMEBORDER, frameborder);
-		if (scrolling != null)
+		}
+		if (scrolling != null) {
 			iframe.addAttribute(IIntroHTMLConstants.ATTRIBUTE_SCROLLING, scrolling);
+		}
 		return iframe;
 	}
 
@@ -1060,8 +1106,9 @@ public class IntroHTMLGenerator {
 
 
 	private boolean filteredFromPresentation(AbstractIntroElement element) {
-		if (element.isOfType(AbstractIntroElement.BASE_ELEMENT))
+		if (element.isOfType(AbstractIntroElement.BASE_ELEMENT)) {
 			return ((AbstractBaseIntroElement) element).isFiltered();
+		}
 
 		return false;
 	}
@@ -1080,8 +1127,9 @@ public class IntroHTMLGenerator {
 	 * @return a StringBuilder containing the content in the file, or null
 	 */
 	private StringBuilder readFromFile(String src, String charsetName) {
-		if (src == null)
+		if (src == null) {
 			return null;
+		}
 		StringBuilder content = new StringBuilder();
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(src).openStream(),
 				(charsetName == null) ? Charset.defaultCharset().name() : charsetName))) {
@@ -1091,10 +1139,9 @@ public class IntroHTMLGenerator {
 			// ResourcesPlugin.getEncoding()));
 			while (true) {
 				int character = reader.read();
-				if (character == -1) // EOF
+				if (character == -1) { // EOF
 					break; // done reading file
-
-				else if (character == PluginIdParser.SUBSTITUTION_BEGIN) { // possible
+				} else if (character == PluginIdParser.SUBSTITUTION_BEGIN) { // possible
 					// substitution
 					PluginIdParser parser = new PluginIdParser(character, reader);
 					// If a valid plugin id was found in the proper format, text
@@ -1103,14 +1150,16 @@ public class IntroHTMLGenerator {
 					// including)
 					// the next dollar sign that follows the one just found.
 					String text = parser.parsePluginId();
-					if (text != null)
+					if (text != null) {
 						content.append(text);
+					}
 				} else {
 					// make sure character is in char range before making cast
-					if (character > 0x00 && character < 0xffff)
+					if (character > 0x00 && character < 0xffff) {
 						content.append((char) character);
-					else
+					} else {
 						content.append(character);
+					}
 				}
 			}
 		} catch (Exception exception) {
@@ -1156,8 +1205,9 @@ public class IntroHTMLGenerator {
 			tokenContent = new StringBuilder();
 			pluginId = new StringBuilder();
 			// make sure tokenBegin is in char range before making cast
-			if (tokenBegin > 0x00 && tokenBegin < 0xffff)
+			if (tokenBegin > 0x00 && tokenBegin < 0xffff) {
 				tokenContent.append((char) tokenBegin);
+			}
 		}
 
 		/**
@@ -1171,8 +1221,9 @@ public class IntroHTMLGenerator {
 		 * replaced by the absolute path to the plugin
 		 */
 		protected String parsePluginId() {
-			if (reader == null || tokenContent == null || pluginId == null)
+			if (reader == null || tokenContent == null || pluginId == null) {
 				return null;
+			}
 
 			try {
 				// Mark the current position of the reader so we can roll
@@ -1267,8 +1318,9 @@ public class IntroHTMLGenerator {
 						// If the plugin id was not valid, reset reader to the
 						// previous mark. The mark should be at the character
 						// just before the last dollar sign.
-						if (path == null)
+						if (path == null) {
 							reader.reset();
+						}
 
 						return path;
 					} else { // we have a regular character
@@ -1284,8 +1336,9 @@ public class IntroHTMLGenerator {
 							tokenContent.append((char) nextChar);
 							// only include non-whitespace characters in plugin
 							// id
-							if (!Character.isWhitespace((char) nextChar))
+							if (!Character.isWhitespace((char) nextChar)) {
 								pluginId.append((char) nextChar);
+							}
 						} else {
 							tokenContent.append(nextChar);
 							pluginId.append(nextChar);

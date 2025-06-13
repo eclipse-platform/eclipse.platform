@@ -41,8 +41,9 @@ public class History {
 		String url;
 
 		HistoryObject(Object location) {
-			if (location instanceof String)
+			if (location instanceof String) {
 				this.url = (String) location;
+			}
 
 			if (location instanceof AbstractIntroPage) {
 				this.page = (AbstractIntroPage) location;
@@ -55,11 +56,12 @@ public class History {
 		 * returns the history page. If iframe page, updated to correct url.
 		 */
 		AbstractIntroPage getPage() {
-			if (page.isIFramePage())
+			if (page.isIFramePage()) {
 				// when page was stored, the IFrame url was also stored. Make
 				// sure to return the same state. The page is the same, only the
 				// IFrame url changes.
 				page.setIFrameURL(getIFrameUrl());
+			}
 			return page;
 		}
 
@@ -95,9 +97,10 @@ public class History {
 	 */
 	public void updateHistory(String location) {
 		// quick exit.
-		if (!history.isEmpty() && isSameLocation(location))
+		if (!history.isEmpty() && isSameLocation(location)) {
 			// resetting the same location is useless.
 			return;
+		}
 		doUpdateHistory(location);
 	}
 
@@ -106,43 +109,47 @@ public class History {
 	 */
 	public void updateHistory(AbstractIntroPage page) {
 		// quick exit.
-		if (!history.isEmpty() && isSameLocation(page))
+		if (!history.isEmpty() && isSameLocation(page)) {
 			// resetting the same location is useless.
 			return;
+		}
 		doUpdateHistory(page);
 	}
 
 	private void doUpdateHistory(Object location) {
 		// we got here due to an intro URL listener or an SWT Form hyperlink
 		// listener. location may be a url or an IntroPage.
-		if (navigationLocation == getHistoryEndPosition())
+		if (navigationLocation == getHistoryEndPosition()) {
 			// we are at the end of the vector, just push.
 			pushToHistory(location);
-		else
+		} else {
 			// we already navigated. add item at current location, and clear
 			// rest of history. (Same as browser behavior.)
 			trimHistory(location);
+		}
 	}
 
 
 	private boolean isSameLocation(Object location) {
 		HistoryObject currentLocation = getCurrentLocation();
-		if (location instanceof String && currentLocation.isURL())
+		if (location instanceof String && currentLocation.isURL()) {
 			return currentLocation.getUrl().equals(location);
+		}
 
-		if (location instanceof AbstractIntroPage
+		if (location instanceof AbstractIntroPage locationPage
 				&& currentLocation.isIntroPage()) {
 
-			AbstractIntroPage locationPage = (AbstractIntroPage) location;
 			// be carefull here with calling getPage on historyOvject.
-			if (!currentLocation.getPageId().equals(locationPage.getId()))
+			if (!currentLocation.getPageId().equals(locationPage.getId())) {
 				return false;
+			}
 
 			// both pages have same ids, they are either both regular pages or
 			// both are Iframe pages. check if they have the same IFrame urls
-			if (currentLocation.isIFramePage() && locationPage.isIFramePage())
+			if (currentLocation.isIFramePage() && locationPage.isIFramePage()) {
 				return currentLocation.getIFrameUrl().equals(
 					locationPage.getIFrameURL());
+			}
 
 			// both pages are not IFrame pages, and they have same id.
 			return true;
@@ -179,15 +186,17 @@ public class History {
 	 * vector is empty, return 0.
 	 */
 	private int getHistoryEndPosition() {
-		if (history.isEmpty())
+		if (history.isEmpty()) {
 			return 0;
+		}
 		return history.size() - 1;
 	}
 
 	public void navigateHistoryBackward() {
-		if (badNavigationLocation(navigationLocation - 1))
+		if (badNavigationLocation(navigationLocation - 1)) {
 			// do nothing. We are at the begining.
 			return;
+		}
 		--navigationLocation;
 	}
 
@@ -195,17 +204,19 @@ public class History {
 	 * Navigate forward in the history.
 	 */
 	public void navigateHistoryForward() {
-		if (badNavigationLocation(navigationLocation + 1))
+		if (badNavigationLocation(navigationLocation + 1)) {
 			// do nothing. We are at the begining.
 			return;
+		}
 		++navigationLocation;
 	}
 
 
 	private boolean badNavigationLocation(int navigationLocation) {
-		if (navigationLocation < 0 || navigationLocation >= history.size())
+		if (navigationLocation < 0 || navigationLocation >= history.size()) {
 			// bad nav location.
 			return true;
+		}
 		return false;
 	}
 
@@ -245,8 +256,9 @@ public class History {
 
 	public static boolean isURL(String aString) {
 		IntroURLParser parser = new IntroURLParser(aString);
-		if (parser.hasProtocol())
+		if (parser.hasProtocol()) {
 			return true;
+		}
 		return false;
 	}
 

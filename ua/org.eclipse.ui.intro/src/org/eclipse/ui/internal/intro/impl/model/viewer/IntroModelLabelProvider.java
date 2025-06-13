@@ -52,11 +52,13 @@ public class IntroModelLabelProvider extends LabelProvider {
 	public Image getImage(Object element) {
 		Image image = null;
 		AbstractIntroElement introElement = null;
-		if (element instanceof AbstractIntroElement)
+		if (element instanceof AbstractIntroElement) {
 			// synch the resource first.
 			introElement = (AbstractIntroElement) element;
-		if (introElement == null)
+		}
+		if (introElement == null) {
 			return null;
+		}
 
 		int elementType = introElement.getType();
 		switch (elementType) {
@@ -77,11 +79,13 @@ public class IntroModelLabelProvider extends LabelProvider {
 
 		String label = null;
 		AbstractIntroElement introElement = null;
-		if (element instanceof AbstractIntroElement)
+		if (element instanceof AbstractIntroElement) {
 			// synch the resource first.
 			introElement = (AbstractIntroElement) element;
-		if (introElement == null)
+		}
+		if (introElement == null) {
 			return null;
+		}
 
 		int elementType = introElement.getType();
 		switch (elementType) {

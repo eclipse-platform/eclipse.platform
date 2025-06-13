@@ -54,14 +54,16 @@ public class SharedStyleManager {
 		String [] sharedStyles = modelRoot.getPresentation()
 			.getImplementationStyles();
 		if (sharedStyles != null) {
-			for (int i=0; i<sharedStyles.length; i++)
-			load(properties, sharedStyles[i], context);
+			for (int i=0; i<sharedStyles.length; i++) {
+				load(properties, sharedStyles[i], context);
+			}
 		}
 	}
 
 	protected void load(Properties properties, String style, StyleContext context) {
-		if (style == null)
+		if (style == null) {
 			return;
+		}
 		try {
 			URL styleURL = new URL(style);
 			try (InputStream is = styleURL.openStream()) {
@@ -69,8 +71,9 @@ public class SharedStyleManager {
 			}
 			context.path = IPath.fromOSString(style).removeLastSegments(1);
 			String t = (String)properties.get("theme"); //$NON-NLS-1$
-			if (t!=null && t.trim().equalsIgnoreCase("true")) //$NON-NLS-1$
+			if (t!=null && t.trim().equalsIgnoreCase("true")) { //$NON-NLS-1$
 				context.inTheme = true;
+			}
 		} catch (Exception e) {
 			Log.error("Could not load SWT style: " + style, e); //$NON-NLS-1$
 		}
@@ -89,17 +92,19 @@ public class SharedStyleManager {
 	 */
 	protected String doGetProperty(Properties aProperties, String key) {
 		String value = aProperties.getProperty(key);
-		if (value != null)
+		if (value != null) {
 			// trim the properties as trailing balnnks cause problems.
 			value = value.trim();
+		}
 		return value;
 	}
 
 
 	protected RGB getRGB(String key) {
 		String value = getProperty(key);
-		if (value == null)
+		if (value == null) {
 			return null;
+		}
 		return parseRGB(value);
 	}
 
@@ -158,8 +163,9 @@ public class SharedStyleManager {
 		Color color = colors.getColor(key);
 		if (color == null) {
 			RGB rgb = getRGB(key);
-			if (rgb != null)
+			if (rgb != null) {
 				color = colors.createColor(key, rgb);
+			}
 		}
 		return color;
 	}
@@ -177,8 +183,9 @@ public class SharedStyleManager {
 			value = getProperty(defaultPageKey);
 		}
 		if (value != null) {
-			if (ImageUtil.hasImage(currentKey))
+			if (ImageUtil.hasImage(currentKey)) {
 				return ImageUtil.getImage(currentKey);
+			}
 			// try to register the image.
 			StyleContext ccontext = getAssociatedContext(currentKey);
 			if (ccontext.inTheme) {
@@ -188,19 +195,22 @@ public class SharedStyleManager {
 			}
 			else {
 				Bundle bundle = ccontext.bundle;
-				if (bundle == null)
+				if (bundle == null) {
 					// it means that we are getting a key defined in this page's
 					// styles. (ie: not an inherited style).
 					bundle = this.context.bundle;
+				}
 				ImageUtil.registerImage(currentKey, bundle, value);
 			}
 			Image image = ImageUtil.getImage(currentKey);
-			if (image != null)
+			if (image != null) {
 				return image;
+			}
 		}
 		// try default. We know default is already registered,
-		if (defaultKey != null)
+		if (defaultKey != null) {
 			return ImageUtil.getImage(defaultKey);
+		}
 		return null;
 	}
 
@@ -208,8 +218,9 @@ public class SharedStyleManager {
 	public boolean useCustomHomePagelayout() {
 		String key = "home-page-custom-layout"; //$NON-NLS-1$
 		String value = getProperty(key);
-		if (value == null)
+		if (value == null) {
 			value = "true"; //$NON-NLS-1$
+		}
 		return value.equalsIgnoreCase("true"); //$NON-NLS-1$
 	}
 

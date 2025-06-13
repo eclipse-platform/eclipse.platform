@@ -137,14 +137,16 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 	 */
 	@Override
 	public void createContent(String id, PrintWriter out) {
-		if (disposed)
+		if (disposed) {
 			return;
+		}
 		this.id = id;
 		params = setParams(id);
 
 
-		if (items==null)
+		if (items==null) {
 			createNewsItems();
+		}
 
 		if (items == null || threadRunning) {
 			out.print("<p class=\"status-text\">"); //$NON-NLS-1$
@@ -197,8 +199,9 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 	 */
 	@Override
 	public void createContent(String id, Composite parent, FormToolkit toolkit) {
-		if (disposed)
+		if (disposed) {
 			return;
+		}
 		this.id = id;
 		params = setParams(id);
 
@@ -212,8 +215,9 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 				}
 			});
 			bulletImage = createImage(IPath.fromOSString("icons/arrow.svg")); //$NON-NLS-1$
-			if (bulletImage != null)
+			if (bulletImage != null) {
 				formText.setImage(HREF_BULLET, bulletImage);
+			}
 			this.parent = parent;
 			this.toolkit = toolkit;
 			this.id = id;
@@ -225,8 +229,9 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 		buffer.append("<form>"); //$NON-NLS-1$
 
 
-		if (items==null)
+		if (items==null) {
 			createNewsItems();
+		}
 
 		if (items == null || threadRunning) {
 			buffer.append("<p>"); //$NON-NLS-1$
@@ -365,8 +370,9 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 		public void run() {
 			// important: don't do the work if the
 			// part gets disposed in the process
-			if (disposed)
+			if (disposed) {
 				return;
+			}
 
 			PlatformUI.getWorkbench().getDisplay().syncExec(() -> {
 				if (parent != null) {

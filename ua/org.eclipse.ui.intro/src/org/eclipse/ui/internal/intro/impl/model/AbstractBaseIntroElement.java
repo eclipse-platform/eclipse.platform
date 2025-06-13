@@ -56,9 +56,10 @@ public abstract class AbstractBaseIntroElement extends AbstractIntroIdElement {
 	 * Filter this element out based on the presentation kind.
 	 */
 	private boolean checkFilterState() {
-		if (this.isOfType(AbstractIntroElement.MODEL_ROOT))
+		if (this.isOfType(AbstractIntroElement.MODEL_ROOT)) {
 			// root element is not filtered.
 			return false;
+		}
 		IntroModelRoot root = (IntroModelRoot) getParentPage().getParent();
 		return root.getPresentation().getImplementationKind().equals(
 			filteredFrom) ? true : false;

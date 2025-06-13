@@ -230,8 +230,9 @@ public class IntroLaunchBar {
 		IDialogSettings settings =  PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(IntroLaunchBar.class)).getDialogSettings();
 		try {
 			int storedLocation = settings.getInt(S_STORED_LOCATION);
-			if (storedLocation > 0)
+			if (storedLocation > 0) {
 				return toSideValue(storedLocation);
+			}
 		} catch (NumberFormatException e) {
 			// The stored value either does not exist or
 			// is corrupted - just pick the default silently.
@@ -331,15 +332,17 @@ public class IntroLaunchBar {
 			String value = resolveColor(element.getBackground());
 			if (value!=null) {
 				RGB r = SharedStyleManager.parseRGB(value);
-				if (r != null)
+				if (r != null) {
 					bg = new Color(display, r);
+				}
 			}
 		}
 	}
 
 	private String resolveColor(String value) {
-		if (value.indexOf('$')== -1)
+		if (value.indexOf('$')== -1) {
 			return value;
+		}
 		if (value.charAt(0)=='$' && value.charAt(value.length()-1)=='$' && theme!=null) {
 			Map properties = theme.getProperties();
 			if (properties!=null) {
@@ -397,8 +400,9 @@ public class IntroLaunchBar {
 		// toolBarManager.add(closeAction);
 		toolBarManager.add(action);
 		toolBarManager.add(new Separator());
-		if (element == null)
+		if (element == null) {
 			return;
+		}
 		IntroLaunchBarShortcut[] shortcuts = element.getShortcuts();
 		for (IntroLaunchBarShortcut shortcut : shortcuts) {
 			addShortcut(shortcut, toolBarManager);
@@ -448,22 +452,25 @@ public class IntroLaunchBar {
 		IIntroURL introURL = IntroURLFactory.createIntroURL(url);
 		if (introURL != null) {
 			IIntroPart intro = closeLaunchBar(true);
-			if (intro == null)
+			if (intro == null) {
 				return;
+			}
 			introURL.execute();
 		}
 	}
 
 	protected void openPage(String id) {
 		IIntroPart intro = closeLaunchBar(true);
-		if (intro == null)
+		if (intro == null) {
 			return;
+		}
 		StringBuilder url = new StringBuilder();
 		url.append(LAUNCH_COMMAND_BASE);
 		url.append(id);
 		IIntroURL introURL = IntroURLFactory.createIntroURL(url.toString());
-		if (introURL != null)
+		if (introURL != null) {
 			introURL.execute();
+		}
 	}
 
 	protected void contextMenuAboutToShow(IMenuManager manager) {

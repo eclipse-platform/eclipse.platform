@@ -46,9 +46,9 @@ public class IntroHomePage extends AbstractIntroPage {
 		AbstractIntroElement[] children = getChildren();
 		for (int i = 0; i < children.length; i++) {
 			AbstractIntroElement child = children[i];
-			if (child.isOfType(AbstractIntroElement.LINK))
+			if (child.isOfType(AbstractIntroElement.LINK)) {
 				linkVector.add(child);
-			else if (child.isOfType(AbstractIntroElement.GROUP)) {
+			} else if (child.isOfType(AbstractIntroElement.GROUP)) {
 				addLinks((IntroGroup) child, linkVector);
 			}
 		}
@@ -62,9 +62,9 @@ public class IntroHomePage extends AbstractIntroPage {
 		AbstractIntroElement[] children = group.getChildren();
 		for (int i = 0; i < children.length; i++) {
 			AbstractIntroElement child = children[i];
-			if (child.isOfType(AbstractIntroElement.LINK))
+			if (child.isOfType(AbstractIntroElement.LINK)) {
 				linkVector.add(child);
-			else if (child.isOfType(AbstractIntroElement.GROUP)) {
+			} else if (child.isOfType(AbstractIntroElement.GROUP)) {
 				addLinks((IntroGroup) child, linkVector);
 			}
 		}

@@ -111,8 +111,9 @@ public class IntroElement {
 	 *            the new child of this element
 	 */
 	public void addChild(IntroElement child) {
-		if (children == null)
+		if (children == null) {
 			children = new ArrayList<>();
+		}
 		children.add(child);
 	}
 
@@ -122,8 +123,9 @@ public class IntroElement {
 	 * @return an array of child elements or an empty array of there are no children.
 	 */
 	public IntroElement[] getChildren() {
-		if (children == null)
+		if (children == null) {
 			return new IntroElement[0];
+		}
 		return children.toArray(new IntroElement[children.size()]);
 	}
 

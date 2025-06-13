@@ -83,11 +83,13 @@ public abstract class IntroConfigurer {
 	 */
 
 	protected String getThemeProperty(String name) {
-		if (themeProperties == null)
+		if (themeProperties == null) {
 			return null;
+		}
 		String value = themeProperties.get(name);
-		if (value != null && model != null)
+		if (value != null && model != null) {
 			value = model.resolveVariables(value);
+		}
 		return value;
 	}
 

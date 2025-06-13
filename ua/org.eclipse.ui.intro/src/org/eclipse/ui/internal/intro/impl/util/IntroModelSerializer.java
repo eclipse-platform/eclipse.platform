@@ -91,8 +91,9 @@ public class IntroModelSerializer {
 		text.append("\nHome page id = " //$NON-NLS-1$
 				+ model.getPresentation().getHomePageId());
 		IntroHead headContent = model.getPresentation().getHead();
-		if (headContent != null)
+		if (headContent != null) {
 			text.append("\nPresentation Shared Head = " + headContent.getSrc()); //$NON-NLS-1$
+		}
 		text.append("\nNumber of pages (not including Root Page) = " //$NON-NLS-1$
 				+ model.getPages().length);
 		text.append("\nNumber of shared groups = " //$NON-NLS-1$
@@ -121,13 +122,15 @@ public class IntroModelSerializer {
 	private void printPageStyles(AbstractIntroPage page, StringBuilder text) {
 		text.append("\n\tpage styles are = "); //$NON-NLS-1$
 		String[] styles = page.getStyles();
-		for (int i = 0; i < styles.length; i++)
+		for (int i = 0; i < styles.length; i++) {
 			text.append(filterURL(styles[i] + "\n\t\t\t")); //$NON-NLS-1$
+		}
 		text.append("\n\tpage alt-styles are = "); //$NON-NLS-1$
 
 		Map<String, Bundle> altStylesHashtable = page.getAltStyles();
-		if (altStylesHashtable == null)
+		if (altStylesHashtable == null) {
 			return;
+		}
 
 		for (Entry<String, Bundle> entry : altStylesHashtable.entrySet()) {
 			text.append(filterURL(entry.getKey()) + " from " + entry.getValue().getSymbolicName()); //$NON-NLS-1$
@@ -237,10 +240,12 @@ public class IntroModelSerializer {
 		text.append(indent + "src = " + html.getSrc()); //$NON-NLS-1$
 		text.append(indent + "isInlined = " + html.isInlined()); //$NON-NLS-1$
 		text.append(indent + "style-id = " + html.getStyleId()); //$NON-NLS-1$
-		if (html.getIntroImage() != null)
+		if (html.getIntroImage() != null) {
 			printImage(text, html.getIntroImage(), indent + "\t\t"); //$NON-NLS-1$
-		if (html.getIntroText() != null)
+		}
+		if (html.getIntroText() != null) {
 			printText(text, html.getIntroText(), indent + "\t\t"); //$NON-NLS-1$
+		}
 
 	}
 
@@ -275,8 +280,9 @@ public class IntroModelSerializer {
 		indent = indent + "\t\t"; //$NON-NLS-1$
 		text.append(indent + "class = " + provider.getClassName()); //$NON-NLS-1$
 		text.append(indent + "pluginId = " + provider.getPluginId()); //$NON-NLS-1$
-		if (provider.getIntroText() != null)
+		if (provider.getIntroText() != null) {
 			printText(text, provider.getIntroText(), indent + "\t\t"); //$NON-NLS-1$
+		}
 
 	}
 

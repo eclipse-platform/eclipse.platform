@@ -42,8 +42,9 @@ public class IntroURLParser {
 	}
 
 	private void parseUrl(String url) {
-		if (url == null)
+		if (url == null) {
 			return;
+		}
 		url_inst = null;
 		try {
 			url_inst = new URL(url);
@@ -103,12 +104,14 @@ public class IntroURLParser {
 	 * @return true if url is an intro URL.
 	 */
 	private boolean isIntroUrl(URL url) {
-		if (!url.getProtocol().equalsIgnoreCase(IntroURL.INTRO_PROTOCOL))
+		if (!url.getProtocol().equalsIgnoreCase(IntroURL.INTRO_PROTOCOL)) {
 			// quick exit. If it is not http, url is not an Intro url.
 			return false;
+		}
 
-		if (url.getHost().equalsIgnoreCase(IntroURL.INTRO_HOST_ID))
+		if (url.getHost().equalsIgnoreCase(IntroURL.INTRO_HOST_ID)) {
 			return true;
+		}
 
 		return false;
 	}
@@ -142,8 +145,9 @@ public class IntroURLParser {
 		// get possible action.
 		String action = url.getPath();
 		// remove leading "/" from path.
-		if (action != null)
+		if (action != null) {
 			action = action.substring(1);
+		}
 		return action;
 	}
 
@@ -154,10 +158,11 @@ public class IntroURLParser {
 		// parser all query parameters.
 		Properties properties = new Properties();
 		String query = url.getQuery();
-		if (query == null)
+		if (query == null) {
 			// we do not have any parameters in this URL, return an empty
 			// Properties instance.
 			return properties;
+		}
 
 		// now extract the key/value pairs from the query.
 		String[] params = query.split("&"); //$NON-NLS-1$

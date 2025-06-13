@@ -68,7 +68,9 @@ public class FontSelection {
 	}
 
 	private static String getFontSizeDeclaration(String element, int baseSize, int percentage, int scale) {
-		if (scale > 75) scale = 75;
+		if (scale > 75) {
+			scale = 75;
+		}
 		int newSize = (int) ((baseSize * percentage *1.25) / (100 - scale));
 		return " body " + element  + "{  font-size : " + newSize  + "px; } ";  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 	}
