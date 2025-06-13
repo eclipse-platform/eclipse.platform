@@ -154,8 +154,7 @@ public class TocFragmentServiceTest {
 		List<Node> results = new ArrayList<>();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node next = nodes.item(i);
-			if (next instanceof Element) {
-				Element nextElement = (Element)next;
+			if (next instanceof Element nextElement) {
 				if ( childKind.equals(nextElement.getTagName())
 						&& attributeValue.equals(nextElement.getAttribute(attributeName))) {
 
@@ -175,8 +174,7 @@ public class TocFragmentServiceTest {
 		List<Node> results = new ArrayList<>();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node next = nodes.item(i);
-			if (next instanceof Element) {
-				Element nextElement = (Element)next;
+			if (next instanceof Element nextElement) {
 				if ( childKind.equals(nextElement.getTagName()) ) {
 					String href = nextElement.getAttribute("href");
 					if (href != null) {
