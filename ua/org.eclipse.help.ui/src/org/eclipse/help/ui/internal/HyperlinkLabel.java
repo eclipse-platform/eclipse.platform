@@ -173,8 +173,9 @@ public class HyperlinkLabel extends Canvas {
 	@Override
 	public Point computeSize(int wHint, int hHint, boolean changed) {
 		int innerWidth = wHint;
-		if (innerWidth != SWT.DEFAULT)
+		if (innerWidth != SWT.DEFAULT) {
 			innerWidth -= 4;
+		}
 		Point textSize = label.computeSize(wHint, hHint, changed);//computeTextSize(innerWidth,
 		// hHint);
 		int textWidth = textSize.x + 4;
@@ -242,11 +243,12 @@ public class HyperlinkLabel extends Canvas {
 
 			@Override
 			public void getState(AccessibleControlEvent e) {
-				if (hasFocus)
+				if (hasFocus) {
 					e.detail = ACC.STATE_FOCUSABLE | ACC.STATE_LINKED
 							| ACC.STATE_FOCUSED;
-				else
+				} else {
 					e.detail = ACC.STATE_FOCUSABLE | ACC.STATE_LINKED;
+				}
 
 			}
 		});
@@ -257,13 +259,14 @@ public class HyperlinkLabel extends Canvas {
 
 			@Override
 			public void getState(AccessibleControlEvent e) {
-				if (hasFocus)
+				if (hasFocus) {
 					e.detail = ACC.STATE_READONLY | ACC.STATE_FOCUSABLE
 							| ACC.STATE_SELECTABLE | ACC.STATE_LINKED
 							| ACC.STATE_FOCUSED;
-				else
+				} else {
 					e.detail = ACC.STATE_READONLY | ACC.STATE_FOCUSABLE
 							| ACC.STATE_SELECTABLE | ACC.STATE_LINKED;
+				}
 
 			}
 		});

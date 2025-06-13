@@ -96,8 +96,9 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 
 	public EngineDescriptor findEngine(String engineId) {
 		for (EngineDescriptor desc : descriptors) {
-			if (desc.getId().equals(engineId))
+			if (desc.getId().equals(engineId)) {
 				return desc;
+			}
 		}
 		return null;
 	}
@@ -202,7 +203,9 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 	 */
 	public void load(String fileName) throws IOException {
 		File file = new File(fileName);
-		if (!file.exists()) return;
+		if (!file.exists()) {
+			return;
+		}
 		FileInputStream stream = new FileInputStream(file);
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
 			load(reader);
@@ -224,8 +227,9 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 		EngineTypeDescriptor etdesc = findEngineType(engineTypeId);
 		String label = getAttribute(node, ATT_LABEL);
 		String desc = getDescription(node);
-		if (etdesc == null)
+		if (etdesc == null) {
 			return;
+		}
 		edesc.setEngineType(etdesc);
 		edesc.setUserDefined(true);
 		edesc.setId(id);
@@ -238,7 +242,9 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 		ArrayList<Integer> used = new ArrayList<>();
 		for (int i=0; i<descriptors.size(); i++) {
 			EngineDescriptor ed = descriptors.get(i);
-			if (!ed.isUserDefined()) continue;
+			if (!ed.isUserDefined()) {
+				continue;
+			}
 			String edTypeId = ed.getEngineTypeId();
 			if (typeId.equals(edTypeId)) {
 				String edId = ed.getId();
@@ -260,8 +266,9 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 
 	private boolean isUsed(int value, ArrayList<Integer> used) {
 		for (Integer iv : used) {
-			if (iv.intValue()==value)
+			if (iv.intValue()==value) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -298,14 +305,16 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 
 	private String getAttribute(Node node, String name) {
 		Node att = node.getAttributes().getNamedItem(name);
-		if (att!=null)
+		if (att!=null) {
 			return att.getNodeValue();
+		}
 		return null;
 	}
 
 	private void saveAttribute(PrintWriter writer, String indent, String name, String value) {
-		if (value==null)
+		if (value==null) {
 			return;
+		}
 		writer.print(indent);
 		writer.print(name);
 		writer.print("=\""); //$NON-NLS-1$
@@ -313,8 +322,9 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 		writer.println("\""); //$NON-NLS-1$
 	}
 	private void saveDescription(PrintWriter writer, String indent, String desc) {
-		if (desc==null)
+		if (desc==null) {
 			return;
+		}
 		writer.print(indent);
 		writer.println("<description>"); //$NON-NLS-1$
 		writer.println(desc);
@@ -323,11 +333,13 @@ public class EngineDescriptorManager extends Observable implements IHelpUIConsta
 	}
 
 	private EngineTypeDescriptor findEngineType(String id) {
-		if (id == null)
+		if (id == null) {
 			return null;
+		}
 		for (EngineTypeDescriptor etd : engineTypes) {
-			if (etd.getId().equals(id))
+			if (etd.getId().equals(id)) {
 				return etd;
+			}
 		}
 		return null;
 	}

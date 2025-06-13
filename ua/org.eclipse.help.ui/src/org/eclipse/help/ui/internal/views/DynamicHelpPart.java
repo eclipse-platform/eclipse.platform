@@ -141,8 +141,9 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 					clearResults();
 				} else if (href.equals(MORE_HREF)) {
 					doMore();
-				} else
+				} else {
 					doOpenLink(e.getHref());
+				}
 			}
 
 			@Override
@@ -169,8 +170,9 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 
 	@Override
 	public void setFocus() {
-		if (searchResults!=null)
+		if (searchResults!=null) {
 			searchResults.setFocus();
+		}
 	}
 
 	@Override
@@ -213,12 +215,14 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 	}
 
 	public void startSearch(String newPhrase, IContext excludeContext) {
-		if (phrase!=null && phrase.equals(newPhrase))
+		if (phrase!=null && phrase.equals(newPhrase)) {
 			return;
+		}
 		this.phrase = newPhrase;
 		this.context = excludeContext;
-		if (getSection().isExpanded())
+		if (getSection().isExpanded()) {
 			startInPlaceSearch(phrase, excludeContext);
+		}
 	}
 
 	private void startInPlaceSearch(final String phrase,
@@ -291,8 +295,9 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 	private void updateResults(final String phrase,
 			final IContext excludeContext, final StringBuilder buffer,
 			final SearchHit[] hits) {
-		if (getSection().isDisposed())
+		if (getSection().isDisposed()) {
 			return;
+		}
 		getSection().getDisplay().asyncExec(() -> doUpdateResults(phrase, excludeContext, buffer, hits));
 	}
 
@@ -315,12 +320,15 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 
 			for (int i = 0; i < hits.length; i++) {
 				SearchHit hit = hits[i];
-				if (hit.canOpen()) // Do not list Welcome/Cheatsheets etc.
+				if (hit.canOpen()) { // Do not list Welcome/Cheatsheets etc.
 					continue;
-				if (isExcluded(hit.getHref(), excludedTopics))
+				}
+				if (isExcluded(hit.getHref(), excludedTopics)) {
 					continue;
-				if (i==SHORT_COUNT)
+				}
+				if (i==SHORT_COUNT) {
 					break;
+				}
 				buff.append("<li indent=\"21\" style=\"image\" value=\""); //$NON-NLS-1$
 				buff.append(IHelpUIConstants.IMAGE_FILE_F1TOPIC);
 				buff.append("\">"); //$NON-NLS-1$
@@ -349,23 +357,30 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 				buff.append("</a></p>"); //$NON-NLS-1$
 			}
 			buff.append("</form>"); //$NON-NLS-1$
-			if (!searchResults.isDisposed())
+			if (!searchResults.isDisposed()) {
 				searchResults.setText(buff.toString(), true, false);
+			}
 		} else
-			if (!searchResults.isDisposed())
+			if (!searchResults.isDisposed()) {
 				searchResults.setText(NLS.bind(Messages.SearchResultsPart_noHits, phrase) , false, false);
-		if (!searchResults.isDisposed())
+			}
+		if (!searchResults.isDisposed()) {
 			getManagedForm().reflow(true);
+		}
 	}
 
 	private boolean isExcluded(String href, IHelpResource [] excludedTopics) {
-		if (excludedTopics==null) return false;
+		if (excludedTopics==null) {
+			return false;
+		}
 		for (int i=0; i<excludedTopics.length; i++) {
-			if (href.startsWith(excludedTopics[i].getHref()))
+			if (href.startsWith(excludedTopics[i].getHref())) {
 				return true;
+			}
 			if (parent.isFilteredByRoles()) {
-				if (!HelpBasePlugin.getActivitySupport().isEnabled(href))
+				if (!HelpBasePlugin.getActivitySupport().isEnabled(href)) {
 					return true;
+				}
 			}
 		}
 		return false;
@@ -380,8 +395,9 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 
 		if (url.startsWith("nw:")) { //$NON-NLS-1$
 			PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(url.substring(3));
-		} else
+		} else {
 			parent.showURL(url);
+		}
 	}
 
 	@Override
@@ -396,8 +412,9 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 
 	@Override
 	public IAction getGlobalAction(String id) {
-		if (id.equals(ActionFactory.COPY.getId()))
+		if (id.equals(ActionFactory.COPY.getId())) {
 			return parent.getCopyAction();
+		}
 		return null;
 	}
 
@@ -408,8 +425,9 @@ public class DynamicHelpPart extends SectionPart implements IHelpPart {
 
 	@Override
 	public void refilter() {
-		if (phrase!=null && phrase.length() > 0)
+		if (phrase!=null && phrase.length() > 0) {
 			startInPlaceSearch(phrase, context);
+		}
 	}
 
 	@Override

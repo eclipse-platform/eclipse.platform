@@ -27,8 +27,9 @@ public class ShowCapabilitiesPreferenceAction implements ILiveHelpAction {
 
 	@Override
 	public void setInitializationString(String data) {
-		if (data!=null && data.equals("narrow")) //$NON-NLS-1$
+		if (data!=null && data.equals("narrow")) { //$NON-NLS-1$
 			narrow=true;
+		}
 	}
 
 	@Override

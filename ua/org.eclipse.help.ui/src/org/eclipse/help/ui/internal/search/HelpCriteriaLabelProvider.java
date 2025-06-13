@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.help.ui.internal.search;
 
-import org.eclipse.help.ui.internal.search.HelpCriteriaContentProvider.CriterionName;
-import org.eclipse.help.ui.internal.search.HelpCriteriaContentProvider.CriterionValue;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
@@ -34,11 +32,9 @@ public class HelpCriteriaLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof HelpCriteriaContentProvider.CriterionName) {
-			CriterionName criterionName = (HelpCriteriaContentProvider.CriterionName)element;
+		if (element instanceof HelpCriteriaContentProvider.CriterionName criterionName) {
 			return criterionName.getName();
-		} else if (element instanceof HelpCriteriaContentProvider.CriterionValue) {
-			CriterionValue criterionValue = (HelpCriteriaContentProvider.CriterionValue)element;
+		} else if (element instanceof HelpCriteriaContentProvider.CriterionValue criterionValue) {
 			return criterionValue.getName();
 		}
 		return null;

@@ -54,8 +54,9 @@ public class ScopeSet {
 	}
 
 	public boolean isDefault() {
-		if (defaultSet==1)
+		if (defaultSet==1) {
 			return true;
+		}
 		return getPreferenceStore().getBoolean(KEY_DEFAULT);
 	}
 
@@ -74,8 +75,9 @@ public class ScopeSet {
 
 	public void dispose() {
 		File file = new File(getFileName(name));
-		if (file.exists())
+		if (file.exists()) {
 			file.delete();
+		}
 	}
 
 	public IPreferenceStore getPreferenceStore() {
@@ -167,8 +169,9 @@ public class ScopeSet {
 		getPreferenceStore();
 		if (preferenceStore.needsSaving() || needsSaving) {
 			try {
-				if (defaultSet != -1)
+				if (defaultSet != -1) {
 					preferenceStore.setValue(KEY_DEFAULT, defaultSet>0);
+				}
 				preferenceStore.save();
 				needsSaving = false;
 			}
@@ -182,8 +185,9 @@ public class ScopeSet {
 	public boolean getEngineEnabled(EngineDescriptor desc) {
 		IPreferenceStore store = getPreferenceStore();
 		String key = getMasterKey(desc.getId());
-		if (store.contains(key))
+		if (store.contains(key)) {
 			return store.getBoolean(key);
+		}
 		store.setValue(key, desc.isEnabled());
 		return desc.isEnabled();
 	}

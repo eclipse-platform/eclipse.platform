@@ -234,13 +234,15 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 		//separator.setVisible(true);
 		// locate local help engine and add it first
 		EngineDescriptor localHelp = findLocalHelp(eds);
-		if (localHelp!=null)
+		if (localHelp!=null) {
 			add(localHelp);
+		}
 		// add engines other than local help
 		for (int i = 0; i < eds.size(); i++) {
 			EngineDescriptor ed = eds.get(i);
-			if (ed==localHelp)
+			if (ed==localHelp) {
 				continue;
+			}
 			add(ed);
 		}
 		reflow();
@@ -249,8 +251,9 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 	private EngineDescriptor findLocalHelp(ArrayList<EngineDescriptor> eds) {
 		for (int i=0; i<eds.size(); i++) {
 			EngineDescriptor ed = eds.get(i);
-			if (ed.getEngineTypeId().equals(IHelpUIConstants.INTERNAL_HELP_ID))
+			if (ed.getEngineTypeId().equals(IHelpUIConstants.INTERNAL_HELP_ID)) {
 				return ed;
+			}
 		}
 		return null;
 	}
@@ -274,8 +277,9 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 
 		if (url.startsWith("nw:")) { //$NON-NLS-1$
 			parent.showExternalURL(url.substring(3));
-		} else
+		} else {
 			parent.showURL(url);
+		}
 	}
 
 	void doCategoryLink(String href) {
@@ -286,8 +290,9 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 			IToc[] tocs = HelpSystem.getTocs();
 			IHelpResource target = null;
 			for (int i = 0; i < tocs.length; i++) {
-				if (tocs[i].getHref().equals(href))
+				if (tocs[i].getHref().equals(href)) {
 					target = tocs[i];
+				}
 			}
 			if (target != null) {
 				part.selectReveal(target);
@@ -308,16 +313,18 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 	public boolean hasFocusControl(Control control) {
 		for (int i = 0; i < results.size(); i++) {
 			EngineResultSection er = results.get(i);
-			if (er.hasControl(control))
+			if (er.hasControl(control)) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	public synchronized void add(EngineDescriptor ed, ISearchEngineResult match) {
 		EngineResultSection ers = findEngineResult(ed);
-		if (match != null)
+		if (match != null) {
 			ers.add(match);
+		}
 	}
 
 	public synchronized void add(EngineDescriptor ed,
@@ -335,8 +342,9 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 			EngineDescriptor ed) {
 		for (int i = 0; i < results.size(); i++) {
 			EngineResultSection er = results.get(i);
-			if (er.matches(ed))
+			if (er.matches(ed)) {
 				return er;
+			}
 		}
 		final EngineResultSection er = new EngineResultSection(this, ed);
 		Display display = parent.getForm().getToolkit().getColors()
@@ -372,8 +380,9 @@ public class SearchResultsPart extends AbstractFormPart implements IHelpPart {
 
 	@Override
 	public IAction getGlobalAction(String id) {
-		if (id.equals(ActionFactory.COPY.getId()))
+		if (id.equals(ActionFactory.COPY.getId())) {
 			return parent.getCopyAction();
+		}
 		return null;
 	}
 

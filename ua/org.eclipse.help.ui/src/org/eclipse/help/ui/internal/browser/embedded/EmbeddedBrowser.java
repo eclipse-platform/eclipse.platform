@@ -80,10 +80,11 @@ public class EmbeddedBrowser {
 	 */
 	public EmbeddedBrowser() {
 		int style = SWT.SHELL_TRIM;
-		if (ProductPreferences.isRTL())
+		if (ProductPreferences.isRTL()) {
 			style |= SWT.RIGHT_TO_LEFT;
-		else
+		} else {
 			style |= SWT.LEFT_TO_RIGHT;
+		}
 		shell = new Shell(style);
 		initializeShell(shell);
 		shell.addControlListener(new ControlListener() {
@@ -140,8 +141,9 @@ public class EmbeddedBrowser {
 			y = shell.getLocation().y;
 		}
 		setSafeBounds(shell, x, y, w, h);
-		if (Platform.getPreferencesService().getBoolean(HelpUIPlugin.PLUGIN_ID, BROWSER_MAXIMIZED, false, null))
+		if (Platform.getPreferencesService().getBoolean(HelpUIPlugin.PLUGIN_ID, BROWSER_MAXIMIZED, false, null)) {
 			shell.setMaximized(true);
+		}
 		shell.addControlListener(new ControlListener() {
 
 			@Override
@@ -195,13 +197,15 @@ public class EmbeddedBrowser {
 	public EmbeddedBrowser(WindowEvent event, Shell parent) {
 		if (parent == null){
 			int style = SWT.SHELL_TRIM;
-			if (ProductPreferences.isRTL())
+			if (ProductPreferences.isRTL()) {
 				style |= SWT.RIGHT_TO_LEFT;
-			else
+			} else {
 				style |= SWT.LEFT_TO_RIGHT;
+			}
 			shell = new Shell(style);
-		} else
+		} else {
 			shell = new Shell(parent, SWT.PRIMARY_MODAL | SWT.DIALOG_TRIM | SWT.RESIZE);
+		}
 		initializeShell(shell);
 		Browser browser = new Browser(shell, SWT.NONE);
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -239,8 +243,9 @@ public class EmbeddedBrowser {
 	private static void initializeShell(Shell s) {
 		s.setText(initialTitle);
 		final Image[] shellImages = createImages();
-		if (shellImages != null)
+		if (shellImages != null) {
 			s.setImages(shellImages);
+		}
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
@@ -279,8 +284,9 @@ public class EmbeddedBrowser {
 			public void show(WindowEvent event) {
 				Browser browser = (Browser) event.widget;
 				Shell shell = browser.getShell();
-				if (event.location != null)
+				if (event.location != null) {
 					shell.setLocation(event.location);
+				}
 				if (event.size != null) {
 					Point size = event.size;
 					shell.setSize(shell.computeSize(size.x, size.y));
@@ -335,8 +341,9 @@ public class EmbeddedBrowser {
 
 			@Override
 			public void changing(LocationEvent event) {
-				if (event.location == null || event.location.startsWith("javascript:")) //$NON-NLS-1$
+				if (event.location == null || event.location.startsWith("javascript:")) { //$NON-NLS-1$
 					return;
+				}
 				changingLocationHolder.set(event.location);
 			}
 
@@ -352,8 +359,9 @@ public class EmbeddedBrowser {
 			}
 		});
 		browser.addProgressListener(ProgressListener.changedAdapter(event -> {
-			if (event.total <= 0 || changingLocationHolder.get() == null)
+			if (event.total <= 0 || changingLocationHolder.get() == null) {
 				return;
+			}
 			statusBarProgress.setMaximum(event.total);
 			statusBarProgress.setSelection(Math.min(event.current, event.total));
 			if (event.current < event.total) {
@@ -489,8 +497,9 @@ public class EmbeddedBrowser {
 	 * Closes the browser.
 	 */
 	public void close() {
-		if (!shell.isDisposed())
+		if (!shell.isDisposed()) {
 			shell.dispose();
+		}
 	}
 	private static void setSafeBounds(Shell s, int x, int y, int width,
 			int height) {

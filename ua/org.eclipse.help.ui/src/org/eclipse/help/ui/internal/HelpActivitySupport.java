@@ -62,11 +62,13 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 
 		private void load() {
 			IConfigurationElement [] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.help.base.activitySupport");//$NON-NLS-1$
-			if (elements.length==1 && elements[0].getName().equals("support")) //$NON-NLS-1$
+			if (elements.length==1 && elements[0].getName().equals("support")) { //$NON-NLS-1$
 				config = elements[0];
-			else if (elements.length>0) {
+			} else if (elements.length>0) {
 				IProduct product = Platform.getProduct();
-				if (product==null) return;
+				if (product==null) {
+					return;
+				}
 				String productId = product.getId();
 				for (int i=0; i<elements.length; i++) {
 					IConfigurationElement element = elements[i];
@@ -82,11 +84,13 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 			return children.length==1?children[0]:null;
 		}
 		public String getShowAllMessage() {
-			if (config==null)
+			if (config==null) {
 				return null;
+			}
 			IConfigurationElement child = getChild("showAllMessage"); //$NON-NLS-1$
-			if (child!=null)
+			if (child!=null) {
 				return child.getValue();
+			}
 			return null;
 		}
 		public boolean needsLiveHelp(boolean embedded) {
@@ -108,9 +112,9 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 						buffer.append(getActivityEditorValue(pluginId, className, embedded));
 						buffer.append(value.substring(loc+15));
 						documentMessage = buffer.toString();
-					}
-					else
+					} else {
 						documentMessage = value;
+					}
 				}
 			}
 			return documentMessage;

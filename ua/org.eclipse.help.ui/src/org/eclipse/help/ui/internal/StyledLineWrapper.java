@@ -60,8 +60,9 @@ public class StyledLineWrapper implements StyledTextContent {
 	public StyledLineWrapper(String text, Drawable drawable, int minWidth) {
 		this.drawable = drawable;
 		maxWidth = Math.max(DEFAULT_WIDTH, minWidth);
-		if (text == null || text.length() == 0)
+		if (text == null || text.length() == 0) {
 			text = " "; // use one blank space //$NON-NLS-1$
+		}
 		setText(text);
 	}
 
@@ -72,25 +73,29 @@ public class StyledLineWrapper implements StyledTextContent {
 
 	@Override
 	public int getCharCount() {
-		if (charCount != -1)
+		if (charCount != -1) {
 			return charCount;
+		}
 		charCount = 0;
-		for (Iterator<String> i = lines.iterator(); i.hasNext();)
+		for (Iterator<String> i = lines.iterator(); i.hasNext();) {
 			charCount += i.next().length();
+		}
 		return charCount;
 	}
 
 	@Override
 	public String getLine(int i) {
-		if ((i >= lines.size()) || (i < 0))
+		if ((i >= lines.size()) || (i < 0)) {
 			SWT.error(SWT.ERROR_INVALID_ARGUMENT);
+		}
 		return lines.get(i);
 	}
 
 	@Override
 	public int getLineAtOffset(int offset) {
-		if (offset >= getCharCount())
+		if (offset >= getCharCount()) {
 			return getLineCount() - 1;
+		}
 		int count = 0;
 		int line = -1;
 		while (count <= offset) {
@@ -101,8 +106,9 @@ public class StyledLineWrapper implements StyledTextContent {
 
 	@Override
 	public int getLineCount() {
-		if (lines.isEmpty())
+		if (lines.isEmpty()) {
 			return 1;
+		}
 		return lines.size();
 	}
 
@@ -113,11 +119,13 @@ public class StyledLineWrapper implements StyledTextContent {
 
 	@Override
 	public int getOffsetAtLine(int line) {
-		if (lines.isEmpty())
+		if (lines.isEmpty()) {
 			return 0;
+		}
 		int offset = 0;
-		for (int i = 0; i < line; i++)
+		for (int i = 0; i < line; i++) {
 			offset += getLine(i).length();
+		}
 		return offset;
 	}
 
@@ -125,13 +133,15 @@ public class StyledLineWrapper implements StyledTextContent {
 	public String getTextRange(int start, int end) {
 		int l1 = getLineAtOffset(start);
 		int l2 = getLineAtOffset(end);
-		if (l1 == l2)
+		if (l1 == l2) {
 			return getLine(l1).substring(start - getOffsetAtLine(l1),
 					end - start);
+		}
 		StringBuilder range = new StringBuilder(getLine(l1).substring(
 				start - getOffsetAtLine(l1)));
-		for (int i = l1 + 1; i < l2; i++)
+		for (int i = l1 + 1; i < l2; i++) {
 			range.append(getLine(i));
+		}
 		range.append(getLine(l2).substring(0, end - getOffsetAtLine(l2)));
 		return range.toString();
 	}
@@ -148,8 +158,9 @@ public class StyledLineWrapper implements StyledTextContent {
 
 	@Override
 	public void setText(String text) {
-		if (text == null)
+		if (text == null) {
 			text = " "; //$NON-NLS-1$
+		}
 		processLineBreaks(text);
 		processStyles(text);
 	}
@@ -178,21 +189,24 @@ public class StyledLineWrapper implements StyledTextContent {
 				lines.add(new String(textChars, start, i - start));
 				start = i + 1;
 				// if we reached the end, stop
-				if (start >= textChars.length)
+				if (start >= textChars.length) {
 					break;
+				}
 				// see if the next character is an LF
 				ch = textChars[start];
 				if (ch == SWT.LF) {
 					start++;
 					i++;
-					if (start >= textChars.length)
+					if (start >= textChars.length) {
 						break;
+					}
 				}
 			} else if (ch == SWT.LF) {
 				lines.add(new String(textChars, start, i - start));
 				start = i + 1;
-				if (start >= textChars.length)
+				if (start >= textChars.length) {
 					break;
+				}
 			} else if (i == textChars.length - 1) {
 				lines.add(new String(textChars, start, i - start + 1));
 			}
@@ -203,8 +217,9 @@ public class StyledLineWrapper implements StyledTextContent {
 			String line = lines.get(i);
 			while (line.length() > 0) {
 				int linebreak = getLineBreak(line, gc);
-				if (linebreak == 0 || linebreak == line.length())
+				if (linebreak == 0 || linebreak == line.length()) {
 					break;
+				}
 				String newline = line.substring(0, linebreak);
 				lines.remove(i);
 				lines.add(i, newline);
@@ -257,15 +272,17 @@ public class StyledLineWrapper implements StyledTextContent {
 			style.fontStyle = SWT.BOLD;
 			// the index of the starting style in styled text
 			int start = text.indexOf(BOLD_TAG, offset);
-			if (start == -1)
+			if (start == -1) {
 				break;
+			}
 			String prefix = getUnstyledText(text.substring(0, start));
 			style.start = prefix.length();
 			// the index of the ending style in styled text
 			offset = start + 1;
 			int end = text.indexOf(BOLD_CLOSE_TAG, offset);
-			if (end == -1)
+			if (end == -1) {
 				break;
+			}
 			prefix = getUnstyledText(text.substring(0, end));
 			style.length = prefix.length() - style.start;
 			lineStyleRanges.add(style);

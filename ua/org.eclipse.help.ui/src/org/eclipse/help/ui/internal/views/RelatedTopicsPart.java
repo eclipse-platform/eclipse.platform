@@ -170,8 +170,9 @@ public class RelatedTopicsPart extends AbstractFormPart implements IHelpPart {
 	@Override
 	public boolean fillContextMenu(IMenuManager manager) {
 		Control focusControl = mform.getForm().getDisplay().getFocusControl();
-		if (contextHelpPart.hasFocusControl(focusControl) || dynamicHelpPart == null)
+		if (contextHelpPart.hasFocusControl(focusControl) || dynamicHelpPart == null) {
 			return contextHelpPart.fillContextMenu(manager);
+		}
 		return dynamicHelpPart.fillContextMenu(manager);
 	}
 
@@ -220,8 +221,9 @@ public class RelatedTopicsPart extends AbstractFormPart implements IHelpPart {
 
 	@Override
 	public void setFocus() {
-		if (contextHelpPart!=null)
+		if (contextHelpPart!=null) {
 			contextHelpPart.setFocus();
+		}
 	}
 
 	public static boolean isUseDynamicHelp() {

@@ -43,8 +43,9 @@ public class IC {
 
 	public void setHref(String href) throws MalformedURLException
 	{
-		if (href.startsWith(":")) //$NON-NLS-1$
+		if (href.startsWith(":")) { //$NON-NLS-1$
 			href = "http"+href; //$NON-NLS-1$
+		}
 
 		setHref(new URL(href));
 	}
@@ -57,20 +58,22 @@ public class IC {
 		this.port = url.getPort();
 		if (port==-1)
 		{
-			if (protocol.equals("http")) //$NON-NLS-1$
+			if (protocol.equals("http")) { //$NON-NLS-1$
 				port = 80;
-			else if (protocol.equals("https")) //$NON-NLS-1$
+			} else if (protocol.equals("https")) { //$NON-NLS-1$
 				port = 443;
+			}
 		}
 	}
 
 	public String getHref()
 	{
 		String portString = ":"+port; //$NON-NLS-1$
-		if (port==80 && protocol.equals("http")) //$NON-NLS-1$
+		if (port==80 && protocol.equals("http")) { //$NON-NLS-1$
 			portString = ""; //$NON-NLS-1$
-		else if (port==443 && protocol.equals("https")) //$NON-NLS-1$
+		} else if (port==443 && protocol.equals("https")) { //$NON-NLS-1$
 			portString = ""; //$NON-NLS-1$
+		}
 
 		return protocol+"://"+host+portString+path; //$NON-NLS-1$
 	}
@@ -139,10 +142,9 @@ public class IC {
 	@Override
 	public boolean equals(Object o)
 	{
-		if (!(o instanceof IC))
+		if (!(o instanceof IC candidate)) {
 			return false;
-
-		IC candidate = (IC)o;
+		}
 
 		if (getName().equals(candidate.getName())
 				&& getPath().equals(candidate.getPath())
@@ -153,11 +155,13 @@ public class IC {
 				InetAddress host1 = InetAddress.getByName(getHost());
 				InetAddress host2 = InetAddress.getByName(candidate.getHost());
 
-				if (host1.getHostAddress().equals(host2.getHostAddress()))
+				if (host1.getHostAddress().equals(host2.getHostAddress())) {
 					return true;
+				}
 			} catch (UnknownHostException e) {
-				if (getHost().equals(candidate.getHost()))
+				if (getHost().equals(candidate.getHost())) {
 					return true;
+				}
 			}
 		}
 

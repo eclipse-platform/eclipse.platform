@@ -267,8 +267,9 @@ public class DefaultHelpUI extends AbstractHelpUI {
 	private static void setIntroStandby() {
 		IIntroManager introMng = PlatformUI.getWorkbench().getIntroManager();
 		IIntroPart intro = introMng.getIntro();
-		if (intro != null && !introMng.isIntroStandby(intro))
+		if (intro != null && !introMng.isIntroStandby(intro)) {
 			introMng.setIntroStandby(intro, true);
+		}
 	}
 
 	private void warnNoOpenPerspective(IWorkbenchWindow window) {
@@ -307,8 +308,9 @@ public class DefaultHelpUI extends AbstractHelpUI {
 	}
 
 	void displayContext(IContext context, int x, int y, boolean noInfopop) {
-		if (context == null)
+		if (context == null) {
 			return;
+		}
 		boolean winfopop = Platform.getPreferencesService().getBoolean
 				(HelpBasePlugin.PLUGIN_ID, IHelpBaseConstants.P_KEY_WINDOW_INFOPOP, false, null);
 		boolean dinfopop = Platform.getPreferencesService().getBoolean
@@ -328,12 +330,13 @@ public class DefaultHelpUI extends AbstractHelpUI {
 					IWorkbenchPart activePart = page.getActivePart();
 					Control c = window.getShell().getDisplay().getFocusControl();
 					IContextProvider adapter = activePart.getAdapter(IContextProvider.class);
-					if (adapter != null)
+					if (adapter != null) {
 						context = adapter
 								.getContext(c); /*
 												 * If the context help has no description text and exactly one
 												 * topic, go straight to the topic and skip context help.
 												 */
+					}
 					Objects.requireNonNull(context, "context must not be null when displaying help content"); //$NON-NLS-1$
 					String contextText = context.getText();
 					IHelpResource[] topics = context.getRelatedTopics();
@@ -472,8 +475,9 @@ public class DefaultHelpUI extends AbstractHelpUI {
 		if (!Constants.OS_WIN32.equalsIgnoreCase(Platform.getOS())) {
 			Display display = Display.getCurrent();
 			if (display != null) {
-				if (insideModalParent(display))
+				if (insideModalParent(display)) {
 					return true;
+				}
 			}
 		}
 
@@ -494,8 +498,9 @@ public class DefaultHelpUI extends AbstractHelpUI {
 
 	public static boolean isDisplayModal(Shell activeShell) {
 		while (activeShell != null) {
-			if ((activeShell.getStyle() & (SWT.APPLICATION_MODAL | SWT.PRIMARY_MODAL | SWT.SYSTEM_MODAL)) > 0)
+			if ((activeShell.getStyle() & (SWT.APPLICATION_MODAL | SWT.PRIMARY_MODAL | SWT.SYSTEM_MODAL)) > 0) {
 				return true;
+			}
 			activeShell = (Shell) activeShell.getParent();
 		}
 		return false;

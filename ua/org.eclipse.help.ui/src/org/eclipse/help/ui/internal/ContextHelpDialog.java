@@ -192,8 +192,9 @@ public class ContextHelpDialog {
 			}
 			if (shell != null) {
 				shell.close();
-				if (!shell.isDisposed())
+				if (!shell.isDisposed()) {
 					shell.dispose();
+				}
 				shell = null;
 			}
 		} catch (Throwable ex) {
@@ -296,8 +297,9 @@ public class ContextHelpDialog {
 
 	private Control createLinksArea(Composite parent) {
 		IHelpResource[] relatedTopics = context.getRelatedTopics();
-		if (relatedTopics == null)
+		if (relatedTopics == null) {
 			return null;
+		}
 		// Create control
 		Composite composite = new Composite(parent, SWT.NONE);
 		initAccessible(composite);

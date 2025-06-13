@@ -47,8 +47,9 @@ public class InfoCenterSearchScopeFactory implements ISearchScopeFactory {
 					String toc = stok.nextToken();
 					list.add(toc);
 				}
-				if (list.size()>0)
+				if (list.size()>0) {
 					tocs = list.toArray(new String[list.size()]);
+				}
 			}
 		}
 		return new InfoCenter.Scope(url, searchSelected, tocs);
@@ -58,7 +59,9 @@ public class InfoCenterSearchScopeFactory implements ISearchScopeFactory {
 			Dictionary<String, Object> parameters) {
 		// try the store first
 		String value = store.getString(engineId+"."+key); //$NON-NLS-1$
-		if (value!=null && value.length()>0) return value;
+		if (value!=null && value.length()>0) {
+			return value;
+		}
 		// try the parameters
 		return (String) parameters.get(key);
 	}

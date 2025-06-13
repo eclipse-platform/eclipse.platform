@@ -54,8 +54,9 @@ public class EngineTypeDescriptor {
 	}
 
 	public Image getIconImage() {
-		if (image!=null)
+		if (image!=null) {
 			return image;
+		}
 		String icon = config.getAttribute(IHelpUIConstants.ATT_ICON);
 		if (icon!=null) {
 			String bundleId = config.getContributor().getName();
@@ -69,8 +70,9 @@ public class EngineTypeDescriptor {
 	public String getDescription() {
 		String desc = null;
 		IConfigurationElement [] children = config.getChildren(IHelpUIConstants.TAG_DESC);
-		if (children.length==1)
+		if (children.length==1) {
 			desc = children[0].getValue();
+		}
 		return desc;
 	}
 
@@ -78,17 +80,17 @@ public class EngineTypeDescriptor {
 		ImageDescriptor desc=null;
 		String icon = config.getAttribute(IHelpUIConstants.ATT_ICON);
 		String bundleId = config.getContributor().getName();
-		if (icon!=null)
+		if (icon!=null) {
 			desc = HelpUIResources.getImageDescriptor(bundleId, icon);
-		else
+		} else {
 			desc = HelpUIResources.getImageDescriptor(bundleId, IHelpUIConstants.IMAGE_HELP_SEARCH);
+		}
 		return desc;
 	}
 	public RootScopePage createRootPage(String scopeSetName) {
 		try {
 			Object obj = config.createExecutableExtension(IHelpUIConstants.ATT_PAGE_CLASS);
-			if (obj instanceof RootScopePage) {
-				RootScopePage page = (RootScopePage)obj;
+			if (obj instanceof RootScopePage page) {
 				return page;
 			}
 			return null;
@@ -102,8 +104,9 @@ public class EngineTypeDescriptor {
 		if (eclass!=null) {
 			try {
 				Object obj = config.createExecutableExtension(IHelpUIConstants.ATT_CLASS);
-				if (obj instanceof ISearchEngine)
+				if (obj instanceof ISearchEngine) {
 					return (ISearchEngine)obj;
+				}
 			}
 			catch (CoreException e) {
 				ILog.of(getClass()).error("Engine " + eclass + " cannot be instantiated", null); //$NON-NLS-1$ //$NON-NLS-2$
@@ -129,8 +132,9 @@ public class EngineTypeDescriptor {
 				}
 			}
 		}
-		if (factory!=null)
+		if (factory!=null) {
 			return factory.createSearchScope(store, engineId, parameters);
+		}
 		return null;
 	}
 }

@@ -211,8 +211,9 @@ public class HelpPreferencePage extends PreferencePage implements
 				.getElements(PreferenceManager.PRE_ORDER).iterator();
 		while (iterator.hasNext()) {
 			IPreferenceNode next = iterator.next();
-			if (next.getId().equals(pageId))
+			if (next.getId().equals(pageId)) {
 				return next;
+			}
 		}
 		return null;
 	}

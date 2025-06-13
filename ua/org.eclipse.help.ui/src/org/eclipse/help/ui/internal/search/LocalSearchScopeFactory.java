@@ -34,8 +34,9 @@ public class LocalSearchScopeFactory implements ISearchScopeFactory {
 			Dictionary<String, Object> parameters) {
 		String name = store.getString(engineId+"."+P_WORKING_SET); //$NON-NLS-1$
 		WorkingSet workingSet = null;
-		if (name != null)
+		if (name != null) {
 			workingSet = BaseHelpSystem.getWorkingSetManager().getWorkingSet(name);
+		}
 		boolean capabilityFiltering = store.getBoolean(engineId+"."+P_CAPABILITY_FILTERING); //$NON-NLS-1$
 		return new LocalHelpScope(workingSet, capabilityFiltering);
 	}

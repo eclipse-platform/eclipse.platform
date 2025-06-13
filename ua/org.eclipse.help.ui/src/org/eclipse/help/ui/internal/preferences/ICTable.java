@@ -232,11 +232,13 @@ public class ICTable {
 	public void setICs(List<IC> ics)
 	{
 		List<IC> oldICs = getICs();
-		for (int o=0;o<oldICs.size();o++)
+		for (int o=0;o<oldICs.size();o++) {
 			removeIC(oldICs.get(o));
+		}
 
-		for (int i=0;i<ics.size();i++)
+		for (int i=0;i<ics.size();i++) {
 			addIC(ics.get(i));
+		}
 	}
 
 	public TableViewer getTableViewer()
@@ -286,8 +288,9 @@ public class ICTable {
 	private void loadPreferences()
 	{
 		List<IC> ics = ICPreferences.getICs();
-		for (int i=0;i<ics.size();i++)
+		for (int i=0;i<ics.size();i++) {
 			addIC(ics.get(i));
+		}
 	}
 
 }
