@@ -24,7 +24,7 @@ import org.eclipse.tm.internal.terminal.provisional.api.TerminalState;
 
 class ConsoleConnector implements ITerminalConnector {
 
-	private Spawner process;
+	private final Spawner process;
 	private ITerminalControl control;
 
 	public ConsoleConnector(Spawner process) {

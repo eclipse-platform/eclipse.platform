@@ -37,11 +37,11 @@ import org.eclipse.ui.part.IPageSite;
 
 class TerminalConsolePage implements IPageBookViewPage, IAdaptable {
 
-	private Spawner process;
+	private final Spawner process;
 	private IPageSite site;
 	private ITerminalViewControl viewer;
 	private Composite composite;
-	private IStreamsProxy streamsProxy;
+	private final IStreamsProxy streamsProxy;
 
 	public TerminalConsolePage(Spawner spawner, IStreamsProxy streamsProxy) {
 		this.process = spawner;
