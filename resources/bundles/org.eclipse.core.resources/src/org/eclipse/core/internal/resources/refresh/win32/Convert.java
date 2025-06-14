@@ -38,8 +38,9 @@ public class Convert {
 	 * This can be avoided by calling String.getBytes(String encoding) instead.
 	 */
 	public static byte[] toPlatformBytes(String target) {
-		if (defaultEncoding == null)
+		if (defaultEncoding == null) {
 			return target.getBytes();
+		}
 		// try to use the default encoding
 		try {
 			return target.getBytes(defaultEncoding);

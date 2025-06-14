@@ -38,8 +38,9 @@ public class PathVariableUtil {
 		StringBuilder destVariable = new StringBuilder(variable);
 
 		IPathVariableManager pathVariableManager = resource.getPathVariableManager();
-		if (variable.startsWith(ParentVariableResolver.NAME) || variable.startsWith(ProjectLocationVariableResolver.NAME))
+		if (variable.startsWith(ParentVariableResolver.NAME) || variable.startsWith(ProjectLocationVariableResolver.NAME)) {
 			destVariable.insert(0, "copy_"); //$NON-NLS-1$
+		}
 
 		while (pathVariableManager.isDefined(destVariable.toString())) {
 			destVariable.append(index);
@@ -51,8 +52,9 @@ public class PathVariableUtil {
 	public static String getValidVariableName(String variable) {
 		// remove the argument part if the variable is of the form ${VAR-ARG}
 		int argumentIndex = variable.indexOf('-');
-		if (argumentIndex != -1)
+		if (argumentIndex != -1) {
 			variable = variable.substring(0, argumentIndex);
+		}
 
 		variable = variable.trim();
 		char first = variable.charAt(0);
@@ -63,8 +65,9 @@ public class PathVariableUtil {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < variable.length(); i++) {
 			char c = variable.charAt(i);
-			if ((Character.isLetter(c) || Character.isDigit(c) || c == '_') && !Character.isWhitespace(c))
+			if ((Character.isLetter(c) || Character.isDigit(c) || c == '_') && !Character.isWhitespace(c)) {
 				builder.append(c);
+			}
 		}
 		variable = builder.toString();
 		return variable;
@@ -89,8 +92,9 @@ public class PathVariableUtil {
 	static private IPath convertToRelative(IPathVariableManager pathVariableManager, IPath originalPath, IResource resource, boolean force, String variableHint, boolean skipWorkspace, boolean generateMacro) throws CoreException {
 		if (variableHint != null && pathVariableManager.isDefined(variableHint)) {
 			IPath value = URIUtil.toPath(pathVariableManager.getURIValue(variableHint));
-			if (value != null)
+			if (value != null) {
 				return wrapInProperFormat(makeRelativeToVariable(pathVariableManager, originalPath, force, variableHint), generateMacro);
+			}
 		}
 		IPath path = convertToProperCase(originalPath);
 		IPath newPath = null;
@@ -100,13 +104,16 @@ public class PathVariableUtil {
 			if (skipWorkspace) {
 				// Variables relative to the workspace are not portable, and defeat the purpose of having linked resource locations,
 				// so they should not automatically be created relative to the workspace.
-				if (variable.equals(WorkspaceLocationVariableResolver.NAME))
+				if (variable.equals(WorkspaceLocationVariableResolver.NAME)) {
 					continue;
+				}
 			}
-			if (variable.equals(WorkspaceParentLocationVariableResolver.NAME))
+			if (variable.equals(WorkspaceParentLocationVariableResolver.NAME)) {
 				continue;
-			if (variable.equals(ParentVariableResolver.NAME))
+			}
+			if (variable.equals(ParentVariableResolver.NAME)) {
 				continue;
+			}
 			// find closest path to the original path
 			IPath value = URIUtil.toPath(pathVariableManager.getURIValue(variable));
 			if (value != null) {
@@ -120,8 +127,9 @@ public class PathVariableUtil {
 				}
 			}
 		}
-		if (newPath != null)
+		if (newPath != null) {
 			return wrapInProperFormat(newPath, generateMacro);
+		}
 
 		if (force) {
 			int originalSegmentCount = originalPath.segmentCount();
@@ -130,13 +138,16 @@ public class PathVariableUtil {
 				int minDifference = Integer.MAX_VALUE;
 				for (String variable : existingVariables) {
 					if (skipWorkspace) {
-						if (variable.equals(WorkspaceLocationVariableResolver.NAME))
+						if (variable.equals(WorkspaceLocationVariableResolver.NAME)) {
 							continue;
+						}
 					}
-					if (variable.equals(WorkspaceParentLocationVariableResolver.NAME))
+					if (variable.equals(WorkspaceParentLocationVariableResolver.NAME)) {
 						continue;
-					if (variable.equals(ParentVariableResolver.NAME))
+					}
+					if (variable.equals(ParentVariableResolver.NAME)) {
 						continue;
+					}
 					IPath value = URIUtil.toPath(pathVariableManager.getURIValue(variable));
 					if (value != null) {
 						value = convertToProperCase(URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(value))));
@@ -149,28 +160,33 @@ public class PathVariableUtil {
 						}
 					}
 				}
-				if (newPath != null)
+				if (newPath != null) {
 					return wrapInProperFormat(newPath, generateMacro);
+				}
 			}
 			if (originalSegmentCount == 0) {
 				String variable = ProjectLocationVariableResolver.NAME;
 				IPath value = URIUtil.toPath(pathVariableManager.getURIValue(variable));
 				value = convertToProperCase(URIUtil.toPath(pathVariableManager.resolveURI(URIUtil.toURI(value))));
-				if (originalPath.isPrefixOf(value))
+				if (originalPath.isPrefixOf(value)) {
 					newPath = makeRelativeToVariable(pathVariableManager, originalPath, force, variable);
-				if (newPath != null)
+				}
+				if (newPath != null) {
 					return wrapInProperFormat(newPath, generateMacro);
+				}
 			}
 		}
 
-		if (skipWorkspace)
+		if (skipWorkspace) {
 			return convertToRelative(pathVariableManager, originalPath, resource, force, variableHint, false, generateMacro);
+		}
 		return originalPath;
 	}
 
 	private static IPath wrapInProperFormat(IPath newPath, boolean generateMacro) {
-		if (generateMacro)
+		if (generateMacro) {
 			newPath = PathVariableUtil.buildVariableMacro(newPath);
+		}
 		return newPath;
 	}
 
@@ -210,8 +226,9 @@ public class PathVariableUtil {
 	}
 
 	static private IPath convertToProperCase(IPath path) {
-		if (Platform.getOS().equals(Platform.OS_WIN32))
+		if (Platform.getOS().equals(Platform.OS_WIN32)) {
 			return IPath.fromPortableString(path.toPortableString().toLowerCase());
+		}
 		return path;
 	}
 
@@ -236,16 +253,18 @@ public class PathVariableUtil {
 	// the format is PARENT-COUNT-ARGUMENT
 	static public String getParentVariableArgument(String variableString) {
 		String items[] = variableString.split("-"); //$NON-NLS-1$
-		if (items.length == 3)
+		if (items.length == 3) {
 			return items[2];
+		}
 		return null;
 	}
 
 	static public String buildParentPathVariable(String variable, int difference, boolean generateMacro) {
 		String newString = ParentVariableResolver.NAME + "-" + difference + "-" + variable; //$NON-NLS-1$//$NON-NLS-2$
 
-		if (!generateMacro)
+		if (!generateMacro) {
 			newString = "${" + newString + "}"; //$NON-NLS-1$//$NON-NLS-2$
+		}
 		return newString;
 	}
 
@@ -257,12 +276,14 @@ public class PathVariableUtil {
 
 	public static String convertFromUserEditableFormatInternal(IPathVariableManager manager, String userFormat, boolean locationFormat) {
 		char pathPrefix = 0;
-		if ((userFormat.length() > 0) && (userFormat.charAt(0) == '/' || userFormat.charAt(0) == '\\'))
+		if ((userFormat.length() > 0) && (userFormat.charAt(0) == '/' || userFormat.charAt(0) == '\\')) {
 			pathPrefix = userFormat.charAt(0);
+		}
 		String components[] = splitPathComponents(userFormat);
 		for (int i = 0; i < components.length; i++) {
-			if (components[i] == null)
+			if (components[i] == null) {
 				continue;
+			}
 			if (isDotDot(components[i])) {
 				int parentCount = 1;
 				components[i] = null;
@@ -271,18 +292,21 @@ public class PathVariableUtil {
 						if (isDotDot(components[j])) {
 							parentCount++;
 							components[j] = null;
-						} else
+						} else {
 							break;
+						}
 					}
 				}
-				if (i == 0) // this means the value is implicitly relative to the project location
+				if (i == 0) { // this means the value is implicitly relative to the project location
 					components[0] = PathVariableUtil.buildParentPathVariable(ProjectLocationVariableResolver.NAME, parentCount, false);
-				else {
+				} else {
 					for (int j = i - 1; j >= 0; j--) {
-						if (parentCount == 0)
+						if (parentCount == 0) {
 							break;
-						if (components[j] == null)
+						}
+						if (components[j] == null) {
 							continue;
+						}
 						String variable = extractVariable(components[j]);
 
 						boolean hasVariableWithMacroSyntax = true;
@@ -309,12 +333,14 @@ public class PathVariableUtil {
 										String originalIntermediateVariableName = intermediateVariable;
 										while (manager.isDefined(intermediateVariable)) {
 											IPath tmpValue = URIUtil.toPath(manager.getURIValue(intermediateVariable));
-											if (tmpValue.equals(intermediateValue))
+											if (tmpValue.equals(intermediateValue)) {
 												break;
+											}
 											intermediateVariable = originalIntermediateVariableName + intermediateVariableIndex;
 										}
-										if (!manager.isDefined(intermediateVariable))
+										if (!manager.isDefined(intermediateVariable)) {
 											manager.setURIValue(intermediateVariable, URIUtil.toURI(intermediateValue));
+										}
 										variable = intermediateVariable;
 										prefix = ""; //$NON-NLS-1$
 									}
@@ -323,12 +349,14 @@ public class PathVariableUtil {
 								if (PathVariableUtil.isParentVariable(variable)) {
 									String argument = PathVariableUtil.getParentVariableArgument(variable);
 									int count = PathVariableUtil.getParentVariableCount(variable);
-									if (argument != null && count != -1)
+									if (argument != null && count != -1) {
 										newVariable = PathVariableUtil.buildParentPathVariable(argument, count + parentCount, locationFormat);
-									else
+									} else {
 										newVariable = PathVariableUtil.buildParentPathVariable(variable, parentCount, locationFormat);
-								} else
+									}
+								} else {
 									newVariable = PathVariableUtil.buildParentPathVariable(variable, parentCount, locationFormat);
+								}
 								components[j] = prefix + newVariable;
 								break;
 							}
@@ -343,12 +371,14 @@ public class PathVariableUtil {
 			}
 		}
 		StringBuilder buffer = new StringBuilder();
-		if (pathPrefix != 0)
+		if (pathPrefix != 0) {
 			buffer.append(pathPrefix);
+		}
 		for (int i = 0; i < components.length; i++) {
 			if (components[i] != null) {
-				if (i > 0)
+				if (i > 0) {
 					buffer.append(java.io.File.separator);
+				}
 				buffer.append(components[i]);
 			}
 		}
@@ -365,14 +395,17 @@ public class PathVariableUtil {
 		for (int i = 0; i < userFormat.length(); i++) {
 			char c = userFormat.charAt(i);
 			if (c == '/' || c == '\\') {
-				if (buffer.length() > 0)
+				if (buffer.length() > 0) {
 					list.add(buffer.toString());
+				}
 				buffer = new StringBuilder();
-			} else
+			} else {
 				buffer.append(c);
+			}
 		}
-		if (buffer.length() > 0)
+		if (buffer.length() > 0) {
 			list.add(buffer.toString());
+		}
 		return list.toArray(new String[0]);
 	}
 
@@ -380,13 +413,15 @@ public class PathVariableUtil {
 		StringBuilder buffer = new StringBuilder();
 		if (locationFormat) {
 			IPath path = IPath.fromOSString(value);
-			if (path.isAbsolute())
+			if (path.isAbsolute()) {
 				return path.toOSString();
+			}
 			int index = value.indexOf(java.io.File.separator);
 			String variable = index != -1 ? value.substring(0, index) : value;
 			convertVariableToUserFormat(buffer, variable, variable, false);
-			if (index != -1)
+			if (index != -1) {
 				buffer.append(value.substring(index));
+			}
 		} else {
 			String components[] = splitVariablesAndContent(value);
 			for (String component : components) {
@@ -407,10 +442,12 @@ public class PathVariableUtil {
 				for (int j = 0; j < count; j++) {
 					buffer.append(java.io.File.separator + ".."); //$NON-NLS-1$
 				}
-			} else
+			} else {
 				buffer.append(component);
-		} else
+			}
+		} else {
 			buffer.append(component);
+		}
 	}
 
 	/*
@@ -428,15 +465,18 @@ public class PathVariableUtil {
 			int index = value.indexOf("${"); //$NON-NLS-1$
 			if (index != -1) {
 				int endIndex = getMatchingBrace(value, index);
-				if (index > 0)
+				if (index > 0) {
 					result.add(value.substring(0, index));
+				}
 				result.add(value.substring(index, endIndex + 1));
 				value = value.substring(endIndex + 1);
-			} else
+			} else {
 				break;
+			}
 		}
-		if (value.length() > 0)
+		if (value.length() > 0) {
 			result.add(value);
+		}
 		return result.toArray(new String[0]);
 	}
 
@@ -457,8 +497,9 @@ public class PathVariableUtil {
 				int endIndex = getMatchingBrace(value, index);
 				result.add(value.substring(index + 2, endIndex));
 				value = value.substring(endIndex + 1);
-			} else
+			} else {
 				break;
+			}
 		}
 		return result.toArray(new String[0]);
 	}
@@ -487,13 +528,15 @@ public class PathVariableUtil {
 		for (int i = index + 1; i < value.length(); i++) {
 			char c = value.charAt(i);
 			if (c == '}') {
-				if (scope == 0)
+				if (scope == 0) {
 					return i;
+				}
 				scope--;
 			}
 			if (c == '$') {
-				if ((i + 1 < value.length()) && (value.charAt(i + 1) == '{'))
+				if ((i + 1 < value.length()) && (value.charAt(i + 1) == '{')) {
 					scope++;
+				}
 			}
 		}
 		return value.length();

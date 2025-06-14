@@ -44,8 +44,9 @@ public class SafeFileTable {
 		Set<Object> set = table.keySet();
 		String[] keys = set.toArray(new String[set.size()]);
 		IPath[] files = new IPath[keys.length];
-		for (int i = 0; i < keys.length; i++)
+		for (int i = 0; i < keys.length; i++) {
 			files[i] = IPath.fromOSString(keys[i]);
+		}
 		return files;
 	}
 
@@ -59,17 +60,19 @@ public class SafeFileTable {
 	}
 
 	public void map(IPath file, IPath aLocation) {
-		if (aLocation == null)
+		if (aLocation == null) {
 			table.remove(file);
-		else
+		} else {
 			table.setProperty(file.toOSString(), aLocation.toOSString());
+		}
 	}
 
 	public void restore() throws CoreException {
 		java.io.File target = location.toFile();
 		table = new Properties();
-		if (!target.exists())
+		if (!target.exists()) {
 			return;
+		}
 		try (FileInputStream input = new FileInputStream(target)) {
 			table.load(input);
 		} catch (IOException e) {
@@ -89,7 +92,8 @@ public class SafeFileTable {
 	}
 
 	public void setLocation(IPath location) {
-		if (location != null)
+		if (location != null) {
 			this.location = location;
+		}
 	}
 }

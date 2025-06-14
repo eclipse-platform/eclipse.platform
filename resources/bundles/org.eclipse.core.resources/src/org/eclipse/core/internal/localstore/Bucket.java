@@ -209,16 +209,18 @@ public abstract class Bucket {
 	 * @exception CoreException thrown by the visitor or from a failed save
 	 */
 	public final int accept(Visitor visitor, IPath filter, int depth) throws CoreException {
-		if (entries.isEmpty())
+		if (entries.isEmpty()) {
 			return Visitor.CONTINUE;
+		}
 		try {
 			for (Iterator<Map.Entry<String, Object>> i = entries.entrySet().iterator(); i.hasNext();) {
 				Map.Entry<String, Object> mapEntry = i.next();
 				IPath path = IPath.fromOSString(mapEntry.getKey());
 				// check whether the filter applies
 				int matchingSegments = filter.matchingFirstSegments(path);
-				if (!filter.isPrefixOf(path) || path.segmentCount() - matchingSegments > depth)
+				if (!filter.isPrefixOf(path) || path.segmentCount() - matchingSegments > depth) {
 					continue;
+				}
 				// apply visitor
 				Entry bucketEntry = createEntry(path, mapEntry.getValue());
 				// calls the visitor passing all uuids for the entry
@@ -232,8 +234,9 @@ public abstract class Bucket {
 					needSaving = true;
 					mapEntry.setValue(bucketEntry.getValue());
 				}
-				if (outcome != Visitor.CONTINUE)
+				if (outcome != Visitor.CONTINUE) {
 					return outcome;
+				}
 			}
 			return Visitor.CONTINUE;
 		} finally {
@@ -247,12 +250,14 @@ public abstract class Bucket {
 	 * Tries to delete as many empty levels as possible.
 	 */
 	private void cleanUp(File toDelete) {
-		if (!toDelete.delete())
+		if (!toDelete.delete()) {
 			// if deletion didn't go well, don't bother trying to delete the parent dir
 			return;
+		}
 		// don't try to delete beyond the root for bucket indexes
-		if (toDelete.getName().equals(INDEXES_DIR_NAME))
+		if (toDelete.getName().equals(INDEXES_DIR_NAME)) {
 			return;
+		}
 		// recurse to parent directory
 		cleanUp(toDelete.getParentFile());
 	}
@@ -387,8 +392,9 @@ public abstract class Bucket {
 	}
 
 	private String readEntryKey(DataInputStream source) throws IOException {
-		if (projectName == null)
+		if (projectName == null) {
 			return source.readUTF();
+		}
 		return IPath.SEPARATOR + projectName + source.readUTF();
 	}
 
@@ -415,8 +421,9 @@ public abstract class Bucket {
 				cache.put(key, entriesSnapshot); // remember the entries in cache
 			}
 		}
-		if (!needSaving)
+		if (!needSaving) {
 			return;
+		}
 		try {
 			if (entriesSnapshot.isEmpty()) {
 				needSaving = false;
@@ -425,8 +432,9 @@ public abstract class Bucket {
 			}
 			// ensure the parent location exists
 			File parent = location.getParentFile();
-			if (parent == null)
+			if (parent == null) {
 				throw new IOException();//caught and rethrown below
+			}
 			parent.mkdirs();
 			try (DataOutputStream destination = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(location), 8192))) {
 				destination.write(getVersion());
@@ -449,10 +457,11 @@ public abstract class Bucket {
 	 * removes the entry.
 	 */
 	public final void setEntryValue(String path, Object value) {
-		if (value == null)
+		if (value == null) {
 			entries.remove(path);
-		else
+		} else {
 			entries.put(path, value);
+		}
 		needSaving = true;
 	}
 

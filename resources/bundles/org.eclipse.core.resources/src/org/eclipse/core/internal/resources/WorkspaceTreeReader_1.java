@@ -97,8 +97,9 @@ public class WorkspaceTreeReader_1 extends WorkspaceTreeReader {
 		//read the project name
 		String projectName = input.readUTF();
 		//use the name of the project handle if available
-		if (project != null)
+		if (project != null) {
 			projectName = project.getName();
+		}
 		String builderName = input.readUTF();
 		return new BuilderPersistentInfo(projectName, builderName, index);
 	}
@@ -107,8 +108,9 @@ public class WorkspaceTreeReader_1 extends WorkspaceTreeReader {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			int builderCount = input.readInt();
-			for (int i = 0; i < builderCount; i++)
+			for (int i = 0; i < builderCount; i++) {
 				builders.add(readBuilderInfo(project, input, i));
+			}
 		} finally {
 			monitor.done();
 		}
@@ -143,8 +145,9 @@ public class WorkspaceTreeReader_1 extends WorkspaceTreeReader {
 				try {
 					// make sure each snapshot is read by the correct reader
 					int version = input.readInt();
-					if (version != getVersion())
+					if (version != getVersion()) {
 						return WorkspaceTreeReader.getReader(workspace, version).readSnapshotTree(input, complete, monitor);
+					}
 				} catch (EOFException e) {
 					break;
 				}

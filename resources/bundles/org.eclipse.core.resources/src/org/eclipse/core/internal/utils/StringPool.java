@@ -47,8 +47,9 @@ public final class StringPool {
 	 * @return A string that is equal to the argument.
 	 */
 	public String add(String string) {
-		if (string == null)
+		if (string == null) {
 			return string;
+		}
 		String result = map.putIfAbsent(string, string);
 		if (result != null) {
 			if (result != string) {

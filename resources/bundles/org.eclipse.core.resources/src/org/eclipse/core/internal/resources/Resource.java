@@ -96,14 +96,16 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public void accept(final IResourceProxyVisitor visitor, final int depth, final int memberFlags) throws CoreException {
 		// It is invalid to call accept on a phantom when INCLUDE_PHANTOMS is not specified.
 		final boolean includePhantoms = (memberFlags & IContainer.INCLUDE_PHANTOMS) != 0;
-		if ((memberFlags & IContainer.DO_NOT_CHECK_EXISTENCE) == 0)
+		if ((memberFlags & IContainer.DO_NOT_CHECK_EXISTENCE) == 0) {
 			checkAccessible(getFlags(getResourceInfo(includePhantoms, false)));
+		}
 
 		final ResourceProxy proxy = new ResourceProxy();
 		IElementContentVisitor elementVisitor = (tree, requestor, contents) -> {
 			ResourceInfo info = (ResourceInfo) contents;
-			if (!isMember(getFlags(info), memberFlags))
+			if (!isMember(getFlags(info), memberFlags)) {
 				return false;
+			}
 			proxy.requestor = requestor;
 			proxy.info = info;
 			try {
@@ -158,26 +160,31 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		final boolean includePhantoms = (memberFlags & IContainer.INCLUDE_PHANTOMS) != 0;
 		ResourceInfo info = getResourceInfo(includePhantoms, false);
 		int flags = getFlags(info);
-		if ((memberFlags & IContainer.DO_NOT_CHECK_EXISTENCE) == 0)
+		if ((memberFlags & IContainer.DO_NOT_CHECK_EXISTENCE) == 0) {
 			checkAccessible(flags);
+		}
 
 		// Check that this resource matches the member flags
 		// Visit this resource.
-		if (!isMember(flags, memberFlags) || !visitor.visit(this) || depth == DEPTH_ZERO)
+		if (!isMember(flags, memberFlags) || !visitor.visit(this) || depth == DEPTH_ZERO) {
 			return;
+		}
 		// Get the info again because it might have been changed by the visitor.
 		info = getResourceInfo(includePhantoms, false);
-		if (info == null)
+		if (info == null) {
 			return;
+		}
 		// Thread safety: (cache the type to avoid changes -- we might not be inside an operation).
 		int type = info.getType();
-		if (type == FILE)
+		if (type == FILE) {
 			return;
+		}
 		// If we had a gender change we need to fix up the resource before asking for its members.
 		IContainer resource = getType() != type ? (IContainer) workspace.newResource(getFullPath(), type) : (IContainer) this;
 		IResource[] members = resource.members(memberFlags);
-		for (IResource member : members)
+		for (IResource member : members) {
 			member.accept(visitor, DEPTH_ZERO, memberFlags | IContainer.DO_NOT_CHECK_EXISTENCE);
+		}
 	}
 
 	protected void assertCopyRequirements(IPath destination, int destinationType, int updateFlags) throws CoreException {
@@ -195,19 +202,22 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 */
 	protected IFileInfo assertLinkRequirements(URI localLocation, int updateFlags) throws CoreException {
 		boolean allowMissingLocal = (updateFlags & IResource.ALLOW_MISSING_LOCAL) != 0;
-		if ((updateFlags & IResource.REPLACE) == 0)
+		if ((updateFlags & IResource.REPLACE) == 0) {
 			checkDoesNotExist(getFlags(getResourceInfo(false, false)), true);
+		}
 		IStatus locationStatus = workspace.validateLinkLocationURI(this, localLocation);
 		// We only tolerate an undefined path variable in the allow missing local case.
 		final boolean variableUndefined = locationStatus.getCode() == IResourceStatus.VARIABLE_NOT_DEFINED_WARNING;
-		if (locationStatus.getSeverity() == IStatus.ERROR || (variableUndefined && !allowMissingLocal))
+		if (locationStatus.getSeverity() == IStatus.ERROR || (variableUndefined && !allowMissingLocal)) {
 			throw new ResourceException(locationStatus);
+		}
 		// Check that the parent exists and is open.
 		Container parent = (Container) getParent();
 		parent.checkAccessible(getFlags(parent.getResourceInfo(false, false)));
 		// If the variable is undefined we can't do any further checks.
-		if (variableUndefined)
+		if (variableUndefined) {
 			return null;
+		}
 		// Check if the file exists.
 		URI resolved = getPathVariableManager().resolveURI(localLocation);
 		IFileStore store = EFS.getStore(resolved);
@@ -342,12 +352,14 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			String message = NLS.bind(Messages.resources_mustNotExist, getFullPath());
 			throw new ResourceException(checkType ? IResourceStatus.RESOURCE_EXISTS : IResourceStatus.PATH_OCCUPIED, getFullPath(), message, null);
 		}
-		if (Workspace.caseSensitive)
+		if (Workspace.caseSensitive) {
 			return;
+		}
 		// Now look for a matching case variant in the tree.
 		IResource variant = findExistingResourceVariant(getFullPath());
-		if (variant == null)
+		if (variant == null) {
 			return;
+		}
 		String msg = NLS.bind(Messages.resources_existsDifferentCase, variant.getFullPath());
 		throw new ResourceException(IResourceStatus.CASE_VARIANT_EXISTS, variant.getFullPath(), msg, null);
 	}
@@ -415,8 +427,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 		// Check if we are only changing case.
 		IResource variant = Workspace.caseSensitive ? null : findExistingResourceVariant(destination);
-		if (variant == null || !this.equals(variant))
+		if (variant == null || !this.equals(variant)) {
 			dest.checkDoesNotExist();
+		}
 
 		// Ensure we aren't trying to move a file to a project.
 		if (getType() == IResource.FILE && dest.getType() == IResource.PROJECT) {
@@ -466,8 +479,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 */
 	public void checkValidPath(IPath toValidate, int type, boolean lastSegmentOnly) throws CoreException {
 		IStatus result = workspace.locationValidator.validatePath(toValidate, type, lastSegmentOnly);
-		if (!result.isOK())
+		if (!result.isOK()) {
 			throw new ResourceException(result);
+		}
 	}
 
 	/**
@@ -477,8 +491,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 */
 	public void checkValidGroupContainer(IPath destination, boolean isLink, boolean isGroup) throws CoreException {
 		IStatus status = getValidGroupContainer(destination, isLink, isGroup);
-		if (!status.isOK())
+		if (!status.isOK()) {
 			throw new ResourceException(status);
+		}
 	}
 
 	/**
@@ -489,8 +504,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public void checkValidGroupContainer(Container destination, boolean isLink, boolean isGroup) throws CoreException {
 		if (!isLink && !isGroup) {
 			String message = Messages.group_invalidParent;
-			if (destination.isVirtual())
+			if (destination.isVirtual()) {
 				throw new ResourceException(new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message));
+			}
 		}
 	}
 
@@ -498,8 +514,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		if (!isLink && !isGroup) {
 			String message = Messages.group_invalidParent;
 			ResourceInfo info = workspace.getResourceInfo(destination, false, false);
-			if (info != null && info.isSet(M_VIRTUAL))
+			if (info != null && info.isSet(M_VIRTUAL)) {
 				return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message);
+			}
 		}
 		return Status.OK_STATUS;
 	}
@@ -512,10 +529,10 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	@Override
 	public boolean contains(ISchedulingRule rule) {
 		// Must allow notifications to nest in all resource rules.
-		if ((this == rule) || rule.getClass().equals(WorkManager.NotifyRule.class))
+		if ((this == rule) || rule.getClass().equals(WorkManager.NotifyRule.class)) {
 			return true;
-		if (rule instanceof MultiRule) {
-			MultiRule multi = (MultiRule) rule;
+		}
+		if (rule instanceof MultiRule multi) {
 			ISchedulingRule[] children = multi.getChildren();
 			for (ISchedulingRule c : children) {
 				if (!contains(c)) {
@@ -524,11 +541,12 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			}
 			return true;
 		}
-		if (!(rule instanceof IResource))
+		if (!(rule instanceof IResource resource)) {
 			return false;
-		IResource resource = (IResource) rule;
-		if (!workspace.equals(resource.getWorkspace()))
+		}
+		if (!workspace.equals(resource.getWorkspace())) {
 			return false;
+		}
 		return path.isPrefixOf(resource.getFullPath());
 	}
 
@@ -537,8 +555,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 */
 	public void convertToPhantom() throws CoreException {
 		ResourceInfo info = getResourceInfo(false, true);
-		if (info == null || isPhantom(getFlags(info)))
+		if (info == null || isPhantom(getFlags(info))) {
 			return;
+		}
 		info.clearSessionProperties();
 		info.set(M_PHANTOM);
 		getLocalManager().updateLocalSync(info, I_NULL_SYNC_INFO);
@@ -676,12 +695,14 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				workspace.deleteResource(existing);
 			}
 			ResourceInfo info = workspace.createResource(this, false);
-			if ((updateFlags & IResource.HIDDEN) != 0)
+			if ((updateFlags & IResource.HIDDEN) != 0) {
 				info.set(M_HIDDEN);
+			}
 			info.set(M_LINK);
 			LinkDescription linkDescription = new LinkDescription(this, localLocation);
-			if (linkDescription.isGroup())
+			if (linkDescription.isGroup()) {
 				info.set(M_VIRTUAL);
+			}
 			getLocalManager().link(this, localLocation, fileInfo);
 			progress.split(5);
 			// Save the location in the project description.
@@ -782,14 +803,16 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		try {
 			workspace.prepareOperation(rule, split);
 			// If there is no resource then there is nothing to delete so just return.
-			if (!exists())
+			if (!exists()) {
 				return;
+			}
 			workspace.beginOperation(true);
 			broadcastPreDeleteEvent();
 
 			// When a project is being deleted, flush the build order in case there is a problem.
-			if (this.getType() == IResource.PROJECT)
+			if (this.getType() == IResource.PROJECT) {
 				workspace.flushBuildOrder();
+			}
 
 			final IFileStore originalStore = getStore();
 			boolean wasLinked = isLinked();
@@ -812,12 +835,14 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			}
 			// Invalidate the tree for further use by clients.
 			tree.makeInvalid();
-			if (!tree.getStatus().isOK())
+			if (!tree.getStatus().isOK()) {
 				throw new ResourceException(tree.getStatus());
+			}
 			// Update any aliases of this resource.
 			// Note that deletion of a linked resource cannot affect other resources.
-			if (!wasLinked)
+			if (!wasLinked) {
 				workspace.getAliasManager().updateAliases(this, originalStore, IResource.DEPTH_INFINITE, progress.split(48));
+			}
 			if (getType() == PROJECT) {
 				// Make sure the rule factory is cleared on project deletion.
 				((Rules) workspace.getRuleFactory()).setRuleFactory((IProject) this, null);
@@ -855,15 +880,18 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 */
 	public void deleteResource(boolean convertToPhantom, MultiStatus status) throws CoreException {
 		// Remove markers on this resource and its descendants.
-		if (exists())
+		if (exists()) {
 			getMarkerManager().removeMarkers(this, IResource.DEPTH_INFINITE);
+		}
 		// If this is a linked resource or contains linked resources,
 		// remove their entries from the project description.
 		List<Resource> links = findLinks();
 		// Pre-delete notification to internal infrastructure
-		if (links != null)
-			for (Resource resource : links)
+		if (links != null) {
+			for (Resource resource : links) {
 				workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_LINK_DELETE, resource));
+			}
+		}
 
 		// Check if we deleted a preferences file.
 		ProjectPreferences.deleted(this);
@@ -874,8 +902,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			ProjectDescription description = project.internalGetDescription();
 			if (description != null) {
 				boolean wasChanged = false;
-				for (Resource resource : links)
+				for (Resource resource : links) {
 					wasChanged |= description.setLinkLocation(resource.getProjectRelativePath(), null);
+				}
 				if (wasChanged) {
 					project.internalSetDescription(description, true);
 					try {
@@ -903,8 +932,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			Project project = (Project) getProject();
 			ProjectDescription description = project.internalGetDescription();
 			if (description != null) {
-				for (Resource resource : filters)
+				for (Resource resource : filters) {
 					description.setFilters(resource.getProjectRelativePath(), null);
+				}
 				project.internalSetDescription(description, true);
 				project.writeDescription(IResource.FORCE);
 			}
@@ -921,8 +951,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				err = e;
 			}
 		}
-		if (err != null)
+		if (err != null) {
 			throw err;
+		}
 	}
 
 	/**
@@ -932,15 +963,17 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		Project project = (Project) getProject();
 		ProjectDescription description = project.internalGetDescription();
 		HashMap<IPath, LinkDescription> linkMap = description.getLinks();
-		if (linkMap == null)
+		if (linkMap == null) {
 			return null;
+		}
 		List<Resource> links = null;
 		IPath myPath = getProjectRelativePath();
 		for (LinkDescription link : linkMap.values()) {
 			IPath linkPath = link.getProjectRelativePath();
 			if (myPath.isPrefixOf(linkPath)) {
-				if (links == null)
+				if (links == null) {
 					links = new ArrayList<>();
+				}
 				links.add(workspace.newResource(project.getFullPath().append(linkPath), link.getType()));
 			}
 		}
@@ -960,8 +993,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				IPath myPath = getProjectRelativePath();
 				for (IPath filterPath : filterMap.keySet()) {
 					if (myPath.isPrefixOf(filterPath)) {
-						if (filters == null)
+						if (filters == null) {
 							filters = new ArrayList<>();
+						}
 						filters.add(workspace.newResource(project.getFullPath().append(filterPath), IResource.FOLDER));
 					}
 				}
@@ -972,11 +1006,12 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 	@Override
 	public boolean equals(Object target) {
-		if (this == target)
+		if (this == target) {
 			return true;
-		if (!(target instanceof Resource))
+		}
+		if (!(target instanceof Resource resource)) {
 			return false;
-		Resource resource = (Resource) target;
+		}
 		return getType() == resource.getType() && path.equals(resource.path) && workspace.equals(resource.workspace);
 	}
 
@@ -996,20 +1031,23 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 * the given path, or null if no such resource exists.
 	 */
 	public IResource findExistingResourceVariant(IPath target) {
-		if (!workspace.tree.includesIgnoreCase(target))
+		if (!workspace.tree.includesIgnoreCase(target)) {
 			return null;
+		}
 		// Ignore phantoms.
 		ResourceInfo info = (ResourceInfo) workspace.tree.getElementDataIgnoreCase(target);
-		if (info != null && info.isSet(M_PHANTOM))
+		if (info != null && info.isSet(M_PHANTOM)) {
 			return null;
+		}
 		// Resort to slow lookup to find exact case variant.
 		IPath result = IPath.ROOT;
 		int segmentCount = target.segmentCount();
 		for (int i = 0; i < segmentCount; i++) {
 			String[] childNames = workspace.tree.getNamesOfChildren(result);
 			String name = findVariant(target.segment(i), childNames);
-			if (name == null)
+			if (name == null) {
 				return null;
+			}
 			result = result.append(name);
 		}
 		return workspace.getRoot().findMember(result);
@@ -1045,8 +1083,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 */
 	private String findVariant(String target, String[] list) {
 		for (String element : list) {
-			if (target.equalsIgnoreCase(element))
+			if (target.equalsIgnoreCase(element)) {
 				return element;
+			}
 		}
 		return null;
 	}
@@ -1056,8 +1095,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		// If a linked resource is moved, we need to remove the location info from the ".project" file.
 		if (isLinked() || isVirtual()) {
 			Project project = (Project) getProject();
-			if (project.internalGetDescription().setLinkLocation(getProjectRelativePath(), null))
+			if (project.internalGetDescription().setLinkLocation(getProjectRelativePath(), null)) {
 				project.writeDescription(IResource.NONE);
+			}
 		}
 
 		List<Resource> filters = findFilters();
@@ -1065,8 +1105,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			// Delete resource filters.
 			Project project = (Project) getProject();
 			ProjectDescription description = project.internalGetDescription();
-			for (Resource resource : filters)
+			for (Resource resource : filters) {
 				description.setFilters(resource.getProjectRelativePath(), null);
+			}
 			project.writeDescription(IResource.NONE);
 		}
 
@@ -1089,10 +1130,12 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public String getFileExtension() {
 		String name = getName();
 		int index = name.lastIndexOf('.');
-		if (index == -1)
+		if (index == -1) {
 			return null;
-		if (index == (name.length() - 1))
+		}
+		if (index == (name.length() - 1)) {
 			return ""; //$NON-NLS-1$
+		}
 		return name.substring(index + 1);
 	}
 
@@ -1118,16 +1161,18 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	@Override
 	public IPath getLocation() {
 		IProject project = getProject();
-		if (project != null && !project.exists())
+		if (project != null && !project.exists()) {
 			return null;
+		}
 		return getLocalManager().locationFor(this, false);
 	}
 
 	@Override
 	public URI getLocationURI() {
 		IProject project = getProject();
-		if (project != null && !project.exists())
+		if (project != null && !project.exists()) {
 			return null;
+		}
 		return getLocalManager().locationURIFor(this, false);
 	}
 
@@ -1155,10 +1200,12 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public IContainer getParent() {
 		int segments = path.segmentCount();
 		// Zero and one segments handled by subclasses.
-		if (segments < 2)
+		if (segments < 2) {
 			Assert.isLegal(false, path.toString());
-		if (segments == 2)
+		}
+		if (segments == 2) {
 			return workspace.getRoot().getProject(path.segment(0));
+		}
 		return (IFolder) workspace.newResource(path.removeLastSegments(1), IResource.FOLDER);
 	}
 
@@ -1190,22 +1237,25 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 	@Override
 	public IPath getRawLocation() {
-		if (isLinked())
+		if (isLinked()) {
 			return FileUtil.toPath(((Project) getProject()).internalGetDescription().getLinkLocationURI(getProjectRelativePath()));
+		}
 		return getLocation();
 	}
 
 	@Override
 	public URI getRawLocationURI() {
-		if (isLinked())
+		if (isLinked()) {
 			return ((Project) getProject()).internalGetDescription().getLinkLocationURI(getProjectRelativePath());
+		}
 		return getLocationURI();
 	}
 
 	@Override
 	public ResourceAttributes getResourceAttributes() {
-		if (!isAccessible() || isVirtual())
+		if (!isAccessible() || isVirtual()) {
 			return null;
+		}
 		return getLocalManager().attributes(this);
 	}
 
@@ -1279,13 +1329,16 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				info.clearModificationStamp();
 			}
 		}
-		if (getType() == IResource.FILE || depth == IResource.DEPTH_ZERO)
+		if (getType() == IResource.FILE || depth == IResource.DEPTH_ZERO) {
 			return;
-		if (depth == IResource.DEPTH_ONE)
+		}
+		if (depth == IResource.DEPTH_ONE) {
 			depth = IResource.DEPTH_ZERO;
+		}
 		IResource[] children = ((IContainer) this).members();
-		for (IResource element : children)
+		for (IResource element : children) {
 			((Resource) element).internalSetLocal(flag, depth);
+		}
 	}
 
 	@Override
@@ -1296,21 +1349,24 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	@Override
 	public boolean isConflicting(ISchedulingRule rule) {
 		// Must not schedule at same time as notification.
-		if ((this == rule) || rule.getClass().equals(WorkManager.NotifyRule.class))
+		if ((this == rule) || rule.getClass().equals(WorkManager.NotifyRule.class)) {
 			return true;
-		if (rule instanceof MultiRule) {
-			MultiRule multi = (MultiRule) rule;
+		}
+		if (rule instanceof MultiRule multi) {
 			ISchedulingRule[] children = multi.getChildren();
-			for (ISchedulingRule element : children)
-				if (isConflicting(element))
+			for (ISchedulingRule element : children) {
+				if (isConflicting(element)) {
 					return true;
+				}
+			}
 			return false;
 		}
-		if (!(rule instanceof IResource))
+		if (!(rule instanceof IResource resource)) {
 			return false;
-		IResource resource = (IResource) rule;
-		if (!workspace.equals(resource.getWorkspace()))
+		}
+		if (!workspace.equals(resource.getWorkspace())) {
 			return false;
+		}
 		IPath otherPath = resource.getFullPath();
 		return path.isPrefixOf(otherPath) || otherPath.isPrefixOf(path);
 	}
@@ -1324,11 +1380,13 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public boolean isDerived(int options) {
 		ResourceInfo info = getResourceInfo(false, false);
 		int flags = getFlags(info);
-		if (flags != NULL_FLAG && ResourceInfo.isSet(flags, ICoreConstants.M_DERIVED))
+		if (flags != NULL_FLAG && ResourceInfo.isSet(flags, ICoreConstants.M_DERIVED)) {
 			return true;
+		}
 		// Check ancestors if the appropriate option is set.
-		if ((options & CHECK_ANCESTORS) != 0)
+		if ((options & CHECK_ANCESTORS) != 0) {
 			return getParent().isDerived(options);
+		}
 		return false;
 	}
 
@@ -1343,11 +1401,13 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public boolean isHidden(int options) {
 		ResourceInfo info = getResourceInfo(false, false);
 		int flags = getFlags(info);
-		if (flags != NULL_FLAG && ResourceInfo.isSet(flags, ICoreConstants.M_HIDDEN))
+		if (flags != NULL_FLAG && ResourceInfo.isSet(flags, ICoreConstants.M_HIDDEN)) {
 			return true;
+		}
 		// Check ancestors if the appropriate option is set.
-		if ((options & CHECK_ANCESTORS) != 0)
+		if ((options & CHECK_ANCESTORS) != 0) {
 			return getParent().isHidden(options);
+		}
 		return false;
 	}
 
@@ -1360,18 +1420,22 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public boolean isLinked(int options) {
 		if ((options & CHECK_ANCESTORS) != 0) {
 			IProject project = getProject();
-			if (project == null)
+			if (project == null) {
 				return false;
+			}
 			ProjectDescription desc = ((Project) project).internalGetDescription();
-			if (desc == null)
+			if (desc == null) {
 				return false;
+			}
 			HashMap<IPath, LinkDescription> links = desc.getLinks();
-			if (links == null)
+			if (links == null) {
 				return false;
+			}
 			IPath myPath = getProjectRelativePath();
 			for (LinkDescription linkDescription : links.values()) {
-				if (linkDescription.getProjectRelativePath().isPrefixOf(myPath))
+				if (linkDescription.getProjectRelativePath().isPrefixOf(myPath)) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -1392,8 +1456,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public boolean isUnderVirtual() {
 		IContainer parent = getParent();
 		while (parent != null) {
-			if (parent.isVirtual())
+			if (parent.isVirtual()) {
 				return true;
+			}
 			parent = parent.getParent();
 		}
 		return false;
@@ -1426,14 +1491,18 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 */
 	protected boolean isMember(int flags, int memberFlags) {
 		int excludeMask = 0;
-		if ((memberFlags & IContainer.INCLUDE_PHANTOMS) == 0)
+		if ((memberFlags & IContainer.INCLUDE_PHANTOMS) == 0) {
 			excludeMask |= M_PHANTOM;
-		if ((memberFlags & IContainer.INCLUDE_HIDDEN) == 0)
+		}
+		if ((memberFlags & IContainer.INCLUDE_HIDDEN) == 0) {
 			excludeMask |= M_HIDDEN;
-		if ((memberFlags & IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS) == 0)
+		}
+		if ((memberFlags & IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS) == 0) {
 			excludeMask |= M_TEAM_PRIVATE_MEMBER;
-		if ((memberFlags & IContainer.EXCLUDE_DERIVED) != 0)
+		}
+		if ((memberFlags & IContainer.EXCLUDE_DERIVED) != 0) {
 			excludeMask |= M_DERIVED;
+		}
 		// The resource is a matching member if it matches none of the exclude flags.
 		return flags != NULL_FLAG && (flags & excludeMask) == 0;
 	}
@@ -1471,11 +1540,13 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	public boolean isTeamPrivateMember(int options) {
 		ResourceInfo info = getResourceInfo(false, false);
 		int flags = getFlags(info);
-		if (flags != NULL_FLAG && ResourceInfo.isSet(flags, ICoreConstants.M_TEAM_PRIVATE_MEMBER))
+		if (flags != NULL_FLAG && ResourceInfo.isSet(flags, ICoreConstants.M_TEAM_PRIVATE_MEMBER)) {
 			return true;
+		}
 		// Check ancestors if the appropriate option is set.
-		if ((options & CHECK_ANCESTORS) != 0)
+		if ((options & CHECK_ANCESTORS) != 0) {
 			return getParent().isTeamPrivateMember(options);
+		}
 		return false;
 	}
 
@@ -1485,18 +1556,21 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	 */
 	public boolean isUnderLink() {
 		int depth = path.segmentCount();
-		if (depth < 2)
+		if (depth < 2) {
 			return false;
-		if (depth == 2)
+		}
+		if (depth == 2) {
 			return isLinked();
+		}
 		// Check if parent at depth two is a link.
 		IPath linkParent = path.removeLastSegments(depth - 2);
 		return workspace.getResourceInfo(linkParent, false, false).isSet(ICoreConstants.M_LINK);
 	}
 
 	protected IPath makePathAbsolute(IPath target) {
-		if (target.isAbsolute())
+		if (target.isAbsolute()) {
 			return target;
+		}
 		return getParent().getFullPath().append(target);
 	}
 
@@ -1551,11 +1625,13 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				workspace.getAliasManager().updateAliases(this, originalStore, IResource.DEPTH_INFINITE, progress.split(24));
 				workspace.getAliasManager().updateAliases(destResource, destResource.getStore(), IResource.DEPTH_INFINITE, progress.split(24));
 			}
-			if (!tree.getStatus().isOK())
+			if (!tree.getStatus().isOK()) {
 				throw new ResourceException(tree.getStatus());
+			}
 			// If this is a project, make sure the move operation is remembered.
-			if (getType() == PROJECT)
+			if (getType() == PROJECT) {
 				workspace.getSaveManager().requestSnapshot();
+			}
 		} catch (OperationCanceledException e) {
 			workspace.getWorkManager().operationCanceled();
 			throw e;
@@ -1593,11 +1669,13 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		SubMonitor split = progress.split(1);
 		try {
 			workspace.prepareOperation(rule, split);
-			if ((!isRoot && !getProject().isAccessible()) || (!exists() && isFiltered()))
+			if ((!isRoot && !getProject().isAccessible()) || (!exists() && isFiltered())) {
 				return;
+			}
 			workspace.beginOperation(true);
-			if (getType() == IResource.PROJECT || getType() == IResource.ROOT)
+			if (getType() == IResource.PROJECT || getType() == IResource.ROOT) {
 				workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_REFRESH, this));
+			}
 			build = getLocalManager().refresh(this, depth, true, progress.split(98));
 		} catch (OperationCanceledException e) {
 			workspace.getWorkManager().operationCanceled();
@@ -1620,8 +1698,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 	@Override
 	public void revertModificationStamp(long value) throws CoreException {
-		if (value < 0)
+		if (value < 0) {
 			throw new IllegalArgumentException("Illegal value: " + value); //$NON-NLS-1$
+		}
 		// Fetch the info but don't bother making it mutable even though we are going to modify it.
 		// It really doesn't matter as the change we are making does not show up in deltas.
 		ResourceInfo info = checkAccessibleAndLocal(DEPTH_ZERO);
@@ -1658,8 +1737,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			ResourceInfo info = getResourceInfo(false, false);
 			checkAccessible(getFlags(info));
 			// Ignore attempts to set derived flag on anything except files and folders.
-			if (info.getType() != FILE && info.getType() != FOLDER)
+			if (info.getType() != FILE && info.getType() != FOLDER) {
 				return;
+			}
 			workspace.beginOperation(true);
 			info = getResourceInfo(false, true);
 			if (isDerived) {
@@ -1711,8 +1791,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 	@Override
 	public long setLocalTimeStamp(long value) throws CoreException {
-		if (value < 0)
+		if (value < 0) {
 			throw new IllegalArgumentException("Illegal value: " + value); //$NON-NLS-1$
+		}
 		// Fetch the info but don't bother making it mutable even though we are going to modify it.
 		// It really doesn't matter as the change we are making does not show up in deltas.
 		ResourceInfo info = checkAccessibleAndLocal(DEPTH_ZERO);
@@ -1729,8 +1810,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	@Override
 	public void setReadOnly(boolean readonly) {
 		ResourceAttributes attributes = getResourceAttributes();
-		if (attributes == null)
+		if (attributes == null) {
 			return;
+		}
 		attributes.setReadOnly(readonly);
 		try {
 			setResourceAttributes(attributes);
@@ -1822,16 +1904,19 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		try {
 			switch (getType()) {
 			case IResource.FILE:
-				if (!hook.deleteFile(tree, (IFile) this, updateFlags, progress.split(1)))
+				if (!hook.deleteFile(tree, (IFile) this, updateFlags, progress.split(1))) {
 					tree.standardDeleteFile((IFile) this, updateFlags, progress.split(1));
+				}
 				break;
 			case IResource.FOLDER:
-				if (!hook.deleteFolder(tree, (IFolder) this, updateFlags, progress.split(1)))
+				if (!hook.deleteFolder(tree, (IFolder) this, updateFlags, progress.split(1))) {
 					tree.standardDeleteFolder((IFolder) this, updateFlags, progress.split(1));
+				}
 				break;
 			case IResource.PROJECT:
-				if (!hook.deleteProject(tree, (IProject) this, updateFlags, progress.split(1)))
+				if (!hook.deleteProject(tree, (IProject) this, updateFlags, progress.split(1))) {
 					tree.standardDeleteProject((IProject) this, updateFlags, progress.split(1));
+				}
 				break;
 			case IResource.ROOT:
 				// When the root is deleted, all its children including hidden projects have to
@@ -1839,8 +1924,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				IProject[] projects = ((IWorkspaceRoot) this).getProjects(IContainer.INCLUDE_HIDDEN);
 				progress.setWorkRemaining(projects.length * 2);
 				for (IProject project : projects) {
-					if (!hook.deleteProject(tree, project, updateFlags, progress.split(1)))
+					if (!hook.deleteProject(tree, project, updateFlags, progress.split(1))) {
 						tree.standardDeleteProject(project, updateFlags, progress.split(1));
+					}
 				}
 				break;
 			}
@@ -1860,22 +1946,26 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		try {
 			switch (getType()) {
 			case IResource.FILE:
-				if (!hook.moveFile(tree, (IFile) this, (IFile) destination, updateFlags, progress.split(1)))
+				if (!hook.moveFile(tree, (IFile) this, (IFile) destination, updateFlags, progress.split(1))) {
 					tree.standardMoveFile((IFile) this, (IFile) destination, updateFlags, progress.split(1));
+				}
 				break;
 			case IResource.FOLDER:
-				if (!hook.moveFolder(tree, (IFolder) this, (IFolder) destination, updateFlags, progress.split(1)))
+				if (!hook.moveFolder(tree, (IFolder) this, (IFolder) destination, updateFlags, progress.split(1))) {
 					tree.standardMoveFolder((IFolder) this, (IFolder) destination, updateFlags, progress.split(1));
+				}
 				break;
 			case IResource.PROJECT:
 				IProject project = (IProject) this;
 				// If there is no change in name, there is nothing to do so return.
-				if (getName().equals(destination.getName()))
+				if (getName().equals(destination.getName())) {
 					return false;
+				}
 				IProjectDescription description = project.getDescription();
 				description.setName(destination.getName());
-				if (!hook.moveProject(tree, project, description, updateFlags, progress.split(1)))
+				if (!hook.moveProject(tree, project, description, updateFlags, progress.split(1))) {
 					tree.standardMoveProject(project, description, updateFlags, progress.split(1));
+				}
 				break;
 			case IResource.ROOT:
 				String msg = Messages.resources_moveRoot;
@@ -1905,14 +1995,17 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	private void broadcastPreMoveEvent(final IResource destination, int updateFlags) throws CoreException {
 		switch (getType()) {
 			case IResource.FILE :
-				if (isLinked())
+				if (isLinked()) {
 					workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_LINK_MOVE, this, destination, updateFlags));
+				}
 				break;
 			case IResource.FOLDER :
-				if (isLinked())
+				if (isLinked()) {
 					workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_LINK_MOVE, this, destination, updateFlags));
-				if (isVirtual())
+				}
+				if (isVirtual()) {
 					workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_GROUP_MOVE, this, destination, updateFlags));
+				}
 				break;
 			case IResource.PROJECT :
 				if (!getName().equals(destination.getName())) {
@@ -1925,8 +2018,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 	@Override
 	public IPathVariableManager getPathVariableManager() {
-		if (getProject() == null)
+		if (getProject() == null) {
 			return workspace.getPathVariableManager();
+		}
 		return new ProjectPathVariableManager(this);
 	}
 
@@ -1950,15 +2044,18 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 	}
 
 	public boolean isFilteredWithException(boolean throwExeception) throws CoreException {
-		if (isLinked() || isVirtual())
+		if (isLinked() || isVirtual()) {
 			return false;
+		}
 
 		Project project = (Project) getProject();
-		if (project == null)
+		if (project == null) {
 			return false;
+		}
 		final ProjectDescription description = project.internalGetDescription();
-		if ((description == null) || (description.getFilters() == null))
+		if ((description == null) || (description.getFilters() == null)) {
 			return false;
+		}
 
 		Resource currentResource = this;
 		while (currentResource != null && currentResource.getParent() != null) {
@@ -1969,8 +2066,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 				fileInfo.setDirectory(currentResource.getType() == IResource.FOLDER);
 				if (fileInfo != null) {
 					IFileInfo[] filtered = parent.filterChildren(project, description, new IFileInfo[] {fileInfo}, throwExeception);
-					if (filtered.length == 0)
+					if (filtered.length == 0) {
 						return true;
+					}
 				}
 			}
 			currentResource = parent;
@@ -1980,11 +2078,13 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 	public IFileInfo[] filterChildren(IFileInfo[] list, boolean throwException) throws CoreException {
 		Project project = (Project) getProject();
-		if (project == null)
+		if (project == null) {
 			return list;
+		}
 		final ProjectDescription description = project.internalGetDescription();
-		if (description == null)
+		if (description == null) {
 			return list;
+		}
 		return filterChildren(project, description, list, throwException);
 	}
 
@@ -1996,23 +2096,26 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 
 		boolean firstSegment = true;
 		do {
-			if (!firstSegment)
+			if (!firstSegment) {
 				relativePath = relativePath.removeLastSegments(1);
+			}
 			filters = description.getFilter(relativePath);
 			if (filters != null) {
 				for (FilterDescription desc : filters) {
 					if (firstSegment || desc.isInheritable()) {
 						Filter filter = new Filter(project, desc);
 						if (filter.isIncludeOnly()) {
-							if (filter.isFirst())
+							if (filter.isFirst()) {
 								currentIncludeFilters.addFirst(filter);
-							else
+							} else {
 								currentIncludeFilters.addLast(filter);
+							}
 						} else {
-							if (filter.isFirst())
+							if (filter.isFirst()) {
 								currentExcludeFilters.addFirst(filter);
-							else
+							} else {
 								currentExcludeFilters.addLast(filter);
+							}
 						}
 					}
 				}
@@ -2024,8 +2127,9 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 			try {
 				list = Filter.filter(project, currentIncludeFilters, currentExcludeFilters, (IContainer) this, list);
 			} catch (CoreException e) {
-				if (throwException)
+				if (throwException) {
 					throw e;
+				}
 			}
 		}
 		return list;
