@@ -158,7 +158,7 @@ public class CommonTab extends AbstractLaunchConfigurationTab {
 	 * Modify listener that simply updates the owning launch configuration dialog.
 	 */
 	private final ModifyListener fBasicModifyListener = evt -> scheduleUpdateJob();
-	private boolean hasTerminalSupport;
+	private final boolean hasTerminalSupport;
 
 	/**
 	 * Constructs a new tab with default context help.
