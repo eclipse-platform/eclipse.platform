@@ -94,10 +94,11 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 			StringBuilder buffer= new StringBuilder();
 			for (int i= 0; i < preview.length(); i++) {
 				char c= preview.charAt(i);
-				if (c == '\n')
+				if (c == '\n') {
 					buffer.append(separator);
-				else
+				} else {
 					buffer.append(c);
+				}
 			}
 			return buffer.toString();
 		}
@@ -440,8 +441,9 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		Control c = previewViewer.getControl();
 		c.addDisposeListener(e -> {
-			if (compareConfiguration != null)
+			if (compareConfiguration != null) {
 				compareConfiguration.dispose();
+			}
 		});
 
 		fCompareConfigurations.add(compareConfiguration);
@@ -463,8 +465,9 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		Control c = previewViewer.getControl();
 		c.addDisposeListener(e -> {
-			if (compareConfiguration != null)
+			if (compareConfiguration != null) {
 				compareConfiguration.dispose();
+			}
 		});
 
 		fCompareConfigurations.add(compareConfiguration);
@@ -478,12 +481,15 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 			b.setSelection(fOverlayStore.getBoolean(key));
 		}
 
-		if (fFilters != null)
+		if (fFilters != null) {
 			fFilters.setText(fOverlayStore.getString(PATH_FILTER));
-		if (addedLinesRegex != null)
+		}
+		if (addedLinesRegex != null) {
 			addedLinesRegex.setText(fOverlayStore.getString(ADDED_LINES_REGEX));
-		if (removedLinesRegex != null)
+		}
+		if (removedLinesRegex != null) {
 			removedLinesRegex.setText(fOverlayStore.getString(REMOVED_LINES_REGEX));
+		}
 
 		editors.forEach(FieldEditor::load);
 	}

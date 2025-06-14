@@ -37,8 +37,9 @@ public abstract class DiffElement implements IDiffElement {
 	public DiffElement(IDiffContainer parent, int kind) {
 		fParent= parent;
 		fKind= kind;
-		if (parent != null)
+		if (parent != null) {
 			parent.add(this);
+		}
 	}
 
 	/**

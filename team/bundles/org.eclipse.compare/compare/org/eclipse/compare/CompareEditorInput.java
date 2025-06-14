@@ -219,8 +219,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		public Viewer findStructureViewer(Viewer oldViewer,	ICompareInput input, Composite parent,
 				CompareConfiguration configuration) {
 			OutlineViewerCreator creator = getWrappedCreator();
-			if (creator != null)
+			if (creator != null) {
 				return creator.findStructureViewer(oldViewer, input, parent, configuration);
+			}
 			return null;
 		}
 
@@ -233,8 +234,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		@Override
 		public Object getInput() {
 			OutlineViewerCreator creator = getWrappedCreator();
-			if (creator != null)
+			if (creator != null) {
 				return creator.getInput();
+			}
 			return null;
 		}
 	}
@@ -255,15 +257,17 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
 				boolean changed= false;
 				Object newValue= e.getNewValue();
-				if (newValue instanceof Boolean)
+				if (newValue instanceof Boolean) {
 					changed= ((Boolean) newValue).booleanValue();
+				}
 				setDirty(e.getSource(), changed);
 			}
 		};
 
 		IPreferenceStore ps= configuration.getPreferenceStore();
-		if (ps != null)
+		if (ps != null) {
 			fStructureCompareOnSingleClick= ps.getBoolean(ComparePreferencePage.OPEN_STRUCTURE_COMPARE);
+		}
 
 		fContainer = configuration.getContainer();
 		configuration.setContainer(this);
@@ -286,13 +290,15 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		}
 		if (adapter == IShowInSource.class) {
 			final IFile file = Adapters.adapt(this, IFile.class);
-			if (file != null)
+			if (file != null) {
 				return (T) (IShowInSource) () -> new ShowInContext(new FileEditorInput(file), StructuredSelection.EMPTY);
+			}
 		}
 		if (adapter == OutlineViewerCreator.class) {
 			synchronized (this) {
-				if (fOutlineView == null)
+				if (fOutlineView == null) {
 					fOutlineView = new InternalOutlineViewerCreator();
+				}
 				return (T) fOutlineView;
 			}
 		}
@@ -327,7 +333,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	@Override
 	public synchronized ICompareNavigator getNavigator() {
-		if (fNavigator == null)
+		if (fNavigator == null) {
 			fNavigator= new CompareEditorInputNavigator(
 				new Object[] {
 					fStructureInputPane,
@@ -336,6 +342,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 					fContentInputPane
 				}
 			);
+		}
 		return fNavigator;
 	}
 
@@ -396,8 +403,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * @return the title
 	 */
 	public String getTitle() {
-		if (fTitle == null)
+		if (fTitle == null) {
 			return Utilities.getString("CompareEditorInput.defaultTitle"); //$NON-NLS-1$
+		}
 		return fTitle;
 	}
 
@@ -531,14 +539,17 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 		fContentInputPane= createContentViewerSwitchingPane(fComposite, SWT.BORDER | SWT.FLAT, this);
 
-		if (fFocusPane == null)
+		if (fFocusPane == null) {
 			fFocusPane= fContentInputPane;
-		if (outline != null)
+		}
+		if (outline != null) {
 			fComposite.setVisible(outline, false);
+		}
 		fComposite.setVisible(fContentInputPane, true);
 
-		if (fStructureInputPane != null && fComposite.getChildren().length == 2)
-			fComposite.setWeights(new int[] { 30, 70 });
+		if (fStructureInputPane != null && fComposite.getChildren().length == 2) {
+			fComposite.setWeights(30, 70);
+		}
 
 		feedInput();
 		parent.requestLayout();
@@ -563,8 +574,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			}
 			control.addDisposeListener(ev -> handleDispose());
 		});
-		if (fHelpContextId != null && PlatformUI.isWorkbenchRunning())
+		if (fHelpContextId != null && PlatformUI.isWorkbenchRunning()) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(fComposite, fHelpContextId);
+		}
 		contentsCreated();
 		return fComposite;
 	}
@@ -626,8 +638,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		final Splitter h= new Splitter(parent, direction);
 
 		fStructureInputPane= createStructureInputPane(h);
-		if (hasChildren(getCompareResult()))
+		if (hasChildren(getCompareResult())) {
 			fFocusPane= fStructureInputPane;
+		}
 
 		fStructurePane1= new CompareStructureViewerSwitchingPane(h, SWT.BORDER | SWT.FLAT, true, this);
 		h.setVisible(fStructurePane1, false);
@@ -644,10 +657,12 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 				@Override
 				public void selectionChanged(SelectionChangedEvent e) {
 					ISelection s= e.getSelection();
-					if (s == null || s.isEmpty())
+					if (s == null || s.isEmpty()) {
 						feed1(s);
-					if (isEditionSelectionDialog())
+					}
+					if (isEditionSelectionDialog()) {
 						firePropertyChange(new PropertyChangeEvent(this, PROP_SELECTED_EDITION, null, getSelectedEdition()));
+					}
 				}
 			}
 		);
@@ -687,8 +702,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	boolean hasChildren(Object input) {
-		if (input instanceof IDiffContainer) {
-			IDiffContainer dn= (IDiffContainer) input;
+		if (input instanceof IDiffContainer dn) {
 			return dn.hasChildren();
 		}
 		return false;
@@ -716,17 +730,20 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 				fStructureInputPane.setInput(fInput);
 			}
 			ISelection sel= fStructureInputPane.getSelection();
-			if (sel == null || sel.isEmpty())
+			if (sel == null || sel.isEmpty()) {
 				feed1(sel);	// we only feed downstream viewers if the top left pane is empty
+			}
 		}
 	}
 
 	private boolean hasOutlineViewer(Object input) {
-		if (!isShowStructureInOutlineView())
+		if (!isShowStructureInOutlineView()) {
 			return false;
+		}
 		OutlineViewerCreator creator = getAdapter(OutlineViewerCreator.class);
-		if (creator != null)
+		if (creator != null) {
 			return creator.hasViewerFor(input);
+		}
 		return false;
 	}
 
@@ -743,22 +760,27 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			() -> {
 				if (selection == null || selection.isEmpty()) {
 					Object input1= fStructureInputPane.getInput();
-					if (input1 != null)
+					if (input1 != null) {
 						internalSetContentPaneInput(input1);
-					if (!Utilities.okToUse(fStructurePane1) || !Utilities.okToUse(fStructurePane2))
+					}
+					if (!Utilities.okToUse(fStructurePane1) || !Utilities.okToUse(fStructurePane2)) {
 						return;
+					}
 					fStructurePane2.setInput(null); // clear downstream pane
 					fStructurePane1.setInput(null);
 				} else {
 					Object input2= getElement(selection);
 					internalSetContentPaneInput(input2);
-					if (!Utilities.okToUse(fStructurePane1) || !Utilities.okToUse(fStructurePane2))
+					if (!Utilities.okToUse(fStructurePane1) || !Utilities.okToUse(fStructurePane2)) {
 						return;
-					if (structureCompareOnSingleClick() || hasUnusableContentViewer())
+					}
+					if (structureCompareOnSingleClick() || hasUnusableContentViewer()) {
 						fStructurePane1.setInput(input2);
+					}
 					fStructurePane2.setInput(null); // clear downstream pane
-					if (fStructurePane1.getInput() != input2)
+					if (fStructurePane1.getInput() != input2) {
 						fStructurePane1.setInput(null);
+					}
 				}
 			}
 		);
@@ -767,8 +789,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private void feedDefault1(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
 			() -> {
-				if (!selection.isEmpty())
+				if (!selection.isEmpty()) {
 					fStructurePane1.setInput(getElement(selection));
+				}
 			}
 		);
 	}
@@ -792,10 +815,11 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private void feed3(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
 			() -> {
-				if (selection.isEmpty())
+				if (selection.isEmpty()) {
 					internalSetContentPaneInput(fStructurePane2.getInput());
-				else
+				} else {
 					internalSetContentPaneInput(getElement(selection));
+				}
 			}
 		);
 
@@ -804,8 +828,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private void internalSetContentPaneInput(Object input) {
 		Object oldInput = fContentInputPane.getInput();
 		fContentInputPane.setInput(input);
-		if (fOutlineView != null)
+		if (fOutlineView != null) {
 			fOutlineView.fireInputChange(oldInput, input);
+		}
 	}
 
 	/**
@@ -817,10 +842,10 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * @return the first element of the selection, or <code>null</code>
 	 */
 	private static Object getElement(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss= (IStructuredSelection) selection;
-			if (ss.size() == 1)
+		if (selection instanceof IStructuredSelection ss) {
+			if (ss.size() == 1) {
 				return ss.getFirstElement();
+			}
 		}
 		return null;
 	}
@@ -853,8 +878,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	public boolean setFocus2() {
 		if (fFocusPane != null) {
 			return fFocusPane.setFocus();
-		} else if (fComposite != null)
+		} else if (fComposite != null) {
 			return fComposite.setFocus();
+		}
 		return false;
 	}
 
@@ -917,10 +943,11 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 				input, parent, fCompareConfiguration);
 
 		boolean isNewViewer= newViewer != oldViewer;
-		if (DEBUG) System.out.println("CompareEditorInput.findContentViewer: " + isNewViewer); //$NON-NLS-1$
+		if (DEBUG) {
+			System.out.println("CompareEditorInput.findContentViewer: " + isNewViewer); //$NON-NLS-1$
+		}
 
-		if (isNewViewer && newViewer instanceof IPropertyChangeNotifier) {
-			final IPropertyChangeNotifier dsp= (IPropertyChangeNotifier) newViewer;
+		if (isNewViewer && newViewer instanceof final IPropertyChangeNotifier dsp) {
 			dsp.addPropertyChangeListener(fDirtyStateListener);
 
 			Control c= newViewer.getControl();
@@ -1111,9 +1138,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		Assert.isNotNull(source);
 		boolean oldDirty = isSaveNeeded();
 
-		if (source instanceof ContentMergeViewer) {
-			ContentMergeViewer cmv = (ContentMergeViewer) source;
-
+		if (source instanceof ContentMergeViewer cmv) {
 			if (dirty == cmv.internalIsLeftDirty()) {
 				fLeftDirty = cmv.internalIsLeftDirty();
 			}
@@ -1136,8 +1161,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	@Override
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
-		if (listener != null)
+		if (listener != null) {
 			fListenerList.add(listener);
+		}
 	}
 
 	@Override
@@ -1216,24 +1242,27 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private static void flushViewer(CompareViewerPane pane, IProgressMonitor pm) {
 		if (pane != null) {
 			IFlushable flushable = Adapters.adapt(pane, IFlushable.class);
-			if (flushable != null)
+			if (flushable != null) {
 				flushable.flush(pm);
+			}
 		}
 	}
 
 	private static void flushLeftViewer(CompareViewerPane pane, IProgressMonitor pm) {
 		if (pane != null) {
 			IFlushable2 flushable = Adapters.adapt(pane, IFlushable2.class);
-			if (flushable != null)
+			if (flushable != null) {
 				flushable.flushLeft(pm);
+			}
 		}
 	}
 
 	private static void flushRightViewer(CompareViewerPane pane, IProgressMonitor pm) {
 		if (pane != null) {
 			IFlushable2 flushable = Adapters.adapt(pane, IFlushable2.class);
-			if (flushable != null)
+			if (flushable != null) {
 				flushable.flushRight(pm);
+			}
 		}
 	}
 
@@ -1259,8 +1288,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	@Override
 	public void registerContextMenu(MenuManager menu, ISelectionProvider selectionProvider) {
-		if (fContainer != null)
+		if (fContainer != null) {
 			fContainer.registerContextMenu(menu, selectionProvider);
+		}
 	}
 
 	@Override
@@ -1304,8 +1334,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	@Override
 	public IWorkbenchPart getWorkbenchPart() {
-		if (fContainer != null)
+		if (fContainer != null) {
 			return fContainer.getWorkbenchPart();
+		}
 		return null;
 	}
 
@@ -1313,14 +1344,16 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	public void run(boolean fork, boolean cancelable,
 			IRunnableWithProgress runnable) throws InvocationTargetException,
 			InterruptedException {
-		if (fContainer != null)
+		if (fContainer != null) {
 			fContainer.run(fork, cancelable, runnable);
+		}
 	}
 
 	@Override
 	public void runAsynchronously(IRunnableWithProgress runnable) {
-		if (fContainer != null)
+		if (fContainer != null) {
 			fContainer.runAsynchronously(runnable);
+		}
 	}
 
 	/**
@@ -1408,10 +1441,12 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * @since 3.3
 	 */
 	public String getOKButtonLabel() {
-		if (isEditable())
+		if (isEditable()) {
 			return CompareMessages.CompareDialog_commit_button;
-		if (isEditionSelectionDialog())
+		}
+		if (isEditionSelectionDialog()) {
 			return CompareMessages.CompareEditorInput_0;
+		}
 		return IDialogConstants.OK_LABEL;
 	}
 
@@ -1443,8 +1478,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 */
 	public boolean okPressed() {
 		if (isEditable()) {
-			if (!saveChanges())
+			if (!saveChanges()) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -1488,10 +1524,10 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	public Object getSelectedEdition() {
 		if (fStructureInputPane != null) {
 			ISelection selection = fStructureInputPane.getSelection();
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
-				if (!ss.isEmpty())
+			if (selection instanceof IStructuredSelection ss) {
+				if (!ss.isEmpty()) {
 					return ss.getFirstElement();
+				}
 
 			}
 		}

@@ -79,10 +79,8 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		@Override
 		public String getText(Object element) {
 			String text = wrappedProvider.getText(element);
-			if (element instanceof PatchDiffNode){
-				PatchDiffNode node = (PatchDiffNode) element;
-				if (node instanceof PatchProjectDiffNode) {
-					PatchProjectDiffNode projectNode = (PatchProjectDiffNode) node;
+			if (element instanceof PatchDiffNode node){
+				if (node instanceof PatchProjectDiffNode projectNode) {
 					if (!Utilities.getProject(projectNode.getDiffProject()).exists()) {
 						text = NLS.bind(PatchMessages.Diff_2Args, text,
 								PatchMessages.PreviewPatchLabelDecorator_ProjectDoesNotExist);
@@ -92,8 +90,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 					return NLS.bind(PatchMessages.Diff_2Args,
 							text, PatchMessages.PatcherCompareEditorInput_NotIncluded);
 				}
-				if (node instanceof PatchFileDiffNode) {
-					PatchFileDiffNode fileNode = (PatchFileDiffNode) node;
+				if (node instanceof PatchFileDiffNode fileNode) {
 					if (getPatcher().hasCachedContents(fileNode.getDiffResult().getDiff())) {
 						text = NLS.bind(PatchMessages.Diff_2Args, text, PatchMessages.HunkMergePage_Merged);
 					}
@@ -101,8 +98,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 						text = NLS.bind(PatchMessages.Diff_2Args, text, PatchMessages.PatchCompareEditorInput_0);
 					}
 				}
-				if (node instanceof HunkDiffNode) {
-					HunkDiffNode hunkNode = (HunkDiffNode) node;
+				if (node instanceof HunkDiffNode hunkNode) {
 					if (hunkNode.isManuallyMerged()) {
 						text = NLS.bind(PatchMessages.Diff_2Args, text, PatchMessages.HunkMergePage_Merged);
 					}
@@ -113,10 +109,11 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 										hunkNode.getHunkResult().getFuzz() + "")); //$NON-NLS-1$
 					}
 				}
-				if (getPatcher().isRetargeted(node.getPatchElement()))
+				if (getPatcher().isRetargeted(node.getPatchElement())) {
 					return NLS.bind(PatchMessages.Diff_2Args,
 							getPatcher().getOriginalPath(node.getPatchElement()).toString(),
 							NLS.bind(PatchMessages.PreviewPatchPage_Target, node.getName()));
+				}
 			}
 			return text;
 		}
@@ -124,15 +121,13 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		@Override
 		public Image getImage(Object element) {
 			Image image = wrappedProvider.getImage(element);
-			if (element instanceof PatchDiffNode){
-				PatchDiffNode node = (PatchDiffNode) element;
+			if (element instanceof PatchDiffNode node){
 				if (!node.isEnabled() && image != null) {
 					LocalResourceManager imageCache = PatchCompareEditorInput.getImageCache(getPatcher().getConfiguration());
 					return imageCache.create(createOverlay(image, CompareUIPlugin.getImageDescriptor(ICompareUIConstants.REMOVED_OVERLAY), IDecoration.TOP_LEFT));
 				}
 			}
-			if (element instanceof HunkDiffNode) {
-				HunkDiffNode node = (HunkDiffNode) element;
+			if (element instanceof HunkDiffNode node) {
 				if (node.isManuallyMerged()) {
 					LocalResourceManager imageCache = PatchCompareEditorInput.getImageCache(getPatcher().getConfiguration());
 					return imageCache.create(PatchCompareEditorInput.createOverlay(image, CompareUIPlugin.getImageDescriptor(ICompareUIConstants.IS_MERGED_OVERLAY), IDecoration.TOP_LEFT));
@@ -211,8 +206,9 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	 * Update the presentation of the diff tree.
 	 */
 	protected void updateTree() {
-		if (getViewer() != null && !getViewer().getControl().isDisposed())
+		if (getViewer() != null && !getViewer().getControl().isDisposed()) {
 			getViewer().refresh(true);
+		}
 	}
 
 	/**
@@ -266,11 +262,11 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 			if (!hunkResult.isOK()) {
 				HunkDiffNode hunkNode = HunkDiffNode.createDiffNode(node, hunkResult, true);
 				Object left = hunkNode.getLeft();
-				if (left instanceof UnmatchedHunkTypedElement) {
-					UnmatchedHunkTypedElement element = (UnmatchedHunkTypedElement) left;
+				if (left instanceof UnmatchedHunkTypedElement element) {
 					element.addContentChangeListener(source -> {
-						if (getViewer() == null || getViewer().getControl().isDisposed())
+						if (getViewer() == null || getViewer().getControl().isDisposed()) {
 							return;
+						}
 						getViewer().refresh(true);
 					});
 				}
@@ -316,8 +312,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		return new ViewerFilter[] { new ViewerFilter() {
 			@Override
 			public boolean select(Viewer v, Object parentElement, Object element) {
-				if (element instanceof PatchDiffNode) {
-					PatchDiffNode node = (PatchDiffNode) element;
+				if (element instanceof PatchDiffNode node) {
 					return node.isEnabled() || isShowAll();
 				}
 				return false;
@@ -409,8 +404,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	}
 
 	private boolean isEnabled(IDiffElement element) {
-		if (element instanceof PatchDiffNode) {
-			PatchDiffNode node = (PatchDiffNode) element;
+		if (element instanceof PatchDiffNode node) {
 			return node.isEnabled();
 		}
 		return false;
@@ -421,8 +415,9 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	@Override
 	public Viewer findStructureViewer(Viewer oldViewer, ICompareInput input,
 			Composite parent) {
-		if (org.eclipse.compare.internal.Utilities.isHunk(input))
+		if (org.eclipse.compare.internal.Utilities.isHunk(input)) {
 			return null;
+		}
 		return super.findStructureViewer(oldViewer, input, parent);
 	}
 }

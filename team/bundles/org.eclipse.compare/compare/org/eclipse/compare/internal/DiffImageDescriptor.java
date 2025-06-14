@@ -36,8 +36,9 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 		ImageData data = null;
 		if (base != null) {
 			data = base.getImageData();
-			if (data == null)
+			if (data == null) {
 				data = DEFAULT_IMAGE_DATA;
+			}
 		}
 		fBaseImageData = data;
 		fOverlayImage= overlay;
@@ -81,8 +82,9 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 
 			if (fOverlayImage != null) {
 				ImageData overlay= fOverlayImage.getImageData();
-				if (overlay == null)
+				if (overlay == null) {
 					overlay= DEFAULT_IMAGE_DATA;
+				}
 				drawImage(overlay, 0, (HEIGHT - overlay.height) / 2);
 			}
 		} else {
@@ -92,8 +94,9 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 
 			if (fOverlayImage != null) {
 				ImageData overlay= fOverlayImage.getImageData();
-				if (overlay == null)
+				if (overlay == null) {
 					overlay= DEFAULT_IMAGE_DATA;
+				}
 				drawImage(overlay, fWidth - overlay.width, (HEIGHT - overlay.height) / 2);
 			}
 		}
@@ -106,10 +109,10 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
-		if (obj instanceof DiffImageDescriptor) {
-			DiffImageDescriptor other = (DiffImageDescriptor) obj;
+		}
+		if (obj instanceof DiffImageDescriptor other) {
 			return (other.hashCode == hashCode
 					&& isEqual(other.fOverlayImage, fOverlayImage)
 					&& other.fWidth == fWidth
@@ -123,8 +126,9 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 		if (isEqual((Object) i1, (Object) i2)) {
 			return true;
 		}
-		if (i1 == null || i2 == null)
+		if (i1 == null || i2 == null) {
 			return false;
+		}
 		return (i1.width == i2.width && i1.height == i2.height
 				&& i1.depth == i2.depth && i1.scanlinePad == i2.scanlinePad
 				&& i1.bytesPerLine == i2.bytesPerLine
@@ -139,24 +143,30 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 	}
 
 	private boolean equals(byte[] data, byte[] data2) {
-		if (isEqual(data, data2))
+		if (isEqual(data, data2)) {
 			return true;
-		if (data == null || data2 == null)
+		}
+		if (data == null || data2 == null) {
 			return false;
-		if (data.length != data2.length)
+		}
+		if (data.length != data2.length) {
 			return false;
+		}
 		for (int i = 0; i < data2.length; i++) {
-			if (data[i] != data2[i])
+			if (data[i] != data2[i]) {
 				return false;
+			}
 		}
 		return true;
 	}
 
 	private boolean isEqual(Object o1, Object o2) {
-		if (o1 == o2)
+		if (o1 == o2) {
 			return true;
-		if (o1 == null || o2 == null)
+		}
+		if (o1 == null || o2 == null) {
 			return false;
+		}
 		return o1.equals(o2);
 	}
 }

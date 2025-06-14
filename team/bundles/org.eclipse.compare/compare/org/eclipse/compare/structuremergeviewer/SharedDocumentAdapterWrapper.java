@@ -85,11 +85,13 @@ public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
 	@Override
 	public void disconnect(Object element) {
 		IEditorInput input = getDocumentKey(element);
-		if (input == null)
+		if (input == null) {
 			return;
+		}
 		IDocumentProvider provider = SharedDocumentAdapter.getDocumentProvider(input);
-		if (provider == null)
+		if (provider == null) {
 			return;
+		}
 		disconnect(provider, input);
 	}
 }

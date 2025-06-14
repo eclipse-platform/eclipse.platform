@@ -203,8 +203,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 			y+= headerHeight;
 
-			if (fCenter != null && !fCenter.isDisposed())
+			if (fCenter != null && !fCenter.isDisposed()) {
 				fCenter.setBounds(width1, y, centerWidth, height2);
+			}
 
 			handleResizeLeftRight(0, y, width1, centerWidth, width2, height2);
 		}
@@ -212,12 +213,13 @@ public abstract class ContentMergeViewer extends ContentViewer
 		private double getHorizontalSplitRatio() {
 			if (fHSplit < 0) {
 				Object input = getInput();
-				if (input instanceof ICompareInput) {
-					ICompareInput ci = (ICompareInput) input;
-					if (ci.getLeft() == null)
+				if (input instanceof ICompareInput ci) {
+					if (ci.getLeft() == null) {
 						return 0.1;
-					if (ci.getRight() == null)
+					}
+					if (ci.getRight() == null) {
 						return 0.9;
+					}
 				}
 				return HSPLIT;
 			}
@@ -248,10 +250,12 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 		@Override
 		public void mouseDoubleClick(MouseEvent e) {
-			if ((fDirection & HORIZONTAL) != 0)
+			if ((fDirection & HORIZONTAL) != 0) {
 				fHSplit= -1;
-			if ((fDirection & VERTICAL) != 0)
+			}
+			if ((fDirection & VERTICAL) != 0) {
 				fVSplit= VSPLIT;
+			}
 			fComposite.layout(true);
 		}
 
@@ -277,14 +281,16 @@ public abstract class ContentMergeViewer extends ContentViewer
 		@Override
 		public void mouseUp(MouseEvent e) {
 			fIsDown= false;
-			if (!fLiveResize)
+			if (!fLiveResize) {
 				resize(e);
+			}
 		}
 
 		@Override
 		public void mouseMove(MouseEvent e) {
-			if (fIsDown && fLiveResize)
+			if (fIsDown && fLiveResize) {
 				resize(e);
+			}
 		}
 
 		private void resize(MouseEvent e) {
@@ -296,14 +302,16 @@ public abstract class ContentMergeViewer extends ContentViewer
 			if (fWidth1 + dx > centerWidth && fWidth2 - dx > centerWidth) {
 				fWidth1 += dx;
 				fWidth2 -= dx;
-				if ((fDirection & HORIZONTAL) != 0)
+				if ((fDirection & HORIZONTAL) != 0) {
 					fHSplit= (double) fWidth1 / (double) (fWidth1 + fWidth2);
+				}
 			}
 			if (fHeight1 + dy > centerWidth && fHeight2 - dy > centerWidth) {
 				fHeight1 += dy;
 				fHeight2 -= dy;
-				if ((fDirection & VERTICAL) != 0)
+				if ((fDirection & VERTICAL) != 0) {
 					fVSplit= (double) fHeight1 / (double) (fHeight1 + fHeight2);
+				}
 			}
 
 			fComposite.layout(true);
@@ -361,8 +369,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 	private final ILabelProviderListener labelChangeListener = event -> {
 		Object[] elements = event.getElements();
 		for (Object object : elements) {
-			if (object == getInput())
+			if (object == getInput()) {
 				updateHeader();
+			}
 		}
 	};
 
@@ -388,7 +397,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 		fAncestorVisible= Utilities.getBoolean(cc, ICompareUIConstants.PROP_ANCESTOR_VISIBLE, fAncestorVisible);
 		fConfirmSave= Utilities.getBoolean(cc, CompareEditor.CONFIRM_SAVE_PROPERTY, fConfirmSave);
 
-		fCompareInputChangeListener = input -> { if (input == getInput()) handleCompareInputChange(); };
+		fCompareInputChangeListener = input -> { if (input == getInput()) {
+			handleCompareInputChange();
+		} };
 
 		// Make sure the compare configuration is not null
 		fCompareConfiguration = cc != null ? cc : new CompareConfiguration();
@@ -603,36 +614,42 @@ public abstract class ContentMergeViewer extends ContentViewer
 			switch (dir) {
 			case VERTICAL:
 				if (fAncestorVisible) {
-					if (fVSashCursor == null)
+					if (fVSashCursor == null) {
 						fVSashCursor=c.getDisplay().getSystemCursor(SWT.CURSOR_SIZENS);
+					}
 					cursor= fVSashCursor;
 				} else {
-					if (fNormalCursor == null)
+					if (fNormalCursor == null) {
 						fNormalCursor= c.getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
+					}
 					cursor= fNormalCursor;
 				}
 				break;
 			case HORIZONTAL:
-				if (fHSashCursor == null)
+				if (fHSashCursor == null) {
 					fHSashCursor= c.getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE);
+				}
 				cursor= fHSashCursor;
 				break;
 			case VERTICAL + HORIZONTAL:
 				if (fAncestorVisible) {
-					if (fHVSashCursor == null)
+					if (fHVSashCursor == null) {
 						fHVSashCursor= c.getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
+					}
 					cursor= fHVSashCursor;
 				} else {
-					if (fHSashCursor == null)
+					if (fHSashCursor == null) {
 						fHSashCursor= c.getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE);
+					}
 					cursor= fHSashCursor;
 				}
 				break;
 			default:
 				throw new IllegalArgumentException(Integer.toString(dir));
 			}
-			if (cursor != null)
+			if (cursor != null) {
 				c.setCursor(cursor);
+			}
 		}
 	}
 
@@ -673,8 +690,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 	protected final void inputChanged(Object input, Object oldInput) {
 		if (input != oldInput && oldInput != null) {
 			ICompareInputLabelProvider lp = getCompareConfiguration().getLabelProvider();
-			if (lp != null)
+			if (lp != null) {
 				lp.removeListener(labelChangeListener);
+			}
 		}
 
 		if (input != oldInput && oldInput instanceof ICompareInput) {
@@ -691,8 +709,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 		if (input != oldInput && input != null) {
 			ICompareInputLabelProvider lp = getCompareConfiguration().getLabelProvider();
-			if (lp != null)
+			if (lp != null) {
 				lp.addListener(labelChangeListener);
+			}
 		}
 
 		if (success) {
@@ -700,8 +719,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 			setRightDirty(false);
 		}
 
-		if (input != oldInput)
+		if (input != oldInput) {
 			internalRefresh(input);
+		}
 	}
 
 	/**
@@ -785,11 +805,13 @@ public abstract class ContentMergeViewer extends ContentViewer
 				fIsThreeWay= ancestor != null;
 			}
 
-			if (fAncestorItem != null)
+			if (fAncestorItem != null) {
 				fAncestorItem.setVisible(fIsThreeWay);
+			}
 
-			if (fAncestorVisible && oldFlag != fIsThreeWay)
+			if (fAncestorVisible && oldFlag != fIsThreeWay) {
 				fComposite.layout(true);
+			}
 
 			Object left= content.getLeftContent(input);
 			Object right= content.getRightContent(input);
@@ -866,8 +888,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 		fRightLabel= new CLabel(fComposite, style | Window.getDefaultOrientation());
 		new Resizer(fRightLabel, VERTICAL);
 
-		if (fCenter == null || fCenter.isDisposed())
+		if (fCenter == null || fCenter.isDisposed()) {
 			fCenter= createCenterControl(fComposite);
+		}
 
 		createControls(fComposite);
 
@@ -1035,8 +1058,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 */
 	@Override
 	protected void handleDispose(DisposeEvent event) {
-		if (fHandlerService != null)
+		if (fHandlerService != null) {
 			fHandlerService.dispose();
+		}
 
 		Object input= getInput();
 		if (input instanceof ICompareInput) {
@@ -1045,8 +1069,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 		}
 		if (input != null) {
 			ICompareInputLabelProvider lp = getCompareConfiguration().getLabelProvider();
-			if (lp != null)
+			if (lp != null) {
 				lp.removeListener(labelChangeListener);
+			}
 		}
 
 		if (fPropertyChangeListener != null) {
@@ -1130,27 +1155,33 @@ public abstract class ContentMergeViewer extends ContentViewer
 		// Only change a label if there is a new label available
 		if (fAncestorLabel != null) {
 			Image ancestorImage = content.getAncestorImage(input);
-			if (ancestorImage != null)
+			if (ancestorImage != null) {
 				fAncestorLabel.setImage(ancestorImage);
+			}
 			String ancestorLabel = content.getAncestorLabel(input);
-			if (ancestorLabel != null)
+			if (ancestorLabel != null) {
 				fAncestorLabel.setText(LegacyActionTools.escapeMnemonics(TextProcessor.process(ancestorLabel)));
+			}
 		}
 		if (fLeftLabel != null) {
 			Image leftImage = content.getLeftImage(input);
-			if (leftImage != null)
+			if (leftImage != null) {
 				fLeftLabel.setImage(leftImage);
+			}
 			String leftLabel = content.getLeftLabel(input);
-			if (leftLabel != null)
+			if (leftLabel != null) {
 				fLeftLabel.setText(LegacyActionTools.escapeMnemonics(leftLabel));
+			}
 		}
 		if (fRightLabel != null) {
 			Image rightImage = content.getRightImage(input);
-			if (rightImage != null)
+			if (rightImage != null) {
 				fRightLabel.setImage(rightImage);
+			}
 			String rightLabel = content.getRightLabel(input);
-			if (rightLabel != null)
+			if (rightLabel != null) {
 				fRightLabel.setText(LegacyActionTools.escapeMnemonics(rightLabel));
+			}
 		}
 	}
 
@@ -1167,8 +1198,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 	@Override
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
-		if (fListenerList == null)
+		if (fListenerList == null) {
 			fListenerList= new ListenerList<>();
+		}
 		fListenerList.add(listener);
 	}
 
@@ -1176,8 +1208,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		if (fListenerList != null) {
 			fListenerList.remove(listener);
-			if (fListenerList.isEmpty())
+			if (fListenerList.isEmpty()) {
 				fListenerList= null;
+			}
 		}
 	}
 
@@ -1270,8 +1303,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 		if (getCompareConfiguration().isLeftEditable() && isLeftDirty()) {
 			byte[] bytes = getContents(true);
-			if (rightEmpty && bytes != null && bytes.length == 0)
+			if (rightEmpty && bytes != null && bytes.length == 0) {
 				bytes = null;
+			}
 			setLeftDirty(false);
 			content.saveLeftContent(input, bytes);
 		}
@@ -1284,8 +1318,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 		if (getCompareConfiguration().isRightEditable() && isRightDirty()) {
 			byte[] bytes = getContents(false);
-			if (leftEmpty && bytes != null && bytes.length == 0)
+			if (leftEmpty && bytes != null && bytes.length == 0) {
 				bytes = null;
+			}
 			setRightDirty(false);
 			content.saveRightContent(input, bytes);
 		}
@@ -1414,10 +1449,10 @@ public abstract class ContentMergeViewer extends ContentViewer
 		if (source != null) {
 			Saveable[] saveables = source.getSaveables();
 			for (Saveable s : saveables) {
-				if (s instanceof ISavingSaveable) {
-					ISavingSaveable saveable = (ISavingSaveable) s;
-					if (saveable.isSaving())
+				if (s instanceof ISavingSaveable saveable) {
+					if (saveable.isSaving()) {
 						return true;
+					}
 				}
 			}
 		}

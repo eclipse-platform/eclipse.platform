@@ -47,8 +47,9 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 		fStructurePane= new CompareViewerSwitchingPane(h, SWT.BORDER | SWT.FLAT, true) {
 			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
-				if (input instanceof ICompareInput)
+				if (input instanceof ICompareInput) {
 					return findStructureViewer(oldViewer, (ICompareInput)input, this);
+				}
 				return null;
 			}
 		};
@@ -62,8 +63,9 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 
 	private Viewer findStructureViewer(Viewer oldViewer, ICompareInput input, Composite parent) {
 		OutlineViewerCreator creator = getCreator();
-		if (creator != null)
+		if (creator != null) {
 			return creator.findStructureViewer(oldViewer, input, parent, getCompareConfiguration());
+		}
 		return null;
 	}
 
@@ -78,33 +80,38 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 
 	@Override
 	public void setFocus() {
-		if (fStructurePane != null)
+		if (fStructurePane != null) {
 			fStructurePane.setFocus();
+		}
 	}
 
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		if (fStructurePane != null)
+		if (fStructurePane != null) {
 			fStructurePane.addSelectionChangedListener(listener);
+		}
 	}
 
 	@Override
 	public ISelection getSelection() {
-		if (fStructurePane != null)
+		if (fStructurePane != null) {
 			return fStructurePane.getSelection();
+		}
 		return StructuredSelection.EMPTY;
 	}
 
 	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		if (fStructurePane != null)
+		if (fStructurePane != null) {
 			fStructurePane.removeSelectionChangedListener(listener);
+		}
 	}
 
 	@Override
 	public void setSelection(ISelection selection) {
-		if (fStructurePane != null)
+		if (fStructurePane != null) {
 			fStructurePane.setSelection(selection);
+		}
 	}
 
 	private void setInput(Object input) {
@@ -117,8 +124,9 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 	public OutlineViewerCreator getCreator() {
 		if (fCreator == null) {
 			fCreator = Adapters.adapt(fCompareEditor, OutlineViewerCreator.class);
-			if (fCreator != null)
+			if (fCreator != null) {
 				fCreator.addPropertyChangeListener(this);
+			}
 		}
 		return fCreator;
 	}
@@ -134,14 +142,16 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (fCreator != null)
+		if (fCreator != null) {
 			fCreator.removePropertyChangeListener(this);
+		}
 		fCreator = null;
 	}
 
 	public void reset() {
-		if (fCreator != null)
+		if (fCreator != null) {
 			fCreator.removePropertyChangeListener(this);
+		}
 		fCreator = null;
 		OutlineViewerCreator creator = getCreator();
 		if (creator != null) {

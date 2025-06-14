@@ -162,8 +162,9 @@ public class CompareConfiguration {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
 				Image image = provider.getAncestorImage(input);
-				if (image != null)
+				if (image != null) {
 					return image;
+				}
 			}
 			return fAncestorImage;
 		}
@@ -173,8 +174,9 @@ public class CompareConfiguration {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
 				String label = provider.getAncestorLabel(input);
-				if (label != null)
+				if (label != null) {
 					return label;
+				}
 			}
 			return fAncestorLabel;
 		}
@@ -184,8 +186,9 @@ public class CompareConfiguration {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
 				Image image = provider.getLeftImage(input);
-				if (image != null)
+				if (image != null) {
 					return image;
+				}
 			}
 			return fLeftImage;
 		}
@@ -195,8 +198,9 @@ public class CompareConfiguration {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
 				String label = provider.getLeftLabel(input);
-				if (label != null)
+				if (label != null) {
 					return label;
+				}
 			}
 			return fLeftLabel;
 		}
@@ -206,8 +210,9 @@ public class CompareConfiguration {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
 				Image image = provider.getRightImage(input);
-				if (image != null)
+				if (image != null) {
 					return image;
+				}
 			}
 			return fRightImage;
 		}
@@ -217,23 +222,26 @@ public class CompareConfiguration {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
 				String label = provider.getRightLabel(input);
-				if (label != null)
+				if (label != null) {
 					return label;
+				}
 			}
 			return fRightLabel;
 		}
 
 		public ICompareInputLabelProvider getLabelProvider(Object input) {
 			ICompareInputLabelProvider lp = labelProviders.get(input);
-			if (lp == null)
+			if (lp == null) {
 				return defaultLabelProvider;
+			}
 			return lp;
 		}
 
 		public void setLabelProvider(ICompareInput input, ICompareInputLabelProvider labelProvider) {
 			ICompareInputLabelProvider old = labelProviders.get(input);
-			if (old != null)
+			if (old != null) {
 				old.removeListener(this);
+			}
 			labelProviders.put(input, labelProvider);
 			labelProvider.addListener(this);
 		}
@@ -243,14 +251,15 @@ public class CompareConfiguration {
 			ICompareInputLabelProvider provider = getLabelProvider(element);
 			if (provider != null) {
 				Image image = provider.getImage(element);
-				if (image != null)
+				if (image != null) {
 					return image;
+				}
 			}
-			if (element instanceof ICompareInput) {
-				ICompareInput ci = (ICompareInput) element;
+			if (element instanceof ICompareInput ci) {
 				Image image = ci.getImage();
-				if (image != null)
+				if (image != null) {
 					return image;
+				}
 			}
 			return super.getImage(element);
 		}
@@ -260,14 +269,15 @@ public class CompareConfiguration {
 			ICompareInputLabelProvider provider = getLabelProvider(element);
 			if (provider != null) {
 				String label = provider.getText(element);
-				if (label != null)
+				if (label != null) {
 					return label;
+				}
 			}
-			if (element instanceof ICompareInput) {
-				ICompareInput ci = (ICompareInput) element;
+			if (element instanceof ICompareInput ci) {
 				String label = ci.getName();
-				if (label != null)
+				if (label != null) {
 					return label;
+				}
 			}
 			return super.getText(element);
 		}
@@ -277,8 +287,9 @@ public class CompareConfiguration {
 			for (ICompareInputLabelProvider lp : labelProviders.values()) {
 				lp.removeListener(this);
 			}
-			if (defaultLabelProvider != null)
+			if (defaultLabelProvider != null) {
 				defaultLabelProvider.removeListener(this);
+			}
 			defaultLabelProvider = null;
 			labelProviders.clear();
 		}
@@ -289,11 +300,13 @@ public class CompareConfiguration {
 		}
 
 		public void setDefaultLabelProvider(ICompareInputLabelProvider labelProvider) {
-			if (defaultLabelProvider != null)
+			if (defaultLabelProvider != null) {
 				defaultLabelProvider.removeListener(this);
+			}
 			defaultLabelProvider = labelProvider;
-			if (defaultLabelProvider != null)
+			if (defaultLabelProvider != null) {
 				defaultLabelProvider.addListener(this);
+			}
 		}
 	}
 
@@ -386,8 +399,9 @@ public class CompareConfiguration {
 	 * @see org.eclipse.compare.structuremergeviewer.Differencer
 	 */
 	public Image getImage(Image base, int kind) {
-		if (fDisposed)
+		if (fDisposed) {
 			return null;
+		}
 		ImageDescriptor id = new DiffImageDescriptor(base, getImageDescriptor(kind), ICompareUIConstants.COMPARE_IMAGE_WIDTH, false);
 		ResourceManager rm = getResourceManager();
 		return rm.create(id);
@@ -434,8 +448,9 @@ public class CompareConfiguration {
 		if (listeners != null) {
 			for (Object listener : listeners) {
 				IPropertyChangeListener l = (IPropertyChangeListener) listener;
-				if (event == null)
+				if (event == null) {
 					event= new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+				}
 				l.propertyChange(event);
 			}
 		}
@@ -460,8 +475,9 @@ public class CompareConfiguration {
 	public void setProperty(String key, Object newValue) {
 		Object oldValue= fProperties.get(key);
 		fProperties.put(key, newValue);
-		if (oldValue == null || !oldValue.equals(newValue))
+		if (oldValue == null || !oldValue.equals(newValue)) {
 			fireChange(key, oldValue, newValue);
+		}
 	}
 
 	/**

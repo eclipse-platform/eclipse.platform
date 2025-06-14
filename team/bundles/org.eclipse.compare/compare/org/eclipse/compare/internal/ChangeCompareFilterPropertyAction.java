@@ -104,11 +104,13 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 	}
 
 	public void setCompareConfiguration(CompareConfiguration cc) {
-		if (fCompareConfiguration != null)
+		if (fCompareConfiguration != null) {
 			fCompareConfiguration.removePropertyChangeListener(this);
+		}
 		fCompareConfiguration = cc;
-		if (fCompareConfiguration != null)
+		if (fCompareConfiguration != null) {
 			fCompareConfiguration.addPropertyChangeListener(this);
+		}
 		setChecked(getProperty());
 	}
 
@@ -123,8 +125,9 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 	}
 
 	public void dispose() {
-		if (fCompareConfiguration != null)
+		if (fCompareConfiguration != null) {
 			fCompareConfiguration.removePropertyChangeListener(this);
+		}
 	}
 
 	@Override

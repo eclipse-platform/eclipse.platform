@@ -41,7 +41,9 @@ public class CompareAction extends BaseCompareAction implements IObjectActionDel
 			// resource should be the ancestor
 			boolean ok = fInput.setSelection(selection, fWorkbenchPage
 					.getWorkbenchWindow().getShell(), showSelectAncestorDialog);
-			if (!ok) return;
+			if (!ok) {
+				return;
+			}
 			fInput.initializeCompareConfiguration();
 			CompareUI.openCompareEditorOnPage(fInput, fWorkbenchPage);
 			fInput= null;	// don't reuse this input!

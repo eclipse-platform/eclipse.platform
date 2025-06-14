@@ -125,21 +125,24 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		void register(IConfigurationElement element, T data) {
 			String id= element.getAttribute(ID_ATTRIBUTE);
 			if (id != null) {
-				if (fIdMap == null)
+				if (fIdMap == null) {
 					fIdMap= new HashMap<>();
+				}
 				fIdMap.put(id, data);
 			}
 
 			String types= element.getAttribute(EXTENSIONS_ATTRIBUTE);
 			if (types != null) {
-				if (fExtensionMap == null)
+				if (fExtensionMap == null) {
 					fExtensionMap= new HashMap<>();
+				}
 				StringTokenizer tokenizer= new StringTokenizer(types, ","); //$NON-NLS-1$
 				while (tokenizer.hasMoreElements()) {
 					String extension= tokenizer.nextToken().trim();
 					List<T> l = fExtensionMap.get(normalizeCase(extension));
-					if (l == null)
+					if (l == null) {
 						fExtensionMap.put(normalizeCase(extension),	l = new ArrayList<>());
+					}
 					l.add(data);
 				}
 			}
@@ -148,18 +151,21 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		void createBinding(IConfigurationElement element, String idAttributeName) {
 			String type= element.getAttribute(CONTENT_TYPE_ID_ATTRIBUTE);
 			String id= element.getAttribute(idAttributeName);
-			if (id == null)
+			if (id == null) {
 				logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.targetIdAttributeMissing", idAttributeName)); //$NON-NLS-1$
+			}
 			if (type != null && id != null && fIdMap != null) {
 				T o= fIdMap.get(id);
 				if (o != null) {
 					IContentType ct= fgContentTypeManager.getContentType(type);
 					if (ct != null) {
-						if (fContentTypeBindings == null)
+						if (fContentTypeBindings == null) {
 							fContentTypeBindings= new HashMap<>();
+						}
 						List<T> l = fContentTypeBindings.get(ct);
-						if (l == null)
+						if (l == null) {
 							fContentTypeBindings.put(ct, l = new ArrayList<>());
+						}
 						l.add(o);
 					} else {
 						logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.contentTypeNotFound", type)); //$NON-NLS-1$
@@ -179,8 +185,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			if (fContentTypeBindings != null) {
 				for (; type != null; type= type.getBaseType()) {
 					List<T> data= fContentTypeBindings.get(type);
-					if (data != null)
+					if (data != null) {
 						return data;
+					}
 				}
 			}
 			return null;
@@ -192,8 +199,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		}
 
 		List<T> searchAll(String extension) {
-			if (fExtensionMap != null)
+			if (fExtensionMap != null) {
 				return fExtensionMap.get(normalizeCase(extension));
+			}
 			return null;
 		}
 
@@ -312,8 +320,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 		if (fgDisposeOnShutdownImages != null) {
 			for (Image img : fgDisposeOnShutdownImages) {
-				if (!img.isDisposed())
+				if (!img.isDisposed()) {
 					img.dispose();
+				}
 			}
 			fgImages= null;
 		}
@@ -339,8 +348,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * @return the plugin's resource bundle
 	 */
 	public ResourceBundle getResourceBundle() {
-		if (fResourceBundle == null)
+		if (fResourceBundle == null) {
 			fResourceBundle= Platform.getResourceBundle(getBundle());
+		}
 		return fResourceBundle;
 	}
 
@@ -370,12 +380,14 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		// collect all IStreamMergers
 		IConfigurationElement[] elements= registry.getConfigurationElementsFor(PLUGIN_ID, STREAM_MERGER_EXTENSION_POINT);
 		for (IConfigurationElement element : elements) {
-			if (STREAM_MERGER.equals(element.getName()))
+			if (STREAM_MERGER.equals(element.getName())) {
 				fStreamMergers.register(element, new StreamMergerDescriptor(element));
+			}
 		}
 		for (IConfigurationElement element : elements) {
-			if (CONTENT_TYPE_BINDING.equals(element.getName()))
+			if (CONTENT_TYPE_BINDING.equals(element.getName())) {
 				fStreamMergers.createBinding(element, STREAM_MERGER_ID_ATTRIBUTE);
+			}
 		}
 
 		// collect all IStructureCreators
@@ -383,14 +395,16 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		for (IConfigurationElement element : elements) {
 			String name= element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
-				if (!STRUCTURE_CREATOR.equals(name))
+				if (!STRUCTURE_CREATOR.equals(name)) {
 					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, STRUCTURE_CREATOR)); //$NON-NLS-1$
+				}
 				fStructureCreators.register(element, new StructureCreatorDescriptor(element));
 			}
 		}
 		for (IConfigurationElement element : elements) {
-			if (CONTENT_TYPE_BINDING.equals(element.getName()))
+			if (CONTENT_TYPE_BINDING.equals(element.getName())) {
 				fStructureCreators.createBinding(element, STRUCTURE_CREATOR_ID_ATTRIBUTE);
+			}
 		}
 
 		// collect all viewers which define the structure merge viewer extension point
@@ -398,14 +412,16 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		for (IConfigurationElement element : elements) {
 			String name= element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
-				if (!VIEWER_TAG.equals(name))
+				if (!VIEWER_TAG.equals(name)) {
 					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
+				}
 				fStructureMergeViewers.register(element, new ViewerDescriptor(element));
 			}
 		}
 		for (IConfigurationElement element : elements) {
-			if (CONTENT_TYPE_BINDING.equals(element.getName()))
+			if (CONTENT_TYPE_BINDING.equals(element.getName())) {
 				fStructureMergeViewers.createBinding(element, STRUCTURE_MERGE_VIEWER_ID_ATTRIBUTE);
+			}
 		}
 
 		// collect all viewers which define the content merge viewer extension point
@@ -413,14 +429,16 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		for (IConfigurationElement element : elements) {
 			String name= element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
-				if (!VIEWER_TAG.equals(name))
+				if (!VIEWER_TAG.equals(name)) {
 					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
+				}
 				fContentMergeViewers.register(element, new ViewerDescriptor(element));
 			}
 		}
 		for (IConfigurationElement element : elements) {
-			if (CONTENT_TYPE_BINDING.equals(element.getName()))
+			if (CONTENT_TYPE_BINDING.equals(element.getName())) {
 				fContentMergeViewers.createBinding(element, CONTENT_MERGE_VIEWER_ID_ATTRIBUTE);
+			}
 		}
 
 		// collect all extensions that define the compare filter extension point
@@ -429,16 +447,18 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		for (IConfigurationElement element : elements) {
 			String name = element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
-				if (!FILTER_TAG.equals(name))
+				if (!FILTER_TAG.equals(name)) {
 					logErrorMessage(Utilities.getFormattedString(
 							"CompareUIPlugin.unexpectedTag", name, FILTER_TAG)); //$NON-NLS-1$
+				}
 				fCompareFilters.register(element, new CompareFilterDescriptor(element));
 			}
 		}
 		for (IConfigurationElement element : elements) {
-			if (CONTENT_TYPE_BINDING.equals(element.getName()))
+			if (CONTENT_TYPE_BINDING.equals(element.getName())) {
 				fCompareFilters.createBinding(element,
 						COMPARE_FILTER_ID_ATTRIBUTE);
+			}
 		}
 
 		// collect all viewers which define the content viewer extension point
@@ -446,14 +466,16 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		for (IConfigurationElement element : elements) {
 			String name= element.getName();
 			if (!CONTENT_TYPE_BINDING.equals(name)) {
-				if (!VIEWER_TAG.equals(name))
+				if (!VIEWER_TAG.equals(name)) {
 					logErrorMessage(Utilities.getFormattedString("CompareUIPlugin.unexpectedTag", name, VIEWER_TAG)); //$NON-NLS-1$
+				}
 				fContentViewers.register(element, new ViewerDescriptor(element));
 			}
 		}
 		for (IConfigurationElement element : elements) {
-			if (CONTENT_TYPE_BINDING.equals(element.getName()))
+			if (CONTENT_TYPE_BINDING.equals(element.getName())) {
 				fContentViewers.createBinding(element, CONTENT_VIEWER_ID_ATTRIBUTE);
+			}
 		}
 	}
 
@@ -463,8 +485,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	public static IWorkbenchWindow getActiveWorkbenchWindow() {
 		IWorkbench workbench= getActiveWorkbench();
-		if (workbench == null)
+		if (workbench == null) {
 			return null;
+		}
 		return workbench.getActiveWorkbenchWindow();
 	}
 
@@ -477,8 +500,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 */
 	private static IWorkbenchPage getActivePage() {
 		IWorkbenchWindow window= getActiveWorkbenchWindow();
-		if (window == null)
+		if (window == null) {
 			return null;
+		}
 		return window.getActivePage();
 	}
 
@@ -494,8 +518,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	public static Shell getShell() {
 		if(PlatformUI.isWorkbenchRunning()){
 			IWorkbenchWindow window = getActiveWorkbenchWindow();
-			if (window == null)
+			if (window == null) {
 				return null;
+			}
 			return window.getShell();
 		}
 
@@ -508,8 +533,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * @param image the image to register for disposal
 	 */
 	public static void disposeOnShutdown(Image image) {
-		if (image != null)
+		if (image != null) {
 			fgDisposeOnShutdownImages.add(image);
+		}
 	}
 
 	/**
@@ -534,10 +560,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		CompareConfiguration configuration = input.getCompareConfiguration();
 		if (configuration != null) {
 			IPreferenceStore ps= configuration.getPreferenceStore();
-			if (ps != null)
+			if (ps != null) {
 				configuration.setProperty(
 						CompareConfiguration.USE_OUTLINE_VIEW,
 						Boolean.valueOf(ps.getBoolean(ComparePreferencePage.USE_OUTLINE_VIEW)));
+			}
 		}
 		if (input.canRunAsJob()) {
 			openEditorInBackground(input, page, editor, activate);
@@ -564,8 +591,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			}
 
 			IWorkbenchPage page = wp;
-			if (page == null)
+			if (page == null) {
 				page= getActivePage();
+			}
 			if (page != null) {
 				// open new CompareEditor on page
 				try {
@@ -668,12 +696,14 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	public static ImageDescriptor getImageDescriptor(String relativePath) {
-		if (fgComparePlugin == null)
+		if (fgComparePlugin == null) {
 			return null;
+		}
 		IPath path= Utilities.getIconPath(null).append(relativePath);
 		URL url= FileLocator.find(fgComparePlugin.getBundle(), path, null);
-		if (url == null)
+		if (url == null) {
 			return null;
+		}
 		return ImageDescriptor.createFromURL(url);
 	}
 
@@ -695,8 +725,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 		boolean dispose= false;
 		Image image= null;
-		if (type != null)
+		if (type != null) {
 			image= fgImages.get(type);
+		}
 		if (image == null) {
 			ImageDescriptor id= fgImageDescriptors.get(type);
 			if (id != null) {
@@ -719,8 +750,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					dispose= true;
 				}
 			}
-			if (image != null)
+			if (image != null) {
 				registerImage(type, image, dispose);
+			}
 		}
 		return image;
 	}
@@ -792,8 +824,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	public IStreamMerger createStreamMerger(String type) {
 		initializeRegistries();
 		StreamMergerDescriptor descriptor= fStreamMergers.search(type);
-		if (descriptor != null)
+		if (descriptor != null) {
 			return descriptor.createStreamMerger();
+		}
 		return null;
 	}
 
@@ -807,16 +840,18 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	public IStreamMerger createStreamMerger(IContentType type) {
 		initializeRegistries();
 		StreamMergerDescriptor descriptor= fStreamMergers.search(type);
-		if (descriptor != null)
+		if (descriptor != null) {
 			return descriptor.createStreamMerger();
+		}
 		return null;
 	}
 
 	public ViewerDescriptor[] findStructureViewerDescriptor(Viewer oldViewer,
 			ICompareInput input, CompareConfiguration configuration) {
 		// we don't show the structure of additions or deletions
-		if ((input == null) || input == null || input.getLeft() == null || input.getRight() == null)
+		if ((input == null) || input == null || input.getLeft() == null || input.getRight() == null) {
 			return null;
+		}
 
 		Set<ViewerDescriptor> result = new LinkedHashSet<>();
 
@@ -825,8 +860,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (ctype != null) {
 			initializeRegistries();
 			List<ViewerDescriptor> list = fStructureMergeViewers.searchAll(ctype);
-			if (list != null)
+			if (list != null) {
 				result.addAll(list);
+			}
 		}
 
 		// old style search
@@ -836,13 +872,15 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			type= normalizeCase(types[0]);
 			initializeRegistries();
 			List<ViewerDescriptor> list = fStructureMergeViewers.searchAll(type);
-			if (list != null)
+			if (list != null) {
 				result.addAll(list);
+			}
 			String alias= getStructureViewerAlias(type);
 			if (alias != null) {
 				list = fStructureMergeViewers.searchAll(alias);
-				if (list != null)
+				if (list != null) {
 					result.addAll(list);
+				}
 			}
 		}
 
@@ -878,8 +916,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 			initializeRegistries();
 			StructureCreatorDescriptor scc= fStructureCreators.search(ctype);	// search for content type
-			if (scc == null && type != null)
+			if (scc == null && type != null) {
 				scc= getStructureCreator(type);	// search for old-style type scheme
+			}
 			if (scc != null) {
 				IStructureCreator sc= scc.createStructureCreator();
 				if (sc != null) {
@@ -902,12 +941,14 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		for (Object ct : contentTypes) {
 			if (ct instanceof IContentType) {
 				List<CompareFilterDescriptor> list = fCompareFilters.searchAll((IContentType) ct);
-				if (list != null)
+				if (list != null) {
 					result.addAll(list);
+				}
 			} else if (ct instanceof String) {
 				List<CompareFilterDescriptor> list = fCompareFilters.searchAll((String) ct);
-				if (list != null)
+				if (list != null) {
 					result.addAll(list);
+				}
 			}
 		}
 
@@ -922,26 +963,24 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (in instanceof IStreamContentAccessor) {
 			String type = ITypedElement.TEXT_TYPE;
 
-			if (in instanceof ITypedElement) {
-				ITypedElement tin = (ITypedElement) in;
-
+			if (in instanceof ITypedElement tin) {
 				IContentType ct = getContentType(tin);
 				if (ct != null) {
 					result.add(ct);
 				}
 
 				String ty = tin.getType();
-				if (ty != null)
+				if (ty != null) {
 					type = ty;
+				}
 				result.add(type);
 			}
 			return result;
 		}
 
-		if (!(in instanceof ICompareInput))
+		if (!(in instanceof ICompareInput input)) {
 			return null;
-
-		ICompareInput input = (ICompareInput) in;
+		}
 
 		IContentType ctype = getCommonType(input);
 		if (ctype != null) {
@@ -950,11 +989,13 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 		String[] types = getTypes(input);
 		String type = null;
-		if (isHomogenous(types))
+		if (isHomogenous(types)) {
 			type = types[0];
+		}
 
-		if (ITypedElement.FOLDER_TYPE.equals(type))
+		if (ITypedElement.FOLDER_TYPE.equals(type)) {
 			return null;
+		}
 
 		if (type == null) {
 			int n = 0;
@@ -966,8 +1007,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					}
 				}
 			}
-			if (n > 1) // don't use the type if there were more than one
+			if (n > 1) { // don't use the type if there were more than one
 				type = null;
+			}
 		}
 
 		if (type != null) {
@@ -995,35 +1037,36 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (in instanceof IStreamContentAccessor) {
 			String type= ITypedElement.TEXT_TYPE;
 
-			if (in instanceof ITypedElement) {
-				ITypedElement tin= (ITypedElement) in;
-
+			if (in instanceof ITypedElement tin) {
 				IContentType ct= getContentType(tin);
 				if (ct != null) {
 					initializeRegistries();
 					List<ViewerDescriptor> list = fContentViewers.searchAll(ct);
-					if (list != null)
+					if (list != null) {
 						result.addAll(list);
+					}
 				}
 
 				String ty= tin.getType();
-				if (ty != null)
+				if (ty != null) {
 					type= ty;
+				}
 			}
 
 			initializeRegistries();
 			List<ViewerDescriptor> list = fContentViewers.searchAll(type);
-			if (list != null)
+			if (list != null) {
 				result.addAll(list);
+			}
 			// fallback
 			result.add(fContentViewers.search(Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT)));
 			return result.toArray(new ViewerDescriptor[0]);
 		}
 
-		if (!(in instanceof ICompareInput))
+		if (!(in instanceof ICompareInput input)) {
 			return null;
+		}
 
-		ICompareInput input= (ICompareInput) in;
 		String name = input.getName();
 
 		IContentType ctype = getCommonType(input);
@@ -1039,11 +1082,13 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 		String[] types= getTypes(input);
 		String type= null;
-		if (isHomogenous(types))
+		if (isHomogenous(types)) {
 			type= types[0];
+		}
 
-		if (ITypedElement.FOLDER_TYPE.equals(type))
+		if (ITypedElement.FOLDER_TYPE.equals(type)) {
 			return null;
+		}
 
 		if (type == null) {
 			int n= 0;
@@ -1055,15 +1100,17 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					}
 				}
 			}
-			if (n > 1)	// don't use the type if there were more than one
+			if (n > 1) { // don't use the type if there were more than one
 				type= null;
+			}
 		}
 
 		if (type != null) {
 			initializeRegistries();
 			List<ViewerDescriptor> list = fContentMergeViewers.searchAll(type);
-			if (list != null)
+			if (list != null) {
 				result.addAll(list);
+			}
 		}
 
 		Set<ViewerDescriptor> editorLinkedDescriptors = findEditorLinkedDescriptors(name, ctype, false);
@@ -1080,8 +1127,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			if ((rightType != null && !right_text)
 					|| (leftType != null && !left_text)) {
 				List<ViewerDescriptor> list = fContentMergeViewers.searchAll(BINARY_TYPE);
-				if (list != null)
+				if (list != null) {
 					result.addAll(list);
+				}
 			}
 			List<ViewerDescriptor> list = fContentMergeViewers.searchAll(ITypedElement.TEXT_TYPE);
 			if (list != null) {
@@ -1176,8 +1224,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	private static Viewer getViewer(Object descriptor, Viewer oldViewer, Composite parent, CompareConfiguration cc) {
-		if (descriptor instanceof IViewerDescriptor)
+		if (descriptor instanceof IViewerDescriptor) {
 			return ((IViewerDescriptor)descriptor).createViewer(oldViewer, parent, cc);
+		}
 		return null;
 	}
 
@@ -1189,25 +1238,29 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		ArrayList<String> tmp= new ArrayList<>();
 		if (ancestor != null) {
 			String type= ancestor.getType();
-			if (type != null)
+			if (type != null) {
 				tmp.add(normalizeCase(type));
+			}
 		}
 		if (left != null) {
 			String type= left.getType();
-			if (type != null)
+			if (type != null) {
 				tmp.add(normalizeCase(type));
+			}
 		}
 		if (right != null) {
 			String type= right.getType();
-			if (type != null)
+			if (type != null) {
 				tmp.add(normalizeCase(type));
+			}
 		}
 		return tmp.toArray(new String[tmp.size()]);
 	}
 
 	private static IContentType getContentType(ITypedElement element) {
-		if (element == null)
+		if (element == null) {
 			return null;
+		}
 		String name= element.getName();
 		IContentType ct= null;
 		if (element instanceof IResourceProvider) {
@@ -1221,8 +1274,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 				}
 			}
 		}
-		if (element instanceof IStreamContentAccessor) {
-			IStreamContentAccessor isa= (IStreamContentAccessor) element;
+		if (element instanceof IStreamContentAccessor isa) {
 			try {
 				InputStream is= isa.getContents();
 				if (is != null) {
@@ -1236,8 +1288,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 				// silently ignored
 			}
 		}
-		if (ct == null)
+		if (ct == null) {
 			ct= fgContentTypeManager.findContentTypeFor(name);
+		}
 		return ct;
 	}
 
@@ -1271,15 +1324,18 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 		if (ancestor != null) {
 			type= getContentType(ancestor);
-			if (type != null)
+			if (type != null) {
 				types[n++]= type;
+			}
 		}
 		type= getContentType(left);
-		if (type != null)
+		if (type != null) {
 			types[n++]= type;
+		}
 		type= getContentType(right);
-		if (type != null)
+		if (type != null) {
 			types[n++]= type;
+		}
 
 		IContentType result= null;
 		IContentType[] s0, s1, s2;
@@ -1289,25 +1345,29 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		case 1:
 			return types[0];
 		case 2:
-			if (types[0].equals(types[1]))
+			if (types[0].equals(types[1])) {
 				return types[0];
+			}
 			s0= toFullPath(types[0]);
 			s1= toFullPath(types[1]);
 			for (int i= 0; i < Math.min(s0.length, s1.length); i++) {
-				if (!s0[i].equals(s1[i]))
+				if (!s0[i].equals(s1[i])) {
 					break;
+				}
 				result= s0[i];
 			}
 			return result;
 		case 3:
-			if (types[0].equals(types[1]) && types[1].equals(types[2]))
+			if (types[0].equals(types[1]) && types[1].equals(types[2])) {
 				return types[0];
+			}
 			s0= toFullPath(types[0]);
 			s1= toFullPath(types[1]);
 			s2= toFullPath(types[2]);
 			for (int i= 0; i < Math.min(Math.min(s0.length, s1.length), s2.length); i++) {
-				if (!s0[i].equals(s1[i]) || !s1[i].equals(s2[i]))
+				if (!s0[i].equals(s1[i]) || !s1[i].equals(s2[i])) {
 					break;
+				}
 				result= s0[i];
 			}
 			return result;
@@ -1318,8 +1378,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	private static IContentType[] toFullPath(IContentType ct) {
 		List<IContentType> l= new ArrayList<>();
-		for (; ct != null; ct= ct.getBaseType())
+		for (; ct != null; ct= ct.getBaseType()) {
 			l.add(0, ct);
+		}
 		return l.toArray(new IContentType[l.size()]);
 	}
 
@@ -1330,26 +1391,29 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * Returns <code>null</code> if the input isn't an <code>IStreamContentAccessor</code>.
 	 */
 	private static String guessType(ITypedElement input) {
-		if (input instanceof IStreamContentAccessor) {
-			IStreamContentAccessor sca= (IStreamContentAccessor) input;
+		if (input instanceof IStreamContentAccessor sca) {
 			InputStream is= null;
 			try {
 				is= sca.getContents();
-				if (is == null)
+				if (is == null) {
 					return null;
+				}
 				int lineLength= 0;
 				int lines= 0;
 				while (lines < 10) {
 					int c= is.read();
-					if (c == -1)	// EOF
+					if (c == -1) { // EOF
 						break;
+					}
 					if (c == '\n' || c == '\r') { // reset line length
 						lineLength= 0;
 						lines++;
-					} else
+					} else {
 						lineLength++;
-					if (lineLength > 1000)
+					}
+					if (lineLength > 1000) {
 						return ITypedElement.UNKNOWN_TYPE;
+					}
 				}
 				return ITypedElement.TEXT_TYPE;
 			} catch (CoreException | IOException ex) {
@@ -1369,8 +1433,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	private static String normalizeCase(String s) {
-		if (NORMALIZE_CASE && s != null)
+		if (NORMALIZE_CASE && s != null) {
 			return s.toUpperCase();
+		}
 		return s;
 	}
 
@@ -1405,14 +1470,16 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	public void removeAllStructureViewerAliases(String type) {
-		if (fStructureViewerAliases == null)
+		if (fStructureViewerAliases == null) {
 			return;
+		}
 		String t= normalizeCase(type);
 		Set<Entry<String, String>> entrySet= fStructureViewerAliases.entrySet();
 		for (Iterator<Map.Entry<String, String>> iter= entrySet.iterator(); iter.hasNext(); ) {
 			Map.Entry<String, String> entry= iter.next();
-			if (entry.getValue().equals(t))
+			if (entry.getValue().equals(t)) {
 				iter.remove();
+			}
 		}
 	}
 
@@ -1423,8 +1490,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * <key> '.' <alias> ' ' <key> '.' <alias> ...
 	 */
 	private void rememberAliases(IPreferenceStore ps) {
-		if (fStructureViewerAliases == null)
+		if (fStructureViewerAliases == null) {
 			return;
+		}
 		StringBuilder buffer= new StringBuilder();
 		for (Map.Entry<String, String> entry : fStructureViewerAliases.entrySet()) {
 			String key= entry.getKey();
@@ -1445,8 +1513,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			final IPreferenceStore ps= getPreferenceStore();
 			fFilter.setFilters(ps.getString(ComparePreferencePage.PATH_FILTER));
 			fPropertyChangeListener= event -> {
-				if (ComparePreferencePage.PATH_FILTER.equals(event.getProperty()))
+				if (ComparePreferencePage.PATH_FILTER.equals(event.getProperty())) {
 					fFilter.setFilters(ps.getString(ComparePreferencePage.PATH_FILTER));
+				}
 			};
 			ps.addPropertyChangeListener(fPropertyChangeListener);
 		}
@@ -1509,8 +1578,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	public static void logErrorMessage(String message) {
-		if (message == null)
+		if (message == null) {
 			message= ""; //$NON-NLS-1$
+		}
 		log(new Status(IStatus.ERROR, getPluginId(), INTERNAL_ERROR, message, null));
 	}
 
@@ -1527,18 +1597,22 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		if (ctype != null) {
 			initializeRegistries();
 			List<ViewerDescriptor> list = fContentMergeViewers.searchAll(ctype);
-			if (list != null)
-				if (list.contains(vd))
+			if (list != null) {
+				if (list.contains(vd)) {
 					return ctype.getName();
+				}
+			}
 		}
 
 		String[] types= getTypes(input);
 		String type= null;
-		if (isHomogenous(types))
+		if (isHomogenous(types)) {
 			type= types[0];
+		}
 
-		if (ITypedElement.FOLDER_TYPE.equals(type))
+		if (ITypedElement.FOLDER_TYPE.equals(type)) {
 			return null;
+		}
 
 		if (type == null) {
 			int n= 0;
@@ -1550,16 +1624,19 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					}
 				}
 			}
-			if (n > 1)	// don't use the type if there were more than one
+			if (n > 1) { // don't use the type if there were more than one
 				type= null;
+			}
 		}
 
 		if (type != null) {
 			initializeRegistries();
 			List<ViewerDescriptor> list = fContentMergeViewers.searchAll(type);
-			if (list != null)
-				if (list.contains(vd))
+			if (list != null) {
+				if (list.contains(vd)) {
 					return type;
+				}
+			}
 		}
 
 		Set<ViewerDescriptor> editorLinkedDescriptors = findEditorLinkedDescriptors(input.getName(), ctype, true);
@@ -1578,31 +1655,38 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			if ((rightType != null && !right_text)
 					|| (leftType != null && !left_text)) {
 				List<ViewerDescriptor> list = fContentMergeViewers.searchAll(BINARY_TYPE);
-				if (list != null)
-					if (list.contains(vd))
+				if (list != null) {
+					if (list.contains(vd)) {
 						return type;
+					}
+				}
 			}
 			List<ViewerDescriptor> list = fContentMergeViewers.searchAll(ITypedElement.TEXT_TYPE);
-			if (list != null)
-				if (list.contains(vd))
+			if (list != null) {
+				if (list.contains(vd)) {
 					return type;
+				}
+			}
 		}
 		return null;
 	}
 
 	String findStructureTypeNameOrType(ICompareInput input, ViewerDescriptor vd, CompareConfiguration cc) {
 		// We don't show the structure of additions or deletions
-		if ((input == null) || input == null || input.getLeft() == null || input.getRight() == null)
+		if ((input == null) || input == null || input.getLeft() == null || input.getRight() == null) {
 			return null;
+		}
 
 		// Content type search
 		IContentType ctype= getCommonType(input);
 		if (ctype != null) {
 			initializeRegistries();
 			List<ViewerDescriptor> list = fStructureMergeViewers.searchAll(ctype);
-			if (list != null)
-				if (list.contains(vd))
+			if (list != null) {
+				if (list.contains(vd)) {
 					return ctype.getName();
+				}
+			}
 		}
 
 		// Old style search
@@ -1612,15 +1696,19 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			type= normalizeCase(types[0]);
 			initializeRegistries();
 			List<ViewerDescriptor> list = fStructureMergeViewers.searchAll(type);
-			if (list != null)
-				if (list.contains(vd))
+			if (list != null) {
+				if (list.contains(vd)) {
 					return type;
+				}
+			}
 			String alias= getStructureViewerAlias(type);
 			if (alias != null) {
 				list = fStructureMergeViewers.searchAll(alias);
-				if (list != null)
-					if (list.contains(vd))
+				if (list != null) {
+					if (list.contains(vd)) {
 						return alias;
+					}
+				}
 			}
 		}
 

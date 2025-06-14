@@ -106,12 +106,14 @@ public class PatchWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		if (patch == null)
+		if (patch == null) {
 			addPage(fPatchWizardPage = new InputPatchPage(this));
-		if (patch == null || (!fPatcher.isWorkspacePatch() && !fPatcher.isGitPatch()))
+		}
+		if (patch == null || (!fPatcher.isWorkspacePatch() && !fPatcher.isGitPatch())) {
 			addPage(fPatchTargetPage = new PatchTargetPage(fPatcher));
-		else if (fPatcher.isGitPatch())
+		} else if (fPatcher.isGitPatch()) {
 			fPatcher.setTarget(ResourcesPlugin.getWorkspace().getRoot());
+		}
 		fPreviewPage2 = new PreviewPatchPage2(fPatcher, fConfiguration);
 		addPage(fPreviewPage2);
 	}
@@ -127,13 +129,15 @@ public class PatchWizard extends Wizard {
 
 		if (fPatchWizardPage != null){
 			// make sure that the patch has been read
-			if (!fPatchWizardPage.isPatchRead())
+			if (!fPatchWizardPage.isPatchRead()) {
 				fPatchWizardPage.readInPatch();
+			}
 			fPatcher.refresh();
 
 			// make sure that the patch is not invalid
-			if (!fPatchWizardPage.checkPageComplete())
+			if (!fPatchWizardPage.checkPageComplete()) {
 				return false;
+			}
 		} else {
 			//either we have a patch from the patch input page or one has
 			//been specified; double check this
@@ -193,8 +197,9 @@ public class PatchWizard extends Wizard {
 			setDialogSettings(section);
 		}
 
-		if (fPatchWizardPage != null)
+		if (fPatchWizardPage != null) {
 			fPatchWizardPage.saveWidgetValues();
+		}
 		fPreviewPage2.saveWidgetValues();
 		return true;
 	}
@@ -206,8 +211,9 @@ public class PatchWizard extends Wizard {
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		//no patch has been read in yet, input patch page
-		if (!patchReadIn)
+		if (!patchReadIn) {
 			return fPatchWizardPage;
+		}
 
 		//Check to see if we're already on the patch target page and if
 		//a target has been set - if it has return the next page in sequence (the preview patch page)

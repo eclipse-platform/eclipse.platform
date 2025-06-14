@@ -57,8 +57,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		String contents= null;
 		IDocument doc= CompareUI.getDocument(input);
 		if (doc == null) {
-			if (input instanceof IStreamContentAccessor) {
-				IStreamContentAccessor sca= (IStreamContentAccessor) input;
+			if (input instanceof IStreamContentAccessor sca) {
 				try {
 					contents= Utilities.readString(sca);
 				} catch (CoreException e) {
@@ -167,7 +166,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	 */
 	protected void setupDocument(IDocument document) {
 		String partitioning = getDocumentPartitioning();
-		if (partitioning == null || !(document instanceof IDocumentExtension3)) {
+		if (partitioning == null || !(document instanceof IDocumentExtension3 ex3)) {
 			if (document.getDocumentPartitioner() == null) {
 				IDocumentPartitioner partitioner= getDocumentPartitioner();
 				if (partitioner != null) {
@@ -176,7 +175,6 @@ public abstract class StructureCreator implements IStructureCreator2 {
 				}
 			}
 		} else {
-			IDocumentExtension3 ex3 = (IDocumentExtension3) document;
 			if (ex3.getDocumentPartitioner(partitioning) == null) {
 				IDocumentPartitioner partitioner= getDocumentPartitioner();
 				if (partitioner != null) {
@@ -221,7 +219,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	 */
 	@Override
 	public void save(IStructureComparator node, Object input) {
-		if (node instanceof IDocumentRange && input instanceof IEditableContent) {
+		if (node instanceof IDocumentRange && input instanceof IEditableContent bca) {
 			IDocument document= ((IDocumentRange)node).getDocument();
 			// First check to see if we have a shared document
 			final ISharedDocumentAdapter sda = SharedDocumentAdapterWrapper.getAdapter(input);
@@ -233,13 +231,13 @@ public abstract class StructureCreator implements IStructureCreator2 {
 						IDocument providerDoc = provider.getDocument(key);
 						// We have to make sure that the document we are saving is the same as the shared document
 						if (providerDoc != null && providerDoc == document) {
-							if (save(provider, document, input, sda, key))
+							if (save(provider, document, input, sda, key)) {
 								return;
+							}
 						}
 					}
 				}
 			}
-			IEditableContent bca= (IEditableContent) input;
 			String contents= document.get();
 			String encoding= null;
 			if (input instanceof IEncodedStreamContentAccessor) {
@@ -249,8 +247,9 @@ public abstract class StructureCreator implements IStructureCreator2 {
 					// ignore
 				}
 			}
-			if (encoding == null)
+			if (encoding == null) {
 				encoding= ResourcesPlugin.getEncoding();
+			}
 			byte[] bytes;
 			try {
 				bytes= contents.getBytes(encoding);
@@ -291,8 +290,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 				return super.getDocumentKey(element);
 			}
 			private boolean hasSameDocument(Object element) {
-				if (element instanceof DocumentRangeNode) {
-					DocumentRangeNode drn = (DocumentRangeNode) element;
+				if (element instanceof DocumentRangeNode drn) {
 					return drn.getDocument() == document;
 				}
 				return false;
@@ -327,8 +325,9 @@ public abstract class StructureCreator implements IStructureCreator2 {
 
 		// Build the structure
 		IStructureComparator structure= createStructure(input, monitor);
-		if (structure == null)	// we couldn't parse the structure
+		if (structure == null) { // we couldn't parse the structure
 			return null;		// so we can't find anything
+		}
 
 		// find the path in the tree
 		return findElement(structure, path);
@@ -347,12 +346,14 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	@Override
 	public IStructureComparator locate(Object element, Object input) {
 		String[] path= getPath(element, input);
-		if (path == null)
+		if (path == null) {
 			return null;
+		}
 		// Build the structure
 		IStructureComparator structure= getStructure(input);
-		if (structure == null)	// we couldn't parse the structure
+		if (structure == null) { // we couldn't parse the structure
 			return null;		// so we can't find anything
+		}
 
 		// find the path in the tree
 		return (IStructureComparator)findElement(structure, path);
@@ -387,11 +388,13 @@ public abstract class StructureCreator implements IStructureCreator2 {
 						}
 						String n2= path[index];
 						if (n1.equals(n2)) {
-							if (index == path.length-1)
+							if (index == path.length-1) {
 								return child;
+							}
 							IStructureComparator result= find(child, path, index+1);
-							if (result != null)
+							if (result != null) {
 								return result;
+							}
 						}
 					}
 				}
@@ -419,16 +422,16 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	@Override
 	public void destroy(Object object) {
 		IDisposable disposable = getDisposable(object);
-		if (disposable != null)
+		if (disposable != null) {
 			disposable.dispose();
+		}
 	}
 
 	private IDisposable getDisposable(Object object) {
 		if (object instanceof IDisposable) {
 			return (IDisposable) object;
 		}
-		if (object instanceof DocumentRangeNode) {
-			DocumentRangeNode node = (DocumentRangeNode) object;
+		if (object instanceof DocumentRangeNode node) {
 			return getDisposable(node.getParentNode());
 		}
 		return null;
@@ -508,8 +511,9 @@ public abstract class StructureCreator implements IStructureCreator2 {
 					}
 				}
 
-				if (c1 != c2)
+				if (c1 != c2) {
 					return false;
+				}
 			}
 		} else if (!buffer1.toString().equals(buffer2.toString())) {
 			return false;

@@ -69,8 +69,9 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		 */
 		@Override
 		public boolean equals(Object other) {
-			if (other instanceof ITypedElement)
+			if (other instanceof ITypedElement) {
 				return fName.equals(((ITypedElement) other).getName());
+			}
 			return super.equals(other);
 		}
 
@@ -97,38 +98,44 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		public Object[] getChildren() {
 			Object[] children= new Object[fChildren.size()];
 			Iterator<ZipResource> iter= fChildren.values().iterator();
-			for (int i= 0; iter.hasNext(); i++)
+			for (int i= 0; iter.hasNext(); i++) {
 				children[i]= iter.next();
+			}
 			return children;
 		}
 
 		ZipFile createContainer(String path) {
 			String entry= path;
 			int pos= path.indexOf('/');
-			if (pos < 0)
+			if (pos < 0) {
 				pos= path.indexOf('\\');
+			}
 			if (pos >= 0) {
 				entry= path.substring(0, pos);
 				path= path.substring(pos + 1);
 			} else if (entry.length() > 0) {
-				if (CompareUIPlugin.getDefault().filter(path, false, true))
+				if (CompareUIPlugin.getDefault().filter(path, false, true)) {
 					return null;
+				}
 				ZipFile ze= new ZipFile(entry);
 				fChildren.put(entry, ze);
 				return ze;
-			} else
+			} else {
 				return null;
+			}
 
 			ZipFolder folder= null;
 			if (fChildren != null) {
 				Object o= fChildren.get(entry);
-				if (o instanceof ZipFolder)
+				if (o instanceof ZipFolder) {
 					folder= (ZipFolder) o;
+				}
 			}
 
 			if (folder == null) {
-				if (path.length() > 0 && CompareUIPlugin.getDefault().filter(path, true, true))
+				if (path.length() > 0 && CompareUIPlugin.getDefault().filter(path, true, true)) {
 					return null;
+				}
 				folder= new ZipFolder(entry);
 				fChildren.put(entry, folder);
 			}
@@ -149,8 +156,9 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		public String getType() {
 			String s= this.getName();
 			int pos= s.lastIndexOf('.');
-			if (pos >= 0)
+			if (pos >= 0) {
 				return s.substring(pos + 1);
+			}
 			return ITypedElement.UNKNOWN_TYPE;
 		}
 
@@ -161,8 +169,9 @@ public class ZipFileStructureCreator implements IStructureCreator {
 
 		@Override
 		public InputStream getContents() {
-			if (fContents == null)
+			if (fContents == null) {
 				fContents= new byte[0];
+			}
 			return new ByteArrayInputStream(fContents);
 		}
 
@@ -177,11 +186,13 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		void appendBytes(byte[] buffer, int length) {
 			if (length > 0) {
 				int oldLen= 0;
-				if (fContents != null)
+				if (fContents != null) {
 					oldLen= fContents.length;
+				}
 				byte[] newBuf= new byte[oldLen + length];
-				if (oldLen > 0)
+				if (oldLen > 0) {
 					System.arraycopy(fContents, 0, newBuf, 0, oldLen);
+				}
 				System.arraycopy(buffer, 0, newBuf, oldLen, length);
 				fContents= newBuf;
 			}
@@ -216,8 +227,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 
 		InputStream is= null;
 
-		if (input instanceof IStreamContentAccessor) {
-			IStreamContentAccessor sca= (IStreamContentAccessor) input;
+		if (input instanceof IStreamContentAccessor sca) {
 			try {
 				is= sca.getContents();
 			} catch (CoreException ex) {
@@ -225,16 +235,18 @@ public class ZipFileStructureCreator implements IStructureCreator {
 			}
 		}
 
-		if (is == null)
+		if (is == null) {
 			return null;
+		}
 
 		ZipInputStream zip= new ZipInputStream(is);
 		ZipFolder root= new ZipFolder(""); //$NON-NLS-1$
 		try {
 			for (;;) {
 				ZipEntry entry= zip.getNextEntry();
-				if (entry == null)
+				if (entry == null) {
 					break;
+				}
 
 				ZipFile ze= root.createContainer(entry.getName());
 				if (ze != null) {
@@ -282,8 +294,9 @@ public class ZipFileStructureCreator implements IStructureCreator {
 	public String getContents(Object o, boolean ignoreWhitespace) {
 		if (o instanceof ZipFile) {
 			byte[] bytes= ((ZipFile)o).getBytes();
-			if (bytes != null)
+			if (bytes != null) {
 				return new String(bytes);
+			}
 			return ""; //$NON-NLS-1$
 		}
 		return null;

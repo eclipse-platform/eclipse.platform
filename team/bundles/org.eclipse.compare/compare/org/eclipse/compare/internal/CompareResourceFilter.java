@@ -38,14 +38,18 @@ public class CompareResourceFilter {
 	public boolean filter(String path0, boolean folder, boolean isArchive) {
 		if (!folder && fExtraResourceFileFilters != null) {
 			char[] name= path0.toCharArray();
-			for (char[] filter : fExtraResourceFileFilters)
-				if (match(filter, name, true))
+			for (char[] filter : fExtraResourceFileFilters) {
+				if (match(filter, name, true)) {
 					return true;
+				}
+			}
 		}
 		if (folder && fExtraResourceFolderFilters != null) {
-			for (String filter : fExtraResourceFolderFilters)
-				if (filter.equals(path0))
+			for (String filter : fExtraResourceFolderFilters) {
+				if (filter.equals(path0)) {
 					return true;
+				}
+			}
 		}
 		return false;
 	}
@@ -80,22 +84,26 @@ public class CompareResourceFilter {
 		} else {
 			int fileCount= 0, folderCount= 0;
 			for (char[] filter : filters) {
-				if (filter.length == 0)
+				if (filter.length == 0) {
 					continue;
-				if (filter[filter.length - 1] == '/')
+				}
+				if (filter[filter.length - 1] == '/') {
 					folderCount++;
-				else
+				} else {
 					fileCount++;
+				}
 			}
 			fExtraResourceFileFilters= new char[fileCount][];
 			fExtraResourceFolderFilters= new String[folderCount];
 			for (char[] filter : filters) {
-				if (filter.length == 0)
+				if (filter.length == 0) {
 					continue;
-				if (filter[filter.length - 1] == '/')
+				}
+				if (filter[filter.length - 1] == '/') {
 					fExtraResourceFolderFilters[--folderCount]= new String(subarray(filter, 0, filter.length - 1));
-				else
+				} else {
 					fExtraResourceFileFilters[--fileCount]= filter;
+				}
 			}
 		}
 	}
@@ -106,8 +114,9 @@ public class CompareResourceFilter {
 		StringTokenizer tok= new StringTokenizer(text, separator);
 		int nTokens= tok.countTokens();
 		String[] res= new String[nTokens];
-		for (int i= 0; i < res.length; i++)
+		for (int i= 0; i < res.length; i++) {
 			res[i]= tok.nextToken().trim();
+		}
 		return res;
 	}
 
@@ -156,10 +165,12 @@ public class CompareResourceFilter {
 	 * @return true if the pattern matches the given name, false otherwise
 	 */
 	private boolean match(char[] pattern, char[] name, boolean isCaseSensitive) {
-		if (name == null)
+		if (name == null) {
 			return false; // null name cannot match
-		if (pattern == null)
+		}
+		if (pattern == null) {
 			return true; // null pattern is equivalent to '*'
+		}
 		return match(pattern, 0, pattern.length, name, 0, name.length, isCaseSensitive);
 	}
 
@@ -209,21 +220,26 @@ public class CompareResourceFilter {
 	 */
 	private boolean match(char[] pattern, int patternStart, int patternEnd, char[] name, int nameStart, int nameEnd,
 			boolean isCaseSensitive) {
-		if (name == null)
+		if (name == null) {
 			return false; // null name cannot match
-		if (pattern == null)
+		}
+		if (pattern == null) {
 			return true; // null pattern is equivalent to '*'
+		}
 		int iPattern= patternStart;
 		int iName= nameStart;
-		if (patternEnd < 0)
+		if (patternEnd < 0) {
 			patternEnd= pattern.length;
-		if (nameEnd < 0)
+		}
+		if (nameEnd < 0) {
 			nameEnd= name.length;
+		}
 		/* check first segment */
 		char patternChar= 0;
 		while ((iPattern < patternEnd) && (patternChar= pattern[iPattern]) != '*') {
-			if (iName == nameEnd)
+			if (iName == nameEnd) {
 				return false;
+			}
 			if (patternChar != (isCaseSensitive ? name[iName] : Character.toLowerCase(name[iName])) && patternChar != '?') {
 				return false;
 			}
@@ -315,31 +331,38 @@ public class CompareResourceFilter {
 	 */
 	private char[][] splitAndTrimOn(char divider, char[] array) {
 		int length= array == null ? 0 : array.length;
-		if (length == 0)
+		if (length == 0) {
 			return NO_CHAR_CHAR;
+		}
 		int wordCount= 1;
-		for (int i= 0; i < length; i++)
-			if (array[i] == divider)
+		for (int i= 0; i < length; i++) {
+			if (array[i] == divider) {
 				wordCount++;
+			}
+		}
 		char[][] split= new char[wordCount][];
 		int last= 0, currentWord= 0;
 		for (int i= 0; i < length; i++) {
 			if (array[i] == divider) {
 				int start= last, end= i - 1;
-				while (start < i && array[start] == ' ')
+				while (start < i && array[start] == ' ') {
 					start++;
-				while (end > start && array[end] == ' ')
+				}
+				while (end > start && array[end] == ' ') {
 					end--;
+				}
 				split[currentWord]= new char[end - start + 1];
 				System.arraycopy(array, start, split[currentWord++], 0, end - start + 1);
 				last= i + 1;
 			}
 		}
 		int start= last, end= length - 1;
-		while (start < length && array[start] == ' ')
+		while (start < length && array[start] == ' ') {
 			start++;
-		while (end > start && array[end] == ' ')
+		}
+		while (end > start && array[end] == ' ') {
 			end--;
+		}
 		split[currentWord]= new char[end - start + 1];
 		System.arraycopy(array, start, split[currentWord++], 0, end - start + 1);
 		return split;
@@ -383,14 +406,18 @@ public class CompareResourceFilter {
 	 *                if the given array is null
 	 */
 	private char[] subarray(char[] array, int start, int end) {
-		if (end == -1)
+		if (end == -1) {
 			end= array.length;
-		if (start > end)
+		}
+		if (start > end) {
 			return null;
-		if (start < 0)
+		}
+		if (start < 0) {
 			return null;
-		if (end > array.length)
+		}
+		if (end > array.length) {
 			return null;
+		}
 		char[] result= new char[end - start];
 		System.arraycopy(array, start, result, 0, end - start);
 		return result;

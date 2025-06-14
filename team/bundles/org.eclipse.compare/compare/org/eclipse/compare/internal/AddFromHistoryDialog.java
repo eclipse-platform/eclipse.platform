@@ -78,8 +78,9 @@ public class AddFromHistoryDialog extends ResizableDialog {
 			} catch (CoreException e) {
 				// fall through
 			}
-			if (charset == null)
+			if (charset == null) {
 				charset= Utilities.getCharset(fFile);
+			}
 			return charset;
 		}
 		@Override
@@ -166,12 +167,14 @@ public class AddFromHistoryDialog extends ResizableDialog {
 
 		String iconName= Utilities.getString(fBundle, "dateIcon", "obj16/day_obj.svg"); //$NON-NLS-2$ //$NON-NLS-1$
 		ImageDescriptor id= CompareUIPlugin.getImageDescriptor(iconName);
-		if (id != null)
+		if (id != null) {
 			fDateImage= id.createImage();
+		}
 		iconName= Utilities.getString(fBundle, "timeIcon", "obj16/resource_obj.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 		id= CompareUIPlugin.getImageDescriptor(iconName);
-		if (id != null)
+		if (id != null) {
 			fTimeImage= id.createImage();
+		}
 	}
 
 	public boolean select(IContainer root, IFile[] inputFiles) {
@@ -187,8 +190,9 @@ public class AddFromHistoryDialog extends ResizableDialog {
 		final int count= inputFiles.length;
 		final IFile[] files= new IFile[count];
 		System.arraycopy(inputFiles, 0, files, 0, count);
-		if (count > 1)
+		if (count > 1) {
 			internalSort(files, 0, count-1);
+		}
 
 
 		String prefix= root.getFullPath().toString();
@@ -199,11 +203,13 @@ public class AddFromHistoryDialog extends ResizableDialog {
 
 				// ignore a recently deleted file at the same path as the
 				// container
-				if (path.equals(prefix))
+				if (path.equals(prefix)) {
 					continue;
+				}
 
-				if (path.startsWith(prefix))
+				if (path.startsWith(prefix)) {
 					path = path.substring(prefix.length() + 1);
+				}
 				TableItem ti = new TableItem(fMemberTable, SWT.NONE);
 				ti.setImage(CompareUI.getImage(file));
 				ti.setText(path);
@@ -239,10 +245,12 @@ public class AddFromHistoryDialog extends ResizableDialog {
 
 		vsplitter.addDisposeListener(
 			e -> {
-				if (fDateImage != null)
+				if (fDateImage != null) {
 					fDateImage.dispose();
-				if (fTimeImage != null)
+				}
+				if (fTimeImage != null) {
 					fTimeImage.dispose();
+				}
 			}
 		);
 
@@ -268,15 +276,16 @@ public class AddFromHistoryDialog extends ResizableDialog {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (e.detail == SWT.CHECK) {
-						if (e.item instanceof TableItem) {
-							TableItem ti= (TableItem) e.item;
-							if (ti.getChecked())
+						if (e.item instanceof TableItem ti) {
+							if (ti.getChecked()) {
 								fArrayList.add((FileHistory) ti.getData());
-							else
+							} else {
 								fArrayList.remove(ti.getData());
+							}
 
-							if (fCommitButton != null)
+							if (fCommitButton != null) {
 								fCommitButton.setEnabled(fArrayList.size() > 0);
+							}
 						}
 					} else {
 						handleMemberSelect(e.item);
@@ -318,7 +327,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 				return CompareUI.findContentViewer(oldViewer, input, this, fCompareConfiguration);
 			}
 		};
-		vsplitter.setWeights(new int[] { 30, 70 });
+		vsplitter.setWeights(30, 70);
 
 		return parent;
 	}
@@ -328,11 +337,11 @@ public class AddFromHistoryDialog extends ResizableDialog {
 	 */
 	private void handleMemberSelect(Widget w) {
 		Object data= null;
-		if (w != null)
+		if (w != null) {
 			data= w.getData();
-		if (data instanceof FileHistory) {
+		}
+		if (data instanceof FileHistory h) {
 
-			FileHistory h= (FileHistory) data;
 			fCurrentFileHistory= h;
 
 			IFile file= h.getFile();
@@ -351,8 +360,9 @@ public class AddFromHistoryDialog extends ResizableDialog {
 				}
 				fEditionTree.setRedraw(true);
 			}
-		} else
+		} else {
 			fCurrentFileHistory= null;
+		}
 	}
 
 	/*
@@ -360,16 +370,18 @@ public class AddFromHistoryDialog extends ResizableDialog {
 	 * It takes care of creating tree nodes for different dates.
 	 */
 	private void addEdition(HistoryInput input, boolean isSelected) {
-		if (fEditionTree == null || fEditionTree.isDisposed())
+		if (fEditionTree == null || fEditionTree.isDisposed()) {
 			return;
+		}
 
 		IFileState state= input.fFileState;
 
 		// find last day
 		TreeItem[] days= fEditionTree.getItems();
 		TreeItem lastDay= null;
-		if (days.length > 0)
+		if (days.length > 0) {
 			lastDay= days[days.length-1];
+		}
 
 		long ldate= state.getModificationTime();
 		long day= dayNumber(ldate);
@@ -381,15 +393,17 @@ public class AddFromHistoryDialog extends ResizableDialog {
 			long today= dayNumber(System.currentTimeMillis());
 
 			String formatKey;
-			if (day == today)
+			if (day == today) {
 				formatKey= "todayFormat"; //$NON-NLS-1$
-			else if (day == today-1)
+			} else if (day == today-1) {
 				formatKey= "yesterdayFormat"; //$NON-NLS-1$
-			else
+			} else {
 				formatKey= "dayFormat"; //$NON-NLS-1$
+			}
 			String pattern= Utilities.getString(fBundle, formatKey);
-			if (pattern != null)
+			if (pattern != null) {
 				df= MessageFormat.format(pattern, df);
+			}
 			lastDay.setText(df);
 			lastDay.setData(date);
 		}
@@ -424,14 +438,14 @@ public class AddFromHistoryDialog extends ResizableDialog {
 	private void feedContent(Widget w) {
 		if (fContentPane != null && !fContentPane.isDisposed()) {
 			Object o= w.getData();
-			if (o instanceof HistoryInput) {
-				HistoryInput selected= (HistoryInput) o;
+			if (o instanceof HistoryInput selected) {
 				fContentPane.setInput(selected);
 				fContentPane.setText(getEditionLabel(selected));
 				fContentPane.setImage(fTimeImage);
 
-				if (fCurrentFileHistory != null)
+				if (fCurrentFileHistory != null) {
 					fCurrentFileHistory.setSelected(selected.fFileState);
+				}
 			} else {
 				fContentPane.setInput(null);
 			}
@@ -440,10 +454,12 @@ public class AddFromHistoryDialog extends ResizableDialog {
 
 	protected String getEditionLabel(HistoryInput input) {
 		String format= Utilities.getString(fBundle, "historyEditionLabel", null);	//$NON-NLS-1$
-		if (format == null)
+		if (format == null) {
 			format= Utilities.getString(fBundle, "editionLabel");	//$NON-NLS-1$
-		if (format == null)
+		}
+		if (format == null) {
 			format= "x{0}";	//$NON-NLS-1$
+		}
 
 		long modDate= input.getModificationDate();
 		String date= DateFormat.getDateTimeInstance().format(new Date(modDate));
@@ -474,8 +490,9 @@ public class AddFromHistoryDialog extends ResizableDialog {
 			String s1= i < l1 ? ss1[i] : ""; //$NON-NLS-1$
 			String s2= i < l2 ? ss2[i] : ""; //$NON-NLS-1$
 			int rc= s1.compareToIgnoreCase(s2);
-			if (rc != 0)
+			if (rc != 0) {
 				return rc < 0;
+			}
 		}
 		return false;
 	}
@@ -487,11 +504,13 @@ public class AddFromHistoryDialog extends ResizableDialog {
 
 		IFile mid= keys[(left + right) / 2];
 		do {
-			while (greaterThan(keys[left], mid))
+			while (greaterThan(keys[left], mid)) {
 				left++;
+			}
 
-			while (greaterThan(mid, keys[right]))
+			while (greaterThan(mid, keys[right])) {
 				right--;
+			}
 
 			if (left <= right) {
 				IFile tmp= keys[left];
@@ -502,10 +521,12 @@ public class AddFromHistoryDialog extends ResizableDialog {
 			}
 		} while (left <= right);
 
-		if (original_left < right)
+		if (original_left < right) {
 			internalSort(keys, original_left, right);
+		}
 
-		if (left < original_right)
+		if (left < original_right) {
 			internalSort(keys, left, original_right);
+		}
 	}
 }

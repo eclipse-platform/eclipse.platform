@@ -131,8 +131,9 @@ public class DocumentMerger {
 
 			fLeftPos= createPosition(leftDoc, lRange, leftStart, leftEnd);
 			fRightPos= createPosition(rightDoc, rRange, rightStart, rightEnd);
-			if (ancestorDoc != null)
+			if (ancestorDoc != null) {
 				fAncestorPos= createPosition(ancestorDoc, aRange, ancestorStart, ancestorEnd);
+			}
 		}
 
 		public Position getPosition(char type) {
@@ -158,15 +159,19 @@ public class DocumentMerger {
 			boolean rightEmpty= fRightPos.length == 0;
 
 			if (fDirection == RangeDifference.LEFT) {
-				if (!leftEmpty && rightEmpty)
+				if (!leftEmpty && rightEmpty) {
 					return CompareMessages.TextMergeViewer_changeType_addition;
-				if (leftEmpty && !rightEmpty)
+				}
+				if (leftEmpty && !rightEmpty) {
 					return CompareMessages.TextMergeViewer_changeType_deletion;
+				}
 			} else {
-				if (leftEmpty && !rightEmpty)
+				if (leftEmpty && !rightEmpty) {
 					return CompareMessages.TextMergeViewer_changeType_addition;
-				if (!leftEmpty && rightEmpty)
+				}
+				if (!leftEmpty && rightEmpty) {
 					return CompareMessages.TextMergeViewer_changeType_deletion;
+				}
 			}
 			return CompareMessages.TextMergeViewer_changeType_change;
 		}
@@ -186,12 +191,14 @@ public class DocumentMerger {
 				int l= end-start;
 				if (range != null) {
 					int dl= range.length;
-					if (l > dl)
+					if (l > dl) {
 						l= dl;
+					}
 				} else {
 					int dl= doc.getLength();
-					if (start+l > dl)
+					if (start+l > dl) {
 						l= dl-start;
+					}
 				}
 
 				Position p= null;
@@ -214,28 +221,32 @@ public class DocumentMerger {
 		}
 
 		void add(Diff d) {
-			if (fDiffs == null)
+			if (fDiffs == null) {
 				fDiffs= new ArrayList<>();
+			}
 			fDiffs.add(d);
 		}
 
 		public boolean isDeleted() {
-			if (fAncestorPos != null && fAncestorPos.isDeleted())
+			if (fAncestorPos != null && fAncestorPos.isDeleted()) {
 				return true;
+			}
 			return fLeftPos.isDeleted() || fRightPos.isDeleted();
 		}
 
 		void setResolved(boolean r) {
 			fResolved= r;
-			if (r)
+			if (r) {
 				fDiffs= null;
+			}
 		}
 
 		public boolean isResolved() {
 			if (!fResolved && fDiffs != null) {
 				for (Diff d : fDiffs) {
-					if (!d.isResolved())
+					if (!d.isResolved()) {
 						return false;
+					}
 				}
 				return true;
 			}
@@ -243,12 +254,15 @@ public class DocumentMerger {
 		}
 
 		Position getPosition(int contributor) {
-			if (contributor == MergeViewerContentProvider.LEFT_CONTRIBUTOR)
+			if (contributor == MergeViewerContentProvider.LEFT_CONTRIBUTOR) {
 				return fLeftPos;
-			if (contributor == MergeViewerContentProvider.RIGHT_CONTRIBUTOR)
+			}
+			if (contributor == MergeViewerContentProvider.RIGHT_CONTRIBUTOR) {
 				return fRightPos;
-			if (contributor == MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR)
+			}
+			if (contributor == MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR) {
 				return fAncestorPos;
+			}
 			return null;
 		}
 
@@ -260,10 +274,12 @@ public class DocumentMerger {
 			if (h != null) {
 				int ds= h.getOffset();
 				int de= ds + h.getLength();
-				if ((start < de) && (end >= ds))
+				if ((start < de) && (end >= ds)) {
 					return true;
-				if ((start == docLength) && (start <= de) && (end >= ds))
+				}
+				if ((start == docLength) && (start <= de) && (end >= ds)) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -271,8 +287,9 @@ public class DocumentMerger {
 		public int getMaxDiffHeight() {
 			Point region= new Point(0, 0);
 			int h= getLineRange(getDocument(MergeViewerContentProvider.LEFT_CONTRIBUTOR), fLeftPos, region).y;
-			if (isThreeWay())
+			if (isThreeWay()) {
 				h= Math.max(h, getLineRange(getDocument(MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR), fAncestorPos, region).y);
+			}
 			return Math.max(h, getLineRange(getDocument(MergeViewerContentProvider.RIGHT_CONTRIBUTOR), fRightPos, region).y);
 		}
 
@@ -306,8 +323,9 @@ public class DocumentMerger {
 
 		private boolean intersectsRegion(int contributor, IRegion region) {
 			Position p = getPosition(contributor);
-			if (p != null)
+			if (p != null) {
 				return p.overlapsWith(region.getOffset(), region.getLength());
+			}
 			return false;
 		}
 
@@ -328,8 +346,9 @@ public class DocumentMerger {
 		}
 
 		public Iterator<Diff> childIterator() {
-			if (fDiffs == null)
+			if (fDiffs == null) {
 				return new ArrayList<Diff>().iterator();
+			}
 			return fDiffs.iterator();
 		}
 	}
@@ -348,8 +367,9 @@ public class DocumentMerger {
 		IDocument lDoc = getDocument(MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 		IDocument rDoc = getDocument(MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
 
-		if (lDoc == null || rDoc == null)
+		if (lDoc == null || rDoc == null) {
 			return;
+		}
 
 		Position lRegion= getRegion(MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 		Position rRegion= getRegion(MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
@@ -428,14 +448,15 @@ public class DocumentMerger {
 			return;
 		}
 
-		if (isCapped(sa, sl, sr))
+		if (isCapped(sa, sl, sr)) {
 			fInput.getCompareConfiguration().setProperty(
 					CompareContentViewerSwitchingPane.OPTIMIZED_ALGORITHM_USED,
 					Boolean.TRUE);
-		else
+		} else {
 			fInput.getCompareConfiguration().setProperty(
 					CompareContentViewerSwitchingPane.OPTIMIZED_ALGORITHM_USED,
 					Boolean.FALSE);
+		}
 
 		Optional<IIgnoreWhitespaceContributor> lDocIgnonerWhitespaceContributor = fInput
 				.createIgnoreWhitespaceContributor(lDoc);
@@ -482,8 +503,9 @@ public class DocumentMerger {
 
 					// Extract the string for each contributor.
 					String a= null;
-					if (sancestor != null)
+					if (sancestor != null) {
 						a= extract2(aDoc, sancestor, es.ancestorStart(), es.ancestorLength());
+					}
 					String s= extract2(lDoc, sleft, es.leftStart(), es.leftLength());
 					String d= extract2(rDoc, sright, es.rightStart(), es.rightLength());
 
@@ -511,12 +533,14 @@ public class DocumentMerger {
 					if (useChange(diff)) {
 						recordChangeDiff(diff);
 						if (s.length() > 0 && d.length() > 0) {
-							if (a == null && sancestor != null)
+							if (a == null && sancestor != null) {
 								a= extract2(aDoc, sancestor, es.ancestorStart(), es.ancestorLength());
-							if (USE_MERGING_TOKEN_DIFF)
+							}
+							if (USE_MERGING_TOKEN_DIFF) {
 								mergingTokenDiff(diff, aDoc, a, rDoc, d, lDoc, s);
-							else
+							} else {
 								simpleTokenDiff(diff, aDoc, a, rDoc, d, lDoc, s);
+							}
 						}
 					}
 				}
@@ -527,15 +551,17 @@ public class DocumentMerger {
 
 	private boolean isCapped(DocLineComparator ancestor,
 			DocLineComparator left, DocLineComparator right) {
-		if (isCappingDisabled())
+		if (isCappingDisabled()) {
 			return false;
+		}
 		int aLength = ancestor == null? 0 : ancestor.getRangeCount();
 		int lLength = left.getRangeCount();
 		int rLength = right.getRangeCount();
 		if ((double) aLength * (double) lLength > LCS.TOO_LONG
 				|| (double) aLength * (double) rLength > LCS.TOO_LONG
-				|| (double) lLength * (double) rLength > LCS.TOO_LONG)
+				|| (double) lLength * (double) rLength > LCS.TOO_LONG) {
 			return true;
+		}
 		return false;
 	}
 
@@ -544,8 +570,9 @@ public class DocumentMerger {
 		IDocument aDoc= null;
 		IDocument lDoc= getDocument(MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 		IDocument rDoc= getDocument(MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
-		if (lDoc == null || rDoc == null)
+		if (lDoc == null || rDoc == null) {
 			return null;
+		}
 
 		Position aRegion= null;
 		Position lRegion= null;
@@ -553,8 +580,9 @@ public class DocumentMerger {
 
 		boolean threeWay= isThreeWay();
 
-		if (threeWay && !isIgnoreAncestor())
+		if (threeWay && !isIgnoreAncestor()) {
 			aDoc= getDocument(MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR);
+		}
 
 		boolean ignoreWhiteSpace= isIgnoreWhitespace();
 		ICompareFilter[] compareFilters = getCompareFilters();
@@ -564,9 +592,10 @@ public class DocumentMerger {
 		DocLineComparator sleft = new DocLineComparator(lDoc, toRegion(lRegion), ignoreWhiteSpace, compareFilters,
 				MergeViewerContentProvider.LEFT_CONTRIBUTOR, createIgnoreWhitespaceContributor(lDoc));
 		DocLineComparator sancestor= null;
-		if (aDoc != null)
+		if (aDoc != null) {
 			sancestor = new DocLineComparator(aDoc, toRegion(aRegion), ignoreWhiteSpace, compareFilters,
 					MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, createIgnoreWhitespaceContributor(aDoc));
+		}
 
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
@@ -614,8 +643,9 @@ public class DocumentMerger {
 					lDoc, lRegion, leftStart, leftEnd,
 					rDoc, rRegion, rightStart, rightEnd);
 
-				if (diff.isInRange(type, pos))
+				if (diff.isInRange(type, pos)) {
 					return diff;
+				}
 			}
 		}
 
@@ -678,23 +708,27 @@ public class DocumentMerger {
 	 * Returns true if kind of change should be shown.
 	 */
 	public boolean useChange(Diff diff) {
-		if (diff.fIsWhitespace)
+		if (diff.fIsWhitespace) {
 			return false;
+		}
 		int kind = diff.getKind();
 		return useChange(kind);
 	}
 
 	private boolean useChange(int kind) {
-		if ((kind == RangeDifference.NOCHANGE) || fInput.getCompareConfiguration().isChangeIgnored(kind))
+		if ((kind == RangeDifference.NOCHANGE) || fInput.getCompareConfiguration().isChangeIgnored(kind)) {
 			return false;
-		if (kind == RangeDifference.ANCESTOR)
+		}
+		if (kind == RangeDifference.ANCESTOR) {
 			return fInput.isShowPseudoConflicts();
+		}
 		return true;
 	}
 
 	private int getTokenEnd(ITokenComparator tc, int start, int count) {
-		if (count <= 0)
+		if (count <= 0) {
 			return tc.getTokenStart(start);
+		}
 		int index= start + count - 1;
 		return tc.getTokenStart(index) + tc.getTokenLength(index);
 	}
@@ -745,8 +779,9 @@ public class DocumentMerger {
 	}
 
 	private static IRegion toRegion(Position position) {
-		if (position != null)
+		if (position != null) {
 			return new Region(position.getOffset(), position.getLength());
+		}
 		return null;
 	}
 
@@ -788,8 +823,9 @@ public class DocumentMerger {
 			for (; i < r.length; i++) {
 				es= r[i];
 				try {
-					if ((leftLine != leftDoc.getLineOfOffset(leftStart+sy.getTokenStart(es.leftStart()))) || (rightLine != rightDoc.getLineOfOffset(rightStart+sm.getTokenStart(es.rightStart()))))
+					if ((leftLine != leftDoc.getLineOfOffset(leftStart+sy.getTokenStart(es.leftStart()))) || (rightLine != rightDoc.getLineOfOffset(rightStart+sm.getTokenStart(es.rightStart())))) {
 						break;
+					}
 				} catch (BadLocationException e) {
 					// silently ignored
 				}
@@ -908,8 +944,9 @@ public class DocumentMerger {
 	}
 
 	private void resetPositions(IDocument doc) {
-		if (doc == null)
+		if (doc == null) {
 			return;
+		}
 		try {
 			doc.removePositionCategory(DIFF_RANGE_CATEGORY);
 		} catch (BadPositionCategoryException e) {
@@ -977,8 +1014,9 @@ public class DocumentMerger {
 			}
 			// If the element falls within a diff, highlight that diff
 			// Otherwise, highlight the first diff after the elements position
-			if ((diffPos.offset + diffPos.length >= p.offset && diff.fDirection != RangeDifference.NOCHANGE) || (diffPos.offset >= p.offset))
+			if ((diffPos.offset + diffPos.length >= p.offset && diff.fDirection != RangeDifference.NOCHANGE) || (diffPos.offset >= p.offset)) {
 				return diff;
+			}
 		}
 		return null;
 	}
@@ -994,8 +1032,9 @@ public class DocumentMerger {
 	 */
 	public int realToVirtualPosition(char contributor, int vpos) {
 
-		if (fAllDiffs == null)
+		if (fAllDiffs == null) {
 			return vpos;
+		}
 
 		int viewPos= 0;		// real view position
 		int virtualPos= 0;	// virtual position
@@ -1009,10 +1048,11 @@ public class DocumentMerger {
 			if (vpos <= viewPos + realHeight) {	// OK, found!
 				vpos-= viewPos;	// make relative to this slot
 				// now scale position within this slot to virtual slot
-				if (realHeight <= 0)
+				if (realHeight <= 0) {
 					vpos= 0;
-				else
+				} else {
 					vpos= (vpos*virtualHeight)/realHeight;
+				}
 				return virtualPos+vpos;
 			}
 			viewPos+= realHeight;
@@ -1027,8 +1067,9 @@ public class DocumentMerger {
 	 */
 	public int virtualToRealPosition(char contributor, int v) {
 
-		if (fAllDiffs == null)
+		if (fAllDiffs == null) {
 			return v;
+		}
 
 		int virtualPos= 0;
 		int viewPos= 0;
@@ -1083,16 +1124,19 @@ public class DocumentMerger {
 		if (diff != null) {
 			switch (type) {
 			case MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR:
-				if (diff.fAncestorPos != null)
+				if (diff.fAncestorPos != null) {
 					return diff.fAncestorPos.offset;
+				}
 				break;
 			case MergeViewerContentProvider.LEFT_CONTRIBUTOR:
-				if (diff.fLeftPos != null)
+				if (diff.fLeftPos != null) {
 					return diff.fLeftPos.offset;
+				}
 				break;
 			case MergeViewerContentProvider.RIGHT_CONTRIBUTOR:
-				if (diff.fRightPos != null)
+				if (diff.fRightPos != null) {
 					return diff.fRightPos.offset;
+				}
 				break;
 			default:
 				throw new IllegalArgumentException(Character.toString(type));
@@ -1102,8 +1146,9 @@ public class DocumentMerger {
 	}
 
 	public Diff[] getChangeDiffs(char contributor, IRegion region) {
-		if (fChangeDiffs == null)
+		if (fChangeDiffs == null) {
 			return new Diff[0];
+		}
 		List<Diff> intersectingDiffs = new ArrayList<>();
 		for (Diff diff : fChangeDiffs) {
 			Diff[] changeDiffs = diff.getChangeDiffs(contributor, region);
@@ -1114,8 +1159,9 @@ public class DocumentMerger {
 
 	public Diff findDiff(int viewportHeight, boolean synchronizedScrolling, Point size, int my) {
 		int virtualHeight= synchronizedScrolling ? getVirtualHeight() : getRightHeight();
-		if (virtualHeight < viewportHeight)
+		if (virtualHeight < viewportHeight) {
 			return null;
+		}
 
 		int yy, hh;
 		int y= 0;
@@ -1127,11 +1173,13 @@ public class DocumentMerger {
 
 					yy= (y*size.y)/virtualHeight;
 					hh= (h*size.y)/virtualHeight;
-					if (hh < 3)
+					if (hh < 3) {
 						hh= 3;
+					}
 
-					if (my >= yy && my < yy+hh)
+					if (my >= yy && my < yy+hh) {
 						return diff;
+					}
 				}
 				y+= h;
 			}
@@ -1144,20 +1192,23 @@ public class DocumentMerger {
 	}
 
 	public Iterator<Diff> changesIterator() {
-		if (fChangeDiffs == null)
+		if (fChangeDiffs == null) {
 			return new ArrayList<Diff>().iterator();
+		}
 		return fChangeDiffs.iterator();
 	}
 
 	public Iterator<Diff> rangesIterator() {
-		if (fAllDiffs == null)
+		if (fAllDiffs == null) {
 			return new ArrayList<Diff>().iterator();
+		}
 		return fAllDiffs.iterator();
 	}
 
 	public boolean isFirstChildDiff(char contributor, int childStart, Diff diff) {
-		if (!diff.hasChildren())
+		if (!diff.hasChildren()) {
 			return false;
+		}
 		Diff d = diff.fDiffs.get(0);
 		Position p= d.getPosition(contributor);
 		return (p.getOffset() >= childStart);
@@ -1165,8 +1216,9 @@ public class DocumentMerger {
 
 	public Diff getWrappedDiff(Diff diff, boolean down) {
 		if (fChangeDiffs != null && fChangeDiffs.size() > 0) {
-			if (down)
+			if (down) {
 				return fChangeDiffs.get(0);
+			}
 			return fChangeDiffs.get(fChangeDiffs.size()-1);
 		}
 		return null;
@@ -1219,11 +1271,13 @@ public class DocumentMerger {
 						if (APPEND_CONFLICT) {
 							s= toDoc.get(toStart, toLen);
 							String ls = TextUtilities.getDefaultLineDelimiter(toDoc);
-							if (!s.endsWith(ls))
+							if (!s.endsWith(ls)) {
 								s += ls;
+							}
 							s+= fromDoc.get(fromStart, fromLen);
-						} else
+						} else {
 							s= fromDoc.get(fromStart, fromLen);
+						}
 						break;
 					default:
 						// for example ERROR
@@ -1247,8 +1301,9 @@ public class DocumentMerger {
 	}
 
 	public int changesCount() {
-		if (fChangeDiffs == null)
+		if (fChangeDiffs == null) {
 			return 0;
+		}
 		return fChangeDiffs.size();
 	}
 
@@ -1256,10 +1311,12 @@ public class DocumentMerger {
 		if (hasChanges()) {
 			for (Iterator<Diff> iterator = changesIterator(); iterator.hasNext();) {
 				Diff diff = iterator.next();
-				if (diff.isDeleted() || diff.getKind() == RangeDifference.NOCHANGE)
+				if (diff.isDeleted() || diff.getKind() == RangeDifference.NOCHANGE) {
 					continue;
-				if (diff.overlaps(contributor, rangeStart, rangeEnd, getDocument(contributor).getLength()))
+				}
+				if (diff.overlaps(contributor, rangeStart, rangeEnd, getDocument(contributor).getLength())) {
 					return diff;
+				}
 			}
 		}
 		return null;
@@ -1276,14 +1333,16 @@ public class DocumentMerger {
 	}
 
 	private Diff findNext(char contributor, List<Diff> v, int start, int end, boolean deep) {
-		if (v == null)
+		if (v == null) {
 			return null;
+		}
 		for (Diff diff : v) {
 			Position p= diff.getPosition(contributor);
 			if (p != null) {
 				int startOffset= p.getOffset();
-				if (end < startOffset)  // <=
+				if (end < startOffset) { // <=
 					return diff;
+				}
 				if (deep && diff.hasChildren()) {
 					Diff d= null;
 					int endOffset= startOffset + p.getLength();
@@ -1292,8 +1351,9 @@ public class DocumentMerger {
 					} else if (end < endOffset) {
 						d= findNext(contributor, diff.fDiffs, start, end, deep);
 					}
-					if (d != null)
+					if (d != null) {
 						return d;
+					}
 				}
 			}
 		}
@@ -1305,8 +1365,9 @@ public class DocumentMerger {
 	}
 
 	private Diff findPrev(char contributor, List<Diff> v, int start, int end, boolean deep) {
-		if (v == null)
+		if (v == null) {
 			return null;
+		}
 		for (int i= v.size()-1; i >= 0; i--) {
 			Diff diff= v.get(i);
 			Position p= diff.getPosition(contributor);
@@ -1333,8 +1394,9 @@ public class DocumentMerger {
 						}
 						d= findPrev(contributor, diff.fDiffs, start, end, deep);
 					}
-					if (d != null)
+					if (d != null) {
 						return d;
+					}
 				}
 			}
 		}

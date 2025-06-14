@@ -43,10 +43,12 @@ public class WorkerJob extends Job {
 
 	private IStatus getResult(Worker w) {
 		Throwable[] errors = w.getErrors();
-		if (errors.length == 0)
+		if (errors.length == 0) {
 			return Status.OK_STATUS;
-		if (errors.length == 1)
+		}
+		if (errors.length == 1) {
 			return new Status(IStatus.ERROR, CompareUIPlugin.PLUGIN_ID, 0, errors[0].getMessage(), errors[0]);
+		}
 		List<IStatus> statii = new ArrayList<>();
 		for (Throwable throwable : errors) {
 			statii.add(new Status(IStatus.ERROR, CompareUIPlugin.PLUGIN_ID, 0, errors[0].getMessage(), throwable));

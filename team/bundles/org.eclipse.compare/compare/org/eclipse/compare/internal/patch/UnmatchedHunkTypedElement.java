@@ -41,15 +41,17 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 
 	@Override
 	public synchronized void addContentChangeListener(IContentChangeListener listener) {
-		if (changeNotifier == null)
+		if (changeNotifier == null) {
 			changeNotifier = new ContentChangeNotifier(this);
+		}
 		changeNotifier.addContentChangeListener(listener);
 	}
 
 	@Override
 	public synchronized void removeContentChangeListener(IContentChangeListener listener) {
-		if (changeNotifier != null)
+		if (changeNotifier != null) {
 			changeNotifier.removeContentChangeListener(listener);
+		}
 	}
 
 	@Override
@@ -68,8 +70,9 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	public void setContent(byte[] newContent) {
 		getPatcher().setManuallyMerged(getHunkResult().getHunk(), true);
 		getPatcher().cacheContents(getDiff(), newContent);
-		if (changeNotifier != null)
+		if (changeNotifier != null) {
 			changeNotifier.fireContentChanged();
+		}
 	}
 
 	private FilePatch2 getDiff() {
@@ -83,20 +86,23 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	@Override
 	public InputStream getContents() throws CoreException {
 		// If there are cached contents, use them
-		if (getPatcher().hasCachedContents(getDiff()))
+		if (getPatcher().hasCachedContents(getDiff())) {
 			return new ByteArrayInputStream(getPatcher().getCachedContents(getDiff()));
+		}
 		// Otherwise return the after state of the diff result
 		List<String> lines = getHunkResult().getDiffResult().getAfterLines();
 		String content = LineReader.createString(getHunkResult().getDiffResult().isPreserveLineDelimiters(), lines);
 		byte[] bytes = null;
-		if (getCharset() != null)
+		if (getCharset() != null) {
 			try {
 				bytes = content.getBytes(getCharset());
 			} catch (UnsupportedEncodingException e) {
 				CompareUIPlugin.log(e);
 			}
-		if (bytes == null)
+		}
+		if (bytes == null) {
 			bytes = content.getBytes();
+		}
 		return new ByteArrayInputStream(bytes);
 	}
 

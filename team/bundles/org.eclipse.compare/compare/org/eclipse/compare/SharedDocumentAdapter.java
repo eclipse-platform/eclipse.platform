@@ -69,8 +69,7 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 	}
 
 	private IFile getFile(Object element) {
-		if (element instanceof IResourceProvider) {
-			IResourceProvider rp = (IResourceProvider) element;
+		if (element instanceof IResourceProvider rp) {
 			IResource resource = rp.getResource();
 			if (resource instanceof IFile) {
 				return (IFile) resource;
@@ -112,11 +111,13 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 	@Override
 	public void disconnect(Object element) {
 		IEditorInput input = getDocumentKey(element);
-		if (input == null)
+		if (input == null) {
 			return;
+		}
 		IDocumentProvider provider = SharedDocumentAdapter.getDocumentProvider(input);
-		if (provider == null)
+		if (provider == null) {
 			return;
+		}
 		disconnect(provider, input);
 	}
 }
