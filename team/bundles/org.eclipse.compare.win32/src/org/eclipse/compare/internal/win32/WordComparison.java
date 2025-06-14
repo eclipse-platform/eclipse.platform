@@ -18,17 +18,6 @@ import java.util.Vector;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.ole.win32.OLE;
-import org.eclipse.swt.ole.win32.OleAutomation;
-import org.eclipse.swt.ole.win32.OleClientSite;
-import org.eclipse.swt.ole.win32.OleFrame;
-import org.eclipse.swt.ole.win32.Variant;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 
@@ -79,8 +68,9 @@ public class WordComparison {
 		Variant varResult = getVariantProperty(auto, name);
 		try {
 			OleAutomation automation = varResult.getAutomation();
-			if (automation != null)
+			if (automation != null) {
 				return automation;
+			}
 		} finally {
 			varResult.dispose();
 		}
@@ -92,8 +82,9 @@ public class WordComparison {
 		if (varResult != null) {
 			try {
 				OleAutomation result = varResult.getAutomation();
-				if (result != null)
+				if (result != null) {
 					return result;
+				}
 			} finally {
 				varResult.dispose();
 			}
@@ -106,8 +97,9 @@ public class WordComparison {
 		if (varResult != null) {
 			try {
 				OleAutomation result = varResult.getAutomation();
-				if (result != null)
+				if (result != null) {
 					return result;
+				}
 			} finally {
 				varResult.dispose();
 			}
@@ -134,7 +126,9 @@ public class WordComparison {
 		if (ids != null) {
 			return ids[0];
 		}
-		if(reference == null) throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_4, name)) ;
+		if(reference == null) {
+			throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_4, name)) ;
+		}
 
 		// the property was not retrieved at that point, try to get it from the reference object
 		ids = reference.getIDsOfNames(new String[] { name });
@@ -146,7 +140,9 @@ public class WordComparison {
 
 	private static int property(OleAutomation auto, String name) {
 		int[] ids = auto.getIDsOfNames(new String[] { name });
-		if (ids == null) throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_4, name));
+		if (ids == null) {
+			throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_4, name));
+		}
 		return ids[0];
 	}
 
@@ -205,8 +201,9 @@ public class WordComparison {
 				OleAutomation activeDocument = getActiveDocument(application);
 				try {
 					Variant varResult = invoke(activeDocument, document, "SaveAs", workingCopy); //$NON-NLS-1$
-					if (varResult == null)
+					if (varResult == null) {
 						throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_6, workingCopy));
+					}
 					varResult.dispose();
 				} finally {
 					closeDocument(activeDocument, document);
@@ -251,8 +248,9 @@ public class WordComparison {
 	private void compareDocument(OleAutomation document, String baseDocument, String revisedDocument) {
 		// Compare to the second document: compare = destination.Compare(p1)
 		Variant varResult = invoke(document, "Compare", baseDocument); //$NON-NLS-1$
-		if (varResult == null)
+		if (varResult == null) {
 			throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_9, baseDocument, revisedDocument));
+		}
 		varResult.dispose();
 	}
 
@@ -361,7 +359,9 @@ public class WordComparison {
 	}
 
 	public void saveAsDocument(String doc) {
-		if (site == null || site.isDisposed()) return;
+		if (site == null || site.isDisposed()) {
+			return;
+		}
 		if (inplace) {
 			site.deactivateInPlaceClient();
 			site.save(new File(doc), true);
@@ -415,8 +415,9 @@ public class WordComparison {
 	 */
 	protected void initializeWorkbenchMenus(IWorkbenchWindow window) {
 		//If there was an OLE Error or nothing has been created yet
-		if (frame == null || frame.isDisposed())
+		if (frame == null || frame.isDisposed()) {
 			return;
+		}
 		// Get the browser menu bar.  If one does not exist then
 		// create it.
 		Shell shell = frame.getShell();
@@ -434,13 +435,14 @@ public class WordComparison {
 		for (int i = 0; i < menuBar.getItemCount(); i++) {
 			MenuItem item = menuBar.getItem(i);
 			String id = ""; //$NON-NLS-1$
-			if (item.getData() instanceof IMenuManager)
+			if (item.getData() instanceof IMenuManager) {
 				id = ((IMenuManager) item.getData()).getId();
-			if (id.equals(IWorkbenchActionConstants.M_FILE))
+			}
+			if (id.equals(IWorkbenchActionConstants.M_FILE)) {
 				fileMenu[0] = item;
-			else if (id.equals(IWorkbenchActionConstants.M_WINDOW))
+			} else if (id.equals(IWorkbenchActionConstants.M_WINDOW)) {
 				windowMenu[0] = item;
-			else {
+			} else {
 				if (window.isApplicationMenu(id)) {
 					containerItems.addElement(item);
 				}
