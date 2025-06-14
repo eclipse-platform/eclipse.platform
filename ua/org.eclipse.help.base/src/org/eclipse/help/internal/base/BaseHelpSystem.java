@@ -127,8 +127,9 @@ public final class BaseHelpSystem {
 	}
 
 	public static synchronized HelpDisplay getHelpDisplay() {
-		if (getInstance().helpDisplay == null)
+		if (getInstance().helpDisplay == null) {
 			getInstance().helpDisplay = new HelpDisplay();
+		}
 		return getInstance().helpDisplay;
 	}
 
@@ -195,15 +196,16 @@ public final class BaseHelpSystem {
 	public static URL resolve(String href, boolean documentOnly) {
 		String url = null;
 		if (href == null || href.contains("://") //$NON-NLS-1$
-					|| isFileProtocol(href))
+					|| isFileProtocol(href)) {
 			url = href;
-		else {
+		} else {
 			BaseHelpSystem.ensureWebappRunning();
 			String base = getBase(documentOnly);
-			if (href.startsWith("/")) //$NON-NLS-1$
+			if (href.startsWith("/")) { //$NON-NLS-1$
 				url = base + href;
-			else
+			} else {
 				url = base + "/" + href; //$NON-NLS-1$
+			}
 		}
 		try {
 			return new URL(url);
@@ -325,8 +327,9 @@ public final class BaseHelpSystem {
 			Object o = c.getDeclaredConstructor().newInstance();
 			//Runnable runnable = null;
 			if (o instanceof ILiveHelpAction helpExt) {
-				if (arg != null)
+				if (arg != null) {
 					helpExt.setInitializationString(arg);
+				}
 				Thread runnableLiveHelp = new Thread(helpExt);
 				runnableLiveHelp.setDaemon(true);
 				runnableLiveHelp.start();

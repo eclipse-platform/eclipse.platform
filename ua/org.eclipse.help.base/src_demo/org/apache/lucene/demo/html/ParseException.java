@@ -133,7 +133,9 @@ public String getMessage() {
     String retval = "Encountered \""; //$NON-NLS-1$
     Token tok = currentToken.next;
     for (int i = 0; i < maxSize; i++) {
-      if (i != 0) retval += " "; //$NON-NLS-1$
+      if (i != 0) {
+		  retval += " "; //$NON-NLS-1$
+	  }
       if (tok.kind == 0) {
         retval += tokenImage[0];
         break;

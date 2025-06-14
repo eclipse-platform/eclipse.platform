@@ -86,9 +86,10 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 
 	@Override
 	public AdaptableTocsArray getRoot() {
-		if (root == null)
+		if (root == null) {
 			root = new AdaptableTocsArray(HelpPlugin.getTocManager().getTocs(
 					Platform.getNL()));
+		}
 		return root;
 	}
 
@@ -97,8 +98,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 	 */
 	@Override
 	public void addWorkingSet(WorkingSet workingSet) {
-		if (workingSet == null || workingSets.contains(workingSet))
+		if (workingSet == null || workingSets.contains(workingSet)) {
 			return;
+		}
 		workingSets.add(workingSet);
 		saveState();
 	}
@@ -132,8 +134,7 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 		if (this == object) {
 			return true;
 		}
-		if (object instanceof WorkingSetManager) {
-			WorkingSetManager workingSetManager = (WorkingSetManager) object;
+		if (object instanceof WorkingSetManager workingSetManager) {
 			return workingSetManager.workingSets.equals(workingSets);
 		}
 		return false;
@@ -144,14 +145,16 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 	 */
 	@Override
 	public WorkingSet getWorkingSet(String name) {
-		if (name == null || workingSets == null)
+		if (name == null || workingSets == null) {
 			return null;
+		}
 
 		Iterator<WorkingSet> iter = workingSets.iterator();
 		while (iter.hasNext()) {
 			WorkingSet workingSet = iter.next();
-			if (name.equals(workingSet.getName()))
+			if (name.equals(workingSet.getName())) {
 				return workingSet;
+			}
 		}
 		return null;
 	}
@@ -241,8 +244,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 		NodeList workingSets = parent.getChildNodes();
 
 		for (int i = 0; i < workingSets.getLength(); i++) {
-			if (workingSets.item(i).getNodeType() != Node.ELEMENT_NODE)
+			if (workingSets.item(i).getNodeType() != Node.ELEMENT_NODE) {
 				continue;
+			}
 
 			WorkingSet workingSet = restoreWorkingSet((Element) workingSets.item(i));
 			if (workingSet != null) {
@@ -269,8 +273,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 			for(int j = 0; j < items.getLength(); j++){
 				Element itemI = (Element) items.item(j);
 				String href = itemI.getAttribute("toc"); //$NON-NLS-1$
-				if (href == null || href.length() == 0)
+				if (href == null || href.length() == 0) {
 					continue;
+				}
 
 				String child_pos = itemI.getAttribute("topic"); //$NON-NLS-1$
 				int pos = -1;
@@ -283,8 +288,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 
 				AdaptableHelpResource toc = getAdaptableToc(href);
 
-				if (toc == null)
+				if (toc == null) {
 					return null;
+				}
 
 				if (pos == -1) {
 					// Create the adaptable toc.
@@ -292,8 +298,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 				} else {
 					// Create the adaptable topic
 					AdaptableTopic[] topics = (AdaptableTopic[]) toc.getChildren();
-					if (pos >= 0 && topics.length > pos)
+					if (pos >= 0 && topics.length > pos) {
 						helpResources.add(topics[pos]);
+					}
 				}
 			}
 		}
@@ -407,8 +414,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 	@Override
 	public AdaptableTopic getAdaptableTopic(String id) {
 
-		if (id == null || id.length() == 0)
+		if (id == null || id.length() == 0) {
 			return null;
+		}
 
 		// toc id's are hrefs: /pluginId/path/to/toc.xml
 		// topic id's are based on parent toc id and index of topic:
@@ -426,11 +434,13 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 
 			String tocStr = id.substring(0, id.lastIndexOf('_', len - 2));
 			AdaptableToc toc = getAdaptableToc(tocStr);
-			if (toc == null)
+			if (toc == null) {
 				return null;
+			}
 			IAdaptable[] topics = toc.getChildren();
-			if (index < 0 || index >= topics.length)
+			if (index < 0 || index >= topics.length) {
 				return null;
+			}
 			return (AdaptableTopic) topics[index];
 		}
 
@@ -481,8 +491,9 @@ public class WorkingSetManager implements IHelpWorkingSetManager {
 		if(null != allCriteriaValues){
 			for(Iterator<String> iter = allCriteriaValues.keySet().iterator(); iter.hasNext();){
 				String criterion = iter.next();
-				if(null == criterion || 0 == criterion.length() || 0 == getCriterionValueIds(criterion).length)
+				if(null == criterion || 0 == criterion.length() || 0 == getCriterionValueIds(criterion).length) {
 					continue;
+				}
 				criterionIds.add(criterion);
 			}
 			criterionIds.sort(null);

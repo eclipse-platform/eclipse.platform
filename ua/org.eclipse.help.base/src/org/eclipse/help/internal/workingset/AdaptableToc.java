@@ -34,8 +34,9 @@ public class AdaptableToc extends AdaptableHelpResource {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IToc.class)
+		if (adapter == IToc.class) {
 			return (T) element;
+		}
 		return super.getAdapter(adapter);
 	}
 

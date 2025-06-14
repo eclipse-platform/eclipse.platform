@@ -79,13 +79,15 @@ public class LocalSearchManager {
 
 		public boolean matches(String extension) {
 			String ext = element.getAttribute("extensions"); //$NON-NLS-1$
-			if (ext == null)
+			if (ext == null) {
 				return false;
+			}
 			StringTokenizer stok = new StringTokenizer(ext, ","); //$NON-NLS-1$
 			for (; stok.hasMoreTokens();) {
 				String token = stok.nextToken().trim();
-				if (token.equalsIgnoreCase(extension))
+				if (token.equalsIgnoreCase(extension)) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -126,12 +128,14 @@ public class LocalSearchManager {
 
 		public URL getIconURL() {
 			String relativePath = element.getAttribute("icon"); //$NON-NLS-1$
-			if (relativePath == null)
+			if (relativePath == null) {
 				return null;
+			}
 			String bundleId = element.getContributor().getName();
 			Bundle bundle = Platform.getBundle(bundleId);
-			if (bundle == null)
+			if (bundle == null) {
 				return null;
+			}
 			return FileLocator.find(bundle, IPath.fromOSString(relativePath), null);
 		}
 
@@ -206,16 +210,18 @@ public class LocalSearchManager {
 	private AnalyzerDescriptor getAnalyzer(String locale) {
 		// get an analyzer from cache
 		AnalyzerDescriptor analyzerDesc = analyzerDescriptors.get(locale);
-		if (analyzerDesc != null)
+		if (analyzerDesc != null) {
 			return analyzerDesc;
+		}
 
 		// obtain configured analyzer for this locale
 		analyzerDesc = new AnalyzerDescriptor(locale);
 		// save analyzer in the cache
 		analyzerDescriptors.put(locale, analyzerDesc);
 		String lang = analyzerDesc.getLang();
-		if (locale != null && !locale.equals(lang))
+		if (locale != null && !locale.equals(lang)) {
 			analyzerDescriptors.put(lang, analyzerDesc);
+		}
 
 		return analyzerDesc;
 	}
@@ -223,21 +229,24 @@ public class LocalSearchManager {
 	public static String trimQuery(String href) {
 		// trim the query
 		int qloc = href.indexOf('?');
-		if (qloc != -1)
+		if (qloc != -1) {
 			return href.substring(0, qloc);
+		}
 		return href;
 	}
 
 	public boolean isIndexable(String url) {
 		url = trimQuery(url);
 		ArrayList<ParticipantDescriptor> list = getParticipantDescriptors(getPluginId(url));
-		if (list == null)
+		if (list == null) {
 			return false;
+		}
 		int dotLoc = url.lastIndexOf('.');
 		String ext = url.substring(dotLoc + 1);
 		for (ParticipantDescriptor desc : list) {
-			if (desc.matches(ext))
+			if (desc.matches(ext)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -260,8 +269,9 @@ public class LocalSearchManager {
 	public static String getPluginId(String href) {
 		href = trimQuery(href);
 		// Assume the url is pluginID/path_to_topic.html
-		if (href.charAt(0) == '/')
+		if (href.charAt(0) == '/') {
 			href = href.substring(1);
+		}
 		int i = href.indexOf('/');
 		String pluginId = i == -1 ? "" : href.substring(0, i); //$NON-NLS-1$
 		pluginId = URLCoder.decode(pluginId);
@@ -323,13 +333,15 @@ public class LocalSearchManager {
 	 */
 	public SearchParticipant getParticipant(String pluginId, String fileName) {
 		ArrayList<ParticipantDescriptor> list = getParticipantDescriptors(pluginId);
-		if (list == null)
+		if (list == null) {
 			return null;
+		}
 		int dotLoc = fileName.lastIndexOf('.');
 		String ext = fileName.substring(dotLoc + 1);
 		for (ParticipantDescriptor desc : list) {
-			if (desc.matches(ext))
+			if (desc.matches(ext)) {
 				return desc.getParticipant();
+			}
 		}
 		return null;
 	}
@@ -386,8 +398,9 @@ public class LocalSearchManager {
 				SEARCH_PARTICIPANT_XP_FULLNAME);
 
 		for (IConfigurationElement element : elements) {
-			if (element.getName().equals("binding") || element.getName().equals("searchParticipant"))  //$NON-NLS-1$//$NON-NLS-2$
+			if (element.getName().equals("binding") || element.getName().equals("searchParticipant")) { //$NON-NLS-1$//$NON-NLS-2$
 				set.add(element.getContributor().getName());
+			}
 		}
 	}
 
@@ -413,35 +426,42 @@ public class LocalSearchManager {
 				// binding - locate the referenced participant
 				String refId = element.getAttribute("participantId"); //$NON-NLS-1$
 				for (IConfigurationElement rel : elements) {
-					if (!rel.getName().equals("searchParticipant")) //$NON-NLS-1$
+					if (!rel.getName().equals("searchParticipant")) { //$NON-NLS-1$
 						continue;
+					}
 					String id = rel.getAttribute("id"); //$NON-NLS-1$
 					// don't allow binding the global participants
-					if (rel.getAttribute("extensions") == null) //$NON-NLS-1$
+					if (rel.getAttribute("extensions") == null) { //$NON-NLS-1$
 						continue;
+					}
 					if (id != null && id.equals(refId)) {
 						// match
-						if (binding == null)
+						if (binding == null) {
 							binding = new ArrayList<>();
+						}
 						binding.add(rel);
 						break;
 					}
 				}
 			} else if (SEARCH_PARTICIPANT_XP_NAME.equals(element.getName())) {
 				// ignore global participant
-				if (element.getAttribute("extensions") == null) //$NON-NLS-1$
+				if (element.getAttribute("extensions") == null) { //$NON-NLS-1$
 					continue;
-				if (!isParticipantEnabled(String.valueOf(true).equals(element.getAttribute("headless")))) //$NON-NLS-1$
+				}
+				if (!isParticipantEnabled(String.valueOf(true).equals(element.getAttribute("headless")))) { //$NON-NLS-1$
 					continue;
-				if (list == null)
+				}
+				if (list == null) {
 					list = new ArrayList<>();
+				}
 				ParticipantDescriptor desc = new ParticipantDescriptor(element);
 				list.add(desc);
 				searchParticipantsById.put(desc.getId(), desc);
 			}
 		}
-		if (binding != null)
+		if (binding != null) {
 			list = addBoundDescriptors(list, binding);
+		}
 		return list;
 	}
 
@@ -455,17 +475,20 @@ public class LocalSearchManager {
 			Collection<ArrayList<ParticipantDescriptor>> collection = searchParticipantsByPlugin.values();
 			boolean found = false;
 			for (ArrayList<ParticipantDescriptor> participants : collection) {
-				if (found)
+				if (found) {
 					break;
-				if (participants == PARTICIPANTS_NOT_FOUND)
+				}
+				if (participants == PARTICIPANTS_NOT_FOUND) {
 					continue;
+				}
 				//ArrayList participants = (ArrayList) entry;
 				for (int j = 0; j < participants.size(); j++) {
 					ParticipantDescriptor desc = participants.get(j);
 					if (desc.contains(refEl)) {
 						// found the matching descriptor - add it to the list
-						if (list == null)
+						if (list == null) {
 							list = new ArrayList<>();
+						}
 						list.add(desc);
 						found = true;
 						break;
@@ -473,8 +496,9 @@ public class LocalSearchManager {
 				}
 			}
 			if (!found) {
-				if (list == null)
+				if (list == null) {
 					list = new ArrayList<>();
+				}
 				ParticipantDescriptor d = new ParticipantDescriptor(refEl);
 				list.add(d);
 				searchParticipantsById.put(d.getId(), d);
@@ -496,8 +520,9 @@ public class LocalSearchManager {
 		ArrayList<SearchParticipant> result = new ArrayList<>();
 		for (ParticipantDescriptor desc : globalSearchParticipants) {
 			SearchParticipant p = desc.getParticipant();
-			if (p != null)
+			if (p != null) {
 				result.add(p);
+			}
 		}
 		return result.toArray(new SearchParticipant[result.size()]);
 	}
@@ -511,12 +536,15 @@ public class LocalSearchManager {
 		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
 				SEARCH_PARTICIPANT_XP_FULLNAME);
 		for (IConfigurationElement element : elements) {
-			if (!element.getName().equals(SEARCH_PARTICIPANT_XP_NAME))
+			if (!element.getName().equals(SEARCH_PARTICIPANT_XP_NAME)) {
 				continue;
-			if (element.getAttribute("extensions") != null) //$NON-NLS-1$
+			}
+			if (element.getAttribute("extensions") != null) { //$NON-NLS-1$
 				continue;
-			if (!isParticipantEnabled(String.valueOf(true).equals(element.getAttribute("headless")))) //$NON-NLS-1$
+			}
+			if (!isParticipantEnabled(String.valueOf(true).equals(element.getAttribute("headless")))) { //$NON-NLS-1$
 				continue;
+			}
 			ParticipantDescriptor desc = new ParticipantDescriptor(element);
 			globalSearchParticipants.add(desc);
 		}
@@ -526,12 +554,14 @@ public class LocalSearchManager {
 		ArrayList<ParticipantDescriptor> result = searchParticipantsByPlugin.get(pluginId);
 		if (result == null) {
 			result = getBindingsForPlugin(pluginId, null, SEARCH_PARTICIPANT_XP_FULLNAME);
-			if (result == null)
+			if (result == null) {
 				result = PARTICIPANTS_NOT_FOUND;
+			}
 			searchParticipantsByPlugin.put(pluginId, result);
 		}
-		if (result == PARTICIPANTS_NOT_FOUND)
+		if (result == PARTICIPANTS_NOT_FOUND) {
 			return null;
+		}
 		return result;
 	}
 
