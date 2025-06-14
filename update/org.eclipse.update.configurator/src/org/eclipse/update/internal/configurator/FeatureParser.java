@@ -66,12 +66,13 @@ public class FeatureParser extends DefaultHandler {
 		} catch (SAXException e) {
 		} catch (IOException e) {
 		} finally {
-			if (in != null)
+			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException e1) {
 					Utils.log(e1.getLocalizedMessage());
 				}
+			}
 		}
 		return feature;
 	}
@@ -113,10 +114,11 @@ public class FeatureParser extends DefaultHandler {
 			String ws = attributes.getValue("ws"); //$NON-NLS-1$
 			String nl = attributes.getValue("nl"); //$NON-NLS-1$
 			String arch = attributes.getValue("arch"); //$NON-NLS-1$
-			if (!Utils.isValidEnvironment(os, ws, arch, nl))
+			if (!Utils.isValidEnvironment(os, ws, arch, nl)) {
 				return;
 //			String exclusive = attributes.getValue("exclusive"); //$NON-NLS-1$
 //			String affinity = attributes.getValue("colocation-affinity"); //$NON-NLS-1$
+			}
 
 			String primary = attributes.getValue("primary"); //$NON-NLS-1$
 			boolean isPrimary = "true".equals(primary); //$NON-NLS-1$

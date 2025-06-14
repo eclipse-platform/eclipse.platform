@@ -47,7 +47,6 @@ public interface IConfigurationConstants {
 	public static final String CFG_TRANSIENT = "transient"; //$NON-NLS-1$
 	public static final String VERSION = "3.0"; //$NON-NLS-1$
 
-	@SuppressWarnings("removal")
 	public static final int DEFAULT_POLICY_TYPE = org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.USER_EXCLUDE;
 	public static final String[] DEFAULT_POLICY_LIST = new String[0];
 
