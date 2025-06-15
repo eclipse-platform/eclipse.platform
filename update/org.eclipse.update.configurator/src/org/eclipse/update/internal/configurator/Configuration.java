@@ -10,7 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     James D Miles (IBM Corp.) - bug 176250, Configurator needs to handle more platform urls 
+ *     James D Miles (IBM Corp.) - bug 176250, Configurator needs to handle more platform urls
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
 
@@ -25,7 +25,7 @@ import org.eclipse.update.configurator.*;
 import org.w3c.dom.*;
 
 public class Configuration implements IConfigurationConstants {
-	
+
 	private final HashMap<String, SiteEntry> sites = new HashMap<>();
 	private final HashMap<String, URL> platformURLs = new HashMap<>();
 	private Date date;
@@ -35,7 +35,7 @@ public class Configuration implements IConfigurationConstants {
 	private boolean isDirty;
 	private Configuration linkedConfig; // shared configuration
 	private URL associatedInstallURL = Utils.getInstallURL();
-	
+
 	public Configuration() {
 		this(new Date());
 		// the config is created now or out of a platform.xml without a date
@@ -44,37 +44,38 @@ public class Configuration implements IConfigurationConstants {
 	public Configuration(Date date)  {
 		this.date = date;
 	}
-	
+
 	public void setURL(URL url) {
 		this.url = url;
 	}
-	
+
 	public URL getURL() {
 		return url;
 	}
-	
+
 	public void setLinkedConfig(Configuration linkedConfig) {
 		this.linkedConfig = linkedConfig;
 		// make all the sites read-only
-		for (SiteEntry linkedSite : linkedConfig.getSites())
+		for (SiteEntry linkedSite : linkedConfig.getSites()) {
 			linkedSite.setUpdateable(false);
+		}
 	}
-	
+
 	public Configuration getLinkedConfig() {
 		return linkedConfig;
 	}
-	
+
 	/**
 	 * @return true if the config needs to be saved
 	 */
 	public boolean isDirty() {
 		return isDirty;
 	}
-	
+
 	public void setDirty(boolean dirty) {
 		isDirty = dirty;
 	}
-	
+
 	public void addSiteEntry(String url, SiteEntry site) {
 		url = Utils.canonicalizeURL(url);
 		// only add the same site once
@@ -92,7 +93,7 @@ public class Configuration implements IConfigurationConstants {
 					}else{
 						relSite = getInstallURL();
 					}
-					
+
 					pURL = new URL(url);
 					URL rURL = PlatformConfiguration.resolvePlatformURL(pURL, relSite);
 					String resolvedURL = rURL.toExternalForm();
@@ -103,9 +104,9 @@ public class Configuration implements IConfigurationConstants {
 			}
 		}
 	}
-	
+
 	public void removeSiteEntry(String url) {
-		url =Utils.canonicalizeURL(url);		
+		url =Utils.canonicalizeURL(url);
 		sites.remove(url);
 		if(url.startsWith("platform:")){ //$NON-NLS-1$
 			URL pURL;
@@ -118,7 +119,7 @@ public class Configuration implements IConfigurationConstants {
 				}else{
 					relSite = getInstallURL();
 				}
-				
+
 				pURL = new URL(url);
 				URL rURL = PlatformConfiguration.resolvePlatformURL(pURL, relSite);
 				String resolvedURL = rURL.toExternalForm();
@@ -128,24 +129,26 @@ public class Configuration implements IConfigurationConstants {
 			}
 		}
 	}
-	
+
 	public SiteEntry getSiteEntry(String url) {
-		url = Utils.canonicalizeURL(url);		
+		url = Utils.canonicalizeURL(url);
 		SiteEntry site = sites.get(url);
-		if (site == null && linkedConfig != null)
+		if (site == null && linkedConfig != null) {
 			site = linkedConfig.getSiteEntry(url);
+		}
 		return site;
 	}
-	
+
 	public SiteEntry[] getSites() {
-		if (linkedConfig == null)
+		if (linkedConfig == null) {
 			return sites.values().toArray(new SiteEntry[sites.size()]);
+		}
 		ArrayList<SiteEntry> combinedSites = new ArrayList<>(sites.values());
 		combinedSites.addAll(linkedConfig.sites.values());
 		return combinedSites.toArray(new SiteEntry[combinedSites.size()]);
 	}
-	
-	public Element toXML(Document doc) throws CoreException {	
+
+	public Element toXML(Document doc) throws CoreException {
 		try {
 			Element configElement = doc.createElement(CFG);
 
@@ -153,58 +156,61 @@ public class Configuration implements IConfigurationConstants {
 			configElement.setAttribute(CFG_DATE, String.valueOf(date.getTime()));
 			String transitory = isTransient() ? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$
 			configElement.setAttribute(CFG_TRANSIENT, transitory);
-						
+
 			if (linkedConfig != null) {
-				// make externalized URL install relative 
+				// make externalized URL install relative
 				configElement.setAttribute(CFG_SHARED_URL, Utils.makeRelative(getInstallURL(), linkedConfig.getURL()).toExternalForm());
 			}
 
 			// collect site entries
 			for (SiteEntry element : sites.values()) {
-				if (linkedConfig != null && linkedConfig.getSiteEntry(element.getURL().toExternalForm()) != null)
+				if (linkedConfig != null && linkedConfig.getSiteEntry(element.getURL().toExternalForm()) != null) {
 					continue;
+				}
 				Element siteElement = element.toXML(doc);
 				configElement.appendChild(siteElement);
 			}
-			
+
 			return configElement;
-			
+
 		} catch (Exception e) {
 			throw Utils.newCoreException("", e); //$NON-NLS-1$
-		} 
+		}
 	}
-	
+
 	public boolean isTransient() {
 		return transientConfig;
 	}
-	
+
 	public void setTransient(boolean isTransient) {
 		this.transientConfig = isTransient;
 	}
-	
+
 	public Date getDate() {
 		return date;
 	}
-	
+
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 	public boolean unconfigureFeatureEntry(IPlatformConfiguration.IFeatureEntry feature) {
-		for (SiteEntry site : getSites())
-			if (site.unconfigureFeatureEntry(feature))
+		for (SiteEntry site : getSites()) {
+			if (site.unconfigureFeatureEntry(feature)) {
 				return true;
+			}
+		}
 		return false;
 	}
-	
+
 	public void setLastModified(long lastModified) {
 		this.lastModified = lastModified;
 	}
-	
+
 	public long lastModified() {
 		return (lastModified != 0) ? lastModified : date.getTime();
 	}
-	
+
 	/**
 	 * Returns the url as a platform:/ url, if possible, else leaves it unchanged
 	 */
@@ -213,8 +219,9 @@ public class Configuration implements IConfigurationConstants {
 			if (url.getProtocol().equals("file")) {//$NON-NLS-1$
 				String rUrl = url.toExternalForm();
 				URL pUrl = platformURLs.get(rUrl);
-				if(pUrl == null)
+				if(pUrl == null) {
 					return url;
+				}
 				return pUrl;
 			}
 			return url;
@@ -222,11 +229,11 @@ public class Configuration implements IConfigurationConstants {
 			return url;
 		}
 	}
-		
+
 	public URL getInstallURL() {
 		return associatedInstallURL;
 	}
-		
+
 	public void setInstallLocation(URL installURL) {
 		associatedInstallURL = installURL;
 	}

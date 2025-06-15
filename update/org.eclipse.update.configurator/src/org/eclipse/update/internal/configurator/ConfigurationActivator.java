@@ -50,10 +50,12 @@ public class ConfigurationActivator implements BundleActivator, IConfigurationCo
 		// all this is only to get the application args
 		DebugOptions service = null;
 		ServiceReference<DebugOptions> reference = context.getServiceReference(DebugOptions.class);
-		if (reference != null)
+		if (reference != null) {
 			service = context.getService(reference);
-		if (service == null)
+		}
+		if (service == null) {
 			return;
+		}
 		try {
 			DEBUG = service.getBooleanOption(OPTION_DEBUG, false);
 		} finally {
@@ -68,8 +70,9 @@ public class ConfigurationActivator implements BundleActivator, IConfigurationCo
 
 	private void acquireFrameworkLogService() {
 		ServiceReference<FrameworkLog> logServiceReference = context.getServiceReference(FrameworkLog.class);
-		if (logServiceReference == null)
+		if (logServiceReference == null) {
 			return;
+		}
 		Utils.log = context.getService(logServiceReference);
 	}
 }

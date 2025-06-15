@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.IPath;
 
 /**
  * The information within this object is obtained from the about INI file.
- * This file resides within an install configurations directory and must be a 
- * standard java property file.  
+ * This file resides within an install configurations directory and must be a
+ * standard java property file.
  * <p>
  * This class is not intended to be instantiated or subclassed by clients.
  * </p>
@@ -56,9 +56,9 @@ public final class AboutInfo {
 	}
 
 	/**
-	 * Returns the configuration information for the feature with the 
+	 * Returns the configuration information for the feature with the
 	 * given id.
-	 * 
+	 *
 	 * @param featureId the feature id
 	 * @param versionId the version id (of the feature)
 	 * @param pluginId the plug-in id
@@ -75,7 +75,7 @@ public final class AboutInfo {
 //			//return null;
 //			return new AboutInfo(featureId); // dummy about info
 //		}
-		
+
 		AboutInfo info = new AboutInfo(featureId);
 		Hashtable<String, String> runtimeMappings  = new Hashtable<>();
 		runtimeMappings.put("{featureVersion}", versionId); //$NON-NLS-1$
@@ -95,12 +95,12 @@ public final class AboutInfo {
 		info.tipsAndTricksHref = reader.getString("tipsAndTricksHref", false, runtimeMappings); //$NON-NLS-1$
 		return info;
 	}
-	
+
 	/**
-	 * Returns the URL for an image which can be shown in an "about" dialog 
-	 * for this product. Products designed to run "headless" typically would not 
+	 * Returns the URL for an image which can be shown in an "about" dialog
+	 * for this product. Products designed to run "headless" typically would not
 	 * have such an image.
-	 * 
+	 *
 	 * @return the URL for an about image, or <code>null</code> if none
 	 */
 	public URL getAboutImageURL() {
@@ -108,9 +108,9 @@ public final class AboutInfo {
 	}
 
 	/**
-	 * Returns the URL for an image which can be shown in an "about features" 
+	 * Returns the URL for an image which can be shown in an "about features"
 	 * dialog. Products designed to run "headless" typically would not have such an image.
-	 * 
+	 *
 	 * @return the URL for a feature image, or <code>null</code> if none
 	 */
 	public URL getFeatureImageURL() {
@@ -119,7 +119,7 @@ public final class AboutInfo {
 
 	/**
 	 * Returns the simple name of the feature image file.
-	 * 
+	 *
 	 * @return the simple name of the feature image file,
 	 * or <code>null</code> if none
 	 */
@@ -127,11 +127,11 @@ public final class AboutInfo {
 		if (featureImageURL != null) {
 			IPath path = IPath.fromOSString(featureImageURL.getPath());
 			return path.lastSegment();
-		} 
+		}
 		return null;
 	}
 
-		
+
 	/**
 	 * Returns a label for the feature plugn, or <code>null</code>.
 	 */
@@ -141,17 +141,17 @@ public final class AboutInfo {
 
 	/**
 	 * Returns the id for this feature.
-	 * 
+	 *
 	 * @return the feature id
 	 */
 	public String getFeatureId() {
 		return featureId;
 	}
-	
+
 	/**
 	 * Returns the text to show in an "about" dialog for this product.
 	 * Products designed to run "headless" typically would not have such text.
-	 * 
+	 *
 	 * @return the about text, or <code>null</code> if none
 	 */
 	public String getAboutText() {
@@ -204,7 +204,7 @@ public final class AboutInfo {
 	/**
 	 * Returns a <code>URL</code> for the welcome page.
 	 * Products designed to run "headless" typically would not have such an page.
-	 * 
+	 *
 	 * @return the welcome page, or <code>null</code> if none
 	 */
 	public URL getWelcomePageURL() {
@@ -214,7 +214,7 @@ public final class AboutInfo {
 	/**
 	 * Returns the ID of a perspective in which to show the welcome page.
 	 * May be <code>null</code>.
-	 * 
+	 *
 	 * @return the welcome page perspective id, or <code>null</code> if none
 	 */
 	public String getWelcomePerspectiveId() {
@@ -223,7 +223,7 @@ public final class AboutInfo {
 
 	/**
 	 * Returns a <code>String</code> for the tips and trick href.
-	 * 
+	 *
 	 * @return the tips and tricks href, or <code>null</code> if none
 	 */
 	public String getTipsAndTricksHref() {
@@ -233,19 +233,19 @@ public final class AboutInfo {
 	/**
 	 * Returns the image url for the window image to use for this product.
 	 * Products designed to run "headless" typically would not have such an image.
-	 * 
+	 *
 	 * @return the image url for the window image, or <code>null</code> if none
 	 */
 	public URL getWindowImageURL() {
 		return windowImageURL;
 	}
-	
+
 	/**
 	 * Return an array of image URLs for the window images to use for
 	 * this product. The expectations is that the elements will be the same
 	 * image rendered at different sizes. Products designed to run "headless"
 	 * typically would not have such images.
-	 * 
+	 *
 	 * @return an array of the image descriptors for the window images, or
 	 *         <code>null</code> if none
 	 * @since 3.0
