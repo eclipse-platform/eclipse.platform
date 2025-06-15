@@ -109,19 +109,23 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 
 		@Override
 		public void addToSummary(String text) {
-			if (summary.length() >= SUMMARY_LENGTH)
+			if (summary.length() >= SUMMARY_LENGTH) {
 				return;
-			if (summary.length() > 0)
+			}
+			if (summary.length() > 0) {
 				summary.append(" "); //$NON-NLS-1$
+			}
 			summary.append(text);
-			if (summary.length() > SUMMARY_LENGTH)
+			if (summary.length() > SUMMARY_LENGTH) {
 				summary.delete(SUMMARY_LENGTH, summary.length());
+			}
 		}
 
 		@Override
 		public void addText(String text) {
-			if (buffer.length() > 0)
+			if (buffer.length() > 0) {
 				buffer.append(" "); //$NON-NLS-1$
+			}
 			buffer.append(text);
 		}
 
@@ -168,8 +172,9 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 		public void endElement(String uri, String localName, String qName) throws SAXException {
 			handleEndElement(qName, data);
 			String top = stack.peek();
-			if (top != null && top.equals(qName))
+			if (top != null && top.equals(qName)) {
 				stack.pop();
+			}
 		}
 
 		@Override
@@ -189,15 +194,17 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 
 		@Override
 		public void characters(char[] characters, int start, int length) throws SAXException {
-			if (length == 0)
+			if (length == 0) {
 				return;
+			}
 			StringBuilder buff = new StringBuilder();
 			for (int i = 0; i < length; i++) {
 				buff.append(characters[start + i]);
 			}
 			String text = buff.toString();
-			if (text.trim().length() > 0)
+			if (text.trim().length() > 0) {
 				handleText(text, data);
+			}
 		}
 
 		/*
@@ -294,11 +301,13 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 			parser.parse(stream, handler);
 			doc.addContents(parsed.getContent());
 			String title = parsed.getTitle();
-			if (title != null)
+			if (title != null) {
 				addTitle(title, doc);
+			}
 			String summary = parsed.getSummary();
-			if (summary != null)
+			if (summary != null) {
 				doc.setSummary(summary);
+			}
 			if (hasFilters) {
 				doc.setHasFilters(true);
 			}
@@ -337,8 +346,9 @@ public abstract class SearchParticipantXML extends SearchParticipant {
 	protected String getElementStackPath() {
 		StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < stack.size(); i++) {
-			if (i > 0)
+			if (i > 0) {
 				buf.append("/"); //$NON-NLS-1$
+			}
 			buf.append(stack.get(i));
 		}
 		return buf.toString();

@@ -24,8 +24,9 @@ public class DefaultBrowserAdapter implements IBrowser {
 	private static DefaultBrowserAdapter fgInstance;
 
 	static DefaultBrowserAdapter getInstance() {
-		if (fgInstance == null)
+		if (fgInstance == null) {
 			fgInstance = new DefaultBrowserAdapter();
+		}
 		return fgInstance;
 	}
 

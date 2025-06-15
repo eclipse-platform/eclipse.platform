@@ -49,41 +49,48 @@ public class ProxyUtil {
 
 	public static IProxyData getProxy(URL url)
 	{
-		if (!isAuthConnSupported())
+		if (!isAuthConnSupported()) {
 			return null;
+		}
 
 		IProxyService service = ProxyManager.getProxyManager();
 		IProxyData data[];
 
-		if (!service.isProxiesEnabled())
+		if (!service.isProxiesEnabled()) {
 			return null;
+		}
 
 		try {
 			URI uri = url.toURI();
-			if (shouldBypass(uri))
+			if (shouldBypass(uri)) {
 				return null;
+			}
 			data = service.select(uri);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			return null;
 		}
 
-		if (data.length==0)
+		if (data.length==0) {
 			return null;
+		}
 		return data[0];
 	}
 
 	public static boolean shouldBypass(URI uri)
 	{
 		String host = uri.getHost();
-		if (host==null)
+		if (host==null) {
 			return true;
+		}
 
 		List<String> hosts = getProxyBypassHosts();
-		if (hosts.contains(host))
+		if (hosts.contains(host)) {
 			return true;
-		if ((host.equals("localhost") || host.equals("127.0.0.1")) && hosts.contains("<local>")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
+		if ((host.equals("localhost") || host.equals("127.0.0.1")) && hosts.contains("<local>")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			return true;
+		}
 		return false;
 	}
 
@@ -91,31 +98,36 @@ public class ProxyUtil {
 	public static List<String> getProxyBypassHosts()
 	{
 		List<String> hosts = new ArrayList<>();
-		if (!isAuthConnSupported())
+		if (!isAuthConnSupported()) {
 			return hosts;
+		}
 
 		IProxyService service = ProxyManager.getProxyManager();
 		String manuals[] = service.getNonProxiedHosts();
 		String natives[] = null;
-		if (service instanceof ProxyManager)
+		if (service instanceof ProxyManager) {
 			natives = ((ProxyManager)service).getNativeNonProxiedHosts();
+		}
 
 		Collections.addAll(hosts, manuals);
-		if (natives!=null)
+		if (natives!=null) {
 			Collections.addAll(hosts, natives);
+		}
 		return hosts;
 	}
 
 	public static URLConnection getConnection(URL url) throws IOException
 	{
 		IProxyData data = getProxy(url);
-		if (data==null)
+		if (data==null) {
 			return url.openConnection();
+		}
 
-		if (data.isRequiresAuthentication())
+		if (data.isRequiresAuthentication()) {
 			Authenticator.setDefault(new ProxyAuthenticator(data.getUserId(),data.getPassword()));
-		else
+		} else {
 			Authenticator.setDefault(null);
+		}
 
 		Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(data.getHost(), data.getPort()));
 		return url.openConnection(proxy);

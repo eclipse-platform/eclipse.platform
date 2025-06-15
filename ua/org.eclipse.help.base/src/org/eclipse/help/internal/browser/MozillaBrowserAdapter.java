@@ -70,8 +70,9 @@ public class MozillaBrowserAdapter implements IBrowser {
 
 	@Override
 	public void displayURL(String url) {
-		if (lastBrowserThread != null)
+		if (lastBrowserThread != null) {
 			lastBrowserThread.exitRequested = true;
+		}
 		if (setLocationPending || setSizePending) {
 			url = createPositioningURL(url);
 		}
@@ -124,10 +125,12 @@ public class MozillaBrowserAdapter implements IBrowser {
 				writer.println("<html><head>"); //$NON-NLS-1$
 				writer.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">"); //$NON-NLS-1$
 				writer.print("<title></title><script type=\"text/javascript\">"); //$NON-NLS-1$
-				if (setSizePending)
+				if (setSizePending) {
 					writer.print("window.resizeTo(" + width + "," + height + ");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				if (setLocationPending)
+				}
+				if (setLocationPending) {
 					writer.print("window.moveTo(" + x + "," + y + ");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				}
 				writer.print("location.replace(\"" + url + "\");"); //$NON-NLS-1$ //$NON-NLS-2$
 				writer.print("</script></head><body>"); //$NON-NLS-1$
 				writer.print("<a href=\"" + url + "\">--&gt;</a>"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -206,25 +209,29 @@ public class MozillaBrowserAdapter implements IBrowser {
 		public void run() {
 			// If browser is opening, wait until it fully opens,
 			waitForBrowser();
-			if (exitRequested)
+			if (exitRequested) {
 				return;
+			}
 			if (openBrowser(executable + " -remote openURL(" + url + ")") == 0) {//$NON-NLS-1$ //$NON-NLS-2$
 				return;
 			}
-			if (exitRequested)
+			if (exitRequested) {
 				return;
+			}
 			browserFullyOpenedAt = System.currentTimeMillis() + DELAY;
 			openBrowser(executable + " " + url); //$NON-NLS-1$
 		}
 
 		private void waitForBrowser() {
-			while (System.currentTimeMillis() < browserFullyOpenedAt)
+			while (System.currentTimeMillis() < browserFullyOpenedAt) {
 				try {
-					if (exitRequested)
+					if (exitRequested) {
 						return;
+					}
 					Thread.sleep(100);
 				} catch (InterruptedException ie) {
 				}
+			}
 		}
 	}
 }

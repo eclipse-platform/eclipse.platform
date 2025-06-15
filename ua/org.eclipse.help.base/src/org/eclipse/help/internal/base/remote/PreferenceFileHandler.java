@@ -80,25 +80,28 @@ public class PreferenceFileHandler {
 
 
 		// The size of any of the array elements should equal the number of remote infocenters
-		if (this.nameEntries == null)
+		if (this.nameEntries == null) {
 			this.numEntries = 0;
-		else
+		} else {
 			this.numEntries = this.nameEntries.length;
+		}
 	}
 
 	protected String[] getValues(String preferenceEntry, String appendString) {
 
-		if (numHostEntries==0) //preference equals ""
+		if (numHostEntries==0) { //preference equals ""
 			return  new String[0];//NEW
+		}
 
 		// Split the string and return an array of Strings
 		String [] currEntries;
 		String [] updatedArray=null;
 
-		if(!preferenceEntry.isEmpty())
+		if(!preferenceEntry.isEmpty()) {
 			currEntries=preferenceEntry.split(PREFERENCE_ENTRY_DELIMITER);
-		else
+		} else {
 			currEntries = new String[0];
+		}
 
 		if(currEntries.length!=numHostEntries) //Current Entry not equals to Hosts
 		{

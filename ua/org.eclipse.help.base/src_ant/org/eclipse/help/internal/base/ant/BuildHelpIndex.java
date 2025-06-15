@@ -48,24 +48,28 @@ public class BuildHelpIndex extends Task {
 	@Override
 	public void execute() throws BuildException {
 		File file = getFile(manifest);
-		if (file == null)
+		if (file == null) {
 			throw new BuildException("Manifest not set."); //$NON-NLS-1$
+		}
 		File target = getFile(destination);
-		if (target == null)
+		if (target == null) {
 			throw new BuildException("Target directory not set."); //$NON-NLS-1$
+		}
 		builder = new HelpIndexBuilder();
 		builder.setManifest(file);
 		builder.setDestination(target);
 		IProgressMonitor monitor = (IProgressMonitor) getProject()
 				.getReferences().get(AntCorePlugin.ECLIPSE_PROGRESS_MONITOR);
-		if (monitor == null)
+		if (monitor == null) {
 			monitor = new NullProgressMonitor();
+		}
 		try {
 			builder.execute(monitor);
 		} catch (CoreException e) {
 			printStatus(e);
-			if (e.getStatus().getSeverity()==IStatus.ERROR)
+			if (e.getStatus().getSeverity()==IStatus.ERROR) {
 				throw new BuildException(e.getMessage(), e.getCause());
+			}
 		}
 	}
 
@@ -81,16 +85,20 @@ public class BuildHelpIndex extends Task {
 	}
 
 	private File getFile(String fileName) {
-		if (fileName == null)
+		if (fileName == null) {
 			return null;
+		}
 		IPath path = IPath.fromOSString(fileName);
-		if (path.isAbsolute())
+		if (path.isAbsolute()) {
 			return new File(fileName);
+		}
 		File root = getProject().getBaseDir();
-		if (fileName.equals(".") || fileName.equals("./")) //$NON-NLS-1$ //$NON-NLS-2$
+		if (fileName.equals(".") || fileName.equals("./")) { //$NON-NLS-1$ //$NON-NLS-2$
 			return root;
-		if (fileName.equals("..") || fileName.equals("../")) //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		if (fileName.equals("..") || fileName.equals("../")) { //$NON-NLS-1$ //$NON-NLS-2$
 			return root.getParentFile();
+		}
 		return new File(root, fileName);
 	}
 

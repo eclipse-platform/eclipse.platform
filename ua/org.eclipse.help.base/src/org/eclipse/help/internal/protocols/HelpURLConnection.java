@@ -92,11 +92,13 @@ public class HelpURLConnection extends URLConnection {
 
 		// Strip off everything before and including the PLUGINS_ROOT
 		int index = urlFile.indexOf(PLUGINS_ROOT);
-		if (index != -1)
+		if (index != -1) {
 			urlFile = urlFile.substring(index + PLUGINS_ROOT.length());
+		}
 		// Strip off the leading "/" and the query
-		if (urlFile.startsWith("/")) //$NON-NLS-1$
+		if (urlFile.startsWith("/")) { //$NON-NLS-1$
 			urlFile = urlFile.substring(1);
+		}
 
 		int indx = urlFile.indexOf('?');
 		if (indx != -1) {
@@ -185,9 +187,9 @@ public class HelpURLConnection extends URLConnection {
 				String arg = aQuery.substring(0, equalsPosition);
 				String val = aQuery.substring(equalsPosition + 1);
 				Object existing = arguments.get(arg);
-				if (existing == null)
+				if (existing == null) {
 					arguments.put(arg, val);
-				else if (existing instanceof Vector) {
+				} else if (existing instanceof Vector) {
 					@SuppressWarnings("unchecked")
 					Vector<String> vector = (Vector<String>) existing;
 					vector.add(val);
@@ -220,22 +222,23 @@ public class HelpURLConnection extends URLConnection {
 		// Check if the file is hypertext or plain text
 		String file = pluginAndFile.toLowerCase(Locale.US);
 		if (file.endsWith(".html") || file.endsWith(".htm") //$NON-NLS-1$ //$NON-NLS-2$
-				|| file.endsWith(".xhtml")) //$NON-NLS-1$
+				|| file.endsWith(".xhtml")) { //$NON-NLS-1$
 			return "text/html"; //$NON-NLS-1$
-		else if (file.endsWith(".css")) //$NON-NLS-1$
+		} else if (file.endsWith(".css")) { //$NON-NLS-1$
 			return "text/css"; //$NON-NLS-1$
-		else if (file.endsWith(".gif")) //$NON-NLS-1$
+		} else if (file.endsWith(".gif")) { //$NON-NLS-1$
 			return "image/gif"; //$NON-NLS-1$
-		else if (file.endsWith(".svg")) //$NON-NLS-1$
+		} else if (file.endsWith(".svg")) { //$NON-NLS-1$
 			return "image/svg+xml"; //$NON-NLS-1$
-		else if (file.endsWith(".jpg")) //$NON-NLS-1$
+		} else if (file.endsWith(".jpg")) { //$NON-NLS-1$
 			return "image/jpeg"; //$NON-NLS-1$
-		else if (file.endsWith(".pdf")) //$NON-NLS-1$
+		} else if (file.endsWith(".pdf")) { //$NON-NLS-1$
 			return "application/pdf"; //$NON-NLS-1$
-		else if (file.endsWith(".xml")) //$NON-NLS-1$
+		} else if (file.endsWith(".xml")) { //$NON-NLS-1$
 			return "application/xml"; //$NON-NLS-1$
-		else if (file.endsWith(".xsl")) //$NON-NLS-1$
+		} else if (file.endsWith(".xsl")) { //$NON-NLS-1$
 			return "application/xsl"; //$NON-NLS-1$
+		}
 		return "text/plain"; //$NON-NLS-1$
 	}
 
@@ -253,18 +256,20 @@ public class HelpURLConnection extends URLConnection {
 	}
 
 	public String getValue(String name) {
-		if (arguments == null)
+		if (arguments == null) {
 			return null;
+		}
 		Object value = arguments.get(name);
 		String stringValue = null;
-		if (value instanceof String)
+		if (value instanceof String) {
 			stringValue = (String) value;
-		else if (value instanceof Vector) {
+		} else if (value instanceof Vector) {
 			@SuppressWarnings("unchecked")
 			Vector<String> vector = (Vector<String>) value;
 			stringValue = vector.firstElement();
-		} else
+		} else {
 			return null;
+		}
 		try {
 			return URLCoder.decode(stringValue);
 		} catch (Exception e) {
@@ -292,10 +297,12 @@ public class HelpURLConnection extends URLConnection {
 			int start = pluginAndFile.indexOf('/') + 1;
 			// Strip query string or anchor bookmark
 			int end = pluginAndFile.indexOf('?');
-			if (end == -1)
+			if (end == -1) {
 				end = pluginAndFile.indexOf('#');
-			if (end == -1)
+			}
+			if (end == -1) {
 				end = pluginAndFile.length();
+			}
 			file = pluginAndFile.substring(start, end);
 			file = URLCoder.decode(file);
 		}
@@ -325,8 +332,9 @@ public class HelpURLConnection extends URLConnection {
 	}
 
 	public boolean isCacheable() {
-		if (getValue("resultof") != null) //$NON-NLS-1$
+		if (getValue("resultof") != null) { //$NON-NLS-1$
 			return false;
+		}
 		return cachingEnabled;
 	}
 
@@ -353,8 +361,9 @@ public class HelpURLConnection extends URLConnection {
 				if (extensions.length != 0) {
 					// We need to pick up the non-default configuration
 					IConfigurationElement[] elements = extensions[0].getConfigurationElements();
-					if (elements.length == 0)
+					if (elements.length == 0) {
 						return null;
+					}
 					IConfigurationElement serverElement = null;
 					for (IConfigurationElement element : elements) {
 						String defaultValue = element.getAttribute("default"); //$NON-NLS-1$
@@ -455,8 +464,9 @@ public class HelpURLConnection extends URLConnection {
 
 		// No error page, InfoCenter is at least 3.6, so it is
 		// returning null already.
-		if (errPage.length==0)
+		if (errPage.length==0) {
 			return in;
+		}
 
 		// Check to see if the URL is the error page for the
 		// remote IC.  If so, return null.
@@ -483,8 +493,9 @@ public class HelpURLConnection extends URLConnection {
 					int count = 0;
 
 					while ((line = br.readLine()) != null) {
-						if ((count > lines.length) || !lines[count].equals(line))
+						if ((count > lines.length) || !lines[count].equals(line)) {
 							return false;
+						}
 						count++;
 					}
 				}

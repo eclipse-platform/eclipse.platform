@@ -88,8 +88,9 @@ public class CriteriaHelpScope extends AbstractHelpScope {
 						continue outer;
 					}
 				} else {
-					if (null != ownCriteria.get(key) && ownCriteria.get(key).contains(value))
+					if (null != ownCriteria.get(key) && ownCriteria.get(key).contains(value)) {
 						continue outer;
+					}
 				}
 			}
 			return false;

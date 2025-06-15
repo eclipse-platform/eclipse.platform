@@ -119,8 +119,9 @@ public class HelpDisplay {
 	 */
 	public void displayHelp(IContext context, IHelpResource topic,
 			boolean forceExternal) {
-		if (context == null || topic == null || topic.getHref() == null)
+		if (context == null || topic == null || topic.getHref() == null) {
 			return;
+		}
 		String topicURL = getTopicURL(topic.getHref());
 		displayHelpResource(topicURL, false);
 		/*
@@ -156,8 +157,9 @@ public class HelpDisplay {
 	 */
 	public void displaySearch(String searchQuery, String topic,
 			boolean forceExternal) {
-		if (searchQuery == null || topic == null)
+		if (searchQuery == null || topic == null) {
 			return;
+		}
 		if (getNoframesURL(topic) == null) {
 			String url = "tab=search&" //$NON-NLS-1$
 					+ searchQuery + "&topic=" //$NON-NLS-1$
@@ -229,10 +231,12 @@ public class HelpDisplay {
 	}
 
 	private String getTopicURL(String topic) {
-		if (topic == null)
+		if (topic == null) {
 			return null;
-		if (topic.startsWith("../")) //$NON-NLS-1$
+		}
+		if (topic.startsWith("../")) { //$NON-NLS-1$
 			topic = topic.substring(2);
+		}
 		/*
 		 * if (topic.startsWith("/")) { String base = "http://" +
 		 * AppServer.getHost() + ":" + AppServer.getPort(); base +=
@@ -285,8 +289,9 @@ public class HelpDisplay {
 				// We need to pick up the non-default configuration
 				IConfigurationElement[] elements = extensions[0]
 						.getConfigurationElements();
-				if (elements.length == 0)
+				if (elements.length == 0) {
 					return;
+				}
 				IConfigurationElement displayElement  = elements[0];
 				// Instantiate the help display
 				try {

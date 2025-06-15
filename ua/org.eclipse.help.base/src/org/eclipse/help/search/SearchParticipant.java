@@ -143,12 +143,14 @@ public abstract class SearchParticipant {
 	 */
 
 	protected static String resolveVariables(String pluginId, String fileName, String locale) {
-		if (fileName.indexOf('$') == -1)
+		if (fileName.indexOf('$') == -1) {
 			return fileName;
+		}
 		ArrayList<String> prefix = ResourceLocator.getPathPrefix(locale);
 		Bundle bundle = Platform.getBundle(pluginId);
-		if (bundle == null)
+		if (bundle == null) {
 			return fileName;
+		}
 		URL url = ResourceLocator.find(bundle, IPath.fromOSString(fileName), prefix);
 		URL root = FileLocator.find(bundle, IPath.EMPTY, null); // $NON-NLS-1$
 		return url.toString().substring(root.toString().length());

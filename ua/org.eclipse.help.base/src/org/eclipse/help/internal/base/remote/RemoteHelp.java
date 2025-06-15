@@ -58,8 +58,9 @@ public class RemoteHelp {
 	 */
 	public static void notifyPreferenceChange() {
 		if (listeners != null) {
-			for (IPreferenceChangeListener listener : listeners)
+			for (IPreferenceChangeListener listener : listeners) {
 				listener.preferenceChange(null);
+			}
 		}
 	}
 
@@ -75,10 +76,11 @@ public class RemoteHelp {
 		} catch (NumberFormatException e) {
 			throw new MalformedURLException();
 		}
-		if(protocol.equalsIgnoreCase(PROTOCOL_HTTPS))
+		if(protocol.equalsIgnoreCase(PROTOCOL_HTTPS)) {
 			url = HttpsUtility.getHttpsURL(protocol,host,port,path);
-		else
+		} else {
 			url = new URL(PROTOCOL_HTTP, host, port, path);
+		}
 
 		return url;
 	}

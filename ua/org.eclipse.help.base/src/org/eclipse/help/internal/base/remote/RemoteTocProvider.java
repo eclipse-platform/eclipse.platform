@@ -69,8 +69,9 @@ public class RemoteTocProvider extends AbstractTocProvider {
 			ITocContribution[] totalContributions = new ITocContribution[0];
 
 			int numICs = host.length;
-			if (numICs == 0) // No remote InfoCenters in preferences.ini
+			if (numICs == 0) { // No remote InfoCenters in preferences.ini
 				return new ITocContribution[0];
+			}
 
 			URL url = null;
 			String urlStr = ""; //$NON-NLS-1$
@@ -144,8 +145,10 @@ public class RemoteTocProvider extends AbstractTocProvider {
 
 		int helpOption=PreferenceFileHandler.getEmbeddedHelpOption();
 
-		if(helpOption ==PreferenceFileHandler.LOCAL_HELP_ONLY || helpOption==PreferenceFileHandler.LOCAL_HELP_PRIORITY)
+		if(helpOption ==PreferenceFileHandler.LOCAL_HELP_ONLY || helpOption==PreferenceFileHandler.LOCAL_HELP_PRIORITY) {
 			return TOC_FILE_PRIORITY+1;
-		else return DEFAULT_PRIORITY-1;
+		} else {
+			return DEFAULT_PRIORITY-1;
+		}
 	}
 }

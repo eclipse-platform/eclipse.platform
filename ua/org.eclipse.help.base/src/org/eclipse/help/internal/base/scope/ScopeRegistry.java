@@ -114,14 +114,17 @@ public class ScopeRegistry {
 
 		for (String phrase : phrases) {
 			AbstractHelpScope scope = parseScopePhrase(phrase);
-			if (scope!=null)
+			if (scope!=null) {
 				scopes.add(scope);
+			}
 		}
 
-		if (scopes.isEmpty())
+		if (scopes.isEmpty()) {
 			return null;
-		if (scopes.size()==1)
+		}
+		if (scopes.size()==1) {
 			return scopes.get(0);
+		}
 		return new IntersectionScope(
 				scopes.toArray(
 						new AbstractHelpScope[scopes.size()]));
@@ -133,8 +136,9 @@ public class ScopeRegistry {
 	 */
 	public AbstractHelpScope parseScopePhrase(String phrase)
 	{
-		if (!(phrase.startsWith("(") && !phrase.startsWith("("))) //$NON-NLS-1$ //$NON-NLS-2$
+		if (!(phrase.startsWith("(") && !phrase.startsWith("("))) { //$NON-NLS-1$ //$NON-NLS-2$
 			phrase = '('+phrase+')';
+		}
 
 		Stack<TempScope> scopeStack = new Stack<>();
 		ScopePhrase scopePhrase = new ScopePhrase(phrase);
@@ -152,9 +156,9 @@ public class ScopeRegistry {
 			else if (elem.equals(")")) //$NON-NLS-1$
 			{
 				TempScope scope = scopeStack.pop();
-				if (scopeStack.isEmpty())
+				if (scopeStack.isEmpty()) {
 					return scope.getScope();
-				else{
+				} else{
 					TempScope parent = scopeStack.peek();
 					parent.add(scope.getScope());
 				}
@@ -173,8 +177,9 @@ public class ScopeRegistry {
 			{
 				TempScope scope = scopeStack.peek();
 				AbstractHelpScope helpScope = getScope(elem);
-				if (helpScope!=null)
+				if (helpScope!=null) {
 					scope.add(helpScope);
+				}
 			}
 		}
 		return null;
@@ -202,18 +207,23 @@ public class ScopeRegistry {
 			for (;cursor<phrase.length();cursor++)
 			{
 				char current = phrase.charAt(cursor);
-				if (current=='(')
+				if (current=='(') {
 					return format(next,current);
-				if (current==')')
+				}
+				if (current==')') {
 					return format(next,current);
-				if ((current+"").equals(SCOPE_AND)) //$NON-NLS-1$
+				}
+				if ((current+"").equals(SCOPE_AND)) { //$NON-NLS-1$
 					return format(next,current);
-				if ((current+"").equals(SCOPE_OR)) //$NON-NLS-1$
+				}
+				if ((current+"").equals(SCOPE_OR)) { //$NON-NLS-1$
 					return format(next,current);
+				}
 				next+=current;
 			}
-			if (next.isEmpty())
+			if (next.isEmpty()) {
 				return null;
+			}
 			return next;
 		}
 
@@ -223,9 +233,9 @@ public class ScopeRegistry {
 			{
 				cursor++;
 				return current+""; //$NON-NLS-1$
-			}
-			else
+			} else {
 				return next;
+			}
 		}
 	}
 
@@ -264,10 +274,11 @@ public class ScopeRegistry {
 						kids.toArray(
 								new AbstractHelpScope[kids.size()]));
 			default:
-				if (kids.size()>=1)
+				if (kids.size()>=1) {
 					return kids.get(0);
-				else
+				} else {
 					return null;
+				}
 			}
 		}
 	}
