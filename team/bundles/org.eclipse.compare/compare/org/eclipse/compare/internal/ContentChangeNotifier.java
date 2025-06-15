@@ -34,8 +34,9 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 
 	@Override
 	public void addContentChangeListener(IContentChangeListener listener) {
-		if (fListenerList == null)
+		if (fListenerList == null) {
 			fListenerList= new ListenerList<>();
+		}
 		fListenerList.add(listener);
 	}
 
@@ -43,8 +44,9 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 	public void removeContentChangeListener(IContentChangeListener listener) {
 		if (fListenerList != null) {
 			fListenerList.remove(listener);
-			if (fListenerList.isEmpty())
+			if (fListenerList.isEmpty()) {
 				fListenerList= null;
+			}
 		}
 	}
 

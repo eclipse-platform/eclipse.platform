@@ -137,20 +137,18 @@ class RetargetPatchElementDialog extends Dialog {
 	}
 
 	private IResource getViewerInput() {
-		if (fPatcher.isWorkspacePatch())
+		if (fPatcher.isWorkspacePatch()) {
 			return ResourcesPlugin.getWorkspace().getRoot();
+		}
 		return fPatcher.getTarget();
 	}
 
 	private IResource getInitialSelection() {
-		if (fSelectedNode instanceof PatchFileDiffNode) {
-			PatchFileDiffNode node = (PatchFileDiffNode) fSelectedNode;
+		if (fSelectedNode instanceof PatchFileDiffNode node) {
 			return fPatcher.getTargetFile(node.getDiffResult().getDiff());
-		} else if (fSelectedNode instanceof HunkDiffNode) {
-			HunkDiffNode node = (HunkDiffNode) fSelectedNode;
+		} else if (fSelectedNode instanceof HunkDiffNode node) {
 			return fPatcher.getTargetFile(node.getHunkResult().getDiffResult().getDiff());
-		} else if (fSelectedNode instanceof PatchProjectDiffNode) {
-			PatchProjectDiffNode node = (PatchProjectDiffNode) fSelectedNode;
+		} else if (fSelectedNode instanceof PatchProjectDiffNode node) {
 			DiffProject diffProject = node.getDiffProject();
 			return Utilities.getProject(diffProject);
 		}
@@ -158,17 +156,14 @@ class RetargetPatchElementDialog extends Dialog {
 	}
 
 	private String getTreeLabel() {
-		if (fSelectedNode instanceof PatchProjectDiffNode) {
-			PatchProjectDiffNode node = (PatchProjectDiffNode) fSelectedNode;
+		if (fSelectedNode instanceof PatchProjectDiffNode node) {
 			DiffProject project = node.getDiffProject();
 			return NLS.bind(PatchMessages.PreviewPatchPage_SelectProject, project.getName());
-		} else if (fSelectedNode instanceof PatchFileDiffNode) {
-			PatchFileDiffNode node = (PatchFileDiffNode) fSelectedNode;
+		} else if (fSelectedNode instanceof PatchFileDiffNode node) {
 			//copy over all hunks to new target resource
 			FilePatch2 diff = node.getDiffResult().getDiff();
 			return NLS.bind(PatchMessages.RetargetPatchElementDialog_0, fPatcher.getPath(diff));
-		} else if (fSelectedNode instanceof HunkDiffNode) {
-			HunkDiffNode node = (HunkDiffNode) fSelectedNode;
+		} else if (fSelectedNode instanceof HunkDiffNode node) {
 			Hunk hunk = node.getHunkResult().getHunk();
 			return NLS.bind(PatchMessages.RetargetPatchElementDialog_1, fPatcher.getPath(hunk.getParent()));
 		}
@@ -178,17 +173,14 @@ class RetargetPatchElementDialog extends Dialog {
 	@Override
 	protected void okPressed() {
 		if (fSelectedResource != null){
-			if (fSelectedNode instanceof PatchProjectDiffNode && fSelectedResource instanceof IProject) {
-				PatchProjectDiffNode node = (PatchProjectDiffNode) fSelectedNode;
+			if (fSelectedNode instanceof PatchProjectDiffNode node && fSelectedResource instanceof IProject) {
 				DiffProject project = node.getDiffProject();
 				fPatcher.retargetProject(project, (IProject)fSelectedResource);
-			} else if (fSelectedNode instanceof PatchFileDiffNode && fSelectedResource instanceof IFile) {
-				PatchFileDiffNode node = (PatchFileDiffNode) fSelectedNode;
+			} else if (fSelectedNode instanceof PatchFileDiffNode node && fSelectedResource instanceof IFile) {
 				//copy over all hunks to new target resource
 				FilePatch2 diff = node.getDiffResult().getDiff();
 				fPatcher.retargetDiff(diff, (IFile)fSelectedResource);
-			} else if (fSelectedNode instanceof HunkDiffNode && fSelectedResource instanceof IFile) {
-				HunkDiffNode node = (HunkDiffNode) fSelectedNode;
+			} else if (fSelectedNode instanceof HunkDiffNode node && fSelectedResource instanceof IFile) {
 				fPatcher.retargetHunk(node.getHunkResult().getHunk(), (IFile)fSelectedResource);
 			}
 		}
@@ -220,10 +212,11 @@ class RetargetPatchElementDialog extends Dialog {
 			ISelection s= event.getSelection();
 			if (s instanceof IStructuredSelection) {
 				Object item= ((IStructuredSelection) s).getFirstElement();
-				if (fViewer.getExpandedState(item))
+				if (fViewer.getExpandedState(item)) {
 					fViewer.collapseToLevel(item, 1);
-				else
+				} else {
 					fViewer.expandToLevel(item, 1);
+				}
 			}
 		});
 

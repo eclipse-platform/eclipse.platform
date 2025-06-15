@@ -95,8 +95,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 		@Override
 		public void dragStart(DragSourceEvent event) {
-			if (element.getText() == null)
+			if (element.getText() == null) {
 				event.doit = false;
+			}
 		}
 	}
 
@@ -116,18 +117,20 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		public void dragEnter(DropTargetEvent event) {
 
 			if (event.detail == DND.DROP_DEFAULT) {
-				if ((event.operations & DND.DROP_COPY) != 0)
+				if ((event.operations & DND.DROP_COPY) != 0) {
 					event.detail = DND.DROP_COPY;
-				else
+				} else {
 					event.detail = DND.DROP_NONE;
+				}
 			}
 
 			for (TransferData dataType : event.dataTypes) {
 				if (resourceTransfer.isSupportedType(dataType)
 						|| textTransfer.isSupportedType(dataType)) {
 					event.currentDataType = dataType;
-					if (event.detail != DND.DROP_COPY)
+					if (event.detail != DND.DROP_COPY) {
 						event.detail = DND.DROP_NONE;
+					}
 					break;
 				}
 			}
@@ -142,13 +145,15 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		public void dragOperationChanged(DropTargetEvent event) {
 
 			if (event.detail == DND.DROP_DEFAULT) {
-				if ((event.operations & DND.DROP_COPY) != 0)
+				if ((event.operations & DND.DROP_COPY) != 0) {
 					event.detail = DND.DROP_COPY;
-				else
+				} else {
 					event.detail = DND.DROP_NONE;
+				}
 			} else if (resourceTransfer.isSupportedType(event.currentDataType)) {
-				if (event.detail != DND.DROP_COPY)
+				if (event.detail != DND.DROP_COPY) {
 					event.detail = DND.DROP_NONE;
+				}
 			}
 		}
 
@@ -163,12 +168,14 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			if (textTransfer.isSupportedType(event.currentDataType)) {
 				String txt = (String) event.data;
 				IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(txt);
-				if (r != null)
+				if (r != null) {
 					element.setResource(r);
+				}
 			} else if (resourceTransfer.isSupportedType(event.currentDataType)) {
 				IResource[] files = (IResource[]) event.data;
-				if (files.length > 0)
+				if (files.length > 0) {
 					element.setResource(files[0]);
+				}
 			}
 
 		}
@@ -327,8 +334,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					IResource r = tmpProject.getExternalFile();
-					if (r == null)
+					if (r == null) {
 						return;
+					}
 					setResource(r);
 				}
 			});
@@ -356,8 +364,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					IResource r = tmpProject.getExternalFolder();
-					if (r == null)
+					if (r == null) {
 						return;
+					}
 					setResource(r);
 				}
 			});
@@ -408,9 +417,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			for (ContentTypeElement e : elements) {
 				e.getRadioButton().addListener(SWT.Selection, event -> {
 					for (ContentTypeElement element : elements) {
-						if (event.widget != element.getRadioButton())
+						if (event.widget != element.getRadioButton()) {
 							element.setEnabled(false);
-						else {
+						} else {
 							element.setEnabled(true);
 							setResource(element.getResource());
 						}
@@ -431,10 +440,11 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		protected void setResource(String s) {
 			IResource tmp = ResourcesPlugin.getWorkspace().getRoot()
 					.findMember(s);
-			if (tmp instanceof IWorkspaceRoot)
+			if (tmp instanceof IWorkspaceRoot) {
 				resource = null;
-			else
+			} else {
 				resource = tmp;
+			}
 			updateErrorInfo();
 		}
 
@@ -591,24 +601,27 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 		private IFolder getTmpFolder(IProject project) throws CoreException {
 			IFolder folder = project.getFolder(TMP_FOLDER_NAME);
-			if (!folder.exists())
+			if (!folder.exists()) {
 				folder.create(IResource.NONE, true, null);
+			}
 			return folder;
 		}
 
 		private IFile getExternalFile() {
 			FileDialog dialog = new FileDialog(getShell());
 			String path = dialog.open();
-			if (path != null)
+			if (path != null) {
 				return (IFile) linkResource(IPath.fromOSString(path));
+			}
 			return null;
 		}
 
 		private IFolder getExternalFolder() {
 			DirectoryDialog dialog = new DirectoryDialog(getShell());
 			String path = dialog.open();
-			if (path != null)
+			if (path != null) {
 				return (IFolder) linkResource(IPath.fromOSString(path));
+			}
 			return null;
 		}
 
@@ -617,8 +630,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			String resourceName = path.lastSegment();
 			try {
 				IProject project = createTmpProject();
-				if (!project.isOpen())
+				if (!project.isOpen()) {
 					project.open(null);
+				}
 				if (path.toFile().isFile()) {
 					r = getTmpFolder(project).getFile(resourceName);
 					if (r.exists()) { 	// add a number to file's name when there already is a file with that name in a folder
@@ -760,12 +774,13 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 	private boolean isComparePossible() {
 		IResource[] resources;
-		if (ancestorPanel.getResource() == null)
+		if (ancestorPanel.getResource() == null) {
 			resources = new IResource[] { leftPanel.getResource(),
 					rightPanel.getResource() };
-		else
+		} else {
 			resources = new IResource[] { ancestorPanel.getResource(),
 					leftPanel.getResource(), rightPanel.getResource() };
+		}
 
 		ResourceCompareInput r = new ResourceCompareInput(new CompareConfiguration());
 		return r.isEnabled(new StructuredSelection(resources));
@@ -800,11 +815,12 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		IResource rightResource = rightPanel.getResource();
 		IResource leftResource = leftPanel.getResource();
 		IResource ancestorResource = ancestorPanel.getResource();
-		if (ancestorResource == null)
+		if (ancestorResource == null) {
 			resources = new IResource[] { leftResource, rightResource };
-		else
+		} else {
 			resources = new IResource[] { ancestorResource, leftResource,
 					rightResource };
+		}
 		return resources;
 	}
 
@@ -815,8 +831,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 				.getDialogSettingsProvider(FrameworkUtil.getBundle(CompareWithOtherResourceDialog.class))
 				.getDialogSettings();
 		IDialogSettings section = settings.getSection(sectionName);
-		if (section == null)
+		if (section == null) {
 			section = settings.addNewSection(sectionName);
+		}
 		return section;
 	}
 

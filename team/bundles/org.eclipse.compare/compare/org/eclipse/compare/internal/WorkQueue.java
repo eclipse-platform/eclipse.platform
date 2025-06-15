@@ -29,8 +29,9 @@ public class WorkQueue {
 	private final List<IRunnableWithProgress> runnables = new ArrayList<>();
 
 	public boolean add(IRunnableWithProgress runnable) {
-		if (runnables.contains(runnable))
+		if (runnables.contains(runnable)) {
 			runnables.remove(runnable);
+		}
 		return runnables.add(runnable);
 	}
 

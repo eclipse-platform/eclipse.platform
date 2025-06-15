@@ -56,9 +56,7 @@ public class AddFromHistoryAction extends BaseCompareAction {
 		Object[] s= Utilities.getResources(selection);
 
 		for (Object o : s) {
-			if (o instanceof IContainer) {
-				IContainer container= (IContainer) o;
-
+			if (o instanceof IContainer container) {
 				ProgressMonitorDialog pmdialog= new ProgressMonitorDialog(parentShell);
 				IProgressMonitor pm= pmdialog.getProgressMonitor();
 				IFile[] states= null;
@@ -71,8 +69,9 @@ public class AddFromHistoryAction extends BaseCompareAction {
 				// There could be a recently deleted file at the same path as
 				// the container. If such a file is the only one to restore, we
 				// should not suggest to restore it, so set states to null.
-				if (states.length == 1 && states[0].getFullPath().equals(container.getFullPath()))
+				if (states.length == 1 && states[0].getFullPath().equals(container.getFullPath())) {
 					states = null;
+				}
 
 				if (states == null || states.length <= 0) {
 					String msg= Utilities.getString(bundle, "noLocalHistoryError"); //$NON-NLS-1$
@@ -107,8 +106,7 @@ public class AddFromHistoryAction extends BaseCompareAction {
 
 	void createContainers(IResource resource) throws CoreException {
 		IContainer container= resource.getParent();
-		if (container instanceof IFolder) {
-			IFolder parent= (IFolder) container;
+		if (container instanceof IFolder parent) {
 			if (parent != null && !parent.exists()) {
 				createContainers(parent);
 				parent.create(false, true, null);

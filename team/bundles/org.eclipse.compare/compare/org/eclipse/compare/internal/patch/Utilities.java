@@ -77,8 +77,7 @@ public class Utilities {
 					CompareMessages.ReaderCreator_fileIsNotAccessible));
 		}
 		String charset = null;
-		if (storage instanceof IEncodedStorage) {
-			IEncodedStorage es = (IEncodedStorage) storage;
+		if (storage instanceof IEncodedStorage es) {
 			charset = es.getCharset();
 		}
 		InputStreamReader in = null;

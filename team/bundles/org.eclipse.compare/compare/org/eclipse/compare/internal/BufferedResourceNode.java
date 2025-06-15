@@ -86,8 +86,7 @@ public class BufferedResourceNode extends ResourceNode {
 		if (child == null) {	// add resource
 			// create a node without a resource behind it!
 			IResource resource= getResource();
-			if (resource instanceof IFolder) {
-				IFolder folder= (IFolder) resource;
+			if (resource instanceof IFolder folder) {
 				IFile file= folder.getFile(other.getName());
 				child= new BufferedResourceNode(file);
 			}
@@ -95,8 +94,7 @@ public class BufferedResourceNode extends ResourceNode {
 
 		if (other == null) {	// delete resource
 			IResource resource= getResource();
-			if (resource instanceof IFolder) {
-				IFolder folder= (IFolder) resource;
+			if (resource instanceof IFolder folder) {
 				IFile file= folder.getFile(child.getName());
 				if (file != null && file.exists()) {
 					fDeleteFile= file;
@@ -106,13 +104,12 @@ public class BufferedResourceNode extends ResourceNode {
 			return null;
 		}
 
-		if (other instanceof IStreamContentAccessor && child instanceof IEditableContent) {
-			IEditableContent dst= (IEditableContent) child;
-
+		if (other instanceof IStreamContentAccessor && child instanceof IEditableContent dst) {
 			try (InputStream is = ((IStreamContentAccessor) other).getContents()) {
 				byte[] bytes = is.readAllBytes();
-				if (bytes != null)
+				if (bytes != null) {
 					dst.setContent(bytes);
+				}
 			} catch (CoreException | IOException ex) {
 				// NeedWork
 			}

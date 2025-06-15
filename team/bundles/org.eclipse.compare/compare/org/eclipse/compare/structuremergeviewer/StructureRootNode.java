@@ -130,8 +130,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 
 	@Override
 	public boolean isReadOnly() {
-		if (fInput instanceof IEditableContentExtension) {
-			IEditableContentExtension ext = (IEditableContentExtension) fInput;
+		if (fInput instanceof IEditableContentExtension ext) {
 			return ext.isReadOnly();
 		}
 		return super.isReadOnly();
@@ -139,8 +138,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 
 	@Override
 	public IStatus validateEdit(Shell shell) {
-		if (fInput instanceof IEditableContentExtension) {
-			IEditableContentExtension ext = (IEditableContentExtension) fInput;
+		if (fInput instanceof IEditableContentExtension ext) {
 			return ext.validateEdit(shell);
 		}
 		return super.validateEdit(shell);

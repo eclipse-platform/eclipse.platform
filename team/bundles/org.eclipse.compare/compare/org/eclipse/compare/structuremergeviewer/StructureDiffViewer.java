@@ -102,8 +102,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			boolean changed = false;
 			if (force || newInput != fInput) {
 				removeDocumentRangeUpdaters();
-				if (fInput instanceof IContentChangeNotifier && fContentChangedListener != null)
+				if (fInput instanceof IContentChangeNotifier && fContentChangedListener != null) {
 					((IContentChangeNotifier)fInput).removeContentChangeListener(fContentChangedListener);
+				}
 				fInput= newInput;
 				if (fInput == null) {
 					dispose(); // destroy fStructureComparator
@@ -112,8 +113,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 					refresh(monitor);
 					changed= true;
 				}
-				if (fInput instanceof IContentChangeNotifier && fContentChangedListener != null)
+				if (fInput instanceof IContentChangeNotifier && fContentChangedListener != null) {
 					((IContentChangeNotifier)fInput).addContentChangeListener(fContentChangedListener);
+				}
 			}
 			return changed;
 		}
@@ -142,8 +144,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			// Dispose of the old one after in case they are using a shared document
 			// (i.e. disposing it after will hold on to a reference to the document
 			// so it doesn't get freed and reloaded)
-			if (oldComparator instanceof IDisposable) {
-				IDisposable disposable = (IDisposable) oldComparator;
+			if (oldComparator instanceof IDisposable disposable) {
 				disposable.dispose();
 			}
 		}
@@ -155,10 +156,10 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		private IStructureComparator createStructure(IProgressMonitor monitor) {
 			// Defend against concurrent disposal
 			Object input = fInput;
-			if (input == null)
+			if (input == null) {
 				return null;
-			if (fStructureCreator instanceof IStructureCreator2) {
-				IStructureCreator2 sc2 = (IStructureCreator2) fStructureCreator;
+			}
+			if (fStructureCreator instanceof IStructureCreator2 sc2) {
 				try {
 					return sc2.createStructure(input, monitor);
 				} catch (CoreException e) {
@@ -169,8 +170,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		}
 
 		public void dispose() {
-			if (fStructureComparator != null && fStructureCreator instanceof IStructureCreator2) {
-				IStructureCreator2 sc2 = (IStructureCreator2) fStructureCreator;
+			if (fStructureComparator != null && fStructureCreator instanceof IStructureCreator2 sc2) {
 				sc2.destroy(fStructureComparator);
 			}
 		}
@@ -189,8 +189,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	public StructureDiffViewer(Tree tree, CompareConfiguration configuration) {
 		super(tree, configuration);
 		Composite c= tree.getParent();
-		if (c instanceof CompareViewerSwitchingPane)
+		if (c instanceof CompareViewerSwitchingPane) {
 			fParent= (CompareViewerSwitchingPane) c;
+		}
 		initialize();
 	}
 
@@ -202,8 +203,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 */
 	public StructureDiffViewer(Composite parent, CompareConfiguration configuration) {
 		super(parent, configuration);
-		if (parent instanceof CompareViewerSwitchingPane)
+		if (parent instanceof CompareViewerSwitchingPane) {
 			fParent= (CompareViewerSwitchingPane) parent;
+		}
 		initialize();
 	}
 
@@ -226,8 +228,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		if (fStructureCreator != structureCreator) {
 			fStructureCreator= structureCreator;
 			Control tree= getControl();
-			if (tree != null && !tree.isDisposed())
+			if (tree != null && !tree.isDisposed()) {
 				tree.setData(CompareUI.COMPARE_VIEWER_TITLE, getTitle());
+			}
 		}
 	}
 
@@ -247,8 +250,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 */
 	@Override
 	public String getTitle() {
-		if (fStructureCreator != null)
+		if (fStructureCreator != null) {
 			return fStructureCreator.getName();
+		}
 		return super.getTitle();
 	}
 
@@ -271,16 +275,15 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 */
 	@Override
 	protected void inputChanged(Object input, Object oldInput) {
-		if (oldInput instanceof ICompareInput) {
-			ICompareInput old = (ICompareInput) oldInput;
+		if (oldInput instanceof ICompareInput old) {
 			old.removeCompareInputChangeListener(fCompareInputChangeListener);
 		}
-		if (input instanceof ICompareInput) {
-			ICompareInput ci = (ICompareInput) input;
+		if (input instanceof ICompareInput ci) {
 			ci.addCompareInputChangeListener(fCompareInputChangeListener);
 			compareInputChanged(ci);
-			if (input != oldInput)
+			if (input != oldInput) {
 				initialSelection();
+			}
 		}
 	}
 
@@ -295,8 +298,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	@Override
 	protected void handleDispose(DisposeEvent event) {
 		Object input = getInput();
-		if (input instanceof ICompareInput) {
-			ICompareInput ci = (ICompareInput) input;
+		if (input instanceof ICompareInput ci) {
 			ci.removeCompareInputChangeListener(fCompareInputChangeListener);
 		}
 		compareInputChanged(null);
@@ -337,50 +339,60 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		ITypedElement t= null;
 		boolean changed= false;
 
-		if (input != null)
+		if (input != null) {
 			t= input.getAncestor();
+		}
 		fThreeWay= (t != null);
 		beginWork(monitor, 400);
 		try {
-			if (fAncestorStructure.setInput(t, force, subMonitor(monitor, 100)))
+			if (fAncestorStructure.setInput(t, force, subMonitor(monitor, 100))) {
 				changed = true;
+			}
 
-			if (input != null)
+			if (input != null) {
 				t= input.getLeft();
-			if (fLeftStructure.setInput(t, force, subMonitor(monitor, 100)))
+			}
+			if (fLeftStructure.setInput(t, force, subMonitor(monitor, 100))) {
 				changed = true;
+			}
 
-			if (input != null)
+			if (input != null) {
 				t= input.getRight();
-			if (fRightStructure.setInput(t, force, subMonitor(monitor, 100)))
+			}
+			if (fRightStructure.setInput(t, force, subMonitor(monitor, 100))) {
 				changed = true;
+			}
 
 			// The compare configuration is nulled when the viewer is disposed
 			CompareConfiguration cc = getCompareConfiguration();
-			if (changed && cc != null)
+			if (changed && cc != null) {
 				cc.getContainer().runAsynchronously(diffTask);
+			}
 		} finally {
 			endWork(monitor);
 		}
 	}
 
 	private void endWork(IProgressMonitor monitor) {
-		if (monitor != null)
+		if (monitor != null) {
 			monitor.done();
+		}
 	}
 
 	private IProgressMonitor subMonitor(IProgressMonitor monitor, int work) {
 		if (monitor != null) {
-			if (monitor.isCanceled() || getControl().isDisposed())
+			if (monitor.isCanceled() || getControl().isDisposed()) {
 				throw new OperationCanceledException();
+			}
 			return SubMonitor.convert(monitor, work);
 		}
 		return null;
 	}
 
 	private void beginWork(IProgressMonitor monitor, int totalWork) {
-		if (monitor != null)
+		if (monitor != null) {
 			monitor.beginTask(null, totalWork);
+		}
 	}
 
 	/**
@@ -388,8 +400,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * @param changed the object that sent out the notification
 	 */
 	protected void contentChanged(final IContentChangeNotifier changed) {
-		if (fStructureCreator == null)
+		if (fStructureCreator == null) {
 			return;
+		}
 
 		if (changed == null) {
 			getCompareConfiguration().getContainer().runAsynchronously(fAncestorStructure.getRefreshTask());
@@ -470,7 +483,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				fRoot= null;
 				message= CompareMessages.StructureDiffViewer_StructureError;
 			} else {	// calculate difference of the two (or three) structures
-				if (fDifferencer == null)
+				if (fDifferencer == null) {
 					fDifferencer= new Differencer() {
 						@Override
 						protected boolean contentsEqual(Object o1,
@@ -481,11 +494,13 @@ public class StructureDiffViewer extends DiffTreeViewer {
 						@Override
 						protected Object visit(Object data, int result, Object ancestor, Object left, Object right) {
 							Object o= super.visit(data, result, ancestor, left, right);
-							if (!getCompareConfiguration().isMirrored() && o instanceof DiffNode)
+							if (!getCompareConfiguration().isMirrored() && o instanceof DiffNode) {
 								((DiffNode)o).swapSides(true);
+							}
 							return o;
 						}
 					};
+				}
 
 				fRoot= (IDiffContainer) fDifferencer.findDifferences(fThreeWay, subMonitor(monitor, 100), null,
 						ancestorComparator, leftComparator, rightComparator);
@@ -509,10 +524,12 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	}
 
 	private void refreshAfterDiff(String message) {
-		if (getControl().isDisposed())
+		if (getControl().isDisposed()) {
 			return;
-		if (fParent != null)
+		}
+		if (fParent != null) {
 			fParent.setTitleArgument(message);
+		}
 
 		refresh(getRoot());
 		// Setting the auto-expand level doesn't do anything for refreshes
@@ -547,8 +564,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 
 	private void handleFailedRefresh(final String message) {
 		Runnable runnable = () -> {
-			if (getControl().isDisposed())
+			if (getControl().isDisposed()) {
 				return;
+			}
 			refreshAfterDiff(message);
 		};
 		if (Display.getCurrent() != null) {
@@ -619,8 +637,9 @@ public class StructureDiffViewer extends DiffTreeViewer {
 
 			s1 = fStructureCreator.getContents(o1, ignoreWhiteSpace);
 			s2 = fStructureCreator.getContents(o2, ignoreWhiteSpace);
-			if (s1 == null || s2 == null)
+			if (s1 == null || s2 == null) {
 				return false;
+			}
 			return s1.equals(s2);
 		}
 		return false;
@@ -679,13 +698,16 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	}
 
 	private void syncExec(final Runnable runnable) {
-		if (getControl().isDisposed())
+		if (getControl().isDisposed()) {
 			return;
+		}
 		if (Display.getCurrent() != null) {
 			runnable.run();
 		} else {
 			getControl().getDisplay().syncExec(() -> {
-				if (!getControl().isDisposed()) runnable.run();
+				if (!getControl().isDisposed()) {
+					runnable.run();
+				}
 			});
 		}
 	}

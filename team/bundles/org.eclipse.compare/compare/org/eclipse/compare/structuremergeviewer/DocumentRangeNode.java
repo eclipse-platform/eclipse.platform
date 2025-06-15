@@ -175,15 +175,17 @@ public class DocumentRangeNode
 	 * @param node the node to add as a child
 	 */
 	public void addChild(DocumentRangeNode node) {
-		if (fChildren == null)
+		if (fChildren == null) {
 			fChildren= new ArrayList<>();
+		}
 		fChildren.add(node);
 	}
 
 	@Override
 	public Object[] getChildren() {
-		if (fChildren != null)
+		if (fChildren != null) {
 			return fChildren.toArray();
+		}
 		return new Object[0];
 	}
 
@@ -207,12 +209,13 @@ public class DocumentRangeNode
 	 * @param pos the character position within the underlying document where text can be legally inserted
 	 */
 	public void setAppendPosition(int pos) {
-		if (fAppendPosition != null)
+		if (fAppendPosition != null) {
 			try {
 				fBaseDocument.removePosition(RANGE_CATEGORY, fAppendPosition);
 			} catch (BadPositionCategoryException e) {
 				// Ignore
 			}
+		}
 		try {
 			// TODO: Avoid an exception for a position that is past the end of the document
 			if (pos <= getDocument().getLength()) {
@@ -355,8 +358,9 @@ public class DocumentRangeNode
 	 */
 	@Override
 	public boolean isEditable() {
-		if (fParent != null)
+		if (fParent != null) {
 			return fParent.isEditable();
+		}
 		return true;
 	}
 
@@ -382,8 +386,9 @@ public class DocumentRangeNode
 				}
 			}
 
-			if (child == null) // no destination: we have to add the contents into the parent
+			if (child == null) { // no destination: we have to add the contents into the parent
 				add(srcContents, null, src);
+			}
 		}
 		nodeChanged(this);
 		return child;
@@ -424,8 +429,9 @@ public class DocumentRangeNode
 	 * @since 3.3
 	 */
 	protected void nodeChanged(DocumentRangeNode node) {
-		if (fParent != null)
+		if (fParent != null) {
 			fParent.nodeChanged(node);
+		}
 	}
 
 	/**
@@ -441,23 +447,26 @@ public class DocumentRangeNode
 	 */
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == ISharedDocumentAdapter.class && fParent != null)
+		if (adapter == ISharedDocumentAdapter.class && fParent != null) {
 			return fParent.getAdapter(adapter);
+		}
 
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
 	@Override
 	public boolean isReadOnly() {
-		if (fParent != null)
+		if (fParent != null) {
 			return fParent.isReadOnly();
+		}
 		return false;
 	}
 
 	@Override
 	public IStatus validateEdit(Shell shell) {
-		if (fParent != null)
+		if (fParent != null) {
 			return fParent.validateEdit(shell);
+		}
 		return Status.OK_STATUS;
 	}
 

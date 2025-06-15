@@ -65,8 +65,9 @@ public class ViewerDescriptor implements IViewerDescriptor {
 				}
 			}
 			Viewer viewer= fViewerCreator.createViewer(parent, mp);
-			if (viewer != null)
+			if (viewer != null) {
 				fViewerClass= viewer.getClass();
+			}
 			return viewer;
 		}
 

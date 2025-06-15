@@ -81,22 +81,25 @@ public class DiffTreeViewer extends TreeViewer {
 
 		@Override
 		public Object getParent(Object element) {
-			if (element instanceof IDiffElement)
+			if (element instanceof IDiffElement) {
 				return ((IDiffElement) element).getParent();
+			}
 			return null;
 		}
 
 		@Override
 		public final boolean hasChildren(Object element) {
-			if (element instanceof IDiffContainer)
+			if (element instanceof IDiffContainer) {
 				return ((IDiffContainer) element).hasChildren();
+			}
 			return false;
 		}
 
 		@Override
 		public final Object[] getChildren(Object element) {
-			if (element instanceof IDiffContainer)
+			if (element instanceof IDiffContainer) {
 				return ((IDiffContainer) element).getChildren();
+			}
 			return new Object[0];
 		}
 
@@ -112,8 +115,9 @@ public class DiffTreeViewer extends TreeViewer {
 	class DiffViewerLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
-			if (element instanceof IDiffElement)
+			if (element instanceof IDiffElement) {
 				return ((IDiffElement) element).getName();
+			}
 
 			return Utilities.getString(fBundle, "defaultLabel"); //$NON-NLS-1$
 		}
@@ -121,9 +125,7 @@ public class DiffTreeViewer extends TreeViewer {
 		@Override
 		@SuppressWarnings("incomplete-switch")
 		public Image getImage(Object element) {
-			if (element instanceof IDiffElement) {
-				IDiffElement input= (IDiffElement) element;
-
+			if (element instanceof IDiffElement input) {
 				int kind= input.getKind();
 				// Flip the direction and the change type, because all images
 				// are the other way round, i.e. for comparison from left to right.
@@ -161,8 +163,9 @@ public class DiffTreeViewer extends TreeViewer {
 	static class FilterSame extends ViewerFilter {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			if (element instanceof IDiffElement)
+			if (element instanceof IDiffElement) {
 				return (((IDiffElement) element).getKind() & Differencer.PSEUDO_CONFLICT) == 0;
+			}
 			return true;
 		}
 		public boolean isFilterProperty(Object element, Object property) {
@@ -291,8 +294,9 @@ public class DiffTreeViewer extends TreeViewer {
 	 */
 	public String getTitle() {
 		String title= Utilities.getString(fBundle, "title", null); //$NON-NLS-1$
-		if (title == null)
+		if (title == null) {
 			title= Utilities.getString("DiffTreeViewer.title"); //$NON-NLS-1$
+		}
 		return title;
 	}
 
@@ -324,8 +328,9 @@ public class DiffTreeViewer extends TreeViewer {
 	@Override
 	protected void handleDispose(DisposeEvent event) {
 		if (fCompareConfiguration != null) {
-			if (fPropertyChangeListener != null)
+			if (fPropertyChangeListener != null) {
 				fCompareConfiguration.removePropertyChangeListener(fPropertyChangeListener);
+			}
 			fCompareConfiguration= null;
 		}
 		fPropertyChangeListener= null;
@@ -380,8 +385,9 @@ public class DiffTreeViewer extends TreeViewer {
 	protected void internalExpandToLevel(Widget node, int level) {
 		Object data= node.getData();
 
-		if (dontExpand(data))
+		if (dontExpand(data)) {
 			return;
+		}
 
 		super.internalExpandToLevel(node, level);
 	}
@@ -485,8 +491,9 @@ public class DiffTreeViewer extends TreeViewer {
 			Iterator<?> e= ((IStructuredSelection) selection).iterator();
 			while (e.hasNext()) {
 				Object element= e.next();
-				if (element instanceof ICompareInput)
+				if (element instanceof ICompareInput) {
 					copyOne((ICompareInput) element, leftToRight);
+				}
 			}
 		}
 	}
@@ -534,8 +541,9 @@ public class DiffTreeViewer extends TreeViewer {
 	 */
 	private boolean internalNavigate(boolean next, boolean fireOpen) {
 		Control c= getControl();
-		if (!(c instanceof Tree) || c.isDisposed())
+		if (!(c instanceof Tree) || c.isDisposed()) {
 			return false;
+		}
 		TreeItem item = getNextItem(next, true);
 		if (item != null) {
 			internalSetSelection(item, fireOpen);
@@ -545,14 +553,15 @@ public class DiffTreeViewer extends TreeViewer {
 
 	private TreeItem getNextItem(boolean next, boolean expand) {
 		Control c= getControl();
-		if (!(c instanceof Tree) || c.isDisposed())
+		if (!(c instanceof Tree tree) || c.isDisposed()) {
 			return null;
+		}
 
-		Tree tree= (Tree) c;
 		TreeItem item= null;
 		TreeItem children[]= tree.getSelection();
-		if (children != null && children.length != 0)
+		if (children != null && children.length != 0) {
 			item= children[0];
+		}
 		if (item == null) {
 			children= tree.getItems();
 			if (children != null && children.length != 0) {
@@ -565,17 +574,20 @@ public class DiffTreeViewer extends TreeViewer {
 
 		while (true) {
 			item= findNextPrev(item, next, expand);
-			if (item == null)
+			if (item == null) {
 				break;
-			if (item.getItemCount() <= 0)
+			}
+			if (item.getItemCount() <= 0) {
 				break;
+			}
 		}
 		return item;
 	}
 
 	private TreeItem findNextPrev(TreeItem item, boolean next, boolean expand) {
-		if (item == null)
+		if (item == null) {
 			return null;
+		}
 
 		TreeItem children[]= null;
 
@@ -591,8 +603,9 @@ public class DiffTreeViewer extends TreeViewer {
 				// Go to previous child.
 				int index= 0;
 				for (; index < children.length; index++) {
-					if (children[index] == item)
+					if (children[index] == item) {
 						break;
+					}
 				}
 
 				if (index > 0) {
@@ -601,11 +614,13 @@ public class DiffTreeViewer extends TreeViewer {
 					while (true) {
 						createChildren(item);
 						int n= item.getItemCount();
-						if (n <= 0)
+						if (n <= 0) {
 							break;
+						}
 
-						if (expand)
+						if (expand) {
 							item.setExpanded(true);
+						}
 						item= item.getItems()[n-1];
 					}
 
@@ -617,8 +632,9 @@ public class DiffTreeViewer extends TreeViewer {
 			// Go up.
 			item= parent;
 		} else {
-			if (expand)
+			if (expand) {
 				item.setExpanded(true);
+			}
 			createChildren(item);
 
 			if (item.getItemCount() > 0) {
@@ -640,8 +656,9 @@ public class DiffTreeViewer extends TreeViewer {
 					// Goto next child.
 					int index= 0;
 					for (; index < children.length; index++) {
-						if (children[index] == item)
+						if (children[index] == item) {
 							break;
+						}
 					}
 
 					if (index < children.length-1) {
@@ -676,23 +693,26 @@ public class DiffTreeViewer extends TreeViewer {
 	private void expandCollapseAction(DoubleClickEvent event) {
 		ISelection s = event.getSelection();
 
-		if (s.isEmpty())
+		if (s.isEmpty()) {
 			return;
+		}
 
 		if (getElement(s) instanceof DiffNode d) {
 			if (d.getType() == ITypedElement.FOLDER_TYPE) {
-				if (getExpandedState(d))
+				if (getExpandedState(d)) {
 					collapseToLevel(d, 1);
-				else
+				} else {
 					expandToLevel(d, 1);
+				}
 			}
 		}
 	}
 
 	private static Object getElement(ISelection selection) {
 		if (selection instanceof IStructuredSelection ss) {
-			if (ss.size() == 1)
+			if (ss.size() == 1) {
 				return ss.getFirstElement();
+			}
 		}
 		return null;
 	}

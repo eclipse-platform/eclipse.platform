@@ -139,8 +139,9 @@ public class CompareEditor extends EditorPart
 			WorkerJob workerJob = new WorkerJob(getWorkerJobName()) {
 				@Override
 				public boolean belongsTo(Object family) {
-					if (family == CompareEditor.this)
+					if (family == CompareEditor.this) {
 						return true;
+					}
 					return super.belongsTo(family);
 				}
 			};
@@ -217,15 +218,17 @@ public class CompareEditor extends EditorPart
 	 */
 	CompareConfiguration getCompareConfiguration() {
 		IEditorInput input= getEditorInput();
-		if (input instanceof CompareEditorInput)
+		if (input instanceof CompareEditorInput) {
 			return ((CompareEditorInput)input).getCompareConfiguration();
+		}
 		return null;
 	}
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		if (!(input instanceof CompareEditorInput))
+		if (!(input instanceof CompareEditorInput)) {
 			throw new PartInitException(Utilities.getString("CompareEditor.invalidInput")); //$NON-NLS-1$
+		}
 
 		setSite(site);
 		setInput(input);
@@ -266,8 +269,9 @@ public class CompareEditor extends EditorPart
 			Job.getJobManager().cancel(this);
 			if (fControl != null && !fControl.isDisposed()) {
 				oldSize= fControl.getSize();
-				if (emptyPage == null)
+				if (emptyPage == null) {
 					emptyPage = new Composite(fPageBook, SWT.NONE);
+				}
 				fPageBook.showPage(emptyPage);
 				fControl.dispose();
 				fControl = null;
@@ -276,8 +280,9 @@ public class CompareEditor extends EditorPart
 
 		super.setInput(input);
 
-		if (fOutlinePage != null)
+		if (fOutlinePage != null) {
 			fOutlinePage.reset();
+		}
 
 		final CompareEditorInput cei= (CompareEditorInput) input;
 		cei.setContainer(fContainer);
@@ -285,14 +290,17 @@ public class CompareEditor extends EditorPart
 		setPartName(cei.getTitle());
 		setTitleToolTip(cei.getToolTipText());
 
-		if (input instanceof IPropertyChangeNotifier)
+		if (input instanceof IPropertyChangeNotifier) {
 			((IPropertyChangeNotifier)input).addPropertyChangeListener(this);
+		}
 
 		setState(cei.getCompareResult() == null ? INITIALIZING : INITIALIZED);
-		if (fPageBook != null)
+		if (fPageBook != null) {
 			createCompareControl();
-		if (fControl != null && oldSize != null)
+		}
+		if (fControl != null && oldSize != null) {
 			fControl.setSize(oldSize);
+		}
 
 		boolean hasResult = cei.getCompareResult() != null;
 		if (!hasResult) {
@@ -315,8 +323,9 @@ public class CompareEditor extends EditorPart
 
 	private void disconnectFromInput(IEditorInput oldInput) {
 		if (oldInput != null) {
-			if (oldInput instanceof IPropertyChangeNotifier)
+			if (oldInput instanceof IPropertyChangeNotifier) {
 				((IPropertyChangeNotifier)oldInput).removePropertyChangeListener(this);
+			}
 
 			// Let the workbench know that the old input's saveables are no longer needed
 			if (knownSaveables != null && !knownSaveables.isEmpty()) {
@@ -351,11 +360,13 @@ public class CompareEditor extends EditorPart
 					newState[0] = CANCELED;
 					return Status.CANCEL_STATUS;
 				} finally {
-					if (monitor.isCanceled())
+					if (monitor.isCanceled()) {
 						newState[0] = CANCELED;
+					}
 					Display.getDefault().syncExec(() -> {
-						if (fPageBook.isDisposed())
+						if (fPageBook.isDisposed()) {
 							return;
+						}
 						// we need to register the saveable if we had a previous input or if
 						// there are knownSaveables (which means that the workbench called
 						// getSaveables and got an empty list
@@ -370,8 +381,9 @@ public class CompareEditor extends EditorPart
 			}
 			@Override
 			public boolean belongsTo(Object family) {
-				if (family == CompareEditor.this || family == cei)
+				if (family == CompareEditor.this || family == cei) {
 					return true;
+				}
 				return cei.belongsTo(family);
 			}
 		};
@@ -406,11 +418,11 @@ public class CompareEditor extends EditorPart
 	}
 
 	private void createCompareControl() {
-		if (fPageBook.isDisposed())
+		if (fPageBook.isDisposed()) {
 			return;
+		}
 		IEditorInput input= getEditorInput();
-		if (input instanceof CompareEditorInput) {
-			CompareEditorInput ci = (CompareEditorInput) input;
+		if (input instanceof CompareEditorInput ci) {
 			if (ci.getCompareResult() == null) {
 				if (getState() == INITIALIZING) {
 					getSite().setSelectionProvider(new CompareEditorSelectionProvider());
@@ -442,8 +454,9 @@ public class CompareEditor extends EditorPart
 				}
 				// Set the state in case this method gets called again
 				setState(CREATING_CONTROL);
-				if (getSite().getSelectionProvider() == null)
+				if (getSite().getSelectionProvider() == null) {
 					getSite().setSelectionProvider(new CompareEditorSelectionProvider());
+				}
 				try {
 					fControl = ci.createContents(fPageBook);
 				} catch (SWTException e) {
@@ -485,17 +498,20 @@ public class CompareEditor extends EditorPart
 	@Override
 	public void dispose() {
 		IEditorInput input= getEditorInput();
-		if (input instanceof IPropertyChangeNotifier)
+		if (input instanceof IPropertyChangeNotifier) {
 			((IPropertyChangeNotifier)input).removePropertyChangeListener(this);
+		}
 		super.dispose();
 	}
 
 	@Override
 	public void setFocus() {
 		IEditorInput input= getEditorInput();
-		if (input instanceof CompareEditorInput)
-			if (!((CompareEditorInput)input).setFocus2())
+		if (input instanceof CompareEditorInput) {
+			if (!((CompareEditorInput)input).setFocus2()) {
 				fPageBook.setFocus();
+			}
+		}
 	}
 
 	@Override
@@ -515,8 +531,9 @@ public class CompareEditor extends EditorPart
 		WorkspaceModifyOperation operation= new WorkspaceModifyOperation() {
 			@Override
 			public void execute(IProgressMonitor pm) throws CoreException {
-				if (input instanceof CompareEditorInput)
+				if (input instanceof CompareEditorInput) {
 					((CompareEditorInput)input).saveChanges(pm);
+				}
 			}
 		};
 
@@ -537,8 +554,9 @@ public class CompareEditor extends EditorPart
 	@Override
 	public boolean isDirty() {
 		IEditorInput input= getEditorInput();
-		if (input instanceof CompareEditorInput)
+		if (input instanceof CompareEditorInput) {
 			return ((CompareEditorInput)input).isDirty();
+		}
 		return false;
 	}
 
@@ -547,8 +565,9 @@ public class CompareEditor extends EditorPart
 		if (event.getProperty().equals(CompareEditorInput.DIRTY_STATE)) {
 			Object old_value= event.getOldValue();
 			Object new_value= event.getNewValue();
-			if (old_value == null || new_value == null || !old_value.equals(new_value))
+			if (old_value == null || new_value == null || !old_value.equals(new_value)) {
 				firePropertyChange(PROP_DIRTY);
+			}
 		} else if (event.getProperty().equals(CompareEditorInput.PROP_TITLE)) {
 			setPartName(((CompareEditorInput)getEditorInput()).getTitle());
 			setTitleToolTip(((CompareEditorInput)getEditorInput()).getToolTipText());
@@ -601,14 +620,14 @@ public class CompareEditor extends EditorPart
 	}
 
 	private void recordSaveables(Saveable[] sourceSaveables) {
-		if (knownSaveables == null)
+		if (knownSaveables == null) {
 			knownSaveables = new HashSet<>();
+		}
 		Collections.addAll(knownSaveables, sourceSaveables);
 	}
 
 	private Saveable[] getSaveables(IEditorInput input) {
-		if (input instanceof ISaveablesSource) {
-			ISaveablesSource source= (ISaveablesSource) input;
+		if (input instanceof ISaveablesSource source) {
 			return source.getSaveables();
 		}
 		return new Saveable[] { getSaveable() };
@@ -624,8 +643,7 @@ public class CompareEditor extends EditorPart
 	@Override
 	public Saveable[] getActiveSaveables() {
 		IEditorInput input= getEditorInput();
-		if (input instanceof ISaveablesSource) {
-			ISaveablesSource source= (ISaveablesSource) input;
+		if (input instanceof ISaveablesSource source) {
 			return source.getActiveSaveables();
 		}
 		return new Saveable[] { getSaveable() };
@@ -713,17 +731,20 @@ public class CompareEditor extends EditorPart
 		if (event.getEventType() == SaveablesLifecycleEvent.POST_CLOSE) {
 			// We may get a post close for a saveable that is not known to the workbench.
 			// Only pass on the event for known saveables
-			if (knownSaveables == null || knownSaveables.isEmpty())
+			if (knownSaveables == null || knownSaveables.isEmpty()) {
 				return;
+			}
 			java.util.List<Saveable> result = new ArrayList<>();
 			Saveable[] all = event.getSaveables();
 			for (Saveable saveable : all) {
-				if (knownSaveables.contains(saveable))
+				if (knownSaveables.contains(saveable)) {
 					result.add(saveable);
+				}
 				knownSaveables.remove(saveable);
 			}
-			if (result.isEmpty())
+			if (result.isEmpty()) {
 				return;
+			}
 			event = new SaveablesLifecycleEvent(this,
 					SaveablesLifecycleEvent.POST_CLOSE,
 					result.toArray(new Saveable[result.size()]),

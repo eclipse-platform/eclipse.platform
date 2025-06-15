@@ -104,10 +104,10 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 */
 	private static class Pair {
 
-		private ITypedElement fEdition;
-		private ITypedElement fItem;
+		private final ITypedElement fEdition;
+		private final ITypedElement fItem;
 		private String fContent;
-		private IStructureCreator fStructureCreator;
+		private final IStructureCreator fStructureCreator;
 		private boolean fHasError= false;
 
 		Pair(IStructureCreator structureCreator, ITypedElement edition, ITypedElement item) {
@@ -133,11 +133,10 @@ public class EditionSelectionDialog extends ResizableDialog {
 		 */
 		private String getContent() {
 			if (fContent == null) {
-				if (fStructureCreator != null)
+				if (fStructureCreator != null) {
 					fContent= fStructureCreator.getContents(fItem, false);
-				else {
-					if (fItem instanceof IStreamContentAccessor) {
-						IStreamContentAccessor sca= (IStreamContentAccessor) fItem;
+				} else {
+					if (fItem instanceof IStreamContentAccessor sca) {
 						try {
 							fContent= Utilities.readString(sca);
 						} catch (CoreException ex) {
@@ -146,8 +145,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 						}
 					}
 				}
-				if (fContent == null)
+				if (fContent == null) {
 					fContent= ""; //$NON-NLS-1$
+				}
 			}
 			return fContent;
 		}
@@ -155,8 +155,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 		@Override
 		public boolean equals(Object other) {
 			if (other != null && other.getClass() == getClass()) {
-				if (getContent().equals(((Pair)other).getContent()))
+				if (getContent().equals(((Pair)other).getContent())) {
 					return true;
+				}
 			}
 			return super.equals(other);
 		}
@@ -169,7 +170,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 	// Configuration options
 	private CompareConfiguration fCompareConfiguration;
-	private ArrayList<Object> fArrayList= new ArrayList<>();
+	private final ArrayList<Object> fArrayList= new ArrayList<>();
 	/** show target on right hand side */
 	private boolean fTargetIsRight= false;
 	/** hide entries which have identical content */
@@ -311,18 +312,21 @@ public class EditionSelectionDialog extends ResizableDialog {
 		// sort input editions
 		final int count= inputEditions.length;
 		final IModificationDate[] editions= new IModificationDate[count];
-		for (int i= 0; i < count; i++)
+		for (int i= 0; i < count; i++) {
 			editions[i]= (IModificationDate) inputEditions[i];
-		if (count > 1)
+		}
+		if (count > 1) {
 			internalSort(editions);
+		}
 
 		// find StructureCreator if ppath is not null
 		IStructureCreator structureCreator= null;
 		if (ppath != null) {
 			String type= target.getType();
 			StructureCreatorDescriptor scd= CompareUIPlugin.getDefault().getStructureCreator(type);
-			if (scd != null)
+			if (scd != null) {
 				structureCreator= scd.createStructureCreator();
+			}
 		}
 
 		if (fAddMode) {
@@ -332,10 +336,11 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 		if (structureCreator != null) {
 			Pair pair= createPair(structureCreator, ppath, target);
-			if (pair != null)
+			if (pair != null) {
 				fTargetPair= pair;
-			else
+			} else {
 				ppath= null;	// couldn't extract item because of error
+			}
 		}
 
 		// from front (newest) to back (oldest)
@@ -351,8 +356,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 				pair= new Pair(null, edition);
 			}
 
-			if (pair != null && pair.fHasError)
+			if (pair != null && pair.fHasError) {
 				return null;
+			}
 
 			if (pair != null && !fTargetPair.equals(pair)) {
 				return pair.fItem;
@@ -382,18 +388,21 @@ public class EditionSelectionDialog extends ResizableDialog {
 		// sort input editions
 		final int count= inputEditions.length;
 		final IModificationDate[] editions= new IModificationDate[count];
-		for (int i= 0; i < count; i++)
+		for (int i= 0; i < count; i++) {
 			editions[i]= (IModificationDate) inputEditions[i];
-		if (count > 1)
+		}
+		if (count > 1) {
 			internalSort(editions);
+		}
 
 		// find StructureCreator if ppath is not null
 		IStructureCreator structureCreator= null;
 		if (ppath != null) {
 			String type= target.getType();
 			StructureCreatorDescriptor scd= CompareUIPlugin.getDefault().getStructureCreator(type);
-			if (scd != null)
+			if (scd != null) {
 				structureCreator= scd.createStructureCreator();
+			}
 		}
 
 		if (!fAddMode) {
@@ -401,18 +410,20 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 			if (structureCreator != null) {
 				Pair pair= createPair(structureCreator, ppath, target);
-				if (pair != null)
+				if (pair != null) {
 					fTargetPair= pair;
-				else
+				} else {
 					ppath= null;	// couldn't extract item because of error
+				}
 			}
 
 			// set the left and right labels for the compare viewer
 			String targetLabel= getTargetLabel(target, fTargetPair.getItem());
-			if (fTargetIsRight)
+			if (fTargetIsRight) {
 				getCompareConfiguration().setRightLabel(targetLabel);
-			else
+			} else {
 				getCompareConfiguration().setLeftLabel(targetLabel);
+			}
 
 			if (structureCreator != null && ppath != null) {	// extract sub element
 
@@ -428,14 +439,16 @@ public class EditionSelectionDialog extends ResizableDialog {
 						// from front (newest) to back (oldest)
 						for (int i= 0; i < count; i++) {
 
-							if (fEditionTree == null || fEditionTree.isDisposed())
+							if (fEditionTree == null || fEditionTree.isDisposed()) {
 								break;
+							}
 							ITypedElement edition= (ITypedElement) editions[i];
 
 							// extract sub element from edition
 							Pair pair= createPair(sc, path, edition);
-							if (pair != null)
+							if (pair != null) {
 								sendPair(pair);
+							}
 						}
 						sendPair(null);
 					}
@@ -445,8 +458,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 				create();
 
 				// from front (newest) to back (oldest)
-				for (int i= 0; i < count; i++)
+				for (int i= 0; i < count; i++) {
 					addMemberEdition(new Pair(null, (ITypedElement) editions[i]));
+				}
 			}
 
 		} else {
@@ -454,16 +468,18 @@ public class EditionSelectionDialog extends ResizableDialog {
 			final Object container= ppath;
 			Assert.isNotNull(container);
 
-			if (structureCreator == null)
+			if (structureCreator == null) {
 				return null;	// error
+			}
 
 			// extract all elements of container
 			final HashSet<Object> current= new HashSet<>();
 			IStructureComparator sco= structureCreator.locate(container, target);
 			if (sco != null) {
 				Object[] children= sco.getChildren();
-				if (children != null)
+				if (children != null) {
 					Collections.addAll(current, children);
+				}
 			}
 
 			final IStructureCreator sc= structureCreator;
@@ -477,8 +493,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 					// from front (newest) to back (oldest)
 					for (int i= 0; i < count; i++) {
 
-						if (fEditionTree == null || fEditionTree.isDisposed())
+						if (fEditionTree == null || fEditionTree.isDisposed()) {
 							break;
+						}
 						ITypedElement edition= (ITypedElement) editions[i];
 
 						IStructureComparator sco2= sc.locate(container, edition);
@@ -487,8 +504,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 							if (children != null) {
 								for (Object c : children) {
 									ITypedElement child = (ITypedElement) c;
-									if (!current.contains(child))
+									if (!current.contains(child)) {
 										sendPair(new Pair(sc, edition, child));
+									}
 								}
 							}
 						}
@@ -500,8 +518,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 		open();
 
-		if (getReturnCode() == OK)
+		if (getReturnCode() == OK) {
 			return fSelectedItem;
+		}
 		return null;
 	}
 
@@ -512,8 +531,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 			p.fHasError= true;
 			return p;
 		}
-		if (scmp instanceof ITypedElement)
+		if (scmp instanceof ITypedElement) {
 			return new Pair(sc, input, (ITypedElement) scmp);
+		}
 		return null;
 	}
 
@@ -591,11 +611,13 @@ public class EditionSelectionDialog extends ResizableDialog {
 			while (iter.hasNext()) {
 				Object edition= iter.next();
 				Object item= fMemberSelection.get(edition);
-				if (item != null)
+				if (item != null) {
 					result.add((ITypedElement) item);
+				}
 			}
-		} else if (fSelectedItem != null)
+		} else if (fSelectedItem != null) {
 			result.add(fSelectedItem);
+		}
 		return result.toArray(new ITypedElement[result.size()]);
 	}
 
@@ -615,20 +637,24 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 */
 	protected String getTargetLabel(ITypedElement target, ITypedElement item) {
 		String format= null;
-		if (target instanceof ResourceNode)
+		if (target instanceof ResourceNode) {
 			format= Utilities.getString(fBundle, "workspaceTargetLabel", null); //$NON-NLS-1$
-		if (format == null)
+		}
+		if (format == null) {
 			format= Utilities.getString(fBundle, "targetLabel"); //$NON-NLS-1$
-		if (format == null)
+		}
+		if (format == null) {
 			format= "x{0}"; //$NON-NLS-1$
+		}
 
 		return formatString(format, target.getName());
 	}
 
 	private String formatString(String string, String variable) {
 		// Only process the string if it contains a variable or an escaped quote (see bug 190023)
-		if (hasVariable(string) || hasDoubleQuotes(string))
+		if (hasVariable(string) || hasDoubleQuotes(string)) {
 			return MessageFormat.format(string, variable);
+		}
 		return string;
 	}
 
@@ -656,14 +682,17 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 */
 	protected String getEditionLabel(ITypedElement selectedEdition, ITypedElement item) {
 		String format= null;
-		if (selectedEdition instanceof ResourceNode)
+		if (selectedEdition instanceof ResourceNode) {
 			format= Utilities.getString(fBundle, "workspaceEditionLabel", null);	//$NON-NLS-1$
-		else if (selectedEdition instanceof HistoryItem)
+		} else if (selectedEdition instanceof HistoryItem) {
 			format= Utilities.getString(fBundle, "historyEditionLabel", null);	//$NON-NLS-1$
-		if (format == null)
+		}
+		if (format == null) {
 			format= Utilities.getString(fBundle, "editionLabel");	//$NON-NLS-1$
-		if (format == null)
+		}
+		if (format == null) {
 			format= "x{0}";	//$NON-NLS-1$
+		}
 
 
 		String date= "";	//$NON-NLS-1$
@@ -694,12 +723,15 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 */
 	protected String getShortEditionLabel(ITypedElement edition, ITypedElement item, Date date) {
 		String format= null;
-		if (edition instanceof ResourceNode)
+		if (edition instanceof ResourceNode) {
 			format= Utilities.getString(fBundle, "workspaceTreeFormat", null);	//$NON-NLS-1$
-		if (format == null)
+		}
+		if (format == null) {
 			format= Utilities.getString(fBundle, "treeFormat", null);	//$NON-NLS-1$
-		if (format == null)
+		}
+		if (format == null) {
 			format= "x{0}"; //$NON-NLS-1$
+		}
 
 		String ds= DateFormat.getTimeInstance().format(date);
 		return formatString(format, ds);
@@ -721,14 +753,16 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @since 2.0
 	 */
 	protected Image getEditionImage(ITypedElement selectedEdition, ITypedElement item) {
-		if (selectedEdition instanceof ResourceNode)
+		if (selectedEdition instanceof ResourceNode) {
 			return selectedEdition.getImage();
+		}
 		if (selectedEdition instanceof HistoryItem) {
 			if (fTimeImage == null) {
 				String iconName= Utilities.getString(fBundle, "timeIcon", "obj16/resource_obj.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 				ImageDescriptor id= CompareUIPlugin.getImageDescriptor(iconName);
-				if (id != null)
+				if (id != null) {
 					fTimeImage= id.createImage();
+				}
 			}
 			return fTimeImage;
 		}
@@ -771,24 +805,26 @@ public class EditionSelectionDialog extends ResizableDialog {
 			fMemberPane.setText(Utilities.getString(fBundle, "memberPaneTitle")); //$NON-NLS-1$
 
 			int flags= SWT.H_SCROLL | SWT.V_SCROLL;
-			if (fMultiSelect)
+			if (fMultiSelect) {
 				flags|= SWT.CHECK;
+			}
 			fMemberTable= new Table(fMemberPane, flags);
 			fMemberTable.addSelectionListener(
 				new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (e.detail == SWT.CHECK) {
-							if (e.item instanceof TableItem) {
-								TableItem ti= (TableItem) e.item;
+							if (e.item instanceof TableItem ti) {
 								Object data= ti.getData();
-								if (ti.getChecked())
+								if (ti.getChecked()) {
 									fArrayList.add(data);
-								else
+								} else {
 									fArrayList.remove(data);
+								}
 
-								if (fCommitButton != null)
+								if (fCommitButton != null) {
 									fCommitButton.setEnabled(fArrayList.size() > 0);
+								}
 
 								fMemberTable.setSelection(new TableItem[] { ti });
 							}
@@ -810,8 +846,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 				fStructuredComparePane= new CompareViewerSwitchingPane(hsplitter, SWT.BORDER | SWT.FLAT, true) {
 					@Override
 					protected Viewer getViewer(Viewer oldViewer, Object input) {
-						if (input instanceof ICompareInput)
+						if (input instanceof ICompareInput) {
 							return CompareUI.findStructureViewer(oldViewer, (ICompareInput)input, this, getCompareConfiguration());
+						}
 						return null;
 					}
 				};
@@ -822,13 +859,15 @@ public class EditionSelectionDialog extends ResizableDialog {
 				// only a single pane showing the editions
 				fEditionPane= new CompareViewerPane(vsplitter, SWT.BORDER | SWT.FLAT);
 			}
-			if (fTitleArg == null)
+			if (fTitleArg == null) {
 				fTitleArg= fTargetPair.getItem().getName();
+			}
 			String titleFormat= Utilities.getString(fBundle, "treeTitleFormat"); //$NON-NLS-1$
 			String title= MessageFormat.format(titleFormat, fTitleArg );
 			fEditionPane.setText(title);
-			if (fTitleImage != null)
+			if (fTitleImage != null) {
 				fEditionPane.setImage(fTitleImage);
+			}
 		}
 
 		fEditionTree= new Tree(fEditionPane, SWT.H_SCROLL | SWT.V_SCROLL);
@@ -857,7 +896,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 				return CompareUI.findContentViewer(oldViewer, input, this, getCompareConfiguration());
 			}
 		};
-		vsplitter.setWeights(new int[] { 30, 70 });
+		vsplitter.setWeights(30, 70);
 
 		statusLabel = new Label(parent, SWT.NONE);
 		statusLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -888,8 +927,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 	protected void okPressed() {
 		if (fCompareMode) {
 			// don't dismiss dialog
-		} else
+		} else {
 			super.okPressed();
+		}
 	}
 
 	//---- private stuff ----------------------------------------------------------------------------------------
@@ -909,10 +949,12 @@ public class EditionSelectionDialog extends ResizableDialog {
 	private static void internalSort(IModificationDate[] keys) {
 		Arrays.sort(keys, (d1, d2) -> {
 			long d= d2.getModificationDate() - d1.getModificationDate();
-			if (d < 0)
+			if (d < 0) {
 				return -1;
-			if (d > 0)
+			}
+			if (d > 0) {
 				return 1;
+			}
 			return 0;
 		});
 	}
@@ -946,10 +988,12 @@ public class EditionSelectionDialog extends ResizableDialog {
 			return;
 		}
 
-		if (fMemberEditions == null)
+		if (fMemberEditions == null) {
 			fMemberEditions= new HashMap<>();
-		if (fMultiSelect && fMemberSelection == null)
+		}
+		if (fMultiSelect && fMemberSelection == null) {
 			fMemberSelection= new HashMap<>();
+		}
 
 		ITypedElement item= pair.getItem();
 		List<Pair> editions= fMemberEditions.get(item);
@@ -980,15 +1024,18 @@ public class EditionSelectionDialog extends ResizableDialog {
 		if (fHideIdentical) {
 			Pair last= fTargetPair;
 			int size= editions.size();
-			if (size > 0)
+			if (size > 0) {
 				last= editions.get(size-1);
-			if (last != null && last.equals(pair))
+			}
+			if (last != null && last.equals(pair)) {
 				return;	// don't add since the new one is equal to old
+			}
 		}
 		editions.add(pair);
 
-		if (!fAddMode || editions == fCurrentEditions)
+		if (!fAddMode || editions == fCurrentEditions) {
 			addEdition(pair);
+		}
 	}
 
 	/*
@@ -1009,14 +1056,16 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * It takes care of creating tree nodes for different dates.
 	 */
 	private void addEdition(Pair pair) {
-		if (fEditionTree == null || fEditionTree.isDisposed())
+		if (fEditionTree == null || fEditionTree.isDisposed()) {
 			return;
+		}
 
 		// find last day
 		TreeItem[] days= fEditionTree.getItems();
 		TreeItem lastDay= null;
-		if (days.length > 0)
+		if (days.length > 0) {
 			lastDay= days[days.length-1];
+		}
 
 		boolean first= lastDay == null;
 
@@ -1031,23 +1080,26 @@ public class EditionSelectionDialog extends ResizableDialog {
 			if (fDateImage == null) {
 				String iconName= Utilities.getString(fBundle, "dateIcon", "obj16/day_obj.svg"); //$NON-NLS-2$ //$NON-NLS-1$
 				ImageDescriptor id= CompareUIPlugin.getImageDescriptor(iconName);
-				if (id != null)
+				if (id != null) {
 					fDateImage= id.createImage();
+				}
 			}
 			lastDay.setImage(fDateImage);
 			String df= DateFormat.getDateInstance().format(date);
 			long today= dayNumber(System.currentTimeMillis());
 
 			String formatKey;
-			if (day == today)
+			if (day == today) {
 				formatKey= "todayFormat"; //$NON-NLS-1$
-			else if (day == today-1)
+			} else if (day == today-1) {
 				formatKey= "yesterdayFormat"; //$NON-NLS-1$
-			else
+			} else {
 				formatKey= "dayFormat"; //$NON-NLS-1$
+			}
 			String pattern= Utilities.getString(fBundle, formatKey);
-			if (pattern != null)
+			if (pattern != null) {
 				df= MessageFormat.format(pattern, df);
+			}
 			lastDay.setText(df);
 			lastDay.setData(date);
 		}
@@ -1068,21 +1120,24 @@ public class EditionSelectionDialog extends ResizableDialog {
 		if (fMemberSelection != null) {
 			Object selected= fMemberSelection.get(fCurrentEditions);
 			if (selected != null) {
-				if (selected == pair.getItem())
+				if (selected == pair.getItem()) {
 					selection= ti;
-				else
+				} else {
 					selection= null;
+				}
 			}
 		}
 		if (selection != null) {
 			fEditionTree.setSelection(new TreeItem[] { selection });
-			if (!fAddMode)
+			if (!fAddMode) {
 				fEditionTree.setFocus();
+			}
 			feedInput(selection);
 		}
 
-		if (first) // expand first node
+		if (first) { // expand first node
 			lastDay.setExpanded(true);
+		}
 	}
 
 	/*
@@ -1104,8 +1159,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 				Iterator<Object> iter= editions.iterator();
 				while (iter.hasNext()) {
 					Object item= iter.next();
-					if (item instanceof Pair)
+					if (item instanceof Pair) {
 						addEdition((Pair) item);
+					}
 				}
 			}
 		}
@@ -1113,8 +1169,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 	private void setInput(Object input) {
 		fContentPane.setInput(input);
-		if (fStructuredComparePane != null)
+		if (fStructuredComparePane != null) {
 			fStructuredComparePane.setInput(input);
+		}
 	}
 
 	/*
@@ -1123,8 +1180,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	private void feedInput(Widget w) {
 		Object input= w.getData();
 		boolean isOK= false;
-		if (input instanceof Pair) {
-			Pair pair= (Pair) input;
+		if (input instanceof Pair pair) {
 			fSelectedItem= pair.getItem();
 			isOK= !pair.fHasError;
 
@@ -1133,8 +1189,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 			Image editionImage= getEditionImage(edition, fSelectedItem);
 
 			if (fAddMode) {
-				if (fMemberSelection != null)
+				if (fMemberSelection != null) {
 					fMemberSelection.put(fCurrentEditions, fSelectedItem);
+				}
 				setInput(fSelectedItem);
 				fContentPane.setText(editionLabel);
 				fContentPane.setImage(editionImage);
@@ -1155,10 +1212,11 @@ public class EditionSelectionDialog extends ResizableDialog {
 			setInput(null);
 		}
 		if (fCommitButton != null) {
-			if (fMultiSelect)
+			if (fMultiSelect) {
 				fCommitButton.setEnabled(isOK && fSelectedItem != null && fArrayList.size() > 0);
-			else
+			} else {
 				fCommitButton.setEnabled(isOK && fSelectedItem != null && fTargetPair.getItem() != fSelectedItem);
+			}
 		}
 	}
 
@@ -1166,10 +1224,10 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * Feeds selection from structure viewer to content viewer.
 	 */
 	private void feedInput2(ISelection sel) {
-		if (sel instanceof IStructuredSelection) {
-			IStructuredSelection ss= (IStructuredSelection) sel;
-			if (ss.size() == 1)
+		if (sel instanceof IStructuredSelection ss) {
+			if (ss.size() == 1) {
 				fContentPane.setInput(ss.getFirstElement());
+			}
 		}
 	}
 }

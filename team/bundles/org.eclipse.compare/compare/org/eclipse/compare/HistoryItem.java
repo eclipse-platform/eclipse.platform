@@ -81,8 +81,9 @@ public class HistoryItem implements IEncodedStreamContentAccessor, ITypedElement
 		String charset= fFileState.getCharset();
 		if (charset == null) {
 			IResource resource= getResource();
-			if (resource instanceof IEncodedStorage)
+			if (resource instanceof IEncodedStorage) {
 				charset= ((IEncodedStorage)resource).getCharset();
+			}
 		}
 		return charset;
 	}

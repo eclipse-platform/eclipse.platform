@@ -72,8 +72,9 @@ public class ResourceNode extends BufferedContent
 
 	@Override
 	public InputStream getContents() throws CoreException {
-		if (fResource instanceof IStorage)
+		if (fResource instanceof IStorage) {
 			return super.getContents();
+		}
 		return null;
 	}
 
@@ -84,19 +85,22 @@ public class ResourceNode extends BufferedContent
 
 	@Override
 	public String getName() {
-		if (fResource != null)
+		if (fResource != null) {
 			return fResource.getName();
+		}
 		return null;
 	}
 
 	@Override
 	public String getType() {
-		if (fResource instanceof IContainer)
+		if (fResource instanceof IContainer) {
 			return ITypedElement.FOLDER_TYPE;
+		}
 		if (fResource != null) {
 			String s= fResource.getFileExtension();
-			if (s != null)
+			if (s != null) {
 				return s;
+			}
 		}
 		return ITypedElement.UNKNOWN_TYPE;
 	}
@@ -137,8 +141,9 @@ public class ResourceNode extends BufferedContent
 					IResource members[]= ((IContainer)fResource).members();
 					for (IResource member : members) {
 						IStructureComparator child = createChild(member);
-						if (child != null)
+						if (child != null) {
 							fChildren.add(child);
+						}
 					}
 				} catch (CoreException ex) {
 					// NeedWork
@@ -171,20 +176,21 @@ public class ResourceNode extends BufferedContent
 	 */
 	@Override
 	protected InputStream createStream() throws CoreException {
-		if (fResource instanceof IStorage) {
+		if (fResource instanceof IStorage storage) {
 			InputStream is= null;
-			IStorage storage= (IStorage) fResource;
 			try {
 				is= storage.getContents();
 			} catch (CoreException e) {
 				if (e.getStatus().getCode() == IResourceStatus.OUT_OF_SYNC_LOCAL) {
 					fResource.refreshLocal(IResource.DEPTH_INFINITE, null);
 					is= storage.getContents();
-				} else
+				} else {
 					throw e;
+				}
 			}
-			if (is != null)
+			if (is != null) {
 				return new BufferedInputStream(is);
+			}
 		}
 		return null;
 	}
@@ -217,8 +223,9 @@ public class ResourceNode extends BufferedContent
 
 	@Override
 	public IStatus validateEdit(Shell shell) {
-		if (isReadOnly())
+		if (isReadOnly()) {
 			return ResourcesPlugin.getWorkspace().validateEdit(new IFile[] { (IFile)fResource}, shell);
+		}
 		return Status.OK_STATUS;
 	}
 }

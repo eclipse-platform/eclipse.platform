@@ -89,8 +89,9 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	@Override
 	public boolean close() {
 		if (super.close()) {
-			if (fCompareEditorInput != null)
+			if (fCompareEditorInput != null) {
 				fCompareEditorInput.removePropertyChangeListener(this);
+			}
 			return true;
 		}
 		return false;
@@ -139,8 +140,9 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(CompareEditorInput.DIRTY_STATE)
 				|| event.getProperty().equals(CompareEditorInput.PROP_SELECTED_EDITION)) {
-			if (fCommitButton != null && fCompareEditorInput != null)
+			if (fCommitButton != null && fCompareEditorInput != null) {
 				fCommitButton.setEnabled(isOKEnabled());
+			}
 		} else if (event.getProperty().equals(CompareEditorInput.PROP_TITLE)) {
 			getShell().setText(fCompareEditorInput.getTitle());
 		} else if (event.getProperty().equals(CompareEditorInput.PROP_TITLE_IMAGE)) {
@@ -149,10 +151,12 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	}
 
 	private boolean isOKEnabled() {
-		if (isInputEditable())
+		if (isInputEditable()) {
 			return fCompareEditorInput.isDirty();
-		if (isElementSelectionDialog())
+		}
+		if (isElementSelectionDialog()) {
 			return getSelectedElement() != null;
+		}
 		return true;
 	}
 
@@ -190,8 +194,9 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	@Override
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == OK) {
-			if (!fCompareEditorInput.okPressed())
+			if (!fCompareEditorInput.okPressed()) {
 				return;
+			}
 		} else if (buttonId == CANCEL) {
 			fCompareEditorInput.cancelPressed();
 		}
@@ -214,8 +219,9 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		if (PlatformUI.isWorkbenchRunning() && getHelpContextId() != null)
+		if (PlatformUI.isWorkbenchRunning() && getHelpContextId() != null) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, getHelpContextId());
+		}
 	}
 
 	/**
@@ -252,10 +258,12 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 			width= parentSize.x-100;
 			height= parentSize.y-100;
 		}
-		if (width < 700)
+		if (width < 700) {
 			width= 700;
-		if (height < 500)
+		}
+		if (height < 500) {
 			height= 500;
+		}
 		return new Point(width, height);
 	}
 

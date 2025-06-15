@@ -85,8 +85,9 @@ public class WorkspacePatcher extends Patcher {
 
 	@Override
 	public void applyAll(IProgressMonitor pm, IFileValidator validator) throws CoreException {
-		if (pm == null)
+		if (pm == null) {
 			pm = new NullProgressMonitor();
+		}
 		if (!fIsWorkspacePatch) {
 			super.applyAll(pm, validator);
 		} else {
@@ -95,8 +96,9 @@ public class WorkspacePatcher extends Patcher {
 			// get all files to be modified in order to call validateEdit
 			List<IFile> list= new ArrayList<>();
 			for (DiffProject diffProject : fDiffProjects) {
-				if (Utilities.getProject(diffProject).isAccessible())
+				if (Utilities.getProject(diffProject).isAccessible()) {
 					list.addAll(Arrays.asList(getTargetFiles(diffProject)));
+				}
 			}
 			// validate the files for editing
 			if (!validator.validateResources(list.toArray(new IFile[list.size()]))) {
@@ -114,8 +116,9 @@ public class WorkspacePatcher extends Patcher {
 				if (isAccessible(diff)) {
 					IFile file= getTargetFile(diff);
 					IPath path= file.getProjectRelativePath();
-					if (pm != null)
+					if (pm != null) {
 						pm.subTask(path.toString());
+					}
 					createPath(file.getProject(), path);
 
 					List<Hunk> failed= new ArrayList<>();
@@ -125,8 +128,9 @@ public class WorkspacePatcher extends Patcher {
 						case FilePatch2.ADDITION :
 							// patch it and collect rejected hunks
 							List<String> result= apply(diff, file, true, failed);
-							if (result != null)
+							if (result != null) {
 								store(LineReader.createString(isPreserveLineDelimiters(), result), file, SubMonitor.convert(pm, workTicks));
+							}
 							workTicks -= WORK_UNIT;
 							break;
 						case FilePatch2.DELETION :
@@ -136,8 +140,9 @@ public class WorkspacePatcher extends Patcher {
 						case FilePatch2.CHANGE :
 							// patch it and collect rejected hunks
 							result= apply(diff, file, false, failed);
-							if (result != null)
+							if (result != null) {
 								store(LineReader.createString(isPreserveLineDelimiters(), result), file, SubMonitor.convert(pm, workTicks));
+							}
 							workTicks -= WORK_UNIT;
 							break;
 						default:
@@ -149,8 +154,9 @@ public class WorkspacePatcher extends Patcher {
 						if (path.segmentCount() > 1) {
 							pp= path.removeLastSegments(1);
 							pp= pp.append(path.lastSegment() + REJECT_FILE_EXTENSION);
-						} else
+						} else {
 							pp= IPath.fromOSString(path.lastSegment() + REJECT_FILE_EXTENSION);
+						}
 						file= createPath(file.getProject(), pp);
 						if (file != null) {
 							store(getRejected(failed), file, pm);
@@ -166,10 +172,12 @@ public class WorkspacePatcher extends Patcher {
 				}
 
 				if (pm != null) {
-					if (pm.isCanceled())
+					if (pm.isCanceled()) {
 						break;
-					if (workTicks > 0)
+					}
+					if (workTicks > 0) {
 						pm.worked(workTicks);
+					}
 				}
 			}
 		}
@@ -199,16 +207,18 @@ public class WorkspacePatcher extends Patcher {
 	public IFile getTargetFile(FilePatch2 diff) {
 		IPath path = diff.getStrippedPath(getStripPrefixSegments(), isReversed());
 		DiffProject project = getProject(diff);
-		if (project != null)
+		if (project != null) {
 			return Utilities.getProject(project).getFile(path);
+		}
 		return super.getTargetFile(diff);
 	}
 
 	private IPath getFullPath(FilePatch2 diff) {
 		IPath path = diff.getStrippedPath(getStripPrefixSegments(), isReversed());
 		DiffProject project = getProject(diff);
-		if (project != null)
+		if (project != null) {
 			return Utilities.getProject(project).getFile(path).getFullPath();
+		}
 		return getTarget().getFullPath().append(path);
 	}
 
@@ -224,7 +234,7 @@ public class WorkspacePatcher extends Patcher {
 			// rule factory will return the root, while others might return just the project. Combining
 			// this rule with the project will result in the smallest possible locking set.
 			ISchedulingRule scheduleRule= ruleFactory.modifyRule(tempProject.getFile(IProjectDescription.DESCRIPTION_FILE_NAME));
-			MultiRule multiRule= new MultiRule(new ISchedulingRule[] { scheduleRule, tempProject } );
+			MultiRule multiRule= new MultiRule(scheduleRule, tempProject );
 			projects.add(multiRule);
 		}
 
@@ -249,11 +259,11 @@ public class WorkspacePatcher extends Patcher {
 
 	@Override
 	protected Object getElementParent(Object element) {
-		if (element instanceof FilePatch2 && fDiffProjects != null) {
-			FilePatch2 diff = (FilePatch2) element;
+		if (element instanceof FilePatch2 diff && fDiffProjects != null) {
 			for (DiffProject project : fDiffProjects) {
-				if (project.contains(diff))
+				if (project.contains(diff)) {
 					return project;
+				}
 			}
 		}
 		return null;
@@ -352,8 +362,9 @@ public class WorkspacePatcher extends Patcher {
 		retargetedDiffs.put(project, Utilities.getProject(project).getFullPath());
 		FilePatch2[] diffs = project.getFileDiffs();
 		DiffProject selectedProject = getDiffProject(targetProject);
-		if (selectedProject == null)
+		if (selectedProject == null) {
 			selectedProject = addDiffProjectForProject(targetProject);
+		}
 		// Copy over the diffs to the new project
 		for (FilePatch2 diff : diffs) {
 			selectedProject.add(diff);
@@ -371,8 +382,9 @@ public class WorkspacePatcher extends Patcher {
 	 * or <code>null</code>
 	 */
 	private DiffProject getDiffProject(IProject project) {
-		if (!isWorkspacePatch())
+		if (!isWorkspacePatch()) {
 			return null;
+		}
 		DiffProject[] projects = getDiffProjects();
 		for (DiffProject p : projects) {
 			if (Utilities.getProject(p).equals(project)) {
@@ -385,15 +397,17 @@ public class WorkspacePatcher extends Patcher {
 	@Override
 	public int getStripPrefixSegments() {
 		// Segments are never stripped from a workspace patch
-		if (isWorkspacePatch())
+		if (isWorkspacePatch()) {
 			return 0;
+		}
 		return super.getStripPrefixSegments();
 	}
 
 	int calculateStripGitPrefixSegments() {
 		FilePatch2[] diffs = getDiffs();
-		if (diffs.length == 0)
+		if (diffs.length == 0) {
 			return -1;
+		}
 		int skip = -1;
 		for (FilePatch2 diff : diffs) {
 			IPath oldPath = diff.getPath(false);
@@ -407,16 +421,18 @@ public class WorkspacePatcher extends Patcher {
 						newPath.segmentCount()); j++) {
 					if (projectExists(oldPath.segment(j))
 							|| projectExists(newPath.segment(j))) {
-						if (skip == -1)
+						if (skip == -1) {
 							skip = j;
-						else if (skip != j)
+						} else if (skip != j) {
 							return -1; // a different number of segments to be
+						}
 										// skipped, abort
 						break;
 					}
 				}
-			} else
+			} else {
 				return -1; // not a git diff or custom prefixes used
+			}
 		}
 		return skip;
 	}
