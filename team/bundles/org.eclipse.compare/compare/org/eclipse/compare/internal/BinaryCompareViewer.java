@@ -100,8 +100,9 @@ public class BinaryCompareViewer extends AbstractViewer {
 							message= MessageFormat.format(format, Integer.toString(pos) );
 							break;
 						}
-						if (l == EOF)
+						if (l == EOF) {
 							break;
+						}
 						pos++;
 					}
 				} else if (left == null && right == null) {
@@ -120,8 +121,9 @@ public class BinaryCompareViewer extends AbstractViewer {
 				Utilities.close(left);
 				Utilities.close(right);
 			}
-			if (message != null)
+			if (message != null) {
 				fMessage.setText(message);
+			}
 			fComposite.layout();
 		}
 	}
@@ -132,8 +134,9 @@ public class BinaryCompareViewer extends AbstractViewer {
 	}
 
 	private InputStream getStream(ITypedElement input) throws CoreException {
-		if (input instanceof IStreamContentAccessor)
+		if (input instanceof IStreamContentAccessor) {
 			return ((IStreamContentAccessor)input).getContents();
+		}
 		return null;
 	}
 }

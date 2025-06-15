@@ -30,8 +30,9 @@ public abstract class BaseCompareAction implements IActionDelegate {
 	@Override
 	final public void selectionChanged(IAction action, ISelection selection) {
 		fSelection= selection;
-		if (action != null)
+		if (action != null) {
 			action.setEnabled(isEnabled(fSelection));
+		}
 	}
 
 	protected boolean isEnabled(ISelection selection) {

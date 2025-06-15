@@ -182,8 +182,9 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 
 	public void setSelection(ISelection selection, boolean reveal) {
 		if (fViewerInFocus != null) {
-			if (reveal && !isSelectionInsideVisibleRegion(fViewerInFocus, selection))
+			if (reveal && !isSelectionInsideVisibleRegion(fViewerInFocus, selection)) {
 				resetVisibleRegion();
+			}
 			fViewerInFocus.setSelection(selection, reveal);
 		}
 	}
@@ -194,8 +195,9 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 	 * @since 3.6
 	 */
 	private void resetVisibleRegion() {
-		if (fViewers == null)
+		if (fViewers == null) {
 			return;
+		}
 
 		for (TextViewer viewer : fViewers) {
 			viewer.setVisibleRegion(0, viewer.getDocument().getLength());
@@ -211,10 +213,10 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 	 * @since 3.6
 	 */
 	private static boolean isSelectionInsideVisibleRegion(TextViewer textViewer, ISelection selection) {
-		if (!(selection instanceof ITextSelection))
+		if (!(selection instanceof ITextSelection textSelection)) {
 			return false;
+		}
 
-		ITextSelection textSelection= (ITextSelection)selection;
 		IRegion visibleRegion= textViewer.getVisibleRegion();
 
 		return textSelection.getOffset() >= visibleRegion.getOffset() && textSelection.getOffset() + textSelection.getLength() <= visibleRegion.getOffset() + visibleRegion.getLength();

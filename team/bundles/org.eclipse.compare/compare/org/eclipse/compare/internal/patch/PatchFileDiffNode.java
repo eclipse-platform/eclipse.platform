@@ -34,8 +34,9 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 	}
 
 	public static int getKind(FileDiffResult result) {
-		if (!result.hasMatches())
+		if (!result.hasMatches()) {
 			return Differencer.NO_CHANGE;
+		}
 		int fileDiffKind = result.getDiff().getDiffType(result.getConfiguration().isReversed());
 		int kind = convertFileDiffTypeToDifferencerType(fileDiffKind);
 		return kind | Differencer.RIGHT;
@@ -91,11 +92,9 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 	public void add(IDiffElement diff) {
 		super.add(diff);
 		// Listen for content changes in unmatched children so we can fire an input change
-		if (diff instanceof HunkDiffNode) {
-			HunkDiffNode node = (HunkDiffNode) diff;
+		if (diff instanceof HunkDiffNode node) {
 			Object left = node.getLeft();
-			if (left instanceof IContentChangeNotifier) {
-				IContentChangeNotifier notifier = (IContentChangeNotifier) left;
+			if (left instanceof IContentChangeNotifier notifier) {
 				notifier.addContentChangeListener(this);
 			}
 		}

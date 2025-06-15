@@ -56,8 +56,7 @@ public class PatchFileTypedElement implements ITypedElement,
 				IResource target = getPatcher().getTarget();
 				if (target instanceof IFile) {
 					file = (IFile) target;
-				} else if (target instanceof IContainer) {
-					IContainer container = (IContainer) target;
+				} else if (target instanceof IContainer container) {
 					file = container.getFile(result.getTargetPath());
 				}
 			}
@@ -92,9 +91,10 @@ public class PatchFileTypedElement implements ITypedElement,
 	@Override
 	public InputStream getContents() throws CoreException {
 		// If there are cached contents, use them
-		if (isAfterState && getPatcher().hasCachedContents(result.getDiff()))
+		if (isAfterState && getPatcher().hasCachedContents(result.getDiff())) {
 			return new ByteArrayInputStream(getPatcher().getCachedContents(
 					result.getDiff()));
+		}
 		// Otherwise, get the lines from the diff result
 		List<String> lines;
 		if (isAfterState) {

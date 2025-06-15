@@ -110,8 +110,9 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	 */
 	@Override
 	public void addCompareInputChangeListener(ICompareInputChangeListener listener) {
-		if (fListener == null)
+		if (fListener == null) {
 			fListener= new ListenerList<>();
+		}
 		fListener.add(listener);
 	}
 
@@ -125,8 +126,9 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	public void removeCompareInputChangeListener(ICompareInputChangeListener listener) {
 		if (fListener != null) {
 			fListener.remove(listener);
-			if (fListener.isEmpty())
+			if (fListener.isEmpty()) {
 				fListener= null;
+			}
 		}
 	}
 
@@ -171,10 +173,12 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	 * @return the first not-{@code null} input of this node
 	 */
 	public ITypedElement getId() {
-		if (fAncestor != null)
+		if (fAncestor != null) {
 			return fAncestor;
-		if (fRight != null)
+		}
+		if (fRight != null) {
 			return fRight;
+		}
 		return fLeft;
 	}
 
@@ -189,26 +193,32 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	@Override
 	public String getName() {
 		String right= null;
-		if (fRight != null)
+		if (fRight != null) {
 			right= fRight.getName();
+		}
 
 		String left= null;
-		if (fLeft != null)
+		if (fLeft != null) {
 			left= fLeft.getName();
+		}
 
 		if (right == null && left == null) {
-			if (fAncestor != null)
+			if (fAncestor != null) {
 				return fAncestor.getName();
+			}
 			return Utilities.getString("DiffNode.noName"); //$NON-NLS-1$
 		}
 
-		if (right == null)
+		if (right == null) {
 			return left;
-		if (left == null)
+		}
+		if (left == null) {
 			return right;
+		}
 
-		if (right.equals(left))
+		if (right.equals(left)) {
 			return right;
+		}
 
 		String s1;
 		String s2;
@@ -232,16 +242,18 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	@Override
 	public Image getImage() {
 		ITypedElement id= getId();
-		if (id != null)
+		if (id != null) {
 			return id.getImage();
+		}
 		return null;
 	}
 
 	@Override
 	public String getType() {
 		ITypedElement id= getId();
-		if (id != null)
+		if (id != null) {
 			return id.getType();
+		}
 		return ITypedElement.UNKNOWN_TYPE;
 	}
 
@@ -293,8 +305,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		//System.out.println("DiffNode.copy: " + leftToRight);
 
 		IDiffContainer pa= getParent();
-		if (pa instanceof ICompareInput) {
-			ICompareInput parent= (ICompareInput) pa;
+		if (pa instanceof ICompareInput parent) {
 			Object dstParent= leftToRight ? parent.getRight() : parent.getLeft();
 
 			if (dstParent instanceof IEditableContent) {
@@ -329,11 +340,13 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		if (other != null && getClass() == other.getClass()) {
 			String[] path1= getPath(this, 0);
 			String[] path2= getPath((DiffNode) other, 0);
-			if (path1.length != path2.length)
+			if (path1.length != path2.length) {
 				return false;
+			}
 			for (int i= 0; i < path1.length; i++) {
-				if (! path1[i].equals(path2[i]))
+				if (! path1[i].equals(path2[i])) {
 					return false;
+				}
 			}
 			return true;
 		}
@@ -344,11 +357,13 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		String[] path= null;
 		if (el instanceof IDiffContainer) {
 			IDiffContainer parent= ((IDiffContainer) el).getParent();
-			if (parent != null)
+			if (parent != null) {
 				path= getPath(parent, level + 1);
+			}
 		}
-		if (path == null)
+		if (path == null) {
 			path= new String[level + 1];
+		}
 		path[(path.length - 1) - level]= el.getName();
 		return path;
 	}

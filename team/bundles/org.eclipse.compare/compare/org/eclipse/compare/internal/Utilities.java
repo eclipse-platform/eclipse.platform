@@ -105,8 +105,9 @@ public class Utilities {
 	public static IWorkbenchPartSite findSite(Control c) {
 		while (c != null && !c.isDisposed()) {
 			Object data= c.getData();
-			if (data instanceof IWorkbenchPart)
+			if (data instanceof IWorkbenchPart) {
 				return ((IWorkbenchPart) data).getSite();
+			}
 			c= c.getParent();
 		}
 		return null;
@@ -115,13 +116,15 @@ public class Utilities {
 	public static IActionBars findActionBars(Control c) {
 		while (c != null && !c.isDisposed()) {
 			Object data= c.getData();
-			if (data instanceof CompareEditor)
+			if (data instanceof CompareEditor) {
 				return ((CompareEditor) data).getActionBars();
+			}
 
 			// PR 1GDVZV7: ITPVCM:WIN98 - CTRL + C does not work in Java source compare
-			if (data instanceof IViewPart)
+			if (data instanceof IViewPart) {
 				return ((IViewPart) data).getViewSite().getActionBars();
 			// end PR 1GDVZV7
+			}
 
 			c= c.getParent();
 		}
@@ -138,8 +141,9 @@ public class Utilities {
 	public static boolean getBoolean(CompareConfiguration cc, String key, boolean dflt) {
 		if (cc != null) {
 			Object value= cc.getProperty(key);
-			if (value instanceof Boolean)
+			if (value instanceof Boolean) {
 				return ((Boolean) value).booleanValue();
+			}
 		}
 		return dflt;
 	}
@@ -167,8 +171,9 @@ public class Utilities {
 	}
 
 	public static void firePropertyChange(final ListenerList<IPropertyChangeListener> listenerList, final PropertyChangeEvent event) {
-		if (listenerList == null || listenerList.isEmpty())
+		if (listenerList == null || listenerList.isEmpty()) {
 			return;
+		}
 		// Legacy listeners may expect to get notified in the UI thread
 		Runnable runnable = () -> {
 			for (IPropertyChangeListener listener : listenerList) {
@@ -211,15 +216,16 @@ public class Utilities {
 					} catch (CoreException ex) {
 						CompareUIPlugin.log(ex);
 					}
-				} else if (o instanceof IAdaptable) {
-					IAdaptable a= (IAdaptable) o;
+				} else if (o instanceof IAdaptable a) {
 					Object adapter= a.getAdapter(IResource.class);
-					if (type.isInstance(adapter))
+					if (type.isInstance(adapter)) {
 						resource= (IResource) adapter;
+					}
 				}
 
-				if (resource != null && resource.isAccessible())
+				if (resource != null && resource.isAccessible()) {
 					tmp.add(resource);
+				}
 			}
 		}
 		return tmp;
@@ -282,8 +288,9 @@ public class Utilities {
 			}
 
 			ImageDescriptor id= CompareUIPlugin.getImageDescriptor(dPath);	// we set the disabled image first (see PR 1GDDE87)
-			if (id != null)
+			if (id != null) {
 				a.setDisabledImageDescriptor(id);
+			}
 			id= CompareUIPlugin.getImageDescriptor(ePath);
 			if (id != null) {
 				a.setImageDescriptor(id);
@@ -298,11 +305,13 @@ public class Utilities {
 		} else {
 			tooltip= getString(bundle, prefix + "tooltip.unchecked", null);	//$NON-NLS-1$
 		}
-		if (tooltip == null)
+		if (tooltip == null) {
 			tooltip= getString(bundle, prefix + "tooltip", null);	//$NON-NLS-1$
+		}
 
-		if (tooltip != null)
+		if (tooltip != null) {
 			a.setToolTipText(tooltip);
+		}
 
 		String description= null;
 		if (checked) {
@@ -310,11 +319,13 @@ public class Utilities {
 		} else {
 			description= getString(bundle, prefix + "description.unchecked", null);	//$NON-NLS-1$
 		}
-		if (description == null)
+		if (description == null) {
 			description= getString(bundle, prefix + "description", null);	//$NON-NLS-1$
+		}
 
-		if (description != null)
+		if (description != null) {
 			a.setDescription(description);
+		}
 	}
 
 	public static String getString(ResourceBundle bundle, String key, String dfltValue) {
@@ -371,8 +382,9 @@ public class Utilities {
 		if (bundle != null) {
 			try {
 				String s= bundle.getString(key);
-				if (s != null)
+				if (s != null) {
 					return Integer.parseInt(s);
+				}
 			} catch (NumberFormatException x) {
 				CompareUIPlugin.log(x);
 			} catch (MissingResourceException x) {
@@ -494,8 +506,9 @@ public class Utilities {
 	public static boolean validateResources(IResource[] resources, Shell shell, String title) {
 		// get all readonly files
 		List<IResource> readOnlyFiles= getReadonlyFiles(resources);
-		if (readOnlyFiles.isEmpty())
+		if (readOnlyFiles.isEmpty()) {
 			return true;
+		}
 
 		// get timestamps of readonly files before validateEdit
 		Map<IFile, Long> oldTimeStamps= createModificationStampMap(readOnlyFiles);
@@ -549,8 +562,9 @@ public class Utilities {
 		List<IResource> readOnlyFiles= new ArrayList<>();
 		for (IResource resource : resources) {
 			ResourceAttributes resourceAttributes= resource.getResourceAttributes();
-			if (resource.getType() == IResource.FILE && resourceAttributes != null && resourceAttributes.isReadOnly())
+			if (resource.getType() == IResource.FILE && resourceAttributes != null && resourceAttributes.isReadOnly()) {
 				readOnlyFiles.add(resource);
+			}
 		}
 		return readOnlyFiles;
 	}
@@ -564,8 +578,9 @@ public class Utilities {
 	}
 
 	private static IStatus addStatus(IStatus status, IStatus entry) {
-		if (status == null)
+		if (status == null) {
 			return entry;
+		}
 
 		if (status.isMultiStatus()) {
 			((MultiStatus)status).add(entry);
@@ -618,8 +633,9 @@ public class Utilities {
 			while ((read= reader.read(part)) != -1) {
 				buffer.append(part, 0, read);
 				progress.worked(2048);
-				if (progress.isCanceled())
+				if (progress.isCanceled()) {
 					throw new OperationCanceledException();
+				}
 			}
 			return buffer.toString();
 		}
@@ -650,10 +666,12 @@ public class Utilities {
 
 	public static String readString(IStreamContentAccessor sa) throws CoreException {
 		String encoding= null;
-		if (sa instanceof IEncodedStreamContentAccessor)
+		if (sa instanceof IEncodedStreamContentAccessor) {
 			encoding= ((IEncodedStreamContentAccessor)sa).getCharset();
-		if (encoding == null)
+		}
+		if (encoding == null) {
 			encoding= ResourcesPlugin.getEncoding();
+		}
 		return Utilities.readString(sa, encoding);
 	}
 
@@ -669,8 +687,9 @@ public class Utilities {
 
 	public static IResource getFirstResource(ISelection selection) {
 		IResource[] resources = getResources(selection);
-		if (resources.length > 0)
+		if (resources.length > 0) {
 			return resources[0];
+		}
 		return null;
 	}
 
@@ -692,12 +711,15 @@ public class Utilities {
 
 	public static IDocument getDocument(char type, Object element, boolean isUsingDefaultContentProvider, boolean canHaveSharedDocument) {
 		ITypedElement te= getLeg(type, element);
-		if (te == null)
+		if (te == null) {
 			return null;
-		if (te instanceof IDocument)
+		}
+		if (te instanceof IDocument) {
 			return (IDocument) te;
-		if (te instanceof IDocumentRange)
+		}
+		if (te instanceof IDocumentRange) {
 			return ((IDocumentRange) te).getDocument();
+		}
 
 		if (isUsingDefaultContentProvider && canHaveSharedDocument) {
 			ISharedDocumentAdapter sda = Adapters.adapt(te, ISharedDocumentAdapter.class);
@@ -705,14 +727,16 @@ public class Utilities {
 				IEditorInput input= sda.getDocumentKey(te);
 				if (input != null) {
 					IDocumentProvider provider = SharedDocumentAdapter.getDocumentProvider(input);
-					if (provider != null)
+					if (provider != null) {
 						return provider.getDocument(input);
+					}
 				}
 			}
 		}
 
-		if (te instanceof IStreamContentAccessor)
+		if (te instanceof IStreamContentAccessor) {
 			return DocumentManager.get(te);
+		}
 
 		return null;
 	}
@@ -726,11 +750,13 @@ public class Utilities {
 	public static boolean isHunk(Object input) {
 		if (input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
-			if (Adapters.adapt(right, IHunk.class) != null)
+			if (Adapters.adapt(right, IHunk.class) != null) {
 				return true;
+			}
 			ITypedElement left = ((DiffNode) input).getLeft();
-			if (Adapters.adapt(left, IHunk.class) != null)
+			if (Adapters.adapt(left, IHunk.class) != null) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -744,8 +770,9 @@ public class Utilities {
 			}
 			ITypedElement left = ((DiffNode) input).getLeft();
 			element = Adapters.adapt(left, HunkResult.class);
-			if (element != null)
+			if (element != null) {
 				return element.isOK();
+			}
 		}
 		return false;
 	}
@@ -808,13 +835,15 @@ public class Utilities {
 			try {
 				URLConnection connection = url.openConnection();
 				progress.worked(10);
-				if (monitor.isCanceled())
+				if (monitor.isCanceled()) {
 					throw new OperationCanceledException();
+				}
 				setReadTimeout(connection, 60 * 1000);
 				progress.setTaskName(PatchMessages.InputPatchPage_URLFetchingContent);
 				String enc = connection.getContentEncoding();
-				if (enc == null)
+				if (enc == null) {
 					enc = ResourcesPlugin.getEncoding();
+				}
 				result[0] = Utilities.readString(
 						connection.getInputStream(), enc,
 						connection.getContentLength(),

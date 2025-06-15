@@ -140,39 +140,42 @@ public class EditionAction extends BaseCompareAction {
 
 		IDocument document= getDocument(file);
 		ITypedElement target= base;
-		if (document != null)
+		if (document != null) {
 			target= new DocumentBufferNode(document, file);
+		}
 
 		ITypedElement[] editions= new ITypedElement[states.length+1];
 		editions[0]= base;
-		for (int i= 0; i < states.length; i++)
+		for (int i= 0; i < states.length; i++) {
 			editions[i+1]= new HistoryItem(base, states[i]);
+		}
 
 		EditionSelectionDialog d= new EditionSelectionDialog(parentShell, bundle);
 		d.setEditionTitleArgument(file.getName());
 		d.setEditionTitleImage(CompareUIPlugin.getImage(file));
 		//d.setHideIdenticalEntries(false);
-		if (fHelpContextId != null)
+		if (fHelpContextId != null) {
 			d.setHelpContextId(fHelpContextId);
+		}
 
 		if (fReplaceMode) {
 
 			ITypedElement ti= null;
-			if (fPrevious)
+			if (fPrevious) {
 				ti= d.selectPreviousEdition(target, editions, null);
-			else
+			} else {
 				ti= d.selectEdition(target, editions, null);
+			}
 
-			if (ti instanceof IStreamContentAccessor) {
-				IStreamContentAccessor sa= (IStreamContentAccessor)ti;
-
+			if (ti instanceof IStreamContentAccessor sa) {
 				if (Utilities.validateResource(file, parentShell, title)) {
 					try {
 
-						if (document != null)
+						if (document != null) {
 							updateDocument(document, sa);
-						else
+						} else {
 							updateWorkspace(bundle, parentShell, sa, file);
+						}
 
 					} catch (InterruptedException x) {
 						// Do nothing. Operation has been canceled by user.
@@ -241,11 +244,13 @@ public class EditionAction extends BaseCompareAction {
 			return null;
 		}
 		IWorkbench wb= PlatformUI.getWorkbench();
-		if (wb == null)
+		if (wb == null) {
 			return null;
+		}
 		IWorkbenchWindow[] ws= wb.getWorkbenchWindows();
-		if (ws == null)
+		if (ws == null) {
 			return null;
+		}
 
 		FileEditorInput test= new FileEditorInput(file);
 
@@ -254,13 +259,13 @@ public class EditionAction extends BaseCompareAction {
 			if (wps != null) {
 				for (IWorkbenchPage wp : wps) {
 					IEditorPart ep= wp.findEditor(test);
-					if (ep instanceof ITextEditor) {
-						ITextEditor te= (ITextEditor) ep;
+					if (ep instanceof ITextEditor te) {
 						IDocumentProvider dp= te.getDocumentProvider();
 						if (dp != null) {
 							IDocument doc= dp.getDocument(ep);
-							if (doc != null)
+							if (doc != null) {
 								return doc;
+							}
 						}
 					}
 				}

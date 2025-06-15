@@ -54,10 +54,10 @@ public class PatchProjectDiffNode extends PatchDiffNode {
 	private boolean containsProblems() {
 		IDiffElement[] elements = getChildren();
 		for (IDiffElement diffElement : elements) {
-			if (diffElement instanceof PatchFileDiffNode) {
-				PatchFileDiffNode node = (PatchFileDiffNode) diffElement;
-				if (node.getDiffResult().containsProblems())
+			if (diffElement instanceof PatchFileDiffNode node) {
+				if (node.getDiffResult().containsProblems()) {
 					return true;
+				}
 			}
 		}
 		return false;

@@ -63,8 +63,9 @@ public class WorkspaceFileDiffResult extends FileDiffResult {
 	public String getCharset() {
 		IFile file = getTargetFile();
 		try {
-			if (file != null)
+			if (file != null) {
 				return file.getCharset();
+			}
 		} catch (CoreException e) {
 		}
 		return ResourcesPlugin.getEncoding();

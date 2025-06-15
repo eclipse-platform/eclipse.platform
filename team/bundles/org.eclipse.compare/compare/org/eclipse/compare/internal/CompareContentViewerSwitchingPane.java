@@ -200,8 +200,9 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 	@Override
 	public void setInput(Object input) {
 		super.setInput(input);
-		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl()))
+		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl())) {
 			return;
+		}
 		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
 				.findContentViewerDescriptor(getViewer(), getInput(), getCompareConfiguration());
 		boolean toolbarVisible = vd != null && vd.length > 1;
@@ -217,8 +218,9 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 	}
 
 	private void showMenu() {
-		if (menuShowing)
+		if (menuShowing) {
 			return;
+		}
 		menuShowing= true;
 
 		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
@@ -242,8 +244,9 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 			if (label == null || label.isEmpty()) {
 				String l = CompareUIPlugin.getDefault().findContentTypeNameOrType((ICompareInput) getInput(),
 						vdi, getCompareConfiguration());
-				if (l == null)
+				if (l == null) {
 					continue;  // Couldn't figure out the label, skip the viewer
+				}
 				label = NLS.bind(CompareMessages.CompareContentViewerSwitchingPane_discoveredLabel, l);
 			}
 			MenuItem item = new MenuItem(menu, SWT.RADIO);
@@ -292,8 +295,7 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 	public void setText(String text) {
 		Composite c = (Composite) getTopLeft();
 		for (Control child : c.getChildren()) {
-			if (child instanceof CLabel) {
-				CLabel label = (CLabel) child;
+			if (child instanceof CLabel label) {
 				if (label != null && !label.isDisposed()) {
 					label.setText(text);
 					c.layout();
@@ -307,10 +309,10 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 	public void setImage(Image image) {
 		Composite c = (Composite) getTopLeft();
 		for (Control child : c.getChildren()) {
-			if (child instanceof CLabel) {
-				CLabel label = (CLabel) child;
-				if (label != null && !label.isDisposed())
+			if (child instanceof CLabel label) {
+				if (label != null && !label.isDisposed()) {
 					label.setImage(image);
+				}
 				return;
 			}
 		}
@@ -320,8 +322,7 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 	public void addMouseListener(MouseListener listener) {
 		Composite c = (Composite) getTopLeft();
 		for (Control child : c.getChildren()) {
-			if (child instanceof CLabel) {
-				CLabel label = (CLabel) child;
+			if (child instanceof CLabel label) {
 				label.addMouseListener(listener);
 			}
 		}

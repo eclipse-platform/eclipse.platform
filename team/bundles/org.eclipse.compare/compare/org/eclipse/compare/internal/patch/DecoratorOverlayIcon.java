@@ -90,10 +90,9 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof DecoratorOverlayIcon)) {
+		if (!(o instanceof DecoratorOverlayIcon other)) {
 			return false;
 		}
-		DecoratorOverlayIcon other = (DecoratorOverlayIcon) o;
 		return base.equals(other.base)
 				&& Arrays.equals(overlays, other.overlays);
 	}

@@ -86,15 +86,15 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 	@Override
 	public void setActiveEditor(IEditorPart targetEditor) {
 
-		if (fActiveEditorPart == targetEditor)
+		if (fActiveEditorPart == targetEditor) {
 			return;
+		}
 
 		fActiveEditorPart= targetEditor;
 
 		if (fActiveEditorPart != null) {
 			IEditorInput input= fActiveEditorPart.getEditorInput();
-			if (input instanceof CompareEditorInput) {
-				CompareEditorInput compareInput= (CompareEditorInput) input;
+			if (input instanceof CompareEditorInput compareInput) {
 				fNext.setCompareEditorInput(compareInput);
 				fPrevious.setCompareEditorInput(compareInput);
 				// Begin fix http://bugs.eclipse.org/bugs/show_bug.cgi?id=20105
@@ -104,10 +104,9 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 			}
 		}
 
-		if (targetEditor instanceof CompareEditor) {
+		if (targetEditor instanceof CompareEditor editor) {
 			IActionBars actionBars= getActionBars();
 
-			CompareEditor editor= (CompareEditor) targetEditor;
 			editor.setActionBars(actionBars);
 
 			actionBars.setGlobalActionHandler(ActionFactory.NEXT.getId(), fNext);

@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Label;
 public class LabelContributionItem extends ControlContribution {
 
 	private Label toolbarLabel;
-	private String labelName;
+	private final String labelName;
 
 	/**
 	 * @param id

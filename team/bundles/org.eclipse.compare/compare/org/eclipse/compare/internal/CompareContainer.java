@@ -77,8 +77,9 @@ public class CompareContainer implements ICompareContainer {
 
 	@Override
 	public synchronized void runAsynchronously(IRunnableWithProgress runnable) {
-		if (worker == null)
+		if (worker == null) {
 			worker = createWorkerJob();
+		}
 		worker.add(runnable);
 	}
 

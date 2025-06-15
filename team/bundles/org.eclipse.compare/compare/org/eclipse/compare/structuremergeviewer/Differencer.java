@@ -130,14 +130,16 @@ public class Differencer {
 		}
 
 		void add(Node child) {
-			if (fChildren == null)
+			if (fChildren == null) {
 				fChildren= new ArrayList<>();
+			}
 			fChildren.add(child);
 		}
 
 		Object visit(Differencer d, Object parent, int level) {
-			if (fCode == NO_CHANGE)
+			if (fCode == NO_CHANGE) {
 				return null;
+			}
 			//dump(level);
 			Object data= d.visit(parent, fCode, fAncestor, fLeft, fRight);
 			if (fChildren != null) {
@@ -283,8 +285,9 @@ public class Differencer {
 
 			for (Object keyChild : allSet) {
 				if (pm != null) {
-					if (pm.isCanceled())
+					if (pm.isCanceled()) {
 						throw new OperationCanceledException();
+					}
 
 					updateProgress(pm, keyChild);
 				}
@@ -303,8 +306,9 @@ public class Differencer {
 			}
 		}
 
-		if (content)			// a leaf
+		if (content) { // a leaf
 			code= compare(threeWay, ancestor, left, right);
+		}
 
 		node.fCode= code;
 
@@ -355,8 +359,9 @@ public class Differencer {
 						description= LEFT | ADDITION;
 					} else {
 						description= CONFLICTING | ADDITION;
-						if (contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR))
+						if (contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR)) {
 							description|= PSEUDO_CONFLICT;
+						}
 					}
 				}
 			} else {
@@ -364,17 +369,19 @@ public class Differencer {
 					if (right == null) {
 						description= CONFLICTING | DELETION | PSEUDO_CONFLICT;
 					} else {
-						if (contentsEqual(ancestor,	MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR))
+						if (contentsEqual(ancestor,	MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR)) {
 							description= LEFT | DELETION;
-						else
+						} else {
 							description= CONFLICTING | CHANGE;
+						}
 					}
 				} else {
 					if (right == null) {
-						if (contentsEqual(ancestor, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, left, MergeViewerContentProvider.LEFT_CONTRIBUTOR))
+						if (contentsEqual(ancestor, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, left, MergeViewerContentProvider.LEFT_CONTRIBUTOR)) {
 							description= RIGHT | DELETION;
-						else
+						} else {
 							description= CONFLICTING | CHANGE;
+						}
 					} else {
 						boolean ay= contentsEqual(ancestor, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, left, MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 						boolean am= contentsEqual(ancestor, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
@@ -387,8 +394,9 @@ public class Differencer {
 							description= LEFT | CHANGE;
 						} else {
 							description= CONFLICTING | CHANGE;
-							if (contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR))
+							if (contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR)) {
 								description|= PSEUDO_CONFLICT;
+							}
 						}
 					}
 				}
@@ -405,8 +413,9 @@ public class Differencer {
 				if (right == null) {
 					description= DELETION;
 				} else {
-					if (! contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR))
+					if (! contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR)) {
 						description= CHANGE;
+					}
 				}
 			}
 		}
@@ -454,26 +463,31 @@ public class Differencer {
 	 */
 	protected boolean contentsEqual(Object input1, Object input2) {
 
-		if (input1 == input2)
+		if (input1 == input2) {
 			return true;
+		}
 
 		InputStream is1= getStream(input1);
 		InputStream is2= getStream(input2);
 
-		if (is1 == null && is2 == null)	// no byte contents
+		if (is1 == null && is2 == null) { // no byte contents
 			return true;
+		}
 
 		try {
-			if (is1 == null || is2 == null)	// only one has contents
+			if (is1 == null || is2 == null) { // only one has contents
 				return false;
+			}
 
 			while (true) {
 				int c1= is1.read();
 				int c2= is2.read();
-				if (c1 == -1 && c2 == -1)
+				if (c1 == -1 && c2 == -1) {
 					return true;
-				if (c1 != c2)
+				}
+				if (c1 != c2) {
 					break;
+				}
 
 			}
 		} catch (IOException ex) {
@@ -526,8 +540,9 @@ public class Differencer {
 	 * @return the children of the given input or <code>null</code> if there are no children.
 	 */
 	protected Object[] getChildren(Object input) {
-		if (input instanceof IStructureComparator)
+		if (input instanceof IStructureComparator) {
 			return ((IStructureComparator) input).getChildren();
+		}
 		return null;
 	}
 
