@@ -188,8 +188,9 @@ public class BrowserManager {
 	 * Obtains singleton instance.
 	 */
 	public static BrowserManager getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new BrowserManager();
+		}
 		return instance;
 	}
 
@@ -197,26 +198,31 @@ public class BrowserManager {
 	 * Creates all adapters, and returns available ones.
 	 */
 	private BrowserDescriptor[] createBrowserDescriptors() {
-		if (this.browsersDescriptors != null)
+		if (this.browsersDescriptors != null) {
 			return this.browsersDescriptors;
+		}
 		Collection<BrowserDescriptor> bDescriptors = new ArrayList<>();
 		IConfigurationElement configElements[] = Platform
 				.getExtensionRegistry().getConfigurationElementsFor(
 						HelpBasePlugin.PLUGIN_ID, "browser"); //$NON-NLS-1$
 		for (int i = 0; i < configElements.length; i++) {
-			if (!configElements[i].getName().equals("browser")) //$NON-NLS-1$
+			if (!configElements[i].getName().equals("browser")) { //$NON-NLS-1$
 				continue;
+			}
 			String id = configElements[i].getAttribute("id"); //$NON-NLS-1$
-			if (id == null)
+			if (id == null) {
 				continue;
+			}
 			String label = configElements[i].getAttribute("name"); //$NON-NLS-1$
-			if (label == null)
+			if (label == null) {
 				continue;
+			}
 			try {
 				Object adapter = configElements[i]
 						.createExecutableExtension("factoryclass"); //$NON-NLS-1$
-				if (!(adapter instanceof IBrowserFactory))
+				if (!(adapter instanceof IBrowserFactory)) {
 					continue;
+				}
 				if (((IBrowserFactory) adapter).isAvailable()) {
 					BrowserDescriptor descriptor = new BrowserDescriptor(id,
 							label, (IBrowserFactory) adapter);
@@ -253,8 +259,9 @@ public class BrowserManager {
 		if (!initialized) {
 			init();
 		}
-		if (currentBrowserDesc == null)
+		if (currentBrowserDesc == null) {
 			return null;
+		}
 		return currentBrowserDesc.getID();
 	}
 
@@ -282,8 +289,9 @@ public class BrowserManager {
 		if (!initialized) {
 			init();
 		}
-		if (defaultBrowserDesc == null)
+		if (defaultBrowserDesc == null) {
 			return null;
+		}
 		return defaultBrowserDesc.getID();
 	}
 

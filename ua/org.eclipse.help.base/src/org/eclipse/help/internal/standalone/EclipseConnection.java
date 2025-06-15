@@ -54,8 +54,7 @@ public class EclipseConnection {
 	public void connect(URL url) throws InterruptedException, Exception {
 		try {
 			HttpURLConnection connection = (HttpURLConnection)ProxyUtil.getConnection(url);
-			if (connection instanceof HttpsURLConnection) {
-				HttpsURLConnection secureConnection = (HttpsURLConnection) connection;
+			if (connection instanceof HttpsURLConnection secureConnection) {
 				// The following allows the connection to
 				// continue even if the default rules for
 				// URL hostname verification fail.

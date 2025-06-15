@@ -125,8 +125,9 @@ public final class InfoCenter implements ISearchEngine {
 		@Override
 		public float getScore() {
 			String value = node.getAttribute("score"); //$NON-NLS-1$
-			if (value != null)
+			if (value != null) {
 				return Float.parseFloat(value);
+			}
 			return (float) 0.0;
 		}
 
@@ -138,8 +139,9 @@ public final class InfoCenter implements ISearchEngine {
 		@Override
 		public String toAbsoluteHref(String href, boolean frames) {
 			String url = baseURL;
-			if (!url.endsWith("/")) //$NON-NLS-1$
+			if (!url.endsWith("/")) { //$NON-NLS-1$
 				url = url + "/"; //$NON-NLS-1$
+			}
 			if (frames) {
 				return url + "topic" + href; //$NON-NLS-1$
 			}
@@ -162,8 +164,9 @@ public final class InfoCenter implements ISearchEngine {
 			ISearchEngineResultCollector collector, IProgressMonitor monitor)
 			throws CoreException {
 		URL url = createURL(query, (Scope) scope);
-		if (url == null)
+		if (url == null) {
 			return;
+		}
 		InputStream is = null;
 		tocs.clear();
 		try {
@@ -199,21 +202,24 @@ public final class InfoCenter implements ISearchEngine {
 			ISearchEngineResultCollector collector, IProgressMonitor monitor) {
 		Document document = null;
 		try {
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				return;
+			}
 			SubMonitor subMonitor = SubMonitor.convert(monitor, 5);
 			subMonitor.subTask(HelpBaseResources.InfoCenter_searching);
 			document = LocalEntityResolver.parse(new InputSource(r));
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				return;
+			}
 
 			// Strip out any comments first
 			Node root = document.getFirstChild();
 			while (root.getNodeType() == Node.COMMENT_NODE) {
 				document.removeChild(root);
 				root = document.getFirstChild();
-				if (monitor.isCanceled())
+				if (monitor.isCanceled()) {
 					return;
+				}
 			}
 			subMonitor.worked(1);
 			load(baseURL, document, (Element) root, collector, subMonitor.split(4));
@@ -235,8 +241,9 @@ public final class InfoCenter implements ISearchEngine {
 		monitor.beginTask("", results.length); //$NON-NLS-1$
 		for (int i = 0; i < topics.getLength(); i++) {
 			Element el = (Element) topics.item(i);
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				break;
+			}
 			results[i] = new InfoCenterResult(baseURL, el);
 			monitor.worked(1);
 		}
@@ -249,10 +256,11 @@ public final class InfoCenter implements ISearchEngine {
 		}
 		StringBuilder buf = new StringBuilder();
 		buf.append(scope.url);
-		if (!scope.url.endsWith("/")) //$NON-NLS-1$
+		if (!scope.url.endsWith("/")) { //$NON-NLS-1$
 			buf.append("/search?phrase="); //$NON-NLS-1$
-		else
+		} else {
 			buf.append("search?phrase="); //$NON-NLS-1$
+		}
 		buf.append(URLEncoder.encode(query, StandardCharsets.UTF_8));
 		buf.append("&locale="); //$NON-NLS-1$
 		buf.append(Platform.getNL());

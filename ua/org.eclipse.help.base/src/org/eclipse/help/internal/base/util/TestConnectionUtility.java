@@ -40,10 +40,11 @@ public class TestConnectionUtility {
 		String urlConnection = ""; //$NON-NLS-1$
 
 		// Build connection string
-		if (thisPort.equals("80")) //$NON-NLS-1$
+		if (thisPort.equals("80")) { //$NON-NLS-1$
 			urlConnection = thisProtocol + "://" + thisHost + thisPath; //$NON-NLS-1$
-		else
+		} else {
 			urlConnection = thisProtocol + "://" + thisHost + ":" + thisPort + thisPath; //$NON-NLS-1$ //$NON-NLS-2$
+		}
 
 		if(thisProtocol.equalsIgnoreCase(PROTOCOL))
 		{
@@ -87,8 +88,9 @@ public class TestConnectionUtility {
 		}catch (Exception ex){}
 		finally{
 			try {
-				if (in!=null)
+				if (in!=null) {
 					in.close();
+				}
 			} catch (IOException e) {}
 		}
 		return false;

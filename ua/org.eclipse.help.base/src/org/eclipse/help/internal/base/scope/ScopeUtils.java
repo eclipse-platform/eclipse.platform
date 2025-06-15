@@ -133,8 +133,7 @@ public class ScopeUtils {
 	}
 
 	public static boolean hasInScopeTarget(IIndexSee see, AbstractHelpScope scope) {
-		if (see instanceof IndexSee) {
-			IndexSee indexSee = (IndexSee)see;
+		if (see instanceof IndexSee indexSee) {
 			UAElement ancestor = indexSee.getParentElement();
 			while (!(ancestor instanceof Index)) {
 				if (ancestor == null) {
@@ -155,8 +154,7 @@ public class ScopeUtils {
 		if (scope.isHierarchicalScope() && !scope.inScope(see)) {
 			return false;
 		}
-		if (see instanceof IndexSee) {
-			IndexSee indexSee = (IndexSee)see;
+		if (see instanceof IndexSee indexSee) {
 			UAElement ancestor = indexSee.getParentElement();
 			while (!(ancestor instanceof Index)) {
 				if (ancestor == null) {
