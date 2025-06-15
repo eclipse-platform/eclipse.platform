@@ -224,7 +224,7 @@ public class ScopedEclipsePreferences {
 	 * A {@link PreferenceChangeEvent} is fired, if the value has changed.
 	 *
 	 * @param key The preference key.
-	 * @return The value of the preference key.
+	 * @param value The value of the preference key.
 	 */
 	public void putString(String key, String value) {
 		String defValue = defaultPrefs.get(key, null);
@@ -245,7 +245,7 @@ public class ScopedEclipsePreferences {
 	 * A {@link PreferenceChangeEvent} is fired, if the value has changed.
 	 *
 	 * @param key The preference key.
-	 * @return The value of the preference key.
+	 * @param value The value of the preference key.
 	 */
 	public void putBoolean(String key, boolean value) {
 		boolean defValue = defaultPrefs.getBoolean(key, false);
@@ -267,7 +267,7 @@ public class ScopedEclipsePreferences {
 	 * and new values are string representation in base 10.
 	 *
 	 * @param key The preference key.
-	 * @return The value of the preference key.
+	 * @param value The value of the preference key.
 	 */
 	public void putInt(String key, int value) {
 		int defValue = defaultPrefs.getInt(key, 0);
@@ -289,7 +289,7 @@ public class ScopedEclipsePreferences {
 	 * and new values are string representation in base 10.
 	 *
 	 * @param key The preference key.
-	 * @return The value of the preference key.
+	 * @param value The value of the preference key.
 	 */
 	public void putLong(String key, long value) {
 		long defValue = defaultPrefs.getLong(key, 0);
@@ -310,7 +310,7 @@ public class ScopedEclipsePreferences {
 	 * A {@link PreferenceChangeEvent} is fired, if the value has changed.
 	 *
 	 * @param key The preference key.
-	 * @return The default value of the preference key.
+	 * @param value The default value of the preference key.
 	 */
 	public void putDefaultString(String key, String value) {
 		String defValue = defaultPrefs.get(key, null);
@@ -329,7 +329,7 @@ public class ScopedEclipsePreferences {
 	 * A {@link PreferenceChangeEvent} is fired, if the value has changed.
 	 *
 	 * @param key The preference key.
-	 * @return The default value of the preference key.
+	 * @param value The default value of the preference key.
 	 */
 	public void putDefaultBoolean(String key, boolean value) {
 		boolean defValue = defaultPrefs.getBoolean(key, false);
@@ -346,7 +346,7 @@ public class ScopedEclipsePreferences {
 	 * and new values are string representation in base 10.
 	 *
 	 * @param key The preference key.
-	 * @return The default value of the preference key.
+	 * @param value The default value of the preference key.
 	 */
 	public void putDefaultInt(String key, int value) {
 		int defValue = defaultPrefs.getInt(key, 0);
@@ -363,7 +363,7 @@ public class ScopedEclipsePreferences {
 	 * and new values are string representation in base 10.
 	 *
 	 * @param key The preference key.
-	 * @return The default value of the preference key.
+	 * @param value The default value of the preference key.
 	 */
 	public void putDefaultLong(String key, long value) {
 		long defValue = defaultPrefs.getLong(key, 0);
