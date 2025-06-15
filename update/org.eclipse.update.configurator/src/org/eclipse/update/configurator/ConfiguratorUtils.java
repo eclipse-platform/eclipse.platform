@@ -48,11 +48,13 @@ public class ConfiguratorUtils {
 		// acquire factory service first
 		BundleContext context = ConfigurationActivator.getBundleContext();
 		ServiceReference<IPlatformConfigurationFactory> configFactorySR = context.getServiceReference(IPlatformConfigurationFactory.class);
-		if (configFactorySR == null)
+		if (configFactorySR == null) {
 			throw new IllegalStateException();
+		}
 		IPlatformConfigurationFactory configFactory = context.getService(configFactorySR);
-		if (configFactory == null)
+		if (configFactory == null) {
 			throw new IllegalStateException();
+		}
 		// get the configuration using the factory
 		IPlatformConfiguration currentConfig = configFactory.getCurrentPlatformConfiguration();
 		context.ungetService(configFactorySR);
@@ -71,11 +73,13 @@ public class ConfiguratorUtils {
 		// acquire factory service first
 		BundleContext context = ConfigurationActivator.getBundleContext();
 		ServiceReference<IPlatformConfigurationFactory> configFactorySR = context.getServiceReference(IPlatformConfigurationFactory.class);
-		if (configFactorySR == null)
+		if (configFactorySR == null) {
 			throw new IllegalStateException();
+		}
 		IPlatformConfigurationFactory configFactory = context.getService(configFactorySR);
-		if (configFactory == null)
+		if (configFactory == null) {
 			throw new IllegalStateException();
+		}
 		// get the configuration using the factory
 		IPlatformConfiguration config = configFactory.getPlatformConfiguration(url);
 		context.ungetService(configFactorySR);
@@ -95,11 +99,13 @@ public class ConfiguratorUtils {
 		// acquire factory service first
 		BundleContext context = ConfigurationActivator.getBundleContext();
 		ServiceReference<IPlatformConfigurationFactory> configFactorySR = context.getServiceReference(IPlatformConfigurationFactory.class);
-		if (configFactorySR == null)
+		if (configFactorySR == null) {
 			throw new IllegalStateException();
+		}
 		IPlatformConfigurationFactory configFactory = context.getService(configFactorySR);
-		if (configFactory == null)
+		if (configFactory == null) {
 			throw new IllegalStateException();
+		}
 		// get the configuration using the factory
 		IPlatformConfiguration config = configFactory.getPlatformConfiguration(url, loc);
 		context.ungetService(configFactorySR);
