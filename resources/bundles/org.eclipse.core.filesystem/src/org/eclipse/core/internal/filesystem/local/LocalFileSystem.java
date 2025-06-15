@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2016 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -14,6 +14,7 @@
  * Martin Oberhuber (Wind River) - [183137] liblocalfile for solaris-sparc
  * Martin Oberhuber (Wind River) - [184433] liblocalfile for Linux x86_64
  * Martin Oberhuber (Wind River) - [184534] get attributes from native lib
+ *     Tue Ton - support for FreeBSD
  *******************************************************************************/
 package org.eclipse.core.internal.filesystem.local;
 
@@ -84,6 +85,8 @@ public class LocalFileSystem extends FileSystem {
 		if (Constants.OS_WIN32.equals(os)) {
 			attributes |= EFS.ATTRIBUTE_ARCHIVE | EFS.ATTRIBUTE_HIDDEN;
 		} else if (Constants.OS_LINUX.equals(os) || (Constants.OS_SOLARIS.equals(os) && Constants.ARCH_SPARC.equals(Platform.getOSArch()))) {
+			attributes |= EFS.ATTRIBUTE_EXECUTABLE | EFS.ATTRIBUTE_SYMLINK | EFS.ATTRIBUTE_LINK_TARGET;
+		} else if (Constants.OS_FREEBSD.equals(os)) {
 			attributes |= EFS.ATTRIBUTE_EXECUTABLE | EFS.ATTRIBUTE_SYMLINK | EFS.ATTRIBUTE_LINK_TARGET;
 		} else if (Constants.OS_MACOSX.equals(os) || Constants.OS_HPUX.equals(os) || Constants.OS_QNX.equals(os)) {
 			attributes |= EFS.ATTRIBUTE_EXECUTABLE;
