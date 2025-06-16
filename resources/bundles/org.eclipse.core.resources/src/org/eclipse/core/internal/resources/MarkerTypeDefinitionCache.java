@@ -33,8 +33,9 @@ public class MarkerTypeDefinitionCache {
 				if (elementName.equalsIgnoreCase("super")) { //$NON-NLS-1$
 					String aType = element.getAttribute("type"); //$NON-NLS-1$
 					if (aType != null) {
-						if (superTypes == null)
+						if (superTypes == null) {
 							superTypes = new HashSet<>(8);
+						}
 						//note that all marker type names will be in the intern table
 						//already because there is invariably a constant to describe
 						//the type name
@@ -44,14 +45,16 @@ public class MarkerTypeDefinitionCache {
 				// persistent
 				if (elementName.equalsIgnoreCase("persistent")) { //$NON-NLS-1$
 					String bool = element.getAttribute("value"); //$NON-NLS-1$
-					if (bool != null)
+					if (bool != null) {
 						this.isPersistent = Boolean.parseBoolean(bool);
+					}
 				}
 				// XXX: legacy code for support of <transient> tag. remove later.
 				if (elementName.equalsIgnoreCase("transient")) { //$NON-NLS-1$
 					String bool = element.getAttribute("value"); //$NON-NLS-1$
-					if (bool != null)
+					if (bool != null) {
 						this.isPersistent = !Boolean.parseBoolean(bool);
+					}
 				}
 			}
 		}
@@ -68,8 +71,9 @@ public class MarkerTypeDefinitionCache {
 		loadDefinitions();
 		HashSet<String> toCompute = new HashSet<>(definitions.keySet());
 		for (String markerId : definitions.keySet()) {
-			if (toCompute.contains(markerId))
+			if (toCompute.contains(markerId)) {
 				computeSuperTypes(markerId, toCompute);
+			}
 		}
 	}
 
@@ -97,11 +101,13 @@ public class MarkerTypeDefinitionCache {
 			} else {
 				// we have already computed this super type's super types (or it doesn't exist)
 				MarkerTypeDefinition parentDef = definitions.get(superId);
-				if (parentDef != null)
+				if (parentDef != null) {
 					toAdd = parentDef.superTypes;
+				}
 			}
-			if (toAdd != null)
+			if (toAdd != null) {
 				transitiveSuperTypes.addAll(toAdd);
+			}
 		}
 		def.superTypes = transitiveSuperTypes;
 		toCompute.remove(markerId);
@@ -121,8 +127,9 @@ public class MarkerTypeDefinitionCache {
 	 */
 	public boolean isSubtype(String type, String superType) {
 		//types are considered super types of themselves
-		if (type.equals(superType))
+		if (type.equals(superType)) {
 			return true;
+		}
 		MarkerTypeDefinition def = definitions.get(type);
 		return def != null && def.superTypes != null && def.superTypes.contains(superType);
 	}
@@ -133,10 +140,11 @@ public class MarkerTypeDefinitionCache {
 		definitions = new HashMap<>(types.length);
 		for (IExtension type : types) {
 			String markerId = type.getUniqueIdentifier();
-			if (markerId != null)
+			if (markerId != null) {
 				definitions.put(markerId.intern(), new MarkerTypeDefinition(type));
-			else
+			} else {
 				Policy.log(IStatus.WARNING, "Missing marker id from plugin: " + type.getContributor().getName(), null); //$NON-NLS-1$
+			}
 		}
 	}
 }

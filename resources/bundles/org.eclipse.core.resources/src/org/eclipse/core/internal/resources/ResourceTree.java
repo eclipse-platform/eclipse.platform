@@ -67,12 +67,14 @@ class ResourceTree implements IResourceTree {
 		Assert.isLegal(isValid);
 		try {
 			lock.acquire();
-			if (!file.exists())
+			if (!file.exists()) {
 				return;
+			}
 			IFileStore store = localManager.getStore(file);
 			final IFileInfo fileInfo = store.fetchInfo();
-			if (!fileInfo.exists())
+			if (!fileInfo.exists()) {
 				return;
+			}
 			localManager.getHistoryStore().addState(file.getFullPath(), store, fileInfo, false);
 		} finally {
 			lock.release();
@@ -97,8 +99,9 @@ class ResourceTree implements IResourceTree {
 		Assert.isLegal(isValid);
 		try {
 			lock.acquire();
-			if (!file.getProject().exists())
+			if (!file.getProject().exists()) {
 				return NULL_TIMESTAMP;
+			}
 			return internalComputeTimestamp(file);
 		} finally {
 			lock.release();
@@ -124,8 +127,9 @@ class ResourceTree implements IResourceTree {
 		try {
 			lock.acquire();
 			// Do nothing if the resource doesn't exist.
-			if (!file.exists())
+			if (!file.exists()) {
 				return;
+			}
 			try {
 				// Delete properties, generate marker deltas, and remove the node from the workspace tree.
 				((Resource) file).deleteResource(true, null);
@@ -148,8 +152,9 @@ class ResourceTree implements IResourceTree {
 		try {
 			lock.acquire();
 			// Do nothing if the resource doesn't exist.
-			if (!folder.exists())
+			if (!folder.exists()) {
 				return;
+			}
 			try {
 				// Delete properties, generate marker deltas, and remove the node from the workspace tree.
 				((Resource) folder).deleteResource(true, null);
@@ -172,8 +177,9 @@ class ResourceTree implements IResourceTree {
 		try {
 			lock.acquire();
 			// Do nothing if the resource doesn't exist.
-			if (!target.exists())
+			if (!target.exists()) {
 				return;
+			}
 			// Delete properties, generate marker deltas, and remove the node from the workspace tree.
 			try {
 				((Project) target).deleteResource(false, null);
@@ -195,13 +201,15 @@ class ResourceTree implements IResourceTree {
 	private boolean ensureDestinationEmpty(IProject source, IFileStore destinationStore, IProgressMonitor monitor) throws CoreException {
 		String message;
 		//Make sure the destination location is unoccupied
-		if (!destinationStore.fetchInfo().exists())
+		if (!destinationStore.fetchInfo().exists()) {
 			return true;
+		}
 		//check for existing children
 		if (destinationStore.childNames(EFS.NONE, Policy.subMonitorFor(monitor, 0)).length > 0) {
 			//allow case rename to proceed
-			if (((Resource) source).getStore().equals(destinationStore))
+			if (((Resource) source).getStore().equals(destinationStore)) {
 				return true;
+			}
 			//fail because the destination is occupied
 			message = NLS.bind(Messages.localstore_resourceExists, destinationStore);
 			IStatus status = new ResourceStatus(IStatus.ERROR, source.getFullPath(), message, null);
@@ -238,8 +246,9 @@ class ResourceTree implements IResourceTree {
 		Assert.isLegal(isValid);
 		try {
 			lock.acquire();
-			if (!file.exists())
+			if (!file.exists()) {
 				return NULL_TIMESTAMP;
+			}
 			ResourceInfo info = ((File) file).getResourceInfo(false, false);
 			return info == null ? NULL_TIMESTAMP : info.getLocalSyncInfo();
 		} finally {
@@ -291,8 +300,9 @@ class ResourceTree implements IResourceTree {
 			boolean force = (flags & IResource.FORCE) != 0;
 
 			// Add the file to the local history if requested by the user.
-			if (keepHistory)
+			if (keepHistory) {
 				addToLocalHistory(file);
+			}
 			monitor.worked(Policy.totalWork / 4);
 
 			// We want to fail if force is false and the file is not synchronized with the
@@ -341,8 +351,9 @@ class ResourceTree implements IResourceTree {
 		subMonitor.subTask(message);
 
 		// Do nothing if the folder doesn't exist in the workspace.
-		if (!folder.exists())
+		if (!folder.exists()) {
 			return true;
+		}
 
 		// Don't delete contents if this is a linked resource
 		if (folder.isLinked()) {
@@ -390,8 +401,9 @@ class ResourceTree implements IResourceTree {
 			switch (child.getType()) {
 				case IResource.FILE :
 					// ignore the .project file for now and delete it last
-					if (!IProjectDescription.DESCRIPTION_FILE_NAME.equals(child.getName()))
+					if (!IProjectDescription.DESCRIPTION_FILE_NAME.equals(child.getName())) {
 						deletedChildren &= internalDeleteFile((IFile) child, flags, Policy.subMonitorFor(monitor, Policy.totalWork / members.length));
+					}
 					break;
 				case IResource.FOLDER :
 					deletedChildren &= internalDeleteFolder((IFolder) child, flags, Policy.subMonitorFor(monitor, Policy.totalWork / members.length));
@@ -402,9 +414,10 @@ class ResourceTree implements IResourceTree {
 		// Check to see if the children were deleted ok. If there was a problem
 		// just return as the problem should have been logged by the recursive
 		// call to the child.
-		if (!deletedChildren)
+		if (!deletedChildren) {
 			// Indicate that the delete was unsuccessful.
 			return false;
+		}
 
 		//Check if there are any undiscovered children of the project on disk other than description file
 		String[] children;
@@ -464,8 +477,9 @@ class ResourceTree implements IResourceTree {
 		IProjectDescription srcDescription = ((Project) project).internalGetDescription();
 		URI srcLocation = srcDescription.getLocationURI();
 		URI destLocation = destDescription.getLocationURI();
-		if (srcLocation == null || destLocation == null)
+		if (srcLocation == null || destLocation == null) {
 			return true;
+		}
 		//don't use URIUtil because we want to treat case rename as a content change
 		return !srcLocation.equals(destLocation);
 	}
@@ -521,8 +535,9 @@ class ResourceTree implements IResourceTree {
 		try {
 			lock.acquire();
 			// Do nothing if the resource doesn't exist.
-			if (!source.exists())
+			if (!source.exists()) {
 				return;
+			}
 			// If the destination already exists then we have a problem.
 			if (destination.exists()) {
 				String message = NLS.bind(Messages.resources_mustNotExist, destination.getFullPath());
@@ -579,8 +594,9 @@ class ResourceTree implements IResourceTree {
 		try {
 			lock.acquire();
 			// Do nothing if the source resource doesn't exist.
-			if (!source.exists())
+			if (!source.exists()) {
 				return;
+			}
 			// If the destination already exists then we have an error.
 			if (destination.exists()) {
 				String message = NLS.bind(Messages.resources_mustNotExist, destination.getFullPath());
@@ -638,8 +654,9 @@ class ResourceTree implements IResourceTree {
 		try {
 			lock.acquire();
 			// Do nothing if the source resource doesn't exist.
-			if (!project.exists())
+			if (!project.exists()) {
 				return true;
+			}
 
 			Project source = (Project) project;
 			Project destination = (Project) source.getWorkspace().getRoot().getProject(destDescription.getName());
@@ -753,8 +770,9 @@ class ResourceTree implements IResourceTree {
 			IProjectDescription srcDescription = source.getDescription();
 			URI srcLocation = srcDescription.getLocationURI();
 			// If the locations are the same (and non-default) then there is nothing to do.
-			if (srcLocation != null && URIUtil.equals(srcLocation, destStore.toURI()))
+			if (srcLocation != null && URIUtil.equals(srcLocation, destStore.toURI())) {
 				return;
+			}
 
 			//If this is a replace, just make sure the destination location exists, and return
 			boolean replace = (flags & IResource.REPLACE) != 0;
@@ -832,8 +850,9 @@ class ResourceTree implements IResourceTree {
 			String message = NLS.bind(Messages.resources_deleting, project.getFullPath());
 			monitor.beginTask(message, Policy.totalWork);
 			// Do nothing if the project doesn't exist in the workspace tree.
-			if (!project.exists())
+			if (!project.exists()) {
 				return;
+			}
 
 			boolean alwaysDeleteContent = (flags & IResource.ALWAYS_DELETE_PROJECT_CONTENT) != 0;
 			boolean neverDeleteContent = (flags & IResource.NEVER_DELETE_PROJECT_CONTENT) != 0;
@@ -884,9 +903,9 @@ class ResourceTree implements IResourceTree {
 			}
 
 			// Signal that the workspace tree should be updated that the project has been deleted.
-			if (success)
+			if (success) {
 				deletedProject(project);
-			else {
+			} else {
 				message = NLS.bind(Messages.localstore_couldnotDelete, project.getFullPath());
 				IStatus status = new ResourceStatus(IResourceStatus.FAILED_DELETE_LOCAL, project.getFullPath(), message);
 				failed(status);
@@ -909,8 +928,9 @@ class ResourceTree implements IResourceTree {
 			monitor.beginTask(message, Policy.totalWork);
 
 			// These pre-conditions should all be ok but just in case...
-			if (!source.exists() || destination.exists() || !destination.getParent().isAccessible())
+			if (!source.exists() || destination.exists() || !destination.getParent().isAccessible()) {
 				throw new IllegalArgumentException();
+			}
 
 			boolean force = (flags & IResource.FORCE) != 0;
 			boolean keepHistory = (flags & IResource.KEEP_HISTORY) != 0;
@@ -927,8 +947,9 @@ class ResourceTree implements IResourceTree {
 			monitor.worked(Policy.totalWork / 4);
 
 			// Add the file contents to the local history if requested by the user.
-			if (keepHistory)
+			if (keepHistory) {
 				addToLocalHistory(source);
+			}
 			monitor.worked(Policy.totalWork / 4);
 
 			//for shallow move of linked resources, nothing needs to be moved in the file system
@@ -951,8 +972,9 @@ class ResourceTree implements IResourceTree {
 				// did the fail occur after copying to the destination?
 				failedDeletingSource = destStore != null && destStore.fetchInfo().exists();
 				// if so, we should proceed
-				if (!failedDeletingSource)
+				if (!failedDeletingSource) {
 					return;
+				}
 			}
 			movedFile(source, destination);
 			updateMovedFileTimestamp(destination, internalComputeTimestamp(destination));
@@ -984,8 +1006,9 @@ class ResourceTree implements IResourceTree {
 			monitor.beginTask(message, 100);
 
 			// These pre-conditions should all be ok but just in case...
-			if (!source.exists() || destination.exists() || !destination.getParent().isAccessible())
+			if (!source.exists() || destination.exists() || !destination.getParent().isAccessible()) {
 				throw new IllegalArgumentException();
+			}
 
 			// Check to see if we are synchronized with the local file system. If we are in sync then we can
 			// short circuit this method and do a file system only move. Otherwise we have to recursively
@@ -1018,8 +1041,9 @@ class ResourceTree implements IResourceTree {
 				// did the fail occur after copying to the destination?
 				failedDeletingSource = destStore != null && destStore.fetchInfo().exists();
 				// if so, we should proceed
-				if (!failedDeletingSource)
+				if (!failedDeletingSource) {
 					return;
+				}
 			}
 			movedFolderSubtree(source, destination);
 			monitor.worked(20);
@@ -1051,8 +1075,9 @@ class ResourceTree implements IResourceTree {
 			monitor.beginTask(message, Policy.totalWork);
 
 			// Double-check this pre-condition.
-			if (!source.isAccessible())
+			if (!source.isAccessible()) {
 				throw new IllegalArgumentException();
+			}
 
 			// If there is nothing to do on disk then signal to make the workspace tree
 			// changes.
@@ -1075,9 +1100,11 @@ class ResourceTree implements IResourceTree {
 			try {
 				destinationStore = computeDestinationStore(description);
 				//destination can be non-empty on replace
-				if ((flags & IResource.REPLACE) == 0)
-					if (!ensureDestinationEmpty(source, destinationStore, monitor))
+				if ((flags & IResource.REPLACE) == 0) {
+					if (!ensureDestinationEmpty(source, destinationStore, monitor)) {
 						return;
+					}
+				}
 			} catch (CoreException e) {
 				//must fail if the destination location cannot be accessd (undefined file system)
 				message = NLS.bind(Messages.localstore_couldNotMove, source.getFullPath());
@@ -1124,8 +1151,9 @@ class ResourceTree implements IResourceTree {
 		try {
 			lock.acquire();
 			// Do nothing if the file doesn't exist in the workspace tree.
-			if (!file.exists())
+			if (!file.exists()) {
 				return;
+			}
 			// Update the timestamp in the tree.
 			ResourceInfo info = ((Resource) file).getResourceInfo(false, true);
 			// The info should never be null since we just checked that the resource exists in the tree.

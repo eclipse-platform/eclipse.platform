@@ -52,15 +52,18 @@ public class FilePropertyTester extends ResourcePropertyTester {
 
 	@Override
 	public boolean test(Object receiver, String method, Object[] args, Object expectedValue) {
-		if ((receiver instanceof IFile) && method.equals(CONTENT_TYPE_ID))
+		if ((receiver instanceof IFile) && method.equals(CONTENT_TYPE_ID)) {
 			return testContentType((IFile) receiver, toString(expectedValue), isArgumentUsed(args, IS_KIND_OF), isArgumentUsed(args, USE_FILENAME_ONLY));
+		}
 		return false;
 	}
 
 	private boolean isArgumentUsed(Object[] args, String value) {
-		for (Object arg : args)
-			if (value.equals(arg))
+		for (Object arg : args) {
+			if (value.equals(arg)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
@@ -97,22 +100,25 @@ public class FilePropertyTester extends ResourcePropertyTester {
 		final String expectedValue = contentTypeId.trim();
 		IContentType actualContentType = null;
 		if (!useFilenameOnly) {
-			if (!file.exists())
+			if (!file.exists()) {
 				return false;
+			}
 			IContentDescription contentDescription = null;
 			try {
 				contentDescription = file.getContentDescription();
 			} catch (CoreException e) {
 				Policy.log(IStatus.ERROR, "Core exception while retrieving the content description", e);//$NON-NLS-1$
 			}
-			if (contentDescription != null)
+			if (contentDescription != null) {
 				actualContentType = contentDescription.getContentType();
+			}
 		} else {
 			actualContentType = Platform.getContentTypeManager().findContentTypeFor(file.getName());
 		}
 		if (actualContentType != null) {
-			if (isKindOfUsed)
+			if (isKindOfUsed) {
 				return actualContentType.isKindOf(Platform.getContentTypeManager().getContentType(expectedValue));
+			}
 			return expectedValue.equals(actualContentType.getId());
 		}
 		return false;
