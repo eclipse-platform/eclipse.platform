@@ -16,7 +16,6 @@ package org.eclipse.compare.internal.win32;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.IViewerCreator;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Composite;
 
 /**
  * Factory registered with the <code>org.eclipse.compare.contentMergeViewers</code>
