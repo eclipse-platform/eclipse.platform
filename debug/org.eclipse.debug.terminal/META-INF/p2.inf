@@ -1,0 +1,31 @@
+requires.1.namespace = org.eclipse.equinox.p2.iu
+requires.1.name = org.eclipse.cdt.core.linux
+requires.1.filter = (osgi.os=linux)
+
+requires.2.namespace = org.eclipse.equinox.p2.iu
+requires.2.name = org.eclipse.cdt.core.linux.x86_64
+requires.2.filter = (&(osgi.os=linux)(osgi.arch=x86_64))
+
+requires.3.namespace = org.eclipse.equinox.p2.iu
+requires.3.name = org.eclipse.cdt.core.linux.ppc64le
+requires.3.filter = (&(osgi.os=linux)(osgi.arch=ppc64le))
+
+requires.4.namespace = org.eclipse.equinox.p2.iu
+requires.4.name = org.eclipse.cdt.core.linux.aarch64
+requires.4.filter = (&(osgi.os=linux)(osgi.arch=aarch64))
+
+requires.5.namespace = org.eclipse.equinox.p2.iu
+requires.5.name = org.eclipse.cdt.core.macosx
+requires.5.filter = (osgi.os=macosx)
+
+requires.6.namespace = org.eclipse.equinox.p2.iu
+requires.6.name = org.eclipse.cdt.core.win32
+requires.6.filter = (osgi.os=win32)
+
+requires.7.namespace = org.eclipse.equinox.p2.iu
+requires.7.name = org.eclipse.cdt.core.win32.x86_64
+requires.7.filter = (&(osgi.os=win32)(osgi.arch=x86_64))
+
+requires.8.namespace = org.eclipse.equinox.p2.iu
+requires.8.name = org.eclipse.cdt.core.win32.aarch64
+requires.8.filter = (&(osgi.os=win32)(osgi.arch=aarch64))
