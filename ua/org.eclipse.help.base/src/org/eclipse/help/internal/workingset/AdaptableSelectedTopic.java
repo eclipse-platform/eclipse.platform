@@ -32,8 +32,9 @@ public class AdaptableSelectedTopic extends AdaptableHelpResource {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == ITopic.class)
+		if (adapter == ITopic.class) {
 			return (T) element;
+		}
 		return super.getAdapter(adapter);
 	}
 
@@ -51,8 +52,9 @@ public class AdaptableSelectedTopic extends AdaptableHelpResource {
 	 */
 	@Override
 	public ITopic getTopic(String href) {
-		if (href == null)
+		if (href == null) {
 			return null;
+		}
 		if (href.equals(getHref())) {
 			return (ITopic)element;
 		}

@@ -37,8 +37,9 @@ public class WorkingSet {
 	public WorkingSet(String name, List<AdaptableHelpResource> elements, List<CriterionResource> criteria) {
 		this.name = name;
 
-		if (elements == null)
+		if (elements == null) {
 			elements = new ArrayList<>();
+		}
 		this.elements = elements;
 
 		if (criteria != null) {
@@ -55,14 +56,16 @@ public class WorkingSet {
 	public WorkingSet(String name, AdaptableHelpResource[] elements, CriterionResource[] criteria) {
 		this.name = name;
 
-		if (elements == null)
+		if (elements == null) {
 			elements = new AdaptableHelpResource[0];
+		}
 
 		this.elements = new ArrayList<>(elements.length);
 		Collections.addAll(this.elements, elements);
 
-		if (criteria == null)
+		if (criteria == null) {
 			criteria = new CriterionResource[0];
+		}
 
 		this.criteria = new ArrayList<>(criteria.length);
 		Collections.addAll(this.criteria, criteria);
@@ -79,8 +82,9 @@ public class WorkingSet {
 	}
 
 	public void setName(String newName) {
-		if (newName == null)
+		if (newName == null) {
 			return;
+		}
 		name = newName;
 	}
 

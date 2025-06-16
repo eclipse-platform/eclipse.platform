@@ -63,8 +63,9 @@ public class WebappManager {
 				// We need to pick up the non-default configuration
 				IConfigurationElement[] elements = extensions[0]
 						.getConfigurationElements();
-				if (elements.length == 0)
+				if (elements.length == 0) {
 					return;
+				}
 				IConfigurationElement serverElement  = elements[0];
 				// Instantiate the app server
 				try {

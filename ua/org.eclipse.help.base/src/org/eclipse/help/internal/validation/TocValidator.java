@@ -83,8 +83,9 @@ public class TocValidator {
 			throws IOException, SAXException, ParserConfigurationException {
 		TocValidator v = new TocValidator();
 		ArrayList<BrokenLink> result = new ArrayList<>();
-		for (String href : hrefs)
+		for (String href : hrefs) {
 			v.processToc(href, null, result, filter);
+		}
 		return result;
 	}
 
@@ -102,23 +103,27 @@ public class TocValidator {
 		if (href.startsWith("/")) { //$NON-NLS-1$
 			href = href.substring(1);
 			int index = href.indexOf('/');
-			if (index == -1)
+			if (index == -1) {
 				throw new IOException("Invalid parameters supplied to the validate method."); //$NON-NLS-1$
+			}
 			plugin = href.substring(0, index);
 			path = href.substring(index+1);
 		} else {
 			path = href;
 		}
-		if (plugin == null)
+		if (plugin == null) {
 			throw new IOException("Invalid parameters supplied to the validate method."); //$NON-NLS-1$
+		}
 		String key = "/" + plugin + "/" + path; //$NON-NLS-1$ //$NON-NLS-2$
 		if (processedTocs.get(key) != null) {
-			if (DEBUG)
+			if (DEBUG) {
 				System.out.println("Skipping toc because it has already been validated: " + key); //$NON-NLS-1$
+			}
 			return;
 		}
-		if (DEBUG)
+		if (DEBUG) {
 			System.out.println("Starting toc: " + key); //$NON-NLS-1$
+		}
 		processedTocs.put(key, new Object());
 		TocContribution contribution = parser.parse(new TocFile(plugin,path, true, "en", null, null)); //$NON-NLS-1$
 		process(contribution.getToc(), plugin, path, result, filter);
@@ -139,17 +144,19 @@ public class TocValidator {
 			}
 		}
 		else if (element instanceof IHelpResource helpResource) {
-			if (element instanceof IToc toc)
+			if (element instanceof IToc toc) {
 				href = toc.getTopic(null).getHref();
-			else
+			} else {
 				href = helpResource.getHref();
+			}
 			if (href != null && filter.isIncluded(href) && !checkLink(href, plugin)) {
 					result.add(new BrokenLink("/" + plugin + "/" + path, href)); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 		}
 		IUAElement [] children = element.getChildren();
-		for (IUAElement child : children)
+		for (IUAElement child : children) {
 			process(child, plugin, path, result, filter);
+		}
 	}
 
 	/* Checks validity of a given link from a toc in a given plug-in.
@@ -157,18 +164,21 @@ public class TocValidator {
 	 */
 	private boolean checkLink(String href, String plugin) {
 		if (href.startsWith("http")) { //$NON-NLS-1$
-			if (DEBUG)
+			if (DEBUG) {
 				System.out.println("    Skipping href: " + href); //$NON-NLS-1$
+			}
 			return true;
 		}
-		if (DEBUG)
+		if (DEBUG) {
 			System.out.print("    Checking href: " + href + "..."); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		boolean result = true;
 		InputStream i = null;
 		try {
 			HelpURLConnection c = new HelpURLConnection(createURL(href, plugin));
-			if ((i = c.getInputStream()) == null)
+			if ((i = c.getInputStream()) == null) {
 				result = false;
+			}
 		} catch (Exception e) {
 			result = false;
 		}
@@ -176,8 +186,9 @@ public class TocValidator {
 			try { i.close(); } catch(Exception e) { }
 			i = null;
 		}
-		if (DEBUG)
+		if (DEBUG) {
 			System.out.println(result?"pass":"fail"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		return result;
 	}
 

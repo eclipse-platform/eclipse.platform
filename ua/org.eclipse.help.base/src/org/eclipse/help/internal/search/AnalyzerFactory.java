@@ -33,28 +33,39 @@ import org.eclipse.core.runtime.IExecutableExtension;
 public class AnalyzerFactory implements IExecutableExtension{
 	private String locale = null;
 	public Analyzer create() {
-		if (locale == null)
+		if (locale == null) {
 			return null;
-		if ("pt".equals(locale)) //$NON-NLS-1$
+		}
+		if ("pt".equals(locale)) { //$NON-NLS-1$
 			return new BrazilianAnalyzer();
-		if ("ja".equals(locale)) //$NON-NLS-1$
+		}
+		if ("ja".equals(locale)) { //$NON-NLS-1$
 			return new CJKAnalyzer();
-		if ("ko".equals(locale)) //$NON-NLS-1$
+		}
+		if ("ko".equals(locale)) { //$NON-NLS-1$
 			return new CJKAnalyzer();
-		if ("pt".equals(locale)) //$NON-NLS-1$
+		}
+		if ("pt".equals(locale)) { //$NON-NLS-1$
 			return new BrazilianAnalyzer();
-		if ("cs".equals(locale)) //$NON-NLS-1$
+		}
+		if ("cs".equals(locale)) { //$NON-NLS-1$
 			return new CzechAnalyzer();
-		if ("de".equals(locale)) //$NON-NLS-1$
+		}
+		if ("de".equals(locale)) { //$NON-NLS-1$
 			return new GermanAnalyzer();
-		if ("el".equals(locale)) //$NON-NLS-1$
+		}
+		if ("el".equals(locale)) { //$NON-NLS-1$
 			return new GreekAnalyzer();
-		if ("fr".equals(locale)) //$NON-NLS-1$
+		}
+		if ("fr".equals(locale)) { //$NON-NLS-1$
 			return new FrenchAnalyzer();
-		if ("nl".equals(locale)) //$NON-NLS-1$
+		}
+		if ("nl".equals(locale)) { //$NON-NLS-1$
 			return new DutchAnalyzer();
-		if ("ru".equals(locale)) //$NON-NLS-1$
+		}
+		if ("ru".equals(locale)) { //$NON-NLS-1$
 			return new RussianAnalyzer();
+		}
 		//unknown language
 		return null;
 
@@ -63,8 +74,9 @@ public class AnalyzerFactory implements IExecutableExtension{
 	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
 			throws CoreException {
-		if (data instanceof String)
+		if (data instanceof String) {
 			locale = (String)data;
+		}
 	}
 
 }

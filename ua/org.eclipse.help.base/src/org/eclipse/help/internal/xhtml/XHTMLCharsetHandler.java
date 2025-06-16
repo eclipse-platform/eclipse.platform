@@ -59,13 +59,27 @@ public class XHTMLCharsetHandler extends ProcessorHandler {
 	 */
 	private boolean endTagRequired(UAElement element) {
 		String elementName = element.getElementName();
-		if ("a".equalsIgnoreCase(elementName)) return true; //$NON-NLS-1$
-		if ("p".equalsIgnoreCase(elementName)) return true; //$NON-NLS-1$
-		if ("div".equalsIgnoreCase(elementName)) return true; //$NON-NLS-1$
-		if ("script".equalsIgnoreCase(elementName)) return true; //$NON-NLS-1$
-		if ("textarea".equalsIgnoreCase(elementName)) return true; //$NON-NLS-1$
-		if ("iframe".equalsIgnoreCase(elementName)) return true; //$NON-NLS-1$
-		if ("title".equalsIgnoreCase(elementName)) return true; //$NON-NLS-1$
+		if ("a".equalsIgnoreCase(elementName)) { //$NON-NLS-1$
+			return true;
+		}
+		if ("p".equalsIgnoreCase(elementName)) { //$NON-NLS-1$
+			return true;
+		}
+		if ("div".equalsIgnoreCase(elementName)) { //$NON-NLS-1$
+			return true;
+		}
+		if ("script".equalsIgnoreCase(elementName)) { //$NON-NLS-1$
+			return true;
+		}
+		if ("textarea".equalsIgnoreCase(elementName)) { //$NON-NLS-1$
+			return true;
+		}
+		if ("iframe".equalsIgnoreCase(elementName)) { //$NON-NLS-1$
+			return true;
+		}
+		if ("title".equalsIgnoreCase(elementName)) { //$NON-NLS-1$
+			return true;
+		}
 		return false;
 	}
 }

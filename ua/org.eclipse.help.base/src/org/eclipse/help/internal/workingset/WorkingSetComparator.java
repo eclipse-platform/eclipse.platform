@@ -27,14 +27,17 @@ public class WorkingSetComparator implements Comparator<WorkingSet> {
 		String name1 = null;
 		String name2 = null;
 
-		if (o1 != null)
+		if (o1 != null) {
 			name1 = o1.getName();
+		}
 
-		if (o2 != null)
+		if (o2 != null) {
 			name2 = o2.getName();
+		}
 
-		if (name1 == null || name2 == null)
+		if (name1 == null || name2 == null) {
 			return -1;
+		}
 
 		return fCollator.compare(name1, name2);
 	}

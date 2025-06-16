@@ -208,8 +208,9 @@ public class SearchResults implements ISearchHitCollector {
 					// To find the target toc recursively because scope.getHref
 					// may be null.
 					toc = getTocForScope(childrenScope, locale);
-					if (toc != null)
+					if (toc != null) {
 						return toc;
+					}
 				}
 			}
 		}
@@ -271,8 +272,9 @@ public class SearchResults implements ISearchHitCollector {
 	 * @return Collection
 	 */
 	private ArrayList<AdaptableHelpResource> getScopes(WorkingSet[] wSets) {
-		if (wSets == null)
+		if (wSets == null) {
 			return null;
+		}
 
 		scopes = new ArrayList<>(wSets.length);
 		for (int w = 0; w < wSets.length; w++) {
@@ -283,8 +285,9 @@ public class SearchResults implements ISearchHitCollector {
 	}
 
 	private ArrayList<CriterionResource> getCriteriaScopes(WorkingSet[] wSets){
-		if (wSets == null)
+		if (wSets == null) {
 			return null;
+		}
 
 		ArrayList<CriterionResource> criteriaScopes = new ArrayList<>(wSets.length);
 		for (WorkingSet wSet : wSets) {

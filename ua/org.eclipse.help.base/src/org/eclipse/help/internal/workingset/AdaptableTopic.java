@@ -42,8 +42,9 @@ public class AdaptableTopic extends AdaptableHelpResource {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == ITopic.class)
+		if (adapter == ITopic.class) {
 			return (T) element;
+		}
 		return super.getAdapter(adapter);
 	}
 
@@ -71,8 +72,9 @@ public class AdaptableTopic extends AdaptableHelpResource {
 	 */
 	@Override
 	public ITopic getTopic(String href) {
-		if (href == null)
+		if (href == null) {
 			return null;
+		}
 
 		if (topicMap == null) {
 			// traverse TOC and fill in the topicMap
@@ -80,8 +82,9 @@ public class AdaptableTopic extends AdaptableHelpResource {
 			topicMap.put(getHref(), element);
 			Deque<ITopic> stack = new ArrayDeque<>();
 			ITopic[] topics = getSubtopics();
-			for (ITopic topic : topics)
+			for (ITopic topic : topics) {
 				stack.push(topic);
+			}
 			while (!stack.isEmpty()) {
 				ITopic topic = stack.pop();
 				if (topic != null) {
@@ -90,8 +93,9 @@ public class AdaptableTopic extends AdaptableHelpResource {
 						topicMap.put(topicHref, topic);
 					}
 					ITopic[] subtopics = topic.getSubtopics();
-					for (ITopic subtopic : subtopics)
+					for (ITopic subtopic : subtopics) {
 						stack.push(subtopic);
+					}
 				}
 			}
 		}
@@ -103,8 +107,10 @@ public class AdaptableTopic extends AdaptableHelpResource {
 		AdaptableToc toc = (AdaptableToc) getParent();
 		toc.saveState(element);
 		AdaptableHelpResource[] topics = toc.getChildren();
-		for (int i = 0; i < topics.length; i++)
-			if (topics[i] == this)
+		for (int i = 0; i < topics.length; i++) {
+			if (topics[i] == this) {
 				element.setAttribute("topic", String.valueOf(i)); //$NON-NLS-1$
+			}
+		}
 	}
 }

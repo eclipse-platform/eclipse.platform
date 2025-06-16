@@ -102,19 +102,22 @@ public class AnalyzerDescriptor {
 		IConfigurationElement configElements[] = Platform.getExtensionRegistry().getConfigurationElementsFor(
 				HelpBasePlugin.PLUGIN_ID, "luceneAnalyzer"); //$NON-NLS-1$
 		for (IConfigurationElement configElement : configElements) {
-			if (!configElement.getName().equals("analyzer")) //$NON-NLS-1$
+			if (!configElement.getName().equals("analyzer")) { //$NON-NLS-1$
 				continue;
+			}
 			String analyzerLocale = configElement.getAttribute("locale"); //$NON-NLS-1$
-			if (analyzerLocale == null || !analyzerLocale.equals(locale))
+			if (analyzerLocale == null || !analyzerLocale.equals(locale)) {
 				continue;
+			}
 			try {
 				Object analyzer = configElement.createExecutableExtension("class"); //$NON-NLS-1$
-				if (analyzer instanceof AnalyzerFactory)
+				if (analyzer instanceof AnalyzerFactory) {
 					this.luceneAnalyzer = ((AnalyzerFactory) analyzer).create();
-				else if (analyzer instanceof Analyzer)
+				} else if (analyzer instanceof Analyzer) {
 					this.luceneAnalyzer = (Analyzer) analyzer;
-				else
+				} else {
 					continue;
+				}
 				String pluginId = configElement.getContributor().getName();
 				String pluginVersion = Platform.getBundle(pluginId).getHeaders()
 						.get(Constants.BUNDLE_VERSION);

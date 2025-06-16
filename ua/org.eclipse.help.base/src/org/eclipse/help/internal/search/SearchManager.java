@@ -202,22 +202,30 @@ public class SearchManager {
 		for (int r=0;r<results.length;r++)
 		{
 			SearchResult result = new SearchResult();
-			if (hits[r].getHref()!=null)
+			if (hits[r].getHref()!=null) {
 				result.setHref(hits[r].getHref());
-			if (hits[r].getId()!=null)
+			}
+			if (hits[r].getId()!=null) {
 				result.setId(hits[r].getId());
-			if (hits[r].getParticipantId()!=null)
+			}
+			if (hits[r].getParticipantId()!=null) {
 				result.setParticipantId(hits[r].getParticipantId());
-			if (hits[r].getDescription()!=null)
+			}
+			if (hits[r].getDescription()!=null) {
 				result.setDescription(hits[r].getDescription());
-			if (hits[r].getLabel()!=null)
+			}
+			if (hits[r].getLabel()!=null) {
 				result.setLabel(hits[r].getLabel());
-			if (hits[r].getSummary()!=null)
+			}
+			if (hits[r].getSummary()!=null) {
 				result.setSummary(hits[r].getSummary());
-			if (hits[r].getToc()!=null)
+			}
+			if (hits[r].getToc()!=null) {
 				result.setToc(hits[r].getToc());
-			if (hits[r].getIconURL()!=null)
+			}
+			if (hits[r].getIconURL()!=null) {
 				result.setIcon(hits[r].getIconURL());
+			}
 			result.setScore(hits[r].getScore());
 			result.setPotentialHit(hits[r].isPotentialHit());
 			results[r] = result;

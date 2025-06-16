@@ -23,8 +23,9 @@ public class Entities {
   static final String[]  encoder = new String[0x100];
 
   static final String decode(String entity) {
-    if (entity.charAt(entity.length()-1) == ';')  // remove trailing semicolon
-      entity = entity.substring(0, entity.length()-1);
+    if (entity.charAt(entity.length()-1) == ';') { // remove trailing semicolon
+		entity = entity.substring(0, entity.length()-1);
+	}
     if (entity.charAt(1) == '#') {
       int start = 2;
       int radix = 10;
@@ -37,9 +38,11 @@ public class Entities {
       return Character.toString(c);
     } else {
       String s = decoder.get(entity);
-      if (s != null)
-	return s;
-      else return ""; //$NON-NLS-1$
+      if (s != null) {
+		return s;
+	  } else {
+		return ""; //$NON-NLS-1$
+	  }
     }
   }
 
@@ -65,8 +68,9 @@ public class Entities {
 
   static final void add(String entity, int value) {
     decoder.put(entity, (Character.valueOf((char)value)).toString());
-    if (value < 0x100)
-      encoder[value] = entity;
+    if (value < 0x100) {
+		encoder[value] = entity;
+	}
   }
 
   static {

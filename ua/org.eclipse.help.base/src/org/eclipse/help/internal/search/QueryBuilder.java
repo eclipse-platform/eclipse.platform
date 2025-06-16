@@ -211,9 +211,9 @@ public class QueryBuilder {
 			 * token.type == SearchQueryToken.AND ||
 			 */
 			token.type == QueryWordsToken.OR
-					|| token.type == QueryWordsToken.NOT)
+					|| token.type == QueryWordsToken.NOT) {
 				newTokens.add(token);
-			else if (token.type == QueryWordsToken.EXACT_PHRASE) {
+			} else if (token.type == QueryWordsToken.EXACT_PHRASE) {
 				List<String> wordList = analyzeText(analyzer, "exact_contents", //$NON-NLS-1$
 						token.value);
 				if (wordList.size() > 0) {
@@ -226,8 +226,9 @@ public class QueryBuilder {
 				for (String word : wordList) {
 					phrase.addWord(word);
 					// add analyzed word to the list of words to highlight
-					if (!highlightWords.contains(word))
+					if (!highlightWords.contains(word)) {
 						highlightWords.add(word);
+					}
 				}
 				// add phrase only if not empty
 				if (phrase.getWords().size() > 0) {
@@ -267,14 +268,15 @@ public class QueryBuilder {
 		// Get queries for parts separated by OR
 		List<Query> requiredQueries = getRequiredQueries(searchTokens, fieldNames,
 				boosts);
-		if (requiredQueries.isEmpty())
+		if (requiredQueries.isEmpty()) {
 			return null;
-		else if (requiredQueries.size() <= 1)
+		} else if (requiredQueries.size() <= 1) {
 			return requiredQueries.get(0);
-		else
+		} else {
 			/* if (requiredQueries.size() > 1) */
 			// OR queries
 			return (orQueries(requiredQueries));
+		}
 	}
 	/**
 	 * Obtains Lucene queries for token sequences separated at OR.
@@ -291,15 +293,17 @@ public class QueryBuilder {
 			} else {
 				Query reqQuery = getRequiredQuery(requiredQueryTokens,
 						fieldNames, boosts);
-				if (reqQuery != null)
+				if (reqQuery != null) {
 					oredQueries.add(reqQuery);
+				}
 				requiredQueryTokens = new ArrayList<>();
 			}
 		}
 		Query reqQuery = getRequiredQuery(requiredQueryTokens, fieldNames,
 				boosts);
-		if (reqQuery != null)
+		if (reqQuery != null) {
 			oredQueries.add(reqQuery);
+		}
 		return oredQueries;
 	}
 	private Query orQueries(Collection<Query> queries) {
@@ -335,8 +339,9 @@ public class QueryBuilder {
 			Query q = qs[0];
 			if (fieldNames.length > 1) {
 				Builder allFieldsQueryBuilder = new BooleanQuery.Builder();
-				for (int f = 0; f < fieldNames.length; f++)
+				for (int f = 0; f < fieldNames.length; f++) {
 					allFieldsQueryBuilder.add(qs[f], BooleanClause.Occur.SHOULD);
+				}
 				q = allFieldsQueryBuilder.build();
 			}
 			if (operator != null && operator.type == QueryWordsToken.NOT) {
@@ -417,12 +422,15 @@ public class QueryBuilder {
 	 */
 	private Query improveRankingForUnqotedPhrase(Query query, String[] fields,
 			float[] boosts) {
-		if (query == null)
+		if (query == null) {
 			return query;
+		}
 		// check if all tokens are words
-		for (QueryWordsToken analyzedToken : analyzedTokens)
-			if (analyzedToken.type != QueryWordsToken.WORD)
+		for (QueryWordsToken analyzedToken : analyzedTokens) {
+			if (analyzedToken.type != QueryWordsToken.WORD) {
 				return query;
+			}
+		}
 		// Create phrase query for all tokens and OR with original query
 		Builder booleanQueryBuilder = new BooleanQuery.Builder();
 		booleanQueryBuilder.add(query, BooleanClause.Occur.SHOULD);

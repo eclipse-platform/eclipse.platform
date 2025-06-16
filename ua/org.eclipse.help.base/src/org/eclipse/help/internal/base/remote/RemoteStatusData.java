@@ -39,12 +39,15 @@ public class RemoteStatusData {
 	public static boolean isAnyRemoteHelpUnavailable()
 	{
 		ArrayList<URL> sites = getRemoteSites();
-		if (sites.isEmpty())
+		if (sites.isEmpty()) {
 			return false;
+		}
 
-		for (int s=0;s<sites.size();s++)
-			if (!isConnected(sites.get(s)))
+		for (int s=0;s<sites.size();s++) {
+			if (!isConnected(sites.get(s))) {
 				return true;
+			}
+		}
 
 		return false;
 	}
@@ -61,9 +64,11 @@ public class RemoteStatusData {
 	{
 		ArrayList<URL> badSites = new ArrayList<>();
 
-		for (int i=0;i<sites.size();i++)
-			if (!isConnected(sites.get(i)))
+		for (int i=0;i<sites.size();i++) {
+			if (!isConnected(sites.get(i))) {
 				badSites.add(sites.get(i));
+			}
+		}
 
 		return badSites;
 	}
@@ -97,8 +102,9 @@ public class RemoteStatusData {
 			Platform.getPreferencesService().getBoolean(
 					HelpBasePlugin.PLUGIN_ID, IHelpBaseConstants.P_KEY_REMOTE_HELP_ON, false,null);
 
-		if (!remoteHelpEnabled)
+		if (!remoteHelpEnabled) {
 			return sites;
+		}
 
 		String hosts[] = Platform.getPreferencesService().getString(
 				HelpBasePlugin.PLUGIN_ID, IHelpBaseConstants.P_KEY_REMOTE_HELP_HOST, "", null).split(","); //$NON-NLS-1$ //$NON-NLS-2$
@@ -174,8 +180,9 @@ public class RemoteStatusData {
 		public boolean isConnected(URL url) throws CoreException
 		{
 			Boolean b = cache.get(url);
-			if (b==null)
+			if (b==null) {
 				throw new CoreException(new Status(IStatus.ERROR,HelpBasePlugin.PLUGIN_ID,"Cache Unavailable")); //$NON-NLS-1$
+			}
 
 			return b.booleanValue();
 		}

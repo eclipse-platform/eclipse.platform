@@ -157,8 +157,9 @@ public final class WebSearch implements ISearchEngine {
 	}
 
 	private static String getVariable(String key, String query) {
-		if (key.equals("expression")) //$NON-NLS-1$
+		if (key.equals("expression")) { //$NON-NLS-1$
 			return query;
+		}
 		return key;
 	}
 }
