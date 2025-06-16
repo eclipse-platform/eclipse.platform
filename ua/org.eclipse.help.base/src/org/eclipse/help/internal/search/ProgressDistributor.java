@@ -94,14 +94,18 @@ public class ProgressDistributor implements IProgressMonitor {
 	}
 
 	public synchronized void addMonitor(IProgressMonitor m) {
-		if (totalWork > -1)
+		if (totalWork > -1) {
 			m.beginTask(taskName, totalWork);
-		if (subTaskName != null)
+		}
+		if (subTaskName != null) {
 			m.subTask(subTaskName);
-		if (worked > 0)
+		}
+		if (worked > 0) {
 			m.internalWorked(worked);
-		if (done)
+		}
+		if (done) {
 			m.done();
+		}
 		monitors.add(m);
 	}
 	public synchronized void removeMonitor(IProgressMonitor m) {

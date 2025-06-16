@@ -117,11 +117,12 @@ InterruptedException {
   }
 
   void addText(String text) throws IOException {
-    if (inIgnoredTag)
-      return;
-    if (inTitle)
-      title.append(text);
-    else {
+    if (inIgnoredTag) {
+		return;
+	}
+    if (inTitle) {
+		title.append(text);
+	} else {
       // don't repeat first heading in summary
       if (!inHeading || summary.length() > 0) {
         addToSummary(text);
@@ -155,10 +156,11 @@ InterruptedException {
 
   void addSpace() throws IOException {
     if (!afterSpace) {
-      if (inTitle)
-        title.append(" "); //$NON-NLS-1$
-      else if (summary.length() > 0)
-        addToSummary(" "); //$NON-NLS-1$
+      if (inTitle) {
+		title.append(" "); //$NON-NLS-1$
+	  } else if (summary.length() > 0) {
+		addToSummary(" "); //$NON-NLS-1$
+	  }
 
       String space = afterTag ? eol : " "; //$NON-NLS-1$
       length += space.length();
@@ -263,8 +265,9 @@ InterruptedException {
         case ArgQuote1:
         case ArgQuote2:
           t2 = ArgValue();
-       if (inImg && t1.image.equalsIgnoreCase("alt") && t2 != null) //$NON-NLS-1$
-         addText("[" + t2.image + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+       if (inImg && t1.image.equalsIgnoreCase("alt") && t2 != null) { //$NON-NLS-1$
+		   addText("[" + t2.image + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+	   }
 
         if(inMetaTag &&
                         (  t1.image.equalsIgnoreCase("name") || //$NON-NLS-1$
@@ -456,14 +459,22 @@ null)
   }
 
   final private boolean jj_3_2() {
-    if (jj_scan_token(ArgQuote2)) return true;
-    if (jj_scan_token(CloseQuote2)) return true;
+    if (jj_scan_token(ArgQuote2)) {
+		return true;
+	}
+    if (jj_scan_token(CloseQuote2)) {
+		return true;
+	}
     return false;
   }
 
   final private boolean jj_3_1() {
-    if (jj_scan_token(ArgQuote1)) return true;
-    if (jj_scan_token(CloseQuote1)) return true;
+    if (jj_scan_token(ArgQuote1)) {
+		return true;
+	}
+    if (jj_scan_token(CloseQuote1)) {
+		return true;
+	}
     return false;
   }
 
@@ -496,8 +507,12 @@ null)
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    for (int i = 0; i < 14; i++) {
+		jj_la1[i] = -1;
+	}
+    for (int i = 0; i < jj_2_rtns.length; i++) {
+		jj_2_rtns[i] = new JJCalls();
+	}
   }
 
   public void ReInit(java.io.InputStream stream) {
@@ -509,8 +524,12 @@ null)
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    for (int i = 0; i < 14; i++) {
+		jj_la1[i] = -1;
+	}
+    for (int i = 0; i < jj_2_rtns.length; i++) {
+		jj_2_rtns[i] = new JJCalls();
+	}
   }
 
   public HTMLParser(java.io.Reader stream) {
@@ -519,8 +538,12 @@ null)
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    for (int i = 0; i < 14; i++) {
+		jj_la1[i] = -1;
+	}
+    for (int i = 0; i < jj_2_rtns.length; i++) {
+		jj_2_rtns[i] = new JJCalls();
+	}
   }
 
   public void ReInit(java.io.Reader stream) {
@@ -529,8 +552,12 @@ null)
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    for (int i = 0; i < 14; i++) {
+		jj_la1[i] = -1;
+	}
+    for (int i = 0; i < jj_2_rtns.length; i++) {
+		jj_2_rtns[i] = new JJCalls();
+	}
   }
 
   public HTMLParser(HTMLParserTokenManager tm) {
@@ -538,8 +565,12 @@ null)
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    for (int i = 0; i < 14; i++) {
+		jj_la1[i] = -1;
+	}
+    for (int i = 0; i < jj_2_rtns.length; i++) {
+		jj_2_rtns[i] = new JJCalls();
+	}
   }
 
   public void ReInit(HTMLParserTokenManager tm) {
@@ -547,14 +578,21 @@ null)
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
-    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    for (int i = 0; i < 14; i++) {
+		jj_la1[i] = -1;
+	}
+    for (int i = 0; i < jj_2_rtns.length; i++) {
+		jj_2_rtns[i] = new JJCalls();
+	}
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
-    if ((oldToken = token).next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
+    if ((oldToken = token).next != null) {
+		token = token.next;
+	} else {
+		token = token.next = token_source.getNextToken();
+	}
     jj_ntk = -1;
     if (token.kind == kind) {
       jj_gen++;
@@ -563,7 +601,9 @@ null)
         for (int i = 0; i < jj_2_rtns.length; i++) {
           JJCalls c = jj_2_rtns[i];
           while (c != null) {
-            if (c.gen < jj_gen) c.first = null;
+            if (c.gen < jj_gen) {
+				c.first = null;
+			}
             c = c.next;
           }
         }
@@ -593,16 +633,25 @@ null)
     if (jj_rescan) {
       int i = 0; Token tok = token;
       while (tok != null && tok != jj_scanpos) { i++; tok = tok.next; }
-      if (tok != null) jj_add_error_token(kind, i);
+      if (tok != null) {
+		jj_add_error_token(kind, i);
+	  }
     }
-    if (jj_scanpos.kind != kind) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) throw jj_ls;
+    if (jj_scanpos.kind != kind) {
+		return true;
+	}
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) {
+		throw jj_ls;
+	}
     return false;
   }
 
   final public Token getNextToken() {
-    if (token.next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
+    if (token.next != null) {
+		token = token.next;
+	} else {
+		token = token.next = token_source.getNextToken();
+	}
     jj_ntk = -1;
     jj_gen++;
     return token;
@@ -611,17 +660,21 @@ null)
   final public Token getToken(int index) {
     Token t = lookingAhead ? jj_scanpos : token;
     for (int i = 0; i < index; i++) {
-      if (t.next != null) t = t.next;
-      else t = t.next = token_source.getNextToken();
+      if (t.next != null) {
+		t = t.next;
+	  } else {
+		t = t.next = token_source.getNextToken();
+	  }
     }
     return t;
   }
 
   final private int jj_ntk() {
-    if ((jj_nt=token.next) == null)
-      return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
+    if ((jj_nt=token.next) == null) {
+		return (jj_ntk = (token.next=token_source.getNextToken()).kind);
+	} else {
+		return (jj_ntk = jj_nt.kind);
+	}
   }
 
 	private final java.util.Vector<int[]> jj_expentries = new java.util.Vector<>();
@@ -631,7 +684,9 @@ null)
   private int jj_endpos;
 
   private void jj_add_error_token(int kind, int pos) {
-    if (pos >= 100) return;
+    if (pos >= 100) {
+		return;
+	}
     if (pos == jj_endpos + 1) {
       jj_lasttokens[jj_endpos++] = kind;
     } else if (jj_endpos != 0) {
@@ -650,11 +705,17 @@ null)
               break;
             }
           }
-          if (exists) break;
+          if (exists) {
+			break;
+		  }
         }
       }
-      if (!exists) jj_expentries.addElement(jj_expentry);
-      if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
+      if (!exists) {
+		jj_expentries.addElement(jj_expentry);
+	  }
+      if (pos != 0) {
+		jj_lasttokens[(jj_endpos = pos) - 1] = kind;
+	  }
     }
   }
 

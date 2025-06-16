@@ -70,8 +70,9 @@ class IndexingOperation {
 
 	private void checkCancelled(IProgressMonitor pm)
 			throws OperationCanceledException {
-		if (pm.isCanceled())
+		if (pm.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 	}
 
 	/**
@@ -262,8 +263,9 @@ class IndexingOperation {
 			ILog.of(getClass()).log(multiStatus);
 		}
 		pm.subTask(HelpBaseResources.Writing_index);
-		if (!index.endAddBatch(addedDocs.size() > 0, lastOperation))
+		if (!index.endAddBatch(addedDocs.size() > 0, lastOperation)) {
 			throw new IndexingException();
+		}
 		pm.done();
 	}
 
@@ -314,8 +316,9 @@ class IndexingOperation {
 		String name = doc.getFile();
 		// remove query string if any
 		int i = name.indexOf('?');
-		if (i != -1)
+		if (i != -1) {
 			name = name.substring(0, i);
+		}
 		return name;
 	}
 
@@ -330,8 +333,9 @@ class IndexingOperation {
 		// Get the list of added plugins
 		Collection<String> addedPlugins = index.getDocPlugins().getAdded();
 
-		if (addedPlugins == null || addedPlugins.isEmpty())
+		if (addedPlugins == null || addedPlugins.isEmpty()) {
 			return new ArrayList<>(0);
+		}
 		return addedPlugins;
 	}
 
@@ -429,8 +433,9 @@ class IndexingOperation {
 	private Collection<URL> getRemovedDocuments(SearchIndex index) {
 		// Get the list of removed plugins
 		Collection<String> removedPlugins = index.getDocPlugins().getRemoved();
-		if (removedPlugins == null || removedPlugins.isEmpty())
+		if (removedPlugins == null || removedPlugins.isEmpty()) {
 			return new ArrayList<>(0);
+		}
 		// get the list of indexed docs. This is a hashtable (url, plugin)
 		HelpProperties indexedDocs = index.getIndexedDocs();
 		Set<URL> removedDocs = new HashSet<>(indexedDocs.size());
@@ -458,14 +463,16 @@ class IndexingOperation {
 		String href = topic.getHref();
 		add(href, hrefs);
 		ITopic[] subtopics = topic.getSubtopics();
-		for (ITopic subtopic : subtopics)
+		for (ITopic subtopic : subtopics) {
 			add(subtopic, hrefs);
+		}
 	}
 
 	private void add(String href, Set<String> hrefs) {
 		if (href != null
-				&& !href.isEmpty() && !href.startsWith("http://") && !href.startsWith("https://")) //$NON-NLS-1$ //$NON-NLS-2$
+				&& !href.isEmpty() && !href.startsWith("http://") && !href.startsWith("https://")) { //$NON-NLS-1$ //$NON-NLS-2$
 			hrefs.add(href);
+		}
 	}
 
 	/**
@@ -486,8 +493,9 @@ class IndexingOperation {
 				add(extraDoc, hrefs);
 			}
 			ITopic tocDescriptionTopic = toc.getTopic(null);
-			if (tocDescriptionTopic != null)
+			if (tocDescriptionTopic != null) {
 				add(tocDescriptionTopic, hrefs);
+			}
 		}
 		return hrefs;
 	}

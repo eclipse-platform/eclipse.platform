@@ -35,8 +35,9 @@ public class RemoteContentLocator {
 
 	public static String getUrlForContent(String contributorID) {
 
-		if (InfoCenterMap == null)
+		if (InfoCenterMap == null) {
 			return null;
+		}
 
 		Object key = InfoCenterMap.get(contributorID);
 		return (String)key;

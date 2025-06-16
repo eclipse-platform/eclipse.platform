@@ -46,14 +46,18 @@ public class LocalHelp implements ISearchEngine2 {
 			SearchProcessorInfo result = processor.preSearch(query);
 			if (result != null) {
 				String alternates[] = result.getAlternateTerms();
-				if (alternates != null)
-					for (String alternate : alternates)
-						if (!altList.contains(alternate))
+				if (alternates != null) {
+					for (String alternate : alternates) {
+						if (!altList.contains(alternate)) {
 							altList.add(alternate);
+						}
+					}
+				}
 
 				String modQuery = result.getQuery();
-				if (modQuery != null)
+				if (modQuery != null) {
 					query = modQuery;
+				}
 			}
 		}
 		altList.sort(null);
@@ -63,8 +67,9 @@ public class LocalHelp implements ISearchEngine2 {
 		searchQuery.setSearchWord(query);
 		WorkingSet[] workingSets = null;
 		LocalHelpScope localScope = (LocalHelpScope) scope;
-		if (localScope.getWorkingSet() != null)
+		if (localScope.getWorkingSet() != null) {
 			workingSets = new WorkingSet[] { localScope.getWorkingSet() };
+		}
 		SearchResults localResults = new SearchResults(workingSets, MAX_HITS, Platform.getNL());
 		// If the indexer has been started and is currently running,
 		// wait for it to finish.
@@ -120,8 +125,9 @@ public class LocalHelp implements ISearchEngine2 {
 		for (SearchHit hit : searchHits) {
 			if (hit.getParticipantId()!=null) {
 				// hit comes from a search participant
-				if (HelpBasePlugin.getActivitySupport().isEnabled(hit.getHref()))
+				if (HelpBasePlugin.getActivitySupport().isEnabled(hit.getHref())) {
 					enabledHits.add(hit);
+				}
 			}
 			else if (HelpBasePlugin.getActivitySupport().isEnabledTopic(
 					hit.getHref(), Platform.getNL())) {
@@ -144,13 +150,15 @@ public class LocalHelp implements ISearchEngine2 {
 	@Override
 	public boolean open(String id) {
 		int sep = id.indexOf('/');
-		if (sep== -1)
+		if (sep== -1) {
 			return false;
+		}
 		String participantId = id.substring(0, sep);
 		id = id.substring(sep+1);
 		SearchParticipant participant = BaseHelpSystem.getLocalSearchManager().getGlobalParticipant(participantId);
-		if (participant==null)
+		if (participant==null) {
 			return false;
+		}
 		try {
 			return participant.open(id);
 		}

@@ -238,8 +238,9 @@ public class SearchIndex implements IHelpSearchIndex {
 			files = new File[0];
 		}
 		for (File file : files) {
-			if (file.isDirectory())
+			if (file.isDirectory()) {
 				deleteDir(file);
+			}
 			file.delete();
 		}
 	}
@@ -267,20 +268,24 @@ public class SearchIndex implements IHelpSearchIndex {
 			HelpURLConnection urlc = new HelpURLConnection(url);
 			String id = urlc.getValue("id"); //$NON-NLS-1$
 			String pid = urlc.getValue("participantId"); //$NON-NLS-1$
-			if (pid != null)
+			if (pid != null) {
 				participant = BaseHelpSystem.getLocalSearchManager().getGlobalParticipant(pid);
+			}
 			// check for file extension-based search participant;
-			if (participant == null)
+			if (participant == null) {
 				participant = BaseHelpSystem.getLocalSearchManager().getParticipant(pluginId, name);
+			}
 			if (participant != null) {
 				IStatus status = participant.addDocument(this, pluginId, name, url, id, new LuceneSearchDocument(doc));
 				if (status.getSeverity() == IStatus.OK) {
 					String filters = doc.get("filters"); //$NON-NLS-1$
 					indexedDocs.put(name, filters != null ? filters : "0"); //$NON-NLS-1$
-					if (id != null)
+					if (id != null) {
 						doc.add(new StoredField("id", id)); //$NON-NLS-1$
-					if (pid != null)
+					}
+					if (pid != null) {
 						doc.add(new StoredField("participantId", pid)); //$NON-NLS-1$
+					}
 					iw.addDocument(doc);
 				}
 				return status;
@@ -330,8 +335,9 @@ public class SearchIndex implements IHelpSearchIndex {
 					|| inconsistencyFile.exists() && firstOperation) {
 				create = true;
 				indexDir.mkdirs();
-				if (!indexDir.exists())
+				if (!indexDir.exists()) {
 					return false; // unable to setup index directory
+				}
 			}
 			indexedDocs = new HelpProperties(INDEXED_DOCS_FILE, indexDir);
 			indexedDocs.restore();
@@ -415,10 +421,12 @@ public class SearchIndex implements IHelpSearchIndex {
 	 */
 	public synchronized boolean endAddBatch(boolean optimize, boolean lastOperation) {
 		try {
-			if (iw == null)
+			if (iw == null) {
 				return false;
-			if (optimize)
+			}
+			if (optimize) {
 				iw.forceMerge(1, true);
+			}
 			iw.close();
 			iw = null;
 			// save the update info:
@@ -452,8 +460,9 @@ public class SearchIndex implements IHelpSearchIndex {
 	 */
 	public synchronized boolean endDeleteBatch() {
 		try {
-			if (iw == null)
+			if (iw == null) {
 				return false;
+			}
 			iw.close();
 			iw = null;
 			// save the update info:
@@ -484,8 +493,9 @@ public class SearchIndex implements IHelpSearchIndex {
 	 */
 	public synchronized boolean endRemoveDuplicatesBatch() {
 		try {
-			if (ir == null)
+			if (ir == null) {
 				return false;
+			}
 			ir.close();
 			ir = null;
 			iw.close();
@@ -656,15 +666,17 @@ public class SearchIndex implements IHelpSearchIndex {
 	 */
 	public void search(ISearchQuery searchQuery, ISearchHitCollector collector) throws QueryTooComplexException {
 		try (var searcherInfo = openSearcher()) {
-			if (searcherInfo == null)
+			if (searcherInfo == null) {
 				return; // already closed
+			}
 			QueryBuilder queryBuilder = new QueryBuilder(searchQuery.getSearchWord(), analyzerDescriptor);
 			Query luceneQuery = queryBuilder.getLuceneQuery(searchQuery.getFieldNames(), searchQuery.isFieldSearch());
 			if (HelpPlugin.DEBUG_SEARCH) {
 				System.out.println("Search Query: " + luceneQuery); //$NON-NLS-1$
 			}
-			if (luceneQuery == null)
+			if (luceneQuery == null) {
 				return;
+			}
 			TopDocs topDocs = searcher.search(luceneQuery, MAX_HITS_BEFORE_FILTERING);
 			collector.addHits(LocalSearchManager.asList(topDocs, searcher), queryBuilder.gethighlightTerms());
 		} catch (IndexSearcher.TooManyClauses tmc) {
@@ -721,8 +733,9 @@ public class SearchIndex implements IHelpSearchIndex {
 	 */
 	public HelpProperties getIndexedDocs() {
 		HelpProperties indexedDocs = new HelpProperties(INDEXED_DOCS_FILE, indexDir);
-		if (exists())
+		if (exists()) {
 			indexedDocs.restore();
+		}
 		return indexedDocs;
 	}
 
@@ -747,7 +760,9 @@ public class SearchIndex implements IHelpSearchIndex {
 	 * @param indexVersionString The version of an Index directory
 	 */
 	public boolean isLuceneCompatible(String indexVersionString) {
-		if (indexVersionString==null) return false;
+		if (indexVersionString==null) {
+			return false;
+		}
 		org.apache.lucene.util.Version nativeLuceneVersion = org.apache.lucene.util.Version.LATEST;
 		Version luceneVersion = new Version(nativeLuceneVersion.toString());
 		Version indexVersion = new Version(indexVersionString);
@@ -814,19 +829,22 @@ public class SearchIndex implements IHelpSearchIndex {
 				// index
 			} catch (IOException ioe) {
 			}
-		} else
+		} else {
 			inconsistencyFile.delete();
+		}
 	}
 
 	@SuppressWarnings("resource")
 	public SearcherInfo openSearcher() {
-		if (closed)
+		if (closed) {
 			return null;
+		}
 		synchronized (searches) {
 			searches.add(Thread.currentThread());
 		}
-		if (closed)
+		if (closed) {
 			return null;
+		}
 		if (searcher == null) {
 			synchronized (searcherCreateLock) {
 				if (searcher == null) {
@@ -1023,11 +1041,13 @@ public class SearchIndex implements IHelpSearchIndex {
 	 */
 
 	public synchronized boolean deleteLockFile() {
-		if (lock != null)
+		if (lock != null) {
 			return false;
+		}
 		File lockFile = getLockFile();
-		if (lockFile.exists())
+		if (lockFile.exists()) {
 			return lockFile.delete();
+		}
 		return true;
 	}
 
@@ -1088,19 +1108,23 @@ public class SearchIndex implements IHelpSearchIndex {
 	 * @return URL to obtain document content or null
 	 */
 	public static URL getIndexableURL(String locale, String url, String id, String participantId) {
-		if (participantId == null)
+		if (participantId == null) {
 			url = getIndexableHref(url);
-		if (url == null)
+		}
+		if (url == null) {
 			return null;
+		}
 
 		try {
 			StringBuilder query = new StringBuilder();
 			query.append("?"); //$NON-NLS-1$
 			query.append("lang=" + locale); //$NON-NLS-1$
-			if (id != null)
+			if (id != null) {
 				query.append("&id=" + id); //$NON-NLS-1$
-			if (participantId != null)
+			}
+			if (participantId != null) {
 				query.append("&participantId=" + participantId); //$NON-NLS-1$
+			}
 			return new URL("localhelp", //$NON-NLS-1$
 					null, -1, url + query.toString(), HelpURLStreamHandler.getDefault());
 

@@ -97,8 +97,9 @@ public class IntersectionScope extends AbstractHelpScope {
 		for (int s=0;s<scopes.length;s++)
 		{
 			str+=scopes[s];
-			if (s<scopes.length-1)
+			if (s<scopes.length-1) {
 				str+=' '+ScopeRegistry.SCOPE_AND+' ';
+			}
 		}
 		return str+')';
 	}

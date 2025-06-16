@@ -180,17 +180,19 @@ public class Eclipse extends Thread {
 	}
 	private String getStartupJar() throws Exception {
 		File pluginsDir = new File(Options.getEclipseHome(), "plugins/"); //$NON-NLS-1$
-		if (!pluginsDir.exists() || !pluginsDir.isDirectory())
+		if (!pluginsDir.exists() || !pluginsDir.isDirectory()) {
 			throw new Exception("Plugins directory " + pluginsDir.getAbsolutePath() //$NON-NLS-1$
 				+ " does not exists.  Pass a correct -eclipsehome option"); //$NON-NLS-1$
+		}
 		File[] plugins = pluginsDir.listFiles();
 		if(plugins == null) {
 			throw new IOException("Content from plugins directory '" + pluginsDir.getAbsolutePath() + "' can not be listed."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		for (File plugin : plugins) {
 			String file = plugin.getName();
-			if (file.startsWith("org.eclipse.equinox.launcher_") && file.endsWith(".jar") && !plugin.isDirectory()) //$NON-NLS-1$ //$NON-NLS-2$
+			if (file.startsWith("org.eclipse.equinox.launcher_") && file.endsWith(".jar") && !plugin.isDirectory()) { //$NON-NLS-1$ //$NON-NLS-2$
 				return "plugins/" + file; //$NON-NLS-1$
+			}
 		}
 		throw new Exception("Plugins directory " + pluginsDir.getAbsolutePath() //$NON-NLS-1$
 				+ " does not contain a valid startup jar.  Pass a correct -eclipsehome option"); //$NON-NLS-1$

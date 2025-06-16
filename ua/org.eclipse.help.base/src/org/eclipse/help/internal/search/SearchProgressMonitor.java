@@ -94,20 +94,23 @@ public class SearchProgressMonitor implements IProgressMonitor {
 	@Override
 	public void internalWorked(double work) {
 		currWork += work;
-		if (currWork > totalWork)
+		if (currWork > totalWork) {
 			currWork = totalWork;
-		else if (currWork < 0)
+		} else if (currWork < 0) {
 			currWork = 0;
+		}
 	}
 
 	public int getPercentage() {
 		if (done) {
 			return 100;
 		}
-		if (totalWork == IProgressMonitor.UNKNOWN)
+		if (totalWork == IProgressMonitor.UNKNOWN) {
 			return 0;
-		if (currWork >= totalWork)
+		}
+		if (currWork >= totalWork) {
 			return 100;
+		}
 		return (int)(100 * currWork / totalWork);
 	}
 
@@ -164,8 +167,9 @@ public class SearchProgressMonitor implements IProgressMonitor {
 			final String locale) {
 
 		// return an existing progress monitor if there is one
-		if (progressMonitors.get(locale) != null)
+		if (progressMonitors.get(locale) != null) {
 			return progressMonitors.get(locale);
+		}
 
 		final SearchProgressMonitor pm = new SearchProgressMonitor();
 		progressMonitors.put(locale, pm);
@@ -198,9 +202,10 @@ public class SearchProgressMonitor implements IProgressMonitor {
 				Thread.sleep(50);
 			} catch (InterruptedException ie) {
 			}
-			if (progressMonitors.get(locale) == null)
+			if (progressMonitors.get(locale) == null) {
 				// operation got canceled
 				break;
+			}
 		}
 
 		return pm;

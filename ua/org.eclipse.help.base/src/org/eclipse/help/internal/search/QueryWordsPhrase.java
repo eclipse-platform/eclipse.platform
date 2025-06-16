@@ -30,10 +30,11 @@ public class QueryWordsPhrase extends QueryWordsToken {
 	}
 	public void addWord(String word) {
 		words.add(word);
-		if (words.size() <= 1)
+		if (words.size() <= 1) {
 			value = word;
-		else
+		} else {
 			value += " " + word; //$NON-NLS-1$
+		}
 	}
 	public List<String> getWords() {
 		return words;

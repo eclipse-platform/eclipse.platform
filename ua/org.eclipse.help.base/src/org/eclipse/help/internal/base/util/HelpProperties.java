@@ -67,8 +67,9 @@ public class HelpProperties extends Properties {
 		// Test if we have a contribution file to start with
 		// If this is a clean start, then we will not have a
 		// contribution file. return false.
-		if (!file.exists())
+		if (!file.exists()) {
 			return loaded;
+		}
 		try (InputStream in = new FileInputStream(file)) {
 			super.load(in);
 			loaded = true;

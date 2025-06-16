@@ -135,8 +135,9 @@ public class HelpIndexBuilder {
 		public File findFile(String file) {
 			for (File dir : dirs) {
 				File absoluteFile = new File(dir, file);
-				if (absoluteFile.exists())
+				if (absoluteFile.exists()) {
 					return absoluteFile;
+				}
 			}
 			return null;
 		}
@@ -176,8 +177,9 @@ public class HelpIndexBuilder {
 			// for the destination
 			StringBuilder buffer = new StringBuilder();
 			appendBundleInformation(buffer, id.id, id.version.toString());
-			if (fid != null)
+			if (fid != null) {
 				appendBundleInformation(buffer, fid.id, fid.version.toString());
+			}
 
 			this.put(id.id, buffer.toString());
 		}
@@ -228,8 +230,9 @@ public class HelpIndexBuilder {
 			if (parent.getName().equalsIgnoreCase("META-INF")) { //$NON-NLS-1$
 				File project = parent.getParentFile();
 				manifest = new File(project, "plugin.xml"); //$NON-NLS-1$
-				if (!manifest.exists())
+				if (!manifest.exists()) {
 					manifest=null;
+				}
 			}
 		}
 		this.manifest = manifest;
@@ -270,11 +273,13 @@ public class HelpIndexBuilder {
 
 	public void execute(IProgressMonitor monitor) throws CoreException {
 		reset();
-		if (manifest == null || destination == null)
+		if (manifest == null || destination == null) {
 			return;
+		}
 		Document doc = readXMLFile(manifest);
-		if (doc == null)
+		if (doc == null) {
 			return;
+		}
 
 		PluginIdentifier pid = getPluginID(manifest.getParentFile(), doc);
 		PluginIdentifier fid = null;
@@ -283,8 +288,9 @@ public class HelpIndexBuilder {
 			// target is a fragment, source is a plug-in
 			File fragmentFile = new File(destination, "fragment.xml"); //$NON-NLS-1$
 			Document fdoc=null;
-			if (fragmentFile.exists())
+			if (fragmentFile.exists()) {
 				fdoc = readXMLFile(fragmentFile);
+			}
 			fid = getPluginID(destination, fdoc);
 			fdoc=null;
 		}
@@ -307,15 +313,17 @@ public class HelpIndexBuilder {
 		for (LocaleDir localeDir : localeDirs) {
 			MultiStatus localeStatus = processLocaleDir(pid, fid, localeDir, subMonitor.split(1));
 			if (localeStatus != null) {
-				if (multiStatus == null)
+				if (multiStatus == null) {
 					multiStatus = localeStatus;
-				else
+				} else {
 					multiStatus.addAll(localeStatus);
+				}
 			}
 		}
 		subMonitor.done();
-		if (multiStatus != null)
+		if (multiStatus != null) {
 			throw new CoreException(multiStatus);
+		}
 	}
 
 	/*
@@ -359,34 +367,41 @@ public class HelpIndexBuilder {
 		computeSystem(os, Platform.knownOSValues());
 
 		File nl = new File(destination, "nl"); //$NON-NLS-1$
-		if (!nl.exists() || !nl.isDirectory())
+		if (!nl.exists() || !nl.isDirectory()) {
 			return;
+		}
 		File [] languages = listFiles(nl);
 		HashSet<String> locales = new HashSet<>();
 		for (File language : languages) {
-			if (!language.isDirectory())
+			if (!language.isDirectory()) {
 				continue;
-			if (!isValidLanguage(language.getName()))
+			}
+			if (!isValidLanguage(language.getName())) {
 				continue;
+			}
 			File [] countries = listFiles(language);
 			for (File country : countries) {
 				String locale;
 				boolean hasCountry = false;
-				if (country.isDirectory() && isValidCountry(country.getName()))
+				if (country.isDirectory() && isValidCountry(country.getName())) {
 					hasCountry = true;
-				if (hasCountry)
+				}
+				if (hasCountry) {
 					locale = language.getName()+"_"+country.getName(); //$NON-NLS-1$
-				else
+				} else {
 					locale = language.getName();
+				}
 				if (isValidLocale(locale) && !locales.contains(locale)) {
 					String relativePath;
-					if (hasCountry)
+					if (hasCountry) {
 						relativePath = "/nl/"+language.getName()+"/"+country.getName(); //$NON-NLS-1$ //$NON-NLS-2$
-					else
+					} else {
 						relativePath = "/nl/"+language.getName(); //$NON-NLS-1$
+					}
 					LocaleDir dir = new LocaleDir(locale, relativePath);
-					if (hasCountry)
+					if (hasCountry) {
 						dir.addDirectory(country);
+					}
 					dir.addDirectory(language);
 					dir.addDirectory(destination);
 					localeDirs.add(dir);
@@ -401,8 +416,9 @@ public class HelpIndexBuilder {
 			// check
 			File [] files = listFiles(systemRoot);
 			for (File sdir : files) {
-				if (!sdir.isDirectory())
+				if (!sdir.isDirectory()) {
 					continue;
+				}
 				String sname = sdir.getName();
 				for (String value : values) {
 					if (value.equals(sname)) {
@@ -424,8 +440,9 @@ public class HelpIndexBuilder {
 	 */
 	private boolean isValidLocale(String locale) {
 		for (Locale legalLocale : legalLocales) {
-			if (legalLocale.toString().equals(locale))
+			if (legalLocale.toString().equals(locale)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -500,8 +517,9 @@ public class HelpIndexBuilder {
 	private File getTocFile(LocaleDir localeDir, String href) {
 		// try the locale dir
 		File file = localeDir.findFile(href);
-		if (file!=null)
+		if (file!=null) {
 			return file;
+		}
 		// try the plug-in
 		File pdir = manifest.getParentFile();
 		return new File(pdir, href);
@@ -512,8 +530,9 @@ public class HelpIndexBuilder {
 	 */
 	private void collectDocs(Set<String> docs, File tocFile)
 			throws CoreException {
-		if (!tocFile.exists())
+		if (!tocFile.exists()) {
 			return;
+		}
 		Document doc = readXMLFile(tocFile);
 		add(doc.getDocumentElement(), docs);
 	}
@@ -530,8 +549,9 @@ public class HelpIndexBuilder {
 		if (href != null
 				&& !href.isEmpty() && !href.startsWith("http://") && !href.startsWith("https://")) { //$NON-NLS-1$ //$NON-NLS-2$
 			href = SearchIndex.getIndexableHref(href);
-			if (href != null)
+			if (href != null) {
 				hrefs.add(href);
+			}
 		}
 		NodeList subtopics = topic.getElementsByTagName("topic"); //$NON-NLS-1$
 		for (int i = 0; i < subtopics.getLength(); i++) {
@@ -539,8 +559,9 @@ public class HelpIndexBuilder {
 			href = getAttribute(subtopic, "href"); //$NON-NLS-1$
 			if (href != null && !href.isEmpty() && !href.startsWith("http://") && !href.startsWith("https://")) { //$NON-NLS-1$ //$NON-NLS-2$
 				href = SearchIndex.getIndexableHref(href);
-				if (href != null)
+				if (href != null) {
 					hrefs.add(href);
+				}
 			}
 		}
 	}
@@ -569,8 +590,9 @@ public class HelpIndexBuilder {
 				IStatus status = index
 						.addDocument(getName(pluginId, href), url);
 				if (status.getCode() != IStatus.OK) {
-					if (multiStatus == null)
+					if (multiStatus == null) {
 						multiStatus = createMultiStatus();
+					}
 					multiStatus.add(status);
 				}
 			}
@@ -579,8 +601,9 @@ public class HelpIndexBuilder {
 				String locale = localeDir.locale!=null?localeDir.locale:Platform.getNL();
 				String message = NLS.bind(HelpBaseResources.HelpIndexBuilder_cannotFindDoc, locale, href);
 				IStatus status = new Status(IStatus.WARNING, pluginId, IStatus.OK, message, null);
-				if (multiStatus == null)
+				if (multiStatus == null) {
 					multiStatus = createMultiStatus();
+				}
 				multiStatus.add(status);
 			}
 			checkCancelled(monitor);
@@ -590,8 +613,9 @@ public class HelpIndexBuilder {
 		if (!index.endAddBatch(true, true)) {
 			IStatus status = new Status(IStatus.ERROR, HelpBasePlugin.PLUGIN_ID,
 					IStatus.OK, HelpBaseResources.HelpIndexBuilder_errorWriting, null);
-			if (multiStatus==null)
+			if (multiStatus==null) {
 				multiStatus = createMultiStatus();
+			}
 			multiStatus.add(status);
 		}
 		return multiStatus;
@@ -607,15 +631,17 @@ public class HelpIndexBuilder {
 
 	private void checkCancelled(IProgressMonitor pm)
 			throws OperationCanceledException {
-		if (pm.isCanceled())
+		if (pm.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 	}
 
 	private String getName(String pluginId, String href) {
 		// remove query string if any
 		int i = href.indexOf('?');
-		if (i != -1)
+		if (i != -1) {
 			href = href.substring(0, i);
+		}
 		return "/" + pluginId + "/" + href; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
@@ -629,15 +655,17 @@ public class HelpIndexBuilder {
 			File[] files = listFiles(indexDirectory);
 			for (File file : files) {
 				boolean result = file.delete();
-				if (!result)
+				if (!result) {
 					throwCoreException(
 							HelpBaseResources.HelpIndexBuilder_cannotScrub, null);
+				}
 			}
 		} else {
 			boolean result = indexDirectory.mkdirs();
-			if (!result)
+			if (!result) {
 				throwCoreException(HelpBaseResources.HelpIndexBuilder_cannotCreateDest,
 						null);
+			}
 		}
 	}
 
@@ -654,8 +682,9 @@ public class HelpIndexBuilder {
 			Node root = doc.getDocumentElement();
 			id = getAttribute(root, "id"); //$NON-NLS-1$
 			version = getAttribute(root, "version"); //$NON-NLS-1$
-			if (id != null && version != null)
+			if (id != null && version != null) {
 				return new PluginIdentifier(id, version);
+			}
 		}
 		// check for the OSGi manifest
 		File OSGiFile = new File(dir,
@@ -668,21 +697,26 @@ public class HelpIndexBuilder {
 						.getMainAttributes());
 				String value = headers.get(Constants.BUNDLE_SYMBOLICNAME)
 						.toString();
-				if (value == null)
+				if (value == null) {
 					return null;
+				}
 				ManifestElement[] elements = ManifestElement.parseHeader(
 						Constants.BUNDLE_SYMBOLICNAME, value);
-				if (elements.length > 0)
+				if (elements.length > 0) {
 					id = elements[0].getValue();
+				}
 				value = headers.get(Constants.BUNDLE_VERSION).toString();
-				if (value == null)
+				if (value == null) {
 					return null;
+				}
 				elements = ManifestElement.parseHeader(
 						Constants.BUNDLE_VERSION, value);
-				if (elements.length > 0)
+				if (elements.length > 0) {
 					version = elements[0].getValue();
-				if (id != null && version != null)
+				}
+				if (id != null && version != null) {
 					return new PluginIdentifier(id, version);
+				}
 			} catch (Exception e1) {
 				throwCoreException(HelpBaseResources.HelpIndexBuilder_errorExtractingId, e1);
 			}
@@ -694,8 +728,9 @@ public class HelpIndexBuilder {
 		NamedNodeMap atts = node.getAttributes();
 		if (atts != null) {
 			Node att = atts.getNamedItem(name);
-			if (att != null)
+			if (att != null) {
 				return att.getNodeValue();
+			}
 		}
 		return null;
 	}
@@ -721,8 +756,9 @@ public class HelpIndexBuilder {
 		for (int i = 0; i < children.getLength(); i++) {
 			Node child = children.item(i);
 			String point = getAttribute(child, "point"); //$NON-NLS-1$
-			if (point.equals(POINT_TOC))
+			if (point.equals(POINT_TOC)) {
 				list.add(child);
+			}
 		}
 		return list.toArray(new Element[list.size()]);
 	}

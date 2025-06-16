@@ -61,8 +61,9 @@ public class CriteriaUtilities {
 			List<String> criterionValues = criterion.getCriterionValues();
 
 			Set<String> existedValueSet = map.get(criterionName);
-			if (null == existedValueSet)
+			if (null == existedValueSet) {
 				existedValueSet = new HashSet<>();
+			}
 			existedValueSet.addAll(criterionValues);
 			map.put(criterionName, existedValueSet);
 		}

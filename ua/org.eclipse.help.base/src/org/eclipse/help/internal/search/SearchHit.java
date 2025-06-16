@@ -129,8 +129,9 @@ public class SearchHit implements ISearchEngineResult2, Comparable<SearchHit> {
 
 	@Override
 	public IHelpResource getCategory() {
-		if (participantId == null)
+		if (participantId == null) {
 			return toc;
+		}
 		return BaseHelpSystem.getLocalSearchManager().getParticipantCategory(participantId);
 	}
 
@@ -167,8 +168,9 @@ public class SearchHit implements ISearchEngineResult2, Comparable<SearchHit> {
 
 	@Override
 	public URL getIconURL() {
-		if (participantId == null)
+		if (participantId == null) {
 			return null;
+		}
 		return BaseHelpSystem.getLocalSearchManager().getParticipantIconURL(participantId);
 	}
 

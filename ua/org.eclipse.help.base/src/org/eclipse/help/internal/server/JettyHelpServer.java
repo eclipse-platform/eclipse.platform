@@ -164,8 +164,9 @@ public class JettyHelpServer extends HelpServer {
 				interrupted = true;
 			}
 		}
-		if (interrupted)
+		if (interrupted) {
 			Thread.currentThread().interrupt();
+		}
 
 		Throwable t = runnable.getException();
 

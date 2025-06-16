@@ -20,12 +20,15 @@ package org.eclipse.help.internal.base.util;
 public class TString {
 	// change all occurrences of oldPat to newPat
 	public static String change(String in, String oldPat, String newPat) {
-		if (oldPat.length() == 0)
+		if (oldPat.length() == 0) {
 			return in;
-		if (oldPat.length() == 1 && newPat.length() == 1)
+		}
+		if (oldPat.length() == 1 && newPat.length() == 1) {
 			return in.replace(oldPat.charAt(0), newPat.charAt(0));
-		if (!in.contains(oldPat))
+		}
+		if (!in.contains(oldPat)) {
 			return in;
+		}
 		int lastIndex = 0;
 		int newIndex = 0;
 		StringBuilder newString = new StringBuilder();
