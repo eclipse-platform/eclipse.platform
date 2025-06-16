@@ -52,14 +52,16 @@ public class ModelProviderManager {
 
 	public ModelProvider getModelProvider(String modelProviderId) throws CoreException {
 		IModelProviderDescriptor desc = getDescriptor(modelProviderId);
-		if (desc == null)
+		if (desc == null) {
 			return null;
+		}
 		return desc.getModelProvider();
 	}
 
 	protected void lazyInitialize() {
-		if (descriptors != null)
+		if (descriptors != null) {
 			return;
+		}
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(ResourcesPlugin.PI_RESOURCES, ResourcesPlugin.PT_MODEL_PROVIDERS);
 		IExtension[] extensions = point.getExtensions();
 		descriptors = new HashMap<>(extensions.length * 2 + 1);
@@ -70,8 +72,9 @@ public class ModelProviderManager {
 			} catch (CoreException e) {
 				Policy.log(e);
 			}
-			if (desc != null)
+			if (desc != null) {
 				descriptors.put(desc.getId(), desc);
+			}
 		}
 		//do cycle detection now so it only has to be done once
 		//cycle detection on a graph subset is a pain

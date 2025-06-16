@@ -31,8 +31,9 @@ public class Policy {
 	}
 
 	public static IProgressMonitor monitorFor(IProgressMonitor monitor) {
-		if (monitor == null)
+		if (monitor == null) {
 			return new NullProgressMonitor();
+		}
 		return monitor;
 	}
 
@@ -57,8 +58,9 @@ public class Policy {
 	 * substitution locations with the given string values.
 	 */
 	public static String bind(String id, String[] bindings) {
-		if (id == null)
+		if (id == null) {
 			return "No message available";//$NON-NLS-1$
+		}
 		String message = null;
 		try {
 			message = bundle.getString(id);
@@ -67,8 +69,9 @@ public class Policy {
 			// the id we were looking for.  In most cases this is semi-informative so is not too bad.
 			return "Missing message: " + id + " in: " + bundleName;//$NON-NLS-1$ //$NON-NLS-2$
 		}
-		if (bindings == null)
+		if (bindings == null) {
 			return message;
+		}
 		return MessageFormat.format(message, (Object[]) bindings);
 	}
 }

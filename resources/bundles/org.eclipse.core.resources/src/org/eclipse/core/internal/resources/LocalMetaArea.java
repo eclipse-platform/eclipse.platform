@@ -185,8 +185,9 @@ public class LocalMetaArea implements ICoreConstants {
 		IPath prefix = metaAreaLocation.append(F_SAFE_TABLE);
 		// if the plugin is the resources plugin, we return the master table
 		// location
-		if (pluginId.equals(ResourcesPlugin.PI_RESOURCES))
+		if (pluginId.equals(ResourcesPlugin.PI_RESOURCES)) {
 			return prefix.append(pluginId); // master table
+		}
 		int saveNumber = getWorkspace().getSaveManager().getSaveNumber(pluginId);
 		return prefix.append(pluginId + "." + saveNumber); //$NON-NLS-1$
 	}
@@ -201,8 +202,9 @@ public class LocalMetaArea implements ICoreConstants {
 		Assert.isLegal(resource.getType() == IResource.ROOT);
 		IPath key = resource.getFullPath().append(F_TREE);
 		String sequenceNumber = getWorkspace().getSaveManager().getMasterTable().getProperty(key.toString());
-		if (sequenceNumber == null)
+		if (sequenceNumber == null) {
 			sequenceNumber = "0"; //$NON-NLS-1$
+		}
 		return metaAreaLocation.append(sequenceNumber + F_SNAP);
 	}
 
@@ -245,8 +247,9 @@ public class LocalMetaArea implements ICoreConstants {
 	public IPath getTreeLocationFor(IResource target, boolean updateSequenceNumber) {
 		IPath key = target.getFullPath().append(F_TREE);
 		String sequenceNumber = getWorkspace().getSaveManager().getMasterTable().getProperty(key.toString());
-		if (sequenceNumber == null)
+		if (sequenceNumber == null) {
 			sequenceNumber = "0"; //$NON-NLS-1$
+		}
 		if (updateSequenceNumber) {
 			int n = Integer.parseInt(sequenceNumber) + 1;
 			n = n < 0 ? 1 : n;
@@ -282,8 +285,9 @@ public class LocalMetaArea implements ICoreConstants {
 	 * resource with the given path is stored.
 	 */
 	public IPath locationFor(IPath resourcePath) {
-		if (IPath.ROOT.equals(resourcePath))
+		if (IPath.ROOT.equals(resourcePath)) {
 			return metaAreaLocation.append(F_ROOT);
+		}
 		return projectMetaLocation.append(resourcePath.segment(0));
 	}
 
@@ -292,8 +296,9 @@ public class LocalMetaArea implements ICoreConstants {
 	 * given resource is stored.
 	 */
 	public IPath locationFor(IResource resource) {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return metaAreaLocation.append(F_ROOT);
+		}
 		return projectMetaLocation.append(resource.getProject().getName());
 	}
 
@@ -304,8 +309,9 @@ public class LocalMetaArea implements ICoreConstants {
 	 */
 	public ProjectDescription readOldDescription(IProject project) throws CoreException {
 		IPath path = getOldDescriptionLocationFor(project);
-		if (!path.toFile().exists())
+		if (!path.toFile().exists()) {
 			return null;
+		}
 		IPath tempPath = getBackupLocationFor(path);
 		ProjectDescription description = null;
 		try {
@@ -354,8 +360,9 @@ public class LocalMetaArea implements ICoreConstants {
 		if (!file.exists()) {
 			locationFile = getBackupLocationFor(locationFile);
 			file = locationFile.toFile();
-			if (!file.exists())
+			if (!file.exists()) {
 				return;
+			}
 		}
 		try (DataInputStream dataIn = new DataInputStream(new SafeChunkyInputStream(file, 500))) {
 			try {
@@ -363,10 +370,11 @@ public class LocalMetaArea implements ICoreConstants {
 				if (location.length() > 0) {
 					//location format < 3.2 was a local file system OS path
 					//location format >= 3.2 is: URI_PREFIX + uri.toString()
-					if (location.startsWith(URI_PREFIX))
+					if (location.startsWith(URI_PREFIX)) {
 						description.setLocationURI(URI.create(location.substring(URI_PREFIX.length())));
-					else
+					} else {
 						description.setLocationURI(URIUtil.toURI(IPath.fromOSString(location)));
+					}
 				}
 			} catch (Exception e) {
 				//don't allow failure to read the location to propagate
@@ -377,18 +385,21 @@ public class LocalMetaArea implements ICoreConstants {
 			int numRefs = dataIn.readInt();
 			IProject[] references = new IProject[numRefs];
 			IWorkspaceRoot root = getWorkspace().getRoot();
-			for (int i = 0; i < numRefs; i++)
+			for (int i = 0; i < numRefs; i++) {
 				references[i] = root.getProject(dataIn.readUTF());
+			}
 			description.setDynamicReferences(references);
 
 			// Since 3.7 -  Build Configurations
 			String[] configs = new String[dataIn.readInt()];
-			for (int i = 0; i < configs.length; i++)
+			for (int i = 0; i < configs.length; i++) {
 				configs[i] = dataIn.readUTF();
-			if (configs.length > 0)
+			}
+			if (configs.length > 0) {
 				// In the future we may decide this is better stored in the
 				// .project, so only set if configs.length > 0
 				description.setBuildConfigs(configs);
+			}
 			// Active configuration name
 			description.setActiveBuildConfig(dataIn.readUTF());
 			// Build configuration references?
@@ -400,10 +411,11 @@ public class LocalMetaArea implements ICoreConstants {
 				IBuildConfiguration[] refs = new IBuildConfiguration[numRefs];
 				for (int j = 0; j < numRefs; j++) {
 					String projName = dataIn.readUTF();
-					if (dataIn.readBoolean())
+					if (dataIn.readBoolean()) {
 						refs[j] = new BuildConfiguration(root.getProject(projName), dataIn.readUTF());
-					else
+					} else {
 						refs[j] = new BuildConfiguration(root.getProject(projName), null);
+					}
 				}
 				m.put(configName, refs);
 			}
@@ -426,23 +438,27 @@ public class LocalMetaArea implements ICoreConstants {
 		Workspace.clear(file);
 		//don't write anything if there is no interesting private metadata
 		ProjectDescription desc = ((Project) target).internalGetDescription();
-		if (desc == null)
+		if (desc == null) {
 			return;
+		}
 		final URI projectLocation = desc.getLocationURI();
 		final IProject[] prjRefs = desc.getDynamicReferences(false);
 		final String[] buildConfigs = desc.configNames;
 		final Map<String, IBuildConfiguration[]> configRefs = desc.getBuildConfigReferences(false);
-		if (projectLocation == null && prjRefs.length == 0 && buildConfigs.length == 0 && configRefs.isEmpty())
+		if (projectLocation == null && prjRefs.length == 0 && buildConfigs.length == 0 && configRefs.isEmpty()) {
 			return;
+		}
 		//write the private metadata file
 		try (SafeChunkyOutputStream output = new SafeChunkyOutputStream(file); DataOutputStream dataOut = new DataOutputStream(output);) {
-			if (projectLocation == null)
+			if (projectLocation == null) {
 				dataOut.writeUTF(""); //$NON-NLS-1$
-			else
+			} else {
 				dataOut.writeUTF(URI_PREFIX + projectLocation);
+			}
 			dataOut.writeInt(prjRefs.length);
-			for (IProject prjRef : prjRefs)
+			for (IProject prjRef : prjRefs) {
 				dataOut.writeUTF(prjRef.getName());
+			}
 
 			// Since 3.7 - build configurations + references
 			// Write out the build configurations

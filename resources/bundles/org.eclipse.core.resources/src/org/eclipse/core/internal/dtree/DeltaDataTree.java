@@ -77,8 +77,9 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * @param childNode child node.
 	 */
 	protected void addChild(IPath parentKey, String localName, AbstractDataTreeNode childNode) {
-		if (!includes(parentKey))
+		if (!includes(parentKey)) {
 			handleNotFound(parentKey);
+		}
 		childNode.setName(localName);
 		this.assembleNode(parentKey, new NoDataDeltaNode(parentKey.lastSegment(), childNode));
 	}
@@ -91,8 +92,9 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * Returns the delta A&lt;-B.  The result is equivalent to A, but has B as its parent.
 	 */
 	DeltaDataTree asBackwardDelta() {
-		if (getParent() == null)
+		if (getParent() == null) {
 			return newEmptyDeltaTree();
+		}
 		return new DeltaDataTree(getRootNode().asBackwardDelta(this, getParent(), rootKey()), this);
 	}
 
@@ -285,14 +287,16 @@ public class DeltaDataTree extends AbstractDataTree {
 	public DeltaDataTree compareWith(DeltaDataTree other, IComparator comparator, IPath path) {
 		/* need to figure out if trees really contain the given path */
 		if (this.includes(path)) {
-			if (other.includes(path))
+			if (other.includes(path)) {
 				return basicCompare(other, comparator, path);
+			}
 			/* only exists in this tree */
 			return new DeltaDataTree(AbstractDataTreeNode.convertToRemovedComparisonNode(this.copyCompleteSubtree(path), comparator.compare(this.getData(path), null)));
 		}
-		if (other.includes(path))
+		if (other.includes(path)) {
 			/* only exists in other tree */
 			return new DeltaDataTree(AbstractDataTreeNode.convertToAddedComparisonNode(other.copyCompleteSubtree(path), comparator.compare(null, other.getData(path))));
+		}
 		/* doesn't exist in either tree */
 		return DeltaDataTree.createEmptyDelta();
 	}
@@ -317,8 +321,9 @@ public class DeltaDataTree extends AbstractDataTree {
 			handleNotFound(key);
 			return null;
 		}
-		if (node.isDelta())
+		if (node.isDelta()) {
 			return naiveCopyCompleteSubtree(key);
+		}
 		//copy the node in case the user wants to hammer the subtree name
 		return node.copy();
 	}
@@ -336,8 +341,9 @@ public class DeltaDataTree extends AbstractDataTree {
 	 */
 	@Override
 	public void createChild(IPath parentKey, String localName, Object data) {
-		if (isImmutable())
+		if (isImmutable()) {
 			handleImmutableTree();
+		}
 		addChild(parentKey, localName, new DataTreeNode(localName, data));
 	}
 
@@ -355,8 +361,9 @@ public class DeltaDataTree extends AbstractDataTree {
 	 */
 	@Override
 	public void createSubtree(IPath key, AbstractDataTreeNode node) {
-		if (isImmutable())
+		if (isImmutable()) {
 			handleImmutableTree();
+		}
 		if (key.isRoot()) {
 			setParent(null);
 			setRootNode(node);
@@ -370,12 +377,14 @@ public class DeltaDataTree extends AbstractDataTree {
 	 */
 	@Override
 	public void deleteChild(IPath parentKey, String localName) {
-		if (isImmutable())
+		if (isImmutable()) {
 			handleImmutableTree();
+		}
 		/* If the child does not exist */
 		IPath childKey = parentKey.append(localName);
-		if (!includes(childKey))
+		if (!includes(childKey)) {
 			handleNotFound(childKey);
+		}
 		assembleNode(parentKey, new NoDataDeltaNode(parentKey.lastSegment(), new DeletedNode(localName)));
 	}
 
@@ -390,8 +399,9 @@ public class DeltaDataTree extends AbstractDataTree {
 		int segmentCount = key.segmentCount();
 		for (int i = 0; i < segmentCount; i++) {
 			node = node.childAtOrNull(key.segment(i));
-			if (node == null)
+			if (node == null) {
 				return null;
+			}
 		}
 		return node;
 	}
@@ -519,11 +529,13 @@ public class DeltaDataTree extends AbstractDataTree {
 	public IPath[] getChildren(IPath parentKey) {
 		AbstractDataTreeNode[] childNodes = getChildNodes(parentKey);
 		int len = childNodes.length;
-		if (len == 0)
+		if (len == 0) {
 			return NO_CHILDREN;
+		}
 		IPath[] answer = new IPath[len];
-		for (int i = 0; i < len; ++i)
+		for (int i = 0; i < len; ++i) {
 			answer[i] = parentKey.append(childNodes[i].name);
+		}
 		return answer;
 	}
 
@@ -592,8 +604,9 @@ public class DeltaDataTree extends AbstractDataTree {
 		AbstractDataTreeNode[] childNodes = getChildNodes(parentKey);
 		int len = childNodes.length;
 		String[] namesOfChildren = new String[len];
-		for (int i = 0; i < len; ++i)
+		for (int i = 0; i < len; ++i) {
 			namesOfChildren[i] = childNodes[i].name;
+		}
 		return namesOfChildren;
 	}
 
@@ -764,8 +777,9 @@ public class DeltaDataTree extends AbstractDataTree {
 	 * resulting delta.
 	 */
 	public DeltaDataTree newEmptyDeltaTree() {
-		if (!isImmutable())
+		if (!isImmutable()) {
 			throw new IllegalArgumentException(Messages.dtree_notImmutable);
+		}
 		return new DeltaDataTree(new NoDataDeltaNode(null), this);
 	}
 
@@ -800,11 +814,13 @@ public class DeltaDataTree extends AbstractDataTree {
 	 *	sourceTree is not immutable
 	 */
 	protected void reroot(DeltaDataTree sourceTree) {
-		if (!sourceTree.isImmutable())
+		if (!sourceTree.isImmutable()) {
 			handleImmutableTree();
+		}
 		DeltaDataTree sourceParent = sourceTree.getParent();
-		if (sourceParent == null)
+		if (sourceParent == null) {
 			return;
+		}
 		this.reroot(sourceParent);
 		DeltaDataTree backwardDelta = sourceTree.asBackwardDelta();
 		DeltaDataTree complete = sourceParent.assembleWithForwardDelta(sourceTree);
@@ -823,10 +839,12 @@ public class DeltaDataTree extends AbstractDataTree {
 	 */
 	public AbstractDataTreeNode safeCopyCompleteSubtree(IPath key) {
 		AbstractDataTreeNode node = searchNodeAt(key);
-		if (node == null)
+		if (node == null) {
 			return null;
-		if (node.isDelta())
+		}
+		if (node.isDelta()) {
 			return safeNaiveCopyCompleteSubtree(key);
+		}
 		//copy the node in case the user wants to hammer the subtree name
 		return node.copy();
 	}
@@ -852,15 +870,18 @@ public class DeltaDataTree extends AbstractDataTree {
 				int actualChildCount = 0;
 				for (int i = numChildren; --i >= 0;) {
 					childNodes[i] = safeCopyCompleteSubtree(key.append(childNames[i]));
-					if (childNodes[i] != null)
+					if (childNodes[i] != null) {
 						actualChildCount++;
+					}
 				}
 				//if there are less actual children due to concurrent deletion, shrink the child array
 				if (actualChildCount < numChildren) {
 					AbstractDataTreeNode[] actualChildNodes = new AbstractDataTreeNode[actualChildCount];
-					for (int iOld = 0, iNew = 0; iOld < numChildren; iOld++)
-						if (childNodes[iOld] != null)
+					for (int iOld = 0, iNew = 0; iOld < numChildren; iOld++) {
+						if (childNodes[iOld] != null) {
 							actualChildNodes[iNew++] = childNodes[iOld];
+						}
+					}
 					childNodes = actualChildNodes;
 				}
 			}
@@ -889,8 +910,9 @@ public class DeltaDataTree extends AbstractDataTree {
 				}
 			}
 			if (node != null) {
-				if (node.isDeleted())
+				if (node.isDeleted()) {
 					break;
+				}
 				return node;
 			}
 			if (complete) {
@@ -921,8 +943,9 @@ public class DeltaDataTree extends AbstractDataTree {
 			}
 		}
 		if (node != null) {
-			if (node.isDeleted())
+			if (node.isDeleted()) {
 				return null;
+			}
 			return node;
 		}
 		if (complete) {
@@ -936,10 +959,12 @@ public class DeltaDataTree extends AbstractDataTree {
 	 */
 	@Override
 	public void setData(IPath key, Object data) {
-		if (isImmutable())
+		if (isImmutable()) {
 			handleImmutableTree();
-		if (!includes(key))
+		}
+		if (!includes(key)) {
 			handleNotFound(key);
+		}
 		assembleNode(key, new DataDeltaNode(key.lastSegment(), data));
 	}
 
@@ -973,8 +998,9 @@ public class DeltaDataTree extends AbstractDataTree {
 	 *	- removes any empty (leaf NoDataDelta) nodes
 	 */
 	protected void simplify(IComparator comparer) {
-		if (parent == null)
+		if (parent == null) {
 			return;
+		}
 		setRootNode(rootNode.simplifyWithParent(rootKey(), parent, comparer));
 	}
 
@@ -985,8 +1011,9 @@ public class DeltaDataTree extends AbstractDataTree {
 		AbstractDataTreeNode root = null;
 		for (DeltaDataTree dad = this; dad != null; dad = dad.getParent()) {
 			root = dad.getRootNode();
-			if (root != null)
+			if (root != null) {
 				root.storeStrings(set);
+			}
 		}
 	}
 

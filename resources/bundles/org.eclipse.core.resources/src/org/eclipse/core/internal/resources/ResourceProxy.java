@@ -60,8 +60,9 @@ public class ResourceProxy implements IResourceProxy, ICoreConstants {
 	@Override
 	public boolean isAccessible() {
 		int flags = info.getFlags();
-		if (info.getType() == IResource.PROJECT)
+		if (info.getType() == IResource.PROJECT) {
 			return flags != NULL_FLAG && ResourceInfo.isSet(flags, M_OPEN);
+		}
 		return flags != NULL_FLAG;
 	}
 
@@ -115,8 +116,9 @@ public class ResourceProxy implements IResourceProxy, ICoreConstants {
 	 */
 	@Override
 	public IPath requestFullPath() {
-		if (fullPath == null)
+		if (fullPath == null) {
 			fullPath = requestor.requestPath();
+		}
 		return fullPath;
 	}
 
@@ -125,8 +127,9 @@ public class ResourceProxy implements IResourceProxy, ICoreConstants {
 	 */
 	@Override
 	public IResource requestResource() {
-		if (resource == null)
+		if (resource == null) {
 			resource = workspace.newResource(requestFullPath(), info.getType());
+		}
 		return resource;
 	}
 
