@@ -299,7 +299,7 @@ public class LocalHistoryBrowserView extends ViewPart {
 		};
 		refreshAction.setText("Refresh View"); //$NON-NLS-1$
 		refreshAction.setToolTipText("Refresh View"); //$NON-NLS-1$
-		refreshAction.setImageDescriptor(ImageDescriptor.createFromURLSupplier(true, () -> LocalHistoryBrowserView.class.getResource("/icons/refresh.gif"))); //$NON-NLS-1$
+		refreshAction.setImageDescriptor(ImageDescriptor.createFromURLSupplier(true, () -> LocalHistoryBrowserView.class.getResource("/icons/refresh.svg"))); //$NON-NLS-1$
 
 		doubleClickAction = new Action() {
 			@Override

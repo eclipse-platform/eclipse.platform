@@ -387,7 +387,7 @@
       </viewer>
       <viewer
             class="org.eclipse.compare.internal.ImageMergeViewerCreator"
-            extensions="gif,jpg,jpeg,png,bmp,ico,tif,tiff"
+            extensions="gif,jpg,jpeg,png,bmp,ico,tif,tiff,svg"
             id="org.eclipse.compare.ImageMergeViewerCreator"
             label="%ImageCompare.label">
       </viewer>

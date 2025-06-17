@@ -99,8 +99,8 @@ public class PreferencePageContainerDialog extends TrayDialog
 	protected static final String PREF_DLG_IMG_TITLE_ERROR = "preference_page_container_title_error_image";//$NON-NLS-1$
 	static {
 		ImageRegistry reg = TeamUIPlugin.getPlugin().getImageRegistry();
-		reg.put(PREF_DLG_TITLE_IMG, ImageDescriptor.createFromFile(PreferenceDialog.class, "images/pref_dialog_title.png"));//$NON-NLS-1$
-		reg.put(PREF_DLG_IMG_TITLE_ERROR, ImageDescriptor.createFromFile(Dialog.class, "images/message_error.png"));//$NON-NLS-1$
+		reg.put(PREF_DLG_TITLE_IMG, ImageDescriptor.createFromFile(PreferenceDialog.class, "images/pref_dialog_title.svg"));//$NON-NLS-1$
+		reg.put(PREF_DLG_IMG_TITLE_ERROR, ImageDescriptor.createFromFile(Dialog.class, "images/message_error.svg"));//$NON-NLS-1$
 	}
 
 	public PreferencePageContainerDialog(Shell shell, PreferencePage[] pages) {
