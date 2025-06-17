@@ -73,6 +73,7 @@ public class DynamicContributionItems extends CompoundContributionItem implement
 
 						ImageData id = icon != null ? ExternalExecutablesUtils.loadImage(icon) : null;
 						if (id != null) {
+							@SuppressWarnings("deprecation")
 							ImageDescriptor desc = ImageDescriptor.createFromImageData(id);
 							if (desc != null)
 								action.setImageDescriptor(desc);

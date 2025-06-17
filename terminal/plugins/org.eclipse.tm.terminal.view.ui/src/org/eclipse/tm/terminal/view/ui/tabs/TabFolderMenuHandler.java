@@ -153,7 +153,6 @@ public class TabFolderMenuHandler extends PlatformObject {
 	 * Setup the context menu for the tab folder. The method will return
 	 * immediately if the menu handler had been initialized before.
 	 *
-	 * @param tabFolder The tab folder control. Must not be <code>null</code>.
 	 */
 	public void initialize() {
 		// Return immediately if the menu manager and menu got initialized already

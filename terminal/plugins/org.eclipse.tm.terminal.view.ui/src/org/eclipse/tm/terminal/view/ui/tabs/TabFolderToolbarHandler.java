@@ -62,7 +62,7 @@ public class TabFolderToolbarHandler extends PlatformObject {
 
 			// The VlmConsoleTabFolderManager is listening to the selection changes of the
 			// TabFolder and fires selection changed events.
-			if (enable && event.getSource() instanceof TabFolderManager) {
+			if (event != null && event.getSource() instanceof TabFolderManager) {
 				enable = event.getSelection() instanceof StructuredSelection && !event.getSelection().isEmpty()
 						&& (((StructuredSelection) event.getSelection()).getFirstElement() instanceof CTabItem
 								|| ((StructuredSelection) event.getSelection()).getFirstElement() instanceof String);
@@ -141,7 +141,6 @@ public class TabFolderToolbarHandler extends PlatformObject {
 	 * Setup the context menu for the tab folder. The method will return
 	 * immediately if the toolbar handler had been initialized before.
 	 *
-	 * @param tabFolder The tab folder control. Must not be <code>null</code>.
 	 */
 	public void initialize() {
 		// Return immediately if the toolbar manager got initialized already

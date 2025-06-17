@@ -291,11 +291,17 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 				// Determine the filter path
 				String text = workingDir.getText();
 				if (Messages.PreferencePage_workingDir_userhome_label.equals(text)) {
-					dialog.setFilterPath(uh.toOSString());
+					if (uh != null) {
+						dialog.setFilterPath(uh.toOSString());
+					}
 				} else if (Messages.PreferencePage_workingDir_eclipsehome_label.equals(text)) {
-					dialog.setFilterPath(eh.toOSString());
+					if (eh != null) {
+						dialog.setFilterPath(eh.toOSString());
+					}
 				} else if (Messages.PreferencePage_workingDir_eclipsews_label.equals(text)) {
-					dialog.setFilterPath(ew.toOSString());
+					if (ew != null) {
+						dialog.setFilterPath(ew.toOSString());
+					}
 				} else if (text != null && !"".equals(text.trim())) { //$NON-NLS-1$
 					try {
 						// Resolve possible dynamic variables
@@ -313,11 +319,11 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 				if (selected != null) {
 					IPath sp = new Path(selected);
 
-					if (uh.equals(sp)) {
+					if (sp.equals(uh)) {
 						workingDir.select(0);
-					} else if (eh.equals(sp)) {
+					} else if (sp.equals(eh)) {
 						workingDir.select(1);
-					} else if (ew.equals(sp)) {
+					} else if (sp.equals(ew)) {
 						workingDir.select(2);
 					} else {
 						workingDir.setText(sp.toOSString());
@@ -527,6 +533,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 							if (i == null) {
 								ImageData id = ExternalExecutablesUtils.loadImage(icon);
 								if (id != null) {
+									@SuppressWarnings("deprecation")
 									ImageDescriptor d = ImageDescriptor.createFromImageData(id);
 									if (d != null)
 										i = d.createImage();

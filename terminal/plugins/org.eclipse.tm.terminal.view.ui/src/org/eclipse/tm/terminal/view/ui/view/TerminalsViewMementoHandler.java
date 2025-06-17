@@ -107,7 +107,7 @@ public class TerminalsViewMementoHandler {
 
 				// Store the current encoding
 				ITerminalViewControl terminal = (ITerminalViewControl) item.getData();
-				String encoding = terminal != null ? terminal.getEncoding() : null;
+				String encoding = terminal != null ? terminal.getCharset().name() : null;
 				if (encoding == null || "".equals(encoding)) //$NON-NLS-1$
 					encoding = (String) properties.get(ITerminalsConnectorConstants.PROP_ENCODING);
 				if (encoding != null && !"".equals(encoding)) { //$NON-NLS-1$
@@ -116,7 +116,7 @@ public class TerminalsViewMementoHandler {
 
 				// Store the current working directory, or if not available, the initial working directory
 				if (terminal != null) {
-					encoding = terminal.getEncoding();
+					encoding = terminal.getCharset().name();
 					Optional<String> workingDirectory = terminal.getTerminalConnector().getWorkingDirectory();
 					String cwd = workingDirectory
 							.orElse((String) properties.get(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR));

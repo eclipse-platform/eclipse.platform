@@ -257,7 +257,6 @@ public class TerminalService implements ITerminalService {
 
 		executeServiceOperation(properties, new TerminalServiceRunnable() {
 			@Override
-			@SuppressWarnings("synthetic-access")
 			public void run(final String id, final String secondaryId, final String title,
 					final ITerminalConnector connector, final Object data, final Done done) {
 				if (restoringView) {

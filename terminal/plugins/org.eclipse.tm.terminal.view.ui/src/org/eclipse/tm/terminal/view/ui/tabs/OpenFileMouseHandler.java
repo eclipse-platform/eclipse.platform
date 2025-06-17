@@ -88,6 +88,7 @@ public class OpenFileMouseHandler implements ITerminalMouseListener2 {
 		}
 	}
 
+	@SuppressWarnings("restriction")
 	@Override
 	public void mouseUp(ITerminalTextDataReadOnly terminalText, int line, int column, int button, int stateMask) {
 		if ((stateMask & SWT.MODIFIER_MASK) != SWT.MOD1) {
@@ -134,7 +135,7 @@ public class OpenFileMouseHandler implements ITerminalMouseListener2 {
 					// relative path: try to append to the working directory
 					Optional<String> workingDirectory = terminal.getTerminalConnector().getWorkingDirectory();
 					if (workingDirectory.isPresent()) {
-						fullPath = Optional.of(workingDirectory.get() + "/" + textToOpen);
+						fullPath = Optional.of(workingDirectory.get() + "/" + textToOpen); //$NON-NLS-1$
 					}
 				}
 				// if the selection is a file location that maps to a resource
@@ -160,8 +161,9 @@ public class OpenFileMouseHandler implements ITerminalMouseListener2 {
 						// continue
 					}
 				}
+				ResourcesPlugin.getPlugin();
 				OpenResourceDialog openResourceDialog = new OpenResourceDialog(site.getShell(),
-						ResourcesPlugin.getPlugin().getWorkspace().getRoot(), IResource.FILE);
+						ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE);
 				openResourceDialog.setInitialPattern(textToOpen);
 				if (openResourceDialog.open() != Window.OK)
 					return;
