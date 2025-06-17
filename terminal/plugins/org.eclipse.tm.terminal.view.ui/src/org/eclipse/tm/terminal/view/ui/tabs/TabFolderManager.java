@@ -225,7 +225,6 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 	 *
 	 * @return The created tab item or <code>null</code> if failed.
 	 */
-	@SuppressWarnings({ "unused" })
 	public CTabItem createTabItem(String title, String encoding, ITerminalConnector connector, Object data,
 			Map<String, Boolean> flags) {
 		Assert.isNotNull(title);
@@ -832,7 +831,7 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 				buffer.append(state2msg(item, terminal.getState()));
 				buffer.append(" - "); //$NON-NLS-1$
 
-				String encoding = terminal.getEncoding();
+				String encoding = terminal.getCharset().name();
 				if (encoding == null || "UTF-8".equals(encoding)) { //$NON-NLS-1$
 					encoding = "Default (UTF-8)"; //$NON-NLS-1$
 				}

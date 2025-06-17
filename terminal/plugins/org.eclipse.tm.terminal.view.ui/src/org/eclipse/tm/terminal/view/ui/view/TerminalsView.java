@@ -689,13 +689,6 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 							elements.add(adapted);
 						continue;
 					}
-
-					if (adapted != null) {
-						if (!elements.contains(adapted))
-							elements.add(adapted);
-						continue;
-					}
-
 					isValid = false;
 				}
 

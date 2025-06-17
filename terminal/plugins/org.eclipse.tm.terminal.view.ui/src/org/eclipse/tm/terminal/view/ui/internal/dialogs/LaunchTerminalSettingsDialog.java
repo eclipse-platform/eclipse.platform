@@ -688,7 +688,7 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 	/**
 	 * Sets the associated dialog settings storage.
 	 *
-	 * @return The dialog settings storage.
+	 * @param dialogSettings The dialog settings storage.
 	 */
 	public void setDialogSettings(IDialogSettings dialogSettings) {
 		this.dialogSettings = dialogSettings;
