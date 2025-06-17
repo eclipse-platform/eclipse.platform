@@ -19,7 +19,7 @@
             id="org.eclipse.core.tools.resources.actionSet">
          <action
                label="Count resources"
-               icon="icons/spy.gif"
+               icon="icons/spy.svg"
                class="org.eclipse.core.tools.resources.CountResourcesAction"
                tooltip="Count resources"
                toolbarPath="Normal/spyGroup"
@@ -41,43 +41,43 @@
       <category name="Resources Tools" id="org.eclipse.core.tools.resources"/>
       <view
             name="Delta Spy"
-            icon="icons/spy.gif"
+            icon="icons/spy.svg"
             category="org.eclipse.core.tools.resources"
             class="org.eclipse.core.tools.resources.DeltaView"
             id="org.eclipse.core.tools.resources.DeltaView"/>
       <view
             name="Element Tree Spy"
-            icon="icons/spy.gif"
+            icon="icons/spy.svg"
             category="org.eclipse.core.tools.resources"
             class="org.eclipse.core.tools.resources.ElementTreeView"
             id="org.eclipse.core.tools.resources.ElementTreeView"/>
       <view
             name="Resource Spy"
-            icon="icons/spy.gif"
+            icon="icons/spy.svg"
             category="org.eclipse.core.tools.resources"
             class="org.eclipse.core.tools.resources.ResourceView"
             id="org.eclipse.core.tools.resources.ResourceView"/>
       <view
             name="Project Spy"
-            icon="icons/spy.gif"
+            icon="icons/spy.svg"
             category="org.eclipse.core.tools.resources"
             class="org.eclipse.core.tools.resources.ProjectView"
             id="org.eclipse.core.tools.resources.ProjectView"/>
       <view
             name="Graphical Delta Spy"
-            icon="icons/spy.gif"
+            icon="icons/spy.svg"
             category="org.eclipse.core.tools.resources"
             class="org.eclipse.core.tools.resources.ResourceChangeView"
             id="org.eclipse.core.tools.resources.ResourceChangeView"/>
       <view
             name="Local History Browser"
-            icon="icons/spy.gif"
+            icon="icons/spy.svg"
             category="org.eclipse.core.tools.resources"
             class="org.eclipse.core.tools.resources.LocalHistoryBrowserView"
             id="org.eclipse.core.tools.resources.LocalHistoryBrowserView"/>
       <view
             name="Marker View"
-            icon="icons/spy.gif"
+            icon="icons/spy.svg"
             category="org.eclipse.core.tools.resources"
             class="org.eclipse.core.tools.resources.markers.MarkerView"
             id="org.eclipse.core.tools.resources.markers.MarkerView"/>

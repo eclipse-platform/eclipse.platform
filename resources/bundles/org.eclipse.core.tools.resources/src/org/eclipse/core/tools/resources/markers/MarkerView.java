@@ -455,9 +455,9 @@ public class MarkerView extends ViewPart implements ISelectionListener, IResourc
 	 * The constructor.
 	 */
 	public MarkerView() {
-		zeroImageDesc = ImageDescriptor.createFromURLSupplier(true, () -> MarkerView.class.getResource("/icons/zero.gif"));
-		oneImageDesc = ImageDescriptor.createFromURLSupplier(true, () -> MarkerView.class.getResource("/icons/one.gif"));
-		infiniteImageDesc = ImageDescriptor.createFromURLSupplier(true, () -> MarkerView.class.getResource("/icons/infinity.gif"));
+		zeroImageDesc = ImageDescriptor.createFromURLSupplier(true, () -> MarkerView.class.getResource("/icons/zero.svg"));
+		oneImageDesc = ImageDescriptor.createFromURLSupplier(true, () -> MarkerView.class.getResource("/icons/one.svg"));
+		infiniteImageDesc = ImageDescriptor.createFromURLSupplier(true, () -> MarkerView.class.getResource("/icons/infinity.svg"));
 		model = new MarkerExtensionModel();
 		propertySource = new ReadOnlyMarkerPropertySource(this, model);
 	}
