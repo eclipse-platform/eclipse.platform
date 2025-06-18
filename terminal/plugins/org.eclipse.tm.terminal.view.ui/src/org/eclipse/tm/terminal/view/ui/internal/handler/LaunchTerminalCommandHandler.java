@@ -60,7 +60,22 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 		Shell shell = HandlerUtil.getActiveShell(event);
 		// Get the current selection
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
-
+		if (commandId.equals("org.eclipse.tm.terminal.view.ui.command.launchConsole")) { //$NON-NLS-1$
+			LaunchTerminalSettingsDialog dialog = new LaunchTerminalSettingsDialog(shell, start);
+			if (dialog.open() == Window.OK) {
+				// Get the terminal settings from the dialog
+				Map<String, Object> properties = dialog.getSettings();
+				if (properties != null) {
+					String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
+					Assert.isNotNull(delegateId);
+					ILauncherDelegate delegate = LauncherDelegateManager.getInstance().getLauncherDelegate(delegateId,
+							false);
+					Assert.isNotNull(delegateId);
+					return delegate.createTerminalConnector(properties);
+				}
+			}
+			return null;
+		}
 		if (commandId.equals("org.eclipse.tm.terminal.view.ui.command.launchToolbar")) { //$NON-NLS-1$
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 				UIPlugin.getTraceHandler().trace("(a) Attempt to open launch terminal settings dialog after " //$NON-NLS-1$

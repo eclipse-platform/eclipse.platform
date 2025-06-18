@@ -13,15 +13,10 @@
  *******************************************************************************/
 package org.eclipse.debug.terminal.ui;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.function.Consumer;
 
-import org.eclipse.cdt.utils.spawner.Spawner;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.debug.core.model.IBinaryStreamMonitor;
-import org.eclipse.debug.core.model.IStreamMonitor;
-import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -37,15 +32,15 @@ import org.eclipse.ui.part.IPageSite;
 
 class TerminalConsolePage implements IPageBookViewPage, IAdaptable {
 
-	private final Spawner process;
 	private IPageSite site;
 	private ITerminalViewControl viewer;
 	private Composite composite;
-	private final IStreamsProxy streamsProxy;
+	private ITerminalConnector connector;
+	private Consumer<ITerminalControl> terminalControlHandler;
 
-	public TerminalConsolePage(Spawner spawner, IStreamsProxy streamsProxy) {
-		this.process = spawner;
-		this.streamsProxy = streamsProxy;
+	public TerminalConsolePage(ITerminalConnector connector, Consumer<ITerminalControl> terminalControlHandler) {
+		this.connector = connector;
+		this.terminalControlHandler = terminalControlHandler;
 	}
 
 	@Override
@@ -54,23 +49,15 @@ class TerminalConsolePage implements IPageBookViewPage, IAdaptable {
 		composite.setLayout(new FillLayout());
 		viewer = TerminalViewControlFactory.makeControl(new ConsoleTerminalListener(), composite,
 				new ITerminalConnector[] {}, true);
-		viewer.setConnector(new ConsoleConnector(process));
+		viewer.setConnector(connector);
 		viewer.setCharset(Charset.defaultCharset());
 		viewer.clearTerminal();
 		viewer.connectTerminal();
 		if (viewer instanceof ITerminalControl ctrl) {
 			ctrl.setConnectOnEnterIfClosed(false);
 			ctrl.setVT100LineWrapping(true);
-			IStreamMonitor streamMonitor = streamsProxy.getOutputStreamMonitor();
-			if (streamMonitor instanceof IBinaryStreamMonitor bin) {
-				OutputStream outputStream = ctrl.getRemoteToTerminalOutputStream();
-				bin.addBinaryListener((data, monitor) -> {
-					try {
-						outputStream.write(data);
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				});
+			if (terminalControlHandler != null) {
+				terminalControlHandler.accept(ctrl);
 			}
 		}
 	}
@@ -78,6 +65,7 @@ class TerminalConsolePage implements IPageBookViewPage, IAdaptable {
 	@Override
 	public void dispose() {
 		viewer.disposeTerminal();
+		composite.dispose();
 	}
 
 	@Override

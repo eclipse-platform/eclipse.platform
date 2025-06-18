@@ -13,9 +13,14 @@
  *******************************************************************************/
 package org.eclipse.debug.terminal.ui;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.eclipse.cdt.utils.spawner.Spawner;
 import org.eclipse.core.runtime.AdapterTypes;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.debug.core.model.IBinaryStreamMonitor;
+import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.terminal.PtyRuntimeProcess;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.osgi.service.component.annotations.Component;
@@ -29,7 +34,19 @@ public class PageBookAdapter implements IAdapterFactory {
 		if (adaptableObject instanceof PtyRuntimeProcess rt) {
 			Spawner spawner = rt.getSpawner();
 			if (spawner != null) {
-				return adapterType.cast(new TerminalConsolePage(spawner, rt.getStreamsProxy()));
+				return adapterType.cast(new TerminalConsolePage(new ConsoleConnector(spawner), terminal -> {
+					IStreamMonitor streamMonitor = rt.getStreamsProxy().getOutputStreamMonitor();
+					if (streamMonitor instanceof IBinaryStreamMonitor bin) {
+						OutputStream outputStream = terminal.getRemoteToTerminalOutputStream();
+						bin.addBinaryListener((data, monitor) -> {
+							try {
+								outputStream.write(data);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						});
+					}
+				}));
 			}
 		}
 		return null;
