@@ -16,5 +16,13 @@
             id="org.eclipse.debug.terminal.processFactory">
       </processFactory>
    </extension>
+   <extension
+         point="org.eclipse.ui.console.consoleFactories">
+      <consoleFactory
+            class="org.eclipse.debug.terminal.ui.TerminalConsoleFactory"
+            icon="icons/console_view.png"
+            label="Terminal">
+      </consoleFactory>
+   </extension>
 
 </plugin>

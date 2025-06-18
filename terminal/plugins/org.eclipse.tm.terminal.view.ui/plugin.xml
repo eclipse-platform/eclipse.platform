@@ -362,6 +362,12 @@
             id="org.eclipse.tm.terminal.view.ui.command.launch"
             name="%command.launch.selection.name">
       </command>
+    <command
+            categoryId="org.eclipse.tm.terminal.view.ui.commands.category"
+            helpContextId="org.eclipse.tm.terminal.view.ui.command_Launch"
+            id="org.eclipse.tm.terminal.view.ui.command.launchConsole"
+            name="%command.launch.selection.name">
+      </command>
       <command
             categoryId="org.eclipse.tm.terminal.view.ui.commands.category"
             helpContextId="org.eclipse.tm.terminal.view.ui.command_Launch"
@@ -396,6 +402,10 @@
       <handler
             class="org.eclipse.tm.terminal.view.ui.internal.handler.LaunchTerminalCommandHandler"
             commandId="org.eclipse.tm.terminal.view.ui.command.launchToolbar">
+      </handler>
+      <handler
+            class="org.eclipse.tm.terminal.view.ui.internal.handler.LaunchTerminalCommandHandler"
+            commandId="org.eclipse.tm.terminal.view.ui.command.launchConsole">
       </handler>
       <handler
             class="org.eclipse.tm.terminal.view.ui.internal.handler.DisconnectTerminalCommandHandler"
