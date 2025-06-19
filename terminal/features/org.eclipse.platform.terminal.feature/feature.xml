@@ -37,4 +37,8 @@
          id="org.eclipse.tm.terminal.connector.local"
          version="0.0.0"/>
 
+   <plugin
+         id="org.eclipse.tm.terminal.connector.telnet"
+         version="0.0.0"/>
+
 </feature>
