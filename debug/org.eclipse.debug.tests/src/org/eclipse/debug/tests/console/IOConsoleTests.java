@@ -81,7 +81,6 @@ public class IOConsoleTests extends AbstractDebugTest {
 	 * The console view used for the running test. Required to obtain access to
 	 * consoles {@link StyledText} widget to simulate user input.
 	 */
-	@SuppressWarnings("restriction")
 	private org.eclipse.ui.internal.console.ConsoleView consoleView;
 
 	/** Track console finished property notification. */
@@ -114,7 +113,6 @@ public class IOConsoleTests extends AbstractDebugTest {
 		if (viewPart == null) {
 			viewPart = activePage.showView(IConsoleConstants.ID_CONSOLE_VIEW, null, IWorkbenchPage.VIEW_CREATE);
 		}
-		@SuppressWarnings("restriction")
 		final org.eclipse.ui.internal.console.ConsoleView castConsoleView = (org.eclipse.ui.internal.console.ConsoleView) viewPart;
 		consoleView = castConsoleView;
 		activePage.activate(consoleView);
@@ -165,7 +163,6 @@ public class IOConsoleTests extends AbstractDebugTest {
 		consoleManager.addConsoles(new IConsole[] { console });
 		TestUtil.waitForJobs(name.getMethodName(), ConsoleManager.CONSOLE_JOB_FAMILY, 25, 10000);
 		consoleManager.showConsoleView(console);
-		@SuppressWarnings("restriction")
 		final org.eclipse.ui.internal.console.IOConsolePage page = (org.eclipse.ui.internal.console.IOConsolePage) consoleView.getCurrentPage();
 		final StyledText textPanel = (StyledText) page.getControl();
 		return new IOConsoleTestUtil(console, textPanel, name.getMethodName());
