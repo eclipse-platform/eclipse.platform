@@ -21,7 +21,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
 class TerminalConsole extends AbstractConsole {
 
 	public final static String TYPE = "terminalConsole"; //$NON-NLS-1$
-	private ITerminalConnector terminalConnector;
+	private final ITerminalConnector terminalConnector;
 
 	TerminalConsole(ITerminalConnector terminalConnector) {
 		super("Terminal", TYPE, null, true);
