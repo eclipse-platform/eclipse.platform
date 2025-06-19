@@ -35,8 +35,8 @@ class TerminalConsolePage implements IPageBookViewPage, IAdaptable {
 	private IPageSite site;
 	private ITerminalViewControl viewer;
 	private Composite composite;
-	private ITerminalConnector connector;
-	private Consumer<ITerminalControl> terminalControlHandler;
+	private final ITerminalConnector connector;
+	private final Consumer<ITerminalControl> terminalControlHandler;
 
 	public TerminalConsolePage(ITerminalConnector connector, Consumer<ITerminalControl> terminalControlHandler) {
 		this.connector = connector;
