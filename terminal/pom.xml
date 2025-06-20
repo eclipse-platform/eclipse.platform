@@ -24,6 +24,7 @@
   <modules>
     <module>plugins</module>
     <module>features</module>
+    <module>tests</module>
   </modules>
 </project>
 
