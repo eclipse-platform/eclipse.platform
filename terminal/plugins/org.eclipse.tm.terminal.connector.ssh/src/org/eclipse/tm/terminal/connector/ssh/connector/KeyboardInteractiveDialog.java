@@ -134,7 +134,6 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 	 *
 	 * @param parent  the parent of the widgets
 	 */
-	@SuppressWarnings("unused")
 	protected void createPasswordFields(Composite parent) {
 		texts = new Text[prompt.length];
 

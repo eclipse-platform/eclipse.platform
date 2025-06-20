@@ -31,7 +31,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	private static volatile TraceHandler traceHandler;
 
 	// ServiceTracker for IJschService
-	private ServiceTracker tracker;
+	private ServiceTracker<IJSchService, IJSchService> tracker;
 
 	/**
 	 * The constructor
@@ -77,13 +77,12 @@ public class UIPlugin extends AbstractUIPlugin {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 
-		tracker = new ServiceTracker(getBundle().getBundleContext(), IJSchService.class.getName(), null);
+		tracker = new ServiceTracker<>(getBundle().getBundleContext(), IJSchService.class.getName(), null);
 		tracker.open();
 	}
 
@@ -107,7 +106,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	 * 		IJschService service is available.
 	 */
 	public IJSchService getJSchService() {
-		return (IJSchService) tracker.getService();
+		return tracker.getService();
 	}
 
 	//---------------------------------------------------------------------------
