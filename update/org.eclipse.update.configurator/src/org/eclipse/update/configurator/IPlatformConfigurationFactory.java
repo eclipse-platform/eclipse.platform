@@ -7,7 +7,7 @@
  *  https://www.eclipse.org/legal/epl-2.0/
  *
  *  SPDX-License-Identifier: EPL-2.0
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -31,29 +31,29 @@ import java.net.URL;
 public interface IPlatformConfigurationFactory {
 	/**
 	 * Returns the current platform configuration.
-	 * 
+	 *
 	 * @return platform configuration used in current instance of platform
-	 */	
+	 */
 	public IPlatformConfiguration getCurrentPlatformConfiguration();
 	/**
 	 * Returns a platform configuration object, optionally initialized with previously saved
 	 * configuration information.
-	 * 
+	 *
 	 * @param url location of previously save configuration information. If <code>null</code>
 	 * is specified, an empty configuration object is returned
 	 * @return platform configuration used in current instance of platform
-	 */	
+	 */
 	public IPlatformConfiguration getPlatformConfiguration(URL url) throws IOException;
-	
+
 	/**
 	 * Returns a platform configuration object, optionally initialized with previously saved
 	 * configuration information.
-	 * 
+	 *
 	 * @param url location of previously save configuration information. If <code>null</code>
 	 * is specified, an empty configuration object is returned
 	 * @param loc location of the platform installation.  Used to resolve entries in the saved
 	 * location
 	 * @return platform configuration used in current instance of platform
-	 */	
+	 */
 	public IPlatformConfiguration getPlatformConfiguration(URL url, URL loc) throws IOException;
 }

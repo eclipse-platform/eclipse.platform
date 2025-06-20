@@ -64,15 +64,17 @@ public class SiteEntry
 	}
 
 	public SiteEntry(URL url, org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy policy) {
-		if (url == null)
+		if (url == null) {
 			try {
 				url = new URL("platform:/base/"); //$NON-NLS-1$ try using platform-relative URL
 			} catch (MalformedURLException e) {
 				url = PlatformConfiguration.getInstallURL(); // ensure we come up ... use absolute file URL
 			}
+		}
 
-		if (policy == null)
+		if (policy == null) {
 			policy = new SitePolicy(PlatformConfiguration.getDefaultPolicy(), DEFAULT_POLICY_LIST);
+		}
 
 		if (url.getProtocol().equals("file")) { //$NON-NLS-1$
 			try {
@@ -81,8 +83,9 @@ public class SiteEntry
 			} catch (MalformedURLException e1) {
 				this.url = url;
 			}
-		} else
+		} else {
 			this.url = url;
+		}
 
 		this.policy = policy;
 		this.resolvedURL = this.url;
@@ -97,9 +100,9 @@ public class SiteEntry
 					URL configURL = config.getURL();
 					URL config_loc = new URL(configURL, "..");
 					resolvedURL = PlatformConfiguration.resolvePlatformURL(url, config_loc); // 19536
-				}
-				else
+				} else {
 					resolvedURL = PlatformConfiguration.resolvePlatformURL(url, config.getInstallURL()); // 19536
+				}
 			} catch (IOException e) {
 				// will use the baseline URL ...
 			}
@@ -122,8 +125,9 @@ public class SiteEntry
 
 	@Override
 	public synchronized void setSitePolicy(org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy policy) {
-		if (policy == null)
+		if (policy == null) {
 			throw new IllegalArgumentException();
+		}
 		this.policy = policy;
 	}
 
@@ -137,14 +141,16 @@ public class SiteEntry
 
 		org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy policy = getSitePolicy();
 
-		if (policy.getType() == org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.USER_INCLUDE)
+		if (policy.getType() == org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.USER_INCLUDE) {
 			return policy.getList();
+		}
 
 		if (policy.getType() == org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.USER_EXCLUDE) {
 			ArrayList<String> detectedPlugins = new ArrayList<>(Arrays.asList(getDetectedPlugins()));
 			for (String excludedPlugin : policy.getList()) {
-				if (detectedPlugins.contains(excludedPlugin))
+				if (detectedPlugins.contains(excludedPlugin)) {
 					detectedPlugins.remove(excludedPlugin);
+				}
 			}
 			return detectedPlugins.toArray(new String[0]);
 		}
@@ -152,8 +158,9 @@ public class SiteEntry
 		if (policy.getType() == org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.MANAGED_ONLY) {
 			PluginEntry[] managedPlugins = getManagedPlugins();
 			String[] managedPluginsURLs = new String[managedPlugins.length];
-			for (int i=0; i<managedPlugins.length; i++)
+			for (int i=0; i<managedPlugins.length; i++) {
 				managedPluginsURLs[i] = managedPlugins[i].getURL();
+			}
 
 			return managedPluginsURLs;
 		}
@@ -167,10 +174,12 @@ public class SiteEntry
 		// We detect all the plugins on the site, but it would be faster
 		// to just lookup the plugins that correspond to the entries found in each feature.
 		// TODO fix the above
-		if (pluginEntries == null)
+		if (pluginEntries == null) {
 			detectPlugins();
-		if (featureEntries == null)
+		}
+		if (featureEntries == null) {
 			detectFeatures();
+		}
 
 		// cache all the plugin entries for faster lookup later
 		Map<VersionedIdentifier, PluginEntry> cachedPlugins = new HashMap<>(pluginEntries.size());
@@ -180,12 +189,15 @@ public class SiteEntry
 
 		ArrayList<PluginEntry> managedPlugins = new ArrayList<>();
 		for (org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry feature : featureEntries.values()) {
-			if (!(feature instanceof FeatureEntry))
+			if (!(feature instanceof FeatureEntry)) {
 				continue;
+			}
 
-			for (PluginEntry plugin : ((FeatureEntry)feature).getPluginEntries())
-				if (cachedPlugins.containsKey(plugin.getVersionedIdentifier()))
+			for (PluginEntry plugin : ((FeatureEntry)feature).getPluginEntries()) {
+				if (cachedPlugins.containsKey(plugin.getVersionedIdentifier())) {
 					managedPlugins.add(cachedPlugins.get(plugin.getVersionedIdentifier()));
+				}
+			}
 
 		}
 		return managedPlugins.toArray(new PluginEntry[managedPlugins.size()]);
@@ -195,39 +207,45 @@ public class SiteEntry
 		String[] pluginURLs = getPlugins();
 		// hash the array, for faster lookups
 		HashMap<String, String> map = new HashMap<>(pluginURLs.length);
-		for (String pluginURL : pluginURLs)
+		for (String pluginURL : pluginURLs) {
 			map.put(pluginURL, pluginURL);
+		}
 
-		if (pluginEntries == null)
-				detectPlugins();
+		if (pluginEntries == null) {
+			detectPlugins();
+		}
 
 		ArrayList<PluginEntry> plugins = new ArrayList<>(pluginURLs.length);
 		for (int i=0; i<pluginEntries.size(); i++) {
 			PluginEntry p = pluginEntries.get(i);
-			if (map.containsKey(p.getURL()))
+			if (map.containsKey(p.getURL())) {
 				plugins.add(p);
+			}
 		}
 		return plugins.toArray(new PluginEntry[plugins.size()]);
 	}
 
 	@Override
 	public long getChangeStamp() {
-		if (changeStamp == 0)
+		if (changeStamp == 0) {
 			computeChangeStamp();
+		}
 		return changeStamp;
 	}
 
 	@Override
 	public long getFeaturesChangeStamp() {
-		if (featuresChangeStamp == 0)
+		if (featuresChangeStamp == 0) {
 			computeFeaturesChangeStamp();
+		}
 		return featuresChangeStamp;
 	}
 
 	@Override
 	public long getPluginsChangeStamp() {
-		if (pluginsChangeStamp == 0)
+		if (pluginsChangeStamp == 0) {
 			computePluginsChangeStamp();
+		}
 		return pluginsChangeStamp;
 	}
 
@@ -255,13 +273,15 @@ public class SiteEntry
 	 */
 	private void detectFeatures() {
 
-		if (featureEntries != null)
+		if (featureEntries != null) {
 			validateFeatureEntries();
-		else
+		} else {
 			featureEntries = new HashMap<>();
+		}
 
-		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL()))
+		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL())) {
 			return;
+		}
 
 		// locate feature entries on site
 		File siteRoot = new File(resolvedURL.getFile().replace('/', File.separatorChar));
@@ -270,11 +290,13 @@ public class SiteEntry
 			// handle the installed features under the features directory
 			File[] dirs = featuresDir.listFiles((FileFilter) f -> {
 				// mac os folders contain a file .DS_Store in each folder, and we need to skip it (bug 76869)
-				if (isMacOS && f.getName().equals(MAC_OS_MARKER))
+				if (isMacOS && f.getName().equals(MAC_OS_MARKER)) {
 					return false;
+				}
 				boolean valid = f.isDirectory() && (new File(f,FEATURE_XML).exists());
-				if (!valid)
+				if (!valid) {
 					Utils.log(NLS.bind(Messages.SiteEntry_cannotFindFeatureInDir, f.getAbsolutePath()));
+				}
 				return valid;
 			});
 
@@ -282,12 +304,14 @@ public class SiteEntry
 				try {
 					File featureXML = new File(dir, FEATURE_XML);
 					if (featureXML.lastModified() <= featuresChangeStamp &&
-						dir.lastModified() <= featuresChangeStamp)
+						dir.lastModified() <= featuresChangeStamp) {
 						continue;
+					}
 					URL featureURL = featureXML.toURL();
 					FeatureEntry featureEntry = featureParser.parse(featureURL);
-					if (featureEntry != null)
+					if (featureEntry != null) {
 						addFeatureEntry(featureEntry);
+					}
 				} catch (MalformedURLException e) {
 					Utils.log(NLS.bind(Messages.InstalledSiteParser_UnableToCreateURLForFile,
 							featuresDir.getAbsolutePath()));
@@ -307,11 +331,13 @@ public class SiteEntry
 		if (pluginEntries != null) {
 			validatePluginEntries();
 			compareTimeStamps = true; // only pick up newer plugins
-		} else
+		} else {
 			pluginEntries = new ArrayList<>();
+		}
 
-		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL()))
+		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL())) {
 			return;
+		}
 
 		// locate plugin entries on site
 		File pluginsDir = new File(resolvedURL.getFile(), PLUGINS);
@@ -402,8 +428,9 @@ public class SiteEntry
 			if (bundleManifest.exists()) {
 				if (compareTimeStamps
 						&& dirTimestamp <= pluginsChangeStamp
-						&& pluginFile.lastModified() <= pluginsChangeStamp)
+						&& pluginFile.lastModified() <= pluginsChangeStamp) {
 					return;
+				}
 				PluginEntry entry = bundleManifest.getPluginEntry();
 				addPluginEntry(entry);
 			} else {
@@ -422,19 +449,21 @@ public class SiteEntry
 					// We will need to double check for this. END to do.
 					if (compareTimeStamps
 							&& dirTimestamp <= pluginsChangeStamp
-							&& pluginFile.lastModified() <= pluginsChangeStamp)
+							&& pluginFile.lastModified() <= pluginsChangeStamp) {
 						return;
+					}
 					PluginEntry entry = pluginParser.parse(pluginFile);
 					addPluginEntry(entry);
 				}
 			}
 		} catch (IOException e) {
 			String pluginFileString = pluginFile.getAbsolutePath();
-			if (ConfigurationActivator.DEBUG)
+			if (ConfigurationActivator.DEBUG) {
 				Utils.log(
 						Utils.newStatus(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, pluginFileString), e));
-			else
+			} else {
 				Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorAccessing, pluginFileString));
+			}
 		} catch (SAXException e) {
 			String pluginFileString = pluginFile.getAbsolutePath();
 			Utils.log(NLS.bind(Messages.InstalledSiteParser_ErrorParsingFile, pluginFileString));
@@ -445,13 +474,15 @@ public class SiteEntry
 	 * @return list of feature url's (relative to site)
 	 */
 	private synchronized String[] getDetectedFeatures() {
-		if (featureEntries == null)
+		if (featureEntries == null) {
 			detectFeatures();
+		}
 		String[] features = new String[featureEntries.size()];
 		Iterator<org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry> iterator = featureEntries
 				.values().iterator();
-		for (int i=0; i<features.length; i++)
+		for (int i=0; i<features.length; i++) {
 			features[i] = ((FeatureEntry)iterator.next()).getURL();
+		}
 		return features;
 	}
 
@@ -459,12 +490,14 @@ public class SiteEntry
 	 * @return list of plugin url's (relative to site)
 	 */
 	private synchronized String[] getDetectedPlugins() {
-		if (pluginEntries == null)
+		if (pluginEntries == null) {
 			detectPlugins();
+		}
 
 		String[] plugins = new String[pluginEntries.size()];
-		for (int i=0; i<plugins.length; i++)
+		for (int i=0; i<plugins.length; i++) {
 			plugins[i] = pluginEntries.get(i).getURL();
+		}
 		return plugins;
 	}
 
@@ -474,12 +507,14 @@ public class SiteEntry
 	}
 
 	private synchronized long computeFeaturesChangeStamp() {
-		if (featuresChangeStamp > 0)
+		if (featuresChangeStamp > 0) {
 			return featuresChangeStamp;
+		}
 
 		long start = 0;
-		if (ConfigurationActivator.DEBUG)
+		if (ConfigurationActivator.DEBUG) {
 			start = (new Date()).getTime();
+		}
 		String[] features = getFeatures();
 
 		// compute stamp for the features directory
@@ -498,8 +533,9 @@ public class SiteEntry
 	}
 
 	private synchronized long computePluginsChangeStamp() {
-		if (pluginsChangeStamp > 0)
+		if (pluginsChangeStamp > 0) {
 			return pluginsChangeStamp;
+		}
 
 		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL())) {
 			Utils.log(NLS.bind(Messages.SiteEntry_computePluginStamp, resolvedURL.toExternalForm()));
@@ -530,8 +566,9 @@ public class SiteEntry
 			//        code executes early on the startup sequence we need to be
 			//        extremely mindful of performance issues.
 			// In fact, we should get the last modified from the connection
-			for (String target : targets)
+			for (String target : targets) {
 				result ^= target.hashCode();
+			}
 			Utils.debug("*WARNING* computing stamp using URL hashcodes only"); //$NON-NLS-1$
 		} else {
 			// compute stamp across local targets
@@ -540,8 +577,9 @@ public class SiteEntry
 				File f = null;
 				for (String target : targets) {
 					f = new File(rootFile, target);
-					if (f.exists())
+					if (f.exists()) {
 						result = Math.max(result, f.lastModified());
+					}
 				}
 			}
 		}
@@ -578,8 +616,9 @@ public class SiteEntry
 	}
 
 	public void addFeatureEntry(org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry feature) {
-		if (featureEntries == null)
+		if (featureEntries == null) {
 			featureEntries = new HashMap<>();
+		}
 		// Make sure we keep the larger version of same feature
 		org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry existing = featureEntries
 				.get(feature.getFeatureIdentifier());
@@ -592,36 +631,42 @@ public class SiteEntry
 			} else if (existingVersion.equals(newVersion)) {
 				// log error if same feature version/id but a different url
 				if (feature instanceof FeatureEntry && existing instanceof FeatureEntry &&
-						!((FeatureEntry)feature).getURL().equals(((FeatureEntry)existing).getURL()))
-				Utils.log(NLS.bind(Messages.SiteEntry_duplicateFeature, (new String[] { getURL().toExternalForm(), existing.getFeatureIdentifier() })));
+						!((FeatureEntry)feature).getURL().equals(((FeatureEntry)existing).getURL())) {
+					Utils.log(NLS.bind(Messages.SiteEntry_duplicateFeature, (new String[] { getURL().toExternalForm(), existing.getFeatureIdentifier() })));
+				}
 			}
 		} else {
 			featureEntries.put(feature.getFeatureIdentifier(), feature);
 			pluginsChangeStamp = 0;
 		}
-		if (feature instanceof FeatureEntry)
+		if (feature instanceof FeatureEntry) {
 			((FeatureEntry)feature).setSite(this);
+		}
 	}
 
 	public FeatureEntry[] getFeatureEntries() {
-		if (featureEntries == null)
+		if (featureEntries == null) {
 			detectFeatures();
+		}
 
-		if (featureEntries == null)
+		if (featureEntries == null) {
 			return new FeatureEntry[0];
+		}
 		return featureEntries.values().toArray(new FeatureEntry[featureEntries.size()]);
 	}
 
 	public void addPluginEntry(PluginEntry plugin) {
-		if (pluginEntries == null)
+		if (pluginEntries == null) {
 			pluginEntries = new ArrayList<>();
+		}
 		// Note: we could use the latest version of the same plugin, like we do for features, but we let the runtime figure it out
 		pluginEntries.add(plugin);
 	}
 
 	public PluginEntry[] getAllPluginEntries() {
-		if (pluginEntries == null)
+		if (pluginEntries == null) {
 			detectPlugins();
+		}
 		return pluginEntries.toArray(new PluginEntry[pluginEntries.size()]);
 	}
 
@@ -646,8 +691,9 @@ public class SiteEntry
 
 		siteElement.setAttribute(CFG_ENABLED, isEnabled() ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		siteElement.setAttribute(CFG_UPDATEABLE, isUpdateable() ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
-		if (isExternallyLinkedSite())
+		if (isExternallyLinkedSite()) {
 			siteElement.setAttribute(CFG_LINK_FILE, getLinkFileName().trim().replace(File.separatorChar, '/'));
+		}
 
 		int type = getSitePolicy().getType();
 		String typeString = CFG_POLICY_TYPE_UNKNOWN;
@@ -689,8 +735,9 @@ public class SiteEntry
 			// Note: in the future, we can check for absolute url as well.
 			//       For now, feature url is features/org.eclipse.foo/feature.xml
 			File featureXML = new File(root, feature.getURL());
-			if (!featureXML.exists())
+			if (!featureXML.exists()) {
 				deletedFeatures.add(feature.getFeatureIdentifier());
+			}
 		}
 		for (String string : deletedFeatures) {
 			featureEntries.remove(string);
@@ -704,8 +751,9 @@ public class SiteEntry
 			// Note: in the future, we can check for absolute url as well.
 			//       For now, feature url is plugins/org.eclipse.foo/plugin.xml
 			File pluginLocation = new File(root, plugin.getURL());
-			if (!pluginLocation.exists())
+			if (!pluginLocation.exists()) {
 				deletedPlugins.add(plugin);
+			}
 		}
 		for (PluginEntry pluginEntry : deletedPlugins) {
 			pluginEntries.remove(pluginEntry);
@@ -721,9 +769,11 @@ public class SiteEntry
 	}
 
 	public FeatureEntry getFeatureEntry(String id) {
-		for (FeatureEntry feature : getFeatureEntries())
-			if (feature.getFeatureIdentifier().equals(id))
+		for (FeatureEntry feature : getFeatureEntries()) {
+			if (feature.getFeatureIdentifier().equals(id)) {
 				return feature;
+			}
+		}
 		return null;
 	}
 
@@ -731,8 +781,9 @@ public class SiteEntry
 	public boolean unconfigureFeatureEntry(
 			org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry feature) {
 		FeatureEntry existingFeature = getFeatureEntry(feature.getFeatureIdentifier());
-		if (existingFeature != null)
+		if (existingFeature != null) {
 			featureEntries.remove(existingFeature.getFeatureIdentifier());
+		}
 		return existingFeature != null;
 	}
 
@@ -742,7 +793,8 @@ public class SiteEntry
 	 * we need to set the feature set to empty, so we don't try to detect them.
 	 */
 	public void initialized() {
-		if (featureEntries == null)
+		if (featureEntries == null) {
 			featureEntries = new HashMap<>();
+		}
 	}
 }
