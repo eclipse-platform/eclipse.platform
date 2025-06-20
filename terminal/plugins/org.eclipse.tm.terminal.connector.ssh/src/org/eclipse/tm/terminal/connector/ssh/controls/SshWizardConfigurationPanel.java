@@ -217,7 +217,7 @@ public class SshWizardConfigurationPanel extends AbstractExtendedConfigurationPa
 					sshSettings.setUser(hostSettings.get(ITerminalsConnectorConstants.PROP_SSH_USER));
 				}
 				if (hostSettings.get(SAVE_PASSWORD) != null) {
-					savePassword = new Boolean(hostSettings.get(SAVE_PASSWORD)).booleanValue();
+					savePassword = Boolean.parseBoolean(hostSettings.get(SAVE_PASSWORD));
 				}
 				if (!savePassword) {
 					sshSettings.setPassword(""); //$NON-NLS-1$
