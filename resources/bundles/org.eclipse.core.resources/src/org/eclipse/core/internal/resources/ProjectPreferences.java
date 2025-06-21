@@ -97,19 +97,22 @@ public class ProjectPreferences extends EclipsePreferences {
 	static void deleted(IFile file) throws CoreException {
 		IPath path = file.getFullPath();
 		int count = path.segmentCount();
-		if (count != 3)
+		if (count != 3) {
 			return;
+		}
 		// check if we are in the .settings directory
-		if (!EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME.equals(path.segment(1)))
+		if (!EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME.equals(path.segment(1))) {
 			return;
+		}
 		Preferences root = Platform.getPreferencesService().getRootNode();
 		String project = path.segment(0);
 		String qualifier = path.removeFileExtension().lastSegment();
 		ProjectPreferences projectNode = (ProjectPreferences) root.node(ProjectScope.SCOPE).node(project);
 		// if the node isn't known then just return
 		try {
-			if (!projectNode.nodeExists(qualifier))
+			if (!projectNode.nodeExists(qualifier)) {
 				return;
+			}
 		} catch (BackingStoreException e) {
 			// ignore
 		}
@@ -118,18 +121,21 @@ public class ProjectPreferences extends EclipsePreferences {
 		clearNode(projectNode.node(qualifier));
 
 		// notifies the CharsetManager if needed
-		if (qualifier.equals(PREFS_REGULAR_QUALIFIER) || qualifier.equals(PREFS_DERIVED_QUALIFIER))
+		if (qualifier.equals(PREFS_REGULAR_QUALIFIER) || qualifier.equals(PREFS_DERIVED_QUALIFIER)) {
 			preferencesChanged(file.getProject());
+		}
 	}
 
 	static void deleted(IFolder folder) throws CoreException {
 		IPath path = folder.getFullPath();
 		int count = path.segmentCount();
-		if (count != 2)
+		if (count != 2) {
 			return;
+		}
 		// check if we are the .settings directory
-		if (!EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME.equals(path.segment(1)))
+		if (!EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME.equals(path.segment(1))) {
 			return;
+		}
 		Preferences root = Platform.getPreferencesService().getRootNode();
 		// The settings dir has been removed/moved so remove all project prefs
 		// for the resource.
@@ -140,8 +146,9 @@ public class ProjectPreferences extends EclipsePreferences {
 		// remove the preferences
 		removeNode(projectNode);
 		// notifies the CharsetManager
-		if (hasResourcesSettings)
+		if (hasResourcesSettings) {
 			preferencesChanged(folder.getProject());
+		}
 	}
 
 	/*
@@ -159,8 +166,9 @@ public class ProjectPreferences extends EclipsePreferences {
 		// remove the preferences
 		removeNode(projectNode);
 		// notifies the CharsetManager
-		if (hasResourcesSettings)
+		if (hasResourcesSettings) {
 			preferencesChanged(project);
+		}
 	}
 
 	static void deleted(IResource resource) throws CoreException {
@@ -193,8 +201,9 @@ public class ProjectPreferences extends EclipsePreferences {
 	}
 
 	private static Properties loadProperties(IFile file) throws BackingStoreException {
-		if (Policy.DEBUG_PREFERENCES)
+		if (Policy.DEBUG_PREFERENCES) {
 			Policy.debug("Loading preferences from file: " + file.getFullPath()); //$NON-NLS-1$
+		}
 		Properties result = new Properties();
 		try (
 			InputStream input = new BufferedInputStream(file.getContents(true));
@@ -202,8 +211,9 @@ public class ProjectPreferences extends EclipsePreferences {
 			result.load(input);
 		} catch (CoreException e) {
 			if (e.getStatus().getCode() == IResourceStatus.RESOURCE_NOT_FOUND) {
-				if (Policy.DEBUG_PREFERENCES)
+				if (Policy.DEBUG_PREFERENCES) {
 					Policy.debug(MessageFormat.format("Preference file {0} does not exist.", file.getFullPath())); //$NON-NLS-1$
+				}
 			} else {
 				String message = NLS.bind(Messages.preferences_loadException, file.getFullPath());
 				log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, IStatus.ERROR, message, e));
@@ -225,8 +235,9 @@ public class ProjectPreferences extends EclipsePreferences {
 
 	private static void read(ProjectPreferences node, IFile file) throws BackingStoreException, CoreException {
 		if (file == null || !file.exists()) {
-			if (Policy.DEBUG_PREFERENCES)
+			if (Policy.DEBUG_PREFERENCES) {
 				Policy.debug("Unable to determine preference file or file does not exist for node: " + node.absolutePath()); //$NON-NLS-1$
+			}
 			return;
 		}
 
@@ -343,8 +354,9 @@ public class ProjectPreferences extends EclipsePreferences {
 		IPath path = file.getFullPath();
 		// if we made it this far we are inside /project/.settings and might
 		// have a change to a preference file
-		if (!PREFS_FILE_EXTENSION.equals(path.getFileExtension()))
+		if (!PREFS_FILE_EXTENSION.equals(path.getFileExtension())) {
 			return;
+		}
 
 		String project = path.segment(0);
 		String qualifier = path.removeFileExtension().lastSegment();
@@ -353,11 +365,12 @@ public class ProjectPreferences extends EclipsePreferences {
 		String message = null;
 		try {
 			message = NLS.bind(Messages.preferences_syncException, node.absolutePath());
-			if (!(node instanceof ProjectPreferences))
+			if (!(node instanceof ProjectPreferences projectPrefs)) {
 				return;
-			ProjectPreferences projectPrefs = (ProjectPreferences) node;
-			if (projectPrefs.isWriting)
+			}
+			if (projectPrefs.isWriting) {
 				return;
+			}
 			read(projectPrefs, file);
 			// Bug 108066: In case the node had existed before it was updated from
 			// file, the read() operation marks it dirty. Override the dirty flag
@@ -366,8 +379,9 @@ public class ProjectPreferences extends EclipsePreferences {
 
 			// make sure that we generate the appropriate resource change events
 			// if encoding settings have changed
-			if (PREFS_REGULAR_QUALIFIER.equals(qualifier) || PREFS_DERIVED_QUALIFIER.equals(qualifier))
+			if (PREFS_REGULAR_QUALIFIER.equals(qualifier) || PREFS_DERIVED_QUALIFIER.equals(qualifier)) {
 				preferencesChanged(file.getProject());
+			}
 		} catch (BackingStoreException e) {
 			IStatus status = new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, IStatus.ERROR, message, e);
 			throw new CoreException(status);
@@ -443,23 +457,26 @@ public class ProjectPreferences extends EclipsePreferences {
 		}
 		List<String> result = new ArrayList<>();
 		for (IResource resource : members) {
-			if (resource.getType() == IResource.FILE && PREFS_FILE_EXTENSION.equals(resource.getFullPath().getFileExtension()))
+			if (resource.getType() == IResource.FILE && PREFS_FILE_EXTENSION.equals(resource.getFullPath().getFileExtension())) {
 				result.add(resource.getFullPath().removeFileExtension().lastSegment());
+			}
 		}
 		return result;
 	}
 
 	@Override
 	public void flush() throws BackingStoreException {
-		if (isReading)
+		if (isReading) {
 			return;
+		}
 		isWriting = true;
 		try {
 			// call the internal method because we don't want to be synchronized, we will do that ourselves later.
 			IEclipsePreferences toFlush = super.internalFlush();
 			//if we aren't at the right level, then flush the appropriate node
-			if (toFlush != null)
+			if (toFlush != null) {
 				toFlush.flush();
+			}
 		} finally {
 			isWriting = false;
 		}
@@ -467,8 +484,9 @@ public class ProjectPreferences extends EclipsePreferences {
 
 	private IFile getFile() {
 		if (file == null) {
-			if (project == null || qualifier == null)
+			if (project == null || qualifier == null) {
 				return null;
+			}
 			file = getFile(project, qualifier);
 		}
 		return file;
@@ -480,14 +498,16 @@ public class ProjectPreferences extends EclipsePreferences {
 	@Override
 	protected IEclipsePreferences getLoadLevel() {
 		if (loadLevel == null) {
-			if (project == null || qualifier == null)
+			if (project == null || qualifier == null) {
 				return null;
+			}
 			// Make it relative to this node rather than navigating to it from the root.
 			// Walk backwards up the tree starting at this node.
 			// This is important to avoid a chicken/egg thing on startup.
 			EclipsePreferences node = this;
-			for (int i = 3; i < segmentCount; i++)
+			for (int i = 3; i < segmentCount; i++) {
 				node = (EclipsePreferences) node.parent();
+			}
 			loadLevel = node;
 		}
 		return loadLevel;
@@ -503,8 +523,9 @@ public class ProjectPreferences extends EclipsePreferences {
 	 */
 	@Override
 	protected IPath getLocation() {
-		if (project == null || qualifier == null)
+		if (project == null || qualifier == null) {
 			return null;
+		}
 		IPath path = project.getLocation();
 		return computeLocation(path, qualifier);
 	}
@@ -517,8 +538,9 @@ public class ProjectPreferences extends EclipsePreferences {
 	@Override
 	protected String internalGet(String key) {
 		// throw NPE if key is null
-		if (key == null)
+		if (key == null) {
 			throw new NullPointerException();
+		}
 		// illegal state if this node has been removed
 		checkRemoved();
 		silentLoad();
@@ -533,22 +555,25 @@ public class ProjectPreferences extends EclipsePreferences {
 		if ((segmentCount == 3) && PREFS_REGULAR_QUALIFIER.equals(qualifier) && (project != null)) {
 			if (ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS.equals(key)) {
 				CharsetManager charsetManager = getWorkspace().getCharsetManager();
-				if (Boolean.parseBoolean(newValue))
+				if (Boolean.parseBoolean(newValue)) {
 					charsetManager.splitEncodingPreferences(project);
-				else
+				} else {
 					charsetManager.mergeEncodingPreferences(project);
+				}
 			}
 		}
 		return super.internalPut(key, newValue);
 	}
 
 	private void initialize() {
-		if (segmentCount != 2)
+		if (segmentCount != 2) {
 			return;
+		}
 
 		// if already initialized, then skip this initialization
-		if (initialized)
+		if (initialized) {
 			return;
+		}
 
 		// initialize the children only if project is opened
 		if (project.isOpen()) {
@@ -590,12 +615,14 @@ public class ProjectPreferences extends EclipsePreferences {
 	private void load(boolean reportProblems) throws BackingStoreException {
 		IFile localFile = getFile();
 		if (localFile == null || !localFile.exists()) {
-			if (Policy.DEBUG_PREFERENCES)
+			if (Policy.DEBUG_PREFERENCES) {
 				Policy.debug("Unable to determine preference file or file does not exist for node: " + absolutePath()); //$NON-NLS-1$
+			}
 			return;
 		}
-		if (Policy.DEBUG_PREFERENCES)
+		if (Policy.DEBUG_PREFERENCES) {
 			Policy.debug("Loading preferences from file: " + localFile.getFullPath()); //$NON-NLS-1$
+		}
 		Properties fromDisk = new Properties();
 		try (InputStream input = localFile.getContents(true)) {
 			fromDisk.load(input);
@@ -603,8 +630,9 @@ public class ProjectPreferences extends EclipsePreferences {
 			loadedNodes.add(absolutePath());
 		} catch (CoreException e) {
 			if (e.getStatus().getCode() == IResourceStatus.RESOURCE_NOT_FOUND) {
-				if (Policy.DEBUG_PREFERENCES)
+				if (Policy.DEBUG_PREFERENCES) {
 					Policy.debug("Preference file does not exist for node: " + absolutePath()); //$NON-NLS-1$
+				}
 				return;
 			}
 			if (reportProblems) {
@@ -629,21 +657,26 @@ public class ProjectPreferences extends EclipsePreferences {
 	@Override
 	public boolean nodeExists(String path) throws BackingStoreException {
 		// short circuit for checking this node
-		if (path.length() == 0)
+		if (path.length() == 0) {
 			return !removed;
+		}
 		// illegal state if this node has been removed.
 		// do this AFTER checking for the empty string.
 		checkRemoved();
 		initialize();
 		silentLoad();
-		if (segmentCount != 1)
+		if (segmentCount != 1) {
 			return super.nodeExists(path);
-		if (path.length() == 0)
+		}
+		if (path.length() == 0) {
 			return super.nodeExists(path);
-		if (path.charAt(0) == IPath.SEPARATOR)
+		}
+		if (path.charAt(0) == IPath.SEPARATOR) {
 			return super.nodeExists(path);
-		if (path.indexOf(IPath.SEPARATOR) != -1)
+		}
+		if (path.indexOf(IPath.SEPARATOR) != -1) {
 			return super.nodeExists(path);
+		}
 		// if we are checking existance of a single segment child of /project, base the answer on
 		// whether or not it exists in the workspace.
 		return getWorkspace().getRoot().getProject(path).exists() || super.nodeExists(path);
@@ -658,10 +691,11 @@ public class ProjectPreferences extends EclipsePreferences {
 		if ((segmentCount == 3) && PREFS_REGULAR_QUALIFIER.equals(qualifier) && (project != null)) {
 			if (ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS.equals(key)) {
 				CharsetManager charsetManager = getWorkspace().getCharsetManager();
-				if (ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS)
+				if (ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS) {
 					charsetManager.splitEncodingPreferences(project);
-				else
+				} else {
 					charsetManager.mergeEncodingPreferences(project);
+				}
 			}
 		}
 	}
@@ -670,8 +704,9 @@ public class ProjectPreferences extends EclipsePreferences {
 	protected void save() throws BackingStoreException {
 		final IFile fileInWorkspace = getFile();
 		if (fileInWorkspace == null) {
-			if (Policy.DEBUG_PREFERENCES)
+			if (Policy.DEBUG_PREFERENCES) {
 				Policy.debug("Not saving preferences since there is no file for node: " + absolutePath()); //$NON-NLS-1$
+			}
 			return;
 		}
 		final String finalQualifier = qualifier;
@@ -683,12 +718,14 @@ public class ProjectPreferences extends EclipsePreferences {
 					// nothing to save. delete existing file if one exists.
 					if (table.isEmpty()) {
 						if (fileInWorkspace.exists()) {
-							if (Policy.DEBUG_PREFERENCES)
+							if (Policy.DEBUG_PREFERENCES) {
 								Policy.debug("Deleting preference file: " + fileInWorkspace.getFullPath()); //$NON-NLS-1$
+							}
 							if (fileInWorkspace.isReadOnly()) {
 								IStatus status1 = fileInWorkspace.getWorkspace().validateEdit(new IFile[] {fileInWorkspace}, IWorkspace.VALIDATE_PROMPT);
-								if (!status1.isOK())
+								if (!status1.isOK()) {
 									throw new CoreException(status1);
+								}
 							}
 							try {
 								fileInWorkspace.delete(true, null);
@@ -704,15 +741,17 @@ public class ProjectPreferences extends EclipsePreferences {
 					String s = removeTimestampFromTable(table);
 					String systemLineSeparator = System.lineSeparator();
 					String fileLineSeparator = fileInWorkspace.getLineSeparator(true);
-					if (!systemLineSeparator.equals(fileLineSeparator))
+					if (!systemLineSeparator.equals(fileLineSeparator)) {
 						s = s.replaceAll(systemLineSeparator, fileLineSeparator);
+					}
 					byte[] input = s.getBytes(StandardCharsets.UTF_8);
 					// make sure that preference folder and file are in sync
 					fileInWorkspace.getParent().refreshLocal(IResource.DEPTH_ZERO, null);
 					fileInWorkspace.refreshLocal(IResource.DEPTH_ZERO, null);
 					if (fileInWorkspace.exists()) {
-						if (Policy.DEBUG_PREFERENCES)
+						if (Policy.DEBUG_PREFERENCES) {
 							Policy.debug("Setting preference file contents for: " + fileInWorkspace.getFullPath()); //$NON-NLS-1$
+						}
 						if (fileInWorkspace.isReadOnly()) {
 							IStatus status2 = fileInWorkspace.getWorkspace().validateEdit(new IFile[] {fileInWorkspace}, IWorkspace.VALIDATE_PROMPT);
 							if (!status2.isOK()) {
@@ -725,16 +764,19 @@ public class ProjectPreferences extends EclipsePreferences {
 						// create the file
 						IFolder folder = (IFolder) fileInWorkspace.getParent();
 						if (!folder.exists()) {
-							if (Policy.DEBUG_PREFERENCES)
+							if (Policy.DEBUG_PREFERENCES) {
 								Policy.debug("Creating parent preference directory: " + folder.getFullPath()); //$NON-NLS-1$
+							}
 							folder.create(IResource.NONE, true, null);
 						}
-						if (Policy.DEBUG_PREFERENCES)
+						if (Policy.DEBUG_PREFERENCES) {
 							Policy.debug("Creating preference file: " + fileInWorkspace.getLocation()); //$NON-NLS-1$
+						}
 						fileInWorkspace.create(input, IResource.NONE, null);
 					}
-					if (PREFS_DERIVED_QUALIFIER.equals(finalQualifier))
+					if (PREFS_DERIVED_QUALIFIER.equals(finalQualifier)) {
 						fileInWorkspace.setDerived(true, null);
+					}
 				} catch (BackingStoreException e2) {
 					bse[0] = e2;
 				} catch (IOException e3) {
@@ -753,8 +795,9 @@ public class ProjectPreferences extends EclipsePreferences {
 					// we might: delete the file, create the .settings folder, create the file, modify the file, or set derived flag for the file.
 					ISchedulingRule rule = MultiRule.combine(new ISchedulingRule[] {factory.deleteRule(fileInWorkspace), factory.createRule(fileInWorkspace.getParent()), factory.modifyRule(fileInWorkspace), factory.derivedRule(fileInWorkspace)});
 					ws.run(operation, rule, IResource.NONE, null);
-					if (bse[0] != null)
+					if (bse[0] != null) {
 						throw bse[0];
+					}
 				}
 			} catch (OperationCanceledException e) {
 				throw new BackingStoreException(Messages.preferences_operationCanceled);
@@ -768,10 +811,12 @@ public class ProjectPreferences extends EclipsePreferences {
 
 	private void silentLoad() {
 		ProjectPreferences node = (ProjectPreferences) getLoadLevel();
-		if (node == null)
+		if (node == null) {
 			return;
-		if (isAlreadyLoaded(node) || node.isLoading())
+		}
+		if (isAlreadyLoaded(node) || node.isLoading()) {
 			return;
+		}
 		try {
 			node.setLoading(true);
 			node.load(false);
