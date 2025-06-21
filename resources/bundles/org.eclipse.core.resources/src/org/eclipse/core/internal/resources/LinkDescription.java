@@ -67,8 +67,9 @@ public class LinkDescription implements Comparable<LinkDescription> {
 		if (o == null) {
 			return false;
 		}
-		if (o.getClass() != this.getClass())
+		if (o.getClass() != this.getClass()) {
 			return false;
+		}
 		LinkDescription other = (LinkDescription) o;
 		return localLocation.equals(other.localLocation) && path.equals(other.path) && type == other.type;
 	}
@@ -121,12 +122,14 @@ public class LinkDescription implements Comparable<LinkDescription> {
 		IPath path2 = that.getProjectRelativePath();
 		int count1 = path1.segmentCount();
 		int compare = count1 - path2.segmentCount();
-		if (compare != 0)
+		if (compare != 0) {
 			return compare;
+		}
 		for (int i = 0; i < count1; i++) {
 			compare = path1.segment(i).compareTo(path2.segment(i));
-			if (compare != 0)
+			if (compare != 0) {
 				return compare;
+			}
 		}
 		return 0;
 	}

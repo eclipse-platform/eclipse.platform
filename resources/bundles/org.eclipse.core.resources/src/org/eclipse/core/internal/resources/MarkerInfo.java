@@ -45,14 +45,15 @@ public class MarkerInfo implements IMarkerSetElement, Cloneable, IStringPoolPart
 	 * either the attribute or an equal canonical substitute.
 	 */
 	protected static Object checkValidAttribute(Object value) {
-		if (value == null)
+		if (value == null) {
 			return null;
-		if (value instanceof String) {
+		}
+		if (value instanceof String valueString) {
 			//we cannot write attributes whose UTF encoding exceeds 65535 bytes.
-			String valueString = (String) value;
 			//optimized test based on maximum 3 bytes per character
-			if (valueString.length() < 21000)
+			if (valueString.length() < 21000) {
 				return value;
+			}
 			byte[] bytes = valueString.getBytes(StandardCharsets.UTF_8);
 			if (bytes.length > 65535) {
 				String msg = "Marker property value is too long: " + valueString.substring(0, 10000); //$NON-NLS-1$
@@ -113,21 +114,24 @@ public class MarkerInfo implements IMarkerSetElement, Cloneable, IStringPoolPart
 	}
 
 	public Map<String, Object> getAttributes() {
-		if (attributes.isEmpty())
+		if (attributes.isEmpty()) {
 			return null;
+		}
 		return attributes.toMap();
 	}
 
 	public MarkerAttributeMap getAttributes(boolean makeCopy) {
-		if (attributes.isEmpty())
+		if (attributes.isEmpty()) {
 			return null;
+		}
 		return makeCopy ? new MarkerAttributeMap(attributes) : attributes;
 	}
 
 	public Object[] getAttributes(String[] attributeNames) {
 		Object[] result = new Object[attributeNames.length];
-		for (int i = 0; i < attributeNames.length; i++)
+		for (int i = 0; i < attributeNames.length; i++) {
 			result[i] = getAttribute(attributeNames[i]);
+		}
 		return result;
 	}
 

@@ -64,8 +64,9 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 */
 	@Override
 	public ISchedulingRule copyRule(IResource source, IResource destination) {
-		if (source.getType() == IResource.ROOT || destination.getType() == IResource.ROOT)
+		if (source.getType() == IResource.ROOT || destination.getType() == IResource.ROOT) {
 			return root;
+		}
 		//source is not modified, destination is created
 		return factoryFor(destination).copyRule(source, destination);
 	}
@@ -75,8 +76,9 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 */
 	@Override
 	public ISchedulingRule createRule(IResource resource) {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return root;
+		}
 		return factoryFor(resource).createRule(resource);
 	}
 
@@ -85,8 +87,9 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 */
 	@Override
 	public ISchedulingRule deleteRule(IResource resource) {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return root;
+		}
 		return factoryFor(resource).deleteRule(resource);
 	}
 
@@ -97,8 +100,9 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 		IResourceRuleFactory fac = projectsToRules.get(destination.getFullPath().segment(0));
 		if (fac == null) {
 			//use the default factory if the project is not yet accessible
-			if (!destination.getProject().isAccessible())
+			if (!destination.getProject().isAccessible()) {
 				return defaultFactory;
+			}
 			//ask the team hook to supply one
 			fac = teamHook.getRuleFactory(destination.getProject());
 			projectsToRules.put(destination.getFullPath().segment(0), fac);
@@ -124,8 +128,9 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 */
 	@Override
 	public ISchedulingRule charsetRule(IResource resource) {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return null;
+		}
 		return factoryFor(resource).charsetRule(resource);
 	}
 
@@ -152,8 +157,9 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 */
 	@Override
 	public ISchedulingRule modifyRule(IResource resource) {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return root;
+		}
 		return factoryFor(resource).modifyRule(resource);
 	}
 
@@ -162,11 +168,13 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 */
 	@Override
 	public ISchedulingRule moveRule(IResource source, IResource destination) {
-		if (source.getType() == IResource.ROOT || destination.getType() == IResource.ROOT)
+		if (source.getType() == IResource.ROOT || destination.getType() == IResource.ROOT) {
 			return root;
+		}
 		//treat a move across projects as a create on the destination and a delete on the source
-		if (!source.getFullPath().segment(0).equals(destination.getFullPath().segment(0)))
+		if (!source.getFullPath().segment(0).equals(destination.getFullPath().segment(0))) {
 			return MultiRule.combine(modifyRule(source.getProject()), modifyRule(destination.getProject()));
+		}
 		return factoryFor(source).moveRule(source, destination);
 	}
 
@@ -175,8 +183,9 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 */
 	@Override
 	public ISchedulingRule refreshRule(IResource resource) {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return root;
+		}
 		return factoryFor(resource).refreshRule(resource);
 	}
 
@@ -184,10 +193,11 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 * Implements TeamHook#setRuleFactory
 	 */
 	void setRuleFactory(IProject project, IResourceRuleFactory factory) {
-		if (factory == null)
+		if (factory == null) {
 			projectsToRules.remove(project.getName());
-		else
+		} else {
 			projectsToRules.put(project.getName(), factory);
+		}
 	}
 
 	/**
@@ -196,29 +206,35 @@ class Rules implements IResourceRuleFactory, ILifecycleListener {
 	 */
 	@Override
 	public ISchedulingRule validateEditRule(IResource[] resources) {
-		if (resources.length == 0)
+		if (resources.length == 0) {
 			return null;
+		}
 		//optimize rule for single file
 		if (resources.length == 1) {
-			if (resources[0].getType() == IResource.ROOT)
+			if (resources[0].getType() == IResource.ROOT) {
 				return root;
+			}
 			return factoryFor(resources[0]).validateEditRule(resources);
 		}
 		//gather rules for each resource from appropriate factory
 		HashSet<ISchedulingRule> rules = new HashSet<>();
 		IResource[] oneResource = new IResource[1];
 		for (IResource resource : resources) {
-			if (resource.getType() == IResource.ROOT)
+			if (resource.getType() == IResource.ROOT) {
 				return root;
+			}
 			oneResource[0] = resource;
 			ISchedulingRule rule = factoryFor(resource).validateEditRule(oneResource);
-			if (rule != null)
+			if (rule != null) {
 				rules.add(rule);
+			}
 		}
-		if (rules.isEmpty())
+		if (rules.isEmpty()) {
 			return null;
-		if (rules.size() == 1)
+		}
+		if (rules.size() == 1) {
 			return rules.iterator().next();
+		}
 		ISchedulingRule[] ruleArray = rules.toArray(new ISchedulingRule[rules.size()]);
 		return new MultiRule(ruleArray);
 	}

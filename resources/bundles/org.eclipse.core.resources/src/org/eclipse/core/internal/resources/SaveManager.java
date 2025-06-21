@@ -210,8 +210,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 	public ISavedState addParticipant(String pluginId, ISaveParticipant participant) throws CoreException {
 		// If the plugin was already registered as a save participant we return null
-		if (saveParticipants.put(pluginId, participant) != null)
+		if (saveParticipants.put(pluginId, participant) != null) {
 			return null;
+		}
 		SavedState state = savedStates.get(pluginId);
 		if (state != null) {
 			if (isDeltaCleared(pluginId)) {
@@ -232,8 +233,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			}
 		}
 		// if the plug-in has a previous save number, we return a state, otherwise we return null
-		if (getSaveNumber(pluginId) > 0)
+		if (getSaveNumber(pluginId) > 0) {
 			return new SavedState(workspace, pluginId, null, null);
+		}
 		return null;
 	}
 
@@ -289,15 +291,18 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		//remove tree file entries for everything except closed projects
 		for (Iterator<Object> it = masterTable.keySet().iterator(); it.hasNext();) {
 			String key = (String) it.next();
-			if (!key.endsWith(LocalMetaArea.F_TREE))
+			if (!key.endsWith(LocalMetaArea.F_TREE)) {
 				continue;
+			}
 			String prefix = key.substring(0, key.length() - LocalMetaArea.F_TREE.length());
 			//always save the root tree entry
-			if (prefix.equals(IPath.ROOT.toString()))
+			if (prefix.equals(IPath.ROOT.toString())) {
 				continue;
+			}
 			IProject project = workspace.getRoot().getProject(prefix);
-			if (!project.exists() || project.isOpen())
+			if (!project.exists() || project.isOpen()) {
 				it.remove();
+			}
 		}
 		savedState = null;
 		IPath location = workspace.getMetaArea().getSafeTableLocationFor(ResourcesPlugin.PI_RESOURCES);
@@ -309,8 +314,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			backup.toFile().delete();
 			return;
 		}
-		if (location.toFile().exists() && !location.toFile().delete())
+		if (location.toFile().exists() && !location.toFile().delete()) {
 			return;
+		}
 		try {
 			saveMasterTable(ISaveContext.FULL_SAVE, location);
 		} catch (CoreException e) {
@@ -372,8 +378,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		}
 
 		//no need to collapse if there are no trees at this point
-		if (trees.isEmpty())
+		if (trees.isEmpty()) {
 			return;
+		}
 
 		//the complete tree
 		trees.add(workspace.getElementTree());
@@ -386,15 +393,18 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		ElementTree[] sorted = sortTrees(treeArray);
 		// if there was a problem sorting the tree, bail on trying to collapse.
 		// We will be able to GC the layers at a later time.
-		if (sorted == null)
+		if (sorted == null) {
 			return;
-		for (int i = 1; i < sorted.length; i++)
+		}
+		for (int i = 1; i < sorted.length; i++) {
 			sorted[i].collapseTo(sorted[i - 1]);
+		}
 	}
 
 	protected void commit(Map<String, SaveContext> contexts) throws CoreException {
-		for (SaveContext saveContext : contexts.values())
+		for (SaveContext saveContext : contexts.values()) {
 			saveContext.commit();
+		}
 	}
 
 	/**
@@ -428,13 +438,15 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		HashMap<String, ElementTree> result = new HashMap<>(savedStates.size() * 2);
 		synchronized (savedStates) {
 			for (SavedState state : savedStates.values()) {
-				if (state.oldTree != null)
+				if (state.oldTree != null) {
 					result.put(state.pluginId, state.oldTree);
+				}
 			}
 		}
 		for (SaveContext context : contexts.values()) {
-			if (!context.isDeltaNeeded())
+			if (!context.isDeltaNeeded()) {
 				continue;
+			}
 			String pluginId = context.getPluginId();
 			result.put(pluginId, current);
 		}
@@ -448,12 +460,14 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				break;
 			case SAVING :
 				try {
-					if (ResourceStats.TRACE_SAVE_PARTICIPANTS)
+					if (ResourceStats.TRACE_SAVE_PARTICIPANTS) {
 						ResourceStats.startSave(participant);
+					}
 					participant.saving(context);
 				} finally {
-					if (ResourceStats.TRACE_SAVE_PARTICIPANTS)
+					if (ResourceStats.TRACE_SAVE_PARTICIPANTS) {
 						ResourceStats.endSave();
+					}
 				}
 				break;
 			case DONE_SAVING :
@@ -470,13 +484,15 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	public void forgetSavedTree(String pluginId) {
 		if (pluginId == null) {
 			synchronized (savedStates) {
-				for (SavedState state : savedStates.values())
+				for (SavedState state : savedStates.values()) {
 					state.forgetTrees();
+				}
 			}
 		} else {
 			SavedState state = savedStates.get(pluginId);
-			if (state != null)
+			if (state != null) {
 				state.forgetTrees();
+			}
 		}
 	}
 
@@ -508,8 +524,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * monitoring purposes.
 	 */
 	private void hookEndSave(int kind, IProject project, long start) {
-		if (ResourceStats.TRACE_SNAPSHOT && kind == ISaveContext.SNAPSHOT)
+		if (ResourceStats.TRACE_SNAPSHOT && kind == ISaveContext.SNAPSHOT) {
 			ResourceStats.endSnapshot();
+		}
 		if (Policy.DEBUG_SAVE) {
 			String endMessage = null;
 			switch (kind) {
@@ -523,8 +540,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 					endMessage = DEBUG_PROJECT_SAVE + project.getFullPath() + ": "; //$NON-NLS-1$
 					break;
 			}
-			if (endMessage != null)
+			if (endMessage != null) {
 				Policy.debug(endMessage + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -533,8 +551,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * monitoring purposes.
 	 */
 	private void hookStartSave(int kind, Project project) {
-		if (ResourceStats.TRACE_SNAPSHOT && kind == ISaveContext.SNAPSHOT)
+		if (ResourceStats.TRACE_SNAPSHOT && kind == ISaveContext.SNAPSHOT) {
 			ResourceStats.startSnapshot();
+		}
 		if (Policy.DEBUG_SAVE) {
 			switch (kind) {
 				case ISaveContext.FULL_SAVE :
@@ -566,18 +585,21 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		IPath location = workspace.getMetaArea().getSnapshotLocationFor(workspace.getRoot());
 		java.io.File target = location.toFile().getParentFile();
 		FilenameFilter filter = (dir, name) -> {
-			if (!name.endsWith(LocalMetaArea.F_SNAP))
+			if (!name.endsWith(LocalMetaArea.F_SNAP)) {
 				return false;
+			}
 			for (int i = 0; i < name.length() - LocalMetaArea.F_SNAP.length(); i++) {
 				char c = name.charAt(i);
-				if (c < '0' || c > '9')
+				if (c < '0' || c > '9') {
 					return false;
+				}
 			}
 			return true;
 		};
 		String[] candidates = target.list(filter);
-		if (candidates != null)
+		if (candidates != null) {
 			removeFiles(target, candidates, Collections.<String> emptyList());
+		}
 	}
 
 	protected boolean isDeltaCleared(String pluginId) {
@@ -587,11 +609,13 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 	protected boolean isOldPluginTree(String pluginId) {
 		// first, check if this plug-ins was marked not to receive a delta
-		if (isDeltaCleared(pluginId))
+		if (isDeltaCleared(pluginId)) {
 			return false;
+		}
 		//see if the plugin is still installed
-		if (Platform.getBundle(pluginId) == null)
+		if (Platform.getBundle(pluginId) == null) {
 			return true;
+		}
 
 		//finally see if the delta has past its expiry date
 		long deltaAge = System.currentTimeMillis() - getDeltaExpiration(pluginId);
@@ -614,8 +638,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	}
 
 	private void rememberSnapshotRequestor() {
-		if (Policy.DEBUG_SAVE)
+		if (Policy.DEBUG_SAVE) {
 			Policy.debug(new RuntimeException("Scheduling workspace snapshot")); //$NON-NLS-1$
+		}
 		if (snapshotRequestor == null) {
 			String msg = "The workspace will exit with unsaved changes in this session."; //$NON-NLS-1$
 			snapshotRequestor = new ResourceStatus(ICoreConstants.CRASH_DETECTED, msg);
@@ -649,8 +674,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 					break;
 				}
 			}
-			if (delete)
+			if (delete) {
 				new java.io.File(root, candidate).delete();
+			}
 		}
 	}
 
@@ -679,8 +705,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		}
 		java.io.File target = location.toFile().getParentFile();
 		String[] candidates = target.list();
-		if (candidates == null)
+		if (candidates == null) {
 			return;
+		}
 		removeFiles(target, candidates, valuables);
 	}
 
@@ -692,8 +719,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		java.io.File target = location.toFile().getParentFile();
 		FilenameFilter filter = (dir, name) -> name.endsWith(LocalMetaArea.F_TREE);
 		String[] candidates = target.list(filter);
-		if (candidates != null)
+		if (candidates != null) {
 			removeFiles(target, candidates, valuables);
+		}
 
 		// projects
 		IProject[] projects = workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
@@ -702,14 +730,16 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			valuables.add(location.lastSegment());
 			target = location.toFile().getParentFile();
 			candidates = target.list(filter);
-			if (candidates != null)
+			if (candidates != null) {
 				removeFiles(target, candidates, valuables);
+			}
 		}
 	}
 
 	protected void reportSnapshotRequestor() {
-		if (snapshotRequestor != null)
+		if (snapshotRequestor != null) {
 			Policy.log(snapshotRequestor);
+		}
 	}
 
 	public void requestSnapshot() {
@@ -726,8 +756,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 		// delete the snapshot file, if any
 		java.io.File file = workspace.getMetaArea().getMarkersSnapshotLocationFor(resource).toFile();
-		if (file.exists())
+		if (file.exists()) {
 			file.delete();
+		}
 		if (file.exists()) {
 			message = Messages.resources_resetMarkers;
 			throw new ResourceException(IResourceStatus.FAILED_DELETE_METADATA, resource.getFullPath(), message, null);
@@ -735,8 +766,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 		// delete the snapshot file, if any
 		file = workspace.getMetaArea().getSyncInfoSnapshotLocationFor(resource).toFile();
-		if (file.exists())
+		if (file.exists()) {
 			file.delete();
+		}
 		if (file.exists()) {
 			message = Messages.resources_resetSync;
 			throw new ResourceException(IResourceStatus.FAILED_DELETE_METADATA, resource.getFullPath(), message, null);
@@ -744,11 +776,13 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 		// if we have the workspace root then recursive over the projects.
 		// only do open projects since closed ones are saved elsewhere
-		if (resource.getType() == IResource.PROJECT)
+		if (resource.getType() == IResource.PROJECT) {
 			return;
+		}
 		IProject[] projects = ((IWorkspaceRoot) resource).getProjects(IContainer.INCLUDE_HIDDEN);
-		for (IProject project : projects)
+		for (IProject project : projects) {
 			resetSnapshots(project);
+		}
 	}
 
 	/**
@@ -756,8 +790,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * which were open when it was last saved.
 	 */
 	protected void restore(IProgressMonitor monitor) throws CoreException {
-		if (Policy.DEBUG_RESTORE)
+		if (Policy.DEBUG_RESTORE) {
 			Policy.debug("Restore workspace: starting..."); //$NON-NLS-1$
+		}
 		long start = System.currentTimeMillis();
 		monitor = Policy.monitorFor(monitor);
 		try {
@@ -789,18 +824,21 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				// restore meta info last because it might close a project if its description is not readable
 				restoreMetaInfo(problems, Policy.subMonitorFor(monitor, 10));
 				IProject[] roots = workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
-				for (IProject root : roots)
+				for (IProject root : roots) {
 					((Project) root).startup();
-				if (!problems.isOK())
+				}
+				if (!problems.isOK()) {
 					Policy.log(problems);
+				}
 			} finally {
 				workspace.getElementTree().immutable();
 			}
 		} finally {
 			monitor.done();
 		}
-		if (Policy.DEBUG_RESTORE)
+		if (Policy.DEBUG_RESTORE) {
 			Policy.debug("Restore workspace: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	/**
@@ -812,8 +850,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 */
 	protected boolean restore(Project project, IProgressMonitor monitor) throws CoreException {
 		boolean status = true;
-		if (Policy.DEBUG_RESTORE)
+		if (Policy.DEBUG_RESTORE) {
 			Policy.debug("Restore project " + project.getFullPath() + ": starting..."); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		long start = System.currentTimeMillis();
 		monitor = Policy.monitorFor(monitor);
 		try {
@@ -830,8 +869,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		} finally {
 			monitor.done();
 		}
-		if (Policy.DEBUG_RESTORE)
+		if (Policy.DEBUG_RESTORE) {
 			Policy.debug("Restore project " + project.getFullPath() + ": " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 		return status;
 	}
 
@@ -847,10 +887,12 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		boolean status = true;
 		IPath snapshotPath = workspace.getMetaArea().getRefreshLocationFor(project);
 		java.io.File snapshotFile = snapshotPath.toFile();
-		if (!snapshotFile.exists())
+		if (!snapshotFile.exists()) {
 			return false;
-		if (Policy.DEBUG_RESTORE)
+		}
+		if (Policy.DEBUG_RESTORE) {
 			Policy.debug("Restore project " + project.getFullPath() + ": starting..."); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		long start = System.currentTimeMillis();
 		monitor = Policy.monitorFor(monitor);
 		try {
@@ -865,8 +907,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		} finally {
 			monitor.done();
 		}
-		if (Policy.DEBUG_RESTORE)
+		if (Policy.DEBUG_RESTORE) {
 			Policy.debug("Restore project " + project.getFullPath() + ": " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 		return status;
 	}
 
@@ -879,8 +922,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		long start = System.currentTimeMillis();
 		MarkerManager markerManager = workspace.getMarkerManager();
 		// when restoring a project, only load markers if it is open
-		if (resource.isAccessible())
+		if (resource.isAccessible()) {
 			markerManager.restore(resource, generateDeltas, monitor);
+		}
 
 		// if we have the workspace root then restore markers for its projects
 		if (resource.getType() == IResource.PROJECT) {
@@ -890,9 +934,11 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			return;
 		}
 		IProject[] projects = ((IWorkspaceRoot) resource).getProjects(IContainer.INCLUDE_HIDDEN);
-		for (IProject project : projects)
-			if (project.isAccessible())
+		for (IProject project : projects) {
+			if (project.isAccessible()) {
 				markerManager.restore(project, generateDeltas, monitor);
+			}
+		}
 		if (Policy.DEBUG_RESTORE_MARKERS) {
 			Policy.debug("Restore Markers for workspace: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -906,8 +952,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		if (!target.exists()) {
 			location = workspace.getMetaArea().getBackupLocationFor(location);
 			target = location.toFile();
-			if (!target.exists())
+			if (!target.exists()) {
 				return;
+			}
 		}
 		try (SafeChunkyInputStream input = new SafeChunkyInputStream(target)) {
 			masterTable.load(input);
@@ -915,8 +962,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			String message = Messages.resources_exMasterTable;
 			throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, message, e);
 		}
-		if (Policy.DEBUG_RESTORE_MASTERTABLE)
+		if (Policy.DEBUG_RESTORE_MASTERTABLE) {
 			Policy.debug("Restore master table for " + location + ": " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 	}
 
 	/**
@@ -924,8 +972,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * which were open when it was last saved.
 	 */
 	protected void restoreMetaInfo(MultiStatus problems, IProgressMonitor monitor) {
-		if (Policy.DEBUG_RESTORE_METAINFO)
+		if (Policy.DEBUG_RESTORE_METAINFO) {
 			Policy.debug("Restore workspace metainfo: starting..."); //$NON-NLS-1$
+		}
 		long start = System.currentTimeMillis();
 		IProject[] roots = workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
 		for (IProject root : roots) {
@@ -937,8 +986,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				problems.merge(new ResourceStatus(IResourceStatus.FAILED_READ_METADATA, root.getFullPath(), message, e));
 			}
 		}
-		if (Policy.DEBUG_RESTORE_METAINFO)
+		if (Policy.DEBUG_RESTORE_METAINFO) {
 			Policy.debug("Restore workspace metainfo: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	/**
@@ -950,12 +1000,13 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		ProjectDescription description = null;
 		CoreException failure = null;
 		try {
-			if (project.isOpen())
+			if (project.isOpen()) {
 				description = workspace.getFileSystemManager().read(project, true);
-			else
+			} else {
 				//for closed projects, just try to read the legacy .prj file,
 				//because the project location is stored there.
 				description = workspace.getMetaArea().readOldDescription(project);
+			}
 		} catch (CoreException e) {
 			failure = e;
 		}
@@ -979,8 +1030,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			}
 			throw failure;
 		}
-		if (Policy.DEBUG_RESTORE_METAINFO)
+		if (Policy.DEBUG_RESTORE_METAINFO) {
 			Policy.debug("Restore metainfo for " + project.getFullPath() + ": " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 	}
 
 	/**
@@ -1038,8 +1090,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		} finally {
 			monitor.done();
 		}
-		if (Policy.DEBUG_RESTORE_SNAPSHOTS)
+		if (Policy.DEBUG_RESTORE_SNAPSHOTS) {
 			Policy.debug("Restore snapshots for workspace: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	/**
@@ -1055,8 +1108,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		if (!tree.exists()) {
 			treeLocation = workspace.getMetaArea().getBackupLocationFor(treeLocation);
 			tree = treeLocation.toFile();
-			if (!tree.exists())
+			if (!tree.exists()) {
 				return false;
+			}
 		}
 		return snapshot.lastModified() < tree.lastModified();
 	}
@@ -1070,8 +1124,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		long start = System.currentTimeMillis();
 		Synchronizer synchronizer = (Synchronizer) workspace.getSynchronizer();
 		// when restoring a project, only load sync info if it is open
-		if (resource.isAccessible())
+		if (resource.isAccessible()) {
 			synchronizer.restore(resource, monitor);
+		}
 
 		// restore sync info for all projects if we were given the workspace root.
 		if (resource.getType() == IResource.PROJECT) {
@@ -1081,9 +1136,11 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			return;
 		}
 		IProject[] projects = ((IWorkspaceRoot) resource).getProjects(IContainer.INCLUDE_HIDDEN);
-		for (IProject project : projects)
-			if (project.isAccessible())
+		for (IProject project : projects) {
+			if (project.isAccessible()) {
 				synchronizer.restore(project, monitor);
+			}
+		}
 		if (Policy.DEBUG_RESTORE_SYNCINFO) {
 			Policy.debug("Restore SyncInfo for workspace: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -1131,8 +1188,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			monitor.beginTask("", Policy.totalWork); //$NON-NLS-1$
 			IPath treeLocation = workspace.getMetaArea().getTreeLocationFor(project, false);
 			IPath tempLocation = workspace.getMetaArea().getBackupLocationFor(treeLocation);
-			if (!treeLocation.toFile().exists() && !tempLocation.toFile().exists())
+			if (!treeLocation.toFile().exists() && !tempLocation.toFile().exists()) {
 				return false;
+			}
 			try (
 				DataInputStream input = new DataInputStream(new SafeFileInputStream(treeLocation.toOSString(), tempLocation.toOSString()));
 			) {
@@ -1281,15 +1339,17 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 							// reset the snapshot file
 							resetSnapshots(project);
 							IStatus result = saveMetaInfo(project, null);
-							if (!result.isOK())
+							if (!result.isOK()) {
 								warnings.merge(result);
+							}
 							monitor.worked(1);
 							break;
 					}
 					// save contexts
 					commit(contexts);
-					if (kind == ISaveContext.FULL_SAVE)
+					if (kind == ISaveContext.FULL_SAVE) {
 						removeClearDeltaMarks();
+					}
 					//this must be done after committing save contexts to update participant save numbers
 					saveMasterTable(kind);
 					broadcastLifecycle(DONE_SAVING, contexts, warnings, Policy.subMonitorFor(monitor, 1));
@@ -1326,8 +1386,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		long start = System.currentTimeMillis();
 		java.io.File target = location.toFile();
 		try {
-			if (kind == ISaveContext.FULL_SAVE || kind == ISaveContext.SNAPSHOT)
+			if (kind == ISaveContext.FULL_SAVE || kind == ISaveContext.SNAPSHOT) {
 				validateMasterTableBeforeSave(target);
+			}
 			try (
 				SafeChunkyOutputStream output = new SafeChunkyOutputStream(target);
 			) {
@@ -1337,8 +1398,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		} catch (IOException e) {
 			throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, NLS.bind(Messages.resources_exSaveMaster, location.toOSString()), e);
 		}
-		if (Policy.DEBUG_SAVE_MASTERTABLE)
+		if (Policy.DEBUG_SAVE_MASTERTABLE) {
 			Policy.debug("Save master table for " + location + ": " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 	}
 
 	/**
@@ -1346,21 +1408,25 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 * all projects to the local disk.
 	 */
 	protected void saveMetaInfo(MultiStatus problems, IProgressMonitor monitor) throws CoreException {
-		if (Policy.DEBUG_SAVE_METAINFO)
+		if (Policy.DEBUG_SAVE_METAINFO) {
 			Policy.debug("Save workspace metainfo: starting..."); //$NON-NLS-1$
+		}
 		long start = System.currentTimeMillis();
 		// save preferences (workspace description, path variables, etc)
 		ResourcesPlugin.getPlugin().savePluginPreferences();
 		// save projects' meta info
 		IProject[] roots = workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
-		for (IProject root : roots)
+		for (IProject root : roots) {
 			if (root.isAccessible()) {
 				IStatus result = saveMetaInfo((Project) root, null);
-				if (!result.isOK())
+				if (!result.isOK()) {
 					problems.merge(result);
+				}
 			}
-		if (Policy.DEBUG_SAVE_METAINFO)
+		}
+		if (Policy.DEBUG_SAVE_METAINFO) {
 			Policy.debug("Save workspace metainfo: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	/**
@@ -1378,8 +1444,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			String msg = NLS.bind(Messages.resources_missingProjectMetaRepaired, project.getName());
 			return new ResourceStatus(IResourceStatus.MISSING_DESCRIPTION_REPAIRED, project.getFullPath(), msg);
 		}
-		if (Policy.DEBUG_SAVE_METAINFO)
+		if (Policy.DEBUG_SAVE_METAINFO) {
 			Policy.debug("Save metainfo for " + project.getFullPath() + ": " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 		return Status.OK_STATUS;
 	}
 
@@ -1430,8 +1497,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			String msg = NLS.bind(Messages.resources_writeWorkspaceMeta, treeLocation);
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, IPath.ROOT, msg, e);
 		}
-		if (Policy.DEBUG_SAVE_TREE)
+		if (Policy.DEBUG_SAVE_TREE) {
 			Policy.debug("Save Workspace Tree: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	/**
@@ -1456,9 +1524,10 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		// we force it in the same thread because it would not
 		// help if the job runs after we close the workspace
 		int state = snapshotJob.getState();
-		if (state == Job.WAITING || state == Job.SLEEPING)
+		if (state == Job.WAITING || state == Job.SLEEPING) {
 			// we cannot pass null to Job#run
 			snapshotJob.run(SubMonitor.convert(monitor));
+		}
 		// cancel the snapshot job
 		snapshotJob.cancel();
 	}
@@ -1470,14 +1539,16 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 */
 	public void snapshotIfNeeded(boolean hasTreeChanges) {
 		// never schedule a snapshot while save is occurring.
-		if (isSaving)
+		if (isSaving) {
 			return;
+		}
 		if (snapshotRequested || operationCount >= workspace.internalGetDescription().getOperationsPerSnapshot()) {
 			rememberSnapshotRequestor();
-			if (snapshotJob.getState() == Job.NONE)
+			if (snapshotJob.getState() == Job.NONE) {
 				snapshotJob.schedule();
-			else
+			} else {
 				snapshotJob.wakeUp();
+			}
 		} else {
 			if (hasTreeChanges) {
 				operationCount++;
@@ -1507,8 +1578,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			// the tree must be immutable
 			tree.immutable();
 			// don't need to snapshot if there are no changes
-			if (tree == lastSnap)
+			if (tree == lastSnap) {
 				return;
+			}
 			operationCount = 0;
 			IPath snapPath = workspace.getMetaArea().getSnapshotLocationFor(workspace.getRoot());
 			ElementTreeWriter writer = new ElementTreeWriter(this);
@@ -1528,8 +1600,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, IPath.ROOT, message, e);
 			}
 			lastSnap = tree;
-			if (Policy.DEBUG_SAVE_TREE)
+			if (Policy.DEBUG_SAVE_TREE) {
 				Policy.debug("Snapshot Workspace Tree: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		} finally {
 			subMonitor.done();
 		}
@@ -1615,8 +1688,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	public void startup(IProgressMonitor monitor) throws CoreException {
 		restore(monitor);
 		java.io.File table = workspace.getMetaArea().getSafeTableLocationFor(ResourcesPlugin.PI_RESOURCES).toFile();
-		if (!table.exists())
+		if (!table.exists()) {
 			table.getParentFile().mkdirs();
+		}
 	}
 
 	/**
@@ -1629,8 +1703,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 	 */
 	protected void updateDeltaExpiration(String pluginId) {
 		String key = DELTA_EXPIRATION_PREFIX + pluginId;
-		if (!masterTable.containsKey(key))
+		if (!masterTable.containsKey(key)) {
 			masterTable.setProperty(key, Long.toString(System.currentTimeMillis()));
+		}
 	}
 
 	private void validateMasterTableBeforeSave(java.io.File target) throws IOException {
@@ -1697,8 +1772,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		// Ensure we have either a project or the workspace root
 		Assert.isLegal(root.getType() == IResource.ROOT || root.getType() == IResource.PROJECT);
 		// only write out info for accessible resources
-		if (!root.isAccessible())
+		if (!root.isAccessible()) {
 			return;
+		}
 
 		// Setup variables
 		final Synchronizer synchronizer = (Synchronizer) workspace.getSynchronizer();
@@ -1759,10 +1835,12 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			} catch (WrappedRuntimeException e) {
 				throw (IOException) e.getTargetException();
 			}
-			if (Policy.DEBUG_SAVE_MARKERS)
+			if (Policy.DEBUG_SAVE_MARKERS) {
 				Policy.debug("Save Markers for " + root.getFullPath() + ": " + saveTimes[0] + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			if (Policy.DEBUG_SAVE_SYNCINFO)
+			}
+			if (Policy.DEBUG_SAVE_SYNCINFO) {
 				Policy.debug("Save SyncInfo for " + root.getFullPath() + ": " + saveTimes[1] + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			}
 			removeGarbage(markersOutput, markersLocation, markersTempLocation);
 			// if we have the workspace root the output stream will be null and we
 			// don't have to perform cleanup code
@@ -1777,8 +1855,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		}
 
 		// recurse over the projects in the workspace if we were given the workspace root
-		if (root.getType() == IResource.PROJECT)
+		if (root.getType() == IResource.PROJECT) {
 			return;
+		}
 		forEachProjectInParallel(null, this::visitAndSave);
 	}
 
@@ -1842,8 +1921,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		// Ensure we have either a project or the workspace root
 		Assert.isLegal(root.getType() == IResource.ROOT || root.getType() == IResource.PROJECT);
 		// only write out info for accessible resources
-		if (!root.isAccessible())
+		if (!root.isAccessible()) {
 			return;
+		}
 
 		// Setup variables
 		final Synchronizer synchronizer = (Synchronizer) workspace.getSynchronizer();
@@ -1903,12 +1983,15 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				} catch (WrappedRuntimeException e) {
 					throw (IOException) e.getTargetException();
 				}
-				if (Policy.DEBUG_SAVE_MARKERS)
+				if (Policy.DEBUG_SAVE_MARKERS) {
 					Policy.debug("Snap Markers for " + root.getFullPath() + ": " + snapTimes[0] + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				if (Policy.DEBUG_SAVE_SYNCINFO)
+				}
+				if (Policy.DEBUG_SAVE_SYNCINFO) {
 					Policy.debug("Snap SyncInfo for " + root.getFullPath() + ": " + snapTimes[1] + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				if (markerFileSize != markersOutput.size())
+				}
+				if (markerFileSize != markersOutput.size()) {
 					safeMarkerStream.succeed();
+				}
 				if (safeSyncInfoStream != null && syncInfoFileSize != syncInfoOutput.size()) {
 					safeSyncInfoStream.succeed();
 					syncInfoOutput.close();
@@ -1921,11 +2004,13 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		}
 
 		// recurse over the projects in the workspace if we were given the workspace root
-		if (root.getType() == IResource.PROJECT)
+		if (root.getType() == IResource.PROJECT) {
 			return;
+		}
 		IProject[] projects = ((IWorkspaceRoot) root).getProjects(IContainer.INCLUDE_HIDDEN);
-		for (IProject project : projects)
+		for (IProject project : projects) {
 			visitAndSnap(project);
+		}
 	}
 
 	/**
@@ -1950,8 +2035,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			// write interesting projects
 			IProject[] interestingProjects = info.getInterestingProjects();
 			output.writeInt(interestingProjects.length);
-			for (IProject interestingProject : interestingProjects)
+			for (IProject interestingProject : interestingProjects) {
 				output.writeUTF(interestingProject.getName());
+			}
 		}
 	}
 
@@ -1989,8 +2075,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 					// Nothing to persist if there isn't a previous delta tree.
 					// There used to be code which serialized the current workspace tree
 					// but this will result in the next build of the builder getting an empty delta...
-					if (info.getLastBuiltTree() == null)
+					if (info.getLastBuiltTree() == null) {
 						continue;
+					}
 
 					// Add to the correct list of builders info and add to the configuration names
 					String configName = info.getConfigName() == null ? activeConfigName : info.getConfigName();
@@ -2061,9 +2148,10 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			List<ElementTree> additionalTrees = new ArrayList<>(projects.length * 2);
 			List<BuilderPersistentInfo> additionalBuilderInfos = new ArrayList<>(projects.length * 2);
 			List<String> additionalConfigNames = new ArrayList<>(projects.length);
-			for (IProject project : projects)
+			for (IProject project : projects) {
 				getTreesToSave(project, trees, builderInfos, configNames, additionalTrees, additionalBuilderInfos,
 						additionalConfigNames);
+			}
 
 			// Save the version 2 builders info
 			writeBuilderPersistentInfo(output, builderInfos);
@@ -2086,14 +2174,17 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			writeBuilderPersistentInfo(output, additionalBuilderInfos);
 
 			// Save the configuration names for the builders in the order they were saved
-			for (String string : configNames)
+			for (String string : configNames) {
 				output.writeUTF(string);
-			for (String string : additionalConfigNames)
+			}
+			for (String string : additionalConfigNames) {
 				output.writeUTF(string);
+			}
 		} finally {
 			subMonitor.done();
-			if (!wasImmutable)
+			if (!wasImmutable) {
 				workspace.newWorkingTree();
+			}
 		}
 	}
 
@@ -2159,14 +2250,17 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			writeBuilderPersistentInfo(output, additionalBuilderInfos);
 
 			// Save configuration names for the builders in the order they were saved
-			for (String string : configNames)
+			for (String string : configNames) {
 				output.writeUTF(string);
-			for (String string : additionalConfigNames)
+			}
+			for (String string : additionalConfigNames) {
 				output.writeUTF(string);
+			}
 		} finally {
 			subMonitor.done();
-			if (!wasImmutable)
+			if (!wasImmutable) {
 				workspace.newWorkingTree();
+			}
 		}
 	}
 
@@ -2186,8 +2280,9 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 			String msg = NLS.bind(Messages.resources_writeMeta, project.getFullPath());
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, treeLocation, msg, e);
 		}
-		if (Policy.DEBUG_SAVE_TREE)
+		if (Policy.DEBUG_SAVE_TREE) {
 			Policy.debug("Save tree for " + project.getFullPath() + ": " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 	}
 
 	protected void writeWorkspaceFields(DataOutputStream output, IProgressMonitor monitor) throws IOException {

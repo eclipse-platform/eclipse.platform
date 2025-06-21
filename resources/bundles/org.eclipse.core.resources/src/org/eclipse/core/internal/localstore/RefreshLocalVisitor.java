@@ -76,12 +76,14 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 	protected void createResource(UnifiedTreeNode node, Resource target) throws CoreException {
 		ResourceInfo info = target.getResourceInfo(false, false);
 		int flags = target.getFlags(info);
-		if (target.exists(flags, false))
+		if (target.exists(flags, false)) {
 			return;
+		}
 		/* make sure target's parent exists */
 		IContainer parent = target.getParent();
-		if (parent.getType() == IResource.FOLDER)
+		if (parent.getType() == IResource.FOLDER) {
 			((Folder) target.getParent()).ensureExists(monitor);
+		}
 		/* Use the basic file creation protocol since we don't want to create any content on disk. */
 		info = workspace.createResource(target, false);
 		/* Mark this resource as having unknown children */
@@ -103,8 +105,9 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 			}
 			return;
 		}
-		if (target.exists(flags, false))
+		if (target.exists(flags, false)) {
 			target.deleteResource(true, errors);
+		}
 		node.setExistsWorkspace(false);
 	}
 
@@ -128,9 +131,9 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 	protected void folderToFile(UnifiedTreeNode node, Resource target) throws CoreException {
 		ResourceInfo info = target.getResourceInfo(false, false);
 		int flags = target.getFlags(info);
-		if (target.exists(flags, true))
+		if (target.exists(flags, true)) {
 			target = (File) ((Folder) target).changeToFile();
-		else {
+		} else {
 			if (!target.exists(flags, false)) {
 				target = (Resource) workspace.getRoot().getFile(target.getFullPath());
 				// Use the basic file creation protocol since we don't want to
@@ -154,8 +157,9 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 
 	protected void makeLocal(UnifiedTreeNode node, Resource target) {
 		ResourceInfo info = target.getResourceInfo(false, true);
-		if (info != null)
+		if (info != null) {
 			target.getLocalManager().updateLocalSync(info, node.getLastModified());
+		}
 	}
 
 	/**
@@ -167,8 +171,9 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 
 	protected void resourceChanged(UnifiedTreeNode node, Resource target) {
 		ResourceInfo info = target.getResourceInfo(false, true);
-		if (info == null)
+		if (info == null) {
 			return;
+		}
 		target.getLocalManager().updateLocalSync(info, node.getLastModified());
 		info.incrementContentId();
 		// forget content-related caching flags
@@ -201,17 +206,20 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 		} else {
 			// do we have a gender variant in the workspace?
 			IResource genderVariant = workspace.getRoot().findMember(target.getFullPath());
-			if (genderVariant != null)
+			if (genderVariant != null) {
 				return RL_UNKNOWN;
+			}
 			if (node.existsInFileSystem()) {
 				Container parent = (Container) target.getParent();
 				if (!parent.exists()) {
 					refresh(parent);
-					if (!parent.exists())
+					if (!parent.exists()) {
 						return RL_NOT_IN_SYNC;
+					}
 				}
-				if (!target.getName().equals(node.getLocalName()))
+				if (!target.getName().equals(node.getLocalName())) {
 					return RL_IN_SYNC;
+				}
 				if (!Workspace.caseSensitive && node.getLevel() == 0) {
 					// do we have any alphabetic variants in the workspace?
 					IResource variant = target.findExistingResourceVariant(target.getFullPath());
@@ -237,8 +245,9 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 		if (!node.existsInWorkspace()) {
 			//may be an existing resource in the workspace of different gender
 			IResource genderVariant = workspace.getRoot().findMember(target.getFullPath());
-			if (genderVariant != null)
+			if (genderVariant != null) {
 				target = (Resource) genderVariant;
+			}
 		}
 		if (target.getType() == IResource.FILE) {
 			if (node.isFolder()) {
@@ -260,10 +269,11 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 	 * lastModified
 	 */
 	protected void synchronizeLastModified(UnifiedTreeNode node, Resource target) {
-		if (target.isLocal(IResource.DEPTH_ZERO))
+		if (target.isLocal(IResource.DEPTH_ZERO)) {
 			resourceChanged(node, target);
-		else
+		} else {
 			contentAdded(node, target);
+		}
 		resourceChanged = true;
 	}
 
@@ -271,27 +281,32 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 	public boolean visit(UnifiedTreeNode node) throws CoreException {
 		Policy.checkCanceled(monitor);
 		try {
-			if (node.isErrorInFileSystem())
+			if (node.isErrorInFileSystem()) {
 				return false; // Don't visit children if we encountered an I/O error
+			}
 			Resource target = (Resource) node.getResource();
 			int targetType = target.getType();
-			if (targetType == IResource.PROJECT)
+			if (targetType == IResource.PROJECT) {
 				return true;
+			}
 			if (node.existsInWorkspace() && node.existsInFileSystem()) {
 				/* for folders we only care about updating local status */
 				if (targetType == IResource.FOLDER && node.isFolder()) {
 					// if not local, mark as local
-					if (!target.isLocal(IResource.DEPTH_ZERO))
+					if (!target.isLocal(IResource.DEPTH_ZERO)) {
 						makeLocal(node, target);
+					}
 					ResourceInfo info = target.getResourceInfo(false, false);
-					if (info != null && info.getModificationStamp() != IResource.NULL_STAMP)
+					if (info != null && info.getModificationStamp() != IResource.NULL_STAMP) {
 						return true;
+					}
 				}
 				/* compare file last modified */
 				if (targetType == IResource.FILE && !node.isFolder()) {
 					ResourceInfo info = target.getResourceInfo(false, false);
-					if (info != null && info.getModificationStamp() != IResource.NULL_STAMP && info.getLocalSyncInfo() == node.getLastModified())
+					if (info != null && info.getModificationStamp() != IResource.NULL_STAMP && info.getLocalSyncInfo() == node.getLastModified()) {
 						return true;
+					}
 				}
 			} else {
 				if (node.existsInFileSystem() && !IPath.EMPTY.isValidSegment(node.getLocalName())) {
@@ -311,11 +326,13 @@ public class RefreshLocalVisitor implements IUnifiedTreeVisitor, ILocalStoreCons
 					return true;
 				}
 			}
-			if (node.isSymbolicLink() && !node.existsInFileSystem())
+			if (node.isSymbolicLink() && !node.existsInFileSystem()) {
 				return true; // Dangling symbolic links are considered to be synchronized.
+			}
 
-			if (synchronizeGender(node, target))
+			if (synchronizeGender(node, target)) {
 				synchronizeLastModified(node, target);
+			}
 			if (targetType == IResource.FILE) {
 				try {
 					((File) target).updateMetadataFiles();

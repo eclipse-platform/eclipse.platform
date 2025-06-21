@@ -193,8 +193,9 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	 * <code>null</code> is returned if there are none.
 	 */
 	public MarkerSet getMarkers(boolean makeCopy) {
-		if (markers == null)
+		if (markers == null) {
 			return null;
+		}
 		return makeCopy ? (MarkerSet) markers.clone() : markers;
 	}
 
@@ -221,10 +222,11 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	public Map<QualifiedName, Object> getSessionProperties() {
 		// thread safety: (Concurrency001)
 		ObjectMap<QualifiedName, Object> temp = sessionProperties;
-		if (temp == null)
+		if (temp == null) {
 			temp = new ObjectMap<>(5);
-		else
+		} else {
 			temp = (ObjectMap<QualifiedName, Object>) sessionProperties.clone();
+		}
 		return temp;
 	}
 
@@ -234,8 +236,9 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	public Object getSessionProperty(QualifiedName name) {
 		// thread safety: (Concurrency001)
 		Map<QualifiedName, Object> temp = sessionProperties;
-		if (temp == null)
+		if (temp == null) {
 			return null;
+		}
 		return temp.get(name);
 	}
 
@@ -246,16 +249,18 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	 */
 	@SuppressWarnings({"unchecked"})
 	public synchronized ObjectMap<QualifiedName, Object> getSyncInfo(boolean makeCopy) {
-		if (syncInfo == null)
+		if (syncInfo == null) {
 			return null;
+		}
 		return makeCopy ? (ObjectMap<QualifiedName, Object>) syncInfo.clone() : syncInfo;
 	}
 
 	public synchronized byte[] getSyncInfo(QualifiedName id, boolean makeCopy) {
 		// thread safety: (Concurrency001)
 		byte[] b;
-		if (syncInfo == null)
+		if (syncInfo == null) {
 			return null;
+		}
 		b = (byte[]) syncInfo.get(id);
 		return b == null ? null : (makeCopy ? (byte[]) b.clone() : b);
 	}
@@ -395,8 +400,9 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 		nodeId = id;
 		// Resource modification stamp starts from current nodeId
 		// so future generations are distinguishable (bug 160728)
-		if (modStamp == 0)
+		if (modStamp == 0) {
 			modStamp = nodeId;
+		}
 	}
 
 	/**
@@ -414,20 +420,23 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	public synchronized void setSessionProperty(QualifiedName name, Object value) {
 		// thread safety: (Concurrency001)
 		if (value == null) {
-			if (sessionProperties == null)
+			if (sessionProperties == null) {
 				return;
+			}
 			ObjectMap<QualifiedName, Object> temp = (ObjectMap<QualifiedName, Object>) sessionProperties.clone();
 			temp.remove(name);
-			if (temp.isEmpty())
+			if (temp.isEmpty()) {
 				sessionProperties = null;
-			else
+			} else {
 				sessionProperties = temp;
+			}
 		} else {
 			ObjectMap<QualifiedName, Object> temp = sessionProperties;
-			if (temp == null)
+			if (temp == null) {
 				temp = new ObjectMap<>(5);
-			else
+			} else {
 				temp = (ObjectMap<QualifiedName, Object>) sessionProperties.clone();
+			}
 			temp.put(name, value);
 			sessionProperties = temp;
 		}
@@ -445,15 +454,18 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	public synchronized void setSyncInfo(QualifiedName id, byte[] value) {
 		if (value == null) {
 			//delete sync info
-			if (syncInfo == null)
+			if (syncInfo == null) {
 				return;
+			}
 			syncInfo.remove(id);
-			if (syncInfo.isEmpty())
+			if (syncInfo.isEmpty()) {
 				syncInfo = null;
+			}
 		} else {
 			//add sync info
-			if (syncInfo == null)
+			if (syncInfo == null) {
 				syncInfo = new ObjectMap<>(5);
+			}
 			syncInfo.put(id, value.clone());
 		}
 	}
@@ -472,14 +484,17 @@ public class ResourceInfo implements IElementTreeData, ICoreConstants, IStringPo
 	@Override
 	public void shareStrings(StringPool set) {
 		ObjectMap<QualifiedName, Object> map = syncInfo;
-		if (map != null)
+		if (map != null) {
 			map.shareStrings(set);
+		}
 		map = sessionProperties;
-		if (map != null)
+		if (map != null) {
 			map.shareStrings(set);
+		}
 		MarkerSet markerSet = markers;
-		if (markerSet != null)
+		if (markerSet != null) {
 			markerSet.shareStrings(set);
+		}
 	}
 
 	public void writeTo(DataOutput output) throws IOException {

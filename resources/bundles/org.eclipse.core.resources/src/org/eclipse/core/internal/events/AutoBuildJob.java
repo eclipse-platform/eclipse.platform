@@ -104,8 +104,9 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 		}
 
 		//don't mess with the interrupt flag if the job is still running
-		if (state != Job.RUNNING)
+		if (state != Job.RUNNING) {
 			setInterrupted(false);
+		}
 
 		switch (state) {
 			case Job.SLEEPING :
@@ -203,8 +204,9 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 			IStatus result = Status.OK_STATUS;
 			try {
 				// Note: shouldBuild() also resets the need/force/avoid build flags!
-				if (shouldBuild())
+				if (shouldBuild()) {
 					result = workspace.getBuildManager().build(workspace.getBuildOrder(), ICoreConstants.EMPTY_BUILD_CONFIG_ARRAY, trigger, subMonitor.split(Policy.opWork));
+				}
 			} finally {
 				//always send POST_BUILD if there has been a PRE_BUILD
 				workspace.broadcastBuildEvent(workspace, IResourceChangeEvent.POST_BUILD, trigger);
@@ -236,8 +238,9 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 	 */
 	synchronized void interrupt() {
 		//if already interrupted, do nothing
-		if (interrupted)
+		if (interrupted) {
 			return;
+		}
 		switch (getState()) {
 			case NONE :
 				return;
@@ -247,29 +250,34 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 				break;
 			case RUNNING :
 				//make sure autobuild doesn't interrupt itself
-				if (Job.getJobManager().currentJob() == this)
+				if (Job.getJobManager().currentJob() == this) {
 					return;
+				}
 				setInterrupted(true);
 				break;
 		}
 		//clear the autobuild avoidance flag if we were interrupted
-		if (interrupted)
+		if (interrupted) {
 			avoidBuild = false;
+		}
 	}
 
 	synchronized boolean isInterrupted() {
-		if (interrupted)
+		if (interrupted) {
 			return true;
+		}
 		//check if another job is blocked by the build job
-		if (isBlocking())
+		if (isBlocking()) {
 			setInterrupted(true);
+		}
 		return interrupted;
 	}
 
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
-		if (!ResourcesPlugin.PREF_AUTO_BUILDING.equals(event.getKey()))
+		if (!ResourcesPlugin.PREF_AUTO_BUILDING.equals(event.getKey())) {
 			return;
+		}
 		// get the new value of auto-build directly from the preferences
 		boolean wasAutoBuilding = isAutoBuilding;
 		isAutoBuilding = Platform.getPreferencesService().getBoolean(ResourcesPlugin.PI_RESOURCES,
@@ -294,8 +302,9 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 			}
 		}
 		//if the system is shutting down, don't build
-		if (systemBundle.getState() == Bundle.STOPPING)
+		if (systemBundle.getState() == Bundle.STOPPING) {
 			return Status.OK_STATUS;
+		}
 		try {
 			doBuild(subMonitor.split(1));
 			lastBuild = System.currentTimeMillis();
@@ -329,13 +338,16 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 	private synchronized boolean shouldBuild() {
 		try {
 			//if auto-build is off then we never run
-			if (!workspace.isAutoBuilding())
+			if (!workspace.isAutoBuilding()) {
 				return false;
+			}
 			//build if the workspace requires a build (description changes)
-			if (forceBuild)
+			if (forceBuild) {
 				return true;
-			if (avoidBuild)
+			}
+			if (avoidBuild) {
 				return false;
+			}
 			//return whether there have been any changes to the workspace tree.
 			return buildNeeded;
 		} finally {
@@ -366,8 +378,9 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			// if the system is shutting down, don't build
-			if (systemBundle.getState() == Bundle.STOPPING)
+			if (systemBundle.getState() == Bundle.STOPPING) {
 				return Status.OK_STATUS;
+			}
 			final ISchedulingRule rule = workspace.getRuleFactory().buildRule();
 			try {
 				workspace.prepareOperation(rule, monitor);

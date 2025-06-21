@@ -43,18 +43,21 @@ public class ResourceChangeDescriptionFactory implements IResourceChangeDescript
 			parentDelta.add(delta);
 		}
 		delta.setKind(IResourceDelta.REMOVED);
-		if (deleteContent)
+		if (deleteContent) {
 			delta.addFlags(IResourceDelta.DELETE_CONTENT_PROPOSED);
-		if (resource.getType() == IResource.FILE)
+		}
+		if (resource.getType() == IResource.FILE) {
 			return delta;
+		}
 		//recurse to build deletion deltas for children
 		try {
 			IResource[] members = ((IContainer) resource).members();
 			int childCount = members.length;
 			if (childCount > 0) {
 				ProposedResourceDelta[] childDeltas = new ProposedResourceDelta[childCount];
-				for (int i = 0; i < childCount; i++)
+				for (int i = 0; i < childCount; i++) {
 					childDeltas[i] = buildDeleteDelta(delta, members[i], deleteContent);
+				}
 			}
 		} catch (CoreException e) {
 			//don't need to create deletion deltas for children of inaccessible resources
@@ -65,11 +68,13 @@ public class ResourceChangeDescriptionFactory implements IResourceChangeDescript
 	@Override
 	public void change(IFile file) {
 		ProposedResourceDelta delta = getDelta(file);
-		if (delta.getKind() == 0)
+		if (delta.getKind() == 0) {
 			delta.setKind(IResourceDelta.CHANGED);
+		}
 		//the CONTENT flag only applies to the changed and moved from cases
-		if (delta.getKind() == IResourceDelta.CHANGED || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0 || (delta.getFlags() & IResourceDelta.COPIED_FROM) != 0)
+		if (delta.getKind() == IResourceDelta.CHANGED || (delta.getFlags() & IResourceDelta.MOVED_FROM) != 0 || (delta.getFlags() & IResourceDelta.COPIED_FROM) != 0) {
 			delta.addFlags(IResourceDelta.CONTENT);
+		}
 	}
 
 	@Override
@@ -224,8 +229,9 @@ public class ResourceChangeDescriptionFactory implements IResourceChangeDescript
 			destinationDelta.addFlags(move ? IResourceDelta.MOVED_FROM : IResourceDelta.COPIED_FROM);
 			destinationDelta.setMovedFromPath(fromPath);
 			// Apply the source flags
-			if (move)
+			if (move) {
 				destinationDelta.addFlags(sourceFlags);
+			}
 		}
 
 		return true;
