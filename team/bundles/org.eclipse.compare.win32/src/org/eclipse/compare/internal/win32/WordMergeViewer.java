@@ -48,15 +48,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.PageBook;
@@ -164,8 +155,9 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 			}
 
 			ImageDescriptor id= getImageDescriptor(dPath);	// we set the disabled image first (see PR 1GDDE87)
-			if (id != null)
+			if (id != null) {
 				a.setDisabledImageDescriptor(id);
+			}
 			id= getImageDescriptor(ePath);
 			if (id != null) {
 				a.setImageDescriptor(id);
@@ -176,8 +168,9 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	private static ImageDescriptor getImageDescriptor(String relativePath) {
 		IPath path= IPath.fromOSString("$nl$/icons/full/").append(relativePath);
 		URL url= FileLocator.find(Activator.getDefault().getBundle(), path, null);
-		if (url == null)
+		if (url == null) {
 			return null;
+		}
 		return ImageDescriptor.createFromURL(url);
 	}
 
@@ -205,8 +198,9 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	}
 
 	private void updateEnablements() {
-		if (saveAction != null)
+		if (saveAction != null) {
 			saveAction.setEnabled(isDirty());
+		}
 		inplaceAction.setChecked(wordArea.isInplace());
 		inplaceAction.setEnabled(wordArea.isOpen());
 	}
@@ -358,8 +352,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		if (saveAction != null &&hasResultFile()) {
 			IEditableContent saveTarget = getSaveTarget();
 			String name = CompareWin32Messages.WordMergeViewer_3;
-			if (saveTarget instanceof ITypedElement) {
-				ITypedElement te = (ITypedElement) saveTarget;
+			if (saveTarget instanceof ITypedElement te) {
 				name = te.getName();
 			}
 			try {
@@ -391,8 +384,9 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		final Runnable dirtyFlagUpdater = new Runnable() {
 			@Override
 			public void run() {
-				if (wordArea.getFrame().isDisposed())
+				if (wordArea.getFrame().isDisposed()) {
 					return;
+				}
 				boolean dirty = wordArea.isDirty();
 				if (hasResultFile()) {
 					try {
