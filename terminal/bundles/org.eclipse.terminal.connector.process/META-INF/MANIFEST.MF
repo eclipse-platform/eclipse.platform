@@ -21,4 +21,4 @@ Export-Package: org.eclipse.terminal.connector.process,
  org.eclipse.terminal.connector.process.activator;x-internal:=true,
  org.eclipse.terminal.connector.process.help,
  org.eclipse.terminal.connector.process.nls;x-internal:=true
-Automatic-Module-Name: org.eclipse.tm.terminal.connector.process
+Automatic-Module-Name: org.eclipse.terminal.connector.process

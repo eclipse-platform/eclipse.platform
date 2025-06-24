@@ -19,4 +19,4 @@ Export-Package: org.eclipse.terminal.view.core,
  org.eclipse.terminal.view.core.preferences,
  org.eclipse.terminal.view.core.tracing,
  org.eclipse.terminal.view.core.utils
-Automatic-Module-Name: org.eclipse.tm.terminal.view.core
+Automatic-Module-Name: org.eclipse.terminal.view.core
