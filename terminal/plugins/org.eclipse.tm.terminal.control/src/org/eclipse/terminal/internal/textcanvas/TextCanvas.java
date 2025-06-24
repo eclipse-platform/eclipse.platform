@@ -43,7 +43,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.terminal.internal.control.ITerminalMouseListener;
-import org.eclipse.terminal.internal.control.ITerminalMouseListener2;
 import org.eclipse.terminal.model.TerminalColor;
 
 /**
@@ -147,13 +146,7 @@ public class TextCanvas extends GridCanvas {
 					Point pt = screenPointToCell(e.x, e.y);
 					if (pt != null) {
 						for (ITerminalMouseListener l : fMouseListeners) {
-							if (l instanceof ITerminalMouseListener2) {
-								ITerminalMouseListener2 l2 = (ITerminalMouseListener2) l;
-								l2.mouseDoubleClick(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button,
-										e.stateMask);
-							} else {
-								l.mouseDoubleClick(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button);
-							}
+							l.mouseDoubleClick(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button, e.stateMask);
 						}
 					}
 				}
@@ -177,12 +170,7 @@ public class TextCanvas extends GridCanvas {
 					Point pt = screenPointToCell(e.x, e.y);
 					if (pt != null) {
 						for (ITerminalMouseListener l : fMouseListeners) {
-							if (l instanceof ITerminalMouseListener2) {
-								ITerminalMouseListener2 l2 = (ITerminalMouseListener2) l;
-								l2.mouseDown(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button, e.stateMask);
-							} else {
-								l.mouseDown(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button);
-							}
+							l.mouseDown(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button, e.stateMask);
 						}
 					}
 				}
@@ -202,12 +190,7 @@ public class TextCanvas extends GridCanvas {
 					Point pt = screenPointToCell(e.x, e.y);
 					if (pt != null) {
 						for (ITerminalMouseListener l : fMouseListeners) {
-							if (l instanceof ITerminalMouseListener2) {
-								ITerminalMouseListener2 l2 = (ITerminalMouseListener2) l;
-								l2.mouseUp(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button, e.stateMask);
-							} else {
-								l.mouseUp(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button);
-							}
+							l.mouseUp(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button, e.stateMask);
 						}
 					}
 				}
@@ -399,12 +382,6 @@ public class TextCanvas extends GridCanvas {
 
 	@Override
 	protected Color getTerminalBackgroundColor(Device device) {
-		return fCellRenderer.getDefaultBackgroundColor(device);
-	}
-
-	@Override
-	@Deprecated
-	protected Color getTerminalBackgroundColor() {
 		return fCellRenderer.getDefaultBackgroundColor();
 	}
 
@@ -504,18 +481,6 @@ public class TextCanvas extends GridCanvas {
 			//Widget realized: compute actual size and force telling the listener
 			onResize(true);
 		}
-	}
-
-	/**
-	 * Notify about a change of the global Font Preference.
-	 * @deprecated Use {@link #updateFont(String)}
-	 */
-	@Deprecated
-	public void onFontChange() {
-		fCellRenderer.onFontChange();
-		setCellWidth(fCellRenderer.getCellWidth());
-		setCellHeight(fCellRenderer.getCellHeight());
-		calculateGrid();
 	}
 
 	public void updateFont(String fontName) {

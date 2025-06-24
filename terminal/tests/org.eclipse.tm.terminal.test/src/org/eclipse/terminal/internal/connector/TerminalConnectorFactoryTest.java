@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
+import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
 import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
 import org.eclipse.terminal.internal.provisional.api.TerminalState;
@@ -52,16 +52,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 	public static class TerminalControlMock implements ITerminalControl {
 
 		@Override
-		public void setEncoding(String encoding) {
-		}
-
-		@Override
 		public void setCharset(Charset charset) {
-		}
-
-		@Override
-		public String getEncoding() {
-			return "UTF-8"; //$NON-NLS-1$
 		}
 
 		@Override
@@ -94,10 +85,6 @@ public class TerminalConnectorFactoryTest extends TestCase {
 
 		@Override
 		public void setState(TerminalState state) {
-		}
-
-		@Override
-		public void setTerminalTitle(String title) {
 		}
 
 		@Override

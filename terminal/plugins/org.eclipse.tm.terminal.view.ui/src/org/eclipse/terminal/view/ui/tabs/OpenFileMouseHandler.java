@@ -31,7 +31,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.terminal.internal.control.ITerminalMouseListener2;
+import org.eclipse.terminal.internal.control.ITerminalMouseListener;
 import org.eclipse.terminal.internal.control.ITerminalViewControl;
 import org.eclipse.terminal.internal.provisional.api.Logger;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
@@ -52,7 +52,7 @@ import org.osgi.framework.Bundle;
 /**
  * @noreference This class is not intended to be referenced by clients.
  */
-public class OpenFileMouseHandler implements ITerminalMouseListener2 {
+public class OpenFileMouseHandler implements ITerminalMouseListener {
 	private static final boolean DEBUG_HOVER = UIPlugin.isOptionEnabled(Logger.TRACE_DEBUG_LOG_HOVER);
 	private static final List<String> NEEDED_BUNDLES = //
 			List.of("org.eclipse.core.resources", //$NON-NLS-1$

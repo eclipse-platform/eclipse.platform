@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.terminal.internal.control.ITerminalListener3;
+import org.eclipse.terminal.internal.control.ITerminalListener;
 import org.eclipse.terminal.internal.provisional.api.TerminalState;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.nls.Messages;
@@ -26,7 +26,7 @@ import org.eclipse.terminal.view.ui.nls.Messages;
 /**
  * Terminal tab default terminal listener implementation.
  */
-public class TabTerminalListener implements ITerminalListener3 {
+public class TabTerminalListener implements ITerminalListener {
 	private static final String TAB_TERMINAL_LISTENER = "TabTerminalListener"; //$NON-NLS-1$
 	/* default */ final TabFolderManager tabFolderManager;
 	private CTabItem tabItem;
@@ -182,11 +182,6 @@ public class TabTerminalListener implements ITerminalListener3 {
 		}
 
 		return newTitle != null && !newTitle.equals(oldTitle) ? newTitle : null;
-	}
-
-	@Override
-	public void setTerminalTitle(final String title) {
-		throw new UnsupportedOperationException("Should not be called as this class implements ITerminalListener3"); //$NON-NLS-1$
 	}
 
 	/**

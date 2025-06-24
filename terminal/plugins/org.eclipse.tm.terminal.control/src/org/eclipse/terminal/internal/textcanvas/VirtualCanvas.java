@@ -137,15 +137,8 @@ public abstract class VirtualCanvas extends Canvas {
 	 */
 	abstract protected void paint(GC gc);
 
-	abstract protected Color getTerminalBackgroundColor(Device device);
-
-	/**
-	 * @deprecated Use {@link #getTerminalBackgroundColor(Device)}
-	 */
-	@Deprecated
-	protected Color getTerminalBackgroundColor() {
-		//		return getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-		return getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+	protected Color getTerminalBackgroundColor(Device device) {
+		return device.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 	}
 
 	protected void paintUnoccupiedSpace(GC gc, Rectangle clipping) {
@@ -155,7 +148,7 @@ public abstract class VirtualCanvas extends Canvas {
 		int marginHeight = (clipping.y + clipping.height) - height;
 		if (marginWidth > 0 || marginHeight > 0) {
 			Color bg = getBackground();
-			gc.setBackground(getTerminalBackgroundColor());
+			gc.setBackground(getTerminalBackgroundColor(gc.getDevice()));
 			if (marginWidth > 0) {
 				gc.fillRectangle(width, clipping.y, marginWidth, clipping.height);
 			}

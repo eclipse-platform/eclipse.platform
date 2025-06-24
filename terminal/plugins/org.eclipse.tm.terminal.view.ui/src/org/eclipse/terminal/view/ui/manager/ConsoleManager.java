@@ -407,27 +407,6 @@ public class ConsoleManager {
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 *
 	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
-	 * @param title The console title. Must not be <code>null</code>.
-	 * @param encoding The terminal encoding or <code>null</code>.
-	 * @param connector The terminal connector. Must not be <code>null</code>.
-	 * @param data The custom terminal data node or <code>null</code>.
-	 * @param flags The flags controlling how the console is opened or <code>null</code> to use defaults.
-	 * @deprecated Use {@link #openConsole(String, String, String, String, ITerminalConnector, Object, Map)}
-	 * and explicitly specify an ID {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID}
-	 */
-	@Deprecated
-	public CTabItem openConsole(String id, String title, String encoding, ITerminalConnector connector, Object data,
-			Map<String, Boolean> flags) {
-		return openConsole(id, ITerminalsConnectorConstants.LAST_ACTIVE_SECONDARY_ID, title, encoding, connector, data,
-				flags);
-	}
-
-	/**
-	 * Opens the console with the given title and connector.
-	 * <p>
-	 * <b>Note:</b> The method must be called within the UI thread.
-	 *
-	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
 	 * @param secondaryId The terminal console secondary id, which may be <code>null</code> which is the secondary id of
 	 *        the first terminal view opened. To specify reuse of most recent terminal view use special value of
 	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID}.

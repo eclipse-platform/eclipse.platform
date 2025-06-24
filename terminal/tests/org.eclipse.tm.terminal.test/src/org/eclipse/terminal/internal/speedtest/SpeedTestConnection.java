@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
+import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
 import org.eclipse.terminal.internal.provisional.api.Logger;
 import org.eclipse.terminal.internal.provisional.api.TerminalState;

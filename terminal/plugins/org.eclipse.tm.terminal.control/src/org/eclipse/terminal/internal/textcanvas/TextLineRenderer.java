@@ -19,13 +19,11 @@ package org.eclipse.terminal.internal.textcanvas;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
 import org.eclipse.terminal.internal.provisional.api.Logger;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
@@ -125,7 +123,7 @@ public class TextLineRenderer implements ILinelRenderer {
 
 	private void fillBackground(GC gc, int x, int y, int width, int height) {
 		Color bg = gc.getBackground();
-		gc.setBackground(getDefaultBackgroundColor(gc.getDevice()));
+		gc.setBackground(getDefaultBackgroundColor());
 		gc.fillRectangle(x, y, width, height);
 		gc.setBackground(bg);
 
@@ -133,14 +131,8 @@ public class TextLineRenderer implements ILinelRenderer {
 
 	@Override
 	public Color getDefaultBackgroundColor() {
-		return getDefaultBackgroundColor(Display.getDefault());
-	}
-
-	@Override
-	public Color getDefaultBackgroundColor(Device device) {
-		// null == default style
 		RGB backgroundRGB = fStyleMap.getBackgroundRGB(null);
-		return new Color(device, backgroundRGB);
+		return new Color(backgroundRGB);
 	}
 
 	private void drawCursor(ITextCanvasModel model, GC gc, int row, int x, int y, int colFirst) {
@@ -214,15 +206,6 @@ public class TextLineRenderer implements ILinelRenderer {
 
 	ITerminalTextDataReadOnly getTerminalText() {
 		return fModel.getTerminalText();
-	}
-
-	/**
-	 * @deprecated Use {@link #updateFont(String)}
-	 */
-	@Deprecated
-	@Override
-	public void onFontChange() {
-		fStyleMap.updateFont();
 	}
 
 	@Override

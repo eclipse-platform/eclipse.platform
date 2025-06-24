@@ -24,8 +24,13 @@ class ConsoleTerminalListener implements ITerminalListener {
 	}
 
 	@Override
-	public void setTerminalTitle(String title) {
-		// TODO redirect to the console?
+	public void setTerminalSelectionChanged() {
+
+	}
+
+	@Override
+	public void setTerminalTitle(String title, TerminalTitleRequestor requestor) {
+
 	}
 
 }

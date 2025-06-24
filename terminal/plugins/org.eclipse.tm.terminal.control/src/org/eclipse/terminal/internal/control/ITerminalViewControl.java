@@ -16,13 +16,12 @@
  ******************************************************************************/
 package org.eclipse.terminal.internal.control;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
+import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
 import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
 import org.eclipse.terminal.internal.provisional.api.TerminalState;
@@ -34,15 +33,6 @@ import org.eclipse.terminal.internal.provisional.api.TerminalState;
  * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ITerminalViewControl {
-	/**
-	 * Set the encoding that the Terminal uses to decode byte streams into
-	 * characters.
-	 *
-	 * @see ITerminalControl#setEncoding(String)
-	 * @deprecated Use {@link #setCharset(Charset)} and do the error handling in the UI code.
-	 */
-	@Deprecated
-	void setEncoding(String encoding) throws UnsupportedEncodingException;
 
 	/**
 	 * Set the charset that the Terminal uses to decode byte streams into
@@ -54,16 +44,6 @@ public interface ITerminalViewControl {
 	void setCharset(Charset charset);
 
 	/**
-	 * Get the Terminal's current encoding.
-	 *
-	 * @return the current Encoding of the Terminal.
-	 * @see ITerminalControl#getEncoding()
-	 * @deprecated Use {@link #getCharset()} and call {@link Charset#name()} on the result
-	 */
-	@Deprecated
-	String getEncoding();
-
-	/**
 	 * @return the non-<code>null</code> current Charset of the Terminal.
 	 * @see ITerminalControl#getCharset()
 	 * @since 5.3
@@ -71,14 +51,6 @@ public interface ITerminalViewControl {
 	Charset getCharset();
 
 	boolean isEmpty();
-
-	/**
-	 * Sets the Terminal font
-	 * @deprecated use {@link #setFont(String)} in order to support bold and italic variants of the given font
-	 * @param font
-	 */
-	@Deprecated
-	void setFont(Font font);
 
 	/**
 	 * Sets the font for the Terminal, using a JFace symbolic font name, such
@@ -189,13 +161,6 @@ public interface ITerminalViewControl {
 	 * @param listener may be a {@link ITerminalMouseListener2} for extra callbacks
 	 */
 	void removeMouseListener(ITerminalMouseListener listener);
-
-	/**
-	 * @since 5.1
-	 * @deprecated call {@link #setTerminalTitle(String, TerminalTitleRequestor)} instead
-	 */
-	@Deprecated(forRemoval = true)
-	void setTerminalTitle(String newTitle);
 
 	/**
 	 * Set the title of the terminal.

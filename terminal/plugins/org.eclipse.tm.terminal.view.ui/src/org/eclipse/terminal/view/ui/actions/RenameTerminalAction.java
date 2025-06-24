@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
+import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.control.ITerminalViewControl;
 import org.eclipse.terminal.internal.control.actions.AbstractTerminalAction;
 import org.eclipse.terminal.view.ui.nls.Messages;

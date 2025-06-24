@@ -48,7 +48,6 @@ package org.eclipse.terminal.internal.emulator;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.SocketException;
 import java.nio.charset.Charset;
@@ -97,9 +96,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.terminal.internal.control.ICommandInputField;
 import org.eclipse.terminal.internal.control.ITerminalListener;
-import org.eclipse.terminal.internal.control.ITerminalListener2;
-import org.eclipse.terminal.internal.control.ITerminalListener3;
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
+import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.control.ITerminalMouseListener;
 import org.eclipse.terminal.internal.control.ITerminalViewControl;
 import org.eclipse.terminal.internal.control.impl.ITerminalControlForText;
@@ -246,19 +243,6 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	}
 
 	@Override
-	@Deprecated
-	public void setEncoding(String encoding) throws UnsupportedEncodingException {
-		Charset charset;
-		if (encoding == null) {
-			charset = Charset.defaultCharset();
-		} else {
-			charset = Charset.forName(encoding);
-		}
-		// remember encoding if above didn't throw an exception
-		setCharset(charset);
-	}
-
-	@Override
 	public void setCharset(Charset charset) {
 		if (charset == null) {
 			charset = Charset.defaultCharset();
@@ -266,12 +250,6 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		fInputStreamReader = new InputStreamReader(fInputStream, charset);
 		fCharset = charset;
 		fTerminalText.setInputStreamReader(fInputStreamReader);
-	}
-
-	@Override
-	@Deprecated
-	public String getEncoding() {
-		return fCharset.name();
 	}
 
 	@Override
@@ -334,9 +312,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	@Override
 	public void selectAll() {
 		getCtlText().selectAll();
-		if (fTerminalListener instanceof ITerminalListener2) {
-			((ITerminalListener2) fTerminalListener).setTerminalSelectionChanged();
-		}
+		fTerminalListener.setTerminalSelectionChanged();
 	}
 
 	@Override
@@ -360,9 +336,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		// The TerminalText object does all text manipulation.
 		getTerminalText().clearTerminal();
 		getCtlText().clearSelection();
-		if (fTerminalListener instanceof ITerminalListener2) {
-			((ITerminalListener2) fTerminalListener).setTerminalSelectionChanged();
-		}
+		fTerminalListener.setTerminalSelectionChanged();
 	}
 
 	@Override
@@ -748,19 +722,6 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		}
 		// Tell the TerminalControl singleton that the font has changed.
 		fCtlText.updateFont(fontName);
-		getTerminalText().fontChanged();
-	}
-
-	@Override
-	@Deprecated
-	public void setFont(Font font) {
-		getCtlText().setFont(font);
-		if (fCommandInputField != null) {
-			fCommandInputField.setFont(font);
-		}
-
-		// Tell the TerminalControl singleton that the font has changed.
-		fCtlText.onFontChange();
 		getTerminalText().fontChanged();
 	}
 
@@ -1276,19 +1237,8 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	}
 
 	@Override
-	public void setTerminalTitle(String title) {
-		setTerminalTitle(title, TerminalTitleRequestor.OTHER);
-	}
-
-	@SuppressWarnings("removal")
-	@Override
 	public void setTerminalTitle(String title, TerminalTitleRequestor requestor) {
-		if (fTerminalListener instanceof ITerminalListener3 listener3) {
-			listener3.setTerminalTitle(title, requestor);
-		} else {
-			fTerminalListener.setTerminalTitle(title);
-		}
-
+		fTerminalListener.setTerminalTitle(title, requestor);
 	}
 
 	@Override
