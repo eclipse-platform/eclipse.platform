@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.tm.internal.terminal.provisional.api.ITerminalConnector;
+import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -38,7 +38,7 @@ public class TerminalConsoleFactory implements IConsoleFactory {
 		if (commandService == null || handlerService == null) {
 			return;
 		}
-		Command command = commandService.getCommand("org.eclipse.tm.terminal.view.ui.command.launchConsole");
+		Command command = commandService.getCommand("org.eclipse.terminal.view.ui.command.launchConsole");
 		if (command == null) {
 			return;
 		}

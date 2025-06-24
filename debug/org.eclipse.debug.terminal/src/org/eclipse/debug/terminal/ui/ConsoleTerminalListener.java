@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.debug.terminal.ui;
 
-import org.eclipse.tm.internal.terminal.control.ITerminalListener;
-import org.eclipse.tm.internal.terminal.provisional.api.TerminalState;
+import org.eclipse.terminal.internal.control.ITerminalListener;
+import org.eclipse.terminal.internal.provisional.api.TerminalState;
 
 class ConsoleTerminalListener implements ITerminalListener {
 

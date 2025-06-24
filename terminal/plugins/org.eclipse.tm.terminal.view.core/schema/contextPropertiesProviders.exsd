@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.tm.terminal.view.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.terminal.view.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.tm.terminal.view.core" id="contextPropertiesProviders" name="Terminal Context Properties Providers"/>
+         <meta.schema plugin="org.eclipse.terminal.view.core" id="contextPropertiesProviders" name="Terminal Context Properties Providers"/>
       </appinfo>
       <documentation>
          This extension point is used to contribute terminal context properties providers. The context properties provider allows querying desired properties for a given context.

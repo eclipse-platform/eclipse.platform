@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.platform.terminal.feature"
+      id="org.eclipse.terminal.feature"
       label="%featureName"
       version="1.0.0.qualifier"
       provider-name="%providerName">
@@ -18,40 +18,40 @@
    </license>
 
    <requires>
-      <import plugin="org.eclipse.cdt.core.linux.x86_64"  filter="(&amp;(osgi.os=linux)(osgi.arch=x86_64))"/>
+      <import plugin="org.eclipse.cdt.core.linux.x86_64" filter="(&amp;(osgi.os=linux)(osgi.arch=x86_64))"/>
       <import plugin="org.eclipse.cdt.core.linux.ppc64le" filter="(&amp;(osgi.os=linux)(osgi.arch=ppc64le))"/>
       <import plugin="org.eclipse.cdt.core.linux.aarch64" filter="(&amp;(osgi.os=linux)(osgi.arch=aarch64))"/>
-      <import plugin="org.eclipse.cdt.core.macosx"        filter="(osgi.os=macosx)"/>
-      <import plugin="org.eclipse.cdt.core.win32.x86_64"  filter="(&amp;(osgi.os=win32)(osgi.arch=x86_64))"/>
+      <import plugin="org.eclipse.cdt.core.macosx" filter="(osgi.os=macosx)"/>
+      <import plugin="org.eclipse.cdt.core.win32.x86_64" filter="(&amp;(osgi.os=win32)(osgi.arch=x86_64))"/>
       <import plugin="org.eclipse.cdt.core.win32.aarch64" filter="(&amp;(osgi.os=win32)(osgi.arch=aarch64))"/>
    </requires>
 
    <plugin
-         id="org.eclipse.tm.terminal.control"
+         id="org.eclipse.terminal.control"
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.tm.terminal.view.core"
+         id="org.eclipse.terminal.view.core"
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.tm.terminal.view.ui"
+         id="org.eclipse.terminal.view.ui"
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.tm.terminal.connector.process"
+         id="org.eclipse.terminal.connector.process"
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.tm.terminal.connector.local"
+         id="org.eclipse.terminal.connector.local"
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.tm.terminal.connector.telnet"
+         id="org.eclipse.terminal.connector.telnet"
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.tm.terminal.connector.ssh"
+         id="org.eclipse.terminal.connector.ssh"
          version="0.0.0"/>
 
 </feature>

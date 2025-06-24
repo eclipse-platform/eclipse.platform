@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: org.eclipse.tm.terminal.control; singleton:=true
+Bundle-SymbolicName: org.eclipse.terminal.control; singleton:=true
 Bundle-Version: 5.6.100.qualifier
-Bundle-Activator: org.eclipse.tm.internal.terminal.control.impl.TerminalPlugin
+Bundle-Activator: org.eclipse.terminal.internal.control.impl.TerminalPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -11,15 +11,15 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-17
-Export-Package: org.eclipse.tm.internal.terminal.connector;x-internal:=true,
- org.eclipse.tm.internal.terminal.control,
- org.eclipse.tm.internal.terminal.control.actions,
- org.eclipse.tm.internal.terminal.control.impl;x-internal:=true,
- org.eclipse.tm.internal.terminal.emulator;x-internal:=true,
- org.eclipse.tm.internal.terminal.model;x-internal:=true,
- org.eclipse.tm.internal.terminal.preferences,
- org.eclipse.tm.internal.terminal.provisional.api,
- org.eclipse.tm.internal.terminal.provisional.api.provider,
- org.eclipse.tm.internal.terminal.textcanvas;x-internal:=true,
- org.eclipse.tm.terminal.model
-Automatic-Module-Name: org.eclipse.tm.terminal.control
+Export-Package: org.eclipse.terminal.internal.connector;x-internal:=true,
+ org.eclipse.terminal.internal.control,
+ org.eclipse.terminal.internal.control.actions,
+ org.eclipse.terminal.internal.control.impl;x-internal:=true,
+ org.eclipse.terminal.internal.emulator;x-internal:=true,
+ org.eclipse.terminal.internal.model;x-internal:=true,
+ org.eclipse.terminal.internal.preferences,
+ org.eclipse.terminal.internal.provisional.api,
+ org.eclipse.terminal.internal.provisional.api.provider,
+ org.eclipse.terminal.internal.textcanvas;x-internal:=true,
+ org.eclipse.terminal.model
+Automatic-Module-Name: org.eclipse.terminal.control

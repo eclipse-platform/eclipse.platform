@@ -16,7 +16,7 @@
 <!-- Property tester contributions -->
    <extension point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
-            class="org.eclipse.tm.terminal.view.core.internal.PropertyTester"
+            class="org.eclipse.terminal.view.core.internal.PropertyTester"
             id="org.eclipse.tm.terminal.view.core.PropertyTester"
             namespace="org.eclipse.tm.terminal.view.core"
             properties="hasContextPropertiesProvider"

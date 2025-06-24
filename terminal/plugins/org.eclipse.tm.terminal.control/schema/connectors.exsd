@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.tm.terminal.control" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.terminal.control" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.tm.terminal.control" id="connectors" name="Terminal Connector Extensions"/>
+         <meta.schema plugin="org.eclipse.terminal.control" id="connectors" name="Terminal Connector Extensions"/>
       </appInfo>
       <documentation>
          
@@ -55,7 +55,7 @@
                   A class extending TerminalConnectorImpl
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.tm.internal.terminal.provisional.api.provider.TerminalConnectorImpl:"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.terminal.internal.provisional.api.provider.TerminalConnectorImpl:"/>
                </appInfo>
             </annotation>
          </attribute>

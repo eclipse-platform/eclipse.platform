@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.debug.terminal.ui;
 
-import org.eclipse.tm.internal.terminal.provisional.api.ITerminalConnector;
+import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
 import org.eclipse.ui.console.AbstractConsole;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.part.IPageBookViewPage;
