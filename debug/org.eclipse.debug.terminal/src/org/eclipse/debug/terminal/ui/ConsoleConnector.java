@@ -17,10 +17,10 @@ import java.io.OutputStream;
 
 import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.cdt.utils.spawner.Spawner;
-import org.eclipse.tm.internal.terminal.provisional.api.ISettingsStore;
-import org.eclipse.tm.internal.terminal.provisional.api.ITerminalConnector;
-import org.eclipse.tm.internal.terminal.provisional.api.ITerminalControl;
-import org.eclipse.tm.internal.terminal.provisional.api.TerminalState;
+import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
+import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
+import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
+import org.eclipse.terminal.internal.provisional.api.TerminalState;
 
 class ConsoleConnector implements ITerminalConnector {
 

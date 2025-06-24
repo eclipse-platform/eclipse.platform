@@ -17,7 +17,7 @@
 <plugin>
    <extension point="org.eclipse.tm.terminal.control.connectors">
       <connector
-            class="org.eclipse.tm.internal.terminal.speedtest.SpeedTestConnector"
+            class="org.eclipse.terminal.internal.speedtest.SpeedTestConnector"
             id="org.eclipse.tm.internal.terminal.speedtest.SpeedTestConnector"
             name="Speed Test"/>
    </extension>

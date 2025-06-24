@@ -13,18 +13,18 @@
 <plugin>
 
 <!-- Terminal connector contributions -->
-   <extension point="org.eclipse.tm.terminal.control.connectors">
+   <extension point="org.eclipse.terminal.control.connectors">
       <connector
             name="%TelnetConnector.label"
-            id="org.eclipse.tm.terminal.connector.telnet.TelnetConnector"
-            class="org.eclipse.tm.terminal.connector.telnet.connector.TelnetConnector"/>
+            id="org.eclipse.terminal.connector.telnet.TelnetConnector"
+            class="org.eclipse.terminal.connector.telnet.connector.TelnetConnector"/>
    </extension>
 
 <!-- Terminal launcher delegate contributions -->
-   <extension point="org.eclipse.tm.terminal.view.ui.launcherDelegates">
+   <extension point="org.eclipse.terminal.view.ui.launcherDelegates">
       <delegate
-            class="org.eclipse.tm.terminal.connector.telnet.launcher.TelnetLauncherDelegate"
-            id="org.eclipse.tm.terminal.connector.telnet.launcher.telnet"
+            class="org.eclipse.terminal.connector.telnet.launcher.TelnetLauncherDelegate"
+            id="org.eclipse.terminal.connector.telnet.launcher.telnet"
             label="%TelnetLauncherDelegate.label">
             <enablement>
                <with variable="selection">
@@ -32,7 +32,7 @@
                   <iterate operator="and" ifEmpty="false">
                      <test
                            forcePluginActivation="true"
-                           property="org.eclipse.tm.terminal.view.core.hasContextPropertiesProvider"
+                           property="org.eclipse.terminal.view.core.hasContextPropertiesProvider"
                            value="true"/>
                   </iterate>
                </with>
