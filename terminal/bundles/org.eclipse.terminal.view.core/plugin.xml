@@ -17,8 +17,8 @@
    <extension point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
             class="org.eclipse.terminal.view.core.internal.PropertyTester"
-            id="org.eclipse.tm.terminal.view.core.PropertyTester"
-            namespace="org.eclipse.tm.terminal.view.core"
+            id="org.eclipse.terminal.view.core.PropertyTester"
+            namespace="org.eclipse.terminal.view.core"
             properties="hasContextPropertiesProvider"
             type="java.lang.Object">
       </propertyTester>

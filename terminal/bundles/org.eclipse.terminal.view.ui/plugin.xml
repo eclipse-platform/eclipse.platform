@@ -30,38 +30,10 @@
             id="org.eclipse.terminal.view.ui.TerminalsView"
             name="%TerminalsView.name">
       </view>
-
-      <!-- Bug 466644: Contribute another view with the old (TCF) ID to handle the ID change -->
-      <!-- The sole purpose of this view is to close itself when it's in an old workspace/persepctive -->
-      <view
-            allowMultiple="true"
-            class="org.eclipse.terminal.view.ui.view.OldTerminalsViewHandler"
-            icon="icons/eview16/terminal_view.gif"
-            id="org.eclipse.tcf.te.ui.terminals.TerminalsView"
-            name="%TerminalsView.name.old">
-      </view>
     </extension>
 
 <!-- Perspective extension contributions -->    
    <extension point="org.eclipse.ui.perspectiveExtensions">
-      <!-- This next line will be a warning about
-               Referenced identifier 'org.eclipse.tcf.te.ui.perspective' in attribute 'targetID' cannot be found
-           If you don't have TCF bundles in your target platform. As TCF is not part of standard CDT target platform
-           this message has been downgraded to a warning.
-        -->
-      <perspectiveExtension targetID="org.eclipse.tcf.te.ui.perspective">
-		 <!-- Register the view shortcuts  -->
-         <viewShortcut id="org.eclipse.terminal.view.ui.TerminalsView"/>
-         <!-- Place the Terminal view relative to the Task List view -->
-         <view
-               id="org.eclipse.terminal.view.ui.TerminalsView"
-               minimized="false"
-               relationship="stack"
-               relative="org.eclipse.ui.views.TaskList"
-               visible="false">
-         </view>
-      </perspectiveExtension>
-
       <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
 		 <!-- Register the view shortcuts  -->
          <viewShortcut id="org.eclipse.terminal.view.ui.TerminalsView"/>
@@ -84,19 +56,6 @@
                minimized="false"
                relationship="stack"
                relative="org.eclipse.ui.console.ConsoleView"
-               visible="false">
-         </view>
-      </perspectiveExtension>
-
-      <perspectiveExtension targetID="org.eclipse.cdt.ui.CPerspective">
-		 <!-- Register the view shortcuts  -->
-         <viewShortcut id="org.eclipse.terminal.view.ui.TerminalsView"/>
-         <!-- Place the Terminal view relative to the Task List view -->
-         <view
-               id="org.eclipse.terminal.view.ui.TerminalsView"
-               minimized="false"
-               relationship="stack"
-               relative="org.eclipse.ui.views.TaskList"
                visible="false">
          </view>
       </perspectiveExtension>

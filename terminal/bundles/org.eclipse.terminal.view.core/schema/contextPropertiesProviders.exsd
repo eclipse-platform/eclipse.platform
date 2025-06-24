@@ -64,10 +64,10 @@ The terminal context is passed in as default variable to the enablement expressi
          <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  The class that implements &lt;code&gt;org.eclipse.tm.terminal.view.core.interfaces.ITerminalContextPropertiesProvider&lt;/code&gt;.
+                  The class that implements &lt;code&gt;org.eclipse.terminal.view.core.interfaces.ITerminalContextPropertiesProvider&lt;/code&gt;.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.tm.terminal.view.core.interfaces.ITerminalContextPropertiesProvider"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.terminal.view.core.interfaces.ITerminalContextPropertiesProvider"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -91,7 +91,7 @@ The terminal context is passed in as default variable to the enablement expressi
          This is an example of the extension point usage:
 &lt;p&gt;
 &lt;pre&gt;&lt;code&gt;
-  &lt;extension point=&quot;org.eclipse.tm.terminal.view.core.contextPropertiesProviders&quot;&gt;
+  &lt;extension point=&quot;org.eclipse.terminal.view.core.contextPropertiesProviders&quot;&gt;
       &lt;contextPropertiesProvider
             class=&quot;com.my.contribution.MyContextPropertiesProviderImpl&quot;&gt;
       &lt;/contextPropertiesProvider&gt;
@@ -105,7 +105,7 @@ The terminal context is passed in as default variable to the enablement expressi
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         The provider of a terminal context properties provider must implement &lt;samp&gt;org.eclipse.tm.terminal.view.core.interfaces.ITerminalContextPropertiesProvider&lt;/samp&gt;.
+         The provider of a terminal context properties provider must implement &lt;samp&gt;org.eclipse.terminal.view.core.interfaces.ITerminalContextPropertiesProvider&lt;/samp&gt;.
       </documentation>
    </annotation>
 

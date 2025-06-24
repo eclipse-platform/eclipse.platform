@@ -22,4 +22,4 @@ Bundle-Localization: plugin
 Export-Package: org.eclipse.terminal.connector.local.activator;x-internal:=true,
  org.eclipse.terminal.connector.local.controls,
  org.eclipse.terminal.connector.local.launcher
-Automatic-Module-Name: org.eclipse.tm.terminal.connector.local
+Automatic-Module-Name: org.eclipse.terminal.connector.local
