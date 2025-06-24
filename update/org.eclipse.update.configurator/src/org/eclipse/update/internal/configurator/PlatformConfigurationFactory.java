@@ -36,8 +36,9 @@ public class PlatformConfigurationFactory implements IPlatformConfigurationFacto
 			PlatformConfiguration.startup(configLocation);
 		} catch (Exception e) {
 			String message = e.getMessage();
-			if (message == null)
+			if (message == null) {
 				message = ""; //$NON-NLS-1$
+			}
 			Utils.log(Utils.newStatus(message, e));
 		}
 		return PlatformConfiguration.getCurrent();
@@ -48,8 +49,9 @@ public class PlatformConfigurationFactory implements IPlatformConfigurationFacto
 		try {
 			return new PlatformConfiguration(url);
 		} catch (Exception e) {
-			if (e instanceof IOException)
+			if (e instanceof IOException) {
 				throw (IOException)e;
+			}
 			throw new IOException(e.getMessage());
 		}
 	}
@@ -59,8 +61,9 @@ public class PlatformConfigurationFactory implements IPlatformConfigurationFacto
 		try {
 			return new PlatformConfiguration(url, loc);
 		} catch (Exception e) {
-			if (e instanceof IOException)
+			if (e instanceof IOException) {
 				throw (IOException)e;
+			}
 			throw new IOException(e.getMessage());
 		}
 	}
@@ -73,8 +76,9 @@ public class PlatformConfigurationFactory implements IPlatformConfigurationFacto
 			try {
 				URL privateURL = new URL(configLocation.getURL(), ConfigurationActivator.NAME_SPACE);
 				File f = new File(privateURL.getFile());
-				if (!f.exists())
+				if (!f.exists()) {
 					f.mkdirs();
+				}
 			} catch (MalformedURLException e1) {
 				// ignore
 			}

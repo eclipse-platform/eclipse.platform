@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 public class BundleGroupComponent implements IBundleGroupProvider {
 
 
-	private org.eclipse.update.configurator.IPlatformConfigurationFactory factory;
+	private final org.eclipse.update.configurator.IPlatformConfigurationFactory factory;
 
 	@Activate
 	public BundleGroupComponent(@Reference org.eclipse.update.configurator.IPlatformConfigurationFactory factory) {
@@ -49,8 +49,9 @@ public class BundleGroupComponent implements IBundleGroupProvider {
 				.getConfiguredFeatureEntries();
 		ArrayList<IBundleGroup> bundleGroups = new ArrayList<>(features.length);
 		for (org.eclipse.update.configurator.IPlatformConfiguration.IFeatureEntry feature : features) {
-			if (feature instanceof FeatureEntry && ((FeatureEntry) feature).hasBranding())
+			if (feature instanceof FeatureEntry && ((FeatureEntry) feature).hasBranding()) {
 				bundleGroups.add((IBundleGroup) feature);
+			}
 		}
 		return bundleGroups.toArray(new IBundleGroup[bundleGroups.size()]);
 	}

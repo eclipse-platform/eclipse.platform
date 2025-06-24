@@ -33,21 +33,24 @@ public class VersionedIdentifier {
 	}
 
 	private boolean equalIdentifiers(VersionedIdentifier id) {
-		if (id == null)
+		if (id == null) {
 			return identifier == null;
+		}
 		return id.identifier.equals(identifier);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!(obj instanceof VersionedIdentifier))
+		}
+		if (!(obj instanceof VersionedIdentifier other)) {
 			return false;
+		}
 
-		VersionedIdentifier other = (VersionedIdentifier) obj;
-		if (!equalIdentifiers(other))
+		if (!equalIdentifiers(other)) {
 			return false;
+		}
 		return version.equals(other.getVersion());
 	}
 

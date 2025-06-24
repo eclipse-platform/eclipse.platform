@@ -56,20 +56,22 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 	public void parse(){
 		InputStream in = null;
 		try {
-			if (feature.getSite() == null)
+			if (feature.getSite() == null) {
 				return;
+			}
 			this.url = new URL(feature.getSite().getResolvedURL(), feature.getURL() + FEATURE_XML);
 			in = url.openStream();
 			parser.parse(new InputSource(in), this);
 		} catch (SAXException e) {
 		} catch (IOException e) {
 		} finally {
-			if (in != null)
+			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException e1) {
 					Utils.log(e1.getLocalizedMessage());
 				}
+			}
 		}
 	}
 
@@ -111,8 +113,9 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 			String os = attributes.getValue("os"); //$NON-NLS-1$
 			String ws = attributes.getValue("ws"); //$NON-NLS-1$
 			String arch = attributes.getValue("arch"); //$NON-NLS-1$
-			if (!Utils.isValidEnvironment(os, ws, arch,nl))
+			if (!Utils.isValidEnvironment(os, ws, arch,nl)) {
 				return;
+			}
 
 			PluginEntry plugin = new PluginEntry();
 			plugin.setPluginIdentifier(id);
@@ -131,8 +134,9 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 	@Override
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {
-		if (!isDescription)
+		if (!isDescription) {
 			return;
+		}
 		description.append(ch, start, length);
 	}
 

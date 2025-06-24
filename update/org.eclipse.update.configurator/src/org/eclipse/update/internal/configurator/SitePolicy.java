@@ -26,14 +26,16 @@ public class SitePolicy implements org.eclipse.update.configurator.IPlatformConf
 	public SitePolicy(int type, String[] list) {
 		if (type != org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.USER_INCLUDE
 				&& type != org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.USER_EXCLUDE
-				&& type != org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.MANAGED_ONLY)
+				&& type != org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.MANAGED_ONLY) {
 			throw new IllegalArgumentException();
+		}
 		this.type = type;
 
-		if (list == null)
+		if (list == null) {
 			this.list = new String[0];
-		else
+		} else {
 			this.list = list;
+		}
 	}
 
 	@Override
@@ -48,10 +50,11 @@ public class SitePolicy implements org.eclipse.update.configurator.IPlatformConf
 
 	@Override
 	public synchronized void setList(String[] list) {
-		if (list == null)
+		if (list == null) {
 			this.list = new String[0];
-		else
+		} else {
 			this.list = list;
+		}
 	}
 
 }

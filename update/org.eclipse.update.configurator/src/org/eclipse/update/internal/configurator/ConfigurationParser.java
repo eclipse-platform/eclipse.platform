@@ -72,8 +72,9 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 		try {
 			if ("file".equals(url.getProtocol())) { //$NON-NLS-1$
 				File inputFile = URIUtil.toFile(URIUtil.toURI(url));
-				if (!inputFile.exists() || !inputFile.canRead())
+				if (!inputFile.exists() || !inputFile.canRead()) {
 					return null;
+				}
 				lastModified = inputFile.lastModified();
 				try (InputStream input = new FileInputStream(inputFile)) {
 					parser.parse(new InputSource(input), this);
@@ -131,15 +132,17 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 	private void processSite(Attributes attributes)
 		throws MalformedURLException, CoreException {
 
-		if (config == null)
+		if (config == null) {
 			return;
+		}
 
 		// reset current site
 		currentSiteURL = null;
 
 		String urlString = attributes.getValue(CFG_URL);
-		if (urlString == null)
+		if (urlString == null) {
 			return;
+		}
 
 		URL url = null;
 		try {
@@ -155,8 +158,9 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 		URL root = property == null || property.length() == 0 ? Utils.getInstallURL() : new URL(property);
 		url = Utils.makeAbsolute(root, url);
 
-		if (!isValidSite(url))
+		if (!isValidSite(url)) {
 			return;
+		}
 
 		// use this new site
 		currentSiteURL = url;
@@ -183,8 +187,9 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 				if (pluginList != null) {
 					StringTokenizer st = new StringTokenizer(pluginList,","); //$NON-NLS-1$
 					policyList = new String[st.countTokens()];
-					for (i=0; i<policyList.length; i++)
+					for (i=0; i<policyList.length; i++) {
 						policyList[i] = st.nextToken();
+					}
 				}
 			}
 		}
@@ -194,17 +199,19 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 
 		String flag = attributes.getValue(CFG_UPDATEABLE);
 		if (flag != null) {
-			if (flag.equals("true")) //$NON-NLS-1$
+			if (flag.equals("true")) { //$NON-NLS-1$
 				site.setUpdateable(true);
-			else
+			} else {
 				site.setUpdateable(false);
+			}
 		}
 
 		flag = attributes.getValue(CFG_ENABLED);
-		if (flag != null && flag.equals("false")) //$NON-NLS-1$
+		if (flag != null && flag.equals("false")) { //$NON-NLS-1$
 			site.setEnabled(false);
-		else
+		} else {
 			site.setEnabled(true);
+		}
 
 		String linkname = attributes.getValue(CFG_LINK_FILE);
 		if (linkname != null && !linkname.isEmpty()) {
@@ -224,19 +231,23 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 	private void processFeature(Attributes attributes)
 		throws MalformedURLException, CoreException {
 
-		if (currentSiteURL == null)
+		if (currentSiteURL == null) {
 			return; // the site was not correct
+		}
 
 		String id = attributes.getValue(CFG_FEATURE_ENTRY_ID);
-		if (id == null)
+		if (id == null) {
 			return;
+		}
 		String version = attributes.getValue(CFG_FEATURE_ENTRY_VERSION);
 		String pluginVersion = attributes.getValue(CFG_FEATURE_ENTRY_PLUGIN_VERSION);
-		if (pluginVersion == null || pluginVersion.trim().length() == 0)
+		if (pluginVersion == null || pluginVersion.trim().length() == 0) {
 			pluginVersion = version;
+		}
 		String pluginIdentifier = attributes.getValue(CFG_FEATURE_ENTRY_PLUGIN_IDENTIFIER);
-		if (pluginIdentifier != null && pluginIdentifier.trim().length() == 0)
+		if (pluginIdentifier != null && pluginIdentifier.trim().length() == 0) {
 			pluginIdentifier = null;
+		}
 		String application = attributes.getValue(CFG_FEATURE_ENTRY_APPLICATION);
 
 		// get install locations
@@ -257,16 +268,18 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 		boolean primary = false;
 		String flag = attributes.getValue(CFG_FEATURE_ENTRY_PRIMARY);
 		if (flag != null) {
-			if (flag.equals("true")) //$NON-NLS-1$
+			if (flag.equals("true")) { //$NON-NLS-1$
 				primary = true;
+			}
 		}
 
 		FeatureEntry featureEntry =  new FeatureEntry(id, version, pluginIdentifier, pluginVersion, primary, application, roots);
 
 		// set the url
 		String url = attributes.getValue(CFG_URL);
-		if (url != null && url.trim().length() > 0)
+		if (url != null && url.trim().length() > 0) {
 			featureEntry.setURL(url);
+		}
 
 		SiteEntry site = config.getSiteEntry(currentSiteURL.toExternalForm());
 		site.addFeatureEntry(featureEntry);
@@ -282,9 +295,9 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 	 */
 	private void processConfig(Attributes attributes) {
 		String date = attributes.getValue(CFG_DATE);
-		if (date == null || date.trim().length() == 0)
+		if (date == null || date.trim().length() == 0) {
 			config = new Configuration(); // constructed with current date
-		else {
+		} else {
 			long time = 0;
 			try {
 				time = Long.parseLong(date);
@@ -313,8 +326,9 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 					 */
 					ConfigurationParser parser = new ConfigurationParser();
 					Configuration sharedConfig = parser.parse(sharedURL, installLocation);
-					if (sharedConfig == null)
+					if (sharedConfig == null) {
 						throw new Exception("Failed to parse shared configuration: " + sharedURL);
+					}
 					config.setLinkedConfig(sharedConfig);
 				}
 			}
@@ -340,16 +354,17 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 				if (url.getPath().startsWith("/config")) {
 					URL config_loc = new URL(configURL, "..");
 					resolvedURL = PlatformConfiguration.resolvePlatformURL(url, config_loc); // 19536
-				}
-				else
+				} else {
 					resolvedURL = PlatformConfiguration.resolvePlatformURL(url, config.getInstallURL()); // 19536
+				}
 			} catch (IOException e) {
 				// will use the baseline URL ...
 			}
 		}
 
-		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL()))
+		if (!PlatformConfiguration.supportsDetection(resolvedURL, config.getInstallURL())) {
 			return false;
+		}
 
 		File siteRoot = new File(resolvedURL.getFile().replace('/', File.separatorChar));
 		if (!siteRoot.exists()) {
@@ -374,8 +389,9 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 				// This is a bit of a hack.
 				// When no features were added to the site, but the site is initialized from platform.xml
 				// we need to set the feature set to empty, so we don't try to detect them.
-				for (SiteEntry site : config.getSites())
+				for (SiteEntry site : config.getSites()) {
 					site.initialized();
+				}
 				return;
 			}
 		} catch (Exception e) {

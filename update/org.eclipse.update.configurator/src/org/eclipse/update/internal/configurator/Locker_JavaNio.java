@@ -42,8 +42,9 @@ public class Locker_JavaNio implements Locker {
 		} catch(OverlappingFileLockException e) {
 			fileLock = null;
 		} finally {
-			if (fileLock != null)
+			if (fileLock != null) {
 				return true;
+			}
 			raf.close();
 			raf = null;
 		}
