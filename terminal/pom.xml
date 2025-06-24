@@ -22,7 +22,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>plugins</module>
+    <module>bundles</module>
     <module>features</module>
     <module>tests</module>
   </modules>
