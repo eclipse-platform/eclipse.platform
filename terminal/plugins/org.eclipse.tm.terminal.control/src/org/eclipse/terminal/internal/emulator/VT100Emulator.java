@@ -45,7 +45,7 @@ import java.util.Arrays;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
+import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.control.impl.ITerminalControlForText;
 import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
 import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;

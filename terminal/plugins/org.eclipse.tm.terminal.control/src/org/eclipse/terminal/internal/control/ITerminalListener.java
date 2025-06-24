@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.control;
 
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.provisional.api.TerminalState;
 
 /**
@@ -29,10 +28,31 @@ public interface ITerminalListener {
 	void setState(TerminalState state);
 
 	/**
-	 * @deprecated Migrate to implementing {@link ITerminalListener3} and
-	 * override {@link ITerminalListener3#setTerminalTitle(String, TerminalTitleRequestor)}
-	 * @param title
+	 * selection has been changed internally e.g. select all
+	 * clients might want to react on that
+	 * NOTE: this does not include mouse selections
+	 * those are handled in separate MouseListeners
+	 * TODO should be unified
 	 */
-	@Deprecated(forRemoval = true)
-	void setTerminalTitle(String title);
+	void setTerminalSelectionChanged();
+
+	/**
+	 * Enum defines terminal title change requestors for
+	 * setTerminalTitle method.
+	 *
+	 * @since 5.5
+	 */
+	enum TerminalTitleRequestor {
+		ANSI, // Terminal tab title change requested using ANSI command in terminal.
+		MENU, // Terminal tab title change requested from menu.
+		OTHER; // Terminal tab title change requested by other requestors.
+	}
+
+	/**
+	 * Set the title of the terminal.
+	 *
+	 * @param title Terminal title.
+	 * @param requestor Item that requests terminal title update.
+	 */
+	void setTerminalTitle(String title, TerminalTitleRequestor requestor);
 }

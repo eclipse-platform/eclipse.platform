@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
+import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
 import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
 import org.eclipse.terminal.internal.provisional.api.Logger;

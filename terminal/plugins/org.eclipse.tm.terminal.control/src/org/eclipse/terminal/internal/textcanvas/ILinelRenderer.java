@@ -17,7 +17,6 @@ package org.eclipse.terminal.internal.textcanvas;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.terminal.model.TerminalColor;
@@ -33,13 +32,6 @@ public interface ILinelRenderer {
 	void drawLine(ITextCanvasModel model, GC gc, int line, int x, int y, int colFirst, int colLast);
 
 	/**
-	 * Update for a font change from the global JFace Registry.
-	 * @deprecated Use {@link #updateFont(String)}
-	 */
-	@Deprecated
-	void onFontChange();
-
-	/**
 	 * Set a new font
 	 * @param fontName Jface name of the new font
 	 * @since 3.2
@@ -52,12 +44,6 @@ public interface ILinelRenderer {
 
 	boolean isInvertedColors();
 
-	/**
-	 * @deprecated use {@link #getDefaultBackgroundColor(Device)}
-	 */
-	@Deprecated
 	Color getDefaultBackgroundColor();
-
-	Color getDefaultBackgroundColor(Device device);
 
 }

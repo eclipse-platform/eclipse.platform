@@ -19,14 +19,19 @@ import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
  * @see ITerminalMouseListener2
  */
 public interface ITerminalMouseListener {
+
 	/**
 	 * Invoked when a double-click has happend inside the terminal control.<br>
 	 * <br>
 	 * <strong>Important:</strong> the event fires for every click, even outside the text region.
 	 * @param terminalText a read-only view of the current terminal text
 	 * @param button see {@link org.eclipse.swt.events.MouseEvent#button} for the meaning of the button values
+	 * @param stateMask see {@link org.eclipse.swt.events.MouseEvent#stateMask} for the meaning of the values
 	 */
-	void mouseDoubleClick(ITerminalTextDataReadOnly terminalText, int line, int column, int button);
+	default void mouseDoubleClick(ITerminalTextDataReadOnly terminalText, int line, int column, int button,
+			int stateMask) {
+		// do nothing by default so that implementors only need to implement methods they care about
+	}
 
 	/**
 	 * Invoked when a mouse button is pushed down inside the terminal control.<br>
@@ -34,8 +39,11 @@ public interface ITerminalMouseListener {
 	 * <strong>Important:</strong> the event fires for every mouse down, even outside the text region.
 	 * @param terminalText a read-only view of the current terminal text
 	 * @param button see {@link org.eclipse.swt.events.MouseEvent#button} for the meaning of the button values
+	 * @param stateMask see {@link org.eclipse.swt.events.MouseEvent#stateMask} for the meaning of the values
 	 */
-	void mouseDown(ITerminalTextDataReadOnly terminalText, int line, int column, int button);
+	default void mouseDown(ITerminalTextDataReadOnly terminalText, int line, int column, int button, int stateMask) {
+		// do nothing by default so that implementors only need to implement methods they care about
+	}
 
 	/**
 	 * Invoked when a mouse button is released inside the terminal control.<br>
@@ -43,6 +51,10 @@ public interface ITerminalMouseListener {
 	 * <strong>Important:</strong> the event fires for every mouse up, even outside the text region.
 	 * @param terminalText a read-only view of the current terminal text
 	 * @param button see {@link org.eclipse.swt.events.MouseEvent#button} for the meaning of the button values
+	 * @param stateMask see {@link org.eclipse.swt.events.MouseEvent#stateMask} for the meaning of the values
 	 */
-	void mouseUp(ITerminalTextDataReadOnly terminalText, int line, int column, int button);
+	default void mouseUp(ITerminalTextDataReadOnly terminalText, int line, int column, int button, int stateMask) {
+		// do nothing by default so that implementors only need to implement methods they care about
+	}
+
 }

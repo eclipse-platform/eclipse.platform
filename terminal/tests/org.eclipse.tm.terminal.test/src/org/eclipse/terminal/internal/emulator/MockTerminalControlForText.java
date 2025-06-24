@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.terminal.internal.control.ITerminalListener3.TerminalTitleRequestor;
+import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.control.impl.ITerminalControlForText;
 import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
 import org.eclipse.terminal.internal.provisional.api.TerminalState;

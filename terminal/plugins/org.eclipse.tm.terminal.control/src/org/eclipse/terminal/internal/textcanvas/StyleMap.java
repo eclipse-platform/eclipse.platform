@@ -164,14 +164,6 @@ public class StyleMap {
 	}
 
 	/**
-	 * @deprecated Use {@link #updateFont(String)}
-	 */
-	@Deprecated
-	public void updateFont() {
-		updateFont(ITerminalConstants.FONT_DEFINITION);
-	}
-
-	/**
 	 * Update the StyleMap for a new font name.
 	 * The font name must be a valid name in the Jface font registry.
 	 * @param fontName Jface name of the new font to use.
