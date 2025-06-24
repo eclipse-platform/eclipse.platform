@@ -16,7 +16,7 @@ package org.eclipse.update.internal.configurator.branding;
 /**
  * These constants define the set of properties that the UI expects to
  * be available via <code>IProduct.getProperty(String)</code>.
- * 
+ *
  * @since 3.0
  * @see org.eclipse.core.runtime.IProduct#getProperty(String)
  */
@@ -41,7 +41,7 @@ public interface IProductConstants {
 
 	/**
 	 * An image which can be shown in an "about" dialog for this
-	 * product. Products designed to run "headless" typically would not 
+	 * product. Products designed to run "headless" typically would not
 	 * have such an image.
 	 * <p>
 	 * A full-sized product image (no larger than 500x330 pixels) is
@@ -52,7 +52,7 @@ public interface IProductConstants {
 	public static final String ABOUT_IMAGE = "aboutImage"; //$NON-NLS-1$
 
 	/**
-	 * An image to be used as the window icon for this product (16x16).  
+	 * An image to be used as the window icon for this product (16x16).
 	 * Products designed to run "headless" typically would not have such an image.
 	 * <p>
 	 * If the <code>WINDOW_IMAGES</code> property is given, then it supercedes
@@ -64,7 +64,7 @@ public interface IProductConstants {
 	/**
 	 * An array of one or more images to be used for this product.  The
 	 * expectation is that the array will contain the same image rendered
-	 * at different sizes (16x16 and 32x32).  
+	 * at different sizes (16x16 and 32x32).
 	 * Products designed to run "headless" typically would not have such images.
 	 * <p>
 	 * If this property is given, then it supercedes <code>WINDOW_IMAGE</code>.

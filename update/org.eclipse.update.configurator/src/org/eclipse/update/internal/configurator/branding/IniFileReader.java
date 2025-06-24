@@ -90,8 +90,9 @@ public class IniFileReader {
 	 * 	of reading and parsing the INI file content
 	 */
 	public IStatus load() {
-		if (ini != null)
+		if (ini != null) {
 			return OK_STATUS;
+		}
 
 		// attempt to locate the corresponding plugin
 		bundle = Utils.getBundle(pluginId);
@@ -133,11 +134,13 @@ public class IniFileReader {
 	 * @return the string value for the given key, or <code>null</code>
 	 */
 	public String getString(String key, boolean doNls, Hashtable<String, String> runtimeMappings) {
-		if (ini == null)
+		if (ini == null) {
 			return null;
+		}
 		String value = ini.getProperty(key);
-		if (value != null && doNls)
+		if (value != null && doNls) {
 			return getResourceString(value, runtimeMappings);
+		}
 		return value;
 	}
 
@@ -148,14 +151,16 @@ public class IniFileReader {
 	 * @return a URL for the given key, or <code>null</code>
 	 */
 	public URL getURL(String key) {
-		if (ini == null)
+		if (ini == null) {
 			return null;
+		}
 
 		URL url = null;
 		String fileName = ini.getProperty(key);
 		if (fileName != null) {
-			if (bundle == null)
+			if (bundle == null) {
 				return null;
+			}
 			url = FileLocator.find(bundle, IPath.fromOSString(fileName), null);
 		}
 		return url;
@@ -171,12 +176,14 @@ public class IniFileReader {
 	 * @since 3.0
 	 */
 	public URL[] getURLs(String key) {
-		if (ini == null || bundle == null)
+		if (ini == null || bundle == null) {
 			return null;
+		}
 
 		String value = ini.getProperty(key);
-		if (value == null)
+		if (value == null) {
 			return null;
+		}
 
 		StringTokenizer tokens = new StringTokenizer(value, ","); //$NON-NLS-1$
 		ArrayList<URL> array = new ArrayList<>(10);
@@ -196,8 +203,9 @@ public class IniFileReader {
 	 * @return the feature plugin lable, or <code>null</code> if none.
 	 */
 	public String getFeaturePluginLabel() {
-		if (bundle == null)
+		if (bundle == null) {
 			return null;
+		}
 		return bundle.getHeaders().get(Constants.BUNDLE_NAME);
 	}
 
@@ -207,8 +215,9 @@ public class IniFileReader {
 	 * @return the provider name for this feature, or <code>null</code>
 	 */
 	public String getProviderName() {
-		if (bundle == null)
+		if (bundle == null) {
 			return null;
+		}
 		return bundle.getHeaders().get(Constants.BUNDLE_VENDOR);
 	}
 
@@ -246,22 +255,26 @@ public class IniFileReader {
 	 */
 	public String getResourceString(String value, Hashtable<String, String> runtimeMappings) {
 
-		if (value == null)
+		if (value == null) {
 			return null;
+		}
 		String s = value.trim();
 
-		if (!s.startsWith(KEY_PREFIX))
+		if (!s.startsWith(KEY_PREFIX)) {
 			return s;
+		}
 
-		if (s.startsWith(KEY_DOUBLE_PREFIX))
+		if (s.startsWith(KEY_DOUBLE_PREFIX)) {
 			return s.substring(1);
+		}
 
 		int ix = s.indexOf(" "); //$NON-NLS-1$
 		String key = ix == -1 ? s : s.substring(0, ix);
 		String dflt = ix == -1 ? s : s.substring(ix + 1);
 
-		if (properties == null)
+		if (properties == null) {
 			return dflt;
+		}
 
 		String result = null;
 		try {
@@ -311,8 +324,9 @@ public class IniFileReader {
 			return new Status(IStatus.ERROR, PID, 0, message, e);
 		} finally {
 			try {
-				if (is != null)
+				if (is != null) {
 					is.close();
+				}
 			} catch (IOException e) {
 			}
 		}
@@ -328,8 +342,9 @@ public class IniFileReader {
 				return new Status(IStatus.ERROR, PID, 0, message, e);
 			} finally {
 				try {
-					if (is != null)
+					if (is != null) {
 						is.close();
+					}
 				} catch (IOException e) {
 				}
 			}
@@ -347,8 +362,9 @@ public class IniFileReader {
 				return new Status(IStatus.ERROR, PID, 0, message, e);
 			} finally {
 				try {
-					if (is != null)
+					if (is != null) {
 						is.close();
+					}
 				} catch (IOException e) {
 				}
 			}

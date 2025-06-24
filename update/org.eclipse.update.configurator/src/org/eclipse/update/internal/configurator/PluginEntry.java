@@ -114,8 +114,9 @@ public class PluginEntry {
 	 * Returns the identifier of this plugin entry
 	 */
 	public VersionedIdentifier getVersionedIdentifier() {
-		if (versionId != null)
+		if (versionId != null) {
 			return versionId;
+		}
 
 		String id = getPluginIdentifier();
 		String ver = getPluginVersion();
@@ -149,9 +150,9 @@ public class PluginEntry {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof PluginEntry))
+		if (!(object instanceof PluginEntry e)) {
 			return false;
-		PluginEntry e = (PluginEntry) object;
+		}
 		return getVersionedIdentifier().equals(e.getVersionedIdentifier());
 	}
 
