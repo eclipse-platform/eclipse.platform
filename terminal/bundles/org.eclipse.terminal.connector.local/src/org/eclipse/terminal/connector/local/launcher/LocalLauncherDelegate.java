@@ -95,8 +95,9 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 			} else {
 				encoding = WorkbenchEncoding.getWorkbenchDefaultEncoding();
 			}
-			if (encoding != null && !"".equals(encoding)) //$NON-NLS-1$
+			if (encoding != null && !"".equals(encoding)) { //$NON-NLS-1$
 				properties.put(ITerminalsConnectorConstants.PROP_ENCODING, encoding);
+			}
 		}
 
 		// For local terminals, force a new terminal tab each time it is launched,
@@ -163,8 +164,9 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 		if ((service != null && service.getSelection() != null)
 				|| properties.containsKey(ITerminalsConnectorConstants.PROP_SELECTION)) {
 			ISelection selection = (ISelection) properties.get(ITerminalsConnectorConstants.PROP_SELECTION);
-			if (selection == null && service != null)
+			if (selection == null && service != null) {
 				selection = service.getSelection();
+			}
 			if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
 				String dir = null;
 				Iterator<?> iter = ((IStructuredSelection) selection).iterator();
@@ -176,23 +178,27 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 							&& bundle.getState() != Bundle.STOPPING) {
 						// If the element is not an IResource, try to adapt to IResource
 						if (!(element instanceof org.eclipse.core.resources.IResource)) {
-							Object adapted = element instanceof IAdaptable
-									? ((IAdaptable) element).getAdapter(org.eclipse.core.resources.IResource.class)
+							Object adapted = element instanceof IAdaptable i
+									? i.getAdapter(org.eclipse.core.resources.IResource.class)
 									: null;
-							if (adapted == null)
+							if (adapted == null) {
 								adapted = Platform.getAdapterManager().getAdapter(element,
 										org.eclipse.core.resources.IResource.class);
-							if (adapted != null)
+							}
+							if (adapted != null) {
 								element = adapted;
+							}
 						}
 
 						if (element instanceof org.eclipse.core.resources.IResource
 								&& ((org.eclipse.core.resources.IResource) element).exists()) {
 							IPath location = ((org.eclipse.core.resources.IResource) element).getLocation();
-							if (location == null)
+							if (location == null) {
 								continue;
-							if (location.toFile().isFile())
+							}
+							if (location.toFile().isFile()) {
 								location = location.removeLastSegments(1);
+							}
 							if (location.toFile().isDirectory() && location.toFile().canRead()) {
 								dir = location.toFile().getAbsolutePath();
 								break;
@@ -200,7 +206,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 						}
 
 						if (element instanceof IPath || element instanceof File) {
-							File f = element instanceof IPath ? ((IPath) element).toFile() : (File) element;
+							File f = element instanceof IPath i ? i.toFile() : (File) element;
 							if (f.isDirectory() && f.canRead()) {
 								dir = f.getAbsolutePath();
 								break;
@@ -235,8 +241,9 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 	private String getTerminalTitle(Map<String, Object> properties) {
 		// Try to see if the user set a title explicitly via the properties map.
 		String title = getDefaultTerminalTitle(properties);
-		if (title != null)
+		if (title != null) {
 			return title;
+		}
 
 		try {
 			String hostname = InetAddress.getLocalHost().getHostName();
@@ -293,8 +300,9 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 
 		// Check for the terminal connector id
 		String connectorId = (String) properties.get(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID);
-		if (connectorId == null)
+		if (connectorId == null) {
 			connectorId = "org.eclipse.terminal.connector.local.LocalConnector"; //$NON-NLS-1$
+		}
 
 		// Extract the process properties using defaults
 		String image;
@@ -357,8 +365,9 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 
 		// Set the ECLIPSE_HOME and ECLIPSE_WORKSPACE environment variables
 		List<String> envpList = new ArrayList<>();
-		if (envp != null)
+		if (envp != null) {
 			envpList.addAll(Arrays.asList(envp));
+		}
 
 		// ECLIPSE_HOME
 		String eclipseHomeLocation = System.getProperty("eclipse.home.location"); //$NON-NLS-1$
@@ -406,7 +415,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 		if (properties.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_MERGE_ENVIRONMENT)) {
 			Object value = properties.get(ITerminalsConnectorConstants.PROP_PROCESS_MERGE_ENVIRONMENT);
 			processSettings
-					.setMergeWithNativeEnvironment(value instanceof Boolean ? ((Boolean) value).booleanValue() : false);
+					.setMergeWithNativeEnvironment(value instanceof Boolean b ? b.booleanValue() : false);
 		}
 
 		// And save the settings to the store
