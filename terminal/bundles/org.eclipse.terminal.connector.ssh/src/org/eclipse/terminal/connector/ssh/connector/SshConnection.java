@@ -76,14 +76,16 @@ public class SshConnection extends Thread {
 	protected Session createSession(String username, String password, String hostname, int port, UserInfo wrapperUI,
 			IProgressMonitor monitor) throws JSchException {
 		IJSchService service = UIPlugin.getDefault().getJSchService();
-		if (service == null)
+		if (service == null) {
 			return null;
+		}
 		Session session = service.createSession(hostname, port, username);
 		//session.setTimeout(getSshTimeoutInMillis());
 		session.setTimeout(0); //never time out on the session
 		session.setServerAliveCountMax(6); //give up after 6 tries (remote will be dead after 30 min)
-		if (password != null)
+		if (password != null) {
 			session.setPassword(password);
+		}
 		session.setUserInfo(wrapperUI);
 		return session;
 	}
@@ -125,14 +127,16 @@ public class SshConnection extends Thread {
 			}
 			// dont try to connect if disconnect has been requested already
 			synchronized (this) {
-				if (fDisconnectHasBeenCalled)
+				if (fDisconnectHasBeenCalled) {
 					return;
+				}
 			}
 
 			session.connect(nTimeout); // making connection with timeout.
 			// if we got disconnected, do not continue
-			if (!isSessionConnected())
+			if (!isSessionConnected()) {
 				return;
+			}
 			ChannelShell channel = (ChannelShell) session.openChannel("shell"); //$NON-NLS-1$
 			channel.setPtyType("xterm"); //$NON-NLS-1$
 			// TERM=xterm implies VT100 line wrapping mode
@@ -360,8 +364,9 @@ public class SshConnection extends Thread {
 					}
 				});
 				String[] result = finResult[0];
-				if (result == null)
+				if (result == null) {
 					return null; // cancelled
+				}
 				if (result.length == 1 && prompt.length == 1 && prompt[0].trim().equalsIgnoreCase("password:")) { //$NON-NLS-1$
 					fPassword = result[0];
 				}
