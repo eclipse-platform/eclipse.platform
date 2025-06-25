@@ -427,11 +427,11 @@
 
       <activityPatternBinding
             activityId="org.eclipse.terminal.view.ui.activity.views"
-            pattern="org\.eclipse\.tm\.terminal\.view\.ui/org\.eclipse\.tm\.terminal\.view\.ui\.TerminalsView">
+            pattern="org\.eclipse\.terminal\.view\.ui/org\.eclipse\.terminal\.view\.ui\.TerminalsView">
       </activityPatternBinding>
       <activityPatternBinding
             activityId="org.eclipse.terminal.view.ui.activity.views"
-            pattern="org\.eclipse\.tm\.terminal\.view\.ui/org\.eclipse\.tm\.terminal\.view\.ui\.commands\.^(?!org\.eclipse\.tm\.terminal\.view\.ui\.commands\.launchToolbar).*">
+            pattern="org\.eclipse\.terminal\.view\.ui/org\.eclipse\.terminal\.view\.ui\.commands\.^(?!org\.eclipse\.terminal\.view\.ui\.commands\.launchToolbar).*">
       </activityPatternBinding>
       
       <categoryActivityBinding
@@ -477,11 +477,11 @@
 
       <activityPatternBinding
             activityId="org.eclipse.terminal.view.ui.activity.maintoolbar"
-            pattern="org\.eclipse\.tm\.terminal\.view\.ui/org\.eclipse\.tm\.terminal\.view\.ui\.toolbar">
+            pattern="org\.eclipse\.terminal\.view\.ui/org\.eclipse\.terminal\.view\.ui\.toolbar">
       </activityPatternBinding>
       <activityPatternBinding
             activityId="org.eclipse.terminal.view.ui.activity.maintoolbar"
-            pattern="org\.eclipse\.tm\.terminal\.view\.ui/org\.eclipse\.tm\.terminal\.view\.ui\.commands\.launchToolbar">
+            pattern="org\.eclipse\.terminal\.view\.ui/org\.eclipse\.terminal\.view\.ui\.command.*\.launchToolbar">
       </activityPatternBinding>
 
       <categoryActivityBinding
