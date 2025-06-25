@@ -61,8 +61,9 @@ public class ProcessLauncherDelegate extends AbstractLauncherDelegate {
 
 		// Check for the terminal connector id
 		String connectorId = (String) properties.get(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID);
-		if (connectorId == null)
+		if (connectorId == null) {
 			connectorId = "org.eclipse.terminal.connector.process.ProcessConnector"; //$NON-NLS-1$
+		}
 
 		// Extract the process properties
 		String image = (String) properties.get(ITerminalsConnectorConstants.PROP_PROCESS_PATH);
@@ -70,7 +71,7 @@ public class ProcessLauncherDelegate extends AbstractLauncherDelegate {
 		Process process = (Process) properties.get(ITerminalsConnectorConstants.PROP_PROCESS_OBJ);
 		PTY pty = (PTY) properties.get(ITerminalsConnectorConstants.PROP_PTY_OBJ);
 		Object value = properties.get(ITerminalsConnectorConstants.PROP_LOCAL_ECHO);
-		boolean localEcho = value instanceof Boolean ? ((Boolean) value).booleanValue() : false;
+		boolean localEcho = value instanceof Boolean b ? b.booleanValue() : false;
 		String lineSeparator = (String) properties.get(ITerminalsConnectorConstants.PROP_LINE_SEPARATOR);
 		ITerminalServiceOutputStreamMonitorListener[] stdoutListeners = (ITerminalServiceOutputStreamMonitorListener[]) properties
 				.get(ITerminalsConnectorConstants.PROP_STDOUT_LISTENERS);
@@ -106,7 +107,7 @@ public class ProcessLauncherDelegate extends AbstractLauncherDelegate {
 		if (properties.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_MERGE_ENVIRONMENT)) {
 			value = properties.get(ITerminalsConnectorConstants.PROP_PROCESS_MERGE_ENVIRONMENT);
 			processSettings
-					.setMergeWithNativeEnvironment(value instanceof Boolean ? ((Boolean) value).booleanValue() : false);
+					.setMergeWithNativeEnvironment(value instanceof Boolean b ? b.booleanValue() : false);
 		}
 
 		// And save the settings to the store

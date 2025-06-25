@@ -194,8 +194,9 @@ public class ProcessConnector extends AbstractStreamsConnector {
 
 			// Enable VT100 line wrapping if we are connected via pty
 			// And TERM is VT100 compatible
-			if (pty != null && !isAnsiTerminal)
+			if (pty != null && !isAnsiTerminal) {
 				control.setVT100LineWrapping(true);
+			}
 
 			// connect the streams
 			connectStreams(control, process.getOutputStream(), process.getInputStream(),
@@ -214,8 +215,9 @@ public class ProcessConnector extends AbstractStreamsConnector {
 			Shell shell = control.getShell();
 			// Lookup the tab item
 			CTabItem item = ConsoleManager.getInstance().findConsole(control);
-			if (item != null)
+			if (item != null) {
 				item.dispose();
+			}
 			// Get the error message from the exception
 			String msg = e.getLocalizedMessage() != null ? e.getLocalizedMessage() : ""; //$NON-NLS-1$
 			Assert.isNotNull(msg);
@@ -229,10 +231,13 @@ public class ProcessConnector extends AbstractStreamsConnector {
 	}
 
 	private static String getTermVariable(String[] envp) {
-		if (envp != null && !Platform.OS_WIN32.equals(Platform.getOS()))
-			for (String var : envp)
-				if (var.startsWith("TERM=")) //$NON-NLS-1$
+		if (envp != null && !Platform.OS_WIN32.equals(Platform.getOS())) {
+			for (String var : envp) {
+				if (var.startsWith("TERM=")) { //$NON-NLS-1$
 					return var.substring(5);
+				}
+			}
+		}
 		return "xterm"; //$NON-NLS-1$
 	}
 
