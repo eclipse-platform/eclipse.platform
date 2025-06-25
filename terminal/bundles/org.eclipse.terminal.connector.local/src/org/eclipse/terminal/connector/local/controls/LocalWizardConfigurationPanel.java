@@ -66,8 +66,9 @@ public class LocalWizardConfigurationPanel extends AbstractExtendedConfiguration
 			setEncoding("UTF-8"); //$NON-NLS-1$
 		} else {
 			String encoding = WorkbenchEncoding.getWorkbenchDefaultEncoding();
-			if (encoding != null && !"".equals(encoding)) //$NON-NLS-1$
+			if (encoding != null && !"".equals(encoding)) { //$NON-NLS-1$
 				setEncoding(encoding);
+			}
 		}
 
 		// Fill the rest of the panel with a label to be able to
@@ -102,12 +103,14 @@ public class LocalWizardConfigurationPanel extends AbstractExtendedConfiguration
 
 	@Override
 	public void setupData(Map<String, Object> data) {
-		if (data == null)
+		if (data == null) {
 			return;
+		}
 
 		String value = (String) data.get(ITerminalsConnectorConstants.PROP_ENCODING);
-		if (value != null)
+		if (value != null) {
 			setEncoding(value);
+		}
 	}
 
 	@Override
