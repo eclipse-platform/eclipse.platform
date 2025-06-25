@@ -312,9 +312,10 @@ class TelnetOption implements TelnetCodes {
 	 *                          we desire this option to be disabled.
 	 */
 	public void setDesired(boolean newValue) {
-		if (newValue)
+		if (newValue) {
 			Logger.log("Setting " + (local ? "local" : "remote") + " option " + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					optionName() + " as desired."); //$NON-NLS-1$
+		}
 
 		desired = newValue;
 	}

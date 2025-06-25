@@ -68,15 +68,17 @@ public class TelnetSettingsPage extends AbstractSettingsPage {
 	}
 
 	private void setHost(String strHost) {
-		if (strHost == null)
+		if (strHost == null) {
 			strHost = ""; //$NON-NLS-1$
+		}
 		fHostText.setText(strHost);
 
 	}
 
 	private void setTimeout(String timeout) {
-		if (timeout == null || timeout.length() == 0)
+		if (timeout == null || timeout.length() == 0) {
 			timeout = "5"; //$NON-NLS-1$
+		}
 		fTimeout.setText(timeout);
 
 	}

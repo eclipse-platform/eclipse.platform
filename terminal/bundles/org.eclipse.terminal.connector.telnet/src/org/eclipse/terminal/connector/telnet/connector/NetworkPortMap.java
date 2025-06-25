@@ -38,16 +38,18 @@ public class NetworkPortMap {
 
 	public String findPortName(String strPort) {
 		for (int i = 0; i < fPortMap.length; i++) {
-			if (fPortMap[i][1].equals(strPort))
+			if (fPortMap[i][1].equals(strPort)) {
 				return fPortMap[i][0];
+			}
 		}
 		return null;
 	}
 
 	public String findPort(String strPortName) {
 		for (int i = 0; i < fPortMap.length; i++) {
-			if (fPortMap[i][0].equals(strPortName))
+			if (fPortMap[i][0].equals(strPortName)) {
 				return fPortMap[i][1];
+			}
 		}
 		return null;
 	}

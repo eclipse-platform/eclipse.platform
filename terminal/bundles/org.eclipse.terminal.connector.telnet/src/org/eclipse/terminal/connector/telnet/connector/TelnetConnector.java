@@ -47,18 +47,20 @@ public class TelnetConnector extends TerminalConnectorImpl {
 
 		public TelnetOutputStream(OutputStream outputStream, String endOfLine) {
 			super(outputStream);
-			if (ITelnetSettings.EOL_CRLF.equals(endOfLine))
+			if (ITelnetSettings.EOL_CRLF.equals(endOfLine)) {
 				EOL = CRLF;
-			else
+			} else {
 				EOL = CRNUL;
+			}
 		}
 
 		@Override
 		public void write(int b) throws IOException {
-			if (b == CR)
+			if (b == CR) {
 				out.write(EOL);
-			else
+			} else {
 				out.write(b);
+			}
 		}
 	}
 
@@ -119,8 +121,9 @@ public class TelnetConnector extends TerminalConnectorImpl {
 
 	@Override
 	public boolean isLocalEcho() {
-		if (fTelnetConnection == null)
+		if (fTelnetConnection == null) {
 			return false;
+		}
 		return fTelnetConnection.localEcho();
 	}
 
