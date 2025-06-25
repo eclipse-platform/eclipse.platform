@@ -21,7 +21,7 @@ import org.eclipse.terminal.view.ui.panels.AbstractConfigurationPanel;
  */
 public class ErrorSettingsPanel extends AbstractConfigurationPanel {
 
-	private String errorMessage;
+	private final String errorMessage;
 
 	/**
 	 * Constructor.

@@ -143,8 +143,9 @@ public class UIPlugin extends AbstractUIPlugin {
 								// Loop the tab items and find the still connected ones
 								for (CTabItem item : items) {
 									// Ignore disposed items
-									if (item.isDisposed())
+									if (item.isDisposed()) {
 										continue;
+									}
 									// Get the terminal view control
 									ITerminalViewControl terminal = (ITerminalViewControl) item.getData();
 									if (terminal == null || terminal.getState() != TerminalState.CONNECTED) {
@@ -158,8 +159,9 @@ public class UIPlugin extends AbstractUIPlugin {
 							// Push the determined saveable items to the memento handler
 							TerminalsViewMementoHandler mementoHandler = ((TerminalsView) part)
 									.getAdapter(TerminalsViewMementoHandler.class);
-							if (mementoHandler != null)
+							if (mementoHandler != null) {
 								mementoHandler.setSaveables(saveables);
+							}
 						}
 					}
 				}
@@ -183,8 +185,9 @@ public class UIPlugin extends AbstractUIPlugin {
 	void activateContexts() {
 		if (Display.getCurrent() != null) {
 			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			if (window != null && windowListener != null)
+			if (window != null && windowListener != null) {
 				windowListener.windowOpened(window);
+			}
 		} else {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(() -> activateContexts());
 		}
@@ -267,8 +270,9 @@ public class UIPlugin extends AbstractUIPlugin {
 
 	public static boolean isOptionEnabled(String strOption) {
 		String strEnabled = Platform.getDebugOption(strOption);
-		if (strEnabled == null)
+		if (strEnabled == null) {
 			return false;
+		}
 
 		return Boolean.parseBoolean(strEnabled);
 	}

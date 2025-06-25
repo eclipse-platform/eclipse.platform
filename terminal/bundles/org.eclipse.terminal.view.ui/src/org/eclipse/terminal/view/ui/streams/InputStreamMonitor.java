@@ -139,8 +139,9 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 	 */
 	public final void addDisposable(IDisposable disposable) {
 		Assert.isNotNull(disposable);
-		if (!disposed && !disposables.contains(disposable))
+		if (!disposed && !disposables.contains(disposable)) {
 			disposables.add(disposable);
+		}
 	}
 
 	/**
@@ -156,8 +157,9 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 	@Override
 	public void dispose() {
 		// If already disposed --> return immediately
-		if (disposed)
+		if (disposed) {
 			return;
+		}
 
 		disposalComing();
 
@@ -173,8 +175,9 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 		close();
 
 		// Dispose all registered disposable objects
-		for (IDisposable disposable : disposables)
+		for (IDisposable disposable : disposables) {
 			disposable.dispose();
+		}
 		// Clear the list
 		disposables.clear();
 	}
@@ -185,8 +188,9 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 	@Override
 	public void close() {
 		// Not initialized -> return immediately
-		if (thread == null)
+		if (thread == null) {
 			return;
+		}
 
 		// Copy the reference
 		final Thread oldThread = thread;
@@ -201,8 +205,9 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 	 */
 	public void startMonitoring() {
 		// If already initialized -> return immediately
-		if (thread != null)
+		if (thread != null) {
 			return;
+		}
 
 		// Create a new runnable which is constantly reading from the stream
 		Runnable runnable = () -> writeStream();
@@ -227,8 +232,9 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 			// If the queue is empty, wait until notified
 			synchronized (queue) {
 				while (queue.isEmpty()) {
-					if (disposed)
+					if (disposed) {
 						break outer;
+					}
 					try {
 						queue.wait();
 					} catch (InterruptedException e) {
@@ -252,8 +258,9 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 						// Flush the stream immediately
 						stream.flush();
 						// Wait a little between writes to allow input being processed
-						if (written < data.length)
+						if (written < data.length) {
 							Thread.sleep(100);
+						}
 					}
 				} catch (IOException e) {
 					// IOException received. If this is happening when already disposed -> ignore
@@ -289,8 +296,9 @@ public class InputStreamMonitor extends OutputStream implements IDisposable {
 		// here as the base class does.
 
 		// Null check. See the implementation in OutputStream.
-		if (b == null)
+		if (b == null) {
 			throw new NullPointerException();
+		}
 
 		// Boundary check. See the implementation in OutputStream.
 		if ((off < 0) || (off > b.length) || (len < 0) || ((off + len) > b.length) || ((off + len) < 0)) {

@@ -84,8 +84,9 @@ public class TabFolderMenuHandler extends PlatformObject {
 		 * @param manager The menu manager or <code>null</code>
 		 */
 		private void removeInvalidContributions(IMenuManager manager) {
-			if (manager == null)
+			if (manager == null) {
 				return;
+			}
 
 			IContributionItem[] items = manager.getItems();
 			for (IContributionItem item : items) {
@@ -236,7 +237,7 @@ public class TabFolderMenuHandler extends PlatformObject {
 								.containsKey(ITerminalsConnectorConstants.PROP_TRANSLATE_BACKSLASHES_ON_PASTE)) {
 							Object value = properties
 									.get(ITerminalsConnectorConstants.PROP_TRANSLATE_BACKSLASHES_ON_PASTE);
-							needsTranslation = value instanceof Boolean ? ((Boolean) value).booleanValue() : false;
+							needsTranslation = value instanceof Boolean b ? b.booleanValue() : false;
 						}
 					}
 				}

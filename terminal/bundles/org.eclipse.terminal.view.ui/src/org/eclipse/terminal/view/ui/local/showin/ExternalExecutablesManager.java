@@ -94,21 +94,24 @@ public class ExternalExecutablesManager {
 
 					Map<Integer, Map<String, String>> c = new HashMap<>();
 					for (String name : data.stringPropertyNames()) {
-						if (name == null || name.indexOf('.') == -1)
+						if (name == null || name.indexOf('.') == -1) {
 							continue;
+						}
 						int ix = name.indexOf('.');
 						String n = name.substring(0, ix);
 						String k = (ix + 1) < name.length() ? name.substring(ix + 1) : null;
-						if (n == null || k == null)
+						if (n == null || k == null) {
 							continue;
+						}
 
 						Integer i = null;
 						try {
 							i = Integer.decode(n);
 						} catch (NumberFormatException e) {
 							/* ignored on purpose */ }
-						if (i == null)
+						if (i == null) {
 							continue;
+						}
 
 						Map<String, String> m = c.get(i);
 						if (m == null) {
@@ -124,20 +127,22 @@ public class ExternalExecutablesManager {
 					Collections.sort(k);
 					for (Integer i : k) {
 						Map<String, String> m = c.get(i);
-						if (m != null && !m.isEmpty())
+						if (m != null && !m.isEmpty()) {
 							externalExecutables.add(m);
+						}
 					}
 				} catch (Exception e) {
 					if (Platform.inDebugMode()) {
 						e.printStackTrace();
 					}
 				} finally {
-					if (r != null)
+					if (r != null) {
 						try {
 							r.close();
 						} catch (IOException e) {
 							/* ignored on purpose */
 						}
+					}
 				}
 			}
 		}
@@ -171,8 +176,9 @@ public class ExternalExecutablesManager {
 				@SuppressWarnings("unused")
 				boolean s = f.delete();
 
-				if (stateService != null)
+				if (stateService != null) {
 					stateService.disable();
+				}
 			} else {
 				FileWriter w = null;
 
@@ -194,8 +200,9 @@ public class ExternalExecutablesManager {
 					w = new FileWriter(f);
 					data.store(w, null);
 
-					if (stateService != null)
+					if (stateService != null) {
 						stateService.enable();
+					}
 				} catch (Exception e) {
 					if (Platform.inDebugMode()) {
 						e.printStackTrace();

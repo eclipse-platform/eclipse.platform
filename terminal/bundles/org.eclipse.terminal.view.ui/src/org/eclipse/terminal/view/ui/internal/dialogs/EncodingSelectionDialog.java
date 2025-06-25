@@ -184,8 +184,9 @@ public class EncodingSelectionDialog extends TrayDialog {
 	@Override
 	protected void okPressed() {
 		// Save the selected encoding
-		if (encodingPanel != null)
+		if (encodingPanel != null) {
 			encoding = encodingPanel.getEncoding();
+		}
 		super.okPressed();
 	}
 

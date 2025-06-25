@@ -117,8 +117,9 @@ public abstract class AbstractExtendedConfigurationPanel extends AbstractConfigu
 			ITerminalContextPropertiesProvider provider = TerminalContextPropertiesProviderFactory.getProvider(element);
 			if (provider != null) {
 				Object encoding = provider.getProperty(element, IContextPropertiesConstants.PROP_DEFAULT_ENCODING);
-				if (encoding instanceof String)
+				if (encoding instanceof String) {
 					return ((String) encoding).trim();
+				}
 			}
 		}
 
@@ -253,8 +254,9 @@ public abstract class AbstractExtendedConfigurationPanel extends AbstractConfigu
 		if (isWithoutSelection()) {
 			if (hostCombo != null) {
 				String host = getHostFromSettings();
-				if (host != null)
+				if (host != null) {
 					settings.put(LAST_HOST_TAG, host);
+				}
 			}
 		}
 
@@ -492,8 +494,9 @@ public abstract class AbstractExtendedConfigurationPanel extends AbstractConfigu
 
 						// Remember the last 5 custom encodings entered
 						if (!encodingHistory.contains(encoding)) {
-							if (encodingHistory.size() == 5)
+							if (encodingHistory.size() == 5) {
 								encodingHistory.remove(4);
+							}
 							encodingHistory.add(encoding);
 						}
 
@@ -566,14 +569,17 @@ public abstract class AbstractExtendedConfigurationPanel extends AbstractConfigu
 	private void addEncodings(List<String> encodings, String... toadd) {
 		Set<String> aliases = new HashSet<>();
 		for (String name : toadd) {
-			if (name == null)
+			if (name == null) {
 				continue;
+			}
 			try {
 				Charset cs = Charset.forName(name);
-				if (aliases.containsAll(cs.aliases()))
+				if (aliases.containsAll(cs.aliases())) {
 					continue;
-				if (aliases.contains(name.toLowerCase()))
+				}
+				if (aliases.contains(name.toLowerCase())) {
 					continue;
+				}
 				aliases.addAll(cs.aliases());
 				aliases.add(name.toLowerCase());
 				encodings.add(name);
@@ -613,9 +619,9 @@ public abstract class AbstractExtendedConfigurationPanel extends AbstractConfigu
 
 		if (encodingCombo != null && !encodingCombo.isDisposed()) {
 			int index = encodingCombo.indexOf("UTF-8".equals(encoding) ? "Default (UTF-8)" : encoding); //$NON-NLS-1$ //$NON-NLS-2$
-			if (index != -1)
+			if (index != -1) {
 				encodingCombo.select(index);
-			else {
+			} else {
 				encodingCombo.add(encoding, encodingCombo.getItemCount() - 1);
 				encodingCombo.select(encodingCombo.indexOf(encoding));
 			}

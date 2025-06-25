@@ -117,8 +117,9 @@ public class OutputStreamMonitor implements IDisposable {
 	 */
 	public final void addDisposable(IDisposable disposable) {
 		Assert.isNotNull(disposable);
-		if (!disposed && !disposables.contains(disposable))
+		if (!disposed && !disposables.contains(disposable)) {
 			disposables.add(disposable);
+		}
 	}
 
 	/**
@@ -134,8 +135,9 @@ public class OutputStreamMonitor implements IDisposable {
 	@Override
 	public void dispose() {
 		// If already disposed --> return immediately
-		if (disposed)
+		if (disposed) {
 			return;
+		}
 
 		disposalComing();
 
@@ -149,8 +151,9 @@ public class OutputStreamMonitor implements IDisposable {
 			/* ignored on purpose */ }
 
 		// Dispose all registered disposable objects
-		for (IDisposable disposable : disposables)
+		for (IDisposable disposable : disposables) {
 			disposable.dispose();
+		}
 		// Clear the list
 		disposables.clear();
 	}
@@ -160,8 +163,9 @@ public class OutputStreamMonitor implements IDisposable {
 	 */
 	protected void startMonitoring() {
 		// If already initialized -> return immediately
-		if (thread != null)
+		if (thread != null) {
 			return;
+		}
 
 		// Create a new runnable which is constantly reading from the stream
 		Runnable runnable = () -> readStream();

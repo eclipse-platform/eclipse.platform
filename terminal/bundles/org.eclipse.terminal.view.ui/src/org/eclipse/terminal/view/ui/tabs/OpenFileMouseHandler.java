@@ -61,8 +61,8 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 					"org.eclipse.text"); //$NON-NLS-1$
 
 	private final ITerminalViewControl terminal;
-	private Pattern regex = Pattern.compile("(\\d*)(:(\\d*))?.*"); //$NON-NLS-1$
-	private IWorkbenchPartSite site;
+	private final Pattern regex = Pattern.compile("(\\d*)(:(\\d*))?.*"); //$NON-NLS-1$
+	private final IWorkbenchPartSite site;
 
 	/**
 	 * Check if we have the bundles needed.
@@ -165,8 +165,9 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 				OpenResourceDialog openResourceDialog = new OpenResourceDialog(site.getShell(),
 						ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE);
 				openResourceDialog.setInitialPattern(textToOpen);
-				if (openResourceDialog.open() != Window.OK)
+				if (openResourceDialog.open() != Window.OK) {
 					return;
+				}
 				Object[] results = openResourceDialog.getResult();
 				List<IFile> files = new ArrayList<>();
 				for (Object result : results) {

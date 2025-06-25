@@ -82,8 +82,9 @@ public abstract class AbstractWindowListener implements IWindowListener {
 				window.getPartService().removePartListener(partListener);
 			}
 
-			if (perspectiveListener != null)
+			if (perspectiveListener != null) {
 				window.removePerspectiveListener(perspectiveListener);
+			}
 		}
 	}
 
@@ -102,8 +103,9 @@ public abstract class AbstractWindowListener implements IWindowListener {
 				IWorkbenchPage page = window.getActivePage();
 				if (page != null) {
 					IWorkbenchPartReference partRef = page.getActivePartReference();
-					if (partRef != null)
+					if (partRef != null) {
 						partListener.partActivated(partRef);
+					}
 				}
 			}
 

@@ -47,8 +47,9 @@ public class SelectEncodingAction extends AbstractTerminalAction {
 	@Override
 	public void run() {
 		ITerminalViewControl target = getTarget();
-		if (target == null)
+		if (target == null) {
 			return;
+		}
 
 		EncodingSelectionDialog dialog = new EncodingSelectionDialog(null);
 		dialog.setCharset(target.getCharset());

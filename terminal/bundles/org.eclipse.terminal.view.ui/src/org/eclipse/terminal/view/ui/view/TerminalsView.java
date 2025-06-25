@@ -197,19 +197,23 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 		// The event listener is registered as filter. It will receive events from all widgets.
 		PlatformUI.getWorkbench().getDisplay().addFilter(SWT.DragDetect, event -> {
 			// Only handle events where a CTabFolder is the source
-			if (!(event.widget instanceof CTabFolder))
+			if (!(event.widget instanceof CTabFolder)) {
 				return;
+			}
 			// TabFolderManager must be created
-			if (tabFolderManager == null)
+			if (tabFolderManager == null) {
 				return;
+			}
 
 			// only for own tab folders
-			if (event.widget != tabFolderControl)
+			if (event.widget != tabFolderControl) {
 				return;
+			}
 
 			// Skip drag if DnD is still ongoing (bug 443787)
-			if (tabFolderControl.getData(DND.DRAG_SOURCE_KEY) != null)
+			if (tabFolderControl.getData(DND.DRAG_SOURCE_KEY) != null) {
 				return;
+			}
 
 			final CTabFolder draggedFolder = (CTabFolder) event.widget;
 
@@ -295,8 +299,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 					// dispose tab item control
 					final Control control = draggedItem.getControl();
 					draggedItem.setControl(null);
-					if (control != null)
+					if (control != null) {
 						control.dispose();
+					}
 
 					// need to remove the dispose listener first
 					DisposeListener disposeListener = (DisposeListener) draggedItem.getData("disposeListener"); //$NON-NLS-1$
@@ -406,8 +411,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 	protected void doConfigurePageBookControl(PageBook pagebook) {
 		Assert.isNotNull(pagebook);
 
-		if (getContextHelpId() != null)
+		if (getContextHelpId() != null) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(pagebook, getContextHelpId());
+		}
 	}
 
 	/**
@@ -483,8 +489,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 				if (e.button == 2) {
 					// middle mouse button click - close tab
 					CTabItem item = tabFolder.getItem(new Point(e.x, e.y));
-					if (item != null)
+					if (item != null) {
 						item.dispose();
+					}
 				}
 			}
 		});
@@ -555,8 +562,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 
 	@Override
 	public void setFocus() {
-		if (pageBookControl != null)
+		if (pageBookControl != null) {
 			pageBookControl.setFocus();
+		}
 	}
 
 	@Override
@@ -599,8 +607,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
-		if (memento == null)
+		if (memento == null) {
 			return;
+		}
 		mementoHandler.saveState(this, memento);
 	}
 
@@ -610,8 +619,9 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 	 * @param memento The memento or <code>null</code>.
 	 */
 	public void restoreState(IMemento memento) {
-		if (memento == null)
+		if (memento == null) {
 			return;
+		}
 		mementoHandler.restoreState(this, memento);
 	}
 
@@ -634,34 +644,42 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 					Object adapted = null;
 
 					if (element instanceof File) {
-						if (!elements.contains(element))
+						if (!elements.contains(element)) {
 							elements.add(element);
+						}
 						continue;
 					}
-					adapted = element instanceof IAdaptable ? ((IAdaptable) element).getAdapter(File.class) : null;
-					if (adapted == null)
+					adapted = element instanceof IAdaptable i ? i.getAdapter(File.class) : null;
+					if (adapted == null) {
 						adapted = Platform.getAdapterManager().getAdapter(element, File.class);
-					if (adapted == null)
+					}
+					if (adapted == null) {
 						adapted = Platform.getAdapterManager().loadAdapter(element, File.class.getName());
+					}
 					if (adapted != null) {
-						if (!elements.contains(adapted))
+						if (!elements.contains(adapted)) {
 							elements.add(adapted);
+						}
 						continue;
 					}
 
 					if (element instanceof IPath) {
-						if (!elements.contains(element))
+						if (!elements.contains(element)) {
 							elements.add(element);
+						}
 						continue;
 					}
-					adapted = element instanceof IAdaptable ? ((IAdaptable) element).getAdapter(IPath.class) : null;
-					if (adapted == null)
+					adapted = element instanceof IAdaptable i ? i.getAdapter(IPath.class) : null;
+					if (adapted == null) {
 						adapted = Platform.getAdapterManager().getAdapter(element, IPath.class);
-					if (adapted == null)
+					}
+					if (adapted == null) {
 						adapted = Platform.getAdapterManager().loadAdapter(element, IPath.class.getName());
+					}
 					if (adapted != null) {
-						if (!elements.contains(adapted))
+						if (!elements.contains(adapted)) {
 							elements.add(adapted);
+						}
 						continue;
 					}
 
@@ -669,24 +687,28 @@ public class TerminalsView extends ViewPart implements ITerminalsView, IShowInTa
 					if (bundle != null && bundle.getState() != Bundle.UNINSTALLED
 							&& bundle.getState() != Bundle.STOPPING) {
 						if (element instanceof org.eclipse.core.resources.IResource) {
-							if (!elements.contains(element))
+							if (!elements.contains(element)) {
 								elements.add(element);
+							}
 							continue;
 						}
 
-						adapted = element instanceof IAdaptable
-								? ((IAdaptable) element).getAdapter(org.eclipse.core.resources.IResource.class)
+						adapted = element instanceof IAdaptable i
+								? i.getAdapter(org.eclipse.core.resources.IResource.class)
 								: null;
-						if (adapted == null)
+						if (adapted == null) {
 							adapted = Platform.getAdapterManager().getAdapter(element,
 									org.eclipse.core.resources.IResource.class);
-						if (adapted == null)
+						}
+						if (adapted == null) {
 							adapted = Platform.getAdapterManager().loadAdapter(element,
 									org.eclipse.core.resources.IResource.class.getName());
+						}
 					}
 					if (adapted != null) {
-						if (!elements.contains(adapted))
+						if (!elements.contains(adapted)) {
 							elements.add(adapted);
+						}
 						continue;
 					}
 					isValid = false;

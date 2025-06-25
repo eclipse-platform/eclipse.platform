@@ -42,8 +42,9 @@ public class RenameTerminalAction extends AbstractTerminalAction {
 	@Override
 	public void run() {
 		ITerminalViewControl target = getTarget();
-		if (target == null)
+		if (target == null) {
 			return;
+		}
 		InputDialog inputDialog = new InputDialog(target.getControl().getShell(), //
 				Messages.RenameTerminalAction_inputdialog_title, //
 				Messages.RenameTerminalAction_inputdialog_prompt, //
