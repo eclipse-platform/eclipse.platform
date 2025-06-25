@@ -72,8 +72,9 @@ public class SshWizardConfigurationPanel extends AbstractExtendedConfigurationPa
 		panel.setLayoutData(data);
 
 		// Create the host selection combo
-		if (isWithoutSelection())
+		if (isWithoutSelection()) {
 			createHostsUI(panel, true);
+		}
 
 		SshConnector conn = new SshConnector();
 		sshSettings = (SshSettings) conn.getSshSettings();
@@ -90,8 +91,9 @@ public class SshWizardConfigurationPanel extends AbstractExtendedConfigurationPa
 		sshSettingsPage.addListener(new ISettingsPage.Listener() {
 			@Override
 			public void onSettingsPageChanged(Control control) {
-				if (getContainer() != null)
+				if (getContainer() != null) {
 					getContainer().validate();
+				}
 			}
 		});
 
@@ -106,39 +108,47 @@ public class SshWizardConfigurationPanel extends AbstractExtendedConfigurationPa
 
 	@Override
 	public void setupData(Map<String, Object> data) {
-		if (data == null || sshSettings == null || sshSettingsPage == null)
+		if (data == null || sshSettings == null || sshSettingsPage == null) {
 			return;
+		}
 
 		String value = (String) data.get(ITerminalsConnectorConstants.PROP_IP_HOST);
-		if (value != null)
+		if (value != null) {
 			sshSettings.setHost(value);
+		}
 
 		Object v = data.get(ITerminalsConnectorConstants.PROP_IP_PORT);
 		value = v != null ? v.toString() : null;
-		if (value != null)
+		if (value != null) {
 			sshSettings.setPort(value);
+		}
 
 		v = data.get(ITerminalsConnectorConstants.PROP_TIMEOUT);
 		value = v != null ? v.toString() : null;
-		if (value != null)
+		if (value != null) {
 			sshSettings.setTimeout(value);
+		}
 
 		v = data.get(ITerminalsConnectorConstants.PROP_SSH_KEEP_ALIVE);
 		value = v != null ? v.toString() : null;
-		if (value != null)
+		if (value != null) {
 			sshSettings.setKeepalive(value);
+		}
 
 		value = (String) data.get(ITerminalsConnectorConstants.PROP_SSH_PASSWORD);
-		if (value != null)
+		if (value != null) {
 			sshSettings.setPassword(value);
+		}
 
 		value = (String) data.get(ITerminalsConnectorConstants.PROP_SSH_USER);
-		if (value != null)
+		if (value != null) {
 			sshSettings.setUser(value);
+		}
 
 		value = (String) data.get(ITerminalsConnectorConstants.PROP_ENCODING);
-		if (value != null)
+		if (value != null) {
 			setEncoding(value);
+		}
 
 		sshSettingsPage.loadSettings();
 	}
@@ -155,8 +165,9 @@ public class SshWizardConfigurationPanel extends AbstractExtendedConfigurationPa
 			ITerminalContextPropertiesProvider provider = TerminalContextPropertiesProviderFactory.getProvider(element);
 			if (provider != null) {
 				Object user = provider.getProperty(element, IContextPropertiesConstants.PROP_DEFAULT_USER);
-				if (user instanceof String)
+				if (user instanceof String) {
 					return ((String) user).trim();
+				}
 			}
 		}
 
@@ -165,8 +176,9 @@ public class SshWizardConfigurationPanel extends AbstractExtendedConfigurationPa
 
 	@Override
 	public void extractData(Map<String, Object> data) {
-		if (data == null)
+		if (data == null) {
 			return;
+		}
 
 		// set the terminal connector id for ssh
 		data.put(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID,
@@ -281,8 +293,9 @@ public class SshWizardConfigurationPanel extends AbstractExtendedConfigurationPa
 				}
 
 				// maybe unchecked the password button - so try to remove a saved password - if any
-				if (!savePassword)
+				if (!savePassword) {
 					removeSecurePassword(host);
+				}
 			} else if (add) {
 				Map<String, String> hostSettings = new HashMap<>();
 				hostSettings.put(ITerminalsConnectorConstants.PROP_IP_HOST, sshSettings.getHost());

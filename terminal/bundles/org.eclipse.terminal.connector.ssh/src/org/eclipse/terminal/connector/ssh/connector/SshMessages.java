@@ -84,8 +84,9 @@ public class SshMessages extends NLS {
 		try {
 			Field f = SshMessages.class.getDeclaredField(key);
 			Object o = f.get(null);
-			if (o instanceof String)
+			if (o instanceof String) {
 				return (String) o;
+			}
 		} catch (SecurityException e) {
 		} catch (NoSuchFieldException e) {
 		} catch (IllegalArgumentException e) {

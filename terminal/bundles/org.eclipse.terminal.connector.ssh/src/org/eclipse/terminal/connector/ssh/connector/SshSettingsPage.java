@@ -63,8 +63,9 @@ public class SshSettingsPage extends AbstractSettingsPage {
 	}
 
 	String get(String value, String def) {
-		if (value == null || value.length() == 0)
+		if (value == null || value.length() == 0) {
 			return def;
+		}
 		return value;
 	}
 

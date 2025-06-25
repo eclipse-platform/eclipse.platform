@@ -37,13 +37,13 @@ public class SshMementoHandler implements IMementoHandler {
 				(String) properties.get(ITerminalsConnectorConstants.PROP_IP_HOST));
 		Object value = properties.get(ITerminalsConnectorConstants.PROP_IP_PORT);
 		memento.putInteger(ITerminalsConnectorConstants.PROP_IP_PORT,
-				value instanceof Integer ? ((Integer) value).intValue() : -1);
+				value instanceof Integer i ? i.intValue() : -1);
 		value = properties.get(ITerminalsConnectorConstants.PROP_TIMEOUT);
 		memento.putInteger(ITerminalsConnectorConstants.PROP_TIMEOUT,
-				value instanceof Integer ? ((Integer) value).intValue() : -1);
+				value instanceof Integer i ? i.intValue() : -1);
 		value = properties.get(ITerminalsConnectorConstants.PROP_SSH_KEEP_ALIVE);
 		memento.putInteger(ITerminalsConnectorConstants.PROP_SSH_KEEP_ALIVE,
-				value instanceof Integer ? ((Integer) value).intValue() : -1);
+				value instanceof Integer i ? i.intValue() : -1);
 		memento.putString(ITerminalsConnectorConstants.PROP_SSH_USER,
 				(String) properties.get(ITerminalsConnectorConstants.PROP_SSH_USER));
 		memento.putString(ITerminalsConnectorConstants.PROP_ENCODING,

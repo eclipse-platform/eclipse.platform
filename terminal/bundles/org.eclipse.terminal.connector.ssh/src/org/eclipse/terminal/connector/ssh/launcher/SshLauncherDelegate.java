@@ -86,8 +86,9 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 	private String getTerminalTitle(Map<String, Object> properties) {
 		// Try to see if the user set a title explicitly via the properties map.
 		String title = getDefaultTerminalTitle(properties);
-		if (title != null)
+		if (title != null) {
 			return title;
+		}
 
 		//No title,try to calculate the title
 		String host = (String) properties.get(ITerminalsConnectorConstants.PROP_IP_HOST);
@@ -100,9 +101,9 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 			String date = format.format(new Date(System.currentTimeMillis()));
 			if (port != null && Integer.valueOf(port).intValue() != ISshSettings.DEFAULT_SSH_PORT) {
 				return NLS.bind(Messages.SshLauncherDelegate_terminalTitle_port,
-						new String[] { user, host, port, date });
+						user, host, port, date);
 			}
-			return NLS.bind(Messages.SshLauncherDelegate_terminalTitle, new String[] { user, host, date });
+			return NLS.bind(Messages.SshLauncherDelegate_terminalTitle, user, host, date);
 		}
 
 		return Messages.SshLauncherDelegate_terminalTitle_default;
@@ -125,8 +126,9 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 
 		// Check for the terminal connector id
 		String connectorId = (String) properties.get(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID);
-		if (connectorId == null)
+		if (connectorId == null) {
 			connectorId = "org.eclipse.terminal.connector.ssh.SshConnector"; //$NON-NLS-1$
+		}
 
 		// Extract the ssh properties
 		String host = (String) properties.get(ITerminalsConnectorConstants.PROP_IP_HOST);
@@ -142,8 +144,9 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 		int portOffset = 0;
 		if (properties.get(ITerminalsConnectorConstants.PROP_IP_PORT_OFFSET) instanceof Integer) {
 			portOffset = ((Integer) properties.get(ITerminalsConnectorConstants.PROP_IP_PORT_OFFSET)).intValue();
-			if (portOffset < 0)
+			if (portOffset < 0) {
 				portOffset = 0;
+			}
 		}
 
 		// The real port to connect to is port + portOffset
