@@ -24,7 +24,7 @@ public class PropertyTester extends org.eclipse.core.expressions.PropertyTester 
 		// "hasContextPropertiesProvider": Checks if a context properties provider is available for the given receiver.
 		if ("hasContextPropertiesProvider".equals(property)) { //$NON-NLS-1$
 			boolean hasProvider = TerminalContextPropertiesProviderFactory.getProvider(receiver) != null;
-			return expectedValue instanceof Boolean ? ((Boolean) expectedValue).equals(Boolean.valueOf(hasProvider))
+			return expectedValue instanceof Boolean b ? b.equals(Boolean.valueOf(hasProvider))
 					: hasProvider;
 		}
 

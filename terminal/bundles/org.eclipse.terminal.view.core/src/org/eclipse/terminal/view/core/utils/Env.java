@@ -63,14 +63,16 @@ public class Env {
 			}
 		}
 		// Set the TERM environment variable if in terminal mode
-		if (terminal)
+		if (terminal) {
 			environmentVariables.put("TERM", "xterm");//$NON-NLS-1$ //$NON-NLS-2$
+		}
 
 		// Convert into an array of strings
 		List<String> keys = new ArrayList<>(environmentVariables.stringPropertyNames());
 		// On Windows hosts, sort the environment keys
-		if (Platform.OS_WIN32.equals(Platform.getOS()))
+		if (Platform.OS_WIN32.equals(Platform.getOS())) {
 			Collections.sort(keys);
+		}
 		List<String> strings = new ArrayList<>(keys.size());
 		for (String key : keys) {
 			String value = environmentVariables.getProperty(key);
