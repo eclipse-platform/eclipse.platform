@@ -429,8 +429,9 @@ public class ScopedEclipsePreferences {
 		Assert.isNotNull(key);
 
 		// If no listener is registered, we are done here
-		if (listeners.isEmpty())
+		if (listeners.isEmpty()) {
 			return;
+		}
 
 		// Create the preference change event
 		final PreferenceChangeEvent event = new PreferenceChangeEvent(node, key, oldValue, newValue);
