@@ -91,8 +91,9 @@ public class TabCommandFieldHandler implements IDisposable, IAdaptable {
 		// Apply to the terminal control
 		Assert.isTrue(!item.isDisposed());
 		ITerminalViewControl terminal = (ITerminalViewControl) item.getData();
-		if (terminal != null)
+		if (terminal != null) {
 			terminal.setCommandInputField(field);
+		}
 	}
 
 }

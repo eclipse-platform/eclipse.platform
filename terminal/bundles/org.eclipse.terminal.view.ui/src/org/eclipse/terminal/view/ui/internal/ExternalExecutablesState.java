@@ -23,7 +23,7 @@ import org.eclipse.ui.ISources;
  */
 public class ExternalExecutablesState extends AbstractSourceProvider {
 	public final static String CONFIGURED_STATE = "org.eclipse.terminal.external.executable.configured"; //$NON-NLS-1$
-	private boolean enabled;
+	private final boolean enabled;
 
 	public ExternalExecutablesState() {
 		this.enabled = ExternalExecutablesManager.hasEntries();

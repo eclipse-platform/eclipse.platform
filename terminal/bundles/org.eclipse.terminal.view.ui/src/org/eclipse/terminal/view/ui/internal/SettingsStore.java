@@ -52,9 +52,10 @@ public class SettingsStore implements ISettingsStore {
 	@Override
 	public final void put(String key, String value) {
 		Assert.isNotNull(key);
-		if (value == null)
+		if (value == null) {
 			settings.remove(key);
-		else
+		} else {
 			settings.put(key, value);
+		}
 	}
 }

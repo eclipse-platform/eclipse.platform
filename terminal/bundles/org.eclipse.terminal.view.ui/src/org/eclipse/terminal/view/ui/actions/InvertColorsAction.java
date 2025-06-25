@@ -41,8 +41,9 @@ public class InvertColorsAction extends AbstractTerminalAction {
 	@Override
 	public void run() {
 		ITerminalViewControl target = getTarget();
-		if (target == null)
+		if (target == null) {
 			return;
+		}
 		target.setInvertedColors(!target.isInvertedColors());
 	}
 

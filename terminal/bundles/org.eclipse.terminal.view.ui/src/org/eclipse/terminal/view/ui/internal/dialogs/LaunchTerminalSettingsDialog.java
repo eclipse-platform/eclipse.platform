@@ -127,8 +127,9 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 							.getDialogSettings(LaunchTerminalSettingsDialog.this.getDialogSettings());
 					IDialogSettings configPanelSettings = dialogSettings != null ? dialogSettings.getSection(key)
 							: null;
-					if (configPanelSettings != null)
+					if (configPanelSettings != null) {
 						configPanel.doRestoreWidgetValues(configPanelSettings, null);
+					}
 				}
 			}
 
@@ -306,8 +307,9 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 					IConfigurationPanel oldPanel = settings.getActiveConfigurationPanel();
 					// Extract the current settings in an special properties container
 					Map<String, Object> data = new HashMap<>();
-					if (oldPanel != null)
+					if (oldPanel != null) {
 						oldPanel.extractData(data);
+					}
 					// Clean out settings which are never passed between the panels
 					data.remove(ITerminalsConnectorConstants.PROP_IP_PORT);
 					data.remove(ITerminalsConnectorConstants.PROP_TIMEOUT);
@@ -318,8 +320,9 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 					// Get the new panel
 					IConfigurationPanel newPanel = settings.getActiveConfigurationPanel();
 					// Re-setup the relevant data
-					if (newPanel != null)
+					if (newPanel != null) {
 						newPanel.setupData(data);
+					}
 
 					// resize the dialog if needed to show the complete panel
 					getShell().pack();
@@ -428,11 +431,13 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 			}
 
 			for (ILauncherDelegate delegate : delegates) {
-				if (delegate.isHidden() || isFiltered(selection, delegate))
+				if (delegate.isHidden() || isFiltered(selection, delegate)) {
 					continue;
+				}
 				String label = delegate.getLabel();
-				if (label == null || "".equals(label.trim()) || label2delegate.containsKey(label)) //$NON-NLS-1$
+				if (label == null || "".equals(label.trim()) || label2delegate.containsKey(label)) { //$NON-NLS-1$
 					label = delegate.getId();
+				}
 				label2delegate.put(label, delegate);
 				items.add(label);
 
@@ -457,11 +462,13 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 			}
 
 			for (ILauncherDelegate delegate : delegates) {
-				if (delegate.isHidden() || isFiltered(selection, delegate))
+				if (delegate.isHidden() || isFiltered(selection, delegate)) {
 					continue;
+				}
 				String label = delegate.getLabel();
-				if (label == null || "".equals(label.trim())) //$NON-NLS-1$
+				if (label == null || "".equals(label.trim())) { //$NON-NLS-1$
 					label = delegate.getId();
+				}
 				label2delegate.put(label, delegate);
 				items.add(label);
 
@@ -487,8 +494,9 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 						ISelectionService service = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 								.getSelectionService();
 						ISelection selection = service != null ? service.getSelection() : null;
-						if (selection != null && selection.isEmpty())
+						if (selection != null && selection.isEmpty()) {
 							selection = null;
+						}
 
 						Map<String, Object> properties = new HashMap<>();
 						properties.put(ITerminalsConnectorConstants.PROP_PROCESS_PATH, path);
@@ -560,8 +568,9 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 	public void validate() {
 		IConfigurationPanel panel = this.settings.getActiveConfigurationPanel();
 		Button okButton = getButton(IDialogConstants.OK_ID);
-		if (okButton != null)
+		if (okButton != null) {
 			okButton.setEnabled(panel.isValid());
+		}
 	}
 
 	/**
@@ -627,8 +636,9 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 		// Store the id of the selected delegate
 		String terminalLabel = terminals != null ? terminals.getText() : singleDelegateLabel;
 		String delegateId = terminalLabel != null ? label2delegate.get(terminalLabel).getId() : null;
-		if (delegateId != null)
+		if (delegateId != null) {
 			data.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegateId);
+		}
 		// Store the selection
 		data.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
 

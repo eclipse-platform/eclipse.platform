@@ -75,8 +75,9 @@ public class DynamicContributionItems extends CompoundContributionItem implement
 						if (id != null) {
 							@SuppressWarnings("deprecation")
 							ImageDescriptor desc = ImageDescriptor.createFromImageData(id);
-							if (desc != null)
+							if (desc != null) {
 								action.setImageDescriptor(desc);
+							}
 						}
 
 						IContributionItem item = new ActionContributionItem(action);
@@ -110,16 +111,19 @@ public class DynamicContributionItems extends CompoundContributionItem implement
 
 				ISelectionService service = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
 				ISelection selection = service != null ? service.getSelection() : null;
-				if (selection != null && selection.isEmpty())
+				if (selection != null && selection.isEmpty()) {
 					selection = null;
+				}
 
 				Map<String, Object> properties = new HashMap<>();
 				properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
-				if (selection != null)
+				if (selection != null) {
 					properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
+				}
 				properties.put(ITerminalsConnectorConstants.PROP_PROCESS_PATH, path);
-				if (args != null)
+				if (args != null) {
 					properties.put(ITerminalsConnectorConstants.PROP_PROCESS_ARGS, args);
+				}
 				properties.put(ITerminalsConnectorConstants.PROP_TRANSLATE_BACKSLASHES_ON_PASTE,
 						Boolean.valueOf(translate));
 

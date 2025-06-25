@@ -122,8 +122,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 		@Override
 		public void mouseDown(MouseEvent e) {
 			// Left button down -> select mode starts
-			if (e.button == 1)
+			if (e.button == 1) {
 				selectMode = true;
+			}
 		}
 
 		@Override
@@ -158,8 +159,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 
 		// Attach a selection listener to the tab folder
 		selectionListener = doCreateTabFolderSelectionListener(this);
-		if (getTabFolder() != null)
+		if (getTabFolder() != null) {
 			getTabFolder().addSelectionListener(selectionListener);
+		}
 	}
 
 	/**
@@ -205,8 +207,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 	 */
 	public void dispose() {
 		// Dispose the selection listener
-		if (getTabFolder() != null && !getTabFolder().isDisposed())
+		if (getTabFolder() != null && !getTabFolder().isDisposed()) {
 			getTabFolder().removeSelectionListener(selectionListener);
+		}
 		// Dispose the tab command field handler
 		for (TabCommandFieldHandler handler : commandFieldHandler.values()) {
 			handler.dispose();
@@ -244,8 +247,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 			item.setText(title);
 			// Set the tab icon
 			Image image = getTabItemImage(connector, data);
-			if (image != null)
+			if (image != null) {
 				item.setImage(image);
+			}
 
 			// Setup the tab item listeners
 			setupTerminalTabListeners(item);
@@ -265,7 +269,7 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 					true);
 			if (terminal instanceof ITerminalControl) {
 				Object value = flags != null ? flags.get(ITerminalsConnectorConstants.PROP_DATA_NO_RECONNECT) : null;
-				boolean noReconnect = value instanceof Boolean ? ((Boolean) value).booleanValue() : false;
+				boolean noReconnect = value instanceof Boolean b ? b.booleanValue() : false;
 				((ITerminalControl) terminal).setConnectOnEnterIfClosed(!noReconnect);
 			}
 
@@ -290,8 +294,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 			// Associated the terminal with the tab item
 			item.setData(terminal);
 			// Associated the custom data node with the tab item (if any)
-			if (data != null)
+			if (data != null) {
 				item.setData("customData", data); //$NON-NLS-1$
+			}
 
 			// Overwrite the text canvas help id
 			String contextHelpId = getParentView().getContextHelpId();
@@ -373,8 +378,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 			item.setText(title);
 			// Set the tab icon
 			Image image = getTabItemImage(connector, data);
-			if (image != null)
+			if (image != null) {
 				item.setImage(image);
+			}
 
 			// Setup the tab item listeners
 			setupTerminalTabListeners(item);
@@ -406,11 +412,13 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 			item.setData(terminal);
 
 			// Associate the custom data node with the tab item (if any)
-			if (data != null)
+			if (data != null) {
 				item.setData("customData", data); //$NON-NLS-1$
+			}
 			// Associate the properties with the tab item (if any)
-			if (properties != null)
+			if (properties != null) {
 				item.setData("properties", properties); //$NON-NLS-1$
+			}
 
 			// Overwrite the text canvas help id
 			String contextHelpId = getParentView().getContextHelpId();
@@ -463,15 +471,18 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 				// paste when the middle button is clicked
 				if (e.button == 2) {
 					Clipboard clipboard = terminal.getClipboard();
-					if (clipboard.isDisposed())
+					if (clipboard.isDisposed()) {
 						return;
+					}
 					int clipboardType = DND.SELECTION_CLIPBOARD;
-					if (clipboard.getAvailableTypes(clipboardType).length == 0)
+					if (clipboard.getAvailableTypes(clipboardType).length == 0) {
 						// use normal clipboard if selection clipboard is not available
 						clipboardType = DND.CLIPBOARD;
+					}
 					String text = (String) clipboard.getContents(TextTransfer.getInstance(), clipboardType);
-					if (text != null && text.length() > 0)
+					if (text != null && text.length() > 0) {
 						terminal.pasteString(text);
+					}
 				}
 			}
 		});
@@ -499,8 +510,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 			titles.add(item.getText());
 		}
 		// Make the proposal unique be appending (<n>) against all known titles.
-		while (titles.contains(title))
+		while (titles.contains(title)) {
 			title = proposal + " (" + ++index + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+		}
 
 		return title;
 	}
@@ -575,14 +587,16 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 
 		// Get the tab folder
 		CTabFolder tabFolder = getTabFolder();
-		if (tabFolder == null)
+		if (tabFolder == null) {
 			return null;
+		}
 
 		// Loop all existing tab items and try to find a matching title
 		for (CTabItem item : tabFolder.getItems()) {
 			// Disposed items cannot be matched
-			if (item.isDisposed())
+			if (item.isDisposed()) {
 				continue;
+			}
 			// Get the title from the current tab item
 			String itemTitle = item.getText();
 			// The terminal console state might be signaled to the user via the
@@ -601,8 +615,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 					String summary = connector.getSettingsSummary();
 					String summary2 = connector2.getSettingsSummary();
 					// If we have matching settings -> we've found the matching item
-					if (summary.equals(summary2))
+					if (summary.equals(summary2)) {
 						return item;
+					}
 				}
 			}
 		}
@@ -620,8 +635,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 
 		// Get the tab folder
 		CTabFolder tabFolder = getTabFolder();
-		if (tabFolder == null)
+		if (tabFolder == null) {
 			return;
+		}
 
 		// Set the given tab item as selection to the tab folder
 		tabFolder.setSelection(item);
@@ -637,8 +653,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 	public CTabItem getActiveTabItem() {
 		// Get the tab folder
 		CTabFolder tabFolder = getTabFolder();
-		if (tabFolder == null)
+		if (tabFolder == null) {
 			return null;
+		}
 
 		return tabFolder.getSelection();
 	}
@@ -649,14 +666,16 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 	public void removeTerminatedItems() {
 		// Get the tab folder
 		CTabFolder tabFolder = getTabFolder();
-		if (tabFolder == null)
+		if (tabFolder == null) {
 			return;
+		}
 
 		// Loop the items and check for terminated status
 		for (CTabItem item : tabFolder.getItems()) {
 			// Disposed items cannot be matched
-			if (item.isDisposed())
+			if (item.isDisposed()) {
 				continue;
+			}
 			// Check if the item is terminated
 			if (isTerminatedTabItem(item)) {
 				// item is terminated -> dispose
@@ -674,8 +693,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 	 */
 	protected boolean isTerminatedTabItem(CTabItem item) {
 		// Null items or disposed items cannot be matched
-		if (item == null || item.isDisposed())
+		if (item == null || item.isDisposed()) {
 			return false;
+		}
 
 		// First, match the item title. If it contains "<terminated>", the item can be removed
 		String itemTitle = item.getText();
@@ -700,8 +720,9 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 	 */
 	public final TabCommandFieldHandler getTabCommandFieldHandler(CTabItem item) {
 		// Null items or disposed items cannot be matched
-		if (item == null || item.isDisposed())
+		if (item == null || item.isDisposed()) {
 			return null;
+		}
 
 		TabCommandFieldHandler handler = commandFieldHandler.get(item);
 		if (handler == null) {
@@ -733,24 +754,28 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 	 */
 	protected void disposeTabCommandFieldHandler(CTabItem item) {
 		// Null items or disposed items cannot be matched
-		if (item == null || item.isDisposed())
+		if (item == null || item.isDisposed()) {
 			return;
+		}
 
 		TabCommandFieldHandler handler = commandFieldHandler.remove(item);
-		if (handler != null)
+		if (handler != null) {
 			handler.dispose();
+		}
 	}
 
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		if (listener != null && !selectionChangedListeners.contains(listener))
+		if (listener != null && !selectionChangedListeners.contains(listener)) {
 			selectionChangedListeners.add(listener);
+		}
 	}
 
 	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		if (listener != null)
+		if (listener != null) {
 			selectionChangedListeners.remove(listener);
+		}
 	}
 
 	@Override
@@ -865,12 +890,15 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 		// Lookup a matching text representation of the state
 		String key = "TabFolderManager_state_" + stateStr.replaceAll("\\.", " ").trim().toLowerCase(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		String stateMsg = null;
-		if (properties != null)
+		if (properties != null) {
 			stateMsg = properties.get(key) instanceof String ? (String) properties.get(key) : null;
-		if (stateMsg == null)
+		}
+		if (stateMsg == null) {
 			stateMsg = Messages.getString(key);
-		if (stateMsg == null)
+		}
+		if (stateMsg == null) {
 			stateMsg = stateStr;
+		}
 
 		return stateMsg;
 	}

@@ -182,10 +182,12 @@ public class ExternalExecutablesDialog extends TrayDialog {
 					String filterFileName = filePath.toFile().isDirectory() || !filePath.toFile().exists() ? null
 							: filePath.lastSegment();
 
-					if (filterPath != null && !filterPath.isEmpty())
+					if (filterPath != null && !filterPath.isEmpty()) {
 						dialog.setFilterPath(filterPath.toString());
-					if (filterFileName != null)
+					}
+					if (filterFileName != null) {
 						dialog.setFileName(filterFileName);
+					}
 				} else {
 					String workspace = null;
 					Bundle bundle = Platform.getBundle("org.eclipse.core.resources"); //$NON-NLS-1$
@@ -258,10 +260,12 @@ public class ExternalExecutablesDialog extends TrayDialog {
 					String filterFileName = filePath.toFile().isDirectory() || !filePath.toFile().exists() ? null
 							: filePath.lastSegment();
 
-					if (filterPath != null && !filterPath.isEmpty())
+					if (filterPath != null && !filterPath.isEmpty()) {
 						dialog.setFilterPath(filterPath.toString());
-					if (filterFileName != null)
+					}
+					if (filterFileName != null) {
 						dialog.setFileName(filterFileName);
+					}
 				} else {
 					String workspace = null;
 					Bundle bundle = Platform.getBundle("org.eclipse.core.resources"); //$NON-NLS-1$
@@ -328,8 +332,9 @@ public class ExternalExecutablesDialog extends TrayDialog {
 	protected void okPressed() {
 		if (name != null && path != null) {
 			// Extract the executable properties
-			if (executableData == null)
+			if (executableData == null) {
 				executableData = new HashMap<>();
+			}
 
 			String value = name.getText();
 			if (value != null && !"".equals(value.trim())) { //$NON-NLS-1$
@@ -429,8 +434,9 @@ public class ExternalExecutablesDialog extends TrayDialog {
 		}
 
 		Button okButton = getButton(IDialogConstants.OK_ID);
-		if (okButton != null)
+		if (okButton != null) {
 			okButton.setEnabled(valid);
+		}
 	}
 
 	/**

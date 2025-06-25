@@ -29,7 +29,7 @@ public class PropertyTester extends org.eclipse.core.expressions.PropertyTester 
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
 
 		if ("hasApplicableLauncherDelegates".equals(property)) { //$NON-NLS-1$
-			ISelection selection = receiver instanceof ISelection ? (ISelection) receiver
+			ISelection selection = receiver instanceof ISelection i ? i
 					: new StructuredSelection(receiver);
 			return expectedValue.equals(Boolean.valueOf(
 					LauncherDelegateManager.getInstance().getApplicableLauncherDelegates(selection).length > 0));

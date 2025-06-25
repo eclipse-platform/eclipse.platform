@@ -43,8 +43,9 @@ public abstract class AbstractLauncherDelegate extends PlatformObject implements
 	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
 			throws CoreException {
-		if (config == null)
+		if (config == null) {
 			return;
+		}
 
 		// Initialize the id field by reading the <id> extension attribute.
 		// Throws an exception if the id is empty or null.

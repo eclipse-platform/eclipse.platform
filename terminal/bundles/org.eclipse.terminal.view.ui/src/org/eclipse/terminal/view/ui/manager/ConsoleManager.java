@@ -64,16 +64,18 @@ public class ConsoleManager {
 		@Override
 		public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
 			// If the old references list is empty, just return
-			if (references.isEmpty())
+			if (references.isEmpty()) {
 				return;
+			}
 			// Create a copy of the old view references list
 			List<IViewReference> oldReferences = new ArrayList<>(references);
 
 			// Get the current list of view references
 			List<IViewReference> references = new ArrayList<>(Arrays.asList(page.getViewReferences()));
 			for (IViewReference reference : oldReferences) {
-				if (references.contains(reference))
+				if (references.contains(reference)) {
 					continue;
+				}
 				// Previous visible terminals console view reference, make visible again
 				try {
 					page.showView(reference.getId(), reference.getSecondaryId(), IWorkbenchPage.VIEW_VISIBLE);
@@ -322,8 +324,9 @@ public class ConsoleManager {
 			String secondaryIdStr = Integer.toString(i);
 			if (!terminalViews.keySet().contains(secondaryIdStr)) {
 				// found a free slot
-				if (i == 0)
+				if (i == 0) {
 					return null;
+				}
 				return Integer.toString(i);
 			}
 		}
@@ -391,10 +394,11 @@ public class ConsoleManager {
 				return newPart;
 			}
 
-			if (activate)
+			if (activate) {
 				page.activate(activePart);
-			else
+			} else {
 				page.bringToTop(activePart);
+			}
 
 			return activePart;
 		}
@@ -431,15 +435,15 @@ public class ConsoleManager {
 
 		// Make the consoles view visible
 		IViewPart part = bringToTop(id, secondaryId, activate);
-		if (!(part instanceof ITerminalsView))
+		if (!(part instanceof ITerminalsView view)) {
 			return null;
+		}
 		// Cast to the correct type
-		ITerminalsView view = (ITerminalsView) part;
-
 		// Get the tab folder manager associated with the view
 		TabFolderManager manager = view.getAdapter(TabFolderManager.class);
-		if (manager == null)
+		if (manager == null) {
 			return null;
+		}
 
 		// Lookup an existing console first
 		String secId = ((IViewSite) part.getSite()).getSecondaryId();
@@ -468,8 +472,9 @@ public class ConsoleManager {
 			item = manager.createTabItem(title, encoding, connector, data, flags);
 		}
 		// If still null, something went wrong
-		if (item == null)
+		if (item == null) {
 			return null;
+		}
 
 		// Make the item the active console
 		manager.bringToTop(item);
@@ -503,13 +508,15 @@ public class ConsoleManager {
 
 		// Get the console view
 		ITerminalsView view = findConsoleView(id, secondaryId);
-		if (view == null)
+		if (view == null) {
 			return null;
+		}
 
 		// Get the tab folder manager associated with the view
 		TabFolderManager manager = view.getAdapter(TabFolderManager.class);
-		if (manager == null)
+		if (manager == null) {
 			return null;
+		}
 
 		return manager.findTabItem(title, connector, data);
 	}
@@ -533,8 +540,9 @@ public class ConsoleManager {
 				IViewPart part = ref != null ? ref.getView(false) : null;
 				if (part instanceof ITerminalsView) {
 					CTabFolder tabFolder = part.getAdapter(CTabFolder.class);
-					if (tabFolder == null)
+					if (tabFolder == null) {
 						continue;
+					}
 					CTabItem[] candidates = tabFolder.getItems();
 					for (CTabItem candidate : candidates) {
 						Object data = candidate.getData();
@@ -544,8 +552,9 @@ public class ConsoleManager {
 						}
 					}
 				}
-				if (item != null)
+				if (item != null) {
 					break;
+				}
 			}
 		}
 

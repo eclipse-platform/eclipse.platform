@@ -145,8 +145,9 @@ public class ConfigurationPanelControl implements IConfigurationPanelContainer, 
 
 		if (isPanelIsGroup()) {
 			panel = new Group(parent, SWT.NONE);
-			if (getGroupLabel() != null)
+			if (getGroupLabel() != null) {
 				((Group) panel).setText(getGroupLabel());
+			}
 		} else {
 			panel = new Composite(parent, SWT.NONE);
 		}
@@ -208,8 +209,9 @@ public class ConfigurationPanelControl implements IConfigurationPanelContainer, 
 	 * @param panel The configuration panel instance or <code>null</code>.
 	 */
 	public void addConfigurationPanel(String key, IConfigurationPanel panel) {
-		if (key == null)
+		if (key == null) {
 			return;
+		}
 		if (panel != null) {
 			configurationPanels.put(key, panel);
 		} else {
@@ -252,8 +254,9 @@ public class ConfigurationPanelControl implements IConfigurationPanelContainer, 
 		}
 		IConfigurationPanel configPanel = getActiveConfigurationPanel();
 		Map<String, Object> data = new HashMap<>();
-		if (configPanel != null)
+		if (configPanel != null) {
 			configPanel.extractData(data);
+		}
 		configPanel = getConfigurationPanel(key);
 		Assert.isNotNull(configPanel);
 		if (configPanel.getControl() != null) {
@@ -261,8 +264,9 @@ public class ConfigurationPanelControl implements IConfigurationPanelContainer, 
 			activeConfigurationPanelKey = key;
 			panelLayout.topControl = configPanel.getControl();
 			panel.layout();
-			if (!data.isEmpty())
+			if (!data.isEmpty()) {
 				configPanel.updateData(data);
+			}
 			configPanel.activate();
 		} else {
 			activeConfigurationPanelKey = key;
@@ -343,8 +347,9 @@ public class ConfigurationPanelControl implements IConfigurationPanelContainer, 
 			IConfigurationPanel configPanel = getConfigurationPanel(panelKey);
 			if (configPanel != null && !isEmptyConfigurationPanel(configPanel)) {
 				IDialogSettings configPanelSettings = settings.getSection(panelKey);
-				if (configPanelSettings == null)
+				if (configPanelSettings == null) {
 					configPanelSettings = settings.addNewSection(panelKey);
+				}
 				configPanel.doRestoreWidgetValues(configPanelSettings, idPrefix);
 			}
 		}
@@ -383,8 +388,9 @@ public class ConfigurationPanelControl implements IConfigurationPanelContainer, 
 		if (configPanel != null && !isEmptyConfigurationPanel(configPanel)) {
 			String key = getActiveConfigurationPanelKey();
 			IDialogSettings configPanelSettings = settings.getSection(key);
-			if (configPanelSettings == null)
+			if (configPanelSettings == null) {
 				configPanelSettings = settings.addNewSection(key);
+			}
 			configPanel.doSaveWidgetValues(configPanelSettings, idPrefix);
 		}
 	}

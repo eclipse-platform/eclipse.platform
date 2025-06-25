@@ -63,7 +63,7 @@ public class LauncherDelegateManager {
 		// The configuration element
 		private final IConfigurationElement element;
 		// The unique id of the extension.
-		private String id;
+		private final String id;
 
 		/**
 		 * Constructor.
@@ -112,8 +112,9 @@ public class LauncherDelegateManager {
 		 * @return The extension class instance or <code>null</code> if the instantiation fails.
 		 */
 		public ILauncherDelegate getInstance() {
-			if (instance == null)
+			if (instance == null) {
 				instance = newInstance();
+			}
 			return instance;
 		}
 
@@ -178,26 +179,31 @@ public class LauncherDelegateManager {
 		@Override
 		public int compare(IExtension o1, IExtension o2) {
 			// We ignore any comparisation with null and
-			if (o1 == null || o2 == null)
+			if (o1 == null || o2 == null) {
 				return 0;
+			}
 			// Check if it is the exact same element
-			if (o1 == o2)
+			if (o1 == o2) {
 				return 0;
+			}
 
 			// The extensions are compared by the unique id of the contributing plug-in first
 			String contributor1 = o1.getContributor().getName();
 			String contributor2 = o2.getContributor().getName();
 
 			// Contributions from our own plug-ins comes before 3rdParty plug-ins
-			if (contributor1.startsWith(OWN_PLUGINS_PATTERN) && !contributor2.startsWith(OWN_PLUGINS_PATTERN))
+			if (contributor1.startsWith(OWN_PLUGINS_PATTERN) && !contributor2.startsWith(OWN_PLUGINS_PATTERN)) {
 				return -1;
-			if (!contributor1.startsWith(OWN_PLUGINS_PATTERN) && contributor2.startsWith(OWN_PLUGINS_PATTERN))
+			}
+			if (!contributor1.startsWith(OWN_PLUGINS_PATTERN) && contributor2.startsWith(OWN_PLUGINS_PATTERN)) {
 				return 1;
+			}
 			if (contributor1.startsWith(OWN_PLUGINS_PATTERN) && contributor2.startsWith(OWN_PLUGINS_PATTERN)) {
 				int value = contributor1.compareTo(contributor2);
 				// Within the same plug-in, the extension are sorted by their unique id (if available)
-				if (value == 0 && o1.getUniqueIdentifier() != null && o2.getUniqueIdentifier() != null)
+				if (value == 0 && o1.getUniqueIdentifier() != null && o2.getUniqueIdentifier() != null) {
 					return o1.getUniqueIdentifier().compareTo(o2.getUniqueIdentifier());
+				}
 				// Otherwise, just return the comparisation result from the contributors
 				return value;
 			}
@@ -205,8 +211,9 @@ public class LauncherDelegateManager {
 			// Contributions from all other plug-ins are sorted alphabetical
 			int value = contributor1.compareTo(contributor2);
 			// Within the same plug-in, the extension are sorted by their unique id (if available)
-			if (value == 0 && o1.getUniqueIdentifier() != null && o2.getUniqueIdentifier() != null)
+			if (value == 0 && o1.getUniqueIdentifier() != null && o2.getUniqueIdentifier() != null) {
 				return o1.getUniqueIdentifier().compareTo(o2.getUniqueIdentifier());
+			}
 			// Otherwise, just return the comparisation result from the contributors
 			return value;
 		}
@@ -317,8 +324,9 @@ public class LauncherDelegateManager {
 			}
 
 			// Add the page if applicable
-			if (isApplicable)
+			if (isApplicable) {
 				applicable.add(delegate);
+			}
 		}
 
 		return applicable.toArray(new ILauncherDelegate[applicable.size()]);
@@ -379,8 +387,9 @@ public class LauncherDelegateManager {
 	 */
 	protected void loadExtensions() {
 		// If already initialized, this method will do nothing.
-		if (initialized)
+		if (initialized) {
 			return;
+		}
 
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry.getExtensionPoint("org.eclipse.terminal.view.ui.launcherDelegates"); //$NON-NLS-1$
