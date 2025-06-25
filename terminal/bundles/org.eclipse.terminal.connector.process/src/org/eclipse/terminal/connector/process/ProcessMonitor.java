@@ -48,8 +48,9 @@ public class ProcessMonitor {
 		// Set the disposed status
 		disposed = true;
 		// Not initialized -> return immediately
-		if (thread == null)
+		if (thread == null) {
 			return;
+		}
 
 		// Copy the reference
 		final Thread oldThread = thread;
@@ -64,8 +65,9 @@ public class ProcessMonitor {
 	 */
 	public void startMonitoring() {
 		// If already initialized -> return immediately
-		if (thread != null)
+		if (thread != null) {
 			return;
+		}
 
 		// Create a new runnable which is constantly reading from the stream
 		Runnable runnable = () -> monitorProcess();
@@ -86,8 +88,9 @@ public class ProcessMonitor {
 	 */
 	public void monitorProcess() {
 		// If already disposed -> return immediately
-		if (disposed)
+		if (disposed) {
 			return;
+		}
 
 		try {
 			// Wait for the monitored process to terminate
@@ -97,8 +100,9 @@ public class ProcessMonitor {
 			Thread.interrupted();
 		} finally {
 			// Dispose the parent process connector
-			if (!disposed)
+			if (!disposed) {
 				processConnector.disconnect();
+			}
 		}
 	}
 }

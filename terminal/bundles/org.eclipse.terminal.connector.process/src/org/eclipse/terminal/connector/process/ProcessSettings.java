@@ -113,8 +113,9 @@ public class ProcessSettings {
 	public void setPTY(PTY pty) {
 		this.pty = pty;
 		// If the PTY is set to "null", the local echo will be set to "true"
-		if (pty == null)
+		if (pty == null) {
 			setLocalEcho(true);
+		}
 	}
 
 	/**
