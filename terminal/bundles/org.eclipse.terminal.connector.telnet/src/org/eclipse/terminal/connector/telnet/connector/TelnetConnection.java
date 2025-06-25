@@ -261,12 +261,14 @@ public class TelnetConnection extends Thread implements TelnetCodes {
 	 */
 	public void setTerminalSize(int newWidth, int newHeight) {
 		Logger.log("Setting new size: width = " + newWidth + ", height = " + newHeight); //$NON-NLS-1$ //$NON-NLS-2$
-		if (!isConnected() || !isRemoteTelnetServer())
+		if (!isConnected() || !isRemoteTelnetServer()) {
 			return;
+		}
 		boolean sizeChanged = false;
 
-		if (newWidth != width || newHeight != height)
+		if (newWidth != width || newHeight != height) {
 			sizeChanged = true;
+		}
 
 		width = newWidth;
 		height = newHeight;
@@ -543,8 +545,9 @@ public class TelnetConnection extends Thread implements TelnetCodes {
 
 				// First, zero out the array of received subnegotiation butes.
 
-				for (int i = 0; i < receivedSubnegotiation.length; ++i)
+				for (int i = 0; i < receivedSubnegotiation.length; ++i) {
 					receivedSubnegotiation[i] = 0;
+				}
 
 				// Forget about any previous subnegotiation errors.
 

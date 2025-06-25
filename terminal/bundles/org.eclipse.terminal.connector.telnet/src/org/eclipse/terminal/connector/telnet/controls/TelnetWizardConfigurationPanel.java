@@ -55,8 +55,9 @@ public class TelnetWizardConfigurationPanel extends AbstractExtendedConfiguratio
 		panel.setLayoutData(data);
 
 		// Create the host selection combo
-		if (isWithoutSelection())
+		if (isWithoutSelection()) {
 			createHostsUI(panel, true);
+		}
 
 		TelnetConnector conn = new TelnetConnector();
 		telnetSettings = (TelnetSettings) conn.getTelnetSettings();
@@ -72,8 +73,9 @@ public class TelnetWizardConfigurationPanel extends AbstractExtendedConfiguratio
 
 		// Add the listener to the settings page
 		telnetSettingsPage.addListener(control -> {
-			if (getContainer() != null)
+			if (getContainer() != null) {
 				getContainer().validate();
+			}
 		});
 
 		// Create the encoding selection combo
@@ -84,39 +86,46 @@ public class TelnetWizardConfigurationPanel extends AbstractExtendedConfiguratio
 
 	@Override
 	public void setupData(Map<String, Object> data) {
-		if (data == null || telnetSettings == null || telnetSettingsPage == null)
+		if (data == null || telnetSettings == null || telnetSettingsPage == null) {
 			return;
+		}
 
 		String value = (String) data.get(ITerminalsConnectorConstants.PROP_IP_HOST);
-		if (value != null)
+		if (value != null) {
 			telnetSettings.setHost(value);
+		}
 
 		Object v = data.get(ITerminalsConnectorConstants.PROP_IP_PORT);
 		value = v != null ? v.toString() : null;
-		if (value != null)
+		if (value != null) {
 			telnetSettings.setNetworkPort(value);
+		}
 
 		v = data.get(ITerminalsConnectorConstants.PROP_TIMEOUT);
 		value = v != null ? v.toString() : null;
-		if (value != null)
+		if (value != null) {
 			telnetSettings.setTimeout(value);
+		}
 
 		v = data.get(ITerminalsConnectorConstants.PROP_TELNET_EOL);
 		value = v != null ? v.toString() : null;
-		if (value != null)
+		if (value != null) {
 			telnetSettings.setEndOfLine(value);
+		}
 
 		value = (String) data.get(ITerminalsConnectorConstants.PROP_ENCODING);
-		if (value != null)
+		if (value != null) {
 			setEncoding(value);
+		}
 
 		telnetSettingsPage.loadSettings();
 	}
 
 	@Override
 	public void extractData(Map<String, Object> data) {
-		if (data == null)
+		if (data == null) {
 			return;
+		}
 
 		// set the terminal connector id for ssh
 		data.put(ITerminalsConnectorConstants.PROP_TERMINAL_CONNECTOR_ID,

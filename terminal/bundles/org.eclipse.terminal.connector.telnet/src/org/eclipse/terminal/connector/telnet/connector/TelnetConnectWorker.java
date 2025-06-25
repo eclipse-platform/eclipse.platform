@@ -50,11 +50,12 @@ class TelnetConnectWorker extends Thread {
 
 		while (remaining >= 0) {
 			// Pause before we re-try if the remaining tries are less than the initial value
-			if (remaining < 10)
+			if (remaining < 10) {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					/* ignored on purpose */ }
+			}
 
 			try {
 				int nTimeout = fConn.getTelnetSettings().getTimeout() * 1000;
