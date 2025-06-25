@@ -60,8 +60,8 @@ public enum TerminalColorPresets {
 	}
 
 	public static class Preset {
-		private String name;
-		private Map<TerminalColor, Supplier<RGB>> map = new EnumMap<>(TerminalColor.class);
+		private final String name;
+		private final Map<TerminalColor, Supplier<RGB>> map = new EnumMap<>(TerminalColor.class);
 
 		Preset(String name) {
 			this.name = name;

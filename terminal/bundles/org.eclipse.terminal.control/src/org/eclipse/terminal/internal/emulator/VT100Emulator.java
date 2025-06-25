@@ -168,10 +168,11 @@ public class VT100Emulator implements ControlListener {
 			ansiParameters[i] = new StringBuffer();
 		}
 		setInputStreamReader(reader);
-		if (TerminalPlugin.isOptionEnabled(Logger.TRACE_DEBUG_LOG_VT100BACKEND))
+		if (TerminalPlugin.isOptionEnabled(Logger.TRACE_DEBUG_LOG_VT100BACKEND)) {
 			text = new VT100BackendTraceDecorator(new VT100EmulatorBackend(data), System.out);
-		else
+		} else {
 			text = new VT100EmulatorBackend(data);
+		}
 
 		//		text.setDimensions(24, 80);
 		TerminalStyle style = TerminalStyle.getDefaultStyle();
@@ -249,8 +250,9 @@ public class VT100Emulator implements ControlListener {
 	public void fontChanged() {
 		Logger.log("entered"); //$NON-NLS-1$
 
-		if (text != null)
+		if (text != null) {
 			adjustTerminalDimensions();
+		}
 	}
 
 	//	/**
@@ -326,8 +328,9 @@ public class VT100Emulator implements ControlListener {
 
 				case '\n':
 					processNewline(); // Newline (Control-J)
-					if (fCrAfterNewLine)
+					if (fCrAfterNewLine) {
 						processCarriageReturn(); // Carriage Return (Control-M)
+					}
 					break;
 
 				case '\r':
@@ -464,8 +467,9 @@ public class VT100Emulator implements ControlListener {
 				break;
 
 			case ANSISTATE_EXPECTING_CHARSET_DESIGNATION:
-				if (character != '%')
+				if (character != '%') {
 					ansiState = ANSISTATE_INITIAL;
+				}
 				// Character set designation commands are ignored
 				break;
 
@@ -774,10 +778,11 @@ public class VT100Emulator implements ControlListener {
 	private void processAnsiCommand_J() {
 		int ansiParameter;
 
-		if (ansiParameters[0].length() == 0)
+		if (ansiParameters[0].length() == 0) {
 			ansiParameter = 0;
-		else
+		} else {
 			ansiParameter = getAnsiParameter(0);
+		}
 
 		switch (ansiParameter) {
 		case 0:
@@ -813,8 +818,9 @@ public class VT100Emulator implements ControlListener {
 	private void processAnsiCommand_K() {
 		//Bug 401386: missing parameter must be interpreted as 0, and not 1 like most other defaults.
 		int ansiParameter = 0;
-		if (ansiParameters[0].length() > 0)
+		if (ansiParameters[0].length() > 0) {
 			ansiParameter = getAnsiParameter(0);
+		}
 
 		switch (ansiParameter) {
 		case 0:
@@ -1311,8 +1317,9 @@ public class VT100Emulator implements ControlListener {
 
 		String parameter = ansiParameters[parameterIndex].toString();
 
-		if (parameter.length() == 0)
+		if (parameter.length() == 0) {
 			return 1;
+		}
 
 		// return 1 on failed parseInt
 		int parameterValue = 1;
@@ -1340,8 +1347,9 @@ public class VT100Emulator implements ControlListener {
 		if (ch == ';') {
 			++nextAnsiParameter;
 		} else {
-			if (nextAnsiParameter < ansiParameters.length)
+			if (nextAnsiParameter < ansiParameters.length) {
 				ansiParameters[nextAnsiParameter].append(ch);
+			}
 		}
 	}
 
@@ -1482,8 +1490,9 @@ public class VT100Emulator implements ControlListener {
 	}
 
 	private ITerminalConnector getConnector() {
-		if (terminal.getTerminalConnector() != null)
+		if (terminal.getTerminalConnector() != null) {
 			return terminal.getTerminalConnector();
+		}
 		return null;
 	}
 
@@ -1575,8 +1584,9 @@ public class VT100Emulator implements ControlListener {
 			c = fReader.read();
 		}
 		// TODO: better end of file handling
-		if (c == -1)
+		if (c == -1) {
 			c = 0;
+		}
 		return (char) c;
 	}
 

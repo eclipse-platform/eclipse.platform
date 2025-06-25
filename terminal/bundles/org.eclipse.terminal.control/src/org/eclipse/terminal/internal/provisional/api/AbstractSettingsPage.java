@@ -57,8 +57,9 @@ public abstract class AbstractSettingsPage implements ISettingsPage, IMessagePro
 		Object[] list = listeners.getListeners();
 		for (int i = 0; i < list.length; i++) {
 			Object l = list[i];
-			if (!(l instanceof Listener))
+			if (!(l instanceof Listener)) {
 				continue;
+			}
 			((Listener) l).onSettingsPageChanged(control);
 		}
 	}
@@ -113,8 +114,9 @@ public abstract class AbstractSettingsPage implements ISettingsPage, IMessagePro
 	 */
 	protected final ControlDecoration createControlDecoration(Control control) {
 		Assert.isNotNull(control);
-		if (!hasDecoration)
+		if (!hasDecoration) {
 			return null;
+		}
 		ControlDecoration controlDecoration = new ControlDecoration(control, getControlDecorationPosition());
 		controlDecoration.setShowOnlyOnFocus(false);
 		control.setData("controlDecoration", controlDecoration); //$NON-NLS-1$

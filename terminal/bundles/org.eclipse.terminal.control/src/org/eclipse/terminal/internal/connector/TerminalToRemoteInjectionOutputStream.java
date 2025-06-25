@@ -130,8 +130,9 @@ public class TerminalToRemoteInjectionOutputStream extends FilterOutputStream {
 		}
 
 		private void checkStream() throws IOException {
-			if (fInjection != this)
+			if (fInjection != this) {
 				throw new IOException("Stream is closed"); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -185,24 +186,27 @@ public class TerminalToRemoteInjectionOutputStream extends FilterOutputStream {
 
 	@Override
 	synchronized public void flush() throws IOException {
-		if (fInterceptor != null)
+		if (fInterceptor != null) {
 			fInterceptor.flush();
+		}
 		out.flush();
 	}
 
 	@Override
 	synchronized public void write(byte[] b, int off, int len) throws IOException {
-		if (fInterceptor != null)
+		if (fInterceptor != null) {
 			fInterceptor.write(b, off, len);
-		else
+		} else {
 			out.write(b, off, len);
+		}
 	}
 
 	@Override
 	synchronized public void write(int b) throws IOException {
-		if (fInterceptor != null)
+		if (fInterceptor != null) {
 			fInterceptor.write(b);
-		else
+		} else {
 			out.write(b);
+		}
 	}
 }

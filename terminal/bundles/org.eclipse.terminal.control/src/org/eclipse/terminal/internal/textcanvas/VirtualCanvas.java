@@ -122,8 +122,9 @@ public abstract class VirtualCanvas extends Canvas {
 	}
 
 	protected void repaint(Rectangle r) {
-		if (isDisposed())
+		if (isDisposed()) {
 			return;
+		}
 		if (inClipping(r, fClientArea)) {
 			redraw(r.x, r.y, r.width, r.height, true);
 			update();
@@ -162,14 +163,18 @@ public abstract class VirtualCanvas extends Canvas {
 	protected boolean inClipping(Rectangle clipping, Rectangle r) {
 		// TODO check if this is OK in all cases (the <=!)
 		//
-		if (r.x + r.width <= clipping.x)
+		if (r.x + r.width <= clipping.x) {
 			return false;
-		if (clipping.x + clipping.width <= r.x)
+		}
+		if (clipping.x + clipping.width <= r.x) {
 			return false;
-		if (r.y + r.height <= clipping.y)
+		}
+		if (r.y + r.height <= clipping.y) {
 			return false;
-		if (clipping.y + clipping.height <= r.y)
+		}
+		if (clipping.y + clipping.height <= r.y) {
 			return false;
+		}
 
 		return true;
 	}
@@ -251,8 +256,9 @@ public abstract class VirtualCanvas extends Canvas {
 
 	protected void updateViewRectangle() {
 		if (fViewRectangle.x == -fVirtualBounds.x && fViewRectangle.y == -fVirtualBounds.y
-				&& fViewRectangle.width == fClientArea.width && fViewRectangle.height == fClientArea.height)
+				&& fViewRectangle.width == fClientArea.width && fViewRectangle.height == fClientArea.height) {
 			return;
+		}
 		fViewRectangle.x = -fVirtualBounds.x;
 		fViewRectangle.y = -fVirtualBounds.y;
 		fViewRectangle.width = fClientArea.width;

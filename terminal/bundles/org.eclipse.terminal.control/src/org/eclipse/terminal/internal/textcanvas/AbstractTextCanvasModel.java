@@ -103,8 +103,9 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 			fInUpdate = true;
 			try {
 				fSnapshot.updateSnapshot(false);
-				if (fSnapshot.hasTerminalChanged())
+				if (fSnapshot.hasTerminalChanged()) {
 					fireTerminalDataChanged();
+				}
 				// TODO why does hasDimensionsChanged not work??????
 				//			if(fSnapshot.hasDimensionsChanged())
 				//				fireDimensionsChanged();
@@ -156,8 +157,9 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 	 * blinking cursor
 	 */
 	protected void updateCursor() {
-		if (!fCursorIsEnabled)
+		if (!fCursorIsEnabled) {
 			return;
+		}
 		int cursorLine = getSnapshot().getCursorLine();
 		int cursorColumn = getSnapshot().getCursorColumn();
 		// if cursor at the end put it to the end of the
@@ -231,24 +233,27 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 
 	@Override
 	public Point getSelectionEnd() {
-		if (fSelectionStartLine < 0)
+		if (fSelectionStartLine < 0) {
 			return null;
-		else
+		} else {
 			return new Point(fSelectionEndColumn, fSeletionEndLine);
+		}
 	}
 
 	@Override
 	public Point getSelectionStart() {
-		if (fSelectionStartLine < 0)
+		if (fSelectionStartLine < 0) {
 			return null;
-		else
+		} else {
 			return new Point(fSelectionStartCoumn, fSelectionStartLine);
+		}
 	}
 
 	@Override
 	public Point getSelectionAnchor() {
-		if (fSelectionStartLine < 0)
+		if (fSelectionStartLine < 0) {
 			return null;
+		}
 		return new Point(fSelectionAnchor.x, fSelectionAnchor.y);
 	}
 
@@ -304,10 +309,11 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 
 	@Override
 	public boolean hasLineSelection(int line) {
-		if (fSelectionStartLine < 0)
+		if (fSelectionStartLine < 0) {
 			return false;
-		else
+		} else {
 			return line >= fSelectionStartLine && line <= fSeletionEndLine;
+		}
 	}
 
 	@Override
@@ -357,16 +363,19 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 		}
 		int row1 = line;
 		int row2 = line;
-		while (row1 > 0 && fSnapshot.isWrappedLine(row1 - 1))
+		while (row1 > 0 && fSnapshot.isWrappedLine(row1 - 1)) {
 			row1--;
-		while (row2 < fSnapshot.getHeight() && fSnapshot.isWrappedLine(row2))
+		}
+		while (row2 < fSnapshot.getHeight() && fSnapshot.isWrappedLine(row2)) {
 			row2++;
+		}
 		row2++;
 		String lineText = ""; //$NON-NLS-1$
 		for (int l = row1; l < row2; l++) {
 			char[] chars = fSnapshot.getChars(l);
-			if (chars == null)
+			if (chars == null) {
 				return;
+			}
 			lineText += String.valueOf(chars);
 		}
 		int width = fSnapshot.getWidth();
@@ -427,25 +436,29 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 	 * @return the currently selected text
 	 */
 	private String extractSelectedText() {
-		if (fSelectionStartLine < 0 || fSelectionStartCoumn < 0 || fSelectionSnapshot == null)
+		if (fSelectionStartLine < 0 || fSelectionStartCoumn < 0 || fSelectionSnapshot == null) {
 			return ""; //$NON-NLS-1$
+		}
 		StringBuffer buffer = new StringBuffer();
 		for (int line = fSelectionStartLine; line <= fSeletionEndLine; line++) {
 			String text;
 			char[] chars = fSelectionSnapshot.getChars(line);
 			if (chars != null) {
 				text = new String(chars);
-				if (line == fSeletionEndLine && fSelectionEndColumn >= 0)
+				if (line == fSeletionEndLine && fSelectionEndColumn >= 0) {
 					text = text.substring(0, Math.min(fSelectionEndColumn + 1, text.length()));
-				if (line == fSelectionStartLine)
+				}
+				if (line == fSelectionStartLine) {
 					text = text.substring(Math.min(fSelectionStartCoumn, text.length()));
+				}
 				text = scrubLine(text);
 			} else {
 				text = ""; //$NON-NLS-1$
 			}
 			buffer.append(text);
-			if (line < fSeletionEndLine && !fSelectionSnapshot.isWrappedLine(line))
+			if (line < fSeletionEndLine && !fSelectionSnapshot.isWrappedLine(line)) {
 				buffer.append('\n');
+			}
 		}
 		return buffer.toString();
 	}
@@ -458,11 +471,13 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 					&& fSelectionSnapshot.getScrollWindowSize() > 0) {
 				int start = fSelectionStartLine + fSelectionSnapshot.getScrollWindowShift();
 				int end = fSeletionEndLine + fSelectionSnapshot.getScrollWindowShift();
-				if (start < 0)
-					if (end >= 0)
+				if (start < 0) {
+					if (end >= 0) {
 						start = 0;
-					else
+					} else {
 						start = -1;
+					}
+				}
 				doSetSelection(start, end, fSelectionStartCoumn, fSelectionEndColumn);
 			}
 			// check if the content of the selection has changed. If the content has
@@ -476,9 +491,10 @@ abstract public class AbstractTextCanvasModel implements ITextCanvasModel {
 				}
 			}
 			// update the observed window...
-			if (fSelectionSnapshot != null)
+			if (fSelectionSnapshot != null) {
 				// todo make -1 to work!
 				fSelectionSnapshot.setInterestWindow(0, fSelectionSnapshot.getHeight());
+			}
 		}
 	}
 

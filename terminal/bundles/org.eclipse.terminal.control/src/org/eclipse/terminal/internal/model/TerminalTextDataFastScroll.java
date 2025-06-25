@@ -36,8 +36,9 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 		fMaxHeight = maxHeight;
 		fData = data;
 		fData.setDimensions(maxHeight, fData.getWidth());
-		if (maxHeight > 2)
+		if (maxHeight > 2) {
 			assert shiftOffset(-2) || throwRuntimeException();
+		}
 	}
 
 	public TerminalTextDataFastScroll(int maxHeight) {
@@ -235,11 +236,13 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 	public void setDimensions(int height, int width) {
 		assert height >= 0 || throwRuntimeException();
 		assert width >= 0 || throwRuntimeException();
-		if (height > fMaxHeight)
+		if (height > fMaxHeight) {
 			setMaxHeight(height);
+		}
 		fHeight = height;
-		if (width != fData.getWidth())
+		if (width != fData.getWidth()) {
 			fData.setDimensions(fMaxHeight, width);
+		}
 	}
 
 	@Override
@@ -256,8 +259,9 @@ public class TerminalTextDataFastScroll implements ITerminalTextData {
 			// copy the first part
 			buffer.copyRange(fData, start, 0, n);
 			// copy the second part
-			if (n < maxHeight)
+			if (n < maxHeight) {
 				buffer.copyRange(fData, 0, n, Math.min(fMaxHeight - n, maxHeight - n));
+			}
 			// copy the buffer back to our data
 			fData.copy(buffer);
 			shiftOffset(-start);

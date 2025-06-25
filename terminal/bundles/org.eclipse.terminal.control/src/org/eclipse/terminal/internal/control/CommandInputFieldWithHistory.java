@@ -138,15 +138,18 @@ public class CommandInputFieldWithHistory implements ICommandInputField {
 	protected void pushLine(String line) {
 		endHistoryMode();
 		// anything to remember?
-		if (line == null || line.trim().length() == 0)
+		if (line == null || line.trim().length() == 0) {
 			return;
+		}
 		fHistory.add(0, line);
 		// ignore if the same as last
-		if (fHistory.size() > 1 && line.equals(fHistory.get(1)))
+		if (fHistory.size() > 1 && line.equals(fHistory.get(1))) {
 			fHistory.remove(0);
+		}
 		// limit the history size.
-		if (fHistory.size() >= fMaxSize)
+		if (fHistory.size() >= fMaxSize) {
 			fHistory.remove(fHistory.size() - 1);
+		}
 	}
 
 	/**
@@ -156,15 +159,17 @@ public class CommandInputFieldWithHistory implements ICommandInputField {
 	public void setHistory(String history) {
 		endHistoryMode();
 		fHistory.clear();
-		if (history == null)
+		if (history == null) {
 			return;
+		}
 		// add history entries separated by '\n'
 		// fHistory.addAll(Arrays.asList(history.split("\n"))); //$NON-NLS-1$
 		//<J2ME CDC-1.1 Foundation-1.1 variant>
 		StringTokenizer tok = new StringTokenizer(history, "\n"); //$NON-NLS-1$
-		while (tok.hasMoreElements())
+		while (tok.hasMoreElements()) {
 			fHistory.add((String) tok.nextElement());
 		//</J2ME CDC-1.1 Foundation-1.1 variant>
+		}
 	}
 
 	/**
@@ -176,10 +181,11 @@ public class CommandInputFieldWithHistory implements ICommandInputField {
 		for (Iterator<String> iterator = fHistory.iterator(); iterator.hasNext();) {
 			String line = iterator.next();
 			if (line.length() > 0) {
-				if (sep)
+				if (sep) {
 					buff.append("\n"); //$NON-NLS-1$
-				else
+				} else {
 					sep = true;
+				}
 				buff.append(line);
 			}
 		}
@@ -200,10 +206,12 @@ public class CommandInputFieldWithHistory implements ICommandInputField {
 			fEditHistoryPos = 0;
 		}
 		fEditedHistory.set(fEditHistoryPos, currLine);
-		if (fEditHistoryPos + count >= fEditedHistory.size())
+		if (fEditHistoryPos + count >= fEditedHistory.size()) {
 			return null;
-		if (fEditHistoryPos + count < 0)
+		}
+		if (fEditHistoryPos + count < 0) {
 			return null;
+		}
 		fEditHistoryPos += count;
 		return (String) fEditedHistory.get(fEditHistoryPos);
 	}
@@ -217,8 +225,9 @@ public class CommandInputFieldWithHistory implements ICommandInputField {
 	 * @return the string to be shown in the command line
 	 */
 	protected String escape() {
-		if (!inHistoryMode())
+		if (!inHistoryMode()) {
 			return null;
+		}
 		String line = (String) fEditedHistory.get(0);
 		endHistoryMode();
 		return line;
@@ -289,13 +298,15 @@ public class CommandInputFieldWithHistory implements ICommandInputField {
 			public void keyPressed(KeyEvent e) {
 				// if the field assist has handled the key already then
 				// ignore it (https://bugs.eclipse.org/bugs/show_bug.cgi?id=211659)
-				if (!e.doit)
+				if (!e.doit) {
 					return;
+				}
 				if (e.character == SWT.CR || e.character == SWT.LF) {
 					e.doit = false;
 					String line = fInputField.getText();
-					if (!terminal.pasteString(line + '\r'))
+					if (!terminal.pasteString(line + '\r')) {
 						return;
+					}
 					pushLine(line);
 					setCommand("");//$NON-NLS-1$
 				} else if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.PAGE_UP) {
@@ -311,8 +322,9 @@ public class CommandInputFieldWithHistory implements ICommandInputField {
 			}
 
 			private void setCommand(String line) {
-				if (line == null)
+				if (line == null) {
 					return;
+				}
 				fInputField.setText(line);
 				fInputField.setSelection(fInputField.getCharCount());
 			}

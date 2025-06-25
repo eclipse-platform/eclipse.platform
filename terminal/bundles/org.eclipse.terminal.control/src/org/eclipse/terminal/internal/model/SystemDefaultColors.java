@@ -58,17 +58,17 @@ public enum SystemDefaultColors implements Supplier<RGB> {
 	 *
 	 * Values from SWT
 	 */
-	private String swtColor;
+	private final String swtColor;
 
 	/**
 	 * Preference name for color.
 	 *
 	 * Values from org.eclipse.ui.texteditor.AbstractTextEditor....
 	 */
-	private String editorColor;
+	private final String editorColor;
 
 	/** If all else fails, use this standard color */
-	private RGB fallbackColor;
+	private final RGB fallbackColor;
 
 	SystemDefaultColors(String editorColor, String swtColor, RGB rgb) {
 		this.editorColor = editorColor;
@@ -91,9 +91,9 @@ public enum SystemDefaultColors implements Supplier<RGB> {
 		if (Platform.getPreferencesService() != null) {
 			if (!store.getBoolean(prefSystemDefault)) {
 				if (store.contains(pref)) {
-					if (store.isDefault(pref))
+					if (store.isDefault(pref)) {
 						rgb = PreferenceConverter.getDefaultColor(store, pref);
-					else {
+					} else {
 						rgb = PreferenceConverter.getColor(store, pref);
 					}
 				}

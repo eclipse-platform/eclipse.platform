@@ -102,22 +102,25 @@ public class TextCanvas extends GridCanvas {
 		fCellCanvasModel.addCellCanvasModelListener(new ITextCanvasModelListener() {
 			@Override
 			public void rangeChanged(int col, int line, int width, int height) {
-				if (isDisposed())
+				if (isDisposed()) {
 					return;
+				}
 				repaintRange(col, line, width, height);
 			}
 
 			@Override
 			public void dimensionsChanged(int cols, int rows) {
-				if (isDisposed())
+				if (isDisposed()) {
 					return;
+				}
 				calculateGrid();
 			}
 
 			@Override
 			public void terminalDataChanged() {
-				if (isDisposed())
+				if (isDisposed()) {
 					return;
+				}
 
 				// scroll to end (unless scroll lock is active)
 				if (!fResizing) {
@@ -159,8 +162,9 @@ public class TextCanvas extends GridCanvas {
 					fHasSelection = false;
 					if ((e.stateMask & SWT.SHIFT) != 0) {
 						Point anchor = fCellCanvasModel.getSelectionAnchor();
-						if (anchor != null)
+						if (anchor != null) {
 							fDraggingStart = anchor;
+						}
 					} else {
 						fCellCanvasModel.setSelectionAnchor(fDraggingStart);
 					}
@@ -180,10 +184,11 @@ public class TextCanvas extends GridCanvas {
 			public void mouseUp(MouseEvent e) {
 				if (e.button == 1) { // left button
 					updateHasSelection(e);
-					if (fHasSelection)
+					if (fHasSelection) {
 						setSelection(screenPointToCell(e.x, e.y));
-					else
+					} else {
 						fCellCanvasModel.setSelection(-1, -1, -1, -1);
+					}
 					fDraggingStart = null;
 				}
 				if (fMouseListeners.size() > 0) {
@@ -223,8 +228,9 @@ public class TextCanvas extends GridCanvas {
 	private void updateHasSelection(MouseEvent e) {
 		if (fDraggingStart != null) {
 			Point p = screenPointToCell(e.x, e.y);
-			if (fDraggingStart.x != p.x || fDraggingStart.y != p.y)
+			if (fDraggingStart.x != p.x || fDraggingStart.y != p.y) {
 				fHasSelection = true;
+			}
 		}
 	}
 
@@ -244,13 +250,15 @@ public class TextCanvas extends GridCanvas {
 	}
 
 	int compare(Point p1, Point p2) {
-		if (p1.equals(p2))
+		if (p1.equals(p2)) {
 			return 0;
+		}
 		if (p1.y == p2.y) {
-			if (p1.x > p2.x)
+			if (p1.x > p2.x) {
 				return 1;
-			else
+			} else {
 				return -1;
+			}
 		}
 		if (p1.y > p2.y) {
 			return 1;
@@ -302,8 +310,9 @@ public class TextCanvas extends GridCanvas {
 					lines = bonds.height / cellHeight;
 					columns = bonds.width / cellWidth;
 				}
-				if (lines < fMinLines)
+				if (lines < fMinLines) {
 					lines = fMinLines;
+				}
 				fResizeListener.sizeChanged(lines, columns);
 			}
 		}
@@ -330,8 +339,9 @@ public class TextCanvas extends GridCanvas {
 			if (fResizing) {
 				// scroll to end if view port was near last line
 				Rectangle viewRect = getViewRectangle();
-				if (virtualBounds.height - (viewRect.y + viewRect.height) < getCellHeight() * 2)
+				if (virtualBounds.height - (viewRect.y + viewRect.height) < getCellHeight() * 2) {
 					scrollToEnd();
+				}
 			}
 		} finally {
 			setRedraw(true);
@@ -463,8 +473,9 @@ public class TextCanvas extends GridCanvas {
 	 * terminaldata
 	 */
 	public void addResizeHandler(ResizeListener listener) {
-		if (fResizeListener != null)
+		if (fResizeListener != null) {
 			throw new IllegalArgumentException("There can be at most one listener at the moment!"); //$NON-NLS-1$
+		}
 		fResizeListener = listener;
 
 		// Bug 281328: [terminal] The very first few characters might be missing in

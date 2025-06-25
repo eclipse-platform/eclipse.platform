@@ -61,8 +61,9 @@ public class TerminalPlugin extends AbstractUIPlugin {
 
 	public static boolean isOptionEnabled(String strOption) {
 		String strEnabled = Platform.getDebugOption(strOption);
-		if (strEnabled == null)
+		if (strEnabled == null) {
 			return false;
+		}
 
 		return Boolean.parseBoolean(strEnabled);
 	}

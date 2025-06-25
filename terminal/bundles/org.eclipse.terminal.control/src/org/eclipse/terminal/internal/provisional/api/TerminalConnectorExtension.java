@@ -41,8 +41,9 @@ import org.eclipse.terminal.internal.provisional.api.provider.TerminalConnectorI
 public class TerminalConnectorExtension {
 	static private ITerminalConnector makeConnector(final IConfigurationElement config) {
 		String id = config.getAttribute("id"); //$NON-NLS-1$
-		if (id == null || id.length() == 0)
+		if (id == null || id.length() == 0) {
 			id = config.getAttribute("class"); //$NON-NLS-1$
+		}
 		String name = config.getAttribute("name"); //$NON-NLS-1$
 		if (name == null || name.length() == 0) {
 			name = id;

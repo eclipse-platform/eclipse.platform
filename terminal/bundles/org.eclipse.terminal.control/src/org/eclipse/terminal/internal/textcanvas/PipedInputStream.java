@@ -65,8 +65,9 @@ public class PipedInputStream extends InputStream {
 
 		public BoundedByteBuffer(int capacity) throws IllegalArgumentException {
 			// make sure we don't deadlock on too small capacity
-			if (capacity <= 0)
+			if (capacity <= 0) {
 				throw new IllegalArgumentException();
+			}
 			fBuffer = new byte[capacity];
 		}
 
@@ -86,15 +87,17 @@ public class PipedInputStream extends InputStream {
 		 * Must be called with a lock on this!
 		 */
 		public void write(byte b) throws InterruptedException {
-			while (fUsedSlots == fBuffer.length)
+			while (fUsedSlots == fBuffer.length) {
 				// wait until not full
 				wait();
+			}
 
 			fBuffer[fPutPos] = b;
 			fPutPos = (fPutPos + 1) % fBuffer.length; // cyclically increment
 
-			if (fUsedSlots++ == 0) // signal if was empty
+			if (fUsedSlots++ == 0) { // signal if was empty
 				notifyAll();
+			}
 		}
 
 		public int getFreeSlots() {
@@ -103,18 +106,21 @@ public class PipedInputStream extends InputStream {
 
 		public void write(byte[] b, int off, int len) throws InterruptedException {
 			assert len <= getFreeSlots();
-			while (fUsedSlots == fBuffer.length)
+			while (fUsedSlots == fBuffer.length) {
 				// wait until not full
 				wait();
+			}
 			int n = Math.min(len, fBuffer.length - fPutPos);
 			System.arraycopy(b, off, fBuffer, fPutPos, n);
-			if (fPutPos + len > fBuffer.length)
+			if (fPutPos + len > fBuffer.length) {
 				System.arraycopy(b, off + n, fBuffer, 0, len - n);
+			}
 			fPutPos = (fPutPos + len) % fBuffer.length; // cyclically increment
 			boolean wasEmpty = fUsedSlots == 0;
 			fUsedSlots += len;
-			if (wasEmpty) // signal if was empty
+			if (wasEmpty) { // signal if was empty
 				notifyAll();
+			}
 		}
 
 		/**
@@ -126,36 +132,41 @@ public class PipedInputStream extends InputStream {
 		 */
 		public int read() throws InterruptedException {
 			while (fUsedSlots == 0) {
-				if (fClosed)
+				if (fClosed) {
 					return -1;
+				}
 				// wait until not empty
 				wait();
 			}
 			byte b = fBuffer[fTakePos];
 			fTakePos = (fTakePos + 1) % fBuffer.length;
 
-			if (fUsedSlots-- == fBuffer.length) // signal if was full
+			if (fUsedSlots-- == fBuffer.length) { // signal if was full
 				notifyAll();
+			}
 			return b;
 		}
 
 		public int read(byte[] cbuf, int off, int len) throws InterruptedException {
 			assert len <= available();
 			while (fUsedSlots == 0) {
-				if (fClosed)
+				if (fClosed) {
 					return 0;
+				}
 				// wait until not empty
 				wait();
 			}
 			int n = Math.min(len, fBuffer.length - fTakePos);
 			System.arraycopy(fBuffer, fTakePos, cbuf, off, n);
-			if (fTakePos + len > n)
+			if (fTakePos + len > n) {
 				System.arraycopy(fBuffer, 0, cbuf, off + n, len - n);
+			}
 			fTakePos = (fTakePos + len) % fBuffer.length;
 			boolean wasFull = fUsedSlots == fBuffer.length;
 			fUsedSlots -= len;
-			if (wasFull)
+			if (wasFull) {
 				notifyAll();
+			}
 
 			return len;
 		}
@@ -181,8 +192,9 @@ public class PipedInputStream extends InputStream {
 		public void write(byte[] b, int off, int len) throws IOException {
 			try {
 				synchronized (fQueue) {
-					if (fQueue.isClosed())
+					if (fQueue.isClosed()) {
 						throw new IOException("Stream is closed!"); //$NON-NLS-1$
+					}
 					int written = 0;
 					while (written < len) {
 						if (fQueue.getFreeSlots() == 0) {
@@ -208,8 +220,9 @@ public class PipedInputStream extends InputStream {
 		public void write(int b) throws IOException {
 			try {
 				synchronized (fQueue) {
-					if (fQueue.isClosed())
+					if (fQueue.isClosed()) {
 						throw new IOException("Stream is closed!"); //$NON-NLS-1$
+					}
 					fQueue.write((byte) b);
 				}
 			} catch (InterruptedException e) {
@@ -248,8 +261,9 @@ public class PipedInputStream extends InputStream {
 	 */
 	public void waitForAvailable(long millis) throws InterruptedException {
 		synchronized (fQueue) {
-			if (fQueue.available() == 0 && !fQueue.fClosed)
+			if (fQueue.available() == 0 && !fQueue.fClosed) {
 				fQueue.wait(millis);
+			}
 		}
 	}
 
@@ -295,8 +309,9 @@ public class PipedInputStream extends InputStream {
 	@Override
 	public int read(byte[] cbuf, int off, int len) throws IOException {
 		int n = 0;
-		if (len == 0)
+		if (len == 0) {
 			return 0;
+		}
 		// read as much as we can using a single synchronized statement
 		try {
 			synchronized (fQueue) {
@@ -305,8 +320,9 @@ public class PipedInputStream extends InputStream {
 					// block now until at least one byte is available
 					int c = fQueue.read();
 					// are we at the end of stream
-					if (c == -1)
+					if (c == -1) {
 						return -1;
+					}
 					cbuf[off] = (byte) c;
 					n++;
 				}
@@ -318,8 +334,9 @@ public class PipedInputStream extends InputStream {
 					if (nn == 0 && fQueue.isClosed()) {
 						// if no byte was read, return -1 to indicate end of stream
 						// else return the bytes we read up to now
-						if (n == 0)
+						if (n == 0) {
 							n = -1;
+						}
 						return n;
 					}
 					fQueue.read(cbuf, off + n, nn);

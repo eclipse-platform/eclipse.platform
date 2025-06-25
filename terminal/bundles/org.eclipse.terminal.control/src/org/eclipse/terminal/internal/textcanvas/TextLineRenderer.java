@@ -100,14 +100,16 @@ public class TextLineRenderer implements ILinelRenderer {
 				char[] chars = model.getTerminalText().getChars(line);
 				if (chars != null) {
 					int offset = 0;
-					if (start.y == line)
+					if (start.y == line) {
 						offset = start.x;
+					}
 					offset = Math.max(offset, colFirst);
 					int len;
-					if (end.y == line)
+					if (end.y == line) {
 						len = end.x - offset + 1;
-					else
+					} else {
 						len = chars.length - offset + 1;
+					}
 					len = Math.min(len, chars.length - offset);
 					if (len > 0) {
 						String text = new String(chars, offset, len);
@@ -136,8 +138,9 @@ public class TextLineRenderer implements ILinelRenderer {
 	}
 
 	private void drawCursor(ITextCanvasModel model, GC gc, int row, int x, int y, int colFirst) {
-		if (!model.isCursorOn())
+		if (!model.isCursorOn()) {
 			return;
+		}
 		int cursorLine = model.getCursorLine();
 
 		if (row == cursorLine) {

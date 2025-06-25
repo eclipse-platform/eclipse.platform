@@ -24,15 +24,17 @@ public class LoggingOutputStream extends FilterOutputStream {
 
 	@Override
 	public void write(byte[] b, int off, int len) throws IOException {
-		if (Logger.isLogEnabled())
+		if (Logger.isLogEnabled()) {
 			Logger.log("Received " + len + " bytes: '" + //$NON-NLS-1$ //$NON-NLS-2$
 					Logger.encode(new String(b, 0, len)) + "'"); //$NON-NLS-1$
+		}
 
 		// we cannot call super.write, because this would call our write
 		// which logs character by character.....
 		//super.write(b, off, len);
-		if ((off | len | (b.length - (len + off)) | (off + len)) < 0)
+		if ((off | len | (b.length - (len + off)) | (off + len)) < 0) {
 			throw new IndexOutOfBoundsException();
+		}
 
 		for (int i = 0; i < len; i++) {
 			super.write(b[off + i]);
@@ -41,9 +43,10 @@ public class LoggingOutputStream extends FilterOutputStream {
 
 	@Override
 	public void write(int b) throws IOException {
-		if (Logger.isLogEnabled())
+		if (Logger.isLogEnabled()) {
 			Logger.log("Received " + 1 + " bytes: '" + //$NON-NLS-1$ //$NON-NLS-2$
 					Logger.encode(new String(new byte[] { (byte) b }, 0, 1)) + "'"); //$NON-NLS-1$
+		}
 		super.write(b);
 	}
 
