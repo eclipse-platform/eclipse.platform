@@ -127,8 +127,9 @@ public class StyleMap {
 	}
 
 	private TerminalStyle defaultIfNull(TerminalStyle style) {
-		if (style == null)
+		if (style == null) {
 			style = fDefaultStyle;
+		}
 		return style;
 	}
 
@@ -185,8 +186,9 @@ public class StyleMap {
 		for (char c = ' '; c <= '~'; c++) {
 			// consider only the first 128 chars for deciding if a font
 			// is proportional. Collect char width as a side-effect.
-			if (measureChar(gc, c, true))
+			if (measureChar(gc, c, true)) {
 				fProportional = true;
+			}
 		}
 		if (fProportional) {
 			// Widest char minus the padding on the left and right:
@@ -259,8 +261,9 @@ public class StyleMap {
 	 * @return the offset in x direction to center this character
 	 */
 	public int getCharOffset(char c) {
-		if (c >= fOffsets.length)
+		if (c >= fOffsets.length) {
 			return 0;
+		}
 		return fOffsets[c];
 	}
 

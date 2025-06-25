@@ -47,14 +47,16 @@ public class TerminalTextData implements ITerminalTextData {
 	 * @return a string representation of the content
 	 */
 	static public String toMultiLineText(ITerminalTextDataReadOnly term, int start, int len) {
-		if (len < 0)
+		if (len < 0) {
 			len = term.getHeight();
+		}
 		StringBuffer buff = new StringBuffer();
 		int width = term.getWidth();
 		int n = Math.min(len, term.getHeight() - start);
 		for (int line = start; line < n; line++) {
-			if (line > 0)
+			if (line > 0) {
 				buff.append("\n"); //$NON-NLS-1$
+			}
 			for (int column = 0; column < width; column++) {
 				buff.append(term.getChar(line, column));
 			}
@@ -106,8 +108,9 @@ public class TerminalTextData implements ITerminalTextData {
 	public void setDimensions(int height, int width) {
 		int h = getHeight();
 		int w = getWidth();
-		if (w == width && h == height)
+		if (w == width && h == height) {
 			return;
+		}
 		fData.setDimensions(height, width);
 		sendDimensionsChanged(h, w, height, width);
 	}
@@ -115,10 +118,11 @@ public class TerminalTextData implements ITerminalTextData {
 	private void sendDimensionsChanged(int oldHeight, int oldWidth, int newHeight, int newWidth) {
 		// determine what has changed
 		if (oldWidth == newWidth) {
-			if (oldHeight < newHeight)
+			if (oldHeight < newHeight) {
 				sendLinesChangedToSnapshot(oldHeight, newHeight - oldHeight);
-			else
+			} else {
 				sendLinesChangedToSnapshot(newHeight, oldHeight - newHeight);
+			}
 		} else {
 			sendLinesChangedToSnapshot(0, oldHeight);
 		}

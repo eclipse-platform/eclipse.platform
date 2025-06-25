@@ -116,8 +116,9 @@ public class TerminalConnector implements ITerminalConnector {
 	@Override
 	public String getInitializationErrorMessage() {
 		getConnectorImpl();
-		if (fException != null)
+		if (fException != null) {
 			return fException.getLocalizedMessage();
+		}
 		return null;
 	}
 
@@ -164,8 +165,9 @@ public class TerminalConnector implements ITerminalConnector {
 				// that's the place where we log the exception
 				Logger.logException(e);
 			}
-			if (fConnector != null && fStore != null)
+			if (fConnector != null && fStore != null) {
 				fConnector.load(fStore);
+			}
 		}
 		return fConnector;
 	}
@@ -192,10 +194,11 @@ public class TerminalConnector implements ITerminalConnector {
 
 	@Override
 	public String getSettingsSummary() {
-		if (fConnector != null)
+		if (fConnector != null) {
 			return getConnectorImpl().getSettingsSummary();
-		else
+		} else {
 			return TerminalMessages.NotInitialized;
+		}
 	}
 
 	@Override
@@ -221,8 +224,9 @@ public class TerminalConnector implements ITerminalConnector {
 	public void save(ISettingsStore store) {
 		// no need to save the settings: it cannot have changed
 		// because we are not initialized....
-		if (fConnector != null)
+		if (fConnector != null) {
 			getConnectorImpl().save(store);
+		}
 	}
 
 	@Override
@@ -238,23 +242,27 @@ public class TerminalConnector implements ITerminalConnector {
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		TerminalConnectorImpl connector = null;
-		if (isInitialized())
+		if (isInitialized()) {
 			connector = getConnectorImpl();
+		}
 		// if we cannot create the connector then we cannot adapt...
 		if (connector != null) {
 			// maybe the connector is adaptable
 			if (connector instanceof IAdaptable) {
 				Object result = ((IAdaptable) connector).getAdapter(adapter);
 				// Not sure if the next block is needed....
-				if (result == null)
+				if (result == null) {
 					//defer to the platform
 					result = Platform.getAdapterManager().getAdapter(connector, adapter);
-				if (result != null)
+				}
+				if (result != null) {
 					return adapter.cast(result);
+				}
 			}
 			// maybe the real adapter is what we need....
-			if (adapter.isInstance(connector))
+			if (adapter.isInstance(connector)) {
 				return adapter.cast(connector);
+			}
 		}
 		// maybe we have to be adapted....
 		return Platform.getAdapterManager().getAdapter(this, adapter);

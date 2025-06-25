@@ -96,8 +96,9 @@ class TerminalTextDataSnapshot implements ITerminalTextDataSnapshot {
 			fFutureChanges.setInterestWindow(fInterestWindowStartLine, fInterestWindowSize);
 			// and update the snapshot
 			if (fSnapshot.getHeight() != fTerminal.getHeight() || fSnapshot.getWidth() != fTerminal.getWidth()) {
-				if (fInterestWindowSize == -1)
+				if (fInterestWindowSize == -1) {
 					fSnapshot.setWindow(0, fTerminal.getHeight());
+				}
 				// if the dimensions have changed, we need a full copy
 				fSnapshot.copy(fTerminal);
 				// and we mark all lines as changed

@@ -116,8 +116,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public void setDimensions(int lines, int cols) {
 		synchronized (fTerminal) {
-			if (lines == fLines && cols == fColumns)
+			if (lines == fLines && cols == fColumns) {
 				return; // nothing to do
+			}
 			// relative cursor line
 			int cl = getCursorLine();
 			int cc = getCursorColumn();
@@ -231,8 +232,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public void insertLines(int n) {
 		synchronized (fTerminal) {
-			if (!isCusorInScrollingRegion())
+			if (!isCusorInScrollingRegion()) {
 				return;
+			}
 			assert n > 0;
 			int line = toAbsoluteLine(fCursorLine);
 			int nLines = Math.min(fTerminal.getHeight() - line, fScrollRegion.getBottomLine() - fCursorLine + 1);
@@ -259,8 +261,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public void deleteLines(int n) {
 		synchronized (fTerminal) {
-			if (!isCusorInScrollingRegion())
+			if (!isCusorInScrollingRegion()) {
 				return;
+			}
 			assert n > 0;
 			int line = toAbsoluteLine(fCursorLine);
 			int nLines = Math.min(fTerminal.getHeight() - line, fScrollRegion.getBottomLine() - fCursorLine + 1);
@@ -289,8 +292,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public TerminalStyle getStyle() {
 		synchronized (fTerminal) {
-			if (fStyle == null)
+			if (fStyle == null) {
 				return fDefaultStyle;
+			}
 			return fStyle;
 		}
 	}
@@ -306,8 +310,9 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	public void appendString(String buffer) {
 		synchronized (fTerminal) {
 			char[] chars = buffer.toCharArray();
-			if (fInsertMode)
+			if (fInsertMode) {
 				insertCharacters(chars.length);
+			}
 			int line = toAbsoluteLine(fCursorLine);
 			int i = 0;
 			while (i < chars.length) {
@@ -348,13 +353,14 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	 * MUST be called from a synchronized block!
 	 */
 	private void doNewline() {
-		if (fCursorLine == fScrollRegion.getBottomLine())
+		if (fCursorLine == fScrollRegion.getBottomLine()) {
 			scrollUp(1);
-		else if (fCursorLine + 1 >= fLines) {
+		} else if (fCursorLine + 1 >= fLines) {
 			int h = fTerminal.getHeight();
 			fTerminal.addLine();
-			if (h != fTerminal.getHeight())
+			if (h != fTerminal.getHeight()) {
 				setCursorLine(fCursorLine + 1);
+			}
 		} else {
 			setCursorLine(fCursorLine + 1);
 		}
@@ -368,10 +374,11 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	}
 
 	private void doReverseLineFeed() {
-		if (fCursorLine == fScrollRegion.getTopLine())
+		if (fCursorLine == fScrollRegion.getTopLine()) {
 			scrollDown(1);
-		else
+		} else {
 			setCursorLine(fCursorLine - 1);
+		}
 	}
 
 	@Override
@@ -406,10 +413,11 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public void setCursorColumn(int targetColumn) {
 		synchronized (fTerminal) {
-			if (targetColumn < 0)
+			if (targetColumn < 0) {
 				targetColumn = 0;
-			else if (targetColumn >= fColumns)
+			} else if (targetColumn >= fColumns) {
 				targetColumn = fColumns - 1;
+			}
 			fCursorColumn = targetColumn;
 			fWrapPending = false;
 			// We make the assumption that nobody is changing the
@@ -422,10 +430,11 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 	@Override
 	public void setCursorLine(int targetLine) {
 		synchronized (fTerminal) {
-			if (targetLine < 0)
+			if (targetLine < 0) {
 				targetLine = 0;
-			else if (targetLine >= fLines)
+			} else if (targetLine >= fLines) {
 				targetLine = fLines - 1;
+			}
 			fCursorLine = targetLine;
 			// We make the assumption that nobody is changing the
 			// terminal cursor except this class!
@@ -465,10 +474,11 @@ public class VT100EmulatorBackend implements IVT100EmulatorBackend {
 
 	@Override
 	public void setScrollRegion(int top, int bottom) {
-		if (top < 0 || bottom < 0)
+		if (top < 0 || bottom < 0) {
 			fScrollRegion = ScrollRegion.FULL_WINDOW;
-		else if (top < bottom)
+		} else if (top < bottom) {
 			fScrollRegion = new ScrollRegion(top, bottom);
+		}
 	}
 
 	@Override

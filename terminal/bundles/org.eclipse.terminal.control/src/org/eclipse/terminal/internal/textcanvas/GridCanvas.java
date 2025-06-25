@@ -46,26 +46,29 @@ abstract public class GridCanvas extends VirtualCanvas {
 	@Override
 	protected void paint(GC gc) {
 		Rectangle clipping = gc.getClipping();
-		if (clipping.width == 0 || clipping.height == 0)
+		if (clipping.width == 0 || clipping.height == 0) {
 			return;
+		}
 		Rectangle clientArea = getScreenRectInVirtualSpace();
 		// Beginning coordinates
 		int xOffset = clientArea.x;
 		int yOffset = clientArea.y;
 		int colFirst = virtualXToCell(xOffset + clipping.x);
-		if (colFirst > getCols())
+		if (colFirst > getCols()) {
 			colFirst = getCols();
-		else if (colFirst < 0) {
+		} else if (colFirst < 0) {
 			colFirst = 0;
 		}
 		int rowFirst = virtualYToCell(yOffset + clipping.y);
 		// End coordinates
 		int colLast = virtualXToCell(xOffset + clipping.x + clipping.width + fCellWidth);
-		if (colLast > getCols())
+		if (colLast > getCols()) {
 			colLast = getCols();
+		}
 		int rowLast = virtualYToCell(yOffset + clipping.y + clipping.height + fCellHeight);
-		if (rowLast > getRows())
+		if (rowLast > getRows()) {
 			rowLast = getRows();
+		}
 		// System.out.println(rowFirst+"->"+rowLast+" "+System.currentTimeMillis());
 		// draw the cells
 		for (int row = rowFirst; row <= rowLast; row++) {

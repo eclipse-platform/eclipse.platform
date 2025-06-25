@@ -56,15 +56,17 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 
 	@Override
 	public char getChar(int line, int column) {
-		if (!isInWindow(line))
+		if (!isInWindow(line)) {
 			return 0;
+		}
 		return fData.getChar(line - fWindowStartLine, column);
 	}
 
 	@Override
 	public char[] getChars(int line) {
-		if (!isInWindow(line))
+		if (!isInWindow(line)) {
 			return null;
+		}
 		return fData.getChars(line - fWindowStartLine);
 	}
 
@@ -75,8 +77,9 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 
 	@Override
 	public LineSegment[] getLineSegments(int line, int startCol, int numberOfCols) {
-		if (!isInWindow(line))
+		if (!isInWindow(line)) {
 			return new LineSegment[] { new LineSegment(startCol, new String(new char[numberOfCols]), null) };
+		}
 		return fData.getLineSegments(line - fWindowStartLine, startCol, numberOfCols);
 	}
 
@@ -87,15 +90,17 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 
 	@Override
 	public TerminalStyle getStyle(int line, int column) {
-		if (!isInWindow(line))
+		if (!isInWindow(line)) {
 			return null;
+		}
 		return fData.getStyle(line - fWindowStartLine, column);
 	}
 
 	@Override
 	public TerminalStyle[] getStyles(int line) {
-		if (!isInWindow(line))
+		if (!isInWindow(line)) {
 			return null;
+		}
 		return fData.getStyles(line - fWindowStartLine);
 	}
 
@@ -123,8 +128,9 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 		// we inherit the dimensions of the source
 		setDimensions(source.getHeight(), source.getWidth());
 		int n = Math.min(fWindowSize, source.getHeight() - fWindowStartLine);
-		if (n > 0)
+		if (n > 0) {
 			fData.copyRange(source, fWindowStartLine, 0, n);
+		}
 	}
 
 	@Override
@@ -140,15 +146,17 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 		}
 		// do not exceed the window size
 		n = Math.min(n, fWindowSize);
-		if (n > 0)
+		if (n > 0) {
 			fData.copyRange(source, sStart, dStart, n);
+		}
 
 	}
 
 	@Override
 	public void copyLine(ITerminalTextData source, int sourceLine, int destLine) {
-		if (isInWindow(destLine))
+		if (isInWindow(destLine)) {
 			fData.copyLine(source, sourceLine, destLine - fWindowStartLine);
+		}
 	}
 
 	@Override
@@ -163,28 +171,32 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 		}
 		n = Math.min(n, fWindowSize - start);
 		// do not exceed the window size
-		if (n > 0)
+		if (n > 0) {
 			fData.scroll(start, n, shift);
+		}
 	}
 
 	@Override
 	public void setChar(int line, int column, char c, TerminalStyle style) {
-		if (!isInWindow(line))
+		if (!isInWindow(line)) {
 			return;
+		}
 		fData.setChar(line - fWindowStartLine, column, c, style);
 	}
 
 	@Override
 	public void setChars(int line, int column, char[] chars, int start, int len, TerminalStyle style) {
-		if (!isInWindow(line))
+		if (!isInWindow(line)) {
 			return;
+		}
 		fData.setChars(line - fWindowStartLine, column, chars, start, len, style);
 	}
 
 	@Override
 	public void setChars(int line, int column, char[] chars, TerminalStyle style) {
-		if (!isInWindow(line))
+		if (!isInWindow(line)) {
 			return;
+		}
 		fData.setChars(line - fWindowStartLine, column, chars, style);
 	}
 
@@ -220,8 +232,9 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 
 	@Override
 	public void cleanLine(int line) {
-		if (isInWindow(line))
+		if (isInWindow(line)) {
 			fData.cleanLine(line - fWindowStartLine);
+		}
 	}
 
 	@Override
@@ -246,14 +259,16 @@ public class TerminalTextDataWindow implements ITerminalTextData {
 
 	@Override
 	public boolean isWrappedLine(int line) {
-		if (isInWindow(line))
+		if (isInWindow(line)) {
 			return fData.isWrappedLine(line - fWindowStartLine);
+		}
 		return false;
 	}
 
 	@Override
 	public void setWrappedLine(int line) {
-		if (isInWindow(line))
+		if (isInWindow(line)) {
 			fData.setWrappedLine(line - fWindowStartLine);
+		}
 	}
 }

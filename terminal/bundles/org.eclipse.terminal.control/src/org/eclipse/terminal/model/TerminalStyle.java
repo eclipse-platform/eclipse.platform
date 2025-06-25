@@ -221,35 +221,48 @@ public class TerminalStyle {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		TerminalStyle other = (TerminalStyle) obj;
-		if (fBackgroundTerminalColor != other.fBackgroundTerminalColor)
+		if (fBackgroundTerminalColor != other.fBackgroundTerminalColor) {
 			return false;
+		}
 		if (fBackgroundRGB == null) {
-			if (other.fBackgroundRGB != null)
+			if (other.fBackgroundRGB != null) {
 				return false;
-		} else if (!fBackgroundRGB.equals(other.fBackgroundRGB))
+			}
+		} else if (!fBackgroundRGB.equals(other.fBackgroundRGB)) {
 			return false;
-		if (fBlink != other.fBlink)
+		}
+		if (fBlink != other.fBlink) {
 			return false;
-		if (fBold != other.fBold)
+		}
+		if (fBold != other.fBold) {
 			return false;
-		if (fForegroundTerminalColor != other.fForegroundTerminalColor)
+		}
+		if (fForegroundTerminalColor != other.fForegroundTerminalColor) {
 			return false;
+		}
 		if (fForegroundRGB == null) {
-			if (other.fForegroundRGB != null)
+			if (other.fForegroundRGB != null) {
 				return false;
-		} else if (!fForegroundRGB.equals(other.fForegroundRGB))
+			}
+		} else if (!fForegroundRGB.equals(other.fForegroundRGB)) {
 			return false;
-		if (fReverse != other.fReverse)
+		}
+		if (fReverse != other.fReverse) {
 			return false;
-		if (fUnderline != other.fUnderline)
+		}
+		if (fUnderline != other.fUnderline) {
 			return false;
+		}
 		return true;
 	}
 
@@ -268,16 +281,21 @@ public class TerminalStyle {
 		} else {
 			result.append(fBackgroundRGB);
 		}
-		if (fBlink)
+		if (fBlink) {
 			result.append(", blink"); //$NON-NLS-1$
-		if (fBold)
+		}
+		if (fBold) {
 			result.append(", bold"); //$NON-NLS-1$
-		if (fBlink)
+		}
+		if (fBlink) {
 			result.append(", blink"); //$NON-NLS-1$
-		if (fReverse)
+		}
+		if (fReverse) {
 			result.append(", reverse"); //$NON-NLS-1$
-		if (fUnderline)
+		}
+		if (fUnderline) {
 			result.append(", underline"); //$NON-NLS-1$
+		}
 		result.append(")"); //$NON-NLS-1$
 		return result.toString();
 	}

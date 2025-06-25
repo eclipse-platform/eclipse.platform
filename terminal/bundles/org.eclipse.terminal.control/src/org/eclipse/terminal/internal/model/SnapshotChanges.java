@@ -84,10 +84,12 @@ public class SnapshotChanges implements ISnapshotChanges {
 	 *      It used to be package protected, and it is public only for Unit Tests.
 	 */
 	public boolean isInInterestWindow(int line, int size) {
-		if (fInterestWindowSize <= 0)
+		if (fInterestWindowSize <= 0) {
 			return true;
-		if (line + size <= fInterestWindowStartLine || line >= fInterestWindowStartLine + fInterestWindowSize)
+		}
+		if (line + size <= fInterestWindowStartLine || line >= fInterestWindowStartLine + fInterestWindowSize) {
 			return false;
+		}
 		return true;
 	}
 
@@ -99,10 +101,12 @@ public class SnapshotChanges implements ISnapshotChanges {
 	 *      It used to be package protected, and it is public only for Unit Tests.
 	 */
 	public boolean isInInterestWindow(int line) {
-		if (fInterestWindowSize <= 0)
+		if (fInterestWindowSize <= 0) {
 			return true;
-		if (line < fInterestWindowStartLine || line >= fInterestWindowStartLine + fInterestWindowSize)
+		}
+		if (line < fInterestWindowStartLine || line >= fInterestWindowStartLine + fInterestWindowSize) {
 			return false;
+		}
 		return true;
 	}
 
@@ -114,10 +118,12 @@ public class SnapshotChanges implements ISnapshotChanges {
 	 *      It used to be package protected, and it is public only for Unit Tests.
 	 */
 	public int fitLineToWindow(int line) {
-		if (fInterestWindowSize <= 0)
+		if (fInterestWindowSize <= 0) {
 			return line;
-		if (line < fInterestWindowStartLine)
+		}
+		if (line < fInterestWindowStartLine) {
 			return fInterestWindowStartLine;
+		}
 		return line;
 	}
 
@@ -134,26 +140,31 @@ public class SnapshotChanges implements ISnapshotChanges {
 	 * move the window correctly!
 	 */
 	public int fitSizeToWindow(int line, int size) {
-		if (fInterestWindowSize <= 0)
+		if (fInterestWindowSize <= 0) {
 			return size;
+		}
 		if (line < fInterestWindowStartLine) {
 			size -= fInterestWindowStartLine - line;
 			line = fInterestWindowStartLine;
 		}
-		if (line + size > fInterestWindowStartLine + fInterestWindowSize)
+		if (line + size > fInterestWindowStartLine + fInterestWindowSize) {
 			size = fInterestWindowStartLine + fInterestWindowSize - line;
+		}
 		return size;
 	}
 
 	@Override
 	public void markLineChanged(int line) {
-		if (!isInInterestWindow(line))
+		if (!isInInterestWindow(line)) {
 			return;
+		}
 		line = fitLineToWindow(line);
-		if (line < fFirstChangedLine)
+		if (line < fFirstChangedLine) {
 			fFirstChangedLine = line;
-		if (line > fLastChangedLine)
+		}
+		if (line > fLastChangedLine) {
 			fLastChangedLine = line;
+		}
 		// in case the terminal got resized we expand
 		// don't remember the changed line because
 		// there is nothing to copy
@@ -164,8 +175,9 @@ public class SnapshotChanges implements ISnapshotChanges {
 
 	@Override
 	public void markLinesChanged(int line, int n) {
-		if (n <= 0 || !isInInterestWindow(line, n))
+		if (n <= 0 || !isInInterestWindow(line, n)) {
 			return;
+		}
 		// do not exceed the bounds of fChangedLines
 		// the terminal might have been resized and
 		// we can only keep changes for the size of the
@@ -198,8 +210,9 @@ public class SnapshotChanges implements ISnapshotChanges {
 	@Override
 	public boolean hasChanged() {
 		if (fFirstChangedLine != Integer.MAX_VALUE || fLastChangedLine > 0 || fScrollWindowShift != 0
-				|| fDimensionsChanged || fCursorHasChanged)
+				|| fDimensionsChanged || fCursorHasChanged) {
 			return true;
+		}
 		return false;
 	}
 
@@ -346,8 +359,9 @@ public class SnapshotChanges implements ISnapshotChanges {
 	public void copyChangedLines(ITerminalTextData dest, ITerminalTextData source) {
 		int n = Math.min(fLastChangedLine + 1, source.getHeight());
 		for (int i = fFirstChangedLine; i < n; i++) {
-			if (hasLineChanged(i))
+			if (hasLineChanged(i)) {
 				dest.copyLine(source, i, i);
+			}
 		}
 	}
 
@@ -398,8 +412,9 @@ public class SnapshotChanges implements ISnapshotChanges {
 
 	@Override
 	public boolean hasLineChanged(int line) {
-		if (line < fChangedLines.length)
+		if (line < fChangedLines.length) {
 			return fChangedLines[line];
+		}
 		// since the height of the terminal could
 		// have changed but we have tracked only changes
 		// of the previous terminal height, any line outside

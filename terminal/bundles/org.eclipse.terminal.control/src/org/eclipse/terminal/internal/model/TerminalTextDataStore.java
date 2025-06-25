@@ -67,8 +67,9 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		// just extend the region
 		if (height > fChars.length) {
 			int h = 4 * height / 3;
-			if (fMaxHeight > 0 && h > fMaxHeight)
+			if (fMaxHeight > 0 && h > fMaxHeight) {
 				h = fMaxHeight;
+			}
 			fStyle = (TerminalStyle[][]) resizeArray(fStyle, height);
 			fChars = (char[][]) resizeArray(fChars, height);
 		}
@@ -93,13 +94,15 @@ public class TerminalTextDataStore implements ITerminalTextData {
 	 */
 	private Object resizeArray(Object origArray, int newSize) {
 		int oldSize = Array.getLength(origArray);
-		if (oldSize == newSize)
+		if (oldSize == newSize) {
 			return origArray;
+		}
 		Class<?> elementType = origArray.getClass().getComponentType();
 		Object newArray = Array.newInstance(elementType, newSize);
 		int preserveLength = Math.min(oldSize, newSize);
-		if (preserveLength > 0)
+		if (preserveLength > 0) {
 			System.arraycopy(origArray, 0, newArray, 0, preserveLength);
+		}
 		return newArray;
 	}
 
@@ -112,15 +115,17 @@ public class TerminalTextDataStore implements ITerminalTextData {
 		int n = column + len;
 
 		// expand the line if needed....
-		if (styles == null)
+		if (styles == null) {
 			styles = new TerminalStyle[n];
-		else if (styles.length < n)
+		} else if (styles.length < n) {
 			styles = (TerminalStyle[]) resizeArray(styles, n);
+		}
 
-		if (chars == null)
+		if (chars == null) {
 			chars = new char[n];
-		else if (chars.length < n)
+		} else if (chars.length < n) {
 			chars = (char[]) resizeArray(chars, n);
+		}
 
 		// and create the line segments
 		TerminalStyle style = styles[column];
@@ -141,22 +146,25 @@ public class TerminalTextDataStore implements ITerminalTextData {
 	@Override
 	public char getChar(int line, int column) {
 		assert column < fWidth || throwRuntimeException();
-		if (fChars[line] == null || column >= fChars[line].length)
+		if (fChars[line] == null || column >= fChars[line].length) {
 			return 0;
+		}
 		return fChars[line][column];
 	}
 
 	@Override
 	public TerminalStyle getStyle(int line, int column) {
 		assert column < fWidth || throwRuntimeException();
-		if (fStyle[line] == null || column >= fStyle[line].length)
+		if (fStyle[line] == null || column >= fStyle[line].length) {
 			return null;
+		}
 		return fStyle[line][column];
 	}
 
 	void ensureLineLength(int iLine, int length) {
-		if (length > fWidth)
+		if (length > fWidth) {
 			throw new RuntimeException();
+		}
 		if (fChars[iLine] == null) {
 			fChars[iLine] = new char[length];
 		} else if (fChars[iLine].length < length) {
@@ -233,8 +241,9 @@ public class TerminalTextDataStore implements ITerminalTextData {
 	public String toString() {
 		StringBuffer buff = new StringBuffer();
 		for (int line = 0; line < getHeight(); line++) {
-			if (line > 0)
+			if (line > 0) {
 				buff.append("\n"); //$NON-NLS-1$
+			}
 			for (int column = 0; column < fWidth; column++) {
 				buff.append(getChar(line, column));
 			}
@@ -288,15 +297,17 @@ public class TerminalTextDataStore implements ITerminalTextData {
 
 	@Override
 	public char[] getChars(int line) {
-		if (fChars[line] == null)
+		if (fChars[line] == null) {
 			return null;
+		}
 		return fChars[line].clone();
 	}
 
 	@Override
 	public TerminalStyle[] getStyles(int line) {
-		if (fStyle[line] == null)
+		if (fStyle[line] == null) {
 			return null;
+		}
 		return fStyle[line].clone();
 	}
 
