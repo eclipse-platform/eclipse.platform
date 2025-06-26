@@ -97,7 +97,7 @@ public class BrowserPart extends AbstractFormPart implements IHelpPart {
 
 	public BrowserPart(final Composite parent, FormToolkit toolkit,
 			final IToolBarManager tbm, IMenuManager menuManager) {
-		browser = new Browser(parent, SWT.NULL);
+		browser = new Browser(parent, SWT.SEARCH);
 		browser.addLocationListener(new LocationListener() {
 
 			@Override

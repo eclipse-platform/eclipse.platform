@@ -121,7 +121,7 @@ public class EmbeddedBrowser {
 			}
 		});
 
-		browser = new Browser(shell, SWT.NONE);
+		browser = new Browser(shell, SWT.SEARCH);
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		initialize(browser);
 
