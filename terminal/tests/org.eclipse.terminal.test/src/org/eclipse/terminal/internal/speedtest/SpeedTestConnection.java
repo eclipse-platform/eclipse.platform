@@ -17,10 +17,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.Logger;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.control.TerminalTitleRequestor;
 
 public class SpeedTestConnection extends Thread {
 	private static int fgNo;

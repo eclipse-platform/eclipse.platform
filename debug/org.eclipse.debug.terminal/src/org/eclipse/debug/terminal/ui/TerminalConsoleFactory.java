@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
+import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.console.ConsolePlugin;

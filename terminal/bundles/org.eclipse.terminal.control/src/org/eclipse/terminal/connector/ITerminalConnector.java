@@ -13,14 +13,14 @@
  * Martin Oberhuber (Wind River) - [261486][api][cleanup] Mark @noimplement interfaces as @noextend
  * Uwe Stieber (Wind River) - [282996] [terminal][api] Add "hidden" attribute to terminal connector extension point
  *******************************************************************************/
-package org.eclipse.terminal.internal.provisional.api;
+package org.eclipse.terminal.connector;
 
 import java.io.OutputStream;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.terminal.internal.control.ITerminalViewControl;
-import org.eclipse.terminal.internal.provisional.api.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.control.ITerminalViewControl;
 
 /**
  * A contributed connection type to manage a single connection.
@@ -42,14 +42,6 @@ import org.eclipse.terminal.internal.provisional.api.provider.TerminalConnectorI
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  *
- * @author Michael Scharf
- *         <p>
- *         <strong>EXPERIMENTAL</strong>. This class or interface has been added
- *         as part of a work in progress. There is no guarantee that this API
- *         will work or that it will remain the same. Please do not use this API
- *         without consulting with the <a
- *         href="http://www.eclipse.org/tm/">Target Management</a> team.
- *         </p>
  */
 public interface ITerminalConnector extends IAdaptable {
 	/**

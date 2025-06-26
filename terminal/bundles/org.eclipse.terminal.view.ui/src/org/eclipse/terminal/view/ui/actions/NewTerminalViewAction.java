@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.terminal.internal.control.actions.AbstractTerminalAction;
+import org.eclipse.terminal.control.actions.AbstractTerminalAction;
 import org.eclipse.terminal.view.ui.activator.UIPlugin;
 import org.eclipse.terminal.view.ui.interfaces.ITerminalsView;
 import org.eclipse.terminal.view.ui.interfaces.ImageConsts;

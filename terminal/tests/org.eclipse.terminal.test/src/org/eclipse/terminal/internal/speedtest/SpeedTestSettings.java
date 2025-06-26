@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.speedtest;
 
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
+import org.eclipse.terminal.connector.ISettingsStore;
 
 public class SpeedTestSettings {
 	String fInputFile = "";

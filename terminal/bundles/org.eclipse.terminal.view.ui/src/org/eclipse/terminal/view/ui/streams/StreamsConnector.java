@@ -12,10 +12,10 @@
 package org.eclipse.terminal.view.ui.streams;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.NullSettingsStore;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.NullSettingsStore;
+import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.ui.services.IDisposable;
 
 /**

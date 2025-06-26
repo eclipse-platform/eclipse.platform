@@ -18,13 +18,13 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.connector.ssh.connector.ISshSettings;
 import org.eclipse.terminal.connector.ssh.connector.SshSettings;
 import org.eclipse.terminal.connector.ssh.controls.SshWizardConfigurationPanel;
 import org.eclipse.terminal.connector.ssh.nls.Messages;
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.TerminalConnectorExtension;
 import org.eclipse.terminal.view.core.TerminalServiceFactory;
 import org.eclipse.terminal.view.core.interfaces.ITerminalService;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;

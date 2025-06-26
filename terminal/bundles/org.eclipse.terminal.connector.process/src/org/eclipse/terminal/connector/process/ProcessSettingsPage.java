@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.terminal.internal.provisional.api.AbstractSettingsPage;
+import org.eclipse.terminal.connector.AbstractSettingsPage;
 import org.eclipse.terminal.view.ui.nls.Messages;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;

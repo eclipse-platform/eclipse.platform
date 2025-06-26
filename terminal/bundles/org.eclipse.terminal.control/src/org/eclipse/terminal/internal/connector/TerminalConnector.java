@@ -20,14 +20,14 @@ import java.util.Optional;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.connector.TerminalConnectorExtension;
+import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
 import org.eclipse.terminal.internal.control.impl.TerminalMessages;
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.Logger;
-import org.eclipse.terminal.internal.provisional.api.TerminalConnectorExtension;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
-import org.eclipse.terminal.internal.provisional.api.provider.TerminalConnectorImpl;
 
 /**
  * An {@link ITerminalConnector} instance, also known as terminal connection

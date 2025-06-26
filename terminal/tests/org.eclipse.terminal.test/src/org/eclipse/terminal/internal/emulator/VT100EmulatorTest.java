@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-import org.eclipse.terminal.internal.provisional.api.Logger;
+import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.TerminalTextDataFactory;
 import org.junit.jupiter.api.AfterAll;

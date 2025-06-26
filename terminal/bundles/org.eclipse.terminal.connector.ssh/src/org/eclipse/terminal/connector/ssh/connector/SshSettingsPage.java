@@ -25,7 +25,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.terminal.internal.provisional.api.AbstractSettingsPage;
+import org.eclipse.terminal.connector.AbstractSettingsPage;
 
 public class SshSettingsPage extends AbstractSettingsPage {
 	private Text fHostText;

@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
+import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.view.core.interfaces.ITerminalService;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
 

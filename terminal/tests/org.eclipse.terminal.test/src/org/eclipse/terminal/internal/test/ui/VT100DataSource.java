@@ -25,11 +25,11 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
-import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
+import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.control.impl.ITerminalControlForText;
 import org.eclipse.terminal.internal.emulator.VT100Emulator;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
 import org.eclipse.terminal.model.ITerminalTextData;
 
 /**

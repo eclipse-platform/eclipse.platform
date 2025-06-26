@@ -11,13 +11,12 @@
  * Michael Scharf (Wind River) - initial API and implementation
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  *******************************************************************************/
-package org.eclipse.terminal.internal.control;
+package org.eclipse.terminal.control;
 
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.TerminalState;
 
 /**
  * Provided by a view implementation.
- * @author Michael Scharf
  *
  */
 public interface ITerminalListener {
@@ -35,18 +34,6 @@ public interface ITerminalListener {
 	 * TODO should be unified
 	 */
 	void setTerminalSelectionChanged();
-
-	/**
-	 * Enum defines terminal title change requestors for
-	 * setTerminalTitle method.
-	 *
-	 * @since 5.5
-	 */
-	enum TerminalTitleRequestor {
-		ANSI, // Terminal tab title change requested using ANSI command in terminal.
-		MENU, // Terminal tab title change requested from menu.
-		OTHER; // Terminal tab title change requested by other requestors.
-	}
 
 	/**
 	 * Set the title of the terminal.

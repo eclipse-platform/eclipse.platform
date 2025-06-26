@@ -18,11 +18,11 @@ package org.eclipse.terminal.connector.ssh.connector;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.Logger;
-import org.eclipse.terminal.internal.provisional.api.NullSettingsStore;
-import org.eclipse.terminal.internal.provisional.api.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.connector.NullSettingsStore;
+import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
 
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;

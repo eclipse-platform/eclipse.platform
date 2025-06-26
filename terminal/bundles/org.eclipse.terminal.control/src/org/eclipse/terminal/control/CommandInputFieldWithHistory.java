@@ -15,7 +15,7 @@
  * Michael Scharf (Wing River) - [236458] Fix 168197 lost the last entry
  * Anton Leherbauer (Wind River) - [220971] The optional terminal input line has redraw problems when resizing
  *******************************************************************************/
-package org.eclipse.terminal.internal.control;
+package org.eclipse.terminal.control;
 
 import java.util.ArrayList;
 import java.util.HashSet;

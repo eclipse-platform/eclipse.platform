@@ -14,21 +14,18 @@
  * Martin Oberhuber (Wind River) - [265352][api] Allow setting fonts programmatically
  * Davy Landman (CWI) - [475267][api] Allow custom mouse listeners
  ******************************************************************************/
-package org.eclipse.terminal.internal.control;
+package org.eclipse.terminal.control;
 
 import java.nio.charset.Charset;
 
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.TerminalState;
 
 /**
- * @author Michael Scharf
- *
  * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
  */

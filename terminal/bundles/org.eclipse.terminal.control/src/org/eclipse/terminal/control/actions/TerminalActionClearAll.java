@@ -18,9 +18,9 @@
  * Anna Dushistova (MontaVista) - [227537] moved actions from terminal.view to terminal plugin
  * Uwe Stieber (Wind River) - [260372] [terminal] Certain terminal actions are enabled if no target terminal control is available
  ********************************************************************************/
-package org.eclipse.terminal.internal.control.actions;
+package org.eclipse.terminal.control.actions;
 
-import org.eclipse.terminal.internal.control.ITerminalViewControl;
+import org.eclipse.terminal.control.ITerminalViewControl;
 
 public class TerminalActionClearAll extends AbstractTerminalAction {
 	public TerminalActionClearAll() {

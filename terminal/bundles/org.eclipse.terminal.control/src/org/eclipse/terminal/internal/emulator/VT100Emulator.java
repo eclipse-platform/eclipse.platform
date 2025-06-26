@@ -45,11 +45,11 @@ import java.util.Arrays;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
+import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.control.impl.ITerminalControlForText;
 import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.Logger;
 import org.eclipse.terminal.model.ITerminalTextData;
 import org.eclipse.terminal.model.TerminalStyle;
 

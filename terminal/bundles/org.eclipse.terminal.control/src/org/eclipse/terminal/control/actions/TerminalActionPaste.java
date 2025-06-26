@@ -20,11 +20,11 @@
  * Uwe Stieber (Wind River) - [294719] [terminal] SWT Widget disposed in TerminalActionPaste
  * Martin Oberhuber (Wind River) - [296212] Cannot paste text into terminal on some Linux hosts
  *******************************************************************************/
-package org.eclipse.terminal.internal.control.actions;
+package org.eclipse.terminal.control.actions;
 
 import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.terminal.internal.control.ITerminalViewControl;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 

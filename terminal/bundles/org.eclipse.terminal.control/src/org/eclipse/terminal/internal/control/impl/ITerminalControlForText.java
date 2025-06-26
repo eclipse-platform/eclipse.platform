@@ -14,9 +14,9 @@ package org.eclipse.terminal.internal.control.impl;
 
 import java.io.OutputStream;
 
-import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.control.TerminalTitleRequestor;
 
 /**
  * need a better name!

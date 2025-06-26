@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
+import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.view.core.activator.CoreBundleActivator;
 import org.eclipse.terminal.view.core.interfaces.ITerminalService;
 import org.eclipse.terminal.view.core.interfaces.ITerminalTabListener;

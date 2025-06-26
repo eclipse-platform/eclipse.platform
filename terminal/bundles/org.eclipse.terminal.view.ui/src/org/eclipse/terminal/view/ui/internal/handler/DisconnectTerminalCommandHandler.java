@@ -17,7 +17,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.terminal.internal.control.ITerminalViewControl;
+import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.ui.interfaces.ITerminalsView;
 import org.eclipse.terminal.view.ui.tabs.TabFolderManager;
 import org.eclipse.ui.handlers.HandlerUtil;

@@ -22,11 +22,11 @@ import java.nio.charset.Charset;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
-import org.eclipse.terminal.internal.provisional.api.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.control.TerminalTitleRequestor;
 
 import junit.framework.TestCase;
 

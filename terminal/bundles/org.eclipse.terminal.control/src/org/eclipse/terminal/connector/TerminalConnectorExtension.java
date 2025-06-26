@@ -12,31 +12,21 @@
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Uwe Stieber (Wind River) - [282996] [terminal][api] Add "hidden" attribute to terminal connector extension point
  *******************************************************************************/
-package org.eclipse.terminal.internal.provisional.api;
+package org.eclipse.terminal.connector;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
 import org.eclipse.terminal.internal.connector.TerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.provider.TerminalConnectorImpl;
 
 /**
  * A factory to get {@link ITerminalConnector} instances.
  *
- * @author Michael Scharf
- *
  * @noextend This class is not intended to be subclassed by clients.
  * @noinstantiate This class is not intended to be instantiated by clients.
- *
- * <p>
- * <strong>EXPERIMENTAL</strong>. This class or interface has been added as
- * part of a work in progress. There is no guarantee that this API will work or
- * that it will remain the same. Please do not use this API without consulting
- * with the <a href="http://www.eclipse.org/tm/">Target Management</a>
- * team.
- * </p>
  */
 public class TerminalConnectorExtension {
 	static private ITerminalConnector makeConnector(final IConfigurationElement config) {

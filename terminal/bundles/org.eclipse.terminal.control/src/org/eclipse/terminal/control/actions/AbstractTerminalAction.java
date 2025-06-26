@@ -17,12 +17,12 @@
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Anna Dushistova (MontaVista) - Adapted from TerminalAction
  *******************************************************************************/
-package org.eclipse.terminal.internal.control.actions;
+package org.eclipse.terminal.control.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.terminal.internal.control.ITerminalViewControl;
+import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
 
 public abstract class AbstractTerminalAction extends Action {

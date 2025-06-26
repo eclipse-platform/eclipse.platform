@@ -10,11 +10,11 @@
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Martin Oberhuber (Wind River) - [378691][api] push Preferences into the Widget
  *******************************************************************************/
-package org.eclipse.terminal.internal.control;
+package org.eclipse.terminal.control;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.internal.emulator.VT100TerminalControl;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
 
 public class TerminalViewControlFactory {
 	/**

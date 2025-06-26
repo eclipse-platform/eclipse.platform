@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.terminal.internal.control.ITerminalViewControl;
+import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.interfaces.ILauncherDelegate;
 import org.eclipse.terminal.view.ui.interfaces.IMementoHandler;

@@ -15,55 +15,42 @@
  * Contributors:
  * Michael Scharf (Wind River) - split into core, view and connector plugins
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
- * Anna Dushistova (MontaVista) - [227537] moved actions from terminal.view to terminal plugin
  * Uwe Stieber (Wind River) - [260372] [terminal] Certain terminal actions are enabled if no target terminal control is available
  *******************************************************************************/
-package org.eclipse.terminal.internal.control.actions;
+package org.eclipse.terminal.control.actions;
 
-import org.eclipse.terminal.internal.control.ITerminalViewControl;
+import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-public class TerminalActionCopy extends AbstractTerminalAction {
-	public TerminalActionCopy() {
-		super(TerminalActionCopy.class.getName());
-		setActionDefinitionId("org.eclipse.terminal.copy"); //$NON-NLS-1$
+public class TerminalActionCut extends AbstractTerminalAction {
+	public TerminalActionCut() {
+		super(TerminalActionCut.class.getName());
 		ISharedImages si = PlatformUI.getWorkbench().getSharedImages();
-		setupAction(ActionMessages.COPY, ActionMessages.COPY, si.getImageDescriptor(ISharedImages.IMG_TOOL_COPY),
-				si.getImageDescriptor(ISharedImages.IMG_TOOL_COPY),
-				si.getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED), true);
+		setupAction(ActionMessages.CUT, ActionMessages.CUT, si.getImageDescriptor(ISharedImages.IMG_TOOL_CUT),
+				si.getImageDescriptor(ISharedImages.IMG_TOOL_CUT),
+				si.getImageDescriptor(ISharedImages.IMG_TOOL_CUT_DISABLED), true);
 	}
 
-	public TerminalActionCopy(ITerminalViewControl target) {
-		super(target, TerminalActionCopy.class.getName());
-		setActionDefinitionId("org.eclipse.terminal.copy"); //$NON-NLS-1$
+	public TerminalActionCut(ITerminalViewControl target) {
+		super(target, TerminalActionCut.class.getName());
 		ISharedImages si = PlatformUI.getWorkbench().getSharedImages();
-		setupAction(ActionMessages.COPY, ActionMessages.COPY, si.getImageDescriptor(ISharedImages.IMG_TOOL_COPY),
-				si.getImageDescriptor(ISharedImages.IMG_TOOL_COPY),
-				si.getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED), true);
+		setupAction(ActionMessages.CUT, ActionMessages.CUT, si.getImageDescriptor(ISharedImages.IMG_TOOL_CUT),
+				si.getImageDescriptor(ISharedImages.IMG_TOOL_CUT),
+				si.getImageDescriptor(ISharedImages.IMG_TOOL_CUT_DISABLED), true);
 	}
 
 	@Override
 	public void run() {
 		ITerminalViewControl target = getTarget();
 		if (target != null) {
-			String selection = target.getSelection();
-
-			if (!selection.equals("")) {//$NON-NLS-1$
-				target.copy();
-			} else {
-				target.sendKey('\u0003');
-			}
+			target.sendKey('\u0018');
 		}
 	}
 
 	@Override
 	public void updateAction(boolean aboutToShow) {
-		ITerminalViewControl target = getTarget();
-		if (aboutToShow && target != null) {
-			setEnabled(!target.getSelection().isEmpty());
-		} else {
-			setEnabled(false);
-		}
+		// Cut is always disabled
+		setEnabled(false);
 	}
 }

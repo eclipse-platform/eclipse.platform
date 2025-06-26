@@ -8,7 +8,7 @@
  * Contributors:
  * Michael Scharf (Wind River) - initial implementation
  *******************************************************************************/
-package org.eclipse.terminal.internal.control;
+package org.eclipse.terminal.control;
 
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
