@@ -193,7 +193,7 @@ public class Win32Natives {
 	 *   <li>All of the objects are signaled, when bWaitAll is <code>true</code></li>
 	 *   <li>The timeout interval of dwMilliseconds elapses.</li>
 	 * </ul>
-	 * @param nCount The number of handles, cannot be greater than MAXIMUM_WAIT_OBJECTS.
+	 * @param nCount The number of handles, cannot be zero and cannot be greater than MAXIMUM_WAIT_OBJECTS.
 	 * @param lpHandles The array of handles to objects to be waited upon cannot contain
 	 * duplicate handles.
 	 * @param bWaitAll If <code>true</code> requires all objects to be signaled before this
