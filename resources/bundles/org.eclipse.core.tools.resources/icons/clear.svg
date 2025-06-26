@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="clear.svg">
+  <defs
+     id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="divider-stroke-7">
+      <stop
+         style="stop-color:#ac9575;stop-opacity:1;"
+         offset="0"
+         id="divider-stroke-stop0" />
+      <stop
+         style="stop-color:#f4efe9;stop-opacity:1"
+         offset="1"
+         id="divider-stroke-stop1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="eraser-stroke-5">
+      <stop
+         style="stop-color:#9a8d73;stop-opacity:1;"
+         offset="0"
+         id="eraser-stroke-stop0" />
+      <stop
+         style="stop-color:#c0b194;stop-opacity:1"
+         offset="1"
+         id="eraser-stroke-stop1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="lightarea-bg-6">
+      <stop
+         style="stop-color:#f5ede6;stop-opacity:1;"
+         offset="0"
+         id="lightarea-bg-stop0" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1"
+         id="lightarea-bg-stop1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="darkarea-bg-3">
+      <stop
+         style="stop-color:#ccbba3;stop-opacity:1;"
+         offset="0"
+         id="darkarea-bg-stop0" />
+      <stop
+         style="stop-color:#f2ebe4;stop-opacity:1"
+         offset="1"
+         id="darkarea-bg-stop1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#darkarea-bg-3"
+       id="darkarea-bg"
+       x1="7.8634343"
+       y1="1047.5792"
+       x2="4.2270188"
+       y2="1046.548"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#lightarea-bg-6"
+       id="lightarea-bg"
+       x1="9.6854334"
+       y1="1043.3263"
+       x2="9.6854334"
+       y2="1039.8574"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#eraser-stroke-5"
+       id="eraser-stroke"
+       x1="-15.131505"
+       y1="13.523434"
+       x2="-10.560841"
+       y2="2.5190842"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.98966812,0,0,1.0004489,19.863103,1036.3587)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#divider-stroke-7"
+       id="divider-stroke"
+       x1="-13.833534"
+       y1="1043.8658"
+       x2="-9.9898014"
+       y2="1043.8658"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-1,0,0,1,-4.708816,0)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="45.254834"
+     inkscape:cx="7.8217953"
+     inkscape:cy="10.12089"
+     inkscape:document-units="px"
+     inkscape:current-layer="g6616"
+     showgrid="true"
+     inkscape:window-width="1350"
+     inkscape:window-height="936"
+     inkscape:window-x="990"
+     inkscape:window-y="365"
+     inkscape:window-maximized="0"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4000" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline"
+     transform="translate(0,-1036.3622)">
+    <g
+       id="g6616">
+      <path
+         style="fill:none;stroke:#9a8d73;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 9.0194025,1049.8598 6.0104105,0"
+         id="line"
+         inkscape:connector-curvature="0">
+        <title
+           id="title3217">line</title>
+      </path>
+      <path
+         style="fill:url(#lightarea-bg);fill-opacity:1;stroke:none;display:inline"
+         d="m 4.747933,1043.8557 1.748611,-3.9562 c 0.22097,-0.4861 0.762754,-1.0077 1.425262,-1.0386 l 3.590776,0 c 0.618718,-0.033 1.193243,0.442 1.016466,1.0165 l -2.016145,3.9783 z"
+         id="lightarea"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccccc">
+        <title
+           id="title3225">lightarea</title>
+      </path>
+      <path
+         style="fill:url(#darkarea-bg);fill-opacity:1;stroke:none;display:inline"
+         d="m 3.49134,1049.8653 c -0.845557,0 -1.109408,-0.4396 -1.016466,-0.9502 l 2.273059,-5.0594 5.76497,0 -2.698303,5.4091 c -0.173238,0.3219 -0.540186,0.6005 -0.809823,0.6005 z"
+         id="darkarea"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccccc">
+        <desc
+           id="desc3223">darkarea</desc>
+        <title
+           id="title3221">darkarea</title>
+      </path>
+      <path
+         style="fill:none;stroke:url(#divider-stroke);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+         d="m 10.650797,1043.8658 -6.01041,0"
+         id="divider"
+         inkscape:connector-curvature="0">
+        <title
+           id="title3219">divider</title>
+      </path>
+      <path
+         style="display:inline;fill:none;stroke:url(#eraser-stroke);stroke-width:0.99504387px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="m 7.8943041,1038.8597 c -0.6556632,0.031 -1.1730339,0.5454 -1.3917209,1.0318 l -1.7319191,3.9705 -2.2576805,5.0648 c -0.091979,0.5108 0.1837745,0.9379 1.0205952,0.9379 l 3.4638385,0 c 0.2668512,0 0.6326572,-0.272 0.8041053,-0.594 l 2.6597334,-5.4087 2.010263,-4.0019 c 0.17495,-0.5747 -0.40827,-1.0334 -1.020595,-1.0004 l -3.5566199,0 z"
+         id="eraser"
+         inkscape:connector-curvature="0">
+        <title
+           id="title3215">eraser</title>
+      </path>
+    </g>
+  </g>
+</svg>
