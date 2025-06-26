@@ -431,6 +431,11 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 			Set<Long> keys = fHandleValueToHandle.keySet();
 			int size = keys.size();
 			if (size == 0) {
+				// This is dangerous: the documentation of WaitForMultipleObjects says that the
+				// number of object handles cannot be zero and returning empty arrays will end
+				// up passing zero as the 1st parameter to WaitForMultipleObjects. Therefore one
+				// needs to make sure to check for this case when calling
+				// Win32Natives.WaitForMultipleObjects(int, ...)
 				return new long[0][0];
 			}
 			handles = new long[size];
@@ -607,6 +612,11 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 	 */
 	private void waitForNotification(long[] handleValues) {
 		int handleCount = handleValues.length;
+		if (handleCount == 0) {
+			// According to the documentation of WaitForMultipleObjects,
+			// nCount (the 1st parameter) cannot be zero
+			return;
+		}
 		int index = Win32Natives.WaitForMultipleObjects(handleCount, handleValues, false, WAIT_FOR_MULTIPLE_OBJECTS_TIMEOUT);
 		if (index == Win32Natives.WAIT_TIMEOUT) {
 			// nothing happened.
