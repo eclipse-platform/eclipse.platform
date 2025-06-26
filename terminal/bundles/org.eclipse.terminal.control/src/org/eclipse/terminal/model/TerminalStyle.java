@@ -16,8 +16,8 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
-import org.eclipse.terminal.internal.provisional.api.Logger;
 
 /**
  * @author scharf

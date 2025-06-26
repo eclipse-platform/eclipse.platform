@@ -19,8 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
-import org.eclipse.terminal.internal.provisional.api.Logger;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.ITerminalTextDataSnapshot;
 import org.eclipse.terminal.model.TextRange;

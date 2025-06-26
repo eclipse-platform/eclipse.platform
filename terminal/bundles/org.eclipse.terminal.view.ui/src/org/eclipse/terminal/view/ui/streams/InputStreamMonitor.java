@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
+import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.view.core.interfaces.constants.ILineSeparatorConstants;
 import org.eclipse.terminal.view.ui.activator.UIPlugin;
 import org.eclipse.terminal.view.ui.nls.Messages;

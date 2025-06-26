@@ -9,14 +9,12 @@
  * Contributors:
  * Davy Landman (CWI) - [475267][api] Initial definition of interface
  *******************************************************************************/
-package org.eclipse.terminal.internal.control;
+package org.eclipse.terminal.control;
 
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 
 /**
  * Terminal specific version of {@link org.eclipse.swt.events.MouseListener}
- * @since 4.1
- * @see ITerminalMouseListener2
  */
 public interface ITerminalMouseListener {
 

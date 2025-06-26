@@ -18,7 +18,7 @@
  *******************************************************************************/
 package org.eclipse.terminal.connector.telnet.connector;
 
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
+import org.eclipse.terminal.connector.ISettingsStore;
 
 /**
  * @noreference This class is not intended to be referenced by clients.

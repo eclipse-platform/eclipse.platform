@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.terminal.connector.telnet.connector;
 
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
+import org.eclipse.terminal.connector.ISettingsStore;
 
 /**
  * @noimplement This interface is not intended to be implemented by clients.

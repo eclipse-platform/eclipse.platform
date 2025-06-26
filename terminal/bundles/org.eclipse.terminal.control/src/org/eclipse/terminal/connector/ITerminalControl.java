@@ -14,25 +14,18 @@
  * Martin Oberhuber (Wind River) - [261486][api][cleanup] Mark @noimplement interfaces as @noextend
  * Anton Leherbauer (Wind River) - [433751] Add option to enable VT100 line wrapping mode
  *******************************************************************************/
-package org.eclipse.terminal.internal.provisional.api;
+package org.eclipse.terminal.connector;
 
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
+import org.eclipse.terminal.control.TerminalTitleRequestor;
 
 /**
  * Represents the terminal view as seen by a terminal connection.
- * <p>
- * <strong>EXPERIMENTAL</strong>. This class or interface has been added as part
- * of a work in progress. There is no guarantee that this API will work or that
- * it will remain the same. Please do not use this API without consulting with
- * the <a href="http://www.eclipse.org/tm/">Target Management</a> team.
- * </p>
  *
- * @author Michael Scharf
  * @noimplement This interface is not intended to be implemented by clients.
  * @noextend This interface is not intended to be extended by clients.
  */

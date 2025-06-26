@@ -37,10 +37,10 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.connector.ssh.activator.UIPlugin;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.Logger;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
 
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;

@@ -9,7 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.internal.provisional.api;
+package org.eclipse.terminal.connector;
 
 /**
  * A settings store implementation doing nothing.

@@ -26,9 +26,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.Logger;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.connector.TerminalState;
 
 /**
  * This class encapsulates a TELNET connection to a remote server. It processes

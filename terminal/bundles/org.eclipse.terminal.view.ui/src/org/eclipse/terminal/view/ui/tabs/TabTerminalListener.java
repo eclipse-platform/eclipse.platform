@@ -18,8 +18,9 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.terminal.internal.control.ITerminalListener;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.control.ITerminalListener;
+import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.nls.Messages;
 

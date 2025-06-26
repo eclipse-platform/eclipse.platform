@@ -156,13 +156,13 @@
          <command
                commandId="org.eclipse.terminal.maximize"
                id="org.eclipse.terminal.view.ui.commands.maximizePart"
-               label="Maximize View"
+               label="%command.maximize.label"
                style="push">
          </command>
          <command
                commandId="org.eclipse.terminal.quickaccess"
                id="org.eclipse.terminal.view.ui.commands.quickAccess"
-               label="Quick Access"
+               label="%command.quickacccess.label"
                style="push">
          </command>
       </menuContribution>
@@ -443,24 +443,6 @@
             id="org.eclipse.terminal.view.ui.activity.views">
       </defaultEnablement>
      
-      <!-- Hide the old TCF Terminals (Migration Only) View from the View Shortcuts Menu -->
-      <activity
-            id="org.eclipse.terminal.view.ui.activity.oldview"
-            name="Terminal Views (Old)">
-      </activity>
-      
-      <activityPatternBinding
-            activityId="org.eclipse.terminal.view.ui.activity.oldview"
-            pattern=".*/org\.eclipse\.tcf\.te\.ui\.terminals\.TerminalsView">
-      </activityPatternBinding>
-     
-      <!-- TBD Remove this category binding to hide the Migration Capability from the Preferences -->
-      <!-- 
-      <categoryActivityBinding
-            activityId="org.eclipse.terminal.view.ui.activity.oldview"
-            categoryId="org.eclipse.terminal.view.ui.category">
-      </categoryActivityBinding>
-      -->
    </extension>
    <extension point="org.eclipse.ui.activities">
       <category

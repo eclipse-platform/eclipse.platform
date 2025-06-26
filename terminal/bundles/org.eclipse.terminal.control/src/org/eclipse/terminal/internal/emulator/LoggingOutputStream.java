@@ -14,7 +14,7 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.eclipse.terminal.internal.provisional.api.Logger;
+import org.eclipse.terminal.connector.Logger;
 
 public class LoggingOutputStream extends FilterOutputStream {
 

@@ -13,21 +13,23 @@
  * Helmut Haigermoser and Ted Williams.
  *
  * Contributors:
- * Michael Scharf (Wind River) - extracted from TerminalConsts
+ * Michael Scharf (Wind River) - split into core, view and connector plugins
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Anna Dushistova (MontaVista) - [227537] moved actions from terminal.view to terminal plugin
  *******************************************************************************/
-package org.eclipse.terminal.internal.control.actions;
+package org.eclipse.terminal.control.actions;
 
-public interface ImageConsts {
-	public final static String IMAGE_DIR_ROOT = "icons/"; //$NON-NLS-1$
-	public final static String IMAGE_DIR_LOCALTOOL = IMAGE_DIR_ROOT + "clcl16/"; // basic colors - size 16x16 //$NON-NLS-1$
-	public final static String IMAGE_DIR_DLCL = IMAGE_DIR_ROOT + "dlcl16/"; // disabled - size 16x16 //$NON-NLS-1$
-	public final static String IMAGE_DIR_ELCL = IMAGE_DIR_ROOT + "elcl16/"; // enabled - size 16x16 //$NON-NLS-1$
+import org.eclipse.osgi.util.NLS;
 
-	public static final String IMAGE_CLCL_CLEAR_ALL = "ImageClclClearAll"; //$NON-NLS-1$
+public class ActionMessages extends NLS {
+	static {
+		NLS.initializeMessages(ActionMessages.class.getName(), ActionMessages.class);
+	}
 
-	public static final String IMAGE_DLCL_CLEAR_ALL = "ImageDlclClearAll"; //$NON-NLS-1$
+	public static String COPY;
+	public static String CUT;
+	public static String PASTE;
+	public static String SELECTALL;
+	public static String CLEARALL;
 
-	public static final String IMAGE_ELCL_CLEAR_ALL = "ImageElclClearAll"; //$NON-NLS-1$
 }

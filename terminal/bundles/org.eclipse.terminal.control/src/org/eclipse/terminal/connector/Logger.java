@@ -13,7 +13,7 @@
  * Michael Scharf (Wind River) - split into core, view and connector plugins
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  *******************************************************************************/
-package org.eclipse.terminal.internal.provisional.api;
+package org.eclipse.terminal.connector;
 
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -36,12 +36,6 @@ import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
  * Logger.log(&quot;counter is &quot; + counter);
  * </pre>
  *
- * <p>
- * <strong>EXPERIMENTAL</strong>. This class or interface has been added as
- * part of a work in progress. There is no guarantee that this API will
- * work or that it will remain the same. Please do not use this API without
- * consulting with the <a href="http://www.eclipse.org/tm/">Target Management</a> team.
- * </p>
  */
 public final class Logger {
 	public static final String TRACE_DEBUG_LOG = "org.eclipse.terminal.control/debug/log"; //$NON-NLS-1$

@@ -15,9 +15,9 @@ import java.util.Map;
 
 import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.TerminalConnectorExtension;
+import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.view.core.TerminalServiceFactory;
 import org.eclipse.terminal.view.core.interfaces.ITerminalService;
 import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMonitorListener;

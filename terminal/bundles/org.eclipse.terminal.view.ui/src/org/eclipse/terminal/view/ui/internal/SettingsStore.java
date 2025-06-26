@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
+import org.eclipse.terminal.connector.ISettingsStore;
 
 /**
  * Simple default Terminal settings store implementation keeping the settings

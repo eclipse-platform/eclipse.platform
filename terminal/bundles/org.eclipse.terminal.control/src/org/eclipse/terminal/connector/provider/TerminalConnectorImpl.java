@@ -11,15 +11,15 @@
  * Michael Scharf (Wind River) - initial API and implementation
  * Martin Oberhuber (Wind River) - [225853][api] Provide more default functionality in TerminalConnectorImpl
  *******************************************************************************/
-package org.eclipse.terminal.internal.provisional.api.provider;
+package org.eclipse.terminal.connector.provider;
 
 import java.io.OutputStream;
 import java.util.Optional;
 
-import org.eclipse.terminal.internal.provisional.api.ISettingsStore;
-import org.eclipse.terminal.internal.provisional.api.ITerminalControl;
-import org.eclipse.terminal.internal.provisional.api.Logger;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
+import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.ITerminalControl;
+import org.eclipse.terminal.connector.Logger;
+import org.eclipse.terminal.connector.TerminalState;
 
 /**
  * Abstract base class for all terminal connector implementations to be

@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.terminal.internal.control.ITerminalListener.TerminalTitleRequestor;
+import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.control.impl.ITerminalControlForText;
-import org.eclipse.terminal.internal.provisional.api.ITerminalConnector;
-import org.eclipse.terminal.internal.provisional.api.TerminalState;
 
 public class MockTerminalControlForText implements ITerminalControlForText {
 	private List<String> allTitles = new ArrayList<>();

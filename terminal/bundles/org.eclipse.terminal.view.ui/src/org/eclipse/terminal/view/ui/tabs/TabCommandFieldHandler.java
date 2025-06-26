@@ -14,8 +14,8 @@ package org.eclipse.terminal.view.ui.tabs;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.terminal.internal.control.CommandInputFieldWithHistory;
-import org.eclipse.terminal.internal.control.ITerminalViewControl;
+import org.eclipse.terminal.control.CommandInputFieldWithHistory;
+import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.ui.services.IDisposable;
 
 /**
