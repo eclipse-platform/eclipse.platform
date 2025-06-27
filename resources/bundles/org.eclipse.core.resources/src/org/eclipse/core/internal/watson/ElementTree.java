@@ -203,8 +203,9 @@ public class ElementTree {
 	 */
 	public synchronized void createElement(IPath key, Object data) {
 		/* don't allow modification of the implicit root */
-		if (key.isRoot())
+		if (key.isRoot()) {
 			return;
+		}
 
 		// Clear the child IDs cache in case it's referring to this parent. This is conservative.
 		childIDsCache = null;
@@ -265,8 +266,9 @@ public class ElementTree {
 	 */
 	public synchronized void deleteElement(IPath key) {
 		/* don't allow modification of the implicit root */
-		if (key.isRoot())
+		if (key.isRoot()) {
 			return;
+		}
 
 		// Clear the child IDs cache in case it's referring to this parent.
 		// This is conservative.
@@ -353,8 +355,9 @@ public class ElementTree {
 		if (cache != null && cache.path == key) {
 			return cache.childPaths;
 		}
-		if (key == null)
+		if (key == null) {
 			return tree.rootPaths();
+		}
 		try {
 			IPath[] children = tree.getChildren(key);
 			childIDsCache = new ChildIDsCache(key, children); // Cache the result
@@ -408,13 +411,16 @@ public class ElementTree {
 	 */
 	public synchronized Object getElementDataIgnoreCase(IPath key) {
 		/* don't allow modification of the implicit root */
-		if (key.isRoot())
+		if (key.isRoot()) {
 			return null;
+		}
 		DataTreeLookup lookup = lookupCacheIgnoreCase; // Grab it in case it's replaced concurrently.
-		if (lookup == null || lookup.key != key)
+		if (lookup == null || lookup.key != key) {
 			lookupCacheIgnoreCase = lookup = tree.lookupIgnoreCase(key);
-		if (lookup.isPresent)
+		}
+		if (lookup.isPresent) {
 			return lookup.data;
+		}
 		throw createElementNotFoundException(key);
 	}
 
@@ -425,8 +431,9 @@ public class ElementTree {
 	 */
 	public synchronized String[] getNamesOfChildren(IPath key) {
 		try {
-			if (key == null)
+			if (key == null) {
 				return new String[] {""}; //$NON-NLS-1$
+			}
 			return tree.getNamesOfChildren(key);
 		} catch (ObjectNotFoundException e) {
 			throw createElementNotFoundException(key);
@@ -489,13 +496,16 @@ public class ElementTree {
 	 */
 	public static boolean hasChanges(ElementTree newLayer, ElementTree oldLayer, IElementComparator comparator, boolean inclusive) {
 		// if any of the layers are null, assume that things have changed
-		if (newLayer == null || oldLayer == null)
+		if (newLayer == null || oldLayer == null) {
 			return true;
-		if (newLayer == oldLayer)
+		}
+		if (newLayer == oldLayer) {
 			return false;
+		}
 		//if the tree data has changed, then the tree has changed
-		if (comparator.compare(newLayer.getTreeData(), oldLayer.getTreeData()) != IElementComparator.K_NO_CHANGE)
+		if (comparator.compare(newLayer.getTreeData(), oldLayer.getTreeData()) != IElementComparator.K_NO_CHANGE) {
 			return true;
+		}
 
 		// The tree structure has the top layer(s) (i.e., tree) parentage pointing down to a complete
 		// layer whose parent is null.  The bottom layers (i.e., operationTree) point up to the
@@ -506,15 +516,16 @@ public class ElementTree {
 
 		// look down from the current layer (always inclusive) if the top layer is mutable
 		ElementTree stopLayer = null;
-		if (newLayer.isImmutable())
+		if (newLayer.isImmutable()) {
 			// if the newLayer is immutable, the tree structure all points up so ensure that
 			// when searching up, we stop at newLayer (inclusive)
 			stopLayer = newLayer.getParent();
-		else {
+		} else {
 			ElementTree layer = newLayer;
 			while (layer != null && layer.getParent() != null) {
-				if (!layer.getDataTree().isEmptyDelta())
+				if (!layer.getDataTree().isEmptyDelta()) {
 					return true;
+				}
 				layer = layer.getParent();
 			}
 		}
@@ -523,8 +534,9 @@ public class ElementTree {
 		// depending on whether newLayer is mutable.
 		ElementTree layer = inclusive ? oldLayer : oldLayer.getParent();
 		while (layer != null && layer.getParent() != stopLayer) {
-			if (!layer.getDataTree().isEmptyDelta())
+			if (!layer.getDataTree().isEmptyDelta()) {
 				return true;
+			}
 			layer = layer.getParent();
 		}
 		// didn't find anything that changed
@@ -661,15 +673,17 @@ public class ElementTree {
 		Assert.isTrue(!isImmutable());
 
 		/* don't allow modification of the implicit root */
-		if (key.isRoot())
+		if (key.isRoot()) {
 			return null;
+		}
 		DataTreeLookup lookup = lookupCache; // Grab it in case it's replaced concurrently.
 		if (lookup == null || lookup.key != key) {
 			lookupCache = lookup = tree.lookup(key);
 		}
 		if (lookup.isPresent) {
-			if (lookup.foundInFirstDelta)
+			if (lookup.foundInFirstDelta) {
 				return lookup.data;
+			}
 			/**
 			 * The node has no data in the most recent delta.
 			 * Pull it up to the present delta by setting its data with a clone.
@@ -699,8 +713,9 @@ public class ElementTree {
 	 */
 	public synchronized void setElementData(IPath key, Object data) {
 		/* don't allow modification of the implicit root */
-		if (key.isRoot())
+		if (key.isRoot()) {
 			return;
+		}
 
 		Assert.isNotNull(key);
 		// Clear the lookup cache, in case the element being modified is the same

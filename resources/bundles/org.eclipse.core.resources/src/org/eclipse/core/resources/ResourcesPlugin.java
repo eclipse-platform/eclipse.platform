@@ -589,8 +589,9 @@ public final class ResourcesPlugin extends Plugin {
 			IStatus result;
 			try {
 				result = workspace.open(null);
-				if (!result.isOK())
+				if (!result.isOK()) {
 					getLog().log(result);
+				}
 				workspaceRegistration = context.registerService(IWorkspace.class, workspace, null);
 				return workspace;
 			} catch (CoreException e) {

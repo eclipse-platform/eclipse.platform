@@ -47,8 +47,9 @@ public class FileState extends PlatformObject implements IFileState {
 	public String getCharset() throws CoreException {
 		// if there is an existing file at this state's path, use the encoding of that file
 		IResource file = workspace.getRoot().findMember(fullPath);
-		if (file != null && file.getType() == IResource.FILE)
+		if (file != null && file.getType() == IResource.FILE) {
 			return ((IFile) file).getCharset();
+		}
 
 		// tries to obtain a description for the file contents
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();

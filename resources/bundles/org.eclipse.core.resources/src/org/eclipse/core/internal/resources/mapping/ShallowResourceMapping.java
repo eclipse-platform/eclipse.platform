@@ -55,12 +55,10 @@ public class ShallowResourceMapping extends ResourceMapping {
 			Object object = mapping.getModelObject();
 			IResource resource = container.getResource();
 			// A shallow mapping only contains direct file children or equal shallow containers
-			if (object instanceof ShallowContainer) {
-				ShallowContainer sc = (ShallowContainer) object;
+			if (object instanceof ShallowContainer sc) {
 				return sc.getResource().equals(resource);
 			}
-			if (object instanceof IResource) {
-				IResource other = (IResource) object;
+			if (object instanceof IResource other) {
 				return other.getType() == IResource.FILE && resource.getFullPath().equals(other.getFullPath().removeLastSegments(1));
 			}
 		}
