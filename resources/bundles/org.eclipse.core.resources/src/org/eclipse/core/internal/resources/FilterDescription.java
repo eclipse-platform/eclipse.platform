@@ -106,15 +106,19 @@ public class FilterDescription implements IResourceFilterDescription, Comparable
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		FilterDescription other = (FilterDescription) obj;
-		if (id != other.id)
+		if (id != other.id) {
 			return false;
+		}
 		return true;
 	}
 
@@ -127,12 +131,14 @@ public class FilterDescription implements IResourceFilterDescription, Comparable
 		IPath path2 = that.getResource().getProjectRelativePath();
 		int count1 = path1.segmentCount();
 		int compare = count1 - path2.segmentCount();
-		if (compare != 0)
+		if (compare != 0) {
 			return compare;
+		}
 		for (int i = 0; i < count1; i++) {
 			compare = path1.segment(i).compareTo(path2.segment(i));
-			if (compare != 0)
+			if (compare != 0) {
 				return compare;
+			}
 		}
 		return 0;
 	}

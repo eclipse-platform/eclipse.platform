@@ -42,8 +42,9 @@ class FilterTypeManager implements IManager {
 			RegistryFactory.getRegistry().addListener(new IRegistryEventListener() {
 				@Override
 				public void added(IExtension[] extensions) {
-					for (IExtension extension : extensions)
+					for (IExtension extension : extensions) {
 						processExtension(extension);
+					}
 				}
 
 				@Override
@@ -53,8 +54,9 @@ class FilterTypeManager implements IManager {
 
 				@Override
 				public void removed(IExtension[] extensions) {
-					for (IExtension extension : extensions)
+					for (IExtension extension : extensions) {
 						processRemovedExtension(extension);
+					}
 				}
 
 				@Override

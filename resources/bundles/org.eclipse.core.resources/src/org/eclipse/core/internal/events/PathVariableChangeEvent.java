@@ -43,8 +43,9 @@ public class PathVariableChangeEvent extends EventObject implements IPathVariabl
 	 */
 	public PathVariableChangeEvent(IPathVariableManager source, String variableName, IPath value, int type) {
 		super(source);
-		if (type < VARIABLE_CHANGED || type > VARIABLE_DELETED)
+		if (type < VARIABLE_CHANGED || type > VARIABLE_DELETED) {
 			throw new IllegalArgumentException("Invalid event type: " + type); //$NON-NLS-1$
+		}
 		this.variableName = variableName;
 		this.value = value;
 		this.type = type;

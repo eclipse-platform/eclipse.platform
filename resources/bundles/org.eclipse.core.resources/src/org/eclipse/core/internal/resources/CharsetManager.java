@@ -77,8 +77,9 @@ public class CharsetManager implements IManager {
 		}
 
 		public void addChanges(Map<IProject, Boolean> newChanges) {
-			if (newChanges.isEmpty())
+			if (newChanges.isEmpty()) {
 				return;
+			}
 			synchronized (asyncChanges) {
 				asyncChanges.addAll(newChanges.entrySet());
 				asyncChanges.notify();
@@ -106,8 +107,9 @@ public class CharsetManager implements IManager {
 					while (!monitor.isCanceled() && ((next = getNextChange()) != null)) {
 						//just exit if the system is shutting down or has been shut down
 						//it is too late to change the workspace at this point anyway
-						if (systemBundle.getState() != Bundle.ACTIVE)
+						if (systemBundle.getState() != Bundle.ACTIVE) {
 							return Status.OK_STATUS;
+						}
 						IProject project = next.getKey();
 						try {
 							if (project.isAccessible()) {
@@ -201,15 +203,17 @@ public class CharsetManager implements IManager {
 			Map<Boolean, String[]> affectedResourcesMap = new HashMap<>();
 			try {
 				// no regular preferences for this project
-				if (projectRegularPrefs == null)
+				if (projectRegularPrefs == null) {
 					affectedResourcesMap.put(Boolean.FALSE, new String[0]);
-				else
+				} else {
 					affectedResourcesMap.put(Boolean.FALSE, projectRegularPrefs.keys());
+				}
 				// no derived preferences for this project
-				if (projectDerivedPrefs == null)
+				if (projectDerivedPrefs == null) {
 					affectedResourcesMap.put(Boolean.TRUE, new String[0]);
-				else
+				} else {
 					affectedResourcesMap.put(Boolean.TRUE, projectDerivedPrefs.keys());
+				}
 			} catch (BackingStoreException e) {
 				// problems with the project scope... we will miss the changes (but will log)
 				String message = Messages.resources_readingEncoding;
@@ -223,8 +227,9 @@ public class CharsetManager implements IManager {
 				for (String affectedResource : affectedResources) {
 					IResourceDelta memberDelta = projectDelta.findMember(IPath.fromOSString(affectedResource));
 					// no changes for the given resource
-					if (memberDelta == null)
+					if (memberDelta == null) {
 						continue;
+					}
 					if (memberDelta.getKind() == IResourceDelta.REMOVED) {
 						boolean shouldDisableCharsetDeltaJobForCurrentProject = false;
 						// remove the setting for the original location - save its value though
@@ -235,16 +240,18 @@ public class CharsetManager implements IManager {
 							IResource resource = workspace.getRoot().findMember(movedToPath);
 							if (resource != null) {
 								Preferences encodingSettings = getPreferences(resource.getProject(), true, resource.isDerived(IResource.CHECK_ANCESTORS));
-								if (currentValue == null || currentValue.trim().length() == 0)
+								if (currentValue == null || currentValue.trim().length() == 0) {
 									encodingSettings.remove(getKeyFor(movedToPath));
-								else
+								} else {
 									encodingSettings.put(getKeyFor(movedToPath), currentValue);
+								}
 								IProject targetProject = workspace.getRoot().getProject(movedToPath.segment(0));
-								if (targetProject.equals(currentProject))
+								if (targetProject.equals(currentProject)) {
 									// if the file was moved inside the same project disable charset listener
 									shouldDisableCharsetDeltaJobForCurrentProject = true;
-								else
+								} else {
 									projectsToSave.put(targetProject, Boolean.FALSE);
+								}
 							}
 						}
 						projectsToSave.put(currentProject, Boolean.valueOf(shouldDisableCharsetDeltaJobForCurrentProject));
@@ -264,15 +271,18 @@ public class CharsetManager implements IManager {
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
 			IResourceDelta delta = event.getDelta();
-			if (delta == null)
+			if (delta == null) {
 				return;
+			}
 			IResourceDelta[] projectDeltas = delta.getAffectedChildren();
 			// process each project in the delta
 			Map<IProject, Boolean> projectsToSave = new HashMap<>();
-			for (IResourceDelta projectDelta : projectDeltas)
+			for (IResourceDelta projectDelta : projectDeltas) {
 				//nothing to do if a project has been added/removed/moved
-				if (projectDelta.getKind() == IResourceDelta.CHANGED && (projectDelta.getFlags() & IResourceDelta.OPEN) == 0)
+				if (projectDelta.getKind() == IResourceDelta.CHANGED && (projectDelta.getFlags() & IResourceDelta.OPEN) == 0) {
 					processEntryChanges(projectDelta, projectsToSave);
+				}
+			}
 			job.addChanges(projectsToSave);
 		}
 	}
@@ -292,12 +302,14 @@ public class CharsetManager implements IManager {
 	void flushPreferences(Preferences projectPrefs, boolean shouldDisableCharsetDeltaJob) throws BackingStoreException {
 		if (projectPrefs != null) {
 			try {
-				if (shouldDisableCharsetDeltaJob)
+				if (shouldDisableCharsetDeltaJob) {
 					charsetListener.setDisabled(true);
+				}
 				projectPrefs.flush();
 			} finally {
-				if (shouldDisableCharsetDeltaJob)
+				if (shouldDisableCharsetDeltaJob) {
 					charsetListener.setDisabled(false);
+				}
 			}
 		}
 	}
@@ -339,9 +351,10 @@ public class CharsetManager implements IManager {
 	Preferences getPreferences(IProject project, boolean create, boolean isDerived, boolean isDerivedEncodingStoredSeparately) {
 		boolean localIsDerived = isDerivedEncodingStoredSeparately ? isDerived : false;
 		String qualifier = localIsDerived ? ProjectPreferences.PREFS_DERIVED_QUALIFIER : ProjectPreferences.PREFS_REGULAR_QUALIFIER;
-		if (create)
+		if (create) {
 			// create all nodes down to the one we are interested in
 			return new ProjectScope(project).getNode(qualifier).node(ResourcesPlugin.PREF_ENCODING);
+		}
 		// be careful looking up for our node so not to create any nodes as side effect
 		Preferences node = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE);
 		try {
@@ -349,14 +362,17 @@ public class CharsetManager implements IManager {
 			//			String path = project.getName() + IPath.SEPARATOR + ResourcesPlugin.PI_RESOURCES + IPath.SEPARATOR + ENCODING_PREF_NODE;
 			//			return node.nodeExists(path) ? node.node(path) : null;
 			// for now, take the long way
-			if (!node.nodeExists(project.getName()))
+			if (!node.nodeExists(project.getName())) {
 				return null;
+			}
 			node = node.node(project.getName());
-			if (!node.nodeExists(qualifier))
+			if (!node.nodeExists(qualifier)) {
 				return null;
+			}
 			node = node.node(qualifier);
-			if (!node.nodeExists(ResourcesPlugin.PREF_ENCODING))
+			if (!node.nodeExists(ResourcesPlugin.PREF_ENCODING)) {
 				return null;
+			}
 			return node.node(ResourcesPlugin.PREF_ENCODING);
 		} catch (BackingStoreException e) {
 			// nodeExists failed
@@ -405,11 +421,13 @@ public class CharsetManager implements IManager {
 			//			String path = project.getName() + IPath.SEPARATOR + ResourcesPlugin.PI_RESOURCES;
 			//			return node.nodeExists(path) ? node.node(path).getBoolean(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS, false) : false;
 			// for now, take the long way
-			if (!node.nodeExists(project.getName()))
+			if (!node.nodeExists(project.getName())) {
 				return ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS;
+			}
 			node = node.node(project.getName());
-			if (!node.nodeExists(ResourcesPlugin.PI_RESOURCES))
+			if (!node.nodeExists(ResourcesPlugin.PI_RESOURCES)) {
 				return ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS;
+			}
 			node = node.node(ResourcesPlugin.PI_RESOURCES);
 			return node.getBoolean(ResourcesPlugin.PREF_SEPARATE_DERIVED_ENCODINGS, ResourcesPlugin.DEFAULT_PREF_SEPARATE_DERIVED_ENCODINGS);
 		} catch (BackingStoreException e) {
@@ -423,8 +441,9 @@ public class CharsetManager implements IManager {
 	protected void mergeEncodingPreferences(IProject project) {
 		Preferences projectRegularPrefs = null;
 		Preferences projectDerivedPrefs = getPreferences(project, false, true, true);
-		if (projectDerivedPrefs == null)
+		if (projectDerivedPrefs == null) {
 			return;
+		}
 		try {
 			boolean prefsChanged = false;
 			String[] affectedResources;
@@ -433,8 +452,9 @@ public class CharsetManager implements IManager {
 				String value = projectDerivedPrefs.get(path, null);
 				projectDerivedPrefs.remove(path);
 				// lazy creation of non-derived preferences
-				if (projectRegularPrefs == null)
+				if (projectRegularPrefs == null) {
 					projectRegularPrefs = getPreferences(project, true, false, false);
+				}
 				projectRegularPrefs.put(path, value);
 				prefsChanged = true;
 			}
@@ -518,15 +538,17 @@ public class CharsetManager implements IManager {
 				.removePreferenceChangeListener(preferenceChangeListener);
 
 		workspace.removeResourceChangeListener(resourceChangeListener);
-		if (charsetListener != null)
+		if (charsetListener != null) {
 			charsetListener.shutdown();
+		}
 	}
 
 	protected void splitEncodingPreferences(IProject project) {
 		Preferences projectRegularPrefs = getPreferences(project, false, false, false);
 		Preferences projectDerivedPrefs = null;
-		if (projectRegularPrefs == null)
+		if (projectRegularPrefs == null) {
 			return;
+		}
 		try {
 			boolean prefsChanged = false;
 			String[] affectedResources;
@@ -538,8 +560,9 @@ public class CharsetManager implements IManager {
 						String value = projectRegularPrefs.get(path, null);
 						projectRegularPrefs.remove(path);
 						// lazy creation of derived preferences
-						if (projectDerivedPrefs == null)
+						if (projectDerivedPrefs == null) {
 							projectDerivedPrefs = getPreferences(project, true, true, true);
+						}
 						projectDerivedPrefs.put(path, value);
 						prefsChanged = true;
 					}
