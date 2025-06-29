@@ -223,7 +223,9 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 
 	private boolean isAncestorOfRoot(IResource parent, IResource[] roots) {
 		// Always traverse into projects in case a root was removed
-		if (parent.getType() == IResource.ROOT) return true;
+		if (parent.getType() == IResource.ROOT) {
+			return true;
+		}
 		for (IResource resource : roots) {
 			if (parent.getFullPath().isPrefixOf(resource.getFullPath())) {
 				return true;

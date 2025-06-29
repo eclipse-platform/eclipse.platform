@@ -127,12 +127,15 @@ public final class Status {
 	 *         instance
 	 */
 	public Result convertToResult() {
-		if (isNotRun())
+		if (isNotRun()) {
 			return Result.UNDEFINED;
-		if (isError())
+		}
+		if (isError()) {
 			return Result.ERROR;
-		if (isFailure())
+		}
+		if (isFailure()) {
 			return Result.FAILURE;
+		}
 		if (isRunning()) {
 			return Result.UNDEFINED;
 		}

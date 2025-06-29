@@ -42,7 +42,7 @@ public class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Status code indicating an unexpected internal error.
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public static final int INTERNAL_ERROR = 120;
@@ -59,7 +59,7 @@ public class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * The combined preference store.
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	private IPreferenceStore fCombinedPreferenceStore;
@@ -92,7 +92,7 @@ public class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns this plug-in instance.
-	 * 
+	 *
 	 * @return the single instance of this plug-in runtime class
 	 */
 	public static AntUIPlugin getDefault() {
@@ -108,7 +108,7 @@ public class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Logs the specified throwable with this plug-in's log.
-	 * 
+	 *
 	 * @param t
 	 *            throwable to log
 	 */
@@ -119,7 +119,7 @@ public class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Logs the specified status with this plug-in's log.
-	 * 
+	 *
 	 * @param status
 	 *            status
 	 */
@@ -129,7 +129,7 @@ public class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Writes the message to the plug-in's log
-	 * 
+	 *
 	 * @param message
 	 *            the text to write to the log
 	 */
@@ -200,9 +200,9 @@ public class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns a combined preference store, this store is read-only.
-	 * 
+	 *
 	 * @return the combined preference store
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public IPreferenceStore getCombinedPreferenceStore() {
@@ -215,14 +215,15 @@ public class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the document provider for use in the Ant editor.
-	 * 
+	 *
 	 * @return the Ant editor document provider
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public synchronized IDocumentProvider getDocumentProvider() {
-		if (fDocumentProvider == null)
+		if (fDocumentProvider == null) {
 			fDocumentProvider = new AntEditorDocumentProvider();
+		}
 		return fDocumentProvider;
 	}
 }

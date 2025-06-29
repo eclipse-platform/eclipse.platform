@@ -71,7 +71,7 @@ public class AntModelCore implements IBreakpointsListener {
 
 	/**
 	 * Updates message attributes on any Ant line breakpoints if there are active Ant editors with Ant models
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.IBreakpointsListener#breakpointsAdded(org.eclipse.debug.core.model.IBreakpoint[])
 	 */
 	private void updateBreakpointMessages(final IBreakpoint[] breakpoints) {
@@ -81,8 +81,7 @@ public class AntModelCore implements IBreakpointsListener {
 					IMarker marker = breakpoint.getMarker();
 					if (marker.exists()) {
 						int lineNumber = marker.getAttribute(IMarker.LINE_NUMBER, 0);
-						marker.setAttribute(IMarker.MESSAGE, MessageFormat.format(DebugModelMessages.AntLineBreakpoint_0, new Object[] {
-								Integer.toString(lineNumber) }));
+						marker.setAttribute(IMarker.MESSAGE, MessageFormat.format(DebugModelMessages.AntLineBreakpoint_0, Integer.toString(lineNumber)));
 					}
 				}
 			}

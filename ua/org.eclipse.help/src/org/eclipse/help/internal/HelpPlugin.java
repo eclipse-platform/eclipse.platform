@@ -83,8 +83,9 @@ public class HelpPlugin extends Plugin {
 	 * Used to obtain Context Manager returns an instance of ContextManager
 	 */
 	public static ContextManager getContextManager() {
-		if (getDefault().contextManager == null)
+		if (getDefault().contextManager == null) {
 			getDefault().contextManager = new ContextManager();
+		}
 		return getDefault().contextManager;
 	}
 
@@ -92,20 +93,23 @@ public class HelpPlugin extends Plugin {
 	 * Used to obtain the ContentExtensionManager
 	 */
 	public static ContentExtensionManager getContentExtensionManager() {
-		if (getDefault().contentExtensionManager == null)
+		if (getDefault().contentExtensionManager == null) {
 			getDefault().contentExtensionManager = new ContentExtensionManager();
+		}
 		return getDefault().contentExtensionManager;
 	}
 
 	public static IndexManager getIndexManager() {
-		if (getDefault().indexManager == null)
+		if (getDefault().indexManager == null) {
 			getDefault().indexManager = new IndexManager();
+		}
 		return getDefault().indexManager;
 	}
 
 	public static CriteriaManager getCriteriaManager() {
-		if (getDefault().criteriaManager == null)
+		if (getDefault().criteriaManager == null) {
 			getDefault().criteriaManager = new CriteriaManager();
+		}
 		return getDefault().criteriaManager;
 	}
 

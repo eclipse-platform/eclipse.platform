@@ -54,8 +54,7 @@ public class InstructionPointerContext {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof InstructionPointerContext) {
-			InstructionPointerContext otherContext = (InstructionPointerContext) other;
+		if (other instanceof InstructionPointerContext otherContext) {
 			if (getAnnotation().equals(otherContext.getAnnotation())){
 				return getEditor().equals(otherContext.getEditor());
 			}

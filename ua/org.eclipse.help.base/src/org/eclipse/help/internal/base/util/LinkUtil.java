@@ -22,14 +22,16 @@ public class LinkUtil {
 	 * after the parameters it will be maintained. If null is passed in, null is returned.
 	 */
 	public static String stripParams(String href) {
-		if (href == null)
+		if (href == null) {
 			return null;
+		}
 		int index = href.indexOf('?');
 		if (index != -1) {
 			String param = href.substring(index);
 			href = href.substring(0, index);
-			if ((index = param.indexOf('#')) != -1)
+			if ((index = param.indexOf('#')) != -1) {
 				href = href + param.substring(index);
+			}
 		}
 		return href;
 	}

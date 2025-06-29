@@ -28,7 +28,7 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 
 /**
  * A toolbar action which toggles the {@linkplain org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants#EDITOR_RECONCILE preference}.
- * 
+ *
  * @since 3.1
  */
 public class ToggleAutoReconcileAction extends TextEditorAction implements IPropertyChangeListener {

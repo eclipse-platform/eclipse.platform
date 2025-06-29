@@ -37,15 +37,17 @@ public class EditorTestHelper {
 
 	public static IEditorPart openInEditor(IFile file, boolean runEventLoop) throws PartInitException {
 		IEditorPart part = IDE.openEditor(getActivePage(), file);
-		if (runEventLoop)
+		if (runEventLoop) {
 			runEventQueue(part);
+		}
 		return part;
 	}
 
 	public static IEditorPart openInEditor(IFile file, String editorId, boolean runEventLoop) throws PartInitException {
 		IEditorPart part = IDE.openEditor(getActivePage(), file, editorId);
-		if (runEventLoop)
+		if (runEventLoop) {
 			runEventQueue(part);
+		}
 		return part;
 	}
 
@@ -57,20 +59,23 @@ public class EditorTestHelper {
 
 	public static void revertEditor(ITextEditor editor, boolean runEventQueue) {
 		editor.doRevertToSaved();
-		if (runEventQueue)
+		if (runEventQueue) {
 			runEventQueue(editor);
+		}
 	}
 
 	public static void closeAllEditors() {
 		IWorkbenchPage page = getActivePage();
-		if (page != null)
+		if (page != null) {
 			page.closeAllEditors(false);
+		}
 	}
 
 	public static void runEventQueue() {
 		IWorkbenchWindow window = getActiveWorkbenchWindow();
-		if (window != null)
+		if (window != null) {
 			runEventQueue(window.getShell());
+		}
 	}
 
 	public static void runEventQueue(IWorkbenchPart part) {
@@ -108,8 +113,9 @@ public class EditorTestHelper {
 	public static boolean calmDown(long minTime, long maxTime, long intervalTime) {
 		long startTime = System.currentTimeMillis() + minTime;
 		runEventQueue();
-		while (System.currentTimeMillis() < startTime)
+		while (System.currentTimeMillis() < startTime) {
 			runEventQueue(intervalTime);
+		}
 
 		long endTime = maxTime > 0 ? System.currentTimeMillis() + maxTime : Long.MAX_VALUE;
 		boolean calm = isCalm();

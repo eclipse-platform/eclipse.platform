@@ -13,7 +13,7 @@ The main body of a workbench window is represented by the _workbench page_, whic
 
 Parts interact with the rest of the window via their _site_. The site is not a visible entity but simply an API mechanism to separate the methods that operate on the view from the methods that operate on controls and services outside the view. This allows the workbench implementers to add new features to the sites without breaking all the plug-ins that implement the parts. Figure 9.1 Spider graph shows how a view (ContentOutline) and an editor (WelcomeEditor) each has its own site, which is hosted by a page, inside a workbench window, owned by the workbench.
 
-![FAQ views.png](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/FAQ/images/FAQ_views.png)
+![FAQ views.png](images/FAQ_views.png)
 
 **Figure 9.1**  Spider diagram of site parts
 

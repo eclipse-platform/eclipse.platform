@@ -55,8 +55,9 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 		Object[] panes = getPanes();
 		for (Object pane : panes) {
 			INavigatable navigator= getNavigator(pane);
-			if (navigator != null)
+			if (navigator != null) {
 				result.add(navigator);
+			}
 		}
 		return result.toArray(new INavigatable[result.size()]);
 	}
@@ -66,8 +67,9 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 		// Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106
 		if (next && fNextFirstTime && mustOpen()) {
 			fNextFirstTime= false;
-			if (openElement())
+			if (openElement()) {
 				return false;
+			}
 		}
 		return super.selectChange(next);
 	}
@@ -77,13 +79,15 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 	 */
 	private boolean mustOpen() {
 		Object[] panes = getPanes();
-		if (panes == null || panes.length == 0)
+		if (panes == null || panes.length == 0) {
 			return false;
+		}
 		for (int i= 1; i < panes.length; i++) {
 			Object pane= panes[i];
 			INavigatable nav = getNavigator(pane);
-			if (nav != null && nav.getInput() != null)
+			if (nav != null && nav.getInput() != null) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -93,13 +97,15 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 	 */
 	private boolean openElement() {
 		Object[] panes = getPanes();
-		if (panes == null || panes.length == 0)
+		if (panes == null || panes.length == 0) {
 			return false;
+		}
 		INavigatable nav = getNavigator(panes[0]);
 		if (nav != null) {
-			if (!nav.openSelectedChange())
+			if (!nav.openSelectedChange()) {
 				// selected change not opened, open first instead
 				nav.selectChange(INavigatable.FIRST_CHANGE);
+			}
 			return true;
 		}
 		return false;

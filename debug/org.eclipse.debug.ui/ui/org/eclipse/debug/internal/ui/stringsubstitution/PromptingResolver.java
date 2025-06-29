@@ -83,7 +83,7 @@ abstract class PromptingResolver implements IDynamicVariableResolver {
 		}
 
 		if (promptHint != null) {
-			dialogMessage = MessageFormat.format(StringSubstitutionMessages.PromptExpanderBase_0, new Object[] { promptHint });
+			dialogMessage = MessageFormat.format(StringSubstitutionMessages.PromptExpanderBase_0, promptHint);
 		} else {
 			dialogMessage = StringSubstitutionMessages.PromptExpanderBase_1;
 		}
@@ -100,7 +100,7 @@ abstract class PromptingResolver implements IDynamicVariableResolver {
 			lastValue = dialogResultString;
 		} else {
 			// dialogResultString == null means prompt was cancelled
-			throw new DebugException(new Status(IStatus.CANCEL, DebugUIPlugin.getUniqueIdentifier(), IStatus.CANCEL, MessageFormat.format(StringSubstitutionMessages.PromptingResolver_0, new Object[] { variable.getName() }), null));
+			throw new DebugException(new Status(IStatus.CANCEL, DebugUIPlugin.getUniqueIdentifier(), IStatus.CANCEL, MessageFormat.format(StringSubstitutionMessages.PromptingResolver_0, variable.getName()), null));
 		}
 		return value;
 	}

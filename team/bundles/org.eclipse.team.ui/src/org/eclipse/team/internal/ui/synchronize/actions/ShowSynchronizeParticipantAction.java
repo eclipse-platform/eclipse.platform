@@ -82,8 +82,8 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 
 	private static final class ParticipantOverlay extends CompositeImageDescriptor {
 
-		private final ImageData pinnedData = TeamUIPlugin.getImageDescriptor("ovr/pinned_ovr.png").getImageData(); //$NON-NLS-1$
-		private final ImageData scheduledData = TeamUIPlugin.getImageDescriptor("ovr/waiting_ovr.png").getImageData(); //$NON-NLS-1$
+		private final ImageData pinnedData = TeamUIPlugin.getImageDescriptor("ovr/pinned_ovr.svg").getImageData(); //$NON-NLS-1$
+		private final ImageData scheduledData = TeamUIPlugin.getImageDescriptor("ovr/waiting_ovr.svg").getImageData(); //$NON-NLS-1$
 		private ImageData imageData;
 		private ISynchronizeParticipant participant;
 
@@ -102,8 +102,7 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 			if (this.participant.isPinned()) {
 				drawImage(pinnedData, this.imageData.width - pinnedData.width, 0);
 			}
-			if (this.participant instanceof SubscriberParticipant) {
-				SubscriberParticipant participant = ( SubscriberParticipant) this.participant;
+			if (this.participant instanceof SubscriberParticipant participant) {
 				SubscriberRefreshSchedule schedule = participant.getRefreshSchedule();
 				if(schedule!=null && schedule.isEnabled()) {
 					drawImage(scheduledData, 0, 0);

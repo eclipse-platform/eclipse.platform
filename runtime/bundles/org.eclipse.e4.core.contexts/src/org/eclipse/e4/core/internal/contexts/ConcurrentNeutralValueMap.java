@@ -92,8 +92,9 @@ public class ConcurrentNeutralValueMap<K, V> {// implements subset of Map<K, V>
 	/** return does NOT use equals() of the neutralValue **/
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ConcurrentNeutralValueMap))
+		if (!(obj instanceof ConcurrentNeutralValueMap)) {
 			return false;
+		}
 		return delegate.equals(((ConcurrentNeutralValueMap<?, ?>) obj).delegate);
 	}
 

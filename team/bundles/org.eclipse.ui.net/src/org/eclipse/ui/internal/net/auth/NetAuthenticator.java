@@ -41,10 +41,11 @@ public class NetAuthenticator extends Authenticator {
 
 		Authentication auth = UserValidationDialog.getAuthentication(
 				hostString, promptString);
-		if (auth != null)
+		if (auth != null) {
 			return new PasswordAuthentication(auth.getUser(), auth
 					.getPassword().toCharArray());
-		else
+		} else {
 			return null;
+		}
 	}
 }

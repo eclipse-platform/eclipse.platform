@@ -44,7 +44,7 @@ public class Policy {
 
 			Policy.DEBUG_TREE_IMMUTABLE = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/tree/immutable", false); //$NON-NLS-1$
 			Policy.DEBUG_TREE_IMMUTABLE_STACK = Policy.DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/tree/immutablestack", false); //$NON-NLS-1$
-			
+
 			DEBUG_CONTENT_TYPE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/contenttype", false); //$NON-NLS-1$
 			DEBUG_CONTENT_TYPE_CACHE = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/contenttype/cache", false); //$NON-NLS-1$
 			DEBUG_HISTORY = DEBUG && options.getBooleanOption(ResourcesPlugin.PI_RESOURCES + "/history", false); //$NON-NLS-1$

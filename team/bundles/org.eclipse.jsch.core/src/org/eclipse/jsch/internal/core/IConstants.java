@@ -28,7 +28,7 @@ public interface IConstants{
   public static final  String KEY_OLD_SSH2HOME="CVSSSH2PreferencePage.SSH2HOME"; //$NON-NLS-1$
   public static final  String KEY_OLD_PRIVATEKEY="CVSSSH2PreferencePage.PRIVATEKEY"; //$NON-NLS-1$
   public static final  String KEY_KEYFILE="CVSSSH2PreferencePage.KEYFILE"; //$NON-NLS-1$
-  
+
   public static final  String KEY_SSH2HOME="SSH2HOME"; //$NON-NLS-1$
   public static final  String KEY_PRIVATEKEY="PRIVATEKEY"; //$NON-NLS-1$
 
@@ -40,12 +40,12 @@ public interface IConstants{
 
   public static final  String DSA="DSA"; //$NON-NLS-1$
   public static final  String RSA="RSA"; //$NON-NLS-1$
-  
+
   public static final int SSH_DEFAULT_PORT=22;
   public static final String SSH_DEFAULT_HOME=".ssh"; //$NON-NLS-1$
   public static final String SSH_OLD_DEFAULT_WIN32_HOME="ssh"; //$NON-NLS-1$
   public static final String SYSTEM_PROPERTY_USER_HOME="user.home"; //$NON-NLS-1$
-  
+
   public final String PREF_USE_PROXY="proxyEnabled"; //$NON-NLS-1$
   public final String PREF_PROXY_TYPE="proxyType"; //$NON-NLS-1$
   public final String PREF_PROXY_HOST="proxyHost"; //$NON-NLS-1$
@@ -54,15 +54,15 @@ public interface IConstants{
 
   public final String PREF_HAS_MIGRATED_SSH2_PREFS="org.eclipse.jsch.core.hasMigratedSsh2Preferences"; //$NON-NLS-1$
   public final String PREF_HAS_CHANGED_DEFAULT_WIN32_SSH_HOME="org.eclipse.jsch.core.hasChangedDefaultWin32SshHome"; //$NON-NLS-1$
-  
+
   public static final String PREF_PREFERRED_AUTHENTICATION_METHODS="CVSSSH2PreferencePage.PREF_AUTH_METHODS"; //$NON-NLS-1$
   public static final String PREF_PREFERRED_AUTHENTICATION_METHODS_ORDER="CVSSSH2PreferencePage.PREF_AUTH_METHODS_ORDER"; //$NON-NLS-1$
-  
+
   public static final String PREF_PREFERRED_SSHAGENT="CVSSSH2PreferencePage.PREF_SSHAGENT"; //$NON-NLS-1$
 
   public static final String PREF_PREFERRED_KEYEXCHANGE_METHODS="CVSSSH2PreferencePage.PREF_KEX_METHODS"; //$NON-NLS-1$
   public static final String PREF_PREFERRED_KEYEXCHANGE_METHODS_ORDER="CVSSSH2PreferencePage.PREF_KEX_METHODS_ORDER"; //$NON-NLS-1$
-  
+
   public static final String PREF_PREFERRED_MAC_METHODS="CVSSSH2PreferencePage.PREF_MAC_METHODS"; //$NON-NLS-1$
   public static final String PREF_PREFERRED_MAC_METHODS_ORDER="CVSSSH2PreferencePage.PREF_MAC_METHODS_ORDER"; //$NON-NLS-1$
 }

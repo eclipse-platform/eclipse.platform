@@ -45,16 +45,16 @@ public class ShowLocalHistory extends ActionDelegate implements IObjectActionDel
 	@Override
 	public void run(IAction action) {
 		IFileState states[]= getLocalHistory();
-		if (states == null || states.length == 0)
+		if (states == null || states.length == 0) {
 			return;
+		}
 		try {
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
 				final IResource resource = (IResource) fSelection.getFirstElement();
 				Runnable r = () -> {
 					IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), resource,  LocalHistoryPageSource.getInstance());
 					IHistoryPage page = view.getHistoryPage();
-					if (page instanceof LocalHistoryPage){
-						LocalHistoryPage historyPage = (LocalHistoryPage) page;
+					if (page instanceof LocalHistoryPage historyPage){
 						historyPage.setClickAction(isCompare());
 					}
 				};
@@ -78,8 +78,9 @@ public class ShowLocalHistory extends ActionDelegate implements IObjectActionDel
 	}
 
 	protected Shell getShell() {
-		if (targetPart != null)
+		if (targetPart != null) {
 			return targetPart.getSite().getShell();
+		}
 		return TeamUIPlugin.getActivePage().getActivePart().getSite().getShell();
 	}
 

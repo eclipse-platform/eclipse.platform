@@ -41,16 +41,22 @@ public class ProjectSetContentHandler extends DefaultHandler {
 			isVersionOne = version.equals("1.0"); //$NON-NLS-1$
 			return;
 		}
-		if (isVersionOne) return;
+		if (isVersionOne) {
+			return;
+		}
 		if (elementName.equals("provider")) { //$NON-NLS-1$
-			if (!inPsf) throw new SAXException(TeamUIMessages.ProjectSetContentHandler_Element_provider_must_be_contained_in_element_psf_4);
+			if (!inPsf) {
+				throw new SAXException(TeamUIMessages.ProjectSetContentHandler_Element_provider_must_be_contained_in_element_psf_4);
+			}
 			inProvider = true;
 			id = atts.getValue("id"); //$NON-NLS-1$
 			references = new ArrayList<>();
 			return;
 		}
 		if (elementName.equals("project")) { //$NON-NLS-1$
-			if (!inProvider) throw new SAXException(TeamUIMessages.ProjectSetContentHandler_Element_project_must_be_contained_in_element_provider_7);
+			if (!inProvider) {
+				throw new SAXException(TeamUIMessages.ProjectSetContentHandler_Element_project_must_be_contained_in_element_provider_7);
+			}
 			inProject = true;
 			String reference = atts.getValue("reference"); //$NON-NLS-1$
 			references.add(reference);
@@ -65,7 +71,9 @@ public class ProjectSetContentHandler extends DefaultHandler {
 			inPsf = false;
 			return;
 		}
-		if (isVersionOne) return;
+		if (isVersionOne) {
+			return;
+		}
 		if (elementName.equals("provider")) { //$NON-NLS-1$
 			map.put(id, references);
 			references = null;

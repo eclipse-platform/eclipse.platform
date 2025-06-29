@@ -269,8 +269,9 @@ public abstract class RefreshParticipantJob extends Job {
 				}
 			}
 		});
-		if(listener != null)
+		if(listener != null) {
 			initialize(listener);
+		}
 	}
 
 	@Override
@@ -350,8 +351,7 @@ public abstract class RefreshParticipantJob extends Job {
 				if (!isUser()) {
 					// Use the GOTO action to show the error and return OK
 					Object prop = getProperty(IProgressConstants.ACTION_PROPERTY);
-					if (prop instanceof GotoActionWrapper) {
-						GotoActionWrapper wrapper = (GotoActionWrapper)prop;
+					if (prop instanceof GotoActionWrapper wrapper) {
 						wrapper.setStatus(e.getStatus());
 						status = new Status(IStatus.OK, TeamUIPlugin.ID, IStatus.OK, e.getStatus().getMessage(), e);
 					}
@@ -371,14 +371,15 @@ public abstract class RefreshParticipantJob extends Job {
 			event.setStatus(status);
 			notifyListeners(DONE, event);
 			if (event.getChangeDescription().getChangeCount() > 0) {
-				if (participant instanceof AbstractSynchronizeParticipant) {
-					AbstractSynchronizeParticipant asp = (AbstractSynchronizeParticipant) participant;
+				if (participant instanceof AbstractSynchronizeParticipant asp) {
 					asp.firePropertyChange(participant, ISynchronizeParticipant.P_CONTENT, null, event.getChangeDescription());
 				}
 			}
 			return event.getStatus();
 		} finally {
-			if (acquired) lock.release();
+			if (acquired) {
+				lock.release();
+			}
 			monitor.done();
 		}
 	}
@@ -446,7 +447,7 @@ public abstract class RefreshParticipantJob extends Job {
 		} else {
 			// No changes found
 			code = IRefreshEvent.STATUS_NO_CHANGES;
-			text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_6, new String[] { getName() }));
+			text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_6, getName()));
 		}
 		return new Status(IStatus.OK, TeamUIPlugin.ID, code, text.toString(), null);
 	}
@@ -600,7 +601,9 @@ public abstract class RefreshParticipantJob extends Job {
 
 	private boolean isJobModal() {
 		Boolean isModal = (Boolean)getProperty(IProgressConstants.PROPERTY_IN_DIALOG);
-		if(isModal == null) return false;
+		if(isModal == null) {
+			return false;
+		}
 		return isModal.booleanValue();
 	}
 

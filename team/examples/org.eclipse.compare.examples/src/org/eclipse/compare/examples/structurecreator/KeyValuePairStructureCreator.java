@@ -38,45 +38,45 @@ import org.eclipse.compare.structuremergeviewer.*;
  * </pre>
  */
 public class KeyValuePairStructureCreator implements IStructureCreator {
-	
+
 	static class KeyValueNode extends DocumentRangeNode implements ITypedElement {
-		
+
 		String fValue;
-		
+
 		public KeyValueNode(String id, String value, IDocument doc, int start, int length) {
 			super(0, id, doc, start, length);
 			fValue= value;
 		}
-		
+
 		String getValue() {
 			return fValue;
 		}
-				
+
 		@Override
 		public String getName() {
 			return this.getId();
 		}
 
 		/*
-		 * Every key/value pair is of type "kvtxt". We register a TextMergeViewer for it. 
+		 * Every key/value pair is of type "kvtxt". We register a TextMergeViewer for it.
 		 * @see ITypedElement#getType
 		 */
 		@Override
 		public String getType() {
 			return "kvtxt"; //$NON-NLS-1$
 		}
-		
+
 		@Override
 		public Image getImage() {
 			return CompareUI.getImage(getType());
 		}
 	}
-		
-		
+
+
 	public KeyValuePairStructureCreator() {
 		// nothing to do
 	}
-	
+
 	/*
 	 * This title will be shown in the title bar of the structure compare pane.
 	 */
@@ -90,25 +90,25 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 	 */
 	@Override
 	public IStructureComparator getStructure(Object input) {
-		
+
 		if (!(input instanceof IStreamContentAccessor))
 			return null;
-		
+
 		IStreamContentAccessor sca= (IStreamContentAccessor) input;
 		try {
 			String contents= Util.readString(sca);
 			if (contents == null)
 				contents= ""; //$NON-NLS-1$
 			Document doc= new Document(contents);
-							
+
 			KeyValueNode root= new KeyValueNode("root", "", doc, 0, doc.getLength()); //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 			for (int i= 0; i < doc.getNumberOfLines(); i++) {
-				
+
 				IRegion r= doc.getLineInformation(i);
 				String s= doc.get(r.getOffset(), r.getLength());
 				int start= r.getOffset();
-					
+
 				String key= ""; //$NON-NLS-1$
 				String value= ""; //$NON-NLS-1$
 				int pos= s.indexOf('=');
@@ -129,10 +129,10 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 			String message= Util.getString("KeyValuePairStructureCreator.BadLocationException.message"); //$NON-NLS-1$
 			CompareUI.getPlugin().getLog().log(new Status(IStatus.ERROR, CompareUI.PLUGIN_ID, 0, message, ex));
 		}
-				
+
 		return null;
 	}
-	
+
 	@Override
 	public void save(IStructureComparator structure, Object input) {
 		if (input instanceof IEditableContent && structure instanceof KeyValueNode) {
@@ -142,7 +142,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 			bca.setContent(c.getBytes());
 		}
 	}
-	
+
 	@Override
 	public String getContents(Object node, boolean ignoreWhitespace) {
 		if (node instanceof KeyValueNode) {
@@ -153,7 +153,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public IStructureComparator locate(Object path, Object source) {
 		return null;

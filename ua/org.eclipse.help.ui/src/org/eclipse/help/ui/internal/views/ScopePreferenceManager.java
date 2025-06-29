@@ -93,8 +93,9 @@ public class ScopePreferenceManager extends PreferenceManager implements IHelpUI
 	private IPreferenceNode addNode(String category, String id, String name, IConfigurationElement config) {
 		IPreferenceNode parent = find(category);
 		PreferenceNode node = new SubpagePreferenceNode(id, name, config);
-		if (parent!=null)
+		if (parent!=null) {
 			parent.add(node);
+		}
 		return node;
 	}
 }

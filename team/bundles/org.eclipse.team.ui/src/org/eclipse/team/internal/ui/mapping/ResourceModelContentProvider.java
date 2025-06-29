@@ -69,8 +69,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 
 	@Override
 	protected ITreeContentProvider getDelegateContentProvider() {
-		if (provider == null)
+		if (provider == null) {
 			provider = new WorkbenchContentProvider();
+		}
 		return provider;
 	}
 
@@ -87,12 +88,13 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	@Override
 	protected boolean isInScope(ISynchronizationScope scope, Object parent, Object elementOrPath) {
 		Object object = internalGetElement(elementOrPath);
-		if (object instanceof IResource) {
-			IResource resource = (IResource) object;
-			if (!resource.getProject().isAccessible())
+		if (object instanceof IResource resource) {
+			if (!resource.getProject().isAccessible()) {
 				return false;
-			if (scope.contains(resource))
+			}
+			if (scope.contains(resource)) {
 				return true;
+			}
 			if (hasChildrenInScope(scope, object, resource)) {
 				return true;
 			}
@@ -101,12 +103,14 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	}
 
 	private boolean hasChildrenInScope(ISynchronizationScope scope, Object object, IResource resource) {
-		if (!resource.isAccessible())
+		if (!resource.isAccessible()) {
 			return false;
+		}
 		IResource[] roots = scope.getRoots();
 		for (IResource root : roots) {
-			if (resource.getFullPath().isPrefixOf(root.getFullPath()))
+			if (resource.getFullPath().isPrefixOf(root.getFullPath())) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -119,8 +123,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 
 	@Override
 	public void dispose() {
-		if (provider != null)
+		if (provider != null) {
 			provider.dispose();
+		}
 		super.dispose();
 		TeamUIPlugin.getPlugin().getPreferenceStore().removePropertyChangeListener(this);
 	}
@@ -136,17 +141,19 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	@Override
 	protected Object[] getChildrenInContext(ISynchronizationContext context, Object parentOrPath, Object[] children) {
 		Object parent = internalGetElement(parentOrPath);
-		if (parent instanceof IResource) {
-			IResource resource = (IResource) parent;
-			if (resource.getType() == IResource.PROJECT && !resource.getProject().isAccessible())
+		if (parent instanceof IResource resource) {
+			if (resource.getType() == IResource.PROJECT && !resource.getProject().isAccessible()) {
 				return new Object[0];
+			}
 			IResourceDiffTree diffTree = context.getDiffTree();
 			// TODO: Could optimize this to a single pass over the children instead of 3
 			children = getTraversalCalculator().filterChildren(diffTree, resource, parentOrPath, children);
-			if (children.length != 0)
+			if (children.length != 0) {
 				children = getChildrenInScope(context.getScope(), parentOrPath, children);
-			if (children.length != 0)
+			}
+			if (children.length != 0) {
 				children = internalGetChildren(context, parentOrPath, children);
+			}
 			return children;
 		}
 		return super.getChildrenInContext(context, parentOrPath, children);
@@ -158,12 +165,12 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 			// If the parent is a TreePath then the subclass is
 			// TreePath aware and we can send a TrePath to the
 			// isVisible method
-			if (parent instanceof TreePath) {
-				TreePath tp = (TreePath) parent;
+			if (parent instanceof TreePath tp) {
 				object = tp.createChildPath(object);
 			}
-			if (isVisible(context, object))
+			if (isVisible(context, object)) {
 				result.add(internalGetElement(object));
+			}
 		}
 		return result.toArray(new Object[result.size()]);
 	}
@@ -176,13 +183,13 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		ResourceMapping mapping = scope.getMapping(object);
 		if (mapping != null) {
 			ResourceTraversal[] traversals = scope.getTraversals(mapping);
-			if (traversals == null)
+			if (traversals == null) {
 				return new ResourceTraversal[0];
+			}
 			return traversals;
 		}
 		// Next, check if the object is within the scope
-		if (object instanceof IResource) {
-			IResource resource = (IResource) object;
+		if (object instanceof IResource resource) {
 			if (scope.contains(resource)) {
 				List<ResourceTraversal> result = new ArrayList<>();
 				ResourceTraversal[] traversals = scope.getTraversals();
@@ -268,8 +275,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		List<IResource> resources = new ArrayList<>();
 		for (IPath path : paths) {
 			IResource resource = getResource(context, path);
-			if (resource != null)
+			if (resource != null) {
 				resources.add(resource);
+			}
 		}
 		return resources.toArray(new IResource[resources.size()]);
 	}
@@ -336,8 +344,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		Object element = internalGetElement(elementOrPath);
 		if (element instanceof IProject) {
 			ISynchronizationContext context = getContext();
-			if (context != null)
+			if (context != null) {
 				return context;
+			}
 		}
 		return super.getParent(elementOrPath);
 	}
@@ -352,8 +361,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 
 	protected void updateLabels(ISynchronizationContext context, final IPath[] paths) {
 		IResource[] resources = getResources(context, paths);
-		if (resources.length > 0)
+		if (resources.length > 0) {
 			((AbstractTreeViewer)getViewer()).update(resources, null);
+		}
 	}
 
 	protected ResourceModelTraversalCalculator getTraversalCalculator() {
@@ -385,8 +395,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	}
 
 	private Object internalGetElement(Object elementOrPath) {
-		if (elementOrPath instanceof TreePath) {
-			TreePath tp = (TreePath) elementOrPath;
+		if (elementOrPath instanceof TreePath tp) {
 			return tp.getLastSegment();
 		}
 		return elementOrPath;
@@ -444,10 +453,12 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 			Tree tree = viewer.getTree();
 			try {
 				tree.setRedraw(false);
-				if (!additions.isEmpty())
+				if (!additions.isEmpty()) {
 					viewer.add(viewer.getInput(), additions.toArray());
-				if (!removals.isEmpty())
+				}
+				if (!removals.isEmpty()) {
 					viewer.remove(viewer.getInput(), removals.toArray());
+				}
 				if (!refreshes.isEmpty()) {
 					for (Object element : refreshes) {
 						viewer.refresh(element);

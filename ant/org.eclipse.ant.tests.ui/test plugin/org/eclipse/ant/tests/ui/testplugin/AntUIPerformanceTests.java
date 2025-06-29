@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2004, 2008 IBM Corporation and others.
+ *  Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -21,9 +21,7 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 /**
- * Performance Test suite for the Ant UI. All of the tests in this suite rely on
- * the setup that occurs in the ProjectCreationDecorator suite. It must always
- * run before any of the other test suites.
+ * Performance Test suite for the Ant UI.
  */
 @Suite
 @SelectClasses({ OpenAntEditorTest.class, OpenLaunchConfigurationDialogTests.class, SeparateVMTests.class })

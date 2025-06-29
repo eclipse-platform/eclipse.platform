@@ -116,8 +116,9 @@ public class DynamicXHTMLFilter implements IFilter {
 		int len = 0;
 		while (true) {
 			len = in.read(buffer);
-			if (len == -1)
+			if (len == -1) {
 				break;
+			}
 			out.write(buffer, 0, len);
 		}
 	}

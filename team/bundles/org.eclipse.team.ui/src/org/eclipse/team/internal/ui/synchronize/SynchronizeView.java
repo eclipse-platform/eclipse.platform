@@ -199,18 +199,20 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 				Saveable newSaveable = (Saveable)event.getNewValue();
 				ISaveablesLifecycleListener listener = getSite().getPage().getWorkbenchWindow()
 					.getService(ISaveablesLifecycleListener.class);
-				if (listener != null && oldSaveable != null)
+				if (listener != null && oldSaveable != null) {
 					listener.handleLifecycleEvent(new SaveablesLifecycleEvent(this, SaveablesLifecycleEvent.POST_CLOSE, new Saveable[] { oldSaveable }, false));
-				if (listener != null && newSaveable != null)
+				}
+				if (listener != null && newSaveable != null) {
 					listener.handleLifecycleEvent(new SaveablesLifecycleEvent(this, SaveablesLifecycleEvent.POST_OPEN, new Saveable[] { newSaveable }, false));
+				}
 			} else if (event.getProperty().equals(ISynchronizeParticipant.P_CONTENT)) {
 				final IWorkbenchSiteProgressService ps = getSite().getAdapter(IWorkbenchSiteProgressService.class);
-				if (ps != null)
+				if (ps != null) {
 					Display.getDefault().asyncExec(() -> ps.warnOfContentChange());
+				}
 			}
 		}
-		if (source instanceof ISynchronizePageConfiguration) {
-			ISynchronizePageConfiguration configuration = (ISynchronizePageConfiguration) source;
+		if (source instanceof ISynchronizePageConfiguration configuration) {
 			if (event.getProperty().equals(ISynchronizePageConfiguration.P_PAGE_DESCRIPTION)) {
 				if (configuration.getParticipant().equals(getParticipant())) {
 					updateTitle();
@@ -252,8 +254,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			SynchronizeViewWorkbenchPart part = (SynchronizeViewWorkbenchPart)fParticipantToPart.get(participant);
 			ISynchronizePageConfiguration configuration = part.getConfiguration();
 			String description = (String)configuration.getProperty(ISynchronizePageConfiguration.P_PAGE_DESCRIPTION);
-			if (description == null)
+			if (description == null) {
 				description = part.getParticipant().getName();
+			}
 			// TODO: Get the description from the configuration
 			// TODO: listen to the configuration for description changes
 			setContentDescription(Utils.shortenText(MAX_NAME_LENGTH, description));
@@ -273,11 +276,13 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 
 	private void clearCrossReferenceCache(IWorkbenchPart part, ISynchronizeParticipant participant) {
 		participant.removePropertyChangeListener(this);
-		if (part == null)
+		if (part == null) {
 			return;
+		}
 		ISynchronizePageConfiguration configuration = ((SynchronizeViewWorkbenchPart)part).getConfiguration();
-		if (configuration != null)
+		if (configuration != null) {
 			configuration.removePropertyChangeListener(this);
+		}
 		fPartToParticipant.remove(part);
 		fParticipantToPart.remove(participant);
 	}
@@ -480,16 +485,19 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	}
 
 	private void createOpenAndLinkWithEditorHelper(StructuredViewer viewer) {
-		if (fOpenAndLinkWithEditorHelper != null)
+		if (fOpenAndLinkWithEditorHelper != null) {
 			fOpenAndLinkWithEditorHelper.dispose();
+		}
 		fOpenAndLinkWithEditorHelper= new OpenAndLinkWithEditorHelper(viewer) {
 			@Override
 			protected void activate(ISelection selection) {
 				try {
 					final Object selectedElement = getSingleElement(selection);
-					if (isOpenInEditor(selectedElement) != null)
-						if (selectedElement instanceof IFile)
+					if (isOpenInEditor(selectedElement) != null) {
+						if (selectedElement instanceof IFile) {
 							openInEditor((IFile) selectedElement, true);
+						}
+					}
 				} catch (PartInitException ex) {
 					// ignore if no editor input can be found
 				}
@@ -624,7 +632,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 */
 	public IPage getPage(ISynchronizeParticipant participant) {
 		IWorkbenchPart part = fParticipantToPart.get(participant);
-		if (part == null) return null;
+		if (part == null) {
+			return null;
+		}
 		try {
 			return getPageRec(part).page;
 		} catch (NullPointerException e) {
@@ -690,8 +700,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	}
 
 	private Saveable getSaveable(ISynchronizeParticipant participant) {
-		if (participant instanceof ModelSynchronizeParticipant) {
-			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
+		if (participant instanceof ModelSynchronizeParticipant msp) {
 			return msp.getActiveSaveable();
 		}
 		return null;
@@ -701,16 +710,18 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	public Saveable[] getActiveSaveables() {
 		ISynchronizeParticipant participant = getParticipant();
 		Saveable s = getSaveable(participant);
-		if (s != null)
+		if (s != null) {
 			return new Saveable[] { s };
+		}
 		return new Saveable[0];
 	}
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		Saveable[] saveables = getSaveables();
-		if (saveables.length == 0)
+		if (saveables.length == 0) {
 			return;
+		}
 		monitor.beginTask(null, 100* saveables.length);
 		for (Saveable saveable : saveables) {
 			try {
@@ -733,8 +744,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	public boolean isDirty() {
 		Saveable[] saveables = getSaveables();
 		for (Saveable saveable : saveables) {
-			if (saveable.isDirty())
+			if (saveable.isDirty()) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -773,7 +785,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		if (viewSite != null && syncMode != null) {
 			viewSite.getActionBars().getStatusLineManager().setMessage(
 					NLS.bind(TeamUIMessages.SynchronizeView_statusLine,
-							new String[] { description, syncMode }));
+							description, syncMode));
 		}
 	}
 
@@ -816,10 +828,10 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 
 		private Object getContributedResourceOrResourceVariant(Object o) {
 			IResource[] resources = Utils.getContributedResources(new Object[] {o});
-			if (resources.length > 0)
+			if (resources.length > 0) {
 				return resources[0];
-			if (o instanceof SyncInfoModelElement) {
-				SyncInfoModelElement sime = (SyncInfoModelElement) o;
+			}
+			if (o instanceof SyncInfoModelElement sime) {
 				return sime.getSyncInfo().getRemote();
 			}
 			return null;
@@ -828,8 +840,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		@Override
 		public int hashCode(Object element) {
 			Object r = getContributedResourceOrResourceVariant(element);
-			if (r != null)
+			if (r != null) {
 				return r.hashCode();
+			}
 			return element.hashCode();
 		}
 
@@ -856,8 +869,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			page.addPartListener(fLinkWithEditorListener);
 
 			IEditorPart editor = page.getActiveEditor();
-			if (editor != null)
+			if (editor != null) {
 				editorActivated(editor);
+			}
 		} else {
 			page.removePartListener(fLinkWithEditorListener);
 		}
@@ -890,19 +904,23 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 * @param editor the activated editor
 	 */
 	private void editorActivated(IEditorPart editor) {
-		if (!isLinkingEnabled())
+		if (!isLinkingEnabled()) {
 			return;
+		}
 
 		IEditorInput editorInput= editor.getEditorInput();
-		if (editorInput == null)
+		if (editorInput == null) {
 			return;
+		}
 		Object input= getInputFromEditor(editorInput);
-		if (input == null)
+		if (input == null) {
 			return;
-		if (!inputIsSelected(editorInput))
+		}
+		if (!inputIsSelected(editorInput)) {
 			showInput(input);
-		else
+		} else {
 			getViewer().getTree().showSelection();
+		}
 	}
 
 	boolean showInput(Object input) {
@@ -944,8 +962,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 * @return the parent or <code>null</code> if there's no parent
 	 */
 	private Object getParent(Object element) {
-		if (element instanceof IResource)
+		if (element instanceof IResource) {
 			return ((IResource)element).getParent();
+		}
 		return null;
 	}
 
@@ -966,18 +985,21 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 
 	private boolean inputIsSelected(IEditorInput input) {
 		IStructuredSelection selection= getViewer().getStructuredSelection();
-		if (selection.size() != 1)
+		if (selection.size() != 1) {
 			return false;
+		}
 		IEditorInput selectionAsInput= getEditorInput(selection.getFirstElement());
 		return input.equals(selectionAsInput);
 	}
 
 	private static IEditorInput getEditorInput(Object input) {
 		IResource[] resources = Utils.getContributedResources(new Object[] { input });
-		if (resources.length > 0)
+		if (resources.length > 0) {
 			input = resources[0];
-		if (input instanceof IFile)
+		}
+		if (input instanceof IFile) {
 			return new FileEditorInput((IFile) input);
+		}
 		return null;
 	}
 
@@ -985,8 +1007,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		Object input= editorInput.getAdapter(IFile.class);
 		if (input == null && editorInput instanceof FileRevisionEditorInput) {
 			IFileRevision fileRevision = ((FileRevisionEditorInput)editorInput).getFileRevision();
-			if (fileRevision instanceof ResourceVariantFileRevision)
+			if (fileRevision instanceof ResourceVariantFileRevision) {
 				return ((ResourceVariantFileRevision) fileRevision).getVariant();
+			}
 		}
 		if (input == null && editorInput instanceof IStorageEditorInput) {
 			try {
@@ -1031,31 +1054,37 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 
 			if (compareResult instanceof IAdaptable) {
 				IResource r = ((IAdaptable) compareResult).getAdapter(IResource.class);
-				if (r != null)
+				if (r != null) {
 					return file.equals(r);
+				}
 			}
-			if (compareResult instanceof ICompareInput) {
-				ICompareInput compareInput = (ICompareInput) compareResult;
+			if (compareResult instanceof ICompareInput compareInput) {
 				ITypedElement left = compareInput.getLeft();
-				if (left instanceof ResourceNode)
-					if (file.equals(((ResourceNode) left).getResource()))
+				if (left instanceof ResourceNode) {
+					if (file.equals(((ResourceNode) left).getResource())) {
 						return true;
+					}
+				}
 				ITypedElement right = compareInput.getRight();
-				if (right instanceof ResourceNode)
-					if (file.equals(((ResourceNode) right).getResource()))
+				if (right instanceof ResourceNode) {
+					if (file.equals(((ResourceNode) right).getResource())) {
 						return true;
+					}
+				}
 			}
 		}
 		return false;
 	}
 
 	private static IEditorPart openInEditor(IFile file, boolean activate) throws PartInitException {
-		if (file == null)
+		if (file == null) {
 			throwPartInitException(TeamUIMessages.SynchronizeView_fileMustNotBeNull);
+		}
 
 		IWorkbenchPage p = TeamUIPlugin.getActivePage();
-		if (p == null)
+		if (p == null) {
 			throwPartInitException(TeamUIMessages.SynchronizeView_noActiveWorkbenchPage);
+		}
 
 		IEditorPart editorPart = IDE.openEditor(p, file, activate);
 		return editorPart;
@@ -1076,11 +1105,12 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 * @return the selected first element or null
 	 */
 	private static Object getSingleElement(ISelection s) {
-		if (!(s instanceof IStructuredSelection))
+		if (!(s instanceof IStructuredSelection selection)) {
 			return null;
-		IStructuredSelection selection = (IStructuredSelection) s;
-		if (selection.size() != 1)
+		}
+		if (selection.size() != 1) {
 			return null;
+		}
 
 		return selection.getFirstElement();
 	}
@@ -1091,8 +1121,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		if (selection != null) {
 			// If can show the selection, do it.
 			// Otherwise, fall through and attempt to show the input
-			if (showInput(selection))
+			if (showInput(selection)) {
 				return true;
+			}
 		}
 		Object input = context.getInput();
 		if (input != null) {

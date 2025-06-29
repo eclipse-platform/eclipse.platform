@@ -51,12 +51,14 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 	}
 
 	protected void calculateDescription() {
-		if (getContainer().isDisposed())
+		if (getContainer().isDisposed()) {
 			return;
+		}
 		if(getVisibleChangesCount() == 0) {
 			TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
-				if (!getContainer().isDisposed())
+				if (!getContainer().isDisposed()) {
 					updatePage(getEmptyChangesComposite(getContainer()));
+				}
 			});
 		} else {
 			TeamUIPlugin.getStandardDisplay().asyncExec(() -> updatePage(null));
@@ -64,7 +66,9 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 	}
 
 	protected void updatePage(Composite message) {
-		if (getContainer().isDisposed()) return;
+		if (getContainer().isDisposed()) {
+			return;
+		}
 		if(messageArea != null) {
 			messageArea.dispose();
 			messageArea = null;
@@ -91,7 +95,8 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 		composite.setLayoutData(data);
 
 		if(! isThreeWay()) {
-			createDescriptionLabel(composite,NLS.bind(TeamUIMessages.ChangesSection_noChanges, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+			createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_noChanges,
+					Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 			return composite;
 		}
 
@@ -106,16 +111,21 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 				if (numChanges > 0) {
 					String message;
 					if(numChanges > 1) {
-						message = NLS.bind(TeamUIMessages.ChangesSection_filterHidesPlural, new String[] { Long.toString(numChanges), Utils.modeToString(candidateMode) });
+						message = NLS.bind(TeamUIMessages.ChangesSection_filterHidesPlural, Long.toString(numChanges),
+								Utils.modeToString(candidateMode));
 					} else {
-						message = NLS.bind(TeamUIMessages.ChangesSection_filterHidesSingular, new String[] { Long.toString(numChanges), Utils.modeToString(candidateMode) });
+						message = NLS.bind(TeamUIMessages.ChangesSection_filterHidesSingular, Long.toString(numChanges),
+								Utils.modeToString(candidateMode));
 					}
-					message = NLS.bind(TeamUIMessages.ChangesSection_filterHides, new String[] { Utils.modeToString(getConfiguration().getMode()), message });
+					message = NLS.bind(TeamUIMessages.ChangesSection_filterHides,
+							Utils.modeToString(getConfiguration().getMode()), message);
 
 					Label warning = new Label(composite, SWT.NONE);
 					warning.setImage(TeamUIPlugin.getPlugin().getImage(ISharedImages.IMG_WARNING_OVR));
 
-					Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.ChangesSection_filterChange, new String[] { Utils.modeToString(candidateMode) }), SWT.WRAP);
+					Hyperlink link = getForms().createHyperlink(composite,
+							NLS.bind(TeamUIMessages.ChangesSection_filterChange, Utils.modeToString(candidateMode)),
+							SWT.WRAP);
 					link.addHyperlinkListener(new HyperlinkAdapter() {
 						@Override
 						public void linkActivated(HyperlinkEvent e) {
@@ -129,7 +139,8 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 			}
 		}
 		// There is no other mode that can be shown so just indicate that there are no changes
-		createDescriptionLabel(composite,NLS.bind(TeamUIMessages.ChangesSection_noChanges, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));	 //
+		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_noChanges,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()))); //
 		return composite;
 	}
 

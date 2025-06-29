@@ -98,7 +98,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Sets the last relevant event set
-	 * 
+	 *
 	 * @param set
 	 *            event set
 	 */
@@ -108,7 +108,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Returns the last relevant event set
-	 * 
+	 *
 	 * @return event set
 	 */
 	protected DebugEvent[] getEventSet() {
@@ -117,7 +117,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Returns the breakpoint manager
-	 * 
+	 *
 	 * @return breakpoint manager
 	 */
 	protected IBreakpointManager getBreakpointManager() {
@@ -126,7 +126,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Returns the source folder with the given name in the given project.
-	 * 
+	 *
 	 * @param name
 	 *            source folder name
 	 * @return package fragment root
@@ -159,7 +159,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the given configuration and waits for an event. Returns the source of the event. If the event is not received, the launch is
 	 * terminated and an exception is thrown.
-	 * 
+	 *
 	 * @param configuration
 	 *            the configuration to launch
 	 * @param waiter
@@ -174,7 +174,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the given configuration and waits for an event. Returns the source of the event. If the event is not received, the launch is
 	 * terminated and an exception is thrown.
-	 * 
+	 *
 	 * @param configuration
 	 *            the configuration to launch
 	 * @param waiter
@@ -205,7 +205,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the build file with the given name, and waits for a suspend event in that program. Returns the thread in which the suspend event
 	 * occurred.
-	 * 
+	 *
 	 * @param buildFileName
 	 *            the build file to launch
 	 * @return thread in which the first suspend event occurred
@@ -219,7 +219,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the given configuration in debug mode, and waits for a suspend event in that program. Returns the thread in which the suspend event
 	 * occurred.
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to launch
 	 * @return thread in which the first suspend event occurred
@@ -234,7 +234,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the build file with the given name, and waits for a breakpoint-caused suspend event in that program. Returns the thread in which the
 	 * suspend event occurred.
-	 * 
+	 *
 	 * @param buildFileName
 	 *            the build file to launch
 	 * @return thread in which the first suspend event occurred
@@ -246,7 +246,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the build file with the given name in a separate VM, and waits for a breakpoint-caused suspend event in that program. Returns the
 	 * thread in which the suspend event occurred.
-	 * 
+	 *
 	 * @param buildFileName
 	 *            the build file to launch
 	 * @return thread in which the first suspend event occurred
@@ -258,7 +258,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the build file with the given name, and waits for a breakpoint-caused suspend event in that program. Returns the thread in which the
 	 * suspend event occurred.
-	 * 
+	 *
 	 * @param buildFileName
 	 *            the build file to launch
 	 * @param register
@@ -277,7 +277,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the given configuration in debug mode, and waits for a breakpoint-caused suspend event in that program. Returns the thread in which
 	 * the suspend event occurred.
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to launch
 	 * @return thread in which the first suspend event occurred
@@ -289,7 +289,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the given configuration in debug mode, and waits for a breakpoint-caused suspend event in that program. Returns the thread in which
 	 * the suspend event occurred.
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to launch
 	 * @param register
@@ -308,7 +308,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the build file with the given name, and waits for a terminate event in that program. Returns the debug target in which the suspend
 	 * event occurred.
-	 * 
+	 *
 	 * @param buildFileName
 	 *            the build file to execute
 	 * @return debug target in which the terminate event occurred
@@ -329,7 +329,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the given configuration in debug mode, and waits for a terminate event in that program. Returns the debug target in which the
 	 * terminate event occurred.
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to launch
 	 * @param timeout
@@ -351,7 +351,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the build file with the given name, and waits for a line breakpoint suspend event in that program. Returns the thread in which the
 	 * suspend event occurred.
-	 * 
+	 *
 	 * @param buildFileName
 	 *            the build file to execute
 	 * @param bp
@@ -367,7 +367,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Launches the given configuration in debug mode, and waits for a line breakpoint suspend event in that program. Returns the thread in which the
 	 * suspend event occurred.
-	 * 
+	 *
 	 * @param config
 	 *            the configuration to launch
 	 * @param bp
@@ -395,7 +395,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Resumes the given thread, and waits for another breakpoint-caused suspend event. Returns the thread in which the suspend event occurs.
-	 * 
+	 *
 	 * @param thread
 	 *            thread to resume
 	 * @return thread in which the first suspend event occurs
@@ -406,7 +406,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Resumes the given thread, and waits for another breakpoint-caused suspend event. Returns the thread in which the suspend event occurs.
-	 * 
+	 *
 	 * @param thread
 	 *            thread to resume
 	 * @param timeout
@@ -430,7 +430,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 	/**
 	 * Resumes the given thread, and waits for a suspend event caused by the specified line breakpoint. Returns the thread in which the suspend event
 	 * occurs.
-	 * 
+	 *
 	 * @param resumeThread
 	 *            thread to resume
 	 * @return thread in which the first suspend event occurs
@@ -462,7 +462,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Resumes the given thread, and waits for the debug target to terminate (i.e. finish/exit the program).
-	 * 
+	 *
 	 * @param thread
 	 *            thread to resume
 	 */
@@ -479,7 +479,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Resumes the given thread, and waits for the associated debug target to terminate.
-	 * 
+	 *
 	 * @param thread
 	 *            thread to resume
 	 * @return the terminated debug target
@@ -511,7 +511,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Creates and returns a line breakpoint at the given line number in the given build file
-	 * 
+	 *
 	 * @param lineNumber
 	 *            line number
 	 * @param file
@@ -523,7 +523,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Creates and returns a line breakpoint at the given line number in the given build file.
-	 * 
+	 *
 	 * @param lineNumber
 	 *            line number
 	 * @param buildFileName
@@ -544,7 +544,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Terminates the given debug target and removes its launch.
-	 * 
+	 *
 	 * NOTE: all breakpoints are removed, all threads are resumed, and then the target is terminated. This avoids defunct processes on linux.
 	 */
 	protected void terminateAndRemove(AntDebugTarget debugTarget) throws CoreException {
@@ -588,7 +588,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Returns the first breakpoint the given thread is suspended at, or <code>null</code> if none.
-	 * 
+	 *
 	 * @return the first breakpoint the given thread is suspended at, or <code>null</code> if none
 	 */
 	protected IBreakpoint getBreakpoint(IThread thread) {
@@ -601,7 +601,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Performs a step over in the given stack frame and returns when complete.
-	 * 
+	 *
 	 * @param frame
 	 *            stack frame to step in
 	 */
@@ -621,7 +621,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Performs a step over in the given stack frame and expects to hit a breakpoint as part of the step over
-	 * 
+	 *
 	 * @param frame
 	 *            stack frame to step in
 	 */
@@ -641,7 +641,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Performs a step into in the given stack frame and returns when complete.
-	 * 
+	 *
 	 * @param frame
 	 *            stack frame to step in
 	 */
@@ -661,7 +661,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Performs a step return in the given stack frame and returns when complete.
-	 * 
+	 *
 	 * @param frame
 	 *            stack frame to step return from
 	 */
@@ -681,7 +681,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Performs a step into with filters in the given stack frame and returns when complete.
-	 * 
+	 *
 	 * @param frame
 	 *            stack frame to step in
 	 */
@@ -709,7 +709,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Performs a step return with filters in the given stack frame and returns when complete.
-	 * 
+	 *
 	 * @param frame
 	 *            stack frame to step in
 	 */
@@ -737,7 +737,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Performs a step over with filters in the given stack frame and returns when complete.
-	 * 
+	 *
 	 * @param frame
 	 *            stack frame to step in
 	 */
@@ -765,7 +765,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Returns the compilation unit with the given name.
-	 * 
+	 *
 	 * @param project
 	 *            the project containing the CU
 	 * @param root
@@ -784,7 +784,7 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 	/**
 	 * Sets the current set of Debug / Other preferences to use during each test
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	protected void setPreferences() {

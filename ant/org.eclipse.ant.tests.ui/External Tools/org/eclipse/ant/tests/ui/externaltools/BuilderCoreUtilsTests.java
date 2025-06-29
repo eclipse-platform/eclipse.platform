@@ -37,7 +37,7 @@ import org.junit.Test;
 
 /**
  * Tests for {@link BuilderCoreUtils}
- * 
+ *
  * @since 3.5.100 org.eclipse.ant.tests.ui
  */
 @SuppressWarnings("restriction")

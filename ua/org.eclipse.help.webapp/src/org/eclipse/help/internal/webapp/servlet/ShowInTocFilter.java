@@ -32,7 +32,9 @@ public class ShowInTocFilter implements IFilter {
 	@Override
 	public OutputStream filter(HttpServletRequest req, OutputStream out) {
 		String uri = req.getRequestURI();
-		if (uri == null) return out;
+		if (uri == null) {
+			return out;
+		}
 		if (!uri.endsWith("html") && !uri.endsWith("htm") && !UrlUtil.isNavPath(uri)) { //$NON-NLS-1$ //$NON-NLS-2$
 			return out;
 		}

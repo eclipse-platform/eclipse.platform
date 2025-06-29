@@ -16,10 +16,6 @@ package org.eclipse.ui.internal.intro.impl.presentations;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import jakarta.inject.Inject;
-
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.ui.model.application.MApplication;
 import org.eclipse.e4.ui.model.application.ui.MElementContainer;
@@ -63,6 +59,10 @@ import org.eclipse.ui.intro.IIntroPart;
 import org.eclipse.ui.intro.config.IIntroURL;
 import org.eclipse.ui.intro.config.IntroURLFactory;
 import org.osgi.framework.FrameworkUtil;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
 
 /**
  * This class is responsible for creating the intro launch bar in the provided parent. It creates
@@ -230,8 +230,9 @@ public class IntroLaunchBar {
 		IDialogSettings settings =  PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(IntroLaunchBar.class)).getDialogSettings();
 		try {
 			int storedLocation = settings.getInt(S_STORED_LOCATION);
-			if (storedLocation > 0)
+			if (storedLocation > 0) {
 				return toSideValue(storedLocation);
+			}
 		} catch (NumberFormatException e) {
 			// The stored value either does not exist or
 			// is corrupted - just pick the default silently.
@@ -331,15 +332,17 @@ public class IntroLaunchBar {
 			String value = resolveColor(element.getBackground());
 			if (value!=null) {
 				RGB r = SharedStyleManager.parseRGB(value);
-				if (r != null)
+				if (r != null) {
 					bg = new Color(display, r);
+				}
 			}
 		}
 	}
 
 	private String resolveColor(String value) {
-		if (value.indexOf('$')== -1)
+		if (value.indexOf('$')== -1) {
 			return value;
+		}
 		if (value.charAt(0)=='$' && value.charAt(value.length()-1)=='$' && theme!=null) {
 			Map properties = theme.getProperties();
 			if (properties!=null) {
@@ -393,15 +396,15 @@ public class IntroLaunchBar {
 			}
 		};
 		action.setToolTipText(Messages.IntroLaunchBar_restore_tooltip);
-		action.setImageDescriptor(ImageUtil.createImageDescriptor("full/etool16/restore_welcome.png")); //$NON-NLS-1$
+		action.setImageDescriptor(ImageUtil.createImageDescriptor("full/etool16/restore_welcome.svg")); //$NON-NLS-1$
 		// toolBarManager.add(closeAction);
 		toolBarManager.add(action);
 		toolBarManager.add(new Separator());
-		if (element == null)
+		if (element == null) {
 			return;
+		}
 		IntroLaunchBarShortcut[] shortcuts = element.getShortcuts();
-		for (int i = 0; i < shortcuts.length; i++) {
-			IntroLaunchBarShortcut shortcut = shortcuts[i];
+		for (IntroLaunchBarShortcut shortcut : shortcuts) {
 			addShortcut(shortcut, toolBarManager);
 		}
 	}
@@ -449,22 +452,25 @@ public class IntroLaunchBar {
 		IIntroURL introURL = IntroURLFactory.createIntroURL(url);
 		if (introURL != null) {
 			IIntroPart intro = closeLaunchBar(true);
-			if (intro == null)
+			if (intro == null) {
 				return;
+			}
 			introURL.execute();
 		}
 	}
 
 	protected void openPage(String id) {
 		IIntroPart intro = closeLaunchBar(true);
-		if (intro == null)
+		if (intro == null) {
 			return;
+		}
 		StringBuilder url = new StringBuilder();
 		url.append(LAUNCH_COMMAND_BASE);
 		url.append(id);
 		IIntroURL introURL = IntroURLFactory.createIntroURL(url.toString());
-		if (introURL != null)
+		if (introURL != null) {
 			introURL.execute();
+		}
 	}
 
 	protected void contextMenuAboutToShow(IMenuManager manager) {

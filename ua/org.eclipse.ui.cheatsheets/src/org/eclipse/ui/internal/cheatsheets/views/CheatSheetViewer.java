@@ -167,31 +167,34 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		boolean isStarted = introItem.isCompleted();
 
 		expandRestoreList = new ArrayList<>();
-		if(expandRestoreAction != null)
+		if(expandRestoreAction != null) {
 			expandRestoreAction.setCollapsed(false);
+		}
 
 		clearBackgrounds();
 		clearIcons();
 		collapseAllButtons();
-		if(isStarted)
+		if(isStarted) {
 			initManager();
+		}
 
 		for (ViewItem item : viewItemList) {
-			if (item instanceof CoreItem) {
-				CoreItem c = (CoreItem) item;
+			if (item instanceof CoreItem c) {
 				ArrayList<SubItemCompositeHolder> l = c.getListOfSubItemCompositeHolders();
-				if (l != null)
+				if (l != null) {
 					for (int j = 0; j < l.size(); j++) {
 						l.get(j).setSkipped(false);
 						l.get(j).setCompleted(false);
 					}
+				}
 			}
 		}
 
-		if (isStarted)
+		if (isStarted) {
 			getManager().fireEvent(ICheatSheetEvent.CHEATSHEET_RESTARTED);
-		else
+		} else {
 			getManager().fireEvent(ICheatSheetEvent.CHEATSHEET_STARTED);
+		}
 
 		isStarted = true;
 		introItem.setAsNormalCollapsed();
@@ -284,8 +287,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 
 		currentItem = (ViewItem) link.getData();
 
-		if (currentItem instanceof CoreItem)
+		if (currentItem instanceof CoreItem) {
 			ciws = (CoreItem) currentItem;
+		}
 
 		if (ciws != null) {
 			list = ciws.getListOfSubItemCompositeHolders();
@@ -378,15 +382,18 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 			ArrayList skippedSubItemsItemList = new ArrayList<>();
 
 			Enumeration e = completedSubItems.keys();
-			while (e.hasMoreElements())
+			while (e.hasMoreElements()) {
 				completedSubItemsItemList.add(e.nextElement());
+			}
 
 			Enumeration e2 = skippedSubItems.keys();
-			while (e2.hasMoreElements())
+			while (e2.hasMoreElements()) {
 				skippedSubItemsItemList.add(e2.nextElement());
+			}
 
-			if (cid != null)
+			if (cid != null) {
 				currentID = cid;
+			}
 
 			if (itemNum >= 0) {
 				currentItemNum = itemNum;
@@ -432,8 +439,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 					if (completedSubItemsItemList.contains(Integer.toString(i))) {
 						String subItemNumbers = (String) completedSubItems.get(Integer.toString(i));
 						StringTokenizer st = new StringTokenizer(subItemNumbers, ","); //$NON-NLS-1$
-						if (item instanceof CoreItem) {
-							CoreItem coreitemws = (CoreItem) item;
+						if (item instanceof CoreItem coreitemws) {
 							ArrayList<SubItemCompositeHolder> subItemCompositeHolders = coreitemws
 									.getListOfSubItemCompositeHolders();
 							if (subItemCompositeHolders != null) {
@@ -454,8 +460,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 					if (skippedSubItemsItemList.contains(Integer.toString(i))) {
 						String subItemNumbers = skippedSubItems.get(Integer.toString(i));
 						StringTokenizer st = new StringTokenizer(subItemNumbers, ","); //$NON-NLS-1$
-						if (item instanceof CoreItem) {
-							CoreItem coreitemws = (CoreItem) item;
+						if (item instanceof CoreItem coreitemws) {
 							while (st.hasMoreTokens()) {
 								String token = st.nextToken();
 								coreitemws.getListOfSubItemCompositeHolders().get(Integer.parseInt(token))
@@ -468,8 +473,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 				CheatSheetStopWatch.printLapTime("CheatSheetViewer.checkSavedState()", "Time in CheatSheetViewer.checkSavedState() after loop: "); //$NON-NLS-1$ //$NON-NLS-2$
 
 				if (buttonIsDown) {
-					if(expandRestoreAction != null)
+					if(expandRestoreAction != null) {
 						expandRestoreAction.setCollapsed(true);
+					}
 				}
 
 				// If the last item is the current one and it is complete then
@@ -486,8 +492,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 					currentItem.setAsCurrentActiveItem();
 
 					// If the intro item is completed, than the cheat sheet has been restored.
-					if(getViewItemAtIndex(0).isCompleted())
+					if(getViewItemAtIndex(0).isCompleted()) {
 						getManager().fireEvent(ICheatSheetEvent.CHEATSHEET_RESTORED);
+					}
 				}
 
 				/* LP-item event */
@@ -549,8 +556,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	private void clearIcons() {
 		for (ViewItem item : viewItemList) {
 			item.setOriginalColor();
-			if (item.isCompleted() || item.isExpanded() || item.isSkipped())
-					item.setIncomplete();
+			if (item.isCompleted() || item.isExpanded() || item.isSkipped()) {
+				item.setIncomplete();
+			}
 		}
 	}
 
@@ -562,8 +570,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 				ViewItem item = iter.previous();
 				if (item != current && item.isExpanded()) {
 					item.setCollapsed();
-					if (fromAction)
+					if (fromAction) {
 						expandRestoreList.add(Integer.toString(getIndexOfItem(item)));
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -819,8 +828,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		expandRestoreList = new ArrayList<>();
 
 		// re set that action to turned off.
-		if(expandRestoreAction != null)
+		if(expandRestoreAction != null) {
 			expandRestoreAction.setCollapsed(false);
+		}
 
 		//reset current item to be null; next item too.
 		currentItem = null;
@@ -862,9 +872,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		}
 
 		control.setRedraw(false);
-		if (model instanceof CheatSheet) {
-			CheatSheet cheatSheetModel = (CheatSheet)model;
-
+		if (model instanceof CheatSheet cheatSheetModel) {
 			if (isRestricted && cheatSheetModel.isContainsCommandOrAction()) {
 				boolean isOK = MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 						Messages.CHEATSHEET_FROM_URL_WITH_EXEC_TITLE,
@@ -879,8 +887,7 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 
 			currentPage = new CheatSheetPage(cheatSheetModel, viewItemList, this);
 			setCollapseExpandButtonEnabled(true);
-		} else if (model instanceof CompositeCheatSheetModel) {
-			CompositeCheatSheetModel compositeCheatSheetModel = ((CompositeCheatSheetModel)model);
+		} else if (model instanceof CompositeCheatSheetModel compositeCheatSheetModel) {
 			compositeCheatSheetModel.setId(currentID);
 			currentPage = new CompositeCheatSheetPage(compositeCheatSheetModel, stateManager);
 			compositeCheatSheetModel.setCheatSheetManager(initManager());
@@ -909,15 +916,17 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 		control.layout();
 		CheatSheetStopWatch.printLapTime("CheatSheetViewer.initCheatSheetView()", "Time in CheatSheetViewer.initCheatSheetView() after layout() call: "); //$NON-NLS-1$ //$NON-NLS-2$
 
-		if (currentItem != null && !currentItem.isCompleted())
+		if (currentItem != null && !currentItem.isCompleted()) {
 			currentItem.setFocus();
+		}
 		CheatSheetStopWatch.printLapTime("CheatSheetViewer.initCheatSheetView()", "Time in CheatSheetViewer.initCheatSheetView() at end of method: "); //$NON-NLS-1$ //$NON-NLS-2$
 		return true;
 	}
 
 	private void internalDispose() {
-		if(manager != null)
+		if(manager != null) {
 			manager.fireEvent(ICheatSheetEvent.CHEATSHEET_CLOSED);
+		}
 
 		saveCurrentSheet();
 
@@ -994,8 +1003,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	* @return true if the file was read and parsed without error
 	*/
 	private IStatus readFile() {
-		if(parser == null)
+		if(parser == null) {
 			parser = new CheatSheetParser();
+		}
 		// If the cheat sheet was registered then
 		// search for a specific type - composite or simple
 		int cheatSheetKind = CheatSheetParser.ANY;
@@ -1105,8 +1115,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 
 	private boolean getExpandRestoreActionState() {
 		boolean expandRestoreActionState = false;
-		if(expandRestoreAction != null)
+		if(expandRestoreAction != null) {
 			expandRestoreActionState = expandRestoreAction.isCollapsed();
+		}
 		return expandRestoreActionState;
 	}
 
@@ -1155,13 +1166,14 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 
 		// The input was not an XML string, find the content URL
 		Bundle bundle = null;
-		if(element != null && element.getConfigurationElement() != null)
+		if(element != null && element.getConfigurationElement() != null) {
 			try{
 				String pluginId = element.getConfigurationElement().getContributor().getName();
 				bundle = Platform.getBundle(pluginId);
 			} catch (Exception e) {
 				// do nothing
 			}
+		}
 		if (bundle != null) {
 			contentURL = FileLocator.find(bundle, IPath.fromOSString(element.getContentFile()), null);
 			if (contentURL == null && element.getContentFile() != null) {
@@ -1273,8 +1285,9 @@ public class CheatSheetViewer implements ICheatSheetViewer, IMenuContributor {
 	}
 
 	/*package*/ void toggleExpandRestore() {
-		if(expandRestoreAction == null)
+		if(expandRestoreAction == null) {
 			return;
+		}
 
 		if (expandRestoreAction.isCollapsed()) {
 			restoreExpandStates();

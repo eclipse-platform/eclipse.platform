@@ -43,9 +43,10 @@ public final class HTMLUtil {
 			// open the start tag
 			element.append(openHTMLStartTag(elementName));
 			// add the attributes, if there are any
-			if (elementAttributes != null && !(elementAttributes.isEmpty()))
+			if (elementAttributes != null && !(elementAttributes.isEmpty())) {
 				element.append(IIntroHTMLConstants.SPACE).append(
 						createAttributeList(elementAttributes));
+			}
 			// close the start tag
 			element.append(closeHTMLTag(insertLineBreak));
 		}
@@ -96,10 +97,11 @@ public final class HTMLUtil {
 	public static StringBuilder createHTMLEndTag(String elementName,
 			boolean addNewLine) {
 		StringBuilder closingElement = new StringBuilder();
-		if (elementName != null)
+		if (elementName != null) {
 			closingElement.append(IIntroHTMLConstants.LT).append(
 					IIntroHTMLConstants.FORWARD_SLASH).append(elementName)
 					.append(closeHTMLTag(addNewLine));
+		}
 		return closingElement;
 	}
 
@@ -112,8 +114,9 @@ public final class HTMLUtil {
 	 *            the attributes to be converted into a String list
 	 */
 	public static String createAttributeList(Map attributes) {
-		if (attributes == null)
+		if (attributes == null) {
 			return null;
+		}
 		StringBuilder attributeList = new StringBuilder();
 		Set attrNames = attributes.keySet();
 		for (Iterator it = attrNames.iterator(); it.hasNext();) {
@@ -160,8 +163,9 @@ public final class HTMLUtil {
 	public static StringBuilder closeHTMLTag(boolean newLine) {
 		StringBuilder closing = new StringBuilder()
 				.append(IIntroHTMLConstants.GT);
-		if (newLine)
+		if (newLine) {
 			closing.append(IIntroHTMLConstants.NEW_LINE);
+		}
 		return closing;
 	}
 
@@ -169,11 +173,13 @@ public final class HTMLUtil {
 	 * Determine if the contents of two character arrays are equal
 	 */
 	public static boolean equalCharArrayContent(char[] a, char[] b) {
-		if (a.length != b.length)
+		if (a.length != b.length) {
 			return false;
+		}
 		for (int i = 0; i < a.length; i++) {
-			if (a[i] != b[i])
+			if (a[i] != b[i]) {
 				return false;
+			}
 		}
 		return true;
 	}

@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -34,7 +34,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Creates a status .
-	 * 
+	 *
 	 * @param severity
 	 *            The status severity: ERROR, WARNING, INFO and OK.
 	 * @param message
@@ -81,7 +81,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Sets the status to ERROR.
-	 * 
+	 *
 	 * @param errorMessage
 	 *            The error message (can be empty, but not null)
 	 */
@@ -93,7 +93,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Sets the status to WARNING.
-	 * 
+	 *
 	 * @param warningMessage
 	 *            The warning message (can be empty, but not null)
 	 */
@@ -105,7 +105,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Sets the status to INFO.
-	 * 
+	 *
 	 * @param infoMessage
 	 *            The info message (can be empty, but not null)
 	 */
@@ -130,7 +130,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Returns always <code>false</code>.
-	 * 
+	 *
 	 * @see IStatus#isMultiStatus()
 	 */
 	@Override
@@ -150,7 +150,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Returns always <code>null</code>.
-	 * 
+	 *
 	 * @see IStatus#getException()
 	 */
 	@Override
@@ -160,7 +160,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Returns always the error severity.
-	 * 
+	 *
 	 * @see IStatus#getCode()
 	 */
 	@Override
@@ -170,7 +170,7 @@ public class StatusInfo implements IStatus {
 
 	/**
 	 * Returns always <code>null</code>.
-	 * 
+	 *
 	 * @see IStatus#getChildren()
 	 */
 	@Override

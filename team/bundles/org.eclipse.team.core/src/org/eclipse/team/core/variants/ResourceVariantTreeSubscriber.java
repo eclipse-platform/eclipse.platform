@@ -50,7 +50,9 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 
 	@Override
 	public SyncInfo getSyncInfo(IResource resource) throws TeamException {
-		if (!isSupervised(resource)) return null;
+		if (!isSupervised(resource)) {
+			return null;
+		}
 		IResourceVariant remoteResource = getRemoteTree().getResourceVariant(resource);
 		IResourceVariant baseResource;
 		if (getResourceComparator().isThreeWay()) {
@@ -187,11 +189,12 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 			fireTeamResourceChange(SubscriberChangeEvent.asSyncChangedDeltas(this, changedResources));
 			return Status.OK_STATUS;
 		} catch (TeamException e) {
-			return new TeamStatus(IStatus.ERROR, TeamPlugin.ID, 0, NLS.bind(Messages.ResourceVariantTreeSubscriber_2, new String[] { resource.getFullPath().toString(), e.getMessage() }), e, resource);
+			return new TeamStatus(IStatus.ERROR, TeamPlugin.ID, 0, NLS.bind(Messages.ResourceVariantTreeSubscriber_2,
+					resource.getFullPath().toString(), e.getMessage()), e, resource);
 		} catch (OperationCanceledException e) {
 			return new TeamStatus(IStatus.CANCEL, TeamPlugin.ID, 0, NLS.bind(
 					Messages.ResourceVariantTreeSubscriber_4,
-					new String[] { resource.getFullPath().toString() }), e,
+					resource.getFullPath().toString()), e,
 					resource);
 		} finally {
 			monitor.done();

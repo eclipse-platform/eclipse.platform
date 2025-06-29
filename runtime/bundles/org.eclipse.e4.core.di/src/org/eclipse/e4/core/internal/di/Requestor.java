@@ -63,10 +63,11 @@ abstract public class Requestor<L extends AnnotatedElement> implements IRequesto
 		this.primarySupplier = primarySupplier;
 		this.tempSupplier = tempSupplier;
 		if (requestingObject != null) {
-			if (primarySupplier != null)
+			if (primarySupplier != null) {
 				objectRef = primarySupplier.makeReference(requestingObject);
-			else
+			} else {
 				objectRef = new WeakReference<>(requestingObject);
+			}
 			objectHashcode = requestingObject.hashCode();
 		} else {
 			objectRef = null;
@@ -103,16 +104,18 @@ abstract public class Requestor<L extends AnnotatedElement> implements IRequesto
 
 	@Override
 	public Object getRequestingObject() {
-		if (objectRef == null)
+		if (objectRef == null) {
 			return null;
+		}
 		return objectRef.get();
 	}
 
 	@Override
 	public Class<?> getRequestingObjectClass() {
 		Object object = getRequestingObject();
-		if (object == null)
+		if (object == null) {
 			return null;
+		}
 		return object.getClass();
 	}
 
@@ -170,10 +173,12 @@ abstract public class Requestor<L extends AnnotatedElement> implements IRequesto
 	@Override
 	public boolean uninject(Object object, PrimaryObjectSupplier objectSupplier) {
 		Object originatingObject = getRequestingObject();
-		if (originatingObject == null)
+		if (originatingObject == null) {
 			return false;
-		if (originatingObject != object)
+		}
+		if (originatingObject != object) {
 			return true;
+		}
 		injector.uninject(object, objectSupplier);
 		return false;
 	}
@@ -190,8 +195,9 @@ abstract public class Requestor<L extends AnnotatedElement> implements IRequesto
 	 * them from being garbage collected.
 	 */
 	protected void clearResolvedArgs() {
-		if (actualArgs == null)
+		if (actualArgs == null) {
 			return;
+		}
 		Arrays.fill(actualArgs, null);
 		actualArgs = null;
 		return;
@@ -211,12 +217,15 @@ abstract public class Requestor<L extends AnnotatedElement> implements IRequesto
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Requestor<?> other = (Requestor<?>) obj;
 		return Objects.equals(this.location, other.location) && this.groupUpdates == other.groupUpdates
 				&& Objects.equals(this.injector, other.injector) && this.isOptional == other.isOptional

@@ -326,11 +326,13 @@ abstract public class Subscriber {
 							: IResource.DEPTH_ZERO, set, monitor);
 				}
 			} catch (TeamException e) {
-				set.addError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(Messages.SubscriberEventHandler_8, new String[] { resource.getFullPath().toString(), e.getMessage() }), e, resource));
+				set.addError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.SYNC_INFO_SET_ERROR,
+						NLS.bind(Messages.SubscriberEventHandler_8, resource.getFullPath().toString(), e.getMessage()),
+						e, resource));
 			}
 		}
 
-		monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { resource.getFullPath().toString() }));
+		monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, resource.getFullPath().toString()));
 		try {
 			SyncInfo info = getSyncInfo(resource);
 			if (info == null || info.getKind() == SyncInfo.IN_SYNC) {
@@ -343,7 +345,7 @@ abstract public class Subscriber {
 		} catch (TeamException e) {
 			set.addError(new TeamStatus(
 					IStatus.ERROR, TeamPlugin.ID, ITeamStatus.RESOURCE_SYNC_INFO_ERROR,
-					NLS.bind(Messages.SubscriberEventHandler_9, new String[] { resource.getFullPath().toString(), e.getMessage() }),
+					NLS.bind(Messages.SubscriberEventHandler_9, resource.getFullPath().toString(), e.getMessage()),
 					e, resource));
 		}
 		// Tick the monitor to give the owner a chance to do something
@@ -378,8 +380,9 @@ abstract public class Subscriber {
 	 */
 	public IDiff getDiff(IResource resource) throws CoreException {
 		SyncInfo info = getSyncInfo(resource);
-		if (info == null || info.getKind() == SyncInfo.IN_SYNC)
+		if (info == null || info.getKind() == SyncInfo.IN_SYNC) {
 			return null;
+		}
 		return SyncInfoToDiffConverter.getDefault().getDeltaFor(info);
 	}
 
@@ -435,8 +438,9 @@ abstract public class Subscriber {
 	private void accept(IResource resource, int depth, IDiffVisitor visitor) throws CoreException {
 		IDiff node = getDiff(resource);
 		if (node != null && node.getKind() != IDiff.NO_CHANGE) {
-			if (!visitor.visit(node))
+			if (!visitor.visit(node)) {
 				return;
+			}
 		}
 		if (depth != IResource.DEPTH_ZERO) {
 			IResource[] members = members(resource);
@@ -505,14 +509,14 @@ abstract public class Subscriber {
 		final int[] direction = new int[] { 0 };
 		final int[] kind = new int[] { 0 };
 		accept(traversals, diff -> {
-			if (diff instanceof IThreeWayDiff) {
-				IThreeWayDiff twd = (IThreeWayDiff) diff;
+			if (diff instanceof IThreeWayDiff twd) {
 				direction[0] |= twd.getDirection();
 			}
 			// If the traversals contain a combination of kinds, return a CHANGE
 			int diffKind = diff.getKind();
-			if (kind[0] == 0)
+			if (kind[0] == 0) {
 				kind[0] = diffKind;
+			}
 			if (kind[0] != diffKind) {
 				kind[0] = IDiff.CHANGE;
 			}

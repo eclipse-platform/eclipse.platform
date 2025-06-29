@@ -1,15 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2007 GEBIT Gesellschaft fuer EDV-Beratung
- * und Informatik-Technologien mbH, 
+ * und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial API and implementation
  * 	   IBM Corporation - bug fixes
@@ -53,8 +53,7 @@ public class AntEditorDocumentProvider extends TextFileDocumentProvider {
 
 	public AntModel getAntModel(Object element) {
 		FileInfo info = getFileInfo(element);
-		if (info instanceof AntFileInfo) {
-			AntFileInfo xmlInfo = (AntFileInfo) info;
+		if (info instanceof AntFileInfo xmlInfo) {
 			return xmlInfo.fAntModel;
 		}
 		return null;
@@ -66,8 +65,8 @@ public class AntEditorDocumentProvider extends TextFileDocumentProvider {
 	}
 
 	protected AntModel createAntModel(Object element, IDocument document, IAnnotationModel annotationModel) {
-		IProblemRequestor requestor = annotationModel instanceof IProblemRequestor ? (IProblemRequestor) annotationModel : null;
-		return new AntModel(document, requestor, new LocationProvider(element instanceof IEditorInput ? (IEditorInput) element : null));
+		IProblemRequestor requestor = annotationModel instanceof IProblemRequestor i ? i : null;
+		return new AntModel(document, requestor, new LocationProvider(element instanceof IEditorInput i ? i : null));
 	}
 
 	@Override
@@ -83,10 +82,10 @@ public class AntEditorDocumentProvider extends TextFileDocumentProvider {
 		// that is setup with the correct document setup participant since it was "missed" by the
 		// document setup extensions (bug 72598).
 		IDocument document = info.fTextFileBuffer.getDocument();
-		if (document instanceof IDocumentExtension3) {
-			IDocumentExtension3 extension = (IDocumentExtension3) document;
-			if (extension.getDocumentPartitioner(AntDocumentSetupParticipant.ANT_PARTITIONING) == null)
+		if (document instanceof IDocumentExtension3 extension) {
+			if (extension.getDocumentPartitioner(AntDocumentSetupParticipant.ANT_PARTITIONING) == null) {
 				fAntDocumentSetupParticipant.setup(document);
+			}
 		}
 
 		// Check if the annotation model has been set by the annotation model factory extension for Ant UI
@@ -118,8 +117,7 @@ public class AntEditorDocumentProvider extends TextFileDocumentProvider {
 
 	@Override
 	protected void disposeFileInfo(Object element, FileInfo info) {
-		if (info instanceof AntFileInfo) {
-			AntFileInfo xmlInfo = (AntFileInfo) info;
+		if (info instanceof AntFileInfo xmlInfo) {
 			if (xmlInfo.fAntModel != null) {
 				IDocument doc = xmlInfo.fTextFileBuffer.getDocument();
 				Object lock = null;

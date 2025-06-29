@@ -56,24 +56,27 @@ public class SharedConfigExtensionsManager {
 
 		long start = 0;
 		// if we need to log performance, capture time.
-		if (Log.logPerformance)
+		if (Log.logPerformance) {
 			start = System.currentTimeMillis();
+		}
 
 		IConfigurationElement[] configExtensionElements = registry
 			.getConfigurationElementsFor(BaseExtensionPointManager.CONFIG_EXTENSION);
 
-		if (Log.logPerformance)
+		if (Log.logPerformance) {
 			Util.logPerformanceTime(
 				"quering registry for configExtensions took: ", start); //$NON-NLS-1$
+		}
 
 		for (int i = 0; i < configExtensionElements.length; i++) {
 			IConfigurationElement element = configExtensionElements[i];
 			if (!ModelLoaderUtil.isValidElementName(element,
 				IntroStandbyContentPart.TAG_STANDBY_CONTENT_PART)
 					&& !ModelLoaderUtil.isValidElementName(element,
-						IntroURLAction.TAG_ACTION))
+						IntroURLAction.TAG_ACTION)) {
 				// if extension is not a standbypart or command, ignore.
 				continue;
+			}
 			createModelClass(element);
 		}
 	}
@@ -87,16 +90,18 @@ public class SharedConfigExtensionsManager {
 			IntroStandbyContentPart.TAG_STANDBY_CONTENT_PART)) {
 			IntroStandbyContentPart standbyPartContent = new IntroStandbyContentPart(
 				element);
-			if (standbyPartContent.getId() == null)
+			if (standbyPartContent.getId() == null) {
 				// no id, ignore.
 				return;
+			}
 			standbyParts.put(standbyPartContent.getId(), standbyPartContent);
 		} else {
 			IntroURLAction introURLCommand = new IntroURLAction(element);
 			if (introURLCommand.getName() == null
-					|| introURLCommand.getReplaceValue() == null)
+					|| introURLCommand.getReplaceValue() == null) {
 				// no name or resolvedValue, ignore.
 				return;
+			}
 			commands.put(introURLCommand.getName(), introURLCommand);
 		}
 	}
@@ -107,8 +112,9 @@ public class SharedConfigExtensionsManager {
 	 * @return Returns a standbyPart basd on its registred id.
 	 */
 	public IntroStandbyContentPart getStandbyPart(String partId) {
-		if (partId == null)
+		if (partId == null) {
 			return null;
+		}
 		return standbyParts.get(partId);
 	}
 
@@ -116,8 +122,9 @@ public class SharedConfigExtensionsManager {
 	 * @return Returns the command from its name.
 	 */
 	public IntroURLAction getCommand(String commandName) {
-		if (commandName == null)
+		if (commandName == null) {
 			return null;
+		}
 		return commands.get(commandName);
 	}
 

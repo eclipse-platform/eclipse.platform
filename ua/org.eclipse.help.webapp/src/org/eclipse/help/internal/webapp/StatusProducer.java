@@ -81,8 +81,9 @@ public class StatusProducer implements IHelpContentProducer {
 
 		if (!href.equalsIgnoreCase(MissingContentManager.REMOTE_STATUS_HREF) &&
 			!href.equalsIgnoreCase(MissingContentManager.MISSING_TOPIC_HREF) &&
-			!href.equalsIgnoreCase(MissingContentManager.REMOTE_STATUS_HELP_VIEW_HREF))
+			!href.equalsIgnoreCase(MissingContentManager.REMOTE_STATUS_HELP_VIEW_HREF)) {
 			return null;
+		}
 
 		StringBuilder pageBuffer = new StringBuilder();
 
@@ -159,8 +160,9 @@ public class StatusProducer implements IHelpContentProducer {
 			addCloseLink(locale, pageBuffer);
 		}
 
-		if (href.equalsIgnoreCase(MissingContentManager.MISSING_TOPIC_HREF))
+		if (href.equalsIgnoreCase(MissingContentManager.MISSING_TOPIC_HREF)) {
 			pageBuffer.append(tab(3)+"<p>"+WebappResources.getString("topicUnavailable",locale)+"</p>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 
 		// Write potential causes, based on some or
 		// all sites failing.
@@ -169,8 +171,9 @@ public class StatusProducer implements IHelpContentProducer {
 		pageBuffer.append(tab(3)+"<ul>\n"); //$NON-NLS-1$
 		pageBuffer.append(tab(4)+"<li>"+WebappResources.getString("serversCouldBeDown",locale)+"</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		pageBuffer.append(tab(4)+"<li>"+WebappResources.getString("mayNeedProxy",locale)+"</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		if (allFailed)
+		if (allFailed) {
 			pageBuffer.append(tab(4)+"<li>"+WebappResources.getString("networkCouldBeDown",locale)+"</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 		pageBuffer.append(tab(3)+"</ul>\n"); //$NON-NLS-1$
 
 
@@ -182,21 +185,23 @@ public class StatusProducer implements IHelpContentProducer {
 			pageBuffer.append(tab(3)+"<ul>\n"); //$NON-NLS-1$
 			for (int r=0;r<remoteSites.size();r++)
 			{
-				if (!badSites.contains(remoteSites.get(r)))
+				if (!badSites.contains(remoteSites.get(r))) {
 					pageBuffer.append(tab(4)+"<li>"+makeAnchor(remoteSites.get(r)+INDEX,remoteSites.get(r)+INDEX,"",true)+"</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				}
 			}
 			pageBuffer.append(tab(3)+"</ul>\n"); //$NON-NLS-1$
-		}
-		else
+		} else {
 			pageBuffer.append(tab(3)+WebappResources.getString("noRemoteSitesAvailable", locale)+"</br>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 
 		if (!badSites.isEmpty())
 		{
 			pageBuffer.append(tab(3)+"<h2>"+WebappResources.getString("sitesWithoutConnectivity", locale)+"</h2>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			pageBuffer.append(tab(3)+"<ul>\n"); //$NON-NLS-1$
 
-			for (int b=0;b<badSites.size();b++)
+			for (int b=0;b<badSites.size();b++) {
 				pageBuffer.append(tab(4)+ "<li>"+badSites.get(b)+INDEX+"</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 
 			pageBuffer.append(tab(3)+ "</ul>\n"); //$NON-NLS-1$
 		}
@@ -362,10 +367,11 @@ public class StatusProducer implements IHelpContentProducer {
 	{
 		String body = tab(1);
 
-		if (ProductPreferences.isRTL())
+		if (ProductPreferences.isRTL()) {
 			body += "<body dir=\"rtl\">"; //$NON-NLS-1$
-		else
+		} else {
 			body += "<body>"; //$NON-NLS-1$
+		}
 		body += '\n';
 		if (addBanner) {
 			body += tab(2) + "<div id=\"banner\"><img src=\"PLUGINS_ROOT/org.eclipse.help.base/doc/help_banner.jpg\" alt=\"Help banner\" width=\"1600\" height=\"36\"></div>\n"; //$NON-NLS-1$
@@ -394,8 +400,9 @@ public class StatusProducer implements IHelpContentProducer {
 	private String makeAnchor(String url,String title,String style,boolean newWindow)
 	{
 		String target=""; //$NON-NLS-1$
-		if (newWindow)
+		if (newWindow) {
 			target = "target=\"_blank\" ";  //$NON-NLS-1$
+		}
 
 		return "<a "+style+" "+target+"href=\""+url+"\">"+title+"</a>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 	}
@@ -406,8 +413,9 @@ public class StatusProducer implements IHelpContentProducer {
 	private static String tab(int count)
 	{
 		String tabs = ""; //$NON-NLS-1$
-		for (int i=0;i<count;i++)
+		for (int i=0;i<count;i++) {
 			tabs+=TAB;
+		}
 		return tabs;
 	}
 

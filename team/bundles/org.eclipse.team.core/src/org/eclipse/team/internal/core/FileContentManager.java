@@ -99,8 +99,9 @@ public class FileContentManager implements IFileContentManager {
 			IPath pluginStateLocation = TeamPlugin.getPlugin().getStateLocation().append(STATE_FILE);
 			File f = pluginStateLocation.toFile();
 
-			if (!f.exists())
+			if (!f.exists()) {
 				return false;
+			}
 
 			try (DataInputStream input = new DataInputStream(new FileInputStream(f))) {
 					map.putAll(readOldFormatExtensionMappings(input));
@@ -199,12 +200,14 @@ public class FileContentManager implements IFileContentManager {
 		int type;
 
 		final String name= storage.getName();
-		if (name != null && (type= getTypeForName(name)) != Team.UNKNOWN)
+		if (name != null && (type= getTypeForName(name)) != Team.UNKNOWN) {
 			return type;
+		}
 
 		final String extension= getFileExtension(name);
-		if (extension != null && (type= getTypeForExtension(extension)) != Team.UNKNOWN)
+		if (extension != null && (type= getTypeForExtension(extension)) != Team.UNKNOWN) {
 			return type;
+		}
 
 		IContentType contentType = Platform.getContentTypeManager().findContentTypeFor(name);
 		if (contentType != null) {
@@ -218,8 +221,9 @@ public class FileContentManager implements IFileContentManager {
 	}
 
 	private IContentType getTextContentType() {
-		if (textContentType == null)
+		if (textContentType == null) {
 			textContentType = Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT);
+		}
 		return textContentType;
 	}
 
@@ -247,13 +251,16 @@ public class FileContentManager implements IFileContentManager {
 	}
 
 	private static String getFileExtension(String name) {
-		if (name == null)
+		if (name == null) {
 			return null;
+		}
 		int index = name.lastIndexOf('.');
-		if (index == -1)
+		if (index == -1) {
 			return null;
-		if (index == (name.length() - 1))
+		}
+		if (index == (name.length() - 1)) {
 			return ""; //$NON-NLS-1$
+		}
 		return name.substring(index + 1);
 	}
 
@@ -269,8 +276,9 @@ public class FileContentManager implements IFileContentManager {
 
 	private IStringMapping [] getMappings(UserStringMappings userMappings, PluginStringMappings pluginMappings) {
 		final Map<String, Integer> mappings= new HashMap<>();
-		if (pluginMappings != null)
+		if (pluginMappings != null) {
 			mappings.putAll(pluginMappings.referenceMap());
+		}
 		mappings.putAll(userMappings.referenceMap());
 		return getStringMappings(mappings);
 	}

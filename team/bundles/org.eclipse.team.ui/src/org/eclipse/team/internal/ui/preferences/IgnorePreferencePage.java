@@ -153,9 +153,13 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		};
 
 		dialog.open();
-		if (dialog.getReturnCode() != Window.OK) return;
+		if (dialog.getReturnCode() != Window.OK) {
+			return;
+		}
 		String pattern = dialog.getValue();
-		if (pattern.isEmpty()) return;
+		if (pattern.isEmpty()) {
+			return;
+		}
 		// Check if the item already exists
 		TableItem[] items = ignoreTable.getItems();
 		for (TableItem item : items) {

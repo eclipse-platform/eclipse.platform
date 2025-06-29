@@ -128,7 +128,7 @@ public class LaunchingPreferencePage extends FieldEditorPreferencePage implement
 		addField(editor);
 		int historyMax = IDebugPreferenceConstants.MAX_LAUNCH_HISTORY_SIZE;
 		editor.setTextLimit(Integer.toString(historyMax).length());
-		editor.setErrorMessage(MessageFormat.format(DebugPreferencesMessages.DebugPreferencePage_11, new Object[] { Integer.valueOf(1), Integer.valueOf(historyMax)}));
+		editor.setErrorMessage(MessageFormat.format(DebugPreferencesMessages.DebugPreferencePage_11, Integer.valueOf(1), Integer.valueOf(historyMax)));
 		editor.setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
 		editor.setValidRange(1, historyMax);
 		editor.setEmptyStringAllowed(false);

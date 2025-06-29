@@ -197,8 +197,9 @@ public final class InternalPlatform {
 	 */
 	public void endSplash() {
 		synchronized (this) {
-			if (splashEnded)
+			if (splashEnded) {
 				return; // do not do this more than once
+			}
 			splashEnded = true;
 		}
 		final String filter = "(eclipse.application.type=main.thread)"; //$NON-NLS-1$
@@ -235,11 +236,13 @@ public final class InternalPlatform {
 	 * <code>null</code> if the bundle could not be determined.
 	 */
 	public String getBundleId(Object object) {
-		if (object == null)
+		if (object == null) {
 			return null;
+		}
 		Bundle source = FrameworkUtil.getBundle(object.getClass());
-		if (source != null && source.getSymbolicName() != null)
+		if (source != null && source.getSymbolicName() != null) {
 			return source.getSymbolicName();
+		}
 
 		return null;
 	}
@@ -263,8 +266,9 @@ public final class InternalPlatform {
 		synchronized (groupProviders) {
 			registration = groupProviders.remove(provider);
 		}
-		if (registration == null)
+		if (registration == null) {
 			return;
+		}
 		// unregister the provider
 		registration.unregister();
 	}
@@ -372,8 +376,9 @@ public final class InternalPlatform {
 		Location location = getInstallLocation();
 		// it is pretty much impossible for the install location to be null.  If it is, the
 		// system is in a bad way so throw and exception and get the heck outta here.
-		if (location == null)
+		if (location == null) {
 			throw new IllegalStateException("The installation location must not be null"); //$NON-NLS-1$
+		}
 		return location.getURL();
 	}
 
@@ -444,10 +449,12 @@ public final class InternalPlatform {
 	 */
 	public String getNLExtensions() {
 		String nlExtensions = PlatformActivator.getContext().getProperty("osgi.nl.extensions"); //$NON-NLS-1$
-		if (nlExtensions == null)
+		if (nlExtensions == null) {
 			return ""; //$NON-NLS-1$
-		if (!nlExtensions.startsWith("@")) //$NON-NLS-1$
+		}
+		if (!nlExtensions.startsWith("@")) { //$NON-NLS-1$
 			nlExtensions = '@' + nlExtensions;
+		}
 		return nlExtensions;
 	}
 
@@ -456,8 +463,9 @@ public final class InternalPlatform {
 	 */
 	public String getOption(String option) {
 		DebugOptions options = getDebugOptions();
-		if (options != null)
+		if (options != null) {
 			return options.getOption(option);
+		}
 		return null;
 	}
 
@@ -494,15 +502,18 @@ public final class InternalPlatform {
 	 * XXX move this into the app model.
 	 */
 	public IProduct getProduct() {
-		if (product != null)
+		if (product != null) {
 			return product;
+		}
 		EclipseAppContainer container = Activator.getContainer();
 		IBranding branding = container == null ? null : container.getBranding();
-		if (branding == null)
+		if (branding == null) {
 			return null;
+		}
 		Object brandingProduct = branding.getProduct();
-		if (!(brandingProduct instanceof IProduct))
+		if (!(brandingProduct instanceof IProduct)) {
 			brandingProduct = new Product(branding);
+		}
 		product = (IProduct) brandingProduct;
 		return product;
 	}
@@ -549,8 +560,9 @@ public final class InternalPlatform {
 	public IPath getStateLocation(Bundle bundle, boolean create) throws IllegalStateException {
 		assertInitialized();
 		IPath result = MetaDataKeeper.getMetaArea().getStateLocation(bundle);
-		if (create)
+		if (create) {
 			result.toFile().mkdirs();
+		}
 		return result;
 	}
 
@@ -636,21 +648,25 @@ public final class InternalPlatform {
 	}
 
 	private void processCommandLine(String[] args) {
-		if (args == null || args.length == 0)
+		if (args == null || args.length == 0) {
 			return;
+		}
 
 		for (int i = 0; i < args.length; i++) {
 			// check for args with parameters
-			if (i == args.length - 1 || args[i + 1].startsWith("-")) //$NON-NLS-1$
+			if (i == args.length - 1 || args[i + 1].startsWith("-")) { //$NON-NLS-1$
 				continue;
+			}
 			String arg = args[++i];
 
 			// look for the keyring file
-			if (args[i - 1].equalsIgnoreCase(KEYRING))
+			if (args[i - 1].equalsIgnoreCase(KEYRING)) {
 				keyringFile = arg;
+			}
 			// look for the user password.
-			if (args[i - 1].equalsIgnoreCase(PASSWORD))
+			if (args[i - 1].equalsIgnoreCase(PASSWORD)) {
 				password = arg;
+			}
 		}
 	}
 
@@ -796,15 +812,17 @@ public final class InternalPlatform {
 
 	public static void start(Bundle bundle) throws BundleException {
 		int originalState = bundle.getState();
-		if ((originalState & Bundle.ACTIVE) != 0)
+		if ((originalState & Bundle.ACTIVE) != 0) {
 			return; // bundle is already active
+		}
 		try {
 			// attempt to activate the bundle
 			bundle.start(Bundle.START_TRANSIENT);
 		} catch (BundleException e) {
-			if ((originalState & Bundle.STARTING) != 0 && (bundle.getState() & Bundle.STARTING) != 0)
+			if ((originalState & Bundle.STARTING) != 0 && (bundle.getState() & Bundle.STARTING) != 0) {
 				// This can happen if the bundle was in the process of being activated on this thread, just return
 				return;
+			}
 			throw e;
 		}
 	}

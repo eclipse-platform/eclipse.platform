@@ -29,7 +29,7 @@ public class WorkspacePatcherUI {
 	 * project to be included in the patch must be prefixed by the line obtained
 	 * from the <code>getWorkspacePatchProjectHeader()</code>. This snippet outlines
 	 * how the a workspace patch is to be created:
-	 * 
+	 *
 	 * <pre>
 	 *  //Write out workspace patch header
 	 *  stream.println(CompareUI.getWorkspacePatchHeader());
@@ -39,7 +39,7 @@ public class WorkspacePatcherUI {
 	 *    //Write out patches in Unified Diff format
 	 *  }
 	 * </pre>
-	 * 
+	 *
 	 * @return String
 	 * @see WorkspacePatcherUI#getWorkspacePatchProjectHeader(IProject)
 	 * @since 3.2

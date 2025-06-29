@@ -271,7 +271,7 @@ New in 3.4, clients can implement &lt;code&gt;org.eclipse.debug.ui.ILaunchShortc
  &lt;extension point=&quot;org.eclipse.debug.ui.launchShortcuts&quot;&gt;
   &lt;shortcut
     label=&quot;Java Application&quot;
-    icon=&quot;$nl$/icons/full/etool16/java_app.png&quot;
+    icon=&quot;$nl$/icons/full/etool16/java_app.svg&quot;
     helpContextId=&quot;org.eclipse.jdt.debug.ui.shortcut_local_java_application&quot;
     modes=&quot;run, debug&quot;
     class=&quot;org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut&quot;

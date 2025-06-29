@@ -98,8 +98,9 @@ public final class SubscriberSyncInfoCollector extends SubscriberResourceCollect
 			i = (eventHandler.getEventHandlerJob().getState() == Job.NONE) ? i + 1 : 0;
 
 			// 50 positive checks in a row
-			if (i == 50)
+			if (i == 50) {
 				break;
+			}
 		}
 		monitor.worked(1);
 	}

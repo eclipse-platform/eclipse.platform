@@ -44,15 +44,17 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 		super(null, configuration);
 		// TODO: We're past the API freeze so we need to access the property by string
 		handler = (IHandler)configuration.getProperty("org.eclipse.team.ui.mergeAll"); //$NON-NLS-1$
-		if (handler == null)
+		if (handler == null) {
 			handler = new MergeAllActionHandler(configuration);
+		}
 		handler.addHandlerListener(this);
 	}
 
 	@Override
 	public void runWithEvent(Event event) {
-		if (handler == null || !handler.isEnabled())
+		if (handler == null || !handler.isEnabled()) {
 			return;
+		}
 		try {
 			handleTargetSaveableChange();
 		} catch (InvocationTargetException e) {
@@ -70,8 +72,7 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 	}
 
 	private void handle(Throwable throwable) {
-		if (throwable instanceof ExecutionException) {
-			ExecutionException ee = (ExecutionException) throwable;
+		if (throwable instanceof ExecutionException ee) {
 			if (ee.getCause() != null) {
 				throwable = ee.getCause();
 			}
@@ -88,8 +89,7 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 		return new FastDiffFilter() {
 			@Override
 			public boolean select(IDiff node) {
-				if (node instanceof IThreeWayDiff) {
-					IThreeWayDiff twd = (IThreeWayDiff) node;
+				if (node instanceof IThreeWayDiff twd) {
 					if (twd.getDirection() == IThreeWayDiff.CONFLICTING || twd.getDirection() == IThreeWayDiff.INCOMING) {
 						return true;
 					}

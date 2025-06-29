@@ -80,7 +80,7 @@ public class AntTargetNode extends AntElementNode {
 	/**
 	 * Returns whether this target is an internal target. Internal targets are targets which has no description or starts with hyphen ('-') character.
 	 * The default target is never considered internal.
-	 * 
+	 *
 	 * @return whether the given target is an internal target
 	 */
 	public boolean isInternal() {
@@ -262,7 +262,7 @@ public class AntTargetNode extends AntElementNode {
 
 	/**
 	 * This function should be used to construct the AntTargetNode
-	 * 
+	 *
 	 * @return newly constructed AntTargetNode
 	 */
 	public static AntTargetNode newAntTargetNode(Target newTarget) {

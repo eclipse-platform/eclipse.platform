@@ -16,7 +16,7 @@ package org.eclipse.jsch.internal.core;
 import org.eclipse.jsch.core.IJSchLocation;
 
 /**
- * This class will be used whenever nobody gives 
+ * This class will be used whenever nobody gives
  * the implementation of IUserAuthenticator.
  * @since 1.1
  */

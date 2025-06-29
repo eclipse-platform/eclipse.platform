@@ -139,9 +139,9 @@ public class CheatSheetParser implements IStatusContainer {
 					// or the remaining characters which follow and determine if it
 					// is the start of a tag to ignore.
 					String tmp = ICheatSheetResource.EMPTY_STRING;
-					if(i+MAXIMUM_TAG_LENGTH < length)
+					if(i+MAXIMUM_TAG_LENGTH < length) {
 						tmp = text.substring(i, i+MAXIMUM_TAG_LENGTH).toLowerCase();
-					else {
+					} else {
 						tmp = text.substring(i, length).toLowerCase();
 					}
 					if (hyperlinkContext || tmp.startsWith(IParserTags.HYPERLINK_START_TAG)) {
@@ -248,8 +248,9 @@ public class CheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 				if (attributeName.equals(IParserTags.CONFIRM)) {
 					executable.setConfirm(attribute.getNodeValue().equals(TRUE_STRING));}
 				else if (attributeName.equals(IParserTags.WHEN)) {
@@ -314,8 +315,9 @@ public class CheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 
 				if (attributeName.equals(IParserTags.TITLE)) {
 					title = true;
@@ -348,8 +350,9 @@ public class CheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 
 				if (attributeName.equals(IParserTags.CONDITION)) {
 					condition = true;
@@ -584,8 +587,9 @@ public class CheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 
 				switch (attributeName) {
 				case IParserTags.CONTEXTID:
@@ -680,8 +684,9 @@ public class CheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 
 				switch (attributeName) {
 				case IParserTags.TITLE:
@@ -718,8 +723,9 @@ public class CheatSheetParser implements IStatusContainer {
 			throw new CheatSheetParserException(message);
 		}
 
-		if (itemExtensionElements != null)
+		if (itemExtensionElements != null) {
 			item.setItemExtensions(itemExtensionElements);
+		}
 	}
 
 	private void handlePerformWhen(IPerformWhenItem item, Node performWhenNode) throws CheatSheetParserException {
@@ -737,8 +743,9 @@ public class CheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 
 				if (attributeName.equals(IParserTags.CONDITION)) {
 					condition = true;
@@ -802,8 +809,9 @@ public class CheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 
 				if (attributeName.equals(IParserTags.VALUES)) {
 					values = true;
@@ -901,8 +909,9 @@ public class CheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 
 				switch (attributeName) {
 				case IParserTags.LABEL:
@@ -930,8 +939,9 @@ public class CheatSheetParser implements IStatusContainer {
 
 	private AbstractItemExtensionElement[] handleUnknownItemAttribute(Node item, Node node) {
 		ArrayList<AbstractItemExtensionElement> al = new ArrayList<>();
-		if (itemExtensionContainerList == null)
+		if (itemExtensionContainerList == null) {
 			return null;
+		}
 
 		for (int i = 0; i < itemExtensionContainerList.size(); i++) {
 			CheatSheetItemExtensionElement itemExtensionElement = itemExtensionContainerList.get(i);

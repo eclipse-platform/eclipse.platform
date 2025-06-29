@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -95,7 +95,7 @@ public class AntPropertiesPage implements IAntBlockContainer {
 
 	/**
 	 * Delegates to saving any additional table settings when the page is closed
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	public void saveAdditionalSettings() {
@@ -104,7 +104,7 @@ public class AntPropertiesPage implements IAntBlockContainer {
 
 	/**
 	 * Returns the specified property files
-	 * 
+	 *
 	 * @return String[]
 	 */
 	protected String[] getPropertyFiles() {

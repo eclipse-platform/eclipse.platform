@@ -41,8 +41,7 @@ public class WorkingSetsFilter extends ViewerFilter {
 		if(element instanceof ILaunchConfigurationType) {
 			return true;
 		}
-		if(element instanceof ILaunchConfiguration) {
-			ILaunchConfiguration config = (ILaunchConfiguration)element;
+		if(element instanceof ILaunchConfiguration config) {
 			try {
 				IResource[] resources = config.getMappedResources();
 				if(resources == null) {

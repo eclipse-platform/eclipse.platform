@@ -145,8 +145,9 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	private ISaveablesLifecycleListener getSaveablesLifecycleListener(
 			IWorkbenchPart part) {
 		ISaveablesLifecycleListener listener = Adapters.adapt(part, ISaveablesLifecycleListener.class);
-		if (listener == null)
+		if (listener == null) {
 			listener = part.getSite().getService(ISaveablesLifecycleListener.class);
+		}
 		return listener;
 	}
 
@@ -199,24 +200,21 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	protected void handleDispose() {
 		super.handleDispose();
 		ICompareInput compareInput = getCompareInput();
-		if (compareInput != null)
+		if (compareInput != null) {
 			compareInput
 					.removeCompareInputChangeListener(compareInputChangeListener);
+		}
 		compareInputChangeListener = null;
-		if (fLeftSaveable instanceof SaveableComparison) {
-			SaveableComparison scm = (SaveableComparison) fLeftSaveable;
+		if (fLeftSaveable instanceof SaveableComparison scm) {
 			scm.removePropertyListener(fLeftPropertyListener);
 		}
-		if (fLeftSaveable instanceof LocalResourceSaveableComparison) {
-			LocalResourceSaveableComparison rsc = (LocalResourceSaveableComparison) fLeftSaveable;
+		if (fLeftSaveable instanceof LocalResourceSaveableComparison rsc) {
 			rsc.dispose();
 		}
-		if (fRightSaveable instanceof SaveableComparison) {
-			SaveableComparison scm = (SaveableComparison) fRightSaveable;
+		if (fRightSaveable instanceof SaveableComparison scm) {
 			scm.removePropertyListener(fRightPropertyListener);
 		}
-		if (fRightSaveable instanceof LocalResourceSaveableComparison) {
-			LocalResourceSaveableComparison rsc = (LocalResourceSaveableComparison) fRightSaveable;
+		if (fRightSaveable instanceof LocalResourceSaveableComparison rsc) {
 			rsc.dispose();
 		}
 
@@ -249,23 +247,26 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	@Override
 	public String getToolTipText() {
 		String[] labels = getLabels();
-		if (labels.length == 3)
-			return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_threeWayTooltip, labels);
-		return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_twoWayTooltip, labels);
+		if (labels.length == 3) {
+			return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_threeWayTooltip, (Object[]) labels);
+		}
+		return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_twoWayTooltip, (Object[]) labels);
 	}
 
 	@Override
 	public String getTitle() {
 		String[] labels = getLabels();
-		if (labels.length == 3)
-			return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_threeWayTitle, labels);
-		return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_twoWayTitle, labels);
+		if (labels.length == 3) {
+			return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_threeWayTitle, (Object[]) labels);
+		}
+		return NLS.bind(TeamUIMessages.SaveablesCompareEditorInput_twoWayTitle, (Object[]) labels);
 	}
 
 	private IWorkbenchPage getPage() {
-		if (page == null)
+		if (page == null) {
 			return PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getActivePage();
+		}
 		return page;
 	}
 
@@ -327,8 +328,9 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	@Override
 	public Saveable[] getActiveSaveables() {
-		if (getCompareResult() == null)
+		if (getCompareResult() == null) {
 			return new Saveable[0];
+		}
 		return new Saveable[] { getLeftSaveable(), getRightSaveable() };
 	}
 
@@ -342,13 +344,10 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 			Composite pParent) {
 		Viewer newViewer = super.findContentViewer(pOldViewer, pInput, pParent);
 		boolean isNewViewer = newViewer != pOldViewer;
-		if (isNewViewer && newViewer instanceof IPropertyChangeNotifier
-				&& fLeftSaveable instanceof IPropertyChangeListener
-				&& fRightSaveable instanceof IPropertyChangeListener) {
+		if (isNewViewer && newViewer instanceof final IPropertyChangeNotifier dsp
+				&& fLeftSaveable instanceof final IPropertyChangeListener lpcl
+				&& fRightSaveable instanceof final IPropertyChangeListener rpcl) {
 			// Register the model for change events if appropriate
-			final IPropertyChangeNotifier dsp = (IPropertyChangeNotifier) newViewer;
-			final IPropertyChangeListener lpcl = (IPropertyChangeListener) fLeftSaveable;
-			final IPropertyChangeListener rpcl = (IPropertyChangeListener) fRightSaveable;
 			dsp.addPropertyChangeListener(lpcl);
 			dsp.addPropertyChangeListener(rpcl);
 			Control c = newViewer.getControl();
@@ -362,10 +361,12 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	@Override
 	public boolean isDirty() {
-		if (fLeftSaveable != null && fLeftSaveable.isDirty())
+		if (fLeftSaveable != null && fLeftSaveable.isDirty()) {
 			return true;
-		if (fRightSaveable != null && fRightSaveable.isDirty())
+		}
+		if (fRightSaveable != null && fRightSaveable.isDirty()) {
 			return true;
+		}
 		return super.isDirty();
 	}
 
@@ -460,9 +461,10 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	protected Object prepareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
 		final ICompareInput input = prepareCompareInput(monitor);
-		if (input != null)
+		if (input != null) {
 			setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title,
-					new String[] { input.getName() }));
+					input.getName()));
+		}
 		return input;
 	}
 
@@ -526,12 +528,15 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		protected IResource[] getResources(ICompareInput input) {
 			IResource leftResource = getResource(fLeftElement);
 			IResource rightResource = getResource(fRightElement);
-			if (leftResource == null && rightResource == null)
+			if (leftResource == null && rightResource == null) {
 				return new IResource[0];
-			if (leftResource == null && rightResource != null)
+			}
+			if (leftResource == null && rightResource != null) {
 				return new IResource[] { rightResource };
-			if (leftResource != null && rightResource == null)
+			}
+			if (leftResource != null && rightResource == null) {
 				return new IResource[] { leftResource };
+			}
 			return new IResource[] { leftResource, rightResource };
 		}
 	};
@@ -659,12 +664,14 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		String keyBinding = null;
 
 		IBindingService bindingService = PlatformUI.getWorkbench().getAdapter(IBindingService.class);
-		if (bindingService != null)
+		if (bindingService != null) {
 			keyBinding = bindingService
 					.getBestActiveBindingFormattedFor(IWorkbenchCommandConstants.NAVIGATE_SHOW_IN_QUICK_MENU);
+		}
 
-		if (keyBinding == null)
+		if (keyBinding == null) {
 			keyBinding = ""; //$NON-NLS-1$
+		}
 
 		return NLS
 				.bind(TeamUIMessages.SaveableCompareEditorInput_0, keyBinding);
@@ -699,18 +706,21 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		@Override
 		public void dispose() {
 			super.dispose();
-			if (lrte != null)
+			if (lrte != null) {
 				lrte.setSharedDocumentListener(null);
+			}
 		}
 
 		@Override
 		public void handleDocumentConnected() {
-			if (connected)
+			if (connected) {
 				return;
+			}
 			connected = true;
 			registerSaveable(false);
-			if (lrte != null)
+			if (lrte != null) {
 				lrte.setSharedDocumentListener(null);
+			}
 		}
 
 		private void registerSaveable(boolean init) {
@@ -719,11 +729,12 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 			if (part != null) {
 				ISaveablesLifecycleListener lifecycleListener = getSaveablesLifecycleListener(part);
 				// Remove this saveable from the lifecycle listener
-				if (!init)
+				if (!init) {
 					lifecycleListener
 							.handleLifecycleEvent(new SaveablesLifecycleEvent(
 									part, SaveablesLifecycleEvent.POST_CLOSE,
 									new Saveable[] { this }, false));
+				}
 				// Now fix the hashing so it uses the connected document
 				initializeHashing();
 				// Finally, add this saveable back to the listener
@@ -756,11 +767,13 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
+			}
 
-			if (!(obj instanceof Saveable))
+			if (!(obj instanceof Saveable)) {
 				return false;
+			}
 
 			Object document = getAdapter(IDocument.class);
 
@@ -770,8 +783,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 				return document.equals(otherDocument);
 			}
 
-			if (obj instanceof InternalResourceSaveableComparison) {
-				InternalResourceSaveableComparison rscm = (InternalResourceSaveableComparison) obj;
+			if (obj instanceof InternalResourceSaveableComparison rscm) {
 				return rscm.getInput().equals(getInput()) && rscm.lrte.equals(lrte);
 			}
 			return false;
@@ -779,13 +791,11 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	}
 
 	public static void handleMenuAboutToShow(IMenuManager manager, ICompareContainer container, Saveable saveable, ITypedElement element, ISelectionProvider provider) {
-		if (provider instanceof ITextViewer) {
-			final ITextViewer v= (ITextViewer)provider;
+		if (provider instanceof final ITextViewer v) {
 			IDocument d= v.getDocument();
 			IDocument other= Adapters.adapt(saveable, IDocument.class);
 			if (d == other) {
-				if (element instanceof IResourceProvider) {
-					IResourceProvider rp= (IResourceProvider)element;
+				if (element instanceof IResourceProvider rp) {
 					IResource resource= rp.getResource();
 					StructuredSelection selection= new StructuredSelection(resource);
 					IWorkbenchPart workbenchPart= container.getWorkbenchPart();
@@ -844,10 +854,11 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 		// Support for non-text editor - try IGotoMarker interface
 		final IGotoMarker gotoMarkerTarget;
-		if (editor instanceof IGotoMarker)
+		if (editor instanceof IGotoMarker) {
 			gotoMarkerTarget= (IGotoMarker)editor;
-		else
+		} else {
 			gotoMarkerTarget= editor != null ? (IGotoMarker)editor.getAdapter(IGotoMarker.class) : null;
+		}
 		if (gotoMarkerTarget != null) {
 			final IEditorInput input= editor.getEditorInput();
 			if (input instanceof IFileEditorInput) {
@@ -863,8 +874,9 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 							gotoMarkerTarget.gotoMarker(marker);
 
 						} finally {
-							if (marker != null)
+							if (marker != null) {
 								marker.delete();
+							}
 						}
 					}
 				};

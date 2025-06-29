@@ -110,14 +110,15 @@ public class NavServlet extends HttpServlet {
 		String nl = UrlUtil.getLocale(req, resp);
 		// break the string into tokens to get the Locale object
 		StringTokenizer locales = new StringTokenizer(nl, "_"); //$NON-NLS-1$
-		if (locales.countTokens() == 1)
+		if (locales.countTokens() == 1) {
 			locale = Locale.of(locales.nextToken(), ""); //$NON-NLS-1$
-		else if (locales.countTokens() == 2)
+		} else if (locales.countTokens() == 2) {
 			locale = Locale.of(locales.nextToken(), locales.nextToken());
-		else if (locales.countTokens() == 3)
+		} else if (locales.countTokens() == 3) {
 			locale = Locale.of(locales.nextToken(), locales.nextToken(), locales.nextToken());
-		else
+		} else {
 			locale = Locale.getDefault();
+		}
 		return locale;
 	}
 

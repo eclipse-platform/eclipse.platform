@@ -124,8 +124,7 @@ public class ServiceSupplier extends ExtendedObjectSupplier implements EventHand
 			return IInjector.NOT_A_VALUE;
 		}
 		Service qualifier = descriptor.getQualifier(Service.class);
-		if (desiredType instanceof ParameterizedType) {
-			ParameterizedType t = (ParameterizedType) desiredType;
+		if (desiredType instanceof ParameterizedType t) {
 			if (t.getRawType() == Collections.class || t.getRawType() == List.class) {
 				return handleCollection(supplierContext, t.getActualTypeArguments()[0], requestor,
 						track && qualifier.dynamic(), qualifier);
@@ -137,7 +136,7 @@ public class ServiceSupplier extends ExtendedObjectSupplier implements EventHand
 
 	private Object handleSingle(ServiceSupplierContext supplierContext, Type t, IRequestor requestor, boolean track,
 			Service qualifier) {
-		Class<?> cls = t instanceof ParameterizedType ? (Class<?>) ((ParameterizedType) t).getRawType() : (Class<?>) t;
+		Class<?> cls = t instanceof ParameterizedType p ? (Class<?>) p.getRawType() : (Class<?>) t;
 		try {
 			Filter filter = supplierContext.getFilter(qualifier.filterExpression());
 			ServiceSupplierTracker<?> tracker = supplierContext.getTracker(cls);
@@ -156,7 +155,7 @@ public class ServiceSupplier extends ExtendedObjectSupplier implements EventHand
 
 	private Object handleCollection(ServiceSupplierContext supplierContext, Type t, IRequestor requestor, boolean track,
 			Service qualifier) {
-		Class<?> cls = t instanceof ParameterizedType ? (Class<?>) ((ParameterizedType) t).getRawType() : (Class<?>) t;
+		Class<?> cls = t instanceof ParameterizedType p ? (Class<?>) p.getRawType() : (Class<?>) t;
 		try {
 			Filter filter = supplierContext.getFilter(qualifier.filterExpression());
 			ServiceSupplierTracker<?> tracker = supplierContext.getTracker(cls);

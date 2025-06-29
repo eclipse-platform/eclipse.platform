@@ -31,60 +31,60 @@ import org.eclipse.swt.widgets.Text;
  * This class is used to add or edit a particular ID Mapping
  */
 public class XMLCompareEditMappingDialog extends StatusDialog {
-	
+
 	private final Mapping fMapping;
 	private final HashMap fIdmapHM;
 	private final boolean fEdit;
-	
+
 	private Text fElementText;
 	private Text fSignatureText;
 	private Text fIdAttributeText;
 
 	private Button fIdTypeAttributeButton;
 	private Button fIdTypeChildBodyButton;
-	
+
 	/*
 	 * Constructs a new edit mapping dialog.
-	 */		
+	 */
 	public XMLCompareEditMappingDialog(Shell parent, Mapping mapping, HashMap idmapHM, boolean edit) {
 		super(parent);
-	
+
 		int shellStyle= getShellStyle();
 		setShellStyle(shellStyle | SWT.MAX | SWT.RESIZE);
 
-	
+
 		fEdit= edit;
 		if (fEdit)
-			setTitle(XMLCompareMessages.XMLCompareEditMappingDialog_editTitle); 
+			setTitle(XMLCompareMessages.XMLCompareEditMappingDialog_editTitle);
 		else
-			setTitle(XMLCompareMessages.XMLCompareEditMappingDialog_newTitle); 
+			setTitle(XMLCompareMessages.XMLCompareEditMappingDialog_newTitle);
 
 		fMapping= mapping;
 		fIdmapHM= idmapHM;
 	}
-	
+
 	/**
-	 * Creates and returns the contents of the upper part 
+	 * Creates and returns the contents of the upper part
 	 * of the dialog (above the button bar).
 	 *
 	 * Subclasses should override.
 	 *
 	 * @param ancestor the parent composite to contain the dialog area
 	 * @return the dialog area control
-	 */	
+	 */
 	@Override
 	protected Control createDialogArea(Composite ancestor) {
 		Composite composite= (Composite) super.createDialogArea(ancestor);
-		
+
 		Composite inner= new Composite(composite, SWT.NONE);
 		GridLayout layout= new GridLayout();
 		layout.numColumns= 2;
 		inner.setLayout(layout);
 		inner.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		//Element
 		Label label= new Label(inner, SWT.NULL);
-		label.setText(XMLCompareMessages.XMLCompareEditMappingDialog_element); 
+		label.setText(XMLCompareMessages.XMLCompareEditMappingDialog_element);
 		label.setLayoutData(new GridData());
 
 		fElementText= new Text(inner, SWT.BORDER);
@@ -94,7 +94,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 
 		//Signature
 		label= new Label(inner, SWT.NULL);
-		label.setText(XMLCompareMessages.XMLCompareEditMappingDialog_signature); 
+		label.setText(XMLCompareMessages.XMLCompareEditMappingDialog_signature);
 		label.setLayoutData(new GridData());
 
 		fSignatureText= new Text(inner, SWT.BORDER);
@@ -103,10 +103,10 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		data.widthHint= convertWidthInCharsToPixels(50);
 		fSignatureText.setLayoutData(data);
 		fSignatureText.addModifyListener(e -> doValidation());
-		
+
 		//Id Attribute
 		label= new Label(inner, SWT.NULL);
-		label.setText(XMLCompareMessages.XMLCompareEditMappingDialog_idattribute); 
+		label.setText(XMLCompareMessages.XMLCompareEditMappingDialog_idattribute);
 		label.setLayoutData(new GridData());
 
 		fIdAttributeText= new Text(inner, SWT.BORDER);
@@ -121,10 +121,10 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 
 		return composite;
 	}
-	
+
 	/**
 	 * Validate user input
-	 */	
+	 */
 	private void doValidation() {
 		StatusInfo status= new StatusInfo();
 		String text= fElementText.getText();
@@ -132,7 +132,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		String errormsg= ""; //$NON-NLS-1$
 		boolean isError= false;
 		if (text.length() == 0) {
-			errormsg= XMLCompareMessages.XMLCompareEditMappingDialog_error_noname; 
+			errormsg= XMLCompareMessages.XMLCompareEditMappingDialog_error_noname;
 			isError= true;
 		} else if (XMLComparePreferencePage.containsInvalidCharacters(text)) {
 			if (errormsg == "") errormsg= XMLCompareMessages.XMLCompareEditMappingDialog_error_invalidname;  //$NON-NLS-1$
@@ -156,10 +156,10 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		if (isError) status.setError(errormsg);
 		updateStatus(status);
 	}
-	
+
 	/**
 	 * Notifies that the ok button of this dialog has been pressed.
-	 */	
+	 */
 	@Override
 	protected void okPressed() {
 		fMapping.setElement(fElementText.getText());
@@ -171,26 +171,26 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		fMapping.setIdAttribute(idtext);
 		super.okPressed();
 	}
-	
+
 	private void createIdSourceGroup(Composite composite) {
 		Label titleLabel= new Label(composite, SWT.NONE);
-		titleLabel.setText(XMLCompareMessages.XMLCompareEditMappingDialog_idtype); 
-		titleLabel.setToolTipText(XMLCompareMessages.XMLCompareEditMappingDialog_idtype_tooltip); 
-	
+		titleLabel.setText(XMLCompareMessages.XMLCompareEditMappingDialog_idtype);
+		titleLabel.setToolTipText(XMLCompareMessages.XMLCompareEditMappingDialog_idtype_tooltip);
+
 		Composite buttonComposite= new Composite(composite, SWT.LEFT);
 		GridLayout layout= new GridLayout();
 		layout.numColumns= 2;
 		buttonComposite.setLayout(layout);
 		composite.setData(new GridData());
-	
+
 		//attribute button
-		fIdTypeAttributeButton= createRadioButton(buttonComposite, XMLCompareMessages.XMLComparePreference_idtype_attribute); 
-		fIdTypeAttributeButton.setToolTipText(XMLCompareMessages.XMLCompareEditMappingDialog_idtype_attribute_tooltip); 
-	
+		fIdTypeAttributeButton= createRadioButton(buttonComposite, XMLCompareMessages.XMLComparePreference_idtype_attribute);
+		fIdTypeAttributeButton.setToolTipText(XMLCompareMessages.XMLCompareEditMappingDialog_idtype_attribute_tooltip);
+
 		//child body button
-		fIdTypeChildBodyButton= createRadioButton(buttonComposite, XMLCompareMessages.XMLComparePreference_idtype_child_body); 
-		fIdTypeChildBodyButton.setToolTipText(XMLCompareMessages.XMLCompareEditMappingDialog_idtype_childbody_tooltip); 
-	
+		fIdTypeChildBodyButton= createRadioButton(buttonComposite, XMLCompareMessages.XMLComparePreference_idtype_child_body);
+		fIdTypeChildBodyButton.setToolTipText(XMLCompareMessages.XMLCompareEditMappingDialog_idtype_childbody_tooltip);
+
 		String idtext= fMapping.getIdAttribute();
 		if (fEdit && idtext.charAt(0) == XMLStructureCreator.ID_TYPE_BODY) {
 			idtext= idtext.substring(1,idtext.length());
@@ -198,7 +198,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		} else
 			fIdTypeAttributeButton.setSelection(true);
 		fIdAttributeText.setText(idtext);
-	
+
 	}
 
 	private Button createRadioButton(Composite parent, String label) {
@@ -207,5 +207,5 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		GridData data= new GridData();
 		button.setLayoutData(data);
 		return button;
-	}	
+	}
 }

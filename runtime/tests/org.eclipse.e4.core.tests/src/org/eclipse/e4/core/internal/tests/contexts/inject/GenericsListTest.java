@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 
@@ -64,7 +65,7 @@ public class GenericsListTest {
 		assertEquals(list, userObject.field);
 	}
 
-	@Test(expected = ClassCastException.class)
+	@Test
 	public void testTypeErasure() {
 
 		List<Integer> list = new ArrayList<>();
@@ -80,7 +81,7 @@ public class GenericsListTest {
 		// of the type erasure
 		assertEquals(list, userObject.field);
 
-		userObject.combineIt();
+		assertThrows(ClassCastException.class, () -> userObject.combineIt());
 	}
 
 

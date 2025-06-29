@@ -23,32 +23,33 @@ public class ResourceMappingLabelProvider extends LabelProvider {
 	WorkbenchLabelProvider provider = new WorkbenchLabelProvider();
 	@Override
 	public String getText(Object element) {
-		if (element instanceof ResourceMapping) {
-			ResourceMapping mapping = (ResourceMapping) element;
+		if (element instanceof ResourceMapping mapping) {
 			String text = provider.getText(mapping.getModelObject());
-			if (text != null && text.length() > 0)
+			if (text != null && text.length() > 0) {
 				return text;
+			}
 			return super.getText(mapping.getModelObject());
 		}
-		if (element instanceof ModelProvider) {
-			ModelProvider provider = (ModelProvider) element;
+		if (element instanceof ModelProvider provider) {
 			return provider.getDescriptor().getLabel();
 		}
 		String text = provider.getText(element);
-		if (text != null && text.length() > 0)
+		if (text != null && text.length() > 0) {
 			return text;
+		}
 		return super.getText(element);
 	}
 	@Override
 	public Image getImage(Object element) {
 		Image image = provider.getImage(element);
-		if (image != null)
+		if (image != null) {
 			return image;
-		if (element instanceof ResourceMapping) {
-			ResourceMapping mapping = (ResourceMapping) element;
+		}
+		if (element instanceof ResourceMapping mapping) {
 			image = provider.getImage(mapping.getModelObject());
-			if (image != null)
+			if (image != null) {
 				return image;
+			}
 		}
 		return super.getImage(element);
 	}

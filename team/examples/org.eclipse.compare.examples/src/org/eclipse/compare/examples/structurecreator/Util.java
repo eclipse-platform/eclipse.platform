@@ -53,12 +53,12 @@ public class Util {
 
 			while ((read= reader.read(part)) != -1)
 				buffer.append(part, 0, read);
-			
+
 			return buffer.toString();
-			
+
 		} catch (IOException ex) {
 			// silently ignored
-		} 
+		}
 		return null;
 	}
 

@@ -77,22 +77,24 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 		@Override
 		protected void configureJob(Job job) {
 			super.configureJob(job);
-			if (operation.isKeepOneProgressServiceEntry())
+			if (operation.isKeepOneProgressServiceEntry()) {
 				job.setProperty(IProgressConstants.KEEPONE_PROPERTY, Boolean.TRUE);
-			else if(operation.getKeepOperation())
+			} else if(operation.getKeepOperation()) {
 				job.setProperty(IProgressConstants.KEEP_PROPERTY, Boolean.TRUE);
+			}
 			gotoAction = operation.getGotoAction();
-			if(gotoAction != null)
+			if(gotoAction != null) {
 				job.setProperty(IProgressConstants.ACTION_PROPERTY, gotoAction);
+			}
 			URL icon = operation.getOperationIcon();
-			if(icon != null)
+			if(icon != null) {
 				job.setProperty(IProgressConstants.ICON_PROPERTY, icon);
+			}
 		}
 
 		@Override
 		protected boolean belongsTo(IContextJob job, Object family) {
-			if (family instanceof IContextJob) {
-				IContextJob otherJob = (IContextJob)family;
+			if (family instanceof IContextJob otherJob) {
 				IRunnableWithProgress runnable = otherJob.getRunnable();
 				if (runnable instanceof TeamOperation) {
 					return operation.isSameFamilyAs((TeamOperation)runnable);

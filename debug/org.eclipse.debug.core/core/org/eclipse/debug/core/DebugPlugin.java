@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -380,6 +380,13 @@ public class DebugPlugin extends Plugin {
 	public static final String ATTR_PATH = PI_DEBUG_CORE + ".ATTR_PATH"; //$NON-NLS-1$
 
 	/**
+	 * Attribute key for breakpoint grouping types accelerators
+	 *
+	 * @since 3.23
+	 */
+	public static final String PREF_SHOW_BREAKPOINT_GROUPBY_TYPE_SHORTCUTS = PI_DEBUG_CORE + ".PREF_FOR_BP_GROUP_TYPE_ACCELERATOR"; //$NON-NLS-1$
+
+	/**
 	 * Launch configuration attribute that designates whether or not the
 	 * descendants of the {@link IProcess} associated to a launch of this
 	 * configuration should be terminated if the main-process is terminated. The
@@ -685,7 +692,7 @@ public class DebugPlugin extends Plugin {
 				if (handler instanceof IStatusHandler) {
 					return (IStatusHandler)handler;
 				}
-				invalidStatusHandler(null, MessageFormat.format("Registered status handler {0} does not implement required interface IStatusHandler.", new Object[] { config.getDeclaringExtension().getUniqueIdentifier() })); //$NON-NLS-1$
+				invalidStatusHandler(null, MessageFormat.format("Registered status handler {0} does not implement required interface IStatusHandler.", config.getDeclaringExtension().getUniqueIdentifier())); //$NON-NLS-1$
 			} catch (CoreException e) {
 				log(e);
 			}
@@ -1133,7 +1140,7 @@ public class DebugPlugin extends Plugin {
 		if (getDefault().isDebugging()) {
 			// this message is intentionally not externalized, as an exception may
 			// be due to the resource bundle itself
-			log(new Status(IStatus.ERROR, getUniqueIdentifier(), ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_2, new Object[] { message }), null));
+			log(new Status(IStatus.ERROR, getUniqueIdentifier(), ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_2, message), null));
 		}
 	}
 
@@ -1209,8 +1216,7 @@ public class DebugPlugin extends Plugin {
 			} else {
 				// invalid process factory
 				String badDefiner = configurationElement.getContributor().getName();
-				log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_4, new Object[] {
-					badDefiner, id }), null));
+				log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_4, badDefiner, id), null));
 			}
 		}
 	}
@@ -1231,15 +1237,13 @@ public class DebugPlugin extends Plugin {
 					try {
 						priority = Integer.parseInt(attribute);
 					} catch (NumberFormatException e) {
-						log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_invalid_exec_factory, new Object[] {
-								configurationElement.getContributor().getName() }), null));
+						log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_invalid_exec_factory, configurationElement.getContributor().getName()), null));
 						priority = 0;
 					}
 					list.add(new ExecFactoryFacade(configurationElement, priority));
 				} else {
 					String badDefiner = configurationElement.getContributor().getName();
-					log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_invalid_exec_factory, new Object[] {
-							badDefiner }), null));
+					log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_invalid_exec_factory, badDefiner), null));
 				}
 			}
 			list.sort(Comparator.comparingInt(ExecFactoryFacade::getPriority).reversed());
@@ -1249,7 +1253,7 @@ public class DebugPlugin extends Plugin {
 	}
 
 	private void invalidStatusHandler(Exception e, String id) {
-		log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_5, new Object[] { id }), e));
+		log(new Status(IStatus.ERROR, DebugPlugin.PI_DEBUG_CORE, ERROR, MessageFormat.format(DebugCoreMessages.DebugPlugin_5, id), e));
 	}
 
 	/**
@@ -1279,7 +1283,7 @@ public class DebugPlugin extends Plugin {
 		}
 	}
 
-	private class ExecFactoryFacade implements ExecFactory {
+	private static class ExecFactoryFacade implements ExecFactory {
 
 		private IConfigurationElement element;
 		private int priority;

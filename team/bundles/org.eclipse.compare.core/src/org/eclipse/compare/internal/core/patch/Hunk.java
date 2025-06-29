@@ -39,15 +39,17 @@ public class Hunk implements IHunk {
 			List<String> lines, boolean hasLineAdditions, boolean hasLineDeletions, boolean hasContextLines) {
 		int oldStart = 0;
 		int newStart = 0;
-		if (oldRange[0] > 0)
+		if (oldRange[0] > 0) {
 			oldStart= oldRange[0]-1;	// line number start at 0!
-		else
+		} else {
 			oldStart= 0;
+		}
 		int oldLength = oldRange[1];
-		if (newRange[0] > 0)
+		if (newRange[0] > 0) {
 			newStart= newRange[0]-1;	// line number start at 0!
-		else
+		} else {
 			newStart= 0;
+		}
 		int newLength = newRange[1];
 		int hunkType = FilePatch2.CHANGE;
 		if (!hasContextLines) {
@@ -131,10 +133,12 @@ public class Hunk implements IHunk {
 
 	public int getHunkType(boolean reverse) {
 		if (reverse) {
-			if (this.hunkType == FilePatch2.ADDITION)
+			if (this.hunkType == FilePatch2.ADDITION) {
 				return FilePatch2.DELETION;
-			if (this.hunkType == FilePatch2.DELETION)
+			}
+			if (this.hunkType == FilePatch2.DELETION) {
 				return FilePatch2.ADDITION;
+			}
 		}
 		return this.hunkType;
 	}
@@ -160,10 +164,12 @@ public class Hunk implements IHunk {
 	 * @param diff the parent of this hunk
 	 */
 	void setParent(FilePatch2 diff) {
-		if (this.fParent == diff)
+		if (this.fParent == diff) {
 			return;
-		if (this.fParent != null)
+		}
+		if (this.fParent != null) {
 			this.fParent.remove(this);
+		}
 		this.fParent = diff;
 	}
 
@@ -189,8 +195,9 @@ public class Hunk implements IHunk {
 
 			if (controlChar == ' ') {	// context lines
 
-				if (pos < 0 || pos >= lines.size())
+				if (pos < 0 || pos >= lines.size()) {
 					return false;
+				}
 				contextLines.add(line);
 				if (linesMatch(configuration, line, lines.get(pos))) {
 					pos++;
@@ -202,12 +209,13 @@ public class Hunk implements IHunk {
 					continue;
 				}
 				return false;
-			} else if (isDeletedDelimeter(controlChar, reverse)) {
+			} else if (isDeletedDelimiter(controlChar, reverse)) {
 				// deleted lines
 
-				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
+				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0) {
 					// context lines inside hunk don't match
 					return false;
+				}
 
 				// check following context lines if exist
 				// use the fuzz factor if needed
@@ -215,17 +223,19 @@ public class Hunk implements IHunk {
 						&& !contextLinesMatched
 						&& contextLines.size() >= fuzz
 						&& !checkPrecedingContextLines(configuration, lines,
-								fuzz, pos, contextLines))
+								fuzz, pos, contextLines)) {
 					return false;
 				// else if there is less or equal context line to the fuzz
 				// factor we ignore them all and treat as matching
+				}
 
 				precedingLinesChecked = true;
 				contextLines.clear();
 				contextLinesMatched = true;
 
-				if (pos < 0 || pos >= lines.size()) // out of the file
+				if (pos < 0 || pos >= lines.size()) { // out of the file
 					return false;
+				}
 				if (linesMatch(configuration, line, lines.get(pos))) {
 					pos++;
 					continue; // line matched, continue with the next one
@@ -235,25 +245,28 @@ public class Hunk implements IHunk {
 				// fails. In other words, all lines considered for deletion
 				// must be found one by one.
 				return false;
-			} else if (isAddedDelimeter(controlChar, reverse)) {
+			} else if (isAddedDelimiter(controlChar, reverse)) {
 
-				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
+				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0) {
 					return false;
+				}
 
 				if (!precedingLinesChecked
 						&& !contextLinesMatched
 						&& contextLines.size() >= fuzz
 						&& !checkPrecedingContextLines(configuration, lines,
-								fuzz, pos, contextLines))
+								fuzz, pos, contextLines)) {
 					return false;
+				}
 
 				precedingLinesChecked = true;
 				contextLines.clear();
 				contextLinesMatched = true;
 
 				// we don't have to do anything more for a 'try'
-			} else
+			} else {
 				Assert.isTrue(false, "tryPatch: unknown control character: " + controlChar); //$NON-NLS-1$
+			}
 		}
 
 		// check following context lines if exist
@@ -261,8 +274,9 @@ public class Hunk implements IHunk {
 				&& fuzz > 0
 				&& contextLines.size() > fuzz
 				&& !checkFollowingContextLines(configuration, lines, fuzz, pos,
-						contextLines))
+						contextLines)) {
 			return false;
+		}
 
 		return true;
 	}
@@ -273,8 +287,9 @@ public class Hunk implements IHunk {
 		// ignore from the beginning
 		for (int j = fuzz; j < contextLines.size(); j++) {
 			if (!linesMatch(configuration, contextLines.get(j),
-							lines.get(pos - contextLines.size() + j)))
+							lines.get(pos - contextLines.size() + j))) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -286,8 +301,9 @@ public class Hunk implements IHunk {
 			// ignore from the end
 			for (int j = 0; j < contextLines.size() - fuzz; j++) {
 				if (!linesMatch(configuration, contextLines.get(j),
-						lines.get(pos - contextLines.size() + j)))
+						lines.get(pos - contextLines.size() + j))) {
 					return false;
+				}
 			}
 		}
 		return true;
@@ -349,11 +365,12 @@ public class Hunk implements IHunk {
 				}
 				Assert.isTrue(false, "doPatch: context doesn't match"); //$NON-NLS-1$
 //					pos++;
-			} else if (isDeletedDelimeter(controlChar, reverse)) {
+			} else if (isDeletedDelimiter(controlChar, reverse)) {
 				// deleted lines
-				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
+				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0) {
 					// context lines inside hunk don't match
 					Assert.isTrue(false, "doPatch: context lines inside hunk don't match"); //$NON-NLS-1$
+				}
 
 				// check following context lines if exist
 				// use the fuzz factor if needed
@@ -361,52 +378,58 @@ public class Hunk implements IHunk {
 						&& !contextLinesMatched
 						&& contextLines.size() >= fuzz
 						&& !checkPrecedingContextLines(configuration, lines,
-								fuzz, pos, contextLines))
+								fuzz, pos, contextLines)) {
 					Assert.isTrue(false, "doPatch: preceding context lines don't match, even though fuzz factor has been used"); //$NON-NLS-1$
 				// else if there is less or equal context line to the fuzz
 				// factor we ignore them all and treat as matching
+				}
 
 				precedingLinesChecked = true;
 				contextLines.clear();
 				contextLinesMatched = true;
 
 				lines.remove(pos);
-			} else if (isAddedDelimeter(controlChar, reverse)) {
+			} else if (isAddedDelimiter(controlChar, reverse)) {
 				// added lines
-				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
+				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0) {
 					Assert.isTrue(false, "doPatch: context lines inside hunk don't match"); //$NON-NLS-1$
+				}
 
 				if (!precedingLinesChecked
 						&& !contextLinesMatched
 						&& contextLines.size() >= fuzz
 						&& !checkPrecedingContextLines(configuration, lines,
-								fuzz, pos, contextLines))
+								fuzz, pos, contextLines)) {
 					Assert.isTrue(false, "doPatch: preceding context lines don't match, even though fuzz factor has been used"); //$NON-NLS-1$
+				}
 
 				precedingLinesChecked = true;
 				contextLines.clear();
 				contextLinesMatched = true;
 
 				// if the line contains a delimiter, use a proper one
-				if (line.length() > LineReader.length(line))
+				if (line.length() > LineReader.length(line)) {
 					line = line.substring(0, LineReader.length(line)) + lineDelimiter;
+				}
 
-				if (getLength(reverse) == 0 && pos+1 < lines.size())
+				if (getLength(reverse) == 0 && pos+1 < lines.size()) {
 					lines.add(pos+1, line);
-				else
+				} else {
 					lines.add(pos, line);
+				}
 				pos++;
-			} else
+			} else {
 				Assert.isTrue(false, "doPatch: unknown control character: " + controlChar); //$NON-NLS-1$
+			}
 		}
 		return getShift(reverse);
 	}
 
-	private boolean isDeletedDelimeter(char controlChar, boolean reverse) {
+	private boolean isDeletedDelimiter(char controlChar, boolean reverse) {
 		return (!reverse && controlChar == '-') || (reverse && controlChar == '+');
 	}
 
-	private boolean isAddedDelimeter(char controlChar, boolean reverse) {
+	private boolean isAddedDelimiter(char controlChar, boolean reverse) {
 		return (reverse && controlChar == '-') || (!reverse && controlChar == '+');
 	}
 
@@ -415,13 +438,15 @@ public class Hunk implements IHunk {
 	 * If fIgnoreWhitespace is true whitespace is ignored.
 	 */
 	private boolean linesMatch(PatchConfiguration configuration, String line1, String line2) {
-		if (configuration.isIgnoreWhitespace())
+		if (configuration.isIgnoreWhitespace()) {
 			return stripWhiteSpace(line1).equals(stripWhiteSpace(line2));
+		}
 		if (isIgnoreLineDelimiter()) {
 			int l1= LineReader.length(line1);
 			int l2= LineReader.length(line2);
-			if (l1 != l2)
+			if (l1 != l2) {
 				return false;
+			}
 			return line1.regionMatches(0, line2, 0, l1);
 		}
 		return line1.equals(line2);
@@ -452,8 +477,9 @@ public class Hunk implements IHunk {
 		int l= s.length();
 		for (int i= 0; i < l; i++) {
 			char c= s.charAt(i);
-			if (!Character.isWhitespace(c))
+			if (!Character.isWhitespace(c)) {
 				sb.append(c);
+			}
 		}
 		return sb.toString();
 	}
@@ -465,9 +491,9 @@ public class Hunk implements IHunk {
 			char c = line.charAt(0);
 			if (c == ' ') {
 				result.append(rest);
-			} else if (isDeletedDelimeter(c, reverse) && !isAfterState) {
+			} else if (isDeletedDelimiter(c, reverse) && !isAfterState) {
 				result.append(rest);
-			} else if (isAddedDelimeter(c, reverse) && isAfterState) {
+			} else if (isAddedDelimiter(c, reverse) && isAfterState) {
 				result.append(rest);
 			}
 		}

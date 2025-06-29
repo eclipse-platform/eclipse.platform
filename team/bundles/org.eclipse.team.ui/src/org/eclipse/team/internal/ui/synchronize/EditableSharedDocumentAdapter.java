@@ -102,8 +102,9 @@ public class EditableSharedDocumentAdapter extends
 		try {
 			super.disconnect(provider, documentKey);
 		} finally {
-			if (connectionCount > 0)
+			if (connectionCount > 0) {
 				connectionCount--;
+			}
 			if (connectionCount == 0) {
 				provider.removeElementStateListener(this);
 				listener.handleDocumentDisconnected();

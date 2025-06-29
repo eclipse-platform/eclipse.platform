@@ -44,26 +44,33 @@ public class ContentComparator extends AbstractContentComparator{
 	protected boolean contentsEqual(IProgressMonitor monitor, InputStream is1,
 			InputStream is2, boolean ignoreWhitespace) {
 		try {
-			if (is1 == is2)
+			if (is1 == is2) {
 				return true;
+			}
 			// no byte contents
-			if (is1 == null && is2 == null)
+			if (is1 == null && is2 == null) {
 				return true;
+			}
 			// only one has contents
-			if (is1 == null || is2 == null)
+			if (is1 == null || is2 == null) {
 				return false;
+			}
 
 			while (true) {
 				int c1 = is1.read();
-				while (shouldIgnoreWhitespace() && isWhitespace(c1))
+				while (shouldIgnoreWhitespace() && isWhitespace(c1)) {
 					c1 = is1.read();
+				}
 				int c2 = is2.read();
-				while (shouldIgnoreWhitespace() && isWhitespace(c2))
+				while (shouldIgnoreWhitespace() && isWhitespace(c2)) {
 					c2 = is2.read();
-				if (c1 == -1 && c2 == -1)
+				}
+				if (c1 == -1 && c2 == -1) {
 					return true;
-				if (c1 != c2)
+				}
+				if (c1 != c2) {
 					break;
+				}
 			}
 		} catch (IOException ex) {
 		} finally {
@@ -85,8 +92,9 @@ public class ContentComparator extends AbstractContentComparator{
 	}
 
 	private boolean isWhitespace(int c) {
-		if (c == -1)
+		if (c == -1) {
 			return false;
+		}
 		return Character.isWhitespace((char) c);
 	}
 }

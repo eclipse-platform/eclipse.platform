@@ -37,8 +37,9 @@ public class Util {
 	 */
 	public static void handleException(String msg, Exception e,
 			Object[] variables) {
-		if (msg == null)
+		if (msg == null) {
 			return;
+		}
 		if (variables != null) {
 			// if variables is not null, errorId will never be null.
 			msg = NLS.bind(msg, variables);
@@ -56,8 +57,9 @@ public class Util {
 		// this translates to giving null to this dialog which is handled by
 		// Eclipse by displaying the detyailed message directly.
 		if (e instanceof CoreException) {
-			if (parent == null)
+			if (parent == null) {
 				parent = DialogUtil.getActiveShell();
+			}
 			DialogUtil.displayCoreErrorDialog(parent, msg, (CoreException) e);
 
 			return;
@@ -65,10 +67,12 @@ public class Util {
 
 		// any other exception, use MessageDialog.
 		// if errorID is null, use error message.
-		if (msg == null)
+		if (msg == null) {
 			msg = e.getMessage();
-		if (parent == null)
+		}
+		if (parent == null) {
 			parent = DialogUtil.getActiveShell();
+		}
 		DialogUtil.displayErrorMessage(parent, msg, e);
 	}
 
@@ -164,9 +168,10 @@ public class Util {
 
 	public static void highlightFocusControl() {
 		Control control = Display.getCurrent().getFocusControl();
-		if (control != null)
+		if (control != null) {
 			control.setBackground(Display.getCurrent().getSystemColor(
 				SWT.COLOR_DARK_RED));
+		}
 	}
 
 	/**

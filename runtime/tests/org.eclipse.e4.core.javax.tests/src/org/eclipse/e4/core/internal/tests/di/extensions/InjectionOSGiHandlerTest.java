@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di.extensions;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
@@ -23,7 +23,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.e4.core.di.extensions.OSGiBundle;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.BundleContext;
 
 public class InjectionOSGiHandlerTest {

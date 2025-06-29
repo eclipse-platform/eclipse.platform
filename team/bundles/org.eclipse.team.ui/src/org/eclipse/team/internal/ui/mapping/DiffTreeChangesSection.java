@@ -94,23 +94,27 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			@Override
 			public void running(IJobChangeEvent event) {
 				if (isJobOfInterest(event.getJob())) {
-					if (context.getDiffTree().isEmpty())
+					if (context.getDiffTree().isEmpty()) {
 						calculateDescription();
+					}
 				}
 			}
 			private boolean isJobOfInterest(Job job) {
-				if (job.belongsTo(getConfiguration().getParticipant()))
+				if (job.belongsTo(getConfiguration().getParticipant())) {
 					return true;
+				}
 				SubscriberDiffTreeEventHandler handler = getHandler();
-				if (handler != null && handler.getEventHandlerJob() == job)
+				if (handler != null && handler.getEventHandlerJob() == job) {
 					return true;
+				}
 				return false;
 			}
 			@Override
 			public void done(IJobChangeEvent event) {
 				if (isJobOfInterest(event.getJob())) {
-					if (context.getDiffTree().isEmpty())
+					if (context.getDiffTree().isEmpty()) {
 						calculateDescription();
+					}
 				}
 			}
 		};
@@ -265,8 +269,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		} else {
 			ISynchronizePageConfiguration configuration = getConfiguration();
 			String id = (String)configuration.getProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER);
-			if (id == null)
+			if (id == null) {
 				id = ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER;
+			}
 			if (id.equals(ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE)) {
 				if (getChangesInMode(getConfiguration().getMode()) > 0 && isAtLeastOneProviderDisabled()) {
 					// There are changes in this mode but they are not visible so enable
@@ -347,10 +352,11 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_9, Integer.valueOf(changesCount));
 		}
 		final ITeamContentProviderDescriptor[] descriptors = getEnabledContentDescriptors();
-		if (descriptors.length == 0)
+		if (descriptors.length == 0) {
 			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_10, message);
-		else
+		} else {
 			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_11, message);
+		}
 
 		createDescriptionLabel(composite, message);
 
@@ -388,8 +394,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		Set<ITeamContentProviderDescriptor> result = new HashSet<>();
 		for (ModelProvider provider : providers) {
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
-			if (desc != null && desc.isEnabled())
+			if (desc != null && desc.isEnabled()) {
 				result.add(desc);
+			}
 		}
 		return result.toArray(new ITeamContentProviderDescriptor[result.size()]);
 	}
@@ -404,7 +411,8 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		data.grabExcessVerticalSpace = true;
 		composite.setLayoutData(data);
 
-		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_3, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_3,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 
 		final boolean[] remember = new boolean[] { false };
 		final PreferenceStore store = (PreferenceStore) getConfiguration()
@@ -467,9 +475,11 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		data.grabExcessVerticalSpace = true;
 		composite.setLayoutData(data);
 		if (isRefreshRunning()) {
-			createDescriptionLabel(composite,NLS.bind(TeamUIMessages.DiffTreeChangesSection_6, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+			createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_6,
+					Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 		} else {
-			createDescriptionLabel(composite,NLS.bind(TeamUIMessages.DiffTreeChangesSection_7, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+			createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_7,
+					Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 		}
 		return composite;
 	}
@@ -495,17 +505,18 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		IModelProviderDescriptor oldDesc = ModelProvider.getModelProviderDescriptor(oldId);
 		String message;
 		String modeToString = Utils.modeToString(getConfiguration().getMode());
-		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_0, new String[] {
+		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_0,
 					provider.getDescriptor().getLabel(),
-					modeToString });
-		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_1, new String[] { modeToString, oldDesc.getLabel(), message });
+				modeToString);
+		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_1, modeToString, oldDesc.getLabel(), message);
 
 		createDescriptionLabel(composite, message);
 
 		Label warning = new Label(composite, SWT.NONE);
 		warning.setImage(TeamUIPlugin.getPlugin().getImage(ISharedImages.IMG_WARNING_OVR));
 
-		Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_2, new String[] { provider.getDescriptor().getLabel() }), SWT.WRAP);
+		Hyperlink link = getForms().createHyperlink(composite,
+				NLS.bind(TeamUIMessages.DiffTreeChangesSection_2, provider.getDescriptor().getLabel()), SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -535,8 +546,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	private void handleEmptyViewer() {
 		// Override stand behavior to do our best to show something
 		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
-			if (!getContainer().isDisposed())
+			if (!getContainer().isDisposed()) {
 				updatePage(getEmptyChangesComposite(getContainer()));
+			}
 		});
 	}
 
@@ -561,8 +573,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 
 	private boolean isViewerEmpty() {
 		Viewer v = getPage().getViewer();
-		if (v instanceof CommonViewerAdvisor.NavigableCommonViewer) {
-			CommonViewerAdvisor.NavigableCommonViewer cv = (CommonViewerAdvisor.NavigableCommonViewer) v;
+		if (v instanceof CommonViewerAdvisor.NavigableCommonViewer cv) {
 			return cv.isEmpty();
 		}
 		return false;
@@ -583,7 +594,8 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		data.grabExcessVerticalSpace = true;
 		composite.setLayoutData(data);
 
-		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_10, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
+		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_10,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName())));
 
 		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.ChangesSection_8, SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
@@ -601,10 +613,11 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 				errors = null;
 				calculateDescription();
 				SubscriberDiffTreeEventHandler handler = getHandler();
-				if (handler != null)
+				if (handler != null) {
 					handler.initializeIfNeeded();
-				else
+				} else {
 					getConfiguration().getParticipant().run(getConfiguration().getSite().getPart());
+				}
 			}
 		});
 		getForms().getHyperlinkGroup().add(link);

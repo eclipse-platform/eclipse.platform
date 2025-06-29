@@ -1,24 +1,8 @@
 Evolving Java-based APIs 3
 ==========================
 
-Part 3 of [Evolving\_Java-based\_APIs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md).
+Part 3 of [Evolving\_Java-based\_APIs](Evolving-Java-based-APIs.md).
 
-Contents
---------
-
-*   [1 Other notes](#Other-notes)
-    *   [1.1 Data Compatibility](#Data-Compatibility)
-    *   [1.2 Standard Workarounds](#Standard-Workarounds)
-        *   [1.2.1 Deprecate and Forward](#Deprecate-and-Forward)
-        *   [1.2.2 Start over in a New Package](#Start-over-in-a-New-Package)
-        *   [1.2.3 Adding an Argument](#Adding-an-Argument)
-        *   [1.2.4 "2" Convention](#.222.22-Convention)
-        *   [1.2.5 COM Style](#COM-Style)
-        *   [1.2.6 Making Obsolete Hook Methods Final](#Making-Obsolete-Hook-Methods-Final)
-    *   [1.3 Defective API Specifications](#Defective-API-Specifications)
-    *   [1.4 A Word about Source Code Incompatibilities](#A-Word-about-Source-Code-Incompatibilities)
-    *   [1.5 Java Reflection](#Java-Reflection)
-    *   [1.6 Versioning](#Versioning)
 
 Other notes
 ===========
@@ -185,4 +169,4 @@ Versioning
 ----------
 
 It should be easy for API clients to know whether a new version of your components broke APIs or not. 
-Eclipse projects implement semantic versioning according to the [Version Numbering](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/VersionNumbering.md) specification.
+Eclipse projects implement semantic versioning according to the [Version Numbering](VersionNumbering.md) specification.

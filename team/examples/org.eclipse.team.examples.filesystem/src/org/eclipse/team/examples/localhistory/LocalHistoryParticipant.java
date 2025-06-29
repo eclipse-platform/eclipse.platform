@@ -120,7 +120,7 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 		final IResourceVariant remote = sync.getRemote();
 		if (remote != null) {
 			config.setRightLabel(NLS.bind("Local History ({0})",
-					new String[] { remote.getContentIdentifier() }));
+					remote.getContentIdentifier()));
 		} else {
 			config.setRightLabel("Local History");
 		}

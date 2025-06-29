@@ -101,8 +101,9 @@ public class FindUnusedMembers implements IRunnableWithProgress {
 			String[] types = method.getParameterTypes();
 			for (int i = 0; i < types.length; i++) {
 				output.write(Signature.toString(types[i]));
-				if (i < types.length - 1)
+				if (i < types.length - 1) {
 					output.write(","); //$NON-NLS-1$
+				}
 			}
 			output.write(")"); //$NON-NLS-1$
 		}
@@ -131,8 +132,9 @@ public class FindUnusedMembers implements IRunnableWithProgress {
 
 		IBinding[] bindings = astParser.createBindings(allTypes, subMonitor.newChild(1));
 		for (IBinding binding : bindings) {
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
+			}
 			ITypeBinding typeBinding = (ITypeBinding) binding;
 			subMonitor.setTaskName("Processing '" + typeBinding.getQualifiedName() + "'"); //$NON-NLS-1$//$NON-NLS-2$
 			doSearchType(typeBinding, subMonitor.newChild(1));
@@ -150,33 +152,40 @@ public class FindUnusedMembers implements IRunnableWithProgress {
 				methods.length + fields.length);
 
 		for (IMethodBinding methodBinding : methods) {
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
+			}
 
-			if (methodOverrides(methodBinding))
+			if (methodOverrides(methodBinding)) {
 				continue;
+			}
 
 			IMethod method = (IMethod) methodBinding.getJavaElement();
-			if (method == null)
+			if (method == null) {
 				continue;
+			}
 
-			if (hasReferences(method, subMonitor.newChild(1)))
+			if (hasReferences(method, subMonitor.newChild(1))) {
 				continue;
+			}
 			result.unusedElementFound(method);
 			unusedMemberCount++;
 		}
 		for (IVariableBinding fieldBinding : fields) {
 			IField field = (IField) fieldBinding.getJavaElement();
-			if (field == null)
+			if (field == null) {
 				continue;
-			if (hasReferences(field, subMonitor.split(1)))
+			}
+			if (hasReferences(field, subMonitor.split(1))) {
 				continue;
+			}
 			result.unusedElementFound(field);
 			unusedMemberCount++;
 		}
 
-		if (monitor.isCanceled())
+		if (monitor.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 	}
 
 	public int getUnusedMethodCount() {

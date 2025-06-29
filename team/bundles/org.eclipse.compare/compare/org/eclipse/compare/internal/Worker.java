@@ -109,8 +109,9 @@ public class Worker implements IRunnableWithProgress {
 
 	private void performNextTask(SubMonitor pm) throws InvocationTargetException, InterruptedException {
 		synchronized (this) {
-			if (work.isEmpty())
+			if (work.isEmpty()) {
 				return;
+			}
 			currentTask = work.remove();
 			currentMonitor= subMonitorFor(pm, 10);
 		}

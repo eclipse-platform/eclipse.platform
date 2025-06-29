@@ -81,8 +81,9 @@ public class CriteriaManager {
 			List<String> criterionValues = criterion.getCriterionValues();
 
 			Set<String> existedValues = criteriaInLocale.get(criterionName);
-			if (null == existedValues)
+			if (null == existedValues) {
 				existedValues = new HashSet<>();
+			}
 			existedValues.addAll(criterionValues);
 			criteriaInLocale.put(criterionName, existedValues);
 		}

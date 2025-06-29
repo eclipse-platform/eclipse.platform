@@ -34,8 +34,9 @@ public class ConfigureProjectAction extends TeamAction {
 			InterruptedException {
 		run(monitor -> {
 			try {
-				if (!isEnabled())
+				if (!isEnabled()) {
 					return;
+				}
 				IProject[] projects = getSelectedProjects();
 				ConfigureProjectWizard.shareProjects(getShell(), projects);
 			} catch (Exception e) {
@@ -51,8 +52,12 @@ public class ConfigureProjectAction extends TeamAction {
 	public boolean isEnabled() {
 		IProject[] selectedProjects = getSelectedProjects();
 		for (IProject project : selectedProjects) {
-			if (!project.isAccessible()) return false;
-			if (RepositoryProvider.isShared(project)) return false;
+			if (!project.isAccessible()) {
+				return false;
+			}
+			if (RepositoryProvider.isShared(project)) {
+				return false;
+			}
 		}
 		return selectedProjects.length > 0;
 	}

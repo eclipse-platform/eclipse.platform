@@ -434,8 +434,7 @@ public class DebugUITools {
 	 * @return an adaptable
 	 */
 	private static IAdaptable getDebugContextElementForSelection(ISelection activeContext) {
-		if (activeContext instanceof IStructuredSelection) {
-			IStructuredSelection selection = (IStructuredSelection) activeContext;
+		if (activeContext instanceof IStructuredSelection selection) {
 			if (!selection.isEmpty()) {
 				Object firstElement = selection.getFirstElement();
 				if (firstElement instanceof IAdaptable) {
@@ -484,8 +483,7 @@ public class DebugUITools {
 			return (IProcess)context;
 		}
 
-		if (context instanceof ILaunch) {
-			ILaunch launch= (ILaunch)context;
+		if (context instanceof ILaunch launch) {
 			IDebugTarget target= launch.getDebugTarget();
 			if (target != null) {
 				IProcess process = target.getProcess();
@@ -864,8 +862,7 @@ public class DebugUITools {
 								if (input.getAdapter(IResource.class).equals(configResource[0])) {
 									return isShiftTerminateLaunch(key);
 								}
-							} else if (key instanceof TreeSelection) {
-								TreeSelection selection = (TreeSelection) key;
+							} else if (key instanceof TreeSelection selection) {
 								TreePath[] treePath = selection.getPaths();
 								if (treePath != null && treePath.length == 1) {
 									Object lastSegmentObj = treePath[0].getLastSegment();
@@ -1368,8 +1365,7 @@ public class DebugUITools {
 			LaunchConfigurationTabGroupViewer tabViewer = ((LaunchConfigurationsDialog) dialog).getTabViewer();
 			if (tabViewer != null) {
 				Object input = tabViewer.getInput();
-				if (input instanceof ILaunchConfiguration) {
-					ILaunchConfiguration configuration = (ILaunchConfiguration) input;
+				if (input instanceof ILaunchConfiguration configuration) {
 					return configuration;
 				}
 			}

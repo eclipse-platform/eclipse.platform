@@ -41,11 +41,13 @@ public class TextContentDescriber implements ITextContentDescriber {
 
 	@Override
 	public int describe(InputStream contents, IContentDescription description) throws IOException {
-		if (description == null || !description.isRequested(IContentDescription.BYTE_ORDER_MARK))
+		if (description == null || !description.isRequested(IContentDescription.BYTE_ORDER_MARK)) {
 			return INDETERMINATE;
+		}
 		byte[] bom = Util.getByteOrderMark(contents);
-		if (bom != null)
+		if (bom != null) {
 			description.setProperty(IContentDescription.BYTE_ORDER_MARK, bom);
+		}
 		// we want to be pretty loose on detecting the text content type
 		return INDETERMINATE;
 	}

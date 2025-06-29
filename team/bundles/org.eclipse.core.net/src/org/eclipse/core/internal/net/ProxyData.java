@@ -70,8 +70,9 @@ public class ProxyData implements IProxyData {
 
 	@Override
 	public void setHost(String host) {
-		if (host != null && host.length() == 0)
+		if (host != null && host.length() == 0) {
 			host = null;
+		}
 		this.host = host;
 	}
 
@@ -161,44 +162,60 @@ public class ProxyData implements IProxyData {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		ProxyData other = (ProxyData) obj;
-		if (dynamic != other.dynamic)
+		if (dynamic != other.dynamic) {
 			return false;
+		}
 		if (host == null) {
-			if (other.host != null)
+			if (other.host != null) {
 				return false;
-		} else if (!host.equals(other.host))
+			}
+		} else if (!host.equals(other.host)) {
 			return false;
+		}
 		if (password == null) {
-			if (other.password != null)
+			if (other.password != null) {
 				return false;
-		} else if (!password.equals(other.password))
+			}
+		} else if (!password.equals(other.password)) {
 			return false;
-		if (port != other.port)
+		}
+		if (port != other.port) {
 			return false;
-		if (requiresAuthentication != other.requiresAuthentication)
+		}
+		if (requiresAuthentication != other.requiresAuthentication) {
 			return false;
+		}
 		if (source == null) {
-			if (other.source != null)
+			if (other.source != null) {
 				return false;
-		} else if (!source.equals(other.source))
+			}
+		} else if (!source.equals(other.source)) {
 			return false;
+		}
 		if (type == null) {
-			if (other.type != null)
+			if (other.type != null) {
 				return false;
-		} else if (!type.equals(other.type))
+			}
+		} else if (!type.equals(other.type)) {
 			return false;
+		}
 		if (user == null) {
-			if (other.user != null)
+			if (other.user != null) {
 				return false;
-		} else if (!user.equals(other.user))
+			}
+		} else if (!user.equals(other.user)) {
 			return false;
+		}
 		return true;
 	}
 

@@ -79,8 +79,9 @@ public final class ParticipantPagePane {
 		if (fPage != null) {
 			fPage.dispose();
 		}
-		if (site != null)
+		if (site != null) {
 			site.dispose();
+		}
 	}
 
 	public Image getTitleImage() {

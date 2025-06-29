@@ -28,7 +28,7 @@ public class ClearTextAction extends GlobalAction {
 	/**
 	 * The document on which this action performs its duty.
 	 */
-	private IDocument document;
+	private final IDocument document;
 
 	/**
 	 * Constructs a ClearTextAction action with the provided document.

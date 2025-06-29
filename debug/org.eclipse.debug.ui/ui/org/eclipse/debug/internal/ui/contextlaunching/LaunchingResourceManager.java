@@ -299,7 +299,7 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 			}
 		}
 		if(launched) {
-			return MessageFormat.format(ContextMessages.LaunchingResourceManager_0, new Object[] { config.getName() });
+			return MessageFormat.format(ContextMessages.LaunchingResourceManager_0, config.getName());
 		}
 		return config.getName();
 	}
@@ -374,7 +374,7 @@ public class LaunchingResourceManager implements IPropertyChangeListener, IWindo
 					return resource.getName();
 				}
 				else {
-					return MessageFormat.format(ContextMessages.LaunchingResourceManager_1, new Object[] { sc.get(0).getLabel() });
+					return MessageFormat.format(ContextMessages.LaunchingResourceManager_1, sc.get(0).getLabel());
 				}
 			}
 			else {

@@ -68,10 +68,11 @@ public class WebSearchPage extends RootScopePage {
 		super.initializeDefaults(store);
 		String template = (String) getEngineDescriptor().getParameters().get(
 				WebSearchScopeFactory.P_URL);
-		if (template != null)
+		if (template != null) {
 			store
 					.setDefault(getStoreKey(WebSearchScopeFactory.P_URL),
 							template);
+		}
 	}
 
 	@Override

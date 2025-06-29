@@ -125,8 +125,7 @@ public class IndexServletTest {
 		List<Node> results = new ArrayList<>();
 		for (int i = 0; i < contributions.getLength(); i++) {
 			Node next = contributions.item(i);
-			if (next instanceof Element)  {
-				Element nextElement = (Element)next;
+			if (next instanceof Element nextElement)  {
 				if ("indexContribution".equals(nextElement.getTagName())) {
 					findEntryInIndexContribution(nextElement, keyword, results);
 				}
@@ -140,8 +139,7 @@ public class IndexServletTest {
 		NodeList indexes = parent.getChildNodes();
 		for (int i = 0; i < indexes.getLength(); i++) {
 			Node next = indexes.item(i);
-			if (next instanceof Element) {
-				Element nextElement = (Element) next;
+			if (next instanceof Element nextElement) {
 				if ("index".equals(nextElement.getTagName())) {
 					findMatchingChildEntry(nextElement, keyword, results);
 				}
@@ -154,8 +152,7 @@ public class IndexServletTest {
 		NodeList topLevelEntries = parent.getChildNodes();
 		for (int i = 0; i < topLevelEntries.getLength(); i++) {
 			Node next = topLevelEntries.item(i);
-			if (next instanceof Element) {
-				Element nextElement = (Element) next;
+			if (next instanceof Element nextElement) {
 				if ("entry".equals(nextElement.getTagName())
 						&& keyword.equals(nextElement
 								.getAttribute("keyword"))) {

@@ -23,11 +23,13 @@ public class HrefUtil {
 	 */
 	public static String normalizeDirectoryHref(String pluginID, String dir) {
 		// "" is treated as if extra directory was not provided
-		if (dir == null || dir.length() <= 0)
+		if (dir == null || dir.length() <= 0) {
 			return null;
+		}
 		// "." means all the files in the plugin
-		if (".".equals(dir)) //$NON-NLS-1$
+		if (".".equals(dir)) { //$NON-NLS-1$
 			dir = ""; //$NON-NLS-1$
+		}
 		// remove not needed trailing separator
 		if (dir.length() > 0 && dir.lastIndexOf('/') == dir.length() - 1) {
 			dir = dir.substring(0, dir.length() - 1);
@@ -47,18 +49,21 @@ public class HrefUtil {
 	 *         /pluginID/path[#anchorID]
 	 */
 	public final static String normalizeHref(String pluginID, String href) {
-		if (href == null)
+		if (href == null) {
 			return null;
+		}
 		if (href.startsWith("http:") //$NON-NLS-1$
 				|| href.startsWith("https:") //$NON-NLS-1$
 				|| href.startsWith("file:") //$NON-NLS-1$
-				|| href.startsWith("jar:")) //$NON-NLS-1$
+				|| href.startsWith("jar:")) { //$NON-NLS-1$
 			// external doc
 			return href;
+		}
 		href = normalizeDirectoryPath(href);
-		if (href.startsWith("/")) //$NON-NLS-1$
+		if (href.startsWith("/")) { //$NON-NLS-1$
 			// already normalized
 			return href;
+		}
 		if (href.startsWith("../")) { //$NON-NLS-1$
 			return href.substring(2);
 		}
@@ -82,11 +87,13 @@ public class HrefUtil {
 	 * @return plugin ID, or null
 	 */
 	public static String getPluginIDFromHref(String href) {
-		if (href == null || href.length() < 2 || href.charAt(0) != '/')
+		if (href == null || href.length() < 2 || href.charAt(0) != '/') {
 			return null;
+		}
 		int secondSlashIx = href.indexOf("/", 1); //$NON-NLS-1$
-		if (secondSlashIx < 0) // href is /pluginID
+		if (secondSlashIx < 0) { // href is /pluginID
 			return href.substring(1);
+		}
 		// href is /pluginID/path[#anchorID]
 		return href.substring(1, secondSlashIx);
 	}
@@ -99,19 +106,24 @@ public class HrefUtil {
 	 * @return relative resource path, or null
 	 */
 	public static String getResourcePathFromHref(String href) {
-		if (href == null)
+		if (href == null) {
 			return null;
+		}
 		// drop anchor id
 		int anchorIx = href.lastIndexOf("#"); //$NON-NLS-1$
-		if (anchorIx >= 0) //anchor exists, drop it
+		if (anchorIx >= 0) { //anchor exists, drop it
 			href = href.substring(0, anchorIx);
-		if (href.length() < 2 || href.charAt(0) != '/')
+		}
+		if (href.length() < 2 || href.charAt(0) != '/') {
 			return null;
+		}
 		int secondSlashIx = href.indexOf("/", 1); //$NON-NLS-1$
-		if (secondSlashIx < 0) // href is /pluginID
+		if (secondSlashIx < 0) { // href is /pluginID
 			return null;
-		if (secondSlashIx + 1 < href.length()) // href is /pluginID/path
+		}
+		if (secondSlashIx + 1 < href.length()) { // href is /pluginID/path
 			return href.substring(secondSlashIx + 1);
+		}
 		// href is /pluginID/
 		return ""; //$NON-NLS-1$
 	}

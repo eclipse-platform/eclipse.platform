@@ -34,10 +34,11 @@ public class GroupData {
 	}
 
 	public GroupData(Element element) {
-		if (element.getNodeName().equals("hidden")) //$NON-NLS-1$
+		if (element.getNodeName().equals("hidden")) { //$NON-NLS-1$
 			path = IUniversalIntroConstants.HIDDEN;
-		else
+		} else {
 			path = element.getAttribute("path"); //$NON-NLS-1$
+		}
 		NodeList children = element.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node child = children.item(i);
@@ -51,8 +52,9 @@ public class GroupData {
 			}
 		}
 		String df = element.getAttribute("default"); //$NON-NLS-1$
-		if (df!=null && df.equalsIgnoreCase("true")) //$NON-NLS-1$
+		if (df!=null && df.equalsIgnoreCase("true")) { //$NON-NLS-1$
 			fDefault = true;
+		}
 	}
 
 	public boolean isHidden() {
@@ -69,8 +71,9 @@ public class GroupData {
 			String id = edata.getId();
 			IntroElement element = null;
 			String tagName="anchor"; //$NON-NLS-1$
-			if (edata instanceof SeparatorData)
+			if (edata instanceof SeparatorData) {
 				tagName = "hr"; //$NON-NLS-1$
+			}
 			element = new IntroElement(tagName);
 			element.setAttribute("id", id); //$NON-NLS-1$
 			result.add(element);
@@ -117,8 +120,9 @@ public class GroupData {
 		int count=0;
 		for (int i=0; i<children.size(); i++) {
 			BaseData data = children.get(i);
-			if (data instanceof ExtensionData)
+			if (data instanceof ExtensionData) {
 				count++;
+			}
 		}
 		return count;
 	}
@@ -145,8 +149,9 @@ public class GroupData {
 	BaseData find(String extensionId) {
 		for (int i = 0; i < children.size(); i++) {
 			BaseData data = children.get(i);
-			if (data.getId().equals(extensionId))
+			if (data.getId().equals(extensionId)) {
 				return data;
+			}
 		}
 		return null;
 	}
@@ -158,8 +163,9 @@ public class GroupData {
 	public int getIndexOf(String baseId) {
 		for (int i = 0; i < children.size(); i++) {
 			BaseData bd = children.get(i);
-			if (bd.getId().equals(baseId))
+			if (bd.getId().equals(baseId)) {
 				return i;
+			}
 		}
 		return -1;
 	}
@@ -203,23 +209,25 @@ public class GroupData {
 
 	public void write(PrintWriter writer, String indent) {
 		writer.print(indent);
-		if (isHidden())
+		if (isHidden()) {
 			writer.print("<hidden>"); //$NON-NLS-1$
-		else {
+		} else {
 			writer.print("<group path=\""+path+"\"");  //$NON-NLS-1$ //$NON-NLS-2$
-			if (fDefault)
+			if (fDefault) {
 				writer.println(" default=\"true\">"); //$NON-NLS-1$
-			else
+			} else {
 				writer.println(">"); //$NON-NLS-1$
+			}
 		}
 		for (int i=0; i<children.size(); i++) {
 			BaseData ed = children.get(i);
 			ed.write(writer, indent+"   "); //$NON-NLS-1$
 		}
 		writer.print(indent);
-		if (isHidden())
+		if (isHidden()) {
 			writer.println("</hidden>"); //$NON-NLS-1$
-		else
+		} else {
 			writer.println("</group>"); //$NON-NLS-1$
+		}
 	}
 }

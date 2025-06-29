@@ -71,7 +71,9 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 			return 0;
 		} else if (len == 1) {
 			int b = read();
-			if (b == -1) return -1;
+			if (b == -1) {
+				return -1;
+			}
 			buffer[off] = (byte) b;
 			return 1;
 		}
@@ -82,7 +84,9 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 			buffer[off++] = '\n';
 			--len;
 			count = 1;
-			if (len < 2) return count; // is there still enough room to expand more?
+			if (len < 2) {
+				return count; // is there still enough room to expand more?
+			}
 		}
 		// read some bytes from the stream into the back half of the buffer
 		// this guarantees that there is always room to expand
@@ -125,7 +129,9 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 	public long skip(long count) throws IOException {
 		int actualCount = 0; // assumes count < Integer.MAX_INT
 		try {
-			while (count-- > 0 && read() != -1) actualCount++; // skip the specified number of bytes
+			while (count-- > 0 && read() != -1) {
+				actualCount++; // skip the specified number of bytes
+			}
 			return actualCount;
 		} catch (InterruptedIOException e) {
 			e.bytesTransferred = actualCount;

@@ -62,17 +62,18 @@ public class CountExpression extends Expression {
 	}
 
 	private void initializeSize(String size) {
-		if (size == null)
+		if (size == null) {
 			size = "*"; //$NON-NLS-1$
-		if ("*".equals(size)) //$NON-NLS-1$
+		}
+		if ("*".equals(size)) { //$NON-NLS-1$
 			fMode = ANY_NUMBER;
-		else if ("?".equals(size)) //$NON-NLS-1$
+		} else if ("?".equals(size)) { //$NON-NLS-1$
 			fMode = NONE_OR_ONE;
-		else if ("!".equals(size)) //$NON-NLS-1$
+		} else if ("!".equals(size)) { //$NON-NLS-1$
 			fMode = NONE;
-		else if ("+".equals(size)) //$NON-NLS-1$
+		} else if ("+".equals(size)) { //$NON-NLS-1$
 			fMode = ONE_OR_MORE;
-		else if (size.charAt(0) == '-' && size.charAt(size.length() - 1) == ')') {
+		} else if (size.charAt(0) == '-' && size.charAt(size.length() - 1) == ')') {
 			try {
 				fMode = LESS_THAN;
 				fSize = Integer.parseInt(size.substring(1, size.length() - 1));
@@ -118,8 +119,9 @@ public class CountExpression extends Expression {
 			size = collection.size();
 		} else {
 			ICountable countable = Expressions.getAsICountable(var, this);
-			if (countable == null)
+			if (countable == null) {
 				return EvaluationResult.NOT_LOADED;
+			}
 			size = countable.count();
 		}
 		switch (fMode) {
@@ -154,10 +156,10 @@ public class CountExpression extends Expression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof CountExpression))
+		if (!(object instanceof final CountExpression that)) {
 			return false;
+		}
 
-		final CountExpression that = (CountExpression) object;
 		return (this.fMode == that.fMode) && (this.fSize == that.fSize);
 	}
 

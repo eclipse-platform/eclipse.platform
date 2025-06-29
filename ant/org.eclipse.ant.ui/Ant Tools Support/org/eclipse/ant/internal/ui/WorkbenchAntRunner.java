@@ -22,7 +22,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Application to run an Ant script after starting the workbench. Shuts down the workbench after the script runs.
- * 
+ *
  * @since 3.4
  */
 public class WorkbenchAntRunner implements IApplication {

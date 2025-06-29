@@ -38,8 +38,7 @@ public class ControlCellModifier implements ICellModifier {
 	@Override
 	public Object getValue(Object element, String property) {
 		if (SequencerColumnPresentation.COL_VALUE.equals(property)) {
-			if (element instanceof SequencerControl) {
-				SequencerControl control = (SequencerControl) element;
+			if (element instanceof SequencerControl control) {
 				return control.getValue();
 			}
 		}
@@ -51,9 +50,8 @@ public class ControlCellModifier implements ICellModifier {
 		Object oldValue = getValue(element, property);
 		if (!value.equals(oldValue)) {
 			if (SequencerColumnPresentation.COL_VALUE.equals(property)) {
-				if (element instanceof SequencerControl) {
+				if (element instanceof SequencerControl control) {
 					if (value instanceof String) {
-						SequencerControl control = (SequencerControl) element;
 						control.setValue((String) value);
 					}
 				}

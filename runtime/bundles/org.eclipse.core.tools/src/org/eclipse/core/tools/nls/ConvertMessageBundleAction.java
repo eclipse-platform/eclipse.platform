@@ -39,15 +39,17 @@ public class ConvertMessageBundleAction implements IObjectActionDelegate {
 
 	@Override
 	public void run(IAction action) {
-		if (fAccessorUnit == null)
+		if (fAccessorUnit == null) {
 			return;
+		}
 		try {
 			final GotoResourceAction pAction = new GotoResourceAction(fPart);
 			IRunnableWithProgress runnable = monitor -> pAction.run();
 			PlatformUI.getWorkbench().getProgressService().run(false, false, runnable);
 			IFile propertiesFile = (IFile) pAction.getResource();
-			if (propertiesFile == null)
+			if (propertiesFile == null) {
 				return;
+			}
 			MessageBundleRefactoring refactoring = new MessageBundleRefactoring(fAccessorUnit.getTypes()[0], propertiesFile);
 			PerformRefactoringOperation op = new PerformRefactoringOperation(refactoring, CheckConditionsOperation.ALL_CONDITIONS);
 			PlatformUI.getWorkbench().getProgressService().run(false, false, new WorkbenchRunnableAdapter(op));

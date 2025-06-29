@@ -43,9 +43,9 @@ class FileSpec {
 
 	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof FileSpec))
+		if (!(other instanceof FileSpec otherFileSpec)) {
 			return false;
-		FileSpec otherFileSpec = (FileSpec) other;
+		}
 		return equals(text, otherFileSpec.getType(), false);
 	}
 

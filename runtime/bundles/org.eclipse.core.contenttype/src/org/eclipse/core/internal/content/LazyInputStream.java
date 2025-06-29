@@ -45,8 +45,9 @@ public class LazyInputStream extends InputStream implements ILazySource {
 	}
 
 	private int computeBlockSize(int blockIndex) {
-		if (blockIndex < blocks.length - 1)
+		if (blockIndex < blocks.length - 1) {
 			return blockCapacity;
+		}
 		int blockSize = (int) (bufferSize % blockCapacity);
 		return blockSize == 0 ? blockCapacity : blockSize;
 	}
@@ -145,8 +146,9 @@ public class LazyInputStream extends InputStream implements ILazySource {
 		// read a block from the underlying stream
 		byte[] newBlock = new byte[blockCapacity];
 		int readCount = in.read(newBlock);
-		if (readCount == -1)
+		if (readCount == -1) {
 			return 0;
+		}
 		// expand blocks array
 		byte[][] tmpBlocks = new byte[blocks.length + 1][];
 		System.arraycopy(blocks, 0, tmpBlocks, 0, blocks.length);
@@ -168,8 +170,9 @@ public class LazyInputStream extends InputStream implements ILazySource {
 	@Override
 	public int read() throws IOException {
 		ensureAvailable(1);
-		if (bufferSize <= offset)
+		if (bufferSize <= offset) {
 			return -1;
+		}
 		int nextByte = 0xFF & blocks[getCurrentBlockIndex()][getOffsetInCurrentBlock()];
 		increaseOffset(1);
 		return nextByte;
@@ -200,8 +203,9 @@ public class LazyInputStream extends InputStream implements ILazySource {
 
 	@Override
 	public long skip(long toSkip) throws IOException {
-		if (toSkip <= 0)
+		if (toSkip <= 0) {
 			return 0;
+		}
 		ensureAvailable(toSkip);
 		long skipped = Math.min(toSkip, bufferSize - offset);
 		increaseOffset(skipped);

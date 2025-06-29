@@ -34,8 +34,8 @@ public class PopHandler extends AbstractDataStackViewHandler {
 	@Override
 	protected void doExecute(DataStackView view, PDAThread thread, ISelection selection) throws ExecutionException {
 		TreeViewer viewer = (TreeViewer)view.getViewer();
-		Object popee = selection instanceof IStructuredSelection
-			? ((IStructuredSelection)selection).getFirstElement() : null;
+		Object popee = selection instanceof IStructuredSelection i2
+			? i2.getFirstElement() : null;
 		if (popee != null) {
 			try {
 				IValue[] stack = thread.getDataStack();

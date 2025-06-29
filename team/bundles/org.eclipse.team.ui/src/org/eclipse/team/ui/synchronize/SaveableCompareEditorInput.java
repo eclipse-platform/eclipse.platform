@@ -134,18 +134,21 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 		@Override
 		public void dispose() {
 			super.dispose();
-			if (lrte != null)
+			if (lrte != null) {
 				lrte.setSharedDocumentListener(null);
+			}
 		}
 
 		@Override
 		public void handleDocumentConnected() {
-			if (connected)
+			if (connected) {
 				return;
+			}
 			connected = true;
 			registerSaveable(false);
-			if (lrte != null)
+			if (lrte != null) {
 				lrte.setSharedDocumentListener(null);
+			}
 		}
 
 		private void registerSaveable(boolean init) {
@@ -240,8 +243,9 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 
 	private ISaveablesLifecycleListener getSaveablesLifecycleListener(IWorkbenchPart part) {
 		ISaveablesLifecycleListener listener = Adapters.adapt(part, ISaveablesLifecycleListener.class);
-		if (listener == null)
+		if (listener == null) {
 			listener = part.getSite().getService(ISaveablesLifecycleListener.class);
+		}
 		return listener;
 	}
 
@@ -265,13 +269,11 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			logTrace("compareInputChangeListener = null"); //$NON-NLS-1$
 		}
 		compareInputChangeListener = null;
-		if (saveable instanceof SaveableComparison && propertyListener != null) {
-			SaveableComparison scm = (SaveableComparison) saveable;
+		if (saveable instanceof SaveableComparison scm && propertyListener != null) {
 			scm.removePropertyListener(propertyListener);
 			propertyListener = null;
 		}
-		if (saveable instanceof LocalResourceSaveableComparison) {
-			LocalResourceSaveableComparison rsc = (LocalResourceSaveableComparison) saveable;
+		if (saveable instanceof LocalResourceSaveableComparison rsc) {
 			rsc.dispose();
 		}
 		if (getCompareResult() instanceof IDisposable) {
@@ -299,8 +301,9 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	protected Object prepareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
 		final ICompareInput input = prepareCompareInput(monitor);
-		if (input != null)
-			setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { input.getName()}));
+		if (input != null) {
+			setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, input.getName()));
+		}
 		return input;
 	}
 
@@ -342,17 +345,20 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	 * close may be asynchronous)
 	 */
 	protected boolean closeEditor(boolean checkForUnsavedChanges) {
-		if (isSaveNeeded() && checkForUnsavedChanges)
+		if (isSaveNeeded() && checkForUnsavedChanges) {
 			return false;
+		}
 
 		final IWorkbenchPage page= getPage();
-		if (page == null)
+		if (page == null) {
 			return false;
+		}
 
 		Runnable runnable = () -> {
 			Shell shell= page.getWorkbenchWindow().getShell();
-			if (shell == null)
+			if (shell == null) {
 				return;
+			}
 
 			IEditorPart part= page.findEditor(SaveableCompareEditorInput.this);
 			getPage().closeEditor(part, false);
@@ -361,8 +367,9 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			runnable.run();
 		} else {
 			Shell shell= page.getWorkbenchWindow().getShell();
-			if (shell == null)
+			if (shell == null) {
 				return false;
+			}
 			Display display= shell.getDisplay();
 			display.asyncExec(runnable);
 		}
@@ -370,8 +377,9 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	}
 
 	private IWorkbenchPage getPage() {
-		if (page == null)
+		if (page == null) {
 			return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		}
 		return page;
 	}
 
@@ -424,8 +432,9 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 
 	@Override
 	public Saveable[] getActiveSaveables() {
-		if (getCompareResult() == null)
+		if (getCompareResult() == null) {
 			return new Saveable[0];
+		}
 		return new Saveable[] { getSaveable() };
 	}
 
@@ -483,10 +492,8 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	public Viewer findContentViewer(Viewer oldViewer, ICompareInput input, Composite parent) {
 		Viewer newViewer = super.findContentViewer(oldViewer, input, parent);
 		boolean isNewViewer= newViewer != oldViewer;
-		if (isNewViewer && newViewer instanceof IPropertyChangeNotifier && saveable instanceof IPropertyChangeListener) {
+		if (isNewViewer && newViewer instanceof final IPropertyChangeNotifier dsp && saveable instanceof final IPropertyChangeListener pcl) {
 			// Register the model for change events if appropriate.
-			final IPropertyChangeNotifier dsp= (IPropertyChangeNotifier) newViewer;
-			final IPropertyChangeListener pcl = (IPropertyChangeListener) saveable;
 			dsp.addPropertyChangeListener(pcl);
 			Control c= newViewer.getControl();
 			c.addDisposeListener(
@@ -503,8 +510,9 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 
 	@Override
 	public boolean isDirty() {
-		if (saveable != null)
+		if (saveable != null) {
 			return saveable.isDirty();
+		}
 		return super.isDirty();
 	}
 

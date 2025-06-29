@@ -48,10 +48,11 @@ public class PathTree {
 			return (flags & propertyBit) != 0;
 		}
 		public void setProperty(int propertyBit, boolean value) {
-			if (value)
+			if (value) {
 				flags |= propertyBit;
-			else
+			} else {
 				flags ^= propertyBit;
+			}
 		}
 		public boolean descendantHasFlag(int property) {
 			if (hasDescendants()) {
@@ -76,8 +77,9 @@ public class PathTree {
 	 */
 	public synchronized Object get(IPath path) {
 		Node node = getNode(path);
-		if (node == null)
+		if (node == null) {
 			return null;
+		}
 		return node.getPayload();
 	}
 
@@ -112,8 +114,9 @@ public class PathTree {
 	 */
 	public synchronized Object remove(IPath path) {
 		Node node = getNode(path);
-		if (node == null)
+		if (node == null) {
 			return null;
+		}
 		Object previous = node.getPayload();
 		node.setPayload(null);
 		if(previous != null) {
@@ -131,10 +134,13 @@ public class PathTree {
 	 * @return whether there are children for the given path
 	 */
 	public synchronized boolean hasChildren(IPath path) {
-		if (path.isEmpty()) return !objects.isEmpty();
+		if (path.isEmpty()) {
+			return !objects.isEmpty();
+		}
 		Node node = getNode(path);
-		if (node == null)
+		if (node == null) {
 			return false;
+		}
 		return node.hasDescendants();
 	}
 
@@ -176,8 +182,9 @@ public class PathTree {
 			addedParent = true;
 		} else {
 			Node node = getNode(parent);
-			if (node == null)
+			if (node == null) {
 				node = addNode(parent);
+			}
 			Set<IPath> children = node.descendantsWithPayload;
 			if (children == null) {
 				children = new HashSet<>();
@@ -211,8 +218,9 @@ public class PathTree {
 				children.remove(path);
 				if (children.isEmpty()) {
 					node.descendantsWithPayload = null;
-					if (node.isEmpty())
+					if (node.isEmpty()) {
 						removeNode(parent);
+					}
 					removedParent = true;
 				}
 			}
@@ -248,8 +256,9 @@ public class PathTree {
 		List<IPath> result = new ArrayList<>();
 		for (IPath path : objects.keySet()) {
 			Node node = getNode(path);
-			if (node.getPayload() != null)
+			if (node.getPayload() != null) {
 				result.add(path);
+			}
 		}
 		return result.toArray(new IPath[result.size()]);
 	}
@@ -262,8 +271,9 @@ public class PathTree {
 		List<Object> result = new ArrayList<>();
 		for (IPath path : objects.keySet()) {
 			Node node = getNode(path);
-			if (node.getPayload() != null)
+			if (node.getPayload() != null) {
 				result.add(node.getPayload());
+			}
 		}
 		return result;
 	}
@@ -307,28 +317,34 @@ public class PathTree {
 	}
 
 	private void internalSetPropertyBit(IPath path, int property, boolean value, Set<IPath> changed) {
-		if (path.segmentCount() == 0)
+		if (path.segmentCount() == 0) {
 			return;
+		}
 		Node node = getNode(path);
-		if (node == null)
+		if (node == null) {
 			return;
+		}
 		// No need to set it if the value hans't changed
-		if (value == node.hasFlag(property))
+		if (value == node.hasFlag(property)) {
 			return;
+		}
 		// Only unset the property if no descendants have the flag set
-		if (!value && node.descendantHasFlag(property))
+		if (!value && node.descendantHasFlag(property)) {
 			return;
+		}
 		node.setProperty(property, value);
 		changed.add(path);
 		internalSetPropertyBit(path.removeLastSegments(1), property, value, changed);
 	}
 
 	public synchronized boolean getProperty(IPath path, int property) {
-		if (path.segmentCount() == 0)
+		if (path.segmentCount() == 0) {
 			return false;
+		}
 		Node node = getNode(path);
-		if (node == null)
+		if (node == null) {
 			return false;
+		}
 		return (node.hasFlag(property));
 	}
 

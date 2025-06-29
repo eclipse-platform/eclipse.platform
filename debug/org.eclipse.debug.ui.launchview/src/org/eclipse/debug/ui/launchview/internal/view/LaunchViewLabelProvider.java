@@ -27,7 +27,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 public class LaunchViewLabelProvider extends BaseLabelProvider implements IStyledLabelProvider {
 
-	private static final ImageDescriptor ICON_RUNNING = AbstractUIPlugin.imageDescriptorFromPlugin(LaunchViewBundleInfo.PLUGIN_ID, "icons/run_co.png"); //$NON-NLS-1$
+	private static final ImageDescriptor ICON_RUNNING = AbstractUIPlugin.imageDescriptorFromPlugin(LaunchViewBundleInfo.PLUGIN_ID, "icons/run_co.svg"); //$NON-NLS-1$
 
 	private final ImageRegistry perConfig = new ImageRegistry();
 
@@ -42,8 +42,7 @@ public class LaunchViewLabelProvider extends BaseLabelProvider implements IStyle
 
 	@Override
 	public Image getImage(Object element) {
-		if (element instanceof LaunchObjectModel) {
-			LaunchObjectModel obj = (LaunchObjectModel) element;
+		if (element instanceof LaunchObjectModel obj) {
 			if (obj.getObject() != null && obj.getObject().canTerminate()) {
 				return getCachedRunningImage(obj);
 			}

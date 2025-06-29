@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2004, 2011 John-Mason P. Shackelford and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     John-Mason P. Shackelford - initial API and implementation
  * 	   IBM Corporation - bug fixes
@@ -232,8 +232,9 @@ public class XmlDocumentFormatter {
 
 				reader.mark(1);
 				int intChar = reader.read();
-				if (intChar == -1)
+				if (intChar == -1) {
 					break;
+				}
 
 				char c = (char) intChar;
 				if (c == '<') {
@@ -372,7 +373,7 @@ public class XmlDocumentFormatter {
 
 	/**
 	 * Returns the indent of the given string.
-	 * 
+	 *
 	 * @param line
 	 *            the text line
 	 * @param tabWidth
@@ -466,7 +467,7 @@ public class XmlDocumentFormatter {
 	/**
 	 * Returns the indentation of the line at <code>offset</code> as a <code>StringBuffer</code>. If the offset is not valid, the empty string is
 	 * returned.
-	 * 
+	 *
 	 * @param offset
 	 *            the offset in the document
 	 * @return the indentation (leading whitespace) of the line in which <code>offset</code> is located
@@ -488,7 +489,7 @@ public class XmlDocumentFormatter {
 	/**
 	 * Returns the first offset greater than <code>offset</code> and smaller than <code>end</code> whose character is not a space or tab character. If
 	 * no such offset is found, <code>end</code> is returned.
-	 * 
+	 *
 	 * @param document
 	 *            the document to search in
 	 * @param offset
@@ -512,7 +513,7 @@ public class XmlDocumentFormatter {
 
 	/**
 	 * Creates a string that represents one indent (can be spaces or tabs..)
-	 * 
+	 *
 	 * @return one indentation
 	 */
 	public static StringBuffer createIndent() {

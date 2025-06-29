@@ -157,8 +157,9 @@ public class MemoryByte {
 	 */
 	public void setReadable(boolean readable) {
 		flags |= MemoryByte.READABLE;
-		if (!readable)
+		if (!readable) {
 			flags ^= MemoryByte.READABLE;
+		}
 	}
 
 	/**
@@ -179,8 +180,9 @@ public class MemoryByte {
 	 */
 	public void setWritable(boolean writable) {
 		flags |= MemoryByte.WRITABLE;
-		if (!writable)
+		if (!writable) {
 			flags ^= MemoryByte.WRITABLE;
+		}
 	}
 
 	/**
@@ -199,8 +201,9 @@ public class MemoryByte {
 	 */
 	public void setChanged(boolean changed) {
 		flags |= MemoryByte.CHANGED;
-		if (!changed)
+		if (!changed) {
 			flags ^= MemoryByte.CHANGED;
+		}
 	}
 
 	/**
@@ -220,8 +223,9 @@ public class MemoryByte {
 	 */
 	public void setHistoryKnown(boolean known) {
 		flags |= MemoryByte.HISTORY_KNOWN;
-		if (!known)
+		if (!known) {
 			flags ^= MemoryByte.HISTORY_KNOWN;
+		}
 	}
 
 	/**
@@ -242,8 +246,9 @@ public class MemoryByte {
 	public void setBigEndian(boolean isBigEndian)
 	{
 		flags |= MemoryByte.BIG_ENDIAN;
-		if (!isBigEndian)
+		if (!isBigEndian) {
 			flags ^= MemoryByte.BIG_ENDIAN;
+		}
 	}
 
 	/**
@@ -266,8 +271,9 @@ public class MemoryByte {
 	public void setEndianessKnown(boolean isEndianessKnown)
 	{
 		flags |= MemoryByte.ENDIANESS_KNOWN;
-		if (!isEndianessKnown)
+		if (!isEndianessKnown) {
 			flags ^= MemoryByte.ENDIANESS_KNOWN;
+		}
 	}
 
 	/**

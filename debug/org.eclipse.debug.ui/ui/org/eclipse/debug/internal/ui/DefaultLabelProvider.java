@@ -132,8 +132,7 @@ public class DefaultLabelProvider implements ILabelProvider {
 					return IDebugUIConstants.IMG_OBJS_STACKFRAME;
 				}
 				return IDebugUIConstants.IMG_OBJS_STACKFRAME_RUNNING;
-			} else if (element instanceof IThread) {
-				IThread thread = (IThread)element;
+			} else if (element instanceof IThread thread) {
 				if (thread.isSuspended()) {
 					return IDebugUIConstants.IMG_OBJS_THREAD_SUSPENDED;
 				} else if (thread.isTerminated()) {
@@ -141,8 +140,7 @@ public class DefaultLabelProvider implements ILabelProvider {
 				} else {
 					return IDebugUIConstants.IMG_OBJS_THREAD_RUNNING;
 				}
-			} else if (element instanceof IDebugTarget) {
-				IDebugTarget target= (IDebugTarget) element;
+			} else if (element instanceof IDebugTarget target) {
 				if (target.isTerminated() || target.isDisconnected()) {
 					return IDebugUIConstants.IMG_OBJS_DEBUG_TARGET_TERMINATED;
 				} else if (target.isSuspended()) {
@@ -163,9 +161,8 @@ public class DefaultLabelProvider implements ILabelProvider {
 					return IDebugUIConstants.IMG_OBJS_OS_PROCESS_TERMINATED;
 				}
 				return IDebugUIConstants.IMG_OBJS_OS_PROCESS;
-			} else if (element instanceof ILaunch) {
+			} else if (element instanceof ILaunch launch) {
 				// determine the image from the launch config type
-				ILaunch launch= (ILaunch)element;
 				ILaunchConfiguration configuration = launch.getLaunchConfiguration();
 				if (configuration != null) {
 					try {
@@ -237,8 +234,7 @@ public class DefaultLabelProvider implements ILabelProvider {
 					label.append(((ILaunchConfiguration)element).getName());
 				} else if (element instanceof ILaunchConfigurationType) {
 					label.append(((ILaunchConfigurationType)element).getName());
-				} else if(element instanceof ILaunchDelegate) {
-					ILaunchDelegate delegate = (ILaunchDelegate) element;
+				} else if(element instanceof ILaunchDelegate delegate) {
 					String name = delegate.getName();
 					if(name == null) {
 						name = delegate.getContributorName();
@@ -255,10 +251,9 @@ public class DefaultLabelProvider implements ILabelProvider {
 			if (element instanceof ITerminate) {
 				if (((ITerminate) element).isTerminated()) {
 					String terminatedMessage= null;
-					if (element instanceof IProcess) {
-						IProcess process = (IProcess)element;
+					if (element instanceof IProcess process) {
 						int exit = process.getExitValue();
-						terminatedMessage = MessageFormat.format(DebugUIMessages.DefaultLabelProvider_16, new Object[] { Integer.toString(exit) });
+						terminatedMessage = MessageFormat.format(DebugUIMessages.DefaultLabelProvider_16, Integer.toString(exit));
 					} else {
 						terminatedMessage= DebugUIMessages.DefaultLabelProvider_1;
 					}
@@ -290,7 +285,7 @@ public class DefaultLabelProvider implements ILabelProvider {
 		if (breakpoint instanceof ILineBreakpoint) {
 			try {
 				int lineNumber = ((ILineBreakpoint)breakpoint).getLineNumber();
-				label.append(MessageFormat.format(DebugUIMessages.DefaultLabelProvider_17, new Object[] { Integer.toString(lineNumber) }));
+				label.append(MessageFormat.format(DebugUIMessages.DefaultLabelProvider_17, Integer.toString(lineNumber)));
 			} catch (CoreException e) {
 			}
 		}
@@ -437,8 +432,7 @@ public class DefaultLabelProvider implements ILabelProvider {
 		if (breakpoint != null && breakpoint.getMarker().exists()) {
 			try {
 				boolean enabled = breakpoint.isEnabled();
-				if (breakpoint instanceof IWatchpoint) {
-					IWatchpoint watchpoint = (IWatchpoint) breakpoint;
+				if (breakpoint instanceof IWatchpoint watchpoint) {
 					if (watchpoint.isAccess()) {
 						if (watchpoint.isModification()) {
 							//access and modification

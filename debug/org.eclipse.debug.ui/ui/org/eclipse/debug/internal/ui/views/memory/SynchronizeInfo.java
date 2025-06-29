@@ -50,11 +50,13 @@ public class SynchronizeInfo {
 	 * Set a property and its value to the info object
 	 */
 	public void setProperty(String propertyId, Object value) {
-		if (propertyId == null)
+		if (propertyId == null) {
 			return;
+		}
 
-		if (value == null)
+		if (value == null) {
 			return;
+		}
 
 		fProperties.put(propertyId, value);
 	}
@@ -65,8 +67,9 @@ public class SynchronizeInfo {
 	 * @return value of the property
 	 */
 	public Object getProperty(String propertyId) {
-		if (propertyId == null)
+		if (propertyId == null) {
 			return null;
+		}
 
 		Object value = fProperties.get(propertyId);
 
@@ -77,8 +80,9 @@ public class SynchronizeInfo {
 	 * @return all the property ids stored in this sync info object
 	 */
 	public String[] getPropertyIds() {
-		if (fProperties == null)
+		if (fProperties == null) {
 			return new String[0];
+		}
 
 		Enumeration<String> enumeration = fProperties.keys();
 		ArrayList<String> ids = new ArrayList<>();

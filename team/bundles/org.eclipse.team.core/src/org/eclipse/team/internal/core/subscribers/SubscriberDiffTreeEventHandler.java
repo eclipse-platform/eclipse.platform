@@ -130,8 +130,9 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 						// return to the STARTED state.
 						if (state != STATE_COLLECTING_CHANGES) {
 							state = STATE_STARTED;
-							if (exceptionState == EXCEPTION_NONE)
+							if (exceptionState == EXCEPTION_NONE) {
 								exceptionState = EXCEPTION_CANCELED;
+							}
 						}
 					}
 				}
@@ -154,8 +155,9 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			handleException(e);
 		}
 		ResourceTraversal[] traversals = manager.getScope().getTraversals();
-		if (traversals.length > 0)
+		if (traversals.length > 0) {
 			reset(traversals, SubscriberEvent.INITIALIZE);
+		}
 	}
 
 	@Override
@@ -165,9 +167,10 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			queueDispatchEvent(
 				new SubscriberEvent(resource, SubscriberEvent.REMOVAL, IResource.DEPTH_ZERO));
 		} else {
-			if (isInScope(resource))
+			if (isInScope(resource)) {
 				queueDispatchEvent(
 					new SubscriberDiffChangedEvent(resource, SubscriberEvent.CHANGE, IResource.DEPTH_ZERO, node));
+			}
 		}
 	}
 
@@ -194,8 +197,9 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 				return true;
 			});
 		} catch (CoreException e) {
-			if (resource.getProject().isAccessible())
+			if (resource.getProject().isAccessible()) {
 				handleException(e, resource, ITeamStatus.SYNC_INFO_SET_ERROR, e.getMessage());
+			}
 		} finally {
 			monitor.done();
 		}
@@ -209,8 +213,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			for (SubscriberEvent event : events) {
 				switch (event.getType()) {
 					case SubscriberEvent.CHANGE :
-						if (event instanceof SubscriberDiffChangedEvent) {
-							SubscriberDiffChangedEvent se = (SubscriberDiffChangedEvent) event;
+						if (event instanceof SubscriberDiffChangedEvent se) {
 							IDiff changedNode = se.getChangedNode();
 							if (changedNode.getKind() == IDiff.NO_CHANGE) {
 								tree.remove(changedNode.getPath());
@@ -287,8 +290,9 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	protected void handleCancel(OperationCanceledException e) {
 		super.handleCancel(e);
 		tree.reportError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.SYNC_INFO_SET_CANCELLATION, Messages.SubscriberEventHandler_12, e, ResourcesPlugin.getWorkspace().getRoot()));
-		if (exceptionState == EXCEPTION_NONE)
+		if (exceptionState == EXCEPTION_NONE) {
 			exceptionState = EXCEPTION_CANCELED;
+		}
 	}
 
 	public DiffFilter getFilter() {
@@ -315,8 +319,9 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	@Override
 	public synchronized void start() {
 		super.start();
-		if (state == STATE_NEW)
+		if (state == STATE_NEW) {
 			state = STATE_STARTED;
+		}
 	}
 
 	public int getState() {
@@ -325,24 +330,27 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 
 	@Override
 	protected boolean isSystemJob() {
-		if (manager != null && !manager.isInitialized())
+		if (manager != null && !manager.isInitialized()) {
 			return false;
+		}
 		return super.isSystemJob();
 	}
 
 	@Override
 	public synchronized void remove(IResource resource) {
 		// Don't queue changes if we haven't been initialized
-		if (state == STATE_STARTED)
+		if (state == STATE_STARTED) {
 			return;
+		}
 		super.remove(resource);
 	}
 
 	@Override
 	public void change(IResource resource, int depth) {
 		// Don't queue changes if we haven't been initialized
-		if (state == STATE_STARTED)
+		if (state == STATE_STARTED) {
 			return;
+		}
 		super.change(resource, depth);
 	}
 }

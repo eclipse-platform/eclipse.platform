@@ -213,7 +213,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @return a URL for the given path or <code>null</code>
 	 * @deprecated use {@link FileLocator#find(Bundle, IPath, Map)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final URL find(IPath path) {
 		return FileLocator.find(getBundle(), path, null);
 	}
@@ -232,7 +232,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @return a URL for the given path or <code>null</code>
 	 * @deprecated use {@link FileLocator#find(Bundle, IPath, Map)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final URL find(IPath path, Map<String,String> override) {
 		return FileLocator.find(getBundle(), path, override);
 	}
@@ -321,13 +321,15 @@ public abstract class Plugin implements BundleActivator {
 	public final Preferences getPluginPreferences() {
 		final Bundle bundleCopy = getBundle();
 		if (preferences != null) {
-			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 				InternalPlatform.message("Plugin preferences already loaded for: " + bundleCopy.getSymbolicName()); //$NON-NLS-1$
+			}
 			return preferences;
 		}
 
-		if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+		if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 			InternalPlatform.message("Loading preferences for plugin: " + bundleCopy.getSymbolicName()); //$NON-NLS-1$
+		}
 
 		// Performance: isolate PreferenceForwarder into an inner class so that it mere presence
 		// won't force the PreferenceForwarder class to be loaded (which triggers Preferences plugin
@@ -357,10 +359,11 @@ public abstract class Plugin implements BundleActivator {
 	public final void savePluginPreferences() {
 		if (InternalPlatform.getDefault().isRunning()) {
 			Location instance = InternalPlatform.getDefault().getInstanceLocation();
-			if (instance == null || !instance.isSet())
+			if (instance == null || !instance.isSet()) {
 				// If the instance area is not set there is no point in getting or setting the preferences.
 				// There is nothing to save in this case.
 				return;
+			}
 			// populate the "preferences" instance variable. We still might
 			// need to save them because someone else might have
 			// made changes via the OSGi APIs.
@@ -424,7 +427,7 @@ public abstract class Plugin implements BundleActivator {
 	 *		}
 	 * </pre>
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	protected void initializeDefaultPluginPreferences() {
 		// default implementation of this method - spec'd to do nothing
 	}
@@ -437,7 +440,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @since 3.0
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final void internalInitializeDefaultPluginPreferences() {
 		initializeDefaultPluginPreferences();
 	}
@@ -457,13 +460,15 @@ public abstract class Plugin implements BundleActivator {
 	 */
 	public boolean isDebugging() {
 		Bundle debugBundle = getBundle();
-		if (debugBundle == null)
+		if (debugBundle == null) {
 			return debug;
+		}
 		String key = debugBundle.getSymbolicName() + "/debug"; //$NON-NLS-1$
 		// first check if platform debugging is enabled
 		final DebugOptions debugOptions = getDebugOptions();
-		if (debugOptions == null)
+		if (debugOptions == null) {
 			return debug;
+		}
 		// if platform debugging is enabled, check to see if this plugin is enabled for debugging
 		return debugOptions.isDebugEnabled() ? InternalPlatform.getDefault().getBooleanOption(key, false) : false;
 	}
@@ -479,7 +484,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @see #openStream(IPath,boolean)
 	 * @deprecated use {@link FileLocator#openStream(Bundle, IPath, boolean)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final InputStream openStream(IPath file) throws IOException {
 		return FileLocator.openStream(getBundle(), file, false);
 	}
@@ -502,7 +507,7 @@ public abstract class Plugin implements BundleActivator {
 	 * @exception IOException if the given path cannot be found in this plug-in
 	 * @deprecated use {@link FileLocator#openStream(Bundle, IPath, boolean)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public final InputStream openStream(IPath file, boolean substituteArgs) throws IOException {
 		return FileLocator.openStream(getBundle(), file, substituteArgs);
 	}
@@ -528,11 +533,12 @@ public abstract class Plugin implements BundleActivator {
 		}
 		String key = debugBundle.getSymbolicName() + "/debug"; //$NON-NLS-1$
 		final DebugOptions options = getDebugOptions();
-		if (options == null)
+		if (options == null) {
 			this.debug = value;
-		else {
-			if (!options.isDebugEnabled())
+		} else {
+			if (!options.isDebugEnabled()) {
 				options.setDebugEnabled(true);
+			}
 			options.setOption(key, value ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
 		}
 	}
@@ -545,12 +551,14 @@ public abstract class Plugin implements BundleActivator {
 	 */
 	private DebugOptions getDebugOptions() {
 		Bundle debugBundle = getBundle();
-		if (debugBundle == null)
+		if (debugBundle == null) {
 			return null;
+		}
 		if (debugTracker == null) {
 			BundleContext context = debugBundle.getBundleContext();
-			if (context == null)
+			if (context == null) {
 				return null;
+			}
 			debugTracker = new ServiceTracker<>(context, DebugOptions.class.getName(), null);
 			debugTracker.open();
 		}
@@ -576,7 +584,7 @@ public abstract class Plugin implements BundleActivator {
 	 *
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-06 (removal in 2027-06 or later)")
 	public void shutdown() throws CoreException {
 		// intentionally left empty
 	}
@@ -612,8 +620,9 @@ public abstract class Plugin implements BundleActivator {
 	@Override
 	public String toString() {
 		Bundle myBundle = getBundle();
-		if (myBundle == null)
+		if (myBundle == null) {
 			return ""; //$NON-NLS-1$
+		}
 		String name = myBundle.getSymbolicName();
 		return name == null ? String.valueOf(myBundle.getBundleId()) : name;
 	}

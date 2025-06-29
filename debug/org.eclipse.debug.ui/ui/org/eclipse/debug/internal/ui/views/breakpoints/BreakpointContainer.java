@@ -437,8 +437,7 @@ public class BreakpointContainer extends ElementContentProvider implements IAdap
 					: IModelDelta.INSERTED|IModelDelta.INSTALL|IModelDelta.EXPAND;
 			ModelDelta childDelta = containerDelta.addNode(children[i], i, flag, numChild);
 
-			if (children[i] instanceof BreakpointContainer) {
-				BreakpointContainer childContainer = (BreakpointContainer) children[i];
+			if (children[i] instanceof BreakpointContainer childContainer) {
 				appendContainerDelta(childContainer, childDelta);
 			}
 		}

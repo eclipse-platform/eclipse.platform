@@ -545,7 +545,7 @@ public class LaunchManagerTests extends AbstractLaunchTest {
 	}
 
 	class LogListener implements ILogListener {
-		private Map<String, IStatus> logs = new HashMap<>();
+		private final Map<String, IStatus> logs = new HashMap<>();
 
 		@Override
 		public synchronized void logging(IStatus status, String plugin) {

@@ -112,8 +112,9 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		@Override
 		protected void internalRemove(Object parent, Object[] elements) {
 			super.internalRemove(parent, elements);
-			if (parent == getInput())
+			if (parent == getInput()) {
 				checkForEmptyViewer();
+			}
 		}
 		@Override
 		protected void internalRemove(Object[] elements) {
@@ -148,8 +149,9 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 				}
 			}
 			empty = false;
-			if (listener != null)
+			if (listener != null) {
 				listener.notEmpty(this);
+			}
 		}
 		public boolean isEmpty() {
 			return empty;
@@ -289,8 +291,9 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		String visibleModel = (String)configuration.getProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER);
 		if (visibleModel != null && !visibleModel.equals(ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE)) {
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(visibleModel);
-			if (desc != null && desc.isEnabled())
+			if (desc != null && desc.isEnabled()) {
 				return new String[] { desc.getContentExtensionId() };
+			}
 		}
 		configuration.setProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER, ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE);
 		ModelSynchronizeParticipant participant = (ModelSynchronizeParticipant)configuration.getParticipant();
@@ -300,8 +303,9 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		boolean isFlatLayout = property != null && property.equals(ITeamContentProviderManager.FLAT_LAYOUT);
 		for (ModelProvider provider : providers) {
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
-			if (desc != null && desc.isEnabled() && (!isFlatLayout || desc.isFlatLayoutSupported()))
+			if (desc != null && desc.isEnabled() && (!isFlatLayout || desc.isFlatLayoutSupported())) {
 				result.add(desc.getContentExtensionId());
+			}
 		}
 		return result.toArray(new String[result.size()]);
 	}
@@ -335,8 +339,7 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		viewer.getNavigatorContentService().addListener(this);
 		initializeViewer(viewer);
 		IBaseLabelProvider provider = viewer.getLabelProvider();
-		if (provider instanceof DecoratingLabelProvider) {
-			DecoratingLabelProvider dlp = (DecoratingLabelProvider) provider;
+		if (provider instanceof DecoratingLabelProvider dlp) {
 			ILabelDecorator decorator = ((SynchronizePageConfiguration)configuration).getLabelDecorator();
 			if (decorator != null) {
 				ILabelProvider lp = dlp.getLabelProvider();
@@ -353,8 +356,7 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 				}
 			});
 			dlp.setDecorationContext(decorationContext);
-		} else if (provider instanceof DecoratingStyledCellLabelProvider) {
-			DecoratingStyledCellLabelProvider dsclp = (DecoratingStyledCellLabelProvider) provider;
+		} else if (provider instanceof DecoratingStyledCellLabelProvider dsclp) {
 			ILabelDecorator decorator = ((SynchronizePageConfiguration) configuration)
 					.getLabelDecorator();
 			if (decorator != null) {
@@ -421,16 +423,13 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 
 	private ICommonViewerSite createCommonViewerSite(CommonViewer viewer, ISynchronizePageConfiguration configuration) {
 		IWorkbenchSite site = configuration.getSite().getWorkbenchSite();
-		if (site instanceof IEditorSite) {
-			IEditorSite es = (IEditorSite) site;
+		if (site instanceof IEditorSite es) {
 			return CommonViewerSiteFactory.createCommonViewerSite(es);
 		}
-		if (site instanceof IViewSite) {
-			IViewSite vs = (IViewSite) site;
+		if (site instanceof IViewSite vs) {
 			return CommonViewerSiteFactory.createCommonViewerSite(vs);
 		}
-		if (site instanceof IPageSite) {
-			IPageSite ps = (IPageSite) site;
+		if (site instanceof IPageSite ps) {
 			return CommonViewerSiteFactory.createCommonViewerSite(configuration.getViewerId(), ps);
 		}
 		return CommonViewerSiteFactory.createCommonViewerSite(configuration.getViewerId(), viewer, configuration.getSite().getShell());
@@ -441,8 +440,9 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		if (visible != null && !visible.equals(ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE)) {
 			try {
 				IModelProviderDescriptor desc = ModelProvider.getModelProviderDescriptor(visible);
-				if (desc != null)
+				if (desc != null) {
 					return desc.getModelProvider();
+				}
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);
 			}
@@ -477,8 +477,7 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 	@Override
 	protected void fillContextMenu(StructuredViewer viewer, IMenuManager manager) {
 		// Clear any handlers from the menu
-		if (manager instanceof CommonMenuManager) {
-			CommonMenuManager cmm = (CommonMenuManager) manager;
+		if (manager instanceof CommonMenuManager cmm) {
 			cmm.clearHandlers();
 		}
 
@@ -530,14 +529,16 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 
 	@Override
 	public void treeEmpty(TreeViewer viewer) {
-		if (emptyTreeListener != null)
+		if (emptyTreeListener != null) {
 			emptyTreeListener.treeEmpty(viewer);
+		}
 	}
 
 	@Override
 	public void notEmpty(TreeViewer viewer) {
-		if (emptyTreeListener != null)
+		if (emptyTreeListener != null) {
 			emptyTreeListener.notEmpty(viewer);
+		}
 	}
 
 	@Override
@@ -570,8 +571,9 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 	private boolean isOpenable(ISelection selection) {
 		IStructuredSelection ss = (IStructuredSelection) selection;
 		Object object = ss.getFirstElement();
-		if (object == null)
+		if (object == null) {
 			return false;
+		}
 		return getParticipant().hasCompareInputFor(object);
 	}
 

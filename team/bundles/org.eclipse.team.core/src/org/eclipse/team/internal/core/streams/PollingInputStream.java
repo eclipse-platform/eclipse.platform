@@ -75,14 +75,20 @@ public class PollingInputStream extends FilterInputStream {
 			boolean stop = false;
 			while (!stop) {
 				try {
-					if (in != null)
+					if (in != null) {
 						in.close();
+					}
 					stop = true;
 				} catch (InterruptedIOException e) {
-					if (checkCancellation()) throw new OperationCanceledException();
-					if (++attempts == numAttempts)
+					if (checkCancellation()) {
+						throw new OperationCanceledException();
+					}
+					if (++attempts == numAttempts) {
 						throw new InterruptedIOException(Messages.PollingInputStream_closeTimeout);
-					if (Policy.DEBUG_STREAMS) System.out.println("close retry=" + attempts); //$NON-NLS-1$
+					}
+					if (Policy.DEBUG_STREAMS) {
+						System.out.println("close retry=" + attempts); //$NON-NLS-1$
+					}
 				} catch (IOException e) {
 					// ignore it - see https://bugs.eclipse.org/bugs/show_bug.cgi?id=203423#c10
 				}
@@ -102,13 +108,18 @@ public class PollingInputStream extends FilterInputStream {
 	public int read() throws IOException {
 		int attempts = 0;
 		for (;;) {
-			if (checkCancellation()) throw new OperationCanceledException();
+			if (checkCancellation()) {
+				throw new OperationCanceledException();
+			}
 			try {
 				return in.read();
 			} catch (InterruptedIOException e) {
-				if (++attempts == numAttempts)
+				if (++attempts == numAttempts) {
 					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout);
-				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				}
+				if (Policy.DEBUG_STREAMS) {
+					System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				}
 			}
 		}
 	}
@@ -128,14 +139,21 @@ public class PollingInputStream extends FilterInputStream {
 	public int read(byte[] buffer, int off, int len) throws IOException {
 		int attempts = 0;
 		for (;;) {
-			if (checkCancellation()) throw new OperationCanceledException();
+			if (checkCancellation()) {
+				throw new OperationCanceledException();
+			}
 			try {
 				return in.read(buffer, off, len);
 			} catch (InterruptedIOException e) {
-				if (e.bytesTransferred != 0) return e.bytesTransferred; // keep partial transfer
-				if (++attempts == numAttempts)
+				if (e.bytesTransferred != 0) {
+					return e.bytesTransferred; // keep partial transfer
+				}
+				if (++attempts == numAttempts) {
 					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout);
-				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				}
+				if (Policy.DEBUG_STREAMS) {
+					System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				}
 			}
 		}
 	}
@@ -153,14 +171,21 @@ public class PollingInputStream extends FilterInputStream {
 	public long skip(long count) throws IOException {
 		int attempts = 0;
 		for (;;) {
-			if (checkCancellation()) throw new OperationCanceledException();
+			if (checkCancellation()) {
+				throw new OperationCanceledException();
+			}
 			try {
 				return in.skip(count);
 			} catch (InterruptedIOException e) {
-				if (e.bytesTransferred != 0) return e.bytesTransferred; // keep partial transfer
-				if (++attempts == numAttempts)
+				if (e.bytesTransferred != 0) {
+					return e.bytesTransferred; // keep partial transfer
+				}
+				if (++attempts == numAttempts) {
 					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout);
-				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				}
+				if (Policy.DEBUG_STREAMS) {
+					System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				}
 			}
 		}
 	}
@@ -173,9 +198,15 @@ public class PollingInputStream extends FilterInputStream {
 		byte[] buffer= new byte[2048];
 		while (true) {
 			int available = in.available();
-			if (available < 1) break;
-			if (available > buffer.length) available = buffer.length;
-			if (in.read(buffer, 0, available) < 1) break;
+			if (available < 1) {
+				break;
+			}
+			if (available > buffer.length) {
+				available = buffer.length;
+			}
+			if (in.read(buffer, 0, available) < 1) {
+				break;
+			}
 		}
 	}
 

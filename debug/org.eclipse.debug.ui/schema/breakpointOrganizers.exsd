@@ -112,7 +112,7 @@ Organizers with the specified name will be automatically created by the Debug Pl
     class=&quot;com.example.BreakpointOrganizer&quot;
      id=&quot;com.example.BreakpointOrganizer&quot;
      label=&quot;Example Organizer&quot;
-     icon=&quot;icons/full/obj16/example_org.png&quot;/&gt;
+     icon=&quot;icons/full/obj16/example_org.svg&quot;/&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
 In the above example, the supplied factory will be included in the list of options for grouping breakpoints (&quot;Group By &gt; Example Organizer&quot;). When selected, the associated organizer will be used to categorize breakpoints.

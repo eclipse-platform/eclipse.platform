@@ -80,9 +80,10 @@ public class Log implements IIntroConstants {
 	 * /trace/logInfo debug option is true.
 	 */
 	public static synchronized void info(String message) {
-		if (!logInfo)
+		if (!logInfo) {
 			// logging of info messages is not enabled.
 			return;
+		}
 
 		pluginLog.info(message);
 	}
@@ -104,10 +105,11 @@ public class Log implements IIntroConstants {
 	 * debug mode.
 	 */
 	public static synchronized void warning(String message) {
-		if (!logWarning)
+		if (!logWarning) {
 			// no warning messages (ie: plugin is not in debug mode). Default is
 			// to not log warning messages.
 			return;
+		}
 
 		pluginLog.warn(message);
 	}

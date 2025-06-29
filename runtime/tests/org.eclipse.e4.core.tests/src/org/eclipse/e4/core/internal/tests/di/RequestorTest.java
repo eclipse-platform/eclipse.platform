@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.lang.reflect.Field;
 
@@ -24,9 +24,9 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.InjectorFactory;
 import org.eclipse.e4.core.internal.contexts.ContextObjectSupplier;
 import org.eclipse.e4.core.internal.di.FieldRequestor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
 public class RequestorTest {
@@ -46,12 +46,12 @@ public class RequestorTest {
 		assertEquals(hash, requestor.hashCode());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		context = EclipseContextFactory.create("RequestorTest");
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		context.dispose();
 	}

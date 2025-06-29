@@ -30,18 +30,20 @@ public class ListContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public Object[] getElements(Object input) {
-		if (fContents != null && fContents == input)
+		if (fContents != null && fContents == input) {
 			return fContents.toArray();
+		}
 		return new Object[0];
 	}
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (newInput instanceof List)
+		if (newInput instanceof List) {
 			fContents = (List<?>) newInput;
-		else
+		} else {
 			fContents= null;
 		// we use a fixed set.
+		}
 	}
 
 	@Override

@@ -32,22 +32,26 @@ public class WrappedSearchProcessor extends AbstractSearchProcessor {
 
 	@Override
 	public SearchProcessorInfo preSearch(String query) {
-		if (isNotSearchProcessorTest(query))
+		if (isNotSearchProcessorTest(query)) {
 			return null;
+		}
 		synchronized (WrappedSearchProcessor.class) {
-			if (isNotSearchProcessorTest(query))
+			if (isNotSearchProcessorTest(query)) {
 				return null;
+			}
 			return wrapped.preSearch(query);
 		}
 	}
 
 	@Override
 	public ISearchResult[] postSearch(String query, ISearchResult[] results) {
-		if (wrapped == null)
+		if (wrapped == null) {
 			return null;
+		}
 		synchronized (WrappedSearchProcessor.class) {
-			if (wrapped == null)
+			if (wrapped == null) {
 				return null;
+			}
 			return wrapped.postSearch(query, results);
 		}
 	}
@@ -55,11 +59,13 @@ public class WrappedSearchProcessor extends AbstractSearchProcessor {
 	@Override
 	public ISearchResult[] postSearch(String query, String originalQuery, ISearchResult[] results, String locale,
 			IHelpResource[] scopes) {
-		if (isNotSearchProcessorTest(originalQuery))
+		if (isNotSearchProcessorTest(originalQuery)) {
 			return null;
+		}
 		synchronized (WrappedSearchProcessor.class) {
-			if (isNotSearchProcessorTest(originalQuery))
+			if (isNotSearchProcessorTest(originalQuery)) {
 				return null;
+			}
 			return wrapped.postSearch(query, originalQuery, results, locale, scopes);
 		}
 	}

@@ -29,8 +29,9 @@ public class TocParser extends ResultParser {
 
 	@Override
 	public void startElement(String uri, String lname, String name, Attributes attrs) {
-		if (name.equalsIgnoreCase(XMLHelper.ELEMENT_TOC_CONTRIBUTIONS))
+		if (name.equalsIgnoreCase(XMLHelper.ELEMENT_TOC_CONTRIBUTIONS)) {
 			return;
+		}
 
 		Properties properties = new Properties();
 		properties.put(JSonHelper.PROPERTY_NAME, name);
@@ -41,10 +42,11 @@ public class TocParser extends ResultParser {
 		}
 
 		ParseElement elem = new ParseElement(properties, element);
-		if (element != null)
+		if (element != null) {
 			element.addChild(elem);
-		else
+		} else {
 			items.add(elem);
+		}
 
 		element = elem;
 
@@ -52,8 +54,9 @@ public class TocParser extends ResultParser {
 
 	@Override
 	public void endElement(String uri, String lname, String name) {
-		if (name.equalsIgnoreCase(XMLHelper.ELEMENT_TOC_CONTRIBUTIONS))
+		if (name.equalsIgnoreCase(XMLHelper.ELEMENT_TOC_CONTRIBUTIONS)) {
 			return;
+		}
 
 		if (element != null) {
 			element = element.getParent();

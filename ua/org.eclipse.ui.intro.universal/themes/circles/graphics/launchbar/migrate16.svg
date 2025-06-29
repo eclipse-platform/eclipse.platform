@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="svg9904"
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   sodipodi:docname="migrate16.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   inkscape:export-filename="Z:\Users\d021678\git\eclipse.platform.images\org.eclipse.images\eclipse-png\org.eclipse.ui.intro.universal\themes\circles\graphics\launchbar\migrate16_2x.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
+  <metadata
+     id="metadata9910">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs9908">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient10468">
+      <stop
+         style="stop-color:#d6f3b6;stop-opacity:1"
+         offset="0"
+         id="stop10464" />
+      <stop
+         id="stop10472"
+         offset="0.48184019"
+         style="stop-color:#8bc570;stop-opacity:1" />
+      <stop
+         style="stop-color:#c2e9a3;stop-opacity:1"
+         offset="1"
+         id="stop10466" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10468"
+       id="linearGradient10470"
+       x1="4"
+       y1="11"
+       x2="4"
+       y2="4"
+       gradientUnits="userSpaceOnUse" />
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter10710"
+       x="-0.56371526"
+       width="2.1274305"
+       y="-0.6607788"
+       height="2.3215576">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.70464408"
+         id="feGaussianBlur10712" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1680"
+     inkscape:window-height="987"
+     id="namedview9906"
+     showgrid="true"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-nodes="false"
+     inkscape:snap-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:zoom="29.5"
+     inkscape:cx="10.317237"
+     inkscape:cy="7.2740443"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg9904">
+    <inkscape:grid
+       type="xygrid"
+       id="grid10457" />
+  </sodipodi:namedview>
+  <path
+     style="opacity:1;fill:url(#linearGradient10470);fill-opacity:1;stroke:#14720c;stroke-width:1.002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 10.5 2.5 L 10.5 5.5 L 7.9570312 5.5 A 3.9992127 3.9992127 0 0 0 4.5 3.5 A 3.9992127 3.9992127 0 0 0 0.5 7.5 A 3.9992127 3.9992127 0 0 0 4.5 11.5 A 3.9992127 3.9992127 0 0 0 7.9589844 9.5 L 10.5 9.5 L 10.5 12.5 L 15.5 7.5 L 10.5 2.5 z "
+     id="path10459" />
+  <ellipse
+     style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.00199997;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter10710)"
+     id="path10474"
+     cx="3.0000002"
+     cy="7"
+     rx="1.5"
+     ry="1.2796611" />
+</svg>

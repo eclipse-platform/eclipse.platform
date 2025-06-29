@@ -138,8 +138,9 @@ public class CompareStructureViewerSwitchingPane extends
 	@Override
 	public void setInput(Object input) {
 		super.setInput(input);
-		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl()))
+		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl())) {
 			return;
+		}
 		ViewerDescriptor[] vd = null;
 		if (getInput() instanceof ICompareInput) {
 			vd = CompareUIPlugin.getDefault().findStructureViewerDescriptor(
@@ -150,8 +151,9 @@ public class CompareStructureViewerSwitchingPane extends
 	}
 
 	private void showMenu() {
-		if (!(getInput() instanceof ICompareInput))
+		if (!(getInput() instanceof ICompareInput)) {
 			return;
+		}
 
 		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
 				.findStructureViewerDescriptor(getViewer(),
@@ -174,9 +176,10 @@ public class CompareStructureViewerSwitchingPane extends
 			label = vdi.getLabel();
 			if (label == null || label.isEmpty()) {
 				String l = CompareUIPlugin.getDefault().findStructureTypeNameOrType((ICompareInput) getInput(), vdi, getCompareConfiguration());
-				if (l == null)
+				if (l == null) {
 					// couldn't figure out the label, skip the viewer
 					continue;
+				}
 				label = NLS.bind(CompareMessages.CompareStructureViewerSwitchingPane_discoveredLabel, new Object[] {l});
 			}
 			MenuItem item = new MenuItem(menu, SWT.RADIO);
@@ -226,8 +229,7 @@ public class CompareStructureViewerSwitchingPane extends
 		Composite c = (Composite) getTopLeft();
 		Control[] children = c.getChildren();
 		for (Control child : children) {
-			if (child instanceof CLabel) {
-				CLabel cl = (CLabel) child;
+			if (child instanceof CLabel cl) {
 				if (cl != null && !cl.isDisposed()) {
 					cl.setText(label);
 					c.layout();
@@ -242,10 +244,10 @@ public class CompareStructureViewerSwitchingPane extends
 		Composite c = (Composite) getTopLeft();
 		Control[] children = c.getChildren();
 		for (Control child : children) {
-			if (child instanceof CLabel) {
-				CLabel cl = (CLabel) child;
-				if (cl != null && !cl.isDisposed())
+			if (child instanceof CLabel cl) {
+				if (cl != null && !cl.isDisposed()) {
 					cl.setImage(image);
+				}
 				return;
 			}
 		}
@@ -256,8 +258,7 @@ public class CompareStructureViewerSwitchingPane extends
 		Composite c = (Composite) getTopLeft();
 		Control[] children = c.getChildren();
 		for (Control child : children) {
-			if (child instanceof CLabel) {
-				CLabel cl = (CLabel) child;
+			if (child instanceof CLabel cl) {
 				cl.addMouseListener(listener);
 			}
 		}

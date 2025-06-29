@@ -19,8 +19,8 @@ import org.junit.runners.Suite;
 /**
  * TestSuite that runs all the XML Compare tests.
  */
-@RunWith(Suite.class)				
-@Suite.SuiteClasses({	
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
 	TestXMLStructureCreator.class
 })
 public class AllXMLCompareTests {

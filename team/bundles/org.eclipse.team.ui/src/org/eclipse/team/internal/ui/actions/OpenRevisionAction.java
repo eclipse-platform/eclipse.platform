@@ -43,15 +43,17 @@ public class OpenRevisionAction extends BaseSelectionListenerAction {
 	public void run() {
 		IStructuredSelection structSel = selection;
 
-		if (structSel == null)
+		if (structSel == null) {
 			return;
+		}
 
 		Object[] objArray = structSel.toArray();
 
 		for (Object tempRevision : objArray) {
 			//If not a revision, don't try opening
-			if (tempRevision instanceof AbstractHistoryCategory)
+			if (tempRevision instanceof AbstractHistoryCategory) {
 				continue;
+			}
 
 			final IFileRevision revision = (IFileRevision) tempRevision;
 			if (revision == null || !revision.exists()) {
@@ -87,8 +89,9 @@ public class OpenRevisionAction extends BaseSelectionListenerAction {
 		IStructuredSelection structSel = selection;
 		Object[] objArray = structSel.toArray();
 
-		if (objArray.length == 0)
+		if (objArray.length == 0) {
 			return false;
+		}
 
 		for (Object obj : objArray) {
 			//Don't bother showing if this a category
@@ -97,8 +100,9 @@ public class OpenRevisionAction extends BaseSelectionListenerAction {
 			}
 			IFileRevision revision = (IFileRevision) obj;
 			//check to see if any of the selected revisions are deleted revisions
-			if (revision != null && !revision.exists())
+			if (revision != null && !revision.exists()) {
 				return false;
+			}
 		}
 
 		return true;

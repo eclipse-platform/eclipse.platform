@@ -25,8 +25,9 @@ public class PreferenceModifyListener extends org.eclipse.core.runtime.preferenc
 		try {
 			if (root.nodeExists(InstanceScope.SCOPE)) {
 				Preferences instance = root.node(InstanceScope.SCOPE);
-				if (instance.nodeExists(ContentTypeManager.CONTENT_TYPE_PREF_NODE))
+				if (instance.nodeExists(ContentTypeManager.CONTENT_TYPE_PREF_NODE)) {
 					ContentTypeManager.getInstance().invalidate();
+				}
 			}
 		} catch (BackingStoreException e) {
 			// do nothing

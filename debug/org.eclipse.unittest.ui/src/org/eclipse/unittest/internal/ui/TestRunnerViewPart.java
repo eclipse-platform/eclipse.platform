@@ -226,11 +226,11 @@ public class TestRunnerViewPart extends ViewPart {
 	final Image fTestRunningIcon;
 	final Image fTestIgnoredIcon;
 
-	final ImageDescriptor fSuiteIconDescriptor = Images.getImageDescriptor("obj16/tsuite.png"); //$NON-NLS-1$
-	final ImageDescriptor fSuiteOkIconDescriptor = Images.getImageDescriptor("obj16/tsuiteok.png"); //$NON-NLS-1$
-	final ImageDescriptor fSuiteErrorIconDescriptor = Images.getImageDescriptor("obj16/tsuiteerror.png"); //$NON-NLS-1$
-	final ImageDescriptor fSuiteFailIconDescriptor = Images.getImageDescriptor("obj16/tsuitefail.png"); //$NON-NLS-1$
-	final ImageDescriptor fSuiteRunningIconDescriptor = Images.getImageDescriptor("obj16/tsuiterun.png"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteIconDescriptor = Images.getImageDescriptor("obj16/tsuite.svg"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteOkIconDescriptor = Images.getImageDescriptor("obj16/tsuiteok.svg"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteErrorIconDescriptor = Images.getImageDescriptor("obj16/tsuiteerror.svg"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteFailIconDescriptor = Images.getImageDescriptor("obj16/tsuitefail.svg"); //$NON-NLS-1$
+	final ImageDescriptor fSuiteRunningIconDescriptor = Images.getImageDescriptor("obj16/tsuiterun.svg"); //$NON-NLS-1$
 
 	final Image fSuiteIcon;
 	final Image fSuiteOkIcon;
@@ -431,8 +431,9 @@ public class TestRunnerViewPart extends ViewPart {
 			getDisplay().asyncExec(() -> registerInfoMessage(msg));
 
 			postSyncRunnable(() -> {
-				if (isDisposed())
+				if (isDisposed()) {
 					return;
+				}
 				fStopAction.setEnabled(lastLaunchStillRunning());
 				updateRerunFailedFirstAction();
 				processChangesInUI();
@@ -461,8 +462,9 @@ public class TestRunnerViewPart extends ViewPart {
 
 		@Override
 		public void runningBegins() {
-			if (!fShowOnErrorOnly)
+			if (!fShowOnErrorOnly) {
 				postShowTestResultsView();
+			}
 		}
 
 		@Override
@@ -480,8 +482,9 @@ public class TestRunnerViewPart extends ViewPart {
 			fTestViewer.registerViewerUpdate(testElement);
 
 			// show the view on the first error only
-			if (fShowOnErrorOnly && (getErrorsPlusFailures() == 1))
+			if (fShowOnErrorOnly && (getErrorsPlusFailures() == 1)) {
 				postShowTestResultsView();
+			}
 		}
 
 		@Override
@@ -545,7 +548,7 @@ public class TestRunnerViewPart extends ViewPart {
 		public StopAction() {
 			setText(Messages.TestRunnerViewPart_stopaction_text);
 			setToolTipText(Messages.TestRunnerViewPart_stopaction_tooltip);
-			Images.setLocalImageDescriptors(this, "stop.png"); //$NON-NLS-1$
+			Images.setLocalImageDescriptors(this, "stop.svg"); //$NON-NLS-1$
 		}
 
 		@Override
@@ -559,7 +562,7 @@ public class TestRunnerViewPart extends ViewPart {
 		public RerunLastAction() {
 			setText(Messages.TestRunnerViewPart_rerunaction_label);
 			setToolTipText(Messages.TestRunnerViewPart_rerunaction_tooltip);
-			Images.setLocalImageDescriptors(this, "relaunch.png"); //$NON-NLS-1$
+			Images.setLocalImageDescriptors(this, "relaunch.svg"); //$NON-NLS-1$
 			setEnabled(false);
 			setActionDefinitionId(RERUN_LAST_COMMAND);
 		}
@@ -574,7 +577,7 @@ public class TestRunnerViewPart extends ViewPart {
 		public RerunFailedCasesAction() {
 			setText(Messages.TestRunnerViewPart_rerunfailuresaction_label);
 			setToolTipText(Messages.TestRunnerViewPart_rerunfailuresaction_tooltip);
-			Images.setLocalImageDescriptors(this, "relaunchf.png"); //$NON-NLS-1$
+			Images.setLocalImageDescriptors(this, "relaunchf.svg"); //$NON-NLS-1$
 			setEnabled(false);
 			setActionDefinitionId(RERUN_FAILED_CASES_COMMAND);
 		}
@@ -593,15 +596,15 @@ public class TestRunnerViewPart extends ViewPart {
 			switch (orientation) {
 			case TestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL:
 				setText(Messages.TestRunnerViewPart_toggle_horizontal_label);
-				setImageDescriptor(Images.getImageDescriptor("elcl16/th_horizontal.png")); //$NON-NLS-1$
+				setImageDescriptor(Images.getImageDescriptor("elcl16/th_horizontal.svg")); //$NON-NLS-1$
 				break;
 			case TestRunnerViewPart.VIEW_ORIENTATION_VERTICAL:
 				setText(Messages.TestRunnerViewPart_toggle_vertical_label);
-				setImageDescriptor(Images.getImageDescriptor("elcl16/th_vertical.png")); //$NON-NLS-1$
+				setImageDescriptor(Images.getImageDescriptor("elcl16/th_vertical.svg")); //$NON-NLS-1$
 				break;
 			case TestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC:
 				setText(Messages.TestRunnerViewPart_toggle_automatic_label);
-				setImageDescriptor(Images.getImageDescriptor("elcl16/th_automatic.png")); //$NON-NLS-1$
+				setImageDescriptor(Images.getImageDescriptor("elcl16/th_automatic.svg")); //$NON-NLS-1$
 				break;
 			default:
 				break;
@@ -648,7 +651,7 @@ public class TestRunnerViewPart extends ViewPart {
 		public FailuresOnlyFilterAction() {
 			super(Messages.TestRunnerViewPart_show_failures_only, AS_CHECK_BOX);
 			setToolTipText(Messages.TestRunnerViewPart_show_failures_only);
-			setImageDescriptor(Images.getImageDescriptor("obj16/failures.png")); //$NON-NLS-1$
+			setImageDescriptor(Images.getImageDescriptor("obj16/failures.svg")); //$NON-NLS-1$
 		}
 
 		@Override
@@ -661,7 +664,7 @@ public class TestRunnerViewPart extends ViewPart {
 		public IgnoredOnlyFilterAction() {
 			super(Messages.TestRunnerViewPart_show_ignored_only, AS_CHECK_BOX);
 			setToolTipText(Messages.TestRunnerViewPart_show_ignored_only);
-			setImageDescriptor(Images.getImageDescriptor("obj16/testignored.png")); //$NON-NLS-1$
+			setImageDescriptor(Images.getImageDescriptor("obj16/testignored.svg")); //$NON-NLS-1$
 		}
 
 		@Override
@@ -684,7 +687,7 @@ public class TestRunnerViewPart extends ViewPart {
 	private class ShowTestHierarchyAction extends Action {
 		public ShowTestHierarchyAction() {
 			super(Messages.TestRunnerViewPart_hierarchical_layout, IAction.AS_CHECK_BOX);
-			setImageDescriptor(Images.getImageDescriptor("elcl16/hierarchicalLayout.png")); //$NON-NLS-1$
+			setImageDescriptor(Images.getImageDescriptor("elcl16/hierarchicalLayout.svg")); //$NON-NLS-1$
 		}
 
 		@Override
@@ -697,7 +700,7 @@ public class TestRunnerViewPart extends ViewPart {
 	private class ActivateOnErrorAction extends Action {
 		public ActivateOnErrorAction() {
 			super(Messages.TestRunnerViewPart_activate_on_failure_only, IAction.AS_CHECK_BOX);
-			// setImageDescriptor(UnitTestPlugin.getImageDescriptor("obj16/failures.png"));
+			// setImageDescriptor(UnitTestPlugin.getImageDescriptor("obj16/failures.svg"));
 			// //$NON-NLS-1$
 			update();
 		}
@@ -721,19 +724,19 @@ public class TestRunnerViewPart extends ViewPart {
 	public TestRunnerViewPart() {
 		fImagesToDispose = new ArrayList<>();
 
-		fStackViewIcon = createManagedImage("eview16/stackframe.png");//$NON-NLS-1$
-		fTestRunOKIcon = createManagedImage("eview16/unitsucc.png"); //$NON-NLS-1$
-		fTestRunFailIcon = createManagedImage("eview16/uniterr.png"); //$NON-NLS-1$
-		fTestRunOKDirtyIcon = createManagedImage("eview16/unitsuccq.png"); //$NON-NLS-1$
-		fTestRunFailDirtyIcon = createManagedImage("eview16/uniterrq.png"); //$NON-NLS-1$
+		fStackViewIcon = createManagedImage("eview16/stackframe.svg");//$NON-NLS-1$
+		fTestRunOKIcon = createManagedImage("eview16/unitsucc.svg"); //$NON-NLS-1$
+		fTestRunFailIcon = createManagedImage("eview16/uniterr.svg"); //$NON-NLS-1$
+		fTestRunOKDirtyIcon = createManagedImage("eview16/unitsuccq.svg"); //$NON-NLS-1$
+		fTestRunFailDirtyIcon = createManagedImage("eview16/uniterrq.svg"); //$NON-NLS-1$
 
-		fTestIcon = createManagedImage("obj16/test.png"); //$NON-NLS-1$
-		fTestOkIcon = createManagedImage("obj16/testok.png"); //$NON-NLS-1$
-		fTestErrorIcon = createManagedImage("obj16/testerr.png"); //$NON-NLS-1$
-		fTestFailIcon = createManagedImage("obj16/testfail.png"); //$NON-NLS-1$
-		fTestRunningIcon = createManagedImage("obj16/testrun.png"); //$NON-NLS-1$
-		fTestIgnoredIcon = createManagedImage("obj16/testignored.png"); //$NON-NLS-1$
-		fTestAssumptionFailureIcon = createManagedImage("obj16/testassumptionfailed.png"); //$NON-NLS-1$
+		fTestIcon = createManagedImage("obj16/test.svg"); //$NON-NLS-1$
+		fTestOkIcon = createManagedImage("obj16/testok.svg"); //$NON-NLS-1$
+		fTestErrorIcon = createManagedImage("obj16/testerr.svg"); //$NON-NLS-1$
+		fTestFailIcon = createManagedImage("obj16/testfail.svg"); //$NON-NLS-1$
+		fTestRunningIcon = createManagedImage("obj16/testrun.svg"); //$NON-NLS-1$
+		fTestIgnoredIcon = createManagedImage("obj16/testignored.svg"); //$NON-NLS-1$
+		fTestAssumptionFailureIcon = createManagedImage("obj16/testassumptionfailed.svg"); //$NON-NLS-1$
 
 		fSuiteIcon = createManagedImage(fSuiteIconDescriptor);
 		fSuiteOkIcon = createManagedImage(fSuiteOkIconDescriptor);
@@ -760,14 +763,16 @@ public class TestRunnerViewPart extends ViewPart {
 		super.init(site, memento);
 		fMemento = memento;
 		IWorkbenchSiteProgressService progressService = getProgressService();
-		if (progressService != null)
+		if (progressService != null) {
 			progressService.showBusyForFamily(TestRunnerViewPart.FAMILY_UNITTEST_RUN);
+		}
 	}
 
 	private IWorkbenchSiteProgressService getProgressService() {
 		Object siteService = getSite().getAdapter(IWorkbenchSiteProgressService.class);
-		if (siteService != null)
+		if (siteService != null) {
 			return (IWorkbenchSiteProgressService) siteService;
+		}
 		return null;
 	}
 
@@ -775,8 +780,9 @@ public class TestRunnerViewPart extends ViewPart {
 	public void saveState(IMemento memento) {
 		if (fSashForm == null) {
 			// part has not been created
-			if (fMemento != null) // Keep the old state;
+			if (fMemento != null) { // Keep the old state;
 				memento.putMemento(fMemento);
+			}
 			return;
 		}
 
@@ -804,11 +810,13 @@ public class TestRunnerViewPart extends ViewPart {
 //			}
 //		}
 		Integer ratio = memento.getInteger(TAG_RATIO);
-		if (ratio != null)
+		if (ratio != null) {
 			fSashForm.setWeights(ratio.intValue(), 1000 - ratio.intValue());
+		}
 		Integer orientation = memento.getInteger(TAG_ORIENTATION);
-		if (orientation != null)
+		if (orientation != null) {
 			fOrientation = orientation.intValue();
+		}
 		computeOrientation();
 		String scrollLock = memento.getString(TAG_SCROLL);
 		if (scrollLock != null) {
@@ -822,18 +830,21 @@ public class TestRunnerViewPart extends ViewPart {
 
 		String failuresOnly = memento.getString(TAG_FAILURES_ONLY);
 		boolean showFailuresOnly = false;
-		if (failuresOnly != null)
+		if (failuresOnly != null) {
 			showFailuresOnly = failuresOnly.equals("true"); //$NON-NLS-1$
+		}
 
 		String ignoredOnly = memento.getString(TAG_IGNORED_ONLY);
 		boolean showIgnoredOnly = false;
-		if (ignoredOnly != null)
+		if (ignoredOnly != null) {
 			showIgnoredOnly = ignoredOnly.equals("true"); //$NON-NLS-1$
+		}
 
 		String time = memento.getString(TAG_SHOW_TIME);
 		boolean showTime = true;
-		if (time != null)
+		if (time != null) {
 			showTime = time.equals("true"); //$NON-NLS-1$
+		}
 
 		setFilterAndLayout(showFailuresOnly, showIgnoredOnly, layout);
 		setShowExecutionTime(showTime);
@@ -882,15 +893,16 @@ public class TestRunnerViewPart extends ViewPart {
 	}
 
 	private void processChangesInUI() {
-		if (fSashForm.isDisposed())
+		if (fSashForm.isDisposed()) {
 			return;
+		}
 
 		doShowInfoMessage();
 		refreshCounters();
 
-		if (!fPartIsVisible)
+		if (!fPartIsVisible) {
 			updateViewTitleProgress();
-		else {
+		} else {
 			updateViewIcon();
 		}
 		updateNextPreviousActions();
@@ -992,16 +1004,18 @@ public class TestRunnerViewPart extends ViewPart {
 	}
 
 	private int getErrorsPlusFailures() {
-		if (fTestRunSession == null)
+		if (fTestRunSession == null) {
 			return 0;
-		else
+		} else {
 			return fTestRunSession.getCurrentErrorCount() + fTestRunSession.getCurrentFailureCount();
+		}
 	}
 
 	private void handleStopped() {
 		postSyncRunnable(() -> {
-			if (isDisposed())
+			if (isDisposed()) {
 				return;
+			}
 			resetViewIcon();
 			fStopAction.setEnabled(false);
 			updateRerunFailedFirstAction();
@@ -1027,12 +1041,13 @@ public class TestRunnerViewPart extends ViewPart {
 
 	private void updateViewIcon() {
 		if (fTestRunSession == null || fTestRunSession.isStopped() || fTestRunSession.isRunning()
-				|| fTestRunSession.countStartedTestCases() == 0)
+				|| fTestRunSession.countStartedTestCases() == 0) {
 			fViewImage = fOriginalViewImage;
-		else if (hasErrorsOrFailures())
+		} else if (hasErrorsOrFailures()) {
 			fViewImage = fTestRunFailIcon;
-		else
+		} else {
 			fViewImage = fTestRunOKIcon;
+		}
 		firePropertyChange(IWorkbenchPart.PROP_TITLE);
 	}
 
@@ -1070,8 +1085,9 @@ public class TestRunnerViewPart extends ViewPart {
 		 *
 		 * action enablement
 		 */
-		if (fTestRunSession == testRunSession)
+		if (fTestRunSession == testRunSession) {
 			return null;
+		}
 
 		deregisterTestSessionListener();
 
@@ -1156,30 +1172,34 @@ public class TestRunnerViewPart extends ViewPart {
 		String displayStr = getDisplayName();
 
 		String testRunLabel = BasicElementLabels.getJavaElementName(fTestRunSession.getTestRunName());
-		if (displayStr != null)
+		if (displayStr != null) {
 			setTitleToolTip(MessageFormat.format(Messages.TestRunnerViewPart_titleToolTip, testRunLabel, displayStr));
-		else
+		} else {
 			setTitleToolTip(testRunLabel);
+		}
 	}
 
 	@Override
 	public synchronized void dispose() {
 		fIsDisposed = true;
-		if (fTestRunSessionListener != null)
+		if (fTestRunSessionListener != null) {
 			UnitTestModel.getInstance().removeTestRunSessionListener(fTestRunSessionListener);
+		}
 
 		IHandlerService handlerService = getSite().getWorkbenchWindow().getService(IHandlerService.class);
 		handlerService.deactivateHandler(fRerunLastActivation);
 		handlerService.deactivateHandler(fRerunFailedFirstActivation);
 		setActiveTestRunSession(null);
 
-		if (fProgressImages != null)
+		if (fProgressImages != null) {
 			fProgressImages.dispose();
+		}
 		getViewSite().getPage().removePartListener(fPartListener);
 
 		disposeImages();
-		if (fClipboard != null)
+		if (fClipboard != null) {
 			fClipboard.dispose();
+		}
 		if (fViewMenuListener != null) {
 			getViewSite().getActionBars().getMenuManager().removeMenuListener(fViewMenuListener);
 		}
@@ -1200,8 +1220,9 @@ public class TestRunnerViewPart extends ViewPart {
 	}
 
 	private void postSyncRunnable(Runnable r) {
-		if (!isDisposed())
+		if (!isDisposed()) {
 			getDisplay().syncExec(r);
+		}
 	}
 
 	private void refreshCounters() {
@@ -1262,8 +1283,9 @@ public class TestRunnerViewPart extends ViewPart {
 	 */
 	protected void postShowTestResultsView() {
 		postSyncRunnable(() -> {
-			if (isDisposed())
+			if (isDisposed()) {
 				return;
+			}
 			showTestResultsView();
 		});
 	}
@@ -1356,8 +1378,9 @@ public class TestRunnerViewPart extends ViewPart {
 
 	@Override
 	public void setFocus() {
-		if (fTestViewer != null)
+		if (fTestViewer != null) {
 			fTestViewer.getTestViewerControl().setFocus();
+		}
 	}
 
 	@Override
@@ -1487,10 +1510,11 @@ public class TestRunnerViewPart extends ViewPart {
 		} else {
 			Point size = fParent.getSize();
 			if (size.x != 0 && size.y != 0) {
-				if (size.x > size.y)
+				if (size.x > size.y) {
 					setOrientation(VIEW_ORIENTATION_HORIZONTAL);
-				else
+				} else {
 					setOrientation(VIEW_ORIENTATION_VERTICAL);
+				}
 			}
 		}
 	}
@@ -1623,17 +1647,16 @@ public class TestRunnerViewPart extends ViewPart {
 		IWorkbenchPage page = site.getPage();
 		IWorkbenchPart activePart = page.getActivePart();
 
-		if (activePart instanceof IViewPart) {
-			IViewPart activeViewPart = (IViewPart) activePart;
+		if (activePart instanceof IViewPart activeViewPart) {
 			IViewSite activeViewSite = activeViewPart.getViewSite();
 			return activeViewSite.getActionBars().getStatusLineManager();
 		}
 
-		if (activePart instanceof IEditorPart) {
-			IEditorPart activeEditorPart = (IEditorPart) activePart;
+		if (activePart instanceof IEditorPart activeEditorPart) {
 			IEditorActionBarContributor contributor = activeEditorPart.getEditorSite().getActionBarContributor();
-			if (contributor instanceof EditorActionBarContributor)
+			if (contributor instanceof EditorActionBarContributor) {
 				return ((EditorActionBarContributor) contributor).getActionBars().getStatusLineManager();
+			}
 		}
 		// no active part
 		return getViewSite().getActionBars().getStatusLineManager();
@@ -1711,18 +1734,21 @@ public class TestRunnerViewPart extends ViewPart {
 		 * JavaCore.removeElementChangedListener(fDirtyListener); fDirtyListener= null;
 		 * }
 		 */
-		if (fViewImage == fTestRunOKIcon)
+		if (fViewImage == fTestRunOKIcon) {
 			fViewImage = fTestRunOKDirtyIcon;
-		else if (fViewImage == fTestRunFailIcon)
+		} else if (fViewImage == fTestRunFailIcon) {
 			fViewImage = fTestRunFailDirtyIcon;
+		}
 
 		Runnable r = () -> {
-			if (isDisposed())
+			if (isDisposed()) {
 				return;
+			}
 			firePropertyChange(IWorkbenchPart.PROP_TITLE);
 		};
-		if (!isDisposed())
+		if (!isDisposed()) {
 			getDisplay().asyncExec(r);
+		}
 	}
 
 	private void postSyncProcessChanges() {
@@ -1734,8 +1760,9 @@ public class TestRunnerViewPart extends ViewPart {
 	 */
 	public void warnOfContentChange() {
 		IWorkbenchSiteProgressService service = getProgressService();
-		if (service != null)
+		if (service != null) {
 			service.warnOfContentChange();
+		}
 	}
 
 	/**
@@ -1749,12 +1776,14 @@ public class TestRunnerViewPart extends ViewPart {
 	}
 
 	private void setOrientation(int orientation) {
-		if ((fSashForm == null) || fSashForm.isDisposed())
+		if ((fSashForm == null) || fSashForm.isDisposed()) {
 			return;
+		}
 		boolean horizontal = orientation == VIEW_ORIENTATION_HORIZONTAL;
 		fSashForm.setOrientation(horizontal ? SWT.HORIZONTAL : SWT.VERTICAL);
-		for (ToggleOrientationAction toggleOrientationAction : fToggleOrientationActions)
+		for (ToggleOrientationAction toggleOrientationAction : fToggleOrientationActions) {
 			toggleOrientationAction.setChecked(fOrientation == toggleOrientationAction.getOrientation());
+		}
 		fCurrentOrientation = orientation;
 		GridLayout layout = (GridLayout) fCounterComposite.getLayout();
 		setCounterColumns(layout);
@@ -1762,10 +1791,11 @@ public class TestRunnerViewPart extends ViewPart {
 	}
 
 	private void setCounterColumns(GridLayout layout) {
-		if (fCurrentOrientation == VIEW_ORIENTATION_HORIZONTAL)
+		if (fCurrentOrientation == VIEW_ORIENTATION_HORIZONTAL) {
 			layout.numColumns = 2;
-		else
+		} else {
 			layout.numColumns = 1;
+		}
 	}
 
 	static boolean getShowOnErrorOnly() {

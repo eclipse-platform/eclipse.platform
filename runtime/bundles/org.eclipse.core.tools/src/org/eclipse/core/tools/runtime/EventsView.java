@@ -111,10 +111,9 @@ public class EventsView extends TableWithTotalView {
 
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
-			if (!(element instanceof PerformanceStats)) {
+			if (!(element instanceof PerformanceStats stats)) {
 				return Messages.stats_badStat;
 			}
-			PerformanceStats stats = (PerformanceStats) element;
 			switch (columnIndex) {
 				case COLUMN_EVENT :
 					return stats.getEvent();
@@ -132,12 +131,12 @@ public class EventsView extends TableWithTotalView {
 
 		@Override
 		public Color getForeground(Object element) {
-			if (!(element instanceof PerformanceStats)) {
+			if (!(element instanceof PerformanceStats stats)) {
 				return null;
 			}
-			PerformanceStats stats = (PerformanceStats) element;
-			if (stats.isFailure())
+			if (stats.isFailure()) {
 				return Display.getDefault().getSystemColor(SWT.COLOR_RED);
+			}
 			return null;
 		}
 
@@ -151,19 +150,22 @@ public class EventsView extends TableWithTotalView {
 		private void asyncExec(Runnable runnable) {
 			@SuppressWarnings("synthetic-access")
 			final Control control = viewer.getControl();
-			if (control == null || control.isDisposed())
+			if (control == null || control.isDisposed()) {
 				return;
+			}
 			final Display display = control.getDisplay();
-			if (display.isDisposed())
+			if (display.isDisposed()) {
 				return;
+			}
 			display.asyncExec(runnable);
 		}
 
 		@Override
 		public void eventsOccurred(final PerformanceStats[] event) {
 			asyncExec(() -> {
-				if (!getViewer().getControl().isDisposed())
+				if (!getViewer().getControl().isDisposed()) {
 					getViewer().refresh();
+				}
 			});
 		}
 
@@ -299,8 +301,9 @@ public class EventsView extends TableWithTotalView {
 
 	@Override
 	protected String getStatusLineMessage(Object element) {
-		if (!(element instanceof PerformanceStats))
+		if (!(element instanceof PerformanceStats)) {
 			return ""; //$NON-NLS-1$
+		}
 		return ((PerformanceStats) element).getBlameString();
 	}
 

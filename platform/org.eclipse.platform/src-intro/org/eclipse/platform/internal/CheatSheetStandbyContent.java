@@ -56,8 +56,9 @@ public final class CheatSheetStandbyContent implements IStandbyContentPart {
 	@Override
 	public void setInput(Object input) {
 		// if the new input is null, use cacched input from momento.
-		if (input != null)
+		if (input != null) {
 			this.input = (String) input;
+		}
 		viewer.setInput(this.input);
 	}
 
@@ -74,16 +75,18 @@ public final class CheatSheetStandbyContent implements IStandbyContentPart {
 	@Override
 	public void saveState(IMemento memento) {
 		String currentCheatSheetId = viewer.getCheatSheetID();
-		if (currentCheatSheetId != null)
+		if (currentCheatSheetId != null) {
 			memento.putString(MEMENTO_CHEATSHEET_ID_ATT, currentCheatSheetId);
+		}
 	}
 
 	/**
 	 * Tries to create the last content part viewed, based on content part id..
 	 */
 	private String getCachedInput(IMemento memento) {
-		if (memento == null)
+		if (memento == null) {
 			return null;
+		}
 		return memento.getString(MEMENTO_CHEATSHEET_ID_ATT);
 
 	}

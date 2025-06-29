@@ -78,8 +78,9 @@ public class ValidatorServlet extends HttpServlet {
 			servlet.init(config);
 			servlet.service(req, response);
 
-			if (isSecure(req, response))
+			if (isSecure(req, response)) {
 				response.commitOutput();
+			}
 
 		} catch(Exception ex) {
 
@@ -128,11 +129,13 @@ public class ValidatorServlet extends HttpServlet {
 		int index = name.indexOf(alias);
 		if (index == 0) {
 			int offset = alias.length();
-			if (name.length() == offset)
+			if (name.length() == offset) {
 				return true;
+			}
 			char ch = name.charAt(offset);
-			if (ch == '/' || ch == '?')
+			if (ch == '/' || ch == '?') {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -161,15 +164,18 @@ public class ValidatorServlet extends HttpServlet {
 			String name = names.nextElement();
 			String val = req.getParameter(name);
 			values.add(val);
-			if (replaceAll(val, '+', "").indexOf("<script")>-1) //$NON-NLS-1$ //$NON-NLS-2$
+			if (replaceAll(val, '+', "").indexOf("<script")>-1) { //$NON-NLS-1$ //$NON-NLS-2$
 				scripts.add(val);
+			}
 		}
 
 		if (resp.getWriter() != null) {
 			String data = resp.getString();
-			for (String script : scripts)
-				if (data.indexOf(script) > -1)
+			for (String script : scripts) {
+				if (data.indexOf(script) > -1) {
 					throw new SecurityException("Potential cross-site scripting detected."); //$NON-NLS-1$
+				}
+			}
 		}
 
 		return true;
@@ -181,10 +187,11 @@ public class ValidatorServlet extends HttpServlet {
 		for (int s=0; s < str.length(); s++) {
 
 			char ch = str.charAt(s);
-			if (ch == remove)
+			if (ch == remove) {
 				buffer.append(add);
-			else
+			} else {
 				buffer.append(ch);
+			}
 		}
 		return buffer.toString();
 	}
@@ -203,16 +210,18 @@ public class ValidatorServlet extends HttpServlet {
 		@Override
 		public PrintWriter getWriter() {
 
-			if (writer == null && stream == null)
+			if (writer == null && stream == null) {
 				writer = new ServletPrintWriter();
+			}
 			return writer;
 		}
 
 		@Override
 		public ServletOutputStream getOutputStream() throws IOException {
 
-			if (stream == null && writer == null)
+			if (stream == null && writer == null) {
 				stream = response.getOutputStream();
+			}
 			return stream;
 		}
 
@@ -241,8 +250,9 @@ public class ValidatorServlet extends HttpServlet {
 
 		public String getString() {
 
-			if (writer != null)
+			if (writer != null) {
 				return writer.toString();
+			}
 
 			return null;
 		}

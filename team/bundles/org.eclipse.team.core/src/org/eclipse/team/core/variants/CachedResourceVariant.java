@@ -76,7 +76,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 			if (!isContentsCached()) {
 				// The cache may have been cleared if someone held
 				// on to the storage too long
-				throw new TeamException(NLS.bind(Messages.CachedResourceVariant_0, new String[] { getCachePath() }));
+				throw new TeamException(NLS.bind(Messages.CachedResourceVariant_0, getCachePath()));
 			}
 			return getCachedContents();
 		}
@@ -102,14 +102,18 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 				String charSet = TeamPlugin.getCharset(getName(), contents);
 				return charSet;
 			} catch (IOException e) {
-				throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.FAILED_DESCRIBING_CONTENTS, NLS.bind(Messages.CachedResourceVariant_1, new String[] { getFullPath().toString() }), e));
+				throw new TeamException(
+						new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.FAILED_DESCRIBING_CONTENTS,
+								NLS.bind(Messages.CachedResourceVariant_1, getFullPath().toString()), e));
 			}
 		}
 	}
 
 	@Override
 	public IStorage getStorage(IProgressMonitor monitor) throws TeamException {
-		if (isContainer()) return null;
+		if (isContainer()) {
+			return null;
+		}
 		ensureContentsCached(monitor);
 		if (storage == null) {
 			storage = new ResourceVariantStorage();
@@ -146,7 +150,9 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	protected void setContents(InputStream stream, IProgressMonitor monitor) throws TeamException {
 		// Ensure that there is a cache entry to receive the contents
 		Assert.isTrue(!isContainer());
-		if (!isHandleCached()) cacheHandle();
+		if (!isHandleCached()) {
+			cacheHandle();
+		}
 		getCacheEntry().setContents(stream, monitor);
 	}
 
@@ -182,7 +188,9 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	 * @throws TeamException if an error occurs
 	 */
 	protected InputStream getCachedContents() throws TeamException {
-		if (isContainer() || !isContentsCached()) return null;
+		if (isContainer() || !isContentsCached()) {
+			return null;
+		}
 		return getCache().getCacheEntry(getCachePath()).getContents();
 	}
 
@@ -222,7 +230,9 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	 * @return the size (in bytes) of the contents of this resource variant
 	 */
 	public long getSize() {
-		if (isContainer() || !isContentsCached()) return 0;
+		if (isContainer() || !isContentsCached()) {
+			return 0;
+		}
 		ResourceVariantCacheEntry entry = getCacheEntry();
 		if (entry == null || entry.getState() != ResourceVariantCacheEntry.READY) {
 			return 0;
@@ -259,7 +269,9 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	 */
 	protected CachedResourceVariant getCachedHandle() {
 		ResourceVariantCacheEntry entry = getCacheEntry();
-		if (entry == null) return null;
+		if (entry == null) {
+			return null;
+		}
 		return entry.getResourceVariant();
 	}
 

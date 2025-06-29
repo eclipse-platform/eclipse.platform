@@ -83,8 +83,9 @@ public class TypeExtension {
 		// handle extenders associated with this type extender
 		for (int i= 0; i < fExtenders.length; i++) {
 			IPropertyTester extender= fExtenders[i];
-			if (extender == null || !extender.handles(namespace, method))
+			if (extender == null || !extender.handles(namespace, method)) {
 				continue;
+			}
 			if (extender.isInstantiated()) {
 				// There is no need to check for an active plug-in here. If a plug-in
 				// gets uninstalled we receive an registry event which will flush the whole
@@ -116,8 +117,9 @@ public class TypeExtension {
 		}
 
 		// there is no inheritance for static methods
-		if (staticMethod)
+		if (staticMethod) {
 			return CONTINUE;
+		}
 
 		// handle extends chain
 		if (fExtends == null) {
@@ -129,8 +131,9 @@ public class TypeExtension {
 			}
 		}
 		result= fExtends.findTypeExtender(manager, namespace, method, staticMethod, forcePluginActivation);
-		if (result != CONTINUE)
+		if (result != CONTINUE) {
 			return result;
+		}
 
 		// handle implements chain
 		if (fImplements == null) {
@@ -146,8 +149,9 @@ public class TypeExtension {
 		}
 		for (TypeExtension fImplement : fImplements) {
 			result= fImplement.findTypeExtender(manager, namespace, method, staticMethod, forcePluginActivation);
-			if (result != CONTINUE)
+			if (result != CONTINUE) {
 				return result;
+			}
 		}
 		return CONTINUE;
 	}

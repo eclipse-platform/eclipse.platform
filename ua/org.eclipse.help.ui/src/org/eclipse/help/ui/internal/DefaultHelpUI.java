@@ -1,5 +1,5 @@
 /***************************************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,6 +18,7 @@ package org.eclipse.help.ui.internal;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
@@ -266,8 +267,9 @@ public class DefaultHelpUI extends AbstractHelpUI {
 	private static void setIntroStandby() {
 		IIntroManager introMng = PlatformUI.getWorkbench().getIntroManager();
 		IIntroPart intro = introMng.getIntro();
-		if (intro != null && !introMng.isIntroStandby(intro))
+		if (intro != null && !introMng.isIntroStandby(intro)) {
 			introMng.setIntroStandby(intro, true);
+		}
 	}
 
 	private void warnNoOpenPerspective(IWorkbenchWindow window) {
@@ -306,8 +308,9 @@ public class DefaultHelpUI extends AbstractHelpUI {
 	}
 
 	void displayContext(IContext context, int x, int y, boolean noInfopop) {
-		if (context == null)
+		if (context == null) {
 			return;
+		}
 		boolean winfopop = Platform.getPreferencesService().getBoolean
 				(HelpBasePlugin.PLUGIN_ID, IHelpBaseConstants.P_KEY_WINDOW_INFOPOP, false, null);
 		boolean dinfopop = Platform.getPreferencesService().getBoolean
@@ -327,12 +330,14 @@ public class DefaultHelpUI extends AbstractHelpUI {
 					IWorkbenchPart activePart = page.getActivePart();
 					Control c = window.getShell().getDisplay().getFocusControl();
 					IContextProvider adapter = activePart.getAdapter(IContextProvider.class);
-					if (adapter != null)
+					if (adapter != null) {
 						context = adapter
 								.getContext(c); /*
 												 * If the context help has no description text and exactly one
 												 * topic, go straight to the topic and skip context help.
 												 */
+					}
+					Objects.requireNonNull(context, "context must not be null when displaying help content"); //$NON-NLS-1$
 					String contextText = context.getText();
 					IHelpResource[] topics = context.getRelatedTopics();
 					boolean isSingleChoiceWithoutDescription = contextText == null && topics.length == 1;
@@ -470,8 +475,9 @@ public class DefaultHelpUI extends AbstractHelpUI {
 		if (!Constants.OS_WIN32.equalsIgnoreCase(Platform.getOS())) {
 			Display display = Display.getCurrent();
 			if (display != null) {
-				if (insideModalParent(display))
+				if (insideModalParent(display)) {
 					return true;
+				}
 			}
 		}
 
@@ -492,8 +498,9 @@ public class DefaultHelpUI extends AbstractHelpUI {
 
 	public static boolean isDisplayModal(Shell activeShell) {
 		while (activeShell != null) {
-			if ((activeShell.getStyle() & (SWT.APPLICATION_MODAL | SWT.PRIMARY_MODAL | SWT.SYSTEM_MODAL)) > 0)
+			if ((activeShell.getStyle() & (SWT.APPLICATION_MODAL | SWT.PRIMARY_MODAL | SWT.SYSTEM_MODAL)) > 0) {
 				return true;
+			}
 			activeShell = (Shell) activeShell.getParent();
 		}
 		return false;

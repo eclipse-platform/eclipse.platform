@@ -47,12 +47,15 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 	}
 
 	private static IPath calculatePath(ITwoWayDiff localChange, ITwoWayDiff remoteChange) {
-		if (localChange != null && remoteChange != null)
+		if (localChange != null && remoteChange != null) {
 			Assert.isTrue(localChange.getPath().equals(remoteChange.getPath()));
-		if (localChange != null)
+		}
+		if (localChange != null) {
 			return localChange.getPath();
-		if (remoteChange != null)
+		}
+		if (remoteChange != null) {
 			return remoteChange.getPath();
+		}
 		Assert.isLegal(false, "Either or local or remote change must be supplied"); //$NON-NLS-1$
 		return null; // Will never be reached
 	}
@@ -70,15 +73,19 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 
 	private static int calculateKind(ITwoWayDiff localChange, ITwoWayDiff remoteChange) {
 		int localKind = NO_CHANGE;
-		if (localChange != null)
+		if (localChange != null) {
 			localKind = localChange.getKind();
+		}
 		int remoteKind = NO_CHANGE;
-		if (remoteChange != null)
+		if (remoteChange != null) {
 			remoteKind = remoteChange.getKind();
-		if (localKind == NO_CHANGE || localKind == remoteKind)
+		}
+		if (localKind == NO_CHANGE || localKind == remoteKind) {
 			return remoteKind;
-		if (remoteKind == NO_CHANGE)
+		}
+		if (remoteKind == NO_CHANGE) {
 			return localKind;
+		}
 		return CHANGE;
 	}
 
@@ -105,18 +112,18 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 			label = super.toDiffString();
 		} else {
 			label = SyncInfoToDiffConverter.diffDirectionToString(getDirection());
-			label = NLS.bind(Messages.concatStrings, new String[] { label, super.toDiffString() });
+			label = NLS.bind(Messages.concatStrings, label, super.toDiffString());
 		}
 		return label;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
+		}
 		if (super.equals(obj)) {
-			if (obj instanceof ThreeWayDiff) {
-				ThreeWayDiff other = (ThreeWayDiff) obj;
+			if (obj instanceof ThreeWayDiff other) {
 				return changesEqual(getLocalChange(), other.getLocalChange())
 					&& changesEqual(getRemoteChange(), other.getRemoteChange());
 			}
@@ -125,10 +132,12 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 	}
 
 	private boolean changesEqual(ITwoWayDiff diff, ITwoWayDiff diff2) {
-		if (diff == null)
+		if (diff == null) {
 			return diff2 == null;
-		if (diff2 == null)
+		}
+		if (diff2 == null) {
 			return false;
+		}
 		return diff.equals(diff2);
 	}
 

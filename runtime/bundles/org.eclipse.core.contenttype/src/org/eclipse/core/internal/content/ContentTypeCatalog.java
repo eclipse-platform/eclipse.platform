@@ -82,13 +82,15 @@ public final class ContentTypeCatalog {
 		if (isAncestor(type1, type2)) {
 			// first criteria: depth - the lower, the better
 			int depthCriteria = type1.getDepth() - type2.getDepth();
-			if (depthCriteria != 0)
+			if (depthCriteria != 0) {
 				return depthCriteria;
+			}
 		}
 		// second criteria: priority - the higher, the better
 		int priorityCriteria = type1.getPriority() - type2.getPriority();
-		if (priorityCriteria != 0)
+		if (priorityCriteria != 0) {
 			return -priorityCriteria;
+		}
 		// they have same depth and priority - choose one arbitrarily (stability is important)
 		return type1.getId().compareTo(type2.getId());
 	};
@@ -103,13 +105,15 @@ public final class ContentTypeCatalog {
 		if (isAncestor(type1, type2)) {
 			// first criteria: depth - the higher, the better
 			int depthCriteria = type1.getDepth() - type2.getDepth();
-			if (depthCriteria != 0)
+			if (depthCriteria != 0) {
 				return -depthCriteria;
+			}
 		}
 		// second criteria: priority - the higher, the better
 		int priorityCriteria = type1.getPriority() - type2.getPriority();
-		if (priorityCriteria != 0)
+		if (priorityCriteria != 0) {
 			return -priorityCriteria;
+		}
 		// they have same depth and priority - choose one arbitrarily (stability is important)
 		return type1.getId().compareTo(type2.getId());
 	};
@@ -123,13 +127,15 @@ public final class ContentTypeCatalog {
 		if (isAncestor(type1, type2)) {
 			// first criteria: depth - the lower, the better
 			int depthCriteria = type1.getDepth() - type2.getDepth();
-			if (depthCriteria != 0)
+			if (depthCriteria != 0) {
 				return depthCriteria;
+			}
 		}
 		// second criteria: priority - the higher, the better
 		int priorityCriteria = type1.getPriority() - type2.getPriority();
-		if (priorityCriteria != 0)
+		if (priorityCriteria != 0) {
 			return -priorityCriteria;
+		}
 		return 0;
 	};
 
@@ -150,13 +156,15 @@ public final class ContentTypeCatalog {
 		if (isAncestor(type1, type2)) {
 			// first criteria: depth - the higher, the better
 			int depthCriteria = type1.getDepth() - type2.getDepth();
-			if (depthCriteria != 0)
+			if (depthCriteria != 0) {
 				return -depthCriteria;
+			}
 		}
 		// second criteria: priority - the higher, the better
 		int priorityCriteria = type1.getPriority() - type2.getPriority();
-		if (priorityCriteria != 0)
+		if (priorityCriteria != 0) {
 			return -priorityCriteria;
+		}
 		return 0;
 	};
 
@@ -213,11 +221,13 @@ public final class ContentTypeCatalog {
 
 	private void associate(ContentType contentType) {
 		String[] builtInFileNames = contentType.getFileSpecs(IContentType.IGNORE_USER_DEFINED | IContentType.FILE_NAME_SPEC);
-		for (String builtInFileName : builtInFileNames)
+		for (String builtInFileName : builtInFileNames) {
 			associate(contentType, builtInFileName, IContentType.FILE_NAME_SPEC);
+		}
 		String[] builtInFileExtensions = contentType.getFileSpecs(IContentType.IGNORE_USER_DEFINED | IContentType.FILE_EXTENSION_SPEC);
-		for (String builtInFileExtension : builtInFileExtensions)
+		for (String builtInFileExtension : builtInFileExtensions) {
 			associate(contentType, builtInFileExtension, IContentType.FILE_EXTENSION_SPEC);
+		}
 		String[] builtInFilePatterns = contentType
 				.getFileSpecs(IContentType.IGNORE_USER_DEFINED | IContentType.FILE_PATTERN_SPEC);
 		for (String builtInFilePattern : builtInFilePatterns) {
@@ -239,8 +249,9 @@ public final class ContentTypeCatalog {
 		if (fileSpecMap != null) {
 			String mappingKey = FileSpec.getMappingKeyFor(text);
 			Set<ContentType> existing = fileSpecMap.get(mappingKey);
-			if (existing == null)
+			if (existing == null) {
 				fileSpecMap.put(mappingKey, existing = new HashSet<>());
+			}
 			existing.add(contentType);
 		} else if ((type & IContentType.FILE_PATTERN_SPEC) != 0) {
 			Pattern compiledPattern = compiledRegexps.get(text);
@@ -260,17 +271,20 @@ public final class ContentTypeCatalog {
 			IContentDescriber describer = current.getDescriber();
 			int status = IContentDescriber.INDETERMINATE;
 			if (describer != null) {
-				if (contents.isText() && !(describer instanceof ITextContentDescriber))
+				if (contents.isText() && !(describer instanceof ITextContentDescriber)) {
 					// for text streams we skip content types that do not provide text-based content describers
 					continue;
+				}
 				status = describe(current, contents, null, properties);
-				if (status == IContentDescriber.INVALID)
+				if (status == IContentDescriber.INVALID) {
 					continue;
+				}
 			}
-			if (status == IContentDescriber.VALID)
+			if (status == IContentDescriber.VALID) {
 				destination.add(valid++, current);
-			else
+			} else {
 				destination.add(current);
+			}
 		}
 		return valid;
 	}
@@ -326,8 +340,9 @@ public final class ContentTypeCatalog {
 		if (fileSpecMap != null) {
 			String mappingKey = FileSpec.getMappingKeyFor(text);
 			Set<ContentType> existing = fileSpecMap.get(mappingKey);
-			if (existing == null)
+			if (existing == null) {
 				return;
+			}
 			existing.remove(contentType);
 		} else if ((type & IContentType.FILE_PATTERN_SPEC) != 0) {
 			Pattern pattern = compiledRegexps.get(text);
@@ -349,28 +364,32 @@ public final class ContentTypeCatalog {
 	 * </ol>
 	 */
 	private boolean ensureValid(ContentType type) {
-		if (type.getValidation() != ContentType.STATUS_UNKNOWN)
+		if (type.getValidation() != ContentType.STATUS_UNKNOWN) {
 			// already processed
 			return type.isValid();
+		}
 		// set this type temporarily as invalid to prevent cycles
 		// all types in a cycle would remain as invalid
 		type.setValidation(ContentType.STATUS_INVALID);
-		if (type.isAlias())
+		if (type.isAlias()) {
 			// it is an alias, leave as invalid
 			return false;
+		}
 		// check base type
 		ContentType baseType = null;
 		if (type.getBaseTypeId() != null) {
 			baseType = (ContentType) contentTypes.get(type.getBaseTypeId());
-			if (baseType == null)
+			if (baseType == null) {
 				// invalid: specified base type is not known
 				return false;
+			}
 			// base type exists, ensure it is valid
 			baseType = baseType.getAliasTarget(true);
 			ensureValid(baseType);
-			if (baseType.getValidation() != ContentType.STATUS_VALID)
+			if (baseType.getValidation() != ContentType.STATUS_VALID) {
 				// invalid: base type was invalid
 				return false;
+			}
 		}
 		// valid: all conditions satisfied
 		type.setValidation(ContentType.STATUS_VALID);
@@ -383,8 +402,9 @@ public final class ContentTypeCatalog {
 		IContentType[] selected = internalFindContentTypesFor(matcher, buffer, fileName, true);
 		// give the policy a chance to change the results
 		ISelectionPolicy policy = matcher.getPolicy();
-		if (policy != null)
+		if (policy != null) {
 			selected = applyPolicy(policy, selected, fileName != null, true);
+		}
 		return selected;
 	}
 
@@ -392,8 +412,9 @@ public final class ContentTypeCatalog {
 		IContentType[] selected = concat(internalFindContentTypesSorted(matcher, fileName, policyConstantGeneralIsBetter));
 		// give the policy a chance to change the results
 		ISelectionPolicy policy = matcher.getPolicy();
-		if (policy != null)
+		if (policy != null) {
 			selected = applyPolicy(policy, selected, true, false);
+		}
 		return selected;
 	}
 
@@ -401,21 +422,24 @@ public final class ContentTypeCatalog {
 		List<ContentType> result = new ArrayList<>(contentTypes.size());
 		for (IContentType iContentType : contentTypes.values()) {
 			ContentType type = (ContentType) iContentType;
-			if (type.isValid() && !type.isAlias())
+			if (type.isValid() && !type.isAlias()) {
 				result.add(type);
+			}
 		}
 		return result.toArray(new IContentType[result.size()]);
 	}
 
 	private ContentType[] getChildren(ContentType parent) {
 		ContentType[] children = allChildren.get(parent);
-		if (children != null)
+		if (children != null) {
 			return children;
+		}
 		List<ContentType> result = new ArrayList<>(5);
 		for (IContentType iContentType : this.contentTypes.values()) {
 			ContentType next = (ContentType) iContentType;
-			if (next.getBaseType() == parent)
+			if (next.getBaseType() == parent) {
 				result.add(next);
+			}
 		}
 		children = result.toArray(new ContentType[result.size()]);
 		allChildren.put(parent, children);
@@ -429,14 +453,16 @@ public final class ContentTypeCatalog {
 
 	private IContentDescription getDescriptionFor(ContentTypeMatcher matcher, ILazySource contents, String fileName, QualifiedName[] options) throws IOException {
 		IContentType[] selected = internalFindContentTypesFor(matcher, contents, fileName, false);
-		if (selected.length == 0)
+		if (selected.length == 0) {
 			return null;
+		}
 		// give the policy a chance to change the results
 		ISelectionPolicy policy = matcher.getPolicy();
 		if (policy != null) {
 			selected = applyPolicy(policy, selected, fileName != null, true);
-			if (selected.length == 0)
+			if (selected.length == 0) {
 				return null;
+			}
 		}
 		return matcher.getSpecificDescription(((ContentType) selected[0]).internalGetDescriptionFor(contents, options));
 	}
@@ -458,8 +484,9 @@ public final class ContentTypeCatalog {
 	}
 
 	private boolean internalAccept(ContentTypeVisitor visitor, ContentType root) {
-		if (!root.isValid() || root.isAlias())
+		if (!root.isValid() || root.isAlias()) {
 			return true;
+		}
 		int result = visitor.visit(root);
 		switch (result) {
 				// stop traversing the tree
@@ -470,9 +497,10 @@ public final class ContentTypeCatalog {
 				return true;
 		}
 		ContentType[] children = getChildren(root);
-		if (children == null)
+		if (children == null) {
 			// this content type has no sub-types - keep traversing the tree
 			return true;
+		}
 		for (ContentType c : children) {
 			if (!internalAccept(visitor, c)) {
 				// stop the traversal
@@ -493,19 +521,23 @@ public final class ContentTypeCatalog {
 				- validExtension;
 		final int appropriatePattern = appropriate.size() - appropriateFullName - appropriateExtension;
 		IContentType[] result = appropriate.toArray(new IContentType[appropriate.size()]);
-		if (validFullName > 1)
+		if (validFullName > 1) {
 			Arrays.sort(result, 0, validFullName, validPolicy);
-		if (validExtension > 1)
+		}
+		if (validExtension > 1) {
 			Arrays.sort(result, validFullName, validFullName + validExtension, validPolicy);
+		}
 		if (validPattern > 1) {
 			Arrays.sort(result, validFullName + validExtension, validFullName + validExtension + validPattern,
 					validPolicy);
 		}
-		if (appropriateFullName - validFullName > 1)
+		if (appropriateFullName - validFullName > 1) {
 			Arrays.sort(result, validFullName + validExtension, appropriateFullName + validExtension, indeterminatePolicy);
-		if (appropriateExtension - validExtension > 1)
+		}
+		if (appropriateExtension - validExtension > 1) {
 			Arrays.sort(result, appropriateFullName + validExtension, appropriate.size() - validPattern,
 					indeterminatePolicy);
+		}
 		if (appropriatePattern - validPattern > 1) {
 			Arrays.sort(result, appropriate.size() - validPattern, appropriate.size(), indeterminatePolicy);
 		}
@@ -528,21 +560,24 @@ public final class ContentTypeCatalog {
 			validPolicy = policySpecificIsBetter;
 		}
 		int total = subset[0].length + subset[1].length + subset[2].length;
-		if (total == 0)
+		if (total == 0) {
 			// don't do further work if subset is empty
 			return NO_CONTENT_TYPES;
+		}
 		if (!forceValidation && total == 1) {
 			// do not do validation if not forced and only one was found (caller will validate later)
 			IContentType[] found = subset[0].length == 1 ? subset[0] : (subset[1].length == 1 ? subset[1] : subset[2]);
 			// bug 100032 - ignore binary content type if contents are text
-			if (!buffer.isText())
+			if (!buffer.isText()) {
 				// binary buffer, caller can call the describer with no risk
 				return found;
+			}
 			// text buffer, need to check describer
 			IContentDescriber describer = ((ContentType) found[0]).getDescriber();
-			if (describer == null || describer instanceof ITextContentDescriber)
+			if (describer == null || describer instanceof ITextContentDescriber) {
 				// no describer or text describer, that is fine
 				return found;
+			}
 			// only eligible content type is binary and contents are text, ignore it
 			return NO_CONTENT_TYPES;
 		}
@@ -562,9 +597,9 @@ public final class ContentTypeCatalog {
 		Set<ContentType> existing = new HashSet<>();
 
 		final Set<ContentType> allByFileName;
-		if (context.equals(manager.getContext()))
+		if (context.equals(manager.getContext())) {
 			allByFileName = getDirectlyAssociated(fileName, IContentTypeSettings.FILE_NAME_SPEC);
-		else {
+		} else {
 			allByFileName = new HashSet<>(getDirectlyAssociated(fileName, IContentTypeSettings.FILE_NAME_SPEC | IContentType.IGNORE_USER_DEFINED));
 			allByFileName.addAll(matcher.getDirectlyAssociated(this, fileName, IContentTypeSettings.FILE_NAME_SPEC));
 		}
@@ -572,30 +607,33 @@ public final class ContentTypeCatalog {
 				IContentType.FILE_NAME_SPEC);
 		existing.addAll(selectedByName);
 		result[0] = selectedByName.toArray(new IContentType[selectedByName.size()]);
-		if (result[0].length > 1)
+		if (result[0].length > 1) {
 			Arrays.sort(result[0], sortingPolicy);
+		}
 
 		final String fileExtension = ContentTypeManager.getFileExtension(fileName);
 		if (fileExtension != null) {
 			final Set<ContentType> allByFileExtension;
-			if (context.equals(manager.getContext()))
+			if (context.equals(manager.getContext())) {
 				allByFileExtension = getDirectlyAssociated(fileExtension, IContentTypeSettings.FILE_EXTENSION_SPEC);
-			else {
+			} else {
 				allByFileExtension = new HashSet<>(getDirectlyAssociated(fileExtension, IContentTypeSettings.FILE_EXTENSION_SPEC | IContentType.IGNORE_USER_DEFINED));
 				allByFileExtension.addAll(matcher.getDirectlyAssociated(this, fileExtension, IContentTypeSettings.FILE_EXTENSION_SPEC));
 			}
 			Set<ContentType> selectedByExtension = selectMatchingByName(context, allByFileExtension, selectedByName, fileExtension, IContentType.FILE_EXTENSION_SPEC);
 			existing.addAll(selectedByExtension);
-			if (!selectedByExtension.isEmpty())
+			if (!selectedByExtension.isEmpty()) {
 				result[1] = selectedByExtension.toArray(new IContentType[selectedByExtension.size()]);
+			}
 		}
-		if (result[1].length > 1)
+		if (result[1].length > 1) {
 			Arrays.sort(result[1], sortingPolicy);
+		}
 
 		final Set<ContentType> allByFilePattern;
-		if (context.equals(manager.getContext()))
+		if (context.equals(manager.getContext())) {
 			allByFilePattern = getMatchingRegexpAssociated(fileName, IContentTypeSettings.FILE_PATTERN_SPEC);
-		else {
+		} else {
 			allByFilePattern = new HashSet<>(getMatchingRegexpAssociated(fileName,
 					IContentTypeSettings.FILE_PATTERN_SPEC | IContentType.IGNORE_USER_DEFINED));
 			allByFilePattern
@@ -603,8 +641,9 @@ public final class ContentTypeCatalog {
 							IContentTypeSettings.FILE_PATTERN_SPEC));
 		}
 		existing.addAll(allByFilePattern);
-		if (!allByFilePattern.isEmpty())
+		if (!allByFilePattern.isEmpty()) {
 			result[2] = allByFilePattern.toArray(new IContentType[allByFilePattern.size()]);
+		}
 
 		return result;
 	}
@@ -674,8 +713,9 @@ public final class ContentTypeCatalog {
 			typeMask ^= (IContentType.IGNORE_PRE_DEFINED | IContentType.IGNORE_USER_DEFINED);
 			for (Iterator<ContentType> i = contentTypes.iterator(); i.hasNext();) {
 				ContentType contentType = i.next();
-				if (!contentType.hasFileSpec(text, typeMask, true))
+				if (!contentType.hasFileSpec(text, typeMask, true)) {
 					i.remove();
+				}
 			}
 		}
 		return contentTypes;
@@ -690,11 +730,13 @@ public final class ContentTypeCatalog {
 		for (IContentType iContentType : contentTypes.values()) {
 			ContentType type = (ContentType) iContentType;
 			String targetId = type.getAliasTargetId();
-			if (targetId == null)
+			if (targetId == null) {
 				continue;
+			}
 			ContentType target = internalGetContentType(targetId);
-			if (target != null)
+			if (target != null) {
 				type.setAliasTarget(target);
+			}
 		}
 	}
 
@@ -707,15 +749,18 @@ public final class ContentTypeCatalog {
 		// do the validation
 		for (IContentType iContentType : contentTypes.values()) {
 			ContentType type = (ContentType) iContentType;
-			if (ensureValid(type))
+			if (ensureValid(type)) {
 				associate(type);
+			}
 		}
-		if (ContentTypeManager.DebuggingHolder.DEBUGGING)
+		if (ContentTypeManager.DebuggingHolder.DEBUGGING) {
 			for (IContentType iContentType : contentTypes.values()) {
 				ContentType type = (ContentType) iContentType;
-				if (!type.isValid())
+				if (!type.isValid()) {
 					ContentMessages.message("Invalid: " + type); //$NON-NLS-1$
+				}
 			}
+		}
 	}
 
 	/**
@@ -723,24 +768,28 @@ public final class ContentTypeCatalog {
 	 * destination collection.
 	 */
 	private Set<ContentType> selectMatchingByName(final IScopeContext context, Collection<ContentType> source, final Collection<ContentType> existing, final String fileSpecText, final int fileSpecType) {
-		if (source == null || source.isEmpty())
+		if (source == null || source.isEmpty()) {
 			return Collections.EMPTY_SET;
+		}
 		final Set<ContentType> destination = new HashSet<>(5);
 		// process all content types in the given collection
 		for (ContentType root : source) {
 			// From a given content type, check if it matches, and
 			// include any children that match as well.
 			internalAccept(contentType -> {
-				if (contentType != root && contentType.hasBuiltInAssociations())
+				if (contentType != root && contentType.hasBuiltInAssociations()) {
 					// this content type has built-in associations - visit it later as root
 					return ContentTypeVisitor.RETURN;
-				if (contentType == root && !contentType.hasFileSpec(context, fileSpecText, fileSpecType))
+				}
+				if (contentType == root && !contentType.hasFileSpec(context, fileSpecText, fileSpecType)) {
 					// it is the root and does not match the file name - do not add it nor look into its children
 					return ContentTypeVisitor.RETURN;
+				}
 				// either the content type is the root and matches the file name or
 				// is a sub content type and does not have built-in files specs
-				if (!existing.contains(contentType))
+				if (!existing.contains(contentType)) {
 					destination.add(contentType);
+				}
 				return ContentTypeVisitor.CONTINUE;
 			}, root);
 		}

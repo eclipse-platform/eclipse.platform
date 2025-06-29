@@ -34,8 +34,9 @@ public class Convert {
 	 * @since org.eclipse.core.filesystem 1.1
 	 */
 	public static String fromPlatformBytes(byte[] source, int length) {
-		if (defaultEncoding == null)
+		if (defaultEncoding == null) {
 			return new String(source, 0, length);
+		}
 		// try to use the default encoding
 		try {
 			return new String(source, 0, length, defaultEncoding);
@@ -51,8 +52,9 @@ public class Convert {
 	 * This can be avoided by calling String.getBytes(String encoding) instead.
 	 */
 	public static byte[] toPlatformBytes(String target) {
-		if (defaultEncoding == null)
+		if (defaultEncoding == null) {
 			return target.getBytes();
+		}
 		// try to use the default encoding
 		try {
 			return target.getBytes(defaultEncoding);

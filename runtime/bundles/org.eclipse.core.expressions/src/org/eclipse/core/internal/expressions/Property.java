@@ -71,9 +71,9 @@ public class Property {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Property))
+		if (!(obj instanceof Property other)) {
 			return false;
-		Property other= (Property)obj;
+		}
 		return fType.equals(other.fType) && fNamespace.equals(other.fNamespace) && fName.equals(other.fName);
 	}
 

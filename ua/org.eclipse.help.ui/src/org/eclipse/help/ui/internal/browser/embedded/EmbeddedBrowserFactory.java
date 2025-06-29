@@ -88,8 +88,9 @@ public class EmbeddedBrowserFactory implements IBrowserFactory {
 			} catch (Exception e) {
 				// Browser not implemented
 			}
-			if (sh != null && !sh.isDisposed())
+			if (sh != null && !sh.isDisposed()) {
 				sh.dispose();
+			}
 		}
 		return available;
 	}

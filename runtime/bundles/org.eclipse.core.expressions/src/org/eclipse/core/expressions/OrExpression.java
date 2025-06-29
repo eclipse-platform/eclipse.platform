@@ -28,10 +28,10 @@ public class OrExpression extends CompositeExpression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof OrExpression))
+		if (!(object instanceof final OrExpression that)) {
 			return false;
+		}
 
-		final OrExpression that= (OrExpression)object;
 		return equals(this.fExpressions, that.fExpressions);
 	}
 }

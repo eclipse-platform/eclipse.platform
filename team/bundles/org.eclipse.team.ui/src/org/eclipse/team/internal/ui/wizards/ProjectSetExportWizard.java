@@ -137,8 +137,9 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 					try (BufferedWriter writer = new BufferedWriter(
 							new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
 						// if file was written to the workspace, perform the validateEdit
-						if (!locationPage.isSaveToFileSystem())
+						if (!locationPage.isSaveToFileSystem()) {
 							locationPage.validateEditWorkspaceFile(getShell());
+						}
 
 						//
 						XMLMemento xmlMemento = getXMLMementoRoot();
@@ -176,12 +177,13 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 					}
 
 					// if file was written to the workspace, refresh it
-					if (!locationPage.isSaveToFileSystem())
+					if (!locationPage.isSaveToFileSystem()) {
 						try {
 							locationPage.refreshWorkspaceFile(monitor);
 						} catch (CoreException e) {
 							//throw away
 						}
+					}
 
 					// notify provider types of the project set write
 					for (String id : map.keySet()) {

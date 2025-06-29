@@ -133,8 +133,7 @@ public class PDAModelPresentation extends LabelProvider implements IDebugModelPr
 				}
 			} else {
 				IBreakpoint breakpoint = breakpoints[0]; // there can only be one in PDA
-				if (breakpoint instanceof PDALineBreakpoint) {
-					PDALineBreakpoint pdaBreakpoint = (PDALineBreakpoint) breakpoint;
+				if (breakpoint instanceof PDALineBreakpoint pdaBreakpoint) {
 					if (pdaBreakpoint instanceof PDAWatchpoint) {
 						try {
 							PDAWatchpoint watchpoint = (PDAWatchpoint)pdaBreakpoint;

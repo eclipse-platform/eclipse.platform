@@ -9,8 +9,7 @@ public class TestLogicalStructureTypeDelegate implements ILogicalStructureTypeDe
 
 	@Override
 	public boolean providesLogicalStructure(IValue value) {
-		if (value instanceof TestValue) {
-			TestValue testValue = (TestValue) value;
+		if (value instanceof TestValue testValue) {
 			return "raw".equals(testValue.getValueString());
 		}
 		return false;

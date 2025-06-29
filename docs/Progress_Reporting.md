@@ -5,15 +5,6 @@ Progress Reporting
 
 _by Henrik Lindberg_ - originally posted on [Eclipse by Planatery Transitions](https://henrik-eclipse.blogspot.com/2009/05/progress-monitor-patterns.html)
 
-Contents
---------
-
-*   [1 Problem](#Problem)
-*   [2 Antipattern](#Antipattern)
-*   [3 Good pattern](#Good-pattern)
-*   [4 Good pattern - regular loop](#Good-pattern---regular-loop)
-*   [5 Rules of Thumb](#Rules-of-Thumb)
-
 Problem
 -------
 

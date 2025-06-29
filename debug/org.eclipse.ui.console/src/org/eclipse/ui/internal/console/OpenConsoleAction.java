@@ -45,7 +45,6 @@ public class OpenConsoleAction extends Action implements IMenuCreator {
 		fFactoryExtensions = getSortedFactories();
 		setToolTipText(ConsoleMessages.OpenConsoleAction_1);
 		setImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_NEW_CON));
-		setDisabledImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_DLCL_NEW_CON));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IConsoleHelpContextIds.CONSOLE_OPEN_CONSOLE_ACTION);
 	}
 
@@ -76,8 +75,7 @@ public class OpenConsoleAction extends Action implements IMenuCreator {
 
 	@Override
 	public void runWithEvent(Event event) {
-		if (event.widget instanceof ToolItem) {
-			ToolItem toolItem= (ToolItem) event.widget;
+		if (event.widget instanceof ToolItem toolItem) {
 			Control control= toolItem.getParent();
 			Menu menu= getMenu(control);
 

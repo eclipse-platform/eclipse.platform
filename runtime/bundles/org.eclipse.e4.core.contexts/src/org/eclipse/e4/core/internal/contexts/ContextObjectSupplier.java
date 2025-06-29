@@ -52,8 +52,9 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 
 		@Override
 		public Reference<Object> getReference() {
-			if (requestor instanceof Requestor)
+			if (requestor instanceof Requestor) {
 				return ((Requestor<?>) requestor).getReference();
+			}
 			return super.getReference();
 		}
 
@@ -62,16 +63,19 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 			if (eventType == ContextChangeEvent.INITIAL) {
 				// needs to be done inside runnable to establish dependencies
 				for (int i = 0; i < keys.length; i++) {
-					if (keys[i] == null)
+					if (keys[i] == null) {
 						continue;
+					}
 					IEclipseContext targetContext = (active[i]) ? context.getActiveLeaf() : context;
 					if (ECLIPSE_CONTEXT_NAME.equals(keys[i])) {
 						result[i] = targetContext;
 						IEclipseContext parent = targetContext.getParent(); // creates pseudo-link
-						if (parent == null)
+						if (parent == null) {
 							targetContext.get(ECLIPSE_CONTEXT_NAME); // pseudo-link in case there is no parent
-					} else if (targetContext.containsKey(keys[i]))
+						}
+					} else if (targetContext.containsKey(keys[i])) {
 						result[i] = targetContext.get(keys[i]);
+					}
 				}
 				return true;
 			}
@@ -89,8 +93,9 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 					return requestor.uninject(extraArguments[0], originatingSupplier);
 				}	break;
 			default:
-				if (!requestor.isValid())
+				if (!requestor.isValid()) {
 					return false; // remove this listener
+				}
 				requestor.resolveArguments(false);
 				requestor.execute();
 				break;
@@ -113,12 +118,15 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			ContextInjectionListener other = (ContextInjectionListener) obj;
 			return Objects.equals(this.context, other.context) && Objects.equals(this.requestor, other.requestor);
 		}
@@ -147,16 +155,18 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 
 		for (int i = 0; i < descriptors.length; i++) {
 			String key = getKey(descriptors[i]);
-			if ((actualArgs[i] == IInjector.NOT_A_VALUE))
+			if ((actualArgs[i] == IInjector.NOT_A_VALUE)) {
 				keys[i] = key;
-			else if (ECLIPSE_CONTEXT_NAME.equals(key)) // allow provider to override IEclipseContext
+			} else if (ECLIPSE_CONTEXT_NAME.equals(key)) { // allow provider to override IEclipseContext
 				keys[i] = ECLIPSE_CONTEXT_NAME;
-			else
+			} else {
 				keys[i] = null;
-			if (descriptors[i] == null)
+			}
+			if (descriptors[i] == null) {
 				active[i] = false;
-			else
+			} else {
 				active[i] = (descriptors[i].hasQualifier(Active.class));
+			}
 		}
 
 		if (requestor != null && track) { // only track if requested
@@ -178,13 +188,15 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 
 	private void fillArgs(Object[] actualArgs, String[] keys, boolean[] active) {
 		for (int i = 0; i < keys.length; i++) {
-			if (keys[i] == null)
+			if (keys[i] == null) {
 				continue;
+			}
 			IEclipseContext targetContext = (active[i]) ? context.getActiveLeaf() : context;
-			if (ECLIPSE_CONTEXT_NAME.equals(keys[i]))
+			if (ECLIPSE_CONTEXT_NAME.equals(keys[i])) {
 				actualArgs[i] = targetContext;
-			else if (targetContext.containsKey(keys[i]))
+			} else if (targetContext.containsKey(keys[i])) {
 				actualArgs[i] = targetContext.get(keys[i]);
+			}
 		}
 	}
 
@@ -198,10 +210,12 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 	}
 
 	private String typeToString(Type type) {
-		if (type == null)
+		if (type == null) {
 			return null;
-		if (type instanceof Class<?>)
+		}
+		if (type instanceof Class<?>) {
 			return ((Class<?>) type).getName();
+		}
 		if (type instanceof ParameterizedType) {
 			Type rawType = ((ParameterizedType) type).getRawType();
 			return typeToString(rawType);
@@ -219,17 +233,20 @@ public class ContextObjectSupplier extends PrimaryObjectSupplier {
 	synchronized public void resumeRecording() {
 		Stack<Computation> current = EclipseContext.getCalculatedComputations();
 		Computation plug = current.pop();
-		if (plug != null)
+		if (plug != null) {
 			throw new IllegalArgumentException("Internal error in nested computation processing"); //$NON-NLS-1$
+		}
 	}
 
 	static public ContextObjectSupplier getObjectSupplier(IEclipseContext context, IInjector injector) {
-		if (context == null)
+		if (context == null) {
 			return null;
+		}
 		// don't track this dependency if we are called in RaT
 		ContextObjectSupplier supplier = (ContextObjectSupplier) ((EclipseContext) context).internalGet((EclipseContext) context, ContextObjectSupplier.class.getName(), true);
-		if (supplier != null)
+		if (supplier != null) {
 			return supplier;
+		}
 		ContextObjectSupplier objectSupplier = new ContextObjectSupplier(context, injector);
 		context.set(ContextObjectSupplier.class, objectSupplier);
 		return objectSupplier;

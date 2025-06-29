@@ -110,8 +110,7 @@ public class TocServletTest {
 		List<Node> results = new ArrayList<>();
 		for (int i = 0; i < contributions.getLength(); i++) {
 			Node next = contributions.item(i);
-			if (next instanceof Element) {
-				Element nextElement = (Element)next;
+			if (next instanceof Element nextElement) {
 				if ( childKind.equals(nextElement.getTagName()) && attributeValue.equals(nextElement.getAttribute(attributeName))) {
 
 					results.add(next);

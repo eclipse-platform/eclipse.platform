@@ -40,10 +40,9 @@ public class ProgressIcons {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (!(obj instanceof ProgressIconKey)) {
+			if (!(obj instanceof ProgressIconKey other)) {
 				return false;
 			}
-			ProgressIconKey other = (ProgressIconKey) obj;
 			return this.pixels == other.pixels && Objects.equals(this.color, other.color);
 		}
 

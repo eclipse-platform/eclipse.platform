@@ -59,8 +59,7 @@ public class AddPDAMemoryBlockAction implements IActionDelegate2{
 	 * @return debug target from the selection or <code>null</code>
 	 */
 	private PDADebugTarget getTarget(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				Object element = ss.getFirstElement();
 				if (element instanceof PDADebugTarget) {

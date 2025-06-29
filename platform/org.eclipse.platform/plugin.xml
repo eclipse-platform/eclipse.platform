@@ -107,13 +107,14 @@
                class="org.eclipse.ui.cheatsheets.CheatSheetExtensionFactory:helpMenuAction"
                menubarPath="help/group.tutorials"
                id="org.eclipse.ui.cheatsheets.actions.CheatSheetHelpMenuAction"
-               icon="$nl$/icons/etool16/cheatsheet_view.png">
+               icon="$nl$/icons/etool16/cheatsheet_view.svg">
          </action>
       </actionSet>
    </extension>
 
    <extension point="org.eclipse.equinox.p2.engine.pgp">
-    <trustedKeys path="700E4F39BC05364B.asc"/>
+    <trustedKeys path="keys/platform.asc"/>
+    <trustedKeys path="keys/orbit.asc"/>
    </extension>
 
 </plugin>

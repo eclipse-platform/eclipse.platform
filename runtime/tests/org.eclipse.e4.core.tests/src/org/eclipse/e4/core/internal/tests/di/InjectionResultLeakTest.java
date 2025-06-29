@@ -14,8 +14,8 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.lang.ref.WeakReference;
 
@@ -23,7 +23,7 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -77,7 +77,7 @@ public class InjectionResultLeakTest {
 		System.gc();
 
 		// partA should have been gc'd
-		assertNull("The object should have been garbage collected", ref.get());
+		assertNull(ref.get(), "The object should have been garbage collected");
 	}
 
 }

@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -173,7 +173,7 @@ public class TargetOrderDialog extends Dialog implements ISelectionChangedListen
 
 	/**
 	 * Returns the selected items in the list, in the order they are displayed (not in the order they were selected).
-	 * 
+	 *
 	 * @return targets for an action
 	 */
 	private List<AntTargetNode> getOrderedSelection() {
@@ -214,7 +214,7 @@ public class TargetOrderDialog extends Dialog implements ISelectionChangedListen
 
 	/**
 	 * Update button enablement
-	 * 
+	 *
 	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
 	@Override

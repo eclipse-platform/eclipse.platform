@@ -45,16 +45,18 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer{
   public void initializeDefaultPreferences(){
     IEclipsePreferences defaultNode=DefaultScope.INSTANCE
         .getNode(JSchCorePlugin.ID);
-    if(SSH_HOME_DEFAULT!=null)
+    if(SSH_HOME_DEFAULT!=null){
       defaultNode.put(IConstants.KEY_SSH2HOME, SSH_HOME_DEFAULT);
+    }
     defaultNode.put(IConstants.KEY_PRIVATEKEY, IConstants.PRIVATE_KEYS_DEFAULT);
     changeDefaultWin32SshHome();
     Utils.migrateSSH2Preferences();
   }
 
   private void changeDefaultWin32SshHome(){
-    if(!Platform.getOS().equals(Platform.OS_WIN32))
+    if(!Platform.getOS().equals(Platform.OS_WIN32)){
       return;
+    }
 
     IEclipsePreferences preferences=InstanceScope.INSTANCE
         .getNode(JSchCorePlugin.ID);
@@ -72,9 +74,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer{
         if(SSH_OLD_WIN32_HOME_DEFAULT!=null
             &&new File(SSH_OLD_WIN32_HOME_DEFAULT).exists()){
           if(!(SSH_HOME_DEFAULT!=null&&new File(SSH_HOME_DEFAULT).exists())
-              ||existingWorkspace)
+              ||existingWorkspace){
             preferences
                 .put(IConstants.KEY_SSH2HOME, SSH_OLD_WIN32_HOME_DEFAULT);
+          }
         }
       }
 

@@ -111,7 +111,9 @@ public class IndexTypeinPart extends AbstractFormPart implements IHelpPart, IHel
 
 	protected void doUp() {
 		checkTree();
-		if (indexTree == null) return;
+		if (indexTree == null) {
+			return;
+		}
 
 		int index = 0;
 		TreeItem[] items = indexTree.getSelection();
@@ -130,7 +132,9 @@ public class IndexTypeinPart extends AbstractFormPart implements IHelpPart, IHel
 
 	protected void doDown() {
 		checkTree();
-		if (indexTree == null) return;
+		if (indexTree == null) {
+			return;
+		}
 
 		int index = 0;
 		TreeItem[] items = indexTree.getSelection();
@@ -149,7 +153,9 @@ public class IndexTypeinPart extends AbstractFormPart implements IHelpPart, IHel
 
 	protected void doNavigate(String text) {
 		checkTree();
-		if (rootItems == null) return;
+		if (rootItems == null) {
+			return;
+		}
 
 		int index = searchPattern(text);
 		if (index != -1 && index != currentIndex) {
@@ -159,13 +165,19 @@ public class IndexTypeinPart extends AbstractFormPart implements IHelpPart, IHel
 	}
 
 	private void checkTree() {
-		if (rootItems != null) return;
+		if (rootItems != null) {
+			return;
+		}
 
 		indexPart = (IndexPart)parent.findPart(HV_INDEX);
-		if (indexPart == null) return;
+		if (indexPart == null) {
+			return;
+		}
 
 		indexTree = indexPart.getTreeWidget();
-		if (indexTree == null) return;
+		if (indexTree == null) {
+			return;
+		}
 
 		int itemCount = indexTree.getItemCount();
 		if (itemCount == 0) {
@@ -219,10 +231,14 @@ public class IndexTypeinPart extends AbstractFormPart implements IHelpPart, IHel
 
 	protected void doOpen() {
 		checkTree();
-		if (indexTree == null) return;
+		if (indexTree == null) {
+			return;
+		}
 
 		TreeItem items[] = indexTree.getSelection();
-		if (items.length == 0) return;
+		if (items.length == 0) {
+			return;
+		}
 
 		Object obj = items[0].getData();
 		if (obj != null) {

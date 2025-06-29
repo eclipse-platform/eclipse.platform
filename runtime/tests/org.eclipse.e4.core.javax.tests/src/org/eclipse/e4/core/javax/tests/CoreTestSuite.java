@@ -43,6 +43,7 @@ import org.eclipse.e4.core.internal.tests.contexts.inject.ParentContextDisposalT
 import org.eclipse.e4.core.internal.tests.contexts.inject.ProviderInjectionTest;
 import org.eclipse.e4.core.internal.tests.contexts.inject.ServiceContextTest;
 import org.eclipse.e4.core.internal.tests.contexts.inject.TestConstructorInjection;
+import org.eclipse.e4.core.internal.tests.contexts.performance.ContextPerformanceTest;
 import org.eclipse.e4.core.internal.tests.di.AutoConstructWithCreatableTest;
 import org.eclipse.e4.core.internal.tests.di.DisposeClassLinkTest;
 import org.eclipse.e4.core.internal.tests.di.InjectArraysTest;
@@ -62,11 +63,13 @@ import org.eclipse.e4.core.internal.tests.di.extensions.InjectionPreferencesTest
 import org.eclipse.e4.core.internal.tests.di.extensions.ServiceSupplierTestCase;
 import org.eclipse.e4.core.internal.tests.nls.MessageRegistryTest;
 import org.eclipse.e4.core.internal.tests.nls.NLSTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+import org.junit.platform.suite.api.SuiteDisplayName;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SuiteDisplayName("CoreTestSuite (javax)")
+@SelectClasses({
 		ExtendedSupplierInjectionTests.class,
 		InjectionPreferencesTest.class,
 		InjectionMixedSuppliersTest.class,
@@ -122,6 +125,9 @@ import org.junit.runners.Suite;
 		// NLS
 		NLSTest.class,
 		MessageRegistryTest.class,
+
+		// Performance
+		ContextPerformanceTest.class
 	})
 public class CoreTestSuite {
 }

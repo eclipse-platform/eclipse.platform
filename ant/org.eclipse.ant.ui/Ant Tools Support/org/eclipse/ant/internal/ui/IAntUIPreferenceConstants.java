@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     John-Mason P. Shackelford (john-mason.shackelford@pearson.com) - bug 53547
@@ -28,14 +28,14 @@ public interface IAntUIPreferenceConstants {
 
 	/**
 	 * The symbolic names for colors for displaying the content in the Console
-	 * 
+	 *
 	 * @see org.eclipse.jface.resource.ColorRegistry
 	 */
 	public static final String CONSOLE_ERROR_COLOR = "org.eclipse.ant.ui.errorColor"; //$NON-NLS-1$
 	public static final String CONSOLE_WARNING_COLOR = "org.eclipse.ant.ui.warningColor"; //$NON-NLS-1$
 	public static final String CONSOLE_INFO_COLOR = "org.eclipse.ant.ui.informationColor"; //$NON-NLS-1$
 	public static final String CONSOLE_VERBOSE_COLOR = "org.eclipse.ant.ui.verboseColor"; //$NON-NLS-1$
-	public static final String CONSOLE_DEBUG_COLOR = "org.eclipse.ant.ui.debugColor"; //$NON-NLS-1$	
+	public static final String CONSOLE_DEBUG_COLOR = "org.eclipse.ant.ui.debugColor"; //$NON-NLS-1$
 
 	public static final String ANT_TOOLS_JAR_WARNING = "toolsJAR"; //$NON-NLS-1$
 
@@ -83,7 +83,7 @@ public interface IAntUIPreferenceConstants {
 
 	/**
 	 * Boolean preference that allows Ant to always be run in the same JRE as the workspace
-	 * 
+	 *
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=135807"
 	 * @since 3.7
 	 */

@@ -76,8 +76,9 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 			IDiff[] diffs = diffTree.getDiffs(traversals);
 			// Now filter the by the mode of the configuration
 			for (IDiff node : diffs) {
-				if (isVisible(node) && getDiffFilter().select(node))
+				if (isVisible(node) && getDiffFilter().select(node)) {
 					result.add(node);
+				}
 			}
 		}
 		return result.toArray(new IDiff[result.size()]);
@@ -96,12 +97,10 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 	private ResourceTraversal[] getTraversals(Object pathOrElement) {
 		// First check to see if the element is a tree path
 		Object element;
-		if (pathOrElement instanceof TreePath) {
-			TreePath tp = (TreePath) pathOrElement;
+		if (pathOrElement instanceof TreePath tp) {
 			Object o = tp.getFirstSegment();
-			if (o instanceof DiffChangeSet) {
+			if (o instanceof DiffChangeSet dcs) {
 				// Special handling for change sets
-				DiffChangeSet dcs = (DiffChangeSet) o;
 				return getTraversalCalculator().getTraversals(dcs, tp);
 			}
 			element = tp.getLastSegment();
@@ -120,8 +119,9 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 		if (mapping != null) {
 			// First, check if we have already calculated the traversal
 			ResourceTraversal[] traversals = getContext().getScope().getTraversals(mapping);
-			if (traversals != null)
+			if (traversals != null) {
 				return traversals;
+			}
 			// We need to determine the traversals from the mapping.
 			// By default, use the local context. Models will need to provide
 			// custom handlers if this doesn't work for them
@@ -135,8 +135,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 	}
 
 	private boolean isResourcePath(Object pathOrElement) {
-		if (pathOrElement instanceof TreePath) {
-			TreePath tp = (TreePath) pathOrElement;
+		if (pathOrElement instanceof TreePath tp) {
 			return getTraversalCalculator().isResourcePath(tp);
 		}
 		return false;
@@ -164,8 +163,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 	}
 
 	private Object[] getTreePathsOrElements() {
-		if (selection instanceof ITreeSelection) {
-			ITreeSelection ts = (ITreeSelection) selection;
+		if (selection instanceof ITreeSelection ts) {
 			return ts.getPaths();
 		}
 		return getElements();
@@ -181,8 +179,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 	}
 
 	private Object internalGetElement(Object elementOrPath) {
-		if (elementOrPath instanceof TreePath) {
-			TreePath tp = (TreePath) elementOrPath;
+		if (elementOrPath instanceof TreePath tp) {
 			return tp.getLastSegment();
 		}
 		return elementOrPath;

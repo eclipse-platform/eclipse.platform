@@ -53,7 +53,7 @@ public class ResourceResolver implements IDynamicVariableResolver {
 				return translateToValue(resource, variable);
 			}
 		}
-		abort(MessageFormat.format(Messages.ResourceResolver_0, new Object[] { getReferenceExpression(variable, argument) }), null);
+		abort(MessageFormat.format(Messages.ResourceResolver_0, getReferenceExpression(variable, argument)), null);
 		return null;
 	}
 
@@ -128,7 +128,7 @@ public class ResourceResolver implements IDynamicVariableResolver {
 		} catch (CoreException e) {
 			// unable to resolve a selection
 		}
-		abort(MessageFormat.format(Messages.ResourceResolver_1, new Object[] { getReferenceExpression(variable, null) }), null);
+		abort(MessageFormat.format(Messages.ResourceResolver_1, getReferenceExpression(variable, null)), null);
 		return null;
 	}
 
@@ -160,7 +160,7 @@ public class ResourceResolver implements IDynamicVariableResolver {
 		} else if (name.endsWith("_name")) { //$NON-NLS-1$
 			return resource.getName();
 		}
-		abort(MessageFormat.format(Messages.ResourceResolver_2, new Object[] { getReferenceExpression(variable, null) }), null);
+		abort(MessageFormat.format(Messages.ResourceResolver_2, getReferenceExpression(variable, null)), null);
 		return null;
 	}
 

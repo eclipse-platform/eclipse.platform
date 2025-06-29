@@ -8,9 +8,8 @@
          point="org.eclipse.ui.views">
       <view
             name="%View.label"
-            icon="$nl$/icons/full/eview16/unit.png"
+            icon="$nl$/icons/full/eview16/unit.svg"
             category="org.eclipse.debug.ui"
-            fastViewWidthRatio="0.40"
             class="org.eclipse.unittest.internal.ui.TestRunnerViewPart"
             id="org.eclipse.unittest.ui.ResultView">
       </view>
@@ -59,8 +58,7 @@
          point="org.eclipse.ui.commandImages">
       <image
             commandId="org.eclipse.unittest.ui.history"
-            disabledIcon="icons/full/dlcl16/history_list.png"
-            icon="icons/full/elcl16/history_list.png">
+            icon="icons/full/elcl16/history_list.svg">
       </image>
    </extension>
 

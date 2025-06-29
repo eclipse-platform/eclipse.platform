@@ -351,8 +351,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 
 		@Override
 		public boolean isConflicting(ISchedulingRule rule) {
-			if (rule instanceof SerialByObjectRule) {
-				SerialByObjectRule rRule = (SerialByObjectRule) rule;
+			if (rule instanceof SerialByObjectRule rRule) {
 				return fObject == rRule.fObject;
 			}
 			return false;
@@ -1017,8 +1016,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 			return;
 		}
 
-		if (evtSrc instanceof IMemoryRendering) {
-			IMemoryRendering rendering = (IMemoryRendering) evtSrc;
+		if (evtSrc instanceof IMemoryRendering rendering) {
 			IMemoryBlock memoryBlock = rendering.getMemoryBlock();
 
 			// do not handle event from renderings displaying other memory
@@ -1590,8 +1588,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 
 		if (model != null) {
 			Object key = model.getKey(0);
-			if (key instanceof BigInteger) {
-				BigInteger startBufferAddress = (BigInteger) key;
+			if (key instanceof BigInteger startBufferAddress) {
 				startBufferAddress = MemoryViewUtil.alignToBoundary(startBufferAddress, getAddressableUnitPerLine());
 
 				if (startAddress.compareTo(startBufferAddress) == 0) {
@@ -1610,8 +1607,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 		if (model != null) {
 			int numElements = model.getElements().length;
 			Object key = model.getKey(numElements - 1);
-			if (key instanceof BigInteger) {
-				BigInteger endBufferAddress = (BigInteger) key;
+			if (key instanceof BigInteger endBufferAddress) {
 				endBufferAddress = MemoryViewUtil.alignToBoundary(endBufferAddress, getAddressableUnitPerLine());
 
 				if (endAddress.compareTo(endBufferAddress) == 0) {
@@ -1996,11 +1992,10 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 				return new MemoryByte[0];
 			}
 
-			if (!(element instanceof MemorySegment)) {
+			if (!(element instanceof MemorySegment line)) {
 				return new MemoryByte[0];
 			}
 
-			MemorySegment line = (MemorySegment) element;
 			int offset = (col - 1) * (getAddressableUnitPerColumn() * getAddressableSize());
 
 			// make a copy of the bytes to ensure that data cannot be changed
@@ -2818,9 +2813,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 			Object address = fTableViewer.getKey(fTableViewer.getTable().indexOf(item), col);
 			if (address != null && address instanceof BigInteger) {
 				Object data = item.getData();
-				if (data instanceof MemorySegment) {
-					MemorySegment line = (MemorySegment) data;
-
+				if (data instanceof MemorySegment line) {
 					if (col > 0) {
 						int start = (col - 1) * getBytesPerColumn();
 						int end = start + getBytesPerColumn();
@@ -3052,7 +3045,7 @@ public abstract class AbstractAsyncTableRendering extends AbstractBaseTableRende
 
 		double tableWeight = (tableHeight / canvasHeight) * 100;
 		double textWeight = (height / canvasHeight) * 100;
-		fSashForm.setWeights(new int[] { (int) tableWeight, (int) textWeight });
+		fSashForm.setWeights((int) tableWeight, (int) textWeight);
 		fSashForm.setMaximizedControl(null);
 
 		fGoToAddressComposite.getExpressionWidget().setFocus();

@@ -24,7 +24,7 @@ public class PreferenceModifyListener extends
   public PreferenceModifyListener(){
     // Nothing to do
   }
-  
+
   @Override
   public IEclipsePreferences preApply(IEclipsePreferences node){
     // the node does not need to be the root of the hierarchy

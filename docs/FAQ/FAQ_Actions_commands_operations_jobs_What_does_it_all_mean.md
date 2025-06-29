@@ -5,15 +5,6 @@ FAQ Actions, commands, operations, jobs: What does it all mean?
 
 Many terms are thrown around in Eclipse for units of functionality or behavior: runnables, actions, commands, operations, and jobs, among others. Here is a high- level view of the terms to help you keep things straight.
 
-Contents
---------
-
-*   [1 Actions](#Actions)
-*   [2 Commands](#Commands)
-*   [3 Operations](#Operations)
-*   [4 Jobs](#Jobs)
-*   [5 See Also](#See-Also)
-
 Actions
 -------
 

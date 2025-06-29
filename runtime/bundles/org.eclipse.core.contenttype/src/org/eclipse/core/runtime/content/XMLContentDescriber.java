@@ -63,8 +63,9 @@ public class XMLContentDescriber extends TextContentDescriber {
 	}
 
 	int describe2(InputStream input, IContentDescription description, Map<String, Object> properties) throws IOException {
-		if (!isProcessed(properties))
+		if (!isProcessed(properties)) {
 			fillContentProperties(input, description, properties);
+		}
 		return internalDescribe(description, properties);
 	}
 
@@ -74,15 +75,17 @@ public class XMLContentDescriber extends TextContentDescriber {
 	}
 
 	int describe2(Reader input, IContentDescription description, Map<String, Object> properties) throws IOException {
-		if (!isProcessed(properties))
+		if (!isProcessed(properties)) {
 			fillContentProperties(readXMLDecl(input), description, properties);
+		}
 		return internalDescribe(description, properties);
 	}
 
 	private boolean isProcessed(Map<String, Object> properties) {
 		Boolean result = (Boolean) properties.get(RESULT);
-		if (result != null)
+		if (result != null) {
 			return true;
+		}
 		return false;
 	}
 
@@ -91,10 +94,11 @@ public class XMLContentDescriber extends TextContentDescriber {
 		String xmlDeclEncoding = "UTF-8"; //$NON-NLS-1$
 		input.reset();
 		if (bom != null) {
-			if (bom == IContentDescription.BOM_UTF_16BE)
+			if (bom == IContentDescription.BOM_UTF_16BE) {
 				xmlDeclEncoding = "UTF-16BE"; //$NON-NLS-1$
-			else if (bom == IContentDescription.BOM_UTF_16LE)
+			} else if (bom == IContentDescription.BOM_UTF_16LE) {
 				xmlDeclEncoding = "UTF-16LE"; //$NON-NLS-1$
+			}
 			// skip BOM to make comparison simpler
 			input.skip(bom.length);
 			properties.put(BOM, bom);
@@ -104,40 +108,49 @@ public class XMLContentDescriber extends TextContentDescriber {
 
 	private void fillContentProperties(String line, IContentDescription description, Map<String, Object> properties) throws IOException {
 		// XMLDecl should be the first string (no blanks allowed)
-		if (line != null && line.startsWith(XML_PREFIX))
+		if (line != null && line.startsWith(XML_PREFIX)) {
 			properties.put(FULL_XML_DECL, Boolean.TRUE);
+		}
 		String charset = getCharset(line);
-		if (charset != null)
+		if (charset != null) {
 			properties.put(CHARSET, charset);
+		}
 		properties.put(RESULT, Boolean.TRUE);
 	}
 
 	private int internalDescribe(IContentDescription description, Map<String, Object> properties) {
 		if (description != null) {
 			byte[] bom = (byte[]) properties.get(BOM);
-			if (bom != null && description.isRequested(IContentDescription.BYTE_ORDER_MARK))
+			if (bom != null && description.isRequested(IContentDescription.BYTE_ORDER_MARK)) {
 				description.setProperty(IContentDescription.BYTE_ORDER_MARK, bom);
+			}
 		}
 		Boolean fullXMLDecl = (Boolean) properties.get(FULL_XML_DECL);
-		if (fullXMLDecl == null || !fullXMLDecl.booleanValue())
+		if (fullXMLDecl == null || !fullXMLDecl.booleanValue()) {
 			return INDETERMINATE;
-		if (description == null)
+		}
+		if (description == null) {
 			return VALID;
+		}
 		String charset = (String) properties.get(CHARSET);
 		if (description.isRequested(IContentDescription.CHARSET)) {
-			if (charset != null && !isCharsetValid(charset))
+			if (charset != null && !isCharsetValid(charset)) {
 				return INVALID;
-			if (isNonDefaultCharset(charset))
+			}
+			if (isNonDefaultCharset(charset)) {
 				description.setProperty(IContentDescription.CHARSET, charset);
+			}
 		}
 		return VALID;
 	}
 
 	private boolean isNonDefaultCharset(String charset) {
-		if (charset == null)
+		if (charset == null) {
 			return false;
-		if ("utf8".equalsIgnoreCase(charset) || "utf-8".equalsIgnoreCase(charset)) //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		if ("utf8".equalsIgnoreCase(charset) || "utf-8".equalsIgnoreCase(charset)) { //$NON-NLS-1$ //$NON-NLS-2$
 			return false;
+		}
 		return true;
 	}
 
@@ -161,13 +174,15 @@ public class XMLContentDescriber extends TextContentDescriber {
 		int count = 0;
 
 		while (read < xmlDecl.length && (c = input.read()) != -1) {
-			if (c == xmlDeclEndBytes[count])
+			if (c == xmlDeclEndBytes[count]) {
 				count++;
-			else
+			} else {
 				count = 0;
+			}
 			xmlDecl[read++] = (byte) c;
-			if (count == xmlDeclEndBytes.length)
+			if (count == xmlDeclEndBytes.length) {
 				break;
+			}
 		}
 		return new String(xmlDecl, 0, read, encoding);
 	}
@@ -189,8 +204,9 @@ public class XMLContentDescriber extends TextContentDescriber {
 
 	private String getCharset(String firstLine) {
 		int encodingPos = findEncodingPosition(firstLine);
-		if (encodingPos == -1)
+		if (encodingPos == -1) {
 			return null;
+		}
 		char quoteChar = '"';
 		int firstQuote = firstLine.indexOf('"', encodingPos);
 		int firstApostrophe = firstLine.indexOf('\'', encodingPos);
@@ -199,11 +215,13 @@ public class XMLContentDescriber extends TextContentDescriber {
 			quoteChar = '\'';
 			firstQuote = firstApostrophe;
 		}
-		if (firstQuote == -1 || firstLine.length() == firstQuote + 1)
+		if (firstQuote == -1 || firstLine.length() == firstQuote + 1) {
 			return null;
+		}
 		int secondQuote = firstLine.indexOf(quoteChar, firstQuote + 1);
-		if (secondQuote == -1)
+		if (secondQuote == -1) {
 			return isFullXMLDecl(firstLine) ? firstLine.substring(firstQuote + 1, firstLine.lastIndexOf(XML_DECL_END)).trim() : null;
+		}
 		return firstLine.substring(firstQuote + 1, secondQuote);
 	}
 
@@ -231,17 +249,20 @@ public class XMLContentDescriber extends TextContentDescriber {
 	}
 
 	private boolean isCharsetValid(String charset) {
-		if (charset.isEmpty())
+		if (charset.isEmpty()) {
 			return false;
+		}
 
 		char c = charset.charAt(0);
-		if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z'))
+		if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z')) {
 			return false;
+		}
 
 		for (int i = 1; i < charset.length(); i++) {
 			c = charset.charAt(i);
-			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.')
+			if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.') {
 				continue;
+			}
 			return false;
 		}
 		return true;

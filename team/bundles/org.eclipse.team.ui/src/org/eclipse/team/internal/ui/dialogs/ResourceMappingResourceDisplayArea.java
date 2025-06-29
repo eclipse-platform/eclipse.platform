@@ -100,8 +100,9 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
 				for (IResource resource : resources) {
-					if (isIncludedInFilter(resource, traversal))
+					if (isIncludedInFilter(resource, traversal)) {
 						result.add(new ResourceTraversalElement(this, traversal, resource, context));
+					}
 				}
 			}
 			return result.toArray(new Object[result.size()]);
@@ -140,8 +141,9 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 
 		@Override
 		public <T> T getAdapter(Class<T> adapter) {
-			if (adapter == IWorkbenchAdapter.class)
+			if (adapter == IWorkbenchAdapter.class) {
 				return (T) this;
+			}
 			return null;
 		}
 	}
@@ -179,8 +181,9 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 					List<ResourceTraversalElement> result = new ArrayList<>();
 					for (IResource child : members) {
 						if ((includeFolders || child.getType() == IResource.FILE)
-								&& isIncludedInFilter(child, traversal))
+								&& isIncludedInFilter(child, traversal)) {
 							result.add(new ResourceTraversalElement(this, traversal, child, context));
+						}
 					}
 					return result.toArray(new Object[result.size()]);
 				}
@@ -191,8 +194,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 		}
 
 		private IResource[] members(IContainer container) throws CoreException {
-			if (context instanceof RemoteResourceMappingContext) {
-				RemoteResourceMappingContext remoteContext = (RemoteResourceMappingContext) context;
+			if (context instanceof RemoteResourceMappingContext remoteContext) {
 				return ResourceMappingResourceDisplayArea.members(container, remoteContext);
 			}
 			return container.members();
@@ -201,18 +203,21 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 		@Override
 		public ImageDescriptor getImageDescriptor(Object object) {
 			IWorkbenchAdapter workbenchAdapter = getWorkbenchAdapter(resource);
-			if (workbenchAdapter == null)
+			if (workbenchAdapter == null) {
 				return null;
+			}
 			return workbenchAdapter.getImageDescriptor(resource);
 		}
 
 		@Override
 		public String getLabel(Object o) {
-			if (resource.getType() != IResource.PROJECT && isTraversalRoot(resource))
+			if (resource.getType() != IResource.PROJECT && isTraversalRoot(resource)) {
 				return resource.getFullPath().toString();
+			}
 			IWorkbenchAdapter workbenchAdapter = getWorkbenchAdapter(resource);
-			if (workbenchAdapter == null)
+			if (workbenchAdapter == null) {
 				return resource.getName();
+			}
 			return workbenchAdapter.getLabel(resource);
 		}
 
@@ -227,8 +232,9 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 
 		@Override
 		public <T> T getAdapter(Class<T> adapter) {
-			if (adapter == IWorkbenchAdapter.class)
+			if (adapter == IWorkbenchAdapter.class) {
 				return (T) this;
+			}
 			return null;
 		}
 
@@ -265,9 +271,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 		viewer.setComparator(new ResourceComparator(ResourceComparator.NAME) {
 			@Override
 			public int compare(Viewer viewer, Object o1, Object o2) {
-				if (o1 instanceof ResourceTraversalElement && o2 instanceof ResourceTraversalElement) {
-					ResourceTraversalElement e1 = (ResourceTraversalElement) o1;
-					ResourceTraversalElement e2 = (ResourceTraversalElement) o2;
+				if (o1 instanceof ResourceTraversalElement e1 && o2 instanceof ResourceTraversalElement e2) {
 					return super.compare(viewer, e1.getResource(), e2.getResource());
 				}
 				return super.compare(viewer, o1, o2);
@@ -280,8 +284,9 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 	private void setInput(String labelText) {
 		if (viewer != null) {
 			Object o = null;
-			if (mapping != null)
+			if (mapping != null) {
 				o = new ResourceMappingElement(mapping, context);
+			}
 			viewer.setInput(o);
 		}
 		if (label != null) {
@@ -296,8 +301,9 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 	}
 
 	private boolean isIncludedInFilter(IResource resource, ResourceTraversal traversal) {
-		if (filter == null)
+		if (filter == null) {
 			return true;
+		}
 		Map<IResource, List<IResource>> mappingResources = cachedFiltering.get(mapping);
 		if (mappingResources == null) {
 			mappingResources = buildFilteredResourceMap(mapping, context);

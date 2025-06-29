@@ -84,15 +84,17 @@ public class OrderedLock implements ILock, ISchedulingRule {
 		boolean interrupted = false;
 		while (true) {
 			try {
-				if (acquire(Long.MAX_VALUE))
+				if (acquire(Long.MAX_VALUE)) {
 					break;
+				}
 			} catch (InterruptedException e) {
 				interrupted = true;
 			}
 		}
 		//preserve thread interrupt state
-		if (interrupted)
+		if (interrupted) {
 			Thread.currentThread().interrupt();
+		}
 	}
 
 	@Override
@@ -112,25 +114,31 @@ public class OrderedLock implements ILock, ISchedulingRule {
 	 * @exception InterruptedException if the thread was interrupted
 	 */
 	boolean acquire(long delay, boolean resumeSuspendedLocks) throws InterruptedException {
-		if (Thread.interrupted())
+		if (Thread.interrupted()) {
 			throw new InterruptedException();
+		}
 
-		if (delay <= 0)
+		if (delay <= 0) {
 			return attempt();
+		}
 		Semaphore semaphore = createSemaphore();
-		if (semaphore == null)
+		if (semaphore == null) {
 			return true;
-		if (DEBUG)
+		}
+		if (DEBUG) {
 			System.out.println("[" + Thread.currentThread() + "] Operation waiting to be executed... " + this); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		boolean success = doAcquire(semaphore, delay);
 		if (resumeSuspendedLocks) {
 			manager.resumeSuspendedLocks(Thread.currentThread());
 		}
-		if (DEBUG)
+		if (DEBUG) {
 			System.out.println("[" + Thread.currentThread() + //$NON-NLS-1$
 					(success ? "] Operation started... " : "] Operation timed out... ") + this); //$NON-NLS-1$ //$NON-NLS-2$ //}
-		if (!success && Thread.interrupted())
+		}
+		if (!success && Thread.interrupted()) {
 			throw new InterruptedException();
+		}
 		return success;
 	}
 
@@ -183,15 +191,17 @@ public class OrderedLock implements ILock, ISchedulingRule {
 		//It might have been removed from the queue while servicing syncExecs
 		//This is will return our existing semaphore if it is still in the queue
 		semaphore = createSemaphore();
-		if (semaphore == null)
+		if (semaphore == null) {
 			return true;
+		}
 		final Thread currentThread = Thread.currentThread();
 		manager.addLockWaitThread(currentThread, this);
 		try {
 			success = semaphore.acquire(delay);
 		} catch (InterruptedException e) {
-			if (DEBUG)
+			if (DEBUG) {
 				System.out.println("[" + currentThread + "] Operation interrupted while waiting... :-|"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			//remember the interrupt to throw it later
 			currentThread.interrupt();
 		}
@@ -208,8 +218,9 @@ public class OrderedLock implements ILock, ISchedulingRule {
 		depth = 0;
 		Semaphore next = operations.peek();
 		setCurrentOperationThread(null);
-		if (next != null)
+		if (next != null) {
 			next.release();
+		}
 	}
 
 	/**
@@ -247,14 +258,16 @@ public class OrderedLock implements ILock, ISchedulingRule {
 
 	@Override
 	public void release() {
-		if (depth == 0)
+		if (depth == 0) {
 			return;
+		}
 		//only release the lock when the depth reaches zero
 		Assert.isTrue(depth >= 0, "Lock released too many times"); //$NON-NLS-1$
-		if (--depth == 0)
+		if (--depth == 0) {
 			doRelease();
-		else
+		} else {
 			manager.removeLockThread(currentOperationThread, this);
+		}
 	}
 
 	/**
@@ -271,11 +284,13 @@ public class OrderedLock implements ILock, ISchedulingRule {
 	 * If newThread is not null, grant this lock to newThread.
 	 */
 	private void setCurrentOperationThread(Thread newThread) {
-		if ((currentOperationThread != null) && (newThread == null))
+		if ((currentOperationThread != null) && (newThread == null)) {
 			manager.removeLockThread(currentOperationThread, this);
+		}
 		this.currentOperationThread = newThread;
-		if (currentOperationThread != null)
+		if (currentOperationThread != null) {
 			manager.addLockThread(currentOperationThread, this);
+		}
 	}
 
 	/**
@@ -316,8 +331,9 @@ public class OrderedLock implements ILock, ISchedulingRule {
 	 */
 	private synchronized boolean updateOperationQueue(Semaphore semaphore, boolean acquired) {
 		// Bug 311863 - Semaphore may have been released concurrently, so check again before discarding it
-		if (!acquired)
+		if (!acquired) {
 			acquired = semaphore.attempt();
+		}
 		if (acquired) {
 			depth++;
 			updateCurrentOperation();

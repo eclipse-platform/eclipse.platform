@@ -50,8 +50,9 @@ public class TextStorageMerger implements IStorageMerger {
 		try {
 			boolean firstLine = true;
 			String lineSeparator = System.lineSeparator();
-			if (lineSeparator == null)
+			if (lineSeparator == null) {
 				lineSeparator= "\n"; //$NON-NLS-1$
+			}
 
 			RangeDifference[] diffs= RangeDifferencer.findRanges(monitor, a, t, o);
 
@@ -62,8 +63,9 @@ public class TextStorageMerger implements IStorageMerger {
 				case RangeDifference.RIGHT:
 					for (int j= rd.rightStart(); j < rd.rightEnd(); j++) {
 						String s= o.getLine(j);
-						if (!firstLine)
+						if (!firstLine) {
 							output.write(lineSeparator.getBytes(outputEncoding));
+						}
 						output.write(s.getBytes(outputEncoding));
 						firstLine = false;
 					}
@@ -72,8 +74,9 @@ public class TextStorageMerger implements IStorageMerger {
 				case RangeDifference.LEFT:
 					for (int j= rd.leftStart(); j < rd.leftEnd(); j++) {
 						String s= t.getLine(j);
-						if (!firstLine)
+						if (!firstLine) {
 							output.write(lineSeparator.getBytes(outputEncoding));
+						}
 						output.write(s.getBytes(outputEncoding));
 						firstLine = false;
 					}

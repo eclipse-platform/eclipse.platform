@@ -155,12 +155,12 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		ResourceMapping[] mappings = scope.getInputMappings();
 		for (ResourceMapping mapping : mappings) {
 			Object modelObject = mapping.getModelObject();
-			if (modelObject instanceof IResource) {
-				IResource resource = (IResource) modelObject;
-				if (resource.getType() == IResource.ROOT)
+			if (modelObject instanceof IResource resource) {
+				if (resource.getType() == IResource.ROOT) {
 					// If the workspace root is one of the inputs,
 					// then use the workspace root as the rule
 					return ResourcesPlugin.getWorkspace().getRoot();
+				}
 				projects.add(resource.getProject());
 			} else {
 				// If one of the inputs is not a resource, then use the
@@ -190,8 +190,9 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	}
 
 	private void internalPrepareContext(IProgressMonitor monitor) throws CoreException {
-		if (initialized)
+		if (initialized) {
 			return;
+		}
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		// Accumulate the initial set of mappings we need traversals for
 		((ResourceMappingScope)scope).reset();
@@ -253,8 +254,9 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 			change.setContracted(true);
 		}
 
-		if (change.shouldFireChange())
+		if (change.shouldFireChange()) {
 			fireMappingsChangedEvent(change.getChangedMappings(), change.getChangedTraversals(refreshTraversals));
+		}
 		monitor.done();
 		return refreshTraversals.asTraversals();
 	}
@@ -300,8 +302,9 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	}
 
 	private void addResourcesToScope(ResourceTraversal[] newTraversals, IProgressMonitor monitor) throws CoreException {
-		if (!consultModels)
+		if (!consultModels) {
 			return;
+		}
 		ResourceMapping[] targetMappings;
 		int count = 0;
 		do {
@@ -439,8 +442,9 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 
 	@Override
 	public void dispose() {
-		if (handler != null)
+		if (handler != null) {
 			handler.shutdown();
+		}
 	}
 
 	/**
@@ -453,8 +457,9 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	}
 
 	private synchronized ScopeManagerEventHandler getHandler() {
-		if (handler == null)
+		if (handler == null) {
 			handler = new ScopeManagerEventHandler(this);
+		}
 		return handler;
 	}
 

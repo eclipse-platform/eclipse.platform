@@ -38,7 +38,7 @@ public class BuildProjectResolver implements IDynamicVariableResolver {
 		if (resource != null && resource.exists()) {
 			return resource.getLocation().toOSString();
 		}
-		abort(NLS.bind(VariableMessages.BuildProjectResolver_3, new String[]{getReferenceExpression(variable, argument)}), null);
+		abort(NLS.bind(VariableMessages.BuildProjectResolver_3, getReferenceExpression(variable, argument)), null);
 		return null;
 	}
 

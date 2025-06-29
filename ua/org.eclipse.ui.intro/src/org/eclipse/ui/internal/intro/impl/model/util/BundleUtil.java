@@ -43,9 +43,9 @@ public class BundleUtil {
 		if (bundle == null || bundle.getState() == Bundle.UNINSTALLED
 				|| bundle.getState() == Bundle.INSTALLED) {
 
-			if (bundle == null)
+			if (bundle == null) {
 				Log.error("Intro tried accessing a NULL bundle.", null); //$NON-NLS-1$
-			else {
+			} else {
 				String msg = StringUtil.concat("Intro tried accessing Bundle: ", getBundleHeader( //$NON-NLS-1$
 						bundle, Constants.BUNDLE_NAME), " vendor: ", //$NON-NLS-1$
 						getBundleHeader(bundle, Constants.BUNDLE_VENDOR), " bundle state: ", //$NON-NLS-1$
@@ -106,16 +106,18 @@ public class BundleUtil {
 	public static String getResolvedResourceLocation(String base,
 			String resource, Bundle bundle) {
 		// quick exits.
-		if (resource == null)
+		if (resource == null) {
 			return null;
+		}
 
 		String fullResource = IPath.fromOSString(base).append(resource).toString();
 		String resolvedResource = getResolvedResourceLocation(fullResource,
 			bundle, true);
 
-		if (resolvedResource.equals(fullResource))
+		if (resolvedResource.equals(fullResource)) {
 			// return resource as is when the resource does not exist.
 			return resource;
+		}
 		return resolvedResource;
 	}
 
@@ -123,11 +125,13 @@ public class BundleUtil {
 	public static String getResolvedResourceLocation(String resource,
 			Bundle bundle, boolean forceNLResolve) {
 		// quick exits.
-		if (resource == null)
+		if (resource == null) {
 			return null;
+		}
 
-		if (bundle == null || !bundleHasValidState(bundle))
+		if (bundle == null || !bundleHasValidState(bundle)) {
 			return resource;
+		}
 
 		URL localLocation = null;
 		try {
@@ -159,8 +163,9 @@ public class BundleUtil {
 			String copyResource = resource;
 			if (forceNLResolve && !copyResource.startsWith(NL_TAG)) {
 				if (copyResource.startsWith("/") //$NON-NLS-1$
-						|| copyResource.startsWith("\\")) //$NON-NLS-1$
+						|| copyResource.startsWith("\\")) { //$NON-NLS-1$
 					copyResource = resource.substring(1);
+				}
 				copyResource = NL_TAG + copyResource;
 			}
 			IPath resourcePath = IPath.fromOSString(copyResource);
@@ -210,8 +215,9 @@ public class BundleUtil {
 	public static String getResolvedBundleLocation(Bundle bundle) {
 		try {
 			URL bundleLocation = bundle.getEntry(""); //$NON-NLS-1$
-			if (bundleLocation == null)
+			if (bundleLocation == null) {
 				return null;
+			}
 			/*
 			bundleLocation = FileLocator.toFileURL(bundleLocation);
 			return bundleLocation.toExternalForm();
@@ -234,8 +240,9 @@ public class BundleUtil {
 	 */
 	public static String getResolvedBundleLocation(String bundleId) {
 		Bundle bundle = Platform.getBundle(bundleId);
-		if (bundle == null)
+		if (bundle == null) {
 			return null;
+		}
 		return getResolvedBundleLocation(bundle);
 	}
 

@@ -123,10 +123,11 @@ public class CompositeCheatSheetPage extends Page implements ISelectionChangedLi
 			@Override
 			public void controlResized(ControlEvent e) {
 				Point size = sash.getSize();
-				if (size.x>size.y)
+				if (size.x>size.y) {
 					sash.setOrientation(SWT.HORIZONTAL);
-				else
+				} else {
 					sash.setOrientation(SWT.VERTICAL);
+				}
 				updateSashPanelMargins(sash);
 			}
 		});
@@ -206,8 +207,9 @@ public class CompositeCheatSheetPage extends Page implements ISelectionChangedLi
 		}
 		model.addObserver((o, arg) -> {
 			ICompositeCheatSheetTask task = (ICompositeCheatSheetTask)arg;
-			if (currentExplorer!=null)
+			if (currentExplorer!=null) {
 				currentExplorer.taskUpdated(task);
+			}
 			updateTask(task);
 		});
 	}
@@ -290,9 +292,10 @@ public class CompositeCheatSheetPage extends Page implements ISelectionChangedLi
 	 * If this is not the selected task wait till it is selected to display it
 	 */
 	private void updateTask(ICompositeCheatSheetTask task) {
-		if (task==null || task != selectedTask) return;
-		if ( task instanceof EditableTask) {
-			EditableTask editable = (EditableTask)task;
+		if (task==null || task != selectedTask) {
+			return;
+		}
+		if ( task instanceof EditableTask editable) {
 			if (editable.getState() == ICompositeCheatSheetTask.IN_PROGRESS) {
 				showEditor(editable);
 				return;
@@ -404,15 +407,13 @@ public class CompositeCheatSheetPage extends Page implements ISelectionChangedLi
 			String ref = (String)e.getHref();
 			if (ref.equals(START_HREF)) {
 				Object data = descriptionPanel.getControl().getData(ICompositeCheatsheetTags.TASK);
-				if (data instanceof EditableTask) {
-					EditableTask task = (EditableTask)data;
+				if (data instanceof EditableTask task) {
 					task.setStarted();
 				}
 			}
 			if (ref.equals(SKIP_HREF)) {
 				Object data = descriptionPanel.getControl().getData(ICompositeCheatsheetTags.TASK);
-				if (data instanceof AbstractTask) {
-					AbstractTask task = (AbstractTask)data;
+				if (data instanceof AbstractTask task) {
 					task.setState(ICompositeCheatSheetTask.SKIPPED);
 				}
 			}

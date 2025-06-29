@@ -91,7 +91,7 @@ public final class LaunchDelegate implements ILaunchDelegate {
 			if(obj instanceof ILaunchConfigurationDelegate) {
 				fDelegate = (ILaunchConfigurationDelegate)obj;
 			} else {
-				throw new CoreException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugPlugin.ERROR, MessageFormat.format(DebugCoreMessages.LaunchDelegate_3, new Object[] { getId() }), null));
+				throw new CoreException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugPlugin.ERROR, MessageFormat.format(DebugCoreMessages.LaunchDelegate_3, getId()), null));
 			}
 		}
 		return fDelegate;
@@ -179,9 +179,9 @@ public final class LaunchDelegate implements ILaunchDelegate {
 			}
 			name = name.trim();
 			if (Character.isUpperCase(name.charAt(0))) {
-				name = MessageFormat.format(DebugCoreMessages.LaunchDelegate_1, new Object[] { name });
+				name = MessageFormat.format(DebugCoreMessages.LaunchDelegate_1, name);
 			} else {
-				name = MessageFormat.format(DebugCoreMessages.LaunchDelegate_2, new Object[] { name });
+				name = MessageFormat.format(DebugCoreMessages.LaunchDelegate_2, name);
 			}
 		}
 		return name;

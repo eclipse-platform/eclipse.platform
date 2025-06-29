@@ -19,7 +19,7 @@ import org.eclipse.jsch.internal.core.IUserAuthenticator;
  * This interface provides access to the specific portions of
  * the location string for use by ssh2 connection
  * and the user authenticator.
- * 
+ *
  * This interface is not intended to be implemented by clients.
  * @see IUserAuthenticator
  * @see IPasswordStore
@@ -52,7 +52,7 @@ public interface IJSchLocation{
   public void setUsername(String username);
 
   /**
-   * Return the user name 
+   * Return the user name
    * @return user name
    */
   public String getUsername();
@@ -64,7 +64,7 @@ public interface IJSchLocation{
   public void setPassword(String password);
 
   /**
-   * Return the password 
+   * Return the password
    * @return password
    */
   public String getPassword();
@@ -77,7 +77,7 @@ public interface IJSchLocation{
   public void setComment(String comment);
 
   /**
-   * Return the comment 
+   * Return the comment
    * @return Comment to be displayed in password prompt.
    */
   public String getComment();

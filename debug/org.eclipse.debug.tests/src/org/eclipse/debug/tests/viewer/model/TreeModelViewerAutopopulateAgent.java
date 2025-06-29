@@ -79,8 +79,7 @@ public class TreeModelViewerAutopopulateAgent implements IViewerUpdateListener {
 	}
 
 	private TreePath getTreePath(Widget w) {
-		if (w instanceof TreeItem) {
-			TreeItem item = (TreeItem)w;
+		if (w instanceof TreeItem item) {
 			LinkedList<Object> segments = new LinkedList<>();
 			while (item != null) {
 				Object segment = item.getData();

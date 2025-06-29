@@ -49,22 +49,25 @@ public class StaticProxyConfig {
 	 * This respects also the proxy bypass definition.
 	 */
 	public void select(URI uri, List<IProxyData> proxies) {
-		if (proxyBypass.bypassProxyFor(uri))
+		if (proxyBypass.bypassProxyFor(uri)) {
 			return;
+		}
 
 		if (!protocolSpecificProxies.isEmpty()) {
 			if (uri.getScheme() != null) {
 				List<IProxyData> protocolProxies = protocolSpecificProxies.get(uri
 						.getScheme().toUpperCase());
-				if (protocolProxies == null)
+				if (protocolProxies == null) {
 					return;
+				}
 				proxies.addAll(protocolProxies);
 			} else {
 				Iterator<List<IProxyData>> it = protocolSpecificProxies.values().iterator();
 				while (it.hasNext()) {
 					List<IProxyData> protocolProxies = it.next();
-					if (protocolProxies == null)
+					if (protocolProxies == null) {
 						return;
+					}
 					proxies.addAll(protocolProxies);
 				}
 			}
@@ -84,8 +87,9 @@ public class StaticProxyConfig {
 
 	public IProxyData[] getProxyData() {
 		IProxyData[] data = getUniversalProxiesData();
-		if (data.length > 0)
+		if (data.length > 0) {
 			return data;
+		}
 		List<IProxyData> proxies = new ArrayList<>();
 		Iterator<List<IProxyData>> it = protocolSpecificProxies.values().iterator();
 		while (it.hasNext()) {

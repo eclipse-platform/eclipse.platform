@@ -64,8 +64,9 @@ public class TestRunSessionSerializer implements XMLReader {
 
 	@Override
 	public void parse(InputSource input) throws IOException, SAXException {
-		if (fHandler == null)
+		if (fHandler == null) {
 			throw new SAXException("ContentHandler missing"); //$NON-NLS-1$
+		}
 
 		fHandler.startDocument();
 		handleTestRun();
@@ -109,9 +110,7 @@ public class TestRunSessionSerializer implements XMLReader {
 	}
 
 	private void handleTestElement(ITestElement testElement) throws SAXException {
-		if (testElement instanceof TestSuiteElement) {
-			TestSuiteElement testSuiteElement = (TestSuiteElement) testElement;
-
+		if (testElement instanceof TestSuiteElement testSuiteElement) {
 			AttributesImpl atts = new AttributesImpl();
 			// Need to store the full #getTestName instead of only the #getSuiteTypeName for
 			// test factory methods
@@ -121,8 +120,9 @@ public class TestRunSessionSerializer implements XMLReader {
 						Double.toString(testSuiteElement.getDuration().toMillis() / 1000.));
 			}
 			if (testSuiteElement.getProgressState() != ProgressState.COMPLETED
-					|| testSuiteElement.getTestResult(false) != Result.UNDEFINED)
+					|| testSuiteElement.getTestResult(false) != Result.UNDEFINED) {
 				addCDATA(atts, IXMLTags.ATTR_INCOMPLETE, Boolean.TRUE.toString());
+			}
 			if (testSuiteElement.getDisplayName() != null) {
 				addCDATA(atts, IXMLTags.ATTR_DISPLAY_NAME, testSuiteElement.getDisplayName());
 			}
@@ -137,17 +137,17 @@ public class TestRunSessionSerializer implements XMLReader {
 			}
 			endElement(IXMLTags.NODE_TESTSUITE);
 
-		} else if (testElement instanceof TestCaseElement) {
-			TestCaseElement testCaseElement = (TestCaseElement) testElement;
-
+		} else if (testElement instanceof TestCaseElement testCaseElement) {
 			AttributesImpl atts = new AttributesImpl();
 			if (testCaseElement.getDuration() != null) {
 				addCDATA(atts, IXMLTags.ATTR_DURATION, testCaseElement.getDuration().toString());
 			}
-			if (testCaseElement.getProgressState() != ProgressState.COMPLETED)
+			if (testCaseElement.getProgressState() != ProgressState.COMPLETED) {
 				addCDATA(atts, IXMLTags.ATTR_INCOMPLETE, Boolean.TRUE.toString());
-			if (testCaseElement.isIgnored())
+			}
+			if (testCaseElement.isIgnored()) {
 				addCDATA(atts, IXMLTags.ATTR_IGNORED, Boolean.TRUE.toString());
+			}
 			if (testCaseElement.isDynamicTest()) {
 				addCDATA(atts, IXMLTags.ATTR_DYNAMIC_TEST, Boolean.TRUE.toString());
 			}
@@ -240,8 +240,9 @@ public class TestRunSessionSerializer implements XMLReader {
 				}
 				buf.append("\\u"); //$NON-NLS-1$
 				String hex = Integer.toHexString(ch);
-				for (int j = hex.length(); j < 4; j++)
+				for (int j = hex.length(); j < 4; j++) {
 					buf.append('0');
+				}
 				buf.append(hex);
 			} else if (buf != null) {
 				buf.append(ch);

@@ -43,8 +43,9 @@ public class LineReader {
 			}
 		}
 
-		if (lines == null)
+		if (lines == null) {
 			lines = new ArrayList<>();
+		}
 		return lines;
 	}
 
@@ -59,12 +60,13 @@ public class LineReader {
 	/*
 	 * Concatenates all strings found in the given List.
 	 */
-	public static String createString(boolean preserveLineDelimeters, List<String> lines) {
+	public static String createString(boolean preserveLineDelimiters, List<String> lines) {
 		StringBuilder sb= new StringBuilder();
 		Iterator<String> iter= lines.iterator();
-		if (preserveLineDelimeters) {
-			while (iter.hasNext())
+		if (preserveLineDelimiters) {
+			while (iter.hasNext()) {
 				sb.append(iter.next());
+			}
 		} else {
 			String lineSeparator = System.lineSeparator();
 			while (iter.hasNext()) {
@@ -89,11 +91,13 @@ public class LineReader {
 		int l= s.length();
 		if (l > 0) {
 			char c= s.charAt(l-1);
-			if (c == '\r')
+			if (c == '\r') {
 				return l-1;
+			}
 			if (c == '\n') {
-				if (l > 1 && s.charAt(l-2) == '\r')
+				if (l > 1 && s.charAt(l-2) == '\r') {
 					return l-2;
+				}
 				return l-1;
 			}
 		}
@@ -134,8 +138,9 @@ public class LineReader {
 					break;
 				}
 				this.fBuffer.append((char)c);
-				if (c == '\n')
+				if (c == '\n') {
 					break;
+				}
 				if (c == '\r') {
 					c= readChar();
 					if (c == -1) {
@@ -149,8 +154,9 @@ public class LineReader {
 						}
 						this.fHaveChar= true;
 						this.fLastChar= c;
-					} else
+					} else {
 						this.fBuffer.append((char)c);
+					}
 					break;
 				}
 			}
@@ -176,8 +182,9 @@ public class LineReader {
 		try {
 			List<String> lines= new ArrayList<>();
 			String line;
-			while ((line= readLine()) != null)
+			while ((line= readLine()) != null) {
 				lines.add(line);
+			}
 			return lines;
 		} catch (IOException ex) {
 			ILog.get().warn(ex.getMessage(), ex);
@@ -192,15 +199,17 @@ public class LineReader {
 	 * counting a trailing line separator.
 	 */
 	int lineContentLength(String line) {
-		if (line == null)
+		if (line == null) {
 			return 0;
+		}
 		int length= line.length();
 		for (int i= length-1; i >= 0; i--) {
 			char c= line.charAt(i);
-			if (c =='\n' || c == '\r')
+			if (c =='\n' || c == '\r') {
 				length--;
-			else
+			} else {
 				break;
+			}
 		}
 		return length;
 	}

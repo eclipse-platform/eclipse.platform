@@ -14,8 +14,8 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,7 +25,7 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ContextFunctionDynamicsTest {
 
@@ -169,13 +169,13 @@ public class ContextFunctionDynamicsTest {
 		InjectTarget target = new InjectTarget();
 		ContextInjectionFactory.inject(target, partContext);
 
-		assertNull("No selection has been set, should be null", target.input); //$NON-NLS-1$
+		assertNull(target.input, "No selection has been set, should be null"); //$NON-NLS-1$
 
 		Object o = new Object();
 		windowContext.set(SELECTION, o);
 
 		assertEquals(
-				"A selection was set into the window, should have been injected into the part", //$NON-NLS-1$
-				o, target.input);
+				o, target.input,
+				"A selection was set into the window, should have been injected into the part"); //$NON-NLS-1$
 	}
 }

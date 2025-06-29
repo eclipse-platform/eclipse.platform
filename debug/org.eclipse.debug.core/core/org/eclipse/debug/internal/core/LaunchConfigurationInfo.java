@@ -440,7 +440,7 @@ public class LaunchConfigurationInfo {
 	 *             if an exception occurs creating the XML
 	 */
 	@SuppressWarnings("unchecked")
-	protected String getAsXML(String lineDelimeter) throws CoreException, IOException, ParserConfigurationException, TransformerException {
+	protected String getAsXML(String lineDelimiter) throws CoreException, IOException, ParserConfigurationException, TransformerException {
 		Document doc = LaunchManager.getDocument();
 		Element configRootElement = doc.createElement(LAUNCH_CONFIGURATION);
 		doc.appendChild(configRootElement);
@@ -488,7 +488,7 @@ public class LaunchConfigurationInfo {
 			configRootElement.appendChild(element);
 		}
 
-		return LaunchManager.serializeDocument(doc, lineDelimeter);
+		return LaunchManager.serializeDocument(doc, lineDelimiter);
 	}
 
 	/**
@@ -832,12 +832,11 @@ public class LaunchConfigurationInfo {
 	public boolean equals(Object obj) {
 
 		// Make sure it's a LaunchConfigurationInfo object
-		if (!(obj instanceof LaunchConfigurationInfo)) {
+		if (!(obj instanceof LaunchConfigurationInfo other)) {
 			return false;
 		}
 
 		// Make sure the types are the same
-		LaunchConfigurationInfo other = (LaunchConfigurationInfo) obj;
 		if (!fType.getIdentifier().equals(other.getType().getIdentifier())) {
 			return false;
 		}

@@ -134,8 +134,9 @@ public class DiffChangeSet extends ChangeSet {
 				tree.beginInput();
 				for (IDiff diff : diffs) {
 					IResource r = tree.getResource(diff);
-					if (r != null)
+					if (r != null) {
 						tree.remove(r);
+					}
 				}
 			} finally {
 				tree.endInput(null);

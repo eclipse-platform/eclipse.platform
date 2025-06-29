@@ -38,7 +38,7 @@ public class RelaunchAction {
 		item.setEnabled(isEnabled());
 		item.setObject(this);
 
-		item.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/term_restart.png"); //$NON-NLS-1$ //$NON-NLS-2$
+		item.setIconURI("platform:/plugin/" + LaunchViewBundleInfo.PLUGIN_ID + "/icons/term_restart.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		return item;
 	}

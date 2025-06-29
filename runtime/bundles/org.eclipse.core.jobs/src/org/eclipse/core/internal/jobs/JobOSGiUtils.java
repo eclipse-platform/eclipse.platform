@@ -52,8 +52,9 @@ class JobOSGiUtils {
 	void openServices() {
 		BundleContext context = JobActivator.getContext();
 		if (context == null) {
-			if (JobManager.DEBUG)
+			if (JobManager.DEBUG) {
 				JobMessages.message("JobsOSGiUtils called before plugin started"); //$NON-NLS-1$
+			}
 			return;
 		}
 
@@ -75,11 +76,13 @@ class JobOSGiUtils {
 	 * <code>null</code> if the bundle could not be determined.
 	 */
 	public String getBundleId(Object object) {
-		if (object == null)
+		if (object == null) {
 			return null;
+		}
 		Bundle source = FrameworkUtil.getBundle(object.getClass());
-		if (source != null && source.getSymbolicName() != null)
+		if (source != null && source.getSymbolicName() != null) {
 			return source.getSymbolicName();
+		}
 		return null;
 	}
 
@@ -97,15 +100,17 @@ class JobOSGiUtils {
 			//we are running stand-alone, so consult global system property
 			String value = System.getProperty(IJobManager.PROP_USE_DAEMON_THREADS);
 			//default to use daemon threads if property is absent
-			if (value == null)
+			if (value == null) {
 				return true;
+			}
 			return "true".equalsIgnoreCase(value); //$NON-NLS-1$
 		}
 		//only use daemon threads if the property is defined
 		final String value = context.getProperty(IJobManager.PROP_USE_DAEMON_THREADS);
 		//if value is absent, don't use daemon threads to maintain legacy behaviour
-		if (value == null)
+		if (value == null) {
 			return false;
+		}
 		return "true".equalsIgnoreCase(value); //$NON-NLS-1$
 	}
 }

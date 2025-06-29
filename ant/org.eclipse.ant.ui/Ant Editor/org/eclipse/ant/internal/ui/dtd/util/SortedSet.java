@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *******************************************************************************/
@@ -18,7 +18,7 @@ import java.util.Comparator;
 /**
  * SortedSet is a flyweight set implementation that uses an external array provided by a KeyHolder. SortedSet provides both equality/comparison
  * operations and identity operations.
- * 
+ *
  * @author Bob Foster
  */
 public class SortedSet {
@@ -62,7 +62,7 @@ public class SortedSet {
 
 	/**
 	 * Add to set (no duplicates allowed).
-	 * 
+	 *
 	 * @param obj
 	 *            Object to add
 	 * @return true if object was added; false if object was already in the set.
@@ -87,8 +87,9 @@ public class SortedSet {
 				break;
 			}
 		}
-		if (comp == 0 && !always)
+		if (comp == 0 && !always) {
 			return -1;
+		}
 		internalAdd(i, obj);
 		return i;
 	}
@@ -110,7 +111,7 @@ public class SortedSet {
 
 	/**
 	 * Add allowing duplicates.
-	 * 
+	 *
 	 * @param obj
 	 *            Object to add
 	 * @return index where object was added in sorted order.
@@ -135,14 +136,17 @@ public class SortedSet {
 
 	public int indexOf(Object obj) {
 		Object[] array = fKeyHolder.getKeys();
-		if (array == null)
+		if (array == null) {
 			return -1;
+		}
 		for (int i = 0; i < array.length; i++) {
 			int comp = fComp.compare(obj, array[i]);
-			if (comp == 0)
+			if (comp == 0) {
 				return i;
-			if (comp < 0)
+			}
+			if (comp < 0) {
 				return -1;
+			}
 		}
 		return -1;
 	}
@@ -153,33 +157,40 @@ public class SortedSet {
 
 	public int indexOfIdentity(Object obj) {
 		Object[] array = fKeyHolder.getKeys();
-		if (array == null)
+		if (array == null) {
 			return -1;
+		}
 		for (int i = 0; i < array.length; i++) {
-			if (obj == array[i])
+			if (obj == array[i]) {
 				return i;
+			}
 		}
 		return -1;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (!(o instanceof SortedSet))
+		}
+		if (!(o instanceof SortedSet other)) {
 			return false;
-		SortedSet other = (SortedSet) o;
+		}
 		Object[] array = fKeyHolder.getKeys();
 		Object[] otherarray = other.fKeyHolder.getKeys();
-		if ((array == null) != (otherarray == null))
+		if ((array == null) != (otherarray == null)) {
 			return false;
-		if (array == null)
+		}
+		if (array == null) {
 			return true;
-		if (array.length != otherarray.length)
+		}
+		if (array.length != otherarray.length) {
 			return false;
+		}
 		for (int i = 0; i < array.length; i++) {
-			if (array[i] != otherarray[i])
+			if (array[i] != otherarray[i]) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -187,8 +198,9 @@ public class SortedSet {
 	public void merge(SortedSet other) {
 		Object[] array = fKeyHolder.getKeys();
 		Object[] otherarray = other.fKeyHolder.getKeys();
-		if (otherarray == null)
+		if (otherarray == null) {
 			return;
+		}
 		if (array == null) {
 			array = otherarray;
 			return;
@@ -214,8 +226,9 @@ public class SortedSet {
 
 	public Object[] members() {
 		Object[] array = fKeyHolder.getKeys();
-		if (array == null)
+		if (array == null) {
 			return new Object[0];
+		}
 		return array;
 	}
 

@@ -58,8 +58,9 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		if (description != null)
+		if (description != null) {
 			createWrappingLabel(composite, description, 1);
+		}
 
 		viewer = new CommonViewer(TEAM_NAVIGATOR_CONTENT, composite, SWT.BORDER);
 		viewer.setComparator(new CommonViewerSorter());
@@ -78,14 +79,16 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 	}
 
 	private Object getInitialInput() {
-		if (context != null)
+		if (context != null) {
 			return context;
+		}
 		return scope;
 	}
 
 	private Object[] getRootModelObjects() {
-		if (scope == null)
+		if (scope == null) {
 			return new Object[0];
+		}
 		ResourceMapping[] mappings = scope.getMappings();
 		List<Object> result = new ArrayList<>();
 		for (ResourceMapping mapping : mappings) {

@@ -43,13 +43,13 @@ public class ToolbarButton {
 		this.action = action;
 		this.param = param;
 		this.state = state.equalsIgnoreCase("on")?true:false; //$NON-NLS-1$
-		if (state.startsWith("hid")) //$NON-NLS-1$
+		if (state.startsWith("hid")) { //$NON-NLS-1$
 			this.styleClass = "buttonHidden"; //$NON-NLS-1$
-		else if ("menu".equals(action)) { //$NON-NLS-1$
+		} else if ("menu".equals(action)) { //$NON-NLS-1$
 			this.styleClass = "buttonMenu"; //$NON-NLS-1$
-		}
-		else
+		} else {
 			this.styleClass = state.equalsIgnoreCase("on")?"buttonOn":"button";   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+		}
 	}
 
 	public boolean isSeparator() {

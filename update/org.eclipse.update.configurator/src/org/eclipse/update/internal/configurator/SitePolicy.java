@@ -13,26 +13,29 @@
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
 
-import org.eclipse.update.configurator.*;
-import org.eclipse.update.configurator.IPlatformConfiguration.*;
 
-
-public class SitePolicy implements IPlatformConfiguration.ISitePolicy {
+@SuppressWarnings("removal")
+public class SitePolicy implements org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy {
 
 	private int type;
 	private String[] list;
 
 	public SitePolicy() {
 	}
+
 	public SitePolicy(int type, String[] list) {
-		if (type != ISitePolicy.USER_INCLUDE && type != ISitePolicy.USER_EXCLUDE && type != ISitePolicy.MANAGED_ONLY)
+		if (type != org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.USER_INCLUDE
+				&& type != org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.USER_EXCLUDE
+				&& type != org.eclipse.update.configurator.IPlatformConfiguration.ISitePolicy.MANAGED_ONLY) {
 			throw new IllegalArgumentException();
+		}
 		this.type = type;
 
-		if (list == null)
+		if (list == null) {
 			this.list = new String[0];
-		else
+		} else {
 			this.list = list;
+		}
 	}
 
 	@Override
@@ -47,10 +50,11 @@ public class SitePolicy implements IPlatformConfiguration.ISitePolicy {
 
 	@Override
 	public synchronized void setList(String[] list) {
-		if (list == null)
+		if (list == null) {
 			this.list = new String[0];
-		else
+		} else {
 			this.list = list;
+		}
 	}
 
 }

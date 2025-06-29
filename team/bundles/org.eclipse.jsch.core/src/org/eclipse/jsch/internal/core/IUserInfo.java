@@ -18,7 +18,7 @@ package org.eclipse.jsch.internal.core;
  * Both values can be set and the user name can be retrieved.
  * However, it is possible that the user name is not mutable.
  * Users must check before trying to set the user name.
- * 
+ *
  * Clients are not expected to implement this interface
  * @since 1.1
  */

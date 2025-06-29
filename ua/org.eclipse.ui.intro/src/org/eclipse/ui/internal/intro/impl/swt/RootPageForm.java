@@ -89,8 +89,9 @@ public class RootPageForm implements IIntroConstants {
 		protected Point computeSize(Composite composite, int wHint, int hHint,
 				boolean flushCache) {
 			int innerWHint = wHint;
-			if (wHint != SWT.DEFAULT)
+			if (wHint != SWT.DEFAULT) {
 				innerWHint -= LABEL_MARGIN_WIDTH + LABEL_MARGIN_WIDTH;
+			}
 			Control[] children = composite.getChildren();
 			Point s1 = children[0].computeSize(SWT.DEFAULT, SWT.DEFAULT);
 			Point s2 = children[1].computeSize(innerWHint, SWT.DEFAULT);
@@ -150,8 +151,9 @@ public class RootPageForm implements IIntroConstants {
 		}
 
 		private void updateDescription(String text) {
-			if (text == null)
+			if (text == null) {
 				text = ""; //$NON-NLS-1$
+			}
 			descriptionLabel.setText(text);
 			descriptionLabel.getParent().layout();
 		}
@@ -223,14 +225,16 @@ public class RootPageForm implements IIntroConstants {
 		layout.verticalSpacing = rootPageStyleManager.getPageVerticalSpacing();
 		contentComposite.setLayout(layout);
 		for (int i = 0; i < children.length; i++) {
-			if (((AbstractBaseIntroElement) children[i]).isFiltered())
+			if (((AbstractBaseIntroElement) children[i]).isFiltered()) {
 				continue;
-			if (children[i].getType() == AbstractIntroElement.GROUP)
+			}
+			if (children[i].getType() == AbstractIntroElement.GROUP) {
 				createGroupContent(contentComposite, (IntroGroup) children[i]);
-			else if (children[i].getType() == AbstractIntroElement.LINK)
+			} else if (children[i].getType() == AbstractIntroElement.LINK) {
 				createImageHyperlink(contentComposite, (IntroLink) children[i]);
-			else if (children[i].getType() == AbstractIntroElement.CONTENT_PROVIDER)
+			} else if (children[i].getType() == AbstractIntroElement.CONTENT_PROVIDER) {
 				createContentProvider(contentComposite, (IntroContentProvider)children[i]);
+			}
 		}
 	}
 
@@ -261,14 +265,16 @@ public class RootPageForm implements IIntroConstants {
 			.getHorizantalSpacing(group);
 		contentComposite.setLayout(layout);
 		for (int i = 0; i < children.length; i++) {
-			if (((AbstractBaseIntroElement) children[i]).isFiltered())
+			if (((AbstractBaseIntroElement) children[i]).isFiltered()) {
 				continue;
-			if (children[i].getType() == AbstractIntroElement.GROUP)
+			}
+			if (children[i].getType() == AbstractIntroElement.GROUP) {
 				createGroupContent(contentComposite, (IntroGroup) children[i]);
-			else if (children[i].getType() == AbstractIntroElement.LINK)
+			} else if (children[i].getType() == AbstractIntroElement.LINK) {
 				createImageHyperlink(contentComposite, (IntroLink) children[i]);
-			else if (children[i].getType() == AbstractIntroElement.CONTENT_PROVIDER)
+			} else if (children[i].getType() == AbstractIntroElement.CONTENT_PROVIDER) {
 				createContentProvider(contentComposite, (IntroContentProvider)children[i]);
+			}
 		}
 	}
 
@@ -318,8 +324,9 @@ public class RootPageForm implements IIntroConstants {
 		Label label = toolkit.createLabel(body, "", SWT.WRAP); //$NON-NLS-1$
 		String key = StringUtil.concat(rootPage.getId(), ".", "hover-text.fg"); //$NON-NLS-1$ //$NON-NLS-2$
 		Color fg = rootPageStyleManager.getColor(toolkit, key);
-		if (fg == null)
+		if (fg == null) {
 			fg = toolkit.getColors().getColor(IFormColors.TITLE);
+		}
 		label.setForeground(fg);
 		label.setAlignment(SWT.CENTER);
 		label.setFont(PageStyleManager.getBannerFont());

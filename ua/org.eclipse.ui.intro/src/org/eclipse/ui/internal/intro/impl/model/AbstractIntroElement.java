@@ -227,15 +227,15 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 * the defining extension.
 	 */
 	public IConfigurationElement getCfgElement() {
-		return cfgElement instanceof IConfigurationElement?(IConfigurationElement)cfgElement:null;
+		return cfgElement instanceof IConfigurationElement i?i:null;
 	}
 
 	public Element getElement() {
-		return cfgElement instanceof Element?(Element)cfgElement:null;
+		return cfgElement instanceof Element e?e:null;
 	}
 
 	/**
-	 * DOM getAttribute retruns an empty string (not null) if attribute is not
+	 * DOM getAttribute returns an empty string (not null) if attribute is not
 	 * defined. Override this behavior to be consistent with Intro Model, and
 	 * IConfiguration element.
 	 */
@@ -244,8 +244,9 @@ public abstract class AbstractIntroElement implements Cloneable {
 			String value = element.getAttribute(att);
 			if (value!=null) {
 				IntroModelRoot root = getModelRoot();
-				if (root!=null)
+				if (root!=null) {
 					return root.resolveVariables(value);
+				}
 				return value;
 			}
 		}
@@ -305,10 +306,10 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 * <p>
 	 * Rules:
 	 * <ul>
-	 * <li>For the model root, it retruns null.</li>
+	 * <li>For the model root, it returns null.</li>
 	 * <li>For the introPart presentation it returns a model root.</li>
 	 * <li>For Pages, it returns an intro model root.</li>
-	 * <li>For all other elements, it retruns a subclass of abstract container.
+	 * <li>For all other elements, it returns a subclass of abstract container.
 	 * </li>
 	 * <li>for divs that are children of configs (shared divs), it returns the
 	 * holding model root.</li>
@@ -329,8 +330,9 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 */
 	public void setParent(AbstractIntroElement parent) {
 		this.parent = parent;
-		if (parent!=null)
+		if (parent!=null) {
 			loadFromParent();
+		}
 	}
 
 	public void setBundle(Bundle bundle) {
@@ -352,35 +354,43 @@ public abstract class AbstractIntroElement implements Cloneable {
 	 */
 	public AbstractIntroPage getParentPage() {
 		// return yourself if you are a page.
-		if (isOfType(AbstractIntroElement.ABSTRACT_PAGE))
+		if (isOfType(AbstractIntroElement.ABSTRACT_PAGE)) {
 			return (AbstractIntroPage) this;
+		}
 
 		AbstractIntroElement parent = getParent();
-		if (parent == null)
+		if (parent == null) {
 			return null;
+		}
 
 		while (parent != null && parent.getParent() != null
-				&& !parent.isOfType(AbstractIntroElement.ABSTRACT_PAGE))
+				&& !parent.isOfType(AbstractIntroElement.ABSTRACT_PAGE)) {
 			parent = parent.getParent();
-		if (parent.isOfType(ABSTRACT_PAGE))
+		}
+		if (parent.isOfType(ABSTRACT_PAGE)) {
 			return (AbstractIntroPage) parent;
+		}
 		return null;
 	}
 
 	public IntroModelRoot getModelRoot() {
 		// return yourself if you are a model root.
-		if (isOfType(AbstractIntroElement.MODEL_ROOT))
+		if (isOfType(AbstractIntroElement.MODEL_ROOT)) {
 			return (IntroModelRoot) this;
+		}
 
 		AbstractIntroElement parent = getParent();
-		if (parent == null)
+		if (parent == null) {
 			return null;
+		}
 
 		while (parent != null && parent.getParent() != null
-				&& !parent.isOfType(AbstractIntroElement.MODEL_ROOT))
+				&& !parent.isOfType(AbstractIntroElement.MODEL_ROOT)) {
 			parent = parent.getParent();
-		if (parent.isOfType(MODEL_ROOT))
+		}
+		if (parent.isOfType(MODEL_ROOT)) {
 			return (IntroModelRoot) parent;
+		}
 		return null;
 	}
 
@@ -420,13 +430,15 @@ public abstract class AbstractIntroElement implements Cloneable {
 	public static final boolean allElementsAreOfType(
 			AbstractIntroElement[] elements, int elementMask) {
 		// if we have an empty list, no point going on.
-		if (elements.length == 0)
+		if (elements.length == 0) {
 			return false;
+		}
 
 		for (int i = 0; i < elements.length; i++) {
 			AbstractIntroElement element = elements[i];
-			if (!element.isOfType(elementMask))
+			if (!element.isOfType(elementMask)) {
 				return false;
+			}
 		}
 		return true;
 	}

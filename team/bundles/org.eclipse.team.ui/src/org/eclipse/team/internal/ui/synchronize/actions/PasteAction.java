@@ -91,8 +91,9 @@ public class PasteAction extends SelectionListenerAction {
 
 	private IStorage getPatchStorage() {
 		final String text = getClipboardText();
-		if (text == null)
+		if (text == null) {
 			return null;
+		}
 
 		IStorage storage = new IEncodedStorage() {
 			@Override

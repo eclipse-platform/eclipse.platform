@@ -140,8 +140,9 @@ public class AntRunner implements IApplication {
 					}
 					waitingForQuote = true;
 				} else {
-					if (!(token.equals(",") || token.equals(" "))) //$NON-NLS-1$ //$NON-NLS-2$
+					if (!(token.equals(",") || token.equals(" "))) { //$NON-NLS-1$ //$NON-NLS-2$
 						result.add(token);
+					}
 				}
 			}
 		}
@@ -281,7 +282,7 @@ public class AntRunner implements IApplication {
 		setProperties(runner, classInternalAntRunner);
 
 		if (arguments != null && arguments.length > 0) {
-			Method setArguments = classInternalAntRunner.getMethod("setArguments", new Class[] { String[].class }); //$NON-NLS-1$
+			Method setArguments = classInternalAntRunner.getMethod("setArguments", String[].class); //$NON-NLS-1$
 			setArguments.invoke(runner, new Object[] { arguments });
 		}
 	}
@@ -302,8 +303,7 @@ public class AntRunner implements IApplication {
 	 */
 	public void run(IProgressMonitor monitor) throws CoreException {
 		if (buildRunning) {
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_RUNNING_BUILD, NLS.bind(InternalCoreAntMessages.AntRunner_Already_in_progess, new String[] {
-					buildFileLocation }), null);
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_RUNNING_BUILD, NLS.bind(InternalCoreAntMessages.AntRunner_Already_in_progess, buildFileLocation), null);
 			throw new CoreException(status);
 		}
 		buildRunning = true;
@@ -319,7 +319,7 @@ public class AntRunner implements IApplication {
 
 			// set the custom classpath
 			if (customClasspath != null) {
-				Method setCustomClasspath = classInternalAntRunner.getMethod("setCustomClasspath", new Class[] { URL[].class }); //$NON-NLS-1$
+				Method setCustomClasspath = classInternalAntRunner.getMethod("setCustomClasspath", URL[].class); //$NON-NLS-1$
 				setCustomClasspath.invoke(runner, new Object[] { customClasspath });
 			}
 
@@ -360,7 +360,7 @@ public class AntRunner implements IApplication {
 
 			// set execution targets
 			if (targets != null) {
-				Method setExecutionTargets = classInternalAntRunner.getMethod("setExecutionTargets", new Class[] { String[].class }); //$NON-NLS-1$
+				Method setExecutionTargets = classInternalAntRunner.getMethod("setExecutionTargets", String[].class); //$NON-NLS-1$
 				setExecutionTargets.invoke(runner, new Object[] { targets });
 			}
 
@@ -400,7 +400,7 @@ public class AntRunner implements IApplication {
 
 		// add property files
 		if (propertyFiles != null) {
-			Method addPropertyFiles = classInternalAntRunner.getMethod("addPropertyFiles", new Class[] { String[].class }); //$NON-NLS-1$
+			Method addPropertyFiles = classInternalAntRunner.getMethod("addPropertyFiles", String[].class); //$NON-NLS-1$
 			addPropertyFiles.invoke(runner, new Object[] { propertyFiles });
 		}
 	}
@@ -449,7 +449,7 @@ public class AntRunner implements IApplication {
 		if (missingClassName != null) {
 			missingClassName = missingClassName.replace('/', '.');
 			message = InternalCoreAntMessages.AntRunner_Could_not_find_one_or_more_classes__Please_check_the_Ant_classpath__2;
-			message = NLS.bind(message, new String[] { missingClassName });
+			message = NLS.bind(message, missingClassName);
 		} else {
 			message = InternalCoreAntMessages.AntRunner_Could_not_find_one_or_more_classes__Please_check_the_Ant_classpath__1;
 		}

@@ -92,8 +92,9 @@ public class AlwaysWelcomeCheckbox implements IIntroContentProvider,IIntroAction
 
 	@Override
 	public void createContent(String id, Composite parent, FormToolkit toolkit) {
-		if (disposed)
+		if (disposed) {
 			return;
+		}
 
 		boolean alwaysShowIntro = getAlwaysShowIntroPref();
 
@@ -109,9 +110,10 @@ public class AlwaysWelcomeCheckbox implements IIntroContentProvider,IIntroAction
 			}
 		});
 
-		if (alwaysShowIntro)
+		if (alwaysShowIntro) {
 			PlatformUI.getPreferenceStore().setValue(
 				IWorkbenchPreferenceConstants.SHOW_INTRO, alwaysShowIntro);
+		}
 	}
 
 	@Override

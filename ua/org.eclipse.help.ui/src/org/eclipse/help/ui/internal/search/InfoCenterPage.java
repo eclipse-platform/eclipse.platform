@@ -77,22 +77,24 @@ public class InfoCenterPage extends RootScopePage {
 			while (stok.hasMoreTokens()) {
 				final String url = stok.nextToken();
 				AdaptableHelpResource res = find(url);
-				if (res != null)
+				if (res != null) {
 					list.add(res);
+				}
 			}
 			setElements(list.toArray(new AdaptableHelpResource[list.size()]));
 		}
 
 		private AdaptableHelpResource find(String url) {
-			if (remoteTocs == null)
+			if (remoteTocs == null) {
 				return null;
+			}
 			IAdaptable[] children = remoteTocs.getChildren();
 			for (int i = 0; i < children.length; i++) {
 				IAdaptable child = children[i];
-				if (child instanceof AdaptableHelpResource) {
-					AdaptableHelpResource res = (AdaptableHelpResource) child;
-					if (res.getHref().equals(url))
+				if (child instanceof AdaptableHelpResource res) {
+					if (res.getHref().equals(url)) {
 						return res;
+					}
 				}
 			}
 			return null;
@@ -103,8 +105,9 @@ public class InfoCenterPage extends RootScopePage {
 			AdaptableHelpResource[] elements = getElements();
 
 			for (int i = 0; i < elements.length; i++) {
-				if (i > 0)
+				if (i > 0) {
 					buf.append(InfoCenterSearchScopeFactory.TOC_SEPARATOR);
+				}
 				buf.append(elements[i].getHref());
 			}
 			store.setValue(getKey(InfoCenterSearchScopeFactory.P_TOCS), buf.toString());
@@ -139,8 +142,9 @@ public class InfoCenterPage extends RootScopePage {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (searchAll.getSelection())
+				if (searchAll.getSelection()) {
 					tree.getTree().setEnabled(false);
+				}
 			}
 		});
 
@@ -155,8 +159,9 @@ public class InfoCenterPage extends RootScopePage {
 			public void widgetSelected(SelectionEvent e) {
 				if (searchSelected.getSelection()) {
 					tree.getTree().setEnabled(true);
-					if (tocStale)
+					if (tocStale) {
 						updateTocs();
+					}
 				}
 			}
 		});
@@ -199,9 +204,10 @@ public class InfoCenterPage extends RootScopePage {
 			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
 				final Object element = event.getElement();
-				if (!tree.getGrayed(element))
+				if (!tree.getGrayed(element)) {
 					BusyIndicator.showWhile(getShell().getDisplay(),
 							() -> setSubtreeChecked(element, tree.getChecked(element), false));
+				}
 			}
 		});
 
@@ -314,8 +320,9 @@ public class InfoCenterPage extends RootScopePage {
 		if (url.length() == 0) {
 			url = (String) getEngineDescriptor().getParameters().get(
 					InfoCenterSearchScopeFactory.P_URL);
-			if (url == null)
+			if (url == null) {
 				url = ""; //$NON-NLS-1$
+			}
 		}
 		urlText.setText(url);
 		//busyLoadTocs(url);
@@ -335,8 +342,9 @@ public class InfoCenterPage extends RootScopePage {
 			tree.setCheckedElements(elements);
 			for (int i = 0; i < elements.length; i++) {
 				Object element = elements[i];
-				if (isExpandable(element))
+				if (isExpandable(element)) {
 					setSubtreeChecked(element, true, true);
+				}
 				updateParentState(element, true);
 			}
 		});
@@ -352,8 +360,9 @@ public class InfoCenterPage extends RootScopePage {
 			tree.setCheckedElements(elements);
 			for (int i = 0; i < elements.length; i++) {
 				Object element = elements[i];
-				if (isExpandable(element))
+				if (isExpandable(element)) {
 					setSubtreeChecked(element, true, true);
+				}
 				updateParentState(element, true);
 			}
 		});
@@ -374,12 +383,14 @@ public class InfoCenterPage extends RootScopePage {
 	}
 
 	void updateParentState(Object child, boolean baseChildState) {
-		if (child == null)
+		if (child == null) {
 			return;
+		}
 
 		Object parent = treeContentProvider.getParent(child);
-		if (parent == null)
+		if (parent == null) {
 			return;
+		}
 
 		boolean allSameState = true;
 		Object[] children = null;
@@ -408,10 +419,12 @@ public class InfoCenterPage extends RootScopePage {
 			if (state) {
 				tree.setChecked(element, true);
 				tree.setGrayed(element, false);
-			} else
+			} else {
 				tree.setGrayChecked(element, false);
-			if (isExpandable(element))
+			}
+			if (isExpandable(element)) {
 				setSubtreeChecked(element, state, checkExpandedState);
+			}
 		}
 	}
 
@@ -420,10 +433,11 @@ public class InfoCenterPage extends RootScopePage {
 			Object parent) {
 		Object[] children = treeContentProvider.getChildren(parent);
 		for (int i = 0; i < children.length; i++) {
-			if (tree.getGrayed(children[i]))
+			if (tree.getGrayed(children[i])) {
 				findCheckedElements(checkedResources, children[i]);
-			else if (tree.getChecked(children[i]))
+			} else if (tree.getChecked(children[i])) {
 				checkedResources.add(children[i]);
+			}
 		}
 	}
 
@@ -432,9 +446,10 @@ public class InfoCenterPage extends RootScopePage {
 			Object element = event.getElement();
 			boolean state = event.getChecked();
 			tree.setGrayed(element, false);
-			if (isExpandable(element))
+			if (isExpandable(element)) {
 				setSubtreeChecked(element, state, state);
 			// only check subtree if state is set to true
+			}
 
 			updateParentState(element, state);
 			// validateInput();
@@ -450,9 +465,10 @@ public class InfoCenterPage extends RootScopePage {
 	@Override
 	public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
-		if (getEngineDescriptor().isUserDefined())
+		if (getEngineDescriptor().isUserDefined()) {
 			store.setValue(getKey(InfoCenterSearchScopeFactory.P_URL), urlText
 					.getText());
+		}
 		updateWorkingSet();
 		workingSet.store(store);
 		store.setValue(getKey(InfoCenterSearchScopeFactory.P_SEARCH_SELECTED),

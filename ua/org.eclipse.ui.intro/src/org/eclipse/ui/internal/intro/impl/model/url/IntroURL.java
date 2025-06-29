@@ -217,8 +217,9 @@ public class IntroURL implements IIntroURL {
 		// set intro to standby mode. we know we have a customizable part.
 		CustomizableIntroPart introPart = (CustomizableIntroPart) IntroPlugin
 			.getIntro();
-		if (introPart == null)
+		if (introPart == null) {
 			introPart = (CustomizableIntroPart) IntroPlugin.showIntro(true);
+		}
 		// store the flag to indicate that standbypart is needed.
 		introPart.getControl().setData(IIntroConstants.SHOW_STANDBY_PART,
 			VALUE_TRUE);
@@ -240,8 +241,9 @@ public class IntroURL implements IIntroURL {
 	 * @return true if the intro was shown, or false if the intro could not be shown
 	 */
 	private boolean setStandbyState(String state) {
-		if (state == null)
+		if (state == null) {
 			return false;
+		}
 		if (state.equals(VALUE_CLOSE)) {
 			return IntroPlugin.closeIntro();
 		} else if (state.equals(VALUE_LAUNCHBAR)) {
@@ -250,8 +252,9 @@ public class IntroURL implements IIntroURL {
 		boolean standby = state.equals(VALUE_TRUE) || state.equals(VALUE_STANDBY);
 
 		IIntroPart introPart = IntroPlugin.showIntro(standby);
-		if (introPart == null)
+		if (introPart == null) {
 			return false;
+		}
 		return true;
 	}
 
@@ -265,20 +268,18 @@ public class IntroURL implements IIntroURL {
 		Object actionObject = ModelLoaderUtil.createClassInstance(pluginId,
 			className);
 		try {
-			if (actionObject instanceof IIntroAction) {
-				IIntroAction introAction = (IIntroAction) actionObject;
+			if (actionObject instanceof IIntroAction introAction) {
 				IIntroSite site = IntroPlugin.getDefault().getIntroModelRoot()
 					.getPresentation().getIntroPart().getIntroSite();
 				introAction.run(site, parameters);
-			} else if (actionObject instanceof IAction) {
-				IAction action = (IAction) actionObject;
+			} else if (actionObject instanceof IAction action) {
 				action.run();
 
-			} else if (actionObject instanceof IActionDelegate) {
-				final IActionDelegate delegate = (IActionDelegate) actionObject;
-				if (delegate instanceof IWorkbenchWindowActionDelegate)
+			} else if (actionObject instanceof final IActionDelegate delegate) {
+				if (delegate instanceof IWorkbenchWindowActionDelegate) {
 					((IWorkbenchWindowActionDelegate) delegate).init(PlatformUI
 						.getWorkbench().getActiveWorkbenchWindow());
+				}
 				Action proxy = new Action(this.action) {
 
 					@Override
@@ -287,12 +288,14 @@ public class IntroURL implements IIntroURL {
 					}
 				};
 				proxy.run();
-			} else
+			} else {
 				// we could not create the class.
 				return false;
+			}
 			// ran action successfully. Now set intro intro standby if needed.
-			if (standbyState == null)
+			if (standbyState == null) {
 				return true;
+			}
 			return setStandbyState(standbyState);
 		} catch (Exception e) {
 			Log.error("Could not run action: " + className, e); //$NON-NLS-1$
@@ -318,8 +321,9 @@ public class IntroURL implements IIntroURL {
 			handlerService.executeCommand(pCommand, null);
 
 			// Executed command successfully. Now set intro standby if needed.
-			if (standbyState == null)
+			if (standbyState == null) {
 				return true;
+			}
 			return setStandbyState(standbyState);
 		} catch (CommandException ex) {
 			Log.error("Could not execute command: " + command, ex); //$NON-NLS-1$
@@ -413,8 +417,9 @@ public class IntroURL implements IIntroURL {
 
 
 	private boolean showMessage(String message) {
-		if (message == null)
+		if (message == null) {
 			return false;
+		}
 		DialogUtil.displayInfoMessage(null, message);
 		return true;
 	}
@@ -436,8 +441,9 @@ public class IntroURL implements IIntroURL {
 
 		IntroModelRoot modelRoot = IntroPlugin.getDefault().getIntroModelRoot();
 		boolean success = modelRoot.setCurrentPageId(pageId);
-		if (!success)
+		if (!success) {
 			success = includePageToShow(modelRoot, pageId);
+		}
 
 		// we turned drawing off. Turn it on again.
 		currentIntroPart.getControl().setRedraw(true);
@@ -447,8 +453,9 @@ public class IntroURL implements IIntroURL {
 			modelRoot.getPresentation().updateHistory(
 				modelRoot.getCurrentPage());
 			// ran action successfully. Now set intro intro standby if needed.
-			if (standbyState == null)
+			if (standbyState == null) {
 				return true;
+			}
 			return setStandbyState(standbyState);
 		}
 		// could not find referenced page.
@@ -492,9 +499,10 @@ public class IntroURL implements IIntroURL {
 		clonedPage.setParent(model);
 		// REVISIT: SWT presentation does not support multiple shared
 		// styles.
-		if (targetSharedStyle != null)
+		if (targetSharedStyle != null) {
 			// add target model shared style.
 			clonedPage.insertStyle(targetSharedStyle, 0);
+		}
 		model.addChild(clonedPage);
 		return model.setCurrentPageId(clonedPage.getId());
 	}
@@ -508,8 +516,9 @@ public class IntroURL implements IIntroURL {
 		for (IntroModelRoot model : ExtensionPointManager.getInst().getIntroModels().values()) {
 			AbstractIntroPage page = (AbstractIntroPage) model.findChild(
 				pageId, AbstractIntroElement.ABSTRACT_PAGE);
-			if (page != null)
+			if (page != null) {
 				return page;
+			}
 		}
 		// could not find page in any model.
 		return null;
@@ -522,19 +531,21 @@ public class IntroURL implements IIntroURL {
 		// set intro to standby mode. we know we have a customizable part.
 		CustomizableIntroPart introPart = (CustomizableIntroPart) IntroPlugin
 			.getIntro();
-		if (introPart == null)
+		if (introPart == null) {
 			// intro is closed. Do nothing.
 			return false;
+		}
 
 		IntroPartPresentation presentation = introPart
 			.getAdapter(IntroPartPresentation.class);
 
-		if (direction.equalsIgnoreCase(VALUE_BACKWARD))
+		if (direction.equalsIgnoreCase(VALUE_BACKWARD)) {
 			return presentation.navigateBackward();
-		else if (direction.equalsIgnoreCase(VALUE_FORWARD))
+		} else if (direction.equalsIgnoreCase(VALUE_FORWARD)) {
 			return presentation.navigateForward();
-		else if (direction.equalsIgnoreCase(VALUE_HOME))
+		} else if (direction.equalsIgnoreCase(VALUE_HOME)) {
 			return presentation.navigateHome();
+		}
 		return false;
 	}
 
@@ -559,18 +570,20 @@ public class IntroURL implements IIntroURL {
 		String value = parameters.getProperty(parameterId);
 		String decode = parameters.getProperty(KEY_DECODE);
 
-		if (value != null)
+		if (value != null) {
 			try {
-				if (decode!=null && decode.equalsIgnoreCase(VALUE_TRUE))
+				if (decode!=null && decode.equalsIgnoreCase(VALUE_TRUE)) {
 					// we are told to decode the parameters of the url through
 					// the decode parameter. Assume that parameters are
 					// UTF-8 encoded.
 					return URLDecoder.decode(value, StandardCharsets.UTF_8);
+				}
 				return value;
 			} catch (Exception e) {
 				// should never be here.
 				Log.error("Failed to decode URL: " + parameterId, e); //$NON-NLS-1$
 			}
+		}
 		return value;
 	}
 
@@ -588,16 +601,18 @@ public class IntroURL implements IIntroURL {
 		StringBuilder url = new StringBuilder();
 		url.append("http://org.eclipse.ui.intro/"); //$NON-NLS-1$
 		url.append(command.getReplaceValue().trim());
-		if (!command.getReplaceValue().contains("?")) //$NON-NLS-1$
+		if (!command.getReplaceValue().contains("?")) { //$NON-NLS-1$
 			// command does not have parameters.
 			url.append("?"); //$NON-NLS-1$
-		else
+		} else {
 			// command already has parameters.
 			url.append("&"); //$NON-NLS-1$
+		}
 		url.append(retrieveInitialQuery());
 		IIntroURL introURL = IntroURLFactory.createIntroURL(url.toString());
-		if (introURL != null)
+		if (introURL != null) {
 			return introURL.execute();
+		}
 		return false;
 	}
 
@@ -613,8 +628,9 @@ public class IntroURL implements IIntroURL {
 			query.append(key);
 			query.append("="); //$NON-NLS-1$
 			query.append(parameters.get(key));
-			if (keys.hasMoreElements())
+			if (keys.hasMoreElements()) {
 				query.append("&"); //$NON-NLS-1$
+			}
 		}
 		return query.toString();
 	}
@@ -622,14 +638,16 @@ public class IntroURL implements IIntroURL {
 
 	private boolean switchToLaunchBar() {
 		IIntroPart intro = PlatformUI.getWorkbench().getIntroManager().getIntro();
-		if (intro == null)
+		if (intro == null) {
 			return false;
+		}
 
 		IntroModelRoot modelRoot = IntroPlugin.getDefault().getIntroModelRoot();
 
 		IntroLaunchBarElement launchBarElement = modelRoot.getPresentation().getLaunchBarElement();
-		if (launchBarElement == null)
+		if (launchBarElement == null) {
 			return true;
+		}
 		IWorkbenchWindow window = intro.getIntroSite().getWorkbenchWindow();
 		IntroLaunchBar.create(window, modelRoot, launchBarElement);
 

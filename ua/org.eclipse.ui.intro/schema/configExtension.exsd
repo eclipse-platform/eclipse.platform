@@ -263,7 +263,7 @@ http://org.eclipse.ui.intro/showStandby?partId=&amp;lt;id of standbyContentPart&
          id=&quot;com.example.intro.flowers&quot;
          name=&quot;A Nice Flowers Welcome&quot;
          path=&quot;$nl$/themes/flowers&quot;
-         previewImage=&quot;$nl$/themes/flowers/preview.png&quot;&gt;
+         previewImage=&quot;$nl$/themes/flowers/preview.svg&quot;&gt;
     &lt;/theme&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;

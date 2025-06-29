@@ -89,8 +89,9 @@ public class PreferenceStatsView extends SpyView {
 		}
 
 		private int basicSizeof(IEclipsePreferences node) {
-			if (node instanceof EclipsePreferences)
+			if (node instanceof EclipsePreferences) {
 				return basicSizeof((EclipsePreferences) node);
+			}
 
 			// name
 			int count = sizeof(node.name());
@@ -137,8 +138,9 @@ public class PreferenceStatsView extends SpyView {
 			count += 4;
 			try {
 				String[] childrenNames = node.childrenNames();
-				for (String childrenName : childrenNames)
+				for (String childrenName : childrenNames) {
 					count += sizeof(childrenName);
+				}
 			} catch (BackingStoreException e) {
 				//this is truly exceptional!
 			}
@@ -169,8 +171,9 @@ public class PreferenceStatsView extends SpyView {
 		}
 
 		private int basicSizeof(Map<?, ?> map) {
-			if (map == null)
+			if (map == null) {
 				return 0;
+			}
 
 			//formula taken from BundleStats
 			int count = (int) Math.round(44 + (16 + (map.size() * 1.25 * 4)) + (24 * map.size()));
@@ -187,20 +190,25 @@ public class PreferenceStatsView extends SpyView {
 		 * duplicates.
 		 */
 		private int sizeof(Object object) {
-			if (object == null)//|| DeepSize.ignore(object))
+			if (object == null) { //|| DeepSize.ignore(object))
 				return 0;
-			if (object instanceof String)
+			}
+			if (object instanceof String) {
 				return 44 + 2 * ((String) object).length();
-			if (object instanceof byte[])
+			}
+			if (object instanceof byte[]) {
 				return 16 + ((byte[]) object).length;
-			if (object instanceof Integer)
+			}
+			if (object instanceof Integer) {
 				return 16;
-			if (object instanceof Map)
+			}
+			if (object instanceof Map) {
 				return basicSizeof((Map<?, ?>) object);
-			if (object instanceof IEclipsePreferences)
+			}
+			if (object instanceof IEclipsePreferences) {
 				return basicSizeof((IEclipsePreferences) object);
-			if (object instanceof QualifiedName) {
-				QualifiedName name = (QualifiedName) object;
+			}
+			if (object instanceof QualifiedName name) {
 				return 20 + sizeof(name.getQualifier()) + sizeof(name.getLocalName());
 			}
 			// unknown -- use deep size
@@ -216,10 +224,11 @@ public class PreferenceStatsView extends SpyView {
 					nodeCount++;
 					int keys = node.keys().length;
 					kvCount += keys;
-					if (keys == 0)
+					if (keys == 0) {
 						emptyNodes++;
-					else
+					} else {
 						nonEmptyNodes.add(node.absolutePath() + " (" + keys + ")"); //$NON-NLS-1$//$NON-NLS-2$
+					}
 				} catch (BackingStoreException e) {
 					e.printStackTrace();
 				}
@@ -235,8 +244,9 @@ public class PreferenceStatsView extends SpyView {
 			buffer.append("Key/value pairs: " + prettyPrint(kvCount) + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			buffer.append("Total size of tree: " + prettyPrint(treeSize) + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 			buffer.append("Nodes with key/value pairs:\n"); //$NON-NLS-1$
-			for (String string : nonEmptyNodes)
+			for (String string : nonEmptyNodes) {
 				buffer.append("\t" + string + "\n"); //$NON-NLS-1$//$NON-NLS-2$
+			}
 
 			//post changes to UI thread
 			viewer.getControl().getDisplay().asyncExec(() -> {
@@ -255,10 +265,12 @@ public class PreferenceStatsView extends SpyView {
 					String val = Integer.toString(i);
 					//pad with zeros if necessary
 					if (buf.length() > 0) {
-						if (val.length() < 2)
+						if (val.length() < 2) {
 							buf.append('0');
-						if (val.length() < 3)
+						}
+						if (val.length() < 3) {
 							buf.append('0');
+						}
 					}
 					buf.append(val);
 					return buf.toString();
@@ -267,10 +279,12 @@ public class PreferenceStatsView extends SpyView {
 					String val = Integer.toString(i / 1000);
 					//pad with zeros if necessary
 					if (buf.length() > 0) {
-						if (val.length() < 2)
+						if (val.length() < 2) {
 							buf.append('0');
-						if (val.length() < 3)
+						}
+						if (val.length() < 3) {
 							buf.append('0');
+						}
 					}
 					buf.append(val);
 					buf.append(',');
@@ -308,8 +322,9 @@ public class PreferenceStatsView extends SpyView {
 		this.viewer.getControl().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.character == SWT.DEL)
+				if (e.character == SWT.DEL) {
 					clearOutputAction.run();
+				}
 			}
 		});
 
@@ -329,8 +344,9 @@ public class PreferenceStatsView extends SpyView {
 		viewer.getControl().setMenu(menu);
 
 		// populate the view with the initial data
-		if (updateAction != null)
+		if (updateAction != null) {
 			updateAction.run();
+		}
 	}
 
 	@Override

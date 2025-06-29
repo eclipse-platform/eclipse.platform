@@ -47,10 +47,9 @@ public class RemoteAntBreakpoint {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof RemoteAntBreakpoint)) {
+		if (!(obj instanceof RemoteAntBreakpoint other)) {
 			return false;
 		}
-		RemoteAntBreakpoint other = (RemoteAntBreakpoint) obj;
 		return other.getLineNumber() == fLineNumber && other.getFile().equals(fFile);
 	}
 

@@ -48,8 +48,9 @@ public class CheatsheetSearchParticipant extends SearchParticipantXML {
 						ICheatSheetResource.CHEAT_SHEET_PLUGIN_ID + '.'
 						+ CheatSheetRegistryReader.CHEAT_SHEET_CONTENT);
 		for (IConfigurationElement element : elements) {
-			if (!element.getName().equals(CheatSheetRegistryReader.TAG_CHEATSHEET))
+			if (!element.getName().equals(CheatSheetRegistryReader.TAG_CHEATSHEET)) {
 				continue;
+			}
 			String fileName = element.getAttribute(CheatSheetRegistryReader.ATT_CONTENTFILE);
 			String id = element.getAttribute("id"); //$NON-NLS-1$
 			String pluginId = element.getContributor().getName();

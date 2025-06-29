@@ -53,12 +53,11 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 			int cat1 = category(e1);
 			int cat2 = category(e2);
 
-			if (cat1 != cat2)
+			if (cat1 != cat2) {
 				return cat1 - cat2;
+			}
 
-			if (e1 instanceof ModelProvider && e2 instanceof ModelProvider) {
-				ModelProvider mp1 = (ModelProvider) e1;
-				ModelProvider mp2 = (ModelProvider) e2;
+			if (e1 instanceof ModelProvider mp1 && e2 instanceof ModelProvider mp2) {
 				if (isExtends(mp1, mp2.getDescriptor())) {
 					return 1;
 				}

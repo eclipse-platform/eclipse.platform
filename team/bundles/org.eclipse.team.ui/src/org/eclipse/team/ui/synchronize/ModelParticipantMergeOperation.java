@@ -77,12 +77,13 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 			participant.getContext().refresh(getScope().getTraversals(),
 					RemoteResourceMappingContext.FILE_CONTENTS_REQUIRED, monitor);
 			// Only wait if we are not going to preview or we are previewing in a dialog
-			if (!sentToSyncView)
+			if (!sentToSyncView) {
 				try {
 					Job.getJobManager().join(participant.getContext(), monitor);
 				} catch (InterruptedException e) {
 					// Ignore
 				}
+			}
 		}
 	}
 
@@ -91,15 +92,17 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		try {
 			super.execute(monitor);
 		} finally {
-			if (ownsParticipant && participant != null)
+			if (ownsParticipant && participant != null) {
 				participant.dispose();
+			}
 		}
 	}
 
 	@Override
 	protected void executeMerge(IProgressMonitor monitor) throws CoreException {
-		if (!sentToSyncView)
+		if (!sentToSyncView) {
 			super.executeMerge(monitor);
+		}
 	}
 
 	@Override
@@ -123,8 +126,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 					mgr.addSynchronizeParticipants(new ISynchronizeParticipant[] {participant});
 					view.display(participant);
 					Object adapted = view.getSite().getAdapter(IWorkbenchSiteProgressService.class);
-					if (adapted instanceof IWorkbenchSiteProgressService) {
-						IWorkbenchSiteProgressService siteProgress = (IWorkbenchSiteProgressService) adapted;
+					if (adapted instanceof IWorkbenchSiteProgressService siteProgress) {
 						siteProgress.showBusyForFamily(PARTICIPANT_MERGE_FAMILY);
 					}
 				}
@@ -135,8 +137,9 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 			@Override
 			public void done(IJobChangeEvent event) {
 				// Ensure that the participant is disposed it it didn't go to the sync view
-				if (TeamUI.getSynchronizeManager().get(participant.getId(), participant.getSecondaryId()) == null)
+				if (TeamUI.getSynchronizeManager().get(participant.getId(), participant.getSecondaryId()) == null) {
 					participant.dispose();
+				}
 			}
 
 		});
@@ -149,8 +152,9 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		if (family == PARTICIPANT_MERGE_FAMILY) {
 			return true;
 		}
-		if (participant != null && participant == family)
+		if (participant != null && participant == family) {
 			return true;
+		}
 		return super.belongsTo(family);
 	}
 
@@ -164,8 +168,9 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 
 	@Override
 	protected ISynchronizationContext getContext() {
-		if (participant != null)
+		if (participant != null) {
 			return participant.getContext();
+		}
 		return null;
 	}
 

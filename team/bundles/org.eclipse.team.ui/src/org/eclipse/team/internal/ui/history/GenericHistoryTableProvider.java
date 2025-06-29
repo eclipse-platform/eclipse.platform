@@ -72,7 +72,9 @@ public class GenericHistoryTableProvider {
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			IFileRevision entry = adaptToFileRevision(element);
-			if (entry == null) return ""; //$NON-NLS-1$
+			if (entry == null) {
+				return ""; //$NON-NLS-1$
+			}
 			switch (columnIndex) {
 				case COL_REVISIONID:
 					String revision = entry.getContentIdentifier();
@@ -92,8 +94,9 @@ public class GenericHistoryTableProvider {
 		}
 
 		private synchronized DateFormat getDateFormat() {
-			if (dateFormat == null)
+			if (dateFormat == null) {
 				dateFormat = DateFormat.getInstance();
+			}
 			return dateFormat;
 		}
 
@@ -113,8 +116,9 @@ public class GenericHistoryTableProvider {
 		@Override
 		public Font getFont(Object element) {
 			IFileRevision entry = adaptToFileRevision(element);
-			if (entry == null)
+			if (entry == null) {
 				return null;
+			}
 			String revision = entry.getContentIdentifier();
 			String tempCurrentRevision = getCurrentRevision();
 			if (tempCurrentRevision != null && tempCurrentRevision.equals(revision)) {
@@ -168,12 +172,14 @@ public class GenericHistoryTableProvider {
 			} else {
 				for (int columnSortOrder : SORT_ORDERS_BY_COLUMN[columnNumber]) {
 					result = compareColumnValue(columnSortOrder, e1, e2);
-					if (result != 0)
+					if (result != 0) {
 						break;
+					}
 				}
 			}
-			if (reversed)
+			if (reversed) {
 				result = -result;
+			}
 			return result;
 		}
 		/**
@@ -186,8 +192,9 @@ public class GenericHistoryTableProvider {
 				case 1: /* date */
 					long date1 = e1.getTimestamp();
 					long date2 = e2.getTimestamp();
-					if (date1 == date2)
+					if (date1 == date2) {
 						return 0;
+					}
 
 					return date1>date2 ? -1 : 1;
 
@@ -349,8 +356,9 @@ public class GenericHistoryTableProvider {
 		RepositoryProvider teamProvider = RepositoryProvider.getProvider(currentFile.getProject());
 		IFileRevision fileRevision = teamProvider.getFileHistoryProvider().getWorkspaceFileRevision(currentFile);
 
-		if (fileRevision != null )
+		if (fileRevision != null ) {
 			return fileRevision.getContentIdentifier();
+		}
 
 		return null;
 	}

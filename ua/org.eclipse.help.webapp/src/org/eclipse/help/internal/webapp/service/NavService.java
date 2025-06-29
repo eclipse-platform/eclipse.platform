@@ -105,8 +105,9 @@ public class NavService extends NavServlet {
 		String baseURL = req.getRequestURL().toString();
 		String navURL = baseURL.replaceFirst(Utils.SERVICE_CONTEXT, ""); //$NON-NLS-1$
 		String query = req.getQueryString();
-		if (query != null)
+		if (query != null) {
 			navURL += '?' + query;
+		}
 		URL url = new URL(navURL);
 		String response = Utils.readString(url);
 		response = Utils.updateResponse(response);
@@ -141,8 +142,9 @@ public class NavService extends NavServlet {
 
 		String path = req.getPathInfo().substring(1);
 		int index = path.indexOf("service/nav/"); //$NON-NLS-1$
-		if (index > -1)
+		if (index > -1) {
 			path = path.substring(index+12);
+		}
 		ITopic topic = getTopic(path, locale);
 
 		AbstractHelpScope scope = RequestScope.getScope(req, resp, false);

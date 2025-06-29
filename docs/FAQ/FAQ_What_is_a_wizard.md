@@ -5,7 +5,7 @@ FAQ What is a wizard?
 
 A wizard is a series of pages that guide a user through a complex task. **Back** and **Next** buttons allow the user to move forward and backward through the pages. Typically, each page collects a piece of information; when the user clicks the **Finish** button, the information is used to perform a task. At any time before clicking **Finish**, the user can cancel the task, which should undo any side effects of the steps completed so far.
 
-![](https://github.com/eclipse-platform/eclipse.platform/tree/master/docs/FAQ/images/New_class_wizard.png)
+![](images/New_class_wizard.png)
 
 New Class wizard
 

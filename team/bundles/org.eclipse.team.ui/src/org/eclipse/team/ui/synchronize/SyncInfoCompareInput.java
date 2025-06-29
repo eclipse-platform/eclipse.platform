@@ -97,7 +97,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		this.description = description;
 		this.resource = sync.getLocal();
 		this.node = new MyDiffNode(null, sync);
-		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { sync.getLocal().getName() }));
+		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, sync.getLocal().getName()));
 	}
 
 	/**
@@ -201,13 +201,15 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 
 	@Override
 	public String getToolTipText() {
-		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(30, description), node.getResource().getFullPath().toString() });
+		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, Utils.shortenText(30, description),
+				node.getResource().getFullPath().toString());
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		if (other == this)
+		if (other == this) {
 			return true;
+		}
 		if (other instanceof SyncInfoCompareInput) {
 			SyncInfo otherSyncInfo = ((SyncInfoCompareInput) other).getSyncInfo();
 			SyncInfo thisSyncInfo = getSyncInfo();
@@ -246,11 +248,9 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	private boolean isSelectedInSynchronizeView() {
 		if (synchronizeConfiguration != null) {
 			ISelection s = synchronizeConfiguration.getSite().getSelectionProvider().getSelection();
-			if (s instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) s;
+			if (s instanceof IStructuredSelection ss) {
 				Object element = ss.getFirstElement();
-				if (element instanceof SyncInfoModelElement) {
-					SyncInfoModelElement sime = (SyncInfoModelElement) element;
+				if (element instanceof SyncInfoModelElement sime) {
 					return sime.getSyncInfo().getLocal().equals(resource);
 				}
 			}

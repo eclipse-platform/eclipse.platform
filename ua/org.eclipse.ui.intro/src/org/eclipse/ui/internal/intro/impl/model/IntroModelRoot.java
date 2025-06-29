@@ -176,8 +176,9 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	@Override
 	protected void loadChildren() {
 		children = new Vector<>();
-		if (Log.logInfo)
+		if (Log.logInfo) {
 			Log.info("Creating Intro plugin model...."); //$NON-NLS-1$
+		}
 
 		// load presentation first and create the model class for it. If there
 		// is more than one presentation, load first one, and log rest.
@@ -418,11 +419,12 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	private void processConfigExtension(IConfigurationElement configExtElement) {
 		// This call will extract the parent folder if needed.
 		Document dom = loadDOM(configExtElement);
-		if (dom == null)
+		if (dom == null) {
 			// we failed to parse the content file. Intro Parser would
 			// have logged the fact. Parser would also have checked to
 			// see if the content file has the correct root tag.
 			return;
+		}
 		processConfigExtension(dom, configExtElement);
 	}
 
@@ -524,16 +526,19 @@ public class IntroModelRoot extends AbstractIntroContainer {
 		IntroExtensionContent extensionContent = new IntroExtensionContent(
 			extensionContentElement, bundle, base, configExtElement);
 		boolean success = false;
-		if (extensionContent.isXHTMLContent())
+		if (extensionContent.isXHTMLContent()) {
 			success = loadXHTMLExtensionContent(extensionContent);
-		else
+		} else {
 			success = load3_0ExtensionContent(extensionContent);
+		}
 
 		if (success) {
-			if (extensionContentElement.hasAttribute("failed")) //$NON-NLS-1$
+			if (extensionContentElement.hasAttribute("failed")) { //$NON-NLS-1$
 				extensionContentElement.removeAttribute("failed"); //$NON-NLS-1$
-		} else
+			}
+		} else {
 			extensionContentElement.setAttribute("failed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 
@@ -545,22 +550,25 @@ public class IntroModelRoot extends AbstractIntroContainer {
 		String path = extensionContent.getPath();
 		// path must be pageId/anchorID in the case of anchors in XHTML pages.
 		String[] pathSegments = path.split("/"); //$NON-NLS-1$
-		if (pathSegments.length != 2)
+		if (pathSegments.length != 2) {
 			// path does not have correct format.
 			return false;
+		}
 		AbstractIntroPage targetPage = (AbstractIntroPage) findChild(
 			pathSegments[0], ABSTRACT_PAGE);
-		if (targetPage == null)
+		if (targetPage == null) {
 			// target could not be found. Signal failure.
 			return false;
+		}
 
 		// Insert all children of this extension before the target element. Anchors need
 		// to stay in DOM, even after all extensions have been resolved, to enable other
 		// plugins to contribute. Find the target node.
 		Document pageDom = targetPage.getDocument();
 		Element targetElement = targetPage.findDomChild(pathSegments[1], "*"); //$NON-NLS-1$
-		if (targetElement == null)
+		if (targetElement == null) {
 			return false;
+		}
 
 		// get extension content
 		Element[] elements = extensionContent.getElements();
@@ -583,8 +591,9 @@ public class IntroModelRoot extends AbstractIntroContainer {
 		// Update the parent page styles. skip style if it is null;
 		String[] styles = extensionContent.getStyles();
 		if (styles != null) {
-			for (int i = 0; i < styles.length; i++)
+			for (int i = 0; i < styles.length; i++) {
 				ModelUtil.insertStyle(pageDom, styles[i]);
+			}
 		}
 
 		return true;
@@ -626,15 +635,18 @@ public class IntroModelRoot extends AbstractIntroContainer {
 
 	private String getMixinStyle(IntroExtensionContent extensionContent) {
 		String path = extensionContent.getPath();
-		if (!path.endsWith("/@")) //$NON-NLS-1$
+		if (!path.endsWith("/@")) { //$NON-NLS-1$
 			return null;
+		}
 		String pageId = path.substring(0, path.length()-2);
 		IntroModelRoot modelRoot = getModelRoot();
-		if (modelRoot==null)
+		if (modelRoot==null) {
 			return null;
+		}
 		IntroConfigurer configurer = modelRoot.getConfigurer();
-		if (configurer==null)
+		if (configurer==null) {
 			return null;
+		}
 		String extensionId = extensionContent.getId();
 		// if this is a replace, take the mixin style as what is being replaced
 		if (extensionContent.getExtensionType() == IntroExtensionContent.TYPE_REPLACEMENT) {
@@ -659,20 +671,23 @@ public class IntroModelRoot extends AbstractIntroContainer {
 
 		AbstractIntroContainer targetContainer = (AbstractIntroContainer)target.getParent();
 		if (targetContainer.getType() == AbstractIntroElement.GROUP
-				&& targetContainer.getParent().getType() == AbstractIntroElement.MODEL_ROOT)
+				&& targetContainer.getParent().getType() == AbstractIntroElement.MODEL_ROOT) {
 			// if we are extending a shared group, defined under a config, we
 			// can not include styles.
 			return;
+		}
 
 		// Update the parent page styles. skip style if it is null;
 		String[] styles = extension.getStyles();
-		if (styles != null)
+		if (styles != null) {
 			targetContainer.getParentPage().addStyles(styles);
+		}
 
 		// for alt-style cache bundle for loading resources.
 		Map<String, Bundle> altStyles = extension.getAltStyles();
-		if (altStyles != null)
+		if (altStyles != null) {
 			targetContainer.getParentPage().addAltStyles(altStyles);
+		}
 	}
 
 	/**
@@ -767,10 +782,11 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	 *         last state.
 	 */
 	public boolean setCurrentPageId(String pageId, boolean fireEvent) {
-		if (pageId.equals(currentPageId))
+		if (pageId.equals(currentPageId)) {
 			// setting to the same page does nothing. Return true because we did
 			// not actually fail. just a no op.
 			return true;
+		}
 
 		AbstractIntroPage page = (AbstractIntroPage) findChild(pageId,
 			ABSTRACT_PAGE);
@@ -785,8 +801,9 @@ public class IntroModelRoot extends AbstractIntroContainer {
 		}
 
 		currentPageId = pageId;
-		if (fireEvent)
+		if (fireEvent) {
 			firePropertyChange(CURRENT_PAGE_PROPERTY_ID);
+		}
 		return true;
 	}
 
@@ -836,15 +853,18 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	 *         we are not in a dynamic intro mode.
 	 */
 	public AbstractIntroPage getCurrentPage() {
-		if (!isDynamic())
+		if (!isDynamic()) {
 			return null;
+		}
 		AbstractIntroPage page = (AbstractIntroPage) findChild(currentPageId,
 			ABSTRACT_PAGE);
-		if (page != null)
+		if (page != null) {
 			return page;
+		}
 		// not a page. Test for root page.
-		if (currentPageId.equals(rootPage.getId()))
+		if (currentPageId.equals(rootPage.getId())) {
 			return rootPage;
+		}
 		// return null if page is not found.
 		return null;
 	}
@@ -888,9 +908,12 @@ public class IntroModelRoot extends AbstractIntroContainer {
 	}
 
 	public String resolveVariables(String text) {
-		if (text==null) return null;
-		if (text.indexOf('$')== -1)
+		if (text==null) {
+			return null;
+		}
+		if (text.indexOf('$')== -1) {
 			return text;
+		}
 		// resolve
 		boolean inVariable=false;
 		StringBuilder buf = new StringBuilder();
@@ -906,21 +929,24 @@ public class IntroModelRoot extends AbstractIntroContainer {
 				inVariable=false;
 				String variable=text.substring(vindex, i);
 				String value = getVariableValue(variable);
-				if (value==null)
+				if (value==null) {
 					value = "$"+variable+"$"; //$NON-NLS-1$ //$NON-NLS-2$
+				}
 				buf.append(value);
 				continue;
 			}
-			else if (!inVariable)
+			else if (!inVariable) {
 				buf.append(c);
+			}
 		}
 		return buf.toString();
 	}
 
 	private String getVariableValue(String variable) {
 	 	if (variable.equals(VAR_THEME)) {
-			if (theme!=null)
+			if (theme!=null) {
 				return theme.getPath();
+			}
 		}
 	 	if (variable.equals(FontSelection.VAR_FONT_STYLE)) {
 	 		return FontSelection.getFontStyle();
@@ -933,13 +959,16 @@ public class IntroModelRoot extends AbstractIntroContainer {
 			}
 		}
 
-		if (configurer!=null)
+		if (configurer!=null) {
 			return configurer.getVariable(variable);
+		}
 		return null;
 	}
 
 	public String resolvePath(String extensionId, String path) {
-		if (configurer==null) return null;
+		if (configurer==null) {
+			return null;
+		}
 		return configurer.resolvePath(extensionId, path);
 	}
 

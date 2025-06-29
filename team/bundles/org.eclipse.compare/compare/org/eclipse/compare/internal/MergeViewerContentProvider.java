@@ -64,29 +64,33 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 
 	@Override
 	public String getAncestorLabel(Object element) {
-		if (fAncestorError != null)
+		if (fAncestorError != null) {
 			return fAncestorError;
+		}
 		return fCompareConfiguration.getAncestorLabel(element);
 	}
 
 	@Override
 	public Image getAncestorImage(Object element) {
-		if (fAncestorError != null)
+		if (fAncestorError != null) {
 			return null;
+		}
 		return fCompareConfiguration.getAncestorImage(element);
 	}
 
 	@Override
 	public Object getAncestorContent(Object element) {
-		if (element instanceof ICompareInput)
+		if (element instanceof ICompareInput) {
 			return ((ICompareInput) element).getAncestor();
+		}
 		return null;
 	}
 
 	@Override
 	public boolean showAncestor(Object element) {
-		if (element instanceof ICompareInput)
+		if (element instanceof ICompareInput) {
 			return true;	// fix for #45239: Show ancestor for incoming and outgoing changes
+		}
 			//return (((ICompareInput)element).getKind() & Differencer.DIRECTION_MASK) == Differencer.CONFLICTING;
 		return false;
 	}
@@ -99,46 +103,51 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 
 	@Override
 	public String getLeftLabel(Object element) {
-		if (fLeftError != null)
+		if (fLeftError != null) {
 			return fLeftError;
+		}
 		return fCompareConfiguration.getLeftLabel(element);
 	}
 
 	@Override
 	public Image getLeftImage(Object element) {
-		if (fLeftError != null)
+		if (fLeftError != null) {
 			return null;
+		}
 		return fCompareConfiguration.getLeftImage(element);
 	}
 
 	@Override
 	public Object getLeftContent(Object element) {
-		if (element instanceof ICompareInput)
+		if (element instanceof ICompareInput) {
 			return ((ICompareInput) element).getLeft();
+		}
 		return null;
 	}
 
 	@Override
 	public boolean isLeftEditable(Object element) {
-		if (hasError())
+		if (hasError()) {
 			return false;
+		}
 		if (element instanceof ICompareInput) {
 			Object left= ((ICompareInput) element).getLeft();
 			if (left == null && element instanceof IDiffElement) {
 				IDiffElement parent= ((IDiffElement)element).getParent();
-				if (parent instanceof ICompareInput)
+				if (parent instanceof ICompareInput) {
 					left= ((ICompareInput) parent).getLeft();
+				}
 			}
-			if (left instanceof IEditableContent)
+			if (left instanceof IEditableContent) {
 				return ((IEditableContent)left).isEditable();
+			}
 		}
 		return false;
 	}
 
 	@Override
 	public void saveLeftContent(Object element, byte[] bytes) {
-		if (element instanceof ICompareInput) {
-			ICompareInput node= (ICompareInput) element;
+		if (element instanceof ICompareInput node) {
 			if (bytes != null) {
 				ITypedElement left= node.getLeft();
 				// #9869: problem if left is null (because no resource exists yet) nothing is done!
@@ -146,10 +155,12 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 					node.copy(false);
 					left= node.getLeft();
 				}
-				if (left instanceof IEditableContent)
+				if (left instanceof IEditableContent) {
 					((IEditableContent)left).setContent(bytes);
-				if (node instanceof ResourceCompareInput.MyDiffNode)
+				}
+				if (node instanceof ResourceCompareInput.MyDiffNode) {
 					((ResourceCompareInput.MyDiffNode)node).fireChange();
+				}
 			} else {
 				node.copy(false);
 			}
@@ -164,46 +175,51 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 
 	@Override
 	public String getRightLabel(Object element) {
-		if (fRightError != null)
+		if (fRightError != null) {
 			return fRightError;
+		}
 		return fCompareConfiguration.getRightLabel(element);
 	}
 
 	@Override
 	public Image getRightImage(Object element) {
-		if (fRightError != null)
+		if (fRightError != null) {
 			return null;
+		}
 		return fCompareConfiguration.getRightImage(element);
 	}
 
 	@Override
 	public Object getRightContent(Object element) {
-		if (element instanceof ICompareInput)
+		if (element instanceof ICompareInput) {
 			return ((ICompareInput) element).getRight();
+		}
 		return null;
 	}
 
 	@Override
 	public boolean isRightEditable(Object element) {
-		if (hasError())
+		if (hasError()) {
 			return false;
+		}
 		if (element instanceof ICompareInput) {
 			Object right= ((ICompareInput) element).getRight();
 			if (right == null && element instanceof IDiffElement) {
 				IDiffContainer parent= ((IDiffElement)element).getParent();
-				if (parent instanceof ICompareInput)
+				if (parent instanceof ICompareInput) {
 					right= ((ICompareInput) parent).getRight();
+				}
 			}
-			if (right instanceof IEditableContent)
+			if (right instanceof IEditableContent) {
 				return ((IEditableContent)right).isEditable();
+			}
 		}
 		return false;
 	}
 
 	@Override
 	public void saveRightContent(Object element, byte[] bytes) {
-		if (element instanceof ICompareInput) {
-			ICompareInput node= (ICompareInput) element;
+		if (element instanceof ICompareInput node) {
 			if (bytes != null) {
 				ITypedElement right= node.getRight();
 				// #9869: problem if right is null (because no resource exists yet) nothing is done!
@@ -211,10 +227,12 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 					node.copy(true);
 					right= node.getRight();
 				}
-				if (right instanceof IEditableContent)
+				if (right instanceof IEditableContent) {
 					((IEditableContent)right).setContent(bytes);
-				if (node instanceof ResourceCompareInput.MyDiffNode)
+				}
+				if (node instanceof ResourceCompareInput.MyDiffNode) {
 					((ResourceCompareInput.MyDiffNode)node).fireChange();
+				}
 			} else {
 				node.copy(true);
 			}

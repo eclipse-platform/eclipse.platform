@@ -98,8 +98,9 @@ public class ProjectSetImporter {
 				IProjectSetSerializer serializer = Team.getProjectSetSerializer("versionOneSerializer"); //$NON-NLS-1$
 				if (serializer != null) {
 					IProject[] projects = serializer.addToWorkspace(new String[0], filename, shell, monitor);
-					if (projects != null)
+					if (projects != null) {
 						newProjects.addAll(Arrays.asList(projects));
+					}
 				}
 			} else {
 				UIProjectSetSerializationContext context = new UIProjectSetSerializationContext(shell, filename);
@@ -121,14 +122,16 @@ public class ProjectSetImporter {
 							providerType = TeamPlugin.getAliasType(id);
 						}
 						if (providerType == null) {
-							throw new TeamException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_0, new String[] { id }), null));
+							throw new TeamException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0,
+									NLS.bind(TeamUIMessages.ProjectSetImportWizard_0, id), null));
 						}
 						ProjectSetCapability serializer = providerType.getProjectSetCapability();
 						ProjectSetCapability.ensureBackwardsCompatible(providerType, serializer);
 						if (serializer != null) {
 							IProject[] allProjects = serializer.addToWorkspace(referenceStrings.toArray(new String[referenceStrings.size()]), context, monitor);
-							if (allProjects != null)
+							if (allProjects != null) {
 								newProjects.addAll(Arrays.asList(allProjects));
+							}
 						}
 					} catch (TeamException e) {
 						errors.add(e);
@@ -268,8 +271,9 @@ public class ProjectSetImporter {
 	}
 
 	private static void replaceWorkingSet(IWorkingSetManager wsManager, IWorkingSet newWs, IWorkingSet oldWs) {
-		if (oldWs != null)
+		if (oldWs != null) {
 			wsManager.removeWorkingSet(oldWs);
+		}
 		wsManager.addWorkingSet(newWs);
 	}
 

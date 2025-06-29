@@ -46,10 +46,11 @@ public class XMLGenerator {
 	 * Constructor.
 	 */
 	public XMLGenerator(Writer writer) {
-		if (writer instanceof PrintWriter printWriter)
+		if (writer instanceof PrintWriter printWriter) {
 			this.out = printWriter;
-		else
+		} else {
 			this.out = new PrintWriter(writer);
+		}
 	}
 
 	/**
@@ -72,8 +73,9 @@ public class XMLGenerator {
 	// returns a String that is a valid XML string
 	// by XML escaping special characters
 	public static String xmlEscape(String cdata) {
-		for (int i = 0; i < invalidXML.length; i++)
+		for (int i = 0; i < invalidXML.length; i++) {
 			cdata = TString.change(cdata, invalidXML[i], escapedXML[i]);
+		}
 		return cdata;
 	}
 
@@ -89,8 +91,9 @@ public class XMLGenerator {
 	}
 
 	public void print(Object o) {
-		if (out != null)
+		if (out != null) {
 			out.print(o);
+		}
 	}
 
 	public void println(Object o) {
@@ -99,7 +102,8 @@ public class XMLGenerator {
 	}
 
 	public void printPad() {
-		for (int i = 0; i < pad; i++)
+		for (int i = 0; i < pad; i++) {
 			print(" "); //$NON-NLS-1$
+		}
 	}
 }

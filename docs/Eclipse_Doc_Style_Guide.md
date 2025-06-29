@@ -5,17 +5,6 @@ This document gives the style conventions to be used in [Eclipse help](/Eclipse_
 The Eclipse help has the following topic types: Tutorial (Getting Started), Concept, Task, and Reference. 
 These topic types are based on the [Darwin Information Typing Architecture (DITA)](http://www.ibm.com/developerworks/library/x-dita1/) standards.
 
-Contents
---------
-
-*   [1 Topic Titles](#Topic-Titles)
-*   [2 Lists](#Lists)
-*   [3 Inline Markup](#Inline-Markup)
-*   [4 Topic Content](#Topic-Content)
-*   [5 Tables](#Tables)
-*   [6 CSS Class Summary](#CSS-Class-Summary)
-*   [7 Graphics](#Graphics)
-*   [8 Indexing](#Indexing)
 
 ### Topic Titles
 

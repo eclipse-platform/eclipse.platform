@@ -35,23 +35,23 @@ public class Mapping {
 		fSignature = signature;
 		fIdAttribute = idattribute;
 	}
-	
+
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof Mapping))
 			return false;
-			
+
 		Mapping mapping= (Mapping) object;
 
 		if (mapping == this)
-			return true;		
+			return true;
 
 		return
 			mapping.fElement.equals(fElement) &&
 			mapping.fSignature.equals(fSignature) &&
 			mapping.fIdAttribute.equals(fIdAttribute);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return fElement.hashCode() ^ fSignature.hashCode();
@@ -62,7 +62,7 @@ public class Mapping {
 	}
 	public String getElement() {
 		return fElement;
-	}	
+	}
 
 	public void setSignature(String signature) {
 		fSignature = signature;
@@ -70,18 +70,18 @@ public class Mapping {
 	public String getSignature() {
 		return fSignature;
 	}
-	
+
 	public void setIdAttribute(String idattribute) {
 		fIdAttribute = idattribute;
 	}
 	public String getIdAttribute() {
 		return fIdAttribute;
 	}
-	
+
 	public String getKey() {
 		return getKey(fSignature, fElement);
 	}
-	
+
 	public static String getKey(String signature, String element) {
 		if (signature == "") //$NON-NLS-1$
 			return XMLStructureCreator.ROOT_ID + XMLStructureCreator.SIGN_SEPARATOR + element + XMLStructureCreator.SIGN_SEPARATOR;

@@ -52,8 +52,9 @@ public class ConstructorRequestor extends Requestor<Constructor<?>> {
 			}
 			throw new InjectionException((originalException != null) ? originalException : e);
 		} finally {
-			if (pausedRecording)
+			if (pausedRecording) {
 				primarySupplier.resumeRecording();
+			}
 			clearResolvedArgs();
 		}
 		return result;
@@ -91,10 +92,11 @@ public class ConstructorRequestor extends Requestor<Constructor<?>> {
 	public String toString() {
 		StringBuilder tmp = new StringBuilder();
 		Object object = getRequestingObject();
-		if (object != null)
+		if (object != null) {
 			tmp.append(object.getClass().getSimpleName());
-		else
+		} else {
 			tmp.append(location.getDeclaringClass().getSimpleName());
+		}
 		tmp.append('(');
 		tmp.append(')');
 		return tmp.toString();

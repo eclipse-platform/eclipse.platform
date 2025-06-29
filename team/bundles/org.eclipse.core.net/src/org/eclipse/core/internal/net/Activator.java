@@ -107,8 +107,9 @@ public class Activator implements BundleActivator {
 			log.log(getLog(status));
 		} else {
 			System.out.println(status.getMessage());
-			if (status.getException() != null)
+			if (status.getException() != null) {
 				status.getException().printStackTrace();
+			}
 		}
 	}
 

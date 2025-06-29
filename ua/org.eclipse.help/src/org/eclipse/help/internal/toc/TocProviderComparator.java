@@ -23,11 +23,12 @@ public class TocProviderComparator implements Comparator<AbstractTocProvider> {
 	@Override
 	public int compare(AbstractTocProvider provider1, AbstractTocProvider provider2)
 	{
-		if(provider1.getPriority()<provider2.getPriority())
+		if(provider1.getPriority()<provider2.getPriority()) {
 			return -1;
-		else if(provider1.getPriority()>provider2.getPriority())
+		} else if(provider1.getPriority()>provider2.getPriority()) {
 			return 1;
-		else
+		} else {
 			return 0;
+		}
 	}
 }

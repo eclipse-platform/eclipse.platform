@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -41,14 +41,12 @@ public class AntObjectLabelProvider extends LabelProvider implements ITableLabel
 		if (columnIndex != 0) {
 			return null;
 		}
-		if (element instanceof Property) {
-			Property prop = (Property) element;
+		if (element instanceof Property prop) {
 			if (prop.isDefault() && prop.isEclipseRuntimeRequired()) {
 				return AntUIImages.getImage(IAntUIConstants.IMG_ANT_ECLIPSE_RUNTIME_OBJECT);
 			}
 			return getPropertyImage();
-		} else if (element instanceof AntObject) {
-			AntObject object = (AntObject) element;
+		} else if (element instanceof AntObject object) {
 			if (object.isDefault() && object.isEclipseRuntimeRequired()) {
 				return AntUIImages.getImage(IAntUIConstants.IMG_ANT_ECLIPSE_RUNTIME_OBJECT);
 			}
@@ -64,8 +62,7 @@ public class AntObjectLabelProvider extends LabelProvider implements ITableLabel
 	public String getColumnText(Object element, int columnIndex) {
 		if (element instanceof Property) {
 			return getPropertyText((Property) element, columnIndex);
-		} else if (element instanceof AntObject) {
-			AntObject object = (AntObject) element;
+		} else if (element instanceof AntObject object) {
 			switch (columnIndex) {
 				case 0:
 					return object.toString();

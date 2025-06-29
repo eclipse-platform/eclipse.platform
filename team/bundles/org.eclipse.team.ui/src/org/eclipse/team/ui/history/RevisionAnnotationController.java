@@ -70,22 +70,24 @@ public abstract class RevisionAnnotationController {
 	private ISelectionChangedListener rulerListener = event -> {
 		ISelection selection= event.getSelection();
 		Revision selected= null;
-		if (selection instanceof IStructuredSelection)
+		if (selection instanceof IStructuredSelection) {
 			selected= (Revision) ((IStructuredSelection) selection).getFirstElement();
+		}
 
-		if (selected == null)
+		if (selected == null) {
 			return;
+		}
 
 		revisionSelected(selected);
 	};
 	private ISelectionChangedListener historyListListener = event -> {
 		ISelection selection= event.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				Object first= ss.getFirstElement();
-				if (first != null)
+				if (first != null) {
 					historyEntrySelected(first);
+				}
 			}
 		}
 	};
@@ -103,8 +105,9 @@ public abstract class RevisionAnnotationController {
 	 * @throws PartInitException swallowed
 	 */
 	public static AbstractDecoratedTextEditor openEditor(IWorkbenchPage page, IFile file) throws PartInitException {
-		if (file == null)
+		if (file == null) {
 			return null;
+		}
 		FileEditorInput input = new FileEditorInput(file);
 		IEditorPart[] openEditors = findOpenEditorsForFile(page, input);
 		if (openEditors.length > 0) {
@@ -123,8 +126,9 @@ public abstract class RevisionAnnotationController {
 			if (descrptr.isInternal() && openEditors.length == 0){
 				IEditorPart part = page.openEditor(input, IDE.getEditorDescriptor(file, true, true).getId(), true, IWorkbenchPage.MATCH_INPUT);
 				AbstractDecoratedTextEditor te = findTextEditorPart(page, part, input);
-				if (te != null)
+				if (te != null) {
 					return te;
+				}
 
 				//editor opened is not a text editor - close it
 				page.closeEditor(part, false);
@@ -132,8 +136,9 @@ public abstract class RevisionAnnotationController {
 			//open file in default text editor
 			IEditorPart part = page.openEditor(input, EditorsUI.DEFAULT_TEXT_EDITOR_ID, true, IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID);
 			AbstractDecoratedTextEditor te = findTextEditorPart(page, part, input);
-			if (te != null)
+			if (te != null) {
 				return te;
+			}
 
 		} catch (PartInitException e) {
 		}
@@ -159,8 +164,9 @@ public abstract class RevisionAnnotationController {
 			Object fileRevision, IStorage storage) throws PartInitException {
 		String id = getEditorId(storage);
 		ITextEditor editor = getEditor(id, fileRevision, storage);
-		if (editor instanceof AbstractDecoratedTextEditor)
+		if (editor instanceof AbstractDecoratedTextEditor) {
 			return (AbstractDecoratedTextEditor) editor;
+		}
 		return null;
 	}
 
@@ -209,8 +215,9 @@ public abstract class RevisionAnnotationController {
 
 
 	private static AbstractDecoratedTextEditor findOpenTextEditorForFile(IWorkbenchPage page, IFile file) {
-		if (file == null)
+		if (file == null) {
 			return null;
+		}
 		FileEditorInput input = new FileEditorInput(file);
 		IEditorPart[] editors = findOpenEditorsForFile(page, input);
 		return findTextEditor(page, editors, input);
@@ -219,17 +226,18 @@ public abstract class RevisionAnnotationController {
 	private static AbstractDecoratedTextEditor findTextEditor(IWorkbenchPage page, IEditorPart[] editors, IEditorInput input) {
 		for (IEditorPart editor : editors) {
 			AbstractDecoratedTextEditor te = findTextEditorPart(page, editor, input);
-			if (te != null)
+			if (te != null) {
 				return te;
+			}
 		}
 		return null;
 	}
 
 	private static AbstractDecoratedTextEditor findTextEditorPart(IWorkbenchPage page, IEditorPart editor, IEditorInput input) {
-		if (editor instanceof AbstractDecoratedTextEditor)
+		if (editor instanceof AbstractDecoratedTextEditor) {
 			return (AbstractDecoratedTextEditor) editor;
-		if (editor instanceof MultiPageEditorPart) {
-			MultiPageEditorPart mpep = (MultiPageEditorPart) editor;
+		}
+		if (editor instanceof MultiPageEditorPart mpep) {
 			IEditorPart[] parts = mpep.findEditors(input);
 			for (IEditorPart editorPart : parts) {
 				if (editorPart instanceof AbstractDecoratedTextEditor) {
@@ -254,10 +262,10 @@ public abstract class RevisionAnnotationController {
 	}
 
 	private static AbstractDecoratedTextEditor findOpenTextEditorFor(IWorkbenchPage page, Object object) {
-		if (object == null)
+		if (object == null) {
 			return null;
-		if (object instanceof IFile) {
-			IFile file = (IFile) object;
+		}
+		if (object instanceof IFile file) {
 			return findOpenTextEditorForFile(page, file);
 		}
 		final IWorkbench workbench= PlatformUI.getWorkbench();
@@ -267,8 +275,9 @@ public abstract class RevisionAnnotationController {
 			try {
 				if (object.equals(reference.getEditorInput())) {
 					IEditorPart editor= reference.getEditor(false);
-					if (editor instanceof AbstractDecoratedTextEditor)
+					if (editor instanceof AbstractDecoratedTextEditor) {
 						return (AbstractDecoratedTextEditor) editor;
+					}
 				}
 			} catch (PartInitException e) {
 				// ignore
@@ -280,13 +289,15 @@ public abstract class RevisionAnnotationController {
 
 	private static IRevisionRulerColumnExtension findEditorRevisonRulerColumn(IWorkbenchPage page, Object object) {
 		ITextEditor editor= findOpenTextEditorFor(page, object);
-		if (editor == null)
+		if (editor == null) {
 			return null;
+		}
 
 		IRevisionRulerColumn column= editor.getAdapter(IRevisionRulerColumn.class);
 		if (column instanceof IRevisionRulerColumnExtension) {
-			if (column.getControl() != null && column.getControl().isDisposed())
+			if (column.getControl() != null && column.getControl().isDisposed()) {
 				return null;
+			}
 			return (IRevisionRulerColumnExtension) column;
 		}
 
@@ -354,8 +365,7 @@ public abstract class RevisionAnnotationController {
 
 		if (entry != null) {
 			IStructuredSelection selection = new StructuredSelection(entry);
-			if (fHistoryListSelectionProvider instanceof Viewer) {
-				Viewer v = (Viewer) fHistoryListSelectionProvider;
+			if (fHistoryListSelectionProvider instanceof Viewer v) {
 				v.setSelection(selection, true);
 			} else if (fHistoryListSelectionProvider != null) {
 				fHistoryListSelectionProvider.setSelection(selection);
@@ -400,8 +410,9 @@ public abstract class RevisionAnnotationController {
 			return revision.getContentIdentifier();
 		}
 		IResourceVariant variant = Adapters.adapt(historyEntry, IResourceVariant.class);
-		if (variant != null)
+		if (variant != null) {
 			return variant.getContentIdentifier();
+		}
 		return null;
 	}
 

@@ -84,8 +84,9 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	 * @return the proxy manager
 	 */
 	public synchronized static IProxyService getProxyManager() {
-		if (proxyManager == null)
+		if (proxyManager == null) {
 			proxyManager = new ProxyManager();
+		}
 		return proxyManager;
 	}
 
@@ -121,8 +122,9 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 			String prop = preferenceManager.getString(PreferenceManager.ROOT, PREF_NON_PROXIED_HOSTS);
 			nonProxiedHosts = ProxyType.convertPropertyStringToHosts(prop);
 		}
-		if (nonProxiedHosts.length == 0)
+		if (nonProxiedHosts.length == 0) {
 			return nonProxiedHosts;
+		}
 		String[] result = new String[nonProxiedHosts.length];
 		System.arraycopy(nonProxiedHosts, 0, result, 0, nonProxiedHosts.length );
 		return result;
@@ -231,8 +233,9 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	public void setProxiesEnabled(boolean enabled) {
 		checkMigrated();
 		boolean current = internalIsProxiesEnabled();
-		if (current == enabled)
+		if (current == enabled) {
 			return;
+		}
 		// Setting the preference will trigger the system property update
 		// (see preferenceChange)
 		preferenceManager.putBoolean(PreferenceManager.ROOT, PREF_ENABLED, enabled);
@@ -300,13 +303,15 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 			return resolveType(nativeProxyProvider.select(uri));
 		}
 
-		if (isHostFiltered(uri))
+		if (isHostFiltered(uri)) {
 			return new IProxyData[0];
+		}
 		IProxyData[] data = getProxyData();
 		List<IProxyData> result = new ArrayList<>();
 		for (IProxyData proxyData : data) {
-			if (proxyData.getHost() != null)
+			if (proxyData.getHost() != null) {
 				result.add(proxyData);
+			}
 		}
 		IProxyData ret[] = result.toArray(new IProxyData[result.size()]);
 		return resolveType(ret);
@@ -329,8 +334,9 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		if (host != null) {
 			String[] filters = getNonProxiedHosts();
 			for (String filter : filters) {
-				if (StringUtil.hostMatchesFilter(host, filter))
+				if (StringUtil.hostMatchesFilter(host, filter)) {
 					return true;
+				}
 			}
 		}
 		return false;
@@ -342,7 +348,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		if (!internalIsProxiesEnabled()) {
 			return null;
 		}
-		if (hasSystemProxies() && isSystemProxiesEnabled())
+		if (hasSystemProxies() && isSystemProxiesEnabled()) {
 			try {
 				URI uri = new URI(type, "//" + host, null); //$NON-NLS-1$
 				IProxyData[] proxyDatas = nativeProxyProvider.select(uri);
@@ -350,12 +356,14 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 			} catch (URISyntaxException e) {
 				return null;
 			}
+		}
 
 		IProxyData[] data = getProxyDataForHost(host);
 		for (IProxyData proxyData : data) {
 			if (proxyData.getType().equalsIgnoreCase(type)
-					&& proxyData.getHost() != null)
+					&& proxyData.getHost() != null) {
 				return resolveType(proxyData);
+			}
 		}
 		return null;
 	}
@@ -369,8 +377,9 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 
 	private Authenticator getPluggedInAuthenticator() {
 		IExtension[] extensions = RegistryFactory.getRegistry().getExtensionPoint(Activator.ID, Activator.PT_AUTHENTICATOR).getExtensions();
-		if (extensions.length == 0)
+		if (extensions.length == 0) {
 			return null;
+		}
 		IExtension extension = extensions[0];
 		IConfigurationElement[] configs = extension.getConfigurationElements();
 		if (configs.length == 0) {
@@ -423,8 +432,9 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	public void setSystemProxiesEnabled(boolean enabled) {
 		checkMigrated();
 		boolean current = isSystemProxiesEnabled();
-		if (current == enabled)
+		if (current == enabled) {
 			return;
+		}
 		// Setting the preference will trigger the system property update
 		// (see preferenceChange)
 		preferenceManager.putBoolean(PreferenceManager.ROOT, PREF_OS, enabled);

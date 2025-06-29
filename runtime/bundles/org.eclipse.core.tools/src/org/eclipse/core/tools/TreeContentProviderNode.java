@@ -108,10 +108,12 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 
 	@Override
 	public String toString() {
-		if (name == null)
+		if (name == null) {
 			return value.toString();
-		if (value == null)
+		}
+		if (value == null) {
 			return name;
+		}
 		return name + " = " + value; //$NON-NLS-1$
 	}
 
@@ -149,8 +151,9 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 	 * <code>TreeContentProviderNode</code>.
 	 */
 	public void sort() {
-		if (children == null)
+		if (children == null) {
 			return;
+		}
 		children.sort(null);
 	}
 
@@ -173,10 +176,12 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 	 * @see ITreeNodeVisitor#visit
 	 */
 	public void accept(ITreeNodeVisitor visitor) {
-		if (!visitor.visit(this))
+		if (!visitor.visit(this)) {
 			return;
-		if (children == null)
+		}
+		if (children == null) {
 			return;
+		}
 		for (TreeContentProviderNode child : children) {
 			child.accept(visitor);
 		}
@@ -197,10 +202,12 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 	 * @return a tree node, or <code>null</code>
 	 */
 	public TreeContentProviderNode findNode(Object obj) {
-		if (obj.equals(this.value))
+		if (obj.equals(this.value)) {
 			return this;
-		if (children == null || children.isEmpty())
+		}
+		if (children == null || children.isEmpty()) {
 			return null;
+		}
 		for (TreeContentProviderNode child : children) {
 			TreeContentProviderNode found = child.findNode(obj);
 			if (found != null) {
@@ -212,7 +219,7 @@ public class TreeContentProviderNode implements Comparable<TreeContentProviderNo
 
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		return value instanceof IAdaptable ? ((IAdaptable) value).getAdapter(adapter) : null;
+		return value instanceof IAdaptable i ? i.getAdapter(adapter) : null;
 	}
 
 }

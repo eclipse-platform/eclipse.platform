@@ -149,8 +149,9 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (PlatformUI.isWorkbenchRunning())
+		if (PlatformUI.isWorkbenchRunning()) {
 			PlatformUI.getWorkbench().getWorkingSetManager().removePropertyChangeListener(this);
+		}
 	}
 
 	@Override

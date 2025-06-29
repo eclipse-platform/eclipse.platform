@@ -141,7 +141,7 @@ public class OrderedMatching extends AbstractMatching {
 		//		/* mark matchings on LeftTree and RightTree */
 		fMatches= new Vector();
 		if (!LeftTree.getSignature().equals(RightTree.getSignature())) {
-			//matching is empty	
+			//matching is empty
 		} else {
 			fMatches.add(new Match(LeftTree, RightTree));
 			for (int i_M= 0; i_M < fMatches.size(); i_M++) {

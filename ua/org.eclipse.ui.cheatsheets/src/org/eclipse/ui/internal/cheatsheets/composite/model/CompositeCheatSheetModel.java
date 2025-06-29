@@ -149,14 +149,12 @@ public class CompositeCheatSheetModel extends Observable implements ICompositeCh
 	 * Reset the state of a task and it's children
 	 */
 	private void resetTask(ICompositeCheatSheetTask task) {
-		if (task instanceof EditableTask) {
-			EditableTask editable = (EditableTask)task;
+		if (task instanceof EditableTask editable) {
 			editable.reset();
 			if (saveHelper != null) {
 				saveHelper.clearTaskMemento(task.getId());
 			}
-		} else if (task instanceof TaskGroup) {
-			TaskGroup group = (TaskGroup)task;
+		} else if (task instanceof TaskGroup group) {
 			ICompositeCheatSheetTask[] subtasks = group.getSubtasks();
 			for (ICompositeCheatSheetTask subtask : subtasks) {
 				resetTask(subtask);

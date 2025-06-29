@@ -18,7 +18,7 @@ import org.eclipse.ant.launching.IAntLaunchConstants;
 
 /**
  * Constant definitions for Ant launch configurations.
- * 
+ *
  * @since 3.4
  * @noimplement This interface is not intended to be implemented by clients.
  * @deprecated use {@link IAntLaunchConstants}
@@ -28,7 +28,7 @@ public interface IAntLaunchConfigurationConstants {
 
 	/**
 	 * Ant launch configuration type identifier.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ID_ANT_LAUNCH_CONFIGURATION_TYPE}
 	 */
 	@Deprecated
@@ -36,7 +36,7 @@ public interface IAntLaunchConfigurationConstants {
 
 	/**
 	 * Ant builder launch configuration type identifier. Ant project builders are of this type.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE}
 	 */
 	@Deprecated
@@ -45,7 +45,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * String attribute indicating the Ant targets to execute. Default value is <code>null</code> which indicates that the default target is to be
 	 * executed. Format is a comma separated listing of targets.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_ANT_TARGETS}
 	 */
 	@Deprecated
@@ -54,7 +54,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * String attribute indicating the Ant targets to execute after a clean (full build) for an Ant builder. Default value is <code>null</code> which
 	 * indicates that the default target is to be executed. Format is a comma separated listing of targets.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_ANT_AFTER_CLEAN_TARGETS}
 	 */
 	@Deprecated
@@ -63,7 +63,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * String attribute indicating the Ant targets to execute during a manual build for an Ant builder. Default value is <code>null</code> which
 	 * indicates that the default target is to be executed. Format is a comma separated listing of targets.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_ANT_MANUAL_TARGETS}
 	 */
 	@Deprecated
@@ -72,7 +72,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * String attribute indicating the Ant targets to execute during an auto build for an Ant builder. Default value is <code>null</code> which
 	 * indicates that the default target is to be executed. Format is a comma separated listing of targets.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_ANT_AUTO_TARGETS}
 	 */
 	@Deprecated
@@ -81,7 +81,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * String attribute indicating the Ant targets to execute during a clean for an Ant builder. Default value is <code>null</code> which indicates
 	 * that the default target is to be executed. Format is a comma separated listing of targets.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_ANT_CLEAN_TARGETS}
 	 */
 	@Deprecated
@@ -89,7 +89,7 @@ public interface IAntLaunchConfigurationConstants {
 
 	/**
 	 * Boolean attribute indicating whether or not target specification for an Ant builder has been updated for 3.1
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_TARGETS_UPDATED}
 	 */
 	@Deprecated
@@ -98,7 +98,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * Map attribute indicating the Ant properties to be defined during the build. Default value is <code>null</code> which indicates no additional
 	 * properties will be defined.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_ANT_PROPERTIES}
 	 */
 	@Deprecated
@@ -107,7 +107,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * String attribute indicating the Ant targets to execute. Default value is <code>null</code> which indicates that no additional property files
 	 * will be defined. Format is a comma separated listing of property files.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_ANT_PROPERTY_FILES}
 	 */
 	@Deprecated
@@ -116,7 +116,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * Boolean attribute indicating whether or not internal targets (targets with no description) should be hidden from the user in the launch
 	 * configuration dialog. Default value is <code>false</code> which indicates that all targets will be displayed.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_HIDE_INTERNAL_TARGETS}
 	 */
 	@Deprecated
@@ -125,7 +125,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * Integer attribute indicating which column targets should be sorted on. A value of 0 indicates target name, 1 indicates target description, and
 	 * -1 indicates no sort. Default value is -1.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_SORT_TARGETS}
 	 */
 	@Deprecated
@@ -134,7 +134,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * Boolean attribute indicating if the default VM install should be used for the separate JRE build Default value is <code>false</code> for
 	 * backwards compatibility
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ATTR_DEFAULT_VM_INSTALL}
 	 */
 	@Deprecated
@@ -143,7 +143,7 @@ public interface IAntLaunchConfigurationConstants {
 	/**
 	 * Identifier for Ant processes (value <code>org.eclipse.ant.ui.antProcess</code>). This identifier is set as the value for the
 	 * <code>IProcess.ATTR_PROCESS_TYPE</code> attribute in processes created by the Ant launch delegate.
-	 * 
+	 *
 	 * @deprecated use {@link IAntLaunchConstants#ID_ANT_PROCESS_TYPE}
 	 */
 	@Deprecated

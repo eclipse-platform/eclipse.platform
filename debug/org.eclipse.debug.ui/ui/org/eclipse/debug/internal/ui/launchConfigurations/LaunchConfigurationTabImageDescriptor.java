@@ -61,11 +61,10 @@ public class LaunchConfigurationTabImageDescriptor extends CompositeImageDescrip
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof LaunchConfigurationTabImageDescriptor)){
+		if (!(object instanceof LaunchConfigurationTabImageDescriptor other)){
 			return false;
 		}
 
-		LaunchConfigurationTabImageDescriptor other= (LaunchConfigurationTabImageDescriptor)object;
 		return (getBaseImage().equals(other.getBaseImage()) && getFlags() == other.getFlags());
 	}
 

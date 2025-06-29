@@ -83,12 +83,13 @@ public class IndexPart extends HyperlinkTreePart implements IHelpUIConstants {
 
 		@Override
 		public String getText(Object obj) {
-			if (obj instanceof IIndexEntry)
+			if (obj instanceof IIndexEntry) {
 				return ((IIndexEntry) obj).getKeyword();
-			if (obj instanceof IHelpResource)
+			}
+			if (obj instanceof IHelpResource) {
 				return ((IHelpResource) obj).getLabel();
-			if (obj instanceof IndexSee) {
-				IndexSee see = (IndexSee) obj;
+			}
+			if (obj instanceof IndexSee see) {
 				return getSeeString(see);
 			}
 			return super.getText(obj);
@@ -129,19 +130,22 @@ public class IndexPart extends HyperlinkTreePart implements IHelpUIConstants {
 			if (!UAContentFilter.isFiltered(entry, HelpEvaluationContext.getContext())) {
 				IHelpResource[] topics = entry.getTopics();
 				for (int i = 0; i < topics.length; i++) {
-					if (isEnabled(topics[i]))
+					if (isEnabled(topics[i])) {
 						return true;
+					}
 				}
 				IIndexEntry[] subentries = entry.getSubentries();
 				for (int i = 0; i < subentries.length; i++) {
-					if (isEnabled(subentries[i]))
+					if (isEnabled(subentries[i])) {
 						return true;
+					}
 				}
 				if (entry instanceof IIndexEntry2) {
 					IIndexSee[] sees = ((IIndexEntry2)entry).getSees();
 					for (int i = 0; i < sees.length; i++) {
-						if (isEnabled(sees[i]))
+						if (isEnabled(sees[i])) {
 							return true;
+						}
 					}
 				}
 			}
@@ -171,16 +175,16 @@ public class IndexPart extends HyperlinkTreePart implements IHelpUIConstants {
 	@Override
 	public void init(ReusableHelpPart parent, String id, IMemento memento) {
 		super.init(parent, id, memento);
-		if (parent.isFilteredByRoles())
+		if (parent.isFilteredByRoles()) {
 			treeViewer.addFilter(roleFilter);
+		}
 	}
 
 	@Override
 	protected void doOpen(Object obj) {
 		if (obj instanceof IHelpResource) {
 			parent.showURL(((IHelpResource) obj).getHref());
-		} else if (obj instanceof IIndexEntry) {
-			IIndexEntry entry = (IIndexEntry) obj;
+		} else if (obj instanceof IIndexEntry entry) {
 			if (getChildren(entry).length > 0) {
 				treeViewer.setExpandedState(obj, !treeViewer.getExpandedState(obj));
 			}
@@ -188,8 +192,7 @@ public class IndexPart extends HyperlinkTreePart implements IHelpUIConstants {
 			if (topics.length == 1) {
 				parent.showURL(topics[0].getHref());
 			}
-		} else if (obj instanceof IIndexSee) {
-			IIndexSee see = (IIndexSee)obj;
+		} else if (obj instanceof IIndexSee see) {
 			IIndexEntry[] entrys = IndexUtils.findSeeTargets(HelpSystem.getIndex(), see, 0);
 			for (int i = 0; i < entrys.length; i++) {
 				treeViewer.setExpandedState(entrys[i], true);
@@ -209,10 +212,11 @@ public class IndexPart extends HyperlinkTreePart implements IHelpUIConstants {
 
 	@Override
 	public void toggleRoleFilter() {
-		if (parent.isFilteredByRoles())
+		if (parent.isFilteredByRoles()) {
 			treeViewer.addFilter(roleFilter);
-		else
+		} else {
 			treeViewer.removeFilter(roleFilter);
+		}
 	}
 
 	private Object[] getChildren(IIndexEntry entry) {
@@ -227,7 +231,7 @@ public class IndexPart extends HyperlinkTreePart implements IHelpUIConstants {
 		 */
 		IHelpResource[] topics = entry.getTopics();
 		IIndexEntry[] subentries = entry.getSubentries();
-		IIndexSee[] sees = entry instanceof IIndexEntry2 ? ((IIndexEntry2)entry).getSees() :
+		IIndexSee[] sees = entry instanceof IIndexEntry2 i ? i.getSees() :
 						   new IIndexSee[0];
 
 		if (topics.length <= 1 && subentries.length == 0 && sees.length == 0) {

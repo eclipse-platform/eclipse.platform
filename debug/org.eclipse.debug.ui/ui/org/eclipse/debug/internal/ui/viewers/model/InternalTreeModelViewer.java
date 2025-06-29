@@ -745,7 +745,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 	private void initColumns(int widthHint, int treeWidgetWidth, String[] visibleColumnIds) {
 		for (TreeColumn column : getTree().getColumns()) {
 			Object colData = column.getData();
-			String columnId = colData instanceof String ? (String) colData : null;
+			String columnId = colData instanceof String s ? s : null;
 			Integer width = fColumnSizes.get(colData);
 			if (width == null) {
 				int ans = getInitialColumnWidth(columnId, treeWidgetWidth, visibleColumnIds);
@@ -906,8 +906,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 		}
 		// save presentation context properties
 		IPresentationContext context = getPresentationContext();
-		if (context instanceof PresentationContext) {
-			PresentationContext pc = (PresentationContext) context;
+		if (context instanceof PresentationContext pc) {
 			pc.saveProperites(memento);
 
 		}
@@ -960,8 +959,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 		// restore presentation context properties
 		// save presentation context properties
 		IPresentationContext context = getPresentationContext();
-		if (context instanceof PresentationContext) {
-			PresentationContext pc = (PresentationContext) context;
+		if (context instanceof PresentationContext pc) {
 			pc.initProperties(memento);
 		}
 	}
@@ -1070,10 +1068,9 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 
 	@Override
 	protected void doUpdateItem(final Item item, Object element) {
-		if (!(item instanceof TreeItem)) {
+		if (!(item instanceof TreeItem treeItem)) {
 			return;
 		}
-		TreeItem treeItem = (TreeItem) item;
 		if (treeItem.isDisposed()) {
 			unmapElement(element, treeItem);
 			return;
@@ -1161,8 +1158,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 		}
 		int index = 0;
 		Widget parent = null;
-		if (widget instanceof TreeItem) {
-			TreeItem treeItem = (TreeItem) widget;
+		if (widget instanceof TreeItem treeItem) {
 			parent = treeItem.getParentItem();
 			if (parent == null) {
 				parent = treeItem.getParent();
@@ -1385,8 +1381,8 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 		Widget widget = findItem(path);
 		String[] columnIds = getVisibleColumns();
 
-		if (widget != null && widget instanceof TreeItem && !widget.isDisposed()) {
-			TreeItem item = (TreeItem)widget;
+		if (widget != null && widget instanceof TreeItem item && !widget.isDisposed()) {
+
 			/*Object data = item.getData();
 			int itemCount = item.getItemCount();
 			item.clearAll(false);
@@ -1591,8 +1587,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 				delta.setFlags(delta.getFlags() | IModelDelta.EXPAND);
 			}
 			items = tree.getItems();
-		} else if (w instanceof TreeItem) {
-			TreeItem item = (TreeItem)w;
+		} else if (w instanceof TreeItem item) {
 			if (item.getExpanded()) {
 				int itemCount = item.getData() != null ? item.getItemCount() : -1;
 				delta.setChildCount(((ITreeModelContentProvider)getContentProvider()).viewToModelCount(path, itemCount));
@@ -1661,9 +1656,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 	public void setElementChecked(TreePath path, boolean checked, boolean grayed) {
 		Widget widget = findItem(path);
 
-		if (widget != null && widget instanceof TreeItem && !widget.isDisposed()) {
-			TreeItem item = (TreeItem)widget;
-
+		if (widget != null && widget instanceof TreeItem item && !widget.isDisposed()) {
 			item.setChecked(checked);
 			item.setGrayed(grayed);
 
@@ -1676,9 +1669,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 	public boolean getElementChecked(TreePath path) {
 		Widget widget = findItem(path);
 
-		if (widget != null && widget instanceof TreeItem && !widget.isDisposed()) {
-			TreeItem item = (TreeItem)widget;
-
+		if (widget != null && widget instanceof TreeItem item && !widget.isDisposed()) {
 			return item.getChecked();
 		}
 		return false;
@@ -1694,9 +1685,7 @@ public class InternalTreeModelViewer extends TreeViewer implements IInternalTree
 	public boolean getElementGrayed(TreePath path) {
 		Widget widget = findItem(path);
 
-		if (widget != null && widget instanceof TreeItem && !widget.isDisposed()) {
-			TreeItem item = (TreeItem)widget;
-
+		if (widget != null && widget instanceof TreeItem item && !widget.isDisposed()) {
 			return item.getGrayed();
 		}
 		return false;

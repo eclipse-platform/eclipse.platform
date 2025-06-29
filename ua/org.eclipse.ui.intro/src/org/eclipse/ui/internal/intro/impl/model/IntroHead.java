@@ -38,8 +38,9 @@ public class IntroHead extends AbstractIntroElement {
 		super(element);
 		src = element.getAttribute(ATT_SRC);
 		encoding = element.getAttribute(ATT_ENCODING);
-		if (encoding == null)
+		if (encoding == null) {
 			encoding = "UTF-8"; //$NON-NLS-1$
+		}
 
 		// Resolve.
 		src = BundleUtil.getResourceLocation(src, element);
@@ -50,8 +51,9 @@ public class IntroHead extends AbstractIntroElement {
 		super(element, bundle);
 		src = getAttribute(element, ATT_SRC);
 		encoding = getAttribute(element, ATT_ENCODING);
-		if (encoding == null)
+		if (encoding == null) {
 			encoding = "UTF-8"; //$NON-NLS-1$
+		}
 
 		// Resolve.
 		src = BundleUtil.getResolvedResourceLocation(base, src, bundle);

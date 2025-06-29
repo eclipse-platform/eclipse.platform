@@ -263,9 +263,10 @@ public class DocLineComparator implements ITokenComparator {
 	private String extract(int line, boolean includeSeparator) {
 		if (line < fLineCount) {
 			try {
-				if (includeSeparator)
+				if (includeSeparator) {
 					return fDocument.get(fDocument.getLineOffset(line),
 							fDocument.getLineLength(line));
+				}
 
 				IRegion r = fDocument.getLineInformation(fLineOffset + line);
 				return fDocument.get(r.getOffset(), r.getLength());
@@ -305,8 +306,9 @@ public class DocLineComparator implements ITokenComparator {
 				}
 			}
 
-			if (c1 != c2)
+			if (c1 != c2) {
 				return false;
+			}
 		}
 		return true;
 	}

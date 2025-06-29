@@ -35,47 +35,54 @@ public abstract class CompositeExpression extends Expression {
 	protected List<Expression> fExpressions;
 
 	public void add(Expression expression) {
-		if (fExpressions == null)
+		if (fExpressions == null) {
 			fExpressions= new ArrayList<>(2);
+		}
 		fExpressions.add(expression);
 	}
 
 	public Expression[] getChildren() {
-		if (fExpressions == null)
+		if (fExpressions == null) {
 			return EMPTY_ARRAY;
+		}
 		return fExpressions.toArray(new Expression[fExpressions.size()]);
 	}
 
 	protected EvaluationResult evaluateAnd(IEvaluationContext scope) throws CoreException {
-		if (fExpressions == null)
+		if (fExpressions == null) {
 			return EvaluationResult.TRUE;
+		}
 		EvaluationResult result= EvaluationResult.TRUE;
 		for (Expression expression : fExpressions) {
 			result= result.and(expression.evaluate(scope));
 			// keep iterating even if we have a not loaded found. It can be
 			// that we find a false which will result in a better result.
-			if (result == EvaluationResult.FALSE)
+			if (result == EvaluationResult.FALSE) {
 				return result;
+			}
 		}
 		return result;
 	}
 
 	protected EvaluationResult evaluateOr(IEvaluationContext scope) throws CoreException {
-		if (fExpressions == null)
+		if (fExpressions == null) {
 			return EvaluationResult.TRUE;
+		}
 		EvaluationResult result= EvaluationResult.FALSE;
 		for (Expression expression : fExpressions) {
 			result= result.or(expression.evaluate(scope));
-			if (result == EvaluationResult.TRUE)
+			if (result == EvaluationResult.TRUE) {
 				return result;
+			}
 		}
 		return result;
 	}
 
 	@Override
 	public void collectExpressionInfo(ExpressionInfo info) {
-		if (fExpressions == null)
+		if (fExpressions == null) {
 			return;
+		}
 		for (Expression expression : fExpressions) {
 			expression.collectExpressionInfo(info);
 		}

@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     Richard Hoefter (richard.hoefter@web.de) - initial API and implementation, bug 95296, bug 288830
  *     IBM Corporation - adapted to wizard export page
@@ -247,14 +247,14 @@ public class AntBuildfileExportPage extends WizardPage {
 				if (projectsWithErrors.size() == 1) {
 					message = DataTransferMessages.AntBuildfileExportPage_cycle_error_in_project;
 				}
-				setErrorMessage(MessageFormat.format(message, new Object[] { ExportUtil.toString(projectsWithErrors, ", ") })); //$NON-NLS-1$
+				setErrorMessage(MessageFormat.format(message, ExportUtil.toString(projectsWithErrors, ", "))); //$NON-NLS-1$
 				complete = false;
 			} else if (projectsWithWarnings.size() > 0) {
 				String message = DataTransferMessages.AntBuildfileExportPage_cycle_warning_in_projects;
 				if (projectsWithWarnings.size() == 1) {
 					message = DataTransferMessages.AntBuildfileExportPage_cycle_warning_in_project;
 				}
-				setMessage(MessageFormat.format(message, new Object[] { ExportUtil.toString(projectsWithWarnings, ", ") }), WARNING); //$NON-NLS-1$
+				setMessage(MessageFormat.format(message, ExportUtil.toString(projectsWithWarnings, ", ")), WARNING); //$NON-NLS-1$
 			} else {
 				setMessage(null);
 			}
@@ -303,7 +303,7 @@ public class AntBuildfileExportPage extends WizardPage {
 		}
 		catch (JavaModelException e) {
 			AntUIPlugin.log(e);
-			setErrorMessage(MessageFormat.format(DataTransferMessages.AntBuildfileExportPage_10, new Object[] { e.toString() }));
+			setErrorMessage(MessageFormat.format(DataTransferMessages.AntBuildfileExportPage_10, e.toString()));
 			return false;
 		}
 		IRunnableWithProgress runnable = pm -> {
@@ -334,7 +334,7 @@ public class AntBuildfileExportPage extends WizardPage {
 
 			if (problem != null) {
 				AntUIPlugin.log(problem);
-				setErrorMessage(MessageFormat.format(DataTransferMessages.AntBuildfileExportPage_10, new Object[] { problem.toString() }));
+				setErrorMessage(MessageFormat.format(DataTransferMessages.AntBuildfileExportPage_10, problem.toString()));
 			}
 		};
 
@@ -357,7 +357,7 @@ public class AntBuildfileExportPage extends WizardPage {
 
 	/**
 	 * Get projects to write buildfiles for. Opens confirmation dialog.
-	 * 
+	 *
 	 * @param displayConfirmation
 	 *            if set to true a dialog prompts for confirmation before overwriting files
 	 * @return set of project names
@@ -411,7 +411,7 @@ public class AntBuildfileExportPage extends WizardPage {
 
 	/**
 	 * Get list of projects which have already a buildfile that was not created by the buildfile export.
-	 * 
+	 *
 	 * @param javaProjects
 	 *            list of IJavaProject objects
 	 * @return set of project names

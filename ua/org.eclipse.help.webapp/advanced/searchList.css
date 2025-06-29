@@ -14,7 +14,7 @@
 
 body {
     <%=prefs.getViewBackgroundStyle()%>
-	color: WindowText;
+	color: CanvasText;
 	font: <%=prefs.getViewFont()%>;
 	font-size: .875rem;
 	padding: 0px;
@@ -84,7 +84,7 @@ a:hover {
 
 .unselectedMenuItem {
 	background:<%=prefs.getToolbarBackground()%>;
-	color:WindowText;
+	color:CanvasText;
 	padding-left:10px;
 	padding-right:10px;
 }

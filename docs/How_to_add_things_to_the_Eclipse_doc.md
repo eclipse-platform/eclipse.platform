@@ -1,14 +1,6 @@
 How to add things to the Eclipse doc
 ====================================
 
-Contents
---------
-
-*   [1 Adding new plug-ins and dependencies](#Adding-new-plug-ins-and-dependencies)
-*   [2 Adding new API packages](#Adding-new-API-packages)
-*   [3 Adding new extension points](#Adding-new-extension-points)
-*   [4 JDT and PDE docs](#JDT-and-PDE-docs)
-*   [5 Missing API docs](#Missing-API-docs)
 
 Adding new plug-ins and dependencies
 ------------------------------------

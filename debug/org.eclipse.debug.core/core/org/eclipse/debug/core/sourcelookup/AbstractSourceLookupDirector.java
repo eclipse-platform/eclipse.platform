@@ -261,7 +261,7 @@ public abstract class AbstractSourceLookupDirector implements ISourceLookupDirec
 				containers.add(container);
 			}
 			else {
-				abort(MessageFormat.format(SourceLookupMessages.AbstractSourceLookupDirector_12, new Object[] { typeId }), null);
+				abort(MessageFormat.format(SourceLookupMessages.AbstractSourceLookupDirector_12, typeId), null);
 			}
 		}
 		return containers;

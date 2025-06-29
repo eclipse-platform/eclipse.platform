@@ -62,14 +62,19 @@ public class PollingOutputStream extends FilterOutputStream {
 	public void write(int b) throws IOException {
 		int attempts = 0;
 		for (;;) {
-			if (checkCancellation()) throw new OperationCanceledException();
+			if (checkCancellation()) {
+				throw new OperationCanceledException();
+			}
 			try {
 				out.write(b);
 				return;
 			} catch (InterruptedIOException e) {
-				if (++attempts == numAttempts)
+				if (++attempts == numAttempts) {
 					throw new InterruptedIOException(Messages.PollingOutputStream_writeTimeout);
-				if (Policy.DEBUG_STREAMS) System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				}
+				if (Policy.DEBUG_STREAMS) {
+					System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				}
 			}
 		}
 	}
@@ -86,7 +91,9 @@ public class PollingOutputStream extends FilterOutputStream {
 		int count = 0;
 		int attempts = 0;
 		for (;;) {
-			if (checkCancellation()) throw new OperationCanceledException();
+			if (checkCancellation()) {
+				throw new OperationCanceledException();
+			}
 			try {
 				out.write(buffer, off, len);
 				return;
@@ -94,7 +101,9 @@ public class PollingOutputStream extends FilterOutputStream {
 				int amount = e.bytesTransferred;
 				if (amount != 0) { // keep partial transfer
 					len -= amount;
-					if (len <= 0) return;
+					if (len <= 0) {
+						return;
+					}
 					off += amount;
 					count += amount;
 					attempts = 0; // made some progress, don't time out quite yet
@@ -104,7 +113,9 @@ public class PollingOutputStream extends FilterOutputStream {
 					e.bytesTransferred = count;
 					throw e;
 				}
-				if (Policy.DEBUG_STREAMS) System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				if (Policy.DEBUG_STREAMS) {
+					System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				}
 			}
 		}
 	}
@@ -121,7 +132,9 @@ public class PollingOutputStream extends FilterOutputStream {
 		int count = 0;
 		int attempts = 0;
 		for (;;) {
-			if (checkCancellation()) throw new OperationCanceledException();
+			if (checkCancellation()) {
+				throw new OperationCanceledException();
+			}
 			try {
 				out.flush();
 				return;
@@ -136,7 +149,9 @@ public class PollingOutputStream extends FilterOutputStream {
 					e.bytesTransferred = count;
 					throw e;
 				}
-				if (Policy.DEBUG_STREAMS) System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				if (Policy.DEBUG_STREAMS) {
+					System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				}
 			}
 		}
 	}
@@ -161,10 +176,15 @@ public class PollingOutputStream extends FilterOutputStream {
 					out.close();
 					stop = true;
 				} catch (InterruptedIOException e) {
-					if (checkCancellation()) throw new OperationCanceledException();
-					if (++attempts == numAttempts)
+					if (checkCancellation()) {
+						throw new OperationCanceledException();
+					}
+					if (++attempts == numAttempts) {
 						throw new InterruptedIOException(Messages.PollingOutputStream_closeTimeout);
-					if (Policy.DEBUG_STREAMS) System.out.println("close retry=" + attempts); //$NON-NLS-1$
+					}
+					if (Policy.DEBUG_STREAMS) {
+						System.out.println("close retry=" + attempts); //$NON-NLS-1$
+					}
 				}
 			}
 		}

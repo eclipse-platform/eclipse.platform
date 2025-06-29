@@ -97,13 +97,15 @@ public class TestExpression extends Expression {
 		Object element= context.getDefaultVariable();
 		if (System.class.equals(element)) {
 			String str= System.getProperty(fProperty);
-			if (str == null)
+			if (str == null) {
 				return EvaluationResult.FALSE;
+			}
 			return EvaluationResult.valueOf(str.equals(fArgs[0]));
 		}
 		Property property= fgTypeExtensionManager.getProperty(element, fNamespace, fProperty, context.getAllowPluginActivation() && fForcePluginActivation);
-		if (!property.isInstantiated())
+		if (!property.isInstantiated()) {
 			return EvaluationResult.NOT_LOADED;
+		}
 		return EvaluationResult.valueOf(property.test(element, fArgs, fExpectedValue));
 	}
 
@@ -115,10 +117,10 @@ public class TestExpression extends Expression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof TestExpression))
+		if (!(object instanceof final TestExpression that)) {
 			return false;
+		}
 
-		final TestExpression that= (TestExpression)object;
 		return this.fNamespace.equals(that.fNamespace) && this.fProperty.equals(that.fProperty)
 			&& this.fForcePluginActivation == that.fForcePluginActivation
 			&& equals(this.fArgs, that.fArgs) && equals(this.fExpectedValue, that.fExpectedValue);
@@ -147,8 +149,9 @@ public class TestExpression extends Expression {
 			} else {
 				args.append(arg.toString());
 			}
-			if (i < fArgs.length - 1)
+			if (i < fArgs.length - 1) {
 				args.append(", "); //$NON-NLS-1$
+			}
 		}
 		return "<test property=\"" + fProperty +  "\"" +//$NON-NLS-1$ //$NON-NLS-2$
 		(fArgs.length != 0 ? " args=\"" + args + "\"" : "") + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

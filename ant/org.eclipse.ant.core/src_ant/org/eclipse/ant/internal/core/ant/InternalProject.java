@@ -85,19 +85,19 @@ public class InternalProject extends Project {
 			// DataType can have a "no arg" constructor or take a single
 			// Project argument.
 			try {
-				ctor = typeClass.getConstructor(new Class[0]);
+				ctor = typeClass.getConstructor();
 				noArg = true;
 			}
 			catch (NoSuchMethodException nse) {
-				ctor = typeClass.getConstructor(new Class[] { Project.class });
+				ctor = typeClass.getConstructor(Project.class);
 				noArg = false;
 			}
 
 			Object o = null;
 			if (noArg) {
-				o = ctor.newInstance(new Object[0]);
+				o = ctor.newInstance();
 			} else {
-				o = ctor.newInstance(new Object[] { this });
+				o = ctor.newInstance(this);
 			}
 			if (o instanceof ProjectComponent) {
 				((ProjectComponent) o).setProject(this);
@@ -123,8 +123,7 @@ public class InternalProject extends Project {
 			thrown = ncdfe;
 		}
 		if (thrown != null) {
-			String message = MessageFormat.format(InternalAntMessages.InternalProject_could_not_create_type, new Object[] { typeName,
-					thrown.toString() });
+			String message = MessageFormat.format(InternalAntMessages.InternalProject_could_not_create_type, typeName, thrown.toString());
 			throw new BuildException(message, thrown);
 		}
 		// this line is actually unreachable

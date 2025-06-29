@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -56,20 +56,12 @@ public class RequestData {
 		return UrlUtil.isBot(request);
 	}
 
-	public boolean isGecko() {
-		return UrlUtil.isGecko(request);
-	}
-
 	public boolean isIE() {
 		return UrlUtil.isIE(request);
 	}
 
 	public String getIEVersion() {
 		return UrlUtil.getIEVersion(request);
-	}
-
-	public boolean isKonqueror() {
-		return UrlUtil.isKonqueror(request);
 	}
 
 	public boolean isMozilla() {

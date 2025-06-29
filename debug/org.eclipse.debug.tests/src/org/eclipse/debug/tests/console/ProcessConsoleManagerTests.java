@@ -45,7 +45,6 @@ import org.junit.Test;
 /**
  * Tests the ProcessConsoleManager.
  */
-@SuppressWarnings("restriction")
 public class ProcessConsoleManagerTests extends AbstractDebugTest {
 
 	/**

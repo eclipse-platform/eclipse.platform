@@ -161,8 +161,9 @@ public class InternalJobGroup {
 		if (oldState == Job.RUNNING && newState == Job.NONE) {
 			IStatus jobResult = job.getResult();
 			Assert.isLegal(jobResult != null);
-			if (cancelingDueToError && jobResult.getSeverity() == IStatus.CANCEL)
+			if (cancelingDueToError && jobResult.getSeverity() == IStatus.CANCEL) {
 				return;
+			}
 
 			results.add(jobResult);
 			int jobResultSeverity = jobResult.getSeverity();
@@ -250,8 +251,9 @@ public class InternalJobGroup {
 	final void endJobGroup(MultiStatus groupResult) {
 		assert Thread.holdsLock(manager.lock);
 		synchronized (jobGroupStateLock) {
-			if (seedJobsRemainingCount > 0 && !groupResult.matches(IStatus.CANCEL))
+			if (seedJobsRemainingCount > 0 && !groupResult.matches(IStatus.CANCEL)) {
 				throw new IllegalStateException("Invalid initial jobs remaining count"); //$NON-NLS-1$
+			}
 			state = JobGroup.NONE;
 			if (result != null) {
 				IStatus[] children1 = result.getChildren();
@@ -287,10 +289,12 @@ public class InternalJobGroup {
 	final List<Job> internalGetActiveJobs() {
 		assert Thread.holdsLock(manager.lock);
 		List<Job> activeJobs = new ArrayList<>(runningJobs.size() + otherActiveJobs.size());
-		for (InternalJob job : runningJobs)
+		for (InternalJob job : runningJobs) {
 			activeJobs.add((Job) job);
-		for (InternalJob job : otherActiveJobs)
+		}
+		for (InternalJob job : otherActiveJobs) {
 			activeJobs.add((Job) job);
+		}
 		return activeJobs;
 	}
 
@@ -338,11 +342,13 @@ public class InternalJobGroup {
 	protected MultiStatus computeGroupResult(List<IStatus> jobResults) {
 		List<IStatus> importantResults = new ArrayList<>();
 		for (IStatus jobResult : jobResults) {
-			if (jobResult.getSeverity() != IStatus.OK)
+			if (jobResult.getSeverity() != IStatus.OK) {
 				importantResults.add(jobResult);
+			}
 		}
-		if (importantResults.isEmpty())
+		if (importantResults.isEmpty()) {
 			return new MultiStatus("org.eclipse.core.jobs", 0, name, null); //$NON-NLS-1$
+		}
 
 		String pluginId = importantResults.get(0).getPlugin();
 		IStatus[] groupResults = importantResults.toArray(new IStatus[importantResults.size()]);
@@ -355,8 +361,9 @@ public class InternalJobGroup {
 	 */
 	boolean doJoin(long remainingTime) throws InterruptedException {
 		synchronized (jobGroupStateLock) {
-			if (getState() == JobGroup.NONE)
+			if (getState() == JobGroup.NONE) {
 				return true;
+			}
 			// If remaining time is greater than MAX_WAIT_INTERVAL, sleep only for
 			// MAX_WAIT_INTERVAL instead to be more responsive to monitor cancellation.
 			long sleepTime = remainingTime != 0 && remainingTime <= MAX_WAIT_INTERVAL ? remainingTime : MAX_WAIT_INTERVAL;

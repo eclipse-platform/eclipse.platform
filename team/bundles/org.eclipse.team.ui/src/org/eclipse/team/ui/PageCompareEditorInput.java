@@ -78,8 +78,9 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 				ICompareInput ci = asCompareInput(selection);
 				StructuredSelection newSelection;
 				if (ci != null) {
-					if (prepare)
+					if (prepare) {
 						prepareCompareInput(ci);
+					}
 					newSelection = new StructuredSelection(ci);
 				} else {
 					newSelection = StructuredSelection.EMPTY;
@@ -111,16 +112,18 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 			public void setInput(Object input) {
 				super.setInput(input);
 				Composite c = getParent();
-				if (c instanceof Splitter)
+				if (c instanceof Splitter) {
 					((Splitter)c).setVisible(this, true);
+				}
 				layout(true);
 			}
 		};
 		ToolBarManager toolBarManager = CompareViewerPane.getToolBarManager(pagePane);
 		IPage page = createPage(pagePane, toolBarManager);
 		pagePane.setContent(page.getControl());
-		if (parent instanceof Splitter)
+		if (parent instanceof Splitter) {
 			((Splitter)parent).setVisible(pagePane, false);
+		}
 		hookupListeners();
 		return pagePane;
 	}
@@ -160,10 +163,10 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 
 	private void hookupListeners() {
 		ISelectionProvider selectionProvider = getSelectionProvider();
-		if (selectionProvider != null)
+		if (selectionProvider != null) {
 			selectionProvider.addSelectionChangedListener(pagePane);
-		if (selectionProvider instanceof StructuredViewer) {
-			StructuredViewer sv = (StructuredViewer) selectionProvider;
+		}
+		if (selectionProvider instanceof StructuredViewer sv) {
 			sv.addOpenListener(pagePane);
 			sv.addDoubleClickListener(pagePane);
 		}
@@ -171,18 +174,19 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 
 	private void cleanupListeners() {
 		ISelectionProvider selectionProvider = getSelectionProvider();
-		if (selectionProvider != null)
+		if (selectionProvider != null) {
 			selectionProvider.removeSelectionChangedListener(pagePane);
-		if (selectionProvider instanceof StructuredViewer) {
-			StructuredViewer sv = (StructuredViewer) selectionProvider;
+		}
+		if (selectionProvider instanceof StructuredViewer sv) {
 			sv.removeOpenListener(pagePane);
 			sv.removeDoubleClickListener(pagePane);
 		}
 	}
 
 	private void hookContentChangeListener(ICompareInput node) {
-		if (hookedInput == node)
+		if (hookedInput == node) {
 			return;
+		}
 		unhookContentChangeListener();
 		hookedInput = node;
 		ITypedElement left = node.getLeft();
@@ -218,8 +222,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	 * @return a compare input representing the selection
 	 */
 	protected ICompareInput asCompareInput(ISelection selection) {
-		if (selection != null && selection instanceof IStructuredSelection) {
-			IStructuredSelection ss= (IStructuredSelection) selection;
+		if (selection != null && selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				Object o = ss.getFirstElement();
 				if(o instanceof ICompareInput) {
@@ -236,12 +239,12 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	 * @param input the compare input to be prepared
 	 */
 	protected final void prepareCompareInput(final ICompareInput input) {
-		if (input == null)
+		if (input == null) {
 			return;
+		}
 		// Don't allow the use of shared documents with PageSaveableParts
 		Object left = input.getLeft();
-		if (left instanceof LocalResourceTypedElement) {
-			LocalResourceTypedElement lrte = (LocalResourceTypedElement) left;
+		if (left instanceof LocalResourceTypedElement lrte) {
 			lrte.enableSharedDocument(false);
 		}
 		IProgressService manager = PlatformUI.getWorkbench().getProgressService();

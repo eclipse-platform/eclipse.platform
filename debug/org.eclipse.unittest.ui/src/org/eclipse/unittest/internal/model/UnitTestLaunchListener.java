@@ -45,20 +45,23 @@ public class UnitTestLaunchListener implements ILaunchListener {
 	@Override
 	public void launchAdded(ILaunch launch) {
 		ILaunchConfiguration config = launch.getLaunchConfiguration();
-		if (config == null)
+		if (config == null) {
 			return;
+		}
 
 		try {
-			if (!config.hasAttribute(UnitTestLaunchConfigurationConstants.ATTR_UNIT_TEST_VIEW_SUPPORT))
+			if (!config.hasAttribute(UnitTestLaunchConfigurationConstants.ATTR_UNIT_TEST_VIEW_SUPPORT)) {
 				return;
+			}
 		} catch (CoreException e1) {
 			UnitTestPlugin.log(e1);
 			return;
 		}
 
 		ITestViewSupport testRunnerViewSupport = TestViewSupportRegistry.newTestRunnerViewSupport(config).orElse(null);
-		if (testRunnerViewSupport == null)
+		if (testRunnerViewSupport == null) {
 			return;
+		}
 
 		fTrackedLaunches.add(launch);
 	}
@@ -70,8 +73,9 @@ public class UnitTestLaunchListener implements ILaunchListener {
 
 	@Override
 	public void launchChanged(final ILaunch launch) {
-		if (!fTrackedLaunches.contains(launch))
+		if (!fTrackedLaunches.contains(launch)) {
 			return;
+		}
 
 		// Load session on 1st change (usually 1st process added), although it's not
 		// much reliable. Each TestRunnerClient should take care of listening to the

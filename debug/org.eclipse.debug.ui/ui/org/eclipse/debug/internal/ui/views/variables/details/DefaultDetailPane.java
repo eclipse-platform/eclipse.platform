@@ -202,11 +202,9 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 					}
 				} else if (element instanceof IExpression) {
 					val = ((IExpression)element).getValue();
-				} else if (element instanceof IBreakpoint) {
-					IBreakpoint bp = (IBreakpoint) element;
+				} else if (element instanceof IBreakpoint bp) {
 					message = bp.getMarker().getAttribute(IMarker.MESSAGE, ""); //$NON-NLS-1$
-				} else if (element instanceof IBreakpointContainer) {
-					IBreakpointContainer c = (IBreakpointContainer) element;
+				} else if (element instanceof IBreakpointContainer c) {
 					IAdaptable category = c.getCategory();
 					if (category != null) {
 						IWorkbenchAdapter adapter = category.getAdapter(IWorkbenchAdapter.class);
@@ -597,7 +595,6 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 		textAction.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		textAction.configureAction(DetailMessages.DefaultDetailPane_Co_ntent_Assist_3, IInternalDebugCoreConstants.EMPTY_STRING,IInternalDebugCoreConstants.EMPTY_STRING);
 		textAction.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_ELCL_CONTENT_ASSIST));
-		textAction.setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_CONTENT_ASSIST));
 		textAction.setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_DLCL_CONTENT_ASSIST));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(textAction, IDebugHelpContextIds.DETAIL_PANE_CONTENT_ASSIST_ACTION);
 		ActionHandler actionHandler = new ActionHandler(textAction);

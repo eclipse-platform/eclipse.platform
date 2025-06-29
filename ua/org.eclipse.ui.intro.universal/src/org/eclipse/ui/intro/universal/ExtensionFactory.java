@@ -51,8 +51,9 @@ public class ExtensionFactory implements IExecutableExtensionFactory, IExecutabl
 
 	@Override
 	public Object create() throws CoreException {
-		if (WELCOME_CUSTOMIZATION_PREFERENCE_PAGE.equals(id))
+		if (WELCOME_CUSTOMIZATION_PREFERENCE_PAGE.equals(id)) {
 			return configure(new WelcomeCustomizationPreferencePage());
+		}
 
 		throw new CoreException(new Status(IStatus.ERROR, UniversalIntroPlugin.PLUGIN_ID, 0,
 				"Unknown id in data argument for " + getClass(), null)); //$NON-NLS-1$
@@ -68,11 +69,12 @@ public class ExtensionFactory implements IExecutableExtensionFactory, IExecutabl
 	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
 			throws CoreException {
-		if (data instanceof String)
+		if (data instanceof String) {
 			id = (String) data;
-		else
+		} else {
 			throw new CoreException(new Status(IStatus.ERROR, UniversalIntroPlugin.PLUGIN_ID, 0,
 					"Data argument must be a String for " + getClass(), null)); //$NON-NLS-1$
+		}
 		this.config = config;
 		this.propertyName = propertyName;
 	}

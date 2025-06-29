@@ -57,8 +57,9 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		}
 
 		private int getCategory(Object element) {
-			if (element instanceof Extension)
+			if (element instanceof Extension) {
 				return 0;
+			}
 			if (element instanceof Name) {
 				return 1;
 			}
@@ -68,8 +69,9 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		@Override
 		public int compare(Viewer viewer,Object e1,Object e2) {
 			final int compare= getCategory(e1) - getCategory(e2);
-			if (compare != 0)
+			if (compare != 0) {
 				return compare;
+			}
 			return super.compare(viewer, ((Item)e1).name,  ((Item)e2).name);
 		}
 	}
@@ -192,10 +194,12 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		final Item item= (Item)element;
 
 		if (PROPERTY_MODE.equals(property)) {
-			if (item.mode == Team.BINARY)
+			if (item.mode == Team.BINARY) {
 				return Integer.valueOf(COMBO_INDEX_BINARY);
-			if (item.mode == Team.TEXT)
+			}
+			if (item.mode == Team.TEXT) {
 				return Integer.valueOf(COMBO_INDEX_TEXT);
+			}
 		}
 
 		if (fShowSaveColumn && PROPERTY_SAVE.equals(property)) {
@@ -214,16 +218,19 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 
 		final IStructuredSelection selection = fTableViewer.getStructuredSelection();
 		final Item item= (Item)selection.getFirstElement();
-		if (item == null)
+		if (item == null) {
 			return;
+		}
 
 		final int comboIndex = ((Integer)value).intValue();
 
 		if (PROPERTY_MODE.equals(property)) {
-			if (comboIndex == COMBO_INDEX_BINARY)
+			if (comboIndex == COMBO_INDEX_BINARY) {
 				item.mode= Team.BINARY;
-			if (comboIndex == COMBO_INDEX_TEXT)
+			}
+			if (comboIndex == COMBO_INDEX_TEXT) {
 				item.mode= Team.TEXT;
+			}
 		}
 
 		if (fShowSaveColumn && PROPERTY_SAVE.equals(property)) {
@@ -257,7 +264,9 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		}
 
 		if (columnIndex == 2) {
-			if (fShowSaveColumn) return SAVE_TEXT[item.save ? COMBO_INDEX_SAVE : COMBO_INDEX_DONT_SAVE];
+			if (fShowSaveColumn) {
+				return SAVE_TEXT[item.save ? COMBO_INDEX_SAVE : COMBO_INDEX_DONT_SAVE];
+			}
 		}
 
 		return null;

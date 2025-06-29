@@ -47,10 +47,9 @@ public class ContextHelpSorter extends ViewerComparator {
 		if (!(e2 instanceof IHelpResource)) {
 			return -1;
 		}
-		if (!(e1 instanceof IHelpResource)) {
+		if (!(e1 instanceof IHelpResource r1)) {
 			return 1;
 		}
-		IHelpResource r1 = (IHelpResource) e1;
 		IHelpResource r2 = (IHelpResource) e2;
 		String c1 = context.getCategory(r1);
 		String c2 = context.getCategory(r2);

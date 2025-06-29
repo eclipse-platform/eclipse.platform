@@ -44,8 +44,9 @@ public class LocalHistoryPageSource extends HistoryPageSource {
 	}
 
 	public synchronized static IHistoryPageSource getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new LocalHistoryPageSource();
+		}
 		return instance;
 	}
 

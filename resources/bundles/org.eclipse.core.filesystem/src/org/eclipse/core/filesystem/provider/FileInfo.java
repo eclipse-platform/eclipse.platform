@@ -123,18 +123,20 @@ public class FileInfo implements IFileInfo {
 
 	@Override
 	public boolean getAttribute(int attribute) {
-		if (attribute == EFS.ATTRIBUTE_READ_ONLY && isAttributeSuported(EFS.ATTRIBUTE_OWNER_WRITE))
+		if (attribute == EFS.ATTRIBUTE_READ_ONLY && isAttributeSuported(EFS.ATTRIBUTE_OWNER_WRITE)) {
 			return (!isSet(EFS.ATTRIBUTE_OWNER_WRITE)) || isSet(EFS.ATTRIBUTE_IMMUTABLE);
-		else if (attribute == EFS.ATTRIBUTE_EXECUTABLE && isAttributeSuported(EFS.ATTRIBUTE_OWNER_EXECUTE))
+		} else if (attribute == EFS.ATTRIBUTE_EXECUTABLE && isAttributeSuported(EFS.ATTRIBUTE_OWNER_EXECUTE)) {
 			return isSet(EFS.ATTRIBUTE_OWNER_EXECUTE);
-		else
+		} else {
 			return isSet(attribute);
+		}
 	}
 
 	@Override
 	public String getStringAttribute(int attribute) {
-		if (attribute == EFS.ATTRIBUTE_LINK_TARGET)
+		if (attribute == EFS.ATTRIBUTE_LINK_TARGET) {
 			return this.linkTarget;
+		}
 		return null;
 	}
 
@@ -177,15 +179,17 @@ public class FileInfo implements IFileInfo {
 				clear(EFS.ATTRIBUTE_IMMUTABLE);
 			}
 		} else if (attribute == EFS.ATTRIBUTE_EXECUTABLE && isAttributeSuported(EFS.ATTRIBUTE_OWNER_EXECUTE)) {
-			if (value)
+			if (value) {
 				set(EFS.ATTRIBUTE_OWNER_EXECUTE);
-			else
+			} else {
 				clear(EFS.ATTRIBUTE_OWNER_EXECUTE | EFS.ATTRIBUTE_GROUP_EXECUTE | EFS.ATTRIBUTE_OTHER_EXECUTE);
+			}
 		} else {
-			if (value)
+			if (value) {
 				set(attribute);
-			else
+			} else {
 				clear(attribute);
+			}
 		}
 	}
 
@@ -200,10 +204,11 @@ public class FileInfo implements IFileInfo {
 	 * if this is a file.
 	 */
 	public void setDirectory(boolean value) {
-		if (value)
+		if (value) {
 			set(ATTRIBUTE_DIRECTORY);
-		else
+		} else {
 			clear(ATTRIBUTE_DIRECTORY);
+		}
 	}
 
 	/**
@@ -213,10 +218,11 @@ public class FileInfo implements IFileInfo {
 	 * otherwise.
 	 */
 	public void setExists(boolean value) {
-		if (value)
+		if (value) {
 			set(ATTRIBUTE_EXISTS);
-		else
+		} else {
 			clear(ATTRIBUTE_EXISTS);
+		}
 	}
 
 	/**
@@ -251,8 +257,9 @@ public class FileInfo implements IFileInfo {
 	 * @param name The file name
 	 */
 	public void setName(String name) {
-		if (name == null)
+		if (name == null) {
 			throw new IllegalArgumentException();
+		}
 		this.name = name;
 	}
 
@@ -266,8 +273,9 @@ public class FileInfo implements IFileInfo {
 	 * @since org.eclipse.core.filesystem 1.1
 	 */
 	public void setStringAttribute(int attribute, String value) {
-		if (attribute == EFS.ATTRIBUTE_LINK_TARGET)
+		if (attribute == EFS.ATTRIBUTE_LINK_TARGET) {
 			this.linkTarget = value;
+		}
 	}
 
 	@Override

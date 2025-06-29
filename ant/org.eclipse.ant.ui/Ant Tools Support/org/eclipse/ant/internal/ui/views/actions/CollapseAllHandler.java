@@ -23,7 +23,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Default handler for Collapse All in the Ant view
- * 
+ *
  * @since 3.5.500
  */
 public class CollapseAllHandler extends AbstractHandler {
@@ -31,8 +31,7 @@ public class CollapseAllHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchPart part = HandlerUtil.getActivePart(event);
-		if (part instanceof AntView) {
-			AntView view = (AntView) part;
+		if (part instanceof AntView view) {
 			TreeViewer viewer = view.getViewer();
 			try {
 				viewer.getTree().setRedraw(false);

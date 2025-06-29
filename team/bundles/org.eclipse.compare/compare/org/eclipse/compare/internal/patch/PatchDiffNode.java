@@ -55,8 +55,7 @@ public abstract class PatchDiffNode extends DiffNode implements IResourceProvide
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof PatchDiffNode) {
-			PatchDiffNode node = (PatchDiffNode) other;
+		if (other instanceof PatchDiffNode node) {
 			return (node.getPatchElement().equals(getPatchElement()));
 		}
 		return super.equals(other);

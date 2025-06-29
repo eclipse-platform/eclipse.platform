@@ -45,15 +45,17 @@ public class Cache implements ICache {
 
 	@Override
 	public synchronized Object get(String name) {
-		if (properties == null)
+		if (properties == null) {
 			return null;
+		}
 		return properties.get(name);
 	}
 
 	@Override
 	public synchronized void remove(String name) {
-		if (properties != null)
+		if (properties != null) {
 			properties.remove(name);
+		}
 		if (properties.isEmpty()) {
 			properties = null;
 		}
@@ -62,8 +64,9 @@ public class Cache implements ICache {
 
 	@Override
 	public synchronized void addCacheListener(ICacheListener listener) {
-		if (listeners == null)
+		if (listeners == null) {
 			listeners = new ListenerList<>(ListenerList.IDENTITY);
+		}
 		listeners.add(listener);
 
 	}
@@ -75,8 +78,9 @@ public class Cache implements ICache {
 
 	@Override
 	public synchronized void removeCacheListener(ICacheListener listener) {
-		if (listeners != null)
+		if (listeners != null) {
 			listeners.remove(listener);
+		}
 	}
 
 	public void dispose() {

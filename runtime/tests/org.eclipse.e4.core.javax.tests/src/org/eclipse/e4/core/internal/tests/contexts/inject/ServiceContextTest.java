@@ -16,11 +16,11 @@
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +34,9 @@ import org.eclipse.e4.core.contexts.RunAndTrack;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
 import org.eclipse.osgi.service.debug.DebugOptions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -107,7 +107,7 @@ public class ServiceContextTest {
 	private IEclipseContext context;
 	private final List<ServiceRegistration<?>> registrations = new ArrayList<>();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		//don't use the global shared service context to avoid contamination across tests
 		BundleContext bundleContext = CoreTestsActivator.getDefault().getBundleContext();
@@ -115,7 +115,7 @@ public class ServiceContextTest {
 		registrations.clear();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		// Consumers must not dispose OSGi context as it is reused
 		//context.dispose();
@@ -137,10 +137,10 @@ public class ServiceContextTest {
 		context.set("x", 1);
 		context.set("y", 2);
 		int result = (Integer) context.get("sum");
-		assertEquals("1.0", 3, result);
+		assertEquals(3, result);
 		context.set("x", 5);
 		result = (Integer) context.get("sum");
-		assertEquals("1.0", 7, result);
+		assertEquals(7, result);
 	}
 
 	/**
@@ -166,26 +166,26 @@ public class ServiceContextTest {
 
 			ContextInjectionFactory.inject(userObject, context);
 			userObject.print("test");
-			assertEquals("1.0", "test", stringPrint1.toString());
+			assertEquals("test", stringPrint1.toString());
 
 			// now remove the service
 			reg1.unregister();
 			reg1 = null;
 			userObject.print("another test");
 			// the string should be unchanged
-			assertEquals("1.1", "test", stringPrint1.toString());
-			assertNull("1.2", userObject.printer);
+			assertEquals("test", stringPrint1.toString());
+			assertNull(userObject.printer);
 
 			// register a different service implementation
 			StringPrintService stringPrint2 = new StringPrintService();
 			reg2 = bundleContext.registerService(PrintService.SERVICE_NAME, stringPrint2, null);
 			userObject.print("yet another test");
 			// the second string should have the value
-			assertEquals("2.0", "test", stringPrint1.toString());
-			assertEquals("2.1", "yet another test", stringPrint2.toString());
+			assertEquals("test", stringPrint1.toString());
+			assertEquals("yet another test", stringPrint2.toString());
 			reg2.unregister();
 			reg2 = null;
-			assertNull("2.2", userObject.printer);
+			assertNull(userObject.printer);
 		} finally {
 			if (reg1 != null) {
 				reg1.unregister();
@@ -210,7 +210,7 @@ public class ServiceContextTest {
 			reg1 = bundleContext.registerService(PrintService.SERVICE_NAME, stringPrint1, null);
 
 			userObject.print("test");
-			assertEquals("1.0", "test", stringPrint1.toString());
+			assertEquals("test", stringPrint1.toString());
 		} finally {
 			if (reg1 != null) {
 				reg1.unregister();
@@ -248,11 +248,11 @@ public class ServiceContextTest {
 
 			PrintService service = (PrintService) otherServiceContext
 					.get(PrintService.SERVICE_NAME);
-			assertEquals("1.0", stringPrint1, service);
+			assertEquals(stringPrint1, service);
 			assertThat(ref.getUsingBundles()).hasSize(1);
 			service = null;
 			otherServiceContext.dispose();
-			assertNull("2.0", ref.getUsingBundles());
+			assertNull(ref.getUsingBundles());
 		} finally {
 			reg1.unregister();
 		}

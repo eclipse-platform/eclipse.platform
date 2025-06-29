@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -607,9 +607,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 		if (eclipseRuntime != null) {
 			eclipseRuntimeRequired = Boolean.parseBoolean(eclipseRuntime);
 		}
-		Iterator<AntClasspathEntry> itr = extraClasspathURLs.iterator();
-		while (itr.hasNext()) {
-			IAntClasspathEntry entry = itr.next();
+		for (IAntClasspathEntry entry : extraClasspathURLs) {
 			if (entry.getEntryURL().equals(url)) {
 				return;
 			}
@@ -663,8 +661,9 @@ public class AntCorePreferences implements IPropertyChangeListener {
 			}
 		}
 
-		if (urlFile == null || !urlFile.exists())
+		if (urlFile == null || !urlFile.exists()) {
 			return null;
+		}
 
 		String path = urlFile.getAbsolutePath();
 		return new URL(IAntCoreConstants.FILE_PROTOCOL + (urlFile.isDirectory() ? path + "/" : path)); //$NON-NLS-1$
@@ -688,8 +687,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 
 		String library = element.getAttribute(AntCorePlugin.LIBRARY);
 		if (library == null) {
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_Library_not_specified_for___0__4, new String[] {
-					objectName }), null);
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_Library_not_specified_for___0__4, objectName), null);
 			AntCorePlugin.getPlugin().getLog().log(status);
 			return false;
 		}
@@ -707,8 +705,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 			}
 
 			// type specifies a library that does not exist
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(errorMessage, new String[] {
-					library, element.getContributor().getName() }), null);
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(errorMessage, library, element.getContributor().getName()), null);
 			AntCorePlugin.getPlugin().getLog().log(status);
 			return false;
 		}
@@ -719,8 +716,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 		}
 		catch (Exception e) {
 			// likely extra classpath entry library that does not exist
-			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_8, new String[] {
-					library, element.getContributor().getName() }), null);
+			IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_8, library, element.getContributor().getName()), null);
 			AntCorePlugin.getPlugin().getLog().log(status);
 		}
 		return false;
@@ -743,8 +739,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 					addPluginClassLoader(bundle);
 				} else {
 					// extra classpath entry that does not exist
-					IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_6, new String[] {
-							library, element.getContributor().getName() }), null);
+					IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_6, library, element.getContributor().getName()), null);
 					AntCorePlugin.getPlugin().getLog().log(status);
 					continue;
 				}
@@ -757,8 +752,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 			}
 			catch (Exception e) {
 				// likely extra classpath entry that does not exist
-				IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_6, new String[] {
-						library, element.getContributor().getName() }), null);
+				IStatus status = new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_LIBRARY_NOT_SPECIFIED, NLS.bind(InternalCoreAntMessages.AntCorePreferences_6, library, element.getContributor().getName()), null);
 				AntCorePlugin.getPlugin().getLog().log(status);
 				continue;
 			}
@@ -1068,11 +1062,9 @@ public class AntCorePreferences implements IPropertyChangeListener {
 
 	protected ClassLoader[] getPluginClassLoaders() {
 		if (orderedPluginClassLoaders == null) {
-			Iterator<WrappedClassLoader> classLoaders = pluginClassLoaders.iterator();
 			Map<String, WrappedClassLoader> idToLoader = new HashMap<>(pluginClassLoaders.size());
 			List<BundleRevision> bundles = new ArrayList<>(pluginClassLoaders.size());
-			while (classLoaders.hasNext()) {
-				WrappedClassLoader loader = classLoaders.next();
+			for (WrappedClassLoader loader : pluginClassLoaders) {
 				idToLoader.put(loader.bundle.getSymbolicName(), loader);
 				BundleRevision revision = loader.bundle.adapt(BundleRevision.class);
 				if (revision != null) {
@@ -1133,8 +1125,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 					prereqs.add(new Relation(currentFrag, hostWires.get(0).getProvider()));
 				}
 			} else {
-				AntCorePlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_MALFORMED_URL, NLS.bind(InternalCoreAntMessages.AntCorePreferences_1, new String[] {
-						currentFrag.getSymbolicName() }), null));
+				AntCorePlugin.getPlugin().getLog().log(new Status(IStatus.ERROR, AntCorePlugin.PI_ANTCORE, AntCorePlugin.ERROR_MALFORMED_URL, NLS.bind(InternalCoreAntMessages.AntCorePreferences_1, currentFrag.getSymbolicName()), null));
 			}
 		}
 
@@ -1231,11 +1222,12 @@ public class AntCorePreferences implements IPropertyChangeListener {
 			BundleRevision from = mapping.from;
 			Integer fromCount = counts.get(from);
 			BundleRevision to = mapping.to;
-			if (to == null)
+			if (to == null) {
 				counts.put(from, Integer.valueOf(0));
-			else {
-				if (counts.get(to) == null)
+			} else {
+				if (counts.get(to) == null) {
 					counts.put(to, Integer.valueOf(0));
+				}
 				fromCount = fromCount == null ? Integer.valueOf(1) : Integer.valueOf(fromCount.intValue() + 1);
 				counts.put(from, fromCount);
 			}
@@ -1287,9 +1279,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 	public List<Task> getRemoteTasks() {
 		List<Task> result = new ArrayList<>(10);
 		if (defaultTasks != null && !defaultTasks.isEmpty()) {
-			Iterator<Task> iter = defaultTasks.iterator();
-			while (iter.hasNext()) {
-				Task task = iter.next();
+			for (Task task : defaultTasks) {
 				if (!task.isEclipseRuntimeRequired()) {
 					result.add(task);
 				}
@@ -1354,9 +1344,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 	public List<Property> getRemoteAntProperties() {
 		List<Property> result = new ArrayList<>(10);
 		if (defaultProperties != null && !defaultProperties.isEmpty()) {
-			Iterator<Property> iter = defaultProperties.iterator();
-			while (iter.hasNext()) {
-				Property property = iter.next();
+			for (Property property : defaultProperties) {
 				if (!property.isEclipseRuntimeRequired()) {
 					result.add(property);
 				}
@@ -1525,9 +1513,7 @@ public class AntCorePreferences implements IPropertyChangeListener {
 	public List<Type> getRemoteTypes() {
 		List<Type> result = new ArrayList<>(10);
 		if (defaultTypes != null && !defaultTypes.isEmpty()) {
-			Iterator<Type> iter = defaultTypes.iterator();
-			while (iter.hasNext()) {
-				Type type = iter.next();
+			for (Type type : defaultTypes) {
 				if (!type.isEclipseRuntimeRequired()) {
 					result.add(type);
 				}

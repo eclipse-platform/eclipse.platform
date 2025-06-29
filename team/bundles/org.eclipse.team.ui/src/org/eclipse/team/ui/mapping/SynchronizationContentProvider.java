@@ -72,13 +72,16 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	@Override
 	public Object getParent(Object element) {
 		element = internalGetElement(element);
-		if (element instanceof ModelProvider)
+		if (element instanceof ModelProvider) {
 			return null;
-		if (element == getModelRoot())
+		}
+		if (element == getModelRoot()) {
 			return null;
+		}
 		Object parent = getDelegateContentProvider().getParent(element);
-		if (parent == getModelRoot())
+		if (parent == getModelRoot()) {
 			return getModelProvider();
+		}
 		return parent;
 	}
 
@@ -89,25 +92,24 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 
 	private Object[] internalGetChildren(Object parent, boolean isElement) {
 		Object element = internalGetElement(parent);
-		if (element instanceof ISynchronizationScope) {
+		if (element instanceof ISynchronizationScope rms) {
 			// If the root is a scope, we want to include all models in the scope
-			ISynchronizationScope rms = (ISynchronizationScope) element;
 			if (rms.getMappings(getModelProviderId()).length > 0) {
 				empty = false;
 				return new Object[] { getModelProvider() };
 			}
 			empty = true;
 			return new Object[0];
-		} else if (element instanceof ISynchronizationContext) {
-			ISynchronizationContext context = (ISynchronizationContext)element;
+		} else if (element instanceof ISynchronizationContext context) {
 			// If the root is a context, we want to filter by the context
 			ISynchronizationContext sc = (ISynchronizationContext) element;
 			if (sc.getScope().getMappings(getModelProviderId()).length > 0) {
 				Object root = getModelRoot();
 				boolean initialized = isInitialized(context);
 				if (!initialized || getChildrenInContext(sc, root, getDelegateChildren(root, isElement)).length > 0) {
-					if (!initialized)
+					if (!initialized) {
 						requestInitialization(context);
+					}
 					empty = false;
 					return new Object[] { getModelProvider() };
 				}
@@ -181,8 +183,9 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	}
 
 	private Object[] getDelegateChildren(Object parent, boolean isElement) {
-		if (isElement)
+		if (isElement) {
 			return getDelegateContentProvider().getElements(parent);
+		}
 		return getDelegateChildren(parent);
 	}
 
@@ -206,8 +209,9 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			}
 		} else {
 			ISynchronizationContext sc = getContext();
-			if (sc != null)
+			if (sc != null) {
 				return hasChildrenInContext(sc, elementOrPath);
+			}
 		}
 		return false;
 	}
@@ -252,8 +256,9 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 */
 	protected boolean hasChildrenInContext(ISynchronizationContext context, Object element) {
 		ResourceTraversal[] traversals = getTraversals(context, element);
-		if (traversals == null)
+		if (traversals == null) {
 			return true;
+		}
 		return context.getDiffTree().getDiffs(traversals).length > 0;
 	}
 
@@ -264,11 +269,13 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			extensionSite.getExtensionStateModel().removePropertyChangeListener(this);
 		}
 		ISynchronizationContext context = getContext();
-		if (context != null)
+		if (context != null) {
 			context.getDiffTree().removeDiffChangeListener(this);
+		}
 		ISynchronizePageConfiguration configuration = getConfiguration();
-		if (configuration != null)
+		if (configuration != null) {
 			configuration.removePropertyChangeListener(this);
+		}
 	}
 
 	@Override
@@ -284,15 +291,17 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		// Configure the content provider based on the site and state model
 		site.getExtensionStateModel().addPropertyChangeListener(this);
 		ISynchronizePageConfiguration configuration = getConfiguration();
-		if (configuration != null)
+		if (configuration != null) {
 			configuration.addPropertyChangeListener(this);
+		}
 		ITreeContentProvider provider = getDelegateContentProvider();
 		if (provider instanceof ICommonContentProvider) {
 			((ICommonContentProvider) provider).init(site);
 		}
 		ISynchronizationContext context = getContext();
-		if (context != null)
+		if (context != null) {
 			context.getDiffTree().addDiffChangeListener(this);
+		}
 	}
 
 	@Override
@@ -321,8 +330,9 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 */
 	protected boolean includeDirection(int direction) {
 		ISynchronizePageConfiguration configuration = getConfiguration();
-		if (configuration != null)
+		if (configuration != null) {
 			return ((SynchronizePageConfiguration)configuration).includeDirection(direction);
+		}
 		return true;
 	}
 
@@ -334,11 +344,12 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 */
 	protected ISynchronizationContext getContext() {
 		ICommonContentExtensionSite extensionSite = getExtensionSite();
-		if (extensionSite != null)
+		if (extensionSite != null) {
 			return (ISynchronizationContext) extensionSite
 					.getExtensionStateModel()
 						.getProperty(
 							ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT);
+		}
 		return null;
 	}
 
@@ -350,11 +361,12 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 */
 	protected ISynchronizationScope getScope() {
 		ICommonContentExtensionSite extensionSite = getExtensionSite();
-		if (extensionSite != null)
+		if (extensionSite != null) {
 			return (ISynchronizationScope) extensionSite
 					.getExtensionStateModel()
 						.getProperty(
 							ITeamContentProviderManager.P_SYNCHRONIZATION_SCOPE);
+		}
 		return null;
 	}
 
@@ -366,11 +378,12 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 */
 	protected ISynchronizePageConfiguration getConfiguration() {
 		ICommonContentExtensionSite extensionSite = getExtensionSite();
-		if (extensionSite != null)
+		if (extensionSite != null) {
 			return (ISynchronizePageConfiguration) extensionSite
 					.getExtensionStateModel()
 						.getProperty(
 							ITeamContentProviderManager.P_SYNCHRONIZATION_PAGE_CONFIGURATION);
+		}
 		return null;
 	}
 
@@ -407,10 +420,11 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		Utils.syncExec((Runnable) () -> {
 			TreeViewer treeViewer = ((TreeViewer)getViewer());
 			// TODO: Need to know if the model root is present in order to refresh properly
-			if (empty)
+			if (empty) {
 				treeViewer.refresh();
-			else
+			} else {
 				treeViewer.refresh(getModelProvider());
+			}
 		}, getViewer().getControl());
 	}
 
@@ -487,23 +501,26 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 * @return the subset of children that are of interest from the given context
 	 */
 	protected Object[] getChildrenInContext(ISynchronizationContext context, Object parent, Object[] children) {
-		if (children.length != 0)
+		if (children.length != 0) {
 			children = getChildrenInScope(context.getScope(), parent, children);
-		if (parent instanceof IResource) {
-			IResource resource = (IResource) parent;
+		}
+		if (parent instanceof IResource resource) {
 			children = getChildrenWithPhantoms(context, resource, children);
 		}
-		if (children.length == 0)
+		if (children.length == 0) {
 			return children;
+		}
 		return internalGetChildren(context, parent, children);
 	}
 
 	private Object[] getChildrenWithPhantoms(ISynchronizationContext context, IResource resource, Object[] children) {
 		IResource[] setChildren = context.getDiffTree().members(resource);
-		if (setChildren.length == 0)
+		if (setChildren.length == 0) {
 			return children;
-		if (children.length == 0)
+		}
+		if (children.length == 0) {
 			return setChildren;
+		}
 		Set<Object> result = new HashSet<>(children.length);
 		Collections.addAll(result, children);
 		Collections.addAll(result, setChildren);
@@ -516,12 +533,12 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			// If the parent is a TreePath then the subclass is
 			// TreePath aware and we can send a TrePath to the
 			// isVisible method
-			if (parent instanceof TreePath) {
-				TreePath tp = (TreePath) parent;
+			if (parent instanceof TreePath tp) {
 				object = tp.createChildPath(object);
 			}
-			if (isVisible(context, object))
+			if (isVisible(context, object)) {
 				result.add(internalGetElement(object));
+			}
 		}
 		return result.toArray(new Object[result.size()]);
 	}
@@ -574,8 +591,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 * @return whether the diff should be visible
 	 */
 	protected boolean isVisible(IDiff diff) {
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			return includeDirection(twd.getDirection());
 		}
 		return diff.getKind() != IDiff.NO_CHANGE;
@@ -644,8 +660,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	}
 
 	private Object internalGetElement(Object elementOrPath) {
-		if (elementOrPath instanceof TreePath) {
-			TreePath tp = (TreePath) elementOrPath;
+		if (elementOrPath instanceof TreePath tp) {
 			return tp.getLastSegment();
 		}
 		return elementOrPath;

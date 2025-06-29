@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -33,14 +33,14 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 /**
  * Handles changes for Ant preview viewers.
- * 
+ *
  * @since 3.0
  */
 class AntPreviewerUpdater {
 
 	/**
 	 * Creates a source preview updater for the given viewer, configuration and preference store.
-	 * 
+	 *
 	 * @param viewer
 	 *            the viewer
 	 * @param configuration
@@ -103,7 +103,7 @@ class AntPreviewerUpdater {
 
 	/**
 	 * Initializes the given viewer's colors.
-	 * 
+	 *
 	 * @param viewer
 	 *            the viewer to be initialized
 	 * @since 2.0
@@ -135,7 +135,7 @@ class AntPreviewerUpdater {
 
 	/**
 	 * Creates a color from the information stored in the given preference store. Returns <code>null</code> if there is no such information available.
-	 * 
+	 *
 	 * @param store
 	 *            the store to read from
 	 * @param key
@@ -151,13 +151,15 @@ class AntPreviewerUpdater {
 
 		if (store.contains(key)) {
 
-			if (store.isDefault(key))
+			if (store.isDefault(key)) {
 				rgb = PreferenceConverter.getDefaultColor(store, key);
-			else
+			} else {
 				rgb = PreferenceConverter.getColor(store, key);
+			}
 
-			if (rgb != null)
+			if (rgb != null) {
 				return new Color(display, rgb);
+			}
 		}
 
 		return null;

@@ -39,13 +39,15 @@ public class NavigateAction extends Action {
 		if (next) {
 			Utils.initAction(this, "action.navigateNext."); //$NON-NLS-1$
 			setActionDefinitionId(ActionFactory.NEXT.getCommandId());
-			if (bars != null)
+			if (bars != null) {
 				bars.setGlobalActionHandler(ActionFactory.NEXT.getId(), this);
+			}
 		} else {
 			Utils.initAction(this, "action.navigatePrevious."); //$NON-NLS-1$
 			setActionDefinitionId(ActionFactory.PREVIOUS.getCommandId());
-			if (bars != null)
+			if (bars != null) {
 				bars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(), this);
+			}
 		}
 	}
 

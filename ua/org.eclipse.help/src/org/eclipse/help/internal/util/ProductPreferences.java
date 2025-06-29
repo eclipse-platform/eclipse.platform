@@ -404,8 +404,9 @@ public class ProductPreferences {
 
 		// Check if the user property is set. If not do not
 		// rely on the vm.
-		if (System.getProperty("osgi.nl.user") == null) //$NON-NLS-1$
+		if (System.getProperty("osgi.nl.user") == null) { //$NON-NLS-1$
 			return false;
+		}
 
 		// guess from default locale
 		String locale = Platform.getNL();

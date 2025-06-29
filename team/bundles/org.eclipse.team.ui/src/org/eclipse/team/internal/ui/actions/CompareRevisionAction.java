@@ -59,8 +59,9 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 	public void run() {
 		IStructuredSelection structSel = selection;
 
-		if (structSel == null)
+		if (structSel == null) {
 			return;
+		}
 
 		Object[] objArray = structSel.toArray();
 
@@ -115,8 +116,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 
 	private String getLocalEncoding() {
 		IResource resource = getResource(getCurrentFileRevision());
-		if (resource instanceof IFile) {
-			IFile file = (IFile) resource;
+		if (resource instanceof IFile file) {
 			try {
 				return file.getCharset();
 			} catch (CoreException e) {
@@ -140,18 +140,20 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 			IEditorInput otherInput = editor.getEditorInput();
 			if (otherInput.equals(input)) {
 				// simply provide focus to editor
-				if (OpenStrategy.activateOnOpen())
+				if (OpenStrategy.activateOnOpen()) {
 					workBenchPage.activate(editor);
-				else
+				} else {
 					workBenchPage.bringToTop(editor);
+				}
 			} else {
 				// if editor is currently not open on that input either re-use
 				// existing
 				CompareUI.reuseCompareEditor(input, (IReusableEditor) editor);
-				if (OpenStrategy.activateOnOpen())
+				if (OpenStrategy.activateOnOpen()) {
 					workBenchPage.activate(editor);
-				else
+				} else {
 					workBenchPage.bringToTop(editor);
+				}
 			}
 		} else {
 			CompareUI.openCompareEditor(input, OpenStrategy.activateOnOpen());
@@ -165,8 +167,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 	}
 
 	private IResource getResource(IFileRevision revision) {
-		if (revision instanceof LocalFileRevision) {
-			LocalFileRevision local = (LocalFileRevision) revision;
+		if (revision instanceof LocalFileRevision local) {
 			return local.getFile();
 		}
 		return null;
@@ -197,14 +198,14 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 		this.selection = selection;
 		if (selection.size() == 1){
 			Object el = selection.getFirstElement();
-			if (el instanceof LocalFileRevision)
+			if (el instanceof LocalFileRevision) {
 				this.setText(TeamUIMessages.CompareRevisionAction_Local);
-			else if (el instanceof FileRevision){
-				FileRevision tempFileRevision = (FileRevision) el;
-				this.setText(NLS.bind(TeamUIMessages.CompareRevisionAction_Revision, new String[]{tempFileRevision.getContentIdentifier()}));
-			}
-			else
+			} else if (el instanceof FileRevision tempFileRevision){
+				this.setText(NLS.bind(TeamUIMessages.CompareRevisionAction_Revision,
+						tempFileRevision.getContentIdentifier()));
+			} else {
 				this.setText(TeamUIMessages.CompareRevisionAction_CompareWithCurrent);
+			}
 			return shouldShow();
 		}
 		else if (selection.size() == 2){
@@ -219,8 +220,9 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 		IStructuredSelection structSel = selection;
 		Object[] objArray = structSel.toArray();
 
-		if (objArray.length == 0)
+		if (objArray.length == 0) {
 			return false;
+		}
 
 		for (Object obj : objArray) {
 			//Don't bother showing if this a category
@@ -229,8 +231,9 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 			}
 			IFileRevision revision = (IFileRevision) obj;
 			//check to see if any of the selected revisions are deleted revisions
-			if (revision != null && !revision.exists())
+			if (revision != null && !revision.exists()) {
 				return false;
+			}
 		}
 
 		return true;

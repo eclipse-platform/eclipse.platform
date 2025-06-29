@@ -31,10 +31,11 @@ public class SchemaValidator {
 		try {
 			SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema"); //$NON-NLS-1$
 			Schema schema = null;
-			if (schemaFile.startsWith("http") || schemaFile.startsWith("ftp"))
+			if (schemaFile.startsWith("http") || schemaFile.startsWith("ftp")) {
 				schema = factory.newSchema(new URL(schemaFile));
-			else
+			} else {
 				schema = factory.newSchema(new File(schemaFile));
+			}
 
 			Validator validator = schema.newValidator();
 			Source source = new StreamSource(uri);

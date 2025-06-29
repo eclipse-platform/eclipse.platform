@@ -163,8 +163,9 @@ public String[] promptKeyboardInteractive(String destination, String name,
 			}
 			String[] result=promptForKeyboradInteractiveInUI(destination, name,
 					instruction, prompt, echo);
-			if(result==null)
+			if(result==null) {
 				return null; // canceled
+			}
 			if(result.length==1&&prompt.length==1
 					&&prompt[0].trim().equalsIgnoreCase("password:")){ //$NON-NLS-1$
 				password=result[0];

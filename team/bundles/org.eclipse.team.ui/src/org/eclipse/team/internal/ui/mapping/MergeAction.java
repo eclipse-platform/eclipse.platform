@@ -65,8 +65,7 @@ public class MergeAction extends Action {
 			final SaveableComparison currentBuffer = ((ModelSynchronizeParticipant)configuration.getParticipant()).getActiveSaveable();
 			if (currentBuffer != null && currentBuffer.isDirty()) {
 				SaveableComparison targetBuffer = null;
-				if (handler instanceof MergeActionHandler) {
-					MergeActionHandler mah = (MergeActionHandler) handler;
+				if (handler instanceof MergeActionHandler mah) {
 					targetBuffer = mah.getSaveable();
 				}
 				final SaveableComparison target = targetBuffer;
@@ -100,15 +99,13 @@ public class MergeAction extends Action {
 	 * @param exception the exception
 	 */
 	protected void handle(Throwable exception) {
-		if (exception instanceof ExecutionException) {
-			ExecutionException ee = (ExecutionException) exception;
+		if (exception instanceof ExecutionException ee) {
 			if (ee.getCause() != null) {
 				handle(exception.getCause());
 			}
 		}
 		IStatus status;
-		if (exception instanceof CoreException) {
-			CoreException ce = (CoreException) exception;
+		if (exception instanceof CoreException ce) {
 			status = ce.getStatus();
 		} else {
 			status = new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, TeamUIMessages.exception, exception);
@@ -119,8 +116,9 @@ public class MergeAction extends Action {
 	private IHandler getHandler() {
 		IHandler handler = manager.getHandler(handlerId);
 		if (handler == null) {
-			if (defaultHandler == null)
+			if (defaultHandler == null) {
 				defaultHandler = getDefaultHandler();
+			}
 			return defaultHandler;
 		}
 		return handler;
@@ -136,8 +134,9 @@ public class MergeAction extends Action {
 	}
 
 	public void dispose() {
-		if (defaultHandler != null)
+		if (defaultHandler != null) {
 			defaultHandler.dispose();
+		}
 	}
 
 	public void update() {

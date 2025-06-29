@@ -179,8 +179,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 
 		@Override
 		public Image getImage(Object obj) {
-			if (obj instanceof CheatSheetElement) {
-				CheatSheetElement element = (CheatSheetElement)obj;
+			if (obj instanceof CheatSheetElement element) {
 				if (element.isComposite()) {
 					return CheatSheetPlugin.getPlugin().getImageRegistry().get(
 							ICheatSheetResource.COMPOSITE_OBJ);
@@ -235,9 +234,10 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 				.getDialogSettings();
 		IDialogSettings dialogSettings = workbenchSettings
 				.getSection(DIALOG_SETTINGS_SECTION);
-		if (dialogSettings == null)
+		if (dialogSettings == null) {
 			dialogSettings = workbenchSettings
 					.addNewSection(DIALOG_SETTINGS_SECTION);
+		}
 
 		setDialogSettings(dialogSettings);
 
@@ -279,10 +279,11 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 		desc = new ScrolledFormText(sform, true);
 		desc.setEnabled(false);
 
-		sform.setWeights(new int[] {10, 2});
+		sform.setWeights(10, 2);
 
-		if (activityViewerFilter.getHasEncounteredFilteredItem())
+		if (activityViewerFilter.getHasEncounteredFilteredItem()) {
 			createShowAllButton(outerContainer);
+		}
 
 		// Add double-click listener
 		treeViewer.addDoubleClickListener(event -> {
@@ -328,9 +329,10 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 		restoreWidgetValues();
 		restoreFileSettings();
 
-		if (!treeViewer.getSelection().isEmpty())
+		if (!treeViewer.getSelection().isEmpty()) {
 			// we only set focus if a selection was restored
 			treeViewer.getTree().setFocus();
+		}
 
 		Dialog.applyDialogFont(outerContainer);
 		selectFileCombo.addModifyListener(new FileAndUrlListener());
@@ -451,12 +453,14 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 		for (String expandedCategoryPath : expandedCategoryPaths) {
 			CheatSheetCollectionElement category = cheatsheetCategories
 					.findChildCollection(IPath.fromOSString(expandedCategoryPath));
-			if (category != null) // ie.- it still exists
+			if (category != null) { // ie.- it still exists
 				categoriesToExpand.add(category);
+			}
 		}
 
-		if (!categoriesToExpand.isEmpty())
+		if (!categoriesToExpand.isEmpty()) {
 			treeViewer.setExpandedElements(categoriesToExpand.toArray());
+		}
 		return categoriesToExpand.isEmpty() ? null
 				: (CheatSheetCollectionElement) categoriesToExpand
 						.get(categoriesToExpand.size() - 1);
@@ -645,12 +649,14 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 	protected void restoreWidgetValues() {
 		String[] expandedCategoryPaths = settings
 				.getArray(STORE_EXPANDED_CATEGORIES_ID);
-		if (expandedCategoryPaths == null)
+		if (expandedCategoryPaths == null) {
 			return; // no stored values
+		}
 
 		CheatSheetCollectionElement category = expandPreviouslyExpandedCategories();
-		if (category != null)
+		if (category != null) {
 			selectPreviouslySelectedCheatSheet(category);
+		}
 	}
 
 	/**
@@ -718,12 +724,14 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 	protected void selectPreviouslySelectedCheatSheet(
 			CheatSheetCollectionElement category) {
 		String cheatsheetId = settings.get(STORE_SELECTED_CHEATSHEET_ID);
-		if (cheatsheetId == null)
+		if (cheatsheetId == null) {
 			return;
+		}
 		CheatSheetElement cheatsheet = category.findCheatSheet(cheatsheetId,
 				false);
-		if (cheatsheet == null)
+		if (cheatsheet == null) {
 			return; // cheatsheet no longer exists, or has moved
+		}
 
 		treeViewer.setSelection(new StructuredSelection(cheatsheet));
 	}
@@ -762,13 +770,15 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 		CheatSheetElement element = null;
 
 		Object el = getSingleSelection(treeViewer.getStructuredSelection());
-		if (el == null)
+		if (el == null) {
 			return;
+		}
 
 		if (el instanceof CheatSheetElement) {
 			element = (CheatSheetElement) el;
-		} else
+		} else {
 			return;
+		}
 
 		settings.put(STORE_SELECTED_CHEATSHEET_ID, element.getID());
 	}

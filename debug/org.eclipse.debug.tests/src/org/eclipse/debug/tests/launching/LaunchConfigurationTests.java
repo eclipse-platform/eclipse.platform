@@ -86,7 +86,7 @@ import org.osgi.service.prefs.Preferences;
 @SuppressWarnings("deprecation")
 public class LaunchConfigurationTests extends AbstractLaunchTest implements ILaunchConfigurationListener {
 
-	@SuppressWarnings({ "restriction", "unused" })
+	@SuppressWarnings({ "unused" })
 	// Only ensures org.eclipse.ui.externaltools is required
 	private static final org.eclipse.ui.externaltools.internal.model.BuilderUtils ref = null;
 
@@ -698,7 +698,7 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 	}
 
 	@Test
-	public void testSharedConfigurationLineDelimeters() throws CoreException {
+	public void testSharedConfigurationLineDelimiters() throws CoreException {
 		// we must test non-system-default separator
 		final String systemSeparator = System.lineSeparator();
 		final String nonSystemSeparator = "\n".equals(systemSeparator) ? "\r\n" : "\n";

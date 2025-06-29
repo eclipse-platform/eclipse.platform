@@ -60,10 +60,10 @@ public class InstanceofExpression extends Expression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof InstanceofExpression))
+		if (!(object instanceof final InstanceofExpression that)) {
 			return false;
+		}
 
-		final InstanceofExpression that= (InstanceofExpression) object;
 		return this.fTypeName.equals(that.fTypeName);
 	}
 

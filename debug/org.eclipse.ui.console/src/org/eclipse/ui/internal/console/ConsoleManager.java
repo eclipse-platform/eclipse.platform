@@ -355,8 +355,7 @@ public class ConsoleManager implements IConsoleManager {
 	 */
 	private boolean shouldBringToTop(IConsole console, IViewPart consoleView) {
 		boolean bringToTop = true;
-		if (consoleView instanceof IConsoleView) {
-			IConsoleView cView = (IConsoleView) consoleView;
+		if (consoleView instanceof IConsoleView cView) {
 			if (cView.isPinned()) {
 				IConsole pinnedConsole = cView.getConsole();
 				bringToTop = console.equals(pinnedConsole);
@@ -416,8 +415,7 @@ public class ConsoleManager implements IConsoleManager {
 					continue;
 				}
 
-				if (console instanceof TextConsole && extension.isEnabledFor(console)) {
-					TextConsole textConsole = (TextConsole) console;
+				if (console instanceof TextConsole textConsole && extension.isEnabledFor(console)) {
 					PatternMatchListener patternMatchListener = new PatternMatchListener(extension);
 					try {
 						textConsole.addPatternMatchListener(patternMatchListener);

@@ -73,8 +73,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	@Override
 	public void launch(ISelection selection, String mode) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection structuredSelection) {
 			Object object = structuredSelection.getFirstElement();
 			if (object instanceof IAdaptable) {
 				if (object instanceof AntElementNode) {
@@ -109,7 +108,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 	 * <li>AntTargetNodes: that target is executed</li>
 	 * <li>AntTaskNodes: the owning target is executed</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param node
 	 *            the Ant node to use as the context for the launch
 	 * @param mode
@@ -117,8 +116,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 	 */
 	public void launch(AntElementNode node, String mode) {
 		String selectedTargetName = null;
-		if (node instanceof AntTargetNode) {
-			AntTargetNode targetNode = (AntTargetNode) node;
+		if (node instanceof AntTargetNode targetNode) {
 			if (targetNode.isDefaultTarget()) {
 				selectedTargetName = DEFAULT_TARGET;
 			} else {
@@ -127,8 +125,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 			}
 		} else if (node instanceof AntProjectNode) {
 			selectedTargetName = DEFAULT_TARGET;
-		} else if (node instanceof AntTaskNode) {
-			AntTaskNode taskNode = (AntTaskNode) node;
+		} else if (node instanceof AntTaskNode taskNode) {
 			selectedTargetName = taskNode.getTask().getOwningTarget().getName();
 		}
 
@@ -189,11 +186,11 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	/**
 	 * Returns a listing of <code>ILaunchConfiguration</code>s that correspond to the specified build file.
-	 * 
+	 *
 	 * @param filepath
 	 *            the path to the buildfile to launch
 	 * @return the list of <code>ILaunchConfiguration</code>s that correspond to the specified build file.
-	 * 
+	 *
 	 * @since 3.4
 	 */
 	protected List<ILaunchConfiguration> collectConfigurations(IPath filepath) {
@@ -229,7 +226,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 	/**
 	 * Returns a unique name for a copy of the given launch configuration with the given targets. The name seed is the same as the name for a new
 	 * launch configuration with &quot; [targetList]&quot; appended to the end.
-	 * 
+	 *
 	 * @param filePath
 	 *            the path to the buildfile
 	 * @param projectName
@@ -267,7 +264,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	/**
 	 * Launch the given targets in the given build file. The targets are launched in the given mode.
-	 * 
+	 *
 	 * @param filePath
 	 *            the path to the build file to launch
 	 * @param project
@@ -277,7 +274,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 	 * @param targetAttribute
 	 *            the targets to launch or <code>null</code> to use targets on existing configuration, or <code>DEFAULT</code> for default target
 	 *            explicitly.
-	 * 
+	 *
 	 *            configuration targets attribute.
 	 */
 	public void launch(IPath filePath, IProject project, String mode, String targetAttribute) {
@@ -316,8 +313,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 				}
 			}
 			catch (CoreException exception) {
-				reportError(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchShortcut_Exception_launching, new Object[] {
-						filePath.toFile().getName() }), exception);
+				reportError(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchShortcut_Exception_launching, filePath.toFile().getName()), exception);
 				return;
 			}
 			launch(mode, configuration);
@@ -328,7 +324,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	/**
 	 * Delegate method to launch the specified <code>ILaunchConfiguration</code> in the specified mode
-	 * 
+	 *
 	 * @param mode
 	 *            the mode to launch in
 	 * @param configuration
@@ -355,7 +351,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	/**
 	 * Creates and returns a default launch configuration for the given file.
-	 * 
+	 *
 	 * @return default launch configuration
 	 */
 	public static ILaunchConfiguration createDefaultLaunchConfiguration(IFile file) {
@@ -364,7 +360,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	/**
 	 * Creates and returns a default launch configuration for the given file path and project.
-	 * 
+	 *
 	 * @param filePath
 	 *            the path to the buildfile
 	 * @param project
@@ -404,14 +400,14 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 			return workingCopy.doSave();
 		}
 		catch (CoreException e) {
-			reportError(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchShortcut_2, new Object[] { filePath.toString() }), e);
+			reportError(MessageFormat.format(AntLaunchConfigurationMessages.AntLaunchShortcut_2, filePath.toString()), e);
 		}
 		return null;
 	}
 
 	/**
 	 * Returns a list of existing launch configuration for the given file.
-	 * 
+	 *
 	 * @param file
 	 *            the buildfile resource
 	 * @return list of launch configurations
@@ -448,7 +444,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 	/**
 	 * Prompts the user to choose from the list of given launch configurations and returns the config the user choose or <code>null</code> if the user
 	 * pressed Cancel or if the given list is empty.
-	 * 
+	 *
 	 * @param configs
 	 *            the list of {@link ILaunchConfiguration}s to choose from
 	 * @return the chosen {@link ILaunchConfiguration} or <code>null</code>
@@ -516,7 +512,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	/**
 	 * Sets whether to show the external tools launch configuration dialog
-	 * 
+	 *
 	 * @param showDialog
 	 *            If true the launch configuration dialog will always be shown
 	 */
@@ -526,8 +522,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	@Override
 	public ILaunchConfiguration[] getLaunchConfigurations(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection structuredSelection) {
 			Object object = structuredSelection.getFirstElement();
 			if (object instanceof IAdaptable) {
 				if (object instanceof AntElementNode) {
@@ -582,8 +577,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 
 	@Override
 	public IResource getLaunchableResource(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection structuredSelection) {
 			Object object = structuredSelection.getFirstElement();
 			if (object instanceof IAdaptable) {
 				IResource resource = ((IAdaptable) object).getAdapter(IResource.class);

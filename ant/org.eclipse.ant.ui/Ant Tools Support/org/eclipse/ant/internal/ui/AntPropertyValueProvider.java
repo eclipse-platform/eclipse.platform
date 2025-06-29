@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -20,19 +20,19 @@ import org.eclipse.jdt.core.JavaCore;
 
 /**
  * Dynamic provider for Ant properties.
- * 
+ *
  * Provides the dynamic values for the following Ant properties:
- * 
+ *
  * <ul>
  * <li><code>eclipse.target</code> - set to the Eclipse target platform location</li>
  * </ul>
- * 
+ *
  * @since 3.1
  */
 public class AntPropertyValueProvider implements IAntPropertyValueProvider {
 	/**
 	 * Returns the dynamic property values for Ant properties.
-	 * 
+	 *
 	 * @param propertyName
 	 *            The name of the property to resolve the value for
 	 * @return The resolved value for the property

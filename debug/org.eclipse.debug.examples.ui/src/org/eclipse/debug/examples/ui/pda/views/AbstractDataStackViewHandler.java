@@ -33,9 +33,7 @@ abstract public class AbstractDataStackViewHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchPart part = HandlerUtil.getActivePartChecked(event);
-		if (part instanceof DataStackView) {
-			DataStackView view = (DataStackView)part;
-
+		if (part instanceof DataStackView view) {
 			ISelection selection = DebugUITools.getDebugContextForEventChecked(event);
 			if (selection instanceof IStructuredSelection) {
 				Object element = ((IStructuredSelection)selection).getFirstElement();

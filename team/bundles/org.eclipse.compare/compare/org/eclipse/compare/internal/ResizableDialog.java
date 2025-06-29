@@ -63,8 +63,9 @@ public abstract class ResizableDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		if (fContextId != null && PlatformUI.isWorkbenchRunning())
+		if (fContextId != null && PlatformUI.isWorkbenchRunning()) {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, fContextId);
+		}
 	}
 
 	@Override
@@ -97,10 +98,12 @@ public abstract class ResizableDialog extends Dialog {
 				Shell shell= getParentShell();
 				if (shell != null) {
 					Point parentSize= shell.getSize();
-					if (width <= 0)
+					if (width <= 0) {
 						width= parentSize.x-300;
-					if (height <= 0)
+					}
+					if (height <= 0) {
 						height= parentSize.y-200;
+					}
 				}
 			} else {
 				Shell shell= getParentShell();
@@ -110,10 +113,12 @@ public abstract class ResizableDialog extends Dialog {
 					height= parentSize.y-100;
 				}
 			}
-			if (width < 700)
+			if (width < 700) {
 				width= 700;
-			if (height < 500)
+			}
+			if (height < 500) {
 				height= 500;
+			}
 		} else {
 			try {
 				width= bounds.getInt(WIDTH);
@@ -153,8 +158,9 @@ public abstract class ResizableDialog extends Dialog {
 	@Override
 	public boolean close() {
 		boolean closed= super.close();
-		if (closed && fNewBounds != null)
+		if (closed && fNewBounds != null) {
 			saveBounds(fNewBounds);
+		}
 		return closed;
 	}
 

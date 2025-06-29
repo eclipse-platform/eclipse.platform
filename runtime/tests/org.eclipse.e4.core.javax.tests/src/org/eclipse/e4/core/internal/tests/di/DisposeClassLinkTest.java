@@ -14,8 +14,8 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -26,7 +26,7 @@ import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.extensions.EventTopic;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 /**
  * Checks that injected objects that do not have normal links
  * established to the context are still notified on context
@@ -139,15 +139,15 @@ public class DisposeClassLinkTest {
 
 		InjectionObject obj = ContextInjectionFactory.make(InjectionObject.class, context);
 
-		assertEquals("The object has been injected with the context", context, obj.context);
-		assertEquals("@PostConstruct should have been called once", 1, obj.postConstruct);
-		assertEquals("@PreDestroy should not have been called", 0, obj.preDestroy);
+		assertEquals(context, obj.context, "The object has been injected with the context");
+		assertEquals(1, obj.postConstruct, "@PostConstruct should have been called once");
+		assertEquals(0, obj.preDestroy, "@PreDestroy should not have been called");
 
 		context.dispose();
 
 		assertNotNull(obj.context);
-		assertEquals("@PostConstruct should only have been called once", 1, obj.postConstruct);
-		assertEquals("@PreDestroy should have been called during uninjection", 1, obj.preDestroy);
+		assertEquals(1, obj.postConstruct, "@PostConstruct should only have been called once");
+		assertEquals(1, obj.preDestroy, "@PreDestroy should have been called during uninjection");
 	}
 
 	@Test

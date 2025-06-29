@@ -1,15 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 GEBIT Gesellschaft fuer EDV-Beratung
- * und Informatik-Technologien mbH, 
+ * und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial API and implementation
  * 	   IBM Corporation - bug fixes
@@ -65,7 +65,7 @@ public class TaskDescriptionProvider {
 
 	/**
 	 * Class to avoid holding on to DOM element handles
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	static class ProposalNode {
@@ -164,7 +164,7 @@ public class TaskDescriptionProvider {
 
 	/**
 	 * Adds a new child {@link ProposalNode} to the given parent node
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	void addNode(Element element, ProposalNode node) {
@@ -176,7 +176,7 @@ public class TaskDescriptionProvider {
 
 	/**
 	 * Recursively find the description text for the parent {@link Element}
-	 * 
+	 *
 	 * @return the description element text or <code>null</code>
 	 * @since 3.5
 	 */
@@ -230,7 +230,7 @@ public class TaskDescriptionProvider {
 
 	/**
 	 * Returns the description string for the specified task.
-	 * 
+	 *
 	 * @return description string or <code>null</code> if task not known or no description available.
 	 */
 	public String getDescriptionForTask(String aTaskName) {
@@ -243,7 +243,7 @@ public class TaskDescriptionProvider {
 
 	/**
 	 * Returns the description string for the specified attribute of the specified task.
-	 * 
+	 *
 	 * @return description string or <code>null</code> if task or attribute not known or no description available.
 	 */
 	public String getDescriptionForTaskAttribute(String aTaskName, String anAttributeName) {
@@ -259,7 +259,7 @@ public class TaskDescriptionProvider {
 
 	/**
 	 * Returns the required string value for the specified attribute of the specified task.
-	 * 
+	 *
 	 * @return required string or <code>null</code> if task or attribute not known or no description available.
 	 */
 	public String getRequiredAttributeForTaskAttribute(String aTaskName, String anAttributeName) {
@@ -275,7 +275,7 @@ public class TaskDescriptionProvider {
 
 	/**
 	 * Returns the {@link ProposalNode} for the given task name or <code>null</code> if one does not exist
-	 * 
+	 *
 	 * @return the {@link ProposalNode} for the given name or <code>null</code>
 	 * @since 3.5
 	 */

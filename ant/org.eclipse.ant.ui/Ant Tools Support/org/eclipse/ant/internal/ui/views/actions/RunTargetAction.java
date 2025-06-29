@@ -42,7 +42,7 @@ public class RunTargetAction extends Action implements IUpdate {
 
 	/**
 	 * Creates a new <code>RunTargetAction</code> which will execute targets in the given view.
-	 * 
+	 *
 	 * @param view
 	 *            the Ant view whose selection this action will use when determining which target to run.
 	 */
@@ -81,7 +81,7 @@ public class RunTargetAction extends Action implements IUpdate {
 
 	/**
 	 * Launches the given Ant element node
-	 * 
+	 *
 	 * @param node
 	 *            the node to use to launch
 	 * @see AntLaunchShortcut#launch(AntElementNode, String)
@@ -120,7 +120,7 @@ public class RunTargetAction extends Action implements IUpdate {
 
 	/**
 	 * Returns the selected node or <code>null</code> if more than one element is selected.
-	 * 
+	 *
 	 * @return AntElementNode the selected node
 	 */
 	private AntElementNode getSelectedElement() {

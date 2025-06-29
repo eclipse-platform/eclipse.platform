@@ -46,16 +46,18 @@ public abstract class DiffContainer extends DiffElement implements IDiffContaine
 		Object[] children= getChildren();
 		for (Object c : children) {
 			IDiffElement child = (IDiffElement) c;
-			if (name.equals(child.getName()))
+			if (name.equals(child.getName())) {
 				return child;
+			}
 		}
 		return null;
 	}
 
 	@Override
 	public void add(IDiffElement diff) {
-		if (fChildren == null)
+		if (fChildren == null) {
 			fChildren= new ArrayList<>();
+		}
 		fChildren.add(diff);
 		diff.setParent(this);
 	}
@@ -67,8 +69,9 @@ public abstract class DiffContainer extends DiffElement implements IDiffContaine
 			child.setParent(null);
 			if (fChildren.isEmpty()) {
 				IDiffContainer p= getParent();
-				if (p != null)
+				if (p != null) {
 					p.removeToRoot(this);
+				}
 			}
 		}
 	}
@@ -92,8 +95,9 @@ public abstract class DiffContainer extends DiffElement implements IDiffContaine
 
 	@Override
 	public IDiffElement[] getChildren() {
-		if (fChildren != null)
+		if (fChildren != null) {
 			return fChildren.toArray(fgEmptyArray);
+		}
 		return fgEmptyArray;
 	}
 }

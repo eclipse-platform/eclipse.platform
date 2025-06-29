@@ -66,14 +66,11 @@ public class AntDebugModelPresentation extends LabelProvider implements IDebugMo
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof AntStackFrame) {
-			AntStackFrame frame = (AntStackFrame) element;
+		if (element instanceof AntStackFrame frame) {
 			return getStackFrameText(frame);
-		} else if (element instanceof AntThread) {
-			AntThread thread = (AntThread) element;
+		} else if (element instanceof AntThread thread) {
 			return getThreadText(thread);
-		} else if (element instanceof AntProperty) {
-			AntProperty property = (AntProperty) element;
+		} else if (element instanceof AntProperty property) {
 			return property.getText();
 		} else if (element instanceof AntProperties) {
 			return ((AntProperties) element).getName();
@@ -95,13 +92,11 @@ public class AntDebugModelPresentation extends LabelProvider implements IDebugMo
 					String lineNumber = Integer.toString(marker.getAttribute(IMarker.LINE_NUMBER, -1));
 					String breakpointString = null;
 					if (breakpoint.isRunToLine()) {
-						breakpointString = MessageFormat.format(DebugModelMessages.AntDebugModelPresentation_5, new Object[] { lineNumber,
-								fileName });
+						breakpointString = MessageFormat.format(DebugModelMessages.AntDebugModelPresentation_5, lineNumber, fileName);
 					} else {
-						breakpointString = MessageFormat.format(DebugModelMessages.AntDebugModelPresentation_2, new Object[] { lineNumber,
-								fileName });
+						breakpointString = MessageFormat.format(DebugModelMessages.AntDebugModelPresentation_2, lineNumber, fileName);
 					}
-					text.append(MessageFormat.format(DebugModelMessages.AntDebugModelPresentation_3, new Object[] { breakpointString }));
+					text.append(MessageFormat.format(DebugModelMessages.AntDebugModelPresentation_3, breakpointString));
 				} else {
 					text.append(DebugModelMessages.AntDebugModelPresentation_4);
 				}
@@ -123,7 +118,7 @@ public class AntDebugModelPresentation extends LabelProvider implements IDebugMo
 			} else {
 				lineNumberString = Integer.toString(lineNumber);
 			}
-			text.append(MessageFormat.format(DebugModelMessages.AntDebugModelPresentation_1, new Object[] { lineNumberString }));
+			text.append(MessageFormat.format(DebugModelMessages.AntDebugModelPresentation_1, lineNumberString));
 			return text.toString();
 		}
 		return null;

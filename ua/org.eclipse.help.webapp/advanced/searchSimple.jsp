@@ -71,7 +71,7 @@ INPUT {
 #searchWord {	
 	padding-left:4px;
 	padding-right:4px;
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 }
 
 #go {
@@ -82,13 +82,13 @@ INPUT {
 <% 
     } else {
 %>
-    background:ThreeDShadow;
+    background:CanvasText;
 <%
     }
 %>
-	color:Window;
+	color:Canvas;
 	font-weight:bold;
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 }
 
 
@@ -144,7 +144,7 @@ function saveSelectedBooks(books)
 
 function openAdvanced()
 {
-	window.location="javascript://needModal";
+	if (typeof top.swtHintNeedModalPopup === "function") top.swtHintNeedModalPopup();
 	advancedDialog = window.open("advanced.jsp?searchWord="+encodeURIComponent(document.getElementById("searchWord").value), "advancedDialog", "resizable=yes,height="+h+",width="+w );
 	advancedDialog.focus(); 
 }

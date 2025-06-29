@@ -351,7 +351,7 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 		return testElement;
 	}
 
-	private final class NoopLaunch extends Launch {
+	private static final class NoopLaunch extends Launch {
 		private NoopLaunch(ILaunchConfiguration launchConfiguration, String mode, ISourceLocator locator) {
 			super(launchConfiguration, mode, locator);
 		}
@@ -471,7 +471,7 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 			if (testElement == null) {
 				return;
 			}
-			if (!(testElement instanceof TestCaseElement)) {
+			if (!(testElement instanceof TestCaseElement testCaseElement)) {
 				if (isIgnored) {
 					((TestElement) testElement).setAssumptionFailed(true);
 					setStatus(testElement, Status.OK);
@@ -480,13 +480,13 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 				}
 				return;
 			}
-			TestCaseElement testCaseElement = (TestCaseElement) testElement;
 			if (isIgnored) {
 				testCaseElement.setIgnored(true);
 			}
 
-			if (testCaseElement.getStatus() == Status.RUNNING)
+			if (testCaseElement.getStatus() == Status.RUNNING) {
 				setStatus(testCaseElement, Status.OK);
+			}
 
 			for (ITestSessionListener listener : fSessionListeners) {
 				listener.testEnded(testCaseElement);
@@ -544,13 +544,13 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 	 *                    <code>false</code> otherwise
 	 */
 	public void registerTestEnded(TestElement testElement, boolean completed) {
-		if (testElement instanceof TestCaseElement) {
+		if (testElement instanceof TestCaseElement testCaseElement) {
 			if (!completed) {
 				return;
 			}
-			TestCaseElement testCaseElement = (TestCaseElement) testElement;
-			if (!testCaseElement.getStatus().isErrorOrFailure())
+			if (!testCaseElement.getStatus().isErrorOrFailure()) {
 				setStatus(testElement, Status.OK);
+			}
 		}
 	}
 
@@ -580,8 +580,7 @@ public class TestRunSession extends TestSuiteElement implements ITestRunSession,
 		if (testResult == Result.ERROR || testResult == Result.FAILURE) {
 			failures.add(testElement);
 		}
-		if (testElement instanceof TestSuiteElement) {
-			TestSuiteElement testSuiteElement = (TestSuiteElement) testElement;
+		if (testElement instanceof TestSuiteElement testSuiteElement) {
 			for (TestElement child : testSuiteElement.getChildren()) {
 				addFailures(failures, child);
 			}

@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
@@ -26,7 +26,7 @@ public class AntDocumentSetupParticipant implements IDocumentSetupParticipant {
 
 	/**
 	 * The name of the Ant partitioning.
-	 * 
+	 *
 	 * @since 3.0
 	 */
 	public final static String ANT_PARTITIONING = "org.eclipse.ant.ui.antPartitioning"; //$NON-NLS-1$
@@ -36,8 +36,7 @@ public class AntDocumentSetupParticipant implements IDocumentSetupParticipant {
 
 	@Override
 	public void setup(IDocument document) {
-		if (document instanceof IDocumentExtension3) {
-			IDocumentExtension3 extension3 = (IDocumentExtension3) document;
+		if (document instanceof IDocumentExtension3 extension3) {
 			IDocumentPartitioner partitioner = createDocumentPartitioner();
 			extension3.setDocumentPartitioner(ANT_PARTITIONING, partitioner);
 			partitioner.connect(document);

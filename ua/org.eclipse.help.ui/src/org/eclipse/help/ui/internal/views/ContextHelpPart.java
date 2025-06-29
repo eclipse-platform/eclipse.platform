@@ -194,20 +194,20 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 		FontData[] tfontData = textFont.getFontData();
 		int height = 0;
 
-		for (int i=0; i<rfontData.length; i++) {
-			FontData data = rfontData[i];
+		for (FontData data : rfontData) {
 			height = Math.max(height, data.getHeight());
 		}
-		for (int i = 0; i < tfontData.length; i++) {
-			tfontData[i].setHeight(height);
+		for (FontData element : tfontData) {
+			element.setHeight(height);
 		}
 		return new Font(display, tfontData);
 	}
 
 	@Override
 	public void dispose() {
-		if (codeFont!=null)
+		if (codeFont!=null) {
 			codeFont.dispose();
+		}
 		codeFont = null;
 		super.dispose();
 	}
@@ -247,8 +247,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 	 */
 	public void setDefaultText(String defaultText) {
 		this.defaultText = defaultText;
-		if (text != null)
+		if (text != null) {
 			text.setText(defaultText, false, false);
+		}
 	}
 
 	private void doOpenLink(Object href) {
@@ -289,15 +290,17 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 				return;
 			}
 		}
-		if (lastControl != null)
+		if (lastControl != null) {
 			updateSearchExpression(null, lastControl);
+		}
 	}
 
 	public void handleActivation(IContextProvider provider, IContext context,
 			Control c,
 			IWorkbenchPart part, boolean isExplicitRequest) {
-		if (text.isDisposed())
+		if (text.isDisposed()) {
 			return;
+		}
 		if (DefaultHelpUI.isOpeningHelpView()) {
 			return;
 		}
@@ -359,21 +362,22 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	private void updateTitle(Control c) {
 		String title = null;
-		if (lastContext != null && lastContext instanceof IContext2) {
-			IContext2 c2 = (IContext2)lastContext;
+		if (lastContext != null && lastContext instanceof IContext2 c2) {
 			title = c2.getTitle();
 		}
-		if (title==null && lastPart != null)
+		if (title==null && lastPart != null) {
 			title = NLS.bind(Messages.ContextHelpPart_aboutP, lastPart
 							.getSite().getRegisteredName());
+		}
 		if (title == null) {
 			String[] searchTerms = computeSearchTerms(c);
 			if (searchTerms.length > 0) {
 				title = NLS.bind(Messages.ContextHelpPart_aboutP, searchTerms[0]);
 			}
 		}
-		if (title==null)
+		if (title==null) {
 			title = Messages.ContextHelpPart_about;
+		}
 		getSection().setText(EscapeUtils.escapeForLabel(title));
 	}
 
@@ -412,11 +416,12 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	private String buildSearchExpression(String[] searchTerms) {
 		StringBuilder buff = new StringBuilder();
-		for (int i = 0; i < searchTerms.length; i++) {
-			if (buff.length() > 0)
+		for (String searchTerm : searchTerms) {
+			if (buff.length() > 0) {
 				buff.append(" OR "); //$NON-NLS-1$
+			}
 			buff.append('"');
-			buff.append(searchTerms[i]);
+			buff.append(searchTerm);
 			buff.append('"');
 		}
 		return buff.length() > 0 ? buff.toString().trim() : null;
@@ -427,7 +432,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 		private final List<String> terms = new ArrayList<>();
 		private final Set<String> termSet = new HashSet<>();
 		public void add(String term) {
-			if (term == null ) return;
+			if (term == null ) {
+				return;
+			}
 			String lowerCaseTerm = term.toLowerCase();
 			// Do not allow duplicates
 			if (!termSet.contains(lowerCaseTerm)) {
@@ -447,17 +454,15 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 	private String[] computeSearchTerms(Control c) {
 		// Search the control and all ancestors until we find a composite
 		// which we can get a search term from
-		Composite container =  c instanceof Composite ? (Composite)c : c.getParent();
+		Composite container = c instanceof Composite composite ? composite : c.getParent();
 		SearchTerms searchTerms = new SearchTerms();
 		while (container != null) {
 			Object data = container.getData();
-			if (data instanceof IWizardContainer) {
-				IWizardContainer wc = (IWizardContainer) data;
+			if (data instanceof IWizardContainer wc) {
 				searchTerms.add(wc.getCurrentPage().getTitle());
 				searchTerms.add(wc.getCurrentPage().getWizard().getWindowTitle());
 				break;
-			} else if (data instanceof IWorkbenchWindow) {
-				IWorkbenchWindow window = (IWorkbenchWindow) data;
+			} else if (data instanceof IWorkbenchWindow window) {
 				IWorkbenchPage page = window.getActivePage();
 				if (page != null) {
 					IWorkbenchPart part = lastPart;
@@ -483,8 +488,7 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 					*/
 				}
 				break;
-			} else if (data instanceof Window) {
-				Window w = (Window) data;
+			} else if (data instanceof Window w) {
 				if (w instanceof IPageChangeProvider) {
 					Object page = ((IPageChangeProvider) w).getSelectedPage();
 					String pageName = getPageName(c, page);
@@ -501,17 +505,20 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 	}
 
 	private String getPageName(Control focusControl, Object page) {
-		if (page instanceof IDialogPage)
+		if (page instanceof IDialogPage) {
 			return ((IDialogPage) page).getTitle();
-		if (focusControl == null)
+		}
+		if (focusControl == null) {
 			return null;
+		}
 
 		Composite parent = focusControl.getParent();
 		while (parent != null) {
 			if (parent instanceof TabFolder) {
 				TabItem[] selection = ((TabFolder) parent).getSelection();
-				if (selection.length == 1)
+				if (selection.length == 1) {
 					return stripMnemonic(selection[0].getText());
+				}
 			} else if (parent instanceof CTabFolder) {
 				CTabItem selection = ((CTabFolder) parent).getSelection();
 				return stripMnemonic(selection.getText());
@@ -523,8 +530,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	private String stripMnemonic(String name) {
 		int loc = name.indexOf('&');
-		if (loc!= -1)
+		if (loc!= -1) {
 			return name.substring(0, loc)+name.substring(loc+1);
+		}
 		return name;
 	}
 
@@ -548,8 +556,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 		Control node = c;
 		do {
 			contextId = (String) node.getData(HELP_KEY);
-			if (contextId != null)
+			if (contextId != null) {
 				break;
+			}
 			node = node.getParent();
 		} while (node != null);
 		if (contextId != null) {
@@ -573,8 +582,8 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 		String category = new String();
 		if (commands != null && commands.length > 0) {
-			for (int i=0;i<commands.length;++i) {
-				if (!UAContentFilter.isFiltered(commands[i], HelpEvaluationContext.getContext())) {
+			for (ICommandLink command : commands) {
+				if (!UAContentFilter.isFiltered(command, HelpEvaluationContext.getContext())) {
 					if (category != null) {
 						addCategory(sbuf, null);
 					}
@@ -583,9 +592,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 					sbuf.append(IHelpUIConstants.IMAGE_COMMAND_F1TOPIC);
 					sbuf.append("\" indent=\"21\">"); //$NON-NLS-1$
 					sbuf.append("<a href=\"command://"); //$NON-NLS-1$
-					sbuf.append(commands[i].getSerialization());
+					sbuf.append(command.getSerialization());
 					sbuf.append("\">"); //$NON-NLS-1$
-					sbuf.append(EscapeUtils.escapeSpecialChars(commands[i].getLabel()));
+					sbuf.append(EscapeUtils.escapeSpecialChars(command.getLabel()));
 					sbuf.append("</a>"); //$NON-NLS-1$
 					sbuf.append("</li>"); //$NON-NLS-1$
 				}
@@ -598,8 +607,7 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 			sorter.sort(null, links);
 		}
 		if (links != null && links.length > 0) {
-			for (int i = 0; i < links.length; i++) {
-				IHelpResource link = links[i];
+			for (IHelpResource link : links) {
 				if (!UAContentFilter.isFiltered(link, HelpEvaluationContext.getContext())) {
 					String cat = null;
 					if (context instanceof IContext2) {
@@ -656,8 +664,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 	}
 
 	private void addCategory(StringBuilder sbuf, String category) {
-		if (category == null)
+		if (category == null) {
 			category = Messages.ContextHelpPart_seeAlso;
+		}
 		sbuf.append("<p><span color=\""); //$NON-NLS-1$
 		sbuf.append(IFormColors.TITLE);
 		sbuf.append("\">"); //$NON-NLS-1$
@@ -667,10 +676,11 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	private String getTopicCategory(String href, String locale) {
 		IToc[] tocs = HelpPlugin.getTocManager().getTocs(locale);
-		for (int i = 0; i < tocs.length; i++) {
-			ITopic topic = tocs[i].getTopic(href);
-			if (topic != null)
-				return tocs[i].getLabel();
+		for (IToc toc : tocs) {
+			ITopic topic = toc.getTopic(href);
+			if (topic != null) {
+				return toc.getLabel();
+			}
 		}
 		return null;
 	}
@@ -701,8 +711,7 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	@Override
 	public boolean setFormInput(Object input) {
-		if (input instanceof ContextHelpProviderInput) {
-			ContextHelpProviderInput chinput = (ContextHelpProviderInput) input;
+		if (input instanceof ContextHelpProviderInput chinput) {
 			handleActivation(chinput.getProvider(), chinput.getContext(), chinput.getControl(),
 						chinput.getPart(), chinput.isExplicitRequest());
 			return true;
@@ -712,8 +721,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	@Override
 	public void setFocus() {
-		if (text != null)
+		if (text != null) {
 			text.setFocus();
+		}
 	}
 
 	@Override
@@ -728,8 +738,9 @@ public class ContextHelpPart extends SectionPart implements IHelpPart {
 
 	@Override
 	public IAction getGlobalAction(String id) {
-		if (id.equals(ActionFactory.COPY.getId()))
+		if (id.equals(ActionFactory.COPY.getId())) {
 			return parent.getCopyAction();
+		}
 		return null;
 	}
 

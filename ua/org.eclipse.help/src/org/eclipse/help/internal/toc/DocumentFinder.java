@@ -46,8 +46,9 @@ public class DocumentFinder {
 		}
 		Bundle pluginDesc = Platform.getBundle(pluginID);
 		if (pluginDesc == null || pluginDesc.getState() == Bundle.INSTALLED
-				|| pluginDesc.getState() == Bundle.UNINSTALLED)
+				|| pluginDesc.getState() == Bundle.UNINSTALLED) {
 			return new String[0];
+		}
 		String directory = HrefUtil.getResourcePathFromHref(dir);
 		if (directory == null) {
 			// the root - all files in a zip should be indexed

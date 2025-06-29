@@ -48,7 +48,6 @@ public class ConsoleRemoveLaunchAction extends Action implements IViewActionDele
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.CONSOLE_REMOVE_LAUNCH);
 		setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE));
 		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_REMOVE));
-		setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_REMOVE));
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
 		ConsolePlugin.getDefault().getConsoleManager().addConsoleListener(this);
 	}
@@ -131,8 +130,7 @@ public class ConsoleRemoveLaunchAction extends Action implements IViewActionDele
 		}
 		// else get dynmically, as this action was created via plug-in XML view contribution
 		IConsole console = fConsoleView.getConsole();
-		if (console instanceof ProcessConsole) {
-			ProcessConsole pconsole = (ProcessConsole) console;
+		if (console instanceof ProcessConsole pconsole) {
 			return pconsole.getProcess().getLaunch();
 		}
 		return null;

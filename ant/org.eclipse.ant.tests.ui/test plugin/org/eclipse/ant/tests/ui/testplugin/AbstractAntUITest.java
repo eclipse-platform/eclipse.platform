@@ -372,7 +372,6 @@ public abstract class AbstractAntUITest {
 	 *
 	 * @param buildFileName
 	 *            build file to launch
-	 * @see ProjectCreationDecorator
 	 */
 	protected ILaunchConfiguration getLaunchConfiguration(String buildFileName) {
 		IFile file = getJavaProject().getProject().getFolder("launchConfigurations").getFile(buildFileName + ".launch"); //$NON-NLS-1$ //$NON-NLS-2$

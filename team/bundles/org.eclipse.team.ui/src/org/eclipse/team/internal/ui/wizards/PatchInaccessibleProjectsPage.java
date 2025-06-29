@@ -76,27 +76,30 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 			@Override
 			public Color getForeground(Object element) {
 				if (element instanceof IProject
-						&& !((IProject) element).exists())
+						&& !((IProject) element).exists()) {
 					return Display.getCurrent().getSystemColor(
 							SWT.COLOR_WIDGET_NORMAL_SHADOW);
+				}
 				return super.getForeground(element);
 			}
 
 			@Override
 			protected String decorateText(String input, Object element) {
 				if (element instanceof IProject
-						&& !((IProject) element).exists())
+						&& !((IProject) element).exists()) {
 					return input
 							+ NLS.bind(
 									TeamUIMessages.PatchInaccessibleProjectsPage_projectDoesNotExistInWorkspace,
 									""); //$NON-NLS-1$
+				}
 				return input;
 			}
 		});
 		checkList.addCheckStateListener(event -> {
 			IProject project = (IProject) event.getElement();
-			if (event.getChecked() && !project.exists())
+			if (event.getChecked() && !project.exists()) {
 				checkList.setChecked(project, false);
+			}
 		});
 		checkList
 				.setComparator(new ResourceComparator(ResourceComparator.NAME));
@@ -142,8 +145,9 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 		if (diffProjects != null) {
 			for (DiffProject diffProject : diffProjects) {
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(diffProject.getName());
-				if (!project.isAccessible())
+				if (!project.isAccessible()) {
 					projects.add(project);
+				}
 			}
 		}
 		checkList.setInput(projects.toArray(new IProject[] {}));
@@ -152,16 +156,18 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if (visible)
+		if (visible) {
 			updateControls();
+		}
 	}
 
 	@Override
 	public IWizardPage getNextPage() {
 		// Skipping the patch parsed page in case this one is displayed
 		Control control = getControl();
-		if (control != null && control.isVisible())
+		if (control != null && control.isVisible()) {
 			return null;
+		}
 		return super.getNextPage();
 	}
 
@@ -178,8 +184,9 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 		int count = checkList.getTable().getItemCount();
 		for (int i = 0; i < count; i++) {
 			IProject project = (IProject) checkList.getElementAt(i);
-			if (project.exists())
+			if (project.exists()) {
 				checkList.setChecked(project, checked);
+			}
 		}
 	}
 

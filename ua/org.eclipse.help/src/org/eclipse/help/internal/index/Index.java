@@ -50,7 +50,9 @@ public class Index extends UAElement implements IIndex {
 	 * @return the entry with matching keyword or null
 	 */
 	public IndexEntry getSeeTarget(IndexSee see) {
-		if (children == null) getChildren();
+		if (children == null) {
+			getChildren();
+		}
 		String keyword = see.getKeyword();
 		for (Iterator<UAElement> iter = children.iterator(); iter.hasNext();) {
 			UAElement next = iter.next();

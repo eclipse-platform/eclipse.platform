@@ -1,25 +1,8 @@
 Evolving Java-based APIs 2
 ==========================
 
-Part 2 of [Evolving\_Java-based\_APIs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md).
+Part 2 of [Evolving\_Java-based\_APIs](Evolving-Java-based-APIs.md).
 
-Contents
---------
-
-*   [1 Achieving API Binary Compatibility](#Achieving-API-Binary-Compatibility)
-    *   [1.1 Evolving API packages](#Evolving-API-packages)
-    *   [1.2 Evolving API Interfaces](#Evolving-API-Interfaces)
-        *   [1.2.1 Evolving API interfaces - API methods](#Evolving-API-interfaces---API-methods)
-        *   [1.2.2 Evolving API interfaces - API fields](#Evolving-API-interfaces---API-fields)
-        *   [1.2.3 Evolving API interfaces - API type members](#Evolving-API-interfaces---API-type-members)
-    *   [1.3 Evolving API Classes](#Evolving-API-Classes)
-        *   [1.3.1 Evolving API classes - API methods and constructors](#Evolving-API-classes---API-methods-and-constructors)
-        *   [1.3.2 Evolving API classes - API fields](#Evolving-API-classes---API-fields)
-        *   [1.3.3 Evolving API classes - API type members](#Evolving-API-classes---API-type-members)
-    *   [1.4 Evolving non-API packages](#Evolving-non-API-packages)
-    *   [1.5 Turning non-generic types and methods into generic ones](#Turning-non-generic-types-and-methods-into-generic-ones)
-    *   [1.6 Evolving annotations on API elements](#Evolving-annotations-on-API-elements)
-*   [2 Other Notes](#Other-Notes)
 
 Achieving API Binary Compatibility
 ----------------------------------
@@ -95,13 +78,13 @@ Evolving API interfaces is somewhat more straightforward than API classes since 
 | Delete element from annotation type | - | **Breaks compatibility** (6) |
 
 (0) Although adding a new method to an API interface which need not be reimplemented by Clients does not break binary compatibility, a pre-existing Client subclass of an existing implementation might still provide a pre-existing implementation of a method by this name. 
-See [Evolving Java-based APIs#Example 4 - Adding an API method](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in the preceding section for why this breaks API contract compatibility.
+See [Evolving Java-based APIs#Example 4 - Adding an API method](Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in the preceding section for why this breaks API contract compatibility.
 
 (1) Adding a new method to an API interface that is implemented by Clients (e.g., a callback, listener, or visitor interface) breaks compatibility because hypothetical pre-existing implementations do not implement the new method.
 
 (2) Adding an API field to an API interface that is implemented by Clients is dangerous in two respects:
 
-*   It may break API contract compatibility similar to [Evolving\_Java-based\_APIs#Example\_4\_-\_Adding\_an\_API\_method](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in case of name clashes.
+*   It may break API contract compatibility similar to [Evolving\_Java-based\_APIs#Example\_4\_-\_Adding\_an\_API\_method](Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in case of name clashes.
 *   It may cause linkage errors in case an instance (respectively static) field hides a static (respectively instance) field, see [JLS8 13.4.8](https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.4.8). This can not happen if all field declarations follow the usual naming conventions from [JLS8 6.1](https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.1) and classes only have API fields that are either
     *   "static final" (and hence have a name that doesn't contain any lowercase letters), or
     *   non-static and non-final (and hence have a name that contains a least one lowercase letter)
@@ -225,7 +208,7 @@ Evolving API classes is somewhat more complex than API interfaces due to the wid
 | Re-order enum constants | - | Binary compatible (8) |
 
 (0) Although adding a new method to an API class which need not be reimplemented by Clients does not break binary compatibility, a pre-existing subclass might still provide a pre-existing implementation of a method by this name. 
-See [Evolving Java-based APIs#Example 4 - Adding an API method](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in the preceding section for why this breaks API contract compatibility.
+See [Evolving Java-based APIs#Example 4 - Adding an API method](Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in the preceding section for why this breaks API contract compatibility.
 
 (1) Adding a new method to an API class that must be reimplemented by Clients breaks compatibility because pre-existing subclasses would not provide any such implementation.
 
@@ -233,7 +216,7 @@ See [Evolving Java-based APIs#Example 4 - Adding an API method](https://github.c
 
 (3) Adding an API field to an API class that is extended by Clients is dangerous in two respects:
 
-*   It may break API contract compatibility similar to [Evolving\_Java-based\_APIs#Example\_4\_-\_Adding\_an\_API\_method](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in case of name clashes.
+*   It may break API contract compatibility similar to [Evolving\_Java-based\_APIs#Example\_4\_-\_Adding\_an\_API\_method](Evolving-Java-based-APIs.md#Achieving-API-Binary-Compatibility) in case of name clashes.
 *   It may cause linkage errors in case an instance (respectively static) field hides a static (respectively instance) field, see [JLS8 13.4.8](https://docs.oracle.com/javase/specs/jls/se8/html/jls-13.html#jls-13.4.8). This can not happen if all field declarations follow the usual naming conventions from [JLS8 6.1](https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.1) and classes only have API fields that are either
     *   "static final" (and hence have a name that doesn't contain any lowercase letters), or
     *   non-static and non-final (and hence have a name that contains a least one lowercase letter)
@@ -390,5 +373,5 @@ Parties that declare annotation types should try to provide helpful guidance for
 Other Notes
 -----------
 
-See [Part 3](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-3.md).
+See [Part 3](Evolving-Java-based-APIs-3.md).
 

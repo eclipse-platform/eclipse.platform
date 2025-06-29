@@ -115,10 +115,12 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 		if(titleImage != null) {
 			titleImage.dispose();
 		}
-		if (page != null)
+		if (page != null) {
 			page.dispose();
-		if (site != null)
+		}
+		if (site != null) {
 			site.dispose();
+		}
 		pageConfiguration.removePropertyChangeListener(listener);
 		super.handleDispose();
 	}
@@ -165,15 +167,14 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	@Override
 	protected ICompareInput asCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.asCompareInput(selection);
-		if (compareInput != null)
+		if (compareInput != null) {
 			return compareInput;
+		}
 
-		if (selection != null && selection instanceof IStructuredSelection) {
-			IStructuredSelection ss= (IStructuredSelection) selection;
+		if (selection != null && selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				Object o = ss.getFirstElement();
-				if (participant instanceof ModelSynchronizeParticipant) {
-					ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
+				if (participant instanceof ModelSynchronizeParticipant msp) {
 					return msp.asCompareInput(o);
 				}
 			}
@@ -190,8 +191,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 		try {
 			// First, see if the active buffer is changing
 			checkForBufferChange(pageConfiguration.getSite().getShell(), input, false /* cancel not allowed */, monitor);
-			if (input instanceof SyncInfoModelElement) {
-				final SyncInfoModelElement node = (SyncInfoModelElement) input;
+			if (input instanceof final SyncInfoModelElement node) {
 				IResource resource = node.getResource();
 				if (resource != null && resource.getType() == IResource.FILE) {
 					participant.prepareCompareInput(node, configuration, monitor);
@@ -211,10 +211,8 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 
 	private void checkForBufferChange(Shell shell, final ICompareInput input, boolean cancelAllowed, IProgressMonitor monitor) throws CoreException {
 		ISynchronizeParticipant participant = pageConfiguration.getParticipant();
-		if (participant instanceof ModelSynchronizeParticipant) {
-			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
-			if (input instanceof ISynchronizationCompareInput) {
-				ISynchronizationCompareInput mci = (ISynchronizationCompareInput) input;
+		if (participant instanceof ModelSynchronizeParticipant msp) {
+			if (input instanceof ISynchronizationCompareInput mci) {
 				msp.checkForBufferChange(shell, mci, cancelAllowed, monitor);
 			}
 		}
@@ -226,8 +224,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 
 	@Override
 	public boolean isSaveNeeded() {
-		if (participant instanceof ModelSynchronizeParticipant) {
-			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
+		if (participant instanceof ModelSynchronizeParticipant msp) {
 			SaveableComparison currentBuffer = msp.getActiveSaveable();
 			if (currentBuffer != null) {
 				return currentBuffer.isDirty();
@@ -240,8 +237,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	public void saveChanges(IProgressMonitor monitor) throws CoreException {
 		super.saveChanges(monitor);
 		Object input = ((ISynchronizePage)page).getViewer().getInput();
-		if (input instanceof ISynchronizeModelElement) {
-			ISynchronizeModelElement root = (ISynchronizeModelElement)input;
+		if (input instanceof ISynchronizeModelElement root) {
 			if (root != null && root instanceof DiffNode) {
 				try {
 					commit(monitor, (DiffNode)root);
@@ -256,12 +252,14 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 
 	private static void commit(IProgressMonitor pm, DiffNode node) throws CoreException {
 		ITypedElement left = node.getLeft();
-		if (left instanceof LocalResourceTypedElement)
+		if (left instanceof LocalResourceTypedElement) {
 			((LocalResourceTypedElement) left).commit(pm);
+		}
 
 		ITypedElement right = node.getRight();
-		if (right instanceof LocalResourceTypedElement)
+		if (right instanceof LocalResourceTypedElement) {
 			((LocalResourceTypedElement) right).commit(pm);
+		}
 
 		IDiffElement[] children = node.getChildren();
 		for (IDiffElement c : children) {
@@ -356,23 +354,26 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 			return false;
 		}
 		// If the CompareConfiguration is not editable, then the OK button is the done button
-		if (isRememberParticipant())
+		if (isRememberParticipant()) {
 			rememberParticipant();
+		}
 		return super.okPressed();
 	}
 
 	@Override
 	public void cancelPressed() {
 		// If the CompareConfiguration is editable, then the CANCEL button is the done button
-		if (isEditable() && isRememberParticipant())
+		if (isEditable() && isRememberParticipant()) {
 			rememberParticipant();
+		}
 		super.cancelPressed();
 	}
 
 	@Override
 	public String getOKButtonLabel() {
-		if (isEditable())
+		if (isEditable()) {
 			return TeamUIMessages.ParticipantPageCompareEditorInput_0;
+		}
 		return TeamUIMessages.ResourceMappingMergeOperation_2;
 	}
 

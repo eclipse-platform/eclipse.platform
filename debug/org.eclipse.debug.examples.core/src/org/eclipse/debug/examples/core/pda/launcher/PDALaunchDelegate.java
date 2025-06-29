@@ -63,7 +63,7 @@ public class PDALaunchDelegate extends LaunchConfigurationDelegate {
 		}
 		File exe = new File(javaVMExec);
 		if (!exe.exists()) {
-			abort(MessageFormat.format("Specified java VM executable {0} does not exist.", new Object[]{javaVMExec}), null); //$NON-NLS-1$
+			abort(MessageFormat.format("Specified java VM executable {0} does not exist.", javaVMExec), null); //$NON-NLS-1$
 		}
 		commandList.add(javaVMExec);
 
@@ -80,7 +80,7 @@ public class PDALaunchDelegate extends LaunchConfigurationDelegate {
 
 		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(IPath.fromOSString(program));
 		if (!file.exists()) {
-			abort(MessageFormat.format("Perl program {0} does not exist.", new Object[] { file.getFullPath().toString() }), null); //$NON-NLS-1$
+			abort(MessageFormat.format("Perl program {0} does not exist.", file.getFullPath().toString()), null); //$NON-NLS-1$
 		}
 
 		commandList.add(file.getLocation().toOSString());

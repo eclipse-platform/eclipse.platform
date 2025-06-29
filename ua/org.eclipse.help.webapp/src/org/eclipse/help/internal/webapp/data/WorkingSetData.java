@@ -66,15 +66,17 @@ public class WorkingSetData extends RequestData {
 
 	public String getWorkingSetName() {
 		String name = request.getParameter("workingSet"); //$NON-NLS-1$
-		if (name == null)
+		if (name == null) {
 			name = ""; //$NON-NLS-1$
+		}
 		return name;
 	}
 
 	public WorkingSet getWorkingSet() {
 		String name = getWorkingSetName();
-		if (name != null && name.length() > 0)
+		if (name != null && name.length() > 0) {
 			return wsmgr.getWorkingSet(name);
+		}
 		return null;
 	}
 
@@ -84,20 +86,24 @@ public class WorkingSetData extends RequestData {
 	 * @return boolean
 	 */
 	public short getTocState(int toc) {
-		if (!isEditMode())
+		if (!isEditMode()) {
 			return STATE_UNCHECKED;
+		}
 		WorkingSet ws = getWorkingSet();
-		if (ws == null)
+		if (ws == null) {
 			return STATE_UNCHECKED;
-		if (toc < 0 || toc >= tocs.length)
+		}
+		if (toc < 0 || toc >= tocs.length) {
 			return STATE_UNCHECKED;
+		}
 
 		// See if the toc is in the working set
 		AdaptableToc adaptableToc = tocs[toc];
 		AdaptableHelpResource[] elements = ws.getElements();
 		for (AdaptableHelpResource element : elements) {
-			if (element == adaptableToc)
+			if (element == adaptableToc) {
 				return STATE_CHECKED;
+			}
 		}
 
 		// Check if it is grayed out
@@ -105,13 +111,16 @@ public class WorkingSetData extends RequestData {
 		boolean allTheSame = true;
 		short baseValue = STATE_UNCHECKED;
 		// base value is that of the first topic
-		if (topics > 0)
+		if (topics > 0) {
 			baseValue = getTopicState(toc, 0);
-		for (int i = 1; allTheSame && i < topics; i++)
+		}
+		for (int i = 1; allTheSame && i < topics; i++) {
 			allTheSame = allTheSame && (getTopicState(toc, i) == baseValue);
+		}
 
-		if (!allTheSame)
+		if (!allTheSame) {
 			return STATE_GRAYED;
+		}
 		return STATE_UNCHECKED;
 	}
 
@@ -137,23 +146,28 @@ public class WorkingSetData extends RequestData {
 	 * @return short
 	 */
 	public short getTopicState(int toc, int topic) {
-		if (!isEditMode)
+		if (!isEditMode) {
 			return STATE_UNCHECKED;
+		}
 		WorkingSet ws = getWorkingSet();
-		if (ws == null)
+		if (ws == null) {
 			return STATE_UNCHECKED;
-		if (toc < 0 || toc >= tocs.length)
+		}
+		if (toc < 0 || toc >= tocs.length) {
 			return STATE_UNCHECKED;
+		}
 
 		AdaptableToc parent = tocs[toc];
 		AdaptableTopic[] topics = (AdaptableTopic[]) parent.getChildren();
-		if (topic < 0 || topic >= topics.length)
+		if (topic < 0 || topic >= topics.length) {
 			return STATE_UNCHECKED;
+		}
 		AdaptableTopic adaptableTopic = topics[topic];
 		AdaptableHelpResource[] elements = ws.getElements();
 		for (AdaptableHelpResource element : elements) {
-			if (element == adaptableTopic)
+			if (element == adaptableTopic) {
 				return STATE_CHECKED;
+			}
 		}
 		return STATE_UNCHECKED;
 	}
@@ -221,20 +235,24 @@ public class WorkingSetData extends RequestData {
 	public short getCriterionCategoryState(int index) {
 		String[] categories = getCriterionIds();
 
-		if (!isEditMode())
+		if (!isEditMode()) {
 			return STATE_UNCHECKED;
+		}
 		WorkingSet ws = getWorkingSet();
-		if (ws == null)
+		if (ws == null) {
 			return STATE_UNCHECKED;
-		if (index < 0 || index >= categories.length)
+		}
+		if (index < 0 || index >= categories.length) {
 			return STATE_UNCHECKED;
+		}
 
 		String category = categories[index];
 		Map<String, Set<String>> criteriaMap = new HashMap<>();
 		CriterionResource[] criteria = ws.getCriteria();
 		CriteriaUtilities.addCriteriaToMap(criteriaMap, criteria);
-		if(!criteriaMap.containsKey(category))
+		if(!criteriaMap.containsKey(category)) {
 			return STATE_UNCHECKED;
+		}
 
 		Set<String> criterionValuesFromWS = criteriaMap.get(category);
 		Set<String> criterionValuesSet = new HashSet<>(Arrays.asList(getCriterionValueIds(category)));
@@ -247,13 +265,16 @@ public class WorkingSetData extends RequestData {
 
 	public short getCriterionValueState(int categoryIndex, int valueIndex) {
 		String[] categories = getCriterionIds();
-		if (!isEditMode)
+		if (!isEditMode) {
 			return STATE_UNCHECKED;
+		}
 		WorkingSet ws = getWorkingSet();
-		if (ws == null)
+		if (ws == null) {
 			return STATE_UNCHECKED;
-		if (categoryIndex < 0 || categoryIndex >= categories.length)
+		}
+		if (categoryIndex < 0 || categoryIndex >= categories.length) {
 			return STATE_UNCHECKED;
+		}
 
 		String category = categories[categoryIndex];
 		Map<String, Set<String>> criteriaMap = new HashMap<>();

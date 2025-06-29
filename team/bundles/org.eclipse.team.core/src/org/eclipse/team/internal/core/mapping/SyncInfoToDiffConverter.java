@@ -78,8 +78,9 @@ public class SyncInfoToDiffConverter {
 
 	private static int asSyncInfoKind(IThreeWayDiff diff) {
 		int kind = diff.getKind();
-		if (diff.getKind() == IDiff.NO_CHANGE)
+		if (diff.getKind() == IDiff.NO_CHANGE) {
 			return SyncInfo.IN_SYNC;
+		}
 		int syncKind = 0;
 		switch (kind) {
 		case IDiff.ADD:
@@ -166,8 +167,9 @@ public class SyncInfoToDiffConverter {
 	}
 
 	private IFileRevision asFileState(final IResourceVariant variant) {
-		if (variant == null)
+		if (variant == null) {
 			return null;
+		}
 		return asFileRevision(variant);
 	}
 
@@ -206,24 +208,26 @@ public class SyncInfoToDiffConverter {
 
 	public static IResourceVariant getRemoteVariant(IThreeWayDiff twd) {
 		IFileRevision revision = getRemote(twd);
-		if (revision != null)
+		if (revision != null) {
 			return asResourceVariant(revision);
+		}
 		return null;
 	}
 
 	public static IResourceVariant getBaseVariant(IThreeWayDiff twd) {
 		IResourceDiff diff = (IResourceDiff)twd.getRemoteChange();
-		if (diff != null)
+		if (diff != null) {
 			return asResourceVariant(diff.getBeforeState());
+		}
 		diff = (IResourceDiff)twd.getLocalChange();
-		if (diff != null)
+		if (diff != null) {
 			return asResourceVariant(diff.getBeforeState());
+		}
 		return null;
 	}
 
 	public SyncInfo asSyncInfo(IDiff diff, IResourceVariantComparator comparator) {
-		if (diff instanceof ResourceDiff) {
-			ResourceDiff rd = (ResourceDiff) diff;
+		if (diff instanceof ResourceDiff rd) {
 			IResource local = rd.getResource();
 			IFileRevision afterState = rd.getAfterState();
 			IResourceVariant remote = asResourceVariant(afterState);
@@ -237,8 +241,7 @@ public class SyncInfoToDiffConverter {
 			}
 			SyncInfo info = createSyncInfo(comparator, kind, local, null, remote);
 			return info;
-		} else if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		} else if (diff instanceof IThreeWayDiff twd) {
 			IResource local = getLocal(twd);
 			if (local != null) {
 				IResourceVariant remote = getRemoteVariant(twd);
@@ -263,23 +266,24 @@ public class SyncInfoToDiffConverter {
 
 	private static IResource getLocal(IThreeWayDiff twd) {
 		IResourceDiff diff = (IResourceDiff)twd.getRemoteChange();
-		if (diff != null)
+		if (diff != null) {
 			return diff.getResource();
+		}
 		diff = (IResourceDiff)twd.getLocalChange();
-		if (diff != null)
+		if (diff != null) {
 			return diff.getResource();
+		}
 		return null;
 	}
 
 	public static IResourceVariant asResourceVariant(IFileRevision revision) {
-		if (revision == null)
+		if (revision == null) {
 			return null;
-		if (revision instanceof ResourceVariantFileRevision) {
-			ResourceVariantFileRevision rvfr = (ResourceVariantFileRevision) revision;
+		}
+		if (revision instanceof ResourceVariantFileRevision rvfr) {
 			return rvfr.getVariant();
 		}
-		if (revision instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) revision;
+		if (revision instanceof IAdaptable adaptable) {
 			Object o = adaptable.getAdapter(IResourceVariant.class);
 			if (o instanceof IResourceVariant) {
 				return (IResourceVariant) o;
@@ -289,12 +293,10 @@ public class SyncInfoToDiffConverter {
 	}
 
 	public static IFileRevision getRemote(IDiff diff) {
-		if (diff instanceof IResourceDiff) {
-			IResourceDiff rd = (IResourceDiff) diff;
+		if (diff instanceof IResourceDiff rd) {
 			return rd.getAfterState();
 		}
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			return getRemote(twd);
 		}
 		return null;
@@ -302,17 +304,20 @@ public class SyncInfoToDiffConverter {
 
 	public static IFileRevision getRemote(IThreeWayDiff twd) {
 		IResourceDiff rd = (IResourceDiff)twd.getRemoteChange();
-		if (rd != null)
+		if (rd != null) {
 			return rd.getAfterState();
+		}
 		rd = (IResourceDiff)twd.getLocalChange();
-		if (rd != null)
+		if (rd != null) {
 			return rd.getBeforeState();
+		}
 		return null;
 	}
 
 	public static SyncInfoToDiffConverter getDefault() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new SyncInfoToDiffConverter();
+		}
 		return instance;
 	}
 }

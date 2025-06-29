@@ -95,8 +95,8 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	 */
 	public SubscriberEventHandler(Subscriber subscriber, ISynchronizationScope scope) {
 		super(
-			NLS.bind(Messages.SubscriberEventHandler_jobName, new String[] { subscriber.getName() }),
-			NLS.bind(Messages.SubscriberEventHandler_errors, new String[] { subscriber.getName() }));
+				NLS.bind(Messages.SubscriberEventHandler_jobName, subscriber.getName()),
+				NLS.bind(Messages.SubscriberEventHandler_errors, subscriber.getName()));
 		this.subscriber = subscriber;
 		this.scope = scope;
 		scopeChangeListener = (scope1, newMappings, newTraversals) -> reset(new ResourceTraversal[0], scope1.getTraversals());
@@ -207,17 +207,20 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 			} catch (TeamException e) {
 				// We only handle the exception if the resource's project is accessible.
 				// The project close delta will clean up.
-				if (resource.getProject().isAccessible())
-					handleException(e, resource, ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(Messages.SubscriberEventHandler_8, new String[] { resource.getFullPath().toString(), e.getMessage() }));
+				if (resource.getProject().isAccessible()) {
+					handleException(e, resource, ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(
+							Messages.SubscriberEventHandler_8, resource.getFullPath().toString(), e.getMessage()));
+				}
 			}
 		}
 
-		monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { resource.getFullPath().toString() }));
+		monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, resource.getFullPath().toString()));
 		try {
 			handleChange(resource);
 			handlePendingDispatch(monitor);
 		} catch (CoreException e) {
-			handleException(e, resource, ITeamStatus.RESOURCE_SYNC_INFO_ERROR, NLS.bind(Messages.SubscriberEventHandler_9, new String[] { resource.getFullPath().toString(), e.getMessage() }));
+			handleException(e, resource, ITeamStatus.RESOURCE_SYNC_INFO_ERROR,
+					NLS.bind(Messages.SubscriberEventHandler_9, resource.getFullPath().toString(), e.getMessage()));
 		}
 		monitor.worked(1);
 	}
@@ -309,7 +312,8 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 						monitor);
 					break;
 				case SubscriberEvent.INITIALIZE :
-					monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { event.getResource().getFullPath().toString() }));
+					monitor.subTask(
+							NLS.bind(Messages.SubscriberEventHandler_2, event.getResource().getFullPath().toString()));
 					collectAll(
 							event.getResource(),
 							((ResourceEvent)event).getDepth(),
@@ -327,7 +331,9 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 			if (event.getType() == BackgroundEventHandler.RUNNABLE_EVENT ) {
 				handleException(new TeamException(Messages.SubscriberEventHandler_10, e));
 			} else {
-				handleException(new TeamException(Messages.SubscriberEventHandler_10, e), event.getResource(), ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(Messages.SubscriberEventHandler_11, new String[] { event.getResource().getFullPath().toString(), e.getMessage() }));
+				handleException(new TeamException(Messages.SubscriberEventHandler_10, e), event.getResource(),
+						ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(Messages.SubscriberEventHandler_11,
+								event.getResource().getFullPath().toString(), e.getMessage()));
 			}
 		}
 	}

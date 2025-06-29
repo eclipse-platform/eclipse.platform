@@ -63,11 +63,11 @@ public class TreeSelectionProviderDecorator implements ISelectionProvider {
 		ISelection selection = selectionProvider.getSelection();
 
 		// in these cases the original selection will be returned
-		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection))
+		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection structuredSelection)) {
 			return selection;
+		}
 
 		// constructs a list with the selected elements
-		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 		List<Object> list = structuredSelection.toList();
 		final List<Object> selectedElements = new ArrayList<>(list);
 
@@ -75,8 +75,9 @@ public class TreeSelectionProviderDecorator implements ISelectionProvider {
 		TreeContentProviderNode anyNode = findNodeElement(selectedElements);
 
 		// if there is no TreeContentProviderNodes, there is nothing to do
-		if (anyNode == null)
+		if (anyNode == null) {
 			return selection;
+		}
 
 		// otherwise, we will move the elements to a new list in the same order
 		// we find them in the tree.
@@ -87,8 +88,9 @@ public class TreeSelectionProviderDecorator implements ISelectionProvider {
 		anyNode.getRoot().accept(node -> {
 			int elementIndex = selectedElements.indexOf(node);
 
-			if (selectedElements.contains(node))
+			if (selectedElements.contains(node)) {
 				orderedElements.add(selectedElements.remove(elementIndex));
+			}
 
 			return true;
 		});
@@ -108,8 +110,9 @@ public class TreeSelectionProviderDecorator implements ISelectionProvider {
 	private TreeContentProviderNode findNodeElement(List<Object> elements) {
 		for (Iterator<?> iter = elements.iterator(); iter.hasNext();) {
 			Object element = iter.next();
-			if (element instanceof TreeContentProviderNode)
+			if (element instanceof TreeContentProviderNode) {
 				return (TreeContentProviderNode) element;
+			}
 		}
 
 		return null;

@@ -273,7 +273,7 @@
                               + 'advanced/workingSet'
                               + (query ? '.jsp?' + query + '&' : 'Manager.jsp?')
                               + 't=' + Date.now(),
-                              function(responseText) {
+                              function(responseText, scopeIndex) {
                     var match = SEARCH_SCOPE_NAME_PATTERN.exec(responseText);
                     if (match) {
                         createElement(scopesPage, 'span', 'g', '<%js:scopes_scope_field_label%>');
@@ -352,7 +352,7 @@
                             var deleteButton = createButton(scopesPage, '<%js:scopes_scope_delete_button_label%>', '<%js:scopes_scope_delete_button_description%>', function() {
 
                                 // if the scope to be deleted is set, unset it first
-                                if (searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM && searchScope.customIndex == scopeNr) {
+                                if (searchScope.level == SEARCH_SCOPE_LEVEL_CUSTOM && searchScope.customIndex == scopeIndex) {
                                     setSearchScope([SEARCH_SCOPE_LEVEL_ALL]);
                                 }
 
@@ -365,7 +365,7 @@
                                                   + '&workingSet='
                                                   + encodeURIComponent(nameInput.value)
                                                   + getHrefs());
-                                setSearchScope([SEARCH_SCOPE_LEVEL_CUSTOM, scopeIndex, scopeName]);
+                                setSearchScope([SEARCH_SCOPE_LEVEL_CUSTOM, scopeName, scopeIndex]);
                             });
                         }
                         createButton(scopesPage, '<%js:scopes_scope_cancel_button_label%>', '<%js:scopes_scope_cancel_button_description%>', function() { showScopesPage(); });
@@ -386,7 +386,7 @@
                         createButton(scopesPage, '<%js:scopes_new_button_label%>', '<%js:scopes_new_button_description%>', function() { showScopesPage('operation=add'); });
                         createButton(scopesPage, '<%js:scopes_close_button_label%>', '<%js:scopes_close_button_description%>', function() { scopesPage.s(); });
                     }
-                });
+                }, 0, scopeIndex);
             }
             function doScopesOperation(query) {
                 remoteRequest(  BASE_URL
@@ -2749,10 +2749,10 @@
     }
 
     var openRequests = {};
-    function remoteRequest(url, callbackFn, cancelId) {
+    function remoteRequest(url, callbackFn, cancelId, callbackFnParam2) {
         var request = new XMLHttpRequest();
         if (callbackFn) request.onreadystatechange = function() {
-            if (request.readyState == 4 && request.status == 200) callbackFn(request.responseText);
+            if (request.readyState == 4 && request.status == 200) callbackFn(request.responseText, callbackFnParam2);
         }
         request.open('GET', url);
         request.send();

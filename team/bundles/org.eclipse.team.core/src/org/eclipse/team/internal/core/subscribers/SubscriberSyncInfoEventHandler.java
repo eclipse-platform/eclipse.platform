@@ -54,8 +54,9 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 	}
 
 	public static ISynchronizationScope createScope(IResource[] roots, Subscriber subscriber) {
-		if (roots == null)
+		if (roots == null) {
 			roots = subscriber.roots();
+		}
 		return new RootResourceSynchronizationScope(roots);
 	}
 
@@ -121,7 +122,9 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 					super.subTask(name);
 				}
 				private void dispatch() {
-					if (dispatching) return;
+					if (dispatching) {
+						return;
+					}
 					try {
 						dispatching = true;
 						handlePreemptiveEvents(this);
@@ -147,8 +150,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 				}
 				@Override
 				public void addError(ITeamStatus status) {
-					if (status instanceof TeamStatus) {
-						TeamStatus ts = (TeamStatus) status;
+					if (status instanceof TeamStatus ts) {
 						IResource resource = ts.getResource();
 						if (resource != null && !resource.getProject().isAccessible()) {
 							// The project was closed while we were collecting sync info.
@@ -184,8 +186,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			for (SubscriberEvent event : events) {
 				switch (event.getType()) {
 					case SubscriberEvent.CHANGE :
-						if (event instanceof SubscriberSyncInfoEvent) {
-							SubscriberSyncInfoEvent se = (SubscriberSyncInfoEvent) event;
+						if (event instanceof SubscriberSyncInfoEvent se) {
 							syncSetInput.collect(se.getResult(), monitor);
 						}
 						break;
@@ -215,8 +216,9 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 	 */
 	public void reset(IResource[] roots) {
 		RootResourceSynchronizationScope scope = (RootResourceSynchronizationScope)getScope();
-		if (roots == null)
+		if (roots == null) {
 			roots = getSubscriber().roots();
+		}
 		scope.setRoots(roots);
 	}
 

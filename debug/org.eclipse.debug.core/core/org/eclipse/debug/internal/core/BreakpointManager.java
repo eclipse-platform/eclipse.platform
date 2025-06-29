@@ -555,7 +555,7 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 			IConfigurationElement config = fBreakpointExtensions.get(marker.getType());
 			if (config == null) {
 				throw new DebugException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(),
- DebugException.CONFIGURATION_INVALID, MessageFormat.format(DebugCoreMessages.BreakpointManager_Missing_breakpoint_definition, new Object[] { marker.getType() }), null));
+ DebugException.CONFIGURATION_INVALID, MessageFormat.format(DebugCoreMessages.BreakpointManager_Missing_breakpoint_definition, marker.getType()), null));
 			}
 			Object object = config.createExecutableExtension(IConfigurationElementConstants.CLASS);
 			if (object instanceof IBreakpoint) {

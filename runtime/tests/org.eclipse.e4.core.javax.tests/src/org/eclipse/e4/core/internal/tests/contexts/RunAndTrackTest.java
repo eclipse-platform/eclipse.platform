@@ -15,9 +15,9 @@
 
 package org.eclipse.e4.core.internal.tests.contexts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,8 @@ import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.contexts.RunAndTrack;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link org.eclipse.e4.core.contexts.RunAndTrack}.
@@ -118,7 +118,7 @@ public class RunAndTrackTest {
 		return contexts;
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		for (IEclipseContext context : createdContexts) {
 			context.dispose();

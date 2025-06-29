@@ -73,14 +73,16 @@ public class WorkingSetManagerData extends RequestData {
 		if (name != null && name.length() > 0) {
 
 			String[] hrefs = request.getParameterValues("hrefs"); //$NON-NLS-1$
-			if (hrefs == null)
+			if (hrefs == null) {
 				hrefs = new String[0];
+			}
 
 			ArrayList<AdaptableHelpResource> selectedElements = new ArrayList<>(hrefs.length);
 			for (String href : hrefs) {
 				AdaptableHelpResource res = getAdaptableHelpResource(href);
-				if (res != null)
+				if (res != null) {
 					selectedElements.add(res);
+				}
 			}
 
 			AdaptableHelpResource[] elements = new AdaptableHelpResource[selectedElements
@@ -103,8 +105,9 @@ public class WorkingSetManagerData extends RequestData {
 		if (name != null && name.length() > 0) {
 
 			WorkingSet ws = wsmgr.getWorkingSet(name);
-			if (ws != null)
+			if (ws != null) {
 				wsmgr.removeWorkingSet(ws);
+			}
 		}
 	}
 
@@ -112,19 +115,22 @@ public class WorkingSetManagerData extends RequestData {
 		if (name != null && name.length() > 0) {
 
 			String oldName = request.getParameter("oldName"); //$NON-NLS-1$
-			if (oldName == null || oldName.length() == 0)
+			if (oldName == null || oldName.length() == 0) {
 				oldName = name;
+			}
 			WorkingSet ws = wsmgr.getWorkingSet(oldName);
 			if (ws != null) {
 				String[] hrefs = request.getParameterValues("hrefs"); //$NON-NLS-1$
-				if (hrefs == null)
+				if (hrefs == null) {
 					hrefs = new String[0];
+				}
 
 				ArrayList<AdaptableHelpResource> selectedElements = new ArrayList<>(hrefs.length);
 				for (String href : hrefs) {
 					AdaptableHelpResource res = getAdaptableHelpResource(href);
-					if (res != null)
+					if (res != null) {
 						selectedElements.add(res);
+					}
 				}
 
 				AdaptableHelpResource[] elements = new AdaptableHelpResource[selectedElements
@@ -149,8 +155,9 @@ public class WorkingSetManagerData extends RequestData {
 	public String[] getWorkingSets() {
 		WorkingSet[] workingSets = wsmgr.getWorkingSets();
 		String[] sets = new String[workingSets.length];
-		for (int i = 0; i < workingSets.length; i++)
+		for (int i = 0; i < workingSets.length; i++) {
 			sets[i] = workingSets[i].getName();
+		}
 
 		return sets;
 	}
@@ -160,15 +167,17 @@ public class WorkingSetManagerData extends RequestData {
 			// See if anything is set in the preferences
 			name = wsmgr.getCurrentWorkingSet();
 			if (name == null || name.length() == 0
-					|| wsmgr.getWorkingSet(name) == null)
+					|| wsmgr.getWorkingSet(name) == null) {
 				name = ServletResources.getString("All", request); //$NON-NLS-1$
+			}
 		}
 		return name;
 	}
 
 	public WorkingSet getWorkingSet() {
-		if (name != null && name.length() > 0)
+		if (name != null && name.length() > 0) {
 			return wsmgr.getWorkingSet(name);
+		}
 		return null;
 	}
 
@@ -179,20 +188,22 @@ public class WorkingSetManagerData extends RequestData {
 
 	private int getOperation() {
 		String op = request.getParameter("operation"); //$NON-NLS-1$
-		if ("add".equals(op)) //$NON-NLS-1$
+		if ("add".equals(op)) { //$NON-NLS-1$
 			return ADD;
-		else if ("remove".equals(op)) //$NON-NLS-1$
+		} else if ("remove".equals(op)) { //$NON-NLS-1$
 			return REMOVE;
-		else if ("edit".equals(op)) //$NON-NLS-1$
+		} else if ("edit".equals(op)) { //$NON-NLS-1$
 			return EDIT;
-		else
+		} else {
 			return NONE;
+		}
 	}
 
 	private AdaptableHelpResource getAdaptableHelpResource(String internalId) {
 		AdaptableHelpResource res = wsmgr.getAdaptableToc(internalId);
-		if (res == null)
+		if (res == null) {
 			res = wsmgr.getAdaptableTopic(internalId);
+		}
 		return res;
 	}
 
@@ -214,8 +225,9 @@ public class WorkingSetManagerData extends RequestData {
 		List<String> category = Arrays.asList(getCriterionIds());
 
 		String[] criteria = request.getParameterValues("criteria"); //$NON-NLS-1$
-		if (criteria == null)
+		if (criteria == null) {
 			criteria = new String[0];
+		}
 
 		Map<String, Set<String>> selectedElements = new HashMap<>();
 		for (String criterion : criteria) {
@@ -244,11 +256,13 @@ public class WorkingSetManagerData extends RequestData {
 					String criterionName = criterion.substring(0, criterion.lastIndexOf('_', len - 2));
 					if(category.contains(criterionName)){
 						String values[] = getCriterionValueIds(criterionName);
-						if (index < 0 || index >= values.length)
+						if (index < 0 || index >= values.length) {
 							continue;
+						}
 						String selectedValue = values[index];
-						if(null == selectedValue || 0 == selectedValue.length())
+						if(null == selectedValue || 0 == selectedValue.length()) {
 							continue;
+						}
 						Set<String> existedElements = selectedElements.get(criterionName);
 						if(null == existedElements){
 							existedElements = new HashSet<>();

@@ -132,8 +132,9 @@ public class IntroExtensionContent extends AbstractIntroElement {
 	 * in the list.
 	 */
 	protected void addStyle(String style) {
-		if (styles.contains(style))
+		if (styles.contains(style)) {
 			return;
+		}
 		styles.add(style);
 	}
 
@@ -143,8 +144,9 @@ public class IntroExtensionContent extends AbstractIntroElement {
 	 * in the list.
 	 */
 	protected void addAltStyle(String altStyle, Bundle bundle) {
-		if (altStyles.containsKey(altStyle))
+		if (altStyles.containsKey(altStyle)) {
 			return;
+		}
 		altStyles.put(altStyle, bundle);
 	}
 
@@ -173,8 +175,9 @@ public class IntroExtensionContent extends AbstractIntroElement {
 		Vector<Node> vector = new Vector<>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
-			if (node.getNodeType() == Node.ELEMENT_NODE)
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				vector.add(node);
+			}
 		}
 		Element[] filteredElements = new Element[vector.size()];
 		vector.copyInto(filteredElements);

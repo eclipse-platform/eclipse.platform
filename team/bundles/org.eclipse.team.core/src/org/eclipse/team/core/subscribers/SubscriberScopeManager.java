@@ -104,8 +104,9 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 			result.add(SubscriberScopeManager.super.refresh(mappings, monitor1));
 			hookupParticipants();
 		}, getSchedulingRule(), IResource.NONE, monitor);
-		if (result.isEmpty())
+		if (result.isEmpty()) {
 			return new ResourceTraversal[0];
+		}
 		return result.get(0);
 	}
 
@@ -131,8 +132,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 	 */
 	private ISynchronizationScopeParticipant createParticipant(ModelProvider provider) {
 		Object factoryObject = provider.getAdapter(ISynchronizationScopeParticipantFactory.class);
-		if (factoryObject instanceof ISynchronizationScopeParticipantFactory) {
-			ISynchronizationScopeParticipantFactory factory = (ISynchronizationScopeParticipantFactory) factoryObject;
+		if (factoryObject instanceof ISynchronizationScopeParticipantFactory factory) {
 			return factory.createParticipant(provider, this.getScope());
 		}
 		return null;

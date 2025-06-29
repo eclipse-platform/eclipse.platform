@@ -41,7 +41,7 @@ public class WordComparison {
 	private OleClientSite site;
 	private boolean inplace;
 	private OleAutomation document;
-	
+
 	public WordComparison(Composite composite) {
 		frame = new OleFrame(composite, SWT.NONE);
 	}
@@ -79,35 +79,38 @@ public class WordComparison {
 		Variant varResult = getVariantProperty(auto, name);
 		try {
 			OleAutomation automation = varResult.getAutomation();
-			if (automation != null)
+			if (automation != null) {
 				return automation;
+			}
 		} finally {
 			varResult.dispose();
 		}
 		throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_1, name));
 	}
-	
+
 	private static OleAutomation getAutomationResult(OleAutomation auto, String command, int value) {
 		Variant varResult = invoke(auto, command, value);
 		if (varResult != null) {
 			try {
 				OleAutomation result = varResult.getAutomation();
-				if (result != null)
+				if (result != null) {
 					return result;
+				}
 			} finally {
 				varResult.dispose();
 			}
 		}
 		throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_2, command, Integer.toString(value)));
 	}
-	
+
 	private static OleAutomation getAutomationResult(OleAutomation auto, String command, String value) {
 		Variant varResult = invoke(auto, command, value);
 		if (varResult != null) {
 			try {
 				OleAutomation result = varResult.getAutomation();
-				if (result != null)
+				if (result != null) {
 					return result;
+				}
 			} finally {
 				varResult.dispose();
 			}
@@ -134,7 +137,9 @@ public class WordComparison {
 		if (ids != null) {
 			return ids[0];
 		}
-		if(reference == null) throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_4, name)) ;
+		if(reference == null) {
+			throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_4, name)) ;
+		}
 
 		// the property was not retrieved at that point, try to get it from the reference object
 		ids = reference.getIDsOfNames(new String[] { name });
@@ -146,7 +151,9 @@ public class WordComparison {
 
 	private static int property(OleAutomation auto, String name) {
 		int[] ids = auto.getIDsOfNames(new String[] { name });
-		if (ids == null) throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_4, name));
+		if (ids == null) {
+			throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_4, name));
+		}
 		return ids[0];
 	}
 
@@ -156,7 +163,7 @@ public class WordComparison {
 
 	/**
 	 * Open the file at the given path as a document in Word.
-	 * 
+	 *
 	 * @param filePath
 	 *            the path of the file containing the document
 	 * @param inplace
@@ -184,7 +191,7 @@ public class WordComparison {
 	 * Compares the base document with the revised document and saves the
 	 * comparison in the working copy which can then be opened using
 	 * openDocument.
-	 * 
+	 *
 	 * @param baseDocument
 	 *            the base document
 	 * @param revisedDocument
@@ -205,8 +212,9 @@ public class WordComparison {
 				OleAutomation activeDocument = getActiveDocument(application);
 				try {
 					Variant varResult = invoke(activeDocument, document, "SaveAs", workingCopy); //$NON-NLS-1$
-					if (varResult == null)
+					if (varResult == null) {
 						throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_6, workingCopy));
+					}
 					varResult.dispose();
 				} finally {
 					closeDocument(activeDocument, document);
@@ -231,7 +239,7 @@ public class WordComparison {
 			}
 		}
 	}
-	
+
 	private void closeDocument(OleAutomation document, OleAutomation reference) {
 		// Close the first document: destination.Close()
 		try {
@@ -251,11 +259,12 @@ public class WordComparison {
 	private void compareDocument(OleAutomation document, String baseDocument, String revisedDocument) {
 		// Compare to the second document: compare = destination.Compare(p1)
 		Variant varResult = invoke(document, "Compare", baseDocument); //$NON-NLS-1$
-		if (varResult == null)
+		if (varResult == null) {
 			throw new SWTException(NLS.bind(CompareWin32Messages.WordComparison_9, baseDocument, revisedDocument));
+		}
 		varResult.dispose();
 	}
-	
+
 	private boolean getDocumentDirty(OleAutomation document) {
 		// 		word.document.Saved
 		if (document != null) {
@@ -270,7 +279,7 @@ public class WordComparison {
 		}
 		return false;
 	}
-	
+
 	private void setDocumentVisible(OleAutomation document, boolean visible) {
 		// Hide it: destination.Windows[0].Visible=0|1
 		OleAutomation windows = getAutomationProperty(document, "Windows"); //$NON-NLS-1$
@@ -299,7 +308,7 @@ public class WordComparison {
 			documents.dispose();
 		}
 	}
-	
+
 	private OleAutomation getActiveDocument(OleAutomation application) {
 		return getAutomationProperty(application, "ActiveDocument"); //$NON-NLS-1$
 	}
@@ -312,7 +321,7 @@ public class WordComparison {
 	}
 
 	/*
-	 * When opening a new comparison, we want to close any existing site 
+	 * When opening a new comparison, we want to close any existing site
 	 * and create a new one.
 	 */
 	private void resetSite(String filePath) {
@@ -361,7 +370,9 @@ public class WordComparison {
 	}
 
 	public void saveAsDocument(String doc) {
-		if (site == null || site.isDisposed()) return;
+		if (site == null || site.isDisposed()) {
+			return;
+		}
 		if (inplace) {
 			site.deactivateInPlaceClient();
 			site.save(new File(doc), true);
@@ -385,7 +396,7 @@ public class WordComparison {
 	public OleFrame getFrame() {
 		return frame;
 	}
-	
+
 	/**
 	 * Dispose of the comparison.
 	 */
@@ -400,7 +411,7 @@ public class WordComparison {
 	}
 
 	/**
-	 * Return whether the comparison document is dirty. This method handles 
+	 * Return whether the comparison document is dirty. This method handles
 	 * both an in-place document and a document opened in a separate window.
 	 * @return weather the comparison document is dirty
 	 */
@@ -408,15 +419,16 @@ public class WordComparison {
 		return (inplace && site != null && !site.isDisposed() && site.isDirty())
 			|| (!inplace && getDocumentDirty(document));
 	}
-	
+
 	/**
 	 *	Initialize the workbench menus for proper menu merging
 	 *  Copied from org.eclipse.ui.internal.editorsupport.win32OleEditor
 	 */
 	protected void initializeWorkbenchMenus(IWorkbenchWindow window) {
 		//If there was an OLE Error or nothing has been created yet
-		if (frame == null || frame.isDisposed())
+		if (frame == null || frame.isDisposed()) {
 			return;
+		}
 		// Get the browser menu bar.  If one does not exist then
 		// create it.
 		Shell shell = frame.getShell();
@@ -434,13 +446,14 @@ public class WordComparison {
 		for (int i = 0; i < menuBar.getItemCount(); i++) {
 			MenuItem item = menuBar.getItem(i);
 			String id = ""; //$NON-NLS-1$
-			if (item.getData() instanceof IMenuManager)
+			if (item.getData() instanceof IMenuManager) {
 				id = ((IMenuManager) item.getData()).getId();
-			if (id.equals(IWorkbenchActionConstants.M_FILE))
+			}
+			if (id.equals(IWorkbenchActionConstants.M_FILE)) {
 				fileMenu[0] = item;
-			else if (id.equals(IWorkbenchActionConstants.M_WINDOW))
+			} else if (id.equals(IWorkbenchActionConstants.M_WINDOW)) {
 				windowMenu[0] = item;
-			else {
+			} else {
 				if (window.isApplicationMenu(id)) {
 					containerItems.addElement(item);
 				}
@@ -477,6 +490,6 @@ public class WordComparison {
 	public void close() {
 		if (isOpen()) {
 			disposeSite();
-		}	
+		}
 	}
 }

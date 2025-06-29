@@ -39,12 +39,14 @@ public class MethodRequestor extends Requestor<Method> {
 	@Override
 	public Object execute() throws InjectionException {
 		if (actualArgs == null) {
-			if (location.getParameterTypes().length > 0)
+			if (location.getParameterTypes().length > 0) {
 				return null; // optional method call
+			}
 		}
 		Object userObject = getRequestingObject();
-		if (userObject == null)
+		if (userObject == null) {
 			return null;
+		}
 		Object result = null;
 		boolean pausedRecording = false;
 		if ((primarySupplier != null)) {
@@ -65,8 +67,9 @@ public class MethodRequestor extends Requestor<Method> {
 			}
 			throw new InjectionException((originalException != null) ? originalException : e);
 		} finally {
-			if (pausedRecording)
+			if (pausedRecording) {
 				primarySupplier.resumeRecording();
+			}
 			clearResolvedArgs();
 		}
 		return result;
@@ -103,8 +106,9 @@ public class MethodRequestor extends Requestor<Method> {
 	public String toString() {
 		StringBuilder tmp = new StringBuilder();
 		Object object = getRequestingObject();
-		if (object != null)
+		if (object != null) {
 			tmp.append(object.getClass().getSimpleName());
+		}
 		tmp.append('#');
 		tmp.append(location.getName());
 		tmp.append('(');

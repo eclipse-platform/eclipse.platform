@@ -31,8 +31,9 @@ public class DiffViewerComparator extends ViewerComparator {
 	public int category(Object node) {
 		if (node instanceof DiffNode) {
 			Object o= ((DiffNode) node).getId();
-			if (o instanceof DocumentRangeNode)
+			if (o instanceof DocumentRangeNode) {
 				return ((DocumentRangeNode) o).getTypeCode();
+			}
 		}
 		return 0;
 	}

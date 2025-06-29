@@ -142,9 +142,12 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj == this) return true;
-		if( ! (obj instanceof ISynchronizeParticipant)) return false;
-		ISynchronizeParticipant other = (ISynchronizeParticipant)obj;
+		if(obj == this) {
+			return true;
+		}
+		if( ! (obj instanceof ISynchronizeParticipant other)) {
+			return false;
+		}
 		return getId().equals(other.getId()) && Utils.equalObject(getSecondaryId(), other.getSecondaryId());
 	}
 
@@ -324,10 +327,10 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	@Override
 	public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
 		SyncInfo sync = getSyncInfo(element);
-		if (sync != null)
+		if (sync != null) {
 			Utils.updateLabels(sync, config, monitor);
-		if (element instanceof SyncInfoModelElement) {
-			SyncInfoModelElement node = (SyncInfoModelElement)element;
+		}
+		if (element instanceof SyncInfoModelElement node) {
 			(node).cacheContents(monitor);
 		}
 	}

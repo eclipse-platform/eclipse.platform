@@ -51,8 +51,7 @@ public class AntClasspathLabelProvider implements ILabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		String file;
-		if (element instanceof ClasspathEntry) {
-			ClasspathEntry entry = (ClasspathEntry) element;
+		if (element instanceof ClasspathEntry entry) {
 			if (entry.isEclipseRuntimeRequired()) {
 				return AntUIImages.getImage(IAntUIConstants.IMG_ANT_ECLIPSE_RUNTIME_OBJECT);
 			}
@@ -68,8 +67,7 @@ public class AntClasspathLabelProvider implements ILabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof IAntClasspathEntry) {
-			IAntClasspathEntry entry = (IAntClasspathEntry) element;
+		if (element instanceof IAntClasspathEntry entry) {
 			StringBuilder label = new StringBuilder(entry.getLabel());
 			if (element instanceof GlobalClasspathEntries) {
 				if (((GlobalClasspathEntries) element).getType() == ClasspathModel.ANT_HOME) {

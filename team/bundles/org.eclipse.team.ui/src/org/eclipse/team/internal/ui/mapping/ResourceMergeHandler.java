@@ -59,8 +59,9 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 							promptForNoChanges();
 						}
 						IStatus status = context.merge(diffs, overwrite, monitor);
-						if (!status.isOK())
+						if (!status.isOK()) {
 							throw new CoreException(status);
+						}
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
 					}
@@ -70,8 +71,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 					return new FastDiffFilter() {
 						@Override
 						public boolean select(IDiff node) {
-							if (node instanceof IThreeWayDiff) {
-								IThreeWayDiff twd = (IThreeWayDiff) node;
+							if (node instanceof IThreeWayDiff twd) {
 								if ((twd.getDirection() == IThreeWayDiff.OUTGOING && overwrite) || twd.getDirection() == IThreeWayDiff.CONFLICTING || twd.getDirection() == IThreeWayDiff.INCOMING) {
 									return true;
 								}
@@ -86,13 +86,15 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 				protected String getJobName() {
 					IDiff[] diffs = getTargetDiffs();
 					if (overwrite) {
-						if (diffs.length == 1)
+						if (diffs.length == 1) {
 							return TeamUIMessages.ResourceMergeHandler_0;
+						}
 						return NLS.bind(TeamUIMessages.ResourceMergeHandler_1, Integer.toString(diffs.length));
 
 					}
-					if (diffs.length == 1)
+					if (diffs.length == 1) {
 						return TeamUIMessages.ResourceMergeHandler_2;
+					}
 					return NLS.bind(TeamUIMessages.ResourceMergeHandler_3, Integer.toString(diffs.length));
 				}
 			};
@@ -115,14 +117,16 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (saveDirtyEditors() && (!overwrite || promptToConfirm()))
+		if (saveDirtyEditors() && (!overwrite || promptToConfirm())) {
 			return super.execute(event);
+		}
 		return null;
 	}
 
 	protected boolean promptToConfirm() {
-		if (Display.getCurrent() != null)
+		if (Display.getCurrent() != null) {
 			return internalPromptToConfirm();
+		}
 		final boolean[] confirmed = new boolean[] { false };
 		Shell shell = getConfiguration().getSite().getShell();
 		if (!shell.isDisposed()) {

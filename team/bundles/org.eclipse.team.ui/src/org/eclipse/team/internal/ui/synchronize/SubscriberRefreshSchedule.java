@@ -191,8 +191,9 @@ public class SubscriberRefreshSchedule {
 	public void saveState(IMemento memento) {
 		memento.putString(CTX_REFRESHSCHEDULE_ENABLED, Boolean.toString(enabled));
 		memento.putInteger(CTX_REFRESHSCHEDULE_INTERVAL, (int)refreshInterval);
-		if (refreshStart != null)
+		if (refreshStart != null) {
 			memento.putString(CTX_REFRESHSCHEDULE_START, Long.toString(refreshStart.getTime()));
+		}
 		memento.putString(CTX_REFRESHSCHEDULE_RUNONCE, Boolean.toString(runOnce));
 	}
 
@@ -231,9 +232,9 @@ public class SubscriberRefreshSchedule {
 		if (changeCount == 0) {
 			text.append(TeamUIMessages.RefreshSchedule_7);
 		} else if (changeCount == 1) {
-			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesSingular, new String[] { Integer.toString(changeCount) }));
+			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesSingular, Integer.toString(changeCount)));
 		} else {
-			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesPlural, new String[] { Integer.toString(changeCount) }));
+			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesPlural, Integer.toString(changeCount)));
 		}
 		return text.toString();
 	}
@@ -243,8 +244,9 @@ public class SubscriberRefreshSchedule {
 	}
 
 	private String getRefreshIntervalAsString() {
-		if (runOnce)
+		if (runOnce) {
 			return TeamUIMessages.RefreshSchedule_16;
+		}
 		boolean hours = false;
 		long seconds = getRefreshInterval();
 		if(seconds <= 60) {
@@ -261,7 +263,7 @@ public class SubscriberRefreshSchedule {
 		} else {
 			unit = (hours ? TeamUIMessages.RefreshSchedule_11 : TeamUIMessages.RefreshSchedule_12);
 		}
-		return NLS.bind(TeamUIMessages.RefreshSchedule_13, new String[] { Long.toString(minutes), unit });
+		return NLS.bind(TeamUIMessages.RefreshSchedule_13, Long.toString(minutes), unit);
 	}
 
 	public IRefreshable getRefreshable() {

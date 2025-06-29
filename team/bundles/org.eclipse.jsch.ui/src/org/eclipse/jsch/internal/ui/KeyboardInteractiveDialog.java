@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -84,7 +84,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 		this.prompt=prompt;
 		this.echo=echo;
 		if (name!=null && name.length()>0) {
-			this.message=NLS.bind(Messages.KeyboardInteractiveDialog_0, new String[] { destination, name });
+			this.message = NLS.bind(Messages.KeyboardInteractiveDialog_0, destination, name);
 		} else {
 			this.message=NLS.bind(Messages.KeyboardInteractiveDialog_1, destination);
 		}

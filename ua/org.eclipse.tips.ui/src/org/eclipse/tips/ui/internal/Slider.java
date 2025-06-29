@@ -86,7 +86,7 @@ public class Slider extends Composite {
 		fLeftButton = new Button(this, SWT.FLAT);
 		fLeftRightButtonWidth = fIconSize / 2 + 8;
 		setLeftRightButtonGridData(fLeftButton, fLeftRightButtonWidth);
-		fLeftButton.setImage(getImage("icons/" + fIconSize + "/aleft.png", resourceManager)); //$NON-NLS-1$ //$NON-NLS-2$
+		fLeftButton.setImage(getImage("icons/" + fIconSize + "/aleft.svg", resourceManager)); //$NON-NLS-1$ //$NON-NLS-2$
 		fLeftButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> scrollLeft()));
 
 		fScroller = new Composite(this, SWT.DOUBLE_BUFFERED);
@@ -96,7 +96,7 @@ public class Slider extends Composite {
 
 		fRightButton = new Button(this, SWT.FLAT);
 		setLeftRightButtonGridData(fRightButton, fLeftRightButtonWidth);
-		fRightButton.setImage(getImage("icons/" + fIconSize + "/aright.png", resourceManager)); //$NON-NLS-1$ //$NON-NLS-2$
+		fRightButton.setImage(getImage("icons/" + fIconSize + "/aright.svg", resourceManager)); //$NON-NLS-1$ //$NON-NLS-2$
 		fRightButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> scrollRight()));
 
 		setupDisposeListener();

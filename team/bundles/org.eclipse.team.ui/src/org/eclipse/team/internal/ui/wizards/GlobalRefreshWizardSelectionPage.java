@@ -67,8 +67,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	class MyContentProvider extends BaseWorkbenchContentProvider {
 		@Override
 		public Object[] getChildren(Object element) {
-			if(element instanceof SynchronizeManager) {
-				SynchronizeManager manager = (SynchronizeManager)element;
+			if(element instanceof SynchronizeManager manager) {
 				return manager.getWizardDescriptors();
 			}
 			return super.getChildren(element);
@@ -78,8 +77,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	class MyLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
-			if(element instanceof SynchronizeWizardDescription) {
-				SynchronizeWizardDescription descriptor = (SynchronizeWizardDescription)element;
+			if(element instanceof SynchronizeWizardDescription descriptor) {
 				return descriptor.getName();
 			}
 			return null;
@@ -87,8 +85,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 
 		@Override
 		public Image getImage(Object element) {
-			if(element instanceof SynchronizeWizardDescription) {
-				SynchronizeWizardDescription descriptor = (SynchronizeWizardDescription)element;
+			if(element instanceof SynchronizeWizardDescription descriptor) {
 				ImageDescriptor d = descriptor.getImageDescriptor();
 				if(createdImages == null) {
 					createdImages = new ArrayList<>(3);
@@ -120,13 +117,15 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	 * Save the page settings into the dialog settings
 	 */
 	public void savePageSettings() {
-		if (fViewer.getControl().isDisposed())
+		if (fViewer.getControl().isDisposed()) {
 			return;
+		}
 
 		final IStructuredSelection selection= fViewer.getStructuredSelection();
 		final Object selected= selection.getFirstElement();
-		if (!(selected instanceof SynchronizeWizardDescription))
+		if (!(selected instanceof SynchronizeWizardDescription)) {
 			return;
+		}
 		getDialogSettings().put(DEFAULT_SELECTION, ((SynchronizeWizardDescription)selected).getId());
 	}
 
@@ -162,12 +161,14 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 
 	private SynchronizeWizardDescription getDefaultSelection() {
 
-		if (!(TeamUI.getSynchronizeManager() instanceof SynchronizeManager))
+		if (!(TeamUI.getSynchronizeManager() instanceof SynchronizeManager)) {
 			return null;
+		}
 
 		final String defaultSelection= getDialogSettings().get(DEFAULT_SELECTION);
-		if (defaultSelection == null)
+		if (defaultSelection == null) {
 			return null;
+		}
 
 		final SynchronizeManager syncManager= (SynchronizeManager)TeamUI.getSynchronizeManager();
 		final SynchronizeWizardDescription [] wizards= syncManager.getWizardDescriptors();
@@ -193,12 +194,11 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 		// Initialize the wizard so we can tell whether to enable the
 		// Next button
 		ISelection selection = event.getSelection();
-		if (selection == null || !(selection instanceof IStructuredSelection)) {
+		if (selection == null || !(selection instanceof IStructuredSelection ss)) {
 			wizard = null;
 			setPageComplete(false);
 			return;
 		}
-		IStructuredSelection ss = (IStructuredSelection) selection;
 		if (ss.size() != 1) {
 			wizard = null;
 			setPageComplete(false);
@@ -223,7 +223,9 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 
 	@Override
 	public IWizardPage getNextPage() {
-		if (wizard == null) return null;
+		if (wizard == null) {
+			return null;
+		}
 		return wizard.getStartingPage();
 	}
 

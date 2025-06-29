@@ -1,15 +1,6 @@
 FAQ How do I run Eclipse?
 =========================
 
-Contents
---------
-
-*   [1 Starting Eclipse](#Starting-Eclipse)
-*   [2 Find the JVM](#Find-the-JVM)
-*   [3 eclipse.ini](#eclipse.ini)
-*   [4 See Also:](#See-Also:)
-*   [5 User Comments](#User-Comments)
-
 Starting Eclipse
 ----------------
 

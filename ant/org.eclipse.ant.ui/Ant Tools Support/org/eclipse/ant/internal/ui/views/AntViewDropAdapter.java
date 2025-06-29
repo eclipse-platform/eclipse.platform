@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -31,7 +31,7 @@ public class AntViewDropAdapter extends DropTargetAdapter {
 
 	/**
 	 * Creates a new drop adapter for the given Ant view.
-	 * 
+	 *
 	 * @param view
 	 *            the view which dropped files will be added to
 	 */

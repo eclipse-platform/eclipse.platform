@@ -41,32 +41,37 @@ public class ProductPreferencesService implements IProductPreferencesService {
 	private String productID = null;
 
 	private void initValues() {
-		if (initialized)
+		if (initialized) {
 			return;
+		}
 		initialized = true;
 
 		IProduct product = Platform.getProduct();
 		if (product == null) {
-			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 				InternalPlatform.message("Product not available to set product default preference overrides."); //$NON-NLS-1$
+			}
 			return;
 		}
 		productID = product.getId();
 		if (productID == null) {
-			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 				InternalPlatform.message("Product ID not available to apply product-level preference defaults."); //$NON-NLS-1$
+			}
 			return;
 		}
 		customizationBundle = product.getDefiningBundle();
 		if (customizationBundle == null) {
-			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 				InternalPlatform.message("Bundle not available to apply product-level preference defaults for product id: " + productID); //$NON-NLS-1$
+			}
 			return;
 		}
 		customizationValue = product.getProperty(PRODUCT_KEY);
 		if (customizationValue == null) {
-			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 				InternalPlatform.message("Product : " + productID + " does not define preference customization file. Using legacy file: plugin_customization.ini"); //$NON-NLS-1$//$NON-NLS-2$
+			}
 			customizationValue = LEGACY_PRODUCT_CUSTOMIZATION_FILENAME;
 		}
 	}
@@ -86,8 +91,9 @@ public class ProductPreferencesService implements IProductPreferencesService {
 		}
 
 		if (url == null) {
-			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+			if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 				InternalPlatform.message("Product preference customization file: " + customizationValue + " not found for bundle: " + productID); //$NON-NLS-1$//$NON-NLS-2$
+			}
 		}
 
 		return loadProperties(url);
@@ -98,19 +104,22 @@ public class ProductPreferencesService implements IProductPreferencesService {
 		initValues();
 		URL transURL = null;
 
-		if (customizationValue != null)
+		if (customizationValue != null) {
 			transURL = FileLocator.find(customizationBundle, NL_DIR.append(customizationValue).removeFileExtension().addFileExtension(PROPERTIES_FILE_EXTENSION), null);
+		}
 
-		if (transURL == null && InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+		if (transURL == null && InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 			InternalPlatform.message("No preference translations found for product/file: " + customizationBundle.getSymbolicName() + '/' + customizationValue); //$NON-NLS-1$
+		}
 
 		return loadProperties(transURL);
 	}
 
 	private Properties loadProperties(URL url) {
 		Properties result = new Properties();
-		if (url == null)
+		if (url == null) {
 			return result;
+		}
 		try (InputStream input = url.openStream()) {
 			result.load(input);
 		} catch (IOException e) {

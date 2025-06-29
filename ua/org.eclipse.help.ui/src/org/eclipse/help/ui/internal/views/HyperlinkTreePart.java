@@ -144,8 +144,9 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 			@Override
 			public void mouseUp(MouseEvent e) {
 				long eventTime = e.time & 0xFFFFFFFFL;
-				if ((eventTime - lastTime <= e.display.getDoubleClickTime()) || (e.button != 1))
+				if ((eventTime - lastTime <= e.display.getDoubleClickTime()) || (e.button != 1)) {
 					return;
+				}
 				lastTime = eventTime;
 				Point p = new Point(e.x, e.y);
 				TreeItem item = treeViewer.getTree().getItem(p);
@@ -160,8 +161,9 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 
 		treeViewer.getTree().addPaintListener(e -> {
 			validateLastItem();
-			if (lastItem == null)
+			if (lastItem == null) {
 				return;
+			}
 			Rectangle bounds = lastItem.getBounds();
 			boolean selected = false;
 			TreeItem[] items = lastItem.getParent().getSelection();
@@ -171,10 +173,11 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 					break;
 				}
 			}
-			if (selected)
+			if (selected) {
 				e.gc.setForeground(e.display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
-			else
+			} else {
 				e.gc.setForeground(toolkit.getHyperlinkGroup().getActiveForeground());
+			}
 			FontMetrics fm = e.gc.getFontMetrics();
 			int height = fm.getHeight();
 			int lineY = bounds.y + height;
@@ -205,22 +208,25 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 						repaintItem(lastItem);
 						updateStatus(null);
 						lastItem = null;
-					} else
+					} else {
 						return;
+					}
 				}
 				Object obj = item.getData();
 				treeViewer.getTree().setCursor(handCursor);
 				IStructuredSelection ssel = treeViewer.getStructuredSelection();
-				if (ssel.getFirstElement() == obj)
+				if (ssel.getFirstElement() == obj) {
 					item.setForeground(e.display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
-				else
+				} else {
 					item.setForeground(toolkit.getHyperlinkGroup().getActiveForeground());
+				}
 				lastItem = item;
 				repaintItem(lastItem);
-				if (obj instanceof IHelpResource)
+				if (obj instanceof IHelpResource) {
 					updateStatus((IHelpResource) obj);
-				else
+				} else {
 					updateStatus(null);
+				}
 				return;
 			} else if (lastItem != null) {
 				lastItem.setForeground(null);
@@ -291,8 +297,9 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 	@Override
 	public void setVisible(boolean visible) {
 		getControl().setVisible(visible);
-		if (visible)
+		if (visible) {
 			treeViewer.refresh();
+		}
 	}
 
 	private void doOpenSelection(IStructuredSelection sel) {
@@ -306,19 +313,20 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 		Object obj = sel.getFirstElement();
 		if (lastItem != null && !lastItem.isDisposed()) {
 			Object lastObj = lastItem.getData();
-			if (lastObj==obj)
+			if (lastObj==obj) {
 				lastItem.setForeground(getControl().getDisplay()
 							.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
-			else
+			} else {
 				lastItem.setForeground(parent.getForm().getToolkit().getHyperlinkGroup()
 						.getActiveForeground());
+			}
 			repaintItem(lastItem);
 		}
-		if (obj instanceof IHelpResource) {
-			IHelpResource res = (IHelpResource) obj;
+		if (obj instanceof IHelpResource res) {
 			updateStatus(res, false);
-		} else
+		} else {
 			updateStatus(null, false);
+		}
 	}
 
 	private void updateStatus(IHelpResource res) {
@@ -329,8 +337,9 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 		if (defaultToSelection && res == null) {
 			IStructuredSelection ssel = treeViewer.getStructuredSelection();
 			Object obj = ssel.getFirstElement();
-			if (obj instanceof IHelpResource)
+			if (obj instanceof IHelpResource) {
 				res = (IHelpResource) obj;
+			}
 		}
 		if (res != null) {
 			String label = res.getLabel();
@@ -369,14 +378,16 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 
 	@Override
 	public void setFocus() {
-		if (treeViewer != null)
+		if (treeViewer != null) {
 			treeViewer.getTree().setFocus();
+		}
 	}
 
 	@Override
 	public IAction getGlobalAction(String id) {
-		if (id.equals(ActionFactory.COPY.getId()))
+		if (id.equals(ActionFactory.COPY.getId())) {
 			return parent.getCopyAction();
+		}
 		return null;
 	}
 
@@ -385,8 +396,9 @@ public abstract class HyperlinkTreePart extends AbstractFormPart implements
 	}
 
 	private void validateLastItem() {
-		if (lastItem != null && lastItem.isDisposed())
+		if (lastItem != null && lastItem.isDisposed()) {
 			lastItem = null;
+		}
 	}
 
 	@Override

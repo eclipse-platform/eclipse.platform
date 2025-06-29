@@ -31,11 +31,13 @@ public class PatchCompareAdapter extends SynchronizationCompareAdapter
 	public ICompareInput asCompareInput(ISynchronizationContext context,
 			Object o) {
 		// PatchFileDiffNode can adapt to IFile
-		if (o instanceof PatchFileDiffNode)
+		if (o instanceof PatchFileDiffNode) {
 			return super.asCompareInput(context, ((PatchFileDiffNode) o)
 					.getResource());
-		if (o instanceof ICompareInput)
+		}
+		if (o instanceof ICompareInput) {
 			return (ICompareInput) o;
+		}
 		return super.asCompareInput(context, o);
 	}
 

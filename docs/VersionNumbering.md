@@ -1,30 +1,6 @@
 Version Numbering
 =================
 
-Contents
---------
-
-*   [1 Guidelines on versioning plug-ins](#Guidelines-on-versioning-plug-ins)
-    *   [1.1 When to change the major segment](#When-to-change-the-major-segment)
-    *   [1.2 When to change the minor segment](#When-to-change-the-minor-segment)
-    *   [1.3 When to change the service segment](#When-to-change-the-service-segment)
-    *   [1.4 Overall example](#Overall-example)
-    *   [1.5 When to change the qualifier segment](#When-to-change-the-qualifier-segment)
-    *   [1.6 Plug-ins with no API](#Plug-ins-with-no-API)
-    *   [1.7 Versioning plug-ins that wrap external libraries](#Versioning-plug-ins-that-wrap-external-libraries)
-*   [2 How to specify plug-in requirements](#How-to-specify-plug-in-requirements)
-    *   [2.1 How to specify versions when plug-ins re-export other plug-ins](#How-to-specify-versions-when-plug-ins-re-export-other-plug-ins)
-    *   [2.2 How to version packages](#How-to-version-packages)
-    *   [2.3 Which version to use in Javadoc tags](#Which-version-to-use-in-Javadoc-tags)
-*   [3 Versioning features](#Versioning-features)
-    *   [3.1 To require features or to require bundles](#To-require-features-or-to-require-bundles)
-        *   [3.1.1 Require bundles](#Require-bundles)
-        *   [3.1.2 Require features](#Require-features)
-    *   [3.2 Feature includes](#Feature-includes)
-    *   [3.3 Patch features](#Patch-features)
-*   [4 API Baseline in API Tools](#API-Baseline-in-API-Tools)
-*   [5 pom.xml Versions](#pom.xml-Versions)
-*   [6 Further reading](#Further-reading)
 
 Guidelines on versioning plug-ins
 ---------------------------------
@@ -44,14 +20,14 @@ Each segment captures a different intent:
 
 The major segment number must be increased when a plug-in makes breaking changes to its API. 
 When the major segment is changed the minor and service segments are reset to 0. 
-See [Evolving Java-based APIs](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md) for details on what constitutes a breaking change.
+See [Evolving Java-based APIs](Evolving-Java-based-APIs.md) for details on what constitutes a breaking change.
 
 **Example**: From the version 2.2.7, an incompatible change would lead to 3.0.0. By definition, such changes should not be made when working in a maintenance stream.
 
 ### When to change the minor segment
 
 The minor segment number must be incremented when a plug-in changes in an "externally visible" way. 
-Examples of externally visible changes include [binary compatible API changes](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md) or an increased minimum Java version via the Bundle-RequiredExecutionEnvironment header in the MANIFEST.MF, significant performance changes, major code rework, adding a new extension point, changing files with a somewhat unclear API status (e.g. changing icons from gif to png), etc. Another way to know when this version number should be changed is by exclusion: it should indicate changes that are neither bug fixes (indicated by the service segment) nor breaking API changes (indicated by the major segment). When the minor segment is changed, the service segment is reset to 0.
+Examples of externally visible changes include [binary compatible API changes](Evolving-Java-based-APIs-2.md) or an increased minimum Java version via the Bundle-RequiredExecutionEnvironment header in the MANIFEST.MF, significant performance changes, major code rework, adding a new extension point, changing files with a somewhat unclear API status (e.g. changing icons from gif to png), etc. Another way to know when this version number should be changed is by exclusion: it should indicate changes that are neither bug fixes (indicated by the service segment) nor breaking API changes (indicated by the major segment). When the minor segment is changed, the service segment is reset to 0.
 
 **Example**: From the version 2.2.7, a minor change would lead to 2.3.0.
 
@@ -84,7 +60,7 @@ This example shows how the version of a plug-in reacts to changes (indicated in 
      - 1.1.1
      The plug-in ships as 1.1.1
 
-![Plugin Versioning Figure 1](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/images/Plugin-versioning-fig1.jpg)
+![Plugin Versioning Figure 1](images/Plugin-versioning-fig1.jpg)
 
 ### When to change the qualifier segment
 
@@ -251,7 +227,7 @@ If you use an older version as API Baseline, you will miss some API problems.
 Further reading
 ---------------
 
-*   See [Evolving Java-based APIs Part 1](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs.md)
-*   See [Evolving Java-based APIs Part 2](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-2.md)
-*   See [Evolving Java-based APIs Part 3](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Evolving-Java-based-APIs-3.md)
+*   See [Evolving Java-based APIs Part 1](Evolving-Java-based-APIs.md)
+*   See [Evolving Java-based APIs Part 2](Evolving-Java-based-APIs-2.md)
+*   See [Evolving Java-based APIs Part 3](Evolving-Java-based-APIs-3.md)
 

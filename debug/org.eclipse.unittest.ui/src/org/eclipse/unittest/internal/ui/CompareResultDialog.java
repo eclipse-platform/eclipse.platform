@@ -237,17 +237,20 @@ public class CompareResultDialog extends TrayDialog {
 		String actual = trace.getActual();
 		int end = Math.min(expected.length(), actual.length());
 		int i = 0;
-		for (; i < end; i++)
-			if (expected.charAt(i) != actual.charAt(i))
+		for (; i < end; i++) {
+			if (expected.charAt(i) != actual.charAt(i)) {
 				break;
+			}
+		}
 		fPrefixSuffix[0] = i;
 
 		int j = expected.length() - 1;
 		int k = actual.length() - 1;
 		int l = 0;
 		for (; k >= i && j >= i; k--, j--) {
-			if (expected.charAt(j) != actual.charAt(k))
+			if (expected.charAt(j) != actual.charAt(k)) {
 				break;
+			}
 			l++;
 		}
 		fPrefixSuffix[1] = l;

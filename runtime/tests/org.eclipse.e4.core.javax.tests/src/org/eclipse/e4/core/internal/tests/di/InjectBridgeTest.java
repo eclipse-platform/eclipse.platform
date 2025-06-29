@@ -13,6 +13,8 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import javax.inject.Inject;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
@@ -20,7 +22,7 @@ import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.InjectionException;
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InjectBridgeTest {
 	static class Base<T> {
@@ -54,12 +56,12 @@ public class InjectBridgeTest {
 		ContextInjectionFactory.make(Concrete.class, context);
 	}
 
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testInjectionFail() {
 		IEclipseContext context = EclipseContextFactory.create();
 		context.set(Object.class, "Value");
 
-		ContextInjectionFactory.make(Concrete.class, context);
+		assertThrows(InjectionException.class, () -> ContextInjectionFactory.make(Concrete.class, context));
 	}
 
 	@Test
@@ -70,10 +72,10 @@ public class InjectBridgeTest {
 		ContextInjectionFactory.invoke(new Concrete(), Execute.class, context);
 	}
 
-	@Test(expected = InjectionException.class)
+	@Test
 	public void testInvokationFail() {
 		IEclipseContext context = EclipseContextFactory.create();
 		context.set(Object.class, "Value");
-		ContextInjectionFactory.invoke(new Concrete(), Execute.class, context);
+		assertThrows(InjectionException.class, () -> ContextInjectionFactory.invoke(new Concrete(), Execute.class, context));
 	}
 }

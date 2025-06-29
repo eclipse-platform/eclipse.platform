@@ -58,7 +58,9 @@ public class ResourceVariantCacheEntry {
 	}
 
 	public InputStream getContents() throws TeamException {
-		if (state != READY) return null;
+		if (state != READY) {
+			return null;
+		}
 		registerHit();
 		File ioFile = getFile();
 		try {
@@ -73,7 +75,7 @@ public class ResourceVariantCacheEntry {
 			}
 		} catch (IOException e) {
 			// We will end up here if we couldn't read or delete the cache file
-			throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { ioFile.getAbsolutePath() }), e);
+			throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, ioFile.getAbsolutePath()), e);
 		}
 		// This can occur when there is no remote contents
 		return new ByteArrayInputStream(new byte[0]);
@@ -112,7 +114,7 @@ public class ResourceVariantCacheEntry {
 	private void internalSetContents(InputStream stream, IProgressMonitor monitor) throws TeamException {
 		// if the state is DISPOSED then there is a problem
 		if (state == DISPOSED) {
-			throw new TeamException(NLS.bind(Messages.RemoteContentsCacheEntry_3, new String[] { cache.getName(), id }));
+			throw new TeamException(NLS.bind(Messages.RemoteContentsCacheEntry_3, cache.getName(), id));
 		}
 		// Otherwise, the state is UNINITIALIZED or READY so we can proceed
 		registerHit();
@@ -134,7 +136,7 @@ public class ResourceVariantCacheEntry {
 				}
 			} catch (FileNotFoundException e) {
 				throw new TeamException(
-						NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { ioFile.getAbsolutePath() }), e);
+						NLS.bind(Messages.RemoteContentsCache_fileError, ioFile.getAbsolutePath()), e);
 			} catch (IOException e) {
 				// Make sure we don't leave the cache file around as it may not have the right
 				// contents
@@ -145,7 +147,7 @@ public class ResourceVariantCacheEntry {
 			// Mark the cache entry as ready
 			state = READY;
 		} catch (IOException e) {
-			throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { ioFile.getAbsolutePath() }), e);
+			throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, ioFile.getAbsolutePath()), e);
 		} finally {
 			try {
 				stream.close();
@@ -167,7 +169,9 @@ public class ResourceVariantCacheEntry {
 	 * @see org.eclipse.team.core.sync.ICacheEntry#getSize()
 	 */
 	public long getSize() {
-		if (state != READY) return 0;
+		if (state != READY) {
+			return 0;
+		}
 		File ioFile = getFile();
 		if (ioFile.exists()) {
 			return ioFile.length();

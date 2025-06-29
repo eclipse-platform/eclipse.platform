@@ -50,8 +50,9 @@ public class CompoundResourceTraversal {
 
 	public synchronized void addResource(IResource resource, int depth) {
 		if (resource.getType() == IResource.FILE) {
-			if (!isCovered(resource, IResource.DEPTH_ZERO))
+			if (!isCovered(resource, IResource.DEPTH_ZERO)) {
 				files.add(resource);
+			}
 		}
 		switch (depth) {
 		case IResource.DEPTH_INFINITE:
@@ -101,8 +102,9 @@ public class CompoundResourceTraversal {
 	}
 
 	private void addZeroFolder(IResource resource) {
-		if (!isCovered(resource, IResource.DEPTH_ZERO))
+		if (!isCovered(resource, IResource.DEPTH_ZERO)) {
 			zeroFolders.add(resource);
+		}
 	}
 
 	private void addDeepFolder(IResource resource) {

@@ -71,14 +71,17 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	 * @throws CoreException on filesystem related errors
 	 */
 	public IFileSystem getFileSystem(String scheme) throws CoreException {
-		if (scheme == null)
+		if (scheme == null) {
 			throw new NullPointerException();
+		}
 		final Map<String, Object> registry = getFileSystemRegistry();
 		Object result = registry.get(scheme);
-		if (result == null)
+		if (result == null) {
 			Policy.error(EFS.ERROR_INTERNAL, NLS.bind(Messages.noFileSystem, scheme));
-		if (result instanceof IFileSystem)
+		}
+		if (result instanceof IFileSystem) {
 			return (IFileSystem) result;
+		}
 		try {
 			IConfigurationElement element = (IConfigurationElement) result;
 			FileSystem fs = (FileSystem) element.createExecutableExtension("run"); //$NON-NLS-1$
@@ -122,8 +125,9 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	 */
 	public IFileStore getStore(URI uri) throws CoreException {
 		final String scheme = uri.getScheme();
-		if (scheme == null)
+		if (scheme == null) {
 			Policy.error(EFS.ERROR_INTERNAL, Messages.noScheme + uri);
+		}
 		return getFileSystem(scheme).getStore(uri);
 	}
 
@@ -154,8 +158,9 @@ public class InternalFileSystemCore implements IRegistryChangeListener {
 	@Override
 	public void registryChanged(IRegistryChangeEvent event) {
 		IExtensionDelta[] changes = event.getExtensionDeltas(EFS.PI_FILE_SYSTEM, EFS.PT_FILE_SYSTEMS);
-		if (changes.length == 0)
+		if (changes.length == 0) {
 			return;
+		}
 		synchronized (this) {
 			//let the registry be rebuilt lazily
 			fileSystems = null;

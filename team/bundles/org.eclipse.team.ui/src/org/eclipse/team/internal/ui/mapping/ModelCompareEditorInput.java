@@ -79,7 +79,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		this.input = input;
 		contextListener = cache -> closeEditor(true);
 		getCompareConfiguration().addPropertyChangeListener(this);
-		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { input.getName() }));
+		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, input.getName()));
 	}
 
 	private static CompareConfiguration createCompareConfiguration(ISynchronizePageConfiguration pageConfiguration) {
@@ -115,11 +115,11 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 
 	@Override
 	protected Saveable createSaveable() {
-		if (input instanceof ISynchronizationCompareInput) {
-			ISynchronizationCompareInput mci = (ISynchronizationCompareInput) input;
+		if (input instanceof ISynchronizationCompareInput mci) {
 			SaveableComparison compareModel = mci.getSaveable();
-			if (compareModel != null)
+			if (compareModel != null) {
 				return compareModel;
+			}
 		}
 		return super.createSaveable();
 	}
@@ -157,8 +157,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	 * given object
 	 */
 	public boolean matches(Object object, ISynchronizeParticipant participant) {
-		if (participant == this.participant && input instanceof ISynchronizationCompareInput) {
-			ISynchronizationCompareInput mci = (ISynchronizationCompareInput) input;
+		if (participant == this.participant && input instanceof ISynchronizationCompareInput mci) {
 			return mci.isCompareInputFor(object);
 		}
 		return false;
@@ -173,13 +172,13 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		} else {
 			fullPath = getName();
 		}
-		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()), fullPath });
+		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip,
+				Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()), fullPath);
 	}
 
 	@Override
 	protected void fireInputChange() {
-		if (input instanceof ResourceDiffCompareInput) {
-			ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
+		if (input instanceof ResourceDiffCompareInput rdci) {
 			rdci.fireChange();
 		}
 	}
@@ -279,8 +278,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 
 	private boolean isSelectedInSynchronizeView() {
 		ISelection s = synchronizeConfiguration.getSite().getSelectionProvider().getSelection();
-		if (s instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) s;
+		if (s instanceof IStructuredSelection ss) {
 			Object element = ss.getFirstElement();
 			return matches(element, participant);
 		}
@@ -289,10 +287,10 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
-		if (obj instanceof ModelCompareEditorInput) {
-			ModelCompareEditorInput other = (ModelCompareEditorInput) obj;
+		}
+		if (obj instanceof ModelCompareEditorInput other) {
 			return other.input.equals(input) && other.participant.equals(participant);
 		}
 		return false;

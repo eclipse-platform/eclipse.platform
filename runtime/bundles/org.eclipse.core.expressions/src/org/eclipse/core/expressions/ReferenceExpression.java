@@ -87,10 +87,10 @@ public class ReferenceExpression extends Expression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof ReferenceExpression))
+		if (!(object instanceof final ReferenceExpression that)) {
 			return false;
+		}
 
-		final ReferenceExpression that= (ReferenceExpression)object;
 		return this.fDefinitionId.equals(that.fDefinitionId);
 	}
 

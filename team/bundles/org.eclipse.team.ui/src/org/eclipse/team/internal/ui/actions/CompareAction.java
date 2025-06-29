@@ -56,19 +56,22 @@ public class CompareAction extends TeamAction {
 		ITypedElement right = null;
 
 		if (selectedResources.length == 2) {
-			if (selectedResources[0] != null)
+			if (selectedResources[0] != null) {
 				left = getElementFor(selectedResources[0]);
+			}
 
-			if (selectedResources[1] != null)
+			if (selectedResources[1] != null) {
 				right = getElementFor(selectedResources[1]);
+			}
 
 		} else if (selectedResources.length == 3) {
 			// prompt for ancestor
 			SelectAncestorDialog dialog = new SelectAncestorDialog(getShell(),
 					selectedResources);
 			int code = dialog.open();
-			if (code != Window.OK)
+			if (code != Window.OK) {
 				return;
+			}
 
 			ancestor = getElementFor(dialog.ancestorResource);
 			left = getElementFor(dialog.leftResource);
@@ -161,11 +164,14 @@ public class CompareAction extends TeamAction {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button selectedButton = (Button) e.widget;
-				if (!selectedButton.getSelection())
+				if (!selectedButton.getSelection()) {
 					return;
-				for (int i = 0; i < 3; i++)
-					if (selectedButton == buttons[i])
+				}
+				for (int i = 0; i < 3; i++) {
+					if (selectedButton == buttons[i]) {
 						pickAncestor(i);
+					}
+				}
 			}
 		};
 	}

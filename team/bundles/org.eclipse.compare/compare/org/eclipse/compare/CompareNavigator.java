@@ -63,8 +63,9 @@ public abstract class CompareNavigator implements ICompareNavigator {
 	 * @return the {@link INavigatable} for the given object or {@code null}
 	 */
 	protected final INavigatable getNavigator(Object object) {
-		if (object == null)
+		if (object == null) {
 			return null;
+		}
 		return Adapters.adapt(object, INavigatable.class);
 	}
 

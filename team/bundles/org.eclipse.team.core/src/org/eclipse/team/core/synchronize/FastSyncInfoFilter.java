@@ -151,8 +151,9 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		public boolean select(SyncInfo info) {
 			int syncKind = info.getKind();
 			for (int filter : changeFilters) {
-				if ((syncKind & SyncInfo.CHANGE_MASK) == filter)
+				if ((syncKind & SyncInfo.CHANGE_MASK) == filter) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -185,8 +186,9 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		public boolean select(SyncInfo info) {
 			int syncKind = info.getKind();
 			for (int filter : directionFilters) {
-				if ((syncKind & SyncInfo.DIRECTION_MASK) == filter)
+				if ((syncKind & SyncInfo.DIRECTION_MASK) == filter) {
 					return true;
+				}
 			}
 			return false;
 		}

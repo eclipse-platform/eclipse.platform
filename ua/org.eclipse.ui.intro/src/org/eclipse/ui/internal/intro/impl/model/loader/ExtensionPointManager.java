@@ -69,11 +69,12 @@ public class ExtensionPointManager extends BaseExtensionPointManager {
 	 *         the intro model root is throught the intro plugin.
 	 */
 	public IntroModelRoot getCurrentModel() {
-		if (currentModel == null)
+		if (currentModel == null) {
 			// we never loaded this model before, or we tried before and we
 			// failed. Load it. Get the correct config element based on
 			// config introId, and log any extra contributions.
 			loadCurrentModel();
+		}
 		return currentModel;
 	}
 
@@ -107,8 +108,9 @@ public class ExtensionPointManager extends BaseExtensionPointManager {
 		sharedConfigExtensionsManager = null;
 		introModels.clear();
 		ExtensionMap.getInstance().clear();
-		if (Log.logInfo)
+		if (Log.logInfo) {
 			Log.info("Cleared Intro model"); //$NON-NLS-1$
+		}
 	}
 
 

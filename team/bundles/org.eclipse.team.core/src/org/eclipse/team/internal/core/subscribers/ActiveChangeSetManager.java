@@ -113,8 +113,9 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	@Override
 	public boolean isModified(IFile file) throws CoreException {
 		IDiff diff = getDiff(file);
-		if (diff != null)
+		if (diff != null) {
 			return isModified(diff);
+		}
 		return false;
 	}
 
@@ -125,8 +126,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	public boolean isModified(IDiff diff) {
 		if (diff != null) {
-			if (diff instanceof IThreeWayDiff) {
-				IThreeWayDiff twd = (IThreeWayDiff) diff;
+			if (diff instanceof IThreeWayDiff twd) {
 				int dir = twd.getDirection();
 				return dir == IThreeWayDiff.OUTGOING || dir == IThreeWayDiff.CONFLICTING;
 			} else {
@@ -323,8 +323,9 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	protected void save(Preferences prefs) {
 		// No need to save the sets if the manager has never been initialized
-		if (!isInitialized())
+		if (!isInitialized()) {
 			return;
+		}
 		// Clear the persisted state before saving the new state
 		try {
 			String[] oldSetNames = prefs.childrenNames();
@@ -332,7 +333,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 				prefs.node(string).removeNode();
 			}
 		} catch (BackingStoreException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_5, new String[] { getName() }), e);
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_5, getName()), e);
 		}
 		ChangeSet[] sets = getSets();
 		for (ChangeSet set : sets) {
@@ -354,7 +355,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_3, new String[] { getName() }), e);
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_3, getName()), e);
 		}
 	}
 
@@ -406,7 +407,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 				}
 			}
 		} catch (BackingStoreException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_4, new String[] { getName() }), e);
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_4, getName()), e);
 		}
 	}
 

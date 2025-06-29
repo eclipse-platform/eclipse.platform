@@ -60,8 +60,9 @@ public class ScopeSetManager extends Observable {
 			this.activeSet.save();
 		}
 		this.activeSet = set;
-		if (!activeSet.isImplicit())
+		if (!activeSet.isImplicit()) {
 			lastExplicitSet = set;
+		}
 		setChanged();
 	}
 
@@ -79,8 +80,9 @@ public class ScopeSetManager extends Observable {
 		IPath location = HelpUIPlugin.getDefault().getStateLocation();
 		location = location.append(ScopeSet.SCOPE_DIR_NAME);
 		File dir = location.toFile();
-		if (!dir.exists())
+		if (!dir.exists()) {
 			dir.mkdir();
+		}
 	}
 
 	public void save() {
@@ -90,18 +92,21 @@ public class ScopeSetManager extends Observable {
 		}
 		IDialogSettings settings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(ScopeSetManager.class))
 				.getDialogSettings();
-		if (activeSet != null)
+		if (activeSet != null) {
 			settings.put(ACTIVE_SET, activeSet.getName());
+		}
 	}
 
 	public ScopeSet[] getScopeSets(boolean implicit) {
 		ArrayList<ScopeSet> result = new ArrayList<>();
 		for (int i = 0; i < sets.size(); i++) {
 			ScopeSet set = sets.get(i);
-			if (set.isImplicit() == implicit)
+			if (set.isImplicit() == implicit) {
 				result.add(set);
-			if (!implicit && set.isImplicit() && activeSet==set)
+			}
+			if (!implicit && set.isImplicit() && activeSet==set) {
 				result.add(set);
+			}
 		}
 		return result.toArray(new ScopeSet[result.size()]);
 	}
@@ -124,8 +129,9 @@ public class ScopeSetManager extends Observable {
 				if (loc != -1) {
 					ScopeSet set = new ScopeSet(name.substring(0, loc));
 					sets.add(set);
-					if (set.isDefault())
+					if (set.isDefault()) {
 						defSet = set;
+					}
 					continue;
 				}
 				loc = name.lastIndexOf(HistoryScopeSet.EXT);
@@ -162,8 +168,9 @@ public class ScopeSetManager extends Observable {
 			if (activeSet == null) {
 				return sets.get(0);
 			}
-			if (!activeSet.isImplicit())
+			if (!activeSet.isImplicit()) {
 				lastExplicitSet = activeSet;
+			}
 		}
 		return activeSet;
 	}
@@ -174,11 +181,12 @@ public class ScopeSetManager extends Observable {
 
 	public HistoryScopeSet findSearchSet(String expression) {
 		for (ScopeSet set : sets) {
-			if (!set.isImplicit() || !(set instanceof HistoryScopeSet))
+			if (!set.isImplicit() || !(set instanceof HistoryScopeSet sset)) {
 				continue;
-			HistoryScopeSet sset = (HistoryScopeSet) set;
-			if (sset.getExpression().equals(expression))
+			}
+			if (sset.getExpression().equals(expression)) {
 				return sset;
+			}
 		}
 		return null;
 	}
@@ -187,13 +195,16 @@ public class ScopeSetManager extends Observable {
 		ScopeSet defaultSet = null;
 		for (ScopeSet set : sets) {
 			if (name != null && set.isImplicit() == implicit) {
-				if (set.getName().equals(name))
+				if (set.getName().equals(name)) {
 					return set;
-			} else if (set.isDefault())
+				}
+			} else if (set.isDefault()) {
 				defaultSet = set;
+			}
 		}
-		if (!implicit)
+		if (!implicit) {
 			return defaultSet;
+		}
 		return null;
 	}
 }

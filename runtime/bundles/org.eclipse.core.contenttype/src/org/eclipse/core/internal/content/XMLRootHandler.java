@@ -190,8 +190,9 @@ public final class XMLRootHandler extends DefaultHandler implements LexicalHandl
 	public void startDTD(final String name, final String publicId, final String systemId) throws SAXException {
 		dtdFound = systemId;
 		// If we don't care about the top-level element, we can stop here.
-		if (!checkRoot)
+		if (!checkRoot) {
 			throw new StopParsingException();
+		}
 	}
 
 	@Override

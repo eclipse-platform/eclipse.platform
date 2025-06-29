@@ -26,8 +26,9 @@ public final class DefaultDescription extends BasicDescription {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof DefaultDescription))
+		if (!(obj instanceof DefaultDescription)) {
 			return false;
+		}
 		// see ContentType.equals()
 		return contentTypeInfo.equals(((DefaultDescription) obj).contentTypeInfo);
 	}

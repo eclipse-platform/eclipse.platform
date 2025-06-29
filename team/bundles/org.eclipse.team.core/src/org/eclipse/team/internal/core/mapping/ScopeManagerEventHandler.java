@@ -64,8 +64,7 @@ public class ScopeManagerEventHandler extends BackgroundEventHandler {
 	@Override
 	protected void processEvent(Event event, IProgressMonitor monitor)
 			throws CoreException {
-		if (event instanceof ResourceMappingEvent) {
-			ResourceMappingEvent rme = (ResourceMappingEvent) event;
+		if (event instanceof ResourceMappingEvent rme) {
 			Collections.addAll(toRefresh, rme.mappings);
 		}
 

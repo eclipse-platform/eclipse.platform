@@ -121,7 +121,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 			final Shell shell = getShell(context);
 			final boolean[] ok = new boolean[] { false };
 			if (readOnlyFiles.length == 1) {
-				syncExec(() -> ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })));
+				syncExec(() -> ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, readOnlyFiles[0].getFullPath().toString())));
 			} else {
 				syncExec(() -> ok[0] = FileListDialog.openQuestion(shell, readOnlyFiles));
 			}
@@ -137,8 +137,9 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 	}
 
 	private Shell getShell(FileModificationValidationContext context) {
-		if (context.getShell() != null)
+		if (context.getShell() != null) {
 			return (Shell)context.getShell();
+		}
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		if (window != null) {

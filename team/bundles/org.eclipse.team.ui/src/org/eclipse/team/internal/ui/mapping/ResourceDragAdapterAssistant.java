@@ -85,9 +85,10 @@ public class ResourceDragAdapterAssistant extends CommonDragAdapterAssistant {
 					}
 					anEvent.data = fileNames;
 
-					if (Policy.DEBUG_DND)
+					if (Policy.DEBUG_DND) {
 						System.out
 								.println("ResourceDragAdapterAssistant.dragSetData set FileTransfer"); //$NON-NLS-1$
+					}
 					return true;
 				}
 			}

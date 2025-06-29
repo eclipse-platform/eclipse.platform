@@ -53,8 +53,7 @@ public class ResourceTest {
 			int modifiers = field.getModifiers();
 			if (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers)) {
 				Object value = field.get(null);
-				if (value instanceof String) {
-					String stringValue = (String)value;
+				if (value instanceof String stringValue) {
 					if (stringValue.startsWith("NLS missing message")) {
 						fail("Missing resource for " + field.getName());
 					}

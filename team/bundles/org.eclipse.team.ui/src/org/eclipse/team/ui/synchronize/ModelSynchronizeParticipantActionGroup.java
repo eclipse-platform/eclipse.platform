@@ -129,8 +129,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
-		if (menu instanceof CommonMenuManager) {
-			CommonMenuManager cmm = (CommonMenuManager) menu;
+		if (menu instanceof CommonMenuManager cmm) {
 			addMergeActions(cmm);
 		}
 		Object[] elements = ((IStructuredSelection)getContext().getSelection()).toArray();
@@ -205,8 +204,9 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 		if (id != null) {
 			site.getActionBars().setGlobalActionHandler(id, action);
 			IKeyBindingService keyBindingService = site.getKeyBindingService();
-			if(keyBindingService != null)
+			if(keyBindingService != null) {
 				keyBindingService.registerAction(action);
+			}
 		}
 	}
 
@@ -254,8 +254,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	private boolean isTwoWayMerge() {
 		ModelSynchronizeParticipant participant = ((ModelSynchronizeParticipant)getConfiguration().getParticipant());
 		ISynchronizationContext context = participant.getContext();
-		if (context instanceof IMergeContext) {
-			IMergeContext mc = (IMergeContext) context;
+		if (context instanceof IMergeContext mc) {
 			return (mc.getMergeType() == ISynchronizationContext.TWO_WAY);
 		}
 		return false;
@@ -298,16 +297,21 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 
 	@Override
 	public void dispose() {
-		if (modelPicker != null)
+		if (modelPicker != null) {
 			modelPicker.dispose();
-		if (merge != null)
+		}
+		if (merge != null) {
 			merge.dispose();
-		if (overwrite != null)
+		}
+		if (overwrite != null) {
 			overwrite.dispose();
-		if (markAsMerged != null)
+		}
+		if (markAsMerged != null) {
 			markAsMerged.dispose();
-		if (updateToolbarAction != null)
+		}
+		if (updateToolbarAction != null) {
 			updateToolbarAction.dispose();
+		}
 		super.dispose();
 	}
 }

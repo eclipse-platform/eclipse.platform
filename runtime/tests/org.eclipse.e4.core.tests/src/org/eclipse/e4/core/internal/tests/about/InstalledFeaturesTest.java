@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.e4.core.internal.tests.about;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.stream.IntStream;
 
 import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.e4.core.internal.services.about.InstalledFeatures;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
 public class InstalledFeaturesTest {

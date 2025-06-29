@@ -42,10 +42,12 @@ public class FindUnusedSearchResultPage extends AbstractTextSearchViewPage imple
 		public int compare(Viewer aViewer, Object e1, Object e2) {
 			String name1 = labelProvider.getText(e1);
 			String name2 = labelProvider.getText(e2);
-			if (name1 == null)
+			if (name1 == null) {
 				name1 = "";//$NON-NLS-1$
-			if (name2 == null)
+			}
+			if (name2 == null) {
 				name2 = "";//$NON-NLS-1$
+			}
 			return getComparator().compare(name1, name2);
 		}
 
@@ -87,10 +89,11 @@ public class FindUnusedSearchResultPage extends AbstractTextSearchViewPage imple
 		public void elementsChanged(Object[] updatedElements) {
 			for (Object updatedElement : updatedElements) {
 				if (fSearchResult.getMatchCount(updatedElement) > 0) {
-					if (fTableViewer.testFindItem(updatedElement) != null)
+					if (fTableViewer.testFindItem(updatedElement) != null) {
 						fTableViewer.refresh(updatedElement);
-					else
+					} else {
 						fTableViewer.add(updatedElement);
+					}
 				} else {
 					fTableViewer.remove(updatedElement);
 				}
@@ -99,8 +102,9 @@ public class FindUnusedSearchResultPage extends AbstractTextSearchViewPage imple
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			if (fSearchResult != null)
+			if (fSearchResult != null) {
 				return fSearchResult.getElements();
+			}
 			return new Object[0];
 		}
 
@@ -132,8 +136,9 @@ public class FindUnusedSearchResultPage extends AbstractTextSearchViewPage imple
 
 	@Override
 	protected void clear() {
-		if (contentProvider != null)
+		if (contentProvider != null) {
 			contentProvider.clear();
+		}
 	}
 
 	@Override
@@ -152,8 +157,9 @@ public class FindUnusedSearchResultPage extends AbstractTextSearchViewPage imple
 
 	@Override
 	protected void elementsChanged(Object[] objects) {
-		if (contentProvider != null)
+		if (contentProvider != null) {
 			contentProvider.elementsChanged(objects);
+		}
 	}
 
 	@Override
@@ -176,8 +182,9 @@ public class FindUnusedSearchResultPage extends AbstractTextSearchViewPage imple
 	}
 
 	void setSortOrder(int order) {
-		if (currentSortOrder == order)
+		if (currentSortOrder == order) {
 			return;
+		}
 		currentSortOrder = order;
 		int flags;
 		if (order == SORT_BY_NAME) {

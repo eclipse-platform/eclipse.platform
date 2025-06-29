@@ -71,9 +71,10 @@ public class HelpUIPlugin extends AbstractUIPlugin {
 			DEBUG_INFOPOP = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/debug/infopop")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
-		if (BaseHelpSystem.getMode() == BaseHelpSystem.MODE_WORKBENCH)
+		if (BaseHelpSystem.getMode() == BaseHelpSystem.MODE_WORKBENCH) {
 			// UI may get activated during standalone
 			BaseHelpSystem.setDefaultErrorUtil(new ErrorUtil());
+		}
 
 		if (BaseHelpSystem.getMode() == BaseHelpSystem.MODE_WORKBENCH) {
 			// This is workbench scenario. Set activity support of base help to

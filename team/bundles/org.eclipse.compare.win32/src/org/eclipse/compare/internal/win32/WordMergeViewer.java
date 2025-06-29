@@ -62,9 +62,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.PageBook;
 
 public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, IPropertyChangeNotifier  {
-	
+
 	private static final String RESOURCE_BUNDLE_NAME = "org.eclipse.compare.internal.win32.WordMergeViewer"; //$NON-NLS-1$
-	
+
 	private FormToolkit formToolkit;
 	private PageBook composite;
 	private Composite docArea;
@@ -103,7 +103,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		toolBarManager.add(new Separator("file"));	//$NON-NLS-1$
 		CompareConfiguration configuration = getConfiguration();
 		// For now, only support saving if one side is editable
-		if (configuration.isRightEditable() || configuration.isLeftEditable() 
+		if (configuration.isRightEditable() || configuration.isLeftEditable()
 				&& (configuration.isRightEditable() != configuration.isLeftEditable())) {
 			saveAction = new Action() {
 				@Override
@@ -114,7 +114,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 			initAction(saveAction, getResourceBundle(), "action.save."); //$NON-NLS-1$
 			toolBarManager.appendToGroup("file", saveAction); //$NON-NLS-1$
 		}
-		
+
 		inplaceAction = new Action(CompareWin32Messages.WordMergeViewer_2, IAction.AS_CHECK_BOX) {
 			@Override
 			public void run() {
@@ -123,37 +123,37 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		};
 		initAction(inplaceAction, getResourceBundle(), "action.inplace."); //$NON-NLS-1$
 		toolBarManager.appendToGroup("modes", inplaceAction); //$NON-NLS-1$
-		
+
 		toolBarManager.update(true);
 	}
-	
+
 	/*
 	 * Initialize the given Action from a ResourceBundle.
 	 */
 	private static void initAction(IAction a, ResourceBundle bundle, String prefix) {
-		
+
 		String labelKey= "label"; //$NON-NLS-1$
 		String tooltipKey= "tooltip"; //$NON-NLS-1$
 		String imageKey= "image"; //$NON-NLS-1$
 		String descriptionKey= "description"; //$NON-NLS-1$
-		
+
 		if (prefix != null && prefix.length() > 0) {
 			labelKey= prefix + labelKey;
 			tooltipKey= prefix + tooltipKey;
 			imageKey= prefix + imageKey;
 			descriptionKey= prefix + descriptionKey;
 		}
-		
+
 		a.setText(getString(bundle, labelKey, labelKey));
 		a.setToolTipText(getString(bundle, tooltipKey, null));
 		a.setDescription(getString(bundle, descriptionKey, null));
-		
+
 		String relPath= getString(bundle, imageKey, null);
 		if (relPath != null && relPath.trim().length() > 0) {
-			
+
 			String dPath;
 			String ePath;
-			
+
 			if (relPath.contains("/")) { //$NON-NLS-1$
 				String path= relPath.substring(1);
 				dPath= 'd' + path;
@@ -162,28 +162,29 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 				dPath= "dlcl16/" + relPath; //$NON-NLS-1$
 				ePath= "elcl16/" + relPath; //$NON-NLS-1$
 			}
-			
+
 			ImageDescriptor id= getImageDescriptor(dPath);	// we set the disabled image first (see PR 1GDDE87)
-			if (id != null)
+			if (id != null) {
 				a.setDisabledImageDescriptor(id);
+			}
 			id= getImageDescriptor(ePath);
 			if (id != null) {
 				a.setImageDescriptor(id);
-				a.setHoverImageDescriptor(id);
 			}
 		}
 	}
-	
+
 	private static ImageDescriptor getImageDescriptor(String relativePath) {
 		IPath path= IPath.fromOSString("$nl$/icons/full/").append(relativePath);
 		URL url= FileLocator.find(Activator.getDefault().getBundle(), path, null);
-		if (url == null)
+		if (url == null) {
 			return null;
+		}
 		return ImageDescriptor.createFromURL(url);
 	}
-	
+
 	private static String getString(ResourceBundle bundle, String key, String dfltValue) {
-		
+
 		if (bundle != null) {
 			try {
 				return bundle.getString(key);
@@ -206,8 +207,9 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	}
 
 	private void updateEnablements() {
-		if (saveAction != null)
+		if (saveAction != null) {
 			saveAction.setEnabled(isDirty());
+		}
 		inplaceAction.setChecked(wordArea.isInplace());
 		inplaceAction.setEnabled(wordArea.isOpen());
 	}
@@ -225,7 +227,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		wordArea.getFrame().setBackground(formToolkit.getColors().getBackground());
 		updateDirtyFlag();
 	}
-	
+
 	private void createTextArea(PageBook book) {
 		textArea = createComposite(book);
 		textArea.setLayout(GridLayoutFactory.fillDefaults().extendedMargins(10, 10, 10, 10).create());
@@ -262,7 +264,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 			ErrorDialog.openError(WordMergeViewer.this.composite.getShell(), null, null, new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, e.getMessage(), e));
 		}
 	}
-	
+
 	@Override
 	public void flush(IProgressMonitor monitor) {
 		Display.getDefault().syncExec(() -> {
@@ -296,7 +298,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	private boolean isReallyDirty() {
 		return isDirty() || wordArea.isDirty();
 	}
-	
+
 	private void openComparison(boolean inplace) throws CoreException {
 		try {
 			if (isOneSided()) {
@@ -325,7 +327,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 						base = right;
 						revised = left;
 					}
-					synchronized (result) {	
+					synchronized (result) {
 						if (!result.exists()) {
 							wordArea.createWorkingCopy(base.getAbsolutePath(), revised.getAbsolutePath(), result.getAbsolutePath());
 							resultFileTimestamp = result.lastModified();
@@ -359,8 +361,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		if (saveAction != null &&hasResultFile()) {
 			IEditableContent saveTarget = getSaveTarget();
 			String name = CompareWin32Messages.WordMergeViewer_3;
-			if (saveTarget instanceof ITypedElement) {
-				ITypedElement te = (ITypedElement) saveTarget;
+			if (saveTarget instanceof ITypedElement te) {
 				name = te.getName();
 			}
 			try {
@@ -376,7 +377,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	public Control getControl() {
 		return composite;
 	}
-	
+
 	@Override
 	public void setInput(Object input) {
 		super.setInput(input);
@@ -387,13 +388,14 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 			Activator.log(e);
 		}
 	}
-	
+
 	private void updateDirtyFlag() {
 		final Runnable dirtyFlagUpdater = new Runnable() {
 			@Override
 			public void run() {
-				if (wordArea.getFrame().isDisposed())
+				if (wordArea.getFrame().isDisposed()) {
 					return;
+				}
 				boolean dirty = wordArea.isDirty();
 				if (hasResultFile()) {
 					try {
@@ -462,7 +464,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 			reset();
 		});
 	}
-	
+
 	@Override
 	protected void reset() {
 		if (wordArea.isOpen()) {

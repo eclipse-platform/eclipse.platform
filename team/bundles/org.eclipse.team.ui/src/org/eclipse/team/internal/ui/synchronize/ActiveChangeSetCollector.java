@@ -80,8 +80,9 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 		@Override
 		public void defaultSetChanged(final ChangeSet previousDefault, final ChangeSet set) {
 			provider.performUpdate(monitor -> {
-				if (listener != null)
+				if (listener != null) {
 					listener.defaultSetChanged(previousDefault, set);
+				}
 			}, true, true);
 		}
 
@@ -98,8 +99,9 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 		@Override
 		public void nameChanged(final ChangeSet set) {
 			provider.performUpdate(monitor -> {
-				if (listener != null)
+				if (listener != null) {
 					listener.nameChanged(set);
+				}
 			}, true, true);
 		}
 
@@ -320,17 +322,20 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 				added = true;
 			}
 			sis.beginInput();
-			if (!sis.isEmpty())
+			if (!sis.isEmpty()) {
 				sis.removeAll(sis.getResources());
+			}
 			sis.addAll(getSyncInfos(set));
 		} finally {
-			if (sis != null)
+			if (sis != null) {
 				sis.endInput(null);
+			}
 		}
 		if (added) {
 			((DiffChangeSet)set).getDiffTree().addDiffChangeListener(this);
-			if (listener != null)
+			if (listener != null) {
 				listener.setAdded(set);
+			}
 		}
 		return sis;
 	}
@@ -345,8 +350,9 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 		for (IDiff diff : diffs) {
 			if (select(diff)) {
 				SyncInfo info = asSyncInfo(diff);
-				if (info != null)
+				if (info != null) {
 					result.add(info);
+				}
 			}
 		}
 		return result;
@@ -383,8 +389,9 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 	private SyncInfo getSyncInfo(SyncInfoSet set, IPath path) {
 		SyncInfo[] infos = set.getSyncInfos();
 		for (SyncInfo info : infos) {
-			if (info.getLocal().getFullPath().equals(path))
+			if (info.getLocal().getFullPath().equals(path)) {
 				return info;
+			}
 		}
 		return null;
 	}

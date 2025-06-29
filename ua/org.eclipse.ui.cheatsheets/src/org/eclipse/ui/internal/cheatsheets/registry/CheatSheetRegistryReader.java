@@ -215,8 +215,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 			return null;
 		}
 		CheatSheetElement result = new CheatSheetElement(nameString);
-		if (initializeCheatSheet(result, element))
+		if (initializeCheatSheet(result, element)) {
 			return result; // ie.- initialization was successful
+		}
 
 		return null;
 	}
@@ -260,8 +261,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 		}
 
 		// Defer for later processing.
-		if (deferCategories == null)
+		if (deferCategories == null) {
 			deferCategories = new ArrayList<>(20);
+		}
 		deferCategories.add(category);
 	}
 
@@ -269,8 +271,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	 * Stores a cheatsheet element for deferred addition.
 	 */
 	private void deferCheatSheet(CheatSheetElement element) {
-		if (deferCheatSheets == null)
+		if (deferCheatSheets == null) {
 			deferCheatSheets = new ArrayList<>(50);
+		}
 		deferCheatSheets.add(element);
 	}
 
@@ -283,8 +286,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 		for (Object element2 : cheatsheetsList) {
 			CheatSheetCollectionElement collection = (CheatSheetCollectionElement) element2;
 			CheatSheetElement element = collection.findCheatSheet(id, true);
-			if (element != null)
+			if (element != null) {
 				return element;
+			}
 		}
 		return null;
 	}
@@ -329,8 +333,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	 */
 	private void finishCategories() {
 		// If no categories just return.
-		if (deferCategories == null)
+		if (deferCategories == null) {
 			return;
+		}
 
 		// Sort categories by flattened name.
 		CategoryNode[] flatArray = new CategoryNode[deferCategories.size()];
@@ -385,8 +390,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 
 		// If another category already exists with the same id ignore this one.
 		Object test = getChildWithID(parent, category.getId());
-		if (test != null)
+		if (test != null) {
 			return;
+		}
 
 		if (parent != null) {
 			CheatSheetCollectionElement collectionElement =
@@ -459,8 +465,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	 */
 	protected String getCategoryStringFor(IConfigurationElement config) {
 		String result = config.getAttribute(ATT_CATEGORY);
-		if (result == null)
+		if (result == null) {
 			result = UNCATEGORIZED_CHEATSHEET_CATEGORY;
+		}
 
 		return result;
 	}
@@ -472,8 +479,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	 * requires non-trivial work.
 	 */
 	public CheatSheetCollectionElement getCheatSheets() {
-		if (cheatsheets == null)
+		if (cheatsheets == null) {
 			readCheatSheets();
+		}
 		return cheatsheets;
 	}
 
@@ -491,8 +499,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 		Object[] children = parent.getChildren();
 		for (int i = 0; i < children.length; ++i) {
 			CheatSheetCollectionElement currentChild = (CheatSheetCollectionElement) children[i];
-			if (currentChild.getId().equals(id))
+			if (currentChild.getId().equals(id)) {
 				return currentChild;
+			}
 		}
 		return null;
 	}
@@ -540,8 +549,9 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 	protected void moveElementToUncategorizedCategory(CheatSheetCollectionElement root, CheatSheetElement element) {
 		CheatSheetCollectionElement otherCategory = getChildWithID(root, UNCATEGORIZED_CHEATSHEET_CATEGORY);
 
-		if (otherCategory == null)
+		if (otherCategory == null) {
 			otherCategory = createCollectionElement(root, null, UNCATEGORIZED_CHEATSHEET_CATEGORY, UNCATEGORIZED_CHEATSHEET_CATEGORY_LABEL);
+		}
 
 		otherCategory.add(element);
 	}
@@ -680,12 +690,14 @@ public class CheatSheetRegistryReader extends RegistryReader implements IRegistr
 			createTaskExplorerElement(element);
 			return true;
 		} else {
-			if (!element.getName().equals(TAG_CHEATSHEET))
+			if (!element.getName().equals(TAG_CHEATSHEET)) {
 				return false;
+			}
 
 			CheatSheetElement cheatsheet = createCheatSheetElement(element);
-			if (cheatsheet != null)
+			if (cheatsheet != null) {
 				addNewElementToResult(cheatsheet, element, cheatsheets);
+			}
 			return true;
 		}
 	}

@@ -14,14 +14,14 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di.extensions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.prefs.BackingStoreException;
 
 import jakarta.inject.Inject;

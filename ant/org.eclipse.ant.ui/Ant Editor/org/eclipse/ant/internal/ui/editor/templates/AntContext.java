@@ -7,7 +7,7 @@
  *  https://www.eclipse.org/legal/epl-2.0/
  *
  *  SPDX-License-Identifier: EPL-2.0
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -39,8 +39,9 @@ public class AntContext extends DocumentTemplateContext {
 
 	@Override
 	public TemplateBuffer evaluate(Template template) throws BadLocationException, TemplateException {
-		if (!canEvaluate(template))
+		if (!canEvaluate(template)) {
 			return null;
+		}
 
 		TemplateBuffer templateBuffer = createTemplateBuffer(template);
 
@@ -74,8 +75,9 @@ public class AntContext extends DocumentTemplateContext {
 		for (int line = 0; line < lines; line++) {
 			IRegion region = document.getLineInformation(line);
 			String lineDelimiter = document.getLineDelimiter(line);
-			if (lineDelimiter != null)
+			if (lineDelimiter != null) {
 				document.replace(region.getOffset() + region.getLength(), lineDelimiter.length(), defaultLineDelimiter);
+			}
 		}
 	}
 
@@ -99,8 +101,9 @@ public class AntContext extends DocumentTemplateContext {
 		int end = getCompletionOffset() + length;
 
 		try {
-			while (start != end && Character.isWhitespace(document.getChar(end - 1)))
+			while (start != end && Character.isWhitespace(document.getChar(end - 1))) {
 				end--;
+			}
 		}
 		catch (BadLocationException e) {
 			// Return latest valid end

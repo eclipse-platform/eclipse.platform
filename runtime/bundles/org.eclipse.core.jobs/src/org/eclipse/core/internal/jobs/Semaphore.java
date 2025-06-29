@@ -31,8 +31,9 @@ public class Semaphore {
 	 * and false otherwise.
 	 */
 	public synchronized boolean acquire(long delay) throws InterruptedException {
-		if (Thread.interrupted())
+		if (Thread.interrupted()) {
 			throw new InterruptedException();
+		}
 		long start = System.nanoTime();
 		long timeLeft = delay;
 		while (true) {
@@ -40,8 +41,9 @@ public class Semaphore {
 				notifications--;
 				return true;
 			}
-			if (timeLeft <= 0)
+			if (timeLeft <= 0) {
 				return false;
+			}
 			wait(timeLeft);
 			timeLeft = ((start - System.nanoTime()) / NANOS_IN_MS) + delay;
 		}

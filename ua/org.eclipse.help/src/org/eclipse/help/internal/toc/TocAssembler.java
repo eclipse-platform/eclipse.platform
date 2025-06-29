@@ -154,8 +154,7 @@ public class TocAssembler {
 			new ProcessorHandler() {
 				@Override
 				public short handle(UAElement element, String id) {
-					if (element instanceof Link) {
-						Link link = (Link)element;
+					if (element instanceof Link link) {
 						String toc = link.getToc();
 						if (toc != null) {
 							TocContribution srcContribution = getContribution(id);
@@ -356,8 +355,7 @@ public class TocAssembler {
 	private class LinkHandler extends ProcessorHandler {
 		@Override
 		public short handle(UAElement element, String id) {
-			if (element instanceof Link) {
-				Link link = (Link)element;
+			if (element instanceof Link link) {
 				UAElement parent = link.getParentElement();
 				if (parent != null) {
 					String toc = link.getToc();
@@ -388,11 +386,10 @@ public class TocAssembler {
 	private class AnchorHandler extends ProcessorHandler {
 		@Override
 		public short handle(UAElement element, String id) {
-			if (element instanceof Anchor) {
+			if (element instanceof Anchor anchor) {
 				if (tocsToFilter.contains(id)) {
 					return UNHANDLED;
 				}
-				Anchor anchor = (Anchor)element;
 				UAElement parent = anchor.getParentElement();
 				if (parent != null) {
 					String anchorId = anchor.getId();
@@ -437,8 +434,7 @@ public class TocAssembler {
 	private class NormalizeHandler extends ProcessorHandler {
 		@Override
 		public short handle(UAElement element, String id) {
-			if (element instanceof Topic) {
-				Topic topic = (Topic)element;
+			if (element instanceof Topic topic) {
 				String href = topic.getHref();
 				if (href != null) {
 					topic.setHref(normalize(href, id));
@@ -448,8 +444,7 @@ public class TocAssembler {
 
 				return HANDLED_CONTINUE;
 			}
-			else if (element instanceof Toc) {
-				Toc toc = (Toc)element;
+			else if (element instanceof Toc toc) {
 				toc.setHref(id);
 				String topic = toc.getTopic();
 				if (topic != null) {
@@ -484,12 +479,10 @@ public class TocAssembler {
 				ITocContribution contribution = getContribution(id);
 				String locale = contribution.getLocale();
 				ICriteria[] criteria = new ICriteria[0];
-				if (element instanceof Topic) {
-					Topic topic = (Topic) element;
+				if (element instanceof Topic topic) {
 					criteria = CriteriaProviderRegistry.getInstance().getAllCriteria(topic);
 				}
-				else if (element instanceof Toc) {
-					Toc toc = (Toc) element;
+				else if (element instanceof Toc toc) {
 					criteria = CriteriaProviderRegistry.getInstance().getAllCriteria(toc);
 				}
 

@@ -266,7 +266,7 @@ If &quot;close&quot; then the Welcome/Intro will be closed.
       &lt;!-- Reuses command definition label and icons --&gt;
       &lt;quicklink
             command=&quot;org.eclipse.epp.mpc.ui.command.showMarketplaceWizard&quot;
-            icon=&quot;icons/mpcdrag.png&quot;&gt;
+            icon=&quot;icons/mpcdrag.svg&quot;&gt;
       &lt;/quicklink&gt;
       
       &lt;!-- Invoke a particular new wizard; place the Welcome/Intro in Standby mode on success --&gt;
@@ -280,7 +280,7 @@ If &quot;close&quot; then the Welcome/Intro will be closed.
       &lt;!-- Allow overriding theme and icons for all newWizard-related commands --&gt;
       &lt;override
             command=&quot;org.eclipse.ui.newWizard*&quot;
-            icon=&quot;icons/solstice/new-project.png&quot;
+            icon=&quot;icons/solstice/new-project.svg&quot;
             theme=&quot;org.eclipse.ui.intro.universal.solstice&quot;&gt;
       &lt;/override&gt;
    &lt;/extension&gt;

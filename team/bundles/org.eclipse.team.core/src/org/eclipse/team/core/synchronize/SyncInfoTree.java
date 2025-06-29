@@ -73,9 +73,13 @@ public class SyncInfoTree extends SyncInfoSet {
 	 * @return <code>true</code> if the resource has children in the set.
 	 */
 	public synchronized boolean hasMembers(IResource resource) {
-		if (resource.getType() == IResource.FILE) return false;
+		if (resource.getType() == IResource.FILE) {
+			return false;
+		}
 		IContainer parent = (IContainer)resource;
-		if (parent.getType() == IResource.ROOT) return !isEmpty();
+		if (parent.getType() == IResource.ROOT) {
+			return !isEmpty();
+		}
 		IPath path = parent.getFullPath();
 		Set allDescendants = parents.get(path);
 		return (allDescendants != null && !allDescendants.isEmpty());
@@ -277,7 +281,9 @@ public class SyncInfoTree extends SyncInfoSet {
 			if (getSyncInfo(resource) != null) {
 				remove(resource);
 			}
-			if (depth == IResource.DEPTH_ZERO || resource.getType() == IResource.FILE) return;
+			if (depth == IResource.DEPTH_ZERO || resource.getType() == IResource.FILE) {
+				return;
+			}
 			if (depth == IResource.DEPTH_ONE) {
 				IResource[] members = members(resource);
 				for (IResource member : members) {
@@ -303,7 +309,9 @@ public class SyncInfoTree extends SyncInfoSet {
 	protected synchronized IResource[] internalGetOutOfSyncDescendants(IContainer resource) {
 		// The parent map contains a set of all out-of-sync children
 		Set<IResource> allChildren = parents.get(resource.getFullPath());
-		if (allChildren == null) return new IResource[0];
+		if (allChildren == null) {
+			return new IResource[0];
+		}
 		return allChildren.toArray(new IResource[allChildren.size()]);
 	}
 
@@ -328,9 +336,13 @@ public class SyncInfoTree extends SyncInfoSet {
 	 * out-of-sync resources contained in the set
 	 */
 	public synchronized IResource[] members(IResource resource) {
-		if (resource.getType() == IResource.FILE) return new IResource[0];
+		if (resource.getType() == IResource.FILE) {
+			return new IResource[0];
+		}
 		IContainer parent = (IContainer)resource;
-		if (parent.getType() == IResource.ROOT) return internalMembers((IWorkspaceRoot)parent);
+		if (parent.getType() == IResource.ROOT) {
+			return internalMembers((IWorkspaceRoot)parent);
+		}
 		// OPTIMIZE: could be optimized so that we don't traverse all the deep
 		// children to find the immediate ones.
 		Set<IResource> children = new HashSet<>();

@@ -49,7 +49,7 @@ INPUT {
 	font-size:.875rem;
 	margin:0;
 	padding:0;
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 }
 
 INPUT {
@@ -76,8 +76,8 @@ INPUT {
 }
 
 #button {
-	background:ThreeDShadow;
-	color:Window;
+	background:CanvasText;
+	color:Canvas;
 	font-size: 1.0em;
 	font-weight:bold;
 	margin-left:1px;
@@ -162,7 +162,7 @@ IMG.expander, IMG.h {
 A {
 	text-decoration:none; 
 	padding-<%=isRTL?"left":"right"%>:2px;
-	color:WindowText;
+	color:CanvasText;
 	/* this works in ie5.5, but not in ie5.0  */
 	white-space: nowrap;
 }

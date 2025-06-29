@@ -77,8 +77,9 @@ public class CheatSheetMenu extends ContributionItem {
 	public CheatSheetMenu() {
 		super("LaunchCheatSheetMenu"); //$NON-NLS-1$
 
-		if (reg == null)
+		if (reg == null) {
 			reg = CheatSheetRegistryReader.getInstance();
+		}
 
 		showActive(true);
 	}

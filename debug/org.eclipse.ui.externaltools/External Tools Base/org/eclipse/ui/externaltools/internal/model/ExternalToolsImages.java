@@ -55,8 +55,8 @@ public class ExternalToolsImages {
 	 */
 	private static void declareImages() {
 		// Objects
-		declareRegistryImage(IExternalToolConstants.IMG_TAB_MAIN, OBJECT + "main_tab.png"); //$NON-NLS-1$
-		declareRegistryImage(IExternalToolConstants.IMG_TAB_BUILD, OBJECT + "build_tab.png"); //$NON-NLS-1$
+		declareRegistryImage(IExternalToolConstants.IMG_TAB_MAIN, OBJECT + "main_tab.svg"); //$NON-NLS-1$
+		declareRegistryImage(IExternalToolConstants.IMG_TAB_BUILD, OBJECT + "build_tab.svg"); //$NON-NLS-1$
 	}
 
 	/**
@@ -154,16 +154,18 @@ public class ExternalToolsImages {
 
 		try {
 			ImageDescriptor id= ImageDescriptor.createFromURL(makeIconFileURL("d" + type, relPath)); //$NON-NLS-1$
-			if (id != null)
+			if (id != null) {
 				action.setDisabledImageDescriptor(id);
+			}
 		} catch (MalformedURLException e) {
 			ExternalToolsPlugin.getDefault().log(e);
 		}
 
 		try {
 			ImageDescriptor id= ImageDescriptor.createFromURL(makeIconFileURL("c" + type, relPath)); //$NON-NLS-1$
-			if (id != null)
+			if (id != null) {
 				action.setHoverImageDescriptor(id);
+			}
 		} catch (MalformedURLException e) {
 			ExternalToolsPlugin.getDefault().log(e);
 		}

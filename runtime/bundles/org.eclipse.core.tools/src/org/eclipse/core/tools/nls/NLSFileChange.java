@@ -56,8 +56,9 @@ public class NLSFileChange extends TextFileChange {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (bytes == null)
+		if (bytes == null) {
 			bytes = contents.getBytes();
+		}
 		file.setContents(bytes, IResource.FORCE, null);
 	}
 

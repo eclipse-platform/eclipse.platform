@@ -275,8 +275,9 @@ public class PrintData extends RequestData {
 			if (href != null && href.length() > 0) {
 				tocGenerated++;
 				//If the link points to an anchor, use the anchor ID instead of using the section ID
-				if (href.contains("#")) //$NON-NLS-1$
+				if (href.contains("#")) { //$NON-NLS-1$
 					hrefContent = sectionId + ". " + "<a href=\"" + getAnchor(href) + "\">" + topic.getLabel() + "</a>\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				}
 			}
 
 			out.write(hrefContent);
@@ -420,8 +421,9 @@ public class PrintData extends RequestData {
 				catch (IOException e) {
 				}
 				try {
-					if (rawInput != null)
+					if (rawInput != null) {
 						rawInput.close();
+					}
 				}
 				catch (Exception e) {}
 			}

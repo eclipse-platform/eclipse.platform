@@ -55,21 +55,25 @@ public class PageData {
 	}
 
 	public void add(GroupData gd) {
-		if (gd.isHidden())
+		if (gd.isHidden()) {
 			hidden = gd;
-		else
+		} else {
 			groups.add(gd);
+		}
 	}
 
 	public void addAnchors(List<IntroElement> result, String groupId) {
 		GroupData group = findGroup(groupId);
-		if (group==null) return;
+		if (group==null) {
+			return;
+		}
 		group.addAnchors(result);
 	}
 
 	public String resolvePath(String extensionId) {
-		if (isHidden(extensionId))
+		if (isHidden(extensionId)) {
 			return null;
+		}
 		for (int i=0; i<groups.size(); i++) {
 			GroupData gdata = groups.get(i);
 			if (gdata.contains(extensionId)) {
@@ -99,30 +103,35 @@ public class PageData {
 	}
 
 	public GroupData findGroup(String groupId) {
-		if (groupId.equals(IUniversalIntroConstants.HIDDEN))
+		if (groupId.equals(IUniversalIntroConstants.HIDDEN)) {
 			return hidden;
+		}
 		for (int i=0; i<groups.size(); i++) {
 			GroupData gdata = groups.get(i);
 			IPath path = IPath.fromOSString(gdata.getPath());
-			if (path.lastSegment().equals(groupId))
+			if (path.lastSegment().equals(groupId)) {
 				return gdata;
+			}
 		}
 		return null;
 	}
 
 	private void addGroup(Element element, boolean hide) {
 		GroupData gd = new GroupData(element);
-		if (hide) hidden = gd;
-		else
+		if (hide) {
+			hidden = gd;
+		} else {
 			groups.add(gd);
+		}
 	}
 
 	public void addImplicitExtension(String extensionId, String name) {
 		ExtensionData ed = findExtension(extensionId, true);
 		if (ed!=null) {
 			// see if name needs to be supplied
-			if (ed.getName()==null || ed.getName().length()==0)
+			if (ed.getName()==null || ed.getName().length()==0) {
 				ed.setName(name);
+			}
 			return;
 		}
 		GroupData gd = findDefaultGroup();
@@ -132,8 +141,9 @@ public class PageData {
 			groups.add(gd);
 			groups.add(new GroupData(P_BOTTOM_RIGHT, true));
 		}
-		if (gd != null)
+		if (gd != null) {
 			gd.addImplicitExtension(extensionId, name);
+		}
 	}
 
 	private GroupData findDefaultGroup() {
@@ -141,11 +151,12 @@ public class PageData {
 		for (int i=0; i<groups.size(); i++) {
 			GroupData gd = groups.get(i);
 			if (gd.isDefault()) {
-				if (defaultGroup==null)
+				if (defaultGroup==null) {
 					defaultGroup = gd;
-				else
-					if (defaultGroup.getExtensionCount()>gd.getExtensionCount())
+				} else
+					if (defaultGroup.getExtensionCount()>gd.getExtensionCount()) {
 						defaultGroup = gd;
+					}
 			}
 		}
 		return defaultGroup;
@@ -159,19 +170,22 @@ public class PageData {
 		for (int i=0; i<groups.size(); i++) {
 			GroupData gdata = groups.get(i);
 			ExtensionData ed = find(gdata, extensionId);
-			if (ed!=null)
+			if (ed!=null) {
 				return ed;
+			}
 		}
 		// check the hidden
-		if (checkHidden && hidden!=null)
+		if (checkHidden && hidden!=null) {
 			return find (hidden, extensionId);
+		}
 		return null;
 	}
 
 	private ExtensionData find(GroupData gd, String extensionId) {
 		BaseData bd = gd.find(extensionId);
-		if (bd!=null && bd instanceof ExtensionData)
+		if (bd!=null && bd instanceof ExtensionData) {
 			return (ExtensionData)bd;
+		}
 		return null;
 	}
 
@@ -184,10 +198,13 @@ public class PageData {
 			}
 		}
 		// check the hidden
-		if (hidden!=null && hidden.contains(extensionId))
+		if (hidden!=null && hidden.contains(extensionId)) {
 			return null;
+		}
 		// create the default: pick the last group
-		if (groups.isEmpty()) return null;
+		if (groups.isEmpty()) {
+			return null;
+		}
 		GroupData last = groups.get(groups.size()-1);
 		return id + "/" + last.getPath() + "/" + IUniversalIntroConstants.DEFAULT_ANCHOR;  //$NON-NLS-1$//$NON-NLS-2$
 	}
@@ -200,8 +217,9 @@ public class PageData {
 			GroupData gd = groups.get(i);
 			gd.write(writer, indent2);
 		}
-		if (hidden!=null)
+		if (hidden!=null) {
 			hidden.write(writer, indent2);
+		}
 		writer.print(indent);
 		writer.println("</page>"); //$NON-NLS-1$
 	}

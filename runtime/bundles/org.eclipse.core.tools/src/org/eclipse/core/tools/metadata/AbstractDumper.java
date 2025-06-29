@@ -56,15 +56,17 @@ public abstract class AbstractDumper implements IDumper {
 			dumpContents(meteredInput, contents);
 		} catch (PartialDumpException pde) {
 			// ensure we remember any partial contents
-			if (pde.getPartialContents() != null)
+			if (pde.getPartialContents() != null) {
 				contents.append(pde.getPartialContents());
+			}
 			dump.setFailureReason(pde);
 		} catch (Exception e) {
 			dump.setFailureReason(e);
 		}
 		dump.setContents(contents.toString());
-		if (meteredInput != null)
+		if (meteredInput != null) {
 			dump.setOffset(meteredInput.getOffset());
+		}
 		return dump;
 	}
 

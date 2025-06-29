@@ -126,8 +126,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	private final IPropertyChangeListener listener = event -> {
 		if (event.getProperty() == ISynchronizeModelElement.BUSY_PROPERTY) {
 			Object source = event.getSource();
-			if (source instanceof ISynchronizeModelElement)
+			if (source instanceof ISynchronizeModelElement) {
 				updateBusyState((ISynchronizeModelElement)source, ((Boolean)event.getNewValue()).booleanValue());
+			}
 		}
 	};
 
@@ -267,7 +268,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	 * should only be invoked in the UI thread.
 	 */
 	protected void firePendingLabelUpdates() {
-		if (!Utils.canUpdateViewer(getViewer())) return;
+		if (!Utils.canUpdateViewer(getViewer())) {
+			return;
+		}
 		try {
 			Object[] updates = pendingLabelUpdates.toArray(new Object[pendingLabelUpdates.size()]);
 			updateLabels(updates);
@@ -549,8 +552,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 					expanded = provider.getExpandedResources();
 					selected = provider.getSelectedResources();
 				}
-				if (viewer instanceof AbstractTreeViewer && additionsMap == null)
+				if (viewer instanceof AbstractTreeViewer && additionsMap == null) {
 					additionsMap = new HashMap<>();
+				}
 			}
 			runnable.run();
 		} finally {
@@ -579,8 +583,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 		}
 
 		ISynchronizeModelElement root = provider.getModelRoot();
-		if(root instanceof SynchronizeModelElement)
+		if(root instanceof SynchronizeModelElement) {
 			((SynchronizeModelElement)root).fireChanges();
+		}
 	}
 
 	/**
@@ -614,8 +619,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 					exception[0] = e;
 				}
 			}, true /* preserve expansion */);
-			if (exception[0] != null)
+			if (exception[0] != null) {
 				throw exception[0];
+			}
 		};
 	}
 
@@ -629,8 +635,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			IResource[] selected;
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				if (preserveExpansion)
+				if (preserveExpansion) {
 					recordExpandedResources();
+				}
 				try {
 					performingBackgroundUpdate = true;
 					runnable.run(monitor);
@@ -655,10 +662,12 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 				// Refresh the view and then set the expansion
 				runViewUpdate(() -> {
 					provider.getViewer().refresh();
-					if (expanded != null)
+					if (expanded != null) {
 						provider.expandResources(expanded);
-					if (selected != null)
+					}
+					if (selected != null) {
 						provider.selectResources(selected);
+					}
 				}, false /* do not preserve expansion (since it is done above) */);
 			}
 		};

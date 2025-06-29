@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -140,7 +140,7 @@ public class AntEditorMarkerUpdater {
 
 	/**
 	 * Returns the attributes with which a newly created marker will be initialized.
-	 * 
+	 *
 	 * @return the initial marker attributes
 	 */
 	private Map<String, Object> getMarkerAttributes(IProblem problem) {
@@ -162,7 +162,7 @@ public class AntEditorMarkerUpdater {
 	/**
 	 * Returns whether or not to add markers to the file based on the file's content type. The content type is considered an Ant buildfile if the XML
 	 * has a root &quot;project&quot; element. Content type is defined in the org.eclipse.ant.core plugin.xml.
-	 * 
+	 *
 	 * @return whether or not to add markers to the file based on the files content type
 	 */
 	private boolean shouldAddMarkers() {

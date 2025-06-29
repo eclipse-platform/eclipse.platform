@@ -57,8 +57,9 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 		IContentType[] types = currentCatalog.findContentTypesFor(this, contents, fileName);
 		IContentType[] result = new IContentType[types.length];
 		int generation = currentCatalog.getGeneration();
-		for (int i = 0; i < result.length; i++)
+		for (int i = 0; i < result.length; i++) {
 			result[i] = new ContentTypeHandler((ContentType) types[i], generation);
+		}
 		return result;
 	}
 
@@ -68,8 +69,9 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 		IContentType[] types = currentCatalog.findContentTypesFor(this, fileName);
 		IContentType[] result = new IContentType[types.length];
 		int generation = currentCatalog.getGeneration();
-		for (int i = 0; i < result.length; i++)
+		for (int i = 0; i < result.length; i++) {
 			result[i] = new ContentTypeHandler((ContentType) types[i], generation);
+		}
 		return result;
 	}
 
@@ -107,16 +109,19 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 		final Set<ContentType> result = new HashSet<>(3);
 		try {
 			root.accept(node -> {
-				if (node == root)
+				if (node == root) {
 					return true;
+				}
 				String[] fileSpecs = ContentTypeSettings.getFileSpecs(node, typeMask);
-				for (String fileSpecification : fileSpecs)
+				for (String fileSpecification : fileSpecs) {
 					if (fileSpecification.equalsIgnoreCase(fileSpec)) {
 						ContentType associated = catalog.getContentType(node.name());
-						if (associated != null)
+						if (associated != null) {
 							result.add(associated);
+						}
 						break;
 					}
+				}
 				return false;
 			});
 		} catch (BackingStoreException bse) {
@@ -134,16 +139,19 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 		final Set<ContentType> result = new HashSet<>(3);
 		try {
 			root.accept(node -> {
-				if (node == root)
+				if (node == root) {
 					return true;
+				}
 				String[] fileSpecs = ContentTypeSettings.getFileSpecs(node, typeMask);
-				for (String fileSpecification : fileSpecs)
+				for (String fileSpecification : fileSpecs) {
 					if (Pattern.matches(catalog.toRegexp(fileSpecification), fileName)) {
 						ContentType associated = catalog.getContentType(node.name());
-						if (associated != null)
+						if (associated != null) {
 							result.add(associated);
+						}
 						break;
 					}
+				}
 				return false;
 			});
 		} catch (BackingStoreException bse) {
@@ -153,13 +161,15 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 	}
 
 	public IContentDescription getSpecificDescription(BasicDescription description) {
-		if (description == null || ContentTypeManager.getInstance().getContext().equals(getContext()))
+		if (description == null || ContentTypeManager.getInstance().getContext().equals(getContext())) {
 			// no need for specific content descriptions
 			return description;
+		}
 		// default description
-		if (description instanceof DefaultDescription)
+		if (description instanceof DefaultDescription) {
 			// return an context specific description instead
 			return new DefaultDescription(new ContentTypeSettings((ContentType) description.getContentTypeInfo(), context));
+		}
 		// non-default description
 		// replace info object with context specific settings
 		((ContentDescription) description).setContentTypeInfo(new ContentTypeSettings((ContentType) description.getContentTypeInfo(), context));

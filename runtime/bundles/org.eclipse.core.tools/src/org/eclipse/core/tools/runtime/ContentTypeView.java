@@ -43,8 +43,9 @@ public class ContentTypeView extends SpyView {
 
 		private TreeContentProviderNode addContentType(IContentType type, Set<ContentTypePropertySource> visited) {
 			ContentTypePropertySource wrapped = new ContentTypePropertySource(type);
-			if (!visited.add(wrapped))
+			if (!visited.add(wrapped)) {
 				return getNodeFor(wrapped);
+			}
 			IContentType base = type.getBaseType();
 			TreeContentProviderNode newNode = createNode(null, wrapped);
 			if (base == null) {
@@ -64,8 +65,9 @@ public class ContentTypeView extends SpyView {
 		protected void rebuild(Viewer viewer, Object input) {
 			IContentType[] allTypes = ContentTypeManager.getInstance().getAllContentTypes();
 			Set<ContentTypePropertySource> visited = new HashSet<>(allTypes.length);
-			for (IContentType allType : allTypes)
+			for (IContentType allType : allTypes) {
 				addContentType(allType, visited);
+			}
 		}
 	}
 

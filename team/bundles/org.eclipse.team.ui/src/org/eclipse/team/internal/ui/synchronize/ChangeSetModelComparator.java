@@ -62,10 +62,12 @@ public class ChangeSetModelComparator extends ViewerComparator {
 	}
 
 	private int compareDates(Date d1, Date d2) {
-		if (d1 == null)
+		if (d1 == null) {
 			d1 = new Date(0);
-		if (d2 == null)
+		}
+		if (d2 == null) {
 			d2 = new Date(0);
+		}
 		return d1.compareTo(d2);
 	}
 
@@ -80,17 +82,16 @@ public class ChangeSetModelComparator extends ViewerComparator {
 			if (s1 instanceof ActiveChangeSet && s2 instanceof ActiveChangeSet) {
 				return compareNames(((ActiveChangeSet)s1).getTitle(), ((ActiveChangeSet)s2).getTitle());
 			}
-			if (s1 instanceof CheckedInChangeSet && s2 instanceof CheckedInChangeSet) {
-				CheckedInChangeSet r1 = (CheckedInChangeSet)s1;
-				CheckedInChangeSet r2 = (CheckedInChangeSet)s2;
-				if (commentCriteria == DATE)
+			if (s1 instanceof CheckedInChangeSet r1 && s2 instanceof CheckedInChangeSet r2) {
+				if (commentCriteria == DATE) {
 					return compareDates(r1.getDate(), r2.getDate());
-				else if (commentCriteria == COMMENT)
+				} else if (commentCriteria == COMMENT) {
 					return compareNames(r1.getComment(), r2.getComment());
-				else if (commentCriteria == USER)
+				} else if (commentCriteria == USER) {
 					return compareNames(r1.getAuthor(), r2.getAuthor());
-				else
+				} else {
 					return 0;
+				}
 			}
 			if (s1 instanceof ActiveChangeSet) {
 				return -1;
@@ -111,10 +112,11 @@ public class ChangeSetModelComparator extends ViewerComparator {
 			} else {
 				return compareNames(((ISynchronizeModelElement)o1).getName(), ((ISynchronizeModelElement)o2).getName());
 			}
-		} else if (o1 instanceof ISynchronizeModelElement)
+		} else if (o1 instanceof ISynchronizeModelElement) {
 			return 1;
-		else if (o2 instanceof ISynchronizeModelElement)
+		} else if (o2 instanceof ISynchronizeModelElement) {
 			return -1;
+		}
 
 		return 0;
 	}

@@ -31,7 +31,7 @@ import org.eclipse.debug.core.model.IBreakpointImportParticipant;
  *          type="org.eclipse.jdt.debug.javaLineBreakpointMarker">
  *    </ImportParticipant>
  * </extension>
- * }  
+ * }
  * </pre>
  *
  * @noextend This class is not intended to be sub-classed by clients.

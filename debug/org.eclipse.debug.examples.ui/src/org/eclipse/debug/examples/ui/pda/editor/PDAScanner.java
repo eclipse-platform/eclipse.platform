@@ -17,7 +17,6 @@ package org.eclipse.debug.examples.ui.pda.editor;
 import org.eclipse.debug.examples.ui.pda.DebugUIPlugin;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
-import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WordRule;
@@ -82,6 +81,6 @@ public class PDAScanner extends BufferedRuleBasedScanner {
 		// labels
 		token = new Token(new TextAttribute(DebugUIPlugin.getDefault().getColor(DebugUIPlugin.LABEL)));
 		WordRule labels = new WordRule(new PDALabelDetector(), token);
-		setRules(new IRule[]{keywords, labels});
+		setRules(keywords, labels);
 	}
 }

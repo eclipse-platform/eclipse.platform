@@ -80,16 +80,18 @@ class ImageCanvas extends Canvas {
 			Rectangle clientArea= getClientArea();
 
 			int x;
-			if (bounds.width < clientArea.width)
+			if (bounds.width < clientArea.width) {
 				x= (clientArea.width - bounds.width) / 2;
-			else
+			} else {
 				x= -getHorizontalBar().getSelection();
+			}
 
 			int y;
-			if (bounds.height < clientArea.height)
+			if (bounds.height < clientArea.height) {
 				y= (clientArea.height - bounds.height) / 2;
-			else
+			} else {
 				y= -getVerticalBar().getSelection();
+			}
 
 			gc.drawImage(fImage, x, y);
 		}

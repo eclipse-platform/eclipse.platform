@@ -58,12 +58,12 @@ public class TerminateCommandAction extends DebugCommandAction {
 
 	@Override
 	public ImageDescriptor getHoverImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE);
+		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE);
 	}
 
 	@Override
 	public ImageDescriptor getImageDescriptor() {
-		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_TERMINATE);
+		return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TERMINATE);
 	}
 
 	@Override

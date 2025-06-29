@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -84,7 +84,7 @@ public class URLFieldEditor extends StringButtonFieldEditor {
 
 	/**
 	 * Helper that opens the directory chooser dialog.
-	 * 
+	 *
 	 * @param startingDirectory
 	 *            The directory the dialog will open in.
 	 * @return File File or <code>null</code>.

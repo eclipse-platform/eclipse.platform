@@ -30,7 +30,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * 			  id="com.example.ExampleLaunchGroupId"
  * 			  mode="run"
  * 			  label="Run"
- * 			  image="icons\run.png"
+ * 			  image="icons\run.svg"
  * 		&lt;/launchGroup&gt;
  * 	&lt;/extension&gt;
  * </pre>

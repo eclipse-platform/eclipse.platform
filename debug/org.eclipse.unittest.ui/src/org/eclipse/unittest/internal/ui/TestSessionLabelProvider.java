@@ -132,41 +132,44 @@ class TestSessionLabelProvider extends LabelProvider implements IStyledLabelProv
 
 	@Override
 	public Image getImage(Object element) {
-		if (element instanceof TestElement && ((TestElement) element).isAssumptionFailure())
+		if (element instanceof TestElement && ((TestElement) element).isAssumptionFailure()) {
 			return fTestRunnerPart.fTestAssumptionFailureIcon;
+		}
 
-		if (element instanceof TestCaseElement) {
-			TestCaseElement testCaseElement = ((TestCaseElement) element);
-			if (testCaseElement.isIgnored())
+		if (element instanceof TestCaseElement testCaseElement) {
+			if (testCaseElement.isIgnored()) {
 				return fTestRunnerPart.fTestIgnoredIcon;
+			}
 
 			Status status = testCaseElement.getStatus();
-			if (status.isNotRun())
+			if (status.isNotRun()) {
 				return fTestRunnerPart.fTestIcon;
-			else if (status.isRunning())
+			} else if (status.isRunning()) {
 				return fTestRunnerPart.fTestRunningIcon;
-			else if (status.isError())
+			} else if (status.isError()) {
 				return fTestRunnerPart.fTestErrorIcon;
-			else if (status.isFailure())
+			} else if (status.isFailure()) {
 				return fTestRunnerPart.fTestFailIcon;
-			else if (status.isOK())
+			} else if (status.isOK()) {
 				return fTestRunnerPart.fTestOkIcon;
-			else
+			} else {
 				throw new IllegalStateException(element.toString());
+			}
 		} else if (element instanceof TestElement) { // suite or session
 			Status status = ((TestElement) element).getStatus();
-			if (status.isNotRun())
+			if (status.isNotRun()) {
 				return fTestRunnerPart.fSuiteIcon;
-			else if (status.isRunning())
+			} else if (status.isRunning()) {
 				return fTestRunnerPart.fSuiteRunningIcon;
-			else if (status.isError())
+			} else if (status.isError()) {
 				return fTestRunnerPart.fSuiteErrorIcon;
-			else if (status.isFailure())
+			} else if (status.isFailure()) {
 				return fTestRunnerPart.fSuiteFailIcon;
-			else if (status.isOK())
+			} else if (status.isOK()) {
 				return fTestRunnerPart.fSuiteOkIcon;
-			else
+			} else {
 				throw new IllegalStateException(element.toString());
+			}
 		} else {
 			throw new IllegalArgumentException(String.valueOf(element));
 		}

@@ -97,8 +97,9 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	 */
 	public String getPath() {
 		URI uri = fileRevision.getURI();
-		if (uri != null)
+		if (uri != null) {
 			return uri.getPath();
+		}
 		return getName();
 	}
 
@@ -117,18 +118,19 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
-		if (obj instanceof FileRevisionTypedElement) {
-			FileRevisionTypedElement other = (FileRevisionTypedElement) obj;
+		}
+		if (obj instanceof FileRevisionTypedElement other) {
 			return other.getFileRevision().equals(getFileRevision());
 		}
 		return false;
 	}
 
 	public String getAuthor() {
-		if (author == null)
+		if (author == null) {
 			author = fileRevision.getAuthor();
+		}
 		return author;
 	}
 

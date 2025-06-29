@@ -107,18 +107,20 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 
 	@Override
 	public InputStream getContents() throws CoreException {
-		if (exists)
+		if (exists) {
 			return super.getContents();
+		}
 		return null;
 	}
 
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ISharedDocumentAdapter.class) {
-			if (isSharedDocumentsEnable())
+			if (isSharedDocumentsEnable()) {
 				return (T) getSharedDocumentAdapter();
-			else
+			} else {
 				return null;
+			}
 		}
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
@@ -128,38 +130,44 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	 * yet, it will be created.
 	 */
 	private synchronized ISharedDocumentAdapter getSharedDocumentAdapter() {
-		if (sharedDocumentAdapter == null)
+		if (sharedDocumentAdapter == null) {
 			sharedDocumentAdapter = new EditableSharedDocumentAdapter(new EditableSharedDocumentAdapter.ISharedDocumentAdapterListener() {
 				@Override
 				public void handleDocumentConnected() {
 					LocalResourceTypedElement.this.updateTimestamp();
-					if (sharedDocumentListener != null)
+					if (sharedDocumentListener != null) {
 						sharedDocumentListener.handleDocumentConnected();
+					}
 				}
 				@Override
 				public void handleDocumentFlushed() {
 					LocalResourceTypedElement.this.fireContentChanged();
-					if (sharedDocumentListener != null)
+					if (sharedDocumentListener != null) {
 						sharedDocumentListener.handleDocumentFlushed();
+					}
 				}
 				@Override
 				public void handleDocumentDeleted() {
 					LocalResourceTypedElement.this.update();
-					if (sharedDocumentListener != null)
+					if (sharedDocumentListener != null) {
 						sharedDocumentListener.handleDocumentDeleted();
+					}
 				}
 				@Override
 				public void handleDocumentSaved() {
 					LocalResourceTypedElement.this.updateTimestamp();
-					if (sharedDocumentListener != null)
+					if (sharedDocumentListener != null) {
 						sharedDocumentListener.handleDocumentSaved();
+					}
 				}
 				@Override
 				public void handleDocumentDisconnected() {
-					if (sharedDocumentListener != null)
+					if (sharedDocumentListener != null) {
 						sharedDocumentListener.handleDocumentDisconnected();
+					}
 				}
 			});
+		}
 		return sharedDocumentAdapter;
 	}
 
@@ -211,10 +219,11 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	 * Update the cached timestamp of the resource.
 	 */
 	void updateTimestamp() {
-		if (getResource().exists())
+		if (getResource().exists()) {
 			timestamp = getResource().getLocalTimeStamp();
-		else
+		} else {
 			exists = false;
+		}
 	}
 
 	/**
@@ -237,10 +246,10 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
-		if (obj instanceof LocalResourceTypedElement) {
-			LocalResourceTypedElement otherElement = (LocalResourceTypedElement) obj;
+		}
+		if (obj instanceof LocalResourceTypedElement otherElement) {
 			return otherElement.getResource().equals(getResource())
 					&& exists == otherElement.exists;
 		}
@@ -295,8 +304,9 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	 */
 	@Override
 	public void discardBuffer() {
-		if (sharedDocumentAdapter != null)
+		if (sharedDocumentAdapter != null) {
 			sharedDocumentAdapter.releaseBuffer();
+		}
 		super.discardBuffer();
 	}
 
@@ -358,12 +368,14 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		author = null;
 
 		IFileHistoryProvider fileHistoryProvider= Utils.getHistoryProvider(getResource());
-		if (fileHistoryProvider == null)
+		if (fileHistoryProvider == null) {
 			return;
+		}
 
 		IFileRevision revision= fileHistoryProvider.getWorkspaceFileRevision(getResource());
-		if (revision == null)
+		if (revision == null) {
 			return;
+		}
 
 		author = revision.getAuthor();
 

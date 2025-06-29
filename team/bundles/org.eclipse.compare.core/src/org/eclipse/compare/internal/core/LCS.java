@@ -168,8 +168,9 @@ public abstract class LCS {
 	}
 
 	private void worked(SubMonitor subMonitor, int work) {
-		if (subMonitor.isCanceled())
+		if (subMonitor.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 		subMonitor.worked(work);
 	}
 

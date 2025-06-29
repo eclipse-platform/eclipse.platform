@@ -98,8 +98,7 @@ public class AddMemoryBlockAction extends Action implements IDebugContextListene
 	private void doInitialization(IMemoryRenderingSite site) {
 		fSite = site;
 		setToolTipText(DebugUIMessages.AddMemoryBlockAction_tooltip);
-		setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_MONITOR_EXPRESSION));
-		setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_ADD));
+		setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_ADD));
 		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_MONITOR_EXPRESSION));
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugUIConstants.PLUGIN_ID + ".addMemoryMonitorAction_context"); //$NON-NLS-1$
 
@@ -187,11 +186,9 @@ public class AddMemoryBlockAction extends Action implements IDebugContextListene
 		for (String e : expressionsArray) {
 			String expression = e.trim();
 			try {
-				if (standardMemRetrieval instanceof IMemoryBlockRetrievalExtension) {
+				if (standardMemRetrieval instanceof IMemoryBlockRetrievalExtension memRetrieval) {
 					// if the debug session supports
 					// IMemoryBlockExtensionRetrieval
-					IMemoryBlockRetrievalExtension memRetrieval = (IMemoryBlockRetrievalExtension) standardMemRetrieval;
-
 					// get extended memory block with the expression entered
 					IMemoryBlockExtension memBlock = memRetrieval.getExtendedMemoryBlock(expression, elem);
 

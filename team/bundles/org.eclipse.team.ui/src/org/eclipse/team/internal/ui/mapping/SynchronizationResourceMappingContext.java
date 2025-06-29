@@ -63,8 +63,7 @@ public final class SynchronizationResourceMappingContext extends
 	@Override
 	public boolean hasRemoteChange(IResource resource, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(resource);
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			IDiff remote = twd.getRemoteChange();
 			return remote != null && remote.getKind() != IDiff.NO_CHANGE;
 		}
@@ -74,8 +73,7 @@ public final class SynchronizationResourceMappingContext extends
 	@Override
 	public boolean hasLocalChange(IResource resource, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(resource);
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			IDiff local = twd.getLocalChange();
 			return local != null && local.getKind() != IDiff.NO_CHANGE;
 		}
@@ -85,15 +83,12 @@ public final class SynchronizationResourceMappingContext extends
 	@Override
 	public IStorage fetchRemoteContents(IFile file, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(file);
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			IDiff remote = twd.getRemoteChange();
-			if (remote instanceof IResourceDiff) {
-				IResourceDiff rd = (IResourceDiff) remote;
+			if (remote instanceof IResourceDiff rd) {
 				return rd.getAfterState().getStorage(monitor);
 			}
-		} else if (diff instanceof IResourceDiff) {
-			IResourceDiff rd = (IResourceDiff) diff;
+		} else if (diff instanceof IResourceDiff rd) {
 			return rd.getAfterState().getStorage(monitor);
 		}
 		return file;
@@ -102,16 +97,13 @@ public final class SynchronizationResourceMappingContext extends
 	@Override
 	public IStorage fetchBaseContents(IFile file, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(file);
-		if (diff instanceof IThreeWayDiff) {
-			IThreeWayDiff twd = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twd) {
 			IDiff remote = twd.getRemoteChange();
-			if (remote instanceof IResourceDiff) {
-				IResourceDiff rd = (IResourceDiff) remote;
+			if (remote instanceof IResourceDiff rd) {
 				return rd.getBeforeState().getStorage(monitor);
 			}
 			IDiff local = twd.getLocalChange();
-			if (local instanceof IResourceDiff) {
-				IResourceDiff rd = (IResourceDiff) local;
+			if (local instanceof IResourceDiff rd) {
 				return rd.getBeforeState().getStorage(monitor);
 			}
 		}

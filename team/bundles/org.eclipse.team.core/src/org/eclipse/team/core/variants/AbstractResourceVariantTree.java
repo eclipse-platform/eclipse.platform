@@ -93,7 +93,8 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 		IResource[] changedResources = null;
 		monitor.beginTask(null, 100);
 		try {
-			monitor.setTaskName(NLS.bind(Messages.SynchronizationCacheRefreshOperation_0, new String[] { resource.getFullPath().makeRelative().toString() }));
+			monitor.setTaskName(NLS.bind(Messages.SynchronizationCacheRefreshOperation_0,
+					resource.getFullPath().makeRelative().toString()));
 
 			// build the remote tree only if an initial tree hasn't been provided
 			IResourceVariant tree = fetchVariant(resource, depth, Policy.subMonitorFor(monitor, 70));
@@ -109,7 +110,9 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 		} finally {
 			monitor.done();
 		}
-		if (changedResources == null) return new IResource[0];
+		if (changedResources == null) {
+			return new IResource[0];
+		}
 		return changedResources;
 	}
 
@@ -184,7 +187,9 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 		if (changed) {
 			changedResources.add(local);
 		}
-		if (depth == IResource.DEPTH_ZERO) return;
+		if (depth == IResource.DEPTH_ZERO) {
+			return;
+		}
 		Map<IResource, IResourceVariant> children = mergedMembers(local, remote, monitor);
 		for (IResource localChild : children.keySet()) {
 			IResourceVariant remoteChild = children.get(localChild);

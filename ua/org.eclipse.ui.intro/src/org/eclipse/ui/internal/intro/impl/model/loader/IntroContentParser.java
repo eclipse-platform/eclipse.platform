@@ -65,9 +65,10 @@ public class IntroContentParser {
 					// and not on doctype. We need to support xhtml files with
 					// no doctype.
 					hasXHTMLContent = true;
-				} else
+				} else {
 					// not intro XML nor XHTML.
 					document = null;
+				}
 			}
 		} catch (Exception e) {
 			Log.error("Could not load Intro content file: " + content, e); //$NON-NLS-1$
@@ -97,14 +98,16 @@ public class IntroContentParser {
 
 			// Use the contained exception.
 			Exception x = spe;
-			if (spe.getException() != null)
+			if (spe.getException() != null) {
 				x = spe.getException();
+			}
 			Log.error(buffer.toString(), x);
 
 		} catch (SAXException sxe) {
 			Exception x = sxe;
-			if (sxe.getException() != null)
+			if (sxe.getException() != null) {
 				x = sxe.getException();
+			}
 			Log.error(x.getMessage(), x);
 
 		} catch (ParserConfigurationException pce) {
@@ -159,10 +162,11 @@ public class IntroContentParser {
 				// "text/html");
 				// transformer
 				// .setOutputProperty(OutputKeys.ENCODING, "iso-8859-1");
-			} else
+			} else {
 				Log
 					.warning("XHTML file used to display this Intro page does not have a Document type defined. " //$NON-NLS-1$
 							+ "XHTML requires document types to be defined."); //$NON-NLS-1$
+			}
 
 			transformer.transform(source, result);
 			return stringWriter.toString();
@@ -172,8 +176,9 @@ public class IntroContentParser {
 			Log.error("Transformer Config error: " + tce.getMessage(), null); //$NON-NLS-1$
 			// Use the contained exception, if any
 			Throwable x = tce;
-			if (tce.getException() != null)
+			if (tce.getException() != null) {
 				x = tce.getException();
+			}
 			Log.error("Transformer Stack trace: ", x); //$NON-NLS-1$
 
 		} catch (TransformerException te) {
@@ -181,8 +186,9 @@ public class IntroContentParser {
 			Log.error("Transformer error: " + te.getMessage(), te); //$NON-NLS-1$
 			// Use the contained exception, if any
 			Throwable x = te;
-			if (te.getException() != null)
+			if (te.getException() != null) {
 				x = te.getException();
+			}
 			Log.error("Transformer Stack trace: ", x); //$NON-NLS-1$
 
 		}

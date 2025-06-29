@@ -192,7 +192,6 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			final ILaunch launch = new Launch(null, ILaunchManager.RUN_MODE, null);
 			launch.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, StandardCharsets.UTF_8.toString());
 			final IProcess process = DebugPlugin.newProcess(launch, mockProcess, "testUtf8Input");
-			@SuppressWarnings("restriction")
 			final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider(), StandardCharsets.UTF_8.toString());
 			try {
 				console.initialize();
@@ -223,11 +222,9 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		final MockProcess mockProcess = new MockProcess(MockProcess.RUN_FOREVER);
 		try {
 			final IProcess process = mockProcess.toRuntimeProcess("testInputReadJobCancel");
-			@SuppressWarnings("restriction")
 			final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider());
 			try {
 				console.initialize();
-				@SuppressWarnings("restriction")
 				final Class<?> jobFamily = org.eclipse.debug.internal.ui.views.console.ProcessConsole.class;
 				assertThat(Job.getJobManager().find(jobFamily)).as("check input read job started").hasSizeGreaterThan(0);
 				Job.getJobManager().cancel(jobFamily);
@@ -287,7 +284,6 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		final AtomicBoolean terminationSignaled = new AtomicBoolean(false);
 		final Process mockProcess = new MockProcess(null, null, terminateBeforeConsoleInitialization ? 0 : -1);
 		final IProcess process = DebugPlugin.newProcess(new Launch(launchConfig, ILaunchManager.RUN_MODE, null), mockProcess, name.getMethodName());
-		@SuppressWarnings("restriction")
 		final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider());
 		console.addPropertyChangeListener(event -> {
 				if (event.getSource() == console && IConsoleConstants.P_CONSOLE_OUTPUT_COMPLETE.equals(event.getProperty())) {
@@ -389,7 +385,6 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 		final IProcess process = mockProcess.toRuntimeProcess("Output Redirect", launchConfigAttributes);
 		final String encoding = launchConfigAttributes != null ? (String) launchConfigAttributes.get(DebugPlugin.ATTR_CONSOLE_ENCODING) : null;
 		final AtomicBoolean consoleFinished = new AtomicBoolean(false);
-		@SuppressWarnings("restriction")
 		final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider(), encoding);
 		console.addPropertyChangeListener((PropertyChangeEvent event) -> {
 			if (event.getSource() == console && IConsoleConstants.P_CONSOLE_OUTPUT_COMPLETE.equals(event.getProperty())) {
@@ -409,9 +404,7 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			final IDocument doc = console.getDocument();
 
 			if (outFile != null) {
-				@SuppressWarnings("restriction")
-				String expectedPathMsg = MessageFormat.format(org.eclipse.debug.internal.ui.views.console.ConsoleMessages.ProcessConsole_1, new Object[] {
-						outFile.getAbsolutePath() });
+				String expectedPathMsg = MessageFormat.format(org.eclipse.debug.internal.ui.views.console.ConsoleMessages.ProcessConsole_1, outFile.getAbsolutePath());
 				assertEquals("No or wrong output of redirect file path in console.", expectedPathMsg, doc.get(doc.getLineOffset(0), doc.getLineLength(0)));
 				assertThat(console.getHyperlinks()).as("check redirect file path is linked").hasSize(1);
 			}
@@ -450,7 +443,6 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 				launchConfigAttributes.put(DebugPlugin.ATTR_CONSOLE_ENCODING, consoleEncoding);
 				final IProcess process = mockProcess.toRuntimeProcess("simpleOutput", launchConfigAttributes);
 				sysout.println(lines[1]);
-				@SuppressWarnings("restriction")
 				final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider(), consoleEncoding);
 				sysout.println(lines[2]);
 				try {
@@ -507,7 +499,6 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_FILE, outFile.getCanonicalPath());
 			launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
 			final IProcess process = mockProcess.toRuntimeProcess("redirectBinaryOutput", launchConfigAttributes);
-			@SuppressWarnings("restriction")
 			final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider(), consoleEncoding);
 			try {
 				console.initialize();
@@ -562,7 +553,6 @@ public class ProcessConsoleTests extends AbstractDebugTest {
 			launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_STDIN_FILE, inFile.getCanonicalPath());
 			launchConfigAttributes.put(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE, false);
 			final IProcess process = mockProcess.toRuntimeProcess("redirectBinaryInput", launchConfigAttributes);
-			@SuppressWarnings("restriction")
 			final org.eclipse.debug.internal.ui.views.console.ProcessConsole console = new org.eclipse.debug.internal.ui.views.console.ProcessConsole(process, new ConsoleColorProvider(), consoleEncoding);
 			try {
 				console.initialize();

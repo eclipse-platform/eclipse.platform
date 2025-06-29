@@ -226,7 +226,7 @@ public class FavoritesDialog extends TrayDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
-		getShell().setText(MessageFormat.format(LaunchConfigurationsMessages.FavoritesDialog_1, new Object[] { getModeLabel() }));
+		getShell().setText(MessageFormat.format(LaunchConfigurationsMessages.FavoritesDialog_1, getModeLabel()));
 		createFavoritesArea(composite);
 		handleFavoriteSelectionChanged();
 		return composite;

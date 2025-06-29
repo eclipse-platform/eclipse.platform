@@ -49,9 +49,8 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	protected String[] getLabels(Object element, IPresentationContext context)
 			throws CoreException {
 
-		if (context instanceof MemoryViewPresentationContext)
+		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
 		{
-			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -86,8 +85,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 			if (presentation != null)
 			{
 				String rowLabel = presentation.getRowLabel(tableRendering.getMemoryBlock(), ((MemorySegment)element).getAddress());
-				if (rowLabel != null)
+				if (rowLabel != null) {
 					return rowLabel;
+				}
 			}
 
 			columnLabel = ((MemorySegment)element).getAddress().toString(16).toUpperCase();
@@ -112,11 +112,11 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 		}
 		else
 		{
-			if (element instanceof MemorySegment)
+			if (element instanceof MemorySegment segment)
 			{
-				MemorySegment segment = (MemorySegment)element;
-				if (segment.getBytes().length != tableRendering.getBytesPerLine())
+				if (segment.getBytes().length != tableRendering.getBytesPerLine()) {
 					return IInternalDebugCoreConstants.EMPTY_STRING;
+				}
 			}
 
 			ILabelProvider labelProvider = tableRendering.getAdapter(ILabelProvider.class);
@@ -125,8 +125,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 				MemoryRenderingElement renderingElement = getMemoryRenderingElement(element, columnIndex, tableRendering);
 				if (renderingElement != null) {
 					String label = labelProvider.getText(renderingElement);
-					if (label != null)
+					if (label != null) {
 						return label;
+					}
 				}
 			}
 
@@ -143,9 +144,8 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	@Override
 	protected ImageDescriptor[] getImageDescriptors(Object element,
 			IPresentationContext context) throws CoreException {
-		if (context instanceof MemoryViewPresentationContext)
+		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
 		{
-			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -167,14 +167,15 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 
 	private ImageDescriptor getColumnImageDescriptor(Object element, int columnIndex, AbstractAsyncTableRendering tableRendering)
 	{
-		if (columnIndex == 0)
+		if (columnIndex == 0) {
 			return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_OBJECT_MEMORY);
+		}
 
-		if (element instanceof MemorySegment)
+		if (element instanceof MemorySegment segment)
 		{
-			MemorySegment segment = (MemorySegment)element;
-			if (segment.getBytes().length != tableRendering.getBytesPerLine())
+			if (segment.getBytes().length != tableRendering.getBytesPerLine()) {
 				return null;
+			}
 
 			ILabelProvider labelProvider = tableRendering.getAdapter(ILabelProvider.class);
 			if (labelProvider != null && columnIndex > 0)
@@ -206,8 +207,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 			if (allKnown)
 			{
 				// mark changed elements with changed icon
-				if (!unchanged)
+				if (!unchanged) {
 					return DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_OBJECT_MEMORY_CHANGED);
+				}
 
 			}
 		}
@@ -217,9 +219,8 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	@Override
 	protected FontData[] getFontDatas(Object element,
 			IPresentationContext context) throws CoreException {
-		if (context instanceof MemoryViewPresentationContext)
+		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
 		{
-			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -240,11 +241,11 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 
 	private FontData getColumnFontData(Object element, int columnIndex, AbstractAsyncTableRendering tableRendering)
 	{
-		if (element instanceof MemorySegment)
+		if (element instanceof MemorySegment segment)
 		{
-			MemorySegment segment = (MemorySegment)element;
-			if (segment.getBytes().length != tableRendering.getBytesPerLine())
+			if (segment.getBytes().length != tableRendering.getBytesPerLine()) {
 				return null;
+			}
 
 			IFontProvider fontProvider = tableRendering.getAdapter(IFontProvider.class);
 			if (fontProvider != null && columnIndex > 0)
@@ -252,8 +253,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 				MemoryRenderingElement renderingElement = getMemoryRenderingElement(element, columnIndex, tableRendering);
 				if (renderingElement != null) {
 					Font font = fontProvider.getFont(renderingElement);
-					if (font != null)
+					if (font != null) {
 						return font.getFontData()[0];
+					}
 				}
 			}
 		}
@@ -264,9 +266,8 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	protected RGB[] getForegrounds(Object element, IPresentationContext context)
 			throws CoreException {
 
-		if (context instanceof MemoryViewPresentationContext)
+		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
 		{
-			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -290,14 +291,15 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 
 	private RGB getColumnBackground(Object element, int columnIndex, AbstractAsyncTableRendering tableRendering)
 	{
-		if (columnIndex == 0)
+		if (columnIndex == 0) {
 			return null;
+		}
 
-		if (element instanceof MemorySegment)
+		if (element instanceof MemorySegment segment)
 		{
-			MemorySegment segment = (MemorySegment)element;
-			if (segment.getBytes().length != tableRendering.getBytesPerLine())
+			if (segment.getBytes().length != tableRendering.getBytesPerLine()) {
 				return null;
+			}
 
 			IColorProvider colorProvider = tableRendering.getAdapter(IColorProvider.class);
 			if (colorProvider != null && columnIndex > 0)
@@ -305,8 +307,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 				MemoryRenderingElement renderingElement = getMemoryRenderingElement(element, columnIndex, tableRendering);
 				if (renderingElement != null) {
 					Color color = colorProvider.getBackground(renderingElement);
-					if (color != null)
+					if (color != null) {
 						return color.getRGB();
+					}
 				}
 			}
 		}
@@ -315,14 +318,15 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 
 	private RGB getColumnForeground(Object element, int columnIndex, AbstractAsyncTableRendering tableRendering)
 	{
-		if (columnIndex == 0)
+		if (columnIndex == 0) {
 			return null;
+		}
 
-		if (element instanceof MemorySegment)
+		if (element instanceof MemorySegment segment)
 		{
-			MemorySegment segment = (MemorySegment)element;
-			if (segment.getBytes().length != tableRendering.getBytesPerLine())
+			if (segment.getBytes().length != tableRendering.getBytesPerLine()) {
 				return null;
+			}
 
 			IColorProvider colorProvider = tableRendering.getAdapter(IColorProvider.class);
 			if (colorProvider != null && columnIndex > 0)
@@ -330,8 +334,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 				MemoryRenderingElement renderingElement = getMemoryRenderingElement(element, columnIndex, tableRendering);
 				if (renderingElement != null) {
 					Color color = colorProvider.getForeground(renderingElement);
-					if (color != null)
+					if (color != null) {
 						return color.getRGB();
+					}
 				}
 			}
 
@@ -351,8 +356,9 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 			if (allKnown)
 			{
 				// mark changed elements in changed color
-				if (!unchanged)
+				if (!unchanged) {
 					return DebugUIPlugin.getPreferenceColor(IDebugUIConstants.PREF_CHANGED_DEBUG_ELEMENT_COLOR).getRGB();
+				}
 
 				return DebugUIPlugin.getPreferenceColor(IDebugUIConstants.PREF_MEMORY_HISTORY_KNOWN_COLOR).getRGB();
 			}
@@ -367,9 +373,8 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	protected RGB[] getBackgrounds(Object element, IPresentationContext context)
 			throws CoreException {
 
-		if (context instanceof MemoryViewPresentationContext)
+		if (context instanceof MemoryViewPresentationContext tableRenderingContext)
 		{
-			MemoryViewPresentationContext tableRenderingContext = (MemoryViewPresentationContext)context;
 			if (tableRenderingContext.getRendering() != null && tableRenderingContext.getRendering() instanceof AbstractAsyncTableRendering)
 			{
 				AbstractAsyncTableRendering tableRendering = (AbstractAsyncTableRendering)tableRenderingContext.getRendering();
@@ -400,8 +405,7 @@ public class MemorySegmentLabelAdapter extends AsynchronousLabelAdapter {
 	 * @return memory rendering element or <code>null</code>
 	 */
 	private MemoryRenderingElement getMemoryRenderingElement(Object element, int columnIndex, AbstractBaseTableRendering rendering) {
-		if (element instanceof MemorySegment) {
-			MemorySegment line = (MemorySegment) element;
+		if (element instanceof MemorySegment line) {
 			BigInteger address = line.getAddress();
 			int offset = (columnIndex - 1) * rendering.getBytesPerColumn();
 			if (offset < rendering.getBytesPerLine() && (offset + rendering.getBytesPerColumn()) <= rendering.getBytesPerLine()) {

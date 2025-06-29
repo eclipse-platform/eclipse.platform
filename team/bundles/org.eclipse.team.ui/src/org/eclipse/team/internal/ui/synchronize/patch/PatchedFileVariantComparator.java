@@ -22,9 +22,10 @@ public class PatchedFileVariantComparator implements IResourceVariantComparator 
 
 	@Override
 	public boolean compare(IResource local, IResourceVariant remote) {
-		if (remote instanceof LocalResourceVariant)
+		if (remote instanceof LocalResourceVariant) {
 			// return true when matching with base
 			return true;
+		}
 		return false;
 	}
 

@@ -24,7 +24,7 @@ import com.jcraft.jsch.*;
  * before a {@link Session} is created. The service is registered as
  * an OSGi service. Clients can obtain an instance of the service from their bundle context
  * or from a service tracker.
- * 
+ *
  * This interface is not intended to be implemented by clients.
  * @since 1.0
  * @noimplement
@@ -32,18 +32,18 @@ import com.jcraft.jsch.*;
 public interface IJSchService{
 
   /**
-   * Create a {@link Session} that can be used to make SSH2 connections. This method ensures that 
+   * Create a {@link Session} that can be used to make SSH2 connections. This method ensures that
    * all preferences are properly propagated into JSch before creating the session and also
    * ensures that the session uses the appropriate proxy settings.
    * <p>
    * Calling this method does not connect the session (see {@link #connect(Session, int, IProgressMonitor)}, if connection
    * throws an exception, clients should check to see if the session is still connected (see {@link Session#isConnected()}.
    * If it is, they should call {@link Session#disconnect()}.
-   * 
+   *
    * @param host the host name
    * @param port the port or -1 if the default port is to be used
    * @param username the user name or <code>null</code> if there is no user name or the user name is not known
-   
+
    * @return the created session
    * @throws JSchException if errors occur
    */
@@ -51,15 +51,15 @@ public interface IJSchService{
       throws JSchException;
 
   /**
-   * 
-   * Create a {@link Session} that can be used to make SSH2 connections. This method ensures that 
+   *
+   * Create a {@link Session} that can be used to make SSH2 connections. This method ensures that
    * all preferences are properly propagated into JSch before creating the session and also
    * ensures that the session uses the appropriate proxy settings.
    * <p>
    * Calling this method does not connect the session (see {@link #connect(Session, int, IProgressMonitor)}, if connection
    * throws an exception, clients should check to see if the session is still connected (see {@link Session#isConnected()}.
    * If it is, they should call {@link Session#disconnect()}.
-   * 
+   *
    *
    * @param location the location which corresponds to user@host:port
    * @param uinfo an instance of {@link UserInfo} or <code>null</code> if
@@ -76,7 +76,7 @@ public interface IJSchService{
    * for socket creation only. Clients that desire a timeout on the session must
    * call {@link Session#setTimeout(int)}. If session connection fails due to an exception,
    * the session will be disconnected by this method.
-   * 
+   *
    * @param session the session to be connected
    * @param timeout
    *          a timeout in milliseconds
@@ -97,7 +97,7 @@ public interface IJSchService{
    * if no proxy is specified for the host
    */
   public abstract Proxy getProxyForHost(String host, String proxyType);
-  
+
   /**
    * Connect to the given host and port using the given proxy.
    * This method calls {@link Proxy#connect(SocketFactory, String, int, int)}
@@ -125,7 +125,7 @@ public interface IJSchService{
    * @since 1.1
    */
   public abstract IJSchLocation getLocation(String user, String host, int port);
-  
+
   /**
    * Get the singleton instance of JSch allocated in jsch.core plug-in internally.
    * @return the singleton instance of JSch.

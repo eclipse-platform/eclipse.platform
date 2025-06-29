@@ -44,19 +44,21 @@ public class InitLegacyPreferences implements ILegacyPreferences {
 	@Deprecated
 	public Object init(Object object, String name) {
 		Plugin plugin = null;
-		if (object instanceof Plugin)
+		if (object instanceof Plugin) {
 			plugin = (Plugin) object;
-		else {
+		} else {
 			plugin = getActivator(name);
 			if (plugin == null) {
-				if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+				if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 					InternalPlatform.message("No plug-in object available to set plug-in default preference overrides for:" + name); //$NON-NLS-1$
+				}
 				return null;
 			}
 		}
 
-		if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES)
+		if (InternalPlatform.DEBUG_PLUGIN_PREFERENCES) {
 			InternalPlatform.message("Applying plug-in default preference overrides for plug-in: " + plugin.getBundle().getBundleId()); //$NON-NLS-1$
+		}
 
 		plugin.internalInitializeDefaultPluginPreferences();
 		return plugin;
@@ -64,12 +66,14 @@ public class InitLegacyPreferences implements ILegacyPreferences {
 
 	private Plugin getActivator(String name) {
 		Bundle bundle = InternalPlatform.getDefault().getBundle(name);
-		if (bundle == null)
+		if (bundle == null) {
 			return null;
+		}
 
 		BundleContext context = bundle.getBundleContext();
-		if (context == null)
+		if (context == null) {
 			return null;
+		}
 
 		/*
 		 * Reflection is required since there is no OSGi API to retrieve the
@@ -80,8 +84,9 @@ public class InitLegacyPreferences implements ILegacyPreferences {
 			Field field = context.getClass().getDeclaredField("activator"); //$NON-NLS-1$
 			field.setAccessible(true);
 			Object activator = field.get(context);
-			if (activator instanceof Plugin)
+			if (activator instanceof Plugin) {
 				return (Plugin) activator;
+			}
 		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
 			log(ex, name);
 		}

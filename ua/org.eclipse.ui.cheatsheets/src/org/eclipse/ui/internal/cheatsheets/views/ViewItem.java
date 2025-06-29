@@ -291,24 +291,33 @@ public abstract class ViewItem {
 	}
 
 	public void dispose() {
-		if (checkDoneLabel != null)
+		if (checkDoneLabel != null) {
 			checkDoneLabel.dispose();
-		if (bodyText != null)
+		}
+		if (bodyText != null) {
 			bodyText.dispose();
-		if (buttonComposite != null)
+		}
+		if (buttonComposite != null) {
 			buttonComposite.dispose();
-		if (completionComposite != null)
+		}
+		if (completionComposite != null) {
 			completionComposite.dispose();
-		if (bodyComp != null)
+		}
+		if (bodyComp != null) {
 			bodyComp.dispose();
-		if (bodyWrapperComposite != null)
+		}
+		if (bodyWrapperComposite != null) {
 			bodyWrapperComposite.dispose();
-		if (mainItemComposite != null)
+		}
+		if (mainItemComposite != null) {
 			mainItemComposite.dispose();
-		if (titleComposite != null)
+		}
+		if (titleComposite != null) {
 			titleComposite.dispose();
-		if (regularFont != null)
+		}
+		if (regularFont != null) {
 			regularFont.dispose();
+		}
 
 		ArrayList<AbstractItemExtensionElement[]> itemExts = item.getItemExtensions();
 		if (itemExts != null) {
@@ -431,8 +440,9 @@ public abstract class ViewItem {
 	void setAsNormalCollapsed() {
 		setBold(false);
 		setColorAsCurrent(false);
-		if (mainItemComposite.isExpanded())
+		if (mainItemComposite.isExpanded()) {
 			setCollapsed();
+		}
 	}
 
 	/*package*/
@@ -466,12 +476,14 @@ public abstract class ViewItem {
 	void setBold(boolean value) {
 		if(value) {
 			mainItemComposite.setFont(boldFont);
-			if(initialized)
+			if(initialized) {
 				mainItemComposite.layout();
+			}
 		} else {
 			mainItemComposite.setFont(regularFont);
-			if(initialized)
+			if(initialized) {
 				mainItemComposite.layout();
+			}
 		}
 		bold = value;
 	}
@@ -621,8 +633,9 @@ public abstract class ViewItem {
 		return (bodyText!=null && !bodyText.isDisposed())?bodyText.canCopy():false;
 	}
 	public void copy() {
-		if (bodyText!=null && !bodyText.isDisposed())
+		if (bodyText!=null && !bodyText.isDisposed()) {
 			bodyText.copy();
+		}
 	}
 
 	abstract boolean hasCompletionMessage();

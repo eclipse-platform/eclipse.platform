@@ -67,8 +67,9 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
 				for (IResource resource : resources) {
-					if (getSubscriber().isSupervised(resource))
+					if (getSubscriber().isSupervised(resource)) {
 						return true;
+					}
 				}
 			}
 		}
@@ -102,8 +103,9 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 		try {
 			if (compareAdapter != null) {
 				int state = compareAdapter.getSynchronizationState(this, mapping, stateMask, monitor);
-				if (state != -1)
+				if (state != -1) {
 					return state;
+				}
 			}
 			return getSubscriber().getState(mapping, stateMask, monitor);
 		} catch (CoreException e) {
@@ -123,8 +125,9 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	public ITeamStateDescription getStateDescription(Object element, int stateMask,
 			String[] properties, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
-		if (stateMask == USE_DECORATED_STATE_MASK)
+		if (stateMask == USE_DECORATED_STATE_MASK) {
 			stateMask = getDecoratedStateMask(element);
+		}
 		return new TeamStateDescription(getSynchronizationState(element, stateMask, monitor));
 	}
 

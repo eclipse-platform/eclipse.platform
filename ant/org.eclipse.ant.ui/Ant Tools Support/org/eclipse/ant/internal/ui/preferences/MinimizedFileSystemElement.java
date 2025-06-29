@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -37,7 +37,7 @@ class MinimizedFileSystemElement implements IWorkbenchAdapter, IAdaptable {
 
 	/**
 	 * Create a <code>MinimizedFileSystemElement</code> with the supplied name and parent.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the file element this represents
 	 * @param parent
@@ -76,7 +76,7 @@ class MinimizedFileSystemElement implements IWorkbenchAdapter, IAdaptable {
 
 	/**
 	 * Adds the passed child to this object's collection of children.
-	 * 
+	 *
 	 * @param child
 	 *            MinimizedFileSystemElement
 	 */
@@ -144,7 +144,7 @@ class MinimizedFileSystemElement implements IWorkbenchAdapter, IAdaptable {
 
 	/**
 	 * Populate the files and folders of the receiver using the supplied structure provider.
-	 * 
+	 *
 	 * @param provider
 	 *            org.eclipse.ui.wizards.datatransfer.IImportStructureProvider
 	 */
@@ -172,7 +172,7 @@ class MinimizedFileSystemElement implements IWorkbenchAdapter, IAdaptable {
 
 	/**
 	 * Returns the file system object property of this element
-	 * 
+	 *
 	 * @return the file system object
 	 */
 	protected Object getFileSystemObject() {
@@ -181,7 +181,7 @@ class MinimizedFileSystemElement implements IWorkbenchAdapter, IAdaptable {
 
 	/**
 	 * Set the file system object property of this element
-	 * 
+	 *
 	 * @param value
 	 *            the file system object
 	 */

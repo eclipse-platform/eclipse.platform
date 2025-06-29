@@ -102,8 +102,9 @@ public class PreferencesObjectSupplier extends ExtendedObjectSupplier implements
 
 	@Override
 	public Object get(IObjectDescriptor descriptor, IRequestor requestor, boolean track, boolean group) {
-		if (descriptor == null)
+		if (descriptor == null) {
 			return null;
+		}
 		Class<?> descriptorsClass = getDesiredClass(descriptor.getDesiredType());
 		String nodePath = getNodePath(descriptor, requestor.getRequestingObjectClass());
 		if (IEclipsePreferences.class.equals(descriptorsClass)) {
@@ -111,83 +112,94 @@ public class PreferencesObjectSupplier extends ExtendedObjectSupplier implements
 		}
 
 		String key = getKey(descriptor);
-		if (key == null || nodePath == null || key.isEmpty() || nodePath.isEmpty())
+		if (key == null || nodePath == null || key.isEmpty() || nodePath.isEmpty()) {
 			return IInjector.NOT_A_VALUE;
-		if (track)
+		}
+		if (track) {
 			addListener(nodePath, key, requestor);
-
-		if (descriptorsClass.isPrimitive()) {
-			if (descriptorsClass.equals(boolean.class))
-				return getPreferencesService().getBoolean(nodePath, key, false, null);
-			else if (descriptorsClass.equals(int.class))
-				return getPreferencesService().getInt(nodePath, key, 0, null);
-			else if (descriptorsClass.equals(double.class))
-				return getPreferencesService().getDouble(nodePath, key, 0.0d, null);
-			else if (descriptorsClass.equals(float.class))
-				return getPreferencesService().getFloat(nodePath, key, 0.0f, null);
-			else if (descriptorsClass.equals(long.class))
-				return getPreferencesService().getLong(nodePath, key, 0L, null);
 		}
 
-		if (String.class.equals(descriptorsClass))
+		if (descriptorsClass.isPrimitive()) {
+			if (descriptorsClass.equals(boolean.class)) {
+				return getPreferencesService().getBoolean(nodePath, key, false, null);
+			} else if (descriptorsClass.equals(int.class)) {
+				return getPreferencesService().getInt(nodePath, key, 0, null);
+			} else if (descriptorsClass.equals(double.class)) {
+				return getPreferencesService().getDouble(nodePath, key, 0.0d, null);
+			} else if (descriptorsClass.equals(float.class)) {
+				return getPreferencesService().getFloat(nodePath, key, 0.0f, null);
+			} else if (descriptorsClass.equals(long.class)) {
+				return getPreferencesService().getLong(nodePath, key, 0L, null);
+			}
+		}
+
+		if (String.class.equals(descriptorsClass)) {
 			return getPreferencesService().getString(nodePath, key, null, null);
-		else if (Boolean.class.equals(descriptorsClass))
+		} else if (Boolean.class.equals(descriptorsClass)) {
 			return getPreferencesService().getBoolean(nodePath, key, false, null);
-		else if (Integer.class.equals(descriptorsClass))
+		} else if (Integer.class.equals(descriptorsClass)) {
 			return getPreferencesService().getInt(nodePath, key, 0, null);
-		else if (Double.class.equals(descriptorsClass))
+		} else if (Double.class.equals(descriptorsClass)) {
 			return getPreferencesService().getDouble(nodePath, key, 0.0d, null);
-		else if (Float.class.equals(descriptorsClass))
+		} else if (Float.class.equals(descriptorsClass)) {
 			return getPreferencesService().getFloat(nodePath, key, 0.0f, null);
-		else if (Long.class.equals(descriptorsClass))
+		} else if (Long.class.equals(descriptorsClass)) {
 			return getPreferencesService().getLong(nodePath, key, 0L, null);
+		}
 
 		return getPreferencesService().getString(nodePath, key, null, null);
 	}
 
 	private Class<?> getDesiredClass(Type desiredType) {
-		if (desiredType instanceof Class<?>)
+		if (desiredType instanceof Class<?>) {
 			return (Class<?>) desiredType;
+		}
 		if (desiredType instanceof ParameterizedType) {
 			Type rawType = ((ParameterizedType) desiredType).getRawType();
-			if (rawType instanceof Class<?>)
+			if (rawType instanceof Class<?>) {
 				return (Class<?>) rawType;
+			}
 		}
 		return null;
 	}
 
 	private String getKey(IObjectDescriptor descriptor) {
-		if (descriptor == null)
+		if (descriptor == null) {
 			return null;
+		}
 		Preference qualifier = descriptor.getQualifier(Preference.class);
 		return qualifier.value();
 	}
 
 	private String getNodePath(IObjectDescriptor descriptor, Class<?> requestingObject) {
-		if (descriptor == null)
+		if (descriptor == null) {
 			return null;
+		}
 		Preference qualifier = descriptor.getQualifier(Preference.class);
 		String nodePath = qualifier.nodePath();
 
 		if (nodePath == null || nodePath.isEmpty()) {
-			if (requestingObject == null)
+			if (requestingObject == null) {
 				return null;
+			}
 			nodePath = FrameworkUtil.getBundle(requestingObject).getSymbolicName();
 		}
 		return nodePath;
 	}
 
 	private void addListener(String nodePath, String key, final IRequestor requestor) {
-		if (requestor == null)
+		if (requestor == null) {
 			return;
+		}
 		synchronized (listenerCache) {
 			if (listenerCache.containsKey(nodePath)) {
 				HashMap<String, List<PrefInjectionListener>> map = listenerCache.get(nodePath);
 				if (map.containsKey(key)) {
 					for (PrefInjectionListener listener : map.get(key)) {
 						IRequestor previousRequestor = listener.getRequestor();
-						if (previousRequestor.equals(requestor))
+						if (previousRequestor.equals(requestor)) {
 							return; // avoid adding duplicate listeners
+						}
 					}
 				}
 			}
@@ -216,8 +228,9 @@ public class PreferencesObjectSupplier extends ExtendedObjectSupplier implements
 		synchronized (listenerCache) {
 			for (HashMap<String, List<PrefInjectionListener>> map : listenerCache.values()) {
 				for (List<PrefInjectionListener> listeners : map.values()) {
-					if (listeners == null)
+					if (listeners == null) {
 						continue;
+					}
 					for (PrefInjectionListener listener : listeners) {
 						listener.stopListening();
 					}

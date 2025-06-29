@@ -57,8 +57,9 @@ public class DeepSize {
 			if (o == null) {
 				return false;
 			}
-			if (o.getClass() != ObjectWrapper.class)
+			if (o.getClass() != ObjectWrapper.class) {
 				return false;
+			}
 			return object == ((ObjectWrapper) o).object;
 		}
 
@@ -168,21 +169,25 @@ public class DeepSize {
 			ignoreTypeNames = getDefaultIgnoreTypeNames();
 		}
 		while (clazz != null) {
-			if (ignoreTypeNames.contains(clazz.getName()))
+			if (ignoreTypeNames.contains(clazz.getName())) {
 				return true;
+			}
 			clazz = clazz.getSuperclass();
 		}
 		return false;
 	}
 
 	private int sizeOf(Object o) {
-		if (o == null)
+		if (o == null) {
 			return 0;
-		if (ignore(o))
+		}
+		if (ignore(o)) {
 			return POINTER_SIZE;
+		}
 		Class<?> clazz = o.getClass();
-		if (shouldIgnoreType(clazz))
+		if (shouldIgnoreType(clazz)) {
 			return POINTER_SIZE;
+		}
 		return clazz.isArray() ? sizeOfArray(clazz, o) : sizeOfObject(clazz, o);
 	}
 
@@ -258,8 +263,9 @@ public class DeepSize {
 	}
 
 	private int sizeOfPrimitiveField(Class<?> type) {
-		if (type == long.class || type == double.class)
+		if (type == long.class || type == double.class) {
 			return 8;
+		}
 		return 4;
 	}
 

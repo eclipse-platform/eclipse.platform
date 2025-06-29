@@ -43,18 +43,20 @@ public final class Chevron extends ToggleHyperlink {
 
 	@Override
 	protected void paintHyperlink(GC gc) {
-		if (hover && getHoverDecorationColor() != null)
+		if (hover && getHoverDecorationColor() != null) {
 			gc.setForeground(getHoverDecorationColor());
-		else if (getDecorationColor() != null)
+		} else if (getDecorationColor() != null) {
 			gc.setForeground(getDecorationColor());
+		}
 		int[][] data;
 		Rectangle carea = getClientArea();
 		int x = (carea.width - innerWidth) /2;
 		int y = (carea.height - innerHeight) / 2;
-		if (isExpanded())
+		if (isExpanded()) {
 			data = translate(onLines, x, y);
-		else
+		} else {
 			data = translate(offLines, x, y);
+		}
 		for (int i=0; i<data.length; i++) {
 			gc.drawPolyline(data[i]);
 		}

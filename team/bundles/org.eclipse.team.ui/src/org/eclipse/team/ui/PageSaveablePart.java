@@ -96,8 +96,9 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 			if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
 				boolean changed= false;
 				Object newValue= e.getNewValue();
-				if (newValue instanceof Boolean)
+				if (newValue instanceof Boolean) {
 					changed= ((Boolean)newValue).booleanValue();
+				}
 				setDirty(e.getSource(), changed);
 			}
 		};
@@ -130,8 +131,9 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		fStructuredComparePane = new CompareViewerSwitchingPane(hsplitter, SWT.BORDER | SWT.FLAT, true) {
 			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
-				if (input instanceof ICompareInput)
+				if (input instanceof ICompareInput) {
 					return findStructureViewer(this, oldViewer, (ICompareInput)input);
+				}
 				return null;
 			}
 		};
@@ -140,12 +142,12 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		fContentPane = new CompareViewerSwitchingPane(vsplitter, SWT.BORDER | SWT.FLAT) {
 			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
-				if (!(input instanceof ICompareInput))
+				if (!(input instanceof ICompareInput)) {
 					return null;
+				}
 				Viewer newViewer= findContentViewer(this, oldViewer, (ICompareInput)input);
 				boolean isNewViewer= newViewer != oldViewer;
-				if (isNewViewer && newViewer instanceof IPropertyChangeNotifier) {
-					final IPropertyChangeNotifier dsp= (IPropertyChangeNotifier) newViewer;
+				if (isNewViewer && newViewer instanceof final IPropertyChangeNotifier dsp) {
 					dsp.addPropertyChangeListener(fDirtyStateListener);
 					Control c= newViewer.getControl();
 					c.addDisposeListener(
@@ -156,7 +158,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 				return newViewer;
 			}
 		};
-		vsplitter.setWeights(new int[]{30, 70});
+		vsplitter.setWeights(30, 70);
 
 		control = composite;
 
@@ -170,8 +172,9 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 
 		getSelectionProvider().addSelectionChangedListener(event -> {
 			ICompareInput input = getCompareInput(event.getSelection());
-			if (input != null)
+			if (input != null) {
 				prepareCompareInput(input);
+			}
 			setInput(input);
 		});
 	}
@@ -209,22 +212,25 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	protected void setDirty(boolean dirty) {
 		boolean confirmSave= true;
 		Object o= cc.getProperty(CompareEditor.CONFIRM_SAVE_PROPERTY);
-		if (o instanceof Boolean)
+		if (o instanceof Boolean) {
 			confirmSave= ((Boolean)o).booleanValue();
+		}
 
 		if (!confirmSave) {
 			fDirty= dirty;
-			if (!fDirty)
+			if (!fDirty) {
 				fDirtyViewers.clear();
+			}
 		}
 	}
 
 	private void setDirty(Object source, boolean dirty) {
 		Assert.isNotNull(source);
-		if (dirty)
+		if (dirty) {
 			fDirtyViewers.add(source);
-		else
+		} else {
 			fDirtyViewers.remove(source);
+		}
 	}
 
 	/**
@@ -233,10 +239,12 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 */
 	private void setInput(Object input) {
 		CompareViewerPane pane = fContentPane;
-		if (pane != null && !pane.isDisposed())
+		if (pane != null && !pane.isDisposed()) {
 			fContentPane.setInput(input);
-		if (fStructuredComparePane != null && !fStructuredComparePane.isDisposed())
+		}
+		if (fStructuredComparePane != null && !fStructuredComparePane.isDisposed()) {
 			fStructuredComparePane.setInput(input);
+		}
 	}
 
 	/*
@@ -245,8 +253,9 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	private void feedInput2(ISelection sel) {
 		ICompareInput input = getCompareInput(sel);
 		prepareCompareInput(input);
-		if (input != null)
+		if (input != null) {
 			fContentPane.setInput(input);
+		}
 	}
 
 	/**
@@ -255,12 +264,12 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @param input the compare input to be prepared
 	 */
 	protected void prepareCompareInput(final ICompareInput input) {
-		if (input == null)
+		if (input == null) {
 			return;
+		}
 		// Don't allow the use of shared documents with PageSaveableParts
 		Object left = input.getLeft();
-		if (left instanceof LocalResourceTypedElement) {
-			LocalResourceTypedElement lrte = (LocalResourceTypedElement) left;
+		if (left instanceof LocalResourceTypedElement lrte) {
 			lrte.enableSharedDocument(false);
 		}
 		IProgressService manager = PlatformUI.getWorkbench().getProgressService();
@@ -358,8 +367,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @return a compare input representing the selection
 	 */
 	protected ICompareInput getCompareInput(ISelection selection) {
-		if (selection != null && selection instanceof IStructuredSelection) {
-			IStructuredSelection ss= (IStructuredSelection) selection;
+		if (selection != null && selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
 				Object o = ss.getFirstElement();
 				if(o instanceof ICompareInput) {
@@ -413,8 +421,9 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	private void flushViewers(IProgressMonitor monitor) {
 		for (Object element : fDirtyViewers) {
 			IFlushable flushable = Adapters.adapt(element, IFlushable.class);
-			if (flushable != null)
+			if (flushable != null) {
 				flushable.flush(monitor);
+			}
 		}
 	}
 

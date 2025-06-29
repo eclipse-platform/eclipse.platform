@@ -147,8 +147,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		fInput.getViewer().addSelectionChangedListener(event -> {
 			ISelection s = event.getSelection();
 			if (s != null && !s.isEmpty()) {
-				if (s instanceof IStructuredSelection) {
-					IStructuredSelection ss = (IStructuredSelection) s;
+				if (s instanceof IStructuredSelection ss) {
 					updateActions(ss);
 				}
 			}
@@ -170,8 +169,7 @@ public class PreviewPatchPage2 extends WizardPage {
 	private void updateActions(IStructuredSelection ss) {
 		fExcludeAction.setEnabled(false);
 		fIncludeAction.setEnabled(false);
-		for (Iterator<?> it = ss.iterator(); it.hasNext();) {
-			Object element = it.next();
+		for (Object element : ss) {
 			if (element instanceof PatchDiffNode) {
 				if (((PatchDiffNode) element).isEnabled()) {
 					fExcludeAction.setEnabled(true);
@@ -188,8 +186,9 @@ public class PreviewPatchPage2 extends WizardPage {
 	 */
 	private void updateEnablements() {
 		boolean atLeastOneIsEnabled = false;
-		if (fInput != null)
+		if (fInput != null) {
 			atLeastOneIsEnabled = fInput.hasResultToApply();
+		}
 		setPageComplete(atLeastOneIsEnabled);
 	}
 
@@ -205,14 +204,14 @@ public class PreviewPatchPage2 extends WizardPage {
 				Shell shell = getShell();
 				ISelection selection = fInput.getViewer().getSelection();
 				PatchDiffNode node = null;
-				if (selection instanceof IStructuredSelection) {
-					IStructuredSelection ss = (IStructuredSelection) selection;
+				if (selection instanceof IStructuredSelection ss) {
 					if (ss.getFirstElement() instanceof PatchDiffNode) {
 						node = (PatchDiffNode) ss.getFirstElement();
 					}
 				}
-				if (node == null)
+				if (node == null) {
 					return;
+				}
 				final RetargetPatchElementDialog dialog = new RetargetPatchElementDialog(shell, fPatcher, node);
 				int returnCode = dialog.open();
 				if (returnCode == Window.OK) {
@@ -229,8 +228,7 @@ public class PreviewPatchPage2 extends WizardPage {
 			boolean enable = false;
 			if (obj instanceof PatchProjectDiffNode) {
 				enable = true;
-			} else if (obj instanceof PatchFileDiffNode) {
-				PatchFileDiffNode node = (PatchFileDiffNode) obj;
+			} else if (obj instanceof PatchFileDiffNode node) {
 				enable = node.getDiffResult().getDiffProblem();
 			} else if (obj instanceof HunkDiffNode) {
 				enable = true;
@@ -242,13 +240,11 @@ public class PreviewPatchPage2 extends WizardPage {
 			@Override
 			public void run() {
 				ISelection selection = fInput.getViewer().getSelection();
-				if (selection instanceof TreeSelection){
-					TreeSelection treeSelection = (TreeSelection) selection;
+				if (selection instanceof TreeSelection treeSelection){
 					Iterator<?> iter = treeSelection.iterator();
 					while (iter.hasNext()){
 						Object obj = iter.next();
-						if (obj instanceof PatchDiffNode){
-							PatchDiffNode node = ((PatchDiffNode) obj);
+						if (obj instanceof PatchDiffNode node){
 							node.setEnabled(false);
 							// TODO: This may require a rebuild if matched hunks are shown
 						}
@@ -264,13 +260,11 @@ public class PreviewPatchPage2 extends WizardPage {
 			@Override
 			public void run() {
 				ISelection selection = fInput.getViewer().getSelection();
-				if (selection instanceof TreeSelection){
-					TreeSelection treeSelection = (TreeSelection) selection;
+				if (selection instanceof TreeSelection treeSelection){
 					Iterator<?> iter = treeSelection.iterator();
 					while (iter.hasNext()){
 						Object obj = iter.next();
-						if (obj instanceof PatchDiffNode){
-							PatchDiffNode node = ((PatchDiffNode) obj);
+						if (obj instanceof PatchDiffNode node){
 							node.setEnabled(true);
 							// TODO: This may require a rebuild if matched hunks are shown
 						}
@@ -305,7 +299,6 @@ public class PreviewPatchPage2 extends WizardPage {
 		};
 		fIgnoreWhiteSpace.setChecked(false);
 		fIgnoreWhiteSpace.setToolTipText(PatchMessages.PreviewPatchPage2_IgnoreWSTooltip);
-		fIgnoreWhiteSpace.setDisabledImageDescriptor(CompareUIPlugin.getImageDescriptor(ICompareUIConstants.IGNORE_WHITESPACE_DISABLED));
 
 		fReversePatch = new Action(PatchMessages.PreviewPatchPage_ReversePatch_text){
 			@Override
@@ -371,10 +364,11 @@ public class PreviewPatchPage2 extends WizardPage {
 					result[0] = fInput.confirmRebuild(promptToConfirm);
 				}
 			};
-			if (Display.getCurrent() == null)
+			if (Display.getCurrent() == null) {
 				ctrl.getDisplay().syncExec(runnable);
-			else
+			} else {
 				runnable.run();
+			}
 		}
 		return result[0];
 	}
@@ -388,10 +382,11 @@ public class PreviewPatchPage2 extends WizardPage {
 					updateEnablements();
 				}
 			};
-			if (Display.getCurrent() == null)
+			if (Display.getCurrent() == null) {
 				ctrl.getDisplay().syncExec(runnable);
-			else
+			} else {
 				runnable.run();
+			}
 		}
 	}
 
@@ -402,13 +397,15 @@ public class PreviewPatchPage2 extends WizardPage {
 			fStripPrefixSegments.setEnabled(true);
 			int length = 99;
 			if (fStripPrefixSegments != null && pageRecalculate) {
-				if (fStripPrefixSegments.getItemCount() > 1)
+				if (fStripPrefixSegments.getItemCount() > 1) {
 					fStripPrefixSegments.remove(1,
 							fStripPrefixSegments.getItemCount() - 1);
+				}
 				length = getPatcher().calculatePrefixSegmentCount();
 				if (length != 99) {
-					for (int k = 1; k < length; k++)
+					for (int k = 1; k < length; k++) {
 						fStripPrefixSegments.add(Integer.toString(k));
+					}
 					fStripPrefixSegments.select(0);
 					getPatcher().setStripPrefixSegments(0);
 					pageRecalculate = false;
@@ -453,28 +450,31 @@ public class PreviewPatchPage2 extends WizardPage {
 
 		// register listeners
 		final WorkspacePatcher patcher= getPatcher();
-		if (fStripPrefixSegments!=null)
+		if (fStripPrefixSegments!=null) {
 			fStripPrefixSegments.addSelectionListener(
 				new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (patcher.getStripPrefixSegments() != getStripPrefixSegments()) {
 						if (promptToRebuild(PatchMessages.PreviewPatchPage2_4)) {
-							if (patcher.setStripPrefixSegments(getStripPrefixSegments()))
+							if (patcher.setStripPrefixSegments(getStripPrefixSegments())) {
 								rebuildTree();
+							}
 							}
 						}
 					}
 				}
 			);
+		}
 
 
 		fFuzzField.addModifyListener(
 			e -> {
 				if (patcher.getFuzz() != getFuzzFactor()) {
 					if (promptToRebuild(PatchMessages.PreviewPatchPage2_5)) {
-						if (patcher.setFuzz(getFuzzFactor()))
+						if (patcher.setFuzz(getFuzzFactor())) {
 							rebuildTree();
+						}
 					} else {
 						fFuzzField.setText(Integer.toString(patcher.getFuzz()));
 					}
@@ -513,8 +513,9 @@ public class PreviewPatchPage2 extends WizardPage {
 							// than the fuzz set in the configuration (see fFuzzField modify listener).
 							patcher.setFuzz(-1);
 							int fuzz= guessFuzzFactor(patcher);
-							if (fuzz>=0)
+							if (fuzz>=0) {
 								fFuzzField.setText(Integer.toString(fuzz));
+							}
 						}
 					}
 				}
@@ -683,8 +684,9 @@ public class PreviewPatchPage2 extends WizardPage {
 			settings = dialogSettings.addNewSection(PREVIEWPATCHPAGE_NAME);
 		}
 		if (settings != null) {
-			if (settings.get(EXPAND_PATCH_OPTIONS) != null)
+			if (settings.get(EXPAND_PATCH_OPTIONS) != null) {
 				patchOptions.setExpanded(settings.getBoolean(EXPAND_PATCH_OPTIONS));
+			}
 			if (settings.get(GENERATE_REJECTS) != null) {
 				generateRejects.setSelection(settings.getBoolean(GENERATE_REJECTS));
 				getPatcher().setGenerateRejectFile(generateRejects.getSelection());
@@ -722,17 +724,19 @@ public class PreviewPatchPage2 extends WizardPage {
 			for (FilePatch2 fileDiff : fPatcher.getDiffs()) {
 				for (IHunk hunk : fileDiff.getHunks()) {
 					for (String line : ((Hunk) hunk).getLines()) {
-						if (addedPattern.matcher(line).find())
+						if (addedPattern.matcher(line).find()) {
 							added++;
-						if (removedPattern.matcher(line).find())
+						}
+						if (removedPattern.matcher(line).find()) {
 							removed++;
+						}
 					}
 				}
 			}
 		}
 
 		return NLS.bind(PatchMessages.PreviewPatchPage2_AddedRemovedLines,
-				new String[] { added + "", removed + "" }); //$NON-NLS-1$ //$NON-NLS-2$
+				added + "", removed + ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override

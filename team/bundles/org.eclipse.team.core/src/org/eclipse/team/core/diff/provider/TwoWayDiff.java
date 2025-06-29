@@ -65,11 +65,11 @@ public class TwoWayDiff extends Diff implements ITwoWayDiff {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
+		}
 		if (super.equals(obj)) {
-			if (obj instanceof TwoWayDiff) {
-				TwoWayDiff other = (TwoWayDiff) obj;
+			if (obj instanceof TwoWayDiff other) {
 				return pathsEqual(getFromPath(), other.getFromPath()) && pathsEqual(getToPath(), other.getToPath());
 			}
 		}
@@ -77,10 +77,12 @@ public class TwoWayDiff extends Diff implements ITwoWayDiff {
 	}
 
 	private boolean pathsEqual(IPath path1, IPath path2) {
-		if (path1 == null)
+		if (path1 == null) {
 			return path2 == null;
-		if (path2 == null)
+		}
+		if (path2 == null) {
 			return false;
+		}
 		return path1.equals(path2);
 	}
 

@@ -42,8 +42,9 @@ public class CompareHandlerService {
 		IServiceLocator serviceLocator = container.getServiceLocator();
 		if (serviceLocator != null) {
 			IHandlerService service = serviceLocator.getService(IHandlerService.class);
-			if (service != null)
+			if (service != null) {
 				return new CompareHandlerService(container, null);
+			}
 		}
 		if (!PlatformUI.isWorkbenchRunning() && shell != null) {
 			Expression e = new ActiveShellExpression(shell);
@@ -69,8 +70,9 @@ public class CompareHandlerService {
 
 	public void registerAction(IAction action, String commandId) {
 		IHandlerService handlerService = getHandlerService();
-		if (handlerService == null)
+		if (handlerService == null) {
 			return;
+		}
 		action.setActionDefinitionId(commandId);
 		IHandlerActivation activation;
 		if (fExpression == null) {
@@ -84,8 +86,9 @@ public class CompareHandlerService {
 	}
 
 	private IHandlerService getHandlerService() {
-		if (fDisposed)
+		if (fDisposed) {
 			return null;
+		}
 		return fHandlerService;
 	}
 
@@ -94,8 +97,9 @@ public class CompareHandlerService {
 			IServiceLocator serviceLocator = fContainer.getServiceLocator();
 			if (serviceLocator != null) {
 				IHandlerService service = serviceLocator.getService(IHandlerService.class);
-				if (service != null)
+				if (service != null) {
 					fHandlerService = service;
+				}
 			}
 			if (PlatformUI.isWorkbenchRunning() && fHandlerService == null && fContainer.getWorkbenchPart() == null && fExpression != null) {
 				// We're in a dialog so we can use an active shell expression
@@ -121,14 +125,16 @@ public class CompareHandlerService {
 			}
 		}
 		// Remove the action definition id since we won't get key bindings
-		if (actionHandler != null)
+		if (actionHandler != null) {
 			actionHandler.setActionDefinitionId(null);
+		}
 	}
 
 	private void updateActionBars() {
 		IActionBars bars = getActionBars();
-		if (bars != null)
+		if (bars != null) {
 			bars.updateActionBars();
+		}
 	}
 
 	private void clearPaneActionHandlers() {
@@ -148,8 +154,9 @@ public class CompareHandlerService {
 	public void dispose() {
 		clearPaneActionHandlers();
 		IHandlerService service = getHandlerService();
-		if (service == null)
+		if (service == null) {
 			return;
+		}
 		service.deactivateHandlers(fActivations);
 		fActivations.clear();
 		fDisposed = true;

@@ -948,8 +948,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 		}
 		String newName = base;
 		while (isExistingLaunchConfigurationName(newName)) {
-			newName = MessageFormat.format(DebugCoreMessages.LaunchManager_31, new Object[] {
-					base, Integer.toString(index) });
+			newName = MessageFormat.format(DebugCoreMessages.LaunchManager_31, base, Integer.toString(index));
 			index++;
 		}
 		return newName;
@@ -1247,10 +1246,9 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 				}
 
 			} else if (store != null){
-				throw createDebugException(MessageFormat.format(DebugCoreMessages.LaunchManager_does_not_exist, new Object[] {
-						config.getName(), store.toURI().toString() }), null);
+				throw createDebugException(MessageFormat.format(DebugCoreMessages.LaunchManager_does_not_exist, config.getName(), store.toURI().toString()), null);
 			} else {
-				throw createDebugException(MessageFormat.format(DebugCoreMessages.LaunchManager_does_not_exist_no_store_found, new Object[] { config.getName() }), null);
+				throw createDebugException(MessageFormat.format(DebugCoreMessages.LaunchManager_does_not_exist_no_store_found, config.getName()), null);
 			}
 		}
 		return info;
@@ -2039,7 +2037,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 		IConfigurationElement config = fSourceLocators.get(identifier);
 		if (config == null) {
 			throw new CoreException(new Status(IStatus.ERROR, DebugPlugin.getUniqueIdentifier(), DebugException.INTERNAL_ERROR,
- MessageFormat.format(DebugCoreMessages.LaunchManager_Source_locator_does_not_exist___0__13, new Object[] { identifier }), null));
+ MessageFormat.format(DebugCoreMessages.LaunchManager_Source_locator_does_not_exist___0__13, identifier), null));
 		}
 		IPersistableSourceLocator sourceLocator = (IPersistableSourceLocator)config.createExecutableExtension("class"); //$NON-NLS-1$
 		if (sourceLocator instanceof AbstractSourceLookupDirector) {
@@ -2299,8 +2297,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 			}
 		} catch (CoreException ce) {
 		}
-		throw createDebugException(MessageFormat.format(DebugCoreMessages.LaunchManager__0__occurred_while_reading_launch_configuration_file__1___1, new Object[] {
-				e.toString(), uri }), e);
+		throw createDebugException(MessageFormat.format(DebugCoreMessages.LaunchManager__0__occurred_while_reading_launch_configuration_file__1___1, e.toString(), uri), e);
 	}
 
 	/**
@@ -2407,7 +2404,7 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 			if (lmonitor.isCanceled()) {
 				break;
 			}
-			lmonitor.subTask(MessageFormat.format(DebugCoreMessages.LaunchManager_28, new Object[] { source.getName() }));
+			lmonitor.subTask(MessageFormat.format(DebugCoreMessages.LaunchManager_28, source.getName()));
 			IPath location = IPath.fromOSString(LOCAL_LAUNCH_CONFIGURATION_CONTAINER_PATH.toOSString()).append(source.getName());
 			File target = location.toFile();
 			IPath locationdir = location.removeLastSegments(1);
@@ -2521,13 +2518,13 @@ public class LaunchManager extends PlatformObject implements ILaunchManager, IRe
 		if(Platform.OS_WIN32.equals(Platform.getOS())) {
 			for (String element : UNSUPPORTED_WIN32_CONFIG_NAMES) {
 				if(configname.equals(element)) {
-					throw new IllegalArgumentException(MessageFormat.format(DebugCoreMessages.LaunchManager_invalid_config_name, new Object[] { configname }));
+					throw new IllegalArgumentException(MessageFormat.format(DebugCoreMessages.LaunchManager_invalid_config_name, configname));
 				}
 			}
 		}
 		for (char element : DISALLOWED_CONFIG_NAME_CHARS) {
 			if (configname.indexOf(element) > -1) {
-				throw new IllegalArgumentException(MessageFormat.format(DebugCoreMessages.LaunchManager_invalid_config_name_char, new Object[] { String.valueOf(element) }));
+				throw new IllegalArgumentException(MessageFormat.format(DebugCoreMessages.LaunchManager_invalid_config_name_char, String.valueOf(element)));
 			}
 		}
 		return true;

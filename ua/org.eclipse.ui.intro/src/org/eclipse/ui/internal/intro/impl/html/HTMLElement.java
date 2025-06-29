@@ -50,8 +50,9 @@ public class HTMLElement {
 	 * Add an attribute with the given name and value to this HTMLElement
 	 */
 	public void addAttribute(String attributeName, String attributeValue) {
-		if(attributeName != null && attributeValue != null)
+		if(attributeName != null && attributeValue != null) {
 			getElementAttributes().put(attributeName, attributeValue);
+		}
 	}
 
 	/**
@@ -68,8 +69,9 @@ public class HTMLElement {
 	 * @return Returns the elementAttributes.
 	 */
 	public Map<String, String> getElementAttributes() {
-		if (elementAttributes == null)
+		if (elementAttributes == null) {
 			elementAttributes = new HashMap<>();
+		}
 
 		return elementAttributes;
 	}
@@ -90,8 +92,9 @@ public class HTMLElement {
 	 * @return Returns the elementContent.
 	 */
 	public Vector<Object> getElementContent() {
-		if (elementContent == null)
+		if (elementContent == null) {
 			elementContent = new Vector<>();
+		}
 
 		return elementContent;
 	}

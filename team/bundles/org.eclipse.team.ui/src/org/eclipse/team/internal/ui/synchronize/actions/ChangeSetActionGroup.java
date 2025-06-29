@@ -144,7 +144,9 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		@Override
 		public void run() {
 			ActiveChangeSet set = getSelectedSet();
-			if (set == null) return;
+			if (set == null) {
+				return;
+			}
 			editChangeSet(set);
 		}
 	}
@@ -158,8 +160,12 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		@Override
 		public void run() {
 			ActiveChangeSet set = getSelectedSet();
-			if (set == null) return;
-			if (MessageDialog.openConfirm(getConfiguration().getSite().getShell(), TeamUIMessages.ChangeSetActionGroup_0, NLS.bind(TeamUIMessages.ChangeSetActionGroup_1, new String[] { LegacyActionTools.escapeMnemonics(set.getTitle()) }))) { //
+			if (set == null) {
+				return;
+			}
+			if (MessageDialog.openConfirm(getConfiguration().getSite().getShell(),
+					TeamUIMessages.ChangeSetActionGroup_0, NLS.bind(TeamUIMessages.ChangeSetActionGroup_1,
+							LegacyActionTools.escapeMnemonics(set.getTitle())))) { //
 				getActiveChangeSetManager().remove(set);
 			}
 		}
@@ -428,12 +434,15 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 
 	@Override
 	public void updateActionBars() {
-		if (editChangeSet != null)
+		if (editChangeSet != null) {
 			editChangeSet.selectionChanged((IStructuredSelection)getContext().getSelection());
-		if (removeChangeSet != null)
+		}
+		if (removeChangeSet != null) {
 			removeChangeSet.selectionChanged((IStructuredSelection)getContext().getSelection());
-		if (makeDefault != null)
+		}
+		if (makeDefault != null) {
 			makeDefault.selectionChanged((IStructuredSelection)getContext().getSelection());
+		}
 		super.updateActionBars();
 	}
 
@@ -475,8 +484,9 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		for (IResource resource : resources) {
 			try {
 				IDiff diff = s.getDiff(resource);
-				if (diff != null)
+				if (diff != null) {
 					diffs.add(diff);
+				}
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);
 			}

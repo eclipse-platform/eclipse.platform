@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.debug.ui.launchview;singleton:=true
-Bundle-Version: 1.1.700.qualifier
+Bundle-Version: 1.1.900.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -21,3 +21,4 @@ Export-Package: org.eclipse.debug.ui.launchview;x-internal:=true,
 Automatic-Module-Name: org.eclipse.debug.ui.launchview
 Service-Component: OSGI-INF/org.eclipse.debug.ui.launchview.internal.impl.DebugCoreProvider.xml,
  OSGI-INF/org.eclipse.debug.ui.launchview.internal.model.LaunchViewModel.xml
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"

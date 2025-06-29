@@ -46,8 +46,9 @@ public class TestViewSupportRegistry {
 	 * @return a {@link TestViewSupportRegistry} object
 	 */
 	public static TestViewSupportRegistry getDefault() {
-		if (fgRegistry != null)
+		if (fgRegistry != null) {
 			return fgRegistry;
+		}
 
 		fgRegistry = new TestViewSupportRegistry(
 				Platform.getExtensionRegistry().getExtensionPoint(ID_EXTENSION_POINT_TEST_VIEW_SUPPORTS));
@@ -83,15 +84,17 @@ public class TestViewSupportRegistry {
 	 */
 	public List<TestViewSupportExtension> getTestViewSupportExtensions(final String filter) {
 		List<TestViewSupportExtension> all = getAllTestViewSupportExtensions();
-		if (all == null)
+		if (all == null) {
 			return Collections.emptyList();
+		}
 
 		return all.stream().filter(p -> p.getId().startsWith(filter)).collect(Collectors.toList());
 	}
 
 	private void loadTestViewSupportExtensions() {
-		if (fTestViewSupportExtensions != null)
+		if (fTestViewSupportExtensions != null) {
 			return;
+		}
 
 		List<TestViewSupportExtension> items = getConfigurationElements().stream().map(TestViewSupportExtension::new)
 				.collect(Collectors.toList());

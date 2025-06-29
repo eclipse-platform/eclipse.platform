@@ -3,14 +3,6 @@
 FAQ How do I add hover support to my text editor?
 =================================================
 
-Contents
---------
-
-*   [1 If you're using the Generic and Extensible editor](#If-yoUre-using-the-Generic-and-Extensible-editor)
-*   [2 If you're extensing the StructuredTextEditor](#If-youre-extensing-the-StructuredTextEditor)
-*   [3 If it's your own editor](#If-its-your-own-editor)
-*   [4 Example of ITextHover implementation](#Example-of-ITextHover-implementation)
-*   [5 See Also](#See-Also)
 
 If you're using the Generic and Extensible editor
 -------------------------------------------------

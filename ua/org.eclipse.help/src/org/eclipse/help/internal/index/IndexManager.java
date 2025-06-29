@@ -104,7 +104,7 @@ public class IndexManager {
 						contribution.setId(contrib[j].getId());
 						contribution.setLocale(contrib[j].getLocale());
 						IIndex index = contrib[j].getIndex();
-						contribution.setIndex(index instanceof Index ? (Index) index
+						contribution.setIndex(index instanceof Index ? index
 								: (Index) UAElementFactory.newElement(index));
 						contributions.add(contribution);
 					}

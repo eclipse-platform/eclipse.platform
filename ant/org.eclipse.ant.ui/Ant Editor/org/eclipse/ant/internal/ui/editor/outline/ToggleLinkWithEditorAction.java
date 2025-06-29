@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.eclipse.jface.action.Action;
 
 /**
  * This action toggles whether the Ant Outline page links its selection to the active editor.
- * 
+ *
  * @since 3.0
  */
 public class ToggleLinkWithEditorAction extends Action {
@@ -43,7 +43,8 @@ public class ToggleLinkWithEditorAction extends Action {
 	@Override
 	public void run() {
 		AntUIPlugin.getDefault().getPreferenceStore().setValue(IAntUIPreferenceConstants.OUTLINE_LINK_WITH_EDITOR, isChecked());
-		if (isChecked())
+		if (isChecked()) {
 			fEditor.synchronizeOutlinePage(false);
+		}
 	}
 }

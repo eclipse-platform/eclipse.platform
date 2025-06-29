@@ -35,8 +35,9 @@ public class IntroText extends AbstractBaseIntroElement {
 	IntroText(Element element, Bundle bundle) {
 		super(element, bundle);
 		Node textNode = element.getFirstChild();
-		if (textNode == null)
+		if (textNode == null) {
 			return;
+		}
 		if (textNode.getNodeType() == Node.TEXT_NODE
 				|| textNode.getNodeType() == Node.CDATA_SECTION_NODE) {
 			// we may have a text or a CDATA nodes.
@@ -50,8 +51,9 @@ public class IntroText extends AbstractBaseIntroElement {
 	 */
 	public String getText() {
 		IntroModelRoot root = getModelRoot();
-		if (root!=null)
+		if (root!=null) {
 			return root.resolveVariables(text);
+		}
 		return text;
 	}
 
@@ -65,8 +67,9 @@ public class IntroText extends AbstractBaseIntroElement {
 	 *         it formatted.
 	 */
 	public boolean checkIfFormatted() {
-		if (text == null)
+		if (text == null) {
 			return false;
+		}
 		int i = text.indexOf('<');
 		return i == -1 ? false : true;
 	}

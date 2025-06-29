@@ -95,9 +95,10 @@ public class ContentProviderManager {
 	public IIntroContentProvider getContentProvider(IntroContentProvider provider) {
 		// safe to cast since we know the object class in table.
 		ContentProviderWrapper providerWrapper = contentProviders.get(provider.getId());
-		if (providerWrapper == null)
+		if (providerWrapper == null) {
 			// return null if provider has not been created yet.
 			return null;
+		}
 		IIntroContentProvider providerClass = providerWrapper.getIIntroContentProvider();
 		return providerClass;
 	}
@@ -124,9 +125,10 @@ public class ContentProviderManager {
 						.getParentPage());
 				contentProviders.put(provider.getId(), wrapper);
 			}
-		} else
+		} else {
 			Log.warning("Failed to create Intro model content provider: " //$NON-NLS-1$
 					+ provider.getClassName());
+		}
 		return providerClass;
 	}
 
@@ -148,8 +150,9 @@ public class ContentProviderManager {
 			provider.dispose();
 		}
 		contentProviders.clear();
-		if (Log.logInfo)
+		if (Log.logInfo) {
 			Log.info("Cleared Intro model content providers"); //$NON-NLS-1$
+		}
 	}
 
 

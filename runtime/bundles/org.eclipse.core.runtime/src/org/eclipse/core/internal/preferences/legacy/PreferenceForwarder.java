@@ -106,22 +106,25 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	@Override
 	public void preferenceChange(IEclipsePreferences.PreferenceChangeEvent event) {
 		// if we are the ones making this change, then don't broadcast
-		if (!notify)
+		if (!notify) {
 			return;
+		}
 		Object oldValue = event.getOldValue();
 		Object newValue = event.getNewValue();
 		String key = event.getKey();
-		if (newValue == null)
+		if (newValue == null) {
 			newValue = getDefault(key, oldValue);
-		else if (oldValue == null)
+		} else if (oldValue == null) {
 			oldValue = getDefault(key, newValue);
+		}
 		firePropertyChangeEvent(key, oldValue, newValue);
 	}
 
 	private EclipsePreferences getPluginPreferences(boolean create) {
 		try {
-			if (!create && !pluginRoot.nodeExists(pluginID))
+			if (!create && !pluginRoot.nodeExists(pluginID)) {
 				return null;
+			}
 		} catch (BackingStoreException e) {
 			return null;
 		}
@@ -163,22 +166,23 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	private Object getDefault(String key, Object obj) {
 		IEclipsePreferences defaults = getDefaultPreferences();
-		if (obj instanceof String)
+		if (obj instanceof String) {
 			return defaults.get(key, STRING_DEFAULT_DEFAULT);
-		else if (obj instanceof Integer)
+		} else if (obj instanceof Integer) {
 			return Integer.valueOf(defaults.getInt(key, INT_DEFAULT_DEFAULT));
-		else if (obj instanceof Double)
+		} else if (obj instanceof Double) {
 			return Double.valueOf(defaults.getDouble(key, DOUBLE_DEFAULT_DEFAULT));
-		else if (obj instanceof Float)
+		} else if (obj instanceof Float) {
 			return Float.valueOf(defaults.getFloat(key, FLOAT_DEFAULT_DEFAULT));
-		else if (obj instanceof Long)
+		} else if (obj instanceof Long) {
 			return Long.valueOf(defaults.getLong(key, LONG_DEFAULT_DEFAULT));
-		else if (obj instanceof byte[])
+		} else if (obj instanceof byte[]) {
 			return defaults.getByteArray(key, BYTE_ARRAY_DEFAULT_DEFAULT);
-		else if (obj instanceof Boolean)
+		} else if (obj instanceof Boolean) {
 			return defaults.getBoolean(key, BOOLEAN_DEFAULT_DEFAULT) ? Boolean.TRUE : Boolean.FALSE;
-		else
+		} else {
 			return null;
+		}
 	}
 
 	/**
@@ -192,11 +196,13 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	@Override
 	public boolean contains(String name) {
-		if (name == null)
+		if (name == null) {
 			return false;
+		}
 		String value = getPluginPreferences(true).get(name, null);
-		if (value != null)
+		if (value != null) {
 			return true;
+		}
 		return getDefaultPreferences().get(name, null) != null;
 	}
 
@@ -238,14 +244,16 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	public void setValue(String name, boolean value) {
 		Boolean oldValue = getBoolean(name) ? Boolean.TRUE : Boolean.FALSE;
 		Boolean newValue = value ? Boolean.TRUE : Boolean.FALSE;
-		if (newValue == oldValue)
+		if (newValue == oldValue) {
 			return;
+		}
 		try {
 			notify = false;
-			if (getDefaultBoolean(name) == value)
+			if (getDefaultBoolean(name) == value) {
 				getPluginPreferences(true).remove(name);
-			else
+			} else {
 				getPluginPreferences(true).putBoolean(name, value);
+			}
 			firePropertyChangeEvent(name, oldValue, newValue);
 		} finally {
 			notify = true;
@@ -324,19 +332,22 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	@Override
 	public void setValue(String name, double value) {
-		if (Double.isNaN(value))
+		if (Double.isNaN(value)) {
 			throw new IllegalArgumentException();
+		}
 		final double doubleValue = getDouble(name);
-		if (value == doubleValue)
+		if (value == doubleValue) {
 			return;
+		}
 		Double oldValue = Double.valueOf(doubleValue);
 		Double newValue = Double.valueOf(value);
 		try {
 			notify = false;
-			if (getDefaultDouble(name) == value)
+			if (getDefaultDouble(name) == value) {
 				getPluginPreferences(true).remove(name);
-			else
+			} else {
 				getPluginPreferences(true).putDouble(name, value);
+			}
 			firePropertyChangeEvent(name, oldValue, newValue);
 		} finally {
 			notify = true;
@@ -376,8 +387,9 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	@Override
 	public void setDefault(String name, double value) {
-		if (Double.isNaN(value))
+		if (Double.isNaN(value)) {
 			throw new IllegalArgumentException();
+		}
 		getDefaultPreferences().putDouble(name, value);
 	}
 
@@ -418,19 +430,22 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	@Override
 	public void setValue(String name, float value) {
-		if (Float.isNaN(value))
+		if (Float.isNaN(value)) {
 			throw new IllegalArgumentException();
+		}
 		final float floatValue = getFloat(name);
-		if (value == floatValue)
+		if (value == floatValue) {
 			return;
+		}
 		Float oldValue = Float.valueOf(floatValue);
 		Float newValue = Float.valueOf(value);
 		try {
 			notify = false;
-			if (getDefaultFloat(name) == value)
+			if (getDefaultFloat(name) == value) {
 				getPluginPreferences(true).remove(name);
-			else
+			} else {
 				getPluginPreferences(true).putFloat(name, value);
+			}
 			firePropertyChangeEvent(name, oldValue, newValue);
 		} finally {
 			notify = true;
@@ -470,8 +485,9 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	@Override
 	public void setDefault(String name, float value) {
-		if (Float.isNaN(value))
+		if (Float.isNaN(value)) {
 			throw new IllegalArgumentException();
+		}
 		getDefaultPreferences().putFloat(name, value);
 	}
 
@@ -512,16 +528,18 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	@Override
 	public void setValue(String name, int value) {
 		final int intValue = getInt(name);
-		if (value == intValue)
+		if (value == intValue) {
 			return;
+		}
 		Integer oldValue = Integer.valueOf(intValue);
 		Integer newValue = Integer.valueOf(value);
 		try {
 			notify = false;
-			if (getDefaultInt(name) == value)
+			if (getDefaultInt(name) == value) {
 				getPluginPreferences(true).remove(name);
-			else
+			} else {
 				getPluginPreferences(true).putInt(name, value);
+			}
 			firePropertyChangeEvent(name, oldValue, newValue);
 		} finally {
 			notify = true;
@@ -600,16 +618,18 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	@Override
 	public void setValue(String name, long value) {
 		final long longValue = getLong(name);
-		if (value == longValue)
+		if (value == longValue) {
 			return;
+		}
 		Long oldValue = Long.valueOf(longValue);
 		Long newValue = Long.valueOf(value);
 		try {
 			notify = false;
-			if (getDefaultLong(name) == value)
+			if (getDefaultLong(name) == value) {
 				getPluginPreferences(true).remove(name);
-			else
+			} else {
 				getPluginPreferences(true).putLong(name, value);
+			}
 			firePropertyChangeEvent(name, oldValue, newValue);
 		} finally {
 			notify = true;
@@ -686,17 +706,20 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	@Override
 	public void setValue(String name, String value) {
-		if (value == null)
+		if (value == null) {
 			throw new IllegalArgumentException();
+		}
 		String oldValue = getString(name);
-		if (value.equals(oldValue))
+		if (value.equals(oldValue)) {
 			return;
+		}
 		try {
 			notify = false;
-			if (getDefaultString(name).equals(value))
+			if (getDefaultString(name).equals(value)) {
 				getPluginPreferences(true).remove(name);
-			else
+			} else {
 				getPluginPreferences(true).put(name, value);
+			}
 			firePropertyChangeEvent(name, oldValue, value);
 		} finally {
 			notify = true;
@@ -735,8 +758,9 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	@Override
 	public void setDefault(String name, String value) {
-		if (value == null)
+		if (value == null) {
 			throw new IllegalArgumentException();
+		}
 		getDefaultPreferences().put(name, value);
 	}
 
@@ -751,8 +775,9 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	@Override
 	public boolean isDefault(String name) {
-		if (name == null)
+		if (name == null) {
 			return false;
+		}
 		return getPluginPreferences(true).get(name, null) == null;
 	}
 
@@ -779,8 +804,9 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	public void setToDefault(String name) {
 		IEclipsePreferences preferences = getPluginPreferences(true);
 		Object oldValue = preferences.get(name, null);
-		if (oldValue != null)
+		if (oldValue != null) {
 			preferences.remove(name);
+		}
 	}
 
 	/**
@@ -828,8 +854,9 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 */
 	public void flush() throws BackingStoreException {
 		IEclipsePreferences node = getPluginPreferences(false);
-		if (node != null)
+		if (node != null) {
 			node.flush();
+		}
 	}
 
 	/*
@@ -880,8 +907,9 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 		for (Object object : props.keySet()) {
 			String key = (String) object;
 			String value = props.getProperty(key);
-			if (value != null)
+			if (value != null) {
 				preferences.put(key, value);
+			}
 		}
 	}
 
@@ -899,8 +927,9 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 		String[] keys = propertyNames();
 		for (String key : keys) {
 			String value = getString(key);
-			if (!Preferences.STRING_DEFAULT_DEFAULT.equals(value))
+			if (!Preferences.STRING_DEFAULT_DEFAULT.equals(value)) {
 				result.put(key, value);
+			}
 		}
 		return result;
 	}

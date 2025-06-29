@@ -69,8 +69,7 @@ public class RunToLineActionDelegate implements IEditorActionDelegate, IActionDe
 
 		protected void contextActivated(ISelection selection) {
 			fTargetElement = null;
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
+			if (selection instanceof IStructuredSelection ss) {
 				if (ss.size() == 1) {
 					fTargetElement = (ISuspendResume)
 						DebugPlugin.getAdapter(ss.getFirstElement(), ISuspendResume.class);
@@ -138,7 +137,7 @@ public class RunToLineActionDelegate implements IEditorActionDelegate, IActionDe
 		this.fAction = action;
 		if (action != null) {
 			action.setText(ActionMessages.RunToLineActionDelegate_4);
-			action.setImageDescriptor(DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_RUN_TO_LINE));
+			action.setImageDescriptor(DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_RUN_TO_LINE));
 			action.setDisabledImageDescriptor(DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_RUN_TO_LINE));
 		}
 	}

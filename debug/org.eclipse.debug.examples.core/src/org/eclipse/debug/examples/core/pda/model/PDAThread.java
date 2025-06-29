@@ -296,8 +296,7 @@ public class PDAThread extends PDADebugElement implements IThread, IPDAEventList
 
 	@Override
 	public void handleEvent(PDAEvent _event) {
-		if (_event instanceof PDARunControlEvent && fThreadId == ((PDARunControlEvent)_event).fThreadId) {
-			PDARunControlEvent event = (PDARunControlEvent)_event;
+		if (_event instanceof PDARunControlEvent event && fThreadId == event.fThreadId) {
 			// clear previous state
 			fBreakpoint = null;
 			setStepping(false);

@@ -57,12 +57,15 @@ public class RegexDiffFilter extends DiffFilter {
 	public boolean select(IDiff diff, IProgressMonitor monitor) {
 		IFileRevision remote = SyncInfoToDiffConverter.getRemote(diff);
 		IResource local = ResourceDiffTree.getResourceFor(diff);
-		if (local == null || local.getType() != IResource.FILE)
+		if (local == null || local.getType() != IResource.FILE) {
 			return true;
-		if (remote == null)
+		}
+		if (remote == null) {
 			return !local.exists();
-		if (!local.exists())
+		}
+		if (!local.exists()) {
 			return false;
+		}
 		return criteria.compare(local, remote, monitor);
 	}
 }

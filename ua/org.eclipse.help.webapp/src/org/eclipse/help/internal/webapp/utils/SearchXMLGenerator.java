@@ -85,7 +85,9 @@ public class SearchXMLGenerator  {
 	private static void serializeCategory(IHelpResource categoryResource,
 			StringBuilder buf, String indent) {
 		String category = categoryResource.getLabel();
-		if (category == null) return;
+		if (category == null) {
+			return;
+		}
 
 		buf.append(indent + "<category"); //$NON-NLS-1$
 

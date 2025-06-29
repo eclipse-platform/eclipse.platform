@@ -23,8 +23,7 @@ public class AdapterFactory implements IAdapterFactory {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-		if (adaptableObject instanceof ModelProvider && adapterType == ResourceMapping.class) {
-			ModelProvider mp = (ModelProvider) adaptableObject;
+		if (adaptableObject instanceof ModelProvider mp && adapterType == ResourceMapping.class) {
 			return (T) new ModelProviderResourceMapping(mp);
 		}
 		return null;

@@ -120,11 +120,10 @@ public class GroupLaunchConfigurationTabGroup extends AbstractLaunchConfiguratio
 	static class LabelProvider extends BaseLabelProvider implements ITableLabelProvider {
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
-			if (!(element instanceof GroupLaunchElement)) {
+			if (!(element instanceof GroupLaunchElement el)) {
 				return null;
 			}
 			if (columnIndex == 0) {
-				GroupLaunchElement el = (GroupLaunchElement) element;
 				if (el.data == null || !isValidLaunchReference(el.data)) {
 					Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 					return errorImage;
@@ -143,11 +142,9 @@ public class GroupLaunchConfigurationTabGroup extends AbstractLaunchConfiguratio
 
 		@Override
 		public String getColumnText(Object element, int columnIndex) {
-			if (!(element instanceof GroupLaunchElement)) {
+			if (!(element instanceof GroupLaunchElement el)) {
 				return null;
 			}
-			GroupLaunchElement el = (GroupLaunchElement) element;
-
 			// launch name
 			if (columnIndex == 0) {
 				try {
@@ -172,7 +169,7 @@ public class GroupLaunchConfigurationTabGroup extends AbstractLaunchConfiguratio
 						return action.getDescription();
 					case DELAY:
 						final Object actionParam = el.actionParam;
-						return NLS.bind(DebugUIMessages.GroupLaunchConfigurationTabGroup_13, actionParam instanceof Integer ? Integer.toString((Integer) actionParam) : "?"); //$NON-NLS-1$
+						return NLS.bind(DebugUIMessages.GroupLaunchConfigurationTabGroup_13, actionParam instanceof Integer i ? Integer.toString(i) : "?"); //$NON-NLS-1$
 					case OUTPUT_REGEXP:
 						return NLS.bind(DebugUIMessages.GroupLaunchConfigurationTabGroup_0, el.actionParam);
 					default:

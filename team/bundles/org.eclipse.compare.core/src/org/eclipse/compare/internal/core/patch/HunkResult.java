@@ -71,8 +71,9 @@ public class HunkResult {
 				int hugeShift = lines.size();
 				for (int i = 1; i <= hugeShift; i++) {
 					if (this.fHunk.tryPatch(configuration, lines, this.fShift - i, fuzz)) {
-						if (isAdjustShift())
+						if (isAdjustShift()) {
 							this.fShift -= i;
+						}
 						found = true;
 						break;
 					}
@@ -81,8 +82,9 @@ public class HunkResult {
 				if (!found) {
 					for (int i = 1; i <= hugeShift; i++) {
 						if (this.fHunk.tryPatch(configuration, lines, this.fShift + i, fuzz)) {
-							if (isAdjustShift())
+							if (isAdjustShift()) {
 								this.fShift += i;
+							}
 							found = true;
 							break;
 						}
@@ -90,7 +92,9 @@ public class HunkResult {
 				}
 
 				if (found) {
-					if (DEBUG) System.out.println("patched hunk at offset: " + (this.fShift-oldShift)); //$NON-NLS-1$
+					if (DEBUG) {
+						System.out.println("patched hunk at offset: " + (this.fShift-oldShift)); //$NON-NLS-1$
+					}
 					this.fShift+= this.fHunk.doPatch(configuration, lines, this.fShift, fuzz);
 					this.fMatches = true;
 				}
@@ -145,8 +149,9 @@ public class HunkResult {
 					throw new OperationCanceledException();
 				}
 				if (this.fHunk.tryPatch(configuration, lines, this.fShift - i, fuzz)) {
-					if (isAdjustShift())
+					if (isAdjustShift()) {
 						this.fShift -= i;
+					}
 					this.fMatches = true;
 					break;
 				}
@@ -159,8 +164,9 @@ public class HunkResult {
 						throw new OperationCanceledException();
 					}
 					if (this.fHunk.tryPatch(configuration, lines, this.fShift + i, fuzz)) {
-						if (isAdjustShift())
+						if (isAdjustShift()) {
 							this.fShift += i;
+						}
 						this.fMatches = true;
 						break;
 					}
@@ -246,8 +252,9 @@ public class HunkResult {
 				}
 			}
 			// Only return the full context if we could apply the hunk
-			if (!problemFound)
-				return LineReader.createString(this.fDiffResult.isPreserveLineDelimeters(), lines);
+			if (!problemFound) {
+				return LineReader.createString(this.fDiffResult.isPreserveLineDelimiters(), lines);
+			}
 		}
 		return getHunk().getContents(afterState, getConfiguration().isReversed());
 	}

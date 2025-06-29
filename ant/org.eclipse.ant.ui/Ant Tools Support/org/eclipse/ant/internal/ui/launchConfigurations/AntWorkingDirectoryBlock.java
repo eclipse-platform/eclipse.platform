@@ -29,7 +29,7 @@ public class AntWorkingDirectoryBlock extends JavaWorkingDirectoryBlock {
 
 	/**
 	 * Returns the default working directory path
-	 * 
+	 *
 	 * @return the default working directory path
 	 */
 	public String getDefaultWorkingDirPath() {
@@ -62,8 +62,7 @@ public class AntWorkingDirectoryBlock extends JavaWorkingDirectoryBlock {
 			}
 		}
 		catch (CoreException e) {
-			setErrorMessage(MessageFormat.format(AntLaunchConfigurationMessages.AntWorkingDirectoryBlock_0, new Object[] {
-					e.getStatus().getMessage() }));
+			setErrorMessage(MessageFormat.format(AntLaunchConfigurationMessages.AntWorkingDirectoryBlock_0, e.getStatus().getMessage()));
 			AntUIPlugin.log(e);
 		}
 	}

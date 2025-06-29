@@ -163,8 +163,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	 */
 	protected SynchronizeModelManager createModelManager(ISynchronizePageConfiguration configuration) {
 		ISynchronizeParticipant participant = configuration.getParticipant();
-		if (participant instanceof IChangeSetProvider) {
-			IChangeSetProvider provider = (IChangeSetProvider) participant;
+		if (participant instanceof IChangeSetProvider provider) {
 			ChangeSetCapability changeSetCapability = provider.getChangeSetCapability();
 			if (changeSetCapability != null) {
 				if (changeSetCapability.supportsActiveChangeSets() || changeSetCapability.supportsCheckedInChangeSets()) {
@@ -205,8 +204,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	private String getStatusLineMessage(IStructuredSelection selection) {
 		if (selection.size() == 1) {
 			Object first = selection.getFirstElement();
-			if (first instanceof SyncInfoModelElement) {
-				SyncInfoModelElement node = (SyncInfoModelElement) first;
+			if (first instanceof SyncInfoModelElement node) {
 				IResource resource = node.getResource();
 				if (resource == null) {
 					return node.getName();

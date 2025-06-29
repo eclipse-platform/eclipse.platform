@@ -269,13 +269,11 @@ public class RenderingViewPane extends AbstractMemoryViewPane implements IMemory
 
 					Object elem = ((IStructuredSelection) selection).getFirstElement();
 
-					if (elem instanceof IMemoryBlock) {
+					if (elem instanceof IMemoryBlock memBlock) {
 						// if the selection event comes from this view
 						if (part == getMemoryRenderingSite()) {
 							// find the folder associated with the given
 							// IMemoryBlockRetrieval
-							IMemoryBlock memBlock = (IMemoryBlock) elem;
-
 							// should never get here... added code for safety
 							if (fTabFolderForMemoryBlock == null) {
 								if (lastViewTab != null) {
@@ -982,8 +980,7 @@ public class RenderingViewPane extends AbstractMemoryViewPane implements IMemory
 			IMemoryRendering rendering = getActiveRendering();
 			if (rendering != null) {
 				if (rendering.getMemoryBlock() == memoryBlock) {
-					if (rendering instanceof IResettableMemoryRendering) {
-						IResettableMemoryRendering resettableRendering = (IResettableMemoryRendering) rendering;
+					if (rendering instanceof IResettableMemoryRendering resettableRendering) {
 						try {
 							resettableRendering.resetRendering();
 						} catch (DebugException e) {

@@ -259,8 +259,9 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 				if (attributeName.equals(ICompositeCheatsheetTags.NAME)) {
 					name = attribute.getNodeValue();
 				}
@@ -292,8 +293,9 @@ public class CompositeCheatSheetParser implements IStatusContainer {
 			for (int x = 0; x < attributes.getLength(); x++) {
 				Node attribute = attributes.item(x);
 				String attributeName = attribute.getNodeName();
-				if (attribute == null || attributeName == null)
+				if (attribute == null || attributeName == null) {
 					continue;
+				}
 				if (attributeName.equals(ICompositeCheatsheetTags.KIND)) {
 					kind = attribute.getNodeValue();
 				}

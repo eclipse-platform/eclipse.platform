@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.ant.ui; singleton:=true
-Bundle-Version: 3.10.100.qualifier
+Bundle-Version: 3.10.200.qualifier
 Bundle-Activator: org.eclipse.ant.internal.ui.AntUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -56,3 +56,4 @@ Require-Bundle: org.eclipse.ui.ide;bundle-version="[3.2.0,4.0.0)";resolution:=op
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.eclipse.ant.ui
+Require-Capability: eclipse.swt;filter:="(image.format=svg)"

@@ -62,8 +62,9 @@ public class Utils {
 			int len = 0;
 			while (true) {
 				len = dataStream.read(buffer); // Read file into the byte array
-				if (len == -1)
+				if (len == -1) {
 					break;
+				}
 				out.write(buffer, 0, len);
 			}
 		} catch (Exception e) {

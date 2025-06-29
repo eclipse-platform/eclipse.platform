@@ -99,11 +99,13 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 		}
 		historyPage.setInput(object);
 		String description = historyPage.getDescription();
-		if (description == null)
+		if (description == null) {
 			description = ""; //$NON-NLS-1$
+		}
 		setPageDescription(description);
-		if (getTitle() == null)
+		if (getTitle() == null) {
 			setTitle(historyPage.getName());
+		}
 		historyPage.addPropertyChangeListener(changeListener);
 		return (IPage)historyPage;
 	}
@@ -111,12 +113,12 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	@Override
 	protected ICompareInput asCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.asCompareInput(selection);
-		if (compareInput != null)
+		if (compareInput != null) {
 			return compareInput;
+		}
 		IHistoryCompareAdapter compareAdapter = Adapters.adapt(historyPage, IHistoryCompareAdapter.class);
 		if (compareAdapter != null){
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss= (IStructuredSelection) selection;
+			if (selection instanceof IStructuredSelection ss) {
 				if (ss.size() == 1) {
 					Object o = ss.getFirstElement();
 					return compareAdapter.getCompareInput(o);
@@ -191,15 +193,17 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 
 	@Override
 	public String getOKButtonLabel() {
-		if (isReplaceDialog())
+		if (isReplaceDialog()) {
 			return TeamUIMessages.HistoryPageCompareEditorInput_0;
+		}
 		return super.getOKButtonLabel();
 	}
 
 	@Override
 	public boolean okPressed() {
-		if (!isReplaceDialog())
+		if (!isReplaceDialog()) {
 			return super.okPressed();
+		}
 		try {
 			Object o = getSelectedEdition();
 			performReplace(((ICompareInput)o).getRight());

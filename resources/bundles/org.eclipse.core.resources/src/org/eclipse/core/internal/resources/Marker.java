@@ -16,11 +16,19 @@
 package org.eclipse.core.internal.resources;
 
 import java.text.DateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 import org.eclipse.core.internal.utils.Messages;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceStatus;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.osgi.util.NLS;
 
@@ -360,6 +368,25 @@ public class Marker extends PlatformObject implements IMarker {
 		Map<String, Object> attributes = info.getAttributes();
 		if (attributes != null) {
 			TreeMap<String, Object> tm = new TreeMap<>(attributes);
+			Object severity = tm.remove(SEVERITY);
+			if (severity instanceof Integer s) {
+				switch (s.intValue()) {
+				case SEVERITY_ERROR:
+					sb.append(", severity: ERROR(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+					break;
+				case SEVERITY_WARNING:
+					sb.append(", severity: WARNING(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+					break;
+				case SEVERITY_INFO:
+					sb.append(", severity: INFO(").append(s).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+					break;
+
+				default:
+					sb.append(", unknown severity: " + s); //$NON-NLS-1$
+					break;
+				}
+			}
+
 			Set<Entry<String, Object>> set = tm.entrySet();
 			if (!set.isEmpty()) {
 				sb.append(", attributes: ["); //$NON-NLS-1$

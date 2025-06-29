@@ -29,7 +29,6 @@ public class ToggleLinkingAction extends Action {
 		setDescription(TeamUIMessages.SynchronizeView_linkWithEditorDescription);
 		setToolTipText(TeamUIMessages.SynchronizeView_linkWithEditorTooltip);
 		setImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_LINK_WITH));
-		setDisabledImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_LINK_WITH_DISABLED));
 		setActionDefinitionId(IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR);
 		this.view = view;
 		setChecked(view.isLinkingEnabled());

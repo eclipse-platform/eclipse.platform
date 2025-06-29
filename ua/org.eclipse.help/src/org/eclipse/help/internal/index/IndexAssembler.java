@@ -211,8 +211,7 @@ public class IndexAssembler {
 	private static class NormalizeHandler extends ProcessorHandler {
 		@Override
 		public short handle(UAElement element, String id) {
-			if (element instanceof Topic) {
-				Topic topic = (Topic)element;
+			if (element instanceof Topic topic) {
 				String href = topic.getHref();
 				if (href != null) {
 					int index = id.indexOf('/', 1);
@@ -295,8 +294,7 @@ public class IndexAssembler {
 		 * used for sorting.
 		 */
 		private String getLabel(IUAElement element) {
-			if (element instanceof Topic) {
-				Topic topic = (Topic)element;
+			if (element instanceof Topic topic) {
 				if (topic.getLabel() == null) {
 					ITopic topic2 = HelpPlugin.getTocManager().getTopic(topic.getHref(), locale);
 					if (topic2 != null) {

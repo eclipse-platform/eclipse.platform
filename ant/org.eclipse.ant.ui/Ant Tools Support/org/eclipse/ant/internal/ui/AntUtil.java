@@ -362,7 +362,7 @@ public final class AntUtil {
 	private static String expandVariableString(String variableString, String invalidMessage) throws CoreException {
 		String expandedString = VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(variableString);
 		if (expandedString == null || expandedString.length() == 0) {
-			String msg = MessageFormat.format(invalidMessage, new Object[] { variableString });
+			String msg = MessageFormat.format(invalidMessage, variableString);
 			throw new CoreException(new Status(IStatus.ERROR, IAntUIConstants.PLUGIN_ID, 0, msg, null));
 		}
 
@@ -517,11 +517,10 @@ public final class AntUtil {
 			}
 		}
 		catch (PartInitException e) {
-			AntUIPlugin.log(MessageFormat.format(AntUIModelMessages.AntUtil_0, new Object[] { fileResource.getLocation().toOSString() }), e);
+			AntUIPlugin.log(MessageFormat.format(AntUIModelMessages.AntUtil_0, fileResource.getLocation().toOSString()), e);
 		}
 
-		if (editorPart instanceof AntEditor) {
-			AntEditor editor = (AntEditor) editorPart;
+		if (editorPart instanceof AntEditor editor) {
 			if (node.getImportNode() != null) {
 				AntModel model = editor.getAntModel();
 				AntProjectNode project = model.getProjectNode();

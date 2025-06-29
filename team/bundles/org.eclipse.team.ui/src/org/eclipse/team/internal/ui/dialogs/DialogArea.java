@@ -52,8 +52,9 @@ public abstract class DialogArea {
 	 * <code>null</code> if none is selected.
 	 */
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
-		if (!listeners.contains(listener))
+		if (!listeners.contains(listener)) {
 			listeners.add(listener);
+		}
 	}
 	/**
 	 * Remove the provided listener from the receiver.

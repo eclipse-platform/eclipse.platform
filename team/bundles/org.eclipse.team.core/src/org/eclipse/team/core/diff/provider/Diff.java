@@ -89,10 +89,10 @@ public abstract class Diff implements IDiff {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
-		if (obj instanceof Diff) {
-			Diff other = (Diff) obj;
+		}
+		if (obj instanceof Diff other) {
 			return other.getPath().equals(getPath()) && getStatus() == other.getStatus();
 		}
 		return false;

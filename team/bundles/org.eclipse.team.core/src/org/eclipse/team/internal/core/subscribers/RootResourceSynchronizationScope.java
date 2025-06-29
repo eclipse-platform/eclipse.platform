@@ -76,8 +76,7 @@ public class RootResourceSynchronizationScope extends AbstractResourceMappingSco
 	@Override
 	public ResourceTraversal[] getTraversals(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
-		if (object instanceof IResource) {
-			IResource resource = (IResource) object;
+		if (object instanceof IResource resource) {
 			return new ResourceTraversal[] {new ResourceTraversal(new IResource[] { resource }, IResource.DEPTH_INFINITE, IResource.NONE)};
 		}
 		return null;

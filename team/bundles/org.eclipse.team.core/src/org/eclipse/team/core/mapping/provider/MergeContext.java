@@ -133,8 +133,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		Policy.checkCanceled(monitor);
 		IResource resource = getDiffTree().getResource(diff);
 		if (resource.getType() != IResource.FILE) {
-			if (diff instanceof IThreeWayDiff) {
-				IThreeWayDiff twd = (IThreeWayDiff) diff;
+			if (diff instanceof IThreeWayDiff twd) {
 				if ((ignoreLocalChanges || getMergeType() == TWO_WAY)
 						&& resource.getType() == IResource.FOLDER
 						&& twd.getKind() == IDiff.ADD
@@ -153,8 +152,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			}
 			return Status.OK_STATUS;
 		}
-		if (diff instanceof IThreeWayDiff && !ignoreLocalChanges && getMergeType() == THREE_WAY) {
-			IThreeWayDiff twDelta = (IThreeWayDiff) diff;
+		if (diff instanceof IThreeWayDiff twDelta && !ignoreLocalChanges && getMergeType() == THREE_WAY) {
 			int direction = twDelta.getDirection();
 			if (direction == IThreeWayDiff.OUTGOING) {
 				// There's nothing to do so return OK
@@ -180,7 +178,8 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			if (remote == null || !getLocalFile(diff).exists()) {
 				// Nothing we can do so return a conflict status
 				// TODO: Should we handle the case where the local and remote have the same contents for a conflicting addition?
-				return new MergeStatus(TeamPlugin.ID, NLS.bind(Messages.MergeContext_1, new String[] { diff.getPath().toString() }), new IFile[] { getLocalFile(diff) });
+				return new MergeStatus(TeamPlugin.ID, NLS.bind(Messages.MergeContext_1, diff.getPath().toString()),
+						new IFile[] { getLocalFile(diff) });
 			}
 			// We have a conflict, a local, base and remote so we can do
 			// a three-way merge
@@ -210,18 +209,20 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			IResourceDiff localDiff = (IResourceDiff)diff.getLocalChange();
 			IResourceDiff remoteDiff = (IResourceDiff)diff.getRemoteChange();
 			IStorageMerger merger = getAdapter(IStorageMerger.class);
-			if (merger == null)
+			if (merger == null) {
 				merger = DelegatingStorageMerger.getInstance();
+			}
 			IFile file = (IFile)localDiff.getResource();
 			monitor1.subTask(NLS.bind(Messages.MergeContext_5, file.getFullPath().toString()));
 			String osEncoding = file.getCharset();
 			IFileRevision ancestorState = localDiff.getBeforeState();
 			IFileRevision remoteState = remoteDiff.getAfterState();
 			IStorage ancestorStorage;
-			if (ancestorState != null)
+			if (ancestorState != null) {
 				ancestorStorage = ancestorState.getStorage(Policy.subMonitorFor(monitor1, 30));
-			else
+			} else {
 				ancestorStorage = null;
+			}
 			IStorage remoteStorage = remoteState.getStorage(Policy.subMonitorFor(monitor1, 30));
 			OutputStream os = getTempOutputStream(file);
 			try {
@@ -242,47 +243,53 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	}
 
 	private void disposeTempOutputStream(IFile file, OutputStream output) {
-		if (output instanceof ByteArrayOutputStream)
+		if (output instanceof ByteArrayOutputStream) {
 			return;
+		}
 		// We created a temporary file so we need to clean it up
 		try {
 			// First make sure the output stream is closed
 			// so that file deletion will not fail because of that.
-			if (output != null)
+			if (output != null) {
 				output.close();
+			}
 		} catch (IOException e) {
 			// Ignore
 		}
 		File tmpFile = getTempFile(file);
-		if (tmpFile.exists())
+		if (tmpFile.exists()) {
 			tmpFile.delete();
+		}
 	}
 
 	private OutputStream getTempOutputStream(IFile file) throws CoreException {
 		File tmpFile = getTempFile(file);
-		if (tmpFile.exists())
+		if (tmpFile.exists()) {
 			tmpFile.delete();
+		}
 		File parent = tmpFile.getParentFile();
-		if (!parent.exists())
+		if (!parent.exists()) {
 			parent.mkdirs();
+		}
 		try {
 			return new BufferedOutputStream(new FileOutputStream(tmpFile));
 		} catch (FileNotFoundException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind("Could not open temporary file {0} for writing: {1}", new String[] { tmpFile.getAbsolutePath(), e.getMessage() }), e); //$NON-NLS-1$
+			TeamPlugin.log(IStatus.ERROR, NLS.bind("Could not open temporary file {0} for writing: {1}", //$NON-NLS-1$
+					tmpFile.getAbsolutePath(), e.getMessage()), e);
 			return new ByteArrayOutputStream();
 		}
 	}
 
 	private InputStream getTempInputStream(IFile file, OutputStream output) throws CoreException {
-		if (output instanceof ByteArrayOutputStream) {
-			ByteArrayOutputStream baos = (ByteArrayOutputStream) output;
+		if (output instanceof ByteArrayOutputStream baos) {
 			return new ByteArrayInputStream(baos.toByteArray());
 		}
 		// We created a temporary file so we need to open an input stream on it
 		try {
 			// First make sure the output stream is closed
-			if (output != null)
+			if (output != null) {
 				output.close();
+			}
 		} catch (IOException e) {
 			// Ignore
 		}
@@ -290,7 +297,8 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		try {
 			return new BufferedInputStream(new FileInputStream(tmpFile));
 		} catch (FileNotFoundException e) {
-			throw new CoreException(new Status(IStatus.ERROR, TeamPlugin.ID, IMergeStatus.INTERNAL_ERROR, NLS.bind(Messages.MergeContext_4, new String[] { tmpFile.getAbsolutePath(), e.getMessage() }), e));
+			throw new CoreException(new Status(IStatus.ERROR, TeamPlugin.ID, IMergeStatus.INTERNAL_ERROR,
+					NLS.bind(Messages.MergeContext_4, tmpFile.getAbsolutePath(), e.getMessage()), e));
 		}
 	}
 
@@ -327,13 +335,15 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			remote = d.getAfterState();
 		} else {
 			d = (IResourceDiff)((IThreeWayDiff)diff).getRemoteChange();
-			if (d != null)
+			if (d != null) {
 				remote = d.getAfterState();
+			}
 		}
 		if (d == null) {
 			d = (IResourceDiff)((IThreeWayDiff)diff).getLocalChange();
-			if (d != null)
+			if (d != null) {
 				remote = d.getBeforeState();
+			}
 		}
 
 		// Only perform the replace if a local or remote change was found

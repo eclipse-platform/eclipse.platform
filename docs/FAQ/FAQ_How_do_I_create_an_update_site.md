@@ -12,7 +12,7 @@ First create a new plugin project
 
 New -> Plug-in Development -> Plug-in Project
 
-![Plugin.jpg](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/FAQ/images/Plugin.jpg)
+![Plugin.jpg](images/Plugin.jpg)
 
 You can select a template for creating your project or even just create a blank one in case you know how things work.
 
@@ -20,7 +20,7 @@ Now you have to create your feature project.
 
 New -> Plug-in Development -> Feature Project
 
-![Feature.jpg](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/FAQ/images/Feature.jpg)
+![Feature.jpg](images/Feature.jpg)
 
 Here is the point where you link your Plugin project with your Feature Project.
 
@@ -28,7 +28,7 @@ Open the feature.xml file on your Feature project.
 
 On plugins tab click on add and select your project then save the file.
 
-![Feature-plugin.jpg](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/FAQ/images/Feature-plugin.jpg)
+![Feature-plugin.jpg](images/Feature-plugin.jpg)
 
 The last piece is the Update site project. See below
 
@@ -39,7 +39,7 @@ To create it go to
 
 New -> Plug-in Development -> Update Site Project
 
-![Site.jpg](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/FAQ/images/Site.jpg)
+![Site.jpg](images/Site.jpg)
 
 Now we just have to link the Feature project with the Update site, and you're good to go.
 
@@ -47,7 +47,7 @@ To do that, open the site.xml file on your Site project.
 
 Add Feature -> Select your project.
 
-![Site-feature.jpg](https://raw.githubusercontent.com/eclipse-platform/eclipse.platform/master/docs/FAQ/images/Site-feature.jpg)
+![Site-feature.jpg](images/Site-feature.jpg)
 
 In case you want to add a category for your feature, just click on New Category,
 

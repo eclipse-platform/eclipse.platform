@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -128,7 +128,7 @@ public class AntPropertyNode extends AntTaskNode {
 
 	/**
 	 * Adds this property name and value as being created by this property node declaration.
-	 * 
+	 *
 	 * @param propertyName
 	 *            the name of the property
 	 * @param value

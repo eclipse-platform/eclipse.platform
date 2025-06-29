@@ -42,28 +42,34 @@ public class Policy {
 	 * @param monitor the progress monitor
 	 */
 	public static void checkCanceled(IProgressMonitor monitor) {
-		if (monitor != null && monitor.isCanceled())
+		if (monitor != null && monitor.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 	}
 	public static IProgressMonitor monitorFor(IProgressMonitor monitor) {
-		if (monitor == null)
+		if (monitor == null) {
 			return new NullProgressMonitor();
+		}
 		return monitor;
 	}
 
 	public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
-		if (monitor == null)
+		if (monitor == null) {
 			return new NullProgressMonitor();
-		if (monitor instanceof NullProgressMonitor)
+		}
+		if (monitor instanceof NullProgressMonitor) {
 			return monitor;
+		}
 		return SubMonitor.convert(monitor, ticks);
 	}
 
 	public static IProgressMonitor infiniteSubMonitorFor(IProgressMonitor monitor, int ticks) {
-		if (monitor == null)
+		if (monitor == null) {
 			return new NullProgressMonitor();
-		if (monitor instanceof NullProgressMonitor)
+		}
+		if (monitor instanceof NullProgressMonitor) {
 			return monitor;
+		}
 		return new InfiniteSubProgressMonitor(monitor, ticks);
 	}
 }

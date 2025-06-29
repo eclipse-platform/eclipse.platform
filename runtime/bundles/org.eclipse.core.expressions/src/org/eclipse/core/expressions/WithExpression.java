@@ -57,10 +57,10 @@ public class WithExpression extends CompositeExpression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof WithExpression))
+		if (!(object instanceof final WithExpression that)) {
 			return false;
+		}
 
-		final WithExpression that= (WithExpression)object;
 		return this.fVariable.equals(that.fVariable) && equals(this.fExpressions, that.fExpressions);
 	}
 

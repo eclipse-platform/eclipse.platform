@@ -25,7 +25,7 @@ import org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants;
 
 /**
  * Supports the Ant augment task, which over-writes (augments) existing nodes based on their id
- * 
+ *
  * @see "http://ant.apache.org/manual/Tasks/augment.html"
  */
 public class AntAugmentTaskNode extends AntTaskNode {

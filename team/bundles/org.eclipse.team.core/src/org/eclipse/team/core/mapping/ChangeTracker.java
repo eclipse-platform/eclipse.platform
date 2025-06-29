@@ -55,7 +55,9 @@ public abstract class ChangeTracker {
 		 */
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
-			if (disposed) return;
+			if (disposed) {
+				return;
+			}
 			IResourceDelta delta = event.getDelta();
 			IResourceDelta[] projectDeltas = delta.getAffectedChildren(IResourceDelta.ADDED | IResourceDelta.CHANGED | IResourceDelta.REMOVED);
 			for (IResourceDelta projectDelta : projectDeltas) {
@@ -65,8 +67,9 @@ public abstract class ChangeTracker {
 					if (isProjectOfInterest(project)) {
 						if (isProjectTracked(project)) {
 							IResource[] resources = getProjectChanges(project, projectDelta);
-							if (resources.length > 0)
+							if (resources.length > 0) {
 								handleChanges(project, resources);
+							}
 						} else {
 							trackProject(project);
 						}
@@ -83,7 +86,9 @@ public abstract class ChangeTracker {
 		 */
 		@Override
 		public void providerMapped(RepositoryProvider provider) {
-			if (disposed) return;
+			if (disposed) {
+				return;
+			}
 			if (isProjectOfInterest(provider.getProject())) {
 				trackProject(provider.getProject());
 			}
@@ -95,7 +100,9 @@ public abstract class ChangeTracker {
 		 */
 		@Override
 		public void providerUnmapped(IProject project) {
-			if (disposed) return;
+			if (disposed) {
+				return;
+			}
 			stopTrackingProject(project);
 		}
 	}
@@ -116,8 +123,9 @@ public abstract class ChangeTracker {
 		RepositoryProviderManager.getInstance().addListener(changeListener);
 		IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (IProject project : allProjects) {
-			if (isProjectOfInterest(project))
+			if (isProjectOfInterest(project)) {
 				trackProject(project);
+			}
 		}
 	}
 
@@ -288,8 +296,9 @@ public abstract class ChangeTracker {
 	 */
 	protected boolean isModified(IFile file) throws CoreException {
 		IChangeGroupingRequestor collector = getCollector(file.getProject());
-		if (collector != null)
+		if (collector != null) {
 			return collector.isModified(file);
+		}
 		return false;
 	}
 

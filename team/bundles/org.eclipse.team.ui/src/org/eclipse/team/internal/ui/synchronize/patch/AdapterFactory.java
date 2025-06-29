@@ -44,8 +44,9 @@ public class AdapterFactory implements IAdapterFactory {
 						.getHunkResult());
 			}
 		}
-		if (adapterType == IWorkbenchAdapter.class)
+		if (adapterType == IWorkbenchAdapter.class) {
 			return (T) modelAdapter;
+		}
 		if (adapterType == ISynchronizationCompareAdapter.class
 				&& adaptableObject instanceof PatchModelProvider) {
 			if (compareAdapter == null) {

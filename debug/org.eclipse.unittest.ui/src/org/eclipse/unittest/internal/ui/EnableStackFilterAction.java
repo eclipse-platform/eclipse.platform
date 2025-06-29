@@ -36,9 +36,7 @@ public class EnableStackFilterAction extends Action {
 		setDescription(Messages.EnableStackFilterAction_action_description);
 		setToolTipText(Messages.EnableStackFilterAction_action_tooltip);
 
-		setDisabledImageDescriptor(Images.getImageDescriptor("dlcl16/cfilter.png")); //$NON-NLS-1$
-		setHoverImageDescriptor(Images.getImageDescriptor("elcl16/cfilter.png")); //$NON-NLS-1$
-		setImageDescriptor(Images.getImageDescriptor("elcl16/cfilter.png")); //$NON-NLS-1$
+		setImageDescriptor(Images.getImageDescriptor("elcl16/cfilter.svg")); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IUnitTestHelpContextIds.ENABLEFILTER_ACTION);
 
 		fView = view;

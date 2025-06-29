@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -29,7 +29,7 @@ public class AntProjectNodeProxy extends AntProjectNode {
 
 	/**
 	 * Creates a new project node with the given name and the given build file name.
-	 * 
+	 *
 	 * @param name
 	 *            the project's name or <code>null</code> if the project's name is not known. If this value is <code>null</code>, the file will be
 	 *            parsed the first time a value is requested that requires it.

@@ -262,8 +262,7 @@ public class RangeDifference {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof RangeDifference) {
-			RangeDifference other = (RangeDifference) obj;
+		if (obj instanceof RangeDifference other) {
 			return this.kind == other.kind
 				&& this.leftStart == other.leftStart
 				&& this.leftLength == other.leftLength
@@ -318,8 +317,9 @@ public class RangeDifference {
 		buf.append(", "); //$NON-NLS-1$
 
 		buf.append("Left: " + toRangeString(this.leftStart, this.leftLength) + " Right: " + toRangeString(this.rightStart, this.rightLength)); //$NON-NLS-1$ //$NON-NLS-2$
-		if (this.ancestorLength > 0 || this.ancestorStart > 0)
+		if (this.ancestorLength > 0 || this.ancestorStart > 0) {
 			buf.append(" Ancestor: " + toRangeString(this.ancestorStart, this.ancestorLength)); //$NON-NLS-1$
+		}
 
 		buf.append("}"); //$NON-NLS-1$
 		return buf.toString();

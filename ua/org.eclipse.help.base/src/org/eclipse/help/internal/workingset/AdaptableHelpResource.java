@@ -38,8 +38,9 @@ public abstract class AdaptableHelpResource
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IHelpResource.class)
+		if (adapter == IHelpResource.class) {
 			return (T) element;
+		}
 		return null;
 	}
 
@@ -65,14 +66,15 @@ public abstract class AdaptableHelpResource
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (this == object)
+		if (this == object) {
 			return true;
-		else if (object instanceof AdaptableHelpResource)
+		} else if (object instanceof AdaptableHelpResource) {
 			return (element == ((AdaptableHelpResource) object).element);
-		else if (object instanceof IHelpResource)
+		} else if (object instanceof IHelpResource) {
 			return element == object;
-		else
+		} else {
 			return false;
+		}
 	}
 
 	/**
@@ -82,8 +84,9 @@ public abstract class AdaptableHelpResource
 	 */
 	@Override
 	public int hashCode() {
-		if (element == null)
+		if (element == null) {
 			return -1;
+		}
 		return element.hashCode();
 	}
 

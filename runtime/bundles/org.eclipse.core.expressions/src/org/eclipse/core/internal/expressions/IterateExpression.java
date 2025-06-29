@@ -159,8 +159,9 @@ public class IterateExpression extends CompositeExpression {
 						return fEmptyResult.booleanValue() ? EvaluationResult.TRUE : EvaluationResult.FALSE;
 					}
 				case 1:
-					if (col instanceof List)
+					if (col instanceof List) {
 						return evaluateAnd(new DefaultVariable(context, ((List<?>)col).get(0)));
+					}
 					//$FALL-THROUGH$
 				default:
 					IteratePool iter= new IteratePool(context, col.iterator());
@@ -170,13 +171,15 @@ public class IterateExpression extends CompositeExpression {
 						switch(fOperator) {
 							case OR:
 								result= result.or(evaluateAnd(iter));
-								if (result == EvaluationResult.TRUE)
+								if (result == EvaluationResult.TRUE) {
 									return result;
+								}
 								break;
 							case AND:
 								result= result.and(evaluateAnd(iter));
-								if (result != EvaluationResult.TRUE)
+								if (result != EvaluationResult.TRUE) {
 									return result;
+								}
 								break;
 						}
 					}
@@ -184,8 +187,9 @@ public class IterateExpression extends CompositeExpression {
 			}
 		} else {
 			IIterable<?> iterable= Expressions.getAsIIterable(var, this);
-			if (iterable == null)
+			if (iterable == null) {
 				return EvaluationResult.NOT_LOADED;
+			}
 			int count= 0;
 			IteratePool iter= new IteratePool(context, iterable.iterator());
 			EvaluationResult result= fOperator == AND ? EvaluationResult.TRUE : EvaluationResult.FALSE;
@@ -195,13 +199,15 @@ public class IterateExpression extends CompositeExpression {
 				switch(fOperator) {
 					case OR:
 						result= result.or(evaluateAnd(iter));
-						if (result == EvaluationResult.TRUE)
+						if (result == EvaluationResult.TRUE) {
 							return result;
+						}
 						break;
 					case AND:
 						result= result.and(evaluateAnd(iter));
-						if (result != EvaluationResult.TRUE)
+						if (result != EvaluationResult.TRUE) {
 							return result;
+						}
 						break;
 				}
 			}
@@ -226,10 +232,10 @@ public class IterateExpression extends CompositeExpression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof IterateExpression))
+		if (!(object instanceof final IterateExpression that)) {
 			return false;
+		}
 
-		final IterateExpression that= (IterateExpression)object;
 		return (this.fOperator == that.fOperator) && equals(this.fExpressions, that.fExpressions);
 	}
 

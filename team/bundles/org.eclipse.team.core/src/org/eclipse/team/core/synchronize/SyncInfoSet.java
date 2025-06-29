@@ -570,7 +570,9 @@ public class SyncInfoSet {
 
 		// Ensure that the list of listeners is not changed while events are fired.
 		// Copy the listeners so that addition/removal is not blocked by event listeners
-		if(event.isEmpty() && ! event.isReset()) return;
+		if(event.isEmpty() && ! event.isReset()) {
+			return;
+		}
 		ISyncInfoSetChangeListener[] allListeners = getListeners();
 		// Fire the events using an ISafeRunnable
 		final ITeamStatus[] newErrors = event.getErrors();

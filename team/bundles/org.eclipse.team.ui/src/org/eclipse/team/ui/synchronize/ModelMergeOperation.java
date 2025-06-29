@@ -78,13 +78,16 @@ public abstract class ModelMergeOperation extends ModelOperation {
 			List<IStatus> notOK = new ArrayList<>();
 			for (ModelProvider provider : providers) {
 				IStatus status = validateMerge(provider, context, Policy.subMonitorFor(monitor, 100));
-				if (!status.isOK())
+				if (!status.isOK()) {
 					notOK.add(status);
+				}
 			}
-			if (notOK.isEmpty())
+			if (notOK.isEmpty()) {
 				return Status.OK_STATUS;
-			if (notOK.size() == 1)
+			}
+			if (notOK.size() == 1) {
 				return notOK.get(0);
+			}
 			return new MultiStatus(TeamUIPlugin.ID, 0, notOK.toArray(new IStatus[notOK.size()]), TeamUIMessages.ResourceMappingMergeOperation_3, null);
 		} finally {
 			monitor.done();
@@ -101,8 +104,9 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 */
 	private static IStatus validateMerge(ModelProvider provider, IMergeContext context, IProgressMonitor monitor) {
 		IResourceMappingMerger merger = getMerger(provider);
-		if (merger == null)
+		if (merger == null) {
 			return Status.OK_STATUS;
+		}
 		return merger.validateMerge(context, monitor);
 	}
 
@@ -226,10 +230,11 @@ public abstract class ModelMergeOperation extends ModelOperation {
 
 				@Override
 				protected void buttonPressed(int id) {
-					if (id == IDialogConstants.YES_ID)
+					if (id == IDialogConstants.YES_ID) {
 						super.buttonPressed(IDialogConstants.OK_ID);
-					else if (id == IDialogConstants.NO_ID)
+					} else if (id == IDialogConstants.NO_ID) {
 						super.buttonPressed(IDialogConstants.CANCEL_ID);
+					}
 					super.buttonPressed(id);
 				}
 			};
@@ -237,8 +242,9 @@ public abstract class ModelMergeOperation extends ModelOperation {
 			result[0] = code == 0;
 		};
 		getShell().getDisplay().syncExec(runnable);
-		if (result[0])
+		if (result[0]) {
 			handlePreviewRequest();
+		}
 	}
 
 	/**
@@ -279,8 +285,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 */
 	protected IStatus performMerge(IProgressMonitor monitor) throws CoreException {
 		ISynchronizationContext sc = getContext();
-		if (sc instanceof IMergeContext) {
-			IMergeContext context = (IMergeContext) sc;
+		if (sc instanceof IMergeContext context) {
 			final ModelProvider[] providers = sortByExtension(context.getScope().getModelProviders());
 			final IStatus[] result = new IStatus[] { Status.OK_STATUS };
 			context.run(monitor1 -> {
@@ -332,8 +337,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 */
 	protected IStatus performMerge(ModelProvider provider, IProgressMonitor monitor) throws CoreException {
 		ISynchronizationContext sc = getContext();
-		if (sc instanceof IMergeContext) {
-			IMergeContext context = (IMergeContext) sc;
+		if (sc instanceof IMergeContext context) {
 			IResourceMappingMerger merger = getMerger(provider);
 			if (merger != null) {
 				IStatus status = merger.merge(context, monitor);
@@ -365,8 +369,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 		return tree.hasMatchingDiffs(ResourcesPlugin.getWorkspace().getRoot().getFullPath(), new FastDiffFilter() {
 			@Override
 			public boolean select(IDiff node) {
-				if (node instanceof IThreeWayDiff) {
-					IThreeWayDiff twd = (IThreeWayDiff) node;
+				if (node instanceof IThreeWayDiff twd) {
 					int direction = twd.getDirection();
 					if (direction == IThreeWayDiff.INCOMING || direction == IThreeWayDiff.CONFLICTING) {
 						return true;

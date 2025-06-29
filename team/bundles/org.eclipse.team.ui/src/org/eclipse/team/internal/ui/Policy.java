@@ -42,8 +42,9 @@ public class Policy {
 	public static ResourceBundle getActionBundle() {
 		// thread safety
 		ResourceBundle tmpBundle = actionBundle;
-		if (tmpBundle != null)
+		if (tmpBundle != null) {
 			return tmpBundle;
+		}
 		return actionBundle = ResourceBundle.getBundle(ACTION_BUNDLE);
 	}
 
@@ -68,16 +69,19 @@ public class Policy {
 	}
 
 	public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
-		if (monitor == null)
+		if (monitor == null) {
 			return new NullProgressMonitor();
-		if (monitor instanceof NullProgressMonitor)
+		}
+		if (monitor instanceof NullProgressMonitor) {
 			return monitor;
+		}
 		return SubMonitor.convert(monitor, ticks);
 	}
 
 	public static IProgressMonitor monitorFor(IProgressMonitor monitor) {
-		if (monitor == null)
+		if (monitor == null) {
 			return new NullProgressMonitor();
+		}
 		return monitor;
 	}
 }

@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *******************************************************************************/
@@ -67,8 +67,9 @@ public class SortedMap implements FactoryObject {
 		Object result = index >= 0 && values != null ? values[index] : null;
 
 		int i = fSet.internalAdd(key, false);
-		if (i >= 0)
+		if (i >= 0) {
 			internalPut(i, val);
+		}
 		return result;
 	}
 
@@ -102,21 +103,25 @@ public class SortedMap implements FactoryObject {
 
 	public Object get(Object key) {
 		Object[] values = fHolder.getValues();
-		if (values == null)
+		if (values == null) {
 			return null;
+		}
 		int i = fSet.indexOf(key);
-		if (i >= 0)
+		if (i >= 0) {
 			return values[i];
+		}
 		return null;
 	}
 
 	public Object getIdentity(Object key) {
 		Object[] values = fHolder.getValues();
-		if (values == null)
+		if (values == null) {
 			return null;
+		}
 		int i = fSet.indexOfIdentity(key);
-		if (i >= 0)
+		if (i >= 0) {
 			return values[i];
+		}
 		return null;
 	}
 
@@ -126,8 +131,9 @@ public class SortedMap implements FactoryObject {
 
 	public Object[] values() {
 		Object[] values = fHolder.getValues();
-		if (values == null)
+		if (values == null) {
 			return new Object[0];
+		}
 		return values;
 	}
 
@@ -149,16 +155,18 @@ public class SortedMap implements FactoryObject {
 		@Override
 		public boolean hasNext() {
 			Object[] array = SortedMap.this.fHolder.getKeys();
-			if (array == null)
+			if (array == null) {
 				return false;
+			}
 			return fIndex + 1 < array.length;
 		}
 
 		@Override
 		public Object next() {
 			Object[] array = SortedMap.this.fHolder.getKeys();
-			if (array == null)
+			if (array == null) {
 				throw new IllegalStateException(AntDTDUtilMessages.SortedMap_next___called_for_empty_array_1);
+			}
 			return array[++fIndex];
 		}
 
@@ -173,8 +181,7 @@ public class SortedMap implements FactoryObject {
 	public void remove(int i) {
 		Object[] values = fHolder.getValues();
 		if (values == null) {
-			throw new IllegalArgumentException(MessageFormat.format(AntDTDUtilMessages.SortedMap_remove__0___in_empty_map_2, new Object[] {
-					Integer.toString(i) }));
+			throw new IllegalArgumentException(MessageFormat.format(AntDTDUtilMessages.SortedMap_remove__0___in_empty_map_2, Integer.toString(i)));
 		}
 		fSet.remove(i);
 		Object[] tmp = new Object[values.length - 1];
@@ -185,8 +192,9 @@ public class SortedMap implements FactoryObject {
 
 	public Object remove(Object obj) {
 		Object[] values = fHolder.getValues();
-		if (values == null)
+		if (values == null) {
 			return null;
+		}
 		int i = fSet.indexOf(obj);
 		if (i >= 0) {
 			Object tmp = values[i];
@@ -199,8 +207,9 @@ public class SortedMap implements FactoryObject {
 
 	public Object removeIdentity(Object obj) {
 		Object[] values = fHolder.getValues();
-		if (values == null)
+		if (values == null) {
 			return null;
+		}
 		int i = fSet.indexOfIdentity(obj);
 		if (i >= 0) {
 			Object tmp = values[i];
@@ -224,8 +233,9 @@ public class SortedMap implements FactoryObject {
 		Object[] keys = fHolder.getKeys();
 		Object[] othervalues = other.fHolder.getValues();
 		Object[] otherkeys = other.fHolder.getKeys();
-		if (otherkeys == null)
+		if (otherkeys == null) {
 			return;
+		}
 		if (keys == null) {
 			fHolder.setKeys(otherkeys);
 			fHolder.setValues(othervalues);

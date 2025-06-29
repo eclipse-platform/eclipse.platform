@@ -13,12 +13,23 @@
  *******************************************************************************/
 package org.eclipse.compare.internal.core.patch;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.compare.internal.core.Messages;
-import org.eclipse.compare.patch.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.compare.patch.IFilePatchResult;
+import org.eclipse.compare.patch.IHunk;
+import org.eclipse.compare.patch.PatchConfiguration;
+import org.eclipse.compare.patch.ReaderCreator;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 public class FileDiffResult implements IFilePatchResult {
@@ -132,8 +143,9 @@ public class FileDiffResult implements IFilePatchResult {
 	}
 
 	protected boolean isEmpty(ReaderCreator content) {
-		if (content == null)
+		if (content == null) {
 			return true;
+		}
 		return LineReader.load(content, false).isEmpty();
 	}
 
@@ -170,19 +182,22 @@ public class FileDiffResult implements IFilePatchResult {
 	 * @return true if this Diff or any of its children Hunks have a problem, false if it doesn't
 	 */
 	public boolean containsProblems() {
-		if (this.fDiffProblem)
+		if (this.fDiffProblem) {
 			return true;
+		}
 		for (HunkResult result : this.fHunkResults.values()) {
-			if (!result.isOK())
+			if (!result.isOK()) {
 				return true;
+			}
 		}
 		return false;
 	}
 
 	public String getLabel() {
 		String label= getTargetPath().toString();
-		if (this.fDiffProblem)
-			return NLS.bind(Messages.FileDiffResult_2, new String[] {label, this.fErrorMessage});
+		if (this.fDiffProblem) {
+			return NLS.bind(Messages.FileDiffResult_2, label, this.fErrorMessage);
+		}
 		return label;
 	}
 
@@ -206,8 +221,9 @@ public class FileDiffResult implements IFilePatchResult {
 	 * @return the fuzz factor or <code>-1</code> if no hunks could be matched
 	 */
 	public int calculateFuzz(List<String> lines, IProgressMonitor monitor) {
-		if (monitor == null)
+		if (monitor == null) {
 			monitor = new NullProgressMonitor();
+		}
 		this.fBeforeLines = new ArrayList<>(lines);
 		// TODO: What about deletions?
 		if (this.fDiff.getDiffType(getConfiguration().isReversed()) == FilePatch2.ADDITION) {
@@ -221,13 +237,14 @@ public class FileDiffResult implements IFilePatchResult {
 		IHunk[] hunks = this.fDiff.getHunks();
 		for (int j = 0; j < hunks.length; j++) {
 			Hunk h = (Hunk) hunks[j];
-			monitor.subTask(NLS.bind(Messages.FileDiffResult_3, new String[] {name, Integer.toString(j + 1)}));
+			monitor.subTask(NLS.bind(Messages.FileDiffResult_3, name, Integer.toString(j + 1)));
 			HunkResult result = getHunkResult(h);
 			result.setShift(shift);
 			int fuzz = result.calculateFuzz(lines, monitor);
 			shift = result.getShift();
-			if (fuzz > highestFuzz)
+			if (fuzz > highestFuzz) {
 				highestFuzz = fuzz;
+			}
 			monitor.worked(1);
 		}
 		this.fAfterLines = lines;
@@ -252,8 +269,9 @@ public class FileDiffResult implements IFilePatchResult {
 		IHunk[] hunks = this.fDiff.getHunks();
 		for (IHunk hunk : hunks) {
 			HunkResult result = this.fHunkResults.get(hunk);
-			if (result != null && !result.isOK())
+			if (result != null && !result.isOK()) {
 				failedHunks.add(result.getHunk());
+			}
 		}
 		return failedHunks;
 	}
@@ -285,13 +303,13 @@ public class FileDiffResult implements IFilePatchResult {
 
 	@Override
 	public InputStream getOriginalContents() {
-		String contents = LineReader.createString(isPreserveLineDelimeters(), getBeforeLines());
+		String contents = LineReader.createString(isPreserveLineDelimiters(), getBeforeLines());
 		return asInputStream(contents, getCharset());
 	}
 
 	@Override
 	public InputStream getPatchedContents() {
-		String contents = LineReader.createString(isPreserveLineDelimeters(), getLines());
+		String contents = LineReader.createString(isPreserveLineDelimiters(), getLines());
 		return asInputStream(contents, getCharset());
 	}
 
@@ -300,7 +318,7 @@ public class FileDiffResult implements IFilePatchResult {
 		return this.charset;
 	}
 
-	public boolean isPreserveLineDelimeters() {
+	public boolean isPreserveLineDelimiters() {
 		return false;
 	}
 

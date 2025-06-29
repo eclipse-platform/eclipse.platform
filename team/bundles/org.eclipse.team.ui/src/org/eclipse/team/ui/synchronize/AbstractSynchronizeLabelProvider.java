@@ -85,8 +85,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	 */
 	protected Image decorateImage(Image base, Object element) {
 		Image decoratedImage;
-		if (element instanceof ICompareInput) {
-			ICompareInput ci = (ICompareInput) element;
+		if (element instanceof ICompareInput ci) {
 			decoratedImage = getCompareImage(base, ci.getKind());
 		} else {
 			IDiff node = getDiff(element);
@@ -106,8 +105,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	protected Image getDelegateImage(Object element) {
 		ILabelProvider modelLabelProvider = getDelegateLabelProvider();
 		Image base = modelLabelProvider.getImage(internalGetElement(element));
-		if (base == null && element instanceof ModelProvider) {
-			ModelProvider mp = (ModelProvider) element;
+		if (base == null && element instanceof ModelProvider mp) {
 			base = getImageManager().getImage(getImageDescriptor(mp));
 		}
 		return base;
@@ -120,8 +118,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	}
 
 	private Object internalGetElement(Object element) {
-		if (element instanceof TreePath) {
-			TreePath tp = (TreePath) element;
+		if (element instanceof TreePath tp) {
 			element = tp.getLastSegment();
 		}
 		return element;
@@ -165,8 +162,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		element = internalGetElement(element);
 		String base = modelLabelProvider.getText(element);
 		if (base == null || base.length() == 0) {
-			if (element instanceof ModelProvider) {
-				ModelProvider provider = (ModelProvider) element;
+			if (element instanceof ModelProvider provider) {
 				base = Utils.getLabel(provider);
 			}
 		}
@@ -187,7 +183,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		IDiff node = getDiff(element);
 		if (node != null && node.getKind() != IDiff.NO_CHANGE) {
 			String syncKindString = node.toDiffString();
-			return NLS.bind(TeamUIMessages.AbstractSynchronizationLabelProvider_0, new String[] { base, syncKindString });
+			return NLS.bind(TeamUIMessages.AbstractSynchronizationLabelProvider_0, base, syncKindString);
 		}
 		return base;
 	}
@@ -199,8 +195,9 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 
 	@Override
 	public void dispose() {
-		if (localImageManager != null)
+		if (localImageManager != null) {
 			localImageManager.dispose();
+		}
 	}
 
 	@Override
@@ -252,8 +249,9 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	}
 
 	private Image addOverlays(Image base, Object element) {
-		if (!isIncludeOverlays())
+		if (!isIncludeOverlays()) {
 			return base;
+		}
 
 		ImageDescriptor[] overlayImages = new ImageDescriptor[4];
 		boolean hasOverlay = false;
@@ -350,8 +348,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	private boolean isConflicting(Object element) {
 		IDiff node = getDiff(element);
 		if (node != null) {
-			if (node instanceof IThreeWayDiff) {
-				IThreeWayDiff twd = (IThreeWayDiff) node;
+			if (node instanceof IThreeWayDiff twd) {
 				return twd.getDirection() == IThreeWayDiff.CONFLICTING;
 			}
 		}
@@ -396,16 +393,14 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	}
 
 	private ISynchronizePageConfiguration getConfiguration() {
-		if (this instanceof SynchronizationLabelProvider) {
-			SynchronizationLabelProvider slp = (SynchronizationLabelProvider) this;
+		if (this instanceof SynchronizationLabelProvider slp) {
 			return (ISynchronizePageConfiguration)slp.getExtensionSite().getExtensionStateModel().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_PAGE_CONFIGURATION);
 		}
 		return null;
 	}
 
 	private ISynchronizationContext getContext() {
-		if (this instanceof SynchronizationLabelProvider) {
-			SynchronizationLabelProvider slp = (SynchronizationLabelProvider) this;
+		if (this instanceof SynchronizationLabelProvider slp) {
 			return slp.getContext();
 		}
 		return null;

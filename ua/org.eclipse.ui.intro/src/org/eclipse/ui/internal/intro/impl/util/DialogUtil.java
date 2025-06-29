@@ -40,11 +40,13 @@ public class DialogUtil {
 	public static void displayCoreErrorDialog(Shell parent, String msg,
 			CoreException coreEx) {
 
-		if (msg == null)
+		if (msg == null) {
 			msg = coreEx.getMessage();
+		}
 		String title = Messages.MessageDialog_errorTitle;
-		if (parent == null)
+		if (parent == null) {
 			parent = getActiveShell();
+		}
 		IStatus status = coreEx.getStatus();
 		ErrorDialog.openError(parent, title, msg, status);
 		Log.error(msg, coreEx);
@@ -56,8 +58,9 @@ public class DialogUtil {
 	public static void displayErrorMessage(Shell parent, String msg,
 			Throwable ex) {
 		String title = Messages.MessageDialog_errorTitle;
-		if (parent == null)
+		if (parent == null) {
 			parent = getActiveShell();
+		}
 		MessageDialog.openError(parent, title, msg);
 		Log.error(msg, ex);
 	}
@@ -70,10 +73,12 @@ public class DialogUtil {
 	 */
 	public static void displayErrorMessage(Shell parent, String msg,
 			Object[] variables, Throwable ex) {
-		if (msg == null)
+		if (msg == null) {
 			return;
-		if (variables != null)
+		}
+		if (variables != null) {
 			msg = NLS.bind(msg, variables);
+		}
 		displayErrorMessage(parent, msg, ex);
 	}
 
@@ -84,8 +89,9 @@ public class DialogUtil {
 	 */
 	public static void displayWarningMessage(Shell parent, String msg) {
 		String title = Messages.MessageDialog_warningTitle;
-		if (parent == null)
+		if (parent == null) {
 			parent = getActiveShell();
+		}
 		MessageDialog.openWarning(parent, title, msg);
 		Log.warning(msg);
 	}
@@ -96,10 +102,12 @@ public class DialogUtil {
 	 */
 	public static void displayWarningMessage(Shell parent, String msg,
 			Object[] variables) {
-		if (msg == null)
+		if (msg == null) {
 			return;
-		if (variables != null)
+		}
+		if (variables != null) {
 			msg = NLS.bind(msg, variables);
+		}
 		displayWarningMessage(parent, msg);
 	}
 
@@ -109,8 +117,9 @@ public class DialogUtil {
 	 */
 	public static void displayInfoMessage(Shell parent, String msg) {
 		String title = Messages.MessageDialog_infoTitle;
-		if (parent == null)
+		if (parent == null) {
 			parent = getActiveShell();
+		}
 		MessageDialog.openInformation(parent, title, msg);
 		Log.info(msg);
 
@@ -122,10 +131,12 @@ public class DialogUtil {
 	 */
 	public static void displayInfoMessage(Shell parent, String msg,
 			Object[] variables) {
-		if (msg == null)
+		if (msg == null) {
 			return;
-		if (variables != null)
+		}
+		if (variables != null) {
 			msg = NLS.bind(msg, variables);
+		}
 		displayInfoMessage(parent, msg);
 	}
 
@@ -139,8 +150,9 @@ public class DialogUtil {
 	public static Shell getActiveShell() {
 		Display display = getCurrentDisplay();
 		Shell activeShell = display.getActiveShell();
-		if (activeShell == null)
+		if (activeShell == null) {
 			return getActiveWorkbenchWindow().getShell();
+		}
 		return activeShell;
 	}
 
@@ -149,8 +161,9 @@ public class DialogUtil {
 	 */
 	public static Display getCurrentDisplay() {
 		Display display = Display.getCurrent();
-		if (display != null)
+		if (display != null) {
 			return display;
+		}
 		return Display.getDefault();
 	}
 

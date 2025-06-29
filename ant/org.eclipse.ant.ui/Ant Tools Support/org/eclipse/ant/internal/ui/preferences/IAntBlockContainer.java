@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -20,7 +20,7 @@ public interface IAntBlockContainer {
 
 	/**
 	 * Sets the error message for the container. May be <code>null</code> to remove the error message.
-	 * 
+	 *
 	 * @param message
 	 *            A string error message or <code>null</code>
 	 */
@@ -28,7 +28,7 @@ public interface IAntBlockContainer {
 
 	/**
 	 * Sets the message for the container. May be <code>null</code> to remove the message.
-	 * 
+	 *
 	 * @param message
 	 *            A string message or <code>null</code>
 	 */
@@ -36,12 +36,12 @@ public interface IAntBlockContainer {
 
 	/**
 	 * Creates and returns a properly configured push button with the supplied label
-	 * 
+	 *
 	 * @param parent
 	 *            The composite parent of the button
 	 * @param label
 	 *            The button label
-	 * 
+	 *
 	 * @return button the created button
 	 */
 	public Button createPushButton(Composite parent, String label);

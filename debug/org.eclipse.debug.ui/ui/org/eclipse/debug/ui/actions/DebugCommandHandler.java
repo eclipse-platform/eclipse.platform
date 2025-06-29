@@ -164,13 +164,11 @@ public abstract class DebugCommandHandler extends AbstractHandler {
 		// window and update the current enabled target based on it
 		fCurrentEnabledTarget = null;
 
-		if (!(evaluationContext instanceof IEvaluationContext)) {
+		if (!(evaluationContext instanceof IEvaluationContext context)) {
 			return;
 		}
-		IEvaluationContext context = (IEvaluationContext) evaluationContext;
 		Object _window = context.getVariable(ISources.ACTIVE_WORKBENCH_WINDOW_NAME);
-		if (_window instanceof IWorkbenchWindow) {
-			IWorkbenchWindow window = (IWorkbenchWindow)_window;
+		if (_window instanceof IWorkbenchWindow window) {
 			fCurrentEnabledTarget = getEnabledTarget(window);
 		}
 	}
@@ -202,8 +200,7 @@ public abstract class DebugCommandHandler extends AbstractHandler {
 		fCurrentEnabledTarget = getEnabledTarget(window);
 
 		ISelection selection = getContextService(window).getActiveContext();
-		if (selection instanceof IStructuredSelection && isEnabled()) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss && isEnabled()) {
 			boolean enabledAfterExecute = execute(window, ss.toArray());
 
 			// enable/disable the action according to the command

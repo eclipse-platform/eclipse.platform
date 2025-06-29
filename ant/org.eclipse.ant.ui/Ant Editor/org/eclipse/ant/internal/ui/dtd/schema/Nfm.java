@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2005 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *******************************************************************************/
@@ -19,7 +19,7 @@ import org.eclipse.ant.internal.ui.dtd.util.FactoryObject;
 
 /**
  * Non-deterministic finite state machine.
- * 
+ *
  * @author Bob Foster
  */
 public class Nfm implements FactoryObject {
@@ -36,7 +36,7 @@ public class Nfm implements FactoryObject {
 
 	/**
 	 * Construct an nfm such that:
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * start  stop
@@ -46,7 +46,7 @@ public class Nfm implements FactoryObject {
 	 * +---+  +---+
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * In all pictures, boxes are NfmNodes.
 	 */
 	private static Nfm nfm(IAtom s) {
@@ -58,7 +58,7 @@ public class Nfm implements FactoryObject {
 
 	/**
 	 * Construct an nfm that "wraps" an existing nfm x such that:
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * start                            stop
@@ -90,7 +90,7 @@ public class Nfm implements FactoryObject {
 
 	/**
 	 * "Star" an existing nfm x.
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * start                            stop
@@ -103,7 +103,7 @@ public class Nfm implements FactoryObject {
 	 *   +------>-------------------------+
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * Frees x.
 	 */
 	public static Nfm getStar(Nfm x) {
@@ -118,7 +118,7 @@ public class Nfm implements FactoryObject {
 
 	/**
 	 * "Question" an existing nfm x: x =&gt; x?
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * start                            stop
@@ -130,7 +130,7 @@ public class Nfm implements FactoryObject {
 	 *   +---------------->---------------+
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * Frees x.
 	 */
 	public static Nfm getQuestion(Nfm x) {
@@ -143,7 +143,7 @@ public class Nfm implements FactoryObject {
 
 	/**
 	 * "Plus" an existing nfm x -&gt; x+
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * start                            stop
@@ -155,7 +155,7 @@ public class Nfm implements FactoryObject {
 	 *             +-----<------+
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * Frees x.
 	 */
 	public static Nfm getPlus(Nfm x) {
@@ -168,7 +168,7 @@ public class Nfm implements FactoryObject {
 
 	/**
 	 * "Or" two existing nfms x,y -&gt; x|y
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * start                            stop
@@ -182,7 +182,7 @@ public class Nfm implements FactoryObject {
 	 *        +---------+  +---------+
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * Frees x and y.
 	 */
 	public static Nfm getOr(Nfm x, Nfm y) {
@@ -198,10 +198,10 @@ public class Nfm implements FactoryObject {
 
 	/**
 	 * "Comma" two existing nfms x,y -&gt; x,y
-	 * 
+	 *
 	 * <p>
 	 * Re-uses x so that x.stop is first transformed to y.start and then x.stop is reset to y.stop. This is as efficient as possible.
-	 * 
+	 *
 	 * <pre>
 	 * {@code
 	 * x start      former x stop   x stop
@@ -211,7 +211,7 @@ public class Nfm implements FactoryObject {
 	 * +---------+  +----------+  +--------+
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * Frees y, returns x modified.
 	 */
 	public static Nfm getComma(Nfm x, Nfm y) {
@@ -227,10 +227,12 @@ public class Nfm implements FactoryObject {
 	 * "{min,*}" an existing nfm x -&gt; x[0],x[1],...,x[min-1],x[min]* Frees x.
 	 */
 	public static Nfm getUnbounded(Nfm x, int min) {
-		if (min == 0)
+		if (min == 0) {
 			return getStar(x);
-		if (min == 1)
+		}
+		if (min == 1) {
 			return getPlus(x);
+		}
 		Nfm last1 = nfm(x), last2 = nfm(x);
 		for (int i = 2; i < min; i++) {
 			last1 = getComma(last1, last2);
@@ -245,32 +247,34 @@ public class Nfm implements FactoryObject {
 	 * "{min,max}" an existing nfm x -&gt; x[0],x[1],...,x[min-1],x[min]?,...,x[max-1]? Frees or returns x.
 	 */
 	public static Nfm getMinMax(Nfm x, int min, int max) {
-		if (max == Integer.MAX_VALUE)
+		if (max == Integer.MAX_VALUE) {
 			return getUnbounded(x, min);
+		}
 		if (max == 0) {
 			free(x);
 			return nfm((IAtom) null);
 		}
 		if (max == 1) {
-			if (min == 0)
+			if (min == 0) {
 				return getQuestion(x);
+			}
 			return x;
 		}
 		Nfm last = null;
 		int i = 0;
 		for (; i < min; i++) {
-			if (last == null)
+			if (last == null) {
 				last = nfm(x);
-			else {
+			} else {
 				Nfm tmp = nfm(x);
 				last = getComma(last, tmp);
 				free(tmp);
 			}
 		}
 		for (; i < max; i++) {
-			if (last == null)
+			if (last == null) {
 				last = getQuestion(x);
-			else {
+			} else {
 				Nfm tmp = getQuestion(x);
 				last = getComma(last, tmp);
 				free(tmp);
@@ -300,8 +304,9 @@ public class Nfm implements FactoryObject {
 
 	private static Nfm free() {
 		Nfm nfm = (Nfm) fFactory.getFree();
-		if (nfm == null)
+		if (nfm == null) {
 			return new Nfm();
+		}
 		return nfm;
 	}
 

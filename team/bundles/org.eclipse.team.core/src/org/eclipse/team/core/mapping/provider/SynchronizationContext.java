@@ -101,8 +101,9 @@ public abstract class SynchronizationContext extends PlatformObject implements I
 			refresh(getScope().getTraversals(), IResource.NONE, Policy.subMonitorFor(monitor, 50));
 		} else {
 			ResourceTraversal[] traversals = manager.refresh(mappings, Policy.subMonitorFor(monitor, 50));
-			if (traversals.length > 0)
+			if (traversals.length > 0) {
 				refresh(traversals, IResource.NONE, Policy.subMonitorFor(monitor, 50));
+			}
 		}
 		monitor.done();
 	}

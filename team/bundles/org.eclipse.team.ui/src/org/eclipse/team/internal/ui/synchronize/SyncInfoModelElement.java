@@ -217,8 +217,7 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 	}
 
 	private static String getEncoding(IResource local) {
-		if (local instanceof IEncodedStorage) {
-			IEncodedStorage es = (IEncodedStorage) local;
+		if (local instanceof IEncodedStorage es) {
 			try {
 				return es.getCharset();
 			} catch (CoreException e) {

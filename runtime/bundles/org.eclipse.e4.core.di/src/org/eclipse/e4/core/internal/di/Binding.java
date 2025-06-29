@@ -61,8 +61,9 @@ public class Binding implements IBinding {
 	}
 
 	public Class<?> getImplementationClass() {
-		if (implementationClazz != null)
+		if (implementationClazz != null) {
 			return implementationClazz;
+		}
 		return clazz;
 	}
 }

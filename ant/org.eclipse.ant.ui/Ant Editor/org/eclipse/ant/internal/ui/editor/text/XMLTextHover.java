@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -89,11 +89,10 @@ public class XMLTextHover implements ITextHover, ITextHoverExtension, IInformati
 	@Override
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
 
-		if (!(textViewer instanceof ISourceViewer)) {
+		if (!(textViewer instanceof ISourceViewer sourceViewer)) {
 			return null;
 		}
 
-		ISourceViewer sourceViewer = (ISourceViewer) textViewer;
 		IAnnotationModel model = sourceViewer.getAnnotationModel();
 
 		if (model != null) {
@@ -238,8 +237,9 @@ public class XMLTextHover implements ITextHover, ITextHoverExtension, IInformati
 			while (pos >= 0) {
 				c = document.getChar(pos);
 				if (c != '.' && c != '-' && c != '/' && c != '\\' && c != ' ' && c != ')' && c != '(' && c != ':'
-						&& !Character.isJavaIdentifierPart(c) && pos != offset)
+						&& !Character.isJavaIdentifierPart(c) && pos != offset) {
 					break;
+				}
 				--pos;
 			}
 
@@ -251,8 +251,9 @@ public class XMLTextHover implements ITextHover, ITextHoverExtension, IInformati
 			while (pos < length) {
 				c = document.getChar(pos);
 				if (c != '.' && c != '-' && c != '/' && c != '\\' && c != ' ' && c != ')' && c != '(' && c != ':'
-						&& !Character.isJavaIdentifierPart(c))
+						&& !Character.isJavaIdentifierPart(c)) {
 					break;
+				}
 				if (c == '/' && (document.getLength() - 1) > (pos + 1) && document.getChar(pos + 1) == '>') {
 					// e.g. <name/>
 					break;
@@ -337,7 +338,7 @@ public class XMLTextHover implements ITextHover, ITextHoverExtension, IInformati
 
 	/**
 	 * Returns the stack frame in which to search for properties, or <code>null</code> if none.
-	 * 
+	 *
 	 * @return the stack frame in which to search for properties, or <code>null</code> if none
 	 */
 	private AntStackFrame getFrame() {

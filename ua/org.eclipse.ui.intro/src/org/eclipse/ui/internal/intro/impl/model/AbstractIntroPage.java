@@ -155,23 +155,26 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 		// load shared-style attribure. This is needed in the XML and in the
 		// XHTML cases. Default is to include shared style.
 		this.sharedStyle = getAttribute(element, ATT_SHARED_STYLE);
-		if (sharedStyle == null)
+		if (sharedStyle == null) {
 			sharedStyle = "true"; //$NON-NLS-1$
+		}
 		url = getAttribute(element, ATT_URL);
-		if (url == null)
+		if (url == null) {
 			// if we do not have a URL attribute, then we have dynamic content.
 			isDynamic = true;
-		else
+		} else {
 			// check the url/standby-url attributes and update accordingly.
 			url = ModelUtil.resolveURL(base, url, bundle);
+		}
 
 	}
 
 	@Override
 	public void setParent(AbstractIntroElement parent) {
 		super.setParent(parent);
-		if (content == null)
+		if (content == null) {
 			init(element, getBundle(), initialBase);
+		}
 	}
 
 	/**
@@ -233,13 +236,15 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 		if (title == null) {
 			// there should only be one title child per page. safe to cast.
 			IntroPageTitle[] titles = (IntroPageTitle[]) getChildrenOfType(AbstractIntroElement.PAGE_TITLE);
-			if (titles.length > 0)
+			if (titles.length > 0) {
 				title = titles[0];
+			}
 		}
 
-		if (title == null)
+		if (title == null) {
 			// still null. no title.
 			return null;
+		}
 		return title.getTitle();
 	}
 
@@ -272,9 +277,10 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 		// call get children first to resolve includes and populate styles
 		// vector. Resolving children will initialize the style vectors.
 		getChildren();
-		if (styles == null)
+		if (styles == null) {
 			// style vector is still null because page does not have styles.
 			return new String[0];
+		}
 		String[] stylesArray = new String[styles.size()];
 		styles.copyInto(stylesArray);
 		return stylesArray;
@@ -304,18 +310,22 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * in the list.
 	 */
 	protected void addStyle(String style) {
-		if (!initStyles(style))
+		if (!initStyles(style)) {
 			return;
-		if (styles.contains(style))
+		}
+		if (styles.contains(style)) {
 			return;
+		}
 		styles.add(style);
 	}
 
 	public void insertStyle(String style, int location) {
-		if (!initStyles(style))
+		if (!initStyles(style)) {
 			return;
-		if (styles.contains(style))
+		}
+		if (styles.contains(style)) {
 			return;
+		}
 		styles.add(location, style);
 	}
 
@@ -326,10 +336,12 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * in the list.
 	 */
 	protected void addAltStyle(String altStyle, Bundle bundle) {
-		if (!initAltStyles(altStyle))
+		if (!initAltStyles(altStyle)) {
 			return;
-		if (altStyles.containsKey(altStyle))
+		}
+		if (altStyles.containsKey(altStyle)) {
 			return;
+		}
 		altStyles.put(altStyle, bundle);
 	}
 
@@ -338,40 +350,48 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Util method to add given styles to the list.
 	 */
 	protected void addStyles(String[] styles) {
-		if (styles == null)
+		if (styles == null) {
 			return;
-		for (int i = 0; i < styles.length; i++)
+		}
+		for (int i = 0; i < styles.length; i++) {
 			addStyle(styles[i]);
+		}
 	}
 
 	/**
 	 * Util method to add map of altstyles to list.
 	 */
 	protected void addAltStyles(Map<String, Bundle> altStyles) {
-		if (altStyles == null)
+		if (altStyles == null) {
 			return;
-		if (this.altStyles == null)
+		}
+		if (this.altStyles == null) {
 			// delay creation until needed.
 			this.altStyles = new Hashtable<>();
+		}
 		this.altStyles.putAll(altStyles);
 	}
 
 
 	private boolean initStyles(String style) {
-		if (style == null)
+		if (style == null) {
 			return false;
-		if (this.styles == null)
+		}
+		if (this.styles == null) {
 			// delay creation until needed.
 			this.styles = new Vector<>();
+		}
 		return true;
 	}
 
 	private boolean initAltStyles(String style) {
-		if (style == null)
+		if (style == null) {
 			return false;
-		if (this.altStyles == null)
+		}
+		if (this.altStyles == null) {
 			// delay creation until needed.
 			this.altStyles = new Hashtable<>();
+		}
 		return true;
 	}
 
@@ -391,10 +411,11 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	@Override
 	protected void resolveChildren() {
 		// flag would be set
-		if (isXHTMLPage)
+		if (isXHTMLPage) {
 			resolvePage();
-		else
+		} else {
 			super.resolveChildren();
+		}
 	}
 
 
@@ -417,8 +438,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 				child = new IntroPageTitle(childElement, bundle);
 			}
 		}
-		if (child != null)
+		if (child != null) {
 			return child;
+		}
 		return super.getModelChild(childElement, bundle, base);
 	}
 
@@ -479,9 +501,10 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 			// make sure to use correct base.
 			init(element, getBundle(), initialBase);
 			super.loadChildren();
-		} else
+		} else {
 			// load the first page with correct id, from content xml file.
 			loadXMLContent(dom);
+		}
 	}
 
 	/**
@@ -515,15 +538,16 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 				filteredFrom = getAttribute(element,
 					AbstractBaseIntroElement.ATT_FILTERED_FROM);
 				sharedStyle = getAttribute(element, ATT_SHARED_STYLE);
-				if (sharedStyle == null)
+				if (sharedStyle == null) {
 					sharedStyle = "true"; //$NON-NLS-1$
+				}
 				foundMatchingPage = true;
 			}
 		}
-		if (foundMatchingPage)
+		if (foundMatchingPage) {
 			// now do children loading as usual.
 			super.loadChildren();
-		else {
+		} else {
 			// page was not found in content file. Perform load actions, and log
 			// fact. init the children vector.
 			children = new Vector<>();
@@ -563,8 +587,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 */
 	public Document getDocument() {
 		// we only need to load children here.
-		if (!loaded)
+		if (!loaded) {
 			loadChildren();
+		}
 		return dom;
 	}
 
@@ -578,8 +603,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 		// we need to force loading of children since we need to determine
 		// content type. Load the children without resolving (for performance),
 		// this will set the XHTML flag at the page level.
-		if (!loaded)
+		if (!loaded) {
 			loadChildren();
+		}
 		return isXHTMLPage;
 	}
 
@@ -595,8 +621,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * legacy model.
 	 */
 	public Element findDomChild(String id, String localElementName) {
-		if (!loaded)
+		if (!loaded) {
 			loadChildren();
+		}
 		// using getElementById is tricky and we need to have intro XHTML
 		// modules to properly use this method.
 		return ModelUtil.getElementById(dom, id, localElementName);
@@ -637,8 +664,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 		IntroPartPresentation presentation = modelRoot.getPresentation();
 		String [] styles = presentation!=null?presentation.getImplementationStyles():null;
 		if (styles != null && injectSharedStyle()) {
-			for (int i=0; i<styles.length; i++)
+			for (int i=0; i<styles.length; i++) {
 				ModelUtil.insertStyle(dom, styles[i]);
+			}
 		}
 
 		// filter the content
@@ -707,12 +735,14 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 		IntroModelRoot targetModelRoot = (IntroModelRoot) getParentPage()
 			.getParent();
 		String targetConfigID = include.getConfigId();
-		if (targetConfigID != null)
+		if (targetConfigID != null) {
 			targetModelRoot = ExtensionPointManager.getInst().getModel(
 				targetConfigID);
-		if (targetModelRoot == null)
+		}
+		if (targetModelRoot == null) {
 			// if the target config was not found, skip this include.
 			return null;
+		}
 		return findDOMTarget(targetModelRoot, path);
 
 	}
@@ -734,9 +764,10 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 		// path must be pageId/anchorID in the case of of XHTML pages.
 		// pages.
 		String[] pathSegments = path.split("/"); //$NON-NLS-1$
-		if (pathSegments.length != 2)
+		if (pathSegments.length != 2) {
 			// path does not have correct format. Return empty results.
 			return results;
+		}
 
 		// save to cast.
 		AbstractIntroPage targetPage = (AbstractIntroPage) model.findChild(
@@ -745,8 +776,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 		if (targetPage != null) {
 			results[0] = targetPage;
 			Element targetElement = targetPage.findDomChild(pathSegments[1]);
-			if (targetElement != null)
+			if (targetElement != null) {
 				results[1] = targetElement;
+			}
 		}
 		return results;
 	}
@@ -773,10 +805,12 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 			clone.title = clonedTitle;
 		}
 		// styles are safe for a shallow copy.
-		if (styles != null)
+		if (styles != null) {
 			clone.styles = new Vector<>(styles);
-		if (altStyles != null)
+		}
+		if (altStyles != null) {
 			clone.altStyles = new Hashtable<>(altStyles);
+		}
 		return clone;
 	}
 
@@ -820,8 +854,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 
 
 	public String getUnmangledId() {
-		if (isIFramePage())
+		if (isIFramePage()) {
 			return originalId;
+		}
 		return id;
 	}
 
@@ -830,8 +865,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Set the url of the embedded IFrame, if this page is an IFrame page.
 	 */
 	public void setIFrameURL(String url) {
-		if (!isIFramePage())
+		if (!isIFramePage()) {
 			return;
+		}
 		this.iframe.setIFrameURL(url);
 	}
 
@@ -839,8 +875,9 @@ public abstract class AbstractIntroPage extends AbstractIntroContainer {
 	 * Returns the url of the embedded IFrame, if this page is an IFrame page.
 	 */
 	public String getIFrameURL() {
-		if (!isIFramePage())
+		if (!isIFramePage()) {
 			return null;
+		}
 		return this.iframe.getIFrameURL();
 	}
 

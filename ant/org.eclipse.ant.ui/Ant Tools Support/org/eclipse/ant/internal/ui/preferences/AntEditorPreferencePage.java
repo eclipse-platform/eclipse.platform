@@ -722,10 +722,11 @@ public class AntEditorPreferencePage extends AbstractAntEditorPreferencePage {
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if ("org.eclipse.ui.preferencePages.GeneralTextEditor".equals(e.text)) //$NON-NLS-1$
+				if ("org.eclipse.ui.preferencePages.GeneralTextEditor".equals(e.text)) { //$NON-NLS-1$
 					PreferencesUtil.createPreferenceDialogOn(link.getShell(), e.text, null, null);
-				else if ("org.eclipse.ui.preferencePages.ColorsAndFonts".equals(e.text)) //$NON-NLS-1$
+				} else if ("org.eclipse.ui.preferencePages.ColorsAndFonts".equals(e.text)) { //$NON-NLS-1$
 					PreferencesUtil.createPreferenceDialogOn(link.getShell(), e.text, null, "selectFont:org.eclipse.jface.textfont"); //$NON-NLS-1$
+				}
 			}
 		});
 		String linktooltip = AntPreferencesMessages.AntEditorPreferencePage_3;

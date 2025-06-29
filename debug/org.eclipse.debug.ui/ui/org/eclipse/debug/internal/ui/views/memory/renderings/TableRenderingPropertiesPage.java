@@ -55,8 +55,9 @@ public class TableRenderingPropertiesPage extends PropertyPage implements
 			composite.setLayoutData(comositeSpec);
 
 			String label = rendering.getLabel();
-			if (label.startsWith("&&")) //$NON-NLS-1$
+			if (label.startsWith("&&")) { //$NON-NLS-1$
 				label = label.replaceFirst("&&", "&");  //$NON-NLS-1$//$NON-NLS-2$
+			}
 			addProperty(composite, DebugUIMessages.TableRenderingPropertiesPage_1, label);
 
 			MemoryByte[] bytes = rendering.getSelectedAsBytes();
@@ -80,8 +81,9 @@ public class TableRenderingPropertiesPage extends PropertyPage implements
 
 				boolean endianessKnown = bytes[0].isEndianessKnown();
 				int endianess = RenderingsUtil.ENDIANESS_UNKNOWN;
-				if (endianessKnown)
+				if (endianessKnown) {
 					endianess = bytes[0].isBigEndian()?RenderingsUtil.BIG_ENDIAN:RenderingsUtil.LITTLE_ENDIAN;
+				}
 
 				boolean allBytesKnown = bytes[0].isHistoryKnown();
 				boolean allBytesUnchanged = bytes[0].isChanged()?false:true;
@@ -96,28 +98,34 @@ public class TableRenderingPropertiesPage extends PropertyPage implements
 						if (endianessKnown)
 						{
 							int byteEndianess = bytes[i].isBigEndian()?RenderingsUtil.BIG_ENDIAN:RenderingsUtil.LITTLE_ENDIAN;
-							if (endianess != RenderingsUtil.ENDIANESS_UNKNOWN && endianess != byteEndianess)
+							if (endianess != RenderingsUtil.ENDIANESS_UNKNOWN && endianess != byteEndianess) {
 								endianess = RenderingsUtil.ENDIANESS_UNKNOWN;
+							}
 						}
 
-						if (!bytes[i].isHistoryKnown())
+						if (!bytes[i].isHistoryKnown()) {
 							allBytesKnown = false;
-						if (bytes[i].isChanged())
+						}
+						if (bytes[i].isChanged()) {
 							allBytesUnchanged = false;
+						}
 
-						if (!bytes[i].isReadable())
+						if (!bytes[i].isReadable()) {
 							allBytesReadable = false;
+						}
 
-						if (!bytes[i].isWritable())
+						if (!bytes[i].isWritable()) {
 							allBytesWritable = false;
+						}
 					}
 				}
 
 				boolean isChanged = allBytesKnown && !allBytesUnchanged;
-				if (allBytesKnown)
+				if (allBytesKnown) {
 					addProperty(composite, DebugUIMessages.TableRenderingPropertiesPage_9, String.valueOf(isChanged));
-				else
+				} else {
 					addProperty(composite, DebugUIMessages.TableRenderingPropertiesPage_10, DebugUIMessages.TableRenderingPropertiesPage_11);
+				}
 
 				String dataEndian = DebugUIMessages.TableRenderingPropertiesPage_12;
 				if (endianessKnown)
@@ -137,10 +145,9 @@ public class TableRenderingPropertiesPage extends PropertyPage implements
 				addProperty(composite, DebugUIMessages.TableRenderingPropertiesPage_16, dataEndian);
 
 
-				if (rendering instanceof AbstractIntegerRendering)
+				if (rendering instanceof AbstractIntegerRendering intRendering)
 				{
 
-					AbstractIntegerRendering intRendering = (AbstractIntegerRendering)rendering;
 					String displayEndian = DebugUIMessages.TableRenderingPropertiesPage_17;
 					endianess = intRendering.getDisplayEndianess();
 
@@ -152,10 +159,11 @@ public class TableRenderingPropertiesPage extends PropertyPage implements
 						displayEndian = DebugUIMessages.TableRenderingPropertiesPage_19;
 						break;
 					default:
-						if (endianessKnown)
+						if (endianessKnown) {
 							displayEndian = dataEndian;
-						else
+						} else {
 							displayEndian = DebugUIMessages.TableRenderingPropertiesPage_20;
+						}
 						break;
 					}
 					addProperty(composite, DebugUIMessages.TableRenderingPropertiesPage_21, displayEndian);

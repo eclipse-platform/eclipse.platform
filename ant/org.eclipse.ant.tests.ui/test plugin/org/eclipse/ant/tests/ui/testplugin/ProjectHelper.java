@@ -7,7 +7,7 @@
  *  https://www.eclipse.org/legal/epl-2.0/
  *
  *  SPDX-License-Identifier: EPL-2.0
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -141,9 +141,9 @@ public class ProjectHelper {
 
 	/**
 	 * Creates two launch configurations one standard one and one for a separate VM
-	 * 
+	 *
 	 * @throws Exception
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	public static void createLaunchConfigurationForBoth(String launchConfigName) throws Exception {
@@ -153,7 +153,7 @@ public class ProjectHelper {
 
 	/**
 	 * Creates a shared launch configuration for launching Ant in a separate VM with the given name.
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	public static void createLaunchConfigurationForSeparateVM(String launchConfigName, String buildFileName) throws Exception {
@@ -179,9 +179,9 @@ public class ProjectHelper {
 
 	/**
 	 * Sets the workspace default VM on the given working copy
-	 * 
+	 *
 	 * @param config
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	@SuppressWarnings("deprecation")
@@ -202,7 +202,7 @@ public class ProjectHelper {
 
 	/**
 	 * Creates a launch configuration with the given name in the given location
-	 * 
+	 *
 	 * @return the handle to the new launch configuration
 	 */
 	public static ILaunchConfiguration createLaunchConfiguration(String launchConfigName, String path) throws CoreException {

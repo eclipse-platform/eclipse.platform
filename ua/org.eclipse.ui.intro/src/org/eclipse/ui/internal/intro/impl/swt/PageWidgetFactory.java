@@ -107,8 +107,9 @@ public class PageWidgetFactory {
 			AbstractIntroElement element) {
 		// check if this element is filtered, and if yes, do not create it.
 		boolean isFiltered = getFilterState(element);
-		if (isFiltered)
+		if (isFiltered) {
 			return;
+		}
 
 		Control c = null;
 		switch (element.getType()) {
@@ -118,12 +119,14 @@ public class PageWidgetFactory {
 			updateLayoutData(c, element);
 			// c must be a composite.
 			Composite newParent = (Composite) c;
-			if (c instanceof Section)
+			if (c instanceof Section) {
 				// client is a composite also.
 				newParent = (Composite) ((Section) newParent).getClient();
+			}
 			AbstractIntroElement[] children = group.getChildren();
-			for (int i = 0; i < children.length; i++)
+			for (int i = 0; i < children.length; i++) {
 				createIntroElement(newParent, children[i]);
+			}
 			break;
 		case AbstractIntroElement.LINK:
 			IntroLink link = (IntroLink) element;
@@ -138,25 +141,28 @@ public class PageWidgetFactory {
 		case AbstractIntroElement.IMAGE:
 			IntroImage image = (IntroImage) element;
 			c = createImage(parent, image);
-			if (c!=null)
+			if (c!=null) {
 				updateLayoutData(c, element);
+			}
 			break;
 		case AbstractIntroElement.HTML:
 			IntroHTML html = (IntroHTML) element;
 			if (html.isInlined()) {
 				IntroText htmlText = html.getIntroText();
-				if (htmlText != null)
+				if (htmlText != null) {
 					c = createText(parent, htmlText);
-				else {
+				} else {
 					IntroImage htmlImage = html.getIntroImage();
-					if (htmlImage != null)
+					if (htmlImage != null) {
 						c = createImage(parent, htmlImage);
+					}
 				}
 			} else {
 				// embedded HTML, so we can show it from a link.
 				String embddedLink = html.getSrc();
-				if (embddedLink == null)
+				if (embddedLink == null) {
 					break;
+				}
 				String linkText = StringUtil.concat(
 						"<p><a href=\"http://org.eclipse.ui.intro/openBrowser?url=", //$NON-NLS-1$
 						embddedLink, "\">", //$NON-NLS-1$
@@ -164,8 +170,9 @@ public class PageWidgetFactory {
 				linkText = generateFormText(linkText);
 				c = createFormText(parent, linkText, null);
 			}
-			if (c != null)
+			if (c != null) {
 				updateLayoutData(c, element);
+			}
 			break;
 		case AbstractIntroElement.CONTENT_PROVIDER:
 			IntroContentProvider provider = (IntroContentProvider) element;
@@ -209,15 +216,19 @@ public class PageWidgetFactory {
 		Composite control = null;
 		if (description != null || label != null || expandable) {
 			int style = description != null ? Section.DESCRIPTION : SWT.NULL;
-			if (expandable)
+			if (expandable) {
 				style |= ExpandableComposite.TWISTIE | ExpandableComposite.FOCUS_TITLE | ExpandableComposite.CLIENT_INDENT;
-			if (expanded)
+			}
+			if (expanded) {
 				style |= ExpandableComposite.EXPANDED;
+			}
 			Section section = toolkit.createSection(parent, style);
-			if (label != null)
+			if (label != null) {
 				section.setText(label);
-			if (description != null)
+			}
+			if (description != null) {
 				section.setDescription(description);
+			}
 			colorControl(section, group);
 			client = toolkit.createComposite(section, SWT.WRAP);
 			section.setClient(client);
@@ -312,13 +323,15 @@ public class PageWidgetFactory {
 		boolean isBold = styleManager.isBold(text);
 		// formatted case. If text is alredy formatted, the bold property is
 		// ignored.
-		if (text.isFormatted())
+		if (text.isFormatted()) {
 			return createFormText(parent, generateFormText(text.getText()), fg);
+		}
 
 		// non formatted case.
-		if (isBold)
+		if (isBold) {
 			return createFormText(parent, generateBoldFormText(text.getText()),
 				fg);
+		}
 		return createText(parent, StringUtil.normalizeWhiteSpace(text.getText()), fg);
 	}
 
@@ -331,16 +344,18 @@ public class PageWidgetFactory {
 			Log.error(e.getMessage(), e);
 			return createText(parent, text, fg);
 		}
-		if (fg != null)
+		if (fg != null) {
 			formText.setForeground(fg);
+		}
 		return formText;
 	}
 
 
 	private Control createText(Composite parent, String text, Color fg) {
 		Label label = toolkit.createLabel(parent, text, SWT.WRAP);
-		if (fg != null)
+		if (fg != null) {
 			label.setForeground(fg);
+		}
 		return label;
 	}
 
@@ -352,8 +367,9 @@ public class PageWidgetFactory {
 		if (imageFile != null) {
 			ilabel = toolkit.createLabel(parent, null, SWT.LEFT);
 			ilabel.setImage(imageFile);
-			if (image.getAlt() != null)
+			if (image.getAlt() != null) {
 				ilabel.setToolTipText(image.getAlt());
+			}
 		}
 		// for images, do not use default layout. Grab horizontal is not what we
 		// want.
@@ -382,10 +398,11 @@ public class PageWidgetFactory {
 
 		IIntroContentProvider providerClass = ContentProviderManager.getInst()
 			.getContentProvider(provider);
-		if (providerClass == null)
+		if (providerClass == null) {
 			// content provider never created before, create it.
 			providerClass = ContentProviderManager.getInst()
 				.createContentProvider(provider, site);
+		}
 
 		if (providerClass != null) {
 			try {
@@ -403,8 +420,9 @@ public class PageWidgetFactory {
 		if (providerClass == null) {
 			// we failed to create a provider class, create the embedded text.
 			IntroText text = provider.getIntroText();
-			if (text != null)
+			if (text != null) {
 				createText(container, text);
+			}
 		}
 		return container;
 	}
@@ -414,10 +432,11 @@ public class PageWidgetFactory {
 		Color fg = styleManager.getColor(toolkit, key);
 		//Composite l = toolkit.createCompositeSeparator(parent);
 		Composite l = new Composite(parent, SWT.NULL);
-		if (fg!=null)
+		if (fg!=null) {
 			l.setBackground(fg);
-		else
+		} else {
 			l.setBackground(toolkit.getColors().getColor(IFormColors.SEPARATOR));
+		}
 		TableWrapData td = new TableWrapData(TableWrapData.FILL,
 				TableWrapData.FILL);
 		td.grabHorizontal = true;
@@ -429,11 +448,13 @@ public class PageWidgetFactory {
 	private void colorControl(Control elementControl,
 			AbstractBaseIntroElement element) {
 		Color fg = styleManager.getColor(toolkit, element);
-		if (fg != null)
+		if (fg != null) {
 			elementControl.setForeground(fg);
+		}
 		Color bg = styleManager.getBackgrond(toolkit, element);
-		if (bg != null)
+		if (bg != null) {
 			elementControl.setBackground(bg);
+		}
 	}
 
 
@@ -446,9 +467,9 @@ public class PageWidgetFactory {
 	private String generateFormText(String text) {
 		StringBuilder sbuf = new StringBuilder();
 		sbuf.append("<form>"); //$NON-NLS-1$
-		if (text.startsWith("<p>")) //$NON-NLS-1$
+		if (text.startsWith("<p>")) { //$NON-NLS-1$
 			sbuf.append(text);
-		else {
+		} else {
 			sbuf.append("<p>"); //$NON-NLS-1$
 			sbuf.append(text);
 			sbuf.append("</p>"); //$NON-NLS-1$
@@ -477,8 +498,9 @@ public class PageWidgetFactory {
 	 * attribute.
 	 */
 	private boolean getFilterState(AbstractIntroElement element) {
-		if (element.isOfType(AbstractIntroElement.BASE_ELEMENT))
+		if (element.isOfType(AbstractIntroElement.BASE_ELEMENT)) {
 			return ((AbstractBaseIntroElement) element).isFiltered();
+		}
 		return false;
 	}
 

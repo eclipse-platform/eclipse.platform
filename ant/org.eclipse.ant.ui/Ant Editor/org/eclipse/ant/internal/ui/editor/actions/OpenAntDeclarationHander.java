@@ -22,7 +22,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Default handler to open / select the enclosing declaration of the selected Ant element in the Ant editor
- * 
+ *
  * @since 3.5.400
  */
 public class OpenAntDeclarationHander extends AbstractHandler {

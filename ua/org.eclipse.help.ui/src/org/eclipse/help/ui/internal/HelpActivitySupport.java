@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProduct;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.help.internal.HelpPlugin;
 import org.eclipse.help.internal.base.HelpBasePlugin;
@@ -42,9 +43,12 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 	private static final String SHOW_DISABLED_ACTIVITIES_ON = "on"; //$NON-NLS-1$
 //	private static final String SHOW_DISABLED_ACTIVITIES_ALWAYS = "always"; //$NON-NLS-1$
 
+	private static final String PREF_KEY_SYNC_SEL = "linkWithSelection"; //$NON-NLS-1$
+
 	private final IWorkbenchActivitySupport activitySupport;
 	private boolean userCanToggleFiltering;
 	private boolean filteringEnabled;
+	private boolean linkWithSelection;
 	private final ActivityDescriptor activityDescriptor;
 
 	static class ActivityDescriptor {
@@ -58,11 +62,13 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 
 		private void load() {
 			IConfigurationElement [] elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.help.base.activitySupport");//$NON-NLS-1$
-			if (elements.length==1 && elements[0].getName().equals("support")) //$NON-NLS-1$
+			if (elements.length==1 && elements[0].getName().equals("support")) { //$NON-NLS-1$
 				config = elements[0];
-			else if (elements.length>0) {
+			} else if (elements.length>0) {
 				IProduct product = Platform.getProduct();
-				if (product==null) return;
+				if (product==null) {
+					return;
+				}
 				String productId = product.getId();
 				for (int i=0; i<elements.length; i++) {
 					IConfigurationElement element = elements[i];
@@ -78,11 +84,13 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 			return children.length==1?children[0]:null;
 		}
 		public String getShowAllMessage() {
-			if (config==null)
+			if (config==null) {
 				return null;
+			}
 			IConfigurationElement child = getChild("showAllMessage"); //$NON-NLS-1$
-			if (child!=null)
+			if (child!=null) {
 				return child.getValue();
+			}
 			return null;
 		}
 		public boolean needsLiveHelp(boolean embedded) {
@@ -104,9 +112,9 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 						buffer.append(getActivityEditorValue(pluginId, className, embedded));
 						buffer.append(value.substring(loc+15));
 						documentMessage = buffer.toString();
-					}
-					else
+					} else {
 						documentMessage = value;
+					}
 				}
 			}
 			return documentMessage;
@@ -122,8 +130,9 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 		activitySupport = workbench.getActivitySupport();
 		activityDescriptor = new ActivityDescriptor();
 
+		IPreferencesService prefService = Platform.getPreferencesService();
 		String showDisabledActivities =
-			Platform.getPreferencesService().getString(HelpBasePlugin.PLUGIN_ID, PREF_KEY_SHOW_DISABLED_ACTIVITIES, "", null); //$NON-NLS-1$
+			prefService.getString(HelpBasePlugin.PLUGIN_ID, PREF_KEY_SHOW_DISABLED_ACTIVITIES, "", null); //$NON-NLS-1$
 		userCanToggleFiltering = SHOW_DISABLED_ACTIVITIES_OFF
 				.equalsIgnoreCase(showDisabledActivities)
 				|| SHOW_DISABLED_ACTIVITIES_ON
@@ -136,6 +145,8 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 				|| SHOW_DISABLED_ACTIVITIES_NEVER
 						.equalsIgnoreCase(showDisabledActivities);
 		filteringEnabled = filteringEnabled && isWorkbenchFiltering();
+
+		linkWithSelection = prefService.getBoolean(HelpBasePlugin.PLUGIN_ID, PREF_KEY_SYNC_SEL, true, null);
 	}
 
 	@Override
@@ -159,6 +170,22 @@ public class HelpActivitySupport implements IHelpActivitySupport {
 				prefs.flush();
 			} catch (BackingStoreException e) {
 			}
+		}
+	}
+
+	@Override
+	public boolean isLinkWithSelectionEnabled() {
+		return linkWithSelection;
+	}
+
+	@Override
+	public void setLinkWithSelection(boolean syncSel) {
+		this.linkWithSelection = syncSel;
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(HelpBasePlugin.PLUGIN_ID);
+		prefs.putBoolean(PREF_KEY_SYNC_SEL, syncSel);
+		try {
+			prefs.flush();
+		} catch (BackingStoreException e) {
 		}
 	}
 

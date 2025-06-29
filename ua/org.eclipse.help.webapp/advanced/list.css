@@ -13,7 +13,7 @@
  *******************************************************************************/
 
 BODY {
-	color:WindowText;
+	color:CanvasText;
 	font: <%=prefs.getViewFont()%>;
 	font-size: .875rem;
 	margin-top:5px;
@@ -25,7 +25,7 @@ BODY {
 
 A {
 	text-decoration:none; 
-	color:WindowText; 
+	color:CanvasText; 
 	padding:0px;
 	white-space: nowrap;
 }
@@ -85,7 +85,7 @@ TABLE {
 
 .unselectedMenuItem {
 	background:<%=prefs.getToolbarBackground()%>;
-	color:WindowText;
+	color:CanvasText;
 	padding-left:10px;
 	padding-right:10px;
 }

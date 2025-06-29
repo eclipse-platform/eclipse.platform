@@ -66,23 +66,25 @@ public class TocFragmentParser extends ResultParser {
 				if (name.equalsIgnoreCase(XMLHelper.ELEMENT_NUMERIC_PATH)) {
 					setLabel(""); //$NON-NLS-1$
 					properties.put(JSonHelper.PROPERTY_NAME, JSonHelper.NUMERIC_PATH);
-				}
-				else
+				} else {
 					properties.put(JSonHelper.PROPERTY_NAME, JSonHelper.TOPIC);
+				}
 
 				for (int i = 0; i < attrs.getLength(); i++) {
 					String qname = attrs.getQName(i);
 					String val = attrs.getValue(i);
 					if (qname.equals(XMLHelper.ATTR_ID)) {
-						if (parentId.length() > 0)
+						if (parentId.length() > 0) {
 							val = parentId + '$' + val;
+						}
 					}
 					properties.put(qname, val);
 				}
 			} else if (parentId.length() <= 0) {
 				for (int i = 0; i < attrs.getLength(); i++) {
-					if (attrs.getQName(i).equals(XMLHelper.ATTR_ID))
+					if (attrs.getQName(i).equals(XMLHelper.ATTR_ID)) {
 						parentId = attrs.getValue(i);
+					}
 				}
 			}
 		}
@@ -99,9 +101,9 @@ public class TocFragmentParser extends ResultParser {
 				if (name.equalsIgnoreCase(XMLHelper.ELEMENT_NUMERIC_PATH)) {
 					properties.setProperty("id", "0"); //$NON-NLS-1$ //$NON-NLS-2$
 					properties.setProperty("type", "topic"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				else
+				} else {
 					properties.setProperty("type", "toc"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 
 				ParseElement element = new ParseElement(properties);
 				items.add(element);

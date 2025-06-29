@@ -89,10 +89,12 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		urlInputButton.setSelection(inputType == InputType_URL);
 		urlCombo.setEnabled(inputType == InputType_URL);
 		// validate field
-		if (inputType == InputType_file)
+		if (inputType == InputType_file) {
 			updateFileEnablement();
-		if (inputType == InputType_URL)
+		}
+		if (inputType == InputType_URL) {
 			updateUrlEnablement();
+		}
 
 	}
 

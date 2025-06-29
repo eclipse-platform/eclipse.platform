@@ -17,7 +17,7 @@ import java.text.MessageFormat;
 
 /**
  * Helper class to format message strings.
- * 
+ *
  * @since 3.1
  */
 public class Messages {

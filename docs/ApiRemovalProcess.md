@@ -1,6 +1,6 @@
 # API removal process
 
-See [Eclipse Project Deprecation Policy](https://github.com/eclipse-platform/eclipse.platform/blob/master/docs/Eclipse_API_Central_Deprecation_Policy.md) for more information.
+See [Eclipse Project Deprecation Policy](Eclipse_API_Central_Deprecation_Policy.md) for more information.
 
 For new API planned removals use:
 
@@ -22,7 +22,7 @@ Example of a deprecation comment:
  * @noimplement
  * @deprecated This XXX (class/method/field) will be removed in a future release. Use XXX instead.
  */
-@Deprecated(forRemoval = true, since = "4.16")
+@Deprecated(forRemoval = true, since = "2025-06")
 ``` 
 * The PMC may decide to back out of an API removal
 * In general, removing a deprecated API does NOT cause the increase of the major version segment.

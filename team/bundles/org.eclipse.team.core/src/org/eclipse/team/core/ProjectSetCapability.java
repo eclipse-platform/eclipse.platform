@@ -247,8 +247,9 @@ public abstract class ProjectSetCapability {
 				existingProjects.add(eachProj);
 			}
 		}
-		if (existingProjects.isEmpty())
+		if (existingProjects.isEmpty()) {
 			return projects;
+		}
 
 		// Confirm the overwrite
 
@@ -256,10 +257,12 @@ public abstract class ProjectSetCapability {
 			context.confirmOverwrite(
 				existingProjects.toArray(
 					new IProject[existingProjects.size()]));
-		if (confirmed == null)
+		if (confirmed == null) {
 			return null;
-		if (existingProjects.size() == confirmed.length)
+		}
+		if (existingProjects.size() == confirmed.length) {
 			return projects;
+		}
 
 		// Return the amended list of projects to be loaded
 
@@ -267,8 +270,9 @@ public abstract class ProjectSetCapability {
 		result.addAll(Arrays.asList(projects));
 		result.removeAll(existingProjects);
 		for (IProject eachProj : confirmed) {
-			if (existingProjects.contains(eachProj))
+			if (existingProjects.contains(eachProj)) {
 				result.add(eachProj);
+			}
 		}
 		return result.toArray(new IProject[result.size()]);
 	}

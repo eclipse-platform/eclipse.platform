@@ -38,7 +38,9 @@ public class ExpandAllAction extends Action implements ISelectionChangedListener
 
 	protected void expandAllFromSelection() {
 		AbstractTreeViewer tree = viewer;
-		if (tree == null) return;
+		if (tree == null) {
+			return;
+		}
 		IStructuredSelection selection = tree.getStructuredSelection();
 		if(! selection.isEmpty()) {
 			Iterator elements = selection.iterator();
@@ -57,8 +59,7 @@ public class ExpandAllAction extends Action implements ISelectionChangedListener
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		ISelection selection = event.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection)selection;
+		if (selection instanceof IStructuredSelection ss) {
 			setEnabled(!ss.isEmpty());
 			return;
 		}

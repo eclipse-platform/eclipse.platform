@@ -55,8 +55,9 @@ public abstract class SaveableComparison extends Saveable {
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) throws CoreException {
-		if (!isDirty())
+		if (!isDirty()) {
 			return;
+		}
 		performSave(monitor);
 		setDirty(false);
 	}
@@ -67,8 +68,9 @@ public abstract class SaveableComparison extends Saveable {
 	 * if progress feedback is not required
 	 */
 	public void doRevert(IProgressMonitor monitor) {
-		if (!isDirty())
+		if (!isDirty()) {
 			return;
+		}
 		performRevert(monitor);
 		setDirty(false);
 	}

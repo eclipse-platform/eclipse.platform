@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -228,11 +228,13 @@ protected Control createContents(Composite parent){
 				if(!new File(home).exists()){
 					while(true){
 						int foo=home.lastIndexOf(java.io.File.separator, home.length());
-						if(foo==-1)
+						if(foo==-1) {
 							break;
+						}
 						home=home.substring(0, foo);
-						if(new File(home).exists())
+						if(new File(home).exists()) {
 							break;
+						}
 					}
 				}
 
@@ -268,8 +270,9 @@ protected Control createContents(Composite parent){
 				}
 
 				for (String foo : files) {
-					if(keys.length()!=0)
+					if(keys.length()!=0) {
 						keys=keys+","; //$NON-NLS-1$
+					}
 					keys=keys+dir+foo;
 				}
 				privateKeyText.setText(keys);
@@ -353,8 +356,9 @@ protected Control createContents(Composite parent){
 		keyCommentText.setLayoutData(gd);
 
 		keyCommentText.addModifyListener(e -> {
-			if(kpair==null)
+			if(kpair==null) {
 				return;
+			}
 			try{
 				ByteArrayOutputStream out=new ByteArrayOutputStream();
 				kpairComment = keyCommentText.getText();
@@ -571,19 +575,18 @@ protected Control createContents(Composite parent){
 					PassphrasePrompt prompt=null;
 					while(_kpair.isEncrypted()){
 						if(prompt==null){
-							prompt=new PassphrasePrompt(NLS.bind(
-									Messages.CVSSSH2PreferencePage_126, new String[] {pkey}));
+							prompt = new PassphrasePrompt(NLS.bind(Messages.CVSSSH2PreferencePage_126, pkey));
 						}
 						Display.getDefault().syncExec(prompt);
 						String passphrase=prompt.getPassphrase();
-						if(passphrase==null)
+						if(passphrase==null) {
 							break;
+						}
 						if(_kpair.decrypt(passphrase)){
 							break;
 						}
-						MessageDialog.openError(getShell(),
-								Messages.CVSSSH2PreferencePage_error, NLS.bind(
-										Messages.CVSSSH2PreferencePage_129, new String[] {pkey}));
+						MessageDialog.openError(getShell(), Messages.CVSSSH2PreferencePage_error,
+								NLS.bind(Messages.CVSSSH2PreferencePage_129, pkey));
 					}
 					if(_kpair.isEncrypted()){
 						return;
@@ -603,8 +606,9 @@ protected Control createContents(Composite parent){
 						byte[] buf=new byte[(int)f.length()];
 						while(i<buf.length){
 							int j=fis.read(buf, i, buf.length-i);
-							if(j<=0)
+							if(j<=0) {
 								break;
+							}
 							i+=j;
 						}
 						String pubkey=new String(buf);
@@ -650,8 +654,9 @@ protected Control createContents(Composite parent){
 		keyExport.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e){
-				if(kpair==null)
+				if(kpair==null) {
 					return;
+				}
 
 				setErrorMessage(null);
 
@@ -688,8 +693,7 @@ protected Control createContents(Composite parent){
 				}
 
 				if(user.length()==0||host.length()==0||port==-1){
-					setErrorMessage(NLS.bind(Messages.CVSSSH2PreferencePage_108,
-							new String[] {target[0]}));
+					setErrorMessage(NLS.bind(Messages.CVSSSH2PreferencePage_108, target[0]));
 					return;
 				}
 
@@ -720,8 +724,9 @@ protected Control createContents(Composite parent){
 		saveKeyPair.addSelectionListener(new SelectionAdapter(){
 			@Override
 	public void widgetSelected(SelectionEvent e){
-				if(kpair==null)
+				if(kpair==null) {
 					return;
+				}
 
 				String pass=keyPassphrase1Text.getText();
 				/*
@@ -744,9 +749,8 @@ protected Control createContents(Composite parent){
 				File _home=new File(home);
 
 				if(!_home.exists()){
-					if(!MessageDialog.openConfirm(getShell(),
-							Messages.CVSSSH2PreferencePage_confirmation, NLS.bind(
-									Messages.CVSSSH2PreferencePage_50, new String[] {home}))){
+					if (!MessageDialog.openConfirm(getShell(), Messages.CVSSSH2PreferencePage_confirmation,
+							NLS.bind(Messages.CVSSSH2PreferencePage_50, home))) {
 						return;
 					}
 					if(!_home.mkdirs()){
@@ -765,9 +769,8 @@ protected Control createContents(Composite parent){
 				}
 
 				if(new File(file).exists()){
-					if(!MessageDialog.openConfirm(getShell(),
-							Messages.CVSSSH2PreferencePage_confirmation, //
-							NLS.bind(Messages.CVSSSH2PreferencePage_53, new String[] {file}))){
+					if (!MessageDialog.openConfirm(getShell(), Messages.CVSSSH2PreferencePage_confirmation, //
+							NLS.bind(Messages.CVSSSH2PreferencePage_53, file))) {
 						return;
 					}
 				}
@@ -805,8 +808,9 @@ protected Control createContents(Composite parent){
 					if (!pkey.isAbsolute()) {
 						pkey = new java.io.File(home, p);
 					}
-					if(pkey.equals(mypkey))
+					if(pkey.equals(mypkey)) {
 						return;
+					}
 				}
 
 				if(dir.equals(home)){
@@ -814,8 +818,9 @@ protected Control createContents(Composite parent){
 				else{
 					dir+=java.io.File.separator;
 				}
-				if(pkeys.length()>0)
+				if(pkeys.length()>0) {
 					pkeys+=","; //$NON-NLS-1$
+				}
 				pkeys=pkeys+dir+fd.getFileName();
 				privateKeyText.setText(pkeys);
 			}
@@ -923,8 +928,9 @@ protected Control createContents(Composite parent){
 
 			@Override
 			public Object[] getElements(Object inputElement){
-				if(inputElement==null)
+				if(inputElement==null) {
 					return null;
+				}
 				return (Object[])inputElement;
 			}
 		});
@@ -1546,9 +1552,8 @@ public boolean performOk(){
 			String home=ssh2HomeText.getText();
 			File _home=new File(home);
 			if(!_home.exists()){
-				if(MessageDialog.openQuestion(getShell(),
-						Messages.CVSSSH2PreferencePage_question, NLS.bind(
-								Messages.CVSSSH2PreferencePage_99, new String[] {home}))){
+				if (MessageDialog.openQuestion(getShell(), Messages.CVSSSH2PreferencePage_question,
+						NLS.bind(Messages.CVSSSH2PreferencePage_99, home))) {
 					if(!(_home.mkdirs())){
 						setErrorMessage(Messages.CVSSSH2PreferencePage_100+home);
 						return false;

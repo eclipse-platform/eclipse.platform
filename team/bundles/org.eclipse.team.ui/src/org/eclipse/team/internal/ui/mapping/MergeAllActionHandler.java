@@ -89,8 +89,9 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		if (saveDirtyEditors() && promptToUpdate())
+		if (saveDirtyEditors() && promptToUpdate()) {
 			return super.execute(event);
+		}
 		return null;
 	}
 
@@ -157,15 +158,16 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 			return false;
 		}
 		final long count = tree.countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK) + tree.countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK);
-		if (count == 0)
+		if (count == 0) {
 			return false;
+		}
 		final boolean[] result = new boolean[] {true};
 		TeamUIPlugin.getStandardDisplay().syncExec(() -> {
 			String sizeString = Long.toString(count);
-			String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, new String[] { sizeString }) :
-				NLS.bind(TeamUIMessages.MergeAllActionHandler_2, new String[] { sizeString });
+			String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, sizeString)
+					: NLS.bind(TeamUIMessages.MergeAllActionHandler_2, sizeString);
 			result[0] = MessageDialog.openQuestion(getConfiguration().getSite().getShell(),
-					NLS.bind(TeamUIMessages.MergeAllActionHandler_3, new String[] { sizeString }), message);
+					NLS.bind(TeamUIMessages.MergeAllActionHandler_3, sizeString), message);
 		});
 		return result[0];
 	}

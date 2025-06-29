@@ -75,8 +75,7 @@ public class TeamStateDescription implements ITeamStateDescription {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof TeamStateDescription) {
-			TeamStateDescription dsd = (TeamStateDescription) obj;
+		if (obj instanceof TeamStateDescription dsd) {
 			if (dsd.getStateFlags() == state) {
 				if (haveSameProperties(this, dsd)) {
 					String[] properties = getPropertyNames();
@@ -109,8 +108,9 @@ public class TeamStateDescription implements ITeamStateDescription {
 					break;
 				}
 			}
-			if (!found)
+			if (!found) {
 				return false;
+			}
 		}
 		return true;
 	}

@@ -374,10 +374,11 @@ public class PreferencePageContainerDialog extends TrayDialog
 			String pageErrorMessage = currentPage.getErrorMessage();
 
 			// Adjust the font
-			if (pageMessage == null && pageErrorMessage == null)
+			if (pageMessage == null && pageErrorMessage == null) {
 				fMessageLabel.setFont(JFaceResources.getBannerFont());
-			else
+			} else {
 				fMessageLabel.setFont(JFaceResources.getDialogFont());
+			}
 
 			// Set the message and error message
 			if (pageMessage == null) {

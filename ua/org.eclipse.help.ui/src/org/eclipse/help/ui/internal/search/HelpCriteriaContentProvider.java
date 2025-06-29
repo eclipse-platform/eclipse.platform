@@ -47,8 +47,7 @@ public class HelpCriteriaContentProvider implements ITreeContentProvider {
 
 		@Override
 		public boolean equals(Object arg0) {
-			if (arg0 instanceof CriterionName) {
-				CriterionName other = (CriterionName) arg0;
+			if (arg0 instanceof CriterionName other) {
 				return other.id.equals(this.id);
 			}
 			return false;
@@ -87,8 +86,7 @@ public class HelpCriteriaContentProvider implements ITreeContentProvider {
 
 		@Override
 		public boolean equals(Object arg0) {
-			if (arg0 instanceof CriterionValue) {
-				CriterionValue other = (CriterionValue) arg0;
+			if (arg0 instanceof CriterionValue other) {
 				return other.id.equals(this.id) && parent.equals(other.parent);
 			}
 			return false;
@@ -109,16 +107,13 @@ public class HelpCriteriaContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof String[]) {
-			String[] names = (String[]) parentElement;
+		if (parentElement instanceof String[] names) {
 			CriterionName criterionNames[] = new  CriterionName[names.length];
 			for (int i = 0; i < names.length; i++) {
 				criterionNames[i] = new CriterionName(names[i], parentElement);
 			}
 			return criterionNames;
-		} else if (parentElement instanceof CriterionName) {
-			CriterionName parentCriterion = (CriterionName) parentElement;
-
+		} else if (parentElement instanceof CriterionName parentCriterion) {
 			String[] values = BaseHelpSystem.getWorkingSetManager().getCriterionValueIds(parentCriterion.getId());
 			CriterionValue[] criterionValues = new CriterionValue[values.length];
 			for (int i = 0; i < values.length; i++) {
@@ -136,8 +131,9 @@ public class HelpCriteriaContentProvider implements ITreeContentProvider {
 			return ((CriterionName) element).getParent();
 		} else if (element instanceof CriterionValue) {
 			return ((CriterionValue) element).getParent();
-		} else
-		return null;
+		} else {
+			return null;
+		}
 	}
 
 	@Override

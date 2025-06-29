@@ -50,9 +50,9 @@ public class StatusUtil {
 		}
 		return max;
 	}
-	
+
 	/*
-	 * Returns error-message / warning-message for a status. 
+	 * Returns error-message / warning-message for a status.
 	 * @return Array of size 2. Index 0 is the error message or <null>
 	 * if not an error. Index 1 the warning message or <null> if not a warning.
 	 */
@@ -66,7 +66,7 @@ public class StatusUtil {
 			return new String[] { null, null };
 		}
 	}
-	
+
 	/*
 	 * Applies the status to the status line of a dialog page.
 	 */
@@ -75,7 +75,7 @@ public class StatusUtil {
 		page.setErrorMessage(messages[0]);
 		page.setMessage(messages[1]);
 	}
-	
+
 	/*
 	 * Applies the status to a message line
 	 */

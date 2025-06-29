@@ -89,7 +89,9 @@ public abstract class ResourceVariantTree extends AbstractResourceVariantTree {
 	 * @return the bytes for the resource variant.
 	 */
 	protected byte[] getBytes(IResource local, IResourceVariant remote) throws TeamException {
-		if (remote == null) return null;
+		if (remote == null) {
+			return null;
+		}
 		return remote.asBytes();
 	}
 

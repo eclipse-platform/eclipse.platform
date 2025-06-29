@@ -39,8 +39,9 @@ public class GotoResourceAction extends Action {
 		protected boolean select(IResource resource) {
 			IProject project = resource.getProject();
 			try {
-				if (project.getNature(JavaCore.NATURE_ID) != null)
+				if (project.getNature(JavaCore.NATURE_ID) != null) {
 					return fJavaModel.contains(resource);
+				}
 			} catch (CoreException e) {
 				// do nothing. Consider resource;
 			}
@@ -62,8 +63,9 @@ public class GotoResourceAction extends Action {
 		GotoResourceDialog dialog = new GotoResourceDialog(part.getSite().getShell(), ResourcesPlugin.getWorkspace().getRoot());
 		dialog.open();
 		Object[] result = dialog.getResult();
-		if (result == null || result.length == 0 || !(result[0] instanceof IResource))
+		if (result == null || result.length == 0 || !(result[0] instanceof IResource)) {
 			return;
+		}
 		selectedResource = (IResource) result[0];
 	}
 }

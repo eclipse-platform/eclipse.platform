@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -96,7 +96,7 @@ public class TogglePresentationAction extends TextEditorAction implements IPrope
 
 	/**
 	 * Synchronizes the appearance of the editor with what the preference store indicates
-	 * 
+	 *
 	 * @param editor
 	 *            the text editor
 	 */

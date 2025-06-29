@@ -79,10 +79,11 @@ public class OpenMessageDialogHandler extends AbstractHandler {
 
 		if (returnCode == CANCEL_RETURN_CODE) {
 			String cancelReturns = event.getParameter(PARAM_ID_CANCEL_RETURNS);
-			if (cancelReturns != null)
+			if (cancelReturns != null) {
 				return cancelReturns;
-			else
+			} else {
 				throw new ExecutionException("dialog canceled"); //$NON-NLS-1$
+			}
 		}
 
 		return buttonLabels[returnCode];

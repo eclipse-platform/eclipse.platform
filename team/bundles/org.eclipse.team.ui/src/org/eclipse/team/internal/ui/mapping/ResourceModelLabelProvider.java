@@ -55,8 +55,7 @@ public class ResourceModelLabelProvider extends
 	public static final FastDiffFilter CONFLICT_FILTER = new FastDiffFilter() {
 		@Override
 		public boolean select(IDiff diff) {
-			if (diff instanceof IThreeWayDiff) {
-				IThreeWayDiff twd = (IThreeWayDiff) diff;
+			if (diff instanceof IThreeWayDiff twd) {
 				return twd.getDirection() == IThreeWayDiff.CONFLICTING;
 			}
 			return false;
@@ -80,17 +79,20 @@ public class ResourceModelLabelProvider extends
 	@Override
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-		if (localImageManager != null)
+		if (localImageManager != null) {
 			localImageManager.dispose();
-		if (provider != null)
+		}
+		if (provider != null) {
 			provider.dispose();
+		}
 		super.dispose();
 	}
 
 	@Override
 	protected ILabelProvider getDelegateLabelProvider() {
-		if (provider == null)
+		if (provider == null) {
 			provider = new WorkbenchLabelProvider();
+		}
 		return provider ;
 	}
 
@@ -141,8 +143,9 @@ public class ResourceModelLabelProvider extends
 		IResourceDiffTree tree = getDiffTree(elementOrPath);
 		if (tree != null && resource != null) {
 			int depth = getTraversalCalculator().getLayoutDepth(resource, internalGetPath(elementOrPath));
-			if (depth == IResource.DEPTH_INFINITE || resource.getType() == IResource.FILE)
+			if (depth == IResource.DEPTH_INFINITE || resource.getType() == IResource.FILE) {
 				return tree.getProperty(resource.getFullPath(), IDiffTree.P_HAS_DESCENDANT_CONFLICTS);
+			}
 			return tree.hasMatchingDiffs(getTraversalCalculator().getTraversals(resource, internalGetPath(elementOrPath)), CONFLICT_FILTER);
 		}
 		return super.hasDecendantConflicts(elementOrPath);
@@ -150,8 +153,9 @@ public class ResourceModelLabelProvider extends
 
 	protected IResourceDiffTree getDiffTree(Object elementOrPath) {
 		ISynchronizationContext context = getContext();
-		if (context != null)
+		if (context != null) {
 			return context.getDiffTree();
+		}
 		return null;
 	}
 
@@ -188,8 +192,9 @@ public class ResourceModelLabelProvider extends
 	protected String getDelegateText(Object elementOrPath) {
 		if (getConfiguration() != null) {
 			String label = getTraversalCalculator().getLabel(elementOrPath);
-			if (label != null)
+			if (label != null) {
 				return label;
+			}
 		}
 		return super.getDelegateText(internalGetElement(elementOrPath));
 	}
@@ -203,8 +208,7 @@ public class ResourceModelLabelProvider extends
 	}
 
 	private Object internalGetElement(Object elementOrPath) {
-		if (elementOrPath instanceof TreePath) {
-			TreePath tp = (TreePath) elementOrPath;
+		if (elementOrPath instanceof TreePath tp) {
 			return tp.getLastSegment();
 		}
 		return elementOrPath;
@@ -223,8 +227,9 @@ public class ResourceModelLabelProvider extends
 		label.setImage(getImage(elementPath));
 		label.setText(getText(elementPath));
 		Font f = getFont(elementPath);
-		if (f != null)
+		if (f != null) {
 			label.setFont(f);
+		}
 	}
 
 	protected ImageManager getImageManager() {

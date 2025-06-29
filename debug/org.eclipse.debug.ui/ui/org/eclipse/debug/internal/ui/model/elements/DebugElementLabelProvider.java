@@ -34,8 +34,7 @@ public class DebugElementLabelProvider extends ElementLabelProvider {
 	@Override
 	protected String getLabel(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		Object element = elementPath.getLastSegment();
-		if (presentationContext instanceof DebugModelPresentationContext) {
-			DebugModelPresentationContext debugContext = (DebugModelPresentationContext) presentationContext;
+		if (presentationContext instanceof DebugModelPresentationContext debugContext) {
 			return debugContext.getModelPresentation().getText(element);
 		}
 		return DebugElementHelper.getLabel(element);
@@ -44,8 +43,7 @@ public class DebugElementLabelProvider extends ElementLabelProvider {
 	@Override
 	protected RGB getBackground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		Object element = elementPath.getLastSegment();
-		if (presentationContext instanceof DebugModelPresentationContext) {
-			DebugModelPresentationContext debugContext = (DebugModelPresentationContext) presentationContext;
+		if (presentationContext instanceof DebugModelPresentationContext debugContext) {
 			return DebugElementHelper.getBackground(element, debugContext.getModelPresentation());
 		}
 		return DebugElementHelper.getBackground(element);
@@ -54,8 +52,7 @@ public class DebugElementLabelProvider extends ElementLabelProvider {
 	@Override
 	protected FontData getFontData(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		Object element = elementPath.getLastSegment();
-		if (presentationContext instanceof DebugModelPresentationContext) {
-			DebugModelPresentationContext debugContext = (DebugModelPresentationContext) presentationContext;
+		if (presentationContext instanceof DebugModelPresentationContext debugContext) {
 			return DebugElementHelper.getFont(element, debugContext.getModelPresentation());
 
 		}
@@ -65,8 +62,7 @@ public class DebugElementLabelProvider extends ElementLabelProvider {
 	@Override
 	protected RGB getForeground(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		Object element = elementPath.getLastSegment();
-		if (presentationContext instanceof DebugModelPresentationContext) {
-			DebugModelPresentationContext debugContext = (DebugModelPresentationContext) presentationContext;
+		if (presentationContext instanceof DebugModelPresentationContext debugContext) {
 			return DebugElementHelper.getForeground(element, debugContext.getModelPresentation());
 		}
 		return DebugElementHelper.getForeground(element);
@@ -75,8 +71,7 @@ public class DebugElementLabelProvider extends ElementLabelProvider {
 	@Override
 	protected ImageDescriptor getImageDescriptor(TreePath elementPath, IPresentationContext presentationContext, String columnId) throws CoreException {
 		Object element = elementPath.getLastSegment();
-		if (presentationContext instanceof DebugModelPresentationContext) {
-			DebugModelPresentationContext debugContext = (DebugModelPresentationContext) presentationContext;
+		if (presentationContext instanceof DebugModelPresentationContext debugContext) {
 			return DebugElementHelper.getImageDescriptor(element, debugContext.getModelPresentation());
 		}
 		return DebugElementHelper.getImageDescriptor(element);
@@ -90,8 +85,7 @@ public class DebugElementLabelProvider extends ElementLabelProvider {
 	 * @return debug model presentation or <code>null</code>
 	 */
 	protected IDebugModelPresentation getModelPresentation(IPresentationContext context, String modelId) {
-		if (context instanceof DebugModelPresentationContext) {
-			DebugModelPresentationContext debugContext = (DebugModelPresentationContext) context;
+		if (context instanceof DebugModelPresentationContext debugContext) {
 			IDebugModelPresentation presentation = debugContext.getModelPresentation();
 			if (presentation instanceof DelegatingModelPresentation) {
 				return ((DelegatingModelPresentation)presentation).getPresentation(modelId);
@@ -105,11 +99,9 @@ public class DebugElementLabelProvider extends ElementLabelProvider {
 		if (updates.length > 0) {
 			ILabelUpdate update = updates[0];
 			IPresentationContext context = update.getPresentationContext();
-			if (context instanceof DebugModelPresentationContext) {
-				DebugModelPresentationContext debugContext = (DebugModelPresentationContext) context;
+			if (context instanceof DebugModelPresentationContext debugContext) {
 				IDebugModelPresentation presentation = debugContext.getModelPresentation();
-				if (presentation instanceof IDebugModelPresentationExtension) {
-					IDebugModelPresentationExtension extension = (IDebugModelPresentationExtension) presentation;
+				if (presentation instanceof IDebugModelPresentationExtension extension) {
 					for (ILabelUpdate u : updates) {
 						if (extension.requiresUIThread(u.getElement())) {
 							return true;

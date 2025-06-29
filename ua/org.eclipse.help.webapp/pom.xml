@@ -14,18 +14,18 @@
   <parent>
     <artifactId>eclipse.platform.ua</artifactId>
     <groupId>eclipse.platform.ua</groupId>
-    <version>4.36.0-SNAPSHOT</version>
+    <version>4.37.0-SNAPSHOT</version>
   </parent>
   <groupId>org.eclipse.platform</groupId>
   <artifactId>org.eclipse.help.webapp</artifactId>
-  <version>3.12.100-SNAPSHOT</version>
+  <version>3.12.200-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <build>
     <plugins>
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-jspc-maven-plugin</artifactId>
-        <version>10.0.24</version>
+        <groupId>org.eclipse.jetty.ee8</groupId>
+        <artifactId>jetty-ee8-jspc-maven-plugin</artifactId>
+        <version>12.0.19</version>
         <executions>
           <execution>
             <id>jspc</id>
@@ -38,8 +38,8 @@
               </jspc>
               <webAppSourceDirectory>${basedir}</webAppSourceDirectory>
               <useProvidedScope>true</useProvidedScope>
-              <sourceVersion>17</sourceVersion>
-              <targetVersion>17</targetVersion>
+              <sourceVersion>21</sourceVersion>
+              <targetVersion>21</targetVersion>
             </configuration>
           </execution>
         </executions>

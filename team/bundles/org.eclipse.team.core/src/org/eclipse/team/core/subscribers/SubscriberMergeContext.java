@@ -82,8 +82,9 @@ public abstract class SubscriberMergeContext extends MergeContext {
 	public void refresh(ResourceTraversal[] traversals, int flags,
 			IProgressMonitor monitor) throws CoreException {
 		GroupProgressMonitor group = getGroup(monitor);
-		if (group != null)
+		if (group != null) {
 			handler.setProgressGroupHint(group.getGroup(), group.getTicks());
+		}
 		handler.initializeIfNeeded();
 		subscriber.refresh(traversals, monitor);
 	}
@@ -92,8 +93,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 		if (monitor instanceof GroupProgressMonitor) {
 			return (GroupProgressMonitor) monitor;
 		}
-		if (monitor instanceof ProgressMonitorWrapper) {
-			ProgressMonitorWrapper wrapper = (ProgressMonitorWrapper) monitor;
+		if (monitor instanceof ProgressMonitorWrapper wrapper) {
 			return getGroup(wrapper.getWrappedProgressMonitor());
 		}
 		return null;
@@ -136,8 +136,9 @@ public abstract class SubscriberMergeContext extends MergeContext {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == SubscriberDiffTreeEventHandler.class)
+		if (adapter == SubscriberDiffTreeEventHandler.class) {
 			return (T) handler;
+		}
 		return super.getAdapter(adapter);
 	}
 

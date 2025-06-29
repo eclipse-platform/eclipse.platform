@@ -3,20 +3,6 @@ FAQ How do I upgrade Eclipse IDE?
 
 (Redirected from [FAQ How do I upgrade Eclipse?](/index.php?title=FAQ_How_do_I_upgrade_Eclipse%3F&redirect=no "FAQ How do I upgrade Eclipse?"))
 
-Contents
---------
-
-*   [1 Upgrading existing Eclipse IDE and Installed Features to newer release](#Upgrading-existing-Eclipse-IDE-and-Installed-Features-to-newer-release)
-*   [2 Always enable major upgrades](#Always-enable-major-upgrades)
-*   [3 Beta-testing milestones and release candidates](#Beta-testing-milestones-and-release-candidates)
-*   [4 Fresh install](#Fresh-install)
-*   [5 Windows specifics](#Windows-specifics)
-*   [6 Older versions (deprecated)](#Older-versions-.28deprecated.29)
-    *   [6.1 Upgrading from previous versions to Neon (4.6) is NOT supported](#Upgrading-from-previous-versions-to-Neon-.284.6.29-is-NOT-supported)
-    *   [6.2 Upgrading from Ganymede (3.4)](#Upgrading-from-Ganymede-.283.4.29)
-    *   [6.3 Upgrading from Europa (3.3) and below](#Upgrading-from-Europa-.283.3.29-and-below)
-    *   [6.4 Upgrading Other Features](#Upgrading-Other-Features)
-*   [7 See Also:](#See-Also:)
 
 Upgrading existing Eclipse IDE and Installed Features to newer release
 ----------------------------------------------------------------------

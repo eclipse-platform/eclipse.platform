@@ -34,7 +34,7 @@ public class SyncByteConverter {
 	public static byte[] setSlot(byte[] syncBytes, int slot, byte[] newBytes) throws TeamException {
 		int start = startOfSlot(syncBytes, slot);
 		if (start == -1) {
-			throw new TeamException(NLS.bind(Messages.SyncByteConverter_1, new String[] { new String(syncBytes) }));
+			throw new TeamException(NLS.bind(Messages.SyncByteConverter_1, new String(syncBytes)));
 		}
 		int end = startOfSlot(syncBytes, slot + 1);
 		int totalLength = start + 1 + newBytes.length;
@@ -62,23 +62,29 @@ public class SyncByteConverter {
 		for (int j = 0; j < syncBytes.length; j++) {
 			if (syncBytes[j] == SEPARATOR_BYTE) {
 				count++;
-				if (count == slot) return j;
+				if (count == slot) {
+					return j;
+				}
 			}
 		}
 		return -1;
 	}
 
 	/**
-	 * Return the offset the the Nth delimeter from the given start index.
+	 * Return the offset the the Nth delimiter from the given start index.
 	 * @return int
 	 */
-	private static int getOffsetOfDelimeter(byte[] bytes, byte delimiter, int start, int n) {
+	private static int getOffsetOfDelimiter(byte[] bytes, byte delimiter, int start, int n) {
 		int count = 0;
 		for (int i = start; i < bytes.length; i++) {
-			if (bytes[i] == delimiter) count++;
-			if (count == n) return i;
+			if (bytes[i] == delimiter) {
+				count++;
+			}
+			if (count == n) {
+				return i;
+			}
 		}
-		// the Nth delimeter was not found
+		// the Nth delimiter was not found
 		return -1;
 	}
 
@@ -97,11 +103,13 @@ public class SyncByteConverter {
 			// make start -1 so that end determination will start at offset 0.
 			start = -1;
 		} else {
-			start = getOffsetOfDelimeter(bytes, delimiter, 0, index);
-			if (start == -1) return null;
+			start = getOffsetOfDelimiter(bytes, delimiter, 0, index);
+			if (start == -1) {
+				return null;
+			}
 		}
 		// Find the ending index
-		int end = getOffsetOfDelimeter(bytes, delimiter, start + 1, 1);
+		int end = getOffsetOfDelimiter(bytes, delimiter, start + 1, 1);
 		// Calculate the length
 		int length;
 		if (end == -1 || includeRest) {

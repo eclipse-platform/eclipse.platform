@@ -58,8 +58,9 @@ public class ProviderHelper {
 
 	static public ExtendedObjectSupplier findProvider(String qualifier, PrimaryObjectSupplier objectSupplier) {
 		synchronized (extendedSuppliers) {
-			if (extendedSuppliers.containsKey(qualifier))
+			if (extendedSuppliers.containsKey(qualifier)) {
 				return extendedSuppliers.get(qualifier);
+			}
 			Bundle bundle = FrameworkUtil.getBundle(ProviderHelper.class);
 			if (bundle == null) {
 				// In case we are not in an OSGi context, see bug 513883

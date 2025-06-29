@@ -195,8 +195,7 @@ public class PDAStackFrame extends PDADebugElement implements IStackFrame {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof PDAStackFrame) {
-			PDAStackFrame sf = (PDAStackFrame)obj;
+		if (obj instanceof PDAStackFrame sf) {
 			return sf.getThread().equals(getThread()) &&
 				sf.getSourceName().equals(getSourceName()) &&
 				sf.fId == fId;

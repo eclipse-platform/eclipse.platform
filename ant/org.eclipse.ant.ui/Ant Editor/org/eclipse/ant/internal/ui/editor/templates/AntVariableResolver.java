@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -34,11 +34,13 @@ public class AntVariableResolver extends TemplateVariableResolver {
 		private int getCommonPrefixLength(String type, String var) {
 			int i = 0;
 			CharSequence vSeq = var.subSequence(2, var.length() - 1); // strip away ${}
-			while (i < type.length() && i < vSeq.length())
-				if (Character.toLowerCase(type.charAt(i)) == Character.toLowerCase(vSeq.charAt(i)))
+			while (i < type.length() && i < vSeq.length()) {
+				if (Character.toLowerCase(type.charAt(i)) == Character.toLowerCase(vSeq.charAt(i))) {
 					i++;
-				else
+				} else {
 					break;
+				}
+			}
 			return i;
 		}
 	};

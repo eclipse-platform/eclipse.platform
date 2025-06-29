@@ -91,7 +91,9 @@ public class ChildLinkInserter {
 		String locale = UrlUtil.getLocale(req, null);
 		String pathInfo = req.getPathInfo();
 		String servletPath = req.getServletPath();
-		if ("/nav".equals(servletPath)) return new ITopic[0]; //$NON-NLS-1$
+		if ("/nav".equals(servletPath)) { //$NON-NLS-1$
+			return new ITopic[0];
+		}
 		Toc[] tocs =  HelpPlugin.getTocManager().getTocs(locale);
 		for (Toc toc : tocs) {
 			if (pathInfo.equals(toc.getTopic())) {

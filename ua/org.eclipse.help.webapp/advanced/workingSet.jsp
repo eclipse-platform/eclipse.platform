@@ -45,7 +45,7 @@ BODY {
 	font: <%=prefs.getViewFont()%>;
 	font-size: .875rem;
 	background:<%=prefs.getToolbarBackground()%>;
-	color: WindowText;
+	color: CanvasText;
 }
 
 TABLE {
@@ -71,9 +71,9 @@ INPUT {
 }
 
 #booksContainer {
-    background:Window;
-	color:WindowText;
-	border:	2px inset ThreeDHighlight;
+    background:Canvas;
+	color:CanvasText;
+	border:	2px inset CanvasText;
 	margin:10px;
 	margin-top:2px;
 	margin-bottom: 0px;
@@ -90,9 +90,9 @@ if (data.isIE()) {
 }
 
 #criteriaContainer {
-    background:Window;
-	color:WindowText;
-	border:	2px inset ThreeDHighlight;
+    background:Canvas;
+	color:CanvasText;
+	border:	2px inset CanvasText;
 	margin-<%=isRTL?"left":"right"%>:10px;
 	margin-top:2px;
 	margin-bottom: 0px;
@@ -154,7 +154,7 @@ BUTTON {
 if (data.isMozilla()) {
 %>
 input[type="checkbox"] {
-	border:2px solid WindowText; 
+	border:2px solid CanvasText; 
 	margin:0px; 
 	padding:0px;	
 }

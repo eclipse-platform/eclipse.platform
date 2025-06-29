@@ -50,8 +50,8 @@ a {
 	font-size:5px;<%-- needed to verticaly center icon image --%>
 	margin:0px;
 	padding:0px;
-	border-top:1px solid ThreeDShadow;
-	border-bottom:1px solid <%=data.isMozilla()?prefs.getToolbarBackground():"ThreeDShadow"%>;
+	border-top:1px solid CanvasText;
+	border-bottom:1px solid <%=data.isMozilla()?prefs.getToolbarBackground():"CanvasText"%>;
 	cursor:default;
 	background:<%=prefs.getToolbarBackground()%>;
 }
@@ -63,18 +63,18 @@ a {
 	cursor:default;
 	<%=prefs.getViewBackgroundStyle()%>
 	border-top:0px solid <%=prefs.getToolbarBackground()%>;
-	border-bottom:1px solid ThreeDShadow;
+	border-bottom:1px solid CanvasText;
 }
 
 .separator {
 	height:100%;
-	background-color:ThreeDShadow;
+	background-color:CanvasText;
 	border-bottom:1px solid <%=prefs.getToolbarBackground()%>;
 }
 
 .separator_pressed {
 	height:100%;
-	background-color:ThreeDShadow;
+	background-color:CanvasText;
 	border-top:0px solid <%=prefs.getToolbarBackground()%>;
 	border-bottom:1px solid <%=prefs.getToolbarBackground()%>;
 }

@@ -120,19 +120,20 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 
 	@Override
 	public boolean belongsTo(Object family) {
-		if (family instanceof RefreshModelParticipantJob) {
-			RefreshModelParticipantJob rmpj = (RefreshModelParticipantJob) family;
+		if (family instanceof RefreshModelParticipantJob rmpj) {
 			return rmpj.getParticipant() == getParticipant();
 		}
-		if (family == getParticipant())
+		if (family == getParticipant()) {
 			return true;
+		}
 		return super.belongsTo(family);
 	}
 
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
-		if (group != null)
+		if (group != null) {
 			monitor = wrapMonitorWithGroup(monitor);
+		}
 		return super.run(monitor);
 	}
 

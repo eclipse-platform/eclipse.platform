@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -45,8 +45,7 @@ public class AntClasspathContentProvider implements ITreeContentProvider {
 				added = false;
 			}
 			parent = model;
-		} else if (parent instanceof GlobalClasspathEntries) {
-			GlobalClasspathEntries globalParent = (GlobalClasspathEntries) parent;
+		} else if (parent instanceof GlobalClasspathEntries globalParent) {
 			newEntry = model.createEntry(child, globalParent);
 			ClasspathEntry newClasspathEntry = (ClasspathEntry) newEntry;
 			if (!globalParent.contains(newClasspathEntry)) {
@@ -187,8 +186,7 @@ public class AntClasspathContentProvider implements ITreeContentProvider {
 	}
 
 	public void setEntries(IClasspathEntry currentParent, List<IAntClasspathEntry> entries) {
-		if (currentParent instanceof GlobalClasspathEntries) {
-			GlobalClasspathEntries group = (GlobalClasspathEntries) currentParent;
+		if (currentParent instanceof GlobalClasspathEntries group) {
 			group.setEntries(entries);
 		}
 

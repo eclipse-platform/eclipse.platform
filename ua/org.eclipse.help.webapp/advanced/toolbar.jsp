@@ -39,7 +39,7 @@ BODY {
 
 #titleText {
 	font-weight:bold;
-	color:WindowText;
+	color:CanvasText;
 }
 
 a {
@@ -117,7 +117,7 @@ if (data.isIE()){
 <%}%>
 
 .separator {
-	background-color: ThreeDShadow;
+	background-color: CanvasText;
 	height:100%;
 	width: 1px;
 	border-top:2px solid <%=prefs.getToolbarBackground()%>;
@@ -128,14 +128,14 @@ if (data.isIE()){
 }
 
 #container {
-	border-bottom:1px solid ThreeDShadow;
+	border-bottom:1px solid CanvasText;
 <%
 if (data.isIE()) {
 %> 
 <%
 }else if (data.isMozilla()){
 %>
-	border-top:1px solid ThreeDShadow;
+	border-top:1px solid CanvasText;
 	height:24px;
 <%
 }
@@ -325,8 +325,8 @@ function menu(button, param) {
 		menu.style.background = "<%=prefs.getToolbarBackground()%>";
 		menu.style.font = "<%=prefs.getToolbarFont()%>";
 		menu.style.fontSize = ".875rem";
-		menu.style.border<%=isRTL ? "Right" : "Left"%> = "1px solid ThreeDShadow";
-		menu.style.borderBottom = "1px solid ThreeDShadow";
+		menu.style.border<%=isRTL ? "Right" : "Left"%> = "1px solid CanvasText";
+		menu.style.borderBottom = "1px solid CanvasText";
 
 		var entries = param.split(",");
 		for (var i=0;i<entries.length;++i) {
@@ -346,7 +346,7 @@ function menu(button, param) {
 			anchor.style.textDecoration = "none";
 			anchor.style.padding = "4px 4px 4px 4px";
 			anchor.style.background = "transparent";
-			anchor.style.color = "WindowText";
+			anchor.style.color = "CanvasText";
 			menu.appendChild(anchor);
 		}
 
@@ -408,7 +408,7 @@ function itemEnter(e) {
 
 function itemExit(e) {
     this.style.background = "transparent";
-    this.style.color = "WindowText";
+    this.style.color = "CanvasText";
     parent.frames[parent.frames.length - 1].window.status = "";
     return true;
 }

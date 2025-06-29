@@ -147,22 +147,19 @@ public class CheatSheetModelSerializer {
 			buf.append(indent + "<nullSubItem/>\n");
 		}
 		else {
-			if (subItem instanceof ConditionalSubItem) {
-				ConditionalSubItem c = (ConditionalSubItem)subItem;
+			if (subItem instanceof ConditionalSubItem c) {
 				buf.append(indent + "<conditionalSubItem\n");
 				buf.append(indent + "      condition=\"" + c.getCondition() + "\">\n");
 				buf.append(serialize(c.getSubItems(), indent + "   "));
 				buf.append(indent + "</conditionalSubItem>\n");
 			}
-			else if (subItem instanceof RepeatedSubItem) {
-				RepeatedSubItem r = (RepeatedSubItem)subItem;
+			else if (subItem instanceof RepeatedSubItem r) {
 				buf.append(indent + "<repeatedSubItem\n");
 				buf.append(indent + "      values=\"" + r.getValues() + "\">\n");
 				buf.append(serialize(r.getSubItems(), indent + "   "));
 				buf.append(indent + "</repeatedSubItem>\n");
 			}
-			else if (subItem instanceof SubItem) {
-				SubItem s = (SubItem)subItem;
+			else if (subItem instanceof SubItem s) {
 				buf.append(indent + "<subItem\n");
 				buf.append(indent + "      label=\"" + s.getLabel() + "\"\n");
 				buf.append(indent + "      when=\"" + s.getWhen() + "\"\n");

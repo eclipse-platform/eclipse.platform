@@ -31,8 +31,9 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 		this.viewers = viewers;
 		this.preferenceKey = preferenceKey;
 		this.store = EditorsUI.getPreferenceStore();
-		if (store != null)
+		if (store != null) {
 			store.addPropertyChangeListener(this);
+		}
 		synchronizeWithPreference();
 		addActionToViewers();
 	}
@@ -60,8 +61,9 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 			checked = store.getBoolean(getPreferenceKey());
 		}
 		if (checked != isChecked()) {
-			if (toggleState(checked))
+			if (toggleState(checked)) {
 				setChecked(checked);
+			}
 		}
 	}
 
@@ -72,8 +74,9 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 	@Override
 	public void run() {
 		toggleState(isChecked());
-		if (store != null)
+		if (store != null) {
 			store.setValue(getPreferenceKey(), isChecked());
+		}
 	}
 
 	public void dispose() {

@@ -54,8 +54,9 @@ public class LayoutData extends RequestData {
 			qs = qs.replaceFirst("^token=[a-z0-9-]{36}", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			qs = qs.replaceFirst("&token=[a-z0-9-]{36}", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		if (qs != null && qs.length() > 0)
+		if (qs != null && qs.length() > 0) {
 			query = "?" + qs; //$NON-NLS-1$
+		}
 	}
 
 	public String getQuery() {
@@ -147,8 +148,9 @@ public class LayoutData extends RequestData {
 	 * Return array of length 0 if no views
 	 */
 	public AbstractView[] getViews() {
-		if (views != null)
+		if (views != null) {
 			return views;
+		}
 
 		View tocview = new View("toc", //$NON-NLS-1$
 				"", //$NON-NLS-1$
@@ -159,14 +161,16 @@ public class LayoutData extends RequestData {
 				preferences.getImagesDirectory() + "/search_results_view.svg", 'R', false); //$NON-NLS-1$
 		View bookmarksview = null;
 
-		if (preferences.isIndexView())
+		if (preferences.isIndexView()) {
 			indexview = new View("index", //$NON-NLS-1$
 					"", //$NON-NLS-1$
 					preferences.getImagesDirectory() + "/index_view.svg", 'I', false); //$NON-NLS-1$
-		if (preferences.isBookmarksView())
+		}
+		if (preferences.isBookmarksView()) {
 			bookmarksview = new View("bookmarks", //$NON-NLS-1$
 					"", //$NON-NLS-1$
 					preferences.getImagesDirectory() + "/bookmarks_view.svg", (char)0, false); //$NON-NLS-1$
+		}
 
 		ArrayList<AbstractView> viewList = new ArrayList<>();
 		viewList.add(tocview);
@@ -212,9 +216,11 @@ public class LayoutData extends RequestData {
 	public AbstractView getCurrentView() {
 		String name = request.getParameter("view"); //$NON-NLS-1$
 		views = getViews();
-		for (AbstractView view : views)
-			if (view.getName().equals(name))
+		for (AbstractView view : views) {
+			if (view.getName().equals(name)) {
 				return view;
+			}
+		}
 		return null;
 	}
 

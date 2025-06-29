@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -18,7 +18,7 @@ import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 
 /**
  * Measures the time to type in one single target into a large buildfile
- * 
+ *
  * @since 3.1
  */
 public class NonInitialTypingTest extends AbstractAntUITest {

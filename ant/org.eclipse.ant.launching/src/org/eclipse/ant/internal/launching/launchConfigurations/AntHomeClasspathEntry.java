@@ -119,10 +119,10 @@ public class AntHomeClasspathEntry extends AbstractRuntimeClasspathEntry {
 		File lib = libDir.toFile();
 		File parentDir = lib.getParentFile();
 		if (parentDir == null || !parentDir.exists()) {
-			abort(MessageFormat.format(AntLaunchConfigurationMessages.AntHomeClasspathEntry_10, new Object[] { antHomeLocation }), null);
+			abort(MessageFormat.format(AntLaunchConfigurationMessages.AntHomeClasspathEntry_10, antHomeLocation), null);
 		}
 		if (!lib.exists() || !lib.isDirectory()) {
-			abort(MessageFormat.format(AntLaunchConfigurationMessages.AntHomeClasspathEntry_11, new Object[] { antHomeLocation }), null);
+			abort(MessageFormat.format(AntLaunchConfigurationMessages.AntHomeClasspathEntry_11, antHomeLocation), null);
 		}
 		return lib;
 	}
@@ -138,7 +138,7 @@ public class AntHomeClasspathEntry extends AbstractRuntimeClasspathEntry {
 		if (antHomeLocation == null) {
 			return AntLaunchConfigurationMessages.AntHomeClasspathEntry_8;
 		}
-		return MessageFormat.format(AntLaunchConfigurationMessages.AntHomeClasspathEntry_9, new Object[] { antHomeLocation });
+		return MessageFormat.format(AntLaunchConfigurationMessages.AntHomeClasspathEntry_9, antHomeLocation);
 	}
 
 	@Override

@@ -30,16 +30,16 @@
 if (data.isMozilla()) {
 %>
 HTML {
-	border-<%=isRTL?"left":"right"%>:1px solid ThreeDShadow;
+	border-<%=isRTL?"left":"right"%>:1px solid CanvasText;
 }
 <% 
 } else {
 %>
 FRAMESET {
-	border-top:1px solid ThreeDShadow;
-	border-left:1px solid ThreeDShadow;
-	border-right:1px solid ThreeDShadow;
-	border-bottom:1px solid ThreeDShadow;
+	border-top:1px solid CanvasText;
+	border-left:1px solid CanvasText;
+	border-right:1px solid CanvasText;
+	border-bottom:1px solid CanvasText;
 }
 <%
 }

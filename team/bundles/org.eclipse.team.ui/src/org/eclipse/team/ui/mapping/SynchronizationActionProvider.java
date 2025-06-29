@@ -104,8 +104,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	protected void initializeOpenActions() {
 		ICommonViewerSite cvs = getActionSite().getViewSite();
 		ISynchronizePageConfiguration configuration = getSynchronizePageConfiguration();
-		if (cvs instanceof ICommonViewerWorkbenchSite && configuration != null) {
-			ICommonViewerWorkbenchSite cvws = (ICommonViewerWorkbenchSite) cvs;
+		if (cvs instanceof ICommonViewerWorkbenchSite cvws && configuration != null) {
 			final IWorkbenchPartSite wps = cvws.getSite();
 			if (wps instanceof IViewSite) {
 				openWithActions = new OpenWithActionGroup(configuration, false);
@@ -157,8 +156,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
-		if (menu instanceof CommonMenuManager) {
-			CommonMenuManager manager = (CommonMenuManager) menu;
+		if (menu instanceof CommonMenuManager manager) {
 			for (String actionId : handlers.keySet()) {
 				manager.registerHandler(actionId, handlers.get(actionId));
 			}
@@ -172,28 +170,35 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
-		if (openWithActions != null) openWithActions.fillActionBars(actionBars);
+		if (openWithActions != null) {
+			openWithActions.fillActionBars(actionBars);
+		}
 	}
 
 	@Override
 	public void updateActionBars() {
 		super.updateActionBars();
-		if (openWithActions != null) openWithActions.updateActionBars();
+		if (openWithActions != null) {
+			openWithActions.updateActionBars();
+		}
 	}
 
 	@Override
 	public void setContext(ActionContext context) {
 		super.setContext(context);
-		if (openWithActions != null) openWithActions.setContext(context);
+		if (openWithActions != null) {
+			openWithActions.setContext(context);
+		}
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (openWithActions != null) openWithActions.dispose();
+		if (openWithActions != null) {
+			openWithActions.dispose();
+		}
 		for (IHandler handler : handlers.values()) {
-			if (handler instanceof MergeActionHandler) {
-				MergeActionHandler mah = (MergeActionHandler) handler;
+			if (handler instanceof MergeActionHandler mah) {
 				mah.dispose();
 			}
 		}

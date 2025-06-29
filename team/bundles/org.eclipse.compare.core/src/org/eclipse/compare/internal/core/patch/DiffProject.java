@@ -39,8 +39,9 @@ public class DiffProject {
 	 */
 	public void add(FilePatch2 diff) {
 		this.fDiffs.add(diff);
-		if (diff.getProject() != this)
+		if (diff.getProject() != this) {
 			diff.setProject(this);
+		}
 	}
 
 	/**

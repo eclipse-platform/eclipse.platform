@@ -585,8 +585,7 @@ public class InternalVirtualTreeModelViewer extends Viewer
 
 	public VirtualItem[] findItems(Object elementOrTreePath) {
 		Object element = elementOrTreePath;
-		if (elementOrTreePath instanceof TreePath) {
-			TreePath path = (TreePath)elementOrTreePath;
+		if (elementOrTreePath instanceof TreePath path) {
 			if (path.getSegmentCount() == 0) {
 				return new VirtualItem[] { getTree() };
 			}
@@ -1281,8 +1280,7 @@ public class InternalVirtualTreeModelViewer extends Viewer
 		}
 		// save presentation context properties
 		IPresentationContext context = getPresentationContext();
-		if (context instanceof PresentationContext) {
-			PresentationContext pc = (PresentationContext) context;
+		if (context instanceof PresentationContext pc) {
 			pc.saveProperites(memento);
 
 		}
@@ -1316,8 +1314,7 @@ public class InternalVirtualTreeModelViewer extends Viewer
 		// restore presentation context properties
 		// save presentation context properties
 		IPresentationContext context = getPresentationContext();
-		if (context instanceof PresentationContext) {
-			PresentationContext pc = (PresentationContext) context;
+		if (context instanceof PresentationContext pc) {
 			pc.initProperties(memento);
 		}
 	}

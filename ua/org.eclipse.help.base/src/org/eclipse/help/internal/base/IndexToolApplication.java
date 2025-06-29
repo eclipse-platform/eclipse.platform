@@ -82,8 +82,9 @@ public class IndexToolApplication implements IApplication {
 		if (locale.getCountry().length() > 0) {
 			d = new File(d, locale.getCountry());
 		}
-		if (!d.exists())
+		if (!d.exists()) {
 			d.mkdirs();
+		}
 
 		try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(new File(d, "doc_index.zip")))) { //$NON-NLS-1$
 			zipDirectory(indexPath, zout, null);
@@ -123,8 +124,9 @@ public class IndexToolApplication implements IApplication {
 			throws IOException {
 		byte buffer[] = new byte[8192];
 		String[] files = dir.list();
-		if (files == null || files.length == 0)
+		if (files == null || files.length == 0) {
 			return;
+		}
 		for (String file : files) {
 			String path;
 			if (base == null) {
@@ -133,15 +135,16 @@ public class IndexToolApplication implements IApplication {
 				path = base + "/" + file; //$NON-NLS-1$
 			}
 			File f = new File(dir, file);
-			if (f.isDirectory())
+			if (f.isDirectory()) {
 				zipDirectory(f, zout, path);
-			else {
+			} else {
 				ZipEntry zentry = new ZipEntry(path);
 				zout.putNextEntry(zentry);
 				try (FileInputStream inputStream = new FileInputStream(f)) {
 					int len;
-					while ((len = inputStream.read(buffer)) != -1)
+					while ((len = inputStream.read(buffer)) != -1) {
 						zout.write(buffer, 0, len);
+					}
 				}
 				zout.flush();
 				zout.closeEntry();

@@ -37,8 +37,9 @@ public class HunkDiffNode extends PatchDiffNode {
 
 	private static ITypedElement getLeftElement(HunkResult result,
 			boolean fullContext) {
-		if (fullContext && !result.isOK())
+		if (fullContext && !result.isOK()) {
 			return new UnmatchedHunkTypedElement(result);
+		}
 		return new HunkTypedElement(result, false /* before state */, fullContext);
 	}
 
@@ -70,8 +71,7 @@ public class HunkDiffNode extends PatchDiffNode {
 
 	public boolean isManuallyMerged() {
 		Object left = getLeft();
-		if (left instanceof UnmatchedHunkTypedElement) {
-			UnmatchedHunkTypedElement element = (UnmatchedHunkTypedElement) left;
+		if (left instanceof UnmatchedHunkTypedElement element) {
 			return element.isManuallyMerged();
 		}
 		return false;

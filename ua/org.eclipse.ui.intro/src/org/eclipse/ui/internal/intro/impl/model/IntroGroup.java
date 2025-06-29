@@ -52,8 +52,9 @@ public class IntroGroup extends AbstractIntroContainer {
 				if (root!=null && root.getTheme()!=null) {
 					Map props = root.getTheme().getProperties();
 					String value = (String)props.get(P_UPPERCASE);
-					if (value!=null && value.equalsIgnoreCase("true")) //$NON-NLS-1$
+					if (value!=null && value.equalsIgnoreCase("true")) { //$NON-NLS-1$
 						label = label.toUpperCase();
+					}
 				}
 			}
 		}
@@ -85,15 +86,17 @@ public class IntroGroup extends AbstractIntroContainer {
 	@Override
 	protected void loadChildren() {
 		String value = getAttribute(element, ATT_COMPUTED);
-		if (value!=null && value.equalsIgnoreCase("true")) //$NON-NLS-1$
+		if (value!=null && value.equalsIgnoreCase("true")) { //$NON-NLS-1$
 			loadDynamicNodes();
+		}
 		super.loadChildren();
 	}
 
 	private void loadDynamicNodes() {
 		IntroModelRoot root = getModelRoot();
-		if (root==null)
+		if (root==null) {
 			return;
+		}
 		AbstractIntroPage page = getParentPage();
 		String pageId = page.getId();
 		IntroConfigurer configurer = root.getConfigurer();
@@ -127,8 +130,9 @@ public class IntroGroup extends AbstractIntroContainer {
 		}
 		// clone children
 		IntroElement [] cnodes = node.getChildren();
-		if (cnodes.length>0)
+		if (cnodes.length>0) {
 			addDynamicNodes(clone, cnodes);
+		}
 		// add the clone to the target
 		target.appendChild(clone);
 	}

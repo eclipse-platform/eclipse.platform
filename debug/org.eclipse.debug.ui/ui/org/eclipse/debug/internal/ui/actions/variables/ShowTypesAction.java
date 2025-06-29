@@ -44,9 +44,8 @@ public class ShowTypesAction extends Action {
 		super(ActionMessages.ShowTypesAction_Show__Type_Names_1, IAction.AS_CHECK_BOX);
 		setView(view);
 		setToolTipText(ActionMessages.ShowTypesAction_Show_Type_Names);
-		setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_TYPE_NAMES));
 		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_TYPE_NAMES));
-		setImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_ELCL_TYPE_NAMES));
+		setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_TYPE_NAMES));
 		setId(DebugUIPlugin.getUniqueIdentifier() + ".ShowTypesAction"); //$NON-NLS-1$
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.SHOW_TYPES_ACTION);
 	}
@@ -69,8 +68,7 @@ public class ShowTypesAction extends Action {
 		if (debugLabelProvider != null) {
 			Boolean typesStatus = on ? Boolean.TRUE : Boolean.FALSE;
 			debugLabelProvider.setAttribute(IDebugModelPresentation.DISPLAY_VARIABLE_TYPE_NAMES, typesStatus);
-			if (viewer instanceof TreeModelViewer) {
-				TreeModelViewer treeViewer = (TreeModelViewer) viewer;
+			if (viewer instanceof TreeModelViewer treeViewer) {
 				treeViewer.getPresentationContext().setProperty(IDebugModelPresentation.DISPLAY_VARIABLE_TYPE_NAMES, typesStatus);
 			}
 			BusyIndicator.showWhile(viewer.getControl().getDisplay(), () -> viewer.refresh());

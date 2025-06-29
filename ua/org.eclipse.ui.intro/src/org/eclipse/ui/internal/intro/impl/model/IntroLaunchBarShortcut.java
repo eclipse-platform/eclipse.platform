@@ -52,8 +52,9 @@ public class IntroLaunchBarShortcut extends AbstractIntroElement {
 	}
 
 	private String getAttribute(String name) {
-		if (ielement!=null)
+		if (ielement!=null) {
 			return ielement.getAttribute(name);
+		}
 		return getCfgElement().getAttribute(name);
 	}
 

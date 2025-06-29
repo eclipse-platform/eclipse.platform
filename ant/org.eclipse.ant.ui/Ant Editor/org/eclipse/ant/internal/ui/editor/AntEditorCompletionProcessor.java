@@ -796,7 +796,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 			String deflt = attribute.getDefault();
 			if (deflt != null && deflt.length() > 0) {
 				proposalInfo = (proposalInfo == null ? "<BR><BR>" : (proposalInfo += "<BR><BR>")); //$NON-NLS-1$ //$NON-NLS-2$
-				proposalInfo += MessageFormat.format(AntEditorMessages.getString("AntEditorCompletionProcessor.59"), new Object[] { deflt }); //$NON-NLS-1$
+				proposalInfo += MessageFormat.format(AntEditorMessages.getString("AntEditorCompletionProcessor.59"), deflt); //$NON-NLS-1$
 			}
 
 			ICompletionProposal proposal = new AntCompletionProposal(replacementString, cursorPosition
@@ -820,7 +820,7 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 				continue;
 			}
 			MacroDef.TemplateElement element = elements.get(elementName);
-			String replacementString = MessageFormat.format("<{0}>\n</{1}>", new Object[] { elementName, elementName }); //$NON-NLS-1$
+			String replacementString = MessageFormat.format("<{0}>\n</{1}>", elementName, elementName); //$NON-NLS-1$
 			String proposalInfo = null;
 
 			String description = element.getDescription();
@@ -1823,10 +1823,10 @@ public class AntEditorCompletionProcessor extends TemplateCompletionProcessor im
 		TriggerSequence[] triggers = bindingSvc.getActiveBindingsFor(getContentAssistCommand());
 		String message;
 		if (triggers.length > 0) {
-			message = MessageFormat.format(AntEditorMessages.getString("AntEditorCompletionProcessor.63"), new Object[] { triggers[0].format(), //$NON-NLS-1$
-					showMessage });
+			message = MessageFormat.format(AntEditorMessages.getString("AntEditorCompletionProcessor.63"), triggers[0].format(), //$NON-NLS-1$
+								showMessage);
 		} else {
-			message = MessageFormat.format(AntEditorMessages.getString("AntEditorCompletionProcessor.64"), new Object[] { showMessage }); //$NON-NLS-1$
+			message = MessageFormat.format(AntEditorMessages.getString("AntEditorCompletionProcessor.64"), showMessage); //$NON-NLS-1$
 		}
 		return message;
 	}

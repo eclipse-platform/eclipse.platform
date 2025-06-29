@@ -26,31 +26,20 @@ import org.eclipse.e4.core.contexts.RunAndTrack;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.debug.DebugOptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-public class ContextPerformanceTest extends TestCase {
+public class ContextPerformanceTest {
+	String displayName;
 
 	IEclipseContext parentContext, context;
 
-	public static Test suite() {
-		return new TestSuite(ContextPerformanceTest.class);
-		// TestSuite suite = new TestSuite();
-		// suite.addTest(new ContextPerformanceTest("testSetValueRunAndTrack"));
-		// return suite;
-	}
-
-	public ContextPerformanceTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeEach
+	public void setUp(TestInfo testInfo) throws Exception {
+		displayName = testInfo.getDisplayName();
 		parentContext = EclipseContextFactory.getServiceContext(CoreTestsActivator.getDefault().getBundleContext());
-		context = parentContext.createChild(getName());
+		context = parentContext.createChild(displayName);
 
 		// add some values to the contexts
 		for (int i = 0; i < 100; i++) {
@@ -69,16 +58,18 @@ public class ContextPerformanceTest extends TestCase {
 		context.get(Location.class.getName());
 	}
 
-	public void testLookup() {
+	@Test
+	public void testLookup() throws Exception {
 		new PerformanceTestRunner() {
 			@Override
 			protected void test() {
 				context.get("something");
 			}
-		}.run(this, 10, 600000);
+		}.run(getClass(), displayName, 10, 600000);
 	}
 
-	public void testLookupContextFunction() {
+	@Test
+	public void testLookupContextFunction() throws Exception {
 		context.set("somefunction", new ContextFunction() {
 			@Override
 			public Object compute(IEclipseContext context, String contextKey) {
@@ -90,10 +81,11 @@ public class ContextPerformanceTest extends TestCase {
 			protected void test() {
 				context.get("somefunction");
 			}
-		}.run(this, 10, 5000000);
+		}.run(getClass(), displayName, 10, 5000000);
 	}
 
-	public void testSetContextFunction() {
+	@Test
+	public void testSetContextFunction() throws Exception {
 		context.set("somefunction", new ContextFunction() {
 			@Override
 			public Object compute(IEclipseContext context, String contextKey) {
@@ -107,14 +99,15 @@ public class ContextPerformanceTest extends TestCase {
 			protected void test() {
 				context.set("something", "value-" + i++);
 			}
-		}.run(this, 10, 600000);
+		}.run(getClass(), displayName, 10, 600000);
 	}
 
 	/**
 	 * Tests setting a value in a context that a RAT is listening to. This test mimics what occurs
 	 * when handlers change in e4. See https://bugs.eclipse.org/bugs/show_bug.cgi?id=305038
 	 */
-	public void testSetValueRunAndTrack() {
+	@Test
+	public void testSetValueRunAndTrack() throws Exception {
 		context.set("somefunction", new ContextFunction() {
 			@Override
 			public Object compute(IEclipseContext context, String contextKey) {
@@ -139,7 +132,7 @@ public class ContextPerformanceTest extends TestCase {
 			protected void test() {
 				context.set("something", "value-" + i++);
 			}
-		}.run(this, 10, 400);
+		}.run(getClass(), displayName, 10, 400);
 	}
 
 }

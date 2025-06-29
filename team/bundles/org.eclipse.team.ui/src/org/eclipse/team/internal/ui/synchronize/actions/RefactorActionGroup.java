@@ -67,8 +67,7 @@ public class RefactorActionGroup extends ActionGroup {
 		parentMenu.appendToGroup(groupId, copyAction);
 		// the paste action has been already created in the Sync view
 		IWorkbenchPart part = site.getPart();
-		if (part instanceof SynchronizeView) {
-			SynchronizeView sv = (SynchronizeView) part;
+		if (part instanceof SynchronizeView sv) {
 			IAction pasteAction = sv.getPastePatchAction();
 			parentMenu.appendToGroup(groupId, pasteAction);
 		}
@@ -150,8 +149,9 @@ public class RefactorActionGroup extends ActionGroup {
 	private IStructuredSelection getSelection() {
 		final ISelection selection= getContext().getSelection();
 
-		if (!(selection instanceof IStructuredSelection))
+		if (!(selection instanceof IStructuredSelection)) {
 			return new StructuredSelection();
+		}
 
 		return new StructuredSelection(Utils.getResources(((IStructuredSelection)selection).toArray()));
 	}
@@ -159,8 +159,9 @@ public class RefactorActionGroup extends ActionGroup {
 	private IStructuredSelection getObjectSelection() {
 		final ISelection selection= getContext().getSelection();
 
-		if (!(selection instanceof IStructuredSelection))
+		if (!(selection instanceof IStructuredSelection)) {
 			return new StructuredSelection();
+		}
 
 		return (IStructuredSelection)selection;
 	}
@@ -172,8 +173,7 @@ public class RefactorActionGroup extends ActionGroup {
 			IResource resource = null;
 			if (next instanceof IResource) {
 				resource = (IResource)next;
-			} else if (next instanceof IAdaptable) {
-				IAdaptable adaptable = (IAdaptable)next;
+			} else if (next instanceof IAdaptable adaptable) {
 				resource = adaptable.getAdapter(IResource.class);
 			}
 			if(resource == null) {

@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2013 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *		IBM Corporation - fix for Bug 40951
@@ -32,7 +32,7 @@ public class Element extends Atom implements IElement {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param name
 	 *            QName of element.
 	 */
@@ -42,7 +42,7 @@ public class Element extends Atom implements IElement {
 
 	/**
 	 * Set undefined property.
-	 * 
+	 *
 	 * @param undefined
 	 *            False if defined; otherwise true (default).
 	 */
@@ -52,7 +52,7 @@ public class Element extends Atom implements IElement {
 
 	/**
 	 * Set text property.
-	 * 
+	 *
 	 * @param text
 	 *            True if text only; otherwise false (default).
 	 */
@@ -62,7 +62,7 @@ public class Element extends Atom implements IElement {
 
 	/**
 	 * Set model property.
-	 * 
+	 *
 	 * @param model
 	 *            Dfm describing content model.
 	 */
@@ -72,7 +72,7 @@ public class Element extends Atom implements IElement {
 
 	/**
 	 * Add an attribute to the attribute map.
-	 * 
+	 *
 	 * @param attribute
 	 *            Attribute to add.
 	 */
@@ -157,7 +157,7 @@ public class Element extends Atom implements IElement {
 
 	/**
 	 * Sets the any.
-	 * 
+	 *
 	 * @param any
 	 *            The any to set
 	 */
@@ -167,7 +167,7 @@ public class Element extends Atom implements IElement {
 
 	/**
 	 * Sets the empty.
-	 * 
+	 *
 	 * @param empty
 	 *            The empty to set
 	 */

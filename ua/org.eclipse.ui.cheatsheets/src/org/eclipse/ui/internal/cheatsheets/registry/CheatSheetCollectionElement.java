@@ -74,8 +74,9 @@ public class CheatSheetCollectionElement extends WorkbenchAdapter implements IPl
 		for (Object element : children) {
 			CheatSheetCollectionElement currentCategory = (CheatSheetCollectionElement) element;
 			if (currentCategory.getLabel(null).equals(searchString)) {
-				if (searchPath.segmentCount() == 1)
+				if (searchPath.segmentCount() == 1) {
 					return currentCategory;
+				}
 
 				return currentCategory.findChildCollection(searchPath.removeFirstSegments(1));
 			}
@@ -92,15 +93,18 @@ public class CheatSheetCollectionElement extends WorkbenchAdapter implements IPl
 		Object[] cheatsheets = getCheatSheets();
 		for (Object cheatsheet : cheatsheets) {
 			CheatSheetElement currentCheatSheet = (CheatSheetElement) cheatsheet;
-			if (currentCheatSheet.getID().equals(searchId))
+			if (currentCheatSheet.getID().equals(searchId)) {
 				return currentCheatSheet;
+			}
 		}
-		if (!recursive)
+		if (!recursive) {
 			return null;
+		}
 		for (CheatSheetCollectionElement child : childCollections) {
 			CheatSheetElement result = child.findCheatSheet(searchId, true);
-			if (result != null)
+			if (result != null) {
 				return result;
+			}
 		}
 		return null;
 	}
@@ -144,8 +148,9 @@ public class CheatSheetCollectionElement extends WorkbenchAdapter implements IPl
 	 * Returns a path representing this collection's ancestor chain.
 	 */
 	public IPath getPath() {
-		if (parent == null)
+		if (parent == null) {
 			return IPath.fromOSString(ICheatSheetResource.EMPTY_STRING);
+		}
 
 		return parent.getPath().append(name);
 	}

@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -118,7 +118,7 @@ public abstract class AntPage {
 
 	/**
 	 * Creates and returns a button with appropriate size and layout.
-	 * 
+	 *
 	 * @param parent
 	 *            the control to create the button on
 	 * @param buttonText
@@ -208,7 +208,7 @@ public abstract class AntPage {
 
 	/**
 	 * Persist table settings into the give dialog store, prefixed with the given key.
-	 * 
+	 *
 	 * @param settings
 	 *            dialog store
 	 * @since 3.5
@@ -228,7 +228,7 @@ public abstract class AntPage {
 
 	/**
 	 * Restore table settings from the given dialog store using the given key.
-	 * 
+	 *
 	 * @param settings
 	 *            dialog settings store
 	 * @since 3.5
@@ -260,7 +260,7 @@ public abstract class AntPage {
 
 	/**
 	 * Restores the column widths from dialog settings
-	 * 
+	 *
 	 * @since 3.5
 	 */
 	private void restoreColumnWidths(IDialogSettings settings) {
@@ -285,7 +285,7 @@ public abstract class AntPage {
 
 	/**
 	 * Returns the content provider to use for the table viewer
-	 * 
+	 *
 	 * @return AntPageContentProvider
 	 */
 	protected AntContentProvider getContentProvider() {
@@ -296,7 +296,7 @@ public abstract class AntPage {
 	 * Returns the currently listed objects in the table if the library for that entry is still included in the preferences. Default objects are
 	 * included depending on the value of the <code>forDisplay</code> parameter. Returns <code>null</code> if this widget has not yet been created or
 	 * has been disposed.
-	 * 
+	 *
 	 * @param forDisplay
 	 *            Whether the result is to be displayed in the UI or stored in the preferences
 	 * @return The list of objects currently displayed in the table
@@ -420,8 +420,7 @@ public abstract class AntPage {
 		Iterator<?> itr = newSelection.iterator();
 		while (itr.hasNext()) {
 			Object element = itr.next();
-			if (element instanceof AntObject) {
-				AntObject antObject = (AntObject) element;
+			if (element instanceof AntObject antObject) {
 				if (antObject.isDefault()) {
 					enabled = false;
 					break;
@@ -434,7 +433,7 @@ public abstract class AntPage {
 
 	/**
 	 * Allows the user to edit a custom Ant object.
-	 * 
+	 *
 	 * @param selection
 	 *            The selection containing the object to edit
 	 */
@@ -447,7 +446,7 @@ public abstract class AntPage {
 
 	/**
 	 * Returns this page's help context id, which is hooked to this page on creation.
-	 * 
+	 *
 	 * @return help context id
 	 */
 	protected abstract String getHelpContextId();

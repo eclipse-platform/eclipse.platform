@@ -33,8 +33,9 @@ public class Policy {
 	}
 
 	public static void log(int severity, String message, Throwable t) {
-		if (message == null)
+		if (message == null) {
 			message = ""; //$NON-NLS-1$
+		}
 		RuntimeLog.log(new Status(severity, PI_FILE_SYSTEM, 1, message, t));
 	}
 

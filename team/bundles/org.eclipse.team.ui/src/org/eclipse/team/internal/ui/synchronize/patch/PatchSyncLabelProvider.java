@@ -39,8 +39,9 @@ public class PatchSyncLabelProvider extends SynchronizationLabelProvider {
 	@Override
 	public void dispose() {
 		super.dispose();
-		if (delegate != null)
+		if (delegate != null) {
 			delegate.dispose();
+		}
 	}
 
 	@Override

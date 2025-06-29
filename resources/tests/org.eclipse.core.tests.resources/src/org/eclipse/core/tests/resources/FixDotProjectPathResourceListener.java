@@ -83,7 +83,7 @@ public class FixDotProjectPathResourceListener implements IResourceChangeListene
 										return Status.OK_STATUS;
 									} catch (CoreException ex) {
 										return ex.getStatus();
-									} 
+									}
 								}
 							};
 							job.setRule(project.getWorkspace().getRuleFactory().modifyRule(project.getParent()));
@@ -122,7 +122,7 @@ public class FixDotProjectPathResourceListener implements IResourceChangeListene
 		dotProject.createLink(IPath.fromFile(targetDiskFile), IResource.FORCE | IResource.REPLACE, null);
 		sourceDiskFile.delete();
 	}
-	
+
 	private IPath getMetaDataFilePath(String name, IPath projectRelativePath) {
 		return IPath.fromFile(tmpDir).append(name).append(projectRelativePath);
 	}
@@ -159,7 +159,7 @@ public class FixDotProjectPathResourceListener implements IResourceChangeListene
 	}
 
 	private void unlinkIfLocal(IResource resource) {
-		if (resource instanceof IProject project && project.isOpen()) { 
+		if (resource instanceof IProject project && project.isOpen()) {
 			try {
 				Arrays.stream(project.members())
 					.filter(IFile.class::isInstance)

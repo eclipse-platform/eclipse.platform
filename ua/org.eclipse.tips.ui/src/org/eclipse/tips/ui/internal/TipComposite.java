@@ -66,30 +66,30 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 	private static final String EMPTY = ""; //$NON-NLS-1$
 	private static final int READ_TIMER = 2000;
 	private TipProvider fProvider;
-	private Browser fBrowser;
+	private final Browser fBrowser;
 	private Slider fSlider;
 	private TipManager fTipManager;
 	private Tip fCurrentTip;
-	private Button fUnreadOnly;
+	private final Button fUnreadOnly;
 	private Button fPreviousTipButton;
-	private Composite fSWTComposite;
-	private Composite fBrowserComposite;
-	private StackLayout fContentStack;
-	private Button fMultiActionMenuButton;
-	private Composite fNavigationBar;
-	private StackLayout fActionStack;
-	private Composite fEmptyActionComposite;
-	private Composite fSingleActionComposite;
-	private Composite fMultiActionComposite;
-	private Button fSingleActionButton;
-	private Button fMultiActionButton;
-	private Composite fContentComposite;
-	private List<Image> fActionImages = new ArrayList<>();
-	private List<BrowserFunction> fBrowserFunctions = new ArrayList<>();
+	private final Composite fSWTComposite;
+	private final Composite fBrowserComposite;
+	private final StackLayout fContentStack;
+	private final Button fMultiActionMenuButton;
+	private final Composite fNavigationBar;
+	private final StackLayout fActionStack;
+	private final Composite fEmptyActionComposite;
+	private final Composite fSingleActionComposite;
+	private final Composite fMultiActionComposite;
+	private final Button fSingleActionButton;
+	private final Button fMultiActionButton;
+	private final Composite fContentComposite;
+	private final List<Image> fActionImages = new ArrayList<>();
+	private final List<BrowserFunction> fBrowserFunctions = new ArrayList<>();
 	private Menu fActionMenu;
-	private ToolBar ftoolBar;
-	private ToolItem fStartupItem;
-	private Button fNextTipButton;
+	private final ToolBar ftoolBar;
+	private final ToolItem fStartupItem;
+	private final Button fNextTipButton;
 	private final ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources(), this);
 
 	/**
@@ -190,7 +190,7 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 				SelectionListener.widgetSelectedAdapter(e -> runTipAction(fCurrentTip.getActions().get(0))));
 
 		fMultiActionMenuButton = new Button(fMultiActionComposite, SWT.NONE);
-		fMultiActionMenuButton.setImage(DefaultTipManager.getImage("icons/popup_menu.png", resourceManager)); //$NON-NLS-1$
+		fMultiActionMenuButton.setImage(DefaultTipManager.getImage("icons/popup_menu.svg", resourceManager)); //$NON-NLS-1$
 		fMultiActionMenuButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> showActionMenu()));
 
 		fEmptyActionComposite = new Composite(actionComposite, SWT.NONE);
@@ -239,11 +239,11 @@ public class TipComposite extends Composite implements ProviderSelectionListener
 	private Image getStartupItemImage(int startup) {
 		switch (startup) {
 		case 1:
-			return DefaultTipManager.getImage("icons/lightbulb.png", resourceManager); //$NON-NLS-1$
+			return DefaultTipManager.getImage("icons/lightbulb.svg", resourceManager); //$NON-NLS-1$
 		case 2:
-			return DefaultTipManager.getImage("icons/stop.png", resourceManager); //$NON-NLS-1$
+			return DefaultTipManager.getImage("icons/stop.svg", resourceManager); //$NON-NLS-1$
 		default:
-			return DefaultTipManager.getImage("icons/run_exc.png", resourceManager); //$NON-NLS-1$
+			return DefaultTipManager.getImage("icons/run_exc.svg", resourceManager); //$NON-NLS-1$
 		}
 	}
 

@@ -221,7 +221,7 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 			setHandleValue(createHandleValue(path, subtree, Win32Natives.FILE_NOTIFY_CHANGE_FILE_NAME | Win32Natives.FILE_NOTIFY_CHANGE_DIR_NAME | Win32Natives.FILE_NOTIFY_CHANGE_LAST_WRITE | Win32Natives.FILE_NOTIFY_CHANGE_SIZE));
 			if (isOpen()) {
 				fHandleValueToHandle.put(getHandleValue(), this);
-				setHandleValueArrays(createHandleArrays());
+				setHandleValueArrays();
 			} else {
 				close();
 			}
@@ -369,7 +369,7 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 		setPriority(Job.DECORATE);
 		setSystem(true);
 		fHandleValueToHandle = new HashMap<>(1);
-		setHandleValueArrays(createHandleArrays());
+		setHandleValueArrays();
 	}
 
 	/**
@@ -424,13 +424,18 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 	 * Win32Natives.MAXIMUM_WAIT_OBJECTS. The arrays are balanced so that they
 	 * differ in size by no more than one element.
 	 */
-	protected long[][] createHandleArrays() {
+	private long[][] createHandleArrays() {
 		long[] handles;
 		// synchronized: in order to protect the map during iteration
 		synchronized (fHandleValueToHandle) {
 			Set<Long> keys = fHandleValueToHandle.keySet();
 			int size = keys.size();
 			if (size == 0) {
+				// This is dangerous: the documentation of WaitForMultipleObjects says that the
+				// number of object handles cannot be zero and returning empty arrays will end
+				// up passing zero as the 1st parameter to WaitForMultipleObjects. Therefore one
+				// needs to make sure to check for this case when calling
+				// Win32Natives.WaitForMultipleObjects(int, ...)
 				return new long[0][0];
 			}
 			handles = new long[size];
@@ -524,7 +529,7 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 				fHandleValueToHandle.remove(handle.getHandleValue());
 				handle.destroy();
 			}
-			setHandleValueArrays(createHandleArrays());
+			setHandleValueArrays();
 		}
 	}
 
@@ -572,8 +577,8 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 		return Status.OK_STATUS;
 	}
 
-	protected void setHandleValueArrays(long[][] arrays) {
-		fHandleValueArrays = arrays;
+	private void setHandleValueArrays() {
+		fHandleValueArrays = createHandleArrays();
 	}
 
 	@Override
@@ -607,6 +612,11 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 	 */
 	private void waitForNotification(long[] handleValues) {
 		int handleCount = handleValues.length;
+		if (handleCount == 0) {
+			// According to the documentation of WaitForMultipleObjects,
+			// nCount (the 1st parameter) cannot be zero
+			return;
+		}
 		int index = Win32Natives.WaitForMultipleObjects(handleCount, handleValues, false, WAIT_FOR_MULTIPLE_OBJECTS_TIMEOUT);
 		if (index == Win32Natives.WAIT_TIMEOUT) {
 			// nothing happened.

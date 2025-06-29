@@ -90,8 +90,9 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 		id = configElement.getAttribute("id"); //$NON-NLS-1$
 
 		configurationElement = configElement;
-		if (id == null || getLabel() == null)
+		if (id == null || getLabel() == null) {
 			throw new WorkbenchException("Invalid category: " + id); //$NON-NLS-1$
+		}
 	}
 
 	/**
@@ -101,19 +102,21 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 	 *            the element to add
 	 */
 	public void addElement(Object element) {
-		if (elements == null)
+		if (elements == null) {
 			elements = new ArrayList<>(5);
+		}
 		elements.add(element);
 	}
 
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IWorkbenchAdapter.class)
+		if (adapter == IWorkbenchAdapter.class) {
 			return adapter.cast(this);
-		else if (adapter == IConfigurationElement.class)
+		} else if (adapter == IConfigurationElement.class) {
 			return adapter.cast(configurationElement);
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@Override
@@ -156,8 +159,9 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 	 * @return the parent path
 	 */
 	public String[] getParentPath() {
-		if (parentPath != null)
+		if (parentPath != null) {
 			return parentPath;
+		}
 
 		String unparsedPath = getRawParentPath();
 		if (unparsedPath != null) {
@@ -188,8 +192,9 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 	 */
 	public String getRootPath() {
 		String[] path = getParentPath();
-		if (path != null && path.length > 0)
+		if (path != null && path.length > 0) {
 			return path[0];
+		}
 
 		return id;
 	}
@@ -211,10 +216,12 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 	 * @return whether the object is in this category
 	 */
 	public boolean hasElement(Object o) {
-		if (elements == null)
+		if (elements == null) {
 			return false;
-		if (elements.isEmpty())
+		}
+		if (elements.isEmpty()) {
 			return false;
+		}
 		return elements.contains(o);
 	}
 
@@ -224,8 +231,9 @@ public class Category implements IWorkbenchAdapter, IPluginContribution,
 	 * @return whether this category has child elements
 	 */
 	public boolean hasElements() {
-		if (elements != null)
+		if (elements != null) {
 			return !elements.isEmpty();
+		}
 
 		return false;
 	}

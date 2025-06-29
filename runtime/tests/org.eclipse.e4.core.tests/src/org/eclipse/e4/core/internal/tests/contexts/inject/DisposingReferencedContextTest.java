@@ -14,14 +14,14 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.internal.contexts.EclipseContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -83,11 +83,11 @@ public class DisposingReferencedContextTest {
 
 		MandatoryTarget target = new MandatoryTarget();
 		ContextInjectionFactory.inject(target, windowContext);
-		assertEquals("The object should have been injected", o, target.object);
+		assertEquals(o, target.object, "The object should have been injected");
 
 		partContext.dispose();
 
-		assertEquals("The object should not have been uninjected", o, target.object);
+		assertEquals(o, target.object, "The object should not have been uninjected");
 	}
 
 	private void testContextDisposeCausesCompleteUninjection_Optional(boolean disposeFirst) {
@@ -101,10 +101,10 @@ public class DisposingReferencedContextTest {
 
 		OptionalTarget target = new OptionalTarget();
 		ContextInjectionFactory.inject(target, windowContext);
-		assertEquals("The object should have been injected", o, target.object);
+		assertEquals(o, target.object, "The object should have been injected");
 
 		partContext.dispose();
 
-		assertEquals("The object should not have been uninjected", o, target.object);
+		assertEquals(o, target.object, "The object should not have been uninjected");
 	}
 }

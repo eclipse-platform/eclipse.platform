@@ -87,10 +87,12 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 		String name = getName();
 		if (name != null) {
 			int index = name.lastIndexOf('.');
-			if (index == -1)
+			if (index == -1) {
 				return ""; //$NON-NLS-1$
-			if (index == (name.length() - 1))
+			}
+			if (index == (name.length() - 1)) {
 				return ""; //$NON-NLS-1$
+			}
 			return name.substring(index + 1);
 		}
 		return ITypedElement.FOLDER_TYPE;
@@ -98,8 +100,9 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 
 	@Override
 	public String getCharset() throws CoreException {
-		if (localEncoding != null)
+		if (localEncoding != null) {
 			return localEncoding;
+		}
 		if (bufferedContents == null) {
 			cacheContents(new NullProgressMonitor());
 		}
@@ -114,7 +117,7 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ISharedDocumentAdapter.class) {
 			synchronized (this) {
-				if (sharedDocumentAdapter == null)
+				if (sharedDocumentAdapter == null) {
 					sharedDocumentAdapter = new SharedDocumentAdapter() {
 						@Override
 						public IEditorInput getDocumentKey(Object element) {
@@ -128,6 +131,7 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 							// The document is read-only
 						}
 					};
+				}
 				return (T) sharedDocumentAdapter;
 			}
 		}

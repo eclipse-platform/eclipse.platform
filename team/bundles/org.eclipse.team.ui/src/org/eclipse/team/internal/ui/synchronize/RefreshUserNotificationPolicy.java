@@ -58,10 +58,14 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 	@Override
 	public ActionFactory.IWorkbenchAction refreshDone(final IRefreshEvent event) {
 		// Ensure that this event was generated for this participant
-		if (event.getParticipant() != participant) return null;
+		if (event.getParticipant() != participant) {
+			return null;
+		}
 		// If the event is for a canceled operation, there's nothing to do
 		int severity = event.getStatus().getSeverity();
-		if(severity == IStatus.CANCEL || severity == IStatus.ERROR) return null;
+		if(severity == IStatus.CANCEL || severity == IStatus.ERROR) {
+			return null;
+		}
 		// Decide on what action to take after the refresh is completed
 		return new WorkbenchAction() {
 			@Override
@@ -90,7 +94,8 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 				if(prompt) {
 					return TeamUIMessages.RefreshSubscriberJob_2a;
 				} else {
-					return NLS.bind(TeamUIMessages.RefreshSubscriberJob_2b, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()) });
+					return NLS.bind(TeamUIMessages.RefreshSubscriberJob_2b,
+							Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()));
 				}
 			}
 		};
@@ -99,16 +104,15 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 	private void notifyIfNeededModal(final IRefreshEvent event) {
 		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
 			String title = (event.getRefreshType() == IRefreshEvent.SCHEDULED_REFRESH
-					? NLS.bind(TeamUIMessages.RefreshCompleteDialog_4a, new String[] { Utils.getTypeName(participant) })
+					? NLS.bind(TeamUIMessages.RefreshCompleteDialog_4a, Utils.getTypeName(participant))
 					: NLS.bind(TeamUIMessages.RefreshCompleteDialog_4,
-							new String[] { Utils.getTypeName(participant) }));
+							Utils.getTypeName(participant)));
 			MessageDialog.openInformation(Utils.getShell(null), title, event.getStatus().getMessage());
 		});
 	}
 
 	protected boolean handleRefreshDone(final IRefreshEvent event, boolean prompt) {
-		if (participant instanceof SubscriberParticipant) {
-			SubscriberParticipant sp = (SubscriberParticipant) participant;
+		if (participant instanceof SubscriberParticipant sp) {
 			SyncInfo[] infos = ((RefreshChangeListener)event.getChangeDescription()).getChanges();
 			List<IResource> selectedResources = new ArrayList<>();
 			selectedResources.addAll(Arrays.asList(((RefreshChangeListener)event.getChangeDescription()).getResources()));

@@ -165,8 +165,9 @@ public class PerformanceStatsProcessor extends Job {
 			RuntimeLog.log(error);
 		}
 		//use the platform log if we couldn't create the performance log
-		if (perfLog == null)
+		if (perfLog == null) {
 			perfLog = InternalPlatform.getDefault().getFrameworkLog();
+		}
 		log = perfLog;
 	}
 
@@ -175,10 +176,12 @@ public class PerformanceStatsProcessor extends Job {
 	 */
 	private void logFailure(PerformanceStats stats, String pluginId, long elapsed) {
 		//may have failed to get the performance log service
-		if (log == null)
+		if (log == null) {
 			return;
-		if (pluginId == null)
+		}
+		if (pluginId == null) {
 			pluginId = Platform.PI_RUNTIME;
+		}
 		String msg = "Performance failure: " + stats.getEvent() + " blame: " + stats.getBlameString() + " context: " + stats.getContext() + " duration: " + elapsed; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		Status status = new Status(IStatus.WARNING, pluginId, 1, msg, new RuntimeException());
 		log.log(new FrameworkLogEntry(status, status.getPlugin(), status.getSeverity(), status.getCode(), status.getMessage(), 0, status.getException(), null));
@@ -203,10 +206,12 @@ public class PerformanceStatsProcessor extends Job {
 
 		//notify performance listeners
 		for (PerformanceListener listener : listeners) {
-			if (events.length > 0)
+			if (events.length > 0) {
 				listener.eventsOccurred(events);
-			for (int j = 0; j < failedEvents.length; j++)
+			}
+			for (int j = 0; j < failedEvents.length; j++) {
 				listener.eventFailed(failedEvents[j], failedTimes[j].longValue());
+			}
 		}
 		schedule(SCHEDULE_DELAY);
 		return Status.OK_STATUS;

@@ -63,8 +63,9 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 		@Override
 		protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
 			// Handle everything in the dispatch
-			if (isShutdown())
+			if (isShutdown()) {
 				throw new OperationCanceledException();
+			}
 			dispatchEvents.add(event);
 		}
 
@@ -73,8 +74,9 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 			if (dispatchEvents.isEmpty()) {
 				return false;
 			}
-			if (isShutdown())
+			if (isShutdown()) {
 				throw new OperationCanceledException();
+			}
 			ResourceDiffTree[] locked = null;
 			try {
 				locked = beginDispath();
@@ -89,8 +91,9 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 					default:
 						break;
 					}
-					if (isShutdown())
+					if (isShutdown()) {
 						throw new OperationCanceledException();
+					}
 				}
 			} catch (CoreException e) {
 				throw TeamException.asTeamException(e);
@@ -244,14 +247,16 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 
 		@Override
 		protected void remove(IResource resource) {
-			if (handler != null)
+			if (handler != null) {
 				handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_REMOVAL, IResource.DEPTH_INFINITE), false);
+			}
 		}
 
 		@Override
 		protected void change(IResource resource, int depth) {
-			if (handler != null)
+			if (handler != null) {
 				handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_CHANGE, depth), false);
+			}
 		}
 
 		@Override
@@ -262,7 +267,8 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 
 	public SubscriberChangeSetManager(Subscriber subscriber) {
 		collector = new ResourceCollector(subscriber);
-		handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, new String[] { subscriber.getName() }), NLS.bind(Messages.SubscriberChangeSetCollector_2, new String[] { subscriber.getName() })); //
+		handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, subscriber.getName()),
+				NLS.bind(Messages.SubscriberChangeSetCollector_2, subscriber.getName()));
 	}
 
 	@Override
@@ -274,11 +280,13 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 		ChangeSet[] sets = getSets();
 		for (ChangeSet s : sets) {
 			ActiveChangeSet set = (ActiveChangeSet) s;
-			if (set.getDiffTree().getChildren(resource.getFullPath()).length > 0)
+			if (set.getDiffTree().getChildren(resource.getFullPath()).length > 0) {
 				return true;
+			}
 		}
-		if (getDefaultSet() != null)
+		if (getDefaultSet() != null) {
 			return (getDefaultSet().getDiffTree().getChildren(resource.getFullPath()).length > 0);
+		}
 		return false;
 	}
 

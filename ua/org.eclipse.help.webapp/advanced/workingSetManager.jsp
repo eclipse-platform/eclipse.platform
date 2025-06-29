@@ -46,7 +46,7 @@ BODY {
     font:<%=prefs.getViewFont()%>;
     font-size:.875rem;
 	background-color: <%=prefs.getToolbarBackground()%>;
-	color:WindowText; 	
+	color:CanvasText; 	
 }
 
 TABLE {
@@ -76,13 +76,13 @@ FORM {
 }
 
 #workingSetContainer {
-	color:WindowText; 
-	border: 2px inset ThreeDHighlight;
+	color:CanvasText; 
+	border: 2px inset CanvasText;
 	margin:0px 5px;
 	padding:5px;
 	overflow:auto;
 	height:140px;
-	background:Window;
+	background:Canvas;
 }
 
 #buttonArea {
@@ -224,7 +224,7 @@ function newWorkingSet() {
 	%>
 	// move the dialog just a bit higher than the middle
 	if (t-50 > 0) t = t-50;
-	window.location="javascript://needModal";
+	if (typeof top.swtHintNeedModalPopup === "function") top.swtHintNeedModalPopup();
 	workingSetDialog = window.open("workingSet.jsp?operation=add&workingSet="+encodeURIComponent(getWorkingSet()), "workingSetDialog", "resizable=yes,height="+h+",width="+w +",left="+l+",top="+t);
 	workingSetDialog.focus(); 
 }
@@ -247,7 +247,7 @@ function editWorkingSet() {
 	// move the dialog just a bit higher than the middle
 	if (t-50 > 0) t = t-50;
 		
-	window.location="javascript://needModal";
+	if (typeof top.swtHintNeedModalPopup === "function") top.swtHintNeedModalPopup();
 	workingSetDialog = window.open("workingSet.jsp?operation=edit&workingSet="+encodeURIComponent(getWorkingSet()), "workingSetDialog", "resizable=no,height="+h+",width="+w+",left="+l+",top="+t );
 	workingSetDialog.focus(); 
 }

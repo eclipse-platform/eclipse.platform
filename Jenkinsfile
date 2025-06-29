@@ -11,6 +11,9 @@ pipeline {
 		maven 'apache-maven-latest'
 		jdk 'temurin-jdk21-latest'
 	}
+	environment {
+		MAVEN_OPTS = '-Xmx1500m'
+	}
 	stages {
 		stage('Build') {
 			steps {
@@ -29,12 +32,16 @@ pipeline {
 			post {
 				always {
 					archiveArtifacts artifacts: '.*log,**/target/**/.*log', allowEmptyArchive: true
-					junit '**/target/surefire-reports/TEST-*.xml'
+					junit allowEmptyResults: true, testResults: '**/target/surefire-reports/TEST-*.xml'
 					discoverGitReferenceBuild referenceJob: 'eclipse.platform/master'
-					recordIssues(publishAllIssues:false, ignoreQualityGate:true,
-						tool: eclipse(name: 'Compiler and API Tools', pattern: '**/target/compilelogs/*.xml'),
-						qualityGates: [[threshold: 1, type: 'DELTA', unstable: true]])
-					recordIssues publishAllIssues:false, tools: [mavenConsole(), javaDoc()]
+					recordIssues enabledForFailure: true, publishAllIssues:false, ignoreQualityGate:true,
+						tools: [
+							eclipse(name: 'Compiler', pattern: '**/target/compilelogs/*.xml'),
+							javaDoc(),
+							issues(name: 'API Tools', id: 'apitools', pattern: '**/target/apianalysis/*.xml')
+						],
+						qualityGates: [[threshold: 1, type: 'DELTA', unstable: true]]
+					recordIssues enabledForFailure: true, publishAllIssues:false, tools: [mavenConsole()]
 				}
 			}
 		}

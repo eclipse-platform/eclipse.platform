@@ -234,14 +234,13 @@ public class ContextFileProvider extends AbstractContextProvider {
 			IUAElement[] children = root.getChildren();
 			Map<String, Context> contexts = new HashMap<>();
 			for (int i=0;i<children.length;++i) {
-				if (children[i] instanceof Context) {
-					Context context = (Context)children[i];
+				if (children[i] instanceof Context context) {
 					String id = context.getId();
 					if (id != null) {
 						Object existingContext =  contexts.get(id);
-						if (existingContext==null)
+						if (existingContext==null) {
 							contexts.put(id, context);
-						else
+						} else
 						{
 							((Context)existingContext).mergeContext(context);
 
@@ -290,8 +289,7 @@ public class ContextFileProvider extends AbstractContextProvider {
 	private class NormalizeHandler extends ProcessorHandler {
 		@Override
 		public short handle(UAElement element, String id) {
-			if (element instanceof Context) {
-				Context context = (Context)element;
+			if (element instanceof Context context) {
 				IUAElement[] children = context.getChildren();
 				if (children.length > 0 && Context.ELEMENT_DESCRIPTION.equals(((UAElement)children[0]).getElementName())) {
 					StringBuilder buf = new StringBuilder();
@@ -321,8 +319,7 @@ public class ContextFileProvider extends AbstractContextProvider {
 					description.appendChild(document.createTextNode(buf.toString()));
 				}
 			}
-			else if (element instanceof Topic) {
-				Topic topic = (Topic)element;
+			else if (element instanceof Topic topic) {
 				String href = topic.getHref();
 				if (href != null) {
 					int index = id.indexOf('/', 1);

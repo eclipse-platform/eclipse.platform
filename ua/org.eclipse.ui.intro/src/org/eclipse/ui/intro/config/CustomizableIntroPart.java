@@ -105,15 +105,17 @@ public final class CustomizableIntroPart extends IntroPart implements
 
 		@Override
 		public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-			if (!(adaptableObject instanceof CustomizableIntroPart))
+			if (!(adaptableObject instanceof CustomizableIntroPart)) {
 				return null;
+			}
 
 			if (adapterType.equals(StandbyPart.class)) {
 				return adapterType.cast(getStandbyPart());
 			} else if (adapterType.equals(IntroPartPresentation.class)) {
 				return adapterType.cast(getPresentation());
-			} else
+			} else {
 				return null;
+			}
 		}
 	};
 
@@ -127,16 +129,17 @@ public final class CustomizableIntroPart extends IntroPart implements
 		// if we are logging performance, start the UI creation start time.
 		// Clock stops at the end of the standbyStateChanged event.
 		if (Log.logPerformance) {
-			if (PerformanceStats.ENABLED)
+			if (PerformanceStats.ENABLED) {
 				PerformanceStats.getStats(
 					IIntroConstants.PERF_VIEW_CREATION_TIME,
 					IIntroConstants.INTRO).startRun();
-			else
+			} else {
 				// capture start time to be used when only Intro performance
 				// trace
 				// is turned on.
 				IntroPlugin.getDefault().setUICreationStartTime(
 					System.currentTimeMillis());
+			}
 		}
 	}
 
@@ -164,9 +167,10 @@ public final class CustomizableIntroPart extends IntroPart implements
 			// we have a valid config contribution, get presentation. Make sure
 			// you pass correct memento.
 			presentation = model.getPresentation();
-			if (presentation != null)
+			if (presentation != null) {
 				presentation.init(this, getMemento(memento,
 					IIntroConstants.MEMENTO_PRESENTATION_TAG));
+			}
 
 			// standby part is not created here for performance.
 
@@ -179,11 +183,12 @@ public final class CustomizableIntroPart extends IntroPart implements
 				IIntroConstants.PLUGIN_ID);
 		}
 
-		if (model == null || !model.hasValidConfig())
+		if (model == null || !model.hasValidConfig()) {
 			DialogUtil.displayErrorMessage(site.getShell(),
 				Messages.CustomizableIntroPart_configNotFound,
 				new Object[] { ModelLoaderUtil.getLogString(
 					getConfigurationElement(), null) }, null);
+		}
 
 	}
 
@@ -227,16 +232,19 @@ public final class CustomizableIntroPart extends IntroPart implements
 		// If we have a standby memento, it means we closed with standby open,
 		// and so recreate it.
 		IMemento standbyMemento = getMemento(memento, IIntroConstants.MEMENTO_STANDBY_PART_TAG);
-		if (standbyMemento == null)
+		if (standbyMemento == null) {
 			return false;
+		}
 		String restore = standbyMemento.getString(IIntroConstants.MEMENTO_RESTORE_ATT);
-		if (restore == null)
+		if (restore == null) {
 			return false;
+		}
 		String cachedStandbyPart = standbyMemento
 			.getString(IIntroConstants.MEMENTO_STANDBY_CONTENT_PART_ID_ATT);
 		if (cachedStandbyPart != null
-				&& cachedStandbyPart.equals(IIntroConstants.EMPTY_STANDBY_CONTENT_PART))
+				&& cachedStandbyPart.equals(IIntroConstants.EMPTY_STANDBY_CONTENT_PART)) {
 			return false;
+		}
 
 		return cachedStandbyPart != null ? true : false;
 	}
@@ -251,21 +259,24 @@ public final class CustomizableIntroPart extends IntroPart implements
 	public void standbyStateChanged(boolean standby) {
 
 		// do this only if there is a valid config.
-		if (model == null || !model.hasValidConfig())
+		if (model == null || !model.hasValidConfig()) {
 			return;
+		}
 
-		if (!standby)
+		if (!standby) {
 			// we started of not in standby, no need to restore standby.
 			restoreStandby = false;
+		}
 
 		boolean isStandbyPartNeeded = isStandbyPartNeeded();
 		isStandbyPartNeeded = isStandbyPartNeeded || restoreStandby;
 
 		try {
-			if (standbyPart == null && standby && isStandbyPartNeeded)
+			if (standbyPart == null && standby && isStandbyPartNeeded) {
 				// if standby part is not created yet, create it only if in
 				// standby, and we need to.
 				createStandbyPart();
+			}
 
 			handleSetFocus(isStandbyPartNeeded);
 			setTopControl(isStandbyPartNeeded ? getStandbyControl()
@@ -307,10 +318,12 @@ public final class CustomizableIntroPart extends IntroPart implements
 		if (standby) {
 			// standby part is null when Intro has not gone into standby state
 			// yet.
-			if (standbyPart != null)
+			if (standbyPart != null) {
 				standbyPart.setFocus();
-		} else
+			}
+		} else {
 			presentation.setFocus();
+		}
 	}
 
 	@Override
@@ -333,8 +346,9 @@ public final class CustomizableIntroPart extends IntroPart implements
 		// the Container top control may have only one child if the standby
 		// part is not created yet. This happens if the intro never goes into
 		// standby. Doing this for performance.
-		if (standbyPart != null)
+		if (standbyPart != null) {
 			return container.getChildren()[1];
+		}
 		return null;
 	}
 
@@ -346,18 +360,21 @@ public final class CustomizableIntroPart extends IntroPart implements
 	public void dispose() {
 		super.dispose();
 		// call dispose on both parts.
-		if (presentation != null)
+		if (presentation != null) {
 			presentation.dispose();
-		if (standbyPart != null)
+		}
+		if (standbyPart != null) {
 			standbyPart.dispose();
+		}
 		// clear all loaded models since we are disposing of the Intro Part.
 		IntroPlugin.getDefault().getExtensionPointManager().clear();
 		ContentProviderManager.getInst().clear();
 		// clean platform adapter.
 		Platform.getAdapterManager().unregisterAdapters(factory,
 			CustomizableIntroPart.class);
-		if (model != null && model.hasValidConfig())
+		if (model != null && model.hasValidConfig()) {
 			Platform.getExtensionRegistry().removeRegistryChangeListener(this);
+		}
 
 	}
 
@@ -390,26 +407,31 @@ public final class CustomizableIntroPart extends IntroPart implements
 		// them. Container has stack layout. safe to cast.
 		boolean restorePresentation = false;
 		StackLayout layout = (StackLayout) container.getLayout();
-		if (getPresentationControl().equals(layout.topControl))
+		if (getPresentationControl().equals(layout.topControl)) {
 			restorePresentation = true;
+		}
 
 		IMemento presentationMemento = memento
 			.createChild(IIntroConstants.MEMENTO_PRESENTATION_TAG);
 		IMemento standbyPartMemento = memento
 			.createChild(IIntroConstants.MEMENTO_STANDBY_PART_TAG);
-		if (restorePresentation)
+		if (restorePresentation) {
 			presentationMemento.putString(IIntroConstants.MEMENTO_RESTORE_ATT, "true"); //$NON-NLS-1$
-		else
+		} else {
 			standbyPartMemento.putString(IIntroConstants.MEMENTO_RESTORE_ATT, "true"); //$NON-NLS-1$
-		if (presentation != null)
+		}
+		if (presentation != null) {
 			presentation.saveState(presentationMemento);
-		if (standbyPart != null)
+		}
+		if (standbyPart != null) {
 			standbyPart.saveState(standbyPartMemento);
+		}
 	}
 
 	private IMemento getMemento(IMemento memento, String key) {
-		if (memento == null)
+		if (memento == null) {
 			return null;
+		}
 		return memento.getChild(key);
 	}
 
@@ -436,8 +458,9 @@ public final class CustomizableIntroPart extends IntroPart implements
 			model.setPresentation(getPresentation());
 			// keep same page on refresh. No need for notification here.
 			model.setCurrentPageId(currentPageId, false);
-			if (getPresentation() != null)
+			if (getPresentation() != null) {
 				getPresentation().registryChanged(event);
+			}
 
 		});
 

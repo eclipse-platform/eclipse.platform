@@ -58,8 +58,9 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 		}
 
 		private void changed(ChangeSet changeSet, IPath[] allAffectedResources) {
-			if (added.contains(changeSet))
+			if (added.contains(changeSet)) {
 				return;
+			}
 			IPath[] paths = changed.get(changeSet);
 			if (paths == null) {
 				changed.put(changeSet, allAffectedResources);
@@ -127,8 +128,7 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 		Object[] listeners = getListeners();
 		for (Object l : listeners) {
 			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
-			if (listener instanceof IChangeSetCollectorChangeListener) {
-				final IChangeSetCollectorChangeListener csccl = (IChangeSetCollectorChangeListener) listener;
+			if (listener instanceof final IChangeSetCollectorChangeListener csccl) {
 				SafeRunner.run(new ISafeRunnable() {
 					@Override
 					public void handleException(Throwable exception) {

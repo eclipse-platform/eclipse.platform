@@ -89,11 +89,9 @@ public class ApplyPatchModelCompareEditorInput extends ModelCompareEditorInput {
 	protected void contentsCreated() {
 		super.contentsCreated();
 		ICompareNavigator nav = getNavigator();
-		if (nav instanceof CompareEditorInputNavigator) {
-			final CompareEditorInputNavigator cein = (CompareEditorInputNavigator) nav;
+		if (nav instanceof final CompareEditorInputNavigator cein) {
 			Object pane = cein.getPanes()[0]; // the structure input pane, top left
-			if (pane instanceof CompareViewerPane) {
-				CompareViewerPane cvp = (CompareViewerPane) pane;
+			if (pane instanceof CompareViewerPane cvp) {
 				cvp.setSelection(StructuredSelection.EMPTY);
 				cvp.addSelectionChangedListener(e -> feed1(cein));
 				feed1(cein);
@@ -105,13 +103,11 @@ public class ApplyPatchModelCompareEditorInput extends ModelCompareEditorInput {
 	private void feed1(CompareEditorInputNavigator cein) {
 		if (getCompareInput() instanceof PatchFileDiffNode) {
 			Object pane = cein.getPanes()[1]; // the top middle pane
-			if (pane instanceof CompareViewerPane) {
-				CompareViewerPane cvp = (CompareViewerPane) pane;
+			if (pane instanceof CompareViewerPane cvp) {
 				cvp.setInput(getCompareInput());
 			}
 			pane = cein.getPanes()[2]; // the top right pane
-			if (pane instanceof CompareViewerPane) {
-				CompareViewerPane cvp = (CompareViewerPane) pane;
+			if (pane instanceof CompareViewerPane cvp) {
 				cvp.setInput(null); // clear downstream pane
 			}
 		}

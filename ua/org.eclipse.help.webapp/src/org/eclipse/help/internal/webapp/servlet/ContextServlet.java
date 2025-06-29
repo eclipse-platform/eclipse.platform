@@ -45,11 +45,11 @@ public class ContextServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		String response = processRequest(req, resp);
-		if ("400".equals(response)) //$NON-NLS-1$
+		if ("400".equals(response)) { //$NON-NLS-1$
 			resp.sendError(400); // bad request; missing parameter
-		else if ("404".equals(response)) //$NON-NLS-1$
+		} else if ("404".equals(response)) { //$NON-NLS-1$
 			resp.sendError(404); // Wrong context id; not found
-		else {
+		} else {
 			@SuppressWarnings("resource")
 			PrintWriter writer = resp.getWriter();
 			writer.write(response);

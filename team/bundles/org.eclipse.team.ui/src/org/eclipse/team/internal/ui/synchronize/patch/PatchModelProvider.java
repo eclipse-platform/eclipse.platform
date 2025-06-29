@@ -127,8 +127,7 @@ public class PatchModelProvider extends ModelProvider {
 	}
 
 	public static PatchWorkspace getPatchWorkspace(Subscriber subscriber) {
-		if (subscriber instanceof ApplyPatchSubscriber) {
-			ApplyPatchSubscriber aps = (ApplyPatchSubscriber) subscriber;
+		if (subscriber instanceof ApplyPatchSubscriber aps) {
 			return new PatchWorkspace(aps.getPatcher());
 		}
 		// TODO: assertion?

@@ -240,11 +240,11 @@ public class DetailPaneProxy implements ISaveablePart {
 					}
 				} else{
 					createErrorLabel(DetailMessages.DetailPaneProxy_0);
-					DebugUIPlugin.log(new CoreException(new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), MessageFormat.format(DetailMessages.DetailPaneProxy_2, new Object[] { fCurrentPane.getID() }))));
+					DebugUIPlugin.log(new CoreException(new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), MessageFormat.format(DetailMessages.DetailPaneProxy_2, fCurrentPane.getID()))));
 				}
 			} else {
 				createErrorLabel(DetailMessages.DetailPaneProxy_0);
-				DebugUIPlugin.log(new CoreException(new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), MessageFormat.format(DetailMessages.DetailPaneProxy_3, new Object[] { paneID }))));
+				DebugUIPlugin.log(new CoreException(new Status(IStatus.ERROR, DebugUIPlugin.getUniqueIdentifier(), MessageFormat.format(DetailMessages.DetailPaneProxy_3, paneID))));
 			}
 		} finally {
 			fParentContainer.getParentComposite().setRedraw(true);
@@ -257,8 +257,7 @@ public class DetailPaneProxy implements ISaveablePart {
 	 * @param hasFocus  whether the detail pane control has the focus
 	 */
 	protected void updateSelectionProvider(boolean hasFocus) {
-		if (fParentContainer instanceof IDetailPaneContainer2) {
-			final IDetailPaneContainer2 container2 = (IDetailPaneContainer2) fParentContainer;
+		if (fParentContainer instanceof final IDetailPaneContainer2 container2) {
 			if (fCurrentPane instanceof IDetailPane2) {
 				final ISelectionProvider provider= hasFocus ? ((IDetailPane2) fCurrentPane).getSelectionProvider() : null;
 				container2.setSelectionProvider(provider);

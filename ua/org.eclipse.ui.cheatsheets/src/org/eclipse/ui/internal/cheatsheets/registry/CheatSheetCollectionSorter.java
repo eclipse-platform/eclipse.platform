@@ -50,8 +50,9 @@ public class CheatSheetCollectionSorter extends ViewerComparator {
 		String name1 = ((WorkbenchAdapter)o1).getLabel(o1);
 		String name2 = ((WorkbenchAdapter)o2).getLabel(o2);
 
-		if (name1.equals(name2))
+		if (name1.equals(name2)) {
 			return 0;
+		}
 
 		return collator.compare(name1, name2);
 	}

@@ -7,13 +7,6 @@ Since you have come this far, you probably already understand that Actions and C
 
 The action framework is proven, tightly integrated and fairly easy to program. So, why change?
 
-Contents
---------
-
-*   [1 Actions](#Actions)
-*   [2 Commands](#Commands)
-*   [3 References](#References)
-*   [4 See Also:](#See-Also:)
 
 Actions
 -------

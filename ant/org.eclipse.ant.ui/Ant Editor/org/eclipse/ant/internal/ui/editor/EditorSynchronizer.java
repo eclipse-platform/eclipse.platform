@@ -19,7 +19,7 @@ import org.eclipse.jface.text.link.LinkedModeModel;
 
 /**
  * Synchronizes the Ant editor with the state of its linked mode
- * 
+ *
  * @since 3.1
  */
 public class EditorSynchronizer implements ILinkedModeListener {
@@ -29,7 +29,7 @@ public class EditorSynchronizer implements ILinkedModeListener {
 
 	/**
 	 * Creates a new synchronizer.
-	 * 
+	 *
 	 * @param editor
 	 *            the Ant editor that will be synchonized with the linked mode
 	 */

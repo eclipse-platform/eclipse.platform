@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -77,8 +77,9 @@ public class AntSourceViewerInformationControl implements IInformationControl, I
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.character == 0x1B) // ESC
+				if (e.character == 0x1B) { // ESC
 					fShell.dispose();
+				}
 			}
 
 			@Override

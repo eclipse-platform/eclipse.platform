@@ -58,12 +58,11 @@ public class TableSelectionProviderDecorator implements ISelectionProvider {
 		ISelection selection = selectionProvider.getSelection();
 
 		// in these cases the original selection will be returned
-		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection))
+		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection structuredSelection)) {
 			return selection;
+		}
 
 		// constructs a list with the selected elements
-		IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-
 		StringBuilder copyText = new StringBuilder();
 		copyText.append(headerPluginStats());
 		copyText.append('\n');

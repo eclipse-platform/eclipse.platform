@@ -45,8 +45,9 @@ public class UITestRunListener extends TestRunListener {
 			// Have to force the creation of view part contents
 			// otherwise the UI will not be updated
 			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-			if (page == null)
+			if (page == null) {
 				return null;
+			}
 			TestRunnerViewPart view = (TestRunnerViewPart) page.findView(TestRunnerViewPart.NAME);
 			if (view == null) {
 				// create and show the result view if it isn't created yet.

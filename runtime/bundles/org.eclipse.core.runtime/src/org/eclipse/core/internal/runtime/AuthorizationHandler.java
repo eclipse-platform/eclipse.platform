@@ -56,8 +56,9 @@ public class AuthorizationHandler {
 	}
 
 	private static void logAuthNotAvailable(Throwable e) {
-		if (authNotAvailableLogged)
+		if (authNotAvailableLogged) {
 			return;
+		}
 		authNotAvailableLogged = true;
 		RuntimeLog.log(new Status(IStatus.WARNING, Platform.PI_RUNTIME, 0, Messages.auth_notAvailable, e));
 	}
@@ -68,10 +69,12 @@ public class AuthorizationHandler {
 	 * <code>false</code> if no authentication implementation is available.
 	 */
 	private static boolean loadKeyring() throws CoreException {
-		if (getAuthClass() == null)
+		if (getAuthClass() == null) {
 			return false;
-		if (keyring != null && new File(keyringFile).lastModified() == keyringTimeStamp)
+		}
+		if (keyring != null && new File(keyringFile).lastModified() == keyringTimeStamp) {
 			return true;
+		}
 		if (keyringFile == null) {
 			boolean found = ServiceCaller.callOnce(AuthorizationHandler.class, Location.class,
 					Location.CONFIGURATION_FILTER, configurationLocation -> {
@@ -159,8 +162,9 @@ public class AuthorizationHandler {
 	 * XXX Move to a plug-in to be defined (JAAS plugin).
 	 */
 	public static synchronized void addAuthorizationInfo(URL serverUrl, String realm, String authScheme, Map<String,String> info) throws CoreException {
-		if (!loadKeyring())
+		if (!loadKeyring()) {
 			return;
+		}
 		try {
 			Method method = authClass.getMethod("addAuthorizationInfo", URL.class, String.class, String.class, Map.class); //$NON-NLS-1$
 			method.invoke(keyring, serverUrl, realm, authScheme, new HashMap<>(info));
@@ -189,8 +193,9 @@ public class AuthorizationHandler {
 	 * XXX Move to a plug-in to be defined (JAAS plugin).
 	 */
 	public static synchronized void addProtectionSpace(URL resourceUrl, String realm) throws CoreException {
-		if (!loadKeyring())
+		if (!loadKeyring()) {
 			return;
+		}
 		try {
 			Method method = authClass.getMethod("addProtectionSpace", URL.class, String.class); //$NON-NLS-1$
 			method.invoke(keyring, resourceUrl, realm);
@@ -222,8 +227,9 @@ public class AuthorizationHandler {
 	 * XXX Move to a plug-in to be defined (JAAS plugin).
 	 */
 	public static synchronized void flushAuthorizationInfo(URL serverUrl, String realm, String authScheme) throws CoreException {
-		if (!loadKeyring())
+		if (!loadKeyring()) {
 			return;
+		}
 		try {
 			Method method = authClass.getMethod("flushAuthorizationInfo", URL.class, String.class, String.class); //$NON-NLS-1$
 			method.invoke(keyring, serverUrl, realm, authScheme);
@@ -253,8 +259,9 @@ public class AuthorizationHandler {
 	 */
 	public static synchronized Map<String,String> getAuthorizationInfo(URL serverUrl, String realm, String authScheme) {
 		try {
-			if (!loadKeyring())
+			if (!loadKeyring()) {
 				return null;
+			}
 			try {
 				Method method = authClass.getMethod("getAuthorizationInfo", URL.class, String.class, String.class); //$NON-NLS-1$
 				@SuppressWarnings("unchecked")
@@ -281,8 +288,9 @@ public class AuthorizationHandler {
 	 */
 	public static synchronized String getProtectionSpace(URL resourceUrl) {
 		try {
-			if (!loadKeyring())
+			if (!loadKeyring()) {
 				return null;
+			}
 			try {
 				Method method = authClass.getMethod("getProtectionSpace", URL.class); //$NON-NLS-1$
 				return (String)method.invoke(keyring, resourceUrl);
@@ -296,8 +304,9 @@ public class AuthorizationHandler {
 	}
 
 	public static void setKeyringFile(String file) {
-		if (keyringFile != null)
+		if (keyringFile != null) {
 			throw new IllegalStateException(NLS.bind(Messages.auth_alreadySpecified, keyringFile));
+		}
 		keyringFile = file;
 	}
 

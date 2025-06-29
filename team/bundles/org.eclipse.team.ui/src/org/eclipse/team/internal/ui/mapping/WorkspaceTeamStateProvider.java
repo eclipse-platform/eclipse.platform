@@ -69,32 +69,36 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	@Override
 	public final boolean isDecorationEnabled(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
-		if (provider != null)
+		if (provider != null) {
 			return provider.isDecorationEnabled(element);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean hasDecoratedState(Object element) throws CoreException {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
-		if (provider != null)
+		if (provider != null) {
 			provider.hasDecoratedState(element);
+		}
 		return false;
 	}
 
 	@Override
 	public final int getDecoratedStateMask(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
-		if (provider != null)
+		if (provider != null) {
 			return provider.getDecoratedStateMask(element);
+		}
 		return 0;
 	}
 
 	@Override
 	public String[] getDecoratedProperties(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
-		if (provider != null)
+		if (provider != null) {
 			return provider.getDecoratedProperties(element);
+		}
 		return new String[0];
 	}
 
@@ -102,30 +106,34 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	public ITeamStateDescription getStateDescription(Object element, int stateMask,
 			String[] properties, IProgressMonitor monitor) throws CoreException {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
-		if (provider != null)
+		if (provider != null) {
 			return provider.getStateDescription(element, stateMask, properties, monitor);
+		}
 		return null;
 	}
 
 	@Override
 	public ResourceMappingContext getResourceMappingContext(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
-		if (provider != null)
+		if (provider != null) {
 			return provider.getResourceMappingContext(element);
+		}
 		return ResourceMappingContext.LOCAL_CONTEXT;
 	}
 
 	private ITeamStateProvider getDecoratedStateProvider(Object element) {
 		RepositoryProviderType type = getProviderType(element);
-		if (type != null)
+		if (type != null) {
 			return Adapters.adapt(type, ITeamStateProvider.class);
+		}
 		return null;
 	}
 
 	private ITeamStateProvider getDecoratedStateProviderForId(String id) {
 		RepositoryProviderType type = getProviderTypeForId(id);
-		if (type != null)
+		if (type != null) {
 			return Adapters.adapt(type, ITeamStateProvider.class);
+		}
 		return null;
 	}
 
@@ -133,8 +141,9 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		ResourceMapping mapping = Utils.getResourceMapping(element);
 		if (mapping != null) {
 			String providerId = getProviderId(mapping.getProjects());
-			if (providerId != null)
+			if (providerId != null) {
 				return getProviderTypeForId(providerId);
+			}
 		}
 		return null;
 	}
@@ -143,18 +152,20 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		String id = null;
 		for (IProject project : projects) {
 			String nextId = getProviderId(project);
-			if (id == null)
+			if (id == null) {
 				id = nextId;
-			else if (nextId != null && !id.equals(nextId))
+			} else if (nextId != null && !id.equals(nextId)) {
 				return null;
+			}
 		}
 		return id;
 	}
 
 	private String getProviderId(IProject project) {
 		RepositoryProvider provider = RepositoryProvider.getProvider(project);
-		if (provider != null)
+		if (provider != null) {
 			return provider.getID();
+		}
 		return null;
 	}
 

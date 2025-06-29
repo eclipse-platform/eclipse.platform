@@ -29,9 +29,7 @@ public class GroupElementLaunchedHandler implements IStatusHandler {
 
 	@Override
 	public Object handleStatus(IStatus status, Object source) throws CoreException {
-		if (source instanceof ILaunch[]) {
-			ILaunch[] launches = (ILaunch[]) source;
-
+		if (source instanceof ILaunch[] launches) {
 			// Now we need to override the history to make multi-launch
 			// appear last, if we don't do it last launch would be our
 			// child's launch which is not correct for repeating the

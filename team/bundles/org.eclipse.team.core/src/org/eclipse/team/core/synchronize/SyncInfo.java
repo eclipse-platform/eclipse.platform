@@ -290,7 +290,9 @@ public class SyncInfo implements IAdaptable {
 
 	@Override
 	public boolean equals(Object other) {
-		if(other == this) return true;
+		if(other == this) {
+			return true;
+		}
 		if(other instanceof SyncInfo) {
 			return equalNodes(this, (SyncInfo)other);
 		}
@@ -309,37 +311,53 @@ public class SyncInfo implements IAdaptable {
 
 			// First, ensure the local resources are equals
 			IResource local1 = null;
-			if (node1.getLocal() != null)
+			if (node1.getLocal() != null) {
 				local1 = node1.getLocal();
+			}
 			IResource local2 = null;
-			if (node2.getLocal() != null)
+			if (node2.getLocal() != null) {
 				local2 = node2.getLocal();
-			if (!equalObjects(local1, local2)) return false;
+			}
+			if (!equalObjects(local1, local2)) {
+				return false;
+			}
 
 			// Next, ensure the base resources are equal
 			IResourceVariant base1 = null;
-			if (node1.getBase() != null)
+			if (node1.getBase() != null) {
 				base1 = node1.getBase();
+			}
 			IResourceVariant base2 = null;
-			if (node2.getBase() != null)
+			if (node2.getBase() != null) {
 				base2 = node2.getBase();
-			if (!equalObjects(base1, base2)) return false;
+			}
+			if (!equalObjects(base1, base2)) {
+				return false;
+			}
 
 			// Finally, ensure the remote resources are equal
 			IResourceVariant remote1 = null;
-			if (node1.getRemote() != null)
+			if (node1.getRemote() != null) {
 				remote1 = node1.getRemote();
+			}
 			IResourceVariant remote2 = null;
-			if (node2.getRemote() != null)
-					remote2 = node2.getRemote();
-			if (!equalObjects(remote1, remote2)) return false;
+			if (node2.getRemote() != null) {
+				remote2 = node2.getRemote();
+			}
+			if (!equalObjects(remote1, remote2)) {
+				return false;
+			}
 
 			return true;
 		}
 
 	private boolean equalObjects(Object o1, Object o2) {
-		if (o1 == null && o2 == null) return true;
-		if (o1 == null || o2 == null) return false;
+		if (o1 == null && o2 == null) {
+			return true;
+		}
+		if (o1 == null || o2 == null) {
+			return false;
+		}
 		return o1.equals(o2);
 	}
 
@@ -376,18 +394,24 @@ public class SyncInfo implements IAdaptable {
 				case INCOMING: label = Messages.RemoteSyncElement_incoming; break;
 			}
 			switch(kind & CHANGE_MASK) {
-				case CHANGE: label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_change }); break; //
-				case ADDITION: label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_addition }); break; //
-				case DELETION: label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_deletion }); break; //
+			case CHANGE:
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_change);
+				break; //
+			case ADDITION:
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_addition);
+				break; //
+			case DELETION:
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_deletion);
+				break; //
 			}
 			if((kind & MANUAL_CONFLICT) != 0) {
-				label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_manual }); //
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_manual); //
 			}
 			if((kind & AUTOMERGE_CONFLICT) != 0) {
-				label = NLS.bind(Messages.concatStrings, new String[] { label, Messages.RemoteSyncElement_auto }); //
+				label = NLS.bind(Messages.concatStrings, label, Messages.RemoteSyncElement_auto); //
 			}
 		}
-		return NLS.bind(Messages.RemoteSyncElement_delimit, new String[] { label });
+		return NLS.bind(Messages.RemoteSyncElement_delimit, label);
 	}
 
 	/**
@@ -440,17 +464,19 @@ public class SyncInfo implements IAdaptable {
 					if (remote == null) {
 						description = CONFLICTING | DELETION | PSEUDO_CONFLICT;
 					} else {
-						if (comparator.compare(base, remote))
+						if (comparator.compare(base, remote)) {
 							description = OUTGOING | DELETION;
-						else
+						} else {
 							description = CONFLICTING | CHANGE;
+						}
 					}
 				} else {
 					if (remote == null) {
-						if (comparator.compare(local, base))
+						if (comparator.compare(local, base)) {
 							description = INCOMING | DELETION;
-						else
+						} else {
 							description = CONFLICTING | CHANGE;
+						}
 					} else {
 						boolean ay = comparator.compare(local, base);
 						boolean am = comparator.compare(base, remote);
@@ -480,8 +506,9 @@ public class SyncInfo implements IAdaptable {
 				if (!localExists) {
 					description= ADDITION;
 				} else {
-					if (! comparator.compare(local, remote))
+					if (! comparator.compare(local, remote)) {
 						description= CHANGE;
+					}
 				}
 			}
 		}

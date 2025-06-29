@@ -53,7 +53,7 @@ public class AntPreferencePage extends FieldEditorPreferencePage implements IWor
 
 	/**
 	 * Allows us to override the default behavior of the default {@link IntegerFieldEditor} to work on a core preference context
-	 * 
+	 *
 	 * @since 3.6
 	 */
 	class AntIntegerFieldEditor extends IntegerFieldEditor {
@@ -62,7 +62,7 @@ public class AntPreferencePage extends FieldEditorPreferencePage implements IWor
 
 		/**
 		 * Constructor
-		 * 
+		 *
 		 * @param node
 		 *            the identifier of the node we want to set the preference in, i.e. org.eclipse.ant.launching
 		 * @param key
@@ -144,8 +144,7 @@ public class AntPreferencePage extends FieldEditorPreferencePage implements IWor
 		int maxValue = 1200000;
 		timeout.setValidRange(minValue, maxValue);
 		timeout.setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
-		timeout.setErrorMessage(MessageFormat.format(AntPreferencesMessages.AntPreferencePage_14, new Object[] { Integer.valueOf(minValue),
-				Integer.valueOf(maxValue) }));
+		timeout.setErrorMessage(MessageFormat.format(AntPreferencesMessages.AntPreferencePage_14, Integer.valueOf(minValue), Integer.valueOf(maxValue)));
 		addField(timeout);
 
 		editor = new URLFieldEditor(IAntUIPreferenceConstants.DOCUMENTATION_URL, AntPreferencesMessages.AntPreferencePage_2, getFieldEditorParent());

@@ -106,8 +106,9 @@ public class PageContentForm implements IIntroConstants {
 		Composite pageComposite = createPageTableComposite(factory, toolkit, styleManager, parent);
 		// now add all children
 		AbstractIntroElement[] children = page.getChildren();
-		for (int i = 0; i < children.length; i++)
+		for (int i = 0; i < children.length; i++) {
 			factory.createIntroElement(pageComposite, children[i]);
+		}
 
 	}
 

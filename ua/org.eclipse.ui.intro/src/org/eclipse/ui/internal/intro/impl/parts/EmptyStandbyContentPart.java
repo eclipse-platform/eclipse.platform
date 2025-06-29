@@ -73,10 +73,11 @@ public class EmptyStandbyContentPart implements IStandbyContentPart {
 
 	@Override
 	public void setInput(Object input) {
-		if (input != null)
+		if (input != null) {
 			setMessage((String) input);
-		else
+		} else {
 			setMessage(""); //$NON-NLS-1$
+		}
 	}
 
 	@Override

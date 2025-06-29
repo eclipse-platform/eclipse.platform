@@ -188,7 +188,9 @@ public class LRUCache implements Cloneable {
 		entry = fEntryTable.get(key);
 
 		/* If entry does not exist, return */
-		if (entry == null) return;
+		if (entry == null) {
+			return;
+		}
 
 		this.privateRemoveEntry (entry, false);
 	}

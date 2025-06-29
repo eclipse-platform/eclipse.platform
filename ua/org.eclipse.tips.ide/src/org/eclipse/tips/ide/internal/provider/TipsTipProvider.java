@@ -40,7 +40,7 @@ public class TipsTipProvider extends org.eclipse.tips.core.TipProvider {
 	@Override
 	public TipImage getImage() {
 		if (fImage48 == null) {
-			fImage48 = getTipImage("icons/tips.png").map(i -> i.setAspectRatio(1)).orElse(null); //$NON-NLS-1$
+			fImage48 = getTipImage("icons/tips.svg").map(i -> i.setAspectRatio(1)).orElse(null); //$NON-NLS-1$
 		}
 		return fImage48;
 	}

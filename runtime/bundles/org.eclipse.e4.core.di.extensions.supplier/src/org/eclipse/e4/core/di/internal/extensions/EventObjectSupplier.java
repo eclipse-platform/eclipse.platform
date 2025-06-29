@@ -118,12 +118,15 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			Subscriber other = (Subscriber) obj;
 			return Objects.equals(this.requestor, other.requestor) && Objects.equals(this.topic, other.topic);
 		}
@@ -146,24 +149,29 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 
 	@Override
 	public Object get(IObjectDescriptor descriptor, IRequestor requestor, boolean track, boolean group) {
-		if (descriptor == null)
+		if (descriptor == null) {
 			return null;
+		}
 		String topic = getTopic(descriptor);
-		if (topic == null || eventAdmin == null || topic.isEmpty())
+		if (topic == null || eventAdmin == null || topic.isEmpty()) {
 			return IInjector.NOT_A_VALUE;
+		}
 
-		if (track)
+		if (track) {
 			subscribe(topic, requestor);
-		else
+		} else {
 			unsubscribe(requestor);
+		}
 
-		if (!currentEvents.containsKey(topic))
+		if (!currentEvents.containsKey(topic)) {
 			return IInjector.NOT_A_VALUE;
+		}
 
 		// convert to fit destination
 		Class<?> descriptorsClass = getDesiredClass(descriptor.getDesiredType());
-		if (descriptorsClass.equals(Event.class))
+		if (descriptorsClass.equals(Event.class)) {
 			return currentEvents.get(topic);
+		}
 
 		return currentEvents.get(topic).getProperty(DATA);
 	}
@@ -171,13 +179,15 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 	private void subscribe(String topic, IRequestor requestor) {
 		Subscriber subscriber = new Subscriber(requestor, topic);
 		synchronized (registrations) {
-			if (registrations.containsKey(subscriber))
+			if (registrations.containsKey(subscriber)) {
 				return;
+			}
 		}
 		BundleContext bundleContext = FrameworkUtil.getBundle(EventObjectSupplier.class).getBundleContext();
-		if (bundleContext == null)
+		if (bundleContext == null) {
 			throw new InjectionException(
 					"Unable to subscribe to events: org.eclipse.e4.core.di.extensions bundle is not activated"); //$NON-NLS-1$
+		}
 
 		String[] topics = new String[] { topic };
 		Dictionary<String, Object> d = new Hashtable<>();
@@ -197,22 +207,25 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 	}
 
 	protected String getTopic(IObjectDescriptor descriptor) {
-		if (descriptor == null)
+		if (descriptor == null) {
 			return null;
+		}
 		EventTopic qualifier = descriptor.getQualifier(EventTopic.class);
 		return qualifier.value();
 	}
 
 	protected void unsubscribe(IRequestor requestor) {
-		if (requestor == null)
+		if (requestor == null) {
 			return;
+		}
 		synchronized (registrations) {
 			Iterator<Entry<Subscriber, ServiceRegistration<EventHandler>>> i = registrations.entrySet().iterator();
 			while (i.hasNext()) {
 				Entry<Subscriber, ServiceRegistration<EventHandler>> entry = i.next();
 				Subscriber key = entry.getKey();
-				if (!requestor.equals(key.getRequestor()))
+				if (!requestor.equals(key.getRequestor())) {
 					continue;
+				}
 				ServiceRegistration<EventHandler> registration = entry.getValue();
 				registration.unregister();
 				i.remove();
@@ -235,12 +248,14 @@ public class EventObjectSupplier extends ExtendedObjectSupplier implements Event
 	}
 
 	private Class<?> getDesiredClass(Type desiredType) {
-		if (desiredType instanceof Class<?>)
+		if (desiredType instanceof Class<?>) {
 			return (Class<?>) desiredType;
+		}
 		if (desiredType instanceof ParameterizedType) {
 			Type rawType = ((ParameterizedType) desiredType).getRawType();
-			if (rawType instanceof Class<?>)
+			if (rawType instanceof Class<?>) {
 				return (Class<?>) rawType;
+			}
 		}
 		return null;
 	}

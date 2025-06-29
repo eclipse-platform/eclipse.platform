@@ -26,8 +26,9 @@ public class ContextDebugHelper {
 		BundleContext bundleContext = bundle == null ? null : bundle.getBundleContext();
 		ServiceReference<IEclipseContextDebugger> ref = bundleContext == null ? null
 				: bundleContext.getServiceReference(IEclipseContextDebugger.class);
-		if (ref == null)
+		if (ref == null) {
 			return null;
+		}
 		IEclipseContextDebugger contextDebugger = bundleContext.getService(ref);
 		bundleContext.ungetService(ref); // this is not the proper place but will do in a static environment
 		return contextDebugger;

@@ -97,8 +97,9 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 	private Status getCumulatedStatus() {
 		TestElement[] children = fChildren.toArray(new TestElement[fChildren.size()]); // copy list to avoid concurreny
 																						// problems
-		if (children.length == 0)
+		if (children.length == 0) {
 			return getSuiteStatus();
+		}
 
 		Status cumulated = children[0].getStatus();
 
@@ -167,8 +168,9 @@ public class TestSuiteElement extends TestElement implements ITestSuiteElement {
 	}
 
 	private void internalSetChildrenStatus(Status status) {
-		if (fChildrenStatus == status)
+		if (fChildrenStatus == status) {
 			return;
+		}
 
 		if (status == Status.RUNNING) {
 			if (fDuration != null) {

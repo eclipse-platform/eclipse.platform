@@ -15,8 +15,8 @@
 
 package org.eclipse.e4.core.internal.tests.nls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Locale;
 
@@ -24,8 +24,8 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.services.translation.TranslationService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 
 import jakarta.inject.Inject;
@@ -51,7 +51,7 @@ public class MessageRegistryTest {
 
 	private IEclipseContext context;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.context = EclipseContextFactory.getServiceContext(FrameworkUtil.getBundle(getClass()).getBundleContext());
 		ContextInjectionFactory.setDefault(context);

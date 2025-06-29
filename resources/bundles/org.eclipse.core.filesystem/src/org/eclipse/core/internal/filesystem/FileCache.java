@@ -62,8 +62,9 @@ public class FileCache {
 	 */
 	public static FileCache getCache() throws CoreException {
 		FileCache instance = FileCacheHolder.instance;
-		if (instance == null)
+		if (instance == null) {
 			throw FileCacheHolder.ce;
+		}
 		return instance;
 	}
 
@@ -93,8 +94,9 @@ public class FileCache {
 		try {
 			SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.copying, toString()), 3);
 			IFileInfo myInfo = source.fetchInfo(EFS.NONE, subMonitor.newChild(1));
-			if (!myInfo.exists())
+			if (!myInfo.exists()) {
 				return new File(cacheDir, "Non-Existent-" + System.currentTimeMillis()); //$NON-NLS-1$
+			}
 			File result;
 			if (myInfo.isDirectory()) {
 				result = getUniqueDirectory(cacheDir, false);
@@ -172,8 +174,9 @@ public class FileCache {
 		do {
 			dir = new File(parent, Long.toString(System.currentTimeMillis() + i++));
 		} while (dir.exists());
-		if (create)
+		if (create) {
 			dir.mkdir();
+		}
 		return dir;
 	}
 }

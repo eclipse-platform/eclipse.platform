@@ -62,10 +62,10 @@ public class EqualsExpression extends Expression {
 
 	@Override
 	public boolean equals(final Object object) {
-		if (!(object instanceof EqualsExpression))
+		if (!(object instanceof final EqualsExpression that)) {
 			return false;
+		}
 
-		final EqualsExpression that= (EqualsExpression)object;
 		return this.fExpectedValue.equals(that.fExpectedValue);
 	}
 

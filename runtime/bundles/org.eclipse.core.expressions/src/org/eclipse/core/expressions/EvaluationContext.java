@@ -77,8 +77,9 @@ public class EvaluationContext implements IEvaluationContext {
 
 	@Override
 	public IEvaluationContext getRoot() {
-		if (fParent == null)
+		if (fParent == null) {
 			return this;
+		}
 		return fParent.getRoot();
 	}
 
@@ -95,8 +96,9 @@ public class EvaluationContext implements IEvaluationContext {
 	@Override
 	public boolean getAllowPluginActivation() {
 		if (fAllowPluginActivation == null) {
-			if (fParent != null)
+			if (fParent != null) {
 				return fParent.getAllowPluginActivation();
+			}
 			return false;
 		}
 		return fAllowPluginActivation.booleanValue();
@@ -106,16 +108,18 @@ public class EvaluationContext implements IEvaluationContext {
 	public void addVariable(String name, Object value) {
 		Assert.isNotNull(name);
 		Assert.isNotNull(value);
-		if (fVariables == null)
+		if (fVariables == null) {
 			fVariables= new HashMap<>();
+		}
 		fVariables.put(name, value);
 	}
 
 	@Override
 	public Object removeVariable(String name) {
 		Assert.isNotNull(name);
-		if (fVariables == null)
+		if (fVariables == null) {
 			return null;
+		}
 		return fVariables.remove(name);
 	}
 
@@ -126,10 +130,12 @@ public class EvaluationContext implements IEvaluationContext {
 		if (fVariables != null) {
 			result= fVariables.get(name);
 		}
-		if (result != null)
+		if (result != null) {
 			return result;
-		if (fParent != null)
+		}
+		if (fParent != null) {
 			return fParent.getVariable(name);
+		}
 		return null;
 	}
 
@@ -138,12 +144,14 @@ public class EvaluationContext implements IEvaluationContext {
 		if (fVariableResolvers != null && fVariableResolvers.length > 0) {
 			for (IVariableResolver resolver : fVariableResolvers) {
 				Object variable= resolver.resolve(name, args);
-				if (variable != null)
+				if (variable != null) {
 					return variable;
+				}
 			}
 		}
-		if (fParent != null)
+		if (fParent != null) {
 			return fParent.resolveVariable(name, args);
+		}
 		return null;
 	}
 }

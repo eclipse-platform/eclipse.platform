@@ -165,7 +165,7 @@ public class ExpressionManager extends PlatformObject implements IExpressionMana
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element= (Element) node;
 				if (!element.getNodeName().equals(EXPRESSION_TAG)) {
-					DebugPlugin.logMessage(MessageFormat.format("Invalid XML element encountered while loading watch expressions: {0}", new Object[] { node.getNodeName() }), null); //$NON-NLS-1$
+					DebugPlugin.logMessage(MessageFormat.format("Invalid XML element encountered while loading watch expressions: {0}", node.getNodeName()), null); //$NON-NLS-1$
 					continue;
 				}
 				String expressionText= element.getAttribute(TEXT_TAG);

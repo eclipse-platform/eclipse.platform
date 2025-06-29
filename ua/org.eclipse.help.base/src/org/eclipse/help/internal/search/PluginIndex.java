@@ -185,10 +185,9 @@ public class PluginIndex {
 
 	@Override
 	public boolean equals(Object obj) {
-		if ( !(obj instanceof PluginIndex) ) {
+		if ( !(obj instanceof PluginIndex index) ) {
 			return false;
 		}
-		PluginIndex index = (PluginIndex) obj;
 		return pluginId.equals(index.pluginId) && path.equals(index.path);
 	}
 

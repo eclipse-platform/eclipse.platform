@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2007, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,11 +13,20 @@
  *******************************************************************************/
 package org.eclipse.jsch.internal.core;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InterruptedIOException;
+import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 import com.jcraft.jsch.SocketFactory;
@@ -32,21 +41,24 @@ public class ResponsiveSocketFactory implements SocketFactory {
   private static Class<?> proxyClass;
   private static boolean hasProxyClass = true;
   public ResponsiveSocketFactory(IProgressMonitor monitor, int timeout) {
-    if (monitor == null)
+    if (monitor == null){
       monitor = new NullProgressMonitor();
+    }
     this.monitor = monitor;
     this.timeout=timeout;
   }
   @Override
   public InputStream getInputStream(Socket socket) throws IOException {
-    if (in == null)
+    if (in == null){
       in = socket.getInputStream();
+    }
     return in;
   }
   @Override
   public OutputStream getOutputStream(Socket socket) throws IOException {
-    if (out == null)
+    if (out == null){
       out = socket.getOutputStream();
+    }
     return out;
   }
   @Override
@@ -60,7 +72,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
     socket.setSoTimeout(timeout);
     return socket;
   }
-  
+
   /**
    * Helper method that will time out when making a socket connection.
    * This is required because there is no way to provide a timeout value
@@ -68,7 +80,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
    * timeout at all.
    */
   private Socket createSocket(final String host, final int port, int timeout, IProgressMonitor monitor) throws UnknownHostException, IOException {
-    
+
     // Start a thread to open a socket
     final Socket[] socket = new Socket[] { null };
     final Exception[] exception = new Exception[] {null };
@@ -90,9 +102,11 @@ public class ResponsiveSocketFactory implements SocketFactory {
       }
     });
     thread.start();
-    
+
     // Wait the appropriate number of seconds
-    if (timeout == 0) timeout = DEFAULT_TIMEOUT;
+    if (timeout == 0){
+      timeout = DEFAULT_TIMEOUT;
+    }
     for (int i = 0; i < timeout; i++) {
       try {
         // wait for the thread to complete or 1 second, which ever comes first
@@ -122,31 +136,32 @@ public class ResponsiveSocketFactory implements SocketFactory {
       }
     }
     if (exception[0] != null) {
-      if (exception[0] instanceof UnknownHostException)
+      if (exception[0] instanceof UnknownHostException){
         throw (UnknownHostException)exception[0];
-      else
+      }
+      else{
         throw (IOException)exception[0];
+      }
     }
     if (socket[0] == null) {
-      throw new InterruptedIOException(NLS.bind(Messages.Util_timeout, new String[] { host })); 
+      throw new InterruptedIOException(NLS.bind(Messages.Util_timeout, host));
     }
     return socket[0];
   }
-  
+
   /* private */  Socket internalCreateSocket(final String host, final int port)
       throws UnknownHostException, IOException{
     Class<?> proxyClass = getProxyClass();
     if (proxyClass != null) {
       // We need to disable proxy support for the socket
       try{
-        
+
         // Obtain the value of the NO_PROXY static field of the proxy class
         Field field = proxyClass.getField("NO_PROXY"); //$NON-NLS-1$
         Object noProxyObject = field.get(null);
         Constructor<Socket> constructor = Socket.class.getConstructor(proxyClass);
         Object o = constructor.newInstance(noProxyObject);
-        if(o instanceof Socket){
-          Socket socket=(Socket)o;
+        if(o instanceof Socket socket){
           socket.connect(new InetSocketAddress(host, port), timeout * 1000);
           return socket;
         }
@@ -172,11 +187,11 @@ public class ResponsiveSocketFactory implements SocketFactory {
       catch(InvocationTargetException e){
         JSchCorePlugin.log(IStatus.ERROR, NLS.bind("An internal error occurred while connecting to {0}", host), e); //$NON-NLS-1$
       }
-      
+
     }
     return new Socket(host, port);
   }
-  
+
   private synchronized Class<?> getProxyClass() {
     if (hasProxyClass && proxyClass == null) {
       try{

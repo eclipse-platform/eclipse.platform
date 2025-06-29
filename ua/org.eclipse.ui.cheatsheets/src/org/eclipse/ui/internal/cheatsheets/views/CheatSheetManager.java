@@ -77,8 +77,9 @@ public class CheatSheetManager implements ICheatSheetManager {
 
 	@Override
 	public String getData(String key) {
-		if (dataTable == null)
+		if (dataTable == null) {
 			return null;
+		}
 		return dataTable.get(key);
 	}
 

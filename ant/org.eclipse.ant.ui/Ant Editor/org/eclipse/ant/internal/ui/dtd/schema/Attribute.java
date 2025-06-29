@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2005 Object Factory Inc.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *		Object Factory Inc. - Initial implementation
  *******************************************************************************/
@@ -18,7 +18,7 @@ import org.eclipse.ant.internal.ui.dtd.IElement;
 
 /**
  * Attr contains information about a single attribute.
- * 
+ *
  * @author Bob Foster
  */
 public class Attribute extends Atom implements IAttribute {
@@ -31,7 +31,7 @@ public class Attribute extends Atom implements IAttribute {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param name
 	 *            Attribute qname.
 	 * @param element
@@ -78,7 +78,7 @@ public class Attribute extends Atom implements IAttribute {
 
 	/**
 	 * Sets the default value.
-	 * 
+	 *
 	 * @param defaultValue
 	 *            Value
 	 */
@@ -88,7 +88,7 @@ public class Attribute extends Atom implements IAttribute {
 
 	/**
 	 * Sets the enumeration.
-	 * 
+	 *
 	 * @param enumeration
 	 *            The enumeration to set
 	 */
@@ -98,7 +98,7 @@ public class Attribute extends Atom implements IAttribute {
 
 	/**
 	 * Sets the fixed.
-	 * 
+	 *
 	 * @param fixed
 	 *            The fixed to set
 	 */
@@ -108,7 +108,7 @@ public class Attribute extends Atom implements IAttribute {
 
 	/**
 	 * Sets the required.
-	 * 
+	 *
 	 * @param required
 	 *            The required to set
 	 */

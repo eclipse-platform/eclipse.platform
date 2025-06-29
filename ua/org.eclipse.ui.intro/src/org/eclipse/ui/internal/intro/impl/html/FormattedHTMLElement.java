@@ -117,8 +117,9 @@ public class FormattedHTMLElement extends HTMLElement {
 			element.append(content);
 		}
 		// indent the end tag if we're on a new line
-		if (indentLevel > 0 && spanMultipleLines)
+		if (indentLevel > 0 && spanMultipleLines) {
 			element.append(getIndent(indentLevel));
+		}
 		// include an end tag
 		element.append(HTMLUtil.createHTMLEndTag(getElementName(), true));
 		return element.toString();

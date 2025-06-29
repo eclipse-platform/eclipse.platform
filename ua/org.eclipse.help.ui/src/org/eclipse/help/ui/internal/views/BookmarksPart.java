@@ -47,10 +47,12 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 
 		@Override
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement == BookmarksPart.this)
+			if (parentElement == BookmarksPart.this) {
 				return new Object[] { BaseHelpSystem.getBookmarkManager() };
-			if (parentElement instanceof BookmarkManager)
+			}
+			if (parentElement instanceof BookmarkManager) {
 				return ((BookmarkManager) parentElement).getBookmarks();
+			}
 			return new Object[0];
 		}
 
@@ -82,21 +84,25 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 
 		@Override
 		public String getText(Object obj) {
-			if (obj instanceof BookmarkManager)
+			if (obj instanceof BookmarkManager) {
 				return Messages.BookmarksPart_savedTopics;
-			if (obj instanceof IHelpResource)
+			}
+			if (obj instanceof IHelpResource) {
 				return ((IHelpResource) obj).getLabel();
+			}
 			return super.getText(obj);
 		}
 
 		@Override
 		public Image getImage(Object obj) {
-			if (obj instanceof BookmarkManager)
+			if (obj instanceof BookmarkManager) {
 				return HelpUIResources
 						.getImage(IHelpUIConstants.IMAGE_BOOKMARKS);
-			if (obj instanceof IHelpResource)
+			}
+			if (obj instanceof IHelpResource) {
 				return HelpUIResources
 						.getImage(IHelpUIConstants.IMAGE_BOOKMARK);
+			}
 			return super.getImage(obj);
 		}
 	}
@@ -123,8 +129,7 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 			@Override
 			public void run() {
 				Object obj = treeViewer.getStructuredSelection().getFirstElement();
-				if (obj instanceof BookmarkManager.Bookmark) {
-					BookmarkManager.Bookmark b = (BookmarkManager.Bookmark)obj;
+				if (obj instanceof BookmarkManager.Bookmark b) {
 					BaseHelpSystem.getBookmarkManager().removeBookmark(b);
 				}
 			}
@@ -149,8 +154,9 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 		canDeleteAll = count>0;
 
 		if (canDelete(selection)) {
-			if (value)
+			if (value) {
 				manager.add(new Separator());
+			}
 			manager.add(deleteAction);
 			value=true;
 		}
@@ -167,8 +173,9 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 			manager.add(action);
 			value=true;
 		}
-		if (value)
+		if (value) {
 			manager.add(new Separator());
+		}
 		return value;
 	}
 
@@ -181,10 +188,10 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 	protected void doOpen(Object obj) {
 		if (obj instanceof BookmarkManager) {
 			treeViewer.setExpandedState(obj, !treeViewer.getExpandedState(obj));
-		} else if (obj instanceof IHelpResource) {
-			IHelpResource res = (IHelpResource) obj;
-			if (res.getHref() != null)
+		} else if (obj instanceof IHelpResource res) {
+			if (res.getHref() != null) {
 				parent.showURL(res.getHref());
+			}
 		}
 	}
 
@@ -212,8 +219,9 @@ public class BookmarksPart extends HyperlinkTreePart implements Observer {
 
 	@Override
 	public IAction getGlobalAction(String id) {
-		if (id.equals(ActionFactory.DELETE.getId()))
+		if (id.equals(ActionFactory.DELETE.getId())) {
 			return deleteAction;
+		}
 		return super.getGlobalAction(id);
 	}
 

@@ -32,13 +32,15 @@ public final class FileStoreUtil {
 	 * @since org.eclipse.core.filesystem 1.9
 	 */
 	private static int comparePathUri(URI uri1, URI uri2) {
-		if (uri1 == null && uri2 == null)
+		if (uri1 == null && uri2 == null) {
 			return 0;
+		}
 		int compare;
 		// Fixed compare contract sgn(compare(x, y)) == -sgn(compare(y, x))
 		// in case of Exceptions:
-		if ((compare = nullsLast(uri1, uri2)) != 0)
+		if ((compare = nullsLast(uri1, uri2)) != 0) {
 			return compare;
+		}
 		// note: If uri is already normal u.normalize() will just return u:
 		return compareNormalisedUri(uri1.normalize(), uri2.normalize());
 	}
@@ -46,27 +48,31 @@ public final class FileStoreUtil {
 	private static int compareNormalisedUri(URI uri1, URI uri2) {
 		int c;
 		// avoid to use IPath here due to high ephemeral memory allocation (Bug 570896)
-		if (((c = compareStringOrNull(uri1.getAuthority(), uri2.getAuthority())) != 0) || ((c = compareStringOrNull(uri1.getScheme(), uri2.getScheme())) != 0) || ((c = comparePathSegments(uri1.getPath(), uri2.getPath())) != 0) || ((c = compareStringOrNull(uri1.getQuery(), uri2.getQuery())) != 0))
+		if (((c = compareStringOrNull(uri1.getAuthority(), uri2.getAuthority())) != 0) || ((c = compareStringOrNull(uri1.getScheme(), uri2.getScheme())) != 0) || ((c = comparePathSegments(uri1.getPath(), uri2.getPath())) != 0) || ((c = compareStringOrNull(uri1.getQuery(), uri2.getQuery())) != 0)) {
 			return c;
+		}
 		return c;
 	}
 
 	static int nullsLast(Object c1, Object c2) {
 		if (c1 == null) {
-			if (c2 == null)
+			if (c2 == null) {
 				return 0;
+			}
 			return 1;
 		}
-		if (c2 == null)
+		if (c2 == null) {
 			return -1;
+		}
 		return 0;
 	}
 
 	public static int comparePathSegments(String p1, String p2) {
 		int compare;
 		compare = compareSlashFirst(p1, p2);
-		if (compare != 0)
+		if (compare != 0) {
 			return compare;
+		}
 		// all segments are equal, so compare based on number of segments
 		int segmentCount1 = countCharButNotAtEnd(p1, '/');
 		int segmentCount2 = countCharButNotAtEnd(p2, '/');
@@ -83,26 +89,31 @@ public final class FileStoreUtil {
 			char c2 = other.charAt(k);
 			if (c1 != c2) {
 				// '/' first
-				if (c1 == '/')
+				if (c1 == '/') {
 					return -1;
-				if (c2 == '/')
+				}
+				if (c2 == '/') {
 					return 1;
+				}
 				return c1 - c2;
 			}
 		}
 		// ignore "/" at the end
-		if (value.endsWith("/")) //$NON-NLS-1$
+		if (value.endsWith("/")) { //$NON-NLS-1$
 			len1 -= 1;
-		if (other.endsWith("/")) //$NON-NLS-1$
+		}
+		if (other.endsWith("/")) { //$NON-NLS-1$
 			len2 -= 1;
+		}
 		return len1 - len2;
 	}
 
 	static int countCharButNotAtEnd(String str, char c) {
 		int count = 0;
 		for (int i = 0; i < str.length() - 1; i++) {
-			if (str.charAt(i) == c)
+			if (str.charAt(i) == c) {
 				count++;
+			}
 		}
 		return count;
 	}
@@ -113,12 +124,14 @@ public final class FileStoreUtil {
 	 */
 	private static int compareStringOrNull(String string1, String string2) {
 		if (string1 == null) {
-			if (string2 == null)
+			if (string2 == null) {
 				return 0;
+			}
 			return 1;
 		}
-		if (string2 == null)
+		if (string2 == null) {
 			return -1;
+		}
 		return string1.compareTo(string2);
 	}
 
@@ -133,8 +146,9 @@ public final class FileStoreUtil {
 			String scheme1 = fileStore1.getFileSystem().getScheme();
 			String scheme2 = fileStore2.getFileSystem().getScheme();
 			int compare = compareStringOrNull(scheme1, scheme2);
-			if (compare != 0)
+			if (compare != 0) {
 				return compare;
+			}
 		} catch (NullPointerException e) {
 			throw (NullPointerException) new NullPointerException(String.format("(fileStore1: %s %s; fileStore2: %s %s)", fileStore1.getClass().getName(), fileStore1, fileStore2.getClass().getName(), fileStore2)).initCause(e); //$NON-NLS-1$
 		}

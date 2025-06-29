@@ -14,10 +14,10 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di.extensions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Dictionary;
@@ -35,8 +35,8 @@ import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.extensions.EventTopic;
 import org.eclipse.e4.core.di.internal.extensions.util.EventUtils;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -133,7 +133,7 @@ public class InjectionEventTest {
 
 	private EventAdminHelper helper;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		ensureEventAdminStarted();
 		BundleContext bundleContext = CoreTestsActivator.getDefault().getBundleContext();

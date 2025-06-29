@@ -59,7 +59,6 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements IUpdate,
 		setToolTipText(ConsoleMessages.ConsoleRemoveAllTerminatedAction_1);
 		setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
 		setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_DLCL_REMOVE_ALL));
-		setHoverImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_LCL_REMOVE_ALL));
 		DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
 		update();
 	}

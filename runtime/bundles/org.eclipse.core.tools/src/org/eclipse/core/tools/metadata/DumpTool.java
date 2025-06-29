@@ -144,8 +144,9 @@ public class DumpTool implements IApplication {
 	 */
 	void extractInfo(File dir, List<String> fileList, IProgressMonitor monitor) {
 
-		if (monitor.isCanceled())
+		if (monitor.isCanceled()) {
 			return;
+		}
 
 		monitor.beginTask("Scanning dir " + dir, 100); //$NON-NLS-1$
 		try {

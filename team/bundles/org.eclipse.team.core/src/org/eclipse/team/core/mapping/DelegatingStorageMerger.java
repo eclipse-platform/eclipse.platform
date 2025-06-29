@@ -76,8 +76,9 @@ public class DelegatingStorageMerger implements IStorageMerger {
 	 * of the target storage.
 	 */
 	public static IStorageMerger getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new DelegatingStorageMerger();
+		}
 		return instance;
 	}
 
@@ -86,12 +87,13 @@ public class DelegatingStorageMerger implements IStorageMerger {
 			IStorage ancestor, IStorage target, IStorage other,
 			IProgressMonitor monitor) throws CoreException {
 		IStorageMerger merger = createDelegateMerger(target);
-		if (merger == null)
+		if (merger == null) {
 			return new Status(IStatus.WARNING, TeamPlugin.ID, CONFLICT,
 					Messages.DelegatingStorageMerger_0, null);
+		}
 		if (ancestor == null && !merger.canMergeWithoutAncestor()) {
 			return new Status(IStatus.WARNING, TeamPlugin.ID, CONFLICT,
-					NLS.bind(Messages.MergeContext_1, new String[] { target.getFullPath().toString() }), null);
+					NLS.bind(Messages.MergeContext_1, target.getFullPath().toString()), null);
 		}
 		return merger.merge(output, outputEncoding, ancestor, target, other, monitor);
 	}
@@ -110,8 +112,9 @@ public class DelegatingStorageMerger implements IStorageMerger {
 		CoreException exception = null;
 		try {
 			IContentType type = getContentType(target);
-			if (type != null)
+			if (type != null) {
 				merger = getMerger(type);
+			}
 		} catch (CoreException e) {
 			exception = e;
 		}
@@ -122,8 +125,9 @@ public class DelegatingStorageMerger implements IStorageMerger {
 			if (merger == null) {
 				// If team thinks the file is text, try to get a text merger for the file
 				int type = getType(target);
-				if (type == Team.TEXT)
+				if (type == Team.TEXT) {
 					merger = createTextMerger();
+				}
 				if (merger == null) {
 					// As a last resort, look for a stream merger
 					merger = findAndWrapStreamMerger(target);
@@ -166,8 +170,9 @@ public class DelegatingStorageMerger implements IStorageMerger {
 
 	private IStorageMerger getMerger(String name) {
 		String extension = getExtension(name);
-		if (extension != null)
+		if (extension != null) {
 			return StorageMergerRegistry.getInstance().createStreamMerger(extension);
+		}
 		return null;
 	}
 
@@ -199,8 +204,7 @@ public class DelegatingStorageMerger implements IStorageMerger {
 	 * @throws CoreException if an exception occurs
 	 */
 	public static IContentType getContentType(IStorage target) throws CoreException {
-		if (target instanceof IFile) {
-			IFile file = (IFile) target;
+		if (target instanceof IFile file) {
 			IContentDescription contentDescription = file.getContentDescription();
 			if (contentDescription != null) {
 				IContentType contentType = contentDescription.getContentType();

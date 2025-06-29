@@ -83,36 +83,41 @@ public class StatusLineCLabelContribution extends ContributionItem {
 	}
 
 	public void setText(String text) {
-		if (text == null)
+		if (text == null) {
 			throw new NullPointerException();
+		}
 
 		this.text = text;
 
-		if (label != null && !label.isDisposed())
+		if (label != null && !label.isDisposed()) {
 			label.setText(this.text);
+		}
 
 		if (this.text.length() == 0) {
 			if (isVisible()) {
 				setVisible(false);
 				IContributionManager contributionManager = getParent();
 
-				if (contributionManager != null)
+				if (contributionManager != null) {
 					contributionManager.update(true);
+				}
 			}
 		} else {
 			if (!isVisible()) {
 				setVisible(true);
 				IContributionManager contributionManager = getParent();
 
-				if (contributionManager != null)
+				if (contributionManager != null) {
 					contributionManager.update(true);
+				}
 			}
 		}
 	}
 
 	public void setTooltip(String tooltip) {
-		if (tooltip == null)
+		if (tooltip == null) {
 			throw new NullPointerException();
+		}
 
 		this.tooltip = tooltip;
 
@@ -122,20 +127,23 @@ public class StatusLineCLabelContribution extends ContributionItem {
 	}
 
 	public void setImage(Image image) {
-		if (image == null)
+		if (image == null) {
 			throw new NullPointerException();
+		}
 
 		this.image = image;
 
-		if (label != null && !label.isDisposed())
+		if (label != null && !label.isDisposed()) {
 			label.setImage(this.image);
+		}
 
 		if (!isVisible()) {
 			setVisible(true);
 			IContributionManager contributionManager = getParent();
 
-			if (contributionManager != null)
+			if (contributionManager != null) {
 				contributionManager.update(true);
+			}
 		}
 	}
 }

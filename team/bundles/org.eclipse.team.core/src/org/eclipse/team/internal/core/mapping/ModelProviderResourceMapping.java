@@ -56,8 +56,9 @@ public class ModelProviderResourceMapping extends ResourceMapping {
 			IResource[] resources = provider.getDescriptor().getMatchingResources(projects);
 			Set<IProject> result = new HashSet<>();
 			for (IResource resource : resources) {
-				if (resource.isAccessible())
+				if (resource.isAccessible()) {
 					result.add(resource.getProject());
+				}
 			}
 			return result.toArray(new IProject[result.size()]);
 		} catch (CoreException e) {
@@ -81,8 +82,7 @@ public class ModelProviderResourceMapping extends ResourceMapping {
 
 	private IResource[] getProviderResources(ResourceMappingContext context) {
 		try {
-			if (context instanceof RemoteResourceMappingContext) {
-				RemoteResourceMappingContext rrmc = (RemoteResourceMappingContext) context;
+			if (context instanceof RemoteResourceMappingContext rrmc) {
 				return provider.getDescriptor().getMatchingResources(rrmc.getProjects());
 			}
 		} catch (CoreException e) {

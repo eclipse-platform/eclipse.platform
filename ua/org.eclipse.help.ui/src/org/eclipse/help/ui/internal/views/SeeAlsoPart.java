@@ -98,9 +98,10 @@ public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
 						.asyncExec(() -> SeeAlsoPart.this.helpPart.showPage((String) e.getHref(), true));
 			}
 		};
-		if ((helpPart.getStyle() & ReusableHelpPart.ALL_TOPICS) != 0)
+		if ((helpPart.getStyle() & ReusableHelpPart.ALL_TOPICS) != 0) {
 			addPageLink(container, toolkit, Messages.SeeAlsoPart_allTopics, IHelpUIConstants.HV_ALL_TOPICS_PAGE,
 				IHelpUIConstants.IMAGE_ALL_TOPICS, listener);
+		}
 		if ((helpPart.getStyle() & ReusableHelpPart.SEARCH) != 0) {
 			addPageLink(container, toolkit, Messages.SeeAlsoPart_search, IHelpUIConstants.HV_FSEARCH_PAGE,
 				IHelpUIConstants.IMAGE_HELP_SEARCH, listener);
@@ -125,8 +126,9 @@ public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
 	private void addPageLink(Composite container, FormToolkit toolkit, String text, String id,
 			String imgRef, IHyperlinkListener listener) {
 		String cid = helpPart.getCurrentPageId();
-		if (cid!=null && cid.equals(id))
+		if (cid!=null && cid.equals(id)) {
 			return;
+		}
 		ImageHyperlink link = new ImageHyperlink(container, SWT.WRAP|toolkit.getOrientation());
 		toolkit.adapt(link, true, true);
 		link.setImage(HelpUIResources.getImage(imgRef));
@@ -170,8 +172,9 @@ public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
 	@Override
 	public void setVisible(boolean visible) {
 		container.setVisible(visible);
-		if (visible)
+		if (visible) {
 			markStale();
+		}
 	}
 
 	@Override
@@ -194,8 +197,9 @@ public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
 
 	@Override
 	public IAction getGlobalAction(String id) {
-		if (id.equals(ActionFactory.COPY.getId()))
+		if (id.equals(ActionFactory.COPY.getId())) {
 			return helpPart.getCopyAction();
+		}
 		return null;
 	}
 
@@ -205,8 +209,9 @@ public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
 
 	@Override
 	public void refresh() {
-		if (linkContainer!=null && helpPart.getCurrentPageId()!=null)
+		if (linkContainer!=null && helpPart.getCurrentPageId()!=null) {
 			updateLinks(helpPart.getCurrentPageId());
+		}
 		super.refresh();
 	}
 
@@ -224,7 +229,8 @@ public class SeeAlsoPart extends AbstractFormPart implements IHelpPart {
 
 	@Override
 	public void setFocus() {
-		if (linkContainer!=null)
+		if (linkContainer!=null) {
 			linkContainer.setFocus();
+		}
 	}
 }

@@ -51,8 +51,9 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 
 	private static IStorage wrapStorage(final IStorage storage,
 			final String charset) {
-		if (charset == null)
+		if (charset == null) {
 			return storage;
+		}
 		if (storage instanceof IFileState) {
 			return new IFileState() {
 				@Override
@@ -168,11 +169,13 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	@Override
 	public String getName() {
 		IFileRevision rev = getAdapter(IFileRevision.class);
-		if (rev != null)
-			return NLS.bind(TeamUIMessages.nameAndRevision, new String[] { rev.getName(), rev.getContentIdentifier()});
+		if (rev != null) {
+			return NLS.bind(TeamUIMessages.nameAndRevision, rev.getName(), rev.getContentIdentifier());
+		}
 		IFileState state = getAdapter(IFileState.class);
-		if (state != null)
+		if (state != null) {
 			return state.getName() +  " " + DateFormat.getInstance().format(new Date(state.getModificationTime())) ; //$NON-NLS-1$
+		}
 		return storage.getName();
 
 	}
@@ -190,13 +193,16 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IWorkbenchAdapter.class)
+		if (adapter == IWorkbenchAdapter.class) {
 			return (T) this;
-		if (adapter == IStorage.class)
+		}
+		if (adapter == IStorage.class) {
 			return (T) storage;
+		}
 		Object object = super.getAdapter(adapter);
-		if (object != null)
+		if (object != null) {
 			return (T) object;
+		}
 		return Adapters.adapt(fileRevision, adapter);
 	}
 
@@ -213,8 +219,9 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	@Override
 	public String getLabel(Object o) {
 		IFileRevision rev = getAdapter(IFileRevision.class);
-		if (rev != null)
+		if (rev != null) {
 			return rev.getName();
+		}
 		return storage.getName();
 	}
 
@@ -225,8 +232,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof FileRevisionEditorInput) {
-			FileRevisionEditorInput other = (FileRevisionEditorInput) obj;
+		if (obj instanceof FileRevisionEditorInput other) {
 			return (other.fileRevision.equals(this.fileRevision));
 		}
 		return false;
@@ -245,8 +251,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	}
 
 	public URI getURI() {
-		if (fileRevision instanceof IFileRevision) {
-			IFileRevision fr = (IFileRevision) fileRevision;
+		if (fileRevision instanceof IFileRevision fr) {
 			return fr.getURI();
 		}
 		return null;

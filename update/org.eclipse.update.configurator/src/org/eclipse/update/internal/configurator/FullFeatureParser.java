@@ -56,20 +56,22 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 	public void parse(){
 		InputStream in = null;
 		try {
-			if (feature.getSite() == null)
+			if (feature.getSite() == null) {
 				return;
+			}
 			this.url = new URL(feature.getSite().getResolvedURL(), feature.getURL() + FEATURE_XML);
 			in = url.openStream();
 			parser.parse(new InputSource(in), this);
 		} catch (SAXException e) {
 		} catch (IOException e) {
 		} finally {
-			if (in != null)
+			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException e1) {
 					Utils.log(e1.getLocalizedMessage());
 				}
+			}
 		}
 	}
 
@@ -103,7 +105,7 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 
 		if (id == null || id.trim().isEmpty()
 		|| ver == null || ver.trim().isEmpty()) {
-			System.out.println(NLS.bind(Messages.FeatureParser_IdOrVersionInvalid, (new String[] { id, ver})));
+			System.out.println(NLS.bind(Messages.FeatureParser_IdOrVersionInvalid, id, ver));
 		} else {
 //			String label = attributes.getValue("label"); //$NON-NLS-1$
 //			String provider = attributes.getValue("provider-name"); //$NON-NLS-1$
@@ -111,28 +113,30 @@ public class FullFeatureParser extends DefaultHandler implements IConfigurationC
 			String os = attributes.getValue("os"); //$NON-NLS-1$
 			String ws = attributes.getValue("ws"); //$NON-NLS-1$
 			String arch = attributes.getValue("arch"); //$NON-NLS-1$
-			if (!Utils.isValidEnvironment(os, ws, arch,nl))
+			if (!Utils.isValidEnvironment(os, ws, arch,nl)) {
 				return;
+			}
 
 			PluginEntry plugin = new PluginEntry();
 			plugin.setPluginIdentifier(id);
 			plugin.setPluginVersion(ver);
 			feature.addPlugin(plugin);
-			
+
 			Utils.
 				debug("End process DefaultFeature tag: id:" +id + " ver:" +ver + " url:" + feature.getURL()); 	 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 	}
-	
+
 	private void processLicense(Attributes attributes ){
 		feature.setLicenseURL(attributes.getValue("url")); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {
-		if (!isDescription)
+		if (!isDescription) {
 			return;
+		}
 		description.append(ch, start, length);
 	}
 

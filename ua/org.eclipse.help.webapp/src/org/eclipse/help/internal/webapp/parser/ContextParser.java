@@ -32,8 +32,9 @@ public class ContextParser extends ResultParser {
 	public void startElement(String uri, String lname, String name, Attributes attrs) {
 
 		currentTag = name;
-		if (name.equalsIgnoreCase(XMLHelper.ELEMENT_DESCRIPTION))
+		if (name.equalsIgnoreCase(XMLHelper.ELEMENT_DESCRIPTION)) {
 			return;
+		}
 
 		Properties properties = new Properties();
 		properties.put(JSonHelper.PROPERTY_NAME, name);
@@ -44,10 +45,11 @@ public class ContextParser extends ResultParser {
 		}
 
 		ParseElement elem = new ParseElement(properties, element);
-		if (element != null)
+		if (element != null) {
 			element.addChild(elem);
-		else
+		} else {
 			items.add(elem);
+		}
 
 		element = elem;
 
@@ -66,8 +68,9 @@ public class ContextParser extends ResultParser {
 				String content = new String(ch, start, length);
 
 				String existing = (String) properties.get(currentTag);
-				if (existing == null)
+				if (existing == null) {
 					existing = ""; //$NON-NLS-1$
+				}
 
 				content = content.replaceAll("[\\n\\t]", "").trim(); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -80,8 +83,9 @@ public class ContextParser extends ResultParser {
 	@Override
 	public void endElement(String uri, String lname, String name) {
 
-		if (name.equalsIgnoreCase(XMLHelper.ELEMENT_DESCRIPTION))
+		if (name.equalsIgnoreCase(XMLHelper.ELEMENT_DESCRIPTION)) {
 			return;
+		}
 
 		if (element != null) {
 			element = element.getParent();

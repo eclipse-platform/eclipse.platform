@@ -64,19 +64,23 @@ public class URIUtil {
 	public static IPath toPath(URI uri) {
 		Assert.isNotNull(uri);
 		// Special treatment for LocalFileSystem. For performance only.
-		if (EFS.SCHEME_FILE.equals(uri.getScheme()))
+		if (EFS.SCHEME_FILE.equals(uri.getScheme())) {
 			return IPath.fromOSString(uri.getSchemeSpecificPart());
+		}
 		// Relative path
-		if (uri.getScheme() == null)
+		if (uri.getScheme() == null) {
 			return IPath.fromOSString(uri.getPath());
+		}
 		// General case
 		try {
 			IFileStore store = EFS.getStore(uri);
-			if (store == null)
+			if (store == null) {
 				return null;
+			}
 			File file = store.toLocalFile(EFS.NONE, null);
-			if (file == null)
+			if (file == null) {
 				return null;
+			}
 			return IPath.fromOSString(file.getAbsolutePath());
 		} catch (CoreException e) {
 			// Fall through to return null.
@@ -91,10 +95,12 @@ public class URIUtil {
 	 * @return The URI representing the provided path
 	 */
 	public static URI toURI(IPath path) {
-		if (path == null)
+		if (path == null) {
 			return null;
-		if (path.isAbsolute())
+		}
+		if (path.isAbsolute()) {
 			return toURI(path.toFile().getAbsolutePath(), true);
+		}
 		//Must use the relativize method to properly construct a relative URI
 		URI base = toURI(IPath.ROOT.setDevice(path.getDevice()));
 		return base.relativize(toURI(path.makeAbsolute()));
@@ -132,8 +138,9 @@ public class URIUtil {
 	 * @since org.eclipse.core.filesystem 1.2
 	 */
 	public static URI toURI(String pathString, boolean forceAbsolute) {
-		if (File.separatorChar != '/')
+		if (File.separatorChar != '/') {
 			pathString = pathString.replace(File.separatorChar, '/');
+		}
 		final int length = pathString.length();
 		StringBuilder pathBuf = new StringBuilder(length + 1);
 		//mark if path is relative
@@ -141,8 +148,9 @@ public class URIUtil {
 			pathBuf.append('/');
 		}
 		//additional double-slash for UNC paths to distinguish from host separator
-		if (pathString.startsWith("//")) //$NON-NLS-1$
+		if (pathString.startsWith("//")) { //$NON-NLS-1$
 			pathBuf.append('/').append('/');
+		}
 		pathBuf.append(pathString);
 		try {
 			String scheme = null;
@@ -171,8 +179,9 @@ public class URIUtil {
 	public static String toDecodedString(URI uri) {
 		String scheme = uri.getScheme();
 		String part = uri.getSchemeSpecificPart();
-		if (scheme == null)
+		if (scheme == null) {
 			return part;
+		}
 		return scheme + ':' + part;
 	}
 

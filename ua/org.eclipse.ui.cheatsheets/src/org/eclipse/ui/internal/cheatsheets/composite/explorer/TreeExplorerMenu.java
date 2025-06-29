@@ -44,13 +44,14 @@ public class TreeExplorerMenu {
 	protected void fillContextMenu(IMenuManager manager) {
 		ISelection selection = explorer.getSelectionProvider().getSelection();
 		ICompositeCheatSheetTask selectedTask = null;
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+		if (selection instanceof IStructuredSelection structuredSelection) {
 			if (structuredSelection.size() == 1) {
 			selectedTask = (ICompositeCheatSheetTask)(structuredSelection).getFirstElement();
 			}
 		}
-		if (selectedTask == null) return;
+		if (selectedTask == null) {
+			return;
+		}
 
 		// Start
 		StartAction startAction = new StartAction(selectedTask);

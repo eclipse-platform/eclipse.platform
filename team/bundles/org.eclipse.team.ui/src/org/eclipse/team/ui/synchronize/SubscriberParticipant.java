@@ -108,7 +108,8 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 			public RefreshParticipantJob createJob(String interval) {
 				return new RefreshSubscriberParticipantJob(SubscriberParticipant.this,
 						TeamUIMessages.RefreshSchedule_14,
-						NLS.bind(TeamUIMessages.RefreshSchedule_15, new String[] { SubscriberParticipant.this.getName(), interval }), getResources(),
+						NLS.bind(TeamUIMessages.RefreshSchedule_15, SubscriberParticipant.this.getName(), interval),
+						getResources(),
 						new RefreshUserNotificationPolicy(SubscriberParticipant.this));
 			}
 			@Override
@@ -229,7 +230,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	@Override
 	public String getName() {
 		String name = super.getName();
-		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, new String[] { name, scope.getName() });
+		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, name, scope.getName());
 	}
 
 	/**
@@ -262,7 +263,9 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * @return the <code>Subscriber</code> associated with this this participant.
 	 */
 	public Subscriber getSubscriber() {
-		if (collector == null) return null;
+		if (collector == null) {
+			return null;
+		}
 		return collector.getSubscriber();
 	}
 
@@ -430,12 +433,14 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 			resourceCount = resources.length;
 		}
 		if (resourceCount == 1) {
-			return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), resources[0].getFullPath().toString() });
+			return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, getShortName(),
+					resources[0].getFullPath().toString());
 		} else if (resourceCount > 1) {
-			return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(resourceCount) });
+			return NLS.bind(TeamUIMessages.Participant_synchronizingResources, getShortName(),
+					Integer.toString(resourceCount));
 		}
 		// A resource count of zero means that it is a non-resource scope so we can print the scope name
-		return NLS.bind(TeamUIMessages.Participant_synchronizingDetails, new String[] { getName() });
+		return NLS.bind(TeamUIMessages.Participant_synchronizingDetails, getName());
 	}
 
 	/**
@@ -500,10 +505,12 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * @param listener the listener to handle the refresh workflow
 	 */
 	private void internalRefresh(IResource[] resources, String jobName, String taskName, IWorkbenchSite site, IRefreshSubscriberListener listener) {
-		if (jobName == null)
+		if (jobName == null) {
 			jobName = getShortTaskName();
-		if (taskName == null)
+		}
+		if (taskName == null) {
 			taskName = getLongTaskName(resources);
+		}
 		Job.getJobManager().cancel(this);
 		RefreshParticipantJob job = new RefreshSubscriberParticipantJob(this, jobName, taskName, resources, listener);
 		job.setUser(true);

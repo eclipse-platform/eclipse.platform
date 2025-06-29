@@ -86,8 +86,7 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 
 	private ChangeSetCapability getChangeSetCapability(ISynchronizePageConfiguration configuration) {
 		ISynchronizeParticipant participant = configuration.getParticipant();
-		if (participant instanceof IChangeSetProvider) {
-			IChangeSetProvider provider = (IChangeSetProvider) participant;
+		if (participant instanceof IChangeSetProvider provider) {
 			return provider.getChangeSetCapability();
 		}
 		return null;

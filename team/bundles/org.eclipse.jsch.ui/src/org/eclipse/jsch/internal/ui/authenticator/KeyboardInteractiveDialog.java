@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -89,8 +89,7 @@ public class KeyboardInteractiveDialog extends TrayDialog{
 		this.prompt=prompt;
 		this.echo=echo;
 		this.message=NLS.bind(Messages.KeyboradInteractiveDialog_message,
-				new String[] {destination
-						+(name!=null&&name.length()>0 ? ": "+name : "")}); //NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$
+				destination + (name != null && name.length() > 0 ? ": " + name : "")); // NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$
 
 		if(prompt!=null && prompt.length==1 && prompt[0].trim().equalsIgnoreCase("password:")){ //$NON-NLS-1$
 			isPasswordAuth=true;
@@ -165,8 +164,7 @@ protected Control createDialogArea(Composite parent){
 		if(comment!=null){
 			Label label=new Label(main, SWT.WRAP);
 			if(isUsernameMutable){
-				label.setText(NLS.bind(Messages.UserValidationDialog_labelUser,
-						new String[] {comment}));
+				label.setText(NLS.bind(Messages.UserValidationDialog_labelUser, comment));
 			}
 			else{
 				label.setText(NLS.bind(Messages.UserValidationDialog_labelPassword,

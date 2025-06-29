@@ -59,10 +59,18 @@ public class ContentComparisonDiffFilter extends DiffFilter {
 	public boolean select(IDiff diff, IProgressMonitor monitor) {
 		IFileRevision remote = SyncInfoToDiffConverter.getRemote(diff);
 		IResource local = ResourceDiffTree.getResourceFor(diff);
-		if (local == null) return true;
-		if (local.getType() != IResource.FILE) return false;
-		if (remote == null) return !local.exists();
-		if (!local.exists()) return false;
+		if (local == null) {
+			return true;
+		}
+		if (local.getType() != IResource.FILE) {
+			return false;
+		}
+		if (remote == null) {
+			return !local.exists();
+		}
+		if (!local.exists()) {
+			return false;
+		}
 		return compareContents((IFile)local, remote, monitor);
 	}
 }

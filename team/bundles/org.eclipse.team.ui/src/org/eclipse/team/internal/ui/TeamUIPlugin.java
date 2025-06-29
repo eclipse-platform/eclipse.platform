@@ -134,10 +134,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 					exc[0] = e;
 				}
 			});
-			if (exc[0] != null)
+			if (exc[0] != null) {
 				throw exc[0];
-			else
+			} else {
 				return ret[0];
+			}
 		}
 	}
 
@@ -151,7 +152,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 */
 	public static IWorkbenchPage getActivePage() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) return null;
+		if (window == null) {
+			return null;
+		}
 		return window.getActivePage();
 	}
 
@@ -247,8 +250,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 			debugRegistration.unregister();
 			debugRegistration = null;
 
-			if (synchronizeManager != null)
+			if (synchronizeManager != null) {
 				synchronizeManager.dispose();
+			}
 		} finally {
 			super.stop(context);
 		}
@@ -348,13 +352,13 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		return null;
 	}
 
-	public static final String FILE_DIRTY_OVR = "ovr/dirty_ov.png"; //$NON-NLS-1$
-	public static final String FILE_CHECKEDIN_OVR = "ovr/version_controlled.png"; //$NON-NLS-1$
-	public static final String FILE_CHECKEDOUT_OVR = "ovr/checkedout_ov.png"; //$NON-NLS-1$
-	public static final String FILE_CONFLICT_OVR = "ovr/confchg_ov.png"; //$NON-NLS-1$
-	public static final String FILE_ERROR_OVR = "ovr/error_co.png"; //$NON-NLS-1$
-	public static final String FILE_WARNING_OVR = "ovr/warning_co.png"; //$NON-NLS-1$
-	public static final String FILE_HOURGLASS_OVR = "ovr/waiting_ovr.png"; //$NON-NLS-1$
+	public static final String FILE_DIRTY_OVR = "ovr/dirty_ov.svg"; //$NON-NLS-1$
+	public static final String FILE_CHECKEDIN_OVR = "ovr/version_controlled.svg"; //$NON-NLS-1$
+	public static final String FILE_CHECKEDOUT_OVR = "ovr/checkedout_ov.svg"; //$NON-NLS-1$
+	public static final String FILE_CONFLICT_OVR = "ovr/confchg_ov.svg"; //$NON-NLS-1$
+	public static final String FILE_ERROR_OVR = "ovr/error_co.svg"; //$NON-NLS-1$
+	public static final String FILE_WARNING_OVR = "ovr/warning_co.svg"; //$NON-NLS-1$
+	public static final String FILE_HOURGLASS_OVR = "ovr/waiting_ovr.svg"; //$NON-NLS-1$
 	/*
 	 * Initializes the table of images used in this plugin. The plugin is
 	 * provided because this method is called before the plugin staic
@@ -385,19 +389,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		createImageDescriptor(plugin, ITeamUIImages.IMG_COLLAPSE_ALL);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_COLLAPSE_ALL_ENABLED);
 
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_INCOMING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_OUTGOING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_CONFLICTING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_REFRESH_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_IGNORE_WHITESPACE_DISABLED);
-
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE);
-
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE_DISABLED);
 
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP_ENABLED);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE_ENABLED);
@@ -464,8 +458,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 
 	public synchronized TeamStateProvider getDecoratedStateProvider(RepositoryProviderType rpt) {
 		TeamStateProvider provider = decoratedStateProviders.get(rpt.getID());
-		if (provider != null)
+		if (provider != null) {
 			return provider;
+		}
 		Subscriber subscriber = rpt.getSubscriber();
 		if (subscriber != null) {
 			provider = new SubscriberTeamStateProvider(subscriber);
@@ -482,8 +477,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * provider
 	 */
 	public synchronized ITeamStateProvider getDecoratedStateProvider() {
-		if (provider == null)
+		if (provider == null) {
 			provider = new WorkspaceTeamStateProvider();
+		}
 		return provider;
 	}
 

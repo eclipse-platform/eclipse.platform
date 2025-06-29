@@ -56,16 +56,19 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	private static final class ExtensionValidator implements IInputValidator {
 		@Override
 		public String isValid(String newText) {
-			if (newText.trim().length() == 0)
+			if (newText.trim().length() == 0) {
 				return ""; //$NON-NLS-1$
+			}
 			if (!isComplete(newText)){
 				return TeamUIMessages.TextPreferencePage_ExtensionNotCompleted;
 			}
 			newText = strip(newText);
-			if (newText.indexOf('*') >= 0)
+			if (newText.indexOf('*') >= 0) {
 				return TeamUIMessages.TextPreferencePage_2;
-			if (newText.indexOf('.') >= 0)
+			}
+			if (newText.indexOf('.') >= 0) {
 				return TeamUIMessages.TextPreferencePage_3;
+			}
 			return null;
 		}
 
@@ -74,10 +77,12 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		 */
 		public String strip(String newText) {
 			newText= newText.trim();
-			if (newText.startsWith("*")) //$NON-NLS-1$
+			if (newText.startsWith("*")) { //$NON-NLS-1$
 				newText= newText.substring(1);
-			if (newText.startsWith(".")) //$NON-NLS-1$
+			}
+			if (newText.startsWith(".")) { //$NON-NLS-1$
 				newText= newText.substring(1);
+			}
 			return newText;
 		}
 
@@ -96,10 +101,12 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	private static final class FilenameValidator implements IInputValidator {
 		@Override
 		public String isValid(String newText) {
-			if (newText.trim().length() == 0)
+			if (newText.trim().length() == 0) {
 				return ""; //$NON-NLS-1$
-			if (newText.indexOf('*') >= 0)
+			}
+			if (newText.indexOf('*') >= 0) {
 				return TeamUIMessages.TextPreferencePage_5;
+			}
 			return null;
 		}
 	}
@@ -221,8 +228,9 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	protected void performDefaults() {
 		super.performDefaults();
 		initializeItems();
-		if (fTable != null)
+		if (fTable != null) {
 			fTable.getViewer().refresh();
+		}
 	}
 
 	/**
@@ -265,8 +273,9 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	private static int [] integerListToIntArray(List integers) {
 		final int [] array= new int [integers.size()];
 		int index= 0;
-		for (Object element : integers)
+		for (Object element : integers) {
 			array[index++]= ((Integer)element).intValue();
+		}
 		return array;
 	}
 
@@ -276,8 +285,9 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	void addExtension() {
 		final ExtensionValidator validator = new ExtensionValidator();
 		final InputDialog dialog = new InputDialog(getShell(), TeamUIMessages.TextPreferencePage_enterExtensionShort, TeamUIMessages.TextPreferencePage_enterExtensionLong, null, validator); //
-		if (dialog.open() != Window.OK)
+		if (dialog.open() != Window.OK) {
 			return;
+		}
 
 		final String extension = validator.strip(dialog.getValue());
 
@@ -300,8 +310,9 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	 */
 	void addName() {
 		final InputDialog dialog = new InputDialog(getShell(), TeamUIMessages.TextPreferencePage_6, TeamUIMessages.TextPreferencePage_7, null, new FilenameValidator()); //
-		if (dialog.open() != Window.OK)
+		if (dialog.open() != Window.OK) {
 			return;
+		}
 
 		final String name = dialog.getValue();
 
@@ -324,13 +335,15 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	 */
 	void removePattern() {
 		final IStructuredSelection selection = fTable.getSelection();
-		if (selection == null)
+		if (selection == null) {
 			return;
+		}
 
 		for (Object element : selection) {
 			final FileTypeTable.Item item= (FileTypeTable.Item)element;
-			if (item.contributed)
+			if (item.contributed) {
 				continue;
+			}
 			fItems.remove(item);
 		}
 		fTable.getViewer().refresh();
@@ -341,8 +354,9 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	 */
 	void changePattern() {
 		final IStructuredSelection selection = fTable.getSelection();
-		if (selection == null)
+		if (selection == null) {
 			return;
+		}
 
 		for (Object element : selection) {
 			final FileTypeTable.Item item= (FileTypeTable.Item)element;

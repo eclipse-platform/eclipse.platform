@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -7,14 +7,13 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.internal.ui.views.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.ISharedImages;
@@ -36,11 +35,9 @@ public class EditorImageDescriptor extends ImageDescriptor {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof EditorImageDescriptor)) {
+		if (!(o instanceof EditorImageDescriptor other)) {
 			return false;
 		}
-		EditorImageDescriptor other = (EditorImageDescriptor) o;
-
 		// See if there is a name - compare it if so and compare the programs if not
 		String otherName = other.program.getName();
 		if (otherName == null) {
@@ -49,22 +46,14 @@ public class EditorImageDescriptor extends ImageDescriptor {
 		return otherName.equals(program.getName());
 	}
 
-	/**
-	 * Returns an SWT Image that is described by the information in this descriptor. Each call returns a new Image.
-	 */
-	public Image getImage() {
-		return createImage();
-	}
-
 	@Override
-	public ImageData getImageData() {
-
-		ImageData defaultImage = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE).getImageData();
+	public ImageData getImageData(int zoom) {
+		ImageData defaultImage = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE).getImageData(zoom);
 		if (defaultImage == null) {
 			return null;
 		}
 		ImageData data = null;
-		if (program == null || ((data = program.getImageData()) == null)) {
+		if (program == null || ((data = program.getImageData(zoom)) == null)) {
 			return defaultImage;
 		}
 

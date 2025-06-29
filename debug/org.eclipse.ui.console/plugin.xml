@@ -26,7 +26,7 @@
       <view
             allowMultiple="true"
             class="org.eclipse.ui.internal.console.ConsoleView"
-            icon="$nl$/icons/full/cview16/console_view.png"
+            icon="$nl$/icons/full/cview16/console_view.svg"
             category="org.eclipse.ui"
             name="%ConsoleView.name"
             id="org.eclipse.ui.console.ConsoleView">
@@ -107,7 +107,7 @@ M4 = Platform-specific fourth key
           point="org.eclipse.ui.console.consoleFactories">
        <consoleFactory
              label="%consoleViewConsoleFactory.name"
-             icon="$nl$/icons/full/cview16/console_view.png"
+             icon="$nl$/icons/full/cview16/console_view.svg"
              class="org.eclipse.ui.internal.console.ConsoleViewConsoleFactory"/>
     </extension>
 

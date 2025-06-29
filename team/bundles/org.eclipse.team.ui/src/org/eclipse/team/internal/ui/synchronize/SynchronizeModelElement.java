@@ -146,7 +146,9 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	private void addToRoot(String flag) {
 		setProperty(flag, true);
 		if (parent != null) {
-			if (parent.getProperty(flag)) return;
+			if (parent.getProperty(flag)) {
+				return;
+			}
 			parent.addToRoot(flag);
 		}
 	}
@@ -154,14 +156,15 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	private void firePropertyChange(String propertyName) {
 		Object[] allListeners;
 		synchronized(this) {
-			if (listeners == null) return;
+			if (listeners == null) {
+				return;
+			}
 			allListeners = listeners.getListeners();
 		}
 		boolean set = getProperty(propertyName);
 		final PropertyChangeEvent event = new PropertyChangeEvent(this, propertyName, Boolean.valueOf(!set), Boolean.valueOf(set));
 		for (Object object : allListeners) {
-			if (object instanceof IPropertyChangeListener) {
-				final IPropertyChangeListener listener = (IPropertyChangeListener)object;
+			if (object instanceof final IPropertyChangeListener listener) {
 				SafeRunner.run(new ISafeRunnable() {
 					@Override
 					public void handleException(Throwable exception) {

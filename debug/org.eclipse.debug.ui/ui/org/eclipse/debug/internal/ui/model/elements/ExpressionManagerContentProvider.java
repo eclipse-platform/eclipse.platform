@@ -24,7 +24,6 @@ import org.eclipse.debug.core.model.IWatchExpression;
 import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.DefaultLabelProvider;
-import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementEditor;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementLabelProvider;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ILabelUpdate;
@@ -73,10 +72,9 @@ public class ExpressionManagerContentProvider extends ElementContentProvider {
 			}
 		}
 
-		@SuppressWarnings("deprecation")
 		private void updateLabel(ILabelUpdate update, int columnIndex) {
 			update.setLabel(DebugUIMessages.ExpressionManagerContentProvider_1, columnIndex);
-			update.setImageDescriptor(DebugUITools.getImageDescriptor(IInternalDebugUIConstants.IMG_LCL_MONITOR_EXPRESSION), columnIndex);
+			update.setImageDescriptor(DebugUITools.getImageDescriptor(IDebugUIConstants.IMG_LCL_ADD), columnIndex);
 
 			// Display the "Add new expression" element in italic to
 			// distinguish it from user elements in view.

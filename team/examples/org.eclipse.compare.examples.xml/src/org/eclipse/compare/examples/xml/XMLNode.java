@@ -79,7 +79,7 @@ public class XMLNode extends DocumentRangeNode implements ITypedElement {
 	public void setIsOrderedChild(boolean isOrderedChild) {
 		fOrderedChild= isOrderedChild;
 	}
-	
+
 	@Override
 	public Image getImage() {
 		if (fOrderedChild)

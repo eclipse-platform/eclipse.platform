@@ -128,8 +128,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	@Override
 	public String getText(Object element) {
 		String text = super.getText(element);
-		if (contentProvider instanceof SynchronizationContentProvider) {
-			SynchronizationContentProvider scp = (SynchronizationContentProvider) contentProvider;
+		if (contentProvider instanceof SynchronizationContentProvider scp) {
 			ISynchronizationContext context = getContext();
 			if (context != null && !scp.isInitialized(context)) {
 				return NLS.bind(TeamUIMessages.SynchronizationLabelProvider_0, text);
@@ -149,8 +148,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	}
 
 	private Object internalGetElement(Object element) {
-		if (element instanceof TreePath) {
-			TreePath tp = (TreePath) element;
+		if (element instanceof TreePath tp) {
 			element = tp.getLastSegment();
 		}
 		return element;

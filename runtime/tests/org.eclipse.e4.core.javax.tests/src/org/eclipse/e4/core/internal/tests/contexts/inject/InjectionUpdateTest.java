@@ -15,9 +15,9 @@
 
 package org.eclipse.e4.core.internal.tests.contexts.inject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -28,8 +28,8 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests updates of injected values and calls to runnables
@@ -57,7 +57,7 @@ public class InjectionUpdateTest {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		c1 = EclipseContextFactory.create("c1");
 		c1.set("id", "c1");

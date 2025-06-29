@@ -63,8 +63,9 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 		if (fPatchInaccessibleProjectsPage != null) {
 			IProject[] projects = fPatchInaccessibleProjectsPage
 					.getSelectedProjects();
-			if (projects != null && projects.length != 0)
+			if (projects != null && projects.length != 0) {
 				openSelectedProjects(projects);
+			}
 		}
 
 		ApplyPatchSubscriber subscriber = new ApplyPatchSubscriber(getPatcher());
@@ -104,28 +105,33 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 
 	@Override
 	public void addPages() {
-		if (getPatch() == null)
+		if (getPatch() == null) {
 			addPage(fPatchWizardPage = new InputPatchPage(this));
-		if (getPatch() == null || !getPatcher().isWorkspacePatch())
+		}
+		if (getPatch() == null || !getPatcher().isWorkspacePatch()) {
 			addPage(fPatchTargetPage = new PatchTargetPage(getPatcher()) {
 				@Override
 				public IWizardPage getNextPage() {
 					IWizardPage nextPage = super.getNextPage();
-					if (!isTargetingInaccessibleProjects() && nextPage != this)
+					if (!isTargetingInaccessibleProjects() && nextPage != this) {
 						return nextPage.getNextPage();
+					}
 					return nextPage;
 				}
 			});
-		if (getPatch() == null || isTargetingInaccessibleProjects())
+		}
+		if (getPatch() == null || isTargetingInaccessibleProjects()) {
 			addPage(fPatchInaccessibleProjectsPage = new PatchInaccessibleProjectsPage(
 					getPatcher()));
+		}
 		addPage(new PatchParsedPage());
 	}
 
 	public boolean isComplete() {
 		if (getPatch() == null || !getPatcher().isWorkspacePatch()
-				|| isTargetingInaccessibleProjects())
+				|| isTargetingInaccessibleProjects()) {
 			return false;
+		}
 		return true;
 	}
 
@@ -134,8 +140,9 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 		if (diffProjects != null) {
 			for (DiffProject diffProject : diffProjects) {
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(diffProject.getName());
-				if (!project.isAccessible())
+				if (!project.isAccessible()) {
 					return true;
+				}
 			}
 		}
 		return false;

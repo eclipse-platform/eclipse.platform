@@ -44,8 +44,9 @@ public class WeakRefList {
 				pos++;
 			}
 		}
-		if (pos == result.length)
+		if (pos == result.length) {
 			return result;
+		}
 		// reallocate the array
 		Object[] tmp = new Object[pos];
 		System.arraycopy(result, 0, tmp, 0, pos);

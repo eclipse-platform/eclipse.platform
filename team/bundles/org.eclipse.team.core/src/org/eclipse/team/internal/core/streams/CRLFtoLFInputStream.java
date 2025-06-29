@@ -53,7 +53,9 @@ public class CRLFtoLFInputStream extends FilterInputStream {
 		if (lastByte == '\r') {
 			lastByte = in.read(); // ok if this throws
 			if (lastByte != '\n') {
-				if (lastByte == -1) pendingByte = false;
+				if (lastByte == -1) {
+					pendingByte = false;
+				}
 				return '\r'; // leaves the byte pending for later
 			}
 		}
@@ -75,7 +77,9 @@ public class CRLFtoLFInputStream extends FilterInputStream {
 			return 0;
 		} else if (len == 1) {
 			int b = read();
-			if (b == -1) return -1;
+			if (b == -1) {
+				return -1;
+			}
 			buffer[off] = (byte) b;
 			return 1;
 		}
@@ -111,7 +115,9 @@ public class CRLFtoLFInputStream extends FilterInputStream {
 				}
 			} else {
 				if (pendingByte) {
-					if (lastByte != '\n') buffer[j++] = '\r'; // if LF, don't write the CR
+					if (lastByte != '\n') {
+						buffer[j++] = '\r'; // if LF, don't write the CR
+					}
 					pendingByte = false;
 				}
 				buffer[j++] = (byte) lastByte;
@@ -134,7 +140,9 @@ public class CRLFtoLFInputStream extends FilterInputStream {
 	public long skip(long count) throws IOException {
 		int actualCount = 0; // assumes count < Integer.MAX_INT
 		try {
-			while (count-- > 0 && read() != -1) actualCount++; // skip the specified number of bytes
+			while (count-- > 0 && read() != -1) {
+				actualCount++; // skip the specified number of bytes
+			}
 			return actualCount;
 		} catch (InterruptedIOException e) {
 			e.bytesTransferred = actualCount;

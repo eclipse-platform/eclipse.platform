@@ -44,7 +44,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Abstract class that caches any remote contents in local so that external 
+ * Abstract class that caches any remote contents in local so that external
  * tools can be used to show a comparison.
  */
 public abstract class AbstractMergeViewer extends Viewer {
@@ -101,24 +101,25 @@ public abstract class AbstractMergeViewer extends Viewer {
 	}
 
 	protected boolean isOneSided() {
-		if (input instanceof ICompareInput) {
-			ICompareInput ci = (ICompareInput) input;
+		if (input instanceof ICompareInput ci) {
 			int type = ci.getKind() & Differencer.CHANGE_TYPE_MASK;
 			return type != Differencer.CHANGE;
 		}
 		return false;
 	}
-	
+
 	protected File getFileForSingleSide() throws CoreException {
 		File file = getFileForLeft();
-		if (file != null && file.exists())
+		if (file != null && file.exists()) {
 			return file;
+		}
 		return getFileForRight();
 	}
-	
+
 	protected File getFileForRight() throws CoreException {
-		if (rightFile != null)
+		if (rightFile != null) {
 			return rightFile;
+		}
 		ICompareInput ci = getCompareInput();
 		if (ci != null) {
 			ITypedElement right = ci.getRight();
@@ -133,8 +134,9 @@ public abstract class AbstractMergeViewer extends Viewer {
 	}
 
 	protected File getFileForLeft() throws CoreException {
-		if (leftFile != null)
+		if (leftFile != null) {
 			return leftFile;
+		}
 		ICompareInput ci = getCompareInput();
 		if (ci != null) {
 			ITypedElement left = ci.getLeft();
@@ -147,24 +149,24 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return null;
 	}
-	
+
 	protected File getResultFile() throws IOException {
-		if (resultFile != null)
+		if (resultFile != null) {
 			return resultFile;
+		}
 		resultFile = File.createTempFile("merge", ".doc"); //$NON-NLS-1$ //$NON-NLS-2$
 		resultFile.deleteOnExit();
 		// Need to delete the file so that clients will know that the files doesn't exist yet
 		resultFile.delete();
 		return resultFile;
 	}
-	
+
 	protected boolean hasResultFile() {
 		return resultFile != null;
 	}
 
 	private File cacheContents(ITypedElement element) throws CoreException {
-		if (element instanceof IStreamContentAccessor) {
-			IStreamContentAccessor sca = (IStreamContentAccessor) element;
+		if (element instanceof IStreamContentAccessor sca) {
 			InputStream contents = sca.getContents();
 			if (contents != null) {
 				try {
@@ -198,7 +200,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 
 	protected ICompareInput getCompareInput() {
 		if (input instanceof ICompareInput) {
-			return (ICompareInput) input;	
+			return (ICompareInput) input;
 		}
 		return null;
 	}
@@ -214,17 +216,15 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return null;
 	}
-	
+
 	protected IFile getEclipseFile(Object element) {
-		if (element instanceof IResourceProvider) {
-			IResourceProvider rp = (IResourceProvider) element;
+		if (element instanceof IResourceProvider rp) {
 			IResource resource = rp.getResource();
 			if (resource.getType() == IResource.FILE) {
 				return (IFile)resource;
 			}
 		}
-		if (element instanceof IAdaptable) {
-			IAdaptable a = (IAdaptable) element;
+		if (element instanceof IAdaptable a) {
 			Object result = a.getAdapter(IResource.class);
 			if (result == null) {
 				result = a.getAdapter(IFile.class);
@@ -235,7 +235,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return null;
 	}
-	
+
 	protected IEditableContent getSaveTarget() {
 		IEditableContent left = getEditableLeft();
 		IEditableContent right = getEditableRight();
@@ -247,30 +247,30 @@ public abstract class AbstractMergeViewer extends Viewer {
 		}
 		return null;
 	}
-	
+
 	private IEditableContent getEditableLeft() {
 		ICompareInput compareInput = getCompareInput();
 		if (compareInput != null) {
 			ITypedElement left = compareInput.getLeft();
 			if (left instanceof IEditableContent && configuration.isLeftEditable()) {
 				return (IEditableContent) left;
-			}	
-		}	
+			}
+		}
 		return null;
 	}
-	
+
 	private IEditableContent getEditableRight() {
 		ICompareInput compareInput = getCompareInput();
 		if (compareInput != null) {
 			ITypedElement right = compareInput.getRight();
 			if (right instanceof IEditableContent && configuration.isRightEditable()) {
 				return (IEditableContent) right;
-				
-			}	
-		}	
+
+			}
+		}
 		return null;
 	}
-	
+
 	protected byte[] asBytes(File file) throws IOException {
 		try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();

@@ -295,7 +295,7 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 		}
 		Image image = fImageCache.get(descriptor);
 		if (image == null) {
-			image = new Image(getControl().getDisplay(), descriptor.getImageData());
+			image = descriptor.createImage();
 			fImageCache.put(descriptor, image);
 		}
 		return image;
@@ -398,8 +398,7 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 
 	@Override
 	protected Widget doFindInputItem(Object element) {
-		if (element instanceof ModelNode) {
-			ModelNode node = (ModelNode) element;
+		if (element instanceof ModelNode node) {
 			if (node.getElement().equals(getInput())) {
 				return getControl();
 			}
@@ -548,11 +547,9 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 	 * @return selection policy or <code>null</code>
 	 */
 	protected IModelSelectionPolicy getSelectionPolicy(ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			Object element = ss.getFirstElement();
-			if (element instanceof IAdaptable) {
-				IAdaptable adaptable = (IAdaptable) element;
+			if (element instanceof IAdaptable adaptable) {
 				IModelSelectionPolicyFactory factory =  adaptable.getAdapter(IModelSelectionPolicyFactory.class);
 				if (factory != null) {
 					return factory.createModelSelectionPolicyAdapter(adaptable, getPresentationContext());
@@ -749,8 +746,7 @@ public abstract class AsynchronousViewer extends StructuredViewer implements Lis
 		if (selection.isEmpty()) {
 			return false;
 		}
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss = (IStructuredSelection) selection;
+		if (selection instanceof IStructuredSelection ss) {
 			Iterator<?> iterator = ss.iterator();
 			while (iterator.hasNext()) {
 				Object element = iterator.next();

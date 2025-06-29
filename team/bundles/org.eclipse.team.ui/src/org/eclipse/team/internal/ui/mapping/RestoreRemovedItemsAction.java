@@ -30,8 +30,7 @@ public class RestoreRemovedItemsAction extends ResourceModelParticipantAction {
 	@Override
 	public void run() {
 		ISynchronizationContext context = getSynchronizationContext();
-		if(context instanceof SubscriberMergeContext){
-			SubscriberMergeContext smc = (SubscriberMergeContext) context;
+		if(context instanceof SubscriberMergeContext smc){
 			SubscriberDiffTreeEventHandler handler  = smc.getAdapter(SubscriberDiffTreeEventHandler.class);
 			handler.reset();
 		}

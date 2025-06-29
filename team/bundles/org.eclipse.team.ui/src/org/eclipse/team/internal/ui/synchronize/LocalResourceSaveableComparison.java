@@ -122,8 +122,9 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		}
 		// Discard of the buffer
 		ITypedElement left = getFileElement();
-		if (left instanceof LocalResourceTypedElement)
+		if (left instanceof LocalResourceTypedElement) {
 			((LocalResourceTypedElement) left).discardBuffer();
+		}
 		document = null;
 	}
 
@@ -145,8 +146,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 			// Then we tell the input to commit its changes
 			// Only the left is ever saveable
 			ITypedElement te = getFileElement();
-			if (te instanceof LocalResourceTypedElement) {
-				LocalResourceTypedElement lrte = (LocalResourceTypedElement) te;
+			if (te instanceof LocalResourceTypedElement lrte) {
 				lrte.commit(Policy.subMonitorFor(monitor, 60));
 			}
 		} finally {
@@ -182,8 +182,9 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	 */
 	private boolean checkForUpdateConflicts() {
 		if(hasSaveConflict()) {
-			if (Utils.RUNNING_TESTS)
+			if (Utils.RUNNING_TESTS) {
 				return !Utils.TESTING_FLUSH_ON_COMPARE_INPUT_CHANGE;
+			}
 			final MessageDialog dialog =
 				new MessageDialog(TeamUIPlugin.getStandardDisplay().getActiveShell(),
 						TeamUIMessages.SyncInfoCompareInput_0,
@@ -210,8 +211,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 
 	private boolean hasSaveConflict() {
 		ITypedElement left = getFileElement();
-		if (left instanceof LocalResourceTypedElement) {
-			LocalResourceTypedElement te = (LocalResourceTypedElement) left;
+		if (left instanceof LocalResourceTypedElement te) {
 			return !te.isSynchronized();
 		}
 		return false;
@@ -243,8 +243,9 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	protected void performRevert(IProgressMonitor monitor) {
 		// Only the left is ever editable
 		ITypedElement left = getFileElement();
-		if (left instanceof LocalResourceTypedElement)
+		if (left instanceof LocalResourceTypedElement) {
 			((LocalResourceTypedElement) left).discardBuffer();
+		}
 	}
 
 	@Override
@@ -269,8 +270,9 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		Image image = input.getImage();
-		if (image != null)
+		if (image != null) {
 			return ImageDescriptor.createFromImage(image);
+		}
 		return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW);
 	}
 
@@ -280,25 +282,25 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
 			boolean changed= false;
 			Object newValue= e.getNewValue();
-			if (newValue instanceof Boolean)
+			if (newValue instanceof Boolean) {
 				changed= ((Boolean)newValue).booleanValue();
+			}
 
 			Object source = e.getSource();
-			if (source instanceof ContentMergeViewer) {
-				ContentMergeViewer cmv = (ContentMergeViewer) source;
+			if (source instanceof ContentMergeViewer cmv) {
 				if (input.getLeft() != null
 						&& input.getLeft().equals(fileElement)) {
-					if (changed && cmv.internalIsLeftDirty())
+					if (changed && cmv.internalIsLeftDirty()) {
 						setDirty(changed);
-					else if (!changed && !cmv.internalIsLeftDirty()) {
+					} else if (!changed && !cmv.internalIsLeftDirty()) {
 						setDirty(changed);
 					}
 				}
 				if (input.getRight() != null
 						&& input.getRight().equals(fileElement)) {
-					if (changed && cmv.internalIsRightDirty())
+					if (changed && cmv.internalIsRightDirty()) {
 						setDirty(changed);
-					else if (!changed && !cmv.internalIsRightDirty()) {
+					} else if (!changed && !cmv.internalIsRightDirty()) {
 						setDirty(changed);
 					}
 				}
@@ -318,23 +320,25 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
+		}
 
-		if (!(obj instanceof Saveable))
+		if (!(obj instanceof Saveable)) {
 			return false;
+		}
 
 		if (document != null) {
 			Object otherDocument= ((Saveable)obj).getAdapter(IDocument.class);
 
-			if (document == null && otherDocument == null)
+			if (document == null && otherDocument == null) {
 				return false;
+			}
 
 			return document != null && document.equals(otherDocument);
 		}
 
-		if (obj instanceof LocalResourceSaveableComparison) {
-			LocalResourceSaveableComparison rscm = (LocalResourceSaveableComparison) obj;
+		if (obj instanceof LocalResourceSaveableComparison rscm) {
 			return rscm.input.equals(input);
 		}
 		return false;
@@ -343,26 +347,26 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IDocument.class) {
-			if (document != null)
+			if (document != null) {
 				return (T) document;
-			if (fileElement instanceof LocalResourceTypedElement) {
-				LocalResourceTypedElement lrte = (LocalResourceTypedElement) fileElement;
+			}
+			if (fileElement instanceof LocalResourceTypedElement lrte) {
 				if (lrte.isConnected()) {
 					ISharedDocumentAdapter sda = Adapters.adapt(lrte, ISharedDocumentAdapter.class);
 					if (sda != null) {
 						IEditorInput input = sda.getDocumentKey(lrte);
 						if (input != null) {
 							IDocumentProvider provider = SharedDocumentAdapter.getDocumentProvider(input);
-							if (provider != null)
+							if (provider != null) {
 								return (T) provider.getDocument(input);
+							}
 						}
 					}
 				}
 			}
 		}
 		if (adapter == IEditorInput.class) {
-			if (fileElement instanceof LocalResourceTypedElement) {
-				LocalResourceTypedElement lrte = (LocalResourceTypedElement) fileElement;
+			if (fileElement instanceof LocalResourceTypedElement lrte) {
 				return (T) new FileEditorInput((IFile)lrte.getResource());
 			}
 		}
@@ -378,8 +382,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	}
 
 	public boolean isConnectedToSharedDocument() {
-		if (fileElement instanceof LocalResourceTypedElement) {
-			LocalResourceTypedElement lrte = (LocalResourceTypedElement) fileElement;
+		if (fileElement instanceof LocalResourceTypedElement lrte) {
 			return lrte.isConnected();
 		}
 		return false;

@@ -65,7 +65,7 @@ INPUT {
 }
 
 A {
-	color:WindowText;
+	color:CanvasText;
 	text-decoration:none;
 }
 
@@ -77,28 +77,18 @@ A {
 #searchWord {
 	margin-left:5px;
 	margin-right:5px;
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 }
 
 #searchLabel {
-	color:WindowText;
+	color:CanvasText;
 }
 
 #go {
-<% 
-    if (data.isMacMozilla()) {
-%>
-    background:GrayText;
-<% 
-    } else {
-%>
-    background:ThreeDShadow;
-<%
-    }
-%>
-	color:Window;
+    background:CanvasText;
+	color:Canvas;
 	font-weight:bold;
-	border:1px solid ThreeDShadow;
+	border:1px solid CanvasText;
 	margin-left:1px;
 	font-size: 1.0em;
 }
@@ -114,7 +104,7 @@ A {
 	text-align:<%=isRTL?"left":"right"%>;
 	margin-<%=isRTL?"right":"left"%>:5px;
 	border:0px;
-	color:WindowText;
+	color:CanvasText;
 	text-decoration:none;
 }
 
@@ -183,7 +173,7 @@ if (data.isIE()){
 	// move the dialog just a bit higher than the middle
 	if (t-50 > 0) t = t-50;
 	
-	window.location="javascript://needModal";
+	if (typeof top.swtHintNeedModalPopup === "function") top.swtHintNeedModalPopup();
 	advancedDialog = window.open("workingSetManager.jsp?workingSet="+encodeURIComponent(workingSet), "advancedDialog", "resizable=yes,height="+h+",width="+w+",left="+l+",top="+t );
 	advancedDialog.focus(); 
 }

@@ -64,8 +64,9 @@ public class BaseExtensionPointManager {
 			String attributeValue) {
 
 		long start = 0;
-		if (Log.logPerformance)
+		if (Log.logPerformance) {
 			start = System.currentTimeMillis();
+		}
 
 		// get all Config extension point contributions. There could be more
 		// than one config contribution, but there should only be one that maps
@@ -81,16 +82,18 @@ public class BaseExtensionPointManager {
 			// well.
 			String configId = introConfig.getAttribute(ATT_ID);
 			IConfigurationElement[] introConfigExtensions = null;
-			if (configId == null)
+			if (configId == null) {
 				// if id of config is null, pass empty array.
 				introConfigExtensions = new IConfigurationElement[0];
-			else
+			} else {
 				introConfigExtensions = getIntroConfigExtensions(
 					ATT_CONFIG_EXTENSION_CONFIG_ID, configId);
+			}
 
-			if (Log.logPerformance)
+			if (Log.logPerformance) {
 				Util.logPerformanceTime(
 					"BEGIN:  quering registry for configs took: ", start); //$NON-NLS-1$
+			}
 
 
 			IntroModelRoot model = new IntroModelRoot(introConfig,
@@ -105,11 +108,12 @@ public class BaseExtensionPointManager {
 			// command contributions.
 			loadSharedConfigExtensions();
 
-			if (Log.logPerformance)
+			if (Log.logPerformance) {
 				Util
 					.logPerformanceTime(
 						"loading Intro Model (quering registry/creating & resolving model) took: ", //$NON-NLS-1$
 						start);
+			}
 
 			return model;
 		}
@@ -131,10 +135,11 @@ public class BaseExtensionPointManager {
 		IConfigurationElement config = getConfigurationFromAttribute(
 			configElements, attrributeName, attributeValue);
 
-		if (config == null)
+		if (config == null) {
 			// if there is no valid config, log the fact.
 			Log.warning("No Intro configuration found with " + attrributeName //$NON-NLS-1$
 					+ " of value = " + attributeValue); //$NON-NLS-1$
+		}
 
 		return config;
 	}
@@ -219,8 +224,9 @@ public class BaseExtensionPointManager {
 			String currentAttributeValue = configElements[i]
 				.getAttribute(attributeName);
 			if (currentAttributeValue != null
-					&& currentAttributeValue.equals(attributeValue))
+					&& currentAttributeValue.equals(attributeValue)) {
 				elements.add(configElements[i]);
+			}
 		}
 
 		// now return array.

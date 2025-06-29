@@ -147,10 +147,12 @@ public class ApplyPatchOperation implements Runnable {
 
 		if (saveAllEditors) {
 			PatchWizard wizard = new PatchWizard(patch, target, configuration);
-			if (patchWizardImage != null)
+			if (patchWizardImage != null) {
 				wizard.setDefaultPageImageDescriptor(patchWizardImage);
-			if (patchWizardTitle != null)
+			}
+			if (patchWizardTitle != null) {
 				wizard.setWindowTitle(patchWizardTitle);
+			}
 			wizard.setNeedsProgressMonitor(true);
 
 			new PatchWizardDialog(getShell(), wizard).open();
@@ -164,8 +166,9 @@ public class ApplyPatchOperation implements Runnable {
 	 * @return the parent shell to be used when the wizard is opened
 	 */
 	protected Shell getShell() {
-		if (part == null)
+		if (part == null) {
 			return CompareUIPlugin.getShell();
+		}
 		return part.getSite().getShell();
 	}
 

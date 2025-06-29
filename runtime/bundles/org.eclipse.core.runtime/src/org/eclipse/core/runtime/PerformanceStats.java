@@ -182,8 +182,9 @@ public class PerformanceStats {
 	 * @see #removeListener(PerformanceStats.PerformanceListener)
 	 */
 	public static void addListener(PerformanceListener listener) {
-		if (ENABLED)
+		if (ENABLED) {
 			PerformanceStatsProcessor.addListener(listener);
+		}
 	}
 
 	/**
@@ -217,15 +218,18 @@ public class PerformanceStats {
 	 * be obtained, a <code>String</code> describing the event should be supplied
 	 */
 	public static PerformanceStats getStats(String eventName, Object blameObject) {
-		if (!ENABLED || eventName == null || blameObject == null)
+		if (!ENABLED || eventName == null || blameObject == null) {
 			return EMPTY_STATS;
+		}
 		PerformanceStats newStats = new PerformanceStats(eventName, blameObject);
-		if (!TRACE_SUCCESS)
+		if (!TRACE_SUCCESS) {
 			return newStats;
+		}
 		//use existing stats object if available
 		PerformanceStats oldStats = statMap.get(newStats);
-		if (oldStats != null)
+		if (oldStats != null) {
 			return oldStats;
+		}
 		statMap.put(newStats, newStats);
 		return newStats;
 	}
@@ -244,8 +248,9 @@ public class PerformanceStats {
 	 * name is enabled, and <code>false</code> otherwise.
 	 */
 	public static boolean isEnabled(String eventName) {
-		if (!ENABLED)
+		if (!ENABLED) {
 			return false;
+		}
 		String option = Platform.getDebugOption(eventName);
 		return option != null && !"false".equalsIgnoreCase(option) && !"-1".equalsIgnoreCase(option); //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -254,8 +259,9 @@ public class PerformanceStats {
 	 * Prints all statistics to the standard output.
 	 */
 	public static void printStats() {
-		if (!ENABLED)
+		if (!ENABLED) {
 			return;
+		}
 		PrintWriter writer = new PrintWriter(System.out);
 		PerformanceStatsProcessor.printStats(writer);
 		writer.flush();
@@ -267,8 +273,9 @@ public class PerformanceStats {
 	 * @param out The writer to print stats to.
 	 */
 	public static void printStats(PrintWriter out) {
-		if (!ENABLED)
+		if (!ENABLED) {
 			return;
+		}
 		PerformanceStatsProcessor.printStats(out);
 	}
 
@@ -280,8 +287,9 @@ public class PerformanceStats {
 	 * @see #addListener(PerformanceStats.PerformanceListener)
 	 */
 	public static void removeListener(PerformanceListener listener) {
-		if (ENABLED)
+		if (ENABLED) {
 			PerformanceStatsProcessor.removeListener(listener);
+		}
 	}
 
 	/**
@@ -294,8 +302,9 @@ public class PerformanceStats {
 		synchronized (statMap) {
 			for (Iterator<PerformanceStats> it = statMap.keySet().iterator(); it.hasNext();) {
 				PerformanceStats stats = it.next();
-				if (stats.getEvent().equals(eventName) && stats.getBlame().equals(blameObject))
+				if (stats.getEvent().equals(eventName) && stats.getBlame().equals(blameObject)) {
 					it.remove();
+				}
 			}
 		}
 	}
@@ -312,7 +321,7 @@ public class PerformanceStats {
 	 */
 	private PerformanceStats(String event, Object blameObject, String context) {
 		this.event = event;
-		this.blame = blameObject instanceof String ? (String) blameObject : blameObject.getClass().getName();
+		this.blame = blameObject instanceof String s ? s : blameObject.getClass().getName();
 		this.blamePluginId = InternalPlatform.getDefault().getBundleId(blameObject);
 		this.context = context;
 	}
@@ -328,14 +337,17 @@ public class PerformanceStats {
 	 * name of a project being built, or the input of an editor being opened.
 	 */
 	public void addRun(long elapsed, String contextName) {
-		if (!ENABLED)
+		if (!ENABLED) {
 			return;
+		}
 		runCount++;
 		runningTime += elapsed;
-		if (elapsed > getThreshold(event))
+		if (elapsed > getThreshold(event)) {
 			PerformanceStatsProcessor.failed(createFailureStats(contextName, elapsed), blamePluginId, elapsed);
-		if (TRACE_SUCCESS)
+		}
+		if (TRACE_SUCCESS) {
 			PerformanceStatsProcessor.changed(this);
+		}
 	}
 
 	/**
@@ -348,10 +360,11 @@ public class PerformanceStats {
 	private PerformanceStats createFailureStats(String contextName, long elapsed) {
 		PerformanceStats failedStat = new PerformanceStats(event, blame, contextName);
 		PerformanceStats old = statMap.get(failedStat);
-		if (old == null)
+		if (old == null) {
 			statMap.put(failedStat, failedStat);
-		else
+		} else {
 			failedStat = old;
+		}
 		failedStat.isFailure = true;
 		failedStat.runCount++;
 		failedStat.runningTime += elapsed;
@@ -371,8 +384,9 @@ public class PerformanceStats {
 	 * @see #startRun()
 	 */
 	public void endRun() {
-		if (!ENABLED || currentStart == NOT_STARTED)
+		if (!ENABLED || currentStart == NOT_STARTED) {
 			return;
+		}
 		addRun(System.currentTimeMillis() - currentStart, context);
 		currentStart = NOT_STARTED;
 	}
@@ -380,9 +394,9 @@ public class PerformanceStats {
 	@Override
 	public boolean equals(Object obj) {
 		//count and time are not considered part of equality
-		if (!(obj instanceof PerformanceStats))
+		if (!(obj instanceof PerformanceStats that)) {
 			return false;
-		PerformanceStats that = (PerformanceStats) obj;
+		}
 		return this.event.equals(that.event) && this.getBlameString().equals(that.getBlameString())
 				&& Objects.equals(this.context, that.context);
 	}
@@ -458,8 +472,9 @@ public class PerformanceStats {
 					//invalid option, just ignore
 				}
 			}
-			if (value == null)
+			if (value == null) {
 				value = Long.valueOf(Long.MAX_VALUE);
+			}
 			thresholdMap.put(eventName, value);
 		}
 		return value.longValue();
@@ -469,8 +484,9 @@ public class PerformanceStats {
 	public int hashCode() {
 		//count and time are not considered part of equality
 		int hash = event.hashCode() * 37 + getBlameString().hashCode();
-		if (context != null)
+		if (context != null) {
 			hash = hash * 37 + context.hashCode();
+		}
 		return hash;
 	}
 
@@ -497,8 +513,9 @@ public class PerformanceStats {
 	 * fully equivalent to <code>startRun(null)</code>.
 	 */
 	public void startRun() {
-		if (ENABLED)
+		if (ENABLED) {
 			startRun(null);
+		}
 	}
 
 	/**
@@ -511,8 +528,9 @@ public class PerformanceStats {
 	 * @see #endRun
 	 */
 	public void startRun(String contextName) {
-		if (!ENABLED)
+		if (!ENABLED) {
 			return;
+		}
 		this.context = contextName;
 		this.currentStart = System.currentTimeMillis();
 	}

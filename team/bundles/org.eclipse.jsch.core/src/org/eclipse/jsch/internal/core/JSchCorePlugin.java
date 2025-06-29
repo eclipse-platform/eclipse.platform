@@ -63,7 +63,7 @@ public class JSchCorePlugin extends Plugin{
 
   /**
    * Convenience method for logging CoreExceptions to the plugin log
-   * 
+   *
    * @param e
    *          the exception
    */
@@ -75,7 +75,7 @@ public class JSchCorePlugin extends Plugin{
    * Log the given status. Do not use this method for the IStatus from a
    * CoreException. Use<code>log(CoreException)</code> instead so the stack
    * trace is not lost.
-   * 
+   *
    * @param status
    *          the status
    */
@@ -89,7 +89,7 @@ public class JSchCorePlugin extends Plugin{
 
   /**
    * Get the communications timeout value in seconds
-   * 
+   *
    * @return the timeout value in seconds
    */
   public int getTimeout(){
@@ -99,7 +99,7 @@ public class JSchCorePlugin extends Plugin{
   /**
    * Set the timeout value for communications to a value in seconds. The value
    * must be greater than or equal 0. If is it 0, there is no timeout.
-   * 
+   *
    * @param timeout
    *          the timeout value in seconds
    */
@@ -128,8 +128,9 @@ public class JSchCorePlugin extends Plugin{
           break;
         }
       }
-      if(irepo!=null)
+      if(irepo!=null){
         break;
+      }
     }
 
     if(irepo!=null){
@@ -147,8 +148,9 @@ public class JSchCorePlugin extends Plugin{
     IExtension[] extensions=Platform.getExtensionRegistry().getExtensionPoint(
         JSchCorePlugin.ID, JSchCorePlugin.PT_IDENTITYREPOSITORY).getExtensions();
 
-    if(extensions.length==0)
+    if(extensions.length==0){
       return new IdentityRepository[0];
+    }
 
     ArrayList<IdentityRepository> tmp = new ArrayList<>();
     for(IExtension extension : extensions) {
@@ -189,8 +191,9 @@ public class JSchCorePlugin extends Plugin{
     Preferences preferences=JSchCorePlugin.getPlugin().getPluginPreferences();
     String ssh_home=preferences.getString(IConstants.KEY_SSH2HOME);
 
-    if(ssh_home.length()==0)
+    if(ssh_home.length()==0){
       ssh_home=PreferenceInitializer.SSH_HOME_DEFAULT;
+    }
 
     java.io.File file=new java.io.File(ssh_home, "known_hosts"); //$NON-NLS-1$
     try{
@@ -230,7 +233,7 @@ public class JSchCorePlugin extends Plugin{
   /**
    * Return the {@link IProxyService} or <code>null</code> if the service is
    * not available.
-   * 
+   *
    * @return the {@link IProxyService} or <code>null</code>
    */
   public IProxyService getProxyService(){

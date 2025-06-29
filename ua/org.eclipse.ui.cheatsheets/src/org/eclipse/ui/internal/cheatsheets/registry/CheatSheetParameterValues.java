@@ -41,8 +41,7 @@ public class CheatSheetParameterValues implements IParameterValues {
 
 		Object[] cheatsheets = cheatSheetCollection.getCheatSheets();
 		for (Object cheatsheet : cheatsheets) {
-			if (cheatsheet instanceof CheatSheetElement) {
-				CheatSheetElement element = (CheatSheetElement) cheatsheet;
+			if (cheatsheet instanceof CheatSheetElement element) {
 				values.put(element.getLabel(null), element.getID());
 			}
 		}

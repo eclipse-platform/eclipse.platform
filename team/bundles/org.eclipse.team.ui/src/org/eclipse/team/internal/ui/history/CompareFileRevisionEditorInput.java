@@ -49,8 +49,9 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		@Override
 		protected IResource[] getResources(ICompareInput input) {
 			IResource resource = getResource(input);
-			if (resource == null)
+			if (resource == null) {
 				return new IResource[0];
+			}
 			return new IResource[] { resource };
 		}
 	};
@@ -63,10 +64,10 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
-		if (obj instanceof CompareFileRevisionEditorInput) {
-			CompareFileRevisionEditorInput other = (CompareFileRevisionEditorInput) obj;
+		}
+		if (obj instanceof CompareFileRevisionEditorInput other) {
 			return other.getLeft().equals(left)
 					&& other.getRightRevision().equals(right);
 		}
@@ -103,7 +104,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		super(new CompareConfiguration(), page);
 		this.left = left;
 		this.right = right;
-		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { left.getName() }));
+		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, left.getName()));
 	}
 
 	@Override
@@ -199,8 +200,9 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 				}
 				author= localElement.getAuthor();
 			}
-			if (author != null)
+			if (author != null) {
 				return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_workspace_authorExists, new Object[] { name, author });
+			}
 		}
 		return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_workspace, new Object[] { name });
 	}
@@ -213,10 +215,11 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 				return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_localRevision, new Object[]{TextProcessor.process(element.getName()), element.getTimestamp()});
 			}
 		} else {
-			if (Utils.isShowAuthor())
-				return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_repository, new Object[] { element.getName(), element.getContentIdentifier(), element.getAuthor() });
-			else
+			if (Utils.isShowAuthor()) {
+				return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_repository, element.getName(), element.getContentIdentifier(), element.getAuthor());
+			} else {
 				return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_repositoryWithoutAuthor, new Object[] { element.getName(), element.getContentIdentifier() });
+			}
 		}
 		return ""; //$NON-NLS-1$
 	}
@@ -251,32 +254,27 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 	}
 
 	private String getShortName(ITypedElement element) {
-		if (element instanceof FileRevisionTypedElement){
-			FileRevisionTypedElement fileRevisionElement = (FileRevisionTypedElement) element;
+		if (element instanceof FileRevisionTypedElement fileRevisionElement){
 			return fileRevisionElement.getName();
 		}
-		else if (element instanceof LocalResourceTypedElement){
-			LocalResourceTypedElement typedContent = (LocalResourceTypedElement) element;
+		else if (element instanceof LocalResourceTypedElement typedContent){
 			return typedContent.getResource().getName();
 		}
 		return element.getName();
 	}
 
 	private String getLongName(ITypedElement element) {
-		if (element instanceof FileRevisionTypedElement){
-			FileRevisionTypedElement fileRevisionElement = (FileRevisionTypedElement) element;
+		if (element instanceof FileRevisionTypedElement fileRevisionElement){
 			return fileRevisionElement.getPath();
 		}
-		else if (element instanceof LocalResourceTypedElement){
-			LocalResourceTypedElement typedContent = (LocalResourceTypedElement) element;
+		else if (element instanceof LocalResourceTypedElement typedContent){
 			return typedContent.getResource().getFullPath().toString();
 		}
 		return element.getName();
 	}
 
 	private String getContentIdentifier(ITypedElement element){
-		if (element instanceof FileRevisionTypedElement){
-			FileRevisionTypedElement fileRevisionElement = (FileRevisionTypedElement) element;
+		if (element instanceof FileRevisionTypedElement fileRevisionElement){
 			Object fileObject = fileRevisionElement.getFileRevision();
 			if (fileObject instanceof LocalFileRevision){
 				try {

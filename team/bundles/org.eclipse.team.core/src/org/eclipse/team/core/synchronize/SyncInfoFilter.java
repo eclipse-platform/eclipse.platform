@@ -61,9 +61,15 @@ public abstract class SyncInfoFilter {
 		public boolean select(SyncInfo info, IProgressMonitor monitor) {
 			IResourceVariant remote = info.getRemote();
 			IResource local = info.getLocal();
-			if (local.getType() != IResource.FILE) return true;
-			if (remote == null) return !local.exists();
-			if (!local.exists()) return false;
+			if (local.getType() != IResource.FILE) {
+				return true;
+			}
+			if (remote == null) {
+				return !local.exists();
+			}
+			if (!local.exists()) {
+				return false;
+			}
 			return compareContents((IFile)local, remote, monitor);
 		}
 

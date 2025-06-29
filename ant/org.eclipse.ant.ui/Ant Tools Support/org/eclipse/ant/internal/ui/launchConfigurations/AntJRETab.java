@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -211,7 +211,7 @@ public class AntJRETab extends JavaJRETab {
 	 * Returns the default {@link IVMInstall} for the given {@link ILaunchConfiguration}, which resolves to the {@link IVMInstall} for the backing
 	 * {@link IJavaProject} as specified by the project attribute in the configuration. If there is no project attribute the workspace default
 	 * {@link IVMInstall} is returned.
-	 * 
+	 *
 	 * @return the default {@link IVMInstall} for the given {@link ILaunchConfiguration}
 	 */
 	private IVMInstall getDefaultVMInstall(ILaunchConfiguration config) {

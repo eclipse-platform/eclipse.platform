@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -16,16 +16,21 @@ package org.eclipse.debug.internal.ui.views.launch;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
 import org.eclipse.debug.ui.IDebugModelPresentation;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Translates images, colors, and fonts into image descriptors, RGBs, and font
@@ -76,12 +81,7 @@ public class DebugElementHelper {
 
 	public static ImageDescriptor getImageDescriptor(Image image) {
 		if (image != null) {
-			ImageDescriptor descriptor = fgImages.get(image);
-			if (descriptor == null) {
-				descriptor = new ImageImageDescriptor(image);
-				fgImages.put(image, descriptor);
-			}
-			return descriptor;
+			return fgImages.computeIfAbsent(image, ImageDescriptor::createFromImage);
 		}
 		return null;
 	}
@@ -135,14 +135,27 @@ public class DebugElementHelper {
 	 */
 	public static RGB getForeground(Object element, IDebugModelPresentation presentation) {
 		Color color = null;
-		if (presentation instanceof IColorProvider) {
-			IColorProvider colorProvider = (IColorProvider) presentation;
+		if (presentation instanceof IColorProvider colorProvider) {
 			color = colorProvider.getForeground(element);
 		} else {
 			color = getPresentation().getForeground(element);
 		}
 		if (color != null) {
 			return color.getRGB();
+		}
+
+		if (element instanceof Breakpoint breakpoint) {
+			if (breakpoint.getBreakpointLabel() != null) {
+				final RGB[] rgb = new RGB[1];
+				Display.getDefault().syncExec(() -> {
+					Color redColor = Display.getDefault().getSystemColor(SWT.COLOR_RED);
+					rgb[0] = redColor.getRGB();
+				});
+				if (rgb[0] != null) {
+					return rgb[0];
+				}
+			}
+			return null;
 		}
 		return null;
 	}
@@ -175,8 +188,7 @@ public class DebugElementHelper {
 	 */
 	public static RGB getBackground(Object element, IDebugModelPresentation presentation) {
 		Color color = null;
-		if (presentation instanceof IColorProvider) {
-			IColorProvider colorProvider = (IColorProvider) presentation;
+		if (presentation instanceof IColorProvider colorProvider) {
 			color = colorProvider.getBackground(element);
 		} else {
 			color = getPresentation().getBackground(element);
@@ -213,8 +225,7 @@ public class DebugElementHelper {
 	 */
 	public static FontData getFont(Object element, IDebugModelPresentation presentation) {
 		Font font = null;
-		if (presentation instanceof IFontProvider) {
-			IFontProvider provider = (IFontProvider) presentation;
+		if (presentation instanceof IFontProvider provider) {
 			font = provider.getFont(element);
 		} else {
 			font = getPresentation().getFont(element);
@@ -222,7 +233,16 @@ public class DebugElementHelper {
 		if (font != null) {
 			return font.getFontData()[0];
 		}
+		if (element instanceof Breakpoint breakpoint) {
+			if (breakpoint.getBreakpointLabel() != null) {
+				var fontNew = JFaceResources.getFontDescriptor(IDebugUIConstants.PREF_VARIABLE_TEXT_FONT)
+						.getFontData()[0];
+				return new FontData(fontNew.getName(), fontNew.getHeight(), fontNew.getStyle() ^ SWT.BOLD);
+			}
+
+		}
 		return null;
+
 	}
 
 	/**

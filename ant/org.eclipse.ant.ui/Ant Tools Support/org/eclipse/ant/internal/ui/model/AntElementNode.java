@@ -1,15 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2002, 2015 GEBIT Gesellschaft fuer EDV-Beratung
- * und Informatik-Technologien mbH, 
+ * und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  *
- * This program and the accompanying materials 
+ * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial API and implementation
  * 	   IBM Corporation - bug fixes
@@ -52,14 +52,14 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * The offset of the corresponding source.
-	 * 
+	 *
 	 * @see #getOffset()
 	 */
 	protected int fOffset = -1;
 
 	/**
 	 * The length of the corresponding source.
-	 * 
+	 *
 	 * @see #getLength()
 	 */
 	protected int fLength = -1;
@@ -91,7 +91,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * Whether this element has been generated as part of an element hierarchy this has problems. This is the severity of the problem.
-	 * 
+	 *
 	 * @see XMLProblem#NO_PROBLEM
 	 * @see XMLProblem#SEVERITY_ERROR
 	 * @see XMLProblem#SEVERITY_WARNING
@@ -233,7 +233,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * Returns the absolute file system path of the file this element is defined within. Only relevant for nodes that are external
-	 * 
+	 *
 	 * @see #isExternal()
 	 */
 	public String getFilePath() {
@@ -300,7 +300,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * Returns a unique string representation of this element. The format of the string is not specified.
-	 * 
+	 *
 	 * @return the string representation
 	 */
 	@Override
@@ -357,12 +357,9 @@ public class AntElementNode implements IAdaptable, IAntElement {
 		if (!(o1 instanceof AntElementNode || o2 instanceof AntElementNode)) {
 			return o2.equals(o1);
 		}
-		if (!(o1 instanceof AntElementNode && o2 instanceof AntElementNode)) {
+		if (!(o1 instanceof AntElementNode e1 && o2 instanceof AntElementNode e2)) {
 			return false;
 		}
-
-		AntElementNode e1 = (AntElementNode) o1;
-		AntElementNode e2 = (AntElementNode) o2;
 
 		return e1.getElementPath().equals(e2.getElementPath());
 	}
@@ -446,10 +443,10 @@ public class AntElementNode implements IAdaptable, IAntElement {
 		String path = getFilePath();
 
 		if (getImportNode() != null) {
-			displayName.append(MessageFormat.format(AntModelMessages.AntElementNode_9, new Object[] { getImportNode().getLabel() }));
+			displayName.append(MessageFormat.format(AntModelMessages.AntElementNode_9, getImportNode().getLabel()));
 		} else {
 			String entityName = getAntModel().getEntityName(path);
-			displayName.append(MessageFormat.format(AntModelMessages.AntElementNode_9, new Object[] { entityName }));
+			displayName.append(MessageFormat.format(AntModelMessages.AntElementNode_9, entityName));
 		}
 	}
 
@@ -485,7 +482,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * Return the resource that contains the definition of this Ant node.
-	 * 
+	 *
 	 * @return The resource that contains the definition of this ant node or <code>null</code> if that resource could not be determined (a buildfile
 	 *         that is external to the workspace).
 	 */
@@ -498,7 +495,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * Return the resource that is the main build file for this Ant node.
-	 * 
+	 *
 	 * @return The resource that is the main buildfile for this ant node or <code>null</code> if that resource could not be determined (a buildfile
 	 *         that is external to the workspace).
 	 */
@@ -515,7 +512,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 	/**
 	 * Returns whether this node is a structural node that should be shown in the buildfile outline. For example, an AntCommentNode would return
 	 * <code>false</code>
-	 * 
+	 *
 	 * @return whether this node is a structural node that should be shown in the buildfile outline
 	 */
 	public boolean isStructuralNode() {
@@ -534,7 +531,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 	/**
 	 * Returns the name or path of the element referenced at the offset within the declaration of this node or <code>null</code> if no element is
 	 * referenced at the offset
-	 * 
+	 *
 	 * @param offset
 	 *            The offset within the declaration of this node
 	 * @return <code>null</code> or the name or path of the referenced element
@@ -560,7 +557,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * Returns the identifier to use for matching occurrences in the Ant editor.
-	 * 
+	 *
 	 * @return the occurrences identifier for this node
 	 */
 	public String getOccurrencesIdentifier() {
@@ -569,7 +566,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * Returns whether the supplied region can be considered as an area in this node containing a reference.
-	 * 
+	 *
 	 * @param region
 	 *            the area to consider for finding a reference
 	 * @return whether a reference could exist in this node from the supplied region
@@ -585,7 +582,7 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 	/**
 	 * Returns whether the supplied region is from within this node's declaration identifier area
-	 * 
+	 *
 	 * @param region
 	 *            The region to check
 	 * @return whether the region is from within this node and is the declaration of a reference.

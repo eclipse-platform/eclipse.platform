@@ -92,8 +92,9 @@ public class InjectionFilter implements IFilter {
 
 		needsLiveHelp = !enabled && HelpBasePlugin.getActivitySupport().getDocumentMessageUsesLiveHelp(addNarrow);
 
-		if (cssIncludes.isEmpty() && !addDisabled)
+		if (cssIncludes.isEmpty() && !addDisabled) {
 			return out;
+		}
 
 		IPath path = IPath.fromOSString(pathInfo);
 		int upLevels = path.segmentCount() - 1;
@@ -117,8 +118,9 @@ public class InjectionFilter implements IFilter {
 
 	private void appendDisabled(StringBuilder buff, int nsteps, boolean narrow, String relativePath) {
 		String message = HelpBasePlugin.getActivitySupport().getDocumentMessage(narrow);
-		if (message==null)
+		if (message==null) {
 			return;
+		}
 		buff.append("<div id=\"help-disabledTopic\">"); //$NON-NLS-1$
 		buff.append("<img src=\""); //$NON-NLS-1$
 		buff.append(relativePath);

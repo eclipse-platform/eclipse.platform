@@ -55,16 +55,18 @@ public class IntroSearchParticipant extends SearchParticipant {
 		Set<String> set = new HashSet<>();
 		for (int i = 0; i < elements.length; i++) {
 			IConfigurationElement element = elements[i];
-			if (!element.getName().equals("config")) //$NON-NLS-1$
+			if (!element.getName().equals("config")) { //$NON-NLS-1$
 				continue;
+			}
 			set.add(element.getContributor().getName());
 		}
 		elements = Platform.getExtensionRegistry().getConfigurationElementsFor(
 				"org.eclipse.ui.intro.configExtension"); //$NON-NLS-1$
 		for (int i = 0; i < elements.length; i++) {
 			IConfigurationElement element = elements[i];
-			if (!element.getName().equals("configExtension")) //$NON-NLS-1$
+			if (!element.getName().equals("configExtension")) { //$NON-NLS-1$
 				continue;
+			}
 			set.add(element.getContributor().getName());
 		}
 		return set;
@@ -92,8 +94,9 @@ public class IntroSearchParticipant extends SearchParticipant {
 				}
 			}
 		}
-		if (targetIntroId == null)
+		if (targetIntroId == null) {
 			return set;
+		}
 		elements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.ui.intro.config"); //$NON-NLS-1$
 		IConfigurationElement config = null;
 		for (int i = 0; i < elements.length; i++) {
@@ -106,13 +109,15 @@ public class IntroSearchParticipant extends SearchParticipant {
 				}
 			}
 		}
-		if (config == null)
+		if (config == null) {
 			return set;
+		}
 		String configId = config.getAttribute("id"); //$NON-NLS-1$
 		ExtensionPointManager extensionPointManager = IntroPlugin.getDefault().getExtensionPointManager();
 		model = extensionPointManager.getModel(configId);
-		if (model != null && model.hasValidConfig())
+		if (model != null && model.hasValidConfig()) {
 			loadFromModel(model, set, locale);
+		}
 		return set;
 	}
 
@@ -126,10 +131,11 @@ public class IntroSearchParticipant extends SearchParticipant {
 				String content = page.getRawContent();
 				String pageId = page.getId();
 				String href;
-				if (content != null)
+				if (content != null) {
 					href = resolveVariables(bundleId, content, locale);
-				else
+				} else {
 					href = pageId;
+				}
 				set.add("/" + bundleId + "/" + href + "?id=" + pageId); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
@@ -138,19 +144,22 @@ public class IntroSearchParticipant extends SearchParticipant {
 	@Override
 	public IStatus addDocument(IHelpSearchIndex index, String pluginId, String name, URL url, String id,
 			ISearchDocument doc) {
-		if (model == null)
+		if (model == null) {
 			return Status.CANCEL_STATUS;
+		}
 		IntroPage page = getPage(id);
-		if (page == null)
+		if (page == null) {
 			return Status.CANCEL_STATUS;
+		}
 		return addPage(index, pluginId, name, url, page, doc);
 	}
 
 	private IntroPage getPage(String id) {
 		IntroPage[] pages = model.getPages();
 		for (int i = 0; i < pages.length; i++) {
-			if (pages[i].getId().equals(id))
+			if (pages[i].getId().equals(id)) {
 				return pages[i];
+			}
 		}
 		return null;
 	}
@@ -185,8 +194,7 @@ public class IntroSearchParticipant extends SearchParticipant {
 			} else if (child instanceof IntroGroup) {
 				String text = ((IntroGroup)child).getLabel();
 				appendNewText(buf, text);
-			} else if (child instanceof IntroText) {
-				IntroText childIntroText = (IntroText) child;
+			} else if (child instanceof IntroText childIntroText) {
 				appendNewText(buf, childIntroText.getText());
 				String childId = childIntroText.getId();
 				String title = null;
@@ -202,8 +210,7 @@ public class IntroSearchParticipant extends SearchParticipant {
 					titleSummary.summary = childIntroText.getText();
 				}
 			}
-			if (child instanceof AbstractIntroContainer) {
-				AbstractIntroContainer container = (AbstractIntroContainer) child;
+			if (child instanceof AbstractIntroContainer container) {
 				if (!"navigation-links".equals(container.getId())) { //$NON-NLS-1$
 					AbstractIntroElement[] cc = container.getChildren();
 					addChildren(cc, buf, doc, titleSummary);
@@ -213,9 +220,12 @@ public class IntroSearchParticipant extends SearchParticipant {
 	}
 
 	private void appendNewText(StringBuilder buf, String text) {
-		if (text == null) return;
-		if (buf.length() > 0)
+		if (text == null) {
+			return;
+		}
+		if (buf.length() > 0) {
 			buf.append(" "); //$NON-NLS-1$
+		}
 		buf.append(text);
 	}
 
@@ -229,8 +239,9 @@ public class IntroSearchParticipant extends SearchParticipant {
 		IIntroManager introManager = PlatformUI.getWorkbench().getIntroManager();
 		IIntroPart intro = introManager
 				.showIntro(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), false);
-		if (intro == null)
+		if (intro == null) {
 			return false;
+		}
 		IIntroURL url = IntroURLFactory.createIntroURL("http://org.eclipse.ui.intro/showPage?id=" + id); //$NON-NLS-1$
 		return url.execute();
 	}

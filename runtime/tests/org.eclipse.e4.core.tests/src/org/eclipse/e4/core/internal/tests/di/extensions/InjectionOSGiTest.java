@@ -14,12 +14,13 @@
  ******************************************************************************/
 package org.eclipse.e4.core.internal.tests.di.extensions;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.EclipseContextFactory;
@@ -27,10 +28,9 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Optional;
 import org.eclipse.e4.core.di.extensions.OSGiBundle;
 import org.eclipse.e4.core.internal.tests.CoreTestsActivator;
-import org.junit.After;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -83,7 +83,7 @@ public class InjectionOSGiTest {
 	private InjectionTarget target;
 	private Bundle bundle;
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		bundle.start();
 
@@ -95,7 +95,7 @@ public class InjectionOSGiTest {
 		ContextInjectionFactory.uninject(target, localContext);
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		final BundleContext bundleContext = CoreTestsActivator
 				.getDefault().getBundleContext();
@@ -115,7 +115,7 @@ public class InjectionOSGiTest {
 		// However due to the way I-build tests are set up (i.e. by using a built
 		// Eclipse installation) exactly that's the case.
 		// -> Disable this for I-build tests
-		Assume.assumeFalse(Boolean.parseBoolean(System.getenv().getOrDefault("ECLIPSE_I_BUILD_TEST", "false")));
+		assumeFalse(Boolean.parseBoolean(System.getenv().getOrDefault("ECLIPSE_I_BUILD_TEST", "false")));
 
 		// Ensure that the providing bundles of the following classes are absent of the
 		// test-runtime and thus the mentioned classes cannot be loaded

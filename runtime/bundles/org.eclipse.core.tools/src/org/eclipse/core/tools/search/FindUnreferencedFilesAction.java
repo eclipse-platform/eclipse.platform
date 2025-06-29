@@ -71,7 +71,8 @@ public class FindUnreferencedFilesAction implements IObjectActionDelegate {
 
 	@Override
 	public void selectionChanged(IAction action, ISelection aSelection) {
-		if (aSelection instanceof IStructuredSelection)
+		if (aSelection instanceof IStructuredSelection) {
 			this.selection = (IStructuredSelection) aSelection;
+		}
 	}
 }

@@ -565,7 +565,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 	public String getMemento() throws CoreException {
 		IPath relativePath = null;
 		IFile file = getFile();
-		String lineDelimeter = getLineSeparator();
+		String lineDelimiter = getLineSeparator();
 		boolean local = true;
 		if (file == null) {
 			relativePath = IPath.fromOSString(getName());
@@ -580,7 +580,7 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 			doc.appendChild(node);
 			node.setAttribute(IConfigurationElementConstants.LOCAL, Boolean.toString(local));
 			node.setAttribute(IConfigurationElementConstants.PATH, relativePath.toString());
-			return LaunchManager.serializeDocument(doc, lineDelimeter);
+			return LaunchManager.serializeDocument(doc, lineDelimiter);
 		} catch (IOException ioe) {
 			e= ioe;
 		} catch (ParserConfigurationException pce) {

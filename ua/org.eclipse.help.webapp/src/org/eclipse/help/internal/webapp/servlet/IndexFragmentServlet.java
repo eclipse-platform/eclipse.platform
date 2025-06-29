@@ -331,7 +331,9 @@ public class IndexFragmentServlet extends HttpServlet {
 		}
 
 		private void generateEntry(IIndexEntry entry, int level, String id) {
-			if (!ScopeUtils.showInTree(entry, scope)) return;
+			if (!ScopeUtils.showInTree(entry, scope)) {
+				return;
+			}
 			if (entry.getKeyword() != null && entry.getKeyword().length() > 0) {
 				ITopic[] topics = ScopeUtils.inScopeTopics(entry.getTopics(), scope);
 				IIndexEntry[] subentries = ScopeUtils.inScopeEntries(entry.getSubentries(), scope);
@@ -360,7 +362,9 @@ public class IndexFragmentServlet extends HttpServlet {
 				buf.append(">\n"); //$NON-NLS-1$
 
 				if (multipleTopics || subentries.length > 0 || sees.length > 0) {
-					if (multipleTopics) generateTopicList(entry);
+					if (multipleTopics) {
+						generateTopicList(entry);
+					}
 					generateSubentries(entry, level + 1);
 					generateSees(sees);
 				}

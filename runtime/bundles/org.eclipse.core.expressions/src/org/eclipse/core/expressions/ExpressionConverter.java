@@ -88,8 +88,9 @@ public final class ExpressionConverter {
 	public Expression perform(IConfigurationElement root) throws CoreException {
 		for (ElementHandler handler : fHandlers) {
 			Expression result= handler.create(this, root);
-			if (result != null)
+			if (result != null) {
 				return result;
+			}
 		}
 		return null;
 	}
@@ -112,8 +113,9 @@ public final class ExpressionConverter {
 	public Expression perform(Element root) throws CoreException {
 		for (ElementHandler handler : fHandlers) {
 			Expression result= handler.create(this, root);
-			if (result != null)
+			if (result != null) {
 				return result;
+			}
 		}
 		return null;
 	}
@@ -123,13 +125,14 @@ public final class ExpressionConverter {
 		if (children != null) {
 			for (IConfigurationElement configElement : children) {
 				Expression child= perform(configElement);
-				if (child == null)
+				if (child == null) {
 					throw new CoreException(new Status(IStatus.ERROR, ExpressionConverter.class,
 						IStatus.ERROR,
 						Messages.format(
 							ExpressionMessages.Expression_unknown_element,
 							getDebugPath(configElement)),
 						null));
+				}
 				result.add(child);
 			}
 		}
@@ -140,16 +143,15 @@ public final class ExpressionConverter {
 		buf.append(configurationElement.getName());
 		Object parent= configurationElement.getParent();
 		while (parent != null) {
-			if (parent instanceof IConfigurationElement) {
+			if (parent instanceof IConfigurationElement parent2) {
 				buf.append(" > "); //$NON-NLS-1$
-				IConfigurationElement parent2= (IConfigurationElement) parent;
 				buf.append(parent2.getName());
 				String id= parent2.getAttribute("id"); //$NON-NLS-1$
-				if (id != null)
+				if (id != null) {
 					buf.append(" (id=").append(id).append(')'); //$NON-NLS-1$
+				}
 				parent= parent2.getParent();
-			} else if (parent instanceof IExtension) {
-				IExtension parent2= (IExtension) parent;
+			} else if (parent instanceof IExtension parent2) {
 				buf.append(" : "); //$NON-NLS-1$
 				buf.append(parent2.getExtensionPointUniqueIdentifier());
 				buf.append(" @ "); //$NON-NLS-1$
@@ -167,13 +169,14 @@ public final class ExpressionConverter {
 		while (child != null) {
 			if (child.getNodeType() == Node.ELEMENT_NODE) {
 				Expression exp= perform((Element)child);
-				if (exp == null)
+				if (exp == null) {
 					throw new CoreException(new Status(IStatus.ERROR, ExpressionConverter.class,
 						IStatus.ERROR,
 						Messages.format(
 							ExpressionMessages.Expression_unknown_element,
 							child.getNodeName()),
 						null));
+				}
 				result.add(exp);
 			}
 			child = child.getNextSibling();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -22,9 +22,10 @@ import org.eclipse.help.internal.UAElement;
 import org.eclipse.help.internal.toc.Toc;
 import org.eclipse.help.ui.internal.HelpUIResources;
 import org.eclipse.help.ui.internal.IHelpUIConstants;
-import org.eclipse.help.ui.internal.util.OverlayIcon;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -47,12 +48,15 @@ public class AllTopicsPart extends HyperlinkTreePart {
 
 		@Override
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement == AllTopicsPart.this)
+			if (parentElement == AllTopicsPart.this) {
 				return HelpSystem.getTocs();
-			if (parentElement instanceof IToc)
+			}
+			if (parentElement instanceof IToc) {
 				return ((IToc) parentElement).getTopics();
-			if (parentElement instanceof ITopic)
+			}
+			if (parentElement instanceof ITopic) {
 				return ((ITopic) parentElement).getSubtopics();
+			}
 			return new Object[0];
 		}
 
@@ -90,8 +94,9 @@ public class AllTopicsPart extends HyperlinkTreePart {
 
 		@Override
 		public String getText(Object obj) {
-			if (obj instanceof IHelpResource)
+			if (obj instanceof IHelpResource) {
 				return ((IHelpResource) obj).getLabel();
+			}
 			return super.getText(obj);
 		}
 
@@ -99,16 +104,14 @@ public class AllTopicsPart extends HyperlinkTreePart {
 		public Image getImage(Object obj) {
 			boolean expanded = treeViewer.getExpandedState(obj);
 			boolean expandable = treeViewer.isExpandable(obj);
-			if (obj instanceof Toc){
-				Toc toc = (Toc) obj;
+			if (obj instanceof Toc toc){
 				Image icon   = HelpUIResources.getImageFromId(toc.getIcon(), expanded, !expandable);
 				if (icon != null) {
 					return icon;
 				}
 			}
 
-			if (obj instanceof Topic) {
-				Topic topic = (Topic) obj;
+			if (obj instanceof Topic topic) {
 				Image icon   = HelpUIResources.getImageFromId(topic.getIcon(), expanded, !expandable);
 				if (icon != null) {
 					return icon;
@@ -120,11 +123,11 @@ public class AllTopicsPart extends HyperlinkTreePart {
 						: IHelpUIConstants.IMAGE_TOC_CLOSED;
 				return HelpUIResources.getImage(key);
 			}
-			if (obj instanceof ITopic) {
+			if (obj instanceof ITopic topic) {
 				if (expandable) {
-					ITopic topic = (ITopic) obj;
-					if (topic.getHref() != null)
+					if (topic.getHref() != null) {
 						return containerWithTopicImage;
+					}
 				}
 				String key = expandable ? IHelpUIConstants.IMAGE_CONTAINER
 						: IHelpUIConstants.IMAGE_FILE_F1TOPIC;
@@ -159,9 +162,10 @@ public class AllTopicsPart extends HyperlinkTreePart {
 		}
 
 		private boolean isNotEmpty(ITopic[] topics) {
-			for (int i = 0; i < topics.length; i++) {
-				if (isNotEmpty(topics[i]))
+			for (ITopic topic : topics) {
+				if (isNotEmpty(topic)) {
 					return true;
+				}
 			}
 			return false;
 		}
@@ -194,8 +198,9 @@ public class AllTopicsPart extends HyperlinkTreePart {
 	@Override
 	public void init(ReusableHelpPart parent, String id, IMemento memento) {
 		super.init(parent, id, memento);
-		if (parent.isFilteredByRoles())
+		if (parent.isFilteredByRoles()) {
 			treeViewer.addFilter(parent.getRoleFilter());
+		}
 		treeViewer.addFilter(parent.getUAFilter());
 		treeViewer.addFilter(new EmptyContainerFilter());
 	}
@@ -205,8 +210,7 @@ public class AllTopicsPart extends HyperlinkTreePart {
 				.getImageDescriptor(IHelpUIConstants.IMAGE_CONTAINER);
 		ImageDescriptor ovr = HelpUIResources
 				.getImageDescriptor(IHelpUIConstants.IMAGE_DOC_OVR);
-		ImageDescriptor desc = new OverlayIcon(base,
-				new ImageDescriptor[][] { { ovr } });
+		ImageDescriptor desc = new DecorationOverlayIcon(base, ovr, IDecoration.TOP_RIGHT);
 		containerWithTopicImage = desc.createImage();
 	}
 
@@ -218,18 +222,20 @@ public class AllTopicsPart extends HyperlinkTreePart {
 
 	@Override
 	protected void doOpen(Object obj) {
-		if (!(obj instanceof IHelpResource))
+		if (!(obj instanceof IHelpResource res)) {
 			return;
-		IHelpResource res = (IHelpResource) obj;
+		}
 		if (res instanceof IToc
 				|| (res instanceof ITopic
 						&& ((ITopic) obj).getSubtopics().length > 0 && res
-						.getHref() == null))
+						.getHref() == null)) {
 			treeViewer.setExpandedState(obj, !treeViewer.getExpandedState(res));
-		if (res instanceof IToc)
+		}
+		if (res instanceof IToc) {
 			postUpdate(res);
-		else if (res.getHref() != null)
+		} else if (res.getHref() != null) {
 			parent.showURL(res.getHref());
+		}
 	}
 
 	@Override
@@ -239,8 +245,7 @@ public class AllTopicsPart extends HyperlinkTreePart {
 
 	public void selectReveal(String href) {
 		IToc[] tocs = HelpSystem.getTocs();
-		for (int i = 0; i < tocs.length; i++) {
-			IToc toc = tocs[i];
+		for (IToc toc : tocs) {
 			ITopic topic = toc.getTopic(href);
 			if (topic != null) {
 				selectReveal(topic);
@@ -262,10 +267,11 @@ public class AllTopicsPart extends HyperlinkTreePart {
 
 	@Override
 	public void toggleRoleFilter() {
-		if (parent.isFilteredByRoles())
+		if (parent.isFilteredByRoles()) {
 			treeViewer.addFilter(parent.getRoleFilter());
-		else
+		} else {
 			treeViewer.removeFilter(parent.getRoleFilter());
+		}
 	}
 
 	@Override

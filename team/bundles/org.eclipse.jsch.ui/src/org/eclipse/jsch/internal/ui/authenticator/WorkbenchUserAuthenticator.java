@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -78,10 +78,11 @@ public void promptForUserInfo(final IJSchLocation location,
 			}
 			location.setPassword(result[1]);
 			if(location.getPasswordStore()!=null){
-				if(allowCaching[0])
+				if(allowCaching[0]) {
 					location.getPasswordStore().update(location);
-				else
+				} else {
 					location.getPasswordStore().clear(location);
+				}
 			}
 		}
 	}
@@ -143,10 +144,11 @@ public String[] promptForKeyboradInteractive(
 				prompt!=null && prompt.length==1 && prompt[0].trim().equalsIgnoreCase("password:")){ //$NON-NLS-1$
 			location.setPassword(result[0][0]);
 			if(location.getPasswordStore()!=null){
-				if(allowCaching[0])
+				if(allowCaching[0]) {
 					location.getPasswordStore().update(location);
-				else
+				} else {
 					location.getPasswordStore().clear(location);
+				}
 			}
 		}
 		return result[0];
@@ -163,8 +165,9 @@ public String[] promptForKeyboradInteractive(
 		dialog.setUsernameMutable(false);
 		dialog.open();
 		String[] _result=dialog.getResult();
-		if(_result!=null)
+		if(_result!=null) {
 			allowCaching[0]=dialog.getAllowCaching();
+		}
 		return _result;
 	}
 
@@ -218,7 +221,7 @@ public boolean promptForHostKeyChange(final IJSchLocation location){
 		final boolean[] openConfirm=new boolean[] {false};
 		final Display display=getStandardDisplay();
 		display.syncExec(() -> openConfirm[0] = MessageDialog.openConfirm(null, Messages.WorkbenchUserAuthenticator_1,
-				NLS.bind(Messages.WorkbenchUserAuthenticator_2, new String[] { location.getHost() })));
+				NLS.bind(Messages.WorkbenchUserAuthenticator_2, location.getHost())));
 		if(!openConfirm[0]){
 			throw new OperationCanceledException();
 		}

@@ -89,17 +89,18 @@ public class UIProjectSetSerializationContext extends ProjectSetSerializationCon
 			List resources = Arrays.asList(projects);
 			@Override
 			public boolean needsPrompt(IResource resource) {
-				if (resource instanceof IProject) {
-					IProject project = (IProject) resource;
+				if (resource instanceof IProject project) {
 					return (project.exists() || getTargetFile(project).exists()) && resources.contains(resource);
 				}
 				return false;
 			}
 			@Override
 			public String promptMessage(IResource resource) {
-				if (resource.exists())
-					return NLS.bind(TeamUIMessages.UIProjectSetSerializationContext_0, new String[] { resource.getName() });
-				return NLS.bind(TeamUIMessages.UIProjectSetSerializationContext_2, new String[] { resource.getName(), getTargetFile((IProject)resource).getAbsolutePath() });
+				if (resource.exists()) {
+					return NLS.bind(TeamUIMessages.UIProjectSetSerializationContext_0, resource.getName());
+				}
+				return NLS.bind(TeamUIMessages.UIProjectSetSerializationContext_2, resource.getName(),
+						getTargetFile((IProject) resource).getAbsolutePath());
 			}
 			public File getTargetFile(IProject project) {
 				return new File(project.getParent().getLocation().toFile(), project.getName());

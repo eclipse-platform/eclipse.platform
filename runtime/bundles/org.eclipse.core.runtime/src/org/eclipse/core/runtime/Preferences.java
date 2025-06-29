@@ -332,8 +332,9 @@ public class Preferences {
 	 */
 	public static void exportPreferences(IPath path) throws CoreException {
 		File file = path.toFile();
-		if (file.exists())
+		if (file.exists()) {
 			file.delete();
+		}
 		file.getParentFile().mkdirs();
 		IPreferencesService service = PreferencesService.getDefault();
 		try (FileOutputStream fos = new FileOutputStream(file); //
@@ -479,11 +480,13 @@ public class Preferences {
 	 *    relevant
 	 */
 	protected void firePropertyChangeEvent(String name, Object oldValue, Object newValue) {
-		if (name == null)
+		if (name == null) {
 			throw new IllegalArgumentException();
+		}
 		// Do we even need to fire an event?
-		if (this.listeners.size() == 0)
+		if (this.listeners.size() == 0) {
 			return;
+		}
 		final PropertyChangeEvent pe = new PropertyChangeEvent(this, name, oldValue, newValue);
 		for (final IPropertyChangeListener l : this.listeners) {
 			ISafeRunnable job = new ISafeRunnable() {
