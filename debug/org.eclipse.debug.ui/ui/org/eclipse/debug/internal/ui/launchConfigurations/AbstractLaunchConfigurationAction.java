@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2018, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,11 +10,13 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Pauline DEVILLE - Issue 2003
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.launchConfigurations;
 
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -128,6 +130,7 @@ public abstract class AbstractLaunchConfigurationAction extends SelectionListene
 	 */
 	protected void errorDialog(CoreException exception) {
 		ErrorDialog.openError(getShell(), null, null, exception.getStatus());
+		DebugUIPlugin.log(exception);
 	}
 
 	/**
