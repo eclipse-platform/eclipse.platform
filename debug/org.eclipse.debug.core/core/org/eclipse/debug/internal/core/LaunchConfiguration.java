@@ -45,6 +45,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
@@ -775,7 +776,17 @@ public class LaunchConfiguration extends PlatformObject implements ILaunchConfig
 				/* Launch the delegate */
 				lmonitor.subTask(DebugCoreMessages.LaunchConfiguration_2);
 				delegate.launch(this, mode, launch, lmonitor.split(10));
+			} catch (OperationCanceledException e) {
+				if (launch != null) {
+					getLaunchManager().removeLaunch(launch);
+					return launch;
+				}
+				throw e;
 			} catch (CoreException e) {
+				if (launch != null && e.getStatus().matches(IStatus.CANCEL)) {
+					getLaunchManager().removeLaunch(launch);
+					return launch;
+				}
 				// if there was an exception, and the launch is empty, remove it
 				if (launch != null && !launch.hasChildren()) {
 					getLaunchManager().removeLaunch(launch);
