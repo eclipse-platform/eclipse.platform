@@ -17,6 +17,7 @@ package org.eclipse.debug.tests.launching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileSystem;
@@ -55,7 +57,10 @@ import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.DebugPlugin;
@@ -64,9 +69,11 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationListener;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchDelegate;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.Launch;
+import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.internal.core.LaunchConfiguration;
 import org.eclipse.debug.internal.core.LaunchManager;
@@ -1328,6 +1335,79 @@ public class LaunchConfigurationTests extends AbstractLaunchTest implements ILau
 			if (process != null) {
 				process.terminate();
 			}
+		}
+	}
+
+	/**
+	 * Do not return null or throw on cancel
+	 *
+	 * @see https://github.com/eclipse-platform/eclipse.platform/issues/2009
+	 * @see org.eclipse.debug.core.ILaunchConfiguration#launch(String,
+	 *      IProgressMonitor)
+	 */
+	@Test
+	public void testCancel() throws CoreException {
+		final ILaunchDelegate launchDelegate = ((LaunchManager) DebugPlugin.getDefault().getLaunchManager()).getLaunchDelegate(LaunchConfigurationTests.ID_TEST_LAUNCH_TYPE);
+		final TestLaunchDelegate testLaunchDelegate = (TestLaunchDelegate) launchDelegate.getDelegate();
+		ILaunchConfigurationDelegate2 customLaunchDelegate = new ILaunchConfigurationDelegate2() {
+
+			void sleep() {
+			}
+			@Override
+			public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
+				sleep();
+				if (monitor.isCanceled()) {
+					throw new CoreException(Status.CANCEL_STATUS);
+				}
+			}
+
+			@Override
+			public boolean preLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
+				sleep();
+				return !monitor.isCanceled();
+			}
+
+			@Override
+			public ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
+				sleep();
+				return null;
+			}
+
+			@Override
+			public boolean finalLaunchCheck(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
+				sleep();
+				return !monitor.isCanceled();
+			}
+
+			@Override
+			public boolean buildForLaunch(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
+				sleep();
+				return !monitor.isCanceled();
+			}
+		};
+		testLaunchDelegate.setDelegate(customLaunchDelegate);
+		try {
+			ILaunchConfigurationWorkingCopy workingCopy = newConfiguration(null, "cancel me"); //$NON-NLS-1$
+			int cancelCount = 0;
+			for (int i = 0; i < 10_000; i++) {
+				AtomicInteger checkCount = new AtomicInteger(i);
+				NullProgressMonitor monitor = new NullProgressMonitor() {
+					@Override
+					public boolean isCanceled() {
+						return super.isCanceled() || checkCount.getAndDecrement() <= 0;
+					}
+				};
+				// Should not throw
+				ILaunch launch = workingCopy.launch(ILaunchManager.RUN_MODE, monitor);
+				assertNotNull(launch);
+				if (!monitor.isCanceled()) {
+					break;
+				}
+				cancelCount++;
+			}
+			assertNotEquals(0, cancelCount);
+		} finally {
+			testLaunchDelegate.setDelegate(null);
 		}
 	}
 
