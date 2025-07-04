@@ -47,8 +47,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class ClipboardCompare extends BaseCompareAction implements IObjectActionDelegate {
 
-	private String clipboard = "Clipboard"; //$NON-NLS-1$
-	private String compareFailed = "Comparision Failed"; //$NON-NLS-1$
+	private final String clipboard = "Clipboard"; //$NON-NLS-1$
+	private final String compareFailed = "Comparision Failed"; //$NON-NLS-1$
 
 	private IWorkbenchPart activePart;
 
