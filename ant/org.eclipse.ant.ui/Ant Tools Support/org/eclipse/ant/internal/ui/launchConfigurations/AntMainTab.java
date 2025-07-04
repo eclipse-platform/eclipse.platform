@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,8 +10,11 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.ant.internal.ui.launchConfigurations;
+
+import java.util.Optional;
 
 import org.eclipse.ant.internal.core.IAntCoreConstants;
 import org.eclipse.ant.internal.ui.AntUIPlugin;
@@ -24,7 +27,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -45,44 +47,27 @@ import org.eclipse.ui.externaltools.internal.ui.FileSelectionDialog;
 
 public class AntMainTab extends ExternalToolsMainTab {
 
-	private String fCurrentLocation = null;
+	private Optional<String> fCurrentLocation;
 	private Button fSetInputHandlerButton;
 	private IFile fNewFile;
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		super.initializeFrom(configuration);
-		try {
-			fCurrentLocation = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, (String) null);
-		}
-		catch (CoreException e) {
-			// do nothing
-		}
+		fCurrentLocation = IExternalToolConstants.LAUNCH_ATTRIBUTE_LOCATION.probe(configuration);
 		updateCheckButtons(configuration);
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		super.performApply(configuration);
-		try {
-			// has the location changed
-			String newLocation = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, (String) null);
-			if (newLocation != null) {
-				if (!newLocation.equals(fCurrentLocation)) {
-					updateTargetsTab();
-					fCurrentLocation = newLocation;
-					updateProjectName(configuration);
-				}
-			} else if (fCurrentLocation != null) {
-				updateTargetsTab();
-				fCurrentLocation = newLocation;
-				updateProjectName(configuration);
-			}
+		// has the location changed
+		Optional<String> newLocation = IExternalToolConstants.LAUNCH_ATTRIBUTE_LOCATION.probe(configuration);
+		if (!newLocation.equals(fCurrentLocation)) {
+			updateTargetsTab();
+			fCurrentLocation = newLocation;
+			updateProjectName(configuration);
 		}
-		catch (CoreException e) {
-			// do nothing
-		}
-
 		setMappedResources(configuration);
 		setAttribute(IAntUIConstants.SET_INPUTHANDLER, configuration, fSetInputHandlerButton.getSelection(), true);
 	}
@@ -110,26 +95,12 @@ public class AntMainTab extends ExternalToolsMainTab {
 	}
 
 	private IFile getIFile(ILaunchConfigurationWorkingCopy configuration) {
-		IFile file = null;
 		if (fNewFile != null) {
-			file = fNewFile;
+			IFile file = fNewFile;
 			fNewFile = null;
-		} else {
-			IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
-			try {
-				String location = configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, (String) null);
-				if (location != null) {
-					String expandedLocation = manager.performStringSubstitution(location);
-					if (expandedLocation != null) {
-						file = AntUtil.getFileForLocation(expandedLocation, null);
-					}
-				}
-			}
-			catch (CoreException e) {
-				// do nothing
-			}
+			return file;
 		}
-		return file;
+		return IExternalToolConstants.LAUNCH_ATTRIBUTE_LOCATION.probe(configuration).map(exp -> AntUtil.getFileForLocation(exp, null)).orElse(null);
 	}
 
 	@Override
