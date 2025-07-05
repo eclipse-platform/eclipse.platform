@@ -113,50 +113,60 @@ public class PollingMonitor extends Job implements IRefreshMonitor {
 					//ignore
 				}
 				//don't wait forever
-				if ((System.currentTimeMillis() - waitStart) > 90000)
+				if ((System.currentTimeMillis() - waitStart) > 90000) {
 					break;
+				}
 			}
 		}
 		long time = System.currentTimeMillis();
 		//check to see if we need to start an iteration
 		if (toRefresh.isEmpty()) {
 			beginIteration();
-			if (Policy.DEBUG_AUTO_REFRESH)
+			if (Policy.DEBUG_AUTO_REFRESH) {
 				Policy.debug(RefreshManager.DEBUG_PREFIX + "New polling iteration on " + toRefresh.size() + " roots"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		}
 		final int oldSize = toRefresh.size();
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + "started polling"); //$NON-NLS-1$
+		}
 		//refresh the hot root if applicable
-		if (time - hotRootTime > HOT_ROOT_DECAY)
+		if (time - hotRootTime > HOT_ROOT_DECAY) {
 			hotRoot = null;
-		else if (hotRoot != null && !monitor.isCanceled())
+		} else if (hotRoot != null && !monitor.isCanceled()) {
 			poll(hotRoot);
+		}
 		//process roots that have not yet been refreshed this iteration
 		final long loopStart = System.currentTimeMillis();
 		while (!toRefresh.isEmpty()) {
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				break;
+			}
 			poll(toRefresh.remove(toRefresh.size() - 1));
 			//stop the iteration if we have exceed maximum duration
-			if (System.currentTimeMillis() - loopStart > MAX_DURATION)
+			if (System.currentTimeMillis() - loopStart > MAX_DURATION) {
 				break;
+			}
 		}
 		time = System.currentTimeMillis() - time;
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + "polled " + (oldSize - toRefresh.size()) + " roots in " + time + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 		//reschedule automatically - shouldRun will cancel if not needed
 		//make sure it doesn't run more than 5% of the time
 		long delay = Math.max(MIN_FREQUENCY, time * 20);
 		//back off even more if there are other jobs running
-		if (!getJobManager().isIdle())
+		if (!getJobManager().isIdle()) {
 			delay *= 2;
-		if (Policy.DEBUG_AUTO_REFRESH)
+		}
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + "rescheduling polling job in: " + delay / 1000 + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		//don't reschedule the job if the resources plugin has been shut down
 		Bundle bundle = Platform.getBundle(ResourcesPlugin.PI_RESOURCES);
-		if (bundle != null && bundle.getState() == Bundle.ACTIVE)
+		if (bundle != null && bundle.getState() == Bundle.ACTIVE) {
 			schedule(delay);
+		}
 		return Status.OK_STATUS;
 	}
 
@@ -178,17 +188,20 @@ public class PollingMonitor extends Job implements IRefreshMonitor {
 	}
 
 	private void poll(IResource resource) {
-		if (resource.isSynchronized(IResource.DEPTH_INFINITE))
+		if (resource.isSynchronized(IResource.DEPTH_INFINITE)) {
 			return;
+		}
 		//don't refresh links with no local content
-		if (resource.isLinked() && !((Resource) resource).getStore().fetchInfo().exists())
+		if (resource.isLinked() && !((Resource) resource).getStore().fetchInfo().exists()) {
 			return;
+		}
 		//submit refresh request
 		refreshManager.refresh(resource);
 		hotRoot = resource;
 		hotRootTime = System.currentTimeMillis();
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + "new hot root: " + resource); //$NON-NLS-1$
+		}
 	}
 
 	@Override
@@ -204,8 +217,9 @@ public class PollingMonitor extends Job implements IRefreshMonitor {
 	 */
 	private synchronized void beginIteration() {
 		toRefresh.addAll(resourceRoots);
-		if (hotRoot != null)
+		if (hotRoot != null) {
 			toRefresh.remove(hotRoot);
+		}
 	}
 
 	/*
@@ -213,11 +227,13 @@ public class PollingMonitor extends Job implements IRefreshMonitor {
 	 */
 	@Override
 	public synchronized void unmonitor(IResource resource) {
-		if (resource == null)
+		if (resource == null) {
 			resourceRoots.clear();
-		else
+		} else {
 			resourceRoots.remove(resource);
-		if (resourceRoots.isEmpty())
+		}
+		if (resourceRoots.isEmpty()) {
 			cancel();
+		}
 	}
 }

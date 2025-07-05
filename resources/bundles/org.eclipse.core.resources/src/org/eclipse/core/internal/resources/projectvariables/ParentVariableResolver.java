@@ -36,28 +36,32 @@ public class ParentVariableResolver extends PathVariableResolver {
 	@Override
 	public String getValue(String variable, IResource resource) {
 		int index = variable.indexOf('-');
-		if (index == -1 || index == (variable.length() - 1))
+		if (index == -1 || index == (variable.length() - 1)) {
 			return null;
+		}
 
 		String countRemaining = variable.substring(index + 1);
 		index = countRemaining.indexOf('-');
-		if (index == -1 || index == (variable.length() - 1))
+		if (index == -1 || index == (variable.length() - 1)) {
 			return null;
+		}
 
 		String countString = countRemaining.substring(0, index);
 		int count = 0;
 		try {
 			count = Integer.parseInt(countString);
-			if (count < 0)
+			if (count < 0) {
 				return null;
+			}
 		} catch (NumberFormatException e) {
 			return null;
 		}
 		String argument = countRemaining.substring(index + 1);
 
 		URI value = resource.getPathVariableManager().getURIValue(argument);
-		if (value == null)
+		if (value == null) {
 			return null;
+		}
 		value = resource.getPathVariableManager().resolveURI(value);
 		value = URIUtil.toURI(URIUtil.toPath(value).removeLastSegments(count));
 

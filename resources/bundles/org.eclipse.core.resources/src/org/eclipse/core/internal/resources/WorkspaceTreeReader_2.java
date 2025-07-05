@@ -75,8 +75,9 @@ public class WorkspaceTreeReader_2 extends WorkspaceTreeReader_1 {
 				// read interesting projects
 				int n = input.readInt();
 				IProject[] projects = new IProject[n];
-				for (int j = 0; j < n; j++)
+				for (int j = 0; j < n; j++) {
 					projects[j] = workspace.getRoot().getProject(input.readUTF());
+				}
 				info.setInterestingProjects(projects);
 				builders.add(info);
 			}
@@ -126,8 +127,9 @@ public class WorkspaceTreeReader_2 extends WorkspaceTreeReader_1 {
 				readBuildersPersistentInfo(null, input, buildersToBeLinked, Policy.subMonitorFor(monitor, Policy.opWork * 10 / 100));
 				linkBuildersToTrees(buildersToBeLinked, trees, treeIndex, Policy.subMonitorFor(monitor, Policy.opWork * 10 / 100));
 
-				for (BuilderPersistentInfo builderPersistentInfo : builderInfos)
+				for (BuilderPersistentInfo builderPersistentInfo : builderInfos) {
 					builderPersistentInfo.setConfigName(input.readUTF());
+				}
 			}
 
 			// Set the builder infos on the projects
@@ -174,8 +176,9 @@ public class WorkspaceTreeReader_2 extends WorkspaceTreeReader_1 {
 				readBuildersPersistentInfo(project, input, infos, Policy.subMonitorFor(monitor, 1));
 				linkBuildersToTrees(infos, trees, treeIndex, Policy.subMonitorFor(monitor, 1));
 
-				for (BuilderPersistentInfo builderPersistentInfo : builderInfos)
+				for (BuilderPersistentInfo builderPersistentInfo : builderInfos) {
 					builderPersistentInfo.setConfigName(input.readUTF());
+				}
 			}
 
 			// Set the builder info on the projects
@@ -214,8 +217,9 @@ public class WorkspaceTreeReader_2 extends WorkspaceTreeReader_1 {
 	private void setBuilderInfos(List<BuilderPersistentInfo> infos) {
 		Map<String, List<BuilderPersistentInfo>> groupedInfos = new HashMap<>();
 		for (BuilderPersistentInfo info : infos) {
-			if (!groupedInfos.containsKey(info.getProjectName()))
+			if (!groupedInfos.containsKey(info.getProjectName())) {
 				groupedInfos.put(info.getProjectName(), new ArrayList<>());
+			}
 			groupedInfos.get(info.getProjectName()).add(info);
 		}
 		for (Map.Entry<String, List<BuilderPersistentInfo>> entry : groupedInfos.entrySet()) {

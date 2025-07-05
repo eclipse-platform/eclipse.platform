@@ -88,8 +88,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 	 */
 	private void checkIsValidName(String name) throws CoreException {
 		IStatus status = validateName(name);
-		if (!status.isOK())
+		if (!status.isOK()) {
 			throw new CoreException(status);
+		}
 	}
 
 	/**
@@ -98,8 +99,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 	 */
 	private void checkIsValidValue(IPath newValue) throws CoreException {
 		IStatus status = validateValue(newValue);
-		if (!status.isOK())
+		if (!status.isOK()) {
 			throw new CoreException(status);
+		}
 	}
 
 	/**
@@ -123,8 +125,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 	}
 
 	private void fireVariableChangeEvent(Collection<IPathVariableChangeListener> list, String name, IPath value, int type) {
-		if (list.isEmpty())
+		if (list.isEmpty()) {
 			return;
+		}
 		// use a separate collection to avoid interference of simultaneous additions/removals
 		IPathVariableChangeListener[] listenerArray = list.toArray(new IPathVariableChangeListener[list.size()]);
 		final PathVariableChangeEvent pve = new PathVariableChangeEvent(this, name, value, type);
@@ -146,8 +149,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 
 	public void fireVariableChangeEvent(IProject project, String name, IPath value, int type) {
 		Collection<IPathVariableChangeListener> list = projectListeners.get(project);
-		if (list != null)
+		if (list != null) {
 			fireVariableChangeEvent(list, name, value, type);
+		}
 	}
 
 	/**
@@ -174,8 +178,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 				// reserved to path variables (#VARIABLE_PREFIX).
 				// TODO: we may want to look at removing these keys from the
 				// preference store as a garbage collection means
-				if (validateName(key).isOK() && validateValue(getValue(key)).isOK())
+				if (validateName(key).isOK() && validateValue(getValue(key)).isOK()) {
 					result.add(key);
+				}
 			}
 		}
 		return result.toArray(new String[result.size()]);
@@ -217,8 +222,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 		Collection<IPathVariableChangeListener> list = projectListeners.get(project);
 		if (list != null) {
 			list.remove(listener);
-			if (list.isEmpty())
+			if (list.isEmpty()) {
 				projectListeners.remove(project);
+			}
 		}
 	}
 
@@ -228,16 +234,18 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 	@Deprecated
 	@Override
 	public IPath resolvePath(IPath path) {
-		if (path == null || path.segmentCount() == 0 || path.isAbsolute() || path.getDevice() != null)
+		if (path == null || path.segmentCount() == 0 || path.isAbsolute() || path.getDevice() != null) {
 			return path;
+		}
 		IPath value = getValue(path.segment(0));
 		return value == null ? path : value.append(path.removeFirstSegments(1));
 	}
 
 	@Override
 	public URI resolveURI(URI uri) {
-		if (uri == null || uri.isAbsolute())
+		if (uri == null || uri.isAbsolute()) {
 			return uri;
+		}
 		String schemeSpecificPart = uri.getSchemeSpecificPart();
 		if (schemeSpecificPart == null || schemeSpecificPart.isEmpty()) {
 			return uri;
@@ -254,18 +262,21 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 	public void setValue(String varName, IPath newValue) throws CoreException {
 		checkIsValidName(varName);
 		//convert path value to canonical form
-		if (newValue != null && newValue.isAbsolute())
+		if (newValue != null && newValue.isAbsolute()) {
 			newValue = FileUtil.canonicalPath(newValue);
+		}
 		checkIsValidValue(newValue);
 		int eventType;
 		// read previous value and set new value atomically in order to generate the right event
 		synchronized (this) {
 			IPath currentValue = getValue(varName);
 			boolean variableExists = currentValue != null;
-			if (!variableExists && newValue == null)
+			if (!variableExists && newValue == null) {
 				return;
-			if (variableExists && currentValue.equals(newValue))
+			}
+			if (variableExists && currentValue.equals(newValue)) {
 				return;
+			}
 			if (newValue == null) {
 				preferences.setToDefault(getKeyForName(varName));
 				eventType = IPathVariableChangeEvent.VARIABLE_DELETED;
@@ -315,8 +326,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 
 		for (int i = 1; i < name.length(); i++) {
 			char following = name.charAt(i);
-			if (Character.isWhitespace(following))
+			if (Character.isWhitespace(following)) {
 				return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, Messages.pathvar_whitespace);
+			}
 			if (!Character.isLetter(following) && !Character.isDigit(following) && following != '_') {
 				message = NLS.bind(Messages.pathvar_invalidChar, String.valueOf(following));
 				return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message);
@@ -351,8 +363,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 	@Override
 	public URI getURIValue(String name) {
 		IPath path = getValue(name);
-		if (path != null)
+		if (path != null) {
 			return URIUtil.toURI(path);
+		}
 		return null;
 	}
 
@@ -384,8 +397,9 @@ public class PathVariableManager implements IPathVariableManager, IManager {
 	public URI getVariableRelativePathLocation(URI location) {
 		try {
 			URI result = convertToRelative(location, false, null);
-			if (!result.equals(location))
+			if (!result.equals(location)) {
 				return result;
+			}
 		} catch (CoreException e) {
 			// handled by returning null
 		}

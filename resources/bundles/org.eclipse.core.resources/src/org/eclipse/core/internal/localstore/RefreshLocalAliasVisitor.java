@@ -33,35 +33,41 @@ public class RefreshLocalAliasVisitor extends RefreshLocalVisitor {
 	protected void createResource(UnifiedTreeNode node, Resource target) throws CoreException {
 		super.createResource(node, target);
 		IFileStore store = node.getStore();
-		if (store == null)
+		if (store == null) {
 			return;
+		}
 		IResource[] aliases = workspace.getAliasManager().computeAliases(target, store);
-		if (aliases != null)
+		if (aliases != null) {
 			for (IResource alias : aliases) {
 				if (alias.getProject().isOpen() && !((Resource) alias).isFiltered()) {
 					super.createResource(node, (Resource) alias);
 				}
 			}
+		}
 	}
 
 	@Override
 	protected void deleteResource(UnifiedTreeNode node, Resource target) throws CoreException {
 		super.deleteResource(node, target);
 		IFileStore store = node.getStore();
-		if (store == null)
+		if (store == null) {
 			return;
+		}
 		IResource[] aliases = workspace.getAliasManager().computeAliases(target, store);
 		if (aliases != null) {
 			boolean wasFilteredOut = false;
-			if (store.fetchInfo() != null && store.fetchInfo().exists())
+			if (store.fetchInfo() != null && store.fetchInfo().exists()) {
 				wasFilteredOut = target.isFiltered();
+			}
 			for (IResource aliase : aliases) {
 				if (aliase.getProject().isOpen()) {
 					if (wasFilteredOut) {
-						if (((Resource) aliase).isFiltered())
+						if (((Resource) aliase).isFiltered()) {
 							super.deleteResource(node, (Resource) aliase);
-					} else
+						}
+					} else {
 						super.deleteResource(node, (Resource) aliase);
+					}
 				}
 			}
 		}
@@ -71,38 +77,47 @@ public class RefreshLocalAliasVisitor extends RefreshLocalVisitor {
 	protected void resourceChanged(UnifiedTreeNode node, Resource target) {
 		super.resourceChanged(node, target);
 		IFileStore store = node.getStore();
-		if (store == null)
+		if (store == null) {
 			return;
+		}
 		IResource[] aliases = workspace.getAliasManager().computeAliases(target, store);
-		if (aliases != null)
+		if (aliases != null) {
 			for (IResource aliase : aliases) {
-				if (aliase.getProject().isOpen())
+				if (aliase.getProject().isOpen()) {
 					super.resourceChanged(node, (Resource) aliase);
+				}
 			}
+		}
 	}
 
 	@Override
 	protected void fileToFolder(UnifiedTreeNode node, Resource target) throws CoreException {
 		super.fileToFolder(node, target);
 		IFileStore store = node.getStore();
-		if (store == null)
+		if (store == null) {
 			return;
+		}
 		IResource[] aliases = workspace.getAliasManager().computeAliases(target, store);
-		if (aliases != null)
-			for (IResource aliase : aliases)
+		if (aliases != null) {
+			for (IResource aliase : aliases) {
 				super.fileToFolder(node, (Resource) aliase);
+			}
+		}
 	}
 
 	@Override
 	protected void folderToFile(UnifiedTreeNode node, Resource target) throws CoreException {
 		super.folderToFile(node, target);
 		IFileStore store = node.getStore();
-		if (store == null)
+		if (store == null) {
 			return;
+		}
 		IResource[] aliases = workspace.getAliasManager().computeAliases(target, store);
-		if (aliases != null)
-			for (IResource aliase : aliases)
+		if (aliases != null) {
+			for (IResource aliase : aliases) {
 				super.folderToFile(node, (Resource) aliase);
+			}
+		}
 	}
 
 	@Override

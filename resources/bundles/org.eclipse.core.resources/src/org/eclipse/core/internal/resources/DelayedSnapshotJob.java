@@ -43,8 +43,9 @@ public class DelayedSnapshotJob extends Job {
 
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
-		if (monitor.isCanceled())
+		if (monitor.isCanceled()) {
 			return Status.CANCEL_STATUS;
+		}
 		if (!workspace.isOpen()) {
 			return Status.OK_STATUS;
 		}
