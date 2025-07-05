@@ -129,23 +129,27 @@ public class ProjectNatureDescriptor implements IProjectNatureDescriptor {
 			String name = element.getName();
 			if (name.equalsIgnoreCase("requires-nature")) { //$NON-NLS-1$
 				String attribute = element.getAttribute("id"); //$NON-NLS-1$
-				if (attribute == null)
+				if (attribute == null) {
 					fail();
+				}
 				requiredList.add(attribute);
 			} else if (name.equalsIgnoreCase("one-of-nature")) { //$NON-NLS-1$
 				String attribute = element.getAttribute("id"); //$NON-NLS-1$
-				if (attribute == null)
+				if (attribute == null) {
 					fail();
+				}
 				setList.add(attribute);
 			} else if (name.equalsIgnoreCase("builder")) { //$NON-NLS-1$
 				String attribute = element.getAttribute("id"); //$NON-NLS-1$
-				if (attribute == null)
+				if (attribute == null) {
 					fail();
+				}
 				builderList.add(attribute);
 			} else if (name.equalsIgnoreCase("content-type")) { //$NON-NLS-1$
 				String attribute = element.getAttribute("id"); //$NON-NLS-1$
-				if (attribute == null)
+				if (attribute == null) {
 					fail();
+				}
 				contentTypeList.add(attribute);
 			} else if (name.equalsIgnoreCase("options")) { //$NON-NLS-1$
 				String attribute = element.getAttribute("allowLinking"); //$NON-NLS-1$

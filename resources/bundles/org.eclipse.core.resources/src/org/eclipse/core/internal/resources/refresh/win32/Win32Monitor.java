@@ -97,28 +97,30 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 
 		@Override
 		public void handleNotification() {
-			if (!isOpen())
+			if (!isOpen()) {
 				return;
+			}
 			ChainedHandle next = getNext();
 			if (next != null) {
 				if (next.isOpen()) {
 					if (!next.exists()) {
 						next.close();
-						if (next instanceof LinkedResourceHandle) {
-							LinkedResourceHandle linkedResourceHandle = (LinkedResourceHandle) next;
+						if (next instanceof LinkedResourceHandle linkedResourceHandle) {
 							linkedResourceHandle.postRefreshRequest();
 						}
 						ChainedHandle previous = getPrevious();
-						if (previous != null)
+						if (previous != null) {
 							previous.open();
+						}
 					}
 				} else {
 					next.open();
 					if (next.isOpen()) {
 						Handle previous = getPrevious();
 						previous.close();
-						if (next instanceof LinkedResourceHandle)
+						if (next instanceof LinkedResourceHandle) {
 							((LinkedResourceHandle) next).postRefreshRequest();
+						}
 					}
 				}
 			}
@@ -161,11 +163,13 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 			if (isOpen()) {
 				if (!Win32Natives.FindCloseChangeNotification(handleValue)) {
 					int error = Win32Natives.GetLastError();
-					if (error != Win32Natives.ERROR_INVALID_HANDLE)
+					if (error != Win32Natives.ERROR_INVALID_HANDLE) {
 						addException(NLS.bind(Messages.WM_errCloseHandle, Integer.toString(error)));
+					}
 				}
-				if (Policy.DEBUG_AUTO_REFRESH)
+				if (Policy.DEBUG_AUTO_REFRESH) {
 					Policy.debug(DEBUG_PREFIX + "removed handle: " + handleValue); //$NON-NLS-1$
+				}
 				handleValue = Win32Natives.INVALID_HANDLE_VALUE;
 			}
 		}
@@ -229,8 +233,9 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 
 		protected void postRefreshRequest(IResource resource) {
 			//native callback occurs even if resource was changed within workspace
-			if (!resource.isSynchronized(IResource.DEPTH_INFINITE))
+			if (!resource.isSynchronized(IResource.DEPTH_INFINITE)) {
 				refreshResult.refresh(resource);
+			}
 		}
 
 		public void setHandleValue(long handleValue) {
@@ -411,8 +416,9 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 	}
 
 	private Handle createHandle(IResource resource) {
-		if (resource.isLinked())
+		if (resource.isLinked()) {
 			return new LinkedResourceHandle(resource);
+		}
 		return new ResourceHandle(resource);
 	}
 
@@ -454,8 +460,7 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 		// synchronized: in order to protect the map during iteration
 		synchronized (fHandleValueToHandle) {
 			for (Handle handle : fHandleValueToHandle.values()) {
-				if (handle instanceof ResourceHandle) {
-					ResourceHandle resourceHandle = (ResourceHandle) handle;
+				if (handle instanceof ResourceHandle resourceHandle) {
 					if (resourceHandle.getResource().equals(resource)) {
 						return handle;
 					}
@@ -496,8 +501,9 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 		}
 		//make sure the job is running
 		schedule(RESCHEDULE_DELAY);
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(DEBUG_PREFIX + " added monitor for: " + resource); //$NON-NLS-1$
+		}
 		return true;
 	}
 
@@ -539,41 +545,48 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		long start = -System.currentTimeMillis();
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(DEBUG_PREFIX + "job started."); //$NON-NLS-1$
+		}
 		try {
 			long[][] handleArrays = getHandleValueArrays();
 			monitor.beginTask(Messages.WM_beginTask, handleArrays.length);
 			// If changes occur to the list of handles,
 			// ignore them until the next time through the loop.
 			for (long[] handleArray : handleArrays) {
-				if (monitor.isCanceled())
+				if (monitor.isCanceled()) {
 					return Status.CANCEL_STATUS;
+				}
 				waitForNotification(handleArray);
 				monitor.worked(1);
 			}
 		} finally {
 			monitor.done();
 			start += System.currentTimeMillis();
-			if (Policy.DEBUG_AUTO_REFRESH)
+			if (Policy.DEBUG_AUTO_REFRESH) {
 				Policy.debug(DEBUG_PREFIX + "job finished in: " + start + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		}
 		//always reschedule the job - so it will come back after errors or cancelation
 		long delay = Math.max(RESCHEDULE_DELAY, start);
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(DEBUG_PREFIX + "rescheduling in: " + delay / 1000 + " seconds"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 		final Bundle bundle = Platform.getBundle(ResourcesPlugin.PI_RESOURCES);
 		//if the bundle is null then the framework has shutdown - just bail out completely (bug 98219)
-		if (bundle == null)
+		if (bundle == null) {
 			return Status.OK_STATUS;
+		}
 		//don't reschedule the job if the resources plugin has been shut down
-		if (bundle.getState() == Bundle.ACTIVE)
+		if (bundle.getState() == Bundle.ACTIVE) {
 			schedule(delay);
+		}
 		MultiStatus result = errors;
 		errors = null;
 		//just log native refresh failures
-		if (result != null && !result.isOK())
+		if (result != null && !result.isOK()) {
 			ResourcesPlugin.getPlugin().getLog().log(result);
+		}
 		return Status.OK_STATUS;
 	}
 
@@ -595,12 +608,14 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 			}
 		} else {
 			Handle handle = getHandle(resource);
-			if (handle != null)
+			if (handle != null) {
 				removeHandle(handle);
+			}
 		}
 		//stop the job if there are no more handles
-		if (fHandleValueToHandle.isEmpty())
+		if (fHandleValueToHandle.isEmpty()) {
 			cancel();
+		}
 	}
 
 	/**
@@ -646,7 +661,8 @@ class Win32Monitor extends Job implements IRefreshMonitor {
 		// WaitForMultipleObjects returns WAIT_OBJECT_0 + index
 		index -= Win32Natives.WAIT_OBJECT_0;
 		Handle handle = fHandleValueToHandle.get(handleValues[index]);
-		if (handle != null)
+		if (handle != null) {
 			handle.handleNotification();
+		}
 	}
 }

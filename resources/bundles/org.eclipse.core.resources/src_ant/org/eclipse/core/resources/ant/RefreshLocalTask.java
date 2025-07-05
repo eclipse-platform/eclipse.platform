@@ -75,13 +75,15 @@ public class RefreshLocalTask extends Task {
 	 */
 	@Override
 	public void execute() throws BuildException {
-		if (resource == null)
+		if (resource == null) {
 			throw new BuildException(Policy.bind("exception.resourceNotSpecified")); //$NON-NLS-1$
+		}
 		try {
 			IProgressMonitor monitor = null;
 			Hashtable<String, Object> references = getProject().getReferences();
-			if (references != null)
+			if (references != null) {
 				monitor = (IProgressMonitor) references.get(AntCorePlugin.ECLIPSE_PROGRESS_MONITOR);
+			}
 			resource.refreshLocal(depth, monitor);
 		} catch (CoreException e) {
 			throw new BuildException(e);
@@ -96,12 +98,13 @@ public class RefreshLocalTask extends Task {
 	 * @param value the depth to refresh to
 	 */
 	public void setDepth(String value) {
-		if (DEPTH_ZERO.equalsIgnoreCase(value))
+		if (DEPTH_ZERO.equalsIgnoreCase(value)) {
 			depth = IResource.DEPTH_ZERO;
-		else if (DEPTH_ONE.equalsIgnoreCase(value))
+		} else if (DEPTH_ONE.equalsIgnoreCase(value)) {
 			depth = IResource.DEPTH_ONE;
-		else if (DEPTH_INFINITE.equalsIgnoreCase(value))
+		} else if (DEPTH_INFINITE.equalsIgnoreCase(value)) {
 			depth = IResource.DEPTH_INFINITE;
+		}
 	}
 
 	/**
@@ -114,12 +117,13 @@ public class RefreshLocalTask extends Task {
 		resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 		if (resource == null) {
 			// if it does not exist we guess it is a folder or a project
-			if (path.segmentCount() > 1)
+			if (path.segmentCount() > 1) {
 				resource = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
-			else {
+			} else {
 				resource = ResourcesPlugin.getWorkspace().getRoot().getProject(value);
-				if (!resource.exists())
+				if (!resource.exists()) {
 					log(Policy.bind("warning.projectDoesNotExist", value), Project.MSG_WARN); //$NON-NLS-1$
+				}
 			}
 		}
 	}

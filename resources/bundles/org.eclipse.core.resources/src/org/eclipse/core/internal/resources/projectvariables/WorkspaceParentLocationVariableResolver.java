@@ -40,8 +40,9 @@ public class WorkspaceParentLocationVariableResolver extends PathVariableResolve
 		IContainer parent = resource.getParent();
 		if (parent != null) {
 			URI locationURI = parent.getLocationURI();
-			if (locationURI != null)
+			if (locationURI != null) {
 				return locationURI.toASCIIString();
+			}
 		}
 		return null;
 	}
