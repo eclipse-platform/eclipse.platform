@@ -78,6 +78,19 @@ import org.eclipse.osgi.util.NLS;
  */
 public class JobManager implements IJobManager, DebugOptionsListener {
 
+
+	private static final int CORES = Runtime.getRuntime().availableProcessors();
+
+	private static final long DELAY_PRIORITY_INTERACTIVE = 0;
+
+	private static final long DELAY_PRIORITY_DECORATE = 1000 / CORES;
+
+	private static final long DELAY_PRIORITY_BUILD = 500 / CORES;
+
+	private static final long DELAY_PRIORITY_LONG = 100 / CORES;
+
+	private static final long DELAY_PRIORITY_SHORT = 50 / CORES;
+
 	private static final int NANOS_IN_MS = 1_000_000;
 
 	/**
@@ -618,18 +631,17 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 	 * tolerate waiting.
 	 */
 	private long delayFor(int priority) {
-		//these values may need to be tweaked based on machine speed
 		switch (priority) {
 			case Job.INTERACTIVE :
-				return 0L;
+				return DELAY_PRIORITY_INTERACTIVE;
 			case Job.SHORT :
-				return 50L;
+				return DELAY_PRIORITY_SHORT;
 			case Job.LONG :
-				return 100L;
+				return DELAY_PRIORITY_LONG;
 			case Job.BUILD :
-				return 500L;
+				return DELAY_PRIORITY_BUILD;
 			case Job.DECORATE :
-				return 1000L;
+				return DELAY_PRIORITY_DECORATE;
 			default :
 				Assert.isTrue(false, "Job has invalid priority: " + priority); //$NON-NLS-1$
 				return 0;
