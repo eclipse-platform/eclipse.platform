@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,11 +36,17 @@ import org.eclipse.help.internal.webapp.WebappResources;
 import org.eclipse.help.internal.webapp.data.RequestScope;
 import org.eclipse.help.internal.webapp.data.UrlUtil;
 import org.eclipse.help.webapp.IFilter;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 /*
  * Generates navigation pages where topics are not present in the table
  * of contents. Displays links to the direct child topics.
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("nav")
+@HttpWhiteboardServletPattern("/nav/*")
 public class NavServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
