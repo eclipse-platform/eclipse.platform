@@ -78,11 +78,6 @@
             httpcontextId="help">
       </servlet>
       <servlet
-            alias="/nav"
-            class="org.eclipse.help.internal.webapp.servlet.NavServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
             alias="/livehelp"
             class="org.eclipse.help.internal.webapp.servlet.LiveHelpServlet"
             httpcontextId="help">
