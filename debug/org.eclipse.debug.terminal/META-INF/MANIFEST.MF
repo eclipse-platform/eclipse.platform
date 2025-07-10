@@ -4,9 +4,10 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.debug.terminal;singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Version: 1.0.0.qualifier
+Import-Package: org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
+ org.eclipse.terminal.control;version="[1.0.0,2.0.0)"
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core;bundle-version="3.23.0",
- org.eclipse.terminal.control;bundle-version="5.6.0",
  org.eclipse.cdt.core.native;bundle-version="[6.4.0,7.0.0)",
  org.eclipse.swt;bundle-version="3.130.0",
  org.eclipse.ui;bundle-version="3.207.100",
