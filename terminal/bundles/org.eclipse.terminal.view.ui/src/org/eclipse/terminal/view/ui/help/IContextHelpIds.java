@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.help;
 
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
 /**
  * UI Context help id definitions.

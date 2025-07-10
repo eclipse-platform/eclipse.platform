@@ -488,13 +488,13 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.terminal.TerminalPreferencePage"
-            class="org.eclipse.terminal.view.ui.preferences.PreferencePage"
+            class="org.eclipse.terminal.view.ui.internal.preferences.PreferencePage"
             id="org.eclipse.terminal.view.ui.preferences"
             name="%preference.page.name">
       </page>
    </extension>
    <extension point="org.eclipse.core.runtime.preferences">
-      <initializer class="org.eclipse.terminal.view.ui.preferences.PreferencesInitializer"/>
+      <initializer class="org.eclipse.terminal.view.ui.internal.preferences.PreferencesInitializer"/>
    </extension>
 
    <extension

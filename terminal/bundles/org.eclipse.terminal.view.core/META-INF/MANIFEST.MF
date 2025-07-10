@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.terminal.view.core;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.eclipse.terminal.view.core.activator.CoreBundleActivator
+Bundle-Activator: org.eclipse.terminal.view.core.internal.CoreBundleActivator
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.0,4.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.33.0,4.0.0)"
@@ -11,12 +11,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.eclipse.terminal.view.core;version="1.0.0",
- org.eclipse.terminal.view.core.activator;x-internal:=true,
  org.eclipse.terminal.view.core.interfaces;version="1.0.0",
  org.eclipse.terminal.view.core.interfaces.constants;version="1.0.0",
  org.eclipse.terminal.view.core.internal;x-internal:=true,
- org.eclipse.terminal.view.core.nls;x-internal:=true,
- org.eclipse.terminal.view.core.preferences;version="1.0.0",
- org.eclipse.terminal.view.core.tracing;version="1.0.0",
  org.eclipse.terminal.view.core.utils;version="1.0.0"
 Automatic-Module-Name: org.eclipse.terminal.view.core

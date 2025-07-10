@@ -154,4 +154,6 @@ public interface ITerminalControl {
 	 * @return whether VT100 line wrapping mode is enabled
 	 */
 	boolean isVT100LineWrapping();
+
+	void updateTerminalDimensions();
 }

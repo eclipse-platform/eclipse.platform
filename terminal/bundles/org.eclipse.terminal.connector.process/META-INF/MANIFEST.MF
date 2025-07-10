@@ -9,16 +9,13 @@ Import-Package: org.eclipse.cdt.utils.pty;mandatory:=native,
  org.eclipse.cdt.utils.spawner;mandatory:=native,
  org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.connector.provider;version="[1.0.0,2.0.0)",
- org.eclipse.terminal.internal.emulator,
  org.eclipse.terminal.view.core;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.core.interfaces;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.core.interfaces.constants;version="[1.0.0,2.0.0)",
- org.eclipse.terminal.view.core.tracing;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.core.utils;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.ui.interfaces;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.ui.launcher;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.ui.manager;version="[1.0.0,2.0.0)",
- org.eclipse.terminal.view.ui.nls,
  org.eclipse.terminal.view.ui.streams;version="[1.0.0,2.0.0)"
 Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.400,4)",
  org.eclipse.core.resources;bundle-version="[3.22.200,4)";resolution:=optional,
@@ -28,7 +25,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.eclipse.terminal.connector.process;version="1.0.0",
- org.eclipse.terminal.connector.process.activator;x-internal:=true,
- org.eclipse.terminal.connector.process.help;version="1.0.0",
- org.eclipse.terminal.connector.process.nls;x-internal:=true
+ org.eclipse.terminal.connector.process.help;version="1.0.0"
 Automatic-Module-Name: org.eclipse.terminal.connector.process

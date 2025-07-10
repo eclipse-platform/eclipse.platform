@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.terminal.view.ui.help.IContextHelpIds;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.panels.AbstractExtendedConfigurationPanel;
 import org.eclipse.ui.PlatformUI;
 

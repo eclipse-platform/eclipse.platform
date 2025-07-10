@@ -53,10 +53,10 @@ import org.eclipse.terminal.control.ITerminalListener;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.control.TerminalViewControlFactory;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
 import org.eclipse.terminal.view.ui.interfaces.ITerminalsView;
 import org.eclipse.terminal.view.ui.interfaces.ImageConsts;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.ui.PlatformUI;
 
 /**

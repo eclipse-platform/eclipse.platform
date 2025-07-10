@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.interfaces;
 
-import org.eclipse.terminal.view.core.preferences.ScopedEclipsePreferences;
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
+import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
 /**
  * Terminal plug-in preference key definitions.

@@ -22,7 +22,7 @@ import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalListener;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
 
 /**
  * Terminal tab default terminal listener implementation.

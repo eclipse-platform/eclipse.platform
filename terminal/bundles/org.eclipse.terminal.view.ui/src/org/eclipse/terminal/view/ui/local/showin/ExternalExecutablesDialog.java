@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.terminal.view.ui.help.IContextHelpIds;
 import org.eclipse.terminal.view.ui.interfaces.IExternalExecutablesProperties;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 

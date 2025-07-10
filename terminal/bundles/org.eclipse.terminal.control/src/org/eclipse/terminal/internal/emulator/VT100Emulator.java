@@ -1469,7 +1469,7 @@ public class VT100Emulator implements ControlListener {
 	 * done.
 	 * <p>
 	 */
-	private void adjustTerminalDimensions() {
+	void adjustTerminalDimensions() {
 		// Compute how many pixels we need to shrink the StyledText control vertically
 		// to make it display an integral number of lines of text.
 
@@ -1483,7 +1483,7 @@ public class VT100Emulator implements ControlListener {
 		// terminal.
 		ITerminalConnector telnetConnection = getConnector();
 		// TODO MSA: send only if dimensions have really changed!
-		if (telnetConnection != null) {
+		if (telnetConnection != null && text != null) {
 			telnetConnection.setTerminalSize(text.getColumns(), text.getLines());
 		}
 

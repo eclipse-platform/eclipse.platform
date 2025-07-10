@@ -35,7 +35,7 @@ import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.control.ITerminalMouseListener;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;

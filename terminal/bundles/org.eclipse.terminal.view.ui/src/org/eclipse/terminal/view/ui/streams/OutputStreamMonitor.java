@@ -25,9 +25,9 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMonitorListener;
 import org.eclipse.terminal.view.core.interfaces.constants.ILineSeparatorConstants;
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
 import org.eclipse.terminal.view.ui.interfaces.tracing.ITraceIds;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.ui.services.IDisposable;
 
 /**

@@ -9,7 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.view.core.preferences;
+package org.eclipse.terminal.view.core.utils;
 
 import java.io.OutputStream;
 import java.util.Map;

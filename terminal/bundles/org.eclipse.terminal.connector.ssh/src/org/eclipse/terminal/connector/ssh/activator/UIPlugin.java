@@ -16,7 +16,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jsch.core.IJSchService;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.terminal.connector.ssh.connector.SshConnection;
-import org.eclipse.terminal.view.core.tracing.TraceHandler;
+import org.eclipse.terminal.view.core.utils.TraceHandler;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;

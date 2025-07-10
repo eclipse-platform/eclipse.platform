@@ -33,4 +33,10 @@ public class Messages extends NLS {
 
 	public static String ProcessConnector_error_title;
 	public static String ProcessConnector_error_creatingProcess;
+	public static String ProcessSettingsPage_dialogTitle;
+	public static String ProcessSettingsPage_processImagePathSelectorControl_label;
+	public static String ProcessSettingsPage_processImagePathSelectorControl_button;
+	public static String ProcessSettingsPage_processArgumentsControl_label;
+	public static String ProcessSettingsPage_processWorkingDirControl_label;
+	public static String ProcessSettingsPage_localEchoSelectorControl_label;
 }

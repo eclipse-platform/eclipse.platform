@@ -16,10 +16,10 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.control.actions.AbstractTerminalAction;
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
 import org.eclipse.terminal.view.ui.interfaces.ITerminalsView;
 import org.eclipse.terminal.view.ui.interfaces.ImageConsts;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.tabs.TabCommandFieldHandler;
 import org.eclipse.terminal.view.ui.tabs.TabFolderManager;
 

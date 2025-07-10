@@ -9,7 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.view.ui.preferences;
+package org.eclipse.terminal.view.ui.internal.preferences;
 
 import java.io.File;
 import java.net.URI;
@@ -60,14 +60,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
 import org.eclipse.terminal.view.ui.controls.NoteCompositeHelper;
 import org.eclipse.terminal.view.ui.interfaces.IExternalExecutablesProperties;
 import org.eclipse.terminal.view.ui.interfaces.IPreferenceKeys;
+import org.eclipse.terminal.view.ui.internal.Messages;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.local.showin.ExternalExecutablesDialog;
 import org.eclipse.terminal.view.ui.local.showin.ExternalExecutablesManager;
 import org.eclipse.terminal.view.ui.local.showin.ExternalExecutablesUtils;
-import org.eclipse.terminal.view.ui.nls.Messages;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.framework.Bundle;
