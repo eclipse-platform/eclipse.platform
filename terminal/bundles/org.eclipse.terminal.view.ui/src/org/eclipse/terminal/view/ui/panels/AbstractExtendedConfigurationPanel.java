@@ -48,7 +48,7 @@ import org.eclipse.terminal.view.core.interfaces.ITerminalContextPropertiesProvi
 import org.eclipse.terminal.view.core.interfaces.constants.IContextPropertiesConstants;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchEncoding;

@@ -1307,7 +1307,7 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 		} else if (PlatformUI.isWorkbenchRunning() && PlatformUI.getWorkbench().getDisplay() != null
 				&& !PlatformUI.getWorkbench().getDisplay().isDisposed()) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(runnable);
-		// else should not happen and we ignore it...
+			// else should not happen and we ignore it...
 		}
 	}
 
@@ -1420,6 +1420,11 @@ public class VT100TerminalControl implements ITerminalControlForText, ITerminalC
 	@Override
 	public String getHoverSelection() {
 		return fCtlText.getHoverSelection();
+	}
+
+	@Override
+	public void updateTerminalDimensions() {
+		getTerminalText().adjustTerminalDimensions();
 	}
 
 }

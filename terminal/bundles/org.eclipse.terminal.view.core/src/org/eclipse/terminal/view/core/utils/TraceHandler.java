@@ -9,12 +9,12 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.view.core.tracing;
+package org.eclipse.terminal.view.core.utils;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.terminal.view.core.activator.CoreBundleActivator;
+import org.eclipse.terminal.view.core.internal.CoreBundleActivator;
 
 /**
  * Helper class to handle tracing using the platforms debug capabilities.

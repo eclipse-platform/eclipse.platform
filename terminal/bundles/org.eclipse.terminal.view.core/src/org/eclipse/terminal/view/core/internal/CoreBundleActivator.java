@@ -9,7 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.view.core.activator;
+package org.eclipse.terminal.view.core.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

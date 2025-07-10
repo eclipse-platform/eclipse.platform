@@ -11,7 +11,7 @@
  * Max Weninger (Wind River) - [361363] [TERMINALS] Implement "Pin&Clone" for the "Terminals" view
  * Dirk Fauth <dirk.fauth@googlemail.com> - Bug 460496
  *******************************************************************************/
-package org.eclipse.terminal.view.ui.nls;
+package org.eclipse.terminal.view.ui.internal;
 
 import java.lang.reflect.Field;
 
@@ -22,15 +22,9 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
-	// The plug-in resource bundle name
-	private static final String BUNDLE_NAME = "org.eclipse.terminal.view.ui.nls.Messages"; //$NON-NLS-1$
-
-	/**
-	 * Static constructor.
-	 */
 	static {
 		// Load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+		NLS.initializeMessages(Messages.class.getName(), Messages.class);
 	}
 
 	/**
@@ -85,13 +79,6 @@ public class Messages extends NLS {
 
 	public static String InvertColorsAction_menu;
 	public static String InvertColorsAction_tooltip;
-
-	public static String ProcessSettingsPage_dialogTitle;
-	public static String ProcessSettingsPage_processImagePathSelectorControl_label;
-	public static String ProcessSettingsPage_processImagePathSelectorControl_button;
-	public static String ProcessSettingsPage_processArgumentsControl_label;
-	public static String ProcessSettingsPage_processWorkingDirControl_label;
-	public static String ProcessSettingsPage_localEchoSelectorControl_label;
 
 	public static String OutputStreamMonitor_error_readingFromStream;
 

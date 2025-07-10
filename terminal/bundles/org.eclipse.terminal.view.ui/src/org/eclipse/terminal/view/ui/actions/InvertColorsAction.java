@@ -17,7 +17,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.control.actions.AbstractTerminalAction;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.tabs.TabFolderManager;
 
 /**

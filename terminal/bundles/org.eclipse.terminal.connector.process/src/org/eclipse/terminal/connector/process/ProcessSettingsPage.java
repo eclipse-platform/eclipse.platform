@@ -28,14 +28,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.terminal.connector.AbstractSettingsPage;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.connector.process.nls.Messages;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 /**
  * Process connector settings page implementation.
  */
-@SuppressWarnings("restriction")
 public class ProcessSettingsPage extends AbstractSettingsPage {
 	private Text processImageSelectorControl;
 	private Button processImageSelectorControlButton;

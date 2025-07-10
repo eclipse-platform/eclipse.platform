@@ -37,8 +37,6 @@ import org.eclipse.terminal.connector.NullSettingsStore;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.connector.process.activator.UIPlugin;
 import org.eclipse.terminal.connector.process.nls.Messages;
-import org.eclipse.terminal.internal.emulator.VT100Emulator;
-import org.eclipse.terminal.internal.emulator.VT100TerminalControl;
 import org.eclipse.terminal.view.core.interfaces.constants.ILineSeparatorConstants;
 import org.eclipse.terminal.view.core.utils.Env;
 import org.eclipse.terminal.view.ui.manager.ConsoleManager;
@@ -47,7 +45,6 @@ import org.eclipse.terminal.view.ui.streams.AbstractStreamsConnector;
 /**
  * Process connector implementation.
  */
-@SuppressWarnings("restriction")
 public class ProcessConnector extends AbstractStreamsConnector {
 	// Reference to the process settings
 	private final ProcessSettings settings;
@@ -114,10 +111,8 @@ public class ProcessConnector extends AbstractStreamsConnector {
 				if (PTY.isSupported(PTY.Mode.TERMINAL)) {
 					try {
 						pty = new PTY(PTY.Mode.TERMINAL);
-
+						control.updateTerminalDimensions();
 						// Initialize the terminal size
-						VT100Emulator text = ((VT100TerminalControl) control).getTerminalText();
-						text.fontChanged();
 					} catch (IOException e) {
 						// PTY not supported
 					}

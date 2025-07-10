@@ -14,9 +14,9 @@ package org.eclipse.terminal.view.core;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.terminal.view.core.activator.CoreBundleActivator;
 import org.eclipse.terminal.view.core.interfaces.ITerminalService;
-import org.eclipse.terminal.view.core.nls.Messages;
+import org.eclipse.terminal.view.core.internal.CoreBundleActivator;
+import org.eclipse.terminal.view.core.internal.Messages;
 import org.osgi.framework.Bundle;
 
 /**

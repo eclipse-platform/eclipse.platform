@@ -16,28 +16,25 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.terminal.connector.ITerminalConnector;
-import org.eclipse.terminal.view.core.activator.CoreBundleActivator;
 import org.eclipse.terminal.view.core.interfaces.ITerminalService;
 import org.eclipse.terminal.view.core.interfaces.ITerminalTabListener;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.interfaces.ILauncherDelegate;
 import org.eclipse.terminal.view.ui.interfaces.IUIConstants;
+import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.launcher.LauncherDelegateManager;
 import org.eclipse.terminal.view.ui.manager.ConsoleManager;
-import org.eclipse.terminal.view.ui.nls.Messages;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * Terminal service implementation.
  */
-@SuppressWarnings("restriction")
 public class TerminalService implements ITerminalService {
 	/**
 	 * The registered terminal tab dispose listeners.
@@ -170,9 +167,7 @@ public class TerminalService implements ITerminalService {
 		if (connector == null) {
 			// Properties contain invalid connector arguments
 			if (done != null) {
-				Exception e = new IllegalArgumentException(Messages.TerminalService_error_cannotCreateConnector);
-				done.done(new Status(IStatus.ERROR, CoreBundleActivator.getUniqueIdentifier(), e.getLocalizedMessage(),
-						e));
+				done.done(Status.error(Messages.TerminalService_error_cannotCreateConnector));
 			}
 			return;
 		}

@@ -10,12 +10,12 @@
  * Wind River Systems - initial API and implementation
  * Dirk Fauth <dirk.fauth@googlemail.com> - Bug 460496
  *******************************************************************************/
-package org.eclipse.terminal.view.ui.preferences;
+package org.eclipse.terminal.view.ui.internal.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.terminal.view.core.preferences.ScopedEclipsePreferences;
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
+import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.ui.interfaces.IPreferenceKeys;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
 /**
  * Terminal default preferences initializer.

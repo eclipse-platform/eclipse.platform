@@ -112,6 +112,10 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		public boolean isVT100LineWrapping() {
 			return false;
 		}
+
+		@Override
+		public void updateTerminalDimensions() {
+		}
 	}
 
 	static class ConnectorMock extends TerminalConnectorImpl {

@@ -10,7 +10,7 @@
  * Wind River Systems - initial API and implementation
  * Max Weninger (Wind River) - [361363] [TERMINALS] Implement "Pin&Clone" for the "Terminals" view
  *******************************************************************************/
-package org.eclipse.terminal.view.ui.activator;
+package org.eclipse.terminal.view.ui.internal;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
-import org.eclipse.terminal.view.core.preferences.ScopedEclipsePreferences;
-import org.eclipse.terminal.view.core.tracing.TraceHandler;
+import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
+import org.eclipse.terminal.view.core.utils.TraceHandler;
 import org.eclipse.terminal.view.ui.interfaces.ImageConsts;
 import org.eclipse.terminal.view.ui.listeners.WorkbenchWindowListener;
 import org.eclipse.terminal.view.ui.view.TerminalsView;

@@ -23,9 +23,9 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
-import org.eclipse.terminal.view.ui.activator.UIPlugin;
 import org.eclipse.terminal.view.ui.interfaces.ILauncherDelegate;
-import org.eclipse.terminal.view.ui.nls.Messages;
+import org.eclipse.terminal.view.ui.internal.Messages;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
 /**
  * Abstract launcher delegate implementation.
