@@ -16,8 +16,8 @@ import java.io.OutputStream;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMonitorListener;
-import org.eclipse.terminal.view.ui.internal.SettingsStore;
 
 /**
  * Streams connector settings implementation.
@@ -174,13 +174,13 @@ public class StreamsSettings {
 		Assert.isNotNull(store);
 		localEcho = Boolean.parseBoolean(store.get("LocalEcho", Boolean.FALSE.toString())); //$NON-NLS-1$
 		lineSeparator = store.get("LineSeparator", null); //$NON-NLS-1$
-		if (store instanceof SettingsStore) {
-			stdin = (OutputStream) ((SettingsStore) store).getSettings().get("stdin"); //$NON-NLS-1$
-			stdout = (InputStream) ((SettingsStore) store).getSettings().get("stdout"); //$NON-NLS-1$
-			stderr = (InputStream) ((SettingsStore) store).getSettings().get("stderr"); //$NON-NLS-1$
-			stdoutListeners = (ITerminalServiceOutputStreamMonitorListener[]) ((SettingsStore) store).getSettings()
+		if (store instanceof InMemorySettingsStore) {
+			stdin = (OutputStream) ((InMemorySettingsStore) store).getSettings().get("stdin"); //$NON-NLS-1$
+			stdout = (InputStream) ((InMemorySettingsStore) store).getSettings().get("stdout"); //$NON-NLS-1$
+			stderr = (InputStream) ((InMemorySettingsStore) store).getSettings().get("stderr"); //$NON-NLS-1$
+			stdoutListeners = (ITerminalServiceOutputStreamMonitorListener[]) ((InMemorySettingsStore) store).getSettings()
 					.get("StdOutListeners"); //$NON-NLS-1$
-			stderrListeners = (ITerminalServiceOutputStreamMonitorListener[]) ((SettingsStore) store).getSettings()
+			stderrListeners = (ITerminalServiceOutputStreamMonitorListener[]) ((InMemorySettingsStore) store).getSettings()
 					.get("StdErrListeners"); //$NON-NLS-1$
 		}
 	}
@@ -194,12 +194,12 @@ public class StreamsSettings {
 		Assert.isNotNull(store);
 		store.put("LocalEcho", Boolean.toString(localEcho)); //$NON-NLS-1$
 		store.put("LineSeparator", lineSeparator); //$NON-NLS-1$
-		if (store instanceof SettingsStore) {
-			((SettingsStore) store).getSettings().put("stdin", stdin); //$NON-NLS-1$
-			((SettingsStore) store).getSettings().put("stdout", stdout); //$NON-NLS-1$
-			((SettingsStore) store).getSettings().put("stderr", stderr); //$NON-NLS-1$
-			((SettingsStore) store).getSettings().put("StdOutListeners", stdoutListeners); //$NON-NLS-1$
-			((SettingsStore) store).getSettings().put("StdErrListeners", stderrListeners); //$NON-NLS-1$
+		if (store instanceof InMemorySettingsStore) {
+			((InMemorySettingsStore) store).getSettings().put("stdin", stdin); //$NON-NLS-1$
+			((InMemorySettingsStore) store).getSettings().put("stdout", stdout); //$NON-NLS-1$
+			((InMemorySettingsStore) store).getSettings().put("stderr", stderr); //$NON-NLS-1$
+			((InMemorySettingsStore) store).getSettings().put("StdOutListeners", stdoutListeners); //$NON-NLS-1$
+			((InMemorySettingsStore) store).getSettings().put("StdErrListeners", stderrListeners); //$NON-NLS-1$
 		}
 	}
 }

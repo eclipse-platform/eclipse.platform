@@ -9,22 +9,21 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.view.ui.internal;
+package org.eclipse.terminal.connector;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.terminal.connector.ISettingsStore;
 
 /**
  * Simple default Terminal settings store implementation keeping the settings
  * within memory.
  */
-public class SettingsStore implements ISettingsStore {
+public class InMemorySettingsStore implements ISettingsStore {
 	private final Map<String, Object> settings = new HashMap<>();
 
-	public SettingsStore() {
+	public InMemorySettingsStore() {
 	}
 
 	/**

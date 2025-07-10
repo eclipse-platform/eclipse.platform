@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.connector.local.activator.UIPlugin;
 import org.eclipse.terminal.connector.local.controls.LocalWizardConfigurationPanel;
@@ -50,7 +51,6 @@ import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanel;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
 import org.eclipse.terminal.view.ui.interfaces.IMementoHandler;
 import org.eclipse.terminal.view.ui.interfaces.IPreferenceKeys;
-import org.eclipse.terminal.view.ui.internal.SettingsStore;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.PlatformUI;
@@ -60,7 +60,6 @@ import org.osgi.framework.Bundle;
 /**
  * Serial launcher delegate implementation.
  */
-@SuppressWarnings("restriction")
 public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 
 	private final IMementoHandler mementoHandler = new LocalMementoHandler();
@@ -109,7 +108,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 		// Initialize the local terminal working directory.
 		if (!properties.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR)) {
 			// By default, start the local terminal in the users home directory
-			String initialCwd = org.eclipse.terminal.view.ui.activator.UIPlugin.getScopedPreferences()
+			String initialCwd = IPreferenceKeys.getPreferences()
 					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD);
 			String cwd = null;
 			if (initialCwd == null || IPreferenceKeys.PREF_INITIAL_CWD_USER_HOME.equals(initialCwd)
@@ -280,8 +279,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 			}
 		}
 		if (shell == null) {
-			shell = org.eclipse.terminal.view.ui.activator.UIPlugin.getScopedPreferences()
-					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
+			shell = IPreferenceKeys.getPreferences().getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
 			if (shell == null || "".equals(shell)) { //$NON-NLS-1$
 				if (System.getenv("SHELL") != null && !"".equals(System.getenv("SHELL").trim())) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					shell = System.getenv("SHELL").trim(); //$NON-NLS-1$
@@ -316,7 +314,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 
 		String arguments = (String) properties.get(ITerminalsConnectorConstants.PROP_PROCESS_ARGS);
 		if (arguments == null && !Platform.OS_WIN32.equals(Platform.getOS())) {
-			arguments = org.eclipse.terminal.view.ui.activator.UIPlugin.getScopedPreferences()
+			arguments = IPreferenceKeys.getPreferences()
 					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS);
 		}
 
@@ -397,7 +395,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 		Assert.isTrue(image != null || process != null);
 
 		// Construct the terminal settings store
-		ISettingsStore store = new SettingsStore();
+		ISettingsStore store = new InMemorySettingsStore();
 
 		// Construct the process settings
 		ProcessSettings processSettings = new ProcessSettings();
@@ -414,8 +412,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 
 		if (properties.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_MERGE_ENVIRONMENT)) {
 			Object value = properties.get(ITerminalsConnectorConstants.PROP_PROCESS_MERGE_ENVIRONMENT);
-			processSettings
-					.setMergeWithNativeEnvironment(value instanceof Boolean b ? b.booleanValue() : false);
+			processSettings.setMergeWithNativeEnvironment(value instanceof Boolean b ? b.booleanValue() : false);
 		}
 
 		// And save the settings to the store

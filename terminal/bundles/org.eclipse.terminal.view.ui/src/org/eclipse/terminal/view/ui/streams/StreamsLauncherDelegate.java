@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.view.core.TerminalServiceFactory;
 import org.eclipse.terminal.view.core.interfaces.ITerminalService;
@@ -25,7 +26,6 @@ import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMon
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanel;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
-import org.eclipse.terminal.view.ui.internal.SettingsStore;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
 
 /**
@@ -78,7 +78,7 @@ public class StreamsLauncherDelegate extends AbstractLauncherDelegate {
 				.get(ITerminalsConnectorConstants.PROP_STDERR_LISTENERS);
 
 		// Construct the terminal settings store
-		ISettingsStore store = new SettingsStore();
+		ISettingsStore store = new InMemorySettingsStore();
 
 		// Construct the streams settings
 		StreamsSettings streamsSettings = new StreamsSettings();

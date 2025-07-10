@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.connector.ssh.connector.ISshSettings;
 import org.eclipse.terminal.connector.ssh.connector.SshSettings;
@@ -31,13 +32,11 @@ import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorCo
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanel;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
 import org.eclipse.terminal.view.ui.interfaces.IMementoHandler;
-import org.eclipse.terminal.view.ui.internal.SettingsStore;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
 
 /**
  * SSH launcher delegate implementation.
  */
-@SuppressWarnings("restriction")
 public class SshLauncherDelegate extends AbstractLauncherDelegate {
 	// The SSH terminal connection memento handler
 	private final IMementoHandler mementoHandler = new SshMementoHandler();
@@ -100,8 +99,7 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 			DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 			String date = format.format(new Date(System.currentTimeMillis()));
 			if (port != null && Integer.valueOf(port).intValue() != ISshSettings.DEFAULT_SSH_PORT) {
-				return NLS.bind(Messages.SshLauncherDelegate_terminalTitle_port,
-						user, host, port, date);
+				return NLS.bind(Messages.SshLauncherDelegate_terminalTitle_port, user, host, port, date);
 			}
 			return NLS.bind(Messages.SshLauncherDelegate_terminalTitle, user, host, date);
 		}
@@ -155,7 +153,7 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 		}
 
 		// Construct the ssh settings store
-		ISettingsStore store = new SettingsStore();
+		ISettingsStore store = new InMemorySettingsStore();
 
 		// Construct the telnet settings
 		SshSettings sshSettings = new SshSettings();
