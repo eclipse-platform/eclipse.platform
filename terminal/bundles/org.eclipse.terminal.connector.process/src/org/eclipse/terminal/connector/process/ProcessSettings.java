@@ -14,13 +14,12 @@ package org.eclipse.terminal.connector.process;
 import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.terminal.connector.ISettingsStore;
+import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMonitorListener;
-import org.eclipse.terminal.view.ui.internal.SettingsStore;
 
 /**
  * Process connector settings implementation.
  */
-@SuppressWarnings("restriction")
 public class ProcessSettings {
 	// Reference to the process image
 	private String image;
@@ -271,14 +270,14 @@ public class ProcessSettings {
 				.parseBoolean(store.get("MergeWithNativeEnvironment", Boolean.FALSE.toString())); //$NON-NLS-1$
 		lineSeparator = store.get("LineSeparator", null); //$NON-NLS-1$
 		workingDir = store.get("WorkingDir", null); //$NON-NLS-1$
-		if (store instanceof SettingsStore) {
-			process = (Process) ((SettingsStore) store).getSettings().get("Process"); //$NON-NLS-1$
-			pty = (PTY) ((SettingsStore) store).getSettings().get("PTY"); //$NON-NLS-1$
-			stdoutListeners = (ITerminalServiceOutputStreamMonitorListener[]) ((SettingsStore) store).getSettings()
-					.get("StdOutListeners"); //$NON-NLS-1$
-			stderrListeners = (ITerminalServiceOutputStreamMonitorListener[]) ((SettingsStore) store).getSettings()
-					.get("StdErrListeners"); //$NON-NLS-1$
-			environment = (String[]) ((SettingsStore) store).getSettings().get("Environment"); //$NON-NLS-1$
+		if (store instanceof InMemorySettingsStore) {
+			process = (Process) ((InMemorySettingsStore) store).getSettings().get("Process"); //$NON-NLS-1$
+			pty = (PTY) ((InMemorySettingsStore) store).getSettings().get("PTY"); //$NON-NLS-1$
+			stdoutListeners = (ITerminalServiceOutputStreamMonitorListener[]) ((InMemorySettingsStore) store)
+					.getSettings().get("StdOutListeners"); //$NON-NLS-1$
+			stderrListeners = (ITerminalServiceOutputStreamMonitorListener[]) ((InMemorySettingsStore) store)
+					.getSettings().get("StdErrListeners"); //$NON-NLS-1$
+			environment = (String[]) ((InMemorySettingsStore) store).getSettings().get("Environment"); //$NON-NLS-1$
 		}
 	}
 
@@ -295,12 +294,12 @@ public class ProcessSettings {
 		store.put("MergeWithNativeEnvironment", Boolean.toString(mergeWithNativeEnvironment)); //$NON-NLS-1$
 		store.put("LineSeparator", lineSeparator); //$NON-NLS-1$
 		store.put("WorkingDir", workingDir); //$NON-NLS-1$
-		if (store instanceof SettingsStore) {
-			((SettingsStore) store).getSettings().put("Process", process); //$NON-NLS-1$
-			((SettingsStore) store).getSettings().put("PTY", pty); //$NON-NLS-1$
-			((SettingsStore) store).getSettings().put("StdOutListeners", stdoutListeners); //$NON-NLS-1$
-			((SettingsStore) store).getSettings().put("StdErrListeners", stderrListeners); //$NON-NLS-1$
-			((SettingsStore) store).getSettings().put("Environment", environment); //$NON-NLS-1$
+		if (store instanceof InMemorySettingsStore) {
+			((InMemorySettingsStore) store).getSettings().put("Process", process); //$NON-NLS-1$
+			((InMemorySettingsStore) store).getSettings().put("PTY", pty); //$NON-NLS-1$
+			((InMemorySettingsStore) store).getSettings().put("StdOutListeners", stdoutListeners); //$NON-NLS-1$
+			((InMemorySettingsStore) store).getSettings().put("StdErrListeners", stderrListeners); //$NON-NLS-1$
+			((InMemorySettingsStore) store).getSettings().put("Environment", environment); //$NON-NLS-1$
 		}
 	}
 }

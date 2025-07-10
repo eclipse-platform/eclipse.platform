@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.connector.telnet.connector.TelnetSettings;
 import org.eclipse.terminal.connector.telnet.controls.TelnetWizardConfigurationPanel;
@@ -30,13 +31,11 @@ import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorCo
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanel;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
 import org.eclipse.terminal.view.ui.interfaces.IMementoHandler;
-import org.eclipse.terminal.view.ui.internal.SettingsStore;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
 
 /**
  * Telnet launcher delegate implementation.
  */
-@SuppressWarnings("restriction")
 public class TelnetLauncherDelegate extends AbstractLauncherDelegate {
 	// The Telnet terminal connection memento handler
 	private final IMementoHandler mementoHandler = new TelnetMementoHandler();
@@ -141,7 +140,7 @@ public class TelnetLauncherDelegate extends AbstractLauncherDelegate {
 		}
 
 		// Construct the terminal settings store
-		ISettingsStore store = new SettingsStore();
+		ISettingsStore store = new InMemorySettingsStore();
 
 		// Construct the telnet settings
 		TelnetSettings telnetSettings = new TelnetSettings();

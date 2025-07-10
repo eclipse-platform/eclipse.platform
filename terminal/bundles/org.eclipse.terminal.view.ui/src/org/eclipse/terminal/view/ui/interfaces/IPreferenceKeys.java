@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.interfaces;
 
+import org.eclipse.terminal.view.core.preferences.ScopedEclipsePreferences;
+import org.eclipse.terminal.view.ui.activator.UIPlugin;
+
 /**
  * Terminal plug-in preference key definitions.
  *
@@ -67,4 +70,9 @@ public interface IPreferenceKeys {
 	 */
 	public final String PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS = PREF_TERMINAL
 			+ ".localTerminalDefaultShellUnixArgs"; //$NON-NLS-1$
+
+	static ScopedEclipsePreferences getPreferences() {
+		return UIPlugin.getScopedPreferences();
+	}
+
 }

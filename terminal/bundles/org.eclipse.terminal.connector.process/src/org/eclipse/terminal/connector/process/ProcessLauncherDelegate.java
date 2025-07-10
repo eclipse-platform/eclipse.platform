@@ -17,6 +17,7 @@ import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.view.core.TerminalServiceFactory;
 import org.eclipse.terminal.view.core.interfaces.ITerminalService;
@@ -24,13 +25,11 @@ import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMon
 import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanel;
 import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
-import org.eclipse.terminal.view.ui.internal.SettingsStore;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
 
 /**
  * Process launcher delegate implementation.
  */
-@SuppressWarnings("restriction")
 public class ProcessLauncherDelegate extends AbstractLauncherDelegate {
 
 	@Override
@@ -89,7 +88,7 @@ public class ProcessLauncherDelegate extends AbstractLauncherDelegate {
 		Assert.isTrue(image != null || process != null);
 
 		// Construct the terminal settings store
-		ISettingsStore store = new SettingsStore();
+		ISettingsStore store = new InMemorySettingsStore();
 
 		// Construct the process settings
 		ProcessSettings processSettings = new ProcessSettings();
@@ -106,8 +105,7 @@ public class ProcessLauncherDelegate extends AbstractLauncherDelegate {
 
 		if (properties.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_MERGE_ENVIRONMENT)) {
 			value = properties.get(ITerminalsConnectorConstants.PROP_PROCESS_MERGE_ENVIRONMENT);
-			processSettings
-					.setMergeWithNativeEnvironment(value instanceof Boolean b ? b.booleanValue() : false);
+			processSettings.setMergeWithNativeEnvironment(value instanceof Boolean b ? b.booleanValue() : false);
 		}
 
 		// And save the settings to the store
