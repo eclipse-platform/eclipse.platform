@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.core.internal;
 
+import org.eclipse.terminal.view.core.ITerminalService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -48,5 +50,15 @@ public class CoreBundleActivator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		CoreBundleActivator.context = null;
+	}
+
+	private static ServiceTracker<ITerminalService, ITerminalService> serviceTracker;
+
+	public static synchronized ITerminalService getTerminalService() {
+		if (serviceTracker == null) {
+			serviceTracker = new ServiceTracker<>(getContext(), ITerminalService.class, null);
+			serviceTracker.open();
+		}
+		return serviceTracker.getService();
 	}
 }

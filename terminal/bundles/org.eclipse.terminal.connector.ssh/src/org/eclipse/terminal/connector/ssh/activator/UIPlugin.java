@@ -16,6 +16,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jsch.core.IJSchService;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.terminal.connector.ssh.connector.SshConnection;
+import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -140,5 +141,16 @@ public class UIPlugin extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String key) {
 		return getDefault().getImageRegistry().getDescriptor(key);
+	}
+
+	private static ServiceTracker<ITerminalService, ITerminalService> serviceTracker;
+
+	public static synchronized ITerminalService getTerminalService() {
+		if (serviceTracker == null) {
+			serviceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(), ITerminalService.class,
+					null);
+			serviceTracker.open();
+		}
+		return serviceTracker.getService();
 	}
 }

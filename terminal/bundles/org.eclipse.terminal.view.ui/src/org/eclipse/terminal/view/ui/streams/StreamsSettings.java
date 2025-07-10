@@ -17,7 +17,7 @@ import java.io.OutputStream;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.InMemorySettingsStore;
-import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMonitorListener;
+import org.eclipse.terminal.view.core.ITerminalServiceOutputStreamMonitorListener;
 
 /**
  * Streams connector settings implementation.

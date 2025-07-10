@@ -15,7 +15,7 @@ import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.InMemorySettingsStore;
-import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMonitorListener;
+import org.eclipse.terminal.view.core.ITerminalServiceOutputStreamMonitorListener;
 
 /**
  * Process connector settings implementation.

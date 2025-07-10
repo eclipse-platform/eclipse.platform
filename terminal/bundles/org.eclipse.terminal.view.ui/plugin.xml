@@ -25,7 +25,7 @@
       <view
             allowMultiple="true"
             category="org.eclipse.terminal.view.ui.views.category"
-            class="org.eclipse.terminal.view.ui.view.TerminalsView"
+            class="org.eclipse.terminal.view.ui.internal.view.TerminalsView"
             icon="icons/eview16/terminal_view.gif"
             id="org.eclipse.terminal.view.ui.TerminalsView"
             name="%TerminalsView.name">
@@ -175,7 +175,7 @@
                mnemonic="%menu.showIn.mnemonic">
              <separator name="additions" visible="false"/>
 	         <dynamic
-	               class="org.eclipse.terminal.view.ui.local.showin.DynamicContributionItems"
+	               class="org.eclipse.terminal.view.ui.internal.local.showin.DynamicContributionItems"
 	               id="org.eclipse.terminal.connector.local.LocalLauncherDynamicContributionItems">
 	            <visibleWhen
 	                  checkEnabled="false">
@@ -222,7 +222,7 @@
                mnemonic="%menu.showIn.mnemonic">
              <separator name="additions" visible="false"/>
 	         <dynamic
-	               class="org.eclipse.terminal.view.ui.local.showin.DynamicContributionItems"
+	               class="org.eclipse.terminal.view.ui.internal.local.showin.DynamicContributionItems"
 	               id="org.eclipse.terminal.connector.local.LocalLauncherDynamicContributionItems">
 	            <visibleWhen
 	                  checkEnabled="false">
@@ -269,7 +269,7 @@
                mnemonic="%menu.showIn.mnemonic">
              <separator name="additions" visible="false"/>
 	         <dynamic
-	               class="org.eclipse.terminal.view.ui.local.showin.DynamicContributionItems"
+	               class="org.eclipse.terminal.view.ui.internal.local.showin.DynamicContributionItems"
 	               id="org.eclipse.terminal.connector.local.LocalLauncherDynamicContributionItems">
 	            <visibleWhen
 	                  checkEnabled="false">
@@ -371,7 +371,7 @@
             commandId="org.eclipse.terminal.view.ui.command.disconnect">
             <enabledWhen>
                <with variable="activePart">
-                  <instanceof value="org.eclipse.terminal.view.ui.interfaces.ITerminalsView"/>
+                  <instanceof value="org.eclipse.terminal.view.ui.ITerminalsView"/>
                   <test property="org.eclipse.terminal.view.ui.canDisconnect" value="true"/>
                </with>
             </enabledWhen>

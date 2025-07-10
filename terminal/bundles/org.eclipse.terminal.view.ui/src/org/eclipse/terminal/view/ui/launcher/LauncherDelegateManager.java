@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.terminal.view.ui.interfaces.ILauncherDelegate;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.ui.ISources;

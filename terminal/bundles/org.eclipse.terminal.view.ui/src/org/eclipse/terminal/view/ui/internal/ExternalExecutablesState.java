@@ -14,7 +14,7 @@ package org.eclipse.terminal.view.ui.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.terminal.view.ui.local.showin.ExternalExecutablesManager;
+import org.eclipse.terminal.view.ui.internal.local.showin.ExternalExecutablesManager;
 import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISources;
 

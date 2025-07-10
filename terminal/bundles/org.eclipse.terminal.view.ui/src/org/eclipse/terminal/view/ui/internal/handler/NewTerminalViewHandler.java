@@ -13,8 +13,8 @@ package org.eclipse.terminal.view.ui.internal.handler;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.terminal.view.ui.interfaces.IUIConstants;
-import org.eclipse.terminal.view.ui.manager.ConsoleManager;
+import org.eclipse.terminal.view.ui.IUIConstants;
+import org.eclipse.terminal.view.ui.launcher.ConsoleManager;
 
 /**
  * New Terminal View handler implementation
