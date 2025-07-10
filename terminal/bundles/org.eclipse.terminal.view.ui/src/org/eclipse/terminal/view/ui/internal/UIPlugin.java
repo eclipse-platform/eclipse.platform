@@ -27,12 +27,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
+import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
-import org.eclipse.terminal.view.ui.interfaces.ImageConsts;
-import org.eclipse.terminal.view.ui.listeners.WorkbenchWindowListener;
-import org.eclipse.terminal.view.ui.view.TerminalsView;
-import org.eclipse.terminal.view.ui.view.TerminalsViewMementoHandler;
+import org.eclipse.terminal.view.ui.ImageConsts;
+import org.eclipse.terminal.view.ui.internal.listeners.WorkbenchWindowListener;
+import org.eclipse.terminal.view.ui.internal.view.TerminalsView;
+import org.eclipse.terminal.view.ui.internal.view.TerminalsViewMementoHandler;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWindowListener;
@@ -43,6 +44,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -110,6 +112,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		getTerminalService(); //track the terminal service to keep it alive
 
 		// Create and register the workbench listener instance
 		listener = new IWorkbenchListener() {
@@ -275,6 +278,17 @@ public class UIPlugin extends AbstractUIPlugin {
 		}
 
 		return Boolean.parseBoolean(strEnabled);
+	}
+
+	private static ServiceTracker<ITerminalService, ITerminalService> serviceTracker;
+
+	public static synchronized ITerminalService getTerminalService() {
+		if (serviceTracker == null) {
+			serviceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(), ITerminalService.class,
+					null);
+			serviceTracker.open();
+		}
+		return serviceTracker.getService();
 	}
 
 }

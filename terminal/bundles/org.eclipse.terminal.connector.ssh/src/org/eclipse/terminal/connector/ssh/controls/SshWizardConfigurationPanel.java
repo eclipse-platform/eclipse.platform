@@ -35,12 +35,12 @@ import org.eclipse.terminal.connector.ssh.connector.SshConnector;
 import org.eclipse.terminal.connector.ssh.connector.SshSettings;
 import org.eclipse.terminal.connector.ssh.connector.SshSettingsPage;
 import org.eclipse.terminal.connector.ssh.nls.Messages;
+import org.eclipse.terminal.view.core.IContextPropertiesConstants;
+import org.eclipse.terminal.view.core.ITerminalContextPropertiesProvider;
+import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.core.TerminalContextPropertiesProviderFactory;
-import org.eclipse.terminal.view.core.interfaces.ITerminalContextPropertiesProvider;
-import org.eclipse.terminal.view.core.interfaces.constants.IContextPropertiesConstants;
-import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
-import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
-import org.eclipse.terminal.view.ui.panels.AbstractExtendedConfigurationPanel;
+import org.eclipse.terminal.view.ui.launcher.AbstractExtendedConfigurationPanel;
+import org.eclipse.terminal.view.ui.launcher.IConfigurationPanelContainer;
 
 /**
  * SSH wizard configuration panel implementation.

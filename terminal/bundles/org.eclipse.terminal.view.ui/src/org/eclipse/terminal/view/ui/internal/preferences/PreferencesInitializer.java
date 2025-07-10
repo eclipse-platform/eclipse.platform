@@ -14,7 +14,7 @@ package org.eclipse.terminal.view.ui.internal.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
-import org.eclipse.terminal.view.ui.interfaces.IPreferenceKeys;
+import org.eclipse.terminal.view.ui.IPreferenceKeys;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
 /**

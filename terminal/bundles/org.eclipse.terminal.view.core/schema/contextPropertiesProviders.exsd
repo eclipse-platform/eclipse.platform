@@ -64,10 +64,10 @@ The terminal context is passed in as default variable to the enablement expressi
          <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  The class that implements &lt;code&gt;org.eclipse.terminal.view.core.interfaces.ITerminalContextPropertiesProvider&lt;/code&gt;.
+                  The class that implements &lt;code&gt;org.eclipse.terminal.view.core.ITerminalContextPropertiesProvider&lt;/code&gt;.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.terminal.view.core.interfaces.ITerminalContextPropertiesProvider"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.terminal.view.core.ITerminalContextPropertiesProvider"/>
                </appinfo>
             </annotation>
          </attribute>

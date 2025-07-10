@@ -13,8 +13,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
-import org.eclipse.terminal.view.ui.panels.AbstractConfigurationPanel;
+import org.eclipse.terminal.view.ui.launcher.AbstractConfigurationPanel;
+import org.eclipse.terminal.view.ui.launcher.IConfigurationPanelContainer;
 
 /**
  * An empty configuration panel implementation.

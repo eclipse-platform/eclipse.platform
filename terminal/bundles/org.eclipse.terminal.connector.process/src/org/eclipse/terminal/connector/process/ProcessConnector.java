@@ -37,9 +37,9 @@ import org.eclipse.terminal.connector.NullSettingsStore;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.connector.process.activator.UIPlugin;
 import org.eclipse.terminal.connector.process.nls.Messages;
-import org.eclipse.terminal.view.core.interfaces.constants.ILineSeparatorConstants;
+import org.eclipse.terminal.view.core.ILineSeparatorConstants;
 import org.eclipse.terminal.view.core.utils.Env;
-import org.eclipse.terminal.view.ui.manager.ConsoleManager;
+import org.eclipse.terminal.view.ui.launcher.ConsoleManager;
 import org.eclipse.terminal.view.ui.streams.AbstractStreamsConnector;
 
 /**

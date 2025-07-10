@@ -20,13 +20,13 @@ import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
-import org.eclipse.terminal.view.core.TerminalServiceFactory;
-import org.eclipse.terminal.view.core.interfaces.ITerminalService;
-import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMonitorListener;
-import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
-import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanel;
-import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
+import org.eclipse.terminal.view.core.ITerminalService;
+import org.eclipse.terminal.view.core.ITerminalServiceOutputStreamMonitorListener;
+import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
+import org.eclipse.terminal.view.ui.launcher.IConfigurationPanel;
+import org.eclipse.terminal.view.ui.launcher.IConfigurationPanelContainer;
 
 /**
  * Streams launcher delegate implementation.
@@ -48,7 +48,7 @@ public class StreamsLauncherDelegate extends AbstractLauncherDelegate {
 		Assert.isNotNull(properties);
 
 		// Get the terminal service
-		ITerminalService terminal = TerminalServiceFactory.getService();
+		ITerminalService terminal = UIPlugin.getTerminalService();
 		// If not available, we cannot fulfill this request
 		if (terminal != null) {
 			terminal.openConsole(properties, done);

@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.terminal.view.core.interfaces.ITerminalContextPropertiesProvider;
 import org.eclipse.terminal.view.core.internal.CoreBundleActivator;
 import org.eclipse.terminal.view.core.internal.Messages;
 

@@ -17,7 +17,7 @@ import java.io.OutputStream;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
-import org.eclipse.terminal.view.core.interfaces.ITerminalServiceOutputStreamMonitorListener;
+import org.eclipse.terminal.view.core.ITerminalServiceOutputStreamMonitorListener;
 import org.eclipse.ui.services.IDisposable;
 
 /**

@@ -14,10 +14,12 @@ package org.eclipse.terminal.connector.local.activator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -116,5 +118,16 @@ public class UIPlugin extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String key) {
 		return getDefault().getImageRegistry().getDescriptor(key);
+	}
+
+	private static ServiceTracker<ITerminalService, ITerminalService> serviceTracker;
+
+	public static synchronized ITerminalService getTerminalService() {
+		if (serviceTracker == null) {
+			serviceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(), ITerminalService.class,
+					null);
+			serviceTracker.open();
+		}
+		return serviceTracker.getService();
 	}
 }

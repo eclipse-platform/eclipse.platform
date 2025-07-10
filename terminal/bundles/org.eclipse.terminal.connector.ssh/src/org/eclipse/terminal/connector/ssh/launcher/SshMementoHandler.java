@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
-import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
-import org.eclipse.terminal.view.ui.interfaces.IMementoHandler;
+import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
+import org.eclipse.terminal.view.ui.IMementoHandler;
 import org.eclipse.ui.IMemento;
 
 /**

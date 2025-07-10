@@ -23,10 +23,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.terminal.view.ui.help.IContextHelpIds;
-import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
+import org.eclipse.terminal.view.ui.internal.IContextHelpIds;
 import org.eclipse.terminal.view.ui.internal.Messages;
-import org.eclipse.terminal.view.ui.panels.AbstractExtendedConfigurationPanel;
+import org.eclipse.terminal.view.ui.launcher.AbstractExtendedConfigurationPanel;
+import org.eclipse.terminal.view.ui.launcher.IConfigurationPanelContainer;
 import org.eclipse.ui.PlatformUI;
 
 /**

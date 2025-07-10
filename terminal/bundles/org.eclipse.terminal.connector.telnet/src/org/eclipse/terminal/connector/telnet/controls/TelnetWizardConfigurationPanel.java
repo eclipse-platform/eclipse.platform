@@ -26,9 +26,9 @@ import org.eclipse.terminal.connector.telnet.connector.NetworkPortMap;
 import org.eclipse.terminal.connector.telnet.connector.TelnetConnector;
 import org.eclipse.terminal.connector.telnet.connector.TelnetSettings;
 import org.eclipse.terminal.connector.telnet.connector.TelnetSettingsPage;
-import org.eclipse.terminal.view.core.interfaces.constants.ITerminalsConnectorConstants;
-import org.eclipse.terminal.view.ui.interfaces.IConfigurationPanelContainer;
-import org.eclipse.terminal.view.ui.panels.AbstractExtendedConfigurationPanel;
+import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
+import org.eclipse.terminal.view.ui.launcher.AbstractExtendedConfigurationPanel;
+import org.eclipse.terminal.view.ui.launcher.IConfigurationPanelContainer;
 
 /**
  * telnet wizard configuration panel implementation.

@@ -16,9 +16,9 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
-import org.eclipse.terminal.view.ui.interfaces.ITerminalsView;
+import org.eclipse.terminal.view.ui.ITerminalsView;
+import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
 import org.eclipse.terminal.view.ui.launcher.LauncherDelegateManager;
-import org.eclipse.terminal.view.ui.tabs.TabFolderManager;
 
 /**
  * Terminal property tester implementation.
