@@ -15,15 +15,22 @@ package org.eclipse.help.internal.webapp.servlet;
 
 import java.io.IOException;
 
+import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.help.internal.base.BaseHelpSystem;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletName;
+import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 /**
  * Servlet to interface client with remote Eclipse
  */
+@Component(service = Servlet.class)
+@HttpWhiteboardServletName("content")
+@HttpWhiteboardServletPattern({ "/content/*", "/topic/*", "/nftopic/*", "/ntopic/*", "/rtopic/*" })
 public class ContentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private EclipseConnector connector;
