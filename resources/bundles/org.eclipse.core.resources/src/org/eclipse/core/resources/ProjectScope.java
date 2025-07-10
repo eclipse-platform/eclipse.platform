@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.core.resources;
 
-import org.eclipse.core.internal.preferences.AbstractScope;
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.AbstractScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.osgi.service.prefs.Preferences;
