@@ -53,31 +53,6 @@
             httpcontextId="help">
       </servlet>
       <servlet
-            alias="/content"
-            class="org.eclipse.help.internal.webapp.servlet.ContentServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/topic"
-            class="org.eclipse.help.internal.webapp.servlet.ContentServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/nftopic"
-            class="org.eclipse.help.internal.webapp.servlet.ContentServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/ntopic"
-            class="org.eclipse.help.internal.webapp.servlet.ContentServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
-            alias="/rtopic"
-            class="org.eclipse.help.internal.webapp.servlet.ContentServlet"
-            httpcontextId="help">
-      </servlet>
-      <servlet
             alias="/livehelp"
             class="org.eclipse.help.internal.webapp.servlet.LiveHelpServlet"
             httpcontextId="help">
