@@ -26,8 +26,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IExternalExecutablesProperties;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
-import org.eclipse.terminal.view.ui.launcher.LauncherDelegateManager;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.CompoundContributionItem;
@@ -48,7 +48,7 @@ public class DynamicContributionItems extends CompoundContributionItem implement
 		this.serviceLocator = serviceLocator;
 
 		// Get the local terminal launcher delegate
-		delegate = LauncherDelegateManager.getInstance()
+		delegate = UIPlugin.getLaunchDelegateManager()
 				.getLauncherDelegate("org.eclipse.terminal.connector.local.launcher.local", false); //$NON-NLS-1$
 	}
 

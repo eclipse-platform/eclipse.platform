@@ -10,7 +10,7 @@
  * Wind River Systems - initial API and implementation
  * Max Weninger (Wind River) - [361363] [TERMINALS] Implement "Pin&Clone" for the "Terminals" view
  *******************************************************************************/
-package org.eclipse.terminal.view.ui.launcher;
+package org.eclipse.terminal.view.ui.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
@@ -25,6 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.control.ITerminalViewControl;
@@ -32,9 +34,9 @@ import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IPreferenceKeys;
 import org.eclipse.terminal.view.ui.ITerminalsView;
 import org.eclipse.terminal.view.ui.IUIConstants;
-import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsView;
+import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IPerspectiveDescriptor;
@@ -48,11 +50,13 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PerspectiveAdapter;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Terminal console manager.
  */
-public class ConsoleManager {
+@Component(service = ITerminalConsoleViewManager.class)
+public class ConsoleManager implements ITerminalConsoleViewManager {
 
 	// Reference to the perspective listener instance
 	private final IPerspectiveListener perspectiveListener;
@@ -146,26 +150,10 @@ public class ConsoleManager {
 		}
 	}
 
-	/*
-	 * Thread save singleton instance creation.
-	 */
-	private static class LazyInstanceHolder {
-		public static ConsoleManager fInstance = new ConsoleManager();
-	}
-
-	/**
-	 * Returns the singleton instance for the console manager.
-	 */
-	public static ConsoleManager getInstance() {
-		return LazyInstanceHolder.fInstance;
-	}
-
 	/**
 	 * Constructor.
 	 */
-	ConsoleManager() {
-		super();
-
+	public ConsoleManager() {
 		perspectiveListener = new ConsoleManagerPerspectiveListener();
 		partListener = new ConsoleManagerPartListener();
 
@@ -192,19 +180,8 @@ public class ConsoleManager {
 		return null;
 	}
 
-	/**
-	 * Returns the console view if available within the active workbench window page.
-	 * <p>
-	 * <b>Note:</b> The method must be called within the UI thread.
-	 *
-	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
-	 * @param secondaryId The terminal console secondary id, which may be <code>null</code> which is the secondary id of
-	 *        the first terminal view opened. To specify reuse of most recent terminal view use special value of
-	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID}.
-	 *
-	 * @return The console view instance if available or <code>null</code> otherwise.
-	 */
-	public ITerminalsView findConsoleView(String id, String secondaryId) {
+	@Override
+	public Optional<ITerminalsView> findConsoleView(String id, String secondaryId) {
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
 
 		ITerminalsView view = null;
@@ -220,7 +197,7 @@ public class ConsoleManager {
 			}
 		}
 
-		return view;
+		return Optional.ofNullable(view);
 	}
 
 	/**
@@ -295,6 +272,7 @@ public class ConsoleManager {
 	 * @return The next secondary id, or <code>null</code> if it is the first one
 	 * @since 4.1
 	 */
+	@Override
 	public String getNextTerminalSecondaryId(String id) {
 		Assert.isNotNull(id);
 
@@ -341,6 +319,7 @@ public class ConsoleManager {
 	 *
 	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
 	 */
+	@Override
 	public IViewPart showConsoleView(String id, String secondaryId) {
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
 
@@ -420,6 +399,7 @@ public class ConsoleManager {
 	 * @param data The custom terminal data node or <code>null</code>.
 	 * @param flags The flags controlling how the console is opened or <code>null</code> to use defaults.
 	 */
+	@Override
 	public CTabItem openConsole(String id, String secondaryId, String title, String encoding,
 			ITerminalConnector connector, Object data, Map<String, Boolean> flags) {
 		Assert.isNotNull(title);
@@ -447,7 +427,7 @@ public class ConsoleManager {
 
 		// Lookup an existing console first
 		String secId = ((IViewSite) part.getSite()).getSecondaryId();
-		CTabItem item = findConsole(id, secId, title, connector, data);
+		CTabItem item = (CTabItem) findConsole(id, secId, title, connector, data).orElse(null);
 
 		// Switch to the tab folder page _before_ calling TabFolderManager#createItem(...).
 		// The createItem(...) method invokes the corresponding connect and this may take
@@ -500,25 +480,26 @@ public class ConsoleManager {
 	 *
 	 * @return The corresponding console tab item or <code>null</code>.
 	 */
-	public CTabItem findConsole(String id, String secondaryId, String title, ITerminalConnector connector,
+	@Override
+	public Optional<Widget> findConsole(String id, String secondaryId, String title, ITerminalConnector connector,
 			Object data) {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
 
 		// Get the console view
-		ITerminalsView view = findConsoleView(id, secondaryId);
+		ITerminalsView view = findConsoleView(id, secondaryId).orElse(null);
 		if (view == null) {
-			return null;
+			return Optional.empty();
 		}
 
 		// Get the tab folder manager associated with the view
 		TabFolderManager manager = view.getAdapter(TabFolderManager.class);
 		if (manager == null) {
-			return null;
+			return Optional.empty();
 		}
 
-		return manager.findTabItem(title, connector, data);
+		return Optional.ofNullable(manager.findTabItem(title, connector, data)).map(Widget.class::cast);
 	}
 
 	/**
@@ -529,7 +510,8 @@ public class ConsoleManager {
 	 * @param control The terminal control. Must not be <code>null</code>.
 	 * @return The corresponding console tab item or <code>null</code>.
 	 */
-	public CTabItem findConsole(ITerminalControl control) {
+	@Override
+	public Optional<Widget> findConsole(ITerminalControl control) {
 		Assert.isNotNull(control);
 
 		CTabItem item = null;
@@ -558,7 +540,7 @@ public class ConsoleManager {
 			}
 		}
 
-		return item;
+		return Optional.ofNullable(item);
 	}
 
 	/**
@@ -611,6 +593,7 @@ public class ConsoleManager {
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
 	 */
+	@Override
 	public void closeConsole(String id, String title, ITerminalConnector connector, Object data) {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);
@@ -634,6 +617,7 @@ public class ConsoleManager {
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
 	 */
+	@Override
 	public void terminateConsole(String id, String title, ITerminalConnector connector, Object data) {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);

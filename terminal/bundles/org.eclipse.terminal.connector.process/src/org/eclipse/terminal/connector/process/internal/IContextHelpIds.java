@@ -9,9 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.connector.process.help;
-
-import org.eclipse.terminal.connector.process.activator.UIPlugin;
+package org.eclipse.terminal.connector.process.internal;
 
 /**
  * Context help id definitions.

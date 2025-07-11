@@ -12,9 +12,9 @@ Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.400,4)",
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
-Export-Package: org.eclipse.terminal.connector.telnet.connector,
- org.eclipse.terminal.connector.telnet.controls,
- org.eclipse.terminal.connector.telnet.launcher
+Export-Package: org.eclipse.terminal.connector.telnet.connector;x-internal:=true,
+ org.eclipse.terminal.connector.telnet.controls;x-internal:=true,
+ org.eclipse.terminal.connector.telnet.launcher;x-internal:=true
 Automatic-Module-Name: org.eclipse.terminal.connector.telnet
 Import-Package: org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.connector.provider;version="[1.0.0,2.0.0)",

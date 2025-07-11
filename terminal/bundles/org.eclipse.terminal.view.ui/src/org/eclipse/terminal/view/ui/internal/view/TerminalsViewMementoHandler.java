@@ -22,8 +22,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IMementoHandler;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
-import org.eclipse.terminal.view.ui.launcher.LauncherDelegateManager;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PlatformUI;
 
@@ -83,7 +83,7 @@ public class TerminalsViewMementoHandler {
 			// Get the terminal launcher delegate
 			String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
 			ILauncherDelegate delegate = delegateId != null
-					? LauncherDelegateManager.getInstance().getLauncherDelegate(delegateId, false)
+					? UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId, false)
 					: null;
 			IMementoHandler mementoHandler = delegate != null
 					? (IMementoHandler) delegate.getAdapter(IMementoHandler.class)
@@ -189,7 +189,7 @@ public class TerminalsViewMementoHandler {
 				// Get the terminal launcher delegate
 				String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
 				ILauncherDelegate delegate = delegateId != null
-						? LauncherDelegateManager.getInstance().getLauncherDelegate(delegateId, false)
+						? UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId, false)
 						: null;
 				IMementoHandler mementoHandler = delegate != null
 						? (IMementoHandler) delegate.getAdapter(IMementoHandler.class)

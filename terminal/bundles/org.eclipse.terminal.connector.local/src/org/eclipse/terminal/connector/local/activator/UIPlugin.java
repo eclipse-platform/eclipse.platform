@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
+import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -120,14 +121,25 @@ public class UIPlugin extends AbstractUIPlugin {
 		return getDefault().getImageRegistry().getDescriptor(key);
 	}
 
-	private static ServiceTracker<ITerminalService, ITerminalService> serviceTracker;
+	private static ServiceTracker<ITerminalService, ITerminalService> terminalServiceTracker;
 
 	public static synchronized ITerminalService getTerminalService() {
-		if (serviceTracker == null) {
-			serviceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(), ITerminalService.class,
-					null);
-			serviceTracker.open();
+		if (terminalServiceTracker == null) {
+			terminalServiceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
+					ITerminalService.class, null);
+			terminalServiceTracker.open();
 		}
-		return serviceTracker.getService();
+		return terminalServiceTracker.getService();
+	}
+
+	private static ServiceTracker<ILaunchDelegateManager, ILaunchDelegateManager> launchDelegateServiceTracker;
+
+	public static synchronized ILaunchDelegateManager getLaunchDelegateManager() {
+		if (launchDelegateServiceTracker == null) {
+			launchDelegateServiceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
+					ILaunchDelegateManager.class, null);
+			launchDelegateServiceTracker.open();
+		}
+		return launchDelegateServiceTracker.getService();
 	}
 }

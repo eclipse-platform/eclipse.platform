@@ -19,17 +19,17 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.ITerminalTabListener;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IUIConstants;
-import org.eclipse.terminal.view.ui.launcher.ConsoleManager;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
-import org.eclipse.terminal.view.ui.launcher.LauncherDelegateManager;
+import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -54,6 +54,8 @@ public class TerminalService implements ITerminalService {
 	 * A terminal tab got disposed.
 	 */
 	public static final int TAB_DISPOSED = 1;
+
+	private ITerminalConsoleViewManager consoleViewManager;
 
 	/**
 	 * Common terminal service runnable implementation.
@@ -84,6 +86,11 @@ public class TerminalService implements ITerminalService {
 		public boolean isExecuteAsync() {
 			return true;
 		}
+	}
+
+	@Activate
+	public TerminalService(@Reference ITerminalConsoleViewManager consoleViewManager) {
+		this.consoleViewManager = consoleViewManager;
 	}
 
 	@Override
@@ -239,7 +246,7 @@ public class TerminalService implements ITerminalService {
 		String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
 		if (delegateId != null) {
 			// Get the launcher delegate
-			ILauncherDelegate delegate = LauncherDelegateManager.getInstance().getLauncherDelegate(delegateId, false);
+			ILauncherDelegate delegate = UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId, false);
 			if (delegate != null) {
 				// Create the terminal connector
 				connector = delegate.createTerminalConnector(properties);
@@ -263,7 +270,7 @@ public class TerminalService implements ITerminalService {
 				} else {
 					// First, restore the view. This opens consoles from the memento
 					fRestoringView = true;
-					ConsoleManager.getInstance().showConsoleView(id, secondaryId);
+					consoleViewManager.showConsoleView(id, secondaryId);
 					fRestoringView = false;
 
 					// After that schedule opening the requested console
@@ -298,9 +305,7 @@ public class TerminalService implements ITerminalService {
 					flags.put(ITerminalsConnectorConstants.PROP_TITLE_DISABLE_ANSI_TITLE, false);
 				}
 				// Open the new console
-				CTabItem item;
-				item = ConsoleManager.getInstance().openConsole(id, secondaryId, title, encoding, connector, data,
-						flags);
+				Widget item = consoleViewManager.openConsole(id, secondaryId, title, encoding, connector, data, flags);
 				// Associate the original terminal properties with the tab item.
 				// This makes it easier to persist the connection data within the memento handler
 				if (item != null && !item.isDisposed()) {
@@ -324,7 +329,7 @@ public class TerminalService implements ITerminalService {
 			public void run(String id, String secondaryId, String title, ITerminalConnector connector, Object data,
 					Done done) {
 				// Close the console
-				ConsoleManager.getInstance().closeConsole(id, title, connector, data);
+				consoleViewManager.closeConsole(id, title, connector, data);
 				// Invoke the callback
 				if (done != null) {
 					done.done(Status.OK_STATUS);
@@ -342,7 +347,7 @@ public class TerminalService implements ITerminalService {
 			public void run(String id, String secondaryId, String title, ITerminalConnector connector, Object data,
 					Done done) {
 				// Close the console
-				ConsoleManager.getInstance().terminateConsole(id, title, connector, data);
+				consoleViewManager.terminateConsole(id, title, connector, data);
 				// Invoke the callback
 				if (done != null) {
 					done.done(Status.OK_STATUS);

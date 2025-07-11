@@ -9,7 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.connector.process;
+package org.eclipse.terminal.connector.process.internal;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
-import org.eclipse.terminal.connector.process.activator.UIPlugin;
+import org.eclipse.terminal.connector.process.ProcessSettings;
 import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.ITerminalServiceOutputStreamMonitorListener;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;

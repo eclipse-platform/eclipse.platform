@@ -34,6 +34,8 @@ import org.eclipse.terminal.view.ui.ImageConsts;
 import org.eclipse.terminal.view.ui.internal.listeners.WorkbenchWindowListener;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsView;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsViewMementoHandler;
+import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
+import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWindowListener;
@@ -113,7 +115,8 @@ public class UIPlugin extends AbstractUIPlugin {
 		super.start(context);
 		plugin = this;
 		getTerminalService(); //track the terminal service to keep it alive
-
+		getLaunchDelegateManager(); //track the manager and keep it alive
+		getConsoleManager(); //track it and keep it alive
 		// Create and register the workbench listener instance
 		listener = new IWorkbenchListener() {
 
@@ -280,15 +283,37 @@ public class UIPlugin extends AbstractUIPlugin {
 		return Boolean.parseBoolean(strEnabled);
 	}
 
-	private static ServiceTracker<ITerminalService, ITerminalService> serviceTracker;
+	private static ServiceTracker<ITerminalService, ITerminalService> terminalServiceTracker;
 
 	public static synchronized ITerminalService getTerminalService() {
-		if (serviceTracker == null) {
-			serviceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(), ITerminalService.class,
-					null);
-			serviceTracker.open();
+		if (terminalServiceTracker == null) {
+			terminalServiceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
+					ITerminalService.class, null);
+			terminalServiceTracker.open();
 		}
-		return serviceTracker.getService();
+		return terminalServiceTracker.getService();
+	}
+
+	private static ServiceTracker<ILaunchDelegateManager, ILaunchDelegateManager> launchDelegateServiceTracker;
+
+	public static synchronized ILaunchDelegateManager getLaunchDelegateManager() {
+		if (launchDelegateServiceTracker == null) {
+			launchDelegateServiceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
+					ILaunchDelegateManager.class, null);
+			launchDelegateServiceTracker.open();
+		}
+		return launchDelegateServiceTracker.getService();
+	}
+
+	private static ServiceTracker<ITerminalConsoleViewManager, ITerminalConsoleViewManager> consoleManagerTracker;
+
+	public static synchronized ITerminalConsoleViewManager getConsoleManager() {
+		if (consoleManagerTracker == null) {
+			consoleManagerTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
+					ITerminalConsoleViewManager.class, null);
+			consoleManagerTracker.open();
+		}
+		return consoleManagerTracker.getService();
 	}
 
 }

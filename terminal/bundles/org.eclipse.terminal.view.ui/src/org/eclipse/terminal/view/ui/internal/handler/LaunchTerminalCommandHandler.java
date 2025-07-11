@@ -32,7 +32,6 @@ import org.eclipse.terminal.view.ui.internal.ITraceIds;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.internal.dialogs.LaunchTerminalSettingsDialog;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
-import org.eclipse.terminal.view.ui.launcher.LauncherDelegateManager;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
@@ -65,7 +64,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 				if (properties != null) {
 					String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
 					Assert.isNotNull(delegateId);
-					ILauncherDelegate delegate = LauncherDelegateManager.getInstance().getLauncherDelegate(delegateId,
+					ILauncherDelegate delegate = UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId,
 							false);
 					Assert.isNotNull(delegateId);
 					return delegate.createTerminalConnector(properties);
@@ -91,7 +90,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 				if (properties != null) {
 					String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
 					Assert.isNotNull(delegateId);
-					ILauncherDelegate delegate = LauncherDelegateManager.getInstance().getLauncherDelegate(delegateId,
+					ILauncherDelegate delegate = UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId,
 							false);
 					Assert.isNotNull(delegateId);
 					delegate.execute(properties, null);
@@ -105,7 +104,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 			}
 
 			// Check if the dialog needs to be shown at all
-			ILauncherDelegate[] delegates = LauncherDelegateManager.getInstance()
+			ILauncherDelegate[] delegates = UIPlugin.getLaunchDelegateManager()
 					.getApplicableLauncherDelegates(selection);
 
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
@@ -132,8 +131,8 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 					if (properties != null) {
 						String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
 						Assert.isNotNull(delegateId);
-						ILauncherDelegate delegate = LauncherDelegateManager.getInstance()
-								.getLauncherDelegate(delegateId, false);
+						ILauncherDelegate delegate = UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId,
+								false);
 						Assert.isNotNull(delegateId);
 						delegate.execute(properties, null);
 					}
