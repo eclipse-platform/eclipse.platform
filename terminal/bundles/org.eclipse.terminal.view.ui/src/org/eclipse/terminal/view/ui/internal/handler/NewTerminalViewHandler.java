@@ -14,7 +14,8 @@ package org.eclipse.terminal.view.ui.internal.handler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.terminal.view.ui.IUIConstants;
-import org.eclipse.terminal.view.ui.launcher.ConsoleManager;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
+import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 
 /**
  * New Terminal View handler implementation
@@ -23,8 +24,9 @@ public class NewTerminalViewHandler extends AbstractTriggerCommandHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		String secondaryId = ConsoleManager.getInstance().getNextTerminalSecondaryId(IUIConstants.ID);
-		ConsoleManager.getInstance().showConsoleView(IUIConstants.ID, secondaryId);
+		ITerminalConsoleViewManager consoleManager = UIPlugin.getConsoleManager();
+		String secondaryId = consoleManager.getNextTerminalSecondaryId(IUIConstants.ID);
+		consoleManager.showConsoleView(IUIConstants.ID, secondaryId);
 
 		triggerCommand("org.eclipse.terminal.view.ui.command.launchToolbar", null); //$NON-NLS-1$
 

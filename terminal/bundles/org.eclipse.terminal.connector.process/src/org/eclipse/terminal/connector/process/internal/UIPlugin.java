@@ -9,7 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.connector.process.activator;
+package org.eclipse.terminal.connector.process.internal;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -18,6 +18,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
+import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -125,6 +126,17 @@ public class UIPlugin extends AbstractUIPlugin {
 			serviceTracker.open();
 		}
 		return serviceTracker.getService();
+	}
+
+	private static ServiceTracker<ITerminalConsoleViewManager, ITerminalConsoleViewManager> consoleManagerTracker;
+
+	public static synchronized ITerminalConsoleViewManager getConsoleManager() {
+		if (consoleManagerTracker == null) {
+			consoleManagerTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
+					ITerminalConsoleViewManager.class, null);
+			consoleManagerTracker.open();
+		}
+		return consoleManagerTracker.getService();
 	}
 
 }

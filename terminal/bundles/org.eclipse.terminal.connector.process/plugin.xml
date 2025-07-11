@@ -24,7 +24,7 @@
 <!-- Terminal launcher delegate contributions -->
    <extension point="org.eclipse.terminal.view.ui.launcherDelegates">
       <delegate
-            class="org.eclipse.terminal.connector.process.ProcessLauncherDelegate"
+            class="org.eclipse.terminal.connector.process.internal.ProcessLauncherDelegate"
             hidden="true"
             id="org.eclipse.terminal.connector.process.launcher.process"
             label="%ProcessLauncherDelegate.label">

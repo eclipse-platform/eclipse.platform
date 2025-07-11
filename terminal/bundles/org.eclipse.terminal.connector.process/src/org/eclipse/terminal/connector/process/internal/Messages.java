@@ -9,7 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.connector.process.nls;
+package org.eclipse.terminal.connector.process.internal;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -18,15 +18,9 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
-	// The plug-in resource bundle name
-	private static final String BUNDLE_NAME = "org.eclipse.terminal.connector.process.nls.Messages"; //$NON-NLS-1$
-
-	/**
-	 * Static constructor.
-	 */
 	static {
 		// Load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+		NLS.initializeMessages(Messages.class.getName(), Messages.class);
 	}
 
 	// **** Declare externalized string id's down here *****

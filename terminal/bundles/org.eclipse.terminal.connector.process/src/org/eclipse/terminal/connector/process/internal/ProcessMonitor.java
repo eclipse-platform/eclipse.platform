@@ -9,9 +9,10 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.connector.process;
+package org.eclipse.terminal.connector.process.internal;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.terminal.connector.process.ProcessConnector;
 
 /**
  * Process monitor implementation.

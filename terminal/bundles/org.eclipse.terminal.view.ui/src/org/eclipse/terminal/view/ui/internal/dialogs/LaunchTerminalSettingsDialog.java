@@ -40,8 +40,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.terminal.connector.ITerminalConnector;
-import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.core.ITerminalService.Done;
+import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IExternalExecutablesProperties;
 import org.eclipse.terminal.view.ui.internal.IContextHelpIds;
 import org.eclipse.terminal.view.ui.internal.ITraceIds;
@@ -52,7 +52,6 @@ import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
 import org.eclipse.terminal.view.ui.launcher.IConfigurationPanel;
 import org.eclipse.terminal.view.ui.launcher.IConfigurationPanelContainer;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
-import org.eclipse.terminal.view.ui.launcher.LauncherDelegateManager;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.PlatformUI;
 
@@ -421,7 +420,7 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalSettingsDialog.this);
 			}
 
-			ILauncherDelegate[] delegates = LauncherDelegateManager.getInstance().getLauncherDelegates(false);
+			ILauncherDelegate[] delegates = UIPlugin.getLaunchDelegateManager().getLauncherDelegates(false);
 
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 				UIPlugin.getTraceHandler().trace(
@@ -451,7 +450,7 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalSettingsDialog.this);
 			}
 
-			ILauncherDelegate[] delegates = LauncherDelegateManager.getInstance()
+			ILauncherDelegate[] delegates = UIPlugin.getLaunchDelegateManager()
 					.getApplicableLauncherDelegates(selection);
 
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {

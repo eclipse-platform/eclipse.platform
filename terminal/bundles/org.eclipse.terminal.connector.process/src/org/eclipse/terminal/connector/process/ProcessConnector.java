@@ -29,17 +29,17 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.NullSettingsStore;
 import org.eclipse.terminal.connector.TerminalState;
-import org.eclipse.terminal.connector.process.activator.UIPlugin;
-import org.eclipse.terminal.connector.process.nls.Messages;
+import org.eclipse.terminal.connector.process.internal.Messages;
+import org.eclipse.terminal.connector.process.internal.ProcessMonitor;
+import org.eclipse.terminal.connector.process.internal.UIPlugin;
 import org.eclipse.terminal.view.core.ILineSeparatorConstants;
 import org.eclipse.terminal.view.core.utils.Env;
-import org.eclipse.terminal.view.ui.launcher.ConsoleManager;
 import org.eclipse.terminal.view.ui.streams.AbstractStreamsConnector;
 
 /**
@@ -209,10 +209,7 @@ public class ProcessConnector extends AbstractStreamsConnector {
 			// Save the shell so the error message can have somewhere to display
 			Shell shell = control.getShell();
 			// Lookup the tab item
-			CTabItem item = ConsoleManager.getInstance().findConsole(control);
-			if (item != null) {
-				item.dispose();
-			}
+			UIPlugin.getConsoleManager().findConsole(control).ifPresent(Widget::dispose);
 			// Get the error message from the exception
 			String msg = e.getLocalizedMessage() != null ? e.getLocalizedMessage() : ""; //$NON-NLS-1$
 			Assert.isNotNull(msg);

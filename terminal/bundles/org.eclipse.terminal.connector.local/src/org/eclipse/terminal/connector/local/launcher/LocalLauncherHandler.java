@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.terminal.connector.local.activator.UIPlugin;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
-import org.eclipse.terminal.view.ui.launcher.LauncherDelegateManager;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -56,7 +56,7 @@ public class LocalLauncherHandler extends AbstractHandler {
 		}
 
 		// Get all applicable launcher delegates for the current selection
-		ILauncherDelegate[] delegates = LauncherDelegateManager.getInstance().getApplicableLauncherDelegates(selection);
+		ILauncherDelegate[] delegates = UIPlugin.getLaunchDelegateManager().getApplicableLauncherDelegates(selection);
 		// Find the local terminal launcher delegate
 		ILauncherDelegate delegate = null;
 		for (ILauncherDelegate candidate : delegates) {
