@@ -67,14 +67,16 @@ public class FileUtil {
 	 * Converts an IPath into its canonical form for the local file system.
 	 */
 	public static IPath canonicalPath(IPath path) {
-		if (path == null)
+		if (path == null) {
 			return null;
+		}
 		try {
 			final String pathString = path.toOSString();
 			final String canonicalPath = new java.io.File(pathString).getCanonicalPath();
 			//only create a new path if necessary
-			if (canonicalPath.equals(pathString))
+			if (canonicalPath.equals(pathString)) {
 				return path;
+			}
 			return IPath.fromOSString(canonicalPath);
 		} catch (IOException e) {
 			return path;
@@ -92,11 +94,13 @@ public class FileUtil {
 	 * in Java 1.7.
 	 */
 	public static IPath realPath(IPath path) {
-		if (path == null)
+		if (path == null) {
 			return null;
+		}
 		IFileSystem fileSystem = EFS.getLocalFileSystem();
-		if (fileSystem.isCaseSensitive())
+		if (fileSystem.isCaseSensitive()) {
 			return path;
+		}
 		IPath realPath = path.isAbsolute() ? IPath.ROOT : IPath.EMPTY;
 		String device = path.getDevice();
 		if (device != null) {
@@ -128,8 +132,9 @@ public class FileUtil {
 					}
 					realPath = realPath.append(realName);
 				} else {
-					if (fileStore == null)
+					if (fileStore == null) {
 						fileStore = fileSystem.getStore(realPath);
+					}
 					fileStore = fileStore.getChild(segment);
 					IFileInfo info = fileStore.fetchInfo();
 					if (!info.exists()) {
@@ -153,14 +158,16 @@ public class FileUtil {
 	 * Converts a URI into its canonical form.
 	 */
 	public static URI canonicalURI(URI uri) {
-		if (uri == null)
+		if (uri == null) {
 			return null;
+		}
 		if (EFS.SCHEME_FILE.equals(uri.getScheme())) {
 			//only create a new URI if it is different
 			final IPath inputPath = URIUtil.toPath(uri);
 			final IPath canonicalPath = canonicalPath(inputPath);
-			if (inputPath == canonicalPath)
+			if (inputPath == canonicalPath) {
 				return uri;
+			}
 			return URIUtil.toURI(canonicalPath);
 		}
 		return uri;
@@ -173,14 +180,16 @@ public class FileUtil {
 	 * @see #realPath(IPath)
 	 */
 	public static URI realURI(URI uri) {
-		if (uri == null)
+		if (uri == null) {
 			return null;
+		}
 		if (EFS.SCHEME_FILE.equals(uri.getScheme())) {
 			// Only create a new URI if it is different.
 			final IPath inputPath = URIUtil.toPath(uri);
 			final IPath realPath = realPath(inputPath);
-			if (inputPath == realPath)
+			if (inputPath == realPath) {
 				return uri;
+			}
 			return URIUtil.toURI(realPath);
 		}
 		return uri;
@@ -211,14 +220,17 @@ public class FileUtil {
 	 * is a prefix of the second.  Returns false if the locations do not overlap
 	 */
 	private static boolean computeOverlap(URI location1, URI location2, boolean bothDirections) {
-		if (location1.equals(location2))
+		if (location1.equals(location2)) {
 			return true;
+		}
 		String scheme1 = location1.getScheme();
 		String scheme2 = location2.getScheme();
-		if (scheme1 == null ? scheme2 != null : !scheme1.equals(scheme2))
+		if (scheme1 == null ? scheme2 != null : !scheme1.equals(scheme2)) {
 			return false;
-		if (EFS.SCHEME_FILE.equals(scheme1) && EFS.SCHEME_FILE.equals(scheme2))
+		}
+		if (EFS.SCHEME_FILE.equals(scheme1) && EFS.SCHEME_FILE.equals(scheme2)) {
 			return computeOverlap(URIUtil.toPath(location1), URIUtil.toPath(location2), bothDirections);
+		}
 		IFileSystem system = null;
 		try {
 			system = EFS.getFileSystem(scheme1);
@@ -289,12 +301,14 @@ public class FileUtil {
 	 * as being relative to path variables.
 	 */
 	public static IPath toPath(URI uri) {
-		if (uri == null)
+		if (uri == null) {
 			return null;
+		}
 		final String scheme = uri.getScheme();
 		// null scheme represents path variable
-		if (scheme == null || EFS.SCHEME_FILE.equals(scheme))
+		if (scheme == null || EFS.SCHEME_FILE.equals(scheme)) {
 			return IPath.fromOSString(uri.getSchemeSpecificPart());
+		}
 		return null;
 	}
 

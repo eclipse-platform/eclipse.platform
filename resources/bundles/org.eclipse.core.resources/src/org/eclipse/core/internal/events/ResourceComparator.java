@@ -85,49 +85,64 @@ public class ResourceComparator implements IElementComparator, ICoreConstants {
 	@Override
 	public int compare(Object o1, Object o2) {
 		// == handles null, null.
-		if (o1 == o2)
+		if (o1 == o2) {
 			return IResourceDelta.NO_CHANGE;
-		int result = 0;
-		if (o1 == null)
-			return ((ResourceInfo) o2).isSet(M_PHANTOM) ? IResourceDelta.ADDED_PHANTOM : IResourceDelta.ADDED;
-		if (o2 == null)
-			return ((ResourceInfo) o1).isSet(M_PHANTOM) ? IResourceDelta.REMOVED_PHANTOM : IResourceDelta.REMOVED;
-		if (!(o1 instanceof ResourceInfo && o2 instanceof ResourceInfo))
-			return IResourceDelta.NO_CHANGE;
-		ResourceInfo oldElement = (ResourceInfo) o1;
-		ResourceInfo newElement = (ResourceInfo) o2;
-		if (!oldElement.isSet(M_PHANTOM) && newElement.isSet(M_PHANTOM))
-			return IResourceDelta.REMOVED;
-		if (oldElement.isSet(M_PHANTOM) && !newElement.isSet(M_PHANTOM))
-			return IResourceDelta.ADDED;
-		if (!compareOpen(oldElement, newElement))
-			result |= IResourceDelta.OPEN;
-		if (!compareContents(oldElement, newElement)) {
-			if (oldElement.getType() == IResource.PROJECT)
-				result |= IResourceDelta.DESCRIPTION;
-			else if (newElement.getType() == IResource.FILE || oldElement.getType() == IResource.FILE)
-				result |= IResourceDelta.CONTENT;
 		}
-		if (!compareType(oldElement, newElement))
+		int result = 0;
+		if (o1 == null) {
+			return ((ResourceInfo) o2).isSet(M_PHANTOM) ? IResourceDelta.ADDED_PHANTOM : IResourceDelta.ADDED;
+		}
+		if (o2 == null) {
+			return ((ResourceInfo) o1).isSet(M_PHANTOM) ? IResourceDelta.REMOVED_PHANTOM : IResourceDelta.REMOVED;
+		}
+		if (!(o1 instanceof ResourceInfo oldElement && o2 instanceof ResourceInfo)) {
+			return IResourceDelta.NO_CHANGE;
+		}
+		ResourceInfo newElement = (ResourceInfo) o2;
+		if (!oldElement.isSet(M_PHANTOM) && newElement.isSet(M_PHANTOM)) {
+			return IResourceDelta.REMOVED;
+		}
+		if (oldElement.isSet(M_PHANTOM) && !newElement.isSet(M_PHANTOM)) {
+			return IResourceDelta.ADDED;
+		}
+		if (!compareOpen(oldElement, newElement)) {
+			result |= IResourceDelta.OPEN;
+		}
+		if (!compareContents(oldElement, newElement)) {
+			if (oldElement.getType() == IResource.PROJECT) {
+				result |= IResourceDelta.DESCRIPTION;
+			} else if (newElement.getType() == IResource.FILE || oldElement.getType() == IResource.FILE) {
+				result |= IResourceDelta.CONTENT;
+			}
+		}
+		if (!compareType(oldElement, newElement)) {
 			result |= IResourceDelta.TYPE;
+		}
 		if (!compareNodeIDs(oldElement, newElement)) {
 			result |= IResourceDelta.REPLACED;
 			// if the node was replaced and the old and new were files, this is also a content change.
-			if (oldElement.getType() == IResource.FILE && newElement.getType() == IResource.FILE)
+			if (oldElement.getType() == IResource.FILE && newElement.getType() == IResource.FILE) {
 				result |= IResourceDelta.CONTENT;
+			}
 		}
-		if (compareLocal(oldElement, newElement))
+		if (compareLocal(oldElement, newElement)) {
 			result |= IResourceDelta.LOCAL_CHANGED;
-		if (!compareCharsets(oldElement, newElement))
+		}
+		if (!compareCharsets(oldElement, newElement)) {
 			result |= IResourceDelta.ENCODING;
-		if (!compareDerived(oldElement, newElement))
+		}
+		if (!compareDerived(oldElement, newElement)) {
 			result |= IResourceDelta.DERIVED_CHANGED;
-		if (notification && !compareSync(oldElement, newElement))
+		}
+		if (notification && !compareSync(oldElement, newElement)) {
 			result |= IResourceDelta.SYNC;
-		if (notification && !compareMarkers(oldElement, newElement))
+		}
+		if (notification && !compareMarkers(oldElement, newElement)) {
 			result |= IResourceDelta.MARKERS;
-		if (save && !compareUsed(oldElement, newElement))
+		}
+		if (save && !compareUsed(oldElement, newElement)) {
 			result |= IResourceDelta.CHANGED;
+		}
 		return result == 0 ? 0 : result | IResourceDelta.CHANGED;
 	}
 
@@ -151,8 +166,9 @@ public class ResourceComparator implements IElementComparator, ICoreConstants {
 	 */
 	private boolean compareLocal(ResourceInfo oldElement, ResourceInfo newElement) {
 		//only applicable for linked resources
-		if (!oldElement.isSet(ICoreConstants.M_LINK) || !newElement.isSet(ICoreConstants.M_LINK))
+		if (!oldElement.isSet(ICoreConstants.M_LINK) || !newElement.isSet(ICoreConstants.M_LINK)) {
 			return false;
+		}
 		long oldStamp = oldElement.getModificationStamp();
 		long newStamp = newElement.getModificationStamp();
 		return (oldStamp == -1 || newStamp == -1) && (oldStamp != newStamp);

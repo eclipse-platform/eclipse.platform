@@ -54,8 +54,9 @@ public final class ResourceModelProvider extends ModelProvider {
 						}
 						break;
 					case IResource.DEPTH_ZERO :
-						if (resource.getType() == IResource.FILE)
+						if (resource.getType() == IResource.FILE) {
 							result.add(resource);
+						}
 						break;
 				}
 			}

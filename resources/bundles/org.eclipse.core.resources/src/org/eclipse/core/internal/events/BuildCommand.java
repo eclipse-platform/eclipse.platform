@@ -104,8 +104,9 @@ public class BuildCommand extends ModelObject implements ICommand {
 	@Override
 	public Object clone() {
 		BuildCommand result = (BuildCommand) super.clone();
-		if (result == null)
+		if (result == null) {
 			return null;
+		}
 		result.setArguments(getArguments());
 		//don't let references to builder instances leak out because they reference trees
 		result.setBuilders(null);
@@ -130,11 +131,12 @@ public class BuildCommand extends ModelObject implements ICommand {
 
 	@Override
 	public boolean equals(Object object) {
-		if (this == object)
+		if (this == object) {
 			return true;
-		if (!(object instanceof BuildCommand))
+		}
+		if (!(object instanceof BuildCommand command)) {
 			return false;
-		BuildCommand command = (BuildCommand) object;
+		}
 		// equal if same builder name, arguments, and triggers
 		return getBuilderName().equals(command.getBuilderName()) && getArguments(false).equals(command.getArguments(false)) && (triggers & ALL_TRIGGERS) == (command.triggers & ALL_TRIGGERS);
 	}
@@ -173,8 +175,9 @@ public class BuildCommand extends ModelObject implements ICommand {
 	 */
 	public IncrementalProjectBuilder getBuilder(IBuildConfiguration config) {
 		synchronized (builderLock) {
-			if (builders != null && supportsConfigs())
+			if (builders != null && supportsConfigs()) {
 				return builders.get(config);
+			}
 			return builder;
 		}
 	}
@@ -197,8 +200,9 @@ public class BuildCommand extends ModelObject implements ICommand {
 
 	@Override
 	public boolean isConfigurable() {
-		if ((triggers & MASK_CONFIG_COMPUTED) == 0)
+		if ((triggers & MASK_CONFIG_COMPUTED) == 0) {
 			computeIsConfigurable();
+		}
 		return (triggers & MASK_CONFIGURABLE) != 0;
 	}
 
@@ -237,10 +241,11 @@ public class BuildCommand extends ModelObject implements ICommand {
 				builder = null;
 				builders = null;
 			} else {
-				if (value instanceof IncrementalProjectBuilder)
+				if (value instanceof IncrementalProjectBuilder) {
 					builder = (IncrementalProjectBuilder) value;
-				else
+				} else {
 					builders = new HashMap<>((Map<IBuildConfiguration, IncrementalProjectBuilder>) value);
+				}
 			}
 		}
 	}
@@ -260,11 +265,13 @@ public class BuildCommand extends ModelObject implements ICommand {
 			IncrementalProjectBuilder configBuilder = builders == null ? null : builders.get(config);
 			if (configBuilder == null && builder == null) {
 				if (supportsConfigs()) {
-					if (builders == null)
+					if (builders == null) {
 						builders = new HashMap<>(1);
+					}
 					builders.put(config, newBuilder);
-				} else
+				} else {
 					builder = newBuilder;
+				}
 			}
 		}
 	}
@@ -277,12 +284,14 @@ public class BuildCommand extends ModelObject implements ICommand {
 
 	@Override
 	public void setBuilding(int trigger, boolean value) {
-		if (!isConfigurable())
+		if (!isConfigurable()) {
 			return;
-		if (value)
+		}
+		if (value) {
 			triggers |= maskForTrigger(trigger);
-		else
+		} else {
 			triggers &= ~maskForTrigger(trigger);
+		}
 	}
 
 	/**
@@ -293,10 +302,11 @@ public class BuildCommand extends ModelObject implements ICommand {
 	 */
 	public void setConfigurable(boolean value) {
 		triggers |= MASK_CONFIG_COMPUTED;
-		if (value)
+		if (value) {
 			triggers |= MASK_CONFIGURABLE;
-		else
+		} else {
 			triggers = ALL_TRIGGERS;
+		}
 	}
 
 	/**

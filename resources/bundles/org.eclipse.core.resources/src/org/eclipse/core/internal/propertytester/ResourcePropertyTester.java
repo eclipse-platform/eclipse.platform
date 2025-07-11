@@ -96,9 +96,9 @@ public class ResourcePropertyTester extends PropertyTester {
 
 	@Override
 	public boolean test(Object receiver, String method, Object[] args, Object expectedValue) {
-		if (!(receiver instanceof IResource))
+		if (!(receiver instanceof IResource res)) {
 			return false;
-		IResource res = (IResource) receiver;
+		}
 		if (method.equals(NAME)) {
 			return new StringMatcher(toString(expectedValue)).match(res.getName());
 		} else if (method.equals(PATH)) {
@@ -151,8 +151,9 @@ public class ResourcePropertyTester extends PropertyTester {
 	 */
 	protected boolean testProperty(IResource resource, boolean persistentFlag, Object[] args, Object expectedValue) {
 		//the project of IWorkspaceRoot is null
-		if (resource == null)
+		if (resource == null) {
 			return false;
+		}
 		String propertyName;
 		String expectedVal;
 		switch (args.length) {
@@ -172,8 +173,9 @@ public class ResourcePropertyTester extends PropertyTester {
 		try {
 			QualifiedName key = toQualifedName(propertyName);
 			Object actualVal = persistentFlag ? resource.getPersistentProperty(key) : resource.getSessionProperty(key);
-			if (actualVal == null)
+			if (actualVal == null) {
 				return false;
+			}
 			return expectedVal == null || expectedVal.equals(actualVal.toString());
 		} catch (CoreException e) {
 			//if the resource is not accessible, fall through and return false below

@@ -52,8 +52,9 @@ public class CollectSyncStatusVisitor extends RefreshLocalVisitor {
 	protected void changed(Resource target) {
 		String message = NLS.bind(Messages.localstore_resourceIsOutOfSync, target.getFullPath());
 		status.add(new ResourceStatus(IResourceStatus.OUT_OF_SYNC_LOCAL, target.getFullPath(), message));
-		if (affectedResources == null)
+		if (affectedResources == null) {
 			affectedResources = new ArrayList<>(20);
+		}
 		affectedResources.add(target);
 		resourceChanged = true;
 	}
@@ -65,8 +66,9 @@ public class CollectSyncStatusVisitor extends RefreshLocalVisitor {
 
 	@Override
 	protected void deleteResource(UnifiedTreeNode node, Resource target) {
-		if (!ignoreLocalDeletions)
+		if (!ignoreLocalDeletions) {
 			changed(target);
+		}
 	}
 
 	@Override

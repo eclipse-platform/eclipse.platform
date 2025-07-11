@@ -52,20 +52,24 @@ public class PropertyBucket extends Bucket {
 		 */
 		static String[][] delete(String[][] existing, QualifiedName propertyName) {
 			// a size-1 array is a special case
-			if (existing.length == 1)
+			if (existing.length == 1) {
 				return (existing[0][0].equals(propertyName.getQualifier()) && existing[0][1].equals(propertyName.getLocalName())) ? null : existing;
+			}
 			// find the guy to delete
 			int deletePosition = search(existing, propertyName);
-			if (deletePosition < 0)
+			if (deletePosition < 0) {
 				// not found, nothing to delete
 				return existing;
+			}
 			String[][] newValue = new String[existing.length - 1][];
-			if (deletePosition > 0)
+			if (deletePosition > 0) {
 				// copy elements preceding the one to be removed
 				System.arraycopy(existing, 0, newValue, 0, deletePosition);
-			if (deletePosition < existing.length - 1)
+			}
+			if (deletePosition < existing.length - 1) {
 				// copy elements succeeding the one to be removed
 				System.arraycopy(existing, deletePosition + 1, newValue, deletePosition, newValue.length - deletePosition);
+			}
 			return newValue;
 		}
 
@@ -80,11 +84,13 @@ public class PropertyBucket extends Bucket {
 			// not found - insert
 			int insertPosition = -index - 1;
 			String[][] newValue = new String[existing.length + 1][];
-			if (insertPosition > 0)
+			if (insertPosition > 0) {
 				System.arraycopy(existing, 0, newValue, 0, insertPosition);
+			}
 			newValue[insertPosition] = new String[] {propertyName.getQualifier(), propertyName.getLocalName(), propertyValue};
-			if (insertPosition < existing.length)
+			if (insertPosition < existing.length) {
 				System.arraycopy(existing, insertPosition, newValue, insertPosition + 1, existing.length - insertPosition);
+			}
 			return newValue;
 		}
 
@@ -102,10 +108,11 @@ public class PropertyBucket extends Bucket {
 					result[added++] = additions[additionPointer++];
 					// duplicate, override
 					basePointer++;
-				} else if (comparison < 0)
+				} else if (comparison < 0) {
 					result[added++] = base[basePointer++];
-				else
+				} else {
 					result[added++] = additions[additionPointer++];
+				}
 			}
 			// copy the remaining states from either additions or base arrays
 			String[][] remaining = basePointer == base.length ? additions : base;
@@ -113,9 +120,10 @@ public class PropertyBucket extends Bucket {
 			int remainingCount = remaining.length - remainingPointer;
 			System.arraycopy(remaining, remainingPointer, result, added, remainingCount);
 			added += remainingCount;
-			if (added == base.length + additions.length)
+			if (added == base.length + additions.length) {
 				// no collisions
 				return result;
+			}
 			// there were collisions, need to compact
 			String[][] finalResult = new String[added][];
 			System.arraycopy(result, 0, finalResult, 0, finalResult.length);
@@ -153,17 +161,19 @@ public class PropertyBucket extends Bucket {
 		 * are found, the entry is marked for removal.
 		 */
 		private void compact() {
-			if (!isDirty())
+			if (!isDirty()) {
 				return;
+			}
 			int occurrences = 0;
 			for (String[] s : value) {
 				if (s != null) {
 					value[occurrences++] = s;
 				}
 			}
-			if (occurrences == value.length)
+			if (occurrences == value.length) {
 				// no states deleted
 				return;
+			}
 			if (occurrences == 0) {
 				// no states remaining
 				value = EMPTY_DATA;
@@ -241,8 +251,9 @@ public class PropertyBucket extends Bucket {
 	private PropertyEntry getEntry(IPath path) {
 		String pathAsString = path.toString();
 		String[][] existing = (String[][]) getEntryValue(pathAsString);
-		if (existing == null)
+		if (existing == null) {
 			return null;
+		}
 		return new PropertyEntry(path, existing);
 	}
 
@@ -253,8 +264,9 @@ public class PropertyBucket extends Bucket {
 
 	public String getProperty(IPath path, QualifiedName name) {
 		PropertyEntry entry = getEntry(path);
-		if (entry == null)
+		if (entry == null) {
 			return null;
+		}
 		return entry.getProperty(name);
 	}
 
@@ -325,15 +337,17 @@ public class PropertyBucket extends Bucket {
 		String pathAsString = path.toString();
 		String[][] existing = (String[][]) getEntryValue(pathAsString);
 		if (existing == null) {
-			if (value != null)
+			if (value != null) {
 				setEntryValue(pathAsString, new String[][] {{name.getQualifier(), name.getLocalName(), value}});
+			}
 			return;
 		}
 		String[][] newValue;
-		if (value != null)
+		if (value != null) {
 			newValue = PropertyEntry.insert(existing, name, value);
-		else
+		} else {
 			newValue = PropertyEntry.delete(existing, name);
+		}
 		// even if newValue == existing we should mark as dirty (insert may just change the existing array)
 		setEntryValue(pathAsString, newValue);
 	}

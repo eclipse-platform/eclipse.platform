@@ -56,8 +56,9 @@ public class NoDataDeltaNode extends AbstractDataTreeNode {
 	@Override
 	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, IPath key) {
 		int numChildren = children.length;
-		if (numChildren == 0)
+		if (numChildren == 0) {
 			return new NoDataDeltaNode(name, NO_CHILDREN);
+		}
 		AbstractDataTreeNode[] newChildren = new AbstractDataTreeNode[numChildren];
 		for (int i = numChildren; --i >= 0;) {
 			newChildren[i] = children[i].asBackwardDelta(myTree, parentTree, key.append(children[i].getName()));
