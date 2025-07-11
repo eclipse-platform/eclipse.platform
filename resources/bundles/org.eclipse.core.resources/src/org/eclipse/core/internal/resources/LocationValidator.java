@@ -68,10 +68,11 @@ public class LocationValidator {
 				message = Messages.links_noPath;
 			} else {
 				IPath pathPart = IPath.fromOSString(schemeSpecificPart);
-				if (pathPart.segmentCount() > 0)
+				if (pathPart.segmentCount() > 0) {
 					message = NLS.bind(Messages.pathvar_undefined, location.toString(), pathPart.segment(0));
-				else
+				} else {
 					message = Messages.links_noPath;
+				}
 			}
 			int code = error ? IResourceStatus.VARIABLE_NOT_DEFINED : IResourceStatus.VARIABLE_NOT_DEFINED_WARNING;
 			return new ResourceStatus(code, null, message);
@@ -84,8 +85,9 @@ public class LocationValidator {
 	 */
 	public IStatus validateLinkLocation(IResource resource, IPath unresolvedLocation) {
 		IPath location = resource.getPathVariableManager().resolvePath(unresolvedLocation);
-		if (location.isEmpty())
+		if (location.isEmpty()) {
 			return new ResourceStatus(IResourceStatus.INVALID_VALUE, resource.getFullPath(), Messages.links_noPath);
+		}
 		//check that the location is absolute
 		if (!location.isAbsolute()) {
 			//we know there is at least one segment, because of previous isEmpty check
@@ -93,8 +95,9 @@ public class LocationValidator {
 			return new ResourceStatus(IResourceStatus.VARIABLE_NOT_DEFINED_WARNING, resource.getFullPath(), message);
 		}
 		//if the location doesn't have a device, see if the OS will assign one
-		if (location.getDevice() == null)
+		if (location.getDevice() == null) {
 			location = IPath.fromOSString(location.toFile().getAbsolutePath());
+		}
 		return validateLinkLocationURI(resource, URIUtil.toURI(location));
 	}
 
@@ -125,23 +128,28 @@ public class LocationValidator {
 		String[] natureIds = ((Project) resource.getProject()).internalGetDescription().getNatureIds();
 
 		IStatus result = workspace.getNatureManager().validateLinkCreation(natureIds);
-		if (!result.isOK())
+		if (!result.isOK()) {
 			return result;
+		}
 		//check team provider veto
-		if (resource.getType() == IResource.FILE)
+		if (resource.getType() == IResource.FILE) {
 			result = workspace.getTeamHook().validateCreateLink((IFile) resource, IResource.NONE, location);
-		else
+		} else {
 			result = workspace.getTeamHook().validateCreateLink((IFolder) resource, IResource.NONE, location);
-		if (!result.isOK())
+		}
+		if (!result.isOK()) {
 			return result;
+		}
 		//check the standard path name restrictions
 		result = validateSegments(location);
-		if (!result.isOK())
+		if (!result.isOK()) {
 			return result;
+		}
 		//check if the location is based on an undefined variable
 		result = validateAbsolute(location, false);
-		if (!result.isOK())
+		if (!result.isOK()) {
 			return result;
+		}
 		// test if the given location overlaps the platform metadata location
 		URI testLocation = workspace.getMetaArea().getLocation().toFile().toURI();
 		if (FileUtil.isOverlapping(location, testLocation)) {
@@ -168,16 +176,18 @@ public class LocationValidator {
 				return new ResourceStatus(IResourceStatus.OVERLAPPING_LOCATION, resource.getFullPath(), message);
 			}
 			//iterate over linked resources and check for overlap
-			if (!project.isOpen())
+			if (!project.isOpen()) {
 				continue;
+			}
 			IResource[] children = null;
 			try {
 				children = project.members();
 			} catch (CoreException e) {
 				//ignore projects that cannot be accessed
 			}
-			if (children == null)
+			if (children == null) {
 				continue;
+			}
 			for (IResource child : children) {
 				if (child.isLinked()) {
 					testLocation = child.getLocationURI();
@@ -211,11 +221,12 @@ public class LocationValidator {
 
 		/* test invalid characters */
 		char[] chars = OS.INVALID_RESOURCE_CHARACTERS;
-		for (char c : chars)
+		for (char c : chars) {
 			if (segment.indexOf(c) != -1) {
 				message = NLS.bind(Messages.resources_invalidCharInName, String.valueOf(c), segment);
 				return new ResourceStatus(IResourceStatus.INVALID_VALUE, null, message);
 			}
+		}
 
 		/* test invalid OS names */
 		if (!OS.isNameValid(segment)) {
@@ -276,16 +287,19 @@ public class LocationValidator {
 			}
 			int fileFolderType = type &= ~IResource.PROJECT;
 			int segmentCount = path.segmentCount();
-			if (lastSegmentOnly)
+			if (lastSegmentOnly) {
 				return validateName(path.segment(segmentCount - 1), fileFolderType);
+			}
 			IStatus status = validateName(path.segment(0), IResource.PROJECT);
-			if (!status.isOK())
+			if (!status.isOK()) {
 				return status;
+			}
 			// ignore first segment (the project)
 			for (int i = 1; i < segmentCount; i++) {
 				status = validateName(path.segment(i), fileFolderType);
-				if (!status.isOK())
+				if (!status.isOK()) {
 					return status;
+				}
 			}
 			return Status.OK_STATUS;
 		}
@@ -306,20 +320,23 @@ public class LocationValidator {
 	}
 
 	public IStatus validateProjectLocation(IProject context, IPath unresolvedLocation) {
-		if (unresolvedLocation == null)
+		if (unresolvedLocation == null) {
 			return validateProjectLocationURI(context, null);
+		}
 		IPath location;
-		if (context != null)
+		if (context != null) {
 			location = context.getPathVariableManager().resolvePath(unresolvedLocation);
-		else
+		} else {
 			location = workspace.getPathVariableManager().resolvePath(unresolvedLocation);
+		}
 		//check that the location is absolute
 		if (!location.isAbsolute()) {
 			String message;
-			if (location.segmentCount() > 0)
+			if (location.segmentCount() > 0) {
 				message = NLS.bind(Messages.pathvar_undefined, location.toString(), location.segment(0));
-			else
+			} else {
 				message = Messages.links_noPath;
+			}
 			return new ResourceStatus(IResourceStatus.VARIABLE_NOT_DEFINED, null, message);
 		}
 		return validateProjectLocationURI(context, URIUtil.toURI(location));
@@ -329,8 +346,9 @@ public class LocationValidator {
 	 * @see IWorkspace#validateProjectLocationURI(IProject, URI)
 	 */
 	public IStatus validateProjectLocationURI(IProject context, URI unresolvedLocation) {
-		if (context == null && unresolvedLocation == null)
+		if (context == null && unresolvedLocation == null) {
 			throw new IllegalArgumentException("Either a project or a location must be provided"); //$NON-NLS-1$
+		}
 
 		// Checks if the new location overlaps the workspace metadata location
 		boolean isMetadataLocation = false;
@@ -350,20 +368,24 @@ public class LocationValidator {
 		}
 
 		// the default is ok for all other projects
-		if (unresolvedLocation == null)
+		if (unresolvedLocation == null) {
 			return Status.OK_STATUS;
+		}
 		URI location;
-		if (context != null)
+		if (context != null) {
 			location = context.getPathVariableManager().resolveURI(unresolvedLocation);
-		else
+		} else {
 			location = workspace.getPathVariableManager().resolveURI(unresolvedLocation);
+		}
 		//check the standard path name restrictions
 		IStatus result = validateSegments(location);
-		if (!result.isOK())
+		if (!result.isOK()) {
 			return result;
+		}
 		result = validateAbsolute(location, true);
-		if (!result.isOK())
+		if (!result.isOK()) {
 			return result;
+		}
 		//check that the URI has a legal scheme
 		try {
 			EFS.getFileSystem(location.getScheme());
@@ -395,11 +417,13 @@ public class LocationValidator {
 			URI testLocation = project.getLocationURI();
 			if (context != null && project.equals(context)) {
 				//tolerate locations being the same if this is the project being tested
-				if (URIUtil.equals(testLocation, location))
+				if (URIUtil.equals(testLocation, location)) {
 					continue;
+				}
 				//a project cannot be moved inside of its current location
-				if (!FileUtil.isPrefixOf(testLocation, location))
+				if (!FileUtil.isPrefixOf(testLocation, location)) {
 					continue;
+				}
 			} else if (!URIUtil.equals(testLocation, location)) {
 				// a project cannot have the same location as another existing project
 				continue;
@@ -443,8 +467,9 @@ public class LocationValidator {
 			int segmentCount = pathPart.segmentCount();
 			for (int i = 0; i < segmentCount; i++) {
 				IStatus result = validateName(pathPart.segment(i), IResource.PROJECT);
-				if (!result.isOK())
+				if (!result.isOK()) {
 					return result;
+				}
 			}
 		}
 		return Status.OK_STATUS;

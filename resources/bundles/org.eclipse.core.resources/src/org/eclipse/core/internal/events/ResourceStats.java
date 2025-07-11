@@ -38,26 +38,30 @@ public class ResourceStats {
 	public static boolean TRACE_SNAPSHOT = PerformanceStats.isEnabled(ResourceStats.EVENT_SNAPSHOT);
 
 	public static void endBuild() {
-		if (currentStats != null)
+		if (currentStats != null) {
 			currentStats.endRun();
+		}
 		currentStats = null;
 	}
 
 	public static void endNotify() {
-		if (currentStats != null)
+		if (currentStats != null) {
 			currentStats.endRun();
+		}
 		currentStats = null;
 	}
 
 	public static void endSave() {
-		if (currentStats != null)
+		if (currentStats != null) {
 			currentStats.endRun();
+		}
 		currentStats = null;
 	}
 
 	public static void endSnapshot() {
-		if (currentStats != null)
+		if (currentStats != null) {
 			currentStats.endRun();
+		}
 		currentStats = null;
 	}
 
@@ -65,16 +69,18 @@ public class ResourceStats {
 	 * Notifies the stats tool that a resource change listener has been added.
 	 */
 	public static void listenerAdded(IResourceChangeListener listener) {
-		if (listener != null)
+		if (listener != null) {
 			PerformanceStats.getStats(EVENT_LISTENERS, listener.getClass().getName());
+		}
 	}
 
 	/**
 	 * Notifies the stats tool that a resource change listener has been removed.
 	 */
 	public static void listenerRemoved(IResourceChangeListener listener) {
-		if (listener != null)
+		if (listener != null) {
 			PerformanceStats.removeStats(EVENT_LISTENERS, listener.getClass().getName());
+		}
 	}
 
 	public static void startBuild(IncrementalProjectBuilder builder) {

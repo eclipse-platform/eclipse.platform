@@ -47,8 +47,9 @@ public final class ProposedResourceDelta extends PlatformObject implements IReso
 
 	@Override
 	public void accept(IResourceDeltaVisitor visitor, int memberFlags) throws CoreException {
-		if (!visitor.visit(this))
+		if (!visitor.visit(this)) {
 			return;
+		}
 		for (ProposedResourceDelta childDelta : children.values()) {
 			childDelta.accept(visitor, memberFlags);
 		}
@@ -58,8 +59,9 @@ public final class ProposedResourceDelta extends PlatformObject implements IReso
 	 * Adds a child delta to the list of children for this delta node.
 	 */
 	protected void add(ProposedResourceDelta delta) {
-		if (children.isEmpty() && status == 0)
+		if (children.isEmpty() && status == 0) {
 			setKind(IResourceDelta.CHANGED);
+		}
 		children.put(delta.getResource().getName(), delta);
 	}
 
@@ -75,15 +77,17 @@ public final class ProposedResourceDelta extends PlatformObject implements IReso
 	@Override
 	public IResourceDelta findMember(IPath path) {
 		int segmentCount = path.segmentCount();
-		if (segmentCount == 0)
+		if (segmentCount == 0) {
 			return this;
+		}
 
 		//iterate over the path and find matching child delta
 		ProposedResourceDelta current = this;
 		for (int i = 0; i < segmentCount; i++) {
 			current = current.children.get(path.segment(i));
-			if (current == null)
+			if (current == null) {
 				return null;
+			}
 		}
 		return current;
 	}
@@ -102,8 +106,9 @@ public final class ProposedResourceDelta extends PlatformObject implements IReso
 	public IResourceDelta[] getAffectedChildren(int kindMask, int memberFlags) {
 		List<ProposedResourceDelta> result = new ArrayList<>();
 		for (ProposedResourceDelta child : children.values()) {
-			if ((child.getKind() & kindMask) != 0)
+			if ((child.getKind() & kindMask) != 0) {
 				result.add(child);
+			}
 		}
 		return result.toArray(new IResourceDelta[result.size()]);
 	}

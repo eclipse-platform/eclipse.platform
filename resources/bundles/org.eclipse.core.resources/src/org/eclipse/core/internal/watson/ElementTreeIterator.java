@@ -93,8 +93,9 @@ public class ElementTreeIterator implements IPathRequestor {
 
 		//pop the segment from the requestor stack
 		nextFreeSegment--;
-		if (nextFreeSegment < 0)
+		if (nextFreeSegment < 0) {
 			nextFreeSegment = 0;
+		}
 	}
 
 	/**
@@ -117,8 +118,9 @@ public class ElementTreeIterator implements IPathRequestor {
 		if (path.isRoot()) {
 			//special visit for root element to use special treeData
 			if (visitor.visitElement(tree, this, tree.getTreeData())) {
-				if (treeRoot == null)
+				if (treeRoot == null) {
 					return;
+				}
 				AbstractDataTreeNode[] children = treeRoot.getChildren();
 				int len = children.length;
 				for (int i = 0; i < len; i++) {
@@ -129,8 +131,9 @@ public class ElementTreeIterator implements IPathRequestor {
 				}
 			}
 		} else {
-			if (treeRoot == null)
+			if (treeRoot == null) {
 				return;
+			}
 			push(path, path.segmentCount() - 1);
 			doIteration(treeRoot, visitor);
 		}
@@ -140,8 +143,9 @@ public class ElementTreeIterator implements IPathRequestor {
 	 * Push the first "toPush" segments of this path.
 	 */
 	private void push(IPath pathToPush, int toPush) {
-		if (toPush <= 0)
+		if (toPush <= 0) {
 			return;
+		}
 		for (int i = 0; i < toPush; i++) {
 			if (nextFreeSegment >= segments.length) {
 				grow();
@@ -152,8 +156,9 @@ public class ElementTreeIterator implements IPathRequestor {
 
 	@Override
 	public String requestName() {
-		if (nextFreeSegment == 0)
+		if (nextFreeSegment == 0) {
 			return ""; //$NON-NLS-1$
+		}
 		return segments[nextFreeSegment - 1];
 	}
 

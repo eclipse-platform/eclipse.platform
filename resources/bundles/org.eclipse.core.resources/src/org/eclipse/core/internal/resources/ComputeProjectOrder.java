@@ -611,8 +611,9 @@ public class ComputeProjectOrder {
 		boolean[] filterMatches = new boolean[order.vertexes.length];
 		for (int i = 0; i < order.vertexes.length; i++) {
 			filterMatches[i] = filter.test(order.vertexes[i]);
-			if (filterMatches[i])
+			if (filterMatches[i]) {
 				filteredCount++;
+			}
 		}
 
 		// No vertexes match the filter, so return the order unmodified

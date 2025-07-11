@@ -48,10 +48,11 @@ public class ResourceDeltaFactory {
 		ResourceComparator comparator = markerGeneration >= 0 ? ResourceComparator.getNotificationComparator() : ResourceComparator.getBuildComparator();
 		newTree.immutable();
 		DeltaDataTree delta = null;
-		if (IPath.ROOT.equals(root))
+		if (IPath.ROOT.equals(root)) {
 			delta = newTree.getDataTree().compareWith(oldTree.getDataTree(), comparator);
-		else
+		} else {
 			delta = newTree.getDataTree().compareWith(oldTree.getDataTree(), comparator, root);
+		}
 
 		delta = delta.asReverseComparisonTree(comparator);
 		IPath pathInTree = root.isRoot() ? IPath.ROOT : root;
@@ -59,8 +60,9 @@ public class ResourceDeltaFactory {
 
 		// get the marker deltas for the delta info object....if needed
 		Map<IPath, MarkerSet> allMarkerDeltas = null;
-		if (markerGeneration >= 0)
+		if (markerGeneration >= 0) {
 			allMarkerDeltas = workspace.getMarkerManager().getMarkerDeltas(markerGeneration);
+		}
 
 		//recursively walk the delta and create a tree of ResourceDelta objects.
 		ResourceDeltaInfo deltaInfo = new ResourceDeltaInfo(workspace, allMarkerDeltas, comparator);
@@ -73,8 +75,9 @@ public class ResourceDeltaFactory {
 		// check all the projects and if they were added and opened then tweek the flags
 		// so the delta reports both.
 		int segmentCount = result.getFullPath().segmentCount();
-		if (segmentCount <= 1)
+		if (segmentCount <= 1) {
 			checkForOpen(result, segmentCount);
+		}
 		return result;
 	}
 
@@ -84,16 +87,20 @@ public class ResourceDeltaFactory {
 	 * in since we've already calculated it before.
 	 */
 	protected static void checkForOpen(ResourceDelta delta, int segmentCount) {
-		if (delta.getKind() == IResourceDelta.ADDED)
-			if (delta.newInfo.isSet(ICoreConstants.M_OPEN))
+		if (delta.getKind() == IResourceDelta.ADDED) {
+			if (delta.newInfo.isSet(ICoreConstants.M_OPEN)) {
 				delta.status |= IResourceDelta.OPEN;
+			}
+		}
 		// return for PROJECT
-		if (segmentCount == 1)
+		if (segmentCount == 1) {
 			return;
+		}
 		// recurse for ROOT
 		IResourceDelta[] children = delta.children;
-		for (IResourceDelta element : children)
+		for (IResourceDelta element : children) {
 			checkForOpen((ResourceDelta) element, 1);
+		}
 	}
 
 	/**
@@ -165,8 +172,9 @@ public class ResourceDeltaFactory {
 
 		// if this delta has children but no other changes, mark it as changed
 		int status = result.status;
-		if ((status & IResourceDelta.ALL_WITH_PHANTOMS) == 0 && numChildren != 0)
+		if ((status & IResourceDelta.ALL_WITH_PHANTOMS) == 0 && numChildren != 0) {
 			result.setStatus(status |= IResourceDelta.CHANGED);
+		}
 
 		// return the delta
 		return result;

@@ -73,12 +73,14 @@ public class ResourceException extends CoreException {
 			IStatus status = getStatus();
 			if (status.getException() != null) {
 				String path = "()"; //$NON-NLS-1$
-				if (status instanceof IResourceStatus)
+				if (status instanceof IResourceStatus) {
 					path = "(" + ((IResourceStatus) status).getPath() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+				}
 				output.print(getClass().getName() + path + "[" + status.getCode() + "]: "); //$NON-NLS-1$ //$NON-NLS-2$
 				status.getException().printStackTrace(output);
-			} else
+			} else {
 				super.printStackTrace(output);
+			}
 		}
 	}
 
@@ -93,12 +95,14 @@ public class ResourceException extends CoreException {
 			IStatus status = getStatus();
 			if (status.getException() != null) {
 				String path = "()"; //$NON-NLS-1$
-				if (status instanceof IResourceStatus)
+				if (status instanceof IResourceStatus) {
 					path = "(" + ((IResourceStatus) status).getPath() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+				}
 				output.print(getClass().getName() + path + "[" + status.getCode() + "]: "); //$NON-NLS-1$ //$NON-NLS-2$
 				status.getException().printStackTrace(output);
-			} else
+			} else {
 				super.printStackTrace(output);
+			}
 		}
 	}
 

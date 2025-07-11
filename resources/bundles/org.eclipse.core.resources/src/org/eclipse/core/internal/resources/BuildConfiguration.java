@@ -67,12 +67,15 @@ public class BuildConfiguration extends PlatformObject implements IBuildConfigur
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		BuildConfiguration other = (BuildConfiguration) obj;
 		return Objects.equals(this.name, other.name) && Objects.equals(this.project, other.project);
 	}
@@ -89,23 +92,26 @@ public class BuildConfiguration extends PlatformObject implements IBuildConfigur
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
-		if (project != null)
+		if (project != null) {
 			result.append(project.getName());
-		else
+		} else {
 			result.append("?"); //$NON-NLS-1$
+		}
 		result.append(";"); //$NON-NLS-1$
-		if (name != null)
+		if (name != null) {
 			result.append(" [").append(name).append(']'); //$NON-NLS-1$
-		else
+		} else {
 			result.append(" [active]"); //$NON-NLS-1$
+		}
 		return result.toString();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter.isInstance(project))
+		if (adapter.isInstance(project)) {
 			return (T) project;
+		}
 		return super.getAdapter(adapter);
 	}
 
