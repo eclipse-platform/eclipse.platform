@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2009, 2016 Texas Instruments and others
+ * Copyright (c) 2009, 2025 Texas Instruments and others
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -29,6 +29,7 @@ import org.eclipse.debug.internal.ui.breakpoints.provisional.IBreakpointContaine
 import org.eclipse.debug.internal.ui.breakpoints.provisional.OtherBreakpointCategory;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 import org.eclipse.debug.internal.ui.views.DebugModelPresentationContext;
+import org.eclipse.debug.ui.BreakpointTypeCategory;
 
 /**
  * Breakpoint element comparator.
@@ -72,6 +73,12 @@ public class ElementComparator implements Comparator<Object> {
 			return 1;
 		} else if (c2.getCategory() instanceof OtherBreakpointCategory) {
 			return -1;
+		}
+
+		if (c1.getCategory() instanceof BreakpointTypeCategory breakType1 && breakType1.hasSortOrder()) {
+			if (c2.getCategory() instanceof BreakpointTypeCategory breakType2 && breakType2.hasSortOrder() ) {
+				return Integer.compare(breakType1.getOrder(), breakType2.getOrder());
+			}
 		}
 
 		// Rest of categories should be listed alphabetically.
