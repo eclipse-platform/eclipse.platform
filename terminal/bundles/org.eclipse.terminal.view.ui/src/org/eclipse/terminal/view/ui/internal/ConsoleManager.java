@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -9,12 +9,12 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Max Weninger (Wind River) - [361363] [TERMINALS] Implement "Pin&Clone" for the "Terminals" view
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +33,7 @@ import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IPreferenceKeys;
 import org.eclipse.terminal.view.ui.ITerminalsView;
-import org.eclipse.terminal.view.ui.IUIConstants;
+import org.eclipse.terminal.view.ui.TerminalViewId;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsView;
 import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
@@ -181,7 +181,7 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	}
 
 	@Override
-	public Optional<ITerminalsView> findConsoleView(String id, String secondaryId) {
+	public Optional<ITerminalsView> findConsoleView(TerminalViewId tvid) {
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
 
 		ITerminalsView view = null;
@@ -190,7 +190,7 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 		IWorkbenchPage page = getActiveWorkbenchPage();
 		if (page != null) {
 			// Look for the view
-			IViewPart part = getTerminalsViewWithSecondaryId(id != null ? id : IUIConstants.ID, secondaryId, true);
+			IViewPart part = getTerminalsViewWithSecondaryId(tvid, true);
 			// Check the interface
 			if (part instanceof ITerminalsView) {
 				view = (ITerminalsView) part;
@@ -203,20 +203,17 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	/**
 	 * Search and return a terminal view with a specific secondary id
 	 *
-	 * @param id The terminals console view id. Must not be <code>null</code>.
-	 * @param secondaryId The terminal console secondary id, which may be <code>null</code> which is the secondary id of
-	 *        the first terminal view opened. To specify reuse of any active terminal view use special value of
-	 *        {@link ITerminalsConnectorConstants#ANY_ACTIVE_SECONDARY_ID}.
+	 * @param tvid The terminals console view id. To specify reuse of most recent terminal view use special value of
+	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID} for its secondary part.
 	 * @param restore <code>True</code> if to try to restore the view, <code>false</code> otherwise.
 	 *
 	 * @return The terminals console view instance or <code>null</code> if not found.
 	 */
-	private IViewPart getTerminalsViewWithSecondaryId(String id, String secondaryId, boolean restore) {
-		Assert.isNotNull(id);
-
+	private IViewPart getTerminalsViewWithSecondaryId(TerminalViewId tvid, boolean restore) {
 		for (IViewReference ref : getActiveWorkbenchPage().getViewReferences()) {
-			if (ref.getId().equals(id)) {
+			if (ref.getId().equals(tvid.primary())) {
 				String refSecondaryId = ref.getSecondaryId();
+				String secondaryId = tvid.secondary().orElse(null);
 				if (ITerminalsConnectorConstants.ANY_ACTIVE_SECONDARY_ID.equals(secondaryId)
 						|| Objects.equals(secondaryId, refSecondaryId)) {
 					return ref.getView(restore);
@@ -229,21 +226,20 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	/**
 	 * Search and return the active terminals view.
 	 *
-	 * @param id The terminals console view id. Must not be <code>null</code>.
-	 * @param secondaryId The terminal console secondary id, which may be <code>null</code> which is the secondary id of
-	 *        the first terminal view opened. To specify reuse of most recent terminal view use special value of
-	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID}.
+	 * @param tvid The terminals console view id. To specify reuse of most recent terminal view use special value of
+	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID} for its secondary part.
 	 * @return The terminals console view instance or <code>null</code> if not found.
 	 */
-	private IViewPart getActiveTerminalsView(String id, String secondaryId) {
-		Assert.isNotNull(id);
-
+	private IViewPart getActiveTerminalsView(TerminalViewId tvid) {
 		IViewPart part = null;
+		String id = tvid.primary();
 
+		String secondaryId = tvid.secondary().orElse(null);
 		if (id.equals(lastActiveViewId)) {
 			if (ITerminalsConnectorConstants.LAST_ACTIVE_SECONDARY_ID.equals(secondaryId)
 					|| Objects.equals(secondaryId, lastActiveSecondaryViewId)) {
-				part = getTerminalsViewWithSecondaryId(lastActiveViewId, lastActiveSecondaryViewId, false);
+				part = getTerminalsViewWithSecondaryId(new TerminalViewId(lastActiveViewId, lastActiveSecondaryViewId),
+						false);
 			}
 		}
 
@@ -255,7 +251,7 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 			} else {
 				finalSecondaryId = secondaryId;
 			}
-			part = getTerminalsViewWithSecondaryId(id, finalSecondaryId, true);
+			part = getTerminalsViewWithSecondaryId(new TerminalViewId(id, finalSecondaryId), true);
 			if (part != null) {
 				lastActiveViewId = part.getViewSite().getId();
 				lastActiveSecondaryViewId = part.getViewSite().getSecondaryId();
@@ -266,61 +262,14 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	}
 
 	/**
-	 * Return a new secondary id to use, based on the number of open terminal views.
-	 *
-	 * @param id The terminals console view id. Must not be <code>null</code>.
-	 * @return The next secondary id, or <code>null</code> if it is the first one
-	 * @since 4.1
-	 */
-	@Override
-	public String getNextTerminalSecondaryId(String id) {
-		Assert.isNotNull(id);
-
-		Map<String, IViewReference> terminalViews = new HashMap<>();
-
-		int maxNumber = 0;
-		for (IViewReference ref : getActiveWorkbenchPage().getViewReferences()) {
-			if (ref.getId().equals(id)) {
-				if (ref.getSecondaryId() != null) {
-					terminalViews.put(ref.getSecondaryId(), ref);
-					int scondaryIdInt = Integer.parseInt(ref.getSecondaryId());
-					if (scondaryIdInt > maxNumber) {
-						maxNumber = scondaryIdInt;
-					}
-				} else {
-					// add the one with secondaryId == null with 0 by default
-					terminalViews.put(Integer.toString(0), ref);
-				}
-			}
-		}
-		if (terminalViews.size() == 0) {
-			return null;
-		}
-
-		int i = 0;
-		for (; i < maxNumber; i++) {
-			String secondaryIdStr = Integer.toString(i);
-			if (!terminalViews.keySet().contains(secondaryIdStr)) {
-				// found a free slot
-				if (i == 0) {
-					return null;
-				}
-				return Integer.toString(i);
-			}
-		}
-		// add a new one
-		return Integer.toString(i + 1);
-	}
-
-	/**
 	 * Show the terminals console view specified by the given id.
 	 * <p>
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 *
-	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
+	 * @param tvid The terminals console view id.
 	 */
 	@Override
-	public IViewPart showConsoleView(String id, String secondaryId) {
+	public IViewPart showConsoleView(TerminalViewId tvid) {
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
 
 		// Get the active workbench page
@@ -328,8 +277,9 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 		if (page != null) {
 			try {
 				// show the view
-				IViewPart part = getActiveTerminalsView(id != null ? id : IUIConstants.ID, secondaryId);
+				IViewPart part = getActiveTerminalsView(tvid);
 				if (part == null) {
+					String secondaryId = tvid.secondary().orElse(null);
 					String finalSecondaryId;
 					if (ITerminalsConnectorConstants.LAST_ACTIVE_SECONDARY_ID.equals(secondaryId)
 							|| ITerminalsConnectorConstants.ANY_ACTIVE_SECONDARY_ID.equals(secondaryId)) {
@@ -339,8 +289,7 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 					} else {
 						finalSecondaryId = secondaryId;
 					}
-					part = page.showView(id != null ? id : IUIConstants.ID, finalSecondaryId,
-							IWorkbenchPage.VIEW_ACTIVATE);
+					part = page.showView(tvid.primary(), finalSecondaryId, IWorkbenchPage.VIEW_ACTIVATE);
 				}
 				// and force the view to the foreground
 				page.bringToTop(part);
@@ -356,20 +305,19 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	/**
 	 * Bring the terminals console view, specified by the given id, to the top of the view stack.
 	 *
-	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
-	 * @param secondaryId The terminals console view secondary id or <code>null</code>.
+	 * @param tvid The terminals console view id.
 	 * @param activate If <code>true</code> activate the console view.
 	 */
-	private IViewPart bringToTop(String id, String secondaryId, boolean activate) {
+	private IViewPart bringToTop(TerminalViewId tvid, boolean activate) {
 		// Get the active workbench page
 		IWorkbenchPage page = getActiveWorkbenchPage();
 		if (page != null) {
 			// get (last) active terminal view
-			IViewPart activePart = getActiveTerminalsView(id != null ? id : IUIConstants.ID, secondaryId);
+			IViewPart activePart = getActiveTerminalsView(tvid);
 			if (activePart == null) {
 				// Create a new one
-				IViewPart newPart = showConsoleView(id != null ? id : IUIConstants.ID,
-						getNextTerminalSecondaryId(IUIConstants.ID));
+				IViewPart newPart = showConsoleView(
+						new TerminalViewId(tvid.primary(), new TerminalViewId().next().secondary()));
 				return newPart;
 			}
 
@@ -389,10 +337,8 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	 * <p>
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 *
-	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
-	 * @param secondaryId The terminal console secondary id, which may be <code>null</code> which is the secondary id of
-	 *        the first terminal view opened. To specify reuse of most recent terminal view use special value of
-	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID}.
+	 * @param tvid The terminals console view id. To specify reuse of most recent terminal view use special value of
+	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID} for its secondary part.
 	 * @param title The console title. Must not be <code>null</code>.
 	 * @param encoding The terminal encoding or <code>null</code>.
 	 * @param connector The terminal connector. Must not be <code>null</code>.
@@ -400,8 +346,8 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	 * @param flags The flags controlling how the console is opened or <code>null</code> to use defaults.
 	 */
 	@Override
-	public CTabItem openConsole(String id, String secondaryId, String title, String encoding,
-			ITerminalConnector connector, Object data, Map<String, Boolean> flags) {
+	public CTabItem openConsole(TerminalViewId tvid, String title, String encoding, ITerminalConnector connector,
+			Object data, Map<String, Boolean> flags) {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
@@ -414,7 +360,7 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 				: false;
 
 		// Make the consoles view visible
-		IViewPart part = bringToTop(id, secondaryId, activate);
+		IViewPart part = bringToTop(tvid, activate);
 		if (!(part instanceof ITerminalsView view)) {
 			return null;
 		}
@@ -427,7 +373,8 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 
 		// Lookup an existing console first
 		String secId = ((IViewSite) part.getSite()).getSecondaryId();
-		CTabItem item = (CTabItem) findConsole(id, secId, title, connector, data).orElse(null);
+		CTabItem item = (CTabItem) findConsole(new TerminalViewId(tvid.primary(), secId), title, connector, data)
+				.orElse(null);
 
 		// Switch to the tab folder page _before_ calling TabFolderManager#createItem(...).
 		// The createItem(...) method invokes the corresponding connect and this may take
@@ -472,8 +419,7 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 * <b>Note:</b> The method will handle unified console titles itself.
 	 *
-	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
-	 * @param secondaryId The terminals console view secondary id or <code>null</code>.
+	 * @param tvid The terminals console view id.
 	 * @param title The console title. Must not be <code>null</code>.
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
@@ -481,14 +427,13 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	 * @return The corresponding console tab item or <code>null</code>.
 	 */
 	@Override
-	public Optional<Widget> findConsole(String id, String secondaryId, String title, ITerminalConnector connector,
-			Object data) {
+	public Optional<Widget> findConsole(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
 
 		// Get the console view
-		ITerminalsView view = findConsoleView(id, secondaryId).orElse(null);
+		ITerminalsView view = findConsoleView(tvid).orElse(null);
 		if (view == null) {
 			return Optional.empty();
 		}
@@ -548,14 +493,14 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	 * <p>
 	 * <b>Note:</b> The method will handle unified console titles itself.
 	 *
-	 * @param id The terminals console view id or <code>null</code> to show the default terminals console view.
+	 * @param tvid The terminals console view id.
 	 * @param title The console title. Must not be <code>null</code>.
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
 	 *
 	 * @return The corresponding console tab item or <code>null</code>.
 	 */
-	private CTabItem findConsoleForTerminalConnector(String id, String title, ITerminalConnector connector,
+	private CTabItem findConsoleForTerminalConnector(TerminalViewId tvid, String title, ITerminalConnector connector,
 			Object data) {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);
@@ -564,7 +509,7 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 		if (page != null) {
 			IViewReference[] refs = page.getViewReferences();
 			for (IViewReference ref : refs) {
-				if (ref.getId().equals(id)) {
+				if (ref.getId().equals(tvid.primary())) {
 					IViewPart part = ref.getView(true);
 					if (part instanceof ITerminalsView) {
 						// Get the tab folder manager associated with the view
@@ -589,18 +534,19 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 * <b>Note:</b> The method will handle unified console titles itself.
 	 *
+	 * @param tvid The terminals console view id.
 	 * @param title The console title. Must not be <code>null</code>.
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
 	 */
 	@Override
-	public void closeConsole(String id, String title, ITerminalConnector connector, Object data) {
+	public void closeConsole(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
 
 		// Lookup the console with this connector
-		CTabItem console = findConsoleForTerminalConnector(id, title, connector, data);
+		CTabItem console = findConsoleForTerminalConnector(tvid, title, connector, data);
 		// If found, dispose the console
 		if (console != null) {
 			console.dispose();
@@ -613,18 +559,19 @@ public class ConsoleManager implements ITerminalConsoleViewManager {
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 * <b>Note:</b> The method will handle unified console titles itself.
 	 *
+	 * @param tvid The terminals console view id.
 	 * @param title The console title. Must not be <code>null</code>.
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
 	 */
 	@Override
-	public void terminateConsole(String id, String title, ITerminalConnector connector, Object data) {
+	public void terminateConsole(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
 
 		// Lookup the console
-		CTabItem console = findConsoleForTerminalConnector(id, title, connector, data);
+		CTabItem console = findConsoleForTerminalConnector(tvid, title, connector, data);
 		// If found, disconnect the console
 		if (console != null && !console.isDisposed()) {
 			ITerminalViewControl terminal = (ITerminalViewControl) console.getData();
