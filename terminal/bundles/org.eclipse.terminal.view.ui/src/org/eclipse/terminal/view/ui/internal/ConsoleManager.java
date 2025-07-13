@@ -56,13 +56,13 @@ import org.osgi.service.component.annotations.Component;
  * Terminal console manager.
  */
 @Component(service = ITerminalConsoleViewManager.class)
-public class ConsoleManager implements ITerminalConsoleViewManager {
+public final class ConsoleManager implements ITerminalConsoleViewManager {
 
 	// Reference to the perspective listener instance
 	private final IPerspectiveListener perspectiveListener;
 
 	// Internal perspective listener implementation
-	static class ConsoleManagerPerspectiveListener extends PerspectiveAdapter {
+	static final class ConsoleManagerPerspectiveListener extends PerspectiveAdapter {
 		private final List<IViewReference> references = new ArrayList<>();
 
 		@Override
