@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2012, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -9,6 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Dirk Fauth <dirk.fauth@googlemail.com> - Bug 460496
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.connector.local.launcher;
 
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.core.runtime.Assert;
@@ -220,13 +222,8 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 				}
 			}
 		}
-
-		// Get the terminal service
-		ITerminalService terminal = UIPlugin.getTerminalService();
-		// If not available, we cannot fulfill this request
-		if (terminal != null) {
-			terminal.openConsole(properties, done);
-		}
+		Optional.ofNullable(PlatformUI.getWorkbench().getService(ITerminalService.class))
+				.ifPresent(s -> s.openConsole(properties, done));
 	}
 
 	/**

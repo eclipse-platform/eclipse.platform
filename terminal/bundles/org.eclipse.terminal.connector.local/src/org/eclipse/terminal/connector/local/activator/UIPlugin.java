@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 - 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2012 - 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,19 +8,17 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.connector.local.activator;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
-import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -121,25 +119,4 @@ public class UIPlugin extends AbstractUIPlugin {
 		return getDefault().getImageRegistry().getDescriptor(key);
 	}
 
-	private static ServiceTracker<ITerminalService, ITerminalService> terminalServiceTracker;
-
-	public static synchronized ITerminalService getTerminalService() {
-		if (terminalServiceTracker == null) {
-			terminalServiceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
-					ITerminalService.class, null);
-			terminalServiceTracker.open();
-		}
-		return terminalServiceTracker.getService();
-	}
-
-	private static ServiceTracker<ILaunchDelegateManager, ILaunchDelegateManager> launchDelegateServiceTracker;
-
-	public static synchronized ILaunchDelegateManager getLaunchDelegateManager() {
-		if (launchDelegateServiceTracker == null) {
-			launchDelegateServiceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
-					ILaunchDelegateManager.class, null);
-			launchDelegateServiceTracker.open();
-		}
-		return launchDelegateServiceTracker.getService();
-	}
 }
