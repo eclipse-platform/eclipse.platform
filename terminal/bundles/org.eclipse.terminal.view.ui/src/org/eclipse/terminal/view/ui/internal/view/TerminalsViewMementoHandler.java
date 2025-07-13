@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2012, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,6 +8,7 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.view;
 
@@ -81,18 +82,13 @@ public class TerminalsViewMementoHandler {
 			}
 
 			// Get the terminal launcher delegate
-			String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
-			ILauncherDelegate delegate = delegateId != null
-					? UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId, false)
-					: null;
-			IMementoHandler mementoHandler = delegate != null
-					? (IMementoHandler) delegate.getAdapter(IMementoHandler.class)
-					: null;
-			if (mementoHandler != null) {
+			Optional<IMementoHandler> mementoHandler = findDelegate(properties).flatMap(this::mementoHandler);
+			if (mementoHandler.isPresent()) {
 				// Create terminal connection child memento
 				IMemento connectionMemento = memento.createChild("connection"); //$NON-NLS-1$
 				Assert.isNotNull(connectionMemento);
 				// Store the common attributes
+				String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
 				connectionMemento.putString(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegateId);
 
 				String terminalConnectorId = (String) properties
@@ -129,7 +125,7 @@ public class TerminalsViewMementoHandler {
 				}
 
 				// Pass on to the memento handler
-				mementoHandler.saveState(connectionMemento, properties);
+				mementoHandler.get().saveState(connectionMemento, properties);
 			}
 		}
 	}
@@ -185,26 +181,24 @@ public class TerminalsViewMementoHandler {
 					properties.put(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR,
 							connection.getString(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR));
 				}
-
-				// Get the terminal launcher delegate
-				String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
-				ILauncherDelegate delegate = delegateId != null
-						? UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId, false)
-						: null;
-				IMementoHandler mementoHandler = delegate != null
-						? (IMementoHandler) delegate.getAdapter(IMementoHandler.class)
-						: null;
-				if (mementoHandler != null) {
-					// Pass on to the memento handler
-					mementoHandler.restoreState(connection, properties);
-				}
-
+				Optional<ILauncherDelegate> delegate = findDelegate(properties);
+				// Pass on to the memento handler
+				delegate.map(d -> d.getAdapter(IMementoHandler.class))
+						.ifPresent(mh -> mh.restoreState(connection, properties));
 				// Restore the terminal connection
-				if (delegate != null && !properties.isEmpty()) {
-					delegate.execute(properties, null);
-				}
+				delegate.ifPresent(d -> d.execute(properties, null));
 			}
 		}
+	}
+
+	private Optional<ILauncherDelegate> findDelegate(Map<String, Object> properties) {
+		return Optional.of(properties).map(map -> map.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID))
+				.filter(String.class::isInstance).map(String.class::cast)
+				.flatMap(id -> UIPlugin.getLaunchDelegateManager().findLauncherDelegate(id, false));
+	}
+
+	private Optional<IMementoHandler> mementoHandler(ILauncherDelegate delegate) {
+		return Optional.ofNullable(delegate.getAdapter(IMementoHandler.class));
 	}
 
 	/**

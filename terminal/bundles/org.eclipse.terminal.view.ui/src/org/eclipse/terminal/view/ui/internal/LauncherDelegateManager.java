@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.expressions.EvaluationResult;
@@ -243,16 +244,15 @@ public class LauncherDelegateManager implements ILaunchDelegateManager {
 	}
 
 	/**
-	 * Returns the terminal launcher delegate identified by its unique id. If no terminal
-	 * launcher delegate with the specified id is registered, <code>null</code> is returned.
+	 * Lookup a terminal launcher delegate identified by its unique id.
 	 *
 	 * @param id The unique id of the terminal launcher delegate or <code>null</code>
 	 * @param unique If <code>true</code>, the method returns new instances of the terminal launcher delegate contribution.
 	 *
-	 * @return The terminal launcher delegate instance or <code>null</code>.
+	 * @return The terminal launcher delegate instance or an empty optional if not found.
 	 */
 	@Override
-	public ILauncherDelegate getLauncherDelegate(String id, boolean unique) {
+	public Optional<ILauncherDelegate> findLauncherDelegate(String id, boolean unique) {
 		ILauncherDelegate contribution = null;
 		Map<String, Proxy> extensions = getExtensions();
 		if (extensions.containsKey(id)) {
@@ -261,7 +261,7 @@ public class LauncherDelegateManager implements ILaunchDelegateManager {
 			contribution = unique ? proxy.newInstance() : proxy.getInstance();
 		}
 
-		return contribution;
+		return Optional.ofNullable(contribution);
 	}
 
 	/**

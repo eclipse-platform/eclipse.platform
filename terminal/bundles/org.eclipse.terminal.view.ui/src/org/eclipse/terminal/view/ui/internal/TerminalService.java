@@ -14,6 +14,7 @@ package org.eclipse.terminal.view.ui.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ISafeRunnable;
@@ -28,7 +29,6 @@ import org.eclipse.terminal.view.core.ITerminalTabListener;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IUIConstants;
 import org.eclipse.terminal.view.ui.TerminalViewId;
-import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
 import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.component.annotations.Activate;
@@ -240,22 +240,10 @@ public class TerminalService implements ITerminalService {
 	 */
 	protected ITerminalConnector createTerminalConnector(Map<String, Object> properties) {
 		Assert.isNotNull(properties);
-
-		// The terminal connector result object
-		ITerminalConnector connector = null;
-
-		// Get the launcher delegate id from the properties
-		String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
-		if (delegateId != null) {
-			// Get the launcher delegate
-			ILauncherDelegate delegate = UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId, false);
-			if (delegate != null) {
-				// Create the terminal connector
-				connector = delegate.createTerminalConnector(properties);
-			}
-		}
-
-		return connector;
+		return Optional.of(properties).map(map -> map.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID))
+				.filter(String.class::isInstance).map(String.class::cast)
+				.flatMap(id -> UIPlugin.getLaunchDelegateManager().findLauncherDelegate(id, false))
+				.map(d -> d.createTerminalConnector(properties)).orElse(null);
 	}
 
 	@Override
