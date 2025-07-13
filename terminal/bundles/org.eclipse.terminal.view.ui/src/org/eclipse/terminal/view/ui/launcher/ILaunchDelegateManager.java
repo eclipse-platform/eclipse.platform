@@ -14,6 +14,7 @@
 package org.eclipse.terminal.view.ui.launcher;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.jface.viewers.ISelection;
 
@@ -30,15 +31,14 @@ public interface ILaunchDelegateManager {
 	List<ILauncherDelegate> getLauncherDelegates(boolean unique);
 
 	/**
-	 * Returns the terminal launcher delegate identified by its unique id. If no terminal
-	 * launcher delegate with the specified id is registered, <code>null</code> is returned.
+	 * Lookup a terminal launcher delegate identified by its unique id.
 	 *
 	 * @param id The unique id of the terminal launcher delegate or <code>null</code>
 	 * @param unique If <code>true</code>, the method returns new instances of the terminal launcher delegate contribution.
 	 *
-	 * @return The terminal launcher delegate instance or <code>null</code>.
+	 * @return The terminal launcher delegate instance or an empty optional if not found.
 	 */
-	ILauncherDelegate getLauncherDelegate(String id, boolean unique);
+	Optional<ILauncherDelegate> findLauncherDelegate(String id, boolean unique);
 
 	/**
 	 * Returns the applicable terminal launcher delegates for the given selection.

@@ -17,11 +17,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -61,16 +61,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 		if (commandId.equals("org.eclipse.terminal.view.ui.command.launchConsole")) { //$NON-NLS-1$
 			LaunchTerminalSettingsDialog dialog = new LaunchTerminalSettingsDialog(shell, start);
 			if (dialog.open() == Window.OK) {
-				// Get the terminal settings from the dialog
-				Map<String, Object> properties = dialog.getSettings();
-				if (properties != null) {
-					String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
-					Assert.isNotNull(delegateId);
-					ILauncherDelegate delegate = UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId,
-							false);
-					Assert.isNotNull(delegateId);
-					return delegate.createTerminalConnector(properties);
-				}
+				return findDelegate(dialog).map(delegate -> delegate.createTerminalConnector(dialog.getSettings()));
 			}
 			return null;
 		}
@@ -87,16 +78,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 				dialog.setSelection(selection);
 			}
 			if (dialog.open() == Window.OK) {
-				// Get the terminal settings from the dialog
-				Map<String, Object> properties = dialog.getSettings();
-				if (properties != null) {
-					String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
-					Assert.isNotNull(delegateId);
-					ILauncherDelegate delegate = UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId,
-							false);
-					Assert.isNotNull(delegateId);
-					delegate.execute(properties, null);
-				}
+				findDelegate(dialog).ifPresent(delegate -> delegate.execute(dialog.getSettings(), null));
 			}
 		} else {
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
@@ -128,16 +110,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 					dialog.setSelection(selection);
 				}
 				if (dialog.open() == Window.OK) {
-					// Get the terminal settings from the dialog
-					Map<String, Object> properties = dialog.getSettings();
-					if (properties != null) {
-						String delegateId = (String) properties.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID);
-						Assert.isNotNull(delegateId);
-						ILauncherDelegate delegate = UIPlugin.getLaunchDelegateManager().getLauncherDelegate(delegateId,
-								false);
-						Assert.isNotNull(delegateId);
-						delegate.execute(properties, null);
-					}
+					findDelegate(dialog).ifPresent(delegate -> delegate.execute(dialog.getSettings(), null));
 				}
 			} else if (delegates.size() == 1) {
 				ILauncherDelegate delegate = delegates.get(0);
@@ -154,6 +127,14 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 		}
 
 		return null;
+	}
+
+	private final Optional<ILauncherDelegate> findDelegate(LaunchTerminalSettingsDialog dialog) {
+		return Optional.ofNullable(dialog.getSettings())
+				.map(map -> map.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID)).filter(String.class::isInstance)
+				.map(String.class::cast)
+				.flatMap(id -> UIPlugin.getLaunchDelegateManager().findLauncherDelegate(id, false));
+
 	}
 
 	private boolean isValidSelection(ISelection selection) {
