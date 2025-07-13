@@ -17,13 +17,13 @@ package org.eclipse.terminal.view.ui.launcher;
 import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.ITerminalsView;
 import org.eclipse.terminal.view.ui.TerminalViewId;
-import org.eclipse.ui.IViewPart;
 
 public interface ITerminalConsoleViewManager {
 
@@ -45,8 +45,10 @@ public interface ITerminalConsoleViewManager {
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 *
 	 * @param tvid The terminals console view id.
+	 * @throws CoreException if the requested console cannot be opened
+	 * @return opened terminal console view part
 	 */
-	IViewPart showConsoleView(TerminalViewId tvid);
+	ITerminalsView showConsoleView(TerminalViewId tvid) throws CoreException;
 
 	/**
 	 * Opens the console with the given title and connector.
@@ -60,9 +62,11 @@ public interface ITerminalConsoleViewManager {
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
 	 * @param flags The flags controlling how the console is opened or <code>null</code> to use defaults.
+	 * @throws CoreException if the requested console cannot be opened
+	 * @return opened terminal console widget
 	 */
 	Widget openConsole(TerminalViewId tvid, String title, String encoding, ITerminalConnector connector, Object data,
-			Map<String, Boolean> flags);
+			Map<String, Boolean> flags) throws CoreException;
 
 	/**
 	 * Lookup a console with the given title and the given terminal connector.

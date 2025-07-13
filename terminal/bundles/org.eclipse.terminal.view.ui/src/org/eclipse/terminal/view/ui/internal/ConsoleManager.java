@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -183,21 +183,7 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 	@Override
 	public Optional<ITerminalsView> findConsoleView(TerminalViewId tvid) {
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
-
-		ITerminalsView view = null;
-
-		// Get the active workbench page
-		IWorkbenchPage page = getActiveWorkbenchPage();
-		if (page != null) {
-			// Look for the view
-			IViewPart part = getTerminalsViewWithSecondaryId(tvid, true);
-			// Check the interface
-			if (part instanceof ITerminalsView) {
-				view = (ITerminalsView) part;
-			}
-		}
-
-		return Optional.ofNullable(view);
+		return findTerminalsViewWithSecondaryId(tvid, true);
 	}
 
 	/**
@@ -209,18 +195,23 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 	 *
 	 * @return The terminals console view instance or <code>null</code> if not found.
 	 */
-	private IViewPart getTerminalsViewWithSecondaryId(TerminalViewId tvid, boolean restore) {
-		for (IViewReference ref : getActiveWorkbenchPage().getViewReferences()) {
+	private Optional<ITerminalsView> findTerminalsViewWithSecondaryId(TerminalViewId tvid, boolean restore) {
+		IWorkbenchPage page = getActiveWorkbenchPage();
+		if (page == null) {
+			return Optional.empty();
+		}
+		for (IViewReference ref : page.getViewReferences()) {
 			if (ref.getId().equals(tvid.primary())) {
 				String refSecondaryId = ref.getSecondaryId();
 				String secondaryId = tvid.secondary().orElse(null);
 				if (ITerminalsConnectorConstants.ANY_ACTIVE_SECONDARY_ID.equals(secondaryId)
 						|| Objects.equals(secondaryId, refSecondaryId)) {
-					return ref.getView(restore);
+					return Optional.ofNullable(ref.getView(restore)).filter(ITerminalsView.class::isInstance)
+							.map(ITerminalsView.class::cast);
 				}
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	/**
@@ -230,20 +221,19 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 	 *        {@link ITerminalsConnectorConstants#LAST_ACTIVE_SECONDARY_ID} for its secondary part.
 	 * @return The terminals console view instance or <code>null</code> if not found.
 	 */
-	private IViewPart getActiveTerminalsView(TerminalViewId tvid) {
-		IViewPart part = null;
+	private Optional<ITerminalsView> findActiveTerminalsView(TerminalViewId tvid) {
+		Optional<ITerminalsView> part = Optional.empty();
 		String id = tvid.primary();
-
 		String secondaryId = tvid.secondary().orElse(null);
 		if (id.equals(lastActiveViewId)) {
 			if (ITerminalsConnectorConstants.LAST_ACTIVE_SECONDARY_ID.equals(secondaryId)
 					|| Objects.equals(secondaryId, lastActiveSecondaryViewId)) {
-				part = getTerminalsViewWithSecondaryId(new TerminalViewId(lastActiveViewId, lastActiveSecondaryViewId),
+				part = findTerminalsViewWithSecondaryId(new TerminalViewId(lastActiveViewId, lastActiveSecondaryViewId),
 						false);
 			}
 		}
 
-		if (part == null) {
+		if (part.isEmpty()) {
 			String finalSecondaryId;
 			if (ITerminalsConnectorConstants.LAST_ACTIVE_SECONDARY_ID.equals(secondaryId)) {
 				// There is no last available, so get any available instead
@@ -251,13 +241,13 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 			} else {
 				finalSecondaryId = secondaryId;
 			}
-			part = getTerminalsViewWithSecondaryId(new TerminalViewId(id, finalSecondaryId), true);
-			if (part != null) {
-				lastActiveViewId = part.getViewSite().getId();
-				lastActiveSecondaryViewId = part.getViewSite().getSecondaryId();
+			part = findTerminalsViewWithSecondaryId(new TerminalViewId(id, finalSecondaryId), true);
+			if (part.isPresent()) {
+				IViewSite site = part.get().getViewSite();
+				lastActiveViewId = site.getId();
+				lastActiveSecondaryViewId = site.getSecondaryId();
 			}
 		}
-
 		return part;
 	}
 
@@ -267,39 +257,43 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 	 * <b>Note:</b> The method must be called within the UI thread.
 	 *
 	 * @param tvid The terminals console view id.
+	 * @throws CoreException if the requested console cannot be opened
+	 * @return opened terminal console view part
 	 */
 	@Override
-	public IViewPart showConsoleView(TerminalViewId tvid) {
+	public ITerminalsView showConsoleView(TerminalViewId tvid) throws CoreException {
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
-
-		// Get the active workbench page
 		IWorkbenchPage page = getActiveWorkbenchPage();
-		if (page != null) {
-			try {
-				// show the view
-				IViewPart part = getActiveTerminalsView(tvid);
-				if (part == null) {
-					String secondaryId = tvid.secondary().orElse(null);
-					String finalSecondaryId;
-					if (ITerminalsConnectorConstants.LAST_ACTIVE_SECONDARY_ID.equals(secondaryId)
-							|| ITerminalsConnectorConstants.ANY_ACTIVE_SECONDARY_ID.equals(secondaryId)) {
-						// We have already checked all open views, so since none of the special flags work
-						// we are opening the first view, which means no secondary id.
-						finalSecondaryId = null;
-					} else {
-						finalSecondaryId = secondaryId;
-					}
-					part = page.showView(tvid.primary(), finalSecondaryId, IWorkbenchPage.VIEW_ACTIVATE);
-				}
-				// and force the view to the foreground
-				page.bringToTop(part);
-				return part;
-			} catch (PartInitException e) {
-				IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(), e.getLocalizedMessage(), e);
-				UIPlugin.getDefault().getLog().log(status);
-			}
+		if (page == null) {
+			throw noActivePage();
 		}
-		return null;
+		// show the view
+		Optional<ITerminalsView> found = findActiveTerminalsView(tvid);
+		if (found.isEmpty()) {
+			String secondaryId = tvid.secondary().orElse(null);
+			String finalSecondaryId;
+			if (ITerminalsConnectorConstants.LAST_ACTIVE_SECONDARY_ID.equals(secondaryId)
+					|| ITerminalsConnectorConstants.ANY_ACTIVE_SECONDARY_ID.equals(secondaryId)) {
+				// We have already checked all open views, so since none of the special flags work
+				// we are opening the first view, which means no secondary id.
+				finalSecondaryId = null;
+			} else {
+				finalSecondaryId = secondaryId;
+			}
+			found = Optional.of(page.showView(tvid.primary(), finalSecondaryId, IWorkbenchPage.VIEW_ACTIVATE))
+					.filter(ITerminalsView.class::isInstance).map(ITerminalsView.class::cast);
+		}
+		// and force the view to the foreground
+		found.ifPresent(page::bringToTop);
+		return found.orElseThrow(this::cannotCreateConsole);
+	}
+
+	private CoreException noActivePage() {
+		return new CoreException(Status.error(Messages.ConsoleManager_e_no_active_page));
+	}
+
+	private CoreException cannotCreateConsole() {
+		return new CoreException(Status.error(Messages.ConsoleManager_e_cannot_create_console));
 	}
 
 	/**
@@ -307,29 +301,28 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 	 *
 	 * @param tvid The terminals console view id.
 	 * @param activate If <code>true</code> activate the console view.
+	 * @throws CoreException if the requested console cannot be opened
+	 * @return opened terminal console view part
 	 */
-	private IViewPart bringToTop(TerminalViewId tvid, boolean activate) {
+	private ITerminalsView bringToTop(TerminalViewId tvid, boolean activate) throws CoreException {
 		// Get the active workbench page
 		IWorkbenchPage page = getActiveWorkbenchPage();
-		if (page != null) {
-			// get (last) active terminal view
-			IViewPart activePart = getActiveTerminalsView(tvid);
-			if (activePart == null) {
-				// Create a new one
-				IViewPart newPart = showConsoleView(
-						new TerminalViewId(tvid.primary(), new TerminalViewId().next().secondary()));
-				return newPart;
-			}
-
-			if (activate) {
-				page.activate(activePart);
-			} else {
-				page.bringToTop(activePart);
-			}
-
-			return activePart;
+		if (page == null) {
+			throw noActivePage();
 		}
-		return null;
+		// get (last) active terminal view
+		Optional<ITerminalsView> found = findActiveTerminalsView(tvid);
+		if (found.isEmpty()) {
+			// Create a new one
+			return showConsoleView(new TerminalViewId(tvid.primary(), new TerminalViewId().next().secondary()));
+		}
+		ITerminalsView tv = found.get();
+		if (activate) {
+			page.activate(tv);
+		} else {
+			page.bringToTop(tv);
+		}
+		return tv;
 	}
 
 	/**
@@ -344,10 +337,12 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 	 * @param connector The terminal connector. Must not be <code>null</code>.
 	 * @param data The custom terminal data node or <code>null</code>.
 	 * @param flags The flags controlling how the console is opened or <code>null</code> to use defaults.
+	 * @throws CoreException if the requested console cannot be opened
+	 * @return opened terminal console widget
 	 */
 	@Override
-	public CTabItem openConsole(TerminalViewId tvid, String title, String encoding, ITerminalConnector connector,
-			Object data, Map<String, Boolean> flags) {
+	public Widget openConsole(TerminalViewId tvid, String title, String encoding, ITerminalConnector connector,
+			Object data, Map<String, Boolean> flags) throws CoreException {
 		Assert.isNotNull(title);
 		Assert.isNotNull(connector);
 		Assert.isNotNull(Display.findDisplay(Thread.currentThread()));
@@ -358,23 +353,18 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 		boolean forceNew = flags != null && flags.containsKey(ITerminalsConnectorConstants.PROP_FORCE_NEW)
 				? flags.get(ITerminalsConnectorConstants.PROP_FORCE_NEW).booleanValue()
 				: false;
-
 		// Make the consoles view visible
-		IViewPart part = bringToTop(tvid, activate);
-		if (!(part instanceof ITerminalsView view)) {
-			return null;
-		}
+		ITerminalsView view = bringToTop(tvid, activate);
 		// Cast to the correct type
 		// Get the tab folder manager associated with the view
 		TabFolderManager manager = view.getAdapter(TabFolderManager.class);
 		if (manager == null) {
-			return null;
+			throw cannotCreateConsole();
 		}
 
 		// Lookup an existing console first
-		String secId = ((IViewSite) part.getSite()).getSecondaryId();
-		CTabItem item = (CTabItem) findConsole(new TerminalViewId(tvid.primary(), secId), title, connector, data)
-				.orElse(null);
+		String secId = ((IViewSite) view.getSite()).getSecondaryId();
+		Optional<Widget> item = findConsole(new TerminalViewId(tvid.primary(), secId), title, connector, data);
 
 		// Switch to the tab folder page _before_ calling TabFolderManager#createItem(...).
 		// The createItem(...) method invokes the corresponding connect and this may take
@@ -383,7 +373,7 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 		view.switchToTabFolderControl();
 
 		// If no existing console exist or forced -> Create the tab item
-		if (item == null || forceNew) {
+		if (item.isEmpty() || forceNew) {
 			// If configured, check all existing tab items if they are associated
 			// with terminated consoles
 			if (UIPlugin.getScopedPreferences().getBoolean(IPreferenceKeys.PREF_REMOVE_TERMINATED_TERMINALS)) {
@@ -396,21 +386,19 @@ public final class ConsoleManager implements ITerminalConsoleViewManager {
 			}
 
 			// Create a new tab item
-			item = manager.createTabItem(title, encoding, connector, data, flags);
+			item = Optional.ofNullable(manager.createTabItem(title, encoding, connector, data, flags));
 		}
-		// If still null, something went wrong
-		if (item == null) {
-			return null;
-		}
-
+		CTabItem tab = toTabItem(item);
 		// Make the item the active console
-		manager.bringToTop(item);
-
+		manager.bringToTop(tab);
 		// Make sure the terminals view has the focus after opening a new terminal
 		view.setFocus();
-
 		// Return the tab item of the opened console
-		return item;
+		return tab;
+	}
+
+	private CTabItem toTabItem(Optional<Widget> item) throws CoreException {
+		return item.filter(CTabItem.class::isInstance).map(CTabItem.class::cast).orElseThrow(this::cannotCreateConsole);
 	}
 
 	/**
