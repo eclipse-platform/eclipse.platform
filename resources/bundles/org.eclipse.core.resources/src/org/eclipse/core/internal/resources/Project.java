@@ -787,7 +787,11 @@ public class Project extends Container implements IProject {
 	 * @see #getActiveBuildConfig()
 	 */
 	IBuildConfiguration internalGetActiveBuildConfig() {
-		String configName = internalGetDescription().activeConfiguration;
+		ProjectDescription description = internalGetDescription();
+		if (description == null) {
+			return new BuildConfiguration(this, IBuildConfiguration.DEFAULT_CONFIG_NAME);
+		}
+		String configName = description.activeConfiguration;
 		try {
 			if (configName != null)
 				return getBuildConfig(configName);
@@ -827,6 +831,9 @@ public class Project extends Container implements IProject {
 	 */
 	public IBuildConfiguration[] internalGetReferencedBuildConfigs(String configName, boolean includeMissing) {
 		ProjectDescription description = internalGetDescription();
+		if (description == null) {
+			return new IBuildConfiguration[0];
+		}
 		IBuildConfiguration[] refs = description.getAllBuildConfigReferences(this, configName, false);
 		Collection<IBuildConfiguration> configs = new LinkedHashSet<>(refs.length);
 		for (IBuildConfiguration ref : refs) {

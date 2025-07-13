@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.events.BuildCommand;
@@ -546,6 +547,14 @@ public class ProjectDescription extends ModelObject implements IProjectDescripti
 		// Configuration level references
 		if (configRefsHaveChanges(dynamicConfigRefs, description.dynamicConfigRefs))
 			return true;
+		// has natures changed?
+		if (!Set.of(natures).equals(Set.of(description.natures))) {
+			return true;
+		}
+		// has buildspec changed?
+		if (!Objects.deepEquals(buildSpec, description.buildSpec)) {
+			return true;
+		}
 
 		return false;
 	}
@@ -978,4 +987,5 @@ public class ProjectDescription extends ModelObject implements IProjectDescripti
 		}
 		return result.toArray(new IProject[0]);
 	}
+
 }
