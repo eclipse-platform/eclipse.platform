@@ -9,8 +9,11 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Christoph Läubrich - extract to interface
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.launcher;
+
+import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
 
@@ -22,9 +25,9 @@ public interface ILaunchDelegateManager {
 	 * @param unique If <code>true</code>, the method returns new instances for each
 	 *               contributed terminal launcher delegate.
 	 *
-	 * @return The list of contributed terminal launcher delegates, or an empty array.
+	 * @return The list of contributed terminal launcher delegates, or an empty list.
 	 */
-	ILauncherDelegate[] getLauncherDelegates(boolean unique);
+	List<ILauncherDelegate> getLauncherDelegates(boolean unique);
 
 	/**
 	 * Returns the terminal launcher delegate identified by its unique id. If no terminal
@@ -41,8 +44,8 @@ public interface ILaunchDelegateManager {
 	 * Returns the applicable terminal launcher delegates for the given selection.
 	 *
 	 * @param selection The selection or <code>null</code>.
-	 * @return The list of applicable terminal launcher delegates or an empty array.
+	 * @return The list of applicable terminal launcher delegates or an empty list.
 	 */
-	ILauncherDelegate[] getApplicableLauncherDelegates(ISelection selection);
+	List<ILauncherDelegate> getApplicableLauncherDelegates(ISelection selection);
 
 }
