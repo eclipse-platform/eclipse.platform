@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,6 +8,7 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal;
 
@@ -30,7 +31,7 @@ public class PropertyTester extends org.eclipse.core.expressions.PropertyTester 
 		if ("hasApplicableLauncherDelegates".equals(property)) { //$NON-NLS-1$
 			ISelection selection = receiver instanceof ISelection i ? i : new StructuredSelection(receiver);
 			return expectedValue.equals(Boolean
-					.valueOf(UIPlugin.getLaunchDelegateManager().getApplicableLauncherDelegates(selection).length > 0));
+					.valueOf(!UIPlugin.getLaunchDelegateManager().getApplicableLauncherDelegates(selection).isEmpty()));
 		}
 
 		if ("canDisconnect".equals(property) && receiver instanceof ITerminalsView) { //$NON-NLS-1$

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,12 +8,14 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.handler;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -104,7 +106,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 			}
 
 			// Check if the dialog needs to be shown at all
-			ILauncherDelegate[] delegates = UIPlugin.getLaunchDelegateManager()
+			List<ILauncherDelegate> delegates = UIPlugin.getLaunchDelegateManager()
 					.getApplicableLauncherDelegates(selection);
 
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
@@ -113,7 +115,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalCommandHandler.this);
 			}
 
-			if (delegates.length > 1 || (delegates.length == 1 && delegates[0].needsUserConfiguration())) {
+			if (delegates.size() > 1 || (delegates.size() == 1 && delegates.get(0).needsUserConfiguration())) {
 				if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 					UIPlugin.getTraceHandler().trace("(b) Attempt to open launch terminal settings dialog after " //$NON-NLS-1$
 							+ (System.currentTimeMillis() - start) + " ms.", //$NON-NLS-1$
@@ -137,8 +139,8 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 						delegate.execute(properties, null);
 					}
 				}
-			} else if (delegates.length == 1) {
-				ILauncherDelegate delegate = delegates[0];
+			} else if (delegates.size() == 1) {
+				ILauncherDelegate delegate = delegates.get(0);
 				Map<String, Object> properties = new HashMap<>();
 
 				// Store the id of the selected delegate

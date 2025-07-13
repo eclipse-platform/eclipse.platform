@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 - 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011 - 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,6 +8,7 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal;
 
@@ -227,10 +228,10 @@ public class LauncherDelegateManager implements ILaunchDelegateManager {
 	 * @param unique If <code>true</code>, the method returns new instances for each
 	 *               contributed terminal launcher delegate.
 	 *
-	 * @return The list of contributed terminal launcher delegates, or an empty array.
+	 * @return The list of contributed terminal launcher delegates, or an empty list.
 	 */
 	@Override
-	public ILauncherDelegate[] getLauncherDelegates(boolean unique) {
+	public List<ILauncherDelegate> getLauncherDelegates(boolean unique) {
 		List<ILauncherDelegate> contributions = new ArrayList<>();
 		for (Proxy launcherDelegate : getExtensions().values()) {
 			ILauncherDelegate instance = unique ? launcherDelegate.newInstance() : launcherDelegate.getInstance();
@@ -238,8 +239,7 @@ public class LauncherDelegateManager implements ILaunchDelegateManager {
 				contributions.add(instance);
 			}
 		}
-
-		return contributions.toArray(new ILauncherDelegate[contributions.size()]);
+		return contributions;
 	}
 
 	/**
@@ -268,10 +268,10 @@ public class LauncherDelegateManager implements ILaunchDelegateManager {
 	 * Returns the applicable terminal launcher delegates for the given selection.
 	 *
 	 * @param selection The selection or <code>null</code>.
-	 * @return The list of applicable terminal launcher delegates or an empty array.
+	 * @return The list of applicable terminal launcher delegates or an empty list.
 	 */
 	@Override
-	public ILauncherDelegate[] getApplicableLauncherDelegates(ISelection selection) {
+	public List<ILauncherDelegate> getApplicableLauncherDelegates(ISelection selection) {
 		List<ILauncherDelegate> applicable = new ArrayList<>();
 
 		for (ILauncherDelegate delegate : getLauncherDelegates(false)) {
@@ -312,7 +312,7 @@ public class LauncherDelegateManager implements ILaunchDelegateManager {
 			}
 		}
 
-		return applicable.toArray(new ILauncherDelegate[applicable.size()]);
+		return applicable;
 	}
 
 	/**
