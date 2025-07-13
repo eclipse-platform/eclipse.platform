@@ -55,7 +55,7 @@ public class TerminalService implements ITerminalService {
 	 */
 	public static final int TAB_DISPOSED = 1;
 
-	private ITerminalConsoleViewManager consoleViewManager;
+	private final ITerminalConsoleViewManager consoleViewManager;
 
 	/**
 	 * Common terminal service runnable implementation.
