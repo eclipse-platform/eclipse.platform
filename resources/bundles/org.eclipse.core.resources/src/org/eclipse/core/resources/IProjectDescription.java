@@ -176,6 +176,13 @@ public interface IProjectDescription {
 	ICommand newCommand();
 
 	/**
+	 * @return <code>true</code> if this project is only persisted in the private
+	 *         workspace area
+	 * @since 3.23
+	 */
+	boolean isWorkspacePrivate();
+
+	/**
 	 * Sets the active configuration for the described project.
 	 * <p>
 	 * If a configuration with the specified name does not exist in the project then the
@@ -385,4 +392,12 @@ public interface IProjectDescription {
 	 * @see #getReferencedProjects()
 	 */
 	void setReferencedProjects(IProject[] projects);
+
+	/**
+	 * Sets the project to be only persisted into the private workspace area and not
+	 * into a physical <code>.project</code> file in the root of the project folder.
+	 *
+	 * @since 3.23
+	 */
+	void setWorkspacePrivate(boolean privateFlag);
 }
