@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
@@ -265,7 +267,11 @@ public class TerminalService implements ITerminalService {
 				} else {
 					// First, restore the view. This opens consoles from the memento
 					fRestoringView = true;
-					consoleViewManager.showConsoleView(tvid);
+					try {
+						consoleViewManager.showConsoleView(tvid);
+					} catch (CoreException e) {
+						ILog.get().log(e.getStatus());
+					}
 					fRestoringView = false;
 
 					// After that schedule opening the requested console
@@ -299,16 +305,21 @@ public class TerminalService implements ITerminalService {
 					flags.put(ITerminalsConnectorConstants.PROP_TITLE_DISABLE_ANSI_TITLE, false);
 				}
 				// Open the new console
-				Widget item = consoleViewManager.openConsole(tvid, title, encoding, connector, data, flags);
-				// Associate the original terminal properties with the tab item.
-				// This makes it easier to persist the connection data within the memento handler
-				if (item != null && !item.isDisposed()) {
-					item.setData("properties", properties); //$NON-NLS-1$
-				}
-
-				// Invoke the callback
-				if (done != null) {
-					done.done(Status.OK_STATUS);
+				try {
+					Widget console = consoleViewManager.openConsole(tvid, title, encoding, connector, data, flags);
+					// Associate the original terminal properties with the tab item.
+					// This makes it easier to persist the connection data within the memento handler
+					if (!console.isDisposed()) {
+						console.setData("properties", properties); //$NON-NLS-1$
+					}
+					// Invoke the callback
+					if (done != null) {
+						done.done(Status.OK_STATUS);
+					}
+				} catch (CoreException e) {
+					if (done != null) {
+						done.done(e.getStatus());
+					}
 				}
 			}
 		}, done);

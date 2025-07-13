@@ -14,6 +14,7 @@ package org.eclipse.terminal.view.ui.internal.handler;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.terminal.view.ui.TerminalViewId;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
@@ -24,10 +25,12 @@ public class NewTerminalViewHandler extends AbstractTriggerCommandHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		UIPlugin.getConsoleManager().showConsoleView(new TerminalViewId().next());
-
-		triggerCommand("org.eclipse.terminal.view.ui.command.launchToolbar", null); //$NON-NLS-1$
-
+		try {
+			UIPlugin.getConsoleManager().showConsoleView(new TerminalViewId().next());
+			triggerCommand("org.eclipse.terminal.view.ui.command.launchToolbar", null); //$NON-NLS-1$
+		} catch (CoreException e) {
+			throw new ExecutionException(e.getStatus().getMessage(), e);
+		}
 		return null;
 	}
 
