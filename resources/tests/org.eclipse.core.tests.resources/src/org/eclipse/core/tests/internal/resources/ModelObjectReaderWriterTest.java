@@ -22,8 +22,11 @@ import static org.eclipse.core.tests.harness.FileSystemHelper.getTempDir;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInputStream;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.removeFromFileSystem;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,11 +39,14 @@ import java.util.Map.Entry;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.internal.resources.LinkDescription;
+import org.eclipse.core.internal.resources.LocalMetaArea;
 import org.eclipse.core.internal.resources.ModelObjectWriter;
 import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.internal.resources.ProjectDescriptionReader;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -54,12 +60,16 @@ import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.tests.resources.WorkspaceTestRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.xml.sax.InputSource;
 
 public class ModelObjectReaderWriterTest {
 
 	@Rule
 	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
+
+	@Rule
+	public TemporaryFolder folder = new TemporaryFolder();
 
 	static final IPath LONG_LOCATION = IPath.fromOSString("/eclipse/dev/i0218/eclipse/pffds/fds//fds///fdsfsdfsd///fdsfdsf/fsdfsdfsd/lugi/dsds/fsd//f/ffdsfdsf/fsdfdsfsd/fds//fdsfdsfdsf/fdsfdsfds/fdsfdsfdsf/fdsfdsfdsds/ns/org.eclipse.help.ui_2.1.0/contexts.xml").setDevice(OS.isWindows() ? "D:" : null);
 	static final URI LONG_LOCATION_URI = LONG_LOCATION.toFile().toURI();
@@ -319,6 +329,45 @@ public class ModelObjectReaderWriterTest {
 
 		// order of keys in serialized file should be exactly the same as expected
 		assertThat(result).isEqualTo(expected);
+	}
+
+	@Test
+	public void testLocalMetaAreaReadWriteNatures() throws CoreException, IOException {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		LocalMetaArea area = new LocalMetaArea((Workspace) workspace);
+		ProjectDescription description = new ProjectDescription();
+		description.setName("Testme");
+		String[] value = new String[] { "org.eclipse.jdt.core.javanature", "org.eclipse.pde.PluginNature" };
+		description.setNatureIds(value);
+		File file = folder.newFile();
+		area.writeToFile(description, file);
+		IProject proj = workspace.getRoot().getProject("tmpproject");
+		ProjectDescription readme = new ProjectDescription();
+		area.readFromFile(proj, readme, file);
+		assertArrayEquals(value, readme.getNatureIds());
+	}
+
+	@Test
+	public void testLocalMetaAreaReadWriteBuildSpec() throws CoreException, IOException {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		LocalMetaArea area = new LocalMetaArea((Workspace) workspace);
+		ProjectDescription description = new ProjectDescription();
+		description.setName("Testme");
+		BuildCommand buildCommand = new BuildCommand();
+		buildCommand.setBuilderName("testBuilder");
+		Map<String, String> args = Map.of("1", "2");
+		buildCommand.setArguments(args);
+		description.setBuildSpec(new ICommand[] { buildCommand });
+		File file = folder.newFile();
+		area.writeToFile(description, file);
+		IProject proj = workspace.getRoot().getProject("tmpproject");
+		ProjectDescription readme = new ProjectDescription();
+		area.readFromFile(proj, readme, file);
+		ICommand[] buildSpec = readme.getBuildSpec();
+		assertEquals(1, buildSpec.length);
+		ICommand read = buildSpec[0];
+		assertEquals("testBuilder", read.getBuilderName());
+		assertEquals(args, read.getArguments());
 	}
 
 	@Test

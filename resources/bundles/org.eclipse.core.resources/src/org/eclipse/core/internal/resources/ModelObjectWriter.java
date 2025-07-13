@@ -44,7 +44,7 @@ public class ModelObjectWriter implements IModelObjectConstants {
 	 * Returns the string representing the serialized set of build triggers for
 	 * the given command
 	 */
-	private static String triggerString(BuildCommand command) {
+	static String triggerString(BuildCommand command) {
 		StringBuilder buf = new StringBuilder();
 		if (command.isBuilding(IncrementalProjectBuilder.AUTO_BUILD))
 			buf.append(TRIGGER_AUTO).append(',');
@@ -83,7 +83,7 @@ public class ModelObjectWriter implements IModelObjectConstants {
 	/**
 	 * Returns whether the build triggers for this command should be written.
 	 */
-	private boolean shouldWriteTriggers(BuildCommand command) {
+	static boolean shouldWriteTriggers(BuildCommand command) {
 		//only write triggers if command is configurable and there exists a trigger
 		//that the builder does NOT respond to.  I.e., don't write out on the default
 		//cases to avoid dirtying .project files unnecessarily.

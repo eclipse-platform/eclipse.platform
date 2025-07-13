@@ -411,9 +411,10 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		try {
 			final IProject project = buildConfiguration.getProject();
 			final ICommand[] commands;
-			if (project.isAccessible())
-				commands = ((Project) project).internalGetDescription().getBuildSpec(false);
-			else
+			if (project.isAccessible()) {
+				ProjectDescription description = ((Project) project).internalGetDescription();
+				commands = description == null ? null : description.getBuildSpec(false);
+			} else
 				commands = null;
 			int work = commands == null ? 0 : commands.length;
 			monitor.beginTask(NLS.bind(Messages.events_building_1, project.getFullPath()), work);
@@ -708,6 +709,9 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		ArrayList<BuilderPersistentInfo> oldInfos = getBuildersPersistentInfo(project);
 
 		ProjectDescription desc = ((Project) project).internalGetDescription();
+		if (desc == null) {
+			return null;
+		}
 		ICommand[] commands = desc.getBuildSpec(false);
 		if (commands.length == 0)
 			return null;
@@ -1577,7 +1581,8 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 			final ICommand[] commands;
 			if (project.isAccessible()) {
 				Set<ISchedulingRule> rules = new HashSet<>();
-				commands = ((Project) project).internalGetDescription().getBuildSpec(false);
+				ProjectDescription description = ((Project) project).internalGetDescription();
+				commands = description == null ? new ICommand[0] : description.getBuildSpec(false);
 				boolean hasNullBuildRule = false;
 				BuildContext context = new BuildContext(buildConfiguration);
 				for (int i = 0; i < commands.length; i++) {

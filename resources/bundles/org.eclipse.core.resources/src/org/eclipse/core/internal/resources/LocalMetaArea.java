@@ -24,13 +24,17 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.internal.events.BuildCommand;
 import org.eclipse.core.internal.localstore.SafeChunkyInputStream;
 import org.eclipse.core.internal.localstore.SafeChunkyOutputStream;
 import org.eclipse.core.internal.utils.Messages;
 import org.eclipse.core.internal.utils.Policy;
 import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
@@ -330,6 +334,8 @@ public class LocalMetaArea implements ICoreConstants {
 	 * location should be used. In the case of failure, log the exception and
 	 * return silently, thus reverting to using the default location and no
 	 * dynamic references. The current format of the location file is:
+	 *
+	 * <pre>
 	 *    UTF - project location
 	 *    int - number of dynamic project references
 	 *    UTF - project reference 1
@@ -347,6 +353,19 @@ public class LocalMetaArea implements ICoreConstants {
 	 *        UTF - configName if hasConfigName
 	 *        ... repeat for number of referenced configurations
 	 *      ... repeat for number of build configurations with references
+	 * since 3.23:
+	 *    bool - private flag if project should only be read from its private project configuration
+	 *    int - number of natures
+	 *      UTF - nature id
+	 *      ... repeated for N natures
+	 *    int - number of buildspecs
+	 *      byte - type of buildspec
+	 *        (type 1) UTF - name of builder
+	 *                 int - number of arguments
+	 *                  UTF arg key
+	 *                  UTF arg value
+	 *                 UTF - triggers string
+	 * </pre>
 	 */
 	public void readPrivateDescription(IProject target, ProjectDescription description) {
 		IPath locationFile = locationFor(target).append(F_PROJECT_LOCATION);
@@ -357,6 +376,17 @@ public class LocalMetaArea implements ICoreConstants {
 			if (!file.exists())
 				return;
 		}
+		try {
+			readFromFile(target, description, file);
+		} catch (IOException e) {
+			//ignore - this is an old location file or an exception occurred
+			// closing the stream
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public void readFromFile(IProject target, ProjectDescription description, java.io.File file) throws IOException {
+		description.setName(target.getName());
 		try (DataInputStream dataIn = new DataInputStream(new SafeChunkyInputStream(file, 500))) {
 			try {
 				String location = dataIn.readUTF();
@@ -408,9 +438,34 @@ public class LocalMetaArea implements ICoreConstants {
 				m.put(configName, refs);
 			}
 			description.setBuildConfigReferences(m);
-		} catch (IOException e) {
-			//ignore - this is an old location file or an exception occurred
-			// closing the stream
+			// read parts since 3.23
+			int natures = dataIn.readInt();
+			String[] natureIds = new String[natures];
+			for (int i = 0; i < natures; i++) {
+				natureIds[i] = dataIn.readUTF();
+			}
+			description.setNatureIds(natureIds);
+			int buildspecs = dataIn.readInt();
+			ICommand[] buildSpecData = new ICommand[buildspecs];
+			for (int i = 0; i < buildspecs; i++) {
+				BuildCommand command = new BuildCommand();
+				buildSpecData[i] = command;
+				int type = dataIn.read();
+				if (type == 1) {
+					command.setName(dataIn.readUTF());
+					int args = dataIn.readInt();
+					Map<String, String> map = new LinkedHashMap<>();
+					for (int j = 0; j < args; j++) {
+						map.put(dataIn.readUTF(), dataIn.readUTF());
+					}
+					command.setArguments(map);
+					String trigger = dataIn.readUTF();
+					if (!trigger.isEmpty()) {
+						ProjectDescriptionReader.parseBuildTriggers(command, trigger);
+					}
+				}
+			}
+			description.setBuildSpec(buildSpecData);
 		}
 	}
 
@@ -426,13 +481,25 @@ public class LocalMetaArea implements ICoreConstants {
 		Workspace.clear(file);
 		//don't write anything if there is no interesting private metadata
 		ProjectDescription desc = ((Project) target).internalGetDescription();
+		try {
+			writeToFile(desc, file);
+		} catch (IOException e) {
+			String message = NLS.bind(Messages.resources_exSaveProjectLocation, target.getName());
+			throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, message, e);
+		}
+	}
+
+	public void writeToFile(ProjectDescription desc, java.io.File file) throws IOException {
 		if (desc == null)
 			return;
 		final URI projectLocation = desc.getLocationURI();
 		final IProject[] prjRefs = desc.getDynamicReferences(false);
 		final String[] buildConfigs = desc.configNames;
 		final Map<String, IBuildConfiguration[]> configRefs = desc.getBuildConfigReferences(false);
-		if (projectLocation == null && prjRefs.length == 0 && buildConfigs.length == 0 && configRefs.isEmpty())
+		final String[] natureIds = desc.getNatureIds();
+		final ICommand[] buildSpec = desc.getBuildSpec(false);
+		if (projectLocation == null && prjRefs.length == 0 && buildConfigs.length == 0 && configRefs.isEmpty()
+				&& natureIds.length == 0 && buildSpec.length == 0)
 			return;
 		//write the private metadata file
 		try (SafeChunkyOutputStream output = new SafeChunkyOutputStream(file); DataOutputStream dataOut = new DataOutputStream(output);) {
@@ -470,10 +537,33 @@ public class LocalMetaArea implements ICoreConstants {
 					}
 				}
 			}
+			// write parts since 3.23
+			dataOut.writeInt(natureIds.length);
+			for (String id : natureIds) {
+				dataOut.writeUTF(id);
+			}
+			dataOut.writeInt(buildSpec.length);
+			for (ICommand command : buildSpec) {
+				if (command instanceof BuildCommand b) {
+					dataOut.write(1);
+					dataOut.writeUTF(b.getName());
+					Map<String, String> arguments = b.getArguments();
+					dataOut.writeInt(arguments.size());
+					for (Entry<String, String> entry : arguments.entrySet()) {
+						dataOut.writeUTF(entry.getKey());
+						dataOut.writeUTF(entry.getValue());
+					}
+					if (ModelObjectWriter.shouldWriteTriggers(b)) {
+						dataOut.writeUTF(ModelObjectWriter.triggerString(b));
+					} else {
+						dataOut.writeUTF(""); //$NON-NLS-1$
+					}
+				} else {
+					dataOut.write(0);
+				}
+			}
+			dataOut.flush();
 			output.succeed();
-		} catch (IOException e) {
-			String message = NLS.bind(Messages.resources_exSaveProjectLocation, target.getName());
-			throw new ResourceException(IResourceStatus.INTERNAL_ERROR, null, message, e);
 		}
 	}
 }
