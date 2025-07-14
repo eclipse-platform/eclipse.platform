@@ -34,7 +34,7 @@ import org.eclipse.terminal.view.ui.ImageConsts;
 import org.eclipse.terminal.view.ui.internal.listeners.WorkbenchWindowListener;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsView;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsViewMementoHandler;
-import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
+import org.eclipse.terminal.view.ui.launcher.ILauncherDelegateManager;
 import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
@@ -64,7 +64,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	private IWindowListener windowListener;
 
 	private ServiceTracker<ITerminalService, ITerminalService> terminalServiceTracker;
-	private ServiceTracker<ILaunchDelegateManager, ILaunchDelegateManager> launchDelegateServiceTracker;
+	private ServiceTracker<ILauncherDelegateManager, ILauncherDelegateManager> launchDelegateServiceTracker;
 	private ServiceTracker<ITerminalConsoleViewManager, ITerminalConsoleViewManager> consoleManagerTracker;
 
 	/**
@@ -113,7 +113,7 @@ public class UIPlugin extends AbstractUIPlugin {
 		super.start(context);
 		terminalServiceTracker = new ServiceTracker<>(context, ITerminalService.class, null);
 		terminalServiceTracker.open();
-		launchDelegateServiceTracker = new ServiceTracker<>(context, ILaunchDelegateManager.class, null);
+		launchDelegateServiceTracker = new ServiceTracker<>(context, ILauncherDelegateManager.class, null);
 		launchDelegateServiceTracker.open();
 		consoleManagerTracker = new ServiceTracker<>(context, ITerminalConsoleViewManager.class, null);
 		consoleManagerTracker.open();
@@ -296,7 +296,7 @@ public class UIPlugin extends AbstractUIPlugin {
 		return plugin.terminalServiceTracker.getService();
 	}
 
-	public static synchronized ILaunchDelegateManager getLaunchDelegateManager() {
+	public static synchronized ILauncherDelegateManager getLaunchDelegateManager() {
 		UIPlugin plugin = getDefault();
 		if (plugin == null) {
 			return null;

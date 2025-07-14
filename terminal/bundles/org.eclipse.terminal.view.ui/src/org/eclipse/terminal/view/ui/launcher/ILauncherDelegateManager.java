@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.jface.viewers.ISelection;
 
-public interface ILaunchDelegateManager {
+public interface ILauncherDelegateManager {
 
 	/**
 	 * Returns all contributed terminal launcher delegates.
