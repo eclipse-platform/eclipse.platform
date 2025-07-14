@@ -29,6 +29,7 @@ import org.eclipse.terminal.view.core.ITerminalTabListener;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IUIConstants;
 import org.eclipse.terminal.view.ui.TerminalViewId;
+import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
 import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.component.annotations.Activate;
@@ -58,6 +59,8 @@ public class TerminalService implements ITerminalService {
 	public static final int TAB_DISPOSED = 1;
 
 	private final ITerminalConsoleViewManager consoleViewManager;
+
+	private ILaunchDelegateManager launchDelegateManager;
 
 	/**
 	 * Common terminal service runnable implementation.
@@ -90,8 +93,10 @@ public class TerminalService implements ITerminalService {
 	}
 
 	@Activate
-	public TerminalService(@Reference ITerminalConsoleViewManager consoleViewManager) {
+	public TerminalService(@Reference ITerminalConsoleViewManager consoleViewManager,
+			@Reference ILaunchDelegateManager launchDelegateManager) {
 		this.consoleViewManager = consoleViewManager;
+		this.launchDelegateManager = launchDelegateManager;
 	}
 
 	@Override
@@ -242,7 +247,7 @@ public class TerminalService implements ITerminalService {
 		Assert.isNotNull(properties);
 		return Optional.of(properties).map(map -> map.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID))
 				.filter(String.class::isInstance).map(String.class::cast)
-				.flatMap(id -> UIPlugin.getLaunchDelegateManager().findLauncherDelegate(id, false))
+				.flatMap(id -> launchDelegateManager.findLauncherDelegate(id, false))
 				.map(d -> d.createTerminalConnector(properties)).orElse(null);
 	}
 

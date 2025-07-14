@@ -16,12 +16,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
-import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -115,28 +112,6 @@ public class UIPlugin extends AbstractUIPlugin {
 
 	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
-	}
-
-	private static ServiceTracker<ITerminalService, ITerminalService> serviceTracker;
-
-	public static synchronized ITerminalService getTerminalService() {
-		if (serviceTracker == null) {
-			serviceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(), ITerminalService.class,
-					null);
-			serviceTracker.open();
-		}
-		return serviceTracker.getService();
-	}
-
-	private static ServiceTracker<ITerminalConsoleViewManager, ITerminalConsoleViewManager> consoleManagerTracker;
-
-	public static synchronized ITerminalConsoleViewManager getConsoleManager() {
-		if (consoleManagerTracker == null) {
-			consoleManagerTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
-					ITerminalConsoleViewManager.class, null);
-			consoleManagerTracker.open();
-		}
-		return consoleManagerTracker.getService();
 	}
 
 }

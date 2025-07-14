@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.internal.connector.TerminalConnector;
 
 /**
@@ -40,7 +40,7 @@ public class TerminalConnectorExtension {
 		}
 		String hidden = config.getAttribute("hidden"); //$NON-NLS-1$
 		boolean isHidden = hidden != null ? Boolean.parseBoolean(hidden) : false;
-		TerminalConnector.Factory factory = () -> (TerminalConnectorImpl) config.createExecutableExtension("class"); //$NON-NLS-1$
+		TerminalConnector.Factory factory = () -> (AbstractTerminalConnector) config.createExecutableExtension("class"); //$NON-NLS-1$
 		return new TerminalConnector(factory, id, name, isHidden);
 	}
 

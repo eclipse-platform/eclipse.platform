@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
@@ -135,5 +136,9 @@ public abstract class AbstractLauncherDelegate extends PlatformObject implements
 	protected String getDefaultTerminalTitle(Map<String, Object> properties) {
 		String title = (String) properties.get(ITerminalsConnectorConstants.PROP_TITLE);
 		return title != null ? title : null;
+	}
+
+	protected ITerminalService getTerminalService() {
+		return UIPlugin.getTerminalService();
 	}
 }

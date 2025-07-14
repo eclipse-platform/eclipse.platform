@@ -33,9 +33,9 @@ import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.connector.NullSettingsStore;
 import org.eclipse.terminal.connector.TerminalState;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 
-public class TelnetConnector extends TerminalConnectorImpl {
+public class TelnetConnector extends AbstractTerminalConnector {
 
 	static final class TelnetOutputStream extends FilterOutputStream {
 		final static byte CR = 13;

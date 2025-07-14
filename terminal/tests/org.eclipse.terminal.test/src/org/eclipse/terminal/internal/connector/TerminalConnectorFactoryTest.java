@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.TerminalState;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
 
 import junit.framework.TestCase;
@@ -118,7 +118,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		}
 	}
 
-	static class ConnectorMock extends TerminalConnectorImpl {
+	static class ConnectorMock extends AbstractTerminalConnector {
 
 		public boolean fEcho;
 		public int fWidth;
@@ -175,7 +175,7 @@ public class TerminalConnectorFactoryTest extends TestCase {
 		return makeTerminalConnector(new ConnectorMock());
 	}
 
-	protected TerminalConnector makeTerminalConnector(final TerminalConnectorImpl mock) {
+	protected TerminalConnector makeTerminalConnector(final AbstractTerminalConnector mock) {
 		TerminalConnector c = new TerminalConnector(() -> mock, "xID", "xName", false);
 		return c;
 	}

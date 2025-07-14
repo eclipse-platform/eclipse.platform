@@ -24,10 +24,10 @@ import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.connector.NullSettingsStore;
 import org.eclipse.terminal.connector.TerminalState;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
 
-public class SpeedTestConnector extends TerminalConnectorImpl {
+public class SpeedTestConnector extends AbstractTerminalConnector {
 	final SpeedTestSettings fSettings = new SpeedTestSettings();
 	InputStream fInputStream;
 	OutputStream fOutputStream;

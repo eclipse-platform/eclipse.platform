@@ -14,7 +14,6 @@ package org.eclipse.terminal.connector.local.activator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
 import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
@@ -27,17 +26,13 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class UIPlugin extends AbstractUIPlugin {
 	// The shared instance
-	private static UIPlugin plugin;
+	private static volatile UIPlugin plugin;
 	// The scoped preferences instance
 	private static volatile ScopedEclipsePreferences scopedPreferences;
 	// The trace handler instance
 	private static volatile TraceHandler traceHandler;
 
-	/**
-	 * The constructor
-	 */
-	public UIPlugin() {
-	}
+	private ServiceTracker<ILaunchDelegateManager, ILaunchDelegateManager> launchDelegateServiceTracker;
 
 	/**
 	 * Returns the shared instance
@@ -83,6 +78,8 @@ public class UIPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		launchDelegateServiceTracker = new ServiceTracker<>(context, ILaunchDelegateManager.class, null);
+		launchDelegateServiceTracker.open();
 		plugin = this;
 	}
 
@@ -121,25 +118,11 @@ public class UIPlugin extends AbstractUIPlugin {
 		return getDefault().getImageRegistry().getDescriptor(key);
 	}
 
-	private static ServiceTracker<ITerminalService, ITerminalService> terminalServiceTracker;
-
-	public static synchronized ITerminalService getTerminalService() {
-		if (terminalServiceTracker == null) {
-			terminalServiceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
-					ITerminalService.class, null);
-			terminalServiceTracker.open();
-		}
-		return terminalServiceTracker.getService();
-	}
-
-	private static ServiceTracker<ILaunchDelegateManager, ILaunchDelegateManager> launchDelegateServiceTracker;
-
 	public static synchronized ILaunchDelegateManager getLaunchDelegateManager() {
-		if (launchDelegateServiceTracker == null) {
-			launchDelegateServiceTracker = new ServiceTracker<>(getDefault().getBundle().getBundleContext(),
-					ILaunchDelegateManager.class, null);
-			launchDelegateServiceTracker.open();
+		UIPlugin plugin = getDefault();
+		if (plugin == null) {
+			return null;
 		}
-		return launchDelegateServiceTracker.getService();
+		return plugin.launchDelegateServiceTracker.getService();
 	}
 }

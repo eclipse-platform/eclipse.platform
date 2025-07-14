@@ -222,7 +222,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 		}
 
 		// Get the terminal service
-		ITerminalService terminal = UIPlugin.getTerminalService();
+		ITerminalService terminal = getTerminalService();
 		// If not available, we cannot fulfill this request
 		if (terminal != null) {
 			terminal.openConsole(properties, done);

@@ -19,7 +19,7 @@ import java.io.OutputStream;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.control.ITerminalViewControl;
 
 /**
@@ -29,9 +29,9 @@ import org.eclipse.terminal.control.ITerminalViewControl;
  * <code>org.eclipse.terminal.control.connectors</code> extension point. This
  * class gives access to the static markup of a terminal connector extension as
  * well as providing the lifecycle management for the dynamically loaded
- * {@link TerminalConnectorImpl} instance, which performs the actual
+ * {@link AbstractTerminalConnector} instance, which performs the actual
  * communications. This pattern allows for lazy initialization, bundle
- * activation and class loading of the actual {@link TerminalConnectorImpl}
+ * activation and class loading of the actual {@link AbstractTerminalConnector}
  * instance.
  *
  * Clients can get terminal connector instances from the
@@ -61,7 +61,7 @@ public interface ITerminalConnector extends IAdaptable {
 	boolean isHidden();
 
 	/**
-	 * @return true if the {@link TerminalConnectorImpl} has been initialized.
+	 * @return true if the {@link AbstractTerminalConnector} has been initialized.
 	 * If there was an initialization error, {@link #getInitializationErrorMessage()}
 	 * returns the error message.
 	 */
