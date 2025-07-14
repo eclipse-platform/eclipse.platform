@@ -31,8 +31,8 @@ public class BreakpointTypeCategory extends PlatformObject implements IBreakpoin
 
 	private final String fName;
 	private ImageDescriptor fImageDescriptor = DebugPluginImages.getImageDescriptor(IInternalDebugUIConstants.IMG_OBJS_BREAKPOINT_TYPE);
-	private boolean fSortOrder;
-	private int fOrder;
+	private boolean fSortable;
+	private int fSortPriority;
 	/**
 	 * Constructs a type category for the given type name.
 	 *
@@ -57,18 +57,17 @@ public class BreakpointTypeCategory extends PlatformObject implements IBreakpoin
 	}
 
 	/**
-	 * Constructs a type category for the given type name with the given attributes
-	 * for sorting order.
+	 * Constructs a type category for the given type name with the given sort
+	 * priority.
 	 *
-	 * @param name      breakpoint type name
-	 * @param sortOrder to sort order or not
-	 * @param order     order of the group
+	 * @param name         breakpoint type name
+	 * @param sortPriority used to calculate the sort order of this category
 	 * @since 3.19
 	 */
-	public BreakpointTypeCategory(String name, boolean sortOrder, int order) {
+	public BreakpointTypeCategory(String name, int sortPriority) {
 		fName = name;
-		fSortOrder = sortOrder;
-		fOrder = order;
+		fSortable = true;
+		fSortPriority = sortPriority;
 	}
 
 	/**
@@ -81,14 +80,15 @@ public class BreakpointTypeCategory extends PlatformObject implements IBreakpoin
 	}
 
 	/**
-	 * Returns the order of this category's placement.
+	 * Returns the sorting priority of this category.
 	 *
-	 * @return the order of this category's placement.
+	 * @return the sorting priority of this category, default is {@code 0}
 	 * @since 3.19
 	 */
-	public int getOrder() {
-		return fOrder;
+	public int getSortPriority() {
+		return fSortPriority;
 	}
+
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof BreakpointTypeCategory type) {
@@ -98,13 +98,13 @@ public class BreakpointTypeCategory extends PlatformObject implements IBreakpoin
 	}
 
 	/**
-	 * Returns whether category should follow a sorting order or not.
+	 * Returns whether category has some sort order or not.
 	 *
-	 * @return whether category should be sorted or not.
+	 * @return whether category can be sorted or not.
 	 * @since 3.19
 	 */
-	public boolean hasSortOrder() {
-		return fSortOrder;
+	public boolean isSortable() {
+		return fSortable;
 	}
 
 	@Override
