@@ -31,7 +31,7 @@ import org.eclipse.terminal.view.core.ITerminalTabListener;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IUIConstants;
 import org.eclipse.terminal.view.ui.TerminalViewId;
-import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
+import org.eclipse.terminal.view.ui.launcher.ILauncherDelegateManager;
 import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.component.annotations.Activate;
@@ -62,7 +62,7 @@ public class TerminalService implements ITerminalService {
 
 	private final ITerminalConsoleViewManager consoleViewManager;
 
-	private ILaunchDelegateManager launchDelegateManager;
+	private ILauncherDelegateManager launchDelegateManager;
 
 	/**
 	 * Common terminal service runnable implementation.
@@ -96,7 +96,7 @@ public class TerminalService implements ITerminalService {
 
 	@Activate
 	public TerminalService(@Reference ITerminalConsoleViewManager consoleViewManager,
-			@Reference ILaunchDelegateManager launchDelegateManager) {
+			@Reference ILauncherDelegateManager launchDelegateManager) {
 		this.consoleViewManager = consoleViewManager;
 		this.launchDelegateManager = launchDelegateManager;
 	}

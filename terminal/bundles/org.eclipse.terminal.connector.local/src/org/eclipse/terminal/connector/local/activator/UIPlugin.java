@@ -16,7 +16,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
-import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
+import org.eclipse.terminal.view.ui.launcher.ILauncherDelegateManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -32,7 +32,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	// The trace handler instance
 	private static volatile TraceHandler traceHandler;
 
-	private ServiceTracker<ILaunchDelegateManager, ILaunchDelegateManager> launchDelegateServiceTracker;
+	private ServiceTracker<ILauncherDelegateManager, ILauncherDelegateManager> launchDelegateServiceTracker;
 
 	/**
 	 * Returns the shared instance
@@ -78,7 +78,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		launchDelegateServiceTracker = new ServiceTracker<>(context, ILaunchDelegateManager.class, null);
+		launchDelegateServiceTracker = new ServiceTracker<>(context, ILauncherDelegateManager.class, null);
 		launchDelegateServiceTracker.open();
 		plugin = this;
 	}
@@ -118,7 +118,7 @@ public class UIPlugin extends AbstractUIPlugin {
 		return getDefault().getImageRegistry().getDescriptor(key);
 	}
 
-	public static synchronized ILaunchDelegateManager getLaunchDelegateManager() {
+	public static synchronized ILauncherDelegateManager getLaunchDelegateManager() {
 		UIPlugin plugin = getDefault();
 		if (plugin == null) {
 			return null;

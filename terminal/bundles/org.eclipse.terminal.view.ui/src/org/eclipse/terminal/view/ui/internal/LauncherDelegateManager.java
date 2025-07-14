@@ -39,7 +39,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.terminal.view.ui.launcher.ILaunchDelegateManager;
+import org.eclipse.terminal.view.ui.launcher.ILauncherDelegateManager;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.PlatformUI;
@@ -49,8 +49,8 @@ import org.osgi.service.component.annotations.Component;
 /**
  * Terminal launcher delegate manager implementation.
  */
-@Component(service = ILaunchDelegateManager.class)
-public class LauncherDelegateManager implements ILaunchDelegateManager {
+@Component(service = ILauncherDelegateManager.class)
+public class LauncherDelegateManager implements ILauncherDelegateManager {
 	// Flag to mark the extension point manager initialized (extensions loaded).
 	private boolean initialized = false;
 
