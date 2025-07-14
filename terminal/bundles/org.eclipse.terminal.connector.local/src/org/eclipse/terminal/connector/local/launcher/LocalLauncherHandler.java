@@ -13,7 +13,6 @@
 package org.eclipse.terminal.connector.local.launcher;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -37,9 +36,15 @@ public class LocalLauncherHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// Get the current selection
-		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		ISelection selection = selection(event);
+		UIPlugin.getLaunchDelegateManager().getApplicableLauncherDelegates(selection)
+				.filter(d -> "org.eclipse.terminal.connector.local.launcher.local".equals(d.getId())).findFirst() //$NON-NLS-1$
+				.ifPresent(d -> executeDelegate(selection, d));
+		return null;
+	}
 
+	private ISelection selection(ExecutionEvent event) {
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		// If the selection is not a structured selection, check if there is an active
 		// editor and get the path from the editor input
 		if (!(selection instanceof IStructuredSelection)) {
@@ -56,29 +61,14 @@ public class LocalLauncherHandler extends AbstractHandler {
 				}
 			}
 		}
+		return selection;
+	}
 
-		// Get all applicable launcher delegates for the current selection
-		List<ILauncherDelegate> delegates = UIPlugin.getLaunchDelegateManager()
-				.getApplicableLauncherDelegates(selection);
-		// Find the local terminal launcher delegate
-		ILauncherDelegate delegate = null;
-		for (ILauncherDelegate candidate : delegates) {
-			if ("org.eclipse.terminal.connector.local.launcher.local".equals(candidate.getId())) { //$NON-NLS-1$
-				delegate = candidate;
-				break;
-			}
-		}
-
-		// Launch the local terminal
-		if (delegate != null) {
-			Map<String, Object> properties = new HashMap<>();
-			properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
-			properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
-
-			delegate.execute(properties, null);
-		}
-
-		return null;
+	private void executeDelegate(ISelection selection, ILauncherDelegate delegate) {
+		Map<String, Object> properties = new HashMap<>();
+		properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
+		properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
+		delegate.execute(properties, null);
 	}
 
 }

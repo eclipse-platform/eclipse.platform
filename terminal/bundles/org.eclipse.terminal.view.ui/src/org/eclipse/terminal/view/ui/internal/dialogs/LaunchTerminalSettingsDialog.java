@@ -421,7 +421,8 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalSettingsDialog.this);
 			}
 
-			List<ILauncherDelegate> delegates = UIPlugin.getLaunchDelegateManager().getLauncherDelegates(false);
+			List<ILauncherDelegate> delegates = UIPlugin.getLaunchDelegateManager().getLauncherDelegates(false)
+					.toList();
 
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 				UIPlugin.getTraceHandler().trace(
@@ -452,7 +453,7 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 			}
 
 			List<ILauncherDelegate> delegates = UIPlugin.getLaunchDelegateManager()
-					.getApplicableLauncherDelegates(selection);
+					.getApplicableLauncherDelegates(selection).toList();
 
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 				UIPlugin.getTraceHandler().trace(

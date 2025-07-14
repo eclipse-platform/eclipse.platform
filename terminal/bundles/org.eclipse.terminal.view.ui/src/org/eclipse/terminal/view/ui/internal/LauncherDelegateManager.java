@@ -19,7 +19,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.eclipse.core.expressions.EvaluationContext;
 import org.eclipse.core.expressions.EvaluationResult;
@@ -31,6 +33,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -224,23 +227,17 @@ public class LauncherDelegateManager implements ILaunchDelegateManager {
 	}
 
 	/**
-	 * Returns the list of all contributed terminal launcher delegates.
+	 * Returns the stream of all contributed terminal launcher delegates.
 	 *
 	 * @param unique If <code>true</code>, the method returns new instances for each
 	 *               contributed terminal launcher delegate.
 	 *
-	 * @return The list of contributed terminal launcher delegates, or an empty list.
+	 * @return The stream of contributed terminal launcher delegates
 	 */
 	@Override
-	public List<ILauncherDelegate> getLauncherDelegates(boolean unique) {
-		List<ILauncherDelegate> contributions = new ArrayList<>();
-		for (Proxy launcherDelegate : getExtensions().values()) {
-			ILauncherDelegate instance = unique ? launcherDelegate.newInstance() : launcherDelegate.getInstance();
-			if (instance != null && !contributions.contains(instance)) {
-				contributions.add(instance);
-			}
-		}
-		return contributions;
+	public Stream<ILauncherDelegate> getLauncherDelegates(boolean unique) {
+		return getExtensions().values().stream().map(proxy -> unique ? proxy.newInstance() : proxy.getInstance())
+				.filter(Objects::nonNull).distinct();
 	}
 
 	/**
@@ -268,51 +265,37 @@ public class LauncherDelegateManager implements ILaunchDelegateManager {
 	 * Returns the applicable terminal launcher delegates for the given selection.
 	 *
 	 * @param selection The selection or <code>null</code>.
-	 * @return The list of applicable terminal launcher delegates or an empty list.
+	 * @return The stream of applicable terminal launcher delegates.
 	 */
 	@Override
-	public List<ILauncherDelegate> getApplicableLauncherDelegates(ISelection selection) {
-		List<ILauncherDelegate> applicable = new ArrayList<>();
+	public Stream<ILauncherDelegate> getApplicableLauncherDelegates(ISelection selection) {
+		return getLauncherDelegates(false).filter(d -> isApplicable(selection, d));
+	}
 
-		for (ILauncherDelegate delegate : getLauncherDelegates(false)) {
-			Expression enablement = delegate.getEnablement();
-
-			// The launcher delegate is applicable by default if
-			// no expression is specified.
-			boolean isApplicable = enablement == null;
-
-			if (enablement != null) {
-				if (selection != null) {
-					// Set the default variable to selection.
-					IEvaluationContext currentState = PlatformUI.getWorkbench().getService(IHandlerService.class)
-							.getCurrentState();
-					EvaluationContext context = new EvaluationContext(currentState, selection);
-					// Set the "selection" variable to the selection.
-					context.addVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME, selection);
-					// Allow plug-in activation
-					context.setAllowPluginActivation(true);
-					// Evaluate the expression
-					try {
-						isApplicable = enablement.evaluate(context).equals(EvaluationResult.TRUE);
-					} catch (CoreException e) {
-						IStatus status = new Status(IStatus.ERROR, UIPlugin.getUniqueIdentifier(),
-								e.getLocalizedMessage(), e);
-						UIPlugin.getDefault().getLog().log(status);
-					}
-				} else {
-					// The enablement is false by definition if
-					// there is no selection.
-					isApplicable = false;
-				}
-			}
-
-			// Add the page if applicable
-			if (isApplicable) {
-				applicable.add(delegate);
-			}
+	private boolean isApplicable(ISelection selection, ILauncherDelegate delegate) {
+		Expression enablement = delegate.getEnablement();
+		if (enablement == null) {
+			// The launcher delegate is applicable by default if no expression is specified.
+			return true;
 		}
-
-		return applicable;
+		if (selection == null) {
+			// The enablement is false by definition if there is no selection.
+			return false;
+		}
+		// Set the default variable to selection.
+		IEvaluationContext currentState = PlatformUI.getWorkbench().getService(IHandlerService.class).getCurrentState();
+		EvaluationContext context = new EvaluationContext(currentState, selection);
+		// Set the "selection" variable to the selection.
+		context.addVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME, selection);
+		// Allow plug-in activation
+		context.setAllowPluginActivation(true);
+		// Evaluate the expression
+		try {
+			return enablement.evaluate(context).equals(EvaluationResult.TRUE);
+		} catch (CoreException e) {
+			ILog.get().log(e.getStatus());
+			return false;
+		}
 	}
 
 	/**
