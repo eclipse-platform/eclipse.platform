@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.TerminalState;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
 import org.eclipse.terminal.internal.connector.TerminalConnector.Factory;
 
@@ -119,7 +119,7 @@ public class TerminalConnectorTest extends TestCase {
 		}
 	}
 
-	static class ConnectorMock extends TerminalConnectorImpl {
+	static class ConnectorMock extends AbstractTerminalConnector {
 
 		public boolean fEcho;
 		public int fWidth;
@@ -173,14 +173,14 @@ public class TerminalConnectorTest extends TestCase {
 	}
 
 	static class SimpleFactory implements Factory {
-		final TerminalConnectorImpl fConnector;
+		final AbstractTerminalConnector fConnector;
 
-		public SimpleFactory(TerminalConnectorImpl connector) {
+		public SimpleFactory(AbstractTerminalConnector connector) {
 			fConnector = connector;
 		}
 
 		@Override
-		public TerminalConnectorImpl makeConnector() throws Exception {
+		public AbstractTerminalConnector makeConnector() throws Exception {
 			// TODO Auto-generated method stub
 			return fConnector;
 		}

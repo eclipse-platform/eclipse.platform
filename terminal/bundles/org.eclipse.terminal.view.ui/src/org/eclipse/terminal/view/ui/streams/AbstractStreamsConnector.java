@@ -16,14 +16,16 @@ import java.io.OutputStream;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.terminal.connector.ITerminalControl;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.view.core.ITerminalServiceOutputStreamMonitorListener;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
+import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.services.IDisposable;
 
 /**
  * Streams connector implementation.
  */
-public abstract class AbstractStreamsConnector extends TerminalConnectorImpl {
+public abstract class AbstractStreamsConnector extends AbstractTerminalConnector {
 	// Reference to the stdin monitor
 	private InputStreamMonitor stdInMonitor;
 	// Reference to the stdout monitor
@@ -196,6 +198,10 @@ public abstract class AbstractStreamsConnector extends TerminalConnectorImpl {
 	@Override
 	public OutputStream getTerminalToRemoteStream() {
 		return stdInMonitor;
+	}
+
+	protected ITerminalConsoleViewManager getConsoleViewManager() {
+		return UIPlugin.getConsoleManager();
 	}
 
 }

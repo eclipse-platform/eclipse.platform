@@ -27,7 +27,7 @@ import org.eclipse.terminal.connector.TerminalState;
  * extension point.
  *
  */
-public abstract class TerminalConnectorImpl {
+public abstract class AbstractTerminalConnector {
 
 	/**
 	 * The TerminalControl associated with this connector.

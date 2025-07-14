@@ -52,10 +52,10 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  A class extending TerminalConnectorImpl
+                  A class extending AbstractTerminalConnector
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.terminal.connector.provider.TerminalConnectorImpl:"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.terminal.connector.provider.AbstractTerminalConnector:"/>
                </appInfo>
             </annotation>
          </attribute>

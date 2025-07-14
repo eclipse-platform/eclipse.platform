@@ -209,7 +209,7 @@ public class ProcessConnector extends AbstractStreamsConnector {
 			// Save the shell so the error message can have somewhere to display
 			Shell shell = control.getShell();
 			// Lookup the tab item
-			UIPlugin.getConsoleManager().findConsole(control).ifPresent(Widget::dispose);
+			getConsoleViewManager().findConsole(control).ifPresent(Widget::dispose);
 			// Get the error message from the exception
 			String msg = e.getLocalizedMessage() != null ? e.getLocalizedMessage() : ""; //$NON-NLS-1$
 			Assert.isNotNull(msg);

@@ -26,7 +26,7 @@ import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.connector.TerminalState;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.internal.control.impl.TerminalMessages;
 
 /**
@@ -35,7 +35,7 @@ import org.eclipse.terminal.internal.control.impl.TerminalMessages;
  *
  * It provides all terminal connector functions that can be provided by static
  * markup without loading the actual implementation class. The actual
- * {@link TerminalConnectorImpl} implementation class is lazily loaded by the
+ * {@link AbstractTerminalConnector} implementation class is lazily loaded by the
  * provided {@link TerminalConnector.Factory} interface when needed. class, and
  * delegates to the actual implementation when needed. The following methods can
  * be called without initializing the contributed implementation class:
@@ -50,7 +50,7 @@ import org.eclipse.terminal.internal.control.impl.TerminalMessages;
  */
 public class TerminalConnector implements ITerminalConnector {
 	/**
-	 * Creates an instance of TerminalConnectorImpl. This is used to lazily load
+	 * Creates an instance of {@link AbstractTerminalConnector}. This is used to lazily load
 	 * classed defined in extensions.
 	 *
 	 */
@@ -62,7 +62,7 @@ public class TerminalConnector implements ITerminalConnector {
 		 * @return a Connector
 		 * @throws Exception
 		 */
-		TerminalConnectorImpl makeConnector() throws Exception;
+		AbstractTerminalConnector makeConnector() throws Exception;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class TerminalConnector implements ITerminalConnector {
 	/**
 	 * The connector
 	 */
-	private TerminalConnectorImpl fConnector;
+	private AbstractTerminalConnector fConnector;
 	/**
 	 * If the initialization of the class specified in the extension fails,
 	 * this variable contains the error
@@ -100,7 +100,7 @@ public class TerminalConnector implements ITerminalConnector {
 	 * Constructor for the terminal connector.
 	 *
 	 * @param terminalConnectorFactory Factory for lazily instantiating the
-	 *            TerminalConnectorImpl when needed.
+	 *            {@link AbstractTerminalConnector} when needed.
 	 * @param id terminal connector ID. The connector is publicly known under
 	 *            this ID.
 	 * @param name translatable name to display the connector in the UI.
@@ -137,14 +137,14 @@ public class TerminalConnector implements ITerminalConnector {
 		return fHidden;
 	}
 
-	private TerminalConnectorImpl getConnectorImpl() {
+	private AbstractTerminalConnector getConnectorImpl() {
 		if (!isInitialized()) {
 			try {
 				fConnector = fTerminalConnectorFactory.makeConnector();
 				fConnector.initialize();
 			} catch (Exception e) {
 				fException = e;
-				fConnector = new TerminalConnectorImpl() {
+				fConnector = new AbstractTerminalConnector() {
 					@Override
 					public void connect(ITerminalControl control) {
 						// super.connect(control);
@@ -241,7 +241,7 @@ public class TerminalConnector implements ITerminalConnector {
 
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		TerminalConnectorImpl connector = null;
+		AbstractTerminalConnector connector = null;
 		if (isInitialized()) {
 			connector = getConnectorImpl();
 		}

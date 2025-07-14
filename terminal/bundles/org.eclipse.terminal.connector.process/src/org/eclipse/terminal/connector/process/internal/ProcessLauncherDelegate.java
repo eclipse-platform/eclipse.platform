@@ -47,7 +47,7 @@ public class ProcessLauncherDelegate extends AbstractLauncherDelegate {
 		Assert.isNotNull(properties);
 
 		// Get the terminal service
-		ITerminalService terminal = UIPlugin.getTerminalService();
+		ITerminalService terminal = getTerminalService();
 		// If not available, we cannot fulfill this request
 		if (terminal != null) {
 			terminal.openConsole(properties, done);

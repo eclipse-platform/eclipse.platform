@@ -22,12 +22,12 @@ import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.Logger;
 import org.eclipse.terminal.connector.NullSettingsStore;
-import org.eclipse.terminal.connector.provider.TerminalConnectorImpl;
+import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 
-public class SshConnector extends TerminalConnectorImpl {
+public class SshConnector extends AbstractTerminalConnector {
 	private OutputStream fOutputStream;
 	private InputStream fInputStream;
 	private JSch fJsch;

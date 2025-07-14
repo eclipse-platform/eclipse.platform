@@ -22,7 +22,6 @@ import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
-import org.eclipse.terminal.connector.ssh.activator.UIPlugin;
 import org.eclipse.terminal.connector.ssh.connector.ISshSettings;
 import org.eclipse.terminal.connector.ssh.connector.SshSettings;
 import org.eclipse.terminal.connector.ssh.controls.SshWizardConfigurationPanel;
@@ -68,7 +67,7 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 		}
 
 		// Get the terminal service
-		ITerminalService terminal = UIPlugin.getTerminalService();
+		ITerminalService terminal = getTerminalService();
 		// If not available, we cannot fulfill this request
 		if (terminal != null) {
 			terminal.openConsole(properties, done);
