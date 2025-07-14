@@ -23,16 +23,21 @@ import org.eclipse.debug.ui.AbstractBreakpointOrganizerDelegate;
 import org.eclipse.debug.ui.BreakpointTypeCategory;
 
 /**
- * Breakpoint organizers for breakpoint types.
- *
- * @since 3.1
+ * Breakpoint organizers for breakpoint types based on breakpoint enablement
+ * state.
  */
 public class BreakpointEnablement extends AbstractBreakpointOrganizerDelegate implements IBreakpointListener {
-	private final BreakpointTypeCategory ENABLED = new BreakpointTypeCategory("Enabled", true, 0); //$NON-NLS-1$
-	private final BreakpointTypeCategory DISABLED = new BreakpointTypeCategory("Disabled", true, 1); //$NON-NLS-1$
+
+	private final BreakpointTypeCategory ENABLED = new BreakpointTypeCategory("Enabled", 0); //$NON-NLS-1$
+	private final BreakpointTypeCategory DISABLED = new BreakpointTypeCategory("Disabled", 1); //$NON-NLS-1$
 
 	public BreakpointEnablement() {
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+	}
+
+	@Override
+	public void dispose() {
+		DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
 	}
 
 	@Override
@@ -50,12 +55,6 @@ public class BreakpointEnablement extends AbstractBreakpointOrganizerDelegate im
 		}
 		return null;
 	}
-
-	@Override
-	public void dispose() {
-		DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
-	}
-
 
 	@Override
 	public void breakpointAdded(IBreakpoint breakpoint) {

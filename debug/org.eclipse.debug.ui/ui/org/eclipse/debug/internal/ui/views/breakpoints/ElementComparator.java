@@ -75,9 +75,9 @@ public class ElementComparator implements Comparator<Object> {
 			return -1;
 		}
 
-		if (c1.getCategory() instanceof BreakpointTypeCategory breakType1 && breakType1.hasSortOrder()) {
-			if (c2.getCategory() instanceof BreakpointTypeCategory breakType2 && breakType2.hasSortOrder() ) {
-				return Integer.compare(breakType1.getOrder(), breakType2.getOrder());
+		if (c1.getCategory() instanceof BreakpointTypeCategory breakType1 && breakType1.isSortable()) {
+			if (c2.getCategory() instanceof BreakpointTypeCategory breakType2 && breakType2.isSortable()) {
+				return Integer.compare(breakType1.getSortPriority(), breakType2.getSortPriority());
 			}
 		}
 
