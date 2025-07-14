@@ -30,8 +30,8 @@ public class PropertyTester extends org.eclipse.core.expressions.PropertyTester 
 
 		if ("hasApplicableLauncherDelegates".equals(property)) { //$NON-NLS-1$
 			ISelection selection = receiver instanceof ISelection i ? i : new StructuredSelection(receiver);
-			return expectedValue.equals(Boolean
-					.valueOf(!UIPlugin.getLaunchDelegateManager().getApplicableLauncherDelegates(selection).isEmpty()));
+			return expectedValue.equals(Boolean.valueOf(UIPlugin.getLaunchDelegateManager()
+					.getApplicableLauncherDelegates(selection).findAny().isPresent()));
 		}
 
 		if ("canDisconnect".equals(property) && receiver instanceof ITerminalsView) { //$NON-NLS-1$

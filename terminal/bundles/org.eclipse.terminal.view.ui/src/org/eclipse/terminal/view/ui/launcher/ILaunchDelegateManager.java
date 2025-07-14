@@ -13,22 +13,22 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.launcher;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.eclipse.jface.viewers.ISelection;
 
 public interface ILaunchDelegateManager {
 
 	/**
-	 * Returns the list of all contributed terminal launcher delegates.
+	 * Returns all contributed terminal launcher delegates.
 	 *
 	 * @param unique If <code>true</code>, the method returns new instances for each
 	 *               contributed terminal launcher delegate.
 	 *
-	 * @return The list of contributed terminal launcher delegates, or an empty list.
+	 * @return The stream of contributed terminal launcher delegates
 	 */
-	List<ILauncherDelegate> getLauncherDelegates(boolean unique);
+	Stream<ILauncherDelegate> getLauncherDelegates(boolean unique);
 
 	/**
 	 * Lookup a terminal launcher delegate identified by its unique id.
@@ -44,8 +44,8 @@ public interface ILaunchDelegateManager {
 	 * Returns the applicable terminal launcher delegates for the given selection.
 	 *
 	 * @param selection The selection or <code>null</code>.
-	 * @return The list of applicable terminal launcher delegates or an empty list.
+	 * @return The stream of applicable terminal launcher delegates.
 	 */
-	List<ILauncherDelegate> getApplicableLauncherDelegates(ISelection selection);
+	Stream<ILauncherDelegate> getApplicableLauncherDelegates(ISelection selection);
 
 }

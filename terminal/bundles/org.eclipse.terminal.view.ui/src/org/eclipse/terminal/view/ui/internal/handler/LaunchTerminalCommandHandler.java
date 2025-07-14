@@ -89,7 +89,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 
 			// Check if the dialog needs to be shown at all
 			List<ILauncherDelegate> delegates = UIPlugin.getLaunchDelegateManager()
-					.getApplicableLauncherDelegates(selection);
+					.getApplicableLauncherDelegates(selection).toList();
 
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 				UIPlugin.getTraceHandler().trace(
