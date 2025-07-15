@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -9,11 +9,9 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Dirk Fauth <dirk.fauth@googlemail.com> - Bug 460496
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui;
-
-import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
-import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
 /**
  * Terminal plug-in preference key definitions.
@@ -70,9 +68,5 @@ public interface IPreferenceKeys {
 	 */
 	public final String PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS = PREF_TERMINAL
 			+ ".localTerminalDefaultShellUnixArgs"; //$NON-NLS-1$
-
-	static ScopedEclipsePreferences getPreferences() {
-		return UIPlugin.getScopedPreferences();
-	}
 
 }
