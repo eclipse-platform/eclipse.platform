@@ -63,7 +63,7 @@ public class TerminalService implements ITerminalService {
 
 	private final ITerminalConsoleViewManager consoleViewManager;
 
-	private ILauncherDelegateManager launchDelegateManager;
+	private final ILauncherDelegateManager launchDelegateManager;
 
 	/**
 	 * Common terminal service runnable implementation.
