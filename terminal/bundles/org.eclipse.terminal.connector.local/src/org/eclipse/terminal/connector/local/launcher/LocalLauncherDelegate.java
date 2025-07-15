@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2012, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -9,6 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Dirk Fauth <dirk.fauth@googlemail.com> - Bug 460496
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.connector.local.launcher;
 
@@ -292,7 +293,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 	}
 
 	@Override
-	public ITerminalConnector createTerminalConnector(Map<String, Object> properties) {
+	public ITerminalConnector createTerminalConnector(Map<String, Object> properties) throws CoreException {
 		Assert.isNotNull(properties);
 
 		// Check for the terminal connector id
@@ -419,13 +420,10 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 
 		// Construct the terminal connector instance
 		ITerminalConnector connector = TerminalConnectorExtension.makeTerminalConnector(connectorId);
-		if (connector != null) {
-			// Apply default settings
-			connector.setDefaultSettings();
-			// And load the real settings
-			connector.load(store);
-		}
-
+		// Apply default settings
+		connector.setDefaultSettings();
+		// And load the real settings
+		connector.load(store);
 		return connector;
 	}
 }

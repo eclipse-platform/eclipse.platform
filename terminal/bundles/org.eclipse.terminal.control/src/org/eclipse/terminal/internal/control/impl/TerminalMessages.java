@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2006, 2025 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  * Michael Scharf (Wind River) - initial API and implementation
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Martin Oberhuber (Wind River) - [378691][api] push Preferences into the Widget
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.internal.control.impl;
 
@@ -46,6 +47,7 @@ public class TerminalMessages extends NLS {
 	public static String TerminalColorsFieldEditor_TextColor;
 	public static String TerminalColorsFieldEditor_White;
 	public static String TerminalColorsFieldEditor_Yellow;
+	public static String TerminalConnectorExtension_e_no_connector_for_id;
 	public static String TerminalError;
 	public static String SocketError;
 	public static String IOError;
