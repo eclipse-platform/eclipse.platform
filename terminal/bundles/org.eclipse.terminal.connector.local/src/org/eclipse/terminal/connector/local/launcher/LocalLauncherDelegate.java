@@ -108,7 +108,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 		// Initialize the local terminal working directory.
 		if (!properties.containsKey(ITerminalsConnectorConstants.PROP_PROCESS_WORKING_DIR)) {
 			// By default, start the local terminal in the users home directory
-			String initialCwd = IPreferenceKeys.getPreferences()
+			String initialCwd = UIPlugin.getScopedPreferences()
 					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD);
 			String cwd = null;
 			if (initialCwd == null || IPreferenceKeys.PREF_INITIAL_CWD_USER_HOME.equals(initialCwd)
@@ -277,7 +277,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 			}
 		}
 		if (shell == null) {
-			shell = IPreferenceKeys.getPreferences().getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
+			shell = UIPlugin.getScopedPreferences().getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX);
 			if (shell == null || "".equals(shell)) { //$NON-NLS-1$
 				if (System.getenv("SHELL") != null && !"".equals(System.getenv("SHELL").trim())) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					shell = System.getenv("SHELL").trim(); //$NON-NLS-1$
@@ -312,7 +312,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 
 		String arguments = (String) properties.get(ITerminalsConnectorConstants.PROP_PROCESS_ARGS);
 		if (arguments == null && !Platform.OS_WIN32.equals(Platform.getOS())) {
-			arguments = IPreferenceKeys.getPreferences()
+			arguments = UIPlugin.getScopedPreferences()
 					.getString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS);
 		}
 
