@@ -9,7 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  *******************************************************************************/
-package org.eclipse.terminal.view.core.utils;
+package org.eclipse.terminal.connector.process.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -35,11 +35,11 @@ import org.eclipse.terminal.connector.ISettingsStore;
 import org.eclipse.terminal.connector.ITerminalControl;
 import org.eclipse.terminal.connector.NullSettingsStore;
 import org.eclipse.terminal.connector.TerminalState;
+import org.eclipse.terminal.connector.process.internal.Env;
 import org.eclipse.terminal.connector.process.internal.Messages;
 import org.eclipse.terminal.connector.process.internal.ProcessMonitor;
 import org.eclipse.terminal.connector.process.internal.UIPlugin;
 import org.eclipse.terminal.view.core.ILineSeparatorConstants;
-import org.eclipse.terminal.view.core.utils.Env;
 import org.eclipse.terminal.view.ui.streams.AbstractStreamsConnector;
 
 /**
