@@ -31,6 +31,7 @@ import org.eclipse.terminal.view.core.ITerminalTabListener;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IUIConstants;
 import org.eclipse.terminal.view.ui.TerminalViewId;
+import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegateManager;
 import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
 import org.eclipse.ui.PlatformUI;
@@ -180,29 +181,28 @@ public class TerminalService implements ITerminalService {
 		title = normalizeTitle(title, data);
 
 		// Create the terminal connector instance
-		final ITerminalConnector connector = createTerminalConnector(properties);
-		if (connector == null) {
+		ITerminalConnector connector;
+		try {
+			connector = createTerminalConnector(properties);
+		} catch (CoreException e) {
 			// Properties contain invalid connector arguments
 			if (done != null) {
-				done.done(Status.error(Messages.TerminalService_error_cannotCreateConnector));
+				done.done(e.getStatus());
 			}
 			return;
 		}
+		executeServiceOperation(runnable, new TerminalViewId(id, secondaryId), title, connector, data, done);
+	}
 
-		// Finalize the used variables
-		final String finId = id;
-		final String finSecondaryId = secondaryId;
-		final String finTitle = title;
-		final Object finData = data;
-		TerminalViewId tvid = new TerminalViewId(finId, finSecondaryId);
-
+	private void executeServiceOperation(final TerminalServiceRunnable runnable, TerminalViewId tvid,
+			final String title, final ITerminalConnector connector, final Object data, final Done done) {
 		// Execute the operation
 		if (!runnable.isExecuteAsync()) {
-			runnable.run(tvid, finTitle, connector, finData, done);
+			runnable.run(tvid, title, connector, data, done);
 		} else {
 			try {
 				Display display = PlatformUI.getWorkbench().getDisplay();
-				display.asyncExec(() -> runnable.run(tvid, finTitle, connector, finData, done));
+				display.asyncExec(() -> runnable.run(tvid, title, connector, data, done));
 			} catch (Exception e) {
 				// if display is disposed, silently ignore.
 			}
@@ -243,14 +243,18 @@ public class TerminalService implements ITerminalService {
 	 * Creates the terminal connector configured within the given properties.
 	 *
 	 * @param properties The terminal console properties. Must not be <code>null</code>.
-	 * @return The terminal connector or <code>null</code>.
+	 * @return The created terminal connector
+	 * @throws CoreException if connector cannot be created for provided input
 	 */
-	protected ITerminalConnector createTerminalConnector(Map<String, Object> properties) {
+	protected ITerminalConnector createTerminalConnector(Map<String, Object> properties) throws CoreException {
 		Assert.isNotNull(properties);
-		return Optional.of(properties).map(map -> map.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID))
-				.filter(String.class::isInstance).map(String.class::cast)
-				.flatMap(id -> launchDelegateManager.findLauncherDelegate(id, false))
-				.map(d -> d.createTerminalConnector(properties)).orElse(null);
+		ILauncherDelegate delegate = Optional.of(properties)
+				.map(map -> map.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID)).filter(String.class::isInstance)
+				.map(String.class::cast).flatMap(id -> launchDelegateManager.findLauncherDelegate(id, false))
+				.orElseThrow(
+						() -> new CoreException(Status.error(Messages.TerminalService_error_cannotCreateConnector)));
+
+		return delegate.createTerminalConnector(properties);
 	}
 
 	@Override

@@ -22,10 +22,12 @@ import java.util.Optional;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.view.core.IContextPropertiesConstants;
 import org.eclipse.terminal.view.core.ITerminalContextPropertiesProvider;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
@@ -61,7 +63,11 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 		if (commandId.equals("org.eclipse.terminal.view.ui.command.launchConsole")) { //$NON-NLS-1$
 			LaunchTerminalSettingsDialog dialog = new LaunchTerminalSettingsDialog(shell, start);
 			if (dialog.open() == Window.OK) {
-				return findDelegate(dialog).map(delegate -> delegate.createTerminalConnector(dialog.getSettings()));
+				Optional<ILauncherDelegate> delegate = findDelegate(dialog);
+				if (delegate.isEmpty()) {
+					return null;
+				}
+				return createConnector(delegate.get(), dialog.getSettings());
 			}
 			return null;
 		}
@@ -129,12 +135,20 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 		return null;
 	}
 
-	private final Optional<ILauncherDelegate> findDelegate(LaunchTerminalSettingsDialog dialog) {
+	private Optional<ILauncherDelegate> findDelegate(LaunchTerminalSettingsDialog dialog) {
 		return Optional.ofNullable(dialog.getSettings())
 				.map(map -> map.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID)).filter(String.class::isInstance)
 				.map(String.class::cast)
 				.flatMap(id -> UIPlugin.getLaunchDelegateManager().findLauncherDelegate(id, false));
+	}
 
+	private ITerminalConnector createConnector(ILauncherDelegate delegate, Map<String, Object> settings)
+			throws ExecutionException {
+		try {
+			return delegate.createTerminalConnector(settings);
+		} catch (CoreException e) {
+			throw new ExecutionException(e.getStatus().getMessage(), e);
+		}
 	}
 
 	private boolean isValidSelection(ISelection selection) {

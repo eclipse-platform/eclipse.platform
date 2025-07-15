@@ -14,6 +14,7 @@ package org.eclipse.terminal.view.ui.launcher;
 import java.util.Map;
 
 import org.eclipse.core.expressions.Expression;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.terminal.connector.ITerminalConnector;
@@ -92,7 +93,8 @@ public interface ILauncherDelegate extends IExecutableExtension, IAdaptable {
 	 * the given properties.
 	 *
 	 * @param properties The terminal properties. Must not be <code>null</code>.
-	 * @return The terminal connector or <code>null</code>.
+	 * @return The created terminal connector.
+	 * @throws CoreException if connector cannot be created for provided input
 	 */
-	public ITerminalConnector createTerminalConnector(Map<String, Object> properties);
+	public ITerminalConnector createTerminalConnector(Map<String, Object> properties) throws CoreException;
 }

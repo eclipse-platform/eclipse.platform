@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2006, 2025 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,21 @@
  * Michael Scharf (Wind River) - initial API and implementation
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Uwe Stieber (Wind River) - [282996] [terminal][api] Add "hidden" attribute to terminal connector extension point
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.connector;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.terminal.connector.provider.AbstractTerminalConnector;
 import org.eclipse.terminal.internal.connector.TerminalConnector;
+import org.eclipse.terminal.internal.control.impl.TerminalMessages;
 
 /**
  * A factory to get {@link ITerminalConnector} instances.
@@ -51,10 +56,10 @@ public class TerminalConnectorExtension {
 	 * @param id the id of the terminal connector in the
 	 *            <code>org.eclipse.terminal.control.connectors</code>
 	 *            extension point
-	 * @return a new ITerminalConnector with id or <code>null</code> if there
-	 *         is no extension with that id.
+	 * @return a new ITerminalConnector for the given id.
+	 * @throws CoreException if connector cannot be created for provided input
 	 */
-	public static ITerminalConnector makeTerminalConnector(String id) {
+	public static ITerminalConnector makeTerminalConnector(String id) throws CoreException {
 		IConfigurationElement[] config = RegistryFactory.getRegistry()
 				.getConfigurationElementsFor("org.eclipse.terminal.control.connectors"); //$NON-NLS-1$
 		for (int i = 0; i < config.length; i++) {
@@ -62,7 +67,8 @@ public class TerminalConnectorExtension {
 				return makeConnector(config[i]);
 			}
 		}
-		return null;
+		throw new CoreException(
+				Status.error(NLS.bind(TerminalMessages.TerminalConnectorExtension_e_no_connector_for_id, id)));
 	}
 
 	/**
