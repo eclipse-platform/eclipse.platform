@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,17 +8,18 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.launcher;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.terminal.connector.ITerminalConnector;
-import org.eclipse.terminal.view.core.ITerminalService;
 
 /**
  * Terminal launcher delegate.
@@ -84,9 +85,9 @@ public interface ILauncherDelegate extends IExecutableExtension, IAdaptable {
 	 * Execute the terminal launch.
 	 *
 	 * @param properties The properties. Must not be <code>null</code>.
-	 * @param done The callback or <code>null</code>.
+	 * @return the {@link CompletableFuture}
 	 */
-	public void execute(Map<String, Object> properties, ITerminalService.Done done);
+	public CompletableFuture<?> execute(Map<String, Object> properties);
 
 	/**
 	 * Creates the terminal connector for this launcher delegate based on

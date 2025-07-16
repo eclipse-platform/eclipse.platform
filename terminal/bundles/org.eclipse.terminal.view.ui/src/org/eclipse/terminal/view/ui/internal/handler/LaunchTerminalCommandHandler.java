@@ -84,7 +84,10 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 				dialog.setSelection(selection);
 			}
 			if (dialog.open() == Window.OK) {
-				findDelegate(dialog).ifPresent(delegate -> delegate.execute(dialog.getSettings(), null));
+				Optional<ILauncherDelegate> delegate = findDelegate(dialog);
+				if (delegate.isPresent()) {
+					executeDelegate(dialog.getSettings(), delegate.get());
+				}
 			}
 		} else {
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
@@ -116,19 +119,14 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 					dialog.setSelection(selection);
 				}
 				if (dialog.open() == Window.OK) {
-					findDelegate(dialog).ifPresent(delegate -> delegate.execute(dialog.getSettings(), null));
+					Optional<ILauncherDelegate> delegate = findDelegate(dialog);
+					if (delegate.isPresent()) {
+						executeDelegate(dialog.getSettings(), delegate.get());
+					}
 				}
 			} else if (delegates.size() == 1) {
 				ILauncherDelegate delegate = delegates.get(0);
-				Map<String, Object> properties = new HashMap<>();
-
-				// Store the id of the selected delegate
-				properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
-				// Store the selection
-				properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
-
-				// Execute
-				delegate.execute(properties, null);
+				executeDelegate(selection, delegate);
 			}
 		}
 
@@ -165,4 +163,20 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 
 		return false;
 	}
+
+	private void executeDelegate(ISelection selection, ILauncherDelegate delegate) throws ExecutionException {
+		Map<String, Object> properties = new HashMap<>();
+		properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
+		properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
+		executeDelegate(properties, delegate);
+	}
+
+	private void executeDelegate(Map<String, Object> properties, ILauncherDelegate delegate) throws ExecutionException {
+		try {
+			delegate.execute(properties);
+		} catch (Exception e) {
+			throw new ExecutionException(e.getMessage(), e);
+		}
+	}
+
 }

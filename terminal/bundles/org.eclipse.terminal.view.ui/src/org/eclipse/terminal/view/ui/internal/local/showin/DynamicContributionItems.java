@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -127,8 +128,11 @@ public class DynamicContributionItems extends CompoundContributionItem implement
 				}
 				properties.put(ITerminalsConnectorConstants.PROP_TRANSLATE_BACKSLASHES_ON_PASTE,
 						Boolean.valueOf(translate));
-
-				delegate.execute(properties, null);
+				try {
+					delegate.execute(properties);
+				} catch (Exception e) {
+					ILog.get().error(e.getMessage(), e);
+				}
 			}
 		};
 

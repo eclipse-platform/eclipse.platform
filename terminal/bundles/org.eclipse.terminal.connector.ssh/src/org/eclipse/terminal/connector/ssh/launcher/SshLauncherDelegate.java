@@ -16,6 +16,7 @@ package org.eclipse.terminal.connector.ssh.launcher;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -28,7 +29,6 @@ import org.eclipse.terminal.connector.ssh.connector.ISshSettings;
 import org.eclipse.terminal.connector.ssh.connector.SshSettings;
 import org.eclipse.terminal.connector.ssh.controls.SshWizardConfigurationPanel;
 import org.eclipse.terminal.connector.ssh.nls.Messages;
-import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IMementoHandler;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
@@ -53,7 +53,7 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 	}
 
 	@Override
-	public void execute(Map<String, Object> properties, ITerminalService.Done done) {
+	public CompletableFuture<?> execute(Map<String, Object> properties) {
 		Assert.isNotNull(properties);
 
 		// Set the terminal tab title
@@ -67,12 +67,10 @@ public class SshLauncherDelegate extends AbstractLauncherDelegate {
 		if (!properties.containsKey(ITerminalsConnectorConstants.PROP_FORCE_NEW)) {
 			properties.put(ITerminalsConnectorConstants.PROP_FORCE_NEW, Boolean.TRUE);
 		}
-
-		// Get the terminal service
-		ITerminalService terminal = getTerminalService();
-		// If not available, we cannot fulfill this request
-		if (terminal != null) {
-			terminal.openConsole(properties, done);
+		try {
+			return getTerminalService().openConsole(properties);
+		} catch (RuntimeException e) {
+			return CompletableFuture.failedFuture(e);
 		}
 	}
 

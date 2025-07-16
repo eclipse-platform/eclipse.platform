@@ -14,6 +14,7 @@ package org.eclipse.terminal.connector.local.launcher;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -37,9 +38,12 @@ public class LocalLauncherHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = selection(event);
-		UIPlugin.getLaunchDelegateManager().getApplicableLauncherDelegates(selection)
-				.filter(d -> "org.eclipse.terminal.connector.local.launcher.local".equals(d.getId())).findFirst() //$NON-NLS-1$
-				.ifPresent(d -> executeDelegate(selection, d));
+		Optional<ILauncherDelegate> delegate = UIPlugin.getLaunchDelegateManager()
+				.getApplicableLauncherDelegates(selection)
+				.filter(d -> "org.eclipse.terminal.connector.local.launcher.local".equals(d.getId())).findFirst(); //$NON-NLS-1$
+		if (delegate.isPresent()) {
+			executeDelegate(selection, delegate.get());
+		}
 		return null;
 	}
 
@@ -64,11 +68,15 @@ public class LocalLauncherHandler extends AbstractHandler {
 		return selection;
 	}
 
-	private void executeDelegate(ISelection selection, ILauncherDelegate delegate) {
+	private void executeDelegate(ISelection selection, ILauncherDelegate delegate) throws ExecutionException {
 		Map<String, Object> properties = new HashMap<>();
 		properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
 		properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
-		delegate.execute(properties, null);
+		try {
+			delegate.execute(properties);
+		} catch (Exception e) {
+			throw new ExecutionException(e.getMessage(), e);
+		}
 	}
 
 }

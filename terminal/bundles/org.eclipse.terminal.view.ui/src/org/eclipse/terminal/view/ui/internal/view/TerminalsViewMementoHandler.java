@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
@@ -186,7 +187,8 @@ public class TerminalsViewMementoHandler {
 				delegate.map(d -> d.getAdapter(IMementoHandler.class))
 						.ifPresent(mh -> mh.restoreState(connection, properties));
 				// Restore the terminal connection
-				delegate.ifPresent(d -> d.execute(properties, null));
+				delegate.ifPresent(d -> executeDelegate(properties, d));
+
 			}
 		}
 	}
@@ -195,6 +197,14 @@ public class TerminalsViewMementoHandler {
 		return Optional.of(properties).map(map -> map.get(ITerminalsConnectorConstants.PROP_DELEGATE_ID))
 				.filter(String.class::isInstance).map(String.class::cast)
 				.flatMap(id -> UIPlugin.getLaunchDelegateManager().findLauncherDelegate(id, false));
+	}
+
+	private void executeDelegate(Map<String, Object> properties, ILauncherDelegate delegate) {
+		try {
+			delegate.execute(properties);
+		} catch (Exception e) {
+			ILog.get().error(e.getMessage(), e);
+		}
 	}
 
 	private Optional<IMementoHandler> mementoHandler(ILauncherDelegate delegate) {
