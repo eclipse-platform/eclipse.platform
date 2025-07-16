@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.BadLocationException;
@@ -197,7 +198,7 @@ public class OpenFileMouseHandler implements ITerminalMouseListener {
 					}
 				}
 			} catch (IllegalArgumentException | NullPointerException | ExecutionException | PartInitException e) {
-				UIPlugin.log("Failed to activate OpenResourceDialog", e); //$NON-NLS-1$
+				ILog.of(getClass()).error("Failed to activate OpenResourceDialog", e); //$NON-NLS-1$
 			}
 
 		}
