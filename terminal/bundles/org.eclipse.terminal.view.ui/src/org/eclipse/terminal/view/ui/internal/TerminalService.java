@@ -15,11 +15,13 @@ package org.eclipse.terminal.view.ui.internal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
@@ -34,7 +36,6 @@ import org.eclipse.terminal.view.ui.TerminalViewId;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegateManager;
 import org.eclipse.terminal.view.ui.launcher.ITerminalConsoleViewManager;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -77,10 +78,9 @@ public class TerminalService implements ITerminalService {
 		 * @param title The terminal tab title. Must not be <code>null</code>.
 		 * @param connector The terminal connector. Must not be <code>null</code>.
 		 * @param data The custom terminal data node or <code>null</code>.
-		 * @param done The callback to invoke if the operation finished or <code>null</code>.
+		 * @return the result {@link IStatus}
 		 */
-		public abstract void run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data,
-				Done done);
+		public abstract IStatus run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data);
 
 		/**
 		 * Returns if or if not to execute the runnable asynchronously.
@@ -159,10 +159,10 @@ public class TerminalService implements ITerminalService {
 	 *
 	 * @param properties The terminal properties. Must not be <code>null</code>.
 	 * @param runnable The terminal service runnable. Must not be <code>null</code>.
-	 * @param done The callback to invoke if the operation has been finished or <code>null</code>.
+	 * @return the {@link CompletableFuture} with result
 	 */
-	protected final void executeServiceOperation(final Map<String, Object> properties,
-			final TerminalServiceRunnable runnable, final Done done) {
+	protected final CompletableFuture<?> executeServiceOperation(final Map<String, Object> properties,
+			final TerminalServiceRunnable runnable) {
 		Assert.isNotNull(properties);
 		Assert.isNotNull(runnable);
 
@@ -186,26 +186,19 @@ public class TerminalService implements ITerminalService {
 			connector = createTerminalConnector(properties);
 		} catch (CoreException e) {
 			// Properties contain invalid connector arguments
-			if (done != null) {
-				done.done(e.getStatus());
-			}
-			return;
+			return CompletableFuture.failedFuture(e);
 		}
-		executeServiceOperation(runnable, new TerminalViewId(id, secondaryId), title, connector, data, done);
+		return executeServiceOperation(runnable, new TerminalViewId(id, secondaryId), title, connector, data);
 	}
 
-	private void executeServiceOperation(final TerminalServiceRunnable runnable, TerminalViewId tvid,
-			final String title, final ITerminalConnector connector, final Object data, final Done done) {
+	private CompletableFuture<?> executeServiceOperation(final TerminalServiceRunnable runnable, TerminalViewId tvid,
+			final String title, final ITerminalConnector connector, final Object data) {
 		// Execute the operation
-		if (!runnable.isExecuteAsync()) {
-			runnable.run(tvid, title, connector, data, done);
+		if (runnable.isExecuteAsync()) {
+			return CompletableFuture.supplyAsync(() -> runnable.run(tvid, title, connector, data),
+					Display.getDefault());
 		} else {
-			try {
-				Display display = PlatformUI.getWorkbench().getDisplay();
-				display.asyncExec(() -> runnable.run(tvid, title, connector, data, done));
-			} catch (Exception e) {
-				// if display is disposed, silently ignore.
-			}
+			return CompletableFuture.completedFuture(runnable.run(tvid, title, connector, data));
 		}
 	}
 
@@ -258,16 +251,14 @@ public class TerminalService implements ITerminalService {
 	}
 
 	@Override
-	public void openConsole(final Map<String, Object> properties, final Done done) {
+	public CompletableFuture<?> openConsole(final Map<String, Object> properties) {
 		Assert.isNotNull(properties);
 		final boolean restoringView = fRestoringView;
-
-		executeServiceOperation(properties, new TerminalServiceRunnable() {
+		return executeServiceOperation(properties, new TerminalServiceRunnable() {
 			@Override
-			public void run(TerminalViewId tvid, final String title, final ITerminalConnector connector,
-					final Object data, final Done done) {
+			public IStatus run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
 				if (restoringView) {
-					doRun(tvid, title, connector, data, done);
+					return doRun(tvid, title, connector, data);
 				} else {
 					// First, restore the view. This opens consoles from the memento
 					fRestoringView = true;
@@ -277,18 +268,11 @@ public class TerminalService implements ITerminalService {
 						ILog.get().log(e.getStatus());
 					}
 					fRestoringView = false;
-
-					// After that schedule opening the requested console
-					try {
-						Display display = PlatformUI.getWorkbench().getDisplay();
-						display.asyncExec(() -> doRun(tvid, title, connector, data, done));
-					} catch (Exception e) {
-						// if display is disposed, silently ignore.
-					}
+					return doRun(tvid, title, connector, data);
 				}
 			}
 
-			public void doRun(TerminalViewId tvid, String title, ITerminalConnector connector, Object data, Done done) {
+			private IStatus doRun(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
 				// Determine the terminal encoding
 				String encoding = (String) properties.get(ITerminalsConnectorConstants.PROP_ENCODING);
 				// Create the flags to pass on to openConsole
@@ -316,50 +300,36 @@ public class TerminalService implements ITerminalService {
 					if (!console.isDisposed()) {
 						console.setData("properties", properties); //$NON-NLS-1$
 					}
-					// Invoke the callback
-					if (done != null) {
-						done.done(Status.OK_STATUS);
-					}
+					return Status.OK_STATUS;
 				} catch (CoreException e) {
-					if (done != null) {
-						done.done(e.getStatus());
-					}
+					return e.getStatus();
 				}
 			}
-		}, done);
+		});
 	}
 
 	@Override
-	public void closeConsole(final Map<String, Object> properties, final Done done) {
+	public CompletableFuture<?> closeConsole(Map<String, Object> properties) {
 		Assert.isNotNull(properties);
-
-		executeServiceOperation(properties, new TerminalServiceRunnable() {
+		return executeServiceOperation(properties, new TerminalServiceRunnable() {
 			@Override
-			public void run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data, Done done) {
-				// Close the console
+			public IStatus run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
 				consoleViewManager.closeConsole(tvid, title, connector, data);
-				// Invoke the callback
-				if (done != null) {
-					done.done(Status.OK_STATUS);
-				}
+				return Status.OK_STATUS;
 			}
-		}, done);
+		});
 	}
 
 	@Override
-	public void terminateConsole(Map<String, Object> properties, Done done) {
+	public CompletableFuture<?> terminateConsole(Map<String, Object> properties) {
 		Assert.isNotNull(properties);
 
-		executeServiceOperation(properties, new TerminalServiceRunnable() {
+		return executeServiceOperation(properties, new TerminalServiceRunnable() {
 			@Override
-			public void run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data, Done done) {
-				// Close the console
+			public IStatus run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
 				consoleViewManager.terminateConsole(tvid, title, connector, data);
-				// Invoke the callback
-				if (done != null) {
-					done.done(Status.OK_STATUS);
-				}
+				return Status.OK_STATUS;
 			}
-		}, done);
+		});
 	}
 }

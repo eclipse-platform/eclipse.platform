@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.core.runtime.Assert;
@@ -44,7 +45,6 @@ import org.eclipse.terminal.connector.local.activator.UIPlugin;
 import org.eclipse.terminal.connector.local.controls.LocalWizardConfigurationPanel;
 import org.eclipse.terminal.connector.process.ProcessSettings;
 import org.eclipse.terminal.view.core.ILineSeparatorConstants;
-import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.ITerminalServiceOutputStreamMonitorListener;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IMementoHandler;
@@ -75,7 +75,7 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 	}
 
 	@Override
-	public void execute(Map<String, Object> properties, ITerminalService.Done done) {
+	public CompletableFuture<?> execute(Map<String, Object> properties) {
 		Assert.isNotNull(properties);
 
 		// Set the terminal tab title
@@ -221,12 +221,10 @@ public class LocalLauncherDelegate extends AbstractLauncherDelegate {
 				}
 			}
 		}
-
-		// Get the terminal service
-		ITerminalService terminal = getTerminalService();
-		// If not available, we cannot fulfill this request
-		if (terminal != null) {
-			terminal.openConsole(properties, done);
+		try {
+			return getTerminalService().openConsole(properties);
+		} catch (RuntimeException e) {
+			return CompletableFuture.failedFuture(e);
 		}
 	}
 

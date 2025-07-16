@@ -13,6 +13,7 @@
 package org.eclipse.terminal.connector.process.internal;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.cdt.utils.pty.PTY;
 import org.eclipse.core.runtime.Assert;
@@ -22,7 +23,6 @@ import org.eclipse.terminal.connector.ITerminalConnector;
 import org.eclipse.terminal.connector.InMemorySettingsStore;
 import org.eclipse.terminal.connector.TerminalConnectorExtension;
 import org.eclipse.terminal.connector.process.ProcessSettings;
-import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.ITerminalServiceOutputStreamMonitorListener;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.launcher.AbstractLauncherDelegate;
@@ -45,14 +45,12 @@ public class ProcessLauncherDelegate extends AbstractLauncherDelegate {
 	}
 
 	@Override
-	public void execute(Map<String, Object> properties, ITerminalService.Done done) {
+	public CompletableFuture<?> execute(Map<String, Object> properties) {
 		Assert.isNotNull(properties);
-
-		// Get the terminal service
-		ITerminalService terminal = getTerminalService();
-		// If not available, we cannot fulfill this request
-		if (terminal != null) {
-			terminal.openConsole(properties, done);
+		try {
+			return getTerminalService().openConsole(properties);
+		} catch (RuntimeException e) {
+			return CompletableFuture.failedFuture(e);
 		}
 	}
 

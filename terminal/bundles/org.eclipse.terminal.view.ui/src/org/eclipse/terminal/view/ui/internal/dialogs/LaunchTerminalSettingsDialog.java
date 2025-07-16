@@ -20,8 +20,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.TrayDialog;
@@ -41,7 +43,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.terminal.connector.ITerminalConnector;
-import org.eclipse.terminal.view.core.ITerminalService.Done;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.IExternalExecutablesProperties;
 import org.eclipse.terminal.view.ui.internal.IContextHelpIds;
@@ -530,7 +531,7 @@ public class LaunchTerminalSettingsDialog extends TrayDialog {
 				}
 
 				@Override
-				public void execute(Map<String, Object> properties, Done done) {
+				public CompletableFuture<IStatus> execute(Map<String, Object> properties) {
 					throw new UnsupportedOperationException();
 				}
 

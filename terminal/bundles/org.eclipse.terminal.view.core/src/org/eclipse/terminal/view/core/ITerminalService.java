@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 - 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011 - 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,12 +8,12 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.core;
 
 import java.util.Map;
-
-import org.eclipse.core.runtime.IStatus;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Terminal service.
@@ -21,40 +21,28 @@ import org.eclipse.core.runtime.IStatus;
 public interface ITerminalService {
 
 	/**
-	 * Client call back interface.
-	 */
-	public interface Done {
-		/**
-		 * Called when the terminal service operation is done.
-		 *
-		 * @param status The status of the terminal service operation.
-		 */
-		public void done(IStatus status);
-	}
-
-	/**
 	 * Opens a terminal asynchronously and invokes the given callback if done.
 	 *
 	 * @param properties The terminal properties. Must not be <code>null</code>.
-	 * @param done The callback to invoke if finished or <code>null</code>.
+	 * @return the {@link CompletableFuture}
 	 */
-	public void openConsole(Map<String, Object> properties, Done done);
+	public CompletableFuture<?> openConsole(Map<String, Object> properties);
 
 	/**
-	 * Close the terminal asynchronously and invokes the given callback if done.
+	 * Close the terminal asynchronously.
 	 *
 	 * @param properties The terminal properties. Must not be <code>null</code>.
-	 * @param done The callback to invoke if finished or <code>null</code>.
+	 * @return the {@link CompletableFuture}
 	 */
-	public void closeConsole(Map<String, Object> properties, Done done);
+	public CompletableFuture<?> closeConsole(Map<String, Object> properties);
 
 	/**
 	 * Terminate (disconnect) the terminal asynchronously and invokes the given callback if done.
 	 *
 	 * @param properties The terminal properties. Must not be <code>null</code>.
-	 * @param done The callback to invoke if finished or <code>null</code>.
+	 * @return the {@link CompletableFuture}
 	 */
-	public void terminateConsole(Map<String, Object> properties, Done done);
+	public CompletableFuture<?> terminateConsole(Map<String, Object> properties);
 
 	/**
 	 * Register the given listener to receive notifications about terminal events.

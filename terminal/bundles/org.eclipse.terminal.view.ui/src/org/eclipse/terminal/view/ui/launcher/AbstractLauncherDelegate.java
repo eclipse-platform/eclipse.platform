@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,6 +8,7 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.launcher;
 
@@ -138,7 +139,15 @@ public abstract class AbstractLauncherDelegate extends PlatformObject implements
 		return title != null ? title : null;
 	}
 
-	protected ITerminalService getTerminalService() {
-		return UIPlugin.getTerminalService();
+	/**
+	 * Get the terminal service
+	 *
+	 * @return an instance of {@link ITerminalService}
+	 *
+	 */
+	protected final ITerminalService getTerminalService() {
+		ITerminalService service = UIPlugin.getTerminalService();
+		Assert.isNotNull(service, Messages.AbstractLauncherDelegate_e_no_terminal_service);
+		return service;
 	}
 }

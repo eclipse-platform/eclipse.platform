@@ -65,6 +65,7 @@ public class Messages extends NLS {
 	public static String AbstractConfigurationPanel_encoding_custom_title;
 	public static String AbstractConfigurationPanel_encoding_custom_message;
 	public static String AbstractConfigurationPanel_encoding_custom_error;
+	public static String AbstractLauncherDelegate_e_no_terminal_service;
 
 	public static String ConsoleManager_e_cannot_create_console;
 	public static String ConsoleManager_e_no_active_page;
