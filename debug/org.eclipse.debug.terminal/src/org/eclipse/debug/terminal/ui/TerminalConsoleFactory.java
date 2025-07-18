@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     Christoph Läubrich - initial API and implementation
+ *     Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.debug.terminal.ui;
 
@@ -19,6 +20,7 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.terminal.connector.ITerminalConnector;
+import org.eclipse.terminal.view.ui.CommandIds;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -38,7 +40,7 @@ public class TerminalConsoleFactory implements IConsoleFactory {
 		if (commandService == null || handlerService == null) {
 			return;
 		}
-		Command command = commandService.getCommand("org.eclipse.terminal.view.ui.command.launchConsole");
+		Command command = commandService.getCommand(CommandIds.COMMAND_LAUNCHCONSOLE);
 		if (command == null) {
 			return;
 		}
