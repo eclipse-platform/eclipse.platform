@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.views.breakpoints;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -31,13 +34,17 @@ public class BreakpointEnablement extends AbstractBreakpointOrganizerDelegate im
 	private final BreakpointTypeCategory ENABLED = new BreakpointTypeCategory("Enabled", 0); //$NON-NLS-1$
 	private final BreakpointTypeCategory DISABLED = new BreakpointTypeCategory("Disabled", 1); //$NON-NLS-1$
 
+	private final Map<IBreakpoint, Boolean> breakpointCache;
+
 	public BreakpointEnablement() {
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+		breakpointCache = new WeakHashMap<>();
 	}
 
 	@Override
 	public void dispose() {
 		DebugPlugin.getDefault().getBreakpointManager().removeBreakpointListener(this);
+		breakpointCache.clear();
 	}
 
 	@Override
@@ -49,6 +56,7 @@ public class BreakpointEnablement extends AbstractBreakpointOrganizerDelegate im
 			} else {
 				categories = new IAdaptable[] { DISABLED };
 			}
+			breakpointCache.put(breakpoint, breakpoint.isEnabled());
 			return categories;
 		} catch (CoreException e) {
 			DebugPlugin.log(e);
@@ -66,6 +74,16 @@ public class BreakpointEnablement extends AbstractBreakpointOrganizerDelegate im
 
 	@Override
 	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta) {
-		fireCategoryChanged(ENABLED);
+		try {
+			boolean isEnabled = breakpoint.isEnabled();
+			Boolean wasEnabled = breakpointCache.get(breakpoint);
+			if (wasEnabled == null || wasEnabled != isEnabled) {
+				breakpointCache.put(breakpoint, isEnabled);
+				BreakpointTypeCategory newCategory = isEnabled ? ENABLED : DISABLED;
+				fireCategoryChanged(newCategory);
+			}
+		} catch (CoreException e) {
+			DebugPlugin.log(e);
+		}
 	}
 }
