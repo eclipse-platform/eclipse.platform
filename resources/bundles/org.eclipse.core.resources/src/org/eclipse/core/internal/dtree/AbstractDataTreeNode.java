@@ -50,10 +50,11 @@ public abstract class AbstractDataTreeNode {
 	 */
 	AbstractDataTreeNode(String name, AbstractDataTreeNode[] children) {
 		this.name = name;
-		if (children == null || children.length == 0)
+		if (children == null || children.length == 0) {
 			this.children = AbstractDataTreeNode.NO_CHILDREN;
-		else
+		} else {
 			this.children = children;
+		}
 	}
 
 	/**
@@ -84,8 +85,9 @@ public abstract class AbstractDataTreeNode {
 	static AbstractDataTreeNode[] assembleWith(AbstractDataTreeNode[] oldNodes, AbstractDataTreeNode[] newNodes, boolean keepDeleted) {
 
 		// Optimize the common case where the new list is empty.
-		if (newNodes.length == 0)
+		if (newNodes.length == 0) {
 			return oldNodes;
+		}
 
 		// Can't just return newNodes if oldNodes has length 0
 		// because newNodes may contain deleted nodes.
@@ -198,8 +200,9 @@ public abstract class AbstractDataTreeNode {
 		}
 		if (this.isDelta()) {
 			AbstractDataTreeNode[] assembledChildren = assembleWith(children, node.children, true);
-			if (this.hasData())
+			if (this.hasData()) {
 				return new DataDeltaNode(name, this.getData(), assembledChildren);
+			}
 			return new NoDataDeltaNode(name, assembledChildren);
 		}
 		AbstractDataTreeNode[] assembledChildren = assembleWith(children, node.children, false);
@@ -271,10 +274,11 @@ public abstract class AbstractDataTreeNode {
 		for (AbstractDataTreeNode element : children) {
 			if (element.getName().equalsIgnoreCase(localName)) {
 				//if we find a deleted child, keep looking for a real child
-				if (element.isDeleted())
+				if (element.isDeleted()) {
 					result = element;
-				else
+				} else {
 					return element;
+				}
 			}
 		}
 		return result;
@@ -502,8 +506,9 @@ public abstract class AbstractDataTreeNode {
 	String[] namesOfChildren() {
 		String names[] = new String[children.length];
 		/* copy child names (Reverse loop optimized) */
-		for (int i = children.length; --i >= 0;)
+		for (int i = children.length; --i >= 0;) {
 			names[i] = children[i].getName();
+		}
 		return names;
 	}
 
@@ -538,8 +543,9 @@ public abstract class AbstractDataTreeNode {
 	 */
 	protected static AbstractDataTreeNode[] simplifyWithParent(AbstractDataTreeNode[] nodes, IPath key, DeltaDataTree parent, IComparator comparer) {
 		int nodeCount = nodes.length;
-		if (nodeCount == 0)
+		if (nodeCount == 0) {
 			return NO_CHILDREN;
+		}
 		AbstractDataTreeNode[] simplifiedNodes = new AbstractDataTreeNode[nodeCount];
 		int simplifiedCount = 0;
 		for (int i = 0; i < nodeCount; ++i) {
@@ -577,9 +583,11 @@ public abstract class AbstractDataTreeNode {
 		name = set.add(name);
 		//copy children pointer in case of concurrent modification
 		AbstractDataTreeNode[] nodes = children;
-		if (nodes != null)
-			for (int i = nodes.length; --i >= 0;)
+		if (nodes != null) {
+			for (int i = nodes.length; --i >= 0;) {
 				nodes[i].storeStrings(set);
+			}
+		}
 	}
 
 	/**

@@ -26,15 +26,18 @@ import org.eclipse.core.runtime.QualifiedName;
 public class ResourceMappingPropertyTester extends ResourcePropertyTester {
 	@Override
 	public boolean test(Object receiver, String method, Object[] args, Object expectedValue) {
-		if (!(receiver instanceof ResourceMapping))
+		if (!(receiver instanceof ResourceMapping)) {
 			return false;
-		if (!method.equals(PROJECT_PERSISTENT_PROPERTY))
+		}
+		if (!method.equals(PROJECT_PERSISTENT_PROPERTY)) {
 			return false;
+		}
 		//Note: we currently say the test is satisfied if any project associated
 		//with the mapping satisfies the test.
 		IProject[] projects = ((ResourceMapping) receiver).getProjects();
-		if (projects.length == 0)
+		if (projects.length == 0) {
 			return false;
+		}
 		String propertyName;
 		String expectedVal;
 		switch (args.length) {
@@ -57,16 +60,19 @@ public class ResourceMappingPropertyTester extends ResourcePropertyTester {
 			try {
 				Object actualVal = project.getPersistentProperty(key);
 				//the value is not set, so keep looking on other projects
-				if (actualVal == null)
+				if (actualVal == null) {
 					continue;
+				}
 				//record that we have found at least one value
 				found = true;
 				//expected value of null means we expect *any* value, rather than expecting no value
-				if (expectedVal == null)
+				if (expectedVal == null) {
 					continue;
+				}
 				//if the value we find does not match, then the property is not satisfied
-				if (!expectedVal.equals(actualVal.toString()))
+				if (!expectedVal.equals(actualVal.toString())) {
 					return false;
+				}
 			} catch (CoreException e) {
 				// ignore
 			}
