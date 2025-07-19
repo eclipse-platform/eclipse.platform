@@ -12,5 +12,10 @@ Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.eclipse.terminal.view.core;version="1.0.0",
  org.eclipse.terminal.view.core.internal;x-internal:=true,
- org.eclipse.terminal.view.core.utils;version="1.0.0"
+ org.eclipse.terminal.view.core.utils;version="1.0.0";
+  x-friends:="org.eclipse.terminal.connector.local,
+   org.eclipse.terminal.connector.ssh,
+   org.eclipse.terminal.connector.telnet,
+   org.eclipse.terminal.connector.process,
+   org.eclipse.terminal.view.ui"
 Automatic-Module-Name: org.eclipse.terminal.view.core
