@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -11,6 +11,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     dakshinamurthy.karra@gmail.com - bug 165371
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.ui.externaltools.internal.model;
 
@@ -167,7 +168,9 @@ public interface IExternalToolConstants {
 	/**
 	 * String attribute identifying the location of an external. Default value
 	 * is <code>null</code>. Encoding is tool specific.
-	 * @deprecated use {@link org.eclipse.core.externaltools.internal.IExternalToolConstants#ATTR_LOCATION}
+	 *
+	 * @deprecated use
+	 *             {@link org.eclipse.core.externaltools.internal.IExternalToolConstants#LAUNCH_ATTRIBUTE_IDENTITY_LOCATION}
 	 */
 	@Deprecated String ATTR_LOCATION = org.eclipse.core.externaltools.internal.IExternalToolConstants.ATTR_LOCATION;
 
@@ -204,7 +207,9 @@ public interface IExternalToolConstants {
 	/**
 	 * String attribute containing the arguments that should be passed to the
 	 * tool. Default value is <code>null</code>, and encoding is tool specific.
-	 * @deprecated use {@link org.eclipse.core.externaltools.internal.IExternalToolConstants#ATTR_TOOL_ARGUMENTS}
+	 *
+	 * @deprecated use
+	 *             {@link org.eclipse.core.externaltools.internal.IExternalToolConstants#LAUNCH_ATTRIBUTE_IDENTITY_ARGUMENTS}
 	 */
 	@Deprecated String ATTR_TOOL_ARGUMENTS = org.eclipse.core.externaltools.internal.IExternalToolConstants.ATTR_TOOL_ARGUMENTS;
 
@@ -212,9 +217,12 @@ public interface IExternalToolConstants {
 	 * String attribute identifying the working directory of an external tool.
 	 * Default value is <code>null</code>, which indicates a default working
 	 * directory, which is tool specific.
-	 * @deprecated use {@link org.eclipse.core.externaltools.internal.IExternalToolConstants#ATTR_WORKING_DIRECTORY}
+	 *
+	 * @deprecated use
+	 *             {@link org.eclipse.core.externaltools.internal.IExternalToolConstants#LAUNCH_ATTRIBUTE_IDENTITY_WORKING_DIRECTORY}
 	 */
-	@Deprecated String ATTR_WORKING_DIRECTORY = org.eclipse.core.externaltools.internal.IExternalToolConstants.ATTR_WORKING_DIRECTORY;
+	@Deprecated
+	String ATTR_WORKING_DIRECTORY = org.eclipse.core.externaltools.internal.IExternalToolConstants.LAUNCH_ATTRIBUTE_IDENTITY_WORKING_DIRECTORY.id();
 
 	/**
 	 * String attribute identifying whether an external tool builder configuration
