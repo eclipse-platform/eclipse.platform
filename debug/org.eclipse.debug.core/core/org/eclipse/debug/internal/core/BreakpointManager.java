@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2020 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -35,6 +35,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -1045,19 +1046,27 @@ public class BreakpointManager implements IBreakpointManager, IResourceChangeLis
 		 * @param update the type of change
 		 */
 		public void notify(IBreakpoint[] breakpoints, IMarkerDelta[] deltas, int update) {
-			fType = update;
-			for (IBreakpointListener iBreakpointListener : fBreakpointListeners) {
-				fListener = iBreakpointListener;
-				for (int j = 0; j < breakpoints.length; j++) {
-					fBreakpoint = breakpoints[j];
-					fDelta = deltas[j];
-					SafeRunner.run(this);
+			Job job = new WorkspaceJob("Notify breakpoint listeners") { //$NON-NLS-1$
+				@Override
+				public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+					fType = update;
+					for (IBreakpointListener iBreakpointListener : fBreakpointListeners) {
+						fListener = iBreakpointListener;
+						for (int j = 0; j < breakpoints.length; j++) {
+							fBreakpoint = breakpoints[j];
+							fDelta = deltas[j];
+							SafeRunner.run(BreakpointNotifier.this);
+						}
+					}
+					fListener = null;
+					fDelta = null;
+					fBreakpoint = null;
+					return Status.OK_STATUS;
 				}
-			}
-			fListener = null;
-			fDelta = null;
-			fBreakpoint = null;
+			};
+			job.schedule();
 		}
+
 	}
 
 	private BreakpointsNotifier getBreakpointsNotifier() {
