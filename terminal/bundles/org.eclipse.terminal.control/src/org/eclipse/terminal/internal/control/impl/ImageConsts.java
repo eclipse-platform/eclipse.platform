@@ -17,15 +17,11 @@
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Anna Dushistova (MontaVista) - [227537] moved actions from terminal.view to terminal plugin
  *******************************************************************************/
-package org.eclipse.terminal.control.actions;
+package org.eclipse.terminal.internal.control.impl;
 
 public interface ImageConsts {
 	public final static String IMAGE_DIR_ROOT = "icons/"; //$NON-NLS-1$
-	public final static String IMAGE_DIR_LOCALTOOL = IMAGE_DIR_ROOT + "clcl16/"; // basic colors - size 16x16 //$NON-NLS-1$
-	public final static String IMAGE_DIR_DLCL = IMAGE_DIR_ROOT + "dlcl16/"; // disabled - size 16x16 //$NON-NLS-1$
 	public final static String IMAGE_DIR_ELCL = IMAGE_DIR_ROOT + "elcl16/"; // enabled - size 16x16 //$NON-NLS-1$
-
-	public static final String IMAGE_CLCL_CLEAR_ALL = "ImageClclClearAll"; //$NON-NLS-1$
 
 	public static final String IMAGE_DLCL_CLEAR_ALL = "ImageDlclClearAll"; //$NON-NLS-1$
 

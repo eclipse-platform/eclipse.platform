@@ -54,7 +54,7 @@ import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.control.TerminalViewControlFactory;
 import org.eclipse.terminal.view.core.ITerminalsConnectorConstants;
 import org.eclipse.terminal.view.ui.ITerminalsView;
-import org.eclipse.terminal.view.ui.ImageConsts;
+import org.eclipse.terminal.view.ui.internal.ImageConsts;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.ui.PlatformUI;

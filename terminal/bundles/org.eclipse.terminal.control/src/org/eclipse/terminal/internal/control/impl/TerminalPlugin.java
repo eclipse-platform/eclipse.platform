@@ -25,7 +25,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.terminal.control.actions.ImageConsts;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -71,15 +71,12 @@ public class TerminalPlugin extends AbstractUIPlugin {
 	@Override
 	protected void initializeImageRegistry(ImageRegistry imageRegistry) {
 		try {
-			// Local toolbars
-			putImageInRegistry(imageRegistry, ImageConsts.IMAGE_CLCL_CLEAR_ALL,
-					ImageConsts.IMAGE_DIR_LOCALTOOL + "clear_co.gif"); //$NON-NLS-1$
 			// Enabled local toolbars
 			putImageInRegistry(imageRegistry, ImageConsts.IMAGE_ELCL_CLEAR_ALL,
 					ImageConsts.IMAGE_DIR_ELCL + "clear_co.gif"); //$NON-NLS-1$
 			// Disabled local toolbars
-			putImageInRegistry(imageRegistry, ImageConsts.IMAGE_DLCL_CLEAR_ALL,
-					ImageConsts.IMAGE_DIR_DLCL + "clear_co.gif"); //$NON-NLS-1$
+			putDisabledImageInRegistry(imageRegistry, ImageConsts.IMAGE_ELCL_CLEAR_ALL,
+					ImageConsts.IMAGE_DLCL_CLEAR_ALL);
 		} catch (MalformedURLException malformedURLException) {
 			malformedURLException.printStackTrace();
 		}
@@ -90,5 +87,11 @@ public class TerminalPlugin extends AbstractUIPlugin {
 		URL url = TerminalPlugin.getDefault().getBundle().getEntry(relativePath);
 		ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL(url);
 		imageRegistry.put(strKey, imageDescriptor);
+	}
+
+	private void putDisabledImageInRegistry(ImageRegistry imageRegistry, String enabledKey, String disabledKey)
+			throws MalformedURLException {
+		ImageDescriptor enabledImageDescriptor = imageRegistry.getDescriptor(enabledKey);
+		imageRegistry.put(disabledKey, ImageDescriptor.createWithFlags(enabledImageDescriptor, SWT.IMAGE_DISABLE));
 	}
 }

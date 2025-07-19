@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.terminal.control.actions.AbstractTerminalAction;
 import org.eclipse.terminal.view.ui.ITerminalsView;
-import org.eclipse.terminal.view.ui.ImageConsts;
+import org.eclipse.terminal.view.ui.internal.ImageConsts;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.ui.PlatformUI;
@@ -43,8 +43,7 @@ public class NewTerminalViewAction extends AbstractTerminalAction {
 		super(null, NewTerminalViewAction.class.getName(), IAction.AS_PUSH_BUTTON);
 
 		//this.view = view;
-		setupAction(Messages.NewTerminalViewAction_menu, Messages.NewTerminalViewAction_tooltip,
-				UIPlugin.getImageDescriptor(ImageConsts.ACTION_NewTerminalView_Hover),
+		setupAction(Messages.NewTerminalViewAction_menu, Messages.NewTerminalViewAction_tooltip, null,
 				UIPlugin.getImageDescriptor(ImageConsts.ACTION_NewTerminalView_Enabled),
 				UIPlugin.getImageDescriptor(ImageConsts.ACTION_NewTerminalView_Disabled), true);
 		setEnabled(true);

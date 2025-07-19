@@ -17,7 +17,7 @@ import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.control.actions.AbstractTerminalAction;
 import org.eclipse.terminal.view.ui.ITerminalsView;
-import org.eclipse.terminal.view.ui.ImageConsts;
+import org.eclipse.terminal.view.ui.internal.ImageConsts;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.internal.tabs.TabCommandFieldHandler;
@@ -36,8 +36,7 @@ public class ToggleCommandFieldAction extends AbstractTerminalAction {
 		super(null, ToggleCommandFieldAction.class.getName(), IAction.AS_CHECK_BOX);
 
 		this.view = view;
-		setupAction(Messages.ToggleCommandFieldAction_menu, Messages.ToggleCommandFieldAction_toolTip,
-				UIPlugin.getImageDescriptor(ImageConsts.ACTION_ToggleCommandField_Hover),
+		setupAction(Messages.ToggleCommandFieldAction_menu, Messages.ToggleCommandFieldAction_toolTip, null,
 				UIPlugin.getImageDescriptor(ImageConsts.ACTION_ToggleCommandField_Enabled),
 				UIPlugin.getImageDescriptor(ImageConsts.ACTION_ToggleCommandField_Disabled), true);
 
