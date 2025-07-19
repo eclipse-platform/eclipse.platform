@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.graphics.Image;
@@ -28,7 +29,6 @@ import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.core.ITerminalService;
 import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
-import org.eclipse.terminal.view.ui.ImageConsts;
 import org.eclipse.terminal.view.ui.internal.listeners.WorkbenchWindowListener;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsView;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsViewMementoHandler;
@@ -222,29 +222,32 @@ public class UIPlugin extends AbstractUIPlugin {
 	@Override
 	protected void initializeImageRegistry(ImageRegistry registry) {
 		Bundle bundle = getBundle();
-		URL url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_EVIEW + "console_view.png"); //$NON-NLS-1$
-		registry.put(ImageConsts.VIEW_Terminals, ImageDescriptor.createFromURL(url));
+		URL consoleViewIconUrl = bundle
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_EVIEW + "console_view.png"); //$NON-NLS-1$
+		registry.put(ImageConsts.VIEW_Terminals, ImageDescriptor.createFromURL(consoleViewIconUrl));
 
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_CLCL + "lock_co.png"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_ScrollLock_Hover, ImageDescriptor.createFromURL(url));
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "lock_co.png"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_ScrollLock_Enabled, ImageDescriptor.createFromURL(url));
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_DLCL + "lock_co.png"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_ScrollLock_Disabled, ImageDescriptor.createFromURL(url));
+		URL enabledLockIconUrl = bundle
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "lock_co.png"); //$NON-NLS-1$
+		ImageDescriptor enabledLockIcon = ImageDescriptor.createFromURL(enabledLockIconUrl);
+		registry.put(ImageConsts.ACTION_ScrollLock_Enabled, enabledLockIcon);
+		ImageDescriptor disabledLockIcon = ImageDescriptor.createWithFlags(enabledLockIcon, SWT.IMAGE_DISABLE);
+		registry.put(ImageConsts.ACTION_ScrollLock_Disabled, disabledLockIcon);
 
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_CLCL + "command_input_field.gif"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_ToggleCommandField_Hover, ImageDescriptor.createFromURL(url));
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "command_input_field.gif"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_ToggleCommandField_Enabled, ImageDescriptor.createFromURL(url));
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_DLCL + "command_input_field.gif"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_ToggleCommandField_Disabled, ImageDescriptor.createFromURL(url));
+		URL enabledInputFieldIconUrl = bundle
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "command_input_field.gif"); //$NON-NLS-1$
+		ImageDescriptor enabledInputFieldIcon = ImageDescriptor.createFromURL(enabledInputFieldIconUrl);
+		registry.put(ImageConsts.ACTION_ToggleCommandField_Enabled, enabledInputFieldIcon);
+		ImageDescriptor disabledInputFieldIcon = ImageDescriptor.createWithFlags(enabledInputFieldIcon,
+				SWT.IMAGE_DISABLE);
+		registry.put(ImageConsts.ACTION_ToggleCommandField_Disabled, disabledInputFieldIcon);
 
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_CLCL + "new_terminal_view.gif"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_NewTerminalView_Hover, ImageDescriptor.createFromURL(url));
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "new_terminal_view.gif"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_NewTerminalView_Enabled, ImageDescriptor.createFromURL(url));
-		url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_DLCL + "new_terminal_view.gif"); //$NON-NLS-1$
-		registry.put(ImageConsts.ACTION_NewTerminalView_Disabled, ImageDescriptor.createFromURL(url));
+		URL enabledTerminalViewIconUrl = bundle
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "new_terminal_view.gif"); //$NON-NLS-1$
+		ImageDescriptor enabledTerminalViewIcon = ImageDescriptor.createFromURL(enabledTerminalViewIconUrl);
+		registry.put(ImageConsts.ACTION_NewTerminalView_Enabled, enabledTerminalViewIcon);
+		ImageDescriptor disabledTerminalViewIcon = ImageDescriptor.createWithFlags(enabledInputFieldIcon,
+				SWT.IMAGE_DISABLE);
+		registry.put(ImageConsts.ACTION_NewTerminalView_Disabled, disabledTerminalViewIcon);
 	}
 
 	/**

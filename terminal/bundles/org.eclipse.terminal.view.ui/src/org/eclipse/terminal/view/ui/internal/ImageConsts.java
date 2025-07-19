@@ -10,7 +10,7 @@
  * Wind River Systems - initial API and implementation
  * Max Weninger (Wind River) - [361363] [TERMINALS] Implement "Pin&Clone" for the "Terminals" view
  *******************************************************************************/
-package org.eclipse.terminal.view.ui;
+package org.eclipse.terminal.view.ui.internal;
 
 /**
  * Image registry constants.
@@ -24,18 +24,6 @@ public interface ImageConsts {
 	 * the bundle directory.
 	 */
 	public final static String IMAGE_DIR_ROOT = "icons/"; //$NON-NLS-1$
-
-	/**
-	 * The directory where to load colored local toolbar images from,
-	 * relative to the image root directory.
-	 */
-	public final static String IMAGE_DIR_CLCL = "clcl16/"; //$NON-NLS-1$
-
-	/**
-	 * The directory where to load disabled local toolbar images from,
-	 * relative to the image root directory.
-	 */
-	public final static String IMAGE_DIR_DLCL = "dlcl16/"; //$NON-NLS-1$
 
 	/**
 	 * The directory where to load enabled local toolbar images from,
@@ -65,11 +53,6 @@ public interface ImageConsts {
 	public static final String ACTION_ScrollLock_Disabled = "ScrollLockAction_disabled"; //$NON-NLS-1$
 
 	/**
-	 * The key to access the scroll lock action image (hover).
-	 */
-	public static final String ACTION_ScrollLock_Hover = "ScrollLockAction_hover"; //$NON-NLS-1$
-
-	/**
 	 * The key to access the new terminal view action image (enabled).
 	 * @since 4.1
 	 */
@@ -82,12 +65,6 @@ public interface ImageConsts {
 	public static final String ACTION_NewTerminalView_Disabled = "NewTerminalViewAction_disabled"; //$NON-NLS-1$
 
 	/**
-	 * The key to access the new terminal view action image (hover).
-	 * @since 4.1
-	 */
-	public static final String ACTION_NewTerminalView_Hover = "NewTerminalViewAction_hover"; //$NON-NLS-1$
-
-	/**
 	 * The key to access the toggle command field action image (enabled).
 	 */
 	public static final String ACTION_ToggleCommandField_Enabled = "ToggleCommandField_enabled"; //$NON-NLS-1$
@@ -97,8 +74,4 @@ public interface ImageConsts {
 	 */
 	public static final String ACTION_ToggleCommandField_Disabled = "ToggleCommandField_disabled"; //$NON-NLS-1$
 
-	/**
-	 * The key to access the toggle command field action image (hover).
-	 */
-	public static final String ACTION_ToggleCommandField_Hover = "ToggleCommandField_hover"; //$NON-NLS-1$
 }
