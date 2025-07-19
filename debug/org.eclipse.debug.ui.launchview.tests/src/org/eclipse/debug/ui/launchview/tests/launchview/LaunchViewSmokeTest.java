@@ -23,10 +23,6 @@ import org.junit.Test;
 
 public class LaunchViewSmokeTest extends AbstractLaunchViewTest {
 
-	@SuppressWarnings({ "restriction", "unused" })
-	// Only ensures org.eclipse.debug.ui.launchview is required
-	private static final org.eclipse.debug.ui.launchview.IBackgroundLaunchExecutor e = null;
-
 	@Test
 	public void testOpenView() {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
