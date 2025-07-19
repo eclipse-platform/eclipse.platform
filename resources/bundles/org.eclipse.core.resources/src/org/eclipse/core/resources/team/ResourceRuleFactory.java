@@ -83,8 +83,9 @@ public class ResourceRuleFactory implements IResourceRuleFactory {
 	 */
 	@Override
 	public ISchedulingRule charsetRule(IResource resource) {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return null;
+		}
 		return resource.getProject();
 	}
 
@@ -188,8 +189,9 @@ public class ResourceRuleFactory implements IResourceRuleFactory {
 	public ISchedulingRule modifyRule(IResource resource) {
 		IPath path = resource.getFullPath();
 		//modifying the project description may cause linked resources to be created or deleted
-		if (path.segmentCount() == 2 && path.segment(1).equals(IProjectDescription.DESCRIPTION_FILE_NAME))
+		if (path.segmentCount() == 2 && path.segment(1).equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
 			return parent(resource);
+		}
 		return resource;
 	}
 
@@ -257,20 +259,26 @@ public class ResourceRuleFactory implements IResourceRuleFactory {
 	 */
 	@Override
 	public ISchedulingRule validateEditRule(IResource[] resources) {
-		if (resources.length == 0)
+		if (resources.length == 0) {
 			return null;
+		}
 		//optimize rule for single file
-		if (resources.length == 1)
+		if (resources.length == 1) {
 			return isReadOnly(resources[0]) ? parent(resources[0]) : null;
+		}
 		//need a lock on the parents of all read-only files
 		HashSet<ISchedulingRule> rules = new HashSet<>();
-		for (IResource resource : resources)
-			if (isReadOnly(resource))
+		for (IResource resource : resources) {
+			if (isReadOnly(resource)) {
 				rules.add(parent(resource));
-		if (rules.isEmpty())
+			}
+		}
+		if (rules.isEmpty()) {
 			return null;
-		if (rules.size() == 1)
+		}
+		if (rules.size() == 1) {
 			return rules.iterator().next();
+		}
 		ISchedulingRule[] ruleArray = rules.toArray(new ISchedulingRule[rules.size()]);
 		return new MultiRule(ruleArray);
 	}

@@ -53,20 +53,24 @@ public class Synchronizer implements ISynchronizer {
 		// if we don't have sync info for the given identifier, then skip it
 		if (getSyncInfo(partner, resource) != null) {
 			// visit the resource and if the visitor says to stop the recursion then return
-			if (!visitor.visit(resource))
+			if (!visitor.visit(resource)) {
 				return;
+			}
 		}
 
 		// adjust depth if necessary
-		if (depth == IResource.DEPTH_ZERO || resource.getType() == IResource.FILE)
+		if (depth == IResource.DEPTH_ZERO || resource.getType() == IResource.FILE) {
 			return;
-		if (depth == IResource.DEPTH_ONE)
+		}
+		if (depth == IResource.DEPTH_ONE) {
 			depth = IResource.DEPTH_ZERO;
+		}
 
 		// otherwise recurse over the children
 		IResource[] children = ((IContainer) resource).members();
-		for (IResource element : children)
+		for (IResource element : children) {
 			accept(partner, element, visitor, depth);
+		}
 	}
 
 	/**
@@ -89,8 +93,9 @@ public class Synchronizer implements ISynchronizer {
 		ICoreRunnable body = monitor -> {
 			IResourceVisitor visitor = resource -> {
 				// only need to flush sync info if there is sync info
-				if (getSyncInfo(partner, resource) != null)
+				if (getSyncInfo(partner, resource) != null) {
 					setSyncInfo(partner, resource, null);
+				}
 				return true;
 			};
 			root.accept(visitor, depth, true);
@@ -153,8 +158,9 @@ public class Synchronizer implements ISynchronizer {
 	protected void restoreFromSave(IResource resource) throws CoreException {
 		IPath sourceLocation = workspace.getMetaArea().getSyncInfoLocationFor(resource);
 		IPath tempLocation = workspace.getMetaArea().getBackupLocationFor(sourceLocation);
-		if (!sourceLocation.toFile().exists() && !tempLocation.toFile().exists())
+		if (!sourceLocation.toFile().exists() && !tempLocation.toFile().exists()) {
 			return;
+		}
 		try (DataInputStream input = new DataInputStream(
 				new SafeFileInputStream(sourceLocation.toOSString(), tempLocation.toOSString()))) {
 			SyncInfoReader reader = new SyncInfoReader(workspace, this);
@@ -168,12 +174,14 @@ public class Synchronizer implements ISynchronizer {
 
 	protected void restoreFromSnap(IResource resource) {
 		IPath sourceLocation = workspace.getMetaArea().getSyncInfoSnapshotLocationFor(resource);
-		if (!sourceLocation.toFile().exists())
+		if (!sourceLocation.toFile().exists()) {
 			return;
+		}
 		try (DataInputStream input = new DataInputStream(new SafeChunkyInputStream(sourceLocation.toFile()))) {
 			SyncInfoSnapReader reader = new SyncInfoSnapReader(workspace, this);
-			while (true)
+			while (true) {
 				reader.readSyncInfo(input);
+			}
 		} catch (EOFException eof) {
 			// ignore end of file -- proceed with what we successfully read
 		} catch (Exception e) {
@@ -229,16 +237,18 @@ public class Synchronizer implements ISynchronizer {
 				throw new ResourceException(new ResourceStatus(IResourceStatus.PARTNER_NOT_REGISTERED, message));
 			}
 			// we do not store sync info on the workspace root
-			if (resource.getType() == IResource.ROOT)
+			if (resource.getType() == IResource.ROOT) {
 				return;
+			}
 			// if the resource doesn't yet exist then create a phantom so we can set the
 			// sync info on it
 			Resource target = (Resource) resource;
 			ResourceInfo resourceInfo = workspace.getResourceInfo(target.getFullPath(), true, false);
 			int flags = target.getFlags(resourceInfo);
 			if (!target.exists(flags, false)) {
-				if (info == null)
+				if (info == null) {
 					return;
+				}
 				// ensure it is possible to create this resource
 				target.checkValidPath(target.getFullPath(), target.getType(), false);
 				Container parent = (Container) target.getParent();
@@ -254,8 +264,9 @@ public class Synchronizer implements ISynchronizer {
 				MultiStatus status = new MultiStatus(ResourcesPlugin.PI_RESOURCES, IResourceStatus.INTERNAL_ERROR,
 						Messages.resources_deleteProblem, null);
 				((Resource) resource).deleteResource(false, status);
-				if (!status.isOK())
+				if (!status.isOK()) {
 					throw new ResourceException(status);
+				}
 			}
 		} finally {
 			workspace.endOperation(resource, false);

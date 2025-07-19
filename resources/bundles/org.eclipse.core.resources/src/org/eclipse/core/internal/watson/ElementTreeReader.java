@@ -67,8 +67,9 @@ public class ElementTreeReader {
 			public Object readData(IPath path, DataInput input) throws IOException {
 				//never read the root node of an ElementTree
 				//this node is reserved for the parent backpointer
-				if (!IPath.ROOT.equals(path))
+				if (!IPath.ROOT.equals(path)) {
 					return factory.readElement(path, input);
+				}
 				return null;
 			}
 		};
@@ -79,8 +80,9 @@ public class ElementTreeReader {
 	 * Returns the appropriate reader for the given version.
 	 */
 	public ElementTreeReader getReader(int formatVersion) throws IOException {
-		if (formatVersion == 1)
+		if (formatVersion == 1) {
 			return new ElementTreeReaderImpl_1(elementInfoFlattener);
+		}
 		throw new IOException(Messages.watson_unknown);
 	}
 

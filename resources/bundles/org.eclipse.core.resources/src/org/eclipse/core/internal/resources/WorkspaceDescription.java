@@ -62,8 +62,9 @@ public class WorkspaceDescription extends ModelObject implements IWorkspaceDescr
 	}
 
 	public String[] getBuildOrder(boolean makeCopy) {
-		if (buildOrder == null)
+		if (buildOrder == null) {
 			return null;
+		}
 		return makeCopy ? (String[]) buildOrder.clone() : buildOrder;
 	}
 

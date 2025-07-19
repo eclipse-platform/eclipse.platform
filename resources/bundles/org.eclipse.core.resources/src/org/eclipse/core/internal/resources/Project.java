@@ -94,8 +94,9 @@ public class Project extends Container implements IProject {
 		checkDoesNotExist();
 		checkDescription(this, description, false);
 		URI location = description.getLocationURI();
-		if (location != null)
+		if (location != null) {
 			return;
+		}
 		//if the project is in the default location, need to check for collision with existing folder of different case
 		if (!Workspace.caseSensitive) {
 			IFileStore store = getStore();
@@ -136,29 +137,33 @@ public class Project extends Container implements IProject {
 		// Update the dynamic state
 		flushOrder |= current.updateDynamicState(description);
 
-		if (flushOrder)
+		if (flushOrder) {
 			workspace.flushBuildOrder();
+		}
 
 		// the natures last as this may cause recursive calls to setDescription.
-		if ((updateFlags & IResource.AVOID_NATURE_CONFIG) == 0)
+		if ((updateFlags & IResource.AVOID_NATURE_CONFIG) == 0) {
 			workspace.getNatureManager().configureNatures(this, current, description, result);
-		else
+		} else {
 			current.setNatureIds(description.getNatureIds(false));
+		}
 		return result;
 	}
 
 	@Override
 	public void build(int trigger, IProgressMonitor monitor) throws CoreException {
-		if (!isAccessible())
+		if (!isAccessible()) {
 			return;
+		}
 		internalBuild(getActiveBuildConfig(), trigger, null, null, monitor);
 	}
 
 	@Override
 	public void build(int trigger, String builderName, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(builderName);
-		if (!isAccessible())
+		if (!isAccessible()) {
 			return;
+		}
 		internalBuild(getActiveBuildConfig(), trigger, builderName, args, monitor);
 	}
 
@@ -166,8 +171,9 @@ public class Project extends Container implements IProject {
 	public void build(IBuildConfiguration config, int trigger, IProgressMonitor monitor) throws CoreException {
 		Assert.isNotNull(config);
 		// If project isn't accessible, or doesn't contain the build configuration, nothing to do.
-		if (!isAccessible() || !hasBuildConfig(config.getName()))
+		if (!isAccessible() || !hasBuildConfig(config.getName())) {
 			return;
+		}
 		internalBuild(config, trigger, null, null, monitor);
 	}
 
@@ -202,13 +208,16 @@ public class Project extends Container implements IProject {
 			// is null (we are using the default) or if the locations aren't equal, then validate the location
 			// of the new description. Otherwise both locations aren't null and they are equal so ignore validation.
 			URI sourceLocation = internalGetDescription().getLocationURI();
-			if (sourceLocation == null || !sourceLocation.equals(location))
+			if (sourceLocation == null || !sourceLocation.equals(location)) {
 				status.merge(workspace.validateProjectLocationURI(project, location));
-		} else
+			}
+		} else {
 			// otherwise continue on like before
 			status.merge(workspace.validateProjectLocationURI(project, location));
-		if (!status.isOK())
+		}
+		if (!status.isOK()) {
 			throw new ResourceException(status);
+		}
 	}
 
 	@Override
@@ -223,8 +232,9 @@ public class Project extends Container implements IProject {
 			int flags = getFlags(info);
 			checkExists(flags, true);
 			subMonitor.subTask(msg);
-			if (!isOpen(flags))
+			if (!isOpen(flags)) {
 				return;
+			}
 			// Signal that this resource is about to be closed.  Do this at the very
 			// beginning so that infrastructure pieces have a chance to do clean up
 			// while the resources still exist.
@@ -235,8 +245,9 @@ public class Project extends Container implements IProject {
 			IProgressMonitor sub = subMonitor.newChild(49, SubMonitor.SUPPRESS_SUBTASK);
 			IStatus saveStatus = workspace.getSaveManager().save(ISaveContext.PROJECT_SAVE, this, sub);
 			internalClose(subMonitor.newChild(49));
-			if (saveStatus != null && !saveStatus.isOK())
+			if (saveStatus != null && !saveStatus.isOK()) {
 				throw new ResourceException(saveStatus);
+			}
 		} catch (OperationCanceledException e) {
 			workspace.getWorkManager().operationCanceled();
 			throw e;
@@ -318,8 +329,9 @@ public class Project extends Container implements IProject {
 			final boolean hasSavedDescription = getLocalManager().hasSavedDescription(this);
 			boolean hasContent = hasSavedDescription;
 			// if there is no project description, there might still be content on disk
-			if (!hasSavedDescription)
+			if (!hasSavedDescription) {
 				hasContent = getLocalManager().hasSavedContent(this);
+			}
 			try {
 				// look for a description on disk
 				if (hasSavedDescription) {
@@ -340,8 +352,9 @@ public class Project extends Container implements IProject {
 			info.clearModificationStamp();
 			// if a project already had content on disk, mark the project as having unknown
 			// children
-			if (hasContent)
+			if (hasContent) {
 				info.set(ICoreConstants.M_CHILDREN_UNKNOWN);
+			}
 			workspace.getSaveManager().requestSnapshot();
 		} catch (OperationCanceledException e) {
 			workspace.getWorkManager().operationCanceled();
@@ -391,8 +404,9 @@ public class Project extends Container implements IProject {
 
 	@Override
 	public IBuildConfiguration getBuildConfig(String configName) throws CoreException {
-		if (configName == null)
+		if (configName == null) {
 			return getActiveBuildConfig();
+		}
 		ProjectInfo info = (ProjectInfo) getResourceInfo(false, false);
 		checkAccessible(getFlags(info));
 		IBuildConfiguration[] configs = internalGetBuildConfigs(false);
@@ -419,8 +433,9 @@ public class Project extends Container implements IProject {
 	@Override
 	public String getDefaultCharset(boolean checkImplicit) {
 		// non-existing resources default to parent's charset
-		if (!exists())
+		if (!exists()) {
 			return checkImplicit ? ResourcesPlugin.getEncoding() : null;
+		}
 		return workspace.getCharsetManager().getCharsetFor(getFullPath(), checkImplicit);
 	}
 
@@ -430,8 +445,9 @@ public class Project extends Container implements IProject {
 		checkAccessible(getFlags(info));
 		ProjectDescription description = ((ProjectInfo) info).getDescription();
 		//if the project is currently in the middle of being created, the description might not be available yet
-		if (description == null)
+		if (description == null) {
 			checkAccessible(NULL_FLAG);
+		}
 		return (IProjectDescription) description.clone();
 	}
 
@@ -443,8 +459,9 @@ public class Project extends Container implements IProject {
 		IProjectNature nature = info.getNature(natureID);
 		if (nature == null) {
 			// Not initialized yet. Does this project have the nature?
-			if (!hasNature(natureID))
+			if (!hasNature(natureID)) {
 				return null;
+			}
 			nature = workspace.getNatureManager().createNature(this, natureID);
 			info.setNature(natureID, nature);
 		}
@@ -484,10 +501,12 @@ public class Project extends Container implements IProject {
 		checkAccessible(getFlags(info));
 		ProjectDescription description = ((ProjectInfo) info).getDescription();
 		//if the project is currently in the middle of being created, the description might not be available yet
-		if (description == null)
+		if (description == null) {
 			checkAccessible(NULL_FLAG);
-		if (!hasBuildConfig(configName))
+		}
+		if (!hasBuildConfig(configName)) {
 			throw new ResourceException(IResourceStatus.BUILD_CONFIGURATION_NOT_FOUND, getFullPath(), null, null);
+		}
 		return internalGetReferencedBuildConfigs(configName, includeMissing);
 	}
 
@@ -497,8 +516,9 @@ public class Project extends Container implements IProject {
 		checkAccessible(getFlags(info));
 		ProjectDescription description = ((ProjectInfo) info).getDescription();
 		//if the project is currently in the middle of being created, the description might not be available yet
-		if (description == null)
+		if (description == null) {
 			checkAccessible(NULL_FLAG);
+		}
 		return description.getAllReferences(this, true);
 	}
 
@@ -523,17 +543,20 @@ public class Project extends Container implements IProject {
 		List<IProject> result = new ArrayList<>(projects.length);
 		for (IProject p : projects) {
 			Project project = (Project) p;
-			if (!project.isAccessible())
+			if (!project.isAccessible()) {
 				continue;
+			}
 			ProjectDescription description = project.internalGetDescription();
-			if (description == null)
+			if (description == null) {
 				continue;
+			}
 			IProject[] references = description.getAllReferences(project, false);
-			for (IProject reference : references)
+			for (IProject reference : references) {
 				if (reference.equals(this)) {
 					result.add(project);
 					break;
 				}
+			}
 		}
 		return result.toArray(new IProject[result.size()]);
 	}
@@ -545,8 +568,9 @@ public class Project extends Container implements IProject {
 
 	@Override
 	public IPath getWorkingLocation(String id) {
-		if (id == null || !exists())
+		if (id == null || !exists()) {
 			return null;
+		}
 		IPath result = workspace.getMetaArea().getWorkingLocation(this, id);
 		result.toFile().mkdirs();
 		return result;
@@ -565,8 +589,9 @@ public class Project extends Container implements IProject {
 		// use #internal method to avoid copy but still throw an
 		// exception if the resource doesn't exist.
 		IProjectDescription desc = internalGetDescription();
-		if (desc == null)
+		if (desc == null) {
 			checkAccessible(NULL_FLAG);
+		}
 		return desc.hasNature(natureID);
 	}
 
@@ -589,8 +614,9 @@ public class Project extends Container implements IProject {
 				try {
 					try {
 						workspace.prepareOperation(notificationsRule, innerMonitor);
-						if (!shouldBuild())
+						if (!shouldBuild()) {
 							return;
+						}
 						workspace.beginOperation(true);
 						workspace.aboutToBuild(Project.this, trigger);
 					} finally {
@@ -603,8 +629,9 @@ public class Project extends Container implements IProject {
 						workspace.beginOperation(false);
 						result = workspace.getBuildManager().build(config, trigger, builderName, args,
 								subMonitor.split(100));
-						if (!result.isOK())
+						if (!result.isOK()) {
 							throw new ResourceException(result);
+						}
 					} finally {
 						workspace.endOperation(projectBuildRule, false);
 						try {
@@ -613,8 +640,9 @@ public class Project extends Container implements IProject {
 							workspace.beginOperation(false);
 							workspace.broadcastBuildEvent(Project.this, IResourceChangeEvent.POST_BUILD, trigger);
 							// building may close the tree, so open it
-							if (workspace.getElementTree().isImmutable())
+							if (workspace.getElementTree().isImmutable()) {
 								workspace.newWorkingTree();
+							}
 						} finally {
 							workspace.endOperation(notificationsRule, false);
 						}
@@ -741,8 +769,9 @@ public class Project extends Container implements IProject {
 				// refresh local
 				monitor.subTask(Messages.resources_updating);
 				getLocalManager().refresh(destination, DEPTH_INFINITE, true, Policy.subMonitorFor(monitor, Policy.opWork * 10 / 100));
-				if (!problems.isOK())
+				if (!problems.isOK()) {
 					throw new ResourceException(problems);
+				}
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
 				throw e;
@@ -793,8 +822,9 @@ public class Project extends Container implements IProject {
 		}
 		String configName = description.activeConfiguration;
 		try {
-			if (configName != null)
+			if (configName != null) {
 				return getBuildConfig(configName);
+			}
 		} catch (CoreException e) {
 			// Build configuration doesn't exist; treat the first as active.
 		}
@@ -806,8 +836,9 @@ public class Project extends Container implements IProject {
 	 */
 	public IBuildConfiguration[] internalGetBuildConfigs(boolean makeCopy) {
 		ProjectDescription desc = internalGetDescription();
-		if (desc == null)
+		if (desc == null) {
 			return new IBuildConfiguration[] {new BuildConfiguration(this, IBuildConfiguration.DEFAULT_CONFIG_NAME)};
+		}
 		return desc.getBuildConfigs(this, makeCopy);
 	}
 
@@ -819,8 +850,9 @@ public class Project extends Container implements IProject {
 	 */
 	public ProjectDescription internalGetDescription() {
 		ProjectInfo info = (ProjectInfo) getResourceInfo(false, false);
-		if (info == null)
+		if (info == null) {
 			return null;
+		}
 		return info.getDescription();
 	}
 
@@ -843,8 +875,9 @@ public class Project extends Container implements IProject {
 				// The project isn't accessible, or the build configuration doesn't exist
 				// on the project.  If requested return the full set of build references which may
 				// be useful to API consumers
-				if (includeMissing)
+				if (includeMissing) {
 					configs.add(ref);
+				}
 			}
 		}
 		return configs.toArray(new IBuildConfiguration[configs.size()]);
@@ -878,23 +911,27 @@ public class Project extends Container implements IProject {
 		if (incrementContentId) {
 			info.incrementContentId();
 			//if the project is not accessible, stamp will be null and should remain null
-			if (info.getModificationStamp() != NULL_STAMP)
+			if (info.getModificationStamp() != NULL_STAMP) {
 				workspace.updateModificationStamp(info);
+			}
 		}
 	}
 
 	@Override
 	public void internalSetLocal(boolean flag, int depth) throws CoreException {
 		// do nothing for projects, but call for its children
-		if (depth == IResource.DEPTH_ZERO)
+		if (depth == IResource.DEPTH_ZERO) {
 			return;
-		if (depth == IResource.DEPTH_ONE)
+		}
+		if (depth == IResource.DEPTH_ONE) {
 			depth = IResource.DEPTH_ZERO;
+		}
 		// get the children via the workspace since we know that this
 		// resource exists (it is local).
 		IResource[] children = getChildren(IResource.NONE);
-		for (IResource element : children)
+		for (IResource element : children) {
 			((Resource) element).internalSetLocal(flag, depth);
+		}
 	}
 
 	@Override
@@ -934,16 +971,20 @@ public class Project extends Container implements IProject {
 	@Override
 	public boolean isLocal(int flags, int depth) {
 		// don't check the flags....projects are always local
-		if (depth == DEPTH_ZERO)
+		if (depth == DEPTH_ZERO) {
 			return true;
-		if (depth == DEPTH_ONE)
+		}
+		if (depth == DEPTH_ONE) {
 			depth = DEPTH_ZERO;
+		}
 		// get the children via the workspace since we know that this
 		// resource exists (it is local).
 		IResource[] children = getChildren(IResource.NONE);
-		for (IResource element : children)
-			if (!element.isLocal(depth))
+		for (IResource element : children) {
+			if (!element.isLocal(depth)) {
 				return false;
+			}
+		}
 		return true;
 	}
 
@@ -1038,15 +1079,17 @@ public class Project extends Container implements IProject {
 				int depth = 0;
 				try {
 					depth = workManager.beginUnprotected();
-					if (!hook.moveProject(tree, this, description, updateFlags, Policy.subMonitorFor(monitor, Policy.opWork / 2)))
+					if (!hook.moveProject(tree, this, description, updateFlags, Policy.subMonitorFor(monitor, Policy.opWork / 2))) {
 						tree.standardMoveProject(this, description, updateFlags, Policy.subMonitorFor(monitor, Policy.opWork / 2));
+					}
 				} finally {
 					workManager.endUnprotected(depth);
 				}
 				// Invalidate the tree for further use by clients.
 				tree.makeInvalid();
-				if (!tree.getStatus().isOK())
+				if (!tree.getStatus().isOK()) {
 					throw new ResourceException(tree.getStatus());
+				}
 				// make sure the move operation is remembered
 				workspace.getSaveManager().requestSnapshot();
 			} catch (OperationCanceledException e) {
@@ -1074,8 +1117,9 @@ public class Project extends Container implements IProject {
 				ProjectInfo info = (ProjectInfo) getResourceInfo(false, false);
 				int flags = getFlags(info);
 				checkExists(flags, true);
-				if (isOpen(flags))
+				if (isOpen(flags)) {
 					return;
+				}
 
 				workspace.beginOperation(true);
 				// flush the build order early in case there is a problem
@@ -1084,8 +1128,9 @@ public class Project extends Container implements IProject {
 				info.set(M_OPEN);
 				//clear the unknown children immediately to avoid background refresh
 				boolean unknownChildren = info.isSet(M_CHILDREN_UNKNOWN);
-				if (unknownChildren)
+				if (unknownChildren) {
 					info.clear(M_CHILDREN_UNKNOWN);
+				}
 				// the M_USED flag is used to indicate the difference between opening a project
 				// for the first time and opening it from a previous close (restoring it from disk)
 				boolean used = info.isSet(M_USED);
@@ -1118,8 +1163,9 @@ public class Project extends Container implements IProject {
 					info.set(M_USED);
 					//reconcile any links and groups in the project description
 					IStatus result = reconcileLinksAndGroups(info.getDescription());
-					if (!result.isOK())
+					if (!result.isOK()) {
 						throw new CoreException(result);
+					}
 					workspace.updateModificationStamp(info);
 					monitor.worked(Policy.opWork * (snapshotLoaded ? 15 : 20) / 100);
 				}
@@ -1219,11 +1265,13 @@ public class Project extends Container implements IProject {
 			if (oldLinks != null) {
 				for (LinkDescription oldLink : oldLinks.values()) {
 					Resource oldLinkResource = (Resource) findMember(oldLink.getProjectRelativePath());
-					if (oldLinkResource == null || !oldLinkResource.isLinked())
+					if (oldLinkResource == null || !oldLinkResource.isLinked()) {
 						continue;
+					}
 					LinkDescription newLink = null;
-					if (newLinks != null)
+					if (newLinks != null) {
 						newLink = newLinks.get(oldLink.getProjectRelativePath());
+					}
 					//if the new link is missing, or has different (raw) location or gender, then remove old link
 					if (newLink == null || !newLink.getLocationURI().equals(oldLinkResource.getRawLocationURI()) || newLink.getType() != oldLinkResource.getType()) {
 						try {
@@ -1242,33 +1290,38 @@ public class Project extends Container implements IProject {
 		// so we don't have to create intermediate directories that would turn
 		// out
 		// to be groups or link folders.
-		if (newLinks == null)
+		if (newLinks == null) {
 			return status;
+		}
 		//sort links to avoid creating nested links before their parents
 		TreeSet<LinkDescription> newLinksAndGroups = new TreeSet<>((arg0, arg1) -> {
 			int numberOfSegments0 = arg0.getProjectRelativePath().segmentCount();
 			int numberOfSegments1 = arg1.getProjectRelativePath().segmentCount();
-			if (numberOfSegments0 != numberOfSegments1)
+			if (numberOfSegments0 != numberOfSegments1) {
 				return numberOfSegments0 - numberOfSegments1;
-			else if (arg0.equals(arg1))
+			} else if (arg0.equals(arg1)) {
 				return 0;
+			}
 
 			return -1;
 		});
-		if (newLinks != null)
+		if (newLinks != null) {
 			newLinksAndGroups.addAll(newLinks.values());
+		}
 
 		for (LinkDescription newLink : newLinksAndGroups) {
 			try {
 				Resource toLink = workspace.newResource(getFullPath().append(newLink.getProjectRelativePath()), newLink.getType());
 				IContainer parent = toLink.getParent();
-				if (parent != null && !parent.exists() && parent.getType() == FOLDER)
+				if (parent != null && !parent.exists() && parent.getType() == FOLDER) {
 					((Folder) parent).ensureExists(Policy.monitorFor(null));
+				}
 				if (!toLink.exists() || !toLink.isLinked()) {
-					if (newLink.isGroup())
+					if (newLink.isGroup()) {
 						((Folder) toLink).create(IResource.REPLACE | IResource.VIRTUAL, true, null);
-					else
+					} else {
 						toLink.createLink(newLink.getLocationURI(), IResource.REPLACE | IResource.ALLOW_MISSING_LOCAL, null);
+					}
 				}
 			} catch (CoreException e) {
 				status.merge(e.getStatus());
@@ -1324,10 +1377,11 @@ public class Project extends Container implements IProject {
 		try {
 			monitor.beginTask(Messages.resources_setDesc, Policy.totalWork);
 			ISchedulingRule rule = null;
-			if ((updateFlags & IResource.AVOID_NATURE_CONFIG) != 0)
+			if ((updateFlags & IResource.AVOID_NATURE_CONFIG) != 0) {
 				rule = workspace.getRuleFactory().modifyRule(this);
-			else
+			} else {
 				rule = workspace.getRoot();
+			}
 			try {
 				//need to use root rule because nature configuration calls third party code
 				workspace.prepareOperation(rule, monitor);
@@ -1338,8 +1392,9 @@ public class Project extends Container implements IProject {
 				ProjectDescription newDescription = (ProjectDescription) description;
 				boolean hasPublicChanges = oldDescription.hasPublicChanges(newDescription);
 				boolean hasPrivateChanges = oldDescription.hasPrivateChanges(newDescription);
-				if (!hasPublicChanges && !hasPrivateChanges)
+				if (!hasPublicChanges && !hasPrivateChanges) {
 					return;
+				}
 				checkDescription(this, newDescription, false);
 				//If we're out of sync and !FORCE, then fail.
 				//If the file is missing, we want to write the new description then throw an exception.
@@ -1352,12 +1407,14 @@ public class Project extends Container implements IProject {
 					}
 				}
 				//see if we have an old .prj file
-				if (!hadSavedDescription)
+				if (!hadSavedDescription) {
 					hadSavedDescription = workspace.getMetaArea().hasSavedProject(this);
+				}
 				workspace.beginOperation(true);
 				MultiStatus status = basicSetDescription(newDescription, updateFlags);
-				if (hadSavedDescription && !status.isOK())
+				if (hadSavedDescription && !status.isOK()) {
 					throw new CoreException(status);
+				}
 				//write the new description to the .project file
 				writeDescription(oldDescription, updateFlags, hasPublicChanges, hasPrivateChanges);
 				//increment the content id even for private changes
@@ -1368,8 +1425,9 @@ public class Project extends Container implements IProject {
 					String msg = NLS.bind(Messages.resources_missingProjectMetaRepaired, getName());
 					status.merge(new ResourceStatus(IResourceStatus.MISSING_DESCRIPTION_REPAIRED, getFullPath(), msg));
 				}
-				if (!status.isOK())
+				if (!status.isOK()) {
 					throw new CoreException(status);
+				}
 			} finally {
 				workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.POST_PROJECT_CHANGE, this));
 				workspace.endOperation(rule, true);
@@ -1392,8 +1450,9 @@ public class Project extends Container implements IProject {
 	 * the behaviour of open().
 	 */
 	protected void startup() throws CoreException {
-		if (!isOpen())
+		if (!isOpen()) {
 			return;
+		}
 		workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_PROJECT_OPEN, this));
 	}
 
@@ -1429,18 +1488,21 @@ public class Project extends Container implements IProject {
 	 * description file contents.
 	 */
 	protected void updateDescription() throws CoreException {
-		if (ProjectDescription.isWriting)
+		if (ProjectDescription.isWriting) {
 			return;
+		}
 		ProjectDescription.isReading = true;
 		try {
 			ProjectDescription description = getLocalManager().read(this, false);
 			//links can only be created if the project is open
 			IStatus result = null;
-			if (isOpen())
+			if (isOpen()) {
 				result = reconcileLinksAndGroups(description);
+			}
 			internalSetDescription(description, true);
-			if (result != null && !result.isOK())
+			if (result != null && !result.isOK()) {
 				throw new CoreException(result);
+			}
 		} finally {
 			workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.POST_PROJECT_CHANGE, this));
 			ProjectDescription.isReading = false;
@@ -1466,8 +1528,9 @@ public class Project extends Container implements IProject {
 	 * @exception CoreException On failure to write the description
 	 */
 	public void writeDescription(IProjectDescription description, int updateFlags, boolean hasPublicChanges, boolean hasPrivateChanges) throws CoreException {
-		if (ProjectDescription.isReading)
+		if (ProjectDescription.isReading) {
 			return;
+		}
 		ProjectDescription.isWriting = true;
 		try {
 			getLocalManager().internalWrite(this, description, updateFlags, hasPublicChanges, hasPrivateChanges);
@@ -1481,16 +1544,19 @@ public class Project extends Container implements IProject {
 		Preferences rootNode = Platform.getPreferencesService().getRootNode();
 		// if the file does not exist or has no content yet, try with project preference
 		String value = getLineSeparatorFromPreferences(rootNode.node(ProjectScope.SCOPE).node(getProject().getName()));
-		if (value != null)
+		if (value != null) {
 			return value;
+		}
 		// try with instance preferences
 		value = getLineSeparatorFromPreferences(rootNode.node(InstanceScope.SCOPE));
-		if (value != null)
+		if (value != null) {
 			return value;
+		}
 		// try with default preferences
 		value = getLineSeparatorFromPreferences(rootNode.node(DefaultScope.SCOPE));
-		if (value != null)
+		if (value != null) {
 			return value;
+		}
 		// if there is no preference set, fall back to OS default value
 		return System.lineSeparator();
 	}
@@ -1498,8 +1564,9 @@ public class Project extends Container implements IProject {
 	private static String getLineSeparatorFromPreferences(Preferences node) {
 		try {
 			// be careful looking up for our node so not to create any nodes as side effect
-			if (node.nodeExists(Platform.PI_RUNTIME))
+			if (node.nodeExists(Platform.PI_RUNTIME)) {
 				return node.node(Platform.PI_RUNTIME).get(Platform.PREF_LINE_SEPARATOR, null);
+			}
 		} catch (org.osgi.service.prefs.BackingStoreException e) {
 			// ignore
 		}

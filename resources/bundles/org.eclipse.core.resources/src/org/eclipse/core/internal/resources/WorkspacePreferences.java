@@ -41,8 +41,9 @@ public class WorkspacePreferences extends WorkspaceDescription {
 	 * stringN".
 	 */
 	public static String convertStringArraytoString(String[] array) {
-		if (array == null || array.length == 0)
+		if (array == null || array.length == 0) {
 			return ""; //$NON-NLS-1$
+		}
 		StringBuilder sb = new StringBuilder();
 		for (String element : array) {
 			sb.append(element);
@@ -58,8 +59,9 @@ public class WorkspacePreferences extends WorkspaceDescription {
 	 */
 	public static String[] convertStringToStringArray(String string, String separator) {
 		List<String> list = new ArrayList<>();
-		for (StringTokenizer tokenizer = new StringTokenizer(string, separator); tokenizer.hasMoreTokens();)
+		for (StringTokenizer tokenizer = new StringTokenizer(string, separator); tokenizer.hasMoreTokens();) {
 			list.add(tokenizer.nextToken());
+		}
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -87,8 +89,9 @@ public class WorkspacePreferences extends WorkspaceDescription {
 		this.preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
 
 		final String version = preferences.getString(ICoreConstants.PREF_VERSION_KEY);
-		if (!ICoreConstants.PREF_VERSION.equals(version))
+		if (!ICoreConstants.PREF_VERSION.equals(version)) {
 			upgradeVersion(version);
+		}
 
 		// initialize cached preferences (for better performance)
 		super.setAutoBuilding(preferences.getBoolean(ResourcesPlugin.PREF_AUTO_BUILDING));
@@ -130,8 +133,9 @@ public class WorkspacePreferences extends WorkspaceDescription {
 	@Override
 	public String[] getBuildOrder() {
 		boolean defaultBuildOrder = preferences.getBoolean(ResourcesPlugin.PREF_DEFAULT_BUILD_ORDER);
-		if (defaultBuildOrder)
+		if (defaultBuildOrder) {
 			return null;
+		}
 		return convertStringToStringArray(preferences.getString(ResourcesPlugin.PREF_BUILD_ORDER), PROJECT_SEPARATOR);
 	}
 
@@ -234,27 +238,27 @@ public class WorkspacePreferences extends WorkspaceDescription {
 		// do not use the value in the event - may be a string instead
 		// of the expected type. Retrieve it from the preferences store
 		// using the type-specific method
-		if (property.equals(ResourcesPlugin.PREF_AUTO_BUILDING))
+		if (property.equals(ResourcesPlugin.PREF_AUTO_BUILDING)) {
 			super.setAutoBuilding(preferences.getBoolean(ResourcesPlugin.PREF_AUTO_BUILDING));
-		else if (property.equals(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL))
+		} else if (property.equals(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL)) {
 			super.setSnapshotInterval(preferences.getLong(ResourcesPlugin.PREF_SNAPSHOT_INTERVAL));
-		else if (property.equals(ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS))
+		} else if (property.equals(ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS)) {
 			super.setMaxBuildIterations(preferences.getInt(ResourcesPlugin.PREF_MAX_BUILD_ITERATIONS));
-		else if (property.equals(ResourcesPlugin.PREF_APPLY_FILE_STATE_POLICY))
+		} else if (property.equals(ResourcesPlugin.PREF_APPLY_FILE_STATE_POLICY)) {
 			super.setApplyFileStatePolicy(preferences.getBoolean(ResourcesPlugin.PREF_APPLY_FILE_STATE_POLICY));
-		else if (property.equals(ResourcesPlugin.PREF_MAX_FILE_STATES))
+		} else if (property.equals(ResourcesPlugin.PREF_MAX_FILE_STATES)) {
 			super.setMaxFileStates(preferences.getInt(ResourcesPlugin.PREF_MAX_FILE_STATES));
-		else if (property.equals(ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE))
+		} else if (property.equals(ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE)) {
 			super.setMaxFileStateSize(preferences.getLong(ResourcesPlugin.PREF_MAX_FILE_STATE_SIZE));
-		else if (property.equals(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY))
+		} else if (property.equals(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY)) {
 			super.setFileStateLongevity(preferences.getLong(ResourcesPlugin.PREF_FILE_STATE_LONGEVITY));
-		else if (property.equals(PreferenceInitializer.PREF_OPERATIONS_PER_SNAPSHOT))
+		} else if (property.equals(PreferenceInitializer.PREF_OPERATIONS_PER_SNAPSHOT)) {
 			super.setOperationsPerSnapshot(preferences.getInt(PreferenceInitializer.PREF_OPERATIONS_PER_SNAPSHOT));
-		else if (property.equals(PreferenceInitializer.PREF_DELTA_EXPIRATION))
+		} else if (property.equals(PreferenceInitializer.PREF_DELTA_EXPIRATION)) {
 			super.setDeltaExpiration(preferences.getLong(PreferenceInitializer.PREF_DELTA_EXPIRATION));
-		else if (property.equals(ResourcesPlugin.PREF_MAX_CONCURRENT_BUILDS))
+		} else if (property.equals(ResourcesPlugin.PREF_MAX_CONCURRENT_BUILDS)) {
 			super.setMaxConcurrentBuilds(preferences.getInt(ResourcesPlugin.PREF_MAX_CONCURRENT_BUILDS));
-		else if (property.equals(ResourcesPlugin.PREF_KEEP_DERIVED_STATE)) {
+		} else if (property.equals(ResourcesPlugin.PREF_KEEP_DERIVED_STATE)) {
 			super.setKeepDerivedState(preferences.getBoolean(ResourcesPlugin.PREF_KEEP_DERIVED_STATE));
 		}
 	}

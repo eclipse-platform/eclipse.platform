@@ -141,8 +141,9 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	private static synchronized SAXParser createParser(Workspace workspace)
 			throws ParserConfigurationException, SAXException {
 		//the parser can't be used concurrently, so only use singleton when workspace is locked
-		if (workspace == null || !isWorkspaceLocked(workspace))
+		if (workspace == null || !isWorkspaceLocked(workspace)) {
 			return createParserFactory().newSAXParser();
+		}
 		if (singletonParser == null) {
 			singletonParser = createParserFactory().newSAXParser();
 		}
@@ -217,8 +218,9 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			// ProjectDescription which is the next thing on the stack.
 			ArrayList<ICommand> commands = (ArrayList<ICommand>) objectStack.pop();
 			state = S_PROJECT_DESC;
-			if (commands.isEmpty())
+			if (commands.isEmpty()) {
 				return;
+			}
 			ICommand[] commandArray = commands.toArray(new ICommand[commands.size()]);
 			projectDescription.setBuildSpec(commandArray);
 		}
@@ -344,8 +346,9 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 					// arguments (if any).
 					HashMap<String, String> dictionaryArgs = (HashMap<String, String>) objectStack.pop();
 					state = S_BUILD_COMMAND;
-					if (dictionaryArgs.isEmpty())
+					if (dictionaryArgs.isEmpty()) {
 						break;
+					}
 					// Below the hashMap on the stack, there is a BuildCommand.
 					((BuildCommand) objectStack.peek()).setArguments(dictionaryArgs);
 				}
@@ -470,8 +473,9 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 		if (elementName.equals(LINKED_RESOURCES)) {
 			HashMap<IPath, LinkDescription> linkedResources = (HashMap<IPath, LinkDescription>) objectStack.pop();
 			state = S_PROJECT_DESC;
-			if (linkedResources.isEmpty())
+			if (linkedResources.isEmpty()) {
 				return;
+			}
 			projectDescription.setLinkDescriptions(linkedResources);
 		}
 	}
@@ -483,8 +487,9 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 		if (elementName.equals(FILTERED_RESOURCES)) {
 			HashMap<IPath, LinkedList<FilterDescription>> filteredResources = (HashMap<IPath, LinkedList<FilterDescription>>) objectStack.pop();
 			state = S_PROJECT_DESC;
-			if (filteredResources.isEmpty())
+			if (filteredResources.isEmpty()) {
 				return;
+			}
 			projectDescription.setFilterDescriptions(filteredResources);
 		}
 	}
@@ -497,8 +502,9 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 		if (elementName.equals(VARIABLE_LIST)) {
 			HashMap<String, VariableDescription> variableList = (HashMap<String, VariableDescription>) objectStack.pop();
 			state = S_PROJECT_DESC;
-			if (variableList.isEmpty())
+			if (variableList.isEmpty()) {
 				return;
+			}
 			projectDescription.setVariableDescriptions(variableList);
 		}
 	}
@@ -703,15 +709,17 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			ArrayList<FileInfoMatcherDescription> matchers = (ArrayList<FileInfoMatcherDescription>) objectStack.pop();
 			Object newArguments = charBuffer.toString();
 
-			if (matchers.size() > 0)
+			if (matchers.size() > 0) {
 				newArguments = matchers.toArray(new FileInfoMatcherDescription[matchers.size()]);
+			}
 
 			// objectStack has an array (Object[2]) on it for the matcher id and arguments.
 			String oldArguments = (String) ((Object[]) objectStack.peek())[1];
 			if (oldArguments != null) {
 				parseProblem(NLS.bind(Messages.projRead_badArguments, oldArguments, newArguments));
-			} else
+			} else {
 				((Object[]) objectStack.peek())[1] = newArguments;
+			}
 			state = S_MATCHER;
 		}
 	}
@@ -828,8 +836,9 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			// Pop the array list of natures off the stack
 			ArrayList<String> natures = (ArrayList<String>) objectStack.pop();
 			state = S_PROJECT_DESC;
-			if (natures.isEmpty())
+			if (natures.isEmpty()) {
 				return;
+			}
 			String[] natureNames = natures.toArray(new String[natures.size()]);
 			projectDescription.setNatureIds(natureNames);
 		}
@@ -841,10 +850,11 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	private void endProjectsElement() {
 		// Pop the array list that contains all the referenced project names
 		ArrayList<String> referencedProjects = (ArrayList<String>) objectStack.pop();
-		if (referencedProjects.isEmpty())
+		if (referencedProjects.isEmpty()) {
 			// Don't bother adding an empty group of referenced projects to the
 			// project descriptor.
 			return;
+		}
 		IWorkspaceRoot root = workspace.getRoot();
 		IProject[] projects = new IProject[referencedProjects.size()];
 		for (int i = 0; i < projects.length; i++) {
@@ -881,16 +891,18 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 	public void fatalError(SAXParseException error) throws SAXException {
 		// ensure a null value is not passed as message to Status constructor (bug 42782)
 		String message = error.getMessage();
-		if (project != null)
+		if (project != null) {
 			message = NLS.bind(Messages.resources_readMeta, project.getName());
+		}
 		problems.add(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_READ_METADATA, message == null ? "" : message, error)); //$NON-NLS-1$
 		throw error;
 	}
 
 	protected void log(Exception ex) {
 		String message = ex.getMessage();
-		if (project != null)
+		if (project != null) {
 			message = NLS.bind(Messages.resources_readMeta, project.getName());
+		}
 		problems.add(new Status(IStatus.WARNING, ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_READ_METADATA, message == null ? "" : message, ex)); //$NON-NLS-1$
 	}
 
@@ -966,8 +978,9 @@ public class ProjectDescriptionReader extends DefaultHandler implements IModelOb
 			log(e);
 		}
 
-		if (projectDescription != null && projectDescription.getName() == null)
+		if (projectDescription != null && projectDescription.getName() == null) {
 			parseProblem(Messages.projRead_missingProjectName);
+		}
 
 		switch (problems.getSeverity()) {
 			case IStatus.ERROR :
