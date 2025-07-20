@@ -242,7 +242,7 @@ public class UIPlugin extends AbstractUIPlugin {
 		registry.put(ImageConsts.ACTION_ToggleCommandField_Disabled, disabledInputFieldIcon);
 
 		URL enabledTerminalViewIconUrl = bundle
-				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "new_terminal_view.gif"); //$NON-NLS-1$
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "new_terminal_view.svg"); //$NON-NLS-1$
 		ImageDescriptor enabledTerminalViewIcon = ImageDescriptor.createFromURL(enabledTerminalViewIconUrl);
 		registry.put(ImageConsts.ACTION_NewTerminalView_Enabled, enabledTerminalViewIcon);
 		ImageDescriptor disabledTerminalViewIcon = ImageDescriptor.createWithFlags(enabledInputFieldIcon,
