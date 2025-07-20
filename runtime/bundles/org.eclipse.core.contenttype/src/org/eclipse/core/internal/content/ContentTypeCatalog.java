@@ -426,8 +426,9 @@ public final class ContentTypeCatalog {
 		ISelectionPolicy policy = matcher.getPolicy();
 		IContentType[] selected = concat(internalFindContentTypesSorted(matcher, fileName, policyConstantGeneralIsBetter, policy == null));
 		// give the policy a chance to change the results
-		if (policy != null)
+		if (policy != null) {
 			selected = applyPolicy(policy, selected, true, false);
+		}
 		return selected.length != 0 ? of(selected[0]) : empty();
 	}
 
