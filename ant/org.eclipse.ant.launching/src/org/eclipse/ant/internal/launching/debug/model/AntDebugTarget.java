@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2016 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.ant.internal.launching.debug.model;
 
@@ -22,7 +23,6 @@ import org.eclipse.ant.internal.launching.debug.IAntDebugController;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -108,13 +108,7 @@ public class AntDebugTarget extends AntDebugElement implements IDebugTarget, IDe
 	@Override
 	public String getName() throws DebugException {
 		if (fName == null) {
-			try {
-				fName = getLaunch().getLaunchConfiguration().getAttribute(IExternalToolConstants.ATTR_LOCATION, DebugModelMessages.AntDebugTarget_0);
-				fName = VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(fName);
-			}
-			catch (CoreException e) {
-				fName = DebugModelMessages.AntDebugTarget_0;
-			}
+			fName = IExternalToolConstants.LAUNCH_ATTRIBUTE_LOCATION.probe(getLaunch().getLaunchConfiguration()).orElse(DebugModelMessages.AntDebugTarget_0);
 		}
 		return fName;
 	}
