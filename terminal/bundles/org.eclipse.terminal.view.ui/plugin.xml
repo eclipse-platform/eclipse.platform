@@ -26,7 +26,7 @@
             allowMultiple="true"
             category="org.eclipse.terminal.view.ui.views.category"
             class="org.eclipse.terminal.view.ui.internal.view.TerminalsView"
-            icon="icons/eview16/terminal_view.gif"
+            icon="icons/eview16/terminal_view.svg"
             id="org.eclipse.terminal.view.ui.TerminalsView"
             name="%TerminalsView.name">
       </view>

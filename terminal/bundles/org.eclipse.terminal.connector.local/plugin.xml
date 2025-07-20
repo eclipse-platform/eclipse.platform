@@ -176,7 +176,7 @@
    <extension point="org.eclipse.ui.commandImages">
       <image
             commandId="org.eclipse.terminal.connector.local.command.launch"
-            icon="icons/eview16/terminal_view.gif">
+            icon="icons/eview16/terminal_view.svg">
       </image>
    </extension>
 
