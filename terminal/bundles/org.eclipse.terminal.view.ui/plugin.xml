@@ -126,7 +126,7 @@
                label="%toolbar.terminal.label">
 	         <command
 	               commandId="org.eclipse.terminal.view.ui.command.launchToolbar"
-	               icon="icons/eview16/console_view.png"
+	               icon="icons/eview16/console_view.svg"
 	               id="org.eclipse.terminal.view.ui.commands.launchToolbar"
 	               label="%command.launch.label"
 	               style="push"
@@ -137,7 +137,7 @@
       <menuContribution locationURI="toolbar:org.eclipse.terminal.view.ui.TerminalsView">
          <command
                commandId="org.eclipse.terminal.view.ui.command.launchToolbar"
-               icon="icons/eview16/console_view.png"
+               icon="icons/eview16/console_view.svg"
                id="org.eclipse.terminal.view.ui.commands.launchToolbarTerminalsView"
                label="%command.launch.label"
                style="push"
@@ -145,7 +145,7 @@
          </command>
          <command
                commandId="org.eclipse.terminal.view.ui.command.disconnect"
-               icon="icons/elcl16/disconnect.gif"
+               icon="icons/elcl16/disconnect.svg"
                id="org.eclipse.terminal.view.ui.commands.disconnect"
                label="%command.disconnect.label"
                style="push"

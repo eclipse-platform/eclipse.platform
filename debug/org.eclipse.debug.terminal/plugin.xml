@@ -20,7 +20,7 @@
          point="org.eclipse.ui.console.consoleFactories">
       <consoleFactory
             class="org.eclipse.debug.terminal.ui.TerminalConsoleFactory"
-            icon="icons/console_view.png"
+            icon="icons/console_view.svg"
             label="Terminal">
       </consoleFactory>
    </extension>
