@@ -73,7 +73,7 @@ public class TerminalPlugin extends AbstractUIPlugin {
 		try {
 			// Enabled local toolbars
 			putImageInRegistry(imageRegistry, ImageConsts.IMAGE_ELCL_CLEAR_ALL,
-					ImageConsts.IMAGE_DIR_ELCL + "clear_co.gif"); //$NON-NLS-1$
+					ImageConsts.IMAGE_DIR_ELCL + "clear_co.svg"); //$NON-NLS-1$
 			// Disabled local toolbars
 			putDisabledImageInRegistry(imageRegistry, ImageConsts.IMAGE_ELCL_CLEAR_ALL,
 					ImageConsts.IMAGE_DLCL_CLEAR_ALL);

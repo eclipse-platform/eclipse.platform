@@ -223,18 +223,18 @@ public class UIPlugin extends AbstractUIPlugin {
 	protected void initializeImageRegistry(ImageRegistry registry) {
 		Bundle bundle = getBundle();
 		URL consoleViewIconUrl = bundle
-				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_EVIEW + "console_view.png"); //$NON-NLS-1$
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_EVIEW + "console_view.svg"); //$NON-NLS-1$
 		registry.put(ImageConsts.VIEW_Terminals, ImageDescriptor.createFromURL(consoleViewIconUrl));
 
 		URL enabledLockIconUrl = bundle
-				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "lock_co.png"); //$NON-NLS-1$
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "lock_co.svg"); //$NON-NLS-1$
 		ImageDescriptor enabledLockIcon = ImageDescriptor.createFromURL(enabledLockIconUrl);
 		registry.put(ImageConsts.ACTION_ScrollLock_Enabled, enabledLockIcon);
 		ImageDescriptor disabledLockIcon = ImageDescriptor.createWithFlags(enabledLockIcon, SWT.IMAGE_DISABLE);
 		registry.put(ImageConsts.ACTION_ScrollLock_Disabled, disabledLockIcon);
 
 		URL enabledInputFieldIconUrl = bundle
-				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "command_input_field.gif"); //$NON-NLS-1$
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "command_input_field.svg"); //$NON-NLS-1$
 		ImageDescriptor enabledInputFieldIcon = ImageDescriptor.createFromURL(enabledInputFieldIconUrl);
 		registry.put(ImageConsts.ACTION_ToggleCommandField_Enabled, enabledInputFieldIcon);
 		ImageDescriptor disabledInputFieldIcon = ImageDescriptor.createWithFlags(enabledInputFieldIcon,
