@@ -226,35 +226,21 @@ public class UIPlugin extends AbstractUIPlugin {
 		URL consoleViewIconUrl = bundle
 				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_EVIEW + "console_view.svg"); //$NON-NLS-1$
 		registry.put(ImageConsts.VIEW_Terminals, ImageDescriptor.createFromURL(consoleViewIconUrl));
+		putActionImages(registry, bundle, "lock_co.svg", //$NON-NLS-1$
+				ImageConsts.ACTION_ScrollLock_Enabled, ImageConsts.ACTION_ScrollLock_Disabled);
+		putActionImages(registry, bundle, "command_input_field.svg", //$NON-NLS-1$
+				ImageConsts.ACTION_ToggleCommandField_Enabled, ImageConsts.ACTION_ToggleCommandField_Disabled);
+		putActionImages(registry, bundle, "new_terminal_view.svg", //$NON-NLS-1$
+				ImageConsts.ACTION_NewTerminalView_Enabled, ImageConsts.ACTION_NewTerminalView_Disabled);
+		putActionImages(registry, bundle, "clear_co.svg", //$NON-NLS-1$
+				ImageConsts.ACTION_ClearAll_enabled, ImageConsts.ACTION_ClearAll_disabled);
+	}
 
-		URL enabledLockIconUrl = bundle
-				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "lock_co.svg"); //$NON-NLS-1$
-		ImageDescriptor enabledLockIcon = ImageDescriptor.createFromURL(enabledLockIconUrl);
-		registry.put(ImageConsts.ACTION_ScrollLock_Enabled, enabledLockIcon);
-		ImageDescriptor disabledLockIcon = ImageDescriptor.createWithFlags(enabledLockIcon, SWT.IMAGE_DISABLE);
-		registry.put(ImageConsts.ACTION_ScrollLock_Disabled, disabledLockIcon);
-
-		URL enabledInputFieldIconUrl = bundle
-				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "command_input_field.svg"); //$NON-NLS-1$
-		ImageDescriptor enabledInputFieldIcon = ImageDescriptor.createFromURL(enabledInputFieldIconUrl);
-		registry.put(ImageConsts.ACTION_ToggleCommandField_Enabled, enabledInputFieldIcon);
-		ImageDescriptor disabledInputFieldIcon = ImageDescriptor.createWithFlags(enabledInputFieldIcon,
-				SWT.IMAGE_DISABLE);
-		registry.put(ImageConsts.ACTION_ToggleCommandField_Disabled, disabledInputFieldIcon);
-
-		URL enabledTerminalViewIconUrl = bundle
-				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "new_terminal_view.svg"); //$NON-NLS-1$
-		ImageDescriptor enabledTerminalViewIcon = ImageDescriptor.createFromURL(enabledTerminalViewIconUrl);
-		registry.put(ImageConsts.ACTION_NewTerminalView_Enabled, enabledTerminalViewIcon);
-		ImageDescriptor disabledTerminalViewIcon = ImageDescriptor.createWithFlags(enabledInputFieldIcon,
-				SWT.IMAGE_DISABLE);
-		registry.put(ImageConsts.ACTION_NewTerminalView_Disabled, disabledTerminalViewIcon);
-		URL enabledClearAllIconUrl = bundle
-				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "clear_co.svg"); //$NON-NLS-1$
-		ImageDescriptor enabledClearAllIcon = ImageDescriptor.createFromURL(enabledClearAllIconUrl);
-		registry.put(ImageConsts.ACTION_ClearAll_enabled, enabledClearAllIcon);
-		ImageDescriptor disabledClearAllIcon = ImageDescriptor.createWithFlags(enabledClearAllIcon, SWT.IMAGE_DISABLE);
-		registry.put(ImageConsts.ACTION_ClearAll_disabled, disabledClearAllIcon);
+	private void putActionImages(ImageRegistry registry, Bundle bundle, String file, String ekey, String dkey) {
+		URL url = bundle.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + file);
+		ImageDescriptor base = ImageDescriptor.createFromURL(url);
+		registry.put(ekey, base);
+		registry.put(dkey, ImageDescriptor.createWithFlags(base, SWT.IMAGE_DISABLE));
 	}
 
 	/**
