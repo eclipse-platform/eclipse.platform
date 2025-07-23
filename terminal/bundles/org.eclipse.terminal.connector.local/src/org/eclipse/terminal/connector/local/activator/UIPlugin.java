@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 - 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2012, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,13 +8,13 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.connector.local.activator;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.core.utils.TraceHandler;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegateManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -27,8 +27,6 @@ import org.osgi.util.tracker.ServiceTracker;
 public class UIPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static volatile UIPlugin plugin;
-	// The scoped preferences instance
-	private static volatile ScopedEclipsePreferences scopedPreferences;
 	// The trace handler instance
 	private static volatile TraceHandler traceHandler;
 
@@ -54,16 +52,6 @@ public class UIPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Return the scoped preferences for this plug-in.
-	 */
-	public static ScopedEclipsePreferences getScopedPreferences() {
-		if (scopedPreferences == null) {
-			scopedPreferences = new ScopedEclipsePreferences(getUniqueIdentifier());
-		}
-		return scopedPreferences;
-	}
-
-	/**
 	 * Returns the bundles trace handler.
 	 *
 	 * @return The bundles trace handler.
@@ -86,7 +74,6 @@ public class UIPlugin extends AbstractUIPlugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		scopedPreferences = null;
 		traceHandler = null;
 		super.stop(context);
 	}
