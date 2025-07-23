@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2004, 2025 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,9 @@
  * Uwe Stieber (Wind River) - [260372] [terminal] Certain terminal actions are enabled if no target terminal control is available
  * Uwe Stieber (Wind River) - [294719] [terminal] SWT Widget disposed in TerminalActionPaste
  * Martin Oberhuber (Wind River) - [296212] Cannot paste text into terminal on some Linux hosts
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
-package org.eclipse.terminal.control.actions;
+package org.eclipse.terminal.view.ui.internal.actions;
 
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.terminal.connector.TerminalState;

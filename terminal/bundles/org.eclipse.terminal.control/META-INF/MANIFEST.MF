@@ -14,7 +14,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Export-Package: org.eclipse.terminal.connector;version="1.0.0",
  org.eclipse.terminal.connector.provider;version="1.0.0",
  org.eclipse.terminal.control;version="1.0.0",
- org.eclipse.terminal.control.actions;version="1.0.0",
  org.eclipse.terminal.internal.connector;x-internal:=true,
  org.eclipse.terminal.internal.control.impl;x-internal:=true,
  org.eclipse.terminal.internal.emulator;x-internal:=true,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -9,6 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Max Weninger (Wind River) - [361363] [TERMINALS] Implement "Pin&Clone" for the "Terminals" view
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal;
 
@@ -41,6 +42,16 @@ public interface ImageConsts {
 	 * The key to access the terminals console view image.
 	 */
 	public static final String VIEW_Terminals = "TerminalsView"; //$NON-NLS-1$
+
+	/**
+	 * The key to access the clear action image (disabled).
+	 */
+	public static final String ACTION_ClearAll_disabled = "ImageDlclClearAll"; //$NON-NLS-1$
+
+	/**
+	 * The key to access the clear action image (enabled).
+	 */
+	public static final String ACTION_ClearAll_enabled = "ImageElclClearAll"; //$NON-NLS-1$
 
 	/**
 	 * The key to access the scroll lock action image (enabled).
