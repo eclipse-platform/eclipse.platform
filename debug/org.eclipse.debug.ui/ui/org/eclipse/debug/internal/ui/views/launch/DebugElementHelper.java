@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.views.launch;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
@@ -44,7 +44,7 @@ public class DebugElementHelper {
 	private static DelegatingModelPresentation fgPresenetation;
 
 	// map of images to image descriptors
-	private static Map<Image, ImageDescriptor> fgImages = new HashMap<>();
+	private static Map<Image, ImageDescriptor> fgImages = new ConcurrentHashMap<>();
 
 	/**
 	 * Disposes this adapter
