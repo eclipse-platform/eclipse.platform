@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -9,6 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Max Weninger (Wind River) - [361363] [TERMINALS] Implement "Pin&Clone" for the "Terminals" view
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal;
 
@@ -248,6 +249,12 @@ public class UIPlugin extends AbstractUIPlugin {
 		ImageDescriptor disabledTerminalViewIcon = ImageDescriptor.createWithFlags(enabledInputFieldIcon,
 				SWT.IMAGE_DISABLE);
 		registry.put(ImageConsts.ACTION_NewTerminalView_Disabled, disabledTerminalViewIcon);
+		URL enabledClearAllIconUrl = bundle
+				.getEntry(ImageConsts.IMAGE_DIR_ROOT + ImageConsts.IMAGE_DIR_ELCL + "clear_co.svg"); //$NON-NLS-1$
+		ImageDescriptor enabledClearAllIcon = ImageDescriptor.createFromURL(enabledClearAllIconUrl);
+		registry.put(ImageConsts.ACTION_ClearAll_enabled, enabledClearAllIcon);
+		ImageDescriptor disabledClearAllIcon = ImageDescriptor.createWithFlags(enabledClearAllIcon, SWT.IMAGE_DISABLE);
+		registry.put(ImageConsts.ACTION_ClearAll_disabled, disabledClearAllIcon);
 	}
 
 	/**

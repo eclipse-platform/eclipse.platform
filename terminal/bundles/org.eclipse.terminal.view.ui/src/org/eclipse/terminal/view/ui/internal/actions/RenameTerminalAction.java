@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Kichwa Coders Canada Inc. and others.
+ * Copyright (c) 2021, 2025 Kichwa Coders Canada Inc. and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -7,6 +7,10 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ * 
+ * Contributors:
+ * Kichwa Coders Canada Inc. - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 
 package org.eclipse.terminal.view.ui.internal.actions;
@@ -17,7 +21,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.control.TerminalTitleRequestor;
-import org.eclipse.terminal.control.actions.AbstractTerminalAction;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Fabrizio Iannetti.
+ * Copyright (c) 2021, 2025 Fabrizio Iannetti and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -7,6 +7,10 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ * 
+ * Contributors:
+ * Fabrizio Iannetti - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 
 package org.eclipse.terminal.view.ui.internal.actions;
@@ -16,7 +20,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
-import org.eclipse.terminal.control.actions.AbstractTerminalAction;
 import org.eclipse.terminal.view.ui.internal.Messages;
 import org.eclipse.terminal.view.ui.internal.tabs.TabFolderManager;
 

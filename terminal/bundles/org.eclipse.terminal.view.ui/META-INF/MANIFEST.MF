@@ -35,7 +35,6 @@ Automatic-Module-Name: org.eclipse.terminal.view.ui
 Import-Package: org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.connector.provider;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.control;version="[1.0.0,2.0.0)",
- org.eclipse.terminal.control.actions;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.model;version="[1.0.0,2.0.0)"
 Service-Component: OSGI-INF/org.eclipse.terminal.view.ui.internal.ConsoleManager.xml,
  OSGI-INF/org.eclipse.terminal.view.ui.internal.LauncherDelegateManager.xml,

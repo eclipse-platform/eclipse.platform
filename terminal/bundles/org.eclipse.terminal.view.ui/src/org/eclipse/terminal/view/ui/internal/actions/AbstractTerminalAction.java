@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2004, 2025 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,14 +16,15 @@
  * Michael Scharf (Wind River) - split into core, view and connector plugins
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Anna Dushistova (MontaVista) - Adapted from TerminalAction
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
-package org.eclipse.terminal.control.actions;
+package org.eclipse.terminal.view.ui.internal.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.terminal.control.ITerminalViewControl;
-import org.eclipse.terminal.internal.control.impl.TerminalPlugin;
+import org.eclipse.terminal.view.ui.internal.UIPlugin;
 
 public abstract class AbstractTerminalAction extends Action {
 	private final ITerminalViewControl fTarget;
@@ -50,7 +51,7 @@ public abstract class AbstractTerminalAction extends Action {
 	protected void setupAction(String strText, String strToolTip, String strImage, String strEnabledImage,
 			String strDisabledImage, boolean bEnabled) {
 		setupAction(strText, strToolTip, strImage, strEnabledImage, strDisabledImage, bEnabled,
-				TerminalPlugin.getDefault().getImageRegistry());
+				UIPlugin.getDefault().getImageRegistry());
 	}
 
 	protected void setupAction(String strText, String strToolTip, String strHoverImage, String strEnabledImage,

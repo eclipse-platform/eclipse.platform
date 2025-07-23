@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2011, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -9,6 +9,7 @@
  * Contributors:
  * Wind River Systems - initial API and implementation
  * Max Weninger (Wind River) - [361363] [TERMINALS] Implement "Pin&Clone" for the "Terminals" view
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.tabs;
 
@@ -26,14 +27,14 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
-import org.eclipse.terminal.control.actions.AbstractTerminalAction;
-import org.eclipse.terminal.control.actions.TerminalActionClearAll;
-import org.eclipse.terminal.control.actions.TerminalActionCopy;
-import org.eclipse.terminal.control.actions.TerminalActionPaste;
 import org.eclipse.terminal.view.ui.ITerminalsView;
 import org.eclipse.terminal.view.ui.internal.actions.AbstractAction;
+import org.eclipse.terminal.view.ui.internal.actions.AbstractTerminalAction;
 import org.eclipse.terminal.view.ui.internal.actions.NewTerminalViewAction;
 import org.eclipse.terminal.view.ui.internal.actions.TabScrollLockAction;
+import org.eclipse.terminal.view.ui.internal.actions.TerminalActionClearAll;
+import org.eclipse.terminal.view.ui.internal.actions.TerminalActionCopy;
+import org.eclipse.terminal.view.ui.internal.actions.TerminalActionPaste;
 import org.eclipse.terminal.view.ui.internal.actions.ToggleCommandFieldAction;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2003, 2025 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,16 +16,11 @@
  * Michael Scharf (Wind River) - split into core, view and connector plugins
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Anna Dushistova (MontaVista) - [227537] moved actions from terminal.view to terminal plugin
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.internal.control.impl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -68,30 +63,4 @@ public class TerminalPlugin extends AbstractUIPlugin {
 		return Boolean.parseBoolean(strEnabled);
 	}
 
-	@Override
-	protected void initializeImageRegistry(ImageRegistry imageRegistry) {
-		try {
-			// Enabled local toolbars
-			putImageInRegistry(imageRegistry, ImageConsts.IMAGE_ELCL_CLEAR_ALL,
-					ImageConsts.IMAGE_DIR_ELCL + "clear_co.svg"); //$NON-NLS-1$
-			// Disabled local toolbars
-			putDisabledImageInRegistry(imageRegistry, ImageConsts.IMAGE_ELCL_CLEAR_ALL,
-					ImageConsts.IMAGE_DLCL_CLEAR_ALL);
-		} catch (MalformedURLException malformedURLException) {
-			malformedURLException.printStackTrace();
-		}
-	}
-
-	protected void putImageInRegistry(ImageRegistry imageRegistry, String strKey, String relativePath)
-			throws MalformedURLException {
-		URL url = TerminalPlugin.getDefault().getBundle().getEntry(relativePath);
-		ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL(url);
-		imageRegistry.put(strKey, imageDescriptor);
-	}
-
-	private void putDisabledImageInRegistry(ImageRegistry imageRegistry, String enabledKey, String disabledKey)
-			throws MalformedURLException {
-		ImageDescriptor enabledImageDescriptor = imageRegistry.getDescriptor(enabledKey);
-		imageRegistry.put(disabledKey, ImageDescriptor.createWithFlags(enabledImageDescriptor, SWT.IMAGE_DISABLE));
-	}
 }

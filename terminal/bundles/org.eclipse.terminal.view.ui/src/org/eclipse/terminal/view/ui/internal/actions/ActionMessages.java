@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 Wind River Systems, Inc. and others.
+ * Copyright (c) 2003, 2025 Wind River Systems, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,9 @@
  * Michael Scharf (Wind River) - split into core, view and connector plugins
  * Martin Oberhuber (Wind River) - fixed copyright headers and beautified
  * Anna Dushistova (MontaVista) - [227537] moved actions from terminal.view to terminal plugin
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
-package org.eclipse.terminal.control.actions;
+package org.eclipse.terminal.view.ui.internal.actions;
 
 import org.eclipse.osgi.util.NLS;
 
