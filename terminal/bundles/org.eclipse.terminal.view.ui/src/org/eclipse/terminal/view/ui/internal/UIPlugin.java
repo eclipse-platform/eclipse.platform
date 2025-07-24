@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
@@ -28,7 +29,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.terminal.connector.TerminalState;
 import org.eclipse.terminal.control.ITerminalViewControl;
 import org.eclipse.terminal.view.core.ITerminalService;
-import org.eclipse.terminal.view.core.utils.ScopedEclipsePreferences;
 import org.eclipse.terminal.view.ui.internal.listeners.WorkbenchWindowListener;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsView;
 import org.eclipse.terminal.view.ui.internal.view.TerminalsViewMementoHandler;
@@ -42,6 +42,7 @@ import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -53,7 +54,7 @@ public class UIPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static volatile UIPlugin plugin;
 	// The scoped preferences instance
-	private static volatile ScopedEclipsePreferences scopedPreferences;
+	private static volatile ScopedPreferenceStore scopedPreferences;
 	// The trace handler instance
 	private static volatile TraceHandler traceHandler;
 	// The workbench listener instance
@@ -87,9 +88,9 @@ public class UIPlugin extends AbstractUIPlugin {
 	/**
 	 * Return the scoped preferences for this plug-in.
 	 */
-	public static ScopedEclipsePreferences getScopedPreferences() {
+	public static ScopedPreferenceStore getScopedPreferences() {
 		if (scopedPreferences == null) {
-			scopedPreferences = new ScopedEclipsePreferences(getUniqueIdentifier());
+			scopedPreferences = new ScopedPreferenceStore(InstanceScope.INSTANCE, getUniqueIdentifier());
 		}
 		return scopedPreferences;
 	}
