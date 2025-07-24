@@ -9,7 +9,6 @@ Import-Package: org.eclipse.cdt.utils.pty;mandatory:=native,
  org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.connector.process;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.core;version="[1.0.0,2.0.0)",
- org.eclipse.terminal.view.core.utils;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.ui;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.view.ui.launcher;version="[1.0.0,2.0.0)"
 Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.400,4)",
