@@ -15,7 +15,6 @@ package org.eclipse.terminal.connector.local.activator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.terminal.view.core.utils.TraceHandler;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegateManager;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -27,8 +26,6 @@ import org.osgi.util.tracker.ServiceTracker;
 public class UIPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static volatile UIPlugin plugin;
-	// The trace handler instance
-	private static volatile TraceHandler traceHandler;
 
 	private ServiceTracker<ILauncherDelegateManager, ILauncherDelegateManager> launchDelegateServiceTracker;
 
@@ -51,18 +48,6 @@ public class UIPlugin extends AbstractUIPlugin {
 		return "org.eclipse.terminal.connector.local"; //$NON-NLS-1$
 	}
 
-	/**
-	 * Returns the bundles trace handler.
-	 *
-	 * @return The bundles trace handler.
-	 */
-	public static TraceHandler getTraceHandler() {
-		if (traceHandler == null) {
-			traceHandler = new TraceHandler(getUniqueIdentifier());
-		}
-		return traceHandler;
-	}
-
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -74,7 +59,6 @@ public class UIPlugin extends AbstractUIPlugin {
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		traceHandler = null;
 		super.stop(context);
 	}
 
