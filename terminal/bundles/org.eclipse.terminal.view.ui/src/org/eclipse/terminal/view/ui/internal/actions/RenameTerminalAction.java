@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  * Kichwa Coders Canada Inc. - initial API and implementation
  * Alexander Fedorov (ArSysOp) - further evolution

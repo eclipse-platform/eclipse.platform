@@ -7,7 +7,7 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  * Fabrizio Iannetti - initial API and implementation
  * Alexander Fedorov (ArSysOp) - further evolution
