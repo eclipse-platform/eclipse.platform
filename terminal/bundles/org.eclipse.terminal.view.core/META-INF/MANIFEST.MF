@@ -11,6 +11,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.eclipse.terminal.view.core;version="1.0.0",
- org.eclipse.terminal.view.core.internal;x-internal:=true,
- org.eclipse.terminal.view.core.utils;version="1.0.0"
+ org.eclipse.terminal.view.core.internal;x-internal:=true
 Automatic-Module-Name: org.eclipse.terminal.view.core

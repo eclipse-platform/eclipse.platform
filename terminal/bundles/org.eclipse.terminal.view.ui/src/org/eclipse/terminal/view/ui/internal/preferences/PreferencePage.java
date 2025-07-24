@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 Wind River Systems, Inc. and others. All rights reserved.
+ * Copyright (c) 2014, 2025 Wind River Systems, Inc. and others. All rights reserved.
  * This program and the accompanying materials are made available under the terms
  * of the Eclipse Public License 2.0 which accompanies this distribution, and is
  * available at https://www.eclipse.org/legal/epl-2.0/
@@ -8,6 +8,7 @@
  *
  * Contributors:
  * Wind River Systems - initial API and implementation
+ * Alexander Fedorov (ArSysOp) - further evolution
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.preferences;
 
@@ -210,9 +211,12 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		workingDir = new Combo(group, SWT.DROP_DOWN);
 		Bundle bundle = Platform.getBundle("org.eclipse.core.resources"); //$NON-NLS-1$
 		if (bundle != null && bundle.getState() != Bundle.UNINSTALLED && bundle.getState() != Bundle.STOPPING) {
-			workingDir.setItems(Messages.PreferencePage_workingDir_userhome_label, Messages.PreferencePage_workingDir_eclipsehome_label, Messages.PreferencePage_workingDir_eclipsews_label);
+			workingDir.setItems(Messages.PreferencePage_workingDir_userhome_label,
+					Messages.PreferencePage_workingDir_eclipsehome_label,
+					Messages.PreferencePage_workingDir_eclipsews_label);
 		} else {
-			workingDir.setItems(Messages.PreferencePage_workingDir_userhome_label, Messages.PreferencePage_workingDir_eclipsehome_label);
+			workingDir.setItems(Messages.PreferencePage_workingDir_userhome_label,
+					Messages.PreferencePage_workingDir_eclipsehome_label);
 		}
 		workingDir.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		workingDir.select(0);
@@ -644,22 +648,22 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 		if (!Platform.OS_WIN32.equals(Platform.getOS())) {
 			String text = command.getText();
 			IPath p = new Path(text.trim());
-			UIPlugin.getScopedPreferences().putString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
+			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
 					p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute() ? p.toOSString() : null);
 
 			text = arguments.getText();
-			UIPlugin.getScopedPreferences().putString(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
+			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
 					!"".equals(text.trim()) ? text.trim() : null); //$NON-NLS-1$
 		}
 
 		String text = workingDir.getText();
 		if (text == null || Messages.PreferencePage_workingDir_userhome_label.equals(text) || "".equals(text.trim())) { //$NON-NLS-1$
-			UIPlugin.getScopedPreferences().putString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD, null);
+			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD, null);
 		} else if (Messages.PreferencePage_workingDir_eclipsehome_label.equals(text)) {
-			UIPlugin.getScopedPreferences().putString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
+			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
 					IPreferenceKeys.PREF_INITIAL_CWD_ECLIPSE_HOME);
 		} else if (Messages.PreferencePage_workingDir_eclipsews_label.equals(text)) {
-			UIPlugin.getScopedPreferences().putString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
+			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
 					IPreferenceKeys.PREF_INITIAL_CWD_ECLIPSE_WS);
 		} else {
 			try {
@@ -668,7 +672,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 				String resolved = vm.performStringSubstitution(text.trim());
 
 				IPath p = new Path(resolved);
-				UIPlugin.getScopedPreferences().putString(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
+				UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
 						p.toFile().canRead() && p.toFile().isDirectory() ? text.trim() : null);
 			} catch (CoreException e) {
 				if (Platform.inDebugMode()) {
