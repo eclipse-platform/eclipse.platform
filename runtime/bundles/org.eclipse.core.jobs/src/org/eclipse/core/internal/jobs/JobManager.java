@@ -1005,6 +1005,13 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 			}
 			//don't join a waiting or sleeping job when suspended (deadlock risk)
 			if (suspended && state != Job.RUNNING) {
+				String pluginId = JobOSGiUtils.getDefault().getBundleId(job);
+				if (pluginId == null) {
+					pluginId = JobManager.PI_JOBS;
+				}
+				RuntimeLog.log(new Status(IStatus.WARNING, pluginId, 0,
+						NLS.bind(JobMessages.JobManager_suspended_problem, job.getName()),
+						new IllegalStateException()));
 				return true;
 			}
 			//it's an error for a job to join itself

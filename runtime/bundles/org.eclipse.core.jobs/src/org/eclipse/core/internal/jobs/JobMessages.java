@@ -22,6 +22,8 @@ import org.eclipse.osgi.util.NLS;
 public class JobMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.core.internal.jobs.messages"; //$NON-NLS-1$
 
+	public static String JobManager_suspended_problem;
+
 	// Job Manager and Locks
 	public static String jobs_blocked0;
 	public static String jobs_blocked1;
