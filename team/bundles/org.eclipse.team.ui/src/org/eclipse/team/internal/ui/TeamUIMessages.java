@@ -631,6 +631,7 @@ public class TeamUIMessages extends NLS {
 
 	public static String ResourceMappingMergeOperation_4;
 
+	public static String VersionControl_FilterMessage;
 
 	public static String GenericHistoryView_PinCurrentHistory;
 
