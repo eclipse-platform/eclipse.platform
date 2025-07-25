@@ -57,15 +57,17 @@ public final class ProjectScope extends AbstractScope {
 	 */
 	public ProjectScope(IProject context) {
 		super();
-		if (context == null)
+		if (context == null) {
 			throw new IllegalArgumentException();
+		}
 		this.project = context;
 	}
 
 	@Override
 	public IEclipsePreferences getNode(String qualifier) {
-		if (qualifier == null)
+		if (qualifier == null) {
 			throw new IllegalArgumentException();
+		}
 		IPreferencesService preferencesService = Platform.getPreferencesService();
 		Preferences scopeNode = preferencesService.getRootNode().node(SCOPE);
 		Preferences projectNode = scopeNode.node(project.getName());
@@ -85,13 +87,15 @@ public final class ProjectScope extends AbstractScope {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (!(obj instanceof ProjectScope))
+		}
+		if (!(obj instanceof ProjectScope other)) {
 			return false;
-		ProjectScope other = (ProjectScope) obj;
+		}
 		return project.equals(other.project);
 	}
 

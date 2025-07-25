@@ -100,8 +100,9 @@ public class DataDeltaNode extends DataTreeNode {
 	AbstractDataTreeNode simplifyWithParent(IPath key, DeltaDataTree parent, IComparator comparer) {
 		AbstractDataTreeNode[] simplifiedChildren = simplifyWithParent(children, key, parent, comparer);
 		/* don't compare root nodes */
-		if (!key.isRoot() && comparer.compare(parent.getData(key), data) == 0)
+		if (!key.isRoot() && comparer.compare(parent.getData(key), data) == 0) {
 			return new NoDataDeltaNode(name, simplifiedChildren);
+		}
 		return new DataDeltaNode(name, data, simplifiedChildren);
 	}
 

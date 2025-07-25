@@ -99,8 +99,9 @@ public class SyncInfoReader_2 extends SyncInfoReader {
 		}
 		// set the table on the resource info
 		ResourceInfo info = workspace.getResourceInfo(path, true, false);
-		if (info == null)
+		if (info == null) {
 			return;
+		}
 		info.setSyncInfo(table);
 		info.clear(ICoreConstants.M_SYNCINFO_SNAP_DIRTY);
 	}

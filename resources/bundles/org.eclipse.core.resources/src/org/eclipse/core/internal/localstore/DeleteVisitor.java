@@ -56,19 +56,22 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 		try {
 			final boolean deleteLocalFile = !target.isLinked() && node.existsInFileSystem();
 			IFileStore localFile = deleteLocalFile ? node.getStore() : null;
-			if (deleteLocalFile && shouldKeepHistory)
+			if (deleteLocalFile && shouldKeepHistory) {
 				recursiveKeepHistory(target.getLocalManager().getHistoryStore(), node);
+			}
 			node.removeChildrenFromTree();
 			//delete from disk
 			int work = ticks < 0 ? 0 : ticks;
 			ticks -= work;
-			if (deleteLocalFile)
+			if (deleteLocalFile) {
 				localFile.delete(EFS.NONE, monitor.split(work));
-			else
+			} else {
 				monitor.worked(work);
+			}
 			//delete from tree
-			if (node.existsInWorkspace())
+			if (node.existsInWorkspace()) {
 				target.deleteResource(true, status);
+			}
 		} catch (CoreException e) {
 			status.add(e.getStatus());
 			//	delete might have been partly successful, so refresh to ensure in sync
@@ -96,11 +99,13 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 	}
 
 	protected boolean isAncestorOfResourceToSkip(IResource resource) {
-		if (skipList == null)
+		if (skipList == null) {
 			return false;
+		}
 		for (IResource target : skipList) {
-			if (isAncestor(resource, target))
+			if (isAncestor(resource, target)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -108,16 +113,19 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 	private void recursiveKeepHistory(IHistoryStore store, UnifiedTreeNode node) {
 		final IResource target = node.getResource();
 		//we don't delete linked content, so no need to keep history
-		if (target.isLinked() || target.isVirtual() || node.isSymbolicLink())
+		if (target.isLinked() || target.isVirtual() || node.isSymbolicLink()) {
 			return;
+		}
 		if (node.isFolder()) {
 			monitor.subTask(NLS.bind(Messages.localstore_deleting, target.getFullPath()));
-			for (Iterator<UnifiedTreeNode> children = node.getChildren(); children.hasNext();)
+			for (Iterator<UnifiedTreeNode> children = node.getChildren(); children.hasNext();) {
 				recursiveKeepHistory(store, children.next());
+			}
 		} else {
 			IFileInfo info = node.fileInfo;
-			if (info == null)
+			if (info == null) {
 				info = new FileInfo(node.getLocalName());
+			}
 			if (FileSystemResourceManager.storeHistory(node.getResource())) {
 				store.addState(target.getFullPath(), node.getStore(), info, true);
 			}
@@ -127,16 +135,20 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 	}
 
 	protected void removeFromSkipList(IResource resource) {
-		if (skipList != null)
+		if (skipList != null) {
 			skipList.remove(resource);
+		}
 	}
 
 	protected boolean shouldSkip(IResource resource) {
-		if (skipList == null)
+		if (skipList == null) {
 			return false;
-		for (Resource element : skipList)
-			if (equals(resource, element))
+		}
+		for (Resource element : skipList) {
+			if (equals(resource, element)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
@@ -151,8 +163,9 @@ public class DeleteVisitor implements IUnifiedTreeVisitor, ICoreConstants {
 			ticks -= skipTicks;
 			return false;
 		}
-		if (isAncestorOfResourceToSkip(target))
+		if (isAncestorOfResourceToSkip(target)) {
 			return true;
+		}
 		delete(node, keepHistory);
 		return false;
 	}

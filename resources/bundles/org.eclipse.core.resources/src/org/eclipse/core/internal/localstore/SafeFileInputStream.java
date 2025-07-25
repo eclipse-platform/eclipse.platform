@@ -47,8 +47,9 @@ public class SafeFileInputStream extends FilterInputStream {
 	private static InputStream getInputStream(String targetPath, String tempPath, int bufferSize) throws IOException {
 		File target = new File(targetPath);
 		if (!target.exists()) {
-			if (tempPath == null)
+			if (tempPath == null) {
 				tempPath = target.getAbsolutePath() + EXTENSION;
+			}
 			target = new File(tempPath);
 		}
 		return new BufferedInputStream(new FileInputStream(target), bufferSize);

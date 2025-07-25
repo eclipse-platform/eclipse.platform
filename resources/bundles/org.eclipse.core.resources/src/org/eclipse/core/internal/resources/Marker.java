@@ -92,9 +92,9 @@ public class Marker extends PlatformObject implements IMarker {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof IMarker))
+		if (!(object instanceof IMarker other)) {
 			return false;
-		IMarker other = (IMarker) object;
+		}
 		return (id == other.getId() && resource.equals(other.getResource()));
 	}
 
@@ -124,11 +124,13 @@ public class Marker extends PlatformObject implements IMarker {
 	public int getAttribute(String attributeName, int defaultValue) {
 		Assert.isNotNull(attributeName);
 		MarkerInfo info = getInfo();
-		if (info == null)
+		if (info == null) {
 			return defaultValue;
+		}
 		Object value = info.getAttribute(attributeName);
-		if (value instanceof Integer)
+		if (value instanceof Integer) {
 			return ((Integer) value).intValue();
+		}
 		return defaultValue;
 	}
 
@@ -139,11 +141,13 @@ public class Marker extends PlatformObject implements IMarker {
 	public String getAttribute(String attributeName, String defaultValue) {
 		Assert.isNotNull(attributeName);
 		MarkerInfo info = getInfo();
-		if (info == null)
+		if (info == null) {
 			return defaultValue;
+		}
 		Object value = info.getAttribute(attributeName);
-		if (value instanceof String)
+		if (value instanceof String) {
 			return (String) value;
+		}
 		return defaultValue;
 	}
 
@@ -154,11 +158,13 @@ public class Marker extends PlatformObject implements IMarker {
 	public boolean getAttribute(String attributeName, boolean defaultValue) {
 		Assert.isNotNull(attributeName);
 		MarkerInfo info = getInfo();
-		if (info == null)
+		if (info == null) {
 			return defaultValue;
+		}
 		Object value = info.getAttribute(attributeName);
-		if (value instanceof Boolean)
+		if (value instanceof Boolean) {
 			return ((Boolean) value).booleanValue();
+		}
 		return defaultValue;
 	}
 
@@ -272,8 +278,9 @@ public class Marker extends PlatformObject implements IMarker {
 			MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
 			boolean validate = manager.isPersistentType(markerInfo.getType());
 			markerInfo.setAttribute(attributeName, value, validate);
-			if (manager.isPersistent(markerInfo))
+			if (manager.isPersistent(markerInfo)) {
 				((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
+			}
 			if (needDelta) {
 				MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
 				manager.changedMarkers(resource, new MarkerDelta[] {delta});
@@ -312,8 +319,9 @@ public class Marker extends PlatformObject implements IMarker {
 			MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
 			boolean validate = manager.isPersistentType(markerInfo.getType());
 			markerInfo.addAttributes(attributeNames, values, validate);
-			if (manager.isPersistent(markerInfo))
+			if (manager.isPersistent(markerInfo)) {
 				((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
+			}
 			if (needDelta) {
 				MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
 				manager.changedMarkers(resource, new MarkerDelta[] {delta});
@@ -342,8 +350,9 @@ public class Marker extends PlatformObject implements IMarker {
 			MarkerInfo oldInfo = needDelta ? (MarkerInfo) markerInfo.clone() : null;
 			boolean validate = manager.isPersistentType(markerInfo.getType());
 			markerInfo.setAttributes(values, validate);
-			if (manager.isPersistent(markerInfo))
+			if (manager.isPersistent(markerInfo)) {
 				((Resource) resource).getResourceInfo(false, true).set(ICoreConstants.M_MARKERS_SNAP_DIRTY);
+			}
 			if (needDelta) {
 				MarkerDelta delta = new MarkerDelta(IResourceDelta.CHANGED, resource, oldInfo);
 				manager.changedMarkers(resource, new MarkerDelta[] {delta});

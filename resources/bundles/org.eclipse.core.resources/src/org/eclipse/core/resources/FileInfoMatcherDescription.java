@@ -50,12 +50,15 @@ public final class FileInfoMatcherDescription {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		FileInfoMatcherDescription other = (FileInfoMatcherDescription) obj;
 		return Objects.equals(this.arguments, other.arguments) && Objects.equals(this.id, other.id);
 	}

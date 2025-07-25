@@ -73,16 +73,18 @@ public class IncrementalBuild extends Task {
 		try {
 			IProgressMonitor monitor = null;
 			Hashtable<String, Object> references = getProject().getReferences();
-			if (references != null)
+			if (references != null) {
 				monitor = (IProgressMonitor) references.get(AntCorePlugin.ECLIPSE_PROGRESS_MONITOR);
+			}
 			if (projectToBuild == null) {
 				ResourcesPlugin.getWorkspace().build(kind, monitor);
 			} else {
 				IProject targetProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectToBuild);
-				if (builder == null)
+				if (builder == null) {
 					targetProject.build(kind, monitor);
-				else
+				} else {
 					targetProject.build(kind, builder, null, monitor);
+				}
 			}
 		} catch (CoreException e) {
 			throw new BuildException(e);
@@ -108,14 +110,15 @@ public class IncrementalBuild extends Task {
 	 * @param value the receiver's kind attribute
 	 */
 	public void setKind(String value) {
-		if (IncrementalBuild.KIND_FULL.equalsIgnoreCase(value))
+		if (IncrementalBuild.KIND_FULL.equalsIgnoreCase(value)) {
 			kind = IncrementalProjectBuilder.FULL_BUILD;
-		else if (IncrementalBuild.KIND_AUTO.equalsIgnoreCase(value))
+		} else if (IncrementalBuild.KIND_AUTO.equalsIgnoreCase(value)) {
 			kind = IncrementalProjectBuilder.AUTO_BUILD;
-		else if (IncrementalBuild.KIND_CLEAN.equalsIgnoreCase(value))
+		} else if (IncrementalBuild.KIND_CLEAN.equalsIgnoreCase(value)) {
 			kind = IncrementalProjectBuilder.CLEAN_BUILD;
-		else if (IncrementalBuild.KIND_INCREMENTAL.equalsIgnoreCase(value))
+		} else if (IncrementalBuild.KIND_INCREMENTAL.equalsIgnoreCase(value)) {
 			kind = IncrementalProjectBuilder.INCREMENTAL_BUILD;
+		}
 	}
 
 	/**

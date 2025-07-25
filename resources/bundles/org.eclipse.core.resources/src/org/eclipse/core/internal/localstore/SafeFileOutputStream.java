@@ -71,22 +71,25 @@ public class SafeFileOutputStream extends OutputStream {
 			failed = true;
 			throw e; // rethrow
 		}
-		if (failed)
+		if (failed) {
 			temp.delete();
-		else
+		} else {
 			commit();
+		}
 	}
 
 	protected void commit() throws IOException {
-		if (!temp.exists())
+		if (!temp.exists()) {
 			return;
+		}
 		Files.copy(temp.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
 		temp.delete();
 	}
 
 	protected void createTempFile(String tempPath) {
-		if (tempPath == null)
+		if (tempPath == null) {
 			tempPath = target.getAbsolutePath() + EXTENSION;
+		}
 		temp = new File(tempPath);
 	}
 

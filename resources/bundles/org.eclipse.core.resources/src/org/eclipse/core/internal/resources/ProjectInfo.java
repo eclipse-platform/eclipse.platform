@@ -60,8 +60,9 @@ public class ProjectInfo extends ResourceInfo {
 		propertyStore = null;
 		if (description != null) {
 			ICommand[] buildSpec = description.getBuildSpec(false);
-			for (ICommand element : buildSpec)
+			for (ICommand element : buildSpec) {
 				((BuildCommand) element).setBuilders(null);
+			}
 		}
 	}
 
@@ -82,8 +83,9 @@ public class ProjectInfo extends ResourceInfo {
 	public IProjectNature getNature(String natureId) {
 		// thread safety: (Concurrency001)
 		HashMap<String, IProjectNature> temp = natures;
-		if (temp == null)
+		if (temp == null) {
 			return null;
+		}
 		return temp.get(natureId);
 	}
 
@@ -122,20 +124,23 @@ public class ProjectInfo extends ResourceInfo {
 	public synchronized void setNature(String natureId, IProjectNature value) {
 		// thread safety: (Concurrency001)
 		if (value == null) {
-			if (natures == null)
+			if (natures == null) {
 				return;
+			}
 			HashMap<String, IProjectNature> temp = (HashMap<String, IProjectNature>) natures.clone();
 			temp.remove(natureId);
-			if (temp.isEmpty())
+			if (temp.isEmpty()) {
 				natures = null;
-			else
+			} else {
 				natures = temp;
+			}
 		} else {
 			HashMap<String, IProjectNature> temp = natures;
-			if (temp == null)
+			if (temp == null) {
 				temp = new HashMap<>(5);
-			else
+			} else {
 				temp = (HashMap<String, IProjectNature>) natures.clone();
+			}
 			temp.put(natureId, value);
 			natures = temp;
 		}

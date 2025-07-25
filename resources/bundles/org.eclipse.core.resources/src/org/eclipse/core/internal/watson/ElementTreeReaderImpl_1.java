@@ -47,8 +47,9 @@ import org.eclipse.core.internal.dtree.DeltaDataTree;
 		DeltaDataTree delta = dataTreeReader.readTree(complete, input, ""); //$NON-NLS-1$
 
 		//if the delta is empty, just return the parent
-		if (delta.isEmptyDelta())
+		if (delta.isEmptyDelta()) {
 			return parentTree;
+		}
 
 		ElementTree tree = new ElementTree(delta);
 

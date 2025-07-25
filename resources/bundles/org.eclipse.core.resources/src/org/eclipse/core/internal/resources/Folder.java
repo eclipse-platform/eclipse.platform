@@ -137,8 +137,9 @@ public class Folder extends Container implements IFolder {
 	public void ensureExists(IProgressMonitor monitor) throws CoreException {
 		ResourceInfo info = getResourceInfo(false, false);
 		int flags = getFlags(info);
-		if (exists(flags, true))
+		if (exists(flags, true)) {
 			return;
+		}
 		if (exists(flags, false)) {
 			String message = NLS.bind(Messages.resources_folderOverFile, getFullPath());
 			throw new ResourceException(IResourceStatus.RESOURCE_WRONG_TYPE, getFullPath(), message, null);
@@ -147,19 +148,22 @@ public class Folder extends Container implements IFolder {
 		if (parent.getType() == PROJECT) {
 			info = parent.getResourceInfo(false, false);
 			parent.checkExists(getFlags(info), true);
-		} else
+		} else {
 			((Folder) parent).ensureExists(monitor);
-		if (getType() == FOLDER && isUnderVirtual())
+		}
+		if (getType() == FOLDER && isUnderVirtual()) {
 			create(IResource.VIRTUAL | IResource.FORCE, true, monitor);
-		else
+		} else {
 			internalCreate(IResource.FORCE, true, monitor);
+		}
 	}
 
 	@Override
 	public String getDefaultCharset(boolean checkImplicit) {
 		// non-existing resources default to parent's charset
-		if (!exists())
+		if (!exists()) {
 			return checkImplicit ? workspace.getCharsetManager().getCharsetFor(getFullPath().removeLastSegments(1), true) : null;
+		}
 		return workspace.getCharsetManager().getCharsetFor(getFullPath(), checkImplicit);
 	}
 
@@ -185,8 +189,9 @@ public class Folder extends Container implements IFolder {
 				}
 			}
 			internalSetLocal(local, DEPTH_ZERO);
-			if (!local)
+			if (!local) {
 				getResourceInfo(true, true).clearModificationStamp();
+			}
 		} finally {
 			monitor.done();
 		}

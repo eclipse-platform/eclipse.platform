@@ -116,17 +116,20 @@ public class UnifiedTree {
 		setLevel(0, depth);
 		while (!queue.isEmpty()) {
 			UnifiedTreeNode node = queue.remove();
-			if (isChildrenMarker(node))
-				continue;
-			if (isLevelMarker(node)) {
-				if (!setLevel(getLevel() + 1, depth))
-					break;
+			if (isChildrenMarker(node)) {
 				continue;
 			}
-			if (visitor.visit(node))
+			if (isLevelMarker(node)) {
+				if (!setLevel(getLevel() + 1, depth)) {
+					break;
+				}
+				continue;
+			}
+			if (visitor.visit(node)) {
 				addNodeChildrenToQueue(node);
-			else
+			} else {
 				removeNodeChildrenFromQueue(node);
+			}
 			//allow reuse of the node, but don't let the freeNodes list grow infinitely
 			if (freeNodes.size() < 32767) {
 				//free memory-consuming elements of the node for garbage collection
@@ -143,12 +146,14 @@ public class UnifiedTree {
 
 		// is there a possibility to have children?
 		int parentType = parent.getType();
-		if (parentType == IResource.FILE && !node.isFolder())
+		if (parentType == IResource.FILE && !node.isFolder()) {
 			return;
+		}
 
 		//don't refresh resources in closed or non-existent projects
-		if (!parent.getProject().isAccessible())
+		if (!parent.getProject().isAccessible()) {
 			return;
+		}
 
 		// get the list of resources in the file system
 		// don't ask for local children if we know it doesn't exist locally
@@ -183,32 +188,36 @@ public class UnifiedTree {
 					child = createChildForLinkedResource(target);
 					workspaceIndex++;
 					//if there is a matching local file, skip it - it will be blocked by the linked resource
-					if (comp == 0)
+					if (comp == 0) {
 						localIndex++;
+					}
 				} else if (comp == 0) {
 					// resource exists in workspace and file system --> localInfo is non-null
 					//create workspace-only node for symbolic link that creates a cycle
-					if (localInfo.getAttribute(EFS.ATTRIBUTE_SYMLINK) && localInfo.isDirectory() && isRecursiveLink(node.getStore(), localInfo))
+					if (localInfo.getAttribute(EFS.ATTRIBUTE_SYMLINK) && localInfo.isDirectory() && isRecursiveLink(node.getStore(), localInfo)) {
 						child = createNode(target, null, null, true);
-					else
+					} else {
 						child = createNode(target, null, localInfo, true);
+					}
 					localIndex++;
 					workspaceIndex++;
 				} else if (comp > 0) {
 					// resource exists only in file system
 					//don't create a node for symbolic links that create a cycle
-					if (localInfo.getAttribute(EFS.ATTRIBUTE_SYMLINK) && localInfo.isDirectory() && isRecursiveLink(node.getStore(), localInfo))
+					if (localInfo.getAttribute(EFS.ATTRIBUTE_SYMLINK) && localInfo.isDirectory() && isRecursiveLink(node.getStore(), localInfo)) {
 						child = null;
-					else
+					} else {
 						child = createChildNodeFromFileSystem(node, localInfo);
+					}
 					localIndex++;
 				} else {
 					// resource exists only in the workspace
 					child = createNode(target, null, null, true);
 					workspaceIndex++;
 				}
-				if (child != null)
+				if (child != null) {
 					addChildToTree(node, child);
+				}
 			}
 		}
 
@@ -219,13 +228,15 @@ public class UnifiedTree {
 		if (unknown) {
 			// Don't open the info - we might not be inside a workspace-modifying operation
 			resourceInfo = parent.getResourceInfo(false, false);
-			if (resourceInfo != null)
+			if (resourceInfo != null) {
 				resourceInfo.clear(ICoreConstants.M_CHILDREN_UNKNOWN);
+			}
 		}
 
 		/* if we added children, add the childMarker separator */
-		if (node.getFirstChild() != null)
+		if (node.getFirstChild() != null) {
 			addChildrenMarker();
+		}
 	}
 
 	protected void addChildrenFromFileSystem(UnifiedTreeNode node, List<IFileInfo> childInfos, int index) {
@@ -234,8 +245,9 @@ public class UnifiedTree {
 		}
 		for (IFileInfo info : childInfos.subList(index, childInfos.size())) {
 			//don't create a node for symbolic links that create a cycle
-			if (!info.getAttribute(EFS.ATTRIBUTE_SYMLINK) || !info.isDirectory() || !isRecursiveLink(node.getStore(), info))
+			if (!info.getAttribute(EFS.ATTRIBUTE_SYMLINK) || !info.isDirectory() || !isRecursiveLink(node.getStore(), info)) {
 				addChildToTree(node, createChildNodeFromFileSystem(node, info));
+			}
 		}
 	}
 
@@ -244,8 +256,9 @@ public class UnifiedTree {
 	}
 
 	protected void addChildToTree(UnifiedTreeNode node, UnifiedTreeNode child) {
-		if (node.getFirstChild() == null)
+		if (node.getFirstChild() == null) {
 			node.setFirstChild(child);
+		}
 		addElementToQueue(child);
 	}
 
@@ -256,30 +269,36 @@ public class UnifiedTree {
 	protected void addNodeChildrenToQueue(UnifiedTreeNode node) {
 		/* if the first child is not null we already added the children */
 		/* If the children won't be at a valid level for the refresh depth, don't bother adding them */
-		if (!childLevelValid || node.getFirstChild() != null)
+		if (!childLevelValid || node.getFirstChild() != null) {
 			return;
+		}
 		addChildren(node);
-		if (queue.isEmpty())
+		if (queue.isEmpty()) {
 			return;
+		}
 		//if we're about to change levels, then the children just added
 		//are the last nodes for their level, so add a level marker to the queue
 		UnifiedTreeNode nextNode = queue.peek();
-		if (isChildrenMarker(nextNode))
+		if (isChildrenMarker(nextNode)) {
 			queue.remove();
+		}
 		nextNode = queue.peek();
-		if (isLevelMarker(nextNode))
+		if (isLevelMarker(nextNode)) {
 			addElementToQueue(levelMarker);
+		}
 	}
 
 	protected void addRootToQueue() {
 		//don't refresh in closed projects
-		if (!root.getProject().isAccessible())
+		if (!root.getProject().isAccessible()) {
 			return;
+		}
 		IFileStore store = ((Resource) root).getStore();
 		IFileInfo fileInfo = fileTree != null ? fileTree.getFileInfo(store) : store.fetchInfo();
 		UnifiedTreeNode node = createNode(root, store, fileInfo, root.exists());
-		if (node.existsInFileSystem() || node.existsInWorkspace())
+		if (node.existsInFileSystem() || node.existsInWorkspace()) {
 			addElementToQueue(node);
+		}
 	}
 
 	/**
@@ -323,26 +342,30 @@ public class UnifiedTree {
 
 	protected Iterator<UnifiedTreeNode> getChildren(UnifiedTreeNode node) {
 		/* if first child is null we need to add node's children to queue */
-		if (node.getFirstChild() == null)
+		if (node.getFirstChild() == null) {
 			addNodeChildrenToQueue(node);
+		}
 
 		/* if the first child is still null, the node does not have any children */
-		if (node.getFirstChild() == null)
+		if (node.getFirstChild() == null) {
 			return Collections.emptyIterator();
+		}
 
 		/* get the index of the first child */
 		int index = queue.indexOf(node.getFirstChild());
 
 		/* if we do not have children, just return an empty enumeration */
-		if (index == -1)
+		if (index == -1) {
 			return Collections.emptyIterator();
+		}
 
 		/* create an enumeration with node's children */
 		List<UnifiedTreeNode> result = new ArrayList<>(10);
 		while (true) {
 			UnifiedTreeNode child = queue.get(index);
-			if (isChildrenMarker(child))
+			if (isChildrenMarker(child)) {
 				break;
+			}
 			result.add(child);
 			if (index == queue.size() - 1) {
 				index = 0;
@@ -361,13 +384,15 @@ public class UnifiedTree {
 		try {
 			final IFileStore store = node.getStore();
 			IFileInfo[] list;
-			if (fileTree != null && (fileTree.getTreeRoot().equals(store) || fileTree.getTreeRoot().isParentOf(store)))
+			if (fileTree != null && (fileTree.getTreeRoot().equals(store) || fileTree.getTreeRoot().isParentOf(store))) {
 				list = fileTree.getChildInfos(store);
-			else
+			} else {
 				list = store.childInfos(EFS.NONE, null);
+			}
 
-			if (list == null || list.length == 0)
+			if (list == null || list.length == 0) {
 				return List.of();
+			}
 			list = ((Resource) node.getResource()).filterChildren(list, false);
 			if (list.length > 1) {
 				Arrays.sort(list);
@@ -385,15 +410,17 @@ public class UnifiedTree {
 
 	protected void initializeQueue() {
 		//initialize the queue
-		if (queue == null)
+		if (queue == null) {
 			queue = new LinkedList<>();
-		else
+		} else {
 			queue.clear();
+		}
 		//initialize the free nodes list
-		if (freeNodes == null)
+		if (freeNodes == null) {
 			freeNodes = new ArrayList<>(100);
-		else
+		} else {
 			freeNodes.clear();
+		}
 		addRootToQueue();
 		addElementToQueue(levelMarker);
 	}
@@ -424,9 +451,8 @@ public class UnifiedTree {
 		if (pathPrefixHistory == null) {
 			//Bug 232426: Check what life cycle we need for the histories
 			Job job = Job.getJobManager().currentJob();
-			if (job instanceof RefreshJob) {
+			if (job instanceof RefreshJob refreshJob) {
 				//we are running from the RefreshJob: use the path history of the job
-				RefreshJob refreshJob = (RefreshJob) job;
 				pathPrefixHistory = refreshJob.getPathPrefixHistory();
 				rootPathHistory = refreshJob.getRootPathHistory();
 			} else {
@@ -562,11 +588,13 @@ public class UnifiedTree {
 	 */
 	protected void removeNodeChildrenFromQueue(UnifiedTreeNode node) {
 		UnifiedTreeNode first = node.getFirstChild();
-		if (first == null)
+		if (first == null) {
 			return;
+		}
 		while (true) {
-			if (first.equals(queue.pollLast()))
+			if (first.equals(queue.pollLast())) {
 				break;
+			}
 		}
 		node.setFirstChild(null);
 	}

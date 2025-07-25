@@ -30,8 +30,9 @@ public class ProjectPropertyTester extends ResourcePropertyTester {
 
 	@Override
 	public boolean test(Object receiver, String method, Object[] args, Object expectedValue) {
-		if ((receiver instanceof IProject) && method.equals(OPEN))
+		if ((receiver instanceof IProject) && method.equals(OPEN)) {
 			return ((IProject) receiver).isOpen() == toBoolean(expectedValue);
+		}
 		return false;
 	}
 }

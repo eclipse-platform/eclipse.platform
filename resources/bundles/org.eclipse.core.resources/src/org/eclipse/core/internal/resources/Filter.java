@@ -60,8 +60,9 @@ public class Filter {
 	public boolean match(IContainer parent, IFileInfo fileInfo) throws CoreException {
 		if (provider == null) {
 			IFilterMatcherDescriptor filterDescriptor = project.getWorkspace().getFilterMatcherDescriptor(getId());
-			if (filterDescriptor != null)
+			if (filterDescriptor != null) {
 				provider = ((FilterDescriptor) filterDescriptor).createFilter();
+			}
 			if (provider == null) {
 				String message = NLS.bind(Messages.filters_missingFilterType, getId());
 				Policy.log(new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, Platform.PLUGIN_ERROR, message, new Error()));
@@ -76,15 +77,17 @@ public class Filter {
 				provider = null;
 			}
 		}
-		if (provider != null)
+		if (provider != null) {
 			return provider.matches(parent, fileInfo);
+		}
 		return false;
 	}
 
 	public boolean isFirst() {
 		IFilterMatcherDescriptor descriptor = project.getWorkspace().getFilterMatcherDescriptor(getId());
-		if (descriptor != null)
+		if (descriptor != null) {
 			return descriptor.isFirstOrdering();
+		}
 		return false;
 	}
 
@@ -105,8 +108,9 @@ public class Filter {
 	}
 
 	public boolean appliesTo(IFileInfo info) {
-		if (info.isDirectory())
+		if (info.isDirectory()) {
 			return (getType() & IResourceFilterDescription.FOLDERS) != 0;
+		}
 		return (getType() & IResourceFilterDescription.FILES) != 0;
 	}
 
@@ -133,8 +137,9 @@ public class Filter {
 						}
 					}
 				}
-				if (!filtersWereApplicable)
+				if (!filtersWereApplicable) {
 					result[outputIndex++] = info;
+				}
 			}
 			if (outputIndex != result.length) {
 				IFileInfo[] tmp = new IFileInfo[outputIndex];
@@ -163,8 +168,9 @@ public class Filter {
 						}
 					}
 				}
-				if (!shouldBeExcluded)
+				if (!shouldBeExcluded) {
 					result[outputIndex++] = info;
+				}
 			}
 			if (outputIndex != result.length) {
 				IFileInfo[] tmp = new IFileInfo[outputIndex];

@@ -57,8 +57,9 @@ public final class ResourceChangeValidator {
 	 * @return the singleton change validator
 	 */
 	public static ResourceChangeValidator getValidator() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new ResourceChangeValidator();
+		}
 		return instance;
 	}
 
@@ -151,12 +152,14 @@ public final class ResourceChangeValidator {
 		try {
 			IResource[] resources = getRootResources(delta);
 			ModelProvider[] providers = getProviders(resources);
-			if (providers.length == 0)
+			if (providers.length == 0) {
 				return Status.OK_STATUS;
+			}
 			monitor.beginTask(Messages.mapping_validate, providers.length);
 			IStatus[] result = new IStatus[providers.length];
-			for (int i = 0; i < providers.length; i++)
+			for (int i = 0; i < providers.length; i++) {
 				result[i] = providers[i].validateChange(delta, Policy.subMonitorFor(monitor, 1));
+			}
 			return combineResults(result);
 		} finally {
 			monitor.done();

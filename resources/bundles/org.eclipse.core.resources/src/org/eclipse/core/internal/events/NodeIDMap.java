@@ -64,8 +64,9 @@ public class NodeIDMap {
 				int hash = hashFor(id, newLength);
 				while (grownIds[hash] != 0) {
 					hash++;
-					if (hash > maxArrayIndex)
+					if (hash > maxArrayIndex) {
 						hash = 0;
+					}
 				}
 				grownIds[hash] = id;
 				grownOldPaths[hash] = oldPaths[i];
@@ -87,20 +88,24 @@ public class NodeIDMap {
 
 		// search the last half of the array
 		for (int i = hash; i < len; i++) {
-			if (ids[i] == searchID)
+			if (ids[i] == searchID) {
 				return i;
+			}
 			// marker info not found so return -1
-			if (ids[i] == 0)
+			if (ids[i] == 0) {
 				return -1;
+			}
 		}
 
 		// search the beginning of the array
 		for (int i = 0; i < hash - 1; i++) {
-			if (ids[i] == searchID)
+			if (ids[i] == searchID) {
 				return i;
+			}
 			// marker info not found so return -1
-			if (ids[i] == 0)
+			if (ids[i] == 0) {
 				return -1;
+			}
 		}
 		// marker info not found so return -1
 		return -1;
@@ -112,8 +117,9 @@ public class NodeIDMap {
 	 */
 	public IPath getNewPath(long nodeID) {
 		int index = getIndex(nodeID);
-		if (index == -1)
+		if (index == -1) {
 			return null;
+		}
 		return newPaths[index];
 	}
 
@@ -123,8 +129,9 @@ public class NodeIDMap {
 	 */
 	public IPath getOldPath(long nodeID) {
 		int index = getIndex(nodeID);
-		if (index == -1)
+		if (index == -1) {
 			return null;
+		}
 		return oldPaths[index];
 	}
 
@@ -146,31 +153,37 @@ public class NodeIDMap {
 	 * or newPath is null, they are ignored (old map values are not overwritten).
 	 */
 	private void put(long id, IPath oldPath, IPath newPath) {
-		if (oldPath == null && newPath == null)
+		if (oldPath == null && newPath == null) {
 			return;
+		}
 		int hash = hashFor(id, ids.length);
 
 		// search for an empty slot at the end of the array
 		for (int i = hash; i < ids.length; i++) {
 			if (ids[i] == id) {
 				//replace value for existing entry
-				if (oldPath != null)
+				if (oldPath != null) {
 					oldPaths[i] = oldPath;
-				if (newPath != null)
+				}
+				if (newPath != null) {
 					newPaths[i] = newPath;
+				}
 				return;
 			}
 			if (ids[i] == 0) {
 				//add a new entry to the map
 				ids[i] = id;
-				if (oldPath != null)
+				if (oldPath != null) {
 					oldPaths[i] = oldPath;
-				if (newPath != null)
+				}
+				if (newPath != null) {
 					newPaths[i] = newPath;
+				}
 				elementCount++;
 				// grow if necessary
-				if (shouldGrow())
+				if (shouldGrow()) {
 					expand();
+				}
 				return;
 			}
 		}
@@ -179,23 +192,28 @@ public class NodeIDMap {
 		for (int i = 0; i < hash - 1; i++) {
 			if (ids[i] == id) {
 				//replace value for existing entry
-				if (oldPath != null)
+				if (oldPath != null) {
 					oldPaths[i] = oldPath;
-				if (newPath != null)
+				}
+				if (newPath != null) {
 					newPaths[i] = newPath;
+				}
 				return;
 			}
 			if (ids[i] == 0) {
 				//add a new entry to the map
 				ids[i] = id;
-				if (oldPath != null)
+				if (oldPath != null) {
 					oldPaths[i] = oldPath;
-				if (newPath != null)
+				}
+				if (newPath != null) {
 					newPaths[i] = newPath;
+				}
 				elementCount++;
 				// grow if necessary
-				if (shouldGrow())
+				if (shouldGrow()) {
 					expand();
+				}
 				return;
 			}
 		}

@@ -53,10 +53,11 @@ public class BlobStore {
 		UniversalUniqueIdentifier uuid = new UniversalUniqueIdentifier();
 		folderFor(uuid).mkdir(EFS.NONE, null);
 		IFileStore destination = fileFor(uuid);
-		if (moveContents)
+		if (moveContents) {
 			target.move(destination, EFS.NONE, null);
-		else
+		} else {
 			target.copy(destination, EFS.NONE, null);
+		}
 		return uuid;
 	}
 
@@ -66,12 +67,14 @@ public class BlobStore {
 	@SuppressWarnings("javadoc")
 	private void appendByteString(StringBuilder buffer, byte value) {
 		String hexString;
-		if (value < 0)
+		if (value < 0) {
 			hexString = Integer.toHexString(256 + value);
-		else
+		} else {
 			hexString = Integer.toHexString(value);
-		if (hexString.length() == 1)
+		}
+		if (hexString.length() == 1) {
 			buffer.append("0"); //$NON-NLS-1$
+		}
 		buffer.append(hexString);
 	}
 
@@ -82,8 +85,9 @@ public class BlobStore {
 	 */
 	private String bytesToHexString(byte[] b) {
 		StringBuilder buffer = new StringBuilder();
-		for (byte element : b)
+		for (byte element : b) {
 			appendByteString(buffer, element);
+		}
 		return buffer.toString();
 	}
 
@@ -103,8 +107,9 @@ public class BlobStore {
 	 * Delete all of the blobs in the given set.
 	 */
 	public void deleteBlobs(Set<UniversalUniqueIdentifier> set) {
-		for (UniversalUniqueIdentifier id : set)
+		for (UniversalUniqueIdentifier id : set) {
 			deleteBlob(id);
+		}
 	}
 
 	public IFileStore fileFor(UniversalUniqueIdentifier uuid) {
@@ -134,8 +139,9 @@ public class BlobStore {
 	protected byte hashUUIDbytes(UniversalUniqueIdentifier uuid) {
 		byte[] bytes = uuid.toBytes();
 		byte hash = 0;
-		for (byte b : bytes)
+		for (byte b : bytes) {
 			hash ^= randomArray[b + 128]; // +128 makes sure the index is >0
+		}
 		return hash;
 	}
 }

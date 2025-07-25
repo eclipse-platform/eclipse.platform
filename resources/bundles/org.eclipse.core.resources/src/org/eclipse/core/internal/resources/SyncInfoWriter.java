@@ -63,12 +63,14 @@ public class SyncInfoWriter {
 	 */
 	public void saveSyncInfo(ResourceInfo info, IPathRequestor requestor, DataOutputStream output, List<QualifiedName> writtenPartners) throws IOException {
 		Map<QualifiedName, Object> table = info.getSyncInfo(false);
-		if (table == null)
+		if (table == null) {
 			return;
+		}
 		// if this is the first sync info that we have written, then
 		// write the version id for the file.
-		if (output.size() == 0)
+		if (output.size() == 0) {
 			output.writeInt(SYNCINFO_SAVE_VERSION);
+		}
 		output.writeUTF(requestor.requestPath().toString());
 		output.writeInt(table.size());
 		for (Map.Entry<QualifiedName, Object> entry : table.entrySet()) {
@@ -105,11 +107,13 @@ public class SyncInfoWriter {
 	 * }</pre>
 	 */
 	public void snapSyncInfo(ResourceInfo info, IPathRequestor requestor, DataOutputStream output) throws IOException {
-		if (!info.isSet(ICoreConstants.M_SYNCINFO_SNAP_DIRTY))
+		if (!info.isSet(ICoreConstants.M_SYNCINFO_SNAP_DIRTY)) {
 			return;
+		}
 		Map<QualifiedName, Object> table = info.getSyncInfo(false);
-		if (table == null)
+		if (table == null) {
 			return;
+		}
 		// write the version id for the snapshot.
 		output.writeInt(SYNCINFO_SNAP_VERSION);
 		output.writeUTF(requestor.requestPath().toString());

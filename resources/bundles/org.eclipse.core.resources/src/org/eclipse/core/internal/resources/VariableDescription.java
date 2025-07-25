@@ -38,8 +38,9 @@ public class VariableDescription implements Comparable<VariableDescription> {
 		if (o == null) {
 			return false;
 		}
-		if (o.getClass() != this.getClass())
+		if (o.getClass() != this.getClass()) {
 			return false;
+		}
 		VariableDescription other = (VariableDescription) o;
 		return name.equals(other.name) && value == other.value;
 	}

@@ -53,15 +53,17 @@ public class PropertyManager2 implements IPropertyManager {
 		}
 
 		private void saveChanges(PropertyBucket bucket) throws CoreException {
-			if (changes.isEmpty())
+			if (changes.isEmpty()) {
 				return;
+			}
 			// make effective all changes collected
 			Iterator<PropertyEntry> i = changes.iterator();
 			PropertyEntry entry = i.next();
 			tree.loadBucketFor(entry.getPath());
 			bucket.setProperties(entry);
-			while (i.hasNext())
+			while (i.hasNext()) {
 				bucket.setProperties(i.next());
+			}
 			bucket.save();
 		}
 
@@ -133,8 +135,9 @@ public class PropertyManager2 implements IPropertyManager {
 			public int visit(Entry entry) {
 				PropertyEntry propertyEntry = (PropertyEntry) entry;
 				int propertyCount = propertyEntry.getOccurrences();
-				for (int i = 0; i < propertyCount; i++)
+				for (int i = 0; i < propertyCount; i++) {
 					result.put(propertyEntry.getPropertyName(i), propertyEntry.getPropertyValue(i));
+				}
 				return CONTINUE;
 			}
 		}, target.getFullPath(), BucketTree.DEPTH_ZERO);
@@ -171,7 +174,7 @@ public class PropertyManager2 implements IPropertyManager {
 		resource.checkAccessible(flags);
 		// enforce the limit stated by the spec
 		if (value != null && value.length() > MAX_VALUE_SIZE) {
-			String message = NLS.bind(Messages.properties_valueTooLong, new Object[] {name.getQualifier(), name.getLocalName(), Integer.toString(MAX_VALUE_SIZE)});
+			String message = NLS.bind(Messages.properties_valueTooLong, name.getQualifier(), name.getLocalName(), Integer.toString(MAX_VALUE_SIZE));
 			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, target.getFullPath(), message, null);
 		}
 		if (name.getQualifier() == null) {

@@ -61,25 +61,30 @@ public abstract class OS {
 	 */
 	public static boolean isNameValid(String name) {
 		//. and .. have special meaning on all platforms
-		if (name.equals(".") || name.equals("..")) //$NON-NLS-1$ //$NON-NLS-2$
+		if (name.equals(".") || name.equals("..")) { //$NON-NLS-1$ //$NON-NLS-2$
 			return false;
+		}
 		if (INSTALLED_PLATFORM.equals(Platform.OS_WIN32)) {
 			//empty names are not valid
 			final int length = name.length();
-			if (length == 0)
+			if (length == 0) {
 				return false;
+			}
 			final char lastChar = name.charAt(length - 1);
 			// filenames ending in dot are not valid
-			if (lastChar == '.')
+			if (lastChar == '.') {
 				return false;
+			}
 			// file names ending with whitespace are truncated (bug 118997)
-			if (Character.isWhitespace(lastChar))
+			if (Character.isWhitespace(lastChar)) {
 				return false;
+			}
 			int dot = name.indexOf('.');
 			//on windows, filename suffixes are not relevant to name validity
 			String basename = dot == -1 ? name : name.substring(0, dot);
-			if (Arrays.binarySearch(INVALID_RESOURCE_BASENAMES, basename.toLowerCase()) >= 0)
+			if (Arrays.binarySearch(INVALID_RESOURCE_BASENAMES, basename.toLowerCase()) >= 0) {
 				return false;
+			}
 			return Arrays.binarySearch(INVALID_RESOURCE_FULLNAMES, name.toLowerCase()) < 0;
 		}
 		return true;

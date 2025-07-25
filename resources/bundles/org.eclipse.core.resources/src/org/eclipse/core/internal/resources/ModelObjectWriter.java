@@ -46,14 +46,18 @@ public class ModelObjectWriter implements IModelObjectConstants {
 	 */
 	static String triggerString(BuildCommand command) {
 		StringBuilder buf = new StringBuilder();
-		if (command.isBuilding(IncrementalProjectBuilder.AUTO_BUILD))
+		if (command.isBuilding(IncrementalProjectBuilder.AUTO_BUILD)) {
 			buf.append(TRIGGER_AUTO).append(',');
-		if (command.isBuilding(IncrementalProjectBuilder.CLEAN_BUILD))
+		}
+		if (command.isBuilding(IncrementalProjectBuilder.CLEAN_BUILD)) {
 			buf.append(TRIGGER_CLEAN).append(',');
-		if (command.isBuilding(IncrementalProjectBuilder.FULL_BUILD))
+		}
+		if (command.isBuilding(IncrementalProjectBuilder.FULL_BUILD)) {
 			buf.append(TRIGGER_FULL).append(',');
-		if (command.isBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD))
+		}
+		if (command.isBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD)) {
 			buf.append(TRIGGER_INCREMENTAL).append(',');
+		}
 		return buf.toString();
 	}
 
@@ -64,8 +68,9 @@ public class ModelObjectWriter implements IModelObjectConstants {
 	protected String[] getReferencedProjects(ProjectDescription description) {
 		IProject[] projects = description.getReferencedProjects();
 		String[] result = new String[projects.length];
-		for (int i = 0; i < projects.length; i++)
+		for (int i = 0; i < projects.length; i++) {
 			result[i] = projects[i].getName();
+		}
 		return result;
 	}
 
@@ -73,8 +78,9 @@ public class ModelObjectWriter implements IModelObjectConstants {
 		writer.startTag(BUILD_COMMAND, null);
 		if (command != null) {
 			writer.printSimpleTag(NAME, command.getName());
-			if (shouldWriteTriggers(command))
+			if (shouldWriteTriggers(command)) {
 				writer.printSimpleTag(BUILD_TRIGGERS, triggerString(command));
+			}
 			write(ARGUMENTS, command.getArguments(false), writer);
 		}
 		writer.endTag(BUILD_COMMAND);
@@ -87,8 +93,9 @@ public class ModelObjectWriter implements IModelObjectConstants {
 		//only write triggers if command is configurable and there exists a trigger
 		//that the builder does NOT respond to.  I.e., don't write out on the default
 		//cases to avoid dirtying .project files unnecessarily.
-		if (!command.isConfigurable())
+		if (!command.isConfigurable()) {
 			return false;
+		}
 		return !command.isBuilding(IncrementalProjectBuilder.AUTO_BUILD) || !command.isBuilding(IncrementalProjectBuilder.CLEAN_BUILD) || !command.isBuilding(IncrementalProjectBuilder.FULL_BUILD) || !command.isBuilding(IncrementalProjectBuilder.INCREMENTAL_BUILD);
 	}
 
@@ -129,8 +136,9 @@ public class ModelObjectWriter implements IModelObjectConstants {
 					write(element, writer);
 				}
 				writer.endTag(ARGUMENTS);
-			} else
+			} else {
 				writer.printSimpleTag(ARGUMENTS, ""); //$NON-NLS-1$
+			}
 		}
 		writer.endTag(MATCHER);
 	}
@@ -166,8 +174,9 @@ public class ModelObjectWriter implements IModelObjectConstants {
 		) {
 			write(object, writer);
 			writer.flush();
-			if (writer.checkError())
+			if (writer.checkError()) {
 				throw new IOException();
+			}
 		}
 	}
 
@@ -241,8 +250,9 @@ public class ModelObjectWriter implements IModelObjectConstants {
 
 	protected void write(String name, Collection<?> collection, XMLWriter writer) throws IOException {
 		writer.startTag(name, null);
-		for (Object o : collection)
+		for (Object o : collection) {
 			write(o, writer);
+		}
 		writer.endTag(name);
 	}
 
@@ -269,8 +279,9 @@ public class ModelObjectWriter implements IModelObjectConstants {
 
 	protected void write(String name, String elementTagName, String[] array, XMLWriter writer) {
 		writer.startTag(name, null);
-		for (String element : array)
+		for (String element : array) {
 			writer.printSimpleTag(elementTagName, element);
+		}
 		writer.endTag(name);
 	}
 

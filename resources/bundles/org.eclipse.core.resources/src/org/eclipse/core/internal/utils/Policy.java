@@ -121,8 +121,9 @@ public class Policy {
 	public static final int totalWork = 100;
 
 	public static void checkCanceled(IProgressMonitor monitor) {
-		if (monitor.isCanceled())
+		if (monitor.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 	}
 
 	/**
@@ -149,21 +150,24 @@ public class Policy {
 		StringWriter writer = new StringWriter();
 		t.printStackTrace(new PrintWriter(writer));
 		String str = writer.toString();
-		if (str.endsWith("\n")) //$NON-NLS-1$
+		if (str.endsWith("\n")) { //$NON-NLS-1$
 			str = str.substring(0, str.length() - 2);
+		}
 		debug(str);
 	}
 
 	public static void log(int severity, String message, Throwable t) {
-		if (message == null)
+		if (message == null) {
 			message = ""; //$NON-NLS-1$
+		}
 		log(new Status(severity, ResourcesPlugin.PI_RESOURCES, 1, message, t));
 	}
 
 	public static void log(IStatus status) {
 		final Bundle bundle = Platform.getBundle(ResourcesPlugin.PI_RESOURCES);
-		if (bundle == null)
+		if (bundle == null) {
 			return;
+		}
 		ILog.of(bundle).log(status);
 	}
 
@@ -179,10 +183,12 @@ public class Policy {
 	}
 
 	public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
-		if (monitor == null)
+		if (monitor == null) {
 			return new NullProgressMonitor();
-		if (monitor instanceof NullProgressMonitor)
+		}
+		if (monitor instanceof NullProgressMonitor) {
 			return monitor;
+		}
 		return new SubProgressMonitor(monitor, ticks);
 	}
 }

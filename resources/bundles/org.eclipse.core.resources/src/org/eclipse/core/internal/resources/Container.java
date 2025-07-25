@@ -36,12 +36,14 @@ public abstract class Container extends Resource implements IContainer {
 	 */
 	@Override
 	public void convertToPhantom() throws CoreException {
-		if (isPhantom())
+		if (isPhantom()) {
 			return;
+		}
 		super.convertToPhantom();
 		IResource[] members = members(IContainer.INCLUDE_PHANTOMS | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
-		for (IResource member : members)
+		for (IResource member : members) {
 			((Resource) member).convertToPhantom();
+		}
 	}
 
 	@Override
@@ -78,8 +80,9 @@ public abstract class Container extends Resource implements IContainer {
 					} else {
 						refreshLocal(DEPTH_INFINITE, Policy.subMonitorFor(monitor, Policy.opWork * 90 / 100));
 					}
-				} else
+				} else {
 					monitor.worked(Policy.opWork * 90 / 100);
+				}
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
 				throw e;
@@ -124,11 +127,13 @@ public abstract class Container extends Resource implements IContainer {
 	@Override
 	protected void fixupAfterMoveSource() throws CoreException {
 		super.fixupAfterMoveSource();
-		if (!synchronizing(getResourceInfo(true, false)))
+		if (!synchronizing(getResourceInfo(true, false))) {
 			return;
+		}
 		IResource[] members = members(IContainer.INCLUDE_PHANTOMS | IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS | IContainer.INCLUDE_HIDDEN);
-		for (IResource member : members)
+		for (IResource member : members) {
 			((Resource) member).fixupAfterMoveSource();
+		}
 	}
 
 	protected IResource[] getChildren(int memberFlags) {
@@ -139,17 +144,20 @@ public abstract class Container extends Resource implements IContainer {
 			//concurrency problem: the container has been deleted by another
 			//thread during this call.  Just return empty children set
 		}
-		if (children == null || children.length == 0)
+		if (children == null || children.length == 0) {
 			return ICoreConstants.EMPTY_RESOURCE_ARRAY;
+		}
 		Resource[] result = new Resource[children.length];
 		int found = 0;
 		for (IPath child : children) {
 			ResourceInfo info = workspace.getResourceInfo(child, true, false);
-			if (info != null && isMember(info.getFlags(), memberFlags))
+			if (info != null && isMember(info.getFlags(), memberFlags)) {
 				result[found++] = workspace.newResource(child, info.getType());
+			}
 		}
-		if (found == result.length)
+		if (found == result.length) {
 			return result;
+		}
 		Resource[] trimmedResult = new Resource[found];
 		System.arraycopy(result, 0, trimmedResult, 0, found);
 		return trimmedResult;
@@ -180,14 +188,17 @@ public abstract class Container extends Resource implements IContainer {
 
 	public boolean hasFilters() {
 		IProject project = getProject();
-		if (project == null)
+		if (project == null) {
 			return false;
+		}
 		ProjectDescription desc = ((Project) project).internalGetDescription();
-		if (desc == null)
+		if (desc == null) {
 			return false;
+		}
 		LinkedList<FilterDescription> filters = desc.getFilter(getProjectRelativePath());
-		if ((filters != null) && (filters.size() > 0))
+		if ((filters != null) && (filters.size() > 0)) {
 			return true;
+		}
 		return false;
 	}
 
@@ -208,12 +219,15 @@ public abstract class Container extends Resource implements IContainer {
 	@Deprecated
 	@Override
 	public boolean isLocal(int flags, int depth) {
-		if (!super.isLocal(flags, depth))
+		if (!super.isLocal(flags, depth)) {
 			return false;
-		if (depth == DEPTH_ZERO)
+		}
+		if (depth == DEPTH_ZERO) {
 			return true;
-		if (depth == DEPTH_ONE)
+		}
+		if (depth == DEPTH_ONE) {
 			depth = DEPTH_ZERO;
+		}
 		// get the children via the workspace since we know that this
 		// resource exists (it is local).
 		IResource[] children = getChildren(IResource.NONE);
@@ -243,8 +257,9 @@ public abstract class Container extends Resource implements IContainer {
 		ResourceInfo info = getResourceInfo(phantom, false);
 		checkAccessible(getFlags(info));
 		//if children are currently unknown, ask for immediate refresh
-		if (info.isSet(ICoreConstants.M_CHILDREN_UNKNOWN))
+		if (info.isSet(ICoreConstants.M_CHILDREN_UNKNOWN)) {
 			workspace.refreshManager.refresh(this);
+		}
 		return getChildren(memberFlags);
 	}
 
@@ -276,8 +291,9 @@ public abstract class Container extends Resource implements IContainer {
 					} else {
 						refreshLocal(DEPTH_INFINITE, Policy.subMonitorFor(monitor, Policy.opWork * 90 / 100));
 					}
-				} else
+				} else {
 					monitor.worked(Policy.opWork * 90 / 100);
+				}
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
 				throw e;
@@ -349,8 +365,9 @@ public abstract class Container extends Resource implements IContainer {
 
 					@Override
 					public boolean visitElement(ElementTree tree, IPathRequestor requestor, Object elementContents) {
-						if (elementContents == null)
+						if (elementContents == null) {
 							return false;
+						}
 						IPath nodePath = requestor.requestPath();
 						// we will always generate an event at least for the root of the sub tree
 						// (skip visiting the root because we already have set the charset above and
@@ -358,17 +375,20 @@ public abstract class Container extends Resource implements IContainer {
 						if (!visitedRoot) {
 							visitedRoot = true;
 							ResourceInfo info = workspace.getResourceInfo(nodePath, false, true);
-							if (info == null)
+							if (info == null) {
 								return false;
+							}
 							info.incrementCharsetGenerationCount();
 							return true;
 						}
 						// does it already have an encoding explicitly set?
-						if (workspace.getCharsetManager().getCharsetFor(nodePath, false) != null)
+						if (workspace.getCharsetManager().getCharsetFor(nodePath, false) != null) {
 							return false;
+						}
 						ResourceInfo info = workspace.getResourceInfo(nodePath, false, true);
-						if (info == null)
+						if (info == null) {
 							return false;
+						}
 						info.incrementCharsetGenerationCount();
 						return true;
 					}

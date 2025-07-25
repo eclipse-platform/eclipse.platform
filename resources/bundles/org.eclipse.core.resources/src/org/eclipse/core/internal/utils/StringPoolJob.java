@@ -61,10 +61,11 @@ public class StringPoolJob extends Job {
 	 */
 	public void addStringPoolParticipant(IStringPoolParticipant participant, ISchedulingRule rule) {
 		participants.put(participant, rule);
-		if (getState() == Job.SLEEPING)
+		if (getState() == Job.SLEEPING) {
 			wakeUp(INITIAL_DELAY);
-		else
+		} else {
 			schedule(INITIAL_DELAY);
+		}
 	}
 
 	/**
@@ -82,8 +83,9 @@ public class StringPoolJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		//if the system is shutting down, don't build
-		if (systemBundle.getState() == Bundle.STOPPING)
+		if (systemBundle.getState() == Bundle.STOPPING) {
 			return Status.OK_STATUS;
+		}
 
 		//copy current participants to handle concurrent additions and removals to map
 		Map.Entry<IStringPoolParticipant, ISchedulingRule>[] entries = participants.entrySet().toArray(new Map.Entry[participants.size()]);
@@ -106,13 +108,15 @@ public class StringPoolJob extends Job {
 		}
 		if (start > 0) {
 			lastDuration = System.currentTimeMillis() - start;
-			if (Policy.DEBUG_STRINGS)
+			if (Policy.DEBUG_STRINGS) {
 				Policy.debug("String sharing saved " + savings + " bytes in: " + lastDuration); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		}
 		//throttle frequency if it takes too long
 		long scheduleDelay = Math.max(RESCHEDULE_DELAY, lastDuration * 100);
-		if (Policy.DEBUG_STRINGS)
+		if (Policy.DEBUG_STRINGS) {
 			Policy.debug("Rescheduling string sharing job in: " + scheduleDelay); //$NON-NLS-1$
+		}
 		schedule(scheduleDelay);
 		return Status.OK_STATUS;
 	}
@@ -120,8 +124,9 @@ public class StringPoolJob extends Job {
 	private int shareStrings(IStringPoolParticipant[] toRun, IProgressMonitor monitor) {
 		final StringPool pool = new StringPool();
 		for (final IStringPoolParticipant current : toRun) {
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				break;
+			}
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {

@@ -67,8 +67,7 @@ public abstract class ModelProvider extends PlatformObject {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof ModelProvider) {
-			ModelProvider other = (ModelProvider) obj;
+		if (obj instanceof ModelProvider other) {
 			return other.getDescriptor().getId().equals(getDescriptor().getId());
 		}
 		return super.equals(obj);
@@ -139,8 +138,9 @@ public abstract class ModelProvider extends PlatformObject {
 		Set<ResourceMapping> mappings = new HashSet<>();
 		for (IResource resource : resources) {
 			ResourceMapping[] resourceMappings = getMappings(resource, context, monitor);
-			if (resourceMappings.length > 0)
+			if (resourceMappings.length > 0) {
 				mappings.addAll(Arrays.asList(resourceMappings));
+			}
 		}
 		return mappings.toArray(new ResourceMapping[mappings.size()]);
 	}

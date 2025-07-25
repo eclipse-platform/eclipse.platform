@@ -93,12 +93,14 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 
 	public void charsetPreferencesChanged(final IProject project) {
 		// avoid reacting to changes made by ourselves
-		if (isDisabled())
+		if (isDisabled()) {
 			return;
+		}
 		ResourceInfo projectInfo = ((Project) project).getResourceInfo(false, false);
 		//nothing to do if project has already been deleted
-		if (projectInfo == null)
+		if (projectInfo == null) {
 			return;
+		}
 		final long projectId = projectInfo.getNodeId();
 		// ensure all resources under the affected project are
 		// reported as having encoding changes
@@ -107,11 +109,13 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 			public IPath getRoot() {
 				//make sure it is still the same project - it could have been deleted and recreated
 				ResourceInfo currentInfo = ((Project) project).getResourceInfo(false, false);
-				if (currentInfo == null)
+				if (currentInfo == null) {
 					return null;
+				}
 				long currentId = currentInfo.getNodeId();
-				if (currentId != projectId)
+				if (currentId != projectId) {
 					return null;
+				}
 				// visit the project subtree
 				return project.getFullPath();
 			}
@@ -146,8 +150,9 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 
 			@Override
 			public boolean isAffected(ResourceInfo info, IPathRequestor requestor) {
-				if (info.getType() != IResource.FILE)
+				if (info.getType() != IResource.FILE) {
 					return false;
+				}
 				return event.getContentType().isAssociatedWith(requestor.requestName());
 			}
 
@@ -166,11 +171,13 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 	private void processNextEvent(final ICharsetListenerFilter filter, IProgressMonitor monitor) throws CoreException {
 		IElementContentVisitor visitor = (tree, requestor, elementContents) -> {
 			ResourceInfo info = (ResourceInfo) elementContents;
-			if (!filter.isAffected(info, requestor))
+			if (!filter.isAffected(info, requestor)) {
 				return true;
+			}
 			info = workspace.getResourceInfo(requestor.requestPath(), false, true);
-			if (info == null)
+			if (info == null) {
 				return false;
+			}
 			info.incrementCharsetGenerationCount();
 			return true;
 		};
@@ -186,8 +193,9 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 		} catch (WrappedRuntimeException e) {
 			throw (CoreException) e.getTargetException();
 		}
-		if (monitor.isCanceled())
+		if (monitor.isCanceled()) {
 			throw new OperationCanceledException();
+		}
 	}
 
 	private ICharsetListenerFilter removeFromQueue() {
@@ -207,8 +215,9 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 				workspace.beginOperation(true);
 				ICharsetListenerFilter next;
 				//if the system is shutting down, don't broadcast
-				while (systemBundle.getState() != Bundle.STOPPING && (next = removeFromQueue()) != null)
+				while (systemBundle.getState() != Bundle.STOPPING && (next = removeFromQueue()) != null) {
 					processNextEvent(next, monitor);
+				}
 			} catch (OperationCanceledException e) {
 				workspace.getWorkManager().operationCanceled();
 				return Status.CANCEL_STATUS;
@@ -248,8 +257,9 @@ public class CharsetDeltaJob extends Job implements IContentTypeManager.IContent
 		}
 		IContentTypeManager contentTypeManager = Platform.getContentTypeManager();
 		//if the service is already gone there is nothing to do
-		if (contentTypeManager != null)
+		if (contentTypeManager != null) {
 			contentTypeManager.removeContentTypeChangeListener(this);
+		}
 	}
 
 	public void startup() {

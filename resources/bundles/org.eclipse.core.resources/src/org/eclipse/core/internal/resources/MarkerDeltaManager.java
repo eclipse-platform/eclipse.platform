@@ -40,9 +40,11 @@ class MarkerDeltaManager {
 	 */
 	protected Map<IPath, MarkerSet> assembleDeltas(long start) {
 		Map<IPath, MarkerSet> result = null;
-		for (int i = 0; i < nextFree; i++)
-			if (startIds[i] >= start)
+		for (int i = 0; i < nextFree; i++) {
+			if (startIds[i] >= start) {
 				result = MarkerDelta.merge(result, batches[i]);
+			}
+		}
 		return result;
 	}
 
@@ -53,11 +55,14 @@ class MarkerDeltaManager {
 	protected void resetDeltas(long startId) {
 		//find offset of first batch to keep
 		int startOffset = 0;
-		for (; startOffset < nextFree; startOffset++)
-			if (startIds[startOffset] >= startId)
+		for (; startOffset < nextFree; startOffset++) {
+			if (startIds[startOffset] >= startId) {
 				break;
-		if (startOffset == 0)
+			}
+		}
+		if (startOffset == 0) {
 			return;
+		}
 		long[] newIds = startIds;
 		Map<IPath, MarkerSet>[] newBatches = batches;
 		//shrink the arrays if it has grown too large

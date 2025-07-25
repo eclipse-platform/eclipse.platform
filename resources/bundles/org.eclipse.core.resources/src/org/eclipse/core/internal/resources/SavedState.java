@@ -59,8 +59,9 @@ public class SavedState implements ISavedState {
 	}
 
 	protected SafeFileTable restoreFileTable() throws CoreException {
-		if (fileTable == null)
+		if (fileTable == null) {
 			fileTable = new SafeFileTable(pluginId, workspace);
+		}
 		return fileTable;
 	}
 
@@ -80,8 +81,9 @@ public class SavedState implements ISavedState {
 			final ISchedulingRule rule = workspace.getRoot();
 			try {
 				workspace.prepareOperation(rule, null);
-				if (oldTree == null || newTree == null)
+				if (oldTree == null || newTree == null) {
 					return;
+				}
 				workspace.beginOperation(true);
 				ResourceDelta delta = ResourceDeltaFactory.computeDelta(workspace, oldTree, newTree, IPath.ROOT, -1);
 				forgetTrees(); // free trees to prevent memory leak

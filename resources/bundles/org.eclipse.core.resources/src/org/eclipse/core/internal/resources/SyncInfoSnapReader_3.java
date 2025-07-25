@@ -63,8 +63,9 @@ public class SyncInfoSnapReader_3 extends SyncInfoSnapReader {
 		ObjectMap<QualifiedName, Object> map = internalReadSyncInfo(input);
 		// set the table on the resource info
 		ResourceInfo info = workspace.getResourceInfo(path, true, false);
-		if (info == null)
+		if (info == null) {
 			return;
+		}
 		info.setSyncInfo(map);
 		info.clear(ICoreConstants.M_SYNCINFO_SNAP_DIRTY);
 	}

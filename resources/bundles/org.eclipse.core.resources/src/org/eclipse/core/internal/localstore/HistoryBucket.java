@@ -58,8 +58,9 @@ public class HistoryBucket extends Bucket {
 		static int compareStates(byte[] state1, byte[] state2) {
 			long timestamp1 = getTimestamp(state1);
 			long timestamp2 = getTimestamp(state2);
-			if (timestamp1 == timestamp2)
+			if (timestamp1 == timestamp2) {
 				return -UniversalUniqueIdentifier.compareTime(state1, state2);
+			}
 			return timestamp1 < timestamp2 ? +1 : -1;
 		}
 
@@ -79,8 +80,9 @@ public class HistoryBucket extends Bucket {
 
 		private static long getTimestamp(byte[] state) {
 			long timestamp = 0;
-			for (int j = 0; j < LONG_LENGTH; j++)
+			for (int j = 0; j < LONG_LENGTH; j++) {
 				timestamp += (state[UUID_LENGTH + j] & 0xFFL) << j * 8;
+			}
 			return timestamp;
 		}
 
@@ -91,17 +93,20 @@ public class HistoryBucket extends Bucket {
 		static byte[][] insert(byte[][] existing, byte[] toAdd) {
 			// look for the right spot where to insert the new guy
 			int index = search(existing, toAdd);
-			if (index >= 0)
+			if (index >= 0) {
 				// already there - nothing else to be done
 				return null;
+			}
 			// not found - insert
 			int insertPosition = -index - 1;
 			byte[][] newValue = new byte[existing.length + 1][];
-			if (insertPosition > 0)
+			if (insertPosition > 0) {
 				System.arraycopy(existing, 0, newValue, 0, insertPosition);
+			}
 			newValue[insertPosition] = toAdd;
-			if (insertPosition < existing.length)
+			if (insertPosition < existing.length) {
 				System.arraycopy(existing, insertPosition, newValue, insertPosition + 1, existing.length - insertPosition);
+			}
 			return newValue;
 		}
 
@@ -119,10 +124,11 @@ public class HistoryBucket extends Bucket {
 					result[added++] = base[basePointer++];
 					// duplicate, ignore
 					additionPointer++;
-				} else if (comparison < 0)
+				} else if (comparison < 0) {
 					result[added++] = base[basePointer++];
-				else
+				} else {
 					result[added++] = additions[additionPointer++];
+				}
 			}
 			// copy the remaining states from either additions or base arrays
 			byte[][] remaining = basePointer == base.length ? additions : base;
@@ -130,9 +136,10 @@ public class HistoryBucket extends Bucket {
 			int remainingCount = remaining.length - remainingPointer;
 			System.arraycopy(remaining, remainingPointer, result, added, remainingCount);
 			added += remainingCount;
-			if (added == base.length + additions.length)
+			if (added == base.length + additions.length) {
 				// no collisions
 				return result;
+			}
 			// there were collisions, need to compact
 			byte[][] finalResult = new byte[added][];
 			System.arraycopy(result, 0, finalResult, 0, finalResult.length);
@@ -159,17 +166,19 @@ public class HistoryBucket extends Bucket {
 		 * are found, the entry is marked for removal.
 		 */
 		private void compact() {
-			if (!isDirty())
+			if (!isDirty()) {
 				return;
+			}
 			int occurrences = 0;
 			for (byte[] d : data) {
 				if (d != null) {
 					data[occurrences++] = d;
 				}
 			}
-			if (occurrences == data.length)
+			if (occurrences == data.length) {
 				// no states deleted
 				return;
+			}
 			if (occurrences == 0) {
 				// no states remaining
 				data = EMPTY_DATA;
@@ -262,8 +271,9 @@ public class HistoryBucket extends Bucket {
 			return;
 		}
 		byte[][] newValue = HistoryEntry.insert(existing, state);
-		if (newValue == null)
+		if (newValue == null) {
 			return;
+		}
 		setEntryValue(pathAsString, newValue);
 	}
 
@@ -287,8 +297,9 @@ public class HistoryBucket extends Bucket {
 	public HistoryEntry getEntry(IPath path) {
 		String pathAsString = path.toString();
 		byte[][] existing = (byte[][]) getEntryValue(pathAsString);
-		if (existing == null)
+		if (existing == null) {
 			return null;
+		}
 		return new HistoryEntry(path, existing);
 	}
 
@@ -311,8 +322,9 @@ public class HistoryBucket extends Bucket {
 	protected Object readEntryValue(DataInputStream source) throws IOException {
 		int length = source.readUnsignedShort();
 		byte[][] uuids = new byte[length][HistoryEntry.DATA_LENGTH];
-		for (byte[] uuid : uuids)
+		for (byte[] uuid : uuids) {
 			source.read(uuid);
+		}
 		return uuids;
 	}
 
@@ -320,7 +332,8 @@ public class HistoryBucket extends Bucket {
 	protected void writeEntryValue(DataOutputStream destination, Object entryValue) throws IOException {
 		byte[][] uuids = (byte[][]) entryValue;
 		destination.writeShort(uuids.length);
-		for (byte[] uuid : uuids)
+		for (byte[] uuid : uuids) {
 			destination.write(uuid);
+		}
 	}
 }

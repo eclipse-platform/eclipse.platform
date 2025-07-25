@@ -36,12 +36,14 @@ public class FilterDescriptor implements IFilterMatcherDescriptor {
 		name = element.getAttribute("name"); //$NON-NLS-1$
 		description = element.getAttribute("description"); //$NON-NLS-1$
 		argumentType = element.getAttribute("argumentType"); //$NON-NLS-1$
-		if (argumentType == null)
+		if (argumentType == null) {
 			argumentType = IFilterMatcherDescriptor.ARGUMENT_TYPE_NONE;
+		}
 		this.element = element;
 		String ordering = element.getAttribute("ordering"); //$NON-NLS-1$
-		if (ordering != null)
+		if (ordering != null) {
 			isFirst = ordering.equals("first"); //$NON-NLS-1$
+		}
 	}
 
 	@Override

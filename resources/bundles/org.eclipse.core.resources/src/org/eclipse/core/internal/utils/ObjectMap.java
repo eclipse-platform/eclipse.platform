@@ -44,8 +44,9 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	 * @param initialCapacity The initial number of elements that will fit in the map.
 	 */
 	public ObjectMap(int initialCapacity) {
-		if (initialCapacity > 0)
+		if (initialCapacity > 0) {
 			elements = new Object[Math.max(initialCapacity * 2, 0)];
+		}
 	}
 
 	/**
@@ -80,11 +81,14 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	 */
 	@Override
 	public boolean containsKey(Object key) {
-		if (elements == null || count == 0)
+		if (elements == null || count == 0) {
 			return false;
-		for (int i = 0; i < elements.length; i = i + 2)
-			if (elements[i] != null && elements[i].equals(key))
+		}
+		for (int i = 0; i < elements.length; i = i + 2) {
+			if (elements[i] != null && elements[i].equals(key)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
@@ -93,11 +97,14 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	 */
 	@Override
 	public boolean containsValue(Object value) {
-		if (elements == null || count == 0)
+		if (elements == null || count == 0) {
 			return false;
-		for (int i = 1; i < elements.length; i = i + 2)
-			if (elements[i] != null && elements[i].equals(value))
+		}
+		for (int i = 1; i < elements.length; i = i + 2) {
+			if (elements[i] != null && elements[i].equals(value)) {
 				return true;
+			}
+		}
 		return false;
 	}
 
@@ -117,21 +124,25 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	 */
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Map))
+		if (!(o instanceof Map)) {
 			return false;
+		}
 		Map<Object, Object> other = (Map<Object, Object>) o;
 		//must be same size
-		if (count != other.size())
+		if (count != other.size()) {
 			return false;
+		}
 
 		//keysets must be equal
-		if (!keySet().equals(other.keySet()))
+		if (!keySet().equals(other.keySet())) {
 			return false;
+		}
 
 		//values for each key must be equal
 		for (int i = 0; i < elements.length; i = i + 2) {
-			if (elements[i] != null && (!elements[i + 1].equals(other.get(elements[i]))))
+			if (elements[i] != null && (!elements[i + 1].equals(other.get(elements[i])))) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -141,11 +152,14 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	 */
 	@Override
 	public V get(Object key) {
-		if (elements == null || count == 0)
+		if (elements == null || count == 0) {
 			return null;
-		for (int i = 0; i < elements.length; i = i + 2)
-			if (elements[i] != null && elements[i].equals(key))
+		}
+		for (int i = 0; i < elements.length; i = i + 2) {
+			if (elements[i] != null && elements[i].equals(key)) {
 				return (V) elements[i + 1];
+			}
+		}
 		return null;
 	}
 
@@ -203,14 +217,17 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	 */
 	@Override
 	public V put(K key, V value) {
-		if (key == null)
+		if (key == null) {
 			throw new NullPointerException();
-		if (value == null)
+		}
+		if (value == null) {
 			return remove(key);
+		}
 
 		// handle the case where we don't have any attributes yet
-		if (elements == null)
+		if (elements == null) {
 			elements = new Object[DEFAULT_SIZE];
+		}
 		if (count == 0) {
 			elements[0] = key;
 			elements[1] = value;
@@ -234,13 +251,15 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 		}
 		// this will put the emptyIndex greater than the size but
 		// that's ok because we will grow first.
-		if (emptyIndex == -1)
+		if (emptyIndex == -1) {
 			emptyIndex = count * 2;
+		}
 
 		// otherwise add it to the list of elements.
 		// grow if necessary
-		if (elements.length <= (count * 2))
+		if (elements.length <= (count * 2)) {
 			grow();
+		}
 		elements[emptyIndex] = key;
 		elements[emptyIndex + 1] = value;
 		count++;
@@ -252,8 +271,9 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	 */
 	@Override
 	public void putAll(Map<? extends K, ? extends V> map) {
-		for (Map.Entry<? extends K, ? extends V> e : map.entrySet())
+		for (Map.Entry<? extends K, ? extends V> e : map.entrySet()) {
 			put(e.getKey(), e.getValue());
+		}
 	}
 
 	/**
@@ -261,8 +281,9 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	 */
 	@Override
 	public V remove(Object key) {
-		if (elements == null || count == 0)
+		if (elements == null || count == 0) {
 			return null;
+		}
 		for (int i = 0; i < elements.length; i = i + 2) {
 			if (elements[i] != null && elements[i].equals(key)) {
 				elements[i] = null;
@@ -290,14 +311,17 @@ public class ObjectMap<K, V> implements Map<K, V>, IStringPoolParticipant {
 	public void shareStrings(StringPool set) {
 		//copy elements for thread safety
 		Object[] array = elements;
-		if (array == null)
+		if (array == null) {
 			return;
+		}
 		for (int i = 0; i < array.length; i++) {
 			Object o = array[i];
-			if (o instanceof String)
+			if (o instanceof String) {
 				array[i] = set.add((String) o);
-			if (o instanceof IStringPoolParticipant)
+			}
+			if (o instanceof IStringPoolParticipant) {
 				((IStringPoolParticipant) o).shareStrings(set);
+			}
 		}
 	}
 

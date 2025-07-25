@@ -96,18 +96,24 @@ public class ResourceChangeListenerList {
 	}
 
 	private void adding(int mask) {
-		if ((mask & 1) != 0)
+		if ((mask & 1) != 0) {
 			count1++;
-		if ((mask & 2) != 0)
+		}
+		if ((mask & 2) != 0) {
 			count2++;
-		if ((mask & 4) != 0)
+		}
+		if ((mask & 4) != 0) {
 			count4++;
-		if ((mask & 8) != 0)
+		}
+		if ((mask & 8) != 0) {
 			count8++;
-		if ((mask & 16) != 0)
+		}
+		if ((mask & 16) != 0) {
 			count16++;
-		if ((mask & 32) != 0)
+		}
+		if ((mask & 32) != 0) {
 			count32++;
+		}
 	}
 
 	/**
@@ -167,18 +173,24 @@ public class ResourceChangeListenerList {
 	}
 
 	private void removing(int mask) {
-		if ((mask & 1) != 0)
+		if ((mask & 1) != 0) {
 			count1--;
-		if ((mask & 2) != 0)
+		}
+		if ((mask & 2) != 0) {
 			count2--;
-		if ((mask & 4) != 0)
+		}
+		if ((mask & 4) != 0) {
 			count4--;
-		if ((mask & 8) != 0)
+		}
+		if ((mask & 8) != 0) {
 			count8--;
-		if ((mask & 16) != 0)
+		}
+		if ((mask & 16) != 0) {
 			count16--;
-		if ((mask & 32) != 0)
+		}
+		if ((mask & 32) != 0) {
 			count32--;
+		}
 	}
 
 	@Override

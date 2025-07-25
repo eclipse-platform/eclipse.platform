@@ -88,8 +88,9 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 
 	@Override
 	public IContainer[] findContainersForLocationURI(URI location, int memberFlags) {
-		if (!location.isAbsolute())
+		if (!location.isAbsolute()) {
 			throw new IllegalArgumentException();
+		}
 		return (IContainer[]) getLocalManager().allResourcesFor(location, false, memberFlags);
 	}
 
@@ -106,8 +107,9 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 
 	@Override
 	public IFile[] findFilesForLocationURI(URI location, int memberFlags) {
-		if (!location.isAbsolute())
+		if (!location.isAbsolute()) {
 			throw new IllegalArgumentException();
+		}
 		return (IFile[]) getLocalManager().allResourcesFor(location, true, memberFlags);
 	}
 
@@ -118,8 +120,9 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 
 	@Override
 	public String getDefaultCharset(boolean checkImplicit) {
-		if (checkImplicit)
+		if (checkImplicit) {
 			return ResourcesPlugin.getEncoding();
+		}
 		String enc = ResourcesPlugin.getPlugin().getPluginPreferences().getString(ResourcesPlugin.PREF_ENCODING);
 		return enc == null || enc.length() == 0 ? null : enc;
 	}
@@ -190,9 +193,10 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 		} catch (ArrayStoreException ex) {
 			// Shouldn't happen since only projects should be children of the workspace root
 			for (IResource root2 : roots) {
-				if (root2.getType() != IResource.PROJECT)
+				if (root2.getType() != IResource.PROJECT) {
 					Policy.log(IStatus.ERROR, NLS.bind("{0} is an invalid child of the workspace root.", //$NON-NLS-1$
 							root2), null);
+				}
 
 			}
 			throw ex;
@@ -208,15 +212,18 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 	@Override
 	public void internalSetLocal(boolean flag, int depth) throws CoreException {
 		// do nothing for the root, but call for its children
-		if (depth == IResource.DEPTH_ZERO)
+		if (depth == IResource.DEPTH_ZERO) {
 			return;
-		if (depth == IResource.DEPTH_ONE)
+		}
+		if (depth == IResource.DEPTH_ONE) {
 			depth = IResource.DEPTH_ZERO;
+		}
 		// get the children via the workspace since we know that this
 		// resource exists (it is local).
 		IResource[] children = getChildren(IResource.NONE);
-		for (IResource element : children)
+		for (IResource element : children) {
 			((Resource) element).internalSetLocal(flag, depth);
+		}
 	}
 
 	@Override
@@ -255,10 +262,12 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 	@Override
 	public boolean isLocal(int flags, int depth) {
 		// don't check the flags....workspace root is always local
-		if (depth == DEPTH_ZERO)
+		if (depth == DEPTH_ZERO) {
 			return true;
-		if (depth == DEPTH_ONE)
+		}
+		if (depth == DEPTH_ONE) {
 			depth = DEPTH_ZERO;
+		}
 		// get the children via the workspace since we know that this
 		// resource exists (it is local).
 		IResource[] children = getChildren(IResource.NONE);
@@ -280,10 +289,11 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 	public void setDefaultCharset(String charset) {
 		// directly change the Resource plugin's preference for encoding
 		Preferences resourcesPreferences = ResourcesPlugin.getPlugin().getPluginPreferences();
-		if (charset != null)
+		if (charset != null) {
 			resourcesPreferences.setValue(ResourcesPlugin.PREF_ENCODING, charset);
-		else
+		} else {
 			resourcesPreferences.setToDefault(ResourcesPlugin.PREF_ENCODING);
+		}
 	}
 
 	@Override
@@ -293,8 +303,9 @@ public class WorkspaceRoot extends Container implements IWorkspaceRoot {
 
 	@Override
 	public long setLocalTimeStamp(long value) {
-		if (value < 0)
+		if (value < 0) {
 			throw new IllegalArgumentException("Illegal time stamp: " + value); //$NON-NLS-1$
+		}
 		//can't set local time for root
 		return value;
 	}

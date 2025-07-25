@@ -113,8 +113,9 @@ abstract class AbstractResourceSnapshot<T extends IResource> implements IResourc
 		}
 		if (markerDescriptions != null) {
 			for (MarkerSnapshot markerDescription : markerDescriptions) {
-				if (markerDescription.resource.exists())
+				if (markerDescription.resource.exists()) {
 					markerDescription.createMarker();
+				}
 			}
 		}
 	}
