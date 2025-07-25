@@ -72,18 +72,23 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 		final boolean includeTeamPrivate = (memberFlags & IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS) != 0;
 		final boolean includeHidden = (memberFlags & IContainer.INCLUDE_HIDDEN) != 0;
 		int mask = includePhantoms ? ALL_WITH_PHANTOMS : REMOVED | ADDED | CHANGED;
-		if ((getKind() & mask) == 0)
+		if ((getKind() & mask) == 0) {
 			return;
-		if (!visitor.visit(this))
+		}
+		if (!visitor.visit(this)) {
 			return;
+		}
 		for (ResourceDelta childDelta : children) {
 			// quietly exclude team-private, hidden and phantom members unless explicitly included
-			if (!includeTeamPrivate && childDelta.isTeamPrivate())
+			if (!includeTeamPrivate && childDelta.isTeamPrivate()) {
 				continue;
-			if (!includePhantoms && childDelta.isPhantom())
+			}
+			if (!includePhantoms && childDelta.isPhantom()) {
 				continue;
-			if (!includeHidden && childDelta.isHidden())
+			}
+			if (!includeHidden && childDelta.isHidden()) {
 				continue;
+			}
 			childDelta.accept(visitor, memberFlags);
 		}
 	}
@@ -92,8 +97,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	 * Check for marker deltas, and set the appropriate change flag if there are any.
 	 */
 	protected void checkForMarkerDeltas() {
-		if (deltaInfo.getMarkerDeltas() == null)
+		if (deltaInfo.getMarkerDeltas() == null) {
 			return;
+		}
 		int kind = getKind();
 		// Only need to check for added and removed, or for changes on the workspace.
 		// For changed, the bit is set in the comparator.
@@ -103,8 +109,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 				status |= MARKERS;
 				// If there have been marker changes, then ensure kind is CHANGED (if not ADDED or REMOVED).
 				// See 1FV9K20: ITPUI:WINNT - severe - task list - add or delete not working
-				if (kind == 0)
+				if (kind == 0) {
 					status |= CHANGED;
+				}
 			}
 		}
 	}
@@ -112,8 +119,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	@Override
 	public IResourceDelta findMember(IPath memberPath) {
 		int segmentCount = memberPath.segmentCount();
-		if (segmentCount == 0)
+		if (segmentCount == 0) {
 			return this;
+		}
 
 		//iterate over the path and find matching child delta
 		ResourceDelta current = this;
@@ -153,11 +161,13 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 						status = (status & KIND_MASK) | (deltaInfo.getComparator().compare(actualOldInfo, newInfo) & ~KIND_MASK);
 						status |= MOVED_FROM;
 						//our API states that MOVED_FROM must be in conjunction with ADDED | (CHANGED + REPLACED)
-						if (kind == CHANGED)
+						if (kind == CHANGED) {
 							status = status | REPLACED | CONTENT;
+						}
 						//check for gender change
-						if (oldInfo != null && newInfo != null && oldInfo.getType() != newInfo.getType())
+						if (oldInfo != null && newInfo != null && oldInfo.getType() != newInfo.getType()) {
 							status |= TYPE;
+						}
 					}
 			}
 			switch (kind) {
@@ -167,8 +177,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 					if (newPath != null && !newPath.equals(path)) {
 						status |= MOVED_TO;
 						//our API states that MOVED_TO must be in conjunction with REMOVED | (CHANGED + REPLACED)
-						if (kind == CHANGED)
+						if (kind == CHANGED) {
 							status = status | REPLACED | CONTENT;
+						}
 					}
 			}
 		}
@@ -178,8 +189,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 		checkForMarkerDeltas();
 
 		//recurse on children
-		for (ResourceDelta element : children)
+		for (ResourceDelta element : children) {
 			element.fixMovesAndMarkers(oldTree);
+		}
 	}
 
 	@Override
@@ -196,26 +208,32 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	public IResourceDelta[] getAffectedChildren(int kindMask, int memberFlags) {
 		int numChildren = children.length;
 		//if there are no children, they all match
-		if (numChildren == 0)
+		if (numChildren == 0) {
 			return children;
+		}
 		boolean includePhantoms = (memberFlags & IContainer.INCLUDE_PHANTOMS) != 0;
 		boolean includeTeamPrivate = (memberFlags & IContainer.INCLUDE_TEAM_PRIVATE_MEMBERS) != 0;
 		boolean includeHidden = (memberFlags & IContainer.INCLUDE_HIDDEN) != 0;
 		// reduce INCLUDE_PHANTOMS member flag to kind mask
-		if (includePhantoms)
+		if (includePhantoms) {
 			kindMask |= ADDED_PHANTOM | REMOVED_PHANTOM;
+		}
 
 		//first count the number of matches so we can allocate the exact array size
 		int matching = 0;
 		for (int i = 0; i < numChildren; i++) {
-			if ((children[i].getKind() & kindMask) == 0)
+			if ((children[i].getKind() & kindMask) == 0) {
 				continue;// child has wrong kind
-			if (!includePhantoms && children[i].isPhantom())
+			}
+			if (!includePhantoms && children[i].isPhantom()) {
 				continue;
-			if (!includeTeamPrivate && children[i].isTeamPrivate())
+			}
+			if (!includeTeamPrivate && children[i].isTeamPrivate()) {
 				continue; // child has is a team-private member which are not included
-			if (!includeHidden && children[i].isHidden())
+			}
+			if (!includeHidden && children[i].isHidden()) {
 				continue;
+			}
 			matching++;
 		}
 		//use arraycopy if all match
@@ -228,14 +246,18 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 		IResourceDelta[] result = new IResourceDelta[matching];
 		int nextPosition = 0;
 		for (int i = 0; i < numChildren; i++) {
-			if ((children[i].getKind() & kindMask) == 0)
+			if ((children[i].getKind() & kindMask) == 0) {
 				continue; // child has wrong kind
-			if (!includePhantoms && children[i].isPhantom())
+			}
+			if (!includePhantoms && children[i].isPhantom()) {
 				continue;
-			if (!includeTeamPrivate && children[i].isTeamPrivate())
+			}
+			if (!includeTeamPrivate && children[i].isTeamPrivate()) {
 				continue; // child has is a team-private member which are not included
-			if (!includeHidden && children[i].isHidden())
+			}
+			if (!includeHidden && children[i].isHidden()) {
 				continue;
+			}
 			result[nextPosition++] = children[i];
 		}
 		return result;
@@ -263,17 +285,21 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	@Override
 	public IMarkerDelta[] getMarkerDeltas() {
 		Map<IPath, MarkerSet> markerDeltas = deltaInfo.getMarkerDeltas();
-		if (markerDeltas == null)
+		if (markerDeltas == null) {
 			return EMPTY_MARKER_DELTAS;
-		if (path == null)
+		}
+		if (path == null) {
 			path = IPath.ROOT;
+		}
 		MarkerSet changes = markerDeltas.get(path);
-		if (changes == null)
+		if (changes == null) {
 			return EMPTY_MARKER_DELTAS;
+		}
 		IMarkerSetElement[] elements = changes.elements();
 		IMarkerDelta[] result = new IMarkerDelta[elements.length];
-		for (int i = 0; i < elements.length; i++)
+		for (int i = 0; i < elements.length; i++) {
 			result[i] = (IMarkerDelta) elements[i];
+		}
 		return result;
 	}
 
@@ -297,29 +323,34 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	public IPath getProjectRelativePath() {
 		IPath full = getFullPath();
 		int count = full.segmentCount();
-		if (count < 0)
+		if (count < 0) {
 			return null;
-		if (count <= 1) // 0 or 1
+		}
+		if (count <= 1) { // 0 or 1
 			return IPath.EMPTY;
+		}
 		return full.removeFirstSegments(1);
 	}
 
 	@Override
 	public IResource getResource() {
 		// return a cached copy if we have one
-		if (cachedResource != null)
+		if (cachedResource != null) {
 			return cachedResource;
+		}
 
 		// if this is a delta for the root then return the root resource
-		if (path.segmentCount() == 0)
+		if (path.segmentCount() == 0) {
 			return deltaInfo.getWorkspace().getRoot();
+		}
 		// if the delta is a remove then we have to look for the old info to find the type
 		// of resource to create.
 		ResourceInfo info = null;
-		if ((getKind() & (REMOVED | REMOVED_PHANTOM)) != 0)
+		if ((getKind() & (REMOVED | REMOVED_PHANTOM)) != 0) {
 			info = oldInfo;
-		else
+		} else {
 			info = newInfo;
+		}
 		Assert.isNotNull(info, "Do not have resource info for resource in delta: " + path); //$NON-NLS-1$
 		cachedResource = deltaInfo.getWorkspace().newResource(path, info.getType());
 		return cachedResource;
@@ -331,8 +362,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	 */
 	protected boolean isPhantom() {
 		//use old info for removals, and new info for added or changed
-		if ((status & (REMOVED | REMOVED_PHANTOM)) != 0)
+		if ((status & (REMOVED | REMOVED_PHANTOM)) != 0) {
 			return ResourceInfo.isSet(oldInfo.getFlags(), ICoreConstants.M_PHANTOM);
+		}
 		return ResourceInfo.isSet(newInfo.getFlags(), ICoreConstants.M_PHANTOM);
 	}
 
@@ -342,8 +374,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	 */
 	protected boolean isTeamPrivate() {
 		//use old info for removals, and new info for added or changed
-		if ((status & (REMOVED | REMOVED_PHANTOM)) != 0)
+		if ((status & (REMOVED | REMOVED_PHANTOM)) != 0) {
 			return ResourceInfo.isSet(oldInfo.getFlags(), ICoreConstants.M_TEAM_PRIVATE_MEMBER);
+		}
 		return ResourceInfo.isSet(newInfo.getFlags(), ICoreConstants.M_TEAM_PRIVATE_MEMBER);
 	}
 
@@ -353,8 +386,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	 */
 	protected boolean isHidden() {
 		//use old info for removals, and new info for added or changed
-		if ((status & (REMOVED | REMOVED_PHANTOM)) != 0)
+		if ((status & (REMOVED | REMOVED_PHANTOM)) != 0) {
 			return ResourceInfo.isSet(oldInfo.getFlags(), ICoreConstants.M_HIDDEN);
+		}
 		return ResourceInfo.isSet(newInfo.getFlags(), ICoreConstants.M_HIDDEN);
 	}
 
@@ -391,8 +425,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 	public String toDeepDebugString() {
 		final StringBuilder buffer = new StringBuilder("\n"); //$NON-NLS-1$
 		writeDebugString(buffer);
-		for (ResourceDelta element : children)
+		for (ResourceDelta element : children) {
 			buffer.append(element.toDeepDebugString());
+		}
 		return buffer.toString();
 	}
 
@@ -447,89 +482,104 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 		int changeFlags = getFlags();
 		boolean prev = false;
 		if ((changeFlags & CONTENT) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("CONTENT"); //$NON-NLS-1$
 			prev = true;
 		}
 		if ((changeFlags & LOCAL_CHANGED) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("LOCAL_CHANGED"); //$NON-NLS-1$
 			prev = true;
 		}
 		if ((changeFlags & MOVED_FROM) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("MOVED_FROM(" + getMovedFromPath() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 			prev = true;
 		}
 		if ((changeFlags & MOVED_TO) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("MOVED_TO(" + getMovedToPath() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 			prev = true;
 		}
 		if ((changeFlags & OPEN) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("OPEN"); //$NON-NLS-1$
 			prev = true;
 		}
 		if ((changeFlags & TYPE) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("TYPE"); //$NON-NLS-1$
 			prev = true;
 		}
 		if ((changeFlags & SYNC) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("SYNC"); //$NON-NLS-1$
 			prev = true;
 		}
 		if ((changeFlags & MARKERS) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("MARKERS"); //$NON-NLS-1$
 			writeMarkerDebugString(buffer);
 			prev = true;
 		}
 		if ((changeFlags & REPLACED) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("REPLACED"); //$NON-NLS-1$
 			prev = true;
 		}
 		if ((changeFlags & DESCRIPTION) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("DESCRIPTION"); //$NON-NLS-1$
 			prev = true;
 		}
 		if ((changeFlags & ENCODING) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("ENCODING"); //$NON-NLS-1$
 			prev = true;
 		}
 		if ((changeFlags & DERIVED_CHANGED) != 0) {
-			if (prev)
+			if (prev) {
 				buffer.append(" | "); //$NON-NLS-1$
+			}
 			buffer.append("DERIVED_CHANGED"); //$NON-NLS-1$
 			prev = true;
 		}
 		buffer.append("}"); //$NON-NLS-1$
-		if (isTeamPrivate())
+		if (isTeamPrivate()) {
 			buffer.append(" (team private)"); //$NON-NLS-1$
-		if (isHidden())
+		}
+		if (isHidden()) {
 			buffer.append(" (hidden)"); //$NON-NLS-1$
+		}
 	}
 
 	public void writeMarkerDebugString(StringBuilder buffer) {
 		Map<IPath, MarkerSet> markerDeltas = deltaInfo.getMarkerDeltas();
-		if (markerDeltas == null || markerDeltas.isEmpty())
+		if (markerDeltas == null || markerDeltas.isEmpty()) {
 			return;
+		}
 		buffer.append('[');
 		for (Entry<IPath, MarkerSet> entry : markerDeltas.entrySet()) {
 			IPath key = entry.getKey();
@@ -539,8 +589,9 @@ public class ResourceDelta extends PlatformObject implements IResourceDelta {
 				boolean addComma = false;
 				for (IMarkerSetElement delta2 : deltas) {
 					IMarkerDelta delta = (IMarkerDelta) delta2;
-					if (addComma)
+					if (addComma) {
 						buffer.append(',');
+					}
 					switch (delta.getKind()) {
 						case IResourceDelta.ADDED :
 							buffer.append('+');

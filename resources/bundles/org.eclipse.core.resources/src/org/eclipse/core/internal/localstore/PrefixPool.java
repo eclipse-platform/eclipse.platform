@@ -59,8 +59,9 @@ public class PrefixPool {
 	 *     be greater than 0.
 	 */
 	public PrefixPool(int initialCapacity) {
-		if (initialCapacity <= 0)
+		if (initialCapacity <= 0) {
 			throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity); //$NON-NLS-1$
+		}
 		pool = new String[initialCapacity];
 		size = 0;
 	}

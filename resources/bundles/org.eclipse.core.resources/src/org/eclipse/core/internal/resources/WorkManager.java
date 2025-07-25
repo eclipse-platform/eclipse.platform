@@ -105,8 +105,9 @@ public class WorkManager implements IManager {
 	 */
 	public int beginUnprotected() {
 		int depth = lock.getDepth();
-		for (int i = 0; i < depth; i++)
+		for (int i = 0; i < depth; i++) {
 			lock.release();
+		}
 		return depth;
 	}
 
@@ -149,8 +150,9 @@ public class WorkManager implements IManager {
 			//clear the failure flag for this thread
 			checkInFailed.remove();
 			//must still end the rule even in the case of failure
-			if (!workspace.isTreeLocked())
+			if (!workspace.isTreeLocked()) {
 				jobManager.endRule(rule);
+			}
 			return true;
 		}
 		return false;
@@ -163,8 +165,9 @@ public class WorkManager implements IManager {
 		decrementPreparedOperations();
 		rebalanceNestedOperations();
 		//reset state if this is the end of a top level operation
-		if (preparedOperations == 0)
+		if (preparedOperations == 0) {
 			hasBuildChanges = false;
+		}
 		//don't let cancelation of this operation affect other operations
 		operationCanceled = false;
 		try {
@@ -190,8 +193,9 @@ public class WorkManager implements IManager {
 	 * @see #beginUnprotected()
 	 */
 	public void endUnprotected(int depth) {
-		for (int i = 0; i < depth; i++)
+		for (int i = 0; i < depth; i++) {
 			lock.acquire();
+		}
 	}
 
 	/**
@@ -305,8 +309,9 @@ public class WorkManager implements IManager {
 	 */
 	boolean shouldBuild() {
 		if (hasBuildChanges) {
-			if (operationCanceled)
+			if (operationCanceled) {
 				return Policy.buildOnCancel;
+			}
 			return true;
 		}
 		return false;

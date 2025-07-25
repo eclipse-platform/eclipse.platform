@@ -63,20 +63,23 @@ public class ProjectContentTypes {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (!(obj instanceof IScopeContext))
+			}
+			if (!(obj instanceof IScopeContext other)) {
 				return false;
-			IScopeContext other = (IScopeContext) obj;
-			if (!getName().equals(other.getName()))
+			}
+			if (!getName().equals(other.getName())) {
 				return false;
+			}
 			IPath location = getLocation();
 			return location == null ? other.getLocation() == null : location.equals(other.getLocation());
 		}
 
 		private IScopeContext getDelegate() {
-			if (!usesContentTypePreferences(project.getName()))
+			if (!usesContentTypePreferences(project.getName())) {
 				return InstanceScope.INSTANCE;
+			}
 			return projectScope;
 		}
 
@@ -119,14 +122,17 @@ public class ProjectContentTypes {
 			Preferences node = PROJECT_SCOPE;
 			//TODO once bug 90500 is fixed, should be simpler
 			// for now, take the long way
-			if (!node.nodeExists(projectName))
+			if (!node.nodeExists(projectName)) {
 				return false;
+			}
 			node = node.node(projectName);
-			if (!node.nodeExists(Platform.PI_RUNTIME))
+			if (!node.nodeExists(Platform.PI_RUNTIME)) {
 				return false;
+			}
 			node = node.node(Platform.PI_RUNTIME);
-			if (!node.nodeExists(CONTENT_TYPE_PREF_NODE))
+			if (!node.nodeExists(CONTENT_TYPE_PREF_NODE)) {
 				return false;
+			}
 			node = node.node(CONTENT_TYPE_PREF_NODE);
 			return node.getBoolean(PREF_LOCAL_CONTENT_TYPE_SETTINGS, false);
 		} catch (BackingStoreException | IllegalStateException | IllegalArgumentException e) {
@@ -144,14 +150,16 @@ public class ProjectContentTypes {
 	 */
 	private Set<String> collectAssociatedContentTypes(Project project) {
 		String[] enabledNatures = workspace.getNatureManager().getEnabledNatures(project);
-		if (enabledNatures.length == 0)
+		if (enabledNatures.length == 0) {
 			return Collections.EMPTY_SET;
+		}
 		Set<String> related = new HashSet<>(enabledNatures.length);
 		for (String enabledNature : enabledNatures) {
 			ProjectNatureDescriptor descriptor = (ProjectNatureDescriptor) workspace.getNatureDescriptor(enabledNature);
-			if (descriptor == null)
+			if (descriptor == null) {
 				// no descriptor found for the nature, skip it
 				continue;
+			}
 			String[] natureContentTypes = descriptor.getContentTypeIds();
 			related.addAll(Arrays.asList(natureContentTypes)); // collect associate content types
 		}
@@ -160,8 +168,9 @@ public class ProjectContentTypes {
 
 	public void contentTypePreferencesChanged(IProject project) {
 		final ProjectInfo info = (ProjectInfo) ((Project) project).getResourceInfo(false, false);
-		if (info != null)
+		if (info != null) {
 			info.setMatcher(null);
+		}
 	}
 
 	/**
@@ -174,9 +183,10 @@ public class ProjectContentTypes {
 
 	private Set<String> getAssociatedContentTypes(Project project) {
 		final ResourceInfo info = project.getResourceInfo(false, false);
-		if (info == null)
+		if (info == null) {
 			// the project has been deleted
 			return null;
+		}
 		final String projectName = project.getName();
 		synchronized (contentTypesPerProject) {
 			Entry<Set<String>> entry = contentTypesPerProject.getEntry(projectName);
@@ -195,11 +205,13 @@ public class ProjectContentTypes {
 	public IContentTypeMatcher getMatcherFor(Project project) throws CoreException {
 		ProjectInfo info = (ProjectInfo) project.getResourceInfo(false, false);
 		//fail if project has been deleted concurrently
-		if (info == null)
+		if (info == null) {
 			project.checkAccessible(project.getFlags(null));
+		}
 		IContentTypeMatcher matcher = info.getMatcher();
-		if (matcher != null)
+		if (matcher != null) {
 			return matcher;
+		}
 		matcher = createMatcher(project);
 		info.setMatcher(matcher);
 		return matcher;
@@ -218,27 +230,31 @@ public class ProjectContentTypes {
 	 */
 	final IContentType[] select(Project project, IContentType[] candidates, boolean fileName, boolean content) {
 		// since no vetoing is done here, don't go further if there is nothing to sort
-		if (candidates.length < 2)
+		if (candidates.length < 2) {
 			return candidates;
+		}
 		final Set<String> associated = getAssociatedContentTypes(project);
-		if (associated == null || associated.isEmpty())
+		if (associated == null || associated.isEmpty()) {
 			// project has no content types associated
 			return candidates;
+		}
 		int associatedCount = 0;
-		for (int i = 0; i < candidates.length; i++)
+		for (int i = 0; i < candidates.length; i++) {
 			// is it an associated content type?
 			if (associated.contains(candidates[i].getId())) {
 				// need to move it to the right spot (unless all types visited so far are associated as well)
 				if (associatedCount < i) {
 					final IContentType promoted = candidates[i];
 					// move all non-associated content types before it one one position up...
-					for (int j = i; j > associatedCount; j--)
+					for (int j = i; j > associatedCount; j--) {
 						candidates[j] = candidates[j - 1];
+					}
 					// ...so there is an empty spot for the content type we are promoting
 					candidates[associatedCount] = promoted;
 				}
 				associatedCount++;
 			}
+		}
 		return candidates;
 	}
 }

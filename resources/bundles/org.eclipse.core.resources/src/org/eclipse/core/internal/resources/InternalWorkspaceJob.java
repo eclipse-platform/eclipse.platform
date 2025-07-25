@@ -45,8 +45,9 @@ public abstract class InternalWorkspaceJob extends Job {
 				workManager.operationCanceled();
 				return Status.CANCEL_STATUS;
 			} finally {
-				if (depth >= 0)
+				if (depth >= 0) {
 					workManager.endUnprotected(depth);
+				}
 				workspace.endOperation(null, false);
 			}
 		} catch (CoreException e) {

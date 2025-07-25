@@ -71,8 +71,9 @@ public class File extends Resource implements IFile {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 100);
 		try (content) {
 			Assert.isNotNull(content, "Content cannot be null."); //$NON-NLS-1$
-			if (workspace.shouldValidate)
+			if (workspace.shouldValidate) {
 				workspace.validateSave(this);
+			}
 			final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
 			SubMonitor newChild = subMonitor.newChild(1);
 			try {
@@ -251,8 +252,9 @@ public class File extends Resource implements IFile {
 
 	private void setLocal(boolean local) throws CoreException {
 		internalSetLocal(local, DEPTH_ZERO);
-		if (!local)
+		if (!local) {
 			getResourceInfo(true, true).clearModificationStamp();
+		}
 	}
 
 	@Override
@@ -265,8 +267,9 @@ public class File extends Resource implements IFile {
 		// non-existing resources default to parent's charset
 		ResourceInfo info = getResourceInfo(false, false);
 		int flags = getFlags(info);
-		if (!exists(flags, false))
+		if (!exists(flags, false)) {
 			return checkImplicit ? workspace.getCharsetManager().getCharsetFor(getFullPath().removeLastSegments(1), true) : null;
+		}
 		checkLocal(flags, DEPTH_ZERO);
 		try {
 			return internalGetCharset(checkImplicit, info);
@@ -283,11 +286,13 @@ public class File extends Resource implements IFile {
 		String charset;
 		ResourceInfo info = getResourceInfo(false, false);
 		int flags = getFlags(info);
-		if (exists(flags, true))
+		if (exists(flags, true)) {
 			// the file exists, look for user setting
-			if ((charset = workspace.getCharsetManager().getCharsetFor(getFullPath(), false)) != null)
+			if ((charset = workspace.getCharsetManager().getCharsetFor(getFullPath(), false)) != null) {
 				// if there is a file-specific user setting, use it
 				return charset;
+			}
+		}
 		// tries to obtain a description from the contents provided
 		IContentDescription description;
 		try {
@@ -298,10 +303,12 @@ public class File extends Resource implements IFile {
 			String message = NLS.bind(Messages.resources_errorContentDescription, getFullPath());
 			throw new ResourceException(IResourceStatus.FAILED_DESCRIBING_CONTENTS, getFullPath(), message, e);
 		}
-		if (description != null)
-			if ((charset = description.getCharset()) != null)
+		if (description != null) {
+			if ((charset = description.getCharset()) != null) {
 				// the description contained charset info, we are done
 				return charset;
+			}
+		}
 		// could not find out the encoding based on the contents... default to parent's
 		return workspace.getCharsetManager().getCharsetFor(getFullPath().removeLastSegments(1), true);
 	}
@@ -309,14 +316,16 @@ public class File extends Resource implements IFile {
 	private String internalGetCharset(boolean checkImplicit, ResourceInfo info) throws CoreException {
 		// if there is a file-specific user setting, use it
 		String charset = workspace.getCharsetManager().getCharsetFor(getFullPath(), false);
-		if (charset != null || !checkImplicit)
+		if (charset != null || !checkImplicit) {
 			return charset;
+		}
 		// tries to obtain a description for the file contents
 		IContentDescription description = workspace.getContentDescriptionManager().getDescriptionFor(this, info, true);
 		if (description != null) {
 			String contentCharset = description.getCharset();
-			if (contentCharset != null)
+			if (contentCharset != null) {
 				return contentCharset;
+			}
 		}
 		// could not find out the encoding based on the contents... default to parent's
 		return workspace.getCharsetManager().getCharsetFor(getFullPath().removeLastSegments(1), true);
@@ -384,8 +393,9 @@ public class File extends Resource implements IFile {
 	}
 
 	protected void internalSetContents(InputStream content, IFileInfo fileInfo, int updateFlags, boolean append, IProgressMonitor monitor) throws CoreException {
-		if (content == null)
+		if (content == null) {
 			content = new ByteArrayInputStream(new byte[0]);
+		}
 		getLocalManager().write(this, content, fileInfo, updateFlags, append, monitor);
 		updateMetadataFiles();
 		workspace.getAliasManager().updateAliases(this, getStore(), IResource.DEPTH_ZERO, monitor);
@@ -393,8 +403,9 @@ public class File extends Resource implements IFile {
 
 	protected void internalSetContents(byte[] content, IFileInfo fileInfo, int updateFlags, boolean append,
 			IProgressMonitor monitor) throws CoreException {
-		if (content == null)
+		if (content == null) {
 			content = new byte[0];
+		}
 		getLocalManager().write(this, content, fileInfo, updateFlags, append, monitor);
 		updateMetadataFiles();
 		workspace.getAliasManager().updateAliases(this, getStore(), IResource.DEPTH_ZERO, monitor);
@@ -460,8 +471,9 @@ public class File extends Resource implements IFile {
 	 */
 	@Override
 	public void refreshLocal(int depth, IProgressMonitor monitor) throws CoreException {
-		if (!getLocalManager().fastIsSynchronized(this))
+		if (!getLocalManager().fastIsSynchronized(this)) {
 			super.refreshLocal(IResource.DEPTH_ZERO, monitor);
+		}
 	}
 
 	@Override
@@ -474,8 +486,9 @@ public class File extends Resource implements IFile {
 		String message = NLS.bind(Messages.resources_settingContents, getFullPath());
 		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 100);
 		try (content) {
-			if (workspace.shouldValidate)
+			if (workspace.shouldValidate) {
 				workspace.validateSave(this);
+			}
 			final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
 			SubMonitor newChild = subMonitor.newChild(1);
 			try {
@@ -506,8 +519,9 @@ public class File extends Resource implements IFile {
 		String message = NLS.bind(Messages.resources_settingContents, getFullPath());
 		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 100);
 		try {
-			if (workspace.shouldValidate)
+			if (workspace.shouldValidate) {
 				workspace.validateSave(this);
+			}
 			final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
 			SubMonitor newChild = subMonitor.newChild(1);
 			try {
@@ -539,8 +553,9 @@ public class File extends Resource implements IFile {
 		if (path.segmentCount() == 2 && path.segment(1).equals(IProjectDescription.DESCRIPTION_FILE_NAME)) {
 			//handle concurrent project deletion
 			ResourceInfo projectInfo = ((Project) getProject()).getResourceInfo(false, false);
-			if (projectInfo != null)
+			if (projectInfo != null) {
 				getLocalManager().updateLocalSync(projectInfo, result);
+			}
 		}
 		return result;
 	}
@@ -630,13 +645,16 @@ public class File extends Resource implements IFile {
 					// reflect the average length of the first Line:
 					InputStream input = new BufferedInputStream(getContents(), 128);) {
 				int c = input.read();
-				while (c != -1 && c != '\r' && c != '\n')
+				while (c != -1 && c != '\r' && c != '\n') {
 					c = input.read();
-				if (c == '\n')
+				}
+				if (c == '\n') {
 					return "\n"; //$NON-NLS-1$
+				}
 				if (c == '\r') {
-					if (input.read() == '\n')
+					if (input.read() == '\n') {
 						return "\r\n"; //$NON-NLS-1$
+					}
 					return "\r"; //$NON-NLS-1$
 				}
 			} catch (CoreException core) {

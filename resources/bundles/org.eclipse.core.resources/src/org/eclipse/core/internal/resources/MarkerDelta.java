@@ -44,24 +44,27 @@ public class MarkerDelta implements IMarkerDelta, IMarkerSetElement {
 	@Override
 	public int getAttribute(String attributeName, int defaultValue) {
 		Object value = info.getAttribute(attributeName);
-		if (value instanceof Integer)
+		if (value instanceof Integer) {
 			return ((Integer) value).intValue();
+		}
 		return defaultValue;
 	}
 
 	@Override
 	public String getAttribute(String attributeName, String defaultValue) {
 		Object value = info.getAttribute(attributeName);
-		if (value instanceof String)
+		if (value instanceof String) {
 			return (String) value;
+		}
 		return defaultValue;
 	}
 
 	@Override
 	public boolean getAttribute(String attributeName, boolean defaultValue) {
 		Object value = info.getAttribute(attributeName);
-		if (value instanceof Boolean)
+		if (value instanceof Boolean) {
 			return ((Boolean) value).booleanValue();
+		}
 		return defaultValue;
 	}
 
@@ -110,19 +113,22 @@ public class MarkerDelta implements IMarkerDelta, IMarkerSetElement {
 	 * to store the result so we don't have to build a new map to return.
 	 */
 	public static Map<IPath, MarkerSet> merge(Map<IPath, MarkerSet> oldChanges, Map<IPath, MarkerSet> newChanges) {
-		if (oldChanges == null)
+		if (oldChanges == null) {
 			//don't worry about copying since the new changes are no longer used
 			return newChanges;
-		if (newChanges == null)
+		}
+		if (newChanges == null) {
 			return oldChanges;
+		}
 		for (Map.Entry<IPath, MarkerSet> newEntry : newChanges.entrySet()) {
 			IPath key = newEntry.getKey();
 			MarkerSet oldSet = oldChanges.get(key);
 			MarkerSet newSet = newEntry.getValue();
-			if (oldSet == null)
+			if (oldSet == null) {
 				oldChanges.put(key, newSet);
-			else
+			} else {
 				merge(oldSet, newSet.elements());
+			}
 		}
 		return oldChanges;
 	}
@@ -146,12 +152,14 @@ public class MarkerDelta implements IMarkerDelta, IMarkerSetElement {
 	protected static MarkerSet merge(MarkerSet oldChanges, IMarkerSetElement[] newChanges) {
 		if (oldChanges == null) {
 			MarkerSet result = new MarkerSet(newChanges.length);
-			for (IMarkerSetElement newChange : newChanges)
+			for (IMarkerSetElement newChange : newChanges) {
 				result.add(newChange);
+			}
 			return result;
 		}
-		if (newChanges == null)
+		if (newChanges == null) {
 			return oldChanges;
+		}
 
 		for (IMarkerSetElement newChange : newChanges) {
 			MarkerDelta newDelta = (MarkerDelta) newChange;

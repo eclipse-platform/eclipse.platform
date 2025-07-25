@@ -51,8 +51,9 @@ public class ResourceTraversal {
 	 * that are passed to the <code>IResource#accept</code> method.
 	 */
 	public ResourceTraversal(IResource[] resources, int depth, int flags) {
-		if (resources == null)
+		if (resources == null) {
 			throw new NullPointerException();
+		}
 		this.resources = resources;
 		this.depth = depth;
 		this.flags = flags;
@@ -68,15 +69,18 @@ public class ResourceTraversal {
 	 * </ul>
 	 */
 	public void accept(IResourceVisitor visitor) throws CoreException {
-		for (IResource resource : resources)
+		for (IResource resource : resources) {
 			try {
-				if (resource.exists())
+				if (resource.exists()) {
 					resource.accept(visitor, depth, flags);
+				}
 			} catch (CoreException e) {
 				//ignore failure in the case of concurrent deletion
-				if (e.getStatus().getCode() != IResourceStatus.RESOURCE_NOT_FOUND)
+				if (e.getStatus().getCode() != IResourceStatus.RESOURCE_NOT_FOUND) {
 					throw e;
+				}
 			}
+		}
 	}
 
 	/**
@@ -98,14 +102,18 @@ public class ResourceTraversal {
 	}
 
 	private boolean contains(IResource resource, IResource child) {
-		if (resource.equals(child))
+		if (resource.equals(child)) {
 			return true;
-		if (depth == IResource.DEPTH_ZERO)
+		}
+		if (depth == IResource.DEPTH_ZERO) {
 			return false;
-		if (child.getParent().equals(resource))
+		}
+		if (child.getParent().equals(resource)) {
 			return true;
-		if (depth == IResource.DEPTH_INFINITE)
+		}
+		if (depth == IResource.DEPTH_INFINITE) {
 			return resource.getFullPath().isPrefixOf(child.getFullPath());
+		}
 		return false;
 	}
 
@@ -116,8 +124,9 @@ public class ResourceTraversal {
 	 */
 	void doFindMarkers(ArrayList<IMarker> result, String type, boolean includeSubtypes) {
 		MarkerManager markerMan = ((Workspace) ResourcesPlugin.getWorkspace()).getMarkerManager();
-		for (IResource resource : resources)
+		for (IResource resource : resources) {
 			markerMan.doFindMarkers(resource, result, type, includeSubtypes, depth);
+		}
 	}
 
 	/**
@@ -133,8 +142,9 @@ public class ResourceTraversal {
 	 * @see IResource#findMarkers(String, boolean, int)
 	 */
 	public IMarker[] findMarkers(String type, boolean includeSubtypes) throws CoreException {
-		if (resources.length == 0)
+		if (resources.length == 0) {
 			return new IMarker[0];
+		}
 		ArrayList<IMarker> result = new ArrayList<>();
 		doFindMarkers(result, type, includeSubtypes);
 		return result.toArray(new IMarker[result.size()]);

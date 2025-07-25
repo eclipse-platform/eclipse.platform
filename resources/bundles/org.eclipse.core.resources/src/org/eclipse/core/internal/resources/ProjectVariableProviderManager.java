@@ -49,14 +49,16 @@ public class ProjectVariableProviderManager {
 			PathVariableResolver p = null;
 			try {
 				String classAttribute = "class"; //$NON-NLS-1$
-				if (element.getAttribute(classAttribute) != null)
+				if (element.getAttribute(classAttribute) != null) {
 					p = (PathVariableResolver) element.createExecutableExtension(classAttribute);
+				}
 			} catch (CoreException e) {
 				Policy.log(e);
 			}
 			provider = p;
-			if (name == null)
+			if (name == null) {
 				fail(NLS.bind(Messages.mapping_invalidDef, extension.getUniqueIdentifier()));
+			}
 		}
 
 		protected void fail(String reason) throws CoreException {
@@ -68,16 +70,19 @@ public class ProjectVariableProviderManager {
 		}
 
 		public String getValue(String variable, IResource resource) {
-			if (value != null)
+			if (value != null) {
 				return value;
+			}
 			return provider.getValue(variable, resource);
 		}
 
 		public String[] getVariableNames(String variable, IResource resource) {
-			if (provider != null)
+			if (provider != null) {
 				return provider.getVariableNames(variable, resource);
-			if (name.equals(variable))
+			}
+			if (name.equals(variable)) {
 				return new String[] {variable};
+			}
 			return null;
 		}
 	}
@@ -109,8 +114,9 @@ public class ProjectVariableProviderManager {
 					} catch (CoreException e) {
 						Policy.log(e);
 					}
-					if (desc != null)
+					if (desc != null) {
 						d.put(desc.getName(), desc);
+					}
 				}
 			}
 		}

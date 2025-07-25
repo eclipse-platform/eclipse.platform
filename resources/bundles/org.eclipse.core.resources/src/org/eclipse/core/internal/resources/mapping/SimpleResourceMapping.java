@@ -34,12 +34,10 @@ public class SimpleResourceMapping extends ResourceMapping {
 	public boolean contains(ResourceMapping mapping) {
 		if (mapping.getModelProviderId().equals(this.getModelProviderId())) {
 			Object object = mapping.getModelObject();
-			if (object instanceof IResource) {
-				IResource other = (IResource) object;
+			if (object instanceof IResource other) {
 				return resource.getFullPath().isPrefixOf(other.getFullPath());
 			}
-			if (object instanceof ShallowContainer) {
-				ShallowContainer sc = (ShallowContainer) object;
+			if (object instanceof ShallowContainer sc) {
 				IResource other = sc.getResource();
 				return resource.getFullPath().isPrefixOf(other.getFullPath());
 			}
@@ -59,8 +57,9 @@ public class SimpleResourceMapping extends ResourceMapping {
 
 	@Override
 	public IProject[] getProjects() {
-		if (resource.getType() == IResource.ROOT)
+		if (resource.getType() == IResource.ROOT) {
 			return ((IWorkspaceRoot) resource).getProjects();
+		}
 		return new IProject[] {resource.getProject()};
 	}
 

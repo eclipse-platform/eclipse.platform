@@ -45,8 +45,9 @@ public class BucketTree {
 
 	static {
 		HEX_STRINGS = new char[SEGMENT_QUOTA][];
-		for (int i = 0; i < HEX_STRINGS.length; i++)
+		for (int i = 0; i < HEX_STRINGS.length; i++) {
 			HEX_STRINGS[i] = Integer.toHexString(i).toCharArray();
+		}
 	}
 
 	protected Bucket current;
@@ -71,10 +72,12 @@ public class BucketTree {
 	public void accept(Bucket.Visitor visitor, IPath base, int depth) throws CoreException {
 		if (IPath.ROOT.equals(base)) {
 			current.load(null, locationFor(IPath.ROOT));
-			if (current.accept(visitor, base, DEPTH_ZERO) != Visitor.CONTINUE)
+			if (current.accept(visitor, base, DEPTH_ZERO) != Visitor.CONTINUE) {
 				return;
-			if (depth == DEPTH_ZERO)
+			}
+			if (depth == DEPTH_ZERO) {
 				return;
+			}
 			boolean keepVisiting = true;
 			depth--;
 			IProject[] projects = workspace.getRoot().getProjects(IContainer.INCLUDE_HIDDEN);
@@ -82,8 +85,9 @@ public class BucketTree {
 				IPath projectPath = projects[i].getFullPath();
 				keepVisiting = internalAccept(visitor, projectPath, locationFor(projectPath), depth, 1);
 			}
-		} else
+		} else {
 			internalAccept(visitor, base, locationFor(base), depth, 0);
+		}
 	}
 
 	public void close() throws CoreException {
@@ -107,13 +111,16 @@ public class BucketTree {
 	private boolean internalAccept(Bucket.Visitor visitor, IPath base, File bucketDir, int depthRequested, int currentDepth) throws CoreException {
 		current.load(base.segment(0), bucketDir);
 		int outcome = current.accept(visitor, base, depthRequested);
-		if (outcome != Visitor.CONTINUE)
+		if (outcome != Visitor.CONTINUE) {
 			return outcome == Visitor.RETURN;
-		if (depthRequested <= currentDepth)
+		}
+		if (depthRequested <= currentDepth) {
 			return true;
+		}
 		File[] subDirs = bucketDir.listFiles();
-		if (subDirs == null)
+		if (subDirs == null) {
 			return true;
+		}
 		for (File subDir : subDirs) {
 			if (subDir.isDirectory()) {
 				if (!internalAccept(visitor, base, subDir, depthRequested, currentDepth + 1)) {
@@ -151,8 +158,9 @@ public class BucketTree {
 	 */
 	private void saveVersion() throws CoreException {
 		File versionFile = getVersionFile();
-		if (!versionFile.getParentFile().exists())
+		if (!versionFile.getParentFile().exists()) {
 			versionFile.getParentFile().mkdirs();
+		}
 		try (FileOutputStream stream = new FileOutputStream(versionFile)) {
 			stream.write(current.getVersion());
 		} catch (IOException e) {

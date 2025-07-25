@@ -53,8 +53,9 @@ public class NotificationManager implements IManager, ILifecycleListener {
 
 		@Override
 		public IStatus run(IProgressMonitor monitor) {
-			if (monitor.isCanceled())
+			if (monitor.isCanceled()) {
 				return Status.CANCEL_STATUS;
+			}
 			notificationRequested = true;
 			try {
 				workspace.run(noop, null, IResource.NONE, null);
@@ -131,8 +132,9 @@ public class NotificationManager implements IManager, ILifecycleListener {
 
 	public void addListener(IResourceChangeListener listener, int eventMask) {
 		listeners.add(listener, eventMask);
-		if (ResourceStats.TRACE_LISTENERS)
+		if (ResourceStats.TRACE_LISTENERS) {
 			ResourceStats.listenerAdded(listener);
+		}
 	}
 
 	/**
@@ -159,15 +161,17 @@ public class NotificationManager implements IManager, ILifecycleListener {
 		final int type = event.getType();
 		try {
 			// Do the notification if there are listeners for events of the given type.
-			if (!listeners.hasListenerFor(type))
+			if (!listeners.hasListenerFor(type)) {
 				return;
+			}
 			isNotifying = true;
 			ResourceDelta delta = getDelta(lastState, type);
 			//don't broadcast POST_CHANGE or autobuild events if the delta is empty
 			if (delta == null || delta.getKind() == 0) {
 				int trigger = event.getBuildKind();
-				if (trigger == IncrementalProjectBuilder.AUTO_BUILD || trigger == 0)
+				if (trigger == IncrementalProjectBuilder.AUTO_BUILD || trigger == 0) {
 					return;
+				}
 			}
 			event.setDelta(delta);
 			long start = System.currentTimeMillis();
@@ -223,12 +227,14 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	 */
 	public void requestNotify() {
 		//don't do intermediate notifications if the current thread doesn't want them
-		if (isNotifying || avoidNotify.contains(Thread.currentThread()))
+		if (isNotifying || avoidNotify.contains(Thread.currentThread())) {
 			return;
+		}
 		//notifications must never take more than one tenth of operation time
 		long delay = Math.max(NOTIFICATION_DELAY, lastNotifyDuration * 10);
-		if (notifyJob.getState() == Job.NONE)
+		if (notifyJob.getState() == Job.NONE) {
 			notifyJob.schedule(delay);
+		}
 	}
 
 	/**
@@ -269,30 +275,35 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	public void handleEvent(LifecycleEvent event) {
 		switch (event.kind) {
 			case LifecycleEvent.PRE_PROJECT_CLOSE :
-				if (!listeners.hasListenerFor(IResourceChangeEvent.PRE_CLOSE))
+				if (!listeners.hasListenerFor(IResourceChangeEvent.PRE_CLOSE)) {
 					return;
+				}
 				IProject project = (IProject) event.resource;
 				notify(getListeners(), new ResourceChangeEvent(workspace, IResourceChangeEvent.PRE_CLOSE, project), true);
 				break;
 			case LifecycleEvent.PRE_PROJECT_MOVE :
 				//only notify deletion on move if old project handle is going
 				// away
-				if (event.resource.equals(event.newResource))
+				if (event.resource.equals(event.newResource)) {
 					return;
+				}
 				//fall through
 			case LifecycleEvent.PRE_PROJECT_DELETE :
-				if (!listeners.hasListenerFor(IResourceChangeEvent.PRE_DELETE))
+				if (!listeners.hasListenerFor(IResourceChangeEvent.PRE_DELETE)) {
 					return;
+				}
 				project = (IProject) event.resource;
 				notify(getListeners(), new ResourceChangeEvent(workspace, IResourceChangeEvent.PRE_DELETE, project), true);
 				break;
 			case LifecycleEvent.PRE_REFRESH :
-				if (!listeners.hasListenerFor(IResourceChangeEvent.PRE_REFRESH))
+				if (!listeners.hasListenerFor(IResourceChangeEvent.PRE_REFRESH)) {
 					return;
-				if (event.resource.getType() == IResource.PROJECT)
+				}
+				if (event.resource.getType() == IResource.PROJECT) {
 					notify(getListeners(), new ResourceChangeEvent(event.resource, IResourceChangeEvent.PRE_REFRESH, event.resource), true);
-				else if (event.resource.getType() == IResource.ROOT)
+				} else if (event.resource.getType() == IResource.ROOT) {
 					notify(getListeners(), new ResourceChangeEvent(workspace, IResourceChangeEvent.PRE_REFRESH, null), true);
+				}
 				break;
 		}
 	}
@@ -300,14 +311,16 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	private void notify(ResourceChangeListenerList.ListenerEntry[] resourceListeners, final ResourceChangeEvent event, final boolean lockTree) {
 		int type = event.getType();
 		boolean oldLock = workspace.isTreeLocked();
-		if (lockTree)
+		if (lockTree) {
 			workspace.setTreeLocked(true);
+		}
 		try {
 			for (ListenerEntry resourceListener : resourceListeners) {
 				if ((type & resourceListener.eventMask) != 0) {
 					final IResourceChangeListener listener = resourceListener.listener;
-					if (ResourceStats.TRACE_LISTENERS)
+					if (ResourceStats.TRACE_LISTENERS) {
 						ResourceStats.startNotify(listener);
+					}
 					SafeRunner.run(new ISafeRunnable() {
 						@Override
 						public void handleException(Throwable e) {
@@ -316,25 +329,29 @@ public class NotificationManager implements IManager, ILifecycleListener {
 
 						@Override
 						public void run() throws Exception {
-							if (Policy.DEBUG_NOTIFICATIONS)
+							if (Policy.DEBUG_NOTIFICATIONS) {
 								Policy.debug("Notifying " + listener.getClass().getName() + " about resource change event" + event.toDebugString()); //$NON-NLS-1$ //$NON-NLS-2$
+							}
 							listener.resourceChanged(event);
 						}
 					});
-					if (ResourceStats.TRACE_LISTENERS)
+					if (ResourceStats.TRACE_LISTENERS) {
 						ResourceStats.endNotify();
+					}
 				}
 			}
 		} finally {
-			if (lockTree)
+			if (lockTree) {
 				workspace.setTreeLocked(oldLock);
+			}
 		}
 	}
 
 	public void removeListener(IResourceChangeListener listener) {
 		listeners.remove(listener);
-		if (ResourceStats.TRACE_LISTENERS)
+		if (ResourceStats.TRACE_LISTENERS) {
 			ResourceStats.listenerRemoved(listener);
+		}
 	}
 
 	/**

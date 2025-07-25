@@ -173,8 +173,9 @@ public abstract class ContainerSnapshot<T extends IContainer> extends AbstractRe
 		// restore any children
 		SubMonitor subMonitor = SubMonitor.convert(monitor, members.size());
 		for (IResourceSnapshot<? extends IResource> member : members) {
-			if (member instanceof AbstractResourceSnapshot)
+			if (member instanceof AbstractResourceSnapshot) {
 				((AbstractResourceSnapshot<? extends IResource>) member).parent = parentHandle;
+			}
 			member.createResource(subMonitor.split(1));
 		}
 	}

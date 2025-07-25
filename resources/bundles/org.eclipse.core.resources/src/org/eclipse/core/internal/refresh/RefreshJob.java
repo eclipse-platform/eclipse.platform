@@ -115,11 +115,11 @@ public class RefreshJob extends InternalWorkspaceJob {
 		for (Iterator<IResource> it = fRequests.iterator(); it.hasNext();) {
 			IPath request = it.next().getFullPath();
 			//discard any existing requests the same or below the resource to be added
-			if (toAdd.isPrefixOf(request))
+			if (toAdd.isPrefixOf(request)) {
 				it.remove();
-			//nothing to do if the resource to be added is a child of an existing request
-			else if (request.isPrefixOf(toAdd))
+			} else if (request.isPrefixOf(toAdd)) {
 				return;
+			}
 		}
 		//finally add the new request to the front of the queue
 		fRequests.add(resource);
@@ -142,8 +142,9 @@ public class RefreshJob extends InternalWorkspaceJob {
 	 * to the provided list.
 	 */
 	protected List<IResource> collectChildrenToDepth(IResource resource, ArrayList<IResource> children, int depth) {
-		if (resource.getType() == IResource.FILE)
+		if (resource.getType() == IResource.FILE) {
 			return children;
+		}
 		IResource[] members;
 		try {
 			members = ((IContainer) resource).members();
@@ -152,12 +153,14 @@ public class RefreshJob extends InternalWorkspaceJob {
 			return children;
 		}
 		for (IResource member : members) {
-			if (member.getType() == IResource.FILE)
+			if (member.getType() == IResource.FILE) {
 				continue;
-			if (depth <= 1)
+			}
+			if (depth <= 1) {
 				children.add(member);
-			else
+			} else {
 				collectChildrenToDepth(member, children, depth - 1);
+			}
 		}
 		return children;
 	}
@@ -166,8 +169,9 @@ public class RefreshJob extends InternalWorkspaceJob {
 	 * Returns the path prefixes visited by this job so far.
 	 */
 	public PrefixPool getPathPrefixHistory() {
-		if (pathPrefixHistory == null)
+		if (pathPrefixHistory == null) {
 			pathPrefixHistory = new PrefixPool(20);
+		}
 		return pathPrefixHistory;
 	}
 
@@ -175,8 +179,9 @@ public class RefreshJob extends InternalWorkspaceJob {
 	 * Returns the root paths visited by this job so far.
 	 */
 	public PrefixPool getRootPathHistory() {
-		if (rootPathHistory == null)
+		if (rootPathHistory == null) {
 			rootPathHistory = new PrefixPool(20);
+		}
 		return rootPathHistory;
 	}
 
@@ -186,8 +191,9 @@ public class RefreshJob extends InternalWorkspaceJob {
 	private synchronized IResource nextRequest() {
 		// synchronized: in order to atomically obtain and clear requests
 		int len = fRequests.size();
-		if (len == 0)
+		if (len == 0) {
 			return null;
+		}
 		return fRequests.remove(len - 1);
 	}
 
@@ -210,8 +216,9 @@ public class RefreshJob extends InternalWorkspaceJob {
 		long longestRefresh = 0;
 		SubMonitor subMonitor = SubMonitor.convert(monitor);
 		try {
-			if (Policy.DEBUG_AUTO_REFRESH)
+			if (Policy.DEBUG_AUTO_REFRESH) {
 				Policy.debug(RefreshManager.DEBUG_PREFIX + " starting refresh job"); //$NON-NLS-1$
+			}
 			int refreshCount = 0;
 			int depth = 2;
 
@@ -226,8 +233,9 @@ public class RefreshJob extends InternalWorkspaceJob {
 					long refreshTime = -System.currentTimeMillis();
 					toRefresh.refreshLocal(baseRefreshDepth + depth, subMonitor.split(1));
 					refreshTime += System.currentTimeMillis();
-					if (refreshTime > longestRefresh)
+					if (refreshTime > longestRefresh) {
 						longestRefresh = refreshTime;
+					}
 					//show occasional progress
 					if (refreshCount % depthIncreaseStep == 0) {
 						//be polite to other threads (no effect on some platforms)
@@ -261,11 +269,13 @@ public class RefreshJob extends InternalWorkspaceJob {
 		} finally {
 			pathPrefixHistory = null;
 			rootPathHistory = null;
-			if (Policy.DEBUG_AUTO_REFRESH)
+			if (Policy.DEBUG_AUTO_REFRESH) {
 				Policy.debug(RefreshManager.DEBUG_PREFIX + " finished refresh job in: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		}
-		if (!errors.isOK())
+		if (!errors.isOK()) {
 			return errors;
+		}
 		return Status.OK_STATUS;
 	}
 

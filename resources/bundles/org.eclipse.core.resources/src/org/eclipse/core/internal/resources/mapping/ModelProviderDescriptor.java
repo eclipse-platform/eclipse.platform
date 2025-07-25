@@ -43,8 +43,9 @@ public class ModelProviderDescriptor implements IModelProviderDescriptor {
 	}
 
 	private boolean convert(EvaluationResult eval) {
-		if (eval == EvaluationResult.FALSE)
+		if (eval == EvaluationResult.FALSE) {
 			return false;
+		}
 		return true;
 	}
 
@@ -100,8 +101,9 @@ public class ModelProviderDescriptor implements IModelProviderDescriptor {
 	}
 
 	public boolean matches(IEvaluationContext context) throws CoreException {
-		if (enablementRule == null)
+		if (enablementRule == null) {
 			return false;
+		}
 		return convert(enablementRule.evaluate(context));
 	}
 
@@ -111,8 +113,9 @@ public class ModelProviderDescriptor implements IModelProviderDescriptor {
 	protected void readExtension(IExtension extension) throws CoreException {
 		//read the extension
 		id = extension.getUniqueIdentifier();
-		if (id == null)
+		if (id == null) {
 			fail(Messages.mapping_noIdentifier);
+		}
 		label = extension.getLabel();
 		IConfigurationElement[] elements = extension.getConfigurationElements();
 		int count = elements.length;
@@ -122,8 +125,9 @@ public class ModelProviderDescriptor implements IModelProviderDescriptor {
 			String name = element.getName();
 			if (name.equalsIgnoreCase("extends-model")) { //$NON-NLS-1$
 				String attribute = element.getAttribute("id"); //$NON-NLS-1$
-				if (attribute == null)
+				if (attribute == null) {
 					fail(NLS.bind(Messages.mapping_invalidDef, id));
+				}
 				extendsList.add(attribute);
 			} else if (name.equalsIgnoreCase(ExpressionTagNames.ENABLEMENT)) {
 				enablementRule = ExpressionConverter.getDefault().perform(element);

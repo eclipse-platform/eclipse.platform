@@ -78,14 +78,16 @@ public class MarkerReader_1 extends MarkerReader {
 				IPath path = IPath.fromOSString(input.readUTF());
 				int markersSize = input.readInt();
 				MarkerSet markers = new MarkerSet(markersSize);
-				for (int i = 0; i < markersSize; i++)
+				for (int i = 0; i < markersSize; i++) {
 					markers.add(readMarkerInfo(input, readTypes));
+				}
 				// if the resource doesn't exist then return. ensure we do this after
 				// reading the markers from the file so we don't get into an
 				// inconsistent state.
 				ResourceInfo info = workspace.getResourceInfo(path, false, false);
-				if (info == null)
+				if (info == null) {
 					continue;
+				}
 				info.setMarkers(markers);
 				if (generateDeltas) {
 					Resource resource = workspace.newResource(path, info.getType());
@@ -93,9 +95,11 @@ public class MarkerReader_1 extends MarkerReader {
 					// and shrinking the array.
 					IMarkerSetElement[] infos = markers.elements;
 					ArrayList<MarkerDelta> deltas = new ArrayList<>(infos.length);
-					for (IMarkerSetElement info2 : infos)
-						if (info2 != null)
+					for (IMarkerSetElement info2 : infos) {
+						if (info2 != null) {
 							deltas.add(new MarkerDelta(IResourceDelta.ADDED, resource, (MarkerInfo) info2));
+						}
+					}
 					workspace.getMarkerManager().changedMarkers(resource, deltas.toArray(new IMarkerSetElement[deltas.size()]));
 				}
 			}
@@ -106,8 +110,9 @@ public class MarkerReader_1 extends MarkerReader {
 
 	private Map<String, Object> readAttributes(DataInputStream input) throws IOException {
 		int attributesSize = input.readInt();
-		if (attributesSize == 0)
+		if (attributesSize == 0) {
 			return null;
+		}
 		Map<String, Object> result = new HashMap<>(attributesSize);
 		for (int j = 0; j < attributesSize; j++) {
 			String key = input.readUTF();
@@ -127,8 +132,9 @@ public class MarkerReader_1 extends MarkerReader {
 					// do nothing
 					break;
 			}
-			if (value != null)
+			if (value != null) {
 				result.put(key, value);
+			}
 		}
 		return result.isEmpty() ? null : result;
 	}

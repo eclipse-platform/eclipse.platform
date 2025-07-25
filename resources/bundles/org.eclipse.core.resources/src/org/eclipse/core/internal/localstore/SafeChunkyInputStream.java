@@ -54,8 +54,9 @@ public class SafeChunkyInputStream extends InputStream {
 	protected void buildChunk() throws IOException {
 		//read buffer loads of data until an entire chunk is accumulated
 		while (true) {
-			if (nextByteInBuffer + ILocalStoreConstants.CHUNK_DELIMITER_SIZE > bufferLength)
+			if (nextByteInBuffer + ILocalStoreConstants.CHUNK_DELIMITER_SIZE > bufferLength) {
 				shiftAndFillBuffer();
+			}
 			int end = find(ILocalStoreConstants.END_CHUNK, nextByteInBuffer, bufferLength, true);
 			if (end != -1) {
 				accumulate(buffer, nextByteInBuffer, end);
@@ -79,8 +80,9 @@ public class SafeChunkyInputStream extends InputStream {
 
 	protected boolean compare(byte[] source, byte[] target, int startIndex) {
 		for (byte element : target) {
-			if (source[startIndex] != element)
+			if (source[startIndex] != element) {
 				return false;
+			}
 			startIndex++;
 		}
 		return true;
@@ -88,32 +90,37 @@ public class SafeChunkyInputStream extends InputStream {
 
 	protected int find(byte[] pattern, int startIndex, int endIndex, boolean accumulate) throws IOException {
 		int pos = findByte(pattern[0], startIndex, endIndex);
-		if (pos == -1)
+		if (pos == -1) {
 			return -1;
+		}
 		if (pos + ILocalStoreConstants.CHUNK_DELIMITER_SIZE > bufferLength) {
-			if (accumulate)
+			if (accumulate) {
 				accumulate(buffer, nextByteInBuffer, pos);
+			}
 			nextByteInBuffer = pos;
 			pos = 0;
 			shiftAndFillBuffer();
 		}
-		if (compare(buffer, pattern, pos))
+		if (compare(buffer, pattern, pos)) {
 			return pos;
+		}
 		return find(pattern, pos + 1, endIndex, accumulate);
 	}
 
 	protected int findByte(byte target, int startIndex, int endIndex) {
 		while (startIndex < endIndex) {
-			if (buffer[startIndex] == target)
+			if (buffer[startIndex] == target) {
 				return startIndex;
+			}
 			startIndex++;
 		}
 		return -1;
 	}
 
 	protected void findChunkStart() throws IOException {
-		if (nextByteInBuffer + ILocalStoreConstants.CHUNK_DELIMITER_SIZE > bufferLength)
+		if (nextByteInBuffer + ILocalStoreConstants.CHUNK_DELIMITER_SIZE > bufferLength) {
 			shiftAndFillBuffer();
+		}
 		int begin = find(ILocalStoreConstants.BEGIN_CHUNK, nextByteInBuffer, bufferLength, false);
 		if (begin != -1) {
 			nextByteInBuffer = begin + ILocalStoreConstants.CHUNK_DELIMITER_SIZE;
@@ -131,18 +138,21 @@ public class SafeChunkyInputStream extends InputStream {
 
 	@Override
 	public int read() throws IOException {
-		if (endOfFile)
+		if (endOfFile) {
 			return -1;
+		}
 		// if there are bytes left in the chunk, return the first available
-		if (nextByteInChunk < chunkLength)
+		if (nextByteInChunk < chunkLength) {
 			return chunk[nextByteInChunk++] & 0xFF;
+		}
 		// Otherwise the chunk is empty so clear the current one, get the next
 		// one and recursively call read.  Need to recur as the chunk may be
 		// real but empty.
 		resetChunk();
 		findChunkStart();
-		if (endOfFile)
+		if (endOfFile) {
 			return -1;
+		}
 		buildChunk();
 		refineChunk();
 		return read();
@@ -154,8 +164,9 @@ public class SafeChunkyInputStream extends InputStream {
 	 */
 	protected void refineChunk() {
 		int start = chunkLength - ILocalStoreConstants.CHUNK_DELIMITER_SIZE;
-		if (start < 0)
+		if (start < 0) {
 			return;
+		}
 		for (int i = start; i >= 0; i--) {
 			if (compare(chunk, ILocalStoreConstants.BEGIN_CHUNK, i)) {
 				nextByteInChunk = i + ILocalStoreConstants.CHUNK_DELIMITER_SIZE;
@@ -176,9 +187,9 @@ public class SafeChunkyInputStream extends InputStream {
 		nextByteInBuffer = 0;
 		bufferLength = length;
 		int read = input.read(buffer, bufferLength, buffer.length - bufferLength);
-		if (read != -1)
+		if (read != -1) {
 			bufferLength += read;
-		else {
+		} else {
 			resetChunk();
 			endOfFile = true;
 		}

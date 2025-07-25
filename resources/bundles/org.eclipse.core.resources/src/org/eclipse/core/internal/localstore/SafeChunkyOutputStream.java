@@ -92,15 +92,17 @@ public class SafeChunkyOutputStream extends FilterOutputStream {
 
 	@Override
 	public void write(int b) throws IOException {
-		if (!isOpen)
+		if (!isOpen) {
 			open();
+		}
 		super.write(b);
 	}
 
 	@Override
 	public void write(byte b[], int off, int len) throws IOException {
-		if (!isOpen)
+		if (!isOpen) {
 			open();
+		}
 		out.write(b, off, len);
 	}
 }

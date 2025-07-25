@@ -77,8 +77,9 @@ public class FileStoreRoot {
 	private IPathVariableManager getManager(IPath workspacePath) {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IResource resource = workspaceRoot.findMember(workspacePath);
-		if (resource != null)
+		if (resource != null) {
 			return resource.getPathVariableManager();
+		}
 		// Bug 547691 - deal with requests for the path of a deleted project
 		if (workspacePath.segmentCount() == 0) {
 			return workspaceRoot.getPathVariableManager();
@@ -111,8 +112,9 @@ public class FileStoreRoot {
 		IPath childPath = workspacePath.removeFirstSegments(chop);
 		URI rootURI = canonical ? getCanonicalRoot() : root;
 		rootURI = getManager(workspacePath).resolveURI(rootURI);
-		if (childPath.segmentCount() == 0)
+		if (childPath.segmentCount() == 0) {
 			return rootURI;
+		}
 		try {
 			return EFS.getStore(rootURI).getFileStore(childPath).toURI();
 		} catch (CoreException e) {
@@ -137,8 +139,9 @@ public class FileStoreRoot {
 			return EFS.getNullFileSystem().getStore(workspacePath);
 		}
 		IFileStore rootStore = EFS.getStore(uri);
-		if (childPath.segmentCount() == 0)
+		if (childPath.segmentCount() == 0) {
 			return rootStore;
+		}
 		return rootStore.getFileStore(childPath);
 	}
 
@@ -168,20 +171,23 @@ public class FileStoreRoot {
 	 *     to this root will be canonicalized
 	 */
 	IPath localLocation(IPath workspacePath, IResource resource, boolean canonical) {
-		if (localRoot == null)
+		if (localRoot == null) {
 			return null;
+		}
 		IPath rootPath = canonical ? getCanonicalLocalRoot() : localRoot;
 		IPath location;
-		if (workspacePath.segmentCount() <= chop)
+		if (workspacePath.segmentCount() <= chop) {
 			location = rootPath;
-		else
+		} else {
 			location = rootPath.append(workspacePath.removeFirstSegments(chop));
+		}
 		location = resource.getPathVariableManager().resolvePath(location);
 
 		// if path is still relative then path variable could not be resolved
 		// if path is null, it means path variable refers to a non-local filesystem
-		if (location == null || !location.isAbsolute())
+		if (location == null || !location.isAbsolute()) {
 			return null;
+		}
 		return location;
 	}
 

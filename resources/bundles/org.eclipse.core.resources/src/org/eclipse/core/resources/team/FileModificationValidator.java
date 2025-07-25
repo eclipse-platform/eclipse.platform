@@ -55,12 +55,13 @@ public abstract class FileModificationValidator implements IFileModificationVali
 	@Override
 	public final IStatus validateEdit(IFile[] files, Object context) {
 		FileModificationValidationContext validationContext;
-		if (context == null)
+		if (context == null) {
 			validationContext = null;
-		else if (context instanceof FileModificationValidationContext)
+		} else if (context instanceof FileModificationValidationContext) {
 			validationContext = (FileModificationValidationContext) context;
-		else
+		} else {
 			validationContext = new FileModificationValidationContext(context);
+		}
 		return validateEdit(files, validationContext);
 	}
 

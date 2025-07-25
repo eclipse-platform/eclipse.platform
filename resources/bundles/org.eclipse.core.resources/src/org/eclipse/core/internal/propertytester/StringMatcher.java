@@ -60,8 +60,9 @@ public class StringMatcher {
 	 * @param pattern the pattern to match text against
 	 */
 	public StringMatcher(String pattern) {
-		if (pattern == null)
+		if (pattern == null) {
 			throw new IllegalArgumentException();
+		}
 		this.pattern = pattern;
 		patternLength = pattern.length();
 		parseWildCards();
@@ -79,11 +80,13 @@ public class StringMatcher {
 		int plen = p.length();
 		for (int i = start, max = end - plen; i <= max; ++i) {
 			if (hasWildCard) {
-				if (regExpRegionMatches(text, i, p, 0, plen))
+				if (regExpRegionMatches(text, i, p, 0, plen)) {
 					return i;
+				}
 			} else {
-				if (text.regionMatches(true, i, p, 0, plen))
+				if (text.regionMatches(true, i, p, 0, plen)) {
 					return i;
+				}
 			}
 		}
 		return -1;
@@ -96,27 +99,33 @@ public class StringMatcher {
 	 * @param text a String object that contains the substring to match
 	 */
 	public boolean match(String text) {
-		if (text == null)
+		if (text == null) {
 			return false;
+		}
 		final int end = text.length();
 		final int segmentCount = segments.length;
-		if (segmentCount == 0 && (hasLeadingStar || hasTrailingStar)) // pattern contains only '*'(s)
+		if (segmentCount == 0 && (hasLeadingStar || hasTrailingStar)) { // pattern contains only '*'(s)
 			return true;
-		if (end == 0)
+		}
+		if (end == 0) {
 			return patternLength == 0;
-		if (patternLength == 0)
+		}
+		if (patternLength == 0) {
 			return false;
+		}
 		int currentTextPosition = 0;
-		if ((end - bound) < 0)
+		if ((end - bound) < 0) {
 			return false;
+		}
 		int segmentIndex = 0;
 		String current = segments[segmentIndex];
 
 		/* process first segment */
 		if (!hasLeadingStar) {
 			int currentLength = current.length();
-			if (!regExpRegionMatches(text, 0, current, 0, currentLength))
+			if (!regExpRegionMatches(text, 0, current, 0, currentLength)) {
 				return false;
+			}
 			segmentIndex++;
 			currentTextPosition = currentTextPosition + currentLength;
 		}
@@ -128,8 +137,9 @@ public class StringMatcher {
 		while (segmentIndex < segmentCount) {
 			current = segments[segmentIndex];
 			int currentMatch = findPosition(text, currentTextPosition, end, current);
-			if (currentMatch < 0)
+			if (currentMatch < 0) {
 				return false;
+			}
 			currentTextPosition = currentMatch + current.length();
 			segmentIndex++;
 		}
@@ -146,8 +156,9 @@ public class StringMatcher {
 	 * Parses the pattern into segments separated by wildcard '*' characters.
 	 */
 	private void parseWildCards() {
-		if (pattern.startsWith("*")) //$NON-NLS-1$
+		if (pattern.startsWith("*")) { //$NON-NLS-1$
 			hasLeadingStar = true;
+		}
 		if (pattern.endsWith("*")) {//$NON-NLS-1$
 			/* make sure it's not an escaped wildcard */
 			if (patternLength > 1 && pattern.charAt(patternLength - 2) != '\\') {
@@ -217,16 +228,20 @@ public class StringMatcher {
 			char pchar = p.charAt(pStart++);
 
 			// process wild cards, skipping single wild cards
-			if (pchar == SINGLE_WILD_CARD)
+			if (pchar == SINGLE_WILD_CARD) {
 				continue;
-			if (pchar == tchar)
+			}
+			if (pchar == tchar) {
 				continue;
-			if (Character.toUpperCase(tchar) == Character.toUpperCase(pchar))
+			}
+			if (Character.toUpperCase(tchar) == Character.toUpperCase(pchar)) {
 				continue;
+			}
 			// comparing after converting to upper case doesn't handle all cases;
 			// also compare after converting to lower case
-			if (Character.toLowerCase(tchar) == Character.toLowerCase(pchar))
+			if (Character.toLowerCase(tchar) == Character.toLowerCase(pchar)) {
 				continue;
+			}
 			return false;
 		}
 		return true;

@@ -96,12 +96,15 @@ public class BuildContext implements IBuildContext {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		BuildContext other = (BuildContext) obj;
 		return buildConfiguration.equals(other.buildConfiguration) && Arrays.equals(requestedBuilt, other.requestedBuilt) && Arrays.equals(buildOrder, other.buildOrder);
 	}

@@ -151,10 +151,11 @@ public class ResourceAttributes {
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
 	public void set(int mask, boolean value) {
-		if (value)
+		if (value) {
 			attributes |= mask;
-		else
+		} else {
 			attributes &= ~mask;
+		}
 	}
 
 	/**

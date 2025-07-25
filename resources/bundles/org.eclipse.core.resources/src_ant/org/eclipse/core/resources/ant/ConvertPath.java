@@ -75,11 +75,12 @@ public class ConvertPath extends Task {
 	@Override
 	public void execute() throws BuildException {
 		validateAttributes();
-		if (fileSystemPath == null)
+		if (fileSystemPath == null) {
 			// here, resourcePath is not null
 			convertResourcePathToFileSystemPath(resourcePath);
-		else
+		} else {
 			convertFileSystemPathToResourcePath(fileSystemPath);
+		}
 	}
 
 	protected void convertFileSystemPathToResourcePath(IPath path) {
@@ -90,14 +91,16 @@ public class ConvertPath extends Task {
 			resource = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path);
 			if (resource == null) {
 				String message = Policy.bind("exception.noProjectMatchThePath", fileSystemPath.toOSString()); //$NON-NLS-1$
-				if (failOnError)
+				if (failOnError) {
 					throw new BuildException(message);
+				}
 				log(message, Project.MSG_ERR);
 				return;
 			}
 		}
-		if (property != null)
+		if (property != null) {
 			getProject().setUserProperty(property, resource.getFullPath().toString());
+		}
 		if (pathID != null) {
 			Path newPath = new Path(getProject(), resource.getFullPath().toString());
 			getProject().addReference(pathID, newPath);
@@ -120,13 +123,15 @@ public class ConvertPath extends Task {
 		if (resource.getLocation() == null) {
 			// can occur if the first segment is not a project
 			String message = Policy.bind("exception.pathNotValid", path.toString()); //$NON-NLS-1$
-			if (failOnError)
+			if (failOnError) {
 				throw new BuildException(message);
+			}
 			log(message, Project.MSG_ERR);
 			return;
 		}
-		if (property != null)
+		if (property != null) {
 			getProject().setUserProperty(property, resource.getLocation().toOSString());
+		}
 		if (pathID != null) {
 			Path newPath = new Path(getProject(), resource.getLocation().toOSString());
 			getProject().addReference(pathID, newPath);
@@ -139,8 +144,9 @@ public class ConvertPath extends Task {
 	 * @param value the file corresponding to the path supplied by the user
 	 */
 	public void setFileSystemPath(File value) {
-		if (resourcePath != null)
+		if (resourcePath != null) {
 			throw new BuildException(Policy.bind("exception.cantUseBoth")); //$NON-NLS-1$
+		}
 		fileSystemPath = IPath.fromOSString(value.toString());
 	}
 
@@ -150,8 +156,9 @@ public class ConvertPath extends Task {
 	 * @param value the path
 	 */
 	public void setResourcePath(String value) {
-		if (fileSystemPath != null)
+		if (fileSystemPath != null) {
 			throw new BuildException(Policy.bind("exception.cantUseBoth")); //$NON-NLS-1$
+		}
 		resourcePath = IPath.fromOSString(value);
 	}
 
@@ -196,15 +203,18 @@ public class ConvertPath extends Task {
 	 * @exception BuildException thrown if a problem occurs during validation.
 	 */
 	protected void validateAttributes() throws BuildException {
-		if (property == null && pathID == null)
+		if (property == null && pathID == null) {
 			throw new BuildException(Policy.bind("exception.propertyAndPathIdNotSpecified")); //$NON-NLS-1$
+		}
 
-		if (resourcePath != null && (!resourcePath.isValidPath(resourcePath.toString()) || resourcePath.isEmpty()))
+		if (resourcePath != null && (!resourcePath.isValidPath(resourcePath.toString()) || resourcePath.isEmpty())) {
 			throw new BuildException(Policy.bind("exception.invalidPath", resourcePath.toOSString())); //$NON-NLS-1$
-		else if (fileSystemPath != null && !fileSystemPath.isValidPath(fileSystemPath.toOSString()))
+		} else if (fileSystemPath != null && !fileSystemPath.isValidPath(fileSystemPath.toOSString())) {
 			throw new BuildException(Policy.bind("exception.invalidPath", fileSystemPath.toOSString())); //$NON-NLS-1$
+		}
 
-		if (resourcePath == null && fileSystemPath == null)
+		if (resourcePath == null && fileSystemPath == null) {
 			throw new BuildException(Policy.bind("exception.mustHaveOneAttribute")); //$NON-NLS-1$
+		}
 	}
 }

@@ -76,21 +76,24 @@ public class MarkerSnapshotReader_2 extends MarkerSnapshotReader {
 		int markersSize = input.readInt();
 		MarkerSet markers = new MarkerSet(markersSize);
 		ArrayList<String> readTypes = new ArrayList<>();
-		for (int i = 0; i < markersSize; i++)
+		for (int i = 0; i < markersSize; i++) {
 			markers.add(readMarkerInfo(input, readTypes));
+		}
 		// we've read all the markers from the file for this snap. if the resource
 		// doesn't exist in the workspace then consider this a delete and return
 		ResourceInfo info = workspace.getResourceInfo(path, false, false);
-		if (info == null)
+		if (info == null) {
 			return;
+		}
 		info.setMarkers(markers);
 		info.clear(ICoreConstants.M_MARKERS_SNAP_DIRTY);
 	}
 
 	private Map<String, Object> readAttributes(DataInputStream input) throws IOException {
 		short attributesSize = input.readShort();
-		if (attributesSize == 0)
+		if (attributesSize == 0) {
 			return null;
+		}
 		Map<String, Object> result = new HashMap<>(attributesSize);
 		for (int j = 0; j < attributesSize; j++) {
 			String key = input.readUTF();

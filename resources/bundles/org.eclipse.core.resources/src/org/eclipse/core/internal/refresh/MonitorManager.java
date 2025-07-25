@@ -99,8 +99,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 	 */
 	private RefreshProvider[] getRefreshProviders() {
 		synchronized (this) {
-			if (providers != null)
+			if (providers != null) {
 				return providers;
+			}
 		}
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(ResourcesPlugin.PI_RESOURCES, ResourcesPlugin.PT_REFRESH_PROVIDERS);
 		IConfigurationElement[] infos = extensionPoint.getConfigurationElements();
@@ -115,8 +116,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 			} catch (CoreException e) {
 				Policy.log(IStatus.WARNING, Messages.refresh_installError, e);
 			}
-			if (provider != null)
+			if (provider != null) {
 				providerList.add(provider);
+			}
 		}
 		synchronized (this) {
 			providers = providerList.toArray(new RefreshProvider[providerList.size()]);
@@ -139,8 +141,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 			try {
 				IResource[] members = project.members();
 				for (IResource member : members) {
-					if (member.isLinked())
+					if (member.isLinked()) {
 						resourcesToMonitor.add(member);
+					}
 				}
 			}catch (CoreException e) {
 				Policy.log(IStatus.WARNING, Messages.refresh_refreshErr, e);
@@ -163,8 +166,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 	private boolean isMonitoring(IResource resource) {
 		synchronized (registeredMonitors) {
 			for (List<IResource> resources : registeredMonitors.values()) {
-				if ((resources != null) && (resources.contains(resource)))
+				if ((resources != null) && (resources.contains(resource))) {
 					return true;
+				}
 			}
 		}
 		return false;
@@ -175,8 +179,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 	 * monitor was installed, and false if a refresh provider was installed.
 	 */
 	boolean monitor(IResource resource, IProgressMonitor progressMonitor) {
-		if (isMonitoring(resource))
+		if (isMonitoring(resource)) {
 			return false;
+		}
 		boolean pollingMonitorNeeded = true;
 		RefreshProvider[] refreshProviders = getRefreshProviders();
 		SubMonitor subMonitor = SubMonitor.convert(progressMonitor, refreshProviders.length);
@@ -198,10 +203,12 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 	 * @see IRefreshResult#monitorFailed
 	 */
 	public void monitorFailed(IRefreshMonitor monitor, IResource resource) {
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + " monitor (" + monitor + ") failed to monitor resource: " + resource); //$NON-NLS-1$ //$NON-NLS-2$
-		if (registeredMonitors == null || monitor == null)
+		}
+		if (registeredMonitors == null || monitor == null) {
 			return;
+		}
 		if (resource == null) {
 			List<IResource> resources = registeredMonitors.get(monitor);
 			if (resources == null || resources.isEmpty()) {
@@ -228,8 +235,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 	 */
 	@Override
 	public void pathVariableChanged(IPathVariableChangeEvent event) {
-		if (registeredMonitors.isEmpty())
+		if (registeredMonitors.isEmpty()) {
 			return;
+		}
 		String variableName = event.getVariableName();
 		final Set<IResource> invalidResources = new HashSet<>();
 		for (List<IResource> resources : registeredMonitors.values()) {
@@ -264,11 +272,13 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 				resources = new ArrayList<>(1);
 				registeredMonitors.put(monitor, resources);
 			}
-			if (!resources.contains(resource))
+			if (!resources.contains(resource)) {
 				resources.add(resource);
+			}
 		}
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + " added monitor (" + monitor + ") on resource: " + resource); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	private void removeMonitor(IRefreshMonitor monitor, IResource resource) {
@@ -281,8 +291,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 				registeredMonitors.remove(monitor);
 			}
 		}
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + " removing monitor (" + monitor + ") on resource: " + resource); //$NON-NLS-1$ //$NON-NLS-2$
+		}
 	}
 
 	private IRefreshMonitor safeInstallMonitor(RefreshProvider provider, IResource resource, IProgressMonitor progressMonitor) {
@@ -311,8 +322,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 		workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 		//adding the lifecycle listener twice does no harm
 		((Workspace) workspace).addLifecycleListener(this);
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + " starting monitor manager."); //$NON-NLS-1$
+		}
 		//If not exclusively using polling, create a polling monitor and run it once, to catch
 		//changes that occurred while the native monitor was turned off.
 		subMonitor.split(1);
@@ -334,14 +346,16 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 			}
 		}
 		registeredMonitors.clear();
-		if (Policy.DEBUG_AUTO_REFRESH)
+		if (Policy.DEBUG_AUTO_REFRESH) {
 			Policy.debug(RefreshManager.DEBUG_PREFIX + " stopping monitor manager."); //$NON-NLS-1$
+		}
 		pollMonitor.cancel();
 	}
 
 	void unmonitor(IResource resource, IProgressMonitor progressMonitor) {
-		if (resource == null || !isMonitoring(resource))
+		if (resource == null || !isMonitoring(resource)) {
 			return;
+		}
 		SubMonitor subMonitor = SubMonitor.convert(progressMonitor, 100);
 		synchronized (registeredMonitors) {
 			SubMonitor loopMonitor = subMonitor.split(90).setWorkRemaining(registeredMonitors.entrySet().size());
@@ -354,13 +368,15 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 				}
 			}
 		}
-		if (resource.getType() == IResource.PROJECT)
+		if (resource.getType() == IResource.PROJECT) {
 			unmonitorLinkedContents((IProject) resource, subMonitor.split(10));
+		}
 	}
 
 	private void unmonitorLinkedContents(IProject project, IProgressMonitor progressMonitor) {
-		if (!project.isAccessible())
+		if (!project.isAccessible()) {
 			return;
+		}
 		IResource[] children = null;
 		try {
 			children = project.members();
@@ -380,8 +396,9 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta delta = event.getDelta();
-		if (delta == null)
+		if (delta == null) {
 			return;
+		}
 		try {
 			delta.accept(this);
 		} catch (CoreException e) {
@@ -393,13 +410,15 @@ class MonitorManager implements ILifecycleListener, IPathVariableChangeListener,
 	public boolean visit(IResourceDelta delta) {
 		if (delta.getKind() == IResourceDelta.ADDED) {
 			IResource resource = delta.getResource();
-			if (resource.isLinked())
+			if (resource.isLinked()) {
 				monitor(resource, new NullProgressMonitor());
+			}
 		}
 		if ((delta.getFlags() & IResourceDelta.OPEN) != 0) {
 			IProject project = (IProject) delta.getResource();
-			if (project.isAccessible())
+			if (project.isAccessible()) {
 				monitor(project, new NullProgressMonitor());
+			}
 		}
 		return true;
 	}

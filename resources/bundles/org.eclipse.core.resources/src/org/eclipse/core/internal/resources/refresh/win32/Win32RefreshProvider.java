@@ -33,12 +33,15 @@ public class Win32RefreshProvider extends RefreshProvider {
 	 */
 	@Override
 	public IRefreshMonitor installMonitor(IResource resource, IRefreshResult result, IProgressMonitor progressMonitor) {
-		if (resource.getLocation() == null || !resource.exists() || resource.getType() == IResource.FILE)
+		if (resource.getLocation() == null || !resource.exists() || resource.getType() == IResource.FILE) {
 			return null;
-		if (monitor == null)
+		}
+		if (monitor == null) {
 			monitor = new Win32Monitor(result);
-		if (monitor.monitor(resource))
+		}
+		if (monitor.monitor(resource)) {
 			return monitor;
+		}
 		return null;
 	}
 }

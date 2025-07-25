@@ -50,15 +50,18 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 	 */
 	@Override
 	public IMarkerDelta[] findMarkerDeltas(String findType, boolean includeSubtypes) {
-		if (delta == null)
+		if (delta == null) {
 			return NO_MARKER_DELTAS;
+		}
 		ResourceDeltaInfo info = ((ResourceDelta) delta).getDeltaInfo();
-		if (info == null)
+		if (info == null) {
 			return NO_MARKER_DELTAS;
+		}
 		//Map of IPath -> MarkerSet containing MarkerDelta objects
 		Map<IPath, MarkerSet> markerDeltas = info.getMarkerDeltas();
-		if (markerDeltas == null || markerDeltas.isEmpty())
+		if (markerDeltas == null || markerDeltas.isEmpty()) {
 			return NO_MARKER_DELTAS;
+		}
 		ArrayList<IMarkerDelta> matching = new ArrayList<>();
 		Iterator<MarkerSet> deltaSets = markerDeltas.values().iterator();
 		while (deltaSets.hasNext()) {
@@ -67,8 +70,9 @@ public class ResourceChangeEvent extends EventObject implements IResourceChangeE
 			for (IMarkerSetElement element : elements) {
 				MarkerDelta markerDelta = (MarkerDelta) element;
 				//our inclusion test depends on whether we are considering subtypes
-				if (findType == null || (includeSubtypes ? markerDelta.isSubtypeOf(findType) : markerDelta.getType().equals(findType)))
+				if (findType == null || (includeSubtypes ? markerDelta.isSubtypeOf(findType) : markerDelta.getType().equals(findType))) {
 					matching.add(markerDelta);
+				}
 			}
 		}
 		return matching.toArray(new IMarkerDelta[matching.size()]);

@@ -53,12 +53,14 @@ public class PlatformURLResourceConnection extends PlatformURLConnection {
 		String filePath = url.getFile().trim();
 		filePath = URLDecoder.decode(filePath, StandardCharsets.UTF_8);
 		IPath spec = IPath.fromOSString(filePath).makeRelative();
-		if (!spec.segment(0).equals(RESOURCE))
+		if (!spec.segment(0).equals(RESOURCE)) {
 			throw new IOException(NLS.bind(Messages.url_badVariant, url));
+		}
 		int count = spec.segmentCount();
 		// if there is only one segment then we are talking about the workspace root.
-		if (count == 1)
+		if (count == 1) {
 			return rootURL;
+		}
 		// if there are two segments then the second is a project name.
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(spec.segment(1));
 		if (!project.exists()) {
@@ -81,8 +83,9 @@ public class PlatformURLResourceConnection extends PlatformURLConnection {
 			if (uri != null) {
 				try {
 					URL url2 = uri.toURL();
-					if (url2.getProtocol().equals("file")) //$NON-NLS-1$
+					if (url2.getProtocol().equals("file")) { //$NON-NLS-1$
 						return url2;
+					}
 				} catch (MalformedURLException e) {
 					String message = NLS.bind(Messages.url_couldNotResolve_URLProtocolHandlerCanNotResolveURL, uri.toString(), url.toExternalForm());
 					throw new IOException(message);
@@ -101,8 +104,9 @@ public class PlatformURLResourceConnection extends PlatformURLConnection {
 	 */
 	public static void startup(IPath root) {
 		// register connection type for platform:/resource/ handling
-		if (rootURL != null)
+		if (rootURL != null) {
 			return;
+		}
 		try {
 			rootURL = root.toFile().toURL();
 		} catch (MalformedURLException e) {

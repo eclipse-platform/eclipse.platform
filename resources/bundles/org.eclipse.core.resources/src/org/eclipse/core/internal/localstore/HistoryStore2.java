@@ -64,16 +64,18 @@ public class HistoryStore2 implements IHistoryStore {
 		}
 
 		private void saveChanges() throws CoreException {
-			if (changes.isEmpty())
+			if (changes.isEmpty()) {
 				return;
+			}
 			// make effective all changes collected
 			Iterator<HistoryEntry> i = changes.iterator();
 			HistoryEntry entry = i.next();
 			tree.loadBucketFor(entry.getPath());
 			HistoryBucket bucket = (HistoryBucket) tree.getCurrent();
 			bucket.addBlobs(entry);
-			while (i.hasNext())
+			while (i.hasNext()) {
 				bucket.addBlobs(i.next());
+			}
 			bucket.save();
 		}
 
@@ -111,10 +113,12 @@ public class HistoryStore2 implements IHistoryStore {
 	@Override
 	public synchronized IFileState addState(IPath key, IFileStore localFile, IFileInfo info, boolean moveContents) {
 		long lastModified = info.getLastModified();
-		if (Policy.DEBUG_HISTORY)
+		if (Policy.DEBUG_HISTORY) {
 			Policy.debug("History: Adding state for key: " + key + ", file: " + localFile + ", timestamp: " + lastModified + ", size: " + localFile.fetchInfo().getLength()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		if (!isValid(localFile, info))
+		}
+		if (!isValid(localFile, info)) {
 			return null;
+		}
 		UniversalUniqueIdentifier uuid = null;
 		try {
 			uuid = blobStore.addBlob(localFile, moveContents);
@@ -150,8 +154,9 @@ public class HistoryStore2 implements IHistoryStore {
 	 */
 	protected void applyPolicy(HistoryEntry fileEntry, int maxStates, long minTimeStamp) {
 		for (int i = 0; i < fileEntry.getOccurrences(); i++) {
-			if (i < maxStates && fileEntry.getTimestamp(i) >= minTimeStamp)
+			if (i < maxStates && fileEntry.getTimestamp(i) >= minTimeStamp) {
 				continue;
+			}
 			// "delete" the current uuid
 			blobsToRemove.add(fileEntry.getUUID(i));
 			fileEntry.deleteOccurrence(i);
@@ -189,8 +194,9 @@ public class HistoryStore2 implements IHistoryStore {
 				tree.accept(new Bucket.Visitor() {
 					@Override
 					public int visit(Entry fileEntry) {
-						if (monitor.isCanceled())
+						if (monitor.isCanceled()) {
 							return STOP;
+						}
 						entryCount[0] += fileEntry.getOccurrences();
 						applyPolicy((HistoryEntry) fileEntry, maxStates, minimumTimestamp);
 						// remove unreferenced blobs, when blobsToRemove size is greater than 100
@@ -224,8 +230,9 @@ public class HistoryStore2 implements IHistoryStore {
 			long start = System.currentTimeMillis();
 			// remove unreferenced blobs
 			blobStore.deleteBlobs(blobsToRemove);
-			if (Policy.DEBUG_HISTORY)
+			if (Policy.DEBUG_HISTORY) {
 				Policy.debug("Time to remove " + blobsToRemove.size() + " unreferenced blobs: " + (System.currentTimeMillis() - start) + "ms."); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+			}
 			blobsToRemove = new HashSet<>();
 		}
 	}
@@ -302,11 +309,13 @@ public class HistoryStore2 implements IHistoryStore {
 			tree.loadBucketFor(filePath);
 			HistoryBucket currentBucket = (HistoryBucket) tree.getCurrent();
 			HistoryEntry fileEntry = currentBucket.getEntry(filePath);
-			if (fileEntry == null || fileEntry.isEmpty())
+			if (fileEntry == null || fileEntry.isEmpty()) {
 				return new IFileState[0];
+			}
 			IFileState[] states = new IFileState[fileEntry.getOccurrences()];
-			for (int i = 0; i < states.length; i++)
+			for (int i = 0; i < states.length; i++) {
 				states[i] = new FileState(this, fileEntry.getPath(), fileEntry.getTimestamp(i), fileEntry.getUUID(i));
+			}
 			return states;
 		} catch (CoreException ce) {
 			log(ce);
@@ -329,14 +338,16 @@ public class HistoryStore2 implements IHistoryStore {
 	 */
 	private boolean isValid(IFileStore localFile, IFileInfo info) {
 		WorkspaceDescription description = workspace.internalGetDescription();
-		if (!description.isApplyFileStatePolicy())
+		if (!description.isApplyFileStatePolicy()) {
 			return true;
+		}
 		long length = info.getLength();
 		boolean result = length <= description.getMaxFileStateSize();
-		if (Policy.DEBUG_HISTORY && !result)
+		if (Policy.DEBUG_HISTORY && !result) {
 			Policy.debug("History: Ignoring file (too large). File: " + localFile.toString() + //$NON-NLS-1$
 					", size: " + length + //$NON-NLS-1$
 					", max: " + description.getMaxFileStateSize()); //$NON-NLS-1$
+		}
 		return result;
 	}
 
@@ -346,8 +357,9 @@ public class HistoryStore2 implements IHistoryStore {
 	private void log(CoreException e) {
 		//create a new status to wrap the exception if there is no exception in the status
 		IStatus status = e.getStatus();
-		if (status.getException() == null)
+		if (status.getException() == null) {
 			status = new Status(IStatus.ERROR, ResourcesPlugin.PI_RESOURCES, IResourceStatus.FAILED_WRITE_METADATA, "Internal error in history store", e); //$NON-NLS-1$
+		}
 		Policy.log(status);
 	}
 
@@ -358,9 +370,10 @@ public class HistoryStore2 implements IHistoryStore {
 			tree.accept(new Bucket.Visitor() {
 				@Override
 				public int visit(Entry fileEntry) {
-					for (int i = 0; i < fileEntry.getOccurrences(); i++)
+					for (int i = 0; i < fileEntry.getOccurrences(); i++) {
 						// remember we need to delete the files later
 						tmpBlobsToRemove.add(((HistoryEntry) fileEntry).getUUID(i));
+					}
 					fileEntry.delete();
 					return CONTINUE;
 				}
@@ -380,9 +393,10 @@ public class HistoryStore2 implements IHistoryStore {
 			tree.accept(new Bucket.Visitor() {
 				@Override
 				public int visit(Entry fileEntry) {
-					for (int i = 0; i < fileEntry.getOccurrences(); i++)
+					for (int i = 0; i < fileEntry.getOccurrences(); i++) {
 						// remember we need to delete the files later
 						tmpBlobsToRemove.remove(((HistoryEntry) fileEntry).getUUID(i));
+					}
 					return CONTINUE;
 				}
 			}, IPath.ROOT, BucketTree.DEPTH_INFINITE);

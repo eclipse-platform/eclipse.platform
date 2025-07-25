@@ -86,8 +86,9 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 		Resource source = (Resource) node.getResource();
 		IPath sufix = source.getFullPath().removeFirstSegments(segmentsToDrop);
 		Resource destination = getDestinationResource(source, sufix);
-		if (!copyProperties(source, destination))
+		if (!copyProperties(source, destination)) {
 			return false;
+		}
 		return copyContents(node, source, destination);
 	}
 
@@ -117,16 +118,18 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 			SubMonitor subMonitor = SubMonitor.convert(monitor.newChild(work), 2);
 			work = 0;
 			//ensure the parent of the root destination exists (bug 126104)
-			if (destination == rootDestination)
+			if (destination == rootDestination) {
 				destinationStore.getParent().mkdir(EFS.NONE, subMonitor.newChild(1));
+			}
 			sourceStore.copy(destinationStore, EFS.SHALLOW, subMonitor.newChild(1));
 			//create the destination in the workspace
 			ResourceInfo info = localManager.getWorkspace().createResource(destination, updateFlags);
 			localManager.updateLocalSync(info, destinationStore.fetchInfo().getLastModified());
 			//update timestamps on aliases
 			getWorkspace().getAliasManager().updateAliases(destination, destinationStore, IResource.DEPTH_ZERO, monitor);
-			if (destination.getType() == IResource.FILE)
+			if (destination.getType() == IResource.FILE) {
 				((File) destination).updateMetadataFiles();
+			}
 		} catch (CoreException e) {
 			status.add(e.getStatus());
 		}
@@ -144,8 +147,9 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 	}
 
 	protected Resource getDestinationResource(Resource source, IPath suffix) {
-		if (suffix.segmentCount() == 0)
+		if (suffix.segmentCount() == 0) {
 			return (Resource) rootDestination;
+		}
 		IPath destinationPath = rootDestination.getFullPath().append(suffix);
 		return getWorkspace().newResource(destinationPath, source.getType());
 	}
@@ -154,8 +158,9 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 	 * This is done in order to generate less garbage.
 	 */
 	protected RefreshLocalVisitor getRefreshLocalVisitor() {
-		if (refreshLocalVisitor == null)
+		if (refreshLocalVisitor == null) {
 			refreshLocalVisitor = new RefreshLocalVisitor(null);
+		}
 		return refreshLocalVisitor;
 	}
 
@@ -169,21 +174,26 @@ public class CopyVisitor implements IUnifiedTreeVisitor {
 
 	protected boolean isSynchronized(UnifiedTreeNode node) {
 		/* virtual resources are always deemed as being synchronized */
-		if (node.getResource().isVirtual())
+		if (node.getResource().isVirtual()) {
 			return true;
-		if (node.isErrorInFileSystem())
+		}
+		if (node.isErrorInFileSystem()) {
 			return true; // Assume synchronized unless proven otherwise
+		}
 		/* does the resource exist in workspace and file system? */
-		if (!node.existsInWorkspace() || !node.existsInFileSystem())
+		if (!node.existsInWorkspace() || !node.existsInFileSystem()) {
 			return false;
+		}
 		/* we don't care about folder last modified */
-		if (node.isFolder() && node.getResource().getType() == IResource.FOLDER)
+		if (node.isFolder() && node.getResource().getType() == IResource.FOLDER) {
 			return true;
+		}
 		/* is lastModified different? */
 		Resource target = (Resource) node.getResource();
 		long lastModifed = target.getResourceInfo(false, false).getLocalSyncInfo();
-		if (lastModifed != node.getLastModified())
+		if (lastModifed != node.getLastModified()) {
 			return false;
+		}
 		return true;
 	}
 

@@ -34,10 +34,10 @@ public class ShallowContainer extends PlatformObject {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == this)
+		if (obj == this) {
 			return true;
-		if (obj instanceof ShallowContainer) {
-			ShallowContainer other = (ShallowContainer) obj;
+		}
+		if (obj instanceof ShallowContainer other) {
 			return other.getResource().equals(getResource());
 		}
 		return false;
@@ -51,8 +51,9 @@ public class ShallowContainer extends PlatformObject {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
-		if (adapter == IResource.class || adapter == IContainer.class)
+		if (adapter == IResource.class || adapter == IContainer.class) {
 			return (T) container;
+		}
 		return super.getAdapter(adapter);
 	}
 

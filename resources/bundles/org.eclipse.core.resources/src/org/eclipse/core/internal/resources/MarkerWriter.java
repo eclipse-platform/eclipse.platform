@@ -91,27 +91,33 @@ public class MarkerWriter {
 	 */
 	public void save(ResourceInfo info, IPathRequestor requestor, DataOutputStream output, List<String> writtenTypes) throws IOException {
 		// phantom resources don't have markers
-		if (info.isSet(ICoreConstants.M_PHANTOM))
+		if (info.isSet(ICoreConstants.M_PHANTOM)) {
 			return;
+		}
 		MarkerSet markers = info.getMarkers(false);
-		if (markers == null)
+		if (markers == null) {
 			return;
+		}
 		IMarkerSetElement[] elements = markers.elements();
 		// filter out the markers...determine if there are any persistent ones
 		Object[] result = filterMarkers(elements);
 		int count = ((Integer) result[0]).intValue();
-		if (count == 0)
+		if (count == 0) {
 			return;
+		}
 		// if this is the first set of markers that we have written, then
 		// write the version id for the file.
-		if (output.size() == 0)
+		if (output.size() == 0) {
 			output.writeInt(MARKERS_SAVE_VERSION);
+		}
 		boolean[] isPersistent = (boolean[]) result[1];
 		output.writeUTF(requestor.requestPath().toString());
 		output.writeInt(count);
-		for (int i = 0; i < elements.length; i++)
-			if (isPersistent[i])
+		for (int i = 0; i < elements.length; i++) {
+			if (isPersistent[i]) {
 				write((MarkerInfo) elements[i], output, writtenTypes);
+			}
+		}
 	}
 
 	/**
@@ -141,13 +147,16 @@ public class MarkerWriter {
 	 */
 	public void snap(ResourceInfo info, IPathRequestor requestor, DataOutputStream output) throws IOException {
 		// phantom resources don't have markers
-		if (info.isSet(ICoreConstants.M_PHANTOM))
+		if (info.isSet(ICoreConstants.M_PHANTOM)) {
 			return;
-		if (!info.isSet(ICoreConstants.M_MARKERS_SNAP_DIRTY))
+		}
+		if (!info.isSet(ICoreConstants.M_MARKERS_SNAP_DIRTY)) {
 			return;
+		}
 		MarkerSet markers = info.getMarkers(false);
-		if (markers == null)
+		if (markers == null) {
 			return;
+		}
 		IMarkerSetElement[] elements = markers.elements();
 		// filter out the markers...determine if there are any persistent ones
 		Object[] result = filterMarkers(elements);
@@ -160,9 +169,11 @@ public class MarkerWriter {
 		// use pick up marker deletions from our snapshot.
 		output.writeInt(count);
 		List<String> writtenTypes = new ArrayList<>();
-		for (int i = 0; i < elements.length; i++)
-			if (isPersistent[i])
+		for (int i = 0; i < elements.length; i++) {
+			if (isPersistent[i]) {
 				write((MarkerInfo) elements[i], output, writtenTypes);
+			}
+		}
 		info.clear(ICoreConstants.M_MARKERS_SNAP_DIRTY);
 	}
 

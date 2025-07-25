@@ -32,8 +32,9 @@ public class ProjectLocationVariableResolver extends PathVariableResolver {
 
 	@Override
 	public String getValue(String variable, IResource resource) {
-		if (resource.getProject().getLocationURI() != null)
+		if (resource.getProject().getLocationURI() != null) {
 			return resource.getProject().getLocationURI().toASCIIString();
+		}
 		return null;
 	}
 }

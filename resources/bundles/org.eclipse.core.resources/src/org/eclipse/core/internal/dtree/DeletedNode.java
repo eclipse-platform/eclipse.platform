@@ -36,8 +36,9 @@ public class DeletedNode extends AbstractDataTreeNode {
 	 */
 	@Override
 	AbstractDataTreeNode asBackwardDelta(DeltaDataTree myTree, DeltaDataTree parentTree, IPath key) {
-		if (parentTree.includes(key))
+		if (parentTree.includes(key)) {
 			return parentTree.copyCompleteSubtree(key);
+		}
 		return this;
 	}
 
@@ -66,8 +67,9 @@ public class DeletedNode extends AbstractDataTreeNode {
 		 * be a corresponding node in the parent.  Deleted nodes can live
 		 * in isolation.
 		 */
-		if (parent.includes(key))
+		if (parent.includes(key)) {
 			return convertToRemovedComparisonNode(parent.copyCompleteSubtree(key), NodeComparison.K_REMOVED);
+		}
 		// Node doesn't exist in either tree.  Return an empty comparison.
 		// Empty comparisons are omitted from the delta.
 		return new DataTreeNode(key.lastSegment(), new NodeComparison(null, null, 0, 0));
@@ -95,8 +97,9 @@ public class DeletedNode extends AbstractDataTreeNode {
 	 */
 	@Override
 	AbstractDataTreeNode simplifyWithParent(IPath key, DeltaDataTree parent, IComparator comparer) {
-		if (parent.includes(key))
+		if (parent.includes(key)) {
 			return this;
+		}
 		return new NoDataDeltaNode(name);
 	}
 
