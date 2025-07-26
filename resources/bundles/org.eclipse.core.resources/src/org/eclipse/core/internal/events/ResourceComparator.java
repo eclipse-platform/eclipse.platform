@@ -95,10 +95,9 @@ public class ResourceComparator implements IElementComparator, ICoreConstants {
 		if (o2 == null) {
 			return ((ResourceInfo) o1).isSet(M_PHANTOM) ? IResourceDelta.REMOVED_PHANTOM : IResourceDelta.REMOVED;
 		}
-		if (!(o1 instanceof ResourceInfo oldElement && o2 instanceof ResourceInfo)) {
+		if (!(o1 instanceof ResourceInfo oldElement && o2 instanceof ResourceInfo newElement)) {
 			return IResourceDelta.NO_CHANGE;
 		}
-		ResourceInfo newElement = (ResourceInfo) o2;
 		if (!oldElement.isSet(M_PHANTOM) && newElement.isSet(M_PHANTOM)) {
 			return IResourceDelta.REMOVED;
 		}
