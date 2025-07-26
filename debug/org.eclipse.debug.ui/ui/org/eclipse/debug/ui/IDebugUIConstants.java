@@ -775,6 +775,14 @@ public interface IDebugUIConstants {
 	String BREAKPOINT_GROUP = "breakpointGroup"; //$NON-NLS-1$
 
 	/**
+	 * Identifier for breakpoint operations other than enable/disable succeeding a
+	 * breakpoint group in a menu (value <code>"BreakpointAdditionalGroup"</code>).
+	 *
+	 * @since 3.18
+	 */
+	String BREAKPOINT_ADDITIONAL_GROUP = "BreakpointAdditionalGroup"; //$NON-NLS-1$
+
+	/**
 	 * Identifier for a "breakpoint group" group in a menu (value <code>"breakpointGroupGroup"</code>).
 	 *
 	 * @since 3.1
