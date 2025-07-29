@@ -1256,7 +1256,11 @@ public abstract class Resource extends PlatformObject implements IResource, ICor
 		if (!isAccessible() || isVirtual()) {
 			return null;
 		}
-		return getLocalManager().attributes(this);
+		FileSystemResourceManager manager = getLocalManager();
+		if (manager == null) {
+			return null;
+		}
+		return manager.attributes(this);
 	}
 
 	/**
