@@ -15,48 +15,32 @@ package org.eclipse.debug.internal.ui.actions.breakpoints;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.IBreakpointsListener;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.internal.ui.actions.AbstractEnableAllActionDelegate;
-import org.eclipse.debug.internal.ui.actions.ActionMessages;
-import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
+import org.eclipse.debug.internal.ui.actions.AbstractAllBreakpointEnablement;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.IWorkbenchWindow;
 
-public class EnableAllBreakpointsAction extends AbstractEnableAllActionDelegate implements IBreakpointsListener {
+public class EnableAllBreakpointsAction extends AbstractAllBreakpointEnablement implements IBreakpointsListener {
 
 	@Override
 	protected boolean isEnabled() {
-		boolean allEnabled = true;
-		IBreakpointManager breakpointManager = DebugPlugin.getDefault().getBreakpointManager();
-		IBreakpoint[] breakpoints = breakpointManager.getBreakpoints();
-
+		IBreakpoint[] breakpoints = getBreakpoints();
+		if (breakpoints.length == 1) {
+			return false;
+		}
 		for (IBreakpoint bp : breakpoints) {
 			try {
 				if (!bp.isEnabled()) {
-					allEnabled = false;
-					break;
+					return true;
 				}
 			} catch (CoreException e) {
 				DebugUIPlugin.log(e);
 			}
 		}
-		if (breakpoints.length > 0 && allEnabled) {
-			return false;
-		}
-		return true;
+		return false;
 	}
-
 	@Override
 	public void breakpointsAdded(IBreakpoint[] breakpoints) {
 		update();
@@ -73,7 +57,6 @@ public class EnableAllBreakpointsAction extends AbstractEnableAllActionDelegate 
 			update();
 		}
 	}
-
 	@Override
 	protected void initialize() {
 		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
@@ -87,43 +70,6 @@ public class EnableAllBreakpointsAction extends AbstractEnableAllActionDelegate 
 
 	@Override
 	public void run(IAction action) {
-		IBreakpointManager breakpointManager = DebugPlugin.getDefault().getBreakpointManager();
-		IBreakpoint[] breakpoints = breakpointManager.getBreakpoints();
-		if (breakpoints.length < 1) {
-			return;
-		}
-		IWorkbenchWindow window = DebugUIPlugin.getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
-		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
-		boolean prompt = store.getBoolean(IDebugPreferenceConstants.PREF_PROMPT_ENABLE_ALL_BREAKPOINTS);
-		boolean proceed = true;
-		if (prompt) {
-			MessageDialogWithToggle mdwt = MessageDialogWithToggle.openYesNoQuestion(window.getShell(),
-					ActionMessages.EnableAllBreakpointsAction_0, ActionMessages.EnableAllBreakpointsAction_1,
-					ActionMessages.EnableAllBreakpointsAction_3, !prompt, null, null);
-			if (mdwt.getReturnCode() != IDialogConstants.YES_ID) {
-				proceed = false;
-			} else {
-				store.setValue(IDebugPreferenceConstants.PREF_PROMPT_ENABLE_ALL_BREAKPOINTS, !mdwt.getToggleState());
-			}
-		}
-		if (proceed) {
-			new Job(ActionMessages.EnableAllBreakpointsAction_1) {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						for (IBreakpoint breakpoint : breakpoints) {
-							breakpoint.setEnabled(true);
-						}
-					} catch (CoreException e) {
-						DebugUIPlugin.log(e);
-						return Status.CANCEL_STATUS;
-					}
-					return Status.OK_STATUS;
-				}
-			}.schedule();
-		}
+		updateBreakpoints(true);
 	}
 }
