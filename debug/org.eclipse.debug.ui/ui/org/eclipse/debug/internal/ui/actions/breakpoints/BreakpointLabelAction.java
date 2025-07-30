@@ -89,6 +89,7 @@ public class BreakpointLabelAction implements IViewActionDelegate {
 						Text inlineEditor = new Text(tree.getParent(), SWT.BORDER);
 						inlineEditor.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 						inlineEditor.setText(current);
+						inlineEditor.selectAll();
 						inlineEditor.setFocus();
 
 						inlineEditor.addListener(SWT.FocusOut, event -> {

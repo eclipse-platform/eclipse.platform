@@ -2065,6 +2065,10 @@ M4 = Platform-specific fourth key
        id="org.eclipse.debug.ui.commands.ToggleLineBreakpoint"
        name="%ActionDefinition.toggleLineBreakpoint.name">
  </command>
+ <command
+	   id="org.eclipse.debug.ui.commands.BreakpointLabelCommand"
+	   name="%breakpointLabelCommand"
+	   description="%breakpointLabelCommand.description"/>
    </extension>
    <extension point="org.eclipse.ui.bindings">
      <key
@@ -2250,6 +2254,11 @@ M4 = Platform-specific fourth key
              contextId="org.eclipse.debug.ui.memory.abstractasynctablerendering"
              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
              sequence="M1+M2+,"/>
+       <key
+		     commandId="org.eclipse.debug.ui.commands.BreakpointLabelCommand"
+		     schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+		     contextId="org.eclipse.ui.contexts.window"
+		     sequence="F2"/>
   	</extension>
 
   	<extension point="org.eclipse.ui.commandImages">
@@ -3271,6 +3280,22 @@ M4 = Platform-specific fourth key
             </iterate>
          </activeWhen>
       </handler>
+      <handler
+	     commandId="org.eclipse.debug.ui.commands.BreakpointLabelCommand"
+	     class="org.eclipse.debug.internal.ui.views.breakpoints.BreakpointLabelCommandHandler">
+	     <enabledWhen>
+	     	<and>
+	     		<with variable="activePartId">
+	     			<equals value="org.eclipse.debug.ui.BreakpointView"/>
+	     		</with>
+	     		<with variable="selection">
+	     			<iterate ifEmpty="false">
+	     				<instanceof value="org.eclipse.debug.core.model.IBreakpoint"/>
+	     			</iterate>
+	     		</with>
+	     	</and>
+	     </enabledWhen>
+  	  </handler>
    </extension>
    <extension
          point="org.eclipse.ui.trace.traceComponents">
