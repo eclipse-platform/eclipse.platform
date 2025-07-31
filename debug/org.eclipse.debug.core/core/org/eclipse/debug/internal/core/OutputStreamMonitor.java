@@ -106,20 +106,6 @@ public class OutputStreamMonitor implements IBinaryStreamMonitor {
 		setBuffered(true);
 	}
 
-	/**
-	 * Creates an output stream monitor on the given stream (connected to system
-	 * out or err).
-	 *
-	 * @param stream input stream to read from
-	 * @param encoding stream encoding or <code>null</code> for system default
-	 * @deprecated use {@link #OutputStreamMonitor(InputStream, Charset)}
-	 *             instead
-	 */
-	@Deprecated
-	public OutputStreamMonitor(InputStream stream, String encoding) {
-		this(stream, Charset.forName(encoding));
-	}
-
 	@Override
 	public synchronized void addListener(IStreamListener listener) {
 		fListeners.add(listener);
