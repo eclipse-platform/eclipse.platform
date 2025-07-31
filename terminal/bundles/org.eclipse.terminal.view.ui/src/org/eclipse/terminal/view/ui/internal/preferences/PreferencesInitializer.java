@@ -31,6 +31,6 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore prefs = UIPlugin.getScopedPreferences();
 		prefs.setDefault(IPreferenceKeys.PREF_REMOVE_TERMINATED_TERMINALS, true);
 		prefs.setDefault(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD, IPreferenceKeys.PREF_INITIAL_CWD_USER_HOME);
-		prefs.setDefault(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX, null);
+		prefs.setDefault(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX, ""); //$NON-NLS-1$
 	}
 }
