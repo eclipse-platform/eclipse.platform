@@ -38,7 +38,8 @@ public interface ILaunchConfigurationDialog extends IRunnableContext {
 	 * @deprecated the launch dialog no longer supports launching without
 	 * 	opening - this constant will never be returned by the dialog
 	 */
-	@Deprecated int LAUNCHED_BEFORE_OPENING = 2;
+	@Deprecated(forRemoval = true, since = "2025-09")
+	int LAUNCHED_BEFORE_OPENING = 2;
 
 	/**
 	 * Adjusts the enable state of this dialog's buttons

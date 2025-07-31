@@ -357,16 +357,6 @@ public interface IInternalDebugUIConstants {
 	String MEMENTO_BREAKPOINT_WORKING_SET_NAME = DebugUIPlugin.getUniqueIdentifier() + ".MEMENTO_BREAKPOINT_WORKING_SET_NAME"; //$NON-NLS-1$
 
 	/**
-	 * Breakpoint working set identifier.
-	 *
-	 * @since 3.1
-	 * @deprecated There is an API equivalent constant that should be used, see
-	 * {@link IDebugUIConstants#BREAKPOINT_WORKINGSET_ID}
-	 */
-	@Deprecated String ID_BREAKPOINT_WORKINGSET = "org.eclipse.debug.ui.breakpointWorkingSet"; //$NON-NLS-1$
-
-
-	/**
 	 * Address at the beginning of a page in a table rendering.
 	 * @since 3.1
 	 */
