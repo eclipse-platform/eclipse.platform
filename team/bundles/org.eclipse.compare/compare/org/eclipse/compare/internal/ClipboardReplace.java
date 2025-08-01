@@ -31,6 +31,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class ClipboardReplace extends BaseCompareAction {
@@ -42,6 +43,9 @@ public class ClipboardReplace extends BaseCompareAction {
 			try {
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				IEditorPart editor = page.getActiveEditor();
+				if (editor instanceof FormEditor fromEditor) {
+					editor = fromEditor.getActiveEditor();
+				}
 				IEditorInput input = editor.getEditorInput();
 				if (input instanceof IFileEditorInput ed) {
 					IFile file2 = ed.getFile();
