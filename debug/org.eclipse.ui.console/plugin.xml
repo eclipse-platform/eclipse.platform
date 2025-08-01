@@ -161,7 +161,7 @@ M4 = Platform-specific fourth key
 
     <extension point="org.eclipse.ui.preferencePages">
       <page name="%ansicon.prefpage.name"
-          category="org.eclipse.debug.ui.ConsolePreferencePage"
+          category="org.eclipse.debug.internal.ui.preferences.ConsolePreferencePage"
           class="org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferencePage"
           id="org.eclipse.ui.internal.console.ansi.preferences.AnsiConsolePreferencePage" />
     </extension>
