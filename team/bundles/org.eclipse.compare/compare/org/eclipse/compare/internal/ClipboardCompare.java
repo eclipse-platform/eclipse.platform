@@ -46,7 +46,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class ClipboardCompare extends BaseCompareAction implements IObjectActionDelegate {
@@ -102,8 +102,11 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 			return;
 		}
 		final String selectionContents;
-		if (editor instanceof FormEditor fromEditor) {
-			editor = fromEditor.getActiveEditor();
+		if (editor instanceof MultiPageEditorPart mpe) {
+			Object page2 = mpe.getSelectedPage();
+			if (page2 instanceof IEditorPart e) {
+				editor = e;
+			}
 		}
 		if (editor instanceof ITextEditor txtEditor) {
 			ISelection selection = txtEditor.getSelectionProvider().getSelection();
