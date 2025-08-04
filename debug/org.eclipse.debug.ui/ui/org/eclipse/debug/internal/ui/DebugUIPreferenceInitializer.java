@@ -57,6 +57,7 @@ public class DebugUIPreferenceInitializer extends AbstractPreferenceInitializer 
 		prefs.setDefault(IDebugPreferenceConstants.PREF_PROMPT_REMOVE_ALL_EXPRESSIONS, true);
 		prefs.setDefault(IDebugPreferenceConstants.PREF_PROMPT_DISABLE_ALL_BREAKPOINTS, true);
 		prefs.setDefault(IDebugPreferenceConstants.PREF_PROMPT_ENABLE_ALL_BREAKPOINTS, true);
+		prefs.setDefault(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT, true);
 
 		/**
 		 * Context launching preferences. Appear on the the Launching preference page
