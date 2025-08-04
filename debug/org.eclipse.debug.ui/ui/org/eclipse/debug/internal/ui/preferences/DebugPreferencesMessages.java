@@ -218,6 +218,7 @@ public class DebugPreferencesMessages extends NLS {
 
 	public static String RunDebugPropertiesPage_0;
 
+	public static String DebugPreferencePage_PromptSkipBreakpoints;
 
 	public static String ConsoleDefaultElapsedTimeFormat;
 
