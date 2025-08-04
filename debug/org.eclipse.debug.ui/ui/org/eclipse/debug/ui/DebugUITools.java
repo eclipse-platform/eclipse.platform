@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -92,6 +92,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -974,6 +975,14 @@ public class DebugUITools {
 		} catch (CoreException e) {
 			DebugUIPlugin.log(e);
 		}
+		boolean breakpointsDisabled = DebugPlugin.getDefault().getBreakpointManager().isEnabled();
+		boolean showWarningPrompt = DebugUIPlugin.getDefault().getPreferenceStore()
+				.getBoolean(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT);
+		if (!breakpointsDisabled && showWarningPrompt && mode.contains("debug")) { //$NON-NLS-1$
+			SkipBreakpointsWarning showWarning = new SkipBreakpointsWarning(DebugUIPlugin.getShell());
+			Display display = DebugUIPlugin.getStandardDisplay();
+			display.syncExec(() -> showWarning.open());
+		}
 		if (launchInBackground) {
 			DebugUIPlugin.launchInBackground(configuration, mode);
 		} else {
@@ -1372,5 +1381,5 @@ public class DebugUITools {
 		}
 		return null;
 	}
-
 }
+
