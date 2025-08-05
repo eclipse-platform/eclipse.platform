@@ -763,7 +763,7 @@ public class DebugUITools {
 	 *             saving of resources that are only involved in the current launch,
 	 *             no longer the entire workspace
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-09")
 	public static boolean saveBeforeLaunch() {
 		return DebugUIPlugin.preLaunchSave();
 	}

@@ -87,20 +87,6 @@ public class InputStreamMonitor {
 	}
 
 	/**
-	 * Creates an input stream monitor which writes to system in via the given
-	 * output stream.
-	 *
-	 * @param stream output stream
-	 * @param encoding stream encoding or <code>null</code> for system default
-	 * @deprecated use {@link #InputStreamMonitor(OutputStream, Charset)}
-	 *             instead
-	 */
-	@Deprecated
-	public InputStreamMonitor(OutputStream stream, String encoding) {
-		this(stream, Charset.forName(encoding));
-	}
-
-	/**
 	 * Appends the given text to the stream, or queues the text to be written at
 	 * a later time if the stream is blocked.
 	 *

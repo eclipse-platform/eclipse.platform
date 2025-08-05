@@ -79,18 +79,6 @@ public final class ContextRunner {
 	 * launch in.
 	 *
 	 * @param group the launch group to launch using
-	 * @deprecated use launch(ILaunchGroup, boolean)
-	 */
-	@Deprecated
-	public void launch(ILaunchGroup group) {
-		launch(group, false);
-	}
-
-	/**
-	 * Performs the context launching given the object context and the mode to
-	 * launch in.
-	 *
-	 * @param group the launch group to launch using
 	 * @param isShift is Shift pressed (use <code>false</code> if no support for
 	 *            Shift)
 	 */
@@ -98,19 +86,6 @@ public final class ContextRunner {
 		IStructuredSelection selection = SelectedResourceManager.getDefault().getCurrentSelection();
 		IResource resource = SelectedResourceManager.getDefault().getSelectedResource();
 		selectAndLaunch(resource, group, selection, isShift);
-	}
-
-	/**
-	 * This method launches the last configuration that was launched, if any.
-	 *
-	 * @param group the launch group to launch with
-	 * @return true if there was a last launch and it was launched, false
-	 *         otherwise
-	 * @deprecated use launchLast(ILaunchGroup, boolean)
-	 */
-	@Deprecated
-	protected boolean launchLast(ILaunchGroup group) {
-		return launchLast(group, false);
 	}
 
 	/**
@@ -132,21 +107,6 @@ public final class ContextRunner {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Prompts the user to select a way of launching the current resource, where
-	 * a 'way' is defined as a launch shortcut.
-	 *
-	 * @param resource the resource context
-	 * @param group the launch group to launch with
-	 * @param selection the current selection
-	 * @deprecated use selectAndLaunch(IResource, ILaunchGroup,
-	 *             IStructuredSelection, boolean)
-	 */
-	@Deprecated
-	protected void selectAndLaunch(IResource resource, ILaunchGroup group, IStructuredSelection selection) {
-		selectAndLaunch(resource, group, selection, false);
 	}
 
 	/**

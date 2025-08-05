@@ -530,7 +530,7 @@ public abstract class AbstractLaunchHistoryAction implements IActionDelegate2, I
 	 *  for clients of the debug platform. Instead, use <code>getHistory()</code>,
 	 *  <code>getFavorites()</code>, and <code>getLastLaunch()</code>.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-09")
 	protected LaunchHistory getLaunchHistory() {
 		return getLaunchConfigurationManager().getLaunchHistory(getLaunchGroupIdentifier());
 	}

@@ -572,7 +572,7 @@ public abstract class AbstractDebugView extends PageBookView implements IDebugVi
 	 *
 	 * @deprecated
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-09")
 	@Override
 	public IMenuManager getContextMenuManager() {
 		if (fContextMenuManagers != null) {

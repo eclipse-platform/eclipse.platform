@@ -199,7 +199,8 @@ public interface IDebugUIConstants {
 	 * @since 2.0
 	 * @deprecated no longer used
 	 */
-	@Deprecated String PREF_SHOW_TYPE_NAMES = PLUGIN_ID + ".show_type_names"; //$NON-NLS-1$
+	@Deprecated(forRemoval = true, since = "2025-09")
+	String PREF_SHOW_TYPE_NAMES = PLUGIN_ID + ".show_type_names"; //$NON-NLS-1$
 
 	/**
 	 * Boolean preference controlling whether the debugger shows the detail pane
@@ -209,7 +210,8 @@ public interface IDebugUIConstants {
 	 * @since 2.0
 	 * @deprecated no longer used
 	 */
-	@Deprecated String PREF_SHOW_DETAIL_PANE = PLUGIN_ID + ".show_detail_pane"; //$NON-NLS-1$
+	@Deprecated(forRemoval = true, since = "2025-09")
+	String PREF_SHOW_DETAIL_PANE = PLUGIN_ID + ".show_detail_pane"; //$NON-NLS-1$
 
 	/**
 	 * Boolean preference controlling whether the debugger will force activate the active

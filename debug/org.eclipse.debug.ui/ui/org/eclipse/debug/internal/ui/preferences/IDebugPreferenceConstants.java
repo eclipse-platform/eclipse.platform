@@ -41,16 +41,6 @@ public interface IDebugPreferenceConstants {
 	String CONSOLE_BAKGROUND_COLOR= "org.eclipse.debug.ui.consoleBackground"; //$NON-NLS-1$
 
 	/**
-	 * @deprecated use IDebugUIConstants.PREF_MEMORY_HISTORY_UNKNOWN_COLOR instead
-	 */
-	@Deprecated String MEMORY_VIEW_UNBUFFERED_LINE_COLOR = IDebugUIConstants.PLUGIN_ID + ".MemoryViewLineColor"; //$NON-NLS-1$
-
-	/**
-	 * @deprecated use IDebugUIConstants.PREF_MEMORY_HISTORY_KNOWN_COLOR instead
-	 */
-	@Deprecated String MEMORY_VIEW_BUFFERED_LINE_COLOR = IDebugUIConstants.PLUGIN_ID + ".MemoryViewBufferedLineColor"; //$NON-NLS-1$
-
-	/**
 	 * (boolean) Whether or not the text in the console will wrap
 	 */
 	String CONSOLE_WRAP= "Console.wrap"; //$NON-NLS-1$
@@ -129,14 +119,6 @@ public interface IDebugPreferenceConstants {
 	String VARIABLES_DETAIL_PANE_UNDERNEATH = "Variables.detail.orientation.underneath"; //$NON-NLS-1$
 	String VARIABLES_DETAIL_PANE_HIDDEN = "Variables.detail.orientation.hidden"; //$NON-NLS-1$
 	String VARIABLES_DETAIL_PANE_AUTO = "Variables.detail.orientation.auto"; //$NON-NLS-1$
-
-	/**
-	 * Memento for the last selected launch config in the
-	 * launch config dialog.
-	 *
-	 * @deprecated no longer supported
-	 */
-	@Deprecated String PREF_LAST_LAUNCH_CONFIGURATION_SELECTION = IDebugUIConstants.PLUGIN_ID + ".lastLaunchConfigSelection"; //$NON-NLS-1$
 
 	/**
 	 * The maximum size of the launch history list
