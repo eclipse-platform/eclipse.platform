@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2022 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -100,7 +100,7 @@ public class ExportBreakpointsOperation implements IRunnableWithProgress {
 				IMemento root = memento.createChild(IImportExportConstants.IE_NODE_BREAKPOINT);
 				root.putString(IImportExportConstants.IE_BP_ENABLED, Boolean.toString(breakpoint.isEnabled()));
 				root.putString(IImportExportConstants.IE_BP_REGISTERED, Boolean.toString(breakpoint.isRegistered()));
-				root.putString(IImportExportConstants.IE_BP_PERSISTANT, Boolean.toString(breakpoint.isPersisted()));
+				root.putString(IImportExportConstants.IE_BP_PERSISTENT, Boolean.toString(breakpoint.isPersisted()));
 				//write out the resource information
 				IResource resource = marker.getResource();
 				IMemento child = root.createChild(IImportExportConstants.IE_NODE_RESOURCE);
