@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -136,7 +136,7 @@ public interface IImportExportConstants {
 	/**
 	 * The name of the persistent attribute for breakpoint information
 	 */
-	String IE_BP_PERSISTANT = "persistant"; //$NON-NLS-1$
+	String IE_BP_PERSISTENT = "persistent"; //$NON-NLS-1$
 
 	/**
 	 * The default file extension for breakpoint export files
