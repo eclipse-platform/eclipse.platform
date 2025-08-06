@@ -136,7 +136,7 @@ public interface IImportExportConstants {
 	/**
 	 * The name of the persistent attribute for breakpoint information
 	 */
-	String IE_BP_PERSISTENT = "persistent"; //$NON-NLS-1$
+	String IE_BP_PERSISTENT = "persistant"; //$NON-NLS-1$
 
 	/**
 	 * The default file extension for breakpoint export files
