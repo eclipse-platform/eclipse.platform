@@ -307,4 +307,6 @@ public class LaunchConfigurationsMessages extends NLS {
 	public static String SelectLaunchOptionsDialog_3;
 	public static String SelectLaunchOptionsDialog_4;
 
+	public static String SelectFavTypeToFilter;
+
 }
