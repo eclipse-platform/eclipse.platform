@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.ant.internal.launching.launchConfigurations;
 
@@ -18,8 +19,6 @@ import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.variables.IStringVariableManager;
-import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationMigrationDelegate;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -40,23 +39,7 @@ public class AntMigrationDelegate implements ILaunchConfigurationMigrationDelega
 	 * @return the buildfile or <code>null</code> if not in the workspace
 	 */
 	protected IFile getFileForCandidate(ILaunchConfiguration candidate) {
-		IFile file = null;
-		String expandedLocation = null;
-		String location = null;
-		IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
-		try {
-			location = candidate.getAttribute(IExternalToolConstants.ATTR_LOCATION, (String) null);
-			if (location != null) {
-				expandedLocation = manager.performStringSubstitution(location);
-				if (expandedLocation != null) {
-					file = AntLaunchingUtil.getFileForLocation(expandedLocation, null);
-				}
-			}
-		}
-		catch (CoreException e) {
-			// do nothing
-		}
-		return file;
+		return IExternalToolConstants.LAUNCH_ATTRIBUTE_LOCATION.probe(candidate).map(l -> AntLaunchingUtil.getFileForLocation(l, null)).orElse(null);
 	}
 
 	@Override
