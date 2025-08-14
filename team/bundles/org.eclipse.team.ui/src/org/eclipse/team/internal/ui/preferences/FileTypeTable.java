@@ -27,14 +27,17 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osgi.util.TextProcessor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.team.core.Team;
 import org.eclipse.team.internal.ui.PixelConverter;
 import org.eclipse.team.internal.ui.SWTUtils;
@@ -114,10 +117,22 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		fItems= items;
 
 
+		Composite tableComposite = new Composite(composite, SWT.NONE);
+		tableComposite.setLayout(new GridLayout(1, false));
+		tableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		/**
+		 * Create a Text filter.
+		 */
+		Text filterText = new Text(tableComposite, SWT.SEARCH | SWT.ICON_CANCEL);
+		filterText.setMessage(TeamUIMessages.VersionControl_FilterMessage);
+		filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
 		/**
 		 * Create a table.
 		 */
-		final Table table = new Table(composite, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
+		final Table table = new Table(tableComposite,
+				SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
 		var gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.heightHint = 300;
 		table.setLayoutData(gd);
@@ -176,15 +191,33 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 
 		if (fShowSaveColumn) {
 			fTableViewer.setCellEditors(new CellEditor[] { null, modeEditor, saveEditor });
-			fTableViewer.setColumnProperties(new String [] { ITEM, PROPERTY_MODE, PROPERTY_SAVE });
+			fTableViewer.setColumnProperties(new String[] { ITEM, PROPERTY_MODE, PROPERTY_SAVE });
 		} else {
-			fTableViewer.setCellEditors(new CellEditor [] { null, modeEditor });
-			fTableViewer.setColumnProperties(new String [] { ITEM, PROPERTY_MODE });
+			fTableViewer.setCellEditors(new CellEditor[] { null, modeEditor });
+			fTableViewer.setColumnProperties(new String[] { ITEM, PROPERTY_MODE });
 		}
 
 		fTableViewer.setCellModifier(this);
 
 		fTableViewer.setInput(fItems);
+
+
+		ViewerFilter tableFilter = new ViewerFilter() {
+			@Override
+			public boolean select(Viewer viewer, Object parentElement, Object element) {
+				String inputText = filterText.getText().toLowerCase().trim();
+
+				if (inputText.isEmpty()) {
+					return true;
+				}
+
+				Item text = (Item) element;
+				return text.name != null && text.name.toLowerCase().contains(inputText);
+			}
+		};
+
+		fTableViewer.addFilter(tableFilter);
+		filterText.addModifyListener(e -> fTableViewer.refresh());
 	}
 
 
@@ -247,7 +280,7 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
 
-		final Item item= (Item) element;
+		final Item item = (Item) element;
 
 		if (columnIndex == 0) {
 			String label = (item instanceof Extension ? "*." : "") + item.name; //$NON-NLS-1$ //$NON-NLS-2$
