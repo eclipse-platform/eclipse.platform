@@ -80,7 +80,7 @@
     and the API baseline is based on the most recent release.
     &lt;p>
     &lt;/p>
-    Please &lt;a href=&quot;https://wiki.eclipse.org/Eclipse_Platform_SDK_Provisioning&quot;>read the tutorial instructions&lt;/a> for more details.
+    Please &lt;a href=&quot;https://github.com/eclipse-ide/.github/blob/main/CONTRIBUTING.md&quot;>read the tutorial instructions&lt;/a> for more details.
     &lt;/p>
   </description>
 </setup:Configuration>
