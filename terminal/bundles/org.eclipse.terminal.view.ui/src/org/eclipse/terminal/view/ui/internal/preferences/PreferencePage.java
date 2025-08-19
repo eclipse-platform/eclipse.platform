@@ -649,16 +649,16 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 			String text = command.getText();
 			IPath p = new Path(text.trim());
 			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX,
-					p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute() ? p.toOSString() : null);
+					p.toFile().isFile() && p.toFile().canRead() && p.toFile().canExecute() ? p.toOSString() : ""); //$NON-NLS-1$
 
 			text = arguments.getText();
 			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_DEFAULT_SHELL_UNIX_ARGS,
-					!"".equals(text.trim()) ? text.trim() : null); //$NON-NLS-1$
+					!"".equals(text.trim()) ? text.trim() : ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		String text = workingDir.getText();
 		if (text == null || Messages.PreferencePage_workingDir_userhome_label.equals(text) || "".equals(text.trim())) { //$NON-NLS-1$
-			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD, null);
+			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD, ""); //$NON-NLS-1$
 		} else if (Messages.PreferencePage_workingDir_eclipsehome_label.equals(text)) {
 			UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
 					IPreferenceKeys.PREF_INITIAL_CWD_ECLIPSE_HOME);
@@ -673,7 +673,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage 
 
 				IPath p = new Path(resolved);
 				UIPlugin.getScopedPreferences().setValue(IPreferenceKeys.PREF_LOCAL_TERMINAL_INITIAL_CWD,
-						p.toFile().canRead() && p.toFile().isDirectory() ? text.trim() : null);
+						p.toFile().canRead() && p.toFile().isDirectory() ? text.trim() : ""); //$NON-NLS-1$
 			} catch (CoreException e) {
 				if (Platform.inDebugMode()) {
 					UIPlugin.getDefault().getLog().log(e.getStatus());
