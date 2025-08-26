@@ -43,6 +43,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.terminal.control.ITerminalMouseListener;
+import org.eclipse.terminal.model.ITerminalTextDataReadOnly;
 import org.eclipse.terminal.model.TerminalColor;
 
 /**
@@ -60,6 +61,11 @@ public class TextCanvas extends GridCanvas {
 	private boolean fHasSelection;
 	private ResizeListener fResizeListener;
 	private final List<ITerminalMouseListener> fMouseListeners;
+	private SelectionMode fSelMode = SelectionMode.NONE;
+
+	private enum SelectionMode {
+		NONE, DRAG, WORD, LINE
+	}
 
 	// The minSize is meant to determine the minimum size of the backing store
 	// (grid) into which remote data is rendered. If the viewport is smaller
@@ -152,12 +158,37 @@ public class TextCanvas extends GridCanvas {
 							l.mouseDoubleClick(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button, e.stateMask);
 						}
 					}
+					selectWord(pt);
 				}
+			}
+
+			private void selectWord(Point pt) {
+				fSelMode = SelectionMode.WORD;
+
+				// select whole word at click position (fallback to single char if no word)
+				fCellCanvasModel.expandHoverSelectionAt(pt.y, pt.x);
+				Point start = fCellCanvasModel.getHoverSelectionStart();
+				Point end = fCellCanvasModel.getHoverSelectionEnd();
+				if (start != null && end != null) {
+					fHasSelection = true;
+					fDraggingStart = start; // anchor at word start for drag-extend by words
+					fCellCanvasModel.setSelectionAnchor(start);
+					fCellCanvasModel.setSelection(start.y, end.y, start.x, end.x);
+				} else {
+					// no word detected -> select the clicked character
+					fHasSelection = true;
+					fDraggingStart = pt;
+					fCellCanvasModel.setSelectionAnchor(pt);
+					fCellCanvasModel.setSelection(pt.y, pt.y, pt.x, pt.x);
+				}
+				// clear hover highlight after using it
+				fCellCanvasModel.expandHoverSelectionAt(-1, -1);
 			}
 
 			@Override
 			public void mouseDown(MouseEvent e) {
 				if (e.button == 1) { // left button
+					fSelMode = SelectionMode.DRAG;
 					fDraggingStart = screenPointToCell(e.x, e.y);
 					fHasSelection = false;
 					if ((e.stateMask & SWT.SHIFT) != 0) {
@@ -178,18 +209,48 @@ public class TextCanvas extends GridCanvas {
 						}
 					}
 				}
+				if (e.count == 3) {
+					selectLine(e);
+				}
+			}
+
+			private void selectLine(MouseEvent e) {
+				fSelMode = SelectionMode.LINE;
+				Point pt = screenPointToCell(e.x, e.y);
+				if (pt != null) {
+					ITerminalTextDataReadOnly term = fCellCanvasModel.getTerminalText();
+					int row = Math.max(0, Math.min(pt.y, term.getHeight() - 1));
+					int startCol = 0;
+					int endCol = Math.max(0, term.getWidth() - 1); // inclusive end column
+					Point start = new Point(startCol, row);
+					Point end = new Point(endCol, row);
+					fHasSelection = true;
+					// keep anchor at the start of the clicked line for drag-extend by lines
+					fDraggingStart = start;
+					fCellCanvasModel.setSelectionAnchor(start);
+					fCellCanvasModel.setSelection(start.y, end.y, start.x, end.x);
+					// notify custom listeners
+					if (fMouseListeners.size() > 0) {
+						for (ITerminalMouseListener l : fMouseListeners) {
+							l.mouseDown(term, pt.y, pt.x, e.button, e.stateMask);
+						}
+					}
+				}
 			}
 
 			@Override
 			public void mouseUp(MouseEvent e) {
 				if (e.button == 1) { // left button
-					updateHasSelection(e);
-					if (fHasSelection) {
-						setSelection(screenPointToCell(e.x, e.y));
-					} else {
-						fCellCanvasModel.setSelection(-1, -1, -1, -1);
+					if (fSelMode == SelectionMode.DRAG) {
+						updateHasSelection(e);
+						if (fHasSelection) {
+							setSelection(screenPointToCell(e.x, e.y));
+						} else {
+							fCellCanvasModel.setSelection(-1, -1, -1, -1);
+						}
 					}
 					fDraggingStart = null;
+					fSelMode = SelectionMode.NONE;
 				}
 				if (fMouseListeners.size() > 0) {
 					Point pt = screenPointToCell(e.x, e.y);
@@ -203,8 +264,20 @@ public class TextCanvas extends GridCanvas {
 		});
 		addMouseMoveListener(e -> {
 			if (fDraggingStart != null) {
+				Point curr = screenPointToCell(e.x, e.y);
 				updateHasSelection(e);
-				setSelection(screenPointToCell(e.x, e.y));
+				switch (fSelMode) {
+				case WORD:
+					updateWordSelection(curr);
+					break;
+				case LINE:
+					updateLineSelection(curr);
+					break;
+				case DRAG:
+				default:
+					setSelection(curr);
+					break;
+				}
 				fCellCanvasModel.expandHoverSelectionAt(-1, -1);
 			} else if ((e.stateMask & SWT.MODIFIER_MASK) == SWT.MOD1) {
 				// highlight (underline) word that would be used by MOD1 + mouse click
@@ -215,8 +288,78 @@ public class TextCanvas extends GridCanvas {
 			}
 			redraw();
 		});
-		serVerticalBarVisible(true);
+		setVerticalBarVisible(true);
 		setHorizontalBarVisible(false);
+	}
+
+	private static class Range {
+		final Point start;
+		final Point end;
+
+		Range(Point start, Point end) {
+			this.start = start;
+			this.end = end;
+		}
+
+		boolean isValid() {
+			return start != null && end != null;
+		}
+	}
+
+	private Range wordRangeAt(Point pt) {
+		if (pt == null)
+			return new Range(null, null);
+		fCellCanvasModel.expandHoverSelectionAt(pt.y, pt.x);
+		return new Range(fCellCanvasModel.getHoverSelectionStart(), fCellCanvasModel.getHoverSelectionEnd());
+	}
+
+	private void setNormalizedSelection(Point start, Point end) {
+		if (start == null || end == null)
+			return;
+
+		Point s = start;
+		Point e = end;
+		if (compare(e, s) < 0) { // normalize order
+			s = end;
+		 e = start;
+		}
+		int sCol = Math.max(0, s.x);
+		int sRow = Math.max(0, s.y);
+		fCellCanvasModel.setSelection(sRow, e.y, sCol, e.x);
+	}
+
+	private void updateWordSelection(Point curr) {
+		if (fDraggingStart == null || curr == null) {
+			return;
+		}
+		// Determine word boundaries at anchor and current positions
+
+		Range anchor = wordRangeAt(fDraggingStart);
+		Range current = wordRangeAt(curr);
+		if (!anchor.isValid() || !current.isValid())
+			return;
+		
+		if (compare(current.start, anchor.start) < 0) {
+			setNormalizedSelection(current.start, anchor.end);
+		} else {
+			setNormalizedSelection(anchor.start, current.end);
+		}
+		fHasSelection = true;
+		// clear hover underline
+		fCellCanvasModel.expandHoverSelectionAt(-1, -1);
+	}
+
+	private void updateLineSelection(Point curr) {
+		if (fDraggingStart == null || curr == null) {
+			return;
+		}
+		ITerminalTextDataReadOnly term = fCellCanvasModel.getTerminalText();
+		int startRow = Math.max(0, Math.min(fDraggingStart.y, curr.y));
+		int endRow = Math.max(0, Math.max(fDraggingStart.y, curr.y));
+		int endCol = Math.max(0, term.getWidth() - 1);
+		setNormalizedSelection(new Point(0, startRow), new Point(endCol, endRow));
+		fCellCanvasModel.setSelectionAnchor(new Point(0, fDraggingStart.y));
+		fHasSelection = true;
 	}
 
 	/**
@@ -544,5 +687,4 @@ public class TextCanvas extends GridCanvas {
 	public String getHoverSelection() {
 		return fCellCanvasModel.getHoverSelectionText();
 	}
-
 }
