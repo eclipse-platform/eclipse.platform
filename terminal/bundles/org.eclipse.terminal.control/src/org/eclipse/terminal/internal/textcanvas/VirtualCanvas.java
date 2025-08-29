@@ -335,7 +335,7 @@ public abstract class VirtualCanvas extends Canvas {
 		return getVerticalBar().isVisible();
 	}
 
-	protected void setVerticalBarVisible(boolean showVScrollBar) {
+	protected void serVerticalBarVisible(boolean showVScrollBar) {
 		ScrollBar vertical = getVerticalBar();
 		vertical.setVisible(showVScrollBar);
 		vertical.setSelection(0);
