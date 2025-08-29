@@ -20,6 +20,7 @@
  * Martin Oberhuber (Wind River) - [265352][api] Allow setting fonts programmatically
  * Anton Leherbauer (Wind River) - [434749] UnhandledEventLoopException when copying to clipboard while the selection is empty
  * Davy Landman (CWI) - [475267][api] Allow custom mouse listeners
+ * Philipp Kurrle (Advantest) - [2131] Implement word and line selection
  *******************************************************************************/
 package org.eclipse.terminal.internal.textcanvas;
 
@@ -157,15 +158,21 @@ public class TextCanvas extends GridCanvas {
 						for (ITerminalMouseListener l : fMouseListeners) {
 							l.mouseDoubleClick(fCellCanvasModel.getTerminalText(), pt.y, pt.x, e.button, e.stateMask);
 						}
+						selectWord(pt);
 					}
-					selectWord(pt);
 				}
 			}
 
+			/**
+			 * Select the word at the given point.
+			 * If no word is detected, select the single character at the point.
+			 *
+			 * @param pt
+			 * 		  the point in cell coordinates
+			 */
 			private void selectWord(Point pt) {
 				fSelMode = SelectionMode.WORD;
 
-				// select whole word at click position (fallback to single char if no word)
 				fCellCanvasModel.expandHoverSelectionAt(pt.y, pt.x);
 				Point start = fCellCanvasModel.getHoverSelectionStart();
 				Point end = fCellCanvasModel.getHoverSelectionEnd();
@@ -175,7 +182,6 @@ public class TextCanvas extends GridCanvas {
 					fCellCanvasModel.setSelectionAnchor(start);
 					fCellCanvasModel.setSelection(start.y, end.y, start.x, end.x);
 				} else {
-					// no word detected -> select the clicked character
 					fHasSelection = true;
 					fDraggingStart = pt;
 					fCellCanvasModel.setSelectionAnchor(pt);
@@ -282,13 +288,12 @@ public class TextCanvas extends GridCanvas {
 			} else if ((e.stateMask & SWT.MODIFIER_MASK) == SWT.MOD1) {
 				// highlight (underline) word that would be used by MOD1 + mouse click
 				Point pt = screenPointToCell(e.x, e.y);
-				fCellCanvasModel.expandHoverSelectionAt(pt.y, pt.x);
 			} else {
 				fCellCanvasModel.expandHoverSelectionAt(-1, -1);
 			}
 			redraw();
 		});
-		setVerticalBarVisible(true);
+		serVerticalBarVisible(true);
 		setHorizontalBarVisible(false);
 	}
 
@@ -307,21 +312,20 @@ public class TextCanvas extends GridCanvas {
 	}
 
 	private Range wordRangeAt(Point pt) {
-		if (pt == null)
-			return new Range(null, null);
 		fCellCanvasModel.expandHoverSelectionAt(pt.y, pt.x);
 		return new Range(fCellCanvasModel.getHoverSelectionStart(), fCellCanvasModel.getHoverSelectionEnd());
 	}
 
 	private void setNormalizedSelection(Point start, Point end) {
-		if (start == null || end == null)
+		if (start == null || end == null) {
 			return;
+		}
 
 		Point s = start;
 		Point e = end;
 		if (compare(e, s) < 0) { // normalize order
 			s = end;
-		 e = start;
+			e = start;
 		}
 		int sCol = Math.max(0, s.x);
 		int sRow = Math.max(0, s.y);
@@ -336,9 +340,10 @@ public class TextCanvas extends GridCanvas {
 
 		Range anchor = wordRangeAt(fDraggingStart);
 		Range current = wordRangeAt(curr);
-		if (!anchor.isValid() || !current.isValid())
+		if (!anchor.isValid() || !current.isValid()) {
 			return;
-		
+		}
+
 		if (compare(current.start, anchor.start) < 0) {
 			setNormalizedSelection(current.start, anchor.end);
 		} else {
