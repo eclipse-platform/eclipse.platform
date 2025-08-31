@@ -13,16 +13,22 @@
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
 
-import java.net.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.update.configurator.*;
-import org.eclipse.update.internal.configurator.branding.*;
-import org.osgi.framework.*;
-import org.w3c.dom.*;
+import org.eclipse.core.runtime.IBundleGroup;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.update.configurator.IPlatformConfiguration;
+import org.eclipse.update.internal.configurator.branding.AboutInfo;
+import org.eclipse.update.internal.configurator.branding.IBundleGroupConstants;
+import org.eclipse.update.internal.configurator.branding.IProductConstants;
+import org.osgi.framework.Bundle;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -197,7 +203,7 @@ public class FeatureEntry
 		ArrayList<Bundle> bundles = new ArrayList<>(plugins.size());
 		for (PluginEntry plugin : plugins) {
 			// get the highest version for the plugin
-			Bundle bundle = Utils.getBundle(plugin.getPluginIdentifier());
+			Bundle bundle = Platform.getBundle(plugin.getPluginIdentifier());
 			if (bundle != null) {
 				bundles.add(bundle);
 			}
@@ -357,11 +363,11 @@ public class FeatureEntry
 	}
 
 	public Bundle getDefiningBundle() {
-		return Utils.getBundle(getFeaturePluginIdentifier());
+		return Platform.getBundle(getFeaturePluginIdentifier());
 	}
 
 	public boolean hasBranding() {
 		String bundleId = getFeaturePluginIdentifier();
-		return bundleId != null && Utils.getBundle(bundleId) != null;
+		return bundleId != null && Platform.getBundle(bundleId) != null;
 	}
 }
