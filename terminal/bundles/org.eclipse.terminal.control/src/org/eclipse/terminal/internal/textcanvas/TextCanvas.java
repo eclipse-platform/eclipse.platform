@@ -288,6 +288,7 @@ public class TextCanvas extends GridCanvas {
 			} else if ((e.stateMask & SWT.MODIFIER_MASK) == SWT.MOD1) {
 				// highlight (underline) word that would be used by MOD1 + mouse click
 				Point pt = screenPointToCell(e.x, e.y);
+				fCellCanvasModel.expandHoverSelectionAt(pt.y, pt.x);
 			} else {
 				fCellCanvasModel.expandHoverSelectionAt(-1, -1);
 			}
