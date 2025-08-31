@@ -26,17 +26,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.framework.log.FrameworkLog;
 import org.eclipse.osgi.framework.log.FrameworkLogEntry;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.environment.EnvironmentInfo;
-import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -144,7 +143,7 @@ public class Utils {
 	 * platform to be running.
 	 */
 	public static boolean isRunning() {
-		Bundle bundle = getBundle(PI_OSGI);
+		Bundle bundle = Platform.getBundle(PI_OSGI);
 		return  bundle == null ? false : (bundle.getState() & (Bundle.ACTIVE | Bundle.STARTING)) != 0;
 	}
 
@@ -200,49 +199,6 @@ public class Utils {
 		return getContext().getProperty(PROP_NL);
 	}
 
-	/**
-	 * Returns a number that changes whenever the set of installed plug-ins
-	 * changes. This can be used for invalidating caches that are based on
-	 * the set of currently installed plug-ins. (e.g. extensions)
-	 *
-	 * @see PlatformAdmin#getState()
-	 * @see org.eclipse.osgi.service.resolver.State#getTimeStamp()
-	 */
-	public static long getStateStamp() {
-		ServiceReference<PlatformAdmin> platformAdminReference = getContext().getServiceReference(PlatformAdmin.class);
-		if (platformAdminReference == null) {
-			return -1;
-		}
-		PlatformAdmin admin = getContext().getService(platformAdminReference);
-		return admin == null ? -1 : admin.getState(false).getTimeStamp();
-	}
-
-	/**
-	 * Return the resolved bundle with the specified symbolic name.
-	 *
-	 * @see PackageAdmin#getBundles(String, String)
-	 */
-	public static synchronized Bundle getBundle(String symbolicName) {
-		if (bundleTracker == null) {
-			bundleTracker = new ServiceTracker<>(getContext(), PackageAdmin.class, null);
-			bundleTracker.open();
-		}
-		PackageAdmin admin = bundleTracker.getService();
-		if (admin == null) {
-			return null;
-		}
-		Bundle[] bundles = admin.getBundles(symbolicName, null);
-		if (bundles == null) {
-			return null;
-		}
-		//Return the first bundle that is not installed or uninstalled
-		for (Bundle bundle : bundles) {
-			if ((bundle.getState() & (Bundle.INSTALLED | Bundle.UNINSTALLED)) == 0) {
-				return bundle;
-			}
-		}
-		return null;
-	}
 
 	/*
 	 * Return the bundle context for this bundle.
