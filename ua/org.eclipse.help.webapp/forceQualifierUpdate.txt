@@ -5,3 +5,4 @@ Bug 510404 - Comparator errors in I20170112-2000
 Bug 558450 - Unanticipated comparator errors in I20191218-1805
 Bug 573965 - Version bumps for 4.21 stream
 Bug 573965 - Version bumps for 4.37 stream
+Enforce qualifier update for 4.38 stream
