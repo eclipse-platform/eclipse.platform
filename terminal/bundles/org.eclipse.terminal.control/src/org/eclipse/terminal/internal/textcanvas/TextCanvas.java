@@ -215,7 +215,7 @@ public class TextCanvas extends GridCanvas {
 			}
 			redraw();
 		});
-		serVerticalBarVisible(true);
+		setVerticalBarVisible(true);
 		setHorizontalBarVisible(false);
 	}
 
