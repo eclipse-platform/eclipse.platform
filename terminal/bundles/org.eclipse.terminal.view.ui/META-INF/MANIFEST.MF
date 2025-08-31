@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.terminal.view.ui;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.100.qualifier
 Bundle-Activator: org.eclipse.terminal.view.ui.internal.UIPlugin
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.0,4.0.0)",
@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.core.expressions;bundle-version="[3.9.0,4.0.0)",
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
-Export-Package: org.eclipse.terminal.view.ui;version="1.0.0",
+Export-Package: org.eclipse.terminal.view.ui;version="1.0.100",
  org.eclipse.terminal.view.ui.internal;x-internal:=true,
  org.eclipse.terminal.view.ui.internal.actions;x-internal:=true,
  org.eclipse.terminal.view.ui.internal.dialogs;x-internal:=true,
@@ -29,8 +29,8 @@ Export-Package: org.eclipse.terminal.view.ui;version="1.0.0",
  org.eclipse.terminal.view.ui.internal.preferences;x-internal:=true,
  org.eclipse.terminal.view.ui.internal.tabs;x-internal:=true,
  org.eclipse.terminal.view.ui.internal.view;x-internal:=true,
- org.eclipse.terminal.view.ui.launcher;version="1.0.0",
- org.eclipse.terminal.view.ui.streams;version="1.0.0"
+ org.eclipse.terminal.view.ui.launcher;version="1.0.100",
+ org.eclipse.terminal.view.ui.streams;version="1.0.100"
 Automatic-Module-Name: org.eclipse.terminal.view.ui
 Import-Package: org.eclipse.terminal.connector;version="[1.0.0,2.0.0)",
  org.eclipse.terminal.connector.provider;version="[1.0.0,2.0.0)",
