@@ -36,7 +36,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class Utils {
@@ -50,7 +49,6 @@ public class Utils {
 	// os
 	public static boolean isWindows = System.getProperty("os.name").startsWith("Win"); //$NON-NLS-1$ //$NON-NLS-2$
 	static FrameworkLog log;
-	private static ServiceTracker<?, PackageAdmin> bundleTracker;
 	private static ServiceTracker<?, Location> instanceLocation;
 	private static ServiceTracker<?, Location> configurationLocation;
 
@@ -124,10 +122,6 @@ public class Utils {
 	 * Close the services that we were listening to.
 	 */
 	/*package*/ static synchronized void shutdown() {
-		if (bundleTracker != null) {
-			bundleTracker.close();
-			bundleTracker = null;
-		}
 		if (instanceLocation != null) {
 			instanceLocation.close();
 			instanceLocation = null;
