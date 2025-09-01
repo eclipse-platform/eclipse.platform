@@ -11,12 +11,15 @@ Require-Bundle: org.eclipse.help.ui,
  org.eclipse.ui.intro.universal,
  org.eclipse.ui.forms,
  org.eclipse.equinox.jsp.jasper.registry;bundle-version="1.0.100",
- org.apache.lucene.core;bundle-version="9.4.2",
  org.eclipse.equinox.http.registry;bundle-version="1.3.100"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org
 Import-Package: javax.servlet;version="3.1.0",
  javax.servlet.http;version="3.1.0",
+ org.apache.lucene.index;version="[10.0.0,11.0.0)",
+ org.apache.lucene.search;version="[10.0.0,11.0.0)",
+ org.apache.lucene.store;version="[10.0.0,11.0.0)",
+ org.apache.lucene.util;version="[10.0.0,11.0.0)",
  org.assertj.core.api,
  org.junit.jupiter.api,
  org.junit.jupiter.api.function,

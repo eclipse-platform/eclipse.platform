@@ -14,14 +14,21 @@
  *******************************************************************************/
 package org.eclipse.help.internal.search;
 
-import org.apache.lucene.analysis.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.help.internal.base.*;
-import org.osgi.framework.*;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.help.internal.base.HelpBasePlugin;
+import org.osgi.annotation.bundle.Referenced;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 /**
  * Text Analyzer Descriptor. Encapsulates Lucene Analyzer
  */
+@Referenced(SmartChineseAnalyzer.class)
 public class AnalyzerDescriptor {
 
 	private Analyzer luceneAnalyzer;
