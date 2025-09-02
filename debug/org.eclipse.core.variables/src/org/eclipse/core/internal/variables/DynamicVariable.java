@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -43,19 +43,19 @@ public class DynamicVariable extends StringVariable implements IDynamicVariable 
 		if (fResolver == null) {
 			String name = getConfigurationElement().getAttribute("resolver"); //$NON-NLS-1$
 			if (name == null) {
-				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Contributed context variable {0} must specify a resolver.", getName()), null)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.VarMissingResolver, getName()), null));
 			}
 			Object object = getConfigurationElement().createExecutableExtension("resolver"); //$NON-NLS-1$
 			if (object instanceof IDynamicVariableResolver) {
 				fResolver = (IDynamicVariableResolver)object;
 			} else {
-				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Contributed context variable resolver for {0} must be an instance of IContextVariableResolver.", getName()), null)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.VarResolverNotIContextVariableResolver, getName()), null));
 			}
 		}
 		try {
 			return fResolver.resolveValue(this, argument);
 		} catch (RuntimeException e) {
-			throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind("Error while evaluating variable {0}.", getName()), e)); //$NON-NLS-1$
+			throw new CoreException(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, NLS.bind(VariablesMessages.VarEvalError, getName()), e));
 		}
 	}
 

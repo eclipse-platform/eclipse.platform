@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -88,10 +88,10 @@ public class ContributedValueVariable extends StringVariable implements IValueVa
 						if (object instanceof IValueVariableInitializer initializer) {
 							initializer.initialize(this);
 						} else {
-							VariablesPlugin.logMessage(NLS.bind("Unable to initialize variable {0} - initializer must be an instance of IValueVariableInitializer.", getName()), null); //$NON-NLS-1$
+							VariablesPlugin.logMessage(NLS.bind(VariablesMessages.VarInitFailDueNonIValueVariable, getName()), null);
 						}
 					} catch (CoreException e) {
-						VariablesPlugin.logMessage(NLS.bind("Unable to initialize variable {0}", getName()), e); //$NON-NLS-1$
+						VariablesPlugin.logMessage(NLS.bind(VariablesMessages.VarInitFail, getName()), e);
 					}
 				}
 			} else {
