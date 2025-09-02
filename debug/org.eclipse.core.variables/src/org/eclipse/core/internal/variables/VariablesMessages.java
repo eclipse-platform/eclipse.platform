@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,6 +25,34 @@ public class VariablesMessages extends NLS {
 	public static String StringVariableManager_27;
 
 	public static String DynamicVariable_0;
+
+	public static String VarMissingResolver;
+
+	public static String VarResolverNotIContextVariableResolver;
+
+	public static String VarEvalError;
+
+	public static String VarInitFailDueNonIValueVariable;
+
+	public static String VarInitFail;
+
+	public static String StringVarExceptionOnChange;
+
+	public static String StringVarMissingNameExt;
+
+	public static String StringVarExtOverridesOnBundles;
+
+	public static String StringVarContExtOverridesOnBundles;
+
+	public static String StringVarExceptionOnLoad;
+
+	public static String StringVarInvalidFormat;
+
+	public static String StringVarInvalidXML;
+
+	public static String StringVarNameNull;
+
+	public static String StringVarLaunchExcep;
 
 	static {
 		// load message values from bundle file
