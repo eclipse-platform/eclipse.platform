@@ -64,7 +64,7 @@ org.osgi.framework.bootdelegation=*
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.compatibility.state"/>
       <plugin id="org.eclipse.osgi.util"/>
-      <plugin id="org.mortbay.jasper.apache-jsp"/>
+      <plugin id="org.mortbay.jasper.mortbay-apache-jsp"/>
    </plugins>
 
    <configurations>
