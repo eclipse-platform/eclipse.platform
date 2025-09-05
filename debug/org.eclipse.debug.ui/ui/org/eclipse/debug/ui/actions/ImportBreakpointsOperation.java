@@ -272,7 +272,7 @@ public class ImportBreakpointsOperation implements IRunnableWithProgress {
 
 		//collect attributes from the 'breakpoint' node
 		map.put(IImportExportConstants.IE_BP_ENABLED, memento.getBoolean(IImportExportConstants.IE_BP_ENABLED));
-		map.put(IImportExportConstants.IE_BP_PERSISTANT, memento.getBoolean(IImportExportConstants.IE_BP_PERSISTANT));
+		map.put(IImportExportConstants.IE_BP_PERSISTENT, memento.getBoolean(IImportExportConstants.IE_BP_PERSISTENT));
 		map.put(IImportExportConstants.IE_BP_REGISTERED, memento.getBoolean(IImportExportConstants.IE_BP_REGISTERED));
 
 		//collect attributes from the 'marker' node
@@ -338,7 +338,7 @@ public class ImportBreakpointsOperation implements IRunnableWithProgress {
 			// create the breakpoint
 			breakpoint = fManager.createBreakpoint(marker);
 			breakpoint.setEnabled(((Boolean)attributes.get(IImportExportConstants.IE_BP_ENABLED)).booleanValue());
-			breakpoint.setPersisted(((Boolean)attributes.get(IImportExportConstants.IE_BP_PERSISTANT)).booleanValue());
+			breakpoint.setPersisted(((Boolean)attributes.get(IImportExportConstants.IE_BP_PERSISTENT)).booleanValue());
 			breakpoint.setRegistered(((Boolean)attributes.get(IImportExportConstants.IE_BP_REGISTERED)).booleanValue());
 			fAdded.add(breakpoint);
 			if (fImportBreakpoints && fCreateWorkingSets && fCurrentWorkingSetProperty != null) {
