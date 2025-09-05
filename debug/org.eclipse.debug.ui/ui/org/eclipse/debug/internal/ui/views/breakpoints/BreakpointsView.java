@@ -196,6 +196,9 @@ public class BreakpointsView extends VariablesView implements IBreakpointManager
 		menu.add(getAction(ACTION_GOTO_MARKER));
 		menu.add(new Separator(IDebugUIConstants.EMPTY_BREAKPOINT_GROUP));
 		menu.add(new Separator(IDebugUIConstants.BREAKPOINT_GROUP));
+		Separator separator = new Separator(IDebugUIConstants.BREAKPOINT_ADDITIONAL_GROUP);
+		separator.setVisible(false);
+		menu.add(separator);
 		IAction action = getAction(PASTE_ACTION);
 		if (action != null) {
 			menu.add(action);
