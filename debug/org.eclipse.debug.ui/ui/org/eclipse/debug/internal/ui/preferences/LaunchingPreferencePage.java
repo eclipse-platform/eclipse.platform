@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2016 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -52,6 +52,7 @@ public class LaunchingPreferencePage extends FieldEditorPreferencePage implement
 	private Button fLaunchLastIfNotLaunchable;
 	private Button fCheckParent;
 	private Button fTerminatAndRelaunch;
+	private Button fSkipAllBreakpointsPrompt;
 
 	/**
 	 * The default constructor
@@ -171,6 +172,8 @@ public class LaunchingPreferencePage extends FieldEditorPreferencePage implement
 		fLaunchLastIfNotLaunchable = SWTFactory.createRadioButton(space, DebugPreferencesMessages.LaunchingPreferencePage_41);
 
 		fTerminatAndRelaunch = SWTFactory.createCheckButton(group, DebugPreferencesMessages.LaunchingPreferencePage_42, null, false, 1);
+		fSkipAllBreakpointsPrompt = SWTFactory.createCheckButton(group,
+				DebugPreferencesMessages.LaunchingPreferencePage_43, null, true, 1);
 
 		// initialize the buttons
 		boolean value = getPreferenceStore().getBoolean(IInternalDebugUIConstants.PREF_USE_CONTEXTUAL_LAUNCH);
@@ -201,6 +204,8 @@ public class LaunchingPreferencePage extends FieldEditorPreferencePage implement
 		fLaunchLastIfNotLaunchable.setEnabled(value);
 		value = getPreferenceStore().getDefaultBoolean(IInternalDebugUIConstants.PREF_TERMINATE_AND_RELAUNCH_LAUNCH_ACTION);
 		fTerminatAndRelaunch.setSelection(value);
+		value = getPreferenceStore().getDefaultBoolean(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT);
+		fSkipAllBreakpointsPrompt.setSelection(value);
 		super.performDefaults();
 	}
 
@@ -210,6 +215,8 @@ public class LaunchingPreferencePage extends FieldEditorPreferencePage implement
 		getPreferenceStore().setValue(IInternalDebugUIConstants.PREF_LAUNCH_PARENT_PROJECT, fCheckParent.getSelection());
 		getPreferenceStore().setValue(IInternalDebugUIConstants.PREF_LAUNCH_LAST_IF_NOT_LAUNCHABLE, fLaunchLastIfNotLaunchable.getSelection());
 		getPreferenceStore().setValue(IInternalDebugUIConstants.PREF_TERMINATE_AND_RELAUNCH_LAUNCH_ACTION, fTerminatAndRelaunch.getSelection());
+		getPreferenceStore().setValue(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT,
+				fSkipAllBreakpointsPrompt.getSelection());
 		return super.performOk();
 	}
 
