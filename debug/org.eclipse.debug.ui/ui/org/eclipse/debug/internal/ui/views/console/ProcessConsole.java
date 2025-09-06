@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2020 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -347,8 +347,6 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					}
 
 					DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-					Duration elapsedTime = Duration.between(launchTime != null ? launchTime.toInstant() : Instant.now(),
-							terminateTime != null ? terminateTime.toInstant() : Instant.now());
 					String elapsedFormat = "%d:%02d:%02d.%03d"; //$NON-NLS-1$
 					if (terminateTime == null) {
 						// refresh every second:
@@ -357,8 +355,20 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 						// pointless to update milliseconds:
 						elapsedFormat = "%d:%02d:%02d"; //$NON-NLS-1$
 					}
-					String elapsedString = String.format(elapsedFormat, elapsedTime.toHours(),
-							elapsedTime.toMinutesPart(), elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+
+					IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
+					boolean showElapsed = store.getBoolean(IDebugPreferenceConstants.CONSOLE_ELAPSED_TIME);
+
+					String elapsedString = "";//$NON-NLS-1$
+					if (showElapsed) {
+						Duration elapsedTime = Duration.between(
+								launchTime != null ? launchTime.toInstant() : Instant.now(),
+								terminateTime != null ? terminateTime.toInstant() : Instant.now());
+						elapsedFormat = "elapsed: " + getElapsedFormat(); //$NON-NLS-1$
+						elapsedString = String.format(elapsedFormat, elapsedTime.toHours(), elapsedTime.toMinutesPart(),
+								elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+					}
+
 					if (launchTime != null && terminateTime != null) {
 						String launchTimeStr = dateTimeFormat.format(launchTime);
 						// Check if process started and terminated at same day. If so only print the
@@ -1113,5 +1123,20 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	@Override
 	public String getHelpContextId() {
 		return IDebugHelpContextIds.PROCESS_CONSOLE;
+	}
+
+	@SuppressWarnings("nls")
+	private String getElapsedFormat() {
+		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
+		int format = store.getInt(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT);
+		return switch (format) {
+		case 0 -> "%d:%02d:%02d";
+		case 1 -> "%02d:%02d:%02d";
+		case 2 -> "%02d:%02d:%02d.%03d";
+		case 3 -> "%02d:%02d.%03d";
+		case 4 -> "%02dh %02dm %02ds";
+		default -> "%d:%02d:%02d";
+		};
+
 	}
 }
