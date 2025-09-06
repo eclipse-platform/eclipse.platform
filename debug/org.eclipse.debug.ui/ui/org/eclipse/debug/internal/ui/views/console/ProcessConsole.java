@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2020 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -73,6 +73,7 @@ import org.eclipse.debug.internal.core.IInternalDebugCoreConstants;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
+import org.eclipse.debug.internal.ui.preferences.DebugPreferencesMessages;
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -347,8 +348,6 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 					}
 
 					DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-					Duration elapsedTime = Duration.between(launchTime != null ? launchTime.toInstant() : Instant.now(),
-							terminateTime != null ? terminateTime.toInstant() : Instant.now());
 					String elapsedFormat = "%d:%02d:%02d.%03d"; //$NON-NLS-1$
 					if (terminateTime == null) {
 						// refresh every second:
@@ -357,8 +356,20 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 						// pointless to update milliseconds:
 						elapsedFormat = "%d:%02d:%02d"; //$NON-NLS-1$
 					}
-					String elapsedString = String.format(elapsedFormat, elapsedTime.toHours(),
-							elapsedTime.toMinutesPart(), elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+
+					IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
+
+					String elapsedTimeFormat = store.getString(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT);
+					String elapsedString = "";//$NON-NLS-1$
+					if (!elapsedTimeFormat.equals(DebugPreferencesMessages.ConsoleDisableElapsedTime)) {
+						Duration elapsedTime = Duration.between(
+								launchTime != null ? launchTime.toInstant() : Instant.now(),
+								terminateTime != null ? terminateTime.toInstant() : Instant.now());
+						elapsedFormat = "elapsed " + convertElapsedFormat(elapsedTimeFormat); //$NON-NLS-1$
+						elapsedString = String.format(elapsedFormat, elapsedTime.toHours(), elapsedTime.toMinutesPart(),
+								elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+					}
+
 					if (launchTime != null && terminateTime != null) {
 						String launchTimeStr = dateTimeFormat.format(launchTime);
 						// Check if process started and terminated at same day. If so only print the
@@ -1113,5 +1124,73 @@ public class ProcessConsole extends IOConsole implements IConsole, IDebugEventSe
 	@Override
 	public String getHelpContextId() {
 		return IDebugHelpContextIds.PROCESS_CONSOLE;
+	}
+
+	@SuppressWarnings("nls")
+	public static String convertElapsedFormat(String humanReadable) {
+		humanReadable = humanReadable.trim();
+
+		StringBuilder format = new StringBuilder();
+
+		for (int i = 0; i < humanReadable.length(); i++) {
+			char c = humanReadable.charAt(i);
+			String part = switch (c) {
+			case 'H' -> {
+				if (i + 1 < humanReadable.length() && humanReadable.charAt(i + 1) == 'H') {
+					i++;
+					if (i + 1 < humanReadable.length() && humanReadable.charAt(i + 1) == 'h') {
+						i++;
+						yield "%02dh";
+					}
+					yield "%02d";
+				} else {
+					if (i + 1 < humanReadable.length() && humanReadable.charAt(i + 1) == 'h') {
+						i++;
+						yield "%dh";
+					}
+					yield "%d";
+				}
+			}
+
+			case 'M' -> {
+				if (i + 1 < humanReadable.length() && humanReadable.charAt(i + 1) == 'M') {
+					i++;
+					if (i + 1 < humanReadable.length() && humanReadable.charAt(i + 1) == 'm') {
+						i++;
+						yield "%02dm";
+					}
+					yield "%02d";
+				}
+				yield "";
+			}
+
+			case 'S' -> {
+				if (i + 1 < humanReadable.length() && humanReadable.charAt(i + 1) == 'S') {
+					i++;
+					if (i + 1 < humanReadable.length() && humanReadable.charAt(i + 1) == 's') {
+						i++;
+						yield "%02ds";
+					}
+					yield "%02d";
+				}
+				yield "";
+			}
+
+			case 'm' -> {
+				if (i + 2 < humanReadable.length() && humanReadable.charAt(i + 1) == 'm'
+						&& humanReadable.charAt(i + 2) == 'm') {
+					i += 2;
+					yield "%03d";
+				}
+				yield "";
+			}
+
+			default -> String.valueOf(c);
+			};
+
+			format.append(part);
+		}
+
+		return format.toString();
 	}
 }

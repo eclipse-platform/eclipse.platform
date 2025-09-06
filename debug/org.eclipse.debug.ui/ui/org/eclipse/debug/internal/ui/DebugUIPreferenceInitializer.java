@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2004, 2020 IBM Corporation and others.
+ *  Copyright (c) 2004, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -15,6 +15,7 @@
 package org.eclipse.debug.internal.ui;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.debug.internal.ui.preferences.DebugPreferencesMessages;
 import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.debug.internal.ui.views.memory.MemoryViewUtil;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -84,6 +85,8 @@ public class DebugUIPreferenceInitializer extends AbstractPreferenceInitializer 
 		prefs.setDefault(IDebugPreferenceConstants.CONSOLE_TAB_WIDTH, 8);
 		prefs.setDefault(IDebugPreferenceConstants.CONSOLE_INTERPRET_CONTROL_CHARACTERS, false);
 		prefs.setDefault(IDebugPreferenceConstants.CONSOLE_INTERPRET_CR_AS_CONTROL_CHARACTER, true);
+		prefs.setDefault(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT,
+				DebugPreferencesMessages.ConsoleDefaultElapsedTimeFormat);
 
 		// console colors
 		setThemeBasedPreferences(prefs, false);

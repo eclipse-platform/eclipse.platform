@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2019 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -335,6 +335,7 @@ public interface IDebugPreferenceConstants {
 	 * @since 3.8
 	 */
 	String DEBUG_VIEW_TOOLBAR_HIDDEN_PERSPECTIVES = "org.eclipse.debug.ui.Debug_view.debug_toolbar_hidden_perspectives"; //$NON-NLS-1$
+	String CONSOLE_ELAPSED_FORMAT = "org.eclipse.console.elapsedTimeFormat"; //$NON-NLS-1$
 }
 
 

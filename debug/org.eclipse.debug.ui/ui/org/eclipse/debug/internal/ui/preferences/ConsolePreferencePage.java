@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -15,9 +15,14 @@ package org.eclipse.debug.internal.ui.preferences;
 
 
 import java.text.MessageFormat;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
+import org.eclipse.debug.internal.ui.SWTFactory;
+import org.eclipse.debug.internal.ui.views.console.ProcessConsole;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
@@ -25,12 +30,17 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
@@ -86,6 +96,14 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 
 	private BooleanFieldEditor2 fInterpretControlCharactersEditor;
 	private BooleanFieldEditor2 fInterpretCrAsControlCharacterEditor;
+
+	private ComboViewer fElapsedFormat;
+
+	private Label fElapsedFormatPreviewLabel;
+
+	@SuppressWarnings("nls")
+	private static final String[] ELAPSED_FORMATS = new String[] { "H:MM:SS", "HH:MM:SS", "HH:MM:SS.mmm", "MM:SS.mmm",
+			"HHh MMm SSs", DebugPreferencesMessages.ConsoleDisableElapsedTime.toString() };
 
 	/**
 	 * Create the console page.
@@ -159,6 +177,40 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		addField(new BooleanFieldEditor(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, DebugPreferencesMessages.ConsolePreferencePage_Show__Console_View_when_there_is_program_output_3, SWT.NONE, getFieldEditorParent()));
 		addField(new BooleanFieldEditor(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, DebugPreferencesMessages.ConsolePreferencePage_Show__Console_View_when_there_is_program_error_3, SWT.NONE, getFieldEditorParent()));
 
+		Label comboLabel = new Label(getFieldEditorParent(), SWT.NONE);
+		comboLabel.setText(DebugPreferencesMessages.ConsoleElapsedTimeLabel);
+		fElapsedFormat = new ComboViewer(getFieldEditorParent(), SWT.DROP_DOWN | SWT.BORDER);
+		Combo combo = fElapsedFormat.getCombo();
+		combo.setToolTipText(DebugPreferencesMessages.ConsoleElapsedTimeToolTip);
+
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+
+		fElapsedFormat.setContentProvider(ArrayContentProvider.getInstance());
+		fElapsedFormat.setInput(ELAPSED_FORMATS);
+		combo.select(selectPreferredElapsedTime());
+
+		fElapsedFormat.addSelectionChangedListener(event -> {
+			if (event.getSelection() instanceof IStructuredSelection selection) {
+				String selectedFormat = selection.getFirstElement() != null ? selection.getFirstElement().toString()
+						: null;
+				if (selectedFormat != null) {
+					fElapsedFormatPreviewLabel.setText("Preview : " + processElapsedTimeFormat(selectedFormat.trim())); //$NON-NLS-1$
+				}
+			}
+
+		});
+		combo.addModifyListener(e -> {
+			if (validateElapsedTimeFormat(combo.getText().trim())) {
+				fElapsedFormatPreviewLabel.setText("Preview : " + processElapsedTimeFormat(combo.getText().trim())); //$NON-NLS-1$
+			} else {
+				fElapsedFormatPreviewLabel.setText("Invalid format"); //$NON-NLS-1$
+			}
+		});
+
+		SWTFactory.createLabel(getFieldEditorParent(), "", 1); //$NON-NLS-1$
+		fElapsedFormatPreviewLabel = SWTFactory.createLabel(getFieldEditorParent(),
+				"Preview : " + processElapsedTimeFormat(combo.getText().trim()), 1); //$NON-NLS-1$
+
 		ColorFieldEditor sysout= new ColorFieldEditor(IDebugPreferenceConstants.CONSOLE_SYS_OUT_COLOR, DebugPreferencesMessages.ConsolePreferencePage_Standard_Out__2, getFieldEditorParent());
 		ColorFieldEditor syserr= new ColorFieldEditor(IDebugPreferenceConstants.CONSOLE_SYS_ERR_COLOR, DebugPreferencesMessages.ConsolePreferencePage_Standard_Error__3, getFieldEditorParent());
 		ColorFieldEditor sysin= new ColorFieldEditor(IDebugPreferenceConstants.CONSOLE_SYS_IN_COLOR, DebugPreferencesMessages.ConsolePreferencePage_Standard_In__4, getFieldEditorParent());
@@ -197,6 +249,11 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		int low = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
 		int high = low + 8000;
 		store.setValue(IDebugPreferenceConstants.CONSOLE_HIGH_WATER_MARK, high);
+		String elapsedTimeInput = fElapsedFormat.getCombo().getText().trim();
+		if (validateElapsedTimeFormat(elapsedTimeInput)) {
+			store.setValue(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT,
+					elapsedTimeInput);
+		}
 		return ok;
 	}
 
@@ -266,6 +323,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		updateWidthEditor();
 		updateBufferSizeEditor();
 		updateInterpretCrAsControlCharacterEditor();
+		updateElapsedTimePreferences();
 	}
 
 	protected boolean canClearErrorMessage() {
@@ -300,5 +358,47 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		} else {
 			super.propertyChange(event);
 		}
+	}
+
+	protected void updateElapsedTimePreferences() {
+		fElapsedFormat.setInput(ELAPSED_FORMATS);
+		fElapsedFormat.getCombo().select(0);
+	}
+
+	private int selectPreferredElapsedTime() {
+		IPreferenceStore store = DebugUIPlugin.getDefault().getPreferenceStore();
+		String prefElapsed = store.getString(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT);
+		int selectionIndex = Arrays.asList(ELAPSED_FORMATS).indexOf(prefElapsed);
+		if (selectionIndex > -1) {
+			return selectionIndex;
+		}
+		fElapsedFormat.getCombo().add(prefElapsed);
+		return fElapsedFormat.getCombo().getItemCount() - 1;
+	}
+
+	private boolean validateElapsedTimeFormat(String format) {
+		if (format.equals(DebugPreferencesMessages.ConsoleDisableElapsedTime)) {
+			return true;
+		}
+		if (format.equals("")) { //$NON-NLS-1$
+			return false;
+		}
+		String matcherFormat = "^((H{1,2}:)?MM(:SS)?(\\.mmm)?|(HHh )?(MMm )?(SSs)?)$"; //$NON-NLS-1$
+		Pattern pattern = Pattern.compile(matcherFormat);
+		if (pattern.matcher(format).matches()) {
+			return true;
+		}
+		return false;
+	}
+
+	private String processElapsedTimeFormat(String format) {
+		if (format.equals(DebugPreferencesMessages.ConsoleDisableElapsedTime)) {
+			return "Not Available"; //$NON-NLS-1$
+		}
+		String dateTimeFormated = ProcessConsole.convertElapsedFormat(format);
+		Duration elapsedTime = Duration.ofHours(1).plusMinutes(2).plusSeconds(3).plusMillis(456);
+		String elapsedString = String.format(dateTimeFormated, elapsedTime.toHours(), elapsedTime.toMinutesPart(),
+				elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
+		return elapsedString;
 	}
 }
