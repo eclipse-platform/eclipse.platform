@@ -41,9 +41,16 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 public class NotificationManager implements IManager, ILifecycleListener {
+
+	/**
+	 * Job for scheduling resource change notifications during nested workspace
+	 * operations if sufficient time (at least {@link #NOTIFICATION_DELAY}) has
+	 * elapsed.
+	 */
 	class NotifyJob extends Job {
 		private final ICoreRunnable noop = monitor -> {
-			// do nothing
+			// do nothing, but keep return below for debugging
+			return;
 		};
 
 		public NotifyJob() {
@@ -98,11 +105,11 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	 * tree the last time we computed a delta
 	 */
 	private volatile ElementTree lastDeltaState;
-	protected volatile long lastNotifyDuration = 0L;
+	protected volatile long lastNotifyDuration;
 	/**
 	 * the marker change id at the end of the last POST_AUTO_BUILD
 	 */
-	private volatile long lastPostBuildId = 0;
+	private volatile long lastPostBuildId;
 	/**
 	 * The state of the workspace at the end of the last POST_BUILD
 	 * notification
@@ -111,7 +118,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 	/**
 	 * the marker change id at the end of the last POST_CHANGE
 	 */
-	private volatile long lastPostChangeId = 0;
+	private volatile long lastPostChangeId;
 	/**
 	 * The state of the workspace at the end of the last POST_CHANGE
 	 * notification
@@ -120,7 +127,7 @@ public class NotificationManager implements IManager, ILifecycleListener {
 
 	private final ResourceChangeListenerList listeners;
 
-	protected volatile boolean notificationRequested = false;
+	protected volatile boolean notificationRequested;
 	private final Job notifyJob;
 	private final Workspace workspace;
 
