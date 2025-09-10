@@ -43,4 +43,16 @@ public class DebugModelPresentationContext extends PresentationContext {
 		return fPresentation;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("DebugModelPresentationContext ["); //$NON-NLS-1$
+		if (fPresentation != null) {
+			builder.append("presentation="); //$NON-NLS-1$
+			builder.append(fPresentation);
+		}
+		builder.append("]"); //$NON-NLS-1$
+		return builder.toString();
+	}
+
 }

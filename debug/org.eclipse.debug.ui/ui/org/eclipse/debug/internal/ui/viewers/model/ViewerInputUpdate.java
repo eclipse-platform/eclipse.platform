@@ -143,6 +143,35 @@ public class ViewerInputUpdate extends Request implements IViewerInputUpdate {
 		return fViewerInput;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ViewerInputUpdate ["); //$NON-NLS-1$
+		builder.append("inputElement="); //$NON-NLS-1$
+		builder.append(fInputElement);
+		builder.append(", "); //$NON-NLS-1$
+		if (fContext != null) {
+			builder.append("context="); //$NON-NLS-1$
+			builder.append(fContext);
+			builder.append(", "); //$NON-NLS-1$
+		}
+		if (fSource != null) {
+			builder.append("source="); //$NON-NLS-1$
+			builder.append(fSource);
+			builder.append(", "); //$NON-NLS-1$
+		}
+		if (fViewerInput != null) {
+			builder.append("viewerInput="); //$NON-NLS-1$
+			builder.append(fViewerInput);
+			builder.append(", "); //$NON-NLS-1$
+		}
+		if (fRequestor != null) {
+			builder.append("requestor="); //$NON-NLS-1$
+			builder.append(fRequestor);
+		}
+		builder.append("]"); //$NON-NLS-1$
+		return builder.toString();
+	}
 
 
 }

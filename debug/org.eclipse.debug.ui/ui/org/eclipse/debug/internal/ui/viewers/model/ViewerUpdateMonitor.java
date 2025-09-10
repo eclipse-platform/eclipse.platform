@@ -21,7 +21,10 @@ import org.eclipse.debug.internal.ui.viewers.AsynchronousSchedulingRuleFactory;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.ITreeModelViewer;
+import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerInputUpdate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
+import org.eclipse.debug.internal.ui.viewers.model.provisional.ViewerInputService;
+import org.eclipse.debug.internal.ui.views.variables.VariablesView;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.swt.widgets.Display;
 
@@ -87,7 +90,15 @@ public abstract class ViewerUpdateMonitor extends Request implements IViewerUpda
 		fContext = context;
 		// Bug 380288: Catch and log a race condition where the viewer input is null.
 		if (viewerInput == null) {
-			DebugUIPlugin.log(new NullPointerException("Input to viewer update should not be null")); //$NON-NLS-1$
+			if (!(context.getPart() instanceof VariablesView view)) {
+				DebugUIPlugin.log(new NullPointerException("Input to viewer update should not be null")); //$NON-NLS-1$
+			} else {
+				IViewerInputUpdate viewerUpdate = view.getLastViewerUpdate();
+				if (viewerUpdate == null || viewerUpdate.getElement() != ViewerInputService.NULL_INPUT) {
+					DebugUIPlugin.log(new NullPointerException(
+							"Input element in viewer update should not be null: " + viewerUpdate)); //$NON-NLS-1$
+				}
+			}
 		}
 		fViewerInput = viewerInput;
 		fElementContentProvider = elementContentProvider;
