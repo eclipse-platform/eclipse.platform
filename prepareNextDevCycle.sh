@@ -26,6 +26,7 @@ if [ ! -f splash.png ] || [ ! -f eclipse_lg.png ] || [ ! -f eclipse_lg@2x.png ];
 	exit 1
 fi
 
+# Update splash-screen
 mv -f futureSplashScreens/splash_${NEXT_RELEASE_NAME}.png splash.png
 if [ -f 'futureSplashScreens/eclipse_lg.png' ]; then
 	# About-dialog image is usally the same for multiple releases
@@ -35,3 +36,11 @@ fi
 popd
 
 git commit --all --message "Splash Screen for ${NEXT_RELEASE_VERSION} (${NEXT_RELEASE_NAME})"
+
+
+# Enforce qualifier update in 'org.eclipse.help.webapp'
+sed -i '2,$ d' 'ua/org.eclipse.help.webapp/forceQualifierUpdate.txt'
+echo "Qualifier update for ${NEXT_RELEASE_VERSION} stream" >> 'ua/org.eclipse.help.webapp/forceQualifierUpdate.txt'
+
+git commit --all --message "Qualifier update of eclipse.help.webapp for ${NEXT_RELEASE_VERSION}"
+
