@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.core.externaltools.internal.launchConfigurations;
 
@@ -28,6 +29,15 @@ public class ExternalToolsProgramMessages extends NLS {
 	public static String ExternalToolsUtil_Location_not_specified_by__0__1;
 	public static String ExternalToolsUtil_invalidLocation__0_;
 	public static String ExternalToolsUtil_invalidDirectory__0_;
+
+
+	public static String LaunchAttributeArguments_name;
+
+
+	public static String LaunchAttributeLocation_name;
+
+
+	public static String LaunchAttributeWorkingDirectory_name;
 
 	static {
 		// load message values from bundle file

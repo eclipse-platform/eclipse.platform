@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2022 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -12,11 +12,13 @@
  *     IBM Corporation - initial API and implementation
  *     Keith Seitz (keiths@redhat.com) - Bug 27243 (environment variables contribution)
  *     dakshinamurthy.karra@gmail.com - bug 165371
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.core.externaltools.internal.launchConfigurations;
 
 
 import java.io.File;
+import java.util.Optional;
 
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.resources.IProject;
@@ -144,12 +146,7 @@ public class ExternalToolsCoreUtil {
 	 * configuration attribute, or if unable to resolve any variables
 	 */
 	public static String[] getArguments(ILaunchConfiguration configuration) throws CoreException {
-		String args = configuration.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, (String) null);
-		if (args != null) {
-			String expanded = getStringVariableManager().performStringSubstitution(args);
-			return parseStringIntoList(expanded);
-		}
-		return null;
+		return Optional.ofNullable(IExternalToolConstants.LAUNCH_ATTRIBUTE_ARGUMENTS.read(configuration)).map(ExternalToolsCoreUtil::parseStringIntoList).orElse(null);
 	}
 
 	private static IStringVariableManager getStringVariableManager() {
