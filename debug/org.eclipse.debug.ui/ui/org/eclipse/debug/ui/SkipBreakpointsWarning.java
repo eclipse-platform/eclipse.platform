@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Provides warning prompt dialog
  *
- * @since 3.19
+ * @since 3.20
  */
 public class SkipBreakpointsWarning extends Dialog {
 
