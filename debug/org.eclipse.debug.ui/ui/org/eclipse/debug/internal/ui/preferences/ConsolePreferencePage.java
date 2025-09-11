@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -18,6 +18,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
+import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
@@ -30,6 +31,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -87,6 +89,9 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	private BooleanFieldEditor2 fInterpretControlCharactersEditor;
 	private BooleanFieldEditor2 fInterpretCrAsControlCharacterEditor;
 
+	private BooleanFieldEditor2 fshowElapsedTime;
+	private Combo fElapsedFormat;
+
 	/**
 	 * Create the console page.
 	 */
@@ -107,6 +112,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	/**
 	 * Create all field editors for this page
 	 */
+	@SuppressWarnings("nls")
 	@Override
 	public void createFieldEditors() {
 
@@ -159,6 +165,27 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		addField(new BooleanFieldEditor(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, DebugPreferencesMessages.ConsolePreferencePage_Show__Console_View_when_there_is_program_output_3, SWT.NONE, getFieldEditorParent()));
 		addField(new BooleanFieldEditor(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, DebugPreferencesMessages.ConsolePreferencePage_Show__Console_View_when_there_is_program_error_3, SWT.NONE, getFieldEditorParent()));
 
+		fshowElapsedTime = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_ELAPSED_TIME,
+				DebugPreferencesMessages.ConsoleElapsedTime, SWT.NONE, getFieldEditorParent());
+		SWTFactory.createLabel(getFieldEditorParent(), "Format ", 1); //$NON-NLS-1$
+		fElapsedFormat = new Combo(getFieldEditorParent(), SWT.BORDER|SWT.READ_ONLY);
+		fElapsedFormat
+				.setItems(new String[] { "H:MM:SS", "HH:MM:SS", "HH:MM:SS.mmm", "MM:SS.mmm",
+						"HHh MMm SSs" });
+		int defaultFormat = DebugUIPlugin.getDefault().getPreferenceStore()
+				.getInt(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT);
+		fElapsedFormat.select(defaultFormat);
+
+		fshowElapsedTime.getChangeControl(getFieldEditorParent()).addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateElapsedTimePreferences();
+			}
+		});
+		addField(fshowElapsedTime);
+
+
+
 		ColorFieldEditor sysout= new ColorFieldEditor(IDebugPreferenceConstants.CONSOLE_SYS_OUT_COLOR, DebugPreferencesMessages.ConsolePreferencePage_Standard_Out__2, getFieldEditorParent());
 		ColorFieldEditor syserr= new ColorFieldEditor(IDebugPreferenceConstants.CONSOLE_SYS_ERR_COLOR, DebugPreferencesMessages.ConsolePreferencePage_Standard_Error__3, getFieldEditorParent());
 		ColorFieldEditor sysin= new ColorFieldEditor(IDebugPreferenceConstants.CONSOLE_SYS_IN_COLOR, DebugPreferencesMessages.ConsolePreferencePage_Standard_In__4, getFieldEditorParent());
@@ -197,6 +224,8 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		int low = store.getInt(IDebugPreferenceConstants.CONSOLE_LOW_WATER_MARK);
 		int high = low + 8000;
 		store.setValue(IDebugPreferenceConstants.CONSOLE_HIGH_WATER_MARK, high);
+		DebugUIPlugin.getDefault().getPreferenceStore().setValue(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT,
+				fElapsedFormat.getSelectionIndex());
 		return ok;
 	}
 
@@ -211,6 +240,8 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		updateBufferSizeEditor();
 		updateInterpretCrAsControlCharacterEditor();
 		updateWordWrapEditorFromConsolePreferences();
+		updateElapsedTimePreferences();
+
 	}
 
 	/**
@@ -266,6 +297,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		updateWidthEditor();
 		updateBufferSizeEditor();
 		updateInterpretCrAsControlCharacterEditor();
+		updateElapsedTimePreferences();
 	}
 
 	protected boolean canClearErrorMessage() {
@@ -300,5 +332,13 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		} else {
 			super.propertyChange(event);
 		}
+	}
+
+	protected void updateElapsedTimePreferences() {
+		Button b = fshowElapsedTime.getChangeControl(getFieldEditorParent());
+		fElapsedFormat.setEnabled(b.getSelection());
+		IPreferenceStore pref = DebugUIPlugin.getDefault().getPreferenceStore();
+		pref.setValue(IDebugPreferenceConstants.CONSOLE_ELAPSED_TIME, b.getSelection());
+		pref.setValue(IDebugPreferenceConstants.CONSOLE_ELAPSED_FORMAT, fElapsedFormat.getSelectionIndex());
 	}
 }
