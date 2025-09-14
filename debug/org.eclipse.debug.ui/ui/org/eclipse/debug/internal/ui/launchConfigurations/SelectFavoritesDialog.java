@@ -165,8 +165,9 @@ public class SelectFavoritesDialog extends AbstractDebugCheckboxSelectionDialog 
 			@Override
 			public boolean select(Viewer viewer2, Object parentElement, Object element) {
 				String search = filterText.getText().toLowerCase();
-				if (search.isEmpty())
+				if (search.isEmpty()) {
 					return true;
+				}
 				return element.toString().toLowerCase().contains(search);
 			}
 		};
