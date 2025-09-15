@@ -1101,9 +1101,9 @@ public class IResourceTest {
 		sourceProj.open(createTestMonitor());
 		// create a new filter.
 		if (applyResFilter) {
-			String MULTI_FILT_ID = "org.eclipse.ui.ide.multiFilter";
-			String FILT_ARG = "1.0-length-equals-false-false-10485760";
-			FileInfoMatcherDescription filterDesc = new FileInfoMatcherDescription(MULTI_FILT_ID, FILT_ARG);
+			String filterProviderId = "org.eclipse.core.resources.regexFilterMatcher";
+			String filterArguments = "foo.*";
+			FileInfoMatcherDescription filterDesc = new FileInfoMatcherDescription(filterProviderId, filterArguments);
 			int EXCL_FILE_GT = IResourceFilterDescription.EXCLUDE_ALL + IResourceFilterDescription.FILES
 					+ IResourceFilterDescription.INHERITABLE;
 			sourceProj.createFilter(EXCL_FILE_GT, filterDesc, IResource.BACKGROUND_REFRESH, createTestMonitor());
