@@ -60,6 +60,7 @@ import org.eclipse.core.tests.runtime.RuntimeTestsPlugin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -222,11 +223,25 @@ public class PreferencesServiceTest {
 	@Test
 	public void testLookupOrder() {
 		IPreferencesService service = Platform.getPreferencesService();
-		String[] defaultOrder = new String[] {"project", //$NON-NLS-1$
+		List<String> defaultOrderList = new ArrayList<>(List.of( //
 				InstanceScope.SCOPE, //
 				ConfigurationScope.SCOPE, //
 				UserScope.SCOPE, //
-				DefaultScope.SCOPE};
+				DefaultScope.SCOPE) //
+		);
+		Bundle resourcesBundle = Platform.getBundle("org.eclipse.core.resources");
+		if (resourcesBundle != null) {
+			if (resourcesBundle.getState() == Bundle.ACTIVE) {
+				// "project" scope is added via
+				// PreferencesService.prependScopeToDefaultDefaultLookupOrder(String)
+				// by org.eclipse.core.internal.resources.Workspace, when the
+				// org.eclipse.core.resources bundle is started, which depends on
+				// the test execution environment (is the UI harness part of the
+				// launch?)
+				defaultOrderList.add(0, "project");
+			}
+		}
+		String[] defaultOrder = defaultOrderList.toArray(String[]::new);
 		String[] fullOrder = new String[] {"a", "b", "c"};
 		String[] nullKeyOrder = new String[] {"e", "f", "g"};
 		String qualifier = getUniqueString();
