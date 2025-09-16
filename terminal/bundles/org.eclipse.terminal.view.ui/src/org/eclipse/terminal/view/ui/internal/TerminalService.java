@@ -193,12 +193,21 @@ public class TerminalService implements ITerminalService {
 
 	private CompletableFuture<?> executeServiceOperation(final TerminalServiceRunnable runnable, TerminalViewId tvid,
 			final String title, final ITerminalConnector connector, final Object data) {
-		// Execute the operation
-		if (runnable.isExecuteAsync()) {
-			return CompletableFuture.supplyAsync(() -> runnable.run(tvid, title, connector, data),
-					Display.getDefault());
-		} else {
-			return CompletableFuture.completedFuture(runnable.run(tvid, title, connector, data));
+		try { // Execute the operation
+			if (runnable.isExecuteAsync()) {
+				return CompletableFuture.supplyAsync(() -> runnable.run(tvid, title, connector, data),
+						/*
+						 * A special executor is used here because the default Display executor will
+						 * do a syncExec here if called from the UI thread, but isExecuteAsync is true so we
+						 * must run async on the UI thread.
+						 */
+						Display.getDefault()::asyncExec);
+
+			} else {
+				return CompletableFuture.completedFuture(runnable.run(tvid, title, connector, data));
+			}
+		} catch (RuntimeException e) {
+			return CompletableFuture.failedFuture(e);
 		}
 	}
 
