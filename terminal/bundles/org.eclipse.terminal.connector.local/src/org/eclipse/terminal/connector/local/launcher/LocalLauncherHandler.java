@@ -19,6 +19,7 @@ import java.util.Optional;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -72,11 +73,11 @@ public class LocalLauncherHandler extends AbstractHandler {
 		Map<String, Object> properties = new HashMap<>();
 		properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
 		properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
-		try {
-			delegate.execute(properties);
-		} catch (Exception e) {
-			throw new ExecutionException(e.getMessage(), e);
-		}
+		delegate.execute(properties).whenComplete((r, e) -> {
+			if (e != null) {
+				ILog.get().error("Error occurred while running delegate to open console", e); //$NON-NLS-1$
+			}
+		});
 	}
 
 }

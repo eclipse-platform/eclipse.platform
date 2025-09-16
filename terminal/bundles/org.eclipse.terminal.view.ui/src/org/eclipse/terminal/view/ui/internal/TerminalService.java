@@ -20,7 +20,6 @@ import java.util.concurrent.CompletionException;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
@@ -260,11 +259,7 @@ public class TerminalService implements ITerminalService {
 				} else {
 					// First, restore the view. This opens consoles from the memento
 					fRestoringView = true;
-					try {
-						consoleViewManager.showConsoleView(tvid);
-					} catch (CoreException e) {
-						ILog.get().log(e.getStatus());
-					}
+					consoleViewManager.showConsoleView(tvid);
 					fRestoringView = false;
 					doRun(tvid, title, connector, data);
 				}
