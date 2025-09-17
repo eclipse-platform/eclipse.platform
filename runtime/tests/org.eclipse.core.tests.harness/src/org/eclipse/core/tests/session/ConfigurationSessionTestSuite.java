@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,8 +45,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
-import org.osgi.framework.wiring.BundleWire;
-import org.osgi.framework.wiring.BundleWiring;
 
 @SuppressWarnings("restriction")
 public class ConfigurationSessionTestSuite extends SessionTestSuite {
@@ -74,18 +71,6 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		super(pluginId, name);
 	}
 
-	private static void collectDependencies(Bundle bundle, Collection<Bundle> dependencyClosure) {
-		if (!dependencyClosure.add(bundle)) {
-			return;
-		}
-		BundleWiring wiring = bundle.adapt(BundleWiring.class);
-		if (wiring != null) {
-			for (BundleWire wire : wiring.getRequiredWires(null)) {
-				collectDependencies(wire.getProviderWiring().getBundle(), dependencyClosure);
-			}
-		}
-	}
-
 	@SuppressWarnings("deprecation")
 	public void addMinimalBundleSet() {
 		// Just use any class from the bundles we want to add as minimal bundle set
@@ -99,11 +84,12 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		addBundle(org.eclipse.core.runtime.content.IContentType.class); // org.eclipse.core.contenttype
 		addBundle(org.eclipse.equinox.app.IApplication.class); // org.eclipse.equinox.app
 
-		// org.apache.felix.scr + dependencies
-		Bundle scrBundle = FrameworkUtil.getBundle(org.apache.felix.scr.info.ScrInfo.class);
-		Collection<Bundle> scrAndDependencies = new HashSet<>();
-		collectDependencies(scrBundle, scrAndDependencies);
-		scrAndDependencies.forEach(i -> addBundle(i, null));
+		// org.apache.felix.scr + (non-optional) dependencies
+		addBundle(org.apache.felix.scr.info.ScrInfo.class); // org.apache.felix.scr
+		addBundle(org.osgi.service.event.EventAdmin.class); // org.osgi.service.event
+		addBundle(org.osgi.service.component.ComponentConstants.class); // org.osgi.service.component
+		addBundle(org.osgi.util.promise.Promise.class); // org.osgi.util.promise
+		addBundle(org.osgi.util.function.Function.class); // org.osgi.util.function
 
 		addBundle(org.eclipse.core.tests.harness.TestHarnessPlugin.class); // org.eclipse.core.tests.harness
 		addBundle(org.eclipse.test.performance.Performance.class); // org.eclipse.test.performance
