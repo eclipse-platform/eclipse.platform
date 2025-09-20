@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.ant.internal.ui;
 
@@ -20,7 +21,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -195,7 +195,7 @@ public final class AntUtil {
 	}
 
 	private static Map<String, String> getAllProperties(ILaunchConfiguration config) throws CoreException {
-		String allArgs = config.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, (String) null);
+		String allArgs = IExternalToolConstants.LAUNCH_ATTRIBUTE_ARGUMENTS.read(config);
 		Map<String, String> properties = new HashMap<>();
 		if (allArgs != null) {
 			// filter arguments to avoid resolving variables that will prompt the user
@@ -213,9 +213,7 @@ public final class AntUtil {
 		}
 		Map<String, String> configProperties = getProperties(config);
 		if (configProperties != null) {
-			Iterator<String> keys = configProperties.keySet().iterator();
-			while (keys.hasNext()) {
-				String name = keys.next();
+			for (String name : configProperties.keySet()) {
 				if (properties.get(name) == null) {
 					properties.put(name, configProperties.get(name));
 				}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -10,11 +10,14 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alexander Fedorov (ArSysOp) - API to process launch configuration attributes
  *******************************************************************************/
 package org.eclipse.ui.externaltools.internal.launchConfigurations;
 
 
 import java.io.File;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.resources.IResource;
@@ -23,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
+import org.eclipse.debug.core.ILaunchAttribute;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -50,7 +54,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 import org.eclipse.ui.externaltools.internal.model.ExternalToolsImages;
-import org.eclipse.ui.externaltools.internal.model.ExternalToolsPlugin;
 
 /**
  * The external tools main tab allows the user to configure primary attributes
@@ -312,13 +315,7 @@ public abstract class ExternalToolsMainTab extends AbstractLaunchConfigurationTa
 	 * configuration.
 	 */
 	protected void updateWorkingDirectory(ILaunchConfiguration configuration) {
-		String workingDir= IExternalToolConstants.EMPTY_STRING;
-		try {
-			workingDir= configuration.getAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, IExternalToolConstants.EMPTY_STRING);
-		} catch (CoreException ce) {
-			ExternalToolsPlugin.getDefault().log(ExternalToolsLaunchConfigurationMessages.ExternalToolsMainTab_Error_reading_configuration_10, ce);
-		}
-		workDirectoryField.setText(workingDir);
+		updateTextField(workDirectoryField, IExternalToolConstants.LAUNCH_ATTRIBUTE_WORKING_DIRECTORY, configuration);
 	}
 
 	/**
@@ -326,13 +323,7 @@ public abstract class ExternalToolsMainTab extends AbstractLaunchConfigurationTa
 	 * configuration.
 	 */
 	protected void updateLocation(ILaunchConfiguration configuration) {
-		String location= IExternalToolConstants.EMPTY_STRING;
-		try {
-			location= configuration.getAttribute(IExternalToolConstants.ATTR_LOCATION, IExternalToolConstants.EMPTY_STRING);
-		} catch (CoreException ce) {
-			ExternalToolsPlugin.getDefault().log(ExternalToolsLaunchConfigurationMessages.ExternalToolsMainTab_Error_reading_configuration_10, ce);
-		}
-		locationField.setText(location);
+		updateTextField(locationField, IExternalToolConstants.LAUNCH_ATTRIBUTE_LOCATION, configuration);
 	}
 
 	/**
@@ -340,41 +331,29 @@ public abstract class ExternalToolsMainTab extends AbstractLaunchConfigurationTa
 	 * configuration.
 	 */
 	protected void updateArgument(ILaunchConfiguration configuration) {
-		String arguments= IExternalToolConstants.EMPTY_STRING;
-		try {
-			arguments= configuration.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, IExternalToolConstants.EMPTY_STRING);
-		} catch (CoreException ce) {
-			ExternalToolsPlugin.getDefault().log(ExternalToolsLaunchConfigurationMessages.ExternalToolsMainTab_Error_reading_configuration_7, ce);
-		}
-		argumentField.setText(arguments);
+		updateTextField(argumentField, IExternalToolConstants.LAUNCH_ATTRIBUTE_ARGUMENTS, configuration);
+	}
+
+	private void updateTextField(Text text, ILaunchAttribute<String> defined, ILaunchConfiguration configuration) {
+		text.setText(defined.probe(configuration).orElse(IExternalToolConstants.EMPTY_STRING));
 	}
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		String location= locationField.getText().trim();
-		if (location.length() == 0) {
-			configuration.setAttribute(IExternalToolConstants.ATTR_LOCATION, (String)null);
-		} else {
-			configuration.setAttribute(IExternalToolConstants.ATTR_LOCATION, location);
-		}
-
-		String workingDirectory= workDirectoryField.getText().trim();
-		if (workingDirectory.length() == 0) {
-			configuration.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, (String)null);
-		} else {
-			configuration.setAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, workingDirectory);
-		}
-
-		String arguments= argumentField.getText().trim();
-		if (arguments.length() == 0) {
-			configuration.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, (String)null);
-		} else {
-			configuration.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, arguments);
-		}
-
+		applyText(locationField, IExternalToolConstants.LAUNCH_ATTRIBUTE_LOCATION, configuration);
+		applyText(workDirectoryField, IExternalToolConstants.LAUNCH_ATTRIBUTE_WORKING_DIRECTORY, configuration);
+		applyText(argumentField, IExternalToolConstants.LAUNCH_ATTRIBUTE_ARGUMENTS, configuration);
 		if(userEdited) {
 			configuration.setAttribute(FIRST_EDIT, (String)null);
 		}
+	}
+
+	private void applyText(Text text, ILaunchAttribute<String> defined, ILaunchConfigurationWorkingCopy configuration) {
+		defined.write(configuration, nullIfEmpty(text));
+	}
+
+	private String nullIfEmpty(Text text) {
+		return Optional.of(text.getText().trim()).filter(Predicate.not(String::isEmpty)).orElse(null);
 	}
 
 	@Override
