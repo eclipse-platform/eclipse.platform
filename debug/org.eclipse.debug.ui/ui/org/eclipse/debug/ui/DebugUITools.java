@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -52,6 +52,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.ISourceLocator;
 import org.eclipse.debug.internal.core.IConfigurationElementConstants;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
+import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.DefaultLabelProvider;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
@@ -81,6 +82,8 @@ import org.eclipse.debug.ui.contexts.IDebugContextService;
 import org.eclipse.debug.ui.memory.IMemoryRenderingManager;
 import org.eclipse.debug.ui.sourcelookup.ISourceContainerBrowser;
 import org.eclipse.debug.ui.sourcelookup.ISourceLookupResult;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -92,6 +95,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -974,6 +978,31 @@ public class DebugUITools {
 		} catch (CoreException e) {
 			DebugUIPlugin.log(e);
 		}
+		boolean breakpointsDisabled = DebugPlugin.getDefault().getBreakpointManager().isEnabled();
+		boolean showWarningPrompt = DebugUIPlugin.getDefault().getPreferenceStore()
+				.getBoolean(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT);
+		if (!breakpointsDisabled && showWarningPrompt && mode.contains("debug")) { //$NON-NLS-1$
+			final boolean[] msgValue = new boolean[] { true };
+			Display display = DebugUIPlugin.getStandardDisplay();
+
+			if (!display.isDisposed()) {
+				display.syncExec(() -> {
+					MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(
+							display.getActiveShell(), DebugUIMessages.skipBreakpointWarningTitle,
+							DebugUIMessages.skipBreakpointWarningLabel, DebugUIMessages.skipBreakpointWarningToggle1,
+							false, null, null);
+					if (dialog.getToggleState()) {
+						DebugUIPlugin.getDefault().getPreferenceStore()
+								.setValue(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT, false);
+					}
+					msgValue[0] = dialog.getReturnCode() == IDialogConstants.OK_ID;
+				});
+			}
+			if (!msgValue[0]) {
+				return;
+			}
+		}
+
 		if (launchInBackground) {
 			DebugUIPlugin.launchInBackground(configuration, mode);
 		} else {
@@ -1372,5 +1401,5 @@ public class DebugUITools {
 		}
 		return null;
 	}
-
 }
+

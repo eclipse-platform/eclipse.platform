@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2017 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -302,6 +302,10 @@ public class DebugUIMessages extends NLS {
 	public static String ExpressionManagerContentProvider_1;
 
 	public static String LaunchShortcutAction_combineLaunchShortcutName;
+
+	public static String skipBreakpointWarningTitle;
+	public static String skipBreakpointWarningLabel;
+	public static String skipBreakpointWarningToggle1;
 
 	static {
 		// load message values from bundle file
