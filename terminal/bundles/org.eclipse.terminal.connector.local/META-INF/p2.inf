@@ -29,3 +29,7 @@ requires.7.filter = (&(osgi.os=win32)(osgi.arch=x86_64))
 requires.8.namespace = org.eclipse.equinox.p2.iu
 requires.8.name = org.eclipse.cdt.core.win32.aarch64
 requires.8.filter = (&(osgi.os=win32)(osgi.arch=aarch64))
+
+requires.9.namespace = org.eclipse.equinox.p2.iu
+requires.9.name = org.eclipse.cdt.core.linux.riscv64
+requires.9.filter = (&(osgi.os=linux)(osgi.arch=riscv64))
