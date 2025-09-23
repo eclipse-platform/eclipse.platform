@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2024 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -105,7 +105,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ColorRegistry;
+import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.CursorLinePainter;
@@ -166,6 +168,7 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -493,6 +496,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	// whether enhanced viewer configuration has been done
 	private boolean isConfigured = false;
 	private boolean fRedoDiff = false;
+
+	private double fCurrMagni = 0;
+
+	private int fCurrentHeight;
 
 	private final class InternalOutlineViewerCreator extends OutlineViewerCreator implements ISelectionChangedListener {
 		@Override
@@ -3171,6 +3178,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	private void configureSourceViewer(SourceViewer sourceViewer, boolean editable, ContributorInfo contributor) {
 		setEditable(sourceViewer, editable);
 		configureTextViewer(sourceViewer);
+
 		if (editable && contributor != null) {
 			IDocument document = sourceViewer.getDocument();
 			if (document != null) {
@@ -3180,6 +3188,31 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		if (!isCursorLinePainterInstalled(sourceViewer)) {
 			getSourceViewerDecorationSupport(sourceViewer).install(fPreferenceStore);
 		}
+
+		StyledText styleText = sourceViewer.getTextWidget();
+		LocalResourceManager LocalResManager = new LocalResourceManager(JFaceResources.getResources(), styleText);
+		styleText.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if ((e.stateMask & SWT.COMMAND) != 0 && (e.keyCode == '=' || e.keyCode == '+')) {
+					updateFontSize(true, LocalResManager);
+				}
+				if ((e.stateMask & SWT.COMMAND) != 0 && e.keyCode == '-') {
+					updateFontSize(false, LocalResManager);
+				}
+			}
+		});
+		styleText.addListener(SWT.Gesture, event -> {
+			if (event.detail == SWT.GESTURE_MAGNIFY) {
+				if (event.magnification > fCurrMagni) {
+					fCurrMagni = event.magnification;
+					updateFontSize(true, LocalResManager);
+				} else if (event.magnification < fCurrMagni) {
+					fCurrMagni = event.magnification;
+					updateFontSize(false, LocalResManager);
+				}
+			}
+		});
 	}
 
 	private boolean isCursorLinePainterInstalled(SourceViewer viewer) {
@@ -6019,4 +6052,29 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		Assert.isNotNull(key);
 		getCompareConfiguration().setProperty(key, null);
 	}
+
+	private void updateFontSize(boolean increment, LocalResourceManager localResManager) {
+		StyledText rightStyle = fRight.getSourceViewer().getTextWidget();
+		StyledText leftStyle = fLeft.getSourceViewer().getTextWidget();
+
+		Font rightFont = rightStyle.getFont();
+		for (FontData fd : rightFont.getFontData()) {
+			if (increment) {
+				fCurrentHeight = Math.max(5, fd.getHeight() + 1);
+			} else {
+				fCurrentHeight = Math.max(5, fd.getHeight() - 1);
+			}
+		}
+
+		FontData[] baseData = JFaceResources.getTextFont().getFontData();
+		for (FontData fd : baseData) {
+			fd.setHeight(fCurrentHeight);
+		}
+		FontDescriptor desc = FontDescriptor.createFrom(baseData);
+		Font newFont = localResManager.create(desc);
+		leftStyle.setFont(newFont);
+		rightStyle.setFont(newFont);
+		doDiff();
+	}
+
 }
