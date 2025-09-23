@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2009, 2019 QNX Software Systems and others.
+ *  Copyright (c) 2009, 2019, 2025 QNX Software Systems and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,7 @@
  *      Freescale Semiconductor
  *      SSI Schaefer
  *      Alexander Fedorov <alexander.fedorov@arsysop.ru> - Bug 529651
+ *      Pauline DEVILLE <pauline.deville@cea.fr - Issue 2167
  *******************************************************************************/
 package org.eclipse.debug.internal.core.groups;
 
@@ -95,6 +96,7 @@ public class GroupLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 			SubMonitor progress = SubMonitor.convert(monitor, NLS.bind(DebugCoreMessages.GroupLaunchConfigurationDelegate_Launching, groupConfig.getName()), 1000);
 
 			List<GroupLaunchElement> launches = createLaunchElements(groupConfig);
+			int nbEnabledLaunches = launches.stream().filter(l -> l.enabled).toList().size();
 			for (int i = 0; i < launches.size(); ++i) {
 				GroupLaunchElement le = launches.get(i);
 
@@ -126,7 +128,7 @@ public class GroupLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 					// loop detected. report as appropriate and die.
 					IStatusHandler cycleHandler = DebugPlugin.getDefault().getStatusHandler(GROUP_CYCLE);
 					cycleHandler.handleStatus(GROUP_CYCLE, conf.getName());
-				} else if (!launchChild(progress.newChild(1000 / launches.size()), group, le, conf, localMode, (i == launches.size() - 1))) {
+				} else if (!launchChild(progress.newChild(1000 / nbEnabledLaunches), group, le, conf, localMode, (i == nbEnabledLaunches - 1))) {
 					break;
 				}
 
