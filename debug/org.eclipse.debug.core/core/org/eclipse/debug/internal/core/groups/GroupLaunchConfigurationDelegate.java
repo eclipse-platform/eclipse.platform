@@ -96,13 +96,9 @@ public class GroupLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 			SubMonitor progress = SubMonitor.convert(monitor, NLS.bind(DebugCoreMessages.GroupLaunchConfigurationDelegate_Launching, groupConfig.getName()), 1000);
 
 			List<GroupLaunchElement> launches = createLaunchElements(groupConfig);
-			int nbEnabledLaunches = launches.stream().filter(l -> l.enabled).toList().size();
-			for (int i = 0; i < launches.size(); ++i) {
+			List<GroupLaunchElement> enabledLaunches = launches.stream().filter(l -> l.enabled).toList();
+			for (int i = 0; i < enabledLaunches.size(); ++i) {
 				GroupLaunchElement le = launches.get(i);
-
-				if (!le.enabled) {
-					continue;
-				}
 
 				// find launch; if not found, skip (error?)
 				final ILaunchConfiguration conf = findLaunchConfiguration(le.name);
@@ -128,7 +124,7 @@ public class GroupLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 					// loop detected. report as appropriate and die.
 					IStatusHandler cycleHandler = DebugPlugin.getDefault().getStatusHandler(GROUP_CYCLE);
 					cycleHandler.handleStatus(GROUP_CYCLE, conf.getName());
-				} else if (!launchChild(progress.newChild(1000 / nbEnabledLaunches), group, le, conf, localMode, (i == nbEnabledLaunches - 1))) {
+				} else if (!launchChild(progress.newChild(1000 / enabledLaunches.size()), group, le, conf, localMode, (i == enabledLaunches.size() - 1))) {
 					break;
 				}
 
