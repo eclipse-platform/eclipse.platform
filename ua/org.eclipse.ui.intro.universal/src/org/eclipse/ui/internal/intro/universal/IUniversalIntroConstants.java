@@ -47,7 +47,7 @@ public interface IUniversalIntroConstants {
 	// convention: actual string value is class name.
 	String INTRO_LINK = "IntroLink"; //$NON-NLS-1$
 
-	// key to retrive page sub-title from PageContentForm
+	// key to retrieve page sub-title from PageContentForm
 	String PAGE_SUBTITLE = "PageSubtitle"; //$NON-NLS-1$
 
 

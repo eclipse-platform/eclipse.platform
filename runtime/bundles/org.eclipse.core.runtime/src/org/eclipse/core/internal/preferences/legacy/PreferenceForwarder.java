@@ -13,12 +13,21 @@
  *******************************************************************************/
 package org.eclipse.core.internal.preferences.legacy;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
-import org.eclipse.core.internal.preferences.*;
+import org.eclipse.core.internal.preferences.DefaultPreferences;
+import org.eclipse.core.internal.preferences.EclipsePreferences;
+import org.eclipse.core.internal.preferences.PreferencesService;
+import org.eclipse.core.internal.preferences.PrefsMessages;
 import org.eclipse.core.internal.runtime.RuntimeLog;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -215,11 +224,10 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	}
 
 	/**
-	 * Returns the current value of the boolean-valued property with the
-	 * given name.
-	 * Returns the default-default value (<code>false</code>) if there
-	 * is no property with the given name, or if the current value
-	 * cannot be treated as a boolean.
+	 * Returns the current value of the boolean-valued property with the given name.
+	 * Returns the default-default value (<code>false</code>) if there is no
+	 * property with the given name, or if the current value cannot be treated as a
+	 * boolean.
 	 *
 	 * @param name the name of the property
 	 * @return the boolean-valued property
@@ -512,11 +520,10 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	}
 
 	/**
-	 * Returns the current value of the integer-valued property with the
-	 * given name.
-	 * Returns the default-default value (<code>0</code>) if there
-	 * is no property with the given name, or if the current value
-	 * cannot be treated as an integter.
+	 * Returns the current value of the integer-valued property with the given name.
+	 * Returns the default-default value (<code>0</code>) if there is no property
+	 * with the given name, or if the current value cannot be treated as an
+	 * integter.
 	 *
 	 * @param name the name of the property
 	 * @return the int-valued property

@@ -343,12 +343,12 @@ public interface IPlatformConfiguration {
 	public ISiteEntry createSiteEntry(URL url, ISitePolicy policy);
 
 	/**
-	 * Create a site policy. The policy determines the way the site
-	 * plug-in are processed at startpu
+	 * Create a site policy. The policy determines the way the site plug-in are
+	 * processed at startup
 	 *
 	 * @param type policy type
 	 * @param list an array of site-relative paths representing the
-	 * inclusion/ exclusion list
+	 *             inclusion/exclusion list
 	 * @return created site policy entry
 	 * @since 2.0
 	 */
@@ -483,8 +483,9 @@ public interface IPlatformConfiguration {
 
 	/**
 	 * Locates the specified feature entry.
+	 *
 	 * @param id feature identifier
-	 * @return ferature entry, or <code>null</code>.
+	 * @return feature entry, or <code>null</code>.
 	 * @since 2.0
 	 */
 	@Deprecated

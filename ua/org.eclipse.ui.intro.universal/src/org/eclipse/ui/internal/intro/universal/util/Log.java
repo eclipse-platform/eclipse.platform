@@ -24,7 +24,7 @@ import org.eclipse.ui.internal.intro.universal.UniversalIntroPlugin;
 
 /**
  * Utility class for logging, based on Platform logging classes. The log
- * listerner used is the base one supplied by the platform. Error messages are
+ * listener used is the base one supplied by the platform. Error messages are
  * always logged. Warning messages are only logged when the plugin is in debug
  * mode. Info messages are only logged when the /trace/logInfo debug option is
  * set to true. Performance reports are only logged when /trace/performance is
@@ -34,8 +34,8 @@ public class Log implements IUniversalIntroConstants {
 
 	/**
 	 * This MUST be set to <b>false </b> in production. <br>
-	 * Used to compile out developement debug messages. <br>
-	 * Compiler compiles out code warpped wit this flag as an optimization.
+	 * Used to compile out development debug messages. <br>
+	 * Compiler compiles out code wrapped with this flag as an optimization.
 	 */
 	public static final boolean DEBUG = false;
 

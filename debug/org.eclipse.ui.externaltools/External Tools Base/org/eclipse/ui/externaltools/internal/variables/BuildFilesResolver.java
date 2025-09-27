@@ -68,7 +68,7 @@ public class BuildFilesResolver implements IDynamicVariableResolver
 					deltas |= IResourceDelta.REMOVED;
 				}
 
-				// Check wether to include files and/or directories
+				// Check whether to include files and/or directories
 				if (argument.indexOf(ARG_DIRS) > -1)
 				{
 					dirs = true;

@@ -53,12 +53,12 @@ public class BuildProjectResolver implements IDynamicVariableResolver {
 	}
 
 	/**
-	 * Returns an expression used to reference the given variable and optional argument.
-	 * For example, <code>${var_name:arg}</code>.
+	 * Returns an expression used to reference the given variable and optional
+	 * argument. For example, <code>${var_name:arg}</code>.
 	 *
 	 * @param variable referenced variable
 	 * @param argument referenced argument or <code>null</code>
-	 * @return vraiable reference expression
+	 * @return variable reference expression
 	 */
 	protected String getReferenceExpression(IDynamicVariable variable, String argument) {
 		StringBuilder reference = new StringBuilder();

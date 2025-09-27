@@ -444,7 +444,7 @@ public class SiteEntry
 					// reliable,
 					// or that the user manually modified an existing plugin,
 					// so
-					// the apparently modifed plugin may actually be configured
+					// the apparently modified plugin may actually be configured
 					// already.
 					// We will need to double check for this. END to do.
 					if (compareTimeStamps
@@ -713,7 +713,7 @@ public class SiteEntry
 			sb.append(list[list.length-1]);
 			siteElement.setAttribute(CFG_LIST, sb.toString());
 		}
-//		// note: we don't save features inside the site element.
+//		note: we don't save features inside the site element.
 
 		// collect feature entries
 //		configElement.setAttribute(CFG_FEATURE_ENTRY_DEFAULT, defaultFeature);

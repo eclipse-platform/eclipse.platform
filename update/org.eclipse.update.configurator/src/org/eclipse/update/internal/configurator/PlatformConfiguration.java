@@ -715,7 +715,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 				}
 			}
 		} finally {
-			// releaes concurrent use lock
+			// release concurrent use lock
 			clearConfigurationLock();
 		}
 	}
