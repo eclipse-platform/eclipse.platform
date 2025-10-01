@@ -365,6 +365,8 @@ public class LaunchConfigurationTabGroupViewer {
 		SWTFactory.createWrapCLabel(parent, LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_2, DebugUITools.getImage(IInternalDebugUIConstants.IMG_ELCL_NEW_CONFIG), 1, width);
 		SWTFactory.createWrapCLabel(parent, LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_9, DebugUITools.getImage(IInternalDebugUIConstants.IMG_ELCL_NEW_PROTO), 1, width);
 		SWTFactory.createWrapCLabel(parent, LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_7, DebugUITools.getImage(IInternalDebugUIConstants.IMG_ELCL_EXPORT_CONFIG), 1, width);
+		SWTFactory.createWrapCLabel(parent, LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_19,
+				DebugUITools.getImage(IInternalDebugUIConstants.IMG_ELCL_IMPORT_CONFIG), 1, width);
 		SWTFactory.createWrapCLabel(parent, LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_6, DebugUITools.getImage(IInternalDebugUIConstants.IMG_ELCL_DUPLICATE_CONFIG), 1, width);
 		SWTFactory.createWrapCLabel(parent, LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_4, DebugUITools.getImage(IInternalDebugUIConstants.IMG_ELCL_DELETE_CONFIG), 1, width);
 		SWTFactory.createWrapCLabel(parent, LaunchConfigurationsMessages.LaunchConfigurationTabGroupViewer_8, DebugUITools.getImage(IInternalDebugUIConstants.IMG_ELCL_FILTER_CONFIGS), 1, width);

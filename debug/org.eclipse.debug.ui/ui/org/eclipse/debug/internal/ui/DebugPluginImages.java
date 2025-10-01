@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2017 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -164,6 +164,8 @@ public class DebugPluginImages {
 				ELCL + "restart_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_EXPORT_CONFIG,
 				IInternalDebugUIConstants.IMG_DLCL_EXPORT_CONFIG, ELCL + "export_config.svg"); //$NON-NLS-1$
+		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_IMPORT_CONFIG,
+				IInternalDebugUIConstants.IMG_DLCL_IMPORT_CONFIG, ELCL + "import_config.svg"); //$NON-NLS-1$
 
 		//Object
 		declareRegistryImage(IDebugUIConstants.IMG_OBJS_LAUNCH_DEBUG, OBJECT + "ldebug_obj.svg"); //$NON-NLS-1$
