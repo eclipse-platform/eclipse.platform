@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -88,6 +88,7 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 	private LinkPrototypeAction fLinkPrototypeAction;
 	private UnlinkPrototypeAction fUnlinkPrototypeAction;
 	private ResetWithPrototypeValuesAction fResetWithPrototypeValuesAction;
+	private ImportLaunchConfigurationAction fImportAction;
 
 	/**
 	 * Action for providing filtering to the Launch Configuration Dialog
@@ -215,6 +216,9 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 		fExportAction = new ExportLaunchConfigurationAction(getViewer(), getLaunchGroup().getMode());
 		setAction(ExportLaunchConfigurationAction.ID_EXPORT_ACTION, fExportAction);
 
+		fImportAction = new ImportLaunchConfigurationAction(getViewer(), getLaunchGroup().getMode());
+		setAction(ImportLaunchConfigurationAction.ID_IMPORT_ACTION, fImportAction);
+
 		fCollapseAllAction = new CollapseAllLaunchConfigurationAction((TreeViewer)getViewer());
 		setAction(CollapseAllLaunchConfigurationAction.ID_COLLAPSEALL_ACTION, fCollapseAllAction);
 
@@ -280,6 +284,7 @@ public class LaunchConfigurationView extends AbstractDebugView implements ILaunc
 		fDeleteAction.dispose();
 		fDuplicateAction.dispose();
 		fExportAction.dispose();
+		fImportAction.dispose();
 		fFilterAction = null;
 		fCollapseAllAction = null;
 		fLinkPrototypeAction.dispose();
