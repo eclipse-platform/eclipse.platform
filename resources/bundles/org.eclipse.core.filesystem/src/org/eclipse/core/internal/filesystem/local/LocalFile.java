@@ -61,6 +61,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -314,6 +315,12 @@ public class LocalFile extends FileStore {
 			} catch (AccessDeniedException e) {
 				// If the file is read only, it can't be deleted via Files.deleteIfExists()
 				// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=500306
+				// Since Java 25, just calling File#delete() is not sufficient anymore on Windows
+				// but the read-only state has to be cleared explicitly,
+				// see https://bugs.openjdk.org/browse/JDK-8355954
+				if (OS.isWindows()) {
+					target.setWritable(true);
+				}
 				if (target.delete()) {
 					infMonitor.worked();
 					return Status.OK_STATUS;
