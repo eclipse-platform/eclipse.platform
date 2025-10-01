@@ -163,9 +163,9 @@ public class DebugPluginImages {
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_RESTART, IInternalDebugUIConstants.IMG_DLCL_RESTART,
 				ELCL + "restart_co.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_EXPORT_CONFIG,
-				IInternalDebugUIConstants.IMG_DLCL_EXPORT_CONFIG, ELCL + "export_config.svg"); //$NON-NLS-1$
+				IInternalDebugUIConstants.IMG_DLCL_EXPORT_CONFIG, ELCL + "export_wiz.svg"); //$NON-NLS-1$
 		declareRegistryImage(IInternalDebugUIConstants.IMG_ELCL_IMPORT_CONFIG,
-				IInternalDebugUIConstants.IMG_DLCL_IMPORT_CONFIG, ELCL + "import_config.svg"); //$NON-NLS-1$
+				IInternalDebugUIConstants.IMG_DLCL_IMPORT_CONFIG, ELCL + "import_wiz.svg"); //$NON-NLS-1$
 
 		//Object
 		declareRegistryImage(IDebugUIConstants.IMG_OBJS_LAUNCH_DEBUG, OBJECT + "ldebug_obj.svg"); //$NON-NLS-1$
