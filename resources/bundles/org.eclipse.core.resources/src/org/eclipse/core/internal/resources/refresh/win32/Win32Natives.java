@@ -201,7 +201,11 @@ public class Win32Natives {
 
 		static MemorySegment toWideString(Arena arena, String value) {
 			// Convert Java String to null-terminated wide string (UTF-16LE)
-			return arena.allocateFrom(value, StandardCharsets.UTF_16LE);
+			// In Java 21, we need to manually encode and allocate
+			byte[] bytes = (value + "\0").getBytes(StandardCharsets.UTF_16LE);
+			MemorySegment segment = arena.allocate(bytes.length);
+			segment.asByteBuffer().put(bytes);
+			return segment;
 		}
 
 		static int fromBoolean(boolean value) {
@@ -214,9 +218,6 @@ public class Win32Natives {
 	}
 
 	private static final String LONG_PATH_PREFIX = "\\\\?\\"; //$NON-NLS-1$
-	
-	// Thread-local Arena for managing native memory allocations
-	private static final ThreadLocal<Arena> THREAD_ARENA = ThreadLocal.withInitial(Arena::ofConfined);
 
 	/**
 	 * Creates a change notification object for the given path. The notification
@@ -296,8 +297,9 @@ public class Win32Natives {
 	 */
 	public static int WaitForMultipleObjects(int nCount, long[] lpHandles, boolean bWaitAll, int dwMilliseconds) {
 		try (Arena arena = Arena.ofConfined()) {
-			// Allocate memory for array of handles
-			MemorySegment handlesArray = arena.allocate(ValueLayout.ADDRESS, nCount);
+			// Allocate memory for array of handles (array of pointers)
+			long arraySize = ValueLayout.ADDRESS.byteSize() * nCount;
+			MemorySegment handlesArray = arena.allocate(arraySize, ValueLayout.ADDRESS.byteAlignment());
 			for (int i = 0; i < nCount; i++) {
 				handlesArray.setAtIndex(ValueLayout.ADDRESS, i, MemorySegment.ofAddress(lpHandles[i]));
 			}
