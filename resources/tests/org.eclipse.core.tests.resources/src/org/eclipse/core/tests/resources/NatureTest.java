@@ -181,13 +181,13 @@ public class NatureTest {
 		assertHasEnabledNature(NATURE_SIMPLE);
 
 		// Try to set natures with a duplicate - this should not throw IllegalArgumentException
-		// The duplicate should be handled gracefully (validation will catch it later)
+		// The duplicate should be handled gracefully (deduplication happens automatically)
 		IProjectDescription desc = project.getDescription();
 		desc.setNatureIds(new String[] { NATURE_SIMPLE, NATURE_SIMPLE });
-		// This should not throw IllegalArgumentException
+		// This should not throw IllegalArgumentException when hasPrivateChanges is called
 		project.setDescription(desc, IResource.KEEP_HISTORY, createTestMonitor());
 		
-		// The duplicate nature should have been detected by validation and only one instance should remain
+		// After deduplication, only one instance of the nature should remain
 		assertHasEnabledNature(NATURE_SIMPLE);
 	}
 
