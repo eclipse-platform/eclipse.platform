@@ -47,6 +47,12 @@ public class LockListener {
 	}
 
 	/**
+	 * @since 3.16
+	 */
+	public boolean isUI() {
+		return false;
+	}
+	/**
 	 * Notification that a thread is about to release a lock.
 	 * <p>
 	 * This default implementation does nothing. Subclasses may override.
