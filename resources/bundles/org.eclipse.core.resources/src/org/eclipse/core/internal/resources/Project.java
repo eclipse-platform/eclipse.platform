@@ -29,6 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -242,6 +243,11 @@ public class Project extends Container implements IProject {
 			workspace.broadcastEvent(LifecycleEvent.newEvent(LifecycleEvent.PRE_PROJECT_CLOSE, this));
 			// flush the build order early in case there is a problem
 			workspace.flushBuildOrder();
+			// Clear the linked flag of linked resources,
+			// since changes to the links in .project while the project is closed
+			// are otherwise not reflected after re-opening the project.
+			// See: https://github.com/eclipse-platform/eclipse.platform/issues/470
+			clearLinkFlags();
 			IProgressMonitor sub = subMonitor.newChild(49, SubMonitor.SUPPRESS_SUBTASK);
 			IStatus saveStatus = workspace.getSaveManager().save(ISaveContext.PROJECT_SAVE, this, sub);
 			internalClose(subMonitor.newChild(49));
@@ -1202,6 +1208,9 @@ public class Project extends Container implements IProject {
 					writeEncodingAfterOpen(monitor);
 					encodingWritten = true;
 				}
+				if (used) {
+					setLinkFlags();
+				}
 				//creation of this project may affect overlapping resources
 				workspace.getAliasManager().updateAliases(this, getStore(), IResource.DEPTH_INFINITE, monitor);
 			} catch (OperationCanceledException e) {
@@ -1559,6 +1568,36 @@ public class Project extends Container implements IProject {
 		}
 		// if there is no preference set, fall back to OS default value
 		return System.lineSeparator();
+	}
+
+	/**
+	 * Clears the {@link ICoreConstants#M_LINK} flag of linked resources.
+	 */
+	private void clearLinkFlags() {
+		modifyLinksResourceInfo(info -> info.clear(M_LINK));
+	}
+
+	/**
+	 * Sets the {@link ICoreConstants#M_LINK} flag of linked resources.
+	 */
+	private void setLinkFlags() {
+		modifyLinksResourceInfo(info -> info.set(M_LINK));
+	}
+
+	private void modifyLinksResourceInfo(Consumer<ResourceInfo> operation) {
+		ProjectDescription description = internalGetDescription();
+		HashMap<IPath, LinkDescription> linkDescriptions = description.linkDescriptions;
+		if (linkDescriptions != null) {
+			for (LinkDescription linkDescription : linkDescriptions.values()) {
+				IFile linkFile = getFile(linkDescription.getProjectRelativePath());
+				if (linkFile != null) {
+					ResourceInfo linkInfo = workspace.getResourceInfo(linkFile.getFullPath(), false, true);
+					if (linkInfo != null) {
+						operation.accept(linkInfo);
+					}
+				}
+			}
+		}
 	}
 
 	private static String getLineSeparatorFromPreferences(Preferences node) {
