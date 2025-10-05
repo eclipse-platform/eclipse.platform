@@ -12,27 +12,17 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.emulator;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Terminal emulator test cases.
  * Runs in emulator package to allow access to default visible items.
  */
-public class AllTestSuite extends TestCase {
-	public AllTestSuite() {
-		super(null);
-	}
-
-	public AllTestSuite(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(AllTestSuite.class.getName());
-		suite.addTestSuite(VT100EmulatorBackendTest.class);
-		return suite;
-	}
+@Suite
+@SelectClasses({ //
+		VT100EmulatorBackendTest.class, //
+})
+public class AllTestSuite {
 
 }

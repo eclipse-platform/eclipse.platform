@@ -12,35 +12,22 @@
  *******************************************************************************/
 package org.eclipse.terminal.test;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Master test suite to run all terminal unit tests.
  */
-public class AutomatedTestSuite extends TestCase {
+@Suite
+@SelectClasses({ //
+		org.eclipse.terminal.internal.emulator.AllTestSuite.class, //
+		org.eclipse.terminal.internal.model.AllTestSuite.class, //
+		org.eclipse.terminal.model.AllTestSuite.class, //
+		org.eclipse.terminal.internal.connector.TerminalConnectorTest.class, //
+		org.eclipse.terminal.internal.connector.TerminalToRemoteInjectionOutputStreamTest.class, //
+})
+public class AutomatedTestSuite {
 
 	public static final String PI_TERMINAL_TESTS = "org.eclipse.terminal.test"; //$NON-NLS-1$
 
-	public AutomatedTestSuite() {
-		super(null);
-	}
-
-	public AutomatedTestSuite(String name) {
-		super(name);
-	}
-
-	/**
-	 * Call each AllTestSuite class from each of the test packages.
-	 */
-	public static Test suite() {
-		TestSuite suite = new TestSuite(AutomatedTestSuite.class.getName());
-		suite.addTest(org.eclipse.terminal.internal.emulator.AllTestSuite.suite());
-		suite.addTest(org.eclipse.terminal.internal.model.AllTestSuite.suite());
-		suite.addTest(org.eclipse.terminal.model.AllTestSuite.suite());
-		suite.addTestSuite(org.eclipse.terminal.internal.connector.TerminalConnectorTest.class);
-		suite.addTestSuite(org.eclipse.terminal.internal.connector.TerminalToRemoteInjectionOutputStreamTest.class);
-		return suite;
-	}
 }
