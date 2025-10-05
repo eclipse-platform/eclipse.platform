@@ -12,29 +12,18 @@
  *******************************************************************************/
 package org.eclipse.terminal.model;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Public Terminal Model test cases.
  * Runs in internal model package to allow access to default visible items.
  */
-public class AllTestSuite extends TestCase {
-	public AllTestSuite() {
-		super(null);
-	}
-
-	public AllTestSuite(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(AllTestSuite.class.getName());
-		suite.addTest(new JUnit4TestAdapter(TerminalColorUITest.class));
-		suite.addTestSuite(StyleTest.class);
-		return suite;
-	}
+@Suite
+@SelectClasses({ //
+		TerminalColorUITest.class, //
+		StyleTest.class, //
+})
+public class AllTestSuite {
 
 }

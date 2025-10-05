@@ -21,5 +21,6 @@ Export-Package: org.eclipse.terminal.internal.connector;x-internal:=true,
  org.eclipse.terminal.model,
  org.eclipse.terminal.test
 Import-Package: org.junit.jupiter.api;version="[5.9.3,6.0.0)",
- org.junit.jupiter.api.function;version="[5.9.3,6.0.0)"
+ org.junit.jupiter.api.function;version="[5.9.3,6.0.0)",
+ org.junit.platform.suite.api;version="[1.9.3,2.0.0)"
 Automatic-Module-Name: org.eclipse.terminal.test
