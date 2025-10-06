@@ -98,7 +98,7 @@ public class GroupLaunchConfigurationDelegate extends LaunchConfigurationDelegat
 			List<GroupLaunchElement> launches = createLaunchElements(groupConfig);
 			List<GroupLaunchElement> enabledLaunches = launches.stream().filter(l -> l.enabled).toList();
 			for (int i = 0; i < enabledLaunches.size(); ++i) {
-				GroupLaunchElement le = launches.get(i);
+				GroupLaunchElement le = enabledLaunches.get(i);
 
 				// find launch; if not found, skip (error?)
 				final ILaunchConfiguration conf = findLaunchConfiguration(le.name);
