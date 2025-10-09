@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -52,7 +52,8 @@ public class AddToFavoritesAction extends SelectionListenerAction {
 	public AddToFavoritesAction() {
 		super(IInternalDebugCoreConstants.EMPTY_STRING);
 		setEnabled(false);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IDebugHelpContextIds.EDIT_LAUNCH_CONFIGURATION_ACTION);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
+				IDebugHelpContextIds.ADD_LAUNCH_CONFIGURATION_TO_FAV_ACTION);
 	}
 
 	/**
@@ -66,29 +67,42 @@ public class AddToFavoritesAction extends SelectionListenerAction {
 		if (selection.size() == 1) {
 			Object object = selection.getFirstElement();
 			ILaunch launch = null;
-			if (object instanceof IAdaptable) {
-				launch = ((IAdaptable)object).getAdapter(ILaunch.class);
+			if (object instanceof IAdaptable iAdaptable) {
+				launch = iAdaptable.getAdapter(ILaunch.class);
 			}
 			if (launch == null) {
-				if (object instanceof ILaunch) {
-					launch = (ILaunch)object;
-				} else if (object instanceof IDebugElement) {
-					launch = ((IDebugElement)object).getLaunch();
-				} else if (object instanceof IProcess) {
-					launch = ((IProcess)object).getLaunch();
+				if (object instanceof ILaunch iLaunch) {
+					launch = iLaunch;
+				} else if (object instanceof IDebugElement iDebugElement) {
+					launch = iDebugElement.getLaunch();
+				} else if (object instanceof IProcess iProcess) {
+					launch = iProcess.getLaunch();
 				}
 			}
 			if (launch != null) {
 				ILaunchConfiguration configuration = launch.getLaunchConfiguration();
 				if (configuration != null) {
-					ILaunchGroup group= DebugUITools.getLaunchGroup(configuration, getMode());
+					ILaunchGroup group = DebugUITools.getLaunchGroup(configuration, launch.getLaunchMode());
 					if (group == null) {
 						return false;
 					}
 					setGroup(group);
 					setLaunchConfiguration(configuration);
 					setMode(launch.getLaunchMode());
-					setText(MessageFormat.format(ActionMessages.AddToFavoritesAction_1, DebugUIPlugin.removeAccelerators(getGroup().getLabel())));
+					try {
+						List<String> favoriteGroups = configuration.getAttribute(IDebugUIConstants.ATTR_FAVORITE_GROUPS,
+								new ArrayList<>());
+						if (favoriteGroups.contains(group.getIdentifier())) {
+							setText(MessageFormat.format(ActionMessages.RemoveFromFavoritesAction,
+									fMode.substring(0, 1).toUpperCase() + fMode.substring(1)));
+						} else {
+							setText(MessageFormat.format(ActionMessages.AddToFavoritesAction_1,
+									DebugUIPlugin.removeAccelerators(
+											fMode.substring(0, 1).toUpperCase() + fMode.substring(1))));
+						}
+					} catch (CoreException e) {
+						DebugUIPlugin.log(e);
+					}
 				}
 			}
 		}
@@ -101,20 +115,7 @@ public class AddToFavoritesAction extends SelectionListenerAction {
 		if (DebugUITools.isPrivate(config)) {
 				return false;
 		}
-
-		if (getGroup() != null) {
-			try {
-				List<String> groups = config.getAttribute(IDebugUIConstants.ATTR_FAVORITE_GROUPS, (List<String>) null);
-				if (groups != null) {
-					return !groups.contains(getGroup().getIdentifier());
-				}
-				return true;
-			} catch (CoreException e) {
-			}
-
-		}
-
-		return false;
+		return true;
 	}
 
 	/**
@@ -177,7 +178,12 @@ public class AddToFavoritesAction extends SelectionListenerAction {
 				if (list == null) {
 					list = new ArrayList<>();
 				}
-				list.add(getGroup().getIdentifier());
+				String groupIdentifier = getGroup().getIdentifier();
+				if (list.contains(groupIdentifier)) {
+					list.remove(groupIdentifier);
+				} else {
+					list.add(groupIdentifier);
+				}
 				ILaunchConfigurationWorkingCopy copy = getLaunchConfiguration().getWorkingCopy();
 				copy.setAttribute(IDebugUIConstants.ATTR_FAVORITE_GROUPS, list);
 				copy.doSave();
