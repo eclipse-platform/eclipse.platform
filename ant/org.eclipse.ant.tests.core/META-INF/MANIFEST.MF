@@ -17,9 +17,9 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.ant.core,
  org.eclipse.core.runtime
 Import-Package: org.assertj.core.api,
- org.junit.jupiter.api,
- org.junit.jupiter.api.function,
- org.junit.platform.suite.api
+ org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.api.function;version="[5.14.0,6.0.0)",
+ org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Eclipse-BundleShape: dir

@@ -21,9 +21,9 @@ Import-Package: javax.servlet;version="3.1.0",
  org.apache.lucene.store;version="[10.0.0,11.0.0)",
  org.apache.lucene.util;version="[10.0.0,11.0.0)",
  org.assertj.core.api,
- org.junit.jupiter.api,
- org.junit.jupiter.api.function,
- org.junit.platform.suite.api
+ org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.api.function;version="[5.14.0,6.0.0)",
+ org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.eclipse.ua.tests,
  org.eclipse.ua.tests.browser.servlet,

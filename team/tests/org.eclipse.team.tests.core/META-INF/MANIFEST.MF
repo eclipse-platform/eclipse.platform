@@ -27,10 +27,10 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.core.filesystem,
  org.eclipse.compare.tests
 Import-Package: org.assertj.core.api,
- org.junit.jupiter.api,
- org.junit.jupiter.api.extension,
- org.junit.jupiter.api.function,
- org.junit.platform.suite.api
+ org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.api.extension;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.api.function;version="[5.14.0,6.0.0)",
+ org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
 Bundle-RequiredExecutionEnvironment: JavaSE-17
