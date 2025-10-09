@@ -7,8 +7,8 @@ Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.29.0,4.0.0)",
  org.eclipse.core.net;bundle-version="[1.0.0,2.0.0)"
 Import-Package: org.assertj.core.api,
- org.junit.jupiter.api,
- org.junit.platform.suite.api
+ org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.platform.suite.api;version="[1.14.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Eclipse-BundleShape: dir
