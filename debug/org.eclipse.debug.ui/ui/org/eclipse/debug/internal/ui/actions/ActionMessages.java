@@ -253,5 +253,6 @@ public class ActionMessages extends NLS {
 	public static String EnableAllBreakpointsAction_1;
 	public static String EnableAllBreakpointsAction_3;
 	public static String BreakpointLabelDialog;
+	public static String RemoveFromFavoritesAction;
 
 }
