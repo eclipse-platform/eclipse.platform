@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * @deprecated Temporarily replaced by CompareWithOtherResourceHandler. See bug
  *             264498.
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "2026-03")
 public class CompareWithOtherResourceAction extends CompareAction {
 
 	@Deprecated

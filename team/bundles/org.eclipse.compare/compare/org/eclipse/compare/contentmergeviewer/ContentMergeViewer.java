@@ -1261,7 +1261,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * @throws CoreException not thrown anymore
 	 * @deprecated use {@link IFlushable#flush(IProgressMonitor)}.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2026-03")
 	public void save(IProgressMonitor monitor) throws CoreException {
 		flush(monitor);
 	}
