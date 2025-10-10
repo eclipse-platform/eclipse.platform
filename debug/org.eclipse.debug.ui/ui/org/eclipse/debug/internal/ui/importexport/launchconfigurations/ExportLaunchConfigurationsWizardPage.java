@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2017 IBM Corporation and others.
+ * Copyright (c) 2007, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -52,6 +52,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -155,12 +157,44 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 	 * @param parent the parent to add the check table viewer to
 	 */
 	protected void createViewer(Composite parent) {
+		Text filterText = new Text(parent, SWT.SEARCH | SWT.CANCEL);
+		filterText.setMessage(WizardMessages.ImportLaunchTypeToFilter);
+		filterText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		ViewerFilter filter = new ViewerFilter() {
+			@Override
+			public boolean select(Viewer viewer2, Object parentElement, Object element) {
+				String search = filterText.getText().toLowerCase();
+				if (search.isEmpty()) {
+					fViewer.collapseAll();
+					return true;
+				}
+				if (element instanceof ILaunchConfiguration launchConfig) {
+					return launchConfig.getName().toLowerCase().contains(search);
+				}
+				if (element instanceof ILaunchConfigurationType launchConfigType) {
+					try {
+						for (ILaunchConfiguration config2 : lm.getLaunchConfigurations(launchConfigType)) {
+							if (config2.getName().toLowerCase().contains(search)) {
+								return true;
+							}
+						}
+					} catch (Exception e) {
+						DebugPlugin.log(e);
+						return false;
+					}
+					return false;
+				}
+				return true;
+			}
+		};
 		SWTFactory.createWrapLabel(parent, WizardMessages.ExportLaunchConfigurationsWizardPage_3, 2);
 		Tree tree = new Tree(parent, SWT.BORDER | SWT.SINGLE | SWT.CHECK);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.horizontalSpan = 2;
 		tree.setLayoutData(gd);
 		fViewer = new CheckboxTreeViewer(tree);
+		fViewer.addFilter(filter);
+
 		fViewer.setLabelProvider(DebugUITools.newDebugModelPresentation());
 		fViewer.setComparator(new WorkbenchViewerComparator());
 		fContentProvider = new ConfigContentProvider();
@@ -205,6 +239,10 @@ public class ExportLaunchConfigurationsWizardPage extends WizardPage {
 				}
 				setPageComplete(isComplete());
 			}
+		});
+		filterText.addModifyListener(e -> {
+			fViewer.refresh();
+			fViewer.expandAll();
 		});
 	}
 
