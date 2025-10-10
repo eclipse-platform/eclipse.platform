@@ -112,6 +112,15 @@ public class LockManager {
 		return false;
 	}
 
+	public boolean isUI() {
+		try {
+			return lockListener.isUI();
+		} catch (Exception | LinkageError e) {
+			handleException(e);
+		}
+		return false;
+	}
+
 	/**
 	 * This thread has just acquired a lock.  Update graph.
 	 */
