@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2013 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -146,7 +146,8 @@ public class VirtualCopyToClipboardActionDelegate extends AbstractDebugActionDel
 		String[] labels = (String[]) item.getData(VirtualItem.LABEL_KEY);
 		if(labels != null && labels.length > 0) {
 			for (String label : labels) {
-				String text = trimLabel(label);
+				String text = exludeLabels(item.getData(), label);
+				text = trimLabel(text);
 				if (text != null && !text.equals(IInternalDebugCoreConstants.EMPTY_STRING)) {
 					buffer.append(text);
 				}
@@ -171,6 +172,19 @@ public class VirtualCopyToClipboardActionDelegate extends AbstractDebugActionDel
 		return label.trim();
 	}
 
+	/**
+	 * Excludes unwanted labels from the selected item
+	 *
+	 * @param itemData Selected object
+	 * @param label    Current label
+	 * @return filtered label or null if label or item is null
+	 */
+	protected String exludeLabels(Object itemData, String label) {
+		if (itemData == null || label == null) {
+			return null;
+		}
+		return label;
+	}
 	private static class ItemsToCopyVirtualItemValidator implements IVirtualItemValidator {
 
 		Set<VirtualItem> fItemsToCopy = Collections.EMPTY_SET;
@@ -367,4 +381,5 @@ public class VirtualCopyToClipboardActionDelegate extends AbstractDebugActionDel
 	public void runWithEvent(IAction action, Event event) {
 		run(action);
 	}
+
 }
