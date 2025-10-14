@@ -1,0 +1,6 @@
+
+# The Eclipse Terminal feature replaces a whole set of features that the TM project
+# used to provide. The granularity of the TM project is collapsed into a single
+# feature in Eclipse Terminal. For ISVs that require additional granularity they
+# are advised to provide their own features that lists their requirements
+update.matchExp=providedCapabilities.exists(pc | pc.namespace == 'org.eclipse.equinox.p2.iu' && (pc.name == 'org.eclipse.terminal.feature.feature.group' || pc.name == 'org.eclipse.tm.terminal.connector.local.feature.feature.group' || pc.name == 'org.eclipse.tm.terminal.connector.ssh.feature.feature.group' || pc.name == 'org.eclipse.tm.terminal.connector.telnet.feature.feature.group' || pc.name == 'org.eclipse.tm.terminal.control.feature.feature.group' || pc.name == 'org.eclipse.tm.terminal.feature.feature.group' || pc.name == 'org.eclipse.tm.terminal.view.feature.feature.group'))
