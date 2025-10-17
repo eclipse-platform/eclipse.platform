@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2011 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -113,8 +113,13 @@ public class DefaultWatchExpressionModelProxy extends DefaultExpressionModelProx
 					}
 				}
 				IWatchExpression expression = (IWatchExpression)getExpression();
-				if (expression != null){
-					expression.setExpressionContext(context);
+				if (expression != null) {
+					IDebugElement pinnedContext = expression.getPinnedContext();
+					if (pinnedContext != null) {
+						expression.setExpressionContext(pinnedContext);
+					} else {
+						expression.setExpressionContext(context);
+					}
 				}
 			}
 		}
