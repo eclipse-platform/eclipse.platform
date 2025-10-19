@@ -49,18 +49,12 @@ public class CopyExpressionsToClipboardActionDelegate extends VirtualCopyToClipb
 				if (label.equals(DebugUIMessages.DefaultLabelProvider_15)) {
 					return null;
 				}
-				if (label.contains(DebugUIMessages.DefaultLabelProvider_15)) {
-					int index = label.lastIndexOf(DebugUIMessages.DefaultLabelProvider_15);
-					if (index != -1) {
-						label = label.substring(0, index)
-								+ label.substring(index + DebugUIMessages.DefaultLabelProvider_15.length());
-					}
+				int index = label.lastIndexOf(DebugUIMessages.DefaultLabelProvider_15);
+				if (index != -1) {
+					label = label.substring(0, index);
 				}
 			}
-			return label;
 		}
 		return label;
 	}
-
-
 }
