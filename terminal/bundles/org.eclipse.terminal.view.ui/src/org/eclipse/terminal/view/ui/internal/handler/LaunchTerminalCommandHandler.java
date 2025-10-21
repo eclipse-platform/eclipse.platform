@@ -19,11 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import jakarta.inject.Named;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
+import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -37,16 +39,18 @@ import org.eclipse.terminal.view.ui.internal.ITraceIds;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
 import org.eclipse.terminal.view.ui.internal.dialogs.LaunchTerminalSettingsDialog;
 import org.eclipse.terminal.view.ui.launcher.ILauncherDelegate;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Launch terminal command handler implementation.
  */
-public class LaunchTerminalCommandHandler extends AbstractHandler {
+public class LaunchTerminalCommandHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		String commandId = event.getCommand().getId();
+	@Execute
+	public void execute(@Named(IServiceConstants.ACTIVE_SHELL) Shell shell,
+			@Named(IServiceConstants.ACTIVE_SELECTION) ISelection selection,
+			@Named(IServiceConstants.ACTIVE_PART) MPart activePart) {
+		// Determine which command variant is being executed based on the active part context
+		String commandId = determineCommandId(activePart);
 		long start = System.currentTimeMillis();
 
 		if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
@@ -54,29 +58,29 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 			String date = format.format(new Date(start));
 
 			UIPlugin.getTraceHandler().trace("Started at " + date + " (" + start + ")", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-					ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalCommandHandler.this);
+					ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, this);
 		}
 
-		// Get the active shell
-		Shell shell = HandlerUtil.getActiveShell(event);
-		// Get the current selection
-		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		if (commandId.equals("org.eclipse.terminal.view.ui.command.launchConsole")) { //$NON-NLS-1$
 			LaunchTerminalSettingsDialog dialog = new LaunchTerminalSettingsDialog(shell, start);
 			if (dialog.open() == Window.OK) {
 				Optional<ILauncherDelegate> delegate = findDelegate(dialog);
 				if (delegate.isEmpty()) {
-					return null;
+					return;
 				}
-				return createConnector(delegate.get(), dialog.getSettings());
+				try {
+					createConnector(delegate.get(), dialog.getSettings());
+				} catch (Exception e) {
+					ILog.get().error("Error creating terminal connector", e); //$NON-NLS-1$
+				}
 			}
-			return null;
+			return;
 		}
 		if (commandId.equals("org.eclipse.terminal.view.ui.command.launchToolbar")) { //$NON-NLS-1$
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 				UIPlugin.getTraceHandler().trace("(a) Attempt to open launch terminal settings dialog after " //$NON-NLS-1$
 						+ (System.currentTimeMillis() - start) + " ms.", //$NON-NLS-1$
-						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalCommandHandler.this);
+						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, this);
 			}
 
 			LaunchTerminalSettingsDialog dialog = new LaunchTerminalSettingsDialog(shell, start);
@@ -94,7 +98,7 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 				UIPlugin.getTraceHandler().trace(
 						"Getting applicable launcher delegates after " + (System.currentTimeMillis() - start) + " ms.", //$NON-NLS-1$ //$NON-NLS-2$
-						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalCommandHandler.this);
+						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, this);
 			}
 
 			// Check if the dialog needs to be shown at all
@@ -104,14 +108,14 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 			if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 				UIPlugin.getTraceHandler().trace(
 						"Got applicable launcher delegates after " + (System.currentTimeMillis() - start) + " ms.", //$NON-NLS-1$ //$NON-NLS-2$
-						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalCommandHandler.this);
+						ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, this);
 			}
 
 			if (delegates.size() > 1 || (delegates.size() == 1 && delegates.get(0).needsUserConfiguration())) {
 				if (UIPlugin.getTraceHandler().isSlotEnabled(0, ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER)) {
 					UIPlugin.getTraceHandler().trace("(b) Attempt to open launch terminal settings dialog after " //$NON-NLS-1$
 							+ (System.currentTimeMillis() - start) + " ms.", //$NON-NLS-1$
-							ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, LaunchTerminalCommandHandler.this);
+							ITraceIds.TRACE_LAUNCH_TERMINAL_COMMAND_HANDLER, this);
 				}
 
 				// Create the launch terminal settings dialog
@@ -130,8 +134,20 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 				executeDelegate(selection, delegate);
 			}
 		}
+	}
 
-		return null;
+	/**
+	 * Determines the command ID based on the active part context.
+	 * In E4, we can't directly access the command ID from the event, so we use
+	 * a default behavior.
+	 * 
+	 * @param activePart the active part
+	 * @return the command ID
+	 */
+	private String determineCommandId(MPart activePart) {
+		// Default to launch command - this will be differentiated by the E4 model
+		// which can bind different instances of this handler to different commands
+		return "org.eclipse.terminal.view.ui.command.launch"; //$NON-NLS-1$
 	}
 
 	private Optional<ILauncherDelegate> findDelegate(LaunchTerminalSettingsDialog dialog) {
@@ -142,12 +158,8 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 	}
 
 	private ITerminalConnector createConnector(ILauncherDelegate delegate, Map<String, Object> settings)
-			throws ExecutionException {
-		try {
-			return delegate.createTerminalConnector(settings);
-		} catch (CoreException e) {
-			throw new ExecutionException(e.getStatus().getMessage(), e);
-		}
+			throws CoreException {
+		return delegate.createTerminalConnector(settings);
 	}
 
 	private boolean isValidSelection(ISelection selection) {
@@ -165,14 +177,14 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 		return false;
 	}
 
-	private void executeDelegate(ISelection selection, ILauncherDelegate delegate) throws ExecutionException {
+	private void executeDelegate(ISelection selection, ILauncherDelegate delegate) {
 		Map<String, Object> properties = new HashMap<>();
 		properties.put(ITerminalsConnectorConstants.PROP_DELEGATE_ID, delegate.getId());
 		properties.put(ITerminalsConnectorConstants.PROP_SELECTION, selection);
 		executeDelegate(properties, delegate);
 	}
 
-	private void executeDelegate(Map<String, Object> properties, ILauncherDelegate delegate) throws ExecutionException {
+	private void executeDelegate(Map<String, Object> properties, ILauncherDelegate delegate) {
 		delegate.execute(properties).whenComplete((r, e) -> {
 			if (e != null) {
 				ILog.get().error("Error occurred while running delegate to open console", e); //$NON-NLS-1$

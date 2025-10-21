@@ -11,18 +11,16 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.handler;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.e4.core.di.annotations.Execute;
 
 /**
  * Maximize view handler implementation.
  */
-public class MaximizeViewHandler extends AbstractTriggerCommandHandler {
+public class MaximizeViewHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		triggerCommand("org.eclipse.ui.window.maximizePart", null); //$NON-NLS-1$
-		return null;
+	@Execute
+	public void execute() {
+		AbstractTriggerCommandHandler.triggerCommandStatic("org.eclipse.ui.window.maximizePart", null); //$NON-NLS-1$
 	}
 
 }

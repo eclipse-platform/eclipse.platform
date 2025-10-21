@@ -11,18 +11,16 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.handler;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.e4.core.di.annotations.Execute;
 
 /**
  * Quick access handler implementation.
  */
-public class QuickAccessHandler extends AbstractTriggerCommandHandler {
+public class QuickAccessHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		triggerCommand("org.eclipse.ui.window.quickAccess", null); //$NON-NLS-1$
-		return null;
+	@Execute
+	public void execute() {
+		AbstractTriggerCommandHandler.triggerCommandStatic("org.eclipse.ui.window.quickAccess", null); //$NON-NLS-1$
 	}
 
 }
