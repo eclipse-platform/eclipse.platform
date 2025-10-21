@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.handler;
 
+import jakarta.inject.Inject;
+
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.e4.core.commands.ECommandService;
+import org.eclipse.e4.core.commands.EHandlerService;
 import org.eclipse.e4.core.di.annotations.Execute;
 
 /**
@@ -18,9 +23,18 @@ import org.eclipse.e4.core.di.annotations.Execute;
  */
 public class QuickAccessHandler {
 
+	@Inject
+	private ECommandService commandService;
+
+	@Inject
+	private EHandlerService handlerService;
+
 	@Execute
 	public void execute() {
-		AbstractTriggerCommandHandler.triggerCommandStatic("org.eclipse.ui.window.quickAccess", null); //$NON-NLS-1$
+		ParameterizedCommand command = commandService.createCommand("org.eclipse.ui.window.quickAccess", null); //$NON-NLS-1$
+		if (command != null) {
+			handlerService.executeHandler(command);
+		}
 	}
 
 }

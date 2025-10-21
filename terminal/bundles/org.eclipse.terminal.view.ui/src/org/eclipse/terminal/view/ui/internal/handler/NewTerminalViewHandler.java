@@ -12,8 +12,13 @@
  *******************************************************************************/
 package org.eclipse.terminal.view.ui.internal.handler;
 
+import jakarta.inject.Inject;
+
+import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILog;
+import org.eclipse.e4.core.commands.ECommandService;
+import org.eclipse.e4.core.commands.EHandlerService;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.terminal.view.ui.TerminalViewId;
 import org.eclipse.terminal.view.ui.internal.UIPlugin;
@@ -23,11 +28,20 @@ import org.eclipse.terminal.view.ui.internal.UIPlugin;
  */
 public class NewTerminalViewHandler {
 
+	@Inject
+	private ECommandService commandService;
+
+	@Inject
+	private EHandlerService handlerService;
+
 	@Execute
 	public void execute() {
 		try {
 			UIPlugin.getConsoleManager().showConsoleView(new TerminalViewId().next());
-			AbstractTriggerCommandHandler.triggerCommandStatic("org.eclipse.terminal.view.ui.command.launchToolbar", null); //$NON-NLS-1$
+			ParameterizedCommand command = commandService.createCommand("org.eclipse.terminal.view.ui.command.launchToolbar", null); //$NON-NLS-1$
+			if (command != null) {
+				handlerService.executeHandler(command);
+			}
 		} catch (CoreException e) {
 			ILog.get().error("Error creating new terminal view", e); //$NON-NLS-1$
 		}
