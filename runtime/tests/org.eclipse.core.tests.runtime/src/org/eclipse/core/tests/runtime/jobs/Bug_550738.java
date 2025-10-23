@@ -134,4 +134,41 @@ public class Bug_550738 extends AbstractJobTest {
 			waitForCompletion(job);
 		}
 	}
+
+	/**
+	 * Test for issue #160: Job.schedule() should work after cancel() when job is running.
+	 * This tests the specific scenario where:
+	 * 1. Job is running
+	 * 2. cancel() is called
+	 * 3. schedule() is called immediately (while still running)
+	 * 4. Job finishes and should reschedule
+	 */
+	@Test
+	public void testCancelThenScheduleWhileRunning() throws InterruptedException {
+		BusyLoopJob job = new BusyLoopJob();
+		try {
+			for (int i = 0; i < 100; i++) {
+				CountDownLatch startedLatch = new CountDownLatch(1);
+				job.started = startedLatch::countDown;
+				job.schedule();
+				assertTrue("Job should start after schedule. Iteration " + i,
+						startedLatch.await(5, TimeUnit.SECONDS));
+
+				// While job is running, cancel it and then immediately schedule it again
+				Thread.sleep(i);
+				job.cancel();
+				job.schedule();
+
+				// The job should reschedule and not remain in NONE state
+				// Wait a bit to ensure the rescheduling happens
+				Thread.sleep(50);
+				int state = job.getState();
+				assertTrue("Job should not be in NONE state after cancel+schedule. Iteration " + i + ", state: " + state,
+						state != org.eclipse.core.runtime.jobs.Job.NONE);
+			}
+		} finally {
+			job.cancelWithoutRelyingOnFramework = true;
+			waitForCompletion(job);
+		}
+	}
 }
