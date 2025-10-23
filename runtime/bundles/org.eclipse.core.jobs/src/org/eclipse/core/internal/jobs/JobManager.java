@@ -1486,9 +1486,6 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		}
 		Assert.isNotNull(job, "Job is null"); //$NON-NLS-1$
 		Assert.isLegal(delay >= 0, "Scheduling delay is negative"); //$NON-NLS-1$
-		if (!reschedule) {
-			job.setAboutToRunCanceled(false);
-		}
 		// if the job is already running, set it to be rescheduled when done
 		if (job.getState() == Job.RUNNING) {
 			job.setStartTime(delay); // XXX delay used as time
@@ -1498,6 +1495,10 @@ public class JobManager implements IJobManager, DebugOptionsListener {
 		if (job.internalGetState() != Job.NONE) {
 			return false;
 		}
+		// Clear the about to run canceled flag when actually scheduling.
+		// A new explicit schedule() call should override any previous cancel() call.
+		// See https://github.com/eclipse-platform/eclipse.platform/issues/160
+		job.setAboutToRunCanceled(false);
 		if (JobManager.DEBUG) {
 			JobManager.debug("Scheduling job: " + job); //$NON-NLS-1$
 		}
