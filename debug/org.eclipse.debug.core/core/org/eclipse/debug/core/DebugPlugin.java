@@ -1285,8 +1285,8 @@ public class DebugPlugin extends Plugin {
 
 	private static class ExecFactoryFacade implements ExecFactory {
 
-		private IConfigurationElement element;
-		private int priority;
+		private final IConfigurationElement element;
+		private final int priority;
 
 		ExecFactoryFacade(IConfigurationElement element, int priority) {
 			this.element = element;
