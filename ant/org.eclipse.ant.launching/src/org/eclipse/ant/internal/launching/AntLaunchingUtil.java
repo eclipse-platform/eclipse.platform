@@ -345,7 +345,7 @@ public final class AntLaunchingUtil {
 	 *             if unable to migrate
 	 * @since 3.0
 	 */
-	@SuppressWarnings({ "restriction", "deprecation" })
+	@SuppressWarnings({ "deprecation" })
 	public static void migrateToNewClasspathFormat(ILaunchConfiguration configuration) throws CoreException {
 		String oldClasspath = configuration.getAttribute(AntLaunching.ATTR_ANT_CUSTOM_CLASSPATH, (String) null);
 		String oldAntHome = configuration.getAttribute(AntLaunching.ATTR_ANT_HOME, (String) null);
