@@ -13,9 +13,6 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.launchConfigurations;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -104,34 +101,37 @@ public class LinkPrototypeAction extends AbstractLaunchConfigurationAction {
 	 */
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
-		// Enable action only if launch configuration(s) of the same type
-		// is(are) selected and the launch configuration type allows prototypes
-		Collection<ILaunchConfigurationType> launchConfigurationTypes = new HashSet<>();
+		if (selection.isEmpty()) {
+			return false;
+		}
+		ILaunchConfigurationType type = null;
 		for (Object object : selection.toList()) {
-			if (object instanceof ILaunchConfiguration) {
-				if (((ILaunchConfiguration) object).isPrototype()) {
+			if (!(object instanceof ILaunchConfiguration launchConfig)) {
+				return false;
+			}
+
+			if (launchConfig.isPrototype()) {
+				return false;
+			}
+
+			ILaunchConfigurationType currentType;
+			try {
+				currentType = launchConfig.getType();
+				if (currentType.getPrototypes().length == 0) {
 					return false;
-				} else {
-					ILaunchConfigurationType type = null;
-					try {
-						type = ((ILaunchConfiguration) object).getType();
-					} catch (CoreException e) {
-						DebugUIPlugin.log(e.getStatus());
-					}
-					if (type != null) {
-						launchConfigurationTypes.add(type);
-					} else {
-						return false;
-					}
 				}
-			} else {
+			} catch (CoreException e) {
+				DebugUIPlugin.log(e.getStatus());
+				return false;
+			}
+
+			if (type == null) {
+				type = currentType;
+			} else if (!type.equals(currentType)) {
 				return false;
 			}
 		}
-		if (launchConfigurationTypes.size() == 1) {
-			return launchConfigurationTypes.iterator().next().supportsPrototypes();
-		}
-		return false;
+		return true;
 	}
 
 	@Override
