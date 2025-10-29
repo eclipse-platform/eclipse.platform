@@ -13,8 +13,8 @@ package org.eclipse.core.tests.resources.regression;
 import static org.eclipse.core.tests.harness.FileSystemHelper.canCreateSymLinks;
 import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.Path;
 import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.internal.localstore.UnifiedTree;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -30,10 +31,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests for recursive symbolic links in projects.
@@ -47,7 +49,7 @@ public class Bug_185247_recursiveLinks {
 
 	@BeforeEach
 	public void requireCanCreateSymlinks(TestInfo testInfo) throws IOException {
-		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
 		testMethodName = testInfo.getTestMethod().get().getName();
 	}
 
@@ -62,13 +64,14 @@ public class Bug_185247_recursiveLinks {
 	 *         |-- link_current -&gt; ./ (links "directory")
 	 * </pre>
 	 */
-	@Test
-	public void test1_linkCurrentDirectory() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test1_linkCurrentDirectory(boolean useAdvancedLinkCheck) throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			createSymlink(directory, "link_current", "./");
 		};
 
-		runTest(createSymlinks);
+		runTest(createSymlinks, useAdvancedLinkCheck);
 	}
 
 	/**
@@ -82,13 +85,14 @@ public class Bug_185247_recursiveLinks {
 	 *         |-- link_parent -&gt; ../ (links "project root")
 	 * </pre>
 	 */
-	@Test
-	public void test2_linkParentDirectory() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test2_linkParentDirectory(boolean useAdvancedLinkCheck) throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			createSymlink(directory, "link_parent", "../");
 		};
 
-		runTest(createSymlinks);
+		runTest(createSymlinks, useAdvancedLinkCheck);
 	}
 
 	/**
@@ -104,15 +108,16 @@ public class Bug_185247_recursiveLinks {
 	 *              |-- link_grandparent -&gt; ../../ (links "project root")
 	 * </pre>
 	 */
-	@Test
-	public void test3_linkGrandparentDirectory() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test3_linkGrandparentDirectory(boolean useAdvancedLinkCheck) throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			File subdirectory = new File(directory, "subdirectory");
 			createDirectory(subdirectory);
 			createSymlink(subdirectory, "link_grandparent", "../../");
 		};
 
-		runTest(createSymlinks);
+		runTest(createSymlinks, useAdvancedLinkCheck);
 	}
 
 	/**
@@ -132,8 +137,9 @@ public class Bug_185247_recursiveLinks {
 	 *              |-- link_parent -&gt; ../ (links directory)
 	 * </pre>
 	 */
-	@Test
-	public void test4_linkParentDirectoryTwice() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test4_linkParentDirectoryTwice(boolean useAdvancedLinkCheck) throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			String[] subdirectoryNames = { "subdirectory1", "subdirectory2" };
 			for (String subdirectoryName : subdirectoryNames) {
@@ -143,7 +149,7 @@ public class Bug_185247_recursiveLinks {
 			}
 		};
 
-		runTest(createSymlinks);
+		runTest(createSymlinks, useAdvancedLinkCheck);
 	}
 
 	/**
@@ -163,8 +169,9 @@ public class Bug_185247_recursiveLinks {
 	 *              |-- link_parent -&gt; /tmp/&lt;random string&gt;/bug185247recursive/test5_linkParentDirectoyTwiceWithAbsolutePath/directory
 	 * </pre>
 	 */
-	@Test
-	public void test5_linkParentDirectoyTwiceWithAbsolutePath() throws Exception {
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test5_linkParentDirectoyTwiceWithAbsolutePath(boolean useAdvancedLinkCheck) throws Exception {
 		CreateTestProjectStructure createSymlinks = directory -> {
 			String[] subdirectoryNames = { "subdirectory1", "subdirectory2" };
 			for (String subdirectoryName : subdirectoryNames) {
@@ -174,22 +181,28 @@ public class Bug_185247_recursiveLinks {
 			}
 		};
 
-		runTest(createSymlinks);
+		runTest(createSymlinks, useAdvancedLinkCheck);
 	}
 
-	private void runTest(CreateTestProjectStructure createSymlinks) throws MalformedURLException, Exception {
-		String projectName = testMethodName;
-		IPath testRoot = IPath.fromPath(tempDirectory);
-		IPath projectRoot = testRoot.append("bug185247recursive").append(projectName);
-		File directory = projectRoot.append("directory").toFile();
-		createDirectory(directory);
+	private void runTest(CreateTestProjectStructure createSymlinks, boolean useAdvancedLinkCheck)
+			throws MalformedURLException, Exception {
+		final boolean originalValue = UnifiedTree.isAdvancedRecursiveLinkChecksEnabled();
+		try {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(useAdvancedLinkCheck);
+			String projectName = testMethodName;
+			IPath testRoot = IPath.fromPath(tempDirectory);
+			IPath projectRoot = testRoot.append("bug185247recursive").append(projectName);
+			File directory = projectRoot.append("directory").toFile();
+			createDirectory(directory);
 
-		createSymlinks.accept(directory);
+			createSymlinks.accept(directory);
 
-
-		URI projectRootLocation = URIUtil.toURI((projectRoot));
-		// refreshing the project with recursive symlinks should not hang
-		importProjectAndRefresh(projectName, projectRootLocation);
+			URI projectRootLocation = URIUtil.toURI((projectRoot));
+			// refreshing the project with recursive symlinks should not hang
+			importProjectAndRefresh(projectName, projectRootLocation);
+		} finally {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(originalValue);
+		}
 	}
 
 	private static void createDirectory(File directory) {
