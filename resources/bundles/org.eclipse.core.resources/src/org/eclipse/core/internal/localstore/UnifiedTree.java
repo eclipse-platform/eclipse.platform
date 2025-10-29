@@ -438,9 +438,6 @@ public class UnifiedTree {
 		//Pattern: A UNIX or Windows relative path that just points backward
 		static final Pattern TRIVIAL_SYMLINK_PATTERN = Pattern.compile( //
 				Platform.OS.isWindows() ? "\\.[.\\\\]*" : "\\.[./]*"); //$NON-NLS-1$//$NON-NLS-2$
-
-		static final Pattern REPEATING_BACKWARDS_PATTERN = Pattern.compile( //
-				Platform.OS.isWindows() ? "(\\.\\.\\\\)+.*" : "(\\.\\./)+.*"); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	/**
@@ -522,20 +519,10 @@ public class UnifiedTree {
 			Path realParentPath = parent.toRealPath();
 			if (disable_advanced_recursive_link_checks) {
 				// Multiple ../ backwards links can go outside the project tree
-				if (linkTarget != null && PatternHolder.REPEATING_BACKWARDS_PATTERN.matcher(linkTarget).matches()) {
-					Path targetPath = parent.resolve(linkTarget).normalize();
-
-					// Recursive if literal target points to the literal parent of this tree
-					if (parent.normalize().startsWith(targetPath)) {
+				if (linkTarget != null) {
+					if (isRecursiveBackwardsLink(realParentPath, linkTarget)) {
 						return true;
 					}
-
-					// Recursive if resolved target points to the resolved parent of this tree
-					Path realTargetPath = targetPath.toRealPath();
-					if (realParentPath.startsWith(realTargetPath)) {
-						return true;
-					}
-
 					// If link is outside the project tree, consider as non recursive
 					// The link still can create recursion in the tree, but we can't detect it here.
 				}
@@ -571,6 +558,51 @@ public class UnifiedTree {
 			//ignore
 		}
 		return false;
+	}
+
+	/**
+	 * @param realParentPath    real parent path object obtained as a result
+	 *                          of @code{Path.toRealPath()}
+	 * @param linkTarget        the link target path as a string, may be relative or
+	 *                          absolute
+	 * @return true if the given target points backwards recursively to the given
+	 *         parent path
+	 * @throws IOException
+	 */
+	private static boolean isRecursiveBackwardsLink(Path realParentPath, String linkTarget)
+			throws IOException {
+		// Cheap test first: literal target points to the literal parent
+		Path normalizedLink = realParentPath.resolve(linkTarget).normalize();
+		if (realParentPath.startsWith(normalizedLink)) {
+			return true;
+		}
+		// Next check costs more time because it does real IO when resolving paths
+		Path realTarget = normalizedLink.toRealPath();
+		if (realParentPath.startsWith(realTarget)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Disable or enable advanced recursive link checks. Advanced link checks may
+	 * hide valid directories in some cases, see bug 537449.
+	 *
+	 * @param enable <code>true</code> to enable advanced recursive link checks,
+	 *               <code>false</code> to disable them.
+	 */
+	public static void enableAdvancedRecursiveLinkChecks(boolean enable) {
+		disable_advanced_recursive_link_checks = !enable;
+	}
+
+	/**
+	 * Returns whether advanced recursive link checks are enabled.
+	 *
+	 * @return <code>true</code> if advanced recursive link checks are enabled,
+	 *         <code>false</code> otherwise.
+	 */
+	public static boolean isAdvancedRecursiveLinkChecksEnabled() {
+		return !disable_advanced_recursive_link_checks;
 	}
 
 	protected boolean isValidLevel(int currentLevel, int depth) {

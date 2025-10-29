@@ -40,7 +40,7 @@ public class WorkspaceResetExtension implements AfterEachCallback, BeforeEachCal
 	public void beforeEach(ExtensionContext context) throws Exception {
 		// Wait for any pending refresh operation, in particular from startup
 		waitForRefresh();
-		TestUtil.log(IStatus.INFO, context.getDisplayName(), "setUp");
+		TestUtil.log(IStatus.INFO, getTestName(context), "setUp");
 		assertNotNull(getWorkspace(), "Workspace was not set up");
 		FreezeMonitor.expectCompletionInAMinute();
 		waitForRefresh();
@@ -48,13 +48,23 @@ public class WorkspaceResetExtension implements AfterEachCallback, BeforeEachCal
 
 	@Override
 	public void afterEach(ExtensionContext context) throws Exception {
-		TestUtil.log(IStatus.INFO, context.getDisplayName(), "tearDown");
+		TestUtil.log(IStatus.INFO, getTestName(context), "tearDown");
 		try {
 			restoreCleanWorkspace();
 		} finally {
 			FreezeMonitor.done();
 			assertWorkspaceFolderEmpty();
 		}
+	}
+
+	private String getTestName(ExtensionContext context) {
+		String className = context.getRequiredTestClass().getSimpleName();
+		String methodName = context.getRequiredTestMethod().getName();
+		String displayName = context.getDisplayName();
+		if (!displayName.contains(methodName)) {
+			methodName += displayName;
+		}
+		return className + "." + methodName;
 	}
 
 	private void restoreCleanWorkspace() {

@@ -11,10 +11,10 @@
 package org.eclipse.core.tests.resources.regression;
 
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
-import static org.junit.Assume.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.core.internal.localstore.UnifiedTree;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -38,10 +39,11 @@ import org.eclipse.core.runtime.Platform.OS;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test cases for symbolic links in projects.
@@ -56,7 +58,7 @@ public class Bug_185247_LinuxTests {
 
 	@BeforeEach
 	public void setUp(TestInfo testInfo) throws Exception {
-		assumeTrue("only relevant on Linux", OS.isLinux());
+		assumeTrue(OS.isLinux(), "only relevant on Linux");
 
 		testMethodName = testInfo.getTestMethod().get().getName();
 		IPath randomLocation = IPath.fromPath(tempDirectory);
@@ -74,34 +76,45 @@ public class Bug_185247_LinuxTests {
 		unzip(archive, outputLocation.toFile());
 	}
 
-	@Test
-	public void test1_trivial() throws Exception {
-		runProjectTestCase();
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test1_trivial(boolean useAdvancedLinkCheck) throws Exception {
+		runProjectTestCase(useAdvancedLinkCheck);
 	}
 
-	@Test
-	public void test2_mutual() throws Exception {
-		runProjectTestCase();
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test2_mutual(boolean useAdvancedLinkCheck) throws Exception {
+		runProjectTestCase(useAdvancedLinkCheck);
 	}
 
-	@Test
-	public void test3_outside_tree() throws Exception {
-		runProjectTestCase();
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test3_outside_tree(boolean useAdvancedLinkCheck) throws Exception {
+		runProjectTestCase(useAdvancedLinkCheck);
 	}
 
-	@Test
-	public void test5_transitive_mutual() throws Exception {
-		runProjectTestCase();
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test5_transitive_mutual(boolean useAdvancedLinkCheck) throws Exception {
+		runProjectTestCase(useAdvancedLinkCheck);
 	}
 
-	@Test
-	public void test6_nonrecursive() throws Exception {
-		runProjectTestCase();
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void test6_nonrecursive(boolean useAdvancedLinkCheck) throws Exception {
+		runProjectTestCase(useAdvancedLinkCheck);
 	}
 
-	private void runProjectTestCase() throws Exception {
-		// refresh should hang, if bug 105554 re-occurs
-		importProjectAndRefresh(testMethodName);
+	private void runProjectTestCase(boolean useAdvancedLinkCheck) throws Exception {
+		final boolean originalValue = UnifiedTree.isAdvancedRecursiveLinkChecksEnabled();
+		try {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(useAdvancedLinkCheck);
+			// refresh should hang, if bug 105554 re-occurs
+			importProjectAndRefresh(testMethodName);
+		} finally {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(originalValue);
+		}
 	}
 
 	private void importProjectAndRefresh(String projectName) throws Exception {
