@@ -523,19 +523,12 @@ public class UnifiedTree {
 			if (disable_advanced_recursive_link_checks) {
 				// Multiple ../ backwards links can go outside the project tree
 				if (linkTarget != null && PatternHolder.REPEATING_BACKWARDS_PATTERN.matcher(linkTarget).matches()) {
-					Path targetPath = parent.resolve(linkTarget).normalize();
-
-					// Recursive if literal target points to the literal parent of this tree
-					if (parent.normalize().startsWith(targetPath)) {
+					if (isRecursiveBackwardsLink(parent, linkTarget, false)) {
 						return true;
 					}
-
-					// Recursive if resolved target points to the resolved parent of this tree
-					Path realTargetPath = targetPath.toRealPath();
-					if (realParentPath.startsWith(realTargetPath)) {
+					if (isRecursiveBackwardsLink(realParentPath, linkTarget, true)) {
 						return true;
 					}
-
 					// If link is outside the project tree, consider as non recursive
 					// The link still can create recursion in the tree, but we can't detect it here.
 				}
@@ -569,6 +562,29 @@ public class UnifiedTree {
 			}
 		} catch (IOException | CoreException e) {
 			//ignore
+		}
+		return false;
+	}
+
+	private static boolean isRecursiveBackwardsLink(Path parent, String linkTarget, boolean resolveRealTarget)
+			throws IOException {
+		// Cheap tests first
+		// Recursive if literal target points to the literal parent of this tree
+		Path notNormalizedLink = parent.resolve(linkTarget);
+		if (parent.startsWith(notNormalizedLink)) {
+			return true;
+		}
+		// Same as above but using normalized variants
+		Path normalizedLink = notNormalizedLink.normalize();
+		if (parent.normalize().startsWith(normalizedLink)) {
+			return true;
+		}
+		// Next check costs more time because it does real IO when resolving paths
+		if (resolveRealTarget) {
+			Path realTarget = normalizedLink.toRealPath();
+			if (parent.startsWith(realTarget)) {
+				return true;
+			}
 		}
 		return false;
 	}
