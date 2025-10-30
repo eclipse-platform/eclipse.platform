@@ -1006,6 +1006,7 @@ public class DebugPlugin extends Plugin {
 	public static Process exec(String[] cmdLine, File workingDirectory, String[] envp, boolean mergeOutput) throws CoreException {
 		List<ExecFactoryFacade> factories = DebugPlugin.getDefault().getExecFactories();
 		Optional<File> directory = shortenWindowsPath(workingDirectory);
+		String[] shortenedCmdLine = shortenWindowsCommandLine(cmdLine);
 		Optional<Map<String, String>> envMap = Optional.ofNullable(envp).map(array -> {
 			Map<String, String> map = new LinkedHashMap<>();
 			for (String e : array) {
@@ -1017,7 +1018,7 @@ public class DebugPlugin extends Plugin {
 			return Map.copyOf(map);
 		});
 		for (ExecFactoryFacade holder : factories) {
-			Optional<Process> exec = holder.exec(cmdLine.clone(), directory, envMap, mergeOutput);
+			Optional<Process> exec = holder.exec(shortenedCmdLine.clone(), directory, envMap, mergeOutput);
 			if (exec.isPresent()) {
 				return exec.get();
 			}
@@ -1029,7 +1030,7 @@ public class DebugPlugin extends Plugin {
 			// ProcessBuilder and Runtime.exec only the new option uses process
 			// builder to not break existing caller of this method
 			if (mergeOutput) {
-				ProcessBuilder pb = new ProcessBuilder(cmdLine);
+				ProcessBuilder pb = new ProcessBuilder(shortenedCmdLine);
 				directory.ifPresent(pb::directory);
 				pb.redirectErrorStream(mergeOutput);
 				if (envMap.isPresent()) {
@@ -1039,9 +1040,9 @@ public class DebugPlugin extends Plugin {
 				}
 				return pb.start();
 			} else if (directory.isEmpty()) {
-				return Runtime.getRuntime().exec(cmdLine, envp);
+				return Runtime.getRuntime().exec(shortenedCmdLine, envp);
 			} else {
-				return Runtime.getRuntime().exec(cmdLine, envp, directory.get());
+				return Runtime.getRuntime().exec(shortenedCmdLine, envp, directory.get());
 			}
 		} catch (IOException e) {
 			Status status = new Status(IStatus.ERROR, getUniqueIdentifier(), ERROR, DebugCoreMessages.DebugPlugin_0, e);
@@ -1081,6 +1082,50 @@ public class DebugPlugin extends Plugin {
 			}
 		}
 		return Optional.ofNullable(path);
+	}
+
+	/**
+	 * Shortens the command line elements if they exceed Windows MAX_PATH limit.
+	 * This is necessary because Windows process creation APIs have problems with
+	 * long paths, even when launching executables or passing file arguments.
+	 *
+	 * @param cmdLine the command line array
+	 * @return the potentially shortened command line array
+	 */
+	private static String[] shortenWindowsCommandLine(String[] cmdLine) {
+		if (cmdLine == null || cmdLine.length == 0 || !Platform.OS.isWindows()) {
+			return cmdLine;
+		}
+
+		String[] result = cmdLine.clone();
+		boolean modified = false;
+
+		// Check and shorten each path-like argument in the command line
+		// The first element is typically the executable path, which is most critical
+		for (int i = 0; i < result.length; i++) {
+			String arg = result[i];
+			if (arg != null && arg.length() > WINDOWS_MAX_PATH) {
+				// Check if this looks like a file path
+				File file = new File(arg);
+				if (file.isAbsolute()) {
+					@SuppressWarnings("restriction")
+					String shortPath = org.eclipse.core.internal.filesystem.local.Win32Handler.getShortPathName(arg);
+					if (shortPath != null) {
+						result[i] = shortPath;
+						modified = true;
+						if (i == 0) {
+							// Log only for the executable (first argument)
+							logDebugMessage("Shortened executable path from " + arg.length() + " to " + shortPath.length() + " characters"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						}
+					} else if (i == 0) {
+						// Only warn for the executable path, as that's the most critical
+						log(Status.warning("Executable path exceeds Window's MAX_PATH limit and shortening the path failed: " + arg)); //$NON-NLS-1$
+					}
+				}
+			}
+		}
+
+		return modified ? result : cmdLine;
 	}
 
 	/**
