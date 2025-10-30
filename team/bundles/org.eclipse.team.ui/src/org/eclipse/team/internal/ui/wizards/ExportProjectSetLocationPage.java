@@ -131,8 +131,8 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			}
 
 			FileDialog d = new FileDialog(getShell(), SWT.SAVE);
-			d.setFilterExtensions(new String[] {"*.psf"}); //$NON-NLS-1$
-			d.setFilterNames(new String[] {TeamUIMessages.ExportProjectSetMainPage_Project_Set_Files_3});
+			d.setFilterExtensions("*.psf"); //$NON-NLS-1$
+			d.setFilterNames(TeamUIMessages.ExportProjectSetMainPage_Project_Set_Files_3);
 			d.setFileName(TeamUIMessages.ExportProjectSetMainPage_default);
 			String fileName = getFileName();
 			if (fileName != null) {
