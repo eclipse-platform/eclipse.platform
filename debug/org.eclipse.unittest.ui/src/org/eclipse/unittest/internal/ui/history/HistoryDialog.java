@@ -108,7 +108,7 @@ public class HistoryDialog extends SelectionDialog {
 		Button importButton = new Button(buttons, SWT.PUSH);
 		importButton.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
 			FileDialog fileDialog = new FileDialog(getShell());
-			fileDialog.setFilterExtensions(new String[] { "*.xml" }); //$NON-NLS-1$
+			fileDialog.setFilterExtensions("*.xml"); //$NON-NLS-1$
 			fileDialog.setText(Messages.HistoryDialog_selectImport);
 			String path = fileDialog.open();
 			if (path == null) {
