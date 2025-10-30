@@ -42,7 +42,7 @@ public class ExternalArchiveSourceContainerBrowser extends AbstractSourceContain
 				.getDialogSettings();
 		String rootDir = dialogSettings.get(ROOT_DIR);
 		dialog.setText(SourceLookupUIMessages.ExternalArchiveSourceContainerBrowser_2);
-		dialog.setFilterExtensions(new String[]{"*.jar;*.zip"});  //$NON-NLS-1$
+		dialog.setFilterExtensions("*.jar;*.zip");  //$NON-NLS-1$
 		if (rootDir != null) {
 			dialog.setFilterPath(rootDir);
 		}
