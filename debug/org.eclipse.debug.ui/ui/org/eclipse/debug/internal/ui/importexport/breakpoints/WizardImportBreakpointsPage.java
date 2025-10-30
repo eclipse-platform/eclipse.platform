@@ -91,7 +91,7 @@ public class WizardImportBreakpointsPage extends WizardPage implements Listener 
 	 */
 	protected void handleBrowseForFileButtonPressed() {
 		FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.OPEN | SWT.SHEET);
-		dialog.setFilterExtensions(new String[]{"*."+IImportExportConstants.EXTENSION});  //$NON-NLS-1$
+		dialog.setFilterExtensions("*."+IImportExportConstants.EXTENSION);  //$NON-NLS-1$
 		String file = dialog.open();
 		if(file != null) {
 			fFileNameField.setText(file);
