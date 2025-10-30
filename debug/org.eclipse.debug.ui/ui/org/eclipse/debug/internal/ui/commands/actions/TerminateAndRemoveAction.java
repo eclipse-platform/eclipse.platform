@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -109,7 +109,7 @@ public class TerminateAndRemoveAction extends DebugCommandAction {
 		// enable the action, which whill just remove the terminated launches (bug 324959).
 		fCanTerminate = !isAllTerminated;
 		if (isAllTerminated) {
-			setEnabled(true);
+			setEnabled(!context.isEmpty());
 		} else {
 			super.debugContextChanged(event);
 		}
