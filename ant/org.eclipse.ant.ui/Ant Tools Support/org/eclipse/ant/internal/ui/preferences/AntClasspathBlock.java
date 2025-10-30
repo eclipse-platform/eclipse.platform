@@ -239,7 +239,7 @@ public class AntClasspathBlock {
 			lastUsedPath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
 		}
 		FileDialog dialog = new FileDialog(treeViewer.getControl().getShell(), SWT.MULTI | SWT.SHEET);
-		dialog.setFilterExtensions(new String[] { "*.jar;*.zip" }); //$NON-NLS-1$
+		dialog.setFilterExtensions("*.jar;*.zip"); //$NON-NLS-1$
 		dialog.setFilterPath(lastUsedPath);
 
 		String result = dialog.open();

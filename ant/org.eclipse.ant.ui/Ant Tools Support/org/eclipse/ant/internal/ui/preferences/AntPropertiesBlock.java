@@ -411,7 +411,7 @@ public class AntPropertiesBlock {
 			lastUsedPath = IAntCoreConstants.EMPTY_STRING;
 		}
 		FileDialog dialog = new FileDialog(fileTableViewer.getControl().getShell(), SWT.MULTI | SWT.SHEET);
-		dialog.setFilterExtensions(new String[] { "*.properties", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$ ;
+		dialog.setFilterExtensions("*.properties", "*.*"); //$NON-NLS-1$ //$NON-NLS-2$ ;
 		dialog.setFilterPath(lastUsedPath);
 
 		String result = dialog.open();

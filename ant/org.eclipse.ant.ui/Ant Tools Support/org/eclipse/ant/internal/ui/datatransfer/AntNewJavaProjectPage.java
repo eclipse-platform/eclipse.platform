@@ -270,7 +270,7 @@ public class AntNewJavaProjectPage extends WizardPage {
 
 		String lastUsedPath = IAntCoreConstants.EMPTY_STRING;
 		FileDialog dialog = new FileDialog(getShell(), SWT.SINGLE | SWT.SHEET);
-		dialog.setFilterExtensions(new String[] { "*.xml" }); //$NON-NLS-1$ ;
+		dialog.setFilterExtensions("*.xml"); //$NON-NLS-1$ ;
 		dialog.setFilterPath(lastUsedPath);
 
 		String result = dialog.open();
