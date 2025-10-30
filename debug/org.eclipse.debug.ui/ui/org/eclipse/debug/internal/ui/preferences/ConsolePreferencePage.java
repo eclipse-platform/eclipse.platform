@@ -41,11 +41,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsoleConstants;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 /**
  * A page to set the preferences for the console
@@ -127,7 +130,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	 */
 	@Override
 	public void createFieldEditors() {
-
+		createHeaderLink();
 		fWrapEditor = new BooleanFieldEditor2(IDebugPreferenceConstants.CONSOLE_WRAP, DebugPreferencesMessages.ConsolePreferencePage_Wrap_text_1, SWT.NONE, getFieldEditorParent());
 		addField(fWrapEditor);
 
@@ -411,5 +414,25 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		String elapsedString = String.format(dateTimeFormated, elapsedTime.toHours(), elapsedTime.toMinutesPart(),
 				elapsedTime.toSecondsPart(), elapsedTime.toMillisPart());
 		return elapsedString;
+	}
+
+	private void createHeaderLink() {
+		final Shell shell = getFieldEditorParent().getShell();
+		String text = DebugPreferencesMessages.ConsoleFontSettingsLink;
+		Link link = new Link(getFieldEditorParent(), SWT.NONE);
+		link.setText(text);
+		link.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if ("org.eclipse.ui.preferencePages.ColorsAndFonts".equals(e.text)) { //$NON-NLS-1$
+					PreferencesUtil.createPreferenceDialogOn(shell, e.text, null,
+							"selectFont:org.eclipse.debug.ui.consoleFont"); //$NON-NLS-1$
+				}
+			}
+		});
+		GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+		gridData.horizontalSpan = 4;
+		link.setLayoutData(gridData);
+		SWTFactory.createVerticalSpacer(getFieldEditorParent(), 2);
 	}
 }

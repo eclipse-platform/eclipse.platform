@@ -232,4 +232,5 @@ public class DebugPreferencesMessages extends NLS {
 
 	public static String ConsolePreferencePage_ConsoleIconUpdate;
 
+	public static String ConsoleFontSettingsLink;
 }
