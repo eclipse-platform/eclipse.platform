@@ -20,6 +20,7 @@ import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -29,7 +30,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -54,6 +57,18 @@ import org.junit.rules.TemporaryFolder;
  * @since 3.10
  */
 public class LaunchTests extends AbstractLaunchTest {
+
+	/**
+	 * Windows MAX_PATH limit for file paths. See
+	 * https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
+	 */
+	private static final int WINDOWS_MAX_PATH = 258;
+
+	/**
+	 * Target length for long path tests. This should be well above MAX_PATH to
+	 * ensure the tests exercise the long path handling code.
+	 */
+	private static final int LONG_PATH_LENGTH_TARGET = 400;
 
 	private InvocationHandler handler;
 	private Runnable readIsTerminatedTask;
@@ -146,15 +161,36 @@ public class LaunchTests extends AbstractLaunchTest {
 		assumeTrue(Platform.OS.isWindows());
 
 		int rootLength = tempFolder.getRoot().toString().length();
-		String subPathElementsName = "subfolder-with-relativly-long-name";
-		String[] segments = Collections.nCopies((400 - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
+		String subPathElementsName = "subfolder-with-relatively-long-name";
+		String[] segments = Collections.nCopies((LONG_PATH_LENGTH_TARGET - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
 		File workingDirectory = tempFolder.newFolder(segments);
-		assertTrue(workingDirectory.toString().length() > 300);
+		assertTrue(workingDirectory.toString().length() > WINDOWS_MAX_PATH);
 
 		// Just launch any process in a directory with a path longer than
 		// Window's MAX_PATH length limit
 		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, false, "jdk");
 		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, true, "jdk");
+	}
+
+	@Test
+	public void testProcessLaunchWithLongExecutablePath() throws CoreException, IOException {
+		assumeTrue(Platform.OS.isWindows());
+
+		int rootLength = tempFolder.getRoot().toString().length();
+		String subPathElementsName = "another-one-with-a-long-path-name-2";
+		String[] segments = Collections.nCopies((LONG_PATH_LENGTH_TARGET - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
+		File workingDirectory = tempFolder.newFolder(segments);
+		assertTrue(workingDirectory.toString().length() > WINDOWS_MAX_PATH);
+		File jar = new File(workingDirectory, "dummy.jar");
+		try (JarOutputStream stream = new JarOutputStream(new FileOutputStream(jar))) {
+			stream.putNextEntry(new ZipEntry("TEST"));
+			stream.write(1);
+		}
+
+		// Just launch any process in a directory with a path longer than
+		// Window's MAX_PATH length limit and an argument that is even longer!
+		startProcessAndAssertOutputContains(List.of("java", "--version", "-cp", jar.getAbsolutePath()), workingDirectory, false, "jdk");
+		startProcessAndAssertOutputContains(List.of("java", "--version", "-cp", jar.getAbsolutePath()), workingDirectory, true, "jdk");
 	}
 
 	private static void startProcessAndAssertOutputContains(List<String> cmdLine, File workingDirectory, boolean mergeOutput, String expectedOutput) throws CoreException, IOException {
