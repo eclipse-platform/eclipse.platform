@@ -363,7 +363,7 @@ public class CheatSheetCategoryBasedSelectionDialog extends TrayDialog //extends
 		public void widgetSelected(SelectionEvent e) {
 			// Launch a file dialog to select a cheatsheet file
 			FileDialog fileDlg = new FileDialog(getShell());
-			fileDlg.setFilterExtensions(new String[]{"*.xml"}); //$NON-NLS-1$
+			fileDlg.setFilterExtensions("*.xml"); //$NON-NLS-1$
 			fileDlg.setText(Messages.SELECTION_DIALOG_FILEPICKER_TITLE);
 			fileDlg.open();
 			String filename = fileDlg.getFileName();
