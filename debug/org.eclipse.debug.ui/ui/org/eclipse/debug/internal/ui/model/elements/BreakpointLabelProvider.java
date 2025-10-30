@@ -32,9 +32,10 @@ public class BreakpointLabelProvider extends DebugElementLabelProvider {
 	@Override
 	protected String getLabel(TreePath elementPath, IPresentationContext presentationContext, String columnId, int columnIndex) throws CoreException {
 		if (columnIndex == 0) {
-			if (elementPath.getFirstSegment() instanceof Breakpoint breakpoint) {
-				if (breakpoint.getBreakpointLabel() != null) {
-					return breakpoint.getBreakpointLabel();
+			if (elementPath.getLastSegment() instanceof Breakpoint breakpoint) {
+				String breakpointLabel = breakpoint.getBreakpointLabel();
+				if (breakpointLabel != null) {
+					return breakpointLabel;
 				}
 			}
 			return super.getLabel(elementPath, presentationContext, columnId, columnIndex);
