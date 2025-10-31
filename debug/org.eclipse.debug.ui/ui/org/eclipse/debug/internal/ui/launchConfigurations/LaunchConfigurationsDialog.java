@@ -69,6 +69,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.ProgressMonitorPart;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ViewForm;
@@ -279,7 +280,9 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		topComp.setLayout(topLayout);
 
 		// Set the things that TitleAreaDialog takes care of
-		setTitle(LaunchConfigurationsMessages.LaunchConfigurationDialog_Create__manage__and_run_launch_configurations_8);
+		setTitle(NLS.bind(
+				LaunchConfigurationsMessages.LaunchConfigurationDialog_Create__manage__and_run_launch_configurations_8,
+				getLaunchGroup().getMode()));
 		setMessage(LaunchConfigurationsMessages.LaunchConfigurationDialog_Ready_to_launch_2);
 		setModeLabelState();
 
