@@ -109,7 +109,7 @@ public class TerminateAndRemoveAction extends DebugCommandAction {
 		// enable the action, which whill just remove the terminated launches (bug 324959).
 		fCanTerminate = !isAllTerminated;
 		if (isAllTerminated) {
-			setEnabled(true);
+			setEnabled(!context.isEmpty());
 		} else {
 			super.debugContextChanged(event);
 		}
