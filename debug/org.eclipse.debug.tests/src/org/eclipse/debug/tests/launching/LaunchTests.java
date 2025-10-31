@@ -55,6 +55,18 @@ import org.junit.rules.TemporaryFolder;
  */
 public class LaunchTests extends AbstractLaunchTest {
 
+	/**
+	 * Windows MAX_PATH limit for file paths.
+	 * See https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation
+	 */
+	private static final int WINDOWS_MAX_PATH = 258;
+
+	/**
+	 * Target length for long path tests. This should be well above MAX_PATH to ensure
+	 * the tests exercise the long path handling code.
+	 */
+	private static final int LONG_PATH_LENGTH_TARGET = 400;
+
 	private InvocationHandler handler;
 	private Runnable readIsTerminatedTask;
 	private Runnable readIsDisconnectedTask;
@@ -146,8 +158,8 @@ public class LaunchTests extends AbstractLaunchTest {
 		assumeTrue(Platform.OS.isWindows());
 
 		int rootLength = tempFolder.getRoot().toString().length();
-		String subPathElementsName = "subfolder-with-relativly-long-name";
-		String[] segments = Collections.nCopies((400 - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
+		String subPathElementsName = "subfolder-with-relatively-long-name";
+		String[] segments = Collections.nCopies((LONG_PATH_LENGTH_TARGET - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
 		File workingDirectory = tempFolder.newFolder(segments);
 		assertTrue(workingDirectory.toString().length() > 300);
 
@@ -155,6 +167,33 @@ public class LaunchTests extends AbstractLaunchTest {
 		// Window's MAX_PATH length limit
 		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, false, "jdk");
 		startProcessAndAssertOutputContains(List.of("java", "--version"), workingDirectory, true, "jdk");
+	}
+
+	@Test
+	public void testProcessLaunchWithLongExecutablePath() throws CoreException, IOException {
+		assumeTrue(Platform.OS.isWindows());
+
+		// Create a directory with a very long path
+		int rootLength = tempFolder.getRoot().toString().length();
+		String subPathElementsName = "subfolder-with-relatively-long-name";
+		String[] segments = Collections.nCopies((LONG_PATH_LENGTH_TARGET - rootLength) / subPathElementsName.length(), subPathElementsName).toArray(String[]::new);
+		File longPathDir = tempFolder.newFolder(segments);
+		assertTrue(longPathDir.toString().length() > 300);
+
+		// Copy a system executable (java) to the long path
+		String javaHome = System.getProperty("java.home");
+		File javaExe = new File(javaHome, "bin/java.exe");
+		File longPathExe = new File(longPathDir, "java.exe");
+
+		// Copy the executable
+		java.nio.file.Files.copy(javaExe.toPath(), longPathExe.toPath());
+		assertTrue(longPathExe.exists());
+		String longExePath = longPathExe.getAbsolutePath();
+		assertTrue("Executable path should exceed MAX_PATH", longExePath.length() > WINDOWS_MAX_PATH);
+
+		// Launch the executable from the long path
+		startProcessAndAssertOutputContains(List.of(longExePath, "--version"), tempFolder.getRoot(), false, "jdk");
+		startProcessAndAssertOutputContains(List.of(longExePath, "--version"), tempFolder.getRoot(), true, "jdk");
 	}
 
 	private static void startProcessAndAssertOutputContains(List<String> cmdLine, File workingDirectory, boolean mergeOutput, String expectedOutput) throws CoreException, IOException {
