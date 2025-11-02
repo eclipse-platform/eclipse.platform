@@ -29,6 +29,8 @@ public class ConsoleUIPreferenceInitializer extends AbstractPreferenceInitialize
 		IPreferenceStore prefs = ConsolePlugin.getDefault().getPreferenceStore();
 		prefs.setDefault(IConsoleConstants.P_CONSOLE_AUTO_SCROLL_LOCK, true);
 		prefs.setDefault(IConsoleConstants.P_CONSOLE_WORD_WRAP, false);
+		prefs.setDefault(IConsoleConstants.AUTO_PIN_ENABLED_PREF_NAME, true);
+		prefs.setDefault(IConsoleConstants.REMEMBER_AUTO_PIN_DECISION_PREF_NAME, false);
 	}
 
 }
