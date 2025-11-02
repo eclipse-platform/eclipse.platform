@@ -164,6 +164,22 @@ public interface IConsoleConstants {
 	String P_CONSOLE_WORD_WRAP = ConsolePlugin.getUniqueIdentifier() + ".P_CONSOLE_WORD_WRAP"; //$NON-NLS-1$
 
 	/**
+	 * The preference name for the auto pin question to avoid that opening for every
+	 * new console opening.
+	 *
+	 * @since 3.15
+	 */
+	String REMEMBER_AUTO_PIN_DECISION_PREF_NAME = ConsolePlugin.getUniqueIdentifier() + ".AUTO_PIN_ASKED"; //$NON-NLS-1$
+
+	/**
+	 * The preference name for automatically pinning current Console view when
+	 * opening a new Console view.
+	 *
+	 * @since 3.15
+	 */
+	String AUTO_PIN_ENABLED_PREF_NAME = ConsolePlugin.getUniqueIdentifier() + ".AUTO_PIN_ENABLED"; //$NON-NLS-1$
+
+	/**
 	 * The default tab size for text consoles.
 	 *
 	 * @since 3.1

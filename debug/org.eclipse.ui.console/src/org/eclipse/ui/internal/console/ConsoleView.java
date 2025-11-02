@@ -461,7 +461,7 @@ public class ConsoleView extends PageBookView implements IConsoleView, IConsoleL
 		fDisplayConsoleAction = new ConsoleDropDownAction(this);
 		ConsoleFactoryExtension[] extensions = ((ConsoleManager)ConsolePlugin.getDefault().getConsoleManager()).getConsoleFactoryExtensions();
 		if (extensions.length > 0) {
-			fOpenConsoleAction = new OpenConsoleAction();
+			fOpenConsoleAction = new OpenConsoleAction(this);
 		}
 	}
 

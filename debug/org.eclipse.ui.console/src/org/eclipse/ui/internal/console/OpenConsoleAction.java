@@ -39,9 +39,14 @@ public class OpenConsoleAction extends Action implements IMenuCreator {
 
 	private ConsoleFactoryExtension[] fFactoryExtensions;
 	private Menu fMenu;
+	private ConsoleView consoleView;
 
-	public OpenConsoleAction() {
+	/**
+	 * @param consoleView the view which this action belongs to.
+	 */
+	public OpenConsoleAction(ConsoleView consoleView) {
 		super(ConsoleMessages.OpenConsoleAction_0, AS_DROP_DOWN_MENU);
+		this.consoleView = consoleView;
 		fFactoryExtensions = getSortedFactories();
 		setToolTipText(ConsoleMessages.OpenConsoleAction_1);
 		setImageDescriptor(ConsolePluginImages.getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_NEW_CON));
@@ -66,6 +71,7 @@ public class OpenConsoleAction extends Action implements IMenuCreator {
 
 	@Override
 	public void dispose() {
+		consoleView = null;
 		fFactoryExtensions = null;
 		if (fMenu != null) {
 			fMenu.dispose();
@@ -98,7 +104,7 @@ public class OpenConsoleAction extends Action implements IMenuCreator {
 			if (!WorkbenchActivityHelper.filterItem(extension) && extension.isEnabled()) {
 				String label = extension.getLabel();
 				ImageDescriptor image = extension.getImageDescriptor();
-				addActionToMenu(fMenu, new ConsoleFactoryAction(label, image, extension), accel);
+				addActionToMenu(fMenu, new ConsoleFactoryAction(label, image, extension, consoleView), accel);
 				accel++;
 				if (extension.isNewConsoleExtenson()) {
 					new Separator("new").fill(fMenu, -1); //$NON-NLS-1$
@@ -128,17 +134,20 @@ public class OpenConsoleAction extends Action implements IMenuCreator {
 		return null;
 	}
 
-	private class ConsoleFactoryAction extends Action {
+	private static class ConsoleFactoryAction extends Action {
 
+		private final ConsoleView fConsoleView;
 		private final ConsoleFactoryExtension fConfig;
 		private IConsoleFactory fFactory;
 
-		public ConsoleFactoryAction(String label, ImageDescriptor image, ConsoleFactoryExtension extension) {
+		public ConsoleFactoryAction(String label, ImageDescriptor image, ConsoleFactoryExtension extension,
+				ConsoleView consoleView) {
 			setText(label);
 			if (image != null) {
 				setImageDescriptor(image);
 			}
 			fConfig = extension;
+			this.fConsoleView = consoleView;
 		}
 
 		@Override
@@ -147,7 +156,9 @@ public class OpenConsoleAction extends Action implements IMenuCreator {
 				if (fFactory == null) {
 					fFactory = fConfig.createFactory();
 				}
-
+				if (fFactory instanceof ConsoleViewConsoleFactory consViewConsFactory) {
+					consViewConsFactory.setConsoleView(fConsoleView);
+				}
 				fFactory.openConsole();
 			} catch (CoreException e) {
 				ConsolePlugin.log(e);

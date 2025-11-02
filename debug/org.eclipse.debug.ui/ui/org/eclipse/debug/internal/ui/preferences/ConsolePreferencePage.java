@@ -177,6 +177,10 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		addField(new BooleanFieldEditor(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, DebugPreferencesMessages.ConsolePreferencePage_Show__Console_View_when_there_is_program_output_3, SWT.NONE, getFieldEditorParent()));
 		addField(new BooleanFieldEditor(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, DebugPreferencesMessages.ConsolePreferencePage_Show__Console_View_when_there_is_program_error_3, SWT.NONE, getFieldEditorParent()));
 
+		BooleanFieldEditor autoPinEditor = new BooleanFieldEditor(IConsoleConstants.AUTO_PIN_ENABLED_PREF_NAME,
+				DebugPreferencesMessages.ConsolePreferencePage_ConsoleAutoPinEnable, SWT.NONE, getFieldEditorParent());
+		autoPinEditor.setPreferenceStore(ConsolePlugin.getDefault().getPreferenceStore());
+		addField(autoPinEditor);
 		Label comboLabel = new Label(getFieldEditorParent(), SWT.NONE);
 		comboLabel.setText(DebugPreferencesMessages.ConsoleElapsedTimeLabel);
 		fElapsedFormat = new ComboViewer(getFieldEditorParent(), SWT.DROP_DOWN | SWT.BORDER);
@@ -324,6 +328,9 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		updateBufferSizeEditor();
 		updateInterpretCrAsControlCharacterEditor();
 		updateElapsedTimePreferences();
+
+		IPreferenceStore prefStore = ConsolePlugin.getDefault().getPreferenceStore();
+		prefStore.setValue(IConsoleConstants.REMEMBER_AUTO_PIN_DECISION_PREF_NAME, false);
 	}
 
 	protected boolean canClearErrorMessage() {
