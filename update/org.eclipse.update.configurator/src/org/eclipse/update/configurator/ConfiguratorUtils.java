@@ -44,6 +44,7 @@ public class ConfiguratorUtils {
 	 * @return platform configuration used in current instance of platform
 	 * @since 3.0
 	 */
+	@Deprecated
 	public static IPlatformConfiguration getCurrentPlatformConfiguration() {
 		// acquire factory service first
 		BundleContext context = ConfigurationActivator.getBundleContext();
@@ -69,6 +70,7 @@ public class ConfiguratorUtils {
 	 * is specified, an empty configuration object is returned
 	 * @return platform configuration used in current instance of platform
 	 */
+	@Deprecated
 	public static IPlatformConfiguration getPlatformConfiguration(URL url) throws IOException {
 		// acquire factory service first
 		BundleContext context = ConfigurationActivator.getBundleContext();
@@ -95,6 +97,7 @@ public class ConfiguratorUtils {
 	 * @param loc location of the platform installation.  Used to resolve entries in the save location
 	 * @return platform configuration used in current instance of platform
 	 */
+	@Deprecated
 	public static IPlatformConfiguration getPlatformConfiguration(URL url, URL loc) throws IOException {
 		// acquire factory service first
 		BundleContext context = ConfigurationActivator.getBundleContext();
@@ -115,6 +118,7 @@ public class ConfiguratorUtils {
 	/**
 	 * @return the URL of this eclipse installation
 	 */
+	@Deprecated
 	public static URL getInstallURL() {
 		return Utils.getInstallURL();
 	}

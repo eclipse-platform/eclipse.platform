@@ -44,6 +44,7 @@ public interface IPlatformConfiguration {
 	 *
 	 * @since 2.0
 	 */
+	@Deprecated
 	public interface ISiteEntry {
 
 		/**
@@ -167,6 +168,7 @@ public interface IPlatformConfiguration {
 	 *
 	 * @since 2.0
 	 */
+	@Deprecated
 	public interface ISitePolicy {
 
 		/**
@@ -235,6 +237,7 @@ public interface IPlatformConfiguration {
 	 *
 	 * @since 2.0
 	 */
+	@Deprecated
 	public interface IFeatureEntry {
 
 		/**
@@ -315,6 +318,7 @@ public interface IPlatformConfiguration {
 	 * @return created site entry
 	 * @since 2.0
 	 */
+	@Deprecated
 	public ISiteEntry createSiteEntry(URL url, ISitePolicy policy);
 
 	/**
@@ -327,6 +331,7 @@ public interface IPlatformConfiguration {
 	 * @return created site policy entry
 	 * @since 2.0
 	 */
+	@Deprecated
 	public ISitePolicy createSitePolicy(int type, String[] list);
 
 	/**
@@ -348,6 +353,7 @@ public interface IPlatformConfiguration {
 	 * @return create feature entry
 	 * @since 2.0
 	 */
+	@Deprecated
 	public IFeatureEntry createFeatureEntry(String id, String version, String pluginVersion, boolean primary, String application, URL[] root);
 
 	/**
@@ -371,6 +377,7 @@ public interface IPlatformConfiguration {
 	 * @return create feature entry
 	 * @since 2.1
 	 */
+	@Deprecated
 	public IFeatureEntry createFeatureEntry(String id, String version, String pluginIdentifier, String pluginVersion, boolean primary, String application, URL[] root);
 
 	/**
@@ -380,6 +387,7 @@ public interface IPlatformConfiguration {
 	 * @param entry site entry
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void configureSite(ISiteEntry entry);
 
 	/**
@@ -392,6 +400,7 @@ public interface IPlatformConfiguration {
 	 * the same URL should be replaced (<code>true</code>) or not (<code>false</code>).
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void configureSite(ISiteEntry entry, boolean replace);
 
 	/**
@@ -401,6 +410,7 @@ public interface IPlatformConfiguration {
 	 * @param entry site entry
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void unconfigureSite(ISiteEntry entry);
 
 	/**
@@ -410,6 +420,7 @@ public interface IPlatformConfiguration {
 	 * configured
 	 * @since 2.0
 	 */
+	@Deprecated
 	public ISiteEntry[] getConfiguredSites();
 
 	/**
@@ -419,6 +430,7 @@ public interface IPlatformConfiguration {
 	 * @return matching site entry, or <code>null</code> if no match found
 	 * @since 2.0
 	 */
+	@Deprecated
 	public ISiteEntry findConfiguredSite(URL url);
 
 	/**
@@ -428,6 +440,7 @@ public interface IPlatformConfiguration {
 	 * @param entry feature entry
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void configureFeatureEntry(IFeatureEntry entry);
 
 	/**
@@ -435,6 +448,7 @@ public interface IPlatformConfiguration {
 	 * @param entry feature entry
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void unconfigureFeatureEntry(IFeatureEntry entry);
 
 	/**
@@ -443,6 +457,7 @@ public interface IPlatformConfiguration {
 	 * are configured
 	 * @since 2.0
 	 */
+	@Deprecated
 	public IFeatureEntry[] getConfiguredFeatureEntries();
 
 	/**
@@ -451,6 +466,7 @@ public interface IPlatformConfiguration {
 	 * @return ferature entry, or <code>null</code>.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public IFeatureEntry findConfiguredFeatureEntry(String id);
 
 	/**
@@ -460,6 +476,7 @@ public interface IPlatformConfiguration {
 	 * configuration location could not be determined.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public URL getConfigurationLocation();
 
 	/**
@@ -470,6 +487,7 @@ public interface IPlatformConfiguration {
 	 * @return configuration change stamp
 	 * @since 2.0
 	 */
+	@Deprecated
 	public long getChangeStamp();
 
 	/**
@@ -504,6 +522,7 @@ public interface IPlatformConfiguration {
 	 * @return primary feature identifier, or <code>null</code> if none configured
 	 * @since 2.0
 	 */
+	@Deprecated
 	public String getPrimaryFeatureIdentifier();
 
 	/**
@@ -513,6 +532,7 @@ public interface IPlatformConfiguration {
 	 * @return an array of plug-in path elements (full URL entries), or an empty array.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public URL[] getPluginPath();
 
 	/**
@@ -549,6 +569,7 @@ public interface IPlatformConfiguration {
 	 * otherwise
 	 * @since 2.0
 	 */
+	@Deprecated
 	public boolean isUpdateable();
 
 	/**
@@ -561,6 +582,7 @@ public interface IPlatformConfiguration {
 	 * otherwise
 	 * @since 2.0
 	 */
+	@Deprecated
 	public boolean isTransient();
 
 	/**
@@ -574,6 +596,7 @@ public interface IPlatformConfiguration {
 	 * otherwise
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void isTransient(boolean value);
 
 	/**
@@ -582,12 +605,14 @@ public interface IPlatformConfiguration {
 	 * configuration state, and updates the lists of available plug-ins.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void refresh();
 
 	/**
 	 * Called to save the configuration information
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void save() throws IOException;
 
 	/**
@@ -597,6 +622,7 @@ public interface IPlatformConfiguration {
 	 * @param url save location.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void save(URL url) throws IOException;
 
 }

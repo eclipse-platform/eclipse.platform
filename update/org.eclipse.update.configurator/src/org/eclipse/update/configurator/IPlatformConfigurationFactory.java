@@ -34,6 +34,7 @@ public interface IPlatformConfigurationFactory {
 	 *
 	 * @return platform configuration used in current instance of platform
 	 */
+	@Deprecated
 	public IPlatformConfiguration getCurrentPlatformConfiguration();
 	/**
 	 * Returns a platform configuration object, optionally initialized with previously saved
@@ -43,6 +44,7 @@ public interface IPlatformConfigurationFactory {
 	 * is specified, an empty configuration object is returned
 	 * @return platform configuration used in current instance of platform
 	 */
+	@Deprecated
 	public IPlatformConfiguration getPlatformConfiguration(URL url) throws IOException;
 
 	/**
@@ -55,5 +57,6 @@ public interface IPlatformConfigurationFactory {
 	 * location
 	 * @return platform configuration used in current instance of platform
 	 */
+	@Deprecated
 	public IPlatformConfiguration getPlatformConfiguration(URL url, URL loc) throws IOException;
 }
