@@ -18,6 +18,8 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({ //
+		CollectionTrustManagerTest.class, //
+		KeyStoreUtilTest.class, //
 		LogSerializationTest.class, //
 		PlatformURLLocalTest.class, //
 		PlatformURLSessionTest.class })
