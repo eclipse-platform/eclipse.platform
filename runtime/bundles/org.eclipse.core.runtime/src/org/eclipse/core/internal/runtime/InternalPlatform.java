@@ -48,6 +48,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.ServiceCaller;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -585,6 +586,14 @@ public final class InternalPlatform {
 		}
 	}
 
+	private void initializeSSLContext() {
+		try {
+			new KeyStoreUtil(getOS()).setUpSslContext();
+		} catch (Exception e) {
+			RuntimeLog.log(Status.error("Exception setting up SSLContext", e)); //$NON-NLS-1$
+		}
+	}
+
 	/*
 	 * Finds and loads the options file
 	 */
@@ -701,6 +710,7 @@ public final class InternalPlatform {
 		initialized = true;
 		stopped = false;
 		initializeAuthorizationHandler();
+		initializeSSLContext();
 		startServices();
 	}
 
