@@ -49,6 +49,7 @@ public interface IProjectSetSerializer {
 	 * @return String[] an array of serialized reference strings uniquely identifying the projects
 	 * @throws TeamException on failures; depends on concrete implementation
 	 */
+	@Deprecated
 	public String[] asReference(IProject[] providerProjects, Object context, IProgressMonitor monitor) throws TeamException;
 
 	/**
@@ -69,5 +70,6 @@ public interface IProjectSetSerializer {
 	 * @return IProject[]  an array of projects that were created
 	 * @throws TeamException on failures; depends on concrete implementation
 	 */
+	@Deprecated
 	public IProject[] addToWorkspace(String[] referenceStrings, String filename, Object context, IProgressMonitor monitor) throws TeamException;
 }
