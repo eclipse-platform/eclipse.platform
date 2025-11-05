@@ -24,10 +24,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
@@ -127,14 +126,55 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 	}
 
 	/**
+	 * A HashMap that also maintains its keys in sorted order. It combines the fast
+	 * access to the content with the ability to get sorted keys and key subsets.
+	 */
+	private static final class HashMapWithSortedKeys {
+		private final SortedSet<IFileStore> keys;
+		private final HashMap<IFileStore, Object> map;
+
+		HashMapWithSortedKeys() {
+			keys = new TreeSet<>(IFileStore::compareTo);
+			map = new HashMap<>(100);
+		}
+
+		Object put(IFileStore key, Object value) {
+			keys.add(key);
+			return map.put(key, value);
+		}
+
+		Object remove(Object key) {
+			keys.remove(key);
+			return map.remove(key);
+		}
+
+		Object get(IFileStore location) {
+			return map.get(location);
+		}
+
+		void clear() {
+			keys.clear();
+			map.clear();
+		}
+
+		Set<IFileStore> keys() {
+			return keys;
+		}
+
+		SortedSet<IFileStore> keysSubSet(IFileStore fromKey, IFileStore toKey) {
+			return keys.subSet(fromKey, toKey);
+		}
+	}
+
+	/**
 	 * Maintains a mapping of FileStore-&gt;IResource, such that multiple resources
 	 * mapped from the same location are tolerated.
 	 */
-	class LocationMap {
+	private static final class LocationMap {
 		/**
 		 * Map of FileStore-&gt;IResource OR FileStore-&gt;ArrayList of (IResource)
 		 */
-		private final SortedMap<IFileStore, Object> map = new TreeMap<>(IFileStore::compareTo);
+		private final HashMapWithSortedKeys map = new HashMapWithSortedKeys();
 
 		/**
 		 * Adds the given resource to the map, keyed by the given location.
@@ -177,17 +217,18 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		 * given location as a prefix.
 		 */
 		public void matchingPrefixDo(IFileStore prefix, Consumer<IResource> doit) {
-			SortedMap<IFileStore, Object> matching;
+			Set<IFileStore> matching;
 			IFileStore prefixParent = prefix.getParent();
 			if (prefixParent != null) {
 				//endPoint is the smallest possible path greater than the prefix that doesn't
 				//match the prefix
 				IFileStore endPoint = prefixParent.getChild(prefix.getName() + "\0"); //$NON-NLS-1$
-				matching = map.subMap(prefix, endPoint);
+				matching = map.keysSubSet(prefix, endPoint);
 			} else {
-				matching = map;
+				matching = map.keys();
 			}
-			for (Object value : matching.values()) {
+			for (IFileStore key : matching) {
+				Object value = map.get(key);
 				if (value == null) {
 					return;
 				}
@@ -230,11 +271,10 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		public void overLappingResourcesDo(Consumer<IResource> doit) {
 			IFileStore previousStore = null;
 			IResource previousResource = null;
-			for (Entry<IFileStore, Object> current : map.entrySet()) {
+			for (IFileStore currentStore : map.keys()) {
 				//value is either single resource or List of resources
-				IFileStore currentStore = current.getKey();
 				IResource currentResource = null;
-				Object value = current.getValue();
+				Object value = map.get(currentStore);
 				if (value instanceof List) {
 					for (Object element : ((List<?>) value)) {
 						if (element instanceof IResource) {
