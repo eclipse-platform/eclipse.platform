@@ -96,6 +96,7 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	/* (Intentionally not included in javadoc)
 	 * @see IContentDescriber#describe(InputStream, IContentDescription)
 	 */
+	@Deprecated
 	@Override
 	public int describe(InputStream contents, IContentDescription description) throws IOException {
 		return describe(contents, description, new HashMap<>());
@@ -104,6 +105,7 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	/**
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
+	@Deprecated
 	public int describe(InputStream contents, IContentDescription description, Map<String, Object> properties) throws IOException {
 		// call the basic XML describer to do basic recognition
 		if (super.describe2(contents, description, properties) == INVALID) {
@@ -118,6 +120,7 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	/* (Intentionally not included in javadoc)
 	 * @see IContentDescriber#describe(Reader, IContentDescription)
 	 */
+	@Deprecated
 	@Override
 	public int describe(Reader contents, IContentDescription description) throws IOException {
 		return describe(contents, description, new HashMap<>());
@@ -126,6 +129,7 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	/**
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
+	@Deprecated
 	public int describe(Reader contents, IContentDescription description, Map<String, Object> properties) throws IOException {
 		// call the basic XML describer to do basic recognition
 		if (super.describe2(contents, description, properties) == INVALID) {
@@ -140,6 +144,7 @@ public final class XMLRootElementContentDescriber extends XMLContentDescriber im
 	/* (Intentionally not included in javadoc)
 	 * @see IExecutableExtension#setInitializationData
 	 */
+	@Deprecated
 	@Override
 	public void setInitializationData(final IConfigurationElement config, final String propertyName, final Object data) throws CoreException {
 		if (data instanceof String) {
