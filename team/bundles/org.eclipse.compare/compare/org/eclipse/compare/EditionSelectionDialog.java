@@ -237,6 +237,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param parent if not <code>null</code> the new dialog stays on top of this parent shell
 	 * @param bundle <code>ResourceBundle</code> to configure the dialog
 	 */
+	@Deprecated
 	public EditionSelectionDialog(Shell parent, ResourceBundle bundle) {
 		super(parent, bundle);
 	}
@@ -268,6 +269,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param contextId the help context id.
 	 * @since 3.2
 	 */
+	@Deprecated
 	@Override
 	public void setHelpContextId(String contextId) {
 		super.setHelpContextId(contextId);
@@ -279,6 +281,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param titleArgument an optional argument for the edition pane's title
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void setEditionTitleArgument(String titleArgument) {
 		fTitleArg= titleArgument;
 	}
@@ -289,6 +292,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param titleImage an optional image for the edition pane's title
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void setEditionTitleImage(Image titleImage) {
 		fTitleImage= titleImage;
 	}
@@ -305,6 +309,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * it is an <code>ITypedElement</code> returned from <code>IStructureCreator.locate(path, item)</code>
 	 * @since 2.0
 	 */
+	@Deprecated
 	public ITypedElement selectPreviousEdition(final ITypedElement target, ITypedElement[] inputEditions, Object ppath) {
 		Assert.isNotNull(target);
 		fTargetPair= new Pair(null, target);
@@ -380,6 +385,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * if <code>path</code> was <code>null</code>; otherwise
 	 * it is an <code>ITypedElement</code> returned from <code>IStructureCreator.locate(path, item)</code>
 	 */
+	@Deprecated
 	public ITypedElement selectEdition(final ITypedElement target, ITypedElement[] inputEditions, Object ppath) {
 
 		Assert.isNotNull(target);
@@ -544,6 +550,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param hide if true identical entries are hidden; otherwise they are shown.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void setHideIdenticalEntries(boolean hide) {
 		fHideIdentical= hide;
 	}
@@ -554,6 +561,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param isRight if true target is shown on right hand side.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void setTargetIsRight(boolean isRight) {
 		fTargetIsRight= isRight;
 	}
@@ -565,6 +573,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param addMode if true dialog is in 'add' mode.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void setAddMode(boolean addMode) {
 		fAddMode= addMode;
 		fMultiSelect= addMode;
@@ -577,6 +586,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param compareMode if true dialog is in 'add' mode.
 	 * @since 2.0
 	 */
+	@Deprecated
 	public void setCompareMode(boolean compareMode) {
 		fCompareMode= compareMode;
 		fStructureCompare= fCompareMode && !fAddMode;
@@ -593,6 +603,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 *
 	 * @return the last specified target or a subsection thereof.
 	 */
+	@Deprecated
 	public ITypedElement getTarget() {
 		return fTargetPair.getItem();
 	}
@@ -604,6 +615,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @return the selected editions as an array.
 	 * @since 2.1
 	 */
+	@Deprecated
 	public ITypedElement[] getSelection() {
 		ArrayList<ITypedElement> result= new ArrayList<>();
 		if (fMemberSelection != null) {
@@ -635,6 +647,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param item if a path has been specified in <code>selectEdition</code> a sub element of the given target; otherwise the same as target
 	 * @return a label the target side of a compare viewer
 	 */
+	@Deprecated
 	protected String getTargetLabel(ITypedElement target, ITypedElement item) {
 		String format= null;
 		if (target instanceof ResourceNode) {
@@ -680,6 +693,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param item if a path has been specified in <code>selectEdition</code> a sub element of the given selectedEdition; otherwise the same as selectedEdition
 	 * @return a label for the edition side of a compare viewer
 	 */
+	@Deprecated
 	protected String getEditionLabel(ITypedElement selectedEdition, ITypedElement item) {
 		String format= null;
 		if (selectedEdition instanceof ResourceNode) {
@@ -721,6 +735,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @return a label of a node in the edition tree viewer
 	 * @since 2.0
 	 */
+	@Deprecated
 	protected String getShortEditionLabel(ITypedElement edition, ITypedElement item, Date date) {
 		String format= null;
 		if (edition instanceof ResourceNode) {
@@ -752,6 +767,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @return a label the edition side of a compare viewer
 	 * @since 2.0
 	 */
+	@Deprecated
 	protected Image getEditionImage(ITypedElement selectedEdition, ITypedElement item) {
 		if (selectedEdition instanceof ResourceNode) {
 			return selectedEdition.getImage();
@@ -769,6 +785,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	protected synchronized Control createDialogArea(Composite parent2) {
 
@@ -905,6 +922,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 		return parent;
 	}
 
+	@Deprecated
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		String buttonLabel= Utilities.getString(fBundle, "buttonLabel", IDialogConstants.OK_LABEL); //$NON-NLS-1$
@@ -923,6 +941,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * Overidden to disable dismiss on double click in compare mode.
 	 * @since 2.0
 	 */
+	@Deprecated
 	@Override
 	protected void okPressed() {
 		if (fCompareMode) {
