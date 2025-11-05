@@ -24,10 +24,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import org.eclipse.core.filesystem.EFS;
@@ -134,7 +133,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		/**
 		 * Map of FileStore-&gt;IResource OR FileStore-&gt;ArrayList of (IResource)
 		 */
-		private final SortedMap<IFileStore, Object> map = new TreeMap<>(IFileStore::compareTo);
+		private final Map<IFileStore, Object> map = new HashMap<>(10_000);
 
 		/**
 		 * Adds the given resource to the map, keyed by the given location.
@@ -177,16 +176,7 @@ public class AliasManager implements IManager, ILifecycleListener, IResourceChan
 		 * given location as a prefix.
 		 */
 		public void matchingPrefixDo(IFileStore prefix, Consumer<IResource> doit) {
-			SortedMap<IFileStore, Object> matching;
-			IFileStore prefixParent = prefix.getParent();
-			if (prefixParent != null) {
-				//endPoint is the smallest possible path greater than the prefix that doesn't
-				//match the prefix
-				IFileStore endPoint = prefixParent.getChild(prefix.getName() + "\0"); //$NON-NLS-1$
-				matching = map.subMap(prefix, endPoint);
-			} else {
-				matching = map;
-			}
+			Map<IFileStore, Object> matching = map;
 			for (Object value : matching.values()) {
 				if (value == null) {
 					return;
