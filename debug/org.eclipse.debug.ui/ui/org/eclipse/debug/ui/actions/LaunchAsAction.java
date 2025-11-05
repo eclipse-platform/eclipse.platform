@@ -76,6 +76,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	 *
 	 * @param launchGroupIdentifier launch group identifier
 	 */
+	@Deprecated
 	public LaunchAsAction(String launchGroupIdentifier) {
 		super();
 		fLaunchGroupIdentifier = launchGroupIdentifier;
@@ -96,6 +97,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	/**
 	 * @see IAction#run()
 	 */
+	@Deprecated
 	@Override
 	public void run() {
 		//do nothing, this action just creates a cascading menu.
@@ -118,6 +120,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	/**
 	 * @see IMenuCreator#dispose()
 	 */
+	@Deprecated
 	@Override
 	public void dispose() {
 		if (getCreatedMenu() != null) {
@@ -128,6 +131,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	/**
 	 * @see IMenuCreator#getMenu(Control)
 	 */
+	@Deprecated
 	@Override
 	public Menu getMenu(Control parent) {
 		return null;
@@ -136,6 +140,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	/**
 	 * @see IMenuCreator#getMenu(Menu)
 	 */
+	@Deprecated
 	@Override
 	public Menu getMenu(Menu parent) {
 		if (getCreatedMenu() != null) {
@@ -267,6 +272,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	/**
 	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
 	 */
+	@Deprecated
 	@Override
 	public void init(IWorkbenchWindow window) {
 //		if (window instanceof WorkbenchWindow) {
@@ -277,6 +283,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Deprecated
 	@Override
 	public void run(IAction action) {
 		// do nothing - this is just a menu
@@ -285,6 +292,7 @@ public class LaunchAsAction extends Action implements IMenuCreator, IWorkbenchWi
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
+	@Deprecated
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (fAction == null) {

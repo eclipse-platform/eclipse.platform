@@ -30,10 +30,12 @@ public class PartPresentationContext extends PresentationContext {
 	 *
 	 * @param part part
 	 */
+	@Deprecated
 	public PartPresentationContext(IWorkbenchPart part) {
 		super(part);
 	}
 
+	@Deprecated
 	@Override
 	public IWorkbenchPart getPart() {
 		return super.getPart();
