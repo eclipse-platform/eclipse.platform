@@ -55,17 +55,20 @@ public class SaveablePartDialog extends TrayDialog {
 	 * @param shell the parent shell or <code>null</code> to create a top level shell.
 	 * @param input the part to show in the dialog.
 	 */
+	@Deprecated
 	public SaveablePartDialog(Shell shell, ISaveableWorkbenchPart input) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
 		this.input = input;
 	}
 
+	@Deprecated
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 	}
 
+	@Deprecated
 	@Override
 	protected Control createDialogArea(Composite parent2) {
 		Composite parent = (Composite) super.createDialogArea(parent2);
@@ -77,6 +80,7 @@ public class SaveablePartDialog extends TrayDialog {
 		return parent;
 	}
 
+	@Deprecated
 	@Override
 	public boolean close() {
 		saveChanges();
@@ -102,10 +106,12 @@ public class SaveablePartDialog extends TrayDialog {
 	 * @return the input to the dialog
 	 * @since 3.2
 	 */
+	@Deprecated
 	protected ISaveableWorkbenchPart getInput() {
 		return input;
 	}
 
+	@Deprecated
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
 		IDialogSettings compareSettings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(SaveablePartDialog.class)).getDialogSettings();
@@ -122,10 +128,12 @@ public class SaveablePartDialog extends TrayDialog {
 	 * Set the help content id of this dialog.
 	 * @param contextId the help context id
 	 */
+	@Deprecated
 	public void setHelpContextId(String contextId) {
 		fContextId= contextId;
 	}
 
+	@Deprecated
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
@@ -134,6 +142,7 @@ public class SaveablePartDialog extends TrayDialog {
 		}
 	}
 
+	@Deprecated
 	@Override
 	protected Point getInitialSize() {
 		Point initialSize = super.getInitialSize();
