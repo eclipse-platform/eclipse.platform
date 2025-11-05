@@ -29,7 +29,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
  */
 public class TestWorkspaceEncodingWithJvmArgs {
 
-	private static final String CHARSET = "UTF-16";
+	private static final String CHARSET = "ASCII";
 
 	@RegisterExtension
 	SessionTestExtension sessionTestExtension = SessionTestExtension.forPlugin(PI_RESOURCES_TESTS)
@@ -38,7 +38,7 @@ public class TestWorkspaceEncodingWithJvmArgs {
 	@BeforeEach
 	@ExecuteInHost
 	public void setUpSession() {
-		sessionTestExtension.setSystemProperty("file.encoding", "UTF-16");
+		sessionTestExtension.setSystemProperty("file.encoding", CHARSET);
 	}
 
 	@Test
