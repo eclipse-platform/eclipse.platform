@@ -66,6 +66,7 @@ import org.eclipse.ui.progress.IProgressService;
 public abstract class PageSaveablePart extends SaveablePartAdapter implements IContentChangeListener{
 
 	private final CompareConfiguration cc;
+	@Deprecated
 	Shell shell;
 
 	// Tracking of dirty state
@@ -87,6 +88,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @param shell the shell for the part
 	 * @param compareConfiguration the compare configuration
 	 */
+	@Deprecated
 	protected PageSaveablePart(Shell shell, CompareConfiguration compareConfiguration){
 		this.shell = shell;
 		this.cc = compareConfiguration;
@@ -104,11 +106,13 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		};
 	}
 
+	@Deprecated
 	@Override
 	public boolean isDirty() {
 		return fDirty || fDirtyViewers.size() > 0;
 	}
 
+	@Deprecated
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
@@ -185,6 +189,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * selection listener on the page.
 	 * @return the selection provider for the page
 	 */
+	@Deprecated
 	protected abstract ISelectionProvider getSelectionProvider();
 
 	/**
@@ -194,6 +199,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @param toolBarManager the toolbar manager for the page
 	 * @return the top-level control for the page
 	 */
+	@Deprecated
 	protected abstract Control createPage(Composite parent, ToolBarManager toolBarManager);
 
 	/**
@@ -201,6 +207,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * will appear in the header of the pane containing the page.
 	 * @param title the page's title
 	 */
+	@Deprecated
 	protected void setPageDescription(String title) {
 		fEditionPane.setText(title);
 	}
@@ -209,6 +216,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * Set the saveable part's dirty state to the given state.
 	 * @param dirty the dirty state
 	 */
+	@Deprecated
 	protected void setDirty(boolean dirty) {
 		boolean confirmSave= true;
 		Object o= cc.getProperty(CompareEditor.CONFIRM_SAVE_PROPERTY);
@@ -263,6 +271,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * with a progress monitor.
 	 * @param input the compare input to be prepared
 	 */
+	@Deprecated
 	protected void prepareCompareInput(final ICompareInput input) {
 		if (input == null) {
 			return;
@@ -295,6 +304,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @param monitor a progress monitor
 	 * @throws InvocationTargetException if an error occurs
 	 */
+	@Deprecated
 	protected abstract void prepareInput(ICompareInput input, CompareConfiguration configuration, IProgressMonitor monitor) throws InvocationTargetException;
 
 	private void hookContentChangeListener(ICompareInput node) {
@@ -313,6 +323,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * Return the parent shell of this part.
 	 * @return the parent shell of this part
 	 */
+	@Deprecated
 	protected Shell getShell() {
 		return shell;
 	}
@@ -321,6 +332,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * This method is internal to the framework and should not be called by clients
 	 * outside of the framework.
 	 */
+	@Deprecated
 	protected void setNavigator(ISynchronizePageConfiguration configuration) {
 			configuration.setProperty(SynchronizePageConfiguration.P_NAVIGATOR, new CompareEditorInputNavigator(
 				new Object[] {
@@ -366,6 +378,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @param selection the selection
 	 * @return a compare input representing the selection
 	 */
+	@Deprecated
 	protected ICompareInput getCompareInput(ISelection selection) {
 		if (selection != null && selection instanceof IStructuredSelection ss) {
 			if (ss.size() == 1) {
@@ -384,6 +397,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 *
 	 * @param showContentPanes whether to show contents pane
 	 */
+	@Deprecated
 	public void setShowContentPanes(boolean showContentPanes) {
 		this.showContentPanes = showContentPanes;
 	}
@@ -393,6 +407,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 *
 	 * @return the primary control for this part.
 	 */
+	@Deprecated
 	public Control getControl() {
 		return control;
 	}
@@ -413,6 +428,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @param monitor
 	 *            a progress monitor
 	 */
+	@Deprecated
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		flushViewers(monitor);

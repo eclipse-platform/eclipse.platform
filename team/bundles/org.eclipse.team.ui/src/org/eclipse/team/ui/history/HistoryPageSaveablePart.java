@@ -57,6 +57,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 	 * @param object the object
 	 * @return whether the object had an {@link IHistoryPageSource} available or not
 	 */
+	@Deprecated
 	public static boolean showHistoryInDialog(Shell shell, Object object) {
 		IHistoryPageSource pageSource = HistoryPageSource.getHistoryPageSource(object);
 		if (pageSource != null && pageSource.canShowHistoryFor(object)) {
@@ -88,26 +89,31 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 	 * @param pageSource the page source
 	 * @param object the object whose history is to be displayed
 	 */
+	@Deprecated
 	public HistoryPageSaveablePart(Shell shell, CompareConfiguration configuration, IHistoryPageSource pageSource, Object object) {
 		super(shell,configuration);
 		this.pageSource = pageSource;
 		this.object = object;
 	}
 
+	@Deprecated
 	@Override
 	public String getTitle() {
 		return historyPage.getName();
 	}
 
+	@Deprecated
 	@Override
 	public Image getTitleImage() {
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 	}
 
+	@Deprecated
 	@Override
 	protected Control createPage(Composite parent, ToolBarManager toolBarManager) {
 		site = new DialogHistoryPageSite(getShell());
@@ -124,11 +130,13 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 		return ((Page) historyPage).getControl();
 	}
 
+	@Deprecated
 	@Override
 	protected final ISelectionProvider getSelectionProvider() {
 		return site.getSelectionProvider();
 	}
 
+	@Deprecated
 	@Override
 	protected ICompareInput getCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.getCompareInput(selection);
@@ -147,6 +155,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	protected void prepareInput(ICompareInput input, CompareConfiguration configuration, IProgressMonitor monitor) throws InvocationTargetException {
 		IHistoryCompareAdapter compareAdapter = Adapters.adapt(historyPage, IHistoryCompareAdapter.class);
@@ -155,6 +164,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 		}
 	}
 
+	@Deprecated
 	@Override
 	public void dispose() {
 		super.dispose();

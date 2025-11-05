@@ -51,11 +51,13 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 	 * @param input the compare input to show in the dialog
 	 * @param participant the given participant
 	 */
+	@Deprecated
 	public ParticipantPageDialog(Shell shell, SaveablePartAdapter input, ISynchronizeParticipant participant) {
 		super(shell, input);
 		this.participant = participant;
 	}
 
+	@Deprecated
 	@Override
 	protected Control createDialogArea(Composite parent2) {
 		Composite parent = (Composite) super.createDialogArea(parent2);
@@ -67,6 +69,7 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 		return parent;
 	}
 
+	@Deprecated
 	@Override
 	protected void buttonPressed(int buttonId) {
 		if(buttonId == IDialogConstants.OK_ID && isRememberParticipant()) {
@@ -97,6 +100,7 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 	 *
 	 * @return the participant showing in this dialog.
 	 */
+	@Deprecated
 	protected ISynchronizeParticipant getParticipant() {
 		return participant;
 	}
@@ -109,6 +113,7 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 	 * view should be presented to the user
 	 * @since 3.2
 	 */
+	@Deprecated
 	protected boolean isOfferToRememberParticipant() {
 		return true;
 	}

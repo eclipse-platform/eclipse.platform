@@ -87,12 +87,14 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	 * @param pageConfiguration the configuration that will be provided to the participant prior to creating the page
 	 * @param participant the participant whose page will be displayed in this part
 	 */
+	@Deprecated
 	public ParticipantPageSaveablePart(Shell shell, CompareConfiguration cc, ISynchronizePageConfiguration pageConfiguration, ISynchronizeParticipant participant) {
 		super(shell,cc);
 		this.participant = participant;
 		this.pageConfiguration = pageConfiguration;
 	}
 
+	@Deprecated
 	@Override
 	public void dispose() {
 		if(titleImage != null) {
@@ -108,6 +110,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		super.dispose();
 	}
 
+	@Deprecated
 	@Override
 	public Image getTitleImage() {
 		if(titleImage == null) {
@@ -116,11 +119,13 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		return titleImage;
 	}
 
+	@Deprecated
 	@Override
 	public String getTitle() {
 		return Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName());
 	}
 
+	@Deprecated
 	@Override
 	public boolean isDirty() {
 		if (participant instanceof ModelSynchronizeParticipant msp) {
@@ -132,6 +137,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		return super.isDirty();
 	}
 
+	@Deprecated
 	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		try {
@@ -145,6 +151,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		}
 	}
 
+	@Deprecated
 	@Override
 	public void doSave(IProgressMonitor pm) {
 		// TODO needs to work for models
@@ -163,6 +170,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		}
 	}
 
+	@Deprecated
 	@Override
 	protected Control createPage(Composite parent, ToolBarManager toolBarManager) {
 		listener = event -> {
@@ -194,6 +202,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		return page.getControl();
 	}
 
+	@Deprecated
 	@Override
 	protected final ISelectionProvider getSelectionProvider() {
 		return ((ISynchronizePage)page).getViewer();
@@ -234,6 +243,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	 * {@inheritDoc}
 	 * @since 3.2
 	 */
+	@Deprecated
 	@Override
 	protected void prepareInput(final ICompareInput input, CompareConfiguration configuration, IProgressMonitor monitor) throws InvocationTargetException {
 		monitor.beginTask(TeamUIMessages.SyncInfoCompareInput_3, 100);
@@ -302,6 +312,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	 *
 	 * @return Returns the pageConfiguration.
 	 */
+	@Deprecated
 	public ISynchronizePageConfiguration getPageConfiguration() {
 		return pageConfiguration;
 	}
@@ -311,6 +322,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	 *
 	 * @return Returns the participant.
 	 */
+	@Deprecated
 	public ISynchronizeParticipant getParticipant() {
 		return participant;
 	}
@@ -319,6 +331,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	 * {@inheritDoc}
 	 * @since 3.2
 	 */
+	@Deprecated
 	@Override
 	protected ICompareInput getCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.getCompareInput(selection);
