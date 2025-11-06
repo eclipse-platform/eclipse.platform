@@ -49,6 +49,7 @@ public interface IFileModificationValidator {
 	 *    reasons why modifying the given files is not reasonable
 	 * @see IWorkspace#validateEdit(IFile[], Object)
 	 */
+	@Deprecated
 	IStatus validateEdit(IFile[] files, Object context);
 
 	/**
@@ -67,5 +68,6 @@ public interface IFileModificationValidator {
 	 * @see IFile#setContents(java.io.InputStream, int, org.eclipse.core.runtime.IProgressMonitor)
 	 * @see IFile#appendContents(java.io.InputStream, int, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Deprecated
 	IStatus validateSave(IFile file);
 }
