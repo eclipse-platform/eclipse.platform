@@ -212,6 +212,7 @@ public class Preferences {
 		 * @param newValue the new value of the property, or
 		 *    <code>null</code> if none
 		 */
+		@Deprecated
 		protected PropertyChangeEvent(Object source, String property, Object oldValue, Object newValue) {
 
 			super(source);
@@ -233,6 +234,7 @@ public class Preferences {
 		 *
 		 * @return the name of the property that changed
 		 */
+		@Deprecated
 		public String getProperty() {
 			return propertyName;
 		}
@@ -243,6 +245,7 @@ public class Preferences {
 		 * @return the new value, or <code>null</code> if not known
 		 *  or not relevant
 		 */
+		@Deprecated
 		public Object getNewValue() {
 			return newValue;
 		}
@@ -253,6 +256,7 @@ public class Preferences {
 		 * @return the old value, or <code>null</code> if not known
 		 *  or not relevant
 		 */
+		@Deprecated
 		public Object getOldValue() {
 			return oldValue;
 		}
@@ -296,6 +300,7 @@ public class Preferences {
 		 * @param event the property change event object describing which
 		 *    property changed and how
 		 */
+		@Deprecated
 		public void propertyChange(Preferences.PropertyChangeEvent event);
 	}
 
