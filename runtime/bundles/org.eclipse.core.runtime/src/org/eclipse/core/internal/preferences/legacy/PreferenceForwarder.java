@@ -47,10 +47,12 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	/*
 	 * Used for test suites only.
 	 */
+	@Deprecated
 	public PreferenceForwarder(String pluginID) {
 		this(null, pluginID);
 	}
 
+	@Deprecated
 	public PreferenceForwarder(Object plugin, String pluginID) {
 		super();
 		this.plugin = plugin;
@@ -60,6 +62,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	/*
 	 * @see org.eclipse.core.runtime.preferences.IEclipsePreferences.INodeChangeListener#added(org.eclipse.core.runtime.preferences.IEclipsePreferences.NodeChangeEvent)
 	 */
+	@Deprecated
 	@Override
 	public synchronized void added(IEclipsePreferences.NodeChangeEvent event) {
 		if (listeners.size() > 0 && pluginID.equals(event.getChild().name())) {
@@ -75,6 +78,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	/*
 	 * @see org.eclipse.core.runtime.preferences.IEclipsePreferences.INodeChangeListener#removed(org.eclipse.core.runtime.preferences.IEclipsePreferences.NodeChangeEvent)
 	 */
+	@Deprecated
 	@Override
 	public synchronized void removed(IEclipsePreferences.NodeChangeEvent event) {
 		// Do nothing. We can't remove ourselves from the node's list of preference change
@@ -87,6 +91,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 *
 	 * @param listener a property change listener
 	 */
+	@Deprecated
 	@Override
 	public synchronized void addPropertyChangeListener(IPropertyChangeListener listener) {
 		if (listeners.size() == 0) {
@@ -103,6 +108,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	/*
 	 * @see org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener#preferenceChange(org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent)
 	 */
+	@Deprecated
 	@Override
 	public void preferenceChange(IEclipsePreferences.PreferenceChangeEvent event) {
 		// if we are the ones making this change, then don't broadcast
@@ -145,6 +151,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 *
 	 * @param listener a property change listener
 	 */
+	@Deprecated
 	@Override
 	public synchronized void removePropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.remove(listener);
@@ -194,6 +201,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @return <code>true</code> if either a current value or a default
 	 *  value is known for the named property, and <code>false</code>otherwise
 	 */
+	@Deprecated
 	@Override
 	public boolean contains(String name) {
 		if (name == null) {
@@ -216,6 +224,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the boolean-valued property
 	 */
+	@Deprecated
 	@Override
 	public boolean getBoolean(String name) {
 		return getPluginPreferences(true).getBoolean(name, getDefaultPreferences().getBoolean(name, BOOLEAN_DEFAULT_DEFAULT));
@@ -240,6 +249,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @param value the new current value of the property
 	 */
+	@Deprecated
 	@Override
 	public void setValue(String name, boolean value) {
 		Boolean oldValue = getBoolean(name) ? Boolean.TRUE : Boolean.FALSE;
@@ -270,6 +280,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	@Override
 	public boolean getDefaultBoolean(String name) {
 		return getDefaultPreferences().getBoolean(name, BOOLEAN_DEFAULT_DEFAULT);
@@ -290,6 +301,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @param value the new default value for the property
 	 */
+	@Deprecated
 	@Override
 	public void setDefault(String name, boolean value) {
 		getDefaultPreferences().putBoolean(name, value);
@@ -305,6 +317,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the double-valued property
 	 */
+	@Deprecated
 	@Override
 	public double getDouble(String name) {
 		return getPluginPreferences(true).getDouble(name, getDefaultPreferences().getDouble(name, DOUBLE_DEFAULT_DEFAULT));
@@ -330,6 +343,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param value the new current value of the property; must be
 	 *   a number (not a NaN)
 	 */
+	@Deprecated
 	@Override
 	public void setValue(String name, double value) {
 		if (Double.isNaN(value)) {
@@ -364,6 +378,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	@Override
 	public double getDefaultDouble(String name) {
 		return getDefaultPreferences().getDouble(name, DOUBLE_DEFAULT_DEFAULT);
@@ -385,6 +400,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param value the new default value for the property; must be
 	 *   a number (not a NaN)
 	 */
+	@Deprecated
 	@Override
 	public void setDefault(String name, double value) {
 		if (Double.isNaN(value)) {
@@ -403,6 +419,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the float-valued property
 	 */
+	@Deprecated
 	@Override
 	public float getFloat(String name) {
 		return getPluginPreferences(true).getFloat(name, getDefaultPreferences().getFloat(name, FLOAT_DEFAULT_DEFAULT));
@@ -428,6 +445,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param value the new current value of the property; must be
 	 *   a number (not a NaN)
 	 */
+	@Deprecated
 	@Override
 	public void setValue(String name, float value) {
 		if (Float.isNaN(value)) {
@@ -462,6 +480,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	@Override
 	public float getDefaultFloat(String name) {
 		return getDefaultPreferences().getFloat(name, FLOAT_DEFAULT_DEFAULT);
@@ -483,6 +502,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param value the new default value for the property; must be
 	 *   a number (not a NaN)
 	 */
+	@Deprecated
 	@Override
 	public void setDefault(String name, float value) {
 		if (Float.isNaN(value)) {
@@ -501,6 +521,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the int-valued property
 	 */
+	@Deprecated
 	@Override
 	public int getInt(String name) {
 		return getPluginPreferences(true).getInt(name, getDefaultPreferences().getInt(name, INT_DEFAULT_DEFAULT));
@@ -525,6 +546,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @param value the new current value of the property
 	 */
+	@Deprecated
 	@Override
 	public void setValue(String name, int value) {
 		final int intValue = getInt(name);
@@ -556,6 +578,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	@Override
 	public int getDefaultInt(String name) {
 		return getDefaultPreferences().getInt(name, INT_DEFAULT_DEFAULT);
@@ -576,6 +599,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @param value the new default value for the property
 	 */
+	@Deprecated
 	@Override
 	public void setDefault(String name, int value) {
 		getDefaultPreferences().putInt(name, value);
@@ -591,6 +615,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the long-valued property
 	 */
+	@Deprecated
 	@Override
 	public long getLong(String name) {
 		return getPluginPreferences(true).getLong(name, getDefaultPreferences().getLong(name, LONG_DEFAULT_DEFAULT));
@@ -615,6 +640,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @param value the new current value of the property
 	 */
+	@Deprecated
 	@Override
 	public void setValue(String name, long value) {
 		final long longValue = getLong(name);
@@ -646,6 +672,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	@Override
 	public long getDefaultLong(String name) {
 		return getDefaultPreferences().getLong(name, LONG_DEFAULT_DEFAULT);
@@ -666,6 +693,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @param value the new default value for the property
 	 */
+	@Deprecated
 	@Override
 	public void setDefault(String name, long value) {
 		getDefaultPreferences().putLong(name, value);
@@ -680,6 +708,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the string-valued property
 	 */
+	@Deprecated
 	@Override
 	public String getString(String name) {
 		return getPluginPreferences(true).get(name, getDefaultPreferences().get(name, STRING_DEFAULT_DEFAULT));
@@ -704,6 +733,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @param value the new current value of the property
 	 */
+	@Deprecated
 	@Override
 	public void setValue(String name, String value) {
 		if (value == null) {
@@ -736,6 +766,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	@Override
 	public String getDefaultString(String name) {
 		return getDefaultPreferences().get(name, STRING_DEFAULT_DEFAULT);
@@ -756,6 +787,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * @param name the name of the property
 	 * @param value the new default value for the property
 	 */
+	@Deprecated
 	@Override
 	public void setDefault(String name, String value) {
 		if (value == null) {
@@ -773,6 +805,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 * and <code>false</code> otherwise (including the case where the property
 	 * is unknown to this object)
 	 */
+	@Deprecated
 	@Override
 	public boolean isDefault(String name) {
 		if (name == null) {
@@ -800,6 +833,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 *
 	 * @param name the name of the property
 	 */
+	@Deprecated
 	@Override
 	public void setToDefault(String name) {
 		IEclipsePreferences preferences = getPluginPreferences(true);
@@ -815,6 +849,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 *
 	 * @return an array of property names
 	 */
+	@Deprecated
 	@Override
 	public String[] propertyNames() {
 		return getPluginPreferences(true).keys();
@@ -826,6 +861,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 *
 	 * @return an array of property names
 	 */
+	@Deprecated
 	@Override
 	public String[] defaultPropertyNames() {
 		try {
@@ -844,6 +880,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	 *  known to this preference object has a current value different from its
 	 *  default value, and <code>false</code> otherwise
 	 */
+	@Deprecated
 	@Override
 	public boolean needsSaving() {
 		return getPluginPreferences(true).isDirty();
@@ -852,6 +889,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	/**
 	 * Flush the values of these plug-in preferences to disk.
 	 */
+	@Deprecated
 	public void flush() throws BackingStoreException {
 		IEclipsePreferences node = getPluginPreferences(false);
 		if (node != null) {
@@ -870,6 +908,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	/*
 	 * @see org.eclipse.core.runtime.Preferences#load(java.io.InputStream)
 	 */
+	@Deprecated
 	@Override
 	public void load(InputStream in) throws IOException {
 		Properties result = new Properties();
@@ -888,6 +927,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 	/*
 	 * @see org.eclipse.core.runtime.Preferences#store(java.io.OutputStream, java.lang.String)
 	 */
+	@Deprecated
 	@Override
 	public void store(OutputStream out, String header) throws IOException {
 		Properties result = convertToProperties();
@@ -913,6 +953,7 @@ public class PreferenceForwarder extends Preferences implements IEclipsePreferen
 		}
 	}
 
+	@Deprecated
 	@Override
 	public String toString() {
 		return "PreferenceForwarder(" + pluginID + ")"; //$NON-NLS-1$ //$NON-NLS-2$
