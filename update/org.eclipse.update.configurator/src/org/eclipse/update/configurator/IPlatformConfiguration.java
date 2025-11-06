@@ -53,6 +53,7 @@ public interface IPlatformConfiguration {
 		 * @return site url
 		 * @since 2.0
 		 */
+		@Deprecated
 		public URL getURL();
 
 		/**
@@ -61,6 +62,7 @@ public interface IPlatformConfiguration {
 		 * @return site policy
 		 * @since 2.0
 		 */
+		@Deprecated
 		public ISitePolicy getSitePolicy();
 
 		/**
@@ -69,6 +71,7 @@ public interface IPlatformConfiguration {
 		 * @param policy site policy
 		 * @since 2.0
 		 */
+		@Deprecated
 		public void setSitePolicy(ISitePolicy policy);
 
 		/**
@@ -79,6 +82,7 @@ public interface IPlatformConfiguration {
 		 * A feature entry is returned as a path relative to the site URL
 		 * @since 2.0
 		 */
+		@Deprecated
 		public String[] getFeatures();
 
 		/**
@@ -91,6 +95,7 @@ public interface IPlatformConfiguration {
 		 * A plug-in entry is returned as a path relative to the site URL		 *
 		 * @since 2.0
 		 */
+		@Deprecated
 		public String[] getPlugins();
 
 		/**
@@ -101,6 +106,7 @@ public interface IPlatformConfiguration {
 		 * @return site change stamp
 		 * @since 2.0
 		 */
+		@Deprecated
 		public long getChangeStamp();
 
 		/**
@@ -133,6 +139,7 @@ public interface IPlatformConfiguration {
 		 * @return <code>true</code> if site can be updated, <code>false</code> otherwise
 		 * @since 2.0
 		 */
+		@Deprecated
 		public boolean isUpdateable();
 
 		/**
@@ -143,6 +150,7 @@ public interface IPlatformConfiguration {
 		 * @return <code>true</code> if the site is linked, <code>false</code> otherwise
 		 * @since 2.0
 		 */
+		@Deprecated
 		public boolean isNativelyLinked();
 	}
 
@@ -180,6 +188,7 @@ public interface IPlatformConfiguration {
 		 * policy type is interpreted as path entries to included plugin.xml
 		 * or fragment.xml <b>relative</b> to the site URL
 		 */
+		@Deprecated
 		public static final int USER_INCLUDE = 0;
 
 		/**
@@ -187,6 +196,7 @@ public interface IPlatformConfiguration {
 		 * policy type is interpreted as path entries to excluded plugin.xml
 		 * or fragment.xml <b>relative</b> to the site URL
 		 */
+		@Deprecated
 		public static final int USER_EXCLUDE = 1;
 
 		/**
@@ -194,6 +204,7 @@ public interface IPlatformConfiguration {
 		 * are contributed to the runtime.
 		 * @since 3.1
 		 */
+		@Deprecated
 		public static final int MANAGED_ONLY = 2;
 
 		/**
@@ -202,6 +213,7 @@ public interface IPlatformConfiguration {
 		 * @return policy type
 		 * @since 2.0
 		 */
+		@Deprecated
 		public int getType();
 
 		/**
@@ -210,6 +222,7 @@ public interface IPlatformConfiguration {
 		 * @return the list as an array
 		 * @since 2.0
 		 */
+		@Deprecated
 		public String[] getList();
 
 		/**
@@ -222,6 +235,7 @@ public interface IPlatformConfiguration {
 		 * @see #USER_EXCLUDE
 		 * @since 2.0
 		 */
+		@Deprecated
 		public void setList(String[] list);
 	}
 
@@ -245,6 +259,7 @@ public interface IPlatformConfiguration {
 		 * @return feature identifier
 		 * @since 2.0
 		 */
+		@Deprecated
 		public String getFeatureIdentifier();
 
 		/**
@@ -252,6 +267,7 @@ public interface IPlatformConfiguration {
 		 * @return feature version (as string), or <code>null</code>
 		 * @since 2.0
 		 */
+		@Deprecated
 		public String getFeatureVersion();
 
 		/**
@@ -266,6 +282,7 @@ public interface IPlatformConfiguration {
 		 * @return feature identifier (as string), or <code>null</code>
 		 * @since 2.1
 		 */
+		@Deprecated
 		public String getFeaturePluginIdentifier();
 
 		/**
@@ -280,6 +297,7 @@ public interface IPlatformConfiguration {
 		 * @return feature version (as string), or <code>null</code>
 		 * @since 2.0
 		 */
+		@Deprecated
 		public String getFeaturePluginVersion();
 
 		/**
@@ -288,6 +306,7 @@ public interface IPlatformConfiguration {
 		 * @return application identifier, or <code>null</code>
 		 * @since 2.0
 		 */
+		@Deprecated
 		public String getFeatureApplication();
 
 		/**
@@ -298,6 +317,7 @@ public interface IPlatformConfiguration {
 		 * @return array of URLs, or an empty array
 		 * @since 2.0
 		 */
+		@Deprecated
 		public URL[] getFeatureRootURLs();
 
 		/**
@@ -307,6 +327,7 @@ public interface IPlatformConfiguration {
 		 * <code>false</code> otherwise.
 		 * @since 2.0
 		 */
+		@Deprecated
 		public boolean canBePrimary();
 	}
 
