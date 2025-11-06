@@ -118,7 +118,7 @@ public class Win32Handler extends NativeHandler {
 		int newLength = com.sun.jna.platform.win32.Kernel32.INSTANCE.GetShortPathName(longPath, buffer, buffer.length);
 		if (0 < newLength && newLength < buffer.length) { // zero means error
 			int offset = longPath.startsWith(WIN32_UNC_RAW_PATH_PREFIX) ? WIN32_UNC_RAW_PATH_PREFIX.length() : WIN32_RAW_PATH_PREFIX.length();
-			return new String(buffer, offset, newLength);
+			return new String(buffer, offset, newLength - offset);
 		}
 		return null;
 	}
