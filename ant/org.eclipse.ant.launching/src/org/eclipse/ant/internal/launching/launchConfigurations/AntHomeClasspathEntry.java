@@ -177,7 +177,7 @@ public class AntHomeClasspathEntry extends AbstractRuntimeClasspathEntry {
 	 * Sets the ant home to use.
 	 *
 	 * @param path
-	 *            path to toor of an ant home installation
+	 *            path to root of an ant home installation
 	 */
 	public void setAntHome(String path) {
 		antHomeLocation = path;

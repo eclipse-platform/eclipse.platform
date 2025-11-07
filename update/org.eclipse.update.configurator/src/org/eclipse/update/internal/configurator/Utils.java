@@ -515,8 +515,8 @@ public class Utils {
 
 		Location location = instanceLocation.getService();
 
-		// it is pretty much impossible for the install location to be null.  If it is, the
-		// system is in a bad way so throw and exception and get the heck outta here.
+		// it is unlikely for the install location to be null. If it is, the
+		// system is in an invalid state so throw an exception and exit.
 		if (location == null) {
 			throw new IllegalStateException("The installation location must not be null"); //$NON-NLS-1$
 		}

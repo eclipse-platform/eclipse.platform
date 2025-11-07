@@ -200,7 +200,7 @@ public class IniFileReader {
 	/**
 	 * Returns the feature plugin label, or <code>null</code>.
 	 *
-	 * @return the feature plugin lable, or <code>null</code> if none.
+	 * @return the feature plugin label, or <code>null</code> if none.
 	 */
 	public String getFeaturePluginLabel() {
 		if (bundle == null) {

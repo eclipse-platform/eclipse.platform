@@ -133,7 +133,7 @@ public final class AboutInfo {
 
 
 	/**
-	 * Returns a label for the feature plugn, or <code>null</code>.
+	 * Returns a label for the feature plugin, or <code>null</code>.
 	 */
 	public String getFeatureLabel() {
 		return featurePluginLabel;

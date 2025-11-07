@@ -330,10 +330,10 @@ public class ExternalToolsBuildTab extends AbstractLaunchConfigurationTab {
 	}
 
 	/**
-	 * Whether referenced projects should be considered when building. Only valid
-	 * when a set of projects is to be built.
+	 * Whether referenced projects should be considered when building. Only
+	 * valid when a set of projects is to be built.
 	 *
-	 * @return whether referenced projects should be considerd when building
+	 * @return whether referenced projects should be considered when building
 	 * @throws CoreException if unable to access the associated attribute
 	 */
 	public static boolean isIncludeReferencedProjects(ILaunchConfiguration configuration, String includeReferencedProjectsId) throws CoreException {
