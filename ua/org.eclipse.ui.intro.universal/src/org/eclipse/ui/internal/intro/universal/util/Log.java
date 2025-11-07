@@ -34,8 +34,8 @@ public class Log implements IUniversalIntroConstants {
 
 	/**
 	 * This MUST be set to <b>false </b> in production. <br>
-	 * Used to compile out developement debug messages. <br>
-	 * Compiler compiles out code warpped wit this flag as an optimization.
+	 * Used to compile out development debug messages. <br>
+	 * Compiler compiles out code wrapped with this flag as an optimization.
 	 */
 	public static final boolean DEBUG = false;
 
