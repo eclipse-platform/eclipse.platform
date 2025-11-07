@@ -5,8 +5,8 @@
 This repository contains the core Eclipse Platform components that form the basis for the Eclipse IDE. It is a **large-scale Java/OSGi project** (~120MB, 5,600+ Java files across 38 Maven modules) using **Maven/Tycho** for building Eclipse RCP bundles and features.
 
 **Key Technologies:**
-- Language: Java (JDK 17+, targets JDK 21 in CI)
-- Build: Maven 3.9+ with Eclipse Tycho (OSGi/RCP build tooling)
+- Language: Java (JDK 21)
+- Build: Maven 3.9.11 with Eclipse Tycho (OSGi/RCP build tooling)
 - Architecture: OSGi bundles organized as Eclipse plugins
 - Testing: JUnit with Tycho Surefire plugin
 
@@ -22,24 +22,9 @@ This repository contains the core Eclipse Platform components that form the basi
 
 ## Critical Build Information
 
-**⚠️ IMPORTANT: This repository CANNOT be built in isolation.** It depends on a parent POM (`eclipse-platform-parent`) from the [eclipse.platform.releng.aggregator](https://github.com/eclipse-platform/eclipse.platform.releng.aggregator) repository. 
-
-### Individual Bundle Builds
-
-Individual bundles CAN be built using the pre-configured profile if you have network access to Eclipse repositories:
-
-```bash
-cd <bundle-directory>  # e.g., runtime/bundles/org.eclipse.core.runtime
-mvn clean verify -Pbuild-individual-bundles
-```
-
 The `-Pbuild-individual-bundles` profile (configured in `.mvn/maven.config`) enables the bundle to fetch the parent POM from https://repo.eclipse.org/content/repositories/eclipse/.
 
 **Note:** If network access to Eclipse repositories is blocked, individual bundle builds will fail. In such environments, code exploration and analysis can still be performed, but build verification is not possible.
-
-### Full Platform Build
-
-For full platform builds, use the aggregator repository which includes this repo as a Git submodule. The CI workflows in this repository delegate to workflows in the aggregator repository.
 
 ### Build Profiles Used in CI
 
