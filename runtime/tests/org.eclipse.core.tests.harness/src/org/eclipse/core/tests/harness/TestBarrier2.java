@@ -184,6 +184,13 @@ public class TestBarrier2 {
 	}
 
 	/**
+	 * Gets this barrier object's current status.
+	 */
+	public int getStatus() {
+		return myStatus.get(myIndex);
+	}
+
+	/**
 	 * Sets this barrier object's status.
 	 */
 	public void setStatus(int status) {
