@@ -447,9 +447,9 @@ public class ParallelBuildChainTest {
 			job.setJobGroup(jobGroup);
 			job.schedule();
 		}
-		for (TestBarrier2 barrier : waitForRunningJobBarriers.values()) {
-			barrier.waitForStatus(TestBarrier2.STATUS_RUNNING);
-		}
+		// Wait for all job wrappers to reach running state with a shared timeout
+		waitForCondition(() -> waitForRunningJobBarriers.values().stream()
+				.allMatch(barrier -> barrier.getStatus() == TestBarrier2.STATUS_RUNNING), TIMEOUT_IN_MILLIS);
 		try {
 			executeWhileRunningBuild.run();
 		} finally {
