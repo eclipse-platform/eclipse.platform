@@ -1,4 +1,6 @@
-# Eclipse Platform Repository - Copilot Instructions
+# Eclipse Platform Repository - AI Agent Instructions
+
+This file provides guidance for AI coding assistants (GitHub Copilot, Claude Code, etc.) working with this repository.
 
 ## Repository Overview
 
@@ -250,3 +252,22 @@ Only search beyond these instructions if:
 - CI is failing with an error not covered here (check Jenkinsfile and workflow YAMLs)
 
 **When in doubt:** Build at the bundle level with `-Pbuild-individual-bundles` profile and verify tests pass locally before pushing changes.
+
+## AI Agent-Specific Notes
+
+### For GitHub Copilot
+- This file is automatically read by GitHub Copilot when providing code suggestions
+- Copilot uses this context to understand the project structure and conventions
+- Copilot excels at inline code completion and small-scale refactoring
+
+### For Claude Code
+- Claude Code has access to this file via the `CLAUDE.md` file in the repository root
+- Claude Code is better suited for multi-file refactoring and architectural changes
+- Use Claude Code for tasks requiring deep codebase understanding across multiple modules
+- Claude Code can execute builds and tests directly via Maven commands
+
+### For Other AI Agents
+- Read this file to understand the repository structure and build requirements
+- Follow the coding conventions in `docs/Coding_Conventions.md`
+- Always test changes with `mvn clean verify -Pbuild-individual-bundles` before committing
+- Check API baseline with `-Papi-check` when modifying public APIs
