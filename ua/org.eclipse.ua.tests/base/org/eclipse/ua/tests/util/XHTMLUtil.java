@@ -36,7 +36,7 @@ public class XHTMLUtil {
 		 * becomes:
 		 * <myElement myAttribute="myValue"/>
 		 */
-		xhtml = xhtml.replaceAll(" />", "/>");
+		xhtml = xhtml.replace(" />", "/>");
 
 		/*
 		 * The base tag is added before showing in browser. It contains an

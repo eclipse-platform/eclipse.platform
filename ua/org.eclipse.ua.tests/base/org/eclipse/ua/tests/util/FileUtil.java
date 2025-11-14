@@ -62,7 +62,7 @@ public class FileUtil {
 			String result = new String(out.toByteArray(), StandardCharsets.UTF_8);
 			if (result.length() > 0) {
 				// filter windows-specific newline
-				result = result.replaceAll("\r", "");
+				result = result.replace("\r", "");
 			}
 			// ignore whitespace at start or end
 			return result.trim();
