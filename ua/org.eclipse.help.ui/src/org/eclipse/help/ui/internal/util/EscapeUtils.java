@@ -43,7 +43,7 @@ public class EscapeUtils {
 	}
 
 	public static String escapeAmpersand(String value) {
-		return value.replaceAll("&", "&amp;"); //$NON-NLS-1$ //$NON-NLS-2$
+		return value.replace("&", "&amp;"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
