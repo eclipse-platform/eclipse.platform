@@ -288,7 +288,29 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 				depth = getWorkManager().beginUnprotected();
 				// Acquire the rule required for running this builder
 				if (rule != null) {
-					Job.getJobManager().beginRule(rule, monitor);
+					try {
+						Job.getJobManager().beginRule(rule, monitor);
+					} catch (IllegalArgumentException e) {
+						// Enhance the error message with builder and project context
+						String builderLabel = currentBuilder.getLabel();
+						String builderClass = currentBuilder.getClass().getName();
+						String projectName = builder.getProject().getFullPath().toString();
+						String pluginId = currentBuilder.getPluginId();
+
+						String enhancedMessage = String.format(
+							"Rule conflict in builder '%s' (class: %s, plugin: %s) for project '%s'. " + //$NON-NLS-1$
+							"The builder requested rule '%s' which conflicts with the outer scope rule. " + //$NON-NLS-1$
+							"Original error: %s", //$NON-NLS-1$
+							builderLabel != null ? builderLabel : "<unknown>", //$NON-NLS-1$
+							builderClass,
+							pluginId != null ? pluginId : "<unknown>", //$NON-NLS-1$
+							projectName,
+							rule,
+							e.getMessage()
+						);
+
+						throw new IllegalArgumentException(enhancedMessage, e);
+					}
 					// Now that we've acquired the rule, changes may have been made concurrently, ensure we're pointing at the
 					// correct currentTree so delta contains concurrent changes made in areas guarded by the scheduling rule
 					if (currentTree != null) {
@@ -303,7 +325,29 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 					getWorkManager().endUnprotected(depth);
 				}
 				if (rule != null) {
-					Job.getJobManager().endRule(rule);
+					try {
+						Job.getJobManager().endRule(rule);
+					} catch (IllegalArgumentException e) {
+						// Enhance the error message with builder and project context
+						String builderLabel = currentBuilder.getLabel();
+						String builderClass = currentBuilder.getClass().getName();
+						String projectName = builder.getProject().getFullPath().toString();
+						String pluginId = currentBuilder.getPluginId();
+
+						String enhancedMessage = String.format(
+							"Rule conflict when ending rule for builder '%s' (class: %s, plugin: %s) for project '%s'. " + //$NON-NLS-1$
+							"The builder tried to end rule '%s' which does not match the current scope. " + //$NON-NLS-1$
+							"Original error: %s", //$NON-NLS-1$
+							builderLabel != null ? builderLabel : "<unknown>", //$NON-NLS-1$
+							builderClass,
+							pluginId != null ? pluginId : "<unknown>", //$NON-NLS-1$
+							projectName,
+							rule,
+							e.getMessage()
+						);
+
+						throw new IllegalArgumentException(enhancedMessage, e);
+					}
 				}
 				// Be sure to clean up after ourselves.
 				if (clean || currentBuilder.wasForgetStateRequested()) {
