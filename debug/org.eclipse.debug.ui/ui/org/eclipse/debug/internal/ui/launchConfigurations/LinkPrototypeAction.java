@@ -107,14 +107,14 @@ public class LinkPrototypeAction extends AbstractLaunchConfigurationAction {
 		// Enable action only if launch configuration(s) of the same type
 		// is(are) selected and the launch configuration type allows prototypes
 		Collection<ILaunchConfigurationType> launchConfigurationTypes = new HashSet<>();
+		ILaunchConfigurationType type = null;
 		for (Object object : selection.toList()) {
-			if (object instanceof ILaunchConfiguration) {
-				if (((ILaunchConfiguration) object).isPrototype()) {
+			if (object instanceof ILaunchConfiguration launchConfig) {
+				if (launchConfig.isPrototype()) {
 					return false;
 				} else {
-					ILaunchConfigurationType type = null;
 					try {
-						type = ((ILaunchConfiguration) object).getType();
+						type = launchConfig.getType();
 					} catch (CoreException e) {
 						DebugUIPlugin.log(e.getStatus());
 					}
@@ -128,8 +128,13 @@ public class LinkPrototypeAction extends AbstractLaunchConfigurationAction {
 				return false;
 			}
 		}
-		if (launchConfigurationTypes.size() == 1) {
-			return launchConfigurationTypes.iterator().next().supportsPrototypes();
+
+		if (launchConfigurationTypes.size() == 1 && type != null) {
+			try {
+				return type.getPrototypes().length > 0;
+			} catch (CoreException e) {
+				DebugUIPlugin.log(e);
+			}
 		}
 		return false;
 	}
