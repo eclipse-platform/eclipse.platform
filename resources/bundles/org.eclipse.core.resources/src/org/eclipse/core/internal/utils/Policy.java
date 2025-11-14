@@ -189,6 +189,6 @@ public class Policy {
 		if (monitor instanceof NullProgressMonitor) {
 			return monitor;
 		}
-		return SubMonitor.convert(monitor, ticks);
+		return SubMonitor.convert(monitor).split(ticks);
 	}
 }
