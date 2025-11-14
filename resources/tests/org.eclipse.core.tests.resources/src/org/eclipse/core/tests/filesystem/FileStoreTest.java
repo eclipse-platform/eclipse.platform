@@ -756,7 +756,7 @@ public class FileStoreTest {
 		List<String> pathsTrimmed = paths.stream().map(s -> s //
 				.replaceAll("/$", "") // remove trailing slashes
 				.replaceAll("/[^/]+/\\.\\./", "/") // collapse /a/../ to /
-				.replaceAll("/\\./", "/") // collapse /./ to /
+				.replace("/./", "/") // collapse /./ to /
 		).toList();
 		paths = new ArrayList<>(paths); // to get a mutable copy for shuffling
 		Collections.shuffle(paths);
