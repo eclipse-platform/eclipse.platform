@@ -54,9 +54,6 @@ public class Policy {
 	}
 
 	public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
-		if (monitor == null) {
-			return new NullProgressMonitor();
-		}
 		if (monitor instanceof NullProgressMonitor) {
 			return monitor;
 		}

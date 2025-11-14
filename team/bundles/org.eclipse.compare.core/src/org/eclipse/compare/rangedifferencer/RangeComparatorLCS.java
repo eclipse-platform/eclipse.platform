@@ -71,73 +71,69 @@ import org.eclipse.core.runtime.*;
 	}
 
 	public RangeDifference[] getDifferences(SubMonitor subMonitor, AbstractRangeDifferenceFactory factory) {
-		try {
-			List<RangeDifference> differences = new ArrayList<>();
-			int length = getLength();
-			if (length == 0) {
-				differences.add(factory.createRangeDifference(RangeDifference.CHANGE, 0, this.comparator2.getRangeCount(), 0, this.comparator1.getRangeCount()));
-			} else {
-				subMonitor.beginTask(null, length);
-				int index1, index2;
-				index1 = index2 = 0;
-				int l1, l2;
-				int s1 = -1;
-				int s2 = -1;
-				while(index1 < this.lcs[0].length && index2 < this.lcs[1].length) {
-					// Move both LCS lists to the next occupied slot
-					while ((l1= this.lcs[0][index1]) == 0) {
-						index1++;
-						if (index1 >= this.lcs[0].length) {
-							break;
-						}
-					}
+		List<RangeDifference> differences = new ArrayList<>();
+		int length = getLength();
+		if (length == 0) {
+			differences.add(factory.createRangeDifference(RangeDifference.CHANGE, 0, this.comparator2.getRangeCount(), 0, this.comparator1.getRangeCount()));
+		} else {
+			subMonitor.beginTask(null, length);
+			int index1, index2;
+			index1 = index2 = 0;
+			int l1, l2;
+			int s1 = -1;
+			int s2 = -1;
+			while(index1 < this.lcs[0].length && index2 < this.lcs[1].length) {
+				// Move both LCS lists to the next occupied slot
+				while ((l1= this.lcs[0][index1]) == 0) {
+					index1++;
 					if (index1 >= this.lcs[0].length) {
 						break;
 					}
-					while ((l2= this.lcs[1][index2]) == 0) {
-						index2++;
-						if (index2 >= this.lcs[1].length) {
-							break;
-						}
-					}
+				}
+				if (index1 >= this.lcs[0].length) {
+					break;
+				}
+				while ((l2= this.lcs[1][index2]) == 0) {
+					index2++;
 					if (index2 >= this.lcs[1].length) {
 						break;
 					}
-					// Convert the entry to an array index (see setLcs(int, int))
-					int end1 = l1 - 1;
-					int end2 = l2 - 1;
-					if (s1 == -1 && (end1 != 0 || end2 != 0)) {
-						// There is a diff at the beginning
-						// TODO: We need to conform that this is the proper order
-						differences.add(factory.createRangeDifference(RangeDifference.CHANGE, 0, end2, 0, end1));
-					} else if (end1 != s1 + 1 || end2 != s2 + 1) {
-						// A diff was found on one of the sides
-						int leftStart = s1 + 1;
-						int leftLength = end1 - leftStart;
-						int rightStart = s2 + 1;
-						int rightLength = end2 - rightStart;
-						// TODO: We need to conform that this is the proper order
-						differences.add(factory.createRangeDifference(RangeDifference.CHANGE, rightStart, rightLength, leftStart, leftLength));
-					}
-					s1 = end1;
-					s2 = end2;
-					index1++;
-					index2++;
-					worked(subMonitor, 1);
 				}
-				if (s1 != -1 && (s1 + 1 < this.comparator1.getRangeCount() || s2 + 1 < this.comparator2.getRangeCount())) {
-					// TODO: we need to find the proper way of representing an append
-					int leftStart = s1 < this.comparator1.getRangeCount() ? s1 + 1 : s1;
-					int rightStart = s2 < this.comparator2.getRangeCount() ? s2 + 1 : s2;
-					// TODO: We need to confirm that this is the proper order
-					differences.add(factory.createRangeDifference(RangeDifference.CHANGE, rightStart, this.comparator2.getRangeCount() - (s2 + 1), leftStart, this.comparator1.getRangeCount() - (s1 + 1)));
+				if (index2 >= this.lcs[1].length) {
+					break;
 				}
-
+				// Convert the entry to an array index (see setLcs(int, int))
+				int end1 = l1 - 1;
+				int end2 = l2 - 1;
+				if (s1 == -1 && (end1 != 0 || end2 != 0)) {
+					// There is a diff at the beginning
+					// TODO: We need to conform that this is the proper order
+					differences.add(factory.createRangeDifference(RangeDifference.CHANGE, 0, end2, 0, end1));
+				} else if (end1 != s1 + 1 || end2 != s2 + 1) {
+					// A diff was found on one of the sides
+					int leftStart = s1 + 1;
+					int leftLength = end1 - leftStart;
+					int rightStart = s2 + 1;
+					int rightLength = end2 - rightStart;
+					// TODO: We need to conform that this is the proper order
+					differences.add(factory.createRangeDifference(RangeDifference.CHANGE, rightStart, rightLength, leftStart, leftLength));
+				}
+				s1 = end1;
+				s2 = end2;
+				index1++;
+				index2++;
+				worked(subMonitor, 1);
 			}
-			return differences.toArray(new RangeDifference[differences.size()]);
-		} finally {
-			subMonitor.done();
+			if (s1 != -1 && (s1 + 1 < this.comparator1.getRangeCount() || s2 + 1 < this.comparator2.getRangeCount())) {
+				// TODO: we need to find the proper way of representing an append
+				int leftStart = s1 < this.comparator1.getRangeCount() ? s1 + 1 : s1;
+				int rightStart = s2 < this.comparator2.getRangeCount() ? s2 + 1 : s2;
+				// TODO: We need to confirm that this is the proper order
+				differences.add(factory.createRangeDifference(RangeDifference.CHANGE, rightStart, this.comparator2.getRangeCount() - (s2 + 1), leftStart, this.comparator1.getRangeCount() - (s1 + 1)));
+			}
+
 		}
+		return differences.toArray(new RangeDifference[differences.size()]);
 	}
 
 	private void worked(SubMonitor subMonitor, int work) {

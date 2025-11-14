@@ -269,7 +269,6 @@ abstract public class Subscriber {
 				IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 100);
 				subMonitor.beginTask(null, IProgressMonitor.UNKNOWN);
 				collect(resource, depth, set, subMonitor);
-				subMonitor.done();
 			}
 		} finally {
 			monitor.done();
