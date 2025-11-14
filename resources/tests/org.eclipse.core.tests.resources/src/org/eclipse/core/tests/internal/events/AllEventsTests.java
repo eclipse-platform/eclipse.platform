@@ -18,6 +18,7 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({ //
+		BuildManagerRuleConflictMessageTest.class, //
 		BuildProjectFromMultipleJobsTest.class, //
 })
 public class AllEventsTests {

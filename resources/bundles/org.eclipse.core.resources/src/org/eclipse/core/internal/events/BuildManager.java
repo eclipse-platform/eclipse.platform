@@ -288,7 +288,11 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 				depth = getWorkManager().beginUnprotected();
 				// Acquire the rule required for running this builder
 				if (rule != null) {
-					Job.getJobManager().beginRule(rule, monitor);
+					try {
+						Job.getJobManager().beginRule(rule, monitor);
+					} catch (IllegalArgumentException e) {
+						throw handleRuleConflict(true, currentBuilder, e);
+					}
 					// Now that we've acquired the rule, changes may have been made concurrently, ensure we're pointing at the
 					// correct currentTree so delta contains concurrent changes made in areas guarded by the scheduling rule
 					if (currentTree != null) {
@@ -303,7 +307,11 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 					getWorkManager().endUnprotected(depth);
 				}
 				if (rule != null) {
-					Job.getJobManager().endRule(rule);
+					try {
+						Job.getJobManager().endRule(rule);
+					} catch (IllegalArgumentException e) {
+						throw handleRuleConflict(false, currentBuilder, e);
+					}
 				}
 				// Be sure to clean up after ourselves.
 				if (clean || currentBuilder.wasForgetStateRequested()) {
@@ -393,6 +401,35 @@ public class BuildManager implements ICoreConstants, IManager, ILifecycleListene
 		} catch (CoreException e) {
 			status.add(e.getStatus());
 		}
+	}
+
+	/**
+	 * Wraps an {@link IllegalArgumentException} thrown by
+	 * {@link org.eclipse.core.runtime.jobs.IJobManager#beginRule(ISchedulingRule, IProgressMonitor)
+	 * beginRule} or
+	 * {@link org.eclipse.core.runtime.jobs.IJobManager#endRule(ISchedulingRule)
+	 * endRule} with builder context (label, class, plugin id, project) so the
+	 * offending builder can be identified from the stack trace. The conflicting
+	 * rule and the underlying error are preserved via the wrapped cause.
+	 *
+	 * @param beginRule {@code true} if the failure occurred during
+	 *                  {@code beginRule}, {@code false} for {@code endRule}
+	 */
+	private static IllegalArgumentException handleRuleConflict(boolean beginRule, InternalBuilder currentBuilder,
+			IllegalArgumentException e) {
+		String label = currentBuilder.getLabel();
+		String pluginId = currentBuilder.getPluginId();
+		IProject project = currentBuilder.getProject();
+		String projectName = project != null ? project.getFullPath().toString() : "<unknown>"; //$NON-NLS-1$
+		String op = beginRule ? "beginRule" : "endRule"; //$NON-NLS-1$ //$NON-NLS-2$
+		String enhancedMessage = String.format("%s failed for builder %s ('%s', plugin %s) on project %s: %s", //$NON-NLS-1$
+				op,
+				currentBuilder.getClass().getName(),
+				label != null ? label : "<unknown>", //$NON-NLS-1$
+				pluginId != null ? pluginId : "<unknown>", //$NON-NLS-1$
+				projectName,
+				e.getMessage());
+		return new IllegalArgumentException(enhancedMessage, e);
 	}
 
 	/**
