@@ -91,8 +91,6 @@ public class File extends Resource implements IFile {
 			}
 		} catch (IOException streamCloseIgnored) {
 			// ignore;
-		} finally {
-			subMonitor.done();
 		}
 	}
 
@@ -163,8 +161,6 @@ public class File extends Resource implements IFile {
 			}
 		} catch (IOException streamCloseIgnored) {
 			// ignore;
-		} finally {
-			subMonitor.done();
 		}
 	}
 
@@ -177,38 +173,34 @@ public class File extends Resource implements IFile {
 	@Override
 	public void create(byte[] content, int updateFlags, IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.resources_creating, getFullPath()), 100);
+		checkValidPath(path, FILE, true);
+		final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
 		try {
-			checkValidPath(path, FILE, true);
-			final ISchedulingRule rule = workspace.getRuleFactory().createRule(this);
-			try {
-				workspace.prepareOperation(rule, subMonitor.newChild(1));
-				checkCreatable();
-				workspace.beginOperation(true);
-				IFileStore store = getStore();
-				IFileInfo localInfo = create(updateFlags, subMonitor.newChild(40), store);
-				boolean local = content != null;
-				if (local) {
-					try {
-						internalSetContents(content, localInfo, updateFlags, false, subMonitor.newChild(59));
-					} catch (CoreException | OperationCanceledException e) {
-						// CoreException when a problem happened creating the file on disk
-						// OperationCanceledException when the operation of setting contents has been
-						// canceled
-						// In either case delete from the workspace and disk
-						workspace.deleteResource(this);
-						store.delete(EFS.NONE, null);
-						throw e;
-					}
+			workspace.prepareOperation(rule, subMonitor.newChild(1));
+			checkCreatable();
+			workspace.beginOperation(true);
+			IFileStore store = getStore();
+			IFileInfo localInfo = create(updateFlags, subMonitor.newChild(40), store);
+			boolean local = content != null;
+			if (local) {
+				try {
+					internalSetContents(content, localInfo, updateFlags, false, subMonitor.newChild(59));
+				} catch (CoreException | OperationCanceledException e) {
+					// CoreException when a problem happened creating the file on disk
+					// OperationCanceledException when the operation of setting contents has been
+					// canceled
+					// In either case delete from the workspace and disk
+					workspace.deleteResource(this);
+					store.delete(EFS.NONE, null);
+					throw e;
 				}
-				setLocal(local);
-			} catch (OperationCanceledException e) {
-				workspace.getWorkManager().operationCanceled();
-				throw e;
-			} finally {
-				workspace.endOperation(rule, true);
 			}
+			setLocal(local);
+		} catch (OperationCanceledException e) {
+			workspace.getWorkManager().operationCanceled();
+			throw e;
 		} finally {
-			subMonitor.done();
+			workspace.endOperation(rule, true);
 		}
 	}
 
@@ -244,7 +236,6 @@ public class File extends Resource implements IFile {
 				throw new ResourceException(IResourceStatus.FAILED_WRITE_LOCAL, getFullPath(), message, null);
 			}
 		}
-		subMonitor.done();
 
 		workspace.createResource(this, updateFlags);
 		return localInfo;
@@ -510,39 +501,33 @@ public class File extends Resource implements IFile {
 			}
 		} catch (IOException streamCloseIgnored) {
 			// ignore;
-		} finally {
-			subMonitor.done();
 		}
 	}
 	@Override
 	public void setContents(byte[] content, int updateFlags, IProgressMonitor monitor) throws CoreException {
 		String message = NLS.bind(Messages.resources_settingContents, getFullPath());
 		SubMonitor subMonitor = SubMonitor.convert(monitor, message, 100);
+		if (workspace.shouldValidate) {
+			workspace.validateSave(this);
+		}
+		final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
+		SubMonitor newChild = subMonitor.newChild(1);
 		try {
-			if (workspace.shouldValidate) {
-				workspace.validateSave(this);
+			workspace.prepareOperation(rule, newChild);
+			ResourceInfo info = getResourceInfo(false, false);
+			checkAccessible(getFlags(info));
+			workspace.beginOperation(true);
+			IFileInfo fileInfo = getStore().fetchInfo();
+			if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
+				// update of derived flag during IFile.write:
+				info.set(ICoreConstants.M_DERIVED);
 			}
-			final ISchedulingRule rule = workspace.getRuleFactory().modifyRule(this);
-			SubMonitor newChild = subMonitor.newChild(1);
-			try {
-				workspace.prepareOperation(rule, newChild);
-				ResourceInfo info = getResourceInfo(false, false);
-				checkAccessible(getFlags(info));
-				workspace.beginOperation(true);
-				IFileInfo fileInfo = getStore().fetchInfo();
-				if (BitMask.isSet(updateFlags, IResource.DERIVED)) {
-					// update of derived flag during IFile.write:
-					info.set(ICoreConstants.M_DERIVED);
-				}
-				internalSetContents(content, fileInfo, updateFlags, false, subMonitor.newChild(99));
-			} catch (OperationCanceledException e) {
-				workspace.getWorkManager().operationCanceled();
-				throw e;
-			} finally {
-				workspace.endOperation(rule, true);
-			}
+			internalSetContents(content, fileInfo, updateFlags, false, subMonitor.newChild(99));
+		} catch (OperationCanceledException e) {
+			workspace.getWorkManager().operationCanceled();
+			throw e;
 		} finally {
-			subMonitor.done();
+			workspace.endOperation(rule, true);
 		}
 	}
 
@@ -616,7 +601,6 @@ public class File extends Resource implements IFile {
 			workspace.getWorkManager().operationCanceled();
 			throw e;
 		} finally {
-			subMonitor.done();
 			workspace.endOperation(rule, true);
 		}
 	}

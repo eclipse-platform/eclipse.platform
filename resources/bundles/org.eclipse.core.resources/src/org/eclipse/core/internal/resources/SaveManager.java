@@ -241,41 +241,37 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 
 	protected void broadcastLifecycle(final int lifecycle, Map<String, SaveContext> contexts, final MultiStatus warnings, IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, contexts.size());
-		try {
-			for (final Iterator<Map.Entry<String, SaveContext>> it = contexts.entrySet().iterator(); it.hasNext();) {
-				Map.Entry<String, SaveContext> entry = it.next();
-				String pluginId = entry.getKey();
-				final ISaveParticipant participant = saveParticipants.get(pluginId);
-				// save participants can be removed concurrently
-				if (participant == null) {
-					subMonitor.worked(1);
-					continue;
-				}
-				final SaveContext context = entry.getValue();
-				/* Be extra careful when calling lifecycle method on arbitrary plugin */
-				ISafeRunnable code = new ISafeRunnable() {
-
-					@Override
-					public void handleException(Throwable e) {
-						String message = Messages.resources_saveProblem;
-						IStatus status = new Status(IStatus.WARNING, ResourcesPlugin.PI_RESOURCES,
-								IResourceStatus.INTERNAL_ERROR, message, e);
-						warnings.add(status);
-
-						/* Remove entry for defective plug-in from this save operation */
-						it.remove();
-					}
-
-					@Override
-					public void run() throws Exception {
-						executeLifecycle(lifecycle, participant, context);
-					}
-				};
-				SafeRunner.run(code);
+		for (final Iterator<Map.Entry<String, SaveContext>> it = contexts.entrySet().iterator(); it.hasNext();) {
+			Map.Entry<String, SaveContext> entry = it.next();
+			String pluginId = entry.getKey();
+			final ISaveParticipant participant = saveParticipants.get(pluginId);
+			// save participants can be removed concurrently
+			if (participant == null) {
 				subMonitor.worked(1);
+				continue;
 			}
-		} finally {
-			subMonitor.done();
+			final SaveContext context = entry.getValue();
+			/* Be extra careful when calling lifecycle method on arbitrary plugin */
+			ISafeRunnable code = new ISafeRunnable() {
+
+				@Override
+				public void handleException(Throwable e) {
+					String message = Messages.resources_saveProblem;
+					IStatus status = new Status(IStatus.WARNING, ResourcesPlugin.PI_RESOURCES,
+							IResourceStatus.INTERNAL_ERROR, message, e);
+					warnings.add(status);
+
+					/* Remove entry for defective plug-in from this save operation */
+					it.remove();
+				}
+
+				@Override
+				public void run() throws Exception {
+					executeLifecycle(lifecycle, participant, context);
+				}
+			};
+			SafeRunner.run(code);
+			subMonitor.worked(1);
 		}
 	}
 
@@ -1574,37 +1570,33 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 		long start = System.currentTimeMillis();
 		String message;
 		SubMonitor subMonitor = SubMonitor.convert(monitor, Policy.totalWork);
+		// the tree must be immutable
+		tree.immutable();
+		// don't need to snapshot if there are no changes
+		if (tree == lastSnap) {
+			return;
+		}
+		operationCount = 0;
+		IPath snapPath = workspace.getMetaArea().getSnapshotLocationFor(workspace.getRoot());
+		ElementTreeWriter writer = new ElementTreeWriter(this);
+		java.io.File localFile = snapPath.toFile();
 		try {
-			// the tree must be immutable
-			tree.immutable();
-			// don't need to snapshot if there are no changes
-			if (tree == lastSnap) {
-				return;
+			SafeChunkyOutputStream safeStream = new SafeChunkyOutputStream(localFile);
+			try (DataOutputStream out = new DataOutputStream(safeStream);) {
+				out.writeInt(ICoreConstants.WORKSPACE_TREE_VERSION_2);
+				writeWorkspaceFields(out, subMonitor);
+				writer.writeDelta(tree, lastSnap, IPath.ROOT, ElementTreeWriter.D_INFINITE, out,
+						ResourceComparator.getSaveComparator());
+				safeStream.succeed();
+				out.close();
 			}
-			operationCount = 0;
-			IPath snapPath = workspace.getMetaArea().getSnapshotLocationFor(workspace.getRoot());
-			ElementTreeWriter writer = new ElementTreeWriter(this);
-			java.io.File localFile = snapPath.toFile();
-			try {
-				SafeChunkyOutputStream safeStream = new SafeChunkyOutputStream(localFile);
-				try (DataOutputStream out = new DataOutputStream(safeStream);) {
-					out.writeInt(ICoreConstants.WORKSPACE_TREE_VERSION_2);
-					writeWorkspaceFields(out, subMonitor);
-					writer.writeDelta(tree, lastSnap, IPath.ROOT, ElementTreeWriter.D_INFINITE, out,
-							ResourceComparator.getSaveComparator());
-					safeStream.succeed();
-					out.close();
-				}
-			} catch (IOException e) {
-				message = NLS.bind(Messages.resources_writeWorkspaceMeta, localFile.getAbsolutePath());
-				throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, IPath.ROOT, message, e);
-			}
-			lastSnap = tree;
-			if (Policy.DEBUG_SAVE_TREE) {
-				Policy.debug("Snapshot Workspace Tree: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		} finally {
-			subMonitor.done();
+		} catch (IOException e) {
+			message = NLS.bind(Messages.resources_writeWorkspaceMeta, localFile.getAbsolutePath());
+			throw new ResourceException(IResourceStatus.FAILED_WRITE_METADATA, IPath.ROOT, message, e);
+		}
+		lastSnap = tree;
+		if (Policy.DEBUG_SAVE_TREE) {
+			Policy.debug("Snapshot Workspace Tree: " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -2181,7 +2173,6 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				output.writeUTF(string);
 			}
 		} finally {
-			subMonitor.done();
 			if (!wasImmutable) {
 				workspace.newWorkingTree();
 			}
@@ -2257,7 +2248,6 @@ public class SaveManager implements IElementInfoFlattener, IManager, IStringPool
 				output.writeUTF(string);
 			}
 		} finally {
-			subMonitor.done();
 			if (!wasImmutable) {
 				workspace.newWorkingTree();
 			}
