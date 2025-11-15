@@ -371,7 +371,7 @@ public class VirtualCopyToClipboardActionDelegate extends AbstractDebugActionDel
 	@Override
 	protected boolean getEnableStateForSelection(IStructuredSelection selection) {
 		if (selection.isEmpty()) {
-			return true;
+			return false;
 		} else {
 			return super.getEnableStateForSelection(selection);
 		}
