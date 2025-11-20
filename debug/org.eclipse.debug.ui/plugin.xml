@@ -2995,9 +2995,12 @@ M4 = Platform-specific fourth key
            perspectiveId="org.eclipse.debug.ui.DebugPerspective"/>
   </extension>
 
-   <extension
-         point="org.eclipse.ui.themes">
-		<themeElementCategory label="%debugPresentation.label" id="org.eclipse.debug.ui.presentation"/>
+	<extension point="org.eclipse.ui.themes">
+		<themeElementCategory id="org.eclipse.debug.ui.presentation" label="%debugPresentation.label">
+			<description>
+				%org.eclipse.debug.ui.presentation.description
+			</description>
+		</themeElementCategory>
       <fontDefinition
             label="%DetailPaneFontDefinition.label"
             defaultsTo="org.eclipse.jface.textfont"
