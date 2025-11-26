@@ -935,6 +935,10 @@ public class FileSystemResourceManager implements ICoreConstants, IManager {
 			final IFileInfo fileInfo = store.fetchInfo();
 			Resource resource = (Resource) target;
 			ResourceInfo info = resource.getResourceInfo(true, false);
+			if (info == null) {
+				String message = NLS.bind(Messages.resources_mustExist, target.getFullPath());
+				throw new ResourceException(IResourceStatus.RESOURCE_NOT_FOUND, target.getFullPath(), message, null);
+			}
 			if (fileInfo.getLastModified() != info.getLocalSyncInfo()) {
 				asyncRefresh(target);
 				String message = NLS.bind(Messages.localstore_resourceIsOutOfSync, target.getFullPath());
