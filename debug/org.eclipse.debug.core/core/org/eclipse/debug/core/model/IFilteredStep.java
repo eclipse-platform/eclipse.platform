@@ -33,6 +33,7 @@ public interface IFilteredStep extends IStep {
 	 *
 	 * @return whether this element can currently perform a filtered step into
 	 */
+	@Deprecated
 	boolean canStepWithFilters();
 	/**
 	 * Steps into the current statement, generating <code>RESUME</code>
@@ -46,5 +47,6 @@ public interface IFilteredStep extends IStep {
 	 * <li>NOT_SUPPORTED - The capability is not supported by the target</li>
 	 * </ul>
 	 */
+	@Deprecated
 	void stepWithFilters() throws DebugException;
 }

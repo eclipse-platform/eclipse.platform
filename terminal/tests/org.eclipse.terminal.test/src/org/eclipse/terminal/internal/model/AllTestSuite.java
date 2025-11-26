@@ -12,36 +12,26 @@
  *******************************************************************************/
 package org.eclipse.terminal.internal.model;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Internal Terminal Model test cases.
  * Runs in internal model package to allow access to default visible items.
  */
-public class AllTestSuite extends TestCase {
-	public AllTestSuite() {
-		super(null);
-	}
-
-	public AllTestSuite(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(AllTestSuite.class.getName());
-		suite.addTestSuite(SnapshotChangesTest.class);
-		suite.addTestSuite(SynchronizedTerminalTextDataTest.class);
-		suite.addTestSuite(TerminalTextDataFastScrollTest.class);
-		suite.addTestSuite(TerminalTextDataFastScrollMaxHeightTest.class);
-		suite.addTestSuite(TerminalTextDataPerformanceTest.class);
-		suite.addTestSuite(TerminalTextDataSnapshotTest.class);
-		suite.addTestSuite(TerminalTextDataSnapshotWindowTest.class);
-		suite.addTestSuite(TerminalTextDataStoreTest.class);
-		suite.addTestSuite(TerminalTextDataTest.class);
-		suite.addTestSuite(TerminalTextDataWindowTest.class);
-		return suite;
-	}
+@Suite
+@SelectClasses({ //
+		SnapshotChangesTest.class, //
+		SynchronizedTerminalTextDataTest.class, //
+		TerminalTextDataFastScrollTest.class, //
+		TerminalTextDataFastScrollMaxHeightTest.class, //
+		TerminalTextDataPerformanceTest.class, //
+		TerminalTextDataSnapshotTest.class, //
+		TerminalTextDataSnapshotWindowTest.class, //
+		TerminalTextDataStoreTest.class, //
+		TerminalTextDataTest.class, //
+		TerminalTextDataWindowTest.class, //
+})
+public class AllTestSuite {
 
 }

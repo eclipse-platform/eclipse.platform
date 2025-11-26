@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 @Deprecated
 public class CompareWithOtherResourceAction extends CompareAction {
 
+	@Deprecated
 	@Override
 	public void run(ISelection selection) {
 		// Show CompareWithOtherResourceDialog which return resources to compare
@@ -34,6 +35,7 @@ public class CompareWithOtherResourceAction extends CompareAction {
 		super.run(selection);
 	}
 
+	@Deprecated
 	@Override
 	protected boolean isEnabled(ISelection selection) {
 		int selectionSize = 0;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -126,7 +126,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 		 */
 		@Override
 		public void handleException(Throwable exception) {
-			IStatus status = new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, "An exception occurred during string variable change notification", exception); //$NON-NLS-1$
+			IStatus status = new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), VariablesPlugin.INTERNAL_ERROR, VariablesMessages.StringVarExceptionOnChange, exception);
 			VariablesPlugin.log(status);
 		}
 
@@ -223,7 +223,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 		for (IConfigurationElement element : elements) {
 			String name= element.getAttribute(ATTR_NAME);
 			if (name == null) {
-				VariablesPlugin.logMessage(NLS.bind("Variable extension missing required 'name' attribute: {0}", element.getDeclaringExtension().getLabel()), null); //$NON-NLS-1$
+				VariablesPlugin.logMessage(NLS.bind(VariablesMessages.StringVarMissingNameExt, element.getDeclaringExtension().getLabel()), null);
 				continue;
 			}
 			String description= element.getAttribute(ATTR_DESCRIPTION);
@@ -231,7 +231,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 			Object old = fDynamicVariables.put(variable.getName(), variable);
 			if (old != null) {
 				DynamicVariable oldVariable = (DynamicVariable)old;
-				VariablesPlugin.logMessage(NLS.bind("Dynamic variable extension from bundle ''{0}'' overrides existing extension variable ''{1}'' from bundle ''{2}''", //$NON-NLS-1$
+				VariablesPlugin.logMessage(NLS.bind(VariablesMessages.StringVarExtOverridesOnBundles,
 						element.getDeclaringExtension().getContributor().getName(), oldVariable.getName(), oldVariable.getConfigurationElement().getDeclaringExtension().getContributor().getName()), null);
 			}
 		}
@@ -246,7 +246,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 		for (IConfigurationElement element : elements) {
 			String name= element.getAttribute(ATTR_NAME);
 			if (name == null) {
-				VariablesPlugin.logMessage(NLS.bind("Variable extension missing required 'name' attribute: {0}", element.getDeclaringExtension().getLabel()), null); //$NON-NLS-1$
+				VariablesPlugin.logMessage(NLS.bind(VariablesMessages.StringVarMissingNameExt, element.getDeclaringExtension().getLabel()), null);
 				continue;
 			}
 			String description= element.getAttribute(ATTR_DESCRIPTION);
@@ -256,7 +256,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 			Object old = fValueVariables.put(name, variable);
 			if (old != null) {
 				StringVariable oldVariable = (StringVariable)old;
-				VariablesPlugin.logMessage(NLS.bind("Contributed variable extension from bundle ''{0}'' overrides existing extension variable ''{1}'' from  bundle ''{2}''", //$NON-NLS-1$
+				VariablesPlugin.logMessage(NLS.bind(VariablesMessages.StringVarContExtOverridesOnBundles,
 						element.getDeclaringExtension().getContributor().getName(), oldVariable.getName(), oldVariable.getConfigurationElement().getDeclaringExtension().getContributor().getName()), null);
 			}
 		}
@@ -282,11 +282,11 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 			parser.setErrorHandler(new DefaultHandler());
 			root = parser.parse(stream).getDocumentElement();
 		} catch (Exception e) {
-			VariablesPlugin.logMessage("An exception occurred while loading persisted value variables.", e); //$NON-NLS-1$
+			VariablesPlugin.logMessage(VariablesMessages.StringVarExceptionOnLoad, e);
 			return;
 		}
 		if (!root.getNodeName().equals(VALUE_VARIABLES_TAG)) {
-			VariablesPlugin.logMessage("Invalid format encountered while loading persisted value variables.", null); //$NON-NLS-1$
+			VariablesPlugin.logMessage(VariablesMessages.StringVarInvalidFormat, null);
 			return;
 		}
 		NodeList list= root.getChildNodes();
@@ -295,7 +295,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element= (Element) node;
 				if (!element.getNodeName().equals(VALUE_VARIABLE_TAG)) {
-					VariablesPlugin.logMessage(NLS.bind("Invalid XML element encountered while loading value variables: {0}", node.getNodeName()), null); //$NON-NLS-1$
+					VariablesPlugin.logMessage(NLS.bind(VariablesMessages.StringVarInvalidXML, node.getNodeName()), null);
 					continue;
 				}
 				String name= element.getAttribute(NAME_TAG);
@@ -312,7 +312,7 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 						existing.setValue(value);
 					}
 				} else {
-					VariablesPlugin.logMessage("Invalid variable entry encountered while loading value variables. Variable name is null.", null); //$NON-NLS-1$
+					VariablesPlugin.logMessage(VariablesMessages.StringVarNameNull, null);
 				}
 			}
 		}
@@ -489,13 +489,13 @@ public class StringVariableManager implements IStringVariableManager, IPreferenc
 			try {
 				variableString= getValueVariablesAsXML();
 			} catch (IOException e) {
-				VariablesPlugin.log(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), IStatus.ERROR, "An exception occurred while storing launch configuration variables.", e)); //$NON-NLS-1$
+				VariablesPlugin.log(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), IStatus.ERROR, VariablesMessages.StringVarLaunchExcep, e));
 				return;
 			} catch (ParserConfigurationException e) {
-				VariablesPlugin.log(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), IStatus.ERROR, "An exception occurred while storing launch configuration variables.", e)); //$NON-NLS-1$
+				VariablesPlugin.log(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), IStatus.ERROR, VariablesMessages.StringVarLaunchExcep, e));
 				return;
 			} catch (TransformerException e) {
-				VariablesPlugin.log(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), IStatus.ERROR, "An exception occurred while storing launch configuration variables.", e)); //$NON-NLS-1$
+				VariablesPlugin.log(new Status(IStatus.ERROR, VariablesPlugin.getUniqueIdentifier(), IStatus.ERROR, VariablesMessages.StringVarLaunchExcep, e));
 				return;
 			}
 		}

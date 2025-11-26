@@ -111,16 +111,19 @@ public class RulerBreakpointTypesActionDelegate implements IEditorActionDelegate
 	}
 
 
+	@Deprecated
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		// In the editor we're not using the selection.
 	}
 
+	@Deprecated
 	@Override
 	public void run(IAction action) {
 		// Do nothing, this is a pull-down menu.
 	}
 
+	@Deprecated
 	@Override
 	public void setActiveEditor(IAction callerAction, IEditorPart targetEditor) {
 		// Clean up old editor data.
@@ -148,6 +151,7 @@ public class RulerBreakpointTypesActionDelegate implements IEditorActionDelegate
 
 	}
 
+	@Deprecated
 	@Override
 	public void dispose() {
 		if (fCallerAction != null) {
@@ -159,6 +163,7 @@ public class RulerBreakpointTypesActionDelegate implements IEditorActionDelegate
 		fRulerInfo = null;
 	}
 
+	@Deprecated
 	@Override
 	public void menuAboutToShow(IMenuManager manager) {
 		fSelection = StructuredSelection.EMPTY;
@@ -196,6 +201,7 @@ public class RulerBreakpointTypesActionDelegate implements IEditorActionDelegate
 		fMenu = menu;
 	}
 
+	@Deprecated
 	@Override
 	public Menu getMenu(Menu parent) {
 		setMenu(new Menu(parent));
@@ -204,6 +210,7 @@ public class RulerBreakpointTypesActionDelegate implements IEditorActionDelegate
 		return fMenu;
 	}
 
+	@Deprecated
 	@Override
 	public Menu getMenu(Control parent) {
 		setMenu(new Menu(parent));

@@ -23,6 +23,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -172,11 +173,11 @@ public class LaunchTerminalCommandHandler extends AbstractHandler {
 	}
 
 	private void executeDelegate(Map<String, Object> properties, ILauncherDelegate delegate) throws ExecutionException {
-		try {
-			delegate.execute(properties);
-		} catch (Exception e) {
-			throw new ExecutionException(e.getMessage(), e);
-		}
+		delegate.execute(properties).whenComplete((r, e) -> {
+			if (e != null) {
+				ILog.get().error("Error occurred while running delegate to open console", e); //$NON-NLS-1$
+			}
+		});
 	}
 
 }

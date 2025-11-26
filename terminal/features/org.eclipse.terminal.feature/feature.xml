@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.terminal.feature"
       label="%featureName"
-      version="1.0.0.qualifier"
+      version="1.0.100.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -21,6 +21,7 @@
       <import plugin="org.eclipse.cdt.core.linux.x86_64" filter="(&amp;(osgi.os=linux)(osgi.arch=x86_64))"/>
       <import plugin="org.eclipse.cdt.core.linux.ppc64le" filter="(&amp;(osgi.os=linux)(osgi.arch=ppc64le))"/>
       <import plugin="org.eclipse.cdt.core.linux.aarch64" filter="(&amp;(osgi.os=linux)(osgi.arch=aarch64))"/>
+      <import plugin="org.eclipse.cdt.core.linux.riscv64" filter="(&amp;(osgi.os=linux)(osgi.arch=riscv64))"/>
       <import plugin="org.eclipse.cdt.core.macosx" filter="(osgi.os=macosx)"/>
       <import plugin="org.eclipse.cdt.core.win32.x86_64" filter="(&amp;(osgi.os=win32)(osgi.arch=x86_64))"/>
       <import plugin="org.eclipse.cdt.core.win32.aarch64" filter="(&amp;(osgi.os=win32)(osgi.arch=aarch64))"/>

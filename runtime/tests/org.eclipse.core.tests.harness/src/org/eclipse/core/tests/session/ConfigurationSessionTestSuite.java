@@ -84,6 +84,13 @@ public class ConfigurationSessionTestSuite extends SessionTestSuite {
 		addBundle(org.eclipse.core.runtime.content.IContentType.class); // org.eclipse.core.contenttype
 		addBundle(org.eclipse.equinox.app.IApplication.class); // org.eclipse.equinox.app
 
+		// org.apache.felix.scr + (non-optional) dependencies
+		addBundle(org.apache.felix.scr.info.ScrInfo.class); // org.apache.felix.scr
+		addBundle(org.osgi.service.event.EventAdmin.class); // org.osgi.service.event
+		addBundle(org.osgi.service.component.ComponentConstants.class); // org.osgi.service.component
+		addBundle(org.osgi.util.promise.Promise.class); // org.osgi.util.promise
+		addBundle(org.osgi.util.function.Function.class); // org.osgi.util.function
+
 		addBundle(org.eclipse.core.tests.harness.TestHarnessPlugin.class); // org.eclipse.core.tests.harness
 		addBundle(org.eclipse.test.performance.Performance.class); // org.eclipse.test.performance
 

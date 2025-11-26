@@ -144,7 +144,7 @@ public class WizardExportBreakpointsPage extends WizardPage implements Listener 
 	 */
 	protected void handleDestinationBrowseButtonPressed() {
 		FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE | SWT.SHEET);
-		dialog.setFilterExtensions(new String[]{"*."+IImportExportConstants.EXTENSION});  //$NON-NLS-1$
+		dialog.setFilterExtensions("*."+IImportExportConstants.EXTENSION);  //$NON-NLS-1$
 		dialog.setText(ImportExportMessages.WizardExportBreakpoints_0);
 		String file = dialog.open();
 		if(file != null) {

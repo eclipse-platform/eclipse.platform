@@ -33,6 +33,10 @@ public class ConsoleMessages extends NLS {
 	public static String PinConsoleAction_0;
 	public static String PinConsoleAction_1;
 
+	public static String TurnOnAutoPinDialogMessage;
+	public static String TurnOnAutoPinDialogTitle;
+	public static String TurnOnAutoPinRememberDecision;
+
 	public static String ClearOutputAction_title;
 	public static String ClearOutputAction_toolTipText;
 
@@ -62,6 +66,7 @@ public class ConsoleMessages extends NLS {
 	public static String TextConsolePage_CopyDescrip;
 	public static String TextConsolePage_PasteText;
 	public static String TextConsolePage_PasteDescrip;
+
 
 	static {
 		// load message values from bundle file

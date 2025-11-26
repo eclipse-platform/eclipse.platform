@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.eclipse.core.tests.resources.saveparticipant
 Bundle-Name: Eclipse Core Tests Save Participant
 Bundle-SymbolicName: org.eclipse.core.tests.resources.saveparticipant; singleton:=true
-Bundle-Version: 3.6.100.qualifier
+Bundle-Version: 3.6.200.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.core.tests.resources.saveparticipant
 Require-Bundle: org.eclipse.core.resources,
@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.tests.resources.saveparticipant2,
  org.eclipse.core.tests.resources.saveparticipant3,
  org.eclipse.core.filesystem
-Import-Package: org.junit.jupiter.api,
- org.junit.jupiter.api.extension
+Import-Package: org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.jupiter.api.extension;version="[5.14.0,6.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy

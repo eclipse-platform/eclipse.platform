@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2020 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -31,6 +31,8 @@ public class DebugPreferencesMessages extends NLS {
 	public static String ConsolePreferencePage_Console_width;
 	public static String ConsolePreferencePage_Limit_console_output_1;
 	public static String ConsolePreferencePage_Console_buffer_size__characters___2;
+
+	public static String ConsolePreferencePage_ConsoleAutoPinEnable;
 	public static String ConsolePreferencePage_The_console_buffer_size_must_be_at_least_1000_characters__1;
 	public static String ConsolePreferencePage_console_width;
 	public static String ConsolePreferencePage_12;
@@ -218,5 +220,14 @@ public class DebugPreferencesMessages extends NLS {
 
 	public static String RunDebugPropertiesPage_0;
 
+	public static String DebugPreferencePage_PromptSkipBreakpoints;
+
+	public static String ConsoleDefaultElapsedTimeFormat;
+
+	public static String ConsoleElapsedTimeLabel;
+
+	public static String ConsoleElapsedTimeToolTip;
+
+	public static Object ConsoleDisableElapsedTime;
 
 }

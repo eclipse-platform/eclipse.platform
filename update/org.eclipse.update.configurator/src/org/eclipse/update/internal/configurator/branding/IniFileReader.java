@@ -28,10 +28,10 @@ import java.util.StringTokenizer;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.internal.configurator.Messages;
-import org.eclipse.update.internal.configurator.Utils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
@@ -95,7 +95,7 @@ public class IniFileReader {
 		}
 
 		// attempt to locate the corresponding plugin
-		bundle = Utils.getBundle(pluginId);
+		bundle = Platform.getBundle(pluginId);
 		if (bundle == null || bundle.getState() == Bundle.UNINSTALLED || bundle.getState() == Bundle.INSTALLED) {
 			bundle = null; // make it null for other test down the road
 			String message = NLS.bind(Messages.IniFileReader_MissingDesc, featureId);
@@ -200,7 +200,7 @@ public class IniFileReader {
 	/**
 	 * Returns the feature plugin label, or <code>null</code>.
 	 *
-	 * @return the feature plugin lable, or <code>null</code> if none.
+	 * @return the feature plugin label, or <code>null</code> if none.
 	 */
 	public String getFeaturePluginLabel() {
 		if (bundle == null) {

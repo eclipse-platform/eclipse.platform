@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -81,6 +81,7 @@ public interface IDebugHelpContextIds {
 	String DEBUG_TOOLBAR_VIEW_ACTION = PREFIX + "debug_toolbar_view_action_context"; //$NON-NLS-1$
 	String DEBUG_TOOLBAR_WINDOW_ACTION = PREFIX + "debug_toolbar_window_action_context"; //$NON-NLS-1$
 	String DEBUG_TOOLBAR_BOTH_ACTION = PREFIX + "debug_toolbar_both_action_context"; //$NON-NLS-1$
+	String ADD_LAUNCH_CONFIGURATION_TO_FAV_ACTION = PREFIX + "Add_launch_configuration_to_favorites_action_context"; //$NON-NLS-1$
 
 	// Views
 	String DEBUG_VIEW = PREFIX + "debug_view_context"; //$NON-NLS-1$

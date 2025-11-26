@@ -98,43 +98,51 @@ public class Preferences {
 	/**
 	 * The default-default value for boolean properties (<code>false</code>).
 	 */
+	@Deprecated
 	public static final boolean BOOLEAN_DEFAULT_DEFAULT = false;
 
 	/**
 	 * The default-default value for double properties (<code>0.0</code>).
 	 */
+	@Deprecated
 	public static final double DOUBLE_DEFAULT_DEFAULT = 0.0;
 
 	/**
 	 * The default-default value for float properties (<code>0.0f</code>).
 	 */
+	@Deprecated
 	public static final float FLOAT_DEFAULT_DEFAULT = 0.0f;
 
 	/**
 	 * The default-default value for int properties (<code>0</code>).
 	 */
+	@Deprecated
 	public static final int INT_DEFAULT_DEFAULT = 0;
 
 	/**
 	 * The default-default value for long properties (<code>0L</code>).
 	 */
+	@Deprecated
 	public static final long LONG_DEFAULT_DEFAULT = 0L;
 
 	/**
 	 * The default-default value for String properties (<code>""</code>).
 	 */
+	@Deprecated
 	public static final String STRING_DEFAULT_DEFAULT = ""; //$NON-NLS-1$
 
 	/**
 	 * The string representation used for <code>true</code>
 	 * (<code>"true"</code>).
 	 */
+	@Deprecated
 	protected static final String TRUE = "true"; //$NON-NLS-1$
 
 	/**
 	 * The string representation used for <code>false</code>
 	 * (<code>"false"</code>).
 	 */
+	@Deprecated
 	protected static final String FALSE = "false"; //$NON-NLS-1$
 
 	/**
@@ -150,6 +158,7 @@ public class Preferences {
 	 *
 	 * @since 3.2
 	 */
+	@Deprecated
 	public static final String PT_PREFERENCES = "preferences"; //$NON-NLS-1$
 
 	/**
@@ -168,6 +177,7 @@ public class Preferences {
 	 * @see Preferences#addPropertyChangeListener(Preferences.IPropertyChangeListener)
 	 * @see Preferences.IPropertyChangeListener
 	 */
+	@Deprecated
 	public static class PropertyChangeEvent extends EventObject {
 		/**
 		 * All serializable objects should have a stable serialVersionUID
@@ -202,6 +212,7 @@ public class Preferences {
 		 * @param newValue the new value of the property, or
 		 *    <code>null</code> if none
 		 */
+		@Deprecated
 		protected PropertyChangeEvent(Object source, String property, Object oldValue, Object newValue) {
 
 			super(source);
@@ -223,6 +234,7 @@ public class Preferences {
 		 *
 		 * @return the name of the property that changed
 		 */
+		@Deprecated
 		public String getProperty() {
 			return propertyName;
 		}
@@ -233,6 +245,7 @@ public class Preferences {
 		 * @return the new value, or <code>null</code> if not known
 		 *  or not relevant
 		 */
+		@Deprecated
 		public Object getNewValue() {
 			return newValue;
 		}
@@ -243,6 +256,7 @@ public class Preferences {
 		 * @return the old value, or <code>null</code> if not known
 		 *  or not relevant
 		 */
+		@Deprecated
 		public Object getOldValue() {
 			return oldValue;
 		}
@@ -272,6 +286,7 @@ public class Preferences {
 	 * three cases in their implementation of the property change listener.
 	 * </p>
 	 */
+	@Deprecated
 	@FunctionalInterface
 	public interface IPropertyChangeListener extends EventListener {
 
@@ -285,6 +300,7 @@ public class Preferences {
 		 * @param event the property change event object describing which
 		 *    property changed and how
 		 */
+		@Deprecated
 		public void propertyChange(Preferences.PropertyChangeEvent event);
 	}
 
@@ -294,6 +310,7 @@ public class Preferences {
 	 * These listeners are to be informed when the current value of a property
 	 * changes.
 	 */
+	@Deprecated
 	protected ListenerList<IPropertyChangeListener> listeners = new ListenerList<>();
 
 	/**
@@ -313,6 +330,7 @@ public class Preferences {
 	 * Indicates whether a value has been changed by <code>setToDefault</code>
 	 * or <code>setValue</code>; initially <code>false</code>.
 	 */
+	@Deprecated
 	protected boolean dirty = false;
 
 	/**
@@ -330,6 +348,7 @@ public class Preferences {
 	 * @see #importPreferences(IPath)
 	 * @see #validatePreferenceVersions(IPath)
 	 */
+	@Deprecated
 	public static void exportPreferences(IPath path) throws CoreException {
 		File file = path.toFile();
 		if (file.exists()) {
@@ -372,6 +391,7 @@ public class Preferences {
 	 * @see #exportPreferences(IPath)
 	 * @see #validatePreferenceVersions(IPath)
 	 */
+	@Deprecated
 	public static void importPreferences(IPath path) throws CoreException {
 		if (!path.toFile().exists()) {
 			String msg = NLS.bind(PrefsMessages.preferences_fileNotFound, path.toOSString());
@@ -410,6 +430,7 @@ public class Preferences {
 	 * @see #exportPreferences(IPath)
 	 * @see #importPreferences(IPath)
 	 */
+	@Deprecated
 	public static IStatus validatePreferenceVersions(IPath file) {
 		PreferencesService service = PreferencesService.getDefault();
 		return service.validateVersions(file);
@@ -424,6 +445,7 @@ public class Preferences {
 	 * @see #load(InputStream)
 	 * @see #store(OutputStream, String)
 	 */
+	@Deprecated
 	public Preferences() {
 		defaultProperties = new Properties();
 		properties = new Properties(defaultProperties);
@@ -441,6 +463,7 @@ public class Preferences {
 	 * </p>
 	 * @param listener a property change listener
 	 */
+	@Deprecated
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.add(listener);
 	}
@@ -451,6 +474,7 @@ public class Preferences {
 	 *
 	 * @param listener a property change listener
 	 */
+	@Deprecated
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.remove(listener);
 	}
@@ -464,6 +488,7 @@ public class Preferences {
 	 * @return <code>true</code> if either a current value or a default
 	 *  value is known for the named property, and <code>false</code>otherwise
 	 */
+	@Deprecated
 	public boolean contains(String name) {
 		return (properties.containsKey(name) || defaultProperties.containsKey(name));
 	}
@@ -479,6 +504,7 @@ public class Preferences {
 	 * @param newValue the new value, or <code>null</code> if not known or not
 	 *    relevant
 	 */
+	@Deprecated
 	protected void firePropertyChangeEvent(String name, Object oldValue, Object newValue) {
 		if (name == null) {
 			throw new IllegalArgumentException();
@@ -515,6 +541,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the boolean-valued property
 	 */
+	@Deprecated
 	public boolean getBoolean(String name) {
 		String value = properties.getProperty(name);
 		if (value == null) {
@@ -542,6 +569,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @param value the new current value of the property
 	 */
+	@Deprecated
 	public void setValue(String name, boolean value) {
 		boolean defaultValue = getDefaultBoolean(name);
 		boolean oldValue = getBoolean(name);
@@ -573,6 +601,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	public boolean getDefaultBoolean(String name) {
 		String value = defaultProperties.getProperty(name);
 		if (value == null) {
@@ -596,6 +625,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @param value the new default value for the property
 	 */
+	@Deprecated
 	public void setDefault(String name, boolean value) {
 		defaultProperties.put(name, value ? Preferences.TRUE : Preferences.FALSE);
 	}
@@ -611,6 +641,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the double-valued property
 	 */
+	@Deprecated
 	public double getDouble(String name) {
 		return convertToDouble(properties.getProperty(name), DOUBLE_DEFAULT_DEFAULT);
 	}
@@ -635,6 +666,7 @@ public class Preferences {
 	 * @param value the new current value of the property; must be
 	 *   a number (not a NaN)
 	 */
+	@Deprecated
 	public void setValue(String name, double value) {
 		if (Double.isNaN(value)) {
 			throw new IllegalArgumentException();
@@ -669,6 +701,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	public double getDefaultDouble(String name) {
 		return convertToDouble(defaultProperties.getProperty(name), DOUBLE_DEFAULT_DEFAULT);
 	}
@@ -689,6 +722,7 @@ public class Preferences {
 	 * @param value the new default value for the property; must be
 	 *   a number (not a NaN)
 	 */
+	@Deprecated
 	public void setDefault(String name, double value) {
 		if (Double.isNaN(value)) {
 			throw new IllegalArgumentException();
@@ -729,6 +763,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the float-valued property
 	 */
+	@Deprecated
 	public float getFloat(String name) {
 		return convertToFloat(properties.getProperty(name), FLOAT_DEFAULT_DEFAULT);
 	}
@@ -753,6 +788,7 @@ public class Preferences {
 	 * @param value the new current value of the property; must be
 	 *   a number (not a NaN)
 	 */
+	@Deprecated
 	public void setValue(String name, float value) {
 		if (Float.isNaN(value)) {
 			throw new IllegalArgumentException();
@@ -787,6 +823,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	public float getDefaultFloat(String name) {
 		return convertToFloat(defaultProperties.getProperty(name), FLOAT_DEFAULT_DEFAULT);
 	}
@@ -807,6 +844,7 @@ public class Preferences {
 	 * @param value the new default value for the property; must be
 	 *   a number (not a NaN)
 	 */
+	@Deprecated
 	public void setDefault(String name, float value) {
 		if (Float.isNaN(value)) {
 			throw new IllegalArgumentException();
@@ -847,6 +885,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the int-valued property
 	 */
+	@Deprecated
 	public int getInt(String name) {
 		return convertToInt(properties.getProperty(name), INT_DEFAULT_DEFAULT);
 	}
@@ -870,6 +909,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @param value the new current value of the property
 	 */
+	@Deprecated
 	public void setValue(String name, int value) {
 		int defaultValue = getDefaultInt(name);
 		int oldValue = getInt(name);
@@ -901,6 +941,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	public int getDefaultInt(String name) {
 		return convertToInt(defaultProperties.getProperty(name), INT_DEFAULT_DEFAULT);
 	}
@@ -920,6 +961,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @param value the new default value for the property
 	 */
+	@Deprecated
 	public void setDefault(String name, int value) {
 		defaultProperties.put(name, Integer.toString(value));
 	}
@@ -957,6 +999,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the long-valued property
 	 */
+	@Deprecated
 	public long getLong(String name) {
 		return convertToLong(properties.getProperty(name), LONG_DEFAULT_DEFAULT);
 	}
@@ -980,6 +1023,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @param value the new current value of the property
 	 */
+	@Deprecated
 	public void setValue(String name, long value) {
 		long defaultValue = getDefaultLong(name);
 		long oldValue = getLong(name);
@@ -1011,6 +1055,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	public long getDefaultLong(String name) {
 		return convertToLong(defaultProperties.getProperty(name), LONG_DEFAULT_DEFAULT);
 	}
@@ -1030,6 +1075,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @param value the new default value for the property
 	 */
+	@Deprecated
 	public void setDefault(String name, long value) {
 		defaultProperties.put(name, Long.toString(value));
 	}
@@ -1066,6 +1112,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the string-valued property
 	 */
+	@Deprecated
 	public String getString(String name) {
 		String value = properties.getProperty(name);
 		return (value != null ? value : STRING_DEFAULT_DEFAULT);
@@ -1090,6 +1137,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @param value the new current value of the property
 	 */
+	@Deprecated
 	public void setValue(String name, String value) {
 		if (value == null) {
 			throw new IllegalArgumentException();
@@ -1124,6 +1172,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @return the default value of the named property
 	 */
+	@Deprecated
 	public String getDefaultString(String name) {
 		String value = defaultProperties.getProperty(name);
 		return (value != null ? value : STRING_DEFAULT_DEFAULT);
@@ -1144,6 +1193,7 @@ public class Preferences {
 	 * @param name the name of the property
 	 * @param value the new default value for the property
 	 */
+	@Deprecated
 	public void setDefault(String name, String value) {
 		if (value == null) {
 			throw new IllegalArgumentException();
@@ -1161,6 +1211,7 @@ public class Preferences {
 	 * and <code>false</code> otherwise (including the case where the property
 	 * is unknown to this object)
 	 */
+	@Deprecated
 	public boolean isDefault(String name) {
 		return !properties.containsKey(name);
 	}
@@ -1184,6 +1235,7 @@ public class Preferences {
 	 *
 	 * @param name the name of the property
 	 */
+	@Deprecated
 	public void setToDefault(String name) {
 		Object oldPropertyValue = properties.remove(name);
 		if (oldPropertyValue != null) {
@@ -1201,6 +1253,7 @@ public class Preferences {
 	 *
 	 * @return an array of property names
 	 */
+	@Deprecated
 	public String[] propertyNames() {
 		return properties.keySet().toArray(EMPTY_STRING_ARRAY);
 	}
@@ -1211,6 +1264,7 @@ public class Preferences {
 	 *
 	 * @return an array of property names
 	 */
+	@Deprecated
 	public String[] defaultPropertyNames() {
 		return defaultProperties.keySet().toArray(EMPTY_STRING_ARRAY);
 	}
@@ -1223,6 +1277,7 @@ public class Preferences {
 	 *  known to this preference object has a current value different from its
 	 *  default value, and <code>false</code> otherwise
 	 */
+	@Deprecated
 	public boolean needsSaving() {
 		return dirty;
 	}
@@ -1242,6 +1297,7 @@ public class Preferences {
 	 * @exception IOException if there is a problem saving this preference object
 	 * @see Properties#store(OutputStream,String)
 	 */
+	@Deprecated
 	public void store(OutputStream out, String header) throws IOException {
 		properties.store(out, header);
 		dirty = false;
@@ -1258,6 +1314,7 @@ public class Preferences {
 	 *    object
 	 * @see java.util.Properties#load(InputStream)
 	 */
+	@Deprecated
 	public void load(InputStream in) throws IOException {
 		properties.load(in);
 		dirty = false;

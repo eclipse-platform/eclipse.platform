@@ -69,4 +69,16 @@ public class DefaultBreakpointsViewInput {
 		return super.equals(arg0);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("DefaultBreakpointsViewInput ["); //$NON-NLS-1$
+		if (fContext != null) {
+			builder.append("context="); //$NON-NLS-1$
+			builder.append(fContext);
+		}
+		builder.append("]"); //$NON-NLS-1$
+		return builder.toString();
+	}
+
 }

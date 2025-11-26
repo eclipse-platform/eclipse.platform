@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -77,6 +77,7 @@ public interface IInternalDebugUIConstants {
 	String IMG_DLCL_PREVIOUS_THREAD = "IMG_DLCL_PREVIOUS_THREAD"; //$NON-NLS-1$
 	String IMG_DLCL_RESTART = "IMG_DLCL_RESTART"; //$NON-NLS-1$
 	String IMG_DLCL_EXPORT_CONFIG = "IMG_DLCL_EXPORT_CONFIG"; //$NON-NLS-1$
+	String IMG_DLCL_IMPORT_CONFIG = "IMG_DLCL_IMPORT_CONFIG"; //$NON-NLS-1$
 
 	//TODO: Move this IDebugUIConstants. Created too late in 3.2 cycle to add API.
 	//The enabled icon is already API.
@@ -120,7 +121,7 @@ public interface IInternalDebugUIConstants {
 	String IMG_ELCL_RESTART = "IMG_ELCL_RESTART"; //$NON-NLS-1$
 	String IMG_ELCL_DEBUG_VIEW_COMPACT_LAYOUT = "IMG_ELCL_DEBUG_VIEW_BREADCRUMB_LAYOUT"; //$NON-NLS-1$
 	String IMG_ELCL_EXPORT_CONFIG = "IMG_ELCL_EXPORT_CONFIG"; //$NON-NLS-1$
-
+	String IMG_ELCL_IMPORT_CONFIG = "IMG_ELCL_IMPORT_CONFIG"; //$NON-NLS-1$
 	String IMG_OBJS_COMMON_TAB = "IMG_OBJS_COMMON_TAB"; //$NON-NLS-1$
 	String IMG_OBJS_REFRESH_TAB = "IMG_OBJS_REFRESH_TAB"; //$NON-NLS-1$
 	String IMG_OBJS_PERSPECTIVE_TAB = "IMG_OBJS_PERSPECTIVE_TAB"; //$NON-NLS-1$
@@ -456,5 +457,12 @@ public interface IInternalDebugUIConstants {
 	 * @since 3.12
 	 */
 	int BREAKPOINT_SORTING_ORDER_CREATION_TIME = 1;
+
+	/**
+	 * Boolean preference prompting Skip All Breakpoints option is enabled on
+	 * launching in debug mode
+	 *
+	 */
+	String PREF_SKIP_ALL_BREAKPOINTS_PROMPT = IDebugUIConstants.PLUGIN_ID + ".DisableSkipAllBreakpointsOnLaunch"; //$NON-NLS-1$
 
 }

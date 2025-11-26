@@ -21,27 +21,32 @@ import static org.eclipse.core.tests.harness.FileSystemHelper.createSymLink;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createInWorkspace;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.createTestMonitor;
 import static org.eclipse.core.tests.resources.ResourceTestUtil.waitForRefresh;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.internal.localstore.UnifiedTree;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.tests.resources.WorkspaceTestRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.eclipse.core.runtime.Platform.OS;
+import org.eclipse.core.tests.resources.util.WorkspaceResetExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+@ExtendWith(WorkspaceResetExtension.class)
 public class SymlinkResourceTest {
-
-	@Rule
-	public WorkspaceTestRule workspaceRule = new WorkspaceTestRule();
 
 	private void mkLink(IFileStore dir, String src, String tgt, boolean isDir) throws CoreException, IOException {
 		createSymLink(dir.toLocalFile(EFS.NONE, createTestMonitor()), src, tgt, isDir);
@@ -71,6 +76,88 @@ public class SymlinkResourceTest {
 	}
 
 	/**
+	 * Test a case of both recursive and non recursive symbolic links that uncovered
+	 * issue described in <a href=
+	 * "https://github.com/eclipse-platform/eclipse.platform/issues/2220">GitHub bug
+	 * 2220</a>.
+	 *
+	 * <pre>{@code
+	 *      /A/B -> /X/Y/Z  	(B is symbolic link as precondition)
+	 *      /A/B/C/D -> ../../D (non-recursive)
+	 *      /A/B/C/E -> ../../Z (recursive)
+	 * }</pre>
+	 *
+	 * The starting path /A/B/C is already based on link. The real path of start is
+	 * /X/Y/Z/C so ../../Z points (recursive) to /X/Y/Z. /X/Y/D and /X/Y/Z is what
+	 * we expect to resolve but we fail in both cases with NoSuchFileException.
+	 */
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void testGithubBug2220(boolean useAdvancedLinkCheck) throws Exception {
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
+		assumeTrue(!OS.isWindows(), "Windows file system handles recursive links differently");
+		final boolean originalValue = UnifiedTree.isAdvancedRecursiveLinkChecksEnabled();
+		try {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(useAdvancedLinkCheck);
+			IProject project = getWorkspace().getRoot().getProject("testGithubBug2220");
+			createInWorkspace(project);
+
+			/* Re-use projects which are cleaned up automatically */
+			getWorkspace().run((IWorkspaceRunnable) monitor -> {
+				/* delete open project because we must re-open with BACKGROUND_REFRESH */
+				project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
+				project.create(null);
+				try {
+					createGithubBug2220Structure(EFS.getStore(project.getLocationURI()));
+				} catch (IOException e) {
+					throw new IllegalStateException("unexpected IOException occurred", e);
+				}
+				// Bug only happens with BACKGROUND_REFRESH.
+				project.open(IResource.BACKGROUND_REFRESH, createTestMonitor());
+			}, null);
+
+			// wait for BACKGROUND_REFRESH to complete.
+			waitForRefresh();
+			project.accept(new IResourceVisitor() {
+				int resourceCount = 0;
+
+				@Override
+				public boolean visit(IResource resource) {
+					resourceCount++;
+					// We have 1 root + .settings + prefs + + .project + 10 elements --> 14 elements
+					// to visit at most
+					System.out.println(resourceCount + " visited: " + resource.getFullPath());
+					assertTrue(resourceCount <= 15, "Expected max 15 elements to visit, got: " + resourceCount);
+					return true;
+				}
+			});
+		} finally {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(originalValue);
+		}
+	}
+
+	/**
+	 * <pre>{@code
+	 *      /A/B -> /X/Y/Z  	(B is symbolic link as precondition)
+	 *      /A/B/C/D -> ../../D (non-recursive)
+	 *      /A/B/C/E -> ../../Z (recursive)
+	 * }</pre>
+	 *
+	 * The starting path /A/B/C is already based on link. The real path of start is
+	 * /X/Y/Z/C so ../../Z points (recursive) to /X/Y/Z.
+	 */
+	protected void createGithubBug2220Structure(IFileStore rootDir) throws CoreException, IOException {
+		Path root = rootDir.toLocalFile(EFS.NONE, createTestMonitor()).toPath();
+		Files.createDirectories(root.resolve("A"));
+		Files.createDirectories(root.resolve("X/Y/Z"));
+		Files.createDirectories(root.resolve("X/Y/D"));
+		Files.createSymbolicLink(root.resolve("A/B"), root.resolve("X/Y/Z"));
+		Files.createDirectories(root.resolve("A/B/C"));
+		Files.createSymbolicLink(root.resolve("A/B/C/D"), Paths.get("../../D"));
+		Files.createSymbolicLink(root.resolve("A/B/C/E"), Paths.get("../../Z"));
+	}
+
+	/**
 	 * Test a very specific case of mutually recursive symbolic links:
 	 * <pre> {@code
 	 *   a/link  -> ../b
@@ -85,7 +172,7 @@ public class SymlinkResourceTest {
 	 */
 	@Test
 	public void testBug232426() throws Exception {
-		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
 
 		IProject project = getWorkspace().getRoot().getProject("Project");
 		createInWorkspace(project);
@@ -118,36 +205,42 @@ public class SymlinkResourceTest {
 		});
 	}
 
-	@Test
-	public void testBug358830() throws Exception {
-		assumeTrue("only relevant for platforms supporting symbolic links", canCreateSymLinks());
+	@ParameterizedTest
+	@ValueSource(booleans = { false, true })
+	public void testBug358830(boolean useAdvancedLinkCheck) throws Exception {
+		assumeTrue(canCreateSymLinks(), "only relevant for platforms supporting symbolic links");
+		final boolean originalValue = UnifiedTree.isAdvancedRecursiveLinkChecksEnabled();
+		try {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(useAdvancedLinkCheck);
+			IProject project = getWorkspace().getRoot().getProject("Project");
+			createInWorkspace(project);
+			/* Re-use projects which are cleaned up automatically */
+			getWorkspace().run((IWorkspaceRunnable) monitor -> {
+				/* delete open project because we must re-open with BACKGROUND_REFRESH */
+				project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
+				project.create(null);
+				try {
+					createBug358830Structure(EFS.getStore(project.getLocationURI()));
+				} catch (IOException e) {
+					throw new IllegalStateException("unexpected IOException occurred", e);
+				}
+				project.open(IResource.BACKGROUND_REFRESH, createTestMonitor());
+			}, null);
 
-		IProject project = getWorkspace().getRoot().getProject("Project");
-		createInWorkspace(project);
-		/* Re-use projects which are cleaned up automatically */
-		getWorkspace().run((IWorkspaceRunnable) monitor -> {
-			/* delete open project because we must re-open with BACKGROUND_REFRESH */
-			project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, createTestMonitor());
-			project.create(null);
-			try {
-				createBug358830Structure(EFS.getStore(project.getLocationURI()));
-			} catch (IOException e) {
-				throw new IllegalStateException("unexpected IOException occurred", e);
-			}
-			project.open(IResource.BACKGROUND_REFRESH, createTestMonitor());
-		}, null);
-
-		//wait for BACKGROUND_REFRESH to complete.
-		waitForRefresh();
-		final int resourceCount[] = new int[] {0};
-		project.accept(resource -> {
-			resourceCount[0]++;
-			return true;
-		});
-		// We have 1 root + 1 folder + 1 file (.project)
-		// + .settings / resources prefs
-		// --> 5 elements to visit
-		assertEquals(5, resourceCount[0]);
+			// wait for BACKGROUND_REFRESH to complete.
+			waitForRefresh();
+			final int resourceCount[] = new int[] { 0 };
+			project.accept(resource -> {
+				resourceCount[0]++;
+				return true;
+			});
+			// We have 1 root + 1 folder + 1 file (.project)
+			// + .settings / resources prefs
+			// --> 5 elements to visit
+			assertEquals(5, resourceCount[0]);
+		} finally {
+			UnifiedTree.enableAdvancedRecursiveLinkChecks(originalValue);
+		}
 	}
 
 }

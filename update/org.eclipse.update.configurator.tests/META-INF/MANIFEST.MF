@@ -3,7 +3,7 @@ Automatic-Module-Name: org.eclipse.update.configurator.tests
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.update.configurator.tests;singleton:=true
-Bundle-Version: 0.2.0.qualifier
+Bundle-Version: 0.2.100.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.update.configurator
@@ -13,5 +13,5 @@ Bundle-Vendor: %providerName
 Export-Package: org.eclipse.update.configurator.tests,
  org.eclipse.update.internal.configurator.tests
 Eclipse-BundleShape: dir
-Import-Package: org.junit.jupiter.api,
- org.junit.platform.suite.api
+Import-Package: org.junit.jupiter.api;version="[5.14.0,6.0.0)",
+ org.junit.platform.suite.api;version="[1.14.0,2.0.0)"

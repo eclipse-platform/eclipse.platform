@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2021 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -52,6 +52,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.ISourceLocator;
 import org.eclipse.debug.internal.core.IConfigurationElementConstants;
 import org.eclipse.debug.internal.ui.DebugPluginImages;
+import org.eclipse.debug.internal.ui.DebugUIMessages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.DefaultLabelProvider;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
@@ -81,6 +82,8 @@ import org.eclipse.debug.ui.contexts.IDebugContextService;
 import org.eclipse.debug.ui.memory.IMemoryRenderingManager;
 import org.eclipse.debug.ui.sourcelookup.ISourceContainerBrowser;
 import org.eclipse.debug.ui.sourcelookup.ISourceLookupResult;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -947,7 +950,8 @@ public class DebugUITools {
 	 * @since 3.12
 	 */
 	public static void launch(final ILaunchConfiguration configuration, final String mode, boolean isShift) {
-		if (DebugUIPlugin.getDefault().getPreferenceStore().getBoolean(IInternalDebugUIConstants.PREF_TERMINATE_AND_RELAUNCH_LAUNCH_ACTION) != isShift) {
+		IPreferenceStore preferenceStore = getPreferenceStore();
+		if (preferenceStore.getBoolean(IInternalDebugUIConstants.PREF_TERMINATE_AND_RELAUNCH_LAUNCH_ACTION) != isShift) {
 			ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
 			ILaunch[] launches = launchManager.getLaunches();
 			for (ILaunch iLaunch : launches) {
@@ -974,6 +978,19 @@ public class DebugUITools {
 		} catch (CoreException e) {
 			DebugUIPlugin.log(e);
 		}
+		boolean breakpointsDisabled = DebugPlugin.getDefault().getBreakpointManager().isEnabled();
+		boolean showWarningPrompt = preferenceStore
+				.getBoolean(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT);
+		if (!breakpointsDisabled && showWarningPrompt && ILaunchManager.DEBUG_MODE.equals(mode)) {
+			MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(
+					DebugUIPlugin.getShellForModalDialog(), DebugUIMessages.skipBreakpointWarningTitle,
+					DebugUIMessages.skipBreakpointWarningLabel, DebugUIMessages.skipBreakpointWarningToggle1, false,
+					preferenceStore, IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT);
+			if (dialog.getReturnCode() != IDialogConstants.OK_ID) {
+				return;
+			}
+		}
+
 		if (launchInBackground) {
 			DebugUIPlugin.launchInBackground(configuration, mode);
 		} else {
@@ -1372,5 +1389,5 @@ public class DebugUITools {
 		}
 		return null;
 	}
-
 }
+

@@ -154,6 +154,12 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	private static final String CSS_VARIABLES_VIEWER_ID = "VariablesViewer"; //$NON-NLS-1$
 
 	/**
+	 * Viewer update object used during
+	 * {@link #viewerInputUpdateComplete(IViewerInputUpdate)}
+	 */
+	private IViewerInputUpdate lastViewerUpdate;
+
+	/**
 	 * Selection provider wrapping an exchangeable active selection provider. Sends
 	 * out a selection changed event when the active selection provider changes.
 	 * Forwards all selection changed events of the active selection provider.
@@ -294,7 +300,12 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	 */
 	private final IViewerInputRequestor fRequester = update -> {
 		if (!update.isCanceled()) {
-			viewerInputUpdateComplete(update);
+			lastViewerUpdate = update;
+			try {
+				viewerInputUpdateComplete(update);
+			} finally {
+				lastViewerUpdate = null;
+			}
 		}
 	};
 
@@ -440,6 +451,15 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 	protected void viewerInputUpdateComplete(IViewerInputUpdate update) {
 		setViewerInput(update.getInputElement());
 		updateAction(FIND_ACTION);
+	}
+
+	/**
+	 * @return Viewer update object being processed during
+	 *         {@link #viewerInputUpdateComplete(IViewerInputUpdate)}, {@code null}
+	 *         otherwise
+	 */
+	public final IViewerInputUpdate getLastViewerUpdate() {
+		return lastViewerUpdate;
 	}
 
 	/**

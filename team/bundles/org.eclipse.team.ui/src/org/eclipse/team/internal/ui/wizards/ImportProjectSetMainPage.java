@@ -165,8 +165,8 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		browseButton.setLayoutData(data);
 		browseButton.addListener(SWT.Selection, event -> {
 			FileDialog d = new FileDialog(getShell());
-			d.setFilterExtensions(new String[] {"*.psf", "*"}); //$NON-NLS-1$ //$NON-NLS-2$
-			d.setFilterNames(new String[] {TeamUIMessages.ImportProjectSetMainPage_Project_Set_Files_2, TeamUIMessages.ImportProjectSetMainPage_allFiles}); //
+			d.setFilterExtensions("*.psf", "*"); //$NON-NLS-1$ //$NON-NLS-2$
+			d.setFilterNames(TeamUIMessages.ImportProjectSetMainPage_Project_Set_Files_2, TeamUIMessages.ImportProjectSetMainPage_allFiles); //
 			String fileName= getFileName();
 			if (fileName != null && fileName.length() > 0) {
 				int separator= fileName.lastIndexOf(File.separatorChar);

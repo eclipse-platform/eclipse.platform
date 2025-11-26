@@ -35,16 +35,19 @@ public interface IStreamMerger {
 	/**
 	 * Indicates the successful completion of the merge operation (value <code>IStatus.OK</code>)
 	 */
+	@Deprecated
 	public static final int OK= IStatus.OK;
 
 	/**
 	 * Indicates that a change conflict prevented the merge from successful completion (value <code>1</code>)
 	 */
+	@Deprecated
 	public static final int CONFLICT= 1;
 
 	/**
 	 * Status code describing an internal error (value <code>2</code>)
 	 */
+	@Deprecated
 	public static final int INTERNAL_ERROR= 2;
 
 	/**
@@ -65,6 +68,7 @@ public interface IStreamMerger {
 	 * @param monitor reports progress of the merge operation
 	 * @return returns the completion status of the operation
 	 */
+	@Deprecated
 	IStatus merge(OutputStream output, String outputEncoding,
 			InputStream ancestor, String ancestorEncoding,
 			InputStream target, String targetEncoding,

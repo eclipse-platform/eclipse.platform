@@ -34,46 +34,56 @@ import org.eclipse.ui.IWorkbenchPartSite;
 @Deprecated
 public abstract class SaveablePartAdapter implements ISaveableWorkbenchPart {
 
+	@Deprecated
 	@Override
 	public void doSaveAs() {
 	}
 
+	@Deprecated
 	@Override
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public boolean isSaveOnCloseNeeded() {
 		return false;
 	}
 
+	@Deprecated
 	@Override
 	public void addPropertyListener(IPropertyListener listener) {
 	}
 
+	@Deprecated
 	@Override
 	public void dispose() {
 	}
 
+	@Deprecated
 	@Override
 	public IWorkbenchPartSite getSite() {
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	public String getTitleToolTip() {
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	public void removePropertyListener(IPropertyListener listener) {
 	}
 
+	@Deprecated
 	@Override
 	public void setFocus() {
 	}
 
+	@Deprecated
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return null;

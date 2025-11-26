@@ -30,7 +30,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * Translates images, colors, and fonts into image descriptors, RGBs, and font
@@ -146,14 +145,7 @@ public class DebugElementHelper {
 
 		if (element instanceof Breakpoint breakpoint) {
 			if (breakpoint.getBreakpointLabel() != null) {
-				final RGB[] rgb = new RGB[1];
-				Display.getDefault().syncExec(() -> {
-					Color redColor = Display.getDefault().getSystemColor(SWT.COLOR_RED);
-					rgb[0] = redColor.getRGB();
-				});
-				if (rgb[0] != null) {
-					return rgb[0];
-				}
+				return new RGB(255, 0, 0);
 			}
 			return null;
 		}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2018 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -69,6 +69,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.wizard.ProgressMonitorPart;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ViewForm;
@@ -279,7 +280,9 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		topComp.setLayout(topLayout);
 
 		// Set the things that TitleAreaDialog takes care of
-		setTitle(LaunchConfigurationsMessages.LaunchConfigurationDialog_Create__manage__and_run_launch_configurations_8);
+		setTitle(NLS.bind(
+				LaunchConfigurationsMessages.LaunchConfigurationDialog_Create__manage__and_run_launch_configurations_8,
+				getLaunchGroup().getMode()));
 		setMessage(LaunchConfigurationsMessages.LaunchConfigurationDialog_Ready_to_launch_2);
 		setModeLabelState();
 
@@ -501,6 +504,7 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 		tmanager.add(getNewAction());
 		tmanager.add(getNewPrototypeAction());
 		tmanager.add(getExportAction());
+		tmanager.add(getImportAction());
 		tmanager.add(getDuplicateAction());
 		tmanager.add(getDeleteAction());
 		tmanager.add(new Separator());
@@ -703,6 +707,11 @@ public class LaunchConfigurationsDialog extends TitleAreaDialog implements ILaun
 	 */
 	protected AbstractLaunchConfigurationAction getDeleteAction() {
 		return (AbstractLaunchConfigurationAction)fLaunchConfigurationView.getAction(DeleteLaunchConfigurationAction.ID_DELETE_ACTION);
+	}
+
+	protected AbstractLaunchConfigurationAction getImportAction() {
+		return (AbstractLaunchConfigurationAction) fLaunchConfigurationView
+				.getAction(ImportLaunchConfigurationAction.ID_IMPORT_ACTION);
 	}
 
 	/**

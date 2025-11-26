@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -48,7 +48,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 	private static final String PROP_SHARED_CONFIG_AREA = "osgi.sharedConfiguration.area";
 	private static final String TEMP_DIR_PREFIX = "eclipse_session_configuration";
 
-	private final Collection<BundleReference> bundleReferences = new ArrayList<>();
+	private final Collection<BundleReference> bundleReferences = new LinkedHashSet<>();
 	private Path configurationDirectory;
 	private boolean readOnly = false;
 	private boolean cascaded = false;
@@ -70,6 +70,13 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 		addBundle(org.osgi.service.prefs.Preferences.class); // org.osgi.service.prefs
 		addBundle(org.eclipse.core.runtime.content.IContentType.class); // org.eclipse.core.contenttype
 		addBundle(org.eclipse.equinox.app.IApplication.class); // org.eclipse.equinox.app
+
+		// org.apache.felix.scr + (non-optional) dependencies
+		addBundle(org.apache.felix.scr.info.ScrInfo.class); // org.apache.felix.scr
+		addBundle(org.osgi.service.event.EventAdmin.class); // org.osgi.service.event
+		addBundle(org.osgi.service.component.ComponentConstants.class); // org.osgi.service.component
+		addBundle(org.osgi.util.promise.Promise.class); // org.osgi.util.promise
+		addBundle(org.osgi.util.function.Function.class); // org.osgi.util.function
 
 		addBundle(org.eclipse.core.tests.harness.TestHarnessPlugin.class); // org.eclipse.core.tests.harness
 		addBundle(org.eclipse.test.performance.Performance.class); // org.eclipse.test.performance

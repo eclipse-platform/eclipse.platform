@@ -39,18 +39,22 @@ public abstract class DeferredDebugElementWorkbenchAdapter extends DebugElementW
 	/**
 	 * An empty collection of children
 	 */
+	@Deprecated
 	protected static final Object[] EMPTY = new Object[0];
 
+	@Deprecated
 	@Override
 	public boolean isContainer() {
 		return true;
 	}
 
+	@Deprecated
 	@Override
 	public ISchedulingRule getRule(Object object) {
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	public void fetchDeferredChildren(Object object, IElementCollector collector, IProgressMonitor monitor) {
 		if (monitor.isCanceled()) {

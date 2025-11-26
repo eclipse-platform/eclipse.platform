@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class TipImageURLTest {
 
-	private static final String URL = "http://remainsoftware.com/img.png";
+	private static final String URL = "https://github.com/eclipse-platform/eclipse.platform/blob/master/ua/org.eclipse.tips.tests/icons/dummy.png";
 
 	@org.junit.jupiter.api.Test
 	public void testTipImage() {

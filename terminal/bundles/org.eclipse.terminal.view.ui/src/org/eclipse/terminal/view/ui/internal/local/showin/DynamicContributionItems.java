@@ -128,11 +128,11 @@ public class DynamicContributionItems extends CompoundContributionItem implement
 				}
 				properties.put(ITerminalsConnectorConstants.PROP_TRANSLATE_BACKSLASHES_ON_PASTE,
 						Boolean.valueOf(translate));
-				try {
-					delegate.execute(properties);
-				} catch (Exception e) {
-					ILog.get().error(e.getMessage(), e);
-				}
+				delegate.execute(properties).whenComplete((r, e) -> {
+					if (e != null) {
+						ILog.get().error("Error occurred while running delegate to open console", e); //$NON-NLS-1$
+					}
+				});
 			}
 		};
 

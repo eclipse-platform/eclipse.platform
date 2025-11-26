@@ -167,6 +167,30 @@ public class NatureTest {
 		assertHasEnabledNature(NATURE_SNOW);
 	}
 
+	/**
+	 * Tests that duplicate natures in the project description don't cause
+	 * IllegalArgumentException. This is a regression test for a bug where
+	 * Set.of() was used which throws on duplicates.
+	 */
+	@Test
+	public void testDuplicateNatures() throws Throwable {
+		createInWorkspace(project);
+
+		// Set initial nature
+		setNatures(project, new String[] { NATURE_SIMPLE }, false);
+		assertHasEnabledNature(NATURE_SIMPLE);
+
+		// Try to set natures with a duplicate - this should not throw IllegalArgumentException
+		// The duplicate should be handled gracefully (deduplication happens automatically)
+		IProjectDescription desc = project.getDescription();
+		desc.setNatureIds(new String[] { NATURE_SIMPLE, NATURE_SIMPLE });
+		// This should not throw IllegalArgumentException when hasPrivateChanges is called
+		project.setDescription(desc, IResource.KEEP_HISTORY, createTestMonitor());
+		
+		// After deduplication, only one instance of the nature should remain
+		assertHasEnabledNature(NATURE_SIMPLE);
+	}
+
 	@Test
 	public void testNatureLifecyle() throws Throwable {
 		createInWorkspace(project);

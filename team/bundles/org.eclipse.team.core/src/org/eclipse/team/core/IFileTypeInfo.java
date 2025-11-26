@@ -28,6 +28,7 @@ public interface IFileTypeInfo {
 	 *
 	 * @return the file extension
 	 */
+	@Deprecated
 	public String getExtension();
 
 	/**
@@ -41,5 +42,6 @@ public interface IFileTypeInfo {
 	 *
 	 * @return the file type
 	 */
+	@Deprecated
 	public int getType();
 }

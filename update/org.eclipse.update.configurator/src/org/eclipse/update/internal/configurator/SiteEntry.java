@@ -444,7 +444,7 @@ public class SiteEntry
 					// reliable,
 					// or that the user manually modified an existing plugin,
 					// so
-					// the apparently modifed plugin may actually be configured
+					// the apparently modified plugin may actually be configured
 					// already.
 					// We will need to double check for this. END to do.
 					if (compareTimeStamps

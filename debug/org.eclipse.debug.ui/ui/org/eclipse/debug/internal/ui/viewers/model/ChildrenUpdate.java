@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.eclipse.debug.internal.ui.viewers.model;
 
+import java.util.Objects;
+
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IChildrenUpdate;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider;
@@ -205,19 +207,27 @@ public class ChildrenUpdate extends ViewerUpdateMonitor implements IChildrenUpda
 
 	@Override
 	protected boolean doEquals(ViewerUpdateMonitor update) {
-		return
-			update instanceof ChildrenUpdate &&
-			((ChildrenUpdate)update).getOffset() == getOffset() &&
-			((ChildrenUpdate)update).getLength() == getLength() &&
-			getViewerInput().equals(update.getViewerInput()) &&
-			getElementPath().equals(update.getElementPath());
+		if (!(update instanceof ChildrenUpdate other)) {
+			return false;
+		}
+		boolean offsetAndLengthOK = other.getOffset() == getOffset() && other.getLength() == getLength();
+		if (!offsetAndLengthOK) {
+			return false;
+		}
+		Object viewerInput = getViewerInput();
+		if (!Objects.equals(viewerInput, other.getViewerInput())) {
+			return false;
+		}
+		return getElementPath().equals(other.getElementPath());
 	}
 
 	@Override
 	protected int doHashCode() {
-		return (int)Math.pow(
-			(getClass().hashCode() + getViewerInput().hashCode() + getElementPath().hashCode()) * (getOffset() + 2),
-			getLength() + 2);
+		Object viewerInput = getViewerInput();
+		int inputBits = viewerInput != null ? viewerInput.hashCode() : 0;
+		int result = (int) Math.pow(
+				(getClass().hashCode() + inputBits + getElementPath().hashCode()) * (getOffset() + 2), getLength() + 2);
+		return result;
 	}
 
 }

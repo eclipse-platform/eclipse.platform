@@ -16,12 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
@@ -68,8 +67,11 @@ public class TerminalService implements ITerminalService {
 
 	/**
 	 * Common terminal service runnable implementation.
+	 *
+	 * These runnables are run asynchronously on the UI thread.
 	 */
-	protected static abstract class TerminalServiceRunnable {
+	@FunctionalInterface
+	private static interface TerminalServiceRunnable {
 
 		/**
 		 * Invoked to execute the terminal service runnable.
@@ -78,21 +80,10 @@ public class TerminalService implements ITerminalService {
 		 * @param title The terminal tab title. Must not be <code>null</code>.
 		 * @param connector The terminal connector. Must not be <code>null</code>.
 		 * @param data The custom terminal data node or <code>null</code>.
-		 * @return the result {@link IStatus}
+		 * @throws CoreException if operation does not complete successfully
+		 * @throws NullPointerException if any required arguments are null.
 		 */
-		public abstract IStatus run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data);
-
-		/**
-		 * Returns if or if not to execute the runnable asynchronously.
-		 * <p>
-		 * The method returns per default <code>true</code>. Overwrite to
-		 * modify the behavior.
-		 *
-		 * @return <code>True</code> to execute the runnable asynchronously, <code>false</code> otherwise.
-		 */
-		public boolean isExecuteAsync() {
-			return true;
-		}
+		void run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) throws CoreException;
 	}
 
 	@Activate
@@ -193,12 +184,17 @@ public class TerminalService implements ITerminalService {
 
 	private CompletableFuture<?> executeServiceOperation(final TerminalServiceRunnable runnable, TerminalViewId tvid,
 			final String title, final ITerminalConnector connector, final Object data) {
-		// Execute the operation
-		if (runnable.isExecuteAsync()) {
-			return CompletableFuture.supplyAsync(() -> runnable.run(tvid, title, connector, data),
-					Display.getDefault());
-		} else {
-			return CompletableFuture.completedFuture(runnable.run(tvid, title, connector, data));
+		try { // Execute the operation
+			return CompletableFuture.runAsync(() -> {
+				try {
+					runnable.run(tvid, title, connector, data);
+				} catch (CoreException e) {
+					throw new CompletionException(e);
+				}
+			}, Display.getDefault()::asyncExec);
+
+		} catch (RuntimeException e) {
+			return CompletableFuture.failedFuture(e);
 		}
 	}
 
@@ -256,23 +252,21 @@ public class TerminalService implements ITerminalService {
 		final boolean restoringView = fRestoringView;
 		return executeServiceOperation(properties, new TerminalServiceRunnable() {
 			@Override
-			public IStatus run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
+			public void run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data)
+					throws CoreException {
 				if (restoringView) {
-					return doRun(tvid, title, connector, data);
+					doRun(tvid, title, connector, data);
 				} else {
 					// First, restore the view. This opens consoles from the memento
 					fRestoringView = true;
-					try {
-						consoleViewManager.showConsoleView(tvid);
-					} catch (CoreException e) {
-						ILog.get().log(e.getStatus());
-					}
+					consoleViewManager.showConsoleView(tvid);
 					fRestoringView = false;
-					return doRun(tvid, title, connector, data);
+					doRun(tvid, title, connector, data);
 				}
 			}
 
-			private IStatus doRun(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
+			private void doRun(TerminalViewId tvid, String title, ITerminalConnector connector, Object data)
+					throws CoreException {
 				// Determine the terminal encoding
 				String encoding = (String) properties.get(ITerminalsConnectorConstants.PROP_ENCODING);
 				// Create the flags to pass on to openConsole
@@ -293,16 +287,11 @@ public class TerminalService implements ITerminalService {
 					flags.put(ITerminalsConnectorConstants.PROP_TITLE_DISABLE_ANSI_TITLE, false);
 				}
 				// Open the new console
-				try {
-					Widget console = consoleViewManager.openConsole(tvid, title, encoding, connector, data, flags);
-					// Associate the original terminal properties with the tab item.
-					// This makes it easier to persist the connection data within the memento handler
-					if (!console.isDisposed()) {
-						console.setData("properties", properties); //$NON-NLS-1$
-					}
-					return Status.OK_STATUS;
-				} catch (CoreException e) {
-					return e.getStatus();
+				Widget console = consoleViewManager.openConsole(tvid, title, encoding, connector, data, flags);
+				// Associate the original terminal properties with the tab item.
+				// This makes it easier to persist the connection data within the memento handler
+				if (!console.isDisposed()) {
+					console.setData("properties", properties); //$NON-NLS-1$
 				}
 			}
 		});
@@ -311,25 +300,12 @@ public class TerminalService implements ITerminalService {
 	@Override
 	public CompletableFuture<?> closeConsole(Map<String, Object> properties) {
 		Assert.isNotNull(properties);
-		return executeServiceOperation(properties, new TerminalServiceRunnable() {
-			@Override
-			public IStatus run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
-				consoleViewManager.closeConsole(tvid, title, connector, data);
-				return Status.OK_STATUS;
-			}
-		});
+		return executeServiceOperation(properties, consoleViewManager::closeConsole);
 	}
 
 	@Override
 	public CompletableFuture<?> terminateConsole(Map<String, Object> properties) {
 		Assert.isNotNull(properties);
-
-		return executeServiceOperation(properties, new TerminalServiceRunnable() {
-			@Override
-			public IStatus run(TerminalViewId tvid, String title, ITerminalConnector connector, Object data) {
-				consoleViewManager.terminateConsole(tvid, title, connector, data);
-				return Status.OK_STATUS;
-			}
-		});
+		return executeServiceOperation(properties, consoleViewManager::terminateConsole);
 	}
 }

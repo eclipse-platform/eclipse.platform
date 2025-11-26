@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2019 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -306,5 +306,13 @@ public class LaunchConfigurationsMessages extends NLS {
 	public static String SelectLaunchersDialog_launchers;
 	public static String SelectLaunchOptionsDialog_3;
 	public static String SelectLaunchOptionsDialog_4;
+
+	public static String SelectFavTypeToFilter;
+
+	public static String ImportLaunchConfigurationAction;
+
+	public static String LaunchConfigurationImportDialog;
+
+	public static String LaunchConfigurationTabGroupViewer_19;
 
 }

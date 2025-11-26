@@ -13,27 +13,17 @@
 
 package org.eclipse.terminal.test;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 /**
  * Master Test Suite to run all Terminal plug-in tests.
  */
-public class AutomatedPluginTestSuite extends TestCase {
-	/**
-	 * Call each AllTestSuite class from each of the test packages.
-	 */
-	public static Test suite() {
-		TestSuite suite = new TestSuite(AutomatedPluginTestSuite.class.getName());
-		//These tests require Eclipse Platform to be up
-		suite.addTestSuite(org.eclipse.terminal.internal.connector.TerminalConnectorPluginTest.class);
-		suite.addTestSuite(org.eclipse.terminal.internal.connector.TerminalConnectorFactoryTest.class);
-
-		//These tests must run as plain JUnit because they require access
-		//to "package" protected methods
-		//suite.addTest(AutomatedTestSuite.suite());
-		return suite;
-	}
+@Suite
+@SelectClasses({ //
+		org.eclipse.terminal.internal.connector.TerminalConnectorPluginTest.class, //
+		org.eclipse.terminal.internal.connector.TerminalConnectorFactoryTest.class, //
+})
+public class AutomatedPluginTestSuite {
 
 }
