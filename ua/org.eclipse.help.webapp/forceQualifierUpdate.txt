@@ -1,8 +1,2 @@
 # To force a version qualifier update add the bug here
-Bug 403352 - Update all parent versions to match our build stream
-Bug 430284 - Update Orbit pre-reqs to latest Orbit I-build
-Bug 510404 - Comparator errors in I20170112-2000
-Bug 558450 - Unanticipated comparator errors in I20191218-1805
-Bug 573965 - Version bumps for 4.21 stream
-Bug 573965 - Version bumps for 4.37 stream
-Enforce qualifier update for 4.38 stream
+Qualifier update for 4.39 stream
