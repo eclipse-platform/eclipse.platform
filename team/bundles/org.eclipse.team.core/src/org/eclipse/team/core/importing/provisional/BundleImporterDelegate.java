@@ -103,7 +103,6 @@ public abstract class BundleImporterDelegate implements IBundleImporterDelegate 
 			if (!references.isEmpty()) {
 				SubMonitor subMonitor = SubMonitor.convert(monitor, references.size());
 				result = psfCapability.addToWorkspace(references.toArray(new String[references.size()]), new ProjectSetSerializationContext(), subMonitor);
-				subMonitor.done();
 			}
 		}
 		return result;

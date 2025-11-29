@@ -297,7 +297,7 @@ class AutoBuildJob extends Job implements IEclipsePreferences.IPreferenceChangeL
 	public IStatus run(IProgressMonitor monitor) {
 		SubMonitor subMonitor = SubMonitor.convert(monitor, 1);
 		synchronized (this) {
-			if (subMonitor.isCanceled() || isInterrupted()) {
+			if (isInterrupted()) {
 				return canceled();
 			}
 		}

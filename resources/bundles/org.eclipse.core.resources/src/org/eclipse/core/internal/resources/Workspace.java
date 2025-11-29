@@ -632,7 +632,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 				throw new ResourceException(result);
 			}
 		} finally {
-			subMonitor.done();
 			// building may close the tree, but we are still inside an operation so open it
 			if (tree.isImmutable()) {
 				newWorkingTree();
@@ -1135,7 +1134,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			getWorkManager().operationCanceled();
 			throw e;
 		} finally {
-			subMonitor.done();
 			endOperation(getRoot(), true);
 		}
 		if (status.matches(IStatus.ERROR)) {
@@ -1529,7 +1527,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			getWorkManager().operationCanceled();
 			throw e;
 		} finally {
-			subMonitor.done();
 			endOperation(getRoot(), true);
 		}
 	}
@@ -2206,7 +2203,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			getWorkManager().operationCanceled();
 			throw e;
 		} finally {
-			subMonitor.done();
 			endOperation(getRoot(), true);
 		}
 		if (status.matches(IStatus.ERROR)) {
@@ -2512,7 +2508,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 			}
 			throw e;
 		} finally {
-			subMonitor.done();
 			if (avoidNotification) {
 				notificationManager.endAvoidNotify();
 			}
@@ -2641,7 +2636,6 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 				throw new CoreException(status);
 			}
 		} finally {
-			subMonitor.done();
 		}
 	}
 
@@ -2906,43 +2900,39 @@ public class Workspace extends PlatformObject implements IWorkspace, ICoreConsta
 
 		IPath name = files.iterator().next().getFullPath(); // XXX any name
 		SubMonitor subMonitor = SubMonitor.convert(monitor, NLS.bind(Messages.resources_creating, name), 1);
+		ISchedulingRule rule = MultiRule
+				.combine(files.stream().map(getRuleFactory()::createRule).toArray(ISchedulingRule[]::new));
+		NullProgressMonitor npm = new NullProgressMonitor();
 		try {
-			ISchedulingRule rule = MultiRule
-					.combine(files.stream().map(getRuleFactory()::createRule).toArray(ISchedulingRule[]::new));
-			NullProgressMonitor npm = new NullProgressMonitor();
-			try {
-				prepareOperation(rule, npm);
-				for (File file : files) {
-					file.checkCreatable();
-				}
-				beginOperation(true);
-				try {
-					File.internalSetMultipleContents(filesToCreate, updateFlags, false, subMonitor.newChild(1),
-							executorService);
-				} catch (CoreException | OperationCanceledException e) {
-					// CoreException when a problem happened creating a file on disk
-					// OperationCanceledException when the operation of setting contents has been
-					// canceled
-					// In either case delete from the workspace and disk
-					for (File file : files) {
-						try {
-							deleteResource(file);
-							IFileStore store = file.getStore();
-							store.delete(EFS.NONE, null);
-						} catch (Exception e2) {
-							e.addSuppressed(e);
-						}
-					}
-					throw e;
-				}
-			} catch (OperationCanceledException e) {
-				getWorkManager().operationCanceled();
-				throw e;
-			} finally {
-				endOperation(rule, true);
+			prepareOperation(rule, npm);
+			for (File file : files) {
+				file.checkCreatable();
 			}
+			beginOperation(true);
+			try {
+				File.internalSetMultipleContents(filesToCreate, updateFlags, false, subMonitor.newChild(1),
+						executorService);
+			} catch (CoreException | OperationCanceledException e) {
+				// CoreException when a problem happened creating a file on disk
+				// OperationCanceledException when the operation of setting contents has been
+				// canceled
+				// In either case delete from the workspace and disk
+				for (File file : files) {
+					try {
+						deleteResource(file);
+						IFileStore store = file.getStore();
+						store.delete(EFS.NONE, null);
+					} catch (Exception e2) {
+						e.addSuppressed(e);
+					}
+				}
+				throw e;
+			}
+		} catch (OperationCanceledException e) {
+			getWorkManager().operationCanceled();
+			throw e;
 		} finally {
-			subMonitor.done();
+			endOperation(rule, true);
 		}
 	}
 }
