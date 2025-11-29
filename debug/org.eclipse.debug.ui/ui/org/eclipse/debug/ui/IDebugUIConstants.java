@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2019 IBM Corporation and others.
+ *  Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -1356,5 +1356,12 @@ public interface IDebugUIConstants {
 	 * @since 3.8
 	 */
 	String COLUMN_ID_VARIABLE_VALUE_TYPE = COLUMN_PRESENTATION_ID_VARIABLE + ".COL_VALUE_TYPE"; //$NON-NLS-1$
+
+	/**
+	 * "Find" action image identifier
+	 *
+	 * @since 3.20
+	 */
+	String IMG_FIND_ACTION = "FIND_ACTION_ICON"; //$NON-NLS-1$
 
 }
