@@ -788,7 +788,6 @@ public class TextConsoleViewer extends SourceViewer implements LineStyleListener
 		int top = textWidget.getTopIndex();
 		if (top > -1) {
 			// scroll vertically
-			@SuppressWarnings("deprecation")
 			int lines = getVisibleLinesInViewport();
 			int bottom = top + lines;
 
