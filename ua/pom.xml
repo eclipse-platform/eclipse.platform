@@ -26,6 +26,7 @@
     <module>org.eclipse.help.base</module>
     <module>org.eclipse.help.ui</module>
     <module>org.eclipse.help.webapp</module>
+    <module>org.eclipse.help-feature</module>
     <module>org.eclipse.ua.tests</module>
     <module>org.eclipse.ua.tests.doc</module>
     <module>org.eclipse.ui.cheatsheets</module>
