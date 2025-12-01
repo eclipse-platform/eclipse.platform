@@ -336,6 +336,12 @@ public interface IDebugPreferenceConstants {
 	 */
 	String DEBUG_VIEW_TOOLBAR_HIDDEN_PERSPECTIVES = "org.eclipse.debug.ui.Debug_view.debug_toolbar_hidden_perspectives"; //$NON-NLS-1$
 	String CONSOLE_ELAPSED_FORMAT = "org.eclipse.console.elapsedTimeFormat"; //$NON-NLS-1$
+
+	/**
+	 * Stores the boolean preference of whether to prompt when pasting multi-line
+	 * expressions
+	 */
+	String PREF_PROMPT_PASTE_MULTILINE_EXPRESSIONS = IDebugUIConstants.PLUGIN_ID + ".paste_multiline_exp_prompt"; //$NON-NLS-1$
 }
 
 
