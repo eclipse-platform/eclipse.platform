@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2025 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -254,5 +254,12 @@ public class ActionMessages extends NLS {
 	public static String EnableAllBreakpointsAction_3;
 	public static String BreakpointLabelDialog;
 	public static String RemoveFromFavoritesAction;
+	public static String PasteWatchExpressionsActionLabel;
+	public static String ExpressionPasteTitle;
+	public static String ExpressionPasteMultiButton;
+	public static String ExpressionPasteSingleButton;
+	public static String ExpressionPasteDialog;
+	public static String ExpressionPasteRemember;
+	public static String ExpressionPastePromptButton;
 
 }
