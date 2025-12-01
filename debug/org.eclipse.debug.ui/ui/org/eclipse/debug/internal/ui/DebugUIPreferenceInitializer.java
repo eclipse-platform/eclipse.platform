@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2004, 2025 IBM Corporation and others.
+ *  Copyright (c) 2004, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -58,6 +58,8 @@ public class DebugUIPreferenceInitializer extends AbstractPreferenceInitializer 
 		prefs.setDefault(IDebugPreferenceConstants.PREF_PROMPT_DISABLE_ALL_BREAKPOINTS, true);
 		prefs.setDefault(IDebugPreferenceConstants.PREF_PROMPT_ENABLE_ALL_BREAKPOINTS, true);
 		prefs.setDefault(IInternalDebugUIConstants.PREF_SKIP_ALL_BREAKPOINTS_PROMPT, true);
+		prefs.setDefault(IDebugPreferenceConstants.PREF_PROMPT_PASTE_MULTILINE_EXPRESSIONS,
+				IInternalDebugUIConstants.EXPRESSION_PASTE_PROMPT);
 
 		/**
 		 * Context launching preferences. Appear on the the Launching preference page
