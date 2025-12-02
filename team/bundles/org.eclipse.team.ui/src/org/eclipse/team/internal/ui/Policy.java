@@ -69,13 +69,10 @@ public class Policy {
 	}
 
 	public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
-		if (monitor == null) {
-			return new NullProgressMonitor();
-		}
 		if (monitor instanceof NullProgressMonitor) {
 			return monitor;
 		}
-		return SubMonitor.convert(monitor, ticks);
+		return SubMonitor.convert(monitor).split(ticks);
 	}
 
 	public static IProgressMonitor monitorFor(IProgressMonitor monitor) {
