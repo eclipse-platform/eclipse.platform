@@ -859,7 +859,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 *
 	 * @deprecated Please use {@link #setFocus2()} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2025-12")
 	public void setFocus() {
 		setFocus2();
 	}
