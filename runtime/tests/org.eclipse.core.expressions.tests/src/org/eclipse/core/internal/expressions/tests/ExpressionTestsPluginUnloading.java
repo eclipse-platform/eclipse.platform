@@ -33,12 +33,15 @@ import org.eclipse.core.internal.expressions.Expressions;
 /**
  * Tests for cache used in {@link Expressions#isInstanceOf(Object, String)}.
  * <p>
- * <b>WARNING:</b> These tests start, stop, and re-start the <code>com.ibm.icu</code> bundle.
+ * <b>WARNING:</b> These tests start, stop, and re-start the <code>org.eclipse.ant.core</code> bundle.
  * Don't include these in another test suite!
  */
 @SuppressWarnings("restriction")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 public class ExpressionTestsPluginUnloading {
+
+	private static final String ANT_CORE_BUNDLE_ID = "org.eclipse.ant.core";
+	private static final String ANT_RUNNER_CLASS_NAME = "org.eclipse.ant.core.AntRunner";
 
 	private String name;
 
@@ -49,13 +52,13 @@ public class ExpressionTestsPluginUnloading {
 
 	@Test
 	public void test01PluginStopping() throws Exception {
-		Bundle bundle= getBundle("com.ibm.icu");
+		Bundle bundle= getBundle(ANT_CORE_BUNDLE_ID);
 		bundle.start();
 		int state = bundle.getState();
 		assertThat(state).withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
 				.isEqualTo(Bundle.ACTIVE);
 
-		doTestInstanceofICUDecimalFormat(bundle);
+		doTestInstanceofAntRunner(bundle);
 		assertThat(bundle.getState()).as("Instanceof with bundle-local class should load extra bundle")
 				.isEqualTo(state);
 
@@ -69,26 +72,26 @@ public class ExpressionTestsPluginUnloading {
 				.withFailMessage("Unexpected bundle state: " + stateToString(state) + " for bundle " + bundle)
 				.isEqualTo(Bundle.ACTIVE);
 
-		doTestInstanceofICUDecimalFormat(bundle);
+		doTestInstanceofAntRunner(bundle);
 	}
 
 	@Test
 	public void test02MultipleClassloaders() throws Exception {
 		Bundle expr= getBundle("org.eclipse.core.expressions.tests");
-		Bundle icu= getBundle("com.ibm.icu");
+		Bundle ant= getBundle(ANT_CORE_BUNDLE_ID);
 
-		Class<?> exprClass = expr.loadClass("com.ibm.icu.text.DecimalFormat");
-		Class<?> icuClass = icu.loadClass("com.ibm.icu.text.DecimalFormat");
-		assertThat(exprClass).isNotSameAs(icuClass);
+		Class<?> exprClass = expr.loadClass(ANT_RUNNER_CLASS_NAME);
+		Class<?> antClass = ant.loadClass(ANT_RUNNER_CLASS_NAME);
+		assertThat(exprClass).isNotSameAs(antClass);
 
 		Object exprObj = exprClass.getDeclaredConstructor().newInstance();
-		Object icuObj = icuClass.getDeclaredConstructor().newInstance();
+		Object antObj = antClass.getDeclaredConstructor().newInstance();
 
 		assertInstanceOf(exprObj, "java.lang.Runnable", "java.lang.String");
-		assertInstanceOf(exprObj, "java.lang.Object", "java.io.Serializable");
+		assertInstanceOf(exprObj, "java.io.Serializable", "org.eclipse.equinox.app.IApplication");
 
-		assertInstanceOf(icuObj, "java.io.Serializable", "java.lang.String");
-		assertInstanceOf(icuObj, "java.text.Format", "java.lang.Runnable");
+		assertInstanceOf(antObj, "org.eclipse.equinox.app.IApplication", "java.lang.Runnable");
+		assertInstanceOf(antObj, "java.lang.Object", "java.io.Serializable");
 	}
 
 	static String stateToString(int state) {
@@ -125,10 +128,10 @@ public class ExpressionTestsPluginUnloading {
 		}
 	}
 
-	private void doTestInstanceofICUDecimalFormat(Bundle bundle) throws Exception {
-		Class<?> clazz = bundle.loadClass("com.ibm.icu.text.DecimalFormat");
-		Object decimalFormat = clazz.getDeclaredConstructor().newInstance();
-		assertInstanceOf(decimalFormat, "com.ibm.icu.text.DecimalFormat", "java.text.NumberFormat");
+	private void doTestInstanceofAntRunner(Bundle bundle) throws Exception {
+		Class<?> clazz = bundle.loadClass(ANT_RUNNER_CLASS_NAME);
+		Object antRunner = clazz.getDeclaredConstructor().newInstance();
+		assertInstanceOf(antRunner, ANT_RUNNER_CLASS_NAME, "java.lang.Runnable");
 	}
 
 	private static Bundle getBundle(String bundleName) {
