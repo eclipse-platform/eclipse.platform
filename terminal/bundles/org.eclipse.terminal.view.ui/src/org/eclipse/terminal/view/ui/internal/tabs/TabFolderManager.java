@@ -888,7 +888,7 @@ public class TabFolderManager extends PlatformObject implements ISelectionProvid
 		// Get he current terminal state as string
 		String stateStr = state.toString();
 		// Lookup a matching text representation of the state
-		String key = "TabFolderManager_state_" + stateStr.replaceAll("\\.", " ").trim().toLowerCase(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String key = "TabFolderManager_state_" + stateStr.replace('.', ' ').trim().toLowerCase(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		String stateMsg = null;
 		if (properties != null) {
 			stateMsg = properties.get(key) instanceof String ? (String) properties.get(key) : null;
