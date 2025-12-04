@@ -66,6 +66,7 @@ public class DebugPluginImages {
 		declareRegistryImage(IDebugUIConstants.IMG_ACT_RUN, CTOOL + "run_exc.svg"); //$NON-NLS-1$
 		declareRegistryImage(IDebugUIConstants.IMG_ACT_SYNCED, ELCL + "synced.svg"); //$NON-NLS-1$
 		declareRegistryImage(IDebugUIConstants.IMG_SKIP_BREAKPOINTS, ELCL + "skip_brkp.svg"); //$NON-NLS-1$
+		declareRegistryImage(IDebugUIConstants.IMG_FIND_ACTION, ELCL + "find.svg"); //$NON-NLS-1$
 
 		//menus
 		declareRegistryImage(IDebugUIConstants.IMG_LCL_CHANGE_VARIABLE_VALUE,

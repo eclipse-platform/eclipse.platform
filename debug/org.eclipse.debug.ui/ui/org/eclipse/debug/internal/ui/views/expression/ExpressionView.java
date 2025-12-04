@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2020 IBM Corporation and others.
+ * Copyright (c) 2000, 2025 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -23,6 +23,7 @@ import org.eclipse.debug.core.IExpressionManager;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IWatchExpression;
+import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.actions.expressions.EditWatchExpressinInPlaceAction;
 import org.eclipse.debug.internal.ui.actions.expressions.PasteWatchExpressionsAction;
@@ -80,13 +81,18 @@ public class ExpressionView extends VariablesView {
 	protected void fillContextMenu(IMenuManager menu) {
 		menu.add(new Separator(IDebugUIConstants.EMPTY_EXPRESSION_GROUP));
 		menu.add(new Separator(IDebugUIConstants.EXPRESSION_GROUP));
-		menu.add(getAction(FIND_ACTION));
+		IAction action;
+		if (DebugPlugin.getDefault().getExpressionManager().getExpressions().length > 0) {
+			action = getAction(FIND_ACTION);
+			action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_FIND_ACTION));
+			menu.add(action);
+		}
 		ChangeVariableValueAction changeValueAction = (ChangeVariableValueAction)getAction("ChangeVariableValue"); //$NON-NLS-1$
 		if (changeValueAction.isApplicable()) {
 			menu.add(changeValueAction);
 		}
 		menu.add(new Separator());
-		IAction action = new AvailableLogicalStructuresAction(this);
+		action = new AvailableLogicalStructuresAction(this);
 		if (action.isEnabled()) {
 			menu.add(action);
 		}
