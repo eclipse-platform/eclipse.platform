@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2019 IBM Corporation and others.
+ *  Copyright (c) 2000, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.DelegatingModelPresentation;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
@@ -967,6 +968,7 @@ public class VariablesView extends AbstractDebugView implements IDebugContextLis
 		setAction("ChangeVariableValue", action); //$NON-NLS-1$
 
 		action= new VirtualFindAction(getVariablesViewer());
+		action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_FIND_ACTION));
 		setGlobalAction(FIND_ACTION, action);
 	}
 

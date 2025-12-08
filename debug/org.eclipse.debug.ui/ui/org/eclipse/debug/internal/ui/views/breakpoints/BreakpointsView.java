@@ -1,5 +1,5 @@
 /*****************************************************************
- * Copyright (c) 2009, 2021 Texas Instruments and others
+ * Copyright (c) 2009, 2026 Texas Instruments and others
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManagerListener;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.debug.internal.ui.DebugPluginImages;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.IDebugHelpContextIds;
 import org.eclipse.debug.internal.ui.VariablesViewModelPresentation;
@@ -200,6 +201,9 @@ public class BreakpointsView extends VariablesView implements IBreakpointManager
 		if (action != null) {
 			menu.add(action);
 		}
+		action = getAction(FIND_ACTION);
+		action.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_FIND_ACTION));
+		menu.add(action);
 		action = getAction(ACTION_REMOVE_FROM_GROUP);
 		if (action != null && action.isEnabled()) {
 			menu.add(action);
