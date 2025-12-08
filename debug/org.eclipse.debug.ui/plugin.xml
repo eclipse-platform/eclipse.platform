@@ -1451,6 +1451,7 @@
                id="org.eclipse.debug.ui.breakpointsView.toolbar.copy"/>
          <action
                label="%SelectAll.label"
+               icon="$nl$/icons/full/elcl16/select_all.svg"
                helpContextId="select_all_breakpoints_action_context"
                definitionId="org.eclipse.ui.edit.selectAll"
                class="org.eclipse.debug.internal.ui.actions.breakpoints.SelectAllBreakpointsAction"
@@ -1567,6 +1568,7 @@
          </action>
          <action
                label="%SelectAll.label"
+               icon="$nl$/icons/full/elcl16/select_all.svg"
                helpContextId="select_all_variables_action_context"
                definitionId="org.eclipse.ui.edit.selectAll"
                class="org.eclipse.debug.internal.ui.actions.variables.SelectAllVariablesAction"
@@ -1615,6 +1617,7 @@
          </action>
          <action
                label="%SelectAll.label"
+               icon="$nl$/icons/full/elcl16/select_all.svg"
                helpContextId="select_all_expressions_action_context"
                definitionId="org.eclipse.ui.edit.selectAll"
                class="org.eclipse.debug.internal.ui.actions.expressions.SelectAllExpressionsAction"
@@ -1641,6 +1644,7 @@
          <action
                class="org.eclipse.debug.internal.ui.actions.variables.SelectAllVariablesAction"
                label="%SelectAll.label"
+               icon="$nl$/icons/full/elcl16/select_all.svg"
                menubarPath="variableGroup"
                definitionId="org.eclipse.ui.edit.selectAll"
                helpContextId="select_all_variables_action_context"
