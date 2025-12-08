@@ -149,13 +149,13 @@ public interface ITerminalViewControl {
 
 	/**
 	 * @since 4.1
-	 * @param listener may be a {@link ITerminalMouseListener2} for extra callbacks
+	 * @param listener the mouse listener to add
 	 */
 	void addMouseListener(ITerminalMouseListener listener);
 
 	/**
 	 * @since 4.1
-	 * @param listener may be a {@link ITerminalMouseListener2} for extra callbacks
+	 * @param listener the mouse listener to remove
 	 */
 	void removeMouseListener(ITerminalMouseListener listener);
 
