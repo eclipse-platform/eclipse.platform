@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2006, 2019 IBM Corporation and others.
+ *  Copyright (c) 2006, 2026 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -423,6 +423,10 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 	private IPropertyChangeListener fPreferenceStorePropertyChangeListener;
 	private WhitespaceCharacterPainter fWhiteSpacePainter;
 
+	private TextViewerAction contentAssistAction;
+
+	private ActionHandler contentAssistActionHandler;
+
 	@Override
 	public Control createControl(Composite parent) {
 
@@ -542,6 +546,8 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 
 				updateAction(DETAIL_FIND_REPLACE_TEXT_ACTION);
 				fHasFocus = true;
+				activateContentAssistHandler(contentAssistAction, contentAssistActionHandler);
+
 			}
 
 			@Override
@@ -556,6 +562,7 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 
 				getViewSite().getActionBars().updateActionBars();
 				fHasFocus = false;
+				deactivateContentAssistHandler();
 			}
 		});
 
@@ -591,18 +598,29 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 	 * Creates the actions to add to the context menu
 	 */
 	private void createActions() {
-		TextViewerAction textAction= new TextViewerAction(fSourceViewer, ISourceViewer.CONTENTASSIST_PROPOSALS);
-		textAction.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-		textAction.configureAction(DetailMessages.DefaultDetailPane_Co_ntent_Assist_3, IInternalDebugCoreConstants.EMPTY_STRING,IInternalDebugCoreConstants.EMPTY_STRING);
-		textAction.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_ELCL_CONTENT_ASSIST));
-		textAction.setDisabledImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_DLCL_CONTENT_ASSIST));
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(textAction, IDebugHelpContextIds.DETAIL_PANE_CONTENT_ASSIST_ACTION);
-		ActionHandler actionHandler = new ActionHandler(textAction);
-		IHandlerService handlerService = getViewSite().getService(IHandlerService.class);
-		fContentAssistActivation = handlerService.activateHandler(textAction.getActionDefinitionId(), actionHandler);
-		setAction(DETAIL_CONTENT_ASSIST_ACTION, textAction);
+		contentAssistAction = new TextViewerAction(fSourceViewer, ISourceViewer.CONTENTASSIST_PROPOSALS);
 
-		textAction= new TextViewerAction(fSourceViewer, ITextOperationTarget.SELECT_ALL);
+		contentAssistAction.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+		contentAssistAction.configureAction(DetailMessages.DefaultDetailPane_Co_ntent_Assist_3,
+				IInternalDebugCoreConstants.EMPTY_STRING, IInternalDebugCoreConstants.EMPTY_STRING);
+		contentAssistAction
+				.setImageDescriptor(DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_ELCL_CONTENT_ASSIST));
+		contentAssistAction.setDisabledImageDescriptor(
+				DebugPluginImages.getImageDescriptor(IDebugUIConstants.IMG_DLCL_CONTENT_ASSIST));
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(contentAssistAction,
+				IDebugHelpContextIds.DETAIL_PANE_CONTENT_ASSIST_ACTION);
+		contentAssistActionHandler = new ActionHandler(contentAssistAction);
+		setAction(DETAIL_CONTENT_ASSIST_ACTION, contentAssistAction);
+
+		StyledText text = fSourceViewer.getTextWidget();
+
+		text.addCaretListener(event -> {
+			if (text.isFocusControl()) {
+				activateContentAssistHandler(contentAssistAction, contentAssistActionHandler);
+			}
+		});
+
+		TextViewerAction textAction = new TextViewerAction(fSourceViewer, ITextOperationTarget.SELECT_ALL);
 		textAction.configureAction(DetailMessages.DefaultDetailPane_Select__All_5, IInternalDebugCoreConstants.EMPTY_STRING,IInternalDebugCoreConstants.EMPTY_STRING);
 		textAction.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_SELECT_ALL);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(textAction, IDebugHelpContextIds.DETAIL_PANE_SELECT_ALL_ACTION);
@@ -650,10 +668,37 @@ public class DefaultDetailPane extends AbstractDetailPane implements IDetailPane
 	}
 
 	/**
-	 * Create the context menu particular to the detail pane.  Note that anyone
+	 * Activates the content assist handler for the specified viewer action.
+	 *
+	 * @param contAssistTextViewer the viewer action providing the action definition
+	 *                             ID
+	 * @param actionHandler        the handler to activate
+	 */
+	private void activateContentAssistHandler(TextViewerAction contAssistTextViewer, ActionHandler actionHandler) {
+		if (fContentAssistActivation == null) {
+			IHandlerService handlerService = getViewSite().getService(IHandlerService.class);
+			fContentAssistActivation = handlerService.activateHandler(contAssistTextViewer.getActionDefinitionId(),
+					actionHandler);
+		}
+	}
+
+	/**
+	 * Deactivates the content assist handler.
+	 */
+	private void deactivateContentAssistHandler() {
+		if (fContentAssistActivation != null) {
+			IHandlerService handlerService = getViewSite().getService(IHandlerService.class);
+			handlerService.deactivateHandler(fContentAssistActivation);
+			fContentAssistActivation = null;
+		}
+	}
+
+	/**
+	 * Create the context menu particular to the detail pane. Note that anyone
 	 * wishing to contribute an action to this menu must use
 	 * <code>IDebugUIConstants.VARIABLE_VIEW_DETAIL_ID</code> as the
 	 * <code>targetID</code> in the extension XML.
+	 *
 	 * @param menuControl the control to create the context menu on
 	 */
 	protected void createDetailContextMenu(Control menuControl) {
