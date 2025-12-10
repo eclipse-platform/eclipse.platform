@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
-import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.core.resources.IFile;
@@ -125,7 +125,7 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 	 * @param parentShell       The shell containing this window's controls
 	 */
 	private void showComparison(String source, String fileName, String clipboardContents, Shell parentShell) {
-		class ClipboardTypedElement implements ITypedElement, IStreamContentAccessor {
+		class ClipboardTypedElement implements ITypedElement, IEncodedStreamContentAccessor {
 			private final String name;
 			private final String content;
 
@@ -147,6 +147,11 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 			@Override
 			public String getType() {
 				return null;
+			}
+
+			@Override
+			public String getCharset() throws CoreException {
+				return "UTF-8"; //$NON-NLS-1$
 			}
 
 			@Override
