@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 IBM Corporation and others.
+ * Copyright (c) 2007, 2026 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -40,6 +40,8 @@ import org.eclipse.debug.ui.actions.IWatchExpressionFactoryAdapter2;
 import org.eclipse.debug.ui.actions.IWatchExpressionFactoryAdapterExtension;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -373,19 +375,46 @@ public class ExpressionDropAdapter extends ViewerDropAdapter {
 	 */
 	private boolean performVariableOrWatchAdaptableDrop(IStructuredSelection selection) {
 		List<IExpression> expressions = new ArrayList<>(selection.size());
-		for (Iterator<?> itr = selection.iterator(); itr.hasNext();) {
-			Object element = itr.next();
-			String expressionText = createExpressionString(element);
-			if (expressionText != null){
-				IExpression expression = createExpression(expressionText);
-				if (expression != null){
-					expressions.add(expression);
+		IExpression expression;
+		if (selection instanceof ITreeSelection treeSelection) {
+			for (TreePath path : treeSelection.getPaths()) {
+				List<IVariable> variables = new ArrayList<>();
+				expression = null;
+				if (path.getSegmentCount() > 1) {
+					for (int e = 0; e < path.getSegmentCount(); e++) {
+						IVariable variable = (IVariable) path.getSegment(e);
+						variables.add(variable);
+					}
+					IWatchExpressionFactoryAdapter2 factory = getFactory2(variables);
+					if (factory != null) {
+						boolean canCreate = factory.canCreateWatchExpression(variables);
+						if (canCreate) {
+							try {
+								String expressionText = factory.createWatchExpression(variables);
+								expression = createExpression(expressionText);
+								expressions.add(expression);
+							} catch (CoreException e) {
+								DebugPlugin.log(e);
+								break;
+							}
+						}
+					}
 				} else {
-					DebugUIPlugin.log(new Status(IStatus.ERROR,DebugUIPlugin.getUniqueIdentifier(),"Drop failed.  Watch expression could not be created for the text " + expressionText)); //$NON-NLS-1$
+					Object element = path.getFirstSegment();
+					String expressionText = createExpressionString(element);
+					if (expressionText == null) {
+						return false;
+					}
+					expressions.add(createExpression(expressionText));
+				}
+			}
+		} else {
+			for (Object element : selection) {
+				String expressionText = createExpressionString(element);
+				if (expressionText == null) {
 					return false;
 				}
-			} else {
-				return false;
+				expressions.add(createExpression(expressionText));
 			}
 		}
 		if (expressions.size() == selection.size()){
@@ -497,6 +526,16 @@ public class ExpressionDropAdapter extends ViewerDropAdapter {
 	private IWatchExpressionFactoryAdapter2 getFactory2(Object element) {
 		if (element instanceof IAdaptable) {
 			return ((IAdaptable)element).getAdapter(IWatchExpressionFactoryAdapter2.class);
+		}
+		if (element instanceof List<?> ExpressionList) {
+			for (Object obj : ExpressionList) {
+				if (!(obj instanceof IAdaptable)) {
+					return null;
+				}
+			}
+			if (ExpressionList.getFirst() instanceof IVariable variable) {
+				return variable.getAdapter(IWatchExpressionFactoryAdapter2.class);
+			}
 		}
 		return null;
 	}
