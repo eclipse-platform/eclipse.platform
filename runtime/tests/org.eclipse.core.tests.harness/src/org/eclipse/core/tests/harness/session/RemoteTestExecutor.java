@@ -66,7 +66,7 @@ class RemoteTestExecutor {
 				throw new CoreException(status);
 			}
 			if (!collector.didTestFinish()) {
-				throw new Exception("session test did not run: " + descriptor);
+				throw new Exception("session test did not run: " + descriptor + "\n" + collector.stackTrace);
 			}
 			if (!collector.wasTestSuccessful()) {
 				throw collector.getError();
