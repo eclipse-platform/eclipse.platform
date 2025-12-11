@@ -188,7 +188,11 @@ public class ClipboardCompare extends BaseCompareAction implements IObjectAction
 	 */
 	private Object getClipboard() {
 		Clipboard clip = new Clipboard(Display.getDefault());
-		return clip.getContents(TextTransfer.getInstance());
+		try {
+			return clip.getContents(TextTransfer.getInstance());
+		} finally {
+			clip.dispose();
+		}
 	}
 
 	@Override

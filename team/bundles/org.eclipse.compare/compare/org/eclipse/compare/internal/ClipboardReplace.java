@@ -92,7 +92,11 @@ public class ClipboardReplace extends BaseCompareAction {
 	 */
 	private Object getClipboard() {
 		Clipboard clip = new Clipboard(Display.getDefault());
-		return clip.getContents(TextTransfer.getInstance());
+		try {
+			return clip.getContents(TextTransfer.getInstance());
+		} finally {
+			clip.dispose();
+		}
 	}
 
 }
