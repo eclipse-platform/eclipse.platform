@@ -20,7 +20,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -50,6 +52,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 
 	private final Collection<BundleReference> bundleReferences = new LinkedHashSet<>();
 	private Path configurationDirectory;
+	private final Map<String, String> configIniValues = new HashMap<>();
 	private boolean readOnly = false;
 	private boolean cascaded = false;
 	private boolean firstExecutedSession = true;
@@ -142,6 +145,16 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 	}
 
 	@Override
+	public CustomSessionConfiguration setConfigIniValue(String key, String value) {
+		if (value == null) {
+			configIniValues.remove(key);
+		} else {
+			configIniValues.put(key, value);
+		}
+		return this;
+	}
+
+	@Override
 	public CustomSessionConfiguration setConfigurationDirectory(Path configurationDirectory) {
 		Objects.requireNonNull(configurationDirectory);
 		this.configurationDirectory = configurationDirectory;
@@ -212,6 +225,9 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 			contents.put(PROP_SHARED_CONFIG_AREA, Platform.getConfigurationLocation().getURL().toExternalForm());
 		}
 		contents.put(PROP_CONFIG_AREA_READ_ONLY, Boolean.valueOf(readOnly).toString());
+		for (Map.Entry<String, String> entry : configIniValues.entrySet()) {
+			contents.put(entry.getKey(), entry.getValue());
+		}
 		// save the properties
 		Path configINI = getConfigurationDirectory().resolve("config.ini");
 		try (OutputStream out = Files.newOutputStream(configINI)) {
