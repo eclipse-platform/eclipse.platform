@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ASCII"?>
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmi:id="_fragment">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_commands_fragment" featurename="commands" parentElementId="org.eclipse.e4.legacy.ide.application">
+    <elements xsi:type="commands:Command" xmi:id="_command_launch" elementId="org.eclipse.terminal.view.ui.command.launch" commandName="Launch Terminal" description="Launch Terminal"/>
+    <elements xsi:type="commands:Command" xmi:id="_command_launchConsole" elementId="org.eclipse.terminal.view.ui.command.launchConsole" commandName="Launch Terminal" description="Launch Terminal"/>
+    <elements xsi:type="commands:Command" xmi:id="_command_launchToolbar" elementId="org.eclipse.terminal.view.ui.command.launchToolbar" commandName="Open a Terminal" description="Open a Terminal"/>
+    <elements xsi:type="commands:Command" xmi:id="_command_disconnect" elementId="org.eclipse.terminal.view.ui.command.disconnect" commandName="Disconnect" description="Disconnect Terminal"/>
+    <elements xsi:type="commands:Command" xmi:id="_command_newview" elementId="org.eclipse.terminal.view.ui.command.newview" commandName="New Terminal View" description="New Terminal View"/>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_handlers_fragment" featurename="handlers" parentElementId="org.eclipse.e4.legacy.ide.application">
+    <elements xsi:type="commands:Handler" xmi:id="_handler_launch" elementId="org.eclipse.terminal.view.ui.handler.launch" contributionURI="bundleclass://org.eclipse.terminal.view.ui/org.eclipse.terminal.view.ui.internal.handler.LaunchTerminalCommandHandler" command="_command_launch"/>
+    <elements xsi:type="commands:Handler" xmi:id="_handler_launchConsole" elementId="org.eclipse.terminal.view.ui.handler.launchConsole" contributionURI="bundleclass://org.eclipse.terminal.view.ui/org.eclipse.terminal.view.ui.internal.handler.LaunchTerminalCommandHandler" command="_command_launchConsole"/>
+    <elements xsi:type="commands:Handler" xmi:id="_handler_launchToolbar" elementId="org.eclipse.terminal.view.ui.handler.launchToolbar" contributionURI="bundleclass://org.eclipse.terminal.view.ui/org.eclipse.terminal.view.ui.internal.handler.LaunchTerminalCommandHandler" command="_command_launchToolbar"/>
+    <elements xsi:type="commands:Handler" xmi:id="_handler_disconnect" elementId="org.eclipse.terminal.view.ui.handler.disconnect" contributionURI="bundleclass://org.eclipse.terminal.view.ui/org.eclipse.terminal.view.ui.internal.handler.DisconnectTerminalCommandHandler" command="_command_disconnect"/>
+    <elements xsi:type="commands:Handler" xmi:id="_handler_newview" elementId="org.eclipse.terminal.view.ui.handler.newview" contributionURI="bundleclass://org.eclipse.terminal.view.ui/org.eclipse.terminal.view.ui.internal.handler.NewTerminalViewHandler" command="_command_newview"/>
+  </fragments>
+</fragment:ModelFragments>
