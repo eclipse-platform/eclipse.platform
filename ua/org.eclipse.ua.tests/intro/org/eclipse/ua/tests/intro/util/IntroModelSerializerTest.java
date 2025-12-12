@@ -135,7 +135,7 @@ public class IntroModelSerializerTest {
 			});
 			xhtml = XHTMLUtil.removeEnvironmentSpecificContent(xhtml);
 			// filter windows-specific newline
-			xhtml = xhtml.replaceAll("\r", "");
+			xhtml = xhtml.replace("\r", "");
 			// ignore all beginning and ending whitespace
 			xhtml = xhtml.trim();
 			map.put(page.getInitialBase() + page.getRawContent(), xhtml);
