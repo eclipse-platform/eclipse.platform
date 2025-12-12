@@ -130,11 +130,7 @@ public class AddFromHistoryAction extends BaseCompareAction {
 						IFileState fileState = s.fFileState;
 						createContainers(file);
 						SubMonitor subMonitor= SubMonitor.convert(pm, 1);
-						try {
-							file.create(fileState.getContents(), false, subMonitor);
-						} finally {
-							subMonitor.done();
-						}
+						file.create(fileState.getContents(), false, subMonitor);
 					}
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
