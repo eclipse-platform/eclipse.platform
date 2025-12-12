@@ -433,7 +433,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * @deprecated Clients should override
 	 *             {@link #preDiffHook(IStructureComparator, IStructureComparator, IStructureComparator, IProgressMonitor)}
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2026-03")
 	protected void preDiffHook(IStructureComparator ancestor, IStructureComparator left, IStructureComparator right) {
 		// we do nothing here
 	}
@@ -589,25 +589,26 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 *             {@link #postDiffHook(Differencer, IDiffContainer, IProgressMonitor)}
 	 *             instead
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true, since = "2026-03")
 	protected void postDiffHook(Differencer differencer, IDiffContainer root) {
 		// we do nothing here
 	}
 
 	/**
-	 * This method is called from within {@link #diff(IProgressMonitor)} after
-	 * the difference tree has been built. This method may be called from a
-	 * background (non-UI) thread).
+	 * This method is called from within {@link #diff(IProgressMonitor)} after the
+	 * difference tree has been built. This method may be called from a background
+	 * (non-UI) thread).
 	 * <p>
 	 * For backwards compatibility, this default implementation calls
 	 * {@link #postDiffHook(Differencer, IDiffContainer)} from the UI thread.
 	 * Clients should override this method even if they don't perform post
-	 * processing to avoid the call to the UI thread.
+	 * processing to avoid the call to the UI thread. This default implementation
+	 * does nothing.
 	 *
 	 * @param differencer the differencer used to perform the differencing
-	 * @param root the non-<code>null</code> root node of the difference tree
-	 * @param monitor a progress monitor or <code>null</code> if progress is
-	 *            not required
+	 * @param root        the non-<code>null</code> root node of the difference tree
+	 * @param monitor     a progress monitor or <code>null</code> if progress is not
+	 *                    required
 	 * @since 3.3
 	 */
 	protected void postDiffHook(final Differencer differencer, final IDiffContainer root, IProgressMonitor monitor) {
