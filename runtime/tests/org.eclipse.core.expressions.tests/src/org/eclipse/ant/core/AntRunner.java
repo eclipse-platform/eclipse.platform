@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -11,19 +11,25 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.icu.text;
+package org.eclipse.ant.core;
+
+import java.io.Serializable;
 
 /**
  * Used by the
  * {@link org.eclipse.core.internal.expressions.tests.ExpressionTestsPluginUnloading}
  * test.
  * <p>
- * <strong>Note:</strong> This class uses the 'com.ibm.icu.text' namespace for
- * test purposes only and does not copy or implement anything from ICU.
+ * <strong>Note:</strong> This class uses the 'org.eclipse.ant.core' namespace
+ * for test purposes only and does not copy or implement anything from the real
+ * AntRunner class.
  * </p>
  */
-public class DecimalFormat implements Runnable {
+public class AntRunner implements Runnable, Serializable {
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public void run() {
+		// Empty implementation for testing
 	}
 }
