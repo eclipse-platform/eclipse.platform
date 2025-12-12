@@ -53,6 +53,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 	private final Collection<BundleReference> bundleReferences = new LinkedHashSet<>();
 	private Path configurationDirectory;
 	private final Map<String, String> configIniValues = new HashMap<>();
+	private final Map<String, String> systemProperties = new HashMap<>();
 	private boolean readOnly = false;
 	private boolean cascaded = false;
 	private boolean firstExecutedSession = true;
@@ -155,6 +156,16 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 	}
 
 	@Override
+	public CustomSessionConfiguration setSystemProperty(String key, String value) {
+		if (value == null) {
+			systemProperties.remove(key);
+		} else {
+			systemProperties.put(key, value);
+		}
+		return this;
+	}
+
+	@Override
 	public CustomSessionConfiguration setConfigurationDirectory(Path configurationDirectory) {
 		Objects.requireNonNull(configurationDirectory);
 		this.configurationDirectory = configurationDirectory;
@@ -189,6 +200,7 @@ public class CustomSessionConfigurationImpl implements CustomSessionConfiguratio
 		if (cascaded) {
 			createOrRefreshConfigIni();
 		}
+		setup.setSystemProperties(systemProperties);
 	}
 
 	@Override

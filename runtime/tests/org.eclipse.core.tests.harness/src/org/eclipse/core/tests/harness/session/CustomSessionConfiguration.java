@@ -83,4 +83,15 @@ public interface CustomSessionConfiguration extends SessionCustomization {
 	 */
 	public CustomSessionConfiguration setConfigIniValue(String key, String value);
 
+	/**
+	 * Sets the given system property for all subsequently executed sessions. If the
+	 * value is null, the property will not be set in subsequent runs anymore.
+	 *
+	 * @param key   the system property key
+	 * @param value the value to set for the key or {@code null} to remove the key
+	 *
+	 * @return this
+	 */
+	public CustomSessionConfiguration setSystemProperty(String key, String value);
+
 }
