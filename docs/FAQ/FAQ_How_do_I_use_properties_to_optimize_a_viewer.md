@@ -9,28 +9,34 @@ In the context of JFace viewers, _property_ means any aspect that has relevance 
 
 The interface IBasicPropertyConstants defines some simple properties-parent, children, text, and image-but the set of possible properties is open ended. Let's say, for example, that you have a tree viewer that is showing a person's ancestral tree. The label of each tree item may contain different information, such as the person's name and year of birth. The viewer may have several filters for showing subsets of the family tree, such as gender or hair color. You could define a set of domain-specific properties for that viewer to enumerate all these values:
 
+```java
       public interface IAncestralConstants {
          public static final String BIRTH_YEAR = "birth-year";
          public static final String NAME = "name";
          public static final String GENDER = "gender";
          public static final String HAIR_COLOR= "hair-color";
       }
+```
 
 Note that a property doesn't necessarily represent something that is directly visible but rather something that affects the presentation in some way.
 
 The label provider, filters, and sorters associated with the viewer define which properties affect them. In this case, the label provider cares only about the name and birth year, so it would override the isLabelProperty method on IBaseLabelProvider as follows:
 
+```java
       public boolean isLabelProperty(Object el, String prop) {
          return IAncestralConstants.NAME.equals(prop) ||
             IAncestralConstants.BIRTH_YEAR.equals(prop);
       }
+```
 
 Similarly, a sorter that sorts entries by name would override the method ViewerSorter.isSorterProperty to return true only for the NAME property. A filter that defines a subset based on hair color would override ViewerFilter.isFilterProperty to return true only for the HAIR_COLOR property.
 
 Still not seeing the point of all this? Well, here's the interesting bit. When changes are made to the domain objects, the viewer's update method, defined on StructuredViewer, can be passed a set of properties to help it optimize the update:
 
+```java
       viewer.update(person, new String[] {NAME});
       viewer.update(person, new String[] {GENDER, HAIR_COLOR});
+```
 
 The viewer update algorithm will ask the label provider and any installed sorter and filters whether they are affected by the property being changed. This information can allow the update method to make some very significant optimizations. If the sorter and filters are not affected by the change, the update is very fast. If any sorter or filter is affected by the change, significant work has to be done to update the view.
 

@@ -3,10 +3,11 @@
 FAQ How do I find out what object is selected?
 ==============================================
 
-The ISelectionService tracks all selection changes within the views and editors of a workbench window or page. By adding a listener to this service, you will be notified whenever the selection changes. Selections in views are typically returned as IStructuredSelection instances, and selections in editors typically implement ITextSelection. You should avoid any expensive computation from within a selection listener, because this event fires quite frequently as the user is moving around in the UI and typing in editors. A more efficient approach is to avoid adding a listener, and simply asking the selection service for the current selection when you need it.
+The ISelectionService tracks all selection changes within the views and editors of a workbench window or page. By adding a listener to this service, you will be notified whenever the selection changes. Selections in views are typically returned as `IStructuredSelection` instances, and selections in editors typically implement `ITextSelection`. You should avoid any expensive computation from within a selection listener, because this event fires quite frequently as the user is moving around in the UI and typing in editors. A more efficient approach is to avoid adding a listener, and simply asking the selection service for the current selection when you need it.
 
-You can also ask for the selection in a particular view by passing the view ID as a parameter to the getSelection method:
+You can also ask for the selection in a particular view by passing the view ID as a parameter to the `getSelection` method:
 
+```java
       IWorkbenchPage page = ...;
       //the current selection in the entire page
       ISelection selection = page.getSelection();
@@ -22,8 +23,9 @@ You can also ask for the selection in a particular view by passing the view ID a
       //add a listener to selection changes only
       //in the navigator view
       page.addSelectionListener(sl, IPageLayout.ID\_RES\_NAV);
+```
 
-IWorkbenchPage implements ISelectionService directly. You can also access a selection service to track selection within a workbench window by using IWorkbenchWindow.getSelectionService.
+`IWorkbenchPage` implements `ISelectionService` directly. You can also access a selection service to track selection within a workbench window by using `IWorkbenchWindow.getSelectionService`.
 
 See Also:
 ---------

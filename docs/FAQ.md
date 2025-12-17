@@ -18,7 +18,7 @@ Installation, Startup and Runtime
 
 ### Where can I get Eclipse?
 
-*   Use the [downloads page](http://www.eclipse.org/downloads/) or [download package](https://www.eclipse.org/downloads/packages/) to get the latest releases. 
+*   Use the [downloads page](http://www.eclipse.org/downloads/) or [download package](https://www.eclipse.org/downloads/packages/) to get the latest releases.
 
 
 ### What's the difference between all the different packages? What do they contain? Do they contain source code?
@@ -72,17 +72,17 @@ The simplest way:
 
 If you need to add additional command-line parameters, then you will need to get to a command prompt and run something like:
 
-    /path/to/eclipse/eclipse -data /path/to/workspace -vm /path/to/jvm/bin/java -vmargs -Xms256M -Xmx512M -XX:PermSize=64M -XX:MaxPermSize=128M 
-    
+    /path/to/eclipse/eclipse -data /path/to/workspace -vm /path/to/jvm/bin/java -vmargs -Xms256M -Xmx512M -XX:PermSize=64M -XX:MaxPermSize=128M
 
- 
+
+
 
 \- or -
 
-    c:\path\to\eclipse\eclipse.exe -data c:\path\to\workspace -vm c:\path\to\jvm\bin\java.exe -vmargs -Xms256M -Xmx512M -XX:PermSize=64M -XX:MaxPermSize=128M 
-    
+    c:\path\to\eclipse\eclipse.exe -data c:\path\to\workspace -vm c:\path\to\jvm\bin\java.exe -vmargs -Xms256M -Xmx512M -XX:PermSize=64M -XX:MaxPermSize=128M
 
- 
+
+
 
 Note that any arguments for the JVM, including setting properties, must come after the _-vmargs_.
 
@@ -180,7 +180,7 @@ There are a couple of things you can try.
 
 1.  Delete the `workspace/.metadata/.lock` file.
 2.  Check your running processes to make sure there aren't any remaining Java or Eclipse processes running. When in doubt, restart your computer. :)
-3.  Try starting Eclipse on a different workspace (from the workspace selection dialog, or by using a command line argument like `-data /home/user/tmp-workspace`), then switch 
+3.  Try starting Eclipse on a different workspace (from the workspace selection dialog, or by using a command line argument like `-data /home/user/tmp-workspace`), then switch
 back to your original workspace.
 
 If none of these solution work, could you be trying to create the workspace on a folder mounted via NFS? If yes, please make sure you are using NFS v4.
@@ -248,9 +248,9 @@ A number of Ubuntu/Linux users have complained about the update manager being un
 The Eclipse launcher is currently ignoring the VM arguments in the `eclipse.ini` file due to the change in branding of the HotSpot VM from Sun to Oracle. The workaround is to set the argument directly via the command line or to append it to your shortcut/script.
 
     eclipse.exe -vmargs -XX:MaxPermSize=256m
-    
 
- 
+
+
 
 Please see [bug 319514](https://bugs.eclipse.org/bugs/show_bug.cgi?id=319514) for more details.
 
@@ -258,15 +258,15 @@ Please see [bug 319514](https://bugs.eclipse.org/bugs/show_bug.cgi?id=319514) fo
 
 On the .log-File (workbench/.metadata/.log) i see an error like:
 
- 
+
 
      The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
-    
 
- 
 
-So check if the file **.snap** exist in your Workbench-Folder on: .metadata/.plugins/org.eclipse.core.resources. Than remove, or rename the file and start eclipse again.  
-  
+
+
+So check if the file **.snap** exist in your Workbench-Folder on: .metadata/.plugins/org.eclipse.core.resources. Than remove, or rename the file and start eclipse again.
+
 
 Eclipse
 -------
@@ -382,9 +382,9 @@ See [Platform Plug-in Developer Guide > Programmer's Guide > Advanced workbench 
 
     Window > Preferences... > General > Keys
       [x] Include unbound commands
-    
 
- 
+
+
 
 *   To find other commands, if the above didn't work:
 
@@ -394,25 +394,25 @@ See [Platform Plug-in Developer Guide > Programmer's Guide > Advanced workbench 
       [ ] Filter uncategorized commands <-- this one is particularly useful
 
 
- 
+
 
 ### Why did Content Assist stop working?
 
 First, select:
 
     Window > Preferences... > General > Keys
-    
 
- 
+
+
 
 Scroll to "Content Assist" and verify that Ctrl+Space is still the hotkey.
 
 If content assist is displaying an empty proposal window, then check your default proposal generators by navigating to:
 
     Window > Preferences... > Java > Editor > Content Assist > Advanced
-    
 
- 
+
+
 
 Ensure the top-most table (defining the default content assist list) has your desired proposal generators. You'll likely want "Java Proposals"
 
@@ -429,9 +429,9 @@ One known process that can interfere with Ctrl+Space is Logitech's QuickCam10.ex
 Make sure that you're opening the file with the correct editor. You may have several associated editors for a given file type, such as .php or .xml. Whatever was installed last is probably the default. If this is not your preferred editor, select:
 
     Window > Preferences... > General > Editors > File Associations
-    
 
- 
+
+
 
 and set a better default. Note that the last editor you used for a file will be used next time, so you might have to use Open With instead of Open to select the correct editor.
 
@@ -449,6 +449,7 @@ Many tools now add an option to "add the xyz nature", usually via the project's 
 
 For a PHP project, this could be:
 
+```xml
 <buildSpec>
     <buildCommand>
         <name>org.eclipse.php.core.PhpIncrementalProjectBuilder</name>
@@ -462,9 +463,11 @@ For a PHP project, this could be:
 <natures>
     <nature>org.eclipse.php.core.PHPNature</nature>
 </natures>
+```
 
 For a Plug-in project:
 
+```xml
 <buildSpec>
     <buildCommand>
         <name>org.eclipse.jdt.core.javabuilder</name>
@@ -483,6 +486,7 @@ For a Plug-in project:
     <nature>org.eclipse.pde.PluginNature</nature>
     <nature>org.eclipse.jdt.core.javanature</nature>
 </natures>
+```
 
 Note also:
 
@@ -566,6 +570,7 @@ The code snippet below should be able to help you. You may also wish to refer to
 
 The code below is largely copy and pasted from `org.eclipse.core.internal.runtime.auth.AuthorizationDatabase`, `org.eclipse.core.internal.runtime.auth.CipherInputStream`, and `org.eclipse.core.internal.runtime.auth.Cipher`.
 
+```java
 		public static void main(String\[\] args) {
 			String s = "/home/user/eclipse/configuration/org.eclipse.core.runtime/.keyring"; //$NON-NLS-1$
 		 
@@ -735,6 +740,7 @@ The code below is largely copy and pasted from `org.eclipse.core.internal.runtim
 				return result;
 			}
 		}
+```
 
 ### My line delimiter changes are not being persisted to the file. What's going on?
 
@@ -882,7 +888,7 @@ Plug-in Development
 
 ### How do I test my plug-ins?
 
-See [here](/PDE./FAQ#How_do_test_my_plug-ins.md "PDE./FAQ")..md 
+See [here](/PDE./FAQ#How_do_test_my_plug-ins.md "PDE./FAQ")..md
 ### I get an unhandled event loop exception in my console. What gives?
 
 See [here](/Graphical_Eclipse_FAQs#I_get_an_unhandled_event_loop_exception_in_my_console._What_gives.3F "Graphical Eclipse FAQs").

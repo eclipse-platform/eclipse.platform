@@ -18,25 +18,29 @@ A DOM represents the structure of your programming language. Its design and impl
 
 The inheritance hierarchy for the DOM  defines the following fields:
 
+```java
       int startOffset, endOffset; // source positions
       Hashtable attributes;       // things like ID, label, ...
       ArrayList children;         // children of this element
       Element parent;             // the owner of this element
       String hoverHelp;           // cached value of hover help
       ...more fields....
+```
 
 The subclasses of Element implement useful methods:
 
+```java
       public String getAttributeValue(String name)
       public String getHoverHelp()
-      public void getContentProposals(...., ArrayList result)   
+      public void getContentProposals(...., ArrayList result)
+```
 
 For instance, the getHoverHelp method easily allows us to use the DOM to find the element at a given offset and then ask it for what hover help is appropriate.
 
-  
 
 
-  
+
+
 
 See Also:
 ---------

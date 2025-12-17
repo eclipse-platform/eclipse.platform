@@ -24,19 +24,21 @@ Keyboard shortcuts can also be created by defining a _key sequence_, using the o
 
 You can also define a key binding that applies only to a particular locale or platform. For example, you can define an accelerator that applies only to a German Linux GTK installation of Eclipse. See the command extension point documentation for more details on these advanced features.
 
-The following is an example key-binding definition. 
+The following is an example key-binding definition.
 This binding sets up a toggle comment accelerator for a hypothetical AMPLE language editor, which by default has no key binding:
 
+```xml
 		<extension point="org.eclipse.ui.bindings">
 			<key sequence="Ctrl+7"
 				commandId="uk.co.example.actions.togglecomment"
 				schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 				contextId="uk.co.example.ampleEditorScope"/>
 		</extension>
+```
 
 The difference between a scheme and a context can be confusing at first. The scheme is explicitly set by the user; once it is set, it does not change. The context can be changed programmatically by any plug-in. For example, you can change the context whenever your view or editor becomes active, using AbstractTextEditor.setKeyBindingScopes().
 
-  
+
 
 See Also:
 ---------

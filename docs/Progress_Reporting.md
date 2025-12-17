@@ -12,11 +12,13 @@ I recently got to investigate issues in p2 why the progress bar did not move whi
 
 The problem is how to handle a case where you need to do something like this:
 
+```java
     for (int i = 0; i < candidates.length; i++) {
       if (loadCandidate1(i)) {
         break;
       }
     }
+```
 
 Where a call to `loadCandidate(int)` is potentially a long running task. The first loaded candidate means we are done.
 
@@ -25,7 +27,7 @@ Antipattern
 
 Here is an implementation of the above example using the antipattern - i.e. "don't do this":
  
-
+```java
     public void antiPattern(IProgressMonitor monitor) {
       SubMonitor sub = SubMonitor.convert(monitor, candidates.length);
       for (int i = 0; i < candidates.length; i++) {
@@ -48,6 +50,7 @@ Here is an implementation of the above example using the antipattern - i.e. "don
       }
       return false;
     }
+```
 
 Well, what is wrong with this, you may ask...Well, the length of the progress bar will be divided into as many slots as there are candidates, and if the first candidate succeeds and uses its 1000 ticks, and the remaining candidates are never considered, we will end up reporting the 1000 ticks on a fraction of the overall progress bar. This means that for 10 candidates, you will see the progress-bar slowly go to about 10% of the overall length, to suddenly jump to 100%.
 
@@ -56,6 +59,7 @@ Good pattern
 
 Here is the good pattern that makes use of the full progress bar:
 
+```java
     public void goodPattern(IProgressMonitor monitor) {
       SubMonitor sub = SubMonitor.convert(monitor, 1000);
       for (int i = 0; i < candidates.length; i++) {
@@ -82,6 +86,7 @@ Here is the good pattern that makes use of the full progress bar:
       }
       return false;
     }
+```
 
 Notice how [`setWorkRemaining(int)`](http://help.eclipse.org/stable/nftopic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/core/runtime/SubMonitor.html#setWorkRemaining(int)) is called each time in the loop. This reallocates the remaining ticks, but there is no need to compute how many that actually remains, the child allocation of 1000 ticks will always give the child 1000 ticks to report, even if there were not enough ticks left in the parent. All the scaling is performed by the SubMonitor, so you don’t have to worry about it.
 
@@ -92,6 +97,7 @@ Good pattern - regular loop
 
 Here is the good pattern for a regular loop where each iteration does consume ticks.
 
+```java
     public void goodLoopPattern(IProgressMonitor monitor) {
       SubMonitor sub = SubMonitor.convert(monitor, candidates.length*100);
       for (int i = 0; i < candidates.length; i++) {
@@ -116,6 +122,7 @@ Here is the good pattern for a regular loop where each iteration does consume ti
       }
       return false;
     }
+```
 
 Here I simply use SubMonitor’s [`newChild(int)`](http://help.eclipse.org/stable/nftopic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/core/runtime/SubMonitor.html#newChild(int)), this works without calling “done” because the next call to newChild (or “done” for that matter) will consume the ticks allocated for the child.
 

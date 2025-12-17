@@ -11,13 +11,15 @@ Luckily, the workbench added an interface called IActionDelegate2 in version 2.0
 
 This alternative solution allows clients to write more compact code with control flow localized to the execution of the action. A typical action would declare itself as follows:
 
-      class Handler extends ActionDelegate 
+```java
+      class Handler extends ActionDelegate
                                  implements IActionDelegate2 {
          public void runWithEvent(IAction action, Event event) {
-            MessageDialog.openInformation(new Shell(), 
+            MessageDialog.openInformation(new Shell(),
                "Demo", "Handling: "+action+" on "+event);
          }
       }
+```
 
 Interfaces like IActionDelegate2 are an indication of how a platform like Eclipse struggles with the tension between adoption and innovation. Because too many client plug-ins already depended on the implementation of the old interface IActionDelegate, it could not be easily changed without breaking the existing Eclipse API. Instead, a parallel replacement was added, which is less elegant but comes back in multiple places in Eclipse. The existence of the IActionDelegateWithEvent interface shows how even naming mistakes have to persist for a while as some clients may rely on it.
 

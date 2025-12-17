@@ -11,6 +11,7 @@ Nonetheless, it is possible for your plug-in to explicitly request a workspace s
 
 The following example saves the workspace:
 
+```java
     final MultiStatus status = new MultiStatus(...);
     IRunnableWithProgress runnable = new IRunnableWithProgress() {
       public void run(IProgressMonitor monitor) {
@@ -26,6 +27,7 @@ The following example saves the workspace:
     if (!status.isOK()) {
       ErrorDialog.openError(...);
     }
+```
 
 Note that the save method can indicate minor problems by returning an IStatus object, or major problems by throwing an exception. You should check both of these results and react accordingly. To request a workspace snapshot, the code is almost identical: pass false as the first parameter to the save method.
 

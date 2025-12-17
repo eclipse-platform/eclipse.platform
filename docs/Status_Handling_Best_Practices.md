@@ -10,10 +10,10 @@ Introduction
 In software engineering serviceability is also known as supportability, and refers to the ability to debug or perform root cause analysis in pursuit of solving a problem with a product.
 Serviceability includes the logging of state and the notification of the user.
 
-Eclipse provides a framework to manage the Log file as well as Dialog to notify the user. 
+Eclipse provides a framework to manage the Log file as well as Dialog to notify the user.
 This framework allows provider to plug-in their diagnosis tools, providing extra value to the user.
 
-This paper explains the best practices of using the IStatus class. 
+This paper explains the best practices of using the IStatus class.
 The second part explains to plug-in provider how to exploit the new ‘StatusHandler’ model, allowing them to contribute to the user interface as well as managing the IStatus we are about to show or log.
 
 Before we investigate IStatus, we need to agree on a couple basic principle about logging and error message rendering.
@@ -25,14 +25,14 @@ Messages
 
 A message is the principal information the user will see in the log or in the User Interface. A message that is logged is supposed to be user consumable and thus follow the same readability and globalization rules as a String rendered in a menu.
 
-  
+
 
 Message content
 ---------------
 
 There are tons of information on how to create a usable message. We rely on your Software Engineering experience to avoid messages like: ‘internal error, please see log’.
 
-  
+
 
 Provide additional information in your message
 ----------------------------------------------
@@ -42,7 +42,7 @@ We recommend you provide two other pieces of information when you create a messa
 1.  An explanation of the message. This is a String that will provide more information to the user than a one line message. The explanation should not be too technical, yet provide more value than the message text itself. Once again, information is available on the web.
 2.  A recommendation of the message. This is a String that will tell the user what he/she should do. When you write this part, put yourself in the shoes of the user and answer the following question: “ok, now what do I do ?”
 
-  
+
 
 Attempt to use a unique identifier
 ----------------------------------
@@ -52,7 +52,7 @@ Unique identifier could be an int or a String that uniquely tag the message. The
 1.  It is easier to search a knowledge base with a unique int than the full text of the message.
 2.  Because messages are translated, a user in a foreign country may send your support team a translated message. If you do not have a unique identifier, it will be difficult for your team to translate it back into the original language.
 
-  
+
 
 Developing messages in eclipse: using the NLS.bind method
 ---------------------------------------------------------
@@ -103,29 +103,31 @@ Most of the framework related to Logging and Error rendering uses an IStatus:
        * ILog.log(IStatus status)
        * IProgressMonitorWithBlocking.setBlocked(IStatus reason)
        * ErrorDialog.openError(Shell parent, String dialogTitle, String message, IStatus status)
-    
 
- 
+
+
 
 Calling the Status API
 ----------------------
 
-You should investigate the Status and MultiStatus classes. 
+You should investigate the Status and MultiStatus classes.
 We recommend you use the following constructor:
 
+```java
     public Status(int severity, String pluginId, int code, String message, Throwable exception)
-
+```
 
 Implementing your own Status
 ----------------------------
 
 You should consider the following when creating an IStatus instance.
 
-1.  Try to create a subclass of IStatus that will carry your specific payload. 
-An Example in Eclipse 3.3 is the class CVSStatus. 
+1.  Try to create a subclass of IStatus that will carry your specific payload.
+An Example in Eclipse 3.3 is the class CVSStatus.
 The class carries information that diagnostic tool can use to validate CVS.
 2.  Do not use IStatus.ERROR as a code. Try to use your own code. As an example, look at the Class CVSSTatus.
 
+```java
 	    public class CVSStatus extends TeamStatus {
 	     
 	    /*** Status codes ***/
@@ -140,6 +142,7 @@ The class carries information that diagnostic tool can use to validate CVS.
 	      super(severity, CVSProviderPlugin.ID, code, message, t,null);
 	      this.cvsLocation = cvsLocation;
 	    }
+```
 
 The Eclipse 3.3 Status handler framework
 ========================================
@@ -164,6 +167,7 @@ Calling the new framework is straight forward. Once your IStatus is created, you
 
 Remember the Handler has the last decision about showing and logging. Consider the previous information as a hint to the handler, but do not rely on them for your execution.
 
+```java
     public void run(IAction action) {
       // Throw an error to be handled
       File aConfigurationFile = obtainConfigurationFileFor(authenticatedUser);
@@ -183,8 +187,9 @@ Remember the Handler has the last decision about showing and logging. Consider t
         if (aStream!=null){
           try {aStream.close();} catch (Exception e){};
         }
-      } 
+      }
     }
+```
 
 Developing a StatusHandler
 ==========================
@@ -196,22 +201,23 @@ A StatusHandler is the counterpart of StatusManager. As a developer, you will ca
 Implementing the handle method
 ------------------------------
 
+```java
     public void handle(StatusAdapter statusAdapter, int style) {
      
       // Retrieve IStatus and message
-      IStatus oldStatus = statusAdapter.getStatus();		
+      IStatus oldStatus = statusAdapter.getStatus();
      
       // Verify we do not have a CompanyStatusWithID
       if (!(oldStatus instanceof CompanyStatusWithID)){
         String message = oldStatus.getMessage();
      
         //All our ID start with DYNA
-        if (null!=message && message.startsWith("DYNA")){		
+        if (null!=message && message.startsWith("DYNA")){
      
           //Remove any unique identifier to not show it to the user
           int lengthOfUniqueId = message.indexOf(' ');
      
-          String uniqueID = message.substring(0,lengthOfUniqueId);			
+          String uniqueID = message.substring(0,lengthOfUniqueId);
           message = message.substring(lengthOfUniqueId);
           message = message + getExplanation(oldStatus);	// Retrieve the explanation for this status
      
@@ -228,6 +234,7 @@ Implementing the handle method
      
       super.handle(statusAdapter, style);
     }
+```
 
 Developing an ErrorSupportProvider
 ==================================
@@ -240,9 +247,9 @@ To Register your SupportArea, you must call the following code
 Policy.setErrorSupportProvider(<instance of org.eclipse.jface.dialogs.ErrorSupportProvider>);
 
     Policy.setErrorSupportProvider(<instance of org.eclipse.jface.dialogs.ErrorSupportProvider>);
-    
 
- 
+
+
 
 We recommend you do it in the Activator class of your bundle, in the start method. Of course you can change it later, for instance in your handle method. In that case, there is no contract that the ErrorSupportProvider you set will be the one receiving the IStatus your are processing.
 
@@ -251,6 +258,7 @@ Implementing the createSupportArea method
 
 Implement the createSupportArea method, returning the control you want to show the user.
 
+```java
     public Control createSupportArea(Composite parent, IStatus status) {
       parent.addDisposeListener(this); // get notified so we can clean our SWT widgets
      
@@ -262,15 +270,18 @@ Implement the createSupportArea method, returning the control you want to show t
       toolkit.getColors().initializeSectionToolBarColors();
       ...
     }
+```
 
 Here is a simple example that will open a web page.
 
+```java
     public Control createSupportArea(Composite parent, IStatus status) {
       viewer = new Browser(parent, SWT.NONE);
       viewer.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
       viewer.setUrl(<a String representing the URL>);
       return viewer;
     }
+```
 
 We highly recommend you implement an IDisposeListener to clean up after yourself, when the ErrorDialog is closed.
 

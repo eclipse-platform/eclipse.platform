@@ -5,6 +5,7 @@ FAQ How do I associate an action with a command?
 
 Actions are associated with commands in various ways depending on how the actions are defined. For actions contributed via the actionSets extension point, the association with a command is done directly in the action definition. The definitionId attribute of the action element must match the ID of the command it is associated with:
 
+```xml
       <actionSet ...>
          <action
             definitionId="org.eclipse.faq.sampleCommand"
@@ -15,11 +16,14 @@ Actions are associated with commands in various ways depending on how the action
          id="org.eclipse.faq.sampleCommand"
          ...>
       </command>
+```
 
 For actions created programmatically, associating the action with a command is a two-step process. As with declarative actions, the first step is to set the action's definition ID to match the ID of the command. The command must still be defined declaratively, using the command extension point. The definition ID is set by calling Action.setDefinitionId. The second step is to register the action with the platform, using the key-binding service. This service can be accessed from the IWorkbenchPartSite, which is accessible to both views and editors. Here is an example of these steps for an action in a view:
 
+```java
       action.setActionDefinitionId("some.unique.id");
       view.getSite().getKeyBindingService().registerAction(action);
+```
 
 See Also:
 ---------

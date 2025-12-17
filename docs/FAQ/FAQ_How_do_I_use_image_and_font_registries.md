@@ -7,6 +7,7 @@ With SWT, you are responsible for managing the lifecycle of such operating syste
 
 Sometimes, a resource is used very frequently or must be shared among several widgets for unknown lengths of time. In these situations, the resources can be stored in a permanent registry. JFace provides three such registries: FontRegistry, ImageRegistry, and ColorRegistry. You can instantiate one of these registries yourself or use the global ones accessible from the JFaceResources class. The advantage to using a private instance is that you don't have to worry about your keys overlapping with the keys of another component. Here is an example of creating and accessing images in a private image registry:
 
+```java
       static final String IMAGE_ID = "my.image";
       ...
       //declaring the image
@@ -18,6 +19,7 @@ Sometimes, a resource is used very frequently or must be shared among several wi
       Button button = new Button(...);
       Image image = registry.get(IMAGE_ID);
       button.setImage(image);
+```
 
 These registries create resources lazily as they are accessed, thus avoiding the expense of creating resources that may never be used. The resources are disposed of automatically when the display is disposed of.
 

@@ -5,6 +5,7 @@ FAQ How can I track the lifecycle of jobs?
 
 It is quite simple to find out when jobs, including those owned by others, are scheduled, run, awoken, and finished. As with many other facilities in the Eclipse Platform, a simple listener suffices:
 
+```java
     IJobManager manager = Job.getJobManager()
     manager.addJobChangeListener(new JobChangeAdapter() {
             public void scheduled(IJobChangeEvent event) {
@@ -12,6 +13,7 @@ It is quite simple to find out when jobs, including those owned by others, are s
                 System.out.println("Job scheduled: " + job.getName());
             }
     });
+```
 
 By subclassing JobChangeAdapter, rather than directly implementing IJobChangeListener, you can pick and choose which job change events you want to listen to. Note that the done event is sent regardless of whether the job was cancelled or failed to complete, and the result status in the job change event will tell you how it ended.
 

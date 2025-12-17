@@ -11,12 +11,14 @@ Plug-ins can store data that may be shared among several workspaces in two locat
 
 Here is an example of obtaining a lock on the user location:
 
+```java
       Location user = Platform.getUserLocation();
       if (user.lock()) {
          // read and write files
       } else {
          // wait until lock is available or fail
       }
+```
 
 Note that these locations are accessible to all plug-ins, so make sure that any data stored here is in a unique subdirectory based on your plug-in's unique ID. Even then, keep in mind that a single user may open multiple workspaces simultaneously that have access to these areas. If you are writing files in these shared locations, you must make sure that you protect read-and-write access by locking the location.
 

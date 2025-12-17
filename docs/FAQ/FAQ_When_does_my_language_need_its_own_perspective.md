@@ -9,6 +9,7 @@ Think of perspectives as one of the windows in a virtual desktop manager. When y
 
 Perspectives are created by using the org.eclipse.ui.perspectives extension point:
 
+```xml
     <extension
             point="org.eclipse.ui.perspectives">
         <perspective
@@ -18,8 +19,8 @@ Perspectives are created by using the org.eclipse.ui.perspectives extension poin
                 id="org.eclipse.faq.sample.coolPerspective">
         </perspective>
     </extension>
+```
 
-  
 
 See Also:
 ---------

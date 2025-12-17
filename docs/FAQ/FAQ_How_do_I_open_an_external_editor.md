@@ -5,11 +5,13 @@ FAQ How do I open an external editor?
 
 A special editor ID is used to indicate that a file should be opened using an external editor. When you ask it to open an editor with this ID, the platform delegates to the operating system to select and open an appropriate editor for the given input. This ID can be used to open an editor on IFile instances or on any other kind of input that implements IPathEditorInput. Here is an example snippet that opens an external editor on an IFile instance:
 
+```java
       IWorkbenchPage page = ...;
       IFile file = ...;
       page.openEditor(
          new FileEditorInput(file),
          IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
+```
 
 Note that this technique applies only to Eclipse 3.0 or greater. On older versions of Eclipse, a special convenience method, openSystemEditor on IWorkbenchPage, accomplished the same task. This method was removed from the workbench API as part of the Eclipse 3.0 rich client refactoring.
 

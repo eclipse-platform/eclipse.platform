@@ -17,6 +17,7 @@ If you want to see what the minimalist editor looks like, we did the experiment 
 
 Here is the structure of our minimalist eScript editor:
 
+```java
       public class Editor extends TextEditor {
          ...
          public Editor() {
@@ -28,11 +29,13 @@ Here is the structure of our minimalist eScript editor:
          }
          ...
       }
+```
 
 In the constructor, we set up a source viewer configuration, handling such issues as Content Assist, hover help, and instructing the editor what to do while the user types text. In the inherited createActions method the editor creates its Content Assist action, used when Ctrl+Space is pressed in the editor.
 
 Our configuration looks like this:
 
+```java
       class Configuration extends SourceViewerConfiguration {
          public IPresentationReconciler getPresentationReconciler(
             ISourceViewer sourceViewer) {
@@ -53,6 +56,7 @@ Our configuration looks like this:
             return '''new TextHover()''';
          }
       }
+```
 
 We use the default presentation reconciler, and we do not distinguish between sections in our documents. In other words, reconciliation of layout will be the same all over the document, whether we are inside a feature, a plug-in, or a method. We declare a scanner, implemented by us, and rely on the text editor framework to parse the document using our parser when it suits it.
 
@@ -62,14 +66,15 @@ Finally, we create a text-hover that will return a relevant string to be shown i
 
 For scanning the underlying document to draw it using different colors and fonts, we deploy RuleBasedScanner, one of the simplest scanners offered by the editor framework:
 
+```java
       class Scanner extends RuleBasedScanner {
          public Scanner() {
             WordRule rule = new WordRule(new IWordDetector() {
-               public boolean isWordStart(char c) { 
-               return Character.isJavaIdentifierStart(c); 
+               public boolean isWordStart(char c) {
+               return Character.isJavaIdentifierStart(c);
                }
-               public boolean isWordPart(char c) {   
-                  return Character.isJavaIdentifierPart(c); 
+               public boolean isWordPart(char c) {
+                  return Character.isJavaIdentifierPart(c);
                }
             });
             Token keyword = new Token(new TextAttribute(Editor.KEYWORD, null, SWT.BOLD));
@@ -92,6 +97,7 @@ For scanning the underlying document to draw it using different colors and fonts
             });
          }
       }
+```
 
 For each of the keywords in our little language, we define a word entry in our WordRule. We pass our keyword detector, together with rules for recognizing comments, strings, and white spaces to the scanner. With this simple set of rules, the scanner can segment a stream of bytes into sections and then use the underlying rules to color the sections.
 

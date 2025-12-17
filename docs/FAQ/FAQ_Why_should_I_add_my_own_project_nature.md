@@ -17,6 +17,7 @@ Adding a project nature
 
 Project natures act as tags on a project to indicate that a certain tool is used to operate on that project. They can also be used to distinguish projects that your plug-in is interested in from the rest of the projects in the workspace. For example, natures can be used to filter declarative extensions that operate only on projects of a particular type. The propertyPages and popupMenus extension points allow you to filter enablement of an extension, based on various properties of the selected resource. One of the properties that this mechanism understands is the nature of a project. Here is an example of an actionSet declaration that operates only on files in projects with the PDE nature:
 
+```xml
    <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
          objectClass="org.eclipse.core.resources.IFile"
@@ -26,6 +27,7 @@ Project natures act as tags on a project to indicate that a certain tool is used
             value="org.eclipse.pde.FeatureNature">
          </filter>
          ...
+```
 
 Another reason for using natures is to make use of the nature lifecycle methods when your plug-in is connected to or disconnected from a project. When a nature is added to a project for the first time, the nature's configure method is called. When the nature is removed from the project, the deconfigure method is called. This is an opportunity to initialize metadata on the project and to associate additional attributes, such as builders, with the project.
 

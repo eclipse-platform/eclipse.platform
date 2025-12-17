@@ -3,9 +3,9 @@ FAQ What is a JDOM?
 
 ![Warning2.png](images/Warning2.png)
 
-**JDT's JDOM has been superseded by the [DOM/AST](https://help.eclipse.org/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/dom/AST.html), and should no longer be used.**  
+**JDT's JDOM has been superseded by the [DOM/AST](https://help.eclipse.org/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/dom/AST.html), and should no longer be used.**
 
-  
+
 A JDOM is a Java document object model. DOM is a commonly used term for an object-oriented representation of the structure of a file. A Google definition search turned up this Web definition: _Document Object Model: DOM is a platform- and language-neutral interface, that provides a standard model of how the objects in an XML object are put together, and a standard interface for accessing and manipulating these objects and their interrelationships._
 
 -[Google search for define:Document Object Model](http://www.google.com/search?q=define:Document+Object+Model)
@@ -14,6 +14,7 @@ In the context of JDT, the JDOM represents a hierarchical, in-memory representat
 
 The class ChangeReturnTypeAction in the FAQ Example plug-in uses the JDOM to change the return type of a selected method. Here is the portion of the action that creates and manipulates the JDOM:
 
+```java
       String oldContents = ...;//original file contents
       IMethod method = ...;//the method to change
       String returnType = ...;//the new return type
@@ -26,6 +27,7 @@ The class ChangeReturnTypeAction in the FAQ Example plug-in uses the JDOM to cha
       IDOMType type = (IDOMType) unit.getChild(typeName);
       IDOMMethod domMethod = (IDOMMethod) type.getChild(mName);
       domMethod.setReturnType(returnType);
+```
 
 Note that modifications to the DOM occur on a copy of the file contents in memory. If the DOM is modified and then discarded, any changes will also be discarded. The current string representation of the in-memory DOM can be obtained by calling IDOMCompilationUnit.getContents(). To save modifications to disk, you should use a working copy.
 

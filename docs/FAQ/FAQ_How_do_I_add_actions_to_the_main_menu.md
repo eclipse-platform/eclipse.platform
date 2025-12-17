@@ -8,23 +8,25 @@ Overview
 
 As with menus and toolbar buttons, menu actions are added to the main menu by using the org.eclipse.ui.actionSets extension point. The FAQ Examples plug-in has many actions that are contributed to the menu in this way. Here is a sample action definition (a subelement of the actionSets element):
 
+```xml
       <action
          label="Open Error &Dialog"
          class=
          "org.eclipse.faq.examples.actions.OpenErrorDialogAction"
          menubarPath="exampleMenu/exampleGroup">
       </action>
+```
 
 The class attribute specifies the fully qualified path of the Action class, which must implement IWorkbenchWindowActionDelegate. When the action is selected by the user, the action's run method will be invoked.
 
-  
+
 The menubarPath attribute specifies the location of the action within the menus. This path is one of the greatest sources of confusion-and one of the biggest FAQs-for new users of action sets, so it is worth explaining it here in detail. The path has two parts, both of which are required. Everything up to the last slash character (/) represents the path of the menu that the action will belong to. For top-level menus, this is a simple string.
 
 The IWorkbenchActionConstants interface contains constants for the standard top-level menu names. For example, file is the path of the **File** menu, and window is the path of the **Window** menu. For menus defined in other plug-ins, consult the plugin.xml file to see the ID of their menus.
 
 When contributing to a submenu, the menu path will be a slash-delimited string containing the IDs of each menu in the hierarchy. The FAQ Examples plug-in defines a top-level menu with ID exampleMenu, and a submenu below this with ID exampleFile. The menubarPath of an action contributed to this submenu would therefore start with exampleMenu/exampleFile.
 
-  
+
 The final part of the menubarPath attribute-after the last slash-is the group name. All menus are divided into groups as a means of organizing the actions within them. When contributing an action, you must specify the name of the group your action belongs to within that menu. Each action can belong to only one group in a single menu. Once again, the standard group names used in the top-level menus are defined in IWorkbenchActionConstants.
 
 Some examples of menubarPath attributes will help to illustrate how they are used. Here is the path for an action in the import/export group within the top-level **File** menu:
@@ -41,7 +43,7 @@ Finally, an action contributed to the **Editor** submenu in the **FAQ Examples**
 
 Note that the group name is required even for menus that have only one group.
 
-  
+
 Menu actions have many more optional attributes, including those for specifying the action's visibility and enablement. Consult the extension point documentation for complete details.
 
 Common Menupaths

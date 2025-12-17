@@ -9,7 +9,9 @@ The Property dialog is invoked by selecting an object and pressing Alt+Enter or 
 
 The Properties view, also known as the property sheet, is not populated using an extension point but is activated through API, by the PDE editors, or manually, through **Window > Show View**. This view, like the Outline view, asks the active workbench part to contribute its contents. When a part becomes active, the property sheet asks it to adapt to IPropertySheetPage, using the IAdaptable mechanism:
 
+```java
       IWorkbenchPart.getAdapter(IPropertySheetPage.class);
+```
 
 If it wants a completely customized property page, the part can respond to this request and provide its own page. If the part does not provide a page, the property sheet presents a default page that solicits key/value pairs from the active part's selection. This again uses the IAdaptable mechanism to ask the selected element whether it wants to contribute properties. This time it asks the element for an implementation of IPropertySource. The property source is responsible for providing its keys and values, changing values, and restoring default values.
 

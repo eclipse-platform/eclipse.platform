@@ -7,6 +7,7 @@ Use the default Eclipse text editor to edit the eScript source files, and use an
 
 A simple Ant script (build.xml) may look like this:
 
+```xml
 		<?xml version="1.0" encoding="UTF-8"?>
 		<project name="eScript" default="compile" basedir=".">
 		<target name="compile">
@@ -15,15 +16,16 @@ A simple Ant script (build.xml) may look like this:
 				<arg value="... long classpath specifier ..."/>
 				<arg value="EscriptPlugin/SampleAction.eScript"/>
 			</exec>
-			<copy file="src/EscriptPlugin/SampleAction.class" 
+			<copy file="src/EscriptPlugin/SampleAction.class"
 				todir="bin/EscriptPlugin/actions/"/>
-			<eclipse.convertPath 
-						fileSystemPath="c:\\faq\\Escript Plugin\\" 
+			<eclipse.convertPath
+						fileSystemPath="c:\\faq\\Escript Plugin\\"
 				property="resourcePath"/>
-			<eclipse.refreshLocal resource="${resourcePath}" 
+			<eclipse.refreshLocal resource="${resourcePath}"
 				depth="infinite"/>
 			</target>
 		</project>
+```
 
 Of course, this script can be made more elegant, but it serves to highlight the main problems with the approach. First, we have to compute the project's classpath, which can be quite complex for a plug-in, and pass it to the eScript compiler. Second, we have to explicitly pass in the name of the source file. Third, we need to replicate the JDT's behavior by copying the resulting class file to the project's bin directory. Finally, we have to refresh the workspace so that Eclipse gets notified of the changes in the class files and can rebuild dependant components in the workspace.
 

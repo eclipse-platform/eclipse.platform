@@ -7,6 +7,7 @@ When actions are contributed via the actionSets extension point, key bindings ar
 
 Now that your action is linked to a command, you need to register the action with the platform. You should do this the first time the platform calls your implementation of WorkbenchAdvisor.fillActionBars:
 
+```java
       public void fillActionBars(IWorkbenchWindow window,
          IActionBarConfigurer configurer, int flags) {
          ...
@@ -16,6 +17,7 @@ Now that your action is linked to a command, you need to register the action wit
          }
          menu.add(maximizeAction);
       }
+```
 
 The method registerGlobalAction will let the platform know that your action exists. When the key binding is invoked by the user, it will now be able locate and run your action.
 

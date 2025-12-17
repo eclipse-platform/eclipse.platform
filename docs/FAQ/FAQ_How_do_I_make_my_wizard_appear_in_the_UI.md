@@ -5,10 +5,12 @@ FAQ How do I make my wizard appear in the UI?
 
 To make a wizard appear, you need an implementation of the wizard interface called IWizardContainer. The container is responsible for all the presentation outside the pages themselves, including a title area, button bar, and progress indicator. You can implement this interface yourself if you want to embed a wizard into a custom control. JFace provides a default wizard container that is a simple modal dialog: WizardDialog. The following code snippet opens a wizard in a wizard dialog:
 
+```java
       Shell shell = window.getShell();
       AddingWizard wizard = new AddingWizard();
       WizardDialog dialog = new WizardDialog(shell, wizard);
       int result = dialog.open();
+```
 
 See Also:
 ---------

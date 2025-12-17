@@ -5,6 +5,7 @@ FAQ How do I show progress on the workbench status line?
 
 The status line has two areas for showing progress. The status line manager has a progress monitor that can be used when you want to block the user from continuing to work during an operation. This progress bar is used as follows:
 
+```java
       IActionBars bars = getViewSite().getActionBars();
       IStatusLineManager statusLine = bars.getStatusLineManager();
       IProgressMonitor pm = statusLine.getProgressMonitor();
@@ -12,6 +13,7 @@ The status line has two areas for showing progress. The status line manager has 
       pm.worked(1);
       .... the actual work is done here...
       pm.done();
+```
 
 If the amount of work to be done can be estimated ahead of time, a more intelligent value can be passed to beginTask, and calls to worked can be used to provide better progress feedback than a continuous animation.
 

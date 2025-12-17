@@ -7,6 +7,7 @@ Since 3.3 you can use the new EFS support to open an text editor on a file store
 
 Most editors will accept as input either an IFileEditorInput or an IStorageEditorInput. The former can be used only for opening files in the workspace, but the latter can be used to open a stream of bytes from anywhere. If you want to open a file on a database object, remote file, or other data source, IStorage is the way to go. The only downside is that this is a read-only input type, so you can use it only for viewing a file, not editing it. To use this approach, implement IStorage so that it returns the bytes for the file you want to display. Here is an IStorage that returns the contents of a string:
 
+```java
       class StringStorage implements IStorage {
         private String string;
        
@@ -35,13 +36,14 @@ Most editors will accept as input either an IFileEditorInput or an IStorageEdito
           return true;
         }
       }
+```
 
 The class extends PlatformObject to inherit the standard implementation of IAdaptable, which IStorage extends. The getName and getFullPath methods can return null if they are not needed. In this case, we've implemented getName to return the first five characters of the string.
 
 The next step is to create an IStorageEditorInput implementation that returns your IStorage object:
 
- 
 
+```java
        class StringInput implements IStorageEditorInput {
           private IStorage storage;
           StringInput(IStorage storage) {this.storage = storage;}
@@ -61,13 +63,14 @@ The next step is to create an IStorageEditorInput implementation that returns yo
             return null;
           }
        }
+```
 
 Again, many of the methods here are optional. The getPersistable method is used for implementing persistence of your editor input, so the platform can automatically restore your editor on start-up. Here, we've implemented the bare essentials: the editor name, and a tool tip.
 
 The final step is to open an editor with this input. This snippet opens the platform's default text editor on a given string:
 
- 
 
+```java
        IWorkbenchWindow window = ...;
        String string = "This is the text file contents";
        IStorage storage = new StringStorage(string);
@@ -75,6 +78,7 @@ The final step is to open an editor with this input. This snippet opens the plat
        IWorkbenchPage page = window.getActivePage();
        if (page != null)
           page.openEditor(input, "org.eclipse.ui.DefaultTextEditor");
+```
 
 See Also:
 ---------

@@ -7,6 +7,7 @@ A DecoratingLabelProvider can be used when an element's text and image need to b
 
 Lightweight label decorators were introduced in Eclipse 2.1. These decorators abstract away the details of performing the image overlay. An implementation of ILightWeightLabelDecorator is provided with an IDecoration object, which it calls in order to add the decorations. The following simple example decorates a viewer containing java.io.File objects to indicate whether they are read-only:
 
+```java
       ImageDescriptor readOnlyOverlay = ...;
       public void decorate(Object element, IDecoration decoration) {
          if (!(element instanceof java.io.File))
@@ -17,12 +18,15 @@ Lightweight label decorators were introduced in Eclipse 2.1. These decorators ab
          decoration.addOverlay(readOnlyOverlay);
          decoration.addSuffix(" (read only)");
       }
+```
 
 A decorating label provider is installed on a viewer in the same way as any other label provider:
 
+```java
       ILabelProvider lp = ... the basic label provider
       ILabelDecorator decorator = ... the decorator
       viewer.setLabelProvider(new DecoratingLabelProvider(lp, decorator));
+```
 
 See Also:
 ---------

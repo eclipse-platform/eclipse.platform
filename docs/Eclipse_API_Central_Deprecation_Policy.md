@@ -1,14 +1,14 @@
 Eclipse/API Central/Deprecation Policy
 ======================================
 
-This page contains Eclipse Project guidelines on API deprecation. 
+This page contains Eclipse Project guidelines on API deprecation.
 This page is maintained by the [Eclipse/PMC](https://eclipse.dev/eclipse/team-leaders.php).
 
 
 What is Deprecation?
 ====================
 
-API deprecation is used to inform API clients that a particular API element is no longer recommended for use. 
+API deprecation is used to inform API clients that a particular API element is no longer recommended for use.
 The deprecation comment should describe the reason for the deprecation, and directions for how to replace their usage with the new recommended way of doing things.
 Deprecation does not necessary implies that the API will be deleted in a future release unless it is explicitely marked for deletion.
 
@@ -20,7 +20,7 @@ Process to deprecate an API
 Identifying Deprecated API
 ==========================
 
-This section describes how clients can identify what API is deprecated. 
+This section describes how clients can identify what API is deprecated.
 To identify API from non-API, see [Provisional API Guidelines](Provisional_API_Guidelines.md)
 
 Java API
@@ -31,16 +31,17 @@ Java API is deprecated through use of the @Deprecate annotation.
 If it is planned to be removed in the future set the forRemoval = true property.
 In this case, the since tag should include the release in which is was marked for deletion.
 
+```java
 	@Deprecated(forRemoval = true, since="2024-12")
+```
 
-
-Older code used @deprecated javadoc tag on types, methods, and fields. 
+Older code used @deprecated javadoc tag on types, methods, and fields.
 The javadoc paragraph following the @deprecated tag defines the rationale for the deprecation and instructions on moving to equivalent new API.
 
 Extension Points
 ----------------
 
-Elements and attributes in extension points are deprecated by setting the "Deprecated" property to true in the PDE extension point schema editor. 
+Elements and attributes in extension points are deprecated by setting the "Deprecated" property to true in the PDE extension point schema editor.
 The entire extension point can be deprecated by deprecating the "extension" element, which is the top level element at the root of any contribution to the extension point.
 
 ![Schema-deprecation.png](images/Schema-deprecation.png)

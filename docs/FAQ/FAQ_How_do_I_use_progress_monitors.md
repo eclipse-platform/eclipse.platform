@@ -13,12 +13,14 @@ After allocating the units of work, you should call SubMonitor.split as the task
 
 Here is a complete example of a long-running operation reporting progress:
 
+```java
       SubMonitor subMonitor = SubMonitor.convert(monitor, 10);
       subMonitor.setTaskName("Performing decathlon: ");
       subMonitor.subTask("hammer throw");
       //perform the hammer throw
       doHammerThrow(subMonitor.split(1));
       //... repeat for remaining nine events
+```
 
 The monitor can also be used to respond to cancellation requests. Each call to SubMonitor.split checks if the monitor has been cancelled and will throw OperationCanceledException if so.
 

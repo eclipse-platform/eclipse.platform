@@ -8,37 +8,39 @@ Adding tracing to your code
 
 During development, it is common practice to print debugging messages to standard output. One common idiom for doing this is
 
- 
 
+```java
        private static final boolean DEBUG = true;
        ...
        if (DEBUG)
           System.out.println("So far so good");
+```
 
 The advantage of this approach is that you can flip the DEBUG field to false when it comes time to deploy your code. The Java compiler will then remove the entire if block from the class file as flow analysis reveals that it is unreachable. The downside of this approach is that all the hard work that went into writing useful debug statements is lost in the deployed product. If your user calls up with a problem, you will have to send a new version of your libraries with the debug switches turned on before you can get useful feedback. Eclipse provides a tracing facility that is turned off by default but can be turned on in the field with a few simple steps.
 
 To instrument your code, use Platform.getDebugOption to add conditions to your trace statements:
 
- 
 
-       private static final String DEBUG_ONE = 
+```java
+       private static final String DEBUG_ONE =
           "org.eclipse.faq.examples/debug/option1";
        ...
        String debugOption = Platform.getDebugOption(DEBUG_ONE);
        if ("true".equalsIgnoreCase(debugOption))
           System.out.println("Debug statement one.");
+```
 
 If you do not need dynamic trace enablement or if you are concerned about code clutter or performance, another tracing style yields cleaner and faster source:
 
- 
 
+```java
        private static final boolean DEBUG_TWO = "true".equalsIgnoreCase(Platform.getDebugOption(
              "org.eclipse.faq.examples/debug/option2"));
        ...
        if (DEBUG_TWO)
           System.out.println("Debug statement two.");
+```
 
-  
 This tracing style is not quite as good as the standard approach outlined at the beginning of this FAQ. Because the debug flag cannot be computed statically, the compiler will not be able to completely optimize out the tracing code. You will still be left with the extra code bulk, but the performance will be good enough for all but the most extreme applications.
 
 **Note:** Some projects use Platform.getDebugOption("pluginID/debug") as their master switch.

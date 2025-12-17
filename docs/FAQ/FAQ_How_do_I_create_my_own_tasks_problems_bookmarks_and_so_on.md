@@ -5,11 +5,13 @@ FAQ How do I create my own tasks, problems, bookmarks, and so on?
 
 Annotations can be added to resources in the workspace by creating IMarker objects. These markers are used to represent compile errors, to-do items, bookmarks, search results, and many other types of annotations. You can create your own marker types for storing annotations for use by your own plug-in. Each marker can store an arbitrary set of attributes. Attributes are keyed by a string, and the values can be strings, Booleans, or integers. The IMarker interface defines some common attribute types, but you are free to create your own attribute names for your markers. Here is an example snippet that creates a marker, adds some attributes, and then deletes it:
 
+```java
             final IFile file = null;
             IMarker marker = file.createMarker(IMarker.MARKER);
             marker.setAttribute(IMarker.MESSAGE, "This is my marker");
             marker.setAttribute("Age", 5);
             marker.delete();
+```
 
 When markers are created, modified, or deleted, a resource change event will be broadcast, telling interested parties about the change. You can search for markers by using the findMarkers methods on IResource.
 

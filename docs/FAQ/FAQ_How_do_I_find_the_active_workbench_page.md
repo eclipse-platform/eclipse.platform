@@ -7,14 +7,15 @@ Many workbench APIs are accessible only from IWorkbenchWindow or IWorkbenchPage.
 
 As it turns out, the answer isn't always straightforward. There appears to be an obvious API on IWorkbench for getting this (caution: _please read below before using this code!_):
 
- 
 
+```java
        IWorkbench wb = PlatformUI.getWorkbench();
        IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
        IWorkbenchPage page = win.getActiveWorkbenchPage();
      
        // on new versions it may need to be changed to:
        IWorkbenchPage page = win.getActivePage();
+```
 
 However, if you read the fine print on these methods, you'll see that they can — and do! — return null if the active shell is not a window. This means that when a dialog or other shell has focus, you might not be able to use these APIs to access the active window or page.
 
@@ -28,26 +29,27 @@ Within a Workbench Part
 
 From within the implementation of any view or editor, you can do the following:
 
- 
 
+```java
        IWorkbenchPage page = getSite().getPage();
+```
 
-Workbench sites are IServiceLocator.
+Workbench sites are `IServiceLocator`.
 
 Within a Command Handler
 ------------------------
 
 The HandlerUtil class provides a number of helper methods to obtain the active window, editor, part, etc. from the ExecutionEvent provided to the handler.
 
-A special case is a handler that implements IElementUpdater as the updateElements() method is provided an UIElement rather than an ExecutionEvent. But the UIElement does provide an IServiceLocator.
+A special case is a handler that implements `IElementUpdater` as the `updateElements()` method is provided an `UIElement` rather than an `ExecutionEvent`. But the `UIElement` does provide an `IServiceLocator`.
 
 Within an Action
 ----------------
 
 From an action defined in a workbench action set, you can access the window from the init method:
 
- 
 
+```java
        class MyAction implements IWorkbenchWindowActionDelegate {
           private IWorkbenchWindow window;
           ...
@@ -55,6 +57,7 @@ From an action defined in a workbench action set, you can access the window from
              this.window = win;
           }
        }
+```
 
 Similarly, actions contributed to the popupMenus extension point always have an initialization method that sets the current part before the action's run method is called. All wizard extension points also have an IWorkbenchWizard init method that supplies the wizard with the current workbench window before the wizard is launched. In short, if you look carefully, you can almost always get at the current window or page, no matter where you are in the Eclipse UI.
 
@@ -63,8 +66,8 @@ From an IEclipseContext or IServiceLocator
 
 Service locators are similar to Eclipse Contexts (IEclipseContext):
 
- 
 
+```java
        IServiceLocator locator = …;
        IWorkbenchWindow window = locator.get(IWorkbenchWindow.class);
-
+```

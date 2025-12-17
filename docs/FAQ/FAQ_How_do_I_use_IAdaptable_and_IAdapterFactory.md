@@ -21,6 +21,7 @@ As another example, the DeleteResourceAction action deletes a selection of resou
 
 In all these cases, the code to perform the adaptation is similar. Here is a simplified version of the DeleteResourceAction code that obtains the selected resource for a given input:
 
+```java
       Object input = ...;
       IResource resource = null;
       if (input instanceof IResource) {
@@ -29,11 +30,14 @@ In all these cases, the code to perform the adaptation is similar. Here is a sim
          IAdaptable a = (IAdaptable)input;
          resource = (IResource)a.getAdapter(IResource.class);
       }
+```
 
 Note that it is not strictly necessary for the object being adapted to implement IAdaptable. For an object that does not implement this interface, you can request an adapter by directly calling the adapter manager:
 
+```java
       IAdapterManager manager = Platform.getAdapterManager();
       ... = manager.getAdapter(object, IResource.class);
+```
 
 For an excellent design story on why Eclipse uses adapters, see Chapter 31 of _Contributing to Eclipse_ by Erich Gamma and Kent Beck.
 

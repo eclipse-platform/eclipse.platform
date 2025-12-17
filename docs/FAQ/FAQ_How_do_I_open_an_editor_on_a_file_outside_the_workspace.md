@@ -5,6 +5,7 @@ FAQ How do I open an editor on a file outside the workspace?
 
 Since 3.3 you can use the new EFS support to open an text editor on a file outside the workspace:
 
+```java
         String name = new FileDialog(aShell, SWT.OPEN).open();
         if (name == null)
             return;
@@ -18,9 +19,11 @@ Since 3.3 you can use the new EFS support to open an text editor on a file outsi
                 /* some code */
             }
         }
+```
 
 Alternatively, you can create a _linked resource_ in an existing project, which points to a file elsewhere in the file system. This example snippet creates a project called External Files, and then prompts the user to select any file in the file system. The code then creates a linked resource in the project to that external file, allowing the platform to open the file in read/write mode in one of the standard editors:
 
+```java
         IWorkspace ws = ResourcesPlugin.getWorkspace();
         IProject project = ws.getRoot().getProject("External Files");
         if (!project.exists())
@@ -37,6 +40,7 @@ Alternatively, you can create a _linked resource_ in an existing project, which 
         IWorkbenchPage page = window.getActivePage();
         if (page != null)
             page.openEditor(file);
+```
 
 See Also:
 ---------

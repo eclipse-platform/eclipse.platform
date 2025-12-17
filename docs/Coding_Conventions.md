@@ -3,8 +3,8 @@ Coding Conventions
 
 Oracle has established coding standards that are generally considered reasonable, as evidenced by their widespread adoption by other Java-based development efforts. One of the goals is to make the Eclipse Platform blend in with the Java platform. This goal is furthered by our following suit.
 
-[Oracle's Code Conventions for the Java Programming Language](https://www.oracle.com/java/technologies/javase/codeconventions-contents.html) covers filenames, file organization, indentation, comments, declarations, statements, white space, naming conventions, and programming practices. 
-All code written for the Eclipse Platform should follow these conventions except as noted below. 
+[Oracle's Code Conventions for the Java Programming Language](https://www.oracle.com/java/technologies/javase/codeconventions-contents.html) covers filenames, file organization, indentation, comments, declarations, statements, white space, naming conventions, and programming practices.
+All code written for the Eclipse Platform should follow these conventions except as noted below.
 We deviate only in places where our needs differ from Oracle's; when we do deviate, we explain why. (The section numbers shown below are Oracle's.)
 
 *   Section 3.1.1 Beginning Comments
@@ -21,10 +21,11 @@ The Eclipse project has more specific naming conventions. See Eclipse Project [N
 
 Modifiers should be ordered as specified in the JLS and summarized in [AST#newModifiers(int)](http://help.eclipse.org/neon/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/dom/AST.html#newModifiers-int-):
 
+```java
     public protected private
     abstract default static final
     synchronized native strictfp transient volatile
-    
+```
 
 For Javadoc conventions, see Oracle's [How to Write Doc Comments for the Javadoc Tool](https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html) and [Eclipse/API_Central](API_Central.md).
 
